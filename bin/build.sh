@@ -9,24 +9,34 @@
 #
 #====================================================================================================
 
-# variables that can be changed in config
+PACKAGE_JSON=./package.json
+GRUNTFILE=../chipper/grunt/Gruntfile.js
 OUTPUT_DIR=./build
 
-# read the config file
-CONFIG_FILE=./build.config
-if [ ! -f $CONFIG_FILE ]; then
-    echo "missing $CONFIG_FILE"; exit 1
-fi
-source $CONFIG_FILE
+# read package.json
+PROJECT=`grep project package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
+VERSION=`grep version package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
+RESOURCE_DIRS=`grep resourceDirs package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
+COMMON_CSS=`grep commonCSS package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
+COMMON_SCRIPTS=`grep commonScripts package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
+
+echo $PROJECT
+echo $VERSION
+echo $RESOURCE_DIRS
+echo $COMMON_CSS
+echo $COMMON_SCRIPTS
+exit 1
+
+# add quotes around lists
+RESOURCE_DIRS="$RESOURCE_DIRS"
+COMMON_CSS="$COMMON_CSS"
+COMMON_SCRIPTS=$COMMON_SCRIPTS
 
 # check prerequisite config variables
 if [ -z "$PROJECT" ]; then
    echo "PROJECT is not set in $CONFIG_FILE"; exit 1
 fi
 
-# variables that CANNOT be changed in config
-GRUNTFILE=../chipper/grunt/Gruntfile.js
-PACKAGE_JSON=./package.json
 HTML_FILE=${PROJECT}.html
 
 # check prerequisite files
@@ -36,7 +46,7 @@ for file in $GRUNTFILE $PACKAGE_JSON $HTML_FILE; do
   fi
 done
 
-echo "Building $PROJECT ..."
+echo "Building $PROJECT $VERSION ..."
 
 echo "Cleaning ${OUTPUT_DIR} ..."
 rm -rf $OUTPUT_DIR
@@ -51,6 +61,7 @@ cp -rp lib $OUTPUT_DIR
 echo "Copying resources ..."
 if [ ! -z "$RESOURCE_DIRS" ]; then
   for dir in $RESOURCE_DIRS; do
+    echo "copying $dir ..."
     cp -rp $dir $OUTPUT_DIR
   done
 fi
@@ -63,6 +74,7 @@ else
 fi
 if [ ! -z $COMMON_CSS ]; then
   for css in $COMMON_CSS; do
+     echo "copying $css ..."
     cp -p $css ${OUTPUT_DIR}/css
   done
 fi
@@ -71,6 +83,7 @@ echo "Copying scripts that are loaded before RequireJS ..."
 if [ ! -z "$OUTPUT_DIR" ]; then
   mkdir $OUTPUT_DIR/js
   for script in $COMMON_SCRIPTS; do
+    echo "copying $script ..."
     cp -p $script ${OUTPUT_DIR}/js
   done
 fi
