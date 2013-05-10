@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GRUNTFILE=../chipper/Gruntfile.js
+GRUNTFILE=../chipper/grunt/Gruntfile.js
 
 if [ "$1" = "common" ]; then
    TARGET=lint-common

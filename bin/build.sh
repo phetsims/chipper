@@ -25,7 +25,7 @@ if [ -z "$PROJECT" ]; then
 fi
 
 # variables that CANNOT be changed in config
-GRUNTFILE=../chipper/Gruntfile.js
+GRUNTFILE=../chipper/grunt/Gruntfile.js
 PACKAGE_JSON=./package.json
 HTML_FILE=${PROJECT}.html
 
