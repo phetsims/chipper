@@ -1,0 +1,3 @@
+5/10/13 add lint.sh
+5/10/13 generalize and migrate Gruntfile.js and build.sh from beers-law-lab
+5/10/13 create chipper repo
