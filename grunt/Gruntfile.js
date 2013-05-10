@@ -21,7 +21,7 @@ module.exports = function( grunt ) {
             options: {
               almond: true,
               mainConfigFile: "js/<%= pkg.project %>-config.js",
-              out: "<%= pkg.outputDir %>/<%= pkg.project %>.min.js",
+              out: "build/<%= pkg.project %>.min.js",
               name: "<%= pkg.project %>-config",
               optimize: 'uglify2',
               wrap: true
