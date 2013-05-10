@@ -3,7 +3,7 @@
 #
 # Builds a simulation for deployment.
 # You must run this from the root level of your simulation repo.
-# Usage: ../chipper/build.sh
+# Usage: ../chipper/bin/build.sh
 #
 # Author: Chris Malley (PixelZoom, Inc.)
 #
