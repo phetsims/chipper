@@ -13,34 +13,34 @@ PACKAGE_JSON=./package.json
 GRUNTFILE=../chipper/grunt/Gruntfile.js
 OUTPUT_DIR=./build
 
-# read package.json
-PROJECT=`grep project package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
-VERSION=`grep version package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
-RESOURCE_DIRS=`grep resourceDirs package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
-COMMON_CSS=`grep commonCSS package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
-COMMON_SCRIPTS=`grep commonScripts package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
+# check for prerequisite files
+for file in $GRUNTFILE $PACKAGE_JSON; do
+  if [ ! -f $file ]; then
+    echo "missing $file"; exit 1
+  fi
+done
 
-echo $PROJECT
-echo $VERSION
-echo $RESOURCE_DIRS
-echo $COMMON_CSS
-echo $COMMON_SCRIPTS
-exit 1
-
-# add quotes around lists
-RESOURCE_DIRS="$RESOURCE_DIRS"
-COMMON_CSS="$COMMON_CSS"
-COMMON_SCRIPTS=$COMMON_SCRIPTS
+# read build configuration from package.json
+function parseJSON() {
+  echo `grep $1 package.json | awk -F ':' '{print $2}' | tr ",\"" " "`
+}
+PROJECT=`parseJSON project`
+VERSION=`parseJSON version`
+RESOURCE_DIRS=`parseJSON resourceDirs`
+COMMON_CSS=`parseJSON commonCSS`
+COMMON_SCRIPTS=`parseJSON commonScripts`
 
 # check prerequisite config variables
 if [ -z "$PROJECT" ]; then
    echo "PROJECT is not set in $CONFIG_FILE"; exit 1
 fi
+if [ -z "$VERSION" ]; then
+   echo "VERSION is not set in $CONFIG_FILE"; exit 1
+fi
 
+# check prerequisite project files
 HTML_FILE=${PROJECT}.html
-
-# check prerequisite files
-for file in $GRUNTFILE $PACKAGE_JSON $HTML_FILE; do
+for file in $HTML_FILE; do
   if [ ! -f $file ]; then
     echo "missing $file"; exit 1
   fi
