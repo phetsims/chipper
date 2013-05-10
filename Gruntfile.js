@@ -45,7 +45,7 @@ module.exports = function( grunt ) {
         // configure the JSHint plugin
         jshint: {
           // source files that are specific to this simulation
-          simFiles: [ 'Gruntfile.js', 'js/**/*.js' ],
+          simFiles: [ 'js/**/*.js' ],
           // source files for common-code dependencies
           commonFiles: [
             '../assert/js/**/*.js',
