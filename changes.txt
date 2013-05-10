@@ -1,3 +1,4 @@
+5/10/13 copy any files loaded via HTML to build/include/, specify as "include" in package.json
 5/10/13 replace build.config with package.json, parse JSON in build.sh
 5/10/13 add lint.sh
 5/10/13 generalize and migrate Gruntfile.js and build.sh from beers-law-lab
