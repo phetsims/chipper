@@ -106,7 +106,8 @@ module.exports = function( grunt ) {
               clearTimeout: false,
               Image: false, // DOM.js
               Blob: false,  // DOM.js
-              canvg: false
+              canvg: false,
+              io: false //socket.io
             }
           }
         }
