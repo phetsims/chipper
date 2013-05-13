@@ -24,28 +24,28 @@ done
 function parseJSON() {
   echo `grep $1 ${PACKAGE_JSON} | awk -F ':' '{print $2}' | tr ",\"" " "`
 }
-PROJECT=`parseJSON project`
+NAME=`parseJSON name`
 VERSION=`parseJSON version`
 RESOURCE_DIRS=`parseJSON resourceDirs`
 INCLUDE=`parseJSON include`
 
 # check prerequisite config variables
-if [ -z "$PROJECT" ]; then
-   echo "PROJECT is not set in $CONFIG_FILE"; exit 1
+if [ -z "$NAME" ]; then
+   echo "NAME is not set in $CONFIG_FILE"; exit 1
 fi
 if [ -z "$VERSION" ]; then
    echo "VERSION is not set in $CONFIG_FILE"; exit 1
 fi
 
 # check prerequisite project files
-HTML_FILE=${PROJECT}.html
+HTML_FILE=${NAME}.html
 for file in $HTML_FILE; do
   if [ ! -f $file ]; then
     echo "missing $file"; exit 1
   fi
 done
 
-echo "= Building $PROJECT $VERSION"
+echo "= Building $NAME $VERSION"
 
 echo "= Cleaning ${OUTPUT_DIR}"
 rm -rf $OUTPUT_DIR
@@ -84,7 +84,7 @@ BACKUP_SUFFIX=.bup
 cp $HTML_FILE $OUTPUT_DIR
 
 # change script tag to load minified script
-sed -i $BACKUP_SUFFIX "s/<script data-main=\"js\/${PROJECT}-config.js\" src=\".*\">/<script type=\"text\/javascript\" src=\"${PROJECT}.min.js\">/g" ${OUTPUT_DIR}/${HTML_FILE}
+sed -i $BACKUP_SUFFIX "s/<script data-main=\"js\/${NAME}-config.js\" src=\".*\">/<script type=\"text\/javascript\" src=\"${NAME}.min.js\">/g" ${OUTPUT_DIR}/${HTML_FILE}
 
 # change the path of any include files
 for file in $INCLUDE; do
