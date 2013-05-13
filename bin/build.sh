@@ -84,13 +84,13 @@ BACKUP_SUFFIX=.bup
 cp $HTML_FILE $OUTPUT_DIR
 
 # change script tag to load minified script
-sed -i $BACKUP_SUFFIX "s/<script data-main=\"js\/${NAME}-config.js\" src=\".*\">/<script type=\"text\/javascript\" src=\"${NAME}.min.js\">/g" ${OUTPUT_DIR}/${HTML_FILE}
+sed -i$BACKUP_SUFFIX "s/<script data-main=\"js\/${NAME}-config.js\" src=\".*\">/<script type=\"text\/javascript\" src=\"${NAME}.min.js\">/g" ${OUTPUT_DIR}/${HTML_FILE}
 
 # change the path of any include files
 for file in $INCLUDE; do
   fromFile=`echo $file | sed -e 's/[\/]/\\&\//g' | tr '\&' '\'`
   toFile=include\\/`basename $file`
-  sed -i $BACKUP_SUFFIX "s/${fromFile}/${toFile}/g" ${OUTPUT_DIR}/${HTML_FILE}
+  sed -i$BACKUP_SUFFIX "s/${fromFile}/${toFile}/g" ${OUTPUT_DIR}/${HTML_FILE}
 done
 
 # delete sed backup files
