@@ -71,6 +71,7 @@ module.exports = function( grunt ) {
             noarg: true, // prohibits the use of arguments.caller and arguments.callee
             nonew: true, // prohibits calling new without assigning result to a variable
             undef: true, // prohibits the use of explicitly undeclared variables
+            strict: true, // requires all functions to run in ECMAScript 5's strict mode
 
             // relaxing options
             expr: true, // suppresses warnings about the use of expressions where normally you would expect to see assignments or function calls, so we can use assert && assert( ... )
