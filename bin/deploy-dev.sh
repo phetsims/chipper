@@ -2,7 +2,8 @@
 #====================================================================================================
 #
 # Deploys a dev build to spot.colorado.edu
-# Usage: deploy-dev username
+# You must run this from the root level of your simulation repo.
+# Usage: ../chipper/bin/deploy-dev.sh username
 #
 # Author: Chris Malley (PixelZoom, Inc.)
 #
