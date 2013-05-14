@@ -1,5 +1,5 @@
 // Copyright 2002-2011, University of Colorado
-package edu.colorado.phet.buildtools.html5;
+package edu.colorado.phet.buildtools.html;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
