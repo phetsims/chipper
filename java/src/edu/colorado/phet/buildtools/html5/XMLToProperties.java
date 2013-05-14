@@ -17,7 +17,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Transform Flash XML string translations to RequireJSI18n format.
+ * Transform Flash XML string translations to Java properties format.
  */
 public class XMLToProperties {
     public static void main( String[] args ) throws IOException, ParserConfigurationException, SAXException {
