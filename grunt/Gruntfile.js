@@ -31,7 +31,7 @@ module.exports = function( grunt ) {
                 global_defs: {
                   // scenery assertions
                   sceneryAssert: false,
-                  sceneryExtraAssert: false,
+                  sceneryAssertExtra: false,
                   // scenery logging
                   sceneryLayerLog: false,
                   sceneryEventLog: false
@@ -84,7 +84,7 @@ module.exports = function( grunt ) {
               // writable globals ---------------------------------
 
               sceneryAssert: true,  // for removal of scenery assertions
-              sceneryExtraAssert: true, // for removal of scenery assertions
+              sceneryAssertExtra: true, // for removal of scenery assertions
               sceneryLayerLog: true, // scenery logging levels
               sceneryEventLog: true, // scenery logging levels
               sceneryAccessibilityLog: true, // scenery accessibility levels
