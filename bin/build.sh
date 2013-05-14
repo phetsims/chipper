@@ -62,9 +62,16 @@ if [ -d ./css ]; then
   cp -rp ./css $OUTPUT_DIR
 fi
 
-echo "= Copying change log"
+echo "= Copying changes.txt"
 if [ -f changes.txt ]; then
   cp changes.txt $OUTPUT_DIR
+fi
+
+if [ -f shas.txt ]; then
+  echo "= Copying shas.txt"
+  cp shas.txt $OUTPUT_DIR
+else
+  echo "WARNING: shas.txt does not exist"
 fi
 
 echo "= Copying resource directories:"
