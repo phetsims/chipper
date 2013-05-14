@@ -11,9 +11,13 @@
 PACKAGE_JSON=./package.json
 BUILD_DIR=build
 
+# parse command line
 if [ $# != 1 ]; then
    echo "Usage: deploy-dev username" ; exit 1
 fi
+USER_NAME=${1}
+
+# check prerequisite files
 if [ ! -f $PACKAGE_JSON ]; then
    echo "Cannot find $PACKAGE_JSON" ; exit 1
 fi
@@ -28,11 +32,9 @@ function parseJSON() {
 NAME=`parseJSON name`
 VERSION=`parseJSON version`
 
-
-USER_NAME=${1}
+# copy to server
 SERVER=spot.colorado.edu
 DEV_ROOT=/htdocs/physics/phet/dev/html
-
 echo "Deploying $NAME $VERSION to $SERVER"
 scp -r $BUILD_DIR ${USERNAME}@${SERVER}:${DEV_ROOT}/${NAME}/${VERSION}
 
