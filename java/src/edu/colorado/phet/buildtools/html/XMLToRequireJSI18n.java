@@ -1,4 +1,4 @@
-package edu.colorado.phet.buildtools.html5;
+package edu.colorado.phet.buildtools.html;
 
 import java.io.IOException;
 import java.nio.file.Files;
