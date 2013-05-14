@@ -27,7 +27,7 @@ function parseJSON() {
 NAME=`parseJSON name`
 VERSION=`parseJSON version`
 RESOURCE_DIRS=`parseJSON resourceDirs`
-DEPENDENCIES=`parseJSON dependencies`
+PHET_LIBS=`parseJSON phetLibs`
 INCLUDE=`parseJSON include`
 
 # check prerequisite config variables
@@ -37,8 +37,8 @@ fi
 if [ -z "$VERSION" ]; then
    echo "VERSION is not set in $CONFIG_FILE"; exit 1
 fi
-if [ -z "$DEPENDENCIES" ]; then
-   echo "DEPENDENCIES is not set in $CONFIG_FILE"; exit 1
+if [ -z "$PHET_LIBS" ]; then
+   echo "PHET_LIBS is not set in $CONFIG_FILE"; exit 1
 fi
 
 # check prerequisite project files
@@ -91,7 +91,7 @@ fi
 echo "= Generating shas.txt"
 SHAS_FILE=${OUTPUT_DIR}/shas.txt
 echo "# $NAME $VERSION" `date` > $SHAS_FILE
-for dependency in $DEPENDENCIES; do
+for dependency in $PHET_LIBS; do
  echo $dependency `( cd ../$dependency; git rev-parse HEAD )` >> $SHAS_FILE
 done
 
