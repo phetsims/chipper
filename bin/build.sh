@@ -56,7 +56,7 @@ rm -rf $OUTPUT_DIR
 mkdir $OUTPUT_DIR
 
 echo "= Creating minified script"
-#grunt --gruntfile $GRUNTFILE --base `pwd` || { echo 'grunt failed' ; exit 1; }
+grunt --gruntfile $GRUNTFILE --base `pwd` || { echo 'grunt failed' ; exit 1; }
 
 echo "= Copying 3rd-party libs"
 cp -rp lib $OUTPUT_DIR
