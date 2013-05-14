@@ -27,6 +27,7 @@ function parseJSON() {
 NAME=`parseJSON name`
 VERSION=`parseJSON version`
 RESOURCE_DIRS=`parseJSON resourceDirs`
+DEPENDENCIES=`parseJSON dependencies`
 INCLUDE=`parseJSON include`
 
 # check prerequisite config variables
@@ -35,6 +36,9 @@ if [ -z "$NAME" ]; then
 fi
 if [ -z "$VERSION" ]; then
    echo "VERSION is not set in $CONFIG_FILE"; exit 1
+fi
+if [ -z "$DEPENDENCIES" ]; then
+   echo "DEPENDENCIES is not set in $CONFIG_FILE"; exit 1
 fi
 
 # check prerequisite project files
@@ -52,7 +56,7 @@ rm -rf $OUTPUT_DIR
 mkdir $OUTPUT_DIR
 
 echo "= Creating minified script"
-grunt --gruntfile $GRUNTFILE --base `pwd` || { echo 'grunt failed' ; exit 1; }
+#grunt --gruntfile $GRUNTFILE --base `pwd` || { echo 'grunt failed' ; exit 1; }
 
 echo "= Copying 3rd-party libs"
 cp -rp lib $OUTPUT_DIR
@@ -65,13 +69,6 @@ fi
 echo "= Copying changes.txt"
 if [ -f changes.txt ]; then
   cp changes.txt $OUTPUT_DIR
-fi
-
-if [ -f shas.txt ]; then
-  echo "= Copying shas.txt"
-  cp shas.txt $OUTPUT_DIR
-else
-  echo "WARNING: shas.txt does not exist"
 fi
 
 echo "= Copying resource directories:"
@@ -90,6 +87,14 @@ if [ ! -z "$INCLUDE" ]; then
     cp ${file} ${OUTPUT_DIR}/include
   done
 fi
+
+echo "= Generating shas.txt"
+SHAS_FILE=${OUTPUT_DIR}/shas.txt
+echo "# $NAME $VERSION" `date` > $SHAS_FILE
+for dependency in $DEPENDENCIES; do
+ echo $dependency `( cd ../$dependency; git rev-parse HEAD )` >> $SHAS_FILE
+done
+exit 1
 
 echo "= Modifying HTML file"
 BACKUP_SUFFIX=.bup
