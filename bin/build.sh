@@ -104,7 +104,7 @@ sed -i$BACKUP_SUFFIX "s/<script data-main=\"js\/${NAME}-config.js\" src=\".*\">/
 
 # change the path of any include files
 for file in $INCLUDE; do
-  fromFile=`echo $file | sed -e 's/[\/]/\\&\//g' | tr '\&' '\'`
+  fromFile=`echo $file | sed -e 's/[\/]/\\&\//g' | tr '\&' '\\\\'`
   toFile=include\\/`basename $file`
   sed -i$BACKUP_SUFFIX "s/${fromFile}/${toFile}/g" ${OUTPUT_DIR}/${HTML_FILE}
 done
