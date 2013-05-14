@@ -62,6 +62,11 @@ if [ -d ./css ]; then
   cp -rp ./css $OUTPUT_DIR
 fi
 
+echo "= Copying change log"
+if [ -f changes.txt ]; then
+  cp changes.txt $OUTPUT_DIR
+fi
+
 echo "= Copying resource directories:"
 if [ ! -z "$RESOURCE_DIRS" ]; then
   for dir in $RESOURCE_DIRS; do
