@@ -86,6 +86,7 @@ module.exports = function( grunt ) {
               sceneryExtraAssert: true, // for removal of scenery assertions
               sceneryLayerLog: true, // scenery logging levels
               sceneryEventLog: true, // scenery logging levels
+              sceneryAccessibilityLog: true, // scenery accessibility levels
               Float32Array: true, // we actually polyfill this, so allow it to be set
 
               // read-only globals ---------------------------------
