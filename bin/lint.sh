@@ -14,7 +14,7 @@ GRUNTFILE=../chipper/grunt/Gruntfile.js
 if [ "$1" = "common" ]; then
    TARGET=lint-common
 else
-   TARGET=lint
+   TARGET=lint-sim
 fi
 
 grunt --gruntfile $GRUNTFILE --base `pwd` $TARGET

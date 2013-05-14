@@ -116,10 +116,10 @@ module.exports = function( grunt ) {
       } );
 
   // Default task ('grunt')
-  grunt.registerTask( 'default', [ 'lint', 'lint-common', 'build' ] );
+  grunt.registerTask( 'default', [ 'lint-sim', 'lint-common', 'build' ] );
 
   // Other tasks ('grunt taskName')
-  grunt.registerTask( 'lint', [ 'jshint:simFiles' ] );
+  grunt.registerTask( 'lint-sim', [ 'jshint:simFiles' ] );
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'build', [ 'requirejs:build' ] );
 
