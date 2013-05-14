@@ -94,7 +94,6 @@ echo "# $NAME $VERSION" `date` > $SHAS_FILE
 for dependency in $DEPENDENCIES; do
  echo $dependency `( cd ../$dependency; git rev-parse HEAD )` >> $SHAS_FILE
 done
-exit 1
 
 echo "= Modifying HTML file"
 BACKUP_SUFFIX=.bup
