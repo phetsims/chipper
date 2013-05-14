@@ -2,6 +2,7 @@
 #====================================================================================================
 #
 # Deploys a dev build to spot.colorado.edu
+# Usage: deploy-dev username
 #
 # Author: Chris Malley (PixelZoom, Inc.)
 #
