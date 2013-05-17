@@ -109,7 +109,8 @@ module.exports = function( grunt ) {
               Image: false, // DOM.js
               Blob: false,  // DOM.js
               canvg: false,
-              io: false //socket.io
+              io: false, //socket.io,
+              TWEEN: false //sole/tween.js
             }
           }
         }
