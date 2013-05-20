@@ -37,6 +37,6 @@ VERSION=`parseJSON version`
 SERVER=spot.colorado.edu
 DEV_ROOT=/htdocs/physics/phet/dev/html
 echo "Deploying $NAME $VERSION to $SERVER"
-scp -r ${BUILD_DIR}/* ${USER_NAME}@${SERVER}:${DEV_ROOT}/${NAME}/${VERSION}
+scp -r $BUILD_DIR ${USER_NAME}@${SERVER}:${DEV_ROOT}/${NAME}/${VERSION}
 
 #====================================================================================================
