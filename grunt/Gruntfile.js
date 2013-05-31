@@ -60,7 +60,7 @@ module.exports = function( grunt ) {
             '../sun/js/**/*.js'
           ],
           // reference external JSHint options in jshint-options.js
-          options: require( './jshint-options' ).options
+          options: require( './jshint-options' )
         }
       } );
 
