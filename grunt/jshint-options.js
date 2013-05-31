@@ -17,7 +17,6 @@ module.exports = {
 
   // relaxing options
   expr: true, // suppresses warnings about the use of expressions where normally you would expect to see assignments or function calls, so we can use assert && assert( ... )
-  es5: true, // we use ES5 getters and setters for now
   loopfunc: true, // suppresses warnings about defining functions inside of loops, but we know how not to shoot ourselves in the foot, and this is useful for _.each
 
   // tell JSHint about global variables that are defined elsewhere. If value is false (default), JSHint will consider that variable as read-only.
