@@ -34,7 +34,8 @@ module.exports = function( grunt ) {
                   sceneryAssertExtra: false,
                   // scenery logging
                   sceneryLayerLog: false,
-                  sceneryEventLog: false
+                  sceneryEventLog: false,
+                  sceneryAccessibilityLog: false
                 },
                 dead_code: true
               }
