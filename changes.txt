@@ -1,3 +1,4 @@
+6/14/13 add clean-strings.sh, for identifying missing and extra keys in translated string files
 5/31/13 Removing es5 JSHint flag for upgrade to JSHint 2 (requirejs-contrib-jshint 0.5.4+)
 5/31/13 Externalized grunt/jshint-options.js, for use in other libraries
 5/10/13 copy any files loaded via HTML to build/include/, specify as "include" in package.json
