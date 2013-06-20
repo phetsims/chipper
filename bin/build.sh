@@ -109,6 +109,10 @@ for file in $INCLUDE; do
   sed -i$BACKUP_SUFFIX "s/${fromFile}/${toFile}/g" ${OUTPUT_DIR}/${HTML_FILE}
 done
 
+# Add the splash screen as base64
+SPLASH_TEMPLATE=../chipper/templates/splash.html
+sed -i$BACKUP_SUFFIX "s/<body>/`cat $SPLASH_TEMPLATE`/g" ${OUTPUT_DIR}/${HTML_FILE}
+
 # delete sed backup files
 rm ${OUTPUT_DIR}/${HTML_FILE}${BACKUP_SUFFIX}
 
