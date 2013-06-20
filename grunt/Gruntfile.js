@@ -51,7 +51,6 @@ module.exports = function( grunt ) {
           commonFiles: [
             '../assert/js/**/*.js',
             '../dot/js/**/*.js',
-            '../fort/js/**/*.js',
             '../joist/js/**/*.js',
             '../kite/js/**/*.js',
             '../phet-core/js/**/*.js',
