@@ -5,6 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+/**
+ * Takes from a data file that contains lines like:
+ * <glyph unicode="&#xf000;" horiz-adv-x="1792" d="M1699 ... -36.5z" />
+ * and creates a scenery compatible version.  See FontAwesomeNode.
+ *
+ * @author Sam Reid
+ */
 public class FontAwesomeToScenery {
     public static void main( String[] args ) throws IOException {
         String svg = FileUtils.loadFileAsString( new File( "C:\\workingcopy\\phet\\svn-1.7\\trunk\\simulations-html\\build-tools\\data\\font-awesome.txt" ) );
