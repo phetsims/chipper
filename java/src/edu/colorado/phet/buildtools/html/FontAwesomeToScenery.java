@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 /**
  * Takes from a data file that contains lines like:
  * <glyph unicode="&#xf000;" horiz-adv-x="1792" d="M1699 ... -36.5z" />
- * and creates a scenery compatible version.  See FontAwesomeNode.
+ * and creates a scenery compatible version.  See sun.FontAwesomeNode.
  *
  * @author Sam Reid
  */
