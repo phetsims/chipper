@@ -39,4 +39,7 @@ DEV_ROOT=/htdocs/physics/phet/dev/html
 echo "Deploying $NAME $VERSION to $SERVER"
 scp -r $BUILD_DIR ${USER_NAME}@${SERVER}:${DEV_ROOT}/${NAME}/${VERSION}
 
+# print the deployed URL, so you can test quickly via copy-paste
+echo "deployed:" http://www.colorado.edu/physics/phet/dev/html/${NAME}/${VERSION}/${NAME}.html
+
 #====================================================================================================
