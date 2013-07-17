@@ -1,3 +1,5 @@
+// Copyright 2002-2013, University of Colorado Boulder
+
 /**
  * JSHint options for simulations and common code, meant to be passed to grunt-contrib-jshint
  */
@@ -54,7 +56,8 @@ module.exports = {
     TWEEN: false, //sole/tween.js
     navigator: false, //For Mobile Safari detection, see http://stackoverflow.com/questions/3007480/determine-if-user-navigated-from-mobile-safari
     Howl: false, //for web audio
-    PxLoader: false //for preloading images
+    PxLoader: false, //for preloading images,
+    ActiveXObject: false //for full screen
   }
 };
 
