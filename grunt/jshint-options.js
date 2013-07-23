@@ -39,6 +39,7 @@ module.exports = {
     require: false, // require.js
     Uint16Array: false,
     Uint32Array: false,
+    XMLHttpRequest: false, // allow ajax requests directly
     document: false,
     window: false,
     console: false,
