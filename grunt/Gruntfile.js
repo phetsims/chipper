@@ -24,20 +24,20 @@ module.exports = function( grunt ) {
               out: "build/<%= pkg.name %>.min.js",
               name: "<%= pkg.name %>-config",
               optimize: 'uglify2',
-              wrap: true
-            },
-            uglify2: {
-              compress: {
-                global_defs: {
-                  // scenery assertions
-                  sceneryAssert: false,
-                  sceneryAssertExtra: false,
-                  // scenery logging
-                  sceneryLayerLog: false,
-                  sceneryEventLog: false,
-                  sceneryAccessibilityLog: false
-                },
-                dead_code: true
+              wrap: true,
+              uglify2: {
+                compress: {
+                  global_defs: {
+                    // scenery assertions
+                    sceneryAssert: false,
+                    sceneryAssertExtra: false,
+                    // scenery logging
+                    sceneryLayerLog: false,
+                    sceneryEventLog: false,
+                    sceneryAccessibilityLog: false
+                  },
+                  dead_code: true
+                }
               }
             }
           }
