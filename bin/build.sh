@@ -9,12 +9,13 @@
 #
 #====================================================================================================
 
-PACKAGE_JSON=./package.json
-GRUNTFILE=../chipper/grunt/Gruntfile.js
 OUTPUT_DIR=./build
 
-# check for prerequisite build files
-for file in $GRUNTFILE $PACKAGE_JSON; do
+# Check for prerequisite files
+PACKAGE_JSON=./package.json
+GRUNTFILE=../chipper/grunt/Gruntfile.js
+MERGEJS=../mergejs/mergejs
+for file in $GRUNTFILE $PACKAGE_JSON $MERGEJS; do
   if [ ! -f $file ]; then
     echo "missing $file"; exit 1
   fi
@@ -28,26 +29,21 @@ NAME=`parseJSON name`
 VERSION=`parseJSON version`
 RESOURCE_DIRS=`parseJSON resourceDirs`
 PHET_LIBS=`parseJSON phetLibs`
-INCLUDE=`parseJSON include`
+PRELOAD=`parseJSON preload`
 
 # check prerequisite config variables
 if [ -z "$NAME" ]; then
-   echo "NAME is not set in $CONFIG_FILE"; exit 1
+   echo "name is not set in $PACKAGE_JSON"; exit 1
 fi
 if [ -z "$VERSION" ]; then
-   echo "VERSION is not set in $CONFIG_FILE"; exit 1
+   echo "version is not set in $PACKAGE_JSON"; exit 1
 fi
 if [ -z "$PHET_LIBS" ]; then
-   echo "PHET_LIBS is not set in $CONFIG_FILE"; exit 1
+   echo "phetLibs is not set in $PACKAGE_JSON"; exit 1
 fi
-
-# check prerequisite project files
-HTML_FILE=${NAME}.html
-for file in $HTML_FILE; do
-  if [ ! -f $file ]; then
-    echo "missing $file"; exit 1
-  fi
-done
+if [ -z "$PRELOAD" ]; then
+   echo "preload is not set in $PACKAGE_JSON"; exit 1
+fi
 
 echo "= Building $NAME $VERSION"
 
@@ -55,16 +51,21 @@ echo "= Cleaning ${OUTPUT_DIR}"
 rm -rf $OUTPUT_DIR
 mkdir $OUTPUT_DIR
 
-echo "= Creating minified script"
+echo "= Minifying scripts that are preloaded"
+MERGEJS_INPUT_FILE=mergejs-input.txt
+MERGEJS_OUTPUT_FILE=${NAME}-preload.min.js
+for file in $PRELOAD; do
+  if [ ! -f $file ]; then
+    echo "$file does not exist, appears in $PACKAGE_JSON"; exit 1
+  fi
+done
+echo $PRELOAD > $MERGEJS_INPUT_FILE
+$MERGEJS -c $MERGEJS_INPUT_FILE mergejs-out.js
+mv mergejs-out-min.js ${OUTPUT_DIR}/${MERGEJS_OUTPUT_FILE}
+rm $MERGEJS_INPUT_FILE mergejs-out.js
+
+echo "= Minifying scripts that are loaded by requirejs"
 grunt --gruntfile $GRUNTFILE --base `pwd` || { echo 'grunt failed' ; exit 1; }
-
-echo "= Copying 3rd-party libs"
-cp -rp lib $OUTPUT_DIR
-
-echo "= Copying CSS files"
-if [ -d ./css ]; then
-  cp -rp ./css $OUTPUT_DIR
-fi
 
 echo "= Copying changes.txt"
 if [ -f changes.txt ]; then
@@ -79,15 +80,6 @@ if [ ! -z "$RESOURCE_DIRS" ]; then
   done
 fi
 
-echo "= Copying include files:"
-if [ ! -z "$INCLUDE" ]; then
-  mkdir ${OUTPUT_DIR}/include
-  for file in $INCLUDE; do
-    echo "$file"
-    cp ${file} ${OUTPUT_DIR}/include
-  done
-fi
-
 echo "= Generating shas.txt"
 SHAS_FILE=${OUTPUT_DIR}/shas.txt
 echo "# $NAME $VERSION" `date` > $SHAS_FILE
@@ -95,26 +87,21 @@ for dependency in $PHET_LIBS; do
  echo $dependency `( cd ../$dependency; git rev-parse HEAD )` >> $SHAS_FILE
 done
 
-echo "= Modifying HTML file"
+echo "= Creating HTML file"
+HTML_FILE=${OUTPUT_DIR}/${NAME}.html
 BACKUP_SUFFIX=.bup
-cp $HTML_FILE $OUTPUT_DIR
+cp ../chipper/templates/sim.html ${HTML_FILE}
 
-# change script tag to load minified script
-sed -i$BACKUP_SUFFIX "s/<script data-main=\"js\/${NAME}-config.js\" src=\".*\">/<script type=\"text\/javascript\" src=\"${NAME}.min.js\">/g" ${OUTPUT_DIR}/${HTML_FILE}
-
-# change the path of any include files
-for file in $INCLUDE; do
-  fromFile=`echo $file | sed -e 's/[\/]/\\&\//g' | tr '\&' '\\\\'`
-  toFile=include\\/`basename $file`
-  sed -i$BACKUP_SUFFIX "s/${fromFile}/${toFile}/g" ${OUTPUT_DIR}/${HTML_FILE}
-done
+# fill in script tags
+sed -i$BACKUP_SUFFIX "s/MERGEJS_OUTPUT_FILE/${MERGEJS_OUTPUT_FILE}/g" ${HTML_FILE}
+sed -i$BACKUP_SUFFIX "s/GRUNT_OUTPUT_FILE/${NAME}.min.js/g" ${HTML_FILE}
 
 # Add the splash screen as base64
 SPLASH_TEMPLATE=../chipper/templates/splash.html
-sed -i$BACKUP_SUFFIX "s/<body>/`cat $SPLASH_TEMPLATE`/g" ${OUTPUT_DIR}/${HTML_FILE}
+sed -i$BACKUP_SUFFIX "s/<body>/`cat $SPLASH_TEMPLATE`/g" ${HTML_FILE}
 
 # delete sed backup files
-rm ${OUTPUT_DIR}/${HTML_FILE}${BACKUP_SUFFIX}
+rm ${HTML_FILE}${BACKUP_SUFFIX}
 
 echo "= Done."
 
