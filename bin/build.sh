@@ -14,7 +14,7 @@ OUTPUT_DIR=./build
 # Check for prerequisite files
 PACKAGE_JSON=./package.json
 GRUNTFILE=../chipper/grunt/Gruntfile.js
-MERGEJS=../mergejs/mergejs
+MERGEJS=../chipper/mergejs-master/mergejs
 for file in $GRUNTFILE $PACKAGE_JSON $MERGEJS; do
   if [ ! -f $file ]; then
     echo "missing $file"; exit 1

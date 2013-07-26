@@ -1,3 +1,4 @@
+7/26/13 download mergejs-master from  https://github.com/eloone/mergejs, check in to chipper
 7/26/13 create deployed html file based on sim.html template
 7/26/13 #12, add minification of scripts that are preloaded before primary script
 6/14/13 add clean-strings.sh, for identifying missing and extra keys in translated string files
