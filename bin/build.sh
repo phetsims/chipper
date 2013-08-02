@@ -86,6 +86,8 @@ echo "# $NAME $VERSION" `date` > $SHAS_FILE
 for dependency in $PHET_LIBS; do
  echo $dependency `( cd ../$dependency; git rev-parse HEAD )` >> $SHAS_FILE
 done
+# Add the sha for chipper itself, see #15
+echo chipper `( cd ../chipper; git rev-parse HEAD )` >> $SHAS_FILE
 
 echo "= Creating HTML file"
 HTML_FILE=${OUTPUT_DIR}/${NAME}.html
