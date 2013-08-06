@@ -80,6 +80,11 @@ if [ ! -z "$RESOURCE_DIRS" ]; then
   done
 fi
 
+echo "= Copying joist resource directories:"
+echo "joist/images"
+mkdir $OUTPUT_DIR/images/joist
+cp -rp ../joist/images/* $OUTPUT_DIR/images/joist
+
 echo "= Generating shas.txt"
 SHAS_FILE=${OUTPUT_DIR}/shas.txt
 echo "# $NAME $VERSION" `date` > $SHAS_FILE
