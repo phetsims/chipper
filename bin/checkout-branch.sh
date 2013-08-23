@@ -19,7 +19,7 @@ fi
 BRANCH=$1
 
 # visit all directories that are Git repositories
-for dir in */; do˚
+for dir in */; do
    if [ -d ${dir}/.git ]
    then
      cd $dir &> /dev/null
