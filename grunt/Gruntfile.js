@@ -192,7 +192,7 @@ module.exports = function( grunt ) {
     if ( fs.existsSync( 'changes.txt' ) ) {
       grunt.file.copy( 'changes.txt', 'build/changes.txt' );
     } else {
-      grunt.log.writeln( 'WARNING: no changes.txt' );
+      grunt.log.error( 'WARNING: no changes.txt' );
     }
     
     // we ignore resourceDirs here, deprecated!
