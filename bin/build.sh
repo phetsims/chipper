@@ -65,7 +65,7 @@ mv mergejs-out-min.js ${OUTPUT_DIR}/${MERGEJS_OUTPUT_FILE}
 rm $MERGEJS_INPUT_FILE mergejs-out.js
 
 echo "= Minifying scripts that are loaded by requirejs"
-grunt --gruntfile $GRUNTFILE --base `pwd` || { echo 'grunt failed' ; exit 1; }
+grunt || { echo 'grunt failed' ; exit 1; }
 
 echo "= Copying changes.txt"
 if [ -f changes.txt ]; then

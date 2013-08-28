@@ -25,6 +25,8 @@ module.exports = function( grunt ) {
               name: "<%= pkg.name %>-config",
               optimize: 'uglify2',
               wrap: true,
+              // generateSourceMaps: true,
+              // preserveLicenseComments: false,
               uglify2: {
                 compress: {
                   global_defs: {
