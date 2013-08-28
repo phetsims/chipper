@@ -110,12 +110,10 @@ module.exports = function( grunt ) {
   // Other tasks ('grunt taskName')
   grunt.registerTask( 'lint-sim', [ 'jshint:simFiles' ] );
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
-  grunt.registerTask( 'build', [ 'requirejs:build' ] );
+  grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
   
   // creates a performance snapshot for profiling changes
-  grunt.registerTask( 'buildSim', 'Description', function() {
-    var done = this.async();
-    
+  grunt.registerTask( 'simBeforeRequirejs', 'Description', function() {
     grunt.log.writeln( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
     
     assert( pkg.name, 'name required in package.json' );
@@ -128,6 +126,40 @@ module.exports = function( grunt ) {
       grunt.file.delete( 'build' );
     }
     grunt.file.mkdir( 'build' );
+    
+    // grunt.log.writeln( 'Running Require.js optimizer' );
+    // requirejs.optimize( {
+    //   almond: true,
+    //   mainConfigFile: 'js/' + pkg.name + '-config.js',
+    //   out: 'build/' + pkg.name + '.min.js',
+    //   name: pkg.name + '-config',
+    //   optimize: 'uglify2',
+    //   wrap: true,
+    //   generateSourceMaps: true,
+    //   preserveLicenseComments: false,
+    //   uglify2: {
+    //     output: {
+    //       inline_script: true // escape </script
+    //     },
+    //     compress: {
+    //       global_defs: {
+    //         // scenery assertions
+    //         sceneryAssert: false,
+    //         sceneryAssertExtra: false,
+    //         // scenery logging
+    //         sceneryLayerLog: false,
+    //         sceneryEventLog: false,
+    //         sceneryAccessibilityLog: false
+    //       },
+    //       dead_code: true
+    //     }
+    //   }
+    // }, function( response ) {
+    // }
+  } );
+    
+  grunt.registerTask( 'simAfterRequirejs', 'Description', function() {
+    var done = this.async();
     
     grunt.log.writeln( 'Minifying preload scripts' );
     var preloadResult = uglify.minify( pkg.preload.split( ' ' ), {
@@ -156,95 +188,68 @@ module.exports = function( grunt ) {
     grunt.log.writeln( 'Copying preload source map' );
     grunt.file.write( 'build/' + preloadMapFilename, preloadMap );
     
-    grunt.log.writeln( 'Running Require.js optimizer' );
-    requirejs.optimize( {
-      almond: true,
-      mainConfigFile: 'js/' + pkg.name + '-config.js',
-      out: 'build/' + pkg.name + '.min.js',
-      name: pkg.name + '-config',
-      optimize: 'uglify2',
-      wrap: true,
-      generateSourceMaps: true,
-      preserveLicenseComments: false,
-      uglify2: {
-        output: {
-          inline_script: true // escape </script
-        },
-        compress: {
-          global_defs: {
-            // scenery assertions
-            sceneryAssert: false,
-            sceneryAssertExtra: false,
-            // scenery logging
-            sceneryLayerLog: false,
-            sceneryEventLog: false,
-            sceneryAccessibilityLog: false
-          },
-          dead_code: true
-        }
-      }
-    }, function( response ) {
-      
-      grunt.log.writeln( 'Copying changes.txt' );
-      grunt.file.copy( 'changes.txt', 'build/changes.txt' );
-      
-      // we ignore resourceDirs here, deprecated!
-      
-      var dependencies = pkg.phetLibs.split( ' ' );
-      dependencies.push( 'chipper' );
-      
-      var dependencyInfo = {};
-      
-      // git --git-dir ../scenery/.git rev-parse HEAD                 -- sha
-      // git --git-dir ../scenery/.git rev-parse --abbrev-ref HEAD    -- branch
-      function nextDependency() {
-        if ( dependencies.length ) {
-          var dependency = dependencies.pop();
+    grunt.log.writeln( 'Copying changes.txt' );
+    grunt.file.copy( 'changes.txt', 'build/changes.txt' );
+    
+    // we ignore resourceDirs here, deprecated!
+    
+    var dependencies = pkg.phetLibs.split( ' ' );
+    dependencies.push( 'chipper' );
+    
+    var dependencyInfo = {};
+    
+    // git --git-dir ../scenery/.git rev-parse HEAD                 -- sha
+    // git --git-dir ../scenery/.git rev-parse --abbrev-ref HEAD    -- branch
+    function nextDependency() {
+      if ( dependencies.length ) {
+        var dependency = dependencies.pop();
+        
+        // get the SHA
+        child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse HEAD', function( error, stdout, stderr ) {
+          assert( !error, error ? ( 'ERROR on git SHA attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
           
-          // get the SHA
-          child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse HEAD', function( error, stdout, stderr ) {
-            assert( !error, error ? ( 'ERROR on git SHA attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
+          var sha = trimWhitespace( stdout );
+          
+          // get the branch
+          child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse --abbrev-ref HEAD', function( error, stdout, stderr ) {
+            assert( !error, error ? ( 'ERROR on git branch attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
             
-            var sha = trimWhitespace( stdout );
+            var branch = trimWhitespace( stdout );
             
-            // get the branch
-            child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse --abbrev-ref HEAD', function( error, stdout, stderr ) {
-              assert( !error, error ? ( 'ERROR on git branch attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
-              
-              var branch = trimWhitespace( stdout );
-              
-              grunt.log.writeln( padString( dependency, 20 ) + branch + ' ' + sha );
-              dependencyInfo[dependency] = { sha: sha, branch: branch };
-              
-              
-              nextDependency();
-            } );
+            grunt.log.writeln( padString( dependency, 20 ) + branch + ' ' + sha );
+            dependencyInfo[dependency] = { sha: sha, branch: branch };
+            
+            
+            nextDependency();
           } );
-        } else {
-          // now continue on with the process! CALLBACK SOUP FOR YOU!
-          
-          // TODO: finish!
-          grunt.log.writeln( 'Writing dependencies.txt' );
-          grunt.file.write( 'build/dependencies.txt', '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString()) + '\n' +
-                                                      JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
-          
-          var splashDataURI = loadFileAsDataURI( '../joist/images/phet-logo-loading.svg' );
-          var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
-          
-          var html = grunt.file.read( '../chipper/templates/sim.html' )
-                               .replace( 'SPLASH_SCREEN_DATA_URI', splashDataURI )
-                               .replace( 'PRELOAD_INLINE_JAVASCRIPT', preloadJS )
-                               .replace( 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
-          
-          grunt.file.write( 'build/' + pkg.name + '_en.html', html );
-          
-          done();
-        }
+        } );
+      } else {
+        // now continue on with the process! CALLBACK SOUP FOR YOU!
+        
+        // TODO: finish!
+        grunt.log.writeln( 'Writing dependencies.txt' );
+        grunt.file.write( 'build/dependencies.txt', '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString()) + '\n' +
+                                                    JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
+        
+        var splashDataURI = loadFileAsDataURI( '../joist/images/phet-logo-loading.svg' );
+        var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
+        
+        var html = grunt.file.read( '../chipper/templates/sim.html' )
+                             .replace( 'SPLASH_SCREEN_DATA_URI', splashDataURI )
+                             .replace( 'PRELOAD_INLINE_JAVASCRIPT', preloadJS )
+                             .replace( 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
+        
+        grunt.file.write( 'build/' + pkg.name + '_en.html', html );
+        
+        // clean up the unneeded JS file
+        grunt.file.delete( 'build/' + pkg.name + '.min.js' );
+        
+        done();
       }
-      
-      grunt.log.writeln( 'Scanning dependencies from:\n' + dependencies.toString() );
-      nextDependency();
-    } );
+    }
+    
+    grunt.log.writeln( 'Scanning dependencies from:\n' + dependencies.toString() );
+    nextDependency();
   } );
 
   // Load tasks from grunt plugins that have been installed locally using npm.
