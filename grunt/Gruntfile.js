@@ -24,7 +24,13 @@ module.exports = function( grunt ) {
     var mimeType = {
       'png': 'image/png',
       'svg': 'image/svg+xml',
-      'jpg': 'image/jpeg'
+      'jpg': 'image/jpeg',
+      'mp3': 'audio/mpeg',
+      'm4a': 'audio/mp4',
+      'ogg': 'audio/ogg',
+      'oga': 'audio/ogg',
+      'bma': 'audio/webm', // webma is the full extension
+      'wav': 'audio/wav'
     }[filename.slice( -3 )];
     assert( mimeType, 'Unknown mime type for filename: ' + filename );
     
