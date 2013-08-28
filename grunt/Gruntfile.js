@@ -46,7 +46,7 @@ module.exports = function( grunt ) {
   
   // TODO: eek, this is scary! we are importing from the sim dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
-  var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' );
+  var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: not currently used, figure out how to include almond correctly?
   
   var preloadMapFilename = 'preload.js.map';
 
@@ -91,34 +91,6 @@ module.exports = function( grunt ) {
             }
           }
         },
-        
-        // uglify: {
-        //   preload: {
-        //     files: {
-        //       'build/preload.js': pkg.preload.split( ' ' )
-        //     },
-        //     options: {
-        //       // sourceMap: 'build/preload.js.map',
-        //       mangle: false, // TODO: only skip mangling on global exports
-        //       beautify: true,
-        //       output: {
-        //         inline_script: true // escape </script
-        //       },
-        //       compress: {
-        //         // global_defs: {
-        //         //   // scenery assertions
-        //         //   sceneryAssert: false,
-        //         //   sceneryAssertExtra: false,
-        //         //   // scenery logging
-        //         //   sceneryLayerLog: false,
-        //         //   sceneryEventLog: false,
-        //         //   sceneryAccessibilityLog: false
-        //         // },
-        //         // dead_code: true
-        //       }
-        //     }
-        //   }
-        // },
 
         // configure the JSHint plugin
         jshint: {
@@ -202,32 +174,16 @@ module.exports = function( grunt ) {
     var preloadResult = uglify.minify( pkg.preload.split( ' ' ), {
       outSourceMap: preloadMapFilename,
       output: {
-        beautify: true,
         inline_script: true // escape </script
       },
-      mangle: false,
       compress: {
         // here for now, for when we want to include options for the preloaded code
-        // global_defs: {
-        //   // scenery assertions
-        //   sceneryAssert: false,
-        //   sceneryAssertExtra: false,
-        //   // scenery logging
-        //   sceneryLayerLog: false,
-        //   sceneryEventLog: false,
-        //   sceneryAccessibilityLog: false
-        // },
-        // dead_code: true
+        global_defs: {}
       }
     } );
     
     var preloadJS = preloadResult.code; // minified output
     var preloadMap = preloadResult.map; // map for minified output, use preloadMapFilename
-    
-    // grunt.log.writeln( 'Minifying ' + pkg.preload.split( ' ' ).toString() );
-    // var preloadJS = pkg.preload.split( ' ' ).map( function( filename ) { return '\n\n/*' + filename + '*/\n' + grunt.file.read( filename ); } ).join( '\n' );
-    // grunt.file.write( 'build/preload.js', preloadJS );
-    // var preloadMap = '';
     
     grunt.log.writeln( 'Copying preload source map' );
     grunt.file.write( 'build/' + preloadMapFilename, preloadMap );
@@ -296,7 +252,7 @@ module.exports = function( grunt ) {
         grunt.log.writeln( 'Constructing HTML from template' );
         var html = grunt.file.read( '../chipper/templates/sim.html' );
         html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
-        html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadJS );
+        html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadJS + '\n//# sourceMappingURL=preload.js.map' );
         html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
         html = stringReplace( html, 'SIM_INLINE_IMAGES', inlineImageHTML );
         
@@ -318,5 +274,4 @@ module.exports = function( grunt ) {
   // Put these in package.json and run 'npm install' before running grunt.
   grunt.loadNpmTasks( 'grunt-requirejs' );
   grunt.loadNpmTasks( 'grunt-contrib-jshint' );
-  grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 };
