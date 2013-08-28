@@ -60,8 +60,8 @@ module.exports = function( grunt ) {
               name: '<%= pkg.name %>-config',
               optimize: 'uglify2',
               wrap: true,
-              // generateSourceMaps: true,
-              // preserveLicenseComments: false,
+              generateSourceMaps: true,
+              preserveLicenseComments: false,
               uglify2: {
                 output: {
                   inline_script: true // escape </script
@@ -234,11 +234,27 @@ module.exports = function( grunt ) {
         var splashDataURI = loadFileAsDataURI( '../joist/images/phet-logo-loading.svg' );
         var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
         
+        var imageFiles = pkg.images.concat( [
+          '../joist/images/phet-logo-loading.svg',
+          '../joist/images/phet-logo-short.svg',
+          '../joist/images/phet-logo-short.png'
+        ] );
+        var inlineImageHTML = "";
+        while ( imageFiles.length ) {
+          var imageFile = imageFiles.pop();
+          grunt.log.writeln( 'Inserting image: ' + imageFile );
+          
+          var dataURI = loadFileAsDataURI( imageFile );
+          // TODO: share this as a CSS class, helps file space if we have tons of images
+          inlineImageHTML += '<img id="' + imageFile + '" style="visibility: hidden; overflow: hidden; position: absolute;" src="' + dataURI + '"/>';
+        }
+        
         grunt.log.writeln( 'Constructing HTML from template' );
         var html = grunt.file.read( '../chipper/templates/sim.html' )
                              .replace( 'SPLASH_SCREEN_DATA_URI', splashDataURI )
-                             .replace( 'PRELOAD_INLINE_JAVASCRIPT', preloadJS )
-                             .replace( 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
+                             .replace( 'PRELOAD_INLINE_JAVASCRIPT', preloadJS + '\n//# sourceMappingURL=' + preloadMapFilename )
+                             .replace( 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript )
+                             .replace( 'SIM_INLINE_IMAGES', inlineImageHTML );
         
         grunt.log.writeln( 'Writing HTML' );
         grunt.file.write( 'build/' + pkg.name + '_en.html', html );
