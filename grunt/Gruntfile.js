@@ -234,14 +234,16 @@ module.exports = function( grunt ) {
         var splashDataURI = loadFileAsDataURI( '../joist/images/phet-logo-loading.svg' );
         var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
         
+        grunt.log.writeln( 'Constructing HTML from template' );
         var html = grunt.file.read( '../chipper/templates/sim.html' )
                              .replace( 'SPLASH_SCREEN_DATA_URI', splashDataURI )
                              .replace( 'PRELOAD_INLINE_JAVASCRIPT', preloadJS )
                              .replace( 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
         
+        grunt.log.writeln( 'Writing HTML' );
         grunt.file.write( 'build/' + pkg.name + '_en.html', html );
         
-        // clean up the unneeded JS file
+        grunt.log.writeln( 'Cleaning temporary files' );
         grunt.file.delete( 'build/' + pkg.name + '.min.js' );
         
         done();
