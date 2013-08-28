@@ -189,7 +189,11 @@ module.exports = function( grunt ) {
     grunt.file.write( 'build/' + preloadMapFilename, preloadMap );
     
     grunt.log.writeln( 'Copying changes.txt' );
-    grunt.file.copy( 'changes.txt', 'build/changes.txt' );
+    if ( fs.existsSync( 'changes.txt' ) ) {
+      grunt.file.copy( 'changes.txt', 'build/changes.txt' );
+    } else {
+      grunt.log.writeln( 'WARNING: no changes.txt' );
+    }
     
     // we ignore resourceDirs here, deprecated!
     
