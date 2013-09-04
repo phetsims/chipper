@@ -31,6 +31,7 @@ module.exports = {
     sceneryLayerLog: true, // scenery logging levels
     sceneryEventLog: true, // scenery logging levels
     sceneryAccessibilityLog: true, // scenery accessibility levels
+    phetAllocation: true, // for tracking object allocations, see phet-core's phetAllocation
     Float32Array: true, // we actually polyfill this, so allow it to be set
 
     // read-only globals ---------------------------------
