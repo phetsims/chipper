@@ -268,7 +268,7 @@ module.exports = function( grunt ) {
           grunt.log.writeln( 'Inserting sound: ' + soundFile );
 
           var dataURI = loadFileAsDataURI( soundFile );
-          inlineSoundHTML += '<audio id="' + soundFile + '" src="' + dataURI + '"></audio>';
+          inlineSoundHTML += '<audio id="' + soundFile + '" src="' + dataURI + '"></audio>\n';
         }
 
         grunt.log.writeln( 'Constructing HTML from template' );
