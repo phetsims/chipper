@@ -33,9 +33,14 @@
       background-color: #f8fff8;
     }
     
-    pre#ast {
+    pre#astBefore {
       border: 1px solid black;
-      background-color: #fff8f8;
+      background-color: #f8f8ff;
+    }
+    
+    pre#astAfter {
+      border: 1px solid black;
+      background-color: #f8fff8;
     }
   </style>
 </head>
@@ -43,12 +48,18 @@
 <body>
   <pre id="before" contenteditable>'place javascript here';</pre>
   <pre id="after"></pre>
-  <pre id="ast"></pre>
+  <pre id="astBefore"></pre>
+  <pre id="astAfter"></pre>
   
   <script type="text/javascript">
     var updateRewrite = function() {
-      $( '#after' ).text( chipperRewrite( $( '#before' ).text() ) );
-      $( '#ast' ).text( JSON.stringify( esprima.parse( $( '#before' ).text() ), null, '  ' ) );
+      window.ast = esprima.parse( $( '#before' ).text() );
+      
+      $( '#astBefore' ).text( JSON.stringify( ast, null, '  ' ) );
+      rewriteProgram( window.ast );
+      $( '#astAfter' ).text( JSON.stringify( ast, null, '  ' ) );
+      
+      $( '#after' ).text( chipperRewrite( $( '#before' ).text(), esprima, escodegen ) );
     };
     document.getElementById( 'before' ).addEventListener( 'input', updateRewrite );
     updateRewrite();
