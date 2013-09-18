@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <title>Chipper code rewrite test</title>
+  
+  <script src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
+  <script src="esprima-test-snapshot.js"></script>
+  <script src="escodegen-browser-test-snapshot.js"></script>
+  <script src="chipperRewrite.js"></script>
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+    }
+    
+    pre {
+      margin: 20px 20px;
+    }
+    
+    pre#before {
+      border: 1px solid black;
+      background-color: #f8f8ff;
+    }
+    
+    pre#after {
+      border: 1px solid black;
+      background-color: #f8fff8;
+    }
+  </style>
+</head>
+
+<body>
+  <pre id="before" contenteditable>'place javascript here';</pre>
+  <pre id="after"></pre>
+  
+  <script type="text/javascript">
+    var updateRewrite = function() {
+      $( '#after' ).text( chipperRewrite( $( '#before' ).text() ) );
+    };
+    document.getElementById( 'before' ).addEventListener( 'input', updateRewrite );
+    updateRewrite();
+  </script>
+</body>
+</html>
