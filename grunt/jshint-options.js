@@ -31,6 +31,7 @@ module.exports = {
     sceneryLayerLog: true, // scenery logging levels
     sceneryEventLog: true, // scenery logging levels
     sceneryAccessibilityLog: true, // scenery accessibility levels
+    phetAllocation: true, // for tracking object allocations, see phet-core's phetAllocation
     Float32Array: true, // we actually polyfill this, so allow it to be set
 
     // read-only globals ---------------------------------
@@ -59,7 +60,10 @@ module.exports = {
     Howl: false, //for web audio
     PxLoader: false, //for preloading images,
     ActiveXObject: false, //for full screen
-    Box2D: false //For Box2D physics engine
+    Box2D: false, //For Box2D physics engine
+
+    alert: false, //for debugging on ipad
+    numeric: false //Numeric library used in energy skate park
   }
 };
 
