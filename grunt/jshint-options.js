@@ -60,7 +60,8 @@ module.exports = {
     Howl: false, //for web audio
     PxLoader: false, //for preloading images,
     ActiveXObject: false, //for full screen
-    Box2D: false //For Box2D physics engine
+    Box2D: false, //For Box2D physics engine,
+    numeric: false //For math
   }
 };
 
