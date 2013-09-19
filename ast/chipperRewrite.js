@@ -1,3 +1,14 @@
+/*
+ * Abstract Syntax Tree modifier. This will read the input JS, turn it into an AST using esprima,
+ * modify it (as noted below), and output JS with escodegen.
+ *
+ * Modifications:
+ *   - For variable declarations, any assignment that is of the form "var assert = require( 'ASSERT/assert')( ... );"
+ *       will be removed.
+ *   - Any standalone assignment to an 'assert' variable will be shortened to the right-hand value
+ *   - Any "assert && assert( ... )" pattern will be replaced with null
+ *   - Any reference (attempt to access a variable) to 'assert' will be replaced with null
+ */
 
 // see https://developer.mozilla.org/en-US/docs/SpiderMonkey/Parser_API
 (function( global ){
