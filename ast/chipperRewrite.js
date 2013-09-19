@@ -115,7 +115,7 @@
                declarator.init.type === 'CallExpression' &&
                declarator.init.callee.type === 'CallExpression' &&
                declarator.init.callee.callee.name === 'require' &&
-               declarator.init.callee.arguments.value === 'ASSERT/assert' ) {
+               declarator.init.callee.arguments[0].value === 'ASSERT/assert' ) {
             return null;
           }
           declarator.id = rewritePattern( declarator.id );
@@ -206,6 +206,9 @@
         ast.right = rewriteExpression( ast.right );
         break;
       case 'AssignmentExpression':
+        if ( isAssert( ast.left ) ) {
+          return rewriteExpression( ast.right );
+        }
         ast.left = rewriteExpression( ast.left );
         ast.right = rewriteExpression( ast.right );
         break;
