@@ -1,12 +1,14 @@
 
 // see https://developer.mozilla.org/en-US/docs/SpiderMonkey/Parser_API
 (function( global ){
+  var truthy = function( ob ) { return !!ob; };
+  
   function isAssert( ast ) {
     return ast.type === 'Identifier' && ast.name === 'assert';
   }
   
   function rewriteProgram( ast ) {
-    ast.body = ast.body.map( rewriteStatement );
+    ast.body = ast.body.map( rewriteStatement ).filter( truthy );
   }
   
   function rewriteStatement( ast ) {
@@ -14,7 +16,7 @@
     
     switch ( ast.type ) {
       case 'BlockStatement':
-        ast.body = ast.body.map( rewriteStatement );
+        ast.body = ast.body.map( rewriteStatement ).filter( truthy );
         break;
       case 'ExpressionStatement':
         ast.expression = rewriteExpression( ast.expression );
@@ -109,12 +111,22 @@
         break;
       case 'VariableDeclaration':
         ast.declarations = ast.declarations.map( function( declarator ) {
+          if ( isAssert( declarator.id ) &&
+               declarator.init.type === 'CallExpression' &&
+               declarator.init.callee.type === 'CallExpression' &&
+               declarator.init.callee.callee.name === 'require' &&
+               declarator.init.callee.arguments.value === 'ASSERT/assert' ) {
+            return null;
+          }
           declarator.id = rewritePattern( declarator.id );
           if ( declarator.init ) {
             declarator.init = rewriteExpression( declarator.init );
           }
           return declarator;
-        } );
+        } ).filter( truthy );
+        if ( ast.declarations.length === 0 ) {
+          return null;
+        }
         break;
       case 'DebuggerStatement':
         break;
@@ -154,6 +166,9 @@
   function rewriteExpression( ast ) {
     if ( ast === null ) {
       return null;
+    }
+    if ( isAssert( ast ) ) {
+      return { type: 'Literal', value: null };
     }
     
     ast.tagged = true;
