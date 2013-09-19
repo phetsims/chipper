@@ -25,6 +25,7 @@ module.exports = function( grunt ) {
       'png': 'image/png',
       'svg': 'image/svg+xml',
       'jpg': 'image/jpeg',
+      'cur': 'image/x-win-bitmap', // cursor files (used in build-a-molecule)
       'mp3': 'audio/mpeg',
       'm4a': 'audio/mp4',
       'ogg': 'audio/ogg',
