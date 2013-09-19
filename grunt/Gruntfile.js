@@ -1,6 +1,8 @@
 var assert = require( 'assert' );
 var fs = require( 'fs' );
 var child_process = require( 'child_process' );
+var info = require( '../../sherpa/info' );
+var _ = require( '../../sherpa/lodash-2.0.0.min' );
 
 /**
  * Grunt configuration file for simulations.
@@ -57,7 +59,7 @@ module.exports = function( grunt ) {
   var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: not currently used, figure out how to include almond correctly?
   var escodegen = require( '../../' + pkg.name + '/node_modules/escodegen' );
   var esprima = require( '../../' + pkg.name + '/node_modules/esprima' );
-  
+
   var chipperRewrite = require( '../../chipper/ast/chipperRewrite.js' );
   var onBuildRead = function( name, path, contents ) {
     return chipperRewrite.chipperRewrite( contents, esprima, escodegen );
@@ -140,6 +142,15 @@ module.exports = function( grunt ) {
         options: require( './jshint-options' )
       }
     } );
+
+  //Prepare the license info, currently goes nowhere except the console
+  var licenses = info();
+  var simLicenses = _.filter( licenses, function( license ) {return _.contains( license.usage, 'sim' );} );
+  for ( var i = 0; i < simLicenses.length; i++ ) {
+    grunt.log.writeln( '############' );
+    grunt.log.writeln( simLicenses[i].text );
+  }
+  grunt.log.writeln( '############' );
 
   // Default task ('grunt')
   grunt.registerTask( 'default', [ 'lint-sim', 'lint-common', 'build' ] );
