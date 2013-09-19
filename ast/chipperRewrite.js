@@ -2,12 +2,15 @@
  * Abstract Syntax Tree modifier. This will read the input JS, turn it into an AST using esprima,
  * modify it (as noted below), and output JS with escodegen.
  *
+ * NOTE: currently run twice, before and after. TODO: improve this!
+ *
  * Modifications:
  *   - For variable declarations, any assignment that is of the form "var assert = require( 'ASSERT/assert')( ... );"
  *       will be removed.
  *   - Any standalone assignment to an 'assert' variable will be shortened to the right-hand value
  *   - Any "assert && assert( ... )" pattern will be replaced with null
  *   - Any reference (attempt to access a variable) to 'assert' will be replaced with null
+ *   - define( "...", [...], function( require ) { ... } ) has the array replaced with [] (strips out dependency info unneeded by almond)
  */
 
 // see https://developer.mozilla.org/en-US/docs/SpiderMonkey/Parser_API
@@ -245,6 +248,21 @@
       case 'CallExpression':
         ast.callee = rewriteExpression( ast.callee );
         ast.arguments = ast.arguments.map( rewriteExpression );
+        
+        // detect define( "...", [...], function( require ) { ... } );
+        if ( ast.callee.type === 'Identifier' &&
+             ast.callee.name === 'define' &&
+             ast.arguments.length === 3 &&
+             ast.arguments[0].type === 'Literal' &&
+             ( typeof ast.arguments[0].value === 'string' ) &&
+             ast.arguments[1].type === 'ArrayExpression' &&
+             ast.arguments[2].type === 'FunctionExpression' &&
+             ast.arguments[2].params.length === 1 &&
+             ast.arguments[2].params[0].name === 'require' ) {
+          
+          // replace the arguments with the empty array, since this will be basically unneeded by almond.js
+          ast.arguments[1].elements = [];
+        }
         break;
       case 'MemberExpression':
         ast.object = rewriteExpression( ast.object );
