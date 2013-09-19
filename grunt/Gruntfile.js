@@ -25,7 +25,7 @@ module.exports = function( grunt ) {
       'png': 'image/png',
       'svg': 'image/svg+xml',
       'jpg': 'image/jpeg',
-      'cur': 'image/x-win-bitmap', // cursor files (used in build-a-molecule)
+      'cur': 'image/x-icon', // cursor files (used in build-a-molecule). x-win-bitmap gives off warnings in Chrome
       'mp3': 'audio/mpeg',
       'm4a': 'audio/mp4',
       'ogg': 'audio/ogg',
@@ -55,6 +55,13 @@ module.exports = function( grunt ) {
   // TODO: eek, this is scary! we are importing from the sim dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
   var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: not currently used, figure out how to include almond correctly?
+  var escodegen = require( '../../' + pkg.name + '/node_modules/escodegen' );
+  var esprima = require( '../../' + pkg.name + '/node_modules/esprima' );
+  
+  var chipperRewrite = require( '../../chipper/ast/chipperRewrite.js' );
+  var onBuildRead = function( name, path, contents ) {
+    return chipperRewrite.chipperRewrite( contents, esprima, escodegen );
+  };
 
   var preloadMapFilename = 'preload.js.map';
 
@@ -107,7 +114,8 @@ module.exports = function( grunt ) {
                   dead_code: true
                 }
               }
-            }
+            },
+            onBuildRead: onBuildRead
           }
         }
       },
