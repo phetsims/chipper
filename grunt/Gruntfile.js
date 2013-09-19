@@ -227,7 +227,9 @@ module.exports = function( grunt ) {
     // we ignore resourceDirs here, deprecated!
 
     var dependencies = pkg.phetLibs.split( ' ' );
-    dependencies.push( 'chipper' );
+    if ( dependencies.indexOf( 'chipper' ) === -1 ) {
+      dependencies.push( 'chipper' );
+    }
 
     var dependencyInfo = {};
 
