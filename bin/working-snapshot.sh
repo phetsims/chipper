@@ -17,7 +17,6 @@ fi
 
 echo "= Generating working-snapshot.json"
 OUTFILE=working-snapshot.json
-echo "# $NAME $VERSION" `date` > $OUTFILE
 echo "{" >> $OUTFILE
 if [[ "$PHET_LIBS" == *chipper* ]]
 then
