@@ -16,7 +16,8 @@ public class CreateIMGTags {
             if ( lowername.endsWith( "png" ) ||
                  lowername.endsWith( "jpg" ) ||
                  lowername.endsWith( "svg" ) ) {
-                System.out.println( "<img src=\"images/" + file.getName() + "\"/>" );
+//                System.out.println( "<img src=\"images/" + file.getName() + "\"/>" );
+                System.out.println( "\"images/" + file.getName() + "\"," );
             }
         }
     }
