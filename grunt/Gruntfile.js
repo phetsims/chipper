@@ -143,22 +143,50 @@ module.exports = function( grunt ) {
       }
     } );
 
-  //Prepare the license info, currently goes nowhere except the console
-  var licenses = info();
-  var simLicenses = _.filter( licenses, function( license ) {return _.contains( license.usage, 'sim' );} );
-  for ( var i = 0; i < simLicenses.length; i++ ) {
-    grunt.log.writeln( '############' );
-    grunt.log.writeln( simLicenses[i].text );
-  }
-  grunt.log.writeln( '############' );
-
   // Default task ('grunt')
-  grunt.registerTask( 'default', [ 'lint-sim', 'lint-common', 'build' ] );
+  grunt.registerTask( 'default', [ 'generateLicenseInfo', 'lint-sim', 'lint-common', 'build' ] );
 
   // Other tasks ('grunt taskName')
   grunt.registerTask( 'lint-sim', [ 'jshint:simFiles' ] );
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+
+  var licenseText;
+  grunt.registerTask( 'generateLicenseInfo', 'Generate the license info', function() {
+    //Prepare the license info
+    //Run this first so that if something is missing from the license file you will find out before having to wait for jshint/requirejs build
+    var licenseInfo = info();
+
+    //Find all dependencies that have 'sherpa' in the path.
+    //Please note, this requires all simulations to keep their dependencies in sherpa!
+    var sherpaDependencyPaths = _.filter( pkg.preload.split( ' ' ), function( dependency ) { return dependency.indexOf( 'sherpa' ) >= 0; } );
+
+    //Sort by name of the library, have to match cases to sort properly
+    var sortedSherpaDependencyPaths = _.sortBy( sherpaDependencyPaths, function( path ) {return path.toUpperCase();} );
+
+    //Map the paths to instances from the info.js file
+    var licenses = _.uniq( _.map( sortedSherpaDependencyPaths, function( sherpaDependencyPath ) {
+      var lastSlash = sherpaDependencyPath.lastIndexOf( '/' );
+      var lastDot = sherpaDependencyPath.lastIndexOf( '.' );
+      var dependencyName = sherpaDependencyPath.substring( lastSlash + 1, lastDot );
+      //    console.log( 'found dependency: ' + sherpaDependencyPath + ', name = ' + dependencyName );
+
+      //Prevent duplicates like PxLoader and PxLoaderImage, which use the same license
+      dependencyName = dependencyName === 'PxLoaderImage' ? 'PxLoader' : dependencyName;
+
+      //Make sure there is an entry in the info.js file, and return it
+      assert( licenseInfo[dependencyName], 'no license entry for ' + dependencyName );
+      return licenseInfo[dependencyName];
+    } ) );
+
+    //Get the text of each entry
+    var separator = '=';
+
+    //TODO: better way to return a value?
+    licenseText = _.reduce( licenses, function( memo, license ) { return memo + license.text + '\n' + separator + '\n'; }, separator + '\n' ).trim();
+
+    grunt.log.writeln( 'created license info for ' + licenses.length + ' dependencies' );
+  } );
 
   // creates a performance snapshot for profiling changes
   grunt.registerTask( 'simBeforeRequirejs', 'Description', function() {
@@ -305,8 +333,19 @@ module.exports = function( grunt ) {
           inlineSoundHTML += '<audio id="' + soundFile + '" src="' + dataURI + '"></audio>\n';
         }
 
+        //Create the license header for this html and all the 3rd party dependencies
+        //TODO: This puts the license for everything as GPLv3.  If we want to build other libraries with this, we should change the license to MIT
+        var htmlHeader = pkg.name + '\n' +
+                         'Copyright 2002-2013, University of Colorado Boulder\n' +
+                         'PhET Interactive Simulations\n' +
+                         'Licensed under GPLv3\n' +
+                         'http://phet.colorado.edu/en/about/licensing\n' +
+                         '\n' +
+                         'Libraries:\n' + licenseText;
+
         grunt.log.writeln( 'Constructing HTML from template' );
         var html = grunt.file.read( '../chipper/templates/sim.html' );
+        html = stringReplace( html, 'HTML_HEADER', htmlHeader );
         html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
         html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadJS + '\n//# sourceMappingURL=preload.js.map' );
         html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
