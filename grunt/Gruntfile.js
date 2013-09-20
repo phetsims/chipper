@@ -151,8 +151,11 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
+  //Scoped variable to hold the result from the generateLicenseInfoTask.
+  //TODO: A better way to store the return value?
   var licenseText;
   grunt.registerTask( 'generateLicenseInfo', 'Generate the license info', function() {
+
     //Prepare the license info
     //Run this first so that if something is missing from the license file you will find out before having to wait for jshint/requirejs build
     var licenseInfo = info();
@@ -183,7 +186,13 @@ module.exports = function( grunt ) {
     var separator = '=';
 
     //TODO: better way to return a value?
-    licenseText = _.reduce( licenses, function( memo, license ) { return memo + license.text + '\n' + separator + '\n'; }, separator + '\n' ).trim();
+    licenseText = _.reduce( licenses,function( memo, license ) {
+      var selectedLicenseText = license.selectedLicense ? '> Selected license: ' + license.selectedLicense + '\n' : '';
+      return memo + license.text + '\n' +
+             selectedLicenseText +
+             separator +
+             '\n';
+    }, separator + '\n' ).trim();
 
     grunt.log.writeln( 'created license info for ' + licenses.length + ' dependencies' );
   } );
