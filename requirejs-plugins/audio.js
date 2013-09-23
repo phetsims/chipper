@@ -37,7 +37,7 @@ define( function() {
 
   return {
     load: function( name, parentRequire, onload, config ) {
-      console.log( 'audio plugin trying to load', name );
+//      console.log( 'audio plugin trying to load', name );
       if ( config.isBuild ) {
         buildMap[name] = parentRequire.toUrl( name );
         onload( null );
