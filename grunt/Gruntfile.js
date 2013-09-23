@@ -318,7 +318,7 @@ module.exports = function( grunt ) {
         var splashDataURI = loadFileAsDataURI( '../joist/images/phet-logo-loading.svg' );
         var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
-        var imageFiles = pkg.images.concat( [
+        var imageFiles = (pkg.images || []).concat( [
           '../joist/images/phet-logo-loading.svg',
           '../joist/images/phet-logo-short.svg',
           '../joist/images/phet-logo-short.png'
