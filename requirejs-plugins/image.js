@@ -14,7 +14,6 @@ define( function() {
 
   //This function was taken from chipper/grunt/Gruntfile.js
   var loadFileAsDataURI = function( filename ) {
-    console.log( 'lfadu' );
     var mimeType = {
       'png': 'image/png',
       'svg': 'image/svg+xml',
@@ -27,15 +26,12 @@ define( function() {
       'bma': 'audio/webm', // webma is the full extension
       'wav': 'audio/wav'
     }[filename.slice( -3 )];
-    console.log( 'mime' );
 
-    //TODO: error checking the mimeType
+    //TODO: error check the mimeType
 //    assert( mimeType, 'Unknown mime type for filename: ' + filename );
-//    console.log( 'assert' );
 
     var base64 = 'data:' + mimeType + ';base64,' + Buffer( fs.readFileSync( filename ) ).toString( 'base64' );
-    console.log( 'base64' );
-    return  base64;
+    return base64;
   };
 
   return {
@@ -64,7 +60,6 @@ define( function() {
       if ( moduleName in buildMap ) {
         var content = buildMap[moduleName];
 
-        console.log( 'found url', content );
         var base64 = loadFileAsDataURI( content );
 
         //Write code that will load the image and register with a global `phetImages` to make sure everything loaded, see SimLauncher.js
