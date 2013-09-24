@@ -100,24 +100,12 @@ module.exports = function( grunt ) {
                   // scenery logging
                   sceneryLayerLog: false,
                   sceneryEventLog: false,
-                  sceneryAccessibilityLog: false
+                  sceneryAccessibilityLog: false,
+                  phetAllocation: false
                 },
-                compress: {
-                  global_defs: {
-                    // scenery assertions
-                    sceneryAssert: false,
-                    sceneryAssertExtra: false,
-                    // scenery logging
-                    sceneryLayerLog: false,
-                    sceneryEventLog: false,
-                    sceneryAccessibilityLog: false,
-                    phetAllocation: false
-                  },
-                  dead_code: true
-                }
+                dead_code: true
               }
-            },
-            onBuildRead: onBuildRead
+            }
           }
         }
       },
