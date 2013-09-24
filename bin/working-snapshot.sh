@@ -17,7 +17,7 @@ fi
 
 echo "= Generating working-snapshot.json"
 OUTFILE=working-snapshot.json
-echo "{" >> $OUTFILE
+echo "{" > $OUTFILE
 if [[ "$PHET_LIBS" == *chipper* ]]
 then
   # lazy here
