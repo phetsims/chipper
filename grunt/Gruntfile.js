@@ -174,9 +174,6 @@ module.exports = function( grunt ) {
       var dependencyName = sherpaDependencyPath.substring( lastSlash + 1, lastDot );
       //    console.log( 'found dependency: ' + sherpaDependencyPath + ', name = ' + dependencyName );
 
-      //Prevent duplicates like PxLoader and PxLoaderImage, which use the same license
-      dependencyName = dependencyName === 'PxLoaderImage' ? 'PxLoader' : dependencyName;
-
       //Make sure there is an entry in the info.js file, and return it
       assert( licenseInfo[dependencyName], 'no license entry for ' + dependencyName );
       return licenseInfo[dependencyName];

@@ -58,7 +58,6 @@ module.exports = {
     TWEEN: false, //sole/tween.js
     navigator: false, //For Mobile Safari detection, see http://stackoverflow.com/questions/3007480/determine-if-user-navigated-from-mobile-safari
     Howl: false, //for web audio
-    PxLoader: false, //for preloading images,
     ActiveXObject: false, //for full screen
     Box2D: false, //For Box2D physics engine
 
