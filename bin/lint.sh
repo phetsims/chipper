@@ -17,4 +17,4 @@ else
    TARGET=lint-sim
 fi
 
-grunt --gruntfile $GRUNTFILE --base `pwd` $TARGET
+grunt $TARGET

@@ -137,6 +137,7 @@ module.exports = function( grunt ) {
   // Other tasks ('grunt taskName')
   grunt.registerTask( 'lint-sim', [ 'jshint:simFiles' ] );
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
+  grunt.registerTask( 'lint', [ 'lint-sim', 'lint-common' ] );
   grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
   //Scoped variable to hold the result from the generateLicenseInfoTask.
