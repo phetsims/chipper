@@ -269,8 +269,6 @@ module.exports = function( grunt ) {
       grunt.log.error( 'WARNING: no changes.txt' );
     }
 
-    // we ignore resourceDirs here, deprecated!
-
     var dependencies = pkg.phetLibs.split( ' ' );
     if ( dependencies.indexOf( 'chipper' ) === -1 ) {
       dependencies.push( 'chipper' );
