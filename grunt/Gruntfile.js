@@ -155,10 +155,11 @@ module.exports = function( grunt ) {
 
     //Add libraries that are not explicitly included by the sim
     //Note: must have a . character for the parsing below //TODO: Remove this restriction
-    sherpaDependencyPaths.push( 'almond-0.2.6.' );
+    sherpaDependencyPaths.push( 'almond-0.2.6.js' );
     sherpaDependencyPaths.push( 'pegjs.' );
     sherpaDependencyPaths.push( 'font-awesome.' );
-    sherpaDependencyPaths.push( 'require-i18n.' );
+    sherpaDependencyPaths.push( 'require-i18n.js' );
+    sherpaDependencyPaths.push( 'base64binary.js' );//TODO: Not all simulations use Vibe
 
     //Sort by name of the library, have to match cases to sort properly
     var sortedSherpaDependencyPaths = _.sortBy( sherpaDependencyPaths, function( path ) {return path.toUpperCase();} );
