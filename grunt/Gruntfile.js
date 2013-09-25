@@ -153,6 +153,13 @@ module.exports = function( grunt ) {
     //Please note, this requires all simulations to keep their dependencies in sherpa!
     var sherpaDependencyPaths = _.filter( pkg.preload.split( ' ' ), function( dependency ) { return dependency.indexOf( 'sherpa' ) >= 0; } );
 
+    //Add libraries that are not explicitly included by the sim
+    //Note: must have a . character for the parsing below //TODO: Remove this restriction
+    sherpaDependencyPaths.push( 'almond-0.2.6.' );
+    sherpaDependencyPaths.push( 'pegjs.' );
+    sherpaDependencyPaths.push( 'font-awesome.' );
+    sherpaDependencyPaths.push( 'require-i18n.' );
+
     //Sort by name of the library, have to match cases to sort properly
     var sortedSherpaDependencyPaths = _.sortBy( sherpaDependencyPaths, function( path ) {return path.toUpperCase();} );
 
