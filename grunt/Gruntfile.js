@@ -142,6 +142,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'lint', [ 'lint-sim', 'lint-common' ] );
   grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'build' ] );
 
   //Scoped variable to hold the result from the generateLicenseInfoTask.
   //TODO: A better way to store the return value?
