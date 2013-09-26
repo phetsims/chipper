@@ -117,14 +117,17 @@ module.exports = function( grunt ) {
         // source files for common-code dependencies
         commonFiles: [
           '../assert/js/**/*.js',
+          '../axon/js/**/*.js',
           '../dot/js/**/*.js',
           '../joist/js/**/*.js',
           '../kite/js/**/*.js',
+          '../nitroglycerin/js/**/*.js',
           '../phet-core/js/**/*.js',
           '../phetcommon/js/**/*.js',
           '../scenery/js/**/*.js',
           '../scenery-phet/js/**/*.js',
-          '../sun/js/**/*.js'
+          '../sun/js/**/*.js',
+          '../vibe/js/**/*.js'
         ],
         // reference external JSHint options in jshint-options.js
         options: require( './jshint-options' )
