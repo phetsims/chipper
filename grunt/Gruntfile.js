@@ -143,6 +143,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint', [ 'lint-sim', 'lint-common' ] );
   grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
   grunt.registerTask( 'nolint', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'bump-version', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
   //Scoped variable to hold the result from the generateLicenseInfoTask.
   //TODO: A better way to store the return value?
@@ -193,6 +194,59 @@ module.exports = function( grunt ) {
     }, separator + '\n' ).trim();
 
     grunt.log.writeln( 'created license info for ' + licenses.length + ' dependencies' );
+  } );
+
+  //This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13
+  //This updates the package.json and js/version.js files, and commits + pushes to git.
+  //BEWARE: do not run this task unless your git is clean, otherwise it will commit other work on your repo as well
+  grunt.registerTask( 'bump-version', 'This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13.' +
+                                      'This updates the package.json and js/version.js files, and commits + pushes to git.' +
+                                      'BEWARE: do not run this task unless your git is clean, otherwise it will commit other work on your repo as well.', function() {
+    var lastDot = pkg.version.lastIndexOf( '.' );
+    var number = parseInt( pkg.version.substring( lastDot + 1 ) );
+    var newNumber = number + 1;
+    var newFullVersion = pkg.version.substring( 0, lastDot + 1 ) + newNumber;
+
+    var replace = function( path, oldText, newText ) {
+      var fullText = grunt.file.read( path );
+      var firstIndex = fullText.indexOf( oldText );
+      var lastIndex = fullText.lastIndexOf( oldText );
+      assert( lastIndex === firstIndex, 'should only be one occurrence of the text string' );
+      assert( lastIndex !== -1, 'should be at least one occurrence of the text string' );
+      grunt.file.write( path, fullText.replace( oldText, newText ) );
+      grunt.log.writeln( 'updated version in ' + path + ' from ' + oldText + ' to ' + newText );
+    };
+
+    //Write the new version to the package.json file and version.js file
+    replace( 'package.json', pkg.version, newFullVersion );
+    replace( 'js/version.js', pkg.version, newFullVersion );
+
+    var cmd1 = 'git add js/version.js package.json';
+    var cmd2 = 'git commit -m "updated version to ' + newFullVersion + '"';
+    var cmd3 = 'git push';
+
+    grunt.log.writeln( 'Running: ' + cmd1 );
+    var done = grunt.task.current.async();
+
+    child_process.exec( cmd1, function( error1, stdout1, stderr1 ) {
+      assert( !error1, "error in " + cmd1 );
+      console.log( 'finished ' + cmd1 );
+      console.log( stdout1 );
+      grunt.log.writeln( 'Running: ' + cmd2 )
+      child_process.exec( cmd2, function( error2, stdout2, stderr2 ) {
+        assert( !error2, "error in git commit" );
+        console.log( 'finished ' + cmd2 );
+        console.log( stdout2 );
+
+        grunt.log.writeln( 'Running: ' + cmd3 );
+        child_process.exec( cmd3, function( error3, stdout3, stderr3 ) {
+          assert( !error3, "error in git push" );
+          console.log( 'finished ' + cmd3 );
+          console.log( stdout3 );
+          done();
+        } );
+      } );
+    } );
   } );
 
   // creates a performance snapshot for profiling changes
