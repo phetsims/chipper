@@ -199,6 +199,7 @@ module.exports = function( grunt ) {
   //This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13
   //This updates the package.json and js/version.js files, and commits + pushes to git.
   //BEWARE: do not run this task unless your git is clean, otherwise it will commit other work on your repo as well
+  //TODO: Also, if you embed this task in another, you should make sure the global pkg.version gets updated as well, since this modifies the files but not the pkg.version, which may be used elsewhere in the gruntfile.
   grunt.registerTask( 'bump-version', 'This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13.' +
                                       'This updates the package.json and js/version.js files, and commits + pushes to git.' +
                                       'BEWARE: do not run this task unless your git is clean, otherwise it will commit other work on your repo as well.', function() {
