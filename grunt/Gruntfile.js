@@ -142,7 +142,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'lint', [ 'lint-sim', 'lint-common' ] );
   grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
-  grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'build' ] );
+  grunt.registerTask( 'nolint', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
   //Scoped variable to hold the result from the generateLicenseInfoTask.
   //TODO: A better way to store the return value?
@@ -314,26 +314,6 @@ module.exports = function( grunt ) {
         var splashDataURI = loadFileAsDataURI( '../joist/images/phet-logo-loading.svg' );
         var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
-        var imageFiles = pkg.images || [];
-        var inlineImageHTML = "";
-        while ( imageFiles.length ) {
-          var imageFile = imageFiles.pop();
-          grunt.log.writeln( 'Inserting image: ' + imageFile );
-
-          var dataURI = loadFileAsDataURI( imageFile );
-          // TODO: share this as a CSS class, helps file space if we have tons of images
-          inlineImageHTML += '<img id="' + imageFile + '" style="visibility: hidden; overflow: hidden; position: absolute;" src="' + dataURI + '"/>';
-        }
-        var soundFiles = pkg.sounds || [];
-        var inlineSoundHTML = "";
-        while ( soundFiles.length ) {
-          var soundFile = soundFiles.pop();
-          grunt.log.writeln( 'Inserting sound: ' + soundFile );
-
-          var dataURI = loadFileAsDataURI( soundFile );
-          inlineSoundHTML += '<audio id="' + soundFile + '" src="' + dataURI + '"></audio>\n';
-        }
-
         //Create the license header for this html and all the 3rd party dependencies
         //TODO: This puts the license for everything as GPLv3.  If we want to build other libraries with this, we should change the license to MIT
         var htmlHeader = pkg.name + '\n' +
@@ -350,8 +330,6 @@ module.exports = function( grunt ) {
         html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
         html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadJS + '\n//# sourceMappingURL=preload.js.map' );
         html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
-        html = stringReplace( html, 'SIM_INLINE_IMAGES', inlineImageHTML );
-        html = stringReplace( html, 'SIM_INLINE_SOUNDS', inlineSoundHTML );
 
         grunt.log.writeln( 'Writing HTML' );
         grunt.file.write( 'build/' + pkg.name + '_en.html', html );
