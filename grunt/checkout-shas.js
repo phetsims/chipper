@@ -31,7 +31,11 @@ module.exports = function( grunt, child_process, assert, projectName ) {
 
         console.log( property + ': ' + json[property].branch + '@' + json[property].sha );
 
-        var command = 'git --git-dir ../' + property + '/.git checkout ' + json[property].sha;
+        //Added an option to checkout master branch if you specify --tomaster=true
+        var toMaster = grunt.option( "tomaster" ) && grunt.option( "tomaster" ) === true;
+        var command = !toMaster ?
+                      'git --git-dir ../' + property + '/.git checkout ' + json[property].sha :
+                      'git --git-dir ../' + property + '/.git checkout master';
         grunt.log.writeln( 'Running: ' + command );
 
         child_process.exec( command, function( error1, stdout1, stderr1 ) {
