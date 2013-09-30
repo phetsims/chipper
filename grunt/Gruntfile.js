@@ -3,6 +3,7 @@ var fs = require( 'fs' );
 var child_process = require( 'child_process' );
 var info = require( '../../sherpa/info' );
 var _ = require( '../../sherpa/lodash-2.0.0.min' );
+var checkoutShas = require( '../../chipper/grunt/checkout-shas' );
 
 /**
  * Grunt configuration file for simulations.
@@ -196,6 +197,10 @@ module.exports = function( grunt ) {
     grunt.log.writeln( 'created license info for ' + licenses.length + ' dependencies' );
   } );
 
+  grunt.registerTask( 'checkout-shas', 'Check out the shas for a project as specified in a dependencies.json file in its top level', function() {
+    checkoutShas( grunt, child_process, assert );
+  } );
+
   //This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13
   //This updates the package.json and js/version.js files, and commits + pushes to git.
   //BEWARE: do not run this task unless your git is clean, otherwise it will commit other work on your repo as well
@@ -362,9 +367,15 @@ module.exports = function( grunt ) {
         // now continue on with the process! CALLBACK SOUP FOR YOU!
 
         // TODO: finish!
-        grunt.log.writeln( 'Writing dependencies.txt' );
-        grunt.file.write( 'build/dependencies.txt', '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString()) + '\n' +
-                                                    JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
+        grunt.log.writeln( 'Writing dependencies.json' );
+
+        var comment = '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString());
+
+        //protect against repos or other attributions named 'comment'
+        assert( !dependencyInfo.comment, 'there was already a "comment" dependency!' );
+        dependencyInfo.comment = comment;
+
+        grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
 
         var splashDataURI = loadFileAsDataURI( '../joist/images/phet-logo-loading.svg' );
         var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
