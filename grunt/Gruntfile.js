@@ -198,7 +198,7 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'checkout-shas', 'Check out the shas for a project as specified in a dependencies.json file in its top level', function() {
-    checkoutShas( grunt, child_process, assert );
+    checkoutShas( grunt, child_process, assert, pkg.name );
   } );
 
   //This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13
