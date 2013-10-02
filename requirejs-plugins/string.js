@@ -76,6 +76,8 @@ define( function() {
 
         //TODO: if the file doesn't use define({}), this will not work
         loadedFile = loadedFile.substring( loadedFile.indexOf( 'define' ) + 'define'.length );
+
+        //TODO: is it safe to just eval a loaded file?  What if there is some insecure code there?
         var evaled = eval( loadedFile );
         var key = moduleName.substring( moduleName.lastIndexOf( '/' ) + 1 );
         var value = evaled[key];
