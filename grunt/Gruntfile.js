@@ -304,6 +304,8 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'simAfterRequirejs', 'Description', function() {
     var done = this.async();
 
+    console.log( 'RequireJS finished.  Found strings:', global.globalStrings );
+
     grunt.log.writeln( 'Minifying preload scripts' );
     var preloadResult = uglify.minify( pkg.preload.split( ' ' ), {
       outSourceMap: preloadMapFilename,

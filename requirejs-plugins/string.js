@@ -79,6 +79,11 @@ define( function() {
 
         //Write code that will load the image and register with a global `phetImages` to make sure everything loaded, see SimLauncher.js
         write( 'define("' + pluginName + '!' + moduleName + '", function(){ return "' + value + '";});\n' );
+
+        //Enumerate all of the strings used by the sim, with no false positives
+        //TODO: A better way to do this without globals?  Perhaps the export value of this function?
+        global.globalStrings = global.globalStrings || [];
+        global.globalStrings.push( {key: moduleName, value: value} );
       }
     }
   };
