@@ -10,7 +10,7 @@
  * For uniformity with image and audio plugin
  *
  * TODO: exclude the plugin itself from build file.  RequireJS docs said there is an easy way to do so
- * TODO: Currently hard coded to use john-travoltage & english.  Provide support for any project and any language.
+ * TODO: Currently hard coded to use English.  Provide support for any language.
  * @author Sam Reid
  */
 define( function() {
@@ -28,13 +28,16 @@ define( function() {
 
       var project = name.substring( 0, name.indexOf( '/' ) );
 
+      var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_en';
+
       if ( config.isBuild ) {
         buildMap[name] = url;
         onload( null );
       }
       else {
         //Load it through the module system
-        parentRequire( [project + '/../nls/john-travoltage-strings_en'], function( stringFile ) {
+//        debugger;
+        parentRequire( [project + '/../nls/' + stringPath], function( stringFile ) {
           console.log( 'loaded through module system: ' + stringFile );
           onload( stringFile[key] );
         } );
@@ -46,7 +49,9 @@ define( function() {
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
         var filename = buildMap[moduleName];
-        var file = filename.substring( 0, filename.lastIndexOf( '/' ) ) + '/../nls/john-travoltage-strings_en.js';
+        var project = moduleName.substring( 0, moduleName.indexOf( '/' ) );
+        var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_en';
+        var file = filename.substring( 0, filename.lastIndexOf( '/' ) ) + '/../nls/' + stringPath + '.js';
 
         //Load the string file, and evaluate with eval().  TODO: should these be JSON?
         //TODO: This may be inefficient at build time, since the same file may be loaded many times (one per string at worst)
