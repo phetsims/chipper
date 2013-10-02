@@ -11,12 +11,16 @@
  *
  * TODO: exclude the plugin itself from build file.  RequireJS docs said there is an easy way to do so
  * TODO: Currently hard coded to use English.  Provide support for any language.
+ * TODO: Should we build all strings into the final HTML file, or separate HTML file per language?
+ * TODO: Provide fallbacks to higher languages for missing strings
  * @author Sam Reid
  */
 define( function() {
 
-  //Keep track of the images that are used during dependency resolution so they can be created at build time
+  //Keep track of the strings that are used during dependency resolution so they can be looked up at build time
   var buildMap = {};
+
+  var locale = 'en';
 
   return {
     load: function( name, parentRequire, onload, config ) {
@@ -28,7 +32,7 @@ define( function() {
 
       var project = name.substring( 0, name.indexOf( '/' ) );
 
-      var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_en';
+      var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
 
       if ( config.isBuild ) {
         buildMap[name] = url;
@@ -57,7 +61,7 @@ define( function() {
       if ( moduleName in buildMap ) {
         var filename = buildMap[moduleName];
         var project = moduleName.substring( 0, moduleName.indexOf( '/' ) );
-        var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_en';
+        var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
         var file = filename.substring( 0, filename.lastIndexOf( '/' ) ) + '/../nls/' + stringPath + '.js';
 
         //Load the string file, and evaluate with eval().  TODO: should these be JSON?
