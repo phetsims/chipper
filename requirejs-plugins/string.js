@@ -82,6 +82,7 @@ define( function() {
 
         //Enumerate all of the strings used by the sim, with no false positives
         //TODO: A better way to do this without globals?  Perhaps the export value of this function?
+        //TODO: if we stick with globals, make sure the globalStrings array is clean (undefined) when we start and delete it when we are done with it.
         global.globalStrings = global.globalStrings || [];
         global.globalStrings.push( {key: moduleName, value: value} );
       }
