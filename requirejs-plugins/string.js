@@ -13,6 +13,8 @@
  * TODO: Currently hard coded to use English.  Provide support for any language.
  * TODO: Should we build all strings into the final HTML file, or separate HTML file per language?
  * TODO: Provide fallbacks to higher languages for missing strings
+ * TODO: Could lump strings together into one script block--perhaps it would be readable by the translation utility and the runtime.
+ *       This could facilitate rewriting the html in place.
  * @author Sam Reid
  */
 define( function() {
