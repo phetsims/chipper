@@ -95,9 +95,9 @@ module.exports = function( grunt ) {
               },
               compress: {
                 global_defs: {
-                  // scenery assertions
-                  sceneryAssert: false,
-                  sceneryAssertExtra: false,
+                  // global assertions
+                  assert: false,
+                  assertSlow: false,
                   // scenery logging
                   sceneryLayerLog: false,
                   sceneryEventLog: false,

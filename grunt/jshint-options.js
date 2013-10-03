@@ -26,8 +26,8 @@ module.exports = {
 
     // writable globals ---------------------------------
 
-    sceneryAssert: true,  // for removal of scenery assertions
-    sceneryAssertExtra: true, // for removal of scenery assertions
+    assert: true,  // allow assertions
+    assertSlow: true, // allow slow assertions
     sceneryLayerLog: true, // scenery logging levels
     sceneryEventLog: true, // scenery logging levels
     sceneryAccessibilityLog: true, // scenery accessibility levels
