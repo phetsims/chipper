@@ -9,6 +9,7 @@
  * So we can enumerate all of the used strings, for purposed of a translation utility
  * For uniformity with image and audio plugin
  *
+ * TODO: Can we use require( 'string!JOHN_TRAVOLTAGE:johnTravoltage.name' ) instead of require( 'string!JOHN_TRAVOLTAGE/johnTravoltage.name' )?
  * TODO: exclude the plugin itself from build file.  RequireJS docs said there is an easy way to do so
  * TODO: Currently hard coded to use English.  Provide support for any language.
  * TODO: Should we build all strings into the final HTML file, or separate HTML file per language?
