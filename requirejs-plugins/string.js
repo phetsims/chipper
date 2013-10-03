@@ -92,12 +92,7 @@ define( function() {
         console.log( key );
         console.log( value );
 
-
-//        define("string!ENERGY_SKATE_PARK/tab.introduction", function(){ return window.phetcommon.getQueryParameter( key ) || "Intro";};});
-
-        //TODO: Will this harm performance on startup?
         //TODO: Do we need to encodeURIComponent on the key here?  Or decode the value?
-        //TODO: why is the string coming out lower case
         var expression = 'window.phetcommon.getQueryParameter( "' + key + '" ) || "' + value + '";';
 
         //Write code that will load the image and register with a global `phetImages` to make sure everything loaded, see SimLauncher.js
