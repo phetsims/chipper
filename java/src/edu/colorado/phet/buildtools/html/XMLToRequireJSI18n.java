@@ -24,7 +24,7 @@ public class XMLToRequireJSI18n {
         XMLToProperties.main( new String[]{args[0], tempDir.toFile().getAbsolutePath()} );
 
         System.out.println( "Converting Properties to RequireJS" );
-        PropertiesToRequireJSI18n.main( new String[]{tempDir.toFile().getAbsolutePath(), args[1]} );
+        PropertiesToJSON.main( new String[]{tempDir.toFile().getAbsolutePath(), args[1]} );
 
         System.out.println( "Done" );
     }

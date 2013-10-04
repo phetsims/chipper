@@ -143,7 +143,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'lint', [ 'lint-sim', 'lint-common' ] );
   grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
-  grunt.registerTask( 'nolint', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
   grunt.registerTask( 'bump-version', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
   //Scoped variable to hold the result from the generateLicenseInfoTask.
@@ -165,6 +165,7 @@ module.exports = function( grunt ) {
     sherpaDependencyPaths.push( 'pegjs.' );
     sherpaDependencyPaths.push( 'font-awesome.' );
     sherpaDependencyPaths.push( 'require-i18n.js' );
+    sherpaDependencyPaths.push( 'text.js' );
     sherpaDependencyPaths.push( 'base64binary.js' );//TODO: Not all simulations use Vibe
 
     //Sort by name of the library, have to match cases to sort properly

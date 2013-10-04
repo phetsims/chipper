@@ -18,18 +18,20 @@
  *       This could facilitate rewriting the html in place.
  * @author Sam Reid
  */
-define( function() {
+define( ['text'], function( text ) {
 
   //Keep track of the strings that are used during dependency resolution so they can be looked up at build time
   var buildMap = {};
 
   var locale = 'en';
 
+  var parse = (typeof JSON !== 'undefined' && typeof JSON.parse === 'function') ? JSON.parse : function( text ) { return eval( '(' + text + ')' ); };
+
   return {
     load: function( name, parentRequire, onload, config ) {
 
       var url = parentRequire.toUrl( name );
-      console.log( 'found url: ' + url );
+//      console.log( 'found url: ' + url );
       var question = url.lastIndexOf( '?' );
       var key = question < 0 ? url.substring( url.lastIndexOf( '/' ) + 1 ) : url.substring( url.lastIndexOf( '/' ) + 1, question );
 
@@ -37,61 +39,60 @@ define( function() {
 
       var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
 
-      if ( config.isBuild ) {
-        buildMap[name] = url;
-        onload( null );
-      }
-      else {
-        //Load it through the module system
+      //Load it through the module system
 //        debugger;
-        parentRequire( [project + '/../strings/' + stringPath], function( stringFile ) {
-          console.log( 'loaded through module system: ' + stringFile );
-          console.log( 'checking query parameter:', key );
-          var queryParameterValue = window.phetcommon.getQueryParameter( key );
-          if ( queryParameterValue ) {
-            onload( queryParameterValue );
+//      console.log( 'getting text for: ' + project + '/../strings/' + stringPath + '.json' );
+
+      var a = url.substring( 0, url.lastIndexOf( '/' ) );
+      var pathToFile = a.substring( 0, a.lastIndexOf( '/' ) ) + '/strings/' + stringPath + '.json';
+
+//      console.log( 'checking path: ', pathToFile );
+
+      var pathToUse = config.isBuild ? pathToFile : project + '/../strings/' + stringPath + '.json';
+      text.get( pathToUse, function( stringFile ) {
+
+          //put parsed json in the loaded file so we don't have to reparse
+          if ( config.isBuild ) {
+            buildMap[name] = parse( stringFile );
+            onload( null );
           }
+
           else {
-            onload( stringFile[key] );
+
+            //TODO: move the config.isBuild call here, by putting the stringFile data into the buildMap, like in the json plugin
+//            console.log( 'loaded through module system: ' + stringFile );
+//            console.log( 'checking query parameter:', key );
+            var queryParameterValue = window.phetcommon.getQueryParameter( key );
+            if ( queryParameterValue ) {
+              onload( queryParameterValue );
+            }
+            else {
+              onload( parse( stringFile )[key] );
+            }
           }
-        } );
-      }
+        },
+        onload.error, {
+          accept: 'application/json'
+        }
+      );
     },
 
     //write method based on RequireJS official text plugin by James Burke
     //https://github.com/jrburke/requirejs/blob/master/text.js
     write: function( pluginName, moduleName, write ) {
+//      console.log( 'write1' );
       if ( moduleName in buildMap ) {
-        var filename = buildMap[moduleName];
-        var project = moduleName.substring( 0, moduleName.indexOf( '/' ) );
-        var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
-        var file = filename.substring( 0, filename.lastIndexOf( '/' ) ) + '/../strings/' + stringPath + '.js';
-
-        //Load the string file, and evaluate with eval().  TODO: should these be JSON?
-        //TODO: This may be inefficient at build time, since the same file may be loaded many times (one per string at worst)
-        //TODO: We could cache those file loads
-
-        //Load the file from the file system
-        //TODO: What if it is UTF-16 or something?
-        var loadedFile = fs.readFileSync( file, 'utf8' );
-
-        //TODO: if the file doesn't use define({}), this will not work
-        loadedFile = loadedFile.substring( loadedFile.indexOf( 'define' ) + 'define'.length );
-
-        //TODO: is it safe to just eval a loaded file?  What if there is some insecure code there?
-        var evaled = eval( loadedFile );
+//        console.log( 'write2' );
+        var json = buildMap[moduleName ];
         var key = moduleName.substring( moduleName.lastIndexOf( '/' ) + 1 );
-        var value = evaled[key];
+        var value = json[key];
 
-        console.log( 'pluginName: ' + pluginName );
-        console.log( 'moduleName: ' + moduleName );
-        console.log( 'found filename: ' + filename );
-        console.log( 'file', file );
-        console.log( 'loaded file', loadedFile );
-        console.log( 'evaled', evaled );
-
-        console.log( key );
-        console.log( value );
+//        console.log( 'pluginName: ' + pluginName );
+//        console.log( 'moduleName: ' + moduleName );
+//        console.log( 'json', json );
+//
+//        console.log( key );
+//        console.log( value );
 
         //TODO: Do we need to encodeURIComponent on the key here?  Or decode the value?
         var expression = 'window.phetcommon.getQueryParameter( "' + key + '" ) || "' + value + '";';
