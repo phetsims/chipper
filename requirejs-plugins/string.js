@@ -23,7 +23,9 @@ define( ['text'], function( text ) {
   //Keep track of the strings that are used during dependency resolution so they can be looked up at build time
   var buildMap = {};
 
-  var locale = 'en';
+  //Read the locale from a query parameter, if it is there, or use english
+  //TODO: The locale should be updated to support translated minified versions
+  var locale = window.phetcommon.getQueryParameter( 'locale' ) || 'en';
 
   var parse = (typeof JSON !== 'undefined' && typeof JSON.parse === 'function') ? JSON.parse : function( text ) { return eval( '(' + text + ')' ); };
 
