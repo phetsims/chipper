@@ -36,6 +36,9 @@ define( ['text'], function( text ) {
       var key = question < 0 ? url.substring( url.lastIndexOf( '/' ) + 1 ) : url.substring( url.lastIndexOf( '/' ) + 1, question );
 
       var project = name.substring( 0, name.indexOf( '/' ) );
+      if ( project.toLowerCase() === 'bam' ) {
+        project = 'build-a-molecule';
+      }
 
       var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
 
@@ -67,7 +70,14 @@ define( ['text'], function( text ) {
               onload( queryParameterValue );
             }
             else {
-              onload( parse( stringFile )[key] );
+              var parsed = parse( stringFile );
+              if ( parsed[key] ) {
+                onload( parsed[key] );
+              }
+              else {
+                console.log( 'string not found for key: ' + key );
+                onload( key );
+              }
             }
           }
         },
