@@ -53,7 +53,7 @@ public class PropertiesToJSON {
             String localeAndCountry = english ? "en" : tail.substring( 0, tail.indexOf( '.' ) );
 
             String a = file.getName().substring( 0, file.getName().indexOf( "-strings" ) );
-            String filename = a + "-strings_" + localeAndCountry.toLowerCase().replace( "_", "-" ) + ".json";
+            String filename = a + "-strings_" + localeAndCountry + ".json";
 
             FileUtils.writeString( new File( destination, filename ), output );
         }
