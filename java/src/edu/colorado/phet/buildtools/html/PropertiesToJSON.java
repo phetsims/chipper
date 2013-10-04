@@ -8,11 +8,10 @@ import java.util.Properties;
 
 
 /**
- * Converts .properties files to the i18n format used by requirejs's i18n plugin.
- * See http://requirejs.org/docs/api.html#i18n
+ * Converts .properties files to json
  * Usage:
  * args[0] is the source localization directory, such as "C:\workingcopy\phet\svn-1.7\trunk\simulations-java\simulations\energy-skate-park\data\energy-skate-park\localization"
- * args[1] is the target nls root such as "C:\workingcopy\phet\svn-1.7\trunk\simulations-html5\simulations\energy-skate-park-easeljs-jquerymobile\src\app\nls"
+ * args[1] is the target nls root such as "C:\workingcopy\phet\svn-1.7\trunk\simulations-html5\simulations\energy-skate-park\strings"
  *
  * @author Sam Reid
  */
@@ -22,7 +21,7 @@ public class PropertiesToJSON {
         //Source is the localization directory, such as "C:\workingcopy\phet\svn-1.7\trunk\simulations-java\simulations\energy-skate-park\data\energy-skate-park\localization"
         File source = new File( args[0] );
 
-        //Destination is the target nls root, such as "C:\workingcopy\phet\svn-1.7\trunk\simulations-html5\simulations\energy-skate-park-easeljs-jquerymobile\src\app\nls"
+        //Destination is the target nls root, such as "C:\workingcopy\phet\svn-1.7\trunk\simulations-html5\simulations\energy-skate-park\strings"
         File destination = new File( args[1] );
 
         for ( final File file : source.listFiles( new FilenameFilter() {
