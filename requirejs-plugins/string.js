@@ -20,6 +20,12 @@
  */
 define( ['text'], function( text ) {
 
+  //Read the locale from a query parameter, if it is there, or use english
+  //TODO: The locale should be updated to support translated minified versions
+  var locale = typeof window !== 'undefined' && typeof window.phetcommon !== 'undefined' && typeof window.phetcommon.getQueryParameter === 'function' ?
+               window.phetcommon.getQueryParameter( 'locale' ) || 'en' :
+               'en';
+
   //Keep track of the strings that are used during dependency resolution so they can be looked up at build time
   var buildMap = {};
 
@@ -29,35 +35,27 @@ define( ['text'], function( text ) {
     load: function( name, parentRequire, onload, config ) {
 
       var url = parentRequire.toUrl( name );
-//      console.log( 'found url: ' + url );
-      var question = url.lastIndexOf( '?' );
-      var key = question < 0 ? url.substring( url.lastIndexOf( '/' ) + 1 ) : url.substring( url.lastIndexOf( '/' ) + 1, question );
+
+      var questionMarkIndex = url.lastIndexOf( '?' );
+      var key = questionMarkIndex < 0 ? url.substring( url.lastIndexOf( '/' ) + 1 ) : url.substring( url.lastIndexOf( '/' ) + 1, questionMarkIndex );
+      var urlWithoutQuery = questionMarkIndex < 0 ? url : url.substring( 0, questionMarkIndex );
+      var urlWithoutString = urlWithoutQuery.substring( 0, urlWithoutQuery.lastIndexOf( '/' ) );
 
       var project = name.substring( 0, name.indexOf( '/' ) );
       if ( project.toLowerCase() === 'bam' ) {
         project = 'build-a-molecule';
       }
 
-      //Read the locale from a query parameter, if it is there, or use english
-      //TODO: The locale should be updated to support translated minified versions
-      var locale = 'en';
-      if ( typeof window !== 'undefined' ) {
-        locale = window.phetcommon.getQueryParameter( 'locale' );
-      }
+//      var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
+      var stringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';
 
-      var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
+      console.log( 'found url: ' + url );
+      console.log( 'found urlwithout query: ' + urlWithoutQuery );
+      console.log( 'found urlwithoutString: ' + urlWithoutString );
+      console.log( 'string path: ' + stringPath );
+      console.log( 'project: ', project );
 
-      //Load it through the module system
-//        debugger;
-//      console.log( 'getting text for: ' + project + '/../strings/' + stringPath + '.json' );
-
-      var a = url.substring( 0, url.lastIndexOf( '/' ) );
-      var pathToFile = a.substring( 0, a.lastIndexOf( '/' ) ) + '/strings/' + stringPath + '.json';
-
-//      console.log( 'checking path: ', pathToFile );
-
-//      var pathToUse = config.isBuild ? pathToFile : project + '/../strings/' + stringPath + '.json';
-      text.get( pathToFile, function( stringFile ) {
+      text.get( stringPath, function( stringFile ) {
 
           //put parsed json in the loaded file so we don't have to reparse
           if ( config.isBuild ) {
