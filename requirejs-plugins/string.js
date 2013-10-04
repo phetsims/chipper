@@ -23,10 +23,6 @@ define( ['text'], function( text ) {
   //Keep track of the strings that are used during dependency resolution so they can be looked up at build time
   var buildMap = {};
 
-  //Read the locale from a query parameter, if it is there, or use english
-  //TODO: The locale should be updated to support translated minified versions
-  var locale = window.phetcommon.getQueryParameter( 'locale' ) || 'en';
-
   var parse = (typeof JSON !== 'undefined' && typeof JSON.parse === 'function') ? JSON.parse : function( text ) { return eval( '(' + text + ')' ); };
 
   return {
@@ -42,6 +38,13 @@ define( ['text'], function( text ) {
         project = 'build-a-molecule';
       }
 
+      //Read the locale from a query parameter, if it is there, or use english
+      //TODO: The locale should be updated to support translated minified versions
+      var locale = 'en';
+      if ( typeof window !== 'undefined' ) {
+        locale = window.phetcommon.getQueryParameter( 'locale' );
+      }
+
       var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
 
       //Load it through the module system
@@ -53,8 +56,8 @@ define( ['text'], function( text ) {
 
 //      console.log( 'checking path: ', pathToFile );
 
-      var pathToUse = config.isBuild ? pathToFile : project + '/../strings/' + stringPath + '.json';
-      text.get( pathToUse, function( stringFile ) {
+//      var pathToUse = config.isBuild ? pathToFile : project + '/../strings/' + stringPath + '.json';
+      text.get( pathToFile, function( stringFile ) {
 
           //put parsed json in the loaded file so we don't have to reparse
           if ( config.isBuild ) {
