@@ -42,9 +42,9 @@ define( ['text'], function( text ) {
       var urlWithoutString = urlWithoutQuery.substring( 0, urlWithoutQuery.lastIndexOf( '/' ) );
 
       var project = name.substring( 0, name.indexOf( '/' ) );
-      if ( project.toLowerCase() === 'bam' ) {
-        project = 'build-a-molecule';
-      }
+      project = project.toLowerCase() === 'bam' ? 'build-a-molecule' :
+                project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
+                project;
 
 //      var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
       var stringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';

@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
  *
  * @author Sam Reid
  */
-public class XMLToRequireJSI18n {
+public class XMLToJSON {
     public static void main( String[] args ) throws IOException, ParserConfigurationException, SAXException {
         Path tempDir = Files.createTempDirectory( "phet-xml-to-requirejs-temp" );
 
