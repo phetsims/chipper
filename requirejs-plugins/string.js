@@ -49,11 +49,11 @@ define( ['text'], function( text ) {
 //      var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
       var stringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';
 
-      console.log( 'found url: ' + url );
-      console.log( 'found urlwithout query: ' + urlWithoutQuery );
-      console.log( 'found urlwithoutString: ' + urlWithoutString );
-      console.log( 'string path: ' + stringPath );
-      console.log( 'project: ', project );
+//      console.log( 'found url: ' + url );
+//      console.log( 'found urlwithout query: ' + urlWithoutQuery );
+//      console.log( 'found urlwithoutString: ' + urlWithoutString );
+//      console.log( 'string path: ' + stringPath );
+//      console.log( 'project: ', project );
 
       text.get( stringPath, function( stringFile ) {
 
