@@ -44,7 +44,7 @@ define( function() {
       else {
         //Load it through the module system
 //        debugger;
-        parentRequire( [project + '/../nls/' + stringPath], function( stringFile ) {
+        parentRequire( [project + '/../strings/' + stringPath], function( stringFile ) {
           console.log( 'loaded through module system: ' + stringFile );
           console.log( 'checking query parameter:', key );
           var queryParameterValue = window.phetcommon.getQueryParameter( key );
@@ -65,7 +65,7 @@ define( function() {
         var filename = buildMap[moduleName];
         var project = moduleName.substring( 0, moduleName.indexOf( '/' ) );
         var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
-        var file = filename.substring( 0, filename.lastIndexOf( '/' ) ) + '/../nls/' + stringPath + '.js';
+        var file = filename.substring( 0, filename.lastIndexOf( '/' ) ) + '/../strings/' + stringPath + '.js';
 
         //Load the string file, and evaluate with eval().  TODO: should these be JSON?
         //TODO: This may be inefficient at build time, since the same file may be loaded many times (one per string at worst)
