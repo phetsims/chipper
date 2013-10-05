@@ -32,13 +32,17 @@ module.exports = function( grunt, projectName ) {
 
         console.log( "Checking out dependency " + property + ': ' + dependencies[property].branch + '@' + dependencies[property].sha );
 
+        //To execute something from a different directory:
+        //cp.exec('foocommand', { cwd: 'path/to/dir/' }, callback);
+        //http://stackoverflow.com/questions/14026967/calling-child-process-exec-in-node-as-though-it-was-executed-in-a-specific-folde
+
         //Added an option to checkout master branch if you specify --tomaster=true
         var toMaster = grunt.option( "tomaster" ) && grunt.option( "tomaster" ) === true;
         var command = !toMaster ?
-                      'git --git-dir ../' + property + '/.git checkout ' + dependencies[property].sha :
-                      'git --git-dir ../' + property + '/.git checkout master';
+                      'git checkout ' + dependencies[property].sha :
+                      'git checkout master';
 
-        child_process.exec( command, function( error1, stdout1, stderr1 ) {
+        child_process.exec( command, {cwd: '../' + property}, function( error1, stdout1, stderr1 ) {
           assert( !error1, "error in " + command );
           console.log( 'Finished checkout.' );
           console.log( stdout1 );
