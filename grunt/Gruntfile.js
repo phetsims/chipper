@@ -106,7 +106,10 @@ module.exports = function( grunt ) {
                 },
                 dead_code: true
               }
-            }
+            },
+
+            //stub out the plugins so their source code won't be included in the minified file
+            stubModules: ['string', 'audio', 'image']
           }
         }
       },
