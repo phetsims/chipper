@@ -4,7 +4,8 @@
  * Image plugin that loads an image dynamically from the file system at development time, but from base64 content after a build.
  * For development time, this is pretty similar to the image plugin at https://github.com/millermedeiros/requirejs-plugins
  *
- * //TODO: exclude the plugin itself from build file.  RequireJS docs said there is an easy way to do so
+ * The plugin code itself is excluded from the build by declaring it as a stubModule.
+ *
  * @author Sam Reid
  */
 define( function() {
