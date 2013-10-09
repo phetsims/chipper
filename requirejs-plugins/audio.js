@@ -11,21 +11,24 @@
 define( [
 
   //Path is relative to the simulation directory where grunt is run from
-  '../../chipper/requirejs-plugins/loadFileAsDataURI'], function( loadFileAsDataURI ) {
+  '../../chipper/requirejs-plugins/loadFileAsDataURI',
+  '../../chipper/requirejs-plugins/getProjectURL'], function( loadFileAsDataURI, getProjectURL ) {
 
   //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
   var buildMap = {};
 
   return {
     load: function( name, parentRequire, onload, config ) {
-//      console.log( 'audio plugin trying to load', name );
+      var audioName = name.substring( name.lastIndexOf( '/' ) );
+      var url = getProjectURL( name, parentRequire ) + 'audio' + audioName;
+
       if ( config.isBuild ) {
-        buildMap[name] = parentRequire.toUrl( name );
+        buildMap[name] = url;
         onload( null );
       }
       else {
-        buildMap[name] = parentRequire.toUrl( name );
-        onload( {url: parentRequire.toUrl( name )} );
+
+        onload( {url: url} );
       }
     },
 
