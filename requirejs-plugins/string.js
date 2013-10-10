@@ -14,13 +14,18 @@
  * TODO: Can we use require( 'string!JOHN_TRAVOLTAGE:johnTravoltage.name' ) instead of require( 'string!JOHN_TRAVOLTAGE/johnTravoltage.name' )?
  * TODO: Currently hard coded to use English.  Provide support for any language.
  * TODO: Should we build all strings into the final HTML file, or separate HTML file per language?
- * TODO: Provide fallbacks to higher languages for missing strings
+ * TODO: Try out the commonJS style of require include statements
  * TODO: Could lump strings together into one script block--perhaps it would be readable by the translation utility and the runtime.
  *       This could facilitate rewriting the html in place.
  * @author Sam Reid
  */
 
-define( ['text', '../../sherpa/lodash-2.0.0.min'], function( text, _ ) {
+define( [
+  'text',
+  '../../sherpa/lodash-2.0.0.min',
+  '../../chipper/requirejs-plugins/getProjectURL' ],
+  function( text, _, getProjectURL ) {
+
   'use strict';
 
   var FALLBACK_LOCALE = 'en';
@@ -39,23 +44,19 @@ define( ['text', '../../sherpa/lodash-2.0.0.min'], function( text, _ ) {
                    window.phetcommon.getQueryParameter( 'locale' ) || 'en' :
                    'en';
 
-      var url = parentRequire.toUrl( name );
-
-      var questionMarkIndex = url.lastIndexOf( '?' );
-      var key = questionMarkIndex < 0 ? url.substring( url.lastIndexOf( '/' ) + 1 ) : url.substring( url.lastIndexOf( '/' ) + 1, questionMarkIndex );
-      var urlWithoutQuery = questionMarkIndex < 0 ? url : url.substring( 0, questionMarkIndex );
-      var urlWithoutString = urlWithoutQuery.substring( 0, urlWithoutQuery.lastIndexOf( '/' ) );
-
-      //TODO: Use getProjectURL to get the base path
+      // Create the paths to the string files - primary and fallback.
       var project = name.substring( 0, name.indexOf( '/' ) );
       project = project.toLowerCase() === 'bam' ? 'build-a-molecule' :
                 project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
                 project;
+      var stringPath = getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';
+      var fallbackStringPath = getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + FALLBACK_LOCALE + '.json';
 
-      var stringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';
-      var fallbackStringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + FALLBACK_LOCALE + '.json';
+      // Pull out the key, which is between the last slash and the first question mark of the 'name' parameter.
+      var questionMarkIndex = name.lastIndexOf( '?' );
+      var key = questionMarkIndex < 0 ? name.substring( name.lastIndexOf( '/' ) + 1 ) : name.substring( name.lastIndexOf( '/' ) + 1, questionMarkIndex );
 
-//      console.log( 'found url: ' + url );
+//      console.log( 'found urlWithoutString: ' + urlWithoutString );
 //      console.log( 'found urlwithout query: ' + urlWithoutQuery );
 //      console.log( 'found urlwithoutString: ' + urlWithoutString );
 //      console.log( 'string path: ' + stringPath );
