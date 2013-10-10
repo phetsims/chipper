@@ -13,18 +13,18 @@
  *
  * TODO: Currently hard coded to use English.  Provide support for any language.
  * TODO: Should we build all strings into the final HTML file, or separate HTML file per language?
- * TODO: Try out the commonJS style of require include statements
  * TODO: Could lump strings together into one script block--perhaps it would be readable by the translation utility and the runtime.
  *       This could facilitate rewriting the html in place.
  * @author Sam Reid
  */
 
-define( [
-  'text',
-  '../../sherpa/lodash-2.0.0.min',
-  '../../chipper/requirejs-plugins/getProjectURL' ], function( text, _, getProjectURL ) {
+define( function( require ) {
 
   'use strict';
+
+  var text = require( 'text' );
+  var _ = require( '../../sherpa/lodash-2.0.0.min' );
+  var getProjectURL = require( '../../chipper/requirejs-plugins/getProjectURL' );
 
   var FALLBACK_LOCALE = 'en';
 
