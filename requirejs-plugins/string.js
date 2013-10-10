@@ -38,9 +38,10 @@ define( function( require ) {
 
       //Read the locale from a query parameter, if it is there, or use english
       //TODO: The locale should be updated to support translated minified versions
+      var defaultLocale = 'en';
       var locale = typeof window !== 'undefined' && typeof window.phetcommon !== 'undefined' && typeof window.phetcommon.getQueryParameter === 'function' ?
-                   window.phetcommon.getQueryParameter( 'locale' ) || 'en' :
-                   'en';
+                   window.phetcommon.getQueryParameter( 'locale' ) || defaultLocale :
+                   defaultLocale;
 
       // Create the paths to the string files - primary and fallback.
       var project = name.substring( 0, name.indexOf( '/' ) );
