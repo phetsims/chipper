@@ -20,6 +20,9 @@
  * @author Sam Reid
  */
 define( ['text'], function( text ) {
+  //TODO 'use strict'?
+
+  var DEFAULT_LOCALE = 'en';
 
   //Read the locale from a query parameter, if it is there, or use english
   //TODO: The locale should be updated to support translated minified versions
@@ -49,46 +52,86 @@ define( ['text'], function( text ) {
 
 //      var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
       var stringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';
+      var fallbackStringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + DEFAULT_LOCALE + '.json';
 
 //      console.log( 'found url: ' + url );
 //      console.log( 'found urlwithout query: ' + urlWithoutQuery );
 //      console.log( 'found urlwithoutString: ' + urlWithoutString );
 //      console.log( 'string path: ' + stringPath );
+//      console.log( 'fallback string path: ' + fallbackStringPath );
 //      console.log( 'project: ', project );
+//      console.log( '--------------------------' );
 
-      text.get( stringPath, function( stringFile ) {
+      // Get the fallback strings.
+      text.get( fallbackStringPath, function( fallbackStringFile ) {
 
-          //put parsed json in the loaded file so we don't have to reparse
-          if ( config.isBuild ) {
-            buildMap[name] = parse( stringFile );
-            onload( null );
-          }
+          // Now get the primary strings.
+          text.get( stringPath, function( stringFile ) {
 
-          else {
-
-            //TODO: move the config.isBuild call here, by putting the stringFile data into the buildMap, like in the json plugin
-//            console.log( 'loaded through module system: ' + stringFile );
-//            console.log( 'checking query parameter:', key );
-            var queryParameterValue = window.phetcommon.getQueryParameter( key );
-            if ( queryParameterValue ) {
-              onload( queryParameterValue );
-            }
-            else {
-              var parsed = parse( stringFile );
-              if ( parsed[key] ) {
-                onload( parsed[key] );
+              // Combine the primary and fallback strings into one object hash.
+              var parsedStrings = _.extend( parse( fallbackStringFile ), parse( stringFile ) ); // TODO: Is there a way that we can just parse once?
+              if ( config.isBuild ) {
+                // TODO: I (jblanco) don't understand this part yet.
+                buildMap[name] = parsedStrings;
+                onload( null );
               }
               else {
-                console.log( 'string not found for key: ' + key );
-                onload( key );
+                var queryParameterValue = window.phetcommon.getQueryParameter( key );
+                if ( queryParameterValue ) {
+                  onload( queryParameterValue );
+                }
+                else {
+                  if ( parsedStrings[key] ) {
+                    onload( parsedStrings[key] );
+                  }
+                  else {
+                    console.log( 'string not found for key: ' + key );
+                    onload( key );
+                  }
+                }
               }
-            }
-          }
+            },
+            onload.error, // TODO: Do we need this one and the one below?
+            { accept: 'application/json' }
+          )
         },
-        onload.error, {
-          accept: 'application/json'
-        }
+        onload.error,
+        { accept: 'application/json' }
       );
+
+//      text.get( stringPath, function( stringFile ) {
+//
+//          //put parsed json in the loaded file so we don't have to reparse
+//          if ( config.isBuild ) {
+//            buildMap[name] = parse( stringFile );
+//            onload( null );
+//          }
+//          else {
+//
+//            //TODO: move the config.isBuild call here, by putting the stringFile data into the buildMap, like in the json plugin
+////            console.log( 'loaded through module system: ' + stringFile );
+////            console.log( 'checking query parameter:', key );
+//            var queryParameterValue = window.phetcommon.getQueryParameter( key );
+//            if ( queryParameterValue ) {
+//              onload( queryParameterValue );
+//            }
+//            else {
+//              var parsed = parse( stringFile );
+//              if ( parsed[key] ) {
+//                console.log( 'string found for key: ' + key );
+//                onload( parsed[key] );
+//              }
+//              else {
+//                console.log( 'string not found for key: ' + key );
+//                onload( key );
+//              }
+//            }
+//          }
+//        },
+//        onload.error, {
+//          accept: 'application/json'
+//        }
+//      );
     },
 
     //write method based on RequireJS official text plugin by James Burke
