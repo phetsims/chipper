@@ -21,15 +21,9 @@
  */
 
 define( ['text', '../../sherpa/lodash-2.0.0.min'], function( text, _ ) {
-  //TODO 'use strict'?
+  'use strict';
 
-  var DEFAULT_LOCALE = 'en';
-
-  //Read the locale from a query parameter, if it is there, or use english
-  //TODO: The locale should be updated to support translated minified versions
-  var locale = typeof window !== 'undefined' && typeof window.phetcommon !== 'undefined' && typeof window.phetcommon.getQueryParameter === 'function' ?
-               window.phetcommon.getQueryParameter( 'locale' ) || 'en' :
-               'en';
+  var FALLBACK_LOCALE = 'en';
 
   //Keep track of the strings that are used during dependency resolution so they can be looked up at build time
   var buildMap = {};
@@ -38,6 +32,12 @@ define( ['text', '../../sherpa/lodash-2.0.0.min'], function( text, _ ) {
 
   return {
     load: function( name, parentRequire, onload, config ) {
+
+      //Read the locale from a query parameter, if it is there, or use english
+      //TODO: The locale should be updated to support translated minified versions
+      var locale = typeof window !== 'undefined' && typeof window.phetcommon !== 'undefined' && typeof window.phetcommon.getQueryParameter === 'function' ?
+                   window.phetcommon.getQueryParameter( 'locale' ) || 'en' :
+                   'en';
 
       var url = parentRequire.toUrl( name );
 
@@ -52,9 +52,8 @@ define( ['text', '../../sherpa/lodash-2.0.0.min'], function( text, _ ) {
                 project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
                 project;
 
-//      var stringPath = project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale;
       var stringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';
-      var fallbackStringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + DEFAULT_LOCALE + '.json';
+      var fallbackStringPath = urlWithoutString + '/../strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + FALLBACK_LOCALE + '.json';
 
 //      console.log( 'found url: ' + url );
 //      console.log( 'found urlwithout query: ' + urlWithoutQuery );
@@ -100,40 +99,6 @@ define( ['text', '../../sherpa/lodash-2.0.0.min'], function( text, _ ) {
         onload.error,
         { accept: 'application/json' }
       );
-
-//      text.get( stringPath, function( stringFile ) {
-//
-//          //put parsed json in the loaded file so we don't have to reparse
-//          if ( config.isBuild ) {
-//            buildMap[name] = parse( stringFile );
-//            onload( null );
-//          }
-//          else {
-//
-//            //TODO: move the config.isBuild call here, by putting the stringFile data into the buildMap, like in the json plugin
-////            console.log( 'loaded through module system: ' + stringFile );
-////            console.log( 'checking query parameter:', key );
-//            var queryParameterValue = window.phetcommon.getQueryParameter( key );
-//            if ( queryParameterValue ) {
-//              onload( queryParameterValue );
-//            }
-//            else {
-//              var parsed = parse( stringFile );
-//              if ( parsed[key] ) {
-//                console.log( 'string found for key: ' + key );
-//                onload( parsed[key] );
-//              }
-//              else {
-//                console.log( 'string not found for key: ' + key );
-//                onload( key );
-//              }
-//            }
-//          }
-//        },
-//        onload.error, {
-//          accept: 'application/json'
-//        }
-//      );
     },
 
     //write method based on RequireJS official text plugin by James Burke
