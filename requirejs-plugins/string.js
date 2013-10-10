@@ -19,7 +19,8 @@
  *       This could facilitate rewriting the html in place.
  * @author Sam Reid
  */
-define( ['text'], function( text ) {
+
+define( ['text', '../../sherpa/lodash-2.0.0.min'], function( text, _ ) {
   //TODO 'use strict'?
 
   var DEFAULT_LOCALE = 'en';
@@ -45,6 +46,7 @@ define( ['text'], function( text ) {
       var urlWithoutQuery = questionMarkIndex < 0 ? url : url.substring( 0, questionMarkIndex );
       var urlWithoutString = urlWithoutQuery.substring( 0, urlWithoutQuery.lastIndexOf( '/' ) );
 
+      //TODO: Use getProjectURL to get the base path
       var project = name.substring( 0, name.indexOf( '/' ) );
       project = project.toLowerCase() === 'bam' ? 'build-a-molecule' :
                 project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
