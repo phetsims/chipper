@@ -343,6 +343,10 @@ module.exports = function( grunt ) {
     //Pass an option to requirejs through its config build options
     grunt.config.set( 'requirejs.build.options.phetLocale', locale );
 
+    //set up a place for the strings to go:
+    global.phet = {};
+    global.phet.strings = {};
+
     //TODO: Use requirejs directly instead of through the grunt plugin
     // grunt.log.writeln( 'Running Require.js optimizer' );
     // requirejs.optimize( {
@@ -378,7 +382,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'simAfterRequirejs', 'Description', function() {
     var done = this.async();
 
-    console.log( 'RequireJS finished.  Found strings:', global.globalStrings );
+    console.log( 'RequireJS finished.  Found strings:', global.phet.strings );
 
     grunt.log.writeln( 'Minifying preload scripts' );
     var preloadResult = uglify.minify( pkg.preload.split( ' ' ), {
@@ -466,8 +470,6 @@ module.exports = function( grunt ) {
                          '\n' +
                          'Libraries:\n' + licenseText;
 
-        var phetStringsCode = 'window.phetStrings=' + JSON.stringify( global.globalStrings, null, '' );//TODO: right hand side should be object literal for looked up strings
-
         grunt.log.writeln( 'Constructing HTML from template' );
         var html = grunt.file.read( '../chipper/templates/sim.html' );
         html = stringReplace( html, 'HTML_HEADER', htmlHeader );
@@ -491,6 +493,7 @@ module.exports = function( grunt ) {
 
         for ( var i = 0; i < locales.length; i++ ) {
           var locale = locales[i];
+          var phetStringsCode = 'window.phetStrings=' + JSON.stringify( global.phet.strings[locale], null, '' );//TODO: right hand side should be object literal for looked up strings
           var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
         }
