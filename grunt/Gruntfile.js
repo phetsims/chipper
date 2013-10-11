@@ -159,7 +159,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-sim', [ 'jshint:simFiles' ] );
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'lint', [ 'lint-sim', 'lint-common' ] );
-  grunt.registerTask( 'build', [ 'clean', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'build', [ 'lint', 'clean', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
   //Build without cleaning, so that files can be added from different tasks for i18n
   grunt.registerTask( 'build-more', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
