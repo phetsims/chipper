@@ -138,6 +138,14 @@ module.exports = function( grunt ) {
       }
     } );
 
+  var clean = function() {
+    if ( fs.existsSync( 'build' ) ) {
+      grunt.log.writeln( 'Cleaning build directory' );
+      grunt.file.delete( 'build' );
+    }
+    grunt.file.mkdir( 'build' );
+  };
+
   // Default task ('grunt')
   grunt.registerTask( 'default', [ 'generateLicenseInfo', 'lint-sim', 'lint-common', 'build' ] );
 
@@ -145,9 +153,43 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-sim', [ 'jshint:simFiles' ] );
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'lint', [ 'lint-sim', 'lint-common' ] );
-  grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
-  grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'build', [ 'clean', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+
+  //Build without cleaning, so that files can be added from different tasks for i18n
+  grunt.registerTask( 'build-more', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'clean', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
   grunt.registerTask( 'bump-version', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+
+  //TODO: This isn't working yet.
+  grunt.registerTask( 'build-all', 'Build minified files for all of the locales', function() {
+
+    clean();
+    //Enumerate all of the locales
+    var stringFiles = fs.readdirSync( 'strings' );
+
+    var done = this.async();
+    var count = 0;
+    for ( var i = 0; i < stringFiles.length; i++ ) {
+      var stringFile = stringFiles[i];
+
+      //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
+      var locale = stringFile.substring( stringFile.indexOf( '_' ) + 1, stringFile.lastIndexOf( '.' ) );
+
+      (function( locale ) {
+        console.log( 'Spawning for locale: ' + locale );
+        grunt.util.spawn( {
+          grunt: true,
+          args: ['build-more', '--locale', locale]
+        }, function( err, res, code ) {
+          console.log( 'spawn finished for locale: ', locale );
+          count++;
+          if ( count === stringFiles.length ) {
+            done();
+          }
+        } );
+      })( locale );
+    }
+  } );
 
   //Scoped variable to hold the result from the generateLicenseInfoTask.
   //TODO: A better way to store the return value?
@@ -259,6 +301,8 @@ module.exports = function( grunt ) {
     } );
   } );
 
+  grunt.registerTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory', clean );
+
   // creates a performance snapshot for profiling changes
   grunt.registerTask( 'simBeforeRequirejs', 'Description', function() {
     grunt.log.writeln( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
@@ -268,11 +312,12 @@ module.exports = function( grunt ) {
     assert( pkg.phetLibs, 'phetLibs required in package.json' );
     assert( pkg.preload, 'preload required in package.json' );
 
-    if ( fs.existsSync( 'build' ) ) {
-      grunt.log.writeln( 'Cleaning build directory' );
-      grunt.file.delete( 'build' );
-    }
-    grunt.file.mkdir( 'build' );
+    //See if a specific language was specified like:
+    // grunt build --locale fr
+    var locale = grunt.option( 'locale' ) || 'en';
+
+    //Pass an option to requirejs through its config build options
+    grunt.config.set( 'requirejs.build.options.phetLocale', locale );
 
     // grunt.log.writeln( 'Running Require.js optimizer' );
     // requirejs.optimize( {
@@ -404,7 +449,8 @@ module.exports = function( grunt ) {
         html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
 
         grunt.log.writeln( 'Writing HTML' );
-        grunt.file.write( 'build/' + pkg.name + '_en.html', html );
+        var locale = grunt.option( 'locale' ) || 'en';
+        grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', html );
 
         grunt.log.writeln( 'Cleaning temporary files' );
         grunt.file.delete( 'build/' + pkg.name + '.min.js' );
