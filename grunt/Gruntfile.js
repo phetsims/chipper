@@ -342,6 +342,7 @@ module.exports = function( grunt ) {
     //Pass an option to requirejs through its config build options
     grunt.config.set( 'requirejs.build.options.phetLocale', locale );
 
+    //TODO: Use requirejs directly instead of through the grunt plugin
     // grunt.log.writeln( 'Running Require.js optimizer' );
     // requirejs.optimize( {
     //   almond: true,
