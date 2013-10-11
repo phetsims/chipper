@@ -136,6 +136,7 @@ module.exports = function( grunt ) {
           '../scenery/js/**/*.js',
           '../scenery-phet/js/**/*.js',
           '../sun/js/**/*.js',
+          '../vegas/js/**/*.js',
           '../vibe/js/**/*.js'
         ],
         // reference external JSHint options in jshint-options.js
