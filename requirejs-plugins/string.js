@@ -36,7 +36,6 @@ define( function( require ) {
 
       if ( config.phetLocale ) {
         theLocaleToUseIfNotOverridenByAQueryParameter = config.phetLocale;
-//        console.log( 'using ', config.phetLocale );
       }
       var locale = typeof window !== 'undefined' && typeof window.phetcommon !== 'undefined' && typeof window.phetcommon.getQueryParameter === 'function' ?
                    window.phetcommon.getQueryParameter( 'locale' ) || theLocaleToUseIfNotOverridenByAQueryParameter :
@@ -53,15 +52,6 @@ define( function( require ) {
       // Pull out the key, which is between the last slash and the first question mark of the 'name' parameter.
       var questionMarkIndex = name.lastIndexOf( '?' );
       var key = questionMarkIndex < 0 ? name.substring( name.lastIndexOf( '/' ) + 1 ) : name.substring( name.lastIndexOf( '/' ) + 1, questionMarkIndex );
-
-//      console.log( 'found urlWithoutString: ' + urlWithoutString );
-//      console.log( 'found urlwithout query: ' + urlWithoutQuery );
-//      console.log( 'found urlwithoutString: ' + urlWithoutString );
-//      console.log( 'string path: ' + stringPath );
-//      console.log( 'fallback string path: ' + fallbackStringPath );
-//      console.log( 'project: ', project );
-//      console.log( '--------------------------' );
-
 
       // Get the fallback strings.
       text.get( fallbackStringPath, function( fallbackStringFile ) {
@@ -135,24 +125,14 @@ define( function( require ) {
     //write method based on RequireJS official text plugin by James Burke
     //https://github.com/jrburke/requirejs/blob/master/text.js
     write: function( pluginName, moduleName, write ) {
-//      console.log( 'write1' );
       if ( moduleName in buildMap ) {
-//        console.log( 'write2' );
         var json = buildMap[moduleName ];
         var key = moduleName.substring( moduleName.lastIndexOf( '/' ) + 1 );
         var value = json[key];
 
-//        console.log( 'pluginName: ' + pluginName );
-//        console.log( 'moduleName: ' + moduleName );
-//        console.log( 'json', json );
-//
-//        console.log( key );
-//        console.log( value );
-
         var expression = 'window.phetStrings.get(\"' + moduleName + '\")';
 
         //Write code that will load the image and register with a global `phetImages` to make sure everything loaded, see SimLauncher.js
-//        write( 'define("' + pluginName + '!' + moduleName + '", function(){ return "' + value + '";});\n' );
         write( 'define("' + pluginName + '!' + moduleName + '", function(){ return ' + expression + ';});\n' );
 
         //Enumerate all of the strings used by the sim, with no false positives
