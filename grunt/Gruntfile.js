@@ -160,35 +160,40 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'clean', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
   grunt.registerTask( 'bump-version', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
-  //TODO: This isn't working yet.
   grunt.registerTask( 'build-all', 'Build minified files for all of the locales', function() {
 
+    //Clean only once for generating all html files
     clean();
+
     //Enumerate all of the locales
     var stringFiles = fs.readdirSync( 'strings' );
 
     var done = this.async();
     var count = 0;
-    for ( var i = 0; i < stringFiles.length; i++ ) {
-      var stringFile = stringFiles[i];
+
+    //Recursive function to create all of the local HTML files
+    (function runLocale() {
+      var stringFile = stringFiles[count];
 
       //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
       var locale = stringFile.substring( stringFile.indexOf( '_' ) + 1, stringFile.lastIndexOf( '.' ) );
-
-      (function( locale ) {
-        console.log( 'Spawning for locale: ' + locale );
-        grunt.util.spawn( {
-          grunt: true,
-          args: ['build-more', '--locale', locale]
-        }, function( err, res, code ) {
-          console.log( 'spawn finished for locale: ', locale );
-          count++;
-          if ( count === stringFiles.length ) {
-            done();
-          }
-        } );
-      })( locale );
-    }
+      console.log( 'Spawning for locale: ' + locale );
+      grunt.util.spawn( {
+        grunt: true,
+        args: ['build-more', '--locale', locale]
+      }, function( err, res, code ) {
+        console.log( 'spawn finished for locale: ', locale );
+        count++;
+        if ( count === stringFiles.length ) {
+          done();
+        }
+        else {
+          //Recursive step to go to the next language
+          runLocale();
+        }
+      } );
+    })();
+//    }
   } );
 
   //Scoped variable to hold the result from the generateLicenseInfoTask.
