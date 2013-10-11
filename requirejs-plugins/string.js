@@ -68,6 +68,8 @@ define( function( require ) {
 //      console.log( 'project: ', project );
 //      console.log( '--------------------------' );
 
+      //TODO: check for existence of the file before calling to text.get to handle fallback strings for files that don't exist
+
       // Get the fallback strings.
       text.get( fallbackStringPath, function( fallbackStringFile ) {
 
@@ -97,7 +99,27 @@ define( function( require ) {
                 }
               }
             },
-            onload.error, // TODO: Do we need this one and the one below?
+            //Error callback in the text! plugin.  Couldn't load the strings for the specified language.
+            function() {
+
+              //Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
+              console.log( "No string file provided for " + stringPath );
+
+              var queryParameterValue = window.phetcommon.getQueryParameter( key );
+              if ( queryParameterValue ) {
+                onload( queryParameterValue );
+              }
+              else {
+                var parsedStrings = parse( fallbackStringFile );
+                if ( parsedStrings[key] ) {
+                  onload( parsedStrings[key] );
+                }
+                else {
+                  console.log( 'string not found for key: ' + key );
+                  onload( key );
+                }
+              }
+            },
             { accept: 'application/json' }
           )
         },
