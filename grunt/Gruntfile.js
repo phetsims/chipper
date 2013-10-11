@@ -165,23 +165,30 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'clean', 'build' ] );
   grunt.registerTask( 'bump-version', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
+  //Look up the locale strings provided in the simulation
+  //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
+  var getLocales = function() {
+    var stringFiles = fs.readdirSync( 'strings' );
+    return stringFiles.map( function( stringFile ) {
+      return stringFile.substring( stringFile.indexOf( '_' ) + 1, stringFile.lastIndexOf( '.' ) );
+    } );
+  };
+
   grunt.registerTask( 'build-all', 'Build minified files for all of the locales', function() {
 
     //Clean only once for generating all html files
     clean();
 
     //Enumerate all of the locales
-    var stringFiles = fs.readdirSync( 'strings' );
+    var locales = getLocales();
 
     var done = this.async();
     var count = 0;
 
     //Recursive function to create all of the local HTML files
     (function runLocale() {
-      var stringFile = stringFiles[count];
+      var locale = locales[count];
 
-      //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
-      var locale = stringFile.substring( stringFile.indexOf( '_' ) + 1, stringFile.lastIndexOf( '.' ) );
       console.log( 'Spawning for locale: ' + locale );
       grunt.util.spawn( {
         grunt: true,
@@ -195,7 +202,7 @@ module.exports = function( grunt ) {
           console.log( 'RESULT\n', res );
         }
         count++;
-        if ( count === stringFiles.length ) {
+        if ( count === locales.length ) {
           done();
         }
         else {
@@ -466,13 +473,20 @@ module.exports = function( grunt ) {
         html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadJS + '\n//# sourceMappingURL=preload.js.map' );
         html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
 
-        //Write the stringless template in case we want to use it with the translation addition process.
-        grunt.file.write( 'build/' + pkg.name + '_locale-template.html', html );
-
         grunt.log.writeln( 'Writing HTML' );
 
         //Create the translated versions
-        var locales = [grunt.option( 'locale' ) || 'en'];
+        //If the user specified --all locales, then build all, otherwise just build the specified locale or english
+        var locales = grunt.option( 'all-locales' ) ? getLocales() :
+                      grunt.option( 'locale' ) ? [grunt.option( 'locale' ) ] :
+                      ['en'];
+
+        //Write the stringless template in case we want to use it with the translation addition process.
+        //Skip it if only building one HTML
+        if ( locales.length > 1 ) {
+          grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
+        }
+
         for ( var i = 0; i < locales.length; i++ ) {
           var locale = locales[i];
           var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
