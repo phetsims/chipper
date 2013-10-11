@@ -308,7 +308,7 @@ module.exports = function( grunt ) {
       assert( !error1, "error in " + cmd1 );
       console.log( 'finished ' + cmd1 );
       console.log( stdout1 );
-      grunt.log.writeln( 'Running: ' + cmd2 )
+      grunt.log.writeln( 'Running: ' + cmd2 );
       child_process.exec( cmd2, function( error2, stdout2, stderr2 ) {
         assert( !error2, "error in git commit" );
         console.log( 'finished ' + cmd2 );
