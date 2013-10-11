@@ -11,15 +11,10 @@
  *
  * The plugin code itself is excluded from the build by declaring it as a stubModule
  *
- * TODO: Currently hard coded to use English.  Provide support for any language.
- * TODO: Should we build all strings into the final HTML file, or separate HTML file per language?
- * TODO: Could lump strings together into one script block--perhaps it would be readable by the translation utility and the runtime.
- *       This could facilitate rewriting the html in place.
+ * TODO: Lump strings together into one script block--perhaps it would be readable by the translation utility and the runtime.  This could facilitate rewriting the html in place.
  * @author Sam Reid
  */
-
 define( function( require ) {
-
   'use strict';
 
   var text = require( 'text' );
@@ -37,7 +32,6 @@ define( function( require ) {
     load: function( name, parentRequire, onload, config ) {
 
       //Read the locale from a query parameter, if it is there, or use english
-      //TODO: The locale should be updated to support translated minified versions
       var theLocaleToUseIfNotOverridenByAQueryParameter = 'en';
 
       if ( config.phetLocale ) {
@@ -156,7 +150,8 @@ define( function( require ) {
 //        console.log( value );
 
         //TODO: Do we need to encodeURIComponent on the key here?  Or decode the value?
-        var expression = 'window.phetcommon.getQueryParameter( "' + key + '" ) || "' + value + '";';
+//        var expression = 'window.phetcommon.getQueryParameter( "' + key + '" ) || "' + value + '";';
+        var expression = 'window.phetStrings.get(' + key + ')';
 
         //Write code that will load the image and register with a global `phetImages` to make sure everything loaded, see SimLauncher.js
 //        write( 'define("' + pluginName + '!' + moduleName + '", function(){ return "' + value + '";});\n' );
