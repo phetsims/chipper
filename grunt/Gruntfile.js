@@ -153,17 +153,17 @@ module.exports = function( grunt ) {
   };
 
   // Default task ('grunt')
-  grunt.registerTask( 'default', [ 'generateLicenseInfo', 'lint-sim', 'lint-common', 'build' ] );
+  grunt.registerTask( 'default', [ 'generateLicenseInfo', 'lint-sim', 'lint-common', 'clean', 'build' ] );
 
   // Other tasks ('grunt taskName')
   grunt.registerTask( 'lint-sim', [ 'jshint:simFiles' ] );
   grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'lint', [ 'lint-sim', 'lint-common' ] );
-  grunt.registerTask( 'build', [ 'lint', 'clean', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'build', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
   //Build without cleaning, so that files can be added from different tasks for i18n
   grunt.registerTask( 'build-more', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
-  grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'clean', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'clean', 'build' ] );
   grunt.registerTask( 'bump-version', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
   grunt.registerTask( 'build-all', 'Build minified files for all of the locales', function() {
