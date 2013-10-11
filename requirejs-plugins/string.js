@@ -68,60 +68,70 @@ define( function( require ) {
 //      console.log( 'project: ', project );
 //      console.log( '--------------------------' );
 
-      //TODO: check for existence of the file before calling to text.get to handle fallback strings for files that don't exist
 
       // Get the fallback strings.
       text.get( fallbackStringPath, function( fallbackStringFile ) {
 
-          // Now get the primary strings.
-          text.get( stringPath, function( stringFile ) {
+          var fallback = '';
+          var queryParameterValue = typeof(window ) !== 'undefined' ? window.phetcommon.getQueryParameter( key ) : null;
+          if ( queryParameterValue ) {
+            fallback = queryParameterValue;
+          }
+          else {
+            var parsedStrings = parse( fallbackStringFile );
+            if ( parsedStrings[key] ) {
+              fallback = parsedStrings[key];
+            }
+            else {
+              console.log( 'string not found for key: ' + key );
+              fallback = key;
+            }
+          }
 
-              // Combine the primary and fallback strings into one object hash.
-              var parsedStrings = _.extend( parse( fallbackStringFile ), parse( stringFile ) ); // TODO: Is there a way that we can just parse once?
-              if ( config.isBuild ) {
-                // TODO: I (jblanco) don't understand this part yet.
-                buildMap[name] = parsedStrings;
-                onload( null );
-              }
-              else {
-                var queryParameterValue = window.phetcommon.getQueryParameter( key );
-                if ( queryParameterValue ) {
-                  onload( queryParameterValue );
+          //If the language specific file is not found during compilation, then use the fallback strings, see #36
+          if ( config.isBuild && !global.fs.existsSync( stringPath ) ) {
+            console.log( "No string file provided for " + stringPath + "/" + key + ", using fallback " + fallback );
+            buildMap[name] = parsedStrings;
+            onload( null );
+          }
+          else {
+
+            // Now get the primary strings.
+            text.get( stringPath, function( stringFile ) {
+
+                // Combine the primary and fallback strings into one object hash.
+                var parsedStrings = _.extend( parse( fallbackStringFile ), parse( stringFile ) ); // TODO: Is there a way that we can just parse once?
+                if ( config.isBuild ) {
+                  // TODO: I (jblanco) don't understand this part yet.
+                  buildMap[name] = parsedStrings;
+                  onload( null );
                 }
                 else {
-                  if ( parsedStrings[key] ) {
-                    onload( parsedStrings[key] );
+                  var queryParameterValue = window.phetcommon.getQueryParameter( key );
+                  if ( queryParameterValue ) {
+                    onload( queryParameterValue );
                   }
                   else {
-                    console.log( 'string not found for key: ' + key );
-                    onload( key );
+                    if ( parsedStrings[key] ) {
+                      onload( parsedStrings[key] );
+                    }
+                    else {
+                      console.log( 'string not found for key: ' + key );
+                      onload( key );
+                    }
                   }
                 }
-              }
-            },
-            //Error callback in the text! plugin.  Couldn't load the strings for the specified language.
-            function() {
+              },
+              //Error callback in the text! plugin.  Couldn't load the strings for the specified language.
+              function() {
 
-              //Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
-              console.log( "No string file provided for " + stringPath );
-
-              var queryParameterValue = window.phetcommon.getQueryParameter( key );
-              if ( queryParameterValue ) {
-                onload( queryParameterValue );
-              }
-              else {
-                var parsedStrings = parse( fallbackStringFile );
-                if ( parsedStrings[key] ) {
-                  onload( parsedStrings[key] );
-                }
-                else {
-                  console.log( 'string not found for key: ' + key );
-                  onload( key );
-                }
-              }
-            },
-            { accept: 'application/json' }
-          )
+                //Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
+                console.log( "No string file provided for " + stringPath );
+                onload( fallback );
+              },
+              { accept: 'application/json' }
+            )
+          }
         },
         onload.error,
         { accept: 'application/json' }
