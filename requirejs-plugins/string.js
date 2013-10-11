@@ -80,6 +80,7 @@ define( function( require ) {
 
       //TODO: Simplify this logic by putting if (config.isBuild) first.  window.phetcommon.getQueryParameter only available for browser,
       //TODO: Only have the option to multiple locales files when config.isBuild===true, etc.
+      //TODO: Missing files only need to be checked for config.isBuild===true, in the browser we get a callback from text.get() error
       // Get the fallback strings.
       text.get( fallbackStringPath, function( fallbackStringFile ) {
 
