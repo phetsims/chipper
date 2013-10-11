@@ -150,8 +150,8 @@ define( function( require ) {
 //        console.log( value );
 
         //TODO: Do we need to encodeURIComponent on the key here?  Or decode the value?
-//        var expression = 'window.phetcommon.getQueryParameter( "' + key + '" ) || "' + value + '";';
-        var expression = 'window.phetStrings.get(' + key + ')';
+        var expression = 'window.phetcommon.getQueryParameter( "' + key + '" ) || "' + value + '";';
+//        var expression = 'window.phetStrings.get(' + key + ')';
 
         //Write code that will load the image and register with a global `phetImages` to make sure everything loaded, see SimLauncher.js
 //        write( 'define("' + pluginName + '!' + moduleName + '", function(){ return "' + value + '";});\n' );
