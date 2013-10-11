@@ -457,12 +457,15 @@ module.exports = function( grunt ) {
                          '\n' +
                          'Libraries:\n' + licenseText;
 
+        var phetStringsCode = 'window.phetStrings=' + JSON.stringify( global.globalStrings, null, '' );//TODO: right hand side should be object literal for looked up strings
+
         grunt.log.writeln( 'Constructing HTML from template' );
         var html = grunt.file.read( '../chipper/templates/sim.html' );
         html = stringReplace( html, 'HTML_HEADER', htmlHeader );
         html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
         html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadJS + '\n//# sourceMappingURL=preload.js.map' );
         html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
+        html = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
         grunt.log.writeln( 'Writing HTML' );
         var locale = grunt.option( 'locale' ) || 'en';

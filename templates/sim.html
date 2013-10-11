@@ -13,6 +13,14 @@ HTML_HEADER
 </head>
 <body bgcolor="black">
 <img id="splash" style="position: absolute;top: 50%;left: 50%;margin-top: -180px;margin-left: -252px;" src="SPLASH_SCREEN_DATA_URI">
+<script type="text/javascript">PHET_STRINGS</script>
+<script type="text/javascript">
+  window.phetStrings.get = function( key ) {
+
+    //Support translation by query parameter so that translation in the browser will be feasible
+    return window.phetcommon.getQueryParameter( key ) || window.phetStrings[key];
+  };
+</script>
 <script type="text/javascript">PRELOAD_INLINE_JAVASCRIPT</script>
 <script type="text/javascript">MAIN_INLINE_JAVASCRIPT</script>
 </body>
