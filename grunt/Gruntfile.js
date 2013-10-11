@@ -465,11 +465,19 @@ module.exports = function( grunt ) {
         html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
         html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadJS + '\n//# sourceMappingURL=preload.js.map' );
         html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
-        html = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
+
+        //Write the stringless template in case we want to use it with the translation addition process.
+        grunt.file.write( 'build/' + pkg.name + '_locale-template.html', html );
 
         grunt.log.writeln( 'Writing HTML' );
-        var locale = grunt.option( 'locale' ) || 'en';
-        grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', html );
+
+        //Create the translated versions
+        var locales = [grunt.option( 'locale' ) || 'en'];
+        for ( var i = 0; i < locales.length; i++ ) {
+          var locale = locales[i];
+          var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
+          grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
+        }
 
         grunt.log.writeln( 'Cleaning temporary files' );
         grunt.file.delete( 'build/' + pkg.name + '.min.js' );
