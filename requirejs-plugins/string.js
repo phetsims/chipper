@@ -28,6 +28,31 @@ define( function( require ) {
 
   var parse = (typeof JSON !== 'undefined' && typeof JSON.parse === 'function') ? JSON.parse : function( text ) { return eval( '(' + text + ')' ); };
 
+  //Finish the build step (whether the specified strings were available or just the fallback strings were).
+  var buildWithStrings = function( name, parsedStrings, onload, key ) {
+    buildMap[name] = parsedStrings;
+    var locale = null;
+
+    //During a build, iterate over the locales and provide the strings for each
+    //Enumerate all of the strings used by the sim, with no false positives
+    //TODO: A better way to do this without globals?  Perhaps the export value of this function?  Or attach to the config?
+    //TODO: if we stick with globals, make sure the globalStrings array is clean (undefined) when we start and delete it when we are done with it.
+    //TODO: make sure this string hasn't already been written (especially with a different value)
+    if ( global.phet.localesToBuild.length === 1 ) {
+      locale = global.phet.localesToBuild[0];
+      global.phet.strings[locale][name] = parsedStrings[key];
+      onload( null );
+    }
+
+    //Load files for all languages for postprocessing step
+    else {
+      for ( var i = 0; i < global.phet.localesToBuild.length; i++ ) {
+        locale = global.phet.localesToBuild[i];
+
+      }
+    }
+  };
+
   return {
     load: function( name, parentRequire, onload, config ) {
 
@@ -75,8 +100,7 @@ define( function( require ) {
           //If the language specific file is not found during compilation, then use the fallback strings, see #36
           if ( config.isBuild && !global.fs.existsSync( stringPath ) ) {
             console.log( "No string file provided for " + stringPath + "/" + key + ", using fallback " + fallback );
-            buildMap[name] = parsedStrings;
-            onload( null );
+            buildWithStrings( name, parsedStrings, onload, key );
           }
           else {
 
@@ -86,9 +110,7 @@ define( function( require ) {
                 // Combine the primary and fallback strings into one object hash.
                 var parsedStrings = _.extend( parse( fallbackStringFile ), parse( stringFile ) ); // TODO: Is there a way that we can just parse once?
                 if ( config.isBuild ) {
-                  // TODO: I (jblanco) don't understand this part yet.
-                  buildMap[name] = parsedStrings;
-                  onload( null );
+                  buildWithStrings( name, parsedStrings, onload, key );
                 }
                 else {
                   var queryParameterValue = window.phetcommon.getQueryParameter( key );
@@ -126,20 +148,10 @@ define( function( require ) {
     //https://github.com/jrburke/requirejs/blob/master/text.js
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
-        var json = buildMap[moduleName ];
-        var key = moduleName.substring( moduleName.lastIndexOf( '/' ) + 1 );
-        var value = json[key];
-
         var expression = 'window.phetStrings.get(\"' + moduleName + '\")';
 
         //Write code that will load the image and register with a global `phetImages` to make sure everything loaded, see SimLauncher.js
         write( 'define("' + pluginName + '!' + moduleName + '", function(){ return ' + expression + ';});\n' );
-
-        //Enumerate all of the strings used by the sim, with no false positives
-        //TODO: A better way to do this without globals?  Perhaps the export value of this function?  Or attach to the config?
-        //TODO: if we stick with globals, make sure the globalStrings array is clean (undefined) when we start and delete it when we are done with it.
-        //TODO: make sure this string hasn't already been written (especially with a different value)
-        global.phet.strings[moduleName] = value;
       }
     }
   };

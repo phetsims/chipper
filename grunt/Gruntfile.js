@@ -357,7 +357,15 @@ module.exports = function( grunt ) {
     global.phet = {};
     global.phet.strings = {};
 
-    //TODO: Use requirejs directly instead of through the grunt plugin
+    var localesToBuild = getLocalesToBuild();
+
+    //Pass a global to the string! plugin so we know which strings to look up
+    global.phet.localesToBuild = localesToBuild;
+    for ( var i = 0; i < localesToBuild.length; i++ ) {
+      global.phet.strings[localesToBuild[i]] = {};
+    }
+
+    //TODO: Use requirejs directly instead of through the grunt plugin (?)
     // grunt.log.writeln( 'Running Require.js optimizer' );
     // requirejs.optimize( {
     //   almond: true,
