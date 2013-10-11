@@ -175,6 +175,16 @@ module.exports = function( grunt ) {
     } );
   };
 
+  //Look up which locales should be built, accounting for flags provided by the developer on the command line
+  //--all-locales true: to build all of the provided locales
+  //--local fr: to build just the french locale
+  //[no options] to build just the english locale
+  var getLocalesToBuild = function() {
+    return grunt.option( 'all-locales' ) ? getLocales() :
+           grunt.option( 'locale' ) ? [grunt.option( 'locale' ) ] :
+           ['en'];
+  };
+
   grunt.registerTask( 'build-all', 'Build minified files for all of the locales', function() {
 
     //Clean only once for generating all html files
@@ -480,10 +490,7 @@ module.exports = function( grunt ) {
         grunt.log.writeln( 'Writing HTML' );
 
         //Create the translated versions
-        //If the user specified --all locales, then build all, otherwise just build the specified locale or english
-        var locales = grunt.option( 'all-locales' ) ? getLocales() :
-                      grunt.option( 'locale' ) ? [grunt.option( 'locale' ) ] :
-                      ['en'];
+        var locales = getLocalesToBuild();
 
         //Write the stringless template in case we want to use it with the translation addition process.
         //Skip it if only building one HTML
