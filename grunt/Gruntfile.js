@@ -183,6 +183,12 @@ module.exports = function( grunt ) {
         args: ['build-more', '--locale', locale]
       }, function( err, res, code ) {
         console.log( 'spawn finished for locale: ', locale );
+        if ( err ) {
+          console.log( 'ERROR\n', locale );
+        }
+        if ( res ) {
+          console.log( 'RESULT\n', res );
+        }
         count++;
         if ( count === stringFiles.length ) {
           done();
