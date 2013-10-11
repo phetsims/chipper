@@ -78,6 +78,8 @@ define( function( require ) {
       var questionMarkIndex = name.lastIndexOf( '?' );
       var key = questionMarkIndex < 0 ? name.substring( name.lastIndexOf( '/' ) + 1 ) : name.substring( name.lastIndexOf( '/' ) + 1, questionMarkIndex );
 
+      //TODO: Simplify this logic by putting if (config.isBuild) first.  window.phetcommon.getQueryParameter only available for browser,
+      //TODO: Only have the option to multiple locales files when config.isBuild===true, etc.
       // Get the fallback strings.
       text.get( fallbackStringPath, function( fallbackStringFile ) {
 
