@@ -140,13 +140,10 @@ define( function( require ) {
       else {
 
         //Lookup all of the available translation files for the localesToBuild and the fallback string files
-
-        //TODO: Cache by repo name
         var localesToLoad = global.phet.localesToBuild.slice();
         if ( localesToLoad.indexOf( FALLBACK_LOCALE ) < 0 ) {
           localesToLoad.push( FALLBACK_LOCALE );
         }
-//        console.log( 'locales to load: ' + localesToLoad );
 
         var count = 0;
         var resourceHandled = function() {
