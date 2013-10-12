@@ -25,6 +25,9 @@ define( function( require ) {
 
   var parse = (typeof JSON !== 'undefined' && typeof JSON.parse === 'function') ? JSON.parse : function( text ) { return eval( '(' + text + ')' ); };
 
+  //Cache the loaded strings so they only have to be file.read once
+  var cache = {};
+
   //Finish the build step (whether the specified strings were available or just the fallback strings were).
   var buildWithStrings = function( name, parsedStrings, onload, key ) {
     var locale = null;
@@ -139,15 +142,24 @@ define( function( require ) {
           (function( locale ) {
 
             var path = getPath( locale );
-//            console.log( 'locale', locale, 'path', path );
-            if ( !global.fs.existsSync( path ) ) {
+
+            //If we already loaded those strings and registered with global.phet.strings, no need to do so again
+            if ( cache[path] ) {
+              resourceHandled();
+            }
+
+            //If the file doesn't exist, move on to the next one
+            else if ( !global.fs.existsSync( path ) ) {
               console.log( "File doesn't exist: ", path );
               resourceHandled();
             }
+
+            //Load from the actual file
             else {
               text.get( path, function( stringFile ) {
                   var parsed = parse( stringFile );
                   global.phet.strings[locale][name] = parsed[key];
+                  cache[path] = parsed;//It doesn't really matter what the right hand side is as long as it is truthy
                   resourceHandled();
                 },
                 onload.error,
