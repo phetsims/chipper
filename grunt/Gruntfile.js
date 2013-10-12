@@ -177,7 +177,7 @@ module.exports = function( grunt ) {
         var missing = _.omit( fallback, _.keys( strings ) );
 
         //Print the missing keys and the english values so the translator knows what to provide
-        console.log( locale, 'missing: ', missing );
+        console.log( locale, 'missing\n', JSON.stringify( missing, null, '\t' ) );
       }
     }
   } );
