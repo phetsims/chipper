@@ -11,7 +11,6 @@
  *
  * The plugin code itself is excluded from the build by declaring it as a stubModule
  *
- * TODO: Lump strings together into one script block--perhaps it would be readable by the translation utility and the runtime.  This could facilitate rewriting the html in place.
  * @author Sam Reid
  */
 define( function( require ) {
@@ -27,30 +26,6 @@ define( function( require ) {
 
   //Cache the loaded strings so they only have to be file.read once
   var cache = {};
-
-  //Finish the build step (whether the specified strings were available or just the fallback strings were).
-  var buildWithStrings = function( name, parsedStrings, onload, key ) {
-    var locale = null;
-
-    //During a build, iterate over the locales and provide the strings for each
-    //Enumerate all of the strings used by the sim, with no false positives
-    //TODO: A better way to do this without globals?  Perhaps the export value of this function?  Or attach to the config?
-    //TODO: if we stick with globals, make sure the globalStrings array is clean (undefined) when we start and delete it when we are done with it.
-    //TODO: make sure this string hasn't already been written (especially with a different value)
-    if ( global.phet.localesToBuild.length === 1 ) {
-      locale = global.phet.localesToBuild[0];
-      global.phet.strings[locale][name] = parsedStrings[key];
-      onload( null );
-    }
-
-    //Load files for all languages for postprocessing step
-    else {
-      for ( var i = 0; i < global.phet.localesToBuild.length; i++ ) {
-        locale = global.phet.localesToBuild[i];
-
-      }
-    }
-  };
 
   //When running in the browser, check to see if we have already loaded the specified file
   //Also parses it so that only happens once per file (instead of once per string key)
@@ -99,7 +74,8 @@ define( function( require ) {
           onload( queryParameterValue )
         }
         else {
-          //TODO: load & parse just once per file.  Could populate a cache from path=>parsedStrings, and use text.get as one branch of the cache code
+
+          //Load & parse just once per file
           getWithCache( fallbackStringPath, function( parsedFallbackStrings ) {
               var fallback = parsedFallbackStrings[key] || key;
 
