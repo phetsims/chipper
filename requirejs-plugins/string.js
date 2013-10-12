@@ -135,6 +135,7 @@ define( function( require ) {
 
             //If we already loaded those strings and registered with global.phet.strings, no need to do so again
             if ( cache[path] ) {
+              global.phet.strings[locale][name] = cache[path][key];
               resourceHandled();
             }
 
