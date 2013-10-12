@@ -28,6 +28,7 @@ module.exports = function( grunt ) {
     return str;
   }
 
+  //TODO: This is copied in requirejs-plugins/loadFileAsDataURI and should be deleted from here if we can figure out how to load that one
   function loadFileAsDataURI( filename ) {
     var mimeType = {
       'png': 'image/png',
