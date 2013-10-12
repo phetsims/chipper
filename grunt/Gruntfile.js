@@ -185,45 +185,19 @@ module.exports = function( grunt ) {
            ['en'];
   };
 
-  grunt.registerTask( 'build-all', 'Build minified files for all of the locales', function() {
+  var getStringsWithFallbacks = function( locale, global_phet_strings ) {
+    var fallbackStrings = global_phet_strings['en'];
+    var strings = global_phet_strings[locale];
 
-    //Clean only once for generating all html files
-    clean();
-
-    //Enumerate all of the locales
-    var locales = getLocales();
-
-    var done = this.async();
-    var count = 0;
-
-    //Recursive function to create all of the local HTML files
-    (function runLocale() {
-      var locale = locales[count];
-
-      console.log( 'Spawning for locale: ' + locale );
-      grunt.util.spawn( {
-        grunt: true,
-        args: ['build-more', '--locale', locale]
-      }, function( err, res, code ) {
-        console.log( 'spawn finished for locale: ', locale );
-        if ( err ) {
-          console.log( 'ERROR\n', locale );
-        }
-        if ( res ) {
-          console.log( 'RESULT\n', res );
-        }
-        count++;
-        if ( count === locales.length ) {
-          done();
-        }
-        else {
-          //Recursive step to go to the next language
-          runLocale();
-        }
-      } );
-    })();
-//    }
-  } );
+    //Assuming the strings has all of the right keys, look up fallbacks where the locale did not translate a certain string
+    var extended = {};
+    for ( var key in strings ) {
+      if ( strings.hasOwnProperty( key ) ) {
+        extended[key] = strings[key] || fallbackStrings[key];
+      }
+    }
+    return extended;
+  };
 
   //Scoped variable to hold the result from the generateLicenseInfoTask.
   //TODO: A better way to store the return value?
@@ -364,6 +338,7 @@ module.exports = function( grunt ) {
     for ( var i = 0; i < localesToBuild.length; i++ ) {
       global.phet.strings[localesToBuild[i]] = {};
     }
+    global.phet.strings['en'] = {};//may overwrite above
 
     //TODO: Use requirejs directly instead of through the grunt plugin (?)
     // grunt.log.writeln( 'Running Require.js optimizer' );
@@ -504,9 +479,11 @@ module.exports = function( grunt ) {
           grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
         }
 
+        //TODO: Write a list of the string keys & values for translation utilities to use
+
         for ( var i = 0; i < locales.length; i++ ) {
           var locale = locales[i];
-          var phetStringsCode = 'window.phetStrings=' + JSON.stringify( global.phet.strings[locale], null, '' );//TODO: right hand side should be object literal for looked up strings
+          var phetStringsCode = 'window.phetStrings=' + JSON.stringify( getStringsWithFallbacks( locale, global.phet.strings ), null, '' );//TODO: right hand side should be object literal for looked up strings
           var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
         }
