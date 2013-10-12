@@ -126,7 +126,7 @@ define( function( require ) {
         if ( localesToLoad.indexOf( FALLBACK_LOCALE ) < 0 ) {
           localesToLoad.push( FALLBACK_LOCALE );
         }
-        console.log( 'locales to load: ' + localesToLoad );
+//        console.log( 'locales to load: ' + localesToLoad );
 
         var count = 0;
         var resourceHandled = function() {
@@ -139,7 +139,7 @@ define( function( require ) {
           (function( locale ) {
 
             var path = getPath( locale );
-            console.log( 'locale', locale, 'path', path );
+//            console.log( 'locale', locale, 'path', path );
             if ( !global.fs.existsSync( path ) ) {
               console.log( "File doesn't exist: ", path );
               resourceHandled();
