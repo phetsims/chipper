@@ -74,10 +74,6 @@ define( function( require ) {
       var questionMarkIndex = name.lastIndexOf( '?' );
       var key = questionMarkIndex < 0 ? name.substring( name.lastIndexOf( '/' ) + 1 ) : name.substring( name.lastIndexOf( '/' ) + 1, questionMarkIndex );
 
-      //TODO: Simplify this logic by putting if (config.isBuild) first.  window.phetcommon.getQueryParameter only available for browser,
-      //TODO: Only have the option to multiple locales files when config.isBuild===true, etc.
-      //TODO: Missing files only need to be checked for config.isBuild===true, in the browser we get a callback from text.get() error
-
       //Browser version first
       if ( !config.isBuild ) {
 
@@ -127,6 +123,8 @@ define( function( require ) {
 
       //For compiler time
       else {
+
+        //TODO: Lookup multiple files, one for each language that is specified in the phetLocales, and register them with the phet.strings
         text.get( fallbackStringPath, function( fallbackStringFile ) {
 
             var fallback = '';
