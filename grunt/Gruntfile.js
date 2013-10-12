@@ -166,6 +166,21 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build-more', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
   grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'clean', 'build' ] );
   grunt.registerTask( 'bump-version', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'string', 'Provide a report about all of the strings provided in the simulation, requires the string map to exist', function() {
+    var stringMap = grunt.file.readJSON( 'build/' + pkg.name + '_string-map.json' );
+
+    //for each language, say what is missing
+    for ( var locale in stringMap ) {
+      if ( stringMap.hasOwnProperty( locale ) && locale !== 'en' ) {
+        var strings = stringMap[locale];
+        var fallback = stringMap['en'];
+        var missing = _.omit( fallback, _.keys( strings ) );
+
+        //Print the missing keys and the english values so the translator knows what to provide
+        console.log( locale, 'missing: ', missing );
+      }
+    }
+  } );
 
   //Look up the locale strings provided in the simulation
   //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
