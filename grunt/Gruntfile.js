@@ -488,6 +488,11 @@ module.exports = function( grunt ) {
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
         }
 
+        //Write the string map, which may be used by translation utility for showing which strings are available for translation
+        grunt.log.writeln( 'Writing string map to ', stringMap );
+        var stringMap = 'build/' + pkg.name + '_string-map.json';
+        grunt.file.write( stringMap, JSON.stringify( global.phet.strings, null, '\t' ) );
+
         grunt.log.writeln( 'Cleaning temporary files' );
         grunt.file.delete( 'build/' + pkg.name + '.min.js' );
 
