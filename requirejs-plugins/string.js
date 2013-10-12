@@ -23,14 +23,10 @@ define( function( require ) {
 
   var FALLBACK_LOCALE = 'en';
 
-  //Keep track of the strings that are used during dependency resolution so they can be looked up at build time
-  var buildMap = {};
-
   var parse = (typeof JSON !== 'undefined' && typeof JSON.parse === 'function') ? JSON.parse : function( text ) { return eval( '(' + text + ')' ); };
 
   //Finish the build step (whether the specified strings were available or just the fallback strings were).
   var buildWithStrings = function( name, parsedStrings, onload, key ) {
-    buildMap[name] = parsedStrings;
     var locale = null;
 
     //During a build, iterate over the locales and provide the strings for each
@@ -81,15 +77,59 @@ define( function( require ) {
       //TODO: Simplify this logic by putting if (config.isBuild) first.  window.phetcommon.getQueryParameter only available for browser,
       //TODO: Only have the option to multiple locales files when config.isBuild===true, etc.
       //TODO: Missing files only need to be checked for config.isBuild===true, in the browser we get a callback from text.get() error
-      // Get the fallback strings.
-      text.get( fallbackStringPath, function( fallbackStringFile ) {
 
-          var fallback = '';
-          var queryParameterValue = typeof(window ) !== 'undefined' ? window.phetcommon.getQueryParameter( key ) : null;
-          if ( queryParameterValue ) {
-            fallback = queryParameterValue;
-          }
-          else {
+      //Browser version first
+      if ( !config.isBuild ) {
+
+        //In the browser, a query parameter overrides anything, to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
+        var queryParameterValue = window.phetcommon.getQueryParameter( key );
+        if ( queryParameterValue ) {
+          onload( queryParameterValue )
+        }
+        else {
+          //TODO: load & parse just once per file
+          text.get( fallbackStringPath, function( fallbackStringFile ) {
+              var parsedFallbackStrings = parse( fallbackStringFile );
+              var fallback = parsedFallbackStrings[key] || key;
+
+              // Now get the primary strings.
+              text.get( stringPath, function( stringFile ) {
+
+                  // Combine the primary and fallback strings into one object hash.
+                  var parsedStrings = _.extend( parsedFallbackStrings, parse( stringFile ) );
+                  if ( parsedStrings[key] ) {
+                    onload( parsedStrings[key] );
+                  }
+                  else {
+                    console.log( 'string not found for key: ' + key );
+                    onload( fallback );
+                  }
+                },
+                //Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
+                function() {
+
+                  if ( !parsedFallbackStrings[key] ) {
+                    //It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
+                    console.log( 'no fallback for key:' + key );
+                  }
+                  //Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
+                  console.log( "No string file provided for " + stringPath );
+                  onload( fallback );
+                },
+                { accept: 'application/json' }
+              )
+            },
+            onload.error,
+            { accept: 'application/json' }
+          )
+        }
+      }
+
+      //For compiler time
+      else {
+        text.get( fallbackStringPath, function( fallbackStringFile ) {
+
+            var fallback = '';
             var parsedStrings = parse( fallbackStringFile );
             if ( parsedStrings[key] ) {
               fallback = parsedStrings[key];
@@ -98,64 +138,35 @@ define( function( require ) {
               console.log( 'string not found for key: ' + key );
               fallback = key;
             }
-          }
 
-          //If the language specific file is not found during compilation, then use the fallback strings, see #36
-          if ( config.isBuild && !global.fs.existsSync( stringPath ) ) {
-            console.log( "No string file provided for " + stringPath + "/" + key + ", using fallback " + fallback );
-            buildWithStrings( name, parsedStrings, onload, key );
-          }
-          else {
+            //If the language specific file is not found during compilation, then use the fallback strings, see #36
+            if ( !global.fs.existsSync( stringPath ) ) {
+              console.log( "No string file provided for " + stringPath + "/" + key + ", using fallback " + fallback );
+              buildWithStrings( name, parsedStrings, onload, key );
+            }
+            else {
 
-            // Now get the primary strings.
-            text.get( stringPath, function( stringFile ) {
+              // Now get the primary strings.
+              text.get( stringPath, function( stringFile ) {
 
-                // Combine the primary and fallback strings into one object hash.
-                var parsedStrings = _.extend( parse( fallbackStringFile ), parse( stringFile ) ); // TODO: Is there a way that we can just parse once?
-                if ( config.isBuild ) {
+                  // Combine the primary and fallback strings into one object hash.
+                  var parsedStrings = _.extend( parse( fallbackStringFile ), parse( stringFile ) ); // TODO: Is there a way that we can just parse once?
                   buildWithStrings( name, parsedStrings, onload, key );
-                }
-                else {
-                  var queryParameterValue = window.phetcommon.getQueryParameter( key );
-                  if ( queryParameterValue ) {
-                    onload( queryParameterValue );
-                  }
-                  else {
-                    if ( parsedStrings[key] ) {
-                      onload( parsedStrings[key] );
-                    }
-                    else {
-                      console.log( 'string not found for key: ' + key );
-                      onload( key );
-                    }
-                  }
-                }
-              },
-              //Error callback in the text! plugin.  Couldn't load the strings for the specified language.
-              function() {
-
-                //Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
-                console.log( "No string file provided for " + stringPath );
-                onload( fallback );
-              },
-              { accept: 'application/json' }
-            )
-          }
-        },
-        onload.error,
-        { accept: 'application/json' }
-      );
+                },
+                onload.error,
+                { accept: 'application/json' }
+              )
+            }
+          },
+          onload.error,
+          { accept: 'application/json' }
+        )
+      }
     },
 
-    //write method based on RequireJS official text plugin by James Burke
-    //https://github.com/jrburke/requirejs/blob/master/text.js
+    //Write code that will look up the string in the compiled sim.
     write: function( pluginName, moduleName, write ) {
-      if ( moduleName in buildMap ) {
-        var expression = 'window.phetStrings.get(\"' + moduleName + '\")';
-
-        //Write code that will load the image and register with a global `phetImages` to make sure everything loaded, see SimLauncher.js
-        write( 'define("' + pluginName + '!' + moduleName + '", function(){ return ' + expression + ';});\n' );
-      }
+      write( 'define("' + pluginName + '!' + moduleName + '",function(){return window.phetStrings.get(\"' + moduleName + '\");});\n' );
     }
   };
 } );
