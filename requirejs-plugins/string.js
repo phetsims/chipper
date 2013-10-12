@@ -52,6 +52,24 @@ define( function( require ) {
     }
   };
 
+  //When running in the browser, check to see if we have already loaded the specified file
+  //Also parses it so that only happens once per file (instead of once per string key)
+  function getWithCache( url, callback, errback, headers ) {
+
+    //Check for cache hit
+    if ( cache[url] ) {
+      callback( cache[url] );
+    }
+
+    //Cache miss: load the file parse, enter into cache and return it
+    else {
+      text.get( url, function( loadedText ) {
+        cache[url] = parse( loadedText );
+        callback( cache[url] );
+      }, errback, headers );
+    }
+  }
+
   return {
     load: function( name, parentRequire, onload, config ) {
 
@@ -82,15 +100,14 @@ define( function( require ) {
         }
         else {
           //TODO: load & parse just once per file.  Could populate a cache from path=>parsedStrings, and use text.get as one branch of the cache code
-          text.get( fallbackStringPath, function( fallbackStringFile ) {
-              var parsedFallbackStrings = parse( fallbackStringFile );
+          getWithCache( fallbackStringPath, function( parsedFallbackStrings ) {
               var fallback = parsedFallbackStrings[key] || key;
 
               // Now get the primary strings.
-              text.get( stringPath, function( stringFile ) {
+              getWithCache( stringPath, function( parsed ) {
 
                   // Combine the primary and fallback strings into one object hash.
-                  var parsedStrings = _.extend( parsedFallbackStrings, parse( stringFile ) );
+                  var parsedStrings = _.extend( parsedFallbackStrings, parsed );
                   if ( parsedStrings[key] ) {
                     onload( parsedStrings[key] );
                   }
