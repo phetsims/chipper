@@ -67,8 +67,9 @@ define( function( require ) {
       project = project.toLowerCase() === 'bam' ? 'build-a-molecule' :
                 project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
                 project;
-      var stringPath = getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';
-      var fallbackStringPath = getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + FALLBACK_LOCALE + '.json';
+      var getPath = function( locale ) {return getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';};
+      var stringPath = getPath( locale );
+      var fallbackStringPath = getPath( FALLBACK_LOCALE );
 
       // Pull out the key, which is between the last slash and the first question mark of the 'name' parameter.
       var questionMarkIndex = name.lastIndexOf( '?' );
