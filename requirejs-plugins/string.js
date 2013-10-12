@@ -52,15 +52,9 @@ define( function( require ) {
   return {
     load: function( name, parentRequire, onload, config ) {
 
-      //Read the locale from a query parameter, if it is there, or use english
-      var theLocaleToUseIfNotOverridenByAQueryParameter = 'en';
-
-      if ( config.phetLocale ) {
-        theLocaleToUseIfNotOverridenByAQueryParameter = config.phetLocale;
-      }
-      var locale = typeof window !== 'undefined' && typeof window.phetcommon !== 'undefined' && typeof window.phetcommon.getQueryParameter === 'function' ?
-                   window.phetcommon.getQueryParameter( 'locale' ) || theLocaleToUseIfNotOverridenByAQueryParameter :
-                   theLocaleToUseIfNotOverridenByAQueryParameter;
+      // Pull out the key, which is between the last slash and the first question mark of the 'name' parameter.
+      var questionMarkIndex = name.lastIndexOf( '?' );
+      var key = questionMarkIndex < 0 ? name.substring( name.lastIndexOf( '/' ) + 1 ) : name.substring( name.lastIndexOf( '/' ) + 1, questionMarkIndex );
 
       // Create the paths to the string files - primary and fallback.
       var project = name.substring( 0, name.indexOf( '/' ) );
@@ -68,15 +62,15 @@ define( function( require ) {
                 project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
                 project;
       var getPath = function( locale ) {return getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';};
-      var stringPath = getPath( locale );
       var fallbackStringPath = getPath( FALLBACK_LOCALE );
 
-      // Pull out the key, which is between the last slash and the first question mark of the 'name' parameter.
-      var questionMarkIndex = name.lastIndexOf( '?' );
-      var key = questionMarkIndex < 0 ? name.substring( name.lastIndexOf( '/' ) + 1 ) : name.substring( name.lastIndexOf( '/' ) + 1, questionMarkIndex );
-
+      var locale;
       //Browser version first
       if ( !config.isBuild ) {
+
+        //Read the locale from a query parameter, if it is there, or use english
+        locale = window.phetcommon.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
+        var stringPath = getPath( locale );
 
         //In the browser, a query parameter overrides anything, to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
         var queryParameterValue = window.phetcommon.getQueryParameter( key );
@@ -84,7 +78,7 @@ define( function( require ) {
           onload( queryParameterValue )
         }
         else {
-          //TODO: load & parse just once per file
+          //TODO: load & parse just once per file.  Could populate a cache from path=>parsedStrings, and use text.get as one branch of the cache code
           text.get( fallbackStringPath, function( fallbackStringFile ) {
               var parsedFallbackStrings = parse( fallbackStringFile );
               var fallback = parsedFallbackStrings[key] || key;
@@ -125,41 +119,43 @@ define( function( require ) {
       //For compiler time
       else {
 
-        //TODO: Lookup multiple files, one for each language that is specified in the phetLocales, and register them with the phet.strings
-        text.get( fallbackStringPath, function( fallbackStringFile ) {
+        //Lookup all of the available translation files for the localesToBuild and the fallback string files
 
-            var fallback = '';
-            var parsedStrings = parse( fallbackStringFile );
-            if ( parsedStrings[key] ) {
-              fallback = parsedStrings[key];
+        //TODO: Cache by repo name
+        var localesToLoad = global.phet.localesToBuild.slice();
+        if ( localesToLoad.indexOf( FALLBACK_LOCALE ) < 0 ) {
+          localesToLoad.push( FALLBACK_LOCALE );
+        }
+        console.log( 'locales to load: ' + localesToLoad );
+
+        var count = 0;
+        var resourceHandled = function() {
+          count++;
+          if ( count >= localesToLoad.length ) {
+            onload( null );
+          }
+        };
+        for ( var i = 0; i < localesToLoad.length; i++ ) {
+          (function( locale ) {
+
+            var path = getPath( locale );
+            console.log( 'locale', locale, 'path', path );
+            if ( !global.fs.existsSync( path ) ) {
+              console.log( "File doesn't exist: ", path );
+              resourceHandled();
             }
             else {
-              console.log( 'string not found for key: ' + key );
-              fallback = key;
-            }
-
-            //If the language specific file is not found during compilation, then use the fallback strings, see #36
-            if ( !global.fs.existsSync( stringPath ) ) {
-              console.log( "No string file provided for " + stringPath + "/" + key + ", using fallback " + fallback );
-              buildWithStrings( name, parsedStrings, onload, key );
-            }
-            else {
-
-              // Now get the primary strings.
-              text.get( stringPath, function( stringFile ) {
-
-                  // Combine the primary and fallback strings into one object hash.
-                  var parsedStrings = _.extend( parse( fallbackStringFile ), parse( stringFile ) ); // TODO: Is there a way that we can just parse once?
-                  buildWithStrings( name, parsedStrings, onload, key );
+              text.get( path, function( stringFile ) {
+                  var parsed = parse( stringFile );
+                  global.phet.strings[locale][name] = parsed[key];
+                  resourceHandled();
                 },
                 onload.error,
                 { accept: 'application/json' }
               )
             }
-          },
-          onload.error,
-          { accept: 'application/json' }
-        )
+          })( localesToLoad[i] );
+        }
       }
     },
 
