@@ -501,6 +501,9 @@ module.exports = function( grunt ) {
           var locale = locales[i];
           var phetStringsCode = 'window.phetStrings=' + JSON.stringify( getStringsWithFallbacks( locale, global.phet.strings ), null, '' );//TODO: right hand side should be object literal for looked up strings
           var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
+
+          //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
+          localeHTML = stringReplace( localeHTML, 'PHET_LOCALE', 'window.phetLocale=\'' + locale + '\';' );
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
         }
 
