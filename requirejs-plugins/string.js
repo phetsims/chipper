@@ -54,6 +54,8 @@ define( function( require ) {
 
       // Create the paths to the string files - primary and fallback.
       var project = name.substring( 0, name.indexOf( '/' ) );
+
+      //Some projects use a nickname for their module name, we can support that here
       project = project.toLowerCase() === 'bam' ? 'build-a-molecule' :
                 project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
                 project;
