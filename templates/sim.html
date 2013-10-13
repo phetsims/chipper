@@ -18,7 +18,7 @@ HTML_HEADER
 <script type="text/javascript">
   window.phetStrings.get = function( key ) {
 
-    //Support translation by query parameter so that translation in the browser will be feasible
+    //Support translation by query parameter to enable translation in the browser
     return window.phetcommon.getQueryParameter( key ) || window.phetStrings[key];
   };
 </script>
