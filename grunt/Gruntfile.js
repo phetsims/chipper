@@ -184,20 +184,26 @@ module.exports = function( grunt ) {
 
   //Look up the locale strings provided in the simulation
   //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
-  var getLocales = function() {
-    var stringFiles = fs.readdirSync( 'strings' );
+  var getLocalesForDirectory = function( directory ) {
+    var stringFiles = fs.readdirSync( directory );
     return stringFiles.map( function( stringFile ) {
       return stringFile.substring( stringFile.indexOf( '_' ) + 1, stringFile.lastIndexOf( '.' ) );
     } );
   };
 
+  //Look up the locale strings provided in the simulation
+  //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
+  var getLocales = function() { return getLocalesForDirectory( 'strings' ); };
+
   //Look up which locales should be built, accounting for flags provided by the developer on the command line
   //--all-locales true: to build all of the provided locales
+  //--locales beers-law-lab: use strings from another sim
   //--local fr: to build just the french locale
   //[no options] to build just the english locale
   var getLocalesToBuild = function() {
     return grunt.option( 'all-locales' ) ? getLocales() :
            grunt.option( 'locale' ) ? [grunt.option( 'locale' ) ] :
+           grunt.option( 'locales' ) ? getLocalesForDirectory( '../' + grunt.option( 'locales' ) + '/strings' ) :
            ['en'];
   };
 
