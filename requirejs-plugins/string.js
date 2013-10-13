@@ -151,8 +151,11 @@ define( function( require ) {
             else {
               text.get( path, function( stringFile ) {
                   var parsed = parse( stringFile );
+
+                  //Store all loaded strings for access in the gruntfile.
+                  //Fallbacks are computed in the Gruntfile.js
                   global.phet.strings[locale][name] = parsed[key];
-                  cache[path] = parsed;//It doesn't really matter what the right hand side is as long as it is truthy
+                  cache[path] = parsed;
                   resourceHandled();
                 },
                 onload.error,
