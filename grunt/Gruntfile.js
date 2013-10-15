@@ -198,7 +198,7 @@ module.exports = function( grunt ) {
   //Look up which locales should be built, accounting for flags provided by the developer on the command line
   //--all-locales true: to build all of the provided locales
   //--locales beers-law-lab: use locales from another sim's strings directory
-  //--local fr: to build just the french locale
+  //--locale fr: to build just the french locale
   //[no options] to build just the english locale
   var getLocalesToBuild = function() {
     return grunt.option( 'all-locales' ) ? getLocales() :
