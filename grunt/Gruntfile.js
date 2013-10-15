@@ -163,10 +163,9 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build', [ 'generateLicenseInfo', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
   //Build without cleaning, so that files can be added from different tasks for i18n
-  grunt.registerTask( 'build-more', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
   grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'clean', 'build' ] );
   grunt.registerTask( 'bump-version', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
-  grunt.registerTask( 'string', 'Provide a report about all of the strings provided in the simulation, requires the string map to exist', function() {
+  grunt.registerTask( 'string', 'Provide a report about all of the strings provided in the simulation, requires the string map to exist (so should be run after running one of the build steps)', function() {
     var stringMap = grunt.file.readJSON( 'build/' + pkg.name + '_string-map.json' );
 
     //for each language, say what is missing
