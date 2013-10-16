@@ -154,18 +154,21 @@ module.exports = function( grunt ) {
   };
 
   // Default task ('grunt')
-  grunt.registerTask( 'default', [ 'generateLicenseInfo', 'lint-sim', 'lint-common', 'clean', 'build' ] );
+  grunt.registerTask( 'default', 'clean, lint and build the English HTML', [ 'generateLicenseInfo', 'lint-sim', 'lint-common', 'clean', 'build' ] );
 
   // Other tasks ('grunt taskName')
-  grunt.registerTask( 'lint-sim', [ 'jshint:simFiles' ] );
-  grunt.registerTask( 'lint-common', [ 'jshint:commonFiles' ] );
-  grunt.registerTask( 'lint', [ 'lint-sim', 'lint-common' ] );
-  grunt.registerTask( 'build', [ 'generateLicenseInfo', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'lint-sim', 'lint just the sim\'s js files', [ 'jshint:simFiles' ] );
+  grunt.registerTask( 'lint-common', 'lint all of the common js files', [ 'jshint:commonFiles' ] );
+  grunt.registerTask( 'lint', 'lint the sim code and the common code', [ 'lint-sim', 'lint-common' ] );
+  grunt.registerTask( 'build', 'Builds the simulation (without cleaning or linting):\n' +
+                               '--all-locales true:\n\tto build HTML for all locales in strings/\n' +
+                               '--locales $project:\n\tuse locales inferred from another project\'s strings/ directory\n' +
+                               '--locale fr:\n\tto build just the French locale\n' +
+                               '[no options]:\n\tto build just the English locale', [ 'generateLicenseInfo', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
   //Build without cleaning, so that files can be added from different tasks for i18n
-  grunt.registerTask( 'nolint', [ 'generateLicenseInfo', 'clean', 'build' ] );
-  grunt.registerTask( 'bump-version', [ 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
-  grunt.registerTask( 'string', 'Provide a report about all of the strings provided in the simulation, requires the string map to exist (so should be run after running one of the build steps)', function() {
+  grunt.registerTask( 'nolint', 'clean and build but without the lint steps', [ 'generateLicenseInfo', 'clean', 'build' ] );
+  grunt.registerTask( 'string', 'After running a build step, provide a report about all of the strings (just for the built locales)', function() {
     var stringMap = grunt.file.readJSON( 'build/' + pkg.name + '_string-map.json' );
 
     //for each language, say what is missing
@@ -333,7 +336,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory', clean );
 
   // creates a performance snapshot for profiling changes
-  grunt.registerTask( 'simBeforeRequirejs', 'Description', function() {
+  grunt.registerTask( 'simBeforeRequirejs', '(internal use only) Prepare for the requirejs step, enumerate locales to build', function() {
     grunt.log.writeln( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
 
     assert( pkg.name, 'name required in package.json' );
@@ -393,7 +396,7 @@ module.exports = function( grunt ) {
     // }
   } );
 
-  grunt.registerTask( 'simAfterRequirejs', 'Description', function() {
+  grunt.registerTask( 'simAfterRequirejs', '(internal use only) Finish writing files after requirjs finished', function() {
     var done = this.async();
 
     grunt.log.writeln( 'Minifying preload scripts' );
