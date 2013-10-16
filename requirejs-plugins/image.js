@@ -20,6 +20,7 @@ define( [
   return {
     load: function( name, parentRequire, onload, config ) {
       var imageName = name.substring( name.lastIndexOf( '/' ) );
+      debugger;
       var path = getProjectURL( name, parentRequire ) + 'images' + imageName;
 
       if ( config.isBuild ) {
@@ -27,13 +28,13 @@ define( [
         onload( null );
       }
       else {
-        var image = new Image();
-        image.onerror = function( error ) { onload.error( error ); };
+        var image = document.createElement( 'img' );
+        image.onerror = function( error ) { console.log( 'failed to load image: ' + path ); onload.error( error ); };
         image.onload = function() {
           onload( image );
           delete image.onload;
         };
-        image.src = path;
+        image.src = path + '?' + config.urlArgs;
       }
     },
 
