@@ -14,21 +14,39 @@ define( [
   '../../chipper/requirejs-plugins/loadFileAsDataURI',
   '../../chipper/requirejs-plugins/getProjectURL'], function( loadFileAsDataURI, getProjectURL ) {
 
-  //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
+  'use strict';
+
+
+  // Keep track of the audio URL lists that are used during dependency
+  // resolution so they can be converted to base64 at build time.
   var buildMap = {};
 
   return {
     load: function( name, parentRequire, onload, config ) {
-      var audioName = name.substring( name.lastIndexOf( '/' ) );
-      var url = getProjectURL( name, parentRequire ) + 'audio' + audioName;
+      var audioName = name.substring( name.lastIndexOf( '/' ) + 1 );
+      var baseUrl = getProjectURL( name, parentRequire ) + 'audio/';
+      var urlList = [];
+
+      // Create an array containing a list of URLs pointing to audio files.
+      if ( audioName.indexOf( '.' ) === -1 ){
+        // Only the file stem has been specified, so assume that both mp3 and
+        // ogg files are available.
+        urlList.push( { url: baseUrl + audioName + '.mp3' } );
+        urlList.push( { url: baseUrl + audioName + '.ogg' } );
+      }
+      else{
+        // The sound name included a type extension (e.g. '.mp3'), so just
+        // insert the full path name into the URL list.
+        urlList.push( { url: baseUrl + audioName } );
+      }
 
       if ( config.isBuild ) {
-        buildMap[name] = url;
+        // Save in the build map for the 'write' function to use.
+        buildMap[name] = urlList;
         onload( null );
       }
       else {
-
-        onload( {url: url} );
+        onload( urlList );
       }
     },
 
@@ -36,13 +54,17 @@ define( [
     //https://github.com/jrburke/requirejs/blob/master/text.js
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
-        var content = buildMap[moduleName];
-
-        var base64 = loadFileAsDataURI( content );
-
-        //return an object with {base64:''} for interpretation by VIBE/Sound
+        var urlList = buildMap[moduleName];
+        var base64ListText = '[';
+        for ( var i = 0; i < urlList.length; i++ ){
+          var base64 = loadFileAsDataURI( urlList[i].url );
+          base64ListText += '{base64:\'' + base64 + '\'}';
+          base64ListText += i === urlList.length - 1 ? '\n' : ',\n';
+        }
+        base64ListText += ']';
+        // Return an array of objects with {base64:''} for interpretation by VIBE/Sound
         write( 'define("' + pluginName + '!' + moduleName + '", function(){ ' +
-               'return {base64:\'' + base64 + '\'};});\n' );
+               'return ' + base64ListText + ';});\n' );
       }
     }
   };
