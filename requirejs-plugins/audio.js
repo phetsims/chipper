@@ -16,6 +16,12 @@ define( [
 
   'use strict';
 
+  function urlExists( url ) {
+    var http = new XMLHttpRequest();
+    http.open( 'HEAD', url, false );
+    http.send();
+    return http.status != 404;
+  }
 
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.
@@ -39,6 +45,13 @@ define( [
         // insert the full path name into the URL list.
         urlList.push( { url: baseUrl + audioName } );
       }
+
+      // Verify that the specified URLs actually exist.
+      urlList.forEach( function( urlSpec ){
+        if ( !urlExists( urlSpec.url ) ){
+          onload.error( new Error( 'Audio file missing, url = ' + urlSpec.url ) );
+        }
+      } );
 
       if ( config.isBuild ) {
         // Save in the build map for the 'write' function to use.
