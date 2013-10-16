@@ -23,6 +23,10 @@ define( [
     return http.status != 404;
   }
 
+  function fileExists( url ) {
+    return global.fs.existsSync( url );
+  }
+
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.
   var buildMap = {};
@@ -48,7 +52,7 @@ define( [
 
       // Verify that the specified URLs actually exist.
       urlList.forEach( function( urlSpec ){
-        if ( !urlExists( urlSpec.url ) ){
+        if ( ( config.isBuild && !global.fs.existsSync( url ) || ( !config.isBuild && !urlExists( urlSpec.url ) ) ) ){
           onload.error( new Error( 'Audio file missing, url = ' + urlSpec.url ) );
         }
       } );
