@@ -160,6 +160,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-sim', 'lint just the sim\'s js files', [ 'jshint:simFiles' ] );
   grunt.registerTask( 'lint-common', 'lint all of the common js files', [ 'jshint:commonFiles' ] );
   grunt.registerTask( 'lint', 'lint the sim code and the common code', [ 'lint-sim', 'lint-common' ] );
+  grunt.registerTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory', clean );
   grunt.registerTask( 'build', 'Builds the simulation (without cleaning or linting):\n' +
                                '--all-locales true:\n\tto build HTML for all locales in strings/\n' +
                                '--locales $project:\n\tuse locales inferred from another project\'s strings/ directory\n' +
@@ -332,8 +333,6 @@ module.exports = function( grunt ) {
       } );
     } );
   } );
-
-  grunt.registerTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory', clean );
 
   // creates a performance snapshot for profiling changes
   grunt.registerTask( 'simBeforeRequirejs', '(internal use only) Prepare for the requirejs step, enumerate locales to build', function() {
