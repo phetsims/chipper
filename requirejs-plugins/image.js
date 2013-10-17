@@ -20,7 +20,6 @@ define( [
   return {
     load: function( name, parentRequire, onload, config ) {
       var imageName = name.substring( name.lastIndexOf( '/' ) );
-      debugger;
       var path = getProjectURL( name, parentRequire ) + 'images' + imageName;
 
       if ( config.isBuild ) {
