@@ -8,6 +8,7 @@ define( function() {
       'png': 'image/png',
       'svg': 'image/svg+xml',
       'jpg': 'image/jpeg',
+      'gif': 'image/gif',
       'cur': 'image/x-icon', // cursor files (used in build-a-molecule). x-win-bitmap gives off warnings in Chrome
       'mp3': 'audio/mpeg',
       'm4a': 'audio/mp4',
