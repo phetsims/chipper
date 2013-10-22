@@ -513,9 +513,9 @@ module.exports = function( grunt ) {
           //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
           localeHTML = stringReplace( localeHTML, 'PHET_LOCALE', 'window.phetLocale=\'' + locale + '\';' );
           
-          // TODO: replace with namespace code once we determine how to get them (like MOLARITY and BAM)
+          // TODO: replace with namespace code once we determine how to get them (like MOLARITY and BAM) see https://github.com/phetsims/chipper/issues/46
           // this is less than ideal, and there's an off-chance it will pick up an incorrect string
-          // TODO: remove this sim-specific workaround!
+          // TODO: remove this sim-specific workaround! see https://github.com/phetsims/chipper/issues/46
           var simOverrides = {
             'concentration': 'tab.concentration',
             'balloons-and-static-electricity': 'balloons.name',
