@@ -519,7 +519,6 @@ module.exports = function( grunt ) {
           var simOverrides = {
             'concentration': 'tab.concentration',
             'balloons-and-static-electricity': 'balloons.name',
-            'example-sim': 'exampleSim',
             'john-travoltage': 'travoltage.name',
             'ohms-law': 'simTitle',
             'resistance-in-a-wire': 'simTitle',
