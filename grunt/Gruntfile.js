@@ -506,11 +506,32 @@ module.exports = function( grunt ) {
 
         for ( var i = 0; i < locales.length; i++ ) {
           var locale = locales[i];
-          var phetStringsCode = 'window.phetStrings=' + JSON.stringify( getStringsWithFallbacks( locale, global.phet.strings ), null, '' );//TODO: right hand side should be object literal for looked up strings
+          var strings = getStringsWithFallbacks( locale, global.phet.strings );
+          var phetStringsCode = 'window.phetStrings=' + JSON.stringify( strings, null, '' );//TODO: right hand side should be object literal for looked up strings
           var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
           //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
           localeHTML = stringReplace( localeHTML, 'PHET_LOCALE', 'window.phetLocale=\'' + locale + '\';' );
+          
+          // TODO: replace with namespace code once we determine how to get them (like MOLARITY and BAM)
+          // this is less than ideal, and there's an off-chance it will pick up an incorrect string
+          // TODO: remove this sim-specific workaround!
+          var simOverrides = {
+            'concentration': 'tab.concentration',
+            'balloons-and-static-electricity': 'balloons.name',
+            'example-sim': 'exampleSim',
+            'john-travoltage': 'travoltage.name',
+            'ohms-law': 'simTitle',
+            'resistance-in-a-wire': 'simTitle',
+            'wave-on-a-string': 'simTitle'
+          };
+          var titleKeySuffix = simOverrides[pkg.name] || pkg.name + '.name';
+          var titleKey = _.find( Object.keys( strings ), function( str ) {
+            // str.endsWith( titleKeySuffix )
+            var idx = str.lastIndexOf( titleKeySuffix );
+            return idx >= 0 && idx === str.length - titleKeySuffix.length;
+          } );
+          localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version ); // TODO: i18n order
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
         }
 
