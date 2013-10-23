@@ -6,8 +6,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Properties;
 
-import edu.colorado.phet.buildtools.html.FileUtils;
-
 /**
  * Converts .properties files to json
  * Usage:
