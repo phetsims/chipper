@@ -6,12 +6,14 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Properties;
 
+import edu.colorado.phet.buildtools.html.FileUtils;
 
 /**
  * Converts .properties files to json
  * Usage:
  * args[0] is the source localization directory, such as "C:\workingcopy\phet\svn-1.7\trunk\simulations-java\simulations\energy-skate-park\data\energy-skate-park\localization"
  * args[1] is the target nls root such as "C:\workingcopy\phet\svn-1.7\trunk\simulations-html5\simulations\energy-skate-park\strings"
+ * args[2] (optional) is a 'filter', and only strings whose key contains the filter are converted, non-matchin key/value pairs are omitted.
  *
  * @author Sam Reid
  */
@@ -24,6 +26,13 @@ public class PropertiesToJSON {
         //Destination is the target nls root, such as "C:\workingcopy\phet\svn-1.7\trunk\simulations-html5\simulations\energy-skate-park\strings"
         File destination = new File( args[1] );
 
+        //Filter param
+        System.out.println("args length = " + args.length );
+        String filter = null;
+        if ( args.length > 2 ){
+            filter = args[2];
+        }
+
         for ( final File file : source.listFiles( new FilenameFilter() {
             public boolean accept( final File dir, final String name ) {
                 return name.endsWith( ".properties" ) && name.contains( "-strings" );
@@ -35,12 +44,17 @@ public class PropertiesToJSON {
             }};
             String output = "{\n";
             for ( Object key : p.keySet() ) {
-                String prefix = "    \"";
-                output += prefix + key + "\": \"" + escape( p.get( key ).toString() ) + "\",\n";
+                if ( filter == null || key.toString().contains( filter ) ){
+                    String prefix = "    \"";
+                    output += prefix + key + "\": \"" + escape( p.get( key ).toString() ) + "\",\n";
+                }
             }
 
             //Remove the last comma
-            output = output.substring( 0, output.lastIndexOf( ',' ) ) + output.substring( output.lastIndexOf( ',' ) + 1 );
+            int lastCommaIndex = output.lastIndexOf( ',' );
+            if ( lastCommaIndex != -1 ){
+                output = output.substring( 0, lastCommaIndex ) + output.substring( lastCommaIndex + 1 );
+            }
 
             output += "}";
 
@@ -63,5 +77,4 @@ public class PropertiesToJSON {
         //Replace " with \".  May need to add other escapes later on.
         return s.replace( "\"", "\\\"" ).replace( "\n", "\\n" );
     }
-
 }
