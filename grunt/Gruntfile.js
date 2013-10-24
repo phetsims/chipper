@@ -93,7 +93,7 @@ module.exports = function( grunt ) {
             name: '<%= pkg.name %>-config',
             optimize: 'uglify2',
             wrap: true,
-            generateSourceMaps: true,
+//            generateSourceMaps: true, //#42 commented out this line until source maps are fixed
             preserveLicenseComments: false,
             uglify2: {
               output: {
@@ -400,7 +400,7 @@ module.exports = function( grunt ) {
 
     grunt.log.writeln( 'Minifying preload scripts' );
     var preloadResult = uglify.minify( pkg.preload.split( ' ' ), {
-      outSourceMap: preloadMapFilename,
+//      outSourceMap: preloadMapFilename,  //#42 commented out this line until source maps are fixed
       output: {
         inline_script: true // escape </script
       },
@@ -413,8 +413,9 @@ module.exports = function( grunt ) {
     var preloadJS = preloadResult.code; // minified output
     var preloadMap = preloadResult.map; // map for minified output, use preloadMapFilename
 
-    grunt.log.writeln( 'Copying preload source map' );
-    grunt.file.write( 'build/' + preloadMapFilename, preloadMap );
+    //#42 commented out next 2 lines until source maps are fixed
+//    grunt.log.writeln( 'Copying preload source map' );
+//    grunt.file.write( 'build/' + preloadMapFilename, preloadMap );
 
     grunt.log.writeln( 'Copying changes.txt' );
     if ( fs.existsSync( 'changes.txt' ) ) {
