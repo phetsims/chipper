@@ -30,8 +30,8 @@ fi
 function parseJSON() {
   echo `grep $1 ${PACKAGE_JSON} | awk -F ':' '{print $2}' | tr ",\"" " "`
 }
-NAME=`parseJSON name`
-VERSION=`parseJSON version`
+NAME=`parseJSON \"name\":`
+VERSION=`parseJSON \"version\":`
 
 # copy to server
 SERVER=spot.colorado.edu
