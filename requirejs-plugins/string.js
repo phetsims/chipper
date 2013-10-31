@@ -77,7 +77,7 @@ define( function( require ) {
         }
         else {
 
-          //Load & parse just once per file
+          // Load & parse just once per file, getting the fallback strings first.
           getWithCache( fallbackStringPath, function( parsedFallbackStrings ) {
               var fallback = parsedFallbackStrings[key] || key;
 
