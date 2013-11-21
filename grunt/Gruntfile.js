@@ -276,7 +276,7 @@ module.exports = function( grunt ) {
     grunt.log.writeln( 'created license info for ' + licenses.length + ' dependencies' );
   } );
 
-  grunt.registerTask( 'checkout-shas', 'Check out the shas for a project as specified in a dependencies.json file in its top level', function() {
+  grunt.registerTask( 'checkout-shas', 'Check out the shas for a project as specified in a dependencies.json file in its top level.  Optional to checkout master branch if you specify --tomaster=true', function() {
     checkoutShas( grunt, child_process, assert, pkg.name );
   } );
 
