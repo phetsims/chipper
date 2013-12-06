@@ -91,6 +91,8 @@ module.exports = function( grunt ) {
             mainConfigFile: 'js/<%= pkg.name %>-config.js',
             out: 'build/<%= pkg.name %>.min.js',
             name: '<%= pkg.name %>-config',
+
+            //Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
             optimize: 'uglify2',
             wrap: true,
 //            generateSourceMaps: true, //#42 commented out this line until source maps are fixed
