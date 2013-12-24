@@ -126,22 +126,11 @@ module.exports = function( grunt ) {
       jshint: {
         // source files that are specific to this simulation
         simFiles: [ 'js/**/*.js' ],
-        // source files for common-code dependencies
-        commonFiles: [
-          '../assert/js/**/*.js',
-          '../axon/js/**/*.js',
-          '../dot/js/**/*.js',
-          '../joist/js/**/*.js',
-          '../kite/js/**/*.js',
-          '../nitroglycerin/js/**/*.js',
-          '../phet-core/js/**/*.js',
-          '../phetcommon/js/**/*.js',
-          '../scenery/js/**/*.js',
-          '../scenery-phet/js/**/*.js',
-          '../sun/js/**/*.js',
-          '../vegas/js/**/*.js',
-          '../vibe/js/**/*.js'
-        ],
+        // source files for common-code dependencies.
+        // phetLibs is a string of repo names, space separated.
+        // split converts the string to an array of repo names.
+        // map then converts each repo name to the form '../repo/js/**/*.js'.
+        commonFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ) ],
         // reference external JSHint options in jshint-options.js
         options: require( './jshint-options' )
       }
