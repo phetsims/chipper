@@ -1,3 +1,4 @@
+acid-base-solutions
 assert
 axon
 balancing-act
@@ -9,11 +10,15 @@ build-a-molecule
 build-an-atom
 chipper
 concentration
+dodecadog
 dot
+energy-skate-park
 energy-skate-park-basics
 example-sim
 faraday
 forces-and-motion-basics
+fraction-common
+fraction-comparison
 fraction-matcher
 fractions-intro
 friction
@@ -31,6 +36,7 @@ molecule-shapes
 nitroglycerin
 ohms-law
 ph-scale
+ph-scale-basics
 phet-core
 phet-info
 phetcommon
@@ -40,9 +46,10 @@ scenery
 scenery-phet
 share
 sherpa
+slater
 smorgasbord
 sun
+under-pressure
 vegas
 vibe
-under-pressure
 wave-on-a-string
