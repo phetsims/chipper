@@ -230,7 +230,7 @@ module.exports = function( grunt ) {
 
     //Add libraries that are not explicitly included by the sim
     //Note: must have a . character for the parsing below //TODO: Remove this restriction
-    sherpaDependencyPaths.push( 'almond-0.2.6.js' );
+    sherpaDependencyPaths.push( 'almond-0.2.9.js' );
     sherpaDependencyPaths.push( 'pegjs.' );
     sherpaDependencyPaths.push( 'font-awesome.' );
     sherpaDependencyPaths.push( 'require-i18n.js' );
