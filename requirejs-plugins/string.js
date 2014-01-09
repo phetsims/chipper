@@ -17,7 +17,7 @@ define( function( require ) {
   'use strict';
 
   var text = require( 'text' );
-  var _ = require( '../../sherpa/lodash-2.0.0.min' );
+  var _ = require( '../../sherpa/lodash-2.4.1.min' );
   var getProjectURL = require( '../../chipper/requirejs-plugins/getProjectURL' );
 
   var FALLBACK_LOCALE = 'en';

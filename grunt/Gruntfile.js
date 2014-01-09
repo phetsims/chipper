@@ -2,7 +2,7 @@ var assert = require( 'assert' );
 var fs = require( 'fs' );
 var child_process = require( 'child_process' );
 var info = require( '../../sherpa/info' );
-var _ = require( '../../sherpa/lodash-2.0.0.min' );
+var _ = require( '../../sherpa/lodash-2.4.1.min' );
 var checkoutShas = require( '../../chipper/grunt/checkout-shas' );
 
 //Register fs as a global so it can be accessed through the requirejs build system.  Text.js plugin may have a superior way to handle this but I (SR) couldn't get it working after a small amount of effort
