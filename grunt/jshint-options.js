@@ -63,7 +63,9 @@ module.exports = {
     Box2D: false, //For Box2D physics engine
 
     alert: false, //for debugging on ipad
-    numeric: false //Numeric library used in energy skate park
+    numeric: false, //Numeric library used in energy skate park
+    location: false, //For setting location.href to save to local file, see http://stackoverflow.com/questions/2897619/using-html5-javascript-to-generate-and-save-a-file
+    FileReader: false //For file loading, see SaveLoadNode in Energy Skate Park: Basics
   }
 };
 
