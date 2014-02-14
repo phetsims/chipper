@@ -169,6 +169,31 @@ module.exports = function( grunt ) {
     }
   } );
 
+  //Task that clones the dependencies for a project (except for the project itself, chipper and sherpa)
+  grunt.registerTask( 'clone', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
+    console.log( 'pkg.name', pkg.name );
+
+    var dependencies = _.without( pkg.phetLibs.split( ' ' ), 'sherpa', 'chipper', pkg.name );
+    console.log( 'cloning dependencies for', pkg.name, ': ', pkg.phetLibs );
+    var numCloned = 0;
+    var done = grunt.task.current.async();
+    for ( var i = 0; i < dependencies.length; i++ ) {
+      var dependency = dependencies[i];
+      var command = 'git clone https://github.com/phetsims/' + dependency + '.git';
+      console.log( 'executing:', command );
+      child_process.exec( command, {cwd: '../'}, function( error1, stdout1, stderr1 ) {
+        console.log( stdout1 );
+        console.log( stderr1 );
+        assert( !error1, "error in " + command );
+        console.log( 'Finished checkout.' );
+        numCloned++;
+        if ( numCloned === dependencies.length ) {
+          done();
+        }
+      } );
+    }
+  } );
+
   //Look up the locale strings provided in the simulation
   //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
   var getLocalesForDirectory = function( directory ) {
