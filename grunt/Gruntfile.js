@@ -170,7 +170,7 @@ module.exports = function( grunt ) {
   } );
 
   //Task that clones the dependencies for a project (except for the project itself, chipper and sherpa)
-  grunt.registerTask( 'clone', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
+  grunt.registerTask( 'get-dependencies', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
     console.log( 'pkg.name', pkg.name );
 
     var dependencies = _.without( pkg.phetLibs.split( ' ' ), 'sherpa', 'chipper', pkg.name );
