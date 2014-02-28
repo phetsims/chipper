@@ -170,6 +170,7 @@ module.exports = function( grunt ) {
   } );
 
   //Task that clones the dependencies for a project (except for the project itself, chipper and sherpa)
+  //See #56
   grunt.registerTask( 'get-dependencies', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
     console.log( 'pkg.name', pkg.name );
 
@@ -192,6 +193,23 @@ module.exports = function( grunt ) {
         }
       } );
     }
+  } );
+
+  //Task that creates a list of git clone commands that will check out a simulation and all its depnedencies
+  //This can be used by a PhET Developer to create a script to put in a simulation's README.md
+  //See #56
+  grunt.registerTask( 'list-clone-commands', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
+    console.log( 'pkg.name', pkg.name );
+
+    var dependencies = pkg.phetLibs.split( ' ' );
+    console.log( 'listing git clone commands for', pkg.name, ': ', pkg.phetLibs );
+    console.log( 'start script' );
+    for ( var i = 0; i < dependencies.length; i++ ) {
+      var dependency = dependencies[i];
+      var command = 'git clone https://github.com/phetsims/' + dependency + '.git';
+      console.log( command );
+    }
+    console.log( 'end script' );
   } );
 
   //Look up the locale strings provided in the simulation
