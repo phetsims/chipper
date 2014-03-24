@@ -4,6 +4,7 @@ var child_process = require( 'child_process' );
 var info = require( '../../sherpa/info' );
 var _ = require( '../../sherpa/lodash-2.4.1.min' );
 var checkoutShas = require( '../../chipper/grunt/checkout-shas' );
+var pullAll = require( '../../chipper/grunt/pull-all' );
 
 //Register fs as a global so it can be accessed through the requirejs build system.  Text.js plugin may have a superior way to handle this but I (SR) couldn't get it working after a small amount of effort
 global.fs = fs;
@@ -292,7 +293,7 @@ module.exports = function( grunt ) {
     var separator = '=';
 
     //TODO: better way to return a value?
-    licenseText = _.reduce( licenses,function( memo, license ) {
+    licenseText = _.reduce( licenses, function( memo, license ) {
       var selectedLicenseText = license.selectedLicense ? '> Selected license: ' + license.selectedLicense + '\n' : '';
       return memo + license.text + '\n' +
              selectedLicenseText +
@@ -305,6 +306,10 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'checkout-shas', 'Check out the shas for a project as specified in a dependencies.json file in its top level.  Optional to checkout master branch if you specify --tomaster=true', function() {
     checkoutShas( grunt, child_process, assert, pkg.name );
+  } );
+
+  grunt.registerTask( 'pull-all', 'Pull all repo above this directory', function() {
+    pullAll( grunt, child_process, assert, pkg.name );
   } );
 
   //This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13
