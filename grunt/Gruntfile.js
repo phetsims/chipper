@@ -504,7 +504,7 @@ module.exports = function( grunt ) {
 
         grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
 
-        var splashDataURI = loadFileAsDataURI( '../joist/images/phet-logo-loading.svg' );
+        var splashDataURI = loadFileAsDataURI( '../brand/images/splash.svg' );
         var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
         //Create the license header for this html and all the 3rd party dependencies
