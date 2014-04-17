@@ -544,7 +544,8 @@ module.exports = function( grunt ) {
           var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
           //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-          localeHTML = stringReplace( localeHTML, 'PHET_LOCALE', 'window.phetLocale=\'' + locale + '\';' );
+          localeHTML = stringReplace( localeHTML, 'PHET_INFO', 'window.phetLocale=\'' + locale + '\';' +
+                                                               'window.phetVersion=\'' + pkg.name + ' ' + pkg.version + '\';' );
 
           var titleKey = pkg.simTitleStringKey;
           localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version ); // TODO: i18n order
