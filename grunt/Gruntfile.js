@@ -16,6 +16,7 @@ global.fs = fs;
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jon Olson
  * @author Sam Reid
+ * @author John Blanco
  */
 module.exports = function( grunt ) {
   function trimWhitespace( str ) {
@@ -551,6 +552,16 @@ module.exports = function( grunt ) {
           localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version ); // TODO: i18n order
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
         }
+
+        // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
+        grunt.log.writeln( 'Constructing HTML for iframe testing from template' );
+        var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
+        iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version + 'iframe test' );
+        iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
+
+        // Write the iframe test file.  English (en) is assumed as the locale.
+        grunt.log.writeln( 'Writing HTML for iframe testing' );
+        grunt.file.write( 'build/' + pkg.name + '_en-iframe' + '.html', iframeTestHtml );
 
         //Write the string map, which may be used by translation utility for showing which strings are available for translation
         grunt.log.writeln( 'Writing string map to ', stringMap );
