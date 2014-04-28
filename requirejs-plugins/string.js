@@ -59,7 +59,7 @@ define( function( require ) {
       project = project.toLowerCase() === 'bam' ? 'build-a-molecule' :
                 project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
                 project;
-      var getPath = function( locale ) {return getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json';};
+      var getPath = function( locale ) {return getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json?' + config.urlArgs;};
       var fallbackStringPath = getPath( FALLBACK_LOCALE );
 
       var locale;
