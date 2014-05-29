@@ -125,7 +125,8 @@ module.exports = function( grunt ) {
         // phetLibs is a string of repo names, space separated.
         // split converts the string to an array of repo names.
         // map then converts each repo name to the form '../repo/js/**/*.js'.
-        commonFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ) ],
+        // includes an exclusion for kite/js/parser/svgPath.js, which is auto-generated
+        commonFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
         // reference external JSHint options in jshint-options.js
         options: require( './jshint-options' )
       }
