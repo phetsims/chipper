@@ -102,6 +102,7 @@ module.exports = function( grunt ) {
                   assert: false,
                   assertSlow: false,
                   // scenery logging
+                  sceneryLog: false,
                   sceneryLayerLog: false,
                   sceneryEventLog: false,
                   sceneryAccessibilityLog: false,
@@ -418,6 +419,7 @@ module.exports = function( grunt ) {
     //         sceneryAssert: false,
     //         sceneryAssertExtra: false,
     //         // scenery logging
+    //         sceneryLog: false,
     //         sceneryLayerLog: false,
     //         sceneryEventLog: false,
     //         sceneryAccessibilityLog: false

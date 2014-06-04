@@ -29,6 +29,7 @@ module.exports = {
 
     assert: true,  // allow assertions
     assertSlow: true, // allow slow assertions
+    sceneryLog: true, // scenery logging levels
     sceneryLayerLog: true, // scenery logging levels
     sceneryEventLog: true, // scenery logging levels
     sceneryAccessibilityLog: true, // scenery accessibility levels
