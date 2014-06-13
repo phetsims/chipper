@@ -16,7 +16,7 @@ do
   if [ -d "$sim" ]; then
     cd $sim                 # build.sh needs to be run from the sim directory
     npm install             # executes quickly when everything is up to date compared to build.sh
-    grunt # run the build
+    grunt $1 # run the build
     cd ..                   # and back to the original directory
   fi
 done
