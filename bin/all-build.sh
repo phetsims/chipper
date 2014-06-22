@@ -14,6 +14,7 @@
 for sim in `cat chipper/bin/data/active-sims | xargs`
 do
   if [ -d "$sim" ]; then
+    echo "Building" $sim
     cd $sim                 # build.sh needs to be run from the sim directory
     npm install             # executes quickly when everything is up to date compared to build.sh
     grunt $1 # run the build
