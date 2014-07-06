@@ -64,6 +64,7 @@ module.exports = {
     ActiveXObject: false, //for full screen
     Box2D: false, //For Box2D physics engine
     THREE: false, //For three.js 3d things
+    WebSocket: false, // for WebSocket communication
 
     alert: false, //for debugging on ipad
     numeric: false, //Numeric library used in energy skate park
