@@ -1,4 +1,4 @@
-#!/bin/sh -i
+#!/bin/bash -i
 #====================================================================================================
 #
 # Deploys a dev build to spot.colorado.edu
@@ -34,10 +34,10 @@ NAME=`parseJSON \"name\":`
 VERSION=`parseJSON \"version\":`
 
 # copy to server
-SERVER=spot.colorado.edu
-DEV_ROOT=/htdocs/physics/phet/dev/html
-echo "Deploying $NAME $VERSION to $SERVER"
-scp -r $BUILD_DIR ${USER_NAME}@${SERVER}:${DEV_ROOT}/${NAME}/${VERSION}
+PHET_DEV_SERVER=${PHET_DEV_SERVER:=spot.colorado.edu}
+PHET_DEV_ROOT=/htdocs/physics/phet/dev/html
+echo "Deploying $NAME $VERSION to $PHET_DEV_SERVER"
+scp -r $BUILD_DIR ${USER_NAME}@${PHET_DEV_SERVER}:${PHET_DEV_ROOT}/${NAME}/${VERSION}
 
 # print the deployed URL, so you can test quickly via copy-paste
 echo "deployed:" http://www.colorado.edu/physics/phet/dev/html/${NAME}/${VERSION}/${NAME}_en.html
