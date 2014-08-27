@@ -91,7 +91,7 @@ module.exports = function( grunt, projectName, author, overwrite ) {
         destPath = replaceOneString( destPath, 'simula-rasa', projectName );
         if ( !fs.existsSync( destPath ) || overwrite ) {
           grunt.file.write( destPath, contents );
-          console.log( 'wrote', abspath, rootdir, subdir, filename );
+          console.log( 'wrote', destPath );
         }
         else {
           console.log( 'file already existed: ' + destPath + '.  Aborting.' );
