@@ -5,6 +5,7 @@ var info = require( '../../sherpa/info' );
 var _ = require( '../../sherpa/lodash-2.4.1.min' );
 var checkoutShas = require( '../../chipper/grunt/checkout-shas' );
 var pullAll = require( '../../chipper/grunt/pull-all' );
+var createSim = require( '../../chipper/grunt/create-sim' );
 
 //Register fs as a global so it can be accessed through the requirejs build system.  Text.js plugin may have a superior way to handle this but I (SR) couldn't get it working after a small amount of effort
 global.fs = fs;
@@ -580,6 +581,10 @@ module.exports = function( grunt ) {
 
     grunt.log.writeln( 'Scanning dependencies from:\n' + dependencies.toString() );
     nextDependency();
+  } );
+
+  grunt.registerTask( 'create-sim', 'Create a sim based on the simula-rasa template', function() {
+    createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'overwrite' ) );
   } );
 
   // Load tasks from grunt plugins that have been installed locally using npm.
