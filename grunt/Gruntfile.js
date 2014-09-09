@@ -560,7 +560,7 @@ module.exports = function( grunt ) {
         // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
         grunt.log.writeln( 'Constructing HTML for iframe testing from template' );
         var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-        iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version + 'iframe test' );
+        iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version + ' iframe test' );
         iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
 
         // Write the iframe test file.  English (en) is assumed as the locale.
