@@ -77,16 +77,26 @@ module.exports = function( grunt, projectName, author, overwrite ) {
   //Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
       if ( abspath.indexOf( '../simula-rasa/node_modules/' ) === 0 ||
-           abspath.indexOf( '../simula-rasa/.git/' ) === 0 ) {
+           abspath.indexOf( '../simula-rasa/.git/' ) === 0 ||
+           abspath.indexOf( '../simula-rasa/build/' ) === 0 ) {
       }
       else {
         var contents = grunt.file.read( abspath );
+
+        //Clean the README
+        contents = replaceAllString( contents, 'To create a sim based on this template, clone this and the other PhET libraries as described in the PhET Development Overview at http://bit.ly/phet-development-overview then run:', '' );
+        contents = replaceAllString( contents, '`cd simula-rasa`', '' );
+        contents = replaceAllString( contents, '`npm install`', '' );
+        contents = replaceAllString( contents, 'then run grunt with', '' );
+        contents = replaceAllString( contents, '`grunt create-sim --name=project-name --author="Your Name (Your Affiliation)`', '' );
+
+        //Replace the sim names
         contents = replaceAllString( contents, 'simula-rasa', projectName );
         contents = replaceAllString( contents, 'SIMULA_RASA', UPPER_CASE );
         contents = replaceAllString( contents, 'SimulaRasa', UpperCamelCase );
         contents = replaceAllString( contents, 'simulaRasa', camelCase );
         contents = replaceAllString( contents, 'Simula Rasa', HumanReadable );
-        contents = replaceAllString( contents, 'To create a sim based on this template, run `grunt create-sim --name=project-name --author="Your Name (Your Affiliation)`', '' );
+
         contents = replaceOneString( contents, 'PhET Simulation Template.  "Simula rasa" is Latin for "blank sim".',
             HumanReadable + ' by ' + author + ', using libraries from PhET Interactive Simulations at the University of Colorado Boulder (please see http://bit.ly/phet-development-overview for more). Readme file automatically created by https://github.com/phetsims/chipper' );
         contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );
