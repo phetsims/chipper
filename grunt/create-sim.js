@@ -85,10 +85,10 @@ module.exports = function( grunt, projectName, author, overwrite ) {
 
         //Clean the README
         contents = replaceAllString( contents, 'To create a sim based on this template, clone this and the other PhET libraries as described in the PhET Development Overview at http://bit.ly/phet-development-overview then run:', '' );
-        contents = replaceAllString( contents, '`cd simula-rasa`', '' );
-        contents = replaceAllString( contents, '`npm install`', '' );
-        contents = replaceAllString( contents, 'then run grunt with', '' );
-        contents = replaceAllString( contents, '`grunt create-sim --name=project-name --author="Your Name (Your Affiliation)`', '' );
+        contents = replaceAllString( contents, 'cd simula-rasa', '' );
+        contents = replaceAllString( contents, 'npm install', '' );
+        contents = replaceAllString( contents, 'grunt create-sim --name=project-name --author="Your Name (Your Affiliation)', '' );
+        contents = replaceAllString( contents, '```', '' );
 
         //Replace the sim names
         contents = replaceAllString( contents, 'simula-rasa', projectName );
