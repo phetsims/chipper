@@ -18,6 +18,12 @@ var assert = require( 'assert' );
 module.exports = function( grunt, projectName, author, overwrite ) {
   'use strict';
 
+  if ( typeof(projectName) === 'undefined' ) {
+    throw new Error( 'projectName unspecified, use --name=...' );
+  }
+  if ( typeof(author) === 'undefined' ) {
+    throw new Error( 'Author unspecified, use --author=...' );
+  }
   console.log( 'Greetings, ' + author + '!' );
   console.log( 'creating sim with projectName', projectName );
 
@@ -80,9 +86,10 @@ module.exports = function( grunt, projectName, author, overwrite ) {
         contents = replaceAllString( contents, 'SimulaRasa', UpperCamelCase );
         contents = replaceAllString( contents, 'simulaRasa', camelCase );
         contents = replaceAllString( contents, 'Simula Rasa', HumanReadable );
+        contents = replaceAllString( contents, 'To create a sim based on this template, run `grunt create-sim --name=project-name --author="Your Name (Your Affiliation)`', '' );
         contents = replaceOneString( contents, 'PhET Simulation Template.  "Simula rasa" is Latin for "blank sim".',
             HumanReadable + ' by ' + author + ', using libraries from PhET Interactive Simulations at the University of Colorado Boulder (please see http://bit.ly/phet-development-overview for more). Readme file automatically created by https://github.com/phetsims/chipper' );
-        contents = replaceAllString( contents, 'Sam Reid (PhET Interactive Simulations)', author );
+        contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );
         var subdirPath = subdir || '';
         var destPath = destinationPath + '/' + subdirPath + '/' + filename;
 
