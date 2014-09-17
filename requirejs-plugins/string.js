@@ -90,7 +90,7 @@ define( function( require ) {
 
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
-                  if ( parsedStrings[key] ) {
+                  if ( parsedStrings[key] !== undefined ) {
                     onload( parsedStrings[key] );
                   }
                   else {
