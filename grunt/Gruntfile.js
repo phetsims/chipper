@@ -522,6 +522,10 @@ module.exports = function( grunt ) {
                          '\n' +
                          'Libraries:\n' + licenseText;
 
+        // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
+        preloadJS = preloadJS.replace( '\x0B', '\\x0B' );
+        mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
+
         grunt.log.writeln( 'Constructing HTML from template' );
         var html = grunt.file.read( '../chipper/templates/sim.html' );
         html = stringReplace( html, 'HTML_HEADER', htmlHeader );
