@@ -65,6 +65,7 @@ module.exports = {
     Box2D: false, //For Box2D physics engine
     THREE: false, //For three.js 3d things
     WebSocket: false, // for WebSocket communication
+    WebGLDebugUtils:false, // for khronos webgl-debug.js debugging utilities
 
     alert: false, //for debugging on ipad
     numeric: false, //Numeric library used in energy skate park
