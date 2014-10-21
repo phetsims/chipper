@@ -11,7 +11,7 @@
 #
 #====================================================================================================
 
-for sim in `cat chipper/bin/data/active-sims | xargs`
+for sim in `cat chipper/data/active-sims | xargs`
 do
   if [ -d "$sim" ]; then
     echo "Building" $sim

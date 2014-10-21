@@ -8,7 +8,7 @@
 #
 #====================================================================================================
 
-for repo in `cat chipper/bin/data/active-repos | xargs`
+for repo in `cat chipper/data/active-repos | xargs`
 do
   if [ -d "$repo" ]; then
     echo $repo

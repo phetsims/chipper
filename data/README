@@ -1,0 +1,3 @@
+active-repos is a list of all repositories that you should have checked out if doing common-code refactoring.
+
+active-sims is a list of all simulation directories that can be built with chipper.

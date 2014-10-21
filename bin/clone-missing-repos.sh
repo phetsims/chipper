@@ -4,7 +4,7 @@
 #
 if [ -d ./chipper ];
 then
-   repos=(`comm -23 <(sort -u ./chipper/bin/data/active-repos) <(/bin/ls -1 .)`)
+   repos=(`comm -23 <(sort -u ./chipper/data/active-repos) <(/bin/ls -1 .)`)
    for repo in "${repos[@]}"
    do
       git clone git@github.com:phetsims/"$repo".git
