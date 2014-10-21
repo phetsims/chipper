@@ -15,8 +15,15 @@ import java.util.StringTokenizer;
  * @author Sam Reid
  */
 public class FontAwesomeToScenery {
+
+    // Sam Reid's personal path
+    private static String SAM_PATH = "C:\\workingcopy\\phet\\svn-1.7\\trunk\\simulations-html\\build-tools\\data\\font-awesome.txt";
+
     public static void main( String[] args ) throws IOException {
-        String svg = FileUtils.loadFileAsString( new File( "C:\\workingcopy\\phet\\svn-1.7\\trunk\\simulations-html\\build-tools\\data\\font-awesome.txt" ) );
+
+        // Read file name from program args, default to Sam's path.
+        String filename = ( args.length > 0 ) ? args[0] : SAM_PATH;
+        String svg = FileUtils.loadFileAsString( new File( filename ) );
 
         String map = ".icon-glass:before                { content: \"\\f000\"; }\n" +
                      ".icon-music:before                { content: \"\\f001\"; }\n" +
