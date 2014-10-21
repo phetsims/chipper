@@ -1,3 +1,5 @@
+// Copyright 2002-2014, University of Colorado Boulder
+
 package edu.colorado.phet.buildtools.html;
 
 import java.io.File;
