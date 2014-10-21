@@ -8,9 +8,13 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /**
- * Takes from a data file that contains lines like:
+ * Reads a data file (font-awesome.txt) that contains lines like:
  * <glyph unicode="&#xf000;" horiz-adv-x="1792" d="M1699 ... -36.5z" />
- * and creates a scenery compatible version.  See sun.FontAwesomeNode.
+ * and creates a scenery-compatible version.  See sun.FontAwesomeNode.
+ * <p>
+ * font-awesome.txt was created by taking src/assets/font-awesome/fonts/fontawesome-webfont.svg
+ * from the Font-Awesome GitHub repository, and manually editing out lines at the top and bottom
+ * of the file.
  *
  * @author Sam Reid
  */
