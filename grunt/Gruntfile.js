@@ -68,8 +68,6 @@ module.exports = function( grunt ) {
   var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
   var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: not currently used, figure out how to include almond correctly?
 
-  var preloadMapFilename = 'preload.js.map';
-
   // Project configuration.
   grunt.initConfig(
     {
@@ -436,23 +434,20 @@ module.exports = function( grunt ) {
     var done = this.async();
 
     grunt.log.writeln( 'Minifying preload scripts' );
-    var preloadResult = uglify.minify( pkg.preload.split( ' ' ), {
-//      outSourceMap: preloadMapFilename,  //#42 commented out this line until source maps are fixed
-      output: {
-        inline_script: true // escape </script
-      },
-      compress: {
-        // here for now, for when we want to include options for the preloaded code
-        global_defs: {}
-      }
-    } );
-
-    var preloadJS = preloadResult.code; // minified output
-    var preloadMap = preloadResult.map; // map for minified output, use preloadMapFilename
-
-    //#42 commented out next 2 lines until source maps are fixed
-//    grunt.log.writeln( 'Copying preload source map' );
-//    grunt.file.write( 'build/' + preloadMapFilename, preloadMap );
+    var preloadBlocks = '';
+    var preloadLibs = pkg.preload.split( ' ' );
+    for ( var libIdx = 0; libIdx < preloadLibs.length; libIdx++ ) {
+      var lib = preloadLibs[libIdx];
+      var preloadResult = uglify.minify( [lib], {
+        output: {
+          inline_script: true // escape </script
+        },
+        compress: {
+          global_defs: {}
+        }
+      } );
+      preloadBlocks += '<script type="text/javascript" id="script-' + lib + '">\n' + preloadResult.code + '\n</script>\n';
+    }
 
     grunt.log.writeln( 'Copying changes.txt' );
     if ( fs.existsSync( 'changes.txt' ) ) {
@@ -523,15 +518,15 @@ module.exports = function( grunt ) {
                          'Libraries:\n' + licenseText;
 
         // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
-        preloadJS = preloadJS.replace( '\x0B', '\\x0B' );
+        preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
         mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
         grunt.log.writeln( 'Constructing HTML from template' );
         var html = grunt.file.read( '../chipper/templates/sim.html' );
         html = stringReplace( html, 'HTML_HEADER', htmlHeader );
         html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
-        html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadJS );
-        html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', mainInlineJavascript );
+        html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
+        html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
 
         grunt.log.writeln( 'Writing HTML' );
 
