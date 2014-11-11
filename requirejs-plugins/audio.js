@@ -18,14 +18,6 @@ define( [
 
   'use strict';
 
-  // Function for testing whether a resource at a given URL actually exists.
-  function urlExists( url ) {
-    var http = new XMLHttpRequest();
-    http.open( 'HEAD', url, false );
-    http.send();
-    return http.status != 404;
-  }
-
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.
   var buildMap = {};
@@ -38,26 +30,19 @@ define( [
       var urlList = [];
 
       // Create an array containing a list of URLs pointing to audio files.
-      if ( audioName.indexOf( '.' ) === -1 ){
+      if ( audioName.indexOf( '.' ) === -1 ) {
         // Only the file stem has been specified, so assume that both mp3 and
         // ogg files are available.
         urlList.push( { url: baseUrl + audioName + '.mp3' } );
         urlList.push( { url: baseUrl + audioName + '.ogg' } );
       }
-      else{
+      else {
         // The sound name included a type extension (e.g. '.mp3'), so just
         // insert the full path name into the URL list.  This is done, at
         // least in part, for backwards compatibility with the first version
         // of this plugin.
         urlList.push( { url: baseUrl + audioName } );
       }
-
-      // Verify that the specified URLs actually exist.
-      urlList.forEach( function( urlSpec ){
-        if ( ( config.isBuild && !global.fs.existsSync( url ) || ( !config.isBuild && !urlExists( urlSpec.url ) ) ) ){
-          onload.error( new Error( 'Audio file missing, url = ' + urlSpec.url ) );
-        }
-      } );
 
       if ( config.isBuild ) {
         // Save in the build map for the 'write' function to use.
@@ -76,7 +61,7 @@ define( [
       if ( moduleName in buildMap ) {
         var urlList = buildMap[moduleName];
         var base64ListText = '[';
-        for ( var i = 0; i < urlList.length; i++ ){
+        for ( var i = 0; i < urlList.length; i++ ) {
           var base64 = loadFileAsDataURI( urlList[i].url );
           base64ListText += '{base64:\'' + base64 + '\'}';
           base64ListText += i === urlList.length - 1 ? '\n' : ',\n';
