@@ -3,6 +3,7 @@ all-sims
 area-builder
 arithmetic
 assert
+atomic-interactions
 axon
 balancing-act
 balancing-chemical-equations
@@ -13,12 +14,14 @@ brand
 build-a-molecule
 build-an-atom
 capacitor-lab
+charges-and-fields
 chipper
 circuit-construction-kit-basics
 color-vision
 concentration
 dodecadog
 dot
+energy-forms-and-changes
 energy-skate-park-basics
 estimation
 example-sim
@@ -32,6 +35,7 @@ graphing-lines
 graphing-quadratics
 gravity-and-orbits
 gravity-force-lab
+isotopes-and-atomic-mass
 john-travoltage
 joist
 kite
@@ -57,6 +61,7 @@ phet-info
 phetcommon
 phetmarks
 plinko-probability
+protein-synthesis
 reactants-products-and-leftovers
 resistance-in-a-wire
 scenery
