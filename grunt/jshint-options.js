@@ -63,6 +63,8 @@ module.exports = {
     Howl: false, //for web audio
     ActiveXObject: false, //for full screen
     Box2D: false, //For Box2D physics engine
+    Stats: false, //For @mrdoob's stats + frame rate readout component
+    poly2tri: false, //For poly2tri triangulation library
     THREE: false, //For three.js 3d things
     WebSocket: false, // for WebSocket communication
     WebGLDebugUtils:false, // for khronos webgl-debug.js debugging utilities
