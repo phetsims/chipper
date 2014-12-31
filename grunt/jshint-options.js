@@ -35,44 +35,113 @@ module.exports = {
     sceneryAccessibilityLog: true, // scenery accessibility levels
     phetAllocation: true, // for tracking object allocations, see phet-core's phetAllocation
     Float32Array: true, // we actually polyfill this, so allow it to be set
-    phetEvents: true, // for instrumenting simulations for data-driven studies
+    phet.arch
+:
+true, // for instrumenting simulations for data-driven studies
 
-    // read-only globals ---------------------------------
+  // read-only globals ---------------------------------
 
-    define: false, // require.js
-    require: false, // require.js
-    Uint16Array: false,
-    Uint32Array: false,
-    XMLHttpRequest: false, // allow ajax requests directly
-    document: false,
-    window: false,
-    console: false,
-    HTMLImageElement: false,
-    HTMLCanvasElement: false,
-    Backbone: false, // backbone is currently run outside of requirejs
-    module: false, // as used in Gruntfile.js
-    $: false, // jQuery
-    _: false, // underscore, lodash
-    clearTimeout: false,
-    Image: false, // DOM.js
-    Blob: false,  // DOM.js
-    canvg: false,
-    io: false, //socket.io,
-    TWEEN: false, //sole/tween.js
-    navigator: false, //For Mobile Safari detection, see http://stackoverflow.com/questions/3007480/determine-if-user-navigated-from-mobile-safari
-    Howl: false, //for web audio
-    ActiveXObject: false, //for full screen
-    Box2D: false, //For Box2D physics engine
-    Stats: false, //For @mrdoob's stats + frame rate readout component
-    poly2tri: false, //For poly2tri triangulation library
-    THREE: false, //For three.js 3d things
-    WebSocket: false, // for WebSocket communication
-    WebGLDebugUtils:false, // for khronos webgl-debug.js debugging utilities
+  define
+:
+false, // require.js
+  require
+:
+false, // require.js
+  Uint16Array
+:
+false,
+  Uint32Array
+:
+false,
+  XMLHttpRequest
+:
+false, // allow ajax requests directly
+  document
+:
+false,
+  window
+:
+false,
+  console
+:
+false,
+  HTMLImageElement
+:
+false,
+  HTMLCanvasElement
+:
+false,
+  Backbone
+:
+false, // backbone is currently run outside of requirejs
+  module
+:
+false, // as used in Gruntfile.js
+  $
+:
+false, // jQuery
+  _
+:
+false, // underscore, lodash
+  clearTimeout
+:
+false,
+  Image
+:
+false, // DOM.js
+  Blob
+:
+false,  // DOM.js
+  canvg
+:
+false,
+  io
+:
+false, //socket.io,
+  TWEEN
+:
+false, //sole/tween.js
+  navigator
+:
+false, //For Mobile Safari detection, see http://stackoverflow.com/questions/3007480/determine-if-user-navigated-from-mobile-safari
+  Howl
+:
+false, //for web audio
+  ActiveXObject
+:
+false, //for full screen
+  Box2D
+:
+false, //For Box2D physics engine
+  Stats
+:
+false, //For @mrdoob's stats + frame rate readout component
+  poly2tri
+:
+false, //For poly2tri triangulation library
+  THREE
+:
+false, //For three.js 3d things
+  WebSocket
+:
+false, // for WebSocket communication
+  WebGLDebugUtils
+:
+false, // for khronos webgl-debug.js debugging utilities
 
-    alert: false, //for debugging on ipad
-    numeric: false, //Numeric library used in energy skate park
-    location: false, //For setting location.href to save to local file, see http://stackoverflow.com/questions/2897619/using-html5-javascript-to-generate-and-save-a-file
-    FileReader: false //For file loading, see SaveLoadNode in Energy Skate Park: Basics
-  }
-};
+  alert
+:
+false, //for debugging on ipad
+  numeric
+:
+false, //Numeric library used in energy skate park
+  location
+:
+false, //For setting location.href to save to local file, see http://stackoverflow.com/questions/2897619/using-html5-javascript-to-generate-and-save-a-file
+  FileReader
+:
+false //For file loading, see SaveLoadNode in Energy Skate Park: Basics
+}
+}
+;
 
