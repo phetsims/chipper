@@ -35,7 +35,6 @@ module.exports = {
     sceneryAccessibilityLog: true, // scenery accessibility levels
     phetAllocation: true, // for tracking object allocations, see phet-core's phetAllocation
     Float32Array: true, // we actually polyfill this, so allow it to be set
-    'phet.arch': true, // for instrumenting simulations for data-driven studies
     phet: true,
 
     // read-only globals ---------------------------------
