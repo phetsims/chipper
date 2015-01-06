@@ -1,3 +1,5 @@
+// Copyright 2002-2015, University of Colorado Boulder
+
 var assert = require( 'assert' );
 var fs = require( 'fs' );
 var child_process = require( 'child_process' );
@@ -7,7 +9,10 @@ var checkoutShas = require( '../../chipper/grunt/checkout-shas' );
 var pullAll = require( '../../chipper/grunt/pull-all' );
 var createSim = require( '../../chipper/grunt/create-sim' );
 
-//Register fs as a global so it can be accessed through the requirejs build system.  Text.js plugin may have a superior way to handle this but I (SR) couldn't get it working after a small amount of effort
+/*
+ * Register fs as a global so it can be accessed through the requirejs build system. Text.js plugin
+ * may have a superior way to handle this but I (SR) couldn't get it working after a small amount of effort.
+ */
 global.fs = fs;
 
 /**
@@ -71,8 +76,10 @@ module.exports = function( grunt ) {
   // Project configuration.
   grunt.initConfig(
     {
-      // Read in the project settings from the package.json file into the pkg property.
-      // This allows us to refer to project settings from within this config file.
+      /*
+       * Read in the project settings from the package.json file into the pkg property.
+       * This allows us to refer to project settings from within this config file.
+       */
       pkg: pkg,
 
       // configure the RequireJS plugin
@@ -86,7 +93,7 @@ module.exports = function( grunt ) {
             out: 'build/<%= pkg.name %>.min.js',
             name: '<%= pkg.name %>-config',
 
-            //Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
+            // Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
             optimize: 'uglify2',
             wrap: true,
 //            generateSourceMaps: true, //#42 commented out this line until source maps are fixed
@@ -119,14 +126,19 @@ module.exports = function( grunt ) {
 
       // configure the JSHint plugin
       jshint: {
+
         // source files that are specific to this simulation
         simFiles: [ 'js/**/*.js' ],
-        // source files for common-code dependencies.
-        // phetLibs is a string of repo names, space separated.
-        // split converts the string to an array of repo names.
-        // map then converts each repo name to the form '../repo/js/**/*.js'.
-        // includes an exclusion for kite/js/parser/svgPath.js, which is auto-generated
+
+        /*
+         * Source files for common-code dependencies.
+         * phetLibs is a string of repo names, space separated.
+         * split converts the string to an array of repo names.
+         * map then converts each repo name to a regular expression identifying the path to JS files.
+         * Includes an exclusion for kite/js/parser/svgPath.js, which is auto-generated.
+         */
         commonFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
+
         // reference external JSHint options in jshint-options.js
         options: require( './jshint-options' )
       }
@@ -154,26 +166,25 @@ module.exports = function( grunt ) {
                                '--locale fr:\n\tto build just the French locale\n' +
                                '[no options]:\n\tto build just the English locale', [ 'generateLicenseInfo', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
 
-  //Build without cleaning, so that files can be added from different tasks for i18n
+  // Build without cleaning, so that files can be added from different tasks for i18n
   grunt.registerTask( 'nolint', 'clean and build but without the lint steps', [ 'generateLicenseInfo', 'clean', 'build' ] );
   grunt.registerTask( 'string', 'After running a build step, provide a report about all of the strings (just for the built locales)', function() {
     var stringMap = grunt.file.readJSON( 'build/' + pkg.name + '_string-map.json' );
 
-    //for each language, say what is missing
+    // for each language, say what is missing
     for ( var locale in stringMap ) {
       if ( stringMap.hasOwnProperty( locale ) && locale !== 'en' ) {
         var strings = stringMap[locale];
         var fallback = stringMap['en'];
         var missing = _.omit( fallback, _.keys( strings ) );
 
-        //Print the missing keys and the english values so the translator knows what to provide
+        // Print the missing keys and the english values so the translator knows what to provide
         console.log( locale, 'missing\n', JSON.stringify( missing, null, '\t' ) );
       }
     }
   } );
 
-  //Task that clones the dependencies for a project (except for the project itself, chipper and sherpa)
-  //See #56
+  // See #56 Task that clones the dependencies for a project (except for the project itself, chipper and sherpa)
   grunt.registerTask( 'get-dependencies', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
     console.log( 'pkg.name', pkg.name );
 
@@ -198,9 +209,11 @@ module.exports = function( grunt ) {
     }
   } );
 
-  //Task that creates a list of git clone commands that will check out a simulation and all its depnedencies
-  //This can be used by a PhET Developer to create a script to put in a simulation's README.md
-  //See #56
+  /*
+   * Task that creates a list of git clone commands that will check out a simulation and all its depnedencies
+   * This can be used by a PhET Developer to create a script to put in a simulation's README.md
+   * See #56
+   */
   grunt.registerTask( 'list-clone-commands', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
     console.log( 'pkg.name', pkg.name );
 
@@ -215,8 +228,10 @@ module.exports = function( grunt ) {
     console.log( 'end script' );
   } );
 
-  //Look up the locale strings provided in the simulation
-  //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
+  /*
+   * Look up the locale strings provided in the simulation.
+   * Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name.
+   */
   var getLocalesForDirectory = function( directory ) {
     var stringFiles = fs.readdirSync( directory );
     return stringFiles.map( function( stringFile ) {
@@ -224,15 +239,19 @@ module.exports = function( grunt ) {
     } );
   };
 
-  //Look up the locale strings provided in the simulation
-  //Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name
+  /*
+   * Look up the locale strings provided in the simulation.
+   * Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name.
+   */
   var getLocales = function() { return getLocalesForDirectory( 'strings' ); };
 
-  //Look up which locales should be built, accounting for flags provided by the developer on the command line
-  //--all-locales true: to build all of the provided locales
-  //--locales beers-law-lab: use locales from another sim's strings directory
-  //--locale fr: to build just the french locale
-  //[no options] to build just the english locale
+  /*
+   * Look up which locales should be built, accounting for flags provided by the developer on the command line
+   * --all-locales true: to build all of the provided locales
+   * --locales beers-law-lab: use locales from another sim's strings directory
+   * --locale fr: to build just the french locale
+   * [no options] to build just the english locale
+   */
   var getLocalesToBuild = function() {
     return grunt.option( 'all-locales' ) ? getLocales() :
            grunt.option( 'locale' ) ? [grunt.option( 'locale' ) ] :
@@ -244,7 +263,7 @@ module.exports = function( grunt ) {
     var fallbackStrings = global_phet_strings['en'];
     var strings = global_phet_strings[locale];
 
-    //Assuming the strings has all of the right keys, look up fallbacks where the locale did not translate a certain string
+    // Assuming the strings has all of the right keys, look up fallbacks where the locale did not translate a certain string
     var extended = {};
     for ( var key in strings ) {
       if ( strings.hasOwnProperty( key ) ) {
@@ -254,21 +273,27 @@ module.exports = function( grunt ) {
     return extended;
   };
 
-  //Scoped variable to hold the result from the generateLicenseInfoTask.
+  // Scoped variable to hold the result from the generateLicenseInfoTask.
   //TODO: A better way to store the return value?
   var licenseText;
   grunt.registerTask( 'generateLicenseInfo', 'Generate the license info', function() {
 
-    //Prepare the license info
-    //Run this first so that if something is missing from the license file you will find out before having to wait for jshint/requirejs build
-    var licenseInfo = info();
+    /*
+     * Prepare the license info. Run this first so that if something is missing from the license file
+     * you will find out before having to wait for jshint/requirejs build
+     */
+     var licenseInfo = info();
 
-    //Find all dependencies that have 'sherpa' in the path.
-    //Please note, this requires all simulations to keep their dependencies in sherpa!
+    /*
+     * Find all dependencies that have 'sherpa' in the path.
+     * Please note, this requires all simulations to keep their dependencies in sherpa!
+     */
     var sherpaDependencyPaths = _.filter( pkg.preload.split( ' ' ), function( dependency ) { return dependency.indexOf( 'sherpa' ) >= 0; } );
 
-    //Add libraries that are not explicitly included by the sim
-    //Note: must have a . character for the parsing below //TODO: Remove this restriction
+    /*
+     * Add libraries that are not explicitly included by the sim.
+     * Note: must have a . character for the parsing below TODO: Remove this restriction
+     */
     sherpaDependencyPaths.push( 'almond-0.2.9.js' );
     sherpaDependencyPaths.push( 'pegjs.' );
     sherpaDependencyPaths.push( 'font-awesome.' );
@@ -276,22 +301,22 @@ module.exports = function( grunt ) {
     sherpaDependencyPaths.push( 'text.js' );
     sherpaDependencyPaths.push( 'base64binary.js' );//TODO: Not all simulations use Vibe
 
-    //Sort by name of the library, have to match cases to sort properly
+    // Sort by name of the library, have to match cases to sort properly
     var sortedSherpaDependencyPaths = _.sortBy( sherpaDependencyPaths, function( path ) {return path.toUpperCase();} );
 
-    //Map the paths to instances from the info.js file
+    // Map the paths to instances from the info.js file
     var licenses = _.uniq( _.map( sortedSherpaDependencyPaths, function( sherpaDependencyPath ) {
       var lastSlash = sherpaDependencyPath.lastIndexOf( '/' );
       var lastDot = sherpaDependencyPath.lastIndexOf( '.' );
       var dependencyName = sherpaDependencyPath.substring( lastSlash + 1, lastDot );
       //    console.log( 'found dependency: ' + sherpaDependencyPath + ', name = ' + dependencyName );
 
-      //Make sure there is an entry in the info.js file, and return it
+      // Make sure there is an entry in the info.js file, and return it
       assert( licenseInfo[dependencyName], 'no license entry for ' + dependencyName );
       return licenseInfo[dependencyName];
     } ) );
 
-    //Get the text of each entry
+    // Get the text of each entry
     var separator = '=';
 
     //TODO: better way to return a value?
@@ -314,9 +339,11 @@ module.exports = function( grunt ) {
     pullAll( grunt, child_process, assert, pkg.name );
   } );
 
-  //This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13
-  //This updates the package.json and js/version.js files, and commits + pushes to git.
-  //BEWARE: do not run this task unless your git is clean, otherwise it will commit other work on your repo as well
+  /*
+   * This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13
+   * This updates the package.json and js/version.js files, and commits + pushes to git.
+   * BEWARE: do not run this task unless your git is clean, otherwise it will commit other work on your repo as well.
+   */
   //TODO: Also, if you embed this task in another, you should make sure the global pkg.version gets updated as well, since this modifies the files but not the pkg.version, which may be used elsewhere in the gruntfile.
   grunt.registerTask( 'bump-version', 'This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13.' +
                                       'This updates the package.json and js/version.js files, and commits + pushes to git.' +
@@ -336,7 +363,7 @@ module.exports = function( grunt ) {
       grunt.log.writeln( 'updated version in ' + path + ' from ' + oldText + ' to ' + newText );
     };
 
-    //Write the new version to the package.json file and version.js file
+    // Write the new version to the package.json file and version.js file
     replace( 'package.json', pkg.version, newFullVersion );
     replace( 'js/version.js', pkg.version, newFullVersion );
 
@@ -377,20 +404,19 @@ module.exports = function( grunt ) {
     assert( pkg.phetLibs, 'phetLibs required in package.json' );
     assert( pkg.preload, 'preload required in package.json' );
 
-    //See if a specific language was specified like:
-    // grunt build --locale fr
+    // See if a specific language was specified like: grunt build --locale fr
     var locale = grunt.option( 'locale' ) || 'en';
 
-    //Pass an option to requirejs through its config build options
+    // Pass an option to requirejs through its config build options
     grunt.config.set( 'requirejs.build.options.phetLocale', locale );
 
-    //set up a place for the strings to go:
+    // set up a place for the strings to go:
     global.phet = {};
     global.phet.strings = {};
 
     var localesToBuild = getLocalesToBuild();
 
-    //Pass a global to the string! plugin so we know which strings to look up
+    // Pass a global to the string! plugin so we know which strings to look up
     global.phet.localesToBuild = localesToBuild;
     for ( var i = 0; i < localesToBuild.length; i++ ) {
       global.phet.strings[localesToBuild[i]] = {};
@@ -493,12 +519,12 @@ module.exports = function( grunt ) {
       else {
         // now continue on with the process! CALLBACK SOUP FOR YOU!
 
-        // TODO: finish!
+        //TODO: finish!
         grunt.log.writeln( 'Writing dependencies.json' );
 
         var comment = '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString());
 
-        //protect against repos or other attributions named 'comment'
+        // protect against repos or other attributions named 'comment'
         assert( !dependencyInfo.comment, 'there was already a "comment" dependency!' );
         dependencyInfo.comment = comment;
 
@@ -507,7 +533,7 @@ module.exports = function( grunt ) {
         var splashDataURI = loadFileAsDataURI( '../brand/images/splash.svg' );
         var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
-        //Create the license header for this html and all the 3rd party dependencies
+        // Create the license header for this html and all the 3rd party dependencies
         //TODO: This puts the license for everything as GPLv3.  If we want to build other libraries with this, we should change the license to MIT
         var htmlHeader = pkg.name + '\n' +
                          'Copyright 2002-2013, University of Colorado Boulder\n' +
@@ -530,11 +556,13 @@ module.exports = function( grunt ) {
 
         grunt.log.writeln( 'Writing HTML' );
 
-        //Create the translated versions
+        // Create the translated versions
         var locales = getLocalesToBuild();
 
-        //Write the stringless template in case we want to use it with the translation addition process.
-        //Skip it if only building one HTML
+        /*
+         * Write the stringless template in case we want to use it with the translation addition process.
+         * Skip it if only building one HTML.
+         */
         if ( locales.length > 1 ) {
           grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
         }
@@ -552,7 +580,7 @@ module.exports = function( grunt ) {
                                                                'window.phetVersion=\'' + pkg.name + ' ' + pkg.version + '\';' );
 
           var titleKey = pkg.simTitleStringKey;
-          localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version ); // TODO: i18n order
+          localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version ); //TODO: i18n order
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
         }
 
@@ -566,7 +594,7 @@ module.exports = function( grunt ) {
         grunt.log.writeln( 'Writing HTML for iframe testing' );
         grunt.file.write( 'build/' + pkg.name + '_en-iframe' + '.html', iframeTestHtml );
 
-        //Write the string map, which may be used by translation utility for showing which strings are available for translation
+        // Write the string map, which may be used by translation utility for showing which strings are available for translation
         grunt.log.writeln( 'Writing string map to ', stringMap );
         var stringMap = 'build/' + pkg.name + '_string-map.json';
         grunt.file.write( stringMap, JSON.stringify( global.phet.strings, null, '\t' ) );
@@ -586,8 +614,10 @@ module.exports = function( grunt ) {
     createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'overwrite' ) );
   } );
 
-  // Load tasks from grunt plugins that have been installed locally using npm.
-  // Put these in package.json and run 'npm install' before running grunt.
+  /*
+   * Load tasks from grunt plugins that have been installed locally using npm.
+   * Put these in package.json and run 'npm install' before running grunt.
+   */
   grunt.loadNpmTasks( 'grunt-requirejs' );
   grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 };
