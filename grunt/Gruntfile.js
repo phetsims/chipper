@@ -335,6 +335,11 @@ module.exports = function( grunt ) {
     checkoutShas( grunt, child_process, assert, pkg.name );
   } );
 
+  grunt.registerTask( 'checkout-master', 'Shortcut for \'grunt checkout-shas --tomaster=true\'', function() {
+    grunt.option( 'tomaster', true );
+    checkoutShas( grunt, child_process, assert, pkg.name );
+  } );
+
   grunt.registerTask( 'pull-all', 'Pull all repo above this directory', function() {
     pullAll( grunt, child_process, assert, pkg.name );
   } );
