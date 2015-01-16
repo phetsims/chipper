@@ -48,6 +48,7 @@ define( function( require ) {
   return {
     load: function( name, parentRequire, onload, config ) {
 
+      //TODO why are we looking for a '?' in a string key name? when does that occur?
       // Pull out the key, which is between the last slash and the first question mark of the 'name' parameter.
       var questionMarkIndex = name.lastIndexOf( '?' );
       var key = questionMarkIndex < 0 ? name.substring( name.lastIndexOf( '/' ) + 1 ) : name.substring( name.lastIndexOf( '/' ) + 1, questionMarkIndex );
@@ -55,6 +56,7 @@ define( function( require ) {
       // Create the paths to the string files - primary and fallback.
       var project = name.substring( 0, name.indexOf( '/' ) );
 
+      //TODO remove this and fix the projects to use the proper convention
       //Some projects use a nickname for their module name, we can support that here
       project = project.toLowerCase() === 'bam' ? 'build-a-molecule' :
                 project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
@@ -66,6 +68,9 @@ define( function( require ) {
       var getPath = function( locale ) {return getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json' + suffix;};
       var fallbackStringPath = getPath( FALLBACK_LOCALE );
 
+      // strings may be specified via the 'strings' query parameter
+      var queryParameterStrings = JSON.parse( window.phetcommon.getQueryParameter( 'strings' ) || '{}' );
+
       var locale;
       //Browser version first
       if ( !config.isBuild ) {
@@ -74,10 +79,11 @@ define( function( require ) {
         locale = window.phetcommon.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
         var stringPath = getPath( locale );
 
-        //In the browser, a query parameter overrides anything, to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
-        var queryParameterValue = window.phetcommon.getQueryParameter( key );
-        if ( queryParameterValue ) {
-          onload( queryParameterValue )
+        // In the browser, a string specified via the 'strings' query parameter overrides anything,
+        // to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
+        var queryParameterStringValue = queryParameterStrings[ name ];
+        if ( queryParameterStringValue ) {
+          onload( queryParameterStringValue )
         }
         else {
 
