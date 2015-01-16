@@ -3,6 +3,7 @@
 /**
  * Grunt configuration file for PhET projects.
  * Requires a package.json file containing project settings.
+ * Reads the following properties from package.json: name, version, phetLibs
  *
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jon Olson
@@ -66,9 +67,12 @@ module.exports = function( grunt ) {
     }
   }
 
+  // Verify that package.json exists and contains required properties
   assert( fs.existsSync( 'package.json' ), 'repository must have a package.json' );
-
   var pkg = grunt.file.readJSON( 'package.json' );
+  assert( pkg.name, 'name missing from package.json' );
+  assert( pkg.version, 'version missing from package.json' );
+  assert( pkg.phetLibs, 'phetLibs missing from package.json' );
 
   // TODO: eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
