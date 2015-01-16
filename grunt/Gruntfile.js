@@ -16,7 +16,7 @@ var createSim = require( '../../chipper/grunt/create-sim' );
 global.fs = fs;
 
 /**
- * Grunt configuration file for simulations.
+ * Grunt configuration file for PhET projects.
  * Requires a package.json file containing project settings.
  *
  * @author Chris Malley (PixelZoom, Inc.)
@@ -65,11 +65,11 @@ module.exports = function( grunt ) {
     }
   }
 
-  assert( fs.existsSync( 'package.json' ), 'We need to be in a sim directory with package.json' );
+  assert( fs.existsSync( 'package.json' ), 'repository must have a package.json' );
 
   var pkg = grunt.file.readJSON( 'package.json' );
 
-  // TODO: eek, this is scary! we are importing from the sim dir. ideally we should just have uglify-js installed once in chipper?
+  // TODO: eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
   var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: not currently used, figure out how to include almond correctly?
 
@@ -127,17 +127,17 @@ module.exports = function( grunt ) {
       // configure the JSHint plugin
       jshint: {
 
-        // source files that are specific to this simulation
-        simFiles: [ 'js/**/*.js' ],
+        // source files that are specific to this repository
+        repoFiles: [ 'js/**/*.js' ],
 
         /*
-         * Source files for common-code dependencies.
+         * All source files for this repository (repository-specific and dependencies).
          * phetLibs is a string of repo names, space separated.
          * split converts the string to an array of repo names.
          * map then converts each repo name to a regular expression identifying the path to JS files.
          * Includes an exclusion for kite/js/parser/svgPath.js, which is auto-generated.
          */
-        commonFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
+        allFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
 
         // reference external JSHint options in jshint-options.js
         options: require( './jshint-options' )
@@ -153,12 +153,11 @@ module.exports = function( grunt ) {
   };
 
   // Default task ('grunt')
-  grunt.registerTask( 'default', 'clean, lint and build the English HTML', [ 'generateLicenseInfo', 'lint-sim', 'lint-common', 'clean', 'build' ] );
+  grunt.registerTask( 'default', 'clean, lint and build the English HTML', [ 'generateLicenseInfo', 'lint-all', 'clean', 'build' ] );
 
   // Other tasks ('grunt taskName')
-  grunt.registerTask( 'lint-sim', 'lint just the sim\'s js files', [ 'jshint:simFiles' ] );
-  grunt.registerTask( 'lint-common', 'lint all of the common js files', [ 'jshint:commonFiles' ] );
-  grunt.registerTask( 'lint', 'lint the sim code and the common code', [ 'lint-sim', 'lint-common' ] );
+  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'jshint:allFiles' ] );
   grunt.registerTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory', clean );
   grunt.registerTask( 'build', 'Builds the simulation (without cleaning or linting):\n' +
                                '--all-locales true:\n\tto build HTML for all locales in strings/\n' +
