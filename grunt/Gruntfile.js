@@ -1,5 +1,15 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
+/**
+ * Grunt configuration file for PhET projects.
+ * Requires a package.json file containing project settings.
+ *
+ * @author Chris Malley (PixelZoom, Inc.)
+ * @author Jon Olson
+ * @author Sam Reid
+ * @author John Blanco
+ */
+
 var assert = require( 'assert' );
 var fs = require( 'fs' );
 var child_process = require( 'child_process' );
@@ -15,15 +25,6 @@ var createSim = require( '../../chipper/grunt/create-sim' );
  */
 global.fs = fs;
 
-/**
- * Grunt configuration file for PhET projects.
- * Requires a package.json file containing project settings.
- *
- * @author Chris Malley (PixelZoom, Inc.)
- * @author Jon Olson
- * @author Sam Reid
- * @author John Blanco
- */
 module.exports = function( grunt ) {
   function trimWhitespace( str ) {
     return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );
