@@ -12,7 +12,7 @@ define( [
 
   //Path is relative to the simulation directory where grunt is run from
   '../../chipper/requirejs-plugins/loadFileAsDataURI',
-  '../../chipper/requirejs-plugins/getProjectURL'], function( loadFileAsDataURI, getProjectURL ) {
+  '../../chipper/requirejs-plugins/getProjectURL' ], function( loadFileAsDataURI, getProjectURL ) {
 
   //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
   var buildMap = {};
@@ -23,7 +23,7 @@ define( [
       var path = getProjectURL( name, parentRequire ) + 'images' + imageName;
 
       if ( config.isBuild ) {
-        buildMap[name] = path;
+        buildMap[ name ] = path;
         onload( null );
       }
       else {
@@ -44,7 +44,7 @@ define( [
     //https://github.com/jrburke/requirejs/blob/master/text.js
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
-        var content = buildMap[moduleName];
+        var content = buildMap[ moduleName ];
 
         var base64 = loadFileAsDataURI( content );
 

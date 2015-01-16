@@ -32,15 +32,15 @@ define( function( require ) {
   function getWithCache( url, callback, errback, headers ) {
 
     //Check for cache hit
-    if ( cache[url] ) {
-      callback( cache[url] );
+    if ( cache[ url ] ) {
+      callback( cache[ url ] );
     }
 
     //Cache miss: load the file parse, enter into cache and return it
     else {
       text.get( url, function( loadedText ) {
-        cache[url] = parse( loadedText );
-        callback( cache[url] );
+        cache[ url ] = parse( loadedText );
+        callback( cache[ url ] );
       }, errback, headers );
     }
   }
@@ -88,15 +88,15 @@ define( function( require ) {
 
           // Load & parse just once per file, getting the fallback strings first.
           getWithCache( fallbackStringPath, function( parsedFallbackStrings ) {
-              var fallback = parsedFallbackStrings[key] || key;
+              var fallback = parsedFallbackStrings[ key ] || key;
 
               // Now get the primary strings.
               getWithCache( stringPath, function( parsed ) {
 
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
-                  if ( parsedStrings[key] !== undefined ) {
-                    onload( parsedStrings[key] );
+                  if ( parsedStrings[ key ] !== undefined ) {
+                    onload( parsedStrings[ key ] );
                   }
                   else {
                     console.log( 'string not found for key: ' + key );
@@ -106,7 +106,7 @@ define( function( require ) {
                 //Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
                 function() {
 
-                  if ( !parsedFallbackStrings[key] ) {
+                  if ( !parsedFallbackStrings[ key ] ) {
                     //It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
                     console.log( 'no fallback for key:' + key );
                   }
@@ -145,8 +145,8 @@ define( function( require ) {
             var path = getPath( locale );
 
             //If we already loaded those strings and registered with global.phet.strings, no need to do so again
-            if ( cache[path] ) {
-              global.phet.strings[locale][name] = cache[path][key];
+            if ( cache[ path ] ) {
+              global.phet.strings[ locale ][ name ] = cache[ path ][ key ];
               resourceHandled();
             }
 
@@ -163,15 +163,15 @@ define( function( require ) {
 
                   //Store all loaded strings for access in the gruntfile.
                   //Fallbacks are computed in the Gruntfile.js
-                  global.phet.strings[locale][name] = parsed[key];
-                  cache[path] = parsed;
+                  global.phet.strings[ locale ][ name ] = parsed[ key ];
+                  cache[ path ] = parsed;
                   resourceHandled();
                 },
                 onload.error,
                 { accept: 'application/json' }
               )
             }
-          })( localesToLoad[i] );
+          })( localesToLoad[ i ] );
         }
       }
     },

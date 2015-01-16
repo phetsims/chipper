@@ -14,7 +14,7 @@ define( [
 
   //Path is relative to the simulation directory where grunt is run from
   '../../chipper/requirejs-plugins/loadFileAsDataURI',
-  '../../chipper/requirejs-plugins/getProjectURL'], function( loadFileAsDataURI, getProjectURL ) {
+  '../../chipper/requirejs-plugins/getProjectURL' ], function( loadFileAsDataURI, getProjectURL ) {
 
   'use strict';
 
@@ -46,7 +46,7 @@ define( [
 
       if ( config.isBuild ) {
         // Save in the build map for the 'write' function to use.
-        buildMap[name] = urlList;
+        buildMap[ name ] = urlList;
         onload( null );
       }
       else {
@@ -59,10 +59,10 @@ define( [
     //https://github.com/jrburke/requirejs/blob/master/text.js
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
-        var urlList = buildMap[moduleName];
+        var urlList = buildMap[ moduleName ];
         var base64ListText = '[';
         for ( var i = 0; i < urlList.length; i++ ) {
-          var base64 = loadFileAsDataURI( urlList[i].url );
+          var base64 = loadFileAsDataURI( urlList[ i ].url );
           base64ListText += '{base64:\'' + base64 + '\'}';
           base64ListText += i === urlList.length - 1 ? '\n' : ',\n';
         }

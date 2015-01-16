@@ -16,7 +16,7 @@ define( function() {
       'oga': 'audio/ogg',
       'bma': 'audio/webm', // webma is the full extension
       'wav': 'audio/wav'
-    }[filename.slice( -3 )];
+    }[ filename.slice( -3 ) ];
 
     //TODO: use asserts at build time
     if ( !mimeType ) {
