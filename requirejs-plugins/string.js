@@ -68,7 +68,7 @@ define( function( require ) {
       var fallbackStringPath = getPath( FALLBACK_LOCALE );
 
       // strings may be specified via the 'strings' query parameter
-      var queryParameterStrings = JSON.parse( window.phetcommon.getQueryParameter( 'strings' ) || '{}' );
+      var queryParameterStrings = JSON.parse( decodeURIComponent( window.phetcommon.getQueryParameter( 'strings' ) || '{}' ) );
 
       var locale;
       //Browser version first
