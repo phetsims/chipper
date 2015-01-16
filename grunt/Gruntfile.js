@@ -67,7 +67,7 @@ module.exports = function( grunt ) {
     }
   }
 
-  // Verify that package.json exists and contains required properties
+  // Read package.json, verify that it contains required properties
   assert( fs.existsSync( 'package.json' ), 'repository must have a package.json' );
   var pkg = grunt.file.readJSON( 'package.json' );
   assert( pkg.name, 'name missing from package.json' );
