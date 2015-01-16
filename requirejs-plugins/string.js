@@ -67,7 +67,7 @@ define( function( require ) {
       var getPath = function( locale ) {return getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json' + suffix;};
       var fallbackStringPath = getPath( FALLBACK_LOCALE );
 
-      // strings may be specified via the 'strings' query parameter
+      // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
       var queryParameterStrings = JSON.parse( decodeURIComponent( window.phetcommon.getQueryParameter( 'strings' ) || '{}' ) );
 
       var locale;
