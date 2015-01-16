@@ -59,7 +59,6 @@ define( function( require ) {
       //TODO remove this and fix the projects to use the proper convention
       //Some projects use a nickname for their module name, we can support that here
       project = project.toLowerCase() === 'bam' ? 'build-a-molecule' :
-                project.toLowerCase() === 'woas' ? 'wave-on-a-string' :
                 project;
 
       //Apply the cache buster args (but only during requirejs mode)
