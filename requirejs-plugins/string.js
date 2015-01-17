@@ -56,11 +56,6 @@ define( function( require ) {
       // Create the paths to the string files - primary and fallback.
       var project = name.substring( 0, name.indexOf( '/' ) );
 
-      //TODO remove this and fix the projects to use the proper convention
-      //Some projects use a nickname for their module name, we can support that here
-      project = project.toLowerCase() === 'bam' ? 'build-a-molecule' :
-                project;
-
       //Apply the cache buster args (but only during requirejs mode)
       var suffix = config.isBuild ? '' : '?' + config.urlArgs;
 
