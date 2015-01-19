@@ -16,7 +16,7 @@ var fs = require( 'fs' );
 var child_process = require( 'child_process' );
 var info = require( '../../sherpa/info' );
 var _ = require( '../../sherpa/lodash-2.4.1.min' );
-var checkoutShas = require( '../../chipper/grunt/checkout-shas' );
+var checkoutShas = require( '../../chipper/grunt/checkoutShas' );
 var pullAll = require( '../../chipper/grunt/pull-all' );
 var createSim = require( '../../chipper/grunt/create-sim' );
 
@@ -336,12 +336,11 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'checkout-shas', 'Check out the shas for a project as specified in a dependencies.json file in its top level.  Optional to checkout master branch if you specify --tomaster=true', function() {
-    checkoutShas( grunt, child_process, assert, pkg.name );
+    checkoutShas( grunt, pkg.name, false );
   } );
 
-  grunt.registerTask( 'checkout-master', 'Shortcut for \'grunt checkout-shas --tomaster=true\'', function() {
-    grunt.option( 'tomaster', true );
-    checkoutShas( grunt, child_process, assert, pkg.name );
+  grunt.registerTask( 'checkout-master', 'Check out master branch for all dependencies', function() {
+    checkoutShas( grunt, pkg.name, true );
   } );
 
   grunt.registerTask( 'pull-all', 'Pull all repo above this directory', function() {

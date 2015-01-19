@@ -8,10 +8,11 @@ var child_process = require( 'child_process' );
  *
  * TODO: should the parent project (the sim itself) also be checked out, ignored, or moved into its specified branch?  Right now it is ignored (i.e. left as it was when the task was started)
  * @param grunt
- * @param projectName
+ * @param toMaster whether master should be used, or dependencies.json shas should be used
  */
-module.exports = function( grunt, projectName ) {
+module.exports = function( grunt, projectName, toMaster ) {
   'use strict';
+
   var dependencies = grunt.file.readJSON( 'dependencies.json' );
   var done = grunt.task.current.async();
   var numToCheckOut = 0;
@@ -21,9 +22,6 @@ module.exports = function( grunt, projectName ) {
       numToCheckOut++;
     }
   }
-
-  //Added an option to checkout master branch if you specify --tomaster=true
-  var toMaster = !!grunt.option( "tomaster" ) && grunt.option( "tomaster" ) === true;
 
   for ( property in dependencies ) {
     if ( property !== 'comment' && property !== projectName && dependencies.hasOwnProperty( property ) ) {
