@@ -16,7 +16,7 @@ var fs = require( 'fs' );
 var child_process = require( 'child_process' );
 var info = require( '../../sherpa/info' );
 var _ = require( '../../sherpa/lodash-2.4.1.min' );
-var checkoutShas = require( '../../chipper/grunt/checkoutShas' );
+var checkoutShas = require( '../../chipper/grunt/checkout-shas' );
 var pullAll = require( '../../chipper/grunt/pull-all' );
 var createSim = require( '../../chipper/grunt/create-sim' );
 
