@@ -48,10 +48,8 @@ define( function( require ) {
   return {
     load: function( name, parentRequire, onload, config ) {
 
-      //TODO why are we looking for a '?' in a string key name? when does that occur?
-      // Pull out the key, which is between the last slash and the first question mark of the 'name' parameter.
-      var questionMarkIndex = name.lastIndexOf( '?' );
-      var key = questionMarkIndex < 0 ? name.substring( name.lastIndexOf( '/' ) + 1 ) : name.substring( name.lastIndexOf( '/' ) + 1, questionMarkIndex );
+      // Extract the key. Eg for 'JOHN_TRAVOLTAGE/johnTravoltage.name', the key is 'johnTravoltage.name'.
+      var key = name.substring( name.lastIndexOf( '/' ) + 1 );
 
       // Create the paths to the string files - primary and fallback.
       var project = name.substring( 0, name.indexOf( '/' ) );
