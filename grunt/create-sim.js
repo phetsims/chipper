@@ -98,7 +98,7 @@ module.exports = function( grunt, projectName, author, overwrite ) {
         contents = replaceAllString( contents, 'Simula Rasa', HumanReadable );
 
         contents = replaceOneString( contents, 'PhET Simulation Template.  "Simula rasa" is Latin for "blank sim".',
-            HumanReadable + ' by ' + author + ', using libraries from PhET Interactive Simulations at the University of Colorado Boulder (please see http://bit.ly/phet-development-overview for more). Readme file automatically created by https://github.com/phetsims/chipper' );
+          HumanReadable + ' by ' + author + ', using libraries from PhET Interactive Simulations at the University of Colorado Boulder (please see http://bit.ly/phet-development-overview for more). Readme file automatically created by https://github.com/phetsims/chipper' );
         contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );
         var subdirPath = subdir || '';
         var destPath = destinationPath + '/' + subdirPath + '/' + filename;

@@ -30,15 +30,15 @@ module.exports = function( grunt, projectName ) {
 
       (function( property ) {
 
-        assert( typeof( dependencies[property].branch !== 'undefined' ) && typeof( dependencies[property].sha !== 'undefined' ) );
+        assert( typeof( dependencies[ property ].branch !== 'undefined' ) && typeof( dependencies[ property ].sha !== 'undefined' ) );
 
-        console.log( "Checking out dependency " + property + ': ' + dependencies[property].branch + '@' + dependencies[property].sha );
+        console.log( "Checking out dependency " + property + ': ' + dependencies[ property ].branch + '@' + dependencies[ property ].sha );
 
         //To execute something from a different directory:
         //cp.exec('foocommand', { cwd: 'path/to/dir/' }, callback);
         //http://stackoverflow.com/questions/14026967/calling-child-process-exec-in-node-as-though-it-was-executed-in-a-specific-folde
-        var command = 'git checkout ' + ( toMaster ? 'master' : dependencies[property].sha );
-        child_process.exec( command, {cwd: '../' + property}, function( error1, stdout1, stderr1 ) {
+        var command = 'git checkout ' + ( toMaster ? 'master' : dependencies[ property ].sha );
+        child_process.exec( command, { cwd: '../' + property }, function( error1, stdout1, stderr1 ) {
           assert( !error1, "error in " + command );
           console.log( 'Finished checkout.' );
           console.log( stdout1 );

@@ -51,7 +51,7 @@ module.exports = function( grunt ) {
       'oga': 'audio/ogg',
       'bma': 'audio/webm', // webma is the full extension
       'wav': 'audio/wav'
-    }[filename.slice( -3 )];
+    }[ filename.slice( -3 ) ];
     assert( mimeType, 'Unknown mime type for filename: ' + filename );
 
     return 'data:' + mimeType + ';base64,' + Buffer( fs.readFileSync( filename ) ).toString( 'base64' );
@@ -124,7 +124,7 @@ module.exports = function( grunt ) {
             },
 
             //stub out the plugins so their source code won't be included in the minified file
-            stubModules: ['string', 'audio', 'image']
+            stubModules: [ 'string', 'audio', 'image' ]
           }
         }
       },
@@ -178,8 +178,8 @@ module.exports = function( grunt ) {
     // for each language, say what is missing
     for ( var locale in stringMap ) {
       if ( stringMap.hasOwnProperty( locale ) && locale !== 'en' ) {
-        var strings = stringMap[locale];
-        var fallback = stringMap['en'];
+        var strings = stringMap[ locale ];
+        var fallback = stringMap[ 'en' ];
         var missing = _.omit( fallback, _.keys( strings ) );
 
         // Print the missing keys and the english values so the translator knows what to provide
@@ -197,10 +197,10 @@ module.exports = function( grunt ) {
     var numCloned = 0;
     var done = grunt.task.current.async();
     for ( var i = 0; i < dependencies.length; i++ ) {
-      var dependency = dependencies[i];
+      var dependency = dependencies[ i ];
       var command = 'git clone https://github.com/phetsims/' + dependency + '.git';
       console.log( 'executing:', command );
-      child_process.exec( command, {cwd: '../'}, function( error1, stdout1, stderr1 ) {
+      child_process.exec( command, { cwd: '../' }, function( error1, stdout1, stderr1 ) {
         console.log( stdout1 );
         console.log( stderr1 );
         assert( !error1, "error in " + command );
@@ -225,7 +225,7 @@ module.exports = function( grunt ) {
     console.log( 'listing git clone commands for', pkg.name, ': ', pkg.phetLibs );
     console.log( 'start script' );
     for ( var i = 0; i < dependencies.length; i++ ) {
-      var dependency = dependencies[i];
+      var dependency = dependencies[ i ];
       var command = 'git clone https://github.com/phetsims/' + dependency + '.git';
       console.log( command );
     }
@@ -258,20 +258,20 @@ module.exports = function( grunt ) {
    */
   var getLocalesToBuild = function() {
     return grunt.option( 'all-locales' ) ? getLocales() :
-           grunt.option( 'locale' ) ? [grunt.option( 'locale' ) ] :
+           grunt.option( 'locale' ) ? [ grunt.option( 'locale' ) ] :
            grunt.option( 'locales' ) ? getLocalesForDirectory( '../' + grunt.option( 'locales' ) + '/strings' ) :
-           ['en'];
+           [ 'en' ];
   };
 
   var getStringsWithFallbacks = function( locale, global_phet_strings ) {
-    var fallbackStrings = global_phet_strings['en'];
-    var strings = global_phet_strings[locale];
+    var fallbackStrings = global_phet_strings[ 'en' ];
+    var strings = global_phet_strings[ locale ];
 
     // Assuming the strings has all of the right keys, look up fallbacks where the locale did not translate a certain string
     var extended = {};
     for ( var key in strings ) {
       if ( strings.hasOwnProperty( key ) ) {
-        extended[key] = strings[key] || fallbackStrings[key];
+        extended[ key ] = strings[ key ] || fallbackStrings[ key ];
       }
     }
     return extended;
@@ -286,7 +286,7 @@ module.exports = function( grunt ) {
      * Prepare the license info. Run this first so that if something is missing from the license file
      * you will find out before having to wait for jshint/requirejs build
      */
-     var licenseInfo = info();
+    var licenseInfo = info();
 
     /*
      * Find all dependencies that have 'sherpa' in the path.
@@ -316,8 +316,8 @@ module.exports = function( grunt ) {
       //    console.log( 'found dependency: ' + sherpaDependencyPath + ', name = ' + dependencyName );
 
       // Make sure there is an entry in the info.js file, and return it
-      assert( licenseInfo[dependencyName], 'no license entry for ' + dependencyName );
-      return licenseInfo[dependencyName];
+      assert( licenseInfo[ dependencyName ], 'no license entry for ' + dependencyName );
+      return licenseInfo[ dependencyName ];
     } ) );
 
     // Get the text of each entry
@@ -428,9 +428,9 @@ module.exports = function( grunt ) {
     // Pass a global to the string! plugin so we know which strings to look up
     global.phet.localesToBuild = localesToBuild;
     for ( var i = 0; i < localesToBuild.length; i++ ) {
-      global.phet.strings[localesToBuild[i]] = {};
+      global.phet.strings[ localesToBuild[ i ] ] = {};
     }
-    global.phet.strings['en'] = {};//may overwrite above
+    global.phet.strings[ 'en' ] = {};//may overwrite above
 
     //TODO: Use requirejs directly instead of through the grunt plugin (?)
     // grunt.log.writeln( 'Running Require.js optimizer' );
@@ -472,8 +472,8 @@ module.exports = function( grunt ) {
     var preloadBlocks = '';
     var preloadLibs = pkg.preload.split( ' ' );
     for ( var libIdx = 0; libIdx < preloadLibs.length; libIdx++ ) {
-      var lib = preloadLibs[libIdx];
-      var preloadResult = uglify.minify( [lib], {
+      var lib = preloadLibs[ libIdx ];
+      var preloadResult = uglify.minify( [ lib ], {
         output: {
           inline_script: true // escape </script
         },
@@ -518,7 +518,7 @@ module.exports = function( grunt ) {
             var branch = trimWhitespace( stdout );
 
             grunt.log.writeln( padString( dependency, 20 ) + branch + ' ' + sha );
-            dependencyInfo[dependency] = { sha: sha, branch: branch };
+            dependencyInfo[ dependency ] = { sha: sha, branch: branch };
 
 
             nextDependency();
@@ -579,7 +579,7 @@ module.exports = function( grunt ) {
         //TODO: Write a list of the string keys & values for translation utilities to use
 
         for ( var i = 0; i < locales.length; i++ ) {
-          var locale = locales[i];
+          var locale = locales[ i ];
           var strings = getStringsWithFallbacks( locale, global.phet.strings );
           var phetStringsCode = 'window.phetStrings=' + JSON.stringify( strings, null, '' );//TODO: right hand side should be object literal for looked up strings
           var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
@@ -589,14 +589,14 @@ module.exports = function( grunt ) {
                                                                'window.phetVersion=\'' + pkg.name + ' ' + pkg.version + '\';' );
 
           var titleKey = pkg.simTitleStringKey;
-          localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version ); //TODO: i18n order
+          localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
         }
 
         // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
         grunt.log.writeln( 'Constructing HTML for iframe testing from template' );
         var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-        iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', strings[titleKey] + ' ' + pkg.version + ' iframe test' );
+        iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version + ' iframe test' );
         iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
 
         // Write the iframe test file.  English (en) is assumed as the locale.
