@@ -335,11 +335,11 @@ module.exports = function( grunt ) {
     grunt.log.writeln( 'created license info for ' + licenses.length + ' dependencies' );
   } );
 
-  grunt.registerTask( 'checkout-shas', 'Check out the shas for a project as specified in a dependencies.json file in its top level.  Optional to checkout master branch if you specify --tomaster=true', function() {
+  grunt.registerTask( 'checkout-shas', 'Check out shas for a project, as specified in dependencies.json', function() {
     checkoutShas( grunt, pkg.name, false );
   } );
 
-  grunt.registerTask( 'checkout-master', 'Check out master branch for all dependencies', function() {
+  grunt.registerTask( 'checkout-master', 'Check out master branch for all dependencies, as specified in dependencies.json', function() {
     checkoutShas( grunt, pkg.name, true );
   } );
 
