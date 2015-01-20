@@ -30,7 +30,7 @@ define( function( require ) {
 
   var parse = (typeof JSON !== 'undefined' && typeof JSON.parse === 'function') ? JSON.parse : function( text ) { return eval( '(' + text + ')' ); };
 
-  //Cache the loaded strings so they only have to be read once through file.read (for performance)
+  // Cache the loaded strings so they only have to be read once through file.read (for performance)
   var cache = {};
 
   /**
@@ -43,12 +43,12 @@ define( function( require ) {
    */
   function getWithCache( url, callback, errback, headers ) {
 
-    //Check for cache hit
+    // Check for cache hit
     if ( cache[ url ] ) {
       callback( cache[ url ] );
     }
     else {
-      //Cache miss: load the file parse, enter into cache and return it
+      // Cache miss: load the file parse, enter into cache and return it
 
       text.get( url, function( loadedText ) {
         cache[ url ] = parse( loadedText );
@@ -90,7 +90,7 @@ define( function( require ) {
       // Create the paths to the string files - primary and fallback.
       var project = name.substring( 0, name.indexOf( '/' ) );
 
-      //Apply the cache buster args (but only during requirejs mode)
+      // Apply the cache buster args (but only during requirejs mode)
       var suffix = config.isBuild ? '' : '?' + config.urlArgs;
 
       var getPath = function( locale ) {return getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json' + suffix;};
@@ -104,7 +104,7 @@ define( function( require ) {
         // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
         var queryParameterStrings = JSON.parse( decodeURIComponent( window.phetcommon.getQueryParameter( 'strings' ) || '{}' ) );
 
-        //Read the locale from a query parameter, if it is there, or use english
+        // Read the locale from a query parameter, if it is there, or use english
         locale = window.phetcommon.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
         var stringPath = getPath( locale );
 
@@ -133,14 +133,14 @@ define( function( require ) {
                     onload( fallback );
                   }
                 },
-                //Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
+                // Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
                 function() {
 
                   if ( !parsedFallbackStrings[ key ] ) {
-                    //It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
+                    // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
                     console.log( 'no fallback for key:' + key );
                   }
-                  //Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
+                  // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
                   console.log( "No string file provided for " + stringPath );
                   onload( fallback );
                 },
@@ -156,7 +156,7 @@ define( function( require ) {
 
         // This code block handles the compilation step (not the in-browser requirejs mode).
 
-        //Lookup all of the available translation files for the localesToBuild and the fallback string files
+        // Lookup all of the available translation files for the localesToBuild and the fallback string files
         var localesToLoad = global.phet.localesToBuild.slice();
         if ( localesToLoad.indexOf( FALLBACK_LOCALE ) < 0 ) {
           localesToLoad.push( FALLBACK_LOCALE );
@@ -174,25 +174,25 @@ define( function( require ) {
 
             var path = getPath( locale );
 
-            //If we already loaded those strings and registered with global.phet.strings, no need to do so again
+            // If we already loaded those strings and registered with global.phet.strings, no need to do so again
             if ( cache[ path ] ) {
               global.phet.strings[ locale ][ name ] = cache[ path ][ key ];
               resourceHandled();
             }
             else if ( !global.fs.existsSync( path ) ) {
-              //If the file doesn't exist, move on to the next one
+              // If the file doesn't exist, move on to the next one
 
               console.log( "File doesn't exist: ", path );
               resourceHandled();
             }
             else {
-              //Load from the actual file
+              // Load from the actual file
 
               text.get( path, function( stringFile ) {
                   var parsed = parse( stringFile );
 
-                  //Store all loaded strings for access in the gruntfile.
-                  //Fallbacks are computed in the Gruntfile.js
+                  // Store all loaded strings for access in the gruntfile.
+                  // Fallbacks are computed in the Gruntfile.js
                   global.phet.strings[ locale ][ name ] = parsed[ key ];
                   cache[ path ] = parsed;
                   resourceHandled();
