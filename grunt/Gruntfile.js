@@ -16,9 +16,9 @@ var fs = require( 'fs' );
 var child_process = require( 'child_process' );
 var info = require( '../../sherpa/info' );
 var _ = require( '../../sherpa/lodash-2.4.1.min' );
-var checkoutShas = require( '../../chipper/grunt/checkout-shas' );
-var pullAll = require( '../../chipper/grunt/pull-all' );
-var createSim = require( '../../chipper/grunt/create-sim' );
+var checkoutShas = require( '../../chipper/grunt/checkoutShas' );
+var pullAll = require( '../../chipper/grunt/pullAll' );
+var createSim = require( '../../chipper/grunt/createSim' );
 
 /*
  * Register fs as a global so it can be accessed through the requirejs build system. Text.js plugin
@@ -144,8 +144,8 @@ module.exports = function( grunt ) {
          */
         allFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
 
-        // reference external JSHint options in jshint-options.js
-        options: require( './jshint-options' )
+        // reference external JSHint options in jshintOptions.js
+        options: require( './jshintOptions' )
       }
     } );
 
