@@ -69,6 +69,7 @@ module.exports = {
     WebSocket: false, // for WebSocket communication
     WebGLDebugUtils: false, // for khronos webgl-debug.js debugging utilities
     iframePhone: false, // for CODAP or other Concord communication
+    PIXI: false,
 
     alert: false, //for debugging on ipad
     numeric: false, //Numeric library used in energy skate park
