@@ -7,22 +7,23 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="phet-sim-level" content="production">
   <title>SIM_TITLE</title>
-<!--
-HTML_HEADER
--->
+  <!--
+  HTML_HEADER
+  -->
 </head>
 <body bgcolor="black">
 <img id="splash" style="position: absolute;top: 50%;left: 50%;margin-top: -210px;margin-left: -252px;" src="SPLASH_SCREEN_DATA_URI">
 <script type="text/javascript">PHET_STRINGS</script>
 <script type="text/javascript">PHET_INFO</script>
+PRELOAD_INLINE_JAVASCRIPT
 <script type="text/javascript">
+  window.phetStringOverrides = JSON.parse( decodeURIComponent( window.phetcommon.getQueryParameter( 'strings' ) || '{}' ) );
   window.phetStrings.get = function( key ) {
 
     //Support translation by query parameter to enable translation in the browser
-    return window.phetcommon.getQueryParameter( key ) || window.phetStrings[key];
+    return window.phetStringOverrides[ key ] || window.phetStrings[ key ];
   };
 </script>
-PRELOAD_INLINE_JAVASCRIPT
 MAIN_INLINE_JAVASCRIPT
 </body>
 </html>
