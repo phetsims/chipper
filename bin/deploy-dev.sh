@@ -39,6 +39,12 @@ PHET_DEV_ROOT=/htdocs/physics/phet/dev/html
 echo "Deploying $NAME $VERSION to $PHET_DEV_SERVER"
 scp -r $BUILD_DIR ${USER_NAME}@${PHET_DEV_SERVER}:${PHET_DEV_ROOT}/${NAME}/${VERSION}
 
+# check in dependencies.json
+echo "Checking in dependencies.json ..."
+cp ${BUILD_DIR}/dependencies.json .
+git add dependencies.json
+git commit --message "check in dependencies.json for ${VERSION}"
+
 # print the deployed URL, so you can test quickly via copy-paste
 echo "deployed:" http://www.colorado.edu/physics/phet/dev/html/${NAME}/${VERSION}/${NAME}_en.html
 
