@@ -44,6 +44,7 @@ echo "Checking in dependencies.json ..."
 cp ${BUILD_DIR}/dependencies.json .
 git add dependencies.json
 git commit --message "check in dependencies.json for ${VERSION}"
+git push
 
 # print the deployed URL, so you can test quickly via copy-paste
 echo "deployed:" http://www.colorado.edu/physics/phet/dev/html/${NAME}/${VERSION}/${NAME}_en.html
