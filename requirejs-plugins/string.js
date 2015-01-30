@@ -102,10 +102,10 @@ define( function( require ) {
       if ( !config.isBuild ) {
 
         // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
-        var queryParameterStrings = JSON.parse( decodeURIComponent( window.phetcommon.getQueryParameter( 'strings' ) || '{}' ) );
+        var queryParameterStrings = JSON.parse( decodeURIComponent( phet.phetcommon.getQueryParameter( 'strings' ) || '{}' ) );
 
         // Read the locale from a query parameter, if it is there, or use english
-        locale = window.phetcommon.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
+        locale = phet.phetcommon.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
         var stringPath = getPath( locale );
 
         // In the browser, a string specified via the 'strings' query parameter overrides anything,
