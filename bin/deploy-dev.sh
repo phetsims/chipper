@@ -39,7 +39,7 @@ PHET_DEV_ROOT=/htdocs/physics/phet/dev/html
 echo "Deploying $NAME $VERSION to $PHET_DEV_SERVER"
 scp -r $BUILD_DIR ${USER_NAME}@${PHET_DEV_SERVER}:${PHET_DEV_ROOT}/${NAME}/${VERSION}
 
-# check in dependencies.json
+# update dependencies.json
 echo "Updating dependencies.json ..."
 cp ${BUILD_DIR}/dependencies.json .
 git add dependencies.json
