@@ -40,10 +40,10 @@ echo "Deploying $NAME $VERSION to $PHET_DEV_SERVER"
 scp -r $BUILD_DIR ${USER_NAME}@${PHET_DEV_SERVER}:${PHET_DEV_ROOT}/${NAME}/${VERSION}
 
 # check in dependencies.json
-echo "Checking in dependencies.json ..."
+echo "Updating dependencies.json ..."
 cp ${BUILD_DIR}/dependencies.json .
 git add dependencies.json
-git commit --message "check in dependencies.json for ${VERSION}"
+git commit --message "updated dependencies.json for ${VERSION}"
 git push
 
 # print the deployed URL, so you can test quickly via copy-paste
