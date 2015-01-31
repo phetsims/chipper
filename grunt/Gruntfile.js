@@ -586,9 +586,11 @@ module.exports = function( grunt ) {
                                 'window.phet.chipper.strings=' + JSON.stringify( strings, null, '' ) + ';';
           var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
+          //TODO: if this is for changing layout, we'll need these globals in requirejs mode
+          //TODO: why are we combining pkg.name with pkg.version?
           //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-          localeHTML = stringReplace( localeHTML, 'PHET_INFO', 'window.phetLocale=\'' + locale + '\';' +
-                                                               'window.phetVersion=\'' + pkg.name + ' ' + pkg.version + '\';' );
+          localeHTML = stringReplace( localeHTML, 'PHET_INFO', 'window.phet.chipper.locale=\'' + locale + '\';' +
+                                                               'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' );
 
           var titleKey = pkg.simTitleStringKey;
           localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
