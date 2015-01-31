@@ -580,8 +580,10 @@ module.exports = function( grunt ) {
         for ( var i = 0; i < locales.length; i++ ) {
           var locale = locales[ i ];
           var strings = getStringsWithFallbacks( locale, global.phet.strings );
-          //TODO: right hand side should be object literal for looked up strings
-          var phetStringsCode = 'window.phet = window.phet || {}; window.phet.chipper = window.phet.chipper || {}; window.phet.chipper.strings=' + JSON.stringify( strings, null, '' ) + ';';
+          //TODO: window.phet and window.phet.chipper should be created elsewhere
+          var phetStringsCode = 'window.phet = window.phet || {};' +
+                                'window.phet.chipper = window.phet.chipper || {};' +
+                                'window.phet.chipper.strings=' + JSON.stringify( strings, null, '' ) + ';';
           var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
           //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
