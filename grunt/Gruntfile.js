@@ -78,6 +78,10 @@ module.exports = function( grunt ) {
   var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
   var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: not currently used, figure out how to include almond correctly?
 
+  global.phet = global.phet || {};
+  global.phet.phetcommon = global.phet.phetcommon || {};
+  global.phet.phetcommon.getCacheBusterArgs = global.phet.phetcommon.getCacheBusterArgs || function() {return '';};
+
   // Project configuration.
   grunt.initConfig(
     {
@@ -419,8 +423,8 @@ module.exports = function( grunt ) {
     grunt.config.set( 'requirejs.build.options.phetLocale', locale );
 
     // set up a place for the strings to go:
-    global.phet = {};
-    global.phet.strings = {};
+    global.phet = global.phet || {};
+    global.phet.strings = global.phet.strings || {};
 
     var localesToBuild = getLocalesToBuild();
 
