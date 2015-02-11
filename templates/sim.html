@@ -18,7 +18,7 @@
 PRELOAD_INLINE_JAVASCRIPT
 <script type="text/javascript">
   (function() {
-    var stringOverrides = JSON.parse( decodeURIComponent( phet.phetcommon.getQueryParameter( 'strings' ) || '{}' ) );
+    var stringOverrides = JSON.parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
     // defined by PHET_STRINGS above, see chipper.Gruntfile.js
     assert && assert( window.phet.chipper.strings );
     window.phet.chipper.strings.get = function( key ) {

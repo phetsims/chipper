@@ -79,8 +79,8 @@ module.exports = function( grunt ) {
   var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: not currently used, figure out how to include almond correctly?
 
   global.phet = global.phet || {};
-  global.phet.phetcommon = global.phet.phetcommon || {};
-  global.phet.phetcommon.getCacheBusterArgs = global.phet.phetcommon.getCacheBusterArgs || function() {return '';};
+  global.phet.chipper = global.phet.chipper || {};
+  global.phet.chipper.getCacheBusterArgs = global.phet.chipper.getCacheBusterArgs || function() {return '';};
 
   var globalDefs = {
     // global assertions
