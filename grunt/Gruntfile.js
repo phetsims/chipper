@@ -27,6 +27,8 @@ var createSim = require( '../../chipper/grunt/createSim' );
 global.fs = fs;
 
 module.exports = function( grunt ) {
+  'use strict';
+
   function trimWhitespace( str ) {
     return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );
   }
@@ -54,7 +56,7 @@ module.exports = function( grunt ) {
     }[ filename.slice( -3 ) ];
     assert( mimeType, 'Unknown mime type for filename: ' + filename );
 
-    return 'data:' + mimeType + ';base64,' + Buffer( fs.readFileSync( filename ) ).toString( 'base64' );
+    return 'data:' + mimeType + ';base64,' + new Buffer( fs.readFileSync( filename ) ).toString( 'base64' );
   }
 
   function stringReplace( str, substring, replacement ) {
@@ -369,7 +371,7 @@ module.exports = function( grunt ) {
                                       'This updates the package.json and js/version.js files, and commits + pushes to git.' +
                                       'BEWARE: do not run this task unless your git is clean, otherwise it will commit other work on your repo as well.', function() {
     var lastDot = pkg.version.lastIndexOf( '.' );
-    var number = parseInt( pkg.version.substring( lastDot + 1 ) );
+    var number = parseInt( pkg.version.substring( lastDot + 1 ), 10 );
     var newNumber = number + 1;
     var newFullVersion = pkg.version.substring( 0, lastDot + 1 ) + newNumber;
 
