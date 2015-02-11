@@ -10,7 +10,7 @@
  */
 define( [
 
-  //Path is relative to the simulation directory where grunt is run from
+  //Path is relative to the requirejs config.js file
   '../../chipper/requirejs-plugins/loadFileAsDataURI',
   '../../chipper/requirejs-plugins/getProjectURL' ], function( loadFileAsDataURI, getProjectURL ) {
 
