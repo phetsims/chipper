@@ -1,6 +1,5 @@
 //  Copyright 2002-2014, University of Colorado Boulder
 
-var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
 

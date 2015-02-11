@@ -1,5 +1,4 @@
 //  Copyright 2002-2014, University of Colorado Boulder
-var assert = require( 'assert' );
 
 /**
  * Create a simulation based on the simula-rasa template
