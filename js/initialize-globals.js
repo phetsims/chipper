@@ -72,7 +72,6 @@
 
 // Initialize query parameters, see docs above
   (function() {
-    'use strict';
 
     // Create the attachment point for all PhET globals
     window.phet = window.phet || {};
@@ -117,7 +116,6 @@
    * Must be run before RequireJS, and assumes that assert.js and query-parameters.js has been run.
    */
   (function() {
-    'use strict';
 
     // TODO: separate this logic out into a more common area?
     var isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
