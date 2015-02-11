@@ -26,7 +26,7 @@ define( function() {
       throw new Error( 'Unknown mime type for filename: ' + filename );
     }
 
-    var base64 = 'data:' + mimeType + ';base64,' + Buffer( fs.readFileSync( filename ) ).toString( 'base64' );
+    var base64 = 'data:' + mimeType + ';base64,' + new Buffer( global.fs.readFileSync( filename ) ).toString( 'base64' );
     return base64;
   };
 } );

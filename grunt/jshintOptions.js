@@ -76,7 +76,8 @@ module.exports = {
     alert: false, //for debugging on ipad
     numeric: false, //Numeric library used in energy skate park
     location: false, //For setting location.href to save to local file, see http://stackoverflow.com/questions/2897619/using-html5-javascript-to-generate-and-save-a-file
-    FileReader: false //For file loading, see SaveLoadNode in Energy Skate Park: Basics
+    FileReader: false, //For file loading, see SaveLoadNode in Energy Skate Park: Basics
+    Buffer: false
   }
 };
 
