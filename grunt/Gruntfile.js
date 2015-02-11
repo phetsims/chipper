@@ -144,7 +144,7 @@ module.exports = function( grunt ) {
       jshint: {
 
         // source files that are specific to this repository
-        repoFiles: [ 'js/**/*.js', 'grunt/**/*.js' ],
+        repoFiles: [ 'js/**/*.js' ],
 
         /*
          * All source files for this repository (repository-specific and dependencies).
