@@ -76,7 +76,7 @@ module.exports = function( grunt ) {
 
   // TODO: eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
-  var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: not currently used, figure out how to include almond correctly?
+  var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: chipper#100 not currently used, figure out how to include almond correctly?
 
   global.phet = global.phet || {};
   global.phet.chipper = global.phet.chipper || {};
