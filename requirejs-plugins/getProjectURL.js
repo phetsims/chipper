@@ -1,6 +1,7 @@
 // Copyright 2002-2013, University of Colorado Boulder
 
 define( function() {
+  'use strict';
 
   return function( name, parentRequire ) {
     //trim the ? suffix, resolve on the last / (could later be converted to :)

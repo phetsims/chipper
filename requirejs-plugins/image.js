@@ -13,6 +13,7 @@ define( [
   //Path is relative to the requirejs config.js file
   '../../chipper/requirejs-plugins/loadFileAsDataURI',
   '../../chipper/requirejs-plugins/getProjectURL' ], function( loadFileAsDataURI, getProjectURL ) {
+  'use strict';
 
   //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
   var buildMap = {};

@@ -112,7 +112,7 @@ define( function( require ) {
         // to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
         var queryParameterStringValue = queryParameterStrings[ name ];
         if ( queryParameterStringValue ) {
-          onload( queryParameterStringValue )
+          onload( queryParameterStringValue );
         }
         else {
 
@@ -145,11 +145,11 @@ define( function( require ) {
                   onload( fallback );
                 },
                 { accept: 'application/json' }
-              )
+              );
             },
             onload.error,
             { accept: 'application/json' }
-          )
+          );
         }
       }
       else {
@@ -199,7 +199,7 @@ define( function( require ) {
                 },
                 onload.error,
                 { accept: 'application/json' }
-              )
+              );
             }
           })( localesToLoad[ i ] );
         }
