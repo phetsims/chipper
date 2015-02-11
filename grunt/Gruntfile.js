@@ -82,6 +82,23 @@ module.exports = function( grunt ) {
   global.phet.phetcommon = global.phet.phetcommon || {};
   global.phet.phetcommon.getCacheBusterArgs = global.phet.phetcommon.getCacheBusterArgs || function() {return '';};
 
+  var globalDefs = {
+    // global assertions
+    assert: false,
+    assertSlow: false,
+    // scenery logging
+    sceneryLog: false,
+    sceneryLayerLog: false,
+    sceneryEventLog: false,
+    sceneryAccessibilityLog: false,
+    phetAllocation: false
+  };
+
+  // Delete arch references from the minified file, but only if it is not an arch build.
+  var archRequired = _.find( pkg.preload.split( ' ' ), function( repo ) { return repo === '../arch/js/arch.js'; } ) !== undefined;
+  if ( !archRequired ) {
+    globalDefs.arch = false;
+  }
   // Project configuration.
   grunt.initConfig(
     {
@@ -112,17 +129,7 @@ module.exports = function( grunt ) {
                 inline_script: true // escape </script
               },
               compress: {
-                global_defs: {
-                  // global assertions
-                  assert: false,
-                  assertSlow: false,
-                  // scenery logging
-                  sceneryLog: false,
-                  sceneryLayerLog: false,
-                  sceneryEventLog: false,
-                  sceneryAccessibilityLog: false,
-                  phetAllocation: false
-                },
+                global_defs: globalDefs,
                 dead_code: true
               }
             },
