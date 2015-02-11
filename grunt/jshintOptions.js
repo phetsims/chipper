@@ -71,6 +71,7 @@ module.exports = {
     iframePhone: false, // for CODAP or other Concord communication
     PIXI: false,
     arch: false,
+    global: false, // for linting Node.js code
 
     alert: false, //for debugging on ipad
     numeric: false, //Numeric library used in energy skate park
