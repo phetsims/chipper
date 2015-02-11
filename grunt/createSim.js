@@ -1,5 +1,7 @@
 //  Copyright 2002-2014, University of Colorado Boulder
 
+var fs = require( 'fs' );
+
 /**
  * Create a simulation based on the simula-rasa template
  *

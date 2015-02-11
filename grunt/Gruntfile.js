@@ -74,7 +74,7 @@ module.exports = function( grunt ) {
   assert( pkg.version, 'version missing from package.json' );
   assert( pkg.phetLibs, 'phetLibs missing from package.json' );
 
-  // TODO: eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
+  // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
   var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' ); // TODO: chipper#100 not currently used, figure out how to include almond correctly?
 
