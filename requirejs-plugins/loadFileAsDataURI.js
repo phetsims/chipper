@@ -1,6 +1,8 @@
 // Copyright 2002-2013, University of Colorado Boulder
 
-//This function was taken from chipper/grunt/Gruntfile.js.  It is for converting a resource (like an image or audio file) to base64
+/**
+ * Converts a resource (like an image or audio file) to base64.
+ */
 define( function() {
   'use strict';
 
