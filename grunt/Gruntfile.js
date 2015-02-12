@@ -80,8 +80,6 @@ module.exports = function( grunt ) {
 
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
-  // TODO: chipper#100 not currently used, figure out how to include almond correctly?
-  var requirejs = require( '../../' + pkg.name + '/node_modules/requirejs' );
 
   global.phet = global.phet || {};
   global.phet.chipper = global.phet.chipper || {};
@@ -446,38 +444,6 @@ module.exports = function( grunt ) {
       global.phet.strings[ localesToBuild[ i ] ] = {};
     }
     global.phet.strings[ FALLBACK_LOCAL ] = {};//may overwrite above
-
-    //TODO: Use requirejs directly instead of through the grunt plugin (?)
-    // grunt.log.writeln( 'Running Require.js optimizer' );
-    // requirejs.optimize( {
-    //   almond: true,
-    //   mainConfigFile: 'js/' + pkg.name + '-config.js',
-    //   out: 'build/' + pkg.name + '.min.js',
-    //   name: pkg.name + '-config',
-    //   optimize: 'uglify2',
-    //   wrap: true,
-    //   generateSourceMaps: true,
-    //   preserveLicenseComments: false,
-    //   uglify2: {
-    //     output: {
-    //       inline_script: true // escape </script
-    //     },
-    //     compress: {
-    //       global_defs: {
-    //         // scenery assertions
-    //         sceneryAssert: false,
-    //         sceneryAssertExtra: false,
-    //         // scenery logging
-    //         sceneryLog: false,
-    //         sceneryLayerLog: false,
-    //         sceneryEventLog: false,
-    //         sceneryAccessibilityLog: false
-    //       },
-    //       dead_code: true
-    //     }
-    //   }
-    // }, function( response ) {
-    // }
   } );
 
   grunt.registerTask( 'simAfterRequirejs', '(internal use only) Finish writing files after requirjs finished', function() {
