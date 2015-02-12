@@ -28,7 +28,7 @@ define( function( require ) {
   // constants
   var FALLBACK_LOCALE = 'en';
 
-  var parse = (typeof JSON !== 'undefined' && typeof JSON.parse === 'function') ? JSON.parse : function( text ) { return eval( '(' + text + ')' ); };
+  var parse = JSON.parse;
 
   // Cache the loaded strings so they only have to be read once through file.read (for performance)
   var cache = {};
@@ -102,7 +102,7 @@ define( function( require ) {
       if ( !config.isBuild ) {
 
         // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
-        var queryParameterStrings = JSON.parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
+        var queryParameterStrings = parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
 
         // Read the locale from a query parameter, if it is there, or use english
         locale = phet.chipper.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
