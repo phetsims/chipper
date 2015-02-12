@@ -10,13 +10,12 @@
  * @author Sam Reid
  * @author John Blanco
  */
-define( [
-
-  //Path is relative to the requirejs config.js file
-  '../../chipper/requirejs-plugins/loadFileAsDataURI',
-  '../../chipper/requirejs-plugins/getProjectURL' ], function( loadFileAsDataURI, getProjectURL ) {
-
+define( function( require ) {
   'use strict';
+
+  //Paths are relative to the requirejs config.js file
+  var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
+  var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
 
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.

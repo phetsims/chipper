@@ -44,7 +44,7 @@ module.exports = function( grunt ) {
     return str;
   }
 
-  //TODO: chipper#99 This is a copy of requirejs-plugins/loadFileAsDataURI.js and should be deleted if we can figure out how to load that one
+  //TODO: chipper#99 This is a copy of js/requirejs-plugins/loadFileAsDataURI.js and should be deleted if we can figure out how to load that one
   function loadFileAsDataURI( filename ) {
     var mimeType = {
       'png': 'image/png',
