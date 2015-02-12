@@ -29,6 +29,8 @@ global.fs = fs;
 module.exports = function( grunt ) {
   'use strict';
 
+  var FALLBACK_LOCAL = 'en';
+
   function trimWhitespace( str ) {
     return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );
   }
@@ -147,7 +149,7 @@ module.exports = function( grunt ) {
       jshint: {
 
         // source files that are specific to this repository
-        repoFiles: [ 'js/**/*.js' ],
+        repoFiles: [ 'js/**/*.js', 'grunt/**/*.js', 'requirejs-plugins/**/*.js' ],
 
         /*
          * All source files for this repository (repository-specific and dependencies).
@@ -191,9 +193,9 @@ module.exports = function( grunt ) {
 
     // for each language, say what is missing
     for ( var locale in stringMap ) {
-      if ( stringMap.hasOwnProperty( locale ) && locale !== 'en' ) {
+      if ( stringMap.hasOwnProperty( locale ) && locale !== FALLBACK_LOCAL ) {
         var strings = stringMap[ locale ];
-        var fallback = stringMap[ 'en' ];
+        var fallback = stringMap.en;
         var missing = _.omit( fallback, _.keys( strings ) );
 
         // Print the missing keys and the english values so the translator knows what to provide
@@ -274,11 +276,11 @@ module.exports = function( grunt ) {
     return grunt.option( 'all-locales' ) ? getLocales() :
            grunt.option( 'locale' ) ? [ grunt.option( 'locale' ) ] :
            grunt.option( 'locales' ) ? getLocalesForDirectory( '../' + grunt.option( 'locales' ) + '/strings' ) :
-           [ 'en' ];
+           [ FALLBACK_LOCAL ];
   };
 
   var getStringsWithFallbacks = function( locale, global_phet_strings ) {
-    var fallbackStrings = global_phet_strings[ 'en' ];
+    var fallbackStrings = global_phet_strings[ FALLBACK_LOCAL ];
     var strings = global_phet_strings[ locale ];
 
     // Assuming the strings has all of the right keys, look up fallbacks where the locale did not translate a certain string
@@ -427,7 +429,7 @@ module.exports = function( grunt ) {
     assert( pkg.preload, 'preload required in package.json' );
 
     // See if a specific language was specified like: grunt build --locale fr
-    var locale = grunt.option( 'locale' ) || 'en';
+    var locale = grunt.option( 'locale' ) || FALLBACK_LOCAL;
 
     // Pass an option to requirejs through its config build options
     grunt.config.set( 'requirejs.build.options.phetLocale', locale );
@@ -443,7 +445,7 @@ module.exports = function( grunt ) {
     for ( var i = 0; i < localesToBuild.length; i++ ) {
       global.phet.strings[ localesToBuild[ i ] ] = {};
     }
-    global.phet.strings[ 'en' ] = {};//may overwrite above
+    global.phet.strings[ FALLBACK_LOCAL ] = {};//may overwrite above
 
     //TODO: Use requirejs directly instead of through the grunt plugin (?)
     // grunt.log.writeln( 'Running Require.js optimizer' );
