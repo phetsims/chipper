@@ -14,13 +14,13 @@
 var assert = require( 'assert' );
 var fs = require( 'fs' );
 var child_process = require( 'child_process' );
-var info = require( '../../sherpa/info' );
+var info = require( '../../../sherpa/info' );
 /* jshint -W079 */
-var _ = require( '../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
+var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
-var checkoutShas = require( '../../chipper/grunt/checkoutShas' );
-var pullAll = require( '../../chipper/grunt/pullAll' );
-var createSim = require( '../../chipper/grunt/createSim' );
+var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
+var pullAll = require( '../../../chipper/js/grunt/pullAll' );
+var createSim = require( '../../../chipper/js/grunt/createSim' );
 
 /*
  * Register fs as a global so it can be accessed through the requirejs build system. Text.js plugin
@@ -81,7 +81,7 @@ module.exports = function( grunt ) {
   assert( pkg.phetLibs, 'phetLibs missing from package.json' );
 
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
-  var uglify = require( '../../' + pkg.name + '/node_modules/uglify-js' );
+  var uglify = require( '../../../' + pkg.name + '/node_modules/uglify-js' );
 
   global.phet = global.phet || {};
   global.phet.chipper = global.phet.chipper || {};
