@@ -16,7 +16,7 @@ var fs = require( 'fs' );
 var child_process = require( 'child_process' );
 var info = require( '../../sherpa/info' );
 /* jshint -W079 */
-var _ = require( '../../sherpa/lodash-2.4.1.min' );
+var _ = require( '../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
 var checkoutShas = require( '../../chipper/grunt/checkoutShas' );
 var pullAll = require( '../../chipper/grunt/pullAll' );
