@@ -17,6 +17,7 @@ var child_process = require( 'child_process' );
 var info = require( '../../sherpa/info' );
 /* jshint -W079 */
 var _ = require( '../../sherpa/lodash-2.4.1.min' );
+/* jshint +W079 */
 var checkoutShas = require( '../../chipper/grunt/checkoutShas' );
 var pullAll = require( '../../chipper/grunt/pullAll' );
 var createSim = require( '../../chipper/grunt/createSim' );
