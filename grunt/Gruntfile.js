@@ -149,7 +149,7 @@ module.exports = function( grunt ) {
       jshint: {
 
         // source files that are specific to this repository
-        repoFiles: [ 'js/**/*.js', 'grunt/**/*.js', 'requirejs-plugins/**/*.js' ],
+        repoFiles: [ 'js/**/*.js' ],
 
         /*
          * All source files for this repository (repository-specific and dependencies).
@@ -593,9 +593,10 @@ module.exports = function( grunt ) {
 
         //TODO: Write a list of the string keys & values for translation utilities to use
 
+        var strings, titleKey;
         for ( var i = 0; i < locales.length; i++ ) {
           var locale = locales[ i ];
-          var strings = getStringsWithFallbacks( locale, global.phet.strings );
+          strings = getStringsWithFallbacks( locale, global.phet.strings );
           //TODO: window.phet and window.phet.chipper should be created elsewhere
           var phetStringsCode = 'window.phet = window.phet || {};' +
                                 'window.phet.chipper = window.phet.chipper || {};' +
@@ -608,7 +609,7 @@ module.exports = function( grunt ) {
           localeHTML = stringReplace( localeHTML, 'PHET_INFO', 'window.phet.chipper.locale=\'' + locale + '\';' +
                                                                'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' );
 
-          var titleKey = pkg.simTitleStringKey;
+          titleKey = pkg.simTitleStringKey;
           localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
         }
@@ -624,8 +625,8 @@ module.exports = function( grunt ) {
         grunt.file.write( 'build/' + pkg.name + '_en-iframe' + '.html', iframeTestHtml );
 
         // Write the string map, which may be used by translation utility for showing which strings are available for translation
-        grunt.log.writeln( 'Writing string map to ', stringMap );
         var stringMap = 'build/' + pkg.name + '_string-map.json';
+        grunt.log.writeln( 'Writing string map to ', stringMap );
         grunt.file.write( stringMap, JSON.stringify( global.phet.strings, null, '\t' ) );
 
         grunt.log.writeln( 'Cleaning temporary files' );
