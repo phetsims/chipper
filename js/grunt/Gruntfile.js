@@ -525,11 +525,10 @@ module.exports = function( grunt ) {
         var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
         // Create the license header for this html and all the 3rd party dependencies
-        //TODO: This puts the license for everything as GPLv3.  If we want to build other libraries with this, we should change the license to MIT
         var htmlHeader = pkg.name + '\n' +
                          'Copyright 2002-2013, University of Colorado Boulder\n' +
                          'PhET Interactive Simulations\n' +
-                         'Licensed under GPLv3\n' +
+                         'Licensed under ' + pkg.license + '\n' +
                          'http://phet.colorado.edu/en/about/licensing\n' +
                          '\n' +
                          'Libraries:\n' + licenseText;
