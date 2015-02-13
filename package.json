@@ -1,9 +1,8 @@
 {
   "name": "chipper",
-  "version": "1.0.0-dev.1",
-  "phetLibs": "chipper",
-  "preload": "",
+  "version": "0.0.0",
   "license": "MIT",
+  "phetLibs": "chipper",
   "repository": {
     "type": "git",
     "url": "https://github.com/phetsims/chipper.git"
