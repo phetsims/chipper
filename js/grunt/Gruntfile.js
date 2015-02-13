@@ -215,7 +215,7 @@ module.exports = function( grunt ) {
     console.log( 'pkg.name', pkg.name );
 
     var dependencies = _.without( pkg.phetLibs.split( ' ' ), 'sherpa', 'chipper', pkg.name );
-    console.log( 'cloning dependencies for', pkg.name, ': ', pkg.phetLibs );
+    console.log( 'cloning dependencies for', pkg.name, ': ', pkg.phetLibs ); //TODO this is wrong, it prints sherpa and chipper, which were removed in previous line
     var numCloned = 0;
     var done = grunt.task.current.async();
     for ( var i = 0; i < dependencies.length; i++ ) {
