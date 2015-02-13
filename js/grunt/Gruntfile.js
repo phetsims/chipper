@@ -28,6 +28,7 @@ var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 
 /*
+ * In Node, global is the global namespace object.
  * Register fs as a global so it can be accessed through the requirejs build system. Text.js plugin
  * may have a superior way to handle this but I (SR) couldn't get it working after a small amount of effort.
  */
