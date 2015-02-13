@@ -3,7 +3,6 @@
 /**
  * Grunt configuration file for PhET projects.
  * Requires a package.json file containing project settings.
- * Reads the following properties from package.json: name, version, phetLibs
  *
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jon Olson
