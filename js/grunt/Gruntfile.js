@@ -244,7 +244,7 @@ module.exports = function( grunt ) {
     console.log( 'pkg.name', pkg.name );
 
     var dependencies = pkg.phetLibs.split( ' ' );
-    console.log( 'listing git clone commands for', pkg.name, ': ', pkg.phetLibs );
+    console.log( 'listing git clone commands for', pkg.name, ': ', dependencies.toString() );
     console.log( 'start script' );
     for ( var i = 0; i < dependencies.length; i++ ) {
       var dependency = dependencies[ i ];
