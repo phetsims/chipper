@@ -107,65 +107,64 @@ module.exports = function( grunt ) {
   }
 
   // Project configuration.
-  grunt.initConfig(
-    {
-      /*
-       * Read in the project settings from the package.json file into the pkg property.
-       * This allows us to refer to project settings from within this config file.
-       */
-      pkg: pkg,
+  grunt.initConfig( {
+    /*
+     * Read in the project settings from the package.json file into the pkg property.
+     * This allows us to refer to project settings from within this config file.
+     */
+    pkg: pkg,
 
-      // configure the RequireJS plugin
-      requirejs: {
+    // configure the RequireJS plugin
+    requirejs: {
 
-        // builds the minified script
-        build: {
-          options: {
-            almond: true,
-            mainConfigFile: 'js/<%= pkg.name %>-config.js',
-            out: 'build/<%= pkg.name %>.min.js',
-            name: '<%= pkg.name %>-config',
+      // builds the minified script
+      build: {
+        options: {
+          almond: true,
+          mainConfigFile: 'js/<%= pkg.name %>-config.js',
+          out: 'build/<%= pkg.name %>.min.js',
+          name: '<%= pkg.name %>-config',
 
-            // Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
-            optimize: 'uglify2',
-            wrap: true,
+          // Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
+          optimize: 'uglify2',
+          wrap: true,
 //            generateSourceMaps: true, //#42 commented out this line until source maps are fixed
-            preserveLicenseComments: false,
-            uglify2: {
-              output: {
-                inline_script: true // escape </script
-              },
-              compress: {
-                global_defs: globalDefs,
-                dead_code: true
-              }
+          preserveLicenseComments: false,
+          uglify2: {
+            output: {
+              inline_script: true // escape </script
             },
+            compress: {
+              global_defs: globalDefs,
+              dead_code: true
+            }
+          },
 
-            //stub out the plugins so their source code won't be included in the minified file
-            stubModules: [ 'string', 'audio', 'image' ]
-          }
+          //stub out the plugins so their source code won't be included in the minified file
+          stubModules: [ 'string', 'audio', 'image' ]
         }
-      },
-
-      // configure the JSHint plugin
-      jshint: {
-
-        // source files that are specific to this repository
-        repoFiles: [ 'js/**/*.js' ],
-
-        /*
-         * All source files for this repository (repository-specific and dependencies).
-         * phetLibs is a string of repo names, space separated.
-         * split converts the string to an array of repo names.
-         * map then converts each repo name to a regular expression identifying the path to JS files.
-         * Includes an exclusion for kite/js/parser/svgPath.js, which is auto-generated.
-         */
-        allFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
-
-        // reference external JSHint options in jshintOptions.js
-        options: require( './jshintOptions' )
       }
-    } );
+    },
+
+    // configure the JSHint plugin
+    jshint: {
+
+      // source files that are specific to this repository
+      repoFiles: [ 'js/**/*.js' ],
+
+      /*
+       * All source files for this repository (repository-specific and dependencies).
+       * phetLibs is a string of repo names, space separated.
+       * split converts the string to an array of repo names.
+       * map then converts each repo name to a regular expression identifying the path to JS files.
+       * Includes an exclusion for kite/js/parser/svgPath.js, which is auto-generated.
+       */
+      allFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
+
+      // reference external JSHint options in jshintOptions.js
+      options: require( './jshintOptions' )
+    }
+  } );
 
   var clean = function() {
     if ( fs.existsSync( 'build' ) ) {
