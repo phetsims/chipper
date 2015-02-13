@@ -78,8 +78,8 @@ module.exports = function( grunt ) {
   var pkg = grunt.file.readJSON( 'package.json' );
   assert( pkg.name, 'name missing from package.json' );
   assert( pkg.version, 'version missing from package.json' );
-  assert( pkg.phetLibs, 'phetLibs missing from package.json' );
   assert( pkg.license, 'license missing from package.json' );
+  assert( pkg.phetLibs, 'phetLibs missing from package.json' );
 
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + pkg.name + '/node_modules/uglify-js' );
@@ -101,10 +101,11 @@ module.exports = function( grunt ) {
   };
 
   // Delete arch references from the minified file, but only if it is not an arch build.
-  var archRequired = _.find( pkg.preload.split( ' ' ), function( repo ) { return repo === '../arch/js/arch.js'; } ) !== undefined;
+  var archRequired = pkg.preload && _.find( pkg.preload.split( ' ' ), function( repo ) { return repo === '../arch/js/arch.js'; } ) !== undefined;
   if ( !archRequired ) {
     globalDefs.arch = false;
   }
+
   // Project configuration.
   grunt.initConfig(
     {
@@ -309,6 +310,7 @@ module.exports = function( grunt ) {
      * Find all dependencies that have 'sherpa' in the path.
      * Please note, this requires all simulations to keep their dependencies in sherpa!
      */
+    assert( pkg.preload, 'preload missing from package.json' );
     var sherpaDependencyPaths = _.filter( pkg.preload.split( ' ' ), function( dependency ) { return dependency.indexOf( 'sherpa' ) >= 0; } );
 
     /*
@@ -576,6 +578,7 @@ module.exports = function( grunt ) {
           localeHTML = stringReplace( localeHTML, 'PHET_INFO', 'window.phet.chipper.locale=\'' + locale + '\';' +
                                                                'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' );
 
+          assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' ); // required for sims
           titleKey = pkg.simTitleStringKey;
           localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
           grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
