@@ -511,7 +511,6 @@ module.exports = function( grunt ) {
       else {
         // now continue on with the process! CALLBACK SOUP FOR YOU!
 
-        //TODO: finish!
         grunt.log.writeln( 'Writing dependencies.json' );
 
         var comment = '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString());
