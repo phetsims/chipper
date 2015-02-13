@@ -11,13 +11,18 @@
  * @author John Blanco
  */
 
+// built-in node APIs
 var assert = require( 'assert' );
 var fs = require( 'fs' );
 var child_process = require( 'child_process' );
-var info = require( '../../../sherpa/info' );
+
+// 3rd-party packages
+var info = require( '../../../sherpa/info' ); // license info for all 3rd-party packages
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
+
+// PhET custom grunt tasks
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
