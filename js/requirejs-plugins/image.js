@@ -35,7 +35,12 @@ define( function( require ) {
         };
         image.onload = function() {
           onload( image );
-          delete image.onload;
+
+          // try-catch for older browsers like Safari 6.1
+          try {
+            delete image.onload;
+          }
+          catch ( e ) {}
         };
         image.src = path + '?' + config.urlArgs;
       }
