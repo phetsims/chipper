@@ -99,6 +99,14 @@
     };
 
     /**
+     * Retrieves the entire map of query parameters (may be empty)
+     * @return {object} map from string->string
+     */
+    window.phet.chipper.getQueryParameters = function() {
+      return queryParamsMap;
+    };
+
+    /**
      * Gets the cache buster args based on the provided query parameters.  Dy default it is:
      * ?bust=<number>
      * But this can be omitted if ?cacheBuster=false is provided
