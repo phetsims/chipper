@@ -1,0 +1,307 @@
+//  Copyright 2002-2015, University of Colorado Boulder
+
+var fs = require( 'fs' );
+var jpeg = require( 'jpeg-js' );
+var pngjs = require( 'pngjs' );
+
+/**
+ * Responsible for converting a single PNG/JPEG file to a structured list of mipmapped versions of it, each
+ * at half the scale of the previous version.
+ *
+ * Level 0 is the original image, level 1 is a half-size image, level 2 is a quarter-size image, etc.
+ *
+ * For each level, a preferred encoding (PNG/JPEG) is determined. If the image doesn't need alpha information and
+ * the JPEG base64 is smaller, the JPEG encoding will be used (PNG otherwise).
+ *
+ * The resulting object for each mipmap level will be of the form:
+ * {
+ *   width: {number} - width of the image provided by this level of detail
+ *   height: {number} - width of the image provided by this level of detail
+ *   data: {Buffer} - 1-dimensional row-major buffer holding RGBA information for the level as an array of bytes 0-255.
+ *                    e.g. buffer[2] will be the blue component of the top-left pixel, buffer[4] is the red component
+ *                    for the pixel to the right, etc.
+ *   url: {string} - Data URL for the preferred image data
+ *   buffer: {Buffer} - Raw bytes for the preferred image data (could be written to file and opened as an image)
+ *   <pngURL, pngBuffer, jpgURL, jpgBuffer may also be available, but is not meant for general use>
+ * }
+ *
+ * @param {string} filename
+ * @param {number} maxLevel - An integer denoting the maximum level of detail that should be included, or -1 to include
+ *                            all levels up to and including a 1x1 image.
+ * @param {number} quality - An integer from 1-100 determining the quality of the image. Currently only used for the
+ *                           JPEG encoding quality.
+ * @param {function} callback - Called with function( mipmaps: {Array} ), consisting of the array of mipmap objects.
+ *                              mipmaps[0] will be for level 0, etc.
+ */
+module.exports = function createMipmap( filename, maxLevel, quality, callback ) {
+  'use strict';
+
+  console.log( 'mipmapping ' + filename + ( maxLevel >= 0 ? ' to level ' + maxLevel : '' ) + ' with quality: ' + quality );
+
+  var mipmaps = []; // our array that will be passed to the callback when we are done
+
+  // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
+  function loadJPEG() {
+    fs.readFile( filename, function( err, data ) {
+      if ( err ) {
+        throw err;
+      }
+
+      // pass the file data directly to jpeg-js
+      var imageData = jpeg.decode( data );
+
+      mipmaps.push( {
+        data: imageData.data,
+        width: imageData.width,
+        height: imageData.height
+      } );
+
+      mipmapIt();
+    } );
+  }
+
+  // Loads / decodes the initial PNG image, and when done proceeds to the mipmapping
+  function loadPNG() {
+    var src = fs.createReadStream( filename );
+
+    var basePNG = new pngjs.PNG( {
+      // if we need a specific filter type, put it here
+    } );
+
+    basePNG.on( 'error', function ( err ) {
+      throw err;
+    } );
+
+    basePNG.on( 'parsed', function() {
+      mipmaps.push( {
+        data: basePNG.data,
+        width: basePNG.width,
+        height: basePNG.height
+      } );
+
+      mipmapIt();
+    } );
+
+    // pass the stream to pngjs
+    src.pipe( basePNG );
+  }
+
+  /**
+   * @param {Buffer} data - Should have 4*width*height elements
+   * @param {number} width
+   * @param {number} height
+   * @param {number} quality - Out of 100
+   * @param {function} callback - function( buffer )
+   */
+  function outputJPEG( data, width, height, quality, callback ) {
+    var encodedOuput = jpeg.encode( {
+      data: data,
+      width: width,
+      height: height
+    }, quality );
+    callback( encodedOuput.data );
+  }
+
+  /**
+   * @param {Buffer} data - Should have 4*width*height elements
+   * @param {number} width
+   * @param {number} height
+   * @param {function} callback - function( buffer )
+   */
+  function outputPNG( data, width, height, callback ) {
+    // provides width/height so it is initialized with the correct-size buffer
+    var png = new pngjs.PNG( {
+      width: width,
+      height: height
+    } );
+
+    // copy our image data into the pngjs.PNG's data buffer;
+    data.copy( png.data, 0, 0, data.length );
+
+    // will concatenate the buffers from the stream into one once it is finished
+    var buffers = [];
+    png.on( 'data', function( buffer ) {
+      buffers.push( buffer );
+    } );
+    png.on( 'end', function() {
+      var buffer = Buffer.concat( buffers );
+
+      callback( buffer );
+    } );
+    png.on( 'error', function( err ) {
+      throw err;
+    } );
+
+    // kick off the encoding of the PNG
+    png.pack();
+  }
+
+  /**
+   * Takes in a mipmap object with data/width/height and returns another mipmap object with data/width/height that is
+   * downscaled by a factor of 2. Needs to round the width/height up to include all of the image (if it's not a
+   * power of 2).
+   *
+   * Handles alpha blending of 4 pixels into 1, and does so with the proper gamma corrections so that we only add/blend
+   * colors in the linear sRGB colorspace.
+   *
+   * @param {object} mipmap - Mipmap object with { data: {Buffer}, width: {number}, height: {number} }
+   */
+  function downscale( mipmap ) {
+    // array index constants for the channels
+    var R = 0;
+    var G = 1;
+    var B = 2;
+    var A = 3;
+
+    // hard-coded gamma (assuming the exponential part of the sRGB curve as a simplification)
+    var GAMMA = 2.2;
+
+    // dimension handling for the larger image
+    var width = mipmap.width;
+    var height = mipmap.height;
+    var data = mipmap.data;
+    function inside( row, col ) {
+      return row < height && col < width;
+    }
+    // grabbing pixel data for a row/col, applying corrections into the [0,1] range.
+    function pixel( row, col ) {
+      if ( !inside( row, col ) ) {
+        return [ 0, 0, 0, 0 ];
+      }
+      var index = 4 * ( row * width + col );
+      return [
+        // maps to [0,1]
+        Math.pow( data[ index + R ] / 255, GAMMA ), // red
+        Math.pow( data[ index + G ] / 255, GAMMA ), // green
+        Math.pow( data[ index + B ] / 255, GAMMA ), // blue
+        Math.pow( data[ index + A ] / 255, GAMMA ) // alpha
+      ];
+    }
+
+    // dimension h andling for the smaller downscaled image
+    var smallWidth = Math.ceil( width / 2 );
+    var smallHeight = Math.ceil( height / 2 );
+    var smallData = new Buffer( 4 * smallWidth * smallHeight );
+    function smallPixel( row, col ) {
+      return 4 * ( row * smallWidth + col );
+    }
+
+    // for each pixel in our downscaled image
+    for ( var row = 0; row < height; row++ ) {
+      for ( var col = 0; col < width; col++ ) {
+        // Original pixel values for the quadrant
+        var p1 = pixel( 2 * row, 2 * col ); // upper-left
+        var p2 = pixel( 2 * row, 2 * col + 1); // upper-right
+        var p3 = pixel( 2 * row + 1, 2 * col ); // lower-left
+        var p4 = pixel( 2 * row + 1, 2 * col + 1 ); // lower-right
+        var output = [ 0, 0, 0, 0 ];
+
+        var alphaSum = p1[ A ] + p2[ A ] + p3[ A ] + p4[ A ];
+
+        // blending of pixels, weighted by alphas
+        output[ R ] = ( p1[ R ] * p1[ A ] + p2[ R ] * p2[ A ] + p3[ R ] * p3[ A ] + p4[ R ] * p4[ A ] ) / alphaSum;
+        output[ G ] = ( p1[ G ] * p1[ A ] + p2[ G ] * p2[ A ] + p3[ G ] * p3[ A ] + p4[ G ] * p4[ A ] ) / alphaSum;
+        output[ B ] = ( p1[ B ] * p1[ A ] + p2[ B ] * p2[ A ] + p3[ B ] * p3[ A ] + p4[ B ] * p4[ A ] ) / alphaSum;
+        output[ A ] = alphaSum / 4; // average of alphas
+
+        // convert back into [0,255] range with reverse corrections, and store in our buffer
+        var outputIndex = smallPixel( row, col );
+        smallData[ outputIndex + R ] = Math.floor( Math.pow( output[ R ], 1 / GAMMA ) * 255 );
+        smallData[ outputIndex + G ] = Math.floor( Math.pow( output[ G ], 1 / GAMMA ) * 255 );
+        smallData[ outputIndex + B ] = Math.floor( Math.pow( output[ B ], 1 / GAMMA ) * 255 );
+        smallData[ outputIndex + A ] = Math.floor( Math.pow( output[ A ], 1 / GAMMA ) * 255 );
+      }
+    }
+
+    return {
+      data: smallData,
+      width: smallWidth,
+      height: smallHeight
+    };
+  }
+
+  // called when our mipmap[0] level is loaded by decoding the main image (creates the mipmap levels)
+  function mipmapIt() {
+    // When reduced to 0, we'll be done with encoding (and can call our callback). Needed because they are asynchronous.
+    var encodeCounter = 1;
+
+    // Alpha detection on the level-0 image to see if we can swap jpg for png
+    var hasAlpha = false;
+    for ( var i = 3; i < mipmaps[0].data.length; i += 4 ) {
+      if ( mipmaps[0].data[i] < 255 ) {
+        hasAlpha = true;
+        break;
+      }
+    }
+
+    // called when all of encoding is complete
+    function encodingComplete() {
+      for ( var level = 0; level < mipmaps.length; level++ ) {
+        // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
+        var usePNG = hasAlpha || mipmaps[level].jpgURL.length > mipmaps[level].pngURL.length;
+        mipmaps[level].url = usePNG ? mipmaps[level].pngURL : mipmaps[level].jpgURL;
+        mipmaps[level].buffer = usePNG ? mipmaps[level].pngBuffer : mipmaps[level].jpgBuffer;
+
+        console.log( 'level ' + level + ' (' + ( usePNG ? 'PNG' : 'JPG' ) + ' ' +
+                     mipmaps[level].width + 'x' + mipmaps[level].height + ') base64: ' +
+                     mipmaps[level].url.length + ' bytes ' );
+      }
+
+      callback( mipmaps );
+    }
+
+    // kicks off asynchronous encoding for a specific level
+    function encodeLevel( level ) {
+      encodeCounter++;
+      outputPNG( mipmaps[level].data, mipmaps[level].width, mipmaps[level].height, function( buffer ) {
+        mipmaps[level].pngBuffer = buffer;
+        mipmaps[level].pngURL = 'data:image/png;base64,' + buffer.toString( 'base64' );
+        if ( --encodeCounter === 0 ) {
+          encodingComplete();
+        }
+      } );
+
+      // only encode JPEG if it has no alpha
+      if ( !hasAlpha ) {
+        encodeCounter++;
+        outputJPEG( mipmaps[level].data, mipmaps[level].width, mipmaps[level].height, quality, function( buffer ) {
+          mipmaps[level].jpgBuffer = buffer;
+          mipmaps[level].jpgURL = 'data:image/jpeg;base64,' + buffer.toString( 'base64' );
+          if ( --encodeCounter === 0 ) {
+            encodingComplete();
+          }
+        } );
+      }
+    }
+
+    // encode all levels, and compute rasters for levels 1-N
+    encodeLevel( 0 );
+    function finestMipmap() {
+      return mipmaps[ mipmaps.length - 1 ];
+    }
+    // bail if we already have a 1x1 image, or if we reach the maxLevel (recall maxLevel===-1 means no maximum level)
+    while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
+      var level = mipmaps.length;
+      mipmaps.push( downscale( finestMipmap() ) );
+      encodeLevel( level );
+    }
+
+    // just in case everything happened synchronously
+    if ( --encodeCounter === 0 ) {
+      encodingComplete();
+    }
+
+  }
+
+  // kick everything off
+  var suffix = filename.slice( -4 );
+  if ( suffix === '.jpg' ) {
+    loadJPEG();
+  }
+  else if ( suffix === '.png' ) {
+    loadPNG();
+  }
+  else {
+    throw new Error( 'unknown image type: ' + filename );
+  }
+};
