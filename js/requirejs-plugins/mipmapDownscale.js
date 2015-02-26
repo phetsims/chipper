@@ -14,8 +14,8 @@
    * colors in the linear sRGB colorspace.
    *
    * @param {object} mipmap - Mipmap object with { data: {Buffer}, width: {number}, height: {number} }
-   * @param {function} createData - function( numBytes ), creates an array-accessible data container, Buffer
-   *                                for Node.js, or presumably a typed array otherwise.
+   * @param {function} createData - function( width, height ), creates an array-accessible data container, Buffer
+   *                                for Node.js, or presumably a typed array otherwise, with 4*width*height components
    *
    * @author Jonathan Olson <jonathan.olson@colorado.edu>
    */
@@ -54,7 +54,7 @@
     // dimension h andling for the smaller downscaled image
     var smallWidth = Math.ceil( width / 2 );
     var smallHeight = Math.ceil( height / 2 );
-    var smallData = createData( 4 * smallWidth * smallHeight );
+    var smallData = createData( smallWidth, smallHeight );
     function smallPixel( row, col ) {
       return 4 * ( row * smallWidth + col );
     }

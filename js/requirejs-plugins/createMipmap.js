@@ -199,8 +199,8 @@ module.exports = function createMipmap( filename, maxLevel, quality, callback ) 
     // bail if we already have a 1x1 image, or if we reach the maxLevel (recall maxLevel===-1 means no maximum level)
     while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
       var level = mipmaps.length;
-      mipmaps.push( mipmapDownscale( finestMipmap(), function( length ) {
-        return new Buffer( length );
+      mipmaps.push( mipmapDownscale( finestMipmap(), function( width, height ) {
+        return new Buffer( 4 * width * height );
       } ) );
       encodeLevel( level );
     }

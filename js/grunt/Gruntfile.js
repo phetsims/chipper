@@ -26,6 +26,9 @@ var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 
+// Mipmap setup
+var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
+
 /*
  * In Node, global is the global namespace object.
  * Register fs as a global so it can be accessed through the requirejs build system. Text.js plugin
@@ -453,6 +456,10 @@ module.exports = function( grunt ) {
       global.phet.strings[ localesToBuild[ i ] ] = {};
     }
     global.phet.strings[ FALLBACK_LOCAL ] = {};//may overwrite above
+
+    // Since require.js plugins can't be asynchronous with isBuild=true (r.js mode), we need to catch all of the
+    // mipmaps that we'll need to build and then handle them later asynchronously.
+    global.phet.mipmapsToBuild = [];
   } );
 
   grunt.registerTask( 'simAfterRequirejs', '(internal use only) Finish writing files after requirjs finished', function() {
@@ -489,6 +496,99 @@ module.exports = function( grunt ) {
 
     var dependencyInfo = {};
 
+    function postMipmapLoad( mipmapJavascript ) {
+      grunt.log.writeln( 'Writing dependencies.json' );
+
+      var comment = '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString());
+
+      // protect against repos or other attributions named 'comment'
+      assert( !dependencyInfo.comment, 'there was already a "comment" dependency!' );
+      dependencyInfo.comment = comment;
+
+      grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
+
+      var splashDataURI = loadFileAsDataURI( '../brand/images/splash.svg' );
+      var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
+
+      // Create the license header for this html and all the 3rd party dependencies
+      var htmlHeader = pkg.name + '\n' +
+                       'Copyright 2002-2013, University of Colorado Boulder\n' +
+                       'PhET Interactive Simulations\n' +
+                       'Licensed under ' + pkg.license + '\n' +
+                       'http://phet.colorado.edu/en/about/licensing\n' +
+                       '\n' +
+                       'Libraries:\n' + licenseText;
+
+      // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
+      preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
+      mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
+
+      grunt.log.writeln( 'Constructing HTML from template' );
+      var html = grunt.file.read( '../chipper/templates/sim.html' );
+      html = stringReplace( html, 'HTML_HEADER', htmlHeader );
+      html = stringReplace( html, 'PHET_MIPMAPS', mipmapJavascript );
+      html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
+      html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
+      html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
+
+      grunt.log.writeln( 'Writing HTML' );
+
+      // Create the translated versions
+      var locales = getLocalesToBuild();
+
+      /*
+       * Write the stringless template in case we want to use it with the translation addition process.
+       * Skip it if only building one HTML.
+       */
+      if ( locales.length > 1 ) {
+        grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
+      }
+
+      //TODO: Write a list of the string keys & values for translation utilities to use
+
+      var strings, titleKey;
+      for ( var i = 0; i < locales.length; i++ ) {
+        var locale = locales[ i ];
+        strings = getStringsWithFallbacks( locale, global.phet.strings );
+        //TODO: window.phet and window.phet.chipper should be created elsewhere
+        var phetStringsCode = 'window.phet = window.phet || {};' +
+                              'window.phet.chipper = window.phet.chipper || {};' +
+                              'window.phet.chipper.strings=' + JSON.stringify( strings, null, '' ) + ';';
+        var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
+
+        //TODO: if this is for changing layout, we'll need these globals in requirejs mode
+        //TODO: why are we combining pkg.name with pkg.version?
+        //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
+        localeHTML = stringReplace( localeHTML, 'PHET_INFO', 'window.phet.chipper.locale=\'' + locale + '\';' +
+                                                             'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' );
+
+        assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' ); // required for sims
+        titleKey = pkg.simTitleStringKey;
+        localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
+        grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
+      }
+
+      // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
+      grunt.log.writeln( 'Constructing HTML for iframe testing from template' );
+      var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
+      iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version + ' iframe test' );
+      iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
+
+      // Write the iframe test file.  English (en) is assumed as the locale.
+      grunt.log.writeln( 'Writing HTML for iframe testing' );
+      grunt.file.write( 'build/' + pkg.name + '_en-iframe' + '.html', iframeTestHtml );
+
+      // Write the string map, which may be used by translation utility for showing which strings are available for translation
+      var stringMap = 'build/' + pkg.name + '_string-map.json';
+      grunt.log.writeln( 'Writing string map to ', stringMap );
+      grunt.file.write( stringMap, JSON.stringify( global.phet.strings, null, '\t' ) );
+
+      grunt.log.writeln( 'Cleaning temporary files' );
+      grunt.file.delete( 'build/' + pkg.name + '.min.js' );
+
+      done();
+    }
+
     // git --git-dir ../scenery/.git rev-parse HEAD                 -- sha
     // git --git-dir ../scenery/.git rev-parse --abbrev-ref HEAD    -- branch
     function nextDependency() {
@@ -518,95 +618,39 @@ module.exports = function( grunt ) {
       else {
         // now continue on with the process! CALLBACK SOUP FOR YOU!
 
-        grunt.log.writeln( 'Writing dependencies.json' );
+        // need to load mipmaps
+        var mipmapsLoaded = 0;
+        var mipmapResult = {};
+        if ( global.phet.mipmapsToBuild.length ) {
+          global.phet.mipmapsToBuild.forEach( function( mipmapToBuild ) {
+            var name = mipmapToBuild.name;
+            var path = mipmapToBuild.path;
+            var level = mipmapToBuild.level;
+            var quality = mipmapToBuild.quality;
 
-        var comment = '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString());
+            createMipmap( path, level, quality, function( mipmaps ) {
+              mipmapToBuild.mipmaps = mipmaps;
+              mipmapResult[name] = mipmaps.map( function( mipmap ) {
+                return {
+                  width: mipmap.width,
+                  height: mipmap.height,
+                  url: mipmap.url
+                };
+              } );
+              mipmapsLoaded++;
 
-        // protect against repos or other attributions named 'comment'
-        assert( !dependencyInfo.comment, 'there was already a "comment" dependency!' );
-        dependencyInfo.comment = comment;
+              if ( mipmapsLoaded === global.phet.mipmapsToBuild.length ) {
 
-        grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
-
-        var splashDataURI = loadFileAsDataURI( '../brand/images/splash.svg' );
-        var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
-
-        // Create the license header for this html and all the 3rd party dependencies
-        var htmlHeader = pkg.name + '\n' +
-                         'Copyright 2002-2013, University of Colorado Boulder\n' +
-                         'PhET Interactive Simulations\n' +
-                         'Licensed under ' + pkg.license + '\n' +
-                         'http://phet.colorado.edu/en/about/licensing\n' +
-                         '\n' +
-                         'Libraries:\n' + licenseText;
-
-        // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
-        preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
-        mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
-
-        grunt.log.writeln( 'Constructing HTML from template' );
-        var html = grunt.file.read( '../chipper/templates/sim.html' );
-        html = stringReplace( html, 'HTML_HEADER', htmlHeader );
-        html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
-        html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
-        html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
-
-        grunt.log.writeln( 'Writing HTML' );
-
-        // Create the translated versions
-        var locales = getLocalesToBuild();
-
-        /*
-         * Write the stringless template in case we want to use it with the translation addition process.
-         * Skip it if only building one HTML.
-         */
-        if ( locales.length > 1 ) {
-          grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
+                // we've now finished loading all of the mipmaps, and can proceed with the build
+                var mipmapJavascript = 'window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';';
+                postMipmapLoad( mipmapJavascript );
+              }
+            } );
+          } );
         }
-
-        //TODO: Write a list of the string keys & values for translation utilities to use
-
-        var strings, titleKey;
-        for ( var i = 0; i < locales.length; i++ ) {
-          var locale = locales[ i ];
-          strings = getStringsWithFallbacks( locale, global.phet.strings );
-          //TODO: window.phet and window.phet.chipper should be created elsewhere
-          var phetStringsCode = 'window.phet = window.phet || {};' +
-                                'window.phet.chipper = window.phet.chipper || {};' +
-                                'window.phet.chipper.strings=' + JSON.stringify( strings, null, '' ) + ';';
-          var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
-
-          //TODO: if this is for changing layout, we'll need these globals in requirejs mode
-          //TODO: why are we combining pkg.name with pkg.version?
-          //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-          localeHTML = stringReplace( localeHTML, 'PHET_INFO', 'window.phet.chipper.locale=\'' + locale + '\';' +
-                                                               'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' );
-
-          assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' ); // required for sims
-          titleKey = pkg.simTitleStringKey;
-          localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
-          grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
+        else {
+          postMipmapLoad( '' ); // no mipmaps loaded
         }
-
-        // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
-        grunt.log.writeln( 'Constructing HTML for iframe testing from template' );
-        var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-        iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version + ' iframe test' );
-        iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
-
-        // Write the iframe test file.  English (en) is assumed as the locale.
-        grunt.log.writeln( 'Writing HTML for iframe testing' );
-        grunt.file.write( 'build/' + pkg.name + '_en-iframe' + '.html', iframeTestHtml );
-
-        // Write the string map, which may be used by translation utility for showing which strings are available for translation
-        var stringMap = 'build/' + pkg.name + '_string-map.json';
-        grunt.log.writeln( 'Writing string map to ', stringMap );
-        grunt.file.write( stringMap, JSON.stringify( global.phet.strings, null, '\t' ) );
-
-        grunt.log.writeln( 'Cleaning temporary files' );
-        grunt.file.delete( 'build/' + pkg.name + '.min.js' );
-
-        done();
       }
     }
 
