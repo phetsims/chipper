@@ -3,10 +3,12 @@
 /**
  * Converts a resource (like an image or audio file) to base64.
  */
-define( function() {
+(function() {
   'use strict';
 
-  return function( filename ) {
+  console.log( 'boo' );
+
+  function loadFileAsDataURI( filename ) {
     var mimeType = {
       'png': 'image/png',
       'svg': 'image/svg+xml',
@@ -21,12 +23,23 @@ define( function() {
       'wav': 'audio/wav'
     }[ filename.slice( -3 ) ];
 
-    //TODO: use asserts at build time
     if ( !mimeType ) {
       throw new Error( 'Unknown mime type for filename: ' + filename );
     }
 
     var base64 = 'data:' + mimeType + ';base64,' + new Buffer( global.fs.readFileSync( filename ) ).toString( 'base64' );
     return base64;
-  };
-} );
+  }
+
+  // browser require.js-compatible definition
+  if ( typeof define !== 'undefined' ) {
+    define( function() {
+      return loadFileAsDataURI;
+    } );
+  }
+
+  // Node.js-compatible definition
+  if ( typeof module !== 'undefined' ) {
+    module.exports = loadFileAsDataURI;
+  }
+})();

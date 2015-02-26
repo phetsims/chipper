@@ -29,6 +29,9 @@ var createSim = require( '../../../chipper/js/grunt/createSim' );
 // Mipmap setup
 var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
 
+// Loading files as data URIs
+var loadFileAsDataURI = require( '../../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
+
 /*
  * In Node, global is the global namespace object.
  * Register fs as a global so it can be accessed through the requirejs build system. Text.js plugin
@@ -50,25 +53,6 @@ module.exports = function( grunt ) {
       str += ' ';
     }
     return str;
-  }
-
-  //TODO: chipper#99 This is a copy of js/requirejs-plugins/loadFileAsDataURI.js and should be deleted if we can figure out how to load that one
-  function loadFileAsDataURI( filename ) {
-    var mimeType = {
-      'png': 'image/png',
-      'svg': 'image/svg+xml',
-      'jpg': 'image/jpeg',
-      'cur': 'image/x-icon', // cursor files (used in build-a-molecule). x-win-bitmap gives off warnings in Chrome
-      'mp3': 'audio/mpeg',
-      'm4a': 'audio/mp4',
-      'ogg': 'audio/ogg',
-      'oga': 'audio/ogg',
-      'bma': 'audio/webm', // webma is the full extension
-      'wav': 'audio/wav'
-    }[ filename.slice( -3 ) ];
-    assert( mimeType, 'Unknown mime type for filename: ' + filename );
-
-    return 'data:' + mimeType + ';base64,' + new Buffer( fs.readFileSync( filename ) ).toString( 'base64' );
   }
 
   function stringReplace( str, substring, replacement ) {
