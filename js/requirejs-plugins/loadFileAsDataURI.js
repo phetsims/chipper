@@ -6,8 +6,6 @@
 (function() {
   'use strict';
 
-  console.log( 'boo' );
-
   function loadFileAsDataURI( filename ) {
     var mimeType = {
       'png': 'image/png',
