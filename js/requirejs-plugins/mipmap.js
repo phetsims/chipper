@@ -20,7 +20,10 @@ define( function( require ) {
 
   return {
     load: function( name, parentRequire, onload, config ) {
-      var imageName = name.substring( name.lastIndexOf( '/' ), name.indexOf( ',' ) );
+      var imageName = name.substring( name.lastIndexOf( '/' ) );
+      if ( imageName.indexOf( ',' ) >= 0 ) {
+        imageName = imageName.substring( 0, imageName.indexOf( ',' ) );
+      }
       var path = getProjectURL( name, parentRequire ) + 'images' + imageName;
 
       // defaults
@@ -68,12 +71,16 @@ define( function( require ) {
           baseCanvas.height = image.naturalHeight;
           var baseContext = baseCanvas.getContext( '2d' );
           baseContext.drawImage( image, 0, 0 );
+          var baseURL = baseCanvas.toDataURL();
+          var baseImage = new Image();
+          baseImage.src = baseURL;
           mipmaps.push( {
             canvas: baseCanvas,
-            url: baseCanvas.toDataURL(),
+            url: baseURL,
             width: image.naturalWidth,
             height: image.naturalHeight,
-            data: baseContext.getImageData( 0, 0, image.naturalWidth, image.naturalHeight ).data
+            data: baseContext.getImageData( 0, 0, image.naturalWidth, image.naturalHeight ).data,
+            img: baseImage
           } );
 
           function finestMipmap() {
@@ -104,7 +111,7 @@ define( function( require ) {
 
           // console.log( Date.now() - a );
 
-          onload( mipmaps[0].url );
+          onload( mipmaps );
         };
         image.src = path + '?' + config.urlArgs;
       }
@@ -124,7 +131,7 @@ define( function( require ) {
              '    window.phetImages.push( mipmap.img );\n' + // make sure it's loaded before the sim launches
              '    mipmap.img.src = mipmap.url;\n' + // trigger the loading of the image for its level
              '  } );\n' +
-             '  return mipmaps[0].img;\n' +
+             '  return mipmaps;\n' +
              '} );\n' );
     }
 
