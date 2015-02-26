@@ -37,8 +37,6 @@ var mipmapDownscale = require( './mipmapDownscale' );
 module.exports = function createMipmap( filename, maxLevel, quality, callback ) {
   'use strict';
 
-  console.log( 'mipmapping ' + filename + ( maxLevel >= 0 ? ' to level ' + maxLevel : '' ) + ' with quality: ' + quality );
-
   var mipmaps = []; // our array that will be passed to the callback when we are done
 
   // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
@@ -153,6 +151,8 @@ module.exports = function createMipmap( filename, maxLevel, quality, callback ) 
 
     // called when all of encoding is complete
     function encodingComplete() {
+      console.log( 'mipmapped ' + filename + ( maxLevel >= 0 ? ' to level ' + maxLevel : '' ) + ' with quality: ' + quality );
+
       for ( var level = 0; level < mipmaps.length; level++ ) {
         // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
         var usePNG = hasAlpha || mipmaps[level].jpgURL.length > mipmaps[level].pngURL.length;
