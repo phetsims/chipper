@@ -53,6 +53,8 @@
  *                             - simulates context loss between successively increasing gl calls (starting at 1)
  *                             - this option should be used in conjunction with webglContextLossTimeout since
  *                             - it only triggers upon the first context lass.
+ * buildCompatible - When present, will trigger changes that are more similar to the build environment. Right now, this
+ *                   includes computing higher-resolution mipmaps for the mipmap plugin.
  *
  * This file reads query parameters from browser window's URL.
  * This file must be loaded before requirejs is started up, and this file cannot be loaded as an AMD module.
