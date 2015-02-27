@@ -50,6 +50,8 @@ define( function( require ) {
         onload( null ); // r.js fails if plugins aren't synchronous with isBuild == true
       }
       else {
+        var highQualityMipmaps = !!phet.chipper.getQueryParameter( 'buildCompatible' );
+
         var image = document.createElement( 'img' );
         image.onerror = function( error ) {
           console.log( 'failed to load image: ' + path );
@@ -90,14 +92,25 @@ define( function( require ) {
                   ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
             var canvas = document.createElement( 'canvas' );
             var context = canvas.getContext( '2d' );
-            var imageData;
-            var mipmap = mipmapDownscale( finestMipmap(), function( width, height ) {
-              imageData = context.createImageData( width, height );
-              return imageData.data;
-            } );
-            canvas.width = mipmap.width;
-            canvas.height = mipmap.height;
-            context.putImageData( imageData, 0, 0 );
+            var mipmap;
+            if ( highQualityMipmaps ) {
+              var imageData;
+              mipmap = mipmapDownscale( finestMipmap(), function( width, height ) {
+                imageData = context.createImageData( width, height );
+                return imageData.data;
+              } );
+              canvas.width = mipmap.width;
+              canvas.height = mipmap.height;
+              context.putImageData( imageData, 0, 0 );
+            }
+            else {
+              mipmap = {};
+              var largeCanvas = finestMipmap().canvas;
+              canvas.width = mipmap.width = Math.ceil( largeCanvas.width / 2 );
+              canvas.height = mipmap.height = Math.ceil( largeCanvas.height / 2 );
+              context.setTransform( 0.5, 0, 0, 0.5, 0, 0 );
+              context.drawImage( largeCanvas, 0, 0 );
+            }
 
             mipmap.canvas = canvas;
             mipmap.url = canvas.toDataURL();
