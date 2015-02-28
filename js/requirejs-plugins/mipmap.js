@@ -2,7 +2,58 @@
 
 /**
  * Alternative to the image plugin, that during development (require.js) will generate mipmaps, but during a chipper
- * build will pregenerate the mipmaps.
+ * build will pregenerate the mipmaps. The output is compatible with Scenery's Image, but is not an HTMLImageElement
+ * (so full compatibility with the image plugin is not possible).
+ *
+ * Usage grammar:
+ * "require( 'mipmap!" image-path ["," optionKey "=" optionValue]* "' );"
+ *
+ * Examples:
+ * require( 'mipmap!FORCES_AND_MOTION_BASICS/crate.png' );
+ * require( 'mipmap!FORCES_AND_MOTION_BASICS/crate.png,level=5,quality=90' );
+ *
+ * There are currently two main options to be provided:
+ * level - What the maximum mipmap level computed should be. Level 0 is the original image, level 1 is a half-size
+ *         image, level 2 is a quarter-size image, etc. Default value is up to level 4. If -1 is passed as the level
+ *         then all mipmap levels up to a 1x1 image will be computed. Mipmaps will only be computed up to a 1x1 image
+ *         if a higher maximum level was set.
+ * quality - Currently the JPEG encoding quality (1-100) for when JPEG images are an output option (which happens when
+ *           the entire image is fully opaque). Default is 98. This parameter is only used for the build, as the
+ *           require.js runtime version will always use PNG (the browser default for toDataURL()).
+ *
+ * The output of the mipmap require() will be an Array of mipmap objects of the form:
+ * {
+ *   width: {number} - Width of the image for this mipmap level
+ *   height: {number} - Height of the image for this mipmap level
+ *   url: {string} - Data URL with encoded PNG/JPEG data for the image for this mipmap level
+ *   img: {HTMLImageElement} - Preloaded Image DOM element with the url.
+ * }
+ * The result array indices are equal to the mipmap level (mipmaps[0] is level 0, mipmaps[5] is level 5, etc.)
+ *
+ * Internal codepaths:
+ * - Require.js runtime: load() is called, we asynchronously load the base image from the path provided, and then
+ *                       synchronously generate the mipmap levels and structure. When done, onload( mipmaps ) is called
+ *                       so that 'mipmaps' is the value require() statements return. Additionally, depending on the
+ *                       presence of the buildCompatible query parameter, it will either use a fast Canvas-based mipmap
+ *                       computation (if buildCompatible is not present), or use the same high-quality pixel-based
+ *                       mipmap computation of the build.
+ * - Chipper grunt build: r.js build will call load() with config.isBuild == true. We'll push path/module-name/options
+ *                        to global.phet.mipmapsToBuild (created in the main build gruntfile), not doing any processing
+ *                        at that time. Then write() is called, and we return a JS stub (to be inserted into the built
+ *                        file like a define() block for a module) that will look up mipmap info from
+ *                        window.phet.chipper.mipmaps, create a DOM Image for each level and notify Joist to wait until
+ *                        all of the level images are loaded (currently done with window.phetImages). Later in the build
+ *                        process, our Gruntfile will scan global.phet.mipmapsToBuild, asynchronously build high-quality
+ *                        mipmaps, and will add JS to insert the mipmap objects (missing the DOM image) into
+ *                        window.phet.chipper.mipmaps. Delaying mipmap computation until later in the build is clunky,
+ *                        but required since require.js only supports the build-step synchonously and our image decoder
+ *                        handles things asynchronously. See http://requirejs.org/docs/plugins.html:
+ *                        > The optimizer traces dependencies synchronously to simplify the optimization logic. This is
+ *                        > different from how require.js in the browser works, and it means that only plugins that can
+ *                        > satisfy their dependencies synchronously should participate in the optimization steps that
+ *                        > allow inlining of loader plugin values.
+ *
+ * For details on the high-quality mipmapping, see documentation for createMipmap.js.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
@@ -14,11 +65,15 @@ define( function( require ) {
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
 
   return {
+    // called both in-browser and during build
     load: function( name, parentRequire, onload, config ) {
+      // should be fully-qualified image-name, like 'FORCES_AND_MOTION_BASICS/crate.png'
       var imageName = name.substring( name.lastIndexOf( '/' ) );
       if ( imageName.indexOf( ',' ) >= 0 ) {
         imageName = imageName.substring( 0, imageName.indexOf( ',' ) );
       }
+
+      // the path to our image file.
       var path = getProjectURL( name, parentRequire ) + 'images' + imageName;
 
       // defaults
@@ -26,6 +81,8 @@ define( function( require ) {
         level: 4, // maximum level
         quality: 98
       };
+
+      // allow overriding the options via comma-separated clauses (see grammar above)
       if ( name.indexOf( ',' ) ) {
         name.substring( name.indexOf( ',' ) + 1 ).split( ',' ).forEach( function( clause ) {
           var keyValue = clause.split( '=' );
@@ -36,6 +93,8 @@ define( function( require ) {
       }
 
       if ( config.isBuild ) {
+        // Store a record that our mipmaps will need to be computed later in the build, and should be provided for the
+        // module name 'name'.
         global.phet.mipmapsToBuild.push( {
           name: name,
           path: path,
@@ -45,8 +104,10 @@ define( function( require ) {
         onload( null ); // r.js fails if plugins aren't synchronous with isBuild == true
       }
       else {
+        // if buildCompatible is provided, use the high-quality build-like mipmapping
         var highQualityMipmaps = !!phet.chipper.getQueryParameter( 'buildCompatible' );
 
+        // load our base resolution iamge
         var image = document.createElement( 'img' );
         image.onerror = function( error ) {
           console.log( 'failed to load image: ' + path );
@@ -61,8 +122,7 @@ define( function( require ) {
 
           var mipmaps = [];
 
-          // var a = Date.now();
-
+          // draw it to a Canvas and set up the base mipmap level information
           var baseCanvas = document.createElement( 'canvas' );
           baseCanvas.width = image.naturalWidth;
           baseCanvas.height = image.naturalHeight;
@@ -83,6 +143,8 @@ define( function( require ) {
           function finestMipmap() {
             return mipmaps[ mipmaps.length - 1 ];
           }
+
+          // compute the non-level-0 mipmaps
           while ( ( mipmaps.length - 1 < options.level || options.level < 0 ) &&
                   ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
             var canvas = document.createElement( 'canvas' );
@@ -91,6 +153,9 @@ define( function( require ) {
             if ( highQualityMipmaps ) {
               var imageData;
               mipmap = mipmapDownscale( finestMipmap(), function( width, height ) {
+                // Callback to create the typed array, but we want to store a reference to the ImageData container
+                // since we can use it to do a putImageData call later, instead of having to create a typed array
+                // AND an ImageData.
                 imageData = context.createImageData( width, height );
                 return imageData.data;
               } );
@@ -99,6 +164,8 @@ define( function( require ) {
               context.putImageData( imageData, 0, 0 );
             }
             else {
+              // Lower-quality downscale by using the built-in Canvas drawImage. Somewhat dependent on the browser
+              // implementation.
               mipmap = {};
               var largeCanvas = finestMipmap().canvas;
               canvas.width = mipmap.width = Math.ceil( largeCanvas.width / 2 );
@@ -107,6 +174,7 @@ define( function( require ) {
               context.drawImage( largeCanvas, 0, 0 );
             }
 
+            // provide access to the Canvas for the next mipmap level
             mipmap.canvas = canvas;
             mipmap.url = canvas.toDataURL();
 
@@ -117,16 +185,15 @@ define( function( require ) {
             mipmaps.push( mipmap );
           }
 
-          // console.log( Date.now() - a );
-
           onload( mipmaps );
         };
+
+        // trigger loading of the image, so that our onload is guaranteed to be called
         image.src = path + '?' + config.urlArgs;
       }
     },
 
-    //write method based on RequireJS official text plugin by James Burke
-    //https://github.com/jrburke/requirejs/blob/master/text.js
+    // called to provide the raw JS string to be written into the build output
     write: function( pluginName, moduleName, write ) {
       // We load the mipmap info (width/height/url for each level) from window.phet.chipper.mipmaps, and then
       // load an HTML Image for each level before the sim launches. This will ensure that the images will immediately
