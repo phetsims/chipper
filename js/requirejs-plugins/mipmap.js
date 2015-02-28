@@ -1,7 +1,5 @@
 // Copyright 2002-2013, University of Colorado Boulder
 
-var req = require;
-
 /**
  * Alternative to the image plugin, that during development (require.js) will generate mipmaps, but during a chipper
  * build will pregenerate the mipmaps.
@@ -14,9 +12,6 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
-
-  //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
-  var buildMap = {};
 
   return {
     load: function( name, parentRequire, onload, config ) {
@@ -36,7 +31,7 @@ define( function( require ) {
           var keyValue = clause.split( '=' );
           var key = keyValue[0];
           var value = keyValue[1];
-          options[key] = parseInt( value );
+          options[key] = parseInt( value, 10 );
         } );
       }
 
