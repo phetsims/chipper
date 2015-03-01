@@ -540,8 +540,10 @@ module.exports = function( grunt ) {
         //TODO: window.phet and window.phet.chipper should be created elsewhere
         var phetStringsCode = 'window.phet = window.phet || {};' +
                               'window.phet.chipper = window.phet.chipper || {};' +
-                              'window.phet.chipper.strings=' + JSON.stringify( strings, null, '' ) + ';' +
-                              mapString.toString(); // mapString needs to be defined in sim.html template for stringTest query parameter
+                              'window.phet.chipper.strings=' + JSON.stringify( strings, null, '' ) + ';';
+
+        // window.phet.chipper.mapString needs to be defined in sim.html template for stringTest query parameter
+        phetStringsCode += 'window.phet.chipper.mapString = ' + mapString.toString();
         var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
         //TODO: if this is for changing layout, we'll need these globals in requirejs mode

@@ -6,24 +6,24 @@
  * @param stringTest - the value of the stringTest query parameter
  * @returns {*}
  */
-function mapString( string, stringTest ) {
-  return stringTest === null ? string :
-         stringTest === 'double' ? string + ':' + string :
-         stringTest === 'empty' ? '' :
-         stringTest === 'none' ? string :
+(function() {
+  var mapString = function( string, stringTest ) {
+    return stringTest === null ? string :
+           stringTest === 'double' ? string + ':' + string :
+           stringTest === 'empty' ? '' :
+           stringTest === 'none' ? string :
 
-           //In the fallback case, supply whatever string was given in the query parameter value
-         stringTest;
-}
+             //In the fallback case, supply whatever string was given in the query parameter value
+           stringTest;
+  };
+  if ( typeof module !== 'undefined' ) {
+    module.exports = mapString;
+  }
+  else {
+    define( function() {
+      'use strict';
 
-if ( typeof module !== 'undefined' ) {
-  module.exports = mapString;
-}
-else {
-  define( function() {
-    'use strict';
-
-    return mapString;
-  } );
-}
-
+      return mapString;
+    } );
+  }
+})();
