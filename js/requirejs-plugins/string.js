@@ -25,6 +25,7 @@ define( function( require ) {
   var text = require( 'text' );
   //Path is relative to the requirejs config.js file
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
+  var mapString = require( '../../chipper/js/requirejs-plugins/mapString.js' );
 
   // constants
   var FALLBACK_LOCALE = 'en';
@@ -33,6 +34,11 @@ define( function( require ) {
 
   // Cache the loaded strings so they only have to be read once through file.read (for performance)
   var cache = {};
+
+  // If doubleStrings is specified, concatenate each string with itself as a primitive i18n test
+  var stringTest = ( typeof window !== 'undefined' && window.phet.chipper.getQueryParameter( 'stringTest' ) ) ?
+                   window.phet.chipper.getQueryParameter( 'stringTest' ) :
+                   null;
 
   /**
    * When running in the browser, check to see if we have already loaded the specified file
@@ -127,7 +133,7 @@ define( function( require ) {
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
                   if ( parsedStrings[ key ] !== undefined ) {
-                    onload( parsedStrings[ key ] );
+                    onload( mapString( parsedStrings[key], stringTest ) );
                   }
                   else {
                     console.log( 'string not found for key: ' + key );
