@@ -5,6 +5,9 @@
  * build will pregenerate the mipmaps. The output is compatible with Scenery's Image, but is not an HTMLImageElement
  * (so full compatibility with the image plugin is not possible).
  *
+ * The mipmapping plugin currently only supports PNG and JPEG for input and output (can't use SVG files direclty, since
+ * those would require native dependencies to rasterize in Node.js).
+ *
  * Usage grammar:
  * "require( 'mipmap!" image-path ["," optionKey "=" optionValue]* "' );"
  *
