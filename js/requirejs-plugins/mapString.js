@@ -7,6 +7,8 @@
  * @returns {*}
  */
 (function() {
+  'use strict';
+
   var mapString = function( string, stringTest ) {
     return stringTest === null ? string :
            stringTest === 'double' ? string + ':' + string :
@@ -21,8 +23,6 @@
   }
   else {
     define( function() {
-      'use strict';
-
       return mapString;
     } );
   }
