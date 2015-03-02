@@ -29,9 +29,6 @@ var createSim = require( '../../../chipper/js/grunt/createSim' );
 // Mipmap setup
 var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
 
-// For stringTest query parameter
-var mapString = require( '../../../chipper/js/requirejs-plugins/mapString' );
-
 // Loading files as data URIs
 var loadFileAsDataURI = require( '../../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
 
@@ -541,9 +538,6 @@ module.exports = function( grunt ) {
         var phetStringsCode = 'window.phet = window.phet || {};' +
                               'window.phet.chipper = window.phet.chipper || {};' +
                               'window.phet.chipper.strings=' + JSON.stringify( strings, null, '' ) + ';';
-
-        // window.phet.chipper.mapString needs to be defined in sim.html template for stringTest query parameter
-        phetStringsCode += 'window.phet.chipper.mapString = ' + mapString.toString();
         var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
         //TODO: if this is for changing layout, we'll need these globals in requirejs mode

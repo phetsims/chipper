@@ -25,7 +25,6 @@ define( function( require ) {
   var text = require( 'text' );
   //Path is relative to the requirejs config.js file
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var mapString = require( '../../chipper/js/requirejs-plugins/mapString.js' );
 
   // constants
   var FALLBACK_LOCALE = 'en';
@@ -133,7 +132,7 @@ define( function( require ) {
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
                   if ( parsedStrings[ key ] !== undefined ) {
-                    onload( mapString( parsedStrings[key], stringTest ) );
+                    onload( window.phet.chipper.mapString( parsedStrings[key], stringTest ) );
                   }
                   else {
                     console.log( 'string not found for key: ' + key );

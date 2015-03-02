@@ -127,6 +127,24 @@
     window.phet.chipper.getCacheBusterArgs = function() {
       return (phet.chipper.getQueryParameter( 'cacheBuster' ) !== 'false') ? ('bust=' + Date.now()) : '';
     };
+
+    /**
+     * Maps an input string to a final string, accommodating tricks like doubleStrings.
+     * This function is used to modify all strings in a sim when the stringTest query parameter is used.
+     * It is used in string.js and sim.html.
+     * @param string - the string to be mapped
+     * @param stringTest - the value of the stringTest query parameter
+     * @returns {*}
+     */
+    window.phet.chipper.mapString = function( string, stringTest ) {
+      return stringTest === null ? string :
+             stringTest === 'double' ? string + ':' + string :
+             stringTest === 'empty' ? '' :
+             stringTest === 'none' ? string :
+
+               //In the fallback case, supply whatever string was given in the query parameter value
+             stringTest;
+    };
   }());
   /**
    * Enables or disables assertions in common libraries using query parameters.
