@@ -474,10 +474,6 @@ module.exports = function( grunt ) {
     }
 
     var dependencies = pkg.phetLibs.split( ' ' );
-    if ( dependencies.indexOf( 'chipper' ) === -1 ) {
-      dependencies.push( 'chipper' );
-    }
-
     var dependencyInfo = {};
 
     function postMipmapLoad( mipmapJavascript ) {
