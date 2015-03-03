@@ -30,11 +30,10 @@
  *                  are translated and (b) whether the layout can accommodate longer strings from other languages.
  *                  Note this is a heuristic rule
  *                  that does not cover all cases.
- *            - if set to "empty", then all internationalized strings will be set to the empty string ''.  This can help
- *                  identify strings that haven't been translated
  *            - if set to "none" or omitted, then the normal translated string will be shown
  *            - if set to anything else, it will use that string everywhere.  This will allow testing specific cases, like
- *                  whether the word 'vitesse' would substitute for 'speed' well.
+ *                  whether the word 'vitesse' would substitute for 'speed' well.  Also, using "%20" it will show whitespace for all
+ *                  of the strings, making it easy to identify non-translated strings
  *
  * Other query parameters:
  *
@@ -131,6 +130,7 @@
     /**
      * Maps an input string to a final string, accommodating tricks like doubleStrings.
      * This function is used to modify all strings in a sim when the stringTest query parameter is used.
+     * The stringTest query parameter and its options are documented in the query parameter docs above.
      * It is used in string.js and sim.html.
      * @param string - the string to be mapped
      * @param stringTest - the value of the stringTest query parameter
@@ -139,7 +139,6 @@
     window.phet.chipper.mapString = function( string, stringTest ) {
       return stringTest === null ? string :
              stringTest === 'double' ? string + ':' + string :
-             stringTest === 'empty' ? '' :
              stringTest === 'none' ? string :
 
                //In the fallback case, supply whatever string was given in the query parameter value
