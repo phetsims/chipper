@@ -23,9 +23,13 @@ the sims, as well as other important issues.
 {CLONE_COMMANDS}
 ```
 (2) Start an http-server
+
 (3) Open [http://localhost/{REPOSITORY}/{REPOSITORY}_en.html](http://localhost/{REPOSITORY}/{REPOSITORY}_en.html) (You will probably need to update this URL based on your HTTP port and relative path.)
+
 (4) Visit the [PhET Development Overview](http://bit.ly/phet-development-overview) for details on minification, testing, architecture, obtaining stable (tested) code, etc.
+
 (5) Contact us at our mailing list: [Developing Interactive Simulations in HTML5](http://groups.google.com/forum/#!forum/developing-interactive-simulations-in-html5)
+
 (6) Help us improve, create a [New Issue](http://github.com/phetsims/{REPOSITORY}/issues/new)
 
 ### License
