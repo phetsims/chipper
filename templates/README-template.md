@@ -1,8 +1,8 @@
 {TITLE}
 =============
 "{TITLE}" is an educational simulation in HTML5, by [PhET Interactive Simulations](http://phet.colorado.edu/) at the University of Colorado Boulder.
-For a description of this simulation, associated resources, and a link to the published version, go to
-[the simulation's web page] (http://phet.colorado.edu/en/simulation/{REPOSITORY}).
+For a description of this simulation, associated resources, and a link to the published version,
+[visit the simulation's web page] (http://phet.colorado.edu/en/simulation/{REPOSITORY}).
 
 ### Try it!
 
