@@ -5,11 +5,11 @@ an educational simulation in HTML5
 by [PhET Interactive Simulations](http://phet.colorado.edu/) at the University of Colorado Boulder
 
 For a description of this simulation, associated resources, and a link to the published version,
-go to [http://phet.colorado.edu/sims/html/{REPOSITORY}] (http://phet.colorado.edu/sims/html/{REPOSITORY}).
+go to [the simulation's web page] (http://phet.colorado.edu/en/simulation/{REPOSITORY}).
 
 [Launch "{TITLE}"](http://phet.colorado.edu/sims/html/{REPOSITORY}/latest/{REPOSITORY}_en.html)
 <a href="http://phet.colorado.edu/sims/html/{REPOSITORY}/latest/{REPOSITORY}_en.html">
-<img src="http://raw.githubusercontent.com/phetsims/{REPOSITORY}/master/assets/{REPOSITORY}-screenshot.png" alt="Screenshot" style="width: 400px;"/>
+<img src="https://raw.githubusercontent.com/phetsims/{REPOSITORY}/master/assets/{REPOSITORY}-screenshot.png" alt="Screenshot" style="width: 400px;"/>
 </a>
 
 ### Documentation
