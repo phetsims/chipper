@@ -25,7 +25,7 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
-var generatePublishedREADME = require( '../../../chipper/js/grunt/generatePublishedREADME' );
+var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 
 // Mipmap setup
 var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
@@ -643,11 +643,17 @@ module.exports = function( grunt ) {
     createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'overwrite' ) );
   } );
 
-  grunt.registerTask( 'generate-published-README', 'Generates the README.md file for a published simulation.', function() {
+  grunt.registerTask( 'generate-published-README', 'Generates README.md file for a published simulation.', function() {
     assert( pkg.phetLibs, 'phetLibs missing from package.json' );
     assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
-    generatePublishedREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey );
+    generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, true /* published */ );
   } );
+
+  grunt.registerTask( 'generate-unpublished-README', 'Generates README.md file for an unpublished simulation.', function() {
+      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
+      assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
+      generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
+    } );
 
   /*
    * Load tasks from grunt plugins that have been installed locally using npm.

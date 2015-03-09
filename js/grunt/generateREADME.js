@@ -1,7 +1,7 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * This grunt task generates the README.md file for a published simulation.
+ * This grunt task generates the README.md file for a simulation.
  * Placeholders in a template file are replaced with values specific to the simulation.
  *
  * @author Chris Malley {PixelZoom, Inc.}
@@ -9,8 +9,9 @@
  * @param {string} repositoryName name of the sim's repository
  * @param {string} phetLibs from package.json
  * @param {string} simTitleStringKey from package.json
+ * @param {boolean} published has the sim been published?
  */
-module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey ) {
+module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, published ) {
   'use strict';
 
   //TODO other variations of this occur in Gruntfile.js, createSim.js, SimIFrameAPI.js
@@ -35,7 +36,8 @@ module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey ) 
   }
 
   // Read the template.
-  var readme = grunt.file.read( '../chipper/templates/README-published.md' );
+  var templateFile = published ? 'README-published.md' : 'README-unpublished.md';
+  var readme = grunt.file.read( '../chipper/templates/' + templateFile );
 
   // Replace placeholders in the template.
   readme = replaceAll( readme, '{REPOSITORY}', repositoryName );
