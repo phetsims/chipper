@@ -8,6 +8,7 @@ For a description of this simulation, associated resources, and a link to the pu
 go to [the simulation's web page] (http://phet.colorado.edu/en/simulation/{REPOSITORY}).
 
 [Launch "{TITLE}"](http://phet.colorado.edu/sims/html/{REPOSITORY}/latest/{REPOSITORY}_en.html)
+
 <a href="http://phet.colorado.edu/sims/html/{REPOSITORY}/latest/{REPOSITORY}_en.html">
 <img src="https://raw.githubusercontent.com/phetsims/{REPOSITORY}/master/assets/{REPOSITORY}-screenshot.png" alt="Screenshot" style="width: 400px;"/>
 </a>
