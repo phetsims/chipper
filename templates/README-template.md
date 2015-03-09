@@ -4,6 +4,8 @@
 For a description of this simulation, associated resources, and a link to the published version, go to
 [the simulation's web page] (http://phet.colorado.edu/en/simulation/{REPOSITORY}).
 
+### Try it!
+
 [Click here to run "{TITLE}".](http://phet.colorado.edu/sims/html/{REPOSITORY}/latest/{REPOSITORY}_en.html)
 
 <a href="http://phet.colorado.edu/sims/html/{REPOSITORY}/latest/{REPOSITORY}_en.html">
