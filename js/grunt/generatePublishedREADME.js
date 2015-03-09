@@ -35,7 +35,7 @@ module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey ) 
   }
 
   // Read the template.
-  var readme = grunt.file.read( '../chipper/templates/README-template.md' );
+  var readme = grunt.file.read( '../chipper/templates/README-published.md' );
 
   // Replace placeholders in the template.
   readme = replaceAll( readme, '{REPOSITORY}', repositoryName );
