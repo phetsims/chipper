@@ -34,4 +34,4 @@ the sims, as well as other important issues.
 (6) Help us improve, create a <a href="http://github.com/phetsims/{REPOSITORY}/issues/new" target="_blank">New Issue</a>
 
 ### License
-See the [license](LICENSE)
+See the <a href="https://github.com/phetsims/{REPOSITORY_NAME}/blob/master/LICENSE" target="_blank">LICENSE</a>
