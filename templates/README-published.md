@@ -25,6 +25,8 @@ the sims, as well as other important issues.
 ```
 (2) Start an http-server
 
+(3) Open `http://localhost/{REPOSITORY}/{REPOSITORY}_en.html` (You will probably need to modify this URL based on your HTTP port and relative path.)
+
 ### Get Involved
 
 Contact us at our Google Group: <a href="http://groups.google.com/forum/#!forum/developing-interactive-simulations-in-html5" target="_blank">Developing Interactive Simulations in HTML5</a>
