@@ -23,6 +23,7 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 
 // PhET custom grunt tasks
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
+var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
@@ -345,6 +346,16 @@ module.exports = function( grunt ) {
 
     grunt.log.writeln( 'created license info for ' + licenses.length + ' dependencies' );
   } );
+
+  grunt.registerTask( 'generate-128-thumbnail', 'Generate 128x84 thumbnail', function() {
+    generateThumbnails( grunt, pkg.name, 128, 84 );
+  } );
+
+  grunt.registerTask( 'generate-600-thumbnail', 'Generate 600x394 thumbnail', function() {
+    generateThumbnails( grunt, pkg.name, 600, 394 );
+  } );
+
+  grunt.registerTask( 'generate-thumbnails', 'Generate thumbnails', ['generate-128-thumbnail', 'generate-600-thumbnail'] );
 
   grunt.registerTask( 'checkout-shas', 'Check out shas for a project, as specified in dependencies.json', function() {
     checkoutShas( grunt, pkg.name, false );
