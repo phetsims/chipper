@@ -94,7 +94,7 @@ module.exports = function( grunt ) {
   };
 
   // Delete arch references from the minified file, but only if it is not an arch build.
-  var archRequired = pkg.preload && _.find( pkg.preload.split( ' ' ), function( repo ) { return repo === '../arch/js/arch.js'; } ) !== undefined;
+  var archRequired = pkg.preload && _.find( pkg.preload, function( repo ) { return repo === '../arch/js/arch.js'; } ) !== undefined;
   if ( !archRequired ) {
     globalDefs.arch = false;
   }
@@ -145,14 +145,9 @@ module.exports = function( grunt ) {
       // source files that are specific to this repository
       repoFiles: [ 'js/**/*.js' ],
 
-      /*
-       * All source files for this repository (repository-specific and dependencies).
-       * phetLibs is a string of repo names, space separated.
-       * split converts the string to an array of repo names.
-       * map then converts each repo name to a regular expression identifying the path to JS files.
-       * Includes an exclusion for kite/js/parser/svgPath.js, which is auto-generated.
-       */
-      allFiles: [ _.map( pkg.phetLibs.split( ' ' ), function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
+      // All source files for this repository (repository-specific and dependencies).
+      // Excludes kite/js/parser/svgPath.js, which is auto-generated.
+      allFiles: [ _.map( pkg.phetLibs, function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
 
       // reference external JSHint options in jshintOptions.js
       options: require( './jshintOptions' )
@@ -202,7 +197,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'get-dependencies', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
     console.log( 'pkg.name', pkg.name );
 
-    var dependencies = _.without( pkg.phetLibs.split( ' ' ), 'sherpa', 'chipper', pkg.name );
+    var dependencies = _.without( pkg.phetLibs.split( ' ' ), pkg.name, 'chipper', 'sherpa' );
     console.log( 'cloning dependencies for', pkg.name, ': ', dependencies.toString() );
     var numCloned = 0;
     var done = grunt.task.current.async();
@@ -231,11 +226,10 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'list-clone-commands', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
     console.log( 'pkg.name', pkg.name );
 
-    var dependencies = pkg.phetLibs.split( ' ' );
-    console.log( 'listing git clone commands for', pkg.name, ': ', dependencies.toString() );
+    console.log( 'listing git clone commands for', pkg.name, ': ', pkg.phetLibs.toString() );
     console.log( 'start script' );
-    for ( var i = 0; i < dependencies.length; i++ ) {
-      var dependency = dependencies[ i ];
+    for ( var i = 0; i < pkg.phetLibs.length; i++ ) {
+      var dependency = pkg.phetLibs[ i ];
       var command = 'git clone https://github.com/phetsims/' + dependency + '.git';
       console.log( command );
     }
@@ -303,7 +297,7 @@ module.exports = function( grunt ) {
      * Please note, this requires all simulations to keep their dependencies in sherpa!
      */
     assert( pkg.preload, 'preload missing from package.json' );
-    var sherpaDependencyPaths = _.filter( pkg.preload.split( ' ' ), function( dependency ) { return dependency.indexOf( 'sherpa' ) >= 0; } );
+    var sherpaDependencyPaths = _.filter( pkg.preload, function( dependency ) { return dependency.indexOf( 'sherpa' ) >= 0; } );
 
     /*
      * Add libraries that are not explicitly included by the sim.
@@ -452,7 +446,7 @@ module.exports = function( grunt ) {
 
     grunt.log.writeln( 'Minifying preload scripts' );
     var preloadBlocks = '';
-    var preloadLibs = pkg.preload.split( ' ' );
+    var preloadLibs = pkg.preload;
     for ( var libIdx = 0; libIdx < preloadLibs.length; libIdx++ ) {
       var lib = preloadLibs[ libIdx ];
       var preloadResult = uglify.minify( [ lib ], {
@@ -474,7 +468,7 @@ module.exports = function( grunt ) {
       grunt.log.error( 'WARNING: no changes.txt' );
     }
 
-    var dependencies = pkg.phetLibs.split( ' ' );
+    var dependencies = _.clone( pkg.phetLibs ); // clone because we'll be modifying this array
     var dependencyInfo = {};
 
     function postMipmapLoad( mipmapJavascript ) {
