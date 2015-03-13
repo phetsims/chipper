@@ -94,7 +94,7 @@ module.exports = function( grunt ) {
   };
 
   // Delete arch references from the minified file, but only if it is not an arch build.
-  var archRequired = pkg.preload && _.find( pkg.preload, function( repo ) { return repo === '../arch/js/arch.js'; } ) !== undefined;
+  var archRequired = pkg.preload && _.find( pkg.preload, function( repo ) { return repo === '../together/js/arch.js'; } ) !== undefined;
   if ( !archRequired ) {
     globalDefs.arch = false;
   }
