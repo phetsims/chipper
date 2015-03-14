@@ -73,6 +73,7 @@ module.exports = {
     PIXI: false,
     arch: false,
     global: false, // for linting Node.js code
+    jsondiffpatch: false, // for generating diffs in together.js
 
     alert: false, //for debugging on ipad
     numeric: false, //Numeric library used in energy skate park
