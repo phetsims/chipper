@@ -76,10 +76,14 @@
 (function() {
   'use strict';
 
-  //If arch has already been preloaded, then this script does nothing.
-  //If arch has not been preloaded, then this will assign window.arch = null
-  //This will enable us to use a pattern like `arch && arch.method`
+  // If arch has already been preloaded, then this script does nothing.
+  // If arch has not been preloaded, then this will assign window.arch = null
+  // This will enable us to use a pattern like `arch && arch.method`
   window.arch = window.arch || null;
+
+  // If together has been preloaded, this line does nothing.  If together needs to be loaded, it will
+  // overwrite this value with the together global.
+  window.together = window.together || null;
 
 // Initialize query parameters, see docs above
   (function() {
