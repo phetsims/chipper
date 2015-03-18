@@ -568,7 +568,7 @@ module.exports = function( grunt ) {
     // git --git-dir ../scenery/.git rev-parse --abbrev-ref HEAD    -- branch
     function nextDependency() {
       if ( dependencies.length ) {
-        var dependency = dependencies.pop();
+        var dependency = dependencies.shift(); // remove first item
 
         // get the SHA
         child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse HEAD', function( error, stdout, stderr ) {
