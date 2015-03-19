@@ -37,6 +37,7 @@
  *
  * Other query parameters:
  *
+ * actionHistogram - when running with together.js + arch, display a histogram of the action types, see arch.jsadded action 
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
  * eall - enable all assertions, as above but with more time consuming checks
  * emitEmptyDeltas - when emitting states using together.js (see emitStates below) emit deltas that are empty, to simplify playback in some systems like Metacog.
