@@ -469,7 +469,9 @@ module.exports = function( grunt ) {
     }
 
     var dependencies = _.clone( pkg.phetLibs ); // clone because we'll be modifying this array
-    var dependencyInfo = {};
+    var dependencyInfo = {
+      comment: '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString())
+    };
 
     function postMipmapLoad( mipmapJavascript ) {
       var splashDataURI = loadFileAsDataURI( '../brand/images/splash.svg' );
@@ -559,6 +561,7 @@ module.exports = function( grunt ) {
     function nextDependency() {
       if ( dependencies.length ) {
         var dependency = dependencies.shift(); // remove first item
+        assert( !dependencyInfo.dependency, 'there was already a dependency named ' + dependency );
 
         // get the SHA
         child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse HEAD', function( error, stdout, stderr ) {
@@ -582,15 +585,9 @@ module.exports = function( grunt ) {
       }
       else {
         // now continue on with the process! CALLBACK SOUP FOR YOU!
+
         grunt.log.writeln( 'Writing dependencies.json' );
-
-        var comment = '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString());
-        // protect against repos or other attributions named 'comment'
-        assert( !dependencyInfo.comment, 'there was already a "comment" dependency!' );
-        dependencyInfo.comment = comment;
-
         grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
-
 
         // need to load mipmaps here, since we can't do it synchronously during the require.js build step
         var mipmapsLoaded = 0; // counter that indicates we are done when incremented to the number of mipmaps
