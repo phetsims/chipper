@@ -472,16 +472,6 @@ module.exports = function( grunt ) {
     var dependencyInfo = {};
 
     function postMipmapLoad( mipmapJavascript ) {
-      grunt.log.writeln( 'Writing dependencies.json' );
-
-      var comment = '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString());
-
-      // protect against repos or other attributions named 'comment'
-      assert( !dependencyInfo.comment, 'there was already a "comment" dependency!' );
-      dependencyInfo.comment = comment;
-
-      grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
-
       var splashDataURI = loadFileAsDataURI( '../brand/images/splash.svg' );
       var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
@@ -592,6 +582,15 @@ module.exports = function( grunt ) {
       }
       else {
         // now continue on with the process! CALLBACK SOUP FOR YOU!
+        grunt.log.writeln( 'Writing dependencies.json' );
+
+        var comment = '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString());
+        // protect against repos or other attributions named 'comment'
+        assert( !dependencyInfo.comment, 'there was already a "comment" dependency!' );
+        dependencyInfo.comment = comment;
+
+        grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
+
 
         // need to load mipmaps here, since we can't do it synchronously during the require.js build step
         var mipmapsLoaded = 0; // counter that indicates we are done when incremented to the number of mipmaps
