@@ -67,13 +67,12 @@ module.exports = function( grunt ) {
     }
   }
 
-  // Read package.json, verify that it contains required properties
+  // Read package.json, verify that it contains required properties required by all PhET repositories
   assert( fs.existsSync( 'package.json' ), 'repository must have a package.json' );
   var pkg = grunt.file.readJSON( 'package.json' );
   assert( pkg.name, 'name missing from package.json' );
   assert( pkg.version, 'version missing from package.json' );
   assert( pkg.license, 'license missing from package.json' );
-  assert( pkg.phetLibs, 'phetLibs missing from package.json' );
 
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + pkg.name + '/node_modules/uglify-js' );
@@ -370,8 +369,6 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'simBeforeRequirejs', '(internal use only) Prepare for the requirejs step, enumerate locales to build', function() {
     grunt.log.writeln( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
 
-    assert( pkg.name, 'name required in package.json' );
-    assert( pkg.version, 'version required in package.json' );
     assert( pkg.phetLibs, 'phetLibs required in package.json' );
     assert( pkg.preload, 'preload required in package.json' );
 
@@ -592,16 +589,19 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'generate-published-README', 'Generates README.md file for a published simulation.', function() {
+    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
     assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
     generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, true /* published */ );
   } );
 
   grunt.registerTask( 'generate-unpublished-README', 'Generates README.md file for an unpublished simulation.', function() {
+    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
     assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
     generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
   } );
 
   grunt.registerTask( 'clone-dependencies', 'Clones all dependencies of a project, as listed in package.json phetLibs entry', function() {
+    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
     cloneDependencies( grunt, pkg.name, pkg.phetLibs );
   } );
 
