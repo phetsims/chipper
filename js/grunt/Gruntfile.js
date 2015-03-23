@@ -278,6 +278,7 @@ module.exports = function( grunt ) {
     var separator = '=';
 
     // share with other tasks via a global
+    global.phet = global.phet || {};
     global.phet.licenseText = _.reduce( licenses, function( memo, license ) {
       var selectedLicenseText = license.selectedLicense ? '> Selected license: ' + license.selectedLicense + '\n' : '';
       return memo + license.text + '\n' +
