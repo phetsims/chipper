@@ -5,6 +5,9 @@
  * Placeholders in a template file are replaced with values specific to the simulation.
  *
  * @author Chris Malley {PixelZoom, Inc.}
+ */
+
+/**
  * @param grunt
  * @param {string} repositoryName name of the sim's repository
  * @param {string[]} phetLibs from package.json

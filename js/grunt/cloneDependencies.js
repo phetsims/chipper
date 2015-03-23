@@ -1,13 +1,17 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
+/**
+ * This grunt task clones the dependencies for a project (except for the project itself, chipper and sherpa).
+ * See issue #56.
+ *
+ * @author Sam Reid
+ * @author John Blanco
+ */
+
 var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 /**
- * See #56 Task that clones the dependencies for a project (except for the project itself, chipper and sherpa)
- *
- * @author Sam Reid
- * @author John Blanco
  * @param grunt
  * @param {string} repositoryName
  * @param {string[]} phetLibs

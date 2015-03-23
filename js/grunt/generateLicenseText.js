@@ -1,5 +1,10 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
+/**
+ * This grunt task generates the license text that goes in the header of the sim's HTML file.
+ * It shares the license text with other grunt tasks by attaching it to global.phet.licenseText.
+ */
+
 var assert = require( 'assert' );
 var info = require( '../../../sherpa/info' ); // license info for all 3rd-party packages
 /* jshint -W079 */
@@ -7,9 +12,6 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 /* jshint +W079 */
 
 /**
- * Generates the license text that goes in the header of the sim's HTML file.
- * Shares the license text with other grunt tasks by attaching it to global.phet.licenseText.
- *
  * @param grunt
  * @param {string[]} preload field from package.json
  */

@@ -1,12 +1,13 @@
 // Copyright 2002-2013, University of Colorado Boulder
 
+//TODO: should the parent project (the sim itself) also be checked out, ignored, or moved into its specified branch?  Right now it is ignored (i.e. left as it was when the task was started)
+/**
+ * This grunt task checks out the shas for a project, as specified in a dependencies.json file in its top level.
+ */
 var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 /**
- * Check out the shas for a project as specified in a dependencies.json file in its top level.
- *
- * TODO: should the parent project (the sim itself) also be checked out, ignored, or moved into its specified branch?  Right now it is ignored (i.e. left as it was when the task was started)
  * @param grunt
  * @param projectName of the project (repository)
  * @param toMaster whether master should be used, or dependencies.json shas should be used

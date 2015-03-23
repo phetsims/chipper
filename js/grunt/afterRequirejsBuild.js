@@ -1,5 +1,10 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
+/**
+ * This grunt task does things after the requirejs:build step.
+ * It is for internal use only, not intended to be called directly.
+ */
+
 // built-in node APIs
 var assert = require( 'assert' );
 var fs = require( 'fs' );
@@ -16,8 +21,6 @@ var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap'
 var loadFileAsDataURI = require( '../../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
 
 /**
- * For internal use only.
- * Do things after the requirejs:build step.
  * @param grunt
  * @param {Object} pkg package.json
  * @param {string} fallbackLocale

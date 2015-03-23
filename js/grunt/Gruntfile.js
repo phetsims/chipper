@@ -14,7 +14,6 @@
 // built-in node APIs
 var assert = require( 'assert' );
 var fs = require( 'fs' );
-var child_process = require( 'child_process' );
 
 // 3rd-party packages
 /* jshint -W079 */
@@ -229,7 +228,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'pull-all',
     'Pull all repo above this directory',
     function() {
-      pullAll( grunt, child_process, assert, pkg.name );  //TODO this looks wrong, why passing in child_process and assert?
+      pullAll( grunt );
     } );
 
   grunt.registerTask( 'string-report',

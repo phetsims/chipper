@@ -1,11 +1,15 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
+/**
+ * This grunt task reports on which strings are missing for each locale.
+ * It's intended to be run after a build.
+ */
+
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
 
 /**
- * After doing a build, reports on which strings are missing for each locale that was built.
  * @param grunt
  * @param {string} repositoryName
  * @param {string} fallbackLocale

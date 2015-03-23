@@ -1,14 +1,17 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
-var assert = require( 'assert' );
-var child_process = require( 'child_process' );
-
 /**
- * This task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13
+ * This grunt task updates the last value in the version by one.  For example from 0.0.0-dev.12 to 0.0.0-dev.13
  * This updates the package.json and js/version.js files, and commits + pushes to git.
  * BEWARE: Do not run this task unless your git is clean, otherwise it will commit other work on your repo as well.
  *
  * @author Sam Reid
+ */
+
+var assert = require( 'assert' );
+var child_process = require( 'child_process' );
+
+/**
  * @param grunt
  * @param {string} version the current version ID
  */

@@ -1,16 +1,18 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
-var fs = require( 'fs' );
-
 /**
- * For internal use only.
- * Do things before the requirejs:build step.
- * Shares the following information with other grunt tasks by via global.phet:
+ * This grunt task does things before the requirejs:build step.
+ * It is for internal use only, not intended to be called directly.
+ * It sares the following information with other grunt tasks by via global.phet:
  * (TODO document these)
  * strings
  * localesToBuild
  * mipmapsToBuild
- *
+ */
+
+var fs = require( 'fs' );
+
+/**
  * @param grunt
  * @param {Object} pkg package.json
  * @param {string} fallbackLocale

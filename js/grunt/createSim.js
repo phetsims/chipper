@@ -1,15 +1,17 @@
 //  Copyright 2002-2014, University of Colorado Boulder
 
-var fs = require( 'fs' );
-
 /**
- * Create a simulation based on the simula-rasa template
+ * This grunt task creates a simulation based on the simula-rasa template
  *
  * Example usage:
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)"
  * or to force overwrite of existing files:
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)" --overwrite=true
- *
+ */
+
+var fs = require( 'fs' );
+
+/**
  * @param {Grunt} grunt the grunt instance
  * @param {String} projectName the name of the project.  All lower case and hyphenated, like circuit-construction-kit
  * @param {String} author the new author for the project
