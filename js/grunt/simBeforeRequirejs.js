@@ -52,6 +52,13 @@ module.exports = function( grunt, repositoryName, version, phetLibs, preload, fa
 
   grunt.log.writeln( 'Building simulation: ' + repositoryName + ' ' + version );
 
+  // info shared with other tasks will be put here
+  global.phet = global.phet || {};
+
+  // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
+  global.phet.chipper = global.phet.chipper || {};
+  global.phet.chipper.getCacheBusterArgs = global.phet.chipper.getCacheBusterArgs || function() {return '';};
+
   // See if a specific language was specified like: grunt build --locale fr
   var locale = grunt.option( 'locale' ) || fallbackLocale;
 
@@ -59,7 +66,6 @@ module.exports = function( grunt, repositoryName, version, phetLibs, preload, fa
   grunt.config.set( 'requirejs.build.options.phetLocale', locale );
 
   // set up a place for the strings to go:
-  global.phet = global.phet || {};
   global.phet.strings = global.phet.strings || {};
 
   // Pass a global to the string! plugin so we know which strings to look up
