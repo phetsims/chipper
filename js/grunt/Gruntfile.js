@@ -30,6 +30,7 @@ var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' )
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseText' );
+var simBeforeRequirejs = require( '../../../chipper/js/grunt/simBeforeRequirejs' );
 
 // Mipmap setup
 var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
@@ -181,7 +182,7 @@ module.exports = function( grunt ) {
     } );
   grunt.registerTask( 'build-no-lint',
     'identical to "build", but does not run "lint-all"',
-    [ 'clean', 'generate-license-text', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+    [ 'clean', 'generate-license-text', 'sim-before-requirejs', 'requirejs:build', 'simAfterRequirejs' ] );
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
     '--all-locales true:\n\tto build HTML for all locales in strings/\n' +
@@ -195,37 +196,6 @@ module.exports = function( grunt ) {
     function() {
       stringReport( grunt, pkg.name, FALLBACK_LOCAL );
     } );
-
-  /*
-   * Look up the locale strings provided in the simulation.
-   * Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name.
-   */
-  var getLocalesForDirectory = function( directory ) {
-    var stringFiles = fs.readdirSync( directory );
-    return stringFiles.map( function( stringFile ) {
-      return stringFile.substring( stringFile.indexOf( '_' ) + 1, stringFile.lastIndexOf( '.' ) );
-    } );
-  };
-
-  /*
-   * Look up the locale strings provided in the simulation.
-   * Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name.
-   */
-  var getLocales = function() { return getLocalesForDirectory( 'strings' ); };
-
-  /*
-   * Look up which locales should be built, accounting for flags provided by the developer on the command line
-   * --all-locales true: to build all of the provided locales
-   * --locales beers-law-lab: use locales from another sim's strings directory
-   * --locale fr: to build just the french locale
-   * [no options] to build just the english locale
-   */
-  var getLocalesToBuild = function() {
-    return grunt.option( 'all-locales' ) ? getLocales() :
-           grunt.option( 'locale' ) ? [ grunt.option( 'locale' ) ] :
-           grunt.option( 'locales' ) ? getLocalesForDirectory( '../' + grunt.option( 'locales' ) + '/strings' ) :
-           [ FALLBACK_LOCAL ];
-  };
 
   var getStringsWithFallbacks = function( locale, global_phet_strings ) {
     var fallbackStrings = global_phet_strings[ FALLBACK_LOCAL ];
@@ -253,34 +223,10 @@ module.exports = function( grunt ) {
     pullAll( grunt, child_process, assert, pkg.name );  //TODO this looks wrong, why passing in child_process and assert?
   } );
 
-  grunt.registerTask( 'simBeforeRequirejs', '(internal use only) Prepare for the requirejs step, enumerate locales to build', function() {
-    grunt.log.writeln( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
-
-    assert( pkg.phetLibs, 'phetLibs required in package.json' );
-    assert( pkg.preload, 'preload required in package.json' );
-
-    // See if a specific language was specified like: grunt build --locale fr
-    var locale = grunt.option( 'locale' ) || FALLBACK_LOCAL;
-
-    // Pass an option to requirejs through its config build options
-    grunt.config.set( 'requirejs.build.options.phetLocale', locale );
-
-    // set up a place for the strings to go:
-    global.phet = global.phet || {};
-    global.phet.strings = global.phet.strings || {};
-
-    var localesToBuild = getLocalesToBuild();
-
-    // Pass a global to the string! plugin so we know which strings to look up
-    global.phet.localesToBuild = localesToBuild;
-    for ( var i = 0; i < localesToBuild.length; i++ ) {
-      global.phet.strings[ localesToBuild[ i ] ] = {};
-    }
-    global.phet.strings[ FALLBACK_LOCAL ] = {};//may overwrite above
-
-    // Since require.js plugins can't be asynchronous with isBuild=true (r.js mode), we need to catch all of the
-    // mipmaps that we'll need to build and then handle them later asynchronously.
-    global.phet.mipmapsToBuild = [];
+  grunt.registerTask( 'sim-before-requirejs', '(internal use only) Do things prior to the requirejs:build step', function() {
+    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
+    assert( pkg.preload, 'preload missing from package.json' );
+    simBeforeRequirejs( grunt, pkg.name, pkg.version, pkg.phetLibs, pkg.preload, FALLBACK_LOCAL );
   } );
 
   grunt.registerTask( 'simAfterRequirejs', '(internal use only) Finish writing files after requirjs finished', function() {
@@ -343,7 +289,8 @@ module.exports = function( grunt ) {
       grunt.log.writeln( 'Writing HTML' );
 
       // Create the translated versions
-      var locales = getLocalesToBuild();
+      assert( global.phet.localesToBuild, 'missing global.phet.localesToBuild' );
+      var locales = global.phet.localesToBuild;
 
       /*
        * Write the stringless template in case we want to use it with the translation addition process.
