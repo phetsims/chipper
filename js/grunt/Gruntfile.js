@@ -26,6 +26,7 @@ var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
+var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' );
 
 // Mipmap setup
 var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
@@ -190,31 +191,6 @@ module.exports = function( grunt ) {
         // Print the missing keys and the english values so the translator knows what to provide
         console.log( locale, 'missing\n', JSON.stringify( missing, null, '\t' ) );
       }
-    }
-  } );
-
-  // See #56 Task that clones the dependencies for a project (except for the project itself, chipper and sherpa)
-  grunt.registerTask( 'get-dependencies', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
-    console.log( 'pkg.name', pkg.name );
-
-    var dependencies = _.without( pkg.phetLibs, pkg.name, 'chipper', 'sherpa' );
-    console.log( 'cloning dependencies for', pkg.name, ': ', dependencies.toString() );
-    var numCloned = 0;
-    var done = grunt.task.current.async();
-    for ( var i = 0; i < dependencies.length; i++ ) {
-      var dependency = dependencies[ i ];
-      var command = 'git clone https://github.com/phetsims/' + dependency + '.git';
-      console.log( 'executing:', command );
-      child_process.exec( command, { cwd: '../' }, function( error1, stdout1, stderr1 ) {
-        console.log( stdout1 );
-        console.log( stderr1 );
-        assert( !error1, "error in " + command );
-        console.log( 'Finished checkout.' );
-        numCloned++;
-        if ( numCloned === dependencies.length ) {
-          done();
-        }
-      } );
     }
   } );
 
@@ -644,6 +620,12 @@ module.exports = function( grunt ) {
       assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
       generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
     } );
+
+  grunt.registerTask( 'clone-dependencies', 'Clones all dependencies of a project, as listed in package.json phetLibs entry', function() {
+    assert( pkg.name, 'name missing from package.json' );
+    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
+    cloneDependencies( grunt, pkg.name, pkg.phetLibs );
+  } );
 
   /*
    * Load tasks from grunt plugins that have been installed locally using npm.
