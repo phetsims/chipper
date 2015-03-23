@@ -195,7 +195,7 @@ module.exports = function( grunt ) {
   } );
 
   /*
-   * Task that creates a list of git clone commands that will check out a simulation and all its depnedencies
+   * Task that creates a list of git clone commands that will check out a simulation and all its dependencies.
    * This can be used by a PhET Developer to create a script to put in a simulation's README.md
    * See #56
    */
