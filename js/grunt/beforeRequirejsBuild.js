@@ -12,13 +12,10 @@ var fs = require( 'fs' );
  * mipmapsToBuild
  *
  * @param grunt
- * @param {string} repositoryName
- * @param {string} version
- * @param {string[]} phetLibs
- * @param {string[]} preload
+ * @param {Object} pkg package.json
  * @param {string} fallbackLocale
  */
-module.exports = function( grunt, repositoryName, version, phetLibs, preload, fallbackLocale ) {
+module.exports = function( grunt, pkg, fallbackLocale ) {
   'use strict';
 
   /*
@@ -46,8 +43,7 @@ module.exports = function( grunt, repositoryName, version, phetLibs, preload, fa
            [ fallbackLocale ];
   };
 
-  //TODO move this elsewhere, so we don't need to pass in version
-  grunt.log.writeln( 'Building simulation: ' + repositoryName + ' ' + version );
+  grunt.log.writeln( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
 
   // info shared with other tasks will be put here
   global.phet = global.phet || {};

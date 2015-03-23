@@ -171,7 +171,7 @@ module.exports = function( grunt ) {
     function() {
       assert( pkg.phetLibs, 'phetLibs missing from package.json' );
       assert( pkg.preload, 'preload missing from package.json' );
-      beforeRequirejsBuild( grunt, pkg.name, pkg.version, pkg.phetLibs, pkg.preload, FALLBACK_LOCAL );
+      beforeRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
     } );
 
   grunt.registerTask( 'after-requirejs-build',
