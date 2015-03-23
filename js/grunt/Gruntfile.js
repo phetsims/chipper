@@ -80,6 +80,7 @@ module.exports = function( grunt ) {
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + pkg.name + '/node_modules/uglify-js' );
 
+  // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
   global.phet = global.phet || {};
   global.phet.chipper = global.phet.chipper || {};
   global.phet.chipper.getCacheBusterArgs = global.phet.chipper.getCacheBusterArgs || function() {return '';};
