@@ -28,6 +28,7 @@ var createSim = require( '../../../chipper/js/grunt/createSim' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' );
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
+var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 
 // Mipmap setup
 var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
@@ -181,21 +182,11 @@ module.exports = function( grunt ) {
     '[no options]:\n\tto build just the English locale',
     [ 'lint-all', 'build-no-lint' ] );
 
-  grunt.registerTask( 'string', 'After running a build step, provide a report about all of the strings (just for the built locales)', function() {
-    var stringMap = grunt.file.readJSON( 'build/' + pkg.name + '_string-map.json' );
-
-    // for each language, say what is missing
-    for ( var locale in stringMap ) {
-      if ( stringMap.hasOwnProperty( locale ) && locale !== FALLBACK_LOCAL ) {
-        var strings = stringMap[ locale ];
-        var fallback = stringMap.en;
-        var missing = _.omit( fallback, _.keys( strings ) );
-
-        // Print the missing keys and the english values so the translator knows what to provide
-        console.log( locale, 'missing\n', JSON.stringify( missing, null, '\t' ) );
-      }
-    }
-  } );
+  grunt.registerTask( 'string-report',
+    'After doing a build, reports on which strings are missing for each locale that was built.',
+    function() {
+      stringReport( grunt, pkg.name, FALLBACK_LOCAL );
+    } );
 
   /*
    * Look up the locale strings provided in the simulation.
