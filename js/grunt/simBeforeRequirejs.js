@@ -3,8 +3,10 @@
 var fs = require( 'fs' );
 
 /**
- * For internal use only. Do things prior to the requirejs:build step.
- * Shares the following things with other grunt tasks by attaching them to global.phet: (TODO document these)
+ * For internal use only.
+ * Do things prior to the requirejs:build step.
+ * Shares the following information with other grunt tasks by via global.phet:
+ * (TODO document these)
  * strings
  * localesToBuild
  * mipmapsToBuild
