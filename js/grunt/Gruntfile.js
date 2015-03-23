@@ -195,24 +195,6 @@ module.exports = function( grunt ) {
   } );
 
   /*
-   * Task that creates a list of git clone commands that will check out a simulation and all its dependencies.
-   * This can be used by a PhET Developer to create a script to put in a simulation's README.md
-   * See #56
-   */
-  grunt.registerTask( 'list-clone-commands', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
-    console.log( 'pkg.name', pkg.name );
-
-    console.log( 'listing git clone commands for', pkg.name, ': ', pkg.phetLibs.toString() );
-    console.log( 'start script' );
-    for ( var i = 0; i < pkg.phetLibs.length; i++ ) {
-      var dependency = pkg.phetLibs[ i ];
-      var command = 'git clone https://github.com/phetsims/' + dependency + '.git';
-      console.log( command );
-    }
-    console.log( 'end script' );
-  } );
-
-  /*
    * Look up the locale strings provided in the simulation.
    * Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name.
    */
