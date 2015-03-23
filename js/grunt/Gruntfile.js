@@ -592,20 +592,16 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'generate-published-README', 'Generates README.md file for a published simulation.', function() {
-    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
     assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
     generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, true /* published */ );
   } );
 
   grunt.registerTask( 'generate-unpublished-README', 'Generates README.md file for an unpublished simulation.', function() {
-      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
-      assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
-      generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
-    } );
+    assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
+    generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
+  } );
 
   grunt.registerTask( 'clone-dependencies', 'Clones all dependencies of a project, as listed in package.json phetLibs entry', function() {
-    assert( pkg.name, 'name missing from package.json' );
-    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
     cloneDependencies( grunt, pkg.name, pkg.phetLibs );
   } );
 
