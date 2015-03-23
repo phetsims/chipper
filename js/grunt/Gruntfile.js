@@ -233,9 +233,6 @@ module.exports = function( grunt ) {
     return extended;
   };
 
-  // Scoped variable to hold the result from the generateLicenseInfoTask.
-  //TODO: A better way to store the return value?
-  var licenseText;
   grunt.registerTask( 'generateLicenseInfo', 'Generate the license info', function() {
 
     /*
@@ -280,8 +277,8 @@ module.exports = function( grunt ) {
     // Get the text of each entry
     var separator = '=';
 
-    //TODO: better way to return a value?
-    licenseText = _.reduce( licenses, function( memo, license ) {
+    // share with other tasks via a global
+    global.phet.licenseText = _.reduce( licenses, function( memo, license ) {
       var selectedLicenseText = license.selectedLicense ? '> Selected license: ' + license.selectedLicense + '\n' : '';
       return memo + license.text + '\n' +
              selectedLicenseText +
@@ -378,7 +375,7 @@ module.exports = function( grunt ) {
                        'Licensed under ' + pkg.license + '\n' +
                        'http://phet.colorado.edu/en/about/licensing\n' +
                        '\n' +
-                       'Libraries:\n' + licenseText;
+                       'Libraries:\n' + global.phet.licenseText;
 
       // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
       preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
