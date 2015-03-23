@@ -4,7 +4,7 @@ var fs = require( 'fs' );
 
 /**
  * For internal use only.
- * Do things prior to the requirejs:build step.
+ * Do things before the requirejs:build step.
  * Shares the following information with other grunt tasks by via global.phet:
  * (TODO document these)
  * strings

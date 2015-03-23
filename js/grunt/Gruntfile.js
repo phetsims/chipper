@@ -30,7 +30,7 @@ var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' )
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseText' );
-var simBeforeRequirejs = require( '../../../chipper/js/grunt/simBeforeRequirejs' );
+var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBuild' );
 
 // Mipmap setup
 var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
@@ -177,7 +177,7 @@ module.exports = function( grunt ) {
     } );
   grunt.registerTask( 'build-no-lint',
     'identical to "build", but does not run "lint-all"',
-    [ 'clean', 'generate-license-text', 'sim-before-requirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+    [ 'clean', 'generate-license-text', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
     '--all-locales true:\n\tto build HTML for all locales in strings/\n' +
@@ -218,13 +218,13 @@ module.exports = function( grunt ) {
     pullAll( grunt, child_process, assert, pkg.name );  //TODO this looks wrong, why passing in child_process and assert?
   } );
 
-  grunt.registerTask( 'sim-before-requirejs', '(internal use only) Do things prior to the requirejs:build step', function() {
+  grunt.registerTask( 'before-requirejs-build', '(internal use only) Do things before the requirejs:build task', function() {
     assert( pkg.phetLibs, 'phetLibs missing from package.json' );
     assert( pkg.preload, 'preload missing from package.json' );
-    simBeforeRequirejs( grunt, pkg.name, pkg.version, pkg.phetLibs, pkg.preload, FALLBACK_LOCAL );
+    beforeRequirejsBuild( grunt, pkg.name, pkg.version, pkg.phetLibs, pkg.preload, FALLBACK_LOCAL );
   } );
 
-  grunt.registerTask( 'simAfterRequirejs', '(internal use only) Finish writing files after requirjs finished', function() {
+  grunt.registerTask( 'after-requirejs-build', '(internal use only) Do things after the requirejs:build task', function() {
     var done = this.async();
 
     grunt.log.writeln( 'Minifying preload scripts' );
