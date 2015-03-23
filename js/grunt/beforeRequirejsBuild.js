@@ -46,6 +46,7 @@ module.exports = function( grunt, repositoryName, version, phetLibs, preload, fa
            [ fallbackLocale ];
   };
 
+  //TODO move this elsewhere, so we don't need to pass in version
   grunt.log.writeln( 'Building simulation: ' + repositoryName + ' ' + version );
 
   // info shared with other tasks will be put here
