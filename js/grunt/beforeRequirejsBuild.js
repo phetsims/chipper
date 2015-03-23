@@ -33,22 +33,16 @@ module.exports = function( grunt, repositoryName, version, phetLibs, preload, fa
   };
 
   /*
-   * Look up the locale strings provided in the simulation.
-   * Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name.
-   */
-  var getLocales = function() { return getLocalesForDirectory( 'strings' ); };
-
-  /*
    * Look up which locales should be built, accounting for flags provided by the developer on the command line
    * --all-locales true: to build all of the provided locales
    * --locales beers-law-lab: use locales from another sim's strings directory
-   * --locale fr: to build just the french locale
-   * [no options] to build just the english locale
+   * --locale fr: to build just the French locale
+   * [no options] to build just the fallback locale (typically English)
    */
   var getLocalesToBuild = function() {
-    return grunt.option( 'all-locales' ) ? getLocales() :
-           grunt.option( 'locale' ) ? [ grunt.option( 'locale' ) ] :
+    return grunt.option( 'all-locales' ) ? getLocalesForDirectory( 'strings' ) :
            grunt.option( 'locales' ) ? getLocalesForDirectory( '../' + grunt.option( 'locales' ) + '/strings' ) :
+           grunt.option( 'locale' ) ? [ grunt.option( 'locale' ) ] :
            [ fallbackLocale ];
   };
 
