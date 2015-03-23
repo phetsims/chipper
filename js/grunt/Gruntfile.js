@@ -253,7 +253,6 @@ module.exports = function( grunt ) {
     pullAll( grunt, child_process, assert, pkg.name );  //TODO this looks wrong, why passing in child_process and assert?
   } );
 
-  // creates a performance snapshot for profiling changes
   grunt.registerTask( 'simBeforeRequirejs', '(internal use only) Prepare for the requirejs step, enumerate locales to build', function() {
     grunt.log.writeln( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
 
