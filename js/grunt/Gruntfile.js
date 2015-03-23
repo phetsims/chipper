@@ -197,7 +197,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'get-dependencies', 'Clone all dependencies of the project, as listed in the package.json phetLibs entry', function() {
     console.log( 'pkg.name', pkg.name );
 
-    var dependencies = _.without( pkg.phetLibs.split( ' ' ), pkg.name, 'chipper', 'sherpa' );
+    var dependencies = _.without( pkg.phetLibs, pkg.name, 'chipper', 'sherpa' );
     console.log( 'cloning dependencies for', pkg.name, ': ', dependencies.toString() );
     var numCloned = 0;
     var done = grunt.task.current.async();
