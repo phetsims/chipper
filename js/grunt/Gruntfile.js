@@ -3,7 +3,7 @@
 /**
  * Grunt configuration file for PhET projects.
  * Requires a package.json file containing project settings.
- * Tasks may share information by attaching to global.phet.
+ * Tasks share information via global.phet, see individual tasks for details.
  *
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jon Olson
@@ -33,6 +33,7 @@ var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseTex
 var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBuild' );
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
 
+//TODO look at why this is necessary
 /*
  * In Node, global is the global namespace object.
  * Register fs as a global so it can be accessed through the requirejs build system. Text.js plugin
@@ -125,30 +126,13 @@ module.exports = function( grunt ) {
     }
   } );
 
-  var clean = function() {
-    if ( fs.existsSync( 'build' ) ) {
-      grunt.log.writeln( 'Cleaning build directory' );
-      grunt.file.delete( 'build' );
-    }
-    grunt.file.mkdir( 'build' );
-  };
+  //---------------------------------------------------------------------------------------------------------------
+  // Primary tasks
+  //---------------------------------------------------------------------------------------------------------------
 
   // Default task ('grunt')
   grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
 
-  // Other tasks ('grunt taskName')
-  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'jshint:allFiles' ] );
-  grunt.registerTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory', clean );
-  grunt.registerTask( 'generate-license-text',
-    'Generates the license text that will be written to the HTML file',
-    function() {
-      assert( pkg.preload, 'preload required in package.json' );
-      generateLicenseText( grunt, pkg.preload );
-    } );
-  grunt.registerTask( 'build-no-lint',
-    'identical to "build", but does not run "lint-all"',
-    [ 'clean', 'generate-license-text', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
     '--all-locales true:\n\tto build HTML for all locales in strings/\n' +
@@ -157,54 +141,82 @@ module.exports = function( grunt ) {
     '[no options]:\n\tto build just the English locale',
     [ 'lint-all', 'build-no-lint' ] );
 
-  grunt.registerTask( 'string-report',
-    'After doing a build, reports on which strings are missing for each locale that was built.',
+  grunt.registerTask( 'build-no-lint',
+    'identical to "build", but does not run "lint-all"',
+    [ 'clean', 'generate-license-text', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
+
+  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
+
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'jshint:allFiles' ] );
+
+  grunt.registerTask( 'clean',
+    'Erases the build/ directory and all its contents, and recreates the build/ directory',
     function() {
-      stringReport( grunt, pkg.name, FALLBACK_LOCAL );
+      if ( fs.existsSync( 'build' ) ) {
+        grunt.log.writeln( 'Cleaning build directory' );
+        grunt.file.delete( 'build' );
+      }
+      grunt.file.mkdir( 'build' );
     } );
 
-  grunt.registerTask( 'checkout-shas', 'Check out shas for a project, as specified in dependencies.json', function() {
-    checkoutShas( grunt, pkg.name, false );
-  } );
+  grunt.registerTask( 'generate-license-text',
+    'Generates the license text that will be written to the HTML file',
+    function() {
+      assert( pkg.preload, 'preload required in package.json' );
+      generateLicenseText( grunt, pkg.preload );
+    } );
 
-  grunt.registerTask( 'checkout-master', 'Check out master branch for all dependencies, as specified in dependencies.json', function() {
-    checkoutShas( grunt, pkg.name, true );
-  } );
+  grunt.registerTask( 'before-requirejs-build',
+    '(internal use only) Do things before the requirejs:build task',
+    function() {
+      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
+      assert( pkg.preload, 'preload missing from package.json' );
+      beforeRequirejsBuild( grunt, pkg.name, pkg.version, pkg.phetLibs, pkg.preload, FALLBACK_LOCAL );
+    } );
 
-  grunt.registerTask( 'pull-all', 'Pull all repo above this directory', function() {
-    pullAll( grunt, child_process, assert, pkg.name );  //TODO this looks wrong, why passing in child_process and assert?
-  } );
+  grunt.registerTask( 'after-requirejs-build',
+    '(internal use only) Do things after the requirejs:build task',
+    function() {
+      afterRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
+    } );
 
-  grunt.registerTask( 'before-requirejs-build', '(internal use only) Do things before the requirejs:build task', function() {
-    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
-    assert( pkg.preload, 'preload missing from package.json' );
-    beforeRequirejsBuild( grunt, pkg.name, pkg.version, pkg.phetLibs, pkg.preload, FALLBACK_LOCAL );
-  } );
+  //---------------------------------------------------------------------------------------------------------------
+  // Utility tasks
+  //---------------------------------------------------------------------------------------------------------------
 
-  grunt.registerTask( 'after-requirejs-build', '(internal use only) Do things after the requirejs:build task', function() {
-    afterRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
-  } );
+  grunt.registerTask( 'checkout-shas',
+    'Check out shas for a project, as specified in dependencies.json',
+    function() {
+      checkoutShas( grunt, pkg.name, false );
+    } );
 
-  grunt.registerTask( 'create-sim', 'Create a sim based on the simula-rasa template.  Example usage: grunt create-sim --name=cannon-blaster --author="Jane Smith (Smith Inc.)"', function() {
-    createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'overwrite' ) );
-  } );
+  grunt.registerTask( 'checkout-master',
+    'Check out master branch for all dependencies, as specified in dependencies.json',
+    function() {
+      checkoutShas( grunt, pkg.name, true );
+    } );
 
-  grunt.registerTask( 'generate-published-README', 'Generates README.md file for a published simulation.', function() {
-    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
-    assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
-    generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, true /* published */ );
-  } );
+  grunt.registerTask( 'create-sim',
+    'Create a sim based on the simula-rasa template.  Example usage: grunt create-sim --name=cannon-blaster --author="Jane Smith (Smith Inc.)"',
+    function() {
+      createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'overwrite' ) );
+    } );
 
-  grunt.registerTask( 'generate-unpublished-README', 'Generates README.md file for an unpublished simulation.', function() {
-    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
-    assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
-    generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
-  } );
+  grunt.registerTask( 'generate-published-README',
+    'Generates README.md file for a published simulation.',
+    function() {
+      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
+      assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
+      generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, true /* published */ );
+    } );
 
-  grunt.registerTask( 'clone-dependencies', 'Clones all dependencies of a project, as listed in package.json phetLibs entry', function() {
-    assert( pkg.phetLibs, 'phetLibs missing from package.json' );
-    cloneDependencies( grunt, pkg.name, pkg.phetLibs );
-  } );
+  grunt.registerTask( 'generate-unpublished-README',
+    'Generates README.md file for an unpublished simulation.',
+    function() {
+      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
+      assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
+      generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
+    } );
 
   grunt.registerTask( 'bump-version',
     'This task updates the last value in the version by one. For example from 0.0.0-dev.12 to 0.0.0-dev.13.' +
@@ -212,6 +224,25 @@ module.exports = function( grunt ) {
     'BEWARE: Do not run this task unless your git is clean, otherwise it will commit other work on your repo as well.',
     function() {
       bumpVersion( grunt, pkg.version );
+    } );
+
+  grunt.registerTask( 'pull-all',
+    'Pull all repo above this directory',
+    function() {
+      pullAll( grunt, child_process, assert, pkg.name );  //TODO this looks wrong, why passing in child_process and assert?
+    } );
+
+  grunt.registerTask( 'string-report',
+    'After doing a build, reports on which strings are missing for each locale that was built.',
+    function() {
+      stringReport( grunt, pkg.name, FALLBACK_LOCAL );
+    } );
+
+  grunt.registerTask( 'clone-dependencies',
+    'Clones all dependencies of a project, as listed in package.json phetLibs entry',
+    function() {
+      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
+      cloneDependencies( grunt, pkg.name, pkg.phetLibs );
     } );
 
   /*
