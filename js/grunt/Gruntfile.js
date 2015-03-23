@@ -164,20 +164,21 @@ module.exports = function( grunt ) {
   };
 
   // Default task ('grunt')
-  grunt.registerTask( 'default', 'clean, lint and build the English HTML', [ 'generateLicenseInfo', 'lint-all', 'clean', 'build' ] );
+  grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
 
   // Other tasks ('grunt taskName')
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'jshint:allFiles' ] );
   grunt.registerTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory', clean );
-  grunt.registerTask( 'build', 'Builds the simulation (without cleaning or linting):\n' +
+  grunt.registerTask( 'build-no-lint', 'identical to "build", but does not run "lint-all"',
+    [ 'clean', 'generateLicenseInfo', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+  grunt.registerTask( 'build', 'Builds the simulation:\n' +
                                '--all-locales true:\n\tto build HTML for all locales in strings/\n' +
                                '--locales $project:\n\tuse locales inferred from another project\'s strings/ directory\n' +
                                '--locale fr:\n\tto build just the French locale\n' +
-                               '[no options]:\n\tto build just the English locale', [ 'generateLicenseInfo', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+                               '[no options]:\n\tto build just the English locale',
+    [ 'lint-all', 'build-no-lint' ] );
 
-  // Build without cleaning, so that files can be added from different tasks for i18n
-  grunt.registerTask( 'nolint', 'clean and build but without the lint steps', [ 'generateLicenseInfo', 'clean', 'build' ] );
   grunt.registerTask( 'string', 'After running a build step, provide a report about all of the strings (just for the built locales)', function() {
     var stringMap = grunt.file.readJSON( 'build/' + pkg.name + '_string-map.json' );
 
