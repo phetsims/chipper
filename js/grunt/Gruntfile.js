@@ -3,6 +3,7 @@
 /**
  * Grunt configuration file for PhET projects.
  * Requires a package.json file containing project settings.
+ * Tasks may share information by attaching to global.phet.
  *
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jon Olson
@@ -16,7 +17,6 @@ var fs = require( 'fs' );
 var child_process = require( 'child_process' );
 
 // 3rd-party packages
-var info = require( '../../../sherpa/info' ); // license info for all 3rd-party packages
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
@@ -29,6 +29,7 @@ var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' );
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
+var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseText' );
 
 // Mipmap setup
 var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
@@ -171,9 +172,15 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'jshint:allFiles' ] );
   grunt.registerTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory', clean );
+  grunt.registerTask( 'generate-license-text',
+    'Generates the license text that will be written to the HTML file',
+    function() {
+      assert( pkg.preload, 'preload required in package.json' );
+      generateLicenseText( grunt, pkg.preload );
+    } );
   grunt.registerTask( 'build-no-lint',
     'identical to "build", but does not run "lint-all"',
-    [ 'clean', 'generateLicenseInfo', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
+    [ 'clean', 'generate-license-text', 'simBeforeRequirejs', 'requirejs:build', 'simAfterRequirejs' ] );
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
     '--all-locales true:\n\tto build HTML for all locales in strings/\n' +
@@ -232,63 +239,6 @@ module.exports = function( grunt ) {
     }
     return extended;
   };
-
-  grunt.registerTask( 'generateLicenseInfo', 'Generate the license info', function() {
-
-    /*
-     * Prepare the license info. Run this first so that if something is missing from the license file
-     * you will find out before having to wait for jshint/requirejs build
-     */
-    var licenseInfo = info();
-
-    /*
-     * Find all dependencies that have 'sherpa' in the path.
-     * Please note, this requires all simulations to keep their dependencies in sherpa!
-     */
-    assert( pkg.preload, 'preload missing from package.json' );
-    var sherpaDependencyPaths = _.filter( pkg.preload, function( dependency ) { return dependency.indexOf( 'sherpa' ) >= 0; } );
-
-    /*
-     * Add libraries that are not explicitly included by the sim.
-     * Note: must have a . character for the parsing below TODO: Remove this restriction
-     */
-    sherpaDependencyPaths.push( 'almond-0.2.9.js' );
-    sherpaDependencyPaths.push( 'pegjs.' );
-    sherpaDependencyPaths.push( 'font-awesome.' );
-    sherpaDependencyPaths.push( 'require-i18n.js' );
-    sherpaDependencyPaths.push( 'text.js' );
-    sherpaDependencyPaths.push( 'base64binary.js' );//TODO: Not all simulations use Vibe
-
-    // Sort by name of the library, have to match cases to sort properly
-    var sortedSherpaDependencyPaths = _.sortBy( sherpaDependencyPaths, function( path ) {return path.toUpperCase();} );
-
-    // Map the paths to instances from the info.js file
-    var licenses = _.uniq( _.map( sortedSherpaDependencyPaths, function( sherpaDependencyPath ) {
-      var lastSlash = sherpaDependencyPath.lastIndexOf( '/' );
-      var lastDot = sherpaDependencyPath.lastIndexOf( '.' );
-      var dependencyName = sherpaDependencyPath.substring( lastSlash + 1, lastDot );
-      //    console.log( 'found dependency: ' + sherpaDependencyPath + ', name = ' + dependencyName );
-
-      // Make sure there is an entry in the info.js file, and return it
-      assert( licenseInfo[ dependencyName ], 'no license entry for ' + dependencyName );
-      return licenseInfo[ dependencyName ];
-    } ) );
-
-    // Get the text of each entry
-    var separator = '=';
-
-    // share with other tasks via a global
-    global.phet = global.phet || {};
-    global.phet.licenseText = _.reduce( licenses, function( memo, license ) {
-      var selectedLicenseText = license.selectedLicense ? '> Selected license: ' + license.selectedLicense + '\n' : '';
-      return memo + license.text + '\n' +
-             selectedLicenseText +
-             separator +
-             '\n';
-    }, separator + '\n' ).trim();
-
-    grunt.log.writeln( 'created license info for ' + licenses.length + ' dependencies' );
-  } );
 
   grunt.registerTask( 'checkout-shas', 'Check out shas for a project, as specified in dependencies.json', function() {
     checkoutShas( grunt, pkg.name, false );
