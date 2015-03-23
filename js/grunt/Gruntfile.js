@@ -249,7 +249,7 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'pull-all', 'Pull all repo above this directory', function() {
-    pullAll( grunt, child_process, assert, pkg.name );
+    pullAll( grunt, child_process, assert, pkg.name );  //TODO this looks wrong, why passing in child_process and assert?
   } );
 
   // creates a performance snapshot for profiling changes
