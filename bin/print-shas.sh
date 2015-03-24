@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 #=======================================================================================
 #
 # Prints shas for all repos that are immediate children of the current directory.

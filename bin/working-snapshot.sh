@@ -1,5 +1,11 @@
 #!/bin/sh
+#====================================================================================================
+#
 # temporary shim for working-snapshot.json output, somewhat copied from build.sh
+#
+# Author: Jonathan Olson
+#
+#====================================================================================================
 
 # Check for prerequisite files
 PACKAGE_JSON=./package.json
