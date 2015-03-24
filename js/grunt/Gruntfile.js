@@ -21,16 +21,16 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 /* jshint +W079 */
 
 // PhET custom grunt tasks
-var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
-var pullAll = require( '../../../chipper/js/grunt/pullAll' );
-var createSim = require( '../../../chipper/js/grunt/createSim' );
-var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
-var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' );
-var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
-var stringReport = require( '../../../chipper/js/grunt/stringReport' );
-var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseText' );
-var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBuild' );
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
+var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBuild' );
+var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
+var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
+var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' );
+var createSim = require( '../../../chipper/js/grunt/createSim' );
+var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseText' );
+var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
+var pullAll = require( '../../../chipper/js/grunt/pullAll' );
+var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 
 //TODO look at why this is necessary
 /*
