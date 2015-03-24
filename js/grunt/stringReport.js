@@ -10,8 +10,8 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 /* jshint +W079 */
 
 /**
- * @param grunt
- * @param {string} repositoryName
+ * @param grunt the grunt instance
+ * @param {string} repositoryName name field from package.json
  * @param {string} fallbackLocale
  */
 module.exports = function( grunt, repositoryName, fallbackLocale ) {

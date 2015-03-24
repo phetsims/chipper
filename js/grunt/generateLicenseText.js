@@ -12,7 +12,7 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 /* jshint +W079 */
 
 /**
- * @param grunt
+ * @param grunt the grunt instance
  * @param {string[]} preload field from package.json
  */
 module.exports = function( grunt, preload ) {

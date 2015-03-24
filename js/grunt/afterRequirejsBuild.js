@@ -21,7 +21,7 @@ var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap'
 var loadFileAsDataURI = require( '../../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
 
 /**
- * @param grunt
+ * @param grunt the grunt instance
  * @param {Object} pkg package.json
  * @param {string} fallbackLocale
  */

@@ -8,7 +8,7 @@ var child_process = require( 'child_process' );
 var fs = require( 'fs' );
 
 /**
- * @param grunt
+ * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
   'use strict';

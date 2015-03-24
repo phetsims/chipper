@@ -13,7 +13,7 @@
 var fs = require( 'fs' );
 
 /**
- * @param grunt
+ * @param grunt the grunt instance
  * @param {Object} pkg package.json
  * @param {string} fallbackLocale
  */

@@ -12,8 +12,8 @@ var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 /**
- * @param grunt
- * @param {string} version the current version ID
+ * @param grunt the grunt instance
+ * @param {string} version from package.json
  */
 module.exports = function( grunt, version ) {
   'use strict';

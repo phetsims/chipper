@@ -8,8 +8,8 @@
  */
 
 /**
- * @param grunt
- * @param {string} repositoryName name of the sim's repository
+ * @param grunt the grunt instance
+ * @param {string} repositoryName name from package.json
  * @param {string[]} phetLibs from package.json
  * @param {string} simTitleStringKey from package.json
  * @param {boolean} published has the sim been published?

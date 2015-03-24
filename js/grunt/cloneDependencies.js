@@ -12,9 +12,9 @@ var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 /**
- * @param grunt
- * @param {string} repositoryName
- * @param {string[]} phetLibs
+ * @param grunt the grunt instance
+ * @param {string} repositoryName name field from package.json
+ * @param {string[]} phetLibs from package.json
  */
 module.exports = function( grunt, repositoryName, phetLibs ) {
   'use strict';
