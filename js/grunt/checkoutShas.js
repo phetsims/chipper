@@ -1,17 +1,18 @@
 // Copyright 2002-2013, University of Colorado Boulder
 
+//TODO: should the parent project (the sim itself) also be checked out, ignored, or moved into its specified branch?  Right now it is ignored (i.e. left as it was when the task was started)
+/**
+ * This grunt task checks out the shas for a project, as specified in a dependencies.json file in its top level.
+ */
 var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 /**
- * Check out the shas for a project as specified in a dependencies.json file in its top level.
- *
- * TODO: should the parent project (the sim itself) also be checked out, ignored, or moved into its specified branch?  Right now it is ignored (i.e. left as it was when the task was started)
- * @param grunt
- * @param projectName of the project (repository)
+ * @param grunt the grunt instance
+ * @param repositoryName name field from package.json
  * @param toMaster whether master should be used, or dependencies.json shas should be used
  */
-module.exports = function( grunt, projectName, toMaster ) {
+module.exports = function( grunt, repositoryName, toMaster ) {
   'use strict';
 
   var dependencies = grunt.file.readJSON( 'dependencies.json' );
@@ -19,13 +20,13 @@ module.exports = function( grunt, projectName, toMaster ) {
   var numToCheckOut = 0;
   var numCheckedOut = 0;
   for ( var property in dependencies ) {
-    if ( property !== 'comment' && property !== projectName ) {
+    if ( property !== 'comment' && property !== repositoryName ) {
       numToCheckOut++;
     }
   }
 
   for ( property in dependencies ) {
-    if ( property !== 'comment' && property !== projectName && dependencies.hasOwnProperty( property ) ) {
+    if ( property !== 'comment' && property !== repositoryName && dependencies.hasOwnProperty( property ) ) {
 
       (function( property ) {
 

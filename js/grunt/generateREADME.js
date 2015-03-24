@@ -5,9 +5,12 @@
  * Placeholders in a template file are replaced with values specific to the simulation.
  *
  * @author Chris Malley {PixelZoom, Inc.}
- * @param grunt
- * @param {string} repositoryName name of the sim's repository
- * @param {string} phetLibs from package.json
+ */
+
+/**
+ * @param grunt the grunt instance
+ * @param {string} repositoryName name from package.json
+ * @param {string[]} phetLibs from package.json
  * @param {string} simTitleStringKey from package.json
  * @param {boolean} published has the sim been published?
  */
@@ -27,10 +30,9 @@ module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, p
 
   // Commands for cloning all required repositories
   var cloneCommands = '';
-  var dependencies = phetLibs.split( ' ' );
-  for ( var i = 0; i < dependencies.length; i++ ) {
-    cloneCommands = cloneCommands + 'git clone https://github.com/phetsims/' + dependencies[ i ] + '.git';
-    if ( i !== dependencies.length - 1 ) {
+  for ( var i = 0; i < phetLibs.length; i++ ) {
+    cloneCommands = cloneCommands + 'git clone https://github.com/phetsims/' + phetLibs[ i ] + '.git';
+    if ( i !== phetLibs.length - 1 ) {
       cloneCommands += '\n';
     }
   }

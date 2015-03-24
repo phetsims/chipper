@@ -1,15 +1,16 @@
 //  Copyright 2002-2014, University of Colorado Boulder
 
+/**
+ * This grunt task pulls all sibling repos in parallel, see #58
+ */
+
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
 
 /**
- * pulls all repos in parallel, see #58
- *
- * @param grunt
- * @param projectName
+ * @param grunt the grunt instance
  */
-module.exports = function( grunt, projectName ) {
+module.exports = function( grunt ) {
   'use strict';
 
   var files = fs.readdirSync( '../' );

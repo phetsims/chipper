@@ -37,8 +37,11 @@
  *
  * Other query parameters:
  *
+ * datamite.actionHistogram - when running with together.js + arch, display a histogram of the action types, see arch.jsadded action
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
  * eall - enable all assertions, as above but with more time consuming checks
+ * emitEmptyDeltas - when emitting states using together.js (see emitStates below) emit deltas that are empty, to simplify playback in some systems like Metacog.
+ * emitStates - when running a simulation using together.js, outputs states and deltas within the arch data stream, see together.js
  * rootRenderer - specify a renderer for the Sim's rootNode to use, such as 'svg', 'webgl' or 'canvas'
  * locale - test with a specific locale
  * playbackInputEventLog - plays event logging back from the server, provide an optional name for the session
@@ -75,10 +78,14 @@
 (function() {
   'use strict';
 
-  //If arch has already been preloaded, then this script does nothing.
-  //If arch has not been preloaded, then this will assign window.arch = null
-  //This will enable us to use a pattern like `arch && arch.method`
+  // If arch has already been preloaded, then this script does nothing.
+  // If arch has not been preloaded, then this will assign window.arch = null
+  // This will enable us to use a pattern like `arch && arch.method`
   window.arch = window.arch || null;
+
+  // If together has been preloaded, this line does nothing.  If together needs to be loaded, it will
+  // overwrite this value with the together global.
+  window.together = window.together || null;
 
 // Initialize query parameters, see docs above
   (function() {
