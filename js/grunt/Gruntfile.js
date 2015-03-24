@@ -226,7 +226,7 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'pull-all',
-    'Pull all repo above this directory',
+    'Pull all sibling repositories',
     function() {
       pullAll( grunt );
     } );
@@ -237,6 +237,7 @@ module.exports = function( grunt ) {
       stringReport( grunt, pkg.name, FALLBACK_LOCAL );
     } );
 
+  //TODO is this vestigial?
   grunt.registerTask( 'clone-dependencies',
     'Clones all dependencies of a project, as listed in package.json phetLibs entry',
     function() {
