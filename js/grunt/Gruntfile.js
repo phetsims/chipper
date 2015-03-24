@@ -25,6 +25,7 @@ var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuil
 var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBuild' );
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
+var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseText' );
@@ -157,6 +158,16 @@ module.exports = function( grunt ) {
       }
       grunt.file.mkdir( 'build' );
     } );
+
+  grunt.registerTask( 'generate-128-thumbnail', 'Generate 128x84 thumbnail', function() {
+    generateThumbnails( grunt, pkg.name, 128, 84 );
+  } );
+
+  grunt.registerTask( 'generate-600-thumbnail', 'Generate 600x394 thumbnail', function() {
+    generateThumbnails( grunt, pkg.name, 600, 394 );
+  } );
+
+  grunt.registerTask( 'generate-thumbnails', 'Generate thumbnails', [ 'generate-128-thumbnail', 'generate-600-thumbnail' ] );
 
   grunt.registerTask( 'generate-license-text',
     'Generates the license text that will be written to the HTML file',
