@@ -10,6 +10,7 @@
  * mipmapsToBuild
  */
 
+var assert = require( 'assert' );
 var fs = require( 'fs' );
 
 /**
@@ -25,9 +26,14 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
    * Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name.
    */
   var getLocalesForDirectory = function( directory ) {
-    var stringFiles = fs.readdirSync( directory );
-    return stringFiles.map( function( stringFile ) {
-      return stringFile.substring( stringFile.indexOf( '_' ) + 1, stringFile.lastIndexOf( '.' ) );
+    // get names of string files
+    var stringFiles = fs.readdirSync( directory ).filter( function( filename ) {
+      return (/^.*-strings.*\.json/).test( filename );
+    } );
+    assert( stringFiles.length > 0, 'no string files found.' );
+    // extract the locale from the file names
+    return stringFiles.map( function( filename ) {
+      return filename.substring( filename.indexOf( '_' ) + 1, filename.lastIndexOf( '.' ) );
     } );
   };
 
@@ -65,7 +71,6 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   // Pass a global to the string! plugin so we know which strings to look up
   global.phet.localesToBuild =  getLocalesToBuild();
-  console.log( 'localesToBuild=' + global.phet.localesToBuild.toString() );//XXX
   for ( var i = 0; i < global.phet.localesToBuild.length; i++ ) {
     global.phet.strings[ global.phet.localesToBuild[ i ] ] = {};
   }
