@@ -7,16 +7,17 @@
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)"
  * or to force overwrite of existing files:
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)" --overwrite=true
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
  */
 
 var fs = require( 'fs' );
 
 /**
- * @param {Grunt} grunt the grunt instance
- * @param {String} projectName the name of the project.  All lower case and hyphenated, like circuit-construction-kit
- * @param {String} author the new author for the project
- * @param {Boolean|undefined} overwrite whether existing files should be overwritten
- * @author Sam Reid (PhET Interactive Simulations)
+ * @param grunt the grunt instance
+ * @param {string} projectName the name of the project.  All lower case and hyphenated, like circuit-construction-kit
+ * @param {string} author the new author for the project
+ * @param {boolean|undefined} [overwrite] whether existing files should be overwritten
  */
 module.exports = function( grunt, projectName, author, overwrite ) {
   'use strict';
