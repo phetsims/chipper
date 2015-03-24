@@ -2,7 +2,7 @@
 
 /**
  * This grunt task generates the license text that goes in the header of the sim's HTML file.
- * It shares the license text with other grunt tasks by attaching it to global.phet.licenseText.
+ * It shares the license text with other grunt tasks via global.phet.licenseText.
  */
 
 var assert = require( 'assert' );

@@ -3,7 +3,7 @@
 /**
  * This grunt task does things before the requirejs:build step.
  * It is for internal use only, not intended to be called directly.
- * It sares the following information with other grunt tasks by via global.phet:
+ * It shares the following information with other grunt tasks via global.phet:
  * (TODO document these)
  * strings
  * localesToBuild
