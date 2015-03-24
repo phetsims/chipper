@@ -25,11 +25,11 @@ var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuil
 var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBuild' );
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
-var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseText' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
+var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 
