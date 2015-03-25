@@ -6,8 +6,7 @@
 # Usage: chipper/bin/status.sh
 #
 # GREEN: on master, no working copy changes
-# YELLOW: on master, working copy changes
-# RED: not on master
+# RED: anything else
 #
 # Author: Jonathan Olson
 #
@@ -17,37 +16,35 @@
 MOVE_RIGHT="\033[36G"
 RED="\033[31m"
 GREEN="\033[32m"
-YELLOW="\033[33m"
 RESET="\033[0m"
 
 for dir in *
 do
   # ignore non-directory files
   if [ -d "${dir}" ]; then
-    cd $dir
     # ignore directory if it's not a git repo base
-    if [ -d .git ]; then
+    if [ -d "${dir}/.git" ]; then
       echo -n "${dir}" # -n for no newline
 
       # current branch name OR an empty string (if detached head)
-      BRANCH=`git symbolic-ref -q HEAD | sed -e 's/refs\/heads\///'`
+      BRANCH=`git -C "${dir}" symbolic-ref -q HEAD | sed -e 's/refs\/heads\///'`
 
       # current SHA
-      SHA=`git rev-parse HEAD`
+      SHA=`git -C "${dir}" rev-parse HEAD`
 
       # status (empty string if clean)
-      STATUS=`git status --porcelain`
+      STATUS=`git -C "${dir}" status --porcelain`
 
       # if no branch, print our SHA (detached head)
       if [ -z "$BRANCH" ]; then
         echo -e "${MOVE_RIGHT}${RED}${SHA}${RESET}"
       else
-        # color branch name based on branch and status. RED for non-master, otherwise GREEN/YELLOW depending on status
+        # color branch name based on branch and status. GREEN for clean master, RED for anything else
         if [ "$BRANCH" = "master" ]; then
           if [ -z "$STATUS" ]; then
             echo -e "${MOVE_RIGHT}${GREEN}master${RESET}"
           else
-            echo -e "${MOVE_RIGHT}${YELLOW}master${RESET}"
+            echo -e "${MOVE_RIGHT}${RED}master${RESET}"
           fi
         else
           echo -e "${MOVE_RIGHT}${RED}${BRANCH}${RESET}"
@@ -59,6 +56,5 @@ do
         echo "$STATUS"
       fi
     fi
-    cd ..
   fi
 done
