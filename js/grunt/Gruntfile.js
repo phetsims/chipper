@@ -159,16 +159,6 @@ module.exports = function( grunt ) {
       grunt.file.mkdir( 'build' );
     } );
 
-  grunt.registerTask( 'generate-128-thumbnail', 'Generate 128x84 thumbnail', function() {
-    generateThumbnails( grunt, pkg.name, 128, 84 );
-  } );
-
-  grunt.registerTask( 'generate-600-thumbnail', 'Generate 600x394 thumbnail', function() {
-    generateThumbnails( grunt, pkg.name, 600, 394 );
-  } );
-
-  grunt.registerTask( 'generate-thumbnails', 'Generate thumbnails', [ 'generate-128-thumbnail', 'generate-600-thumbnail' ] );
-
   grunt.registerTask( 'generate-license-text',
     'Generates the license text that will be written to the HTML file',
     function() {
@@ -255,6 +245,16 @@ module.exports = function( grunt ) {
       assert( pkg.phetLibs, 'phetLibs missing from package.json' );
       cloneDependencies( grunt, pkg.name, pkg.phetLibs );
     } );
+
+  grunt.registerTask( 'generate-128-thumbnail', 'Generate 128x84 thumbnail', function() {
+    generateThumbnails( grunt, pkg.name, 128, 84 );
+  } );
+
+  grunt.registerTask( 'generate-600-thumbnail', 'Generate 600x394 thumbnail', function() {
+    generateThumbnails( grunt, pkg.name, 600, 394 );
+  } );
+
+  grunt.registerTask( 'generate-thumbnails', 'Generate thumbnails', [ 'generate-128-thumbnail', 'generate-600-thumbnail' ] );
 
   /*
    * Load tasks from grunt plugins that have been installed locally using npm.
