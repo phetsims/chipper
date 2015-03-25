@@ -14,11 +14,11 @@
 #====================================================================================================
 
 # ANSI escape sequences to move to the right (in the same line) or to apply or reset colors
-MOVE_RIGHT="\E[36G"
-RED="\E[31m"
-GREEN="\E[32m"
-YELLOW="\E[33m"
-RESET="\E[0m"
+MOVE_RIGHT="\033[36G"
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+RESET="\033[0m"
 
 for dir in *
 do
