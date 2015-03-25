@@ -22,18 +22,19 @@ for dir in *
 do
   # ignore non-directory files
   if [ -d "${dir}" ]; then
+    cd "${dir}" > /dev/null
     # ignore directory if it's not a git repo base
-    if [ -d "${dir}/.git" ]; then
+    if [ -d ".git" ]; then
       echo -n "${dir}" # -n for no newline
 
       # current branch name OR an empty string (if detached head)
-      BRANCH=`git -C "${dir}" symbolic-ref -q HEAD | sed -e 's/refs\/heads\///'`
+      BRANCH=`git symbolic-ref -q HEAD | sed -e 's/refs\/heads\///'`
 
       # current SHA
-      SHA=`git -C "${dir}" rev-parse HEAD`
+      SHA=`git rev-parse HEAD`
 
       # status (empty string if clean)
-      STATUS=`git -C "${dir}" status --porcelain`
+      STATUS=`git status --porcelain`
 
       # if no branch, print our SHA (detached head)
       if [ -z "$BRANCH" ]; then
@@ -56,5 +57,6 @@ do
         echo "$STATUS"
       fi
     fi
+    cd .. > /dev/null
   fi
 done
