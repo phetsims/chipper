@@ -1,14 +1,21 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
+/**
+ * This grunt task generates 128x84 and 600x394 thumbnails of the sim's screenshot in assets.
+ * Thumbnails are put in the build directory of the sim. If the directory doesn't exist, it is created.
+ * New grunt tasks can easily be created to generate different sized images by passing this function
+ * different heights and widths.
+ *
+ * @author Aaron Davis
+ */
+
 var Jimp = require( 'jimp' );
 
 /**
- * Generate 128x84 and 600x394 thumbnails of the sim's screenshot in assets
- *
- * @param grunt
+ * @param grunt the grunt instance
  * @param projectName of the project (repository)
- * @param width
- * @param height
+ * @param width of the resized image
+ * @param height of the resized image
  */
 module.exports = function( grunt, projectName, width, height ) {
   'use strict';
@@ -27,8 +34,11 @@ module.exports = function( grunt, projectName, width, height ) {
 
   var done = grunt.task.current.async();
 
+  // W031 says "do not use new for side effects."
+  // It is disabled here because Jimp takes a callback that does the image processing.
   /* jshint -W031 */
   new Jimp( fullResImageName, function() {
     this.resize( width, height ).write( destinationFile, done );
   } );
+  /* jshint +W031 */
 };
