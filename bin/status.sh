@@ -5,6 +5,10 @@
 # This must be run from the main "git" directory (the parent of all simulation/chipper repo directories)
 # Usage: chipper/bin/status.sh
 #
+# GREEN: on master, no working copy changes
+# YELLOW: on master, working copy changes
+# RED: not on master
+#
 # Author: Jonathan Olson
 #
 #====================================================================================================
