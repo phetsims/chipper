@@ -136,9 +136,10 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
     'with no options, builds HTML for English only\n' +
-    '--all-locales=true : builds HTML for all locales in strings/ directory\n' +
-    '--locale=fr : builds HTML for French locale\n' +
-    '--locales=$repo : infers locales from another repository\'s strings/ directory\n' +
+    '--locales=* : all locales in strings/ directory\n' +
+    '--locales=fr : French\n' +
+    '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
+    '--localesRepo=$repo : all locales in another repository\'s strings/ directory\n' +
     [ 'lint-all', 'build-no-lint' ] );
 
   grunt.registerTask( 'build-no-lint',

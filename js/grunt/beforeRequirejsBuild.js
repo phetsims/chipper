@@ -38,17 +38,35 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   };
 
   /*
-   * Look up which locales should be built, accounting for flags provided by the developer on the command line
-   * --all-locales true: to build all of the provided locales
-   * --locales beers-law-lab: use locales from another sim's strings directory
-   * --locale fr: to build just the French locale
-   * [no options] to build just the fallback locale (typically English)
+   * Look up which locales should be built, accounting for flags provided by the developer on the command line.
+   * With no options, builds the fallback locale (typically English).
+   *
+   * --locales=* : all locales from the sim's strings/ directory
+   * --locales=fr : French
+   * --locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)
+   * --localesRepo=beers-law-lab: all locales from another repository's strings/ directory, ignored if --locale is present
+   *
+   * @returns {string[]}
    */
   var getLocalesToBuild = function() {
-    return grunt.option( 'all-locales' ) ? getLocalesForDirectory( 'strings' ) :
-           grunt.option( 'locales' ) ? getLocalesForDirectory( '../' + grunt.option( 'locales' ) + '/strings' ) :
-           grunt.option( 'locale' ) ? [ grunt.option( 'locale' ) ] :
-           [ fallbackLocale ];
+
+    var locales = grunt.option( 'locales' ); // this option takes precedence
+    var localesRepo = grunt.option( 'localesRepo' );
+
+    if ( locales ) {
+      if ( locales === '*' ) {
+        return getLocalesForDirectory( 'strings' );
+      }
+      else {
+        return locales.split( ',' );
+      }
+    }
+    else if ( localesRepo ) {
+      return getLocalesForDirectory( '../' + localesRepo + '/strings' );
+    }
+    else {
+      return [ fallbackLocale ];
+    }
   };
 
   grunt.log.writeln( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
@@ -71,6 +89,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   // Pass a global to the string! plugin so we know which strings to look up
   global.phet.localesToBuild =  getLocalesToBuild();
+  grunt.log.writeln( 'building locales: ' + global.phet.localesToBuild.toString() );
   for ( var i = 0; i < global.phet.localesToBuild.length; i++ ) {
     global.phet.strings[ global.phet.localesToBuild[ i ] ] = {};
   }
