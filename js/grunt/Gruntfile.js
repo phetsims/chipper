@@ -135,10 +135,10 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
-    '--all-locales true:\n\tto build HTML for all locales in strings/\n' +
-    '--locales $project:\n\tuse locales inferred from another project\'s strings/ directory\n' +
-    '--locale fr:\n\tto build just the French locale\n' +
-    '[no options]:\n\tto build just the English locale',
+    'with no options, builds HTML for English only\n' +
+    '--all-locales=true : builds HTML for all locales in strings/ directory\n' +
+    '--locale=fr : builds HTML for French locale\n' +
+    '--locales=$repo : infers locales from another repository\'s strings/ directory\n' +
     [ 'lint-all', 'build-no-lint' ] );
 
   grunt.registerTask( 'build-no-lint',
@@ -198,10 +198,10 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'create-sim',
     'Creates a sim based on the simula-rasa template.\n' +
-    '--name="string" repository name\n' +
-    '--author="string" author name\n' +
-    '--title="string" (optional) the simulation title\n' +
-    '--clean=true (optional) deletes the repository directory if it exists',
+    '--name="string" : the repository name\n' +
+    '--author="string" : the author name\n' +
+    '--title="string" : (optional) the simulation title\n' +
+    '--clean=true : (optional) deletes the repository directory if it exists',
     function() {
       createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'title' ), grunt.option( 'clean' ) );
     } );
