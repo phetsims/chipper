@@ -2,7 +2,7 @@
 
 /**
  * This grunt task creates a simulation based on the simula-rasa template.
- * It is intended to be run from the root level of the simula-rasa directory.
+ * Run from any repository directory that is a sibiling of simula-rasa.
  *
  * Example usage:
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)"
@@ -89,6 +89,8 @@ module.exports = function( grunt, repositoryName, author, overwrite ) {
 
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
+
+      console.log( 'rootdir=' + rootdir );//XXX
 
       // skip these file
       if ( abspath.indexOf( '../simula-rasa/README.md' ) === 0 ||
