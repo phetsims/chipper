@@ -31,7 +31,6 @@ module.exports = function( grunt, repositoryName, author ) {
   console.log( 'Greetings, ' + author + '!' );
   console.log( 'creating sim with repositoryName', repositoryName );
 
-  // Overwrite only if specified to do so.
   var destinationPath = '../' + repositoryName;
   if ( fs.existsSync( destinationPath ) ) {
      throw new Error( destinationPath + ' already exists. Manually remove it if you want to do over.' );
