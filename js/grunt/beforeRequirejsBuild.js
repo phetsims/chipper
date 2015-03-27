@@ -89,7 +89,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   // Pass a global to the string! plugin so we know which strings to look up
   global.phet.localesToBuild =  getLocalesToBuild();
-  grunt.log.writeln( 'building locales: ' + global.phet.localesToBuild.toString() );
+  grunt.log.writeln( 'Locales to build: ' + global.phet.localesToBuild.toString() );
   for ( var i = 0; i < global.phet.localesToBuild.length; i++ ) {
     global.phet.strings[ global.phet.localesToBuild[ i ] ] = {};
   }
