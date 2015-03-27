@@ -31,8 +31,8 @@ module.exports = function( grunt, repositoryName, author, clean ) {
     throw new Error( 'Author unspecified, use --author=...' );
   }
 
-  console.log( 'Greetings, ' + author + '!' );
-  console.log( 'creating sim with repositoryName', repositoryName );
+  console.log( 'Greetings ' + author + '!' );
+  console.log( 'creating sim with repository name ' + repositoryName );
 
   var destinationPath = '../' + repositoryName;
   if ( clean && fs.existsSync( destinationPath ) ) {
@@ -42,7 +42,7 @@ module.exports = function( grunt, repositoryName, author, clean ) {
 
   // Create the directory, if it didn't exist
   if ( fs.existsSync( destinationPath ) ) {
-    throw new Error( destinationPath + ' already exists. Manually remove it if you want to do over.' );
+    throw new Error( destinationPath + ' already exists. Run with --clean if you want to do over.' );
   }
   grunt.file.mkdir( destinationPath );
 
@@ -112,15 +112,17 @@ module.exports = function( grunt, repositoryName, author, clean ) {
         // Replace author
         contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );
 
-        // Replace names in the destination path
-        var destPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
-        destPath = replaceOneString( destPath, 'simula-rasa', repositoryName );
-        destPath = replaceOneString( destPath, 'SimulaRasa', upperCamelCase );
+        // Replace names in the path where the contents will be written
+        var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
+        contentsPath = replaceOneString( contentsPath, 'simula-rasa', repositoryName );
+        contentsPath = replaceOneString( contentsPath, 'SimulaRasa', upperCamelCase );
 
         // Write the file
-        grunt.file.write( destPath, contents );
-        console.log( 'wrote', destPath );
+        grunt.file.write( contentsPath, contents );
+        console.log( 'wrote', contentsPath );
       }
     }
   );
+
+  console.log( 'Please generate README.md for your new repository using "grunt generate-unpublished-repo"' );
 };
