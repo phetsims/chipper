@@ -81,7 +81,7 @@ module.exports = function( grunt, repositoryName, author, overwrite ) {
     return tmpString.substring( 0, 1 ).toUpperCase() + tmpString.substring( 1 );
   }
 
-  // Create the various versions of the repository name
+  // Create variations of the repository name
   var configPath = replaceAllString( repositoryName.toUpperCase(), '-', '_' ); // eg, 'simula-rasa' -> 'SIMULA_RASA'
   var lowerCamelCase = toCamelCase( repositoryName ); // eg, 'simula-rasa' -> 'simulaRasa'
   var upperCamelCase = lowerCamelCase.substring( 0, 1 ).toUpperCase() + lowerCamelCase.substring( 1 ); // eg, 'simula-rasa' -> 'SimulaRasa'
