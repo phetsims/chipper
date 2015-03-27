@@ -44,7 +44,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
    * --locales=* : all locales from the sim's strings/ directory
    * --locales=fr : French
    * --locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)
-   * --localesRepo=beers-law-lab: all locales from another repository's strings/ directory, ignored if --locale is present
+   * --localesRepo=beers-law-lab: all locales from another repository's strings/ directory, ignored if --locales is present
    *
    * @returns {string[]}
    */
