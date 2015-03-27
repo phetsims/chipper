@@ -90,8 +90,6 @@ module.exports = function( grunt, repositoryName, author, overwrite ) {
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
 
-      console.log( 'rootdir=' + rootdir );//XXX
-
       // skip these file
       if ( abspath.indexOf( '../simula-rasa/README.md' ) === 0 ||
            abspath.indexOf( '../simula-rasa/node_modules/' ) === 0 ||
