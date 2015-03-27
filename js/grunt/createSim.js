@@ -37,7 +37,7 @@ module.exports = function( grunt, repositoryName, author, clean ) {
   var destinationPath = '../' + repositoryName;
   if ( clean && fs.existsSync( destinationPath ) ) {
     grunt.log.writeln( 'Cleaning ' + destinationPath );
-    grunt.file.delete( destinationPath, { force: true } );
+    grunt.file.delete( destinationPath, { force: true } ); // delete won't operate outside of current working dir unless forced
   }
 
   // Create the directory, if it didn't exist
