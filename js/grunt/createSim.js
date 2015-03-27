@@ -15,6 +15,7 @@
  * For development and debugging, add --clean=true to delete the repository directory.
  *
  * @author Sam Reid (PhET Interactive Simulations)
+ * @author Chris Malley (PixelZoom, Inc.)
  */
 
 var fs = require( 'fs' );
