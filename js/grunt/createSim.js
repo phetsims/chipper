@@ -7,6 +7,8 @@
  * Example usage:
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)"
  *
+ * For development and debugging, add --clean to delete the repository directory.
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
@@ -16,8 +18,9 @@ var fs = require( 'fs' );
  * @param grunt the grunt instance
  * @param {string} repositoryName the repository name.  All lower case and hyphenated, like circuit-construction-kit
  * @param {string} author the new author for the project
+ * @param {boolean} [clean] whether to delete the repository directory if it already exists, useful for development and debugging
  */
-module.exports = function( grunt, repositoryName, author ) {
+module.exports = function( grunt, repositoryName, author, clean ) {
   'use strict';
 
   // Check for required parameters
@@ -31,8 +34,13 @@ module.exports = function( grunt, repositoryName, author ) {
   console.log( 'Greetings, ' + author + '!' );
   console.log( 'creating sim with repositoryName', repositoryName );
 
-  // Create the directory, if it didn't exist
   var destinationPath = '../' + repositoryName;
+  if ( clean && fs.existsSync( destinationPath ) ) {
+    grunt.log.writeln( 'Cleaning ' + destinationPath );
+    grunt.file.delete( destinationPath, { force: true } );
+  }
+
+  // Create the directory, if it didn't exist
   if ( fs.existsSync( destinationPath ) ) {
     throw new Error( destinationPath + ' already exists. Manually remove it if you want to do over.' );
   }
@@ -94,7 +102,7 @@ module.exports = function( grunt, repositoryName, author ) {
       else {
         var contents = grunt.file.read( abspath );
 
-        // Replace repository names
+        // Replace variations of the repository name
         contents = replaceAllString( contents, 'simula-rasa', repositoryName );
         contents = replaceAllString( contents, 'SIMULA_RASA', configPath );
         contents = replaceAllString( contents, 'simulaRasa', lowerCamelCase );
@@ -104,10 +112,10 @@ module.exports = function( grunt, repositoryName, author ) {
         // Replace author
         contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );
 
-        // Fix the destination path name
+        // Replace names in the destination path
         var destPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
-        destPath = replaceOneString( destPath, 'SimulaRasa', upperCamelCase );
         destPath = replaceOneString( destPath, 'simula-rasa', repositoryName );
+        destPath = replaceOneString( destPath, 'SimulaRasa', upperCamelCase );
 
         // Write the file
         grunt.file.write( destPath, contents );
