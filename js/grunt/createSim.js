@@ -34,8 +34,13 @@ module.exports = function( grunt, repositoryName, author, overwrite ) {
   console.log( 'Greetings, ' + author + '!' );
   console.log( 'creating sim with repositoryName', repositoryName );
 
-  // Create the directory, if it didn't exist
+  // Overwrite only if specified to do so.
   var destinationPath = '../' + repositoryName;
+  if ( !overwrite && fs.existsSync( destinationPath ) ) {
+     throw new Error( destinationPath + ' already exists. Use --overwrite=true to overwrite.' );
+  }
+
+  // Create the directory, if it didn't exist
   grunt.file.mkdir( destinationPath );
 
   // Replace a single occurrence in a string (if any) with another.
