@@ -199,7 +199,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'create-sim',
     'Create a sim based on the simula-rasa template. Example usage: grunt create-sim --name=cannon-blaster --author="Jane Smith (Smith Inc.)"',
     function() {
-      createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'overwrite' ) );
+      createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ) );
     } );
 
   grunt.registerTask( 'generate-published-README',

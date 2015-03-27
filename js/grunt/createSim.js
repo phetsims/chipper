@@ -6,8 +6,6 @@
  *
  * Example usage:
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)"
- * or to force overwrite of existing files:
- * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)" --overwrite=true
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -18,9 +16,8 @@ var fs = require( 'fs' );
  * @param grunt the grunt instance
  * @param {string} repositoryName the repository name.  All lower case and hyphenated, like circuit-construction-kit
  * @param {string} author the new author for the project
- * @param {boolean|undefined} [overwrite] whether existing files should be overwritten
  */
-module.exports = function( grunt, repositoryName, author, overwrite ) {
+module.exports = function( grunt, repositoryName, author ) {
   'use strict';
 
   // Check for required parameters
@@ -36,8 +33,8 @@ module.exports = function( grunt, repositoryName, author, overwrite ) {
 
   // Overwrite only if specified to do so.
   var destinationPath = '../' + repositoryName;
-  if ( !overwrite && fs.existsSync( destinationPath ) ) {
-     throw new Error( destinationPath + ' already exists. Use --overwrite=true to overwrite.' );
+  if ( fs.existsSync( destinationPath ) ) {
+     throw new Error( destinationPath + ' already exists. Manually remove it if you want to do over.' );
   }
 
   // Create the directory, if it didn't exist
@@ -102,25 +99,21 @@ module.exports = function( grunt, repositoryName, author, overwrite ) {
         // Replace repository names
         contents = replaceAllString( contents, 'simula-rasa', repositoryName );
         contents = replaceAllString( contents, 'SIMULA_RASA', configPath );
-        contents = replaceAllString( contents, 'SimulaRasa', upperCamelCase );
         contents = replaceAllString( contents, 'simulaRasa', lowerCamelCase );
+        contents = replaceAllString( contents, 'SimulaRasa', upperCamelCase );
         contents = replaceAllString( contents, 'Simula Rasa', humanReadable );
 
         // Replace author
         contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );
 
-        // Fix the dest path name
-        var subdirPath = subdir || '';
-        var destPath = destinationPath + '/' + subdirPath + '/' + filename;
+        // Fix the destination path name
+        var destPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
         destPath = replaceOneString( destPath, 'SimulaRasa', upperCamelCase );
         destPath = replaceOneString( destPath, 'simula-rasa', repositoryName );
-        if ( !fs.existsSync( destPath ) || overwrite ) {
-          grunt.file.write( destPath, contents );
-          console.log( 'wrote', destPath );
-        }
-        else {
-          console.log( 'file already existed: ' + destPath + '.  Aborting.' );
-        }
+
+        // Write the file
+        grunt.file.write( destPath, contents );
+        console.log( 'wrote', destPath );
       }
     }
   );
