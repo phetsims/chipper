@@ -31,12 +31,11 @@ module.exports = function( grunt, repositoryName, author ) {
   console.log( 'Greetings, ' + author + '!' );
   console.log( 'creating sim with repositoryName', repositoryName );
 
+  // Create the directory, if it didn't exist
   var destinationPath = '../' + repositoryName;
   if ( fs.existsSync( destinationPath ) ) {
-     throw new Error( destinationPath + ' already exists. Manually remove it if you want to do over.' );
+    throw new Error( destinationPath + ' already exists. Manually remove it if you want to do over.' );
   }
-
-  // Create the directory, if it didn't exist
   grunt.file.mkdir( destinationPath );
 
   // Replace a single occurrence in a string (if any) with another.
