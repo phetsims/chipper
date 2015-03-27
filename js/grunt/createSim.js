@@ -2,7 +2,7 @@
 
 /**
  * This grunt task creates a simulation based on the simula-rasa template.
- * Run from any repository directory that is a sibiling of simula-rasa.
+ * Run from any repository directory that is a sibling of simula-rasa.
  *
  * Example usage:
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)"
