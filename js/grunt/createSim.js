@@ -83,8 +83,8 @@ module.exports = function( grunt, repositoryName, author, title, clean ) {
     } );
   }
 
-  // Eg, 'simula-rasa' -> 'Simula Rasa'
-  function toHumanReadable( input ) {
+  // Coerces a repository name to a sim title. Eg, 'simula-rasa' -> 'Simula Rasa'
+  function toTitle( input ) {
     var tmpString = input.replace( /-(.)/g, function( match, group1 ) {
       return ' ' + group1.toUpperCase();
     } );
@@ -95,7 +95,7 @@ module.exports = function( grunt, repositoryName, author, title, clean ) {
   var configPath = replaceAllString( repositoryName.toUpperCase(), '-', '_' ); // eg, 'simula-rasa' -> 'SIMULA_RASA'
   var lowerCamelCase = toCamelCase( repositoryName ); // eg, 'simula-rasa' -> 'simulaRasa'
   var upperCamelCase = lowerCamelCase.substring( 0, 1 ).toUpperCase() + lowerCamelCase.substring( 1 ); // eg, 'simula-rasa' -> 'SimulaRasa'
-  title = title || toHumanReadable( repositoryName ); // eg, 'simula-rasa' -> 'Simula Rasa'
+  title = title || toTitle( repositoryName ); // eg, 'simula-rasa' -> 'Simula Rasa'
 
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
