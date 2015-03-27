@@ -7,7 +7,12 @@
  * Example usage:
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)"
  *
- * For development and debugging, add --clean to delete the repository directory.
+ * This task will attempt to coerce a sim title from the repository name. For example,
+ * 'cannon-blaster' becomes 'Cannon Blaster'.  If this is not suitable, then use --title
+ * to specify a title.  For example:
+ * grunt create-sim --name=fractions-basics --title="Fractions: Basics" --author="Sam Reid (PhET Interactive Simulations)"
+ *
+ * For development and debugging, add --clean=true to delete the repository directory.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -18,9 +23,10 @@ var fs = require( 'fs' );
  * @param grunt the grunt instance
  * @param {string} repositoryName the repository name.  All lower case and hyphenated, like circuit-construction-kit
  * @param {string} author the new author for the project
+ * @param {string} [title] optional title. If not provide, will attempt to coerce the repository name to a title.
  * @param {boolean} [clean] whether to delete the repository directory if it already exists, useful for development and debugging
  */
-module.exports = function( grunt, repositoryName, author, clean ) {
+module.exports = function( grunt, repositoryName, author, title, clean ) {
   'use strict';
 
   // Check for required parameters
@@ -88,7 +94,7 @@ module.exports = function( grunt, repositoryName, author, clean ) {
   var configPath = replaceAllString( repositoryName.toUpperCase(), '-', '_' ); // eg, 'simula-rasa' -> 'SIMULA_RASA'
   var lowerCamelCase = toCamelCase( repositoryName ); // eg, 'simula-rasa' -> 'simulaRasa'
   var upperCamelCase = lowerCamelCase.substring( 0, 1 ).toUpperCase() + lowerCamelCase.substring( 1 ); // eg, 'simula-rasa' -> 'SimulaRasa'
-  var humanReadable = toHumanReadable( repositoryName ); // eg, 'simula-rasa' -> 'Simula Rasa'
+  title = title || toHumanReadable( repositoryName ); // eg, 'simula-rasa' -> 'Simula Rasa'
 
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
@@ -107,7 +113,7 @@ module.exports = function( grunt, repositoryName, author, clean ) {
         contents = replaceAllString( contents, 'SIMULA_RASA', configPath );
         contents = replaceAllString( contents, 'simulaRasa', lowerCamelCase );
         contents = replaceAllString( contents, 'SimulaRasa', upperCamelCase );
-        contents = replaceAllString( contents, 'Simula Rasa', humanReadable );
+        contents = replaceAllString( contents, 'Simula Rasa', title );
 
         // Replace author
         contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );

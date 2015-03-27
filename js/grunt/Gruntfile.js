@@ -197,9 +197,9 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'create-sim',
-    'Create a sim based on the simula-rasa template. Example usage: grunt create-sim --name=cannon-blaster --author="Jane Smith (Smith Inc.)"',
+    'Create a sim based on the simula-rasa template. Example usage: grunt create-sim --name=division-basics --author="Jane Smith (Smith Inc.)" --title="Division: Basics"',
     function() {
-      createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'clean' ) );
+      createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'title' ), grunt.option( 'clean' ) );
     } );
 
   grunt.registerTask( 'generate-published-README',
