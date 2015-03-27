@@ -87,36 +87,29 @@ module.exports = function( grunt, repositoryName, author, overwrite ) {
   var upperCamelCase = lowerCamelCase.substring( 0, 1 ).toUpperCase() + lowerCamelCase.substring( 1 ); // eg, 'simula-rasa' -> 'SimulaRasa'
   var humanReadable = toHumanReadable( repositoryName ); // eg, 'simula-rasa' -> 'Simula Rasa'
 
-  //Iterate over the file system and copy files, changing filenames and contents as we go.
+  // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
-      if ( abspath.indexOf( '../simula-rasa/node_modules/' ) === 0 ||
+      if ( abspath.indexOf( '../simula-rasa/README.md' ) === 0 ||
+           abspath.indexOf( '../simula-rasa/node_modules/' ) === 0 ||
            abspath.indexOf( '../simula-rasa/.git/' ) === 0 ||
            abspath.indexOf( '../simula-rasa/build/' ) === 0 ) {
       }
       else {
         var contents = grunt.file.read( abspath );
 
-        //Clean the README
-        contents = replaceAllString( contents, 'To create a sim based on this template, clone this and the other PhET libraries as described in the PhET Development Overview at http://bit.ly/phet-development-overview then run:', '' );
-        contents = replaceAllString( contents, 'cd simula-rasa', '' );
-        contents = replaceAllString( contents, 'npm install', '' );
-        contents = replaceAllString( contents, 'grunt create-sim --name=project-name --author="Your Name (Your Affiliation)"', '' );
-        contents = replaceAllString( contents, '```', '' );
-
-        //Replace the sim names
+        // Replace repository names
         contents = replaceAllString( contents, 'simula-rasa', repositoryName );
         contents = replaceAllString( contents, 'SIMULA_RASA', configPath );
         contents = replaceAllString( contents, 'SimulaRasa', upperCamelCase );
         contents = replaceAllString( contents, 'simulaRasa', lowerCamelCase );
         contents = replaceAllString( contents, 'Simula Rasa', humanReadable );
 
-        contents = replaceOneString( contents, 'PhET Simulation Template.  "Simula rasa" is Latin for "blank sim".',
-          humanReadable + ' by ' + author + ', using libraries from PhET Interactive Simulations at the University of Colorado Boulder (please see http://bit.ly/phet-development-overview for more). Readme file automatically created by https://github.com/phetsims/chipper' );
+        // Replace author
         contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );
+
+        // Fix the dest path name
         var subdirPath = subdir || '';
         var destPath = destinationPath + '/' + subdirPath + '/' + filename;
-
-        //Fix the dest path name
         destPath = replaceOneString( destPath, 'SimulaRasa', upperCamelCase );
         destPath = replaceOneString( destPath, 'simula-rasa', repositoryName );
         if ( !fs.existsSync( destPath ) || overwrite ) {
