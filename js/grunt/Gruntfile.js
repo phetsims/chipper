@@ -197,7 +197,11 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'create-sim',
-    'Create a sim based on the simula-rasa template. Example usage: grunt create-sim --name=division-basics --author="Jane Smith (Smith Inc.)" --title="Division: Basics"',
+    'Creates a sim based on the simula-rasa template.\n' +
+    '--name="string" repository name\n' +
+    '--author="string" author name\n' +
+    '--title="string" (optional) the simulation title\n' +
+    '--clean=true (optional) deletes the repository directory if it exists',
     function() {
       createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'title' ), grunt.option( 'clean' ) );
     } );
