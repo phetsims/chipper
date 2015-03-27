@@ -1,7 +1,8 @@
 //  Copyright 2002-2014, University of Colorado Boulder
 
 /**
- * This grunt task creates a simulation based on the simula-rasa template
+ * This grunt task creates a simulation based on the simula-rasa template.
+ * It is intended to be run from the root level of the simula-rasa directory.
  *
  * Example usage:
  * grunt create-sim --name=cannon-blaster --author="Sam Reid (PhET Interactive Simulations)"
@@ -15,28 +16,29 @@ var fs = require( 'fs' );
 
 /**
  * @param grunt the grunt instance
- * @param {string} projectName the name of the project.  All lower case and hyphenated, like circuit-construction-kit
+ * @param {string} repositoryName the repository name.  All lower case and hyphenated, like circuit-construction-kit
  * @param {string} author the new author for the project
  * @param {boolean|undefined} [overwrite] whether existing files should be overwritten
  */
-module.exports = function( grunt, projectName, author, overwrite ) {
+module.exports = function( grunt, repositoryName, author, overwrite ) {
   'use strict';
 
-  if ( typeof(projectName) === 'undefined' ) {
-    throw new Error( 'projectName unspecified, use --name=...' );
+  // Check for required parameters
+  if ( typeof( repositoryName ) === 'undefined' ) {
+    throw new Error( 'repositoryName unspecified, use --name=...' );
   }
-  if ( typeof(author) === 'undefined' ) {
+  if ( typeof( author ) === 'undefined' ) {
     throw new Error( 'Author unspecified, use --author=...' );
   }
-  console.log( 'Greetings, ' + author + '!' );
-  console.log( 'creating sim with projectName', projectName );
 
-  //create the directory, if it didn't exist
-  var destinationPath = '../' + projectName;
+  console.log( 'Greetings, ' + author + '!' );
+  console.log( 'creating sim with repositoryName', repositoryName );
+
+  // Create the directory, if it didn't exist
+  var destinationPath = '../' + repositoryName;
   grunt.file.mkdir( destinationPath );
 
-  //Replace a single occurrence in a string (if any) with another.
-  //Note: this was copied from Gruntfile.js
+  // Replace a single occurrence in a string (if any) with another.
   var replaceOneString = function( str, substring, replacement ) {
     var idx = str.indexOf( substring );
     if ( str.indexOf( substring ) !== -1 ) {
@@ -47,7 +49,7 @@ module.exports = function( grunt, projectName, author, overwrite ) {
     }
   };
 
-  //Replace all occurrences of a string recursively
+  // Replace all occurrences of a string recursively
   var replaceAllString = function( str, substring, replacement ) {
     var replaced = replaceOneString( str, substring, replacement );
     if ( replaced === str ) {
@@ -58,25 +60,27 @@ module.exports = function( grunt, projectName, author, overwrite ) {
     }
   };
 
-  //See http://stackoverflow.com/questions/10425287/convert-string-to-camelcase-with-regular-expression
+  // See http://stackoverflow.com/questions/10425287/convert-string-to-camelcase-with-regular-expression
+  // Eg: 'simula-rasa' -> 'simulaRasa'
   function toCamelCase( input ) {
     return input.toLowerCase().replace( /-(.)/g, function( match, group1 ) {
       return group1.toUpperCase();
     } );
   }
 
+  // Eg, 'simula-rasa' -> 'Simula Rasa'
   function toHumanReadable( input ) {
-    return input.replace( /-(.)/g, function( match, group1 ) {
+    var tmpString = input.replace( /-(.)/g, function( match, group1 ) {
       return ' ' + group1.toUpperCase();
     } );
+    return tmpString.substring( 0, 1 ).toUpperCase() + tmpString.substring( 1 );
   }
 
-  //Create the various renamings of the project for replacement
-  var UPPER_CASE = replaceAllString( projectName.toUpperCase(), '-', '_' );
-  var camelCase = toCamelCase( projectName );
-  var UpperCamelCase = camelCase.substring( 0, 1 ).toUpperCase() + camelCase.substring( 1 );
-  var humanReadable = toHumanReadable( projectName );
-  var HumanReadable = humanReadable.substring( 0, 1 ).toUpperCase() + humanReadable.substring( 1 );
+  // Create the various versions of the repository name
+  var configPath = replaceAllString( repositoryName.toUpperCase(), '-', '_' ); // eg, 'simula-rasa' -> 'SIMULA_RASA'
+  var lowerCamelCase = toCamelCase( repositoryName ); // eg, 'simula-rasa' -> 'simulaRasa'
+  var upperCamelCase = lowerCamelCase.substring( 0, 1 ).toUpperCase() + lowerCamelCase.substring( 1 ); // eg, 'simula-rasa' -> 'SimulaRasa'
+  var humanReadable = toHumanReadable( repositoryName ); // eg, 'simula-rasa' -> 'Simula Rasa'
 
   //Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
@@ -95,21 +99,21 @@ module.exports = function( grunt, projectName, author, overwrite ) {
         contents = replaceAllString( contents, '```', '' );
 
         //Replace the sim names
-        contents = replaceAllString( contents, 'simula-rasa', projectName );
-        contents = replaceAllString( contents, 'SIMULA_RASA', UPPER_CASE );
-        contents = replaceAllString( contents, 'SimulaRasa', UpperCamelCase );
-        contents = replaceAllString( contents, 'simulaRasa', camelCase );
-        contents = replaceAllString( contents, 'Simula Rasa', HumanReadable );
+        contents = replaceAllString( contents, 'simula-rasa', repositoryName );
+        contents = replaceAllString( contents, 'SIMULA_RASA', configPath );
+        contents = replaceAllString( contents, 'SimulaRasa', upperCamelCase );
+        contents = replaceAllString( contents, 'simulaRasa', lowerCamelCase );
+        contents = replaceAllString( contents, 'Simula Rasa', humanReadable );
 
         contents = replaceOneString( contents, 'PhET Simulation Template.  "Simula rasa" is Latin for "blank sim".',
-          HumanReadable + ' by ' + author + ', using libraries from PhET Interactive Simulations at the University of Colorado Boulder (please see http://bit.ly/phet-development-overview for more). Readme file automatically created by https://github.com/phetsims/chipper' );
+          humanReadable + ' by ' + author + ', using libraries from PhET Interactive Simulations at the University of Colorado Boulder (please see http://bit.ly/phet-development-overview for more). Readme file automatically created by https://github.com/phetsims/chipper' );
         contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );
         var subdirPath = subdir || '';
         var destPath = destinationPath + '/' + subdirPath + '/' + filename;
 
         //Fix the dest path name
-        destPath = replaceOneString( destPath, 'SimulaRasa', UpperCamelCase );
-        destPath = replaceOneString( destPath, 'simula-rasa', projectName );
+        destPath = replaceOneString( destPath, 'SimulaRasa', upperCamelCase );
+        destPath = replaceOneString( destPath, 'simula-rasa', repositoryName );
         if ( !fs.existsSync( destPath ) || overwrite ) {
           grunt.file.write( destPath, contents );
           console.log( 'wrote', destPath );
