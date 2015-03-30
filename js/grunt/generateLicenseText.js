@@ -49,7 +49,7 @@ module.exports = function( grunt, preload ) {
     var lastSlash = sherpaDependencyPath.lastIndexOf( '/' );
     var lastDot = sherpaDependencyPath.lastIndexOf( '.' );
     var dependencyName = sherpaDependencyPath.substring( lastSlash + 1, lastDot );
-    // console.log( 'found dependency: ' + sherpaDependencyPath + ', name = ' + dependencyName );
+    // grunt.log.writeln( 'found dependency: ' + sherpaDependencyPath + ', name = ' + dependencyName );
 
     // Make sure there is an entry in the info.js file, and return it
     assert( licenseInfo[ dependencyName ], 'no license entry for ' + dependencyName );

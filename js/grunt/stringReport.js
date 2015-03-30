@@ -25,7 +25,7 @@ module.exports = function( grunt, repositoryName, fallbackLocale ) {
     if ( stringMap.hasOwnProperty( locale ) && locale !== fallbackLocale ) {
       var strings = stringMap[ locale ];
       var missing = _.omit( fallbackStrings, _.keys( strings ) );
-      console.log( locale, 'missing\n', JSON.stringify( missing, null, '\t' ) );
+      grunt.log.writeln( locale, 'missing\n', JSON.stringify( missing, null, '\t' ) );
     }
   }
 };

@@ -24,7 +24,7 @@ module.exports = function( grunt, projectName, width, height ) {
   var destinationFile = 'build/' + projectName + '-' + width + '.png';
 
   if ( !grunt.file.exists( fullResImageName ) ) {
-    console.log( 'no image file exists: ' + fullResImageName + '. Not running task: generate-thumbnails' );
+    grunt.log.writeln( 'no image file exists: ' + fullResImageName + '. Not running task: generate-thumbnails' );
     return;
   }
 

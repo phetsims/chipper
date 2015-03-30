@@ -47,20 +47,20 @@ module.exports = function( grunt, version ) {
   child_process.exec( command1, function( error1, stdout1, stderr1 ) {
 
     assert( !error1, "error in " + command1 );
-    console.log( 'finished ' + command1 );
-    console.log( stdout1 );
+    grunt.log.writeln( 'finished ' + command1 );
+    grunt.log.writeln( stdout1 );
 
     grunt.log.writeln( 'Running: ' + command2 );
     child_process.exec( command2, function( error2, stdout2, stderr2 ) {
       assert( !error2, "error in git commit" );
-      console.log( 'finished ' + command2 );
-      console.log( stdout2 );
+      grunt.log.writeln( 'finished ' + command2 );
+      grunt.log.writeln( stdout2 );
 
       grunt.log.writeln( 'Running: ' + command3 );
       child_process.exec( command3, function( error3, stdout3, stderr3 ) {
         assert( !error3, "error in git push" );
-        console.log( 'finished ' + command3 );
-        console.log( stdout3 );
+        grunt.log.writeln( 'finished ' + command3 );
+        grunt.log.writeln( stdout3 );
         done();
       } );
     } );

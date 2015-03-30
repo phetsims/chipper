@@ -38,8 +38,8 @@ module.exports = function( grunt, repositoryName, author, title, clean ) {
     throw new Error( 'Author unspecified, use --author=...' );
   }
 
-  console.log( 'Greetings ' + author + '!' );
-  console.log( 'creating sim with repository name ' + repositoryName );
+  grunt.log.writeln( 'Greetings ' + author + '!' );
+  grunt.log.writeln( 'creating sim with repository name ' + repositoryName );
 
   var destinationPath = '../' + repositoryName;
   if ( clean && fs.existsSync( destinationPath ) ) {
@@ -126,10 +126,10 @@ module.exports = function( grunt, repositoryName, author, title, clean ) {
 
         // Write the file
         grunt.file.write( contentsPath, contents );
-        console.log( 'wrote', contentsPath );
+        grunt.log.writeln( 'wrote', contentsPath );
       }
     }
   );
 
-  console.log( 'Please generate README.md for your new repository using "grunt generate-unpublished-repo"' );
+  grunt.log.writeln( 'Please generate README.md for your new repository using "grunt generate-unpublished-repo"' );
 };

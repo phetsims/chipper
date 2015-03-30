@@ -32,7 +32,7 @@ module.exports = function( grunt, repositoryName, toMaster ) {
 
         assert( typeof( dependencies[ property ].branch !== 'undefined' ) && typeof( dependencies[ property ].sha !== 'undefined' ) );
 
-        console.log( "Checking out dependency " + property + ': ' + dependencies[ property ].branch + '@' + dependencies[ property ].sha );
+        grunt.log.writeln( "Checking out dependency " + property + ': ' + dependencies[ property ].branch + '@' + dependencies[ property ].sha );
 
         //To execute something from a different directory:
         //cp.exec('foocommand', { cwd: 'path/to/dir/' }, callback);
@@ -40,9 +40,9 @@ module.exports = function( grunt, repositoryName, toMaster ) {
         var command = 'git checkout ' + ( toMaster ? 'master' : dependencies[ property ].sha );
         child_process.exec( command, { cwd: '../' + property }, function( error1, stdout1, stderr1 ) {
           assert( !error1, "error in " + command );
-          console.log( 'Finished checkout.' );
-          console.log( stdout1 );
-          console.log( stderr1 );
+          grunt.log.writeln( 'Finished checkout.' );
+          grunt.log.writeln( stdout1 );
+          grunt.log.writeln( stderr1 );
           numCheckedOut = numCheckedOut + 1;
           if ( numToCheckOut === numCheckedOut ) {
             done();

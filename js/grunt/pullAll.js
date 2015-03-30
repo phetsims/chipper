@@ -18,7 +18,7 @@ module.exports = function( grunt ) {
   for ( var i = 0; i < files.length; i++ ) {
     var file = files[ i ];
     if ( fs.statSync( '../' + file ).isDirectory() ) {
-      console.log( file );
+      grunt.log.writeln( file );
       var gitPath = '../' + file + '/.git';
       if ( fs.existsSync( gitPath ) ) {
         // Do something
@@ -26,7 +26,7 @@ module.exports = function( grunt ) {
       }
     }
   }
-  console.log( gitRoots );
+  grunt.log.writeln( gitRoots );
   var done = grunt.task.current.async();
   var numPulled = 0;
   for ( i = 0; i < gitRoots.length; i++ ) {
@@ -34,15 +34,15 @@ module.exports = function( grunt ) {
     var command = 'git pull';
     (function( gitRoot ) {
       child_process.exec( command, { cwd: gitRoot }, function( error1, stdout1, stderr1 ) {
-        console.log( 'Finished checkout in ' + gitRoot );
+        grunt.log.writeln( 'Finished checkout in ' + gitRoot );
         if ( stdout1 && stdout1.length > 0 ) {
-          console.log( stdout1 );
+          grunt.log.writeln( stdout1 );
         }
         if ( stderr1 && stderr1.length > 0 ) {
-          console.log( stderr1 );
+          grunt.log.writeln( stderr1 );
         }
         if ( error1 && error1.length > 0 ) {
-          console.log( error1 );
+          grunt.log.writeln( error1 );
         }
         numPulled = numPulled + 1;
         if ( numPulled === gitRoots.length ) {
