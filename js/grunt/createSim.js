@@ -131,5 +131,5 @@ module.exports = function( grunt, repositoryName, author, title, clean ) {
     }
   );
 
-  grunt.log.writeln( 'Please generate README.md for your new repository using "grunt generate-unpublished-repo"' );
+  grunt.log.writeln( 'Please generate README.md for your new repository by running "grunt generate-unpublished-README"' );
 };
