@@ -18,6 +18,12 @@ RED="\033[31m"
 GREEN="\033[32m"
 RESET="\033[0m"
 
+# must be run from root of working copy
+if [ ! -d ./chipper ]; then
+  echo "./chipper not found"
+  exit 1
+fi
+
 for dir in *
 do
   # ignore non-directory files

@@ -7,6 +7,7 @@
 #
 #====================================================================================================
 
+# must be run from root of working copy
 if [ ! -d ./chipper ]; then
   echo "./chipper not found"
   exit 1
