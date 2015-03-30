@@ -7,6 +7,11 @@
 #
 #====================================================================================================
 
+if [ ! -d ./chipper ]; then
+  echo "./chipper not found"
+  exit 1
+fi
+
 for sim in `cat chipper/data/active-repos | sort | xargs`
 do
   if [ -d "$sim" ]; then
