@@ -193,19 +193,13 @@ define( function( require ) {
             }
             else {
               // Load from the actual file
+              var parsed = JSON.parse( global.fs.readFileSync( path, 'utf8' ) );
 
-              text.get( path, function( stringFile ) {
-                  var parsed = parse( stringFile );
-
-                  // Store all loaded strings for access in the gruntfile.
-                  // Fallbacks are computed in the Gruntfile.js
-                  global.phet.strings[ locale ][ name ] = parsed[ key ];
-                  cache[ path ] = parsed;
-                  resourceHandled();
-                },
-                onload.error,
-                { accept: 'application/json' }
-              );
+              // Store all loaded strings for access in the gruntfile.
+              // Fallbacks are computed in the Gruntfile.js
+              global.phet.strings[ locale ][ name ] = parsed[ key ];
+              cache[ path ] = parsed;
+              resourceHandled();
             }
           })( localesToLoad[ i ] );
         }
