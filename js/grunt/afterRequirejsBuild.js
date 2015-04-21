@@ -71,6 +71,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
    */
   function loadStringMap() {
     var locales = global.phet.localesToBuild;
+    var localesWithFallback = ( locales.indexOf( fallbackLocale ) < 0 ) ? locales.concat( [ fallbackLocale ] ) : locales;
 
     // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
     var stringRepositories = []; // { name: {string}, path: {string}, prefix: {string} }
@@ -96,7 +97,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     stringRepositories.forEach( function( repository ) {
       repoStringMap[repository.name] = {};
 
-      locales.forEach( function( locale ) {
+      localesWithFallback.forEach( function( locale ) {
         var basePath;
         // pick a location that is in the repo, or babel
         if ( locale === fallbackLocale ) {
@@ -126,7 +127,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     // combine our strings into [locale][stringKey] map, using the fallback locale where necessary
     var stringMap = {};
-    locales.forEach( function( locale ) {
+    localesWithFallback.forEach( function( locale ) {
       stringMap[locale] = {};
 
       for ( var stringKey in global.phet.strings ) {
