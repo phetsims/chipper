@@ -159,50 +159,31 @@ define( function( require ) {
         }
       }
       else {
-
         // This code block handles the compilation step (not the in-browser requirejs mode).
 
-        // Lookup all of the available translation files for the localesToBuild and the fallback string files
-        var localesToLoad = global.phet.localesToBuild.slice();
-        if ( localesToLoad.indexOf( FALLBACK_LOCALE ) < 0 ) {
-          localesToLoad.push( FALLBACK_LOCALE );
-        }
+        // lazily construct our strings list
+        global.phet.strings = global.phet.strings || {};
 
-        var count = 0;
-        var resourceHandled = function() {
-          count++;
-          if ( count >= localesToLoad.length ) {
-            onload( null );
-          }
+        // extract information about the repository name, prefix, and path that will be recorded for later in the build
+        var requirePrefix = name.substring( 0, name.indexOf( '/' ) );
+        var requirePath = parentRequire.toUrl( requirePrefix ); // Need to do this require.js lookup in plugin
+        if ( requirePath.substring( requirePath.lastIndexOf( '/' ) ) !== '/js' ) {
+          throw new Error( 'Assumes REPO/js location' );
+        }
+        var repositoryPath = requirePath.substring( 0, requirePath.lastIndexOf( '/' ) ); // strip off '/js'
+        var repositoryName = repositoryPath.substring( repositoryPath.lastIndexOf( '/' ) + 1 );
+
+        // entry saved for later in the build
+        global.phet.strings[name] = {
+          name: name, // 'SOME_SIM/string.name'
+          requirePrefix: requirePrefix, // 'SOME_SIM'
+          requirePath: requirePath, // '/Users/something/phet/git/some-sim/js'
+          repositoryPath: repositoryPath, // '/Users/something/phet/git/some-sim'
+          repositoryName: repositoryName // 'some-sim'
         };
-        for ( var i = 0; i < localesToLoad.length; i++ ) {
-          (function( locale ) {
 
-            var path = getPath( locale );
-
-            // If we already loaded those strings and registered with global.phet.strings, no need to do so again
-            if ( cache[ path ] ) {
-              global.phet.strings[ locale ][ name ] = cache[ path ][ key ];
-              resourceHandled();
-            }
-            else if ( !global.fs.existsSync( path ) ) {
-              // If the file doesn't exist, move on to the next one
-
-              console.log( "File doesn't exist: ", path );
-              resourceHandled();
-            }
-            else {
-              // Load from the actual file
-              var parsed = JSON.parse( global.fs.readFileSync( path, 'utf8' ) );
-
-              // Store all loaded strings for access in the gruntfile.
-              // Fallbacks are computed in the Gruntfile.js
-              global.phet.strings[ locale ][ name ] = parsed[ key ];
-              cache[ path ] = parsed;
-              resourceHandled();
-            }
-          })( localesToLoad[ i ] );
-        }
+        // tell require.js we're done processing
+        onload( null );
       }
     },
 

@@ -8,6 +8,7 @@
 // built-in node APIs
 var assert = require( 'assert' );
 var fs = require( 'fs' );
+var path = require( 'path' );
 var child_process = require( 'child_process' );
 
 /* jshint -W079 */
@@ -64,18 +65,89 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     }
   }
 
-  function getStringsWithFallbacks( locale, global_phet_strings ) {
-    var fallbackStrings = global_phet_strings[ fallbackLocale ];
-    var strings = global_phet_strings[ locale ];
+  /**
+   * Returns a map such that map[locale][stringKey] will be the string value (with fallbacks to English where needed).
+   * Loads each string file only once, and only loads the repository/locale combinations necessary.
+   */
+  function loadStringMap() {
+    var locales = global.phet.localesToBuild;
 
-    // Assuming the strings has all of the right keys, look up fallbacks where the locale did not translate a certain string
-    var extended = {};
-    for ( var key in strings ) {
-      if ( strings.hasOwnProperty( key ) ) {
-        extended[ key ] = strings[ key ] || fallbackStrings[ key ];
+    // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
+    var stringRepositories = []; // { name: {string}, path: {string}, prefix: {string} }
+    for ( var stringKey in global.phet.strings ) {
+      var repositoryName = global.phet.strings[stringKey].repositoryName;
+
+      if ( stringRepositories.every( function( repo ) { return repo.name !== repositoryName; } ) ) {
+        stringRepositories.push( {
+          name: repositoryName,
+          path: global.phet.strings[stringKey].repositoryPath,
+          prefix: global.phet.strings[stringKey].requirePrefix
+        } );
+
+        // If a string depends on an unlisted dependency, fail out
+        if ( pkg.phetLibs.indexOf( repositoryName ) < 0 ) {
+          throw new Error( 'String dependency repository missing in listed dependencies: ' + repositoryName );
+        }
       }
     }
-    return extended;
+
+    // Load all the required string files into memory, so we don't load them multiple times (for each usage)
+    var repoStringMap = {}; // maps [repositoryName][locale] => contents of locale string file
+    stringRepositories.forEach( function( repository ) {
+      repoStringMap[repository.name] = {};
+
+      locales.forEach( function( locale ) {
+        var basePath;
+        // pick a location that is in the repo, or babel
+        if ( locale === fallbackLocale ) {
+          basePath = repository.path + '/strings/';
+        }
+        else {
+          basePath = repository.path + '/../babel/' + repository.name + '/';
+        }
+
+        var stringsFilename = path.normalize( basePath + repository.name + '-strings_' + locale + '.json' );
+
+        var fileExists = fs.existsSync( stringsFilename );
+        if ( fileExists ) {
+          var fileContents = JSON.parse( fs.readFileSync( stringsFilename, 'utf8' ) );
+          var fileMap = repoStringMap[repository.name][locale] = {};
+
+          // we need to add the prefixes to the strings (from the string files)
+          for ( var stringKeyMissingPrefix in fileContents ) {
+            fileMap[ repository.prefix + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
+          }
+        }
+        else {
+          grunt.log.error( 'Missing ' + stringsFilename );
+        }
+      } );
+    } );
+
+    // combine our strings into [locale][stringKey] map, using the fallback locale where necessary
+    var stringMap = {};
+    locales.forEach( function( locale ) {
+      stringMap[locale] = {};
+
+      for ( var stringKey in global.phet.strings ) {
+        var repositoryName = global.phet.strings[stringKey].repositoryName;
+
+        // English fallback
+        var fallbackString = repoStringMap[repositoryName][fallbackLocale][stringKey];
+        assert( fallbackString, 'Missing string ' + stringKey + ' in fallback locale (' + fallbackLocale + ')' );
+        stringMap[locale][stringKey] = fallbackString;
+
+        // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.
+        if ( locale !== fallbackLocale &&
+             repoStringMap[ repositoryName ] &&
+             repoStringMap[ repositoryName ][ locale ] &&
+             repoStringMap[ repositoryName ][ locale ][ stringKey ] ) {
+          stringMap[locale][stringKey] = repoStringMap[repositoryName][locale][stringKey].value;
+        }
+      }
+    } );
+
+    return stringMap;
   }
 
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
@@ -139,6 +211,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     grunt.log.writeln( 'Writing HTML' );
 
     // Create the translated versions
+
     var locales = global.phet.localesToBuild;
 
     // Write the stringless template in case we want to use it with the translation addition process.
@@ -147,16 +220,16 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
     }
 
-    //TODO: Write a list of the string keys & values for translation utilities to use
+    var stringMap = loadStringMap();
 
-    var strings, titleKey;
+    var titleKey = pkg.simTitleStringKey;
     for ( var i = 0; i < locales.length; i++ ) {
       var locale = locales[ i ];
-      strings = getStringsWithFallbacks( locale, global.phet.strings );
+
       //TODO: window.phet and window.phet.chipper should be created elsewhere
       var phetStringsCode = 'window.phet = window.phet || {};' +
                             'window.phet.chipper = window.phet.chipper || {};' +
-                            'window.phet.chipper.strings=' + JSON.stringify( strings, null, '' ) + ';';
+                            'window.phet.chipper.strings=' + JSON.stringify( stringMap[ locale ], null, '' ) + ';';
       var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
       //TODO: if this is for changing layout, we'll need these globals in requirejs mode
@@ -166,15 +239,14 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
                                                            'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' );
 
       assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' ); // required for sims
-      titleKey = pkg.simTitleStringKey;
-      localeHTML = stringReplace( localeHTML, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
+      localeHTML = stringReplace( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
       grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
     }
 
     // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
     grunt.log.writeln( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-    iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', strings[ titleKey ] + ' ' + pkg.version + ' iframe test' );
+    iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + pkg.version + ' iframe test' );
     iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
 
     // Write the iframe test file.  English (en) is assumed as the locale.
@@ -182,9 +254,9 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     grunt.file.write( 'build/' + pkg.name + '_en-iframe' + '.html', iframeTestHtml );
 
     // Write the string map, which may be used by translation utility for showing which strings are available for translation
-    var stringMap = 'build/' + pkg.name + '_string-map.json';
-    grunt.log.writeln( 'Writing string map to ', stringMap );
-    grunt.file.write( stringMap, JSON.stringify( global.phet.strings, null, '\t' ) );
+    var stringMapFilename = 'build/' + pkg.name + '_string-map.json';
+    grunt.log.writeln( 'Writing string map to ', stringMapFilename );
+    grunt.file.write( stringMapFilename, JSON.stringify( stringMap[ fallbackLocale ], null, '\t' ) );
 
     grunt.log.writeln( 'Cleaning temporary files' );
     grunt.file.delete( 'build/' + pkg.name + '.min.js' );

@@ -25,17 +25,34 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
    * Look up the locale strings provided in the simulation.
    * Requires a form like energy-skate-park-basics_ar_SA, where no _ appear in the sim name.
    */
-  var getLocalesForDirectory = function( directory ) {
-    // get names of string files
-    var stringFiles = fs.readdirSync( directory ).filter( function( filename ) {
-      return (/^.*-strings.*\.json/).test( filename );
-    } );
-    assert( stringFiles.length > 0, 'no string files found.' );
-    // extract the locale from the file names
-    return stringFiles.map( function( filename ) {
-      return filename.substring( filename.indexOf( '_' ) + 1, filename.lastIndexOf( '.' ) );
-    } );
-  };
+  function getLocalesForRepo( repo ) {
+    var directory = '../babel/' + repo;
+    var locales = [ fallbackLocale ]; // our default, where we always pull strings from in the sim repo
+
+    try {
+      // ensure it's a directory
+      var stats = fs.statSync( directory );
+      if ( !stats.isDirectory() ) {
+        assert( false, 'Strings location is not a directory: ' + directory );
+        return locales;
+      }
+
+      // get names of string files
+      var stringFiles = fs.readdirSync( directory ).filter( function( filename ) {
+        return (/^.*-strings.*\.json/).test( filename );
+      } );
+      assert( stringFiles.length > 0, 'no string files found.' );
+
+      // extract the locale from the file names
+      return locales.concat( stringFiles.map( function( filename ) {
+        return filename.substring( filename.indexOf( '_' ) + 1, filename.lastIndexOf( '.' ) );
+      } ) );
+    }
+    catch ( e ) {
+      assert( false, 'Failure checking strings repo location: ' + directory );
+      return locales;
+    }
+  }
 
   /*
    * Look up which locales should be built, accounting for flags provided by the developer on the command line.
@@ -55,14 +72,14 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     if ( locales ) {
       if ( locales === '*' ) {
-        return getLocalesForDirectory( 'strings' );
+        return getLocalesForRepo( pkg.name );
       }
       else {
         return locales.split( ',' );
       }
     }
     else if ( localesRepo ) {
-      return getLocalesForDirectory( '../' + localesRepo + '/strings' );
+      return getLocalesForRepo( localesRepo );
     }
     else {
       return [ fallbackLocale ];
@@ -84,16 +101,9 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   // Pass an option to requirejs through its config build options
   grunt.config.set( 'requirejs.build.options.phetLocale', locale );
 
-  // set up a place for the strings to go:
-  global.phet.strings = global.phet.strings || {};
-
   // Pass a global to the string! plugin so we know which strings to look up
   global.phet.localesToBuild =  getLocalesToBuild();
   grunt.log.writeln( 'Locales to build: ' + global.phet.localesToBuild.toString() );
-  for ( var i = 0; i < global.phet.localesToBuild.length; i++ ) {
-    global.phet.strings[ global.phet.localesToBuild[ i ] ] = {};
-  }
-  global.phet.strings[ fallbackLocale ] = {}; // may overwrite above
 
   // Since require.js plugins can't be asynchronous with isBuild=true (r.js mode), we need to catch all of the
   // mipmaps that we'll need to build and then handle them later asynchronously.
