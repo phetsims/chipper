@@ -49,6 +49,17 @@ module.exports = function( grunt ) {
   // Read package.json, verify that it contains properties required by all PhET repositories
   assert( fs.existsSync( 'package.json' ), 'repository must have a package.json' );
   var pkg = grunt.file.readJSON( 'package.json' );
+  assert( pkg.preload, 'preload missing from package.json' );
+  if ( grunt.option( 'together' ) ) {
+    console.log( 'Adding additional preload files for together' );
+    // add the additional preload files needed to support data exchange using together.js
+    pkg.preload.push( '../together/js/together.js' );
+    pkg.preload.push( '../together/js/SimIFrameAPI.js' );
+    pkg.preload.push( '../together/js/arch.js' );
+    pkg.preload.push( '../together/js/datamite.js' );
+    pkg.preload.push( '../together/js/api/Common.js' );
+    pkg.preload.push( '../together/js/api/' + pkg.name + '-api.js' );
+  }
   assert( pkg.name, 'name missing from package.json' );
   assert( pkg.version, 'version missing from package.json' );
   assert( pkg.license, 'license missing from package.json' );
@@ -64,12 +75,6 @@ module.exports = function( grunt ) {
     sceneryAccessibilityLog: false,
     phetAllocation: false
   };
-
-  // Delete arch references from the minified file, but only if it is not an arch build.
-  var archRequired = pkg.preload && _.find( pkg.preload, function( repo ) { return repo === '../together/js/arch.js'; } ) !== undefined;
-  if ( !archRequired ) {
-    globalDefs.arch = false;
-  }
 
   // Project configuration.
   grunt.initConfig( {
@@ -140,6 +145,7 @@ module.exports = function( grunt ) {
     '--locales=fr : French\n' +
     '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
     '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n',
+    '--together',
     [ 'lint-all', 'build-no-lint' ] );
 
   grunt.registerTask( 'build-no-lint',
