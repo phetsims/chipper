@@ -144,7 +144,7 @@ module.exports = function( grunt ) {
     '--locales=* : all locales in strings/ directory\n' +
     '--locales=fr : French\n' +
     '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
-                                                                                  '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n'
+                                                                                  '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n',
     [ 'lint-all', 'build-no-lint' ] );
 
   grunt.registerTask( 'build-no-lint',
