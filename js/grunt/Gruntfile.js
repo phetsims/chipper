@@ -49,8 +49,8 @@ module.exports = function( grunt ) {
   // Read package.json, verify that it contains properties required by all PhET repositories
   assert( fs.existsSync( 'package.json' ), 'repository must have a package.json' );
   var pkg = grunt.file.readJSON( 'package.json' );
-  assert( pkg.preload, 'preload missing from package.json' );
   if ( grunt.option( 'together' ) ) {
+    assert( pkg.preload, 'preload missing from package.json' );
     console.log( 'Adding additional preload files for together' );
     // add the additional preload files needed to support data exchange using together.js
     pkg.preload.push( '../together/js/together.js' );
