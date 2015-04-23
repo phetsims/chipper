@@ -38,7 +38,7 @@ module.exports = function( grunt, preload ) {
   sherpaDependencyPaths.push( 'pegjs.' );
   sherpaDependencyPaths.push( 'font-awesome.' );
   sherpaDependencyPaths.push( 'require-i18n.js' );
-  sherpaDependencyPaths.push( 'text.js' );
+  sherpaDependencyPaths.push( 'text-2.0.12.js' );
   sherpaDependencyPaths.push( 'base64binary.js' );//TODO: Not all simulations use vibe
 
   // Sort by name of the library, have to match cases to sort properly
