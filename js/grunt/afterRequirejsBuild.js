@@ -101,7 +101,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
         var basePath;
         // pick a location that is in the repo, or babel
         if ( locale === fallbackLocale ) {
-          basePath = repository.path + '/strings/';
+          basePath = repository.path + '/';
         }
         else {
           basePath = repository.path + '/../babel/' + repository.name + '/';
@@ -134,7 +134,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
         var repositoryName = global.phet.strings[stringKey].repositoryName;
 
         // English fallback
-        var fallbackString = repoStringMap[repositoryName][fallbackLocale][stringKey];
+        var fallbackString = repoStringMap[repositoryName][fallbackLocale][stringKey].value;
         assert( fallbackString, 'Missing string ' + stringKey + ' in fallback locale (' + fallbackLocale + ')' );
         stringMap[locale][stringKey] = fallbackString;
 

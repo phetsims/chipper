@@ -23,8 +23,6 @@ define( function( require ) {
 
   // modules
   var text = require( 'text' );
-  //Path is relative to the requirejs config.js file
-  var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
 
   // constants
   var FALLBACK_LOCALE = 'en';
@@ -93,26 +91,35 @@ define( function( require ) {
       // Extract the key. Eg for 'JOHN_TRAVOLTAGE/johnTravoltage.name', the key is 'johnTravoltage.name'.
       var key = name.substring( name.lastIndexOf( '/' ) + 1 );
 
-      // Create the paths to the string files - primary and fallback.
-      var project = name.substring( 0, name.indexOf( '/' ) );
-
       // Apply the cache buster args (but only during requirejs mode)
       var suffix = config.isBuild ? '' : '?' + config.urlArgs;
 
-      var getPath = function( locale ) {return getProjectURL( name, parentRequire ) + 'strings/' + project.toLowerCase().split( '_' ).join( '-' ) + '-strings_' + locale + '.json' + suffix;};
-      var fallbackStringPath = getPath( FALLBACK_LOCALE );
+      var requirePrefix = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
+      var requirePath, repositoryPath, repositoryName, locale;
 
-      var locale;
+      function getFilenameForLocale( locale ) {
+        return repositoryName + '-strings_' + locale + '.json' + suffix;
+      }
 
       // This code block handles the in-browser requirejs version (not the compilation step)
       if ( !config.isBuild ) {
+        requirePath = parentRequire.toUrl( requirePrefix );
+        if ( requirePath.indexOf( '?' ) >= 0 ) {
+          requirePath = requirePath.substring( 0, requirePath.indexOf( '?' ) );
+        }
+        repositoryPath = requirePath + '/..';
+        repositoryName = requirePrefix.toLowerCase().split( '_' ).join( '-' );
 
         // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
         var queryParameterStrings = parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
 
         // Read the locale from a query parameter, if it is there, or use english
         locale = phet.chipper.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
-        var stringPath = getPath( locale );
+
+        var fallbackSpecficPath = repositoryPath + '/' + getFilenameForLocale( FALLBACK_LOCALE );
+        var localeSpecificPath = ( locale === FALLBACK_LOCALE ) ?
+                                 fallbackSpecficPath :
+                                 repositoryPath + '/../babel/' + repositoryName + '/' + getFilenameForLocale( locale );
 
         // In the browser, a string specified via the 'strings' query parameter overrides anything,
         // to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
@@ -123,16 +130,16 @@ define( function( require ) {
         else {
 
           // Load & parse just once per file, getting the fallback strings first.
-          getWithCache( fallbackStringPath, function( parsedFallbackStrings ) {
-              var fallback = parsedFallbackStrings[ key ] || key;
+          getWithCache( fallbackSpecficPath, function( parsedFallbackStrings ) {
+              var fallback = parsedFallbackStrings[ key ].value;
 
               // Now get the primary strings.
-              getWithCache( stringPath, function( parsed ) {
+              getWithCache( localeSpecificPath, function( parsed ) {
 
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
                   if ( parsedStrings[ key ] !== undefined ) {
-                    onload( window.phet.chipper.mapString( parsedStrings[key], stringTest ) );
+                    onload( window.phet.chipper.mapString( parsedStrings[key].value, stringTest ) );
                   }
                   else {
                     console.log( 'string not found for key: ' + key );
@@ -147,7 +154,7 @@ define( function( require ) {
                     console.log( 'no fallback for key:' + key );
                   }
                   // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
-                  console.log( "No string file provided for " + stringPath );
+                  console.log( "No string file provided for " + localeSpecificPath );
                   onload( fallback );
                 },
                 { accept: 'application/json' }
@@ -161,17 +168,17 @@ define( function( require ) {
       else {
         // This code block handles the compilation step (not the in-browser requirejs mode).
 
-        // lazily construct our strings list
-        global.phet.strings = global.phet.strings || {};
-
         // extract information about the repository name, prefix, and path that will be recorded for later in the build
-        var requirePrefix = name.substring( 0, name.indexOf( '/' ) );
-        var requirePath = parentRequire.toUrl( requirePrefix ); // Need to do this require.js lookup in plugin
+        requirePrefix = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
+        requirePath = parentRequire.toUrl( requirePrefix ); // e.g. '/Users/something/phet/git/some-sim/js'
         if ( requirePath.substring( requirePath.lastIndexOf( '/' ) ) !== '/js' ) {
           throw new Error( 'Assumes REPO/js location' );
         }
-        var repositoryPath = requirePath.substring( 0, requirePath.lastIndexOf( '/' ) ); // strip off '/js'
-        var repositoryName = repositoryPath.substring( repositoryPath.lastIndexOf( '/' ) + 1 );
+        repositoryPath = requirePath.substring( 0, requirePath.lastIndexOf( '/' ) ); // e.g. '/Users/something/phet/git/some-sim'
+        repositoryName = repositoryPath.substring( repositoryPath.lastIndexOf( '/' ) + 1 ); // e.g. 'some-sim'
+
+        // lazily construct our strings list
+        global.phet.strings = global.phet.strings || {};
 
         // entry saved for later in the build
         global.phet.strings[name] = {
