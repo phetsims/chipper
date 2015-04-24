@@ -7,13 +7,18 @@
 #
 #=======================================================================================
 
+CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
+WORKING_DIR=${CHIPPER_BIN}/../..
+cd ${WORKING_DIR}
+
+
 if [ -d ./chipper ];
 then
-   repos=(`comm -23 <(sort -u ./chipper/data/active-repos) <(/bin/ls -1 .)`)
-   for repo in "${repos[@]}"
-   do
-      git clone https://github.com/phetsims/"$repo".git
-   done
+  MISSING_REPOS=`./chipper/bin/print-missing-repos.sh`
+  for repo in "${MISSING_REPOS[@]}"
+  do
+    git clone https://github.com/phetsims/"$repo".git
+  done
 else
-   echo "I don't see chipper. Are you running this script in your working directory?"
+  echo "I don't see chipper. Are you running this script in your working directory?"
 fi
