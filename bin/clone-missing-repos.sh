@@ -15,7 +15,7 @@ cd ${WORKING_DIR}
 if [ -d ./chipper ];
 then
   MISSING_REPOS=`./chipper/bin/print-missing-repos.sh`
-  for repo in ${MISSING_REPOS}
+  for repo in `echo "${MISSING_REPOS}" | xargs`
   do
     git clone https://github.com/phetsims/"$repo".git
   done
