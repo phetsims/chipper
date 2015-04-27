@@ -1,11 +1,12 @@
 #!/bin/bash
-#=======================================================================================
+#=============================================================================================
 #
-# Clones all missing repos
+# Clones all missing repos.
+# Missing repos are identified by comparing your working directory to the active-repos file.
 #
 # Author: Aaron Davis
 #
-#=======================================================================================
+#=============================================================================================
 
 CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 WORKING_DIR=${CHIPPER_BIN}/../..
