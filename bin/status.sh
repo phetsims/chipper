@@ -2,8 +2,6 @@
 #====================================================================================================
 #
 # Shows git status for all repos
-# This must be run from the main "git" directory (the parent of all simulation/chipper repo directories)
-# Usage: chipper/bin/status.sh
 #
 # GREEN: on master, no working copy changes
 # RED: anything else
@@ -12,17 +10,15 @@
 #
 #====================================================================================================
 
+CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
+WORKING_DIR=${CHIPPER_BIN}/../..
+cd ${WORKING_DIR}
+
 # ANSI escape sequences to move to the right (in the same line) or to apply or reset colors
 MOVE_RIGHT="\033[36G"
 RED="\033[31m"
 GREEN="\033[32m"
 RESET="\033[0m"
-
-# must be run from root of working copy
-if [ ! -d ./chipper ]; then
-  echo "./chipper not found"
-  exit 1
-fi
 
 for dir in *
 do

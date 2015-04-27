@@ -2,14 +2,15 @@
 #====================================================================================================
 #
 # Builds all chipper-like simulations.
-# This must be run from the main "git" directory (the parent of all simulation/chipper repo directories)
-# Usage: chipper/bin/all-build.sh
-#                                     (named all-build because I like build.sh to
-#                                      be tab-completed easily. lazy? yes)
+# (named all-build because I like build.sh to be tab-completed easily. lazy? yes)
 #
 # Author: Jonathan Olson
 #
 #====================================================================================================
+
+CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
+WORKING_DIR=${CHIPPER_BIN}/../..
+cd ${WORKING_DIR}
 
 for sim in `cat chipper/data/active-sims | xargs`
 do

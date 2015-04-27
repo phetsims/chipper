@@ -7,11 +7,9 @@
 #
 #====================================================================================================
 
-# must be run from root of working copy
-if [ ! -d ./chipper ]; then
-  echo "./chipper not found"
-  exit 1
-fi
+CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
+WORKING_DIR=${CHIPPER_BIN}/../..
+cd ${WORKING_DIR}
 
 for sim in `cat chipper/data/active-repos | sort | xargs`
 do

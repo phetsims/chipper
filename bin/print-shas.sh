@@ -1,11 +1,15 @@
 #!/bin/bash
 #=======================================================================================
 #
-# Prints shas for all repos that are immediate children of the current directory.
+# Prints shas for all repos in the working directory.
 #
 # Author: Chris Malley (PixelZoom, Inc.)
 #
 #=======================================================================================
+
+CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
+WORKING_DIR=${CHIPPER_BIN}/../..
+cd ${WORKING_DIR}
 
 for repo in `ls -1`
 do
