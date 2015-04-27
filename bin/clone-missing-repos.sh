@@ -11,7 +11,6 @@ CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 WORKING_DIR=${CHIPPER_BIN}/../..
 cd ${WORKING_DIR}
 
-
 if [ -d ./chipper ];
 then
   MISSING_REPOS=`./chipper/bin/print-missing-repos.sh`
