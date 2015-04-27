@@ -53,6 +53,7 @@ module.exports = function( grunt ) {
     assert( pkg.preload, 'preload missing from package.json' );
     console.log( 'Adding additional preload files for together' );
     // add the additional preload files needed to support data exchange using together.js
+    pkg.preload.push( '../sherpa/jsondiffpatch-0.1.31.js' );
     pkg.preload.push( '../together/js/together.js' );
     pkg.preload.push( '../together/js/SimIFrameAPI.js' );
     pkg.preload.push( '../together/js/arch.js' );
