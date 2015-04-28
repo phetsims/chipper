@@ -31,6 +31,7 @@ var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseTex
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
+var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 
 //TODO look at why this is necessary
@@ -49,18 +50,6 @@ module.exports = function( grunt ) {
   // Read package.json, verify that it contains properties required by all PhET repositories
   assert( fs.existsSync( 'package.json' ), 'repository must have a package.json' );
   var pkg = grunt.file.readJSON( 'package.json' );
-  if ( grunt.option( 'together' ) ) {
-    assert( pkg.preload, 'preload missing from package.json' );
-    console.log( 'Adding additional preload files for together' );
-    // add the additional preload files needed to support data exchange using together.js
-    pkg.preload.push( '../sherpa/jsondiffpatch-0.1.31.js' );
-    pkg.preload.push( '../together/js/together.js' );
-    pkg.preload.push( '../together/js/SimIFrameAPI.js' );
-    pkg.preload.push( '../together/js/arch.js' );
-    pkg.preload.push( '../together/js/datamite.js' );
-    pkg.preload.push( '../together/js/api/Common.js' );
-    pkg.preload.push( '../together/js/api/' + pkg.name + '-api.js' );
-  }
   assert( pkg.name, 'name missing from package.json' );
   assert( pkg.version, 'version missing from package.json' );
   assert( pkg.license, 'license missing from package.json' );
@@ -152,7 +141,7 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'build-no-lint',
     'identical to "build", but does not run "lint-all"',
-    [ 'clean', 'generate-license-text', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
+    [ 'clean', 'set-preload', 'generate-license-text', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
 
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
 
@@ -166,6 +155,12 @@ module.exports = function( grunt ) {
         grunt.file.delete( 'build' );
       }
       grunt.file.mkdir( 'build' );
+    } );
+
+  grunt.registerTask( 'set-preload',
+    'Determines the set of files that will be preloaded in the HTML file',
+    function() {
+      setPreload( grunt, pkg );
     } );
 
   grunt.registerTask( 'generate-license-text',
