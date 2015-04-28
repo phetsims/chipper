@@ -3,6 +3,14 @@
 #
 # temporary shim for working-snapshot.json output, somewhat copied from build.sh
 #
+# Its purpose is for specific common-code repos (dot/kite/scenery). When they were broken by
+# other common changes, it took a lot of time to track down (since I couldn't bisect across ~8 repos),
+# so I found it easier to take snapshots of my repos when they were working, and when I came across
+# a break, I could identify all of the common code commits that could have caused the break.
+#
+# NOTE: If/when this script is deleted, working-snapshot.json would then be deleted from all
+# applicable repos.
+#
 # Author: Jonathan Olson
 #
 #====================================================================================================
