@@ -135,7 +135,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
         // English fallback
         var fallbackString = repoStringMap[repositoryName][fallbackLocale][stringKey].value;
-        assert( fallbackString, 'Missing string ' + stringKey + ' in fallback locale (' + fallbackLocale + ')' );
+        assert( fallbackString !== undefined && fallbackString !== null, 'Missing string ' + stringKey + ' in fallback locale (' + fallbackLocale + ')' );
         stringMap[locale][stringKey] = fallbackString;
 
         // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.
