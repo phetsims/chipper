@@ -2,7 +2,6 @@
 #====================================================================================================
 #
 # Builds all chipper-like simulations.
-# (named all-build because I like build.sh to be tab-completed easily. lazy? yes)
 #
 # Author: Jonathan Olson
 #
