@@ -184,7 +184,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     comment: '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString())
   };
 
-  function postMipmapLoad( mipmapJavascript ) {
+  function postMipmapLoad( dependencyJSON, mipmapJavascript ) {
     var splashDataURI = loadFileAsDataURI( '../brand/images/splash.svg' );
     var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
@@ -221,6 +221,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
     }
 
+    html = stringReplace( html, 'PHET_SHAS', 'window.phet.chipper.dependencies = ' + dependencyJSON );
+
     var stringMap = loadStringMap();
 
     var titleKey = pkg.simTitleStringKey;
@@ -233,11 +235,16 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
                             'window.phet.chipper.strings=' + JSON.stringify( stringMap[ locale ], null, '' ) + ';';
       var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
+      var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
+      timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) );
+
       //TODO: if this is for changing layout, we'll need these globals in requirejs mode
       //TODO: why are we combining pkg.name with pkg.version?
       //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-      localeHTML = stringReplace( localeHTML, 'PHET_INFO', 'window.phet.chipper.locale=\'' + locale + '\';' +
-                                                           'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' );
+      localeHTML = stringReplace( localeHTML, 'PHET_INFO',
+        'window.phet.chipper.locale=\'' + locale + '\';' +
+        'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' +
+        'window.phet.chipper.buildTimestamp=\'' + timestamp + '\';' );
 
       assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' ); // required for sims
       localeHTML = stringReplace( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
@@ -294,8 +301,10 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     else {
       // now continue on with the process! CALLBACK SOUP FOR YOU!
 
+      var dependencyJSON = JSON.stringify( dependencyInfo, null, 2 );
+
       grunt.log.writeln( 'Writing dependencies.json' );
-      grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencyInfo, null, 2 ) + '\n' );
+      grunt.file.write( 'build/dependencies.json', dependencyJSON + '\n' );
 
       // need to load mipmaps here, since we can't do it synchronously during the require.js build step
       var mipmapsLoaded = 0; // counter that indicates we are done when incremented to the number of mipmaps
@@ -322,13 +331,13 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
               // we've now finished loading all of the mipmaps, and can proceed with the build
               var mipmapJavascript = 'window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';';
-              postMipmapLoad( mipmapJavascript );
+              postMipmapLoad( dependencyJSON, mipmapJavascript );
             }
           } );
         } );
       }
       else {
-        postMipmapLoad( '' ); // no mipmaps loaded
+        postMipmapLoad( dependencyJSON, '' ); // no mipmaps loaded
       }
     }
   }
