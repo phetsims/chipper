@@ -50,7 +50,7 @@ module.exports = function( grunt, pkg ) {
       '../sherpa/jsondiffpatch-0.1.31.js',
       '../together/js/together.js',
       '../together/js/SimIFrameAPI.js',
-      '../together/js/arch.js',
+      '../together/js/togetherEvents.js',
       '../together/js/datamite.js',
       '../together/js/api/Common.js',
       '../together/js/api/' + pkg.name + '-api.js'
