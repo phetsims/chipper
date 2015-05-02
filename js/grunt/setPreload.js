@@ -52,7 +52,7 @@ module.exports = function( grunt, pkg ) {
       '../together/js/SimIFrameAPI.js',
       '../together/js/togetherEvents.js',
       '../together/js/datamite.js',
-      '../together/js/api/Common.js',
+      '../together/js/api/TogetherCommon.js',
       '../together/js/api/' + pkg.name + '-api.js'
     ] );
   }
