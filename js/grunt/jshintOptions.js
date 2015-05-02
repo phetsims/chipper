@@ -71,7 +71,7 @@ module.exports = {
     WebGLDebugUtils: false, // for khronos webgl-debug.js debugging utilities
     iframePhone: false, // for CODAP or other Concord communication
     PIXI: false,
-    arch: false,
+    togetherEvents: false,
     global: false, // for linting Node.js code
     jsondiffpatch: false, // for generating diffs in together.js
 

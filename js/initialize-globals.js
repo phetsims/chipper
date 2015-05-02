@@ -1,7 +1,7 @@
 // Copyright 2002-2013, University of Colorado Boulder
 
 /**
- * Initializes phet globals that are used by all simulations, including assertions, arch and query-parameters.
+ * Initializes phet globals that are used by all simulations, including assertions, togetherEvents and query-parameters.
  * See https://github.com/phetsims/phetcommon/issues/23
  *
  * PhET Simulations can be launched with query parameters which enable certain features.  To use a query parameter,
@@ -37,11 +37,11 @@
  *
  * Other query parameters:
  *
- * datamite.actionHistogram - when running with together.js + arch, display a histogram of the action types, see arch.jsadded action
+ * datamite.actionHistogram - when running with together.js + togetherEvents, display a histogram of the action types, see togetherEvents.jsadded action
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
  * eall - enable all assertions, as above but with more time consuming checks
  * emitEmptyDeltas - when emitting states using together.js (see emitStates below) emit deltas that are empty, to simplify playback in some systems like Metacog.
- * emitStates - when running a simulation using together.js, outputs states and deltas within the arch data stream, see together.js
+ * emitStates - when running a simulation using together.js, outputs states and deltas within the togetherEvents data stream, see together.js
  * rootRenderer - specify a renderer for the Sim's rootNode to use, such as 'svg', 'webgl' or 'canvas'
  * locale - test with a specific locale
  * playbackInputEventLog - plays event logging back from the server, provide an optional name for the session
@@ -78,10 +78,10 @@
 (function() {
   'use strict';
 
-  // If arch has already been preloaded, then this script does nothing.
-  // If arch has not been preloaded, then this will assign window.arch = null
-  // This will enable us to use a pattern like `arch && arch.method`
-  window.arch = window.arch || null;
+  // If togetherEvents has already been preloaded, then this script does nothing.
+  // If togetherEvents has not been preloaded, then this will assign window.togetherEvents = null
+  // This will enable us to use a pattern like `togetherEvents && togetherEvents.method`
+  window.togetherEvents = window.togetherEvents || null;
 
   // If together has been preloaded, this line does nothing.  If together needs to be loaded, it will
   // overwrite this value with the together global.
