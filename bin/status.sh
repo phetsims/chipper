@@ -29,8 +29,10 @@ do
     if [ -d ".git" ]; then
       echo -n "${dir}" # -n for no newline
 
+      REF=`git symbolic-ref -q HEAD`
+
       # current branch name OR an empty string (if detached head)
-      BRANCH=`git symbolic-ref -q HEAD | sed -e 's/refs\/heads\///'`
+      BRANCH=`echo "${REF}" | sed -e 's/refs\/heads\///'`
 
       # current SHA
       SHA=`git rev-parse HEAD`
@@ -38,21 +40,41 @@ do
       # status (empty string if clean)
       STATUS=`git status --porcelain`
 
+      # Safe method to get ahead/behind counts, see http://stackoverflow.com/questions/2969214/git-programmatically-know-by-how-much-the-branch-is-ahead-behind-a-remote-branc
+      # get the tracking-branch name
+      TRACKING_BRANCH=`git for-each-ref --format='%(upstream:short)' ${REF}`
+      # creates global variables $1 and $2 based on left vs. right tracking
+      # inspired by @adam_spiers
+      COUNTS=`git rev-list --left-right --count $TRACKING_BRANCH...HEAD` # e.g. behind-count + '\t' + ahead-count
+      # split the behind and ahead count
+      BEHIND=`echo "${COUNTS}" | awk '{ print $1 }'`
+      AHEAD=`echo "${COUNTS}" | awk '{ print $2 }'`
+
       # if no branch, print our SHA (detached head)
       if [ -z "$BRANCH" ]; then
-        echo -e "${MOVE_RIGHT}${RED}${SHA}${RESET}"
+        echo -e -n "${MOVE_RIGHT}${RED}${SHA}${RESET}"
       else
         # color branch name based on branch and status. GREEN for clean master, RED for anything else
         if [ "$BRANCH" = "master" ]; then
-          if [ -z "$STATUS" ]; then
-            echo -e "${MOVE_RIGHT}${GREEN}master${RESET}"
+          if [ -z "$STATUS" -a "$AHEAD" -eq 0 ]; then
+            echo -e -n "${MOVE_RIGHT}${GREEN}master${RESET}"
           else
-            echo -e "${MOVE_RIGHT}${RED}master${RESET}"
+            echo -e -n "${MOVE_RIGHT}${RED}master${RESET}"
           fi
         else
-          echo -e "${MOVE_RIGHT}${RED}${BRANCH}${RESET}"
+          echo -e -n "${MOVE_RIGHT}${RED}${BRANCH}${RESET}"
         fi
       fi
+
+      if [ ! "$AHEAD" -eq 0 ]; then
+        echo -e -n " ahead ${AHEAD}"
+      fi
+
+      if [ ! "$BEHIND" -eq 0 ]; then
+        echo -e -n " behind ${BEHIND}"
+      fi
+
+      echo ""
 
       # print status, if any
       if [ ! -z "$STATUS" ]; then
