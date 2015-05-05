@@ -236,7 +236,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
 
       var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
-      timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) );
+      timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
       //TODO: if this is for changing layout, we'll need these globals in requirejs mode
       //TODO: why are we combining pkg.name with pkg.version?
@@ -301,10 +301,21 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     else {
       // now continue on with the process! CALLBACK SOUP FOR YOU!
 
+      // get our JSON for dependencies
       var dependencyJSON = JSON.stringify( dependencyInfo, null, 2 );
 
+      // and get JSON for our dependences (without babel), for dependencies.json
+      // (since different builds can have different babel SHAs)
+      var dependencyInfoWithoutBabel = {};
+      for ( var key in dependencyInfo ) {
+        if ( key !== 'babel' ) {
+          dependencyInfoWithoutBabel[key] = dependencyInfo[key];
+        }
+      }
+      var dependencyJSONWithoutBabel = JSON.stringify( dependencyInfoWithoutBabel, null, 2 );
+
       grunt.log.writeln( 'Writing dependencies.json' );
-      grunt.file.write( 'build/dependencies.json', dependencyJSON + '\n' );
+      grunt.file.write( 'build/dependencies.json', dependencyJSONWithoutBabel + '\n' );
 
       // need to load mipmaps here, since we can't do it synchronously during the require.js build step
       var mipmapsLoaded = 0; // counter that indicates we are done when incremented to the number of mipmaps
