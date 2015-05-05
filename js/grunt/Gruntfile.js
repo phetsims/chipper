@@ -54,6 +54,13 @@ module.exports = function( grunt ) {
   assert( pkg.version, 'version missing from package.json' );
   assert( pkg.license, 'license missing from package.json' );
 
+  // TODO: As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
+  // string. This approach has a lot of problems and should be replaced as soon as we work out a more all encompassing
+  // way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3 for more info.
+  if ( grunt.option( 'together' ) && pkg.version.indexOf( '-dev' ) > -1 ){
+    pkg.version = pkg.version.replace( '-dev', '-together' );
+  }
+
   var globalDefs = {
     // global assertions
     assert: false,

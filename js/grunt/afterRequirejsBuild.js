@@ -246,6 +246,15 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
         'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' +
         'window.phet.chipper.buildTimestamp=\'' + timestamp + '\';' );
 
+      // TODO: As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the
+      // version string. This approach has a lot of problems and should be replaced as soon as we work out a more all
+      // encompassing way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3
+      // for more info.
+      if ( grunt.option( 'together' ) ){
+        var unalteredVersion = pkg.version.replace( '-together', '-dev' );
+        localeHTML = stringReplace( localeHTML, unalteredVersion, pkg.version );
+      }
+
       assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' ); // required for sims
       localeHTML = stringReplace( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
       grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
