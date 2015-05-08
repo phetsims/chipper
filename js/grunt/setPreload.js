@@ -14,7 +14,7 @@ var assert = require( 'assert' );
 /*
  * @param grunt the grunt instance
  * @param {string} repositoryName name of the sim's repository
- * @param {string[]} simPreloads sim-specific preloads, as specified in the preload field of package.json
+ * @param {Object} pkg package.json
  */
 module.exports = function( grunt, pkg ) {
   'use strict';
