@@ -27,10 +27,10 @@ var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
-var generateLicenseText = require( '../../../chipper/js/grunt/generateLicenseText' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
+var setLicenseText = require( '../../../chipper/js/grunt/setLicenseText' );
 var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 
@@ -148,7 +148,7 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'build-no-lint',
     'identical to "build", but does not run "lint-all"',
-    [ 'clean', 'set-preload', 'generate-license-text', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
+    [ 'clean', 'set-preload', 'set-license-text', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
 
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
 
@@ -170,10 +170,10 @@ module.exports = function( grunt ) {
       setPreload( grunt, pkg );
     } );
 
-  grunt.registerTask( 'generate-license-text',
-    'Generates the license text that will be written to the HTML file',
+  grunt.registerTask( 'set-license-text',
+    'Sets global.phet.licenseText, the license text that will be written to the HTML file',
     function() {
-      generateLicenseText( grunt, pkg );
+      setLicenseText( grunt, pkg );
     } );
 
   grunt.registerTask( 'before-requirejs-build',
@@ -190,7 +190,7 @@ module.exports = function( grunt ) {
       afterRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
     } );
 
-  grunt.registerTask( 'test', '', [ 'clean', 'set-preload', 'generate-license-text'] );//XXX
+  grunt.registerTask( 'test', '', [ 'clean', 'set-preload', 'set-license-text'] );//XXX
 
   //---------------------------------------------------------------------------------------------------------------
   // Utility tasks
