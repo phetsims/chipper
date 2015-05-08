@@ -173,8 +173,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-license-text',
     'Generates the license text that will be written to the HTML file',
     function() {
-      assert( pkg.preload, 'preload required in package.json' );
-      generateLicenseText( grunt, pkg.preload );
+      generateLicenseText( grunt, pkg );
     } );
 
   grunt.registerTask( 'before-requirejs-build',
@@ -190,6 +189,8 @@ module.exports = function( grunt ) {
     function() {
       afterRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
     } );
+
+  grunt.registerTask( 'test', '', [ 'clean', 'set-preload', 'generate-license-text'] );//XXX
 
   //---------------------------------------------------------------------------------------------------------------
   // Utility tasks

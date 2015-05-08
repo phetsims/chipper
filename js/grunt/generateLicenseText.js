@@ -1,8 +1,11 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * This grunt task generates the license text that goes in the header of the sim's HTML file.
+ * This grunt task generates the license text that goes in the header of a sim's HTML file.
  * It shares the license text with other grunt tasks via global.phet.licenseText.
+ * License info is read from sherpa/info.js.
+ *
+ * @author Chris Malley (PixelZoom, Inc.)
  */
 
 var assert = require( 'assert' );
@@ -13,60 +16,73 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 
 /**
  * @param grunt the grunt instance
- * @param {string[]} preload field from package.json
+ * @param {Object} pkg package.json
  */
-module.exports = function( grunt, preload ) {
+module.exports = function( grunt, pkg ) {
   'use strict';
 
-  /*
-   * Prepare the license info. Run this first so that if something is missing from the license file
-   * you will find out before having to wait for jshint/requirejs build
-   */
+  // Read sherpa/info.js, which contains the license info.
   var licenseInfo = info();
 
-  /*
-   * Find all dependencies that have 'sherpa' in the path.
-   * Please note, this requires all simulations to keep their dependencies in sherpa!
-   */
-  var sherpaDependencyPaths = _.filter( preload, function( dependency ) { return dependency.indexOf( 'sherpa' ) >= 0; } );
+  // Collect the set of license keys.
+  console.log( 'Adding common licenses...' );
+  var licenseKeys = [
+    // dependencies common to all sims that are NOT preloaded
+    'almond-0.2.9',
+    'font-awesome',
+    'pegjs',
+    'require-i18n',
+    'text-2.0.12'
+  ];
 
-  /*
-   * Add libraries that are not explicitly included by the sim.
-   * Note: must have a . character for the parsing below TODO: Remove this restriction
-   */
-  sherpaDependencyPaths.push( 'almond-0.2.9.js' );
-  sherpaDependencyPaths.push( 'pegjs.' );
-  sherpaDependencyPaths.push( 'font-awesome.' );
-  sherpaDependencyPaths.push( 'require-i18n.js' );
-  sherpaDependencyPaths.push( 'text-2.0.12.js' );
+  //TODO the conventions for key names in info.js are dubious
+  // Extract keys from pkg.preload, for any dependencies in sherpa
+  console.log( 'Adding preload licenses...' );
+  pkg.preload.forEach( function( path ) {
+    if ( path.indexOf( '/sherpa/' ) !== -1 ) {
+      path = path.replace( /\.js$/, '' );  // trim .js file suffix
+      var lastSlash = path.lastIndexOf( '/' );
+      var key = path.substring( lastSlash + 1 );
+      licenseKeys.push( key );
+    }
+  } );
 
-  // Sort by name of the library, have to match cases to sort properly
-  var sortedSherpaDependencyPaths = _.sortBy( sherpaDependencyPaths, function( path ) {return path.toUpperCase();} );
+  // Add sim-specific licenses, as specified in the (optional) licenseKeys field of package.json.
+  if ( pkg.licenseKeys ) {
+    console.log( 'Adding sim-specific licenses...' );
+    licenseKeys = licenseKeys.concat( pkg.licenseKeys );
+  }
 
-  // Map the paths to instances from the info.js file
-  var licenses = _.uniq( _.map( sortedSherpaDependencyPaths, function( sherpaDependencyPath ) {
-    var lastSlash = sherpaDependencyPath.lastIndexOf( '/' );
-    var lastDot = sherpaDependencyPath.lastIndexOf( '.' );
-    var dependencyName = sherpaDependencyPath.substring( lastSlash + 1, lastDot );
-    // grunt.log.writeln( 'found dependency: ' + sherpaDependencyPath + ', name = ' + dependencyName );
+  // Finally, add additional licenses required by together (data collection).
+  if ( grunt.option( 'together' ) ) {
+    console.log( 'Adding together licenses...' );
+    licenseKeys.push( 'jsondiffpatch-0.1.31' );
+  }
 
-    // Make sure there is an entry in the info.js file, and return it
-    assert( licenseInfo[ dependencyName ], 'no license entry for ' + dependencyName );
-    return licenseInfo[ dependencyName ];
-  } ) );
+  // Sort keys and remove duplicates
+  licenseKeys = _.uniq( _.sortBy( licenseKeys, function( key ) { return key.toUpperCase(); } ) );
 
-  // Get the text of each entry
+  grunt.log.writeln( 'licenseKeys = ' + licenseKeys.toString() );
+
+  // Separator between each license
   var separator = '=';
+
+  // Combine all licenses into 1 string
+  var licenseText = separator + '\n';
+  licenseKeys.forEach( function( key ) {
+    var license = licenseInfo[key];
+    assert( license, 'no entry in sherpa/info.js for key = ' + key );
+    licenseText += license.text + '\n';
+    if ( license.selectedLicense ) {
+      // Where PhET has selected from among a choice of licenses
+      licenseText += ( 'Selected license: ' + license.selectedLicense + '\n' );
+    }
+    licenseText += ( separator + '\n' );
+  } );
+
+  //grunt.log.writeln( 'licenseText=' + licenseText ); // debugging output
 
   // share with other tasks via a global
   global.phet = global.phet || {};
-  global.phet.licenseText = _.reduce( licenses, function( memo, license ) {
-    var selectedLicenseText = license.selectedLicense ? '> Selected license: ' + license.selectedLicense + '\n' : '';
-    return memo + license.text + '\n' +
-           selectedLicenseText +
-           separator +
-           '\n';
-  }, separator + '\n' ).trim();
-
-  grunt.log.writeln( 'created license info for ' + licenses.length + ' dependencies' );
+  global.phet.licenseText = licenseText;
 };
