@@ -3,13 +3,18 @@
 /**
  * This grunt task generates the license text that goes in the header of a sim's HTML file.
  * It shares the license text with other grunt tasks via global.phet.licenseText.
- * License info is read from sherpa/info.js.
+ *
+ * License info is read from sherpa/info.json. The fields in each license entry are:
+ *
+ * {string[]} text - the text of the license info. A newline will be appended to each array element
+ * {string} [selectedLicense] - indicates which license PhET has selected to use for a library available under multiple licenses
+ * {string[]} [usage] - how the library is used by PhET. Values include "sim", "development", "docs".
+ * {string} [notes] - optional notes
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
 var assert = require( 'assert' );
-var info = require( '../../../sherpa/info' ); // license info for all 3rd-party packages
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
@@ -21,8 +26,8 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 module.exports = function( grunt, pkg ) {
   'use strict';
 
-  // Read sherpa/info.js, which contains the license info.
-  var licenseInfo = info();
+  // Read sherpa/info.json, which contains the license info.
+  var licenseInfo = grunt.file.readJSON( '../sherpa/info.json' );
 
   // Collect the set of license keys.
   console.log( 'Adding common licenses...' );
@@ -35,7 +40,7 @@ module.exports = function( grunt, pkg ) {
     'text-2.0.12'
   ];
 
-  //TODO the conventions for key names in info.js are dubious
+  //TODO the conventions for key names in info.json are dubious
   // Extract keys from pkg.preload, for any dependencies in sherpa
   console.log( 'Adding preload licenses...' );
   pkg.preload.forEach( function( path ) {
@@ -65,22 +70,29 @@ module.exports = function( grunt, pkg ) {
   grunt.log.writeln( 'licenseKeys = ' + licenseKeys.toString() );
 
   // Separator between each license
-  var separator = '=';
+  var SEPARATOR = '=';
 
   // Combine all licenses into 1 string
-  var licenseText = separator + '\n';
+  var licenseText = SEPARATOR + '\n';
   licenseKeys.forEach( function( key ) {
+
     var license = licenseInfo[key];
-    assert( license, 'no entry in sherpa/info.js for key = ' + key );
-    licenseText += license.text + '\n';
+    assert( license, 'no entry in sherpa/info.json for key = ' + key );
+
+    // text is an array of strings.  Each string goes on a new line.
+    for ( var i = 0; i < license.text.length; i++ ) {
+      licenseText += ( license.text[i] + '\n' );
+    }
+
+    // selectedLicense is optional. When there are multiple licenses, PhET selects one.
     if ( license.selectedLicense ) {
-      // Where PhET has selected from among a choice of licenses
       licenseText += ( 'Selected license: ' + license.selectedLicense + '\n' );
     }
-    licenseText += ( separator + '\n' );
+    licenseText += ( SEPARATOR + '\n' );
   } );
+  licenseText.trim();
 
-  //grunt.log.writeln( 'licenseText=' + licenseText ); // debugging output
+  //grunt.log.writeln( 'licenseText=<' + licenseText + '>' ); // debugging output
 
   // share with other tasks via a global
   global.phet = global.phet || {};
