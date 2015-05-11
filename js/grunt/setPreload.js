@@ -28,7 +28,7 @@ module.exports = function( grunt, pkg ) {
     // 3rd-party scripts
     "../sherpa/jquery-2.1.0.js",
     "../sherpa/lodash-2.4.1.js",
-    "../sherpa/has.js",
+    "../sherpa/has-70898c7.js",
     "../sherpa/FileSaver-b8054a2.js",
 
     // PhET scripts
