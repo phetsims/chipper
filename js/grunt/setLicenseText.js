@@ -30,7 +30,7 @@ module.exports = function( grunt, pkg ) {
     // dependencies common to all sims that are NOT preloaded
     'almond-0.2.9',
     'font-awesome',
-    'pegjs',
+    'pegjs-0.7.0',
     'require-i18n',
     'text-2.0.12'
   ];
