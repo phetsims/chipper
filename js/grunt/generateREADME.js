@@ -26,7 +26,7 @@ module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, p
   // Read the title from the English strings file.
   var strings = grunt.file.readJSON( '../' + repositoryName + '/' + repositoryName + '-strings_en.json' );
   var titleKey = simTitleStringKey.split( '/' ).pop(); // eg. 'EXAMPLE_SIM/example-sim.name' -> 'example-sim.name'
-  var title = strings[ titleKey ];
+  var title = strings[ titleKey ].value;
 
   // Commands for cloning all required repositories
   var cloneCommands = '';
