@@ -1,5 +1,6 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
+//TODO the conventions for key names in info.json are dubious
 /**
  * This grunt task generates the license text that goes in the header of a sim's HTML file.
  * It shares the license text with other grunt tasks via global.phet.licenseText.
@@ -40,7 +41,6 @@ module.exports = function( grunt, pkg ) {
     'text-2.0.12'
   ];
 
-  //TODO the conventions for key names in info.json are dubious
   // Extract keys from pkg.preload, for any dependencies in sherpa
   console.log( 'Adding preload licenses...' );
   pkg.preload.forEach( function( path ) {
