@@ -190,8 +190,6 @@ module.exports = function( grunt ) {
       afterRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
     } );
 
-  grunt.registerTask( 'test', '', [ 'clean', 'set-preload', 'set-license-text'] );//XXX
-
   //---------------------------------------------------------------------------------------------------------------
   // Utility tasks
   //---------------------------------------------------------------------------------------------------------------
