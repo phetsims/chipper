@@ -1,11 +1,16 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
-//TODO the conventions for key names in info.json are dubious
 /**
  * This grunt task generates the license text that goes in the header of a sim's HTML file.
  * It shares the license text with other grunt tasks via global.phet.licenseText.
  *
- * License info is read from sherpa/info.json. The fields in each license entry are:
+ * License info is read from sherpa/info.json.
+ *
+ * By convention, the key for each license entry is the name of the JavaScript source file,
+ * with the .js suffix stripped off.  For example, for almond-0.2.9.js, the key is 'almond-0.2.9'.
+ * (TODO This convention is dubious. Why are we bothering to strip off the .js suffix?)
+ *
+ * The fields in each license entry are:
  *
  * {string[]} text - the text of the license info. A newline will be appended to each array element
  * {string} [selectedLicense] - indicates which license PhET has selected to use for a library available under multiple licenses
