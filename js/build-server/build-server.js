@@ -11,7 +11,6 @@ var express = require( 'express' );
 var doT = require( 'express-dot' );
 var parseArgs = require( 'minimist' );
 var winston = require( 'winston' );
-var _ = require( 'underscore' );
 var request = require( 'request' );
 var querystring = require( 'querystring' );
 var child_process = require( 'child_process' );
@@ -80,7 +79,7 @@ function deploy( req, res ) {
 
   }
   else {
-    winston.log( 'error', 'missing required query parameters repos and/or locales' )
+    winston.log( 'error', 'missing required query parameters repos and/or locales' );
   }
 
   //res.send( repos );
@@ -163,7 +162,7 @@ function test() {
   var query = querystring.stringify( { 'repos': JSON.stringify( repos ), 'locales': JSON.stringify( locales ) } );
   var url = 'http://localhost:' + LISTEN_PORT + '/deploy?' + query;
   request( url, function( error, response, body ) {
-    if ( !error && response.statusCode == 200 ) {
+    if ( !error && response.statusCode === 200 ) {
       console.log( 'successfully tried to deploy to url: ' + url );
     }
     else {
@@ -240,4 +239,4 @@ app.engine( 'html', doT.__express );
 app.get( '/deploy', deploy );
 
 // start the server
-app.listen( LISTEN_PORT, function() { winston.log( 'info', 'Listening on port ' + LISTEN_PORT ) } );
+app.listen( LISTEN_PORT, function() { winston.log( 'info', 'Listening on port ' + LISTEN_PORT ); } );
