@@ -51,7 +51,7 @@ function deploy( req, res ) {
 
     winston.log( 'info', 'building sim ' + repoName );
 
-    var buildDir = '../build-server-tmp';
+    var buildDir = './js/build-server/tmp';
     var simDir = '../' + repoName;
 
     var writeDependenciesFile = function() {
@@ -64,7 +64,7 @@ function deploy( req, res ) {
         exec( 'grunt checkout-shas --buildServer', simDir, function() {
           exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
             exec( 'grunt checkout-master', simDir, function() {
-              exec( 'rm -rf ' + buildDir, simDir );
+              exec( 'rm -rf ' + buildDir, '.' );
             } );
           } );
         } );
