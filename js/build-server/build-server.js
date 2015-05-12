@@ -251,17 +251,17 @@ function test() {
     'version': '1.0.0',
     'serverName': 'simian'
   } );
-  var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
+  var url = 'http://phet-dev.colorado.edu/deploy-html-simulation?' + query;
   winston.log( 'info', 'test url: ' + url );
 
-  //request( url, function( error, response, body ) {
-  //  if ( !error && response.statusCode === 200 ) {
-  //    winston.log( 'info', 'running test' );
-  //  }
-  //  else {
-  //    winston.log( 'error', 'test deploy failed' );
-  //  }
-  //} );
+  request( url, function( error, response, body ) {
+    if ( !error && response.statusCode === 200 ) {
+      winston.log( 'info', 'running test' );
+    }
+    else {
+      winston.log( 'error', 'test deploy failed' );
+    }
+  } );
 }
 
 // Handle command line input
