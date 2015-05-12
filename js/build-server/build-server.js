@@ -6,6 +6,9 @@
  * @author Aaron Davis
  */
 
+/* jslint node: true */
+"use strict";
+
 // modules
 var express = require( 'express' );
 var doT = require( 'express-dot' );
@@ -15,6 +18,10 @@ var request = require( 'request' );
 var querystring = require( 'querystring' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
+
+/* jshint -W079 */
+var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
+/* jshint +W079 */
 
 // constants
 var LISTEN_PORT = 16371;
@@ -44,6 +51,16 @@ function deploy( req, res ) {
       } );
     };
 
+    var buildLocales = function() {
+      child_process.exec( 'grunt build --locales=' + locales.toString(), { cwd: buildDir }, function( err, stdout, stderr ) {
+        if ( err ) {
+          console.log( err );
+        }
+        console.log( stdout );
+        console.log( stderr );
+      } );
+    };
+
     var writeDependenciesFile = function() {
       fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
         if ( err ) {
@@ -52,12 +69,13 @@ function deploy( req, res ) {
         console.log( 'The file was saved!' );
 
         child_process.exec( 'grunt checkout-shas', { cwd: buildDir }, function( err, stdout, stderr ) {
-          if (err) {
-            console.log( err );
+          if ( err ) {
+            console.log( 'ERROR:' + err );
           }
-          else {
-            console.log( 'no error!' );
-          }
+          console.log( stdout );
+          console.log( stderr );
+          console.log( 'building locales' );
+          buildLocales();
         } );
 
       } );
@@ -158,7 +176,7 @@ function test() {
       "branch": "HEAD"
     }
   };
-  var locales = [ 'fr' ];
+  var locales = [ 'fr', 'es' ];
   var query = querystring.stringify( { 'repos': JSON.stringify( repos ), 'locales': JSON.stringify( locales ) } );
   var url = 'http://localhost:' + LISTEN_PORT + '/deploy?' + query;
   request( url, function( error, response, body ) {
