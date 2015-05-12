@@ -238,15 +238,17 @@ function test() {
     'version': '1.0.0',
     'serverName': 'simian'
   } );
-  var url = 'http://localhost:' + LISTEN_PORT + '/deploy?' + query;
-  request( url, function( error, response, body ) {
-    if ( !error && response.statusCode === 200 ) {
-      winston.log( 'info', 'successfully tried to deploy to url: ' + url );
-    }
-    else {
-      winston.log( 'error', 'test deploy failed' );
-    }
-  } );
+  var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
+  winston.log( 'info', 'test url: ' + url );
+
+  //request( url, function( error, response, body ) {
+  //  if ( !error && response.statusCode === 200 ) {
+  //    winston.log( 'info', 'running test' );
+  //  }
+  //  else {
+  //    winston.log( 'error', 'test deploy failed' );
+  //  }
+  //} );
 }
 
 // Handle command line input
@@ -312,7 +314,7 @@ app.set( 'view engine', 'dot' );
 app.engine( 'html', doT.__express );
 
 // route that checks whether the user is logged in
-app.get( '/deploy', deploy );
+app.get( '/deploy-html-simulation', deploy );
 
 // start the server
 if ( start ) {
