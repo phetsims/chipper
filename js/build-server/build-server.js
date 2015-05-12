@@ -251,7 +251,7 @@ function test() {
     'version': '1.0.0',
     'serverName': 'simian'
   } );
-  var url = 'http://phet-dev.colorado.edu/deploy-html-simulation?' + query;
+  var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
   winston.log( 'info', 'test url: ' + url );
 
   request( url, function( error, response, body ) {
