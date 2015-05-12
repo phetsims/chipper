@@ -39,7 +39,9 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 var LISTEN_PORT = 16371;
 var REPOS_KEY = 'repos';
 var LOCALES_KEY = 'locales';
-var REPO_NAME = 'repoName';
+var SIM_NAME = 'simName';
+var VERSION = 'version';
+var SERVER_NAME = 'serverName';
 
 var verbose = false;
 
@@ -61,19 +63,21 @@ function exec( command, dir, callback ) {
 }
 
 function deploy( req, res ) {
-  if ( req.query[ REPOS_KEY ] && req.query[ LOCALES_KEY ] && req.query[ REPO_NAME ] ) {
+  if ( req.query[ REPOS_KEY ] && req.query[ LOCALES_KEY ] && req.query[ SIM_NAME ] && req.query[ VERSION ] ) {
     var repos = JSON.parse( req.query[ REPOS_KEY ] );
     var locales = JSON.parse( req.query[ LOCALES_KEY ] );
-    var repoName = req.query[ REPO_NAME ];
+    var simName = req.query[ SIM_NAME ];
+    var version = req.query[ VERSION ];
 
-    winston.log( 'info', 'building sim ' + repoName );
+    var server = 'simian';
+    if ( req.query[ SERVER_NAME ] ) {
+      server = req.query[ SERVER_NAME ];
+    }
+
+    winston.log( 'info', 'building sim ' + simName );
 
     var buildDir = './js/build-server/tmp';
-    var simDir = '../' + repoName;
-
-    // TODO: get server and version dynamically
-    var server = 'simian';
-    var version = '1.0.0';
+    var simDir = '../' + simName;
 
     var scp = function( callback ) {
       winston.log( 'info', 'SCPing files to ' + server );
@@ -82,7 +86,7 @@ function deploy( req, res ) {
         host: server + '.colorado.edu',
         username: credentials.username,
         password: credentials.password,
-        path: '/data/web/htdocs/phetsims/sims/html/' + repoName + '/' + version + '/'
+        path: '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/'
       }, function( err ) {
         if ( err ) {
           winston.log( 'error', 'SCP failed with error: ' + err );
@@ -98,7 +102,7 @@ function deploy( req, res ) {
 
     var notifyServer = function( callback ) {
       var host = ( server === 'simian' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
-      var project = 'html/' + repoName;
+      var project = 'html/' + simName;
       var url = 'http://' + host + '/services/synchronize-project?projectName=' + project;
       request( url, function( error, response, body ) {
         if ( !error && response.statusCode === 200 ) {
@@ -159,7 +163,7 @@ function deploy( req, res ) {
     } );
   }
   else {
-    winston.log( 'error', 'missing required query parameters repos and/or locales' );
+    winston.log( 'error', 'missing one or more required query parameters repos, locales, simName, and version' );
   }
 }
 
@@ -227,14 +231,20 @@ function test() {
     }
   };
   var locales = [ 'fr', 'es' ];
-  var query = querystring.stringify( { 'repos': JSON.stringify( repos ), 'locales': JSON.stringify( locales ), 'repoName': 'molecules-and-light' } );
+  var query = querystring.stringify( {
+    'repos': JSON.stringify( repos ),
+    'locales': JSON.stringify( locales ),
+    'simName': 'molecules-and-light',
+    'version': '1.0.0',
+    'serverName': 'simian'
+  } );
   var url = 'http://localhost:' + LISTEN_PORT + '/deploy?' + query;
   request( url, function( error, response, body ) {
     if ( !error && response.statusCode === 200 ) {
       winston.log( 'info', 'successfully tried to deploy to url: ' + url );
     }
     else {
-      winston.log( 'error', 'failed to deploy with query parameters: ' + query );
+      winston.log( 'error', 'test deploy failed' );
     }
   } );
 }
