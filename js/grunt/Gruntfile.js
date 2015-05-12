@@ -197,7 +197,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'checkout-shas',
     'Check out shas for a project, as specified in dependencies.json',
     function() {
-      checkoutShas( grunt, pkg.name, false );
+      checkoutShas( grunt, pkg.name, false, grunt.option( 'dependenciesFile' ) );
     } );
 
   grunt.registerTask( 'checkout-master',

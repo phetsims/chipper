@@ -11,11 +11,13 @@ var child_process = require( 'child_process' );
  * @param grunt the grunt instance
  * @param repositoryName name field from package.json
  * @param toMaster whether master should be used, or dependencies.json shas should be used
+ * @param dependencies optional dependencies json object to be used instead of the one in the directory
  */
-module.exports = function( grunt, repositoryName, toMaster ) {
+module.exports = function( grunt, repositoryName, toMaster, dependencies ) {
   'use strict';
 
-  var dependencies = grunt.file.readJSON( 'dependencies.json' );
+  dependencies = grunt.file.readJSON( ( dependencies ) ? dependencies : 'dependencies.json' );
+  console.log( dependencies );
   var done = grunt.task.current.async();
   var numToCheckOut = 0;
   var numCheckedOut = 0;

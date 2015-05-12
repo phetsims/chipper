@@ -27,39 +27,32 @@ var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefine
 var LISTEN_PORT = 16371;
 var REPOS_KEY = 'repos';
 var LOCALES_KEY = 'locales';
+var REPO_NAME = 'repoName';
+
+function exec( command, dir, callback ) {
+  child_process.exec( command, { cwd: dir }, function( err, stdout, stderr ) {
+    if ( err ) {
+      console.log( err );
+    }
+    console.log( stdout );
+    console.log( stderr );
+    if ( callback ) {
+      callback();
+    }
+  } );
+}
 
 function deploy( req, res ) {
   console.log( req.query );
   if ( req.query[ REPOS_KEY ] && req.query[ LOCALES_KEY ] ) {
     var repos = JSON.parse( req.query[ REPOS_KEY ] );
     var locales = JSON.parse( req.query[ LOCALES_KEY ] );
-    console.log( repos );
-    console.log( locales );
+    var repoName = req.query[ REPO_NAME ];
+
+    winston.log( 'info', 'building sim ' + repoName );
 
     var buildDir = '../build-server-tmp';
-
-    var writeGruntFile = function( callback ) {
-      var contents = 'module.exports = require( \'../chipper/js/grunt/Gruntfile.js\' );';
-      fs.writeFile( buildDir + '/Gruntfile.js', contents, function( err ) {
-        if ( err ) {
-          return console.log( err );
-        }
-        else {
-          console.log( 'wrote Gruntfile' );
-          callback();
-        }
-      } );
-    };
-
-    var buildLocales = function() {
-      child_process.exec( 'grunt build --locales=' + locales.toString(), { cwd: buildDir }, function( err, stdout, stderr ) {
-        if ( err ) {
-          console.log( err );
-        }
-        console.log( stdout );
-        console.log( stderr );
-      } );
-    };
+    var simDir = '../' + repoName;
 
     var writeDependenciesFile = function() {
       fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
@@ -68,14 +61,10 @@ function deploy( req, res ) {
         }
         console.log( 'The file was saved!' );
 
-        child_process.exec( 'grunt checkout-shas', { cwd: buildDir }, function( err, stdout, stderr ) {
-          if ( err ) {
-            console.log( 'ERROR:' + err );
-          }
-          console.log( stdout );
-          console.log( stderr );
-          console.log( 'building locales' );
-          buildLocales();
+        exec( 'grunt checkout-shas', buildDir, function() {
+          exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
+            exec( 'grunt checkout-master', buildDir );
+          } );
         } );
 
       } );
@@ -85,16 +74,14 @@ function deploy( req, res ) {
       if ( !exists ) {
         fs.mkdir( buildDir, function( err ) {
           if ( !err ) {
-            writeGruntFile( writeDependenciesFile );
+            writeDependenciesFile();
           }
         } );
       }
       else {
-        writeGruntFile( writeDependenciesFile );
+        writeDependenciesFile();
       }
     } );
-
-
   }
   else {
     winston.log( 'error', 'missing required query parameters repos and/or locales' );
@@ -116,68 +103,68 @@ function deploy( req, res ) {
 function test() {
   var repos = {
     "molecules-and-light": {
-      "sha": "9020b1a3fb9e671ef2fcf47c44521276749abbe8",
-      "branch": "1.0"
+      "sha": "663973959fdec8724e1c197fbbd2bcdf636b41a8",
+      "branch": "master"
     },
     "assert": {
-      "sha": "952d1ea66d2aa4c707413ff3a355120a5fe0a6d4",
-      "branch": "HEAD"
+      "sha": "903564a25a0f26acdbd334d3e104039864b405ef",
+      "branch": "master"
     },
     "axon": {
-      "sha": "9d415eb95eac561226402535dbbeb34d611b514b",
-      "branch": "HEAD"
+      "sha": "084949f67b7fa6c87fa29acabcd3ee1cad90f27f",
+      "branch": "master"
     },
     "brand": {
-      "sha": "8565ca68078fa1015fa677ee5ff8075508f0216b",
-      "branch": "HEAD"
+      "sha": "b3362651f1d7eddb7f8697d02400472f97f9d140",
+      "branch": "master"
     },
     "chipper": {
-      "sha": "4a815b88a71b1796a09efb9fe81c27d491fa0e3a",
-      "branch": "HEAD"
+      "sha": "1b58d12f40170c7a1d9282a4281ab0eca14f0a6d",
+      "branch": "master"
     },
     "dot": {
-      "sha": "300d500db2b269cef3a57afff6a484bd22b889c1",
-      "branch": "HEAD"
+      "sha": "10841da0d3d5288a3b3296ff7f5cc3361f7298f0",
+      "branch": "master"
     },
     "joist": {
-      "sha": "469839fa26e6f9dd6dc09efe398b2d62d70a8313",
-      "branch": "HEAD"
+      "sha": "223beb469fb4d87bdd3aeb817ff500031d7cfe59",
+      "branch": "master"
     },
     "kite": {
-      "sha": "4283618986d554da85329ebdbc6c2ddd54cba84f",
-      "branch": "HEAD"
+      "sha": "e659eb14701b55cb4579bcf42de5e8d044cfa5fe",
+      "branch": "master"
     },
     "nitroglycerin": {
-      "sha": "a1b4005b9a6062887955274a9d14c31dab69b93c",
-      "branch": "HEAD"
+      "sha": "c6f79ce4664a1120a8d1d2393d5d48f9b72d4bc9",
+      "branch": "master"
     },
     "phet-core": {
-      "sha": "33450dabed3c9b3a2ed1c33666db534fb9e51fbc",
-      "branch": "HEAD"
+      "sha": "879ed37fe9489cb9d312f45333e9bfa27da0c48a",
+      "branch": "master"
     },
     "phetcommon": {
       "sha": "bb92c52cd90fdaa0c2a746fea82594afd439b4db",
-      "branch": "HEAD"
+      "branch": "master"
     },
     "scenery": {
-      "sha": "422ff322b6b4749406adad4293d6700932ecf49e",
-      "branch": "HEAD"
+      "sha": "af8426352cfac4188eca3fadaf9114b36ac3b1db",
+      "branch": "master"
     },
     "scenery-phet": {
-      "sha": "adbf7ffe7672f8321b4462a714b397146403e51e",
-      "branch": "HEAD"
+      "sha": "92295da83d09a202e0a41ab217cc34b90afcef44",
+      "branch": "master"
     },
     "sherpa": {
-      "sha": "9a3ecfeeef516ec6361af14825f0581165625c44",
-      "branch": "HEAD"
+      "sha": "327c060c12ead53f3d6a2ad4229f6d0188e75be5",
+      "branch": "master"
     },
     "sun": {
-      "sha": "f290622fd4e3c6389779ce72fd32539b4d03ea72",
-      "branch": "HEAD"
+      "sha": "8aba31e7471b8752bde2086bdc65c4b1e8116e6a",
+      "branch": "master"
     }
   };
   var locales = [ 'fr', 'es' ];
-  var query = querystring.stringify( { 'repos': JSON.stringify( repos ), 'locales': JSON.stringify( locales ) } );
+  var query = querystring.stringify( { 'repos': JSON.stringify( repos ), 'locales': JSON.stringify( locales ), 'repoName': 'molecules-and-light' } );
   var url = 'http://localhost:' + LISTEN_PORT + '/deploy?' + query;
   request( url, function( error, response, body ) {
     if ( !error && response.statusCode === 200 ) {
