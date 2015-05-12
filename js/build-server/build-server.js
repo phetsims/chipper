@@ -79,6 +79,17 @@ function deploy( req, res ) {
     var buildDir = './js/build-server/tmp';
     var simDir = '../' + simName;
 
+    var npmInstall = function( callback ) {
+      fs.exists( simDir + '/node_modules', function( exists ) {
+        if ( !exists ) {
+          exec( 'npm install', simDir, callback );
+        }
+        else {
+          callback();
+        }
+      } );
+    };
+
     var scp = function( callback ) {
       winston.log( 'info', 'SCPing files to ' + server );
 
@@ -132,13 +143,15 @@ function deploy( req, res ) {
         }
         winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
 
-        exec( 'grunt checkout-shas --buildServer', simDir, function() {
-          exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
-            scp( function() {
-              notifyServer( function() {
-                exec( 'grunt checkout-master', simDir, function() {
-                  exec( 'rm -rf ' + buildDir, '.', function() {
-                    winston.log( 'info', 'build finished' );
+        npmInstall( function() {
+          exec( 'grunt checkout-shas --buildServer', simDir, function() {
+            exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
+              scp( function() {
+                notifyServer( function() {
+                  exec( 'grunt checkout-master', simDir, function() {
+                    exec( 'rm -rf ' + buildDir, '.', function() {
+                      winston.log( 'info', 'build finished' );
+                    } );
                   } );
                 } );
               } );
