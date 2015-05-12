@@ -55,8 +55,7 @@ function exec( command, dir, callback ) {
 }
 
 function deploy( req, res ) {
-  console.log( req.query );
-  if ( req.query[ REPOS_KEY ] && req.query[ LOCALES_KEY ] ) {
+  if ( req.query[ REPOS_KEY ] && req.query[ LOCALES_KEY ] && req.query[ REPO_NAME ] ) {
     var repos = JSON.parse( req.query[ REPOS_KEY ] );
     var locales = JSON.parse( req.query[ LOCALES_KEY ] );
     var repoName = req.query[ REPO_NAME ];
@@ -67,9 +66,11 @@ function deploy( req, res ) {
     var simDir = '../' + repoName;
 
     var scp = function( callback ) {
-      console.log( 'running scp' );
-      var server = 'simian';
+      var server = 'simian'; // TODO: get server and version dynamically
       var version = '1.0.0';
+
+      winston.log( 'info', 'SCPing files to ' + server );
+
       client.scp( simDir + '/build/', {
         host: server + '.colorado.edu',
         username: credentials.username,
@@ -77,10 +78,10 @@ function deploy( req, res ) {
         path: '/data/web/htdocs/phetsims/sims/html/' + repoName + '/' + version + '/'
       }, function( err ) {
         if ( err ) {
-          console.log( 'SCP ERROR: ' + err );
+          winston.log( 'error', 'SCP ERROR: ' + err );
         }
         else {
-          console.log( 'SCP success!' );
+          winston.log( 'info', 'SCP ran successfully' );
           if ( callback ) {
             callback();
           }
@@ -91,9 +92,9 @@ function deploy( req, res ) {
     var writeDependenciesFile = function() {
       fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
         if ( err ) {
-          return console.log( err );
+          return winston.log( 'error', err );
         }
-        console.log( 'The file was saved!' );
+        winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
 
         exec( 'grunt checkout-shas --buildServer', simDir, function() {
           exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
@@ -194,10 +195,10 @@ function test() {
   var url = 'http://localhost:' + LISTEN_PORT + '/deploy?' + query;
   request( url, function( error, response, body ) {
     if ( !error && response.statusCode === 200 ) {
-      console.log( 'successfully tried to deploy to url: ' + url );
+      winston.log( 'info', 'successfully tried to deploy to url: ' + url );
     }
     else {
-      console.log( 'ERROR: tried to deploy to url: ' + url );
+      winston.log( 'error', 'ERROR: failed to deploy with query parameters: ' + query );
     }
   } );
 }
