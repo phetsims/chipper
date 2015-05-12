@@ -40,11 +40,16 @@ var LISTEN_PORT = 16371;
 var REPOS_KEY = 'repos';
 var LOCALES_KEY = 'locales';
 var REPO_NAME = 'repoName';
+var ERROR = 'ERROR';
+
+var verbose = true;
 
 function exec( command, dir, callback ) {
   child_process.exec( command, { cwd: dir }, function( err, stdout, stderr ) {
-    console.log( stdout );
-    console.log( stderr );
+    if ( verbose ) {
+      console.log( stdout );
+      console.log( stderr );
+    }
     if ( !err && callback ) {
       callback();
     }
@@ -65,10 +70,11 @@ function deploy( req, res ) {
     var buildDir = './js/build-server/tmp';
     var simDir = '../' + repoName;
 
-    var scp = function( callback ) {
-      var server = 'simian'; // TODO: get server and version dynamically
-      var version = '1.0.0';
+    // TODO: get server and version dynamically
+    var server = 'simian';
+    var version = '1.0.0';
 
+    var scp = function( callback ) {
       winston.log( 'info', 'SCPing files to ' + server );
 
       client.scp( simDir + '/build/', {
@@ -89,18 +95,44 @@ function deploy( req, res ) {
       } );
     };
 
+    var notifyServer = function( callback ) {
+      var host = ( server === 'simian' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
+      var project = 'html/' + repoName;
+      var url = 'http://' + host + '/services/synchronize-project?projectName=' + project;
+      request( url, function( error, response, body ) {
+        if ( !error && response.statusCode === 200 ) {
+          var syncResponse = JSON.parse( body );
+          if ( !syncResponse.success ) {
+            winston.log( ERROR, 'request to synchronize project ' + project + ' on ' + server + ' failed with message: ' + syncResponse.error );
+          }
+          else {
+            winston.log( 'info', 'request to synchronize project ' + project + ' on ' + server + ' succeeded' );
+          }
+        }
+        else {
+          winston.log( ERROR, 'request to synchronize project failed' );
+        }
+
+        if ( callback ) {
+          callback();
+        }
+      } );
+    };
+
     var writeDependenciesFile = function() {
       fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
         if ( err ) {
-          return winston.log( 'error', err );
+          return winston.log( ERROR, err );
         }
         winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
 
         exec( 'grunt checkout-shas --buildServer', simDir, function() {
           exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
             scp( function() {
-              exec( 'grunt checkout-master', simDir, function() {
-                exec( 'rm -rf ' + buildDir, '.' );
+              notifyServer( function() {
+                exec( 'grunt checkout-master', simDir, function() {
+                  exec( 'rm -rf ' + buildDir, '.' );
+                } );
               } );
             } );
           } );
@@ -123,7 +155,7 @@ function deploy( req, res ) {
     } );
   }
   else {
-    winston.log( 'error', 'missing required query parameters repos and/or locales' );
+    winston.log( ERROR, 'missing required query parameters repos and/or locales' );
   }
 }
 
@@ -198,7 +230,7 @@ function test() {
       winston.log( 'info', 'successfully tried to deploy to url: ' + url );
     }
     else {
-      winston.log( 'error', 'ERROR: failed to deploy with query parameters: ' + query );
+      winston.log( ERROR, 'failed to deploy with query parameters: ' + query );
     }
   } );
 }
