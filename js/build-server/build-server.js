@@ -51,7 +51,7 @@ function exec( command, dir, callback ) {
       console.log( stderr );
     }
     if ( !err && callback ) {
-      winston.log( 'info', 'command: ' + command + ' ran successfully' );
+      winston.log( 'info', command + ' ran successfully' );
       callback();
     }
     else if ( err ) {
@@ -133,7 +133,9 @@ function deploy( req, res ) {
             scp( function() {
               notifyServer( function() {
                 exec( 'grunt checkout-master', simDir, function() {
-                  exec( 'rm -rf ' + buildDir, '.' );
+                  exec( 'rm -rf ' + buildDir, '.', function() {
+                    winston.log( 'info', 'build finished' );
+                  } );
                 } );
               } );
             } );
