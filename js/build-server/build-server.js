@@ -61,9 +61,11 @@ function deploy( req, res ) {
         }
         console.log( 'The file was saved!' );
 
-        exec( 'grunt checkout-shas', buildDir, function() {
+        exec( 'grunt checkout-shas --buildServer', simDir, function() {
           exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
-            exec( 'grunt checkout-master', buildDir );
+            exec( 'grunt checkout-master', simDir, function() {
+              exec( 'rm -rf ' + buildDir, simDir );
+            } );
           } );
         } );
 
