@@ -18,6 +18,18 @@ var request = require( 'request' );
 var querystring = require( 'querystring' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
+var client = require( 'scp2' );
+
+var start = true;
+
+try {
+  var credentials = require( './credentials.json' ); // put this file in js/build-sever/ with your CU login info
+}
+catch( e ) {
+  console.log( 'ERROR: SCP credentials not found. ' +
+               'Please create a file "credentials.json" in js/build-server with fields for "username" and "password"' );
+  start = false;
+}
 
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
@@ -31,13 +43,13 @@ var REPO_NAME = 'repoName';
 
 function exec( command, dir, callback ) {
   child_process.exec( command, { cwd: dir }, function( err, stdout, stderr ) {
-    if ( err ) {
-      console.log( err );
-    }
     console.log( stdout );
     console.log( stderr );
-    if ( callback ) {
+    if ( !err && callback ) {
       callback();
+    }
+    else if ( err ) {
+      console.log( err );
     }
   } );
 }
@@ -54,6 +66,28 @@ function deploy( req, res ) {
     var buildDir = './js/build-server/tmp';
     var simDir = '../' + repoName;
 
+    var scp = function( callback ) {
+      console.log( 'running scp' );
+      var server = 'simian';
+      var version = '1.0.0';
+      client.scp( simDir + '/build/', {
+        host: server + '.colorado.edu',
+        username: credentials.username,
+        password: credentials.password,
+        path: '/data/web/htdocs/phetsims/sims/html/' + repoName + '/' + version + '/'
+      }, function( err ) {
+        if ( err ) {
+          console.log( 'SCP ERROR: ' + err );
+        }
+        else {
+          console.log( 'SCP success!' );
+          if ( callback ) {
+            callback();
+          }
+        }
+      } );
+    };
+
     var writeDependenciesFile = function() {
       fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
         if ( err ) {
@@ -63,8 +97,10 @@ function deploy( req, res ) {
 
         exec( 'grunt checkout-shas --buildServer', simDir, function() {
           exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
-            exec( 'grunt checkout-master', simDir, function() {
-              exec( 'rm -rf ' + buildDir, '.' );
+            scp( function() {
+              exec( 'grunt checkout-master', simDir, function() {
+                exec( 'rm -rf ' + buildDir, '.' );
+              } );
             } );
           } );
         } );
@@ -88,18 +124,6 @@ function deploy( req, res ) {
   else {
     winston.log( 'error', 'missing required query parameters repos and/or locales' );
   }
-
-  //res.send( repos );
-  //var child = spawn( 'ls', [ '-la', '.' ] );
-  //var result = '';
-  //
-  //child.stdout.on( 'data', function( chunk ) {
-  //  result += chunk.toString();
-  //} );
-  //
-  //child.on( 'close', function( code ) {
-  //  console.log( result );
-  //} );
 }
 
 function test() {
@@ -178,8 +202,6 @@ function test() {
   } );
 }
 
-test();
-
 // Handle command line input
 // First 2 args provide info about executables, ignore
 var commandLineArgs = process.argv.slice( 2 );
@@ -246,4 +268,9 @@ app.engine( 'html', doT.__express );
 app.get( '/deploy', deploy );
 
 // start the server
-app.listen( LISTEN_PORT, function() { winston.log( 'info', 'Listening on port ' + LISTEN_PORT ); } );
+if ( start ) {
+  app.listen( LISTEN_PORT, function() {
+    winston.log( 'info', 'Listening on port ' + LISTEN_PORT );
+    test();
+  } );
+}
