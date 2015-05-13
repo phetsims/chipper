@@ -13,6 +13,7 @@
  * The fields in each license entry are:
  *
  * {string[]} text - the text of the license info. A newline will be appended to each array element
+ * {string} license - the license options for the library
  * {string} [selectedLicense] - indicates which license PhET has selected to use for a library available under multiple licenses
  * {string[]} [usage] - how the library is used by PhET. Values include "sim", "development", "docs".
  * {string} [notes] - optional notes
@@ -82,12 +83,17 @@ module.exports = function( grunt, pkg ) {
   licenseKeys.forEach( function( key ) {
 
     var license = licenseInfo[key];
-    assert( license, 'no entry in sherpa/info.json for key = ' + key );
+    assert( license, 'sherpa/info.json: no entry for key = ' + key );
+    assert( license.text, 'sherpa/info.json: no text field for key = ' + key );
+    assert( license.license, 'sherpa/info.json: no license field for key = ' + key );
 
     // text is an array of strings.  Each string goes on a new line.
     for ( var i = 0; i < license.text.length; i++ ) {
       licenseText += ( license.text[i] + '\n' );
     }
+
+    // license
+    licenseText += ( 'License: ' + license.license + '\n' );
 
     // selectedLicense is optional. When there are multiple licenses, PhET selects one.
     if ( license.selectedLicense ) {
