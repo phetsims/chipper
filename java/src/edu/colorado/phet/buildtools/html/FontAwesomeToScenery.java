@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+//TODO The data file is actually fontawesome-webfont.svg. It's unclear whether there was a font-awesome.txt, and what happened to it. See sun#187.
 /**
  * Reads a data file (font-awesome.txt) that contains lines like:
  * <glyph unicode="&#xf000;" horiz-adv-x="1792" d="M1699 ... -36.5z" />
