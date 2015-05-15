@@ -116,7 +116,10 @@ function exec( command, dir, callback ) {
       callback();
     }
     else if ( err ) {
-      winston.log( 'error', 'error running command: ' + command + '. err: ' + err + '. build aborted.' );
+      winston.log( 'error', 'error running command: ' + command + '. build aborted.' );
+      exec( 'grunt checkout-master', dir, function() {
+        winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
+      } );
     }
   } );
 }
