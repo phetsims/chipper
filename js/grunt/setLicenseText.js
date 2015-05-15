@@ -23,7 +23,7 @@
 
 var assert = require( 'assert' );
 /* jshint -W079 */
-var _ = require( '../../../sherpa/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
 
 /**

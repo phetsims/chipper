@@ -26,10 +26,10 @@ module.exports = function( grunt, pkg ) {
   var preload = [
 
     // 3rd-party scripts
-    "../sherpa/jquery-2.1.0.js",
-    "../sherpa/lodash-2.4.1.js",
-    "../sherpa/has-70898c7.js",
-    "../sherpa/FileSaver-b8054a2.js",
+    "../sherpa/lib/jquery-2.1.0.js",
+    "../sherpa/lib/lodash-2.4.1.js",
+    "../sherpa/lib/has-70898c7.js",
+    "../sherpa/lib/FileSaver-b8054a2.js",
 
     // PhET scripts
     "../assert/js/assert.js",
@@ -47,7 +47,7 @@ module.exports = function( grunt, pkg ) {
   if ( grunt.option( 'together' ) ) {
     console.log( 'Adding together preload files...' );
     preload = preload.concat( [
-      '../sherpa/jsondiffpatch-0.1.31.js',
+      '../sherpa/lib/jsondiffpatch-0.1.31.js',
       '../together/js/together.js',
       '../together/js/SimIFrameAPI.js',
       '../together/js/togetherEvents.js',

@@ -19,7 +19,7 @@ define( function( require ) {
   'use strict';
 
   // 3rd party dependencies, path relative to config.js
-  var _ = require( '../../sherpa/lodash-2.4.1.min' );
+  var _ = require( '../../sherpa/lib/lodash-2.4.1.min' );
 
   // modules
   var text = require( 'text' );
