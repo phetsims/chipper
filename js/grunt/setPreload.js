@@ -11,6 +11,9 @@
 
 var assert = require( 'assert' );
 
+var BUILD_INFO_FILENAME = '../chipper/build.json'; // contains build info, which identifies preloads needed by all sims
+var LICENSE_INFO_FILENAME = '../sherpa/info.json'; // contains the license info
+
 /*
  * @param grunt the grunt instance
  * @param {string} repositoryName name of the sim's repository
@@ -19,42 +22,32 @@ var assert = require( 'assert' );
 module.exports = function( grunt, pkg ) {
   'use strict';
 
-  assert( pkg.name, 'name required in package.json' );
+  // Read build info
+  assert( fs.existsSync( BUILD_INFO_FILENAME ), 'missing ' + BUILD_INFO_FILENAME );
+  var buildInfo = grunt.file.readJSON( BUILD_INFO_FILENAME );
 
-  // Put common preloads first. All sims have these.
+  // Read license info
+  assert( fs.existsSync( LICENSE_INFO_FILENAME ), 'missing ' + LICENSE_INFO_FILENAME );
+  var licenseInfo = grunt.file.readJSON( LICENSE_INFO_FILENAME );
+
+  // Add common preloads, as specified in build.json
   console.log( 'Adding common preload files...' );
-  var preload = [
+  assert( buildInfo.common && buildInfo.common.preload, BUILD_INFO_FILENAME + ' is missing common.preload' );
+  var preload = buildInfo.common.preload;
 
-    // 3rd-party scripts
-    "../sherpa/lib/jquery-2.1.0.js",
-    "../sherpa/lib/lodash-2.4.1.js",
-    "../sherpa/lib/has-70898c7.js",
-    "../sherpa/lib/FileSaver-b8054a2.js",
-
-    // PhET scripts
-    "../assert/js/assert.js",
-    "../chipper/js/initialize-globals.js",
-    "../phetcommon/js/analytics/google-analytics.js"
-  ];
-
-  // Then add sim-specific preloads, as specified in the (optional) preload field of package.json.
+  // Add sim-specific preloads, as specified in the (optional) preload field of package.json.
   if ( pkg.preload ) {
     console.log( 'Adding sim-specific preload files...' );
     preload = preload.concat( pkg.preload );
   }
 
-  // Finally, add additional preloads required by together (data collection).
+  // Add together (data collection) preloads, as specified in build.json
   if ( grunt.option( 'together' ) ) {
     console.log( 'Adding together preload files...' );
-    preload = preload.concat( [
-      '../sherpa/lib/jsondiffpatch-0.1.31.js',
-      '../together/js/together.js',
-      '../together/js/SimIFrameAPI.js',
-      '../together/js/togetherEvents.js',
-      '../together/js/datamite.js',
-      '../together/js/api/TogetherCommon.js',
-      '../together/js/api/' + pkg.name + '-api.js'
-    ] );
+    assert( buildInfo.together && buildInfo.together.preload, BUILD_INFO_FILENAME + ' is missing together.preload' );
+    preload = preload.concat( buildInfo.together.preload );
+    assert( pkg.name, 'package.json is missing name' );
+    preload.push( '../together/js/api/' + pkg.name + '-api.js' );
   }
 
   // Modify pkg
