@@ -1,9 +1,15 @@
 /*
  * TODO: clean up this file
  */
-module.exports = function( grunt, sim ) {
+module.exports = function( grunt ) {
   'use strict';
 
+  /* jslint node: true */
+  // allows "process" to pass lint instead of getting an undefined lint error
+  var directory = process.cwd();
+  var directoryComponents = directory.split( '/' );
+  var sim = directoryComponents[ directoryComponents.length - 1 ];
+  
   grunt.file.defaultEncoding = 'utf8';
 
   var rootdir = "../babel/" + sim;
@@ -25,9 +31,7 @@ module.exports = function( grunt, sim ) {
   var packageJSON = grunt.file.readJSON( '../' + sim + '/package.json' );
   var simTitleKey = packageJSON.simTitleStringKey;
 
-  simTitleKey = simTitleKey.split( "/" )[ 1 ];
-
-  console.log( simTitleKey );
+  simTitleKey = simTitleKey.split( '/' )[ 1 ];
 
   //create xml making a simulation tag for each language
   var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
@@ -46,5 +50,5 @@ module.exports = function( grunt, sim ) {
 
   finalXML = finalXML.concat( '</simulations>\n' + '</project>' );
 
-  console.log( finalXML );
+  grunt.file.write( '../' + sim + '/build/' + sim + '.xml', finalXML );
 };

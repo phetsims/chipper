@@ -195,7 +195,7 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'createXML', 'Write XML file with specific translations for sim',
     function() {
-      createXML( grunt, "neuron" );
+      createXML( grunt );
     } );
 
   //---------------------------------------------------------------------------------------------------------------
