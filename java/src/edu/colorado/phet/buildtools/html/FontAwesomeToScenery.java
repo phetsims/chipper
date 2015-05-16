@@ -7,15 +7,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-//TODO The data file is actually fontawesome-webfont.svg. It's unclear whether there was a font-awesome.txt, and what happened to it. See sun#187.
 /**
- * Reads a data file (font-awesome.txt) that contains lines like:
+ * Reads a data file (sherpa/lib/font-awesome.txt) that contains lines like:
  * <glyph unicode="&#xf000;" horiz-adv-x="1792" d="M1699 ... -36.5z" />
  * and creates a scenery-compatible version.  See sun.FontAwesomeNode.
  * <p>
  * font-awesome.txt was created by taking src/assets/font-awesome/fonts/fontawesome-webfont.svg
- * from the Font-Awesome GitHub repository, and manually editing out lines at the top and bottom
- * of the file.
+ * from the Font-Awesome GitHub repository at https://github.com/FortAwesome/Font-Awesome,
+ * and manually deleting everything except the "glyph" tags.
  *
  * @author Sam Reid
  */
