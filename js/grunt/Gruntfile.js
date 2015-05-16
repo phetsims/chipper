@@ -33,6 +33,7 @@ var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var setLicenseText = require( '../../../chipper/js/grunt/setLicenseText' );
 var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
+var createXML = require( '../../../chipper/js/grunt/createXML' );
 
 //TODO look at why this is necessary
 /*
@@ -133,7 +134,9 @@ module.exports = function( grunt ) {
   //---------------------------------------------------------------------------------------------------------------
 
   // Default task ('grunt')
+
   grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
+
 
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
@@ -189,6 +192,11 @@ module.exports = function( grunt ) {
     function() {
       afterRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
     } );
+
+  grunt.registerTask('createXML' , 'Write XML file with specific translations for sim' , 
+    function(){
+      createXML(grunt, "neuron");
+    });
 
   //---------------------------------------------------------------------------------------------------------------
   // Utility tasks
