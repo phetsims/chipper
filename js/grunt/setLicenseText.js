@@ -41,7 +41,7 @@ module.exports = function( grunt, pkg ) {
   var licenseKeys = [
     // dependencies common to all sims that are NOT preloaded
     'almond-0.2.9',
-    'font-awesome',
+    'font-awesome-4.3.0',
     'pegjs-0.7.0',
     'require-i18n',
     'text-2.0.12'
