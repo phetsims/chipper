@@ -1,5 +1,15 @@
-/*
- * TODO: clean up this file
+// Copyright 2002-2015, University of Colorado Boulder
+
+/**
+ * This grunt task generates a file [sim-name].xml for use by the website when automatically deploying sims
+ * and translations.
+ *
+ * @author Aaron Davis
+ * @author Michael Kauzmann
+ */
+
+/**
+ * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
   'use strict';
@@ -9,23 +19,22 @@ module.exports = function( grunt ) {
   var directory = process.cwd();
   var directoryComponents = directory.split( '/' );
   var sim = directoryComponents[ directoryComponents.length - 1 ];
-  
+
   grunt.file.defaultEncoding = 'utf8';
 
-  var rootdir = "../babel/" + sim;
-  var filenames = [];
+  var rootdir = '../babel/' + sim;
+  var englishStringsFile = sim + '-strings_en.json';
+  var filenames = [ englishStringsFile ];
+
   grunt.file.recurse( rootdir, function( abspath, rootdir, subdir, filename ) {
     filenames.push( filename );
   } );
 
-  // getting individual language abbrevations for sim
-  // for(var i = 0; i< filenames.length; i++){
-  //   var filename = filenames[i];
-  //   var firstUnderscoreIndex = filename.indexOf("_");
-  //   var periodIndex= filename.indexOf(".");
-  //   var language = filename.substring(firstUnderscoreIndex + 1, periodIndex);
-  //   //console.log(language);
-  // }
+  var getLocaleFromName = function( filename ) {
+    var firstUnderscoreIndex = filename.indexOf( '_' );
+    var periodIndex = filename.indexOf( '.' );
+    return filename.substring( firstUnderscoreIndex + 1, periodIndex );
+  };
 
   // grab the title from sim/package.json
   var packageJSON = grunt.file.readJSON( '../' + sim + '/package.json' );
@@ -33,16 +42,17 @@ module.exports = function( grunt ) {
 
   simTitleKey = simTitleKey.split( '/' )[ 1 ];
 
-  //create xml making a simulation tag for each language
+  // create xml, making a simulation tag for each language
   var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
                  '<project name="molecules-and-light">\n' +
                  '<simulations>\n';
 
   for ( var j = 0; j < filenames.length; j++ ) {
-    var languageJSON = grunt.file.readJSON( '../babel' + '/' + sim + '/' + filenames[ j ] );
+    var locale = getLocaleFromName( filenames[ j ] );
+    var languageJSON = grunt.file.readJSON( ( locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + filenames[ j ] );
 
     if ( languageJSON[ simTitleKey ] ) {
-      finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="en">\n' +
+      finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + locale + '">\n' +
                                   '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
                                   '</simulation>\n' );
     }

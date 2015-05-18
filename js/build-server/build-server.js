@@ -1,13 +1,13 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * PhET build server
+ * PhET build and deploy server
  *
  * @author Aaron Davis
  */
 
 /* jslint node: true */
-"use strict";
+'use strict';
 
 // modules
 var express = require( 'express' );
@@ -205,14 +205,19 @@ function deploy( req, res ) {
         }
         winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
 
+        // run every step of the build
         npmInstall( function() {
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
             exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
-              scp( function() {
-                notifyServer( function() {
-                  exec( 'grunt checkout-master', simDir, function() {
-                    exec( 'rm -rf ' + buildDir, '.', function() {
-                      winston.log( 'info', 'build finished' );
+              exec( 'grunt generate-thumbnails', simDir, function() {
+                exec( 'grunt createXML', simDir, function() {
+                  scp( function() {
+                    notifyServer( function() {
+                      exec( 'grunt checkout-master', simDir, function() {
+                        exec( 'rm -rf ' + buildDir, '.', function() {
+                          winston.log( 'info', 'build finished' );
+                        } );
+                      } );
                     } );
                   } );
                 } );
@@ -261,7 +266,7 @@ function test() {
       "branch": "master"
     },
     "chipper": {
-      "sha": "012d483642d2b895c2a358eeac690d4aa3ea2667",
+      "sha": "0f5e764552019d12c396e7d4123e7ffcd24a3bd8",
       "branch": "master"
     },
     "dot": {
@@ -293,11 +298,11 @@ function test() {
       "branch": "master"
     },
     "scenery-phet": {
-      "sha": "f9ff4e5a743ac2931766e3df5da2e5154dc64457",
+      "sha": "4ca937ebfe35a021d4c781a4c6877be22ddbcf9b",
       "branch": "master"
     },
     "sherpa": {
-      "sha": "685a838478184c406282b9592d1d53fef644c018",
+      "sha": "7c1f8f58b67a29014fb75ef4c80c3a5904193630",
       "branch": "master"
     },
     "sun": {
@@ -310,7 +315,7 @@ function test() {
     'repos': JSON.stringify( repos ),
     'locales': JSON.stringify( locales ),
     'simName': 'molecules-and-light',
-    'version': '1.0.0',
+    'version': '1.0.1',
     'serverName': 'simian'
   } );
   var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
