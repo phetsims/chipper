@@ -9,7 +9,9 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
+// modules
 var assert = require( 'assert' );
+var fs = require( 'fs' );
 
 var BUILD_INFO_FILENAME = '../chipper/build.json'; // contains build info, which identifies preloads needed by all sims
 var LICENSE_INFO_FILENAME = '../sherpa/info.json'; // contains the license info
@@ -28,7 +30,6 @@ module.exports = function( grunt, pkg ) {
 
   // Read license info
   assert( fs.existsSync( LICENSE_INFO_FILENAME ), 'missing ' + LICENSE_INFO_FILENAME );
-  var licenseInfo = grunt.file.readJSON( LICENSE_INFO_FILENAME );
 
   // Add common preloads, as specified in build.json
   console.log( 'Adding common preload files...' );
