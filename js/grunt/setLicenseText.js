@@ -26,6 +26,9 @@ var assert = require( 'assert' );
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
 
+var BUILD_INFO_FILENAME = '../chipper/build.json'; // contains build info, which identifies licenses applicable to all sims
+var LICENSE_INFO_FILENAME = '../sherpa/info.json'; // contains the license info
+
 /**
  * @param grunt the grunt instance
  * @param {Object} pkg package.json
@@ -33,19 +36,18 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 module.exports = function( grunt, pkg ) {
   'use strict';
 
-  // Read sherpa/info.json, which contains the license info.
-  var licenseInfo = grunt.file.readJSON( '../sherpa/info.json' );
+  // Read build info
+  assert( fs.existsSync( BUILD_INFO_FILENAME ), 'missing ' + BUILD_INFO_FILENAME );
+  var buildInfo = grunt.file.readJSON( BUILD_INFO_FILENAME );
 
-  // Collect the set of license keys.
+  // Read license info
+  assert( fs.existsSync( LICENSE_INFO_FILENAME ), 'missing ' + LICENSE_INFO_FILENAME );
+  var licenseInfo = grunt.file.readJSON( LICENSE_INFO_FILENAME );
+
+  // Add common licenses, as specified in build.json
   console.log( 'Adding common licenses...' );
-  var licenseKeys = [
-    // dependencies common to all sims that are NOT preloaded
-    'almond-0.2.9',
-    'font-awesome',
-    'pegjs-0.7.0',
-    'require-i18n',
-    'text-2.0.12'
-  ];
+  assert( buildInfo.common && buildInfo.common.licenseKeys, BUILD_INFO_FILENAME + ' is missing common.licenseKeys' );
+  var licenseKeys = buildInfo.common.licenseKeys;
 
   // Extract keys from pkg.preload, for any dependencies in sherpa
   console.log( 'Adding preload licenses...' );
@@ -64,10 +66,11 @@ module.exports = function( grunt, pkg ) {
     licenseKeys = licenseKeys.concat( pkg.licenseKeys );
   }
 
-  // Finally, add additional licenses required by together (data collection).
+   // Add together (data collection) licenses, as specified in build.json
   if ( grunt.option( 'together' ) ) {
     console.log( 'Adding together licenses...' );
-    licenseKeys.push( 'jsondiffpatch-0.1.31' );
+    assert( buildInfo.together && buildInfo.together.licenseKeys, BUILD_INFO_FILENAME + ' is missing together.licenseKeys' );
+    licenseKeys.concat( buildInfo.together.licenseKeys );
   }
 
   // Sort keys and remove duplicates
@@ -82,14 +85,14 @@ module.exports = function( grunt, pkg ) {
   var licenseText = SEPARATOR + '\n';
   licenseKeys.forEach( function( key ) {
 
-    var license = licenseInfo[key];
+    var license = licenseInfo[ key ];
     assert( license, 'sherpa/info.json: no entry for key = ' + key );
     assert( license.text, 'sherpa/info.json: no text field for key = ' + key );
     assert( license.license, 'sherpa/info.json: no license field for key = ' + key );
 
     // text is an array of strings.  Each string goes on a new line.
     for ( var i = 0; i < license.text.length; i++ ) {
-      licenseText += ( license.text[i] + '\n' );
+      licenseText += ( license.text[ i ] + '\n' );
     }
 
     // license
