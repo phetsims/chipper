@@ -270,7 +270,7 @@ function test() {
       "branch": "master"
     },
     "chipper": {
-      "sha": "d3564ea3e88d4d16f03c8e5c02f12ab924e2a1ec",
+      "sha": "4602156c89dd307be35ec6ada2cdece82e0ac956",
       "branch": "master"
     },
     "dot": {
