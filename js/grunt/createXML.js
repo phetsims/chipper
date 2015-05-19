@@ -8,20 +8,17 @@
  * @author Michael Kauzmann
  */
 
-/* jslint node: true */ // allows "process" to pass lint instead of getting an undefined lint error
-
 /**
  * @param grunt the grunt instance
- * @param sim the sim name, defaults to the current directory
  */
-module.exports = function( grunt, sim ) {
+module.exports = function( grunt ) {
   'use strict';
 
-  if ( !sim ) {
-    var directory = process.cwd();
-    var directoryComponents = directory.split( '/' );
-    sim = directoryComponents[ directoryComponents.length - 1 ];
-  }
+  /* jslint node: true */
+  // allows "process" to pass lint instead of getting an undefined lint error
+  var directory = process.cwd();
+  var directoryComponents = directory.split( '/' );
+  var sim = directoryComponents[ directoryComponents.length - 1 ];
 
   grunt.file.defaultEncoding = 'utf8';
 

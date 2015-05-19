@@ -210,7 +210,7 @@ function deploy( req, res ) {
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
             exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
               exec( 'grunt generate-thumbnails', simDir, function() {
-                exec( 'grunt createXML --sim-name ' + simName, simDir, function() {
+                exec( 'grunt createXML', simDir, function() {
                   scp( function() {
                     notifyServer( function() {
                       exec( 'grunt checkout-master', simDir, function() {
