@@ -152,27 +152,27 @@ function deploy( req, res ) {
       } );
     };
 
-    // TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
-    var scp = function( callback ) {
-      winston.log( 'info', 'SCPing files to ' + server );
-
-      client.scp( simDir + '/build/', {
-        host: server + '.colorado.edu',
-        username: credentials.username,
-        password: credentials.password,
-        path: '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/'
-      }, function( err ) {
-        if ( err ) {
-          winston.log( 'error', 'SCP failed with error: ' + err );
-        }
-        else {
-          winston.log( 'info', 'SCP ran successfully' );
-          if ( callback ) {
-            callback();
-          }
-        }
-      } );
-    };
+    // #141 TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
+    //var scp = function( callback ) {
+    //  winston.log( 'info', 'SCPing files to ' + server );
+    //
+    //  client.scp( simDir + '/build/', {
+    //    host: server + '.colorado.edu',
+    //    username: credentials.username,
+    //    password: credentials.password,
+    //    path: '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/'
+    //  }, function( err ) {
+    //    if ( err ) {
+    //      winston.log( 'error', 'SCP failed with error: ' + err );
+    //    }
+    //    else {
+    //      winston.log( 'info', 'SCP ran successfully' );
+    //      if ( callback ) {
+    //        callback();
+    //      }
+    //    }
+    //  } );
+    //};
 
     var notifyServer = function( callback ) {
       var host = ( server === 'simian' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
