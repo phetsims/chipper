@@ -29,7 +29,6 @@
       "almond-0.2.9",
       "font-awesome-4.3.0",
       "pegjs-0.7.0",
-      "require-i18n",
       "text-2.0.12"
     ]
   },
