@@ -27,17 +27,16 @@ module.exports = function( grunt, sim ) {
 
   var rootdir = '../babel/' + sim;
   var englishStringsFile = sim + '-strings_en.json';
-  var filenames = [ englishStringsFile ];
+  var stringFiles = [ { name: englishStringsFile, locale: 'en' } ];
 
   grunt.file.recurse( rootdir, function( abspath, rootdir, subdir, filename ) {
-    filenames.push( filename );
-  } );
-
-  var getLocaleFromName = function( filename ) {
     var firstUnderscoreIndex = filename.indexOf( '_' );
     var periodIndex = filename.indexOf( '.' );
-    return filename.substring( firstUnderscoreIndex + 1, periodIndex );
-  };
+    var locale = filename.substring( firstUnderscoreIndex + 1, periodIndex );
+    stringFiles.push( { name: filename, locale: locale } );
+  } );
+
+  console.log( stringFiles );
 
   // grab the title from sim/package.json
   var packageJSON = grunt.file.readJSON( '../' + sim + '/package.json' );
@@ -50,13 +49,12 @@ module.exports = function( grunt, sim ) {
                  '<project name="molecules-and-light">\n' +
                  '<simulations>\n';
 
-  for ( var j = 0; j < filenames.length; j++ ) {
-    var filename = filenames[ j ];
-    var locale = getLocaleFromName( filename );
-    var languageJSON = grunt.file.readJSON( ( locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + filename );
+  for ( var j = 0; j < stringFiles.length; j++ ) {
+    var stringFile = stringFiles[ j ];
+    var languageJSON = grunt.file.readJSON( ( stringFile.locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name );
 
     if ( languageJSON[ simTitleKey ] ) {
-      finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + locale + '">\n' +
+      finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
                                   '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
                                   '</simulation>\n' );
     }
