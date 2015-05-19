@@ -51,8 +51,9 @@ module.exports = function( grunt, sim ) {
                  '<simulations>\n';
 
   for ( var j = 0; j < filenames.length; j++ ) {
-    var locale = getLocaleFromName( filenames[ j ] );
-    var languageJSON = grunt.file.readJSON( ( locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + filenames[ j ] );
+    var filename = filenames[ j ];
+    var locale = getLocaleFromName( filename );
+    var languageJSON = grunt.file.readJSON( ( locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + filename );
 
     if ( languageJSON[ simTitleKey ] ) {
       finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + locale + '">\n' +
