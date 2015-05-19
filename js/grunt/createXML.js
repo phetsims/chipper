@@ -33,8 +33,6 @@ module.exports = function( grunt ) {
     stringFiles.push( { name: filename, locale: locale } );
   } );
 
-  console.log( stringFiles );
-
   // grab the title from sim/package.json
   var packageJSON = grunt.file.readJSON( '../' + sim + '/package.json' );
   var simTitleKey = packageJSON.simTitleStringKey;
