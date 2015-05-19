@@ -241,9 +241,13 @@ function deploy( req, res ) {
         writeDependenciesFile();
       }
     } );
+
+    res.send( 'build process initiated, check logs for details' );
   }
   else {
-    winston.log( 'error', 'missing one or more required query parameters repos, locales, simName, and version' );
+    var errorString = 'missing one or more required query parameters repos, locales, simName, and version';
+    winston.log( 'error', errorString );
+    res.send( errorString );
   }
 }
 
@@ -321,14 +325,14 @@ function test() {
   var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
   winston.log( 'info', 'test url: ' + url );
 
-  request( url, function( error, response, body ) {
-    if ( !error && response.statusCode === 200 ) {
-      winston.log( 'info', 'running test' );
-    }
-    else {
-      winston.log( 'error', 'test deploy failed' );
-    }
-  } );
+  //request( url, function( error, response, body ) {
+  //  if ( !error && response.statusCode === 200 ) {
+  //    winston.log( 'info', 'running test' );
+  //  }
+  //  else {
+  //    winston.log( 'error', 'test deploy failed' );
+  //  }
+  //} );
 }
 
 // Create and configure the ExpressJS app
