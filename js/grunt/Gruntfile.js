@@ -25,7 +25,6 @@ var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuil
 var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBuild' );
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
-var cloneDependencies = require( '../../../chipper/js/grunt/cloneDependencies' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
@@ -267,14 +266,6 @@ module.exports = function( grunt ) {
     'After doing a build, reports on which strings are missing for each locale that was built.',
     function() {
       stringReport( grunt, pkg.name, FALLBACK_LOCAL );
-    } );
-
-  //TODO is this vestigial?
-  grunt.registerTask( 'clone-dependencies',
-    'Clones all dependencies of a project, as listed in package.json phetLibs entry',
-    function() {
-      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
-      cloneDependencies( grunt, pkg.name, pkg.phetLibs );
     } );
 
   grunt.registerTask( 'generate-128-thumbnail', 'Generate 128x84 thumbnail', function() {
