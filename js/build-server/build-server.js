@@ -18,18 +18,19 @@ var request = require( 'request' );
 var querystring = require( 'querystring' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
-var client = require( 'scp2' );
+//var client = require( 'scp2' ); //TODO #141 required by scp
 
 var start = true;
 
-try {
-  var credentials = require( './credentials.json' ); // put this file in js/build-sever/ with your CU login info
-}
-catch( e ) {
-  console.log( 'ERROR: SCP credentials not found. ' +
-               'Please create a file "credentials.json" in js/build-server with fields for "username" and "password"' );
-  start = false;
-}
+//TODO #141 needed by scp
+//try {
+//  var credentials = require( './credentials.json' ); // put this file in js/build-sever/ with your CU login info
+//}
+//catch( e ) {
+//  console.log( 'ERROR: SCP credentials not found. ' +
+//               'Please create a file "credentials.json" in js/build-server with fields for "username" and "password"' );
+//  start = false;
+//}
 
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
