@@ -152,6 +152,7 @@ function deploy( req, res ) {
       } );
     };
 
+    // TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
     var scp = function( callback ) {
       winston.log( 'info', 'SCPing files to ' + server );
 
@@ -211,7 +212,7 @@ function deploy( req, res ) {
             exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
               exec( 'grunt generate-thumbnails', simDir, function() {
                 exec( 'grunt createXML', simDir, function() {
-                  scp( function() {
+                  exec( 'cp build/* /data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
                     notifyServer( function() {
                       exec( 'grunt checkout-master', simDir, function() {
                         exec( 'rm -rf ' + buildDir, '.', function() {
