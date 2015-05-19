@@ -53,5 +53,5 @@ module.exports = function( grunt, pkg ) {
 
   // Modify pkg
   pkg.preload = preload;
-  console.log( 'pkg.preload = ' + pkg.preload.toString() );
+  grunt.log.writeln( 'pkg.preload = ' + pkg.preload.toString() );
 };
