@@ -1,5 +1,21 @@
 {
   "common": {
+    "phetLibs": [
+      "assert",
+      "axon",
+      "babel",
+      "brand",
+      "chipper",
+      "dot",
+      "joist",
+      "kite",
+      "phet-core",
+      "phetcommon",
+      "scenery",
+      "scenery-phet",
+      "sherpa",
+      "sun"
+    ],
     "preload": [
       "../sherpa/lib/jquery-2.1.0.js",
       "../sherpa/lib/lodash-2.4.1.js",

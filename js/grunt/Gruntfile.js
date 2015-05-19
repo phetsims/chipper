@@ -55,6 +55,14 @@ module.exports = function( grunt ) {
   assert( pkg.version, 'version missing from package.json' );
   assert( pkg.license, 'license missing from package.json' );
 
+  // For sims, read common phetLibs from chipper/build.json. We'll do this here since several grunt tasks (including some utilities) need phetLibs.
+  if ( pkg.phetLibs ) {
+    assert( fs.existsSync( '../chipper/build.json' ), 'missing build.json' );
+    var buildInfo = grunt.file.readJSON( '../chipper/build.json' );
+    pkg.phetLibs = _.uniq( pkg.phetLibs.concat( buildInfo.common.phetLibs ).sort() );
+    grunt.log.writeln( 'phetLibs = ' + pkg.phetLibs );
+  }
+
   // TODO: As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
   // string. This approach has a lot of problems and should be replaced as soon as we work out a more all encompassing
   // way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3 for more info.
