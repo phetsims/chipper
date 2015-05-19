@@ -47,12 +47,12 @@ module.exports = function( grunt, pkg ) {
   var licenseInfo = grunt.file.readJSON( LICENSE_INFO_FILENAME );
 
   // Add common licenses, as specified in build.json
-  console.log( 'Adding common licenses...' );
+  grunt.log.writeln( 'Adding common licenses...' );
   assert( buildInfo.common && buildInfo.common.licenseKeys, BUILD_INFO_FILENAME + ' is missing common.licenseKeys' );
   var licenseKeys = buildInfo.common.licenseKeys;
 
   // Extract keys from pkg.preload, for any dependencies in sherpa
-  console.log( 'Adding preload licenses...' );
+  grunt.log.writeln( 'Adding preload licenses...' );
   pkg.preload.forEach( function( path ) {
     if ( path.indexOf( '/sherpa/' ) !== -1 ) {
       path = path.replace( /\.js$/, '' );  // trim .js file suffix
@@ -64,13 +64,13 @@ module.exports = function( grunt, pkg ) {
 
   // Add sim-specific licenses, as specified in the (optional) licenseKeys field of package.json.
   if ( pkg.licenseKeys ) {
-    console.log( 'Adding sim-specific licenses...' );
+    grunt.log.writeln( 'Adding sim-specific licenses...' );
     licenseKeys = licenseKeys.concat( pkg.licenseKeys );
   }
 
    // Add together (data collection) licenses, as specified in build.json
   if ( grunt.option( 'together' ) ) {
-    console.log( 'Adding together licenses...' );
+    grunt.log.writeln( 'Adding together licenses...' );
     assert( buildInfo.together && buildInfo.together.licenseKeys, BUILD_INFO_FILENAME + ' is missing together.licenseKeys' );
     licenseKeys.concat( buildInfo.together.licenseKeys );
   }

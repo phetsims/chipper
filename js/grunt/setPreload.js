@@ -32,19 +32,19 @@ module.exports = function( grunt, pkg ) {
   assert( fs.existsSync( LICENSE_INFO_FILENAME ), 'missing ' + LICENSE_INFO_FILENAME );
 
   // Add common preloads, as specified in build.json
-  console.log( 'Adding common preload files...' );
+  grunt.log.writeln( 'Adding common preload files...' );
   assert( buildInfo.common && buildInfo.common.preload, BUILD_INFO_FILENAME + ' is missing common.preload' );
   var preload = buildInfo.common.preload;
 
   // Add sim-specific preloads, as specified in the (optional) preload field of package.json.
   if ( pkg.preload ) {
-    console.log( 'Adding sim-specific preload files...' );
+    grunt.log.writeln( 'Adding sim-specific preload files...' );
     preload = preload.concat( pkg.preload );
   }
 
   // Add together (data collection) preloads, as specified in build.json
   if ( grunt.option( 'together' ) ) {
-    console.log( 'Adding together preload files...' );
+    grunt.log.writeln( 'Adding together preload files...' );
     assert( buildInfo.together && buildInfo.together.preload, BUILD_INFO_FILENAME + ' is missing together.preload' );
     preload = preload.concat( buildInfo.together.preload );
     assert( pkg.name, 'package.json is missing name' );
