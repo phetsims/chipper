@@ -18,6 +18,7 @@ var request = require( 'request' );
 var querystring = require( 'querystring' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
+var async = require( 'async' );
 //var client = require( 'scp2' ); //TODO #141 required by scp
 
 var start = true;
@@ -125,100 +126,101 @@ function exec( command, dir, callback ) {
   } );
 }
 
-function deploy( req, res ) {
-  if ( req.query[ REPOS_KEY ] && req.query[ LOCALES_KEY ] && req.query[ SIM_NAME ] && req.query[ VERSION ] ) {
-    var repos = JSON.parse( req.query[ REPOS_KEY ] );
-    var locales = JSON.parse( req.query[ LOCALES_KEY ] );
-    var simName = req.query[ SIM_NAME ];
-    var version = req.query[ VERSION ];
+var taskQueue = async.queue( function( task, taskCallback ) {
+  var req = task.req;
+  var res = task.res;
 
-    var server = 'simian';
-    if ( req.query[ SERVER_NAME ] ) {
-      server = req.query[ SERVER_NAME ];
-    }
+  var repos = JSON.parse( req.query[ REPOS_KEY ] );
+  var locales = JSON.parse( req.query[ LOCALES_KEY ] );
+  var simName = req.query[ SIM_NAME ];
+  var version = req.query[ VERSION ];
 
-    winston.log( 'info', 'building sim ' + simName );
+  var server = 'simian';
+  if ( req.query[ SERVER_NAME ] ) {
+    server = req.query[ SERVER_NAME ];
+  }
 
-    var buildDir = './js/build-server/tmp';
-    var simDir = '../' + simName;
+  winston.log( 'info', 'building sim ' + simName );
 
-    var npmInstall = function( callback ) {
-      fs.exists( simDir + '/node_modules', function( exists ) {
-        if ( !exists ) {
-          exec( 'npm install', simDir, callback );
+  var buildDir = './js/build-server/tmp';
+  var simDir = '../' + simName;
+
+  var npmInstall = function( callback ) {
+    fs.exists( simDir + '/node_modules', function( exists ) {
+      if ( !exists ) {
+        exec( 'npm install', simDir, callback );
+      }
+      else {
+        callback();
+      }
+    } );
+  };
+
+  // #141 TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
+  //var scp = function( callback ) {
+  //  winston.log( 'info', 'SCPing files to ' + server );
+  //
+  //  client.scp( simDir + '/build/', {
+  //    host: server + '.colorado.edu',
+  //    username: credentials.username,
+  //    password: credentials.password,
+  //    path: '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/'
+  //  }, function( err ) {
+  //    if ( err ) {
+  //      winston.log( 'error', 'SCP failed with error: ' + err );
+  //    }
+  //    else {
+  //      winston.log( 'info', 'SCP ran successfully' );
+  //      if ( callback ) {
+  //        callback();
+  //      }
+  //    }
+  //  } );
+  //};
+
+  var notifyServer = function( callback ) {
+    var host = ( server === 'simian' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
+    var project = 'html/' + simName;
+    var url = 'http://' + host + '/services/synchronize-project?projectName=' + project;
+    request( url, function( error, response, body ) {
+      if ( !error && response.statusCode === 200 ) {
+        var syncResponse = JSON.parse( body );
+
+        if ( !syncResponse.success ) {
+          winston.log( 'error', 'request to synchronize project ' + project + ' on ' + server + ' failed with message: ' + syncResponse.error );
         }
         else {
-          callback();
+          winston.log( 'info', 'request to synchronize project ' + project + ' on ' + server + ' succeeded' );
         }
-      } );
-    };
+      }
+      else {
+        winston.log( 'error', 'request to synchronize project failed' );
+      }
 
-    // #141 TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
-    //var scp = function( callback ) {
-    //  winston.log( 'info', 'SCPing files to ' + server );
-    //
-    //  client.scp( simDir + '/build/', {
-    //    host: server + '.colorado.edu',
-    //    username: credentials.username,
-    //    password: credentials.password,
-    //    path: '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/'
-    //  }, function( err ) {
-    //    if ( err ) {
-    //      winston.log( 'error', 'SCP failed with error: ' + err );
-    //    }
-    //    else {
-    //      winston.log( 'info', 'SCP ran successfully' );
-    //      if ( callback ) {
-    //        callback();
-    //      }
-    //    }
-    //  } );
-    //};
+      if ( callback ) {
+        callback();
+      }
+    } );
+  };
 
-    var notifyServer = function( callback ) {
-      var host = ( server === 'simian' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
-      var project = 'html/' + simName;
-      var url = 'http://' + host + '/services/synchronize-project?projectName=' + project;
-      request( url, function( error, response, body ) {
-        if ( !error && response.statusCode === 200 ) {
-          var syncResponse = JSON.parse( body );
+  var writeDependenciesFile = function() {
+    fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
+      if ( err ) {
+        return winston.log( 'error', err );
+      }
+      winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
 
-          if ( !syncResponse.success ) {
-            winston.log( 'error', 'request to synchronize project ' + project + ' on ' + server + ' failed with message: ' + syncResponse.error );
-          }
-          else {
-            winston.log( 'info', 'request to synchronize project ' + project + ' on ' + server + ' succeeded' );
-          }
-        }
-        else {
-          winston.log( 'error', 'request to synchronize project failed' );
-        }
-
-        if ( callback ) {
-          callback();
-        }
-      } );
-    };
-
-    var writeDependenciesFile = function() {
-      fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
-        if ( err ) {
-          return winston.log( 'error', err );
-        }
-        winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
-
-        // run every step of the build
-        npmInstall( function() {
-          exec( 'grunt checkout-shas --buildServer', simDir, function() {
-            exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
-              exec( 'grunt generate-thumbnails', simDir, function() {
-                exec( 'grunt createXML', simDir, function() {
-                  exec( 'cp build/* /data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
-                    notifyServer( function() {
-                      exec( 'grunt checkout-master', simDir, function() {
-                        exec( 'rm -rf ' + buildDir, '.', function() {
-                          winston.log( 'info', 'build finished' );
-                        } );
+      // run every step of the build
+      npmInstall( function() {
+        exec( 'grunt checkout-shas --buildServer', simDir, function() {
+          exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
+            exec( 'grunt generate-thumbnails', simDir, function() {
+              exec( 'grunt createXML', simDir, function() {
+                exec( 'cp build/* /data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
+                  notifyServer( function() {
+                    exec( 'grunt checkout-master', simDir, function() {
+                      exec( 'rm -rf ' + buildDir, '.', function() {
+                        taskCallback();
                       } );
                     } );
                   } );
@@ -227,24 +229,34 @@ function deploy( req, res ) {
             } );
           } );
         } );
-
       } );
-    };
 
-    fs.exists( buildDir, function( exists ) {
-      if ( !exists ) {
-        fs.mkdir( buildDir, function( err ) {
-          if ( !err ) {
-            writeDependenciesFile();
-          }
-        } );
-      }
-      else {
-        writeDependenciesFile();
-      }
     } );
+  };
 
-    res.send( 'build process initiated, check logs for details' );
+  fs.exists( buildDir, function( exists ) {
+    if ( !exists ) {
+      fs.mkdir( buildDir, function( err ) {
+        if ( !err ) {
+          writeDependenciesFile();
+        }
+      } );
+    }
+    else {
+      writeDependenciesFile();
+    }
+  } );
+
+  res.send( 'build process initiated, check logs for details' );
+
+}, 1 ); // 1 is the max number of tasks that can run concurrently
+
+function queueDeploy( req, res ) {
+  if ( req.query[ REPOS_KEY ] && req.query[ LOCALES_KEY ] && req.query[ SIM_NAME ] && req.query[ VERSION ] ) {
+    winston.log( 'info', 'queuing task' );
+    taskQueue.push( { req: req, res: res }, function() {
+      winston.log( 'info', 'build finished' );
+    } );
   }
   else {
     var errorString = 'missing one or more required query parameters repos, locales, simName, and version';
@@ -344,7 +356,7 @@ app.set( 'view engine', 'dot' );
 app.engine( 'html', doT.__express );
 
 // route that checks whether the user is logged in
-app.get( '/deploy-html-simulation', deploy );
+app.get( '/deploy-html-simulation', queueDeploy );
 
 // start the server
 if ( start ) {
