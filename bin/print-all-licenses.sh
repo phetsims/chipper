@@ -17,8 +17,8 @@ RED="\033[31m"
 RESET="\033[0m"
 
 # Use GitHub markdown for table output
-echo "Repo: 1st line of LICENSE"
-echo "--------------------------"
+echo "Repo  | 1st line of LICENSE"
+echo "------------- | -------------"
 
 for repo in `cat chipper/data/active-repos | xargs`
 do
@@ -27,12 +27,12 @@ do
 
     # If the license file exists, print its 1st line
     if [ -e "LICENSE" ]; then
-        echo "$repo: " `cat LICENSE | head -1`
+        echo "$repo | " `cat LICENSE | head -1`
     else
-        echo -e "${RED}$repo: missing license${RESET}"
+        echo -e "${RED}$repo | missing license${RESET}"
     fi
     cd .. &> /dev/null
   else
-    echo -e "${RED}$repo: missing repository{RESET}"
+    echo -e "${RED}$repo | missing repository{RESET}"
   fi
 done
