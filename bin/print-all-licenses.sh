@@ -12,24 +12,27 @@ CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 WORKING_DIR=${CHIPPER_BIN}/../..
 cd ${WORKING_DIR}
 
+# ANSI escape sequences
+RED="\033[31m"
+RESET="\033[0m"
+
 # Use GitHub markdown for table output
-echo "Repo  | 1st line of LICENSE"
-echo "------------- | -------------"
+echo "Repo: 1st line of LICENSE"
+echo "--------------------------"
 
 for repo in `cat chipper/data/active-repos | xargs`
 do
   if [ -d "$repo" ]; then
-    cd $repo                 
-    value=`cat LICENSE | head -1`
-    
+    cd $repo &> /dev/null
+
     # If the license file exists, print its 1st line
     if [ -e "LICENSE" ]; then
-        echo $repo " | " $value
+        echo "$repo: " `cat LICENSE | head -1`
     else
-        echo $repo " | undefined"
-             fi
-    cd ..   
+        echo -e "${RED}$repo: missing license${RESET}"
+    fi
+    cd .. &> /dev/null
   else
-    echo ">>>>>>>>>>>>>>>> MISSING " $repo
+    echo -e "${RED}$repo: missing repository{RESET}"
   fi
 done
