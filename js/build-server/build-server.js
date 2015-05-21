@@ -131,7 +131,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var res = task.res;
 
   var repos = JSON.parse( req.query[ REPOS_KEY ] );
-  var locales = JSON.parse( req.query[ LOCALES_KEY ] );
+  var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( req.query[ LOCALES_KEY ] ) : '*';
   var simName = req.query[ SIM_NAME ];
   var version = req.query[ VERSION ];
 
@@ -252,7 +252,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 }, 1 ); // 1 is the max number of tasks that can run concurrently
 
 function queueDeploy( req, res ) {
-  if ( req.query[ REPOS_KEY ] && req.query[ LOCALES_KEY ] && req.query[ SIM_NAME ] && req.query[ VERSION ] ) {
+  if ( req.query[ REPOS_KEY ] && req.query[ SIM_NAME ] && req.query[ VERSION ] ) {
     winston.log( 'info', 'queuing task' );
     taskQueue.push( { req: req, res: res }, function() {
       winston.log( 'info', 'build finished' );
@@ -328,15 +328,16 @@ function test() {
       "branch": "master"
     }
   };
-  var locales = [ 'fr', 'es' ];
+  //var locales = [ 'fr', 'es' ];
   var query = querystring.stringify( {
     'repos': JSON.stringify( repos ),
-    'locales': JSON.stringify( locales ),
+    //'locales': JSON.stringify( locales ),
     'simName': 'molecules-and-light',
     'version': '1.0.1',
     'serverName': 'simian'
   } );
-  var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
+  //var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
+  var url = 'phet-dev.colorado.edu/deploy-html-simulation?' + query;
   winston.log( 'info', 'test url: ' + url );
 
   //request( url, function( error, response, body ) {
