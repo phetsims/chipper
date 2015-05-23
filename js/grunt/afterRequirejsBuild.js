@@ -21,6 +21,9 @@ var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap'
 // Loading files as data URIs
 var loadFileAsDataURI = require( '../../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
 
+// Locale information
+var localeInfo = require( '../../../chipper/js/data/localeInfo' );
+
 /**
  * @param grunt the grunt instance
  * @param {Object} pkg package.json
@@ -98,6 +101,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       repoStringMap[repository.name] = {};
 
       localesWithFallback.forEach( function( locale ) {
+        var isRTL = localeInfo[ locale ].direction === 'rtl';
+
         var basePath;
         // pick a location that is in the repo, or babel
         if ( locale === fallbackLocale ) {
@@ -116,6 +121,14 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
           // we need to add the prefixes to the strings (from the string files)
           for ( var stringKeyMissingPrefix in fileContents ) {
+            var stringData = fileContents[ stringKeyMissingPrefix ];
+
+            // Pad RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
+            // Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
+            if ( isRTL ) {
+              stringData.value = '\u202b' + stringData.value + '\u202c';
+            }
+
             fileMap[ repository.prefix + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
           }
         }

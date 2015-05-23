@@ -21,6 +21,9 @@ define( function( require ) {
   // 3rd party dependencies, path relative to config.js
   var _ = require( '../../sherpa/lib/lodash-2.4.1.min' );
 
+  // for running in browsers
+  var localeInfo = require( '../../chipper/js/data/localeInfo' );
+
   // modules
   var text = require( 'text' );
 
@@ -115,6 +118,7 @@ define( function( require ) {
 
         // Read the locale from a query parameter, if it is there, or use english
         locale = phet.chipper.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
+        var isRTL = localeInfo[ locale ].direction === 'rtl';
 
         var fallbackSpecficPath = repositoryPath + '/' + getFilenameForLocale( FALLBACK_LOCALE );
         var localeSpecificPath = ( locale === FALLBACK_LOCALE ) ?
@@ -135,6 +139,13 @@ define( function( require ) {
 
               // Now get the primary strings.
               getWithCache( localeSpecificPath, function( parsed ) {
+                  // Pad RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
+                  // Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
+                  if ( isRTL ) {
+                    for ( var stringKey in parsed ) {
+                      parsed[ stringKey ].value = '\u202b' + parsed[ stringKey ].value + '\u202c';
+                    }
+                  }
 
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
