@@ -97,6 +97,11 @@ module.exports = function( grunt, pkg ) {
       licenseText += ( license.text[ i ] + '\n' );
     }
 
+    // project URL
+    if ( license.url ) {
+      licenseText += ( 'URL: ' + license.url + '\n' );
+    }
+
     // license
     licenseText += ( 'License: ' + license.license + '\n' );
 
