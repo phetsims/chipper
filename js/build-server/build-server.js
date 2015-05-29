@@ -119,6 +119,7 @@ function exec( command, dir, callback ) {
     }
     else if ( err ) {
       winston.log( 'error', 'error running command: ' + command + '. build aborted.' );
+      winston.log('error' , dir);
       exec( 'grunt checkout-master', dir, function() {
         winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
       } );
@@ -130,7 +131,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var req = task.req;
   var res = task.res;
 
-  var repos = JSON.parse( req.query[ REPOS_KEY ] );
+  var repos = querystring.parse( req.query[ REPOS_KEY ] );
   var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( req.query[ LOCALES_KEY ] ) : '*';
   var simName = req.query[ SIM_NAME ];
   var version = req.query[ VERSION ];
@@ -227,15 +228,18 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
               exec( 'grunt generate-thumbnails', simDir, function() {
                 exec( 'grunt createXML', simDir, function() {
-                  exec( 'cp build/* /data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
-                    notifyServer( function() {
-                      exec( 'grunt checkout-master', simDir, function() {
-                        exec( 'rm -rf ' + buildDir, '.', function() {
-                          taskCallback();
+                  var simPath = '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/';
+                  exec('IF exist ' + simPath +' ( echo ' + simPath +' exists ) ELSE ( mkdir '+ simPath +' && echo ' + simPath +' created)',simDir,function(){   
+                    exec( 'cp build/* ' + simPath, simDir, function() {
+                      notifyServer( function() {
+                        exec( 'grunt checkout-master', simDir, function() {
+                          exec( 'rm -rf ' + buildDir, '.', function() {
+                            taskCallback();
+                          } );
                         } );
                       } );
                     } );
-                  } );
+                   } ); 
                 } );
               } );
             } );
@@ -347,8 +351,8 @@ function test() {
     'version': '1.0.1',
     'serverName': 'simian'
   } );
-  //var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
-  var url = 'phet-dev.colorado.edu' + query;
+  var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
+  // var url = 'phet-dev.colorado.edu' + query;
   winston.log( 'info', 'test url: ' + url );
 
   //request( url, function( error, response, body ) {
