@@ -98,12 +98,16 @@ module.exports = function( grunt, pkg ) {
     }
 
     // project URL
-    if ( license.url ) {
-      licenseText += ( 'URL: ' + license.url + '\n' );
+    if ( license.projectURL ) {
+      licenseText += ( 'URL: ' + license.projectURL + '\n' );
     }
 
     // license
-    licenseText += ( 'License: ' + license.license + '\n' );
+    licenseText += ( 'License: ' + license.license );
+    if ( license.licenseURL) {
+      licenseText += ( ', ' + license.licenseURL );
+    }
+    licenseText += '\n';
 
     // selectedLicense is optional. When there are multiple licenses, PhET selects one.
     if ( license.selectedLicense ) {
