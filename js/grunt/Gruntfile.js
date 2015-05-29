@@ -26,6 +26,7 @@ var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBu
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
+var deploySimulation = require( '../../../chipper/js/grunt/deploySimulation' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
@@ -160,6 +161,15 @@ module.exports = function( grunt ) {
     'identical to "build", but does not run "lint-all"',
     [ 'clean', 'set-preload', 'set-license-text', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
 
+  grunt.registerTask( 'deploy-production',
+    'Deploy a simulation. Should be run AFTER grunt build\n' +
+    'with no options, deploys to phet-dev (since this is still being tested)\n' +
+    '--production : deploy to figaro (not yet implemented)\n',
+    function() {
+      deploySimulation( grunt, grunt.option( 'production' ) );
+    }
+  );
+
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'jshint:allFiles' ] );
@@ -200,11 +210,6 @@ module.exports = function( grunt ) {
       afterRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
     } );
 
-  grunt.registerTask( 'createXML', 'Write XML file with specific translations for sim',
-    function() {
-      createXML( grunt );
-    } );
-
   //---------------------------------------------------------------------------------------------------------------
   // Utility tasks
   //---------------------------------------------------------------------------------------------------------------
@@ -230,6 +235,11 @@ module.exports = function( grunt ) {
     '--clean=true : (optional) deletes the repository directory if it exists',
     function() {
       createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'title' ), grunt.option( 'clean' ) );
+    } );
+
+  grunt.registerTask( 'createXML', 'Write XML file with specific translations for sim',
+    function() {
+      createXML( grunt );
     } );
 
   grunt.registerTask( 'generate-published-README',

@@ -235,6 +235,11 @@
       localizedName: 'español (Colombia)',
       direction: 'ltr'
     },
+    es_CR: {
+      name: 'Spanish, Costa Rica',
+      localizedName: 'español (Costa Rica)',
+      direction: 'ltr'
+    },
     es_ES: {
       name: 'Spanish, Spain',
       localizedName: 'español (España)',
