@@ -29,7 +29,7 @@
       "almond-0.2.9",
       "font-awesome-4.3.0",
       "pegjs-0.7.0",
-      "text-2.0.12"
+      "requirejs-text-2.0.12"
     ]
   },
   "together": {
