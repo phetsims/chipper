@@ -134,6 +134,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( req.query[ LOCALES_KEY ] ) : '*';
   var simName = req.query[ SIM_NAME ];
   var version = req.query[ VERSION ];
+  console.log(repos);
 
   var server = 'simian';
   if ( req.query[ SERVER_NAME ] ) {
@@ -156,14 +157,14 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
- // var pullMaster = function(callback){
+ var pullMaster = function(callback){
 
-    //repos
-    // var finished = ._after( how many times to be called, callback);
-    // for
-    //   exec( 'git pull', '../' + repoName ),finished);
+    var finished = _.after( Object.keys(repos).length, callback);
+    for (var repoName in repos){
+      exec( 'git pull', '../' + repoName ,finished);
+    }
     
-//  }
+ };
 
   // #141 TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
   //var scp = function( callback ) {
@@ -221,7 +222,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
       // run every step of the build
       npmInstall( function() {
-    //    pullMaster(function(){
+        pullMaster(function(){
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
             exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
               exec( 'grunt generate-thumbnails', simDir, function() {
@@ -240,7 +241,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             } );
           } );
         });
-   //   });
+      });
     });
   };
 
@@ -347,7 +348,7 @@ function test() {
     'serverName': 'simian'
   } );
   //var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
-  var url = 'localhost:16371?' + query;
+  var url = 'phet-dev.colorado.edu' + query;
   winston.log( 'info', 'test url: ' + url );
 
   //request( url, function( error, response, body ) {
