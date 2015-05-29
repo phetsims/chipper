@@ -156,6 +156,15 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
+ // var pullMaster = function(callback){
+
+    //repos
+    // var finished = ._after( how many times to be called, callback);
+    // for
+    //   exec( 'git pull', '../' + repoName ),finished);
+    
+//  }
+
   // #141 TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
   //var scp = function( callback ) {
   //  winston.log( 'info', 'SCPing files to ' + server );
@@ -212,15 +221,17 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
       // run every step of the build
       npmInstall( function() {
-        exec( 'grunt checkout-shas --buildServer', simDir, function() {
-          exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
-            exec( 'grunt generate-thumbnails', simDir, function() {
-              exec( 'grunt createXML', simDir, function() {
-                exec( 'cp build/* /data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
-                  notifyServer( function() {
-                    exec( 'grunt checkout-master', simDir, function() {
-                      exec( 'rm -rf ' + buildDir, '.', function() {
-                        taskCallback();
+    //    pullMaster(function(){
+          exec( 'grunt checkout-shas --buildServer', simDir, function() {
+            exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
+              exec( 'grunt generate-thumbnails', simDir, function() {
+                exec( 'grunt createXML', simDir, function() {
+                  exec( 'cp build/* /data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
+                    notifyServer( function() {
+                      exec( 'grunt checkout-master', simDir, function() {
+                        exec( 'rm -rf ' + buildDir, '.', function() {
+                          taskCallback();
+                        } );
                       } );
                     } );
                   } );
@@ -228,10 +239,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
               } );
             } );
           } );
-        } );
-      } );
-
-    } );
+        });
+   //   });
+    });
   };
 
   fs.exists( buildDir, function( exists ) {
@@ -337,7 +347,7 @@ function test() {
     'serverName': 'simian'
   } );
   //var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
-  var url = 'phet-dev.colorado.edu/deploy-html-simulation?' + query;
+  var url = 'localhost:16371?' + query;
   winston.log( 'info', 'test url: ' + url );
 
   //request( url, function( error, response, body ) {
