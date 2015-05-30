@@ -159,12 +159,13 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   var pullMaster = function( callback ) {
-
+    if ( 'comment' in repos ) {
+      delete repos.comment;
+    }
     var finished = _.after( Object.keys( repos ).length, callback );
     for ( var repoName in repos ) {
       exec( 'git pull', '../' + repoName, finished );
     }
-
   };
 
   // #141 TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
