@@ -119,7 +119,7 @@ function exec( command, dir, callback ) {
     }
     else if ( err ) {
       winston.log( 'error', 'error running command: ' + command + '. build aborted.' );
-      winston.log('error' , dir);
+      winston.log( 'error', dir );
       exec( 'grunt checkout-master', dir, function() {
         winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
       } );
@@ -131,7 +131,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var req = task.req;
   var res = task.res;
 
-  var repos = querystring.parse( req.query[ REPOS_KEY ] );
+  var repos = JSON.parse( req.query[ REPOS_KEY ] );
   var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( req.query[ LOCALES_KEY ] ) : '*';
   var simName = req.query[ SIM_NAME ];
   var version = req.query[ VERSION ];
@@ -158,14 +158,14 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
- var pullMaster = function(callback){
+  var pullMaster = function( callback ) {
 
-    var finished = _.after( Object.keys(repos).length, callback);
-    for (var repoName in repos){
-      exec( 'git pull', '../' + repoName ,finished);
+    var finished = _.after( Object.keys( repos ).length, callback );
+    for ( var repoName in repos ) {
+      exec( 'git pull', '../' + repoName, finished );
     }
-    
- };
+
+  };
 
   // #141 TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
   //var scp = function( callback ) {
@@ -223,13 +223,13 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
       // run every step of the build
       npmInstall( function() {
-        pullMaster(function(){
+        pullMaster( function() {
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
             exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
               exec( 'grunt generate-thumbnails', simDir, function() {
                 exec( 'grunt createXML', simDir, function() {
                   var simPath = '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/';
-                  exec('IF exist ' + simPath +' ( echo ' + simPath +' exists ) ELSE ( mkdir '+ simPath +' && echo ' + simPath +' created)',simDir,function(){   
+                  exec( 'IF exist ' + simPath + ' ( echo ' + simPath + ' exists ) ELSE ( mkdir ' + simPath + ' && echo ' + simPath + ' created)', simDir, function() {
                     exec( 'cp build/* ' + simPath, simDir, function() {
                       notifyServer( function() {
                         exec( 'grunt checkout-master', simDir, function() {
@@ -239,14 +239,14 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                         } );
                       } );
                     } );
-                   } ); 
+                  } );
                 } );
               } );
             } );
           } );
-        });
-      });
-    });
+        } );
+      } );
+    } );
   };
 
   fs.exists( buildDir, function( exists ) {
