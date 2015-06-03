@@ -114,15 +114,21 @@ function exec( command, dir, callback ) {
       console.log( stderr );
     }
     if ( !err && callback ) {
-      winston.log( 'info', command + ' ran successfully' );
+      winston.log( 'info', command + ' ran successfully in directory: ' + dir );
       callback();
     }
     else if ( err ) {
-      winston.log( 'error', 'error running command: ' + command + '. build aborted.' );
-      winston.log( 'error', dir );
-      exec( 'grunt checkout-master', dir, function() {
-        winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
-      } );
+      if (command === 'grunt checkout-master'){
+        winston.log( 'error', 'error running grunt checkout-master, build aborted to avoid infinite loop.' );
+        winston.log( 'error', dir );
+      }
+      else {
+        winston.log( 'error', 'error running command: ' + command + '. build aborted.' );
+        winston.log( 'error', dir );
+        exec( 'grunt checkout-master', dir, function() {
+          winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
+        } );
+      }
     }
   } );
 }
@@ -131,11 +137,20 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var req = task.req;
   var res = task.res;
 
-  var repos = JSON.parse( req.query[ REPOS_KEY ] );
+  /*
+   for some configurations, Node doesn't automatically
+   decode the query string properly.
+   DecodeURIComponent is a more robust solution that json/querystring.parse
+   */
+  var reposString = decodeURIComponent( req.query[ REPOS_KEY ] );
+  var repos = JSON.parse( reposString );
+  //var repos = JSON.parse( req.query[ REPOS_KEY ] );
+//  var repos = querystring.parse( req.query[ REPOS_KEY ] );  // if unexpected token:%, make this querstring.parse instead of JSON
+
   var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( req.query[ LOCALES_KEY ] ) : '*';
   var simName = req.query[ SIM_NAME ];
   var version = req.query[ VERSION ];
-  console.log(repos);
+  //console.log(repos);
 
   var server = 'simian';
   if ( req.query[ SERVER_NAME ] ) {
@@ -159,14 +174,51 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   var pullMaster = function( callback ) {
-    if ( 'comment' in repos ) {
+
+    if ( 'comment' in  repos  ) {
       delete repos.comment;
+      winston.log('info' , 'comment was deleted');
+
     }
     var finished = _.after( Object.keys( repos ).length, callback );
-    for ( var repoName in repos ) {
-      exec( 'git pull', '../' + repoName, finished );
+
+    for (var repoName in repos){
+        if( repos.hasOwnProperty(repoName) ) {
+          fs.exists( '../' + repoName, function( exists ) {
+          if ( exists ) {
+            winston.log( 'info', 'pulling from ' + repoName );
+            exec( 'git pull', '../' + repoName, finished );
+          }
+          else {
+            winston.log( 'Alert', repoName + "  is not a repo." );
+            callback();
+          }
+
+          } );
+        }
     }
   };
+
+  var mkVersionDir = function( callback){
+    var simDirPath ='/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/';
+
+    fs.exists( simDirPath, function( exists ) {
+      if ( !exists ) {
+        fs.mkdir( simDirPath, function( err ) {
+          if ( !err ) {
+            callback();
+          }
+          else{
+            winston.log('error' , err);
+          }
+        } );
+      }
+      else {
+        callback();
+      }
+    } );
+  };
+
 
   // #141 TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
   //var scp = function( callback ) {
@@ -215,6 +267,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
+
   var writeDependenciesFile = function() {
     fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
       if ( err ) {
@@ -229,9 +282,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
               exec( 'grunt generate-thumbnails', simDir, function() {
                 exec( 'grunt createXML', simDir, function() {
-                  var simPath = '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/';
-                  exec( 'IF exist ' + simPath + ' ( echo ' + simPath + ' exists ) ELSE ( mkdir ' + simPath + ' && echo ' + simPath + ' created)', simDir, function() {
-                    exec( 'cp build/* ' + simPath, simDir, function() {
+                  mkVersionDir(function(){
+                    exec( 'cp build/* ' + '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
                       notifyServer( function() {
                         exec( 'grunt checkout-master', simDir, function() {
                           exec( 'rm -rf ' + buildDir, '.', function() {
@@ -283,10 +335,6 @@ function queueDeploy( req, res ) {
 
 function test() {
   var repos = {
-    "molecules-and-light": {
-      "sha": "ce00d086b33499d523c35142de86ce3a98986344",
-      "branch": "master"
-    },
     "assert": {
       "sha": "903564a25a0f26acdbd334d3e104039864b405ef",
       "branch": "master"
@@ -313,6 +361,10 @@ function test() {
     },
     "kite": {
       "sha": "affd230ecc0d01f4f217ed7060007e3c71de4937",
+      "branch": "master"
+    },
+    "molecules-and-light": {
+    "sha": "ce00d086b33499d523c35142de86ce3a98986344",
       "branch": "master"
     },
     "nitroglycerin": {
@@ -342,6 +394,9 @@ function test() {
     "sun": {
       "sha": "5ae6c12634dc188f5b9ba8bc3aca76dcf96448c8",
       "branch": "master"
+    },
+    "comment": {
+      "message":  "this is a comment"
     }
   };
   //var locales = [ 'fr', 'es' ];
@@ -356,14 +411,20 @@ function test() {
   // var url = 'phet-dev.colorado.edu' + query;
   winston.log( 'info', 'test url: ' + url );
 
-  //request( url, function( error, response, body ) {
-  //  if ( !error && response.statusCode === 200 ) {
-  //    winston.log( 'info', 'running test' );
-  //  }
-  //  else {
-  //    winston.log( 'error', 'test deploy failed' );
-  //  }
-  //} );
+
+
+  //
+  request( url, function( error, response, body ) {
+   if ( !error && response.statusCode === 200 ) {
+     winston.log( 'info', 'running test' );
+   }
+   else {
+     winston.log( 'error', 'test deploy failed' );
+   }
+  } );
+
+
+
 }
 
 // Create and configure the ExpressJS app
