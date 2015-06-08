@@ -203,7 +203,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     // Create the license header for this html and all the 3rd party dependencies
     var htmlHeader = pkg.name + '\n' +
-                     'Copyright 2002-2013, University of Colorado Boulder\n' +
+                     'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', University of Colorado Boulder\n' +
                      'PhET Interactive Simulations\n' +
                      'Licensed under ' + pkg.license + '\n' +
                      'http://phet.colorado.edu/en/about/licensing\n' +
