@@ -135,59 +135,60 @@ function exec( command, dir, callback ) {
   } );
 }
 
-function createXML( sim, version, callback ) {
-
-  console.log( "CWD: " + process.cwd() );
-
-  var rootdir = '../babel/' + sim;
-  var englishStringsFile = sim + '-strings_en.json';
-  var stringFiles = [ { name: englishStringsFile, locale: 'en' } ];
-
-  var files = fs.readdirSync( rootdir );
-  for ( var i = 0; i < files.length; i++ ) {
-    var filename = files[ i ];
-    var firstUnderscoreIndex = filename.indexOf( '_' );
-    var periodIndex = filename.indexOf( '.' );
-    var locale = filename.substring( firstUnderscoreIndex + 1, periodIndex );
-    stringFiles.push( { name: filename, locale: locale } );
-  }
-
-  try {
-    // grab the title from sim/package.json
-    var packageJSON = JSON.parse( fs.readFileSync( '../' + sim + '/package.json', { encoding: 'utf-8' } ) );
-    var simTitleKey = packageJSON.simTitleStringKey;
-
-    simTitleKey = simTitleKey.split( '/' )[ 1 ];
-
-    // create xml, making a simulation tag for each language
-    var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
-                   '<project name="' + sim + '">\n' +
-                   '<simulations>\n';
-
-    for ( var j = 0; j < stringFiles.length; j++ ) {
-      var stringFile = stringFiles[ j ];
-      var languageJSON = JSON.parse( fs.readFileSync(
-        ( stringFile.locale === 'en' ) ? '../' + sim + '/' + englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name,
-        { encoding: 'utf-8' } ) );
-
-      if ( languageJSON[ simTitleKey ] ) {
-        finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
-                                    '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
-                                    '</simulation>\n' );
-      }
-    }
-
-    finalXML = finalXML.concat( '</simulations>\n' + '</project>' );
-
-    fs.writeFileSync( HTML_SIMS_DIRECTORY + sim + '/' + version + '/' + sim + '.xml', finalXML, { mode: 436 } ); // 436 = 0664
-    winston.log( 'info', 'wrote XML file:\n' + finalXML );
-    callback();
-  }
-  catch( e ) {
-    winston.log( 'error', e );
-    callback( true );
-  }
-}
+// TODO: determine if this is better here or as a grunt task
+//function createXML( sim, version, callback ) {
+//
+//  console.log( "CWD: " + process.cwd() );
+//
+//  var rootdir = '../babel/' + sim;
+//  var englishStringsFile = sim + '-strings_en.json';
+//  var stringFiles = [ { name: englishStringsFile, locale: 'en' } ];
+//
+//  var files = fs.readdirSync( rootdir );
+//  for ( var i = 0; i < files.length; i++ ) {
+//    var filename = files[ i ];
+//    var firstUnderscoreIndex = filename.indexOf( '_' );
+//    var periodIndex = filename.indexOf( '.' );
+//    var locale = filename.substring( firstUnderscoreIndex + 1, periodIndex );
+//    stringFiles.push( { name: filename, locale: locale } );
+//  }
+//
+//  try {
+//    // grab the title from sim/package.json
+//    var packageJSON = JSON.parse( fs.readFileSync( '../' + sim + '/package.json', { encoding: 'utf-8' } ) );
+//    var simTitleKey = packageJSON.simTitleStringKey;
+//
+//    simTitleKey = simTitleKey.split( '/' )[ 1 ];
+//
+//    // create xml, making a simulation tag for each language
+//    var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
+//                   '<project name="' + sim + '">\n' +
+//                   '<simulations>\n';
+//
+//    for ( var j = 0; j < stringFiles.length; j++ ) {
+//      var stringFile = stringFiles[ j ];
+//      var languageJSON = JSON.parse( fs.readFileSync(
+//        ( stringFile.locale === 'en' ) ? '../' + sim + '/' + englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name,
+//        { encoding: 'utf-8' } ) );
+//
+//      if ( languageJSON[ simTitleKey ] ) {
+//        finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
+//                                    '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
+//                                    '</simulation>\n' );
+//      }
+//    }
+//
+//    finalXML = finalXML.concat( '</simulations>\n' + '</project>' );
+//
+//    fs.writeFileSync( HTML_SIMS_DIRECTORY + sim + '/' + version + '/' + sim + '.xml', finalXML, { mode: 436 } ); // 436 = 0664
+//    winston.log( 'info', 'wrote XML file:\n' + finalXML );
+//    callback();
+//  }
+//  catch( e ) {
+//    winston.log( 'error', e );
+//    callback( true );
+//  }
+//}
 
 var taskQueue = async.queue( function( task, taskCallback ) {
   var req = task.req;
@@ -331,12 +332,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
               exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
                 exec( 'grunt generate-thumbnails', simDir, function() {
-                  mkVersionDir( function() {
-                    exec( 'cp build/* ' + '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
-                      createXML( simName, version, function( err ) {
-                        if ( err ) {
-                          winston.log( 'error', 'didn\'t write XML file' );
-                        }
+                  exec( 'grunt createXML', simDir, function() {
+                    mkVersionDir( function() {
+                      exec( 'cp build/* ' + '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
                         notifyServer( function() {
                           exec( 'grunt checkout-master', simDir, function() {
                             exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
