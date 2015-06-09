@@ -207,7 +207,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
                      'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', University of Colorado Boulder\n' +
                      'PhET Interactive Simulations\n' +
                      'Licensed under ' + pkg.license + '\n' +
-                     'http://phet.colorado.edu/en/about/licensing';
+                     'http://phet.colorado.edu/en/html-terms-privacy-and-licensing';
 
     // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
     preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
