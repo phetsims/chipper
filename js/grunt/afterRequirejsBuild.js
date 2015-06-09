@@ -233,9 +233,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
     }
 
-    html = replaceFirst( html, 'PHET_SHAS', 'window.phet.chipper.dependencies = ' + dependencyJSON );
-
-    html = replaceFirst( html, 'THIRD_PARTY_LICENSES', 'window.phet.chipper.thirdPartyLicenses = ' + global.phet.licenseText );
+    html = replaceFirst( html, 'PHET_SHAS', dependencyJSON );
+    html = replaceFirst( html, 'THIRD_PARTY_LICENSES', global.phet.licenseText );
 
     var stringMap = loadStringMap();
 
@@ -243,11 +242,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     for ( var i = 0; i < locales.length; i++ ) {
       var locale = locales[ i ];
 
-      //TODO: window.phet and window.phet.chipper should be created elsewhere
-      var phetStringsCode = 'window.phet = window.phet || {};' +
-                            'window.phet.chipper = window.phet.chipper || {};' +
-                            'window.phet.chipper.strings=' + JSON.stringify( stringMap[ locale ], null, '' ) + ';';
-      var localeHTML = replaceFirst( html, 'PHET_STRINGS', phetStringsCode );
+      var localeHTML = replaceFirst( html, 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
 
       var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
       timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
@@ -255,10 +250,10 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       //TODO: if this is for changing layout, we'll need these globals in requirejs mode
       //TODO: why are we combining pkg.name with pkg.version?
       //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-      localeHTML = replaceFirst( localeHTML, 'PHET_INFO',
-        'window.phet.chipper.locale=\'' + locale + '\';' +
-        'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' +
-        'window.phet.chipper.buildTimestamp=\'' + timestamp + '\';' );
+      localeHTML = replaceFirst( localeHTML, 'PHET_PROJECT', pkg.name );
+      localeHTML = replaceFirst( localeHTML, 'PHET_VERSION', pkg.version );
+      localeHTML = replaceFirst( localeHTML, 'PHET_BUILD_TIMESTAMP', timestamp );
+      localeHTML = replaceFirst( localeHTML, 'PHET_LOCALE', locale );
 
       // TODO: As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the
       // version string. This approach has a lot of problems and should be replaced as soon as we work out a more all
