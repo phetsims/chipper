@@ -41,7 +41,7 @@ module.exports = function( grunt ) {
 
   // create xml, making a simulation tag for each language
   var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
-                 '<project name="molecules-and-light">\n' +
+                 '<project name="' + sim + '">\n' +
                  '<simulations>\n';
 
   for ( var j = 0; j < stringFiles.length; j++ ) {
