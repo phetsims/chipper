@@ -411,20 +411,15 @@ function test() {
   // var url = 'phet-dev.colorado.edu' + query;
   winston.log( 'info', 'test url: ' + url );
 
-
-
   //
-  request( url, function( error, response, body ) {
-   if ( !error && response.statusCode === 200 ) {
-     winston.log( 'info', 'running test' );
-   }
-   else {
-     winston.log( 'error', 'test deploy failed' );
-   }
-  } );
-
-
-
+  // request( url, function( error, response, body ) {
+  //  if ( !error && response.statusCode === 200 ) {
+  //    winston.log( 'info', 'running test' );
+  //  }
+  //  else {
+  //    winston.log( 'error', 'test deploy failed' );
+  //  }
+  // } );
 }
 
 // Create and configure the ExpressJS app
