@@ -98,6 +98,6 @@ module.exports = function( grunt, pkg ) {
 
   // share with other tasks via a global
   global.phet = global.phet || {};
-  global.phet.licenseText =  JSON.stringify( licenseObject, null, 2 );
+  global.phet.licenseText = JSON.stringify( licenseObject, null, 2 );
   //grunt.log.writeln( 'licenseText=<' + global.phet.licenseText + '>' ); // debugging output
 };
