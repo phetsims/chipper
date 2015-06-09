@@ -28,8 +28,7 @@
     "licenseKeys": [
       "almond-0.2.9",
       "font-awesome-4.3.0",
-      "pegjs-0.7.0",
-      "requirejs-text-2.0.12"
+      "pegjs-0.7.0"
     ]
   },
   "together": {

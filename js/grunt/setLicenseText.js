@@ -14,7 +14,8 @@
  *
  * {string[]} text - the text of the license info. A newline will be appended to each array element
  * {string} license - the license options for the library
- * {string} [selectedLicense] - indicates which license PhET has selected to use for a library available under multiple licenses
+ * {string} [projectURL] - the project's URL
+ * {string} [licenseURL] - the project's license URL
  * {string[]} [usage] - how the library is used by PhET. Values include "sim", "development", "docs".
  * {string} [notes] - optional notes
  *
@@ -109,10 +110,6 @@ module.exports = function( grunt, pkg ) {
     }
     licenseText += '\n';
 
-    // selectedLicense is optional. When there are multiple licenses, PhET selects one.
-    if ( license.selectedLicense ) {
-      licenseText += ( 'Selected license: ' + license.selectedLicense + '\n' );
-    }
     licenseText += ( SEPARATOR + '\n' );
   } );
   licenseText.trim();
