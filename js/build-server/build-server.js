@@ -138,19 +138,14 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var res = task.res;
 
   /*
-   for some configurations, Node doesn't automatically
-   decode the query string properly.
-   DecodeURIComponent is a more robust solution that json/querystring.parse
+   * For some configurations, Node doesn't automatically decode the query string properly.
+   * DecodeURIComponent is a more robust solution that json/querystring.parse
    */
-  var reposString = decodeURIComponent( req.query[ REPOS_KEY ] );
-  var repos = JSON.parse( reposString );
-  //var repos = JSON.parse( req.query[ REPOS_KEY ] );
-//  var repos = querystring.parse( req.query[ REPOS_KEY ] );  // if unexpected token:%, make this querstring.parse instead of JSON
+  var repos = JSON.parse( decodeURIComponent( req.query[ REPOS_KEY ] ) );
+  var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( decodeURIComponent( req.query[ LOCALES_KEY ] ) ) : '*';
 
-  var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( req.query[ LOCALES_KEY ] ) : '*';
   var simName = req.query[ SIM_NAME ];
   var version = req.query[ VERSION ];
-  //console.log(repos);
 
   var server = 'simian';
   if ( req.query[ SERVER_NAME ] ) {
@@ -396,10 +391,10 @@ function test() {
       "message": "this is a comment"
     }
   };
-  //var locales = [ 'fr', 'es' ];
+  var locales = [ 'de' ];
   var query = querystring.stringify( {
     'repos': JSON.stringify( repos ),
-    //'locales': JSON.stringify( locales ),
+    'locales': JSON.stringify( locales ),
     'simName': 'molecules-and-light',
     'version': '1.0.1',
     'serverName': 'simian'
