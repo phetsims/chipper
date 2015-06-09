@@ -84,8 +84,8 @@ module.exports = function( grunt, pkg ) {
   // Separator between each license
   var SEPARATOR = '=';
 
-  // Combine all licenses into 1 string
-  var licenseText = SEPARATOR + '\n';
+  // Combine all licenses into 1 object literal
+  var licenseObject = {};
   licenseKeys.forEach( function( key ) {
 
     var license = licenseInfo[ key ];
@@ -93,30 +93,11 @@ module.exports = function( grunt, pkg ) {
     assert( license.text, 'sherpa/info.json: no text field for key = ' + key );
     assert( license.license, 'sherpa/info.json: no license field for key = ' + key );
 
-    // text is an array of strings.  Each string goes on a new line.
-    for ( var i = 0; i < license.text.length; i++ ) {
-      licenseText += ( license.text[ i ] + '\n' );
-    }
-
-    // project URL
-    if ( license.projectURL ) {
-      licenseText += ( 'URL: ' + license.projectURL + '\n' );
-    }
-
-    // license
-    licenseText += ( 'License: ' + license.license );
-    if ( license.licenseURL) {
-      licenseText += ( ', ' + license.licenseURL );
-    }
-    licenseText += '\n';
-
-    licenseText += ( SEPARATOR + '\n' );
+    licenseObject[ key ] = license;
   } );
-  licenseText.trim();
-
-  //grunt.log.writeln( 'licenseText=<' + licenseText + '>' ); // debugging output
 
   // share with other tasks via a global
   global.phet = global.phet || {};
-  global.phet.licenseText = licenseText;
+  global.phet.licenseText =  JSON.stringify( licenseObject, null, 2 );
+  //grunt.log.writeln( 'licenseText=<' + global.phet.licenseText + '>' ); // debugging output
 };

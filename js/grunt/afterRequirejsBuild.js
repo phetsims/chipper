@@ -206,9 +206,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
                      'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', University of Colorado Boulder\n' +
                      'PhET Interactive Simulations\n' +
                      'Licensed under ' + pkg.license + '\n' +
-                     'http://phet.colorado.edu/en/about/licensing\n' +
-                     '\n' +
-                     'Libraries:\n' + global.phet.licenseText;
+                     'http://phet.colorado.edu/en/about/licensing';
 
     // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
     preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
@@ -217,6 +215,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     grunt.log.writeln( 'Constructing HTML from template' );
     var html = grunt.file.read( '../chipper/templates/sim.html' );
     html = stringReplace( html, 'HTML_HEADER', htmlHeader );
+    html = stringReplace( html, 'THIRD_PARTY_LICENSES', 'Third-party licenses:\n' + global.phet.licenseText );
     html = stringReplace( html, 'PHET_MIPMAPS', mipmapJavascript );
     html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
     html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
