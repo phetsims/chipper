@@ -58,7 +58,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     return str;
   }
 
-  function stringReplace( str, substring, replacement ) {
+  // Replaces the first occurrence of substring in str with replacement.
+  function replaceFirst( str, substring, replacement ) {
     var idx = str.indexOf( substring );
     if ( str.indexOf( substring ) !== -1 ) {
       return str.slice( 0, idx ) + replacement + str.slice( idx + substring.length );
@@ -214,11 +215,11 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     grunt.log.writeln( 'Constructing HTML from template' );
     var html = grunt.file.read( '../chipper/templates/sim.html' );
-    html = stringReplace( html, 'HTML_HEADER', htmlHeader );
-    html = stringReplace( html, 'PHET_MIPMAPS', mipmapJavascript );
-    html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
-    html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
-    html = stringReplace( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
+    html = replaceFirst( html, 'HTML_HEADER', htmlHeader );
+    html = replaceFirst( html, 'PHET_MIPMAPS', mipmapJavascript );
+    html = replaceFirst( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
+    html = replaceFirst( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
+    html = replaceFirst( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
 
     grunt.log.writeln( 'Writing HTML' );
 
@@ -232,9 +233,9 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
     }
 
-    html = stringReplace( html, 'PHET_SHAS', 'window.phet.chipper.dependencies = ' + dependencyJSON );
+    html = replaceFirst( html, 'PHET_SHAS', 'window.phet.chipper.dependencies = ' + dependencyJSON );
 
-    html = stringReplace( html, 'THIRD_PARTY_LICENSES', 'window.phet.chipper.thirdPartyLicenses = ' + global.phet.licenseText );
+    html = replaceFirst( html, 'THIRD_PARTY_LICENSES', 'window.phet.chipper.thirdPartyLicenses = ' + global.phet.licenseText );
 
     var stringMap = loadStringMap();
 
@@ -246,7 +247,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       var phetStringsCode = 'window.phet = window.phet || {};' +
                             'window.phet.chipper = window.phet.chipper || {};' +
                             'window.phet.chipper.strings=' + JSON.stringify( stringMap[ locale ], null, '' ) + ';';
-      var localeHTML = stringReplace( html, 'PHET_STRINGS', phetStringsCode );
+      var localeHTML = replaceFirst( html, 'PHET_STRINGS', phetStringsCode );
 
       var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
       timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
@@ -254,7 +255,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       //TODO: if this is for changing layout, we'll need these globals in requirejs mode
       //TODO: why are we combining pkg.name with pkg.version?
       //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-      localeHTML = stringReplace( localeHTML, 'PHET_INFO',
+      localeHTML = replaceFirst( localeHTML, 'PHET_INFO',
         'window.phet.chipper.locale=\'' + locale + '\';' +
         'window.phet.chipper.version=\'' + pkg.name + ' ' + pkg.version + '\';' +
         'window.phet.chipper.buildTimestamp=\'' + timestamp + '\';' );
@@ -265,19 +266,19 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       // for more info.
       if ( grunt.option( 'together' ) ){
         var unalteredVersion = pkg.version.replace( '-together', '-dev' );
-        localeHTML = stringReplace( localeHTML, unalteredVersion, pkg.version );
+        localeHTML = replaceFirst( localeHTML, unalteredVersion, pkg.version );
       }
 
       assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' ); // required for sims
-      localeHTML = stringReplace( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
+      localeHTML = replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
       grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
     }
 
     // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
     grunt.log.writeln( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-    iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + pkg.version + ' iframe test' );
-    iframeTestHtml = stringReplace( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
+    iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + pkg.version + ' iframe test' );
+    iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
 
     // Write the iframe test file.  English (en) is assumed as the locale.
     grunt.log.writeln( 'Writing HTML for iframe testing' );
