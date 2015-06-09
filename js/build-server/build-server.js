@@ -167,7 +167,7 @@ function createXML( sim, version, callback ) {
     for ( var j = 0; j < stringFiles.length; j++ ) {
       var stringFile = stringFiles[ j ];
       var languageJSON = JSON.parse( fs.readFileSync(
-        ( stringFile.locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name,
+        ( stringFile.locale === 'en' ) ? '../' + sim + '/' + englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name,
         { encoding: 'utf-8' } ) );
 
       if ( languageJSON[ simTitleKey ] ) {
