@@ -215,7 +215,6 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     grunt.log.writeln( 'Constructing HTML from template' );
     var html = grunt.file.read( '../chipper/templates/sim.html' );
     html = stringReplace( html, 'HTML_HEADER', htmlHeader );
-    html = stringReplace( html, 'THIRD_PARTY_LICENSES', 'Third-party licenses:\n' + global.phet.licenseText );
     html = stringReplace( html, 'PHET_MIPMAPS', mipmapJavascript );
     html = stringReplace( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
     html = stringReplace( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
@@ -234,6 +233,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     }
 
     html = stringReplace( html, 'PHET_SHAS', 'window.phet.chipper.dependencies = ' + dependencyJSON );
+
+    html = stringReplace( html, 'THIRD_PARTY_LICENSES', 'window.phet.chipper.thirdPartyLicenses = ' + global.phet.licenseText );
 
     var stringMap = loadStringMap();
 
