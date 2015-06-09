@@ -118,7 +118,7 @@ function exec( command, dir, callback ) {
       callback();
     }
     else if ( err ) {
-      if (command === 'grunt checkout-master'){
+      if ( command === 'grunt checkout-master' ) {
         winston.log( 'error', 'error running grunt checkout-master, build aborted to avoid infinite loop.' );
         winston.log( 'error', dir );
       }
@@ -175,32 +175,29 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   var pullMaster = function( callback ) {
 
-    if ( 'comment' in  repos  ) {
+    if ( 'comment' in  repos ) {
       delete repos.comment;
-      winston.log('info' , 'comment was deleted');
-
+      winston.log( 'info', 'comment was deleted' );
     }
+    
     var finished = _.after( Object.keys( repos ).length, callback );
 
-    for (var repoName in repos){
-        if( repos.hasOwnProperty(repoName) ) {
-          fs.exists( '../' + repoName, function( exists ) {
-          if ( exists ) {
-            winston.log( 'info', 'pulling from ' + repoName );
-            exec( 'git pull', '../' + repoName, finished );
-          }
-          else {
-            winston.log( 'Alert', repoName + "  is not a repo." );
-            callback();
-          }
-
-          } );
+    for ( var repoName in repos ) {
+      if ( repos.hasOwnProperty( repoName ) ) {
+        if ( fs.existsSync( '../' + repoName ) ) {
+          winston.log( 'info', 'pulling from ' + repoName );
+          exec( 'git pull', '../' + repoName, finished );
         }
+        else {
+          winston.log( 'error', repoName + ' is not a repo.' );
+          callback();
+        }
+      }
     }
   };
 
-  var mkVersionDir = function( callback){
-    var simDirPath ='/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/';
+  var mkVersionDir = function( callback ) {
+    var simDirPath = '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/';
 
     fs.exists( simDirPath, function( exists ) {
       if ( !exists ) {
@@ -208,8 +205,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
           if ( !err ) {
             callback();
           }
-          else{
-            winston.log('error' , err);
+          else {
+            winston.log( 'error', err );
           }
         } );
       }
@@ -282,7 +279,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
               exec( 'grunt generate-thumbnails', simDir, function() {
                 exec( 'grunt createXML', simDir, function() {
-                  mkVersionDir(function(){
+                  mkVersionDir( function() {
                     exec( 'cp build/* ' + '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
                       notifyServer( function() {
                         exec( 'grunt checkout-master', simDir, function() {
@@ -364,7 +361,7 @@ function test() {
       "branch": "master"
     },
     "molecules-and-light": {
-    "sha": "ce00d086b33499d523c35142de86ce3a98986344",
+      "sha": "ce00d086b33499d523c35142de86ce3a98986344",
       "branch": "master"
     },
     "nitroglycerin": {
@@ -396,7 +393,7 @@ function test() {
       "branch": "master"
     },
     "comment": {
-      "message":  "this is a comment"
+      "message": "this is a comment"
     }
   };
   //var locales = [ 'fr', 'es' ];
