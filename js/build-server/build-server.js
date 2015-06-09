@@ -322,7 +322,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                 exec( 'grunt generate-thumbnails', simDir, function() {
                   mkVersionDir( function() {
                     exec( 'cp build/* ' + '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
-                      createXML( simDir, version, function() {
+                      createXML( simName, version, function() {
                         notifyServer( function() {
                           exec( 'grunt checkout-master', simDir, function() {
                             exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
