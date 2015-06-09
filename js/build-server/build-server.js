@@ -166,7 +166,9 @@ function createXML( sim, version, callback ) {
 
     for ( var j = 0; j < stringFiles.length; j++ ) {
       var stringFile = stringFiles[ j ];
-      var languageJSON = require( ( stringFile.locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name );
+      var languageJSON = JSON.parse( fs.readFileSync(
+        ( stringFile.locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name,
+        { encoding: 'utf-8' } ) );
 
       if ( languageJSON[ simTitleKey ] ) {
         finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
