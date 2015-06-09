@@ -110,8 +110,8 @@ function exec( command, dir, callback ) {
   winston.log( 'info', 'running command: ' + command );
   child_process.exec( command, { cwd: dir }, function( err, stdout, stderr ) {
     if ( verbose ) {
-      console.log( stdout );
-      console.log( stderr );
+      winston.log( 'info', stdout );
+      winston.log( 'info', stderr );
     }
     if ( !err && callback ) {
       winston.log( 'info', command + ' ran successfully in directory: ' + dir );
@@ -128,6 +128,7 @@ function exec( command, dir, callback ) {
         exec( 'grunt checkout-master', dir, function() {
           winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
         } );
+        exec( 'git checkout master', dir );
       }
     }
   } );
@@ -174,7 +175,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       delete repos.comment;
       winston.log( 'info', 'comment was deleted' );
     }
-    
+
     var finished = _.after( Object.keys( repos ).length, callback );
 
     for ( var repoName in repos ) {
@@ -271,15 +272,19 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       npmInstall( function() {
         pullMaster( function() {
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
-            exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
-              exec( 'grunt generate-thumbnails', simDir, function() {
-                exec( 'grunt createXML', simDir, function() {
-                  mkVersionDir( function() {
-                    exec( 'cp build/* ' + '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
-                      notifyServer( function() {
-                        exec( 'grunt checkout-master', simDir, function() {
-                          exec( 'rm -rf ' + buildDir, '.', function() {
-                            taskCallback();
+            exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
+              exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
+                exec( 'grunt generate-thumbnails', simDir, function() {
+                  exec( 'grunt createXML', simDir, function() {
+                    mkVersionDir( function() {
+                      exec( 'cp build/* ' + '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/', simDir, function() {
+                        notifyServer( function() {
+                          exec( 'grunt checkout-master', simDir, function() {
+                            exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
+                              exec( 'rm -rf ' + buildDir, '.', function() {
+                                taskCallback();
+                              } );
+                            } );
                           } );
                         } );
                       } );
