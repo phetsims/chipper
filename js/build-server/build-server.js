@@ -232,7 +232,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       winston.log( 'info', 'comment was deleted' );
     }
 
-    var finished = _.after( Object.keys( repos ).length + 1, callback );
+    var finished = _.after( Object.keys( repos ).length + 2, callback );
 
     for ( var repoName in repos ) {
       if ( repos.hasOwnProperty( repoName ) ) {
@@ -247,6 +247,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       }
     }
     exec( 'git pull', '../babel', finished );
+    exec( 'git pull', '../' + simName, finished );
   };
 
   var mkVersionDir = function( callback ) {
