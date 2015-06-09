@@ -28,6 +28,7 @@ module.exports = function( grunt, isProduction ) {
 
   var query = querystring.stringify( {
     'repos': JSON.stringify( dependencies ),
+    'locales': JSON.stringify( [ 'en' ] ),
     'simName': sim,
     'version': version,
     'serverName': 'simian'
