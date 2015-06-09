@@ -22,11 +22,10 @@ module.exports = function( grunt ) {
 
   grunt.file.defaultEncoding = 'utf8';
 
-  var rootdir = '../babel/' + sim;
   var englishStringsFile = sim + '-strings_en.json';
   var stringFiles = [ { name: englishStringsFile, locale: 'en' } ];
 
-  grunt.file.recurse( rootdir, function( abspath, rootdir, subdir, filename ) {
+  grunt.file.recurse( 'build', function( abspath, rootdir, subdir, filename ) {
     var firstUnderscoreIndex = filename.indexOf( '_' );
     var periodIndex = filename.indexOf( '.' );
     var locale = filename.substring( firstUnderscoreIndex + 1, periodIndex );
@@ -46,12 +45,17 @@ module.exports = function( grunt ) {
 
   for ( var j = 0; j < stringFiles.length; j++ ) {
     var stringFile = stringFiles[ j ];
-    var languageJSON = grunt.file.readJSON( ( stringFile.locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name );
+    try {
+      var languageJSON = grunt.file.readJSON( ( stringFile.locale === 'en' ) ? englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name );
 
-    if ( languageJSON[ simTitleKey ] ) {
-      finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
-                                  '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
-                                  '</simulation>\n' );
+      if ( languageJSON[ simTitleKey ] ) {
+        finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
+                                    '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
+                                    '</simulation>\n' );
+      }
+    }
+    catch( e ) {
+      console.log( e );
     }
   }
 
