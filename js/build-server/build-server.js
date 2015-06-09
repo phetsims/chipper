@@ -154,7 +154,7 @@ function createXML( sim, version, callback ) {
 
   try {
     // grab the title from sim/package.json
-    var packageJSON = require( '../' + sim + '/package.json' );
+    var packageJSON = JSON.parse( fs.readFileSync( '../' + sim + '/package.json', { encoding: 'utf-8' } ) );
     var simTitleKey = packageJSON.simTitleStringKey;
 
     simTitleKey = simTitleKey.split( '/' )[ 1 ];
