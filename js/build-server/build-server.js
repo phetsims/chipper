@@ -175,13 +175,13 @@ function createXML( sim, version, callback ) {
       if ( fs.existsSync( simHTML ) ) {
         if ( languageJSON[ simTitleKey ] ) {
           finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
-                                      '<title><![CDATA[' + languageJSON[ simTitleKey ] + ']]></title>\n' +
+                                      '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
                                       '</simulation>\n' );
         }
         else {
           winston.log( 'warn', 'Sim name not found in translation for ' + simHTML + '. Defaulting to English name.' );
           finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
-                                      '<title><![CDATA[' + englishStrings[ simTitleKey ] + ']]></title>\n' +
+                                      '<title><![CDATA[' + englishStrings[ simTitleKey ].value + ']]></title>\n' +
                                       '</simulation>\n' );
         }
       }
