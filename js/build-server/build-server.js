@@ -154,9 +154,9 @@ function createXML( sim, version, callback ) {
     // grab the title from sim/package.json
     var packageJSON = JSON.parse( fs.readFileSync( '../' + sim + '/package.json', { encoding: 'utf-8' } ) );
     var simTitleKey = packageJSON.simTitleStringKey;
-
     simTitleKey = simTitleKey.split( '/' )[ 1 ];
-    console.log( simTitleKey );
+
+    var englishTitle = JSON.parse( fs.readFileSync( '../' + sim + '/' + englishStringsFile, { encoding: 'utf-8' } ) )[ simTitleKey ].value;
 
     // create xml, making a simulation tag for each language
     var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
@@ -172,14 +172,19 @@ function createXML( sim, version, callback ) {
       console.log( languageJSON );
 
       var simHTML = HTML_SIMS_DIRECTORY + sim + '/' + version + '/' + sim + '_' + stringFile.locale + '.html';
-      console.log( simHTML );
-      console.log( fs.existsSync( simHTML ) );
-      console.log( languageJSON[ simTitleKey ] );
 
-      if ( languageJSON[ simTitleKey ] && fs.existsSync( simHTML ) ) {
-        finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
-                                    '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
-                                    '</simulation>\n' );
+      if ( fs.existsSync( simHTML ) ) {
+        if ( languageJSON[ simTitleKey ] ) {
+          finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
+                                      '<title><![CDATA[' + languageJSON[ simTitleKey ] + ']]></title>\n' +
+                                      '</simulation>\n' );
+        }
+        else {
+          winston.log( 'warn', 'Sim name not found in translation for ' + simHTML + '. Defaulting to English name.');
+          finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
+                                      '<title><![CDATA[' + englishTitle + ']]></title>\n' +
+                                      '</simulation>\n' );
+        }
       }
     }
 
