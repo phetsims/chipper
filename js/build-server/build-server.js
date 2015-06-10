@@ -156,6 +156,7 @@ function createXML( sim, version, callback ) {
     var simTitleKey = packageJSON.simTitleStringKey;
 
     simTitleKey = simTitleKey.split( '/' )[ 1 ];
+    console.log( simTitleKey );
 
     // create xml, making a simulation tag for each language
     var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
@@ -168,9 +169,12 @@ function createXML( sim, version, callback ) {
         ( stringFile.locale === 'en' ) ? '../' + sim + '/' + englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name,
         { encoding: 'utf-8' } ) );
 
+      console.log( languageJSON );
+
       var simHTML = HTML_SIMS_DIRECTORY + sim + '/' + version + '/' + sim + '_' + stringFile.locale + '.html';
       console.log( simHTML );
       console.log( fs.existsSync( simHTML ) );
+      console.log( languageJSON[ simTitleKey ] );
 
       if ( languageJSON[ simTitleKey ] && fs.existsSync( simHTML ) ) {
         finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
