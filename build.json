@@ -19,7 +19,6 @@
     "preload": [
       "../sherpa/lib/jquery-2.1.0.js",
       "../sherpa/lib/lodash-2.4.1.js",
-      "../sherpa/lib/has-70898c7.js",
       "../sherpa/lib/FileSaver-b8054a2.js",
       "../assert/js/assert.js",
       "../chipper/js/initialize-globals.js",
