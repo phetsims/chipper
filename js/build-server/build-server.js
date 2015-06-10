@@ -156,7 +156,7 @@ function createXML( sim, version, callback ) {
     var simTitleKey = packageJSON.simTitleStringKey;
     simTitleKey = simTitleKey.split( '/' )[ 1 ];
 
-    var englishTitle = JSON.parse( fs.readFileSync( '../' + sim + '/' + englishStringsFile, { encoding: 'utf-8' } ) )[ simTitleKey ].value;
+    var englishStrings = JSON.parse( fs.readFileSync( '../' + sim + '/' + englishStringsFile, { encoding: 'utf-8' } ) );
 
     // create xml, making a simulation tag for each language
     var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
@@ -165,9 +165,8 @@ function createXML( sim, version, callback ) {
 
     for ( var j = 0; j < stringFiles.length; j++ ) {
       var stringFile = stringFiles[ j ];
-      var languageJSON = JSON.parse( fs.readFileSync(
-        ( stringFile.locale === 'en' ) ? '../' + sim + '/' + englishStringsFile : '../babel' + '/' + sim + '/' + stringFile.name,
-        { encoding: 'utf-8' } ) );
+      var languageJSON = ( stringFile.locale === 'en' ) ? englishStrings :
+                         JSON.parse( fs.readFileSync( '../babel' + '/' + sim + '/' + stringFile.name, { encoding: 'utf-8' } ) );
 
       console.log( languageJSON );
 
@@ -180,9 +179,9 @@ function createXML( sim, version, callback ) {
                                       '</simulation>\n' );
         }
         else {
-          winston.log( 'warn', 'Sim name not found in translation for ' + simHTML + '. Defaulting to English name.');
+          winston.log( 'warn', 'Sim name not found in translation for ' + simHTML + '. Defaulting to English name.' );
           finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
-                                      '<title><![CDATA[' + englishTitle + ']]></title>\n' +
+                                      '<title><![CDATA[' + englishStrings[ simTitleKey ] + ']]></title>\n' +
                                       '</simulation>\n' );
         }
       }
