@@ -204,6 +204,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   var simName = req.query[ SIM_NAME ];
   var version = req.query[ VERSION ];
+  version = version.match( /\d\.\d\.\d/ ); // strip suffixes from version since just the numbers are used in the directory name
+  winston.log( 'info', 'detecting version number: ' version );
 
   var server = 'simian';
   if ( req.query[ SERVER_NAME ] ) {
