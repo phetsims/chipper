@@ -81,9 +81,6 @@ module.exports = function( grunt, pkg ) {
 
   grunt.log.writeln( 'licenseKeys = ' + licenseKeys.toString() );
 
-  // Separator between each license
-  var SEPARATOR = '=';
-
   // Combine all licenses into 1 object literal
   var licenseObject = {};
   licenseKeys.forEach( function( key ) {
