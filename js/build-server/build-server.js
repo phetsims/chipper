@@ -168,8 +168,6 @@ function createXML( sim, version, callback ) {
       var languageJSON = ( stringFile.locale === 'en' ) ? englishStrings :
                          JSON.parse( fs.readFileSync( '../babel' + '/' + sim + '/' + stringFile.name, { encoding: 'utf-8' } ) );
 
-      console.log( languageJSON );
-
       var simHTML = HTML_SIMS_DIRECTORY + sim + '/' + version + '/' + sim + '_' + stringFile.locale + '.html';
 
       if ( fs.existsSync( simHTML ) ) {
