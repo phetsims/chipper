@@ -42,7 +42,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
-  assert( global.phet.licenseText, 'missing global.phet.licenseText' );
+  assert( global.phet.thirdPartyLicenses, 'missing global.phet.thirdPartyLicenses' );
   assert( global.phet.strings, 'missing global.phet.strings' );
   assert( global.phet.localesToBuild, 'missing global.phet.localesToBuild' );
   assert( global.phet.mipmapsToBuild, 'missing global.phet.mipmapsToBuild' );
@@ -234,7 +234,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     }
 
     html = replaceFirst( html, 'PHET_SHAS', dependencyJSON );
-    html = replaceFirst( html, 'THIRD_PARTY_LICENSES', global.phet.licenseText );
+    html = replaceFirst( html, 'THIRD_PARTY_LICENSES', JSON.stringify( global.phet.thirdPartyLicenses, null, 2 ) );
 
     var stringMap = loadStringMap();
 

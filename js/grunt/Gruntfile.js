@@ -30,8 +30,8 @@ var deploySimulation = require( '../../../chipper/js/grunt/deploySimulation' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
-var setLicenseText = require( '../../../chipper/js/grunt/setLicenseText' );
 var setPreload = require( '../../../chipper/js/grunt/setPreload' );
+var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var createXML = require( '../../../chipper/js/grunt/createXML' );
 
@@ -159,7 +159,7 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'build-no-lint',
     'identical to "build", but does not run "lint-all"',
-    [ 'clean', 'set-preload', 'set-license-text', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
+    [ 'clean', 'set-preload', 'set-third-party-licenses', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
 
   grunt.registerTask( 'deploy-production',
     'Deploy a simulation. Should be run AFTER grunt build\n' +
@@ -190,10 +190,10 @@ module.exports = function( grunt ) {
       setPreload( grunt, pkg );
     } );
 
-  grunt.registerTask( 'set-license-text',
-    'Sets global.phet.licenseText, the license text that will be written to the HTML file',
+  grunt.registerTask( 'set-third-party-licenses',
+    'Sets global.phet.thirdPartyLicenses, an object literal that will be written to the HTML file',
     function() {
-      setLicenseText( grunt, pkg );
+      setThirdPartyLicenses( grunt, pkg );
     } );
 
   grunt.registerTask( 'before-requirejs-build',

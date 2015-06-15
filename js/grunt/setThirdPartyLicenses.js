@@ -1,10 +1,9 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * This grunt task generates the license text that goes in the header of a sim's HTML file.
- * It shares the license text with other grunt tasks via global.phet.licenseText.
- *
- * License info is read from sherpa/info.json.
+ * This grunt task creates an object literal that describes the third-party libraries that are included in the html deliverable.
+ * It shares the object literal with other grunt tasks via global.phet.thirdPartyLicenses.
+ * License info is read from sherpa/info.json, and the format of the object literal is similar to that syntax.
  *
  * By convention, the key for each license entry is the name of the JavaScript source file,
  * with the .js suffix stripped off.  For example, for almond-0.2.9.js, the key is 'almond-0.2.9'.
@@ -95,6 +94,5 @@ module.exports = function( grunt, pkg ) {
 
   // share with other tasks via a global
   global.phet = global.phet || {};
-  global.phet.licenseText = JSON.stringify( licenseObject, null, 2 );
-  //grunt.log.writeln( 'licenseText=<' + global.phet.licenseText + '>' ); // debugging output
+  global.phet.thirdPartyLicenses = licenseObject;
 };
