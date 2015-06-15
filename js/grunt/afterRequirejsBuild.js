@@ -216,7 +216,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     grunt.log.writeln( 'Constructing HTML from template' );
     var html = grunt.file.read( '../chipper/templates/sim.html' );
     html = replaceFirst( html, 'HTML_HEADER', htmlHeader );
-    html = replaceFirst( html, 'PHET_MIPMAPS', mipmapJavascript );
+    html = replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapJavascript );
     html = replaceFirst( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
     html = replaceFirst( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
     html = replaceFirst( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
@@ -359,14 +359,14 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
             if ( mipmapsLoaded === global.phet.mipmapsToBuild.length ) {
 
               // we've now finished loading all of the mipmaps, and can proceed with the build
-              var mipmapJavascript = 'window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';';
-              postMipmapLoad( dependencyJSON, mipmapJavascript );
+              var mipmapsJavaScript = '<script type="text/javascript">window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';</script>';
+              postMipmapLoad( dependencyJSON, mipmapsJavaScript );
             }
           } );
         } );
       }
       else {
-        postMipmapLoad( dependencyJSON, '' ); // no mipmaps loaded
+        postMipmapLoad( dependencyJSON, '<!-- no mipmaps -->' ); // no mipmaps loaded
       }
     }
   }
