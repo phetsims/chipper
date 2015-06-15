@@ -14,7 +14,7 @@ var assert = require( 'assert' );
 var fs = require( 'fs' );
 
 var BUILD_INFO_FILENAME = '../chipper/build.json'; // contains build info, which identifies preloads needed by all sims
-var LICENSE_INFO_FILENAME = '../sherpa/info.json'; // contains the license info
+var LICENSE_INFO_FILENAME = '../sherpa/third-party-licenses.json'; // contains third-party license info
 
 /*
  * @param grunt the grunt instance

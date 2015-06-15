@@ -3,7 +3,7 @@
 /**
  * This grunt task creates an object literal that describes the third-party libraries that are included in the html deliverable.
  * It shares the object literal with other grunt tasks via global.phet.thirdPartyLicenses.
- * License info is read from sherpa/info.json, and the format of the object literal is similar to that syntax.
+ * License info is read from sherpa/third-party-licenses.json, and the format of the object literal is similar to that syntax.
  *
  * By convention, the key for each license entry is the name of the JavaScript source file,
  * with the .js suffix stripped off.  For example, for almond-0.2.9.js, the key is 'almond-0.2.9'.
@@ -29,7 +29,7 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 /* jshint +W079 */
 
 var BUILD_INFO_FILENAME = '../chipper/build.json'; // contains build info, which identifies licenses applicable to all sims
-var LICENSE_INFO_FILENAME = '../sherpa/info.json'; // contains the license info
+var LICENSE_INFO_FILENAME = '../sherpa/third-party-licenses.json'; // contains third-party license info
 
 /**
  * @param grunt the grunt instance
@@ -85,9 +85,9 @@ module.exports = function( grunt, pkg ) {
   licenseKeys.forEach( function( key ) {
 
     var license = licenseInfo[ key ];
-    assert( license, 'sherpa/info.json: no entry for key = ' + key );
-    assert( license.text, 'sherpa/info.json: no text field for key = ' + key );
-    assert( license.license, 'sherpa/info.json: no license field for key = ' + key );
+    assert( license, 'sherpa/third-party-licenses.json: no entry for key = ' + key );
+    assert( license.text, 'sherpa/third-party-licenses.json: no text field for key = ' + key );
+    assert( license.license, 'sherpa/third-party-licenses.json: no license field for key = ' + key );
 
     licenseObject[ key ] = license;
   } );
