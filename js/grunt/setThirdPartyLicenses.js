@@ -15,7 +15,6 @@
  * {string} license - the license options for the library
  * {string} [projectURL] - the project's URL
  * {string} [licenseURL] - the project's license URL
- * {string[]} [usage] - how the library is used by PhET. Values include "sim", "development", "docs".
  * {string} [notes] - optional notes
  *
  * @author Chris Malley (PixelZoom, Inc.)
