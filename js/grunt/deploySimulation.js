@@ -12,9 +12,9 @@ var request = require( 'request' );
 
 /**
  * @param grunt the grunt instance
- * @param isProduction true if deploying to figaro
+ * @param serverName defaults to simian currently
  */
-module.exports = function( grunt, isProduction ) {
+module.exports = function( grunt, serverName ) {
   'use strict';
 
   /* jslint node: true */
@@ -31,10 +31,13 @@ module.exports = function( grunt, isProduction ) {
     'locales': JSON.stringify( [ 'en' ] ),
     'simName': sim,
     'version': version,
-    'serverName': 'simian'
+    'serverName': serverName
   } );
 
-  var url = 'http://phet-dev.colorado.edu/deploy-html-simulation?' + query;
+  var buildServerUrl = 'localhost:16371';
+  var url = buildServerUrl + '/deploy-html-simulation?' + query;
+
+  grunt.log.writeln( url );
 
   var done = grunt.task.current.async();
 

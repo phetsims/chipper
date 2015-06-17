@@ -19,19 +19,18 @@ var querystring = require( 'querystring' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
 var async = require( 'async' );
-//var client = require( 'scp2' ); //TODO #141 required by scp
+var client = require( 'scp2' );
 
 var start = true;
 
-//TODO #141 needed by scp
-//try {
-//  var credentials = require( './credentials.json' ); // put this file in js/build-sever/ with your CU login info
-//}
-//catch( e ) {
-//  console.log( 'ERROR: SCP credentials not found. ' +
-//               'Please create a file "credentials.json" in js/build-server with fields for "username" and "password"' );
-//  start = false;
-//}
+try {
+  var credentials = require( './credentials.json' ); // put this file in js/build-sever/ with your spot login info
+}
+catch( e ) {
+  console.log( 'ERROR: SCP credentials not found. ' +
+               'Please create a file "credentials.json" in js/build-server with fields for "username" and "password"' );
+  start = false;
+}
 
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
@@ -44,7 +43,9 @@ var LOCALES_KEY = 'locales';
 var SIM_NAME = 'simName';
 var VERSION = 'version';
 var SERVER_NAME = 'serverName';
+var DEV_KEY = 'dev';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
+var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
 
 
 // Handle command line input
@@ -98,6 +99,9 @@ if ( parsedCommandLineOptions.hasOwnProperty( 'help' ) || parsedCommandLineOptio
 
 // Merge the default and supplied options.
 var options = _.extend( defaultOptions, parsedCommandLineOptions );
+
+winston.remove( winston.transports.Console );
+winston.add( winston.transports.Console, { 'timestamp': true } );
 
 if ( options.logFile ) {
   winston.add( winston.transports.File, { filename: options.logFile } );
@@ -208,12 +212,17 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var repos = JSON.parse( decodeURIComponent( req.query[ REPOS_KEY ] ) );
   var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( decodeURIComponent( req.query[ LOCALES_KEY ] ) ) : '*';
 
+  var isDev = ( req.query[ DEV_KEY ] ) ? true : false;
   var simName = req.query[ SIM_NAME ];
   var version = req.query[ VERSION ];
-  version = version.match( /\d\.\d\.\d/ ); // strip suffixes from version since just the numbers are used in the directory name
+
+  if ( !isDev ) {
+    // strip suffixes from version since just the numbers are used in the directory name on simian and figaro
+    version = version.match( /\d\.\d\.\d/ );
+  }
   winston.log( 'info', 'detecting version number: ' + version );
 
-  var server = 'simian';
+  var server = 'simian'; // while testing, default to simian
   if ( req.query[ SERVER_NAME ] ) {
     server = req.query[ SERVER_NAME ];
   }
@@ -235,7 +244,6 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   var pullMaster = function( callback ) {
-
     if ( 'comment' in  repos ) {
       delete repos.comment;
       winston.log( 'info', 'comment was deleted' );
@@ -278,28 +286,26 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
+  var scp = function( callback ) {
+    winston.log( 'info', 'SCPing files to ' + server );
 
-  // #141 TODO: will we ever need to SCP files, or just cp since we will be on the same machine that the files are deploying to
-  //var scp = function( callback ) {
-  //  winston.log( 'info', 'SCPing files to ' + server );
-  //
-  //  client.scp( simDir + '/build/', {
-  //    host: server + '.colorado.edu',
-  //    username: credentials.username,
-  //    password: credentials.password,
-  //    path: '/data/web/htdocs/phetsims/sims/html/' + simName + '/' + version + '/'
-  //  }, function( err ) {
-  //    if ( err ) {
-  //      winston.log( 'error', 'SCP failed with error: ' + err );
-  //    }
-  //    else {
-  //      winston.log( 'info', 'SCP ran successfully' );
-  //      if ( callback ) {
-  //        callback();
-  //      }
-  //    }
-  //  } );
-  //};
+    client.scp( simDir + '/build/', {
+      host: server + '.colorado.edu',
+      username: credentials.username,
+      password: credentials.password,
+      path: DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/'
+    }, function( err ) {
+      if ( err ) {
+        winston.log( 'error', 'SCP failed with error: ' + err );
+      }
+      else {
+        winston.log( 'info', 'SCP ran successfully' );
+        if ( callback ) {
+          callback();
+        }
+      }
+    } );
+  };
 
   var notifyServer = function( callback ) {
     var host = ( server === 'simian' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
@@ -326,6 +332,15 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
+  var afterDeploy = function() {
+    exec( 'grunt checkout-master', simDir, function() {
+      exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
+        exec( 'rm -rf ' + buildDir, '.', function() {
+          taskCallback();
+        } );
+      } );
+    } );
+  };
 
   var writeDependenciesFile = function() {
     fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
@@ -340,23 +355,22 @@ var taskQueue = async.queue( function( task, taskCallback ) {
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
             exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
               exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
-                exec( 'grunt generate-thumbnails', simDir, function() {
-                  mkVersionDir( function() {
-                    exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
-                      createXML( simName, version, function() {
-                        notifyServer( function() {
-                          exec( 'grunt checkout-master', simDir, function() {
-                            exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
-                              exec( 'rm -rf ' + buildDir, '.', function() {
-                                taskCallback();
-                              } );
-                            } );
-                          } );
+
+                if ( isDev ) {
+                  scp( afterDeploy );
+                }
+                else {
+                  exec( 'grunt generate-thumbnails', simDir, function() {
+                    mkVersionDir( function() {
+                      exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
+                        createXML( simName, version, function() {
+                          notifyServer( afterDeploy );
                         } );
                       } );
                     } );
                   } );
-                } );
+                }
+
               } );
             } );
           } );

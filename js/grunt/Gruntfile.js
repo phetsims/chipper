@@ -163,10 +163,18 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'deploy-production',
     'Deploy a simulation. Should be run AFTER grunt build\n' +
-    'with no options, deploys to phet-dev (since this is still being tested)\n' +
-    '--production : deploy to figaro (not yet implemented)\n',
+    'with no options, deploys to phet-dev (since this is still being tested)\n',
     function() {
-      deploySimulation( grunt, grunt.option( 'production' ) );
+      deploySimulation( grunt, 'simian' );
+    }
+  );
+
+  grunt.registerTask( 'deploy-dev',
+    'Deploy a dev version. Should be run AFTER grunt build\n' +
+    'with no options, deploys to spot\n' +
+    '--serverName : deploy to the given server, i.e. serverName=rintintin\n',
+    function() {
+      deploySimulation( grunt, grunt.option( 'serverName' ) || 'spot' );
     }
   );
 
