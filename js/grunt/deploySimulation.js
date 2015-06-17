@@ -35,7 +35,7 @@ module.exports = function( grunt, serverName ) {
     'dev': ( serverName === 'spot' || serverName === 'rintintin' )
   } );
 
-  var buildServerUrl = 'localhost:16372';
+  var buildServerUrl = 'localhost:16371';
   //var buildServerUrl = 'http://phet-dev.colorado.edu';
   var url = buildServerUrl + '/deploy-html-simulation?' + query;
 
