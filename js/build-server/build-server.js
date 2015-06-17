@@ -231,11 +231,15 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   var buildDir = './js/build-server/tmp';
   var simDir = '../' + simName;
-  
+
+  /**
+   * pull master for every repo in dependencies.json (plus babel) to make sure everything is up to date
+   * @param callback
+   */
   var pullMaster = function( callback ) {
-    if ( 'comment' in  repos ) {
+
+    if ( 'comment' in repos ) {
       delete repos.comment;
-      winston.log( 'info', 'comment was deleted' );
     }
 
     var finished = _.after( Object.keys( repos ).length + 1, callback );
@@ -255,6 +259,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     exec( 'git pull', '../babel', finished );
   };
 
+  /**
+   * execute mkdir for the sim version directory if it doesn't exist
+   * @param callback
+   */
   var mkVersionDir = function( callback ) {
     var simDirPath = HTML_SIMS_DIRECTORY + simName + '/' + version + '/';
 
@@ -275,6 +283,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
+  /**
+   * scp files to dev server. This will usually be spot.
+   * @param callback
+   */
   var scp = function( callback ) {
     winston.log( 'info', 'SCPing files to ' + server );
 
@@ -296,6 +308,11 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
+  /**
+   * Notify the website that a new sim or translation has been deployed. This will cause the project to
+   * synchronize and the new translation will appear on the website.
+   * @param callback
+   */
   var notifyServer = function( callback ) {
     var host = ( server === 'simian' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
     var project = 'html/' + simName;
@@ -321,6 +338,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
+  /**
+   * Clean up after deploy. Check out master and remove the temp build dir
+   */
   var afterDeploy = function() {
     exec( 'grunt checkout-master', simDir, function() {
       exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
@@ -331,6 +351,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
+  /**
+   * Write a dependencies.json file based on the the dependencies passed to the build server.
+   * The reason to write this to a file is so the "grunt checkout-shas" task works without much modification.
+   */
   var writeDependenciesFile = function() {
     fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
       if ( err ) {
