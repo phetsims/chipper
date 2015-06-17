@@ -231,18 +231,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   var buildDir = './js/build-server/tmp';
   var simDir = '../' + simName;
-
-  var npmInstall = function( callback ) {
-    fs.exists( simDir + '/node_modules', function( exists ) {
-      if ( !exists ) {
-        exec( 'npm install', simDir, callback );
-      }
-      else {
-        callback();
-      }
-    } );
-  };
-
+  
   var pullMaster = function( callback ) {
     if ( 'comment' in  repos ) {
       delete repos.comment;
@@ -350,7 +339,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
 
       // run every step of the build
-      npmInstall( function() {
+      exec( 'npm install', simDir, function() {
         pullMaster( function() {
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
             exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
