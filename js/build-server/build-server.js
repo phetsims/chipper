@@ -15,19 +15,18 @@ var doT = require( 'express-dot' );
 var parseArgs = require( 'minimist' );
 var winston = require( 'winston' );
 var request = require( 'request' );
-var querystring = require( 'querystring' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
 var async = require( 'async' );
 var client = require( 'scp2' );
 
-var start = true;
+var start = true; // whether or not to start the server - will be set to false if scp credentials are not found
 
 try {
   var credentials = require( './credentials.json' ); // put this file in js/build-sever/ with your spot login info
 }
 catch( e ) {
-  console.log( 'ERROR: SCP credentials not found. ' +
+  console.log( 'ERROR: SCP credentials for deploying to spot not found. ' +
                'Please create a file "credentials.json" in js/build-server with fields for "username" and "password"' );
   start = false;
 }
@@ -100,17 +99,25 @@ if ( parsedCommandLineOptions.hasOwnProperty( 'help' ) || parsedCommandLineOptio
 // Merge the default and supplied options.
 var options = _.extend( defaultOptions, parsedCommandLineOptions );
 
+// add timestamps to log messages
 winston.remove( winston.transports.Console );
 winston.add( winston.transports.Console, { 'timestamp': true } );
 
 if ( options.logFile ) {
-  winston.add( winston.transports.File, { filename: options.logFile } );
+  winston.add( winston.transports.File, { filename: options.logFile, 'timestamp': true } );
 }
 if ( options.silent ) {
   winston.remove( winston.transports.Console );
 }
 var verbose = options.verbose;
 
+/**
+ * Execute a step of the build process. The build aborts if any step fails.
+ *
+ * @param command the command to be executed
+ * @param dir the directory to execute the command from
+ * @param callback the function that executes upon completion
+ */
 function exec( command, dir, callback ) {
   winston.log( 'info', 'running command: ' + command );
   child_process.exec( command, { cwd: dir }, function( err, stdout, stderr ) {
@@ -122,6 +129,8 @@ function exec( command, dir, callback ) {
       winston.log( 'info', command + ' ran successfully in directory: ' + dir );
       callback();
     }
+
+    // checkout master for all repos if the build fails so they don't get left at random shas
     else if ( err ) {
       if ( command === 'grunt checkout-master' ) {
         winston.log( 'error', 'error running grunt checkout-master, build aborted to avoid infinite loop.' );
@@ -139,19 +148,32 @@ function exec( command, dir, callback ) {
   } );
 }
 
+/**
+ * Create a [sim name].xml file in the live sim directory in htdocs. This file tells the website which
+ * translations exist for a given sim. It is used by the "synchronize" method in Project.java in the webiste code.
+ *
+ * @param sim
+ * @param version
+ * @param callback
+ */
 function createXML( sim, version, callback ) {
 
   var rootdir = '../babel/' + sim;
   var englishStringsFile = sim + '-strings_en.json';
   var stringFiles = [ { name: englishStringsFile, locale: 'en' } ];
 
-  var files = fs.readdirSync( rootdir );
-  for ( var i = 0; i < files.length; i++ ) {
-    var filename = files[ i ];
-    var firstUnderscoreIndex = filename.indexOf( '_' );
-    var periodIndex = filename.indexOf( '.' );
-    var locale = filename.substring( firstUnderscoreIndex + 1, periodIndex );
-    stringFiles.push( { name: filename, locale: locale } );
+  try {
+    var files = fs.readdirSync( rootdir );
+    for ( var i = 0; i < files.length; i++ ) {
+      var filename = files[ i ];
+      var firstUnderscoreIndex = filename.indexOf( '_' );
+      var periodIndex = filename.indexOf( '.' );
+      var locale = filename.substring( firstUnderscoreIndex + 1, periodIndex );
+      stringFiles.push( { name: filename, locale: locale } );
+    }
+  }
+  catch( e ) {
+    winston.log( 'warn', 'no directory for the given sim exists in babel' );
   }
 
   try {
@@ -201,6 +223,10 @@ function createXML( sim, version, callback ) {
   }
 }
 
+/**
+ * taskQueue ensures that only one build/deploy process will be happening at the same time.
+ * This main build/deploy logic is here.
+ */
 var taskQueue = async.queue( function( task, taskCallback ) {
   var req = task.req;
   var res = task.res;
@@ -369,9 +395,12 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
               exec( 'grunt build-no-lint --locales=' + locales.toString(), simDir, function() {
 
+                // if deploying a dev version just scp to spot
                 if ( isDev ) {
                   scp( afterDeploy );
                 }
+
+                // otherwise do a full deploy to simian or figaro
                 else {
                   exec( 'grunt generate-thumbnails', simDir, function() {
                     mkVersionDir( function() {
@@ -423,102 +452,13 @@ function queueDeploy( req, res ) {
   }
 }
 
-function test() {
-  var repos = {
-    "assert": {
-      "sha": "903564a25a0f26acdbd334d3e104039864b405ef",
-      "branch": "master"
-    },
-    "axon": {
-      "sha": "1199217e4b4a158afe5cf2fd59e5a7a087fd4179",
-      "branch": "master"
-    },
-    "brand": {
-      "sha": "b3362651f1d7eddb7f8697d02400472f97f9d140",
-      "branch": "master"
-    },
-    "chipper": {
-      "sha": "4602156c89dd307be35ec6ada2cdece82e0ac956",
-      "branch": "master"
-    },
-    "dot": {
-      "sha": "9e70b8cac3ddfcb9e1dff786b23bc64de3b98350",
-      "branch": "master"
-    },
-    "joist": {
-      "sha": "c9f2b67459f59f292a59bca7a714cd6f0908b4f9",
-      "branch": "master"
-    },
-    "kite": {
-      "sha": "affd230ecc0d01f4f217ed7060007e3c71de4937",
-      "branch": "master"
-    },
-    "molecules-and-light": {
-      "sha": "ce00d086b33499d523c35142de86ce3a98986344",
-      "branch": "master"
-    },
-    "nitroglycerin": {
-      "sha": "c6f79ce4664a1120a8d1d2393d5d48f9b72d4bc9",
-      "branch": "master"
-    },
-    "phet-core": {
-      "sha": "23834d107dc1cb368c00901c76927b712b9caa10",
-      "branch": "master"
-    },
-    "phetcommon": {
-      "sha": "bb92c52cd90fdaa0c2a746fea82594afd439b4db",
-      "branch": "master"
-    },
-    "scenery": {
-      "sha": "a69dfeb8452edb51348eb2187ce25939a8b0dda1",
-      "branch": "master"
-    },
-    "scenery-phet": {
-      "sha": "4ca937ebfe35a021d4c781a4c6877be22ddbcf9b",
-      "branch": "master"
-    },
-    "sherpa": {
-      "sha": "7c1f8f58b67a29014fb75ef4c80c3a5904193630",
-      "branch": "master"
-    },
-    "sun": {
-      "sha": "5ae6c12634dc188f5b9ba8bc3aca76dcf96448c8",
-      "branch": "master"
-    },
-    "comment": {
-      "message": "this is a comment"
-    }
-  };
-  var locales = [ 'de' ];
-  var query = querystring.stringify( {
-    'repos': JSON.stringify( repos ),
-    'locales': JSON.stringify( locales ),
-    'simName': 'molecules-and-light',
-    'version': '1.0.1',
-    'serverName': 'simian'
-  } );
-  var url = 'http://localhost:' + LISTEN_PORT + '/deploy-html-simulation?' + query;
-  // var url = 'phet-dev.colorado.edu' + query;
-  winston.log( 'info', 'test url: ' + url );
-
-  //
-  // request( url, function( error, response, body ) {
-  //  if ( !error && response.statusCode === 200 ) {
-  //    winston.log( 'info', 'running test' );
-  //  }
-  //  else {
-  //    winston.log( 'error', 'test deploy failed' );
-  //  }
-  // } );
-}
-
 // Create and configure the ExpressJS app
 var app = express();
 app.set( 'views', __dirname + '/html/views' );
 app.set( 'view engine', 'dot' );
 app.engine( 'html', doT.__express );
 
-// route that checks whether the user is logged in
+// add the route to build and deploy
 app.get( '/deploy-html-simulation', queueDeploy );
 
 // start the server
@@ -526,6 +466,5 @@ if ( start ) {
   app.listen( LISTEN_PORT, function() {
     winston.log( 'info', 'Listening on port ' + LISTEN_PORT );
     winston.log( 'info', 'Verbose mode: ' + verbose );
-    test();
   } );
 }
