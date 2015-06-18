@@ -18,7 +18,8 @@ var request = require( 'request' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
 var async = require( 'async' );
-var client = require( 'scp2' );
+//var client = require( 'scp2' );
+var Client = require( 'scp2' ).Client;
 
 var start = true; // whether or not to start the server - will be set to false if scp credentials are not found
 
@@ -316,22 +317,51 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var scp = function( callback ) {
     winston.log( 'info', 'SCPing files to ' + server );
 
-    client.scp( simDir + '/build/', {
+    var path = DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/';
+
+    var client = new Client( {
+      port: 22,
       host: server + '.colorado.edu',
       username: credentials.username,
-      password: credentials.password,
-      path: DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/'
-    }, function( err ) {
-      if ( err ) {
-        winston.log( 'error', 'SCP failed with error: ' + err );
-      }
-      else {
-        winston.log( 'info', 'SCP ran successfully' );
-        if ( callback ) {
-          callback();
-        }
-      }
+      password: credentials.password
     } );
+
+    var files = fs.readdirSync( 'build' );
+    var finished = _.after( files.length, function() {
+      winston.log( 'info', 'SCP finished' );
+      callback();
+    } );
+    for ( var i = 0; i < files.length; i++ ) {
+      var file = files[ i ];
+      (function( file ) {
+        client.upload( file, path + file, function( err ) {
+          if ( err ) {
+            winston.log( 'error', err );
+          }
+          else {
+            winston.log( 'info', 'scping file ' + file );
+          }
+          finished();
+        } );
+      })( file );
+    }
+
+    //client.scp( simDir + '/build/', {
+    //  host: server + '.colorado.edu',
+    //  username: credentials.username,
+    //  password: credentials.password,
+    //  path: DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/'
+    //}, function( err ) {
+    //  if ( err ) {
+    //    winston.log( 'error', 'SCP failed with error: ' + err );
+    //  }
+    //  else {
+    //    winston.log( 'info', 'SCP ran successfully' );
+    //    if ( callback ) {
+    //      callback();
+    //    }
+    //  }
+    //} );
   };
 
   /**
