@@ -22,6 +22,7 @@
  *
  * dev - enable developer-only features, such as showing the layout bounds
  * ea - enable assertions, internal code error checks
+ * qrCode - adds a menu item that will open a window with a QR code with the URL of the simulation
  * fuzzMouse - randomly sends mouse events to sim
  * profiler - shows profiling information for the sim
  * showPointerAreas - touch areas in red, mouse areas in blue, both dotted outlines
