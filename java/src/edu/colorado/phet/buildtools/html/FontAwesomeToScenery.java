@@ -11,10 +11,13 @@ import java.util.StringTokenizer;
  * Reads a data file (sherpa/lib/font-awesome.txt) that contains lines like:
  * <glyph unicode="&#xf000;" horiz-adv-x="1792" d="M1699 ... -36.5z" />
  * and creates a scenery-compatible version.  See sun.FontAwesomeNode.
- * <p>
- * font-awesome.txt was created by taking src/assets/font-awesome/fonts/fontawesome-webfont.svg
- * from the Font-Awesome GitHub repository at https://github.com/FortAwesome/Font-Awesome,
- * and manually deleting everything except the "glyph" tags.
+ * <p/>
+ * Font awesome provides a svg file with the pictographs,
+ * which we have checked in to sherpa at this path:
+ * sherpa/lib/fontawesome-webfont-3.0.2.svg
+ * <p/>
+ * Before running this process, the svg file must be manually filtered to
+ * remove everything except the "glyph" tags
  *
  * @author Sam Reid
  */
