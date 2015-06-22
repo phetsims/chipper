@@ -54,7 +54,7 @@ module.exports = function( grunt, serverName ) {
 
     credentialsObject.path = path + version + '/';
 
-    // scp will mkdir if automatically if necessary
+    // scp will mkdir automatically if necessary
     client.scp( 'build', credentialsObject, function( err ) {
       if ( err ) {
         grunt.log.writeln( 'SCP failed with error: ' + err );
