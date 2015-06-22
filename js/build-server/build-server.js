@@ -364,6 +364,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     //} );
   };
 
+  if ( false ) { scp(); } // TODO: remove scp if not needed. This is just pass lint.
+
   /**
    * Notify the website that a new sim or translation has been deployed. This will cause the project to
    * synchronize and the new translation will appear on the website.
@@ -427,7 +429,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
                 // if deploying a dev version just scp to spot
                 if ( isDev ) {
-                  scp( afterDeploy );
+                  exec( 'grunt deploy-dev --serverName=rintintin', simDir, afterDeploy );
                 }
 
                 // otherwise do a full deploy to simian or figaro

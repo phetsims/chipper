@@ -27,6 +27,7 @@ var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deploySimulation = require( '../../../chipper/js/grunt/deploySimulation' );
+var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
@@ -170,11 +171,11 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'deploy-dev',
-    'Deploy a dev version. Should be run AFTER grunt build\n' +
+    'Deploy a dev version.\n' +
     'with no options, deploys to spot\n' +
     '--serverName : deploy to the given server, i.e. serverName=rintintin\n',
     function() {
-      deploySimulation( grunt, grunt.option( 'serverName' ) || 'spot' );
+      deployDev( grunt, grunt.option( 'serverName' ) || 'spot' );
     }
   );
 
