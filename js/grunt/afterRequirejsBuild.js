@@ -91,7 +91,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
         // If a string depends on an unlisted dependency, fail out
         if ( pkg.phetLibs.indexOf( repositoryName ) < 0 ) {
-          throw new Error( 'String dependency missing from phetLib in package.json: ' + repositoryName );
+          throw new Error( repositoryName + ' is missing from phetLib in package.json' );
         }
       }
     }
