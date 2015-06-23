@@ -10,10 +10,13 @@
 
 // modules
 var client = require( 'scp2' );
+var child_process = require( 'child_process' );
 
 // constants
-var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
+var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/ad-tests/';
 var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
+var BUILD_DIR = 'build';
+var PACKAGE_JSON = 'package.json';
 
 
 /**
@@ -22,6 +25,17 @@ var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
  */
 module.exports = function( grunt, serverName ) {
   'use strict';
+
+  // check prerequisite files
+  if ( !grunt.file.exists( PACKAGE_JSON ) ) {
+    grunt.log.writeln( 'Cannot find ' + PACKAGE_JSON );
+    process.exit();
+  }
+
+  if ( !grunt.file.exists( BUILD_DIR ) ) {
+    grunt.log.writeln( 'Cannot find ' + BUILD_DIR );
+    process.exit();
+  }
 
   var directory = process.cwd();
   var directoryComponents = directory.split( '/' );
@@ -78,7 +92,25 @@ module.exports = function( grunt, serverName ) {
         else {
           grunt.log.writeln( '.htaccess file written successfully' );
         }
-        done();
+
+        grunt.log.writeln( 'updating dependencies.json' );
+        grunt.file.copy( 'build/dependencies.json', 'dependencies.json' );
+
+        child_process.exec( 'git add dependencies.json', function( err, stdout, stderr ) {
+          assert( err, 'error: ' + err );
+          grunt.log.writeln( stdout );
+
+          child_process.exec( 'git commit --message "updated dependencies.json for ' + version + ' "', function( err, stdout, stderr ) {
+            assert( err, 'error: ' + err );
+            grunt.log.writeln( stdout );
+
+            child_process.exec( 'git push', function( err, stdout, stderr ) {
+              assert( err, 'error: ' + err );
+              grunt.log.writeln( stdout );
+              done();
+            } );
+          } );
+        } );
       } );
     } );
   }
