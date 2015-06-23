@@ -8,16 +8,12 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /**
- * Reads a data file (sherpa/lib/font-awesome.txt) that contains lines like:
+ * Font awesome provides pictographs that can be used in PhET Simulations, such as the home icon, checkboxes, etc.,
+ * checked in at sherpa/lib/fontawesome-webfont-3.0.2.svg .  This file can be manually filtered to remove everything
+ * except the "glyph" tags, so it will have lines like this:
  * <glyph unicode="&#xf000;" horiz-adv-x="1792" d="M1699 ... -36.5z" />
- * and creates a scenery-compatible version.  See sun.FontAwesomeNode.
- * <p/>
- * Font awesome provides a svg file with the pictographs,
- * which we have checked in to sherpa at this path:
- * sherpa/lib/fontawesome-webfont-3.0.2.svg
- * <p/>
- * Before running this process, the svg file must be manually filtered to
- * remove everything except the "glyph" tags
+ * Then when running FontAwesomeToScenery on that manually filtered output, it produces a scenery-specific file
+ * for using the font awesome pictographs.  The latest checked in version of that file is located in FontAwesomeNode.js
  *
  * @author Sam Reid
  */
