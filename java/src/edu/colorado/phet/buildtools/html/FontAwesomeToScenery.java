@@ -9,11 +9,11 @@ import java.util.StringTokenizer;
 
 /**
  * Font awesome provides pictographs that can be used in PhET Simulations, such as the home icon, checkboxes, etc.,
- * checked in at sherpa/lib/fontawesome-webfont-3.0.2.svg .  This file can be manually filtered to remove everything
+ * checked in at sherpa/lib/fontawesome-webfont-3.0.2.svg. This file must be manually filtered to remove everything
  * except the "glyph" tags, so it will have lines like this:
  * <glyph unicode="&#xf000;" horiz-adv-x="1792" d="M1699 ... -36.5z" />
  * Then when running FontAwesomeToScenery on that manually filtered output, it produces a scenery-specific file
- * for using the font awesome pictographs.  The latest checked in version of that file is located in FontAwesomeNode.js
+ * for using the font awesome pictographs.  The latest checked in version of that file is sun.FontAwesomeNode.js
  *
  * @author Sam Reid
  */
