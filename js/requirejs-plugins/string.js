@@ -139,12 +139,10 @@ define( function( require ) {
 
               // Now get the primary strings.
               getWithCache( localeSpecificPath, function( parsed ) {
-                  // Pad RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
+                  // Pad LTR/RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
                   // Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
-                  if ( isRTL ) {
-                    for ( var stringKey in parsed ) {
-                      parsed[ stringKey ].value = '\u202b' + parsed[ stringKey ].value + '\u202c';
-                    }
+                  for ( var stringKey in parsed ) {
+                    parsed[ stringKey ].value = ( isRTL ? '\u202b' : '\u202a' ) + parsed[ stringKey ].value + '\u202c';
                   }
 
                   // Combine the primary and fallback strings into one object hash.

@@ -124,11 +124,9 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
           for ( var stringKeyMissingPrefix in fileContents ) {
             var stringData = fileContents[ stringKeyMissingPrefix ];
 
-            // Pad RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
+            // Pad LTR/RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
             // Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
-            if ( isRTL ) {
-              stringData.value = '\u202b' + stringData.value + '\u202c';
-            }
+            stringData.value = ( isRTL ? '\u202b' : '\u202a' ) + stringData.value + '\u202c';
 
             fileMap[ repository.prefix + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
           }
