@@ -21,7 +21,7 @@ var PACKAGE_JSON = 'package.json';
 
 /**
  * @param grunt the grunt instance
- * @param serverName defaults to simian currently
+ * @param serverName defaults to spot currently, but sometimes rintintin is used
  */
 module.exports = function( grunt, serverName ) {
   'use strict';
@@ -37,13 +37,14 @@ module.exports = function( grunt, serverName ) {
     process.exit();
   }
 
+  // get the sim name and version
   var directory = process.cwd();
   var directoryComponents = directory.split( '/' );
   var sim = directoryComponents[ directoryComponents.length - 1 ];
-
   var version = grunt.file.readJSON( 'package.json' ).version;
-  var credentials;
 
+  // try to get spot credentials from credentials.json file
+  var credentials;
   try {
     credentials = grunt.file.readJSON( '../chipper/credentials.json' ); // put this file in js/build-sever/ with your spot login info
   }
@@ -56,17 +57,14 @@ module.exports = function( grunt, serverName ) {
     var done = grunt.task.current.async();
 
     var path = DEV_DIRECTORY + sim + '/';
-    grunt.log.writeln( path );
-
     var credentialsObject = {
       host: serverName + '.colorado.edu',
       username: credentials.username,
-      password: credentials.password
+      password: credentials.password,
+      path: path + version + '/'
     };
 
     grunt.log.writeln( 'Copying files to ' + serverName + '...' );
-
-    credentialsObject.path = path + version + '/';
 
     // scp will mkdir automatically if necessary
     client.scp( 'build', credentialsObject, function( err ) {
