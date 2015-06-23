@@ -13,7 +13,7 @@ var client = require( 'scp2' );
 var child_process = require( 'child_process' );
 
 // constants
-var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/ad-tests/';
+var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
 var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
 var BUILD_DIR = 'build';
 var PACKAGE_JSON = 'package.json';
