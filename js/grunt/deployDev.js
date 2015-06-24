@@ -11,6 +11,7 @@
 // modules
 var client = require( 'scp2' );
 var child_process = require( 'child_process' );
+var assert = require( 'assert' );
 
 // constants
 var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
@@ -94,21 +95,23 @@ module.exports = function( grunt, serverName ) {
         grunt.log.writeln( 'updating dependencies.json' );
         grunt.file.copy( 'build/dependencies.json', 'dependencies.json' );
 
-        child_process.exec( 'git add dependencies.json', function( err, stdout, stderr ) {
-          assert( err, 'error: ' + err );
-          grunt.log.writeln( stdout );
-
-          child_process.exec( 'git commit --message "updated dependencies.json for ' + version + ' "', function( err, stdout, stderr ) {
-            assert( err, 'error: ' + err );
+        var exec = function( command, callback ) {
+          child_process.exec( command, function( err, stdout, stderr ) {
             grunt.log.writeln( stdout );
+            grunt.log.writeln( stderr );
+            assert( err, 'assertion error running ' + command );
+            callback();
+          } );
+        };
 
-            child_process.exec( 'git push', function( err, stdout, stderr ) {
-              assert( err, 'error: ' + err );
-              grunt.log.writeln( stdout );
+        exec( 'git add dependencies.json', function() {
+          exec( 'git commit --message "updated dependencies.json for ' + version + ' "', function() {
+            exec( 'git push', function() {
               done();
             } );
           } );
         } );
+        
       } );
     } );
   }
