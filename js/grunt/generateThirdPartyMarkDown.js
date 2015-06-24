@@ -26,7 +26,7 @@ module.exports = function( grunt ) {
   var columnHeaders = [ 'Library', 'Website', 'License', 'License URL (if different than project website)', 'Text', 'How is it used in sims?' ];
   var headerDelimiters = [];
   for ( i = 0; i < columnHeaders.length; i++ ) {
-    headerDelimiters.push( '-----' );
+    headerDelimiters.push( '------' );
   }
   var output = columnHeaders.join( '|' ) + '\n' + headerDelimiters.join( '|' );
 
@@ -56,7 +56,7 @@ module.exports = function( grunt ) {
     child_process.exec( command, { cwd: SHERPA }, function( err, stdout, stderr ) {
       grunt.log.writeln( stdout );
       grunt.log.writeln( stderr );
-      assert( err, 'assertion error running ' + command );
+      assert( !err, 'assertion error running ' + command );
       callback();
     } );
   };

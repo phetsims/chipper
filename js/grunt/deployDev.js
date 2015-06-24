@@ -99,7 +99,7 @@ module.exports = function( grunt, serverName ) {
           child_process.exec( command, function( err, stdout, stderr ) {
             grunt.log.writeln( stdout );
             grunt.log.writeln( stderr );
-            assert( err, 'assertion error running ' + command );
+            assert( !err, 'assertion error running ' + command );
             callback();
           } );
         };
@@ -111,7 +111,7 @@ module.exports = function( grunt, serverName ) {
             } );
           } );
         } );
-        
+
       } );
     } );
   }
