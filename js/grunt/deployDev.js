@@ -65,6 +65,32 @@ module.exports = function( grunt, serverName ) {
       path: path + version + '/'
     };
 
+    // write .htaccess in the sim directory
+    // it is easier to just overwrite it every time than to test if it exists and then write
+    var createHtaccessFile = function( callback ) {
+      grunt.log.writeln( 'Attempting to write .htaccess file in ' + path );
+
+      try {
+        var sshClient = new client.Client( credentialsObject );
+        sshClient.write( {
+          destination: path + '.htaccess',
+          content: new Buffer( HTACCESS_TEXT )
+        }, function( err ) {
+          if ( err ) {
+            grunt.log.writeln( 'error writing htaccess file ' + err );
+          }
+          else {
+            grunt.log.writeln( '.htaccess file written successfully' );
+          }
+          callback();
+        } );
+      }
+      catch( e ) {
+        grunt.log.writeln( 'error creating ssh client ' + e );
+        callback();
+      }
+    };
+
     grunt.log.writeln( 'Copying files to ' + serverName + '...' );
 
     // scp will mkdir automatically if necessary
@@ -76,43 +102,26 @@ module.exports = function( grunt, serverName ) {
         grunt.log.writeln( 'SCP ran successfully' );
       }
 
-      grunt.log.writeln( 'Attempting to write .htaccess file in ' + path );
+      grunt.log.writeln( 'updating dependencies.json' );
+      grunt.file.copy( 'build/dependencies.json', 'dependencies.json' );
 
-      // write .htaccess in the sim directory
-      // it is easier to just overwrite it every time than to test if it exists and then write
-      var sshClient = new client.Client( credentialsObject );
-      sshClient.write( {
-        destination: path + '.htaccess',
-        content: new Buffer( HTACCESS_TEXT )
-      }, function( err ) {
-        if ( err ) {
-          grunt.log.writeln( err );
-        }
-        else {
-          grunt.log.writeln( '.htaccess file written successfully' );
-        }
+      var exec = function( command, callback ) {
+        child_process.exec( command, function( err, stdout, stderr ) {
+          grunt.log.writeln( stdout );
+          grunt.log.writeln( stderr );
+          assert( !err, 'assertion error running ' + command );
+          callback();
+        } );
+      };
 
-        grunt.log.writeln( 'updating dependencies.json' );
-        grunt.file.copy( 'build/dependencies.json', 'dependencies.json' );
-
-        var exec = function( command, callback ) {
-          child_process.exec( command, function( err, stdout, stderr ) {
-            grunt.log.writeln( stdout );
-            grunt.log.writeln( stderr );
-            assert( !err, 'assertion error running ' + command );
-            callback();
-          } );
-        };
-
-        exec( 'git add dependencies.json', function() {
-          exec( 'git commit --message "updated dependencies.json for ' + version + ' "', function() {
-            exec( 'git push', function() {
-              done();
-            } );
+      exec( 'git add dependencies.json', function() {
+        exec( 'git commit --message "updated dependencies.json for ' + version + ' "', function() {
+          exec( 'git push', function() {
+            createHtaccessFile( done );
           } );
         } );
-
       } );
+
     } );
   }
 };
