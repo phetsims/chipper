@@ -62,7 +62,7 @@ module.exports = function( grunt ) {
   };
 
   exec( 'git add ' + OUTPUT_FILE, function() {
-    exec( 'git commit --message "updated info.md"', function() {
+    exec( 'git commit --message "update info.md"', function() {
       exec( 'git push', function() {
         done();
       } );
