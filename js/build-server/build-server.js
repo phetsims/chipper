@@ -313,7 +313,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * @param callback
    */
   var scp = function( callback ) {
-    winston.log( 'info', 'SCPing files to ' + server );
+    winston.log( 'info', 'SCPing files to spot' );
 
     var files = fs.readdirSync( 'build' );
     var finished = _.after( files.length, function() {
@@ -325,17 +325,18 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       var options = {
         file: files[ i ],
         user: credentials.username,
-        host: server + '.colorado.edu',
+        host: 'rintintin.colorado.edu',
         port: '22',
         path: DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/'
       };
       (function( options ) {
+        winston.log( 'info', 'about to copy file ' + options.file );
         scp.send( options, function( err ) {
           if ( err ) {
             winston.log( 'error', 'scp: ' + err );
           }
           else {
-            winston.log( 'info', 'copying file ' + options.file );
+            winston.log( 'info', 'copied file ' + options.file );
           }
           finished();
         } );
