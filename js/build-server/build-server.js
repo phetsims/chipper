@@ -18,8 +18,6 @@ var request = require( 'request' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
 var async = require( 'async' );
-//var client = require( 'scp2' );
-var Client = require( 'scp2' ).Client;
 
 var start = true; // whether or not to start the server - will be set to false if scp credentials are not found
 
@@ -317,54 +315,33 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var scp = function( callback ) {
     winston.log( 'info', 'SCPing files to ' + server );
 
-    var path = DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/';
-
-    var client = new Client( {
-      port: 22,
-      host: server + '.colorado.edu',
-      username: credentials.username,
-      password: credentials.password
-    } );
-
     var files = fs.readdirSync( 'build' );
     var finished = _.after( files.length, function() {
       winston.log( 'info', 'SCP finished' );
       callback();
     } );
+
     for ( var i = 0; i < files.length; i++ ) {
-      var file = files[ i ];
-      (function( file ) {
-        client.upload( file, path + file, function( err ) {
+      var options = {
+        file: files[ i ],
+        user: credentials.username,
+        host: server + '.colorado.edu',
+        port: '22',
+        path: DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/'
+      };
+      (function( options ) {
+        scp.send( options, function( err ) {
           if ( err ) {
-            winston.log( 'error', err );
+            winston.log( 'error', 'scp: ' + err );
           }
           else {
-            winston.log( 'info', 'scping file ' + file );
+            winston.log( 'info', 'copying file ' + options.file );
           }
           finished();
         } );
-      })( file );
+      })( options );
     }
-
-    //client.scp( simDir + '/build/', {
-    //  host: server + '.colorado.edu',
-    //  username: credentials.username,
-    //  password: credentials.password,
-    //  path: DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/'
-    //}, function( err ) {
-    //  if ( err ) {
-    //    winston.log( 'error', 'SCP failed with error: ' + err );
-    //  }
-    //  else {
-    //    winston.log( 'info', 'SCP ran successfully' );
-    //    if ( callback ) {
-    //      callback();
-    //    }
-    //  }
-    //} );
   };
-
-  if ( false ) { scp(); } // TODO: remove scp if not needed. This is just pass lint.
 
   /**
    * Notify the website that a new sim or translation has been deployed. This will cause the project to
@@ -429,7 +406,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
                 // if deploying a dev version just scp to spot
                 if ( isDev ) {
-                  exec( 'grunt deploy-dev --serverName=rintintin', simDir, afterDeploy );
+                  scp( afterDeploy );
                 }
 
                 // otherwise do a full deploy to simian or figaro
