@@ -318,25 +318,19 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
     var files = fs.readdirSync( simDir + '/build' );
 
-    winston.log( 'info', files );
-    winston.log( 'info', files.length );
-
     var finished = _.after( files.length, function() {
       winston.log( 'info', 'SCP finished' );
       callback();
     } );
 
     for ( var i = 0; i < files.length; i++ ) {
-      var file = simDir + '/build/' + files[ i ];
-      winston.log( 'info', file );
       var options = {
-        file: file,
+        file: simDir + '/build/' + files[ i ],
         user: credentials.username,
         host: 'rintintin.colorado.edu',
         port: '22',
-        path: DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/'
+        path: DEV_DIRECTORY + simName + '/' + version + '/'
       };
-      winston.log( 'info', options );
 
       (function( options ) {
         winston.log( 'info', 'about to copy file ' + options.file );
