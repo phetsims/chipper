@@ -86,7 +86,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     }
   };
 
-  grunt.log.writeln( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
+  grunt.log.debug( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
 
   // info shared with other tasks will be put here
   global.phet = global.phet || {};
@@ -103,7 +103,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   // Pass a global to the string! plugin so we know which strings to look up
   global.phet.localesToBuild =  getLocalesToBuild();
-  grunt.log.writeln( 'Locales to build: ' + global.phet.localesToBuild.toString() );
+  grunt.log.debug( 'Locales to build: ' + global.phet.localesToBuild.toString() );
 
   // Since require.js plugins can't be asynchronous with isBuild=true (r.js mode), we need to catch all of the
   // mipmaps that we'll need to build and then handle them later asynchronously.

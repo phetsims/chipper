@@ -168,7 +168,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   var done = grunt.task.current.async();
 
-  grunt.log.writeln( 'Minifying preload scripts' );
+  grunt.log.debug( 'Minifying preload scripts' );
   var preloadBlocks = '';
   for ( var libIdx = 0; libIdx < pkg.preload.length; libIdx++ ) {
     var lib = pkg.preload[ libIdx ];
@@ -183,7 +183,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     preloadBlocks += '<script type="text/javascript" id="script-' + lib + '">\n' + preloadResult.code + '\n</script>\n';
   }
 
-  grunt.log.writeln( 'Copying changes.txt' );
+  grunt.log.debug( 'Copying changes.txt' );
   if ( fs.existsSync( 'changes.txt' ) ) {
     grunt.file.copy( 'changes.txt', 'build/changes.txt' );
   }
@@ -211,7 +211,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
     mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
-    grunt.log.writeln( 'Constructing HTML from template' );
+    grunt.log.debug( 'Constructing HTML from template' );
     var html = grunt.file.read( '../chipper/templates/sim.html' );
     html = replaceFirst( html, 'HTML_HEADER', htmlHeader );
     html = replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapJavascript );
@@ -219,7 +219,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     html = replaceFirst( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
     html = replaceFirst( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
 
-    grunt.log.writeln( 'Writing HTML' );
+    grunt.log.debug( 'Writing HTML' );
 
     // Create the translated versions
 
@@ -268,21 +268,21 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     }
 
     // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
-    grunt.log.writeln( 'Constructing HTML for iframe testing from template' );
+    grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + pkg.version + ' iframe test' );
     iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
 
     // Write the iframe test file.  English (en) is assumed as the locale.
-    grunt.log.writeln( 'Writing HTML for iframe testing' );
+    grunt.log.debug( 'Writing HTML for iframe testing' );
     grunt.file.write( 'build/' + pkg.name + '_en-iframe' + '.html', iframeTestHtml );
 
     // Write the string map, which may be used by translation utility for showing which strings are available for translation
     var stringMapFilename = 'build/' + pkg.name + '_string-map.json';
-    grunt.log.writeln( 'Writing string map to ', stringMapFilename );
+    grunt.log.debug( 'Writing string map to ', stringMapFilename );
     grunt.file.write( stringMapFilename, JSON.stringify( stringMap[ fallbackLocale ], null, '\t' ) );
 
-    grunt.log.writeln( 'Cleaning temporary files' );
+    grunt.log.debug( 'Cleaning temporary files' );
     grunt.file.delete( 'build/' + pkg.name + '.min.js' );
 
     done();
@@ -307,7 +307,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
           var branch = trimWhitespace( stdout );
 
-          grunt.log.writeln( padString( dependency, 20 ) + branch + ' ' + sha );
+          grunt.log.debug( padString( dependency, 20 ) + branch + ' ' + sha );
           dependencyInfo[ dependency ] = { sha: sha, branch: branch };
 
           nextDependency();
@@ -330,7 +330,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       }
       var dependencyJSONWithoutBabel = JSON.stringify( dependencyInfoWithoutBabel, null, 2 );
 
-      grunt.log.writeln( 'Writing dependencies.json' );
+      grunt.log.debug( 'Writing dependencies.json' );
       grunt.file.write( 'build/dependencies.json', dependencyJSONWithoutBabel + '\n' );
 
       // need to load mipmaps here, since we can't do it synchronously during the require.js build step
@@ -369,6 +369,6 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     }
   }
 
-  grunt.log.writeln( 'Scanning dependencies from:\n' + dependencies.toString() );
+  grunt.log.debug( 'Scanning dependencies from:\n' + dependencies.toString() );
   nextDependency();
 };

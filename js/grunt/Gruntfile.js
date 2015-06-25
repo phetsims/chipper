@@ -62,7 +62,7 @@ module.exports = function( grunt ) {
     assert( fs.existsSync( '../chipper/build.json' ), 'missing build.json' );
     var buildInfo = grunt.file.readJSON( '../chipper/build.json' );
     pkg.phetLibs = _.uniq( pkg.phetLibs.concat( buildInfo.common.phetLibs ).sort() );
-    grunt.log.writeln( 'phetLibs = ' + pkg.phetLibs );
+    grunt.log.debug( 'phetLibs = ' + pkg.phetLibs );
   }
 
   // TODO: As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
