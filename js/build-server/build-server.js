@@ -315,7 +315,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var scp = function( callback ) {
     winston.log( 'info', 'SCPing files to spot' );
 
-    var files = fs.readdirSync( 'build' );
+    var files = fs.readdirSync( simDir + '/build' );
 
     winston.log( 'info', files );
     winston.log( 'info', files.length );
