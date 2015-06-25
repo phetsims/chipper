@@ -316,6 +316,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     winston.log( 'info', 'SCPing files to spot' );
 
     var files = fs.readdirSync( 'build' );
+
+    winston.log( 'info', files );
+    winston.log( 'info', files.length );
+
     var finished = _.after( files.length, function() {
       winston.log( 'info', 'SCP finished' );
       callback();
@@ -329,6 +333,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         port: '22',
         path: DEV_DIRECTORY + 'ad-tests/' + simName + '/' + version + '/'
       };
+      winston.log( 'info', options );
+
       (function( options ) {
         winston.log( 'info', 'about to copy file ' + options.file );
         scp.send( options, function( err ) {
