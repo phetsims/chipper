@@ -18,6 +18,7 @@ var request = require( 'request' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
 var async = require( 'async' );
+var scp = require( 'scp' );
 
 var start = true; // whether or not to start the server - will be set to false if scp credentials are not found
 
@@ -312,7 +313,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * scp files to dev server. This will usually be spot.
    * @param callback
    */
-  var scp = function( callback ) {
+  var devScp = function( callback ) {
     winston.log( 'info', 'SCPing files to spot' );
 
     var files = fs.readdirSync( simDir + '/build' );
@@ -413,7 +414,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
                 // if deploying a dev version just scp to spot
                 if ( isDev ) {
-                  scp( afterDeploy );
+                  devScp( afterDeploy );
                 }
 
                 // otherwise do a full deploy to simian or figaro
