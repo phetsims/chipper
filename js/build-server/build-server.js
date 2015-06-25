@@ -18,8 +18,7 @@ var request = require( 'request' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs' );
 var async = require( 'async' );
-//var scp = require( 'scp' );
-var Client = require( 'scp2' ).Client;
+var scp = require( 'scp' );
 
 var start = true; // whether or not to start the server - will be set to false if scp credentials are not found
 
@@ -327,13 +326,6 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       callback();
     } );
 
-    var client = new Client( {
-      user: credentials.username,
-      password: credentials.password,
-      host: 'rintintin.colorado.edu',
-      port: '22'
-    } );
-
     for ( var i = 0; i < files.length; i++ ) {
       var file = simDir + '/build/' + files[ i ];
       winston.log( 'info', file );
@@ -346,9 +338,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       };
       winston.log( 'info', options );
 
-      (function( options, filename ) {
+      (function( options ) {
         winston.log( 'info', 'about to copy file ' + options.file );
-        client.upload( options.file, options.path + filename, function( err ) {
+        scp.send( options, function( err ) {
           if ( err ) {
             winston.log( 'error', 'scp: ' + err );
           }
@@ -357,16 +349,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
           }
           finished();
         } );
-        //  scp.send( options, function( err ) {
-        //    if ( err ) {
-        //      winston.log( 'error', 'scp: ' + err );
-        //    }
-        //    else {
-        //      winston.log( 'info', 'copied file ' + options.file );
-        //    }
-        //    finished();
-        //  } );
-      })( options, files[i] );
+      })( options );
     }
   };
 
