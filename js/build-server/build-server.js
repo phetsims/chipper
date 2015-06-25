@@ -327,8 +327,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
 
     for ( var i = 0; i < files.length; i++ ) {
+      var file = simDir + '/build/' + files[ i ];
+      winston.log( 'info', file );
       var options = {
-        file: simDir + '/' + files[ i ],
+        file: file,
         user: credentials.username,
         host: 'rintintin.colorado.edu',
         port: '22',
