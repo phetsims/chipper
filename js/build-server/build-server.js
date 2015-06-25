@@ -328,7 +328,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
     for ( var i = 0; i < files.length; i++ ) {
       var options = {
-        file: files[ i ],
+        file: simDir + '/' + files[ i ],
         user: credentials.username,
         host: 'rintintin.colorado.edu',
         port: '22',
