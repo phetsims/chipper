@@ -80,13 +80,13 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
     var stringRepositories = []; // { name: {string}, path: {string}, prefix: {string} }
     for ( var stringKey in global.phet.strings ) {
-      var repositoryName = global.phet.strings[stringKey].repositoryName;
+      var repositoryName = global.phet.strings[ stringKey ].repositoryName;
 
       if ( stringRepositories.every( function( repo ) { return repo.name !== repositoryName; } ) ) {
         stringRepositories.push( {
           name: repositoryName,
-          path: global.phet.strings[stringKey].repositoryPath,
-          prefix: global.phet.strings[stringKey].requirePrefix
+          path: global.phet.strings[ stringKey ].repositoryPath,
+          prefix: global.phet.strings[ stringKey ].requirePrefix
         } );
 
         // If a string depends on an unlisted dependency, fail out
@@ -99,7 +99,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     // Load all the required string files into memory, so we don't load them multiple times (for each usage)
     var repoStringMap = {}; // maps [repositoryName][locale] => contents of locale string file
     stringRepositories.forEach( function( repository ) {
-      repoStringMap[repository.name] = {};
+      repoStringMap[ repository.name ] = {};
 
       localesWithFallback.forEach( function( locale ) {
         var isRTL = localeInfo[ locale ].direction === 'rtl';
@@ -118,7 +118,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
         var fileExists = fs.existsSync( stringsFilename );
         if ( fileExists ) {
           var fileContents = JSON.parse( fs.readFileSync( stringsFilename, 'utf8' ) );
-          var fileMap = repoStringMap[repository.name][locale] = {};
+          var fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
           // we need to add the prefixes to the strings (from the string files)
           for ( var stringKeyMissingPrefix in fileContents ) {
@@ -140,22 +140,22 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     // combine our strings into [locale][stringKey] map, using the fallback locale where necessary
     var stringMap = {};
     localesWithFallback.forEach( function( locale ) {
-      stringMap[locale] = {};
+      stringMap[ locale ] = {};
 
       for ( var stringKey in global.phet.strings ) {
-        var repositoryName = global.phet.strings[stringKey].repositoryName;
+        var repositoryName = global.phet.strings[ stringKey ].repositoryName;
 
         // English fallback
-        var fallbackString = repoStringMap[repositoryName][fallbackLocale][stringKey].value;
+        var fallbackString = repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ].value;
         assert( fallbackString !== undefined && fallbackString !== null, 'Missing string ' + stringKey + ' in fallback locale (' + fallbackLocale + ')' );
-        stringMap[locale][stringKey] = fallbackString;
+        stringMap[ locale ][ stringKey ] = fallbackString;
 
         // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.
         if ( locale !== fallbackLocale &&
              repoStringMap[ repositoryName ] &&
              repoStringMap[ repositoryName ][ locale ] &&
              repoStringMap[ repositoryName ][ locale ][ stringKey ] ) {
-          stringMap[locale][stringKey] = repoStringMap[repositoryName][locale][stringKey].value;
+          stringMap[ locale ][ stringKey ] = repoStringMap[ repositoryName ][ locale ][ stringKey ].value;
         }
       }
     } );
@@ -201,11 +201,24 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
     // Create the license header for this html and all the 3rd party dependencies
-    var htmlHeader = pkg.name + '\n' +
-                     'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', University of Colorado Boulder\n' +
-                     'PhET Interactive Simulations\n' +
-                     'Licensed under ' + pkg.license + '\n' +
-                     'http://phet.colorado.edu/en/html-terms-privacy-and-licensing';
+    // Text was discussed in https://github.com/phetsims/chipper/issues/148
+    var titleKey = pkg.simTitleStringKey;
+    var stringMap = loadStringMap();
+    var englishSimTitle = stringMap.en[ titleKey ] + ' ' + pkg.version; //TODO: i18n order
+    var htmlHeader = englishSimTitle + '\n' +
+                     'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
+                     'PhET Interactive Simulations, University of Colorado Boulder\n' +
+                     '\n' +
+                     'This file is licensed under Creative Commons Attribution 4.0\n' +
+                     'For alternate source code licensing, see https://github.com/phetsims\n' +
+                     'For licenses for third-party software used by this simulation, see below\n' +
+                     'For more information, see http://phet.colorado.edu/en/licensing\n' +
+                     '\n' +
+                     'The PhET name and PhET logo are registered trademarks of The Regents of the\n' +
+                     'University of Colorado. Permission is granted to use the PhET name and PhET logo\n' +
+                     'only for attribution purposes. Use of the PhET name and/or PhET logo for promotional\n' +
+                     'marketing, or advertising purposes requires a separate license agreement from the\n' +
+                     'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
 
     // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
     preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
@@ -234,9 +247,6 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     html = replaceFirst( html, 'PHET_SHAS', dependencyJSON );
     html = replaceFirst( html, 'THIRD_PARTY_LICENSES', JSON.stringify( global.phet.thirdPartyLicenses, null, 2 ) );
 
-    var stringMap = loadStringMap();
-
-    var titleKey = pkg.simTitleStringKey;
     for ( var i = 0; i < locales.length; i++ ) {
       var locale = locales[ i ];
 
@@ -257,7 +267,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       // version string. This approach has a lot of problems and should be replaced as soon as we work out a more all
       // encompassing way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3
       // for more info.
-      if ( grunt.option( 'together' ) ){
+      if ( grunt.option( 'together' ) ) {
         var unalteredVersion = pkg.version.replace( '-together', '-dev' );
         localeHTML = replaceFirst( localeHTML, unalteredVersion, pkg.version );
       }
@@ -325,7 +335,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       var dependencyInfoWithoutBabel = {};
       for ( var key in dependencyInfo ) {
         if ( key !== 'babel' ) {
-          dependencyInfoWithoutBabel[key] = dependencyInfo[key];
+          dependencyInfoWithoutBabel[ key ] = dependencyInfo[ key ];
         }
       }
       var dependencyJSONWithoutBabel = JSON.stringify( dependencyInfoWithoutBabel, null, 2 );
