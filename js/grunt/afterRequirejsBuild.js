@@ -216,7 +216,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
                      '\n' +
                      'The PhET name and PhET logo are registered trademarks of The Regents of the\n' +
                      'University of Colorado. Permission is granted to use the PhET name and PhET logo\n' +
-                     'only for attribution purposes. Use of the PhET name and/or PhET logo for promotional\n' +
+                     'only for attribution purposes. Use of the PhET name and/or PhET logo for promotional,\n' +
                      'marketing, or advertising purposes requires a separate license agreement from the\n' +
                      'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
 
