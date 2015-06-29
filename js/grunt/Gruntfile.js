@@ -194,7 +194,6 @@ module.exports = function( grunt ) {
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
     function() {
       if ( fs.existsSync( 'build' ) ) {
-        grunt.log.writeln( 'Cleaning build directory' );
         grunt.file.delete( 'build' );
       }
       grunt.file.mkdir( 'build' );
