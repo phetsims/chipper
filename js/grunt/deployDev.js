@@ -36,8 +36,8 @@ module.exports = function( grunt ) {
   var preferences = grunt.file.readJSON( PREFERENCES_FILE );
 
   // verify that preferences contains required entries
-  assert( preferences.userName, 'userName is missing from ' + PREFERENCES_FILE );
-  assert( preferences.userPassword, 'userPassword is missing from ' + PREFERENCES_FILE );
+  assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
+  assert( preferences.devPassword, 'devPassword is missing from ' + PREFERENCES_FILE );
 
   // check prerequisite files
   assert( grunt.file.exists( PACKAGE_JSON ), 'Cannot find ' + PACKAGE_JSON );
@@ -59,8 +59,8 @@ module.exports = function( grunt ) {
   var path = basePath + sim + '/';
   var credentialsObject = {
     host: server,
-    username: preferences.userName,
-    password: preferences.userPassword,
+    username: preferences.devUsername,
+    password: preferences.devPassword,
     path: path + version + '/'
   };
 
