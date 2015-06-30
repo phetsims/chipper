@@ -172,16 +172,14 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'deploy-dev',
-    'Deploy a dev version.\n' +
-    'with no options, deploys to spot\n' +
-    '--serverName : deploy to the given server, i.e. serverName=rintintin\n' +
+    'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
     '--buildServer : build the sim with the build server if true\n',
     function() {
       if ( grunt.option( 'buildServer' ) ) {
         deploySimulation( grunt, 'simian' );
       }
       else {
-        deployDev( grunt, grunt.option( 'serverName' ) || 'spot' );
+        deployDev( grunt );
       }
     }
   );
