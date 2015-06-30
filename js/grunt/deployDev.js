@@ -15,10 +15,12 @@ var assert = require( 'assert' );
 var fs = require( 'fs' );
 
 // constants
+var DEV_SERVER = 'spot.colorado.edu';
 var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
 var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
 var BUILD_DIR = 'build';
 var PACKAGE_JSON = 'package.json';
+var DEPENDENCIES_JSON = 'dependencies.json';
 
 var TEST_SCP = false; // set to true to disable commit and push, and SCP to a test directory on spot
 
@@ -42,7 +44,7 @@ module.exports = function( grunt ) {
   assert( grunt.file.exists( BUILD_DIR ), 'Cannot find ' + BUILD_DIR );
 
   // get the server name and server path if they are in the preferences file, otherwise use defaults
-  var server = preferences.devDeployServer || 'spot.colorado.edu';
+  var server = preferences.devDeployServer || DEV_SERVER;
   var basePath = preferences.devDeployPath || DEV_DIRECTORY;
   if ( TEST_SCP ) { basePath += 'ad-tests/'; }
 
@@ -50,7 +52,7 @@ module.exports = function( grunt ) {
   var directory = process.cwd();
   var directoryComponents = directory.split( '/' );
   var sim = directoryComponents[ directoryComponents.length - 1 ];
-  var version = grunt.file.readJSON( 'package.json' ).version;
+  var version = grunt.file.readJSON( PACKAGE_JSON ).version;
 
   var done = grunt.task.current.async();
 
@@ -73,7 +75,7 @@ module.exports = function( grunt ) {
       content: new Buffer( HTACCESS_TEXT )
     }, function( err ) {
       if ( err ) {
-        grunt.log.error( 'error writing htaccess file ' + err );
+        grunt.log.error( 'error writing .htaccess file ' + err );
       }
       else {
         grunt.log.writeln( '.htaccess file written successfully' );
@@ -86,7 +88,7 @@ module.exports = function( grunt ) {
   grunt.log.writeln( 'Copying files to ' + server + '...' );
 
   // scp will mkdir automatically if necessary
-  client.scp( 'build', credentialsObject, function( err ) {
+  client.scp( BUILD_DIR, credentialsObject, function( err ) {
     if ( err ) {
       throw new Error( 'SCP failed with error: ' + err );
     }
@@ -94,8 +96,8 @@ module.exports = function( grunt ) {
       grunt.log.writeln( 'SCP ran successfully' );
     }
 
-    grunt.log.writeln( 'updating dependencies.json' );
-    grunt.file.copy( 'build/dependencies.json', 'dependencies.json' );
+    grunt.log.writeln( 'updating ' + DEPENDENCIES_JSON );
+    grunt.file.copy( BUILD_DIR + '/' + DEPENDENCIES_JSON, DEPENDENCIES_JSON );
 
     var exec = function( command, callback ) {
       child_process.exec( command, function( err, stdout, stderr ) {
@@ -107,8 +109,8 @@ module.exports = function( grunt ) {
     };
 
     if ( !TEST_SCP ) {
-      exec( 'git add dependencies.json', function() {
-        exec( 'git commit --message "updated dependencies.json for ' + version + ' "', function() {
+      exec( 'git add ' + DEPENDENCIES_JSON, function() {
+        exec( 'git commit --message "updated ' + DEPENDENCIES_JSON + ' for ' + version + ' "', function() {
           exec( 'git push', function() {
             createHtaccessFile( done );
           } );
