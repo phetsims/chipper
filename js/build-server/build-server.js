@@ -112,43 +112,6 @@ if ( options.silent ) {
 var verbose = options.verbose;
 
 /**
- * Execute a step of the build process. The build aborts if any step fails.
- *
- * @param command the command to be executed
- * @param dir the directory to execute the command from
- * @param callback the function that executes upon completion
- */
-function exec( command, dir, callback ) {
-  winston.log( 'info', 'running command: ' + command );
-  child_process.exec( command, { cwd: dir }, function( err, stdout, stderr ) {
-    if ( verbose ) {
-      winston.log( 'info', stdout );
-      winston.log( 'info', stderr );
-    }
-    if ( !err && callback ) {
-      winston.log( 'info', command + ' ran successfully in directory: ' + dir );
-      callback();
-    }
-
-    // checkout master for all repos if the build fails so they don't get left at random shas
-    else if ( err ) {
-      if ( command === 'grunt checkout-master' ) {
-        winston.log( 'error', 'error running grunt checkout-master, build aborted to avoid infinite loop.' );
-        winston.log( 'error', dir );
-      }
-      else {
-        winston.log( 'error', 'error running command: ' + command + '. build aborted.' );
-        winston.log( 'error', dir );
-        exec( 'grunt checkout-master', dir, function() {
-          winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
-        } );
-        exec( 'git checkout master', dir );
-      }
-    }
-  } );
-}
-
-/**
  * Create a [sim name].xml file in the live sim directory in htdocs. This file tells the website which
  * translations exist for a given sim. It is used by the "synchronize" method in Project.java in the webiste code.
  *
@@ -257,6 +220,44 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   var buildDir = './js/build-server/tmp';
   var simDir = '../' + simName;
+
+  /**
+   * Execute a step of the build process. The build aborts if any step fails.
+   *
+   * @param command the command to be executed
+   * @param dir the directory to execute the command from
+   * @param callback the function that executes upon completion
+   */
+  function exec( command, dir, callback ) {
+    winston.log( 'info', 'running command: ' + command );
+    child_process.exec( command, { cwd: dir }, function( err, stdout, stderr ) {
+      if ( verbose ) {
+        winston.log( 'info', stdout );
+        winston.log( 'info', stderr );
+      }
+      if ( !err && callback ) {
+        winston.log( 'info', command + ' ran successfully in directory: ' + dir );
+        callback();
+      }
+
+      // checkout master for all repos if the build fails so they don't get left at random shas
+      else if ( err ) {
+        if ( command === 'grunt checkout-master' ) {
+          winston.log( 'error', 'error running grunt checkout-master in ' + dir + ', build aborted to avoid infinite loop.' );
+          taskCallback(); // build aborted, so take this build task off of the queue
+        }
+        else {
+          winston.log( 'error', 'error running command: ' + command + ' in ' + dir + '. build aborted.' );
+          exec( 'grunt checkout-master', dir, function() {
+            exec( 'git checkout master', dir, function() {
+              winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
+              taskCallback(); // build aborted, so take this build task off of the queue
+            } );
+          } );
+        }
+      }
+    } );
+  }
 
   /**
    * pull master for every repo in dependencies.json (plus babel) to make sure everything is up to date
