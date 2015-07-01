@@ -311,6 +311,11 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   /**
    * scp files to dev server. This will usually be spot.
+   * This is currently hardcoded to use my credentials and requires an ssh key to be set up.
+   * Using the 'scp2' library (which allows for password authorization), worked inconsistently when
+   * running on simian, so the more basic library 'scp' was used instead.
+   *
+   * This method will not mkdir. To deploy to spot with mkdir, use 'grunt deploy-dev' locally.
    * @param callback
    */
   var devScp = function( callback ) {
@@ -327,7 +332,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       var options = {
         file: simDir + '/build/' + files[ i ],
         user: credentials.username,
-        host: 'rintintin.colorado.edu',
+        host: 'rintintin.colorado.edu', // alias for spot
         port: '22',
         path: DEV_DIRECTORY + simName + '/' + version + '/'
       };
@@ -392,7 +397,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   /**
    * Write a dependencies.json file based on the the dependencies passed to the build server.
-   * The reason to write this to a file is so the "grunt checkout-shas" task works without much modification.
+   * The reason to write this to a file instead of using the in memory values, is so the "grunt checkout-shas"
+   * task works without much modification.
    */
   var writeDependenciesFile = function() {
     fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
@@ -419,7 +425,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                     mkVersionDir( function() {
                       exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
                         createXML( simName, version, function() {
-                          notifyServer( afterDeploy );
+                          notifyServer( function() {
+                            devScp( afterDeploy ); // copy to spot on non-dev deploys too
+                          } );
                         } );
                       } );
                     } );
