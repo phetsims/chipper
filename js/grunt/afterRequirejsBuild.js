@@ -226,6 +226,9 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     grunt.log.debug( 'Constructing HTML from template' );
     var html = grunt.file.read( '../chipper/templates/sim.html' );
+    // Strip out carriage returns (if building in Windows), then add in our own after the MOTW.
+    // See https://github.com/phetsims/joist/issues/164
+    html = replaceFirst( html.replace( /\r/g, '' ), 'CARRIAGE_RETURN', '\r' );
     html = replaceFirst( html, 'HTML_HEADER', htmlHeader );
     html = replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapJavascript );
     html = replaceFirst( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
