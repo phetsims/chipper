@@ -27,7 +27,9 @@ module.exports = function( grunt ) {
 
   for ( var library in json ) {
     var lines = [
-      '**' + library + '**',
+      '**' + library + '**<br>',  // This <br> wasn't necessary when viewing GitHub markdown as an issue comment
+                                  // But for unknown reasons is necessary when viewing from
+                                  // https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
       json[ library ].text.join( '<br>' ),
       json[ library ].projectURL,
       json[ library ].license + '  ' + json[ library ].licenseURL,
