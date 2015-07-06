@@ -25,11 +25,11 @@
       "../phetcommon/js/analytics/google-analytics.js"
     ],
     "licenseKeys": [
-      "almond-0.2.9",
-      "fontawesome-webfont-3.0.2",
-      "jama-1.0.2",
-      "pegjs-0.7.0",
-      "text-2.0.12"
+      "almond-0.2.9.js",
+      "fontawesome-webfont-3.0.2.svg",
+      "jama-1.0.2.js",
+      "pegjs-0.7.0.js",
+      "text-2.0.12.js"
     ]
   },
   "together": {
@@ -42,7 +42,7 @@
       "../together/js/api/TogetherCommon.js"
     ],
     "licenseKeys": [
-      "jsondiffpatch-0.1.31"
+      "jsondiffpatch-0.1.31.js"
     ]
   }
 }

@@ -54,7 +54,6 @@ module.exports = function( grunt, pkg ) {
   grunt.log.debug( 'Adding preload licenses...' );
   pkg.preload.forEach( function( path ) {
     if ( path.indexOf( '/sherpa/' ) !== -1 ) {
-      path = path.replace( /\.js$/, '' );  // trim .js file suffix
       var lastSlash = path.lastIndexOf( '/' );
       var key = path.substring( lastSlash + 1 );
       licenseKeys.push( key );
