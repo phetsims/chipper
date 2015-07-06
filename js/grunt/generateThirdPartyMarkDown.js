@@ -23,10 +23,10 @@ module.exports = function( grunt ) {
   for ( var library in json ) {
     var lines = [
       '**' + library + '**',
-      '*' + json[ library ].text.join( '<br>' ) + '*',
+      json[ library ].text.join( '<br>' ),
       json[ library ].projectURL,
-      '- ' + json[ library ].license + '  ' + json[ library ].licenseURL,
-      '- ' + json[ library ].notes
+      json[ library ].license + '  ' + json[ library ].licenseURL,
+      json[ library ].notes
     ];
 
     entries.push( lines.join( '\n' ) );
