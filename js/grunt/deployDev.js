@@ -17,6 +17,7 @@ var fs = require( 'fs' );
 // constants
 var DEV_SERVER = 'spot.colorado.edu';
 var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
+var URL_BASE = 'http://www.colorado.edu/physics/phet/dev/html/';
 var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
 var BUILD_DIR = 'build';
 var PACKAGE_JSON = 'package.json';
@@ -46,7 +47,10 @@ module.exports = function( grunt ) {
   // get the server name and server path if they are in the preferences file, otherwise use defaults
   var server = preferences.devDeployServer || DEV_SERVER;
   var basePath = preferences.devDeployPath || DEV_DIRECTORY;
-  if ( TEST_SCP ) { basePath += 'ad-tests/'; }
+  if ( TEST_SCP ) {
+    basePath += 'ad-tests/';
+    URL_BASE += 'ad-tests/';
+  }
 
   // get the sim name and version
   var directory = process.cwd();
@@ -54,14 +58,19 @@ module.exports = function( grunt ) {
   var sim = directoryComponents[ directoryComponents.length - 1 ];
   var version = grunt.file.readJSON( PACKAGE_JSON ).version;
 
-  var done = grunt.task.current.async();
-
   var path = basePath + sim + '/';
   var credentialsObject = {
     host: server,
     username: preferences.devUsername,
     password: preferences.devPassword,
     path: path + version + '/'
+  };
+
+  var done = grunt.task.current.async();
+
+  var finish = function() {
+    grunt.log.writeln( 'deployed: ' + URL_BASE + sim + '/' + version + '/' + sim + '_en.html' );
+    done();
   };
 
   // write .htaccess in the sim directory
@@ -92,11 +101,7 @@ module.exports = function( grunt ) {
     if ( err ) {
       throw new Error( 'SCP failed with error: ' + err );
     }
-    else {
-      grunt.log.writeln( 'SCP ran successfully' );
-    }
 
-    grunt.log.writeln( 'updating ' + DEPENDENCIES_JSON );
     grunt.file.copy( BUILD_DIR + '/' + DEPENDENCIES_JSON, DEPENDENCIES_JSON );
 
     var exec = function( command, callback ) {
@@ -112,13 +117,13 @@ module.exports = function( grunt ) {
       exec( 'git add ' + DEPENDENCIES_JSON, function() {
         exec( 'git commit --message "updated ' + DEPENDENCIES_JSON + ' for ' + version + ' "', function() {
           exec( 'git push', function() {
-            createHtaccessFile( done );
+            createHtaccessFile( finish );
           } );
         } );
       } );
     }
     else {
-      createHtaccessFile( done );
+      createHtaccessFile( finish );
     }
 
   } );
