@@ -1,7 +1,8 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * This grunt task generates a markdown form of sherpa/third-party-licenses.json.
+ * This grunt task generates a markdown form of sherpa/third-party-licenses.json and automatically commits it.
+ * The output can be observed at https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
  *
  * @author Aaron Davis
  * @author Sam Reid
@@ -12,7 +13,7 @@ var assert = require( 'assert' );
   
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
-var OUTPUT_FILE = 'info.md';
+var OUTPUT_FILE = 'third-party-licenses.md';
 
 /**
  * @param grunt the grunt instance
