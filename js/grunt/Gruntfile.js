@@ -23,7 +23,6 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 // PhET custom grunt tasks
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
 var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBuild' );
-var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deploySimulation = require( '../../../chipper/js/grunt/deploySimulation' );
@@ -269,14 +268,6 @@ module.exports = function( grunt ) {
       assert( pkg.phetLibs, 'phetLibs missing from package.json' );
       assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
       generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
-    } );
-
-  grunt.registerTask( 'bump-version',
-    'This task updates the last value in the version by one. For example from 0.0.0-dev.12 to 0.0.0-dev.13.' +
-    'This updates the package.json and js/version.js files, and commits + pushes to git.' +
-    'BEWARE: Do not run this task unless your git is clean, otherwise it will commit other work on your repo as well.',
-    function() {
-      bumpVersion( grunt, pkg.version );
     } );
 
   grunt.registerTask( 'pull-all',
