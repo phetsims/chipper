@@ -7,8 +7,12 @@
  * @author Sam Reid
  */
 
+var child_process = require( 'child_process' );
+var assert = require( 'assert' );
+  
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
+var OUTPUT_FILE = 'info.md';
 
 /**
  * @param grunt the grunt instance
@@ -33,31 +37,33 @@ module.exports = function( grunt ) {
   }
 
   var output = entries.join( '\n\n' );
-  console.log( '!!!!!!' );
-  console.log( output );
-  console.log( '!!!!!!' );
 
-  //grunt.log.writeln( 'writing file ' + OUTPUT_FILE );
-  //grunt.file.write( SHERPA + '/' + OUTPUT_FILE, output );
-  //
-  //var done = grunt.task.current.async();
-  //
-  //// exec a command in the sherpa directory
-  //var exec = function( command, callback ) {
-  //  child_process.exec( command, { cwd: SHERPA }, function( err, stdout, stderr ) {
-  //    grunt.log.writeln( stdout );
-  //    grunt.log.writeln( stderr );
-  //    assert( !err, 'assertion error running ' + command );
-  //    callback();
-  //  } );
-  //};
-  //
-  //exec( 'git add ' + OUTPUT_FILE, function() {
-  //  exec( 'git commit --message "update info.md"', function() {
-  //    exec( 'git push', function() {
-  //      done();
-  //    } );
-  //  } );
-  //} );
+  // It is sometimes convenient to iterate using GitHub issue preview rather than committing every time.
+  // In this case, you may want to comment out the commit below.
+  grunt.log.debug( '!!!!!! BEGIN LICENSES OUTPUT' );
+  grunt.log.debug( output );
+  grunt.log.debug( '!!!!!! END LICENSES OUTPUT' );
 
+  grunt.log.writeln( 'writing file ' + OUTPUT_FILE );
+  grunt.file.write( SHERPA + '/' + OUTPUT_FILE, output );
+
+  var done = grunt.task.current.async();
+
+  // exec a command in the sherpa directory
+  var exec = function( command, callback ) {
+    child_process.exec( command, { cwd: SHERPA }, function( err, stdout, stderr ) {
+      grunt.log.writeln( stdout );
+      grunt.log.writeln( stderr );
+      assert( !err, 'assertion error running ' + command );
+      callback();
+    } );
+  };
+
+  exec( 'git add ' + OUTPUT_FILE, function() {
+    exec( 'git commit --message "updated info.md"', function() {
+      exec( 'git push', function() {
+        done();
+      } );
+    } );
+  } );
 };
