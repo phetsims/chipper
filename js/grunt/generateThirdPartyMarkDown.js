@@ -4,10 +4,11 @@
  * This grunt task generates a markdown form of sherpa/third-party-licenses.json.
  *
  * @author Aaron Davis
+ * @author Sam Reid
  */
 
 // constants
-var SHERPA = '../sherpa';
+var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
 
 /**
  * @param grunt the grunt instance
@@ -29,20 +30,9 @@ module.exports = function( grunt ) {
     ];
 
     entries.push( lines.join( '\n' ) );
-    //output += '*' + library + '*';
-    //var text = json[ library ].text.join( '<br>' );
-    //var license = json[ library ].license;
-    //var projectURL = json[ library ].projectURL;
-    //var notes = json[ library ].notes;
-    //var licenseURL = json[ library ].licenseURL;
-    //rows.push( [ library, projectURL ? projectURL : '', license, licenseURL ? licenseURL : '', text, notes ] );
   }
 
   var output = entries.join( '\n\n' );
-  //for ( i = 0; i < entr.length; i++ ) {
-  //  var row = rows[ i ];
-  //  output += '\n' + row.join( '|' );
-  //}
   console.log( '!!!!!!' );
   console.log( output );
   console.log( '!!!!!!' );
