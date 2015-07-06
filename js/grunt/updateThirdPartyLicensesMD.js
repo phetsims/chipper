@@ -34,7 +34,7 @@ module.exports = function( grunt ) {
       json[ library ].notes
     ];
 
-    // \n worked well when viewing GitHub markdown as an issue comment, but for unknown reasons is necessary when 
+    // \n worked well when viewing GitHub markdown as an issue comment, but for unknown reasons <br> is necessary when 
     // viewing from https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
     entries.push( lines.join( '<br>' ) );
   }
