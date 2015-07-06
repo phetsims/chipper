@@ -10,7 +10,7 @@
 
 var child_process = require( 'child_process' );
 var assert = require( 'assert' );
-  
+
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
 var OUTPUT_FILE = 'third-party-licenses.md';
@@ -27,16 +27,16 @@ module.exports = function( grunt ) {
 
   for ( var library in json ) {
     var lines = [
-      '**' + library + '**<br>',  // This <br> wasn't necessary when viewing GitHub markdown as an issue comment
-                                  // But for unknown reasons is necessary when viewing from
-                                  // https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
+      '**' + library + '**',
       json[ library ].text.join( '<br>' ),
       json[ library ].projectURL,
       json[ library ].license + '  ' + json[ library ].licenseURL,
       json[ library ].notes
     ];
 
-    entries.push( lines.join( '\n' ) );
+    // \n worked well when viewing GitHub markdown as an issue comment, but for unknown reasons is necessary when 
+    // viewing from https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
+    entries.push( lines.join( '<br>' ) );
   }
 
   var output = entries.join( '\n\n' );
