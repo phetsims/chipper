@@ -16,7 +16,7 @@ var parseArgs = require( 'minimist' );
 var winston = require( 'winston' );
 var request = require( 'request' );
 var child_process = require( 'child_process' );
-var fs = require( 'fs' );
+var fs = require( 'fs.extra' );
 var async = require( 'async' );
 var scp = require( 'scp' );
 
@@ -261,6 +261,19 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   }
 
   /**
+   * Clean up after deploy. Check out master and remove the temp build dir
+   */
+  var afterDeploy = function() {
+    exec( 'grunt checkout-master', simDir, function() {
+      exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
+        exec( 'rm -rf ' + buildDir, '.', function() {
+          taskCallback();
+        } );
+      } );
+    } );
+  };
+
+  /**
    * pull master for every repo in dependencies.json (plus babel) to make sure everything is up to date
    * @param callback
    */
@@ -296,12 +309,14 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
     fs.exists( simDirPath, function( exists ) {
       if ( !exists ) {
-        fs.mkdir( simDirPath, function( err ) {
+        fs.mkdirp( simDirPath, function( err ) {
           if ( !err ) {
             callback();
           }
           else {
-            winston.log( 'error', err );
+            winston.log( 'error', 'in mkVersionDir ' + err );
+            winston.log( 'error', 'build failed' );
+            afterDeploy();
           }
         } );
       }
@@ -384,18 +399,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
-  /**
-   * Clean up after deploy. Check out master and remove the temp build dir
-   */
-  var afterDeploy = function() {
-    exec( 'grunt checkout-master', simDir, function() {
-      exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
-        exec( 'rm -rf ' + buildDir, '.', function() {
-          taskCallback();
-        } );
-      } );
-    } );
-  };
+
 
   /**
    * Write a dependencies.json file based on the the dependencies passed to the build server.
