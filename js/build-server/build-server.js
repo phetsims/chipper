@@ -473,7 +473,7 @@ function queueDeploy( req, res ) {
         winston.log( 'error', 'build for ' + req.query[ SIM_NAME ] + ' failed with error: ' + err );
       }
       else {
-        winston.log( 'info', 'build for ' + req.query[ SIM_NAME ] + 'finished successfully' );
+        winston.log( 'info', 'build for ' + req.query[ SIM_NAME ] + ' finished successfully' );
       }
     } );
   }
