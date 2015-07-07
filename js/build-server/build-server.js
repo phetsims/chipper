@@ -201,7 +201,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var repos = JSON.parse( decodeURIComponent( req.query[ REPOS_KEY ] ) );
   var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( decodeURIComponent( req.query[ LOCALES_KEY ] ) ) : '*';
 
-  var isDev = ( req.query[ DEV_KEY ] ) ? true : false;
+  var isDev = ( req.query[ DEV_KEY ] && req.query[ DEV_KEY ] === 'true' ) ? true : false;
+  winston.log( 'info', 'deploying to ' + ( isDev ? 'dev server' : 'production server' ) );
   var simName = req.query[ SIM_NAME ];
   var version = req.query[ VERSION ];
 
