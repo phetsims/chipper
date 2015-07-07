@@ -245,14 +245,14 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       else if ( err ) {
         if ( command === 'grunt checkout-master' ) {
           winston.log( 'error', 'error running grunt checkout-master in ' + dir + ', build aborted to avoid infinite loop.' );
-          taskCallback(); // build aborted, so take this build task off of the queue
+          taskCallback( err ); // build aborted, so take this build task off of the queue
         }
         else {
           winston.log( 'error', 'error running command: ' + command + ' in ' + dir + '. build aborted.' );
           exec( 'grunt checkout-master', dir, function() {
             exec( 'git checkout master', dir, function() {
               winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
-              taskCallback(); // build aborted, so take this build task off of the queue
+              taskCallback( err ); // build aborted, so take this build task off of the queue
             } );
           } );
         }
@@ -263,11 +263,11 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   /**
    * Clean up after deploy. Check out master and remove the temp build dir
    */
-  var afterDeploy = function() {
+  var afterDeploy = function( err ) {
     exec( 'grunt checkout-master', simDir, function() {
       exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
         exec( 'rm -rf ' + buildDir, '.', function() {
-          taskCallback();
+          taskCallback( err );
         } );
       } );
     } );
@@ -316,7 +316,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
           else {
             winston.log( 'error', 'in mkVersionDir ' + err );
             winston.log( 'error', 'build failed' );
-            afterDeploy();
+            afterDeploy( err );
           }
         } );
       }
@@ -468,8 +468,13 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 function queueDeploy( req, res ) {
   if ( req.query[ REPOS_KEY ] && req.query[ SIM_NAME ] && req.query[ VERSION ] ) {
     winston.log( 'info', 'queuing task' );
-    taskQueue.push( { req: req, res: res }, function() {
-      winston.log( 'info', 'build finished' );
+    taskQueue.push( { req: req, res: res }, function( err ) {
+      if ( err ) {
+        winston.log( 'error', 'build for ' + req.query[ SIM_NAME ] + ' failed with error: ' + err );
+      }
+      else {
+        winston.log( 'info', 'build for ' + req.query[ SIM_NAME ] + 'finished successfully' );
+      }
     } );
   }
   else {
