@@ -19,17 +19,8 @@ var child_process = require( 'child_process' );
 var fs = require( 'fs.extra' );
 var async = require( 'async' );
 var scp = require( 'scp' );
-
-var start = true; // whether or not to start the server - will be set to false if scp credentials are not found
-
-try {
-  var credentials = require( './credentials.json' ); // put this file in js/build-sever/ with your spot login info
-}
-catch( e ) {
-  console.log( 'ERROR: SCP credentials for deploying to spot not found. ' +
-               'Please create a file "credentials.json" in js/build-server with fields for "username" and "password"' );
-  start = false;
-}
+var assert = require( 'assert' );
+var email = require( 'emailjs/email' );
 
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
@@ -45,7 +36,47 @@ var SERVER_NAME = 'serverName';
 var DEV_KEY = 'dev';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
 var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
+var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 
+assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
+var preferences = require( PREFERENCES_FILE );
+
+// verify that preferences contains required entries
+assert( preferences.emailUsername, 'emailUsername is missing from ' + PREFERENCES_FILE );
+assert( preferences.emailPassword, 'emailPassword is missing from ' + PREFERENCES_FILE );
+assert( preferences.emailServer, 'emailServer is missing from ' + PREFERENCES_FILE );
+assert( preferences.emailFrom, 'emailFrom is missing from ' + PREFERENCES_FILE );
+assert( preferences.emailTo, 'emailTo is missing from ' + PREFERENCES_FILE );
+assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
+
+// configure email server
+var server = email.server.connect( {
+  user: preferences.emailUsername,
+  password: preferences.emailPassword,
+  host: preferences.emailServer,
+  tls: preferences.tls || true
+} );
+
+/**
+ * Send an email. Used to notify developers if a build fails
+ * @param subject
+ * @param text
+ */
+function sendEmail( subject, text ) {
+  server.send( {
+    text: text,
+    from: 'PhET Build Server <' + preferences.emailFrom + '>',
+    to: preferences.emailTo,
+    subject: subject,
+  }, function( err, message ) {
+    if ( err ) {
+      console.log( 'error sending email', err );
+    }
+    else {
+      console.log( 'send email', message );
+    }
+  } );
+}
 
 // Handle command line input
 // First 2 args provide info about executables, ignore
@@ -348,7 +379,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     for ( var i = 0; i < files.length; i++ ) {
       var options = {
         file: simDir + '/build/' + files[ i ],
-        user: credentials.username,
+        user: preferences.devUsername,
         host: 'rintintin.colorado.edu', // alias for spot
         port: '22',
         path: DEV_DIRECTORY + simName + '/' + version + '/'
@@ -398,7 +429,6 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       }
     } );
   };
-
 
 
   /**
@@ -494,9 +524,7 @@ app.engine( 'html', doT.__express );
 app.get( '/deploy-html-simulation', queueDeploy );
 
 // start the server
-if ( start ) {
-  app.listen( LISTEN_PORT, function() {
-    winston.log( 'info', 'Listening on port ' + LISTEN_PORT );
-    winston.log( 'info', 'Verbose mode: ' + verbose );
-  } );
-}
+app.listen( LISTEN_PORT, function() {
+  winston.log( 'info', 'Listening on port ' + LISTEN_PORT );
+  winston.log( 'info', 'Verbose mode: ' + verbose );
+} );
