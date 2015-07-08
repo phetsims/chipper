@@ -212,8 +212,8 @@ function createXML( sim, version, callback ) {
     callback();
   }
   catch( e ) {
-    winston.log( 'error', e );
-    callback( true );
+    winston.log( 'warn', 'XML file failed to write: ' + e );
+    callback();
   }
 }
 
@@ -501,6 +501,7 @@ function queueDeploy( req, res ) {
     taskQueue.push( { req: req, res: res }, function( err ) {
       if ( err ) {
         winston.log( 'error', 'build for ' + req.query[ SIM_NAME ] + ' failed with error: ' + err );
+        sendEmail( 'BUILD ERROR', err );
       }
       else {
         winston.log( 'info', 'build for ' + req.query[ SIM_NAME ] + ' finished successfully' );
