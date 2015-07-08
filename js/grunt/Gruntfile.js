@@ -35,6 +35,7 @@ var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var createXML = require( '../../../chipper/js/grunt/createXML' );
+var licenseTXTReport = require( '../../../chipper/js/grunt/licenseTXTReport' );
 
 //TODO look at why this is necessary
 /*
@@ -252,6 +253,12 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'createXML', 'Write XML file with specific translations for sim',
     function() {
       createXML( grunt );
+    } );
+
+  // See licenseTXTReport.js
+  grunt.registerTask( 'licenseTXTReport', 'Report on the license.txt files throughout the working copies',
+    function() {
+      licenseTXTReport( grunt );
     } );
 
   grunt.registerTask( 'generate-published-README',
