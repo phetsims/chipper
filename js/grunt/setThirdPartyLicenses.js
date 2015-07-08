@@ -5,10 +5,6 @@
  * It shares the object literal with other grunt tasks via global.phet.thirdPartyLicenses.
  * License info is read from sherpa/third-party-licenses.json, and the format of the object literal is similar to that syntax.
  *
- * By convention, the key for each license entry is the name of the JavaScript source file,
- * with the .js suffix stripped off.  For example, for almond-0.2.9.js, the key is 'almond-0.2.9'.
- * (TODO This convention is dubious. Why are we bothering to strip off the .js suffix?)
- *
  * The fields in each license entry are:
  *
  * {string[]} text - the text of the license info. A newline will be appended to each array element
