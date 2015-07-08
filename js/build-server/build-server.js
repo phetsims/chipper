@@ -48,6 +48,7 @@ assert( preferences.emailServer, 'emailServer is missing from ' + PREFERENCES_FI
 assert( preferences.emailFrom, 'emailFrom is missing from ' + PREFERENCES_FILE );
 assert( preferences.emailTo, 'emailTo is missing from ' + PREFERENCES_FILE );
 assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
+assert( preferences.devDeployServer, 'devDeployServer is missing from ' + PREFERENCES_FILE );
 
 // configure email server
 var server = email.server.connect( {
@@ -67,7 +68,7 @@ function sendEmail( subject, text ) {
     text: text,
     from: 'PhET Build Server <' + preferences.emailFrom + '>',
     to: preferences.emailTo,
-    subject: subject,
+    subject: subject
   }, function( err, message ) {
     if ( err ) {
       console.log( 'error sending email', err );
@@ -380,7 +381,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       var options = {
         file: simDir + '/build/' + files[ i ],
         user: preferences.devUsername,
-        host: 'rintintin.colorado.edu', // alias for spot
+        host: preferences.devDeployServer,
         port: '22',
         path: DEV_DIRECTORY + simName + '/' + version + '/'
       };
