@@ -37,6 +37,8 @@ module.exports = function( grunt, pkg ) {
   assert( fs.existsSync( BUILD_INFO_FILENAME ), 'missing ' + BUILD_INFO_FILENAME );
   var buildInfo = grunt.file.readJSON( BUILD_INFO_FILENAME );
 
+  console.log( buildInfo );
+
   // Read license info
   assert( fs.existsSync( LICENSE_INFO_FILENAME ), 'missing ' + LICENSE_INFO_FILENAME );
   var licenseInfo = grunt.file.readJSON( LICENSE_INFO_FILENAME );
@@ -62,11 +64,11 @@ module.exports = function( grunt, pkg ) {
     licenseKeys = licenseKeys.concat( pkg.licenseKeys );
   }
 
-   // Add together (data collection) licenses, as specified in build.json
+  // Add together (data collection) licenses, as specified in build.json
   if ( grunt.option( 'together' ) ) {
     grunt.log.debug( 'Adding together licenses...' );
     assert( buildInfo.together && buildInfo.together.licenseKeys, BUILD_INFO_FILENAME + ' is missing together.licenseKeys' );
-    licenseKeys.concat( buildInfo.together.licenseKeys );
+    licenseKeys = licenseKeys.concat( buildInfo.together.licenseKeys );
   }
 
   // Sort keys and remove duplicates
