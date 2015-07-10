@@ -10,6 +10,7 @@
 
 var child_process = require( 'child_process' );
 var assert = require( 'assert' );
+var fs = require( 'fs' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
