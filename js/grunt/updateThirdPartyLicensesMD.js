@@ -25,6 +25,7 @@ module.exports = function( grunt ) {
   var json = grunt.file.readJSON( SHERPA + '/third-party-licenses.json' );
 
   var entries = [];
+  var licensesUsed = [];
 
   for ( var library in json ) {
 
@@ -45,9 +46,16 @@ module.exports = function( grunt ) {
     // \n worked well when viewing GitHub markdown as an issue comment, but for unknown reasons <br> is necessary when 
     // viewing from https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
     entries.push( lines.join( '<br>' ) );
+
+    if ( licensesUsed.indexOf( json[ library ].license ) < 0 ) {
+      licensesUsed.push( json[ library ].license );
+    }
   }
 
-  var output = entries.join( '\n\n' );
+  // Summarize licenses used
+  var output = entries.join( '\n\n' ) + '\n\n' +
+               '**Licenses Used:**<br>' +
+               licensesUsed.join( '<br>' );
 
   // It is sometimes convenient to iterate using GitHub issue preview rather than committing every time.
   // In this case, you may want to comment out the commit below.
