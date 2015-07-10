@@ -214,9 +214,7 @@ module.exports = function( grunt ) {
     'Prints the license block for the simulation as it will appear in the HTML file\n' +
     'To make it easy to inspect/iterate over the license block formatting & content',
     function() {
-
-      // Print the 3rd party licenses
-      // You can comment out this line to just see the errors as they occur
+      // Print the 3rd party licenses. You can comment out this line to just see the errors as they occur
       console.log( global.phet.thirdPartyLicenses );
     } );
 
