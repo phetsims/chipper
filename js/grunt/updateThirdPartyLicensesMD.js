@@ -57,23 +57,23 @@ module.exports = function( grunt ) {
   grunt.log.writeln( 'writing file ' + OUTPUT_FILE );
   grunt.file.write( SHERPA + '/' + OUTPUT_FILE, output );
 
-  //var done = grunt.task.current.async();
+  var done = grunt.task.current.async();
 
   // exec a command in the sherpa directory
-  //var exec = function( command, callback ) {
-  //  child_process.exec( command, { cwd: SHERPA }, function( err, stdout, stderr ) {
-  //    grunt.log.writeln( stdout );
-  //    grunt.log.writeln( stderr );
-  //    assert( !err, 'assertion error running ' + command );
-  //    callback();
-  //  } );
-  //};
-  //
-  //exec( 'git add ' + OUTPUT_FILE, function() {
-  //  exec( 'git commit --message "updated info.md"', function() {
-  //    exec( 'git push', function() {
-  //      done();
-  //    } );
-  //  } );
-  //} );
+  var exec = function( command, callback ) {
+    child_process.exec( command, { cwd: SHERPA }, function( err, stdout, stderr ) {
+      grunt.log.writeln( stdout );
+      grunt.log.writeln( stderr );
+      assert( !err, 'assertion error running ' + command );
+      callback();
+    } );
+  };
+
+  exec( 'git add ' + OUTPUT_FILE, function() {
+    exec( 'git commit --message "updated info.md"', function() {
+      exec( 'git push', function() {
+        done();
+      } );
+    } );
+  } );
 };
