@@ -37,8 +37,9 @@ module.exports = function( grunt ) {
       '**' + library + '**',
       json[ library ].text.join( '<br>' ),
       json[ library ].projectURL,
-      json[ library ].license + '  ' + json[ library ].licenseURL,
-      json[ library ].notes
+      'License: ' + json[ library ].license,
+      'License URL: ' + json[ library ].licenseURL,
+      'Notes: ' + json[ library ].notes
     ];
 
     // \n worked well when viewing GitHub markdown as an issue comment, but for unknown reasons <br> is necessary when 
