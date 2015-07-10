@@ -24,7 +24,8 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 /* jshint +W079 */
 
 var BUILD_INFO_FILENAME = '../chipper/build.json'; // contains build info, which identifies licenses applicable to all sims
-var LICENSE_INFO_FILENAME = '../sherpa/third-party-licenses.json'; // contains third-party license info
+var THIRD_PARTY_LICENSES_FILENAME = '../sherpa/third-party-licenses.json'; // contains third-party license info
+var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
 /**
  * @param grunt the grunt instance
@@ -37,11 +38,9 @@ module.exports = function( grunt, pkg ) {
   assert( fs.existsSync( BUILD_INFO_FILENAME ), 'missing ' + BUILD_INFO_FILENAME );
   var buildInfo = grunt.file.readJSON( BUILD_INFO_FILENAME );
 
-  console.log( buildInfo );
-
   // Read license info
-  assert( fs.existsSync( LICENSE_INFO_FILENAME ), 'missing ' + LICENSE_INFO_FILENAME );
-  var licenseInfo = grunt.file.readJSON( LICENSE_INFO_FILENAME );
+  assert( fs.existsSync( THIRD_PARTY_LICENSES_FILENAME ), 'missing ' + THIRD_PARTY_LICENSES_FILENAME );
+  var licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );
 
   // Add common licenses, as specified in build.json
   grunt.log.debug( 'Adding common licenses...' );
@@ -77,7 +76,7 @@ module.exports = function( grunt, pkg ) {
   grunt.log.debug( 'licenseKeys = ' + licenseKeys.toString() );
 
   // Combine all licenses into 1 object literal
-  var licenseObject = {};
+  var thirdPartyLicenses = {};
   licenseKeys.forEach( function( key ) {
 
     var license = licenseInfo[ key ];
@@ -85,10 +84,29 @@ module.exports = function( grunt, pkg ) {
     assert( license.text, 'sherpa/third-party-licenses.json: no text field for key = ' + key );
     assert( license.license, 'sherpa/third-party-licenses.json: no license field for key = ' + key );
 
-    licenseObject[ key ] = license;
+    // Look up the license file
+    var licenseFilename = LICENSES_DIRECTORY + key + '.txt';
+    var licenseText;
+
+    // Read the content of the license file into a string
+    try {
+      licenseText = fs.readFileSync( licenseFilename, 'utf-8' );
+    }
+    catch( error ) {
+
+      // If the file could not be found or read, then error out.
+      // This block is here for ease of debugging 
+      grunt.log.error( 'error loading license file for ' + licenseFilename + ': ', error );
+
+      // We don't want to proceed with errors in licensing, so rethrow the error
+      throw error;
+    }
+    license.licenseText = licenseText.split( /\r?\n/ );
+
+    thirdPartyLicenses[ key ] = license;
   } );
 
   // share with other tasks via a global
   global.phet = global.phet || {};
-  global.phet.thirdPartyLicenses = licenseObject;
+  global.phet.thirdPartyLicenses = thirdPartyLicenses;
 };
