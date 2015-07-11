@@ -215,7 +215,7 @@ module.exports = function( grunt ) {
     'To make it easy to inspect/iterate over the license block formatting & content',
     function() {
       // Print the 3rd party licenses. You can comment out this line to just see the errors as they occur
-      console.log( global.phet.thirdPartyLicenses );
+      grunt.log.writeln( JSON.stringify( global.phet.thirdPartyLicenses, null, '  ' ) );
     } );
 
   grunt.registerTask( 'report-third-party-licenses',

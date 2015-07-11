@@ -82,22 +82,22 @@ module.exports = function( grunt ) {
             ) {
 
               // Report that the item came from a 3rd party
-              console.log( '3RD PARTY: \t\t\t\t\t' + abspath + ': ' + line );
+              grunt.log.writeln( '3RD PARTY: \t\t\t\t\t' + abspath + ': ' + line );
             }
           }
         }
         if ( foundEntries !== 1 ) {
           if ( foundEntries === 0 ) {
-            console.log( 'NOT ANNOTATED IN FILE:\t\t' + abspath );
+            grunt.log.writeln( 'NOT ANNOTATED IN FILE:\t\t' + abspath );
           }
           else {
-            console.log( 'MULTIPLE ANNOTATIONS:\t\t' + abspath );
+            grunt.log.writeln( 'MULTIPLE ANNOTATIONS:\t\t' + abspath );
           }
 
         }
       }
       catch( err ) {
-        console.log( 'NOT ANNOTATED (NO FILE):\t' + abspath );
+        grunt.log.writeln( 'NOT ANNOTATED (NO FILE):\t' + abspath );
       }
 
     }
