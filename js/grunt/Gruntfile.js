@@ -209,19 +209,11 @@ module.exports = function( grunt ) {
       setThirdPartyLicenses( grunt, pkg );
     } );
 
-  // This task is for internal use only, you probably want to use report-third-party-licenses, see below
-  grunt.registerTask( 'print-third-party-licenses',
-    'Prints the license block for the simulation as it will appear in the HTML file\n' +
-    'To make it easy to inspect/iterate over the license block formatting & content',
-    function() {
-      // Print the 3rd party licenses. You can comment out this line to just see the errors as they occur
-      grunt.log.writeln( JSON.stringify( global.phet.thirdPartyLicenses, null, '  ' ) );
-    } );
-
   grunt.registerTask( 'report-third-party-licenses',
-    'given the text from set-third-party-licenses, prints it to the screen.  Helpful for debugging licensing without ' +
-    'doing full builds.',
-    [ 'set-preload', 'set-third-party-licenses', 'print-third-party-licenses' ] );
+    'Computes the license header text that will appear in the HTML file.  This will error out if any problems are' +
+    'discovered during the license analysis.  use `grunt -d -v report-third-party-licenses` to print the report. Helpful' +
+    ' for debugging licensing without doing full builds.',
+    [ 'set-preload', 'set-third-party-licenses' ] );
 
   grunt.registerTask( 'before-requirejs-build',
     '(internal use only) Do things before the requirejs:build task',

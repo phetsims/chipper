@@ -109,4 +109,7 @@ module.exports = function( grunt, pkg ) {
   // share with other tasks via a global
   global.phet = global.phet || {};
   global.phet.thirdPartyLicenses = thirdPartyLicenses;
+
+  // Print the 3rd party licenses if you running with `grunt -d -v`
+  grunt.verbose.debug( JSON.stringify( thirdPartyLicenses, null, 2 ) );
 };
