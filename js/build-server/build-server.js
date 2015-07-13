@@ -298,7 +298,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    */
   var writeHtaccess = function( callback ) {
     var contents = 'RewriteEngine on\n' +
-                   'RewriteBase /sims/html/area-builder/\n' +
+                   'RewriteBase /sims/html/' + simName + '/\n' +
                    'RewriteRule latest(.*) ' + version + '$1\n' +
                    'Header set Access-Control-Allow-Origin "*"\n';
     fs.writeFileSync( HTML_SIMS_DIRECTORY + simName + '/.htaccess', contents );
