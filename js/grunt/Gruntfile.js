@@ -210,7 +210,7 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'report-third-party-licenses',
-    'Computes the license header text that will appear in the HTML file.  This will error out if any problems are' +
+    'Computes the license header text that will appear in the HTML file.  This will error out if any problems are ' +
     'discovered during the license analysis.  use `grunt -d -v report-third-party-licenses` to print the report. Helpful' +
     ' for debugging licensing without doing full builds.',
     [ 'set-preload', 'set-third-party-licenses' ] );
