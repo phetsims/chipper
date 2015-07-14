@@ -13,6 +13,7 @@
 var querystring = require( 'querystring' );
 var request = require( 'request' );
 var fs = require( 'fs' );
+var assert = require( 'assert' );
 
 // constants
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
