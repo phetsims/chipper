@@ -14,7 +14,7 @@ CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 WORKING_DIR=${CHIPPER_BIN}/../..
 cd ${WORKING_DIR}
 
-for sim in `cat chipper/data/active-sims | xargs`
+for sim in `cat chipper/data/active-runnables | xargs`
 do
   if [ -d "$sim" ]; then
     echo "Building" $sim

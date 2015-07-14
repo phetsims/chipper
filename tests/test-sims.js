@@ -232,6 +232,6 @@ window.addEventListener( 'message', function( evt ) {
     nextBuild();
   };
   // location of active sims
-  req.open( 'GET', '../../chipper/data/active-sims', true );
+  req.open( 'GET', '../../chipper/data/active-runnables', true );
   req.send();
 } )();
