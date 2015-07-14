@@ -165,7 +165,8 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'deploy-production',
     'Deploy a simulation. Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
-    'with no options, deploys to phet-dev (since this is still being tested)\n',
+    'with no options, deploys to phet-dev (since this is still being tested)\n' +
+    '--devDeploy : deploys to spot\n',
     function() {
       deploySimulation( grunt, grunt.option( 'devDeploy' ) );
     }
