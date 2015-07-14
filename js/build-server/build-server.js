@@ -297,12 +297,25 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * Write the .htaccess file to make "latest" point to the version being deployed.
    * @param callback
    */
-  var writeHtaccess = function( callback ) {
+  var writeLatestHtaccess = function( callback ) {
     var contents = 'RewriteEngine on\n' +
                    'RewriteBase /sims/html/' + simName + '/\n' +
                    'RewriteRule latest(.*) ' + version + '$1\n' +
                    'Header set Access-Control-Allow-Origin "*"\n';
     fs.writeFileSync( HTML_SIMS_DIRECTORY + simName + '/.htaccess', contents );
+    callback();
+  };
+
+  /**
+   * Write the .htaccess file to make download sim button force a download instead of opening in the browser
+   * @param callback
+   */
+  var writeDownloadHtaccess = function( callback ) {
+    var contents = 'RewriteEngine On\n' +
+                   'RewriteCond %{QUERY_STRING} =download\n' +
+                   'RewriteRule ([^/]*)$ - [L,E=download:$1]\n' +
+                   'Header onsuccess set Content-disposition "attachment; filename=%{download}e" env=download\n';
+    fs.writeFileSync( HTML_SIMS_DIRECTORY + simName + '/' + version + '/.htaccess', contents );
     callback();
   };
 
@@ -475,10 +488,12 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                   exec( 'grunt generate-thumbnails', simDir, function() {
                     mkVersionDir( function() {
                       exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
-                        writeHtaccess( function() {
-                          createXML( simName, version, function() {
-                            notifyServer( function() {
-                              devScp( afterDeploy ); // copy to spot on non-dev deploys too
+                        writeLatestHtaccess( function() {
+                          writeDownloadHtaccess( function() {
+                            createXML( simName, version, function() {
+                              notifyServer( function() {
+                                devScp( afterDeploy ); // copy to spot on non-dev deploys too
+                              } );
                             } );
                           } );
                         } );
