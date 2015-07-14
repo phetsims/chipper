@@ -164,10 +164,10 @@ module.exports = function( grunt ) {
     [ 'clean', 'set-preload', 'set-third-party-licenses', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
 
   grunt.registerTask( 'deploy-production',
-    'Deploy a simulation. Should be run AFTER grunt build\n' +
+    'Deploy a simulation. Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
     'with no options, deploys to phet-dev (since this is still being tested)\n',
     function() {
-      deploySimulation( grunt, 'simian' );
+      deploySimulation( grunt, grunt.option( 'devDeploy' ) );
     }
   );
 

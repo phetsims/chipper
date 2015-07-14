@@ -6,40 +6,66 @@
  * @author Aaron Davis
  */
 
+/* jslint node: true */
+'use strict';
+
 // modules
 var querystring = require( 'querystring' );
 var request = require( 'request' );
+var fs = require( 'fs' );
+
+// constants
+var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
+var DEFAULT_DEV_SERVER = 'spot.colorado.edu';
+var PACKAGE_JSON = 'package.json';
+var DEPENDENCIES_JSON = 'build/dependencies.json';
+var PRODUCTION_SERVER_NAME = 'simian.colorado.edu';
+var PRODUCTION_SERVER_URL = 'http://phet-dev.colorado.edu';
 
 /**
  * @param grunt the grunt instance
- * @param serverName defaults to simian currently
+ * @param devDeploy deploy to development server instead of production if true
  */
-module.exports = function( grunt, serverName ) {
-  'use strict';
+module.exports = function( grunt, devDeploy ) {
+  devDeploy = !!devDeploy; // cast to boolean
 
-  /* jslint node: true */
-  // allows "process" to pass lint instead of getting an undefined lint error
+  /**
+   * Get the name of the development server. Defaults to spot.colorado.edu if there is no preferences file
+   * and no field in preferences for devDeployServer.
+   * @returns {string}
+   */
+  var getDevServerName = function() {
+    if ( fs.existsSync( PREFERENCES_FILE ) ) {
+      var preferences = grunt.file.readJSON( PREFERENCES_FILE );
+      if ( preferences.devDeployServer ) {
+        return preferences.devDeployServer;
+      }
+    }
+    return DEFAULT_DEV_SERVER;
+  };
+
+  // get the sim name from the current directory
   var directory = process.cwd();
-  var directoryComponents = directory.split( '/' );
+  var directoryComponents = directory.split( ( /^win/.test( process.platform ) ) ? '\\' : '/' );
   var sim = directoryComponents[ directoryComponents.length - 1 ];
 
-  var dependencies = grunt.file.readJSON( 'build/dependencies.json' );
-  var version = grunt.file.readJSON( 'package.json' ).version;
+  // check prerequisite files
+  assert( grunt.file.exists( PACKAGE_JSON ), 'Cannot find ' + PACKAGE_JSON );
+  assert( grunt.file.exists( DEPENDENCIES_JSON ), 'Cannot find ' + DEPENDENCIES_JSON );
+
+  var dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
+  var version = grunt.file.readJSON( PACKAGE_JSON ).version;
 
   var query = querystring.stringify( {
     'repos': JSON.stringify( dependencies ),
     'locales': JSON.stringify( [ 'en' ] ),
     'simName': sim,
     'version': version,
-    'serverName': serverName,
-    'dev': ( serverName === 'spot' || serverName === 'rintintin' )
+    'serverName': ( devDeploy ) ? getDevServerName() : PRODUCTION_SERVER_NAME,
+    'dev': devDeploy
   } );
 
-  //var buildServerUrl = 'localhost:16371';
-  var buildServerUrl = 'http://phet-dev.colorado.edu';
-  var url = buildServerUrl + '/deploy-html-simulation?' + query;
-
-  grunt.log.writeln( url );
+  var url = PRODUCTION_SERVER_URL + '/deploy-html-simulation?' + query;
 
   var done = grunt.task.current.async();
 

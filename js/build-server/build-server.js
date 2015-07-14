@@ -36,6 +36,7 @@ var SERVER_NAME = 'serverName';
 var DEV_KEY = 'dev';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
 var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
+var DEFAULT_SERVER_NAME = 'simian.colorado.edu'; // while testing, default to simian
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 
 assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
@@ -220,7 +221,7 @@ function createXML( sim, version, callback ) {
 
 /**
  * taskQueue ensures that only one build/deploy process will be happening at the same time.
- * This main build/deploy logic is here.
+ * The main build/deploy logic is here.
  */
 var taskQueue = async.queue( function( task, taskCallback ) {
   var req = task.req;
@@ -244,7 +245,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   }
   winston.log( 'info', 'detecting version number: ' + version );
 
-  var server = 'simian'; // while testing, default to simian
+  var server = DEFAULT_SERVER_NAME;
   if ( req.query[ SERVER_NAME ] ) {
     server = req.query[ SERVER_NAME ];
   }
@@ -420,7 +421,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * @param callback
    */
   var notifyServer = function( callback ) {
-    var host = ( server === 'simian' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
+    var host = ( server === 'simian.colorado.edu' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
     var project = 'html/' + simName;
     var url = 'http://' + host + '/services/synchronize-project?projectName=' + project;
     request( url, function( error, response, body ) {
