@@ -174,13 +174,15 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'deploy-dev',
     'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
-    '--buildServer : build the sim with the build server if true\n',
+    '--buildServer : build the sim with the build server if true\n' +
+    '--debug : log ssh debug info if true\n' +
+    '--test : set to true to disable commit and push, and SCP to a test directory on spot\n',
     function() {
       if ( grunt.option( 'buildServer' ) ) {
         deploySimulation( grunt, 'simian' );
       }
       else {
-        deployDev( grunt );
+        deployDev( grunt, grunt.option( 'debug' ), grunt.option( 'test' ) );
       }
     }
   );
