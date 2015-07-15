@@ -27,8 +27,9 @@ var TEST_SCP = false; // set to true to disable commit and push, and SCP to a te
 
 /**
  * @param grunt the grunt instance
+ * @param debug log ssh debug info if true
  */
-module.exports = function( grunt ) {
+module.exports = function( grunt, debug ) {
   'use strict';
 
   // read the preferences file
@@ -65,6 +66,10 @@ module.exports = function( grunt ) {
     password: preferences.devPassword,
     path: path + version + '/'
   };
+
+  if ( debug ) {
+    credentialsObject.debug = grunt.log.writeln;
+  }
 
   var done = grunt.task.current.async();
 
