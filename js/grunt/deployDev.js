@@ -23,13 +23,12 @@ var BUILD_DIR = 'build';
 var PACKAGE_JSON = 'package.json';
 var DEPENDENCIES_JSON = 'dependencies.json';
 
-var TEST_SCP = false; // set to true to disable commit and push, and SCP to a test directory on spot
-
 /**
  * @param grunt the grunt instance
  * @param debug log ssh debug info if true
+ * @param test set to true disable commit and push, and SCP to a test directory on spot
  */
-module.exports = function( grunt, debug ) {
+module.exports = function( grunt, debug, test ) {
   'use strict';
 
   // read the preferences file
@@ -48,7 +47,7 @@ module.exports = function( grunt, debug ) {
   // get the server name and server path if they are in the preferences file, otherwise use defaults
   var server = preferences.devDeployServer || DEV_SERVER;
   var basePath = preferences.devDeployPath || DEV_DIRECTORY;
-  if ( TEST_SCP ) {
+  if ( test ) {
     basePath += 'ad-tests/';
     URL_BASE += 'ad-tests/';
   }
@@ -118,7 +117,7 @@ module.exports = function( grunt, debug ) {
       } );
     };
 
-    if ( !TEST_SCP ) {
+    if ( !test ) {
       exec( 'git add ' + DEPENDENCIES_JSON, function() {
         exec( 'git commit --message "updated ' + DEPENDENCIES_JSON + ' for ' + version + ' "', function() {
           exec( 'git push', function() {
