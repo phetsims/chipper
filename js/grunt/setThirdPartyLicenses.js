@@ -72,7 +72,7 @@ module.exports = function( grunt, pkg ) {
 
   // Add all dependencies. Duplicates will be removed later.
   for ( var i = 0; i < licenseKeys.length; i++ ) {
-    var dependencies = (licenseInfo[ licenseKeys[ i ] ].dependencies);
+    var dependencies = licenseInfo[ licenseKeys[ i ] ].dependencies;
     if ( typeof dependencies === 'object' ) {
       licenseKeys = licenseKeys.concat( dependencies );
     }
