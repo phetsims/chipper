@@ -39,8 +39,7 @@ module.exports = function( grunt ) {
       '**' + library + '**',
       json[ library ].text.join( '<br>' ),
       json[ library ].projectURL,
-      'License: ' + json[ library ].license,
-      'License URL: ' + json[ library ].licenseURL,
+      'License: [' + json[ library ].license + '](licenses/' + library + '.txt)',
       'Notes: ' + json[ library ].notes
     ];
 
