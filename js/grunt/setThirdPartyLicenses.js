@@ -88,6 +88,7 @@ module.exports = function( grunt, pkg ) {
     assert( license, 'sherpa/third-party-licenses.json: no entry for key = ' + key );
     assert( license.text, 'sherpa/third-party-licenses.json: no text field for key = ' + key );
     assert( license.license, 'sherpa/third-party-licenses.json: no license field for key = ' + key );
+    assert( license.projectURL, 'sherpa/third-party-licenses.json: no projectURL field for key = ' + key );
 
     // Look up the license file
     var licenseFilename = LICENSES_DIRECTORY + key + '.txt';
