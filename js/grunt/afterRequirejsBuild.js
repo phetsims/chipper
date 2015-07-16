@@ -183,14 +183,6 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     preloadBlocks += '<script type="text/javascript" id="script-' + lib + '">\n' + preloadResult.code + '\n</script>\n';
   }
 
-  grunt.log.debug( 'Copying changes.txt' );
-  if ( fs.existsSync( 'changes.txt' ) ) {
-    grunt.file.copy( 'changes.txt', 'build/changes.txt' );
-  }
-  else {
-    grunt.log.error( 'WARNING: no changes.txt' );
-  }
-
   var dependencies = _.clone( pkg.phetLibs ); // clone because we'll be modifying this array
   var dependencyInfo = {
     comment: '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString())
