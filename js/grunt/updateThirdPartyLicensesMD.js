@@ -43,6 +43,10 @@ module.exports = function( grunt ) {
       'Notes: ' + json[ library ].notes
     ];
 
+    if ( json[ library ].dependencies ) {
+      lines.push( 'Dependencies: **' + json[ library ].dependencies + '**' );
+    }
+
     // \n worked well when viewing GitHub markdown as an issue comment, but for unknown reasons <br> is necessary when 
     // viewing from https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
     entries.push( lines.join( '<br>' ) );

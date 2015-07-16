@@ -23,8 +23,6 @@ var fs = require( 'fs' );
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
 
-var checkLicenseDependencies = require( '../../../chipper/js/grunt/checkLicenseDependencies' );
-
 var BUILD_INFO_FILENAME = '../chipper/build.json'; // contains build info, which identifies licenses applicable to all sims
 var THIRD_PARTY_LICENSES_FILENAME = '../sherpa/third-party-licenses.json'; // contains third-party license info
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
@@ -59,9 +57,6 @@ module.exports = function( grunt, pkg ) {
     }
   } );
 
-  // Make sure that any included libraries contain all required auxiliary licenses
-  checkLicenseDependencies( grunt, pkg );
-
   // Add sim-specific licenses, as specified in the (optional) licenseKeys field of package.json.
   if ( pkg.licenseKeys ) {
     grunt.log.debug( 'Adding sim-specific licenses...' );
@@ -73,6 +68,14 @@ module.exports = function( grunt, pkg ) {
     grunt.log.debug( 'Adding together licenses...' );
     assert( buildInfo.together && buildInfo.together.licenseKeys, BUILD_INFO_FILENAME + ' is missing together.licenseKeys' );
     licenseKeys = licenseKeys.concat( buildInfo.together.licenseKeys );
+  }
+
+  // Add all dependencies. Duplicates will be removed later.
+  for ( var i = 0; i < licenseKeys.length; i++ ) {
+    var dependencies = (licenseInfo[ licenseKeys[ i ] ].dependencies);
+    if ( typeof dependencies === 'object' ) {
+      licenseKeys = licenseKeys.concat( dependencies );
+    }
   }
 
   // Sort keys and remove duplicates
