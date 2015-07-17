@@ -348,7 +348,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
           var level = mipmapToBuild.level;
           var quality = mipmapToBuild.quality;
 
-          createMipmap( path, level, quality, grunt.log.debug, function( mipmaps ) {
+          createMipmap( path, level, quality, grunt, function( mipmaps ) {
             mipmapToBuild.mipmaps = mipmaps;
             mipmapResult[ name ] = mipmaps.map( function( mipmap ) {
               return {

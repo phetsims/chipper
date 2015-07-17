@@ -34,7 +34,7 @@ var mipmapDownscale = require( './mipmapDownscale' );
  * @param {function} callback - Called with function( mipmaps: {Array} ), consisting of the array of mipmap objects.
  *                              mipmaps[0] will be for level 0, etc.
  */
-module.exports = function createMipmap( filename, maxLevel, quality, logFunction, callback ) {
+module.exports = function createMipmap( filename, maxLevel, quality, grunt, callback ) {
   'use strict';
 
   var mipmaps = []; // our array that will be passed to the callback when we are done
@@ -151,7 +151,7 @@ module.exports = function createMipmap( filename, maxLevel, quality, logFunction
 
     // called when all of encoding is complete
     function encodingComplete() {
-      logFunction && logFunction( 'mipmapped ' + filename + ( maxLevel >= 0 ? ' to level ' + maxLevel : '' ) + ' with quality: ' + quality );
+      grunt.log.debug( 'mipmapped ' + filename + ( maxLevel >= 0 ? ' to level ' + maxLevel : '' ) + ' with quality: ' + quality );
 
       for ( var level = 0; level < mipmaps.length; level++ ) {
         // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
@@ -159,7 +159,7 @@ module.exports = function createMipmap( filename, maxLevel, quality, logFunction
         mipmaps[level].url = usePNG ? mipmaps[level].pngURL : mipmaps[level].jpgURL;
         mipmaps[level].buffer = usePNG ? mipmaps[level].pngBuffer : mipmaps[level].jpgBuffer;
 
-        logFunction && logFunction( 'level ' + level + ' (' + ( usePNG ? 'PNG' : 'JPG' ) + ' ' +
+        grunt.log.debug( 'level ' + level + ' (' + ( usePNG ? 'PNG' : 'JPG' ) + ' ' +
                                     mipmaps[level].width + 'x' + mipmaps[level].height + ') base64: ' +
                                     mipmaps[level].url.length + ' bytes ' );
       }
