@@ -28,7 +28,20 @@ module.exports = function( grunt ) {
   var entries = [];
   var licensesUsed = [];
 
-  for ( var library in json ) {
+  // Get a list of the library names
+  var libraries = [];
+  for ( var lib in json ) {
+    libraries.push( lib );
+  }
+
+  // Use a case insensitive sort, see http://stackoverflow.com/questions/8996963/how-to-perform-case-insensitive-sorting-in-javascript
+  libraries.sort( function( a, b ) {
+    return a.toLowerCase().localeCompare( b.toLowerCase() );
+  } );
+
+  // Add info for each library to the MD report
+  for ( var i = 0; i < libraries.length; i++ ) {
+    var library = libraries[ i ];
 
     // check for existence of the license file
     if ( !fs.existsSync( LICENSES_DIRECTORY + library + '.txt' ) ) {
