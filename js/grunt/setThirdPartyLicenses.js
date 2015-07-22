@@ -116,6 +116,10 @@ module.exports = function( grunt, pkg ) {
     thirdPartyLicenses[ key ] = license;
   } );
 
+  // Next, add the licenses for 3rd party images, audio, etc.
+  // Discover which images and audio are loaded through the plugins
+  
+  
   // share with other tasks via a global
   global.phet = global.phet || {};
   global.phet.thirdPartyLicenses = thirdPartyLicenses;

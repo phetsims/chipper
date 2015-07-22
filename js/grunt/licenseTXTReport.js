@@ -20,7 +20,6 @@
  *
  * @author Sam Reid
  */
-var fs = require( 'fs' );
 
 /**
  * @param grunt the grunt instance
@@ -28,6 +27,8 @@ var fs = require( 'fs' );
 module.exports = function( grunt ) {
   'use strict';
 
+  var getLicensingIssuesForFile = require( '../../../chipper/js/grunt/getLicensingIssuesForFile' );
+  
   /* jslint node: true */
   // allows "process" to pass lint instead of getting an undefined lint error
   var directory = process.cwd();
@@ -46,7 +47,7 @@ module.exports = function( grunt ) {
          // Skip things we don't need to report on that may also be in the working copy
          abspath.indexOf( '/node_modules/' ) < 0 &&
          abspath.indexOf( '/codap-data-interactives/' ) < 0 &&
-         abspath.indexOf( '/an-unconventional-weapon/' ) < 0 &&
+         abspath.indexOf( '/an-unconventional-weapon/' ) < 0 && // SR's Ludum Dare entry
          abspath.indexOf( '/three.js/' ) < 0 &&
          abspath.indexOf( '/codap/' ) < 0 &&
          abspath.indexOf( 'README.txt' ) < 0 &&
@@ -54,52 +55,10 @@ module.exports = function( grunt ) {
          // The license file doesn't need to annotate itself :)
          filename.indexOf( 'license.txt' ) !== 0
     ) {
-
-      // look in the license.txt file to see if there is an entry for that file
-      try {
-        var licenseFilename = rootdir + '/' + subdir + '/license.txt';
-        var file = fs.readFileSync( licenseFilename, 'utf8' );
-
-        //find the line that annotates the asset
-        var lines = file.split( /\r?\n/ );
-
-        // Count how many entries found in case there are conflicting annotations
-        var foundEntries = 0;
-        for ( var i = 0; i < lines.length; i++ ) {
-          var line = lines[ i ];
-          if ( line.indexOf( filename ) === 0 ) {
-            foundEntries++;
-
-            // Heuristics for whether PhET created the asset
-            if (
-              line.indexOf( 'source=PhET' ) < 0 &&
-              line.indexOf( 'author=PhET' ) < 0 &&
-              line.indexOf( 'author=phet' ) < 0 &&
-              line.indexOf( 'author=Ron Le Master' ) < 0 &&
-              line.indexOf( 'author=Emily Randall' ) < 0 &&
-              line.indexOf( 'author=Yuen-ying Carpenter' ) < 0 &&
-              line.indexOf( 'author=Bryce' ) < 0
-            ) {
-
-              // Report that the item came from a 3rd party
-              grunt.log.writeln( '3RD PARTY: \t\t\t\t\t' + abspath + ': ' + line );
-            }
-          }
-        }
-        if ( foundEntries !== 1 ) {
-          if ( foundEntries === 0 ) {
-            grunt.log.writeln( 'NOT ANNOTATED IN FILE:\t\t' + abspath );
-          }
-          else {
-            grunt.log.writeln( 'MULTIPLE ANNOTATIONS:\t\t' + abspath );
-          }
-
-        }
+      var licensingIssuesForFile = getLicensingIssuesForFile( abspath );
+      if ( licensingIssuesForFile !== 'OK' ) {
+        grunt.log.warn( licensingIssuesForFile );
       }
-      catch( err ) {
-        grunt.log.writeln( 'NOT ANNOTATED (NO FILE):\t' + abspath );
-      }
-
     }
   } );
 };

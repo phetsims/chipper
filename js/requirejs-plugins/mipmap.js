@@ -66,6 +66,7 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
+  var getLicensingIssuesForFile = require( '../../chipper/js/grunt/getLicensingIssuesForFile' );
 
   return {
     // called both in-browser and during build
@@ -89,9 +90,9 @@ define( function( require ) {
       if ( name.indexOf( ',' ) ) {
         name.substring( name.indexOf( ',' ) + 1 ).split( ',' ).forEach( function( clause ) {
           var keyValue = clause.split( '=' );
-          var key = keyValue[0];
-          var value = keyValue[1];
-          options[key] = parseInt( value, 10 );
+          var key = keyValue[ 0 ];
+          var value = keyValue[ 1 ];
+          options[ key ] = parseInt( value, 10 );
         } );
       }
 
@@ -104,7 +105,14 @@ define( function( require ) {
           level: options.level,
           quality: options.quality
         } );
-        onload( null ); // r.js fails if plugins aren't synchronous with isBuild == true
+
+        var report = getLicensingIssuesForFile( path );
+        if ( report !== 'OK' ) {
+          onload.error( new Error( report ) );
+        }
+        else {
+          onload( null ); // r.js fails if plugins aren't synchronous with isBuild == true
+        }
       }
       else {
         // if buildCompatible is provided, use the high-quality build-like mipmapping
@@ -121,7 +129,7 @@ define( function( require ) {
           try {
             delete image.onload;
           }
-          catch ( e ) {}
+          catch( e ) {}
 
           var mipmaps = [];
 
