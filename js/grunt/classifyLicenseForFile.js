@@ -3,7 +3,9 @@
 (function() {
   'use strict';
 
-  global.thirdPartyImageAndAudioLicenseInfo = global.thirdPartyImageAndAudioLicenseInfo || [];
+  if ( typeof global !== 'undefined' ) {
+    global.thirdPartyImageAndAudioLicenseInfo = global.thirdPartyImageAndAudioLicenseInfo || [];
+  }
 
   // Automatically write each classification to a global so it can be included in the HTML file after the build is 
   // complete
