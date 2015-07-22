@@ -14,7 +14,7 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var getLicensingIssuesForFile = require( '../../chipper/js/grunt/getLicensingIssuesForFile' );
+  var classifyLicenseForFile = require( '../../chipper/js/grunt/classifyLicenseForFile' );
 
   //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
   var buildMap = {};
@@ -26,9 +26,9 @@ define( function( require ) {
 
       if ( config.isBuild ) {
         buildMap[ name ] = path;
-        var report = getLicensingIssuesForFile( path );
-        if ( report !== 'OK' ) {
-          onload.error( new Error( report ) );
+        var licenseInfo = classifyLicenseForFile( name, path );
+        if ( licenseInfo.isProblematic === true ) {
+          onload.error( new Error( licenseInfo.classification ) );
         }
         else {
           onload( null );

@@ -27,8 +27,8 @@
 module.exports = function( grunt ) {
   'use strict';
 
-  var getLicensingIssuesForFile = require( '../../../chipper/js/grunt/getLicensingIssuesForFile' );
-  
+  var classifyLicenseForFile = require( '../../../chipper/js/grunt/classifyLicenseForFile' );
+
   /* jslint node: true */
   // allows "process" to pass lint instead of getting an undefined lint error
   var directory = process.cwd();
@@ -55,9 +55,9 @@ module.exports = function( grunt ) {
          // The license file doesn't need to annotate itself :)
          filename.indexOf( 'license.txt' ) !== 0
     ) {
-      var licensingIssuesForFile = getLicensingIssuesForFile( abspath );
-      if ( licensingIssuesForFile !== 'OK' ) {
-        grunt.log.warn( licensingIssuesForFile );
+      var result = classifyLicenseForFile( abspath, abspath );
+      if ( result.isProblematic === true ) {
+        grunt.log.warn( result );
       }
     }
   } );

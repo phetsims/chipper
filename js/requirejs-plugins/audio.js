@@ -16,7 +16,7 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var getLicensingIssuesForFile = require( '../../chipper/js/grunt/getLicensingIssuesForFile' );
+  var classifyLicenseForFile = require( '../../chipper/js/grunt/classifyLicenseForFile' );
 
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.
@@ -50,12 +50,12 @@ define( function( require ) {
 
         var errorString = '';
         for ( var i = 0; i < urlList.length; i++ ) {
-          var report = getLicensingIssuesForFile( urlList[ i ].url );
-          if ( report !== 'OK' ) {
+          var licenseInfo = classifyLicenseForFile( name, urlList[ i ].url );
+          if ( licenseInfo.isProblematic === true ) {
             if ( errorString !== '' ) {
               errorString = errorString + ', ';
             }
-            errorString = errorString + report;
+            errorString = errorString + licenseInfo.classification;
           }
         }
         if ( errorString !== '' ) {

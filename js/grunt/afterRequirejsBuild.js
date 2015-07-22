@@ -241,6 +241,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     html = replaceFirst( html, 'PHET_SHAS', dependencyJSON );
     html = replaceFirst( html, 'THIRD_PARTY_LICENSES', JSON.stringify( global.phet.thirdPartyLicenses, null, 2 ) );
+    html = replaceFirst( html, 'THIRD_PARTY_LICENSES_IMAGES_AUDIO', JSON.stringify( global.thirdPartyImageAndAudioLicenseInfo, null, 2 ) );
 
     for ( var i = 0; i < locales.length; i++ ) {
       var locale = locales[ i ];
