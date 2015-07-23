@@ -107,7 +107,7 @@ define( function( require ) {
         } );
 
         var licenseInfo = classifyLicenseForFile( name, path );
-        if ( licenseInfo.isProblematic === true ) {
+        if ( false && licenseInfo.isProblematic === true ) {
           onload.error( new Error( licenseInfo.classification ) );
         }
         else {

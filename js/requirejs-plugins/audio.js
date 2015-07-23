@@ -51,7 +51,7 @@ define( function( require ) {
         var errorString = '';
         for ( var i = 0; i < urlList.length; i++ ) {
           var licenseInfo = classifyLicenseForFile( name, urlList[ i ].url );
-          if ( licenseInfo.isProblematic === true ) {
+          if ( false && licenseInfo.isProblematic === true ) {
             if ( errorString !== '' ) {
               errorString = errorString + ', ';
             }

@@ -27,7 +27,7 @@ define( function( require ) {
       if ( config.isBuild ) {
         buildMap[ name ] = path;
         var licenseInfo = classifyLicenseForFile( name, path );
-        if ( licenseInfo.isProblematic === true ) {
+        if ( false && licenseInfo.isProblematic === true ) {
           onload.error( new Error( licenseInfo.classification ) );
         }
         else {
