@@ -204,7 +204,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
                      'This file is licensed under Creative Commons Attribution 4.0\n' +
                      'For alternate source code licensing, see https://github.com/phetsims\n' +
                      'For licenses for third-party software used by this simulation, see below\n' +
-                     'For more information, see http://phet.colorado.edu/en/licensing\n' +
+                     'For more information, see http://phet.colorado.edu/en/licensing/html\n' +
                      '\n' +
                      'The PhET name and PhET logo are registered trademarks of The Regents of the\n' +
                      'University of Colorado. Permission is granted to use the PhET name and PhET logo\n' +
