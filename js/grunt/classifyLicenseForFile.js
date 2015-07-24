@@ -9,9 +9,9 @@
 
   // Automatically write each classification to a global so it can be included in the HTML file after the build is 
   // complete
-  var wrap = function( classifyLicenseForFile ) {
+  var classifyLicenseForFile = function( getClassification ) {
     return function( name, abspath ) {
-      var licenseInfo = classifyLicenseForFile( name, abspath );
+      var licenseInfo = getClassification( abspath );
       if ( licenseInfo.classification === 'third-party' ) {
 
         // Add to global list of 3rd party images & audio. Include the name since it should be unique (otherwise 
@@ -30,8 +30,7 @@
    * @param {string} abspath - the path for the file
    * @returns {*}
    */
-  function classifyLicenseForFile( name, abspath ) {
-
+  function getClassification( abspath ) {
     var lastSlash = abspath.lastIndexOf( '/' );
     var prefix = abspath.substring( 0, lastSlash );
     var licenseFilename = prefix + '/license.json';
@@ -43,14 +42,14 @@
       file = global.fs.readFileSync( licenseFilename, 'utf8' );
     }
     catch( err ) {
-      return { classification: 'missing-license.json', isProblematic: true };
+      return { classification: 'missing-license.json', isProblematic: true, entry: null };
     }
     var json = JSON.parse( file );
 
     var entry = json[ assetFilename ];
 
     if ( !entry ) {
-      return { classification: 'not-annotated', isProblematic: true };
+      return { classification: 'not-annotated', isProblematic: true, entry: entry };
     }
     else if ( entry.projectURL === 'http://phet.colorado.edu' ) {
       return { classification: 'phet', isProblematic: false, entry: entry };
@@ -81,12 +80,12 @@
   // browser require.js-compatible definition
   if ( typeof define !== 'undefined' ) {
     define( function() {
-      return wrap( classifyLicenseForFile );
+      return classifyLicenseForFile( getClassification );
     } );
   }
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {
-    module.exports = wrap( classifyLicenseForFile );
+    module.exports = classifyLicenseForFile( getClassification );
   }
 })();

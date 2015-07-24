@@ -10,7 +10,7 @@
  * MULTIPLE ANNOTATIONS:    There is a license.txt file but the asset is annotated more than once and hence may have
  *                          conflicts
  *
- * This can be run from any simulation directory with `grunt licenseTXTReport` and it reports for all directories (not
+ * This can be run from any simulation directory with `grunt licenseJSONReport` and it reports for all directories (not
  * just the simulation at hand).
  *
  * Note that this program relies on numerous heuristics for determining the output, such as allowed entries that
@@ -53,11 +53,11 @@ module.exports = function( grunt ) {
          abspath.indexOf( 'README.txt' ) < 0 &&
 
          // The license file doesn't need to annotate itself :)
-         filename.indexOf( 'license.txt' ) !== 0
+         filename.indexOf( 'license.json' ) !== 0
     ) {
       var result = classifyLicenseForFile( abspath, abspath );
       if ( result.isProblematic === true ) {
-        grunt.log.warn( result );
+        grunt.log.warn( abspath + ': ' + result.classification );
       }
     }
   } );

@@ -38,7 +38,7 @@ module.exports = function( grunt ) {
       }
 
       // For each file in the directory, make sure it appears in license.json
-      var directoryContents = fs.readdirSync( rootdir + '/' + subdir );
+      var directoryContents = global.fs.readdirSync( rootdir + '/' + subdir );
       for ( var i = 0; i < directoryContents.length; i++ ) {
         var listedFile = directoryContents[ i ];
         if ( listedFile !== 'license.json' &&

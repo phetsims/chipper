@@ -36,7 +36,7 @@ var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var createXML = require( '../../../chipper/js/grunt/createXML' );
-var licenseTXTReport = require( '../../../chipper/js/grunt/licenseTXTReport' );
+var licenseJSONReport = require( '../../../chipper/js/grunt/licenseJSONReport' );
 
 //TODO look at why this is necessary
 /*
@@ -265,10 +265,10 @@ module.exports = function( grunt ) {
       createXML( grunt );
     } );
 
-  // See licenseTXTReport.js
-  grunt.registerTask( 'licenseTXTReport', 'Report on the license.txt files throughout the working copies',
+  // See licenseJSONReport.js
+  grunt.registerTask( 'licenseJSONReport', 'Report on the license.txt files throughout the working copies',
     function() {
-      licenseTXTReport( grunt );
+      licenseJSONReport( grunt );
     } );
 
   grunt.registerTask( 'generate-published-README',
