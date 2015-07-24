@@ -63,6 +63,11 @@
       // NASA OK, but should still be annotated
       return { classification: 'third-party', isProblematic: false, entry: entry };
     }
+    else if ( entry.projectURL === 'http://www.americancinematheque.com/ball/1997MPBTravolta.htm' ) {
+      // We decided to allow images for John Travoltage even though we were unable to contact American Cinematheque for 
+      // explicit permission
+      return { classification: 'third-party', isProblematic: false, entry: entry };
+    }
     else {
       return { classification: 'third-party', isProblematic: true, entry: entry };
     }
