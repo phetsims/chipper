@@ -26,67 +26,40 @@
    * Returns a string indicating a problem with licensing for the image/audio file, or null if there is no problem found.
    * The license.txt file is consulted.
    *
+   * @param {string} name - the name of the resource, to help disambiguate different images with similar filenames.
    * @param {string} abspath - the path for the file
    * @returns {*}
    */
   function classifyLicenseForFile( name, abspath ) {
 
-    var lines = null;
     var lastSlash = abspath.lastIndexOf( '/' );
     var prefix = abspath.substring( 0, lastSlash );
-    var licenseFilename = prefix + '/license.txt';
+    var licenseFilename = prefix + '/license.json';
     var assetFilename = abspath.substring( lastSlash + 1 );
 
+    var file = null;
     // look in the license.txt file to see if there is an entry for that file
     try {
-      var file = global.fs.readFileSync( licenseFilename, 'utf8' );
-
-      //find the line that annotates the asset
-      lines = file.split( /\r?\n/ );
+      file = global.fs.readFileSync( licenseFilename, 'utf8' );
     }
     catch( err ) {
-      return { classification: 'missing-license.txt', isProblematic: true };
+      return { classification: 'missing-license.json', isProblematic: true };
     }
+    var json = JSON.parse( file );
 
-    // Count how many entries found in case there are conflicting annotations
-    var entries = [];
-    for ( var i = 0; i < lines.length; i++ ) {
-      var line = lines[ i ];
-      if ( line.indexOf( assetFilename ) === 0 ) {
-        entries.push( line );
-      }
-    }
-    if ( entries.length === 0 ) {
+    var entry = json[ assetFilename ];
+
+    if ( !entry ) {
       return { classification: 'not-annotated', isProblematic: true };
     }
-    else if ( entries.length > 1 ) {
-      return { classification: 'multiple-annotations', isProblematic: true };
-    }
-
-    // Heuristics for whether PhET created the asset
-    var entry = entries[ 0 ];
-    if (
-      entry.indexOf( 'source=PhET' ) >= 0 ||
-      entry.indexOf( 'author=PhET' ) >= 0 ||
-      entry.indexOf( 'author=phet' ) >= 0 ||
-      entry.indexOf( 'author=Ron Le Master' ) >= 0 ||
-      entry.indexOf( 'author=Emily Randall' ) >= 0 ||
-      entry.indexOf( 'author=Yuen-ying Carpenter' ) >= 0 ||
-      entry.indexOf( 'author=Bryce' ) >= 0 ||
-      entry.indexOf( 'Creative Commons 0' ) >= 0 ||
-      entry.indexOf( 'Snow Day' ) >= 0
-    ) {
-
-      // Report that the item came from a 3rd party
+    else if ( entry.projectURL === 'http://phet.colorado.edu' ) {
       return { classification: 'phet', isProblematic: false, entry: entry };
     }
-    else if ( entry.toLowerCase().indexOf( 'public domain' ) >= 0 ) {
-
+    else if ( entry.license.toLowerCase() === 'Public Domain' ) {
       // public domain OK, but should still be annotated
       return { classification: 'third-party', isProblematic: false, entry: entry };
     }
-    else if ( entry.toLowerCase().indexOf( 'source=nasa' ) >= 0 ) {
-
+    else if ( entry.license === 'NASA' ) {
       // NASA OK, but should still be annotated
       return { classification: 'third-party', isProblematic: false, entry: entry };
     }
