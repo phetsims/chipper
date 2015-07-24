@@ -70,7 +70,7 @@
     }
     else if ( entry.notes === 'from Snow Day Math' ) {
       // Permit Snow Day Match images to pass the build--they should be replaced in the near future
-      // by PhET created artwork, see https://github.com/phetsims/making-tens/issues/25
+      // by PhET-created artwork, see https://github.com/phetsims/making-tens/issues/25
       return { classification: 'third-party', isProblematic: false, entry: entry };
     }
     else {
