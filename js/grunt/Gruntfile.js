@@ -29,6 +29,7 @@ var deploySimulation = require( '../../../chipper/js/grunt/deploySimulation' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var updateThirdPartyLicensesMD = require( '../../../chipper/js/grunt/updateThirdPartyLicensesMD' );
+var checkForThirdPartyOrphans = require( '../../../chipper/js/grunt/checkForThirdPartyOrphans' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var setPreload = require( '../../../chipper/js/grunt/setPreload' );
@@ -311,6 +312,13 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'update-third-party-licenses-md', 'Update, commit and push markdown file for third party libraries based on the JSON file', function() {
     updateThirdPartyLicensesMD( grunt );
   } );
+
+  // See https://github.com/phetsims/chipper/issues/185
+  grunt.registerTask( 'check-for-third-party-orphans', 'Look for missing entries in license.json or missing files in the directory',
+    function() {
+      checkForThirdPartyOrphans( grunt );
+    }
+  );
 
   /*
    * Load tasks from grunt plugins that have been installed locally using npm.
