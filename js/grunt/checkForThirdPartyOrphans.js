@@ -32,8 +32,18 @@ module.exports = function( grunt ) {
           var resourceFilename = rootdir + '/' + subdir + '/' + key;
           var exists = global.fs.existsSync( resourceFilename );
           if ( !exists ) {
-            console.log( "Entry in JSON has no file: " + resourceFilename );
+            console.log( 'Entry in JSON has no file: ' + resourceFilename );
           }
+        }
+      }
+
+      // For each file in the directory, make sure it appears in license.json
+      var directoryContents = fs.readdirSync( rootdir + '/' + subdir );
+      for ( var i = 0; i < directoryContents.length; i++ ) {
+        var listedFile = directoryContents[ i ];
+        if ( listedFile !== 'license.json' &&
+             listedFile !== 'README.txt' && !json.hasOwnProperty( listedFile ) ) {
+          console.log( 'File is missing entry in license.json, ' + rootdir + '/' + subdir + '/' + listedFile );
         }
       }
     }
