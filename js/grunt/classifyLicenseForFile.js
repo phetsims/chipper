@@ -55,7 +55,7 @@
     else if ( entry.projectURL === 'http://phet.colorado.edu' ) {
       return { classification: 'phet', isProblematic: false, entry: entry };
     }
-    else if ( entry.license.toLowerCase() === 'Public Domain' ) {
+    else if ( entry.license === 'Public Domain' ) {
       // public domain OK, but should still be annotated
       return { classification: 'third-party', isProblematic: false, entry: entry };
     }
