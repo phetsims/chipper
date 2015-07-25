@@ -249,7 +249,19 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     html = replaceFirst( html, 'PHET_SHAS', dependencyJSON );
     html = replaceFirst( html, 'THIRD_PARTY_LICENSES', JSON.stringify( global.phet.thirdPartyLicenses, null, 2 ) );
-    html = replaceFirst( html, 'THIRD_PARTY_LICENSES_IMAGES_AUDIO', JSON.stringify( global.thirdPartyImageAndAudioLicenseInfo, null, 2 ) );
+
+    // Add a list of all 3rd-party images and audio files.
+    // For each registered image or audio file, keep the ones that have licenseInfo.classification === 'third-party' 
+    // return their licenseInfo.entry
+    var thirdPartyEntries = {};
+    for ( var obj in global.imageAndAudioLicenseInfo ) {
+      if ( global.imageAndAudioLicenseInfo.hasOwnProperty( obj ) ) {
+        if ( global.imageAndAudioLicenseInfo[ obj ].classification === 'third-party' ) {
+          thirdPartyEntries[ obj ] = global.imageAndAudioLicenseInfo[ obj ].entry;
+        }
+      }
+    }
+    html = replaceFirst( html, 'THIRD_PARTY_IMAGES_AND_AUDIO', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
     for ( var i = 0; i < locales.length; i++ ) {
       var locale = locales[ i ];

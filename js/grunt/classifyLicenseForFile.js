@@ -4,8 +4,7 @@
   'use strict';
 
   if ( typeof global !== 'undefined' ) {
-    global.thirdPartyImageAndAudioLicenseInfo = global.thirdPartyImageAndAudioLicenseInfo || {};
-    global.allImageAndAudioLicenseInfo = global.allImageAndAudioLicenseInfo || {};
+    global.imageAndAudioLicenseInfo = global.imageAndAudioLicenseInfo || {};
   }
 
   // Automatically write each classification to a global so it can be included in the HTML file after the build is 
@@ -14,13 +13,11 @@
     return function( name, abspath ) {
       var licenseInfo = getClassification( abspath );
 
-      global.allImageAndAudioLicenseInfo[ name ] = licenseInfo.entry;
-      if ( licenseInfo.classification === 'third-party' ) {
+      // Make it available for adding a list of 3rd party resources to the HTML
+      // and for checking whether there are unused images/audio
+      global.imageAndAudioLicenseInfo[ name ] = licenseInfo;
 
-        // Add to global list of 3rd party images & audio. Include the name since it should be unique (otherwise 
-        // different images with the same name would have collisions)
-        global.thirdPartyImageAndAudioLicenseInfo[ name ] = licenseInfo.entry;
-      }
+      // Return it for further processing
       return licenseInfo;
     };
   };

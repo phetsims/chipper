@@ -27,7 +27,7 @@ module.exports = function( grunt, simNameUppercase ) {
       // check if the file on the HDD was loaded during requirejs
       var key = simNameUppercase + '/' + filename;
       if ( filename !== 'license.json' &&
-           filename !== 'README.txt' && !global.allImageAndAudioLicenseInfo.hasOwnProperty( key )
+           filename !== 'README.txt' && !global.imageAndAudioLicenseInfo.hasOwnProperty( key )
       ) {
         grunt.log.error( 'Unused resource: ' + key );
       }
