@@ -23,6 +23,7 @@ var loadFileAsDataURI = require( '../../../chipper/js/requirejs-plugins/loadFile
 
 // Locale information
 var localeInfo = require( '../../../chipper/js/data/localeInfo' );
+var reportUnusedImagesAndAudio = require( '../../../chipper/js/grunt/reportUnusedImagesAndAudio' );
 
 /**
  * @param grunt the grunt instance
@@ -189,6 +190,13 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   };
 
   function postMipmapLoad( dependencyJSON, mipmapJavascript ) {
+
+    // After all plugins completed, check which images & audio files are in the images/audio directories 
+    // but not loaded by the plugins. The simNameUppercase such as BALANCING_ACT is required in order
+    // to identify the namespaced resources. This reuses the pkg.simTitleStringKey toget the simNameUppercase
+    var simNameUppercase = pkg.simTitleStringKey.substring( 0, pkg.simTitleStringKey.indexOf( '/' ) );
+    reportUnusedImagesAndAudio( grunt, simNameUppercase );
+
     var splashDataURI = loadFileAsDataURI( '../brand/images/splash.svg' );
     var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 

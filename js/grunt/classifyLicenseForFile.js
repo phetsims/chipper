@@ -5,6 +5,7 @@
 
   if ( typeof global !== 'undefined' ) {
     global.thirdPartyImageAndAudioLicenseInfo = global.thirdPartyImageAndAudioLicenseInfo || {};
+    global.allImageAndAudioLicenseInfo = global.allImageAndAudioLicenseInfo || {};
   }
 
   // Automatically write each classification to a global so it can be included in the HTML file after the build is 
@@ -12,6 +13,8 @@
   var classifyLicenseForFile = function( getClassification ) {
     return function( name, abspath ) {
       var licenseInfo = getClassification( abspath );
+
+      global.allImageAndAudioLicenseInfo[ name ] = licenseInfo.entry;
       if ( licenseInfo.classification === 'third-party' ) {
 
         // Add to global list of 3rd party images & audio. Include the name since it should be unique (otherwise 
