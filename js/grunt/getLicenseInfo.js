@@ -9,9 +9,9 @@
 
   // Automatically write each classification to a global so it can be included in the HTML file after the build is 
   // complete
-  var classifyLicenseForFile = function( getClassification ) {
+  var getLicenseInfo = function( _getLicenseInfo ) {
     return function( name, abspath ) {
-      var licenseInfo = getClassification( abspath );
+      var licenseInfo = _getLicenseInfo( abspath );
 
       // Make it available for adding a list of 3rd party resources to the HTML
       // and for checking whether there are unused images/audio
@@ -24,20 +24,21 @@
 
   /**
    * Returns a string indicating a problem with licensing for the image/audio file, or null if there is no problem found.
-   * The license.txt file is consulted.
+   * The license.json file is consulted.
    *
-   * @param {string} name - the name of the resource, to help disambiguate different images with similar filenames.
    * @param {string} abspath - the path for the file
    * @returns {*}
+   *
+   * @private
    */
-  function getClassification( abspath ) {
+  function _getLicenseInfo( abspath ) {
     var lastSlash = abspath.lastIndexOf( '/' );
     var prefix = abspath.substring( 0, lastSlash );
     var licenseFilename = prefix + '/license.json';
     var assetFilename = abspath.substring( lastSlash + 1 );
 
     var file = null;
-    // look in the license.txt file to see if there is an entry for that file
+    // look in the license.json file to see if there is an entry for that file
     try {
       file = global.fs.readFileSync( licenseFilename, 'utf8' );
     }
@@ -80,12 +81,12 @@
   // browser require.js-compatible definition
   if ( typeof define !== 'undefined' ) {
     define( function() {
-      return classifyLicenseForFile( getClassification );
+      return getLicenseInfo( _getLicenseInfo );
     } );
   }
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {
-    module.exports = classifyLicenseForFile( getClassification );
+    module.exports = getLicenseInfo( _getLicenseInfo );
   }
 })();

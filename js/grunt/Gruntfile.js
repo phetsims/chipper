@@ -266,7 +266,7 @@ module.exports = function( grunt ) {
     } );
 
   // See licenseJSONReport.js
-  grunt.registerTask( 'licenseJSONReport', 'Report on the license.txt files throughout the working copies',
+  grunt.registerTask( 'licenseJSONReport', 'Report on the license.json files throughout the working copies',
     function() {
       licenseJSONReport( grunt );
     } );

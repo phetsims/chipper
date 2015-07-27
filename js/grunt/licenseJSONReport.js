@@ -1,13 +1,13 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * This grunt task iterates over all of the license.txt files and reports any images or audio that have any of the following
+ * This grunt task iterates over all of the license.json files and reports any images or audio that have any of the following
  * problems:
  *
- * NOT ANNOTATED (NO FILE): Are missing the license.txt file
+ * NOT ANNOTATED (NO FILE): Are missing the license.json file
  * 3RD PARTY:               Known to be from a source outside of PhET
- * NOT ANNOTATED IN FILE:   There is a license.txt file but the asset is not in there
- * MULTIPLE ANNOTATIONS:    There is a license.txt file but the asset is annotated more than once and hence may have
+ * NOT ANNOTATED IN FILE:   There is a license.json file but the asset is not in there
+ * MULTIPLE ANNOTATIONS:    There is a license.json file but the asset is annotated more than once and hence may have
  *                          conflicts
  *
  * This can be run from any simulation directory with `grunt licenseJSONReport` and it reports for all directories (not
@@ -27,7 +27,7 @@
 module.exports = function( grunt ) {
   'use strict';
 
-  var classifyLicenseForFile = require( '../../../chipper/js/grunt/classifyLicenseForFile' );
+  var getLicenseInfo = require( '../../../chipper/js/grunt/getLicenseInfo' );
 
   /* jslint node: true */
   // allows "process" to pass lint instead of getting an undefined lint error
@@ -55,7 +55,7 @@ module.exports = function( grunt ) {
          // The license file doesn't need to annotate itself :)
          filename.indexOf( 'license.json' ) !== 0
     ) {
-      var result = classifyLicenseForFile( abspath, abspath );
+      var result = getLicenseInfo( abspath, abspath );
       if ( result.isProblematic === true ) {
         grunt.log.warn( abspath + ': ' + result.classification );
       }

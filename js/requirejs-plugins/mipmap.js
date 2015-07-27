@@ -66,7 +66,7 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
-  var classifyLicenseForFile = require( '../../chipper/js/grunt/classifyLicenseForFile' );
+  var getLicenseInfo = require( '../../chipper/js/grunt/getLicenseInfo' );
 
   return {
     // called both in-browser and during build
@@ -106,7 +106,7 @@ define( function( require ) {
           quality: options.quality
         } );
 
-        var licenseInfo = classifyLicenseForFile( name, path );
+        var licenseInfo = getLicenseInfo( name, path );
         if ( licenseInfo.isProblematic === true ) {
           onload.error( new Error( licenseInfo.classification ) );
         }
