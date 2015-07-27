@@ -314,7 +314,7 @@ module.exports = function( grunt ) {
   } );
 
   // See https://github.com/phetsims/chipper/issues/185
-  grunt.registerTask( 'check-for-third-party-orphans', 'Look for missing entries in license.json or missing files in the directory',
+  grunt.registerTask( 'check-for-third-party-orphans', 'project-wide: Look for missing entries in license.json or missing files in its directory',
     function() {
       checkForThirdPartyOrphans( grunt );
     }
