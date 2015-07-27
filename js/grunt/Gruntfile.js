@@ -208,7 +208,7 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'set-third-party-licenses',
-    'Sets global.phet.thirdPartyLicenses, an object literal that will be written to the HTML file',
+    '(internal use only) Sets global.phet.thirdPartyLicenses, an object literal that will be written to the HTML file',
     function() {
       setThirdPartyLicenses( grunt, pkg );
     } );
