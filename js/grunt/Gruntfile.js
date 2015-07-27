@@ -202,7 +202,7 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'set-preload',
-    'Determines the set of files that will be preloaded in the HTML file',
+    '(internal use only) Determines the set of files that will be preloaded in the HTML file',
     function() {
       setPreload( grunt, pkg );
     } );
