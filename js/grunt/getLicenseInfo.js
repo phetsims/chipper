@@ -1,8 +1,32 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
+/**
+ * This file is used during string and audio plugin resolution in order to accomplish 2 goals:
+ *
+ * (a) determine that PhET Simulations are built using compatible resources.  Each resource (image or audio file) must
+ * be annotated in a license.json file in the same directory.  Resource files without a compatible license will cause
+ * the build to fail.
+ *
+ * (b) provide information from the 3rd party resource files to the build system, so that a report can be included in the
+ * build HTML file
+ *
+ * The return value from this function is a javascript object literal of the form:
+ *   {classification: <string>, isProblematic: <boolean>, entry: <object> }
+ *
+ * The classification is one of: missing-license.json, not-annotated, phet or third-party
+ * isProblematic indicates whether the particular license is compatible with PhET's licensing
+ * entry: the object that appears in the license.json file, see
+ * https://github.com/phetsims/simula-rasa/blob/master/images/README.txt
+ *
+ * In order to simplify compatibility with requirejs and node versions, the return value is a javascript object literal
+ * rather than a separate file/constructor function such as LicenseInfo.js
+ *
+ * @author Sam Reid
+ */
 (function() {
   'use strict';
 
+  // During a build, store the 3rd party data for reporting in the HTML file.
   if ( typeof global !== 'undefined' ) {
     global.imageAndAudioLicenseInfo = global.imageAndAudioLicenseInfo || {};
   }

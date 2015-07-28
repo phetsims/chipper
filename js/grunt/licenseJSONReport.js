@@ -4,11 +4,9 @@
  * This grunt task iterates over all of the license.json files and reports any images or audio that have any of the following
  * problems:
  *
- * NOT ANNOTATED (NO FILE): Are missing the license.json file
- * 3RD PARTY:               Known to be from a source outside of PhET
- * NOT ANNOTATED IN FILE:   There is a license.json file but the asset is not in there
- * MULTIPLE ANNOTATIONS:    There is a license.json file but the asset is annotated more than once and hence may have
- *                          conflicts
+ * missing-license.json    The resource file has no associated license.json file
+ * third-party             Known to be from an unapproved source outside of PhET
+ * not-annotated           There is a license.json file but the asset is not in there
  *
  * This can be run from any simulation directory with `grunt licenseJSONReport` and it reports for all directories (not
  * just the simulation at hand).
