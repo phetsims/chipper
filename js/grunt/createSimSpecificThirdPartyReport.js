@@ -2,7 +2,10 @@
 
 /**
  * Creates a report on third-party images, audio and code which are used by the simulation.  This is only run if the option
- * 'createSimSpecificThirdPartyReport' is provided to the grunt command.
+ * 'createSimSpecificThirdPartyReport' is provided to the grunt command.  The fastest way to run this utility for all
+ * of the projects is with:
+ *
+ * grunt build-no-lint --createSimSpecificThirdPartyReport
  *
  * The report is stored in a file build/third-party-report.json in order to make it easy to restart/update the
  * composite report, since running a report for each simulation may take several minutes.  For the file that generates
