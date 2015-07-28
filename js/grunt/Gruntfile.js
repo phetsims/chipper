@@ -266,10 +266,15 @@ module.exports = function( grunt ) {
     } );
 
   // See licenseJSONReport.js
-  grunt.registerTask( 'licenseJSONReport', 'Report on the license.json files throughout the working copies',
-    function() {
-      licenseJSONReport( grunt );
-    } );
+  grunt.registerTask( 'licenseJSONReport', '(project-wide) Report on license.json files throughout all working copies. ' +
+                                           'Reports any images or audio that have any of the following problems:\n' +
+                                           '\n' +
+                                           'NOT ANNOTATED (NO FILE)\n' +
+                                           '3RD PARTY\n' +
+                                           'NOT ANNOTATED IN FILE\n' +
+                                           'MULTIPLE ANNOTATIONS', function() {
+    licenseJSONReport( grunt );
+  } );
 
   grunt.registerTask( 'generate-published-README',
     'Generates README.md file for a published simulation.',
