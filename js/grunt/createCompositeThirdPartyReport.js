@@ -1,12 +1,14 @@
 /**
- * Creates a composite report of all of the 3rd party images, code, audio, fonts used by PhET Simulations.
+ * Creates a composite report of all of the 3rd party images, code, audio, fonts used by PhET Simulations and updates
+ * the online version by automatically adding and pushing the changes to GitHub.  The output can be seen at:
+ * https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
+ *
  * Entries in sherpa/license.json are used for the code report, and this is augmented by information obtained
  * by running simulation specific reports using:
  *
  * grunt-all.sh build-no-lint --createSimSpecificThirdPartyReport
  *
- * indicating which third-party code resources are used by which simulations.  The output can be seen at:
- * https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
+ * indicating which third-party code resources are used by which simulations.
  *
  * See https://github.com/phetsims/chipper/issues/162
  *
