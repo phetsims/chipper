@@ -5,7 +5,8 @@
  *
  * (a) determine that PhET Simulations are built using compatible resources.  Each resource (image or audio file) must
  * be annotated in a license.json file in the same directory.  Resource files without a compatible license will cause
- * the build to fail.
+ * the build to fail.  This file contains the rules for what PhET has deemed permissible 3rd party images, such as
+ * Public Domain or images from NASA or other exceptions below.
  *
  * (b) provide information from the 3rd party resource files to the build system, so that a report can be included in the
  * build HTML file
