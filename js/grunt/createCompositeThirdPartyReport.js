@@ -176,23 +176,28 @@ module.exports = function( grunt ) {
   }
 
   // Summarize licenses used
-  var output = '# Third-party Code & Fonts:<br>\n' +
-               entries.join( '\n\n' ) + '\n\n' +
+  var output =
+      '* [Third-party Code & Fonts](#third-party-code-and-fonts)\n' +
+      '* [Third-party Code & Fonts License Summary](#third-party-code-and-fonts-license-summary)\n' +
+      '* [Third-party Images & Audio](#third-party-images-and-audio)\n' +
+      '* [Third-party Images & Audio License Summary](#third-party-images-and-audio-license-summary)\n\n' +
+      '# <a name="third-party-code-and-fonts"></a>Third-party Code & Fonts:<br>\n' +
+      entries.join( '\n\n' ) + '\n\n' +
 
-               '---\n' +
+      '---\n' +
 
-               '# Third-party Code & Fonts License Summary:<br>\n' +
-               codeLicensesUsed.join( '<br>' ) + '\n\n' +
+      '# <a name="third-party-code-and-fonts-license-summary"></a>Third-party Code & Fonts License Summary:<br>\n' +
+      codeLicensesUsed.join( '<br>' ) + '\n\n' +
 
-               '---\n' +
+      '---\n' +
 
-               '# Third-party Images & Audio:<br>\n' +
-               imagesAndAudioOutput.join( '\n\n' ) + '\n\n' +
+      '# <a name="third-party-images-and-audio"></a>Third-party Images & Audio:<br>\n' +
+      imagesAndAudioOutput.join( '\n\n' ) + '\n\n' +
 
-               '---\n' +
+      '---\n' +
 
-               '# Third-party Images & Audio License Summary:<br>\n' +
-               imageAndAudioLicensesUsed.join( '<br>' ) + '\n\n'
+      '# <a name="third-party-images-and-audio-license-summary"></a>Third-party Images & Audio License Summary:<br>\n' +
+      imageAndAudioLicensesUsed.join( '<br>' ) + '\n\n'
     ;
 
   // It is sometimes convenient to iterate using GitHub issue preview rather than committing every time.
