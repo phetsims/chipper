@@ -93,28 +93,26 @@
    * etc.
    * @returns {Function}
    */
-  var getLicenseInfo = function() {
-    return function( name, abspath ) {
-      var licenseInfo = _getLicenseInfo( abspath );
+  var getLicenseInfo = function( name, abspath ) {
+    var licenseInfo = _getLicenseInfo( abspath );
 
-      // Make it available for adding a list of 3rd party resources to the HTML
-      // and for checking whether there are unused images/audio
-      global.imageAndAudioLicenseInfo[ name ] = licenseInfo;
+    // Make it available for adding a list of 3rd party resources to the HTML
+    // and for checking whether there are unused images/audio
+    global.imageAndAudioLicenseInfo[ name ] = licenseInfo;
 
-      // Return it for further processing
-      return licenseInfo;
-    };
+    // Return it for further processing
+    return licenseInfo;
   };
 
   // browser require.js-compatible definition
   if ( typeof define !== 'undefined' ) {
     define( function() {
-      return getLicenseInfo();
+      return getLicenseInfo;
     } );
   }
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {
-    module.exports = getLicenseInfo();
+    module.exports = getLicenseInfo;
   }
 })();
