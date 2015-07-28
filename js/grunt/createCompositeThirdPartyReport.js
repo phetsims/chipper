@@ -5,7 +5,10 @@
  *
  * grunt-all.sh build-no-lint --createSimSpecificThirdPartyReport
  *
- * indicating which third-party code resources are used by which simulations.
+ * indicating which third-party code resources are used by which simulations.  The output can be seen at:
+ * https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
+ *
+ * See https://github.com/phetsims/chipper/issues/162
  *
  * @author Sam Reid
  */
