@@ -104,7 +104,9 @@ module.exports = function( grunt ) {
   // Get a list of the library names
   var libraries = [];
   for ( var lib in json ) {
-    libraries.push( lib );
+    if ( json.hasOwnProperty( lib ) ) {
+      libraries.push( lib );
+    }
   }
 
   // Use a case insensitive sort, see http://stackoverflow.com/questions/8996963/how-to-perform-case-insensitive-sorting-in-javascript
