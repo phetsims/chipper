@@ -57,7 +57,23 @@ module.exports = function( grunt ) {
     ) {
       var result = getLicenseInfo( abspath, abspath );
       if ( result.isProblematic === true ) {
-        grunt.log.warn( abspath + ': ' + result.classification );
+        grunt.log.writeln( result.classification + ': ' + subdir + '/' + filename );
+      }
+    }
+
+    if ( filename === 'license.json' ) {
+      var file = global.fs.readFileSync( abspath, 'utf8' );
+      var json = JSON.parse( file );
+
+      // For each key in the json file, make sure that file exists in the directory
+      for ( var key in json ) {
+        if ( json.hasOwnProperty( key ) ) {
+          var resourceFilename = rootdir + '/' + subdir + '/' + key;
+          var exists = global.fs.existsSync( resourceFilename );
+          if ( !exists ) {
+            grunt.log.writeln( 'missing-file: ' + subdir + '/' + key );
+          }
+        }
       }
     }
   } );
