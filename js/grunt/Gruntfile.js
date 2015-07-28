@@ -28,7 +28,6 @@ var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deploySimulation = require( '../../../chipper/js/grunt/deploySimulation' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
-var updateThirdPartyLicensesMD = require( '../../../chipper/js/grunt/updateThirdPartyLicensesMD' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var setPreload = require( '../../../chipper/js/grunt/setPreload' );
@@ -320,10 +319,6 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'generate-thumbnails', 'Generate thumbnails', [ 'generate-128-thumbnail', 'generate-600-thumbnail' ] );
-
-  grunt.registerTask( 'update-third-party-licenses-md', 'Update, commit and push markdown file for third party libraries based on the JSON file', function() {
-    updateThirdPartyLicensesMD( grunt );
-  } );
 
   /*
    * Load tasks from grunt plugins that have been installed locally using npm.

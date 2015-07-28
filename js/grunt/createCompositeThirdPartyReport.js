@@ -95,7 +95,6 @@ module.exports = function( grunt ) {
   grunt.log.writeln( JSON.stringify( compositeImagesAndAudio, null, 2 ) );
   grunt.log.writeln( 'report completed for\n' + repositoryNames.join( ', ' ) );
 
-  // Convert everything to MD, see updateThirdPartyLicensesMD
   var json = grunt.file.readJSON( SHERPA + '/lib/license.json' );
 
   var entries = [];
