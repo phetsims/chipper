@@ -31,24 +31,9 @@
     global.imageAndAudioLicenseInfo = global.imageAndAudioLicenseInfo || {};
   }
 
-  // Automatically write each classification to a global so it can be included in the HTML file after the build is 
-  // complete
-  var getLicenseInfo = function( _getLicenseInfo ) {
-    return function( name, abspath ) {
-      var licenseInfo = _getLicenseInfo( abspath );
-
-      // Make it available for adding a list of 3rd party resources to the HTML
-      // and for checking whether there are unused images/audio
-      global.imageAndAudioLicenseInfo[ name ] = licenseInfo;
-
-      // Return it for further processing
-      return licenseInfo;
-    };
-  };
-
   /**
    * Returns a string indicating a problem with licensing for the image/audio file, or null if there is no problem found.
-   * The license.json file is consulted.
+   * The license.json file is consulted.  This function has no side effects (compare to getLicenseInfo above)
    *
    * @param {string} abspath - the path for the file
    * @returns {*}
@@ -102,15 +87,34 @@
     }
   }
 
+  /**
+   * Returns the classification from _getLicenseInfo but also has the side effect of adding it to a global variable
+   * for providing licensing information for 3rd party resources in the built HTML file, looking for unused annotations,
+   * etc.
+   * @returns {Function}
+   */
+  var getLicenseInfo = function() {
+    return function( name, abspath ) {
+      var licenseInfo = _getLicenseInfo( abspath );
+
+      // Make it available for adding a list of 3rd party resources to the HTML
+      // and for checking whether there are unused images/audio
+      global.imageAndAudioLicenseInfo[ name ] = licenseInfo;
+
+      // Return it for further processing
+      return licenseInfo;
+    };
+  };
+
   // browser require.js-compatible definition
   if ( typeof define !== 'undefined' ) {
     define( function() {
-      return getLicenseInfo( _getLicenseInfo );
+      return getLicenseInfo();
     } );
   }
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {
-    module.exports = getLicenseInfo( _getLicenseInfo );
+    module.exports = getLicenseInfo();
   }
 })();
