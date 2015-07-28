@@ -22,7 +22,7 @@ var fs = require( 'fs' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
-var OUTPUT_FILE = 'third-party-licenses.md';
+var OUTPUT_FILE = 'third-party-licenses.md';  // The name of the output file
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
 module.exports = function( grunt ) {
@@ -39,9 +39,11 @@ module.exports = function( grunt ) {
   // Start in the github checkout dir (above one of the sibling directories)
   var rootdir = directory + '/../';
 
+  // Aggregate results for each of the license types
   var compositeCode = {};
   var compositeImagesAndAudio = {};
 
+  // List of all of the repository names, so that we can detect which libraries are used by all-sims
   var repositoryNames = [];
 
   // TODO: Make sure we hit all of the repos from active-sims (if one didn't build, it might not have a report file).
@@ -52,36 +54,37 @@ module.exports = function( grunt ) {
   // TODO:  instead of just master, and won't have to generate additional report files after the build?
   // TODO: At a minimum, let us fail the build if we didn't see a report for every active-sim
 
-  // Iterate over all images and audio directories recursively
+  /**
+   * Add the source (images/audio or code/fonts) entries to the destination object, keyed by name.
+   * @param repositoryName
+   * @param source
+   * @param destination
+   */
+  var augment = function( repositoryName, source, destination ) {
+    for ( var entry in source ) {
+      if ( source.hasOwnProperty( entry ) ) {
+        if ( !destination.hasOwnProperty( entry ) ) {
+          destination[ entry ] = source[ entry ];//overwrites
+          destination[ entry ].usedBy = [];
+        }
+        destination[ entry ].usedBy.push( repositoryName );
+      }
+    }
+  };
+
+  // Iterate over all repositories images and audio directories recursively
   grunt.file.recurse( rootdir, function( abspath, rootdir, subdir, filename ) {
     if ( filename === 'third-party-report.json' ) {
       var repositoryName = subdir.substring( 0, subdir.lastIndexOf( '/' ) );
 
       // Report on progress as we go
-      grunt.log.writeln( repositoryName );
+      grunt.log.writeln( 'checking ' + repositoryName + '...' );
       repositoryNames.push( repositoryName );
-      var json = grunt.file.readJSON( abspath );
-      var code = json.code;
-      for ( var entry in code ) {
-        if ( code.hasOwnProperty( entry ) ) {
-          if ( !compositeCode.hasOwnProperty( entry ) ) {
-            compositeCode[ entry ] = json.code[ entry ];//overwrites
-            compositeCode[ entry ].usedBy = [];
-          }
-          compositeCode[ entry ].usedBy.push( repositoryName );
-        }
-      }
 
-      var imagesAndAudio = json.imagesAndAudio;
-      for ( entry in imagesAndAudio ) {
-        if ( imagesAndAudio.hasOwnProperty( entry ) ) {
-          if ( !compositeImagesAndAudio.hasOwnProperty( entry ) ) {
-            compositeImagesAndAudio[ entry ] = json.imagesAndAudio[ entry ];
-            compositeImagesAndAudio[ entry ].usedBy = [];
-          }
-          compositeImagesAndAudio[ entry ].usedBy.push( repositoryName );
-        }
-      }
+      var json = grunt.file.readJSON( abspath );
+
+      augment( repositoryName, json.code, compositeCode );
+      augment( repositoryName, json.imagesAndAudio, compositeImagesAndAudio );
     }
   } );
 
@@ -97,9 +100,6 @@ module.exports = function( grunt ) {
       }
     }
   }
-  grunt.log.writeln( JSON.stringify( compositeCode, null, 2 ) );
-  grunt.log.writeln( JSON.stringify( compositeImagesAndAudio, null, 2 ) );
-  grunt.log.writeln( 'report completed for\n' + repositoryNames.join( ', ' ) );
 
   var json = grunt.file.readJSON( SHERPA + '/lib/license.json' );
 
@@ -213,6 +213,7 @@ module.exports = function( grunt ) {
   grunt.log.debug( output );
   grunt.log.debug( '!!!!!! END LICENSES OUTPUT' );
 
+  // TODO: Only try to overwrite the file if the contents are different.  It should be easy to compare contents.
   grunt.log.writeln( 'writing file ' + OUTPUT_FILE );
   grunt.file.write( SHERPA + '/' + OUTPUT_FILE, output );
 
