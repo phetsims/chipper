@@ -36,6 +36,7 @@ var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLic
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var createXML = require( '../../../chipper/js/grunt/createXML' );
 var licenseJSONReport = require( '../../../chipper/js/grunt/licenseJSONReport' );
+var createCompositeThirdPartyReport = require( '../../../chipper/js/grunt/createCompositeThirdPartyReport' );
 
 //TODO look at why this is necessary
 /*
@@ -265,14 +266,21 @@ module.exports = function( grunt ) {
     } );
 
   // See licenseJSONReport.js
-  grunt.registerTask( 'licenseJSONReport', '(project-wide) Report on license.json files throughout all working copies. ' +
-                                           'Reports any images or audio that have any of the following problems:\n' +
-                                           '\n' +
-                                           'NOT ANNOTATED (NO FILE)\n' +
-                                           '3RD PARTY\n' +
-                                           'NOT ANNOTATED IN FILE\n' +
-                                           'MULTIPLE ANNOTATIONS', function() {
+  grunt.registerTask( 'create-license-json-report', '(project-wide) Report on license.json files throughout all working copies. ' +
+                                                    'Reports any images or audio that have any of the following problems:\n' +
+                                                    '\n' +
+                                                    'missing-license.json\n' +
+                                                    'third-party\n' +
+                                                    'not-annotated\n', function() {
     licenseJSONReport( grunt );
+  } );
+
+  // see createCompositeThirdPartyReport.js
+  grunt.registerTask( 'create-composite-third-party-report', 'Given the simulation-specific reports created by ' +
+                                                             'createSimSpecificThirdPartyReport, aggregate them and provide ' +
+                                                             'a complete report, indicating which third-party resources are ' +
+                                                             'used by which simulations.', function() {
+    createCompositeThirdPartyReport( grunt );
   } );
 
   grunt.registerTask( 'generate-published-README',

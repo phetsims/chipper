@@ -21,9 +21,9 @@ var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap'
 // Loading files as data URIs
 var loadFileAsDataURI = require( '../../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
 
-// Locale information
-var localeInfo = require( '../../../chipper/js/data/localeInfo' );
+var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 var reportUnusedImagesAndAudio = require( '../../../chipper/js/grunt/reportUnusedImagesAndAudio' );
+var createSimSpecificThirdPartyReport = require( '../../../chipper/js/grunt/createSimSpecificThirdPartyReport' );
 
 /**
  * @param grunt the grunt instance
@@ -262,6 +262,11 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       }
     }
     html = replaceFirst( html, 'THIRD_PARTY_IMAGES_AND_AUDIO', JSON.stringify( thirdPartyEntries, null, 2 ) );
+
+    // If enabled, create a report about the third-party images, audio and code used by the simulation.
+    if ( grunt.option( 'createSimSpecificThirdPartyReport' ) ) {
+      createSimSpecificThirdPartyReport( grunt, global.phet.thirdPartyLicenses, thirdPartyEntries );
+    }
 
     for ( var i = 0; i < locales.length; i++ ) {
       var locale = locales[ i ];
