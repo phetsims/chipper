@@ -95,7 +95,7 @@ module.exports = function( grunt ) {
   var json = grunt.file.readJSON( SHERPA + '/lib/license.json' );
 
   var entries = [];
-  var licensesUsed = [];
+  var codeLicensesUsed = [];
 
   // Get a list of the library names
   var libraries = [];
@@ -137,8 +137,8 @@ module.exports = function( grunt ) {
     // viewing from https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
     entries.push( lines.join( '<br>' ) );
 
-    if ( licensesUsed.indexOf( json[ library ].license ) < 0 ) {
-      licensesUsed.push( json[ library ].license );
+    if ( codeLicensesUsed.indexOf( json[ library ].license ) < 0 ) {
+      codeLicensesUsed.push( json[ library ].license );
     }
   }
 
@@ -169,17 +169,17 @@ module.exports = function( grunt ) {
   }
 
   // Summarize licenses used
-  var output = '**Third-party Code:**<br>\n' +
+  var output = '# Third-party Code:<br>\n' +
                entries.join( '\n\n' ) + '\n\n' +
 
                '---\n' +
 
-               '**Third-party Code License Summary:**<br>\n' +
-               licensesUsed.join( '<br>' ) + '\n\n' +
+               '# Third-party Code License Summary:<br>\n' +
+               codeLicensesUsed.join( '<br>' ) + '\n\n' +
 
                '---\n' +
 
-               '**Third-party Images & Audio:**<br>\n' +
+               '# Third-party Images & Audio:<br>\n' +
                imagesAndAudioOutput.join( '\n\n' ) + '\n';
 
   // It is sometimes convenient to iterate using GitHub issue preview rather than committing every time.
