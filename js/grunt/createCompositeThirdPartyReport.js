@@ -1,5 +1,9 @@
 /**
- * Given the simulation-specific reports created by createSimSpecificThirdPartyReport, aggregate them and provide a
+ * Given the simulation-specific reports created by createSimSpecificThirdPartyReport (often using
+ *
+ * grunt build-no-lint --createSimSpecificThirdPartyReport
+ *
+ * as the command), aggregate them and provide a
  * complete report, indicating which third-party resources are used by which simulations.
  *
  * @author Sam Reid
@@ -96,6 +100,7 @@ module.exports = function( grunt ) {
 
   var entries = [];
   var codeLicensesUsed = [];
+  var imageAndAudioLicensesUsed = [];
 
   // Get a list of the library names
   var libraries = [];
@@ -161,26 +166,34 @@ module.exports = function( grunt ) {
         compositeImagesAndAudio[ imageAndAudioKey ].text.join( '<br>' ),
         compositeImagesAndAudio[ imageAndAudioKey ].projectURL,
         'License: ' + compositeImagesAndAudio[ imageAndAudioKey ].license,
-        'Notes: ' + compositeImagesAndAudio[ imageAndAudioKey ].notes,
-        'Used by: ' + 'TODO'
+        'Notes: ' + compositeImagesAndAudio[ imageAndAudioKey ].notes
       ];
       imagesAndAudioOutput.push( imageAudioEntryLines.join( '<br>' ) );
+    }
+    if ( imageAndAudioLicensesUsed.indexOf( compositeImagesAndAudio[ imageAndAudioKey ].license ) < 0 ) {
+      imageAndAudioLicensesUsed.push( compositeImagesAndAudio[ imageAndAudioKey ].license );
     }
   }
 
   // Summarize licenses used
-  var output = '# Third-party Code:<br>\n' +
+  var output = '# Third-party Code & Fonts:<br>\n' +
                entries.join( '\n\n' ) + '\n\n' +
 
                '---\n' +
 
-               '# Third-party Code License Summary:<br>\n' +
+               '# Third-party Code & Fonts License Summary:<br>\n' +
                codeLicensesUsed.join( '<br>' ) + '\n\n' +
 
                '---\n' +
 
                '# Third-party Images & Audio:<br>\n' +
-               imagesAndAudioOutput.join( '\n\n' ) + '\n';
+               imagesAndAudioOutput.join( '\n\n' ) + '\n\n' +
+
+               '---\n' +
+
+               '# Third-party Images & Audio License Summary:<br>\n' +
+               imageAndAudioLicensesUsed.join( '<br>' ) + '\n\n'
+    ;
 
   // It is sometimes convenient to iterate using GitHub issue preview rather than committing every time.
   // In this case, you may want to comment out the commit below.
