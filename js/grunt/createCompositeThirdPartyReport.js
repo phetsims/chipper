@@ -1,10 +1,11 @@
 /**
- * Given the simulation-specific reports created by createSimSpecificThirdPartyReport (often using
+ * Creates a composite report of all of the 3rd party images, code, audio, fonts used by PhET Simulations.
+ * Entries in sherpa/license.json are used for the code report, and this is augmented by information obtained
+ * by running simulation specific reports using:
  *
- * grunt build-no-lint --createSimSpecificThirdPartyReport
+ * grunt-all.sh build-no-lint --createSimSpecificThirdPartyReport
  *
- * as the command), aggregate them and provide a
- * complete report, indicating which third-party resources are used by which simulations.
+ * indicating which third-party code resources are used by which simulations.
  *
  * @author Sam Reid
  */
