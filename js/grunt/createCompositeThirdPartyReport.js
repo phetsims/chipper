@@ -206,6 +206,10 @@ module.exports = function( grunt ) {
 
   // Summarize licenses used
   var output =
+      'This report is for the current branch & revision of each repository at the time the report was generated ' +
+      'and may not match with published versions.  To see the third party resources used in published simulations, inspect ' +
+      'their HTML files for the `window.phet.chipper.thirdPartyLicenses` and `window.phet.chipper.thirdPartyImagesAndAudio` ' +
+      '(only exists in recent sim publications).\n' +
       '* [Third-party Code & Fonts](#third-party-code-and-fonts)\n' +
       '* [Third-party Code & Fonts License Summary](#third-party-code-and-fonts-license-summary)\n' +
       '* [Third-party Images & Audio](#third-party-images-and-audio)\n' +
