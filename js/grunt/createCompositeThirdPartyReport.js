@@ -4,7 +4,7 @@
  * https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
  *
  * Entries in sherpa/license.json are used for the code report, and this is augmented by information obtained
- * by running simulation specific reports using:
+ * by running mandatory simulation-specific reports using:
  *
  * grunt-all.sh build-no-lint --createSimSpecificThirdPartyReport
  *
@@ -46,14 +46,6 @@ module.exports = function( grunt ) {
 
   // List of all of the repository names, so that we can detect which libraries are used by all-sims
   var repositoryNames = [];
-
-  // TODO: Make sure we hit all of the repos from active-sims (if one didn't build, it might not have a report file).
-  // TODO: Should we just use active-sims as the list to iterate over?
-  // TODO: Should there be a sim report as well as a non-sim report?
-  // TODO: Add other 3rd party things from sherpa that are used in non-requirejs projects.
-  // TODO: Should we parse the HTML and get the values from the HTML so that we can (a) run reports for published sims
-  // TODO:  instead of just master, and won't have to generate additional report files after the build?
-  // TODO: At a minimum, let us fail the build if we didn't see a report for every active-sim
 
   /**
    * Add the source (images/audio or code/fonts) entries to the destination object, keyed by name.
