@@ -22,6 +22,7 @@ var fs = require( 'fs' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
+var ACTIVE_RUNNABLES_FILENAME = 'chipper/data/active-runnables';  // The relative path to sherpa, from the chipper path
 var OUTPUT_FILE = 'third-party-licenses.md';  // The name of the output file
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
@@ -88,6 +89,27 @@ module.exports = function( grunt ) {
     }
   } );
 
+  // Make sure we received a report from every active-runnable.  Otherwise, perhaps something isn't building properly
+  var activeRunnables = grunt.file.read( rootdir + '/' + ACTIVE_RUNNABLES_FILENAME ).trim();
+  var activeRunnablesByLine = activeRunnables.split( /\r?\n/ );
+  var missing = [];
+  for ( var i = 0; i < activeRunnablesByLine.length; i++ ) {
+    var element = activeRunnablesByLine[ i ];
+    var completed = false;
+    for ( var k = 0; k < repositoryNames.length; k++ ) {
+      if ( repositoryNames[ k ] === element ) {
+        completed = true;
+        break;
+      }
+    }
+    if ( !completed ) {
+      missing.push( element );
+    }
+  }
+  if ( missing.length > 0 ) {
+    grunt.fail.warn( 'missing reports for ' + missing.join( ', ' ) );
+  }
+
   // Sort to easily compare lists of repositoryNames with usedBy columns, to see which resources are used by everything.
   repositoryNames.sort();
 
@@ -121,7 +143,7 @@ module.exports = function( grunt ) {
   } );
 
   // Add info for each library to the MD report
-  for ( var i = 0; i < libraries.length; i++ ) {
+  for ( i = 0; i < libraries.length; i++ ) {
     var library = libraries[ i ];
 
     // check for existence of the license file
