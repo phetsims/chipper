@@ -252,7 +252,7 @@ module.exports = function( grunt ) {
       } );
     };
 
-    // Add and commit the changes to the 
+    // Add and commit the changes to the output file
     exec( 'git add ' + OUTPUT_FILE, function() {
       exec( 'git commit --message "updated ' + OUTPUT_FILE + '"', function() {
         exec( 'git push', function() {
