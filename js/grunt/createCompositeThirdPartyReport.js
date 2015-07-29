@@ -49,9 +49,9 @@ module.exports = function( grunt ) {
 
   /**
    * Add the source (images/audio or code/fonts) entries to the destination object, keyed by name.
-   * @param repositoryName
-   * @param source
-   * @param destination
+   * @param {string} repositoryName - the name of the repository, such as 'energy-skate-park-basics'
+   * @param {object} source - the object from which to read the entry
+   * @param {object} destination - the object to which to append the entry
    */
   var augment = function( repositoryName, source, destination ) {
     for ( var entry in source ) {
@@ -179,8 +179,12 @@ module.exports = function( grunt ) {
   imageAudioKeys.sort( function( a, b ) {
     return a.toLowerCase().localeCompare( b.toLowerCase() );
   } );
+
+  // Create the text for the image and audio, and keep track of which licenses were used by them.
   for ( i = 0; i < imageAudioKeys.length; i++ ) {
     var imageAndAudioKey = imageAudioKeys[ i ];
+
+    // Exception for Snow Day Math, can be removed once we are generating that artwork
     if ( compositeImagesAndAudio[ imageAndAudioKey ].notes !== 'from Snow Day Math' ) {
       var imageAudioEntryLines = [
         '**' + imageAndAudioKey + '**',
@@ -248,8 +252,9 @@ module.exports = function( grunt ) {
       } );
     };
 
+    // Add and commit the changes to the 
     exec( 'git add ' + OUTPUT_FILE, function() {
-      exec( 'git commit --message "updated info.md"', function() {
+      exec( 'git commit --message "updated ' + OUTPUT_FILE + '"', function() {
         exec( 'git push', function() {
           done();
         } );
