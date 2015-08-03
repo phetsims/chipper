@@ -6,7 +6,6 @@
  * @author Aaron Davis
  */
 
-/* jslint node: true */
 
 // modules
 var client = require( 'scp2' );
@@ -29,6 +28,8 @@ var DEPENDENCIES_JSON = 'dependencies.json';
  * @param test set to true disable commit and push, and SCP to a test directory on spot
  */
 module.exports = function( grunt, debug, test ) {
+  // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
+  /* jslint node: true */
   'use strict';
 
   // read the preferences file

@@ -12,10 +12,10 @@
  * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
+  // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
+  /* jslint node: true */
   'use strict';
 
-  /* jslint node: true */
-  // allows "process" to pass lint instead of getting an undefined lint error
   var directory = process.cwd();
   var directoryComponents = directory.split( '/' );
   var sim = directoryComponents[ directoryComponents.length - 1 ];

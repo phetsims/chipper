@@ -13,10 +13,10 @@
  * @param {string} simNameUppercase - the upper-case string prefix such as BALANCING_ACT
  */
 module.exports = function( grunt, simNameUppercase ) {
+  // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
+  /* jslint node: true */
   'use strict';
 
-  /* jslint node: true */
-  // allows "process" to pass lint instead of getting an undefined lint error
   var directory = process.cwd();
 
   var endsWith = function( string, substring ) {

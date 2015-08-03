@@ -6,6 +6,7 @@
  * @author Aaron Davis
  */
 
+// The following comment permits node-specific globals (such as process.cwd()) to pass jshint
 /* jslint node: true */
 'use strict';
 

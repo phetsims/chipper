@@ -23,12 +23,12 @@
  * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
+  // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
+  /* jslint node: true */
   'use strict';
 
   var getLicenseInfo = require( '../../../chipper/js/grunt/getLicenseInfo' );
 
-  /* jslint node: true */
-  // allows "process" to pass lint instead of getting an undefined lint error
   var directory = process.cwd();
 
   // Start in the github checkout dir (above one of the sibling directories)
