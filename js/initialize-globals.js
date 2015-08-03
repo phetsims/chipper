@@ -136,6 +136,18 @@
     };
 
     /**
+     * Gets the name of brand to use (such as 'phet', 'adapted-from-phet' or 'interoperable'), which determines which 
+     * logo to show in the navbar as well as what options to show in the PhET menu and what text to show in the about 
+     * dialog.
+     * See also the build-time version of this function (which uses grunt options) in beforeRequirejsBuild.js
+     * See https://github.com/phetsims/brand/issues/11
+     * @returns {string}
+     */
+    window.phet.chipper.getBrandName = function() {
+      return phet.chipper.getQueryParameter( 'brand' ) || 'adapted-from-phet';
+    };
+
+    /**
      * Maps an input string to a final string, accommodating tricks like doubleStrings.
      * This function is used to modify all strings in a sim when the stringTest query parameter is used.
      * The stringTest query parameter and its options are documented in the query parameter docs above.

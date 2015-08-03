@@ -48,7 +48,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
         return filename.substring( filename.indexOf( '_' ) + 1, filename.lastIndexOf( '.' ) );
       } ) );
     }
-    catch ( e ) {
+    catch( e ) {
       assert( false, 'Failure checking strings repo location: ' + directory );
       return locales;
     }
@@ -94,6 +94,18 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
   global.phet.chipper = global.phet.chipper || {};
   global.phet.chipper.getCacheBusterArgs = global.phet.chipper.getCacheBusterArgs || function() {return '';};
+
+  /**
+   * Gets the name of brand to use (such as 'phet', 'adapted-from-phet' or 'interoperable'), which determines which
+   * logo to show in the navbar as well as what options to show in the PhET menu and what text to show in the about
+   * dialog.
+   * See also the requirejs-time version of this function (which uses query-parameters) in initialize-globals.js
+   * See https://github.com/phetsims/brand/issues/11
+   * @returns {string}
+   */
+  global.phet.chipper.getBrandName = function() {
+    return grunt.option( 'brand' ) || 'adapted-from-phet';
+  };
 
   // See if a specific language was specified like: grunt build --locale fr
   var locale = grunt.option( 'locale' ) || fallbackLocale;

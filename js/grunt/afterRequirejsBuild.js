@@ -197,7 +197,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     var simNameUppercase = pkg.simTitleStringKey.substring( 0, pkg.simTitleStringKey.indexOf( '/' ) );
     reportUnusedImagesAndAudio( grunt, simNameUppercase );
 
-    var splashDataURI = loadFileAsDataURI( '../brand/images/splash.svg' );
+    // Load the splash SVG from the appropriate brand.
+    var splashDataURI = loadFileAsDataURI( '../brand/' + global.phet.chipper.getBrandName() + '/images/splash.svg' );
     var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
     // Create the license header for this html and all the 3rd party dependencies
