@@ -268,9 +268,9 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'create-license-json-report', '(project-wide) Report on license.json files throughout all working copies. ' +
                                                     'Reports any images or audio that have any of the following problems:\n' +
                                                     '\n' +
-                                                    'missing-license.json\n' +
-                                                    'third-party\n' +
-                                                    'not-annotated\n', function() {
+                                                    'missing-license.json (no file)\n' +
+                                                    'third-party (incompatible license)\n' +
+                                                    'not-annotated (entry missing)\n', function() {
     createLicenseJSONReport( grunt );
   } );
 
