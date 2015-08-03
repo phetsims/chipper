@@ -1,3 +1,5 @@
+// Copyright 2002-2015, University of Colorado Boulder
+
 /**
  * Creates a composite report of all of the 3rd party images, code, audio, fonts used by PhET Simulations and updates
  * the online version by automatically adding and pushing the changes to GitHub.  The output can be seen at:
