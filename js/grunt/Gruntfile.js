@@ -34,7 +34,7 @@ var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var createXML = require( '../../../chipper/js/grunt/createXML' );
-var licenseJSONReport = require( '../../../chipper/js/grunt/licenseJSONReport' );
+var createLicenseJSONReport = require( '../../../chipper/js/grunt/createLicenseJSONReport' );
 var createCompositeThirdPartyReport = require( '../../../chipper/js/grunt/createCompositeThirdPartyReport' );
 
 //TODO look at why this is necessary
@@ -264,14 +264,14 @@ module.exports = function( grunt ) {
       createXML( grunt );
     } );
 
-  // See licenseJSONReport.js
+  // See createLicenseJSONReport.js
   grunt.registerTask( 'create-license-json-report', '(project-wide) Report on license.json files throughout all working copies. ' +
                                                     'Reports any images or audio that have any of the following problems:\n' +
                                                     '\n' +
                                                     'missing-license.json\n' +
                                                     'third-party\n' +
                                                     'not-annotated\n', function() {
-    licenseJSONReport( grunt );
+    createLicenseJSONReport( grunt );
   } );
 
   // see createCompositeThirdPartyReport.js

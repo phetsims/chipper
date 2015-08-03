@@ -8,8 +8,8 @@
  * third-party             Known to be from an unapproved source outside of PhET
  * not-annotated           There is a license.json file but the asset is not in there
  *
- * This can be run from any simulation directory with `grunt licenseJSONReport` and it reports for all directories (not
- * just the simulation at hand).
+ * This can be run from any simulation directory with `grunt create-license-json-report` and it reports for all directories
+ * (not just the simulation at hand).
  *
  * Note that this program relies on numerous heuristics for determining the output, such as allowed entries that
  * determine if a file originates from PhET.
