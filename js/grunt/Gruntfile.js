@@ -34,7 +34,7 @@ var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var createXML = require( '../../../chipper/js/grunt/createXML' );
-var createLicenseJSONReport = require( '../../../chipper/js/grunt/createLicenseJSONReport' );
+var createImageAndAudioLicenseReport = require( '../../../chipper/js/grunt/createImageAndAudioLicenseReport' );
 var createCompositeThirdPartyReport = require( '../../../chipper/js/grunt/createCompositeThirdPartyReport' );
 
 //TODO look at why this is necessary
@@ -264,14 +264,14 @@ module.exports = function( grunt ) {
       createXML( grunt );
     } );
 
-  // See createLicenseJSONReport.js
-  grunt.registerTask( 'create-license-json-report', '(project-wide) Report on license.json files throughout all working copies. ' +
-                                                    'Reports any images or audio that have any of the following problems:\n' +
-                                                    '\n' +
-                                                    'missing-license.json (no file)\n' +
-                                                    'third-party (incompatible license)\n' +
-                                                    'not-annotated (entry missing)\n', function() {
-    createLicenseJSONReport( grunt );
+  // See createImageAndAudioLicenseReport.js
+  grunt.registerTask( 'create-image-and-audio-license-report', '(project-wide) Report on license.json files throughout all working copies. ' +
+                                                               'Reports any images or audio that have any of the following problems:\n' +
+                                                               '\n' +
+                                                               'missing-license.json (no file)\n' +
+                                                               'third-party (incompatible license)\n' +
+                                                               'not-annotated (entry missing)\n', function() {
+    createImageAndAudioLicenseReport( grunt );
   } );
 
   // see createCompositeThirdPartyReport.js
