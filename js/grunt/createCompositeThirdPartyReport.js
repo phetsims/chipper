@@ -262,7 +262,6 @@ module.exports = function( grunt ) {
     } );
   }
   else {
-    console.log( OUTPUT_FILE + ' contents are the same.  No need to save/commit.' );
+    grunt.log.writeln( OUTPUT_FILE + ' contents are the same.  No need to save/commit.' );
   }
-
 };
