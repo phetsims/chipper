@@ -14,6 +14,10 @@
  * The return value from this function is a javascript object literal of the form:
  *   {classification: <string>, isProblematic: <boolean>, entry: <object> }
  *
+ * As an important side-effect, each entry is added to global.imageAndAudioLicenseInfo.
+ * After all resources have been loaded, this global will contain a list of all resources
+ * used by the sim.
+ *
  * The classification is one of: missing-license.json, not-annotated, phet or third-party
  * isProblematic indicates whether the particular license is compatible with PhET's licensing
  * entry: the object that appears in the license.json file, see

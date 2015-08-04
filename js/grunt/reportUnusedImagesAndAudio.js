@@ -1,8 +1,13 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * Report which images & audio from a sim were not used in the simulation with a require statement.  These files are probably
- * unused.
+ * Report which images & audio from a sim were not used in the simulation with a require statement.
+ *
+ * Relies on global.imageAndAudioLicenseInfo. Each time a resource is loaded by a plugin (image, audio, mipmap,...)
+ * its license info is added to this global by the plugin.  After all resources are loaded, the global will
+ * contain the list of all resources that are actually used by the sim.  Comparing what's in the filesystem to
+ * this list identifies resources that are unused.
+ *
  * See https://github.com/phetsims/chipper/issues/172
  *
  * @author Sam Reid
