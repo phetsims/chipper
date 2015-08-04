@@ -33,7 +33,6 @@ var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
-var createXML = require( '../../../chipper/js/grunt/createXML' );
 var createImageAndAudioLicenseReport = require( '../../../chipper/js/grunt/createImageAndAudioLicenseReport' );
 var createCompositeThirdPartyReport = require( '../../../chipper/js/grunt/createCompositeThirdPartyReport' );
 
@@ -257,11 +256,6 @@ module.exports = function( grunt ) {
     '--clean=true : (optional) deletes the repository directory if it exists',
     function() {
       createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'title' ), grunt.option( 'clean' ) );
-    } );
-
-  grunt.registerTask( 'createXML', 'Write XML file with specific translations for sim',
-    function() {
-      createXML( grunt );
     } );
 
   // See createImageAndAudioLicenseReport.js
