@@ -28,52 +28,72 @@ module.exports = function( grunt ) {
   /* jslint node: true */
   'use strict';
 
+  // modules
   var getLicenseInfo = require( '../../../chipper/js/grunt/getLicenseInfo' );
 
-  var directory = process.cwd();
+  // constants
+  var ACTIVE_REPOS_FILENAME = 'chipper/data/active-repos';  // The relative path to the list of active repos
 
   // Start in the github checkout dir (above one of the sibling directories)
+  var directory = process.cwd();
   var rootdir = directory + '/../';
 
-  // Iterate over all images and audio directories recursively
-  grunt.file.recurse( rootdir, function( abspath, rootdir, subdir, filename ) {
-    if ( subdir &&
+  // Iterate over all active-repos
+  var repos = grunt.file.read( rootdir + '/' + ACTIVE_REPOS_FILENAME ).trim();
+  var reposByLine = repos.split( /\r?\n/ );
 
-         // Images and audio files
-         (abspath.indexOf( '/images/' ) >= 0 ||
-          abspath.indexOf( '/audio/' ) >= 0 ) &&
+  /**
+   * Create a fast report based on the license.json files for the specified repository and directory (images or audio)
+   * @param {string} repo - the name of the repository, such as 'balancing-act'
+   * @param {string} directory - the name of the directory to search such as 'images'
+   * @private
+   */
+  var reportForDirectory = function( repo, directory ) {
 
-         // Skip things we don't need to report on that may also be in the working copy
-         abspath.indexOf( '/node_modules/' ) < 0 &&
-         abspath.indexOf( '/codap-data-interactives/' ) < 0 &&
-         abspath.indexOf( '/an-unconventional-weapon/' ) < 0 && // SR's Ludum Dare entry
-         abspath.indexOf( '/three.js/' ) < 0 &&
-         abspath.indexOf( '/codap/' ) < 0 &&
-         abspath.indexOf( 'README.md' ) < 0 &&
+    var searchDir = rootdir + repo + '/' + directory;
 
-         // The license file doesn't need to annotate itself :)
-         filename.indexOf( 'license.json' ) !== 0
-    ) {
-      var result = getLicenseInfo( abspath, abspath );
-      if ( result.isProblematic === true ) {
-        grunt.log.writeln( 'incompatible-license: ' + subdir + '/' + filename );
-      }
-    }
+    // Not all projects have an audio/ directory
+    if ( grunt.file.exists( searchDir ) ) {
 
-    if ( filename === 'license.json' ) {
-      var file = global.fs.readFileSync( abspath, 'utf8' );
-      var json = JSON.parse( file );
+      // Iterate over all images and audio directories recursively
+      grunt.file.recurse( searchDir, function( abspath, rootdir, subdir, filename ) {
 
-      // For each key in the json file, make sure that file exists in the directory
-      for ( var key in json ) {
-        if ( json.hasOwnProperty( key ) ) {
-          var resourceFilename = rootdir + '/' + subdir + '/' + key;
-          var exists = global.fs.existsSync( resourceFilename );
-          if ( !exists ) {
-            grunt.log.writeln( 'missing-file: ' + subdir + '/' + key );
+        // Some files don't need to be attributed in the license.json
+        if ( abspath.indexOf( 'README.md' ) < 0 &&
+             filename.indexOf( 'license.json' ) !== 0 ) {
+
+          // Classify the resource
+          var result = getLicenseInfo( abspath, abspath );
+
+          // Report if it is a problem
+          if ( result.isProblematic === true ) {
+            grunt.log.writeln( 'incompatible-license: ' + repo + '/' + directory + '/' + filename );
           }
         }
-      }
+
+        // Now iterate through the license.json entries and see which are missing files
+        // This helps to identify stale entries in the license.json files.
+        if ( filename === 'license.json' ) {
+
+          var file = grunt.file.read( abspath, 'utf8' );
+          var json = JSON.parse( file );
+
+          // For each key in the json file, make sure that file exists in the directory
+          for ( var key in json ) {
+            if ( json.hasOwnProperty( key ) ) {
+              var resourceFilename = searchDir + '/' + key;
+              var exists = grunt.file.exists( resourceFilename );
+              if ( !exists ) {
+                grunt.log.writeln( 'missing-file: ' + repo + '/' + directory + '/' + key );
+              }
+            }
+          }
+        }
+      } );
     }
-  } );
+  };
+  for ( var i = 0; i < reposByLine.length; i++ ) {
+    reportForDirectory( reposByLine[ i ], 'images' );
+    reportForDirectory( reposByLine[ i ], 'audio' );
+  }
 };
