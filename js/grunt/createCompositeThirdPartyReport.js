@@ -186,17 +186,15 @@ module.exports = function( grunt ) {
   for ( i = 0; i < imageAudioKeys.length; i++ ) {
     var imageAndAudioKey = imageAudioKeys[ i ];
 
-    // Exception for Snow Day Math, can be removed once we are generating that artwork
-    if ( compositeImagesAndAudio[ imageAndAudioKey ].notes !== 'from Snow Day Math' ) {
-      var imageAudioEntryLines = [
-        '**' + imageAndAudioKey + '**',
-        compositeImagesAndAudio[ imageAndAudioKey ].text.join( '<br>' ),
-        compositeImagesAndAudio[ imageAndAudioKey ].projectURL,
-        'License: ' + compositeImagesAndAudio[ imageAndAudioKey ].license,
-        'Notes: ' + compositeImagesAndAudio[ imageAndAudioKey ].notes
-      ];
-      imagesAndAudioOutput.push( imageAudioEntryLines.join( '<br>' ) );
-    }
+    var imageAudioEntryLines = [
+      '**' + imageAndAudioKey + '**',
+      compositeImagesAndAudio[ imageAndAudioKey ].text.join( '<br>' ),
+      compositeImagesAndAudio[ imageAndAudioKey ].projectURL,
+      'License: ' + compositeImagesAndAudio[ imageAndAudioKey ].license,
+      'Notes: ' + compositeImagesAndAudio[ imageAndAudioKey ].notes
+    ];
+    imagesAndAudioOutput.push( imageAudioEntryLines.join( '<br>' ) );
+    
     if ( imageAndAudioLicensesUsed.indexOf( compositeImagesAndAudio[ imageAndAudioKey ].license ) < 0 ) {
       imageAndAudioLicensesUsed.push( compositeImagesAndAudio[ imageAndAudioKey ].license );
     }

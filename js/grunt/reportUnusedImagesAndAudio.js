@@ -10,9 +10,9 @@
 
 /**
  * @param grunt the grunt instance
- * @param {string} simNameUppercase - the upper-case string prefix such as BALANCING_ACT
+ * @param {string} simName - the lower-case string prefix such as balancing-act
  */
-module.exports = function( grunt, simNameUppercase ) {
+module.exports = function( grunt, simName ) {
   // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
   /* jslint node: true */
   'use strict';
@@ -29,7 +29,7 @@ module.exports = function( grunt, simNameUppercase ) {
     if ( subdir && (subdir.indexOf( 'images' ) === 0 || subdir.indexOf( 'audio' ) === 0) ) {
 
       // check if the file on the HDD was loaded during requirejs
-      var key = simNameUppercase + '/' + filename;
+      var key = simName + '/' + filename;
 
       // if it is an audio file, strip off the suffix .mp3 or .ogg because audio is loaded without a suffix
       // The only exception is VIBE/empty.mp3 which doesn't require an ogg version (WHY?)
