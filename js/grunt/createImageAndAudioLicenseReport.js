@@ -52,7 +52,7 @@ module.exports = function( grunt ) {
    */
   var reportForDirectory = function( repo, directory ) {
 
-    assert( grunt.file.exists( repo ), 'missing required repo: ' + repo );
+    assert( grunt.file.exists( rootdir + repo ), 'missing required repo: ' + repo );
 
     var searchDir = rootdir + repo + '/' + directory;
 
