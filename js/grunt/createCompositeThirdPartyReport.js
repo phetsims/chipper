@@ -24,7 +24,7 @@ var fs = require( 'fs' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
-var ACTIVE_RUNNABLES_FILENAME = 'chipper/data/active-runnables';  // The relative path to sherpa, from the chipper path
+var ACTIVE_RUNNABLES_FILENAME = 'chipper/data/active-runnables';  // The relative path to the list of active runnables
 var OUTPUT_FILE = 'third-party-licenses.md';  // The name of the output file
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
