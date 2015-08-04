@@ -17,7 +17,7 @@
  * The classification is one of: missing-license.json, not-annotated, phet or third-party
  * isProblematic indicates whether the particular license is compatible with PhET's licensing
  * entry: the object that appears in the license.json file, see
- * https://github.com/phetsims/simula-rasa/blob/master/images/README.txt
+ * https://github.com/phetsims/simula-rasa/blob/master/images/README.md
  *
  * In order to simplify compatibility with requirejs and node versions, the return value is a javascript object literal
  * rather than a separate file/constructor function such as LicenseInfo.js
