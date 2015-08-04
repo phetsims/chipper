@@ -20,6 +20,8 @@
  * @author Sam Reid
  */
 
+var assert = require( 'assert' );
+
 /**
  * @param grunt the grunt instance
  */
@@ -49,6 +51,8 @@ module.exports = function( grunt ) {
    * @private
    */
   var reportForDirectory = function( repo, directory ) {
+
+    assert( grunt.file.exists( repo ), 'missing required repo: ' + repo );
 
     var searchDir = rootdir + repo + '/' + directory;
 
