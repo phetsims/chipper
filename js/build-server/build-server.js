@@ -147,13 +147,13 @@ var verbose = options.verbose;
 
 /**
  * Create a [sim name].xml file in the live sim directory in htdocs. This file tells the website which
- * translations exist for a given sim. It is used by the "synchronize" method in Project.java in the webiste code.
+ * translations exist for a given sim. It is used by the "synchronize" method in Project.java in the website code.
  *
  * @param sim
  * @param version
  * @param callback
  */
-function createXML( sim, version, callback ) {
+function createTranslationsXML( sim, version, callback ) {
 
   var rootdir = '../babel/' + sim;
   var englishStringsFile = sim + '-strings_en.json';
@@ -491,7 +491,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                       exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
                         writeLatestHtaccess( function() {
                           writeDownloadHtaccess( function() {
-                            createXML( simName, version, function() {
+                            createTranslationsXML( simName, version, function() {
                               notifyServer( function() {
                                 devScp( afterDeploy ); // copy to spot on non-dev deploys too
                               } );
