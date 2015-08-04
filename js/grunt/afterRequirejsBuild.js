@@ -193,7 +193,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     // After all plugins completed, check which images & audio files are in the images/audio directories 
     // but not loaded by the plugins. The simNameUppercase such as BALANCING_ACT is required in order
-    // to identify the namespaced resources. This reuses the pkg.simTitleStringKey toget the simNameUppercase
+    // to identify the namespaced resources. This reuses the pkg.simTitleStringKey to get the simNameUppercase
     var simNameUppercase = pkg.simTitleStringKey.substring( 0, pkg.simTitleStringKey.indexOf( '/' ) );
     reportUnusedImagesAndAudio( grunt, simNameUppercase );
 
