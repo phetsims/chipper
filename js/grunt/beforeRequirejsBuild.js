@@ -10,6 +10,9 @@
  * mipmapsToBuild
  */
 
+// The following comment permits node-specific globals to pass jslint
+/* jslint node: true */
+
 var assert = require( 'assert' );
 var fs = require( 'fs' );
 
@@ -20,6 +23,11 @@ var fs = require( 'fs' );
  */
 module.exports = function( grunt, pkg, fallbackLocale ) {
   'use strict';
+
+  // read the preferences file
+  var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
+  assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
+  var preferences = grunt.file.readJSON( PREFERENCES_FILE );
 
   /*
    * Look up the locale strings provided in the simulation.
@@ -97,14 +105,13 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   /**
    * Gets the name of brand to use (such as 'phet', 'adapted-from-phet' or 'interoperable'), which determines which
-   * logo to show in the navbar as well as what options to show in the PhET menu and what text to show in the about
-   * dialog.
+   * logo to show in the navbar as well as what options to show in the PhET menu and what text to show in the About dialog.
    * See also the requirejs-time version of this function (which uses query-parameters) in initialize-globals.js
    * See https://github.com/phetsims/brand/issues/11
    * @returns {string}
    */
   global.phet.chipper.getBrandName = function() {
-    return grunt.option( 'brand' ) || 'adapted-from-phet';
+    return grunt.option( 'brand' ) || preferences.brand || 'adapted-from-phet';
   };
 
   // See if a specific language was specified like: grunt build --locale fr
