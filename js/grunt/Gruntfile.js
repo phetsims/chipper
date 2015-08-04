@@ -267,10 +267,10 @@ module.exports = function( grunt ) {
   // See createImageAndAudioLicenseReport.js
   grunt.registerTask( 'create-image-and-audio-license-report', '(project-wide) Report on license.json files throughout all working copies. ' +
                                                                'Reports any images or audio that have any of the following problems:\n' +
-                                                               '\n' +
-                                                               'missing-license.json (no file)\n' +
-                                                               'third-party (incompatible license)\n' +
-                                                               'not-annotated (entry missing)\n', function() {
+                                                               '(1) missing-license.json (no license.json for the resource)\n' +
+                                                               '(2) incompatible-license (resource license not approved)\n' +
+                                                               '(3) not-annotated (entry missing from license.json)\n' +
+                                                               '(4) missing-file (entry in the license.json but not on the file system)', function() {
     createImageAndAudioLicenseReport( grunt );
   } );
 

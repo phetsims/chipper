@@ -5,8 +5,9 @@
  * problems:
  *
  * missing-license.json    The resource file has no associated license.json file
- * third-party             Known to be from an unapproved source outside of PhET
+ * incompatible-license    Known to be from an unapproved source outside of PhET
  * not-annotated           There is a license.json file but the asset is not in there
+ * missing-file            There is an entry in the license.json but no corresponding file
  *
  * This can be run from any simulation directory with `grunt create-image-and-audio-license-report` and it reports for
  * all directories (not just the simulation at hand).
@@ -48,14 +49,14 @@ module.exports = function( grunt ) {
          abspath.indexOf( '/an-unconventional-weapon/' ) < 0 && // SR's Ludum Dare entry
          abspath.indexOf( '/three.js/' ) < 0 &&
          abspath.indexOf( '/codap/' ) < 0 &&
-         abspath.indexOf( 'README.txt' ) < 0 &&
+         abspath.indexOf( 'README.md' ) < 0 &&
 
          // The license file doesn't need to annotate itself :)
          filename.indexOf( 'license.json' ) !== 0
     ) {
       var result = getLicenseInfo( abspath, abspath );
       if ( result.isProblematic === true ) {
-        grunt.log.writeln( result.classification + ': ' + subdir + '/' + filename );
+        grunt.log.writeln( 'incompatible-license: ' + subdir + '/' + filename );
       }
     }
 
