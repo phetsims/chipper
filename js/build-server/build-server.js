@@ -457,7 +457,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                       exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
                         writeLatestHtaccess( function() {
                           writeDownloadHtaccess( function() {
-                            createTranslationsXML( simName, version, function() {
+                            createTranslationsXML( function() {
                               notifyServer( function() {
                                 exec( 'grunt deploy-dev --mkdir', afterDeploy ); // copy to spot on non-dev deploys too
                               } );
