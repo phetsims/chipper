@@ -154,7 +154,7 @@ module.exports = function( grunt ) {
     '--locales=fr : French\n' +
     '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
     '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
-    '--together : adds additional preload files needed to support together.js\n',
+    '--together : adds additional preload files needed to support together.js',
     [ 'lint-all', 'build-no-lint' ]
   );
 
@@ -165,7 +165,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'deploy-production',
     'Deploy a simulation. Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
     'with no options, deploys to phet-dev (since this is still being tested)\n' +
-    '--devDeploy : deploys to spot\n',
+    '--devDeploy : deploys to spot',
     function() {
       deploySimulation( grunt, grunt.option( 'devDeploy' ) );
     }
@@ -175,7 +175,7 @@ module.exports = function( grunt ) {
     'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
     '--buildServer : build the sim with the build server if true\n' +
     '--debug : log ssh debug info if true\n' +
-    '--test : set to true to disable commit and push, and SCP to a test directory on spot\n',
+    '--test : set to true to disable commit and push, and SCP to a test directory on spot',
     function() {
       if ( grunt.option( 'buildServer' ) ) {
         deploySimulation( grunt, 'simian' );
