@@ -110,9 +110,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
    * See https://github.com/phetsims/brand/issues/11
    * @returns {string}
    */
-  global.phet.chipper.getBrandName = function() {
-    return grunt.option( 'brand' ) || preferences.brand || 'adapted-from-phet';
-  };
+  global.phet.chipper.brand = grunt.option( 'brand' ) || preferences.brand || 'adapted-from-phet';
 
   // See if a specific language was specified like: grunt build --locale fr
   var locale = grunt.option( 'locale' ) || fallbackLocale;
@@ -121,7 +119,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   grunt.config.set( 'requirejs.build.options.phetLocale', locale );
 
   // Pass a global to the string! plugin so we know which strings to look up
-  global.phet.localesToBuild =  getLocalesToBuild();
+  global.phet.localesToBuild = getLocalesToBuild();
   grunt.log.debug( 'Locales to build: ' + global.phet.localesToBuild.toString() );
 
   // Since require.js plugins can't be asynchronous with isBuild=true (r.js mode), we need to catch all of the

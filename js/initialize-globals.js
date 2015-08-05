@@ -136,16 +136,14 @@
     };
 
     /**
-     * Gets the name of brand to use (such as 'phet', 'adapted-from-phet' or 'interoperable'), which determines which 
-     * logo to show in the navbar as well as what options to show in the PhET menu and what text to show in the about 
+     * Gets the name of brand to use (such as 'phet', 'adapted-from-phet' or 'interoperable'), which determines which
+     * logo to show in the navbar as well as what options to show in the PhET menu and what text to show in the about
      * dialog.
      * See also the build-time version of this function (which uses grunt options) in beforeRequirejsBuild.js
      * See https://github.com/phetsims/brand/issues/11
      * @returns {string}
      */
-    window.phet.chipper.getBrandName = function() {
-      return phet.chipper.getQueryParameter( 'brand' ) || 'adapted-from-phet';
-    };
+    window.phet.chipper.brand = phet.chipper.getQueryParameter( 'brand' ) || 'adapted-from-phet';
 
     /**
      * Maps an input string to a final string, accommodating tricks like doubleStrings.

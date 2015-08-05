@@ -198,7 +198,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     reportUnusedImagesAndAudio( grunt, simNameUppercase );
 
     // Load the splash SVG from the appropriate brand.
-    var splashDataURI = loadFileAsDataURI( '../brand/' + global.phet.chipper.getBrandName() + '/images/splash.svg' );
+    var splashDataURI = loadFileAsDataURI( '../brand/' + global.phet.chipper.brand + '/images/splash.svg' );
     var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
 
     // Create the license header for this html and all the 3rd party dependencies
@@ -209,7 +209,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
     var htmlHeader = null;
-    if ( global.phet.chipper.getBrandName() === 'interoperable' ) {
+    if ( global.phet.chipper.brand === 'interoperable' ) {
 
       // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
       htmlHeader = englishSimTitle + '\n' +
