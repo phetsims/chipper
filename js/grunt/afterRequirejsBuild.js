@@ -206,20 +206,37 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     var titleKey = pkg.simTitleStringKey;
     var stringMap = loadStringMap();
     var englishSimTitle = stringMap.en[ titleKey ] + ' ' + pkg.version; //TODO: i18n order
-    var htmlHeader = englishSimTitle + '\n' +
-                     'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
-                     'PhET Interactive Simulations, University of Colorado Boulder\n' +
-                     '\n' +
-                     'This file is licensed under Creative Commons Attribution 4.0\n' +
-                     'For alternate source code licensing, see https://github.com/phetsims\n' +
-                     'For licenses for third-party software used by this simulation, see below\n' +
-                     'For more information, see http://phet.colorado.edu/en/licensing/html\n' +
-                     '\n' +
-                     'The PhET name and PhET logo are registered trademarks of The Regents of the\n' +
-                     'University of Colorado. Permission is granted to use the PhET name and PhET logo\n' +
-                     'only for attribution purposes. Use of the PhET name and/or PhET logo for promotional,\n' +
-                     'marketing, or advertising purposes requires a separate license agreement from the\n' +
-                     'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
+
+    // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
+    var htmlHeader = null;
+    if ( global.phet.chipper.getBrandName() === 'interoperable' ) {
+
+      // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
+      htmlHeader = englishSimTitle + '\n' +
+                   'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
+                   'PhET Interactive Simulations, University of Colorado Boulder\n' +
+                   '\n' +
+                   'This Interoperable PhET Simulation file requires a license.\n' +
+                   'USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
+                   'Contact phethelp@colorado.edu regarding licensing.\n' +
+                   'http://phet.colorado.edu/en/licensing';
+    }
+    else {
+      htmlHeader = englishSimTitle + '\n' +
+                   'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
+                   'PhET Interactive Simulations, University of Colorado Boulder\n' +
+                   '\n' +
+                   'This file is licensed under Creative Commons Attribution 4.0\n' +
+                   'For alternate source code licensing, see https://github.com/phetsims\n' +
+                   'For licenses for third-party software used by this simulation, see below\n' +
+                   'For more information, see http://phet.colorado.edu/en/licensing/html\n' +
+                   '\n' +
+                   'The PhET name and PhET logo are registered trademarks of The Regents of the\n' +
+                   'University of Colorado. Permission is granted to use the PhET name and PhET logo\n' +
+                   'only for attribution purposes. Use of the PhET name and/or PhET logo for promotional,\n' +
+                   'marketing, or advertising purposes requires a separate license agreement from the\n' +
+                   'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
+    }
 
     // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
     preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
