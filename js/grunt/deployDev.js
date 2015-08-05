@@ -6,9 +6,11 @@
  * @author Aaron Davis
  */
 
+// The following comment permits node-specific globals (such as process.cwd()) to pass jshint
+/* jslint node: true */
+'use strict';
 
 // modules
-var client = require( 'scp2' );
 var child_process = require( 'child_process' );
 var assert = require( 'assert' );
 var fs = require( 'fs' );
@@ -24,13 +26,10 @@ var DEPENDENCIES_JSON = 'dependencies.json';
 
 /**
  * @param grunt the grunt instance
- * @param debug log ssh debug info if true
+ * @param mkdir set to true to create the sim dir and .htaccess file before copying the version directory
  * @param test set to true disable commit and push, and SCP to a test directory on spot
  */
-module.exports = function( grunt, debug, test ) {
-  // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
-  /* jslint node: true */
-  'use strict';
+module.exports = function( grunt, mkdir, test ) {
 
   // read the preferences file
   var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
@@ -58,18 +57,8 @@ module.exports = function( grunt, debug, test ) {
   var directoryComponents = directory.split( ( /^win/.test( process.platform ) ) ? '\\' : '/' );
   var sim = directoryComponents[ directoryComponents.length - 1 ];
   var version = grunt.file.readJSON( PACKAGE_JSON ).version;
-
-  var path = basePath + sim + '/';
-  var credentialsObject = {
-    host: server,
-    username: preferences.devUsername,
-    password: preferences.devPassword,
-    path: path + version + '/'
-  };
-
-  if ( debug ) {
-    credentialsObject.debug = grunt.log.writeln;
-  }
+  var simPath = basePath + sim;
+  var versionPath = simPath + '/' + version;
 
   var done = grunt.task.current.async();
 
@@ -78,58 +67,54 @@ module.exports = function( grunt, debug, test ) {
     done();
   };
 
-  // write .htaccess in the sim directory
-  // it is easier to just overwrite it every time than to test if it exists and then write
-  var createHtaccessFile = function( callback ) {
-    grunt.log.writeln( 'Attempting to write .htaccess file in ' + path );
-
-    var sshClient = new client.Client( credentialsObject );
-    sshClient.write( {
-      destination: path + '.htaccess',
-      content: new Buffer( HTACCESS_TEXT )
-    }, function( err ) {
-      if ( err ) {
-        grunt.log.error( 'error writing .htaccess file ' + err );
-      }
-      else {
-        grunt.log.writeln( '.htaccess file written successfully' );
-      }
+  /**
+   * Exec a command, log stdout and stderr, handle errors
+   * @param command
+   * @param callback
+   */
+  var exec = function( command, callback ) {
+    grunt.log.writeln( 'Running command: ' + command );
+    child_process.exec( command, function( err, stdout, stderr ) {
+      if ( stdout ) { grunt.log.writeln( stdout ); }
+      if ( stderr ) { grunt.log.writeln( stderr ); }
+      assert( !err, 'assertion error running ' + command );
       callback();
     } );
-
   };
 
-  grunt.log.writeln( 'Copying files to ' + server + '...' );
-
-  // scp will mkdir automatically if necessary
-  client.scp( BUILD_DIR, credentialsObject, function( err ) {
-    if ( err ) {
-      throw new Error( 'SCP failed with error: ' + err );
-    }
-
+  /**
+   * Copy dependencies.json to sim root, commit, and push
+   * @param callback
+   */
+  var commitAndPush = function( callback ) {
     grunt.file.copy( BUILD_DIR + '/' + DEPENDENCIES_JSON, DEPENDENCIES_JSON );
-
-    var exec = function( command, callback ) {
-      child_process.exec( command, function( err, stdout, stderr ) {
-        grunt.log.writeln( stdout );
-        grunt.log.writeln( stderr );
-        assert( !err, 'assertion error running ' + command );
-        callback();
+    exec( 'git add ' + DEPENDENCIES_JSON, function() {
+      exec( 'git commit --message "updated ' + DEPENDENCIES_JSON + ' for ' + version + ' "', function() {
+        exec( 'git push', callback );
       } );
-    };
+    } );
+  };
 
-    if ( !test ) {
-      exec( 'git add ' + DEPENDENCIES_JSON, function() {
-        exec( 'git commit --message "updated ' + DEPENDENCIES_JSON + ' for ' + version + ' "', function() {
-          exec( 'git push', function() {
-            createHtaccessFile( finish );
-          } );
-        } );
-      } );
-    }
-    else {
-      createHtaccessFile( finish );
-    }
+  /**
+   * scp file to dev server, and call commitAndPush if not testing
+   */
+  var scp = function() {
+    exec( 'scp -r ' + BUILD_DIR + ' ' + preferences.devUsername + '@' + server + ':' + versionPath, function() {
+      if ( test ) {
+        finish();
+      }
+      else {
+        commitAndPush( finish );
+      }
+    } );
+  };
 
-  } );
+  if ( mkdir ) {
+    var sshString = 'ssh ' + preferences.devUsername + '@' + server;
+    var mkdirAndCreateHtaccessCommand = ' \'mkdir -p ' + simPath + ' && echo "' + HTACCESS_TEXT + '" > ' + simPath + '/.htaccess\'';
+    exec( sshString + mkdirAndCreateHtaccessCommand, scp );
+  }
+  else {
+    scp();
+  }
 };
