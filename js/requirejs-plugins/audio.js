@@ -51,7 +51,9 @@ define( function( require ) {
         var errorString = '';
         for ( var i = 0; i < urlList.length; i++ ) {
           var licenseInfo = getLicenseInfo( name, urlList[ i ].url );
-          if ( licenseInfo.isProblematic === true ) {
+
+          // Check for errors, but only if the brand is 'phet', see #176
+          if ( licenseInfo.isProblematic === true && phet.chipper.brand === 'phet' ) {
             if ( errorString !== '' ) {
               errorString = errorString + ', ';
             }

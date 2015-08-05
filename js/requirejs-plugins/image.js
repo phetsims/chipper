@@ -27,7 +27,9 @@ define( function( require ) {
       if ( config.isBuild ) {
         buildMap[ name ] = path;
         var licenseInfo = getLicenseInfo( name, path );
-        if ( licenseInfo.isProblematic === true ) {
+
+        // Check for errors, but only if the brand is 'phet', see #176
+        if ( licenseInfo.isProblematic === true && phet.chipper.brand === 'phet' ) {
           onload.error( new Error( licenseInfo.classification ) );
         }
         else {
