@@ -174,14 +174,15 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'deploy-dev',
     'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
     '--buildServer : build the sim with the build server if true\n' +
+    '--simDir : the sim directory path, defaults to the current directory\n' +
     '--mkdir : set to true to create the sim dir and .htaccess file before copying the version directory\n' +
     '--test : set to true to disable commit and push, and SCP to a test directory on spot',
     function() {
       if ( grunt.option( 'buildServer' ) ) {
-        deploySimulation( grunt, 'simian' );
+        deploySimulation( grunt, true );
       }
       else {
-        deployDev( grunt, grunt.option( 'mkdir' ), grunt.option( 'test' ) );
+        deployDev( grunt, grunt.option( 'simDir' ), grunt.option( 'mkdir' ), grunt.option( 'test' ) );
       }
     }
   );

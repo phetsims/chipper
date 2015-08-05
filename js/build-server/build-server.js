@@ -447,7 +447,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
                 // if deploying a dev version just scp to spot
                 if ( isDev ) {
-                  exec( 'grunt deploy-dev --mkdir', afterDeploy );
+                  exec( 'grunt deploy-dev --simDir=../' + simName + ' --mkdir', afterDeploy );
                 }
 
                 // otherwise do a full deploy to simian or figaro
@@ -459,7 +459,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                           writeDownloadHtaccess( function() {
                             createTranslationsXML( function() {
                               notifyServer( function() {
-                                exec( 'grunt deploy-dev --mkdir', afterDeploy ); // copy to spot on non-dev deploys too
+                                exec( 'grunt deploy-dev --simDir=../' + simName + ' --mkdir', afterDeploy ); // copy to spot on non-dev deploys too
                               } );
                             } );
                           } );

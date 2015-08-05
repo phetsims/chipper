@@ -26,10 +26,11 @@ var DEPENDENCIES_JSON = 'dependencies.json';
 
 /**
  * @param grunt the grunt instance
+ * @param simDir the sim directory path
  * @param mkdir set to true to create the sim dir and .htaccess file before copying the version directory
  * @param test set to true disable commit and push, and SCP to a test directory on spot
  */
-module.exports = function( grunt, mkdir, test ) {
+module.exports = function( grunt, simDir, mkdir, test ) {
 
   // read the preferences file
   var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
@@ -74,7 +75,8 @@ module.exports = function( grunt, mkdir, test ) {
    */
   var exec = function( command, callback ) {
     grunt.log.writeln( 'Running command: ' + command );
-    child_process.exec( command, function( err, stdout, stderr ) {
+    var execOptions = simDir ? { cwd: simDir } : {};
+    child_process.exec( command, execOptions, function( err, stdout, stderr ) {
       if ( stdout ) { grunt.log.writeln( stdout ); }
       if ( stderr ) { grunt.log.writeln( stderr ); }
       assert( !err, 'assertion error running ' + command );
