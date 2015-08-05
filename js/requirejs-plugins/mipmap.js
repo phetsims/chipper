@@ -120,7 +120,7 @@ define( function( require ) {
         // if buildCompatible is provided, use the high-quality build-like mipmapping
         var highQualityMipmaps = !!phet.chipper.getQueryParameter( 'buildCompatible' );
 
-        // load our base resolution iamge
+        // load our base resolution image
         var image = document.createElement( 'img' );
         image.onerror = function( error ) {
           console.log( 'failed to load image: ' + path );
