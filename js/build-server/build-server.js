@@ -230,7 +230,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     var englishStringsFile = simName + '-strings_en.json';
     var stringFiles = [ { name: englishStringsFile, locale: 'en' } ];
 
-    // pull all the string filename and locales from babel and store in stringFiles array
+    // pull all the string filenames and locales from babel and store in stringFiles array
     if ( !fs.existsSync( rootdir ) ) {
       winston.log( 'warn', 'no directory for the given sim exists in babel' );
     }
@@ -500,7 +500,7 @@ function queueDeploy( req, res ) {
     taskQueue.push( { req: req, res: res }, function( err ) {
       if ( err ) {
         var errorMessage = 'Build failed with error: ' + err + '.\nSim = ' + req.query[ SIM_NAME ] +
-                           '\nVersion = ' + req.query[ VERSION ] + '\nLocales = ' + req.query[ LOCALES_KEY ];
+                           '\nVersion = ' + req.query[ VERSION ] + '\nLocales = ' + req.query[ LOCALES_KEY ].toString();
         winston.log( 'error', errorMessage );
         sendEmail( 'BUILD ERROR', errorMessage );
       }
