@@ -205,7 +205,10 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     // Text was discussed in https://github.com/phetsims/chipper/issues/148
     var titleKey = pkg.simTitleStringKey;
     var stringMap = loadStringMap();
-    var englishSimTitle = stringMap.en[ titleKey ] + ' ' + pkg.version; //TODO: i18n order
+
+    // Get the title to display as the sim name and version.  The HTML header is not internationalized, so word order
+    // can just be hard coded as English here, see #156
+    var englishSimTitle = stringMap.en[ titleKey ] + ' ' + pkg.version;
 
     // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
     var htmlHeader = null;
