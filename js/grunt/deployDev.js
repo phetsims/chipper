@@ -53,7 +53,7 @@ module.exports = function( grunt, mkdir, test ) {
   }
 
   // get the sim name and version
-  var directory = simDir ? simDir : process.cwd();
+  var directory = process.cwd();
   var directoryComponents = directory.split( ( /^win/.test( process.platform ) ) ? '\\' : '/' );
   var sim = directoryComponents[ directoryComponents.length - 1 ];
   var version = grunt.file.readJSON( PACKAGE_JSON ).version;
