@@ -19,7 +19,6 @@ var request = require( 'request' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs.extra' );
 var async = require( 'async' );
-var scp = require( 'scp' );
 var assert = require( 'assert' );
 var email = require( 'emailjs/email' );
 
@@ -36,7 +35,6 @@ var VERSION = 'version';
 var SERVER_NAME = 'serverName';
 var DEV_KEY = 'dev';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
-var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
 var DEFAULT_SERVER_NAME = 'simian.colorado.edu'; // while testing, default to simian
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 
@@ -387,49 +385,6 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   /**
-   * scp files to dev server. This will usually be spot.
-   * This is currently hardcoded to use my credentials and requires an ssh key to be set up.
-   * Using the 'scp2' library (which allows for password authorization), worked inconsistently when
-   * running on simian, so the more basic library 'scp' was used instead.
-   *
-   * This method will not mkdir. To deploy to spot with mkdir, use 'grunt deploy-dev' locally.
-   * @param callback
-   */
-  var devScp = function( callback ) {
-    winston.log( 'info', 'SCPing files to spot' );
-
-    var files = fs.readdirSync( simDir + '/build' );
-
-    var finished = _.after( files.length, function() {
-      winston.log( 'info', 'SCP finished' );
-      callback();
-    } );
-
-    for ( var i = 0; i < files.length; i++ ) {
-      var options = {
-        file: simDir + '/build/' + files[ i ],
-        user: preferences.devUsername,
-        host: preferences.devDeployServer,
-        port: '22',
-        path: DEV_DIRECTORY + simName + '/' + version + '/'
-      };
-
-      (function( options ) {
-        winston.log( 'info', 'about to copy file ' + options.file );
-        scp.send( options, function( err ) {
-          if ( err ) {
-            winston.log( 'error', 'scp: ' + err );
-          }
-          else {
-            winston.log( 'info', 'copied file ' + options.file );
-          }
-          finished();
-        } );
-      })( options );
-    }
-  };
-
-  /**
    * Notify the website that a new sim or translation has been deployed. This will cause the project to
    * synchronize and the new translation will appear on the website.
    * @param callback
@@ -481,7 +436,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
                 // if deploying a dev version just scp to spot
                 if ( isDev ) {
-                  devScp( afterDeploy );
+                  exec( 'grunt deploy-dev --mkdir', afterDeploy );
                 }
 
                 // otherwise do a full deploy to simian or figaro
@@ -493,7 +448,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                           writeDownloadHtaccess( function() {
                             createTranslationsXML( simName, version, function() {
                               notifyServer( function() {
-                                devScp( afterDeploy ); // copy to spot on non-dev deploys too
+                                exec( 'grunt deploy-dev --mkdir', afterDeploy ); // copy to spot on non-dev deploys too
                               } );
                             } );
                           } );
