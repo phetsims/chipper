@@ -34,6 +34,8 @@
  * projectURL - the URL for the resource
  * license - the name of license, such as "Public Domain"
  * notes - additional helpful information about the resource, or ""
+ * exception - [optional] description of why the image is being used despite the fact that it doesn't match our usual
+ *           - licensing considerations
  *
  * For an example, please see any of the license.json files in a PhET simulation's image directory.
  *
@@ -81,20 +83,20 @@
       return { classification: 'phet', isProblematic: false, entry: entry };
     }
     else if ( entry.license === 'Public Domain' ) {
+
       // public domain OK, but should still be annotated
       return { classification: 'third-party', isProblematic: false, entry: entry };
     }
     else if ( entry.license === 'NASA' ) {
+
       // NASA OK, but should still be annotated
       return { classification: 'third-party', isProblematic: false, entry: entry };
     }
-    else if ( entry.projectURL === 'http://www.americancinematheque.com/ball/1997MPBTravolta.htm' ) {
-      // We decided to allow images for John Travoltage even though we were unable to contact American Cinematheque for 
-      // explicit permission
-      return { classification: 'third-party', isProblematic: false, entry: entry };
-    }
     else {
-      return { classification: 'third-party', isProblematic: true, entry: entry };
+
+      // The file was an unknown or incompatible 3rd party license.  Mark as problematic unless it has an exception
+      // see https://github.com/phetsims/john-travoltage/issues/82
+      return { classification: 'third-party', isProblematic: !entry.exception, entry: entry };
     }
   }
 
