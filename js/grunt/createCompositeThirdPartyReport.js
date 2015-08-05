@@ -1,8 +1,8 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * Creates a composite report of all of the 3rd party images, code, audio, fonts used by PhET Simulations and updates
- * the online version by automatically adding and pushing the changes to GitHub.  The output can be seen at:
+ * Creates a composite report of all of the 3rd party images, code, audio and other media used by PhET Simulations and
+ * updates the online version by automatically adding and pushing the changes to GitHub.  The output can be seen at:
  * https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
  *
  * Entries in sherpa/license.json are used for the code report, and this is augmented by information obtained
@@ -50,7 +50,7 @@ module.exports = function( grunt ) {
   var repositoryNames = [];
 
   /**
-   * Add the source (images/audio or code/fonts) entries to the destination object, keyed by name.
+   * Add the source (images/audio/media or code) entries to the destination object, keyed by name.
    * @param {string} repositoryName - the name of the repository, such as 'energy-skate-park-basics'
    * @param {object} source - the object from which to read the entry
    * @param {object} destination - the object to which to append the entry
@@ -194,7 +194,7 @@ module.exports = function( grunt ) {
       'Notes: ' + compositeImagesAndAudio[ imageAndAudioKey ].notes
     ];
     imagesAndAudioOutput.push( imageAudioEntryLines.join( '<br>' ) );
-    
+
     if ( imageAndAudioLicensesUsed.indexOf( compositeImagesAndAudio[ imageAndAudioKey ].license ) < 0 ) {
       imageAndAudioLicensesUsed.push( compositeImagesAndAudio[ imageAndAudioKey ].license );
     }
@@ -206,16 +206,16 @@ module.exports = function( grunt ) {
       'and may not match with published versions.  To see the third party resources used in published simulations, inspect ' +
       'their HTML files for the `window.phet.chipper.thirdPartyLicenses` and `window.phet.chipper.thirdPartyImagesAndAudio` ' +
       '(only exists in recent sim publications).\n' +
-      '* [Third-party Code & Fonts](#third-party-code-and-fonts)\n' +
-      '* [Third-party Code & Fonts License Summary](#third-party-code-and-fonts-license-summary)\n' +
+      '* [Third-party Code](#third-party-code)\n' +
+      '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
       '* [Third-party Images & Audio](#third-party-images-and-audio)\n' +
       '* [Third-party Images & Audio License Summary](#third-party-images-and-audio-license-summary)\n\n' +
-      '# <a name="third-party-code-and-fonts"></a>Third-party Code & Fonts:<br>\n' +
+      '# <a name="third-party-code"></a>Third-party Code:<br>\n' +
       entries.join( '\n\n' ) + '\n\n' +
 
       '---\n' +
 
-      '# <a name="third-party-code-and-fonts-license-summary"></a>Third-party Code & Fonts License Summary:<br>\n' +
+      '# <a name="third-party-code-and-license-summary"></a>Third-party Code License Summary:<br>\n' +
       codeLicensesUsed.join( '<br>' ) + '\n\n' +
 
       '---\n' +
