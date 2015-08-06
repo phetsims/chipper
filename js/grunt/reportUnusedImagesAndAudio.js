@@ -3,7 +3,7 @@
 /**
  * Report which images & audio from a sim were not used in the simulation with a require statement.
  *
- * Relies on global.imageAndAudioLicenseInfo. Each time a resource is loaded by a plugin (image, audio, mipmap,...)
+ * Relies on global.phet.imageAndAudioLicenseInfo. Each time a resource is loaded by a plugin (image, audio, mipmap,...)
  * its license info is added to this global by the plugin.  After all resources are loaded, the global will
  * contain the list of all resources that are actually used by the sim.  Comparing what's in the filesystem to
  * this list identifies resources that are unused.
@@ -27,7 +27,7 @@ var assert = require( 'assert' );
 module.exports = function( grunt, simNameUppercase ) {
 
   // globals that should be defined by this point
-  assert( global.imageAndAudioLicenseInfo, 'missing global.imageAndAudioLicenseInfo' );
+  assert( global.phet.imageAndAudioLicenseInfo, 'missing global.phet.imageAndAudioLicenseInfo' );
 
   var directory = process.cwd();
 
@@ -52,7 +52,7 @@ module.exports = function( grunt, simNameUppercase ) {
       }
 
       if ( filename !== 'license.json' &&
-           filename !== 'README.txt' && !global.imageAndAudioLicenseInfo.hasOwnProperty( key ) ) {
+           filename !== 'README.txt' && !global.phet.imageAndAudioLicenseInfo.hasOwnProperty( key ) ) {
         grunt.log.error( 'Unused resource: ' + key );
       }
     }

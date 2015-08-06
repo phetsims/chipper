@@ -49,7 +49,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   assert( global.phet.mipmapsToBuild, 'missing global.phet.mipmapsToBuild' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
   assert( global.phet.chipper.brand, 'missing global.phet.chipper.brand' );
-  assert( global.imageAndAudioLicenseInfo, 'missing imageAndAudioLicenseInfo' );
+  assert( global.phet.imageAndAudioLicenseInfo, 'missing global.phet.imageAndAudioLicenseInfo' );
 
   function trimWhitespace( str ) {
     return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );
@@ -278,10 +278,10 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     // For each registered image or audio file, keep the ones that have licenseInfo.classification === 'third-party' 
     // return their licenseInfo.entry
     var thirdPartyEntries = {};
-    for ( var obj in global.imageAndAudioLicenseInfo ) {
-      if ( global.imageAndAudioLicenseInfo.hasOwnProperty( obj ) ) {
-        if ( global.imageAndAudioLicenseInfo[ obj ].classification === 'third-party' ) {
-          thirdPartyEntries[ obj ] = global.imageAndAudioLicenseInfo[ obj ].entry;
+    for ( var obj in global.phet.imageAndAudioLicenseInfo ) {
+      if ( global.phet.imageAndAudioLicenseInfo.hasOwnProperty( obj ) ) {
+        if ( global.phet.imageAndAudioLicenseInfo[ obj ].classification === 'third-party' ) {
+          thirdPartyEntries[ obj ] = global.phet.imageAndAudioLicenseInfo[ obj ].entry;
         }
       }
     }

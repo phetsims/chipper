@@ -14,7 +14,7 @@
  * The return value from this function is a javascript object literal of the form:
  *   {classification: <string>, isProblematic: <boolean>, entry: <object> }
  *
- * As an important side-effect, each entry is added to global.imageAndAudioLicenseInfo.
+ * As an important side-effect, each entry is added to global.phet.imageAndAudioLicenseInfo.
  * After all resources have been loaded, this global will contain a list of all resources
  * used by the sim.
  *
@@ -46,7 +46,7 @@
 
   // During a build, store the 3rd party data for reporting in the HTML file.
   if ( typeof global !== 'undefined' ) {
-    global.imageAndAudioLicenseInfo = global.imageAndAudioLicenseInfo || {};
+    global.phet.imageAndAudioLicenseInfo = global.phet.imageAndAudioLicenseInfo || {};
   }
 
   /**
@@ -111,7 +111,7 @@
 
     // Make it available for adding a list of 3rd party resources to the HTML
     // and for checking whether there are unused images/audio
-    global.imageAndAudioLicenseInfo[ name ] = licenseInfo;
+    global.phet.imageAndAudioLicenseInfo[ name ] = licenseInfo;
 
     // Return it for further processing
     return licenseInfo;
