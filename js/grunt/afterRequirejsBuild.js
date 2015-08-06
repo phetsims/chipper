@@ -215,7 +215,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
     var htmlHeader = null;
-    if ( global.phet.chipper.brand === 'interoperable' ) {
+    if ( global.phet.chipper.brand === 'phet-io' ) {
 
       // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
       htmlHeader = englishSimTitle + '\n' +
