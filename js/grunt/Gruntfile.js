@@ -33,7 +33,7 @@ var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
-var createImageAndAudioLicenseReport = require( '../../../chipper/js/grunt/createImageAndAudioLicenseReport' );
+var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 
 //TODO look at why this is necessary
@@ -258,14 +258,14 @@ module.exports = function( grunt ) {
       createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'title' ), grunt.option( 'clean' ) );
     } );
 
-  // See createImageAndAudioLicenseReport.js
-  grunt.registerTask( 'create-image-and-audio-license-report', '(project-wide) Report on license.json files throughout all working copies. ' +
-                                                               'Reports any images or audio that have any of the following problems:\n' +
-                                                               '(1) missing-license.json (no license.json for the resource)\n' +
-                                                               '(2) incompatible-license (resource license not approved)\n' +
-                                                               '(3) not-annotated (entry missing from license.json)\n' +
-                                                               '(4) missing-file (entry in the license.json but not on the file system)', function() {
-    createImageAndAudioLicenseReport( grunt );
+  // See reportMedia.js
+  grunt.registerTask( 'report-media', '(project-wide) Report on license.json files throughout all working copies. ' +
+                                      'Reports any media (such as images or audio) files that have any of the following problems:\n' +
+                                      '(1) missing-license.json (no license.json for the resource)\n' +
+                                      '(2) incompatible-license (resource license not approved)\n' +
+                                      '(3) not-annotated (entry missing from license.json)\n' +
+                                      '(4) missing-file (entry in the license.json but not on the file system)', function() {
+    reportMedia( grunt );
   } );
 
   // see reportThirdParty.js
