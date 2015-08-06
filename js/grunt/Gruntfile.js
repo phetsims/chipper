@@ -204,18 +204,6 @@ module.exports = function( grunt ) {
       setPreload( grunt, pkg );
     } );
 
-  //grunt.registerTask( 'set-third-party-licenses',
-  //  '(internal use only) Sets global.phet.thirdPartyLicenses, an object literal that will be written to the HTML file',
-  //  function() {
-  //    setThirdPartyLicenses( grunt, pkg );
-  //  } );
-  //
-  //grunt.registerTask( 'report-third-party-licenses',
-  //  'Computes the license header text that will appear in the HTML file.  This will error out if any problems are ' +
-  //  'discovered during the license analysis. Use `grunt -d -v report-third-party-licenses` to print the report. Helpful' +
-  //  ' for debugging licensing without doing full builds.',
-  //  [ 'set-preload', 'set-third-party-licenses' ] );
-
   grunt.registerTask( 'before-requirejs-build',
     '(internal use only) Do things before the requirejs:build task',
     function() {
