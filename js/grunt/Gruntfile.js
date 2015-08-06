@@ -88,7 +88,7 @@ module.exports = function( grunt ) {
   } );
 
   // The brand repo has a different structure, so add it explicitly
-  libFiles.push( '../brand/**/*.js' );
+  //libFiles.push( '../brand/**/*.js' );
 
   // Don't try to lint the svgPath.js.  It was automatically generated and doesn't match convention
   var allFilesToLint = [
