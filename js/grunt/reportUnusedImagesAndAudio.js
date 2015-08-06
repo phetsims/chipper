@@ -53,7 +53,7 @@ module.exports = function( grunt, simNameUppercase ) {
 
       if ( filename !== 'license.json' &&
            filename !== 'README.txt' && !global.phet.imageAndAudioLicenseInfo.hasOwnProperty( key ) ) {
-        grunt.log.error( 'Unused resource: ' + key );
+        grunt.log.warn( 'Unused resource: ' + key );
       }
     }
   } );
