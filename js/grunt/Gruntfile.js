@@ -34,7 +34,7 @@ var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var createImageAndAudioLicenseReport = require( '../../../chipper/js/grunt/createImageAndAudioLicenseReport' );
-var createCompositeThirdPartyReport = require( '../../../chipper/js/grunt/createCompositeThirdPartyReport' );
+var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 
 //TODO look at why this is necessary
 /*
@@ -268,12 +268,12 @@ module.exports = function( grunt ) {
     createImageAndAudioLicenseReport( grunt );
   } );
 
-  // see createCompositeThirdPartyReport.js
-  grunt.registerTask( 'create-composite-third-party-report', 'Given the simulation-specific reports created by ' +
-                                                             'createSimSpecificThirdPartyReport, aggregate them and provide ' +
-                                                             'a complete report, indicating which third-party resources are ' +
-                                                             'used by which simulations.', function() {
-    createCompositeThirdPartyReport( grunt );
+  // see reportThirdParty.js
+  grunt.registerTask( 'report-third-party', 'Given the simulation-specific reports created by ' +
+                                            'createSimSpecificThirdPartyReport, aggregate them and provide ' +
+                                            'a complete report, indicating which third-party resources are ' +
+                                            'used by which simulations.', function() {
+    reportThirdParty( grunt );
   } );
 
   grunt.registerTask( 'generate-published-README',

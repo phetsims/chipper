@@ -9,7 +9,7 @@
  *
  * The report is stored in a file build/third-party-report.json in order to make it easy to restart/update the
  * composite report, since running a report for each simulation may take several minutes.  For the file that generates
- * the composite report, please see createCompositeThirdPartyReport.js
+ * the composite report, please see reportThirdParty.js
  *
  * See https://github.com/phetsims/chipper/issues/162
  *
