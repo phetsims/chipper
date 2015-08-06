@@ -13,7 +13,11 @@
  * @author Sam Reid
  */
 
-// built-in node APIs
+// The following comment permits node-specific globals (such as process.cwd()) to pass jshint
+/* jslint node: true */
+'use strict';
+
+// modules
 var assert = require( 'assert' );
 
 /**
@@ -21,9 +25,6 @@ var assert = require( 'assert' );
  * @param {string} simNameUppercase - the upper-case string prefix such as BALANCING_ACT
  */
 module.exports = function( grunt, simNameUppercase ) {
-  // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
-  /* jslint node: true */
-  'use strict';
 
   // globals that should be defined by this point
   assert( global.imageAndAudioLicenseInfo, 'missing global.imageAndAudioLicenseInfo' );

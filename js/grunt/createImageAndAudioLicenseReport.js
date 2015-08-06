@@ -20,15 +20,17 @@
  * @author Sam Reid
  */
 
+// The following comment permits node-specific globals (such as process.cwd()) to pass jshint
+/* jslint node: true */
+'use strict';
+
+// modules
 var assert = require( 'assert' );
 
 /**
  * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
-  // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
-  /* jslint node: true */
-  'use strict';
 
   // modules
   var getLicenseInfo = require( '../../../chipper/js/grunt/getLicenseInfo' );

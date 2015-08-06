@@ -17,6 +17,10 @@
  * @author Sam Reid
  */
 
+// The following comment permits node-specific globals (such as process.cwd()) to pass jshint
+/* jslint node: true */
+'use strict';
+
 // modules
 var child_process = require( 'child_process' );
 var assert = require( 'assert' );
@@ -29,9 +33,6 @@ var OUTPUT_FILE = 'third-party-licenses.md';  // The name of the output file
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
 module.exports = function( grunt ) {
-  // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
-  /* jslint node: true */
-  'use strict';
 
   /* jshint -W079 */
   var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
