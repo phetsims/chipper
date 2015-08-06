@@ -143,80 +143,6 @@ if ( options.silent ) {
 }
 var verbose = options.verbose;
 
-/**
- * Create a [sim name].xml file in the live sim directory in htdocs. This file tells the website which
- * translations exist for a given sim. It is used by the "synchronize" method in Project.java in the website code.
- *
- * @param sim
- * @param version
- * @param callback
- */
-function createTranslationsXML( sim, version, callback ) {
-
-  var rootdir = '../babel/' + sim;
-  var englishStringsFile = sim + '-strings_en.json';
-  var stringFiles = [ { name: englishStringsFile, locale: 'en' } ];
-
-  try {
-    var files = fs.readdirSync( rootdir );
-    for ( var i = 0; i < files.length; i++ ) {
-      var filename = files[ i ];
-      var firstUnderscoreIndex = filename.indexOf( '_' );
-      var periodIndex = filename.indexOf( '.' );
-      var locale = filename.substring( firstUnderscoreIndex + 1, periodIndex );
-      stringFiles.push( { name: filename, locale: locale } );
-    }
-  }
-  catch( e ) {
-    winston.log( 'warn', 'no directory for the given sim exists in babel' );
-  }
-
-  try {
-    // grab the title from sim/package.json
-    var packageJSON = JSON.parse( fs.readFileSync( '../' + sim + '/package.json', { encoding: 'utf-8' } ) );
-    var simTitleKey = packageJSON.simTitleStringKey;
-    simTitleKey = simTitleKey.split( '/' )[ 1 ];
-
-    var englishStrings = JSON.parse( fs.readFileSync( '../' + sim + '/' + englishStringsFile, { encoding: 'utf-8' } ) );
-
-    // create xml, making a simulation tag for each language
-    var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
-                   '<project name="' + sim + '">\n' +
-                   '<simulations>\n';
-
-    for ( var j = 0; j < stringFiles.length; j++ ) {
-      var stringFile = stringFiles[ j ];
-      var languageJSON = ( stringFile.locale === 'en' ) ? englishStrings :
-                         JSON.parse( fs.readFileSync( '../babel' + '/' + sim + '/' + stringFile.name, { encoding: 'utf-8' } ) );
-
-      var simHTML = HTML_SIMS_DIRECTORY + sim + '/' + version + '/' + sim + '_' + stringFile.locale + '.html';
-
-      if ( fs.existsSync( simHTML ) ) {
-        if ( languageJSON[ simTitleKey ] ) {
-          finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
-                                      '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
-                                      '</simulation>\n' );
-        }
-        else {
-          winston.log( 'warn', 'Sim name not found in translation for ' + simHTML + '. Defaulting to English name.' );
-          finalXML = finalXML.concat( '<simulation name="' + sim + '" locale="' + stringFile.locale + '">\n' +
-                                      '<title><![CDATA[' + englishStrings[ simTitleKey ].value + ']]></title>\n' +
-                                      '</simulation>\n' );
-        }
-      }
-    }
-
-    finalXML = finalXML.concat( '</simulations>\n' + '</project>' );
-
-    fs.writeFileSync( HTML_SIMS_DIRECTORY + sim + '/' + version + '/' + sim + '.xml', finalXML, { mode: 436 } ); // 436 = 0664
-    winston.log( 'info', 'wrote XML file:\n' + finalXML );
-    callback();
-  }
-  catch( e ) {
-    winston.log( 'warn', 'XML file failed to write: ' + e );
-    callback();
-  }
-}
 
 /**
  * taskQueue ensures that only one build/deploy process will be happening at the same time.
@@ -265,8 +191,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     winston.log( 'info', 'running command: ' + command );
     child_process.exec( command, { cwd: dir }, function( err, stdout, stderr ) {
       if ( verbose ) {
-        winston.log( 'info', stdout );
-        winston.log( 'info', stderr );
+        if ( stdout ) { winston.log( 'info', stdout ); }
+        if ( stderr ) { winston.log( 'info', stderr ); }
       }
       if ( !err && callback ) {
         winston.log( 'info', command + ' ran successfully in directory: ' + dir );
@@ -277,19 +203,104 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       else if ( err ) {
         if ( command === 'grunt checkout-master' ) {
           winston.log( 'error', 'error running grunt checkout-master in ' + dir + ', build aborted to avoid infinite loop.' );
-          taskCallback( err ); // build aborted, so take this build task off of the queue
+          taskCallback( 'error running command ' + command + ': ' + err ); // build aborted, so take this build task off of the queue
         }
         else {
           winston.log( 'error', 'error running command: ' + command + ' in ' + dir + '. build aborted.' );
           exec( 'grunt checkout-master', dir, function() {
             exec( 'git checkout master', dir, function() {
               winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
-              taskCallback( err ); // build aborted, so take this build task off of the queue
+              taskCallback( 'error running command ' + command + ': ' + err ); // build aborted, so take this build task off of the queue
             } );
           } );
         }
       }
     } );
+  };
+
+  /**
+   * Create a [sim name].xml file in the live sim directory in htdocs. This file tells the website which
+   * translations exist for a given sim. It is used by the "synchronize" method in Project.java in the website code.
+   *
+   * @param callback
+   */
+  var createTranslationsXML = function( callback ) {
+
+    var rootdir = '../babel/' + simName;
+    var englishStringsFile = simName + '-strings_en.json';
+    var stringFiles = [ { name: englishStringsFile, locale: 'en' } ];
+
+    // pull all the string filenames and locales from babel and store in stringFiles array
+    if ( !fs.existsSync( rootdir ) ) {
+      winston.log( 'warn', 'no directory for the given sim exists in babel' );
+    }
+    else {
+      var files = fs.readdirSync( rootdir );
+      for ( var i = 0; i < files.length; i++ ) {
+        var filename = files[ i ];
+        var firstUnderscoreIndex = filename.indexOf( '_' );
+        var periodIndex = filename.indexOf( '.' );
+        var locale = filename.substring( firstUnderscoreIndex + 1, periodIndex );
+        stringFiles.push( { name: filename, locale: locale } );
+      }
+    }
+
+    // make sure package.json is found so we can get simTitleStringKey
+    var packageJSONPath = '../' + simName + '/package.json';
+    if ( !fs.existsSync( packageJSONPath ) ) {
+      taskCallback( 'package.json not found when trying to create translations XML file' );
+      return;
+    }
+    var packageJSON = JSON.parse( fs.readFileSync( packageJSONPath, { encoding: 'utf-8' } ) );
+
+    // make sure simTitleStringKey exists in package.json
+    if ( !packageJSON.simTitleStringKey ) {
+      taskCallback( 'simTitleStringKey missing from package.json' );
+      return;
+    }
+    var simTitleKey = packageJSON.simTitleStringKey;
+    simTitleKey = simTitleKey.split( '/' )[ 1 ];
+
+    // make sure the english strings file exists so we can read the english strings
+    var englishStringsFilePath = '../' + simName + '/' + englishStringsFile;
+    if ( !fs.existsSync( englishStringsFilePath ) ) {
+      taskCallback( 'English strings file not found' );
+      return;
+    }
+    var englishStrings = JSON.parse( fs.readFileSync( '../' + simName + '/' + englishStringsFile, { encoding: 'utf-8' } ) );
+
+    // create xml, making a simulation tag for each language
+    var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
+                   '<project name="' + simName + '">\n' +
+                   '<simulations>\n';
+
+    for ( var j = 0; j < stringFiles.length; j++ ) {
+      var stringFile = stringFiles[ j ];
+      var languageJSON = ( stringFile.locale === 'en' ) ? englishStrings :
+                         JSON.parse( fs.readFileSync( '../babel' + '/' + simName + '/' + stringFile.name, { encoding: 'utf-8' } ) );
+
+      var simHTML = HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '_' + stringFile.locale + '.html';
+
+      if ( fs.existsSync( simHTML ) ) {
+        if ( languageJSON[ simTitleKey ] ) {
+          finalXML = finalXML.concat( '<simulation name="' + simName + '" locale="' + stringFile.locale + '">\n' +
+                                      '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
+                                      '</simulation>\n' );
+        }
+        else {
+          winston.log( 'warn', 'Sim name not found in translation for ' + simHTML + '. Defaulting to English name.' );
+          finalXML = finalXML.concat( '<simulation name="' + simName + '" locale="' + stringFile.locale + '">\n' +
+                                      '<title><![CDATA[' + englishStrings[ simTitleKey ].value + ']]></title>\n' +
+                                      '</simulation>\n' );
+        }
+      }
+    }
+
+    finalXML = finalXML.concat( '</simulations>\n' + '</project>' );
+
+    fs.writeFileSync( HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '.xml', finalXML, { mode: 436 } ); // 436 = 0664
+    winston.log( 'info', 'wrote XML file:\n' + finalXML );
+    callback();
   };
 
   /**
@@ -436,7 +447,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
                 // if deploying a dev version just scp to spot
                 if ( isDev ) {
-                  exec( 'grunt deploy-dev --mkdir', afterDeploy );
+                  exec( 'grunt deploy-dev --mkdir', simDir, afterDeploy );
                 }
 
                 // otherwise do a full deploy to simian or figaro
@@ -446,9 +457,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                       exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
                         writeLatestHtaccess( function() {
                           writeDownloadHtaccess( function() {
-                            createTranslationsXML( simName, version, function() {
+                            createTranslationsXML( function() {
                               notifyServer( function() {
-                                exec( 'grunt deploy-dev --mkdir', afterDeploy ); // copy to spot on non-dev deploys too
+                                exec( 'grunt deploy-dev --mkdir', simDir, afterDeploy ); // copy to spot on non-dev deploys too
                               } );
                             } );
                           } );
@@ -488,8 +499,10 @@ function queueDeploy( req, res ) {
     winston.log( 'info', 'queuing task' );
     taskQueue.push( { req: req, res: res }, function( err ) {
       if ( err ) {
-        winston.log( 'error', 'build for ' + req.query[ SIM_NAME ] + ' failed with error: ' + err );
-        sendEmail( 'BUILD ERROR', err );
+        var errorMessage = 'Build failed with error: ' + err + '. Sim = ' + req.query[ SIM_NAME ] +
+                           ' Version = ' + req.query[ VERSION ] + ' Locales = ' + req.query[ LOCALES_KEY ].toString();
+        winston.log( 'error', errorMessage );
+        sendEmail( 'BUILD ERROR', errorMessage.replace( /\n/g, ' ' ) ); // for some reason emails get cut off at newlines
       }
       else {
         winston.log( 'info', 'build for ' + req.query[ SIM_NAME ] + ' finished successfully' );
