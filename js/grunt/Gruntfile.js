@@ -82,6 +82,20 @@ module.exports = function( grunt ) {
     phetAllocation: false
   };
 
+  // Enumerate the list of files to be linted for the jshint:allFiles task
+  var libFiles = _.map( pkg.phetLibs, function( repo ) {
+    return '../' + repo + '/js/**/*.js';
+  } );
+
+  // The brand repo has a different structure, so add it explicitly
+  libFiles.push( '../brand/**/*.js' );
+
+  // Don't try to lint the svgPath.js.  It was automatically generated and doesn't match convention
+  var allFilesToLint = [
+    libFiles,
+    '!../kite/js/parser/svgPath.js'
+  ];
+
   // Project configuration.
   grunt.initConfig( {
     /*
@@ -130,7 +144,7 @@ module.exports = function( grunt ) {
 
       // All source files for this repository (repository-specific and dependencies).
       // Excludes kite/js/parser/svgPath.js, which is auto-generated.
-      allFiles: [ _.map( pkg.phetLibs, function( repo ) { return '../' + repo + '/js/**/*.js'; } ), '!../kite/js/parser/svgPath.js' ],
+      allFiles: allFilesToLint,
 
       // reference external JSHint options in jshintOptions.js
       options: require( './jshintOptions' )
