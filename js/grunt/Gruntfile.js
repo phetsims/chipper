@@ -273,8 +273,8 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'report-third-party', 'Given the simulation-specific reports created by ' +
                                             'createSimSpecificThirdPartyReport, aggregate them and provide ' +
                                             'a complete report, indicating which third-party resources are ' +
-                                            'used by which simulations.', function() {
-    reportThirdParty( grunt );
+                                            'used by which simulations.', function( path ) {
+    reportThirdParty( grunt, path );
   } );
 
   grunt.registerTask( 'generate-published-README',

@@ -28,27 +28,27 @@ var fs = require( 'fs' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
-var ACTIVE_RUNNABLES_FILENAME = 'chipper/data/active-runnables';  // The relative path to the list of active runnables
 var OUTPUT_FILE = 'third-party-licenses.md';  // The name of the output file
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
+var COMMIT_CHANGES = false;
 
-module.exports = function( grunt ) {
+/**
+ * @param grunt
+ * @param {string} path - the path to the directory in which to find the HTML files for reporting, can be relative to
+ *                      - grunt or absolute
+ */
+module.exports = function( grunt, path ) {
 
   /* jshint -W079 */
   var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
   /* jshint +W079 */
-
-  var directory = process.cwd();
-
-  // Start in the github checkout dir (above one of the sibling directories)
-  var rootdir = directory + '/../';
 
   // Aggregate results for each of the license types
   var compositeCode = {};
   var compositeImagesAndAudio = {};
 
   // List of all of the repository names, so that we can detect which libraries are used by all-sims
-  var repositoryNames = [];
+  var htmlFileNames = [];
 
   /**
    * Add the source (images/audio/media or code) entries to the destination object, keyed by name.
@@ -68,51 +68,47 @@ module.exports = function( grunt ) {
     }
   };
 
-  // Iterate over all repositories images and audio directories recursively
-  grunt.file.recurse( rootdir, function( abspath, rootdir, subdir, filename ) {
-    if ( filename === 'third-party-report.json' ) {
-      var repositoryName = subdir.substring( 0, subdir.lastIndexOf( '/' ) );
+  var endsWith = function( string, substring ) {
+    return string.indexOf( substring ) === string.length - substring.length;
+  };
 
-      // Report on progress as we go
-      grunt.log.writeln( 'checking ' + repositoryName + '...' );
-      repositoryNames.push( repositoryName );
+  grunt.file.recurse( path, function( abspath, rootdir, subdir, filename ) {
+    if ( endsWith( filename.toLowerCase(), '.html' ) &&
 
-      var json = grunt.file.readJSON( abspath );
+         // shortcut to avoid looking at the -iframe.html files when testing on a build directory.
+         !endsWith( filename.toLowerCase(), '-iframe.html' ) ) {
+      console.log( 'found', abspath );
 
-      augment( repositoryName, json.code, compositeCode );
-      augment( repositoryName, json.imagesAndAudio, compositeImagesAndAudio );
+      // load the file into a string
+      var html = grunt.file.read( abspath ).trim();
+
+      var startIndex = html.indexOf( 'window.phet.chipper.thirdPartyLicenses = {' );
+
+      var endIndex = html.indexOf( 'window.phet.chipper.dependencies = {' );
+      var substring = html.substring( startIndex, endIndex );
+
+      // TODO: Add explicit line markers to facilitate machine readability
+      var window = {
+        phet: {
+          chipper: {}
+        }
+      };
+      eval( substring );
+      augment( filename, window.phet.chipper.thirdPartyLicenses, compositeCode );
+      augment( filename, window.phet.chipper.thirdPartyImagesAndAudio, compositeImagesAndAudio );
+
+      htmlFileNames.push( filename );
     }
   } );
 
-  // Make sure we received a report from every active-runnable.  Otherwise, perhaps something isn't building properly
-  var activeRunnables = grunt.file.read( rootdir + '/' + ACTIVE_RUNNABLES_FILENAME ).trim();
-  var activeRunnablesByLine = activeRunnables.split( /\r?\n/ );
-  var missing = [];
-  for ( var i = 0; i < activeRunnablesByLine.length; i++ ) {
-    var element = activeRunnablesByLine[ i ];
-    var completed = false;
-    for ( var k = 0; k < repositoryNames.length; k++ ) {
-      if ( repositoryNames[ k ] === element ) {
-        completed = true;
-        break;
-      }
-    }
-    if ( !completed ) {
-      missing.push( element );
-    }
-  }
-  if ( missing.length > 0 ) {
-    grunt.fail.warn( 'missing reports for ' + missing.join( ', ' ) );
-  }
-
   // Sort to easily compare lists of repositoryNames with usedBy columns, to see which resources are used by everything.
-  repositoryNames.sort();
+  htmlFileNames.sort();
 
   // If anything is used by every sim indicate that here
   for ( var entry in compositeCode ) {
     if ( compositeCode.hasOwnProperty( entry ) ) {
       compositeCode[ entry ].usedBy.sort();
-      if ( _.isEqual( repositoryNames, compositeCode[ entry ].usedBy ) ) {
+      if ( _.isEqual( htmlFileNames, compositeCode[ entry ].usedBy ) ) {
         compositeCode[ entry ].usedBy = 'all-sims';// Confusing that this matches a repo name, but since that repo isn't actually a sim, perhaps this will be ok
       }
     }
@@ -138,7 +134,7 @@ module.exports = function( grunt ) {
   } );
 
   // Add info for each library to the MD report
-  for ( i = 0; i < libraries.length; i++ ) {
+  for ( var i = 0; i < libraries.length; i++ ) {
     var library = libraries[ i ];
 
     // check for existence of the license file
@@ -254,13 +250,15 @@ module.exports = function( grunt ) {
     };
 
     // Add and commit the changes to the output file
-    exec( 'git add ' + OUTPUT_FILE, function() {
-      exec( 'git commit --message "updated ' + OUTPUT_FILE + '"', function() {
-        exec( 'git push', function() {
-          done();
+    if ( COMMIT_CHANGES ) {
+      exec( 'git add ' + OUTPUT_FILE, function() {
+        exec( 'git commit --message "updated ' + OUTPUT_FILE + '"', function() {
+          exec( 'git push', function() {
+            done();
+          } );
         } );
       } );
-    } );
+    }
   }
   else {
     grunt.log.writeln( OUTPUT_FILE + ' contents are the same.  No need to save/commit.' );
