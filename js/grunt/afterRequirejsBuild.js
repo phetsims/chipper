@@ -47,6 +47,9 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   assert( global.phet.strings, 'missing global.phet.strings' );
   assert( global.phet.localesToBuild, 'missing global.phet.localesToBuild' );
   assert( global.phet.mipmapsToBuild, 'missing global.phet.mipmapsToBuild' );
+  assert( global.phet.chipper, 'missing global.phet.chipper' );
+  assert( global.phet.chipper.brand, 'missing global.phet.chipper.brand' );
+  assert( global.imageAndAudioLicenseInfo, 'missing imageAndAudioLicenseInfo' );
 
   function trimWhitespace( str ) {
     return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );
