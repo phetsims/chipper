@@ -109,8 +109,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   global.phet.chipper.getCacheBusterArgs = global.phet.chipper.getCacheBusterArgs || function() {return '';};
 
   /**
-   * Gets the name of brand to use (such as 'phet', 'adapted-from-phet' or 'interoperable'), which determines which
-   * logo to show in the navbar as well as what options to show in the PhET menu and what text to show in the About dialog.
+   * Gets the name of brand to use, which determines which logo to show in the navbar as well as what options
+   * to show in the PhET menu and what text to show in the About dialog.
    * See also the requirejs-time version of this function (which uses query-parameters) in initialize-globals.js
    * See https://github.com/phetsims/brand/issues/11
    * @returns {string}
