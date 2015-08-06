@@ -12,9 +12,12 @@
 
 // The following comment permits node-specific globals to pass jslint
 /* jslint node: true */
+'use strict';
 
+// modules
 var assert = require( 'assert' );
 var fs = require( 'fs' );
+var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 
 /**
  * @param grunt the grunt instance
@@ -22,7 +25,9 @@ var fs = require( 'fs' );
  * @param {string} fallbackLocale
  */
 module.exports = function( grunt, pkg, fallbackLocale ) {
-  'use strict';
+
+  // Load the 3rd party licenses for code
+  setThirdPartyLicenses( grunt, pkg );
 
   // read the preferences file
   var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';

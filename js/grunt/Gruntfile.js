@@ -31,7 +31,6 @@ var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var setPreload = require( '../../../chipper/js/grunt/setPreload' );
-var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
@@ -160,7 +159,7 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'build-no-lint',
     'identical to "build", but does not run "lint-all"',
-    [ 'clean', 'set-preload', 'set-third-party-licenses', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
+    [ 'clean', 'set-preload', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
 
   grunt.registerTask( 'deploy-production',
     'Deploy a simulation. Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
@@ -205,17 +204,17 @@ module.exports = function( grunt ) {
       setPreload( grunt, pkg );
     } );
 
-  grunt.registerTask( 'set-third-party-licenses',
-    '(internal use only) Sets global.phet.thirdPartyLicenses, an object literal that will be written to the HTML file',
-    function() {
-      setThirdPartyLicenses( grunt, pkg );
-    } );
-
-  grunt.registerTask( 'report-third-party-licenses',
-    'Computes the license header text that will appear in the HTML file.  This will error out if any problems are ' +
-    'discovered during the license analysis. Use `grunt -d -v report-third-party-licenses` to print the report. Helpful' +
-    ' for debugging licensing without doing full builds.',
-    [ 'set-preload', 'set-third-party-licenses' ] );
+  //grunt.registerTask( 'set-third-party-licenses',
+  //  '(internal use only) Sets global.phet.thirdPartyLicenses, an object literal that will be written to the HTML file',
+  //  function() {
+  //    setThirdPartyLicenses( grunt, pkg );
+  //  } );
+  //
+  //grunt.registerTask( 'report-third-party-licenses',
+  //  'Computes the license header text that will appear in the HTML file.  This will error out if any problems are ' +
+  //  'discovered during the license analysis. Use `grunt -d -v report-third-party-licenses` to print the report. Helpful' +
+  //  ' for debugging licensing without doing full builds.',
+  //  [ 'set-preload', 'set-third-party-licenses' ] );
 
   grunt.registerTask( 'before-requirejs-build',
     '(internal use only) Do things before the requirejs:build task',
