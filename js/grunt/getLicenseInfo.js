@@ -26,17 +26,17 @@
  * In order to simplify compatibility with requirejs and node versions, the return value is a javascript object literal
  * rather than a separate file/constructor function such as LicenseInfo.js
  *
- * Each media (image/audio) file must have an entry in a license.json file in the same directory which indicates the
- * origin of the file as well as its licensing.  The license.json file should contain one entry per file, and each
+ * Each media file (image, audio, ...) must have an entry in a license.json file in the same directory which indicates the
+ * origin of the file as well as its licensing.  The license.json file should contain one entry per media file, and each
  * should be annotated with the following:
  *
  * text - copyright statement or "Public Domain"
  * projectURL - the URL for the resource
  * license - the name of license, such as "Public Domain"
  * notes - additional helpful information about the resource, or ""
- * exception - [optional] description of why the image is being used despite the fact that it doesn't match PhET's licensing policy
+ * exception - [optional] description of why the file is being used despite the fact that it doesn't match PhET's licensing policy
  *
- * For an example, please see any of the license.json files in a PhET simulation's image directory.
+ * For an example, please see any of the license.json files in a PhET simulation's images directory.
  *
  * @author Sam Reid
  */
