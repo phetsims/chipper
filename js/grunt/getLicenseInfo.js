@@ -34,8 +34,7 @@
  * projectURL - the URL for the resource
  * license - the name of license, such as "Public Domain"
  * notes - additional helpful information about the resource, or ""
- * exception - [optional] description of why the image is being used despite the fact that it doesn't match our usual
- *           - licensing considerations
+ * exception - [optional] description of why the image is being used despite the fact that it doesn't match PhET's licensing policy
  *
  * For an example, please see any of the license.json files in a PhET simulation's image directory.
  *
