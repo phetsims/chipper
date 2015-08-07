@@ -78,20 +78,16 @@ module.exports = function( grunt, path ) {
          !endsWith( filename.toLowerCase(), '-iframe.html' ) ) {
 
       // load the file into a string
-      grunt.log.debug( 'reading ' + abspath );
       var html = grunt.file.read( abspath ).trim();
 
-      var startIndex = html.indexOf( ThirdPartyConstants.START_THIRD_PARTY_RESOURCES );
-      var endIndex = html.indexOf( ThirdPartyConstants.END_THIRD_PARTY_RESOURCES );
+      var startIndex = html.indexOf( ThirdPartyConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
+      var endIndex = html.indexOf( ThirdPartyConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
       var substring = html.substring( startIndex, endIndex );
-      grunt.log.debug( startIndex, endIndex );
 
       var firstCurlyBrace = substring.indexOf( '{' );
       var lastCurlyBrace = substring.lastIndexOf( '}' );
-      grunt.log.debug( firstCurlyBrace, lastCurlyBrace );
       var jsonString = substring.substring( firstCurlyBrace, lastCurlyBrace + 1 );
 
-      grunt.log.debug( jsonString );
       var json = JSON.parse( jsonString );
 
       augment( filename, json.lib, compositeCode );
@@ -203,37 +199,30 @@ module.exports = function( grunt, path ) {
   var fileList = htmlFileNames.join( ', ' );
 
   var output =
-      'This report is for the following files: ' + fileList + '.  To see the third party resources used in a particular published ' +
-      'simulations, inspect the HTML file for the `window.phet.chipper.thirdPartyLicenseEntries` and `window.phet.chipper.thirdPartyImagesAndAudio` ' +
-      '(only exists in recent sim publications).\n' +
-      '* [Third-party Code](#third-party-code)\n' +
-      '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
-      '* [Third-party Images & Audio](#third-party-images-and-audio)\n' +
-      '* [Third-party Images & Audio License Summary](#third-party-images-and-audio-license-summary)\n\n' +
-      '# <a name="third-party-code"></a>Third-party Code:<br>\n' +
-      entries.join( '\n\n' ) + '\n\n' +
+    'This report is for the following files: ' + fileList + '.  To see the third party resources used in a particular published ' +
+    'simulations, inspect the HTML file for the `window.phet.chipper.thirdPartyLicenseEntries` and `window.phet.chipper.thirdPartyImagesAndAudio` ' +
+    '(only exists in recent sim publications).\n' +
+    '* [Third-party Code](#third-party-code)\n' +
+    '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
+    '* [Third-party Images & Audio](#third-party-images-and-audio)\n' +
+    '* [Third-party Images & Audio License Summary](#third-party-images-and-audio-license-summary)\n\n' +
+    '# <a name="third-party-code"></a>Third-party Code:<br>\n' +
+    entries.join( '\n\n' ) + '\n\n' +
 
-      '---\n' +
+    '---\n' +
 
-      '# <a name="third-party-code-and-license-summary"></a>Third-party Code License Summary:<br>\n' +
-      codeLicensesUsed.join( '<br>' ) + '\n\n' +
+    '# <a name="third-party-code-and-license-summary"></a>Third-party Code License Summary:<br>\n' +
+    codeLicensesUsed.join( '<br>' ) + '\n\n' +
 
-      '---\n' +
+    '---\n' +
 
-      '# <a name="third-party-images-and-audio"></a>Third-party Images & Audio:<br>\n' +
-      imagesAndAudioOutput.join( '\n\n' ) + '\n\n' +
+    '# <a name="third-party-images-and-audio"></a>Third-party Images & Audio:<br>\n' +
+    imagesAndAudioOutput.join( '\n\n' ) + '\n\n' +
 
-      '---\n' +
+    '---\n' +
 
-      '# <a name="third-party-images-and-audio-license-summary"></a>Third-party Images & Audio License Summary:<br>\n' +
-      imageAndAudioLicensesUsed.join( '<br>' ) + '\n\n'
-    ;
-
-  // It is sometimes convenient to iterate using GitHub issue preview rather than committing every time.
-  // In this case, you may want to comment out the commit below.
-  grunt.log.debug( '!!!!!! BEGIN LICENSES OUTPUT' );
-  grunt.log.debug( output );
-  grunt.log.debug( '!!!!!! END LICENSES OUTPUT' );
+    '# <a name="third-party-images-and-audio-license-summary"></a>Third-party Images & Audio License Summary:<br>\n' +
+    imageAndAudioLicensesUsed.join( '<br>' ) + '\n\n';
 
   // Compare the file output to the existing file, and write & git commit only if different
   if ( grunt.file.read( SHERPA + '/' + OUTPUT_FILE ) !== output ) {
