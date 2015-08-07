@@ -9,7 +9,7 @@
  * not-annotated           There is a license.json file but the asset is not in there
  * missing-file            There is an entry in the license.json but no corresponding file
  *
- * This can be run from any simulation directory with `grunt create-image-and-audio-license-report` and it reports for
+ * This can be run from any simulation directory with `grunt report-media` and it reports for
  * all directories (not just the simulation at hand).
  *
  * Note that this program relies on numerous heuristics for determining the output, such as allowed entries that
@@ -101,8 +101,11 @@ module.exports = function( grunt ) {
       } );
     }
   };
+
+  var mediaTypes = [ 'images', 'audio' ];
   for ( var i = 0; i < reposByLine.length; i++ ) {
-    reportForDirectory( reposByLine[ i ], 'images' );
-    reportForDirectory( reposByLine[ i ], 'audio' );
+    for ( var k = 0; k < mediaTypes.length; k++ ) {
+      reportForDirectory( reposByLine[ i ], mediaTypes[ k ] );
+    }
   }
 };

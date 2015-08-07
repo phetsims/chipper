@@ -195,7 +195,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   function postMipmapLoad( dependencyJSON, mipmapJavascript ) {
 
-    // After all plugins completed, check which media files such as images & audio files are in the images/audio 
+    // After all plugins completed, check which media files (images & audio files) are in the media 
     // directories but not loaded by the plugins. The simNameUppercase such as BALANCING_ACT is required in order
     // to identify the namespaced resources. This reuses the pkg.simTitleStringKey to get the simNameUppercase
     var simNameUppercase = pkg.simTitleStringKey.substring( 0, pkg.simTitleStringKey.indexOf( '/' ) );

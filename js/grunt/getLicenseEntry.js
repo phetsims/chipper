@@ -11,21 +11,6 @@
  * (b) provide information from the 3rd party resource files to the build system, so that a report can be included in the
  * build HTML file
  *
- * The return value from this function is a javascript object literal of the form:
- *   {classification: <string>, isProblematic: <boolean>, entry: <object> }
- *
- * As an important side-effect, each entry is added to global.phet.imageAndAudioLicenseInfo.
- * After all resources have been loaded, this global will contain a list of all resources
- * used by the sim.
- *
- * The classification is one of: missing-license.json, not-annotated, phet or third-party
- * isProblematic indicates whether the particular license is compatible with PhET's licensing
- * entry: the object that appears in the license.json file, see
- * https://github.com/phetsims/simula-rasa/blob/master/images/README.md
- *
- * In order to simplify compatibility with requirejs and node versions, the return value is a javascript object literal
- * rather than a separate file/constructor function such as LicenseInfo.js
- *
  * Each media file (image, audio, ...) must have an entry in a license.json file in the same directory which indicates the
  * origin of the file as well as its licensing.  The license.json file should contain one entry per media file, and each
  * should be annotated with the following:
