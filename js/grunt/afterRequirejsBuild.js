@@ -195,8 +195,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   function postMipmapLoad( dependencyJSON, mipmapJavascript ) {
 
-    // After all plugins completed, check which images & audio files are in the images/audio directories 
-    // but not loaded by the plugins. The simNameUppercase such as BALANCING_ACT is required in order
+    // After all plugins completed, check which media files such as images & audio files are in the images/audio 
+    // directories but not loaded by the plugins. The simNameUppercase such as BALANCING_ACT is required in order
     // to identify the namespaced resources. This reuses the pkg.simTitleStringKey to get the simNameUppercase
     var simNameUppercase = pkg.simTitleStringKey.substring( 0, pkg.simTitleStringKey.indexOf( '/' ) );
     reportUnusedMedia( grunt, simNameUppercase );
@@ -276,13 +276,14 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     html = replaceFirst( html, 'PHET_SHAS', dependencyJSON );
 
-    // Add a list of all 3rd-party images and audio files.
-    // For each registered image or audio file, keep the ones that are not from PhET 
-    // return their licenseInfo.entry
+    // Start aggregating all of the 3rd party license entries
     var thirdPartyEntries = {
       lib: getThirdPartyLibEntries( grunt, pkg )
     };
 
+    // Add a list of all 3rd-party media files, such as images and audio.
+    // For each registered image or audio file, keep the ones that are not from PhET 
+    // return their licenseInfo.entry
     // For each media type
     for ( var mediaType in global.phet.chipper.licenseEntries ) {
       if ( global.phet.chipper.licenseEntries.hasOwnProperty( mediaType ) ) {

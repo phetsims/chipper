@@ -44,7 +44,7 @@ module.exports = function( grunt, path ) {
 
   // Aggregate results for each of the license types
   var compositeCode = {};
-  var compositeImagesAndAudio = {};
+  var compositeMedia = {};
 
   // List of all of the repository names, so that we can detect which libraries are used by all-sims
   var htmlFileNames = [];
@@ -91,8 +91,8 @@ module.exports = function( grunt, path ) {
       var json = JSON.parse( jsonString );
 
       augment( filename, json.lib, compositeCode );
-      augment( filename, json.audio, compositeImagesAndAudio );
-      augment( filename, json.images, compositeImagesAndAudio );
+      augment( filename, json.audio, compositeMedia );
+      augment( filename, json.images, compositeMedia );
 
       htmlFileNames.push( filename );
     }
@@ -115,7 +115,7 @@ module.exports = function( grunt, path ) {
 
   var entries = [];
   var codeLicensesUsed = [];
-  var imageAndAudioLicensesUsed = [];
+  var mediaLicensesUsed = [];
 
   // Get a list of the library names
   var libraries = [];
@@ -164,33 +164,33 @@ module.exports = function( grunt, path ) {
     }
   }
 
-  var imagesAndAudioOutput = [];
-  var imageAudioKeys = [];
-  for ( var imageAudioEntry in compositeImagesAndAudio ) {
-    if ( compositeImagesAndAudio.hasOwnProperty( imageAudioEntry ) ) {
-      imageAudioKeys.push( imageAudioEntry );
+  var mediaOutput = [];
+  var mediaKeys = [];
+  for ( var imageAudioEntry in compositeMedia ) {
+    if ( compositeMedia.hasOwnProperty( imageAudioEntry ) ) {
+      mediaKeys.push( imageAudioEntry );
     }
   }
   // Use a case insensitive sort, see http://stackoverflow.com/questions/8996963/how-to-perform-case-insensitive-sorting-in-javascript
-  imageAudioKeys.sort( function( a, b ) {
+  mediaKeys.sort( function( a, b ) {
     return a.toLowerCase().localeCompare( b.toLowerCase() );
   } );
 
   // Create the text for the image and audio, and keep track of which licenses were used by them.
-  for ( i = 0; i < imageAudioKeys.length; i++ ) {
-    var imageAndAudioKey = imageAudioKeys[ i ];
+  for ( i = 0; i < mediaKeys.length; i++ ) {
+    var mediaKey = mediaKeys[ i ];
 
-    var imageAudioEntryLines = [
-      '**' + imageAndAudioKey + '**',
-      compositeImagesAndAudio[ imageAndAudioKey ].text.join( '<br>' ),
-      compositeImagesAndAudio[ imageAndAudioKey ].projectURL,
-      'License: ' + compositeImagesAndAudio[ imageAndAudioKey ].license,
-      'Notes: ' + compositeImagesAndAudio[ imageAndAudioKey ].notes
+    var mediaEntryLines = [
+      '**' + mediaKey + '**',
+      compositeMedia[ mediaKey ].text.join( '<br>' ),
+      compositeMedia[ mediaKey ].projectURL,
+      'License: ' + compositeMedia[ mediaKey ].license,
+      'Notes: ' + compositeMedia[ mediaKey ].notes
     ];
-    imagesAndAudioOutput.push( imageAudioEntryLines.join( '<br>' ) );
+    mediaOutput.push( mediaEntryLines.join( '<br>' ) );
 
-    if ( imageAndAudioLicensesUsed.indexOf( compositeImagesAndAudio[ imageAndAudioKey ].license ) < 0 ) {
-      imageAndAudioLicensesUsed.push( compositeImagesAndAudio[ imageAndAudioKey ].license );
+    if ( mediaLicensesUsed.indexOf( compositeMedia[ mediaKey ].license ) < 0 ) {
+      mediaLicensesUsed.push( compositeMedia[ mediaKey ].license );
     }
   }
 
@@ -200,12 +200,12 @@ module.exports = function( grunt, path ) {
 
   var output =
     'This report is for the following files: ' + fileList + '.  To see the third party resources used in a particular published ' +
-    'simulations, inspect the HTML file for the `window.phet.chipper.thirdPartyLicenseEntries` and `window.phet.chipper.thirdPartyImagesAndAudio` ' +
-    '(only exists in recent sim publications).\n' +
+    'simulation, inspect the HTML file between the `' + ThirdPartyConstants.START_THIRD_PARTY_LICENSE_ENTRIES + '` and `' + ThirdPartyConstants.END_THIRD_PARTY_LICENSE_ENTRIES + '` ' +
+    '(only exists in sim publications after Aug 7, 2015).\n' +
     '* [Third-party Code](#third-party-code)\n' +
     '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
-    '* [Third-party Images & Audio](#third-party-images-and-audio)\n' +
-    '* [Third-party Images & Audio License Summary](#third-party-images-and-audio-license-summary)\n\n' +
+    '* [Third-party Media](#third-party-media)\n' +
+    '* [Third-party Media License Summary](#third-party-media-license-summary)\n\n' +
     '# <a name="third-party-code"></a>Third-party Code:<br>\n' +
     entries.join( '\n\n' ) + '\n\n' +
 
@@ -216,13 +216,13 @@ module.exports = function( grunt, path ) {
 
     '---\n' +
 
-    '# <a name="third-party-images-and-audio"></a>Third-party Images & Audio:<br>\n' +
-    imagesAndAudioOutput.join( '\n\n' ) + '\n\n' +
+    '# <a name="third-party-media"></a>Third-party Media:<br>\n' +
+    mediaOutput.join( '\n\n' ) + '\n\n' +
 
     '---\n' +
 
-    '# <a name="third-party-images-and-audio-license-summary"></a>Third-party Images & Audio License Summary:<br>\n' +
-    imageAndAudioLicensesUsed.join( '<br>' ) + '\n\n';
+    '# <a name="third-party-media-license-summary"></a>Third-party Media License Summary:<br>\n' +
+    mediaLicensesUsed.join( '<br>' ) + '\n\n';
 
   // Compare the file output to the existing file, and write & git commit only if different
   if ( grunt.file.read( SHERPA + '/' + OUTPUT_FILE ) !== output ) {

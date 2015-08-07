@@ -1,7 +1,7 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * Report which images & audio from a sim were not used in the simulation with a require statement.
+ * Report which media files (such as images and audio) from a sim were not used in the simulation with a require statement.
  *
  * Each time a resource is loaded by a plugin (image, audio, mipmap,...) its license info is added to this global by
  * the plugin.  After all resources are loaded, the global will contain the list of all resources that are actually used
@@ -34,7 +34,7 @@ module.exports = function( grunt, simNameUppercase ) {
     return string.indexOf( substring ) === string.length - substring.length;
   };
 
-  // Iterate over all images and audio directories recursively
+  // Iterate over image directories and sub-directories
   if ( grunt.file.exists( directory + '/images' ) ) {
     grunt.file.recurse( directory + '/images', function( abspath, rootdir, subdir, filename ) {
 
@@ -49,7 +49,7 @@ module.exports = function( grunt, simNameUppercase ) {
     } );
   }
 
-  // Iterate over all images and audio directories recursively
+  // Iterate over audio directories and sub-directories
   if ( grunt.file.exists( directory + '/audio' ) ) {
     grunt.file.recurse( directory + '/audio', function( abspath, rootdir, subdir, filename ) {
 

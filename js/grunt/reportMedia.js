@@ -61,7 +61,7 @@ module.exports = function( grunt ) {
     // Not all projects have an audio/ directory
     if ( grunt.file.exists( searchDir ) ) {
 
-      // Iterate over all images and audio directories recursively
+      // Iterate over all media directories, such as images and audio recursively
       grunt.file.recurse( searchDir, function( abspath, rootdir, subdir, filename ) {
 
         // Some files don't need to be attributed in the license.json
@@ -71,8 +71,11 @@ module.exports = function( grunt ) {
           // Classify the resource
           var result = getLicenseEntry( abspath );
 
+          if ( !result ) {
+            grunt.log.writeln( 'not-annotated: ' + repo + '/' + directory + '/' + filename );
+          }
           // Report if it is a problem
-          if ( result.isProblematic === true ) {
+          else if ( result.isProblematic === true ) {
             grunt.log.writeln( 'incompatible-license: ' + repo + '/' + directory + '/' + filename );
           }
         }
