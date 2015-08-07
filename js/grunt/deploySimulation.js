@@ -21,7 +21,7 @@ var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 var DEFAULT_DEV_SERVER = 'spot.colorado.edu';
 var PACKAGE_JSON = 'package.json';
 var DEPENDENCIES_JSON = 'build/dependencies.json';
-var PRODUCTION_SERVER_NAME = 'figaro.colorado.edu';
+var PRODUCTION_SERVER_NAME = 'simain.colorado.edu';
 var PRODUCTION_SERVER_URL = 'http://phet-dev.colorado.edu';
 
 /**
@@ -29,22 +29,13 @@ var PRODUCTION_SERVER_URL = 'http://phet-dev.colorado.edu';
  * @param devDeploy deploy to development server instead of production if true
  */
 module.exports = function( grunt, devDeploy ) {
-  devDeploy = !!devDeploy; // cast to boolean
 
-  /**
-   * Get the name of the development server. Defaults to spot.colorado.edu if there is no preferences file
-   * and no field in preferences for devDeployServer.
-   * @returns {string}
-   */
-  var getDevServerName = function() {
-    if ( fs.existsSync( PREFERENCES_FILE ) ) {
-      var preferences = grunt.file.readJSON( PREFERENCES_FILE );
-      if ( preferences.devDeployServer ) {
-        return preferences.devDeployServer;
-      }
-    }
-    return DEFAULT_DEV_SERVER;
-  };
+  assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
+  var preferences = grunt.file.readJSON( PREFERENCES_FILE );
+  assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
+
+  var devServerName = preferences.devDeployServer || DEFAULT_DEV_SERVER;
+  devDeploy = !!devDeploy; // cast to boolean
 
   // get the sim name from the current directory
   var directory = process.cwd();
@@ -63,8 +54,9 @@ module.exports = function( grunt, devDeploy ) {
     'locales': JSON.stringify( [ 'en' ] ),
     'simName': sim,
     'version': version,
-    'serverName': ( devDeploy ) ? getDevServerName() : PRODUCTION_SERVER_NAME,
-    'dev': devDeploy
+    'serverName': ( devDeploy ) ? devServerName : PRODUCTION_SERVER_NAME,
+    'dev': devDeploy,
+    'authorizationCode': preferences.buildServerAuthorizationCode
   } );
 
   var url = PRODUCTION_SERVER_URL + '/deploy-html-simulation?' + query;
