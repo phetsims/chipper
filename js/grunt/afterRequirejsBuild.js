@@ -295,7 +295,16 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
             var licenseEntry = mediaEntry[ resourceName ];
 
             // If it is not from PhET, it is from a 3rd party and we must include it in the report
-            if ( licenseEntry.projectURL !== 'http://phet.colorado.edu' ) {
+            // But lift this restriction when building a non-phet brand
+            if ( !licenseEntry ) {
+
+              // Fail if there is no license entry.  Though this error should have been caught
+              // during plugin loading, so this is a "double check"
+              if ( phet.chipper.brand === 'phet' || phet.chipper.brand === 'phet-io' ) {
+                grunt.log.error( 'No license.json entry for ' + resourceName );
+              }
+            }
+            else if ( licenseEntry.projectURL !== 'http://phet.colorado.edu' ) {
 
               thirdPartyEntries[ mediaType ] = thirdPartyEntries[ mediaType ] || {};
               thirdPartyEntries[ mediaType ][ resourceName ] = licenseEntry;

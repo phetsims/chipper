@@ -54,7 +54,7 @@ define( function( require ) {
           var licenseEntry = getLicenseEntry( urlList[ i ].url );
 
           // Check for errors, but only if the brand is 'phet', see #176
-          if ( phet.chipper.brand === 'phet' && LicenseEntryClassifier.isProblematic( licenseEntry ) ) {
+          if ( (phet.chipper.brand === 'phet' || phet.chipper.brand === 'phet-io') && LicenseEntryClassifier.isProblematic( licenseEntry ) ) {
             errorString += 'Error for ' + urlList[ i ].url;
           }
           else {
