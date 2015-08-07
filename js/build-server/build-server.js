@@ -36,7 +36,7 @@ var AUTHORIZATION_KEY = 'authorizationCode';
 var SERVER_NAME = 'serverName';
 var DEV_KEY = 'dev';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
-var DEFAULT_SERVER_NAME = 'simian.colorado.edu'; // while testing, default to simian
+var DEFAULT_SERVER_NAME = 'figaro.colorado.edu';
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 
 assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
@@ -511,7 +511,6 @@ function queueDeploy( req, res ) {
     }
     else {
       winston.log( 'info', 'queuing build for ' + simName + ' ' + version );
-      process.exit();
       taskQueue.push( { req: req, res: res }, function( err ) {
         if ( err ) {
           var errorMessage = 'Build failed with error: ' + err + '. Sim = ' + simName +
