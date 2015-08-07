@@ -276,7 +276,7 @@ module.exports = function( grunt ) {
     reportThirdParty( grunt, path );
   } );
 
-  grunt.registerTask( 'generate-published-README',
+  grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
     function() {
       assert( pkg.phetLibs, 'phetLibs missing from package.json' );
@@ -284,7 +284,7 @@ module.exports = function( grunt ) {
       generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, true /* published */ );
     } );
 
-  grunt.registerTask( 'generate-unpublished-README',
+  grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
     function() {
       assert( pkg.phetLibs, 'phetLibs missing from package.json' );
