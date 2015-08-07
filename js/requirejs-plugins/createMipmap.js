@@ -67,7 +67,7 @@ module.exports = function createMipmap( filename, maxLevel, quality, grunt, call
       // if we need a specific filter type, put it here
     } );
 
-    basePNG.on( 'error', function ( err ) {
+    basePNG.on( 'error', function( err ) {
       throw err;
     } );
 
@@ -142,8 +142,8 @@ module.exports = function createMipmap( filename, maxLevel, quality, grunt, call
 
     // Alpha detection on the level-0 image to see if we can swap jpg for png
     var hasAlpha = false;
-    for ( var i = 3; i < mipmaps[0].data.length; i += 4 ) {
-      if ( mipmaps[0].data[i] < 255 ) {
+    for ( var i = 3; i < mipmaps[ 0 ].data.length; i += 4 ) {
+      if ( mipmaps[ 0 ].data[ i ] < 255 ) {
         hasAlpha = true;
         break;
       }
@@ -155,13 +155,13 @@ module.exports = function createMipmap( filename, maxLevel, quality, grunt, call
 
       for ( var level = 0; level < mipmaps.length; level++ ) {
         // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
-        var usePNG = hasAlpha || mipmaps[level].jpgURL.length > mipmaps[level].pngURL.length;
-        mipmaps[level].url = usePNG ? mipmaps[level].pngURL : mipmaps[level].jpgURL;
-        mipmaps[level].buffer = usePNG ? mipmaps[level].pngBuffer : mipmaps[level].jpgBuffer;
+        var usePNG = hasAlpha || mipmaps[ level ].jpgURL.length > mipmaps[ level ].pngURL.length;
+        mipmaps[ level ].url = usePNG ? mipmaps[ level ].pngURL : mipmaps[ level ].jpgURL;
+        mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
 
         grunt.log.debug( 'level ' + level + ' (' + ( usePNG ? 'PNG' : 'JPG' ) + ' ' +
-                                    mipmaps[level].width + 'x' + mipmaps[level].height + ') base64: ' +
-                                    mipmaps[level].url.length + ' bytes ' );
+                         mipmaps[ level ].width + 'x' + mipmaps[ level ].height + ') base64: ' +
+                         mipmaps[ level ].url.length + ' bytes ' );
       }
 
       callback( mipmaps );
@@ -170,9 +170,9 @@ module.exports = function createMipmap( filename, maxLevel, quality, grunt, call
     // kicks off asynchronous encoding for a specific level
     function encodeLevel( level ) {
       encodeCounter++;
-      outputPNG( mipmaps[level].data, mipmaps[level].width, mipmaps[level].height, function( buffer ) {
-        mipmaps[level].pngBuffer = buffer;
-        mipmaps[level].pngURL = 'data:image/png;base64,' + buffer.toString( 'base64' );
+      outputPNG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, function( buffer ) {
+        mipmaps[ level ].pngBuffer = buffer;
+        mipmaps[ level ].pngURL = 'data:image/png;base64,' + buffer.toString( 'base64' );
         if ( --encodeCounter === 0 ) {
           encodingComplete();
         }
@@ -181,9 +181,9 @@ module.exports = function createMipmap( filename, maxLevel, quality, grunt, call
       // only encode JPEG if it has no alpha
       if ( !hasAlpha ) {
         encodeCounter++;
-        outputJPEG( mipmaps[level].data, mipmaps[level].width, mipmaps[level].height, quality, function( buffer ) {
-          mipmaps[level].jpgBuffer = buffer;
-          mipmaps[level].jpgURL = 'data:image/jpeg;base64,' + buffer.toString( 'base64' );
+        outputJPEG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, quality, function( buffer ) {
+          mipmaps[ level ].jpgBuffer = buffer;
+          mipmaps[ level ].jpgURL = 'data:image/jpeg;base64,' + buffer.toString( 'base64' );
           if ( --encodeCounter === 0 ) {
             encodingComplete();
           }
@@ -196,6 +196,7 @@ module.exports = function createMipmap( filename, maxLevel, quality, grunt, call
     function finestMipmap() {
       return mipmaps[ mipmaps.length - 1 ];
     }
+
     // bail if we already have a 1x1 image, or if we reach the maxLevel (recall maxLevel===-1 means no maximum level)
     while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
       var level = mipmaps.length;

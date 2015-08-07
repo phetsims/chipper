@@ -148,7 +148,7 @@ define( function( require ) {
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
                   if ( parsedStrings[ key ] !== undefined ) {
-                    onload( window.phet.chipper.mapString( parsedStrings[key].value, stringTest ) );
+                    onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
                   }
                   else {
                     console.log( 'string not found for key: ' + key );
@@ -190,7 +190,7 @@ define( function( require ) {
         global.phet.strings = global.phet.strings || {};
 
         // entry saved for later in the build
-        global.phet.strings[name] = {
+        global.phet.strings[ name ] = {
           name: name, // 'SOME_SIM/string.name'
           requirePrefix: requirePrefix, // 'SOME_SIM'
           requirePath: requirePath, // '/Users/something/phet/git/some-sim/js'

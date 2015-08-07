@@ -1,9 +1,9 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * The following rules determine whether a license entry is compatible with PhET licensing.  When building with the 
+ * The following rules determine whether a license entry is compatible with PhET licensing.  When building with the
  * 'phet' brand, an incompatible license will cause the build to fail.
- * 
+ *
  * @author Sam Reid
  */
 

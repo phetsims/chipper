@@ -33,9 +33,11 @@
     var width = mipmap.width;
     var height = mipmap.height;
     var data = mipmap.data;
+
     function inside( row, col ) {
       return row < height && col < width;
     }
+
     // grabbing pixel data for a row/col, applying corrections into the [0,1] range.
     function pixel( row, col ) {
       if ( !inside( row, col ) ) {
@@ -55,6 +57,7 @@
     var smallWidth = Math.ceil( width / 2 );
     var smallHeight = Math.ceil( height / 2 );
     var smallData = createData( smallWidth, smallHeight );
+
     function smallPixel( row, col ) {
       return 4 * ( row * smallWidth + col );
     }
@@ -64,7 +67,7 @@
       for ( var col = 0; col < width; col++ ) {
         // Original pixel values for the quadrant
         var p1 = pixel( 2 * row, 2 * col ); // upper-left
-        var p2 = pixel( 2 * row, 2 * col + 1); // upper-right
+        var p2 = pixel( 2 * row, 2 * col + 1 ); // upper-right
         var p3 = pixel( 2 * row + 1, 2 * col ); // lower-left
         var p4 = pixel( 2 * row + 1, 2 * col + 1 ); // lower-right
         var output = [ 0, 0, 0, 0 ];
