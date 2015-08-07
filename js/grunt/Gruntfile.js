@@ -272,7 +272,9 @@ module.exports = function( grunt ) {
   // see reportThirdParty.js
   grunt.registerTask( 'report-third-party', 'Given a directory of HTML files (required argument), report the ' +
                                             'third party code, images, audio, etc. used in the group ' +
-                                            'and commit the changes to sherpa/third-party-licenses.json', function( path ) {
+                                            'and commit the changes to sherpa/third-party-licenses.json. ' +
+                                            'If the "--copy-from-build" option is given, it will iterate over the active-runnables ' +
+                                            'and copy all the files to the report HTML directory (required argument)', function( path ) {
     assert( path, 'The path is a required grunt argument (use taskname:argument)' );
     reportThirdParty( grunt, path );
   } );

@@ -38,9 +38,37 @@ var COMMIT_CHANGES = false;
  */
 module.exports = function( grunt, path ) {
 
+  var i;
+  
   /* jshint -W079 */
   var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
   /* jshint +W079 */
+
+  // If the option is provided, try to copy all of the active-runnables to the target directory 
+  // before running the report
+  if ( grunt.option( 'copy-from-build' ) ) {
+
+    var directory = process.cwd();
+
+    // Start in the github checkout dir (above one of the sibling directories)
+    var rootdir = directory + '/../';
+
+    var ACTIVE_RUNNABLES_FILENAME = 'chipper/data/active-runnables';  // The relative path to the list of active runnables
+
+    // Make sure we received a report from every active-runnable.  Otherwise, perhaps something isn't building properly
+    var activeRunnables = grunt.file.read( rootdir + '/' + ACTIVE_RUNNABLES_FILENAME ).trim();
+    var activeRunnablesByLine = activeRunnables.split( /\r?\n/ );
+    for ( i = 0; i < activeRunnablesByLine.length; i++ ) {
+      var element = activeRunnablesByLine[ i ];
+      var src = rootdir + element + '/build/' + element + '_en.html';
+      var dst = path + '/' + element + '_en.html';
+      if ( !grunt.file.exists( src ) ) {
+        grunt.log.error( 'File not found: ' + src );
+      }
+      //console.log( 'src,dst', src, dst );
+      grunt.file.copy( src, dst );
+    }
+  }
 
   // Aggregate results for each of the license types
   var compositeCode = {};
@@ -61,7 +89,7 @@ module.exports = function( grunt, path ) {
     var startIndex = html.indexOf( startKey );
     var endIndex = html.indexOf( endKey );
 
-    return html.substring( startIndex + startKey.length, endIndex );
+    return html.substring( startIndex + startKey.length, endIndex ).trim();
   };
 
   /**
@@ -106,11 +134,16 @@ module.exports = function( grunt, path ) {
       var json = JSON.parse( jsonString );
 
       var title = parseTitle( html );
-      augment( title, json.lib, compositeCode );
-      augment( title, json.audio, compositeMedia );
-      augment( title, json.images, compositeMedia );
+      if ( title && title.indexOf( 'undefined' ) !== 0 ) {
+        augment( title, json.lib, compositeCode );
+        augment( title, json.audio, compositeMedia );
+        augment( title, json.images, compositeMedia );
 
-      simTitles.push( title );
+        simTitles.push( title );
+      }
+      else {
+        grunt.log.writeln( 'title not found for ' + abspath );
+      }
     }
   } );
 
@@ -147,7 +180,7 @@ module.exports = function( grunt, path ) {
   } );
 
   // Add info for each library to the MD report
-  for ( var i = 0; i < libraries.length; i++ ) {
+  for ( i = 0; i < libraries.length; i++ ) {
     var library = libraries[ i ];
 
     // check for existence of the license file
@@ -215,7 +248,7 @@ module.exports = function( grunt, path ) {
 
   // Summarize licenses used
   // TODO: Add the versions
-  var fileList = simTitles.join( '* ' );
+  var fileList = simTitles.join( '\n* ' );
 
   var output =
     'This report enumerates the third-party resources (code, images, audio, etc) used in a set of simulations.\n' +
