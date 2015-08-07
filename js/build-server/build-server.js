@@ -30,8 +30,9 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 var LISTEN_PORT = 16371;
 var REPOS_KEY = 'repos';
 var LOCALES_KEY = 'locales';
-var SIM_NAME = 'simName';
-var VERSION = 'version';
+var SIM_NAME_KEY = 'simName';
+var VERSION_KEY = 'version';
+var AUTHORIZATION_KEY = 'authorizationCode';
 var SERVER_NAME = 'serverName';
 var DEV_KEY = 'dev';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
@@ -49,6 +50,7 @@ assert( preferences.emailFrom, 'emailFrom is missing from ' + PREFERENCES_FILE )
 assert( preferences.emailTo, 'emailTo is missing from ' + PREFERENCES_FILE );
 assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
 assert( preferences.devDeployServer, 'devDeployServer is missing from ' + PREFERENCES_FILE );
+assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
 
 // configure email server
 var server = email.server.connect( {
@@ -161,8 +163,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   var isDev = ( req.query[ DEV_KEY ] && req.query[ DEV_KEY ] === 'true' ) ? true : false;
   winston.log( 'info', 'deploying to ' + ( isDev ? 'dev server' : 'production server' ) );
-  var simName = req.query[ SIM_NAME ];
-  var version = req.query[ VERSION ];
+  var simName = req.query[ SIM_NAME_KEY ];
+  var version = req.query[ VERSION_KEY ];
 
   if ( !isDev ) {
     // strip suffixes from version since just the numbers are used in the directory name on simian and figaro
@@ -495,22 +497,36 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 }, 1 ); // 1 is the max number of tasks that can run concurrently
 
 function queueDeploy( req, res ) {
-  if ( req.query[ REPOS_KEY ] && req.query[ SIM_NAME ] && req.query[ VERSION ] ) {
-    winston.log( 'info', 'queuing task' );
-    taskQueue.push( { req: req, res: res }, function( err ) {
-      if ( err ) {
-        var errorMessage = 'Build failed with error: ' + err + '. Sim = ' + req.query[ SIM_NAME ] +
-                           ' Version = ' + req.query[ VERSION ] + ' Locales = ' + req.query[ LOCALES_KEY ].toString();
-        winston.log( 'error', errorMessage );
-        sendEmail( 'BUILD ERROR', errorMessage.replace( /\n/g, ' ' ) ); // for some reason emails get cut off at newlines
-      }
-      else {
-        winston.log( 'info', 'build for ' + req.query[ SIM_NAME ] + ' finished successfully' );
-      }
-    } );
+  var repos = req.query[ REPOS_KEY ];
+  var simName = req.query[ SIM_NAME_KEY ];
+  var version = req.query[ VERSION_KEY ];
+  var locales = req.query[ LOCALES_KEY ];
+  var authorizationKey = req.query[ AUTHORIZATION_KEY ];
+
+  if ( repos && simName && version && authorizationKey ) {
+    if ( authorizationKey !== preferences.buildServerAuthorizationCode ) {
+      var err = 'wrong authorization code';
+      winston.log( 'error', err );
+      res.send( err );
+    }
+    else {
+      winston.log( 'info', 'queuing build for ' + simName + ' ' + version );
+      process.exit();
+      taskQueue.push( { req: req, res: res }, function( err ) {
+        if ( err ) {
+          var errorMessage = 'Build failed with error: ' + err + '. Sim = ' + simName +
+                             ' Version = ' + version + ' Locales = ' + locales ? locales.toString() : 'undefined';
+          winston.log( 'error', errorMessage );
+          sendEmail( 'BUILD ERROR', errorMessage.replace( /\n/g, ' ' ) ); // for some reason emails get cut off at newlines
+        }
+        else {
+          winston.log( 'info', 'build for ' + simName + ' finished successfully' );
+        }
+      } );
+    }
   }
   else {
-    var errorString = 'missing one or more required query parameters repos, locales, simName, and version';
+    var errorString = 'missing one or more required query parameters: repos, simName, version, authorizationKey';
     winston.log( 'error', errorString );
     res.send( errorString );
   }
