@@ -16,7 +16,8 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var getLicenseInfo = require( '../../chipper/js/grunt/getLicenseInfo' );
+  var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
+  var LicenseEntryClassifier = require( '../../chipper/js/grunt/LicenseEntryClassifier' );
 
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.
@@ -50,14 +51,15 @@ define( function( require ) {
 
         var errorString = '';
         for ( var i = 0; i < urlList.length; i++ ) {
-          var licenseInfo = getLicenseInfo( name, urlList[ i ].url );
+          var licenseEntry = getLicenseEntry( urlList[ i ].url );
 
           // Check for errors, but only if the brand is 'phet', see #176
-          if ( licenseInfo.isProblematic === true && phet.chipper.brand === 'phet' ) {
-            if ( errorString !== '' ) {
-              errorString = errorString + ', ';
-            }
-            errorString = errorString + licenseInfo.classification;
+          if ( phet.chipper.brand === 'phet' && LicenseEntryClassifier.isProblematic( licenseEntry ) ) {
+            errorString += 'error1';
+          }
+          else {
+            global.phet.chipper.licenseEntries.audio = global.phet.chipper.licenseEntries.audio || {};
+            global.phet.chipper.licenseEntries.audio[ name ] = licenseEntry;
           }
         }
         if ( errorString !== '' ) {

@@ -17,7 +17,6 @@
 // modules
 var assert = require( 'assert' );
 var fs = require( 'fs' );
-var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLicenses' );
 
 /**
  * @param grunt the grunt instance
@@ -25,9 +24,6 @@ var setThirdPartyLicenses = require( '../../../chipper/js/grunt/setThirdPartyLic
  * @param {string} fallbackLocale
  */
 module.exports = function( grunt, pkg, fallbackLocale ) {
-
-  // Load the 3rd party licenses for code
-  setThirdPartyLicenses( grunt, pkg );
 
   // read the preferences file
   var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
@@ -130,4 +126,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   // Since require.js plugins can't be asynchronous with isBuild=true (r.js mode), we need to catch all of the
   // mipmaps that we'll need to build and then handle them later asynchronously.
   global.phet.mipmapsToBuild = [];
+
+  // These entries will be filled in as plugins are loaded.  
+  // This will have elements: lib, audio, images, etc.
+  global.phet.chipper.licenseEntries = {};
 };

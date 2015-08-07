@@ -270,10 +270,9 @@ module.exports = function( grunt ) {
   } );
 
   // see reportThirdParty.js
-  grunt.registerTask( 'report-third-party', 'Given the simulation-specific reports created by ' +
-                                            'createSimSpecificThirdPartyReport, aggregate them and provide ' +
-                                            'a complete report, indicating which third-party resources are ' +
-                                            'used by which simulations.', function( path ) {
+  grunt.registerTask( 'report-third-party', 'Given a directory of HTML files (required argument), report the ' +
+                                            'third party code, images, audio, etc. used in the group' +
+                                            'and commit the changes to sherpa/third-party-licenses.json', function( path ) {
     reportThirdParty( grunt, path );
   } );
 

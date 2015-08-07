@@ -21,10 +21,12 @@ HTML_HEADER
   window.phet.chipper.buildTimestamp = 'PHET_BUILD_TIMESTAMP';
   window.phet.chipper.locale = 'PHET_LOCALE';
 
-  // Licenses for third-party software used by this simulation.
-  // The format is JSON, where each entry describes a third-party license.
-  window.phet.chipper.thirdPartyLicenses = THIRD_PARTY_LICENSES;
-  window.phet.chipper.thirdPartyImagesAndAudio = THIRD_PARTY_IMAGES_AND_AUDIO;
+  // This simulation uses following third-party resources.  The following code block describes each resource
+  // and provides its licensing information.  The START and END tags make it easy to automatically parse
+  // and the entries are in JSON.  See getLicenseEntry.js for information about the attributes in each entry.
+  // START_THIRD_PARTY_LICENSE_ENTRIES
+  window.phet.chipper.thirdPartyLicenseEntries = THIRD_PARTY_LICENSE_ENTRIES;
+  // START_THIRD_PARTY_LICENSE_ENTRIES
   window.phet.chipper.dependencies = PHET_SHAS;
   window.phet.chipper.strings = PHET_STRINGS;
 </script>

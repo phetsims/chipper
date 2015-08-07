@@ -22,8 +22,11 @@ var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap'
 var loadFileAsDataURI = require( '../../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
 
 var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
-var reportUnusedImagesAndAudio = require( '../../../chipper/js/grunt/reportUnusedImagesAndAudio' );
-var createSimSpecificThirdPartyReport = require( '../../../chipper/js/grunt/createSimSpecificThirdPartyReport' );
+var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );
+var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
+
+// Load shared constants
+var ThirdPartyConstants = require( '../../../chipper/js/grunt/ThirdPartyConstants' );
 
 /**
  * @param grunt the grunt instance
@@ -43,13 +46,11 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
-  assert( global.phet.thirdPartyLicenses, 'missing global.phet.thirdPartyLicenses' );
   assert( global.phet.strings, 'missing global.phet.strings' );
   assert( global.phet.localesToBuild, 'missing global.phet.localesToBuild' );
   assert( global.phet.mipmapsToBuild, 'missing global.phet.mipmapsToBuild' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
   assert( global.phet.chipper.brand, 'missing global.phet.chipper.brand' );
-  assert( global.phet.imageAndAudioLicenseInfo, 'missing global.phet.imageAndAudioLicenseInfo' );
 
   function trimWhitespace( str ) {
     return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );
@@ -198,7 +199,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     // but not loaded by the plugins. The simNameUppercase such as BALANCING_ACT is required in order
     // to identify the namespaced resources. This reuses the pkg.simTitleStringKey to get the simNameUppercase
     var simNameUppercase = pkg.simTitleStringKey.substring( 0, pkg.simTitleStringKey.indexOf( '/' ) );
-    reportUnusedImagesAndAudio( grunt, simNameUppercase );
+    reportUnusedMedia( grunt, simNameUppercase );
 
     // Load the splash SVG from the appropriate brand.
     var splashDataURI = loadFileAsDataURI( '../brand/' + global.phet.chipper.brand + '/images/splash.svg' );
@@ -258,6 +259,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     html = replaceFirst( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
     html = replaceFirst( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
     html = replaceFirst( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
+    html = replaceFirst( html, 'START_THIRD_PARTY_LICENSE_ENTRIES', ThirdPartyConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
+    html = replaceFirst( html, 'END_THIRD_PARTY_LICENSE_ENTRIES', ThirdPartyConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
 
     grunt.log.debug( 'Writing HTML' );
 
@@ -272,25 +275,36 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     }
 
     html = replaceFirst( html, 'PHET_SHAS', dependencyJSON );
-    html = replaceFirst( html, 'THIRD_PARTY_LICENSES', JSON.stringify( global.phet.thirdPartyLicenses, null, 2 ) );
 
     // Add a list of all 3rd-party images and audio files.
-    // For each registered image or audio file, keep the ones that have licenseInfo.classification === 'third-party' 
+    // For each registered image or audio file, keep the ones that are not from PhET 
     // return their licenseInfo.entry
-    var thirdPartyEntries = {};
-    for ( var obj in global.phet.imageAndAudioLicenseInfo ) {
-      if ( global.phet.imageAndAudioLicenseInfo.hasOwnProperty( obj ) ) {
-        if ( global.phet.imageAndAudioLicenseInfo[ obj ].classification === 'third-party' ) {
-          thirdPartyEntries[ obj ] = global.phet.imageAndAudioLicenseInfo[ obj ].entry;
+    var thirdPartyEntries = {
+      lib: getThirdPartyLibEntries( grunt, pkg )
+    };
+
+    // For each media type
+    for ( var mediaType in global.phet.chipper.licenseEntries ) {
+      if ( global.phet.chipper.licenseEntries.hasOwnProperty( mediaType ) ) {
+        var mediaEntry = global.phet.chipper.licenseEntries[ mediaType ];
+
+        // For each resource of that type
+        for ( var resourceName in mediaEntry ) {
+          if ( mediaEntry.hasOwnProperty( resourceName ) ) {
+
+            var licenseEntry = mediaEntry[ resourceName ];
+
+            // If it is not from PhET, it is from a 3rd party and we must include it in the report
+            if ( licenseEntry.projectURL !== 'http://phet.colorado.edu' ) {
+
+              thirdPartyEntries[ mediaType ] = thirdPartyEntries[ mediaType ] || {};
+              thirdPartyEntries[ mediaType ][ resourceName ] = licenseEntry;
+            }
+          }
         }
       }
     }
-    html = replaceFirst( html, 'THIRD_PARTY_IMAGES_AND_AUDIO', JSON.stringify( thirdPartyEntries, null, 2 ) );
-
-    // If enabled, create a report about the third-party images, audio and code used by the simulation.
-    if ( grunt.option( 'createSimSpecificThirdPartyReport' ) ) {
-      createSimSpecificThirdPartyReport( grunt, global.phet.thirdPartyLicenses, thirdPartyEntries );
-    }
+    html = replaceFirst( html, 'THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
     for ( var i = 0; i < locales.length; i++ ) {
       var locale = locales[ i ];

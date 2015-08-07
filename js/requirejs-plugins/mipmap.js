@@ -66,7 +66,8 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
-  var getLicenseInfo = require( '../../chipper/js/grunt/getLicenseInfo' );
+  var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
+  var LicenseEntryClassifier = require( '../../chipper/js/grunt/LicenseEntryClassifier' );
 
   return {
     // called both in-browser and during build
@@ -106,14 +107,16 @@ define( function( require ) {
           quality: options.quality
         } );
 
-        var licenseInfo = getLicenseInfo( name, path );
+        var licenseEntry = getLicenseEntry( path );
 
         // Check for errors, but only if the brand is 'phet', see #176
-        if ( licenseInfo.isProblematic === true && phet.chipper.brand === 'phet' ) {
-          onload.error( new Error( licenseInfo.classification ) );
+        if ( phet.chipper.brand === 'phet' && LicenseEntryClassifier.isProblematic( licenseEntry ) ) {
+          onload.error( new Error( 'problematic license entry' ) );
         }
         else {
-          onload( null ); // r.js fails if plugins aren't synchronous with isBuild == true
+          global.phet.chipper.licenseEntries.images = global.phet.chipper.licenseEntries.images || {};
+          global.phet.chipper.licenseEntries.images[ name ] = licenseEntry;
+          onload( null );
         }
       }
       else {

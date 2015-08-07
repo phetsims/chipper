@@ -33,7 +33,7 @@ var assert = require( 'assert' );
 module.exports = function( grunt ) {
 
   // modules
-  var getLicenseInfo = require( '../../../chipper/js/grunt/getLicenseInfo' );
+  var getLicenseEntry = require( '../../../chipper/js/grunt/getLicenseEntry' );
 
   // constants
   var ACTIVE_REPOS_FILENAME = 'chipper/data/active-repos';  // The relative path to the list of active repos
@@ -69,7 +69,7 @@ module.exports = function( grunt ) {
              filename.indexOf( 'license.json' ) !== 0 ) {
 
           // Classify the resource
-          var result = getLicenseInfo( abspath, abspath );
+          var result = getLicenseEntry( abspath );
 
           // Report if it is a problem
           if ( result.isProblematic === true ) {

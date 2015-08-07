@@ -43,21 +43,16 @@
 (function() {
   'use strict';
 
-  // During a build, store the 3rd party data for reporting in the HTML file.
-  if ( typeof global !== 'undefined' ) {
-    global.phet.imageAndAudioLicenseInfo = global.phet.imageAndAudioLicenseInfo || {};
-  }
-
   /**
    * Returns a string indicating a problem with licensing for the image/audio file, or null if there is no problem found.
-   * The license.json file is consulted.  This function has no side effects (compare to getLicenseInfo above)
+   * The license.json file is consulted.  This function has no side effects (compare to getLicenseEntry above)
    *
    * @param {string} abspath - the path for the file
    * @returns {*}
    *
    * @private
    */
-  function _getLicenseInfo( abspath ) {
+  function getLicenseEntry( abspath ) {
     var lastSlash = abspath.lastIndexOf( '/' );
     var prefix = abspath.substring( 0, lastSlash );
     var licenseFilename = prefix + '/license.json';
@@ -69,62 +64,31 @@
       file = global.fs.readFileSync( licenseFilename, 'utf8' );
     }
     catch( err ) {
-      return { classification: 'missing-license.json', isProblematic: true, entry: null };
+      //return { classification: 'missing-license.json', isProblematic: true, entry: null };
+
+      // File not found
+      return null;
     }
     var json = JSON.parse( file );
 
     var entry = json[ assetFilename ];
-
     if ( !entry ) {
-      return { classification: 'not-annotated', isProblematic: true, entry: entry };
-    }
-    else if ( entry.projectURL === 'http://phet.colorado.edu' ) {
-      return { classification: 'phet', isProblematic: false, entry: entry };
-    }
-    else if ( entry.license === 'Public Domain' ) {
 
-      // public domain OK, but should still be annotated
-      return { classification: 'third-party', isProblematic: false, entry: entry };
+      // Not annotated in file
+      return null;
     }
-    else if ( entry.license === 'NASA' ) {
-
-      // NASA OK, but should still be annotated
-      return { classification: 'third-party', isProblematic: false, entry: entry };
-    }
-    else {
-
-      // The file was an unknown or incompatible 3rd party license.  Mark as problematic unless it has an exception
-      // see https://github.com/phetsims/john-travoltage/issues/82
-      return { classification: 'third-party', isProblematic: !entry.exception, entry: entry };
-    }
+    return entry;
   }
-
-  /**
-   * Returns the classification from _getLicenseInfo but also has the side effect of adding it to a global variable
-   * for providing licensing information for 3rd party resources in the built HTML file, looking for unused annotations,
-   * etc.
-   * @returns {Function}
-   */
-  var getLicenseInfo = function( name, abspath ) {
-    var licenseInfo = _getLicenseInfo( abspath );
-
-    // Make it available for adding a list of 3rd party resources to the HTML
-    // and for checking whether there are unused images/audio
-    global.phet.imageAndAudioLicenseInfo[ name ] = licenseInfo;
-
-    // Return it for further processing
-    return licenseInfo;
-  };
 
   // browser require.js-compatible definition
   if ( typeof define !== 'undefined' ) {
     define( function() {
-      return getLicenseInfo;
+      return getLicenseEntry;
     } );
   }
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {
-    module.exports = getLicenseInfo;
+    module.exports = getLicenseEntry;
   }
 })();

@@ -1,16 +1,12 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * Creates a composite report of all of the 3rd party images, code, audio and other media used by PhET Simulations and
- * updates the online version by automatically adding and pushing the changes to GitHub.  The output can be seen at:
+ * Creates a composite report of all of the 3rd party images, code, audio and other media used by all of the PhET
+ * Simulations which appear in a directory (required argument) and updates the online version by automatically adding and
+ * pushing the changes to GitHub.  The output can be seen at:
  * https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
  *
- * Entries in sherpa/license.json are used for the code report, and this is augmented by information obtained
- * by running mandatory simulation-specific reports using:
- *
- * grunt-all.sh build-no-lint --createSimSpecificThirdPartyReport
- *
- * indicating which third-party code resources are used by which simulations.
+ * Third party entries are parsed from HTML.  See getLicenseEntry.js
  *
  * See https://github.com/phetsims/chipper/issues/162
  *
@@ -25,6 +21,9 @@
 var child_process = require( 'child_process' );
 var assert = require( 'assert' );
 var fs = require( 'fs' );
+
+// Load shared constants
+var ThirdPartyConstants = require( '../../../chipper/js/grunt/ThirdPartyConstants' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
@@ -77,25 +76,27 @@ module.exports = function( grunt, path ) {
 
          // shortcut to avoid looking at the -iframe.html files when testing on a build directory.
          !endsWith( filename.toLowerCase(), '-iframe.html' ) ) {
-      console.log( 'found', abspath );
 
       // load the file into a string
+      grunt.log.debug( 'reading ' + abspath );
       var html = grunt.file.read( abspath ).trim();
 
-      var startIndex = html.indexOf( 'window.phet.chipper.thirdPartyLicenses = {' );
-
-      var endIndex = html.indexOf( 'window.phet.chipper.dependencies = {' );
+      var startIndex = html.indexOf( ThirdPartyConstants.START_THIRD_PARTY_RESOURCES );
+      var endIndex = html.indexOf( ThirdPartyConstants.END_THIRD_PARTY_RESOURCES );
       var substring = html.substring( startIndex, endIndex );
+      grunt.log.debug( startIndex, endIndex );
 
-      // TODO: Add explicit line markers to facilitate machine readability
-      var window = {
-        phet: {
-          chipper: {}
-        }
-      };
-      eval( substring );
-      augment( filename, window.phet.chipper.thirdPartyLicenses, compositeCode );
-      augment( filename, window.phet.chipper.thirdPartyImagesAndAudio, compositeImagesAndAudio );
+      var firstCurlyBrace = substring.indexOf( '{' );
+      var lastCurlyBrace = substring.lastIndexOf( '}' );
+      grunt.log.debug( firstCurlyBrace, lastCurlyBrace );
+      var jsonString = substring.substring( firstCurlyBrace, lastCurlyBrace + 1 );
+
+      grunt.log.debug( jsonString );
+      var json = JSON.parse( jsonString );
+
+      augment( filename, json.lib, compositeCode );
+      augment( filename, json.audio, compositeImagesAndAudio );
+      augment( filename, json.images, compositeImagesAndAudio );
 
       htmlFileNames.push( filename );
     }
@@ -198,10 +199,12 @@ module.exports = function( grunt, path ) {
   }
 
   // Summarize licenses used
+  // TODO: Add the versions
+  var fileList = htmlFileNames.join( ', ' );
+
   var output =
-      'This report is for the current branch & revision of each repository at the time the report was generated ' +
-      'and may not match with published versions.  To see the third party resources used in published simulations, inspect ' +
-      'their HTML files for the `window.phet.chipper.thirdPartyLicenses` and `window.phet.chipper.thirdPartyImagesAndAudio` ' +
+      'This report is for the following files: ' + fileList + '.  To see the third party resources used in a particular published ' +
+      'simulations, inspect the HTML file for the `window.phet.chipper.thirdPartyLicenseEntries` and `window.phet.chipper.thirdPartyImagesAndAudio` ' +
       '(only exists in recent sim publications).\n' +
       '* [Third-party Code](#third-party-code)\n' +
       '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +

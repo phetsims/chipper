@@ -3,10 +3,9 @@
 /**
  * Report which images & audio from a sim were not used in the simulation with a require statement.
  *
- * Relies on global.phet.imageAndAudioLicenseInfo. Each time a resource is loaded by a plugin (image, audio, mipmap,...)
- * its license info is added to this global by the plugin.  After all resources are loaded, the global will
- * contain the list of all resources that are actually used by the sim.  Comparing what's in the filesystem to
- * this list identifies resources that are unused.
+ * Each time a resource is loaded by a plugin (image, audio, mipmap,...) its license info is added to this global by
+ * the plugin.  After all resources are loaded, the global will contain the list of all resources that are actually used
+ * by the sim.  Comparing what's in the filesystem to this list identifies resources that are unused.
  *
  * See https://github.com/phetsims/chipper/issues/172
  *
@@ -27,7 +26,7 @@ var assert = require( 'assert' );
 module.exports = function( grunt, simNameUppercase ) {
 
   // globals that should be defined by this point
-  assert( global.phet.imageAndAudioLicenseInfo, 'missing global.phet.imageAndAudioLicenseInfo' );
+  assert( global.phet.chipper.licenseEntries, 'missing global.phet.chipper.licenseEntries' );
 
   var directory = process.cwd();
 
@@ -36,9 +35,23 @@ module.exports = function( grunt, simNameUppercase ) {
   };
 
   // Iterate over all images and audio directories recursively
-  grunt.file.recurse( directory, function( abspath, rootdir, subdir, filename ) {
+  if ( grunt.file.exists( directory + '/images' ) ) {
+    grunt.file.recurse( directory + '/images', function( abspath, rootdir, subdir, filename ) {
 
-    if ( subdir && (subdir.indexOf( 'images' ) === 0 || subdir.indexOf( 'audio' ) === 0) ) {
+      // check if the file on the HDD was loaded during requirejs
+      var key = simNameUppercase + '/' + filename;
+
+      if ( filename !== 'license.json' &&
+           filename !== 'README.txt' &&
+           (!global.phet.chipper.licenseEntries.images.hasOwnProperty( key )) ) {
+        grunt.log.warn( 'Unused image: ' + key );
+      }
+    } );
+  }
+
+  // Iterate over all images and audio directories recursively
+  if ( grunt.file.exists( directory + '/audio' ) ) {
+    grunt.file.recurse( directory + '/audio', function( abspath, rootdir, subdir, filename ) {
 
       // check if the file on the HDD was loaded during requirejs
       var key = simNameUppercase + '/' + filename;
@@ -50,11 +63,11 @@ module.exports = function( grunt, simNameUppercase ) {
           key = key.substring( 0, key.length - 4 );
         }
       }
-
       if ( filename !== 'license.json' &&
-           filename !== 'README.txt' && !global.phet.imageAndAudioLicenseInfo.hasOwnProperty( key ) ) {
-        grunt.log.warn( 'Unused resource: ' + key );
+           filename !== 'README.txt' &&
+           (!global.phet.chipper.licenseEntries.audio.hasOwnProperty( key )) ) {
+        grunt.log.warn( 'Unused image: ' + key );
       }
-    }
-  } );
+    } );
+  }
 };

@@ -1,19 +1,13 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * This grunt task creates an object literal that describes the third-party libraries that are included in the html deliverable.
- * It shares the object literal with other grunt tasks via global.phet.thirdPartyLicenses.
+ * This function returns an object literal that describes the third-party libraries that are included in the html deliverable.
  * License info is read from sherpa/lib/license.json, and the format of the object literal is similar to that syntax.
  *
- * The fields in each license entry are:
- *
- * {string[]} text - the text of the license info. A newline will be appended to each array element
- * {string} license - the license options for the library
- * {string} [projectURL] - the project's URL
- * {string} [licenseURL] - the project's license URL
- * {string} [notes] - optional notes
+ * See getLicenseEntry.js for a description & syntax of the license entries
  *
  * @author Chris Malley (PixelZoom, Inc.)
+ * @author Sam Reid (PhET Interactive Simulations)
  */
 
 // modules
@@ -84,7 +78,7 @@ module.exports = function( grunt, pkg ) {
   grunt.log.debug( 'licenseKeys = ' + licenseKeys.toString() );
 
   // Combine all licenses into 1 object literal
-  var thirdPartyLicenses = {};
+  var libEntries = {};
   licenseKeys.forEach( function( key ) {
 
     var license = licenseInfo[ key ];
@@ -113,17 +107,8 @@ module.exports = function( grunt, pkg ) {
     }
     license.licenseText = licenseText.split( /\r?\n/ );
 
-    thirdPartyLicenses[ key ] = license;
+    libEntries[ key ] = license;
   } );
 
-  // Next, add the licenses for 3rd party images, audio, etc.
-  // Discover which images and audio are loaded through the plugins
-  
-  
-  // share with other tasks via a global
-  global.phet = global.phet || {};
-  global.phet.thirdPartyLicenses = thirdPartyLicenses;
-
-  // Print the 3rd party licenses if you running with `grunt -d -v`
-  grunt.verbose.debug( JSON.stringify( thirdPartyLicenses, null, 2 ) );
+  return libEntries;
 };
