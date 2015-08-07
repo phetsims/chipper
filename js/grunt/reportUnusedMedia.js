@@ -43,6 +43,7 @@ module.exports = function( grunt, simNameUppercase ) {
 
       if ( filename !== 'license.json' &&
            filename !== 'README.txt' &&
+           global.phet.chipper.licenseEntries.images &&
            (!global.phet.chipper.licenseEntries.images.hasOwnProperty( key )) ) {
         grunt.log.warn( 'Unused image: ' + key );
       }
@@ -65,6 +66,7 @@ module.exports = function( grunt, simNameUppercase ) {
       }
       if ( filename !== 'license.json' &&
            filename !== 'README.txt' &&
+           global.phet.chipper.licenseEntries.audio &&
            (!global.phet.chipper.licenseEntries.audio.hasOwnProperty( key )) ) {
         grunt.log.warn( 'Unused image: ' + key );
       }
