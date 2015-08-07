@@ -27,8 +27,10 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   // read the preferences file
   var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
-  assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
-  var preferences = grunt.file.readJSON( PREFERENCES_FILE );
+  var preferences = {};
+  if ( fs.existsSync( PREFERENCES_FILE ) ) {
+    preferences = grunt.file.readJSON( PREFERENCES_FILE );
+  }
 
   /*
    * Look up the locale strings provided in the simulation.
