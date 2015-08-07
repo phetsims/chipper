@@ -47,7 +47,22 @@ module.exports = function( grunt, path ) {
   var compositeMedia = {};
 
   // List of all of the repository names, so that we can detect which libraries are used by all-sims
-  var htmlFileNames = [];
+  var simTitles = [];
+
+  /**
+   * Given an HTML text, find the title attribute by parsing for <title>
+   * @param html
+   * @returns {string}
+   */
+  var parseTitle = function( html ) {
+    var startKey = '<title>';
+    var endKey = '</title>';
+
+    var startIndex = html.indexOf( startKey );
+    var endIndex = html.indexOf( endKey );
+
+    return html.substring( startIndex + startKey.length, endIndex );
+  };
 
   /**
    * Add the source (images/audio/media or code) entries to the destination object, keyed by name.
@@ -90,22 +105,23 @@ module.exports = function( grunt, path ) {
 
       var json = JSON.parse( jsonString );
 
-      augment( filename, json.lib, compositeCode );
-      augment( filename, json.audio, compositeMedia );
-      augment( filename, json.images, compositeMedia );
+      var title = parseTitle( html );
+      augment( title, json.lib, compositeCode );
+      augment( title, json.audio, compositeMedia );
+      augment( title, json.images, compositeMedia );
 
-      htmlFileNames.push( filename );
+      simTitles.push( title );
     }
   } );
 
   // Sort to easily compare lists of repositoryNames with usedBy columns, to see which resources are used by everything.
-  htmlFileNames.sort();
+  simTitles.sort();
 
   // If anything is used by every sim indicate that here
   for ( var entry in compositeCode ) {
     if ( compositeCode.hasOwnProperty( entry ) ) {
       compositeCode[ entry ].usedBy.sort();
-      if ( _.isEqual( htmlFileNames, compositeCode[ entry ].usedBy ) ) {
+      if ( _.isEqual( simTitles, compositeCode[ entry ].usedBy ) ) {
         compositeCode[ entry ].usedBy = 'all-sims';// Confusing that this matches a repo name, but since that repo isn't actually a sim, perhaps this will be ok
       }
     }
@@ -187,6 +203,9 @@ module.exports = function( grunt, path ) {
       'License: ' + compositeMedia[ mediaKey ].license,
       'Notes: ' + compositeMedia[ mediaKey ].notes
     ];
+    if ( compositeMedia[ mediaKey ].exception ) {
+      mediaEntryLines.push( 'Exception: ' + compositeMedia[ mediaKey ].exception );
+    }
     mediaOutput.push( mediaEntryLines.join( '<br>' ) );
 
     if ( mediaLicensesUsed.indexOf( compositeMedia[ mediaKey ].license ) < 0 ) {
@@ -196,16 +215,18 @@ module.exports = function( grunt, path ) {
 
   // Summarize licenses used
   // TODO: Add the versions
-  var fileList = htmlFileNames.join( ', ' );
+  var fileList = simTitles.join( '* ' );
 
   var output =
-    'This report is for the following files: ' + fileList + '.  To see the third party resources used in a particular published ' +
-    'simulation, inspect the HTML file between the `' + ThirdPartyConstants.START_THIRD_PARTY_LICENSE_ENTRIES + '` and `' + ThirdPartyConstants.END_THIRD_PARTY_LICENSE_ENTRIES + '` ' +
-    '(only exists in sim publications after Aug 7, 2015).\n' +
+    'This report enumerates the third-party resources (code, images, audio, etc) used in a set of simulations.\n' +
     '* [Third-party Code](#third-party-code)\n' +
     '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
     '* [Third-party Media](#third-party-media)\n' +
-    '* [Third-party Media License Summary](#third-party-media-license-summary)\n\n' +
+    '* [Third-party Media License Summary](#third-party-media-license-summary)\n' +
+    '\n' +
+    'This report is for the following simulations: \n\n* ' + fileList + '\n\nTo see the third party resources used in a particular published ' +
+    'simulation, inspect the HTML file between the `' + ThirdPartyConstants.START_THIRD_PARTY_LICENSE_ENTRIES + '` and `' + ThirdPartyConstants.END_THIRD_PARTY_LICENSE_ENTRIES + '` ' +
+    '(only exists in sim publications after Aug 7, 2015).\n' +
     '# <a name="third-party-code"></a>Third-party Code:<br>\n' +
     entries.join( '\n\n' ) + '\n\n' +
 
