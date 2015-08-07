@@ -21,8 +21,8 @@ var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 var DEFAULT_DEV_SERVER = 'spot.colorado.edu';
 var PACKAGE_JSON = 'package.json';
 var DEPENDENCIES_JSON = 'build/dependencies.json';
-var PRODUCTION_SERVER_NAME = 'simain.colorado.edu';
-var PRODUCTION_SERVER_URL = 'http://phet-dev.colorado.edu';
+var PRODUCTION_SERVER_NAME = 'simian.colorado.edu';
+var PRODUCTION_SERVER_URL = 'https://phet-dev.colorado.edu';
 
 /**
  * @param grunt the grunt instance
