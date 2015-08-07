@@ -55,7 +55,7 @@ define( function( require ) {
 
           // Check for errors, but only if the brand is 'phet', see #176
           if ( phet.chipper.brand === 'phet' && LicenseEntryClassifier.isProblematic( licenseEntry ) ) {
-            errorString += 'error1';
+            errorString += 'Error for ' + urlList[ i ].url;
           }
           else {
             global.phet.chipper.licenseEntries.audio = global.phet.chipper.licenseEntries.audio || {};
