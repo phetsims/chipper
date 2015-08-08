@@ -27,9 +27,14 @@
     }
   };
 
+  // This definition is required for builds with brand=phet, see #227 
+  if ( typeof define !== 'undefined' ) {
+    define( function() {
+      return LicenseEntryClassifier;
+    } );
+  }
+
   // Node.js-compatible definition
-  // No need to provide a requirejs implementation since this is only used during the build
-  // Though be aware this file is evaluated for the requirejs dynamic mode, it just doesn't need to do anything
   if ( typeof module !== 'undefined' ) {
     module.exports = LicenseEntryClassifier;
   }
