@@ -161,7 +161,14 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
 
-
+  // Add the linting step as an pre-build step.  Can be skipped with --lint=false
+  var optionalTasks = [];
+  if ( grunt.option( 'lint' ) === false ) {
+  }
+  else {
+    optionalTasks.push( 'lint-all' );
+  }
+  
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
     'with no options, builds HTML for English only\n' +
@@ -170,12 +177,13 @@ module.exports = function( grunt ) {
     '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
     '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
     '--together : adds additional preload files needed to support together.js',
-    [ 'lint-all', 'build-no-lint' ]
+    optionalTasks.concat( [
+      'clean',
+      'set-preload',
+      'before-requirejs-build',
+      'requirejs:build',
+      'after-requirejs-build' ] )
   );
-
-  grunt.registerTask( 'build-no-lint',
-    'identical to "build", but does not run "lint-all"',
-    [ 'clean', 'set-preload', 'before-requirejs-build', 'requirejs:build', 'after-requirejs-build' ] );
 
   grunt.registerTask( 'deploy-production',
     'Deploy a simulation. Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
