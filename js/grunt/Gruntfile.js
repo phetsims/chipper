@@ -83,20 +83,22 @@ module.exports = function( grunt ) {
   };
 
   // Enumerate the list of files to be linted for the jshint:allFiles task
-  var libFiles = _.map( pkg.phetLibs, function( repo ) {
+  var allFilesToLint = _.map( pkg.phetLibs, function( repo ) {
     return '../' + repo + '/js/**/*.js';
   } );
 
   // The brand repo has a different structure, so add it explicitly
-  libFiles.push( '../brand/*/js/**/*.js' );
+  allFilesToLint.push( '../brand/*/js/**/*.js' );
 
   // Don't try to lint the svgPath.js.  It was automatically generated and doesn't match convention
-  var allFilesToLint = [
-    libFiles,
-    '!../kite/js/parser/svgPath.js'
-  ];
+  allFilesToLint.push( '!../kite/js/parser/svgPath.js' );
 
-  // Project configuration.
+  // Identify the repo files to lint for the single repo.
+  // The brand repo is a special case since it has nested subdirectories instead of a top level js/ directory
+  var repoFilesToLint = pkg.name === 'brand' ? [ '*/js/**/*.js' ] :
+
+    // Default case for repo files to lint
+    [ 'js/**/*.js' ];
   grunt.initConfig( {
     /*
      * Read in the project settings from the package.json file into the pkg property.
@@ -140,7 +142,7 @@ module.exports = function( grunt ) {
     jshint: {
 
       // source files that are specific to this repository
-      repoFiles: [ 'js/**/*.js' ],
+      repoFiles: repoFilesToLint,
 
       // All source files for this repository (repository-specific and dependencies).
       // Excludes kite/js/parser/svgPath.js, which is auto-generated.
