@@ -52,7 +52,7 @@ define( function( require ) {
         var errorString = '';
         for ( var i = 0; i < urlList.length; i++ ) {
           var licenseEntry = getLicenseEntry( urlList[ i ].url );
-          if ( !isAcceptableLicenseEntry( name, licenseEntry, phet.chipper.brand ) ) {
+          if ( isAcceptableLicenseEntry( name, licenseEntry, phet.chipper.brand ) ) {
             global.phet.chipper.licenseEntries.audio = global.phet.chipper.licenseEntries.audio || {};
             global.phet.chipper.licenseEntries.audio[ name ] = licenseEntry;
           }
