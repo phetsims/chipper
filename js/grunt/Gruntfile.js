@@ -84,7 +84,6 @@ module.exports = function( grunt ) {
   };
 
   // Enumerate the list of files to be linted for the jshint:allFiles task
-  console.log( 'pkg.phetLibs=' + pkg.phetLibs );//XXX
   var allFilesToLint = _.map( pkg.phetLibs, function( repo ) {
     return '../' + repo + '/js/**/*.js';
   } );
@@ -98,9 +97,6 @@ module.exports = function( grunt ) {
   // Identify the repo files to lint for the single repo.
   // The brand repo is a special case since it has nested subdirectories instead of a top level js/ directory
   var repoFilesToLint = ( pkg.name === 'brand' ) ? [ '*/js/**/*.js' ] : [ 'js/**/*.js' ];
-
-  console.log( 'allFilesToLint=' + allFilesToLint );
-  console.log( 'repoFilesToLint=' + repoFilesToLint );
 
   grunt.initConfig( {
     /*
