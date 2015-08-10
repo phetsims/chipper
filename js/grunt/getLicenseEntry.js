@@ -3,6 +3,7 @@
 /**
  * This file is used during string and audio plugin resolution in order to accomplish 2 goals:
  *
+ *
  * (a) determine that PhET Simulations are built using compatible resources.  Each resource (image or audio file) must
  * be annotated in a license.json file in the same directory.  Resource files without a compatible license will cause
  * the build to fail.  This file contains the rules for what PhET has deemed permissible 3rd party images, such as
@@ -29,7 +30,7 @@
   'use strict';
 
   /**
-   * Returns a string indicating a problem with licensing for the image/audio file, or null if there is no problem found.
+   * Returns a string indicating a problem with licensing for the media file, or null if there is no problem found.
    * The license.json file is consulted.  This function has no side effects (compare to getLicenseEntry above)
    *
    * @param {string} abspath - the path for the file
@@ -41,7 +42,7 @@
     var lastSlash = abspath.lastIndexOf( '/' );
     var prefix = abspath.substring( 0, lastSlash );
     var licenseFilename = prefix + '/license.json';
-    var assetFilename = abspath.substring( lastSlash + 1 );
+    var mediaFilename = abspath.substring( lastSlash + 1 );
 
     var file = null;
     // look in the license.json file to see if there is an entry for that file
@@ -56,7 +57,7 @@
     }
     var json = JSON.parse( file );
 
-    var entry = json[ assetFilename ];
+    var entry = json[ mediaFilename ];
     if ( !entry ) {
 
       // Not annotated in file
