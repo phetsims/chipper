@@ -16,8 +16,9 @@ var Jimp = require( 'jimp' );
  * @param projectName of the project (repository)
  * @param width of the resized image
  * @param height of the resized image
+ * @param callback
  */
-module.exports = function( grunt, projectName, width, height ) {
+module.exports = function( grunt, projectName, width, height, callback ) {
   'use strict';
 
   var fullResImageName = 'assets/' + projectName + '-screenshot.png';
@@ -32,13 +33,11 @@ module.exports = function( grunt, projectName, width, height ) {
     grunt.file.mkdir( 'build' );
   }
 
-  var done = grunt.task.current.async();
-
   // W031 says "do not use new for side effects."
   // It is disabled here because Jimp takes a callback that does the image processing.
   /* jshint -W031 */
   new Jimp( fullResImageName, function() {
-    this.resize( width, height ).write( destinationFile, done );
+    this.resize( width, height ).write( destinationFile, callback );
   } );
   /* jshint +W031 */
 };

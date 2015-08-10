@@ -317,15 +317,11 @@ module.exports = function( grunt ) {
       stringReport( grunt, pkg.name, FALLBACK_LOCAL );
     } );
 
-  grunt.registerTask( 'generate-128-thumbnail', 'Generate 128x84 thumbnail', function() {
-    generateThumbnails( grunt, pkg.name, 128, 84 );
+  grunt.registerTask( 'generate-thumbnails', 'Generate thumbnails', function() {
+    var finished = _.after( 2, grunt.task.current.async() );
+    generateThumbnails( grunt, pkg.name, 128, 84, finished );
+    generateThumbnails( grunt, pkg.name, 600, 394, finished );
   } );
-
-  grunt.registerTask( 'generate-600-thumbnail', 'Generate 600x394 thumbnail', function() {
-    generateThumbnails( grunt, pkg.name, 600, 394 );
-  } );
-
-  grunt.registerTask( 'generate-thumbnails', 'Generate thumbnails', [ 'generate-128-thumbnail', 'generate-600-thumbnail' ] );
 
   /*
    * Load tasks from grunt plugins that have been installed locally using npm.
