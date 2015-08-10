@@ -38,10 +38,11 @@
    * @private
    */
   function getLicenseEntry( absolutePath ) {
-    var lastSlash = absolutePath.lastIndexOf( '/' );
-    var prefix = absolutePath.substring( 0, lastSlash );
+
+    var lastSlashIndex = absolutePath.lastIndexOf( '/' );
+    var prefix = absolutePath.substring( 0, lastSlashIndex );
     var licenseFilename = prefix + '/license.json';
-    var mediaFilename = absolutePath.substring( lastSlash + 1 );
+    var mediaFilename = absolutePath.substring( lastSlashIndex + 1 );
 
     var file = null;
     // look in the license.json file to see if there is an entry for that file
