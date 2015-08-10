@@ -57,7 +57,7 @@ define( function( require ) {
             global.phet.chipper.licenseEntries.audio[ name ] = licenseEntry;
           }
           else {
-            errorString += 'Error for ' + urlList[ i ].url;
+            errorString += 'unacceptable license entry for ' + urlList[ i ].url;
           }
         }
         if ( errorString !== '' ) {
