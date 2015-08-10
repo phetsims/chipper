@@ -29,7 +29,7 @@ define( function( require ) {
         buildMap[ name ] = path;
         var licenseEntry = getLicenseEntry( path );
 
-        // Check for errors, but only if the brand is 'phet', see #176
+        // Check for errors, but only if the brand is 'phet' or 'phet-io', see #176
         if ( (phet.chipper.brand === 'phet' || phet.chipper.brand === 'phet-io') && LicenseEntryClassifier.isProblematic( licenseEntry ) ) {
           onload.error( new Error( 'problematic license entry' ) );
         }
