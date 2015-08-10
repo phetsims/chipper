@@ -58,6 +58,8 @@ module.exports = function( grunt ) {
   // For sims, read common phetLibs from chipper/build.json. We'll do this here since several grunt tasks (including some utilities) need phetLibs.
   assert( fs.existsSync( '../chipper/build.json' ), 'missing build.json' );
   var buildInfo = grunt.file.readJSON( '../chipper/build.json' );
+
+  // Add phetLibs from build-local.json
   pkg.phetLibs = pkg.phetLibs || [];
   pkg.phetLibs = _.uniq( pkg.phetLibs.concat( buildInfo.common.phetLibs ).sort() );
   grunt.log.debug( 'phetLibs = ' + pkg.phetLibs );
