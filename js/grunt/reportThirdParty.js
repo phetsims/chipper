@@ -238,20 +238,28 @@ module.exports = function( grunt, path ) {
     if ( projectURL.length === 0 ) {
       projectURL = '(no project url)';
     }
+    var notes = compositeMedia[ mediaKey ].notes.trim();
+    if ( notes.length === 0 ) {
+      notes = '(no notes)';
+    }
+    var license = compositeMedia[ mediaKey ].license.trim();
+    if ( license.length === 0 ) {
+      license = '(no license)';
+    }
     var mediaEntryLines = [
       '**' + mediaKey + '**',
       copyrightStatement,
       projectURL,
-      'License: ' + compositeMedia[ mediaKey ].license,
-      'Notes: ' + compositeMedia[ mediaKey ].notes
+      'License: ' + license,
+      'Notes: ' + notes
     ];
     if ( compositeMedia[ mediaKey ].exception ) {
       mediaEntryLines.push( 'Exception: ' + compositeMedia[ mediaKey ].exception );
     }
     mediaOutput.push( mediaEntryLines.join( '<br>' ) );
 
-    if ( mediaLicensesUsed.indexOf( compositeMedia[ mediaKey ].license ) < 0 ) {
-      mediaLicensesUsed.push( compositeMedia[ mediaKey ].license );
+    if ( mediaLicensesUsed.indexOf( license ) < 0 ) {
+      mediaLicensesUsed.push( license );
     }
   }
 
