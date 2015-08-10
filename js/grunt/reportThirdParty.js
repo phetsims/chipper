@@ -39,7 +39,7 @@ var COMMIT_CHANGES = false;
 module.exports = function( grunt, path ) {
 
   var i;
-  
+
   /* jshint -W079 */
   var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
   /* jshint +W079 */
@@ -229,10 +229,19 @@ module.exports = function( grunt, path ) {
   for ( i = 0; i < mediaKeys.length; i++ ) {
     var mediaKey = mediaKeys[ i ];
 
+    var copyrightStatement = compositeMedia[ mediaKey ].text.join( '<br>' ).trim();
+    var projectURL = compositeMedia[ mediaKey ].projectURL.trim();
+
+    if ( copyrightStatement.length === 0 ) {
+      copyrightStatement = '(no text)';
+    }
+    if ( projectURL.length === 0 ) {
+      projectURL = '(no project url)';
+    }
     var mediaEntryLines = [
       '**' + mediaKey + '**',
-      compositeMedia[ mediaKey ].text.join( '<br>' ),
-      compositeMedia[ mediaKey ].projectURL,
+      copyrightStatement,
+      projectURL,
       'License: ' + compositeMedia[ mediaKey ].license,
       'Notes: ' + compositeMedia[ mediaKey ].notes
     ];
