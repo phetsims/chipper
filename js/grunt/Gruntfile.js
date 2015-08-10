@@ -317,7 +317,7 @@ module.exports = function( grunt ) {
       stringReport( grunt, pkg.name, FALLBACK_LOCAL );
     } );
 
-  grunt.registerTask( 'generate-thumbnails', 'Generate thumbnails', function() {
+  grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.', function() {
     var finished = _.after( 2, grunt.task.current.async() );
     generateThumbnails( grunt, pkg.name, 128, 84, finished );
     generateThumbnails( grunt, pkg.name, 600, 394, finished );
