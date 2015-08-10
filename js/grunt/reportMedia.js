@@ -1,11 +1,11 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * This grunt task iterates over all of the license.json files and reports any images or audio that have any of the following
- * problems:
+ * This grunt task iterates over all of the license.json files and reports any media files (images, audio, ...)
+ * that have any of the following problems:
  *
  * incompatible-license    Known to be from an unapproved source outside of PhET
- * not-annotated           Missing license.json file or the asset is not mentioned in the file
+ * not-annotated           Missing license.json file or missing entry in license.json
  * missing-file            There is an entry in the license.json but no corresponding file
  *
  * This can be run from any simulation directory with `grunt report-media` and it reports for
