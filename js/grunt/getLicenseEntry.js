@@ -1,7 +1,7 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * This file is used during string and audio plugin resolution in order to accomplish 2 goals:
+ * This file is used when loading media files via plugins, to accomplish 2 goals:
  *
  *
  * (a) determine that PhET Simulations are built using compatible resources.  Each resource (image or audio file) must
