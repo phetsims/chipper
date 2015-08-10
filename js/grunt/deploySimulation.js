@@ -21,8 +21,8 @@ var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 var DEFAULT_DEV_SERVER = 'spot.colorado.edu';
 var PACKAGE_JSON = 'package.json';
 var DEPENDENCIES_JSON = 'build/dependencies.json';
-var PRODUCTION_SERVER_NAME = 'figaro.colorado.edu';
-var PRODUCTION_SERVER_URL = 'https://phet.colorado.edu';
+var DEFAULT_PRODUCTION_SERVER_NAME = 'figaro.colorado.edu';
+var DEFAULT_PRODUCTION_SERVER_URL = 'https://phet.colorado.edu';
 
 /**
  * @param grunt the grunt instance
@@ -35,6 +35,8 @@ module.exports = function( grunt, devDeploy ) {
   assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
 
   var devServerName = preferences.devDeployServer || DEFAULT_DEV_SERVER;
+  var productionServerName = preferences.productionServerName || DEFAULT_PRODUCTION_SERVER_NAME;
+  var productionServerURL = preferences.productionServerURL || DEFAULT_PRODUCTION_SERVER_URL;
   devDeploy = !!devDeploy; // cast to boolean
 
   // get the sim name from the current directory
@@ -54,12 +56,12 @@ module.exports = function( grunt, devDeploy ) {
     'locales': JSON.stringify( [ 'en' ] ),
     'simName': sim,
     'version': version,
-    'serverName': ( devDeploy ) ? devServerName : PRODUCTION_SERVER_NAME,
+    'serverName': ( devDeploy ) ? devServerName : productionServerName,
     'dev': devDeploy,
     'authorizationCode': preferences.buildServerAuthorizationCode
   } );
 
-  var url = PRODUCTION_SERVER_URL + '/deploy-html-simulation?' + query;
+  var url = productionServerURL + '/deploy-html-simulation?' + query;
 
   var done = grunt.task.current.async();
 
