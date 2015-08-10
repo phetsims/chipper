@@ -57,7 +57,6 @@
 
     var entry = json[ mediaFilename ];
     if ( !entry ) {
-
       // Not annotated in file
       return null;
     }
