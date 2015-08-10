@@ -40,6 +40,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   assert( pkg.name, 'name missing from package.json' );
   assert( pkg.version, 'version missing from package.json' );
   assert( pkg.license, 'license missing from package.json' );
+  assert( pkg.requirejsNamespace, 'requirejsNamespace missing from package.json' );
   assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
   assert( pkg.phetLibs, 'phetLibs missing from package.json' );
   assert( pkg.preload, 'preload missing from package.json' );
@@ -196,10 +197,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   function postMipmapLoad( dependencyJSON, mipmapJavascript ) {
 
     // After all plugins completed, check which media files (images & audio files) are in the media 
-    // directories but not loaded by the plugins. The simNameUppercase such as BALANCING_ACT is required in order
-    // to identify the namespaced resources. This reuses the pkg.simTitleStringKey to get the simNameUppercase
-    var simNameUppercase = pkg.simTitleStringKey.substring( 0, pkg.simTitleStringKey.indexOf( '/' ) );
-    reportUnusedMedia( grunt, simNameUppercase );
+    // directories but not loaded by the plugins.
+    reportUnusedMedia( grunt, pkg.requirejsNamespace );
 
     // Load the splash SVG from the appropriate brand.
     var splashDataURI = loadFileAsDataURI( '../brand/' + global.phet.chipper.brand + '/images/splash.svg' );
