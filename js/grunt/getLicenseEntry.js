@@ -49,8 +49,6 @@
       file = global.fs.readFileSync( licenseFilename, 'utf8' );
     }
     catch( err ) {
-      //return { classification: 'missing-license.json', isProblematic: true, entry: null };
-
       // File not found
       return null;
     }
