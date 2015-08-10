@@ -19,7 +19,7 @@
 
           // The file was an unknown or incompatible 3rd party license.  Mark as problematic unless it has an exception
           // see https://github.com/phetsims/john-travoltage/issues/82
-          entry.exception !== null
+          !!entry.exception
         );
     },
     isProblematic: function( entry ) {
