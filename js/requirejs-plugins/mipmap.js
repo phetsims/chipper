@@ -67,7 +67,7 @@ define( function( require ) {
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
   var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
-  var LicenseEntryClassifier = require( '../../chipper/js/grunt/LicenseEntryClassifier' );
+  var isAcceptableLicenseEntry = require( '../../chipper/js/grunt/isAcceptableLicenseEntry' );
 
   return {
     // called both in-browser and during build
@@ -108,15 +108,13 @@ define( function( require ) {
         } );
 
         var licenseEntry = getLicenseEntry( path );
-
-        // Check for errors, but only if the brand is 'phet' or 'phet-io', see #176
-        if ( (phet.chipper.brand === 'phet' || phet.chipper.brand === 'phet-io') && LicenseEntryClassifier.isProblematic( licenseEntry ) ) {
-          onload.error( new Error( 'problematic license entry' ) );
-        }
-        else {
+        if ( isAcceptableLicenseEntry( name, licenseEntry, phet.chipper.brand ) ) {
           global.phet.chipper.licenseEntries.images = global.phet.chipper.licenseEntries.images || {};
           global.phet.chipper.licenseEntries.images[ name ] = licenseEntry;
           onload( null );
+        }
+        else {
+          onload.error( new Error( 'problematic license entry' ) );//TODO error message contains no info about the entry
         }
       }
       else {
