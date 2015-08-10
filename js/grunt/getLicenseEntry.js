@@ -33,7 +33,9 @@
    * The license.json file is consulted.  This function has no side effects (compare to getLicenseEntry above)
    *
    * @param {string} absolutePath - the path for the media file
-   * @returns {*}
+   * @returns {object} the entry from the license.json file
+   *                     or null if the license.json file is missing
+   *                     or null if the license.json file exists but has no entry for the given file
    *
    * @private
    */

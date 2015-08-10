@@ -168,7 +168,7 @@ module.exports = function( grunt ) {
   else {
     optionalTasks.push( 'lint-all' );
   }
-  
+
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
     'with no options, builds HTML for English only\n' +
@@ -272,10 +272,9 @@ module.exports = function( grunt ) {
   // See reportMedia.js
   grunt.registerTask( 'report-media', '(project-wide) Report on license.json files throughout all working copies. ' +
                                       'Reports any media (such as images or audio) files that have any of the following problems:\n' +
-                                      '(1) missing-license.json (no license.json for the resource)\n' +
-                                      '(2) incompatible-license (resource license not approved)\n' +
-                                      '(3) not-annotated (entry missing from license.json)\n' +
-                                      '(4) missing-file (entry in the license.json but not on the file system)', function() {
+                                      '(1) incompatible-license (resource license not approved)\n' +
+                                      '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
+                                      '(3) missing-file (entry in the license.json but not on the file system)', function() {
     reportMedia( grunt );
   } );
 
