@@ -95,10 +95,8 @@ module.exports = function( grunt ) {
 
   // Identify the repo files to lint for the single repo.
   // The brand repo is a special case since it has nested subdirectories instead of a top level js/ directory
-  var repoFilesToLint = pkg.name === 'brand' ? [ '*/js/**/*.js' ] :
+  var repoFilesToLint = ( pkg.name === 'brand' ) ? [ '*/js/**/*.js' ] : [ 'js/**/*.js' ];
 
-    // Default case for repo files to lint
-    [ 'js/**/*.js' ];
   grunt.initConfig( {
     /*
      * Read in the project settings from the package.json file into the pkg property.
