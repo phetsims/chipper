@@ -177,7 +177,7 @@ module.exports = function( grunt ) {
     '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
     '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
     '--together : adds additional preload files needed to support together.js\n' +
-    '--lint=false : skip the linting sub-task',
+    '--lint=false : skip the lint sub-task',
     optionalTasks.concat( [
       'clean',
       'set-preload',
