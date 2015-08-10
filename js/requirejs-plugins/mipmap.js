@@ -114,7 +114,7 @@ define( function( require ) {
           onload( null );
         }
         else {
-          onload.error( new Error( 'unacceptable license entry' ) );//TODO error message contains no info about the entry
+          onload.error( new Error( 'unacceptable license entry' ) );//TODO chipper#242 error message doesn't identify the media file
         }
       }
       else {
