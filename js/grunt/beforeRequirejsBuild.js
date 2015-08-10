@@ -114,6 +114,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
    * @returns {string}
    */
   global.phet.chipper.brand = grunt.option( 'brand' ) || preferences.brand || 'adapted-from-phet';
+  assert( fs.existsSync( '../brand/' + phet.chipper.brand ), 'no such brand: ' + global.phet.chipper.brand );
 
   // See if a specific language was specified like: grunt build --locale fr
   var locale = grunt.option( 'locale' ) || fallbackLocale;

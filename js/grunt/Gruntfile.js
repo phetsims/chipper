@@ -95,10 +95,8 @@ module.exports = function( grunt ) {
 
   // Identify the repo files to lint for the single repo.
   // The brand repo is a special case since it has nested subdirectories instead of a top level js/ directory
-  var repoFilesToLint = pkg.name === 'brand' ? [ '*/js/**/*.js' ] :
+  var repoFilesToLint = ( pkg.name === 'brand' ) ? [ '*/js/**/*.js' ] : [ 'js/**/*.js' ];
 
-    // Default case for repo files to lint
-    [ 'js/**/*.js' ];
   grunt.initConfig( {
     /*
      * Read in the project settings from the package.json file into the pkg property.
@@ -177,7 +175,7 @@ module.exports = function( grunt ) {
     '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
     '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
     '--together : adds additional preload files needed to support together.js\n' +
-    '--lint=false : skip the linting sub-task',
+    '--lint=false : skip the lint sub-task',
     optionalTasks.concat( [
       'clean',
       'set-preload',
