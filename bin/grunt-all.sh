@@ -14,6 +14,7 @@ CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 WORKING_DIR=${CHIPPER_BIN}/../..
 cd ${WORKING_DIR}
 
+# Exit immediately on Ctrl-C
 trap "exit 1" SIGINT
 
 for sim in `cat chipper/data/active-runnables | xargs`
