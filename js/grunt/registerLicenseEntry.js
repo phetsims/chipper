@@ -51,6 +51,7 @@ define( function() {
 
   /**
    * Registers the license entry for a media file.
+   * Intended to be called by media plugins.
    *
    * @param {string} name - the symbolic media filename as supplied to the plugin, e.g. JOHN_TRAVOLTAGE/arm.png
    * @param {*} licenseEntry - license entry for the media file, documented in getLicenseEntry.js
