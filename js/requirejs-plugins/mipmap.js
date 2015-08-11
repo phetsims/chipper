@@ -66,8 +66,7 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
-  var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
-  var isAcceptableLicenseEntry = require( '../../chipper/js/grunt/isAcceptableLicenseEntry' );
+  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
 
   return {
     // called both in-browser and during build
@@ -107,15 +106,7 @@ define( function( require ) {
           quality: options.quality
         } );
 
-        var licenseEntry = getLicenseEntry( path );
-        if ( isAcceptableLicenseEntry( name, licenseEntry, phet.chipper.brand ) ) {
-          global.phet.chipper.licenseEntries.images = global.phet.chipper.licenseEntries.images || {};
-          global.phet.chipper.licenseEntries.images[ name ] = licenseEntry;
-          onload( null );
-        }
-        else {
-          onload.error( new Error( 'unacceptable license entry for ' + path ) );
-        }
+        checkAndRegisterLicenseEntry( name, path, phet.chipper.brand, 'images', onload );
       }
       else {
         // if buildCompatible is provided, use the high-quality build-like mipmapping

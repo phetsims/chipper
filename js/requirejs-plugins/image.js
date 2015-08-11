@@ -14,8 +14,7 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
-  var isAcceptableLicenseEntry = require( '../../chipper/js/grunt/isAcceptableLicenseEntry' );
+  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
 
   //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
   var buildMap = {};
@@ -27,15 +26,7 @@ define( function( require ) {
 
       if ( config.isBuild ) {
         buildMap[ name ] = path;
-        var licenseEntry = getLicenseEntry( path );
-        if ( isAcceptableLicenseEntry( name, licenseEntry, phet.chipper.brand ) ) {
-          global.phet.chipper.licenseEntries.images = global.phet.chipper.licenseEntries.images || {};
-          global.phet.chipper.licenseEntries.images[ name ] = licenseEntry;
-          onload( null );
-        }
-        else {
-          onload.error( new Error( 'unacceptable license entry for ' + path ) );
-        }
+        checkAndRegisterLicenseEntry( name, path, phet.chipper.brand, 'images', onload );
       }
       else {
         var image = document.createElement( 'img' );

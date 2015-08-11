@@ -16,8 +16,7 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
-  var isAcceptableLicenseEntry = require( '../../chipper/js/grunt/isAcceptableLicenseEntry' );
+  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
 
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.
@@ -49,19 +48,19 @@ define( function( require ) {
         // Save in the build map for the 'write' function to use.
         buildMap[ name ] = urlList;
 
-        var errorString = '';
+        // Check the license entries for each file
+        var errors = [];
+        var onLoadAdapter = function() { };
+        onLoadAdapter.error = function( error ) {
+          errors.push( error );
+        };
         for ( var i = 0; i < urlList.length; i++ ) {
-          var licenseEntry = getLicenseEntry( urlList[ i ].url );
-          if ( isAcceptableLicenseEntry( name, licenseEntry, phet.chipper.brand ) ) {
-            global.phet.chipper.licenseEntries.audio = global.phet.chipper.licenseEntries.audio || {};
-            global.phet.chipper.licenseEntries.audio[ name ] = licenseEntry;
-          }
-          else {
-            errorString += 'unacceptable license entry for ' + urlList[ i ].url;
-          }
+          checkAndRegisterLicenseEntry( name, urlList[ i ].url, phet.chipper.brand, 'audio', onLoadAdapter );
         }
-        if ( errorString !== '' ) {
-          onload.error( new Error( errorString ) );
+
+        // If any license entry was a problem, then we must fail the build, for simplicity, just report the first error
+        if ( errors.length > 0 ) {
+          onload.error( errors[ 0 ] );
         }
         else {
           onload( null );
