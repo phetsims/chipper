@@ -231,7 +231,6 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'before-requirejs-build',
     '(internal use only) Do things before the requirejs:build task',
     function() {
-      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
       assert( pkg.preload, 'preload missing from package.json' );
       beforeRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
     } );
@@ -291,7 +290,6 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
     function() {
-      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
       assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
       generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, true /* published */ );
     } );
@@ -299,7 +297,6 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
     function() {
-      assert( pkg.phetLibs, 'phetLibs missing from package.json' );
       assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
       generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
     } );
