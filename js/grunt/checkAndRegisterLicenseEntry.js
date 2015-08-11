@@ -33,7 +33,7 @@ define( function( require ) {
       onload( null );
     }
     else {
-      onload.error( new Error( 'unacceptable license entry for ' + path ) );
+      onload.error( new Error( 'unacceptable license entry for ' + name ) );
     }
   }
 
