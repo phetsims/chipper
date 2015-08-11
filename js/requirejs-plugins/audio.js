@@ -56,6 +56,8 @@ define( function( require ) {
         buildMap[ name ] = urlList;
 
         // Check the license entries for each file
+        // Create an adapter that will be called like the onload function, so that we can efficiently reuse 
+        // checkAndRegisterLicenseEntry
         var errors = [];
         var onLoadAdapter = function() { };
         onLoadAdapter.error = function( error ) {
