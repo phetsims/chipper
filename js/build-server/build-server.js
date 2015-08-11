@@ -1,7 +1,41 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * PhET build and deploy server
+ * PhET build and deploy server. The server is designed to run on the same host as the production site (simian or figaro).
+ *
+ * All of the phet repos live on simian and figaro under /data/share/phet/phet-repos. The build server lives in chipper:
+ * /data/share/phet/phet-repos/chipper. To start the build server, run this command on simian or figaro (without quotes):
+ *
+ * "cd /data/share/phet/phet-repos/chipper && nohup /usr/local/nodejs/bin/node js/build-server/build-server.js &"
+ *
+ * Do not start the build server unless you have the necessary fields filled out in ~/.phet/build-local.json
+ * (see assertions below). Additionally, you will need an ssh key set up to copy files from the production server to spot.
+ *
+ * To stop the build server, look for its process id with "ps -elf | grep node" and kill the process.
+ *
+ * The build server starts a build process upon receiving and https request to /deploy-html-simulation. It takes as input
+ * the following query parameters:
+ * - repos - a json object with dependency repos and shas, in the form of dependencies.json files
+ * - locales - a list of locales to build [optional, defaults to all locales in babel]
+ * - simName - the standardized name of the sim, lowercase with hyphens instead of spaces (i.e. area-builder)
+ * - version - the version to be built. Production deploys will automatically strip everything after the major.minor.maintenance
+ * - authorizationCode - a password to authorize legitimate requests
+ * - serverName - server to deploy to, defaults to figaro.colorado.edu, but could be overriden for testing on simian.colorado.edu
+ * - dev - if true, just deploy to spot, not to the production server
+ *
+ * The build server does the following steps when a deploy request is received:
+ * - checks the authorization code, unauthorized codes will not trigger a build
+ * - puts the build task on a queue so multiple builds don't occur simultaneously
+ * - npm install in the sim directory
+ * - pull master for the sim and all dependencies
+ * - grunt checkout-shas
+ * - grunt build --lint=false for selected locales
+ * - grunt generate-thumbnails
+ * - mkdir for the new sim version
+ * - copy the build files to the correct location in the server doc root
+ * - write necessary .htaccess files for indicating the latest directory and downloading the html files
+ * - write the XML file that tells the website which translations exist
+ * - notify the website that a new simulation/translation is published and should appear
  *
  * @author Aaron Davis
  */
