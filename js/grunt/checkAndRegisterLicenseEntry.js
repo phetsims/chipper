@@ -16,7 +16,7 @@ define( function( require ) {
   return function( name, path, brand, mediaType, onload ) {
 
     var licenseEntry = getLicenseEntry( path );
-    if ( isAcceptableLicenseEntry( name, licenseEntry, phet.chipper.brand ) ) {
+    if ( isAcceptableLicenseEntry( name, licenseEntry, brand ) ) {
       global.phet.chipper.licenseEntries[ mediaType ] = global.phet.chipper.licenseEntries[ mediaType ] || {};
       global.phet.chipper.licenseEntries[ mediaType ][ name ] = licenseEntry;
       onload( null );
