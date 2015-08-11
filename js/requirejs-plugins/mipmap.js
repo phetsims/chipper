@@ -67,7 +67,7 @@ define( function( require ) {
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
   var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
-  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
+  var registerLicenseEntry = require( '../../chipper/js/grunt/registerLicenseEntry' );
 
   return {
     // called both in-browser and during build
@@ -107,7 +107,7 @@ define( function( require ) {
           quality: options.quality
         } );
 
-        checkAndRegisterLicenseEntry( name, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
+        registerLicenseEntry( name, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
       }
       else {
         // if buildCompatible is provided, use the high-quality build-like mipmapping

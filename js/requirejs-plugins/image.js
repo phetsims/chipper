@@ -15,7 +15,7 @@ define( function( require ) {
   var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
-  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
+  var registerLicenseEntry = require( '../../chipper/js/grunt/registerLicenseEntry' );
 
   //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
   var buildMap = {};
@@ -27,7 +27,7 @@ define( function( require ) {
 
       if ( config.isBuild ) {
         buildMap[ name ] = path;
-        checkAndRegisterLicenseEntry( name, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
+        registerLicenseEntry( name, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
       }
       else {
         var image = document.createElement( 'img' );
