@@ -55,7 +55,7 @@ define( function( require ) {
           errors.push( error );
         };
         for ( var i = 0; i < urlList.length; i++ ) {
-          checkAndRegisterLicenseEntry( name, urlList[ i ].url, phet.chipper.brand, 'audio', onLoadAdapter );
+          checkAndRegisterLicenseEntry( name, urlList[ i ].url, global.phet.chipper.brand, 'audio', onLoadAdapter );
         }
 
         // If any license entry was a problem, then we must fail the build, for simplicity, just report the first error

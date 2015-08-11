@@ -106,7 +106,7 @@ define( function( require ) {
           quality: options.quality
         } );
 
-        checkAndRegisterLicenseEntry( name, path, phet.chipper.brand, 'images', onload );
+        checkAndRegisterLicenseEntry( name, path, global.phet.chipper.brand, 'images', onload );
       }
       else {
         // if buildCompatible is provided, use the high-quality build-like mipmapping

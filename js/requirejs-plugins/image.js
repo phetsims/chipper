@@ -26,7 +26,7 @@ define( function( require ) {
 
       if ( config.isBuild ) {
         buildMap[ name ] = path;
-        checkAndRegisterLicenseEntry( name, path, phet.chipper.brand, 'images', onload );
+        checkAndRegisterLicenseEntry( name, path, global.phet.chipper.brand, 'images', onload );
       }
       else {
         var image = document.createElement( 'img' );

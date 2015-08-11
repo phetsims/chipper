@@ -300,7 +300,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
               // Fail if there is no license entry.  Though this error should have been caught
               // during plugin loading, so this is a "double check"
-              if ( phet.chipper.brand === 'phet' || phet.chipper.brand === 'phet-io' ) {
+              if ( global.phet.chipper.brand === 'phet' || global.phet.chipper.brand === 'phet-io' ) {
                 grunt.log.error( 'No license.json entry for ' + resourceName );
               }
             }
