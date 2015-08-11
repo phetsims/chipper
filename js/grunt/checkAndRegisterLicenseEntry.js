@@ -11,8 +11,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  // TODO: Why cannot we load this require statement here?  See #229
-  //var isAcceptableLicenseEntry = require( '../../../chipper/js/grunt/isAcceptableLicenseEntry' );
+  var isAcceptableLicenseEntry = require( '../../../chipper/js/grunt/isAcceptableLicenseEntry' );
 
   /**
    * @param {string} name - the symbolic media filename as supplied to the plugin, e.g. JOHN_TRAVOLTAGE/arm.png
@@ -20,9 +19,8 @@ define( function( require ) {
    * @param {string} brand
    * @param {string} mediaType - the type of media and name of the media subdirectory ('audio'|'image'|'mipmap'|...)
    * @param {function} onload - a function that conforms to the requirejs onload API
-   * @param {function} isAcceptableLicenseEntry
    */
-  function checkAndRegisterLicenseEntry( name, licenseEntry, brand, mediaType, onload, isAcceptableLicenseEntry ) {
+  function checkAndRegisterLicenseEntry( name, licenseEntry, brand, mediaType, onload ) {
     if ( isAcceptableLicenseEntry( name, licenseEntry, brand ) ) {
       global.phet.chipper.licenseEntries[ mediaType ] = global.phet.chipper.licenseEntries[ mediaType ] || {};
       global.phet.chipper.licenseEntries[ mediaType ][ name ] = licenseEntry;
