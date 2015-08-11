@@ -67,7 +67,7 @@ define( function( require ) {
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
 
-  var checkAndRegisterLicenseEntry = require( '../../chipper/js/requirejs-plugins/checkAndRegisterLicenseEntry' );
+  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
 
   // Ideally we would like to require these files from checkAndRegisterLicenseEntry.js, but for unknown reasons
   // loading them there yields only undefined.  As an alterate solution, we can load them here and pass them through.
