@@ -44,8 +44,14 @@ define( function() {
   function isAcceptableLicenseEntry( name, entry, brand ) {
     var acceptable = !isApplicableBrand( brand ) || isCompatibleLicenseEntry( entry ) || !!entry.exception;
     if ( acceptable && !!entry.exception ) {
-      //TODO how to print warning without grunt.warn? see chipper#222
-      console.log( 'WARNING: license exception for ' + name + ': ' + entry.exception );
+      var warningMessage = 'license exception for ' + name + ': ' + entry.exception;
+      if ( global.phet.chipper.grunt ) {
+        // use grunt.log if it's available
+        global.phet.chipper.grunt.log.warn( warningMessage );
+      }
+      else {
+        console.log( 'WARNING: ' + warningMessage );
+      }
     }
     return acceptable;
   }

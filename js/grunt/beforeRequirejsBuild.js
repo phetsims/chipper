@@ -99,11 +99,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   grunt.log.debug( 'Building simulation: ' + pkg.name + ' ' + pkg.version );
 
-  // info shared with other tasks will be put here
-  global.phet = global.phet || {};
-
   // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
-  global.phet.chipper = global.phet.chipper || {};
   global.phet.chipper.getCacheBusterArgs = global.phet.chipper.getCacheBusterArgs || function() {return '';};
 
   /**
