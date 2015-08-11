@@ -21,8 +21,7 @@
   'use strict';
 
   /**
-   * Returns a string indicating a problem with licensing for a media file, or null if there is no problem found.
-   * The license.json file is consulted.  This function has no side effects (compare to getLicenseEntry above)
+   * Retrieves the license entry for a media file from license.json.
    *
    * @param {string} absolutePath - the path for the media file
    * @returns {Object|null} the entry from the license.json file
