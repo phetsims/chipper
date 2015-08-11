@@ -289,10 +289,11 @@ module.exports = function( grunt ) {
                                             'third party code, images, audio, etc. used in the group ' +
                                             'and commit the changes to sherpa/third-party-licenses.json. ' +
                                             'If the "--copy-from-build" option is given, it will iterate over the active-runnables ' +
-                                            'and copy all the files to the report HTML directory (required argument)', function( path ) {
-    assert( path, 'The path is a required grunt argument (use taskname:argument)' );
-    reportThirdParty( grunt, path );
-  } );
+                                            'and copy all the files to the report HTML directory (required argument)',
+    function( path ) {
+      assert( path, 'The path is a required grunt argument (use taskname:argument)' );
+      reportThirdParty( grunt, path );
+    } );
 
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
