@@ -3,7 +3,6 @@
 /**
  * This file is used when loading media files (images, audio,...) via plugins, to accomplish 2 goals:
  *
- *
  * (a) determine that PhET Simulations are built using compatible resources.  Each media file must
  * be annotated in a license.json file in the same directory.  Media files without a compatible license will cause
  * the build to fail.
