@@ -15,7 +15,16 @@ define( function( require ) {
   //var getLicenseEntry = require( '../../../chipper/js/grunt/getLicenseEntry' );
   //var isAcceptableLicenseEntry = require( '../../../chipper/js/grunt/isAcceptableLicenseEntry' );
 
-  return function( name, path, brand, mediaType, onload, getLicenseEntry, isAcceptableLicenseEntry ) {
+  /**
+   * @param {string} name - the media filename
+   * @param {path} path - the path to the media file
+   * @param {string} brand
+   * @param {string} mediaType - the type of media and name of the media subdirectory ('audio'|'image'|'mipmap'|...)
+   * @param {function} onload - a function that conforms to the requirejs onload API
+   * @param {function} getLicenseEntry
+   * @param {function} isAcceptableLicenseEntry
+   */
+  function checkAndRegisterLicenseEntry( name, path, brand, mediaType, onload, getLicenseEntry, isAcceptableLicenseEntry ) {
 
     var licenseEntry = getLicenseEntry( path );
     if ( isAcceptableLicenseEntry( name, licenseEntry, brand ) ) {
@@ -26,5 +35,7 @@ define( function( require ) {
     else {
       onload.error( new Error( 'unacceptable license entry for ' + path ) );
     }
-  };
+  }
+
+  return checkAndRegisterLicenseEntry;
 } );

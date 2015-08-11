@@ -55,19 +55,21 @@ define( function( require ) {
         // Save in the build map for the 'write' function to use.
         buildMap[ name ] = urlList;
 
-        // Check the license entries for each file
-        // Create an adapter that will be called like the onload function, so that we can efficiently reuse 
-        // checkAndRegisterLicenseEntry
+        // Create an adapter whose API matches the requirejs onload function.
+        // This is necessary because we only want to call onload(null) once per invocation of a media plugin.
+        // As a side-effect of calling checkAndRegisterLicenseEntry, this adapter will populate the errors array for any problem license entries.
         var errors = [];
-        var onLoadAdapter = function() { };
-        onLoadAdapter.error = function( error ) {
+        var onloadAdapter = function( value ) { };
+        onloadAdapter.error = function( error ) {
           errors.push( error );
         };
+
+        // Check the license entries for each file.
         for ( var i = 0; i < urlList.length; i++ ) {
-          checkAndRegisterLicenseEntry( name, urlList[ i ].url, global.phet.chipper.brand, 'audio', onLoadAdapter, getLicenseEntry, isAcceptableLicenseEntry );
+          checkAndRegisterLicenseEntry( name, urlList[ i ].url, global.phet.chipper.brand, 'audio', onloadAdapter, getLicenseEntry, isAcceptableLicenseEntry );
         }
 
-        // If any license entry was a problem, then we must fail the build, for simplicity, just report the first error
+        // If any license entry was a problem, then we must fail the build. For simplicity, just report the first error.
         if ( errors.length > 0 ) {
           onload.error( errors[ 0 ] );
         }
