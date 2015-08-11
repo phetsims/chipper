@@ -16,7 +16,7 @@ define( function( require ) {
   //var isAcceptableLicenseEntry = require( '../../../chipper/js/grunt/isAcceptableLicenseEntry' );
 
   /**
-   * @param {string} name - the media filename
+   * @param {string} name - the symbolic media filename as supplied to the plugin, e.g. JOHN_TRAVOLTAGE/arm.png
    * @param {path} path - the path to the media file
    * @param {string} brand
    * @param {string} mediaType - the type of media and name of the media subdirectory ('audio'|'image'|'mipmap'|...)
