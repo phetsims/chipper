@@ -479,7 +479,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         pullMaster( function() {
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
             exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
-              exec( 'grunt --lint=false --locales=' + locales.toString(), simDir, function() {
+              exec( 'grunt build --lint=false --locales=' + locales.toString(), simDir, function() {
 
                 // if deploying a dev version just scp to spot
                 if ( isDev ) {
