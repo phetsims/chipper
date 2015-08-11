@@ -16,7 +16,14 @@ define( function( require ) {
   //Paths are relative to the requirejs config.js file
   var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
+
+  var checkAndRegisterLicenseEntry = require( '../../chipper/js/requirejs-plugins/checkAndRegisterLicenseEntry' );
+
+  // Ideally we would like to require these files from checkAndRegisterLicenseEntry.js, but for unknown reasons
+  // loading them there yields only undefined.  As an alterate solution, we can load them here and pass them through.
+  // see https://github.com/phetsims/chipper/issues/229#issuecomment-129709998
+  var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
+  var isAcceptableLicenseEntry = require( '../../chipper/js/grunt/isAcceptableLicenseEntry' );
 
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.
@@ -55,7 +62,7 @@ define( function( require ) {
           errors.push( error );
         };
         for ( var i = 0; i < urlList.length; i++ ) {
-          checkAndRegisterLicenseEntry( name, urlList[ i ].url, global.phet.chipper.brand, 'audio', onLoadAdapter );
+          checkAndRegisterLicenseEntry( name, urlList[ i ].url, global.phet.chipper.brand, 'audio', onLoadAdapter, getLicenseEntry, isAcceptableLicenseEntry );
         }
 
         // If any license entry was a problem, then we must fail the build, for simplicity, just report the first error

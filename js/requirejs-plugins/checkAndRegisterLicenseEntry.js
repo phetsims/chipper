@@ -7,13 +7,10 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-define( function( require ) {
-  'use strict';
+'use strict';
+(function() {
 
-  var getLicenseEntry = require( '../../../chipper/js/grunt/getLicenseEntry' );
-  var isAcceptableLicenseEntry = require( '../../../chipper/js/grunt/isAcceptableLicenseEntry' );
-
-  return function( name, path, brand, mediaType, onload ) {
+  var checkAndRegisterLicenseEntry = function( name, path, brand, mediaType, onload, getLicenseEntry, isAcceptableLicenseEntry ) {
 
     var licenseEntry = getLicenseEntry( path );
     if ( isAcceptableLicenseEntry( name, licenseEntry, brand ) ) {
@@ -25,4 +22,16 @@ define( function( require ) {
       onload.error( new Error( 'unacceptable license entry for ' + path ) );
     }
   };
-} );
+
+  // browser require.js-compatible definition
+  if ( typeof define !== 'undefined' ) {
+    define( function() {
+      return checkAndRegisterLicenseEntry;
+    } );
+  }
+
+  // Node.js-compatible definition
+  if ( typeof module !== 'undefined' ) {
+    module.exports = checkAndRegisterLicenseEntry;
+  }
+})();
