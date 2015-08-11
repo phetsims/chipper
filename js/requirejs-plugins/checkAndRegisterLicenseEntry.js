@@ -7,8 +7,8 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-'use strict';
 (function() {
+  'use strict';
 
   var checkAndRegisterLicenseEntry = function( name, path, brand, mediaType, onload, getLicenseEntry, isAcceptableLicenseEntry ) {
 
