@@ -2,11 +2,10 @@
 
 /**
  * Retrieves the license entry for a media file from license.json.
- * This file is used when loading media files (images, audio,...) via plugins.
+ * This file is used when loading media files (images, audio,...) via media plugins.
  *
- * Each media file must have an entry in a license.json file in the same directory which indicates the
- * origin of the file as well as its licensing.  The license.json file should contain one entry per media file,
- * and each should be annotated with the following:
+ * A license entry for a media file is found in a license.json file that is in
+ * the same directory as the media file. A license entry has the following fields:
  *
  * text - copyright statement or "Public Domain"
  * projectURL - the URL for the resource
