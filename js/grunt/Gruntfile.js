@@ -280,9 +280,10 @@ module.exports = function( grunt ) {
                                       'Reports any media (such as images or audio) files that have any of the following problems:\n' +
                                       '(1) incompatible-license (resource license not approved)\n' +
                                       '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
-                                      '(3) missing-file (entry in the license.json but not on the file system)', function() {
-    reportMedia( grunt );
-  } );
+                                      '(3) missing-file (entry in the license.json but not on the file system)',
+    function() {
+      reportMedia( grunt );
+    } );
 
   // see reportThirdParty.js
   grunt.registerTask( 'report-third-party', 'Given a directory of HTML files (required argument), report the ' +
@@ -321,11 +322,12 @@ module.exports = function( grunt ) {
       stringReport( grunt, pkg.name, FALLBACK_LOCAL );
     } );
 
-  grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.', function() {
-    var finished = _.after( 2, grunt.task.current.async() );
-    generateThumbnails( grunt, pkg.name, 128, 84, finished );
-    generateThumbnails( grunt, pkg.name, 600, 394, finished );
-  } );
+  grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.',
+    function() {
+      var finished = _.after( 2, grunt.task.current.async() );
+      generateThumbnails( grunt, pkg.name, 128, 84, finished );
+      generateThumbnails( grunt, pkg.name, 600, 394, finished );
+    } );
 
   /*
    * Load tasks from grunt plugins that have been installed locally using npm.
