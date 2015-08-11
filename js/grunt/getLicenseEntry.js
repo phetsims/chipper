@@ -25,7 +25,7 @@
    * The license.json file is consulted.  This function has no side effects (compare to getLicenseEntry above)
    *
    * @param {string} absolutePath - the path for the media file
-   * @returns {object} the entry from the license.json file
+   * @returns {Object|null} the entry from the license.json file
    *                     or null if the license.json file is missing
    *                     or null if the license.json file exists but has no entry for the given file
    *
@@ -38,21 +38,20 @@
     var licenseFilename = prefix + '/license.json';
     var mediaFilename = absolutePath.substring( lastSlashIndex + 1 );
 
+    // read license.json
     var file = null;
-    // look in the license.json file to see if there is an entry for that file
     try {
       file = global.fs.readFileSync( licenseFilename, 'utf8' );
     }
     catch( err ) {
-      // File not found
-      return null;
+      return null;  // File not found
     }
     var json = JSON.parse( file );
 
+    // get the media file's license entry
     var entry = json[ mediaFilename ];
     if ( !entry ) {
-      // Not annotated in file
-      return null;
+      return null; // Not annotated in file
     }
     return entry;
   }
