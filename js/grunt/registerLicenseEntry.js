@@ -2,7 +2,7 @@
 
 /**
  * Registers the license entry for a media file by adding it to global.phet.chipper.licenseEntries.
- * Also verifies that the file's license is "acceptable" (see isAcceptableLicenseEntry for details).
+ * Also verifies that the file's license is "acceptable" (as defined in isAcceptableLicenseEntry below).
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Chris Malley (PixelZoom, Inc.)
