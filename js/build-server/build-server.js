@@ -86,35 +86,6 @@ assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FI
 assert( preferences.devDeployServer, 'devDeployServer is missing from ' + PREFERENCES_FILE );
 assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
 
-// configure email server
-var server = email.server.connect( {
-  user: preferences.emailUsername,
-  password: preferences.emailPassword,
-  host: preferences.emailServer,
-  tls: preferences.tls || true
-} );
-
-/**
- * Send an email. Used to notify developers if a build fails
- * @param subject
- * @param text
- */
-function sendEmail( subject, text ) {
-  server.send( {
-    text: text,
-    from: 'PhET Build Server <' + preferences.emailFrom + '>',
-    to: preferences.emailTo,
-    subject: subject
-  }, function( err, message ) {
-    if ( err ) {
-      console.log( 'error sending email', err );
-    }
-    else {
-      console.log( 'send email', message );
-    }
-  } );
-}
-
 // Handle command line input
 // First 2 args provide info about executables, ignore
 var commandLineArgs = process.argv.slice( 2 );
@@ -178,6 +149,35 @@ if ( options.silent ) {
   winston.remove( winston.transports.Console );
 }
 var verbose = options.verbose;
+
+// configure email server
+var server = email.server.connect( {
+  user: preferences.emailUsername,
+  password: preferences.emailPassword,
+  host: preferences.emailServer,
+  tls: preferences.tls || true
+} );
+
+/**
+ * Send an email. Used to notify developers if a build fails
+ * @param subject
+ * @param text
+ */
+function sendEmail( subject, text ) {
+  server.send( {
+    text: text,
+    from: 'PhET Build Server <' + preferences.emailFrom + '>',
+    to: preferences.emailTo,
+    subject: subject
+  }, function( err, message ) {
+    if ( err ) {
+      winston.log( 'error', 'sending email ' + err );
+    }
+    else {
+      winston.log( 'info', 'sent email ' + message );
+    }
+  } );
+}
 
 
 /**
