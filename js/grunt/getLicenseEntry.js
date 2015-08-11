@@ -1,14 +1,8 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * This file is used when loading media files (images, audio,...) via plugins, to accomplish 2 goals:
- *
- * (a) determine that PhET Simulations are built using compatible resources.  Each media file must
- * be annotated in a license.json file in the same directory.  Media files without a compatible license will cause
- * the build to fail.
- *
- * (b) provide information from the 3rd-party media files to the build system, so that a report can be included in the
- * build HTML file
+ * Retrieves the license entry for a media file from license.json.
+ * This file is used when loading media files (images, audio,...) via plugins.
  *
  * Each media file must have an entry in a license.json file in the same directory which indicates the
  * origin of the file as well as its licensing.  The license.json file should contain one entry per media file,
