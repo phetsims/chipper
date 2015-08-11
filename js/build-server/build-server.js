@@ -3,15 +3,34 @@
 /**
  * PhET build and deploy server. The server is designed to run on the same host as the production site (simian or figaro).
  *
+ * Starting and Stopping the Server
+ * ================================
+ *
  * All of the phet repos live on simian and figaro under /data/share/phet/phet-repos. The build server lives in chipper:
  * /data/share/phet/phet-repos/chipper. To start the build server, run this command on simian or figaro (without quotes):
  *
  * "cd /data/share/phet/phet-repos/chipper && nohup /usr/local/nodejs/bin/node js/build-server/build-server.js &"
  *
  * Do not start the build server unless you have the necessary fields filled out in ~/.phet/build-local.json
- * (see assertions below). Additionally, you will need an ssh key set up to copy files from the production server to spot.
+ * (see assertions below).
+ *
+ * Additionally, you will need an ssh key set up to copy files from the production server to spot. To do this, you'll need
+ * to have an rsa key in ~/.ssh on the production server (run "ssh-keygen -t rsa" to generate a key if you don't already have one).
+ * Also, you will need to add an entry for spot in ~/.ssh/authorized_keys like so:
+ *
+ * Host spot
+ *     HostName spot.colorado.edu
+ *     User [identikey]
+ *     Port 22
+ *     IdentityFile ~/.ssh/id_rsa
+ *
+ * On spot, you'll need to add your public key from figaro to a file ~/.ssh/authorized_keys
  *
  * To stop the build server, look for its process id with "ps -elf | grep node" and kill the process.
+ *
+ *
+ * Using the Build Server for Production Deploys
+ * =============================================
  *
  * The build server starts a build process upon receiving and https request to /deploy-html-simulation. It takes as input
  * the following query parameters:
@@ -22,6 +41,12 @@
  * - authorizationCode - a password to authorize legitimate requests
  * - serverName - server to deploy to, defaults to figaro.colorado.edu, but could be overriden for testing on simian.colorado.edu
  * - dev - if true, just deploy to spot, not to the production server
+ *
+ * Note: You will NOT want to assemble these request URLs manually, instead use grunt deploy-production for deploys.
+ *
+ *
+ * What the Build Server Does
+ * ==========================
  *
  * The build server does the following steps when a deploy request is received:
  * - checks the authorization code, unauthorized codes will not trigger a build
@@ -479,7 +504,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         pullMaster( function() {
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
             exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
-              exec( 'grunt build --lint=false --locales=' + locales.toString(), simDir, function() {
+              exec( 'grunt build --brand=phet --lint=false --locales=' + locales.toString(), simDir, function() {
 
                 // if deploying a dev version just scp to spot
                 if ( isDev ) {
