@@ -35,8 +35,8 @@
 
     var lastSlashIndex = absolutePath.lastIndexOf( '/' );
     var prefix = absolutePath.substring( 0, lastSlashIndex );
-    var licenseFilename = prefix + '/license.json';
-    var mediaFilename = absolutePath.substring( lastSlashIndex + 1 );
+    var licenseFilename = prefix + '/license.json'; // license.json is a sibling of the media file
+    var mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
 
     // read license.json
     var file = null;
