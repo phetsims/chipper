@@ -134,16 +134,15 @@ module.exports = function( grunt, path ) {
       var json = JSON.parse( jsonString );
 
       var title = parseTitle( html );
-      if ( title && title.indexOf( 'undefined' ) !== 0 ) {
-        augment( title, json.lib, compositeCode );
-        augment( title, json.audio, compositeMedia );
-        augment( title, json.images, compositeMedia );
-
-        simTitles.push( title );
-      }
-      else {
+      if ( !title || title.indexOf( 'undefined' ) === 0 ) {
         grunt.log.writeln( 'title not found for ' + abspath );
+        title = filename;
       }
+      augment( title, json.lib, compositeCode );
+      augment( title, json.audio, compositeMedia );
+      augment( title, json.images, compositeMedia );
+
+      simTitles.push( title );
     }
   } );
 
