@@ -107,7 +107,11 @@ define( function( require ) {
           quality: options.quality
         } );
 
-        registerLicenseEntry( name, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
+        // remove optional args from name
+        var optionsIndex = name.indexOf( ',' );
+        var nameNoArgs = ( optionsIndex === -1 ) ? name : name.substring( 0, optionsIndex );
+
+        registerLicenseEntry( nameNoArgs, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
       }
       else {
         // if buildCompatible is provided, use the high-quality build-like mipmapping
