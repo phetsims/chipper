@@ -29,7 +29,6 @@ var deploySimulation = require( '../../../chipper/js/grunt/deploySimulation' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
-var pullAll = require( '../../../chipper/js/grunt/pullAll' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
@@ -300,12 +299,6 @@ module.exports = function( grunt ) {
     function() {
       assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
       generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
-    } );
-
-  grunt.registerTask( 'pull-all',
-    'Pull all sibling repositories',
-    function() {
-      pullAll( grunt );
     } );
 
   grunt.registerTask( 'string-report',
