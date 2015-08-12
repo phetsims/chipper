@@ -30,7 +30,6 @@ var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var pullAll = require( '../../../chipper/js/grunt/pullAll' );
-var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 var stringReport = require( '../../../chipper/js/grunt/stringReport' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
@@ -179,7 +178,6 @@ module.exports = function( grunt ) {
     '--lint=false : skip the lint sub-task',
     optionalTasks.concat( [
       'clean',
-      'set-preload',
       'before-requirejs-build',
       'requirejs:build',
       'after-requirejs-build' ] )
@@ -220,12 +218,6 @@ module.exports = function( grunt ) {
         grunt.file.delete( 'build' );
       }
       grunt.file.mkdir( 'build' );
-    } );
-
-  grunt.registerTask( 'set-preload',
-    '(internal use only) Determines the set of files that will be preloaded in the HTML file',
-    function() {
-      setPreload( grunt, pkg );
     } );
 
   grunt.registerTask( 'before-requirejs-build',

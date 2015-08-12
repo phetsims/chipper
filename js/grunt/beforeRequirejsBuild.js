@@ -17,6 +17,7 @@
 // modules
 var assert = require( 'assert' );
 var fs = require( 'fs' );
+var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 
 /**
  * @param grunt the grunt instance
@@ -25,6 +26,8 @@ var fs = require( 'fs' );
  */
 module.exports = function( grunt, pkg, fallbackLocale ) {
 
+  setPreload( grunt, pkg );
+  
   // read the preferences file
   var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
   var preferences = {};
