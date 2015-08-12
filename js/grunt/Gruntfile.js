@@ -45,6 +45,13 @@ global.fs = fs;
 module.exports = function( grunt ) {
   'use strict';
 
+  // for sharing global information
+  global.phet = global.phet || {};
+  global.phet.chipper = global.phet.chipper || {};
+
+  // for situations where we can't pass the grunt instance as a function argument
+  global.phet.chipper.grunt = grunt;
+
   var FALLBACK_LOCAL = 'en';
 
   // Read package.json, verify that it contains properties required by all PhET repositories
@@ -265,19 +272,21 @@ module.exports = function( grunt ) {
                                       'Reports any media (such as images or audio) files that have any of the following problems:\n' +
                                       '(1) incompatible-license (resource license not approved)\n' +
                                       '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
-                                      '(3) missing-file (entry in the license.json but not on the file system)', function() {
-    reportMedia( grunt );
-  } );
+                                      '(3) missing-file (entry in the license.json but not on the file system)',
+    function() {
+      reportMedia( grunt );
+    } );
 
   // see reportThirdParty.js
   grunt.registerTask( 'report-third-party', 'Given a directory of HTML files (required argument), report the ' +
                                             'third party code, images, audio, etc. used in the group ' +
                                             'and commit the changes to sherpa/third-party-licenses.json. ' +
                                             'If the "--copy-from-build" option is given, it will iterate over the active-runnables ' +
-                                            'and copy all the files to the report HTML directory (required argument)', function( path ) {
-    assert( path, 'The path is a required grunt argument (use taskname:argument)' );
-    reportThirdParty( grunt, path );
-  } );
+                                            'and copy all the files to the report HTML directory (required argument)',
+    function( path ) {
+      assert( path, 'The path is a required grunt argument (use taskname:argument)' );
+      reportThirdParty( grunt, path );
+    } );
 
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
@@ -305,11 +314,12 @@ module.exports = function( grunt ) {
       stringReport( grunt, pkg.name, FALLBACK_LOCAL );
     } );
 
-  grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.', function() {
-    var finished = _.after( 2, grunt.task.current.async() );
-    generateThumbnails( grunt, pkg.name, 128, 84, finished );
-    generateThumbnails( grunt, pkg.name, 600, 394, finished );
-  } );
+  grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.',
+    function() {
+      var finished = _.after( 2, grunt.task.current.async() );
+      generateThumbnails( grunt, pkg.name, 128, 84, finished );
+      generateThumbnails( grunt, pkg.name, 600, 394, finished );
+    } );
 
   /*
    * Load tasks from grunt plugins that have been installed locally using npm.

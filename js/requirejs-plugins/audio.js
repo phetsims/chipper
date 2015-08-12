@@ -13,17 +13,11 @@
 define( function( require ) {
   'use strict';
 
-  //Paths are relative to the requirejs config.js file
+  // modules - paths are relative to the requirejs config.js file
   var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-
-  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
-
-  // Ideally we would like to require these files from checkAndRegisterLicenseEntry.js, but for unknown reasons
-  // loading them there yields only undefined.  As an alterate solution, we can load them here and pass them through.
-  // see https://github.com/phetsims/chipper/issues/229#issuecomment-129709998
+  var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
   var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
-  var isAcceptableLicenseEntry = require( '../../chipper/js/grunt/isAcceptableLicenseEntry' );
 
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.
@@ -57,16 +51,16 @@ define( function( require ) {
 
         // Create an adapter whose API matches the requirejs onload function.
         // This is necessary because we only want to call onload(null) once per invocation of a media plugin.
-        // As a side-effect of calling checkAndRegisterLicenseEntry, this adapter will populate the errors array for any problem license entries.
+        // As a side-effect of calling registerLicenseEntry, this adapter will populate the errors array for any problem license entries.
         var errors = [];
         var onloadAdapter = function( value ) { };
         onloadAdapter.error = function( error ) {
           errors.push( error );
         };
 
-        // Check the license entries for each file.
+        // Register the license entries for each file.
         for ( var i = 0; i < urlList.length; i++ ) {
-          checkAndRegisterLicenseEntry( name, urlList[ i ].url, global.phet.chipper.brand, 'audio', onloadAdapter, getLicenseEntry, isAcceptableLicenseEntry );
+          registerLicenseEntry( name, getLicenseEntry( urlList[ i ].url ), global.phet.chipper.brand, 'audio', onloadAdapter );
         }
 
         // If any license entry was a problem, then we must fail the build. For simplicity, just report the first error.

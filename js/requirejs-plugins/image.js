@@ -11,17 +11,11 @@
 define( function( require ) {
   'use strict';
 
-  //Paths are relative to the requirejs config.js file
+  // modules - paths are relative to the requirejs config.js file
   var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-
-  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
-
-  // Ideally we would like to require these files from checkAndRegisterLicenseEntry.js, but for unknown reasons
-  // loading them there yields only undefined.  As an alterate solution, we can load them here and pass them through.
-  // see https://github.com/phetsims/chipper/issues/229#issuecomment-129709998
+  var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
   var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
-  var isAcceptableLicenseEntry = require( '../../chipper/js/grunt/isAcceptableLicenseEntry' );
 
   //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
   var buildMap = {};
@@ -33,7 +27,7 @@ define( function( require ) {
 
       if ( config.isBuild ) {
         buildMap[ name ] = path;
-        checkAndRegisterLicenseEntry( name, path, global.phet.chipper.brand, 'images', onload, getLicenseEntry, isAcceptableLicenseEntry );
+        registerLicenseEntry( name, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
       }
       else {
         var image = document.createElement( 'img' );

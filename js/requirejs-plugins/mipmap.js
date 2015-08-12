@@ -63,17 +63,11 @@
 define( function( require ) {
   'use strict';
 
-  //Paths are relative to the requirejs config.js file
+  // modules - paths are relative to the requirejs config.js file
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
-
-  var checkAndRegisterLicenseEntry = require( '../../chipper/js/grunt/checkAndRegisterLicenseEntry' );
-
-  // Ideally we would like to require these files from checkAndRegisterLicenseEntry.js, but for unknown reasons
-  // loading them there yields only undefined.  As an alterate solution, we can load them here and pass them through.
-  // see https://github.com/phetsims/chipper/issues/229#issuecomment-129709998
+  var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
   var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
-  var isAcceptableLicenseEntry = require( '../../chipper/js/grunt/isAcceptableLicenseEntry' );
 
   return {
     // called both in-browser and during build
@@ -113,7 +107,11 @@ define( function( require ) {
           quality: options.quality
         } );
 
-        checkAndRegisterLicenseEntry( name, path, global.phet.chipper.brand, 'images', onload, getLicenseEntry, isAcceptableLicenseEntry );
+        // remove optional args from name
+        var optionsIndex = name.indexOf( ',' );
+        var nameNoArgs = ( optionsIndex === -1 ) ? name : name.substring( 0, optionsIndex );
+
+        registerLicenseEntry( nameNoArgs, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
       }
       else {
         // if buildCompatible is provided, use the high-quality build-like mipmapping
