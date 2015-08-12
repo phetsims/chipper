@@ -225,10 +225,8 @@ module.exports = function( grunt ) {
       grunt.file.mkdir( 'build' );
     } );
 
-  grunt.registerTask( 'before-requirejs-build',
-    '(internal use only) Do things before the requirejs:build task',
+  grunt.registerTask( 'before-requirejs-build', '(internal use only) Do things before the requirejs:build task',
     function() {
-      assert( pkg.preload, 'preload missing from package.json' );
       beforeRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
     } );
 

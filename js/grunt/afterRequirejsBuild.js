@@ -43,7 +43,9 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   assert( pkg.requirejsNamespace, 'requirejsNamespace missing from package.json' );
   assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
   assert( pkg.phetLibs, 'phetLibs missing from package.json' );
-  assert( pkg.preload, 'preload missing from package.json' );
+
+  // required fields in pkg (package.json augmented in setPreload)
+  assert( pkg.preload, 'preload missing from pkg' );
 
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );

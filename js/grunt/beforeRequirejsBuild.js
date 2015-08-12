@@ -27,6 +27,9 @@ var setPreload = require( '../../../chipper/js/grunt/setPreload' );
 module.exports = function( grunt, pkg, fallbackLocale ) {
 
   setPreload( grunt, pkg );
+
+  // after preload, the preload should be defined
+  assert( pkg.preload, 'preload missing from package.json' );
   
   // read the preferences file
   var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
