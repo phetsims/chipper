@@ -211,6 +211,11 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     var titleKey = pkg.simTitleStringKey;
     var stringMap = loadStringMap();
 
+    // Make sure the simulation has a title
+    if ( !stringMap.en[ titleKey ] ) {
+      grunt.fail.warn( 'There was no title.' );
+    }
+
     // Get the title to display as the sim name and version.  The HTML header is not internationalized, so word order
     // can just be hard coded as English here, see #156
     var englishSimTitle = stringMap.en[ titleKey ] + ' ' + pkg.version;
