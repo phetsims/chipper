@@ -3,10 +3,10 @@
 /**
  * Creates a composite report of all of the 3rd party images, code, audio and other media used by all of the PhET
  * Simulations which appear in a directory (required argument) and updates the online version by automatically adding and
- * pushing the changes to GitHub.  The output can be seen at:
+ * pushing the changes to GitHub.  One of the reports is published at:
  * https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
  *
- * Third party entries are parsed from HTML.  See getLicenseEntry.js
+ * Third party entries are parsed from HTML, see getLicenseEntry.js
  *
  * See https://github.com/phetsims/chipper/issues/162
  *
@@ -18,8 +18,6 @@
 'use strict';
 
 // modules
-var child_process = require( 'child_process' );
-var assert = require( 'assert' );
 var fs = require( 'fs' );
 
 // Load shared constants
@@ -27,16 +25,21 @@ var ThirdPartyConstants = require( '../../../chipper/js/grunt/ThirdPartyConstant
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
-var OUTPUT_FILE = 'third-party-licenses.md';  // The name of the output file
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
-var COMMIT_CHANGES = false;
 
 /**
  * @param grunt
- * @param {string} path - the path to the directory in which to find the HTML files for reporting, can be relative to
- *                      - grunt or absolute
+ * @param {string} input - the path to the directory in which to find the HTML files for reporting, can be relative to grunt or absolute
+ * @param {string} output - the path to a file where the report should be written
+ * @param {boolean} activeRunnables - If this flag is supplied, the task iterates over the active-runnables and copies
+ *                                  - each built HTML file into the directory specified with --input before running the
+ *                                  - report.  If any HTML files are missing, the report will fail.  Before using this
+ *                                  - flag, the developer should run `grunt-all.sh` to make sure all of the HTML files
+ *                                  - are up-to-date.  The directory is neither automatically created nor automatically
+ *                                  - cleaned, this is the responsibility of the developer. (Note that if you fail to
+ *                                  - manually clean the directory, you may end up with stale HTML files).
  */
-module.exports = function( grunt, path ) {
+module.exports = function( grunt, input, output, activeRunnables ) {
 
   var i;
 
@@ -44,9 +47,8 @@ module.exports = function( grunt, path ) {
   var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
   /* jshint +W079 */
 
-  // If the option is provided, try to copy all of the active-runnables to the target directory 
-  // before running the report
-  if ( grunt.option( 'copy-from-build' ) ) {
+  // If the option is provided, try to copy all of the active-runnables to the target directory before running the report
+  if ( activeRunnables ) {
 
     var directory = process.cwd();
 
@@ -56,16 +58,15 @@ module.exports = function( grunt, path ) {
     var ACTIVE_RUNNABLES_FILENAME = 'chipper/data/active-runnables';  // The relative path to the list of active runnables
 
     // Make sure we received a report from every active-runnable.  Otherwise, perhaps something isn't building properly
-    var activeRunnables = grunt.file.read( rootdir + '/' + ACTIVE_RUNNABLES_FILENAME ).trim();
-    var activeRunnablesByLine = activeRunnables.split( /\r?\n/ );
+    var activeRunnablesString = grunt.file.read( rootdir + '/' + ACTIVE_RUNNABLES_FILENAME ).trim();
+    var activeRunnablesByLine = activeRunnablesString.split( /\r?\n/ );
     for ( i = 0; i < activeRunnablesByLine.length; i++ ) {
       var element = activeRunnablesByLine[ i ];
       var src = rootdir + element + '/build/' + element + '_en.html';
-      var dst = path + '/' + element + '_en.html';
+      var dst = input + '/' + element + '_en.html';
       if ( !grunt.file.exists( src ) ) {
         grunt.log.error( 'File not found: ' + src );
       }
-      //console.log( 'src,dst', src, dst );
       grunt.file.copy( src, dst );
     }
   }
@@ -114,7 +115,7 @@ module.exports = function( grunt, path ) {
     return string.indexOf( substring ) === string.length - substring.length;
   };
 
-  grunt.file.recurse( path, function( abspath, rootdir, subdir, filename ) {
+  grunt.file.recurse( input, function( abspath, rootdir, subdir, filename ) {
     if ( endsWith( filename.toLowerCase(), '.html' ) &&
 
          // shortcut to avoid looking at the -iframe.html files when testing on a build directory.
@@ -263,10 +264,9 @@ module.exports = function( grunt, path ) {
   }
 
   // Summarize licenses used
-  // TODO: Add the versions
   var fileList = simTitles.join( '\n* ' );
 
-  var output =
+  var outputString =
     'This report enumerates the third-party resources (code, images, audio, etc) used in a set of simulations.\n' +
     '* [Third-party Code](#third-party-code)\n' +
     '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
@@ -295,34 +295,11 @@ module.exports = function( grunt, path ) {
     mediaLicensesUsed.join( '<br>' ) + '\n\n';
 
   // Compare the file output to the existing file, and write & git commit only if different
-  if ( grunt.file.read( SHERPA + '/' + OUTPUT_FILE ) !== output ) {
-    grunt.log.writeln( 'File output changed, writing file ' + OUTPUT_FILE );
-    grunt.file.write( SHERPA + '/' + OUTPUT_FILE, output );
-
-    var done = grunt.task.current.async();
-
-    // exec a command in the sherpa directory
-    var exec = function( command, callback ) {
-      child_process.exec( command, { cwd: SHERPA }, function( err, stdout, stderr ) {
-        grunt.log.writeln( stdout );
-        grunt.log.writeln( stderr );
-        assert( !err, 'assertion error running ' + command );
-        callback();
-      } );
-    };
-
-    // Add and commit the changes to the output file
-    if ( COMMIT_CHANGES ) {
-      exec( 'git add ' + OUTPUT_FILE, function() {
-        exec( 'git commit --message "updated ' + OUTPUT_FILE + '"', function() {
-          exec( 'git push', function() {
-            done();
-          } );
-        } );
-      } );
-    }
+  if ( !grunt.file.exists( output ) || grunt.file.read( output ) !== outputString ) {
+    grunt.log.writeln( 'File output changed, writing file ' + output );
+    grunt.file.write( output, outputString );
   }
   else {
-    grunt.log.writeln( OUTPUT_FILE + ' contents are the same.  No need to save/commit.' );
+    grunt.log.writeln( output + ' contents are the same.  No need to save.' );
   }
 };

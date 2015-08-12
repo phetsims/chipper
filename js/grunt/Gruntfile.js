@@ -274,14 +274,35 @@ module.exports = function( grunt ) {
     } );
 
   // see reportThirdParty.js
-  grunt.registerTask( 'report-third-party', 'Given a directory of HTML files (required argument), report the ' +
-                                            'third party code, images, audio, etc. used in the group ' +
-                                            'and commit the changes to sherpa/third-party-licenses.json. ' +
-                                            'If the "--copy-from-build" option is given, it will iterate over the active-runnables ' +
-                                            'and copy all the files to the report HTML directory (required argument)',
-    function( path ) {
-      assert( path, 'The path is a required grunt argument (use taskname:argument)' );
-      reportThirdParty( grunt, path );
+  grunt.registerTask( 'report-third-party', 'This task is used to create a report of third-party resources (code, ' +
+                                            'images, audio, etc) used in a set of PhET simulations by reading the ' +
+                                            'license information in built HTML files.\n' +
+                                            '--input (required argument) the path to the directory containing HTML ' +
+                                            'files which will be reported on.\n' +
+                                            '--output (required argument) the path to a file where the report should be ' +
+                                            'written. The file is in markdown syntax and the *.md suffix is ' +
+                                            'recommended. This will silently overwrite an existing file, if there is ' +
+                                            'one.\n' +
+                                            '--active-runnables (optional flag, boolean) If this flag is ' +
+                                            'supplied, the task iterates over the active-runnables and copies each ' +
+                                            'built HTML file into the directory specified with --input before ' +
+                                            'running the report. If any HTML files are missing, the report will fail. ' +
+                                            'Before using this flag, the developer should run `grunt-all.sh` to make ' +
+                                            'sure all of the HTML files are up-to-date. The directory is neither ' +
+                                            'automatically created nor automatically cleaned, this is the ' +
+                                            'responsibility of the developer. (Note that if you fail to manually ' +
+                                            'clean the directory, you may end up with stale HTML files).',
+    function() {
+
+      // The input and output arguments are required but we chose not to use the grunt required argument syntax (a colon)
+      // since it would cause problems for Windows developers who have colons in the pathnames.
+      var input = grunt.option( 'input' );
+      var output = grunt.option( 'output' );
+      assert( input, 'The input path must be specified' );
+      assert( output, 'The output path must be specified' );
+
+      var activeRunnables = !!grunt.option( 'active-runnables' );
+      reportThirdParty( grunt, input, output, activeRunnables );
     } );
 
   grunt.registerTask( 'published-README',
