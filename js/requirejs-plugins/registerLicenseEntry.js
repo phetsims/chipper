@@ -19,21 +19,23 @@ define( function() {
    */
   function isCompatibleLicenseEntry( entry, brand ) {
     if ( brand === 'phet' || brand === 'phet-io' ) {
+
       // PhET-specific brands have these licensing policies
       return entry.projectURL === 'http://phet.colorado.edu' ||
              entry.license === 'Public Domain' ||
              entry.license === 'NASA';
     }
     else {
+
       // non-PhET brands have no licensing policies, so all entries are compatible
       return true;
     }
   }
 
   /**
-   * Determines whether a license entry is "acceptable".  A license entry is acceptable
-   * if the entry is compatible with the licensing polices for the specified brand,
-   * or if the entry has an "exception" field explaining why the licensing policies can be ignored.
+   * Determines whether a license entry is "acceptable".  A license entry is acceptable if the entry is compatible with
+   * the licensing polices for the specified brand, or if the entry has an "exception" field explaining why the
+   * licensing policies can be ignored.
    *
    * @param {string} name - name of the resource whose license entry is being checked
    * @param {object} entry - see getLicenseEntry.js
@@ -44,8 +46,9 @@ define( function() {
     var acceptable = isCompatibleLicenseEntry( entry, brand ) || !!entry.exception;
     if ( acceptable && !!entry.exception ) {
       var warningMessage = 'license exception for ' + name + ': ' + entry.exception;
+
+      // use grunt.log if it's available
       if ( global.phet.chipper.grunt ) {
-        // use grunt.log if it's available
         global.phet.chipper.grunt.log.warn( warningMessage );
       }
       else {
