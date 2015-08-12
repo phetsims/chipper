@@ -13,8 +13,8 @@ define( function() {
 
   /**
    * Determines whether a license entry is compatible with a brand's licensing policies.
-   * @param {*} entry see getLicenseEntry.js
-   * @param {string} brand
+   * @param {object} entry - see getLicenseEntry.js
+   * @param {string} brand - the string for the selected brand, such as 'phet'
    * @returns {boolean}
    */
   function isCompatibleLicenseEntry( entry, brand ) {
@@ -35,9 +35,9 @@ define( function() {
    * if the entry is compatible with the licensing polices for the specified brand,
    * or if the entry has an "exception" field explaining why the licensing policies can be ignored.
    *
-   * @param {string} name name of the resource whose license entry is being checked
-   * @param {*} entry see getLicenseEntry.js
-   * @param {string} brand
+   * @param {string} name - name of the resource whose license entry is being checked
+   * @param {object} entry - see getLicenseEntry.js
+   * @param {string} brand - the string for the selected brand, such as 'phet'
    * @returns {boolean}
    */
   function isAcceptableLicenseEntry( name, entry, brand ) {
@@ -60,8 +60,8 @@ define( function() {
    * Intended to be called by media plugins.
    *
    * @param {string} name - the symbolic media filename as supplied to the plugin, e.g. JOHN_TRAVOLTAGE/arm.png
-   * @param {*} licenseEntry - license entry for the media file, documented in getLicenseEntry.js
-   * @param {string} brand
+   * @param {object} licenseEntry - license entry for the media file, documented in getLicenseEntry.js
+   * @param {string} brand - the string for the selected brand, such as 'phet'
    * @param {string} mediaType - the type of media and name of the media subdirectory ('audio'|'image'|'mipmap'|...)
    * @param {function} onload - a function that conforms to the requirejs onload API
    */
