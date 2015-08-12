@@ -12,29 +12,28 @@ define( function() {
   'use strict';
 
   /**
-   * Determines whether a brand is subject to PhET licensing policies.
+   * Determines whether a license entry is compatible with a brand's licensing policies.
+   * @param {*} entry see getLicenseEntry.js
    * @param {string} brand
    * @returns {boolean}
    */
-  function isApplicableBrand( brand ) {
-    return brand === 'phet' || brand === 'phet-io';
+  function isCompatibleLicenseEntry( entry, brand ) {
+    if ( brand === 'phet' || brand === 'phet-io' ) {
+      // PhET-specific brands have these licensing policies
+      return entry.projectURL === 'http://phet.colorado.edu' ||
+             entry.license === 'Public Domain' ||
+             entry.license === 'NASA';
+    }
+    else {
+      // non-PhET brands have no licensing policies, so all entries are compatible
+      return true;
+    }
   }
 
   /**
-   * Determines whether a license entry is compatible with PhET licensing policies.
-   * @param {*} entry see getLicenseEntry.js
-   * @returns {boolean}
-   */
-  function isCompatibleLicenseEntry( entry ) {
-    return entry.projectURL === 'http://phet.colorado.edu' ||
-           entry.license === 'Public Domain' ||
-           entry.license === 'NASA';
-  }
-
-  /**
-   * Determines whether a license entry is "acceptable". For PhET brands, a license entry is acceptable
-   * if it is compatible with PhET licensing policies, or if it has an "exception" field explaining why
-   * PhET licensing policies can be ignored. For non-PhET brands, all license entries are acceptable.
+   * Determines whether a license entry is "acceptable".  A license entry is acceptable
+   * if the entry is compatible with the licensing polices for the specified brand,
+   * or if the entry has an "exception" field explaining why the licensing policies can be ignored.
    *
    * @param {string} name name of the resource whose license entry is being checked
    * @param {*} entry see getLicenseEntry.js
@@ -42,7 +41,7 @@ define( function() {
    * @returns {boolean}
    */
   function isAcceptableLicenseEntry( name, entry, brand ) {
-    var acceptable = !isApplicableBrand( brand ) || isCompatibleLicenseEntry( entry ) || !!entry.exception;
+    var acceptable = isCompatibleLicenseEntry( entry, brand ) || !!entry.exception;
     if ( acceptable && !!entry.exception ) {
       var warningMessage = 'license exception for ' + name + ': ' + entry.exception;
       if ( global.phet.chipper.grunt ) {
