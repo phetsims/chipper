@@ -51,7 +51,7 @@ function createStatusElement( simName ) {
   var simStatusElement = document.createElement( 'div' );
   simStatusElement.classList.add( 'status' );
   simListDiv.appendChild( simStatusElement );
-  simStatusElements[simName] = simStatusElement
+  simStatusElements[ simName ] = simStatusElement;
 
   var devStatus = document.createElement( 'span' );
   devStatus.classList.add( 'dev' );
