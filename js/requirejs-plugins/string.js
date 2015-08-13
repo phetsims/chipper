@@ -41,7 +41,7 @@ define( function( require ) {
                    null;
 
   /**
-   * When running in the browser, check to see if we have already loaded the specified file
+   * When running in requirejs mode, check to see if we have already loaded the specified file
    * Also parses it so that only happens once per file (instead of once per string key)
    * @param {string} url path for the string
    * @param {function} callback callback when the check succeeds
