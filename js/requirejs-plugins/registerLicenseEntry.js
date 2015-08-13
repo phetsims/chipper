@@ -20,6 +20,11 @@ define( function() {
   function isCompatibleLicenseEntry( entry, brand ) {
     if ( brand === 'phet' || brand === 'phet-io' ) {
 
+      // Un-annotated entries are not acceptable 
+      if ( !entry ) {
+        return false;
+      }
+
       // PhET-specific brands have these licensing policies
       return entry.projectURL === 'http://phet.colorado.edu' ||
              entry.license === 'Public Domain' ||
@@ -43,7 +48,7 @@ define( function() {
    * @returns {boolean}
    */
   function isAcceptableLicenseEntry( name, entry, brand ) {
-    var acceptable = isCompatibleLicenseEntry( entry, brand ) || !!entry.exception;
+    var acceptable = isCompatibleLicenseEntry( entry, brand ) || (entry && !!entry.exception);
     if ( acceptable && !!entry.exception ) {
       var warningMessage = 'license exception for ' + name + ': ' + entry.exception;
 
