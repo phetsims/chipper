@@ -13,7 +13,7 @@
    * Handles alpha blending of 4 pixels into 1, and does so with the proper gamma corrections so that we only add/blend
    * colors in the linear sRGB colorspace.
    *
-   * @param {object} mipmap - Mipmap object with { data: {Buffer}, width: {number}, height: {number} }
+   * @param {Object} mipmap - Mipmap object with { data: {Buffer}, width: {number}, height: {number} }
    * @param {function} createData - function( width, height ), creates an array-accessible data container, Buffer
    *                                for Node.js, or presumably a typed array otherwise, with 4*width*height components
    *

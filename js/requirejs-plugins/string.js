@@ -84,7 +84,7 @@ define( function( require ) {
      * @param {function} onload - A function to call with the value for name. This tells the loader that the plugin is
      *        done loading the resource. onload.error() can be called, passing an error object to it, if the plugin
      *        detects an error condition that means the resource will fail to load correctly.
-     * @param {object} config - A configuration object. This is a way for the optimizer and the web app to pass
+     * @param {Object} config - A configuration object. This is a way for the optimizer and the web app to pass
      *        configuration information to the plugin. The i18n! plugin uses this to get the current current locale, if
      *        the web app wants to force a specific locale. The optimizer will set an isBuild property in the config to
      *        true if this plugin (or pluginBuilder) is being called as part of an optimizer build.

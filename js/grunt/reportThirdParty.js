@@ -96,8 +96,8 @@ module.exports = function( grunt, input, output, activeRunnables ) {
   /**
    * Add the source (images/audio/media or code) entries to the destination object, keyed by name.
    * @param {string} repositoryName - the name of the repository, such as 'energy-skate-park-basics'
-   * @param {object} source - the object from which to read the entry
-   * @param {object} destination - the object to which to append the entry
+   * @param {Object} source - the object from which to read the entry
+   * @param {Object} destination - the object to which to append the entry
    */
   var augment = function( repositoryName, source, destination ) {
     for ( var entry in source ) {
