@@ -32,7 +32,7 @@ var assert = require( 'assert' );
 module.exports = function( grunt ) {
 
   // modules
-  var getLicenseEntry = require( '../../../chipper/js/grunt/getLicenseEntry' );
+  var getLicenseEntry = require( '../../../chipper/js/common/getLicenseEntry' );
 
   // constants
   var ACTIVE_REPOS_FILENAME = 'chipper/data/active-repos';  // The relative path to the list of active repos

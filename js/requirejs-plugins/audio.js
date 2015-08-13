@@ -17,7 +17,7 @@ define( function( require ) {
   var loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
-  var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
+  var getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
 
   // Keep track of the audio URL lists that are used during dependency
   // resolution so they can be converted to base64 at build time.

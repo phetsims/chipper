@@ -67,7 +67,7 @@ define( function( require ) {
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var mipmapDownscale = require( '../../chipper/js/common/mipmapDownscale' );
   var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
-  var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
+  var getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
 
   return {
     // called both in-browser and during build
