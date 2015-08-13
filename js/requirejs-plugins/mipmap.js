@@ -120,7 +120,6 @@ define( function( require ) {
         // load our base resolution image
         var image = document.createElement( 'img' );
         image.onerror = function( error ) {
-          console.log( 'failed to load image: ' + path );
           onload.error( error );
         };
         image.onload = function() {
