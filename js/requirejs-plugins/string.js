@@ -56,7 +56,6 @@ define( function( require ) {
     }
     else {
       // Cache miss: load the file parse, enter into cache and return it
-
       text.get( url, function( loadedText ) {
         cache[ url ] = parse( loadedText );
         callback( cache[ url ] );
