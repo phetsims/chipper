@@ -146,7 +146,7 @@ define( function( require ) {
                     onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
                   }
                   else {
-                    console.log( 'string not found for key: ' + key );
+                    console.log( 'no entry for string key: ' + key );
                     onload( fallback );
                   }
                 },
@@ -155,10 +155,10 @@ define( function( require ) {
 
                   if ( !parsedFallbackStrings[ key ] ) {
                     // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
-                    console.log( 'no fallback for key:' + key );
+                    console.log( 'no fallback for string key:' + key );
                   }
                   // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
-                  console.log( "No string file provided for " + localeSpecificPath );
+                  console.log( "no string file for " + localeSpecificPath );
                   onload( fallback );
                 },
                 { accept: 'application/json' }
@@ -176,7 +176,7 @@ define( function( require ) {
         requirePrefix = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
         requirePath = parentRequire.toUrl( requirePrefix ); // e.g. '/Users/something/phet/git/some-sim/js'
         if ( requirePath.substring( requirePath.lastIndexOf( '/' ) ) !== '/js' ) {
-          throw new Error( 'Assumes REPO/js location' );
+          throw new Error( 'requirejs namespace REPO must resolve to repo/js' );
         }
         repositoryPath = requirePath.substring( 0, requirePath.lastIndexOf( '/' ) ); // e.g. '/Users/something/phet/git/some-sim'
         repositoryName = repositoryPath.substring( repositoryPath.lastIndexOf( '/' ) + 1 ); // e.g. 'some-sim'
