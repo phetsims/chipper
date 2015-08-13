@@ -54,7 +54,7 @@ module.exports = function( grunt, requirejsNamespace ) {
   if ( grunt.file.exists( directory + '/audio' ) ) {
     grunt.file.recurse( directory + '/audio', function( abspath, rootdir, subdir, filename ) {
 
-      // check if the file on the HDD was loaded during requirejs
+      // check if the file was loaded during requirejs
       var key = requirejsNamespace + '/' + filename;
 
       // if it is an audio file, strip off the suffix .mp3 or .ogg because audio is loaded without a suffix
