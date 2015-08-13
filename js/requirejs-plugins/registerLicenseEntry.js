@@ -20,15 +20,11 @@ define( function() {
   function isCompatibleLicenseEntry( entry, brand ) {
     if ( brand === 'phet' || brand === 'phet-io' ) {
 
-      // Un-annotated entries are not acceptable 
-      if ( !entry ) {
-        return false;
-      }
-
       // PhET-specific brands have these licensing policies
-      return entry.projectURL === 'http://phet.colorado.edu' ||
-             entry.license === 'Public Domain' ||
-             entry.license === 'NASA';
+      // Un-annotated entries are not acceptable
+      return entry && ( entry.projectURL === 'http://phet.colorado.edu' ||
+                        entry.license === 'Public Domain' ||
+                        entry.license === 'NASA' );
     }
     else {
 
