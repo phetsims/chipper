@@ -57,6 +57,7 @@ module.exports = function( grunt, requirejsNamespace ) {
       // check if the file was loaded during requirejs
       var key = requirejsNamespace + '/' + filename;
 
+      // TODO vibe#17 eliminate vibe-specific code in audio.js
       // if it is an audio file, strip off the suffix .mp3 or .ogg because audio is loaded without a suffix
       // The only exception is VIBE/empty.mp3 which doesn't require an ogg version (WHY?)
       if ( key !== 'VIBE/empty.mp3' ) {
