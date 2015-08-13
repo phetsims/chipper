@@ -18,13 +18,9 @@
 define( function( require ) {
   'use strict';
 
-  // 3rd party dependencies, path relative to config.js
-  var _ = require( '../../sherpa/lib/lodash-2.4.1.min' );
-
-  // for running in browsers
-  var localeInfo = require( '../../chipper/js/data/localeInfo' );
-
   // modules
+  var _ = require( '../../sherpa/lib/lodash-2.4.1.min' ); // 3rd party dependencies, path relative to config.js
+  var localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
   var text = require( 'text' );
 
   // constants
