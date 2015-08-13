@@ -16,10 +16,10 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 /* jshint +W079 */
 
 // Mipmap setup
-var createMipmap = require( '../../../chipper/js/requirejs-plugins/createMipmap' );
+var createMipmap = require( '../../../chipper/js/grunt/createMipmap' );
 
 // Loading files as data URIs
-var loadFileAsDataURI = require( '../../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
+var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
 
 var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );

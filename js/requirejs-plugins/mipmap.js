@@ -65,7 +65,7 @@ define( function( require ) {
 
   // modules - paths are relative to the requirejs config.js file
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var mipmapDownscale = require( '../../chipper/js/requirejs-plugins/mipmapDownscale' );
+  var mipmapDownscale = require( '../../chipper/js/common/mipmapDownscale' );
   var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
   var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );
 

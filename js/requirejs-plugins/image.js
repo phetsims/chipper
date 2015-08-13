@@ -12,7 +12,7 @@ define( function( require ) {
   'use strict';
 
   // modules - paths are relative to the requirejs config.js file
-  var loadFileAsDataURI = require( '../../chipper/js/requirejs-plugins/loadFileAsDataURI' );
+  var loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
   var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
   var getLicenseEntry = require( '../../chipper/js/grunt/getLicenseEntry' );

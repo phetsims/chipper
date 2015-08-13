@@ -3,7 +3,7 @@
 var fs = require( 'fs' );
 var jpeg = require( 'jpeg-js' );
 var pngjs = require( 'pngjs' );
-var mipmapDownscale = require( './mipmapDownscale' );
+var mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
 
 /**
  * Responsible for converting a single PNG/JPEG file to a structured list of mipmapped versions of it, each
