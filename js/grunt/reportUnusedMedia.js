@@ -21,9 +21,9 @@ var assert = require( 'assert' );
 
 /**
  * @param grunt the grunt instance
- * @param {string} simNameUppercase - the upper-case string prefix such as BALANCING_ACT
+ * @param {string} requirejsNamespace - requirejs namespace that appears in config.js, eg, BALANCING_ACT
  */
-module.exports = function( grunt, simNameUppercase ) {
+module.exports = function( grunt, requirejsNamespace ) {
 
   // globals that should be defined by this point
   assert( global.phet.chipper.licenseEntries, 'missing global.phet.chipper.licenseEntries' );
@@ -39,7 +39,7 @@ module.exports = function( grunt, simNameUppercase ) {
     grunt.file.recurse( directory + '/images', function( abspath, rootdir, subdir, filename ) {
 
       // check if the file on the HDD was loaded during requirejs
-      var key = simNameUppercase + '/' + filename;
+      var key = requirejsNamespace + '/' + filename;
 
       if ( filename !== 'license.json' &&
            filename !== 'README.txt' &&
@@ -55,7 +55,7 @@ module.exports = function( grunt, simNameUppercase ) {
     grunt.file.recurse( directory + '/audio', function( abspath, rootdir, subdir, filename ) {
 
       // check if the file on the HDD was loaded during requirejs
-      var key = simNameUppercase + '/' + filename;
+      var key = requirejsNamespace + '/' + filename;
 
       // if it is an audio file, strip off the suffix .mp3 or .ogg because audio is loaded without a suffix
       // The only exception is VIBE/empty.mp3 which doesn't require an ogg version (WHY?)
