@@ -38,7 +38,7 @@ module.exports = function( grunt, requirejsNamespace ) {
   if ( grunt.file.exists( directory + '/images' ) ) {
     grunt.file.recurse( directory + '/images', function( abspath, rootdir, subdir, filename ) {
 
-      // check if the file on the HDD was loaded during requirejs
+      // check if the file was loaded during requirejs
       var key = requirejsNamespace + '/' + filename;
 
       if ( filename !== 'license.json' &&
