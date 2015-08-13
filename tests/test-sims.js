@@ -1,4 +1,3 @@
-
 var durationOverride = phet.chipper.getQueryParameter( 'duration' );
 var fuzzOverride = phet.chipper.getQueryParameter( 'fuzz' );
 var loadOnly = !!phet.chipper.getQueryParameter( 'loadOnly' );
@@ -84,7 +83,7 @@ function nextBuild() {
 
       if ( data.sim === simName && data.success ) {
         console.log( simName + ' built successfully' );
-        simStatusElements[simName].classList.add( 'complete-grunt' );
+        simStatusElements[ simName ].classList.add( 'complete-grunt' );
         testQueue.push( {
           simName: simName,
           isBuild: true
@@ -95,7 +94,7 @@ function nextBuild() {
       }
       else {
         console.log( 'error building ' + simName );
-        simStatusElements[simName].classList.add( 'error-grunt' );
+        simStatusElements[ simName ].classList.add( 'error-grunt' );
 
         eventLog.style.display = 'block';
         gruntErrors.style.display = 'block';
@@ -114,14 +113,14 @@ function nextBuild() {
 // loads a sim into the iframe
 function loadSim( simName, isBuild ) {
   iframe.src = '../../' + simName + '/' + ( isBuild ? 'build/' : '' ) + simName + '_en.html?' + simQueryParameters.join( '&' );
-  simStatusElements[simName].classList.add( 'loading-' + ( isBuild ? 'build' : 'dev' ) );
+  simStatusElements[ simName ].classList.add( 'loading-' + ( isBuild ? 'build' : 'dev' ) );
 }
 // switches to the next sim (if there are any)
 function nextSim() {
   clearTimeout( timeoutId );
 
   if ( currentTest ) {
-    simStatusElements[currentTest.simName].classList.add( 'complete-' + ( currentTest.isBuild ? 'build' : 'dev' ) );
+    simStatusElements[ currentTest.simName ].classList.add( 'complete-' + ( currentTest.isBuild ? 'build' : 'dev' ) );
   }
 
   if ( testQueue.length ) {
@@ -142,7 +141,7 @@ function onSimLoad( simName ) {
   var isBuild = simName === currentTest.simName && currentTest.isBuild;
 
   // not loading anymore
-  simStatusElements[simName].classList.remove( 'loading-' + ( isBuild ? 'build' : 'dev' ) );
+  simStatusElements[ simName ].classList.remove( 'loading-' + ( isBuild ? 'build' : 'dev' ) );
 
   // window.open stub on child. otherwise we get tons of "Report Problem..." popups that stall
   iframe.contentWindow.open = function() {
@@ -176,7 +175,7 @@ function onSimError( simName, data ) {
     errorLog.innerHTML += '<pre>' + data.stack + '</pre>';
   }
 
-  simStatusElements[simName].classList.add( 'error-' + ( isBuild ? 'build' : 'dev' ) );
+  simStatusElements[ simName ].classList.add( 'error-' + ( isBuild ? 'build' : 'dev' ) );
 
   // since we can have multiple errors for a single sim (due to being asynchronous),
   // we need to not move forward more than one sim
@@ -206,7 +205,7 @@ window.addEventListener( 'message', function( evt ) {
 } );
 
 // load the list of sims before kicing things off
-( function() {
+(function() {
   var req = new XMLHttpRequest();
   req.onload = function() {
     var simListText = req.responseText;
@@ -234,4 +233,4 @@ window.addEventListener( 'message', function( evt ) {
   // location of active sims
   req.open( 'GET', '../../chipper/data/active-runnables', true );
   req.send();
-} )();
+})();
