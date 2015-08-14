@@ -394,7 +394,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   var spotScp = function( callback ) {
-    exec( 'scp -r ' + buildDir + ' ' + preferences.devUsername + '@' + devServer + ':' + DEV_DIRECTORY + simName + '/' + version, '.', callback );
+    exec( 'scp -r build ' + preferences.devUsername + '@' + devServer + ':' + DEV_DIRECTORY + simName + '/' + version, simDir, callback );
   };
 
   /**
