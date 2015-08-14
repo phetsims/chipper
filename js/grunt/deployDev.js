@@ -38,7 +38,6 @@ module.exports = function( grunt, mkdir, test ) {
 
   // verify that preferences contains required entries
   assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
-  assert( preferences.devPassword, 'devPassword is missing from ' + PREFERENCES_FILE );
 
   // check prerequisite files
   assert( grunt.file.exists( PACKAGE_JSON ), 'Cannot find ' + PACKAGE_JSON );
@@ -74,10 +73,10 @@ module.exports = function( grunt, mkdir, test ) {
    */
   var exec = function( command, callback ) {
     grunt.log.writeln( 'Running command: ' + command );
-    child_process.exec( command, { timeout: 10000 }, function( err, stdout, stderr ) {
-      if ( stdout ) { grunt.log.writeln( stdout ); }
-      if ( stderr ) { grunt.log.writeln( stderr ); }
-      assert( !err, 'assertion error running ' + command );
+    child_process.exec( command , function( err, stdout, stderr ) {
+      grunt.log.writeln( stdout );
+      grunt.log.writeln( stderr );
+      assert( !err, 'assertion error running ' + command + '. ' + err );
       callback();
     } );
   };
