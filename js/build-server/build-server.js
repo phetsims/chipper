@@ -95,6 +95,7 @@ var AUTHORIZATION_KEY = 'authorizationCode';
 var SERVER_NAME = 'serverName';
 var DEV_KEY = 'dev';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
+var DEV_SERVER = 'spot.colorado.edu';
 var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
 var DEFAULT_SERVER_NAME = 'figaro.colorado.edu';
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
@@ -109,7 +110,6 @@ assert( preferences.emailServer, 'emailServer is missing from ' + PREFERENCES_FI
 assert( preferences.emailFrom, 'emailFrom is missing from ' + PREFERENCES_FILE );
 assert( preferences.emailTo, 'emailTo is missing from ' + PREFERENCES_FILE );
 assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
-assert( preferences.devDeployServer, 'devDeployServer is missing from ' + PREFERENCES_FILE );
 assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
 
 // Handle command line input
@@ -236,6 +236,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   if ( req.query[ SERVER_NAME ] ) {
     server = req.query[ SERVER_NAME ];
   }
+
+  var devServer = preferences.devDeployServer || DEV_SERVER;
 
   winston.log( 'info', 'building sim ' + simName );
 
@@ -392,7 +394,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   var spotScp = function( callback ) {
-    exec( 'scp -r ' + buildDir + ' ' + preferences.devUsername + '@' + server + ':' + DEV_DIRECTORY + simName + '/' + version, '.', callback );
+    exec( 'scp -r ' + buildDir + ' ' + preferences.devUsername + '@' + devServer + ':' + DEV_DIRECTORY + simName + '/' + version, '.', callback );
   };
 
   /**
