@@ -62,14 +62,14 @@ module.exports = function( grunt, requirejsNamespace ) {
       // The only exception is VIBE/empty.mp3 which doesn't require an ogg version (WHY?)
       if ( key !== 'VIBE/empty.mp3' ) {
         if ( endsWith( key, '.mp3' ) || endsWith( key, '.ogg' ) ) {
-          key = key.substring( 0, key.length - 4 );
+          key = key.substring( 0, key.lastIndexOf( '.' ) );
         }
       }
       if ( filename !== 'license.json' &&
            filename !== 'README.txt' &&
            global.phet.chipper.licenseEntries.audio &&
            (!global.phet.chipper.licenseEntries.audio.hasOwnProperty( key )) ) {
-        grunt.log.warn( 'Unused image: ' + key );
+        grunt.log.warn( 'Unused audio: ' + key );
       }
     } );
   }
