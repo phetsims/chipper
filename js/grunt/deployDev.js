@@ -74,7 +74,7 @@ module.exports = function( grunt, mkdir, test ) {
    */
   var exec = function( command, callback ) {
     grunt.log.writeln( 'Running command: ' + command );
-    child_process.exec( command, function( err, stdout, stderr ) {
+    child_process.exec( command, { timeout: 10000 }, function( err, stdout, stderr ) {
       if ( stdout ) { grunt.log.writeln( stdout ); }
       if ( stderr ) { grunt.log.writeln( stderr ); }
       assert( !err, 'assertion error running ' + command );

@@ -21,9 +21,9 @@ var assert = require( 'assert' );
 
 /**
  * @param grunt the grunt instance
- * @param {string} simNameUppercase - the upper-case string prefix such as BALANCING_ACT
+ * @param {string} requirejsNamespace - requirejs namespace that appears in config.js, eg, BALANCING_ACT
  */
-module.exports = function( grunt, simNameUppercase ) {
+module.exports = function( grunt, requirejsNamespace ) {
 
   // globals that should be defined by this point
   assert( global.phet.chipper.licenseEntries, 'missing global.phet.chipper.licenseEntries' );
@@ -38,8 +38,8 @@ module.exports = function( grunt, simNameUppercase ) {
   if ( grunt.file.exists( directory + '/images' ) ) {
     grunt.file.recurse( directory + '/images', function( abspath, rootdir, subdir, filename ) {
 
-      // check if the file on the HDD was loaded during requirejs
-      var key = simNameUppercase + '/' + filename;
+      // check if the file was loaded during requirejs
+      var key = requirejsNamespace + '/' + filename;
 
       if ( filename !== 'license.json' &&
            filename !== 'README.txt' &&
@@ -54,22 +54,23 @@ module.exports = function( grunt, simNameUppercase ) {
   if ( grunt.file.exists( directory + '/audio' ) ) {
     grunt.file.recurse( directory + '/audio', function( abspath, rootdir, subdir, filename ) {
 
-      // check if the file on the HDD was loaded during requirejs
-      var key = simNameUppercase + '/' + filename;
+      // check if the file was loaded during requirejs
+      var key = requirejsNamespace + '/' + filename;
 
+      // TODO vibe#17 eliminate vibe-specific code in audio.js
       // if it is an audio file, strip off the suffix .mp3 or .ogg because audio is loaded without a suffix
       // The only exception is VIBE/empty.mp3 which doesn't require an ogg version because it is only used
       // on iPad to open the audio channel from a user input event, see Sound.js
       if ( key !== 'VIBE/empty.mp3' ) {
         if ( endsWith( key, '.mp3' ) || endsWith( key, '.ogg' ) ) {
-          key = key.substring( 0, key.length - 4 );
+          key = key.substring( 0, key.lastIndexOf( '.' ) );
         }
       }
       if ( filename !== 'license.json' &&
            filename !== 'README.txt' &&
            global.phet.chipper.licenseEntries.audio &&
            (!global.phet.chipper.licenseEntries.audio.hasOwnProperty( key )) ) {
-        grunt.log.warn( 'Unused image: ' + key );
+        grunt.log.warn( 'Unused audio: ' + key );
       }
     } );
   }

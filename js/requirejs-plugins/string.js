@@ -18,13 +18,9 @@
 define( function( require ) {
   'use strict';
 
-  // 3rd party dependencies, path relative to config.js
-  var _ = require( '../../sherpa/lib/lodash-2.4.1.min' );
-
-  // for running in browsers
-  var localeInfo = require( '../../chipper/js/data/localeInfo' );
-
   // modules
+  var _ = require( '../../sherpa/lib/lodash-2.4.1.min' ); // 3rd party dependencies, path relative to config.js
+  var localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
   var text = require( 'text' );
 
   // constants
@@ -41,7 +37,7 @@ define( function( require ) {
                    null;
 
   /**
-   * When running in the browser, check to see if we have already loaded the specified file
+   * When running in requirejs mode, check to see if we have already loaded the specified file
    * Also parses it so that only happens once per file (instead of once per string key)
    * @param {string} url path for the string
    * @param {function} callback callback when the check succeeds
@@ -56,7 +52,6 @@ define( function( require ) {
     }
     else {
       // Cache miss: load the file parse, enter into cache and return it
-
       text.get( url, function( loadedText ) {
         cache[ url ] = parse( loadedText );
         callback( cache[ url ] );
@@ -118,6 +113,9 @@ define( function( require ) {
 
         // Read the locale from a query parameter, if it is there, or use english
         locale = phet.chipper.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
+        if ( !localeInfo[ locale ] ) {
+          onload.error( new Error( 'unsupported locale: ' + locale ) );
+        }
         var isRTL = localeInfo[ locale ].direction === 'rtl';
 
         var fallbackSpecficPath = repositoryPath + '/' + getFilenameForLocale( FALLBACK_LOCALE );
@@ -135,6 +133,8 @@ define( function( require ) {
 
           // Load & parse just once per file, getting the fallback strings first.
           getWithCache( fallbackSpecficPath, function( parsedFallbackStrings ) {
+              assert && assert( parsedFallbackStrings[ key ] !== undefined,
+                'Missing string: ' + key + ' in ' + fallbackSpecficPath );
               var fallback = parsedFallbackStrings[ key ].value;
 
               // Now get the primary strings.
@@ -147,11 +147,11 @@ define( function( require ) {
 
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
-                  if ( parsedStrings[ key ] !== undefined ) {
+                  if ( parsedStrings[ key ] !== undefined && parsedStrings[ key ].value.length > 0 ) {
                     onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
                   }
                   else {
-                    console.log( 'string not found for key: ' + key );
+                    console.log( 'no entry for string key: ' + key );
                     onload( fallback );
                   }
                 },
@@ -160,10 +160,10 @@ define( function( require ) {
 
                   if ( !parsedFallbackStrings[ key ] ) {
                     // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
-                    console.log( 'no fallback for key:' + key );
+                    console.log( 'no fallback for string key:' + key );
                   }
                   // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
-                  console.log( "No string file provided for " + localeSpecificPath );
+                  console.log( "no string file for " + localeSpecificPath );
                   onload( fallback );
                 },
                 { accept: 'application/json' }
@@ -181,7 +181,7 @@ define( function( require ) {
         requirePrefix = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
         requirePath = parentRequire.toUrl( requirePrefix ); // e.g. '/Users/something/phet/git/some-sim/js'
         if ( requirePath.substring( requirePath.lastIndexOf( '/' ) ) !== '/js' ) {
-          throw new Error( 'Assumes REPO/js location' );
+          throw new Error( 'requirejs namespace REPO must resolve to repo/js' );
         }
         repositoryPath = requirePath.substring( 0, requirePath.lastIndexOf( '/' ) ); // e.g. '/Users/something/phet/git/some-sim'
         repositoryName = repositoryPath.substring( repositoryPath.lastIndexOf( '/' ) + 1 ); // e.g. 'some-sim'

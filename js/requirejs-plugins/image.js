@@ -32,7 +32,6 @@ define( function( require ) {
       else {
         var image = document.createElement( 'img' );
         image.onerror = function( error ) {
-          console.log( 'failed to load image: ' + path );
           onload.error( error );
         };
         image.onload = function() {
