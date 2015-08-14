@@ -58,7 +58,8 @@ module.exports = function( grunt, simNameUppercase ) {
       var key = simNameUppercase + '/' + filename;
 
       // if it is an audio file, strip off the suffix .mp3 or .ogg because audio is loaded without a suffix
-      // The only exception is VIBE/empty.mp3 which doesn't require an ogg version (WHY?)
+      // The only exception is VIBE/empty.mp3 which doesn't require an ogg version because it is only used
+      // on iPad to open the audio channel from a user input event, see Sound.js
       if ( key !== 'VIBE/empty.mp3' ) {
         if ( endsWith( key, '.mp3' ) || endsWith( key, '.ogg' ) ) {
           key = key.substring( 0, key.length - 4 );
