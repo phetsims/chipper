@@ -156,6 +156,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
         var repositoryName = global.phet.strings[ stringKey ].repositoryName;
 
         // English fallback
+        assert( repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ] !== undefined,
+          'Missing string: ' + stringKey + ' in ' + repositoryName + ' for fallback locale: ' + fallbackLocale );
         var fallbackString = repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ].value;
         assert( fallbackString !== undefined && fallbackString !== null, 'Missing string ' + stringKey + ' in fallback locale (' + fallbackLocale + ')' );
         stringMap[ locale ][ stringKey ] = fallbackString;
@@ -200,7 +202,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   function postMipmapLoad( dependencyJSON, mipmapJavascript ) {
 
-    // After all plugins completed, check which media files (images & audio files) are in the media 
+    // After all plugins completed, check which media files (images & audio files) are in the media
     // directories but not loaded by the plugins.
     reportUnusedMedia( grunt, pkg.requirejsNamespace );
 
@@ -290,7 +292,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     };
 
     // Add a list of all 3rd-party media files, such as images and audio.
-    // For each registered image or audio file, keep the ones that are not from PhET 
+    // For each registered image or audio file, keep the ones that are not from PhET
     // return their licenseInfo.entry
     // For each media type
     for ( var mediaType in global.phet.chipper.licenseEntries ) {
