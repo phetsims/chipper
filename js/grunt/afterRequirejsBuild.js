@@ -110,6 +110,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       repoStringMap[ repository.name ] = {};
 
       localesWithFallback.forEach( function( locale ) {
+
+        assert( localeInfo[ locale ], 'unsupported locale: ' + locale );
         var isRTL = localeInfo[ locale ].direction === 'rtl';
 
         var basePath;

@@ -113,6 +113,9 @@ define( function( require ) {
 
         // Read the locale from a query parameter, if it is there, or use english
         locale = phet.chipper.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
+        if ( !localeInfo[ locale ] ) {
+          onload.error( new Error( 'unsupported locale: ' + locale ) );
+        }
         var isRTL = localeInfo[ locale ].direction === 'rtl';
 
         var fallbackSpecficPath = repositoryPath + '/' + getFilenameForLocale( FALLBACK_LOCALE );
