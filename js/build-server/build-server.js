@@ -95,6 +95,7 @@ var AUTHORIZATION_KEY = 'authorizationCode';
 var SERVER_NAME = 'serverName';
 var DEV_KEY = 'dev';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
+var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
 var DEFAULT_SERVER_NAME = 'figaro.colorado.edu';
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 
@@ -390,6 +391,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     callback();
   };
 
+  var spotScp = function( callback ) {
+    exec( 'scp -r ' + buildDir + ' ' + preferences.devUsername + '@' + server + ':' + DEV_DIRECTORY + simName + '/' + version, '.', callback );
+  };
+
   /**
    * Clean up after deploy. Check out master and remove the temp build dir
    */
@@ -508,7 +513,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
                 // if deploying a dev version just scp to spot
                 if ( isDev ) {
-                  exec( 'grunt deploy-dev --mkdir', simDir, afterDeploy );
+                  spotScp( afterDeploy );
                 }
 
                 // otherwise do a full deploy to simian or figaro
@@ -520,7 +525,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                           writeDownloadHtaccess( function() {
                             createTranslationsXML( function() {
                               notifyServer( function() {
-                                exec( 'grunt deploy-dev --mkdir', simDir, afterDeploy ); // copy to spot on non-dev deploys too
+                                spotScp( afterDeploy ); // copy to spot on non-dev deploys too
                               } );
                             } );
                           } );
