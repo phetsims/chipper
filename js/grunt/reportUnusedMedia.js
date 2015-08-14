@@ -30,10 +30,6 @@ module.exports = function( grunt, requirejsNamespace ) {
 
   var directory = process.cwd();
 
-  var endsWith = function( string, substring ) {
-    return string.indexOf( substring ) === string.length - substring.length;
-  };
-
   // Iterate over image directories and sub-directories
   if ( grunt.file.exists( directory + '/images' ) ) {
     grunt.file.recurse( directory + '/images', function( abspath, rootdir, subdir, filename ) {
@@ -41,11 +37,13 @@ module.exports = function( grunt, requirejsNamespace ) {
       // check if the file was loaded during requirejs
       var key = requirejsNamespace + '/' + filename;
 
-      if ( filename !== 'license.json' &&
-           filename !== 'README.txt' &&
-           global.phet.chipper.licenseEntries.images &&
-           (!global.phet.chipper.licenseEntries.images.hasOwnProperty( key )) ) {
-        grunt.log.warn( 'Unused image: ' + key );
+      if ( filename !== 'license.json' ) {
+
+        // If no licenseEntries were registered, or some were registered but not one corresponding to this file
+        if ( !global.phet.chipper.licenseEntries.images ||
+             (!global.phet.chipper.licenseEntries.images.hasOwnProperty( key )) ) {
+          grunt.log.warn( 'Unused image: ' + key );
+        }
       }
     } );
   }
@@ -57,20 +55,17 @@ module.exports = function( grunt, requirejsNamespace ) {
       // check if the file was loaded during requirejs
       var key = requirejsNamespace + '/' + filename;
 
-      // TODO vibe#17 eliminate vibe-specific code in audio.js
-      // if it is an audio file, strip off the suffix .mp3 or .ogg because audio is loaded without a suffix
-      // The only exception is VIBE/empty.mp3 which doesn't require an ogg version because it is only used
-      // on iPad to open the audio channel from a user input event, see Sound.js
-      if ( key !== 'VIBE/empty.mp3' ) {
-        if ( endsWith( key, '.mp3' ) || endsWith( key, '.ogg' ) ) {
-          key = key.substring( 0, key.lastIndexOf( '.' ) );
+      var licenseEntries = global.phet.chipper.licenseEntries;
+      if ( filename !== 'license.json' ) {
+
+        // Audio files may be loaded without a suffix (to load both *.mp3 and *.ogg), so check it as well
+        var suffixless = key.substring( 0, key.lastIndexOf( '.' ) );
+
+        // If no licenseEntries were registered, or some were registered but not one corresponding to this file
+        if ( !licenseEntries.audio ||
+             (!licenseEntries.audio.hasOwnProperty( key ) && !licenseEntries.audio.hasOwnProperty( suffixless )) ) {
+          grunt.log.warn( 'Unused audio: ' + key );
         }
-      }
-      if ( filename !== 'license.json' &&
-           filename !== 'README.txt' &&
-           global.phet.chipper.licenseEntries.audio &&
-           (!global.phet.chipper.licenseEntries.audio.hasOwnProperty( key )) ) {
-        grunt.log.warn( 'Unused audio: ' + key );
       }
     } );
   }
