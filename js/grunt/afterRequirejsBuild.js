@@ -345,7 +345,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       // version string. This approach has a lot of problems and should be replaced as soon as we work out a more all
       // encompassing way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3
       // for more info.
-      if ( grunt.option( 'together' ) ) {
+      if ( global.phet.chipper.brand === 'phet-io' ) {
         var unalteredVersion = pkg.version.replace( '-together', '-dev' );
         localeHTML = replaceFirst( localeHTML, unalteredVersion, pkg.version );
       }

@@ -43,7 +43,7 @@ module.exports = function( grunt, pkg ) {
   }
 
   // Add together (data collection) preloads, as specified in build.json
-  if ( grunt.option( 'together' ) ) {
+  if ( global.phet.chipper.brand === 'phet-io' ) {
     grunt.log.debug( 'Adding together preload files...' );
     assert( buildInfo.together && buildInfo.together.preload, BUILD_INFO_FILENAME + ' is missing together.preload' );
     preload = preload.concat( buildInfo.together.preload );
