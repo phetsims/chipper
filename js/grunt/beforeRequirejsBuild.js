@@ -10,10 +10,6 @@
  * mipmapsToBuild
  */
 
-// The following comment permits node-specific globals to pass jslint
-/* jslint node: true */
-'use strict';
-
 // modules
 var assert = require( 'assert' );
 var fs = require( 'fs' );
@@ -25,18 +21,12 @@ var setPreload = require( '../../../chipper/js/grunt/setPreload' );
  * @param {string} fallbackLocale
  */
 module.exports = function( grunt, pkg, fallbackLocale ) {
-
+  'use strict';
+  
   setPreload( grunt, pkg );
 
   // after preload, the preload should be defined
   assert( pkg.preload, 'preload missing from package.json' );
-  
-  // read the preferences file
-  var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
-  var preferences = {};
-  if ( fs.existsSync( PREFERENCES_FILE ) ) {
-    preferences = grunt.file.readJSON( PREFERENCES_FILE );
-  }
 
   /*
    * Look up the locale strings provided in the simulation.
@@ -107,16 +97,6 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
   global.phet.chipper.getCacheBusterArgs = global.phet.chipper.getCacheBusterArgs || function() {return '';};
-
-  /**
-   * Gets the name of brand to use, which determines which logo to show in the navbar as well as what options
-   * to show in the PhET menu and what text to show in the About dialog.
-   * See also the requirejs-time version of this function (which uses query-parameters) in initialize-globals.js
-   * See https://github.com/phetsims/brand/issues/11
-   * @returns {string}
-   */
-  global.phet.chipper.brand = grunt.option( 'brand' ) || preferences.brand || 'adapted-from-phet';
-  assert( fs.existsSync( '../brand/' + global.phet.chipper.brand ), 'no such brand: ' + global.phet.chipper.brand );
 
   // See if a specific language was specified like: grunt build --locale fr
   var locale = grunt.option( 'locale' ) || fallbackLocale;

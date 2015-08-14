@@ -11,6 +11,9 @@
  * @author John Blanco
  */
 
+// use process.env
+/* jslint node: true */
+
 // built-in node APIs
 var assert = require( 'assert' );
 var fs = require( 'fs' );
@@ -51,6 +54,23 @@ module.exports = function( grunt ) {
   global.phet.chipper.grunt = grunt;
 
   var FALLBACK_LOCAL = 'en';
+
+  // read the preferences file
+  var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
+  var preferences = {};
+  if ( fs.existsSync( PREFERENCES_FILE ) ) {
+    preferences = grunt.file.readJSON( PREFERENCES_FILE );
+  }
+
+  /**
+   * Gets the name of brand to use, which determines which logo to show in the navbar as well as what options
+   * to show in the PhET menu and what text to show in the About dialog.
+   * See also the requirejs-time version of this function (which uses query-parameters) in initialize-globals.js
+   * See https://github.com/phetsims/brand/issues/11
+   * @returns {string}
+   */
+  global.phet.chipper.brand = grunt.option( 'brand' ) || preferences.brand || 'adapted-from-phet';
+  assert( fs.existsSync( '../brand/' + global.phet.chipper.brand ), 'no such brand: ' + global.phet.chipper.brand );
 
   // Read package.json, verify that it contains properties required by all PhET repositories
   assert( fs.existsSync( 'package.json' ), 'repository must have a package.json' );
