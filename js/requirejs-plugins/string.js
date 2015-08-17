@@ -152,7 +152,6 @@ define( function( require ) {
                   }
                   else {
                     throw new Error( 'no entry for string key: ' + key );
-                    onload( fallback );
                   }
                 },
                 // Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
