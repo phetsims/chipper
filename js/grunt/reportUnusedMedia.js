@@ -58,7 +58,7 @@ module.exports = function( grunt, requirejsNamespace ) {
       var licenseEntries = global.phet.chipper.licenseEntries;
       if ( filename !== 'license.json' ) {
 
-        // Audio files may be loaded without a suffix (to load both *.mp3 and *.ogg), so check it as well
+        // Audio files may be loaded without a suffix (to load both *.mp3 and *.ogg), so check basename as well
         var basename = key.substring( 0, key.lastIndexOf( '.' ) );
 
         // If no licenseEntries were registered, or some were registered but not one corresponding to this file
