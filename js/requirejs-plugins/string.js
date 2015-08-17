@@ -151,7 +151,7 @@ define( function( require ) {
                     onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
                   }
                   else {
-                    console.log( 'no entry for string key: ' + key );
+                    throw new Error( 'no entry for string key: ' + key );
                     onload( fallback );
                   }
                 },
@@ -160,7 +160,7 @@ define( function( require ) {
 
                   if ( !parsedFallbackStrings[ key ] ) {
                     // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
-                    console.log( 'no fallback for string key:' + key );
+                    throw new Error( 'no fallback for string key:' + key );
                   }
                   // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
                   console.log( "no string file for " + localeSpecificPath );
