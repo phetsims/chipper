@@ -37,11 +37,11 @@ module.exports = function( grunt, requirejsNamespace ) {
       // check if the file was loaded during requirejs
       var key = requirejsNamespace + '/' + filename;
 
+      var licenseEntries = global.phet.chipper.licenseEntries;
       if ( filename !== 'license.json' ) {
 
         // If no licenseEntries were registered, or some were registered but not one corresponding to this file
-        if ( !global.phet.chipper.licenseEntries.images ||
-             (!global.phet.chipper.licenseEntries.images.hasOwnProperty( key )) ) {
+        if ( !licenseEntries.images || !licenseEntries.images.hasOwnProperty( key ) ) {
           grunt.log.warn( 'Unused image: ' + key );
         }
       }
@@ -58,12 +58,8 @@ module.exports = function( grunt, requirejsNamespace ) {
       var licenseEntries = global.phet.chipper.licenseEntries;
       if ( filename !== 'license.json' ) {
 
-        // Audio files may be loaded without a suffix (to load both *.mp3 and *.ogg), so check basename as well
-        var basename = key.substring( 0, key.lastIndexOf( '.' ) );
-
         // If no licenseEntries were registered, or some were registered but not one corresponding to this file
-        if ( !licenseEntries.audio ||
-             (!licenseEntries.audio.hasOwnProperty( key ) && !licenseEntries.audio.hasOwnProperty( basename )) ) {
+        if ( !licenseEntries.audio || !licenseEntries.audio.hasOwnProperty( key ) ) {
           grunt.log.warn( 'Unused audio: ' + key );
         }
       }

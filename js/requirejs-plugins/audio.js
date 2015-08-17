@@ -61,7 +61,14 @@ define( function( require ) {
 
         // Register the license entries for each file.
         for ( var i = 0; i < urlList.length; i++ ) {
-          registerLicenseEntry( name, getLicenseEntry( urlList[ i ].url ), global.phet.chipper.brand, 'audio', onloadAdapter );
+
+          // If the name has no suffix, borrow the suffix from the URL so that each file is registered, see #261
+          var nameToRegister = name;
+          if ( name.lastIndexOf( '.' ) < 0 ) {
+            var suffix = urlList[ i ].url.substring( urlList[ i ].url.lastIndexOf( '.' ) + 1 );
+            nameToRegister = name + '.' + suffix;
+          }
+          registerLicenseEntry( nameToRegister, getLicenseEntry( urlList[ i ].url ), global.phet.chipper.brand, 'audio', onloadAdapter );
         }
 
         // If any license entry was a problem, then we must fail the build. For simplicity, just report the first error.
