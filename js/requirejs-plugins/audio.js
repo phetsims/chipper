@@ -32,26 +32,27 @@ define( function( require ) {
 
       // Create an array containing a list of URLs pointing to audio files.
       if ( audioName.indexOf( '.' ) === -1 ) {
-        // Only the file stem has been specified, so assume that both mp3 and
-        // ogg files are available.
+
+        // Only the file stem has been specified, so assume that both mp3 and ogg files are available.
         urlList.push( { url: baseUrl + audioName + '.mp3' } );
         urlList.push( { url: baseUrl + audioName + '.ogg' } );
       }
       else {
-        // The sound name included a type extension (e.g. '.mp3'), so just
-        // insert the full path name into the URL list.  This is done, at
-        // least in part, for backwards compatibility with the first version
-        // of this plugin.
+
+        // The sound name included a type extension (e.g. '.mp3'), so just insert the full path name into the URL list.
+        // This is done, at least in part, for backwards compatibility with the first version of this plugin.
         urlList.push( { url: baseUrl + audioName } );
       }
 
       if ( config.isBuild ) {
+
         // Save in the build map for the 'write' function to use.
         buildMap[ name ] = urlList;
 
         // Create an adapter whose API matches the requirejs onload function.
         // This is necessary because we only want to call onload(null) once per invocation of a media plugin.
-        // As a side-effect of calling registerLicenseEntry, this adapter will populate the errors array for any problem license entries.
+        // As a side-effect of calling registerLicenseEntry, this adapter will populate the errors array for any problem
+        // license entries.
         var errors = [];
         var onloadAdapter = function( value ) { };
         onloadAdapter.error = function( error ) {
