@@ -100,7 +100,35 @@ define( function( require ) {
       }
 
       // This code block handles the in-browser requirejs version (not the compilation step)
-      if ( !config.isBuild ) {
+      if ( config.isBuild ) {
+
+        // This code block handles the compilation step (not the in-browser requirejs mode).
+
+        // extract information about the repository name, prefix, and path that will be recorded for later in the build
+        requirePrefix = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
+        requirePath = parentRequire.toUrl( requirePrefix ); // e.g. '/Users/something/phet/git/some-sim/js'
+        if ( requirePath.substring( requirePath.lastIndexOf( '/' ) ) !== '/js' ) {
+          throw new Error( 'requirejs namespace REPO must resolve to repo/js' );
+        }
+        repositoryPath = requirePath.substring( 0, requirePath.lastIndexOf( '/' ) ); // e.g. '/Users/something/phet/git/some-sim'
+        repositoryName = repositoryPath.substring( repositoryPath.lastIndexOf( '/' ) + 1 ); // e.g. 'some-sim'
+
+        // lazily construct our strings list
+        global.phet.strings = global.phet.strings || {};
+
+        // entry saved for later in the build
+        global.phet.strings[ name ] = {
+          name: name, // 'SOME_SIM/string.name'
+          requirePrefix: requirePrefix, // 'SOME_SIM'
+          requirePath: requirePath, // '/Users/something/phet/git/some-sim/js'
+          repositoryPath: repositoryPath, // '/Users/something/phet/git/some-sim'
+          repositoryName: repositoryName // 'some-sim'
+        };
+
+        // tell require.js we're done processing
+        onload( null );
+      }
+      else {
         requirePath = parentRequire.toUrl( requirePrefix );
         if ( requirePath.indexOf( '?' ) >= 0 ) {
           requirePath = requirePath.substring( 0, requirePath.indexOf( '?' ) );
@@ -172,33 +200,6 @@ define( function( require ) {
             { accept: 'application/json' }
           );
         }
-      }
-      else {
-        // This code block handles the compilation step (not the in-browser requirejs mode).
-
-        // extract information about the repository name, prefix, and path that will be recorded for later in the build
-        requirePrefix = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
-        requirePath = parentRequire.toUrl( requirePrefix ); // e.g. '/Users/something/phet/git/some-sim/js'
-        if ( requirePath.substring( requirePath.lastIndexOf( '/' ) ) !== '/js' ) {
-          throw new Error( 'requirejs namespace REPO must resolve to repo/js' );
-        }
-        repositoryPath = requirePath.substring( 0, requirePath.lastIndexOf( '/' ) ); // e.g. '/Users/something/phet/git/some-sim'
-        repositoryName = repositoryPath.substring( repositoryPath.lastIndexOf( '/' ) + 1 ); // e.g. 'some-sim'
-
-        // lazily construct our strings list
-        global.phet.strings = global.phet.strings || {};
-
-        // entry saved for later in the build
-        global.phet.strings[ name ] = {
-          name: name, // 'SOME_SIM/string.name'
-          requirePrefix: requirePrefix, // 'SOME_SIM'
-          requirePath: requirePath, // '/Users/something/phet/git/some-sim/js'
-          repositoryPath: repositoryPath, // '/Users/something/phet/git/some-sim'
-          repositoryName: repositoryName // 'some-sim'
-        };
-
-        // tell require.js we're done processing
-        onload( null );
       }
     },
 
