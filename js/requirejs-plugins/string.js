@@ -108,7 +108,7 @@ define( function( require ) {
         requirePrefix = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
         requirePath = parentRequire.toUrl( requirePrefix ); // e.g. '/Users/something/phet/git/some-sim/js'
         if ( requirePath.substring( requirePath.lastIndexOf( '/' ) ) !== '/js' ) {
-          throw new Error( 'requirejs namespace REPO must resolve to repo/js' );
+          onload.error( new Error( 'requirejs namespace REPO must resolve to repo/js' ) );
         }
         repositoryPath = requirePath.substring( 0, requirePath.lastIndexOf( '/' ) ); // e.g. '/Users/something/phet/git/some-sim'
         repositoryName = repositoryPath.substring( repositoryPath.lastIndexOf( '/' ) + 1 ); // e.g. 'some-sim'
