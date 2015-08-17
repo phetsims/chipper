@@ -59,11 +59,11 @@ module.exports = function( grunt, requirejsNamespace ) {
       if ( filename !== 'license.json' ) {
 
         // Audio files may be loaded without a suffix (to load both *.mp3 and *.ogg), so check it as well
-        var suffixless = key.substring( 0, key.lastIndexOf( '.' ) );
+        var basename = key.substring( 0, key.lastIndexOf( '.' ) );
 
         // If no licenseEntries were registered, or some were registered but not one corresponding to this file
         if ( !licenseEntries.audio ||
-             (!licenseEntries.audio.hasOwnProperty( key ) && !licenseEntries.audio.hasOwnProperty( suffixless )) ) {
+             (!licenseEntries.audio.hasOwnProperty( key ) && !licenseEntries.audio.hasOwnProperty( basename )) ) {
           grunt.log.warn( 'Unused audio: ' + key );
         }
       }
