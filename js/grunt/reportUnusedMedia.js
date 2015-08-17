@@ -30,39 +30,24 @@ module.exports = function( grunt, requirejsNamespace ) {
 
   var directory = process.cwd();
 
-  // Iterate over image directories and sub-directories
-  if ( grunt.file.exists( directory + '/images' ) ) {
-    grunt.file.recurse( directory + '/images', function( abspath, rootdir, subdir, filename ) {
+  [ 'images', 'audio' ].forEach( function( mediaType ) {
 
-      // check if the file was loaded during requirejs
-      var key = requirejsNamespace + '/' + filename;
+    // Iterate over media directories and sub-directories
+    if ( grunt.file.exists( directory + '/' + mediaType ) ) {
+      grunt.file.recurse( directory + '/' + mediaType, function( abspath, rootdir, subdir, filename ) {
 
-      var licenseEntries = global.phet.chipper.licenseEntries;
-      if ( filename !== 'license.json' ) {
+        // check if the file was loaded during requirejs
+        var key = requirejsNamespace + '/' + filename;
 
-        // If no licenseEntries were registered, or some were registered but not one corresponding to this file
-        if ( !licenseEntries.images || !licenseEntries.images.hasOwnProperty( key ) ) {
-          grunt.log.warn( 'Unused image: ' + key );
+        var licenseEntries = global.phet.chipper.licenseEntries;
+        if ( filename !== 'license.json' ) {
+
+          // If no licenseEntries were registered, or some were registered but not one corresponding to this file
+          if ( !licenseEntries.hasOwnProperty( mediaType ) || !licenseEntries[ mediaType ].hasOwnProperty( key ) ) {
+            grunt.log.warn( 'Unused ' + mediaType + ' file: ' + key );
+          }
         }
-      }
-    } );
-  }
-
-  // Iterate over audio directories and sub-directories
-  if ( grunt.file.exists( directory + '/audio' ) ) {
-    grunt.file.recurse( directory + '/audio', function( abspath, rootdir, subdir, filename ) {
-
-      // check if the file was loaded during requirejs
-      var key = requirejsNamespace + '/' + filename;
-
-      var licenseEntries = global.phet.chipper.licenseEntries;
-      if ( filename !== 'license.json' ) {
-
-        // If no licenseEntries were registered, or some were registered but not one corresponding to this file
-        if ( !licenseEntries.audio || !licenseEntries.audio.hasOwnProperty( key ) ) {
-          grunt.log.warn( 'Unused audio: ' + key );
-        }
-      }
-    } );
-  }
+      } );
+    }
+  } );
 };
