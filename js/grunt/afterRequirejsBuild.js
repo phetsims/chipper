@@ -86,7 +86,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     var localesWithFallback = ( locales.indexOf( fallbackLocale ) < 0 ) ? locales.concat( [ fallbackLocale ] ) : locales;
 
     // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
-    var stringRepositories = []; // { name: {string}, path: {string}, prefix: {string} }
+    var stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
     for ( var stringKey in global.phet.strings ) {
       var repositoryName = global.phet.strings[ stringKey ].repositoryName;
 
@@ -94,7 +94,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
         stringRepositories.push( {
           name: repositoryName,
           path: global.phet.strings[ stringKey ].repositoryPath,
-          prefix: global.phet.strings[ stringKey ].requirePrefix
+          requirejsNamespace: global.phet.strings[ stringKey ].requirejsNamespace
         } );
 
         // If a string depends on an unlisted dependency, fail out
@@ -130,7 +130,6 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
           var fileContents = JSON.parse( fs.readFileSync( stringsFilename, 'utf8' ) );
           var fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
-          // we need to add the prefixes to the strings (from the string files)
           for ( var stringKeyMissingPrefix in fileContents ) {
             var stringData = fileContents[ stringKeyMissingPrefix ];
 
@@ -138,7 +137,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
             // Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
             stringData.value = ( isRTL ? '\u202b' : '\u202a' ) + stringData.value + '\u202c';
 
-            fileMap[ repository.prefix + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
+            // Add the requirejs namespaces (eg, JOIST) to the key
+            fileMap[ repository.requirejsNamespace + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
           }
         }
         else {

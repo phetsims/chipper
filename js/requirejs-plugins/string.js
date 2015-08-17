@@ -92,7 +92,7 @@ define( function( require ) {
       // Apply the cache buster args (but only during requirejs mode)
       var suffix = config.isBuild ? '' : '?' + config.urlArgs;
 
-      var requirePrefix = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
+      var requirejsNamespace = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
       var requirePath, repositoryPath, repositoryName, locale;
 
       function getFilenameForLocale( locale ) {
@@ -105,8 +105,8 @@ define( function( require ) {
         // This code block handles the compilation step (not the in-browser requirejs mode).
 
         // extract information about the repository name, prefix, and path that will be recorded for later in the build
-        requirePrefix = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
-        requirePath = parentRequire.toUrl( requirePrefix ); // e.g. '/Users/something/phet/git/some-sim/js'
+        requirejsNamespace = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
+        requirePath = parentRequire.toUrl( requirejsNamespace ); // e.g. '/Users/something/phet/git/some-sim/js'
         if ( requirePath.substring( requirePath.lastIndexOf( '/' ) ) !== '/js' ) {
           onload.error( new Error( 'requirejs namespace REPO must resolve to repo/js' ) );
         }
@@ -119,7 +119,7 @@ define( function( require ) {
         // entry saved for later in the build
         global.phet.strings[ name ] = {
           name: name, // 'SOME_SIM/string.name'
-          requirePrefix: requirePrefix, // 'SOME_SIM'
+          requirejsNamespace: requirejsNamespace, // 'SOME_SIM'
           requirePath: requirePath, // '/Users/something/phet/git/some-sim/js'
           repositoryPath: repositoryPath, // '/Users/something/phet/git/some-sim'
           repositoryName: repositoryName // 'some-sim'
@@ -129,12 +129,12 @@ define( function( require ) {
         onload( null );
       }
       else {
-        requirePath = parentRequire.toUrl( requirePrefix );
+        requirePath = parentRequire.toUrl( requirejsNamespace );
         if ( requirePath.indexOf( '?' ) >= 0 ) {
           requirePath = requirePath.substring( 0, requirePath.indexOf( '?' ) );
         }
         repositoryPath = requirePath + '/..';
-        repositoryName = requirePrefix.toLowerCase().split( '_' ).join( '-' );
+        repositoryName = requirejsNamespace.toLowerCase().split( '_' ).join( '-' );
 
         // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
         var queryParameterStrings = parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
