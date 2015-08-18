@@ -208,7 +208,7 @@ module.exports = function( grunt ) {
         locales = getLocalesFromRepository( repository ); // all locales for the repository that we're building
       }
       else {
-        buildConfig.locales = _.uniq( gruntOptions.locales.split( ',' ) );
+        locales = _.uniq( locales.split( ',' ) );
       }
     }
     else {
