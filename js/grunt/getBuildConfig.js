@@ -249,7 +249,7 @@ module.exports = function( grunt ) {
     allFilesToLint.push( '!../kite/js/parser/svgPath.js' );
     allFilesToLint = _.uniq( allFilesToLint );
 
-    //TODO provide a reference for where these fields are defined
+    //TODO chipper#276 provide a reference for where these fields are defined
     return {
 
       // Source files that are specific to this repository
@@ -277,7 +277,7 @@ module.exports = function( grunt ) {
 
       jshint: getJSHintConfig( packageJSON, phetLibs ),
 
-      //TODO provide a reference for where these fields are defined
+      //TODO chipper#277 provide a reference for where these fields are defined
       // configure the RequireJS plugin
       requirejs: {
 
@@ -316,7 +316,7 @@ module.exports = function( grunt ) {
               }
             },
 
-            //TODO should 'mipmap' be in here too?
+            //TODO chipper#275 should 'mipmap' be included here too?
             // stub out the plugins, so their source code won't be included in the minified file
             stubModules: [ 'string', 'audio', 'image' ]
           }
