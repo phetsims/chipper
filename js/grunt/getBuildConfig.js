@@ -292,7 +292,6 @@ module.exports = function( grunt ) {
             // Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
             optimize: 'uglify2',
             wrap: true,
-            // generateSourceMaps: true, //#42 commented out this line until source maps are fixed
             preserveLicenseComments: false,
             uglify2: {
               output: {
