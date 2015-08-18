@@ -285,9 +285,9 @@ module.exports = function( grunt ) {
 
             almond: true,
 
-            mainConfigFile: 'js/' + pkg.name + '-config.js',
-            out: 'build/' + pkg.name + '.min.js',
-            name: pkg.name + '-config',
+            mainConfigFile: 'js/' + packageJSON.name + '-config.js',
+            out: 'build/' + packageJSON.name + '.min.js',
+            name: packageJSON.name + '-config',
 
             // Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
             optimize: 'uglify2',
