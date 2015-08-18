@@ -263,9 +263,6 @@ module.exports = function( grunt ) {
     };
   }
 
-  //------------------------------------------------------------------------------------
-  // grunt config
-
   /**
    * Gets the Grunt configuration object.
    *
