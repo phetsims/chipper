@@ -354,6 +354,7 @@ module.exports = function( grunt ) {
     version: packageJSON.version,
     license: packageJSON.name,
     simTitleStringKey: packageJSON.simTitleStringKey,
+    requirejsNamespace: packageJSON.requirejsNamespace,
     brand: getBrand( grunt, buildLocalJSON ),
     fallbackLocale: 'en'
   };
