@@ -41,9 +41,9 @@ module.exports = function( grunt, pkg ) {
   assert( buildInfo.common && buildInfo.common.licenseKeys, BUILD_INFO_FILENAME + ' is missing common.licenseKeys' );
   var licenseKeys = buildInfo.common.licenseKeys;
 
-  // Extract keys from pkg.preload, for any dependencies in sherpa
+  // Extract keys from pkg.phet.preload, for any dependencies in sherpa
   grunt.log.debug( 'Adding preload licenses...' );
-  pkg.preload.forEach( function( path ) {
+  pkg.phet.preload.forEach( function( path ) {
     if ( path.indexOf( '/sherpa/' ) !== -1 ) {
       var lastSlash = path.lastIndexOf( '/' );
       var key = path.substring( lastSlash + 1 );
@@ -52,9 +52,9 @@ module.exports = function( grunt, pkg ) {
   } );
 
   // Add sim-specific licenses, as specified in the (optional) licenseKeys field of package.json.
-  if ( pkg.licenseKeys ) {
+  if ( pkg.phet.licenseKeys ) {
     grunt.log.debug( 'Adding sim-specific licenses...' );
-    licenseKeys = licenseKeys.concat( pkg.licenseKeys );
+    licenseKeys = licenseKeys.concat( pkg.phet.licenseKeys );
   }
 
   // Add together (data collection) licenses, as specified in build.json

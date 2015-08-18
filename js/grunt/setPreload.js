@@ -3,7 +3,7 @@
 /**
  * Determines the set of files to be preloaded before the simulation is run.
  * These files will be loaded via script tags in the generated HTML file.
- * As a side-effect, this modifies pkg.preload.
+ * As a side-effect, this modifies pkg.phet.preload.
  * It does not modify the actual package.json file.
  *
  * @author Chris Malley (PixelZoom, Inc.)
@@ -37,9 +37,9 @@ module.exports = function( grunt, pkg ) {
   var preload = buildInfo.common.preload;
 
   // Add sim-specific preloads, as specified in the (optional) preload field of package.json.
-  if ( pkg.preload ) {
+  if ( pkg.phet.preload ) {
     grunt.log.debug( 'Adding sim-specific preload files...' );
-    preload = preload.concat( pkg.preload );
+    preload = preload.concat( pkg.phet.preload );
   }
 
   // Add together (data collection) preloads, as specified in build.json
@@ -52,6 +52,6 @@ module.exports = function( grunt, pkg ) {
   }
 
   // Modify pkg
-  pkg.preload = preload;
-  grunt.log.debug( 'pkg.preload = ' + pkg.preload.toString() );
+  pkg.phet.preload = preload;
+  grunt.log.debug( 'pkg.phet.preload = ' + pkg.phet.preload.toString() );
 };

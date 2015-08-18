@@ -40,12 +40,11 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   assert( pkg.name, 'name missing from package.json' );
   assert( pkg.version, 'version missing from package.json' );
   assert( pkg.license, 'license missing from package.json' );
-  assert( pkg.requirejsNamespace, 'requirejsNamespace missing from package.json' );
-  assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
-  assert( pkg.phetLibs, 'phetLibs missing from package.json' );
-
-  // required fields in pkg (package.json augmented in setPreload)
-  assert( pkg.preload, 'preload missing from pkg' );
+  assert( pkg.phet, 'phet metadata missing from package.json' );
+  assert( pkg.phet.requirejsNamespace, 'phet.requirejsNamespace missing from package.json' );
+  assert( pkg.phet.simTitleStringKey, 'phet.simTitleStringKey missing from package.json' );
+  assert( pkg.phet.phetLibs, 'phet.phetLibs missing from package.json' );
+  assert( pkg.phet.preload, 'preload missing from pkg' ); // augmented by setPreload
 
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
@@ -98,7 +97,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
         } );
 
         // If a string depends on an unlisted dependency, fail out
-        if ( pkg.phetLibs.indexOf( repositoryName ) < 0 ) {
+        if ( pkg.phet.phetLibs.indexOf( repositoryName ) < 0 ) {
           throw new Error( repositoryName + ' is missing from phetLib in package.json' );
         }
       }
@@ -181,8 +180,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
   grunt.log.debug( 'Minifying preload scripts' );
   var preloadBlocks = '';
-  for ( var libIdx = 0; libIdx < pkg.preload.length; libIdx++ ) {
-    var lib = pkg.preload[ libIdx ];
+  for ( var libIdx = 0; libIdx < pkg.phet.preload.length; libIdx++ ) {
+    var lib = pkg.phet.preload[ libIdx ];
     var preloadResult = uglify.minify( [ lib ], {
       output: {
         inline_script: true // escape </script
@@ -194,7 +193,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
     preloadBlocks += '<script type="text/javascript" id="script-' + lib + '">\n' + preloadResult.code + '\n</script>\n';
   }
 
-  var dependencies = _.clone( pkg.phetLibs ); // clone because we'll be modifying this array
+  var dependencies = _.clone( pkg.phet.phetLibs ); // clone because we'll be modifying this array
   var dependencyInfo = {
     comment: '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString())
   };
@@ -203,7 +202,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     // After all plugins completed, check which media files (images & audio files) are in the media
     // directories but not loaded by the plugins.
-    reportUnusedMedia( grunt, pkg.requirejsNamespace );
+    reportUnusedMedia( grunt, pkg.phet.requirejsNamespace );
 
     // Load the splash SVG from the appropriate brand.
     var splashDataURI = loadFileAsDataURI( '../brand/' + global.phet.chipper.brand + '/images/splash.svg' );
@@ -211,7 +210,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
 
     // Create the license header for this html and all the 3rd party dependencies
     // Text was discussed in https://github.com/phetsims/chipper/issues/148
-    var titleKey = pkg.simTitleStringKey;
+    var titleKey = pkg.phet.simTitleStringKey;
     var stringMap = loadStringMap();
 
     // Make sure the simulation has a title
@@ -350,7 +349,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
         localeHTML = replaceFirst( localeHTML, unalteredVersion, pkg.version );
       }
 
-      assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' ); // required for sims
+      assert( pkg.phet.simTitleStringKey, 'phet.simTitleStringKey missing from package.json' ); // required for sims
       localeHTML = replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
       grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
     }

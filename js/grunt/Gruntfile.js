@@ -84,9 +84,10 @@ module.exports = function( grunt ) {
   var buildInfo = grunt.file.readJSON( '../chipper/build.json' );
 
   // Add phetLibs from build-local.json
-  pkg.phetLibs = pkg.phetLibs || [];
-  pkg.phetLibs = _.uniq( pkg.phetLibs.concat( buildInfo.common.phetLibs ).sort() );
-  grunt.log.debug( 'phetLibs = ' + pkg.phetLibs );
+  pkg.phet = pkg.phet || {};
+  pkg.phet.phetLibs = pkg.phet.phetLibs || [];
+  pkg.phet.phetLibs = _.uniq( pkg.phet.phetLibs.concat( buildInfo.common.phetLibs ).sort() );
+  grunt.log.debug( 'pkg.phet.phetLibs = ' + pkg.phet.phetLibs );
 
   // TODO: As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
   // string. This approach has a lot of problems and should be replaced as soon as we work out a more all encompassing
@@ -108,7 +109,7 @@ module.exports = function( grunt ) {
   };
 
   // Enumerate the list of files to be linted for the jshint:allFiles task
-  var allFilesToLint = _.map( pkg.phetLibs, function( repo ) {
+  var allFilesToLint = _.map( pkg.phet.phetLibs, function( repo ) {
     return '../' + repo + '/js/**/*.js';
   } );
 
@@ -327,15 +328,15 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
     function() {
-      assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
-      generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, true /* published */ );
+      assert( pkg.phet.simTitleStringKey, 'simTitleStringKey missing from package.json' );
+      generateREADME( grunt, pkg.name, pkg.phet.phetLibs, pkg.phet.simTitleStringKey, true /* published */ );
     } );
 
   grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
     function() {
-      assert( pkg.simTitleStringKey, 'simTitleStringKey missing from package.json' );
-      generateREADME( grunt, pkg.name, pkg.phetLibs, pkg.simTitleStringKey, false /* published */ );
+      assert( pkg.phet.simTitleStringKey, 'phet.simTitleStringKey missing from package.json' );
+      generateREADME( grunt, pkg.name, pkg.phet.phetLibs, pkg.phet.simTitleStringKey, false /* published */ );
     } );
 
   grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.',

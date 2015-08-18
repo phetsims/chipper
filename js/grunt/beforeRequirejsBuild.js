@@ -26,7 +26,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   setPreload( grunt, pkg );
 
   // after preload, the preload should be defined
-  assert( pkg.preload, 'preload missing from package.json' );
+  assert( pkg.phet.preload, 'phet.preload missing from package.json' );
 
   /*
    * Look up the locale strings provided in the simulation.

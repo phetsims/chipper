@@ -317,12 +317,12 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     }
     var packageJSON = JSON.parse( fs.readFileSync( packageJSONPath, { encoding: 'utf-8' } ) );
 
-    // make sure simTitleStringKey exists in package.json
-    if ( !packageJSON.simTitleStringKey ) {
-      taskCallback( 'simTitleStringKey missing from package.json' );
+    // make sure phet.simTitleStringKey exists in package.json
+    if ( !packageJSON.phet || !packageJSON.phet.simTitleStringKey ) {
+      taskCallback( 'phet.simTitleStringKey missing from package.json' );
       return;
     }
-    var simTitleKey = packageJSON.simTitleStringKey;
+    var simTitleKey = packageJSON.phet.simTitleStringKey;
     simTitleKey = simTitleKey.split( '/' )[ 1 ];
 
     // make sure the english strings file exists so we can read the english strings
