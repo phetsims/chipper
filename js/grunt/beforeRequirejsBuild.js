@@ -5,7 +5,6 @@
  * It is for internal use only, not intended to be called directly.
  * It shares the following information with other grunt tasks via global.phet:
  * (TODO document these)
- * strings
  * localesToBuild
  * mipmapsToBuild
  */
