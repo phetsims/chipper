@@ -129,6 +129,7 @@ module.exports = function( grunt ) {
   var repoFilesToLint = ( pkg.name === 'brand' ) ? [ '*/js/**/*.js' ] : [ 'js/**/*.js' ];
 
   grunt.initConfig( {
+    //TODO chipper#278 is this necessary?
     /*
      * Read in the project settings from the package.json file into the pkg property.
      * This allows us to refer to project settings from within this config file.
@@ -143,6 +144,7 @@ module.exports = function( grunt ) {
       build: {
         options: {
           almond: true,
+          //TODO chipper#278 is this necessary?
           mainConfigFile: 'js/<%= pkg.name %>-config.js',
           out: 'build/<%= pkg.name %>.min.js',
           name: '<%= pkg.name %>-config',

@@ -272,6 +272,7 @@ module.exports = function( grunt ) {
   function getGruntConfig( packageJSON, phetLibs ) {
     return {
 
+      //TODO chipper#278 is this necessary?
       // Setting pkg allows us to refer to package.json entries from within this config
       pkg: packageJSON,
 
@@ -287,6 +288,7 @@ module.exports = function( grunt ) {
           options: {
 
             almond: true,
+            //TODO chipper#278 is this necessary?
             mainConfigFile: 'js/<%= pkg.name %>-config.js',
             out: 'build/<%= pkg.name %>.min.js',
             name: '<%= pkg.name %>-config',
