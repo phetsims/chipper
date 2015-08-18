@@ -185,7 +185,7 @@ module.exports = function( grunt ) {
     return locales;
   }
 
-  /*
+  /**
    * Gets the set of locales to be built.
    *
    * The grunt options are:
