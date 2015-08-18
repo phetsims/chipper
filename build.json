@@ -32,7 +32,7 @@
       "text-2.0.12.js"
     ]
   },
-  "together": {
+  "phet-io": {
     "preload": [
       "../sherpa/lib/jsondiffpatch-0.1.31.js",
       "../together/js/together.js",

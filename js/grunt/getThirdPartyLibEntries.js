@@ -57,11 +57,11 @@ module.exports = function( grunt, pkg ) {
     licenseKeys = licenseKeys.concat( pkg.phet.licenseKeys );
   }
 
-  // Add together (data collection) licenses, as specified in build.json
+  // Add phet-io licenses, as specified in build.json
   if ( global.phet.chipper.brand === 'phet-io' ) {
     grunt.log.debug( 'Adding together licenses...' );
-    assert( buildInfo.together && buildInfo.together.licenseKeys, BUILD_INFO_FILENAME + ' is missing together.licenseKeys' );
-    licenseKeys = licenseKeys.concat( buildInfo.together.licenseKeys );
+    assert( buildInfo[ 'phet-io' ] && buildInfo[ 'phet-io' ].licenseKeys, BUILD_INFO_FILENAME + ' is missing phet-io.licenseKeys' );
+    licenseKeys = licenseKeys.concat( buildInfo[ 'phet-io' ].licenseKeys );
   }
 
   // Add all dependencies. Duplicates will be removed later.

@@ -42,11 +42,11 @@ module.exports = function( grunt, pkg ) {
     preload = preload.concat( pkg.phet.preload );
   }
 
-  // Add together (data collection) preloads, as specified in build.json
+  // Add phet-io preloads, as specified in build.json
   if ( global.phet.chipper.brand === 'phet-io' ) {
-    grunt.log.debug( 'Adding together preload files...' );
-    assert( buildInfo.together && buildInfo.together.preload, BUILD_INFO_FILENAME + ' is missing together.preload' );
-    preload = preload.concat( buildInfo.together.preload );
+    grunt.log.debug( 'Adding phet-io preload files...' );
+    assert( buildInfo[ 'phet-io' ] && buildInfo[ 'phet-io' ].preload, BUILD_INFO_FILENAME + ' is missing phet-io.preload' );
+    preload = preload.concat( buildInfo[ 'phet-io' ].preload );
     assert( pkg.name, 'package.json is missing name' );
     preload.push( '../together/js/api/' + pkg.name + '-api.js' );
   }
