@@ -48,7 +48,9 @@ module.exports = function( grunt, pkg ) {
     assert( buildInfo[ 'phet-io' ] && buildInfo[ 'phet-io' ].preload, BUILD_INFO_FILENAME + ' is missing phet-io.preload' );
     preload = preload.concat( buildInfo[ 'phet-io' ].preload );
     assert( pkg.name, 'package.json is missing name' );
-    preload.push( '../together/js/api/' + pkg.name + '-api.js' );
+    var togetherAPI = '../together/js/api/' + pkg.name + '-api.js';
+    assert( fs.existsSync( togetherAPI ), 'together API file does not exist: ' + togetherAPI );
+    preload.push( togetherAPI );
   }
 
   // Modify pkg
