@@ -1,7 +1,7 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * Initializes configuration information that is required by the 'build' task.
+ * Gets configuration information that is required by the 'build' task.
  * Reads information from multiple places, including:
  *
  * chipper/build.json
