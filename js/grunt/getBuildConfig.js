@@ -17,7 +17,7 @@
  * {string} version - version identifier
  * {string} license - license
  * {string} simTitleStringKey - key of the sim's title string
- * {string} requirejsNamespace - the repos requirejs namespace in config.js, eg AREA_BUILDER
+ * {string} requirejsNamespace - the repository's requirejs namespace in config.js, eg AREA_BUILDER
  * {string} brand - brand identifier
  * {string[]} phetLibs - other repositories that are required by the sim
  * {string[]} preload - scripts that need to be preloaded in the .html file, in the order that they will be preloaded
