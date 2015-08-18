@@ -273,10 +273,6 @@ module.exports = function( grunt ) {
   function getGruntConfig( packageJSON, phetLibs ) {
     return {
 
-      //TODO chipper#278 is this necessary?
-      // Setting pkg allows us to refer to package.json entries from within this config
-      pkg: packageJSON,
-
       jshint: getJSHintConfig( packageJSON, phetLibs ),
 
       // configure the RequireJS plugin, see https://github.com/jrburke/r.js/blob/master/build/example.build.js
@@ -288,10 +284,10 @@ module.exports = function( grunt ) {
           options: {
 
             almond: true,
-            //TODO chipper#278 is this necessary?
-            mainConfigFile: 'js/<%= pkg.name %>-config.js',
-            out: 'build/<%= pkg.name %>.min.js',
-            name: '<%= pkg.name %>-config',
+
+            mainConfigFile: 'js/' + pkg.name + '-config.js',
+            out: 'build/' + pkg.name + '.min.js',
+            name: pkg.name + '-config',
 
             // Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
             optimize: 'uglify2',
