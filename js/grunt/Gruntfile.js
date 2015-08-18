@@ -136,8 +136,7 @@ module.exports = function( grunt ) {
      */
     pkg: pkg,
 
-    //TODO chipper#277 provide a reference for where these fields are defined
-    // configure the RequireJS plugin
+    // configure the RequireJS plugin, see https://github.com/jrburke/r.js/blob/master/build/example.build.js
     requirejs: {
 
       // builds the minified script
