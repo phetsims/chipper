@@ -83,10 +83,12 @@ module.exports = function( grunt ) {
   assert( fs.existsSync( '../chipper/build.json' ), 'missing build.json' );
   var buildInfo = grunt.file.readJSON( '../chipper/build.json' );
 
-  // Add phetLibs from build-local.json
+  // phetLibs
   pkg.phet = pkg.phet || {};
   pkg.phet.phetLibs = pkg.phet.phetLibs || [];
-  pkg.phet.phetLibs = _.uniq( pkg.phet.phetLibs.concat( buildInfo.common.phetLibs ).sort() );
+  pkg.phet.phetLibs.push( pkg.name ); // add the repo that's being built
+  pkg.phet.phetLibs = pkg.phet.phetLibs.concat( buildInfo.common.phetLibs ); // add phetLibs from build.json
+  pkg.phet.phetLibs = _.uniq( pkg.phet.phetLibs.sort() ); // sort and remove duplicates
   grunt.log.debug( 'pkg.phet.phetLibs = ' + pkg.phet.phetLibs );
 
   // TODO: As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
