@@ -249,12 +249,13 @@ module.exports = function( grunt ) {
     allFilesToLint.push( '!../kite/js/parser/svgPath.js' );
     allFilesToLint = _.uniq( allFilesToLint );
 
-    //TODO chipper#276 provide a reference for where these fields are defined
     return {
 
+      // PhET-specific, passed to the 'lint' grunt task
       // Source files that are specific to this repository
       repoFiles: repoFilesToLint,
 
+      // PhET-specific, passed to the 'lint-all' grunt task
       // All source files for this repository (repository-specific and dependencies).
       allFiles: allFilesToLint,
 

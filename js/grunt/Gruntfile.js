@@ -170,13 +170,14 @@ module.exports = function( grunt ) {
       }
     },
 
-    //TODO chipper#276 provide a reference for where these fields are defined
     // configure the JSHint plugin
     jshint: {
 
+      // PhET-specific, pass to the 'lint' task
       // source files that are specific to this repository
       repoFiles: repoFilesToLint,
 
+      // PhET-specific, passed to the 'lint-all' task
       // All source files for this repository (repository-specific and dependencies).
       // Excludes kite/js/parser/svgPath.js, which is auto-generated.
       allFiles: allFilesToLint,
