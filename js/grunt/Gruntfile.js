@@ -88,6 +88,9 @@ module.exports = function( grunt ) {
   pkg.phet.phetLibs = pkg.phet.phetLibs || [];
   pkg.phet.phetLibs.push( pkg.name ); // add the repo that's being built
   pkg.phet.phetLibs = pkg.phet.phetLibs.concat( buildInfo.common.phetLibs ); // add phetLibs from build.json
+  if ( global.phet.chipper.brand === 'phet-io' && buildInfo[ 'phet-io' ] && buildInfo[ 'phet-io' ].phetLibs ) {
+    pkg.phet.phetLibs = pkg.phet.phetLibs.concat( buildInfo[ 'phet-io' ].phetLibs ); // add phetLibs for phet-io brand
+  }
   pkg.phet.phetLibs = _.uniq( pkg.phet.phetLibs.sort() ); // sort and remove duplicates
   grunt.log.debug( 'pkg.phet.phetLibs = ' + pkg.phet.phetLibs );
 
