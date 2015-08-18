@@ -7,7 +7,7 @@
 
 # Legend:
 
-## Boxes:
+#### Boxes:
 
 Left: run in require.js mode with fuzz test
 
@@ -15,7 +15,7 @@ Middle: build
 
 Right: run the build version with fuzz test
 
-## Colors:
+#### Colors:
 
 * gray = not tested yet
 * blue = loading
