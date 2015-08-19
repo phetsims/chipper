@@ -36,7 +36,7 @@
     var mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
 
     // fatal error if license.json doesn't exist
-    if ( !fs.existsSync( licenseFilename ) ) {
+    if ( !global.fs.existsSync( licenseFilename ) ) {
       throw new Error( 'missing license file: ' + licenseFilename );
     }
 
