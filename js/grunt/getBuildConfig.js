@@ -57,7 +57,9 @@ module.exports = function( grunt ) {
    * @returns {string}
    */
   function getBrand( grunt, buildLocalJSON ) {
-    return grunt.option( 'brand' ) || buildLocalJSON.brand || 'adapted-from-phet';
+    var brand = grunt.option( 'brand' ) || buildLocalJSON.brand || 'adapted-from-phet';
+    assert( fs.existsSync( '../brand/' + brand ), 'no such brand: ' + brand );
+    return brand;
   }
 
   /**
@@ -355,8 +357,8 @@ module.exports = function( grunt ) {
     name: packageJSON.name,
     version: packageJSON.version,
     license: packageJSON.license,
-    simTitleStringKey: packageJSON.simTitleStringKey,
-    requirejsNamespace: packageJSON.requirejsNamespace,
+    simTitleStringKey: packageJSON.phet.simTitleStringKey,
+    requirejsNamespace: packageJSON.phet.requirejsNamespace,
     brand: getBrand( grunt, buildLocalJSON )
   };
 
