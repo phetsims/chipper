@@ -25,7 +25,7 @@
 
 // modules
 var assert = require( 'assert' );
-var buildConstants = require( '../../../chipper/js/grunt/buildConstants' );
+var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 
 /**
  * @param grunt the grunt instance
@@ -102,7 +102,7 @@ module.exports = function( grunt ) {
     }
   };
 
-  var mediaTypes = buildConstants.MEDIA_TYPES;
+  var mediaTypes = ChipperConstants.MEDIA_TYPES;
   for ( var i = 0; i < reposByLine.length; i++ ) {
     for ( var k = 0; k < mediaTypes.length; k++ ) {
       reportForDirectory( reposByLine[ i ], mediaTypes[ k ] );

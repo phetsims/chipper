@@ -26,7 +26,7 @@ var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' )
 var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
 
 // Load shared constants
-var buildConstants = require( '../../../chipper/js/grunt/buildConstants' );
+var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 
 /**
  * @param grunt the grunt instance
@@ -53,7 +53,7 @@ module.exports = function( grunt, pkg ) {
   assert( global.phet.chipper, 'missing global.phet.chipper' );
   assert( global.phet.chipper.brand, 'missing global.phet.chipper.brand' );
 
-  var fallbackLocale = buildConstants.FALLBACK_LOCALE;
+  var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
 
   function trimWhitespace( str ) {
     return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );
@@ -268,8 +268,8 @@ module.exports = function( grunt, pkg ) {
     html = replaceFirst( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
     html = replaceFirst( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
     html = replaceFirst( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
-    html = replaceFirst( html, 'START_THIRD_PARTY_LICENSE_ENTRIES', buildConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
-    html = replaceFirst( html, 'END_THIRD_PARTY_LICENSE_ENTRIES', buildConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
+    html = replaceFirst( html, 'START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
+    html = replaceFirst( html, 'END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
 
     grunt.log.debug( 'Writing HTML' );
 

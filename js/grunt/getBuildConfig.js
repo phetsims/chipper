@@ -42,7 +42,7 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 /* jshint +W079 */
 
 // modules
-var buildConstants = require( '../../../chipper/js/grunt/buildConstants' );
+var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 
 /**
  * @param {Object} grunt - the grunt instance
@@ -219,7 +219,7 @@ module.exports = function( grunt ) {
         locales = getLocalesFromRepository( localesRepo ); // all locales for some other repository
       }
       else {
-        locales = [ buildConstants.FALLBACK_LOCALE ];
+        locales = [ ChipperConstants.FALLBACK_LOCALE ];
       }
     }
     return locales;

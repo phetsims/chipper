@@ -22,7 +22,7 @@ define( function( require ) {
   var _ = require( '../../sherpa/lib/lodash-2.4.1.min' ); // 3rd party dependencies, path relative to config.js
   var localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
   var text = require( 'text' );
-  var buildConstants = require( '../../chipper/js/grunt/buildConstants' );
+  var ChipperConstants = require( '../../chipper/js/common/ChipperConstants' );
 
   var parse = JSON.parse;
 
@@ -138,14 +138,14 @@ define( function( require ) {
         var queryParameterStrings = parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
 
         // Read the locale from a query parameter, if it is there, or use the fallback locale
-        locale = phet.chipper.getQueryParameter( 'locale' ) || buildConstants.FALLBACK_LOCALE;
+        locale = phet.chipper.getQueryParameter( 'locale' ) || ChipperConstants.FALLBACK_LOCALE;
         if ( !localeInfo[ locale ] ) {
           onload.error( new Error( 'unsupported locale: ' + locale ) );
         }
         var isRTL = localeInfo[ locale ].direction === 'rtl';
 
-        var fallbackSpecificPath = repositoryPath + '/' + getFilenameForLocale( buildConstants.FALLBACK_LOCALE );
-        var localeSpecificPath = ( locale === buildConstants.FALLBACK_LOCALE ) ?
+        var fallbackSpecificPath = repositoryPath + '/' + getFilenameForLocale( ChipperConstants.FALLBACK_LOCALE );
+        var localeSpecificPath = ( locale === ChipperConstants.FALLBACK_LOCALE ) ?
                                  fallbackSpecificPath :
                                  repositoryPath + '/../babel/' + repositoryName + '/' + getFilenameForLocale( locale );
 

@@ -1,7 +1,7 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- * Constants used by the PhET build process.
+ * Constants used throughout chipper.
  * All fields are @public (read-only)
  *
  * @author Sam Reid
@@ -11,6 +11,7 @@
   'use strict';
 
   var buildConfig = {
+
     // Locale to use when no locale is specified
     FALLBACK_LOCALE: 'en',
 
