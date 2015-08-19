@@ -47,8 +47,10 @@ module.exports = function( grunt ) {
   'use strict';
 
   // for sharing global information
-  global.phet = global.phet || {};
-  global.phet.chipper = global.phet.chipper || {};
+  assert( !global.phet, 'global.phet already exists' );
+  global.phet = {
+    chipper: {}
+  };
 
   // for situations where we can't pass the grunt instance as a function argument
   global.phet.chipper.grunt = grunt;
