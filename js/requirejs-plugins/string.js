@@ -139,7 +139,7 @@ define( function( require ) {
         // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
         var queryParameterStrings = parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
 
-        // Read the locale from a query parameter, if it is there, or use english
+        // Read the locale from a query parameter, if it is there, or use English
         locale = phet.chipper.getQueryParameter( 'locale' ) || 'en';
         if ( !localeInfo[ locale ] ) {
           onload.error( new Error( 'unsupported locale: ' + locale ) );
