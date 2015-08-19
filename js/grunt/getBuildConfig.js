@@ -123,8 +123,8 @@ module.exports = function( grunt ) {
       preload.push( TOGETHER_API_FILENAME );
     }
 
-    // sort and remove duplicates
-    return _.uniq( preload.sort() );
+    // remove duplicates (do NOT sort, order is significant!)
+    return _.uniq( preload );
   }
 
   /**
