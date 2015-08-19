@@ -24,9 +24,7 @@
    * Retrieves the license entry for a media file from license.json.
    *
    * @param {string} absolutePath - the path for the media file
-   * @returns {Object|null} the entry from the license.json file
-   *                     or null if the license.json file is missing
-   *                     or null if the license.json file exists but has no entry for the given file
+   * @returns {Object|null} the entry from the license.json file, null if there is not entry
    *
    * @private
    */
@@ -37,15 +35,13 @@
     var licenseFilename = prefix + '/license.json'; // license.json is a sibling of the media file
     var mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
 
+    // fatal error if license.json doesn't exist
+    if ( !fs.existsSync( licenseFilename ) ) {
+      throw new Error( 'missing license file: ' + licenseFilename );
+    }
+
     // read license.json
-    var file = null;
-    try {
-      file = global.fs.readFileSync( licenseFilename, 'utf8' );
-    }
-    catch( err ) {
-      return null;  // File not found
-    }
-    var json = JSON.parse( file );
+    var json = JSON.parse( global.fs.readFileSync( licenseFilename, 'utf8' ) );
 
     // get the media file's license entry
     var entry = json[ mediaFilename ];
