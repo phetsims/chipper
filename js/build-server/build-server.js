@@ -98,6 +98,7 @@ var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
 var DEV_SERVER = 'spot.colorado.edu';
 var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
 var DEFAULT_SERVER_NAME = 'figaro.colorado.edu';
+var ENGLISH_LOCALE = 'en';
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 
 assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
@@ -292,7 +293,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
     var rootdir = '../babel/' + simName;
     var englishStringsFile = simName + '-strings_en.json';
-    var stringFiles = [ { name: englishStringsFile, locale: 'en' } ];
+    var stringFiles = [ { name: englishStringsFile, locale: ENGLISH_LOCALE } ];
 
     // pull all the string filenames and locales from babel and store in stringFiles array
     if ( !fs.existsSync( rootdir ) ) {
@@ -340,7 +341,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
     for ( var j = 0; j < stringFiles.length; j++ ) {
       var stringFile = stringFiles[ j ];
-      var languageJSON = ( stringFile.locale === 'en' ) ? englishStrings :
+      var languageJSON = ( stringFile.locale === ENGLISH_LOCALE ) ? englishStrings :
                          JSON.parse( fs.readFileSync( '../babel' + '/' + simName + '/' + stringFile.name, { encoding: 'utf-8' } ) );
 
       var simHTML = HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '_' + stringFile.locale + '.html';
