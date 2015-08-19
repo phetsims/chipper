@@ -354,7 +354,7 @@ module.exports = function( grunt ) {
     // These entries have no dependencies on other entries in buildConfig.
     name: packageJSON.name,
     version: packageJSON.version,
-    license: packageJSON.name,
+    license: packageJSON.license,
     simTitleStringKey: packageJSON.simTitleStringKey,
     requirejsNamespace: packageJSON.requirejsNamespace,
     brand: getBrand( grunt, buildLocalJSON )
