@@ -97,12 +97,6 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
   global.phet.chipper.getCacheBusterArgs = global.phet.chipper.getCacheBusterArgs || function() {return '';};
 
-  // See if a specific language was specified like: grunt build --locale fr
-  var locale = grunt.option( 'locale' ) || fallbackLocale;
-
-  // Pass an option to requirejs through its config build options
-  grunt.config.set( 'requirejs.build.options.phetLocale', locale );
-
   // Pass a global to the string! plugin so we know which strings to look up
   global.phet.localesToBuild = getLocalesToBuild();
   grunt.log.debug( 'Locales to build: ' + global.phet.localesToBuild.toString() );
