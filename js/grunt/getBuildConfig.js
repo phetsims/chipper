@@ -9,7 +9,6 @@
  * REPO/package.json
  * grunt.options( optionName )
  *
- * The information is shared via global variable global.phet.chipper.buildConfig.
  * All entries are @public (read-only).
  * Entries include:
  *
