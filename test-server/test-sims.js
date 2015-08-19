@@ -204,7 +204,7 @@ window.addEventListener( 'message', function( evt ) {
   }
 } );
 
-// load the list of sims before kicing things off
+// load the list of sims before kicking things off
 (function() {
   var req = new XMLHttpRequest();
   req.onload = function() {
