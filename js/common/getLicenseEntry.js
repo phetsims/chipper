@@ -24,7 +24,7 @@
    * Retrieves the license entry for a media file from license.json.
    *
    * @param {string} absolutePath - the path for the media file
-   * @returns {Object|null} the entry from the license.json file, null if there is not entry
+   * @returns {Object|null} the entry from the license.json file, null if there is no entry
    *
    * @private
    */
