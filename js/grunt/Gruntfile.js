@@ -34,6 +34,7 @@ var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
+var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 
 //TODO look at why this is necessary
 /*
@@ -46,139 +47,29 @@ global.fs = fs;
 module.exports = function( grunt ) {
   'use strict';
 
+  //---------------------------------------------------------------------------------------------------------------
+  // Configuration
+
   // for sharing global information
   assert( !global.phet, 'global.phet already exists' );
   global.phet = {
-    chipper: {}
+    chipper: {
+      grunt: grunt // for situations where we can't pass the grunt instance as a function argument
+    }
   };
 
-  // for situations where we can't pass the grunt instance as a function argument
-  global.phet.chipper.grunt = grunt;
+  // read build configuration information from multiple sources (config files, command line,...)
+  var buildConfig = getBuildConfig( grunt );
+  global.phet.chipper.brand = buildConfig.brand; //TODO this is used in media plugins
 
-  // read the preferences file
-  var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
-  var preferences = {};
-  if ( fs.existsSync( PREFERENCES_FILE ) ) {
-    preferences = grunt.file.readJSON( PREFERENCES_FILE );
-  }
-
-  /**
-   * Gets the name of brand to use, which determines which logo to show in the navbar as well as what options
-   * to show in the PhET menu and what text to show in the About dialog.
-   * See also the requirejs-time version of this function (which uses query-parameters) in initialize-globals.js
-   * See https://github.com/phetsims/brand/issues/11
-   * @returns {string}
-   */
-  global.phet.chipper.brand = grunt.option( 'brand' ) || preferences.brand || 'adapted-from-phet';
-  assert( fs.existsSync( '../brand/' + global.phet.chipper.brand ), 'no such brand: ' + global.phet.chipper.brand );
-
-  // Read package.json, verify that it contains properties required by all PhET repositories
-  assert( fs.existsSync( 'package.json' ), 'repository must have a package.json' );
-  var pkg = grunt.file.readJSON( 'package.json' );
-  assert( pkg.name, 'name missing from package.json' );
-  assert( pkg.version, 'version missing from package.json' );
-  assert( pkg.license, 'license missing from package.json' );
-
-  // For sims, read common phetLibs from chipper/build.json. We'll do this here since several grunt tasks (including some utilities) need phetLibs.
-  assert( fs.existsSync( '../chipper/build.json' ), 'missing build.json' );
-  var buildInfo = grunt.file.readJSON( '../chipper/build.json' );
-
-  // phetLibs
-  pkg.phet = pkg.phet || {};
-  pkg.phet.phetLibs = pkg.phet.phetLibs || [];
-  pkg.phet.phetLibs.push( pkg.name ); // add the repo that's being built
-  pkg.phet.phetLibs = pkg.phet.phetLibs.concat( buildInfo.common.phetLibs ); // add phetLibs from build.json
-  if ( global.phet.chipper.brand === 'phet-io' && buildInfo[ 'phet-io' ] && buildInfo[ 'phet-io' ].phetLibs ) {
-    pkg.phet.phetLibs = pkg.phet.phetLibs.concat( buildInfo[ 'phet-io' ].phetLibs ); // add phetLibs for phet-io brand
-  }
-  pkg.phet.phetLibs = _.uniq( pkg.phet.phetLibs.sort() ); // sort and remove duplicates
-  grunt.log.debug( 'pkg.phet.phetLibs = ' + pkg.phet.phetLibs );
-
-  // TODO: As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
+  // TODO: chipper#270 As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
   // string. This approach has a lot of problems and should be replaced as soon as we work out a more all encompassing
   // way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3 for more info.
-  if ( global.phet.chipper.brand === 'phet-io' && pkg.version.indexOf( '-dev' ) > -1 ) {
-    pkg.version = pkg.version.replace( '-dev', '-together' );
+  if ( buildConfig.brand === 'phet-io' && buildConfig.version.indexOf( '-dev' ) > -1 ) {
+    buildConfig.version = buildConfig.version.replace( '-dev', '-together' );
   }
 
-  var globalDefs = {
-    // global assertions
-    assert: false,
-    assertSlow: false,
-    // scenery logging
-    sceneryLog: false,
-    sceneryLayerLog: false,
-    sceneryEventLog: false,
-    sceneryAccessibilityLog: false,
-    phetAllocation: false
-  };
-
-  // Enumerate the list of files to be linted for the jshint:allFiles task
-  var allFilesToLint = _.map( pkg.phet.phetLibs, function( repo ) {
-    return '../' + repo + '/js/**/*.js';
-  } );
-
-  // The brand repo has a different structure, so add it explicitly
-  allFilesToLint.push( '../brand/*/js/**/*.js' );
-
-  // Don't try to lint the svgPath.js.  It was automatically generated and doesn't match convention
-  allFilesToLint.push( '!../kite/js/parser/svgPath.js' );
-
-  // Identify the repo files to lint for the single repo.
-  // The brand repo is a special case since it has nested subdirectories instead of a top level js/ directory
-  var repoFilesToLint = ( pkg.name === 'brand' ) ? [ '*/js/**/*.js' ] : [ 'js/**/*.js' ];
-
-  grunt.initConfig( {
-
-    // configure the RequireJS plugin, see https://github.com/jrburke/r.js/blob/master/build/example.build.js
-    requirejs: {
-
-      // builds the minified script
-      build: {
-        options: {
-          almond: true,
-
-          mainConfigFile: 'js/' + pkg.name + '-config.js',
-          out: 'build/' + pkg.name + '.min.js',
-          name: pkg.name + '-config',
-
-          // Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
-          optimize: 'uglify2',
-          wrap: true,
-          preserveLicenseComments: false,
-          uglify2: {
-            output: {
-              inline_script: true // escape </script
-            },
-            compress: {
-              global_defs: globalDefs,
-              dead_code: true
-            }
-          },
-
-          //TODO chipper#275 should 'mipmap' be included here too?
-          //stub out the plugins so their source code won't be included in the minified file
-          stubModules: [ 'string', 'audio', 'image' ]
-        }
-      }
-    },
-
-    // configure the JSHint plugin
-    jshint: {
-
-      // PhET-specific, pass to the 'lint' task
-      // source files that are specific to this repository
-      repoFiles: repoFilesToLint,
-
-      // PhET-specific, passed to the 'lint-all' task
-      // All source files for this repository (repository-specific and dependencies).
-      // Excludes kite/js/parser/svgPath.js, which is auto-generated.
-      allFiles: allFilesToLint,
-
-      // reference external JSHint options in jshintOptions.js
-      options: require( './jshintOptions' )
-    }
-  } );
+  grunt.initConfig( buildConfig.gruntConfig );
 
   //---------------------------------------------------------------------------------------------------------------
   // Primary tasks
@@ -250,13 +141,13 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'before-requirejs-build', '(internal use only) Do things before the requirejs:build task',
     function() {
-      beforeRequirejsBuild( grunt, pkg );
+      beforeRequirejsBuild( grunt, buildConfig.name, buildConfig.version );
     } );
 
   grunt.registerTask( 'after-requirejs-build',
     '(internal use only) Do things after the requirejs:build task',
     function() {
-      afterRequirejsBuild( grunt, pkg );
+      afterRequirejsBuild( grunt, buildConfig );
     } );
 
   //---------------------------------------------------------------------------------------------------------------
@@ -267,13 +158,13 @@ module.exports = function( grunt ) {
     'Check out shas for a project, as specified in dependencies.json',
     function() {
       var buildServer = grunt.option( 'buildServer' ) ? true : false;
-      checkoutShas( grunt, pkg.name, false, buildServer );
+      checkoutShas( grunt, buildConfig.name, false, buildServer );
     } );
 
   grunt.registerTask( 'checkout-master',
     'Check out master branch for all dependencies, as specified in dependencies.json',
     function() {
-      checkoutShas( grunt, pkg.name, true );
+      checkoutShas( grunt, buildConfig.name, true );
     } );
 
   grunt.registerTask( 'create-sim',
@@ -331,22 +222,20 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
     function() {
-      assert( pkg.phet.simTitleStringKey, 'simTitleStringKey missing from package.json' );
-      generateREADME( grunt, pkg.name, pkg.phet.phetLibs, pkg.phet.simTitleStringKey, true /* published */ );
+      generateREADME( grunt, buildConfig.name, buildConfig.phetLibs, buildConfig.simTitleStringKey, true /* published */ );
     } );
 
   grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
     function() {
-      assert( pkg.phet.simTitleStringKey, 'phet.simTitleStringKey missing from package.json' );
-      generateREADME( grunt, pkg.name, pkg.phet.phetLibs, pkg.phet.simTitleStringKey, false /* published */ );
+      generateREADME( grunt, buildConfig.name, buildConfig.phetLibs, buildConfig.simTitleStringKey, false /* published */ );
     } );
 
   grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.',
     function() {
       var finished = _.after( 2, grunt.task.current.async() );
-      generateThumbnails( grunt, pkg.name, 128, 84, finished );
-      generateThumbnails( grunt, pkg.name, 600, 394, finished );
+      generateThumbnails( grunt, buildConfig.name, 128, 84, finished );
+      generateThumbnails( grunt, buildConfig.name, 600, 394, finished );
     } );
 
   /*

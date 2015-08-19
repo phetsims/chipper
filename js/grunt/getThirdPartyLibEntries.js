@@ -17,52 +17,21 @@ var fs = require( 'fs' );
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
 
-var BUILD_INFO_FILENAME = '../chipper/build.json'; // contains build info, which identifies licenses applicable to all sims
 var THIRD_PARTY_LICENSES_FILENAME = '../sherpa/lib/license.json'; // contains third-party license info
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
 /**
- * @param grunt the grunt instance
- * @param {Object} pkg package.json
+ * @param grunt - the grunt instance
+ * @param {Object} buildConfig - see initBuildConfig.js
  */
-module.exports = function( grunt, pkg ) {
+module.exports = function( grunt, buildConfig ) {
   'use strict';
-
-  // Read build info
-  assert( fs.existsSync( BUILD_INFO_FILENAME ), 'missing ' + BUILD_INFO_FILENAME );
-  var buildInfo = grunt.file.readJSON( BUILD_INFO_FILENAME );
 
   // Read license info
   assert( fs.existsSync( THIRD_PARTY_LICENSES_FILENAME ), 'missing ' + THIRD_PARTY_LICENSES_FILENAME );
   var licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );
 
-  // Add common licenses, as specified in build.json
-  grunt.log.debug( 'Adding common licenses...' );
-  assert( buildInfo.common && buildInfo.common.licenseKeys, BUILD_INFO_FILENAME + ' is missing common.licenseKeys' );
-  var licenseKeys = buildInfo.common.licenseKeys;
-
-  // Extract keys from pkg.phet.preload, for any dependencies in sherpa
-  grunt.log.debug( 'Adding preload licenses...' );
-  pkg.phet.preload.forEach( function( path ) {
-    if ( path.indexOf( '/sherpa/' ) !== -1 ) {
-      var lastSlash = path.lastIndexOf( '/' );
-      var key = path.substring( lastSlash + 1 );
-      licenseKeys.push( key );
-    }
-  } );
-
-  // Add sim-specific licenses, as specified in the (optional) licenseKeys field of package.json.
-  if ( pkg.phet.licenseKeys ) {
-    grunt.log.debug( 'Adding sim-specific licenses...' );
-    licenseKeys = licenseKeys.concat( pkg.phet.licenseKeys );
-  }
-
-  // Add phet-io licenses, as specified in build.json
-  if ( global.phet.chipper.brand === 'phet-io' ) {
-    grunt.log.debug( 'Adding together licenses...' );
-    assert( buildInfo[ 'phet-io' ] && buildInfo[ 'phet-io' ].licenseKeys, BUILD_INFO_FILENAME + ' is missing phet-io.licenseKeys' );
-    licenseKeys = licenseKeys.concat( buildInfo[ 'phet-io' ].licenseKeys );
-  }
+  var licenseKeys = buildConfig.licenseKeys.slice( 0 ); // make a copy, we'll be adding keys
 
   // Add all dependencies. Duplicates will be removed later.
   for ( var i = 0; i < licenseKeys.length; i++ ) {

@@ -11,47 +11,32 @@ var fs = require( 'fs' );
 var path = require( 'path' );
 var child_process = require( 'child_process' );
 
+// third-party libraries
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
 
-// Mipmap setup
+// modules
 var createMipmap = require( '../../../chipper/js/grunt/createMipmap' );
-
-// Loading files as data URIs
 var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
-
 var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );
 var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
-
-// Load shared constants
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 
 /**
- * @param grunt the grunt instance
- * @param {Object} pkg package.json
+ * @param grunt - the grunt instance
+ * @param {Object} buildConfig - see initBuildConfig.js
  */
-module.exports = function( grunt, pkg ) {
+module.exports = function( grunt, buildConfig ) {
   'use strict';
-
-  // required fields in package.json
-  assert( pkg.name, 'name missing from package.json' );
-  assert( pkg.version, 'version missing from package.json' );
-  assert( pkg.license, 'license missing from package.json' );
-  assert( pkg.phet, 'phet metadata missing from package.json' );
-  assert( pkg.phet.requirejsNamespace, 'phet.requirejsNamespace missing from package.json' );
-  assert( pkg.phet.simTitleStringKey, 'phet.simTitleStringKey missing from package.json' );
-  assert( pkg.phet.phetLibs, 'phet.phetLibs missing from package.json' );
-  assert( pkg.phet.preload, 'preload missing from pkg' ); // augmented by setPreload
 
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
-  assert( global.phet.strings, 'missing global.phet.strings' );
-  assert( global.phet.localesToBuild, 'missing global.phet.localesToBuild' );
-  assert( global.phet.mipmapsToBuild, 'missing global.phet.mipmapsToBuild' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
-  assert( global.phet.chipper.brand, 'missing global.phet.chipper.brand' );
+  assert( global.phet.chipper.licenseEntries, 'missing global.phet.chipper.licenseEntries' );
+  assert( global.phet.strings, 'missing global.phet.strings' );
+  assert( global.phet.mipmapsToBuild, 'missing global.phet.mipmapsToBuild' );
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
 
@@ -82,8 +67,8 @@ module.exports = function( grunt, pkg ) {
    * Loads each string file only once, and only loads the repository/locale combinations necessary.
    */
   function loadStringMap() {
-    var locales = global.phet.localesToBuild;
-    var localesWithFallback = ( locales.indexOf( fallbackLocale ) < 0 ) ? locales.concat( [ fallbackLocale ] ) : locales;
+
+    assert( buildConfig.locales.indexOf( ChipperConstants.FALLBACK_LOCALE ) !== -1, 'fallback locale is required' );
 
     // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
     var stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
@@ -98,7 +83,7 @@ module.exports = function( grunt, pkg ) {
         } );
 
         // If a string depends on an unlisted dependency, fail out
-        if ( pkg.phet.phetLibs.indexOf( repositoryName ) < 0 ) {
+        if ( buildConfig.phetLibs.indexOf( repositoryName ) < 0 ) {
           throw new Error( repositoryName + ' is missing from phetLib in package.json' );
         }
       }
@@ -109,7 +94,7 @@ module.exports = function( grunt, pkg ) {
     stringRepositories.forEach( function( repository ) {
       repoStringMap[ repository.name ] = {};
 
-      localesWithFallback.forEach( function( locale ) {
+      buildConfig.locales.forEach( function( locale ) {
 
         assert( localeInfo[ locale ], 'unsupported locale: ' + locale );
         var isRTL = localeInfo[ locale ].direction === 'rtl';
@@ -149,7 +134,7 @@ module.exports = function( grunt, pkg ) {
 
     // combine our strings into [locale][stringKey] map, using the fallback locale where necessary
     var stringMap = {};
-    localesWithFallback.forEach( function( locale ) {
+    buildConfig.locales.forEach( function( locale ) {
       stringMap[ locale ] = {};
 
       for ( var stringKey in global.phet.strings ) {
@@ -175,14 +160,14 @@ module.exports = function( grunt, pkg ) {
   }
 
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
-  var uglify = require( '../../../' + pkg.name + '/node_modules/uglify-js' );
+  var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
   var done = grunt.task.current.async();
 
   grunt.log.debug( 'Minifying preload scripts' );
   var preloadBlocks = '';
-  for ( var libIdx = 0; libIdx < pkg.phet.preload.length; libIdx++ ) {
-    var lib = pkg.phet.preload[ libIdx ];
+  for ( var libIdx = 0; libIdx < buildConfig.preload.length; libIdx++ ) {
+    var lib = buildConfig.preload[ libIdx ];
     var preloadResult = uglify.minify( [ lib ], {
       output: {
         inline_script: true // escape </script
@@ -194,24 +179,24 @@ module.exports = function( grunt, pkg ) {
     preloadBlocks += '<script type="text/javascript" id="script-' + lib + '">\n' + preloadResult.code + '\n</script>\n';
   }
 
-  var dependencies = _.clone( pkg.phet.phetLibs ); // clone because we'll be modifying this array
+  var dependencies = _.clone( buildConfig.phetLibs ); // clone because we'll be modifying this array
   var dependencyInfo = {
-    comment: '# ' + pkg.name + ' ' + pkg.version + ' ' + (new Date().toString())
+    comment: '# ' + buildConfig.name + ' ' + buildConfig.version + ' ' + (new Date().toString())
   };
 
   function postMipmapLoad( dependencyJSON, mipmapJavascript ) {
 
     // After all plugins completed, check which media files (images & audio files) are in the media
     // directories but not loaded by the plugins.
-    reportUnusedMedia( grunt, pkg.phet.requirejsNamespace );
+    reportUnusedMedia( grunt, buildConfig.requirejsNamespace );
 
     // Load the splash SVG from the appropriate brand.
-    var splashDataURI = loadFileAsDataURI( '../brand/' + global.phet.chipper.brand + '/images/splash.svg' );
-    var mainInlineJavascript = grunt.file.read( 'build/' + pkg.name + '.min.js' );
+    var splashDataURI = loadFileAsDataURI( '../brand/' + buildConfig.brand + '/images/splash.svg' );
+    var mainInlineJavascript = grunt.file.read( 'build/' + buildConfig.name + '.min.js' );
 
     // Create the license header for this html and all the 3rd party dependencies
     // Text was discussed in https://github.com/phetsims/chipper/issues/148
-    var titleKey = pkg.phet.simTitleStringKey;
+    var titleKey = buildConfig.simTitleStringKey;
     var stringMap = loadStringMap();
 
     // Make sure the simulation has a title
@@ -221,11 +206,11 @@ module.exports = function( grunt, pkg ) {
 
     // Get the title to display as the sim name and version.  The HTML header is not internationalized, so word order
     // can just be hard coded as English here, see #156
-    var englishSimTitle = stringMap.en[ titleKey ] + ' ' + pkg.version;
+    var englishSimTitle = stringMap.en[ titleKey ] + ' ' + buildConfig.version;
 
     // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
     var htmlHeader = null;
-    if ( global.phet.chipper.brand === 'phet-io' ) {
+    if ( buildConfig.brand === 'phet-io' ) {
 
       // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
       htmlHeader = englishSimTitle + '\n' +
@@ -275,19 +260,17 @@ module.exports = function( grunt, pkg ) {
 
     // Create the translated versions
 
-    var locales = global.phet.localesToBuild;
-
     // Write the stringless template in case we want to use it with the translation addition process.
     // Skip it if only building one HTML.
-    if ( locales.length > 1 ) {
-      grunt.file.write( 'build/' + pkg.name + '_STRING_TEMPLATE.html', html );
+    if ( buildConfig.locales.length > 1 ) {
+      grunt.file.write( 'build/' + buildConfig.name + '_STRING_TEMPLATE.html', html );
     }
 
     html = replaceFirst( html, 'PHET_SHAS', dependencyJSON );
 
     // Start aggregating all of the 3rd party license entries
     var thirdPartyEntries = {
-      lib: getThirdPartyLibEntries( grunt, pkg )
+      lib: getThirdPartyLibEntries( grunt, buildConfig )
     };
 
     // Add a list of all 3rd-party media files, such as images and audio.
@@ -310,7 +293,7 @@ module.exports = function( grunt, pkg ) {
 
               // Fail if there is no license entry.  Though this error should have been caught
               // during plugin loading, so this is a "double check"
-              if ( global.phet.chipper.brand === 'phet' || global.phet.chipper.brand === 'phet-io' ) {
+              if ( buildConfig.brand === 'phet' || buildConfig.brand === 'phet-io' ) {
                 grunt.log.error( 'No license.json entry for ' + resourceName );
               }
             }
@@ -325,8 +308,8 @@ module.exports = function( grunt, pkg ) {
     }
     html = replaceFirst( html, 'THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
-    for ( var i = 0; i < locales.length; i++ ) {
-      var locale = locales[ i ];
+    for ( var i = 0; i < buildConfig.locales.length; i++ ) {
+      var locale = buildConfig.locales[ i ];
 
       var localeHTML = replaceFirst( html, 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
 
@@ -334,10 +317,9 @@ module.exports = function( grunt, pkg ) {
       timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
       //TODO: if this is for changing layout, we'll need these globals in requirejs mode
-      //TODO: why are we combining pkg.name with pkg.version?
       //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-      localeHTML = replaceFirst( localeHTML, 'PHET_PROJECT', pkg.name );
-      localeHTML = replaceFirst( localeHTML, 'PHET_VERSION', pkg.version );
+      localeHTML = replaceFirst( localeHTML, 'PHET_PROJECT', buildConfig.name );
+      localeHTML = replaceFirst( localeHTML, 'PHET_VERSION', buildConfig.version );
       localeHTML = replaceFirst( localeHTML, 'PHET_BUILD_TIMESTAMP', timestamp );
       localeHTML = replaceFirst( localeHTML, 'PHET_LOCALE', locale );
 
@@ -345,33 +327,33 @@ module.exports = function( grunt, pkg ) {
       // version string. This approach has a lot of problems and should be replaced as soon as we work out a more all
       // encompassing way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3
       // for more info.
-      if ( global.phet.chipper.brand === 'phet-io' ) {
-        var unalteredVersion = pkg.version.replace( '-together', '-dev' );
-        localeHTML = replaceFirst( localeHTML, unalteredVersion, pkg.version );
+      if ( buildConfig.brand === 'phet-io' ) {
+        var unalteredVersion = buildConfig.version.replace( '-together', '-dev' );
+        localeHTML = replaceFirst( localeHTML, unalteredVersion, buildConfig.version );
       }
 
-      assert( pkg.phet.simTitleStringKey, 'phet.simTitleStringKey missing from package.json' ); // required for sims
-      localeHTML = replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + pkg.version ); //TODO: i18n order
-      grunt.file.write( 'build/' + pkg.name + '_' + locale + '.html', localeHTML );
+      assert( buildConfig.simTitleStringKey, 'phet.simTitleStringKey missing from package.json' ); // required for sims
+      localeHTML = replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + buildConfig.version ); //TODO: i18n order
+      grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
     }
 
     // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-    iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + pkg.version + ' iframe test' );
-    iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_URL', pkg.name + '_en.html' );
+    iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + buildConfig.version + ' iframe test' );
+    iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
 
     // Write the iframe test file.  English (en) is assumed as the locale.
     grunt.log.debug( 'Writing HTML for iframe testing' );
-    grunt.file.write( 'build/' + pkg.name + '_en-iframe' + '.html', iframeTestHtml );
+    grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
     // Write the string map, which may be used by translation utility for showing which strings are available for translation
-    var stringMapFilename = 'build/' + pkg.name + '_string-map.json';
+    var stringMapFilename = 'build/' + buildConfig.name + '_string-map.json';
     grunt.log.debug( 'Writing string map to ', stringMapFilename );
     grunt.file.write( stringMapFilename, JSON.stringify( stringMap[ fallbackLocale ], null, '\t' ) );
 
     grunt.log.debug( 'Cleaning temporary files' );
-    grunt.file.delete( 'build/' + pkg.name + '.min.js' );
+    grunt.file.delete( 'build/' + buildConfig.name + '.min.js' );
 
     done();
   }
