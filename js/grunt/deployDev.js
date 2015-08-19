@@ -23,6 +23,7 @@ var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
 var BUILD_DIR = 'build';
 var PACKAGE_JSON = 'package.json';
 var DEPENDENCIES_JSON = 'dependencies.json';
+var TEST_DIR_NAME = 'deploy-dev-tests'
 
 /**
  * @param grunt the grunt instance
@@ -47,8 +48,8 @@ module.exports = function( grunt, mkdir, test ) {
   var server = preferences.devDeployServer || DEV_SERVER;
   var basePath = preferences.devDeployPath || DEV_DIRECTORY;
   if ( test ) {
-    basePath += 'ad-tests/';
-    URL_BASE += 'ad-tests/';
+    basePath += TEST_DIR_NAME + '/';
+    URL_BASE += TEST_DIR_NAME + '/';
   }
 
   // get the sim name and version
