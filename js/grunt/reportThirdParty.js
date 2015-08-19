@@ -21,7 +21,7 @@
 var fs = require( 'fs' );
 
 // Load shared constants
-var ThirdPartyConstants = require( '../../../chipper/js/grunt/ThirdPartyConstants' );
+var buildConstants = require( '../../../chipper/js/grunt/buildConstants' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
@@ -124,8 +124,8 @@ module.exports = function( grunt, input, output, activeRunnables ) {
       // load the file into a string
       var html = grunt.file.read( abspath ).trim();
 
-      var startIndex = html.indexOf( ThirdPartyConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
-      var endIndex = html.indexOf( ThirdPartyConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
+      var startIndex = html.indexOf( buildConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
+      var endIndex = html.indexOf( buildConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
       var substring = html.substring( startIndex, endIndex );
 
       var firstCurlyBrace = substring.indexOf( '{' );
@@ -274,7 +274,7 @@ module.exports = function( grunt, input, output, activeRunnables ) {
     '* [Third-party Media License Summary](#third-party-media-license-summary)\n' +
     '\n' +
     'This report is for the following simulations: \n\n* ' + fileList + '\n\nTo see the third party resources used in a particular published ' +
-    'simulation, inspect the HTML file between the `' + ThirdPartyConstants.START_THIRD_PARTY_LICENSE_ENTRIES + '` and `' + ThirdPartyConstants.END_THIRD_PARTY_LICENSE_ENTRIES + '` ' +
+    'simulation, inspect the HTML file between the `' + buildConstants.START_THIRD_PARTY_LICENSE_ENTRIES + '` and `' + buildConstants.END_THIRD_PARTY_LICENSE_ENTRIES + '` ' +
     '(only exists in sim publications after Aug 7, 2015).\n' +
     '# <a name="third-party-code"></a>Third-party Code:<br>\n' +
     entries.join( '\n\n' ) + '\n\n' +

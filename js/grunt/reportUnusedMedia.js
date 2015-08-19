@@ -18,6 +18,7 @@
 
 // modules
 var assert = require( 'assert' );
+var buildConstants = require( '../../../chipper/js/grunt/buildConstants' );
 
 /**
  * @param grunt the grunt instance
@@ -30,7 +31,7 @@ module.exports = function( grunt, requirejsNamespace ) {
 
   var directory = process.cwd();
 
-  [ 'images', 'audio' ].forEach( function( mediaType ) {
+  buildConstants.MEDIA_TYPES.forEach( function( mediaType ) {
 
     // Iterate over media directories and sub-directories
     if ( grunt.file.exists( directory + '/' + mediaType ) ) {

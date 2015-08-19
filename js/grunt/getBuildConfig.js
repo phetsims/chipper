@@ -22,7 +22,6 @@
  * {string[]} phetLibs - other repositories that are required by the sim
  * {string[]} preload - scripts that need to be preloaded in the .html file, in the order that they will be preloaded
  * {string[]} licenseKeys - keys to licenses in sherpa/lib/license.json, for third-party dependencies
- * {string} fallbackLocale - the locale to use if none is specified
  * {string[]} locales - locales to build
  * {Object} gruntConfig
  *
@@ -41,6 +40,9 @@ var fs = require( 'fs' );
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
+
+// modules
+var buildConstants = require( '../../../chipper/js/grunt/buildConstants' );
 
 /**
  * @param {Object} grunt - the grunt instance
@@ -198,9 +200,8 @@ module.exports = function( grunt ) {
    *
    * @param {Object} grunt - the grunt instance
    * @param {string} repository - name of the repository that is being built
-   * @param {string} fallbackLocale - the locale to build if no locales are specified
    */
-  function getLocales( grunt, repository, fallbackLocale ) {
+  function getLocales( grunt, repository ) {
 
     var locales = grunt.option( 'locales' );
 
@@ -218,7 +219,7 @@ module.exports = function( grunt ) {
         locales = getLocalesFromRepository( localesRepo ); // all locales for some other repository
       }
       else {
-        locales = [ fallbackLocale ];
+        locales = [ buildConstants.FALLBACK_LOCALE ];
       }
     }
     return locales;
@@ -356,15 +357,14 @@ module.exports = function( grunt ) {
     license: packageJSON.name,
     simTitleStringKey: packageJSON.simTitleStringKey,
     requirejsNamespace: packageJSON.requirejsNamespace,
-    brand: getBrand( grunt, buildLocalJSON ),
-    fallbackLocale: 'en'
+    brand: getBrand( grunt, buildLocalJSON )
   };
 
   // These entries depend on other entries in buildConfig.
   buildConfig.phetLibs = getPhetLibs( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.preload = getPreload( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
-  buildConfig.locales = getLocales( grunt, buildConfig.name, buildConfig.fallbackLocale );
+  buildConfig.locales = getLocales( grunt, buildConfig.name );
   buildConfig.gruntConfig = getGruntConfig( packageJSON, buildConfig.phetLibs );
 
   grunt.log.debug( 'buildConfig=' + JSON.stringify( buildConfig, null, 2 ) );
