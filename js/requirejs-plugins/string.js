@@ -140,7 +140,7 @@ define( function( require ) {
         var queryParameterStrings = parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
 
         // Read the locale from a query parameter, if it is there, or use english
-        locale = phet.chipper.getQueryParameter( 'locale' ) || config.phetLocale || 'en';
+        locale = phet.chipper.getQueryParameter( 'locale' ) || 'en';
         if ( !localeInfo[ locale ] ) {
           onload.error( new Error( 'unsupported locale: ' + locale ) );
         }
