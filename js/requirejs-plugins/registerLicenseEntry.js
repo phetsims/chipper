@@ -45,7 +45,7 @@ define( function() {
    */
   function isAcceptableLicenseEntry( name, entry, brand ) {
     var acceptable = isCompatibleLicenseEntry( entry, brand ) || (entry && !!entry.exception);
-    if ( acceptable && !!entry.exception ) {
+    if ( acceptable && entry && !!entry.exception ) {
       var warningMessage = 'license exception for ' + name + ': ' + entry.exception;
 
       // use grunt.log if it's available
