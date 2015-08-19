@@ -22,9 +22,7 @@ define( function( require ) {
   var _ = require( '../../sherpa/lib/lodash-2.4.1.min' ); // 3rd party dependencies, path relative to config.js
   var localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
   var text = require( 'text' );
-
-  // constants
-  var FALLBACK_LOCALE = 'en';
+  var buildConstants = require( '../../chipper/js/grunt/buildConstants' );
 
   var parse = JSON.parse;
 
@@ -146,8 +144,8 @@ define( function( require ) {
         }
         var isRTL = localeInfo[ locale ].direction === 'rtl';
 
-        var fallbackSpecificPath = repositoryPath + '/' + getFilenameForLocale( FALLBACK_LOCALE );
-        var localeSpecificPath = ( locale === FALLBACK_LOCALE ) ?
+        var fallbackSpecificPath = repositoryPath + '/' + getFilenameForLocale( buildConstants.FALLBACK_LOCALE );
+        var localeSpecificPath = ( locale === buildConstants.FALLBACK_LOCALE ) ?
                                  fallbackSpecificPath :
                                  repositoryPath + '/../babel/' + repositoryName + '/' + getFilenameForLocale( locale );
 
