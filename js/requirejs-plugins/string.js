@@ -146,9 +146,9 @@ define( function( require ) {
         }
         var isRTL = localeInfo[ locale ].direction === 'rtl';
 
-        var fallbackSpecficPath = repositoryPath + '/' + getFilenameForLocale( FALLBACK_LOCALE );
+        var fallbackSpecificPath = repositoryPath + '/' + getFilenameForLocale( FALLBACK_LOCALE );
         var localeSpecificPath = ( locale === FALLBACK_LOCALE ) ?
-                                 fallbackSpecficPath :
+                                 fallbackSpecificPath :
                                  repositoryPath + '/../babel/' + repositoryName + '/' + getFilenameForLocale( locale );
 
         // In the browser, a string specified via the 'strings' query parameter overrides anything,
@@ -160,9 +160,9 @@ define( function( require ) {
         else {
 
           // Load & parse just once per file, getting the fallback strings first.
-          getWithCache( fallbackSpecficPath, function( parsedFallbackStrings ) {
+          getWithCache( fallbackSpecificPath, function( parsedFallbackStrings ) {
               if( parsedFallbackStrings[ key ] === undefined ) {
-                throw new Error( 'Missing string: ' + key + ' in ' + fallbackSpecficPath );
+                throw new Error( 'Missing string: ' + key + ' in ' + fallbackSpecificPath );
               }
               var fallback = parsedFallbackStrings[ key ].value;
 
