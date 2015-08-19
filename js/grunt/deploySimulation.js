@@ -15,6 +15,7 @@ var querystring = require( 'querystring' );
 var request = require( 'request' );
 var fs = require( 'fs' );
 var assert = require( 'assert' );
+var buildConstants = require( '../../../chipper/js/grunt/buildConstants' );
 
 // constants
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
@@ -53,7 +54,7 @@ module.exports = function( grunt, devDeploy ) {
 
   var query = querystring.stringify( {
     'repos': JSON.stringify( dependencies ),
-    'locales': JSON.stringify( [ 'en' ] ),
+    'locales': JSON.stringify( [ buildConstants.FALLBACK_LOCALE ] ),
     'simName': sim,
     'version': version,
     'serverName': ( devDeploy ) ? devServerName : productionServerName,

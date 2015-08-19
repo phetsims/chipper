@@ -13,15 +13,15 @@
 var assert = require( 'assert' );
 var fs = require( 'fs' );
 var setPreload = require( '../../../chipper/js/grunt/setPreload' );
+var buildConstants = require( '../../../chipper/js/grunt/buildConstants' );
 
 /**
  * @param grunt the grunt instance
  * @param {Object} pkg package.json
- * @param {string} fallbackLocale
  */
-module.exports = function( grunt, pkg, fallbackLocale ) {
+module.exports = function( grunt, pkg ) {
   'use strict';
-  
+
   setPreload( grunt, pkg );
 
   // after preload, the preload should be defined
@@ -33,7 +33,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
    */
   function getLocalesForRepo( repo ) {
     var directory = '../babel/' + repo;
-    var locales = [ fallbackLocale ]; // our default, where we always pull strings from in the sim repo
+    var locales = [ buildConstants.FALLBACK_LOCALE ]; // our default, where we always pull strings from in the sim repo
 
     try {
       // ensure it's a directory
@@ -88,7 +88,7 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
       return getLocalesForRepo( localesRepo );
     }
     else {
-      return [ fallbackLocale ];
+      return [ buildConstants.FALLBACK_LOCALE ];
     }
   };
 

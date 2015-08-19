@@ -31,9 +31,8 @@ var buildConstants = require( '../../../chipper/js/grunt/buildConstants' );
 /**
  * @param grunt the grunt instance
  * @param {Object} pkg package.json
- * @param {string} fallbackLocale
  */
-module.exports = function( grunt, pkg, fallbackLocale ) {
+module.exports = function( grunt, pkg ) {
   'use strict';
 
   // required fields in package.json
@@ -53,6 +52,8 @@ module.exports = function( grunt, pkg, fallbackLocale ) {
   assert( global.phet.mipmapsToBuild, 'missing global.phet.mipmapsToBuild' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
   assert( global.phet.chipper.brand, 'missing global.phet.chipper.brand' );
+
+  var fallbackLocale = buildConstants.FALLBACK_LOCALE;
 
   function trimWhitespace( str ) {
     return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );

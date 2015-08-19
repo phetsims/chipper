@@ -55,8 +55,6 @@ module.exports = function( grunt ) {
   // for situations where we can't pass the grunt instance as a function argument
   global.phet.chipper.grunt = grunt;
 
-  var FALLBACK_LOCAL = 'en';
-
   // read the preferences file
   var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
   var preferences = {};
@@ -252,13 +250,13 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'before-requirejs-build', '(internal use only) Do things before the requirejs:build task',
     function() {
-      beforeRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
+      beforeRequirejsBuild( grunt, pkg );
     } );
 
   grunt.registerTask( 'after-requirejs-build',
     '(internal use only) Do things after the requirejs:build task',
     function() {
-      afterRequirejsBuild( grunt, pkg, FALLBACK_LOCAL );
+      afterRequirejsBuild( grunt, pkg );
     } );
 
   //---------------------------------------------------------------------------------------------------------------
