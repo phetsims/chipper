@@ -333,7 +333,7 @@ module.exports = function( grunt ) {
                   sceneryEventLog: false,
                   sceneryAccessibilityLog: false,
 
-                  //TODO document this
+                  // for tracking object allocations, see phet-core/js/phetAllocation.js (PhET-specific)
                   phetAllocation: false
                 }
               }
