@@ -35,7 +35,7 @@ var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 
-//TODO look at why this is necessary
+//TODO chipper#300 look at why this is necessary
 /*
  * In Node, global is the global namespace object.
  * Register fs as a global so it can be accessed through the requirejs build system. Text.js plugin
