@@ -39,7 +39,6 @@ module.exports = function( grunt, buildConfig ) {
   assert( global.phet, 'missing global.phet' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
   assert( global.phet.strings, 'missing global.phet.strings' );
-  assert( global.phet.mipmapsToBuild, 'missing global.phet.mipmapsToBuild' );
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
 
@@ -409,7 +408,7 @@ module.exports = function( grunt, buildConfig ) {
       // need to load mipmaps here, since we can't do it synchronously during the require.js build step
       var mipmapsLoaded = 0; // counter that indicates we are done when incremented to the number of mipmaps
       var mipmapResult = {}; // result to be attached to window.phet.chipper.mipmaps in the sim
-      if ( global.phet.mipmapsToBuild.length ) {
+      if ( global.phet.mipmapsToBuild && global.phet.mipmapsToBuild.length > 0 ) {
         global.phet.mipmapsToBuild.forEach( function( mipmapToBuild ) {
           var name = mipmapToBuild.name;
           var path = mipmapToBuild.path;

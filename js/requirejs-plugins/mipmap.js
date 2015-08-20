@@ -100,6 +100,7 @@ define( function( require ) {
       if ( config.isBuild ) {
         // Store a record that our mipmaps will need to be computed later in the build, and should be provided for the
         // module name 'name'.
+        global.phet.mipmapsToBuild = global.phet.mipmapsToBuild || []; // initialize if this is the first mipmap
         global.phet.mipmapsToBuild.push( {
           name: name,
           path: path,
