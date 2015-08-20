@@ -336,12 +336,16 @@ module.exports = function( grunt ) {
   assert( packageJSON.version, 'version missing from ' + PACKAGE_FILENAME );
   assert( packageJSON.license, 'license missing from ' + PACKAGE_FILENAME );
 
-  // only repos in active-runnables with have PhET-specific entries
+  // only repositories in are runnable have PhET-specific entries
   if ( packageJSON.phet ) {
+
+    // verify that required fields are present
     assert( packageJSON.phet.simTitleStringKey, 'phet.simTitleStringKey missing from ' + PACKAGE_FILENAME );
     assert( packageJSON.phet.requirejsNamespace, 'phet.requirejsNamespace missing from ' + PACKAGE_FILENAME );
   }
   else {
+
+    // default so that non-build tasks run for repositories that aren't runnable
     packageJSON.phet ={};
   }
 
