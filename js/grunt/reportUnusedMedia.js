@@ -17,7 +17,6 @@
 'use strict';
 
 // modules
-var assert = require( 'assert' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 
 /**
@@ -25,9 +24,6 @@ var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
  * @param {string} requirejsNamespace - requirejs namespace that appears in config.js, eg, BALANCING_ACT
  */
 module.exports = function( grunt, requirejsNamespace ) {
-
-  // globals that should be defined by this point
-  assert( global.phet.chipper.licenseEntries, 'missing global.phet.chipper.licenseEntries' );
 
   var directory = process.cwd();
 
@@ -40,7 +36,7 @@ module.exports = function( grunt, requirejsNamespace ) {
         // check if the file was loaded during requirejs
         var key = requirejsNamespace + '/' + filename;
 
-        var licenseEntries = global.phet.chipper.licenseEntries;
+        var licenseEntries = global.phet.chipper.licenseEntries || {}; // global.phet.chipper.licenseEntries is initialized by media plugins
         if ( filename !== 'license.json' ) {
 
           // If no licenseEntries were registered, or some were registered but not one corresponding to this file
