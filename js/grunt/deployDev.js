@@ -26,9 +26,9 @@ var DEPENDENCIES_JSON = 'dependencies.json';
 var TEST_DIR_NAME = 'deploy-dev-tests';
 
 /**
- * @param grunt the grunt instance
- * @param mkdir set to true to create the sim dir and .htaccess file before copying the version directory
- * @param test set to true disable commit and push, and SCP to a test directory on spot
+ * @param grunt - the grunt instance
+ * @param {boolean} mkdir - set to true to create the sim dir and .htaccess file before copying the version directory
+ * @param {boolean} test - set to true to disable commit and push, and SCP to a test directory on spot
  */
 module.exports = function( grunt, mkdir, test ) {
 
