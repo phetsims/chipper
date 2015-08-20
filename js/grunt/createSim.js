@@ -29,9 +29,9 @@ module.exports = function( grunt ) {
 
   // grunt options
   var repositoryName = grunt.option( 'name' );
-  assert( repositoryName, 'missing option: name (the new repository name)' );
+  assert( repositoryName, 'missing required option: name (the new repository name)' );
   var author = grunt.option( 'author' );
-  assert( author, 'missing option: author' );
+  assert( author, 'missing required option: author' );
   var title = grunt.option( 'title' ) || toTitle( repositoryName );
   var clean = !!grunt.option( 'clean' ); // {boolean}
 
