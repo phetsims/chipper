@@ -38,7 +38,7 @@ module.exports = function( grunt, buildConfig ) {
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
-  assert( global.phet.phet.strings, 'missing global.phet.chipper.strings' );
+  assert( global.phet.chipper.strings, 'missing global.phet.chipper.strings' );
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
 
