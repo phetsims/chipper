@@ -38,7 +38,6 @@ module.exports = function( grunt, buildConfig ) {
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
-  assert( global.phet.chipper.licenseEntries, 'missing global.phet.chipper.licenseEntries' );
   assert( global.phet.strings, 'missing global.phet.strings' );
   assert( global.phet.mipmapsToBuild, 'missing global.phet.mipmapsToBuild' );
 
