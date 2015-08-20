@@ -34,6 +34,7 @@ var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails'
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
+var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 
 //TODO chipper#300 look at why this is necessary
 /*
@@ -85,7 +86,7 @@ module.exports = function( grunt ) {
   }
 
   // Initialize grunt
-  grunt.initConfig( buildConfig.gruntConfig );
+  grunt.initConfig( getGruntConfig( buildConfig.name, buildConfig.phetLibs ) );
 
   //---------------------------------------------------------------------------------------------------------------
   // Primary tasks

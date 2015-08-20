@@ -226,128 +226,6 @@ module.exports = function( grunt ) {
     return locales;
   }
 
-  /**
-   * Gets the JSHint configuration object.
-   *
-   * @param {Object} packageJSON - package.json
-   * @param {string[]} phetLibs
-   * @returns {Object}
-   */
-  function getJSHintConfig( packageJSON, phetLibs ) {
-
-    // Repository files to be linted. brand has a non-standard directory structure.
-    var repoFilesToLint = ( packageJSON.name === 'brand' ) ? [ '*/js/**/*.js' ] : [ 'js/**/*.js' ];
-
-    // All files to be linted
-    var allFilesToLint = _.map( phetLibs, function( repo ) {
-      return '../' + repo + '/js/**/*.js';
-    } );
-
-    // brand repo has a non-standard directory structure, so add it explicitly if it's a dependency.
-    if ( packageJSON.name !== 'brand' ) {
-      allFilesToLint.push( '../brand/*/js/**/*.js' );
-    }
-
-    // Exclude svgPath.js, it was automatically generated and doesn't match pass lint.
-    allFilesToLint.push( '!../kite/js/parser/svgPath.js' );
-    allFilesToLint = _.uniq( allFilesToLint );
-
-    return {
-
-      // PhET-specific, passed to the 'lint' grunt task
-      // Source files that are specific to this repository
-      repoFiles: repoFilesToLint,
-
-      // PhET-specific, passed to the 'lint-all' grunt task
-      // All source files for this repository (repository-specific and dependencies).
-      allFiles: allFilesToLint,
-
-      // Reference external options in jshintOptions.js
-      options: require( './jshintOptions' )
-    };
-  }
-
-  /**
-   * Gets the Grunt configuration object.
-   *
-   * @param {Object} packageJSON - package.json
-   * @param {strings[]} phetLibs
-   */
-  function getGruntConfig( packageJSON, phetLibs ) {
-    return {
-
-      jshint: getJSHintConfig( packageJSON, phetLibs ),
-
-      requirejs: {
-
-        // requirejs:build task (RequireJS optimizer)
-        build: {
-
-          // RequireJS optimizer options, see https://github.com/jrburke/r.js/blob/master/build/example.build.js
-          options: {
-
-            //TODO chipper#277 investigate and document
-            almond: true,
-
-            // name of the single module to optimize
-            name: packageJSON.name + '-config',
-
-            // JS config file
-            mainConfigFile: 'js/' + packageJSON.name + '-config.js',
-
-            // optimized output file
-            out: 'build/' + packageJSON.name + '.min.js',
-
-            // use the default wrapping strategy to wrap the module code, so that define/require are not globals
-            wrap: true,
-
-            // turn off preservation of comments that have a license in them
-            preserveLicenseComments: false,
-
-            // Minification strategy. Set this to 'none' if you want to debug a non-minified but compiled version.
-            optimize: 'uglify2',
-
-            // uglify2 configuration options
-            uglify2: {
-
-              // output options documented at https://github.com/mishoo/UglifyJS2#beautifier-options
-              output: {
-                inline_script: true // escape </script
-              },
-
-              // compress options documented at https://github.com/mishoo/UglifyJS2#compressor-options
-              compress: {
-
-                dead_code: true, // remove unreachable code
-
-                // To define globals, use global_defs inside compress options, see https://github.com/jrburke/r.js/issues/377
-                global_defs: {
-
-                  // global assertions (PhET-specific)
-                  assert: false,
-                  assertSlow: false,
-
-                  // scenery logging (PhET-specific)
-                  sceneryLog: false,
-                  sceneryLayerLog: false,
-                  sceneryEventLog: false,
-                  sceneryAccessibilityLog: false,
-
-                  // for tracking object allocations, see phet-core/js/phetAllocation.js (PhET-specific)
-                  phetAllocation: false
-                }
-              }
-            },
-
-            //TODO chipper#275 should 'mipmap' be included here too?
-            // modules to stub out in the optimized file
-            stubModules: [ 'string', 'audio', 'image' ]
-          }
-        }
-      }
-    };
-  }
-
   //------------------------------------------------------------------------------------
   // read configuration files
 
@@ -402,7 +280,6 @@ module.exports = function( grunt ) {
   buildConfig.preload = getPreload( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
   buildConfig.locales = getLocales( grunt, buildConfig.name );
-  buildConfig.gruntConfig = getGruntConfig( packageJSON, buildConfig.phetLibs );
 
   grunt.log.debug( 'buildConfig=' + JSON.stringify( buildConfig, null, 2 ) );
   return buildConfig;
