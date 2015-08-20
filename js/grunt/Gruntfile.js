@@ -167,14 +167,13 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'checkout-shas',
     'Check out shas for a project, as specified in dependencies.json',
     function() {
-      var buildServer = grunt.option( 'buildServer' ) ? true : false;
-      checkoutShas( grunt, buildConfig.name, false, buildServer );
+      checkoutShas( grunt, buildConfig.name, false /* toMaster */ );
     } );
 
   grunt.registerTask( 'checkout-master',
     'Check out master branch for all dependencies, as specified in dependencies.json',
     function() {
-      checkoutShas( grunt, buildConfig.name, true );
+      checkoutShas( grunt, buildConfig.name, true /* toMaster */ );
     } );
 
   grunt.registerTask( 'create-sim',
