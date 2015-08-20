@@ -27,37 +27,6 @@ var fs = require( 'fs' );
 module.exports = function( grunt ) {
   'use strict';
 
-  // grunt options
-  var repositoryName = grunt.option( 'name' );
-  assert( repositoryName, 'missing required option: name (the new repository name)' );
-  var author = grunt.option( 'author' );
-  assert( author, 'missing required option: author' );
-  var title = grunt.option( 'title' ) || toTitle( repositoryName );
-  var clean = !!grunt.option( 'clean' ); // {boolean}
-
-  // Check for required parameters
-  if ( typeof( repositoryName ) === 'undefined' ) {
-    throw new Error( 'repositoryName unspecified, use --name=...' );
-  }
-  if ( typeof( author ) === 'undefined' ) {
-    throw new Error( 'Author unspecified, use --author=...' );
-  }
-
-  grunt.log.writeln( 'Greetings ' + author + '!' );
-  grunt.log.writeln( 'creating sim with repository name ' + repositoryName );
-
-  var destinationPath = '../' + repositoryName;
-  if ( clean && fs.existsSync( destinationPath ) ) {
-    grunt.log.writeln( 'Cleaning ' + destinationPath );
-    grunt.file.delete( destinationPath, { force: true } ); // delete won't operate outside of current working dir unless forced
-  }
-
-  // Create the directory, if it didn't exist
-  if ( fs.existsSync( destinationPath ) ) {
-    throw new Error( destinationPath + ' already exists. Run with --clean if you want to do over.' );
-  }
-  grunt.file.mkdir( destinationPath );
-
   // Replace a single occurrence in a string (if any) with another.
   var replaceOneString = function( str, substring, replacement ) {
     var idx = str.indexOf( substring );
@@ -95,6 +64,37 @@ module.exports = function( grunt ) {
     } );
     return tmpString.substring( 0, 1 ).toUpperCase() + tmpString.substring( 1 );
   }
+
+  // grunt options
+  var repositoryName = grunt.option( 'name' );
+  assert( repositoryName, 'missing required option: name (the new repository name)' );
+  var author = grunt.option( 'author' );
+  assert( author, 'missing required option: author' );
+  var title = grunt.option( 'title' ) || toTitle( repositoryName );
+  var clean = !!grunt.option( 'clean' ); // {boolean}
+
+  // Check for required parameters
+  if ( typeof( repositoryName ) === 'undefined' ) {
+    throw new Error( 'repositoryName unspecified, use --name=...' );
+  }
+  if ( typeof( author ) === 'undefined' ) {
+    throw new Error( 'Author unspecified, use --author=...' );
+  }
+
+  grunt.log.writeln( 'Greetings ' + author + '!' );
+  grunt.log.writeln( 'creating sim with repository name ' + repositoryName );
+
+  var destinationPath = '../' + repositoryName;
+  if ( clean && fs.existsSync( destinationPath ) ) {
+    grunt.log.writeln( 'Cleaning ' + destinationPath );
+    grunt.file.delete( destinationPath, { force: true } ); // delete won't operate outside of current working dir unless forced
+  }
+
+  // Create the directory, if it didn't exist
+  if ( fs.existsSync( destinationPath ) ) {
+    throw new Error( destinationPath + ' already exists. Run with --clean if you want to do over.' );
+  }
+  grunt.file.mkdir( destinationPath );
 
   // Create variations of the repository name
   var configPath = replaceAllString( repositoryName.toUpperCase(), '-', '_' ); // eg, 'simula-rasa' -> 'SIMULA_RASA'
