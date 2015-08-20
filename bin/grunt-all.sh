@@ -13,7 +13,7 @@
 CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 WORKING_DIR=${CHIPPER_BIN}/../..
 INPUT_FILE=${WORKING_DIR}/chipper/data/active-runnables
-USAGE="usage: `basename $0` [-f fileOfRepoNames] gruntTask"
+USAGE="usage: `basename $0` [-f fileOfRepoNames] [gruntTask]"
 
 # Exit immediately on Ctrl-C
 trap "exit 1" SIGINT
