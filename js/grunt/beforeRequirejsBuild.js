@@ -13,7 +13,4 @@ module.exports = function( grunt, name, version ) {
   'use strict';
 
   grunt.log.debug( 'Building simulation: ' + name + ' ' + version );
-
-  // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
-  global.phet.chipper.getCacheBusterArgs = global.phet.chipper.getCacheBusterArgs || function() { return ''; };
 };

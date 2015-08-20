@@ -50,17 +50,33 @@ module.exports = function( grunt ) {
   //---------------------------------------------------------------------------------------------------------------
   // Configuration
 
-  // for sharing global information
+  var buildConfig = getBuildConfig( grunt );
+
+  // Initialize and document all globals
   assert( !global.phet, 'global.phet already exists' );
   global.phet = {
-    chipper: {
-      grunt: grunt // for situations where we can't pass the grunt instance as a function argument
-    }
-  };
 
-  // read build configuration information from multiple sources (config files, command line,...)
-  var buildConfig = getBuildConfig( grunt );
-  global.phet.chipper.brand = buildConfig.brand; //TODO this is used in media plugins
+    chipper: {
+
+      // the grunt instance, for situations where we can't pass it as a function argument
+      grunt: grunt,
+
+      // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
+      getCacheBusterArgs: function() { return ''; },
+
+      // media plugins populate this with license.json entries, see getLicenseEntry.js for format of entries
+      licenseEntries: {},
+
+      // use by media plugins, which don't have access to buildConfig
+      brand: buildConfig.brand
+    },
+
+    // populated by mipmap.js
+    mipmapsToLoad: [],
+
+    // populated by string.js
+    strings: {}
+  };
 
   // TODO: chipper#270 As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
   // string. This approach has a lot of problems and should be replaced as soon as we work out a more all encompassing
@@ -69,6 +85,7 @@ module.exports = function( grunt ) {
     buildConfig.version = buildConfig.version.replace( '-dev', '-together' );
   }
 
+  // Initialize grunt
   grunt.initConfig( buildConfig.gruntConfig );
 
   //---------------------------------------------------------------------------------------------------------------
