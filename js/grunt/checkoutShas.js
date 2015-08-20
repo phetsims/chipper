@@ -15,7 +15,8 @@ var child_process = require( 'child_process' );
 module.exports = function( grunt, repositoryName, toMaster ) {
   'use strict';
 
-  var buildServer = !!grunt.option( 'buildServer' ); // whether this build is initiated by the build server
+  // This option should be used only by build-server, to indicate that the task was invoked from build-server.
+  var buildServer = !!grunt.option( 'buildServer' );
 
   var dependencies = grunt.file.readJSON( ( buildServer ) ? '../chipper/js/build-server/tmp/dependencies.json' : 'dependencies.json' );
   var done = grunt.task.current.async();
