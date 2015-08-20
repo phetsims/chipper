@@ -136,7 +136,7 @@ module.exports = function( grunt ) {
         deploySimulation( grunt, 'simian' );
       }
       else {
-        deployDev( grunt, grunt.option( 'mkdir' ), grunt.option( 'test' ) );
+        deployDev( grunt );
       }
     }
   );
