@@ -23,7 +23,7 @@ var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
 var BUILD_DIR = 'build';
 var PACKAGE_JSON = 'package.json';
 var DEPENDENCIES_JSON = 'dependencies.json';
-var TEST_DIR_NAME = 'deploy-dev-tests'
+var TEST_DIR_NAME = 'deploy-dev-tests';
 
 /**
  * @param grunt the grunt instance
