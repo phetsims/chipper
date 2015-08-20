@@ -38,7 +38,7 @@ module.exports = function( grunt, buildConfig ) {
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
-  assert( global.phet.strings, 'missing global.phet.strings' );
+  assert( global.phet.phet.strings, 'missing global.phet.chipper.strings' );
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
 
@@ -74,14 +74,14 @@ module.exports = function( grunt, buildConfig ) {
 
     // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
     var stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
-    for ( var stringKey in global.phet.strings ) {
-      var repositoryName = global.phet.strings[ stringKey ].repositoryName;
+    for ( var stringKey in global.phet.chipper.strings ) {
+      var repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
       if ( stringRepositories.every( function( repo ) { return repo.name !== repositoryName; } ) ) {
         stringRepositories.push( {
           name: repositoryName,
-          path: global.phet.strings[ stringKey ].repositoryPath,
-          requirejsNamespace: global.phet.strings[ stringKey ].requirejsNamespace
+          path: global.phet.chipper.strings[ stringKey ].repositoryPath,
+          requirejsNamespace: global.phet.chipper.strings[ stringKey ].requirejsNamespace
         } );
 
         // If a string depends on an unlisted dependency, fail out
@@ -139,8 +139,8 @@ module.exports = function( grunt, buildConfig ) {
     buildConfig.locales.forEach( function( locale ) {
       stringMap[ locale ] = {};
 
-      for ( var stringKey in global.phet.strings ) {
-        var repositoryName = global.phet.strings[ stringKey ].repositoryName;
+      for ( var stringKey in global.phet.chipper.strings ) {
+        var repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
         // English fallback
         assert( repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ] !== undefined,
@@ -408,8 +408,8 @@ module.exports = function( grunt, buildConfig ) {
       // need to load mipmaps here, since we can't do it synchronously during the require.js build step
       var mipmapsLoaded = 0; // counter that indicates we are done when incremented to the number of mipmaps
       var mipmapResult = {}; // result to be attached to window.phet.chipper.mipmaps in the sim
-      if ( global.phet.mipmapsToBuild && global.phet.mipmapsToBuild.length > 0 ) {
-        global.phet.mipmapsToBuild.forEach( function( mipmapToBuild ) {
+      if ( global.phet.chipper.mipmapsToBuild && global.phet.chipper.mipmapsToBuild.length > 0 ) {
+        global.phet.chipper.mipmapsToBuild.forEach( function( mipmapToBuild ) {
           var name = mipmapToBuild.name;
           var path = mipmapToBuild.path;
           var level = mipmapToBuild.level;
@@ -426,7 +426,7 @@ module.exports = function( grunt, buildConfig ) {
             } );
             mipmapsLoaded++;
 
-            if ( mipmapsLoaded === global.phet.mipmapsToBuild.length ) {
+            if ( mipmapsLoaded === global.phet.chipper.mipmapsToBuild.length ) {
 
               // we've now finished loading all of the mipmaps, and can proceed with the build
               var mipmapsJavaScript = '<script type="text/javascript">window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';</script>';

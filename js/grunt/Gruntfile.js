@@ -67,14 +67,14 @@ module.exports = function( grunt ) {
       licenseEntries: {},
 
       // use by media plugins, which don't have access to buildConfig
-      brand: buildConfig.brand
-    },
+      brand: buildConfig.brand,
 
-    // populated by mipmap.js
-    mipmapsToLoad: [],
+      // populated by mipmap.js
+      mipmapsToBuild: [],
 
-    // populated by string.js
-    strings: {}
+      // populated by string.js
+      strings: {}
+    }
   };
 
   // TODO: chipper#270 As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
@@ -136,7 +136,7 @@ module.exports = function( grunt ) {
         deploySimulation( grunt, 'simian' );
       }
       else {
-        deployDev( grunt, grunt.option( 'mkdir' ), grunt.option( 'test' ) );
+        deployDev( grunt );
       }
     }
   );
@@ -167,14 +167,13 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'checkout-shas',
     'Check out shas for a project, as specified in dependencies.json',
     function() {
-      var buildServer = grunt.option( 'buildServer' ) ? true : false;
-      checkoutShas( grunt, buildConfig.name, false, buildServer );
+      checkoutShas( grunt, buildConfig.name, false /* toMaster */ );
     } );
 
   grunt.registerTask( 'checkout-master',
     'Check out master branch for all dependencies, as specified in dependencies.json',
     function() {
-      checkoutShas( grunt, buildConfig.name, true );
+      checkoutShas( grunt, buildConfig.name, true /* toMaster */ );
     } );
 
   grunt.registerTask( 'create-sim',
@@ -184,7 +183,7 @@ module.exports = function( grunt ) {
     '--title="string" : (optional) the simulation title\n' +
     '--clean=true : (optional) deletes the repository directory if it exists',
     function() {
-      createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'title' ), grunt.option( 'clean' ) );
+      createSim( grunt );
     } );
 
   // See reportMedia.js
@@ -217,16 +216,7 @@ module.exports = function( grunt ) {
                                             'responsibility of the developer. (Note that if you fail to manually ' +
                                             'clean the directory, you may end up with stale HTML files).',
     function() {
-
-      // The input and output arguments are required but we chose not to use the grunt required argument syntax (a colon)
-      // since it would cause problems for Windows developers who have colons in the pathnames.
-      var input = grunt.option( 'input' );
-      var output = grunt.option( 'output' );
-      assert( input, 'The input path must be specified' );
-      assert( output, 'The output path must be specified' );
-
-      var activeRunnables = !!grunt.option( 'active-runnables' );
-      reportThirdParty( grunt, input, output, activeRunnables );
+      reportThirdParty( grunt );
     } );
 
   grunt.registerTask( 'published-README',
