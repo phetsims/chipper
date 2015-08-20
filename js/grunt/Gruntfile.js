@@ -70,11 +70,11 @@ module.exports = function( grunt ) {
       brand: buildConfig.brand,
 
       // populated by mipmap.js
-      mipmapsToBuild: []
-    },
+      mipmapsToBuild: [],
 
-    // populated by string.js
-    strings: {}
+      // populated by string.js
+      strings: {}
+    }
   };
 
   // TODO: chipper#270 As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version

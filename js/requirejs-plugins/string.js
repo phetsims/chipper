@@ -112,10 +112,10 @@ define( function( require ) {
         repositoryName = repositoryPath.substring( repositoryPath.lastIndexOf( '/' ) + 1 ); // e.g. 'some-sim'
 
         // lazily construct our strings list
-        global.phet.strings = global.phet.strings || {};
+        global.phet.chipper.strings = global.phet.chipper.strings || {};
 
         // entry saved for later in the build
-        global.phet.strings[ name ] = {
+        global.phet.chipper.strings[ name ] = {
           name: name, // 'SOME_SIM/string.name'
           requirejsNamespace: requirejsNamespace, // 'SOME_SIM'
           requirePath: requirePath, // '/Users/something/phet/git/some-sim/js'

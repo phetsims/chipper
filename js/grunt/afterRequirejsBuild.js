@@ -38,7 +38,7 @@ module.exports = function( grunt, buildConfig ) {
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
-  assert( global.phet.strings, 'missing global.phet.strings' );
+  assert( global.phet.phet.strings, 'missing global.phet.chipper.strings' );
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
 
@@ -74,14 +74,14 @@ module.exports = function( grunt, buildConfig ) {
 
     // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
     var stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
-    for ( var stringKey in global.phet.strings ) {
-      var repositoryName = global.phet.strings[ stringKey ].repositoryName;
+    for ( var stringKey in global.phet.chipper.strings ) {
+      var repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
       if ( stringRepositories.every( function( repo ) { return repo.name !== repositoryName; } ) ) {
         stringRepositories.push( {
           name: repositoryName,
-          path: global.phet.strings[ stringKey ].repositoryPath,
-          requirejsNamespace: global.phet.strings[ stringKey ].requirejsNamespace
+          path: global.phet.chipper.strings[ stringKey ].repositoryPath,
+          requirejsNamespace: global.phet.chipper.strings[ stringKey ].requirejsNamespace
         } );
 
         // If a string depends on an unlisted dependency, fail out
@@ -139,8 +139,8 @@ module.exports = function( grunt, buildConfig ) {
     buildConfig.locales.forEach( function( locale ) {
       stringMap[ locale ] = {};
 
-      for ( var stringKey in global.phet.strings ) {
-        var repositoryName = global.phet.strings[ stringKey ].repositoryName;
+      for ( var stringKey in global.phet.chipper.strings ) {
+        var repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
         // English fallback
         assert( repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ] !== undefined,
