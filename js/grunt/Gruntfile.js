@@ -78,8 +78,8 @@ module.exports = function( grunt ) {
     }
   };
 
-  // TODO: chipper#270 As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
-  // TODO: entries in buildConfig are @public (read-only), and this workaround is writing to one of those entries!
+  // TODO: chipper#270 As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version.
+  // TODO: Entries in buildConfig are @public (read-only), and this workaround is writing to one of those entries!
   // string. This approach has a lot of problems and should be replaced as soon as we work out a more all encompassing
   // way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3 for more info.
   if ( buildConfig.brand === 'phet-io' && buildConfig.version.indexOf( '-dev' ) > -1 ) {
