@@ -25,7 +25,6 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 
 // PhET custom grunt tasks
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
-var beforeRequirejsBuild = require( '../../../chipper/js/grunt/beforeRequirejsBuild' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deploySimulation = require( '../../../chipper/js/grunt/deploySimulation' );
@@ -114,7 +113,6 @@ module.exports = function( grunt ) {
     '--lint=false : skip the lint sub-task',
     optionalTasks.concat( [
       'clean',
-      'before-requirejs-build',
       'requirejs:build',
       'after-requirejs-build' ] )
   );
@@ -154,11 +152,6 @@ module.exports = function( grunt ) {
         grunt.file.delete( 'build' );
       }
       grunt.file.mkdir( 'build' );
-    } );
-
-  grunt.registerTask( 'before-requirejs-build', '(internal use only) Do things before the requirejs:build task',
-    function() {
-      beforeRequirejsBuild( grunt, buildConfig.name, buildConfig.version );
     } );
 
   grunt.registerTask( 'after-requirejs-build',
