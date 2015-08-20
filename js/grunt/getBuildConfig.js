@@ -278,12 +278,12 @@ module.exports = function( grunt ) {
 
       jshint: getJSHintConfig( packageJSON, phetLibs ),
 
-      // configure the RequireJS plugin, see https://github.com/jrburke/r.js/blob/master/build/example.build.js
       requirejs: {
 
         // builds the minified script
         build: {
 
+          // RequireJS options, see https://github.com/jrburke/r.js/blob/master/build/example.build.js
           options: {
 
             almond: true,
