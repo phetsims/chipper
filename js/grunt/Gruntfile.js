@@ -71,7 +71,7 @@ module.exports = function( grunt ) {
     },
 
     // populated by mipmap.js
-    mipmapsToLoad: [],
+    mipmapsToBuild: [],
 
     // populated by string.js
     strings: {}
