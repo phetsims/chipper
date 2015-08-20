@@ -67,11 +67,11 @@ module.exports = function( grunt ) {
       licenseEntries: {},
 
       // use by media plugins, which don't have access to buildConfig
-      brand: buildConfig.brand
-    },
+      brand: buildConfig.brand,
 
-    // populated by mipmap.js
-    mipmapsToBuild: [],
+      // populated by mipmap.js
+      mipmapsToBuild: []
+    },
 
     // populated by string.js
     strings: {}

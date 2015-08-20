@@ -41,12 +41,12 @@
  *                       computation (if buildCompatible is not present), or use the same high-quality pixel-based
  *                       mipmap computation of the build.
  * - Chipper grunt build: r.js build will call load() with config.isBuild == true. We'll push path/module-name/options
- *                        to global.phet.mipmapsToBuild (created in the main build gruntfile), not doing any processing
+ *                        to global.phet.chipper.mipmapsToBuild (created in the main build gruntfile), not doing any processing
  *                        at that time. Then write() is called, and we return a JS stub (to be inserted into the built
  *                        file like a define() block for a module) that will look up mipmap info from
  *                        window.phet.chipper.mipmaps, create a DOM Image for each level and notify Joist to wait until
  *                        all of the level images are loaded (currently done with window.phetImages). Later in the build
- *                        process, our Gruntfile will scan global.phet.mipmapsToBuild, asynchronously build high-quality
+ *                        process, our Gruntfile will scan global.phet.chipper.mipmapsToBuild, asynchronously build high-quality
  *                        mipmaps, and will add JS to insert the mipmap objects (missing the DOM image) into
  *                        window.phet.chipper.mipmaps. Delaying mipmap computation until later in the build is clunky,
  *                        but required since require.js only supports the build-step synchonously and our image decoder
@@ -100,8 +100,8 @@ define( function( require ) {
       if ( config.isBuild ) {
         // Store a record that our mipmaps will need to be computed later in the build, and should be provided for the
         // module name 'name'.
-        global.phet.mipmapsToBuild = global.phet.mipmapsToBuild || []; // initialize if this is the first mipmap
-        global.phet.mipmapsToBuild.push( {
+        global.phet.chipper.mipmapsToBuild = global.phet.chipper.mipmapsToBuild || []; // initialize if this is the first mipmap
+        global.phet.chipper.mipmapsToBuild.push( {
           name: name,
           path: path,
           level: options.level,
