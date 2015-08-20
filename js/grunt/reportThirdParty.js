@@ -8,6 +8,12 @@
  *
  * Third party entries are parsed from HTML, see getLicenseEntry.js
  *
+ * If the --activeRunnables grunt option is supplied, the task iterates over the active-runnables and copies each built HTML file
+ * into the directory specified with --input before running the report.  If any HTML files are missing, the report will fail.
+ * Before using this options, the developer should run `grunt-all.sh` to make sure all of the HTML files are up-to-date.
+ * The directory is neither automatically created nor automatically cleaned, this is the responsibility of the developer.
+ * (Note that if you fail to manually clean the directory, you may end up with stale HTML files).
+ *
  * See https://github.com/phetsims/chipper/issues/162
  *
  * @author Sam Reid
@@ -18,6 +24,7 @@
 'use strict';
 
 // modules
+var assert = require( 'assert' );
 var fs = require( 'fs' );
 
 // Load shared constants
@@ -29,17 +36,14 @@ var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses
 
 /**
  * @param grunt
- * @param {string} input - the path to the directory in which to find the HTML files for reporting, can be relative to grunt or absolute
- * @param {string} output - the path to a file where the report should be written
- * @param {boolean} activeRunnables - If this flag is supplied, the task iterates over the active-runnables and copies
- *                                  - each built HTML file into the directory specified with --input before running the
- *                                  - report.  If any HTML files are missing, the report will fail.  Before using this
- *                                  - flag, the developer should run `grunt-all.sh` to make sure all of the HTML files
- *                                  - are up-to-date.  The directory is neither automatically created nor automatically
- *                                  - cleaned, this is the responsibility of the developer. (Note that if you fail to
- *                                  - manually clean the directory, you may end up with stale HTML files).
  */
-module.exports = function( grunt, input, output, activeRunnables ) {
+module.exports = function( grunt ) {
+
+  var input = grunt.option( 'input' ); // relative or absolute path to the directory in which to find the HTML files for reporting
+  assert( input, 'missing required option: input' );
+  var output = grunt.option( 'output' ); // path to a file where the report should be written
+  assert( output, 'missing required option: output' );
+  var activeRunnables = !!grunt.option( 'active-runnables' ); // {boolean} see doc above
 
   var i;
 

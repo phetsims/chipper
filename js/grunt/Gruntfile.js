@@ -217,16 +217,7 @@ module.exports = function( grunt ) {
                                             'responsibility of the developer. (Note that if you fail to manually ' +
                                             'clean the directory, you may end up with stale HTML files).',
     function() {
-
-      // The input and output arguments are required but we chose not to use the grunt required argument syntax (a colon)
-      // since it would cause problems for Windows developers who have colons in the pathnames.
-      var input = grunt.option( 'input' );
-      var output = grunt.option( 'output' );
-      assert( input, 'The input path must be specified' );
-      assert( output, 'The output path must be specified' );
-
-      var activeRunnables = !!grunt.option( 'active-runnables' );
-      reportThirdParty( grunt, input, output, activeRunnables );
+      reportThirdParty( grunt );
     } );
 
   grunt.registerTask( 'published-README',
