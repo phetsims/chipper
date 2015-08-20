@@ -5,7 +5,6 @@
  * It is for internal use only, not intended to be called directly.
  * It shares information with other grunt tasks via these globals:
  *
- * global.phet.chipper.licenseEntries - license entries, populated in by media plugins
  * global.phet.mipmapsToBuild - populated by mipmap.js plugin
  *
  * @param grunt - the grunt instance
@@ -23,8 +22,4 @@ module.exports = function( grunt, name, version ) {
   // Since require.js plugins can't be asynchronous with isBuild=true (r.js mode), we need to catch all of the
   // mipmaps that we'll need to build and then handle them later asynchronously.
   global.phet.mipmapsToBuild = [];
-
-  // These entries will be filled in as plugins are loaded.  
-  // This will have elements: lib, audio, images, etc.
-  global.phet.chipper.licenseEntries = {};
 };

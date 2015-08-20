@@ -71,6 +71,7 @@ define( function() {
    */
   function registerLicenseEntry( name, licenseEntry, brand, mediaType, onload ) {
     if ( isAcceptableLicenseEntry( name, licenseEntry, brand ) ) {
+      global.phet.chipper.licenseEntries = global.phet.chipper.licenseEntries || {}; // initialize if this is the first entry
       global.phet.chipper.licenseEntries[ mediaType ] = global.phet.chipper.licenseEntries[ mediaType ] || {};
       global.phet.chipper.licenseEntries[ mediaType ][ name ] = licenseEntry;
       onload( null );
