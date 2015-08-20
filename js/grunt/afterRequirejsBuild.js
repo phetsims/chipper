@@ -278,9 +278,7 @@ module.exports = function( grunt, buildConfig ) {
     };
 
     // Add a list of all 3rd-party media files, such as images and audio.
-    // For each registered image or audio file, keep the ones that are not from PhET
-    // return their licenseInfo.entry
-    // For each media type
+    // For each registered image or audio file, keep the ones that are not from PhET return their licenseInfo.entry
     for ( var mediaType in global.phet.chipper.licenseEntries ) {
       if ( global.phet.chipper.licenseEntries.hasOwnProperty( mediaType ) ) {
         var mediaEntry = global.phet.chipper.licenseEntries[ mediaType ];
