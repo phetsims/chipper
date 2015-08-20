@@ -27,7 +27,7 @@ var DEFAULT_PRODUCTION_SERVER_URL = 'https://phet.colorado.edu';
 
 /**
  * @param grunt - the grunt instance
- * @param {boolean} devDeploy deploy to development server instead of production if true
+ * @param {boolean} devDeploy - deploy to development server instead of production if true
  */
 module.exports = function( grunt, devDeploy ) {
 

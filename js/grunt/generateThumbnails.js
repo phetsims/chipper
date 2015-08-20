@@ -12,17 +12,17 @@
 var Jimp = require( 'jimp' );
 
 /**
- * @param grunt the grunt instance
- * @param projectName of the project (repository)
- * @param width of the resized image
- * @param height of the resized image
- * @param callback
+ * @param grunt - the grunt instance
+ * @param {string} repositoryName - name of the repository
+ * @param {number} width of the resized image
+ * @param {number} height of the resized image
+ * @param {function} callback
  */
-module.exports = function( grunt, projectName, width, height, callback ) {
+module.exports = function( grunt, repositoryName, width, height, callback ) {
   'use strict';
 
-  var fullResImageName = 'assets/' + projectName + '-screenshot.png';
-  var destinationFile = 'build/' + projectName + '-' + width + '.png';
+  var fullResImageName = 'assets/' + repositoryName + '-screenshot.png';
+  var destinationFile = 'build/' + repositoryName + '-' + width + '.png';
 
   if ( !grunt.file.exists( fullResImageName ) ) {
     grunt.log.writeln( 'no image file exists: ' + fullResImageName + '. Not running task: generate-thumbnails' );

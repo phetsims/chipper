@@ -8,11 +8,11 @@
  */
 
 /**
- * @param grunt the grunt instance
- * @param {string} repositoryName name from package.json
- * @param {string[]} phetLibs from package.json
- * @param {string} simTitleStringKey from package.json
- * @param {boolean} published has the sim been published?
+ * @param grunt - the grunt instance
+ * @param {string} repositoryName - name of the repository
+ * @param {string[]} phetLibs - repositories that repositoryName depends on
+ * @param {string} simTitleStringKey - key for the sim's title string
+ * @param {boolean} published - has the sim been published?
  */
 module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, published ) {
   'use strict';

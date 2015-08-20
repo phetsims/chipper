@@ -8,9 +8,9 @@ var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 /**
- * @param grunt the grunt instance
- * @param repositoryName name field from package.json
- * @param toMaster whether master should be used, or dependencies.json shas should be used
+ * @param grunt - the grunt instance
+ * @param {string} repositoryName - name of the repository
+ * @param {boolean} toMaster - whether master should be used, or dependencies.json shas should be used
  */
 module.exports = function( grunt, repositoryName, toMaster ) {
   'use strict';

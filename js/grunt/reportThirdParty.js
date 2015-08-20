@@ -35,7 +35,7 @@ var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
 /**
- * @param grunt
+ * @param grunt - the grunt instance
  */
 module.exports = function( grunt ) {
 
