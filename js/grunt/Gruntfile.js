@@ -184,7 +184,7 @@ module.exports = function( grunt ) {
     '--title="string" : (optional) the simulation title\n' +
     '--clean=true : (optional) deletes the repository directory if it exists',
     function() {
-      createSim( grunt, grunt.option( 'name' ), grunt.option( 'author' ), grunt.option( 'title' ), grunt.option( 'clean' ) );
+      createSim( grunt );
     } );
 
   // See reportMedia.js

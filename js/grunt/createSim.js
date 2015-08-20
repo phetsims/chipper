@@ -18,17 +18,22 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
+var assert = require( 'assert' );
 var fs = require( 'fs' );
 
 /**
  * @param grunt the grunt instance
- * @param {string} repositoryName the repository name.  All lower case and hyphenated, like circuit-construction-kit
- * @param {string} author the new author for the project
- * @param {string} [title] optional title. If not provide, will attempt to coerce the repository name to a title.
- * @param {boolean} [clean] whether to delete the repository directory if it already exists, useful for development and debugging
  */
-module.exports = function( grunt, repositoryName, author, title, clean ) {
+module.exports = function( grunt ) {
   'use strict';
+
+  // grunt options
+  var repositoryName = grunt.option( 'name' );
+  assert( repositoryName, 'missing option: name (the new repository name)' );
+  var author = grunt.option( 'author' );
+  assert( author, 'missing option: author' );
+  var title = grunt.option( 'title' ) || toTitle( repositoryName );
+  var clean = !!grunt.option( 'clean' ); // {boolean}
 
   // Check for required parameters
   if ( typeof( repositoryName ) === 'undefined' ) {
@@ -95,7 +100,6 @@ module.exports = function( grunt, repositoryName, author, title, clean ) {
   var configPath = replaceAllString( repositoryName.toUpperCase(), '-', '_' ); // eg, 'simula-rasa' -> 'SIMULA_RASA'
   var lowerCamelCase = toCamelCase( repositoryName ); // eg, 'simula-rasa' -> 'simulaRasa'
   var upperCamelCase = lowerCamelCase.substring( 0, 1 ).toUpperCase() + lowerCamelCase.substring( 1 ); // eg, 'simula-rasa' -> 'SimulaRasa'
-  title = title || toTitle( repositoryName ); // eg, 'simula-rasa' -> 'Simula Rasa'
 
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
