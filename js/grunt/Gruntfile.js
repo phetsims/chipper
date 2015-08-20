@@ -222,12 +222,14 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
     function() {
+      assert( buildConfig.simTitleStringKey, 'missing buildConfig.simTitleStringKey' );
       generateREADME( grunt, buildConfig.name, buildConfig.phetLibs, buildConfig.simTitleStringKey, true /* published */ );
     } );
 
   grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
     function() {
+      assert( buildConfig.simTitleStringKey, 'missing buildConfig.simTitleStringKey' );
       generateREADME( grunt, buildConfig.name, buildConfig.phetLibs, buildConfig.simTitleStringKey, false /* published */ );
     } );
 

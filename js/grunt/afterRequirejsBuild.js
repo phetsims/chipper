@@ -31,6 +31,10 @@ var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
+  // buildConfig required by this task
+  assert( buildConfig.simTitleStringKey, 'missing buildConfig.simTitleStringKey' );
+  assert( buildConfig.requirejsNamespace, 'missing buildConfig.requirejsNamespace' );
+
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
@@ -332,7 +336,6 @@ module.exports = function( grunt, buildConfig ) {
         localeHTML = replaceFirst( localeHTML, unalteredVersion, buildConfig.version );
       }
 
-      assert( buildConfig.simTitleStringKey, 'phet.simTitleStringKey missing from package.json' ); // required for sims
       localeHTML = replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + buildConfig.version ); //TODO: i18n order
       grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
     }
