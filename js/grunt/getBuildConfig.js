@@ -280,44 +280,66 @@ module.exports = function( grunt ) {
 
       requirejs: {
 
-        // builds the minified script
+        // requirejs:build task (RequireJS optimizer)
         build: {
 
-          // RequireJS options, see https://github.com/jrburke/r.js/blob/master/build/example.build.js
+          // RequireJS optimizer options, see https://github.com/jrburke/r.js/blob/master/build/example.build.js
           options: {
 
+            //TODO chipper#277 investigate and document
             almond: true,
 
-            mainConfigFile: 'js/' + packageJSON.name + '-config.js',
-            out: 'build/' + packageJSON.name + '.min.js',
+            // name of the single module to optimize
             name: packageJSON.name + '-config',
 
-            // Minification strategy.  Put this to none if you want to debug a non-minified but compiled version
-            optimize: 'uglify2',
+            // JS config file
+            mainConfigFile: 'js/' + packageJSON.name + '-config.js',
+
+            // optimized output file
+            out: 'build/' + packageJSON.name + '.min.js',
+
+            // use the default wrapping strategy to wrap the module code, so that define/require are not globals
             wrap: true,
+
+            // turn off preservation of comments that have a license in them
             preserveLicenseComments: false,
+
+            // Minification strategy. Set this to 'none' if you want to debug a non-minified but compiled version.
+            optimize: 'uglify2',
+
+            // uglify2 configuration options
             uglify2: {
+
+              // output options documented at https://github.com/mishoo/UglifyJS2#beautifier-options
               output: {
                 inline_script: true // escape </script
               },
+
+              // compress options documented at https://github.com/mishoo/UglifyJS2#compressor-options
               compress: {
+
+                dead_code: true, // remove unreachable code
+
                 global_defs: {
-                  // global assertions
+
+                  // global assertions (PhET-specific)
                   assert: false,
                   assertSlow: false,
-                  // scenery logging
+
+                  // scenery logging (PhET-specific)
                   sceneryLog: false,
                   sceneryLayerLog: false,
                   sceneryEventLog: false,
                   sceneryAccessibilityLog: false,
+
+                  //TODO document this
                   phetAllocation: false
-                },
-                dead_code: true
+                }
               }
             },
 
             //TODO chipper#275 should 'mipmap' be included here too?
-            // stub out the plugins, so their source code won't be included in the minified file
+            // modules to stub out in the optimized file
             stubModules: [ 'string', 'audio', 'image' ]
           }
         }
