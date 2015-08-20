@@ -320,6 +320,7 @@ module.exports = function( grunt ) {
 
                 dead_code: true, // remove unreachable code
 
+                // To define globals, use global_defs inside compress options, see https://github.com/jrburke/r.js/issues/377
                 global_defs: {
 
                   // global assertions (PhET-specific)
