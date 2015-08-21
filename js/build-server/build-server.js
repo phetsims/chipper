@@ -40,7 +40,6 @@
  * - version - the version to be built. Production deploys will automatically strip everything after the major.minor.maintenance
  * - authorizationCode - a password to authorize legitimate requests
  * - serverName - server to deploy to, defaults to figaro.colorado.edu, but could be overriden for testing on simian.colorado.edu
- * - dev - if true, just deploy to spot, not to the production server
  *
  * Note: You will NOT want to assemble these request URLs manually, instead use grunt deploy-production for deploys.
  *
@@ -51,6 +50,7 @@
  * The build server does the following steps when a deploy request is received:
  * - checks the authorization code, unauthorized codes will not trigger a build
  * - puts the build task on a queue so multiple builds don't occur simultaneously
+ * - pull chipper and clone any missing repos
  * - npm install in the sim directory
  * - pull master for the sim and all dependencies
  * - grunt checkout-shas
@@ -415,6 +415,18 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   /**
+   * Pull chipper and perennial, then clone missing repos
+   * @param callback
+   */
+  var cloneMissingRepos = function( callback ) {
+    exec( 'git pull', '.', function() { // pull chipper first
+      exec( 'git pull', PERENNIAL, function() {
+        exec( './chipper/bin/clone-missing-repos.sh', '..', callback );
+      } );
+    } );
+  };
+
+  /**
    * pull master for every repo in dependencies.json (plus babel) to make sure everything is up to date
    * @param callback
    */
@@ -511,19 +523,21 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
 
       // run every step of the build
-      exec( 'npm install', simDir, function() {
-        pullMaster( function() {
-          exec( 'grunt checkout-shas --buildServer', simDir, function() {
-            exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
-              exec( 'grunt build --brand=phet --lint=false --locales=' + locales.toString(), simDir, function() {
-                exec( 'grunt generate-thumbnails', simDir, function() {
-                  mkVersionDir( function() {
-                    exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
-                      writeLatestHtaccess( function() {
-                        writeDownloadHtaccess( function() {
-                          createTranslationsXML( function() {
-                            notifyServer( function() {
-                              spotScp( afterDeploy ); // copy to spot on non-dev deploys too
+      cloneMissingRepos( function() {
+        exec( 'npm install', simDir, function() {
+          pullMaster( function() {
+            exec( 'grunt checkout-shas --buildServer', simDir, function() {
+              exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
+                exec( 'grunt build --brand=phet --lint=false --locales=' + locales.toString(), simDir, function() {
+                  exec( 'grunt generate-thumbnails', simDir, function() {
+                    mkVersionDir( function() {
+                      exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
+                        writeLatestHtaccess( function() {
+                          writeDownloadHtaccess( function() {
+                            createTranslationsXML( function() {
+                              notifyServer( function() {
+                                spotScp( afterDeploy ); // copy to spot on non-dev deploys too
+                              } );
                             } );
                           } );
                         } );
