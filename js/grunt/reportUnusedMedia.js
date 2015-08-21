@@ -30,8 +30,9 @@ module.exports = function( grunt, requirejsNamespace ) {
   ChipperConstants.MEDIA_TYPES.forEach( function( mediaType ) {
 
     // Iterate over media directories and sub-directories
-    if ( grunt.file.exists( directory + '/' + mediaType ) ) {
-      grunt.file.recurse( directory + '/' + mediaType, function( abspath, rootdir, subdir, filename ) {
+    var subdirectory = directory + '/' + mediaType;
+    if ( grunt.file.isDir( subdirectory ) ) {
+      grunt.file.recurse( subdirectory, function( abspath, rootdir, subdir, filename ) {
 
         // check if the file was loaded during requirejs
         var key = requirejsNamespace + '/' + filename;
