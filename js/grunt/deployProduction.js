@@ -34,22 +34,22 @@ module.exports = function( grunt ) {
   assert( packageJSON.version, 'missing name from ' + PACKAGE_JSON );
 
   // read dependencies.json (required)
-  var dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
+  var dependenciesJSON = grunt.file.readJSON( DEPENDENCIES_JSON );
 
   // read build-locale.json (required)
-  var preferences = grunt.file.readJSON( PREFERENCES_FILE );
-  assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
+  var buildLocalJSON = grunt.file.readJSON( PREFERENCES_FILE );
+  assert( buildLocalJSON.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
 
   var query = querystring.stringify( {
-    'repos': JSON.stringify( dependencies ),
+    'repos': JSON.stringify( dependenciesJSON ),
     'locales': JSON.stringify( [ ChipperConstants.FALLBACK_LOCALE ] ),
     'simName': packageJSON.name,
     'version': packageJSON.version,
-    'serverName': preferences.productionServerName || DEFAULT_PRODUCTION_SERVER_NAME,
-    'authorizationCode': preferences.buildServerAuthorizationCode
+    'serverName': buildLocalJSON.productionServerName || DEFAULT_PRODUCTION_SERVER_NAME,
+    'authorizationCode': buildLocalJSON.buildServerAuthorizationCode
   } );
 
-  var productionServerURL = preferences.productionServerURL || DEFAULT_PRODUCTION_SERVER_URL;
+  var productionServerURL = buildLocalJSON.productionServerURL || DEFAULT_PRODUCTION_SERVER_URL;
   var url = productionServerURL + '/deploy-html-simulation?' + query;
 
   var done = grunt.task.current.async();
