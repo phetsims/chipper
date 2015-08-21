@@ -177,34 +177,36 @@ module.exports = function( grunt ) {
     } );
 
   // See reportMedia.js
-  grunt.registerTask( 'report-media', '(project-wide) Report on license.json files throughout all working copies. ' +
-                                      'Reports any media (such as images or audio) files that have any of the following problems:\n' +
-                                      '(1) incompatible-license (resource license not approved)\n' +
-                                      '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
-                                      '(3) missing-file (entry in the license.json but not on the file system)',
+  grunt.registerTask( 'report-media',
+    '(project-wide) Report on license.json files throughout all working copies. ' +
+    'Reports any media (such as images or audio) files that have any of the following problems:\n' +
+    '(1) incompatible-license (resource license not approved)\n' +
+    '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
+    '(3) missing-file (entry in the license.json but not on the file system)',
     function() {
       reportMedia( grunt );
     } );
 
   // see reportThirdParty.js
-  grunt.registerTask( 'report-third-party', 'This task is used to create a report of third-party resources (code, ' +
-                                            'images, audio, etc) used in a set of PhET simulations by reading the ' +
-                                            'license information in built HTML files.\n' +
-                                            '--input (required argument) the path to the directory containing HTML ' +
-                                            'files which will be reported on.\n' +
-                                            '--output (required argument) the path to a file where the report should be ' +
-                                            'written. The file is in markdown syntax and the *.md suffix is ' +
-                                            'recommended. This will silently overwrite an existing file, if there is ' +
-                                            'one.\n' +
-                                            '--active-runnables (optional flag, boolean) If this flag is ' +
-                                            'supplied, the task iterates over the active-runnables and copies each ' +
-                                            'built HTML file into the directory specified with --input before ' +
-                                            'running the report. If any HTML files are missing, the report will fail. ' +
-                                            'Before using this flag, the developer should run `grunt-all.sh` to make ' +
-                                            'sure all of the HTML files are up-to-date. The directory is neither ' +
-                                            'automatically created nor automatically cleaned, this is the ' +
-                                            'responsibility of the developer. (Note that if you fail to manually ' +
-                                            'clean the directory, you may end up with stale HTML files).',
+  grunt.registerTask( 'report-third-party',
+    'This task is used to create a report of third-party resources (code, ' +
+    'images, audio, etc) used in a set of PhET simulations by reading the ' +
+    'license information in built HTML files.\n' +
+    '--input (required argument) the path to the directory containing HTML ' +
+    'files which will be reported on.\n' +
+    '--output (required argument) the path to a file where the report should be ' +
+    'written. The file is in markdown syntax and the *.md suffix is ' +
+    'recommended. This will silently overwrite an existing file, if there is ' +
+    'one.\n' +
+    '--active-runnables (optional flag, boolean) If this flag is ' +
+    'supplied, the task iterates over the active-runnables and copies each ' +
+    'built HTML file into the directory specified with --input before ' +
+    'running the report. If any HTML files are missing, the report will fail. ' +
+    'Before using this flag, the developer should run `grunt-all.sh` to make ' +
+    'sure all of the HTML files are up-to-date. The directory is neither ' +
+    'automatically created nor automatically cleaned, this is the ' +
+    'responsibility of the developer. (Note that if you fail to manually ' +
+    'clean the directory, you may end up with stale HTML files).',
     function() {
       reportThirdParty( grunt );
     } );
