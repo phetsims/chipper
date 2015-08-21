@@ -19,7 +19,6 @@
  */
 
 var assert = require( 'assert' );
-var fs = require( 'fs' );
 
 /**
  * @param grunt the grunt instance
@@ -84,15 +83,16 @@ module.exports = function( grunt ) {
   grunt.log.writeln( 'Greetings ' + author + '!' );
   grunt.log.writeln( 'creating sim with repository name ' + repositoryName );
 
+  // initialize the directory
   var destinationPath = '../' + repositoryName;
-  if ( clean && fs.existsSync( destinationPath ) ) {
-    grunt.log.writeln( 'Cleaning ' + destinationPath );
-    grunt.file.delete( destinationPath, { force: true } ); // delete won't operate outside of current working dir unless forced
-  }
-
-  // Create the directory, if it didn't exist
-  if ( fs.existsSync( destinationPath ) ) {
-    throw new Error( destinationPath + ' already exists. Run with --clean if you want to do over.' );
+  if ( grunt.file.exists( destinationPath ) ) {
+    if ( clean ) {
+      grunt.log.writeln( 'Cleaning ' + destinationPath );
+      grunt.file.delete( destinationPath, { force: true } ); // delete won't operate outside of current working dir unless forced
+    }
+    else {
+      throw new Error( destinationPath + ' already exists. Run with --clean if you want to do over.' );
+    }
   }
   grunt.file.mkdir( destinationPath );
 
