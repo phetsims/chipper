@@ -172,7 +172,7 @@ module.exports = function( grunt ) {
     assert( grunt.file.isDir(), stringsDirectory + 'is not a directory' );
 
     // Get names of string files.
-    var stringFiles = grunt.file.expand( stringsDirectory, /^.*-strings.*\.json/ );
+    var stringFiles = grunt.file.expand( stringsDirectory + '/' + repository + '-strings_*.json' );
     assert( stringFiles.length > 0, 'no string files found in ' + stringsDirectory );
 
     // Extract the locales from the file names.
