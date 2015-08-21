@@ -29,7 +29,7 @@ module.exports = function( grunt, repositoryName, width, height, callback ) {
     return;
   }
 
-  //TODO handle the case where build is not a directory, see grunt.file.isDir
+  //TODO chipper#304 handle the case where build is not a directory, see grunt.file.isDir
   if ( !grunt.file.exists( 'build' ) ) {
     grunt.file.mkdir( 'build' );
   }
