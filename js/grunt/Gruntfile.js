@@ -2,7 +2,6 @@
 
 /**
  * Grunt configuration file for PhET projects.
- * Requires a package.json file containing project settings.
  * Tasks share information via global.phet, see individual tasks for details.
  *
  * @author Chris Malley (PixelZoom, Inc.)
