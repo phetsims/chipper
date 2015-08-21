@@ -107,8 +107,8 @@ module.exports = function( grunt ) {
     }
 
     // add sim-specific preloads from package.json
-    if ( packageJSON.preload ) {
-      preload = preload.concat( packageJSON.preload );
+    if ( packageJSON.phet.preload ) {
+      preload = preload.concat( packageJSON.phet.preload );
     }
 
     // add brand-specific preloads from build.json
