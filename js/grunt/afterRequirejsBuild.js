@@ -7,7 +7,6 @@
 
 // built-in node APIs
 var assert = require( 'assert' );
-var fs = require( 'fs' );
 var path = require( 'path' );
 var child_process = require( 'child_process' );
 
@@ -112,9 +111,8 @@ module.exports = function( grunt, buildConfig ) {
 
         var stringsFilename = path.normalize( basePath + repository.name + '-strings_' + locale + '.json' );
 
-        var fileExists = fs.existsSync( stringsFilename );
-        if ( fileExists ) {
-          var fileContents = JSON.parse( fs.readFileSync( stringsFilename, 'utf8' ) );
+        if ( grunt.file.exists( stringsFilename ) ) {
+          var fileContents = grunt.file.readJSON( stringsFilename, { encoding: 'utf8' } );
           var fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
           for ( var stringKeyMissingPrefix in fileContents ) {
