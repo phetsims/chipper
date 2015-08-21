@@ -98,6 +98,7 @@ var DEV_SERVER = 'spot.colorado.edu';
 var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
 var DEFAULT_SERVER_NAME = 'figaro.colorado.edu';
 var ENGLISH_LOCALE = 'en';
+var PERENNIAL = '../perennial';
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
 
 assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
@@ -261,17 +262,15 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
       // checkout master for all repos if the build fails so they don't get left at random shas
       else if ( err ) {
-        if ( command === 'grunt checkout-master' ) {
-          winston.log( 'error', 'error running grunt checkout-master in ' + dir + ', build aborted to avoid infinite loop.' );
+        if ( command === 'grunt checkout-master-all' ) {
+          winston.log( 'error', 'error running grunt checkout-master-all in ' + dir + ', build aborted to avoid infinite loop.' );
           taskCallback( 'error running command ' + command + ': ' + err ); // build aborted, so take this build task off of the queue
         }
         else {
           winston.log( 'error', 'error running command: ' + command + ' in ' + dir + '. build aborted.' );
-          exec( 'grunt checkout-master', dir, function() {
-            exec( 'git checkout master', dir, function() {
-              winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
-              taskCallback( 'error running command ' + command + ': ' + err ); // build aborted, so take this build task off of the queue
-            } );
+          exec( 'grunt checkout-master-all', dir, function() {
+            winston.log( 'info', 'checking out master for every repo in case build shas are still checked out' );
+            taskCallback( 'error running command ' + command + ': ' + err ); // build aborted, so take this build task off of the queue
           } );
         }
       }
@@ -408,11 +407,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * Clean up after deploy. Check out master and remove the temp build dir
    */
   var afterDeploy = function( err ) {
-    exec( 'grunt checkout-master', simDir, function() {
-      exec( 'git checkout master', simDir, function() { // checkout the master for the current sim
-        exec( 'rm -rf ' + buildDir, '.', function() {
-          taskCallback( err );
-        } );
+    exec( 'grunt checkout-master-all', PERENNIAL, function() {
+      exec( 'rm -rf ' + buildDir, '.', function() {
+        taskCallback( err );
       } );
     } );
   };
