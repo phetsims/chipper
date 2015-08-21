@@ -241,7 +241,6 @@ module.exports = function( grunt ) {
   if ( packageJSON.phet ) {
 
     // verify that required fields are present
-    assert( packageJSON.phet.simTitleStringKey, 'phet.simTitleStringKey missing from ' + PACKAGE_FILENAME );
     assert( packageJSON.phet.requirejsNamespace, 'phet.requirejsNamespace missing from ' + PACKAGE_FILENAME );
   }
   else {
@@ -270,12 +269,13 @@ module.exports = function( grunt ) {
     name: packageJSON.name,
     version: packageJSON.version,
     license: packageJSON.license,
-    simTitleStringKey: packageJSON.phet.simTitleStringKey,
     requirejsNamespace: packageJSON.phet.requirejsNamespace,
     brand: getBrand( grunt, buildLocalJSON )
   };
 
   // These entries depend on other entries in buildConfig.
+  buildConfig.simTitleStringKey = packageJSON.phet.simTitleStringKey ||
+    ( buildConfig.requirejsNamespace + '/' + buildConfig.name + '.name' ); // default to REPO/repo.name
   buildConfig.phetLibs = getPhetLibs( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.preload = getPreload( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
