@@ -35,14 +35,6 @@ var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 
-//TODO chipper#300 look at why this is necessary
-/*
- * In Node, global is the global namespace object.
- * Register fs as a global so it can be accessed through the requirejs build system. Text.js plugin
- * may have a superior way to handle this but I (SR) couldn't get it working after a small amount of effort.
- */
-global.fs = fs;
-
 module.exports = function( grunt ) {
   'use strict';
 
@@ -59,6 +51,9 @@ module.exports = function( grunt ) {
 
       // the grunt instance, for situations where we can't pass it as a function argument
       grunt: grunt,
+
+      // for code that runs in both requirejs and build modes, and therefore doesn't have access to grunt.file
+      fs: fs,
 
       // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
       getCacheBusterArgs: function() { return ''; },
