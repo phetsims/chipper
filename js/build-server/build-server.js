@@ -279,6 +279,17 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   /**
+   * checkout master everywhere and abort build with err
+   * @param err
+   */
+  var abortBuild = function( err ) {
+    exec( 'grunt checkout-master-all', PERENNIAL, function() {
+      winston.log( 'info', 'build aborted: checking out master for every repo in case build shas are still checked out' );
+      taskCallback( err ); // build aborted, so take this build task off of the queue
+    } );
+  };
+
+  /**
    * Create a [sim name].xml file in the live sim directory in htdocs. This file tells the website which
    * translations exist for a given sim. It is used by the "synchronize" method in Project.java in the website code.
    *
@@ -308,7 +319,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     // make sure package.json is found so we can get simTitleStringKey
     var packageJSONPath = '../' + simName + '/package.json';
     if ( !fs.existsSync( packageJSONPath ) ) {
-      taskCallback( 'package.json not found when trying to create translations XML file' );
+      abortBuild( 'package.json not found when trying to create translations XML file' );
       return;
     }
     var packageJSON = JSON.parse( fs.readFileSync( packageJSONPath, { encoding: 'utf-8' } ) );
@@ -325,7 +336,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     // make sure the english strings file exists so we can read the english strings
     var englishStringsFilePath = '../' + simName + '/' + englishStringsFile;
     if ( !fs.existsSync( englishStringsFilePath ) ) {
-      taskCallback( 'English strings file not found' );
+      abortBuild( 'English strings file not found' );
       return;
     }
     var englishStrings = JSON.parse( fs.readFileSync( '../' + simName + '/' + englishStringsFile, { encoding: 'utf-8' } ) );
@@ -417,7 +428,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       data = JSON.parse( data );
       if ( err ) {
         winston.log( 'error', 'couldn\'t read simInfoArray ' + err );
-        taskCallback( 'couldn\'t read simInfoArray ' + err );
+        abortBuild( 'couldn\'t read simInfoArray ' + err );
       }
       else {
         data.push( {
@@ -428,7 +439,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         fs.writeFile( simInfoArray, JSON.stringify( data, null, 2 ), function( err ) {
           if ( err ) {
             winston.log( 'error', 'couldn\'t write simInfoArray ' + err );
-            taskCallback( 'couldn\'t write simInfoArray ' + err );
+            abortBuild( 'couldn\'t write simInfoArray ' + err );
           }
           else {
             exec( 'git commit -a -m "[automated commit] add ' + simTitle + ' to simInfoArray"', '../rosetta', function() {
@@ -446,7 +457,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var afterDeploy = function( err ) {
     exec( 'grunt checkout-master-all', PERENNIAL, function() {
       exec( 'rm -rf ' + buildDir, '.', function() {
-        taskCallback( err );
+        abortBuild( err );
       } );
     } );
   };
