@@ -457,7 +457,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var afterDeploy = function( err ) {
     exec( 'grunt checkout-master-all', PERENNIAL, function() {
       exec( 'rm -rf ' + buildDir, '.', function() {
-        abortBuild( err );
+        taskCallback();
       } );
     } );
   };
