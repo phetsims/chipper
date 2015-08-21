@@ -182,6 +182,11 @@ module.exports = function( grunt ) {
     } );
     assert( locales.length > 0, 'no locales found in ' + stringsDirectory );
 
+    // Add fallback locale if it's English, since English strings file is stored in the sim repository, not in babel.
+    if ( ChipperConstants.FALLBACK_LOCALE === 'en' ) {
+      locales.push( ChipperConstants.FALLBACK_LOCALE );
+    }
+
     return locales;
   }
 
@@ -207,7 +212,7 @@ module.exports = function( grunt ) {
         locales = getLocalesFromRepository( repository ); // all locales for the repository that we're building
       }
       else {
-        locales = _.uniq( locales.split( ',' ) );
+        locales = locales.split( ',' );
       }
     }
     else {
@@ -219,7 +224,7 @@ module.exports = function( grunt ) {
         locales = [ ChipperConstants.FALLBACK_LOCALE ];
       }
     }
-    return locales;
+    return _.uniq( locales.sort() );
   }
 
   //------------------------------------------------------------------------------------
