@@ -68,9 +68,6 @@ module.exports = function( grunt ) {
       var element = activeRunnablesByLine[ i ];
       var src = rootdir + element + '/build/' + element + '_en.html';
       var dst = input + '/' + element + '_en.html';
-      if ( !grunt.file.exists( src ) ) {
-        grunt.log.error( 'File not found: ' + src );
-      }
       grunt.file.copy( src, dst );
     }
   }
