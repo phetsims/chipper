@@ -12,7 +12,6 @@
 
 // modules
 var assert = require( 'assert' );
-var fs = require( 'fs' );
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
@@ -28,7 +27,6 @@ module.exports = function( grunt, buildConfig ) {
   'use strict';
 
   // Read license info
-  assert( fs.existsSync( THIRD_PARTY_LICENSES_FILENAME ), 'missing ' + THIRD_PARTY_LICENSES_FILENAME );
   var licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );
 
   var licenseKeys = buildConfig.licenseKeys.slice( 0 ); // make a copy, we'll be adding keys
@@ -51,29 +49,16 @@ module.exports = function( grunt, buildConfig ) {
   licenseKeys.forEach( function( key ) {
 
     var license = licenseInfo[ key ];
+
+    // verify required keys
     assert( license, 'sherpa/lib/license.json: no entry for key = ' + key );
     assert( license.text, 'sherpa/lib/license.json: no text field for key = ' + key );
     assert( license.license, 'sherpa/lib/license.json: no license field for key = ' + key );
     assert( license.projectURL, 'sherpa/lib/license.json: no projectURL field for key = ' + key );
     assert( license.notes, 'sherpa/lib/license.json: no notes field for key = ' + key );
 
-    // Look up the license file
-    var licenseFilename = LICENSES_DIRECTORY + key + '.txt';
-    var licenseText;
-
-    // Read the content of the license file into a string
-    try {
-      licenseText = fs.readFileSync( licenseFilename, 'utf-8' );
-    }
-    catch( error ) {
-
-      // If the file could not be found or read, then error out.
-      // This block is here for ease of debugging 
-      grunt.log.error( 'error loading license file for ' + licenseFilename + ': ', error );
-
-      // We don't want to proceed with errors in licensing, so rethrow the error
-      throw error;
-    }
+    // read the license file
+    var licenseText = grunt.file.read( LICENSES_DIRECTORY + key + '.txt', 'utf-8' );
     license.licenseText = licenseText.split( /\r?\n/ );
 
     libEntries[ key ] = license;
