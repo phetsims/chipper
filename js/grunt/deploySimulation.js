@@ -57,7 +57,7 @@ module.exports = function( grunt, devDeploy ) {
     'simName': sim,
     'version': version,
     'serverName': ( devDeploy ) ? devServerName : productionServerName,
-    'dev': devDeploy,
+    'dev': !!devDeploy, // cast to boolean since this is what build server expects
     'authorizationCode': preferences.buildServerAuthorizationCode
   } );
 
