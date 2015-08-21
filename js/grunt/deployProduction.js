@@ -16,10 +16,10 @@ var request = require( 'request' );
 var fs = require( 'fs' );
 var assert = require( 'assert' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 
 // constants
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
-var DEFAULT_DEV_SERVER = 'spot.colorado.edu';
 var PACKAGE_JSON = 'package.json';
 var DEPENDENCIES_JSON = 'build/dependencies.json';
 var DEFAULT_PRODUCTION_SERVER_NAME = 'figaro.colorado.edu';
@@ -27,15 +27,13 @@ var DEFAULT_PRODUCTION_SERVER_URL = 'https://phet.colorado.edu';
 
 /**
  * @param grunt - the grunt instance
- * @param {boolean} devDeploy - deploy to development server instead of production if true
  */
-module.exports = function( grunt, devDeploy ) {
+module.exports = function( grunt ) {
 
   assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
   var preferences = grunt.file.readJSON( PREFERENCES_FILE );
   assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
 
-  var devServerName = preferences.devDeployServer || DEFAULT_DEV_SERVER;
   var productionServerName = preferences.productionServerName || DEFAULT_PRODUCTION_SERVER_NAME;
   var productionServerURL = preferences.productionServerURL || DEFAULT_PRODUCTION_SERVER_URL;
 
@@ -48,6 +46,9 @@ module.exports = function( grunt, devDeploy ) {
   assert( grunt.file.exists( PACKAGE_JSON ), 'Cannot find ' + PACKAGE_JSON );
   assert( grunt.file.exists( DEPENDENCIES_JSON ), 'Cannot find ' + DEPENDENCIES_JSON );
 
+  // before invoking the build-server, do a dev deploy, including committing and pushing to github
+  deployDev( grunt );
+
   var dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
   var version = grunt.file.readJSON( PACKAGE_JSON ).version;
 
@@ -56,8 +57,7 @@ module.exports = function( grunt, devDeploy ) {
     'locales': JSON.stringify( [ ChipperConstants.FALLBACK_LOCALE ] ),
     'simName': sim,
     'version': version,
-    'serverName': ( devDeploy ) ? devServerName : productionServerName,
-    'dev': !!devDeploy, // cast to boolean since this is what build server expects
+    'serverName': productionServerName,
     'authorizationCode': preferences.buildServerAuthorizationCode
   } );
 

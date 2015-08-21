@@ -26,7 +26,7 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
-var deploySimulation = require( '../../../chipper/js/grunt/deploySimulation' );
+var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
@@ -111,26 +111,21 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'deploy-production',
-    'Deploy a simulation. Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
-    'with no options, deploys to phet-dev (since this is still being tested)\n' +
-    '--devDeploy : deploys to spot',
+    'Invoke deployDev and then deploy a simulation to the production server.\n' +
+    'Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n',
+    'Deploys to figaro by default, but simian can be used for testing by setting:\n' +
+    '"productionServerName": "simian.colorado.edu" and "productionServerURL": "https://phet-dev.colorado.edu" in build-local.json',
     function() {
-      deploySimulation( grunt, grunt.option( 'devDeploy' ) );
+      deployProduction( grunt );
     }
   );
 
   grunt.registerTask( 'deploy-dev',
     'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
-    '--buildServer : build the sim with the build server if true\n' +
     '--mkdir : set to true to create the sim dir and .htaccess file before copying the version directory\n' +
     '--test : set to true to disable commit and push, and SCP to a test directory on spot',
     function() {
-      if ( grunt.option( 'buildServer' ) ) {
-        deploySimulation( grunt, true );
-      }
-      else {
-        deployDev( grunt );
-      }
+      deployDev( grunt );
     }
   );
 

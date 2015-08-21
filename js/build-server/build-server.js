@@ -93,7 +93,6 @@ var SIM_NAME_KEY = 'simName';
 var VERSION_KEY = 'version';
 var AUTHORIZATION_KEY = 'authorizationCode';
 var SERVER_NAME = 'serverName';
-var DEV_KEY = 'dev';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
 var DEV_SERVER = 'spot.colorado.edu';
 var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
@@ -222,15 +221,11 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var repos = JSON.parse( decodeURIComponent( req.query[ REPOS_KEY ] ) );
   var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( decodeURIComponent( req.query[ LOCALES_KEY ] ) ) : '*';
 
-  var isDev = ( req.query[ DEV_KEY ] && req.query[ DEV_KEY ] === 'true' ) ? true : false;
-  winston.log( 'info', 'deploying to ' + ( isDev ? 'dev server' : 'production server' ) );
   var simName = req.query[ SIM_NAME_KEY ];
   var version = req.query[ VERSION_KEY ];
 
-  if ( !isDev ) {
-    // strip suffixes from version since just the numbers are used in the directory name on simian and figaro
-    version = version.match( /\d\.\d\.\d/ );
-  }
+  // strip suffixes from version since just the numbers are used in the directory name on simian and figaro
+  version = version.match( /\d\.\d\.\d/ );
   winston.log( 'info', 'detecting version number: ' + version );
 
   var server = DEFAULT_SERVER_NAME;
@@ -513,31 +508,21 @@ var taskQueue = async.queue( function( task, taskCallback ) {
           exec( 'grunt checkout-shas --buildServer', simDir, function() {
             exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
               exec( 'grunt build --brand=phet --lint=false --locales=' + locales.toString(), simDir, function() {
-
-                // if deploying a dev version just scp to spot
-                if ( isDev ) {
-                  spotScp( afterDeploy );
-                }
-
-                // otherwise do a full deploy to simian or figaro
-                else {
-                  exec( 'grunt generate-thumbnails', simDir, function() {
-                    mkVersionDir( function() {
-                      exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
-                        writeLatestHtaccess( function() {
-                          writeDownloadHtaccess( function() {
-                            createTranslationsXML( function() {
-                              notifyServer( function() {
-                                spotScp( afterDeploy ); // copy to spot on non-dev deploys too
-                              } );
+                exec( 'grunt generate-thumbnails', simDir, function() {
+                  mkVersionDir( function() {
+                    exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
+                      writeLatestHtaccess( function() {
+                        writeDownloadHtaccess( function() {
+                          createTranslationsXML( function() {
+                            notifyServer( function() {
+                              spotScp( afterDeploy ); // copy to spot on non-dev deploys too
                             } );
                           } );
                         } );
                       } );
                     } );
                   } );
-                }
-
+                } );
               } );
             } );
           } );
