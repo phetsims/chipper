@@ -33,7 +33,6 @@
 
 // built-in node APIs
 var assert = require( 'assert' );
-var fs = require( 'fs' );
 
 // 3rd-party packages
 /* jshint -W079 */
@@ -57,7 +56,7 @@ module.exports = function( grunt ) {
    */
   function getBrand( grunt, buildLocalJSON ) {
     var brand = grunt.option( 'brand' ) || buildLocalJSON.brand || 'adapted-from-phet';
-    assert( fs.existsSync( '../brand/' + brand ), 'no such brand: ' + brand );
+    assert( grunt.file.exists( '../brand/' + brand ), 'no such brand: ' + brand );
     return brand;
   }
 
@@ -119,7 +118,7 @@ module.exports = function( grunt ) {
     // add the together API file
     if ( brand === 'phet-io' ) {
       var TOGETHER_API_FILENAME = '../together/js/api/' + packageJSON.name + '-api.js';
-      assert( fs.existsSync( TOGETHER_API_FILENAME ), 'together API file does not exist: ' + TOGETHER_API_FILENAME );
+      assert( grunt.file.exists( TOGETHER_API_FILENAME ), 'together API file does not exist: ' + TOGETHER_API_FILENAME );
       preload.push( TOGETHER_API_FILENAME );
     }
 
@@ -170,13 +169,10 @@ module.exports = function( grunt ) {
 
     // confirm that the repository has a strings directory
     var stringsDirectory = '../babel/' + repository;
-    var stats = fs.statSync( stringsDirectory );
-    assert( stats.isDirectory(), stringsDirectory + 'is not a directory' );
+    assert( grunt.file.isDir(), stringsDirectory + 'is not a directory' );
 
     // Get names of string files.
-    var stringFiles = fs.readdirSync( stringsDirectory ).filter( function( filename ) {
-      return (/^.*-strings.*\.json/).test( filename );
-    } );
+    var stringFiles = grunt.file.expand( stringsDirectory, /^.*-strings.*\.json/ );
     assert( stringFiles.length > 0, 'no string files found in ' + stringsDirectory );
 
     // Extract the locales from the file names.
@@ -231,7 +227,6 @@ module.exports = function( grunt ) {
 
   // ./package.json (required)
   var PACKAGE_FILENAME = 'package.json';
-  assert( fs.existsSync( PACKAGE_FILENAME ), 'missing ' + PACKAGE_FILENAME );
   var packageJSON = grunt.file.readJSON( PACKAGE_FILENAME );
   assert( packageJSON.name, 'name missing from ' + PACKAGE_FILENAME );
   assert( packageJSON.version, 'version missing from ' + PACKAGE_FILENAME );
@@ -251,14 +246,16 @@ module.exports = function( grunt ) {
 
   // chipper/build.json (required)
   var BUILD_FILENAME = '../chipper/build.json';
-  assert( fs.existsSync( BUILD_FILENAME ), 'missing ' + BUILD_FILENAME );
   var buildJSON = grunt.file.readJSON( BUILD_FILENAME );
 
   // $HOME/.phet/build-local.json (optional)
   var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
-  var buildLocalJSON = {};
-  if ( fs.existsSync( BUILD_LOCAL_FILENAME ) ) {
+  var buildLocalJSON;
+  try {
     buildLocalJSON = grunt.file.readJSON( BUILD_LOCAL_FILENAME );
+  }
+  catch( error ) {
+    buildLocalJSON = {}
   }
 
   //------------------------------------------------------------------------------------

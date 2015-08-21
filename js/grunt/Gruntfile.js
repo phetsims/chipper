@@ -78,7 +78,7 @@ module.exports = function( grunt ) {
   };
 
   // Initialize grunt
-  grunt.initConfig( getGruntConfig( buildConfig.name, buildConfig.phetLibs ) );
+  grunt.initConfig( getGruntConfig( grunt, buildConfig.name, buildConfig.phetLibs ) );
 
   //---------------------------------------------------------------------------------------------------------------
   // Primary tasks

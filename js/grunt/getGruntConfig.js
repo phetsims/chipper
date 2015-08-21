@@ -15,7 +15,7 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
  * @param {string} repositoryName - name of the repository we're building
  * @param {string[]} phetLibs - see getBuildConfig.js
  */
-module.exports = function( repositoryName, phetLibs ) {
+module.exports = function( grunt, repositoryName, phetLibs ) {
   'use strict';
 
   /**
@@ -60,7 +60,7 @@ module.exports = function( repositoryName, phetLibs ) {
   }
 
   // grunt config
-  return {
+  var gruntConfig = {
 
     jshint: getJSHintConfig( repositoryName, phetLibs ),
 
@@ -132,4 +132,7 @@ module.exports = function( repositoryName, phetLibs ) {
       }
     }
   };
+
+  grunt.log.debug( 'gruntConfig=' + JSON.stringify( gruntConfig, null, 2 ) );
+  return gruntConfig;
 };
