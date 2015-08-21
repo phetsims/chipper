@@ -53,7 +53,7 @@ var assert = require( 'assert' );
     // Assemble the deployConfig
 
     var deployConfig = {
-      // These entries have no dependencies on other entries in deployConfig.
+      // These fields have no dependencies on other entries in deployConfig.
       name: packageJSON.name,
       version: packageJSON.version,
       buildServerAuthorizationCode: buildLocalJSON.buildServerAuthorizationCode,
@@ -64,7 +64,7 @@ var assert = require( 'assert' );
       productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu'
     };
 
-    // These entries depend on other entries in buildConfig.
+    // These fields depend on other entries in buildConfig.
     //TODO simTitleStringKey default is duplicated from getBuildConfig.js
     deployConfig.simTitleStringKey = packageJSON.phet.simTitleStringKey ||
                                      ( deployConfig.requirejsNamespace + '/' + deployConfig.name + '.name' );

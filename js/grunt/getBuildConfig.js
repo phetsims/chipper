@@ -9,8 +9,8 @@
  * REPO/package.json
  * grunt.options( optionName )
  *
- * All entries are @public (read-only).
- * Entries include:
+ * All fields are @public (read-only).
+ * Fields include:
  *
  * {string} name - name of the repository being built
  * {string} version - version identifier
@@ -265,7 +265,7 @@ module.exports = function( grunt ) {
   // Assemble the buildConfig
 
   var buildConfig = {
-    // These entries have no dependencies on other entries in buildConfig.
+    // These fields have no dependencies on other entries in buildConfig.
     name: packageJSON.name,
     version: packageJSON.version,
     license: packageJSON.license,
@@ -273,7 +273,7 @@ module.exports = function( grunt ) {
     brand: getBrand( grunt, buildLocalJSON )
   };
 
-  // These entries depend on other entries in buildConfig.
+  // These fields depend on other entries in buildConfig.
   buildConfig.simTitleStringKey = packageJSON.phet.simTitleStringKey ||
     ( buildConfig.requirejsNamespace + '/' + buildConfig.name + '.name' ); // default to REPO/repo.name
   buildConfig.phetLibs = getPhetLibs( packageJSON, buildJSON, buildConfig.brand );
