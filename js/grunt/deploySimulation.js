@@ -38,7 +38,6 @@ module.exports = function( grunt, devDeploy ) {
   var devServerName = preferences.devDeployServer || DEFAULT_DEV_SERVER;
   var productionServerName = preferences.productionServerName || DEFAULT_PRODUCTION_SERVER_NAME;
   var productionServerURL = preferences.productionServerURL || DEFAULT_PRODUCTION_SERVER_URL;
-  devDeploy = !!devDeploy; // cast to boolean
 
   // get the sim name from the current directory
   var directory = process.cwd();

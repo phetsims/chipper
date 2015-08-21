@@ -126,7 +126,7 @@ module.exports = function( grunt ) {
     '--test : set to true to disable commit and push, and SCP to a test directory on spot',
     function() {
       if ( grunt.option( 'buildServer' ) ) {
-        deploySimulation( grunt, 'simian' );
+        deploySimulation( grunt, true );
       }
       else {
         deployDev( grunt );
