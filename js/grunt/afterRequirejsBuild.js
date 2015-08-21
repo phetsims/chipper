@@ -110,24 +110,18 @@ module.exports = function( grunt, buildConfig ) {
         }
 
         var stringsFilename = path.normalize( basePath + repository.name + '-strings_' + locale + '.json' );
+        var fileContents = grunt.file.readJSON( stringsFilename, { encoding: 'utf8' } );
+        var fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
-        if ( grunt.file.exists( stringsFilename ) ) {
-          var fileContents = grunt.file.readJSON( stringsFilename, { encoding: 'utf8' } );
-          var fileMap = repoStringMap[ repository.name ][ locale ] = {};
+        for ( var stringKeyMissingPrefix in fileContents ) {
+          var stringData = fileContents[ stringKeyMissingPrefix ];
 
-          for ( var stringKeyMissingPrefix in fileContents ) {
-            var stringData = fileContents[ stringKeyMissingPrefix ];
+          // Pad LTR/RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
+          // Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
+          stringData.value = ( isRTL ? '\u202b' : '\u202a' ) + stringData.value + '\u202c';
 
-            // Pad LTR/RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
-            // Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
-            stringData.value = ( isRTL ? '\u202b' : '\u202a' ) + stringData.value + '\u202c';
-
-            // Add the requirejs namespaces (eg, JOIST) to the key
-            fileMap[ repository.requirejsNamespace + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
-          }
-        }
-        else {
-          grunt.log.error( 'Missing ' + stringsFilename );
+          // Add the requirejs namespaces (eg, JOIST) to the key
+          fileMap[ repository.requirejsNamespace + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
         }
       } );
     } );
