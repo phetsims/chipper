@@ -255,7 +255,7 @@ module.exports = function( grunt ) {
     buildLocalJSON = grunt.file.readJSON( BUILD_LOCAL_FILENAME );
   }
   catch( error ) {
-    buildLocalJSON = {}
+    buildLocalJSON = {};
   }
 
   //------------------------------------------------------------------------------------
