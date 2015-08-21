@@ -10,7 +10,7 @@
 /* jslint node: true */
 'use strict';
 
-// modules
+// build-in node APIs
 var child_process = require( 'child_process' );
 var assert = require( 'assert' );
 
