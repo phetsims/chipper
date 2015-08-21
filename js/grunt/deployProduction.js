@@ -13,43 +13,30 @@
 // modules
 var querystring = require( 'querystring' );
 var request = require( 'request' );
-var assert = require( 'assert' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-
-// constants
-var PACKAGE_JSON = 'package.json';
-var DEPENDENCIES_JSON = 'build/dependencies.json';
-var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
-var DEFAULT_PRODUCTION_SERVER_NAME = 'figaro.colorado.edu';
-var DEFAULT_PRODUCTION_SERVER_URL = 'https://phet.colorado.edu';
+var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
 
 /**
  * @param grunt - the grunt instance
  */
 module.exports = function( grunt ) {
 
-  // read package.json (required)
-  var packageJSON = grunt.file.readJSON( PACKAGE_JSON );
-  assert( packageJSON.name, 'missing name from ' + PACKAGE_JSON );
-  assert( packageJSON.version, 'missing name from ' + PACKAGE_JSON );
+  // configuration info from external files
+  var deployConfig = getDeployConfig( global.phet.chipper.fs );
 
   // read dependencies.json (required)
-  var dependenciesJSON = grunt.file.readJSON( DEPENDENCIES_JSON );
-
-  // read build-locale.json (required)
-  var buildLocalJSON = grunt.file.readJSON( PREFERENCES_FILE );
-  assert( buildLocalJSON.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
+  var dependenciesJSON = grunt.file.readJSON( 'build/dependencies.json' );
 
   var query = querystring.stringify( {
     'repos': JSON.stringify( dependenciesJSON ),
     'locales': JSON.stringify( [ ChipperConstants.FALLBACK_LOCALE ] ),
-    'simName': packageJSON.name,
-    'version': packageJSON.version,
-    'serverName': buildLocalJSON.productionServerName || DEFAULT_PRODUCTION_SERVER_NAME,
-    'authorizationCode': buildLocalJSON.buildServerAuthorizationCode
+    'simName': deployConfig.name,
+    'version': deployConfig.version,
+    'serverName': deployConfig.productionServerName,
+    'authorizationCode': deployConfig.buildServerAuthorizationCode
   } );
 
-  var productionServerURL = buildLocalJSON.productionServerURL || DEFAULT_PRODUCTION_SERVER_URL;
+  var productionServerURL = deployConfig.productionServerURL;
   var url = productionServerURL + '/deploy-html-simulation?' + query;
 
   var done = grunt.task.current.async();
