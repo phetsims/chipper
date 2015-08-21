@@ -13,7 +13,6 @@
 // modules
 var child_process = require( 'child_process' );
 var assert = require( 'assert' );
-var fs = require( 'fs' );
 
 // constants
 var DEV_SERVER = 'spot.colorado.edu';
@@ -34,17 +33,15 @@ module.exports = function( grunt ) {
   var mkdir = !!grunt.option( 'mkdir' ); // true = create the sim dir and .htaccess file before copying the version directory
   var test = !!grunt.option( 'test' ); // true = disable commit and push, and SCP to a test directory on spot
 
+  // check prerequisite files
+  assert( grunt.file.isDir( BUILD_DIR ), BUILD_DIR + ' directory does not exists' );
+
   // read the preferences file
   var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
-  assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
   var preferences = grunt.file.readJSON( PREFERENCES_FILE );
 
   // verify that preferences contains required entries
   assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
-
-  // check prerequisite files
-  assert( grunt.file.exists( PACKAGE_JSON ), 'Cannot find ' + PACKAGE_JSON );
-  assert( grunt.file.exists( BUILD_DIR ), 'Cannot find ' + BUILD_DIR );
 
   // get the server name and server path if they are in the preferences file, otherwise use defaults
   var server = preferences.devDeployServer || DEV_SERVER;
