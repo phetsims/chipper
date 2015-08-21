@@ -113,34 +113,6 @@ assert( preferences.emailTo, 'emailTo is missing from ' + PREFERENCES_FILE );
 assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
 assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
 
-var testAdd = function( callback ) {
-  console.log( process.cwd() );
-  var simInfoArray = '../rosetta/data/simInfoArray.json';
-  fs.readFile( simInfoArray, { encoding: 'utf8' }, function( err, data ) {
-    data = JSON.parse( data );
-    if ( err ) {
-      winston.log( 'error', 'couldn\'t read simInfoArray ' + err );
-    }
-    else {
-      data.push( {
-        simTitle: 'test',
-        projectName: 'test',
-        testUrl: '_en.html'
-      } );
-      fs.writeFile( simInfoArray, JSON.stringify( data, null, 2 ), function( err ) {
-        if ( err ) {
-          winston.log( 'error', 'couldn\'t write simInfoArray ' + err );
-        }
-        else {
-          callback();
-        }
-      } );
-    }
-  } );
-};
-
-testAdd();
-
 // Handle command line input
 // First 2 args provide info about executables, ignore
 var commandLineArgs = process.argv.slice( 2 );
