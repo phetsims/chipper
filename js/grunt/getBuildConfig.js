@@ -250,14 +250,12 @@ module.exports = function( grunt ) {
   }
 
   // chipper/build.json (required)
-  var BUILD_FILENAME = '../chipper/build.json';
-  var buildJSON = grunt.file.readJSON( BUILD_FILENAME );
+  var buildJSON = grunt.file.readJSON( '../chipper/build.json' );
 
   // $HOME/.phet/build-local.json (optional)
-  var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
   var buildLocalJSON;
   try {
-    buildLocalJSON = grunt.file.readJSON( BUILD_LOCAL_FILENAME );
+    buildLocalJSON = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
   }
   catch( error ) {
     buildLocalJSON = {};
