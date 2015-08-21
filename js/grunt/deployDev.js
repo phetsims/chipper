@@ -14,13 +14,13 @@
 var child_process = require( 'child_process' );
 var assert = require( 'assert' );
 
+// modules
+var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
+
 // constants
-var DEV_SERVER = 'spot.colorado.edu';
-var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
 var URL_BASE = 'http://www.colorado.edu/physics/phet/dev/html/';
 var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
 var BUILD_DIR = 'build';
-var PACKAGE_JSON = 'package.json';
 var DEPENDENCIES_JSON = 'dependencies.json';
 var TEST_DIR_NAME = 'deploy-dev-tests';
 
@@ -33,29 +33,20 @@ module.exports = function( grunt ) {
   var mkdir = !!grunt.option( 'mkdir' ); // true = create the sim dir and .htaccess file before copying the version directory
   var test = !!grunt.option( 'test' ); // true = disable commit and push, and SCP to a test directory on spot
 
-  // check prerequisite files
-  assert( grunt.file.isDir( BUILD_DIR ), BUILD_DIR + ' directory does not exists' );
-
-  // read the preferences file
-  var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
-  var preferences = grunt.file.readJSON( PREFERENCES_FILE );
-
-  // verify that preferences contains required entries
-  assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
+  // configuration info from external files
+  var deployConfig = getDeployConfig( global.phet.chipper.fs );
 
   // get the server name and server path if they are in the preferences file, otherwise use defaults
-  var server = preferences.devDeployServer || DEV_SERVER;
-  var basePath = preferences.devDeployPath || DEV_DIRECTORY;
+  var server = deployConfig.devDeployServer;
+  var basePath = deployConfig.devDeployPath;
   if ( test ) {
     basePath += TEST_DIR_NAME + '/';
     URL_BASE += TEST_DIR_NAME + '/';
   }
 
   // get the sim name and version
-  var directory = process.cwd();
-  var directoryComponents = directory.split( ( /^win/.test( process.platform ) ) ? '\\' : '/' );
-  var sim = directoryComponents[ directoryComponents.length - 1 ];
-  var version = grunt.file.readJSON( PACKAGE_JSON ).version;
+  var sim = deployConfig.name;
+  var version = deployConfig.version;
   var simPath = basePath + sim;
   var versionPath = simPath + '/' + version;
 
@@ -98,7 +89,7 @@ module.exports = function( grunt ) {
    * scp file to dev server, and call commitAndPush if not testing
    */
   var scp = function() {
-    exec( 'scp -r ' + BUILD_DIR + ' ' + preferences.devUsername + '@' + server + ':' + versionPath, function() {
+    exec( 'scp -r ' + BUILD_DIR + ' ' + deployConfig.devUsername + '@' + server + ':' + versionPath, function() {
       if ( test ) {
         finish();
       }
@@ -109,7 +100,7 @@ module.exports = function( grunt ) {
   };
 
   if ( mkdir ) {
-    var sshString = 'ssh ' + preferences.devUsername + '@' + server;
+    var sshString = 'ssh ' + deployConfig.devUsername + '@' + server;
     var mkdirAndCreateHtaccessCommand = ' \'mkdir -p ' + simPath + ' && echo "' + HTACCESS_TEXT + '" > ' + simPath + '/.htaccess\'';
     exec( sshString + mkdirAndCreateHtaccessCommand, scp );
   }
