@@ -389,8 +389,19 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     callback();
   };
 
+  /**
+   * Copy files to spot. This function calls scp once for each file instead of using scp -r. The reason for this is that
+   * scp -r will create a new directory called 'build' inside the sim version directory if the version directory already exists.
+   * Because this function is called for translations too, in many cases the directory will already exist.
+   * @param callback
+   */
   var spotScp = function( callback ) {
-    exec( 'scp -r build ' + preferences.devUsername + '@' + devServer + ':' + DEV_DIRECTORY + simName + '/' + version, simDir, callback );
+    var buildDir = simDir + '/build';
+    var files = fs.readdirSync( buildDir );
+    for ( var i = 0; i < files.length; i++ ) {
+      var filename = files[ i ];
+      exec( 'scp ' + filename + ' ' + preferences.devUsername + '@' + devServer + ':' + DEV_DIRECTORY + simName + '/' + version, buildDir, callback );
+    }
   };
 
   /**
