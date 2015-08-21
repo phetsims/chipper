@@ -138,7 +138,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
     function() {
-      if ( fs.existsSync( 'build' ) ) {
+      if ( grunt.file.exists( 'build' ) ) {
         grunt.file.delete( 'build' );
       }
       grunt.file.mkdir( 'build' );
