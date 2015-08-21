@@ -16,7 +16,6 @@ var request = require( 'request' );
 var fs = require( 'fs' );
 var assert = require( 'assert' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 
 // constants
 var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
@@ -45,9 +44,6 @@ module.exports = function( grunt ) {
   // check prerequisite files
   assert( grunt.file.exists( PACKAGE_JSON ), 'Cannot find ' + PACKAGE_JSON );
   assert( grunt.file.exists( DEPENDENCIES_JSON ), 'Cannot find ' + DEPENDENCIES_JSON );
-
-  // before invoking the build-server, do a dev deploy, including committing and pushing to github
-  deployDev( grunt );
 
   var dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
   var version = grunt.file.readJSON( PACKAGE_JSON ).version;

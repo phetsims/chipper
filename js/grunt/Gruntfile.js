@@ -116,6 +116,8 @@ module.exports = function( grunt ) {
     'Deploys to figaro by default, but simian can be used for testing by setting:\n' +
     '"productionServerName": "simian.colorado.edu" and "productionServerURL": "https://phet-dev.colorado.edu" in build-local.json',
     function() {
+      // before invoking the build-server, do a dev deploy, including committing and pushing to github
+      deployDev( grunt );
       deployProduction( grunt );
     }
   );
