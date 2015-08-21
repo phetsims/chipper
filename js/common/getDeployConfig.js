@@ -4,6 +4,8 @@
 /* jslint node: true */
 'use strict';
 
+var assert = require( 'assert' );
+
 /**
  * Gets configuration information that is related to deploying sims.
  *
