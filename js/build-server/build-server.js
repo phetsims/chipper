@@ -113,6 +113,34 @@ assert( preferences.emailTo, 'emailTo is missing from ' + PREFERENCES_FILE );
 assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
 assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
 
+var testAdd = function( callback ) {
+  console.log( process.cwd() );
+  var simInfoArray = '../rosetta/data/simInfoArray.json';
+  fs.readFile( simInfoArray, { encoding: 'utf8' }, function( err, data ) {
+    data = JSON.parse( data );
+    if ( err ) {
+      winston.log( 'error', 'couldn\'t read simInfoArray ' + err );
+    }
+    else {
+      data.push( {
+        simTitle: 'test',
+        projectName: 'test',
+        testUrl: '_en.html'
+      } );
+      fs.writeFile( simInfoArray, JSON.stringify( data, null, 2 ), function( err ) {
+        if ( err ) {
+          winston.log( 'error', 'couldn\'t write simInfoArray ' + err );
+        }
+        else {
+          callback();
+        }
+      } );
+    }
+  } );
+};
+
+testAdd();
+
 // Handle command line input
 // First 2 args provide info about executables, ignore
 var commandLineArgs = process.argv.slice( 2 );
@@ -240,6 +268,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   var buildDir = './js/build-server/tmp';
   var simDir = '../' + simName;
+  var simTitle; // initialized later when parsing the strings file
 
   /**
    * Execute a step of the build process. The build aborts if any step fails.
@@ -327,6 +356,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       return;
     }
     var englishStrings = JSON.parse( fs.readFileSync( '../' + simName + '/' + englishStringsFile, { encoding: 'utf-8' } ) );
+    simTitle = englishStrings[ simTitleKey ].value;
 
     // create xml, making a simulation tag for each language
     var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
@@ -401,6 +431,38 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       var filename = files[ i ];
       exec( 'scp ' + filename + ' ' + preferences.devUsername + '@' + devServer + ':' + DEV_DIRECTORY + simName + '/' + version, buildDir, callback );
     }
+  };
+
+  /**
+   * Add an entry in for this sim in simInfoArray in rosetta, so it shows up as translatable.
+   * Must be run after createTranslationsXML so that simTitle is initialized.
+   * @param callback
+   */
+  var addToRosetta = function( callback ) {
+    var simInfoArray = '../rosetta/data/simInfoArray.json';
+    fs.readFile( simInfoArray, { encoding: 'utf8' }, function( err, data ) {
+      data = JSON.parse( data );
+      if ( err ) {
+        winston.log( 'error', 'couldn\'t read simInfoArray ' + err );
+        taskCallback( 'couldn\'t read simInfoArray ' + err );
+      }
+      else {
+        data.push( {
+          simTitle: simTitle,
+          projectName: simName,
+          testUrl: HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '_en.html'
+        } );
+        fs.writeFile( simInfoArray, JSON.stringify( data, null, 2 ), function( err ) {
+          if ( err ) {
+            winston.log( 'error', 'couldn\'t write simInfoArray ' + err );
+            taskCallback( 'couldn\'t write simInfoArray ' + err );
+          }
+          else {
+            callback();
+          }
+        } );
+      }
+    } );
   };
 
   /**
@@ -536,7 +598,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                           writeDownloadHtaccess( function() {
                             createTranslationsXML( function() {
                               notifyServer( function() {
-                                spotScp( afterDeploy ); // copy to spot on non-dev deploys too
+                                addToRosetta( function() {
+                                  spotScp( afterDeploy ); // copy to spot on non-dev deploys too
+                                } );
                               } );
                             } );
                           } );
