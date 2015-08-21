@@ -25,7 +25,6 @@
 
 // modules
 var assert = require( 'assert' );
-var fs = require( 'fs' );
 
 // Load shared constants
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
@@ -185,7 +184,7 @@ module.exports = function( grunt ) {
     var library = libraries[ i ];
 
     // check for existence of the license file
-    if ( !fs.existsSync( LICENSES_DIRECTORY + library + '.txt' ) ) {
+    if ( !grunt.file.exists( LICENSES_DIRECTORY + library + '.txt' ) ) {
       grunt.log.error( 'license file not found for ' + library );
     }
 
