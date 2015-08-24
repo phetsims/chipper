@@ -12,7 +12,7 @@ var assert = require( 'assert' );
  * All fields are @public (read-only).
  * Fields include:
  *
- * string} name - name of the repository being built
+ * {string} name - name of the repository being built
  * {string} version - version identifier
  * {string} simTitleStringKey - key of the sim's title string
  * {string} buildServerAuthorizationCode

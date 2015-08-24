@@ -256,13 +256,13 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         if ( stdout ) { winston.log( 'info', stdout ); }
         if ( stderr ) { winston.log( 'info', stderr ); }
       }
-      if ( !err && callback ) {
+      if ( !err ) {
         winston.log( 'info', command + ' ran successfully in directory: ' + dir );
-        callback();
+        if ( callback ) { callback(); }
       }
 
       // checkout master for all repos if the build fails so they don't get left at random shas
-      else if ( err ) {
+      else {
         if ( command === 'grunt checkout-master-all' ) {
           winston.log( 'error', 'error running grunt checkout-master-all in ' + dir + ', build aborted to avoid infinite loop.' );
           taskCallback( 'error running command ' + command + ': ' + err ); // build aborted, so take this build task off of the queue
@@ -452,17 +452,6 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   /**
-   * Clean up after deploy. Check out master and remove the temp build dir
-   */
-  var afterDeploy = function( err ) {
-    exec( 'grunt checkout-master-all', PERENNIAL, function() {
-      exec( 'rm -rf ' + buildDir, '.', function() {
-        taskCallback();
-      } );
-    } );
-  };
-
-  /**
    * Pull chipper and perennial, then clone missing repos
    * @param callback
    */
@@ -585,7 +574,13 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                             createTranslationsXML( function() {
                               notifyServer( function() {
                                 addToRosetta( function() {
-                                  spotScp( afterDeploy ); // copy to spot on non-dev deploys too
+                                  spotScp( function() {
+                                    exec( 'grunt checkout-master-all', PERENNIAL, function() {
+                                      exec( 'rm -rf ' + buildDir, '.', function() {
+                                        taskCallback();
+                                      } );
+                                    } );
+                                  } );
                                 } );
                               } );
                             } );
