@@ -48,7 +48,7 @@ module.exports = function( grunt, buildConfig ) {
    */
   function loadStringMap() {
 
-    assert( buildConfig.locales.indexOf( ChipperConstants.FALLBACK_LOCALE ) !== -1, 'fallback locale is required' );
+    assert( buildConfig.locales.indexOf( fallbackLocale ) !== -1, 'fallback locale is required' );
 
     // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
     var stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
