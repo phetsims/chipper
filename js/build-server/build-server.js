@@ -455,8 +455,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             abortBuild( 'couldn\'t write simInfoArray ' + err );
           }
           else {
-            exec( 'git commit -a -m "[automated commit] add ' + simTitle + ' to simInfoArray"', '../rosetta', function() {
-              exec( 'git push origin master', '../rosetta', callback );
+            exec( 'git pull', '../rosetta', function() {
+              exec( 'git commit -a -m "[automated commit] add ' + simTitle + ' to simInfoArray"', '../rosetta', function() {
+                exec( 'git push origin master', '../rosetta', callback );
+              } );
             } );
           }
         } );
