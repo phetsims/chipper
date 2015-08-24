@@ -88,8 +88,16 @@ module.exports = function( grunt, buildConfig ) {
           basePath = repository.path + '/../babel/' + repository.name + '/';
         }
 
+        // Read optional string file
         var stringsFilename = path.normalize( basePath + repository.name + '-strings_' + locale + '.json' );
-        var fileContents = grunt.file.readJSON( stringsFilename );
+        var fileContents;
+        try {
+          fileContents = grunt.file.readJSON( stringsFilename );
+        }
+        catch( error ) {
+          grunt.log.warn( 'missing string file: ' + stringsFilename );
+          fileContents = {};
+        }
         var fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
         for ( var stringKeyMissingPrefix in fileContents ) {
