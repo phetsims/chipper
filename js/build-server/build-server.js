@@ -411,9 +411,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var spotScp = function( callback ) {
     var buildDir = simDir + '/build';
     var files = fs.readdirSync( buildDir );
+    var finished = _.after( files.length, callback );
     for ( var i = 0; i < files.length; i++ ) {
       var filename = files[ i ];
-      exec( 'scp ' + filename + ' ' + preferences.devUsername + '@' + devServer + ':' + DEV_DIRECTORY + simName + '/' + version, buildDir, callback );
+      exec( 'scp ' + filename + ' ' + preferences.devUsername + '@' + devServer + ':' + DEV_DIRECTORY + simName + '/' + version, buildDir, finished );
     }
   };
 
