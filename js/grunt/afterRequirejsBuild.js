@@ -110,7 +110,7 @@ module.exports = function( grunt, buildConfig ) {
         }
 
         var stringsFilename = path.normalize( basePath + repository.name + '-strings_' + locale + '.json' );
-        var fileContents = grunt.file.readJSON( stringsFilename, { encoding: 'utf8' } );
+        var fileContents = grunt.file.readJSON( stringsFilename );
         var fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
         for ( var stringKeyMissingPrefix in fileContents ) {
