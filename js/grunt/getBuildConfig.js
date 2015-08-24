@@ -246,7 +246,7 @@ module.exports = function( grunt ) {
   else {
 
     // default so that non-build tasks run for repositories that aren't runnable
-    packageJSON.phet ={};
+    packageJSON.phet = {};
   }
 
   // chipper/build.json (required)
@@ -275,7 +275,7 @@ module.exports = function( grunt ) {
 
   // These fields depend on other entries in buildConfig.
   buildConfig.simTitleStringKey = packageJSON.phet.simTitleStringKey ||
-    ( buildConfig.requirejsNamespace + '/' + buildConfig.name + '.name' ); // default to REPO/repo.name
+                                  ( buildConfig.requirejsNamespace + '/' + buildConfig.name + '.name' ); // default to REPO/repo.name
   buildConfig.phetLibs = getPhetLibs( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.preload = getPreload( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );

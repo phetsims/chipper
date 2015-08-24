@@ -159,7 +159,7 @@ define( function( require ) {
 
           // Load & parse just once per file, getting the fallback strings first.
           getWithCache( fallbackSpecificPath, function( parsedFallbackStrings ) {
-              if( parsedFallbackStrings[ key ] === undefined ) {
+              if ( parsedFallbackStrings[ key ] === undefined ) {
                 throw new Error( 'Missing string: ' + key + ' in ' + fallbackSpecificPath );
               }
               var fallback = parsedFallbackStrings[ key ].value;
