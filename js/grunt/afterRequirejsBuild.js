@@ -360,7 +360,7 @@ module.exports = function( grunt, buildConfig ) {
       // get our JSON for dependencies
       var dependencyJSON = JSON.stringify( dependencyInfo, null, 2 );
 
-      // and get JSON for our dependences (without babel), for dependencies.json
+      // and get JSON for our dependencies (without babel), for dependencies.json
       // (since different builds can have different babel SHAs)
       var dependencyInfoWithoutBabel = {};
       for ( var key in dependencyInfo ) {
