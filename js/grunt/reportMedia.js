@@ -84,7 +84,7 @@ module.exports = function( grunt ) {
         // This helps to identify stale entries in the license.json files.
         if ( filename === 'license.json' ) {
 
-          var file = grunt.file.read( abspath, 'utf8' );
+          var file = grunt.file.read( abspath );
           var json = JSON.parse( file );
 
           // For each key in the json file, make sure that file exists in the directory
