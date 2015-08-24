@@ -96,8 +96,8 @@ module.exports = function( grunt ) {
 
         // Replace names in the path where the contents will be written
         var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
-        contentsPath = contentsPath.replace( 'simula-rasa', repositoryName );
-        contentsPath = contentsPath.replace( 'SimulaRasa', upperCamelCase );
+        contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'simula-rasa', repositoryName );
+        contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'SimulaRasa', upperCamelCase );
 
         // Write the file
         grunt.file.write( contentsPath, contents );

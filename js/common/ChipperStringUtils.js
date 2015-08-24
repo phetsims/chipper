@@ -49,6 +49,25 @@
       return str.replace( new RegExp( find.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' ), 'g' ), replaceWith );
     },
 
+    //TODO chipper#316 determine why this behaves differently than str.replace for some cases (eg, 'MAIN_INLINE_JAVASCRIPT')
+    /**
+     * Replaces the first occurrence of {string} find with {string} replace in {string} str
+     *
+     * @param {string} str - the input string
+     * @param {string} find - the string to find
+     * @param {string} replaceWith - the string to replace find with
+     * @returns {string} a new string
+     */
+    replaceFirst: function( str, find, replaceWith ) {
+      var idx = str.indexOf( find );
+      if ( str.indexOf( find ) !== -1 ) {
+        return str.slice( 0, idx ) + replaceWith + str.slice( idx + find.length );
+      }
+      else {
+        return str;
+      }
+    },
+
     /**
      * Trims leading and trailing spaces a string.
      *
