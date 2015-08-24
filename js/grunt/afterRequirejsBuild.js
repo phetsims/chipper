@@ -30,14 +30,9 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
-  // buildConfig required by this task
-  assert( buildConfig.simTitleStringKey, 'missing buildConfig.simTitleStringKey' );
-  assert( buildConfig.requirejsNamespace, 'missing buildConfig.requirejsNamespace' );
-
   // globals that should be defined by this point
   assert( global.phet, 'missing global.phet' );
   assert( global.phet.chipper, 'missing global.phet.chipper' );
-  assert( global.phet.chipper.strings, 'missing global.phet.chipper.strings' );
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
 
