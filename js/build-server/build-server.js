@@ -432,11 +432,22 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         abortBuild( 'couldn\'t read simInfoArray ' + err );
       }
       else {
-        data.push( {
-          simTitle: simTitle,
-          projectName: simName,
-          testUrl: HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '_en.html'
-        } );
+        var testUrl = HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '_en.html';
+        var newSim = true;
+        for ( var simInfoObject in simInfoArray ) {
+          if ( simInfoObject.projectName && simInfoObject.projectName === simName ) {
+            simInfoObject.simTitle = simTitle;
+            simInfoObject.testUrl = testUrl;
+            newSim = false;
+          }
+        }
+        if ( newSim ) {
+          data.push( {
+            simTitle: simTitle,
+            projectName: simName,
+            testUrl: testUrl
+          } );
+        }
         fs.writeFile( simInfoArray, JSON.stringify( data, null, 2 ), function( err ) {
           if ( err ) {
             winston.log( 'error', 'couldn\'t write simInfoArray ' + err );
@@ -507,7 +518,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
           else {
             winston.log( 'error', 'in mkVersionDir ' + err );
             winston.log( 'error', 'build failed' );
-            afterDeploy( err );
+            abortBuild( err );
           }
         } );
       }
