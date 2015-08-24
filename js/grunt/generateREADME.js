@@ -7,6 +7,8 @@
  * @author Chris Malley {PixelZoom, Inc.}
  */
 
+var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+
 /**
  * @param grunt - the grunt instance
  * @param {string} repositoryName - name of the repository
@@ -16,12 +18,6 @@
  */
 module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, published ) {
   'use strict';
-
-  //TODO other variations of this occur in Gruntfile.js, createSim.js, SimIFrameAPI.js
-  // http://stackoverflow.com/questions/1144783/replacing-all-occurrences-of-a-string-in-javascript
-  var replaceAll = function( str, find, replace ) {
-    return str.replace( new RegExp( find.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' ), 'g' ), replace );
-  };
 
   // Read the title from the English strings file.
   var strings = grunt.file.readJSON( '../' + repositoryName + '/' + repositoryName + '-strings_en.json' );
@@ -42,9 +38,9 @@ module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, p
   var readme = grunt.file.read( '../chipper/templates/' + templateFile );
 
   // Replace placeholders in the template.
-  readme = replaceAll( readme, '{REPOSITORY}', repositoryName );
-  readme = replaceAll( readme, '{TITLE}', title );
-  readme = replaceAll( readme, '{CLONE_COMMANDS}', cloneCommands );
+  readme = ChipperStringUtils.replaceAll( readme, '{REPOSITORY}', repositoryName );
+  readme = ChipperStringUtils.replaceAll( readme, '{TITLE}', title );
+  readme = ChipperStringUtils.replaceAll( readme, '{CLONE_COMMANDS}', cloneCommands );
 
   // Write to the repository's root directory.
   grunt.file.write( 'README.md', readme );
