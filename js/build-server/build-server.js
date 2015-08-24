@@ -476,6 +476,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                 } );
               } );
             }
+            else {
+              callback();
+            }
           }
         } );
       }
