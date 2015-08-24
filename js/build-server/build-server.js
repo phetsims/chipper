@@ -434,7 +434,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       else {
         var testUrl = HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '_en.html';
         var newSim = true;
-        for ( var simInfoObject in simInfoArray ) {
+        for ( var simInfoObject in data ) {
           if ( simInfoObject.projectName && simInfoObject.projectName === simName ) {
             simInfoObject.simTitle = simTitle;
             simInfoObject.testUrl = testUrl;
