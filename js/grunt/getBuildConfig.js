@@ -161,7 +161,7 @@ module.exports = function( grunt ) {
   }
 
   /*
-   * Gets the locales from a repository, by inspecting the names of the string files in that repository.
+   * Gets the locales from a repository, by inspecting the names of the string files in babel for that repository.
    *
    * @param {string} repository - name of the repository to get locales from
    */
@@ -182,11 +182,6 @@ module.exports = function( grunt ) {
     } );
     assert( locales.length > 0, 'no locales found in ' + stringsDirectory );
 
-    // Add fallback locale if it's English, since English strings file is stored in the sim repository, not in babel.
-    if ( ChipperConstants.FALLBACK_LOCALE === 'en' ) {
-      locales.push( ChipperConstants.FALLBACK_LOCALE );
-    }
-
     return locales;
   }
 
@@ -205,25 +200,26 @@ module.exports = function( grunt ) {
    */
   function getLocales( grunt, repository ) {
 
-    var locales = grunt.option( 'locales' );
+    // fallback locale is included in all cases
+    var locales = [ ChipperConstants.FALLBACK_LOCALE ];
 
-    if ( locales ) {
-      if ( locales === '*' ) {
-        locales = getLocalesFromRepository( repository ); // all locales for the repository that we're building
+    var localesValue = grunt.option( 'locales' );
+
+    if ( localesValue ) {
+      if ( localesValue === '*' ) {
+        locales = locales.concat( getLocalesFromRepository( repository ) ); // all locales for the repository that we're building
       }
       else {
-        locales = locales.split( ',' );
+        locales = locales.concat( localesValue.split( ',' ) );
       }
     }
     else {
       var localesRepo = grunt.option( 'localesRepo' );
       if ( localesRepo ) {
-        locales = getLocalesFromRepository( localesRepo ); // all locales for some other repository
-      }
-      else {
-        locales = [ ChipperConstants.FALLBACK_LOCALE ];
+        locales = locales.concat( getLocalesFromRepository( localesRepo ) ); // all locales for some other repository
       }
     }
+
     return _.uniq( locales.sort() );
   }
 
