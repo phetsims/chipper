@@ -330,20 +330,18 @@ module.exports = function( grunt, buildConfig ) {
     done();
   }
 
-  // git --git-dir ../scenery/.git rev-parse HEAD                 -- sha
-  // git --git-dir ../scenery/.git rev-parse --abbrev-ref HEAD    -- branch
   function nextDependency() {
     if ( dependencies.length ) {
       var dependency = dependencies.shift(); // remove first item
       assert( !dependencyInfo.dependency, 'there was already a dependency named ' + dependency );
 
-      // get the SHA
+      // get the SHA: git --git-dir ../scenery/.git rev-parse HEAD
       child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse HEAD', function( error, stdout, stderr ) {
         assert( !error, error ? ( 'ERROR on git SHA attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
 
         var sha = stdout.trim();
 
-        // get the branch
+        // get the branch: git --git-dir ../scenery/.git rev-parse --abbrev-ref HEAD
         child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse --abbrev-ref HEAD', function( error, stdout, stderr ) {
           assert( !error, error ? ( 'ERROR on git branch attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
 
