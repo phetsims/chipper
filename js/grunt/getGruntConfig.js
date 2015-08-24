@@ -12,6 +12,7 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be rede
 /* jshint +W079 */
 
 /**
+ * @param {Object} grunt - the grunt instance
  * @param {string} repositoryName - name of the repository we're building
  * @param {string[]} phetLibs - see getBuildConfig.js
  */
