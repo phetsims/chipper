@@ -333,13 +333,13 @@ module.exports = function( grunt, buildConfig ) {
       child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse HEAD', function( error, stdout, stderr ) {
         assert( !error, error ? ( 'ERROR on git SHA attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
 
-        var sha = ChipperStringUtils.trimWhitespace( stdout );
+        var sha = stdout.trim();
 
         // get the branch
         child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse --abbrev-ref HEAD', function( error, stdout, stderr ) {
           assert( !error, error ? ( 'ERROR on git branch attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
 
-          var branch = ChipperStringUtils.trimWhitespace( stdout );
+          var branch = stdout.trim();
 
           grunt.log.debug( ChipperStringUtils.padString( dependency, 20 ) + branch + ' ' + sha );
           dependencyInfo[ dependency ] = { sha: sha, branch: branch };

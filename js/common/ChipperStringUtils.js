@@ -66,16 +66,6 @@
       else {
         return str;
       }
-    },
-
-    /**
-     * Trims leading and trailing spaces a string.
-     *
-     * @param {string} str - the input string
-     * @returns {string} a new string
-     */
-    trimWhitespace: function( str ) {
-      return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );
     }
   };
 
