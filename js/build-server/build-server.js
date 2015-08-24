@@ -278,6 +278,19 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
+  var execWithoutAbort = function( command, dir, callback ) {
+    child_process.exec( command, { cwd: dir }, function( err, stdout, stderr ) {
+      if ( err ) {
+        winston.log( 'warn', command + ' had error ' + err );
+      }
+      if ( verbose ) {
+        if ( stdout ) { winston.log( 'info', stdout ); }
+        if ( stderr ) { winston.log( 'info', stderr ); }
+      }
+      callback();
+    } );
+  };
+
   /**
    * checkout master everywhere and abort build with err
    * @param err
@@ -425,8 +438,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    */
   var addToRosetta = function( callback ) {
     var simInfoArray = '../rosetta/data/simInfoArray.json';
-    fs.readFile( simInfoArray, { encoding: 'utf8' }, function( err, data ) {
-      data = JSON.parse( data );
+    fs.readFile( simInfoArray, { encoding: 'utf8' }, function( err, simInfoArrayString ) {
+      var data = JSON.parse( simInfoArrayString );
       if ( err ) {
         winston.log( 'error', 'couldn\'t read simInfoArray ' + err );
         abortBuild( 'couldn\'t read simInfoArray ' + err );
@@ -449,17 +462,20 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             testUrl: testUrl
           } );
         }
-        fs.writeFile( simInfoArray, JSON.stringify( data, null, 2 ), function( err ) {
+        var contents = JSON.stringify( data, null, 2 );
+        fs.writeFile( simInfoArray, contents, function( err ) {
           if ( err ) {
             winston.log( 'error', 'couldn\'t write simInfoArray ' + err );
             abortBuild( 'couldn\'t write simInfoArray ' + err );
           }
           else {
-            exec( 'git pull', '../rosetta', function() {
-              exec( 'git commit -a -m "[automated commit] add ' + simTitle + ' to simInfoArray"', '../rosetta', function() {
-                exec( 'git push origin master', '../rosetta', callback );
+            if ( simInfoArrayString !== contents ) {
+              execWithoutAbort( 'git pull', '../rosetta', function() {
+                execWithoutAbort( 'git commit -a -m "[automated commit] add ' + simTitle + ' to simInfoArray"', '../rosetta', function() {
+                  execWithoutAbort( 'git push origin master', '../rosetta', callback );
+                } );
               } );
-            } );
+            }
           }
         } );
       }
