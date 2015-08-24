@@ -46,7 +46,7 @@ var assert = require( 'assert' );
     // $HOME/.phet/build-local.json (required)
     var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
     var buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
-    assert( buildLocalJSON.buildServerAuthorizationCode, 'buildServerAuthorizationCode missing from ' + buildLocalJSON );
+    assert( buildLocalJSON.buildServerAuthorizationCode, 'buildServerAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME );
     assert( buildLocalJSON.devUsername, 'devUsername missing from ' + BUILD_LOCAL_FILENAME );
 
     //------------------------------------------------------------------------------------
