@@ -22,6 +22,7 @@ var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale inf
 var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );
 var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 /**
  * @param grunt - the grunt instance
@@ -40,28 +41,6 @@ module.exports = function( grunt, buildConfig ) {
   assert( global.phet.chipper.strings, 'missing global.phet.chipper.strings' );
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
-
-  function trimWhitespace( str ) {
-    return str.replace( /^\s\s*/, '' ).replace( /\s\s*$/, '' );
-  }
-
-  function padString( str, n ) {
-    while ( str.length < n ) {
-      str += ' ';
-    }
-    return str;
-  }
-
-  // Replaces the first occurrence of substring in str with replacement.
-  function replaceFirst( str, substring, replacement ) {
-    var idx = str.indexOf( substring );
-    if ( str.indexOf( substring ) !== -1 ) {
-      return str.slice( 0, idx ) + replacement + str.slice( idx + substring.length );
-    }
-    else {
-      return str;
-    }
-  }
 
   /**
    * Returns a map such that map[locale][stringKey] will be the string value (with fallbacks to English where needed).
@@ -241,14 +220,15 @@ module.exports = function( grunt, buildConfig ) {
     var html = grunt.file.read( '../chipper/templates/sim.html' );
     // Strip out carriage returns (if building in Windows), then add in our own after the MOTW.
     // See https://github.com/phetsims/joist/issues/164
-    html = replaceFirst( html.replace( /\r/g, '' ), 'CARRIAGE_RETURN', '\r' );
-    html = replaceFirst( html, 'HTML_HEADER', htmlHeader );
-    html = replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapJavascript );
-    html = replaceFirst( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
-    html = replaceFirst( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
-    html = replaceFirst( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
-    html = replaceFirst( html, 'START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
-    html = replaceFirst( html, 'END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
+    html = html.replace( /\r/g, '' );
+    html = html.replace( 'CARRIAGE_RETURN', '\r' );
+    html = html.replace( 'HTML_HEADER', htmlHeader );
+    html = html.replace( 'PHET_MIPMAPS_JAVASCRIPT', mipmapJavascript );
+    html = html.replace( 'SPLASH_SCREEN_DATA_URI', splashDataURI );
+    html = html.replace( 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
+    html = html.replace( 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
+    html = html.replace( 'START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
+    html = html.replace( 'END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
 
     grunt.log.debug( 'Writing HTML' );
 
@@ -260,7 +240,7 @@ module.exports = function( grunt, buildConfig ) {
       grunt.file.write( 'build/' + buildConfig.name + '_STRING_TEMPLATE.html', html );
     }
 
-    html = replaceFirst( html, 'PHET_SHAS', dependencyJSON );
+    html = html.replace( 'PHET_SHAS', dependencyJSON );
 
     // Start aggregating all of the 3rd party license entries
     var thirdPartyEntries = {
@@ -301,41 +281,41 @@ module.exports = function( grunt, buildConfig ) {
         }
       }
     }
-    html = replaceFirst( html, 'THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
+    html = html.replace( 'THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
     for ( var i = 0; i < buildConfig.locales.length; i++ ) {
       var locale = buildConfig.locales[ i ];
 
-      var localeHTML = replaceFirst( html, 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
+      var localeHTML = html.replace( 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
 
       var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
       timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
       //TODO: if this is for changing layout, we'll need these globals in requirejs mode
       //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-      localeHTML = replaceFirst( localeHTML, 'PHET_PROJECT', buildConfig.name );
-      localeHTML = replaceFirst( localeHTML, 'PHET_VERSION', buildConfig.version );
-      localeHTML = replaceFirst( localeHTML, 'PHET_BUILD_TIMESTAMP', timestamp );
-      localeHTML = replaceFirst( localeHTML, 'PHET_LOCALE', locale );
+      localeHTML = localeHTML.replace( 'PHET_PROJECT', buildConfig.name );
+      localeHTML = localeHTML.replace( 'PHET_VERSION', buildConfig.version );
+      localeHTML = localeHTML.replace( 'PHET_BUILD_TIMESTAMP', timestamp );
+      localeHTML = localeHTML.replace( 'PHET_LOCALE', locale );
 
-      // TODO: As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the
+      // TODO chipper#270 As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the
       // version string. This approach has a lot of problems and should be replaced as soon as we work out a more all
       // encompassing way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3
       // for more info.
       if ( buildConfig.brand === 'phet-io' ) {
         var unalteredVersion = buildConfig.version.replace( '-together', '-dev' );
-        localeHTML = replaceFirst( localeHTML, unalteredVersion, buildConfig.version );
+        localeHTML = localeHTML.replace( unalteredVersion, buildConfig.version );
       }
 
-      localeHTML = replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + buildConfig.version ); //TODO: i18n order
+      localeHTML = localeHTML.replace( 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + buildConfig.version ); //TODO: i18n order
       grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
     }
 
     // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-    iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + buildConfig.version + ' iframe test' );
-    iframeTestHtml = replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
+    iframeTestHtml = iframeTestHtml.replace( 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + buildConfig.version + ' iframe test' );
+    iframeTestHtml = iframeTestHtml.replace( 'SIM_URL', buildConfig.name + '_en.html' );
 
     // Write the iframe test file.  English (en) is assumed as the locale.
     grunt.log.debug( 'Writing HTML for iframe testing' );
@@ -363,15 +343,15 @@ module.exports = function( grunt, buildConfig ) {
       child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse HEAD', function( error, stdout, stderr ) {
         assert( !error, error ? ( 'ERROR on git SHA attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
 
-        var sha = trimWhitespace( stdout );
+        var sha = ChipperStringUtils.trimWhitespace( stdout );
 
         // get the branch
         child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse --abbrev-ref HEAD', function( error, stdout, stderr ) {
           assert( !error, error ? ( 'ERROR on git branch attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
 
-          var branch = trimWhitespace( stdout );
+          var branch = ChipperStringUtils.trimWhitespace( stdout );
 
-          grunt.log.debug( padString( dependency, 20 ) + branch + ' ' + sha );
+          grunt.log.debug( ChipperStringUtils.padString( dependency, 20 ) + branch + ' ' + sha );
           dependencyInfo[ dependency ] = { sha: sha, branch: branch };
 
           nextDependency();

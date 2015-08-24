@@ -19,42 +19,13 @@
  */
 
 var assert = require( 'assert' );
+var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 /**
  * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
   'use strict';
-
-  // Replace a single occurrence in a string (if any) with another.
-  var replaceOneString = function( str, substring, replacement ) {
-    var idx = str.indexOf( substring );
-    if ( str.indexOf( substring ) !== -1 ) {
-      return str.slice( 0, idx ) + replacement + str.slice( idx + substring.length );
-    }
-    else {
-      return str;
-    }
-  };
-
-  // Replace all occurrences of a string recursively
-  var replaceAllString = function( str, substring, replacement ) {
-    var replaced = replaceOneString( str, substring, replacement );
-    if ( replaced === str ) {
-      return replaced;
-    }
-    else {
-      return replaceAllString( replaced, substring, replacement );
-    }
-  };
-
-  // See http://stackoverflow.com/questions/10425287/convert-string-to-camelcase-with-regular-expression
-  // Eg: 'simula-rasa' -> 'simulaRasa'
-  function toCamelCase( input ) {
-    return input.toLowerCase().replace( /-(.)/g, function( match, group1 ) {
-      return group1.toUpperCase();
-    } );
-  }
 
   // Coerces a repository name to a sim title. Eg, 'simula-rasa' -> 'Simula Rasa'
   function toTitle( input ) {
@@ -97,8 +68,8 @@ module.exports = function( grunt ) {
   grunt.file.mkdir( destinationPath );
 
   // Create variations of the repository name
-  var configPath = replaceAllString( repositoryName.toUpperCase(), '-', '_' ); // eg, 'simula-rasa' -> 'SIMULA_RASA'
-  var lowerCamelCase = toCamelCase( repositoryName ); // eg, 'simula-rasa' -> 'simulaRasa'
+  var configPath = ChipperStringUtils.replaceAll( repositoryName.toUpperCase(), '-', '_' ); // eg, 'simula-rasa' -> 'SIMULA_RASA'
+  var lowerCamelCase = ChipperStringUtils.toCamelCase( repositoryName ); // eg, 'simula-rasa' -> 'simulaRasa'
   var upperCamelCase = lowerCamelCase.substring( 0, 1 ).toUpperCase() + lowerCamelCase.substring( 1 ); // eg, 'simula-rasa' -> 'SimulaRasa'
 
   // Iterate over the file system and copy files, changing filenames and contents as we go.
@@ -114,19 +85,19 @@ module.exports = function( grunt ) {
         var contents = grunt.file.read( abspath );
 
         // Replace variations of the repository name
-        contents = replaceAllString( contents, 'simula-rasa', repositoryName );
-        contents = replaceAllString( contents, 'SIMULA_RASA', configPath );
-        contents = replaceAllString( contents, 'simulaRasa', lowerCamelCase );
-        contents = replaceAllString( contents, 'SimulaRasa', upperCamelCase );
-        contents = replaceAllString( contents, 'Simula Rasa', title );
+        contents = ChipperStringUtils.replaceAll( contents, 'simula-rasa', repositoryName );
+        contents = ChipperStringUtils.replaceAll( contents, 'SIMULA_RASA', configPath );
+        contents = ChipperStringUtils.replaceAll( contents, 'simulaRasa', lowerCamelCase );
+        contents = ChipperStringUtils.replaceAll( contents, 'SimulaRasa', upperCamelCase );
+        contents = ChipperStringUtils.replaceAll( contents, 'Simula Rasa', title );
 
         // Replace author
-        contents = replaceAllString( contents, 'Your Name (Your Affiliation)', author );
+        contents = ChipperStringUtils.replaceAll( contents, 'Your Name (Your Affiliation)', author );
 
         // Replace names in the path where the contents will be written
         var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
-        contentsPath = replaceOneString( contentsPath, 'simula-rasa', repositoryName );
-        contentsPath = replaceOneString( contentsPath, 'SimulaRasa', upperCamelCase );
+        contentsPath = contentsPath.replace( 'simula-rasa', repositoryName );
+        contentsPath = contentsPath.replace( 'SimulaRasa', upperCamelCase );
 
         // Write the file
         grunt.file.write( contentsPath, contents );
