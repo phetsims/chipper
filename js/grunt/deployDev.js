@@ -12,7 +12,6 @@
 
 // build-in node APIs
 var child_process = require( 'child_process' );
-var assert = require( 'assert' );
 
 // modules
 var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );

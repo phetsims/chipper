@@ -21,9 +21,7 @@ var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
  * @param callback - optional callback to run when finished, defaults to grunt.task.current.async()
  */
 module.exports = function( grunt, callback ) {
-
-  var done = callback || grunt.task.current.async();
-
+  
   // configuration info from external files
   var deployConfig = getDeployConfig( global.phet.chipper.fs );
 
@@ -42,7 +40,7 @@ module.exports = function( grunt, callback ) {
   var productionServerURL = deployConfig.productionServerURL;
   var url = productionServerURL + '/deploy-html-simulation?' + query;
 
-  var done = grunt.task.current.async();
+  var done = callback || grunt.task.current.async();
 
   request( url, function( error, response, body ) {
     if ( !error && response.statusCode === 200 ) {
