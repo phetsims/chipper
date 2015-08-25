@@ -27,8 +27,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript, done ) {
   'use strict';
 
-  console.log( 'createHTMLFiles' );//XXX
-
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
 
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
