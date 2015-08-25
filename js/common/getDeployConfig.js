@@ -66,8 +66,7 @@ var assert = require( 'assert' );
 
     // These fields depend on other entries in buildConfig.
     //TODO simTitleStringKey default is duplicated from getBuildConfig.js
-    deployConfig.simTitleStringKey = packageJSON.phet.simTitleStringKey ||
-                                     ( deployConfig.requirejsNamespace + '/' + deployConfig.name + '.name' );
+    deployConfig.simTitleStringKey = deployConfig.requirejsNamespace + '/' + deployConfig.name + '.name';
 
     return deployConfig;
   }

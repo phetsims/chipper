@@ -38,7 +38,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // Get the title and version to display in the HTML header.
   // The HTML header is not internationalized, so order can just be hard coded here, see #156
   var simTitle = stringMap.en[ buildConfig.simTitleStringKey ];
-  assert( simTitle, 'missing value for sim title key ' + buildConfig.simTitleStringKey );
+  assert( simTitle, 'missing entry for sim title, key = ' + buildConfig.simTitleStringKey );
   var simTitleAndVersion = simTitle + ' ' + buildConfig.version;
 
   // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
