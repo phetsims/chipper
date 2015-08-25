@@ -6,6 +6,9 @@
  *
  * This is one step in the 'after-requirejs-build' task.
  * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous task.
+ *
+ * @author Johnathan Olson <jonathan.olson@colorado.edu>
+ * @author Chris Malley (PixelZoom, Inc.)
  */
 
 // built-in node APIs

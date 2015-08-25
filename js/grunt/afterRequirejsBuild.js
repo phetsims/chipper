@@ -25,6 +25,8 @@
  *     }
  *   }
  * }
+ *
+ * @author Chris Malley (PixelZoom, Inc.)
  */
 
 // modules
