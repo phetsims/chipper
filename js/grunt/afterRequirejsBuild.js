@@ -216,6 +216,7 @@ module.exports = function( grunt, buildConfig ) {
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
     grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
+    //TODO chipper#318 is this being used by Rosetta?
     // Write the string map, which may be used by translation utility for showing which strings are available for translation
     var stringMapFilename = 'build/' + buildConfig.name + '_string-map.json';
     grunt.log.debug( 'Writing string map to ', stringMapFilename );
