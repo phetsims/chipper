@@ -212,14 +212,12 @@ module.exports = function( grunt, buildConfig ) {
       grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
     }
 
+    //TODO why isn't this using ChipperConstants.FALLBACK_LOCALE?
     // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + buildConfig.version + ' iframe test' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
-
-    // Write the iframe test file.  English (en) is assumed as the locale.
-    grunt.log.debug( 'Writing HTML for iframe testing' );
     grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
     // Write the string map, which may be used by translation utility for showing which strings are available for translation
