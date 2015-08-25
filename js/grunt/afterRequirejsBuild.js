@@ -53,10 +53,6 @@ module.exports = function( grunt, buildConfig ) {
 
   function createHTMLFiles( dependencyJSON, mipmapJavascript ) {
 
-    // After all plugins completed, check which media files (images & audio files) are in the media
-    // directories but not loaded by the plugins.
-    reportUnusedMedia( grunt, buildConfig.requirejsNamespace );
-
     // map[locale][stringKey]
     var stringMap = getStringMap( grunt, buildConfig );
 
@@ -255,6 +251,9 @@ module.exports = function( grunt, buildConfig ) {
       } );
     }
   }
+
+  // After all plugins completed (which happens in requirejs:build), report which media files in the repository are unused.
+  reportUnusedMedia( grunt, buildConfig.requirejsNamespace );
 
   createDependenciesJSON( grunt, buildConfig, createMipmaps );
 };
