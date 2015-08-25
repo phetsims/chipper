@@ -7,8 +7,7 @@
  */
 
 // built-in node APIs
-var assert;
-assert = require( 'assert' );
+var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 // modules
