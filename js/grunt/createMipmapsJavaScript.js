@@ -58,7 +58,7 @@ module.exports = function( grunt, buildConfig, dependencies, nextStep ) {
 
           // Begin the next build step
           var mipmapsJavaScript = '<script type="text/javascript">window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';</script>';
-          nextStep( grunt, buildConfig, dependencies, mipmapsJavaScript );
+          nextStep( dependencies, mipmapsJavaScript );
         }
       } );
     } );

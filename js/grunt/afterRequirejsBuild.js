@@ -49,8 +49,8 @@ module.exports = function( grunt, buildConfig ) {
 
   // The multi-step asynchronous task described above.
   // For each step, a callback function invokes the next step.
-  createDependenciesJSON( grunt, buildConfig, function( grunt, buildConfig, dependenciesJSON ) {
-    createMipmapsJavaScript( grunt, buildConfig, dependenciesJSON, function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript ) {
+  createDependenciesJSON( grunt, buildConfig, function( dependenciesJSON ) {
+    createMipmapsJavaScript( grunt, buildConfig, dependenciesJSON, function( dependenciesJSON, mipmapsJavaScript ) {
       createHTMLFiles( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript, done );
     } );
   } );

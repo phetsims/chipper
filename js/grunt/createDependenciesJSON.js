@@ -69,7 +69,7 @@ module.exports = function( grunt, buildConfig, nextStep ) {
       grunt.file.write( 'build/dependencies.json', JSON.stringify( dependenciesInfoWithoutBabel, null, 2 ) + '\n' );
 
       // Pass the complete dependencies (including 'babel') to the next step.
-      nextStep( grunt, buildConfig, JSON.stringify( dependenciesInfo, null, 2 ) );
+      nextStep( JSON.stringify( dependenciesInfo, null, 2 ) );
     }
   }
 
