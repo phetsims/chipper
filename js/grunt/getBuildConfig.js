@@ -278,7 +278,7 @@ module.exports = function( grunt ) {
 
   // TODO: chipper#270 workaround, part 1 (see part 2 in getBuildConfig.js)
   if ( buildConfig.brand === 'phet-io' && buildConfig.version.indexOf( '-dev' ) > -1 ) {
-    buildConfig.version = buildConfig.version.replace( '-dev', '-together' );
+    buildConfig.version = buildConfig.version.replace( '-dev', '-phet-io' );
   }
 
   grunt.log.debug( 'buildConfig=' + JSON.stringify( buildConfig, null, 2 ) );

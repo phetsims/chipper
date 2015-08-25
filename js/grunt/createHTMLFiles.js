@@ -174,7 +174,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
     // TODO: chipper#270 workaround, part 2 (see part 1 in getBuildConfig.js)
     if ( buildConfig.brand === 'phet-io' ) {
-      var devVersion = buildConfig.version.replace( '-together', '-dev' );
+      var devVersion = buildConfig.version.replace( '-phet-io', '-dev' );
       localeHTML = localeHTML.replace( devVersion, buildConfig.version );
     }
 
