@@ -32,7 +32,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScri
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
-  // map[locale][stringKey]
+  // stringMap[locale][stringKey] give us a string
   var stringMap = getStringMap( grunt, buildConfig );
 
   // Get the title and version to display in the HTML header.
@@ -75,7 +75,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScri
   // Load the splash SVG from the appropriate brand.
   var splashDataURI = loadFileAsDataURI( '../brand/' + buildConfig.brand + '/images/splash.svg' );
 
-  //TODO describe what's happening here
+  // Minify scripts that will be preloaded in the HMTL file.
   grunt.log.debug( 'Minifying preload scripts' );
   var preloadBlocks = '';
   for ( var libIdx = 0; libIdx < buildConfig.preload.length; libIdx++ ) {
@@ -94,7 +94,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScri
   // Load the optimized code for the sim.
   var mainInlineJavascript = grunt.file.read( 'build/' + buildConfig.name + '.min.js' );
 
-  // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
+  // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
   preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
   mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
@@ -125,7 +125,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScri
   html = ChipperStringUtils.replaceFirst( html, 'PHET_SHAS', dependenciesJSON );
 
   // Add license entries for third-party media files that were loaded by media plugins.
-  // The media plugins initialize and populate global.phet.chipper.licenseEntries.
+  // The media plugins populate global.phet.chipper.licenseEntries.
   var thirdPartyEntries = {
     lib: getThirdPartyLibEntries( grunt, buildConfig )
   };
@@ -162,7 +162,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScri
   }
   html = ChipperStringUtils.replaceFirst( html, 'THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
-  // Create locale-specific html files
+  // Create locale-specific HTML files
   for ( var i = 0; i < buildConfig.locales.length; i++ ) {
     var locale = buildConfig.locales[ i ];
 
@@ -197,7 +197,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScri
   grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
   //TODO chipper#318 is this being used by Rosetta?
-  // Write the string map, which may be used by translation utility for showing which strings are available for translation
+  // Write the string map, which may be used by Rosetta for showing which strings are available for translation
   var stringMapFilename = 'build/' + buildConfig.name + '_string-map.json';
   grunt.log.debug( 'Writing string map to ', stringMapFilename );
   grunt.file.write( stringMapFilename, JSON.stringify( stringMap[ fallbackLocale ], null, '\t' ) );
