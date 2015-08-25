@@ -4,6 +4,8 @@
  * Gets shas and branch names for all dependencies and creates:
  * - the dependencies.json file that is written to the build directory (excludes babel)
  * - the dependences JSON data structure that is embedded in the HTML file (includes babel)
+ *
+ * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous build step.
  */
 
 // built-in node APIs
@@ -11,14 +13,15 @@ var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 // modules
+var createMipmapsJavaScript = require( '../../../chipper/js/grunt/createMipmapsJavaScript' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 /**
  * @param grunt - the grunt instance
  * @param {Object} buildConfig - see getBuildConfig.js
- * @param {function} completedCallback - called when this module completes
+ * @param {function} done - handle to the "done" function that should be called when this async task is completed
  */
-module.exports = function( grunt, buildConfig, completedCallback ) {
+module.exports = function( grunt, buildConfig, done ) {
   'use strict';
 
   var phetLibsCopy = _.clone( buildConfig.phetLibs ); // clone because we'll be modifying this array
@@ -68,9 +71,11 @@ module.exports = function( grunt, buildConfig, completedCallback ) {
       grunt.log.debug( 'Writing dependencies.json' );
       grunt.file.write( 'build/dependencies.json', dependenciesJSONWithoutBabel + '\n' );
 
-      // Provide callback with the complete dependencies (including 'babel') which will be embedded in the html file.
+      // The complete dependencies (including 'babel') which will be embedded in the html file.
       var dependenciesJSON = JSON.stringify( dependenciesInfo, null, 2 );
-      completedCallback( grunt, buildConfig, dependenciesJSON );
+
+      // Begin the next build step
+      createMipmapsJavaScript( grunt, buildConfig, dependenciesJSON, done );
     }
   }
 

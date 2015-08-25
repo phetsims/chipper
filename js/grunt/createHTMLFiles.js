@@ -2,6 +2,7 @@
 
 /**
  * Creates locale-specific HTML files by populating a template.
+ * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous build step.
  */
 
 // built-in node APIs
@@ -18,11 +19,13 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param grunt - the grunt instance
  * @param buildConfig - see getBuildConfig.js
  * @param dependenciesJSON - JSON data structure that indicates shas and branches for dependencies
- * @param mipmapJavascript - script for mipmaps
- * @param completedCallback - called when this module completes
+ * @param mipmapsJavaScript - script for mipmaps
+ * @param {function} done - handle to the "done" function that should be called when this async task is completed
  */
-module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapJavascript, completedCallback ) {
+module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript, done ) {
   'use strict';
+
+  console.log( 'createHTMLFiles' );//XXX
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
 
@@ -103,7 +106,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapJavascrip
   html = html.replace( /\r/g, '' );
   html = ChipperStringUtils.replaceFirst( html, 'CARRIAGE_RETURN', '\r' );
   html = ChipperStringUtils.replaceFirst( html, 'HTML_HEADER', htmlHeader );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapJavascript );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapsJavaScript );
   html = ChipperStringUtils.replaceFirst( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
   html = ChipperStringUtils.replaceFirst( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
   html = ChipperStringUtils.replaceFirst( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
@@ -199,9 +202,9 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapJavascrip
   grunt.log.debug( 'Writing string map to ', stringMapFilename );
   grunt.file.write( stringMapFilename, JSON.stringify( stringMap[ fallbackLocale ], null, '\t' ) );
 
-  //TODO should handle this be handled in afterRequirejsBuild.js?
   grunt.log.debug( 'Cleaning temporary files' );
   grunt.file.delete( 'build/' + buildConfig.name + '.min.js' );
 
-  completedCallback( grunt, buildConfig );
+  // Tell grunt that this async task has completed.
+  done();
 };
