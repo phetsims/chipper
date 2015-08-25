@@ -20,11 +20,11 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 /**
  * @param grunt - the grunt instance
  * @param buildConfig - see getBuildConfig.js
- * @param dependenciesJSON - JSON data structure that indicates shas and branches for dependencies
+ * @param {string} dependencies - dependencies information, including shas and branches for repositories
  * @param mipmapsJavaScript - script for mipmaps
  * @param {function} nextStep - called when this step is completed
  */
-module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript, nextStep ) {
+module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, nextStep ) {
   'use strict';
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
@@ -122,7 +122,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScri
   }
 
   //TODO Is it ok to be modifying html after we wrote stringless HTML above?
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_SHAS', dependenciesJSON );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_SHAS', dependencies );
 
   // Add license entries for third-party media files that were loaded by media plugins.
   // The media plugins populate global.phet.chipper.licenseEntries.

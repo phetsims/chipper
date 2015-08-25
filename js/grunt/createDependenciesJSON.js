@@ -66,16 +66,11 @@ module.exports = function( grunt, buildConfig, nextStep ) {
           dependenciesInfoWithoutBabel[ key ] = dependenciesInfo[ key ];
         }
       }
-      var dependenciesJSONWithoutBabel = JSON.stringify( dependenciesInfoWithoutBabel, null, 2 );
-
       grunt.log.debug( 'Writing dependencies.json' );
-      grunt.file.write( 'build/dependencies.json', dependenciesJSONWithoutBabel + '\n' );
+      grunt.file.write( 'build/dependencies.json', JSON.stringify( dependenciesInfoWithoutBabel, null, 2 ) + '\n' );
 
-      // The complete dependencies (including 'babel') which will be embedded in the html file.
-      var dependenciesJSON = JSON.stringify( dependenciesInfo, null, 2 );
-
-      // Begin the next build step
-      nextStep( grunt, buildConfig, dependenciesJSON );
+      // Pass the complete dependencies (including 'babel') to the next step.
+      nextStep( grunt, buildConfig, JSON.stringify( dependenciesInfo, null, 2 ) );
     }
   }
 
