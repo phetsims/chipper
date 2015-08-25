@@ -113,7 +113,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   html = ChipperStringUtils.replaceFirst( html, 'START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
   html = ChipperStringUtils.replaceFirst( html, 'END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
 
-  //TODO is this used?
+  //TODO #318 is this used by Rosetta?
   // Write the stringless template in case we want to use it with the translation addition process.
   // Skip it if only building one HTML.
   if ( buildConfig.locales.length > 1 ) {
