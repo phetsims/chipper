@@ -45,6 +45,6 @@ module.exports = function( grunt, buildConfig ) {
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( grunt, buildConfig.requirejsNamespace );
 
-  // Begin the multi-step asynchronous build process described above.
+  // Begin the multi-step asynchronous task described above.
   createDependenciesJSON( grunt, buildConfig, done );
 };
