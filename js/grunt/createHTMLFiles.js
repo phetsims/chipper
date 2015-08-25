@@ -188,7 +188,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
   }
 
-  //TODO why isn't this using ChipperConstants.FALLBACK_LOCALE?
+  //TODO should this be using ChipperConstants.FALLBACK_LOCALE instead of hardcoded to 'en'?
   // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
   grunt.log.debug( 'Constructing HTML for iframe testing from template' );
   var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
