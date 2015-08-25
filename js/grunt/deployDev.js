@@ -68,7 +68,6 @@ module.exports = function( grunt, callback ) {
     child_process.exec( command, function( err, stdout, stderr ) {
       grunt.log.writeln( stdout );
       grunt.log.writeln( stderr );
-      assert( !err, 'assertion error running ' + command + '. ' + err );
       callback();
     } );
   };

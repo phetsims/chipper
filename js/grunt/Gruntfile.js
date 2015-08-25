@@ -112,8 +112,9 @@ module.exports = function( grunt ) {
     '"productionServerName": "simian.colorado.edu" and "productionServerURL": "https://phet-dev.colorado.edu" in build-local.json',
     function() {
       // before invoking the build-server, do a dev deploy, including committing and pushing to github
+      var done = grunt.task.current.async();
       deployDev( grunt, function() {
-        deployProduction( grunt );
+        deployProduction( grunt, done );
       } );
     }
   );
