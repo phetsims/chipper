@@ -162,11 +162,12 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
     timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
-    //TODO: if this is for changing layout, we'll need these globals in requirejs mode
-    //Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
+
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_PROJECT', buildConfig.name );
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_VERSION', buildConfig.version );
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_BUILD_TIMESTAMP', timestamp );
+    //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
+    // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_LOCALE', locale );
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version ); //TODO: i18n order
 
