@@ -16,7 +16,7 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 /**
  * @param grunt - the grunt instance
  * @param {Object} buildConfig - see getBuildConfig.js
- * @param {function} completedCallback - called after dependencies.json has been written
+ * @param {function} completedCallback - called when this module completes
  */
 module.exports = function( grunt, buildConfig, completedCallback ) {
   'use strict';
