@@ -21,7 +21,7 @@ var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
  * @param callback - optional callback to run when finished, defaults to grunt.task.current.async()
  */
 module.exports = function( grunt, callback ) {
-  
+
   // configuration info from external files
   var deployConfig = getDeployConfig( global.phet.chipper.fs );
 

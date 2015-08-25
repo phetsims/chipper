@@ -445,7 +445,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         abortBuild( 'couldn\'t read simInfoArray ' + err );
       }
       else {
-        var testUrl = HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '_en.html';
+        var host = ( server === 'simian.colorado.edu' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
+        var testUrl = 'http://' + host + '/sims/html/' + simName + '/latest/' + simName + '_en.html';
         var newSim = true;
         for ( var i = 0; i < data.length; i++ ) {
           var simInfoObject = data[ i ];
