@@ -169,7 +169,8 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_LOCALE', locale );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version ); //TODO: i18n order
+    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE',
+      stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version ); //TODO: i18n order
 
     // TODO: chipper#270 workaround, part 2 (see part 1 in getBuildConfig.js)
     if ( buildConfig.brand === 'phet-io' ) {
