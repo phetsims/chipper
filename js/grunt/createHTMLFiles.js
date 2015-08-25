@@ -113,15 +113,6 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   html = ChipperStringUtils.replaceFirst( html, 'START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
   html = ChipperStringUtils.replaceFirst( html, 'END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
 
-  //TODO #318 is this used by Rosetta?
-  // Write the stringless template in case we want to use it with the translation addition process.
-  // Skip it if only building one HTML.
-  if ( buildConfig.locales.length > 1 ) {
-    grunt.log.debug( 'Writing stringless HTML file' );
-    grunt.file.write( 'build/' + buildConfig.name + '_STRING_TEMPLATE.html', html );
-  }
-
-  //TODO Is it ok to be modifying html after we wrote repo_STRING_TEMPLATE.html above?
   html = ChipperStringUtils.replaceFirst( html, 'PHET_SHAS', dependencies );
 
   // Add license entries for third-party media files that were loaded by media plugins.
@@ -195,12 +186,6 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version + ' iframe test' );
   iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
   grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
-
-  //TODO chipper#318 is this being used by Rosetta?
-  // Write the string map, which may be used by Rosetta for showing which strings are available for translation
-  var stringMapFilename = 'build/' + buildConfig.name + '_string-map.json';
-  grunt.log.debug( 'Writing string map to ', stringMapFilename );
-  grunt.file.write( stringMapFilename, JSON.stringify( stringMap[ fallbackLocale ], null, '\t' ) );
 
   grunt.log.debug( 'Cleaning temporary files' );
   grunt.file.delete( 'build/' + buildConfig.name + '.min.js' );
