@@ -14,15 +14,14 @@ var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 // modules
-var createMipmapsJavaScript = require( '../../../chipper/js/grunt/createMipmapsJavaScript' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 /**
  * @param grunt - the grunt instance
  * @param {Object} buildConfig - see getBuildConfig.js
- * @param {function} done - handle to the "done" function that should be called when this async task is completed
+ * @param {function} nextStep - called when this step is completed
  */
-module.exports = function( grunt, buildConfig, done ) {
+module.exports = function( grunt, buildConfig, nextStep ) {
   'use strict';
 
   var phetLibsCopy = _.clone( buildConfig.phetLibs ); // clone because we'll be modifying this array
@@ -76,7 +75,7 @@ module.exports = function( grunt, buildConfig, done ) {
       var dependenciesJSON = JSON.stringify( dependenciesInfo, null, 2 );
 
       // Begin the next build step
-      createMipmapsJavaScript( grunt, buildConfig, dependenciesJSON, done );
+      nextStep( grunt, buildConfig, dependenciesJSON );
     }
   }
 

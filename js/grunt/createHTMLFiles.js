@@ -22,9 +22,9 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param buildConfig - see getBuildConfig.js
  * @param dependenciesJSON - JSON data structure that indicates shas and branches for dependencies
  * @param mipmapsJavaScript - script for mipmaps
- * @param {function} done - handle to the "done" function that should be called when this async task is completed
+ * @param {function} nextStep - called when this step is completed
  */
-module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript, done ) {
+module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript, nextStep ) {
   'use strict';
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
@@ -205,6 +205,5 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScri
   grunt.log.debug( 'Cleaning temporary files' );
   grunt.file.delete( 'build/' + buildConfig.name + '.min.js' );
 
-  // Tell grunt that this async task has completed.
-  done();
+  nextStep();
 };

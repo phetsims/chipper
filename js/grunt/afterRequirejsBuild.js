@@ -29,6 +29,8 @@
 
 // modules
 var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenciesJSON' );
+var createMipmapsJavaScript = require( '../../../chipper/js/grunt/createMipmapsJavaScript' );
+var createHTMLFiles = require( '../../../chipper/js/grunt/createHTMLFiles' );
 var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );
 
 /**
@@ -45,6 +47,11 @@ module.exports = function( grunt, buildConfig ) {
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( grunt, buildConfig.requirejsNamespace );
 
-  // Begin the multi-step asynchronous task described above.
-  createDependenciesJSON( grunt, buildConfig, done );
+  // The multi-step asynchronous task described above.
+  // For each step, a callback function invokes the next step.
+  createDependenciesJSON( grunt, buildConfig, function( grunt, buildConfig, dependenciesJSON ) {
+    createMipmapsJavaScript( grunt, buildConfig, dependenciesJSON, function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript ) {
+      createHTMLFiles( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript, done );
+    } );
+  } );
 };

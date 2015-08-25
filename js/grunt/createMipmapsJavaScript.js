@@ -13,15 +13,14 @@ var assert = require( 'assert' );
 
 // modules
 var createMipmap = require( '../../../chipper/js/grunt/createMipmap' );
-var createHTMLFiles = require( '../../../chipper/js/grunt/createHTMLFiles' );
 
 /**
  * @param grunt - the grunt instance
  * @param buildConfig - see getBuildConfig.js
  * @param dependenciesJSON - JSON that describes dependencies, passed through to createHTMLFiles
- * @param {function} done - handle to the "done" function that should be called when this async task is completed
+ * @param {function} nextStep - called when this step is completed
  */
-module.exports = function( grunt, buildConfig, dependenciesJSON, done ) {
+module.exports = function( grunt, buildConfig, dependenciesJSON, nextStep ) {
   'use strict';
 
   // globals that should be defined by this point
@@ -34,7 +33,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, done ) {
   if ( global.phet.chipper.mipmapsToBuild.length === 0 ) {
 
     // No mipmaps loaded, begin the next build step
-    createHTMLFiles( grunt, buildConfig, dependenciesJSON, '<!-- no mipmaps -->', done );
+    nextStep( grunt, buildConfig, dependenciesJSON, '<!-- no mipmaps -->' );
   }
   else {
     global.phet.chipper.mipmapsToBuild.forEach( function( mipmapToBuild ) {
@@ -59,7 +58,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, done ) {
 
           // Begin the next build step
           var mipmapsJavaScript = '<script type="text/javascript">window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';</script>';
-          createHTMLFiles( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript, done );
+          nextStep( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript );
         }
       } );
     } );
