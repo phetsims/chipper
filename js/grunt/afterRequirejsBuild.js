@@ -202,6 +202,13 @@ module.exports = function( grunt, buildConfig ) {
       localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_BUILD_TIMESTAMP', timestamp );
       localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_LOCALE', locale );
       localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + buildConfig.version ); //TODO: i18n order
+
+      // TODO: chipper#270 workaround, part 2 (see part 1 in getBuildConfig.js)
+      if ( buildConfig.brand === 'phet-io' ) {
+        var devVersion = buildConfig.version.replace( '-together', '-dev' );
+        localeHTML = localeHTML.replace( devVersion, buildConfig.version );
+      }
+
       grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
     }
 

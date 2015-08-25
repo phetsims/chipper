@@ -277,10 +277,7 @@ module.exports = function( grunt ) {
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
   buildConfig.locales = getLocales( grunt, buildConfig.name );
 
-  // TODO: chipper#270
-  // As a temporary means of keeping track of "together" versions, replace "-dev" with "-together" in the version
-  // string. This approach has a lot of problems and should be replaced as soon as we work out a more all encompassing
-  // way of tracking together-enhanced versions.  See https://github.com/phetsims/special-ops/issues/3 for more info.
+  // TODO: chipper#270 workaround, part 1 (see part 2 in getBuildConfig.js)
   if ( buildConfig.brand === 'phet-io' && buildConfig.version.indexOf( '-dev' ) > -1 ) {
     buildConfig.version = buildConfig.version.replace( '-dev', '-together' );
   }
