@@ -13,6 +13,11 @@
 var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
+// 3rd-party packages
+/* jshint -W079 */
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
+/* jshint +W079 */
+
 // modules
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
@@ -60,13 +65,7 @@ module.exports = function( grunt, buildConfig, nextStep ) {
 
       // Remove 'babel' (string repo) from the dependencies that are written to dependencies.json,
       // since different builds can have different babel SHAs.
-      var dependenciesInfoWithoutBabel = {};
-      for ( var key in dependenciesInfo ) {
-        if ( key !== 'babel' ) {
-          dependenciesInfoWithoutBabel[ key ] = dependenciesInfo[ key ];
-        }
-      }
-      grunt.log.debug( 'Writing dependencies.json' );
+      var dependenciesInfoWithoutBabel = _.omit( dependenciesInfo, 'babel' );
       grunt.file.write( 'build/dependencies.json', JSON.stringify( dependenciesInfoWithoutBabel, null, 2 ) + '\n' );
 
       // Pass the complete dependencies (including 'babel') to the next step.
