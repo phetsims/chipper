@@ -6,20 +6,21 @@
  *
  * Due to the asynchronous nature of determining shas and branch names for dependencies (via child_process.exec)
  * and creating scripts for mipmaps, the overall structure of this task is necessarily nested, relying on callbacks.
+ *
  * Here's the basic flow of this task:
  *
  * createDependenciesJSON() {
  *
  *   var dependenciesJSON = ... // create JSON that describes dependencies
- *   write dependencies.json file
+ *   write dependencies.json file;
  *
  *   createMipmaps( dependenciesJSON ) {
  *
  *     var mipmapsJavascript = ... // create script for mipmaps
  *
  *     createHTMLFiles( dependenciesJSON, mipmapsJavascript ) {
- *       replace token in HTML template
- *       write locale-specific HMTL files
+ *       replace tokens in HTML template;
+ *       write locale-specific HMTL files;
  *       done;
  *     }
  *   }
