@@ -38,7 +38,8 @@ var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' )
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
-  // Tell grunt that this task is asynchronous
+  // Tell grunt to wait because this task is asynchronous.
+  // Returns a handle to a function that must be called when the task has completed.
   var done = grunt.task.current.async();
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
