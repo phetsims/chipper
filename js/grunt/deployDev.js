@@ -26,8 +26,9 @@ var TEST_DIR_NAME = 'deploy-dev-tests';
 
 /**
  * @param grunt - the grunt instance
+ * @param callback - optional callback to run when finished, defaults to grunt.task.current.async()
  */
-module.exports = function( grunt ) {
+module.exports = function( grunt, callback ) {
 
   // grunt options
   var mkdir = !!grunt.option( 'mkdir' ); // true = create the sim dir and .htaccess file before copying the version directory
@@ -50,7 +51,7 @@ module.exports = function( grunt ) {
   var simPath = basePath + sim;
   var versionPath = simPath + '/' + version;
 
-  var done = grunt.task.current.async();
+  var done = callback || grunt.task.current.async();
 
   var finish = function() {
     grunt.log.writeln( 'deployed: ' + URL_BASE + sim + '/' + version + '/' + sim + '_en.html' );
