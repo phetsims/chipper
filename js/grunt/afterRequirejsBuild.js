@@ -67,30 +67,21 @@ module.exports = function( grunt, buildConfig ) {
     // directories but not loaded by the plugins.
     reportUnusedMedia( grunt, buildConfig.requirejsNamespace );
 
-    // Load the splash SVG from the appropriate brand.
-    var splashDataURI = loadFileAsDataURI( '../brand/' + buildConfig.brand + '/images/splash.svg' );
-    var mainInlineJavascript = grunt.file.read( 'build/' + buildConfig.name + '.min.js' );
-
-    // Create the license header for this html and all the 3rd party dependencies
-    // Text was discussed in https://github.com/phetsims/chipper/issues/148
-    var titleKey = buildConfig.simTitleStringKey;
+    // map[locale][stringKey]
     var stringMap = getStringMap( grunt, buildConfig );
 
-    // Make sure the simulation has a title
-    if ( !stringMap.en[ titleKey ] ) {
-      grunt.fail.warn( 'There was no title.' );
-    }
-
-    // Get the title to display as the sim name and version.  The HTML header is not internationalized, so word order
-    // can just be hard coded as English here, see #156
-    var englishSimTitle = stringMap.en[ titleKey ] + ' ' + buildConfig.version;
+    // Get the title and version to display in the HTML header.
+    // The HTML header is not internationalized, so order can just be hard coded here, see #156
+    var simTitle = stringMap.en[ buildConfig.simTitleStringKey ];
+    assert( simTitle, 'missing value for sim title key ' + buildConfig.simTitleStringKey );
+    var simTitleAndVersion = simTitle + ' ' + buildConfig.version;
 
     // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
     var htmlHeader = null;
     if ( buildConfig.brand === 'phet-io' ) {
 
       // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
-      htmlHeader = englishSimTitle + '\n' +
+      htmlHeader = simTitleAndVersion + '\n' +
                    'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
                    'PhET Interactive Simulations, University of Colorado Boulder\n' +
                    '\n' +
@@ -100,7 +91,7 @@ module.exports = function( grunt, buildConfig ) {
                    'http://phet.colorado.edu/en/licensing';
     }
     else {
-      htmlHeader = englishSimTitle + '\n' +
+      htmlHeader = simTitleAndVersion + '\n' +
                    'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
                    'PhET Interactive Simulations, University of Colorado Boulder\n' +
                    '\n' +
@@ -115,6 +106,12 @@ module.exports = function( grunt, buildConfig ) {
                    'marketing, or advertising purposes requires a separate license agreement from the\n' +
                    'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
     }
+
+    // Load the splash SVG from the appropriate brand.
+    var splashDataURI = loadFileAsDataURI( '../brand/' + buildConfig.brand + '/images/splash.svg' );
+
+    // Load the optimized code for the sim.
+    var mainInlineJavascript = grunt.file.read( 'build/' + buildConfig.name + '.min.js' );
 
     // workaround for Uglify2's unicode unescaping. see https://github.com/phetsims/chipper/issues/70
     preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
@@ -176,7 +173,6 @@ module.exports = function( grunt, buildConfig ) {
                 }
               }
               else if ( licenseEntry.projectURL !== 'http://phet.colorado.edu' ) {
-
                 thirdPartyEntries[ mediaType ] = thirdPartyEntries[ mediaType ] || {};
                 thirdPartyEntries[ mediaType ][ resourceName ] = licenseEntry;
               }
@@ -201,7 +197,7 @@ module.exports = function( grunt, buildConfig ) {
       localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_VERSION', buildConfig.version );
       localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_BUILD_TIMESTAMP', timestamp );
       localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_LOCALE', locale );
-      localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ titleKey ] + ' ' + buildConfig.version ); //TODO: i18n order
+      localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE', stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version ); //TODO: i18n order
 
       // TODO: chipper#270 workaround, part 2 (see part 1 in getBuildConfig.js)
       if ( buildConfig.brand === 'phet-io' ) {
@@ -216,7 +212,7 @@ module.exports = function( grunt, buildConfig ) {
     // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ titleKey ] + ' ' + buildConfig.version + ' iframe test' );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version + ' iframe test' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
     grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
