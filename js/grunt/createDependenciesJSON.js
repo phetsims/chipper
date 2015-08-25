@@ -5,7 +5,8 @@
  * - the dependencies.json file that is written to the build directory (excludes babel)
  * - the dependences JSON data structure that is embedded in the HTML file (includes babel)
  *
- * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous build step.
+ * This is one step in the 'after-requirejs-build' task.
+ * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous task.
  */
 
 // built-in node APIs

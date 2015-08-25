@@ -2,7 +2,9 @@
 
 /**
  * Creates locale-specific HTML files by populating a template.
- * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous build step.
+ *
+ * This is one step in the 'after-requirejs-build' task.
+ * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous task.
  */
 
 // built-in node APIs
