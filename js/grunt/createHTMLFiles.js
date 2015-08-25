@@ -199,7 +199,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapJavascrip
   grunt.log.debug( 'Writing string map to ', stringMapFilename );
   grunt.file.write( stringMapFilename, JSON.stringify( stringMap[ fallbackLocale ], null, '\t' ) );
 
-  //TODO handle this in afterRequirejsBuild.js
+  //TODO should handle this be handled in afterRequirejsBuild.js?
   grunt.log.debug( 'Cleaning temporary files' );
   grunt.file.delete( 'build/' + buildConfig.name + '.min.js' );
 
