@@ -7,17 +7,12 @@
 
 // built-in node APIs
 var assert = require( 'assert' );
-var child_process = require( 'child_process' );
-
-// third-party libraries
-/* jshint -W079 */
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
-/* jshint +W079 */
 
 // modules
 var createMipmap = require( '../../../chipper/js/grunt/createMipmap' );
 var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
 var getStringMap = require( '../../../chipper/js/grunt/getStringMap' );
+var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenciesJSON' );
 var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );
 var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
@@ -56,12 +51,7 @@ module.exports = function( grunt, buildConfig ) {
     preloadBlocks += '<script type="text/javascript" id="script-' + lib + '">\n' + preloadResult.code + '\n</script>\n';
   }
 
-  var dependencies = _.clone( buildConfig.phetLibs ); // clone because we'll be modifying this array
-  var dependencyInfo = {
-    comment: '# ' + buildConfig.name + ' ' + buildConfig.version + ' ' + (new Date().toString())
-  };
-
-  function postMipmapLoad( dependencyJSON, mipmapJavascript ) {
+  function createHTMLFiles( dependencyJSON, mipmapJavascript ) {
 
     // After all plugins completed, check which media files (images & audio files) are in the media
     // directories but not loaded by the plugins.
@@ -228,85 +218,43 @@ module.exports = function( grunt, buildConfig ) {
     done();
   }
 
-  function nextDependency() {
-    if ( dependencies.length ) {
-      var dependency = dependencies.shift(); // remove first item
-      assert( !dependencyInfo.dependency, 'there was already a dependency named ' + dependency );
+  function createMipmaps( grunt, buildConfig, dependenciesJSON ) {
 
-      // get the SHA: git --git-dir ../scenery/.git rev-parse HEAD
-      child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse HEAD', function( error, stdout, stderr ) {
-        assert( !error, error ? ( 'ERROR on git SHA attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
+    // need to load mipmaps here, since we can't do it synchronously during the require.js build step
+    var mipmapsLoaded = 0; // counter that indicates we are done when incremented to the number of mipmaps
+    var mipmapResult = {}; // result to be attached to window.phet.chipper.mipmaps in the sim
+    if ( global.phet.chipper.mipmapsToBuild && global.phet.chipper.mipmapsToBuild.length === 0 ) {
+      createHTMLFiles( dependenciesJSON, '<!-- no mipmaps -->' ); // no mipmaps loaded
+    }
+    else {
+      global.phet.chipper.mipmapsToBuild.forEach( function( mipmapToBuild ) {
 
-        var sha = stdout.trim();
+        var name = mipmapToBuild.name;
+        var path = mipmapToBuild.path;
+        var level = mipmapToBuild.level;
+        var quality = mipmapToBuild.quality;
 
-        // get the branch: git --git-dir ../scenery/.git rev-parse --abbrev-ref HEAD
-        child_process.exec( 'git --git-dir ../' + dependency + '/.git rev-parse --abbrev-ref HEAD', function( error, stdout, stderr ) {
-          assert( !error, error ? ( 'ERROR on git branch attempt: code: ' + error.code + ', signal: ' + error.signal + ' with stderr:\n' + stderr ) : 'An error without an error? not good' );
+        createMipmap( path, level, quality, grunt, function( mipmaps ) {
+          mipmapToBuild.mipmaps = mipmaps;
+          mipmapResult[ name ] = mipmaps.map( function( mipmap ) {
+            return {
+              width: mipmap.width,
+              height: mipmap.height,
+              url: mipmap.url
+            };
+          } );
+          mipmapsLoaded++;
 
-          var branch = stdout.trim();
+          if ( mipmapsLoaded === global.phet.chipper.mipmapsToBuild.length ) {
 
-          grunt.log.debug( ChipperStringUtils.padString( dependency, 20 ) + branch + ' ' + sha );
-          dependencyInfo[ dependency ] = { sha: sha, branch: branch };
-
-          nextDependency();
+            // we've now finished loading all of the mipmaps, and can proceed with the build
+            var mipmapsJavaScript = '<script type="text/javascript">window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';</script>';
+            createHTMLFiles( dependenciesJSON, mipmapsJavaScript );
+          }
         } );
       } );
     }
-    else {
-      // now continue on with the process! CALLBACK SOUP FOR YOU!
-
-      // get our JSON for dependencies
-      var dependencyJSON = JSON.stringify( dependencyInfo, null, 2 );
-
-      // and get JSON for our dependencies (without babel), for dependencies.json
-      // (since different builds can have different babel SHAs)
-      var dependencyInfoWithoutBabel = {};
-      for ( var key in dependencyInfo ) {
-        if ( key !== 'babel' ) {
-          dependencyInfoWithoutBabel[ key ] = dependencyInfo[ key ];
-        }
-      }
-      var dependencyJSONWithoutBabel = JSON.stringify( dependencyInfoWithoutBabel, null, 2 );
-
-      grunt.log.debug( 'Writing dependencies.json' );
-      grunt.file.write( 'build/dependencies.json', dependencyJSONWithoutBabel + '\n' );
-
-      // need to load mipmaps here, since we can't do it synchronously during the require.js build step
-      var mipmapsLoaded = 0; // counter that indicates we are done when incremented to the number of mipmaps
-      var mipmapResult = {}; // result to be attached to window.phet.chipper.mipmaps in the sim
-      if ( global.phet.chipper.mipmapsToBuild && global.phet.chipper.mipmapsToBuild.length > 0 ) {
-        global.phet.chipper.mipmapsToBuild.forEach( function( mipmapToBuild ) {
-          var name = mipmapToBuild.name;
-          var path = mipmapToBuild.path;
-          var level = mipmapToBuild.level;
-          var quality = mipmapToBuild.quality;
-
-          createMipmap( path, level, quality, grunt, function( mipmaps ) {
-            mipmapToBuild.mipmaps = mipmaps;
-            mipmapResult[ name ] = mipmaps.map( function( mipmap ) {
-              return {
-                width: mipmap.width,
-                height: mipmap.height,
-                url: mipmap.url
-              };
-            } );
-            mipmapsLoaded++;
-
-            if ( mipmapsLoaded === global.phet.chipper.mipmapsToBuild.length ) {
-
-              // we've now finished loading all of the mipmaps, and can proceed with the build
-              var mipmapsJavaScript = '<script type="text/javascript">window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';</script>';
-              postMipmapLoad( dependencyJSON, mipmapsJavaScript );
-            }
-          } );
-        } );
-      }
-      else {
-        postMipmapLoad( dependencyJSON, '<!-- no mipmaps -->' ); // no mipmaps loaded
-      }
-    }
   }
 
-  grunt.log.debug( 'Scanning dependencies from:\n' + dependencies.toString() );
-  nextDependency();
+  createDependenciesJSON( grunt, buildConfig, createMipmaps );
 };
