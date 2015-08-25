@@ -185,7 +185,8 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
   grunt.log.debug( 'Constructing HTML for iframe testing from template' );
   var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE', stringMap[ fallbackLocale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version + ' iframe test' );
+  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE',
+    stringMap[ fallbackLocale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version + ' iframe test' );
   iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
   grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
