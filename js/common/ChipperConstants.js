@@ -10,7 +10,7 @@
 (function() {
   'use strict';
 
-  var buildConfig = {
+  var ChipperConstants = {
 
     // Locale to use when no locale is specified
     FALLBACK_LOCALE: 'en',
@@ -28,13 +28,13 @@
   // browser require.js-compatible definition
   if ( typeof define !== 'undefined' ) {
     define( function() {
-      return buildConfig;
+      return ChipperConstants;
     } );
   }
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {
-    module.exports = buildConfig;
+    module.exports = ChipperConstants;
   }
 
 })();
