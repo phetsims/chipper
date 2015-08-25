@@ -123,7 +123,7 @@ module.exports = function( grunt, buildConfig, dependenciesJSON, mipmapsJavaScri
     grunt.file.write( 'build/' + buildConfig.name + '_STRING_TEMPLATE.html', html );
   }
 
-  //TODO why are we modifying the html after we wrote stringless HTML above?
+  //TODO Is it ok to be modifying html after we wrote stringless HTML above?
   html = ChipperStringUtils.replaceFirst( html, 'PHET_SHAS', dependenciesJSON );
 
   // Add license entries for third-party media files that were loaded by media plugins.
