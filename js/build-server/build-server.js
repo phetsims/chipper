@@ -35,7 +35,7 @@
  * The build server starts a build process upon receiving and https request to /deploy-html-simulation. It takes as input
  * the following query parameters:
  * - repos - a json object with dependency repos and shas, in the form of dependencies.json files
- * - locales - a list of locales to build [optional, defaults to all locales in babel]
+ * - locales - a comma-separated list of locales to build [optional, defaults to all locales in babel]
  * - simName - the standardized name of the sim, lowercase with hyphens instead of spaces (i.e. area-builder)
  * - version - the version to be built. Production deploys will automatically strip everything after the major.minor.maintenance
  * - authorizationCode - a password to authorize legitimate requests
@@ -220,7 +220,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * DecodeURIComponent is a more robust solution that json/querystring.parse
    */
   var repos = JSON.parse( decodeURIComponent( req.query[ REPOS_KEY ] ) );
-  var locales = ( req.query[ LOCALES_KEY ] ) ? JSON.parse( decodeURIComponent( req.query[ LOCALES_KEY ] ) ) : '*';
+  var locales = ( req.query[ LOCALES_KEY ] ) ? decodeURIComponent( req.query[ LOCALES_KEY ] ) : '*';
 
   var simName = req.query[ SIM_NAME_KEY ];
   var version = req.query[ VERSION_KEY ];
@@ -600,7 +600,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
           pullMaster( function() {
             exec( 'grunt checkout-shas --buildServer', simDir, function() {
               exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
-                exec( 'grunt build --brand=phet --lint=false --locales=' + locales.toString(), simDir, function() {
+                exec( 'grunt build --brand=phet --lint=false --locales=' + locales, simDir, function() {
                   exec( 'grunt generate-thumbnails', simDir, function() {
                     mkVersionDir( function() {
                       exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {

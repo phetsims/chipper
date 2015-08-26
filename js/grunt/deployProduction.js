@@ -25,12 +25,14 @@ module.exports = function( grunt, callback ) {
   // configuration info from external files
   var deployConfig = getDeployConfig( global.phet.chipper.fs );
 
+  var locales = grunt.option( 'locales' ) || ChipperConstants.FALLBACK_LOCALE;
+
   // read dependencies.json (required)
   var dependenciesJSON = grunt.file.readJSON( 'build/dependencies.json' );
 
   var query = querystring.stringify( {
     'repos': JSON.stringify( dependenciesJSON ),
-    'locales': JSON.stringify( [ ChipperConstants.FALLBACK_LOCALE ] ),
+    'locales': locales,
     'simName': deployConfig.name,
     'version': deployConfig.version,
     'serverName': deployConfig.productionServerName,
