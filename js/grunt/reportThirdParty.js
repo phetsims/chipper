@@ -180,11 +180,6 @@ module.exports = function( grunt ) {
   for ( i = 0; i < libraries.length; i++ ) {
     var library = libraries[ i ];
 
-    // check for existence of the license file
-    if ( !grunt.file.exists( LICENSES_DIRECTORY + library + '.txt' ) ) {
-      grunt.log.error( 'license file not found for ' + library );
-    }
-
     var lines = [
       '**' + library + '**',
       json[ library ].text.join( '<br>' ),
