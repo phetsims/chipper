@@ -16,7 +16,7 @@ var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 
 /**
  * @param grunt - the grunt instance
- * @param {Object} buildConfig - see initBuildConfig.js
+ * @param {Object} buildConfig - see getBuildConfig.js
  * @returns map[locale][stringKey]
  */
 module.exports = function( grunt, buildConfig ) {
