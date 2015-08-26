@@ -28,6 +28,7 @@ var assert = require( 'assert' );
 
 // Load shared constants
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
@@ -111,15 +112,11 @@ module.exports = function( grunt ) {
     }
   };
 
-  var endsWith = function( string, substring ) {
-    return string.indexOf( substring ) === string.length - substring.length;
-  };
-
   grunt.file.recurse( input, function( abspath, rootdir, subdir, filename ) {
-    if ( endsWith( filename.toLowerCase(), '.html' ) &&
+    if ( ChipperStringUtils.endsWith( filename.toLowerCase(), '.html' ) &&
 
          // shortcut to avoid looking at the -iframe.html files when testing on a build directory.
-         !endsWith( filename.toLowerCase(), '-iframe.html' ) ) {
+         !ChipperStringUtils.endsWith( filename.toLowerCase(), '-iframe.html' ) ) {
 
       // load the file into a string
       var html = grunt.file.read( abspath ).trim();
