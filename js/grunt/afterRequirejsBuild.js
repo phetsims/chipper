@@ -27,11 +27,10 @@ module.exports = function( grunt, buildConfig ) {
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( grunt, buildConfig.requirejsNamespace );
 
-  // Since this is an asynchronous task, each step in the task uses a callback to advance to the next step,
-  // and propagate information to the subsequent step(s). The final step in the task calls 'done', to tell
-  // grunt that the task has completed.
+  // Since this is an asynchronous task, each step in the task uses a callback to advance to the next step.
+  // The final step in the task calls 'done', to tell grunt that the task has completed.
   createDependenciesJSON( grunt, buildConfig, function( dependenciesJSON ) {
-    createMipmapsJavaScript( grunt, buildConfig, dependenciesJSON, function( dependenciesJSON, mipmapsJavaScript ) {
+    createMipmapsJavaScript( grunt, buildConfig, function( mipmapsJavaScript ) {
       createHTMLFiles( grunt, buildConfig, dependenciesJSON, mipmapsJavaScript, done );
     } );
   } );

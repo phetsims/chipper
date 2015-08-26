@@ -22,9 +22,9 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param buildConfig - see getBuildConfig.js
  * @param {string} dependencies - dependencies information, including shas and branches for repositories
  * @param mipmapsJavaScript - script for mipmaps
- * @param {function} nextStep - called when this step is completed
+ * @param {function} callback - called when this step is completed
  */
-module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, nextStep ) {
+module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, callback ) {
   'use strict';
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
@@ -193,5 +193,5 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   grunt.log.debug( 'Cleaning temporary files' );
   grunt.file.delete( 'build/' + buildConfig.name + '.min.js' );
 
-  nextStep();
+  callback();
 };

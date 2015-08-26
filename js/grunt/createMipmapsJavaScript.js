@@ -20,10 +20,9 @@ var createMipmap = require( '../../../chipper/js/grunt/createMipmap' );
 /**
  * @param grunt - the grunt instance
  * @param {Object} buildConfig - see getBuildConfig.js
- * @param {string} dependencies - dependencies information, passed through to next step
- * @param {function} nextStep - called when this step is completed
+ * @param {function} callback - called when this step is completed
  */
-module.exports = function( grunt, buildConfig, dependencies, nextStep ) {
+module.exports = function( grunt, buildConfig, callback ) {
   'use strict';
 
   // globals that should be defined by this point
@@ -35,8 +34,8 @@ module.exports = function( grunt, buildConfig, dependencies, nextStep ) {
 
   if ( global.phet.chipper.mipmapsToBuild.length === 0 ) {
 
-    // No mipmaps loaded, begin the next build step
-    nextStep( grunt, buildConfig, dependencies, '<!-- no mipmaps -->' );
+    // No mipmaps loaded, we're done.
+    callback( '<!-- no mipmaps -->' );
   }
   else {
     global.phet.chipper.mipmapsToBuild.forEach( function( mipmapToBuild ) {
@@ -47,6 +46,7 @@ module.exports = function( grunt, buildConfig, dependencies, nextStep ) {
       var quality = mipmapToBuild.quality;
 
       createMipmap( path, level, quality, grunt, function( mipmaps ) {
+
         mipmapToBuild.mipmaps = mipmaps;
         mipmapResult[ name ] = mipmaps.map( function( mipmap ) {
           return {
@@ -57,11 +57,9 @@ module.exports = function( grunt, buildConfig, dependencies, nextStep ) {
         } );
         mipmapsLoaded++;
 
+        // All mipmaps processed, we're done.
         if ( mipmapsLoaded === global.phet.chipper.mipmapsToBuild.length ) {
-
-          // Begin the next build step
-          var mipmapsJavaScript = '<script type="text/javascript">window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';</script>';
-          nextStep( dependencies, mipmapsJavaScript );
+          callback( '<script type="text/javascript">window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';</script>' );
         }
       } );
     } );

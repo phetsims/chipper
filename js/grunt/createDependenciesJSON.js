@@ -24,9 +24,9 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 /**
  * @param grunt - the grunt instance
  * @param {Object} buildConfig - see getBuildConfig.js
- * @param {function} nextStep - called when this step is completed
+ * @param {function} callback - called when this step is completed
  */
-module.exports = function( grunt, buildConfig, nextStep ) {
+module.exports = function( grunt, buildConfig, callback ) {
   'use strict';
 
   var phetLibsCopy = _.clone( buildConfig.phetLibs ); // clone because we'll be modifying this array
@@ -69,7 +69,7 @@ module.exports = function( grunt, buildConfig, nextStep ) {
       grunt.file.write( 'build/dependencies.json', JSON.stringify( dependenciesInfoWithoutBabel, null, 2 ) + '\n' );
 
       // Pass the complete dependencies (including 'babel') to the next step.
-      nextStep( JSON.stringify( dependenciesInfo, null, 2 ) );
+      callback( JSON.stringify( dependenciesInfo, null, 2 ) );
     }
   }
 
