@@ -162,7 +162,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   html = ChipperStringUtils.replaceFirst( html, 'PHET_MAIN_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_DEPENCENCIES', dependencies );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_DEPENDENCIES', dependencies );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_PROJECT', buildConfig.name );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_VERSION', buildConfig.version );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_BUILD_TIMESTAMP', timestamp );
