@@ -88,7 +88,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   // Minify scripts that will be preloaded in the HMTL file.
   grunt.log.debug( 'Minifying preload scripts' );
-  var preloadBlocks = '';
+  var preloadJavaScript = '';
   for ( var libIdx = 0; libIdx < buildConfig.preload.length; libIdx++ ) {
     var lib = buildConfig.preload[ libIdx ];
     var preloadResult = uglify.minify( [ lib ], {
@@ -99,14 +99,14 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
         global_defs: {}
       }
     } );
-    preloadBlocks += '<script type="text/javascript" id="script-' + lib + '">\n' + preloadResult.code + '\n</script>\n';
+    preloadJavaScript += '<script type="text/javascript" id="script-' + lib + '">\n' + preloadResult.code + '\n</script>\n';
   }
 
   // Load the optimized code for the sim.
   var mainInlineJavascript = grunt.file.read( 'build/' + buildConfig.name + '.min.js' );
 
   // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
-  preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
+  preloadJavaScript = preloadJavaScript.replace( '\x0B', '\\x0B' );
   mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
   // License entries for third-party media files that were loaded by media plugins.
@@ -158,7 +158,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   html = ChipperStringUtils.replaceFirst( html, 'PHET_HTML_HEADER', htmlHeader );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapsJavaScript );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_SPLASH_DATA_URI', splashDataURI );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_PRELOAD_JAVASCRIPT', preloadBlocks );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_PRELOAD_JAVASCRIPT', preloadJavaScript );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_MAIN_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
