@@ -196,8 +196,8 @@ module.exports = function( grunt ) {
     'written. The file is in markdown syntax and the *.md suffix is ' +
     'recommended. This will silently overwrite an existing file, if there is ' +
     'one.\n' +
-    '--active-runnables (optional flag, boolean) If this flag is ' +
-    'supplied, the task iterates over the active-runnables and copies each ' +
+    '--active-runnables (optional, default to false) If true, ' +
+    'the task iterates over the active-runnables and copies each ' +
     'built HTML file into the directory specified with --input before ' +
     'running the report. If any HTML files are missing, the report will fail. ' +
     'Before using this flag, the developer should run `grunt-all.sh` to make ' +
