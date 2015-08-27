@@ -27,8 +27,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, callback ) {
   'use strict';
 
-  var fallbackLocale = ChipperConstants.FALLBACK_LOCALE;
-
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
@@ -37,7 +35,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   // Get the title and version to display in the HTML header.
   // The HTML header is not internationalized, so order can just be hard coded here, see #156
-  var simTitle = stringMap.en[ buildConfig.simTitleStringKey ];
+  var simTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ buildConfig.simTitleStringKey ];
   assert( simTitle, 'missing entry for sim title, key = ' + buildConfig.simTitleStringKey );
   var simTitleAndVersion = simTitle + ' ' + buildConfig.version;
 
@@ -98,7 +96,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
   mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
-  // Replace tokens in the template
+  // Replace tokens in the template that are independent of locale
   grunt.log.debug( 'Constructing HTML from template' );
   var html = grunt.file.read( '../chipper/templates/sim.html' );
   // Strip out carriage returns (if building in Windows), then add in our own after the MOTW.
@@ -112,7 +110,6 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   html = ChipperStringUtils.replaceFirst( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
   html = ChipperStringUtils.replaceFirst( html, 'START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
   html = ChipperStringUtils.replaceFirst( html, 'END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
-
   html = ChipperStringUtils.replaceFirst( html, 'PHET_SHAS', dependencies );
 
   // Add license entries for third-party media files that were loaded by media plugins.
@@ -157,20 +154,25 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   for ( var i = 0; i < buildConfig.locales.length; i++ ) {
     var locale = buildConfig.locales[ i ];
 
+    var localeTitleAndVersion = stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version; //TODO: i18n order
     var localeHTML = ChipperStringUtils.replaceFirst( html, 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
 
     var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
     timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
-
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_PROJECT', buildConfig.name );
+    localeHTML = ChipperStringUtils.replaceAll( localeHTML, 'PHET_PROJECT', buildConfig.name );
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_VERSION', buildConfig.version );
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_BUILD_TIMESTAMP', timestamp );
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_LOCALE', locale );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE',
-      stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version ); //TODO: i18n order
+    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE', localeTitleAndVersion );
+
+    // metadata for Open Graph protocol, see phet-edmodo#2
+    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_TITLE', localeTitleAndVersion );
+    var latestDir = 'http://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
+    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_URL', latestDir + buildConfig.name + '_' + locale );
+    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
 
     // TODO: chipper#270 workaround, part 2 (see part 1 in getBuildConfig.js)
     if ( buildConfig.brand === 'phet-io' ) {
@@ -185,8 +187,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
   grunt.log.debug( 'Constructing HTML for iframe testing from template' );
   var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE',
-    stringMap[ fallbackLocale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version + ' iframe test' );
+  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE', simTitleAndVersion + ' iframe test' );
   iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
   grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
