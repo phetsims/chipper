@@ -76,6 +76,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
                  'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
   }
 
+  // All html files share the same build timestamp
+  var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
+  timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
+
   // Load the splash SVG from the appropriate brand.
   var splashDataURI = loadFileAsDataURI( '../brand/' + buildConfig.brand + '/images/splash.svg' );
 
@@ -117,6 +121,9 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   html = ChipperStringUtils.replaceFirst( html, 'START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
   html = ChipperStringUtils.replaceFirst( html, 'END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_SHAS', dependencies );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_PROJECT', buildConfig.name );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_VERSION', buildConfig.version );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_BUILD_TIMESTAMP', timestamp );
 
   // Add license entries for third-party media files that were loaded by media plugins.
   // The media plugins populate global.phet.chipper.licenseEntries.
@@ -156,19 +163,16 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   }
   html = ChipperStringUtils.replaceFirst( html, 'THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
+  var latestDir = 'http://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
+
   // Create locale-specific HTML files
   for ( var i = 0; i < buildConfig.locales.length; i++ ) {
     var locale = buildConfig.locales[ i ];
 
-    var localeTitleAndVersion = stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version; //TODO: i18n order
     var localeHTML = ChipperStringUtils.replaceFirst( html, 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
 
-    var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
-    timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
+    var localeTitleAndVersion = stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version; //TODO: i18n order
 
-    localeHTML = ChipperStringUtils.replaceAll( localeHTML, 'PHET_PROJECT', buildConfig.name );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_VERSION', buildConfig.version );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_BUILD_TIMESTAMP', timestamp );
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_LOCALE', locale );
@@ -176,7 +180,6 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
     // metadata for Open Graph protocol, see phet-edmodo#2
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
-    var latestDir = 'http://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_URL', latestDir + buildConfig.name + '_' + locale );
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
 
