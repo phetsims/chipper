@@ -32,7 +32,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
-var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
 /**
  * @param grunt - the grunt instance
