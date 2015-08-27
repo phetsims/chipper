@@ -11,7 +11,7 @@
 var assert = require( 'assert' );
 
 // third-party node APIs
-var Encoder = require('node-html-encoder').Encoder;
+var Encoder = require( 'node-html-encoder' ).Encoder;
 
 // modules
 var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
@@ -37,7 +37,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   var stringMap = getStringMap( grunt, buildConfig );
 
   // HTML encoder
-  var encoder = new Encoder('entity');
+  var encoder = new Encoder( 'entity' );
 
   // Get the title and version to display in the HTML header.
   // The HTML header is not internationalized, so order can just be hard coded here, see #156
@@ -80,6 +80,9 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
+  // Directory on the PhET website where the latest version of the sim lives
+  var latestDir = 'http://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
+
   // Load the splash SVG from the appropriate brand.
   var splashDataURI = loadFileAsDataURI( '../brand/' + buildConfig.brand + '/images/splash.svg' );
 
@@ -106,26 +109,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   preloadBlocks = preloadBlocks.replace( '\x0B', '\\x0B' );
   mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
-  // Replace tokens in the template that are independent of locale
-  grunt.log.debug( 'Constructing HTML from template' );
-  var html = grunt.file.read( '../chipper/templates/sim.html' );
-  // Strip out carriage returns (if building in Windows), then add in our own after the MOTW.
-  // See https://github.com/phetsims/joist/issues/164
-  html = html.replace( /\r/g, '' );
-  html = ChipperStringUtils.replaceFirst( html, 'CARRIAGE_RETURN', '\r' );
-  html = ChipperStringUtils.replaceFirst( html, 'HTML_HEADER', htmlHeader );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapsJavaScript );
-  html = ChipperStringUtils.replaceFirst( html, 'SPLASH_SCREEN_DATA_URI', splashDataURI );
-  html = ChipperStringUtils.replaceFirst( html, 'PRELOAD_INLINE_JAVASCRIPT', preloadBlocks );
-  html = ChipperStringUtils.replaceFirst( html, 'MAIN_INLINE_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
-  html = ChipperStringUtils.replaceFirst( html, 'START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
-  html = ChipperStringUtils.replaceFirst( html, 'END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_SHAS', dependencies );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_PROJECT', buildConfig.name );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_VERSION', buildConfig.version );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_BUILD_TIMESTAMP', timestamp );
-
-  // Add license entries for third-party media files that were loaded by media plugins.
+  // License entries for third-party media files that were loaded by media plugins.
   // The media plugins populate global.phet.chipper.licenseEntries.
   var thirdPartyEntries = {
     lib: getThirdPartyLibEntries( grunt, buildConfig )
@@ -161,9 +145,28 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
       }
     }
   }
-  html = ChipperStringUtils.replaceFirst( html, 'THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
-  var latestDir = 'http://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
+  grunt.log.debug( 'Constructing HTML from template' );
+  var html = grunt.file.read( '../chipper/templates/sim.html' );
+
+  // Strip out carriage returns (if building in Windows), then add in our own after the MOTW.
+  // See https://github.com/phetsims/joist/issues/164
+  html = html.replace( /\r/g, '' );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_CARRIAGE_RETURN', '\r' );
+
+  // Replace tokens in the template that are independent of locale
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_HTML_HEADER', htmlHeader );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapsJavaScript );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_SPLASH_DATA_URI', splashDataURI );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_PRELOAD_JAVASCRIPT', preloadBlocks );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_MAIN_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_DEPENCENCIES', dependencies );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_PROJECT', buildConfig.name );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_VERSION', buildConfig.version );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_BUILD_TIMESTAMP', timestamp );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
   // Create locale-specific HTML files
   for ( var i = 0; i < buildConfig.locales.length; i++ ) {
@@ -176,7 +179,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_LOCALE', locale );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
+    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_SIM_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
 
     // metadata for Open Graph protocol, see phet-edmodo#2
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
@@ -196,8 +199,8 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
   grunt.log.debug( 'Constructing HTML for iframe testing from template' );
   var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE', encoder.htmlEncode( simTitleAndVersion + ' iframe test' ) );
-  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
+  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_TITLE', encoder.htmlEncode( simTitleAndVersion + ' iframe test' ) );
+  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_URL', buildConfig.name + '_en.html' );
   grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
   grunt.log.debug( 'Cleaning temporary files' );

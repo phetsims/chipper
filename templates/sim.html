@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<!-- saved from url=(0025)http://phet.colorado.edu/ -->CARRIAGE_RETURN
+<!-- saved from url=(0025)http://phet.colorado.edu/ -->PHET_CARRIAGE_RETURN
 <html>
 <head>
   <meta charset="utf-8"/>
@@ -14,10 +14,10 @@
   <meta property="og:url" content="OG_URL"/>
   <meta property="og:image" content="OG_IMAGE"/>
 
-  <title>SIM_TITLE</title>
+  <title>PHET_SIM_TITLE</title>
 </head>
 <!--
-HTML_HEADER
+PHET_HTML_HEADER
 -->
 <body bgcolor="black">
 <script type="text/javascript">
@@ -31,15 +31,15 @@ HTML_HEADER
   // This simulation uses following third-party resources.  The following code block describes each resource
   // and provides its licensing information.  The START and END tags make it easy to automatically parse
   // and the entries are in JSON.  See getLicenseEntry.js for information about the attributes in each entry.
-  // START_THIRD_PARTY_LICENSE_ENTRIES
-  window.phet.chipper.thirdPartyLicenseEntries = THIRD_PARTY_LICENSE_ENTRIES;
-  // END_THIRD_PARTY_LICENSE_ENTRIES
-  window.phet.chipper.dependencies = PHET_SHAS;
+  // PHET_START_THIRD_PARTY_LICENSE_ENTRIES
+  window.phet.chipper.thirdPartyLicenseEntries = PHET_THIRD_PARTY_LICENSE_ENTRIES;
+  // PHET_END_THIRD_PARTY_LICENSE_ENTRIES
+  window.phet.chipper.dependencies = PHET_DEPENCENCIES;
   window.phet.chipper.strings = PHET_STRINGS;
 </script>
-<img id="splash" style="position: absolute;top: 50%;left: 50%;margin-top: -210px;margin-left: -252px;" src="SPLASH_SCREEN_DATA_URI">
+<img id="splash" style="position: absolute;top: 50%;left: 50%;margin-top: -210px;margin-left: -252px;" src="PHET_SPLASH_DATA_URI">
 PHET_MIPMAPS_JAVASCRIPT
-PRELOAD_INLINE_JAVASCRIPT
+PHET_PRELOAD_JAVASCRIPT
 <script type="text/javascript">
   (function() {
     var stringOverrides = JSON.parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
@@ -54,6 +54,6 @@ PRELOAD_INLINE_JAVASCRIPT
     };
   })();
 </script>
-MAIN_INLINE_JAVASCRIPT
+PHET_MAIN_JAVASCRIPT
 </body>
 </html>
