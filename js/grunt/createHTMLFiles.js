@@ -10,6 +10,9 @@
 // built-in node APIs
 var assert = require( 'assert' );
 
+// third-party node APIs
+var Encoder = require('node-html-encoder').Encoder;
+
 // modules
 var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
 var getStringMap = require( '../../../chipper/js/grunt/getStringMap' );
@@ -32,6 +35,9 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   // stringMap[locale][stringKey] give us a string
   var stringMap = getStringMap( grunt, buildConfig );
+
+  // HTML encoder
+  var encoder = new Encoder('entity');
 
   // Get the title and version to display in the HTML header.
   // The HTML header is not internationalized, so order can just be hard coded here, see #156
@@ -166,10 +172,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_LOCALE', locale );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE', localeTitleAndVersion );
+    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'SIM_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
 
     // metadata for Open Graph protocol, see phet-edmodo#2
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_TITLE', localeTitleAndVersion );
+    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
     var latestDir = 'http://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_URL', latestDir + buildConfig.name + '_' + locale );
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
@@ -187,7 +193,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
   grunt.log.debug( 'Constructing HTML for iframe testing from template' );
   var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE', simTitleAndVersion + ' iframe test' );
+  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_TITLE', encoder.htmlEncode( simTitleAndVersion + ' iframe test' ) );
   iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'SIM_URL', buildConfig.name + '_en.html' );
   grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
