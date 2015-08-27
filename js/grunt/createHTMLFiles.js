@@ -166,6 +166,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   html = ChipperStringUtils.replaceFirst( html, 'PHET_PROJECT', buildConfig.name );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_VERSION', buildConfig.version );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_BUILD_TIMESTAMP', timestamp );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_BRAND', buildConfig.brand );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
   // Create locale-specific HTML files
