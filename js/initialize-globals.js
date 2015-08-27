@@ -141,7 +141,7 @@
      * See https://github.com/phetsims/brand/issues/11
      * @returns {string}
      */
-    window.phet.chipper.brand = phet.chipper.getQueryParameter( 'brand' ) || 'adapted-from-phet';
+    window.phet.chipper.brand = window.phet.chipper.brand || phet.chipper.getQueryParameter( 'brand' ) || 'adapted-from-phet';
 
     /**
      * Maps an input string to a final string, accommodating tricks like doubleStrings.
