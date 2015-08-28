@@ -184,7 +184,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
     // metadata for Open Graph protocol, see phet-edmodo#2
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_URL', latestDir + buildConfig.name + '_' + locale );
+    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_URL', latestDir + buildConfig.name + '_' + locale + '.html' );
     localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
 
     // TODO: chipper#270 workaround, part 2 (see part 1 in getBuildConfig.js)
