@@ -25,7 +25,7 @@ var assert = require( 'assert' );
  * {string} productionServerName - production server name, defaults to 'figaro.colorado.edu', can be over-ridden to 'simian.colorado.edu' for example
  * {string} productionServerURL - production server url, defaults to 'https://phet.colorado.edu', can be over-ridden to 'https://phet-dev.colorado.edu'
  *
- * Include these fields to enable sending emails from build-server on build failure.
+ * Include these fields in build-local.json to enable sending emails from build-server on build failure.
  * They are only needed on the production server, not locally:
  * {string} emailUsername - e.g. "[identikey]@colorado.edu"
  * {string} emailPassword
