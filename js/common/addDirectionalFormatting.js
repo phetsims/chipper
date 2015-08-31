@@ -10,11 +10,13 @@
   'use strict';
 
   /**
-   * @param {Object} stringData
+   * @param {Object} stringData - object with a field for value, like those listed in our string files
    * @param {boolean} isRTL
    */
   var addDirectionalFormatting = function( stringData, isRTL ) {
-    stringData.value = ( isRTL ? '\u202b' : '\u202a' ) + stringData.value + '\u202c';
+    if ( stringData.value.length > 0 ) {
+      stringData.value = ( isRTL ? '\u202b' : '\u202a' ) + stringData.value + '\u202c';
+    }
   };
 
   // browser require.js-compatible definition
