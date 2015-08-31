@@ -12,7 +12,9 @@
  * "cd /data/share/phet/phet-repos/chipper && nohup /usr/local/nodejs/bin/node js/build-server/build-server.js &"
  *
  * Do not start the build server unless you have the necessary fields filled out in ~/.phet/build-local.json
- * (see assertions below).
+ * (see assertions in getDeployConfig).
+ *
+ * To configure the build server to send an email on build failure, fill out the optional email related fields in getDeployConfig.
  *
  * Additionally, you will need an ssh key set up to copy files from the production server to spot. To do this, you'll need
  * to have an rsa key in ~/.ssh on the production server (run "ssh-keygen -t rsa" to generate a key if you don't already have one).
@@ -164,12 +166,12 @@ var verbose = options.verbose;
 
 // configure email server
 var server;
-if ( deployConfig.emailUsername && deployConfig.emailPassword && deployConfig.emailServer && deployConfig.emailFrom && deployConfig.emailTo ) {
+if ( deployConfig.emailUsername && deployConfig.emailPassword && deployConfig.emailTo ) {
   server = email.server.connect( {
     user: deployConfig.emailUsername,
     password: deployConfig.emailPassword,
     host: deployConfig.emailServer,
-    tls: deployConfig.tls || true
+    tls: true
   } );
 }
 
@@ -195,7 +197,6 @@ function sendEmail( subject, text ) {
     } );
   }
 }
-
 
 /**
  * taskQueue ensures that only one build/deploy process will be happening at the same time.

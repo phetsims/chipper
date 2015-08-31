@@ -12,15 +12,26 @@ var assert = require( 'assert' );
  * All fields are @public (read-only).
  * Fields include:
  *
+ * Required:
  * {string} name - name of the repository being built
  * {string} version - version identifier
  * {string} simTitleStringKey - key of the sim's title string
  * {string} buildServerAuthorizationCode - password that verifies if build request comes from phet team members
  * {string} devUsername - username on our dev server
+ *
+ * Optional:
  * {string} devDeployServer - name of the dev server, defaults to 'spot.colorado.edu'
  * {string} devDeployPath - path on dev server to deploy to, defaults to '/htdocs/physics/phet/dev/html/'
  * {string} productionServerName - production server name, defaults to 'figaro.colorado.edu', can be over-ridden to 'simian.colorado.edu' for example
  * {string} productionServerURL - production server url, defaults to 'https://phet.colorado.edu', can be over-ridden to 'https://phet-dev.colorado.edu'
+ *
+ * Include these fields to enable sending emails from build-server on build failure.
+ * They are only needed on the production server, not locally:
+ * {string} emailUsername - e.g. "[identikey]@colorado.edu"
+ * {string} emailPassword
+ * {string} emailServer - (optional: defaults to "smpt.colorado.edu")
+ * {string} emailFrom - (optional: defaults to emailUsername field)
+ * {string} emailTo - e.g. "Me <[identikey]@colorado.edu>, Another Person <person@exmaple.com>"
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
@@ -61,7 +72,12 @@ var assert = require( 'assert' );
       devDeployServer: buildLocalJSON.devDeployServer || 'spot.colorado.edu',
       devDeployPath: buildLocalJSON.devDeployPath || '/htdocs/physics/phet/dev/html/',
       productionServerName: buildLocalJSON.productionServerName || 'figaro.colorado.edu',
-      productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu'
+      productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu',
+      emailUsername: buildLocalJSON.emailUsername,
+      emailPassword: buildLocalJSON.emailPassword,
+      emailServer: buildLocalJSON.emailServer || 'smtp.colorado.edu',
+      emailFrom: buildLocalJSON.emailFrom || buildLocalJSON.emailUsername,
+      emailTo: buildLocalJSON.emailTo
     };
 
     // These fields depend on other entries in buildConfig.
