@@ -13,6 +13,7 @@ var path = require( 'path' );
 // modules
 var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+var addDirectionalFormatting = require( '../../../chipper/js/common/addDirectionalFormatting' );
 
 /**
  * @param grunt - the grunt instance
@@ -79,10 +80,7 @@ module.exports = function( grunt, buildConfig ) {
 
       for ( var stringKeyMissingPrefix in fileContents ) {
         var stringData = fileContents[ stringKeyMissingPrefix ];
-
-        // Pad LTR/RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
-        // Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
-        stringData.value = ( isRTL ? '\u202b' : '\u202a' ) + stringData.value + '\u202c';
+        addDirectionalFormatting( stringData, isRTL );
 
         // Add the requirejs namespaces (eg, JOIST) to the key
         fileMap[ repository.requirejsNamespace + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];

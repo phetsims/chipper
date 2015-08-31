@@ -23,6 +23,7 @@ define( function( require ) {
   var localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
   var text = require( 'text' );
   var ChipperConstants = require( '../../chipper/js/common/ChipperConstants' );
+  var addDirectionalFormatting = require( '../../chipper/js/common/addDirectionalFormatting' );
 
   var parse = JSON.parse;
 
@@ -169,7 +170,7 @@ define( function( require ) {
                   // Pad LTR/RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
                   // Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
                   for ( var stringKey in parsed ) {
-                    parsed[ stringKey ].value = ( isRTL ? '\u202b' : '\u202a' ) + parsed[ stringKey ].value + '\u202c';
+                    addDirectionalFormatting( parsed[ stringKey ], isRTL );
                   }
 
                   // Combine the primary and fallback strings into one object hash.
