@@ -110,7 +110,7 @@ module.exports = function( grunt, buildConfig ) {
            repoStringMap[ repositoryName ][ locale ] &&
            repoStringMap[ repositoryName ][ locale ][ stringKey ] &&
 
-           // If the string in rosetta is empty we want to use the fallback locale string.
+           // If the string's value is empty we want to use the fallback locale string.
            // Test for length of 2 and not 0 because the directional embedding marks are included in empty strings.
            repoStringMap[ repositoryName ][ locale ][ stringKey ].value.length > 2 ) {
         stringMap[ locale ][ stringKey ] = repoStringMap[ repositoryName ][ locale ][ stringKey ].value;
