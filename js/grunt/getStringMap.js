@@ -116,7 +116,7 @@ module.exports = function( grunt, buildConfig ) {
         stringMap[ locale ][ stringKey ] = repoStringMap[ repositoryName ][ locale ][ stringKey ].value;
       }
     }
-  } );                                                                            #33
+  } );
 
   return stringMap;
 };
