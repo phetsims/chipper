@@ -9,7 +9,12 @@
  * @author Aaron Davis
  */
 
+// modules
 var Jimp = require( 'jimp' );
+var assert = require( 'assert' );
+
+// constants
+var BUILD_DIRECTORY = 'build';
 
 /**
  * @param grunt - the grunt instance
@@ -22,17 +27,17 @@ module.exports = function( grunt, repositoryName, width, height, callback ) {
   'use strict';
 
   var fullResImageName = 'assets/' + repositoryName + '-screenshot.png';
-  var destinationFile = 'build/' + repositoryName + '-' + width + '.png';
+  var destinationFile = BUILD_DIRECTORY + '/' + repositoryName + '-' + width + '.png';
 
   if ( !grunt.file.exists( fullResImageName ) ) {
     grunt.log.writeln( 'no image file exists: ' + fullResImageName + '. Not running task: generate-thumbnails' );
     return;
   }
 
-  //TODO chipper#304 handle the case where build is not a directory, see grunt.file.isDir
-  if ( !grunt.file.exists( 'build' ) ) {
-    grunt.file.mkdir( 'build' );
+  if ( !grunt.file.exists( BUILD_DIRECTORY ) ) {
+    grunt.file.mkdir( BUILD_DIRECTORY );
   }
+  assert( grunt.file.isDir( BUILD_DIRECTORY ), 'Error: "build" is not a directory' );
 
   // W031 says "do not use new for side effects."
   // It is disabled here because Jimp takes a callback that does the image processing.
