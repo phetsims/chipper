@@ -15,12 +15,12 @@ var assert = require( 'assert' );
  * {string} name - name of the repository being built
  * {string} version - version identifier
  * {string} simTitleStringKey - key of the sim's title string
- * {string} buildServerAuthorizationCode
- * {string} devUsername
- * {string} devDeployServer
- * {string} devDeployPath
- * {string} productionServerName
- * {string} productionServerURL
+ * {string} buildServerAuthorizationCode - password that verifies if build request comes from phet team members
+ * {string} devUsername - username on our dev server
+ * {string} devDeployServer - name of the dev server, defaults to 'spot.colorado.edu'
+ * {string} devDeployPath - path on dev server to deploy to, defaults to '/htdocs/physics/phet/dev/html/'
+ * {string} productionServerName - production server name, defaults to 'figaro.colorado.edu', can be over-ridden to 'simian.colorado.edu' for example
+ * {string} productionServerURL - production server url, defaults to 'https://phet.colorado.edu', can be over-ridden to 'https://phet-dev.colorado.edu'
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */

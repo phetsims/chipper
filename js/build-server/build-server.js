@@ -78,8 +78,9 @@ var request = require( 'request' );
 var child_process = require( 'child_process' );
 var fs = require( 'fs.extra' );
 var async = require( 'async' );
-var assert = require( 'assert' );
 var email = require( 'emailjs/email' );
+var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
+var deployConfig = getDeployConfig( fs );
 
 /* jshint -W079 */
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
@@ -94,24 +95,8 @@ var VERSION_KEY = 'version';
 var AUTHORIZATION_KEY = 'authorizationCode';
 var SERVER_NAME = 'serverName';
 var HTML_SIMS_DIRECTORY = '/data/web/htdocs/phetsims/sims/html/';
-var DEV_SERVER = 'spot.colorado.edu';
-var DEV_DIRECTORY = '/htdocs/physics/phet/dev/html/';
-var DEFAULT_SERVER_NAME = 'figaro.colorado.edu';
 var ENGLISH_LOCALE = 'en';
 var PERENNIAL = '../perennial';
-var PREFERENCES_FILE = process.env.HOME + '/.phet/build-local.json';
-
-assert( fs.existsSync( PREFERENCES_FILE ), 'missing preferences file ' + PREFERENCES_FILE );
-var preferences = require( PREFERENCES_FILE );
-
-// verify that preferences contains required entries
-assert( preferences.emailUsername, 'emailUsername is missing from ' + PREFERENCES_FILE );
-assert( preferences.emailPassword, 'emailPassword is missing from ' + PREFERENCES_FILE );
-assert( preferences.emailServer, 'emailServer is missing from ' + PREFERENCES_FILE );
-assert( preferences.emailFrom, 'emailFrom is missing from ' + PREFERENCES_FILE );
-assert( preferences.emailTo, 'emailTo is missing from ' + PREFERENCES_FILE );
-assert( preferences.devUsername, 'devUsername is missing from ' + PREFERENCES_FILE );
-assert( preferences.buildServerAuthorizationCode, 'buildServerAuthorizationCode is missing from ' + PREFERENCES_FILE );
 
 // Handle command line input
 // First 2 args provide info about executables, ignore
@@ -178,12 +163,15 @@ if ( options.silent ) {
 var verbose = options.verbose;
 
 // configure email server
-var server = email.server.connect( {
-  user: preferences.emailUsername,
-  password: preferences.emailPassword,
-  host: preferences.emailServer,
-  tls: preferences.tls || true
-} );
+var server;
+if ( deployConfig.emailUsername && deployConfig.emailPassword && deployConfig.emailServer && deployConfig.emailFrom && deployConfig.emailTo ) {
+  server = email.server.connect( {
+    user: deployConfig.emailUsername,
+    password: deployConfig.emailPassword,
+    host: deployConfig.emailServer,
+    tls: deployConfig.tls || true
+  } );
+}
 
 /**
  * Send an email. Used to notify developers if a build fails
@@ -191,19 +179,21 @@ var server = email.server.connect( {
  * @param text
  */
 function sendEmail( subject, text ) {
-  server.send( {
-    text: text,
-    from: 'PhET Build Server <' + preferences.emailFrom + '>',
-    to: preferences.emailTo,
-    subject: subject
-  }, function( err, message ) {
-    if ( err ) {
-      winston.log( 'error', 'sending email ' + err );
-    }
-    else {
-      winston.log( 'info', 'sent email ' + message );
-    }
-  } );
+  if ( server ) {
+    server.send( {
+      text: text,
+      from: 'PhET Build Server <' + deployConfig.emailFrom + '>',
+      to: deployConfig.emailTo,
+      subject: subject
+    }, function( err, message ) {
+      if ( err ) {
+        winston.log( 'error', 'sending email ' + err );
+      }
+      else {
+        winston.log( 'info', 'sent email ' + message );
+      }
+    } );
+  }
 }
 
 
@@ -229,12 +219,12 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   version = version.match( /\d\.\d\.\d/ );
   winston.log( 'info', 'detecting version number: ' + version );
 
-  var server = DEFAULT_SERVER_NAME;
+  var server = deployConfig.productionServerName;
   if ( req.query[ SERVER_NAME ] ) {
     server = req.query[ SERVER_NAME ];
   }
 
-  var devServer = preferences.devDeployServer || DEV_SERVER;
+  var devServer = deployConfig.devDeployServer;
 
   winston.log( 'info', 'building sim ' + simName );
 
@@ -427,7 +417,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     var finished = _.after( files.length, callback );
     for ( var i = 0; i < files.length; i++ ) {
       var filename = files[ i ];
-      exec( 'scp ' + filename + ' ' + preferences.devUsername + '@' + devServer + ':' + DEV_DIRECTORY + simName + '/' + version, buildDir, finished );
+      exec( 'scp ' + filename + ' ' + deployConfig.devUsername + '@' + devServer + ':' + deployConfig.devDeployPath + simName + '/' + version, buildDir, finished );
     }
   };
 
@@ -658,7 +648,7 @@ function queueDeploy( req, res ) {
   var authorizationKey = req.query[ AUTHORIZATION_KEY ];
 
   if ( repos && simName && version && authorizationKey ) {
-    if ( authorizationKey !== preferences.buildServerAuthorizationCode ) {
+    if ( authorizationKey !== deployConfig.buildServerAuthorizationCode ) {
       var err = 'wrong authorization code';
       winston.log( 'error', err );
       res.send( err );
