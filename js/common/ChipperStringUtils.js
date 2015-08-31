@@ -11,6 +11,23 @@
   var ChipperStringUtils = {
 
     /**
+     * Pad LTR/RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
+     * Uses directional formatting characters: http://unicode.org/reports/tr9/#Directional_Formatting_Characters
+     *
+     * @param {string} str
+     * @param {boolean} isRTL
+     * @returns {string} the input string padded with the embedding marks, or an empty string if the input was empty
+     */
+    addDirectionalFormatting: function( str, isRTL ) {
+      if ( str.length > 0 ) {
+        return ( isRTL ? '\u202b' : '\u202a' ) + str + '\u202c';
+      }
+      else {
+        return str;
+      }
+    },
+
+    /**
      * Converts a string to camel case, eg: 'simula-rasa' -> 'simulaRasa'
      * See http://stackoverflow.com/questions/10425287/convert-string-to-camelcase-with-regular-expression
      *

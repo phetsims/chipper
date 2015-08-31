@@ -13,7 +13,7 @@ var path = require( 'path' );
 // modules
 var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var addDirectionalFormatting = require( '../../../chipper/js/common/addDirectionalFormatting' );
+var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 /**
  * @param grunt - the grunt instance
@@ -80,7 +80,7 @@ module.exports = function( grunt, buildConfig ) {
 
       for ( var stringKeyMissingPrefix in fileContents ) {
         var stringData = fileContents[ stringKeyMissingPrefix ];
-        addDirectionalFormatting( stringData, isRTL );
+        stringData.value = ChipperStringUtils.addDirectionalFormatting( stringData.value, isRTL );
 
         // Add the requirejs namespaces (eg, JOIST) to the key
         fileMap[ repository.requirejsNamespace + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
