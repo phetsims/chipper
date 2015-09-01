@@ -73,8 +73,10 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
         // RequireJS optimizer options, see https://github.com/jrburke/r.js/blob/master/build/example.build.js
         options: {
 
-          //TODO chipper#277 investigate and document
-          almond: true,
+          // Includes a require.js stub called almond, so that we don't have to include the full require.js runtime
+          // inside of builds. This helps reduce file size, and the rest of require.js isn't needed. See
+          // https://github.com/phetsims/chipper/issues/277
+          almond: false,
 
           // name of the single module to optimize
           name: repositoryName + '-config',
