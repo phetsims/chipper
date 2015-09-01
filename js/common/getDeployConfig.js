@@ -26,11 +26,13 @@ var assert = require( 'assert' );
  * {string} productionServerURL - production server url, defaults to 'https://phet.colorado.edu', can be over-ridden to 'https://phet-dev.colorado.edu'
  *
  * Include these fields in build-local.json to enable sending emails from build-server on build failure.
- * They are only needed on the production server, not locally:
+ * They are only needed on the production server, not locally. A valid emailUsername and emailPassword are needed to authenticate
+ * sending mail from the smtp server, though the actual emails will be sent from 'PhET Build Server <phethelp@colorado.edu>',
+ * not from the address you put here.
  * {string} emailUsername - e.g. "[identikey]@colorado.edu"
  * {string} emailPassword
- * {string} emailServer - (optional: defaults to "smpt.colorado.edu")
- * {string} emailTo - e.g. "Me <[identikey]@colorado.edu>, Another Person <person@exmaple.com>"
+ * {string} emailServer - (optional: defaults to "smtp.colorado.edu")
+ * {string} emailTo - e.g. "Me <[identikey]@colorado.edu>, Another Person <person@example.com>"
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
