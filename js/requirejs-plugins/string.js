@@ -173,7 +173,7 @@ define( function( require ) {
 
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
-                  if ( parsedStrings[ key ] !== undefined && parsedStrings[ key ].value.length > 0 ) {
+                  if ( parsedStrings[ key ] !== undefined ) {
                     onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
                   }
                   else {
