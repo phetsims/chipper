@@ -225,8 +225,6 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     server = req.query[ SERVER_NAME ];
   }
 
-  var devServer = deployConfig.devDeployServer;
-
   winston.log( 'info', 'building sim ' + simName );
 
   var buildDir = './js/build-server/tmp';
@@ -412,15 +410,15 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * Because this function is called for translations too, in many cases the directory will already exist.
    * @param callback
    */
-  var spotScp = function( callback ) {
-    var buildDir = simDir + '/build';
-    var files = fs.readdirSync( buildDir );
-    var finished = _.after( files.length, callback );
-    for ( var i = 0; i < files.length; i++ ) {
-      var filename = files[ i ];
-      exec( 'scp ' + filename + ' ' + deployConfig.devUsername + '@' + devServer + ':' + deployConfig.devDeployPath + simName + '/' + version, buildDir, finished );
-    }
-  };
+  //var spotScp = function( callback ) {
+  //  var buildDir = simDir + '/build';
+  //  var files = fs.readdirSync( buildDir );
+  //  var finished = _.after( files.length, callback );
+  //  for ( var i = 0; i < files.length; i++ ) {
+  //    var filename = files[ i ];
+  //    exec( 'scp ' + filename + ' ' + deployConfig.devUsername + '@' + deployConfig.devDeployServer + ':' + deployConfig.devDeployPath + simName + '/' + version, buildDir, finished );
+  //  }
+  //};
 
   /**
    * Add an entry in for this sim in simInfoArray in rosetta, so it shows up as translatable.
@@ -600,13 +598,13 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                             createTranslationsXML( function() {
                               notifyServer( function() {
                                 addToRosetta( function() {
-                                  spotScp( function() {
-                                    exec( 'grunt checkout-master-all', PERENNIAL, function() {
-                                      exec( 'rm -rf ' + buildDir, '.', function() {
-                                        taskCallback();
-                                      } );
+                                  //spotScp( function() { TODO: do we need this? grunt deploy-production does a spot deploy already
+                                  exec( 'grunt checkout-master-all', PERENNIAL, function() {
+                                    exec( 'rm -rf ' + buildDir, '.', function() {
+                                      taskCallback();
                                     } );
                                   } );
+                                  //} );
                                 } );
                               } );
                             } );
