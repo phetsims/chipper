@@ -30,7 +30,6 @@ var assert = require( 'assert' );
  * {string} emailUsername - e.g. "[identikey]@colorado.edu"
  * {string} emailPassword
  * {string} emailServer - (optional: defaults to "smpt.colorado.edu")
- * {string} emailFrom - (optional: defaults to emailUsername field)
  * {string} emailTo - e.g. "Me <[identikey]@colorado.edu>, Another Person <person@exmaple.com>"
  *
  * @author Chris Malley (PixelZoom, Inc.)
@@ -76,7 +75,6 @@ var assert = require( 'assert' );
       emailUsername: buildLocalJSON.emailUsername,
       emailPassword: buildLocalJSON.emailPassword,
       emailServer: buildLocalJSON.emailServer || 'smtp.colorado.edu',
-      emailFrom: buildLocalJSON.emailFrom || buildLocalJSON.emailUsername,
       emailTo: buildLocalJSON.emailTo
     };
 

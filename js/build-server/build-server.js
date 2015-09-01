@@ -184,7 +184,7 @@ function sendEmail( subject, text ) {
   if ( server ) {
     server.send( {
       text: text,
-      from: 'PhET Build Server <' + deployConfig.emailFrom + '>',
+      from: 'PhET Build Server <phethelp@colorado.edu>',
       to: deployConfig.emailTo,
       subject: subject
     }, function( err, message ) {
