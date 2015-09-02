@@ -80,6 +80,10 @@ define( function( require ) {
         }
       }
       else {
+        // add the cache buster args to each url
+        urlList.forEach( function( urlObject ){
+          urlObject.url = urlObject.url + '?' + config.urlArgs;
+        } );
         // Provide the list of URLs corresponding to the specified sound.
         onload( urlList );
       }
