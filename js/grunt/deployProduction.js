@@ -45,11 +45,14 @@ module.exports = function( grunt, callback ) {
   var done = callback || grunt.task.current.async();
 
   request( url, function( error, response, body ) {
-    if ( !error && response.statusCode === 200 ) {
-      grunt.log.writeln( 'sending request to: ' + url );
+    if ( error ) {
+      grunt.log.writeln( 'error: deploy failed with error ' + error );
+    }
+    else if ( response.statusCode !== 200 ) {
+      grunt.log.writeln( 'error: deploy failed with status code ' + response.statusCode );
     }
     else {
-      grunt.log.writeln( 'error: deploy failed' );
+      grunt.log.writeln( 'sending request to: ' + url );
     }
     done();
   } );
