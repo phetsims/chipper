@@ -98,10 +98,9 @@ define( function( require ) {
         return repositoryName + '-strings_' + locale + '.json' + suffix;
       }
 
-      // This code block handles the in-browser requirejs version (not the compilation step)
       if ( config.isBuild ) {
 
-        // This code block handles the compilation step (not the in-browser requirejs mode).
+        // --- build mode ---
 
         // extract information about the repository name, prefix, and path that will be recorded for later in the build
         requirejsNamespace = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
@@ -128,6 +127,9 @@ define( function( require ) {
         onload( null );
       }
       else {
+
+        // --- requirejs mode ---
+
         requirePath = parentRequire.toUrl( requirejsNamespace );
         if ( requirePath.indexOf( '?' ) >= 0 ) {
           requirePath = requirePath.substring( 0, requirePath.indexOf( '?' ) );
