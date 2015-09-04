@@ -128,9 +128,8 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
             }
           },
 
-          //TODO chipper#275 should 'mipmap' be included here too?
           // modules to stub out in the optimized file
-          stubModules: [ 'string', 'audio', 'image' ]
+          stubModules: [ 'string', 'audio', 'image', 'mipmap' ]
         }
       }
     }
