@@ -30,7 +30,7 @@ define( function( require ) {
   // Cache the loaded strings so they only have to be read once through file.read (for performance)
   var cache = {};
 
-  // If doubleStrings is specified, concatenate each string with itself as a primitive i18n test
+  // See documentation of stringTest query parameter in initialize-globals.js
   var stringTest = ( typeof window !== 'undefined' && window.phet.chipper.getQueryParameter( 'stringTest' ) ) ?
                    window.phet.chipper.getQueryParameter( 'stringTest' ) :
                    null;
