@@ -87,4 +87,4 @@ http.createServer( function( req, res ) {
   } );
 } ).listen( port );
 
-console.log( 'server running on port ' + port + ' with root directory ' + rootDir );
+console.log( 'running on port ' + port + ' with root directory ' + rootDir );
