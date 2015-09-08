@@ -1,5 +1,6 @@
 var http = require( 'http' );
 var spawn = require( 'child_process' ).spawn;
+var path = require( 'path' );
 
 var port = 45361;
 
@@ -7,6 +8,9 @@ var jsonHeaders = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*'
 };
+
+// root of your GitHub working copy, relative to the name of the directory that the currently executing script resides in
+var rootDir = path.normalize( __dirname + '/../../' );
 
 http.createServer( function( req, res ) {
   var simName = req.url.slice( 1 );
@@ -32,7 +36,7 @@ http.createServer( function( req, res ) {
   // TODO: Why do these more portable versions not work?
   // var npmInstall = spawn( 'node', [ 'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js', 'install' ], {
   var npmInstall = spawn( 'npm', [ 'install' ], {
-    cwd: '../../' + simName
+    cwd: rootDir + simName
   } );
   console.log( 'running npm install on ' + simName );
   npmInstall.stderr.on( 'data', function( data ) {
@@ -54,7 +58,7 @@ http.createServer( function( req, res ) {
     else {
       // var grunt = spawn( 'node', [ 'C:\\Users\\jon\\AppData\\Roaming\\npm\\node_modules\\grunt-cli\\bin\\grunt', '--no-color' ], {
       var grunt = spawn( 'grunt', [ '--no-color' ], {
-        cwd: '../../' + simName
+        cwd: rootDir + simName
       } );
       console.log( 'running grunt on ' + simName );
 
