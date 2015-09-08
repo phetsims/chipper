@@ -35,11 +35,6 @@
     var licenseFilename = prefix + '/license.json'; // license.json is a sibling of the media file
     var mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
 
-    // fatal error if license.json doesn't exist
-    if ( !global.phet.chipper.fs.existsSync( licenseFilename ) ) {
-      throw new Error( 'missing license file: ' + licenseFilename );
-    }
-
     // read license.json
     var json = JSON.parse( global.phet.chipper.fs.readFileSync( licenseFilename, 'utf8' ) );
 
