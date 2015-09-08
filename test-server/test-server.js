@@ -9,7 +9,7 @@ var jsonHeaders = {
   'Access-Control-Allow-Origin': '*'
 };
 
-// root of your GitHub working copy, relative to the name of the directory that the currently executing script resides in
+// root of your GitHub working copy, relative to the name of the directory that the currently-executing script resides in
 var rootDir = path.normalize( __dirname + '/../../' );
 
 http.createServer( function( req, res ) {
