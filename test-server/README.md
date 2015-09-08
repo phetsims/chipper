@@ -1,8 +1,10 @@
 # To run:
 
-1. Run `node chipper/test-server/test-server.js`.
+1. Go to the `chipper/test-server` directory.
 
-2. Open `chipper/test-server/test-sims.html` in a browser.
+2. Run `node test-server.js`.
+
+3. Open `chipper/test-server/test-sims.html` in a browser.
 
 
 # Legend:
