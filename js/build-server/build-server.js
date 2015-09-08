@@ -199,6 +199,21 @@ function sendEmail( subject, text ) {
 }
 
 /**
+ * exists method that uses fs.statSync instead of the deprecated existsSync
+ * @param file
+ * @returns {boolean} true if the file exists
+ */
+function exists( file ) {
+  try {
+    fs.statSync( file );
+    return true;
+  }
+  catch( e ) {
+    return false;
+  }
+}
+
+/**
  * taskQueue ensures that only one build/deploy process will be happening at the same time.
  * The main build/deploy logic is here.
  */
@@ -304,10 +319,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     var stringFiles = [ { name: englishStringsFile, locale: ENGLISH_LOCALE } ];
 
     // pull all the string filenames and locales from babel and store in stringFiles array
-    if ( !fs.existsSync( rootdir ) ) {
-      winston.log( 'warn', 'no directory for the given sim exists in babel' );
-    }
-    else {
+    try {
       var files = fs.readdirSync( rootdir );
       for ( var i = 0; i < files.length; i++ ) {
         var filename = files[ i ];
@@ -317,14 +329,19 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         stringFiles.push( { name: filename, locale: locale } );
       }
     }
+    catch( e ) {
+      winston.log( 'warn', 'no directory for the given sim exists in babel' );
+    }
 
-    // make sure package.json is found so we can get simTitleStringKey
-    var packageJSONPath = '../' + simName + '/package.json';
-    if ( !fs.existsSync( packageJSONPath ) ) {
+    // try reading package.json so we can get simTitleStringKey
+    var packageJSON;
+    try {
+      packageJSON = JSON.parse( fs.readFileSync( '../' + simName + '/package.json', { encoding: 'utf-8' } ) );
+    }
+    catch( e ) {
       abortBuild( 'package.json not found when trying to create translations XML file' );
       return;
     }
-    var packageJSON = JSON.parse( fs.readFileSync( packageJSONPath, { encoding: 'utf-8' } ) );
 
     // pull simTitle key from phet.simTitleStringKey if it exists in package.json, or use default repo.name
     var simTitleKey;
@@ -335,13 +352,15 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       simTitleKey = simName + '.name';
     }
 
-    // make sure the english strings file exists so we can read the english strings
-    var englishStringsFilePath = '../' + simName + '/' + englishStringsFile;
-    if ( !fs.existsSync( englishStringsFilePath ) ) {
+    // try opening the english strings file so we can read the english strings
+    var englishStrings;
+    try {
+      englishStrings = JSON.parse( fs.readFileSync( '../' + simName + '/' + englishStringsFile, { encoding: 'utf-8' } ) );
+    }
+    catch( e ) {
       abortBuild( 'English strings file not found' );
       return;
     }
-    var englishStrings = JSON.parse( fs.readFileSync( '../' + simName + '/' + englishStringsFile, { encoding: 'utf-8' } ) );
     simTitle = englishStrings[ simTitleKey ].value;
 
     // create xml, making a simulation tag for each language
@@ -356,7 +375,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
       var simHTML = HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '_' + stringFile.locale + '.html';
 
-      if ( fs.existsSync( simHTML ) ) {
+      if ( exists( simHTML ) ) {
         if ( languageJSON[ simTitleKey ] ) {
           finalXML = finalXML.concat( '<simulation name="' + simName + '" locale="' + stringFile.locale + '">\n' +
                                       '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
@@ -501,14 +520,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
     for ( var repoName in repos ) {
       if ( repos.hasOwnProperty( repoName ) ) {
-        if ( fs.existsSync( '../' + repoName ) ) {
-          winston.log( 'info', 'pulling from ' + repoName );
-          exec( 'git pull', '../' + repoName, finished );
-        }
-        else {
-          winston.log( 'error', repoName + ' is not a repo.' );
-          callback();
-        }
+        winston.log( 'info', 'pulling from ' + repoName );
+        exec( 'git pull', '../' + repoName, finished );
       }
     }
     exec( 'git pull', '../babel', finished );
@@ -520,24 +533,15 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    */
   var mkVersionDir = function( callback ) {
     var simDirPath = HTML_SIMS_DIRECTORY + simName + '/' + version + '/';
-
-    fs.exists( simDirPath, function( exists ) {
-      if ( !exists ) {
-        fs.mkdirp( simDirPath, function( err ) {
-          if ( !err ) {
-            callback();
-          }
-          else {
-            winston.log( 'error', 'in mkVersionDir ' + err );
-            winston.log( 'error', 'build failed' );
-            abortBuild( err );
-          }
-        } );
-      }
-      else {
-        callback();
-      }
-    } );
+    try {
+      fs.mkdirpSync( simDirPath );
+      callback();
+    }
+    catch( e ) {
+      winston.log( 'error', 'in mkVersionDir ' + e );
+      winston.log( 'error', 'build failed' );
+      abortBuild( e );
+    }
   };
 
   /**
@@ -622,18 +626,12 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     } );
   };
 
-  fs.exists( buildDir, function( exists ) {
-    if ( !exists ) {
-      fs.mkdir( buildDir, function( err ) {
-        if ( !err ) {
-          writeDependenciesFile();
-        }
-      } );
-    }
-    else {
-      writeDependenciesFile();
-    }
-  } );
+  try {
+    fs.mkdirSync( buildDir );
+  }
+  finally {
+    writeDependenciesFile();
+  }
 
   res.send( 'build process initiated, check logs for details' );
 
