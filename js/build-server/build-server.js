@@ -629,6 +629,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   try {
     fs.mkdirSync( buildDir );
   }
+  catch( e ) {
+    // do nothing, most likely failed because the directory already exists, which is fine
+  }
   finally {
     writeDependenciesFile();
   }
