@@ -38,6 +38,7 @@
  *
  * Other query parameters:
  *
+ * component - when running the scenery-phet example, select a particular component in the components screen
  * datamite.actionHistogram - when running with together.js + togetherEvents, display a histogram of the action types, see togetherEvents.jsadded action
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
  * eall - enable all assertions, as above but with more time consuming checks
