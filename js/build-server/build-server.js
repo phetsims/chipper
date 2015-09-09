@@ -534,7 +534,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var mkVersionDir = function( callback ) {
     var simDirPath = HTML_SIMS_DIRECTORY + simName + '/' + version + '/';
     try {
-      fs.mkdirpSync( simDirPath );
+      fs.mkdirpSync( simDirPath, 436 ); // 436 is 664 permissions in decimal
       callback();
     }
     catch( e ) {
