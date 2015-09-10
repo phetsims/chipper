@@ -116,7 +116,7 @@ define( function( require ) {
 
         // entry saved for later in the build
         global.phet.chipper.strings[ name ] = {
-          name: name, // 'SOME_SIM/string.name'
+          name: name, // 'SOME_SIM/string.title'
           requirejsNamespace: requirejsNamespace, // 'SOME_SIM'
           requirePath: requirePath, // '/Users/something/phet/git/some-sim/js'
           repositoryPath: repositoryPath, // '/Users/something/phet/git/some-sim'
