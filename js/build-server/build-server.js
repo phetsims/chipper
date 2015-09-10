@@ -343,13 +343,13 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       return;
     }
 
-    // pull simTitle key from phet.simTitleStringKey if it exists in package.json, or use default repo.name
+    // pull simTitle key from phet.simTitleStringKey if it exists in package.json, or use default repo.title
     var simTitleKey;
     if ( packageJSON.phet && packageJSON.phet.simTitleStringKey && packageJSON.phet.simTitleStringKey.indexOf( '/' ) > -1 ) {
       simTitleKey = packageJSON.phet.simTitleStringKey.split( '/' )[ 1 ];
     }
     else {
-      simTitleKey = simName + '.name';
+      simTitleKey = simName + '.title';
     }
 
     // try opening the english strings file so we can read the english strings

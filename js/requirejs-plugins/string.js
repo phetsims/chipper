@@ -2,7 +2,7 @@
 
 /**
  * String plugin, loads a string using a syntax like:
- * var title = require( 'string!JOHN_TRAVOLTAGE/johnTravoltage.name' );
+ * var title = require( 'string!JOHN_TRAVOLTAGE/john-travoltage.title' );
  *
  * This file conforms to the RequireJS plugin API which is described here: http://requirejs.org/docs/plugins.html#api
  *
@@ -85,7 +85,7 @@ define( function( require ) {
      */
     load: function( name, parentRequire, onload, config ) {
 
-      // Extract the key. Eg for 'JOHN_TRAVOLTAGE/johnTravoltage.name', the key is 'johnTravoltage.name'.
+      // Extract the key. Eg for 'JOHN_TRAVOLTAGE/john-travoltage.title', the key is 'john-travoltage.title'.
       var key = name.substring( name.lastIndexOf( '/' ) + 1 );
 
       // Apply the cache buster args (but only during requirejs mode)

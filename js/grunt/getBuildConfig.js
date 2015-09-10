@@ -270,7 +270,7 @@ module.exports = function( grunt ) {
   };
 
   // These fields depend on other entries in buildConfig.
-  buildConfig.simTitleStringKey = buildConfig.requirejsNamespace + '/' + buildConfig.name + '.name'; // REPO/repo.name
+  buildConfig.simTitleStringKey = buildConfig.requirejsNamespace + '/' + buildConfig.name + '.title'; // REPO/repo.name
   buildConfig.phetLibs = getPhetLibs( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.preload = getPreload( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
