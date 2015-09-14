@@ -361,7 +361,20 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       abortBuild( 'English strings file not found' );
       return;
     }
-    simTitle = englishStrings[ simTitleKey ].value;
+
+    if ( englishStrings[ simTitleKey ] ) {
+      simTitle = englishStrings[ simTitleKey ].value;
+    }
+    else {
+      simTitleKey = simName + '.name'; // try falling back to old title key default
+
+      if ( englishStrings[ simTitleKey ] ) {
+        simTitle = englishStrings[ simTitleKey ].value;
+      }
+      else {
+        abortBuild( 'sim title key is incorrect' );
+      }
+    }
 
     // create xml, making a simulation tag for each language
     var finalXML = '<?xml version="1.0" encoding="utf-8" ?>\n' +
