@@ -34,8 +34,6 @@ module.exports = function( grunt, requirejsNamespace ) {
     if ( grunt.file.isDir( subdirectory ) ) {
       grunt.file.recurse( subdirectory, function( abspath, rootdir, subdir, filename ) {
 
-        console.log( 'subdir=' + subdir + ', filename=' + filename );
-
         // check if the file was loaded during requirejs
         var key = subdir ?
                   requirejsNamespace + '/' + subdir + '/' + filename :
