@@ -72,14 +72,17 @@ define( function( require ) {
   return {
     // called both in-browser and during build
     load: function( name, parentRequire, onload, config ) {
-      // should be fully-qualified image-name, like 'FORCES_AND_MOTION_BASICS/crate.png'
-      var imageName = name.substring( name.lastIndexOf( '/' ) );
-      if ( imageName.indexOf( ',' ) >= 0 ) {
-        imageName = imageName.substring( 0, imageName.indexOf( ',' ) );
+
+      // everything after the repository namespace, eg 'FUNCTION_BUILDER/functions/feet.png' -> '/functions/feet.png'
+      var imagePath = name.substring( name.indexOf( '/' ) );
+
+      // strip off optional arguments, eg '/functions/feet.png,level=5,quality=90' -> '/functions/feet.png'
+      if ( imagePath.indexOf( ',' ) >= 0 ) {
+        imagePath = imagePath.substring( 0, imagePath.indexOf( ',' ) );
       }
 
       // the path to our image file.
-      var path = getProjectURL( name, parentRequire ) + 'images' + imageName;
+      var path = getProjectURL( name, parentRequire ) + 'images' + imagePath;
 
       // defaults
       var options = {

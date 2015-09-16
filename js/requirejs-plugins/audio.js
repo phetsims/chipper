@@ -26,22 +26,24 @@ define( function( require ) {
   // Define the plugin operations based on the RequireJS plugin API.
   return {
     load: function( name, parentRequire, onload, config ) {
-      var audioName = name.substring( name.lastIndexOf( '/' ) + 1 );
-      var baseUrl = getProjectURL( name, parentRequire ) + 'audio/';
+
+      // everything after the repository namespace, eg 'MY_REPO/explosions/boom' -> '/explosions/boom'
+      var audioPath = name.substring( name.indexOf( '/' ) );
+      var baseUrl = getProjectURL( name, parentRequire ) + 'audio';
       var urlList = [];
 
       // Create an array containing a list of URLs pointing to audio files.
-      if ( audioName.indexOf( '.' ) === -1 ) {
+      if ( audioPath.indexOf( '.' ) === -1 ) {
 
         // Only the file stem has been specified, so assume that both mp3 and ogg files are available.
-        urlList.push( { url: baseUrl + audioName + '.mp3' } );
-        urlList.push( { url: baseUrl + audioName + '.ogg' } );
+        urlList.push( { url: baseUrl + audioPath + '.mp3' } );
+        urlList.push( { url: baseUrl + audioPath + '.ogg' } );
       }
       else {
 
         // The sound name included a type extension (e.g. '.mp3'), so just insert the full path name into the URL list.
         // This is done, at least in part, for backwards compatibility with the first version of this plugin.
-        urlList.push( { url: baseUrl + audioName } );
+        urlList.push( { url: baseUrl + audioPath } );
       }
 
       if ( config.isBuild ) {

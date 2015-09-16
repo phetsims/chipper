@@ -22,8 +22,10 @@ define( function( require ) {
 
   return {
     load: function( name, parentRequire, onload, config ) {
-      var imageName = name.substring( name.lastIndexOf( '/' ) );
-      var path = getProjectURL( name, parentRequire ) + 'images' + imageName;
+
+      // everything after the repository namespace, eg 'FUNCTION_BUILDER/functions/feet.png' -> '/functions/feet.png'
+      var imagePath = name.substring( name.indexOf( '/' ) );
+      var path = getProjectURL( name, parentRequire ) + 'images' + imagePath;
 
       if ( config.isBuild ) {
         buildMap[ name ] = path;
