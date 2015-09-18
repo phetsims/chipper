@@ -56,7 +56,22 @@ var assert = require( 'assert' );
     assert( packageJSON.version, 'version missing from ' + PACKAGE_FILENAME );
 
     // $HOME/.phet/build-local.json (required)
-    var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
+    var BUILD_LOCAL_FILENAME;
+
+    /*
+     * When running on simian or figaro, build-server is run under user "phet-admin". However, "process.env.HOME" will get
+     * the user who is starting the process's home directory, not phet-admin's home directory, therefore we need to use
+     * a different approach to get the home directory. Because passwd-user doesn't work on windows, windows users
+     * will still get their preferences file via process.env.HOME.
+     */
+    if ( process.platform === 'linux' ) {
+      var passwdUser = require( 'passwd-user' );
+      BUILD_LOCAL_FILENAME = passwdUser.sync( process.getuid() ).homedir + '/.phet/build-local.json';
+    }
+    else {
+      BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
+    }
+
     var buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
     assert( buildLocalJSON.buildServerAuthorizationCode, 'buildServerAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME );
     assert( buildLocalJSON.devUsername, 'devUsername missing from ' + BUILD_LOCAL_FILENAME );
