@@ -56,7 +56,7 @@
  * - npm install in the sim directory
  * - pull master for the sim and all dependencies
  * - grunt checkout-shas
- * - grunt build --lint=false for selected locales
+ * - grunt build for selected locales
  * - grunt generate-thumbnails
  * - mkdir for the new sim version
  * - copy the build files to the correct location in the server doc root
@@ -609,7 +609,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             pullMaster( function() {
               exec( 'grunt checkout-shas --buildServer', simDir, function() {
                 exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
-                  exec( 'grunt build --brand=phet --lint=false --locales=' + locales, simDir, function() {
+                  exec( 'grunt build --brand=phet --locales=' + locales, simDir, function() {
                     exec( 'grunt generate-thumbnails', simDir, function() {
                       mkVersionDir( function() {
                         exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
