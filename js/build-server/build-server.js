@@ -85,7 +85,7 @@ var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
 var deployConfig = getDeployConfig( fs );
 
 /* jshint -W079 */
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
+var _ = require( 'lodash' ); // allow _ to be redefined, contrary to jshintOptions.js
 /* jshint +W079 */
 
 // constants
