@@ -596,32 +596,35 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var writeDependenciesFile = function() {
     fs.writeFile( buildDir + '/dependencies.json', JSON.stringify( repos ), function( err ) {
       if ( err ) {
-        return winston.log( 'error', err );
+        winston.log( 'error', err );
+        taskCallback( err );
       }
-      winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
+      else {
+        winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
 
-      // run every step of the build
-      cloneMissingRepos( function() {
-        exec( 'npm install', simDir, function() {
-          pullMaster( function() {
-            exec( 'grunt checkout-shas --buildServer', simDir, function() {
-              exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
-                exec( 'grunt build --brand=phet --lint=false --locales=' + locales, simDir, function() {
-                  exec( 'grunt generate-thumbnails', simDir, function() {
-                    mkVersionDir( function() {
-                      exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
-                        writeLatestHtaccess( function() {
-                          writeDownloadHtaccess( function() {
-                            createTranslationsXML( function() {
-                              notifyServer( function() {
-                                addToRosetta( function() {
-                                  //spotScp( function() { TODO: do we need this? grunt deploy-production does a spot deploy already
-                                  exec( 'grunt checkout-master-all', PERENNIAL, function() {
-                                    exec( 'rm -rf ' + buildDir, '.', function() {
-                                      taskCallback();
+        // run every step of the build
+        cloneMissingRepos( function() {
+          exec( 'npm install', simDir, function() {
+            pullMaster( function() {
+              exec( 'grunt checkout-shas --buildServer', simDir, function() {
+                exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
+                  exec( 'grunt build --brand=phet --lint=false --locales=' + locales, simDir, function() {
+                    exec( 'grunt generate-thumbnails', simDir, function() {
+                      mkVersionDir( function() {
+                        exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
+                          writeLatestHtaccess( function() {
+                            writeDownloadHtaccess( function() {
+                              createTranslationsXML( function() {
+                                notifyServer( function() {
+                                  addToRosetta( function() {
+                                    //spotScp( function() { TODO: do we need this? grunt deploy-production does a spot deploy already
+                                    exec( 'grunt checkout-master-all', PERENNIAL, function() {
+                                      exec( 'rm -rf ' + buildDir, '.', function() {
+                                        taskCallback();
+                                      } );
                                     } );
+                                    //} );
                                   } );
-                                  //} );
                                 } );
                               } );
                             } );
@@ -635,7 +638,8 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             } );
           } );
         } );
-      } );
+      }
+
     } );
   };
 
