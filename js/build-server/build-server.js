@@ -737,11 +737,8 @@ function queueDeploy( req, res ) {
   }
 }
 
-// Create and configure the ExpressJS app
+// Create the ExpressJS app
 var app = express();
-app.set( 'views', __dirname + '/html/views' );
-app.set( 'view engine', 'dot' );
-app.engine( 'html', doT.__express );
 
 // add the route to build and deploy
 app.get( '/deploy-html-simulation', queueDeploy );
