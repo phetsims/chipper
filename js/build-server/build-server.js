@@ -281,7 +281,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * @param err
    */
   var abortBuild = function( err ) {
-    winston.log( 'error', 'abort build called: ' + err );
+    winston.log( 'error', 'BUILD ABORTED! ' + err );
     exec( 'grunt checkout-master-all', PERENNIAL, function() {
       winston.log( 'info', 'build aborted: checking out master for every repo in case build shas are still checked out' );
       taskCallback( err ); // build aborted, so take this build task off of the queue
@@ -336,6 +336,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   // validate simName
   if ( !simNameRegex.test( simName ) ) {
     abortBuild( 'invalid simName ' + simName );
+    return;
   }
 
   // validate version and strip suffixes since just the numbers are used in the directory name on simian and figaro
