@@ -502,20 +502,27 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       delete reposCopy.comment;
     }
 
-    var finished = _.after( Object.keys( reposCopy ).length + 1, callback );
-    var error = false;
+    var errors = [];
+
+    var finished = _.after( Object.keys( reposCopy ).length + 1, function() {
+      if ( _.any( errors ) ) {
+        abortBuild( 'at least one repository failed to pull master' );
+      }
+      callback();
+    } );
+
+    var errorCheckCallback = function( err ) {
+      errors.push( err );
+      finished();
+    };
 
     for ( var repoName in reposCopy ) {
       if ( reposCopy.hasOwnProperty( repoName ) ) {
         winston.log( 'info', 'pulling from ' + repoName );
-        var err = execWithoutAbort( 'git pull', '../' + repoName, finished );
-        error = !!err || error;
+        execWithoutAbort( 'git pull', '../' + repoName, errorCheckCallback );
       }
     }
-    if ( error ) {
-      abortBuild( 'failed to pull master in at least one repository' );
-    }
-    exec( 'git pull', '../babel', finished );
+    execWithoutAbort( 'git pull', '../babel', errorCheckCallback );
   };
 
   /**
