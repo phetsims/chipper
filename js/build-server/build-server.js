@@ -540,18 +540,24 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     var project = 'html/' + simName;
     var url = 'http://' + host + '/services/synchronize-project?projectName=' + project;
     request( url, function( error, response, body ) {
+      var errorMessage;
+
       if ( !error && response.statusCode === 200 ) {
         var syncResponse = JSON.parse( body );
 
         if ( !syncResponse.success ) {
-          winston.log( 'error', 'request to synchronize project ' + project + ' on ' + server + ' failed with message: ' + syncResponse.error );
+          errorMessage = 'request to synchronize project ' + project + ' on ' + server + ' failed with message: ' + syncResponse.error;
+          winston.log( 'error', errorMessage );
+          sendEmail( 'SYNCHRONIZE FAILED', errorMessage );
         }
         else {
           winston.log( 'info', 'request to synchronize project ' + project + ' on ' + server + ' succeeded' );
         }
       }
       else {
-        winston.log( 'error', 'request to synchronize project failed' );
+        errorMessage = 'request to synchronize project errored or returned a non 200 status code';
+        winston.log( 'error', errorMessage );
+        sendEmail( 'SYNCHRONIZE FAILED', errorMessage );
       }
 
       if ( callback ) {
