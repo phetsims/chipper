@@ -281,6 +281,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * @param err
    */
   var abortBuild = function( err ) {
+    winston.log( 'error', 'abort build called: ' + err );
     exec( 'grunt checkout-master-all', PERENNIAL, function() {
       winston.log( 'info', 'build aborted: checking out master for every repo in case build shas are still checked out' );
       taskCallback( err ); // build aborted, so take this build task off of the queue
@@ -310,21 +311,25 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     // make sure all keys in repos object are valid sim names
     if ( simNameRegex.test( key ) ) {
       abortBuild( 'invalid simName in repos: ' + simName );
+      return;
     }
 
     var value = repos[ key ];
     if ( key === 'comment' ) {
       if ( typeof value !== 'string' ) {
         abortBuild( 'invalid comment in repos: should be a string' );
+        return;
       }
     }
     else if ( value instanceof Object && value.hasOwnProperty( 'sha' ) ) {
       if ( !/^[a-f0-9]{40}$/.test( value.sha ) ) {
         abortBuild( 'invalid sha in repos. key: ' + key + ' value: ' + value + ' sha: ' + value.sha );
+        return;
       }
     }
     else {
       abortBuild( 'invalid item in repos. key: ' + key + ' value: ' + value );
+      return;
     }
   }
 
@@ -341,6 +346,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   }
   else {
     abortBuild( 'invalid version number: ' + version );
+    return;
   }
 
   // define vars for build dir and sim dir
@@ -398,6 +404,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     }
     else {
       abortBuild( 'no key for sim title' );
+      return;
     }
 
     // create xml, making a simulation tag for each language
