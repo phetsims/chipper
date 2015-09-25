@@ -222,29 +222,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var req = task.req;
   var res = task.res;
 
-  /*
-   * For some configurations, Node doesn't automatically decode the query string properly.
-   * DecodeURIComponent is a more robust solution that json/querystring.parse
-   */
-  var repos = JSON.parse( decodeURIComponent( req.query[ REPOS_KEY ] ) );
-  var locales = ( req.query[ LOCALES_KEY ] ) ? decodeURIComponent( req.query[ LOCALES_KEY ] ) : '*';
 
-  var simName = req.query[ SIM_NAME_KEY ];
-  var version = req.query[ VERSION_KEY ];
-
-  // strip suffixes from version since just the numbers are used in the directory name on simian and figaro
-  version = version.match( /\d\.\d\.\d/ );
-  winston.log( 'info', 'detecting version number: ' + version );
-
-  var server = deployConfig.productionServerName;
-  if ( req.query[ SERVER_NAME ] ) {
-    server = req.query[ SERVER_NAME ];
-  }
-
-  winston.log( 'info', 'building sim ' + simName );
-
-  var buildDir = './js/build-server/tmp';
-  var simDir = '../' + simName;
+  //-----------------------------------------------------------------------------------------
+  // Define helper functions exec, execWithoutAbort, and AbortBuild for use in this function
+  //-----------------------------------------------------------------------------------------
 
   /**
    * Execute a step of the build process. The build aborts if any step fails.
@@ -305,6 +286,46 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       taskCallback( err ); // build aborted, so take this build task off of the queue
     } );
   };
+
+
+  //-------------------------------------------------------------------------------------
+  // Parse and validate query parameters
+  //-------------------------------------------------------------------------------------
+
+  /*
+   * For some configurations, Node doesn't automatically decode the query string properly.
+   * DecodeURIComponent is a more robust solution than json/querystring.parse
+   */
+  var repos = JSON.parse( decodeURIComponent( req.query[ REPOS_KEY ] ) );
+  var locales = ( req.query[ LOCALES_KEY ] ) ? decodeURIComponent( req.query[ LOCALES_KEY ] ) : '*';
+
+  var simName = req.query[ SIM_NAME_KEY ];
+  var version = req.query[ VERSION_KEY ];
+
+  var server = deployConfig.productionServerName;
+  if ( req.query[ SERVER_NAME ] ) {
+    server = req.query[ SERVER_NAME ];
+  }
+
+  winston.log( 'info', 'building sim ' + simName );
+
+  var buildDir = './js/build-server/tmp';
+  var simDir = '../' + simName;
+
+  // strip suffixes from version since just the numbers are used in the directory name on simian and figaro
+  var versionMatch = version.match( /^(\d+\.\d+\.\d+)(?:-.*)?$/ );
+  if ( versionMatch && versionMatch.length === 2 ) {
+    version = versionMatch[ 1 ];
+    winston.log( 'info', 'detecting version number: ' + version );
+  }
+  else {
+    abortBuild( 'invalid version number: ' + version );
+  }
+
+
+  //-------------------------------------------------------------------------------------
+  // Define other helper functions used in build process
+  //-------------------------------------------------------------------------------------
 
   /**
    * Create a [sim name].xml file in the live sim directory in htdocs. This file tells the website which
