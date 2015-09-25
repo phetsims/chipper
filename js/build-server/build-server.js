@@ -526,14 +526,17 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    */
   var pullMaster = function( callback ) {
 
-    if ( 'comment' in repos ) {
-      delete repos.comment;
+    // so we don't have to modify the repos object
+    var reposCopy = _.clone( repos );
+
+    if ( 'comment' in reposCopy ) {
+      delete reposCopy.comment;
     }
 
-    var finished = _.after( Object.keys( repos ).length + 1, callback );
+    var finished = _.after( Object.keys( reposCopy ).length + 1, callback );
 
-    for ( var repoName in repos ) {
-      if ( repos.hasOwnProperty( repoName ) ) {
+    for ( var repoName in reposCopy ) {
+      if ( reposCopy.hasOwnProperty( repoName ) ) {
         winston.log( 'info', 'pulling from ' + repoName );
         exec( 'git pull', '../' + repoName, finished );
       }
