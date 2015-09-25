@@ -464,7 +464,12 @@ var taskQueue = async.queue( function( task, taskCallback ) {
             if ( simInfoArrayString !== contents ) {
               exec( 'git pull', '../rosetta', function() {
                 exec( 'git commit -a -m "[automated commit] add ' + simTitle + ' to simInfoArray"', '../rosetta', function() {
-                  exec( 'git push origin master', '../rosetta', callback );
+                  execWithoutAbort( 'git push origin master', '../rosetta', function( err ) {
+                    if ( err ) {
+                      sendEmail( 'ROSETTA PUSH FAILED', err );
+                    }
+                    callback();
+                  } );
                 } );
               } );
             }
