@@ -292,27 +292,48 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   // Parse and validate query parameters
   //-------------------------------------------------------------------------------------
 
-  /*
-   * For some configurations, Node doesn't automatically decode the query string properly.
-   * DecodeURIComponent is a more robust solution than json/querystring.parse
-   */
   var repos = JSON.parse( decodeURIComponent( req.query[ REPOS_KEY ] ) );
   var locales = ( req.query[ LOCALES_KEY ] ) ? decodeURIComponent( req.query[ LOCALES_KEY ] ) : '*';
-
-  var simName = req.query[ SIM_NAME_KEY ];
-  var version = req.query[ VERSION_KEY ];
+  var simName = decodeURIComponent( req.query[ SIM_NAME_KEY ] );
+  var version = decodeURIComponent( req.query[ VERSION_KEY ] );
 
   var server = deployConfig.productionServerName;
   if ( req.query[ SERVER_NAME ] ) {
-    server = req.query[ SERVER_NAME ];
+    server = decodeURIComponent( req.query[ SERVER_NAME ] );
   }
 
-  winston.log( 'info', 'building sim ' + simName );
+  var simNameRegex = /^[a-z-]+$/;
 
-  var buildDir = './js/build-server/tmp';
-  var simDir = '../' + simName;
+  // make sure the repos passed in validates
+  for ( var key in repos ) {
 
-  // strip suffixes from version since just the numbers are used in the directory name on simian and figaro
+    // make sure all keys in repos object are valid sim names
+    if ( simNameRegex.text( key ) ) {
+      abortBuild( 'invalid simName in repos: ' + simName );
+    }
+
+    var value = repos[ key ];
+    if ( key === 'comment' ) {
+      if ( typeof value !== 'string' ) {
+        abortBuild( 'invalid comment in repos: should be a string' );
+      }
+    }
+    else if ( value instanceof Object && value.hasOwnProperty( 'sha' ) ) {
+      if ( !/^[a-f0-9]{40}$/.test( value.sha ) ) {
+        abortBuild( 'invalid sha in repos. key: ' + key + ' value: ' + value + ' sha: ' + value.sha );
+      }
+    }
+    else {
+      abortBuild( 'invalid item in repos. key: ' + key + ' value: ' + value );
+    }
+  }
+
+  // validate simName
+  if ( !simNameRegex.test( simName ) ) {
+    abortBuild( 'invalid simName ' + simName );
+  }
+
+  // validate version and strip suffixes since just the numbers are used in the directory name on simian and figaro
   var versionMatch = version.match( /^(\d+\.\d+\.\d+)(?:-.*)?$/ );
   if ( versionMatch && versionMatch.length === 2 ) {
     version = versionMatch[ 1 ];
@@ -321,6 +342,12 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   else {
     abortBuild( 'invalid version number: ' + version );
   }
+
+  // define vars for build dir and sim dir
+  var buildDir = './js/build-server/tmp';
+  var simDir = '../' + simName;
+
+  winston.log( 'info', 'building sim ' + simName );
 
 
   //-------------------------------------------------------------------------------------
