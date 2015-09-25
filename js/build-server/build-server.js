@@ -366,17 +366,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       var simHTML = HTML_SIMS_DIRECTORY + simName + '/' + version + '/' + simName + '_' + stringFile.locale + '.html';
 
       if ( exists( simHTML ) ) {
-        if ( languageJSON[ simTitleKey ] ) {
-          finalXML = finalXML.concat( '<simulation name="' + simName + '" locale="' + stringFile.locale + '">\n' +
-                                      '<title><![CDATA[' + languageJSON[ simTitleKey ].value + ']]></title>\n' +
-                                      '</simulation>\n' );
-        }
-        else {
-          winston.log( 'warn', 'Sim name not found in translation for ' + simHTML + '. Defaulting to English name.' );
-          finalXML = finalXML.concat( '<simulation name="' + simName + '" locale="' + stringFile.locale + '">\n' +
-                                      '<title><![CDATA[' + englishStrings[ simTitleKey ].value + ']]></title>\n' +
-                                      '</simulation>\n' );
-        }
+        var localizedSimTitle = ( languageJSON[ simTitleKey ] ) ? languageJSON[ simTitleKey ].value : englishStrings[ simTitleKey ].value;
+        finalXML = finalXML.concat( '<simulation name="' + simName + '" locale="' + stringFile.locale + '">\n' +
+                                    '<title><![CDATA[' + localizedSimTitle + ']]></title>\n' +
+                                    '</simulation>\n' );
       }
     }
 
