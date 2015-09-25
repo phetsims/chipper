@@ -73,7 +73,6 @@
 
 // modules
 var express = require( 'express' );
-var doT = require( 'express-dot' );
 var parseArgs = require( 'minimist' );
 var winston = require( 'winston' );
 var request = require( 'request' );
@@ -166,9 +165,9 @@ if ( options.silent ) {
 var verbose = options.verbose;
 
 // configure email server
-var server;
+var emailServer;
 if ( deployConfig.emailUsername && deployConfig.emailPassword && deployConfig.emailTo ) {
-  server = email.server.connect( {
+  emailServer = email.server.connect( {
     user: deployConfig.emailUsername,
     password: deployConfig.emailPassword,
     host: deployConfig.emailServer,
@@ -182,8 +181,8 @@ if ( deployConfig.emailUsername && deployConfig.emailPassword && deployConfig.em
  * @param text
  */
 function sendEmail( subject, text ) {
-  if ( server ) {
-    server.send( {
+  if ( emailServer ) {
+    emailServer.send( {
       text: text,
       from: 'PhET Build Server <phethelp@colorado.edu>',
       to: deployConfig.emailTo,
@@ -298,9 +297,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   var simName = decodeURIComponent( req.query[ SIM_NAME_KEY ] );
   var version = decodeURIComponent( req.query[ VERSION_KEY ] );
 
-  var server = deployConfig.productionServerName;
+  var productionServer = deployConfig.productionServerName;
   if ( req.query[ SERVER_NAME ] ) {
-    server = decodeURIComponent( req.query[ SERVER_NAME ] );
+    productionServer = decodeURIComponent( req.query[ SERVER_NAME ] );
   }
 
   var simNameRegex = /^[a-z-]+$/;
@@ -482,7 +481,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         abortBuild( 'couldn\'t read simInfoArray ' + err );
       }
       else {
-        var host = ( server === 'simian.colorado.edu' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
+        var host = ( productionServer === 'simian.colorado.edu' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
         var testUrl = 'http://' + host + '/sims/html/' + simName + '/latest/' + simName + '_en.html';
         var newSim = true;
         for ( var i = 0; i < data.length; i++ ) {
@@ -599,7 +598,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
    * @param callback
    */
   var notifyServer = function( callback ) {
-    var host = ( server === 'simian.colorado.edu' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
+    var host = ( productionServer === 'simian.colorado.edu' ) ? 'phet-dev.colorado.edu' : 'phet.colorado.edu';
     var project = 'html/' + simName;
     var url = 'http://' + host + '/services/synchronize-project?projectName=' + project;
     request( url, function( error, response, body ) {
@@ -609,12 +608,12 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         var syncResponse = JSON.parse( body );
 
         if ( !syncResponse.success ) {
-          errorMessage = 'request to synchronize project ' + project + ' on ' + server + ' failed with message: ' + syncResponse.error;
+          errorMessage = 'request to synchronize project ' + project + ' on ' + productionServer + ' failed with message: ' + syncResponse.error;
           winston.log( 'error', errorMessage );
           sendEmail( 'SYNCHRONIZE FAILED', errorMessage );
         }
         else {
-          winston.log( 'info', 'request to synchronize project ' + project + ' on ' + server + ' succeeded' );
+          winston.log( 'info', 'request to synchronize project ' + project + ' on ' + productionServer + ' succeeded' );
         }
       }
       else {
