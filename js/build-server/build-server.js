@@ -334,25 +334,6 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       winston.log( 'warn', 'no directory for the given sim exists in babel' );
     }
 
-    // try reading package.json so we can get simTitleStringKey
-    var packageJSON;
-    try {
-      packageJSON = JSON.parse( fs.readFileSync( '../' + simName + '/package.json', { encoding: 'utf-8' } ) );
-    }
-    catch( e ) {
-      abortBuild( 'package.json not found when trying to create translations XML file' );
-      return;
-    }
-
-    // pull simTitle key from phet.simTitleStringKey if it exists in package.json, or use default repo.title
-    var simTitleKey;
-    if ( packageJSON.phet && packageJSON.phet.simTitleStringKey && packageJSON.phet.simTitleStringKey.indexOf( '/' ) > -1 ) {
-      simTitleKey = packageJSON.phet.simTitleStringKey.split( '/' )[ 1 ];
-    }
-    else {
-      simTitleKey = simName + '.title';
-    }
-
     // try opening the english strings file so we can read the english strings
     var englishStrings;
     try {
@@ -363,18 +344,13 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       return;
     }
 
+    var simTitleKey = simName + '.title'; // all sims must have a key of this form
+
     if ( englishStrings[ simTitleKey ] ) {
       simTitle = englishStrings[ simTitleKey ].value;
     }
     else {
-      simTitleKey = simName + '.name'; // try falling back to old title key default
-
-      if ( englishStrings[ simTitleKey ] ) {
-        simTitle = englishStrings[ simTitleKey ].value;
-      }
-      else {
-        abortBuild( 'sim title key is incorrect' );
-      }
+      abortBuild( 'no key for sim title' );
     }
 
     // create xml, making a simulation tag for each language
