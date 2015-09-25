@@ -462,9 +462,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
           }
           else {
             if ( simInfoArrayString !== contents ) {
-              execWithoutAbort( 'git pull', '../rosetta', function() {
-                execWithoutAbort( 'git commit -a -m "[automated commit] add ' + simTitle + ' to simInfoArray"', '../rosetta', function() {
-                  execWithoutAbort( 'git push origin master', '../rosetta', callback );
+              exec( 'git pull', '../rosetta', function() {
+                exec( 'git commit -a -m "[automated commit] add ' + simTitle + ' to simInfoArray"', '../rosetta', function() {
+                  exec( 'git push origin master', '../rosetta', callback );
                 } );
               } );
             }
