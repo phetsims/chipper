@@ -245,7 +245,6 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
   var buildDir = './js/build-server/tmp';
   var simDir = '../' + simName;
-  var simTitle; // initialized later when parsing the strings file
 
   /**
    * Execute a step of the build process. The build aborts if any step fails.
@@ -310,10 +309,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   /**
    * Create a [sim name].xml file in the live sim directory in htdocs. This file tells the website which
    * translations exist for a given sim. It is used by the "synchronize" method in Project.java in the website code.
-   *
+   * @param simTitleCallback
    * @param callback
    */
-  var createTranslationsXML = function( callback ) {
+  var createTranslationsXML = function( simTitleCallback, callback ) {
 
     var rootdir = '../babel/' + simName;
     var englishStringsFile = simName + '-strings_en.json';
@@ -347,7 +346,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     var simTitleKey = simName + '.title'; // all sims must have a key of this form
 
     if ( englishStrings[ simTitleKey ] ) {
-      simTitle = englishStrings[ simTitleKey ].value;
+      simTitleCallback( englishStrings[ simTitleKey ].value );
     }
     else {
       abortBuild( 'no key for sim title' );
@@ -425,9 +424,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   /**
    * Add an entry in for this sim in simInfoArray in rosetta, so it shows up as translatable.
    * Must be run after createTranslationsXML so that simTitle is initialized.
+   * @param simTitle
    * @param callback
    */
-  var addToRosetta = function( callback ) {
+  var addToRosetta = function( simTitle, callback ) {
     var simInfoArray = '../rosetta/data/simInfoArray.json';
     fs.readFile( simInfoArray, { encoding: 'utf8' }, function( err, simInfoArrayString ) {
       var data = JSON.parse( simInfoArrayString );
@@ -575,6 +575,11 @@ var taskQueue = async.queue( function( task, taskCallback ) {
       else {
         winston.log( 'info', 'wrote file ' + buildDir + '/dependencies.json' );
 
+        var simTitle; // initialized via simTitleCallback in createTranslationsXML() for use in addToRosetta()
+        var simTitleCallback = function( title ) {
+          simTitle = title;
+        };
+
         // run every step of the build
         cloneMissingRepos( function() {
           exec( 'npm install', simDir, function() {
@@ -587,9 +592,9 @@ var taskQueue = async.queue( function( task, taskCallback ) {
                         exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
                           writeLatestHtaccess( function() {
                             writeDownloadHtaccess( function() {
-                              createTranslationsXML( function() {
+                              createTranslationsXML( simTitleCallback, function() {
                                 notifyServer( function() {
-                                  addToRosetta( function() {
+                                  addToRosetta( simTitle, function() {
                                     //spotScp( function() { TODO: do we need this? grunt deploy-production does a spot deploy already
                                     exec( 'grunt checkout-master-all', PERENNIAL, function() {
                                       exec( 'rm -rf ' + buildDir, '.', function() {
