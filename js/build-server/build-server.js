@@ -291,7 +291,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         if ( stdout ) { winston.log( 'info', stdout ); }
         if ( stderr ) { winston.log( 'info', stderr ); }
       }
-      callback();
+      callback( err );
     } );
   };
 
@@ -503,12 +503,17 @@ var taskQueue = async.queue( function( task, taskCallback ) {
     }
 
     var finished = _.after( Object.keys( reposCopy ).length + 1, callback );
+    var error = false;
 
     for ( var repoName in reposCopy ) {
       if ( reposCopy.hasOwnProperty( repoName ) ) {
         winston.log( 'info', 'pulling from ' + repoName );
-        exec( 'git pull', '../' + repoName, finished );
+        var err = execWithoutAbort( 'git pull', '../' + repoName, finished );
+        error = !!err || error;
       }
+    }
+    if ( error ) {
+      abortBuild( 'failed to pull master in at least one repository' );
     }
     exec( 'git pull', '../babel', finished );
   };
