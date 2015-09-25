@@ -308,7 +308,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   for ( var key in repos ) {
 
     // make sure all keys in repos object are valid sim names
-    if ( simNameRegex.text( key ) ) {
+    if ( simNameRegex.test( key ) ) {
       abortBuild( 'invalid simName in repos: ' + simName );
     }
 
