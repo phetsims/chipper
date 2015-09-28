@@ -403,6 +403,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
     var simTitleKey = simName + '.title'; // all sims must have a key of this form
 
+    winston.log( 'info', 'title key: ' + simTitleKey );
+    winston.log( 'info', 'title: ' + englishStrings[ simTitleKey ] );
+    winston.log( 'info', 'englishStrings: ' + englishStrings );
+
     if ( englishStrings[ simTitleKey ] ) {
       simTitleCallback( englishStrings[ simTitleKey ].value );
     }
