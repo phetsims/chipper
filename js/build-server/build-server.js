@@ -120,8 +120,8 @@ var defaultOptions = {
 
 for ( var key in parsedCommandLineOptions ) {
   if ( key !== '_' && parsedCommandLineOptions.hasOwnProperty( key ) && !defaultOptions.hasOwnProperty( key ) ) {
-    console.log( 'Unrecognized option: ' + key );
-    console.log( 'try --help for usage information.' );
+    console.error( 'Unrecognized option: ' + key );
+    console.error( 'try --help for usage information.' );
     return;
   }
 }
@@ -173,6 +173,10 @@ if ( deployConfig.emailUsername && deployConfig.emailPassword && deployConfig.em
     host: deployConfig.emailServer,
     tls: true
   } );
+}
+else {
+  winston.log( 'warn', 'failed to set up email server, missing one or more of the following fields in build-local.json:\n' +
+                       'emailUsername, emailPassword, emailTo' );
 }
 
 /**
