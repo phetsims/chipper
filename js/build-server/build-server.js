@@ -654,10 +654,10 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
         // run every step of the build
         cloneMissingRepos( function() {
-          exec( 'npm install', simDir, function() {
-            pullMaster( function() {
-              exec( 'grunt checkout-shas --buildServer=true --repo=' + simName, PERENNIAL, function() {
-                exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
+          pullMaster( function() {
+            exec( 'grunt checkout-shas --buildServer=true --repo=' + simName, PERENNIAL, function() {
+              exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
+                exec( 'npm install', simDir, function() {
                   exec( 'grunt build --brand=phet --locales=' + locales, simDir, function() {
                     exec( 'grunt generate-thumbnails', simDir, function() {
                       mkVersionDir( function() {
