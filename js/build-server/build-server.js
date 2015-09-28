@@ -714,8 +714,9 @@ function queueDeploy( req, res ) {
       winston.log( 'info', 'queuing build for ' + simName + ' ' + version );
       taskQueue.push( { req: req, res: res }, function( err ) {
         if ( err ) {
-          var errorMessage = 'Build failed with error: ' + err + '. Sim = ' + simName +
-                             ' Version = ' + version + ' Locales = ' + ( locales ? locales.toString() : 'undefined' );
+          var errorMessage = 'Build failed with error: ' + err + '. Sim = ' + decodeURIComponent( simName ) +
+                             ' Version = ' + decodeURIComponent( version ) + ' Locales = ' + ( locales ? decodeURIComponent( locales ) : 'undefined' ) +
+                             ' Shas = ' + decodeURIComponent( repos );
           winston.log( 'error', errorMessage );
           sendEmail( 'BUILD ERROR', errorMessage.replace( /\n/g, ' ' ) ); // for some reason emails get cut off at newlines
         }
