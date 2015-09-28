@@ -196,7 +196,7 @@ function sendEmail( subject, text ) {
         winston.log( 'error', 'sending email ' + err );
       }
       else {
-        winston.log( 'info', 'sent email ' + message );
+        winston.log( 'info', 'sent email ' + message.toString() );
       }
     } );
   }
@@ -405,7 +405,7 @@ var taskQueue = async.queue( function( task, taskCallback ) {
 
     winston.log( 'info', 'title key: ' + simTitleKey );
     winston.log( 'info', 'title: ' + englishStrings[ simTitleKey ] );
-    winston.log( 'info', 'englishStrings: ' + englishStrings );
+    winston.log( 'info', 'englishStrings: ' + englishStrings.toString() );
 
     if ( englishStrings[ simTitleKey ] ) {
       simTitleCallback( englishStrings[ simTitleKey ].value );
