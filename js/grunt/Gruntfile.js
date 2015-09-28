@@ -105,6 +105,10 @@ module.exports = function( grunt ) {
       'after-requirejs-build' ] )
   );
 
+  grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
+    [ 'build', 'generate-thumbnails' ]
+  );
+
   grunt.registerTask( 'deploy-production',
     'Invoke deployDev and then deploy a simulation to the production server.\n' +
     'Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
