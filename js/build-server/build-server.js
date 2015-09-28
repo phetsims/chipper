@@ -532,18 +532,6 @@ var taskQueue = async.queue( function( task, taskCallback ) {
   };
 
   /**
-   * Pull chipper and perennial, then clone missing repos
-   * @param callback
-   */
-  var cloneMissingRepos = function( callback ) {
-    exec( 'git pull', '.', function() { // pull chipper first
-      exec( 'git pull', PERENNIAL, function() {
-        exec( './chipper/bin/clone-missing-repos.sh', '..', callback );
-      } );
-    } );
-  };
-
-  /**
    * pull master for every repo in dependencies.json (plus babel) to make sure everything is up to date
    * @param callback
    */
@@ -653,26 +641,30 @@ var taskQueue = async.queue( function( task, taskCallback ) {
         };
 
         // run every step of the build
-        cloneMissingRepos( function() {
-          pullMaster( function() {
-            exec( 'grunt checkout-shas --buildServer=true --repo=' + simName, PERENNIAL, function() {
-              exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
-                exec( 'npm install', simDir, function() {
-                  exec( 'grunt build --brand=phet --locales=' + locales, simDir, function() {
-                    exec( 'grunt generate-thumbnails', simDir, function() {
-                      mkVersionDir( function() {
-                        exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
-                          writeHtaccess( function() {
-                            createTranslationsXML( simTitleCallback, function() {
-                              notifyServer( function() {
-                                addToRosetta( simTitle, function() {
-                                  //spotScp( function() { TODO: do we need this? grunt deploy-production does a spot deploy already
-                                  exec( 'grunt checkout-master-all', PERENNIAL, function() {
-                                    exec( 'rm -rf ' + buildDir, '.', function() {
-                                      taskCallback();
+        exec( 'git pull', '.', function() { // pull chipper and perennial first
+          exec( 'git pull', PERENNIAL, function() {
+            exec( './chipper/bin/clone-missing-repos.sh', '..', function() { // clone missing repos in case any new repos exist that might be dependencies
+              pullMaster( function() {
+                exec( 'grunt checkout-shas --buildServer=true --repo=' + simName, PERENNIAL, function() {
+                  exec( 'git checkout ' + repos[ simName ].sha, simDir, function() { // checkout the sha for the current sim
+                    exec( 'npm install', simDir, function() {
+                      exec( 'grunt build --brand=phet --locales=' + locales, simDir, function() {
+                        exec( 'grunt generate-thumbnails', simDir, function() {
+                          mkVersionDir( function() {
+                            exec( 'cp build/* ' + HTML_SIMS_DIRECTORY + simName + '/' + version + '/', simDir, function() {
+                              writeHtaccess( function() {
+                                createTranslationsXML( simTitleCallback, function() {
+                                  notifyServer( function() {
+                                    addToRosetta( simTitle, function() {
+                                      //spotScp( function() { TODO: do we need this? grunt deploy-production does a spot deploy already
+                                      exec( 'grunt checkout-master-all', PERENNIAL, function() {
+                                        exec( 'rm -rf ' + buildDir, '.', function() {
+                                          taskCallback();
+                                        } );
+                                      } );
+                                      //} );
                                     } );
                                   } );
-                                  //} );
                                 } );
                               } );
                             } );
