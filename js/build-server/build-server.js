@@ -109,8 +109,6 @@ var parsedCommandLineOptions = parseArgs( commandLineArgs, {
 } );
 
 var defaultOptions = {
-  logFile: undefined,
-  silent: false,
   verbose: false,
 
   // options for supporting help
@@ -135,16 +133,8 @@ if ( parsedCommandLineOptions.hasOwnProperty( 'help' ) || parsedCommandLineOptio
   console.log(
     '  --help (print usage and exit)\n' +
     '    type: bool  default: false\n' +
-    '  --logFile (file name)\n' +
-    '    type: string  default: undefined\n' +
-    '  --silent (do not log to console)\n' +
-    '    type: bool  default: false\n' +
     '  --verbose (output grunt logs in addition to build-server)\n' +
     '    type: bool  default: false\n'
-  );
-  console.log(
-    'Example - Run build-server without console output, but log to a file called log.txt:\n' +
-    '  node build-server.js --silent --logFile=log.txt\n'
   );
   return;
 }
@@ -156,12 +146,6 @@ var options = _.extend( defaultOptions, parsedCommandLineOptions );
 winston.remove( winston.transports.Console );
 winston.add( winston.transports.Console, { 'timestamp': true } );
 
-if ( options.logFile ) {
-  winston.add( winston.transports.File, { filename: options.logFile, 'timestamp': true } );
-}
-if ( options.silent ) {
-  winston.remove( winston.transports.Console );
-}
 var verbose = options.verbose;
 
 // configure email server
