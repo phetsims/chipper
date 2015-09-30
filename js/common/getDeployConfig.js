@@ -25,15 +25,6 @@ var assert = require( 'assert' );
  * {string} productionServerName - production server name, defaults to 'figaro.colorado.edu', can be over-ridden to 'simian.colorado.edu' for example
  * {string} productionServerURL - production server url, defaults to 'https://phet.colorado.edu', can be over-ridden to 'https://phet-dev.colorado.edu'
  *
- * Include these fields in build-local.json to enable sending emails from build-server on build failure.
- * They are only needed on the production server, not locally. A valid emailUsername and emailPassword are needed to authenticate
- * sending mail from the smtp server, though the actual emails will be sent from 'PhET Build Server <phethelp@colorado.edu>',
- * not from the address you put here.
- * {string} emailUsername - e.g. "[identikey]@colorado.edu"
- * {string} emailPassword
- * {string} emailServer - (optional: defaults to "smtp.colorado.edu")
- * {string} emailTo - e.g. "Me <[identikey]@colorado.edu>, Another Person <person@example.com>"
- *
  * @author Chris Malley (PixelZoom, Inc.)
  */
 (function() {
@@ -56,22 +47,7 @@ var assert = require( 'assert' );
     assert( packageJSON.version, 'version missing from ' + PACKAGE_FILENAME );
 
     // $HOME/.phet/build-local.json (required)
-    var BUILD_LOCAL_FILENAME;
-
-    /*
-     * When running on simian or figaro, build-server is run under user "phet-admin". However, "process.env.HOME" will get
-     * the user who is starting the process's home directory, not phet-admin's home directory, therefore we need to use
-     * a different approach to get the home directory. Because passwd-user doesn't work on windows, windows users
-     * will still get their preferences file via process.env.HOME.
-     */
-    if ( process.platform === 'linux' ) {
-      var passwdUser = require( 'passwd-user' );
-      BUILD_LOCAL_FILENAME = passwdUser.sync( process.getuid() ).homedir + '/.phet/build-local.json';
-    }
-    else {
-      BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
-    }
-
+    var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
     var buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
     assert( buildLocalJSON.buildServerAuthorizationCode, 'buildServerAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME );
     assert( buildLocalJSON.devUsername, 'devUsername missing from ' + BUILD_LOCAL_FILENAME );
@@ -88,11 +64,7 @@ var assert = require( 'assert' );
       devDeployServer: buildLocalJSON.devDeployServer || 'spot.colorado.edu',
       devDeployPath: buildLocalJSON.devDeployPath || '/htdocs/physics/phet/dev/html/',
       productionServerName: buildLocalJSON.productionServerName || 'figaro.colorado.edu',
-      productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu',
-      emailUsername: buildLocalJSON.emailUsername,
-      emailPassword: buildLocalJSON.emailPassword,
-      emailServer: buildLocalJSON.emailServer || 'smtp.colorado.edu',
-      emailTo: buildLocalJSON.emailTo
+      productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu'
     };
 
     // These fields depend on other entries in buildConfig.

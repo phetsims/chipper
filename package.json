@@ -17,7 +17,6 @@
     "jimp": "^0.2.0",
     "request": "^2.55.0",
     "underscore": "^1.8.2",
-    "node-html-encoder": "~0.0.2",
-    "passwd-user": "^1.2.1"
+    "node-html-encoder": "~0.0.2"
   }
 }
