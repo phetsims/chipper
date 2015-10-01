@@ -30,14 +30,20 @@ module.exports = function( grunt, callback ) {
   // read dependencies.json (required)
   var dependenciesJSON = grunt.file.readJSON( 'build/dependencies.json' );
 
-  var query = querystring.stringify( {
+  var params = {
     'repos': JSON.stringify( dependenciesJSON ),
     'locales': locales,
     'simName': deployConfig.name,
     'version': deployConfig.version,
     'serverName': deployConfig.productionServerName,
     'authorizationCode': deployConfig.buildServerAuthorizationCode
-  } );
+  };
+
+  if ( grunt.option( 'option' ) === 'rc' ) {
+    params.option = 'rc';
+  }
+
+  var query = querystring.stringify( params );
 
   var productionServerURL = deployConfig.productionServerURL;
   var url = productionServerURL + '/deploy-html-simulation?' + query;
