@@ -139,6 +139,17 @@ module.exports = function( grunt ) {
     }
   );
 
+  grunt.registerTask( 'deploy-rc',
+    'Deploy a rc version to spot using the build server\n' +
+    'This is useful to ensure that the rc version is built in the same environment as our production deploys\n' +
+    'Unlike deploy-dev, this does NOT commit and push dependencies.json',
+    function() {
+      grunt.option( 'noDev', true );
+      grunt.option( 'option', 'rc' );
+      deployProduction( grunt );
+    }
+  );
+
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'jshint:allFiles' ] );
