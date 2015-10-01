@@ -28,6 +28,7 @@ var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
+var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
@@ -146,7 +147,12 @@ module.exports = function( grunt ) {
     function() {
       grunt.option( 'noDev', true );
       grunt.option( 'option', 'rc' );
-      deployProduction( grunt );
+
+      var done = grunt.task.current.async();
+
+      deployUtil.commitAndPush( grunt, function() {
+        deployProduction( grunt, done );
+      } );
     }
   );
 

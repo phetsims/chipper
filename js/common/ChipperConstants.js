@@ -22,7 +22,10 @@
     START_THIRD_PARTY_LICENSE_ENTRIES: '### START THIRD PARTY LICENSE ENTRIES ###',
 
     // Used to fill in sim.html, the sim template
-    END_THIRD_PARTY_LICENSE_ENTRIES: '### END THIRD PARTY LICENSE ENTRIES ###'
+    END_THIRD_PARTY_LICENSE_ENTRIES: '### END THIRD PARTY LICENSE ENTRIES ###',
+
+    // name of build directory
+    BUILD_DIR: 'build'
   };
 
   // browser require.js-compatible definition

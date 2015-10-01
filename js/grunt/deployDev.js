@@ -10,17 +10,14 @@
 /* jslint node: true */
 'use strict';
 
-// build-in node APIs
-var child_process = require( 'child_process' );
-
 // modules
 var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
+var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
+var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 
 // constants
 var URL_BASE = 'http://www.colorado.edu/physics/phet/dev/html/';
 var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
-var BUILD_DIR = 'build';
-var DEPENDENCIES_JSON = 'dependencies.json';
 var TEST_DIR_NAME = 'deploy-dev-tests';
 
 /**
@@ -58,42 +55,15 @@ module.exports = function( grunt, callback ) {
   };
 
   /**
-   * Exec a command, log stdout and stderr, handle errors
-   * @param command
-   * @param callback
-   */
-  var exec = function( command, callback ) {
-    grunt.log.writeln( 'Running command: ' + command );
-    child_process.exec( command, function( err, stdout, stderr ) {
-      grunt.log.writeln( stdout );
-      grunt.log.writeln( stderr );
-      callback();
-    } );
-  };
-
-  /**
-   * Copy dependencies.json to sim root, commit, and push
-   * @param callback
-   */
-  var commitAndPush = function( callback ) {
-    grunt.file.copy( BUILD_DIR + '/' + DEPENDENCIES_JSON, DEPENDENCIES_JSON );
-    exec( 'git add ' + DEPENDENCIES_JSON, function() {
-      exec( 'git commit --message "updated ' + DEPENDENCIES_JSON + ' for ' + version + ' "', function() {
-        exec( 'git push', callback );
-      } );
-    } );
-  };
-
-  /**
    * scp file to dev server, and call commitAndPush if not testing
    */
   var scp = function() {
-    exec( 'scp -r ' + BUILD_DIR + ' ' + deployConfig.devUsername + '@' + server + ':' + versionPath, function() {
+    deployUtil.exec( grunt, 'scp -r ' + ChipperConstants.BUILD_DIR + ' ' + deployConfig.devUsername + '@' + server + ':' + versionPath, function() {
       if ( test ) {
         finish();
       }
       else {
-        commitAndPush( finish );
+        deployUtil.commitAndPush( grunt, finish );
       }
     } );
   };
@@ -101,7 +71,7 @@ module.exports = function( grunt, callback ) {
   if ( mkdir ) {
     var sshString = 'ssh ' + deployConfig.devUsername + '@' + server;
     var mkdirAndCreateHtaccessCommand = ' \'mkdir -p ' + simPath + ' && echo "' + HTACCESS_TEXT + '" > ' + simPath + '/.htaccess\'';
-    exec( sshString + mkdirAndCreateHtaccessCommand, scp );
+    deployUtil.exec( grunt, sshString + mkdirAndCreateHtaccessCommand, scp );
   }
   else {
     scp();
