@@ -190,7 +190,7 @@ define( function( require ) {
                     throw new Error( 'no fallback for string key:' + key );
                   }
                   // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
-                  console.log( "no string file for " + localeSpecificPath );
+                  console.log( 'no string file for ' + localeSpecificPath );
                   onload( fallback );
                 },
                 { accept: 'application/json' }

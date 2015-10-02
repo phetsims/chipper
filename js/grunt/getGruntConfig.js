@@ -73,7 +73,7 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
         rulePaths: [ '../chipper/eslint/rules' ]
       }
     },
-    
+
     jshint: getJSHintConfig( repositoryName, phetLibs ),
 
     requirejs: {
