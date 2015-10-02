@@ -144,9 +144,9 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'deploy-rc',
-    'Deploy a rc version to spot using the build server\n' +
-    'This is useful to ensure that the rc version is built in the same environment as our production deploys\n' +
-    'Unlike deploy-dev, this does NOT commit and push dependencies.json',
+    'Deploy a rc version to spot using the build server.\n' +
+    'Behaves identically to grunt deploy-dev, except the sim is rebuilt and deployed from the build-server instead of locally.\n' +
+    'This is useful to ensure that the rc version is built in the same environment as our production deploys',
     function() {
       grunt.option( 'noDev', true );
       grunt.option( 'option', 'rc' );
