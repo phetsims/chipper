@@ -12,6 +12,9 @@
       2,
       "always"
     ],
+    "copyright": [
+      2
+    ],
     "no-unused-vars": [
       2,
       {
