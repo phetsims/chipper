@@ -63,6 +63,16 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
   // grunt config
   var gruntConfig = {
 
+    eslint: {
+
+      // Cached eslint is fast enough that we can always lint-all and don't need a rule to lint-sim.
+      target: getJSHintConfig( repositoryName, phetLibs ).allFiles,
+      options: {
+        configFile: '../chipper/data/.eslintrc',
+        cache: true
+      }
+    },
+    
     jshint: getJSHintConfig( repositoryName, phetLibs ),
 
     requirejs: {

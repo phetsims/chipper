@@ -39,6 +39,9 @@ var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 module.exports = function( grunt ) {
   'use strict';
 
+  // For eslint
+  require( 'load-grunt-tasks' )( grunt );
+
   //---------------------------------------------------------------------------------------------------------------
   // Configuration
 
