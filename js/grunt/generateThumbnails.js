@@ -42,7 +42,7 @@ module.exports = function( grunt, repositoryName, width, height, callback ) {
   // W031 says "do not use new for side effects."
   // It is disabled here because Jimp takes a callback that does the image processing.
   /* jshint -W031 */
-  new Jimp( fullResImageName, function() {
+  new Jimp( fullResImageName, function() { //eslint-disable-line no-new
     this.resize( width, height ).write( destinationFile, callback );
   } );
   /* jshint +W031 */

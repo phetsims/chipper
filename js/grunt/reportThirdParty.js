@@ -21,7 +21,6 @@
 
 // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
 /* jslint node: true */
-'use strict';
 
 // modules
 var assert = require( 'assert' );
@@ -37,6 +36,7 @@ var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
  * @param grunt - the grunt instance
  */
 module.exports = function( grunt ) {
+  'use strict';
 
   var input = grunt.option( 'input' ); // relative or absolute path to the directory in which to find the HTML files for reporting
   assert( input, 'missing required option: input' );

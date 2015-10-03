@@ -7,7 +7,6 @@
  */
 
 /* jslint node: true */
-'use strict';
 
 var child_process = require( 'child_process' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
@@ -23,6 +22,8 @@ var DEPENDENCIES_JSON = 'dependencies.json';
  * @param callback
  */
 var exec = function( grunt, command, callback ) {
+  'use strict';
+  
   grunt.log.writeln( 'Running command: ' + command );
   child_process.exec( command, function( err, stdout, stderr ) {
     grunt.log.writeln( stdout );
@@ -37,6 +38,8 @@ var exec = function( grunt, command, callback ) {
  * @param callback
  */
 var commitAndPush = function( grunt, callback ) {
+  'use strict';
+  
   grunt.file.copy( ChipperConstants.BUILD_DIR + '/' + DEPENDENCIES_JSON, DEPENDENCIES_JSON );
   exec( grunt, 'git add ' + DEPENDENCIES_JSON, function() {
     var version = getDeployConfig( global.phet.chipper.fs ).version;

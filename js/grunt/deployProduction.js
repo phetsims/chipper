@@ -8,7 +8,6 @@
 
 // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
 /* jslint node: true */
-'use strict';
 
 // modules
 var querystring = require( 'querystring' );
@@ -21,7 +20,8 @@ var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
  * @param callback - optional callback to run when finished, defaults to grunt.task.current.async()
  */
 module.exports = function( grunt, callback ) {
-
+  'use strict';
+  
   // configuration info from external files
   var deployConfig = getDeployConfig( global.phet.chipper.fs );
 

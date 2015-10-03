@@ -21,7 +21,6 @@
 
 // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
 /* jslint node: true */
-'use strict';
 
 // modules
 var assert = require( 'assert' );
@@ -31,6 +30,7 @@ var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
  * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
+  'use strict';
 
   // modules
   var getLicenseEntry = require( '../../../chipper/js/common/getLicenseEntry' );

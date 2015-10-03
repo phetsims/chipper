@@ -2,7 +2,6 @@
 
 // The following comment permits node-specific globals (such as process) to pass jshint
 /* jslint node: true */
-'use strict';
 
 var assert = require( 'assert' );
 
@@ -28,6 +27,7 @@ var assert = require( 'assert' );
  * @author Chris Malley (PixelZoom, Inc.)
  */
 (function() {
+  'use strict';
 
   /**
    * @param fs - the node fs API

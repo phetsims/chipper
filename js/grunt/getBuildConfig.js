@@ -29,7 +29,6 @@
 
 // The following comment permits node-specific globals (such as process.cwd()) to pass jshint
 /* jslint node: true */
-'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
@@ -46,6 +45,7 @@ var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
  * @param {Object} grunt - the grunt instance
  */
 module.exports = function( grunt ) {
+  'use strict';
 
   /**
    * Gets the brand identifier.
