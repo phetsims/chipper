@@ -90,6 +90,8 @@ module.exports = function( grunt ) {
   // Add the linting step as an pre-build step.  Can be skipped with --lint=false
   var optionalTasks = [];
   if ( grunt.option( 'lint' ) === false ) {
+
+    // do nothing
   }
   else {
     optionalTasks.push( 'lint-all' );
