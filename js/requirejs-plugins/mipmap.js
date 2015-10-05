@@ -131,7 +131,9 @@ define( function( require ) {
           try {
             delete image.onload;
           }
-          catch( e ) {}
+          catch( e ) {
+            // do nothing
+          }
 
           var mipmaps = [];
 

@@ -43,7 +43,9 @@ define( function( require ) {
           try {
             delete image.onload;
           }
-          catch( e ) {}
+          catch( e ) {
+            // do nothing
+          }
         };
         image.src = path + '?' + config.urlArgs;
       }
