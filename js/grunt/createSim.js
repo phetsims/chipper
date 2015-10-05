@@ -80,6 +80,8 @@ module.exports = function( grunt ) {
            abspath.indexOf( '../simula-rasa/node_modules/' ) === 0 ||
            abspath.indexOf( '../simula-rasa/.git/' ) === 0 ||
            abspath.indexOf( '../simula-rasa/build/' ) === 0 ) {
+
+        // do nothing
       }
       else {
         var contents = grunt.file.read( abspath );
