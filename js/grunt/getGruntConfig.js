@@ -71,7 +71,8 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
       options: {
         configFile: '../chipper/eslint/.eslintrc',
         cache: true,
-        rulePaths: [ '../chipper/eslint/rules' ]
+        rulePaths: [ '../chipper/eslint/rules' ],
+        fix: true
       }
     },
 
