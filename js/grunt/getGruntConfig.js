@@ -68,8 +68,9 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
         // Rules are specified in the .eslintrc file
         configFile: '../chipper/eslint/.eslintrc',
 
-        // Caching only checks changed files or when the rules are changed.  Caches are declared in .eslintcache files
-        // in the directory where grunt was run from.
+        // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a 
+        // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where 
+        // grunt was run from.
         cache: true,
 
         // Our custom rules live here
