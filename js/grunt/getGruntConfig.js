@@ -26,7 +26,7 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
    * @param {string[]} phetLibs - see getBuildConfig.js
    * @returns {Object}
    */
-  function getJSHintConfig( repositoryName, phetLibs ) {
+  function getLintConfig( repositoryName, phetLibs ) {
 
     // Repository files to be linted. brand has a non-standard directory structure.
     var repoFilesToLint = ( repositoryName === 'brand' ) ? [ '*/js/**/*.js' ] : [ 'js/**/*.js' ];
@@ -54,28 +54,34 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
 
       // PhET-specific, passed to the 'lint-all' grunt task
       // All source files for this repository (repository-specific and dependencies).
-      allFiles: allFilesToLint,
-
-      // Reference external options in jshintOptions.js
-      options: require( './jshintOptions' )
+      allFiles: allFilesToLint
     };
   }
+
+  var lintConfig = getLintConfig( repositoryName, phetLibs );
 
   // grunt config
   var gruntConfig = {
 
+    // Configuration for ESLint
     eslint: {
-
-      // Cached eslint is fast enough that we can always lint-all and don't need a rule to lint-sim.
-      target: getJSHintConfig( repositoryName, phetLibs ).allFiles,
       options: {
-        configFile: '../chipper/eslint/.eslintrc',
-        cache: true,
-        rulePaths: [ '../chipper/eslint/rules' ]
-      }
-    },
 
-    jshint: getJSHintConfig( repositoryName, phetLibs ),
+        // Rules are specified in the .eslintrc file
+        configFile: '../chipper/eslint/.eslintrc',
+
+        // Caching only checks changed files or when the rules are changed.  Caches are declared in .eslintcache files
+        // in the directory where grunt was run from.
+        cache: true,
+
+        // Our custom rules live here
+        rulePaths: [ '../chipper/eslint/rules' ]
+      },
+
+      // When running eslint with an option like "eslint:allFiles" or "eslint:repoFiles", these fields are used.
+      allFiles: lintConfig.allFiles,
+      repoFiles: lintConfig.repoFiles
+    },
 
     requirejs: {
 

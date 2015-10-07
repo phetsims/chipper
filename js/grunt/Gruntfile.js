@@ -161,9 +161,9 @@ module.exports = function( grunt ) {
     }
   );
 
-  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'jshint:repoFiles' ] );
+  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'eslint:repoFiles' ] );
 
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'jshint:allFiles' ] );
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'eslint:allFiles' ] );
 
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
