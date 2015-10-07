@@ -1,4 +1,5 @@
 {
+  "extends": "eslint:recommended",
   "rules": {
     // Permit console.log statements (we have a lot of them)
     // TODO: Find a way to make sure no console.log statements make it to production.  Can use the no-console rule
@@ -55,97 +56,94 @@
   "env": {
     "browser": true
   },
-  "extends": "eslint:recommended",
   "globals": {
-    "process": true,
     // writable globals ---------------------------------
-
-    "assert": true,
+    "process": true,
     // allow assertions
-    "assertSlow": true,
+    "assert": true,
     // allow slow assertions
+    "assertSlow": true,
+    // scenery logging levels
     "sceneryLog": true,
     // scenery logging levels
     "sceneryLayerLog": true,
     // scenery logging levels
     "sceneryEventLog": true,
-    // scenery logging levels
-    "sceneryAccessibilityLog": true,
     // scenery accessibility levels
-    "phetAllocation": true,
+    "sceneryAccessibilityLog": true,
     // for tracking object allocations, see phet-core's phetAllocation
-    "Float32Array": true,
+    "phetAllocation": true,
     // we actually polyfill this, so allow it to be set
+    "Float32Array": true,
     "phet": true,
     "together": true,
     // read-only globals ---------------------------------
 
+    // require.js
     "define": false,
     // require.js
     "require": false,
-    // require.js
     "Uint16Array": false,
     "Uint32Array": false,
-    "XMLHttpRequest": false,
     // allow ajax requests directly
+    "XMLHttpRequest": false,
     "document": false,
     "window": false,
     "console": false,
     "HTMLImageElement": false,
     "HTMLCanvasElement": false,
-    "Backbone": false,
     // backbone is currently run outside of requirejs
-    "module": false,
+    "Backbone": false,
     // as used in Gruntfile.js
-    "$": false,
+    "module": false,
     // jQuery
-    "_": true,
+    "$": false,
     // underscore, lodash
+    "_": true,
     "clearTimeout": false,
+    // DOM.js
     "Image": false,
     // DOM.js
     "Blob": false,
-    // DOM.js
     "canvg": false,
+    //socket.io
     "io": false,
-    //socket.io,
-    "TWEEN": false,
     //sole/tween.js
-    "navigator": false,
+    "TWEEN": false,
     //For Mobile Safari detection, see http"://stackoverflow.com/questions/3007480/determine-if-user-navigated-from-mobile-safari
-    "Howl": false,
+    "navigator": false,
     //for web audio
-    "ActiveXObject": false,
+    "Howl": false,
     //for full screen
-    "Box2D": false,
+    "ActiveXObject": false,
     //For Box2D physics engine
-    "Stats": false,
+    "Box2D": false,
     //For @mrdoob's stats + frame rate readout component
-    "poly2tri": false,
+    "Stats": false,
     //For poly2tri triangulation library
-    "THREE": false,
+    "poly2tri": false,
     //For three.js 3d things
-    "WebSocket": false,
+    "THREE": false,
     // for WebSocket communication
-    "WebGLDebugUtils": false,
+    "WebSocket": false,
     // for khronos webgl-debug.js debugging utilities
-    "iframePhone": false,
+    "WebGLDebugUtils": false,
     // for CODAP or other Concord communication
+    "iframePhone": false,
     "PIXI": false,
     "togetherEvents": false,
-    "global": false,
     // for linting Node.js code
-    "jsondiffpatch": false,
+    "global": false,
     // for generating diffs in together.js
-
-    "alert": false,
+    "jsondiffpatch": false,
     //for debugging on ipad
-    "numeric": false,
+    "alert": false,
     //Numeric library used in energy skate park
-    "location": false,
+    "numeric": false,
     //For setting location.href to save to local file, see http"://stackoverflow.com/questions/2897619/using-html5-javascript-to-generate-and-save-a-file
-    "FileReader": false,
+    "location": false,
     //For file loading, see SaveLoadNode in Energy Skate Park": Basics
+    "FileReader": false,
     "Buffer": false
   }
 }
