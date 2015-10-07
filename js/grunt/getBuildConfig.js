@@ -27,16 +27,11 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
-// The following comment permits node-specific globals (such as process.cwd()) to pass jshint
-/* jslint node: true */
-
 // built-in node APIs
 var assert = require( 'assert' );
 
 // 3rd-party packages
-/* jshint -W079 */
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
-/* jshint +W079 */
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' );
 
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );

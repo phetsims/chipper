@@ -1,8 +1,5 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
-// The following comment permits node-specific globals (such as process) to pass jshint
-/* jslint node: true */
-
 var assert = require( 'assert' );
 
 /**

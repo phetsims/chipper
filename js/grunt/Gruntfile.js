@@ -18,9 +18,7 @@ var assert = require( 'assert' );
 var fs = require( 'fs' );
 
 // 3rd-party packages
-/* jshint -W079 */
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
-/* jshint +W079 */
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' );
 
 // PhET custom grunt tasks
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
@@ -267,5 +265,4 @@ module.exports = function( grunt ) {
    * Put these in package.json and run 'npm install' before running grunt.
    */
   grunt.loadNpmTasks( 'grunt-requirejs' );
-  grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 };

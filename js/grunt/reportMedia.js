@@ -19,9 +19,6 @@
  * @author Sam Reid
  */
 
-// The following comment permits node-specific globals (such as process.cwd()) to pass jshint
-/* jslint node: true */
-
 // modules
 var assert = require( 'assert' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );

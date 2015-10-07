@@ -19,9 +19,6 @@
  * @author Sam Reid
  */
 
-// The following comment permits node-specific globals (such as process.cwd()) to pass jshint
-/* jslint node: true */
-
 // modules
 var assert = require( 'assert' );
 
@@ -46,9 +43,7 @@ module.exports = function( grunt ) {
 
   var i;
 
-  /* jshint -W079 */
-  var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
-  /* jshint +W079 */
+  var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' );
 
   // If the option is provided, try to copy all of the active-runnables to the target directory before running the report
   if ( activeRunnables ) {

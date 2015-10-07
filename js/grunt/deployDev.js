@@ -6,9 +6,6 @@
  * @author Aaron Davis
  */
 
-// The following comment permits node-specific globals (such as process.cwd()) to pass jshint
-/* jslint node: true */
-
 // modules
 var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );

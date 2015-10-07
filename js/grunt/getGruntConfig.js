@@ -7,9 +7,7 @@
  */
 
 // 3rd-party packages
-/* jshint -W079 */
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
-/* jshint +W079 */
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' );
 
 /**
  * @param {Object} grunt - the grunt instance
@@ -20,7 +18,7 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
   'use strict';
 
   /**
-   * Gets the JSHint configuration object.
+   * Gets the paths to be linted.
    *
    * @param {string} repositoryName - name of the repository we're building
    * @param {string[]} phetLibs - see getBuildConfig.js
