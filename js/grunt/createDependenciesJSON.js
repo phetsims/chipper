@@ -14,7 +14,7 @@ var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 // 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // allow _ to be redefined, contrary to jshintOptions.js
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' );
 
 // modules
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
