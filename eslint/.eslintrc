@@ -54,6 +54,7 @@
     //    "no-use-before-define": [
     //      2
     //    ],
+    // TODO: This may be good to have
     //    "new-cap": [
     //      2
     //    ],
@@ -68,7 +69,39 @@
     "strict": 2,
     //
     // Avoid code that looks like two expressions but is actually one
-    "no-unexpected-multiline": 2
+    "no-unexpected-multiline": 2,
+    //
+    // encourages use of dot notation whenever possible
+    "dot-notation": 2,
+    //
+    // disallow adding to native types
+    "no-extend-native": 2,
+    //
+    // disallow use of assignment in return statement
+    "no-return-assign": 2,
+    // 
+    // disallow comparisons where both sides are exactly the same
+    "no-self-compare": 2,
+    //
+    // disallow unnecessary .call() and .apply()
+    // TODO: Under discussion in https://github.com/phetsims/scenery-phet/issues/193
+    //    "no-useless-call": 2,
+    //
+    // disallow use of undefined when initializing variables
+    "no-undef-init": 2
+    //
+    // disallow trailing whitespace at the end of lines (fixable)
+    //    "no-trailing-spaces": 2,
+    //
+    //     specify the maximum length of a line in your program
+    // TODO: Under discussion in https://github.com/phetsims/chipper/issues/376
+    //    "max-len": [
+    //      2,
+    //      // this many columns per line
+    //      120,
+    //      // tab counts for this many spaces
+    //      4
+    //    ]
   },
   "env": {
     "browser": true
