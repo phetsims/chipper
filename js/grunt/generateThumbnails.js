@@ -10,7 +10,7 @@
  */
 
 // modules
-var Jimp = require( 'jimp' );
+var Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
 var assert = require( 'assert' );
 
 // constants

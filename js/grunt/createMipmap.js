@@ -1,7 +1,7 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 var fs = require( 'fs' );
-var jpeg = require( 'jpeg-js' );
+var jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
 var pngjs = require( 'pngjs' );
 var mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
 

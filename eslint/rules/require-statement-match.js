@@ -45,9 +45,6 @@ module.exports = function( context ) {
       //  'kind': 'var'
       //};
 
-      // Let these ones pass, they are special cases
-      var whitelist = [ '_', 'jpeg', 'DotUtil', 'Jimp', 'DotRectangle', 'Stats', 'KiteLine' ];
-
       if ( node.declarations &&
            node.declarations.length > 0 &&
            node.declarations[ 0 ].init &&
@@ -62,7 +59,7 @@ module.exports = function( context ) {
             var lastSlash = rhs.lastIndexOf( '/' );
             var tail = rhs.substring( lastSlash + 1 );
 
-            if ( tail !== lhs && whitelist.indexOf( lhs ) < 0 ) {
+            if ( tail !== lhs ) {
 
               context.report( {
                 node: node,

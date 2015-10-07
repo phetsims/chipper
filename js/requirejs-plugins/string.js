@@ -19,7 +19,7 @@ define( function( require ) {
   'use strict';
 
   // modules
-  var _ = require( '../../sherpa/lib/lodash-2.4.1.min' ); // 3rd party dependencies, path relative to config.js
+  var _ = require( '../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
   var localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
   var text = require( 'text' );
   var ChipperConstants = require( '../../chipper/js/common/ChipperConstants' );

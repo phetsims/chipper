@@ -7,7 +7,7 @@
  */
 
 // 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' );
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
 
 /**
  * @param {Object} grunt - the grunt instance
@@ -58,6 +58,9 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
 
   var lintConfig = getLintConfig( repositoryName, phetLibs );
 
+  // --disable-es-cache disables the cache, useful for developing rules
+  var cache = !grunt.option( 'disable-eslint-cache' );
+
   // grunt config
   var gruntConfig = {
 
@@ -71,7 +74,7 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
         // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a 
         // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where 
         // grunt was run from.
-        cache: true,
+        cache: cache,
 
         // Our custom rules live here
         rulePaths: [ '../chipper/eslint/rules' ]

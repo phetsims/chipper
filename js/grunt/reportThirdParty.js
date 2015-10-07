@@ -43,7 +43,7 @@ module.exports = function( grunt ) {
 
   var i;
 
-  var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' );
+  var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
 
   // If the option is provided, try to copy all of the active-runnables to the target directory before running the report
   if ( activeRunnables ) {

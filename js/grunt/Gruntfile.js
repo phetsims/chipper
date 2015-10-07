@@ -18,7 +18,7 @@ var assert = require( 'assert' );
 var fs = require( 'fs' );
 
 // 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' );
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
 
 // PhET custom grunt tasks
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
