@@ -1,25 +1,40 @@
+// Copyright 2002-2015 University of Colorado Boulder
+// @author Sam Reid
+// Note: IDEA wants to shrink all the line breaks in the file, so I'm using // to simulate line breakes where desired
 {
+  // Use all of the default rules from eslint, unless overriden below.
   "extends": "eslint:recommended",
+  // The new rules, overrides, etc.
   "rules": {
+    // 
     // Permit console.log statements (we have a lot of them)
     // TODO: Find a way to make sure no console.log statements make it to production.  Can use the no-console rule
     // but we want to be able to use console.log during development. 
     "no-console": 0,
+    // 
+    // specify whether backticks, double or single quotes should be used (fixable)
     "quotes": [
       2,
       "single"
     ],
+    //
+    // disallow mixed 'LF' and 'CRLF' as linebreaks
     "linebreak-style": [
       2,
       "unix"
     ],
+    //
+    // require or disallow use of semicolons instead of ASI (fixable)
     "semi": [
       2,
       "always"
     ],
-    "copyright": [
-      2
-    ],
+    //
+    // Custom rule for checking the copyright.
+    "copyright": 2,
+    //
+    // disallow declaration of variables that are not used in the code (recommended)
+    // Overriden to allow unused args
     "no-unused-vars": [
       2,
       {
@@ -30,27 +45,29 @@
     //    "require-jsdoc": [
     //      2
     //    ],
-    "eqeqeq": [
-      2
-    ],
-    "curly": [
-      2
-    ],
+    //
+    // require the use of === and !== (fixable)
+    "eqeqeq": 2,
+    //
+    // specify curly brace conventions for all control statements
+    "curly": 2,
     //    "no-use-before-define": [
     //      2
     //    ],
     //    "new-cap": [
     //      2
     //    ],
-    "no-caller": [
-      2
-    ],
-    "no-new": [
-      2
-    ],
-    "strict": [
-      2
-    ],
+    //
+    // disallow use of arguments.caller or arguments.callee
+    "no-caller": 2,
+    //
+    // disallow use of the new operator when not part of an assignment or comparison
+    "no-new": 2,
+    //
+    // controls location of Use Strict Directives
+    "strict": 2,
+    //
+    // Avoid code that looks like two expressions but is actually one
     "no-unexpected-multiline": 2
   },
   "env": {
