@@ -156,6 +156,7 @@
     window.phet.chipper.mapString = function( string, stringTest ) {
       return stringTest === null ? string :
              stringTest === 'double' ? string + ':' + string :
+             stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
              stringTest === 'none' ? string :
 
                //In the fallback case, supply whatever string was given in the query parameter value
