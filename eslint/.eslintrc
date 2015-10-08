@@ -19,10 +19,11 @@
     ],
     //
     // disallow mixed 'LF' and 'CRLF' as linebreaks
-    "linebreak-style": [
-      2,
-      "unix"
-    ],
+    // TODO: Determine how to best normalize EOL's.
+    //    "linebreak-style": [
+    //      2,
+    //      "unix"
+    //    ],
     //
     // require or disallow use of semicolons instead of ASI (fixable)
     "semi": [
