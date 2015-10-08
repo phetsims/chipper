@@ -97,8 +97,8 @@
     // disallow trailing whitespace at the end of lines (fixable)
     //    "no-trailing-spaces": 2,
     //
-    //     specify the maximum length of a line in your program
-    // TODO: Under discussion in https://github.com/phetsims/chipper/issues/376
+    // USE THIS DURING CODE REVIEW
+    // specify the maximum length of a line in your program
     //    "max-len": [
     //      2,
     //      // this many columns per line
