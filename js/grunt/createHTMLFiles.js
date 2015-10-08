@@ -149,8 +149,9 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   grunt.log.debug( 'Constructing HTML from template' );
   var html = grunt.file.read( '../chipper/templates/sim.html' );
 
-  // Strip out carriage returns (if building in Windows), then add in our own after the MOTW.
-  // See https://github.com/phetsims/joist/issues/164
+  // Strip out carriage returns (if building on Windows), then add in our own after the MOTW (Mark Of The Web).
+  // See https://github.com/phetsims/joist/issues/164 and
+  // https://msdn.microsoft.com/en-us/library/ms537628%28v=vs.85%29.aspx
   html = html.replace( /\r/g, '' );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_CARRIAGE_RETURN', '\r' );
 
