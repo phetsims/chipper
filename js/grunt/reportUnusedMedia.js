@@ -37,7 +37,7 @@ module.exports = function( grunt, requirejsNamespace ) {
                   requirejsNamespace + '/' + filename;
 
         var licenseEntries = global.phet.chipper.licenseEntries || {}; // global.phet.chipper.licenseEntries is initialized by media plugins
-        if ( filename !== 'license.json' ) {
+        if ( filename !== 'license.json' && filename !== 'README.md' ) {
 
           // If no licenseEntries were registered, or some were registered but not one corresponding to this file
           if ( !licenseEntries.hasOwnProperty( mediaType ) || !licenseEntries[ mediaType ].hasOwnProperty( key ) ) {
