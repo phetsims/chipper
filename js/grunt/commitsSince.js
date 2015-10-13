@@ -3,6 +3,7 @@
 /**
  * Prints commits since a specified date, for all dependencies of the build target.
  * The output is grouped by repository, and condensed to one line per commit.
+ * The date is in ISO 8601 format
  *
  * For example, to see all commits since Oct 1, 2015 at 3:52pm:
  * grunt commits-since --date="2015-10-01 15:52"
