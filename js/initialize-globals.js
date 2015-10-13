@@ -31,6 +31,7 @@
  *              are translated and (b) whether the layout can accommodate longer strings from other languages.
  *              Note this is a heuristic rule that does not cover all cases.
  *            - if set to "long", then an exceptionally long string will be substituted for all strings
+ *            - if set to "rtl", then a string that tests RTL (right-to-left) capabilities will be substituted for all strings
  *            - if set to "none" or omitted, then the normal translated string will be shown
  *            - if set to anything else, it will use that string everywhere.  This will allow testing specific cases, like
  *                  whether the word 'vitesse' would substitute for 'speed' well.  Also, using "%20" it will show whitespace for all
@@ -157,6 +158,7 @@
       return stringTest === null ? string :
              stringTest === 'double' ? string + ':' + string :
              stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
+             stringTest === 'rtl' ? 'TBD' :
              stringTest === 'none' ? string :
 
                //In the fallback case, supply whatever string was given in the query parameter value
