@@ -23,6 +23,7 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-lin
 // PhET custom grunt tasks
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
+var commitsSince = require( '../../../chipper/js/grunt/commitsSince' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
@@ -258,6 +259,12 @@ module.exports = function( grunt ) {
       var finished = _.after( 2, grunt.task.current.async() );
       generateThumbnails( grunt, buildConfig.name, 128, 84, finished );
       generateThumbnails( grunt, buildConfig.name, 600, 394, finished );
+    } );
+
+  grunt.registerTask( 'commits-since',
+    'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
+    function() {
+      commitsSince( grunt, buildConfig );
     } );
 
   /*
