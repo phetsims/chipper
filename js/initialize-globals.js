@@ -28,9 +28,9 @@
  * showPointerAreas - touch areas in red, mouse areas in blue, both dotted outlines
  * webgl - can be set to false with ?webgl=false to turn off WebGL rendering, see https://github.com/phetsims/scenery/issues/289
  * stringTest - if set to "double", duplicates all of the translated strings which will allow to see (a) if all strings
- *                  are translated and (b) whether the layout can accommodate longer strings from other languages.
- *                  Note this is a heuristic rule
- *                  that does not cover all cases.
+ *              are translated and (b) whether the layout can accommodate longer strings from other languages.
+ *              Note this is a heuristic rule that does not cover all cases.
+ *            - if set to "long", then an exceptionally long string will be substituted for all strings
  *            - if set to "none" or omitted, then the normal translated string will be shown
  *            - if set to anything else, it will use that string everywhere.  This will allow testing specific cases, like
  *                  whether the word 'vitesse' would substitute for 'speed' well.  Also, using "%20" it will show whitespace for all
