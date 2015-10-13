@@ -18,6 +18,9 @@
 var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
+// 3rd-party packages
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+
 /**
  * @param grunt - the grunt instance
  * @param {Object} buildConfig - see getBuildConfig.js
@@ -29,14 +32,17 @@ module.exports = function( grunt, buildConfig ) {
   // Returns a handle to a function that must be called when the task has completed.
   var done = grunt.task.current.async();
 
-  var repositories = [ buildConfig.name ];
-  repositories = repositories.concat( buildConfig.phetLibs );
+  // Make a copy, because we'll be modifying this list.
+  var repositories = _.clone( buildConfig.phetLibs );
 
+  // Read date from command line.
   var dateString = grunt.option( 'date' );
   assert( dateString, 'missing required option: --date=\<date\>' );
 
-  var output = ''; // accumulate output here
+  // accumulate output here
+  var output = '';
 
+  // Recursively process each repository, since this task is asynchronous.
   function nextRepository() {
 
     if ( repositories.length > 0 ) {
@@ -55,7 +61,11 @@ module.exports = function( grunt, buildConfig ) {
         } );
     }
     else {
+
+      // Write the output
       grunt.log.writeln( output );
+
+      // Tell grunt that this aynchronous task is done.
       done();
     }
   }
