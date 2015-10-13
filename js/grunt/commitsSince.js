@@ -43,14 +43,14 @@ module.exports = function( grunt, buildConfig ) {
 
       // remove first repository from the list
       var repository = repositories.shift();
-      output += ( repository + ' since ' + dateString + ' ***************************************************\n' );
+      output += ( repository + ' since ' + dateString + ' ----------------------------------------------\n' );
 
       // 'git log' command
       child_process.exec(
-        'git --git-dir ../' + repository + '/.git log --since="' + dateString + '" --pretty=format:"%h | %cI | %cn | %s"',
+        'git --git-dir ../' + repository + '/.git log --since="' + dateString + '" --pretty=tformat:"%h | %cI | %cn | %s"',
         function( error, stdout, stderr ) {
           assert( !error, 'ERROR on git log attempt: ' + stderr );
-          output += ( stdout + '\n' );
+          output += stdout;
           nextRepository();
         } );
     }
