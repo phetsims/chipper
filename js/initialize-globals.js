@@ -34,7 +34,7 @@
  *            - if set to "rtl", then a string that tests RTL (right-to-left) capabilities will be substituted for all strings
  *            - if set to "none" or omitted, then the normal translated string will be shown
  *            - if set to anything else, it will use that string everywhere.  This will allow testing specific cases, like
- *                  whether the word 'vitesse' would substitute for 'speed' well.  Also, using "%20" it will show whitespace for all
+ *                  whether the word 'vitesse' would substitute for 'speed' well.  Also, using "/u20" it will show whitespace for all
  *                  of the strings, making it easy to identify non-translated strings
  *
  * Other query parameters:
@@ -158,7 +158,7 @@
       return stringTest === null ? string :
              stringTest === 'double' ? string + ':' + string :
              stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
-             stringTest === 'rtl' ? 'TBD' :
+             stringTest === 'rtl' ? '\u202b\u062a\u0633\u062a (\u0632\u0628\u0627\u0646)\u202c' :
              stringTest === 'none' ? string :
 
                //In the fallback case, supply whatever string was given in the query parameter value
