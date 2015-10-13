@@ -50,7 +50,7 @@ module.exports = function( grunt, buildConfig ) {
         'git --git-dir ../' + repository + '/.git log --since="' + dateString + '" --pretty=format:"%h | %cI | %cn | %s"',
         function( error, stdout, stderr ) {
           assert( !error, 'ERROR on git log attempt: ' + stderr );
-          output += stdout;
+          output += ( stdout + '\n' );
           nextRepository();
         } );
     }
