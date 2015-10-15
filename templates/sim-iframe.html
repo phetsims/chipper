@@ -19,6 +19,18 @@
 <h1>Iframe Embedding Test</h1>
 
 <p>The simulation should be embedded below:</p>
-<iframe src="PHET_SIM_URL" width="600" height="400" allowfullscreen scrolling="no"></iframe>
+
+<script type="application/javascript">
+  var frame = document.createElement( 'iframe' );
+
+  var suffix = window.location.search || '';
+  frame.setAttribute( 'src', 'PHET_SIM_URL' + suffix );
+  frame.style.width = 600 + 'px';
+  frame.style.height = 400 + 'px';
+  frame.scrolling = 'no';
+  frame.setAttribute( 'allowFullScreen', '' );
+
+  document.body.appendChild( frame );
+</script>
 </body>
 </html>
