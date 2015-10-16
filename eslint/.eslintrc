@@ -191,6 +191,9 @@
     "location": false,
     //For file loading, see SaveLoadNode in Energy Skate Park": Basics
     "FileReader": false,
-    "Buffer": false
+    "Buffer": false,
+    // For qunit
+    "equal": false,
+    "test": false
   }
 }
