@@ -20,17 +20,10 @@
 
 <p>The simulation should be embedded below:</p>
 
+<iframe id="iframe" width="600" height="400" allowfullscreen scrolling="no"></iframe>
 <script type="application/javascript">
-  var frame = document.createElement( 'iframe' );
-
   var suffix = window.location.search || '';
-  frame.setAttribute( 'src', 'PHET_SIM_URL' + suffix );
-  frame.style.width = 600 + 'px';
-  frame.style.height = 400 + 'px';
-  frame.scrolling = 'no';
-  frame.setAttribute( 'allowFullScreen', '' );
-
-  document.body.appendChild( frame );
+  document.getElementById( 'iframe' ).setAttribute( 'src', 'PHET_SIM_URL' + suffix );
 </script>
 </body>
 </html>
