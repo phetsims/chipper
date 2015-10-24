@@ -71,8 +71,8 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
         // Rules are specified in the .eslintrc file
         configFile: '../chipper/eslint/.eslintrc',
 
-        // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a 
-        // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where 
+        // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a
+        // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where
         // grunt was run from.
         cache: cache,
 
@@ -113,15 +113,19 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
           // turn off preservation of comments that have a license in them
           preserveLicenseComments: false,
 
-          // Minification strategy. Set this to 'none' if you want to debug a non-minified but compiled version.
-          optimize: 'uglify2',
+          // Minification strategy.
+          optimize: grunt.option( 'no-uglify' ) ? 'none' : 'uglify2',
 
           // uglify2 configuration options
           uglify2: {
 
+            mangle: grunt.option( 'no-mangle' ) ? false : true,
+
             // output options documented at https://github.com/mishoo/UglifyJS2#beautifier-options
             output: {
-              inline_script: true // escape </script
+              inline_script: true, // escape </script
+
+              beautify: grunt.option( 'no-mangle' ) ? true : false
             },
 
             // compress options documented at https://github.com/mishoo/UglifyJS2#compressor-options

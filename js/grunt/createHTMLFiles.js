@@ -91,15 +91,24 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   var preloadJavaScript = '';
   for ( var libIdx = 0; libIdx < buildConfig.preload.length; libIdx++ ) {
     var lib = buildConfig.preload[ libIdx ];
-    var preloadResult = uglify.minify( [ lib ], {
-      output: {
-        inline_script: true // escape </script
-      },
-      compress: {
-        global_defs: {}
-      }
-    } );
-    preloadJavaScript += '<script type="text/javascript" id="script-' + lib + '">\n' + preloadResult.code + '\n</script>\n';
+
+    var processedCode;
+    if ( grunt.option( 'no-uglify' ) ) {
+      processedCode = global.phet.chipper.fs.readFileSync( lib, 'utf8' );
+    }
+    else {
+      processedCode = uglify.minify( [ lib ], {
+        mangle: grunt.option( 'no-mangle' ) ? false : true,
+        output: {
+          inline_script: true, // escape </script
+          beautify: grunt.option( 'no-mangle' ) ? true : false
+        },
+        compress: {
+          global_defs: {}
+        }
+      } ).code;
+    }
+    preloadJavaScript += '<script type="text/javascript" id="script-' + lib + '">\n' + processedCode + '\n</script>\n';
   }
 
   // Load the optimized code for the sim.
