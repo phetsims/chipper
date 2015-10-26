@@ -87,10 +87,10 @@
     // 
     "require-statement-match": 2,
     // permit only one var declaration per line, see #390
-    "one-var": [
-      2,
-      "never"
-    ]
+    //    "one-var": [
+    //      2,
+    //      "never"
+    //    ]
     //
     // disallow trailing whitespace at the end of lines (fixable)
     //    "no-trailing-spaces": 2,
