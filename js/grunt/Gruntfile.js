@@ -104,8 +104,8 @@ module.exports = function( grunt ) {
     '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
     '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
     '--lint=false : skip the lint sub-task\n' +
-    '--no-mangle : skip the mangling portion of UglifyJS2, and beautify the output\n' +
-    '--no-uglify : skip the UglifyJS2 step altogether',
+    '--mangle=false : skip the mangling portion of UglifyJS2, and beautify the output\n' +
+    '--uglify=false : skip the UglifyJS2 step altogether',
     optionalTasks.concat( [
       'clean',
       'requirejs:build',

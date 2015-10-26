@@ -114,18 +114,18 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
           preserveLicenseComments: false,
 
           // Minification strategy.
-          optimize: grunt.option( 'no-uglify' ) ? 'none' : 'uglify2',
+          optimize: grunt.option( 'uglify' ) === false ? 'none' : 'uglify2',
 
           // uglify2 configuration options
           uglify2: {
 
-            mangle: grunt.option( 'no-mangle' ) ? false : true,
+            mangle: grunt.option( 'mangle' ) === false ? false : true,
 
             // output options documented at https://github.com/mishoo/UglifyJS2#beautifier-options
             output: {
               inline_script: true, // escape </script
 
-              beautify: grunt.option( 'no-mangle' ) ? true : false
+              beautify: grunt.option( 'mangle' ) === false ? true : false
             },
 
             // compress options documented at https://github.com/mishoo/UglifyJS2#compressor-options

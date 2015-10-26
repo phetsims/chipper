@@ -93,15 +93,15 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     var lib = buildConfig.preload[ libIdx ];
 
     var processedCode;
-    if ( grunt.option( 'no-uglify' ) ) {
+    if ( grunt.option( 'uglify' ) === false ) {
       processedCode = global.phet.chipper.fs.readFileSync( lib, 'utf8' );
     }
     else {
       processedCode = uglify.minify( [ lib ], {
-        mangle: grunt.option( 'no-mangle' ) ? false : true,
+        mangle: grunt.option( 'mangle' ) === false ? false : true,
         output: {
           inline_script: true, // escape </script
-          beautify: grunt.option( 'no-mangle' ) ? true : false
+          beautify: grunt.option( 'mangle' ) === false ? true : false
         },
         compress: {
           global_defs: {}
