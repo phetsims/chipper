@@ -92,7 +92,10 @@ define( function( require ) {
       var suffix = config.isBuild ? '' : '?' + config.urlArgs;
 
       var requirejsNamespace = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
-      var requirePath, repositoryPath, repositoryName, locale;
+      var requirePath;
+      var repositoryPath;
+      var repositoryName;
+      var locale;
 
       function getFilenameForLocale( locale ) {
         return repositoryName + '-strings_' + locale + '.json' + suffix;
