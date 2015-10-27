@@ -112,12 +112,15 @@ module.exports = function( grunt ) {
 
     // add the together API file
     if ( brand === 'phet-io' ) {
-      var TOGETHER_API_FILENAME = '../together/js/api/' + packageJSON.name + '-api.js';
-      assert( grunt.file.exists( TOGETHER_API_FILENAME ), 'together API file does not exist: ' + TOGETHER_API_FILENAME );
 
+      // If there are any dependencies to the main together api file, load them first,
+      // in the order specified in the package.json
       if ( packageJSON.phet.togetherPreload ) {
         preload = preload.concat( packageJSON.phet.togetherPreload );
       }
+
+      var TOGETHER_API_FILENAME = '../together/js/api/' + packageJSON.name + '-api.js';
+      assert( grunt.file.exists( TOGETHER_API_FILENAME ), 'together API file does not exist: ' + TOGETHER_API_FILENAME );
 
       preload.push( TOGETHER_API_FILENAME );
     }
