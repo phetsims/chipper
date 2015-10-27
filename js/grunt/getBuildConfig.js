@@ -114,6 +114,11 @@ module.exports = function( grunt ) {
     if ( brand === 'phet-io' ) {
       var TOGETHER_API_FILENAME = '../together/js/api/' + packageJSON.name + '-api.js';
       assert( grunt.file.exists( TOGETHER_API_FILENAME ), 'together API file does not exist: ' + TOGETHER_API_FILENAME );
+
+      if ( packageJSON.phet.togetherPreload ) {
+        preload = preload.concat( packageJSON.phet.togetherPreload );
+      }
+
       preload.push( TOGETHER_API_FILENAME );
     }
 
