@@ -119,13 +119,13 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
           // uglify2 configuration options
           uglify2: {
 
-            mangle: grunt.option( 'mangle' ) === false ? false : true,
+            mangle: grunt.option( 'mangle' ) !== false,
 
             // output options documented at https://github.com/mishoo/UglifyJS2#beautifier-options
             output: {
               inline_script: true, // escape </script
 
-              beautify: grunt.option( 'mangle' ) === false ? true : false
+              beautify: grunt.option( 'mangle' ) === false
             },
 
             // compress options documented at https://github.com/mishoo/UglifyJS2#compressor-options

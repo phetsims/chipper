@@ -98,10 +98,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     }
     else {
       processedCode = uglify.minify( [ lib ], {
-        mangle: grunt.option( 'mangle' ) === false ? false : true,
+        mangle: grunt.option( 'mangle' ) !== false,
         output: {
           inline_script: true, // escape </script
-          beautify: grunt.option( 'mangle' ) === false ? true : false
+          beautify: grunt.option( 'mangle' ) === false
         },
         compress: {
           global_defs: {}
