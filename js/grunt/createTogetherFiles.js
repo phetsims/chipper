@@ -44,5 +44,13 @@ module.exports = function( grunt, buildConfig ) {
     '../js/SimIFrameClient.js',
     'SimIFrameClient.js'
   );
+  var camelCase = ChipperStringUtils.toCamelCase( buildConfig.name );
+
+  // TODO: Regex or more matches
+  exampleFileText = ChipperStringUtils.replaceAll(
+    exampleFileText,
+    'togetherID: \'concentration.sim\'',
+    'togetherID: \'' + camelCase + '.sim\''
+  );
   grunt.file.write( 'build/mirror-input-events.html', exampleFileText );
 };
