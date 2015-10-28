@@ -26,8 +26,13 @@ module.exports = function( context ) {
         } );
       }
       else {
-        // second year must be between 2010 and 2099, inclusive
-        if ( ! /^ Copyright 2002-20[1-9]\d, University of Colorado Boulder$/.test( comments[ 0 ].value ) ) {
+
+        // sample comment:
+        //{"type":"Line","value":" Copyright 2002-2015, University of Colorado Boulder","range":[0,54],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":54}}}
+        if ( comments[ 0 ].value !== ' Copyright 2002-2015, University of Colorado Boulder' &&
+             comments[ 0 ].value !== ' Copyright 2002-2014, University of Colorado Boulder' &&
+             comments[ 0 ].value !== ' Copyright 2002-2013, University of Colorado Boulder' ) {
+
           context.report( {
             node: node,
             loc: comments[ 0 ].loc.start,

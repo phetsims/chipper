@@ -24,7 +24,7 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
    * @param {string[]} phetLibs - see getBuildConfig.js
    * @returns {Object}
    */
-  function getLintConfig( repositoryName, phetLibs ) {
+  function getLintPaths( repositoryName, phetLibs ) {
 
     // Repository files to be linted. brand has a non-standard directory structure.
     var repoFilesToLint = ( repositoryName === 'brand' ) ? [ '*/js/**/*.js' ] : [ 'js/**/*.js' ];
@@ -56,7 +56,7 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
     };
   }
 
-  var lintConfig = getLintConfig( repositoryName, phetLibs );
+  var lintPaths = getLintPaths( repositoryName, phetLibs );
 
   // --disable-es-cache disables the cache, useful for developing rules
   var cache = !grunt.option( 'disable-eslint-cache' );
@@ -81,8 +81,8 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
       },
 
       // When running eslint with an option like "eslint:allFiles" or "eslint:repoFiles", these fields are used.
-      allFiles: lintConfig.allFiles,
-      repoFiles: lintConfig.repoFiles
+      allFiles: lintPaths.allFiles,
+      repoFiles: lintPaths.repoFiles
     },
 
     requirejs: {
