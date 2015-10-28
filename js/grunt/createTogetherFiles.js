@@ -63,7 +63,11 @@ module.exports = function( grunt, buildConfig ) {
       'togetherID: \'concentration.sim\'',
       'togetherID: \'' + camelCase + '.sim\''
     );
-
+    text = ChipperStringUtils.replaceAll(
+      text,
+      '\'faradaysLaw.sim',
+      '\'' + camelCase + '.sim'
+    );
     text = ChipperStringUtils.replaceAll(
       text,
       'src="../html/color-vision-together.html?brand=phet-io&togetherEvents.storeInitialMessages"',
@@ -74,6 +78,7 @@ module.exports = function( grunt, buildConfig ) {
   filter( 'mirror-input-events.html' );
   filter( 'index.html', 'together-index.html' );
   filter( 'event-log.html' );
+  filter( 'state.html' );
 
   // Include the logo
   grunt.file.copy( '../together/examples/logo-on-white.png', 'build/logo-on-white.png' );

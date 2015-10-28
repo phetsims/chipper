@@ -34,6 +34,7 @@ var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
+var createTogetherFiles = require( '../../../chipper/js/grunt/createTogetherFiles' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -109,12 +110,22 @@ module.exports = function( grunt ) {
     optionalTasks.concat( [
       'clean',
       'requirejs:build',
-      'after-requirejs-build' ] )
+      'after-requirejs-build',
+      'create-together-files'
+    ] )
   );
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
     [ 'build', 'generate-thumbnails' ]
   );
+
+  // This is a separate task in order to make it easy to iterate on dev examples, without
+  // having to rebuild the simulation html
+  grunt.registerTask( 'create-together-files', 'Generate example files for together, if the brand is phet-io', function() {
+    if ( buildConfig.brand === 'phet-io' ) {
+      createTogetherFiles( grunt, buildConfig );
+    }
+  } );
 
   grunt.registerTask( 'deploy-production',
     'Invoke deployDev and then deploy a simulation to the production server.\n' +
