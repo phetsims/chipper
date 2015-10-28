@@ -33,30 +33,47 @@ module.exports = function( grunt, buildConfig ) {
   grunt.file.write( 'build/SimIFrameClient.js', copyrightHeader + '\n' + minified );
 
   // Create a mirror-input-events.html file for testing.
-  var exampleFileText = grunt.file.read( '../together/examples/mirror-input-events.html' );
-  exampleFileText = ChipperStringUtils.replaceAll(
-    exampleFileText,
-    '// This URL is replaced with a built html file when this file is used as a template during the build process',
-    'URL = \'' + buildConfig.name + '_en.html\';'
-  );
-  exampleFileText = ChipperStringUtils.replaceAll(
-    exampleFileText,
-    '../js/SimIFrameClient.js',
-    'SimIFrameClient.js'
-  );
-  var camelCase = ChipperStringUtils.toCamelCase( buildConfig.name );
 
-  // TODO: Regex or more matches
-  exampleFileText = ChipperStringUtils.replaceAll(
-    exampleFileText,
-    'togetherID: \'concentration.sim\'',
-    'togetherID: \'' + camelCase + '.sim\''
-  );
-  grunt.file.write( 'build/mirror-input-events.html', exampleFileText );
+  var filter = function( inputFilename, outputFilename ) {
 
-  // Index file with links to examples
-  var indexHTMLContent = grunt.file.read( '../together/examples/index.html' );
-  grunt.file.write( 'build/together-index.html', indexHTMLContent );
+    // Default to the input filename if not specified
+    outputFilename = outputFilename || inputFilename;
+
+    var text = grunt.file.read( '../together/examples/' + inputFilename );
+    text = ChipperStringUtils.replaceAll( text,
+      '../js/SimIFrameClient.js',
+      'SimIFrameClient.js'
+    );
+
+    text = ChipperStringUtils.replaceAll(
+      text,
+      '// This URL is replaced with a built html file when this file is used as a template during the build process',
+      'URL = \'' + buildConfig.name + '_en.html\';'
+    );
+    text = ChipperStringUtils.replaceAll(
+      text,
+      '../js/SimIFrameClient.js',
+      'SimIFrameClient.js'
+    );
+    var camelCase = ChipperStringUtils.toCamelCase( buildConfig.name );
+
+    // TODO: Regex or more matches
+    text = ChipperStringUtils.replaceAll(
+      text,
+      'togetherID: \'concentration.sim\'',
+      'togetherID: \'' + camelCase + '.sim\''
+    );
+
+    text = ChipperStringUtils.replaceAll(
+      text,
+      'src="../html/color-vision-together.html?brand=phet-io&togetherEvents.storeInitialMessages"',
+      'src="' + buildConfig.name + '_en.html?togetherEvents.storeInitialMessages"'
+    );
+    grunt.file.write( 'build/' + outputFilename, text );
+  };
+  filter( 'mirror-input-events.html' );
+  filter( 'index.html', 'together-index.html' );
+  filter( 'event-log.html' );
 
   // Include the logo
   grunt.file.copy( '../together/examples/logo-on-white.png', 'build/logo-on-white.png' );
