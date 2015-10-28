@@ -53,4 +53,11 @@ module.exports = function( grunt, buildConfig ) {
     'togetherID: \'' + camelCase + '.sim\''
   );
   grunt.file.write( 'build/mirror-input-events.html', exampleFileText );
+
+  // Index file with links to examples
+  var indexHTMLContent = grunt.file.read( '../together/examples/index.html' );
+  grunt.file.write( 'build/together-index.html', indexHTMLContent );
+
+  // Include the logo
+  grunt.file.copy( '../together/examples/logo-on-white.png', 'build/logo-on-white.png' );
 };
