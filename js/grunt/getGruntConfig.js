@@ -77,7 +77,9 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
         cache: cache,
 
         // Our custom rules live here
-        rulePaths: [ '../chipper/eslint/rules' ]
+        rulePaths: [ '../chipper/eslint/rules' ],
+
+        cacheFile: '../chipper/eslint/cache/' + repositoryName + '.eslintcache'
       },
 
       // When running eslint with an option like "eslint:allFiles" or "eslint:repoFiles", these fields are used.
