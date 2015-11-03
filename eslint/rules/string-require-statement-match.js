@@ -56,7 +56,8 @@ module.exports = function( context ) {
                 loc: node.loc.start,
                 message: 'Mismatched var in require(string!), ' +
                          'key=' + key + ', ' +
-                         'var=' + varName
+                         'var=' + varName + ', ' +
+                         'desiredVar=' + desiredVarName
               } );
             }
           }
