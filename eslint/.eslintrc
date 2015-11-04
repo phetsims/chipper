@@ -86,7 +86,6 @@
     //
     // 
     "require-statement-match": 2,
-//    "string-require-statement-match": 2,
     // permit only one var declaration per line, see #390
     "one-var": [
       2,
