@@ -17,7 +17,7 @@ module.exports = function( context ) {
     var out = '';
 
     // Add whitespace after each digit so that strings like myString1pattern will get camelcased with uppercase P
-    var withWhitespaceAfterDigits = string.replace( /\d/g, function( a ) {return a + ' ';} );
+    var withWhitespaceAfterDigits = string.replace( /\d/g, function( a ) {return a + ' ';} ).trim();
 
     // Split on whitespace, remove whitespace and uppercase the first word in each term
     withWhitespaceAfterDigits.split( ' ' ).forEach( function( element, index ) {
