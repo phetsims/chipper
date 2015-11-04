@@ -21,9 +21,6 @@ module.exports = function( context ) {
     return out;
   }
 
-  var endsWith = function( string, s ) {
-    return string.length >= s.length && string.substring( string.length - s.length ) === s;
-  };
   return {
 
     // Similar to the require-statement-match.js, please visit that file for AST example
