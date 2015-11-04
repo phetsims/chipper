@@ -39,7 +39,7 @@ module.exports = function( context ) {
           var varName = node.declarations[ 0 ].id.name;
           var rhs = node.declarations[ 0 ].init.arguments[ 0 ].value;
 
-          if ( rhs.indexOf( 'string!' ) === 0 ) {
+          if ( rhs && rhs.indexOf( 'string!' ) === 0 ) {
 
             var lastSlash = rhs.lastIndexOf( '/' );
             var key = rhs.substring( lastSlash + 1 );
