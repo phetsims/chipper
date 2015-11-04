@@ -15,7 +15,12 @@ module.exports = function( context ) {
   // Adapted from Stack Overflow, see http://stackoverflow.com/questions/25085306/javascript-space-separated-string-to-camelcase
   function toCamelCase( string ) {
     var out = '';
-    string.split( ' ' ).forEach( function( element, index ) {
+
+    // Add whitespace after each digit so that strings like myString1pattern will get camelcased with uppercase P
+    var withWhitespaceAfterDigits = string.replace( /\d/g, function( a ) {return a + ' ';} );
+
+    // Split on whitespace, remove whitespace and uppercase the first word in each term
+    withWhitespaceAfterDigits.split( ' ' ).forEach( function( element, index ) {
       out += (index === 0 ? element : element[ 0 ].toUpperCase() + element.slice( 1 ));
     } );
     return out;
