@@ -1,7 +1,7 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
 /**
- *
+ * Creates files required for the phet-io branded simulation.
  */
 
 // modules
