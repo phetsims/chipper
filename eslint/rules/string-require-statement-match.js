@@ -23,6 +23,15 @@ module.exports = function( context ) {
     withWhitespaceAfterDigits.split( ' ' ).forEach( function( element, index ) {
       out += (index === 0 ? element : element[ 0 ].toUpperCase() + element.slice( 1 ));
     } );
+
+    // lowercase the first character
+    if ( out.length > 1 ) {
+      out = out.charAt( 0 ).toLowerCase() + out.slice( 1 );
+    }
+    else if ( out.length === 1 ) {
+      out = out.toLowerCase();
+    }
+
     return out;
   }
 
