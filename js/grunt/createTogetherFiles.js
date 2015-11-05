@@ -47,7 +47,7 @@ module.exports = function( grunt, buildConfig ) {
 
     text = ChipperStringUtils.replaceAll(
       text,
-      '// This URL is replaced with a built html file when this file is used as a template during the build process',
+      '// $TEMPLATE$ This URL is replaced with a built html file when this file is used as a template during the build process',
       'URL = \'' + buildConfig.name + '_en.html\';'
     );
     text = ChipperStringUtils.replaceAll(
