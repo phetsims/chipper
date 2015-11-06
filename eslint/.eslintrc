@@ -90,7 +90,8 @@
     "one-var": [
       2,
       "never"
-    ]
+    ],
+    "string-require-statement-match": 2
     //
     // disallow trailing whitespace at the end of lines (fixable)
     //    "no-trailing-spaces": 2,
