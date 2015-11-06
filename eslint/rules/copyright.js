@@ -26,13 +26,11 @@ module.exports = function( context ) {
         } );
       }
       else {
-
-        // sample comment:
-        //{"type":"Line","value":" Copyright 2002-2015, University of Colorado Boulder","range":[0,54],"loc":{"start":{"line":1,"column":0},"end":{"line":1,"column":54}}}
-        if ( comments[ 0 ].value !== ' Copyright 2002-2015, University of Colorado Boulder' &&
-             comments[ 0 ].value !== ' Copyright 2002-2014, University of Colorado Boulder' &&
-             comments[ 0 ].value !== ' Copyright 2002-2013, University of Colorado Boulder' ) {
-
+        // years must be between 2000 and 2099, inclusive.  A script can be used to check that the dates
+        // match the GitHub creation and last-modified dates
+        var isDateRangeOK = /^ Copyright 20\d\d-20\d\d, University of Colorado Boulder$/.test( comments[ 0 ].value );
+        var isSingleDateOK = /^ Copyright 20\d\d, University of Colorado Boulder$/.test( comments[ 0 ].value );
+        if ( !isDateRangeOK && !isSingleDateOK ) {
           context.report( {
             node: node,
             loc: comments[ 0 ].loc.start,
@@ -42,7 +40,6 @@ module.exports = function( context ) {
       }
     }
   };
-
 };
 
 module.exports.schema = [
