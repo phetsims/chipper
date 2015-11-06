@@ -35,6 +35,7 @@ var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var createTogetherFiles = require( '../../../chipper/js/grunt/createTogetherFiles' );
+var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -126,6 +127,13 @@ module.exports = function( grunt ) {
       createTogetherFiles( grunt, buildConfig );
     }
   } );
+
+  // Grunt task that determines created and last modified dates from git, and
+  // updates copyright statements accordingly, see #403
+  grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
+    function() {
+      updateCopyrightDates( grunt, buildConfig );
+    } );
 
   grunt.registerTask( 'deploy-production',
     'Invoke deployDev and then deploy a simulation to the production server.\n' +
