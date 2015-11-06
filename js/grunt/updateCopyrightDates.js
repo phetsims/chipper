@@ -102,6 +102,8 @@ module.exports = function( grunt ) {
 
     // Gather the start dates
     gatherDates( 'startDate', 'git log --diff-filter=A --follow --date=short --format=%cd -1 -- ' );
+
+    // Gather the end dates
     gatherDates( 'endDate', 'git log --follow --date=short --format=%cd -1 -- ' );
   }
 };
