@@ -18,6 +18,7 @@ module.exports = function( grunt ) {
   var child_process = require( 'child_process' );
   var assert = require( 'assert' );
   var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+  var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
   // constants
   var sourceRoot = process.cwd() + '/js';
@@ -70,28 +71,32 @@ module.exports = function( grunt ) {
 
     // Count the number of start and end dates we need
     grunt.file.recurse( sourceRoot, function( abspath ) {
-      elements[ abspath ] = {};
-      count++;// for getting start date
-      count++;// for getting end date
+      if ( ChipperStringUtils.endsWith( abspath, '.js' ) ) {
+        elements[ abspath ] = {};
+        count++;// for getting start date
+        count++;// for getting end date
+      }
     } );
 
     // Using the git command, gather the dates specified
     var gatherDates = function( dateName, gitCommand ) {
       grunt.file.recurse( sourceRoot, function( abspath ) {
+        if ( ChipperStringUtils.endsWith( abspath, '.js' ) ) {
 
-        // Look up the GitHub dates for the file
-        child_process.exec(
-          gitCommand + abspath,
-          function( error, stdout, stderr ) {
-            assert( !error, 'ERROR on git log attempt: ' + stderr );
-            var date = stdout.split( '-' )[ 0 ];
-            elements[ abspath ][ dateName ] = date;
-            count--;
-            if ( count === 0 ) {
-              updateAllFiles();
-              done();
-            }
-          } );
+          // Look up the GitHub dates for the file
+          child_process.exec(
+            gitCommand + abspath,
+            function( error, stdout, stderr ) {
+              assert( !error, 'ERROR on git log attempt: ' + stderr );
+              var date = stdout.split( '-' )[ 0 ];
+              elements[ abspath ][ dateName ] = date;
+              count--;
+              if ( count === 0 ) {
+                updateAllFiles();
+                done();
+              }
+            } );
+        }
       } );
     };
 
