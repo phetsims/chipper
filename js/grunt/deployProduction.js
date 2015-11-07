@@ -9,7 +9,6 @@
 // modules
 var querystring = require( 'querystring' );
 var request = require( 'request' );
-var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
 
 /**
@@ -22,14 +21,15 @@ module.exports = function( grunt, callback ) {
   // configuration info from external files
   var deployConfig = getDeployConfig( global.phet.chipper.fs );
 
-  var locales = grunt.option( 'locales' ) || ChipperConstants.FALLBACK_LOCALE;
+  if ( grunt.option( 'locales' ) ) {
+    throw new Error( 'Should not specify locales for production deployment' );
+  }
 
   // read dependencies.json (required)
   var dependenciesJSON = grunt.file.readJSON( 'build/dependencies.json' );
 
   var params = {
     'repos': JSON.stringify( dependenciesJSON ),
-    'locales': locales,
     'simName': deployConfig.name,
     'version': deployConfig.version,
     'serverName': deployConfig.productionServerName,
