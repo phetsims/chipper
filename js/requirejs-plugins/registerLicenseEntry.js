@@ -1,4 +1,4 @@
-// Copyright 2002-2014, University of Colorado Boulder
+// Copyright 2015, University of Colorado Boulder
 
 /**
  * Registers the license entry for a media file by adding it to global.phet.chipper.licenseEntries.

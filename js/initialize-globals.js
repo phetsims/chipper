@@ -1,4 +1,4 @@
-// Copyright 2002-2013, University of Colorado Boulder
+// Copyright 2015, University of Colorado Boulder
 
 /**
  * Initializes phet globals that are used by all simulations, including assertions, togetherEvents and query-parameters.

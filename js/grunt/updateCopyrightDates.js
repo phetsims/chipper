@@ -1,4 +1,4 @@
-// Copyright 2002-2015, University of Colorado Boulder
+// Copyright 2015, University of Colorado Boulder
 
 /**
  * Grunt task that determines created and last modified dates from git, and updates copyright statements accordingly,
@@ -55,10 +55,15 @@ module.exports = function( grunt ) {
 
       // Update the line
       if ( firstLine !== copyrightLine ) {
-        var concatted = [ copyrightLine ].concat( fileLines.slice( 1 ) );
-        var newFileContents = concatted.join( lineSeparator );
-        grunt.file.write( absPath, newFileContents );
-        console.log( absPath + ', overwritten with ' + copyrightLine );
+        if ( firstLine.indexOf( '// Copyright' ) === 0 ) {
+          var concatted = [ copyrightLine ].concat( fileLines.slice( 1 ) );
+          var newFileContents = concatted.join( lineSeparator );
+          grunt.file.write( absPath, newFileContents );
+          console.log( absPath + ', overwritten with ' + copyrightLine );
+        }
+        else {
+          console.log( absPath + ' FIRST LINE WAS NOT COPYRIGHT: ' + firstLine );
+        }
       }
       else {
         console.log( absPath + ' was already correct' );

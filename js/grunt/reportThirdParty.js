@@ -1,4 +1,4 @@
-// Copyright 2002-2015, University of Colorado Boulder
+// Copyright 2015, University of Colorado Boulder
 
 /**
  * Creates a composite report of all of the 3rd party images, code, audio and other media used by all of the PhET

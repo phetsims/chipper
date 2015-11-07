@@ -1,4 +1,4 @@
-// Copyright 2002-2015, University of Colorado Boulder
+// Copyright 2015, University of Colorado Boulder
 
 /**
  * This function returns an object literal that describes the third-party libraries that are included in the html deliverable.

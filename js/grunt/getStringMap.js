@@ -1,4 +1,4 @@
-// Copyright 2002-2015, University of Colorado Boulder
+// Copyright 2015, University of Colorado Boulder
 
 /**
  * Returns a map such that map[locale][stringKey] will be the string value (with fallbacks to English where needed).
