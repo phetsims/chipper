@@ -40,6 +40,10 @@ module.exports = function( grunt, callback ) {
     params.option = 'rc';
   }
 
+  if ( grunt.option( 'email' ) ) {
+    params.email = grunt.option( 'email' );
+  }
+
   var query = querystring.stringify( params );
 
   var productionServerURL = deployConfig.productionServerURL;

@@ -140,7 +140,8 @@ module.exports = function( grunt ) {
     'Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
     'Deploys to figaro by default, but simian can be used for testing by setting:\n' +
     '"productionServerName": "simian.colorado.edu" and "productionServerURL": "https://phet-dev.colorado.edu" in build-local.json\n' +
-    '--noDev : if true, deploy to production only, not spot as well. Useful for testing',
+    '--noDev : if true, deploy to production only, not spot as well. Useful for testing\n' +
+    '--email : optionally enter an email to be notified if the build fails',
     function() {
       // before invoking the build-server, do a dev deploy, including committing and pushing to github
       var done = grunt.task.current.async();
