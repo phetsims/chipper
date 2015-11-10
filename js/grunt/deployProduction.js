@@ -40,6 +40,9 @@ module.exports = function( grunt, callback ) {
   if ( grunt.option( 'email' ) ) {
     params.email = grunt.option( 'email' );
   }
+  else if ( deployConfig.buildServerNotifyEmail ) {
+    params.email = deployConfig.buildServerNotifyEmail;
+  }
 
   var query = querystring.stringify( params );
 

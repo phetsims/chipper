@@ -57,6 +57,7 @@ var assert = require( 'assert' );
       name: packageJSON.name,
       version: packageJSON.version,
       buildServerAuthorizationCode: buildLocalJSON.buildServerAuthorizationCode,
+      buildServerNotifyEmail: buildLocalJSON.buildServerNotifyEmail || null,
       devUsername: buildLocalJSON.devUsername,
       devDeployServer: buildLocalJSON.devDeployServer || 'spot.colorado.edu',
       devDeployPath: buildLocalJSON.devDeployPath || '/htdocs/physics/phet/dev/html/',
