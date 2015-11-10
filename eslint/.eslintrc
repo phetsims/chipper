@@ -118,10 +118,6 @@
     "assertSlow": true,
     // scenery logging levels
     "sceneryLog": true,
-    // scenery logging levels
-    "sceneryLayerLog": true,
-    // scenery logging levels
-    "sceneryEventLog": true,
     // scenery accessibility levels
     "sceneryAccessibilityLog": true,
     // for tracking object allocations, see phet-core's phetAllocation

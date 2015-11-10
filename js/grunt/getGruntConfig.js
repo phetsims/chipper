@@ -144,8 +144,6 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
 
                 // scenery logging (PhET-specific)
                 sceneryLog: false,
-                sceneryLayerLog: false,
-                sceneryEventLog: false,
                 sceneryAccessibilityLog: false,
 
                 // for tracking object allocations, see phet-core/js/phetAllocation.js (PhET-specific)
