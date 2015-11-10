@@ -21,15 +21,12 @@ module.exports = function( grunt, callback ) {
   // configuration info from external files
   var deployConfig = getDeployConfig( global.phet.chipper.fs );
 
-  if ( grunt.option( 'locales' ) ) {
-    throw new Error( 'Should not specify locales for production deployment' );
-  }
-
   // read dependencies.json (required)
   var dependenciesJSON = grunt.file.readJSON( 'build/dependencies.json' );
 
   var params = {
     'repos': JSON.stringify( dependenciesJSON ),
+    'locales': grunt.option( 'locales' ) || '*',
     'simName': deployConfig.name,
     'version': deployConfig.version,
     'serverName': deployConfig.productionServerName,

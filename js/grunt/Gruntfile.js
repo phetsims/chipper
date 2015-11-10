@@ -141,7 +141,11 @@ module.exports = function( grunt ) {
     'Deploys to figaro by default, but simian can be used for testing by setting:\n' +
     '"productionServerName": "simian.colorado.edu" and "productionServerURL": "https://phet-dev.colorado.edu" in build-local.json\n' +
     '--noDev : if true, deploy to production only, not spot as well. Useful for testing\n' +
-    '--email : optionally enter an email to be notified if the build fails',
+    '--email : optionally enter an email to be notified if the build fails\n' +
+    '--locales=* : all locales that have been published so far. NOTE: for sims published after 11/9/15, this is the ' +
+    'default option, otherwise it must be explicitly passed to republish all translations.\n' +
+    '--locales=fr : French\n' +
+    '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)',
     function() {
       // before invoking the build-server, do a dev deploy, including committing and pushing to github
       var done = grunt.task.current.async();
