@@ -7,6 +7,9 @@
   'use strict';
 
   function loadFileAsDataURI( filename ) {
+    var filenameParts = filename.split( '.' );
+    var suffix = filenameParts[ filenameParts.length - 1 ];
+
     var mimeType = {
       'png': 'image/png',
       'svg': 'image/svg+xml',
@@ -18,8 +21,9 @@
       'ogg': 'audio/ogg',
       'oga': 'audio/ogg',
       'bma': 'audio/webm', // webma is the full extension
-      'wav': 'audio/wav'
-    }[ filename.slice( -3 ) ];
+      'wav': 'audio/wav',
+      'woff': 'application/x-font-woff'
+    }[ suffix ];
 
     if ( !mimeType ) {
       throw new Error( 'Unknown mime type for filename: ' + filename );
