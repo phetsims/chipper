@@ -28,6 +28,7 @@ var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
+var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
@@ -284,6 +285,12 @@ module.exports = function( grunt ) {
       var finished = _.after( 2, grunt.task.current.async() );
       generateThumbnails( grunt, buildConfig.name, 128, 84, finished );
       generateThumbnails( grunt, buildConfig.name, 600, 394, finished );
+    } );
+
+  grunt.registerTask( 'generate-development-html',
+    'Generates top-level SIM_en.html file based on the preloads in package.json.',
+    function() {
+      generateDevelopmentHTML( grunt, buildConfig );
     } );
 
   grunt.registerTask( 'commits-since',
