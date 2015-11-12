@@ -62,7 +62,7 @@ module.exports = function( grunt ) {
       grunt.file.delete( destinationPath, { force: true } ); // delete won't operate outside of current working dir unless forced
     }
     else {
-      throw new Error( destinationPath + ' already exists. Run with --clean if you want to do over.' );
+      grunt.log.writeln( ( 'WARNING:' + destinationPath + ' already exists, overwriting' )['yellow'] );
     }
   }
   grunt.file.mkdir( destinationPath );
