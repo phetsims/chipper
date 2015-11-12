@@ -99,6 +99,7 @@ module.exports = function( grunt ) {
         // Replace names in the path where the contents will be written
         var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
         contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'simula-rasa', repositoryName );
+        contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'simulaRasa', lowerCamelCase );
         contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'SimulaRasa', upperCamelCase );
 
         // Write the file
