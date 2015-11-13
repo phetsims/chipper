@@ -120,11 +120,12 @@ module.exports = function( grunt ) {
       }
 
       var TOGETHER_API_FILENAME = '../together/js/api/' + packageJSON.name + '-api.js';
-      if( !grunt.file.exists( TOGETHER_API_FILENAME ) ) {
+      if ( !grunt.file.exists( TOGETHER_API_FILENAME ) ) {
         grunt.log.warn( 'together API file does not exist: ' + TOGETHER_API_FILENAME );
       }
 
       preload.push( TOGETHER_API_FILENAME );
+      preload.push( '../together/js/finishedPreloads.js' );
     }
 
     // remove duplicates (do NOT sort, order is significant!)
