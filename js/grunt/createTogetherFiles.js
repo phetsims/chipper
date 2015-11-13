@@ -121,22 +121,6 @@ module.exports = function( grunt, buildConfig ) {
           var contents = grunt.file.read( abspath );
           contents = filter( contents );
 
-          // Replace variations of the repository name
-          //contents = ChipperStringUtils.replaceAll( contents, 'simula-rasa', repositoryName );
-          //contents = ChipperStringUtils.replaceAll( contents, 'SIMULA_RASA', configPath );
-          //contents = ChipperStringUtils.replaceAll( contents, 'simulaRasa', lowerCamelCase );
-          //contents = ChipperStringUtils.replaceAll( contents, 'SimulaRasa', upperCamelCase );
-          //contents = ChipperStringUtils.replaceAll( contents, 'Simula Rasa', title );
-          //
-          //// Replace author
-          //contents = ChipperStringUtils.replaceAll( contents, 'Your Name (Your Affiliation)', author );
-          //
-          //// Replace names in the path where the contents will be written
-
-          //contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'simula-rasa', repositoryName );
-          //contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'simulaRasa', lowerCamelCase );
-          //contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'SimulaRasa', upperCamelCase );
-
           // Write the file
           grunt.file.write( contentsPath, contents );
           grunt.log.writeln( 'wrote', contentsPath );
