@@ -9,6 +9,8 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 
 // Copied from phet-core
 function escapeHTML( str ) {
+  'use strict';
+
   // see https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet
   // HTML Entity Encoding
   return str
@@ -18,7 +20,7 @@ function escapeHTML( str ) {
     .replace( /\"/g, '&quot;' )
     .replace( /\'/g, '&#x27;' )
     .replace( /\//g, '&#x2F;' );
-};
+}
 
 /**
  * @param grunt - the grunt instance
@@ -145,7 +147,7 @@ module.exports = function( grunt, buildConfig ) {
 
   // Also update the together/doc/index.html for any file contents it includes
   if ( grunt.option( 'together-doc' ) ) {
-    console.log( 'running together-doc' )
+    console.log( 'running together-doc' );
     var text = grunt.file.read( '../together/doc/index.html' );
     var startKey = '<!--START_active.html-->';
     var endKey = '<!--END_active.html-->';
