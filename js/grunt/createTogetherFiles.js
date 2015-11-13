@@ -7,6 +7,19 @@
 // modules
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
+// Copied from phet-core
+function escapeHTML( str ) {
+  // see https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet
+  // HTML Entity Encoding
+  return str
+    .replace( /&/g, '&amp;' )
+    .replace( /</g, '&lt;' )
+    .replace( />/g, '&gt;' )
+    .replace( /\"/g, '&quot;' )
+    .replace( /\'/g, '&#x27;' )
+    .replace( /\//g, '&#x2F;' );
+};
+
 /**
  * @param grunt - the grunt instance
  * @param {Object} buildConfig - see getBuildConfig.js
@@ -129,4 +142,19 @@ module.exports = function( grunt, buildConfig ) {
       }
     }
   );
+
+  // Also update the together/doc/index.html for any file contents it includes
+  if ( grunt.option( 'together-doc' ) ) {
+    console.log( 'running together-doc' )
+    var text = grunt.file.read( '../together/doc/index.html' );
+    var startKey = '<!--START_active.html-->';
+    var endKey = '<!--END_active.html-->';
+    var startIndex = text.indexOf( startKey ) + startKey.length;
+    var endIndex = text.indexOf( endKey );
+    var replacement = grunt.file.read( '../together/doc/examples/active.html' );
+    replacement = filter( replacement ); // neat!
+    replacement = escapeHTML( replacement );
+    var newText = text.substring( 0, startIndex ) + replacement + text.substring( endIndex );
+    grunt.file.write( '../together/doc/index.html', newText );
+  }
 };
