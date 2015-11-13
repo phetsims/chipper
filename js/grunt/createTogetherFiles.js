@@ -69,17 +69,17 @@ module.exports = function( grunt, buildConfig ) {
     // between ? and &
     text = ChipperStringUtils.replaceAll(
       text,
-      '\'../../html/color-vision-together.html?brand=phet-io\'',
+      '\'../../../color-vision/color-vision_en.html?brand=phet-io\'',
       '\'../' + buildConfig.name + '_en.html?build\''
     );
     text = ChipperStringUtils.replaceAll(
       text,
-      '\'../../html/faradays-law-together.html?brand=phet-io\'',
+      '\'../../../faradays-law/faradays-law_en.html?brand=phet-io\'',
       '\'../' + buildConfig.name + '_en.html?build\''
     );
     text = ChipperStringUtils.replaceAll(
       text,
-      '\'../../html/concentration-together.html?brand=phet-io\'',
+      '\'../../../concentration/concentration_en.html?brand=phet-io\'',
       '\'../' + buildConfig.name + '_en.html?build\''
     );
     //
