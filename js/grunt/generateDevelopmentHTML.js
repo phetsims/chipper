@@ -33,12 +33,18 @@ module.exports = function( grunt, buildConfig ) {
   var normalPreload = buildConfig.preload.filter( notGA );
   var ioPreload = buildConfig.getPreload( packageJSON, buildJSON, 'phet-io' ).filter( notGA );
 
+  function stringifyArray( arr ) {
+    return '[ ' + arr.map( function( string ) {
+      return '\'' + string.replace( /'/g, '\\\'' ) + '\'';
+    } ).join( ', ' ) + ' ]';
+  }
+
   // Replace placeholders in the template.
   html = ChipperStringUtils.replaceAll( html, '{REPOSITORY}', repositoryName );
   html = ChipperStringUtils.replaceAll( html, '{BRAND}', buildConfig.brand );
   html = ChipperStringUtils.replaceAll( html, '{SPLASH_URL}', splashURL );
-  html = ChipperStringUtils.replaceAll( html, '{IO_PRELOADS}', JSON.stringify( ioPreload ) );
-  html = ChipperStringUtils.replaceAll( html, '{PRELOADS}', JSON.stringify( normalPreload ) );
+  html = ChipperStringUtils.replaceAll( html, '{IO_PRELOADS}', stringifyArray( ioPreload ) );
+  html = ChipperStringUtils.replaceAll( html, '{PRELOADS}', stringifyArray( normalPreload ) );
 
   // Write to the repository's root directory.
   grunt.file.write( repositoryName + '_en.html', html );

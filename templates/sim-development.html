@@ -12,41 +12,41 @@
   <title>Loading {REPOSITORY}</title>
 </head>
 <body bgcolor="black">
-  <img id="splash" style="position: absolute;top: 50%;left: 50%;margin-top: -210px;margin-left: -252px;">
+<img id="splash" style="position: absolute;top: 50%;left: 50%;margin-top: -210px;margin-left: -252px;">
 
-  <script type="text/javascript">
-    (function(){
-      // Identify the brand (assume generated brand if not provided with query parameters)
-      var brandMatch = location.search.match( /brand=([^&]+)/ );
-      var brand = brandMatch ? decodeURIComponent( brandMatch[ 1 ] ) : '{BRAND}';
+<script type="text/javascript">
+  ( function() {
+    // Identify the brand (assume generated brand if not provided with query parameters)
+    var brandMatch = location.search.match( /brand=([^&]+)/ );
+    var brand = brandMatch ? decodeURIComponent( brandMatch[ 1 ] ) : '{BRAND}';
 
-      // Load the desired splash screen image
-      document.getElementById( 'splash' ).src = '../brand/' + brand + '/images/splash.svg';
+    // Load the desired splash screen image
+    document.getElementById( 'splash' ).src = '../brand/' + brand + '/images/splash.svg';
 
-      // Preloads, with more included for phet-io brands
-      var preloads = ( brand === 'phet-io' ) ? {IO_PRELOADS} : {PRELOADS};
+    // Preloads, with more included for phet-io brands
+    var preloads = ( brand === 'phet-io' ) ? {IO_PRELOADS} : {PRELOADS};
 
-      // Loads a synchronously-executed asynchronously-downloaded script tag, with optional data-main parameter.
-      // See http://www.html5rocks.com/en/tutorials/speed/script-loading/ for more about script loading. It helps to
-      // load all of the scripts with this method, so they are treated the same (and placed in the correct execution
-      // order).
-      function loadURL( preloadURL, main ) {
-        var script = document.createElement( 'script' );
-        if ( typeof main === 'string' ) {
-          script.setAttribute( 'data-main', main );
-        }
-        script.type = 'text/javascript';
-        script.src = preloadURL;
-        script.async = false;
-        document.head.appendChild( script );
+    // Loads a synchronously-executed asynchronously-downloaded script tag, with optional data-main parameter.
+    // See http://www.html5rocks.com/en/tutorials/speed/script-loading/ for more about script loading. It helps to
+    // load all of the scripts with this method, so they are treated the same (and placed in the correct execution
+    // order).
+    function loadURL( preloadURL, main ) {
+      var script = document.createElement( 'script' );
+      if ( typeof main === 'string' ) {
+        script.setAttribute( 'data-main', main );
       }
+      script.type = 'text/javascript';
+      script.src = preloadURL;
+      script.async = false;
+      document.head.appendChild( script );
+    }
 
-      // Queue all of the preloads to be loaded.
-      preloads.forEach( loadURL );
+    // Queue all of the preloads to be loaded.
+    preloads.forEach( loadURL );
 
-      // Then load the main require.js code.
-      loadURL( '../sherpa/lib/require-2.1.11.js', 'js/{REPOSITORY}-config.js' );
-    })();
-  </script>
+    // Then load the main require.js code.
+    loadURL( '../sherpa/lib/require-2.1.11.js', 'js/{REPOSITORY}-config.js' );
+  } )();
+</script>
 </body>
 </html>
