@@ -106,8 +106,8 @@ module.exports = function( grunt ) {
     }
 
     // add brand-specific preloads from build.json
-    if ( buildJSON[ buildConfig.brand ] && buildJSON[ buildConfig.brand ].preload ) {
-      preload = preload.concat( buildJSON[ buildConfig.brand ].preload );
+    if ( buildJSON[ brand ] && buildJSON[ brand ].preload ) {
+      preload = preload.concat( buildJSON[ brand ].preload );
     }
 
     // add the together API file
@@ -120,7 +120,9 @@ module.exports = function( grunt ) {
       }
 
       var TOGETHER_API_FILENAME = '../together/js/api/' + packageJSON.name + '-api.js';
-      assert( grunt.file.exists( TOGETHER_API_FILENAME ), 'together API file does not exist: ' + TOGETHER_API_FILENAME );
+      if( !grunt.file.exists( TOGETHER_API_FILENAME ) ) {
+        grunt.log.warn( 'together API file does not exist: ' + TOGETHER_API_FILENAME );
+      }
 
       preload.push( TOGETHER_API_FILENAME );
     }
@@ -269,7 +271,8 @@ module.exports = function( grunt ) {
     version: packageJSON.version,
     license: packageJSON.license,
     requirejsNamespace: packageJSON.phet.requirejsNamespace,
-    brand: getBrand( grunt, buildLocalJSON )
+    brand: getBrand( grunt, buildLocalJSON ),
+    getPreload: getPreload // TODO: better way to allow requsting different preload lists?
   };
 
   // These fields depend on other entries in buildConfig.

@@ -9,6 +9,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 /**
@@ -22,15 +23,23 @@ module.exports = function( grunt, buildConfig ) {
   var splashURL = '../brand/' + buildConfig.brand + '/images/splash.svg';
   var html = grunt.file.read( '../chipper/templates/sim-development.html' );
 
-  // Replace placeholders in the template.
-  html = ChipperStringUtils.replaceAll( html, '{REPOSITORY}', repositoryName );
-  html = ChipperStringUtils.replaceAll( html, '{SPLASH_URL}', splashURL );
-  html = ChipperStringUtils.replaceAll( html, '{PRELOADS}', buildConfig.preload.filter( function( preload ) {
+  var packageJSON = grunt.file.readJSON( 'package.json' );
+  var buildJSON = grunt.file.readJSON( '../chipper/build.json' );
+
+  function notGA( preload ) {
     // skip the google-analytics preload
     return preload.indexOf( 'google-analytics' ) === -1;
-  } ).map( function( preload ) {
-    return '<script type="text/javascript" src="' + preload + '"></script>';
-  } ).join( '\n  ' ) );
+  }
+
+  var normalPreload = buildConfig.preload.filter( notGA );
+  var ioPreload = buildConfig.getPreload( packageJSON, buildJSON, 'phet-io' ).filter( notGA );
+
+  // Replace placeholders in the template.
+  html = ChipperStringUtils.replaceAll( html, '{REPOSITORY}', repositoryName );
+  html = ChipperStringUtils.replaceAll( html, '{BRAND}', buildConfig.brand );
+  html = ChipperStringUtils.replaceAll( html, '{SPLASH_URL}', splashURL );
+  html = ChipperStringUtils.replaceAll( html, '{IO_PRELOADS}', JSON.stringify( ioPreload ) );
+  html = ChipperStringUtils.replaceAll( html, '{PRELOADS}', JSON.stringify( normalPreload ) );
 
   // Write to the repository's root directory.
   grunt.file.write( repositoryName + '_en.html', html );
