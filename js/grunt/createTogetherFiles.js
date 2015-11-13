@@ -100,7 +100,7 @@ module.exports = function( grunt, buildConfig ) {
     return text;
   };
 
-  var destinationPath = 'build/';
+  var destinationPath = 'build';
 
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../together/doc/', function( abspath, rootdir, subdir, filename ) {
