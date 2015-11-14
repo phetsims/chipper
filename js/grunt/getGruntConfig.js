@@ -58,7 +58,7 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
 
   var lintPaths = getLintPaths( repositoryName, phetLibs );
 
-  // --disable-es-cache disables the cache, useful for developing rules
+  // --disable-eslint-cache disables the cache, useful for developing rules
   var cache = !grunt.option( 'disable-eslint-cache' );
 
   // grunt config
