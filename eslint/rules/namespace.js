@@ -25,7 +25,7 @@ module.exports = function( context ) {
 
           // If there is no register call, check if it is a namespace declaration file
           // (which doesn't do any register calls)
-          var declaresNamespace = fullText.indexOf( 'return new Namespace' >= 0 );
+          var declaresNamespace = fullText.indexOf( 'return new Namespace' ) >= 0;
           if ( !declaresNamespace ) {
             context.report( {
               node: node,
