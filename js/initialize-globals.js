@@ -39,6 +39,8 @@
  *
  * Other query parameters:
  *
+ * checkNamespaces - Currently a debugging aid that will add assertions to make sure all of the namespaces are created for
+ *                   modules that match the normal namespace patterns. See https://github.com/phetsims/tasks/issues/378
  * component - when running the scenery-phet example, select a particular component in the components screen
  * datamite.actionHistogram - when running with together.js + togetherEvents, display a histogram of the action types, see togetherEvents.jsadded action
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
