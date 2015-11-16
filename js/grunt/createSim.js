@@ -91,10 +91,12 @@ module.exports = function( grunt ) {
         contents = ChipperStringUtils.replaceAll( contents, 'SIMULA_RASA', configPath );
         contents = ChipperStringUtils.replaceAll( contents, 'simulaRasa', lowerCamelCase );
         contents = ChipperStringUtils.replaceAll( contents, 'SimulaRasa', upperCamelCase );
-        contents = ChipperStringUtils.replaceAll( contents, 'Simula Rasa', title );
+
+        // Replace the title
+        contents = ChipperStringUtils.replaceAll( contents, '$TITLE$', title );
 
         // Replace author
-        contents = ChipperStringUtils.replaceAll( contents, 'Your Name (Your Affiliation)', author );
+        contents = ChipperStringUtils.replaceAll( contents, '$AUTHOR$', author );
 
         // Replace names in the path where the contents will be written
         var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
