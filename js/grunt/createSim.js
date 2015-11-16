@@ -72,6 +72,8 @@ module.exports = function( grunt ) {
   var lowerCamelCase = ChipperStringUtils.toCamelCase( repositoryName ); // eg, 'simula-rasa' -> 'simulaRasa'
   var upperCamelCase = lowerCamelCase.substring( 0, 1 ).toUpperCase() + lowerCamelCase.substring( 1 ); // eg, 'simula-rasa' -> 'SimulaRasa'
 
+  var yearToday = grunt.template.today( 'yyyy' );
+
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
 
@@ -97,6 +99,9 @@ module.exports = function( grunt ) {
 
         // Replace author
         contents = ChipperStringUtils.replaceAll( contents, '$AUTHOR$', author );
+
+        // Fix copyright comments
+        contents = contents.replace( /\/\/ Copyright \d\d\d\d.*/g, '// Copyright ' + yearToday + ', University of Colorado Boulder' );
 
         // Replace names in the path where the contents will be written
         var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
