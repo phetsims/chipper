@@ -28,8 +28,7 @@
   }
 
   function toParagraphs( string ) {
-    // TODO: Improve with actual paragraphs
-    return string.replace( /\n\n/g, '\n<br><br>\n' );
+    return string.replace( /\n\n/g, '\n</p><p>\n' );
   }
 
   function typeString( type ) {
