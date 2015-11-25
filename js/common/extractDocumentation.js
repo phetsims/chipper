@@ -561,6 +561,7 @@
       // Variable object initialization: e.g. var Util = { ... };
       else if ( topLevelStatement.type === 'VariableDeclaration' &&
                 topLevelStatement.declarations[ 0 ].type === 'VariableDeclarator' &&
+                topLevelStatement.declarations[ 0 ].init &&
                 topLevelStatement.declarations[ 0 ].init.type === 'ObjectExpression' &&
                 isCapitalized( topLevelStatement.declarations[ 0 ].id.name ) ) {
         var objectName = topLevelStatement.declarations[ 0 ].id.name;
