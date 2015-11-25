@@ -143,10 +143,14 @@
 
       // constructor
       if ( baseObject.type === 'type' ) {
+        // Add a target for #-links if we aren't the baseName.
         if ( typeName !== baseName ) {
           contentHTML += '<div id="' + baseURLPrefix.slice( 0, baseURLPrefix.length - 1 ) + '"></div>';
         }
         var constructorLine = typeName + inlineParameterList( baseObject.comment );
+        if ( baseObject.supertype ) {
+          constructorLine += ' <span class="inherit">extends ' + typeString( baseObject.supertype ) + '</span>';
+        }
         contentHTML += '<h4 id="' + baseURLPrefix + 'constructor" class="section">' + constructorLine + '</h4>';
         contentHTML += '<p>' + toParagraphs( baseObject.comment.description ) + '</p>';
         contentHTML += parameterDetailsList( baseObject.comment );
