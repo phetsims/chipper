@@ -61,6 +61,8 @@
  *                          - because only the selected screens are initialized
  * showHomeScreen - if false, go immediate to screenIndex, defaults to screenIndex=0
  * strings - override strings, value is JSON that is identical to string.json files
+ * togetherEvents.log - if set to console, will stream togetherEvents to console
+ * together.docs      - will output type documentation to the console, see https://github.com/phetsims/together/issues/218
  * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
  *                         - if a value is specified, it will also simulate a context loss after the specified number
  *                         - of milliseconds has elapsed.
