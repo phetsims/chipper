@@ -27,8 +27,98 @@
       .replace( /\//g, '&#x2F;' );
   }
 
-  function toParagraphs( string ) {
-    return string.replace( /\n\n/g, '\n</p><p>\n' );
+  /**
+   * Parses the HTML looking for examples (matching #begin and #end) that have embedded #on/#off to control where code
+   * examples are displayed. Breaks up everything into a concise paragraph structure (blank lines trigger the end of a
+   * paragraph).
+   * @private
+   *
+   * @param {string} string
+   * @returns {string}
+   */
+  function descriptionHTML( string ) {
+    var result = '';
+    var lines = string.split( '\n' );
+
+    var inParagraph = false;
+    function insideParagraph() {
+      if ( !inParagraph ) {
+        result += '<p>\n';
+        inParagraph = true;
+      }
+    }
+    function outsideParagraph() {
+      if ( inParagraph ) {
+        result += '</p>\n';
+        inParagraph = false;
+      }
+    }
+
+    for ( var i = 0; i < lines.length; i++ ) {
+      var line = lines[ i ];
+
+      if ( line.indexOf( '#begin' ) === 0 ) {
+        var initialLine = lines[ i ];
+        var runLines = [];
+        var displayLines = [];
+        var isDisplayed = false;
+        for ( i++; i < lines.length; i++ ) {
+          if ( lines[ i ].indexOf( '#end' ) === 0 ) {
+            break;
+          }
+          else if ( lines[ i ].indexOf( '#on' ) === 0 ) {
+            isDisplayed = true;
+          }
+          else if ( lines[ i ].indexOf( '#off' ) === 0 ) {
+            isDisplayed = false;
+          }
+          else {
+            runLines.push( lines[ i ] );
+            if ( isDisplayed ) {
+              displayLines.push( lines[ i ] );
+            }
+          }
+        }
+
+        var runString = runLines.join( '\n' );
+        var displayString = displayLines.join( '\n' );
+
+        var canvasExampleMatch = initialLine.match( /^\#begin canvasExample ([^ ]+) ([^x]+)x([^x]+)$/ );
+        if ( canvasExampleMatch ) {
+          outsideParagraph();
+
+          var name = canvasExampleMatch[ 1 ];
+          var width = canvasExampleMatch[ 2 ];
+          var height = canvasExampleMatch[ 3 ];
+
+          var exampleName = 'example-' + name;
+
+          result += '<canvas id="' + exampleName + '" class="exampleScene"></canvas>';
+          result += '<script type="text/javascript">(function(){';
+          result += 'var canvas = document.getElementById( "' + exampleName + '" );';
+          result += 'canvas.width = ' + width + ';';
+          result += 'canvas.height = ' + height + ';';
+          result += 'var context = canvas.getContext( "2d" );';
+          result += runString;
+          result += '})();</' + 'script>'; // paranoia!
+          result += '<pre class="brush: js">\n';
+          result += displayString;
+          result += '</pre>';
+        }
+      }
+      else {
+        if ( line.length === 0 ) {
+          outsideParagraph();
+        }
+        else {
+          insideParagraph();
+          result += line + '\n';
+        }
+      }
+    }
+    outsideParagraph();
+
+    return result;
   }
 
   function typeString( type ) {
@@ -135,7 +225,7 @@
     indexHTML += '<div id="collapse-' + baseName + '" class="collapse">\n';
 
     contentHTML += '<h3 id="' + baseURL.slice( 1 ) + '" class="section">' + baseName + '</h3>\n';
-    contentHTML += '<p>\n' + toParagraphs( doc.topLevelComment.description ) + '\n</p>\n';
+    contentHTML += descriptionHTML( doc.topLevelComment.description );
 
     typeNames.forEach( function( typeName ) {
       var baseObject = doc[ typeName ];
@@ -152,7 +242,7 @@
           constructorLine += ' <span class="inherit">extends ' + typeString( baseObject.supertype ) + '</span>';
         }
         contentHTML += '<h4 id="' + baseURLPrefix + 'constructor" class="section">' + constructorLine + '</h4>';
-        contentHTML += '<p>' + toParagraphs( baseObject.comment.description ) + '</p>';
+        contentHTML += descriptionHTML( baseObject.comment.description );
         contentHTML += parameterDetailsList( baseObject.comment );
       }
 
@@ -168,7 +258,7 @@
         typeLine += returnOrConstant( object );
         contentHTML += '<h5 id="' + baseURLPrefix + object.name + '" class="section">' + typeLine + '</h5>';
         if ( object.description ) {
-          contentHTML += '<p>' + toParagraphs( object.description ) + '</p>';
+          contentHTML += descriptionHTML( object.description );
         }
         contentHTML += parameterDetailsList( object );
 
@@ -185,7 +275,7 @@
           typeLine += ' <span class="property">' + typeString( object.type ) + '</span>';
           contentHTML += '<h5 id="' + baseURLPrefix + object.name + '" class="section">' + typeLine + '</h5>';
           if ( object.description ) {
-            contentHTML += '<p>' + toParagraphs( object.description ) + '</p>';
+            contentHTML += descriptionHTML( object.description );
           }
         } );
       }
@@ -211,7 +301,7 @@
             typeLine += '</span>';
           }
           contentHTML += '<h5 id="' + baseURLPrefix + object.name + '" class="section">' + typeLine + '</h5>';
-          contentHTML += '<p>' + toParagraphs( object.description ) + '</p>';
+          contentHTML += descriptionHTML( object.description );
           contentHTML += parameterDetailsList( object );
         } );
       }
