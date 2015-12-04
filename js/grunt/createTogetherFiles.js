@@ -112,6 +112,14 @@ module.exports = function( grunt, buildConfig ) {
         '<!--if camelcase===beaker' // don't end this comment, so the next comment will end
       );
     }
+
+    if ( camelCase !== 'concentration' ) {
+      text = ChipperStringUtils.replaceAll(
+        text,
+        '<!--if camelcase===concentration-->',
+        '<!--if camelcase===concentration' // don't end this comment, so the next comment will end
+      );
+    }
     return text;
   };
 
@@ -120,9 +128,9 @@ module.exports = function( grunt, buildConfig ) {
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../together/doc/', function( abspath, rootdir, subdir, filename ) {
       // skip these files
-      if ( abspath.indexOf( '../simula-rasa/README.md' ) === 0 ||
+    if ( abspath.indexOf( '../simula-rasa/README.md' ) === 0 ||
            abspath.indexOf( '../simula-rasa/node_modules/' ) === 0 ||
-           abspath.indexOf( '../simula-rasa/.git/' ) === 0 ||
+         abspath.indexOf( '../simula-rasa/.git/' ) === 0 ||
            abspath.indexOf( '../simula-rasa/build/' ) === 0 ) {
 
         // do nothing
