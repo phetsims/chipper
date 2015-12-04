@@ -45,7 +45,7 @@ module.exports = function( grunt, buildConfig ) {
 
   var copyrightHeader = '// Copyright 2002-2015, University of Colorado Boulder\n' +
                         '// For licensing, please contact phethelp@colorado.edu';
-  grunt.file.write( 'build/js/SimIFrameClient.js', copyrightHeader + '\n' + minified );
+  grunt.file.write( 'build/phet-io/js/SimIFrameClient.js', copyrightHeader + '\n' + minified );
 
   // Create a mirror-input-events.html file for testing.
 
@@ -85,29 +85,29 @@ module.exports = function( grunt, buildConfig ) {
     text = ChipperStringUtils.replaceAll(
       text,
       '\'../../../color-vision/color-vision_en.html?brand=phet-io\'',
-      '\'../' + buildConfig.name + '_en.html?build\''
+      '\'../../' + buildConfig.name + '_en.html?build\''
     );
     text = ChipperStringUtils.replaceAll(
       text,
       '\'../../../faradays-law/faradays-law_en.html?brand=phet-io\'',
-      '\'../' + buildConfig.name + '_en.html?build\''
+      '\'../../' + buildConfig.name + '_en.html?build\''
     );
     text = ChipperStringUtils.replaceAll(
       text,
       '\'../../../concentration/concentration_en.html?brand=phet-io\'',
-      '\'../' + buildConfig.name + '_en.html?build\''
+      '\'../../' + buildConfig.name + '_en.html?build\''
     );
     text = ChipperStringUtils.replaceAll(
       text,
       '\'../../../concentration/beaker.html?brand=phet-io\'',
-      '\'../' + buildConfig.name + '_en.html?build\''
+      '\'../../' + buildConfig.name + '_en.html?build\''
     );
     //
     if ( camelCase === 'beaker' ) {
       text = ChipperStringUtils.replaceAll(
         text,
-        '\'../../html/beaker-together.html?brand=phet-io&together.values=',
-        '\'../' + buildConfig.name + '_en.html?build\''
+        '\'../../html/beaker-together.html?brand=phet-io\'',
+        '\'../../' + buildConfig.name + '_en.html?build\''
       );
     }
     else {
@@ -128,32 +128,22 @@ module.exports = function( grunt, buildConfig ) {
     return text;
   };
 
-  var destinationPath = 'build';
+  var destinationPath = 'build/phet-io';
 
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../together/doc/', function( abspath, rootdir, subdir, filename ) {
-      // skip these files
-    if ( abspath.indexOf( '../simula-rasa/README.md' ) === 0 ||
-           abspath.indexOf( '../simula-rasa/node_modules/' ) === 0 ||
-         abspath.indexOf( '../simula-rasa/.git/' ) === 0 ||
-           abspath.indexOf( '../simula-rasa/build/' ) === 0 ) {
 
-        // do nothing
+    var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
+    if ( abspath.indexOf( '.png' ) >= 0 ) {
+      grunt.file.copy( abspath, contentsPath );
       }
       else {
-        var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
-        if ( abspath.indexOf( '.png' ) >= 0 ) {
-          grunt.file.copy( abspath, contentsPath );
-        }
-        else {
-          var contents = grunt.file.read( abspath );
-          contents = filter( contents );
+      var contents = grunt.file.read( abspath );
+      contents = filter( contents );
 
-          // Write the file
-          grunt.file.write( contentsPath, contents );
-          grunt.log.writeln( 'wrote', contentsPath );
-        }
-
+      // Write the file
+      grunt.file.write( contentsPath, contents );
+      grunt.log.writeln( 'wrote', contentsPath );
       }
     }
   );
