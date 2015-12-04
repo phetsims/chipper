@@ -97,6 +97,11 @@ module.exports = function( grunt, buildConfig ) {
       '\'../../../concentration/concentration_en.html?brand=phet-io\'',
       '\'../' + buildConfig.name + '_en.html?build\''
     );
+    text = ChipperStringUtils.replaceAll(
+      text,
+      '\'../../../concentration/beaker.html?brand=phet-io\'',
+      '\'../' + buildConfig.name + '_en.html?build\''
+    );
     //
     if ( camelCase === 'beaker' ) {
       text = ChipperStringUtils.replaceAll(
