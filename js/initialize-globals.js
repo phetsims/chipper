@@ -74,6 +74,9 @@
  *                             - it only triggers upon the first context loss.
  * buildCompatible - When present, will trigger changes that are more similar to the build environment. Right now, this
  *                   includes computing higher-resolution mipmaps for the mipmap plugin.
+ * showCanvasNodeBounds - Displays an overlay of the current bounds of each CanvasNode
+ * showFittedBlockBounds - Displays an overlay of the current bounds of each "fittable" Scenery Block.
+ * showPointers - Displays a semi-transparent cursor indicator for the location of each active pointer on the screen.
  *
  * This file reads query parameters from browser window's URL.
  * This file must be loaded before requirejs is started up, and this file cannot be loaded as an AMD module.
