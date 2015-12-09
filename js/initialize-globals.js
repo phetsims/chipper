@@ -75,7 +75,7 @@
  * buildCompatible - When present, will trigger changes that are more similar to the build environment. Right now, this
  *                   includes computing higher-resolution mipmaps for the mipmap plugin.
  * showCanvasNodeBounds - Displays an overlay of the current bounds of each CanvasNode
- * showFittedBlockBounds - Displays an overlay of the current bounds of each "fittable" Scenery Block.
+ * showFittedBlockBounds - Displays an overlay of the current bounds of each scenery.FittedBlock
  * showPointers - Displays a semi-transparent cursor indicator for the location of each active pointer on the screen.
  *
  * This file reads query parameters from browser window's URL.
