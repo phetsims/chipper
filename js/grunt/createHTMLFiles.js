@@ -232,19 +232,23 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     var localeChipperNamespaceJavascript = replaceLocaleConstants( chipperNamespaceJavascript, locale );
     var localeChipperStringSetupJavascript = replaceLocaleConstants( chipperStringSetupJavascript, locale );
 
+    // Write the single-file built simulation file
     grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
 
-    var localeDir = 'build/chrome-web-store_' + locale;
-    var localeJSDir = localeDir + '/js';
-    grunt.file.mkdir( localeDir );
-    grunt.file.mkdir( localeJSDir );
+    // Write the Chrome Web Store files
+    if ( grunt.option( 'chromeWebStore' ) ) {
+      var localeDir = 'build/chrome-web-store_' + locale;
+      var localeJSDir = localeDir + '/js';
+      grunt.file.mkdir( localeDir );
+      grunt.file.mkdir( localeJSDir );
 
-    grunt.file.write( localeDir + '/' + buildConfig.name + '_' + locale + '.html', chromeLocaleHTML );
-    grunt.file.write( localeJSDir + '/chipper-namespace.js', localeChipperNamespaceJavascript );
-    grunt.file.write( localeJSDir + '/chipper-string-setup.js', localeChipperStringSetupJavascript );
-    grunt.file.write( localeJSDir + '/mipmaps.js', mipmapsJavaScript );
-    grunt.file.write( localeJSDir + '/preload.js', preloadScripts.join( '\n' ) );
-    grunt.file.write( localeJSDir + '/main.js', mainInlineJavascript );
+      grunt.file.write( localeDir + '/' + buildConfig.name + '_' + locale + '.html', chromeLocaleHTML );
+      grunt.file.write( localeJSDir + '/chipper-namespace.js', localeChipperNamespaceJavascript );
+      grunt.file.write( localeJSDir + '/chipper-string-setup.js', localeChipperStringSetupJavascript );
+      grunt.file.write( localeJSDir + '/mipmaps.js', mipmapsJavaScript );
+      grunt.file.write( localeJSDir + '/preload.js', preloadScripts.join( '\n' ) );
+      grunt.file.write( localeJSDir + '/main.js', mainInlineJavascript );
+    }
   }
 
   //TODO should this be using ChipperConstants.FALLBACK_LOCALE instead of hardcoded to 'en'?
