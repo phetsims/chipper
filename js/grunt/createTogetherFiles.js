@@ -131,7 +131,7 @@ module.exports = function( grunt, buildConfig ) {
   var destinationPath = 'build/phet-io';
 
   // Iterate over the file system and copy files, changing filenames and contents as we go.
-  grunt.file.recurse( '../together/doc/', function( abspath, rootdir, subdir, filename ) {
+  grunt.file.recurse( '../together/doc/site/', function( abspath, rootdir, subdir, filename ) {
 
     var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
     if ( abspath.indexOf( '.png' ) >= 0 ) {
@@ -148,18 +148,18 @@ module.exports = function( grunt, buildConfig ) {
     }
   );
 
-  // Also update the together/doc/index.html for any file contents it includes
+  // Also update the together/doc/site/index.html for any file contents it includes
   if ( grunt.option( 'together-doc' ) ) {
     console.log( 'running together-doc' );
-    var text = grunt.file.read( '../together/doc/index.html' );
+    var text = grunt.file.read( '../together/doc/site/index.html' );
     var startKey = '<!--START_active.html-->';
     var endKey = '<!--END_active.html-->';
     var startIndex = text.indexOf( startKey ) + startKey.length;
     var endIndex = text.indexOf( endKey );
-    var replacement = grunt.file.read( '../together/doc/examples/active.html' );
+    var replacement = grunt.file.read( '../together/doc/site/examples/active.html' );
     replacement = filter( replacement ); // neat!
     replacement = escapeHTML( replacement );
     var newText = text.substring( 0, startIndex ) + replacement + text.substring( endIndex );
-    grunt.file.write( '../together/doc/index.html', newText );
+    grunt.file.write( '../together/doc/site/index.html', newText );
   }
 };
