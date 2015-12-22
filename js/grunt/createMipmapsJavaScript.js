@@ -59,7 +59,7 @@ module.exports = function( grunt, buildConfig, callback ) {
 
         // All mipmaps processed, we're done.
         if ( mipmapsLoaded === global.phet.chipper.mipmapsToBuild.length ) {
-          callback( '<script type="text/javascript">window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';</script>' );
+          callback( 'window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';' );
         }
       } );
     } );

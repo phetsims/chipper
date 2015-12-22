@@ -88,7 +88,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   // Minify scripts that will be preloaded in the HMTL file.
   grunt.log.debug( 'Minifying preload scripts' );
-  var preloadJavaScript = '';
+  var preloadScripts = [];
   for ( var libIdx = 0; libIdx < buildConfig.preload.length; libIdx++ ) {
     var lib = buildConfig.preload[ libIdx ];
 
@@ -108,14 +108,15 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
         }
       } ).code;
     }
-    preloadJavaScript += '<script type="text/javascript" id="script-' + lib + '">\n' + processedCode + '\n</script>\n';
+
+    // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
+    preloadScripts.push( processedCode.replace( '\x0B', '\\x0B' ) );
   }
 
   // Load the optimized code for the sim.
   var mainInlineJavascript = grunt.file.read( 'build/' + buildConfig.name + '.min.js' );
 
   // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
-  preloadJavaScript = preloadJavaScript.replace( '\x0B', '\\x0B' );
   mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
   // License entries for third-party media files that were loaded by media plugins.
@@ -157,53 +158,97 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   grunt.log.debug( 'Constructing HTML from template' );
   var html = grunt.file.read( '../chipper/templates/sim.html' );
+  var chromeHTML = grunt.file.read( '../chipper/templates/sim-chrome-web-store.html' );
+  var chipperNamespaceJavascript = grunt.file.read( '../chipper/templates/chipper-namespace.js' );
+  var chipperStringSetupJavascript = grunt.file.read( '../chipper/templates/chipper-string-setup.js' );
 
-  // Strip out carriage returns (if building on Windows), then add in our own after the MOTW (Mark Of The Web).
-  // See https://github.com/phetsims/joist/issues/164 and
-  // https://msdn.microsoft.com/en-us/library/ms537628%28v=vs.85%29.aspx
-  html = html.replace( /\r/g, '' );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_CARRIAGE_RETURN', '\r' );
+  function replaceConstants( string, insertScripts ) {
+    // Strip out carriage returns (if building on Windows), then add in our own after the MOTW (Mark Of The Web).
+    // See https://github.com/phetsims/joist/issues/164 and
+    // https://msdn.microsoft.com/en-us/library/ms537628%28v=vs.85%29.aspx
+    string = string.replace( /\r/g, '' );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_CARRIAGE_RETURN', '\r' );
 
-  // Replace tokens in the template that are independent of locale
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_HTML_HEADER', htmlHeader );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_MIPMAPS_JAVASCRIPT', mipmapsJavaScript );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_SPLASH_DATA_URI', splashDataURI );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_PRELOAD_JAVASCRIPT', preloadJavaScript );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_MAIN_JAVASCRIPT', '<script type="text/javascript">' + mainInlineJavascript + '</script>' );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_DEPENDENCIES', dependencies );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_PROJECT', buildConfig.name );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_VERSION', buildConfig.version );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_BUILD_TIMESTAMP', timestamp );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_BRAND', buildConfig.brand );
-  html = ChipperStringUtils.replaceFirst( html, 'PHET_THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
+    // Replace tokens in the template that are independent of locale
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_HTML_HEADER', htmlHeader );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_MIPMAPS_JAVASCRIPT', mipmapsJavaScript );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_SPLASH_DATA_URI', splashDataURI );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_PRELOAD_JAVASCRIPT', preloadScripts.map( function( script ) {
+      if ( insertScripts ) {
+        return '<script type="text/javascript">\n' + script + '\n</script>\n';
+      }
+      else {
+        return script + '\n';
+      }
+    } ).join( '\n' ) );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_MAIN_JAVASCRIPT', mainInlineJavascript );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_DEPENDENCIES', dependencies );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_PROJECT', buildConfig.name );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_VERSION', buildConfig.version );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_BUILD_TIMESTAMP', timestamp );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_BRAND', buildConfig.brand );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
+
+    return string;
+  }
+
+  html = replaceConstants( html, true );
+  chromeHTML = replaceConstants( chromeHTML, false );
+  chipperNamespaceJavascript = replaceConstants( chipperNamespaceJavascript, false );
+  chipperStringSetupJavascript = replaceConstants( chipperStringSetupJavascript, false );
+
+  function replaceLocaleConstants( string, locale ) {
+    var localeTitleAndVersion = stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version; //TODO: i18n order
+
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
+
+    //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
+    // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_LOCALE', locale );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_SIM_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
+
+    // metadata for Open Graph protocol, see phet-edmodo#2
+    string = ChipperStringUtils.replaceFirst( string, 'OG_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
+    string = ChipperStringUtils.replaceFirst( string, 'OG_URL', latestDir + buildConfig.name + '_' + locale + '.html' );
+    string = ChipperStringUtils.replaceFirst( string, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
+
+    // TODO: chipper#270 workaround, part 2 (see part 1 in getBuildConfig.js)
+    if ( buildConfig.brand === 'phet-io' ) {
+      var devVersion = buildConfig.version.replace( '-phet-io', '-dev' );
+      string = string.replace( devVersion, buildConfig.version );
+    }
+
+    return string;
+  }
 
   // Create locale-specific HTML files
   for ( var i = 0; i < buildConfig.locales.length; i++ ) {
     var locale = buildConfig.locales[ i ];
 
-    var localeHTML = ChipperStringUtils.replaceFirst( html, 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
+    var localeHTML = replaceLocaleConstants( html, locale );
+    var chromeLocaleHTML = replaceLocaleConstants( chromeHTML, locale );
+    var localeChipperNamespaceJavascript = replaceLocaleConstants( chipperNamespaceJavascript, locale );
+    var localeChipperStringSetupJavascript = replaceLocaleConstants( chipperStringSetupJavascript, locale );
 
-    var localeTitleAndVersion = stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version; //TODO: i18n order
-
-    //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
-    // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_LOCALE', locale );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_SIM_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
-
-    // metadata for Open Graph protocol, see phet-edmodo#2
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_URL', latestDir + buildConfig.name + '_' + locale + '.html' );
-    localeHTML = ChipperStringUtils.replaceFirst( localeHTML, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
-
-    // TODO: chipper#270 workaround, part 2 (see part 1 in getBuildConfig.js)
-    if ( buildConfig.brand === 'phet-io' ) {
-      var devVersion = buildConfig.version.replace( '-phet-io', '-dev' );
-      localeHTML = localeHTML.replace( devVersion, buildConfig.version );
-    }
-
+    // Write the single-file built simulation file
     grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
+
+    // Write the Chrome Web Store files
+    if ( grunt.option( 'chromeWebStore' ) ) {
+      var localeDir = 'build/chrome-web-store_' + locale;
+      var localeJSDir = localeDir + '/js';
+      grunt.file.mkdir( localeDir );
+      grunt.file.mkdir( localeJSDir );
+
+      grunt.file.write( localeDir + '/' + buildConfig.name + '_' + locale + '.html', chromeLocaleHTML );
+      grunt.file.write( localeJSDir + '/chipper-namespace.js', localeChipperNamespaceJavascript );
+      grunt.file.write( localeJSDir + '/chipper-string-setup.js', localeChipperStringSetupJavascript );
+      grunt.file.write( localeJSDir + '/mipmaps.js', mipmapsJavaScript );
+      grunt.file.write( localeJSDir + '/preload.js', preloadScripts.join( '\n' ) );
+      grunt.file.write( localeJSDir + '/main.js', mainInlineJavascript );
+    }
   }
 
   //TODO should this be using ChipperConstants.FALLBACK_LOCALE instead of hardcoded to 'en'?
