@@ -37,6 +37,7 @@ var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var createTogetherFiles = require( '../../../chipper/js/grunt/createTogetherFiles' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
+var portJavaStrings = require( '../../../chipper/js/grunt/portJavaStrings' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -298,6 +299,13 @@ module.exports = function( grunt ) {
     'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
     function() {
       commitsSince( grunt, buildConfig );
+    } );
+
+  grunt.registerTask( 'port-java-strings',
+    'Port Java strings to JSON and place in the babel repository\n' +
+    '--java-sim-dir (required) the path to the Java simulation directory\n' +
+    '--overwrite (optional) whether to overwrite existing files in babel', function() {
+      portJavaStrings( grunt, buildConfig );
     } );
 
   /*
