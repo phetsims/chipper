@@ -14,6 +14,10 @@
  * The directory is neither automatically created nor automatically cleaned, this is the responsibility of the developer.
  * (Note that if you fail to manually clean the directory, you may end up with stale HTML files).
  *
+ * Example steps in order:
+ * grunt-all.sh
+ * grunt report-third-party --input=/Users/samreid/github/sherpa/temp --output=/Users/samreid/github/sherpa/third-party-licenses.md --activeRunnables
+ *
  * See https://github.com/phetsims/chipper/issues/162
  *
  * @author Sam Reid
