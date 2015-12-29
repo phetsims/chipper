@@ -196,7 +196,7 @@ module.exports = function( grunt, buildConfig ) {
       allTranslationFiles.push( { abspath: abspath, parsed: propertiesParser.parse( grunt.file.read( abspath ) ) } );
     }
   } );
-  grunt.log.writeln( 'parsed ' + allTranslationFiles.length + ' files' );
+  grunt.log.writeln( 'parsed ' + allTranslationFiles.length + ' English files for cross-repo search' );
 
   var localeFiles = fs.readdirSync( localizationDir );
 
