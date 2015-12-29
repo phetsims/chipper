@@ -36,8 +36,14 @@ module.exports = function( grunt, buildConfig ) {
   var englishJavaStrings = propertiesParser.parse( propertiesString );
   var javaKeys = _.keys( englishJavaStrings );
 
+  // This task has two modes:
+  // (a) given a pre-existing JSON English file, port other languages based on the keys & values
+  // This is useful when many strings have been changed/removed in porting to HTML5
+  // (b) porting all of the files, including the English file.  This is performed if no English JSON
+  // file can be found.
   var englishJSONStrings = null;
   try {
+    grunt.log.writeln( 'found English JSON file, using it to port the remaining languages...' );
     englishJSONStrings = grunt.file.readJSON( simulationRoot + '/' + buildConfig.name + '-strings_en.json' );
   }
   catch( e ) {
