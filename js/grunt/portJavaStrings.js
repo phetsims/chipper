@@ -22,11 +22,10 @@ module.exports = function( grunt, buildConfig ) {
 
   // constants
   var simulationRoot = process.cwd();
-  var jsStrings = grunt.file.readJSON( simulationRoot + '/' + buildConfig.name + '-strings_en.json' );
 
   var javaSimDir = grunt.option( 'java-sim-dir' );
   if ( !javaSimDir ) {
-    console.log( 'Usage: java-sim-dir is required' );
+    grunt.log.writeln( 'Usage: java-sim-dir is required' );
     return;
   }
   var javaSimName = javaSimDir.substring( javaSimDir.lastIndexOf( '/' ) + 1 );
@@ -34,15 +33,29 @@ module.exports = function( grunt, buildConfig ) {
   var localizationDir = javaSimDir + '/data/' + javaSimName + '/localization';
   var propertiesString = grunt.file.read( localizationDir + '/' + javaSimName + '-strings.properties' );
 
-  var javaStrings = propertiesParser.parse( propertiesString );
+  var englishJavaStrings = propertiesParser.parse( propertiesString );
+  var javaKeys = _.keys( englishJavaStrings );
 
-  var jsKeys = _.keys( jsStrings );
-  var javaKeys = _.keys( javaStrings );
+  var englishJSONStrings = null;
+  try {
+    englishJSONStrings = grunt.file.readJSON( simulationRoot + '/' + buildConfig.name + '-strings_en.json' );
+  }
+  catch( e ) {
+    grunt.log.writeln( 'could not find English JSON strings, generating them first...' );
+    englishJSONStrings = {};
+    for ( var kk = 0; kk < javaKeys.length; kk++ ) {
+      var javaKey = javaKeys[ kk ];
+      englishJSONStrings[ javaKey ] = { value: englishJavaStrings[ javaKey ] };
+    }
+    grunt.file.write( simulationRoot + '/' + buildConfig.name + '-strings_en.json', JSON.stringify( englishJSONStrings, null, 2 ) );
+  }
+
+  var jsKeys = _.keys( englishJSONStrings );
 
   var getTranslationFromSimKey = function( jsKey, locale ) {
 
     // If the English Java file has the same key name as JS, then look for that translated string
-    if ( javaStrings[ jsKey ] ) {
+    if ( englishJavaStrings[ jsKey ] ) {
 
       return javaSimTranslations[ locale ].parsed[ jsKey ];
     }
@@ -52,13 +65,13 @@ module.exports = function( grunt, buildConfig ) {
   // If there has been a key renaming from Java to JS, we may still be able to look up the appropriate key by looking
   // at the translated values
   var getTranslationFromSimTranslation = function( jsKey, locale, matchCase ) {
-    var jsValue = jsStrings[ jsKey ].value;
+    var jsValue = englishJSONStrings[ jsKey ].value;
     for ( var i = 0; i < javaKeys.length; i++ ) {
       var javaKey = javaKeys[ i ];
-      var javaValue = javaStrings[ javaKey ];
-      //console.log( javaValue, '??', jsValue );
+      var javaValue = englishJavaStrings[ javaKey ];
+      //grunt.log.writeln( javaValue, '??', jsValue );
       if ( ( matchCase && (javaValue === jsValue)) || (javaValue.toLowerCase() === jsValue.toLowerCase()) ) {
-        //console.log( 'got a match based on values for ' + jsKey + ', ' + locale + ', ' + matchCase );
+        //grunt.log.writeln( 'got a match based on values for ' + jsKey + ', ' + locale + ', ' + matchCase );
         return getTranslationFromSimKey( javaKey, locale );
       }
     }
@@ -68,7 +81,7 @@ module.exports = function( grunt, buildConfig ) {
   };
 
   var getTranslationFromAnyTranslation = function( jsKey, locale, matchCase ) {
-    var jsValue = jsStrings[ jsKey ].value;
+    var jsValue = englishJSONStrings[ jsKey ].value;
 
     var foundValues = [];
     for ( var i = 0; i < allTranslationFiles.length; i++ ) {
@@ -86,11 +99,11 @@ module.exports = function( grunt, buildConfig ) {
           var localizationParentDir = localizationDirectory.substring( 0, localizationDirectory.lastIndexOf( '/' ) );
           var projectName = localizationParentDir.substring( localizationParentDir.lastIndexOf( '/' ) + 1 );
           var localizedPath = localizationDirectory + '/' + projectName + '-strings_' + locale + '.properties';
-          //console.log( 'abspath ' + abspath );
-          //console.log( 'localizationDir: ' + localizationDirectory );
-          //console.log( 'projectDir: ' + localizationParentDir );
-          //console.log( 'projectName: ' + projectName );
-          //console.log( 'localizedPath: ' + localizedPath );
+          //grunt.log.writeln( 'abspath ' + abspath );
+          //grunt.log.writeln( 'localizationDir: ' + localizationDirectory );
+          //grunt.log.writeln( 'projectDir: ' + localizationParentDir );
+          //grunt.log.writeln( 'projectName: ' + projectName );
+          //grunt.log.writeln( 'localizedPath: ' + localizedPath );
 
           if ( fs.existsSync( localizedPath ) ) {
             var localizedStrings = propertiesParser.parse( grunt.file.read( localizedPath ) );
@@ -104,7 +117,7 @@ module.exports = function( grunt, buildConfig ) {
     }
 
     if ( foundValues.length > 0 ) {
-      //console.log( jsKey + ' (' + locale + ') found these values: ' + foundValues );
+      //grunt.log.writeln( jsKey + ' (' + locale + ') found these values: ' + foundValues );
       var counts = {};
 
       var max = 0;
@@ -117,7 +130,7 @@ module.exports = function( grunt, buildConfig ) {
           maxFoundValue = foundValue;
         }
       }
-      console.log( jsKey + ' (' + locale + ') returning ' + maxFoundValue + ' with ' + counts[ maxFoundValue ] + ' votes from the following pool: ', counts );
+      grunt.log.writeln( jsKey + ' (' + locale + ') returning ' + maxFoundValue + ' with ' + counts[ maxFoundValue ] + ' votes from the following pool: ', counts );
       return maxFoundValue;
     }
 
@@ -150,7 +163,7 @@ module.exports = function( grunt, buildConfig ) {
       var value = getValueForJSKey( jsKey, locale );
 
       if ( !value ) {
-        //console.log( 'MISSING KEY: ' + jsKey );
+        //grunt.log.writeln( 'MISSING KEY: ' + jsKey );
         missingForLocale.push( jsKey );
       }
       else {
@@ -162,12 +175,12 @@ module.exports = function( grunt, buildConfig ) {
     // write to babel
     var filename = simulationRoot + '/../babel/' + buildConfig.name + '/' + buildConfig.name + '-strings_' + locale + '.json';
     if ( grunt.file.exists( filename ) && !grunt.option( 'overwrite' ) ) {
-      console.log( 'File already existed ' + filename + ', skipping...' );
+      grunt.log.writeln( 'File already existed ' + filename + ', skipping...' );
     }
     else {
       grunt.file.write( filename, JSON.stringify( result, null, 2 ) );
     }
-    console.log( locale + ': ' + foundForLocale.length + '/' + jsKeys.length + '. Missing: ' + missingForLocale );
+    grunt.log.writeln( locale + ': ' + foundForLocale.length + '/' + jsKeys.length + '. Missing: ' + missingForLocale );
   };
 
   var allTranslationFiles = [];
@@ -177,7 +190,7 @@ module.exports = function( grunt, buildConfig ) {
       allTranslationFiles.push( { abspath: abspath, parsed: propertiesParser.parse( grunt.file.read( abspath ) ) } );
     }
   } );
-  console.log( 'parsed ' + allTranslationFiles.length + ' files' );
+  grunt.log.writeln( 'parsed ' + allTranslationFiles.length + ' files' );
 
   var localeFiles = fs.readdirSync( localizationDir );
 
