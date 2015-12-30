@@ -23,20 +23,20 @@ module.exports = function( grunt, buildConfig ) {
   var simulationRoot = process.cwd();
   var jsStrings = grunt.file.readJSON( simulationRoot + '/' + buildConfig.name + '-strings_en.json' );
 
-	// iterate over the strings
-	for( var key in jsStrings ) {
-		if( jsStrings.hasOwnProperty( key ) ) {
+  // iterate over the strings
+  for( var key in jsStrings ) {
+    if( jsStrings.hasOwnProperty( key ) ) {
 
-			var string = jsStrings[ key ].value;
-			var requireStringKey = buildConfig.requirejsNamespace + '/' + key;
-			
-			// global.phet.chipper.strings is initialized by the string plugin
-			var chipperStrings = global.phet.chipper.strings || {};
+      var string = jsStrings[ key ].value;
+      var requireStringKey = buildConfig.requirejsNamespace + '/' + key;
+      
+      // global.phet.chipper.strings is initialized by the string plugin
+      var chipperStrings = global.phet.chipper.strings || {};
 
       // If this string was not added to the global chipperStrings, it was not required in the sim
       if ( !chipperStrings.hasOwnProperty( requireStringKey ) ) {
         grunt.log.warn( 'Unused string: ' + requireStringKey + ', ' + string );
       }
-		}
-	}
+    }
+  }
 };
