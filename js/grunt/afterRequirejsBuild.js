@@ -12,6 +12,7 @@ var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenc
 var createMipmapsJavaScript = require( '../../../chipper/js/grunt/createMipmapsJavaScript' );
 var createHTMLFiles = require( '../../../chipper/js/grunt/createHTMLFiles' );
 var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );
+var reportUnusedStrings = require( '../../../chipper/js/grunt/reportUnusedStrings' );
 
 /**
  * @param grunt - the grunt instance
@@ -26,6 +27,9 @@ module.exports = function( grunt, buildConfig ) {
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( grunt, buildConfig.requirejsNamespace );
+
+  // After all strings have been loaded, report which of the translatable strings are unused.
+  reportUnusedStrings( grunt, buildConfig );
 
   // Since this is an asynchronous task, each step in the task uses a callback to advance to the next step.
   // The final step in the task calls 'done', to tell grunt that the task has completed.
