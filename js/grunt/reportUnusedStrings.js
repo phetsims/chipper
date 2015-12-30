@@ -35,7 +35,7 @@ module.exports = function( grunt, buildConfig ) {
 
       // If this string was not added to the global chipperStrings, it was not required in the sim
       if ( !chipperStrings.hasOwnProperty( requireStringKey ) ) {
-        grunt.log.warn( 'Unused string: ' + requireStringKey + ', ' + string );
+        grunt.log.warn( 'Unused string: key=' + requireStringKey + ', value=' + string );
       }
     }
   }
