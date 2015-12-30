@@ -62,7 +62,6 @@ module.exports = function( grunt, buildConfig ) {
 
     // If the English Java file has the same key name as JS, then look for that translated string
     if ( englishJavaStrings[ jsKey ] ) {
-
       return javaSimTranslations[ locale ].parsed[ jsKey ];
     }
     return null;
@@ -204,7 +203,7 @@ module.exports = function( grunt, buildConfig ) {
   for ( var i = 0; i < localeFiles.length; i++ ) {
     var file = localeFiles[ i ];
     if ( file.indexOf( '.properties' ) >= 0 && file.indexOf( '_' ) >= 0 ) {
-      var locale = file.substring( file.lastIndexOf( '_' ) + 1, file.lastIndexOf( '.' ) );
+      var locale = file.substring( file.indexOf( '_' ) + 1, file.lastIndexOf( '.' ) );
       var abspath = localizationDir + '/' + file;
       javaSimTranslations[ locale ] = {
         abspath: abspath,
@@ -216,10 +215,8 @@ module.exports = function( grunt, buildConfig ) {
   for ( var m = 0; m < localeFiles.length; m++ ) {
     var localeFile = localeFiles[ m ];
     if ( localeFile.indexOf( '.properties' ) >= 0 && localeFile.indexOf( '_' ) >= 0 ) {
-      var localeForFile = localeFile.substring( localeFile.lastIndexOf( '_' ) + 1, localeFile.lastIndexOf( '.' ) );
-      if ( localeForFile === 'fr' ) { // TODO: Undo this short circuit
-        visitLocale( localeForFile );
-      }
+      var localeForFile = localeFile.substring( localeFile.indexOf( '_' ) + 1, localeFile.lastIndexOf( '.' ) );
+      visitLocale( localeForFile );
     }
   }
 };
