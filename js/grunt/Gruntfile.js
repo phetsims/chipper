@@ -100,6 +100,15 @@ module.exports = function( grunt ) {
     optionalTasks.push( 'lint-all' );
   }
 
+  var additionalTasks = [
+    'clean',
+    'requirejs:build',
+    'after-requirejs-build'
+  ];
+
+  if ( buildConfig.brand === 'phet-io' ) {
+    additionalTasks.push( 'create-together-files' );
+  }
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
     'with no options, builds HTML for English only\n' +
@@ -111,12 +120,7 @@ module.exports = function( grunt ) {
     '--mangle=false : skip the mangling portion of UglifyJS2, and beautify the output\n' +
     '--uglify=false : skip the UglifyJS2 step altogether\n' +
     '--chromeWebStore : Output additional files that can be deployed to the Chrome Web Store',
-    optionalTasks.concat( [
-      'clean',
-      'requirejs:build',
-      'after-requirejs-build',
-      'create-together-files'
-    ] )
+    optionalTasks.concat( additionalTasks )
   );
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
@@ -126,9 +130,7 @@ module.exports = function( grunt ) {
   // This is a separate task in order to make it easy to iterate on dev examples, without
   // having to rebuild the simulation html
   grunt.registerTask( 'create-together-files', 'Generate example files for together, if the brand is phet-io', function() {
-    if ( buildConfig.brand === 'phet-io' ) {
-      createTogetherFiles( grunt, buildConfig );
-    }
+    createTogetherFiles( grunt, buildConfig );
   } );
 
   // Grunt task that determines created and last modified dates from git, and
