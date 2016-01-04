@@ -97,24 +97,27 @@ module.exports = function( grunt, buildConfig ) {
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
-  var simIFrameClientJS = uglify.minify( [ '../together/js/SimIFrameClient.js' ], {
-    mangle: true,
-    output: {
-      inline_script: true, // escape </script
-      beautify: false
-    },
-    compress: {
-      global_defs: {}
-    }
-  } ).code;
-
-  var copyrightHeader = '// Copyright 2002-2015, University of Colorado Boulder\n' +
-                        '// For licensing, please contact phethelp@colorado.edu';
-  grunt.file.write( 'build/phet-io/js/SimIFrameClient.js', copyrightHeader + '\n' + simIFrameClientJS );
-
-  // Create a mirror-input-events.html file for testing.
-
   var destinationPath = 'build/phet-io';
+
+  var minifyAndWrite = function( filename ) {
+    var minified = uglify.minify( [ '../together/js/' + filename ], {
+      mangle: true,
+      output: {
+        inline_script: true, // escape </script
+        beautify: false
+      },
+      compress: {
+        global_defs: {}
+      }
+    } ).code;
+
+    var copyrightHeader = '// Copyright 2002-2015, University of Colorado Boulder\n' +
+                          '// For licensing, please contact phethelp@colorado.edu';
+    grunt.file.write( destinationPath + '/js/' + filename, copyrightHeader + '\n' + minified );
+  };
+
+  minifyAndWrite( 'SimIFrameClient.js' );
+  minifyAndWrite( 'SimWrapperUtils.js' );
 
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../together/doc/site/', function( abspath, rootdir, subdir, filename ) {
@@ -130,7 +133,7 @@ module.exports = function( grunt, buildConfig ) {
 
         // Write the file
         grunt.file.write( contentsPath, contents );
-        grunt.log.writeln( 'wrote', contentsPath );
+        grunt.log.writeln( 'wrote ' + contentsPath );
       }
     }
   );
