@@ -32,8 +32,8 @@ module.exports = function( grunt, buildConfig ) {
   var filter = function( text ) {
 
     text = ChipperStringUtils.replaceAll( text,
-      '../../js/SimIFrameClient.js',
-      '../js/SimIFrameClient.js'
+      '../../../js/',
+      '../js/'
     );
 
     text = ChipperStringUtils.replaceAll( text,
@@ -83,7 +83,7 @@ module.exports = function( grunt, buildConfig ) {
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
-  var destinationPath = 'build/doc';
+  var destinationPath = 'build/phet-io-doc';
 
   var minifyAndWrite = function( filename ) {
     var minified = uglify.minify( [ '../together/js/' + filename ], {
