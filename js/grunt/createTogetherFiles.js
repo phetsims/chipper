@@ -133,18 +133,18 @@ module.exports = function( grunt, buildConfig ) {
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../together/doc/site/', function( abspath, rootdir, subdir, filename ) {
 
-    var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
+      var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
 
-    if ( abspath.indexOf( '.png' ) >= 0 ) {
-      grunt.file.copy( abspath, contentsPath );
+      if ( abspath.indexOf( '.png' ) >= 0 ) {
+        grunt.file.copy( abspath, contentsPath );
       }
       else {
-      var contents = grunt.file.read( abspath );
-      contents = filter( contents );
+        var contents = grunt.file.read( abspath );
+        contents = filter( contents );
 
-      // Write the file
-      grunt.file.write( contentsPath, contents );
-      grunt.log.writeln( 'wrote', contentsPath );
+        // Write the file
+        grunt.file.write( contentsPath, contents );
+        grunt.log.writeln( 'wrote', contentsPath );
       }
     }
   );
