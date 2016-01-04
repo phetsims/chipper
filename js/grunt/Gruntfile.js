@@ -106,9 +106,6 @@ module.exports = function( grunt ) {
     'after-requirejs-build'
   ];
 
-  if ( buildConfig.brand === 'phet-io' ) {
-    additionalTasks.push( 'create-together-files' );
-  }
   grunt.registerTask( 'build',
     'Builds the simulation:\n' +
     'with no options, builds HTML for English only\n' +
