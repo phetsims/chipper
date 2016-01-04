@@ -29,10 +29,75 @@ function escapeHTML( str ) {
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
-// TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
+  var filter = function( text ) {
+
+    text = ChipperStringUtils.replaceAll( text,
+      '../../js/SimIFrameClient.js',
+      '../js/SimIFrameClient.js'
+    );
+    var camelCase = ChipperStringUtils.toCamelCase( buildConfig.name );
+
+    // TODO: Regex or more matches
+    text = ChipperStringUtils.replaceAll( text,
+      'togetherID: \'concentration.sim\'',
+      'togetherID: \'' + camelCase + '.sim\''
+    );
+    text = ChipperStringUtils.replaceAll( text,
+      '\'concentration.sim.active\'',
+      '\'' + camelCase + '.sim.active\''
+    );
+    text = ChipperStringUtils.replaceAll( text,
+      '\'faradaysLaw.sim',
+      '\'' + camelCase + '.sim'
+    );
+    text = ChipperStringUtils.replaceAll( text,
+      'src="../html/color-vision-together.html?brand=phet-io&togetherEvents.storeInitialMessages"',
+      'src="' + buildConfig.name + '_en.html?togetherEvents.storeInitialMessages"'
+    );
+
+    // Use a ?build so that use cases that require further query parameters don't have to distinguish between ? and &
+    text = ChipperStringUtils.replaceAll( text,
+      '\'../../../color-vision/color-vision_en.html?brand=phet-io\'',
+      '\'../../' + buildConfig.name + '_en.html?build\''
+    );
+    text = ChipperStringUtils.replaceAll( text,
+      '\'../../../faradays-law/faradays-law_en.html?brand=phet-io\'',
+      '\'../../' + buildConfig.name + '_en.html?build\''
+    );
+    text = ChipperStringUtils.replaceAll( text,
+      '\'../../../concentration/concentration_en.html?brand=phet-io\'',
+      '\'../../' + buildConfig.name + '_en.html?build\''
+    );
+    text = ChipperStringUtils.replaceAll( text,
+      '\'../../../concentration/beaker.html?brand=phet-io\'',
+      '\'../../' + buildConfig.name + '_en.html?build\''
+    );
+    text = ChipperStringUtils.replaceAll( text,
+      '\'../../html/beaker-together.html?brand=phet-io\'',
+      '\'../../' + buildConfig.name + '_en.html?build\''
+    );
+    return text;
+  };
+
+  // Also update the together/doc/site/index.html for any file contents it includes
+  if ( grunt.option( 'together-doc' ) ) {
+    console.log( 'running together-doc' );
+    var text = grunt.file.read( '../together/doc/site/index.html' );
+    var startKey = '<!--START_active.html-->';
+    var endKey = '<!--END_active.html-->';
+    var startIndex = text.indexOf( startKey ) + startKey.length;
+    var endIndex = text.indexOf( endKey );
+    var replacement = grunt.file.read( '../together/doc/site/examples/active.html' );
+    replacement = filter( replacement ); // neat!
+    replacement = escapeHTML( replacement );
+    var newText = text.substring( 0, startIndex ) + replacement + text.substring( endIndex );
+    grunt.file.write( '../together/doc/site/index.html', newText );
+  }
+
+  // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
-  var minified = uglify.minify( [ '../together/js/SimIFrameClient.js' ], {
+  var simIFrameClientJS = uglify.minify( [ '../together/js/SimIFrameClient.js' ], {
     mangle: true,
     output: {
       inline_script: true, // escape </script
@@ -45,88 +110,9 @@ module.exports = function( grunt, buildConfig ) {
 
   var copyrightHeader = '// Copyright 2002-2015, University of Colorado Boulder\n' +
                         '// For licensing, please contact phethelp@colorado.edu';
-  grunt.file.write( 'build/phet-io/js/SimIFrameClient.js', copyrightHeader + '\n' + minified );
+  grunt.file.write( 'build/phet-io/js/SimIFrameClient.js', copyrightHeader + '\n' + simIFrameClientJS );
 
   // Create a mirror-input-events.html file for testing.
-
-  var filter = function( text ) {
-
-    text = ChipperStringUtils.replaceAll(
-      text,
-      '../../js/SimIFrameClient.js',
-      '../js/SimIFrameClient.js'
-    );
-    var camelCase = ChipperStringUtils.toCamelCase( buildConfig.name );
-
-    // TODO: Regex or more matches
-    text = ChipperStringUtils.replaceAll(
-      text,
-      'togetherID: \'concentration.sim\'',
-      'togetherID: \'' + camelCase + '.sim\''
-    );
-    text = ChipperStringUtils.replaceAll(
-      text,
-      '\'concentration.sim.active\'',
-      '\'' + camelCase + '.sim.active\''
-    );
-    text = ChipperStringUtils.replaceAll(
-      text,
-      '\'faradaysLaw.sim',
-      '\'' + camelCase + '.sim'
-    );
-    text = ChipperStringUtils.replaceAll(
-      text,
-      'src="../html/color-vision-together.html?brand=phet-io&togetherEvents.storeInitialMessages"',
-      'src="' + buildConfig.name + '_en.html?togetherEvents.storeInitialMessages"'
-    );
-
-    // Use a ?build so that use cases that require further query parameters don't have to distinguish
-    // between ? and &
-    text = ChipperStringUtils.replaceAll(
-      text,
-      '\'../../../color-vision/color-vision_en.html?brand=phet-io\'',
-      '\'../../' + buildConfig.name + '_en.html?build\''
-    );
-    text = ChipperStringUtils.replaceAll(
-      text,
-      '\'../../../faradays-law/faradays-law_en.html?brand=phet-io\'',
-      '\'../../' + buildConfig.name + '_en.html?build\''
-    );
-    text = ChipperStringUtils.replaceAll(
-      text,
-      '\'../../../concentration/concentration_en.html?brand=phet-io\'',
-      '\'../../' + buildConfig.name + '_en.html?build\''
-    );
-    text = ChipperStringUtils.replaceAll(
-      text,
-      '\'../../../concentration/beaker.html?brand=phet-io\'',
-      '\'../../' + buildConfig.name + '_en.html?build\''
-    );
-    //
-    if ( camelCase === 'beaker' ) {
-      text = ChipperStringUtils.replaceAll(
-        text,
-        '\'../../html/beaker-together.html?brand=phet-io\'',
-        '\'../../' + buildConfig.name + '_en.html?build\''
-      );
-    }
-    else {
-      text = ChipperStringUtils.replaceAll(
-        text,
-        '<!--if camelcase===beaker-->',
-        '<!--if camelcase===beaker' // don't end this comment, so the next comment will end
-      );
-    }
-
-    if ( camelCase !== 'concentration' ) {
-      text = ChipperStringUtils.replaceAll(
-        text,
-        '<!--if camelcase===concentration-->',
-        '<!--if camelcase===concentration' // don't end this comment, so the next comment will end
-      );
-    }
-    return text;
-  };
 
   var destinationPath = 'build/phet-io';
 
@@ -148,19 +134,4 @@ module.exports = function( grunt, buildConfig ) {
       }
     }
   );
-
-  // Also update the together/doc/site/index.html for any file contents it includes
-  if ( grunt.option( 'together-doc' ) ) {
-    console.log( 'running together-doc' );
-    var text = grunt.file.read( '../together/doc/site/index.html' );
-    var startKey = '<!--START_active.html-->';
-    var endKey = '<!--END_active.html-->';
-    var startIndex = text.indexOf( startKey ) + startKey.length;
-    var endIndex = text.indexOf( endKey );
-    var replacement = grunt.file.read( '../together/doc/site/examples/active.html' );
-    replacement = filter( replacement ); // neat!
-    replacement = escapeHTML( replacement );
-    var newText = text.substring( 0, startIndex ) + replacement + text.substring( endIndex );
-    grunt.file.write( '../together/doc/site/index.html', newText );
-  }
 };
