@@ -99,7 +99,8 @@ module.exports = function( grunt, buildConfig ) {
 
     var copyrightHeader = '// Copyright 2002-2015, University of Colorado Boulder\n' +
                           '// For licensing, please contact phethelp@colorado.edu';
-    grunt.file.write( destinationPath + '/js/' + filename, copyrightHeader + '\n' + minified );
+    grunt.file.write( destinationPath + '/js/' + filename,
+      copyrightHeader + '\n' + 'window.togetherProduction=true;' + minified );
   };
 
   minifyAndWrite( 'SimIFrameClient.js' );
