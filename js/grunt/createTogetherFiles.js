@@ -134,6 +134,7 @@ module.exports = function( grunt, buildConfig ) {
   grunt.file.recurse( '../together/doc/site/', function( abspath, rootdir, subdir, filename ) {
 
     var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
+
     if ( abspath.indexOf( '.png' ) >= 0 ) {
       grunt.file.copy( abspath, contentsPath );
       }
