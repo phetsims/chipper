@@ -35,21 +35,7 @@ module.exports = function( grunt, buildConfig ) {
       '../../js/SimIFrameClient.js',
       '../js/SimIFrameClient.js'
     );
-    var camelCase = ChipperStringUtils.toCamelCase( buildConfig.name );
 
-    // TODO: Regex or more matches
-    text = ChipperStringUtils.replaceAll( text,
-      'togetherID: \'concentration.sim\'',
-      'togetherID: \'' + camelCase + '.sim\''
-    );
-    text = ChipperStringUtils.replaceAll( text,
-      '\'concentration.sim.active\'',
-      '\'' + camelCase + '.sim.active\''
-    );
-    text = ChipperStringUtils.replaceAll( text,
-      '\'faradaysLaw.sim',
-      '\'' + camelCase + '.sim'
-    );
     text = ChipperStringUtils.replaceAll( text,
       'src="../html/color-vision-together.html?brand=phet-io&togetherEvents.storeInitialMessages"',
       'src="' + buildConfig.name + '_en.html?togetherEvents.storeInitialMessages"'
