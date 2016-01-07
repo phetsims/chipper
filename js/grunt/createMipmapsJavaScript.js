@@ -59,7 +59,17 @@ module.exports = function( grunt, buildConfig, callback ) {
 
         // All mipmaps processed, we're done.
         if ( mipmapsLoaded === global.phet.chipper.mipmapsToBuild.length ) {
-          callback( 'window.phet.chipper.mipmaps = ' + JSON.stringify( mipmapResult ) + ';' );
+          // Deterministic stringification for https://github.com/phetsims/chipper/issues/419.
+          // Possibly use something like https://www.npmjs.com/package/json-stable-stringify in the future?
+          var mipmapNames = Object.keys( mipmapResult );
+          mipmapNames.sort();
+          var mipmapString = '{' + mipmapNames.map( function( name ) {
+            return '"' + name + '":[' + mipmapResult[ name ].map( function( mipmap ) {
+              return '{width:' + mipmap.width + ',height:' + mipmap.height + ',url:"' + mipmap.url + '"}';
+            } ).join( ',' ) + ']';
+          } ).join( ',' ) + '}';
+
+          callback( 'window.phet.chipper.mipmaps = ' + mipmapString + ';' );
         }
       } );
     } );
