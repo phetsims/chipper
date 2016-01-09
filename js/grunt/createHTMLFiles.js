@@ -119,6 +119,12 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
   mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
+  // Supply the phet-io startup sequence, see together#181
+  if (buildConfig.brand === 'phet-io'){
+    var phetIOLaunchTemplate = grunt.file.read( '../chipper/templates/phet-io-launch.js' );
+    mainInlineJavascript=ChipperStringUtils.replaceFirst( phetIOLaunchTemplate, '/*MAIN_INLINE_JAVASCRIPT*/', mainInlineJavascript );
+  }
+
   // License entries for third-party media files that were loaded by media plugins.
   // The media plugins populate global.phet.chipper.licenseEntries.
   var thirdPartyEntries = {
@@ -141,8 +147,8 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
             if ( !licenseEntry ) {
 
               // Fail if there is no license entry.  Though this error should have been caught
-              // during plugin loading, so this is a "double check"
               if ( buildConfig.brand === 'phet' || buildConfig.brand === 'phet-io' ) {
+              // during plugin loading, so this is a "double check"
                 grunt.log.error( 'No license.json entry for ' + resourceName );
               }
             }
