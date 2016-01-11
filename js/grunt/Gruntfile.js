@@ -112,6 +112,7 @@ module.exports = function( grunt ) {
     '--locales=fr : French\n' +
     '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
     '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
+    '--brand=$brand : build a specific brand, choices are phet, phet-io, adapted-from-phet (default)\n' +
     '--lint=false : skip the lint sub-task\n' +
     '--mangle=false : skip the mangling portion of UglifyJS2, and beautify the output\n' +
     '--uglify=false : skip the UglifyJS2 step altogether\n' +
