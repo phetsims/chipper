@@ -25,4 +25,4 @@ DIRECTORIES=`ls -1 .`
 ITEMS_IN_ONE_LIST=`echo -e "${ACTIVE_REPOS}\n${DIRECTORIES}" | sort | uniq -u`
 
 # uniq -d only includes duplicate lines
-echo -e "${ACTIVE_REPOS}\n${ITEMS_IN_ONE_LIST}" | sort | uniq -d | dos2unix
+echo -e "${ACTIVE_REPOS}\n${ITEMS_IN_ONE_LIST}" | sort | uniq -d
