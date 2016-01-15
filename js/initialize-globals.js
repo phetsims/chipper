@@ -106,6 +106,11 @@
     window.phet = window.phet || {};
     window.phet.chipper = window.phet.chipper || {};
 
+    // Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
+    // See Random.js
+    // @public (writeable by phet-io) can be overwritten for replicable playback in phet-io.
+    window.phet.chipper.randomSeed = Math.random();
+
     //Pre-populate the query parameters map so that multiple subsequent look-ups are fast
     var queryParamsMap = {};
 
