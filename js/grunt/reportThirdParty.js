@@ -8,7 +8,7 @@
  *
  * Third party entries are parsed from HTML, see getLicenseEntry.js
  *
- * If the --activeRunnables grunt option is supplied, the task iterates over the active-runnables and copies each built HTML file
+ * If the --active-runnables grunt option is supplied, the task iterates over the active-runnables and copies each built HTML file
  * into the directory specified with --input before running the report.  If any HTML files are missing, the report will fail.
  * Before using this options, the developer should run `grunt-all.sh` to make sure all of the HTML files are up-to-date.
  * The directory is neither automatically created nor automatically cleaned, this is the responsibility of the developer.
@@ -16,7 +16,7 @@
  *
  * Example steps in order:
  * grunt-all.sh
- * grunt report-third-party --input=/Users/samreid/github/sherpa/temp --output=/Users/samreid/github/sherpa/third-party-licenses.md --activeRunnables
+ * grunt report-third-party --input=/Users/samreid/github/sherpa/temp --output=/Users/samreid/github/sherpa/third-party-licenses.md --active-runnables
  *
  * See https://github.com/phetsims/chipper/issues/162
  *
@@ -130,7 +130,7 @@ module.exports = function( grunt ) {
       var json = JSON.parse( jsonString );
 
       var title = parseTitle( html );
-      if ( !title || title.indexOf( 'undefined' ) === 0 ) {
+      if ( !title || title.indexOf( 'undefined' ) === 0 || title.indexOf( 'TITLE' ) >= 0 ) {
         grunt.log.writeln( 'title not found for ' + abspath );
         title = filename;
       }
