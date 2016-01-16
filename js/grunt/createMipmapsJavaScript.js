@@ -59,6 +59,7 @@ module.exports = function( grunt, buildConfig, callback ) {
 
         // All mipmaps processed, we're done.
         if ( mipmapsLoaded === global.phet.chipper.mipmapsToBuild.length ) {
+
           // Deterministic stringification for https://github.com/phetsims/chipper/issues/419.
           // Possibly use something like https://www.npmjs.com/package/json-stable-stringify in the future?
           var mipmapNames = Object.keys( mipmapResult );
