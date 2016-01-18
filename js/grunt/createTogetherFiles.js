@@ -32,6 +32,11 @@ module.exports = function( grunt, buildConfig ) {
   var filter = function( text ) {
 
     text = ChipperStringUtils.replaceAll( text,
+      '../../../sherpa/lib/highlight.js-9.1.0',
+      'lib/highlight.js'
+    );
+
+    text = ChipperStringUtils.replaceAll( text,
       '../../../js/',
       '../js/'
     );
@@ -122,6 +127,13 @@ module.exports = function( grunt, buildConfig ) {
         grunt.file.write( contentsPath, contents );
         grunt.log.writeln( 'wrote ' + contentsPath );
       }
+    }
+  );
+
+  grunt.file.recurse( '../sherpa/lib/highlight.js-9.1.0', function( abspath, rootdir, subdir, filename ) {
+      var highlightDir = destinationPath + '/lib/highlight.js';
+      var contentsPath = subdir ? ( highlightDir + '/' + subdir + '/' + filename ) : ( highlightDir + '/' + filename );
+      grunt.file.copy( abspath, contentsPath );
     }
   );
 };
