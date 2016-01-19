@@ -102,7 +102,7 @@ module.exports = function( grunt, buildConfig ) {
       }
     } ).code;
 
-    var copyrightHeader = '// Copyright 2002-2015, University of Colorado Boulder\n' +
+    var copyrightHeader = '// Copyright 2002-2016, University of Colorado Boulder\n' +
                           '// For licensing, please contact phethelp@colorado.edu';
     grunt.file.write( destinationPath + '/js/' + filename,
       copyrightHeader + '\n' + 'window.togetherProduction=true;' + minified );
