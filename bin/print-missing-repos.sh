@@ -17,7 +17,7 @@ cd ${WORKING_DIR}
 # comm -23 <(sort -u ./chipper/data/active-repos) <(/bin/ls -1 .)
 
 # Lists of repo names and possible repo names (directories)
-ACTIVE_REPOS=`cat ./chipper/data/active-repos`
+ACTIVE_REPOS=`cat ./chipper/data/active-repos | tr -d '\015'`
 DIRECTORIES=`ls -1 .`
 
 # A list of repo names that is either in active-repos OR is checked out (but not both).
