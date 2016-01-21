@@ -110,14 +110,13 @@ module.exports = function( grunt ) {
       preload = preload.concat( buildJSON[ brand ].preload );
     }
 
+    // add brand-specific preloads from package.json
+    if ( packageJSON[ brand ] && packageJSON[ brand ].preload ) {
+      preload = preload.concat( packageJSON[ brand ].preload );
+    }
+
     // add the together API file
     if ( brand === 'phet-io' ) {
-
-      // If there are any dependencies to the main together api file, load them first,
-      // in the order specified in the package.json
-      if ( packageJSON.phet.togetherPreload ) {
-        preload = preload.concat( packageJSON.phet.togetherPreload );
-      }
 
       var TOGETHER_API_FILENAME = '../together/js/api/' + packageJSON.name + '-api.js';
       if ( !grunt.file.exists( TOGETHER_API_FILENAME ) ) {
