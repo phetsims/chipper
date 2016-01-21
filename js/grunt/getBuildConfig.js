@@ -267,13 +267,16 @@ module.exports = function( grunt ) {
   // Assemble the buildConfig
 
   var buildConfig = {
+
     // These fields have no dependencies on other entries in buildConfig.
     name: packageJSON.name,
     version: packageJSON.version,
     license: packageJSON.license,
     requirejsNamespace: packageJSON.phet.requirejsNamespace,
     brand: getBrand( grunt, buildLocalJSON ),
-    getPreload: getPreload // TODO: better way to allow requsting different preload lists?
+
+    //TODO: better way to allow requesting different preload lists? chipper#63
+    getPreload: getPreload // for generating HTML files for specific configurations, see chipper#63
   };
 
   // These fields depend on other entries in buildConfig.
