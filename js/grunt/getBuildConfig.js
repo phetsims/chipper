@@ -110,14 +110,13 @@ module.exports = function( grunt ) {
       preload = preload.concat( buildJSON[ brand ].preload );
     }
 
+    // add brand-specific preloads from package.json
+    if ( packageJSON[ brand ] && packageJSON[ brand ].preload ) {
+      preload = preload.concat( packageJSON[ brand ].preload );
+    }
+
     // add the together API file
     if ( brand === 'phet-io' ) {
-
-      // If there are any dependencies to the main together api file, load them first,
-      // in the order specified in the package.json
-      if ( packageJSON.phet.togetherPreload ) {
-        preload = preload.concat( packageJSON.phet.togetherPreload );
-      }
 
       var TOGETHER_API_FILENAME = '../together/js/api/' + packageJSON.name + '-api.js';
       if ( !grunt.file.exists( TOGETHER_API_FILENAME ) ) {
@@ -267,13 +266,16 @@ module.exports = function( grunt ) {
   // Assemble the buildConfig
 
   var buildConfig = {
+
     // These fields have no dependencies on other entries in buildConfig.
     name: packageJSON.name,
     version: packageJSON.version,
     license: packageJSON.license,
     requirejsNamespace: packageJSON.phet.requirejsNamespace,
     brand: getBrand( grunt, buildLocalJSON ),
-    getPreload: getPreload // TODO: better way to allow requsting different preload lists?
+
+    //TODO: better way to allow requesting different preload lists? chipper#63
+    getPreload: getPreload // for generating HTML files for specific configurations, see chipper#63
   };
 
   // These fields depend on other entries in buildConfig.
