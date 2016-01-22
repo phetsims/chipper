@@ -111,8 +111,8 @@ module.exports = function( grunt ) {
     }
 
     // add brand-specific preloads from package.json
-    if ( packageJSON[ brand ] && packageJSON[ brand ].preload ) {
-      preload = preload.concat( packageJSON[ brand ].preload );
+    if ( packageJSON.phet[ brand ] && packageJSON.phet[ brand ].preload ) {
+      preload = preload.concat( packageJSON.phet[ brand ].preload );
     }
 
     // add the together API file
