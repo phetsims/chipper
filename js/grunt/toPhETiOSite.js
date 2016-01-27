@@ -14,16 +14,12 @@ var directory = process.cwd();
 
 /**
  * @param grunt the grunt instance
+ * @param buildConfig
  */
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
-  grunt.log.writeln( 'hello' );
-  console.log( buildConfig );
-
   var simVersion = buildConfig.version;
-
-  console.log( 'brand', buildConfig.brand );
 
   assert( buildConfig.brand === 'phet-io', 'the brand must be phet-io to get the version name right' );
 
@@ -45,8 +41,12 @@ module.exports = function( grunt, buildConfig ) {
   var apiPath = directory + '/../phet-io-site/' + siteVersion + '/api/' + apiHash + '/' + simName + '/' + simVersion;
 
   // Clean if present
-  grunt.file.delete( simPath, { force: true } );
-  grunt.file.delete( apiPath, { force: true } );
+  if ( grunt.file.exists( simPath ) ) {
+    grunt.file.delete( simPath, { force: true } ); // Must force since it is outside of working directory
+  }
+  if ( grunt.file.exists( apiPath ) ) {
+    grunt.file.delete( apiPath, { force: true } );
+  }
 
   // Create
   grunt.file.mkdir( simPath );
@@ -60,9 +60,13 @@ module.exports = function( grunt, buildConfig ) {
     // TODO: this line is duplicated around chipper
     var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
     grunt.file.copy( abspath, contentsPath );
-    grunt.log.writeln( 'copied ' + abspath + ' -> ' + contentsPath );
   } );
 
   // Copy each of the API files
-  //var packageJSON = grunt.file.readJSON( directory + '/package.json' );
+  var packageJSON = grunt.file.readJSON( directory + '/package.json' );
+  var preload = packageJSON.phet[ 'phet-io' ].preload;
+  for ( var i = 0; i < preload.length; i++ ) {
+    var preloadPath = preload[ i ];
+    grunt.file.copy( preloadPath, apiPath + '/' + preloadPath.substring( preloadPath.lastIndexOf( '/' ) + 1 ) );
+  }
 };
