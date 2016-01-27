@@ -37,6 +37,7 @@ var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var createTogetherFiles = require( '../../../chipper/js/grunt/createTogetherFiles' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
+var toPhETiOSite = require( '../../../chipper/js/grunt/toPhETiOSite' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -298,6 +299,12 @@ module.exports = function( grunt ) {
     'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
     function() {
       commitsSince( grunt, buildConfig );
+    } );
+
+  grunt.registerTask( 'to-phet-io-site',
+    'Copy a simulation and its API to the local phet-io-site, see phet-io-site-readme.md',
+    function() {
+      toPhETiOSite( grunt, buildConfig );
     } );
 
   /*
