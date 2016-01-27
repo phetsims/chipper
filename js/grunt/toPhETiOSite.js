@@ -64,5 +64,5 @@ module.exports = function( grunt, buildConfig ) {
   } );
 
   // Copy each of the API files
-  var packageJSON = grunt.file.readJSON( directory + '/package.json' );
+  //var packageJSON = grunt.file.readJSON( directory + '/package.json' );
 };
