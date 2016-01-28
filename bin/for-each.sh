@@ -2,7 +2,7 @@
 #====================================================================================================
 #
 # Visits each repository listed in a file and applies the same command to each.
-# The file must be located in chipper/bin/data, with one repository name on each line of the file.
+# The lists are files located in chipper/bin/data, with one repository name on each line of the file.
 #
 # For example, to print the working directory of all instrumented simulations:
 #
@@ -20,6 +20,12 @@ cd ${WORKING_DIR}
 
 # Exit immediately on Ctrl-C
 trap "exit 1" SIGINT
+
+# verify number of command line args
+if [ $# -lt 2 ]; then
+  echo "usage: `basename $0` filename command"
+  exit 1
+fi
 
 for sim in `cat $CHIPPER_BIN/../data/$1 | xargs`
 do
