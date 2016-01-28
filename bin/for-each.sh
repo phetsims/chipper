@@ -33,10 +33,9 @@ cd ${WORKING_DIR}
 WORKING_DIR=`pwd` # clean up the path, since it appears in error messages
 
 # filename is the first arg
-if [ "${DIR:0:1}" = "/" ]; then
-  # absolute path
-  filename=$1
-else
+filename=$1
+if [ "${filename:0:1}" != "/" ]; then
+
   # relative path
   filename=${RUN_DIR}/$1
 
