@@ -28,11 +28,14 @@ if [ $# -lt 2 ]; then
   exit 1
 fi
 
+# filename is the first arg
+filename=${WORKING_DIR}/chipper/data/$1
+
 # command is all args after the filename
 command=${@:2}
 
  # run the command in each repository directory
-for repository in `cat ${WORKING_DIR}/chipper/data/$1 | xargs`
+for repository in `cat $filename | xargs`
 do
   if [ -d "$repository" ]; then
     echo $repository
