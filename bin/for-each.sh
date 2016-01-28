@@ -1,16 +1,16 @@
 #!/bin/bash
 #====================================================================================================
 #
-# Visits each repository listed in a file and applies the same command to each.
-# The lists are files located in chipper/bin/data, with one repository name on each line of the file.
+# Visits each repository listed in a file and applies the same command to each.  If the specified file cannot be found
+# it will check for a matching file in chipper/bin/data.
 #
 # For example, to print the working directory of all instrumented simulations:
 #
 # for-each.sh instrumented-sims pwd
 #
 # Author: Sam Reid
+# Author: Chris Malley
 # Author: Jonathan Olson (from work in grunt-all.sh)
-# Author: Chris Malley (from work in grunt-all.sh)
 #
 #====================================================================================================
 
