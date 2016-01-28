@@ -1,9 +1,10 @@
 #!/bin/bash
 #====================================================================================================
 #
-# Visits each directory in in a list and applies the same command to each.  The lists are drawn
-# from chipper/bin/data.  For example, to print the working directory of all instrumented simulations,
-# use:
+# Visits each repository listed in a file and applies the same command to each.
+# The file must be located in chipper/bin/data, with one repository name on each line of the file.
+#
+# For example, to print the working directory of all instrumented simulations:
 #
 # for-each.sh instrumented-sims pwd
 #
