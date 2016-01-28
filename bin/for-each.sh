@@ -24,7 +24,7 @@ for sim in `cat $CHIPPER_BIN/../data/$1 | xargs`
 do
   if [ -d "$sim" ]; then
     echo $sim
-    cd $sim                 # build.sh needs to be run from the sim directory
+    cd $sim > /dev/null     # build.sh needs to be run from the sim directory
     ${@:2}                  # run command with remaining command-line args, skip the file list filename
     cd ..                   # and back to the original directory
   else
