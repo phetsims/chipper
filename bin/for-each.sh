@@ -14,12 +14,6 @@
 #
 #====================================================================================================
 
-# cd to the directory where working copy lives
-CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
-WORKING_DIR=${CHIPPER_BIN}/../..
-cd ${WORKING_DIR}
-WORKING_DIR=`pwd` # clean up the path, since it appears in error messages
-
 # Exit immediately on Ctrl-C
 trap "exit 1" SIGINT
 
@@ -29,13 +23,39 @@ if [ $# -lt 2 ]; then
   exit 1
 fi
 
+# remember the directory where the script was run
+RUN_DIR=`pwd`
+
+# cd to working directory
+CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
+WORKING_DIR=${CHIPPER_BIN}/../..
+cd ${WORKING_DIR}
+WORKING_DIR=`pwd` # clean up the path, since it appears in error messages
+
 # filename is the first arg
-filename=${WORKING_DIR}/chipper/data/$1
+if [ "${DIR:0:1}" = "/" ]; then
+  # absolute path
+  filename=$1
+else
+  # relative path
+  filename=${RUN_DIR}/$1
+
+  # if the relative path doesn't exist, default to chipper/data/
+  if [ ! -e $filename ]; then
+    filename=${WORKING_DIR}/chipper/data/$1
+  fi
+fi
+
+# verify that input file exists
+if [ ! -e $filename ]; then
+  echo "$filename does not exist"
+  exit 1
+fi
 
 # command is all args after the filename
 command=${@:2}
 
- # run the command in each repository directory
+# run the command in each repository directory
 for repository in `cat $filename | xargs`
 do
   if [ -d "$repository" ]; then
