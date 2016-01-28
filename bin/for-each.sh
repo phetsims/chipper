@@ -17,9 +17,6 @@ CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 WORKING_DIR=${CHIPPER_BIN}/../..
 cd ${WORKING_DIR}
 
-array=( "$@" )
-unset "array[$1]"
-
 # Exit immediately on Ctrl-C
 trap "exit 1" SIGINT
 
