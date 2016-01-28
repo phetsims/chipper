@@ -18,6 +18,7 @@
 CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 WORKING_DIR=${CHIPPER_BIN}/../..
 cd ${WORKING_DIR}
+WORKING_DIR=`pwd` # clean up the path, since it appears in error messages
 
 # Exit immediately on Ctrl-C
 trap "exit 1" SIGINT
@@ -41,6 +42,6 @@ do
     echo $repository
     (cd $repository > /dev/null; $command)
   else
-    echo ">>>>>>>>>>>>>>>> MISSING " $repository
+    echo ">>>>>>>>>>>>>>>> MISSING " ${WORKING_DIR}/$repository
   fi
 done
