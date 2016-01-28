@@ -39,9 +39,7 @@ for repository in `cat $filename | xargs`
 do
   if [ -d "$repository" ]; then
     echo $repository
-    cd $repository > /dev/null  # run in the repository directory
-    $command                    # run command
-    cd ${WORKING_DIR}           # return to the original directory
+    (cd $repository > /dev/null; $command)
   else
     echo ">>>>>>>>>>>>>>>> MISSING " $repository
   fi
