@@ -47,7 +47,7 @@ fi
 
 # verify that input file exists
 if [ ! -e $filename ]; then
-  echo "$filename does not exist"
+  echo "$1 does not exist"
   exit 1
 fi
 
