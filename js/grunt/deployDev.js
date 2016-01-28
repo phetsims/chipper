@@ -52,7 +52,7 @@ module.exports = function( grunt, callback ) {
   };
 
   /**
-   * scp file to dev server, and call commitAndPush if not testing
+   * scp file to dev server, and call commitAndPushDependenciesJSON if not testing
    */
   var scp = function() {
     deployUtil.exec( grunt, 'scp -r ' + ChipperConstants.BUILD_DIR + ' ' + deployConfig.devUsername + '@' + server + ':' + versionPath, function() {
@@ -60,7 +60,7 @@ module.exports = function( grunt, callback ) {
         finish();
       }
       else {
-        deployUtil.commitAndPush( grunt, finish );
+        deployUtil.commitAndPushDependenciesJSON( grunt, finish );
       }
     } );
   };

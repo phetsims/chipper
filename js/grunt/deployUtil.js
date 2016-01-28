@@ -37,7 +37,7 @@ var exec = function( grunt, command, callback ) {
  * @param grunt
  * @param callback
  */
-var commitAndPush = function( grunt, callback ) {
+var commitAndPushDependenciesJSON = function( grunt, callback ) {
   'use strict';
   
   grunt.file.copy( ChipperConstants.BUILD_DIR + '/' + DEPENDENCIES_JSON, DEPENDENCIES_JSON );
@@ -50,6 +50,6 @@ var commitAndPush = function( grunt, callback ) {
 };
 
 module.exports = {
-  commitAndPush: commitAndPush,
+  commitAndPushDependenciesJSON: commitAndPushDependenciesJSON,
   exec: exec
 };

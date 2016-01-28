@@ -182,7 +182,7 @@ module.exports = function( grunt ) {
 
       var done = grunt.task.current.async();
 
-      deployUtil.commitAndPush( grunt, function() {
+      deployUtil.commitAndPushDependenciesJSON( grunt, function() {
         deployProduction( grunt, done );
       } );
     }
