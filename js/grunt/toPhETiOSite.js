@@ -24,21 +24,17 @@ module.exports = function( grunt, buildConfig ) {
   assert( buildConfig.brand === 'phet-io', 'the brand must be phet-io to get the version name right' );
 
   var siteVersion = grunt.option( 'siteversion' ) + ''; // convert number to string
-  var simHash = grunt.option( 'simshash' );
-  var apiHash = grunt.option( 'apihash' );
 
   if ( siteVersion.indexOf( '.' ) < 0 ) {
     siteVersion = siteVersion + '.0'; // Drop missing ".0" suffix if missing
   }
 
   assert( siteVersion, '--siteversion must be specified' );
-  assert( simHash, '--simHash must be specified' );
-  assert( apiHash, '--apiHash must be specified' );
 
   var simName = buildConfig.name;
 
-  var simPath = directory + '/../phet-io-site/' + siteVersion + '/sims/' + simHash + '/' + simName + '/' + simVersion;
-  var apiPath = directory + '/../phet-io-site/' + siteVersion + '/api/' + apiHash + '/' + simName + '/' + simVersion;
+  var simPath = directory + '/../phet-io-site/' + siteVersion + '/sims/' + simName + '/' + simVersion;
+  var apiPath = directory + '/../phet-io-site/' + siteVersion + '/api/' + simName + '/' + simVersion;
 
   // Clean if present
   if ( grunt.file.exists( simPath ) ) {
