@@ -38,6 +38,7 @@ var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var createTogetherFiles = require( '../../../chipper/js/grunt/createTogetherFiles' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var toPhETiOSite = require( '../../../chipper/js/grunt/toPhETiOSite' );
+var createPhETiODocs = require( '../../../chipper/js/grunt/createPhETiODocs' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -305,6 +306,12 @@ module.exports = function( grunt ) {
     'Copy a simulation and its API to the local phet-io-site, see phet-io-site-readme.md',
     function() {
       toPhETiOSite( grunt, buildConfig );
+    } );
+
+  grunt.registerTask( 'create-phet-io-docs',
+    'Copy the phet-io-site docs from together to phet-io-site',
+    function() {
+      createPhETiODocs( grunt, buildConfig );
     } );
 
   /*
