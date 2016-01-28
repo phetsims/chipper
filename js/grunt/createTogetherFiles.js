@@ -106,7 +106,7 @@ module.exports = function( grunt, buildConfig ) {
                           '// This PhET-iO file requires a license\n' +
                           '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
                           '// For licensing, please contact phethelp@colorado.edu';
-    grunt.file.write( destinationPath + '/js/' + filename, copyrightHeader + '\n' + minified );
+    grunt.file.write( destinationPath + '/js/' + filename, copyrightHeader + '\n\n' + minified );
   };
 
   minifyAndWrite( 'SimIFrameClient.js' );
