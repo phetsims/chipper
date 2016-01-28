@@ -120,9 +120,9 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
   // Supply the phet-io startup sequence, see together#181
-  if (buildConfig.brand === 'phet-io'){
+  if ( buildConfig.brand === 'phet-io' ) {
     var phetIOLaunchTemplate = grunt.file.read( '../chipper/templates/phet-io-launch.js' );
-    mainInlineJavascript=ChipperStringUtils.replaceFirst( phetIOLaunchTemplate, '/*MAIN_INLINE_JAVASCRIPT*/', mainInlineJavascript );
+    mainInlineJavascript = ChipperStringUtils.replaceFirst( phetIOLaunchTemplate, '/*MAIN_INLINE_JAVASCRIPT*/', mainInlineJavascript );
   }
 
   // License entries for third-party media files that were loaded by media plugins.
@@ -148,7 +148,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
               // Fail if there is no license entry.  Though this error should have been caught
               if ( buildConfig.brand === 'phet' || buildConfig.brand === 'phet-io' ) {
-              // during plugin loading, so this is a "double check"
+                // during plugin loading, so this is a "double check"
                 grunt.log.error( 'No license.json entry for ' + resourceName );
               }
             }
@@ -238,8 +238,11 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     var localeChipperNamespaceJavascript = replaceLocaleConstants( chipperNamespaceJavascript, locale );
     var localeChipperStringSetupJavascript = replaceLocaleConstants( chipperStringSetupJavascript, locale );
 
+    // phet-io simulations end in "phetio", see https://github.com/phetsims/together/issues/288
+    var brandSuffix = buildConfig.brand === 'phet-io' ? '-phetio' : '';
+
     // Write the single-file built simulation file
-    grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
+    grunt.file.write( 'build/' + buildConfig.name + '_' + locale + brandSuffix + '.html', localeHTML );
 
     // Write the Chrome Web Store files
     if ( grunt.option( 'chromeWebStore' ) ) {
@@ -259,11 +262,14 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   //TODO should this be using ChipperConstants.FALLBACK_LOCALE instead of hardcoded to 'en'?
   // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
-  grunt.log.debug( 'Constructing HTML for iframe testing from template' );
-  var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_TITLE', encoder.htmlEncode( simTitleAndVersion + ' iframe test' ) );
-  iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_URL', buildConfig.name + '_en.html' );
-  grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
+  // phet-io sims should be tested in more powerful wrappers instead of the iframe test.
+  if ( buildConfig.brand !== 'phet-io' ) {
+    grunt.log.debug( 'Constructing HTML for iframe testing from template' );
+    var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_TITLE', encoder.htmlEncode( simTitleAndVersion + ' iframe test' ) );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_URL', buildConfig.name + '_en.html' );
+    grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
+  }
 
   grunt.log.debug( 'Cleaning temporary files' );
   grunt.file.delete( 'build/' + buildConfig.name + '.min.js' );
