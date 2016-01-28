@@ -14,6 +14,7 @@
 #
 #====================================================================================================
 
+# cd to the directory where working copy lives
 CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 WORKING_DIR=${CHIPPER_BIN}/../..
 cd ${WORKING_DIR}
@@ -27,14 +28,18 @@ if [ $# -lt 2 ]; then
   exit 1
 fi
 
-for sim in `cat $CHIPPER_BIN/../data/$1 | xargs`
+# command is all args after the filename
+command=${@:2}
+
+ # run the command in each repository directory
+for repository in `cat ${WORKING_DIR}/chipper/data/$1 | xargs`
 do
-  if [ -d "$sim" ]; then
-    echo $sim
-    cd $sim > /dev/null     # build.sh needs to be run from the sim directory
-    ${@:2}                  # run command with remaining command-line args, skip the file list filename
-    cd ..                   # and back to the original directory
+  if [ -d "$repository" ]; then
+    echo $repository
+    cd $repository > /dev/null  # run in the repository directory
+    $command                    # run command
+    cd ${WORKING_DIR}           # return to the original directory
   else
-    echo ">>>>>>>>>>>>>>>> MISSING " $sim
+    echo ">>>>>>>>>>>>>>>> MISSING " $repository
   fi
 done
