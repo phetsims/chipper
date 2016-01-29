@@ -35,10 +35,9 @@ var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
-var createTogetherFiles = require( '../../../chipper/js/grunt/createTogetherFiles' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var toPhETiOSite = require( '../../../chipper/js/grunt/toPhETiOSite' );
-var createPhETiODocs = require( '../../../chipper/js/grunt/createPhETiODocs' );
+var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -125,12 +124,6 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
     [ 'build', 'generate-thumbnails' ]
   );
-
-  // This is a separate task in order to make it easy to iterate on dev examples, without
-  // having to rebuild the simulation html
-  grunt.registerTask( 'create-together-files', 'Generate example files for together, if the brand is phet-io', function() {
-    createTogetherFiles( grunt, buildConfig );
-  } );
 
   // Grunt task that determines created and last modified dates from git, and
   // updates copyright statements accordingly, see #403
@@ -308,10 +301,10 @@ module.exports = function( grunt ) {
       toPhETiOSite( grunt, buildConfig );
     } );
 
-  grunt.registerTask( 'create-phet-io-docs',
-    'Copy the phet-io-site docs from together to phet-io-site',
+  grunt.registerTask( 'update-phet-io-site',
+    'Copy the phet-io-site docs and materials from together/phet-io-site to phet-io-site',
     function() {
-      createPhETiODocs( grunt, buildConfig );
+      updatePhETiOSite( grunt, buildConfig );
     } );
 
   /*
