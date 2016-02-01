@@ -62,7 +62,9 @@
  *                          - because only the selected screens are initialized
  * showHomeScreen - if false, go immediate to screenIndex, defaults to screenIndex=0
  * strings - override strings, value is JSON that is identical to string.json files
- * togetherEvents.log - if set to console, will stream togetherEvents to console
+ * togetherEvents.log - if set to 'console', will stream togetherEvents to console in JSON
+ *                    - if set to 'lines', will stream colorized human-readable events to the console
+ *                                        (only works for Chrome and Firefox)
  * together.expressions - evaluate expressions on together wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&togetherEvents.log=console&together.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
  * together.docs      - will output type documentation to the console, see https://github.com/phetsims/together/issues/218
  * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
