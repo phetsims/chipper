@@ -103,7 +103,7 @@ module.exports = function( grunt, buildConfig ) {
   var destinationPath = '../phet-io-site/' + siteVersion + '/lib';
 
   var minifyAndWrite = function( filename, precode ) {
-    var minified = uglify.minify( [ '../together/js/' + filename ], {
+    var minified = uglify.minify( [ '../phet-io/js/' + filename ], {
       mangle: true,
       output: {
         inline_script: true, // escape </script

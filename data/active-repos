@@ -77,6 +77,8 @@ phet-info
 phet-metacog
 phetcommon
 phetmarks
+phet-io
+phet-io-site
 plinko-probability
 projectile-motion
 protein-synthesis
@@ -97,7 +99,6 @@ sugar-and-salt-solutions
 sun
 tandem
 tasks
-together
 trig-tour
 under-pressure
 vegas

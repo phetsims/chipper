@@ -37,11 +37,11 @@
   "phet-io": {
     "preload": [
       "../sherpa/lib/jsondiffpatch-0.1.31.js",
-      "../together/js/together.js",
-      "../together/js/SimIFrameAPI.js",
-      "../together/js/togetherEvents.js",
-      "../together/js/datamite.js",
-      "../together/js/api/TogetherCommon.js"
+      "../phet-io/js/together.js",
+      "../phet-io/js/SimIFrameAPI.js",
+      "../phet-io/js/togetherEvents.js",
+      "../phet-io/js/datamite.js",
+      "../phet-io/js/api/TogetherCommon.js"
     ]
   }
 }

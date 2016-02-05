@@ -232,7 +232,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     var localeChipperNamespaceJavascript = replaceLocaleConstants( chipperNamespaceJavascript, locale );
     var localeChipperStringSetupJavascript = replaceLocaleConstants( chipperStringSetupJavascript, locale );
 
-    // phet-io simulations end in "phetio", see https://github.com/phetsims/together/issues/288
+    // phet-io simulations end in "phetio", see https://github.com/phetsims/phet-io/issues/288
     var brandSuffix = buildConfig.brand === 'phet-io' ? '-phetio' : '';
 
     // Write the single-file built simulation file

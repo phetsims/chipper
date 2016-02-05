@@ -1,6 +1,6 @@
 // Copyright 2013-2015, University of Colorado Boulder
 // This template is used in the phet-io brand for the startup sequence, allowing automatic startup or wrapper-initiated startup
-// See https://github.com/phetsims/together/issues/181 for full details of the phet-io startup sequence
+// See https://github.com/phetsims/phet-io/issues/181 for full details of the phet-io startup sequence
 // This code is a near-duplicate in sim-development.html
 
 // This function launches the simulation by running the main require.js code

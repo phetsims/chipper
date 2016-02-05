@@ -67,7 +67,7 @@
  *                    - if set to 'lines', will stream colorized human-readable events to the console
  *                                        (only works for Chrome and Firefox)
  * together.expressions - evaluate expressions on together wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&togetherEvents.log=console&together.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
- * together.docs      - will output type documentation to the console, see https://github.com/phetsims/together/issues/218
+ * together.docs      - will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
  * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
  *                         - if a value is specified, it will also simulate a context loss after the specified number
  *                         - of milliseconds has elapsed.

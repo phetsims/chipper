@@ -117,7 +117,7 @@ module.exports = function( grunt ) {
 
     // add preload that must be last for phet-io
     if ( brand === 'phet-io' ) {
-      preload.push( '../together/js/finishedPreloads.js' );
+      preload.push( '../phet-io/js/finishedPreloads.js' );
     }
 
     // remove duplicates (do NOT sort, order is significant!)
