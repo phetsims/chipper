@@ -125,7 +125,7 @@
     // we actually polyfill this, so allow it to be set
     "Float32Array": true,
     "phet": true,
-    "together": true,
+    "phetio": true,
     // read-only globals ---------------------------------
 
     // require.js
