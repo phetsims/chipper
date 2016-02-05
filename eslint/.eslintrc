@@ -180,7 +180,7 @@
     // for CODAP or other Concord communication
     "iframePhone": false,
     "PIXI": false,
-    "togetherEvents": false,
+    "phetioEvents": false,
     // for linting Node.js code
     "global": false,
     // for generating diffs in phetio.js

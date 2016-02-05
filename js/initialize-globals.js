@@ -1,7 +1,7 @@
 // Copyright 2015, University of Colorado Boulder
 
 /**
- * Initializes phet globals that are used by all simulations, including assertions, togetherEvents and query-parameters.
+ * Initializes phet globals that are used by all simulations, including assertions, phetioEvents and query-parameters.
  * See https://github.com/phetsims/phetcommon/issues/23
  *
  * PhET Simulations can be launched with query parameters which enable certain features.  To use a query parameter,
@@ -42,10 +42,10 @@
  * checkNamespaces - Currently a debugging aid that will add assertions to make sure all of the namespaces are created for
  *                   modules that match the normal namespace patterns. See https://github.com/phetsims/tasks/issues/378
  * component - when running the scenery-phet example, select a particular component in the components screen
- * datamite.actionHistogram - when running with phetio.js + togetherEvents, display a histogram of the action types, see togetherEvents.jsadded action
+ * datamite.actionHistogram - when running with phetio.js + phetioEvents, display a histogram of the action types, see phetioEvents.jsadded action
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
  * eall - enable all assertions, as above but with more time consuming checks
- * emitDeltas - when running a simulation using phetio.js, outputs states and deltas within the togetherEvents data stream, see phetio.js
+ * emitDeltas - when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
  * emitEmptyDeltas - when emitting deltas using phetio.js (see emitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
  * emitStates - when running a simulation using phetio.js, outputs the state at the end of every frame
  * rootRenderer - specify a renderer for the Sim's rootNode to use, such as 'svg', 'webgl' or 'canvas'
@@ -63,10 +63,10 @@
  *                          - because only the selected screens are initialized
  * showHomeScreen - if false, go immediate to screenIndex, defaults to screenIndex=0
  * strings - override strings, value is JSON that is identical to string.json files
- * togetherEvents.log - if set to 'console', will stream togetherEvents to console in JSON
+ * phetioEvents.log - if set to 'console', will stream phetioEvents to console in JSON
  *                    - if set to 'lines', will stream colorized human-readable events to the console
  *                                        (only works for Chrome and Firefox)
- * together.expressions - evaluate expressions on together wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&togetherEvents.log=console&together.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
+ * together.expressions - evaluate expressions on together wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&phetioEvents.log=console&together.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
  * together.docs      - will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
  * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
  *                         - if a value is specified, it will also simulate a context loss after the specified number
@@ -93,10 +93,10 @@
 (function() {
   'use strict';
 
-  // If togetherEvents has already been preloaded, then this script does nothing.
-  // If togetherEvents has not been preloaded, then this will assign window.togetherEvents = null
-  // This will enable us to use a pattern like `togetherEvents && togetherEvents.method`
-  window.togetherEvents = window.togetherEvents || null;
+  // If phetioEvents has already been preloaded, then this script does nothing.
+  // If phetioEvents has not been preloaded, then this will assign window.phetioEvents = null
+  // This will enable us to use a pattern like `phetioEvents && phetioEvents.method`
+  window.phetioEvents = window.phetioEvents || null;
 
   // If together has been preloaded, this line does nothing.  If together needs to be loaded, it will
   // overwrite this value with the together global.
