@@ -66,8 +66,8 @@
  * phetioEvents.log - if set to 'console', will stream phetioEvents to console in JSON
  *                    - if set to 'lines', will stream colorized human-readable events to the console
  *                                        (only works for Chrome and Firefox)
- * together.expressions - evaluate expressions on together wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&phetioEvents.log=console&together.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
- * together.docs      - will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
+ * phetio.expressions - evaluate expressions on phet-io wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&phetioEvents.log=console&phetio.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
+ * phetio.docs      - will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
  * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
  *                         - if a value is specified, it will also simulate a context loss after the specified number
  *                         - of milliseconds has elapsed.
@@ -98,9 +98,9 @@
   // This will enable us to use a pattern like `phetioEvents && phetioEvents.method`
   window.phetioEvents = window.phetioEvents || null;
 
-  // If together has been preloaded, this line does nothing.  If together needs to be loaded, it will
+  // If phet-io has been preloaded, this line does nothing.  If phet-io needs to be loaded, it will
   // overwrite this value with the together global.
-  window.together = window.together || null;
+  window.phetio = window.phetio || null;
 
 // Initialize query parameters, see docs above
   (function() {
