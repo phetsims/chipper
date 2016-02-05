@@ -99,7 +99,7 @@
   window.phetioEvents = window.phetioEvents || null;
 
   // If phet-io has been preloaded, this line does nothing.  If phet-io needs to be loaded, it will
-  // overwrite this value with the together global.
+  // overwrite this value with the phetio global.
   window.phetio = window.phetio || null;
 
 // Initialize query parameters, see docs above
