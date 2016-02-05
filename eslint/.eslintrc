@@ -183,7 +183,7 @@
     "togetherEvents": false,
     // for linting Node.js code
     "global": false,
-    // for generating diffs in together.js
+    // for generating diffs in phetio.js
     "jsondiffpatch": false,
     //for debugging on ipad
     "alert": false,
