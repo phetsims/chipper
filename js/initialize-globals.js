@@ -45,8 +45,9 @@
  * datamite.actionHistogram - when running with together.js + togetherEvents, display a histogram of the action types, see togetherEvents.jsadded action
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
  * eall - enable all assertions, as above but with more time consuming checks
- * emitEmptyDeltas - when emitting states using together.js (see emitStates below) emit deltas that are empty, to simplify playback in some systems like Metacog.
- * emitStates - when running a simulation using together.js, outputs states and deltas within the togetherEvents data stream, see together.js
+ * emitDeltas - when running a simulation using together.js, outputs states and deltas within the togetherEvents data stream, see together.js
+ * emitEmptyDeltas - when emitting deltas using together.js (see emitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
+ * emitStates - when running a simulation using together.js, outputs the state at the end of every frame
  * rootRenderer - specify a renderer for the Sim's rootNode to use, such as 'svg', 'webgl' or 'canvas'
  * locale - test with a specific locale
  * phet-io-standalone - query parameter will cause a phet-io simulation to launch, even without a wrapper "go-ahead" step, see together#181
