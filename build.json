@@ -41,7 +41,7 @@
       "../phet-io/js/SimIFrameAPI.js",
       "../phet-io/js/phetioEvents.js",
       "../phet-io/js/datamite.js",
-      "../phet-io/js/api/TogetherCommon.js"
+      "../phet-io/js/api/PhETIOCommon.js"
     ]
   }
 }
