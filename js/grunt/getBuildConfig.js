@@ -278,11 +278,6 @@ module.exports = function( grunt ) {
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
   buildConfig.locales = getLocales( grunt, buildConfig.name );
 
-  // TODO: chipper#270 workaround, part 1 (see part 2 in createHTMLFiles.js)
-  if ( buildConfig.brand === 'phet-io' && buildConfig.version.indexOf( '-dev' ) > -1 ) {
-    buildConfig.version = buildConfig.version.replace( '-dev', '-phet-io' );
-  }
-
   grunt.log.debug( 'buildConfig=' + JSON.stringify( buildConfig, null, 2 ) );
   return buildConfig;
 };

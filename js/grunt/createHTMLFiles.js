@@ -220,12 +220,6 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     string = ChipperStringUtils.replaceFirst( string, 'OG_URL', latestDir + buildConfig.name + '_' + locale + '.html' );
     string = ChipperStringUtils.replaceFirst( string, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
 
-    // TODO: chipper#270 workaround, part 2 (see part 1 in getBuildConfig.js)
-    if ( buildConfig.brand === 'phet-io' ) {
-      var devVersion = buildConfig.version.replace( '-phet-io', '-dev' );
-      string = string.replace( devVersion, buildConfig.version );
-    }
-
     return string;
   }
 
