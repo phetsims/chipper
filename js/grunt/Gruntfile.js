@@ -302,7 +302,7 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'update-phet-io-site',
-    'Copy the phet-io-site docs and materials from together/phet-io-site to phet-io-site',
+    'Copy the phet-io-site docs and materials from phet-io/phet-io-site to phet-io-site',
     function() {
       updatePhETiOSite( grunt, buildConfig );
     } );
