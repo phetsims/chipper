@@ -50,7 +50,7 @@
  * emitStates - when running a simulation using phetio.js, outputs the state at the end of every frame
  * rootRenderer - specify a renderer for the Sim's rootNode to use, such as 'svg', 'webgl' or 'canvas'
  * locale - test with a specific locale
- * phet-io-standalone - query parameter will cause a phet-io simulation to launch, even without a wrapper "go-ahead" step, see together#181
+ * phet-io-standalone - query parameter will cause a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
  * playbackInputEventLog - plays event logging back from the server, provide an optional name for the session
  * recordInputEventLog - enables input event logging, provide an optional name for the session, log is available via PhET menu
  * sceneryLog - list of one or more logs to enable in scenery 0.2+, delimited with .
