@@ -45,12 +45,8 @@
  * datamite.actionHistogram - when running with phetio.js + phetioEvents, display a histogram of the action types, see phetioEvents.jsadded action
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
  * eall - enable all assertions, as above but with more time consuming checks
- * emitDeltas - when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
- * emitEmptyDeltas - when emitting deltas using phetio.js (see emitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
- * emitStates - when running a simulation using phetio.js, outputs the state at the end of every frame
  * rootRenderer - specify a renderer for the Sim's rootNode to use, such as 'svg', 'webgl' or 'canvas'
  * locale - test with a specific locale
- * phet-io-standalone - query parameter will cause a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
  * playbackInputEventLog - plays event logging back from the server, provide an optional name for the session
  * recordInputEventLog - enables input event logging, provide an optional name for the session, log is available via PhET menu
  * sceneryLog - list of one or more logs to enable in scenery 0.2+, delimited with .
@@ -63,11 +59,15 @@
  *                          - because only the selected screens are initialized
  * showHomeScreen - if false, go immediate to screenIndex, defaults to screenIndex=0
  * strings - override strings, value is JSON that is identical to string.json files
- * phetioEvents.log - if set to 'console', will stream phetioEvents to console in JSON
- *                    - if set to 'lines', will stream colorized human-readable events to the console
+ * phet-io.log         - if set to 'console', will stream phetioEvents to console in JSON
+ *                     - if set to 'lines', will stream colorized human-readable events to the console
  *                                        (only works for Chrome and Firefox)
- * phetio.expressions - evaluate expressions on phet-io wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&phetioEvents.log=console&phetio.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
- * phetio.docs      - will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
+ * phet-io.expressions - evaluate expressions on phet-io wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&phet-io.log=console&phet-io.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
+ * phet-io.docs        - will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
+ * phet-io.standalone  - query parameter will cause a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
+ * phet-io.emitDeltas  - when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
+ * phet-io.emitEmptyDeltas - when emitting deltas using phetio.js (see phet-io.emitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
+ * phet-io.emitStates  - when running a simulation using phetio.js, outputs the state at the end of every frame
  * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
  *                         - if a value is specified, it will also simulate a context loss after the specified number
  *                         - of milliseconds has elapsed.
