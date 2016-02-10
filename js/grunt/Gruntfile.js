@@ -37,7 +37,7 @@ var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
-var phetIO = require( '../../../chipper/js/grunt/phetIO' );
+var buildPhETIO = require( '../../../chipper/js/grunt/buildPhETIO' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -301,10 +301,10 @@ module.exports = function( grunt ) {
       updatePhETiOSite( grunt, buildConfig );
     } );
 
-  grunt.registerTask( 'phet-io',
+  grunt.registerTask( 'build-phet-io',
     'Full PhET-iO build including phet version, phet-io version and accompanying material',
     function() {
-      phetIO( grunt, buildConfig );
+      buildPhETIO( grunt, buildConfig );
     } );
 
   /*
