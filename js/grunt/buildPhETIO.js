@@ -19,6 +19,8 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
+  var packageJSON = grunt.file.readJSON( 'package.json' );
+
   var cwd = process.cwd();
 
   var phetioBuildDir = cwd + '/build-phet-io';
@@ -52,6 +54,14 @@ module.exports = function( grunt, buildConfig ) {
         return ChipperStringUtils.replaceAll( contents, '../../js/', '../lib/' );
       }
     } );
+
+    // Copy the API files
+    var preload = packageJSON.phet[ 'phet-io' ].preload;
+    for ( var i = 0; i < preload.length; i++ ) {
+      var lastSlash = preload[ i ].lastIndexOf( '/' );
+      var filename = preload[ i ].substring( lastSlash + 1 );
+      grunt.file.copy( preload[ i ], 'build/phet-io/protected/api/' + filename );
+    }
 
     var wrapperHTML = grunt.file.read( '../phet-io/templates/wrappers.html' );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM$', buildConfig.name );
