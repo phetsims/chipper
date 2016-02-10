@@ -44,7 +44,7 @@ module.exports = function( grunt, buildConfig ) {
 
     copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers' );
 
-    var wrapperHTML = grunt.file.read( '../phet-io/html/wrappers-template.html' );
+    var wrapperHTML = grunt.file.read( '../phet-io/templates/wrappers.html' );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM$', buildConfig.name );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$VERSION$', buildConfig.version );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$PHET_IO_HTML_SIM_FILENAME$', buildConfig.name + '_en-phetio.html' );
