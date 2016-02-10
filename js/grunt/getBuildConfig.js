@@ -265,6 +265,8 @@ module.exports = function( grunt ) {
     version: packageJSON.version,
     license: packageJSON.license,
     requirejsNamespace: packageJSON.phet.requirejsNamespace,
+
+    // @public (read-write, phetIO)
     brand: getBrand( grunt, buildLocalJSON ),
 
     //TODO: better way to allow requesting different preload lists? chipper#63

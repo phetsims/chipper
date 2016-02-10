@@ -38,6 +38,7 @@ var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var toPhETiOSite = require( '../../../chipper/js/grunt/toPhETiOSite' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
+var phetIO = require( '../../../chipper/js/grunt/phetIO' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -295,16 +296,16 @@ module.exports = function( grunt ) {
       commitsSince( grunt, buildConfig );
     } );
 
-  grunt.registerTask( 'to-phet-io-site',
-    'Copy a simulation and its API to the local phet-io-site, see phet-io-site-readme.md',
-    function() {
-      toPhETiOSite( grunt, buildConfig );
-    } );
-
   grunt.registerTask( 'update-phet-io-site',
     'Copy the phet-io-site docs and materials from phet-io/phet-io-site to phet-io-site',
     function() {
       updatePhETiOSite( grunt, buildConfig );
+    } );
+
+  grunt.registerTask( 'phet-io',
+    'Full PhET-iO build including phet version, phet-io version and accompanying material',
+    function() {
+      phetIO( grunt, buildConfig );
     } );
 
   /*
