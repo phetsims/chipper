@@ -34,7 +34,12 @@ module.exports = function( grunt, buildConfig ) {
 
     // create devguide/
     grunt.file.mkdir( 'build/phet-io/devguide' );
-    copyDirectory( grunt, '../phet-io/doc/devguide', 'build/phet-io/devguide' );
+    copyDirectory( grunt, '../sherpa/lib/highlight.js-9.1.0', 'build/phet-io/devguide/lib/highlight.js-9.1.0' );
+    copyDirectory( grunt, '../phet-io/doc/devguide', 'build/phet-io/devguide', function( abspath, contents ) {
+      if ( abspath.indexOf( '.html' ) >= 0 ) {
+        return ChipperStringUtils.replaceAll( contents, '../../../sherpa/lib/highlight.js-9.1.0', 'lib/highlight.js-9.1.0' );
+      }
+    } );
 
     // create protected/
     grunt.file.mkdir( 'build/phet-io/protected' );
@@ -92,17 +97,17 @@ module.exports = function( grunt, buildConfig ) {
     grunt.log.writeln( 'Starting command: ' + command1 + '...' );
     child_process.exec( command1, { cwd: cwd }, function( error1, stdout1, stderr1 ) {
       assert( !error1, 'error in ' + command1 + '\n' + error1 );
-      grunt.log.writeln( 'Finished command: ' + command1 );
       grunt.log.writeln( stdout1 );
       grunt.log.writeln( stderr1 );
+      grunt.log.writeln( 'Finished command: ' + command1 );
       copyDirectory( grunt, buildDir, phetioBuildDir );
 
       grunt.log.writeln( 'Starting command: ' + command2 + '...' );
       child_process.exec( command2, { cwd: cwd }, function( error2, stdout2, stderr2 ) {
         assert( !error2, 'error in ' + command2 + '\n' + error2 );
-        grunt.log.writeln( 'Finished command: ' + command2 );
         grunt.log.writeln( stdout2 );
         grunt.log.writeln( stderr2 );
+        grunt.log.writeln( 'Finished command: ' + command2 );
         copyDirectory( grunt, phetioBuildDir, buildDir + '/phet-io' );
 
         createOtherPhETIOFiles();
