@@ -36,7 +36,6 @@ var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
-var toPhETiOSite = require( '../../../chipper/js/grunt/toPhETiOSite' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var phetIO = require( '../../../chipper/js/grunt/phetIO' );
 
