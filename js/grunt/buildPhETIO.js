@@ -63,6 +63,9 @@ module.exports = function( grunt, buildConfig ) {
       grunt.file.copy( preload[ i ], 'build/phet-io/protected/api/' + filename );
     }
 
+    // The .htaccess file
+    grunt.file.copy( '../phet-io/templates/.htaccess', 'build/phet-io/protected/.htaccess' );
+
     var wrapperHTML = grunt.file.read( '../phet-io/templates/wrappers.html' );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM$', buildConfig.name );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$VERSION$', buildConfig.version );
