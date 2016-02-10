@@ -47,13 +47,16 @@ module.exports = function( grunt, buildConfig ) {
     grunt.file.mkdir( 'build/phet-io/protected/api' );
     grunt.file.mkdir( 'build/phet-io/protected/wrappers' );
 
-    copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers' );
+    copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers', function( abspath, contents ) {
+      if ( abspath.indexOf( '.html' ) >= 0 ) {
+        return ChipperStringUtils.replaceAll( contents, '../../js/', '../lib/' );
+      }
+    } );
 
     var wrapperHTML = grunt.file.read( '../phet-io/templates/wrappers.html' );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM$', buildConfig.name );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$VERSION$', buildConfig.version );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$PHET_IO_HTML_SIM_FILENAME$', buildConfig.name + '_en-phetio.html' );
-    console.log( wrapperHTML );
     grunt.file.write( 'build/phet-io/protected/wrappers.html', wrapperHTML );
 
     // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
