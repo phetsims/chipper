@@ -32,3 +32,7 @@ else {
   }
   window.phetLaunchSimulation = launchSimulation;
 }
+
+// After phetLaunchSimulation has been assigned, start the rest of the launch sequence
+// This calls to onPhETiOInitialized
+phetio.SimIFrameAPI.initialize();
