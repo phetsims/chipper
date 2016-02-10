@@ -302,7 +302,7 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'build-phet-io',
-    'Full PhET-iO build including phet version, phet-io version and accompanying material',
+    'Full PhET-iO simulation build including PhET branded version, PhET-iO branded version and accompanying PhET-iO material',
     function() {
       buildPhETIO( grunt, buildConfig );
     } );
