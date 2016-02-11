@@ -76,6 +76,15 @@
       }
       window.phetLaunchSimulation = launchSimulation;
     }
+
+    // After phetLaunchSimulation has been assigned, start the rest of the launch sequence
+    // This calls onPhETiOInitialized
+    if ( brand === 'phet-io' ) {
+
+      // In phet-io requirejs mode, we must schedule the call to phetio.SimIFrameAPI.initialize() after
+      // all other preloads complete and after window.phetLaunchSimulation is assigned.
+      loadURL( '../phet-io/js/initializeSimIFrameAPI.js' );
+    }
   })();
 </script>
 </body>
