@@ -49,11 +49,18 @@ module.exports = function( grunt, buildConfig ) {
     grunt.file.mkdir( 'build/phet-io/protected/api' );
     grunt.file.mkdir( 'build/phet-io/protected/wrappers' );
 
-    copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers', function( abspath, contents ) {
+    var filterWrapper = function( abspath, contents ) {
       if ( abspath.indexOf( '.html' ) >= 0 ) {
         return ChipperStringUtils.replaceAll( contents, '../../js/', '../lib/' );
       }
-    } );
+    };
+    copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers', filterWrapper );
+
+    // TODO: what is something overwrites? These directories are being merged.
+    var simSpecificPath = '../phet-io/html/' + buildConfig.name;
+    if ( grunt.file.exists( simSpecificPath ) ) {
+      copyDirectory( grunt, simSpecificPath, 'build/phet-io/protected/wrappers', filterWrapper );
+    }
 
     // Copy the API files
     var preload = packageJSON.phet[ 'phet-io' ].preload;
