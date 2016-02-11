@@ -42,6 +42,9 @@
       "../phet-io/js/phetioEvents.js",
       "../phet-io/js/datamite.js",
       "../phet-io/js/api/PhETIOCommon.js"
+    ],
+    "phetLibs": [
+      "phet-io"
     ]
   }
 }
