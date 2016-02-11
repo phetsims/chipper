@@ -19,6 +19,7 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
+  var skipBuild = grunt.option( 'skipBuild' );
   var packageJSON = grunt.file.readJSON( 'package.json' );
 
   var cwd = process.cwd();
@@ -59,7 +60,11 @@ module.exports = function( grunt, buildConfig ) {
     // TODO: what is something overwrites? These directories are being merged.
     var simSpecificPath = '../phet-io/html/' + buildConfig.name;
     if ( grunt.file.exists( simSpecificPath ) ) {
-      copyDirectory( grunt, simSpecificPath, 'build/phet-io/protected/wrappers', filterWrapper );
+      var failOnExistingFiles = true;
+      if ( skipBuild ) {
+        failOnExistingFiles = false;
+      }
+      copyDirectory( grunt, simSpecificPath, 'build/phet-io/protected/wrappers', filterWrapper, { failOnExistingFiles: failOnExistingFiles } );
     }
 
     // Copy the API files
@@ -110,7 +115,7 @@ module.exports = function( grunt, buildConfig ) {
     minifyAndWrite( 'SimWrapperUtils.js', 'window.useRelativeSimPath=true;' );
   };
 
-  if ( grunt.option( 'skipBuild' ) ) {
+  if ( skipBuild ) {
     grunt.file.mkdir( 'build/phet-io' );
     createOtherPhETIOFiles();
   }
