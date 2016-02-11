@@ -1,6 +1,9 @@
+.idea
 *.iml
 node_modules
 .DS_Store
 .DS_Store?
 java/src/edu/colorado/phet/buildtools/html/*.class
 eslint/cache
+*.sublime-project
+*.sublime-workspace
