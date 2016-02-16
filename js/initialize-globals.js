@@ -32,6 +32,9 @@
  *              Note this is a heuristic rule that does not cover all cases.
  *            - if set to "long", then an exceptionally long string will be substituted for all strings
  *            - if set to "rtl", then a string that tests RTL (right-to-left) capabilities will be substituted for all strings
+ *            - if set to "xss", it will test for security issues related to https://github.com/phetsims/special-ops/issues/18,
+ *                  and running a sim should NOT redirect to another page. Preferably should be used for built versions or
+ *                  other versions where assertions are not enabled (brackets can cause issues for SubSupText, etc.)
  *            - if set to "none" or omitted, then the normal translated string will be shown
  *            - if set to anything else, it will use that string everywhere.  This will allow testing specific cases, like
  *                  whether the word 'vitesse' would substitute for 'speed' well.  Also, using "/u20" it will show whitespace for all
@@ -176,6 +179,7 @@
              stringTest === 'double' ? string + ':' + string :
              stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
              stringTest === 'rtl' ? '\u202b\u062a\u0633\u062a (\u0632\u0628\u0627\u0646)\u202c' :
+             stringTest === 'xss' ? '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABCQEBtxmN7wAAAABJRU5ErkJggg==" onload="window.location.href=atob(\'aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==\')" />' :
              stringTest === 'none' ? string :
 
                //In the fallback case, supply whatever string was given in the query parameter value
