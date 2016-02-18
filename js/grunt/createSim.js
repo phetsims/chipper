@@ -116,5 +116,5 @@ module.exports = function( grunt ) {
     }
   );
 
-  grunt.log.writeln( 'Please generate README.md for your new repository by running "grunt generate-unpublished-README"' );
+  grunt.log.writeln( 'Please generate README.md for your new repository by running "grunt unpublished-README"' );
 };
