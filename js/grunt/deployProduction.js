@@ -51,16 +51,25 @@ module.exports = function( grunt, callback ) {
 
   var done = callback || grunt.task.current.async();
 
-  request( url, function( error, response, body ) {
-    if ( error ) {
-      grunt.log.writeln( 'error: deploy failed with error ' + error );
-    }
-    else if ( response.statusCode !== 200 ) {
-      grunt.log.writeln( 'error: deploy failed with status code ' + response.statusCode );
-    }
-    else {
-      grunt.log.writeln( 'sending request to: ' + url );
-    }
+  if ( grunt.option( 'dryRun' ) ){
+    grunt.log.writeln( 'Option \'dryRun\' set, URL will not be sent to build server.' );
+    grunt.log.writeln( 'URL = ' + url );
     done();
-  } );
+  }
+  else{
+
+    // send the build request to the build server
+    request( url, function( error, response, body ) {
+      if ( error ) {
+        grunt.fail.warn( 'Build request failed with error ' + error + '.' );
+      }
+      else if ( response.statusCode !== 200 ) {
+        grunt.fail.warn( 'Build request failed with status code ' + response.statusCode + '.' );
+      }
+      else {
+        grunt.log.writeln( 'Build request sent successfully, URL: ' + url );
+      }
+      done();
+    } );
+  }
 };

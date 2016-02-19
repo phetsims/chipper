@@ -137,6 +137,7 @@ module.exports = function( grunt ) {
     'Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
     'Deploys to figaro by default, but simian can be used for testing by setting:\n' +
     '"productionServerName": "simian.colorado.edu" and "productionServerURL": "https://phet-dev.colorado.edu" in build-local.json\n' +
+    '--dryRun : if true, preconditions will be checked and the build server URL will be printed but build and deploy will not occur\n' +
     '--noDev : if true, deploy to production only, not spot as well. Useful for testing\n' +
     '--email : optionally enter an email to be notified if the build fails or succeeds (overrides buildServerNotifyEmail in build-locale.json)\n' +
     '--locales=* : all locales that have been published so far. NOTE: for sims published after 11/9/15, this is the ' +
@@ -144,18 +145,26 @@ module.exports = function( grunt ) {
     '--locales=fr : French\n' +
     '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)',
     function() {
-      // before invoking the build-server, do a dev deploy, including committing and pushing to github
+
       var done = grunt.task.current.async();
-      if ( grunt.option( 'noDev' ) ) {
-        deployProduction( grunt, done );
-      }
-      else {
-        deployDev( grunt, function() {
-          deployProduction( grunt, done );
+
+      deployUtil.checkForUncommittedChanges( grunt, function() {
+        deployUtil.checkForUnpushedChanges( grunt, function() {
+          deployUtil.verifyDependenciesCheckedOut( grunt, function() {
+            if ( grunt.option( 'noDev' ) || grunt.option( 'dryRun' ) ) {
+              deployUtil.commitAndPushDependenciesJSON( grunt, function() {
+                deployProduction( grunt, done );
+              } );
+            }
+            else {
+              deployDev( grunt, function() {
+                deployProduction( grunt, done );
+              } );
+            }
+          } );
         } );
-      }
-    }
-  );
+      } );
+    } );
 
   grunt.registerTask( 'deploy-dev',
     'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
@@ -169,15 +178,21 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'deploy-rc',
     'Deploy a rc version to spot using the build server.\n' +
     'Behaves identically to grunt deploy-dev, except the sim is rebuilt and deployed from the build-server instead of locally.\n' +
-    'This is useful to ensure that the rc version is built in the same environment as our production deploys',
+    'This is useful to ensure that the rc version is built in the same environment as our production deploys\n' +
+    '--dryRun : if true, preconditions will be checked and the build server URL will be printed but build and deploy will not occur',
+
     function() {
       grunt.option( 'noDev', true );
       grunt.option( 'option', 'rc' );
 
       var done = grunt.task.current.async();
 
-      deployUtil.commitAndPushDependenciesJSON( grunt, function() {
-        deployProduction( grunt, done );
+      deployUtil.checkForUncommittedChanges( grunt, function() {
+        deployUtil.checkForUnpushedChanges( grunt, function() {
+          deployUtil.commitAndPushDependenciesJSON( grunt, function() {
+            deployProduction( grunt, done );
+          } );
+        } );
       } );
     }
   );
