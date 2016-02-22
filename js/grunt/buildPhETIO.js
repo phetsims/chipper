@@ -57,7 +57,7 @@ module.exports = function( grunt, buildConfig ) {
     };
     copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers', filterWrapper );
 
-    // TODO: what is something overwrites? These directories are being merged.
+    // TODO: what if something overwrites? These directories are being merged.
     var simSpecificPath = '../phet-io/html/' + buildConfig.name;
     if ( grunt.file.exists( simSpecificPath ) ) {
       var failOnExistingFiles = true;
