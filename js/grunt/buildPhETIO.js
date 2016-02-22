@@ -44,15 +44,17 @@ module.exports = function( grunt, buildConfig ) {
       }
     } );
 
+    // output the SimIFrameClient.js and SimWrapperUtils.js to the top level lib (not protected), see https://github.com/phetsims/phet-io/issues/353
+    grunt.file.mkdir( 'build/phet-io/lib' );
+
     // create protected/
     grunt.file.mkdir( 'build/phet-io/protected' );
-    grunt.file.mkdir( 'build/phet-io/protected/lib' );
     grunt.file.mkdir( 'build/phet-io/protected/api' );
     grunt.file.mkdir( 'build/phet-io/protected/wrappers' );
 
     var filterWrapper = function( abspath, contents ) {
       if ( abspath.indexOf( '.html' ) >= 0 ) {
-        return ChipperStringUtils.replaceAll( contents, '../../js/', '../lib/' );
+        return ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
       }
     };
     copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers', filterWrapper );
@@ -88,7 +90,7 @@ module.exports = function( grunt, buildConfig ) {
     // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
     var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
-    var destinationPath = 'build/phet-io/protected/lib';
+    var destinationPath = 'build/phet-io/lib';
 
     var minifyAndWrite = function( filename, precode ) {
       var minified = uglify.minify( [ '../phet-io/js/' + filename ], {
