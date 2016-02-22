@@ -70,6 +70,7 @@
  * phet-io.standalone  - query parameter will cause a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
  * phet-io.emitDeltas  - when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
  * phet-io.emitEmptyDeltas - when emitting deltas using phetio.js (see phet-io.emitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
+ * phet-io.emitInputEvents - emit the Scenery input events
  * phet-io.emitStates  - when running a simulation using phetio.js, outputs the state at the end of every frame
  * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
  *                         - if a value is specified, it will also simulate a context loss after the specified number
