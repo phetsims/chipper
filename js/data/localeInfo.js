@@ -7,7 +7,7 @@
 //
 // language codes are ISO 639-1, see http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
 // country codes are ISO 3166-1 alpha2, see http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
-// 
+//
 // NOTE: We are using an older version of ISO 639-1 because java.util.Locale maps some of the newer language codes to older codes.
 // See Locale.convertOldISOCodes.
 // The affected country codes are:
@@ -992,6 +992,11 @@
     zh_CN: {
       name: 'Simplified Chinese',
       localizedName: '中文 (中国)',
+      direction: 'ltr'
+    },
+    zh_HK: {
+      name: 'Hong Kong Chinese',
+      localizedName: '中文 (香港)',
       direction: 'ltr'
     },
     zh_TW: {
