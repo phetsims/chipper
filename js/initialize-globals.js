@@ -97,11 +97,6 @@
 (function() {
   'use strict';
 
-  // If phetioEvents has already been preloaded, then this script does nothing.
-  // If phetioEvents has not been preloaded, then this will assign window.phetioEvents = null
-  // This will enable us to use a pattern like `phetioEvents && phetioEvents.method`
-  window.phetioEvents = window.phetioEvents || null;
-
   // If phet-io has been preloaded, this line does nothing.  If phet-io needs to be loaded, it will
   // overwrite this value with the phetio global.
   window.phetio = window.phetio || null;
