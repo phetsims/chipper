@@ -56,6 +56,31 @@ var commitAndPushDependenciesJSON = function( grunt, callback ) {
   }
 };
 
+var getDependenciesList = function( grunt ){
+  'use strict';
+
+  var dependencies;
+  if ( grunt.file.exists( DEPENDENCIES_JSON ) ){
+    dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
+  }
+  else{
+    // There is no dependencies file yet, which means that this is probably the first RC on a branch.  Add the sim
+    // itself as the only dependency.
+    grunt.log.debug( 'No dependencies file found, sim itself will be the only dependency' );
+    dependencies = {};
+    dependencies[ getDeployConfig( global.phet.chipper.fs ).name ] = {};
+  }
+
+  // make the list of dependencies, including the main sim repo
+  var dependenciesList = [];
+  for ( var property in dependencies ) {
+    if ( dependencies.hasOwnProperty( property ) && property !== 'comment' ) {
+      dependenciesList.push( property );
+    }
+  }
+  return dependenciesList;
+};
+
 /**
  * Check for working copy changes in all dependencies, fails if any are found unless the --force option is in use. This
  * is generally used to prevent erroneous deployments of release candidate or production builds.
@@ -65,16 +90,10 @@ var commitAndPushDependenciesJSON = function( grunt, callback ) {
 var checkForUncommittedChanges = function( grunt, callback ) {
   'use strict';
 
-  var dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
-  var dependenciesList = [];
+  // get of list of this sim's dependencies
+  var dependenciesList = getDependenciesList( grunt );
 
-  // make the list of dependencies, including the main sim repo
-  for ( var property in dependencies ) {
-    if ( dependencies.hasOwnProperty( property ) && property !== 'comment' ) {
-      dependenciesList.push( property );
-    }
-  }
-
+  // check all dependencies for uncommitted changes
   var gitCheckForChangedFilesCommand = 'git diff-files';
   grunt.log.debug( 'Checking for working copy changes on all dependencies...' );
 
@@ -112,16 +131,10 @@ var checkForUncommittedChanges = function( grunt, callback ) {
 var checkForUnpushedChanges = function( grunt, callback ) {
   'use strict';
 
-  var dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
-  var dependenciesList = [];
+  // get of list of this sim's dependencies
+  var dependenciesList = getDependenciesList( grunt );
 
-  // make the list of dependencies, including the main sim repo
-  for ( var property in dependencies ) {
-    if ( dependencies.hasOwnProperty( property ) && property !== 'comment' ) {
-      dependenciesList.push( property );
-    }
-  }
-
+  // check all dependencies for unpushed changes
   var getCurrentShaCommand = 'git rev-parse HEAD';
   grunt.log.debug( 'Checking for unpushed changes on all dependencies...' );
 
