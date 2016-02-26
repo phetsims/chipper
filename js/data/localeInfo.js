@@ -990,17 +990,17 @@
       direction: 'ltr'
     },
     zh_CN: {
-      name: 'Simplified Chinese',
+      name: 'Chinese, Simplified',
       localizedName: '中文 (中国)',
       direction: 'ltr'
     },
     zh_HK: {
-      name: 'Hong Kong Chinese',
+      name: 'Chinese, Hong Kong',
       localizedName: '中文 (香港)',
       direction: 'ltr'
     },
     zh_TW: {
-      name: 'Traditional Chinese',
+      name: 'Chinese, Traditional',
       localizedName: '中文 (台灣)',
       direction: 'ltr'
     },
