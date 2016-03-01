@@ -37,8 +37,9 @@
 
     // read license.json
     var fileContents = global.phet.chipper.fs.readFileSync( licenseFilename, 'utf8' );
+    var json = null;
     try {
-      var json = JSON.parse( fileContents );
+      json = JSON.parse( fileContents );
     }
     catch( err ) {
       if ( err instanceof SyntaxError ) {
