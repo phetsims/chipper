@@ -44,7 +44,7 @@
     catch( err ) {
       if ( err instanceof SyntaxError ) {
         // default message is incomprehensible, see chipper#449
-        throw new SyntaxError( 'syntax error in '+ licenseFilename );
+        throw new Error( 'syntax error in '+ licenseFilename );
       }
       else {
         throw err;
