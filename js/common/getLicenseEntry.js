@@ -36,7 +36,16 @@
     var mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
 
     // read license.json
-    var json = JSON.parse( global.phet.chipper.fs.readFileSync( licenseFilename, 'utf8' ) );
+    var fileContents = global.phet.chipper.fs.readFileSync( licenseFilename, 'utf8' );
+    try {
+      var json = JSON.parse( fileContents );
+    }
+    catch( err ) {
+      if ( err instanceof SyntaxError ) {
+        err.message = 'syntax error in ' + licenseFilename;
+      }
+      throw err;
+    }
 
     // get the media file's license entry
     var entry = json[ mediaFilename ];
