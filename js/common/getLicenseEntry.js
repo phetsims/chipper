@@ -43,9 +43,11 @@
     }
     catch( err ) {
       if ( err instanceof SyntaxError ) {
-        err.message = 'syntax error in ' + licenseFilename;
+        throw new SyntaxError( 'syntax error in '+ licenseFilename );
       }
-      throw err;
+      else {
+        throw err;
+      }
     }
 
     // get the media file's license entry
