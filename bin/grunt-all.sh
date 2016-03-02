@@ -17,7 +17,7 @@ cd ${WORKING_DIR}
 # Exit immediately on Ctrl-C
 trap "exit 1" SIGINT
 
-for sim in `cat chipper/data/active-runnables | xargs`
+for sim in `cat chipper/data/active-runnables | xargs | tr -d '\015'`
 do
   if [ -d "$sim" ]; then
     echo "Building" $sim
