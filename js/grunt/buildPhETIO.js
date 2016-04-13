@@ -54,7 +54,10 @@ module.exports = function( grunt, buildConfig ) {
 
     var filterWrapper = function( abspath, contents ) {
       if ( abspath.indexOf( '.html' ) >= 0 ) {
-        return ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
+        contents = ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
+        contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_NAME$', buildConfig.name );
+        contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_VERSION$', buildConfig.version );
+        return contents;
       }
     };
     copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers', filterWrapper );
