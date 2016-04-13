@@ -233,10 +233,14 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     var localeChipperStringSetupJavascript = replaceLocaleConstants( chipperStringSetupJavascript, locale );
 
     // phet-io simulations end in "phetio", see https://github.com/phetsims/phet-io/issues/288
-    var brandSuffix = buildConfig.brand === 'phet-io' ? '-phetio' : '';
+    var filename = 'build/' + buildConfig.name + '_' + locale;
+    if ( buildConfig.brand === 'phet-io' ) {
+      filename = filename + '-phetio';
+    }
+    filename = filename + '.html';
 
     // Write the single-file built simulation file
-    grunt.file.write( 'build/' + buildConfig.name + '_' + locale + brandSuffix + '.html', localeHTML );
+    grunt.file.write( filename, localeHTML );
 
     // Write the Chrome Web Store files
     if ( grunt.option( 'chromeWebStore' ) ) {
