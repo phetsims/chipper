@@ -60,6 +60,7 @@
  *                          - ?screens=2 would launch with just screen 2.
  *                          - Note that launching with a subset of screens can speed up the startup time significantly
  *                          - because only the selected screens are initialized
+ * showVisibleBounds - shows the visible bounds in ScreenView.js, for debugging the layout outside of the "dev" bounds
  * showHomeScreen - if false, go immediate to screenIndex, defaults to screenIndex=0
  * strings - override strings, value is JSON that is identical to string.json files
  * phet-io.log         - if set to 'console', will stream phetioEvents to console in JSON
