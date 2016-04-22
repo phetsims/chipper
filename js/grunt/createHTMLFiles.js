@@ -81,7 +81,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
   // Directory on the PhET website where the latest version of the sim lives
-  var latestDir = 'http://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
+  var latestDir = 'https://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
 
   // Load the splash SVG from the appropriate brand.
   var splashDataURI = loadFileAsDataURI( '../brand/' + buildConfig.brand + '/images/splash.svg' );
