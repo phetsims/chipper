@@ -57,7 +57,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
                  'This Interoperable PhET Simulation file requires a license.\n' +
                  'USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
                  'Contact phethelp@colorado.edu regarding licensing.\n' +
-                 'http://phet.colorado.edu/en/licensing';
+                 'https://phet.colorado.edu/en/licensing';
   }
   else {
     htmlHeader = simTitleAndVersion + '\n' +
@@ -67,7 +67,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
                  'This file is licensed under Creative Commons Attribution 4.0\n' +
                  'For alternate source code licensing, see https://github.com/phetsims\n' +
                  'For licenses for third-party software used by this simulation, see below\n' +
-                 'For more information, see http://phet.colorado.edu/en/licensing/html\n' +
+                 'For more information, see https://phet.colorado.edu/en/licensing/html\n' +
                  '\n' +
                  'The PhET name and PhET logo are registered trademarks of The Regents of the\n' +
                  'University of Colorado. Permission is granted to use the PhET name and PhET logo\n' +
@@ -152,7 +152,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
                 grunt.log.error( 'No license.json entry for ' + resourceName );
               }
             }
-            else if ( licenseEntry.projectURL !== 'http://phet.colorado.edu' ) {
+            else if ( licenseEntry.projectURL !== 'https://phet.colorado.edu' ) {
               thirdPartyEntries[ mediaType ] = thirdPartyEntries[ mediaType ] || {};
               thirdPartyEntries[ mediaType ][ resourceName ] = licenseEntry;
             }
