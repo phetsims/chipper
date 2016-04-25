@@ -31,7 +31,9 @@ module.exports = function( grunt, buildConfig ) {
 
   // Add all dependencies. Duplicates will be removed later.
   for ( var i = 0; i < licenseKeys.length; i++ ) {
-    var dependencies = licenseInfo[ licenseKeys[ i ] ].dependencies;
+    var license = licenseInfo[ licenseKeys[ i ] ];
+    assert( license, 'sherpa/lib/license.json: no entry for key = ' + licenseKeys[ i ] );
+    var dependencies = license.dependencies;
     if ( typeof dependencies === 'object' ) {
       licenseKeys = licenseKeys.concat( dependencies );
     }
