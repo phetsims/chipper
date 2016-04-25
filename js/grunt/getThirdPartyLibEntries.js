@@ -32,7 +32,7 @@ module.exports = function( grunt, buildConfig ) {
   // Add all dependencies. Duplicates will be removed later.
   for ( var i = 0; i < licenseKeys.length; i++ ) {
     var license = licenseInfo[ licenseKeys[ i ] ];
-    assert( license, 'sherpa/lib/license.json: no entry for key = ' + licenseKeys[ i ] );
+    assert( license, THIRD_PARTY_LICENSES_FILENAME + ': no entry for key = ' + licenseKeys[ i ] );
     var dependencies = license.dependencies;
     if ( typeof dependencies === 'object' ) {
       licenseKeys = licenseKeys.concat( dependencies );
@@ -51,11 +51,11 @@ module.exports = function( grunt, buildConfig ) {
     var license = licenseInfo[ key ];
 
     // verify required keys
-    assert( license, 'sherpa/lib/license.json: no entry for key = ' + key );
-    assert( license.text, 'sherpa/lib/license.json: no text field for key = ' + key );
-    assert( license.license, 'sherpa/lib/license.json: no license field for key = ' + key );
-    assert( license.projectURL, 'sherpa/lib/license.json: no projectURL field for key = ' + key );
-    assert( license.notes, 'sherpa/lib/license.json: no notes field for key = ' + key );
+    assert( license, THIRD_PARTY_LICENSES_FILENAME + ': no entry for key = ' + key );
+    assert( license.text, THIRD_PARTY_LICENSES_FILENAME + ': no text field for key = ' + key );
+    assert( license.license, THIRD_PARTY_LICENSES_FILENAME + ': no license field for key = ' + key );
+    assert( license.projectURL, THIRD_PARTY_LICENSES_FILENAME + ': no projectURL field for key = ' + key );
+    assert( license.notes, THIRD_PARTY_LICENSES_FILENAME + ': no notes field for key = ' + key );
 
     // read the license file
     var licenseText = grunt.file.read( LICENSES_DIRECTORY + key + '.txt', 'utf-8' );
