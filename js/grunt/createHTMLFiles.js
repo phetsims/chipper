@@ -11,7 +11,10 @@
 var assert = require( 'assert' );
 
 // third-party node APIs
-var Encoder = require( 'node-html-encoder' ).Encoder;
+var nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
+
+// constants
+var Encoder = nodeHTMLEncoder.Encoder;
 
 // modules
 var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
