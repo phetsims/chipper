@@ -30,7 +30,7 @@ module.exports = function( context ) {
         context.report( {
           node: node,
           loc: node.loc.start,
-          message: 'Property access in require statement'
+          message: 'property access in require statement'
         } );
       }
     }
