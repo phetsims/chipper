@@ -20,7 +20,7 @@ module.exports = function( grunt, buildConfig ) {
 
   var repositoryName = buildConfig.name;
   var splashURL = '../brand/' + buildConfig.brand + '/images/splash.svg';
-  var html = grunt.file.read( '../chipper/templates/sim-development.html' );
+  var html = grunt.file.read( '../chipper/templates/sim-development.html' ); // the template file
 
   var packageJSON = grunt.file.readJSON( 'package.json' );
   var buildJSON = grunt.file.readJSON( '../chipper/build.json' );
@@ -33,10 +33,14 @@ module.exports = function( grunt, buildConfig ) {
   var normalPreload = buildConfig.preload.filter( notGA );
   var ioPreload = buildConfig.getPreload( packageJSON, buildJSON, 'phet-io' ).filter( notGA );
 
+  // Formatting is very specific to the template file. Each preload is placed on separate line,
+  // with an indentation that is specific indentation to the template. See chipper#462
   function stringifyArray( arr ) {
-    return '[ ' + arr.map( function( string ) {
-      return '\'' + string.replace( /'/g, '\\\'' ) + '\'';
-    } ).join( ', ' ) + ' ]';
+    return '[\n' +
+           arr.map( function( string ) {
+             return '      \'' + string.replace( /'/g, '\\\'' ) + '\'';
+           } ).join( ', \n' ) +
+           '\n    ]';
   }
 
   // Replace placeholders in the template.

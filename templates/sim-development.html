@@ -23,10 +23,8 @@
     // Load the desired splash screen image
     document.getElementById( 'splash' ).src = '../brand/' + brand + '/images/splash.svg';
 
-    // Preloads, with more included for phet-io brands
-    var preloads = ( brand === 'phet-io' ) ?
-      {IO_PRELOADS} :
-      {PRELOADS};
+    // Preloads, with more included for phet-io brand
+    var preloads = ( brand === 'phet-io' ) ? {IO_PRELOADS} : {PRELOADS};
 
     // Loads a synchronously-executed asynchronously-downloaded script tag, with optional data-main parameter.
     // See http://www.html5rocks.com/en/tutorials/speed/script-loading/ for more about script loading. It helps to
