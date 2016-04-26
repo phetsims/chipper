@@ -18,7 +18,6 @@ var assert = require( 'assert' );
  * Optional:
  * {string} devDeployServer - name of the dev server, defaults to 'spot.colorado.edu'
  * {string} devDeployPath - path on dev server to deploy to, defaults to '/htdocs/physics/phet/dev/html/'
- * {string} productionServerName - production server name, defaults to 'figaro.colorado.edu', can be over-ridden to 'simian.colorado.edu' for example
  * {string} productionServerURL - production server url, defaults to 'https://phet.colorado.edu', can be over-ridden to 'https://phet-dev.colorado.edu'
  *
  * @author Chris Malley (PixelZoom, Inc.)
@@ -61,7 +60,6 @@ var assert = require( 'assert' );
       devUsername: buildLocalJSON.devUsername,
       devDeployServer: buildLocalJSON.devDeployServer || 'spot.colorado.edu',
       devDeployPath: buildLocalJSON.devDeployPath || '/htdocs/physics/phet/dev/html/',
-      productionServerName: buildLocalJSON.productionServerName || 'figaro.colorado.edu',
       productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu'
     };
 
