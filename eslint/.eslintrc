@@ -111,7 +111,9 @@
     "browser": true
   },
   "globals": {
+
     // writable globals ---------------------------------
+
     "process": true,
     // allow assertions
     "assert": true,
@@ -127,6 +129,7 @@
     "Float32Array": true,
     "phet": true,
     "phetio": true,
+
     // read-only globals ---------------------------------
 
     // require.js
