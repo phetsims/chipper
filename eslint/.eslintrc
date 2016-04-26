@@ -199,6 +199,8 @@
     "katex": false,
     // For qunit
     "equal": false,
-    "test": false
+    "test": false,
+    // BigRational
+    "bigRat": false
   }
 }
