@@ -52,8 +52,55 @@ module.exports = function( grunt, buildConfig ) {
     grunt.file.mkdir( 'build/phet-io/protected/api' );
     grunt.file.mkdir( 'build/phet-io/protected/wrappers' );
 
+    // Load the template for instance-proxies.html
+    var preload = packageJSON.phet[ 'phet-io' ].preload;
+    var simAPIDeclaration = '';
+    for ( var i = 0; i < preload.length; i++ ) {
+      simAPIDeclaration = grunt.file.read( preload[ i ] );
+    }
+    var templateText = grunt.file.read( '../phet-io/html/templates/load-state.html' );
+    var lines = templateText.split( '\n' );
+    var output = '[';
+    lines.forEach( function( line ) {
+      output = output + '\'' + line + '\',\n';
+    } );
+    output = ChipperStringUtils.replaceAll( output, '<script>', '<scr\'+\'ipt>' );
+    output = ChipperStringUtils.replaceAll( output, '</script>', '</scr\'+\'ipt>' );
+    output = output + '\'\'].join(\'\\n\')';
+
     var filterWrapper = function( abspath, contents ) {
       if ( abspath.indexOf( '.html' ) >= 0 ) {
+
+        // RULES FOR INSTANCE_PROXIES
+        contents = ChipperStringUtils.replaceAll( contents,
+          '"../../../sherpa/lib/lodash-2.4.1.min.js"',
+          '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
+        );
+        contents = ChipperStringUtils.replaceAll( contents,
+          '"../../../sherpa/lib/jquery-2.1.0.min.js"',
+          '"https://code.jquery.com/jquery-2.2.3.min.js"'
+        );
+        contents = ChipperStringUtils.replaceAll( contents,
+          '<script type="text/javascript" src="../../js/api/PhETIOCommon.js"></script>',
+          '<script>' + grunt.file.read( '../phet-io/js/api/PhETIOCommon.js' ) + '</script>'
+        );
+        contents = ChipperStringUtils.replaceAll( contents,
+          '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
+          '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
+        );
+        contents = ChipperStringUtils.replaceAll( contents,
+          'var isBuiltMode = false;',
+          'var isBuiltMode = true;' );
+        contents = ChipperStringUtils.replaceAll( contents,
+          '<!--SIM_API_DECLARATION-->',
+          '<script>' + simAPIDeclaration + '</script>'
+        );
+        contents = ChipperStringUtils.replaceAll( contents,
+          'var templateText = null;',
+          'var templateText = ' + output + ';'
+        ); //template uses exclusively "
+        // END RULES FOR INSTANCE_PROXIES
+
         contents = ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
         contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_NAME$', buildConfig.name );
         contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_VERSION$', buildConfig.version );
