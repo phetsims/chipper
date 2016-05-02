@@ -19,6 +19,25 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
+  // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
+  var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
+
+  // Read a JS file and uglify
+  var readUgly = function( filename ) {
+    var text = grunt.file.read( filename );
+    return uglify.minify( text, {
+      mangle: true,
+      fromString: true,
+      output: {
+        inline_script: true, // escape </script
+        beautify: false
+      },
+      compress: {
+        global_defs: {}
+      }
+    } ).code;
+  };
+
   var skipBuild = grunt.option( 'skipBuild' );
   var packageJSON = grunt.file.readJSON( 'package.json' );
 
@@ -56,7 +75,7 @@ module.exports = function( grunt, buildConfig ) {
     var preload = packageJSON.phet[ 'phet-io' ].preload;
     var simAPIDeclaration = '';
     for ( var i = 0; i < preload.length; i++ ) {
-      simAPIDeclaration = grunt.file.read( preload[ i ] );
+      simAPIDeclaration = readUgly( preload[ i ] );
     }
     var templateText = grunt.file.read( '../phet-io/html/templates/load-state.html' );
     var lines = templateText.split( '\n' );
@@ -82,7 +101,7 @@ module.exports = function( grunt, buildConfig ) {
         );
         contents = ChipperStringUtils.replaceAll( contents,
           '<script type="text/javascript" src="../../js/api/PhETIOCommon.js"></script>',
-          '<script>' + grunt.file.read( '../phet-io/js/api/PhETIOCommon.js' ) + '</script>'
+          '<script>' + readUgly( '../phet-io/js/api/PhETIOCommon.js' ) + '</script>'
         );
         contents = ChipperStringUtils.replaceAll( contents,
           '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
@@ -136,9 +155,6 @@ module.exports = function( grunt, buildConfig ) {
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$PHET_IO_HTML_SIM_FILENAME$', buildConfig.name + '_en-phetio.html' );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM_NAME$', buildConfig.name );
     grunt.file.write( 'build/phet-io/protected/wrappers.html', wrapperHTML );
-
-    // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
-    var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
     var destinationPath = 'build/phet-io/lib';
 
