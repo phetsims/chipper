@@ -139,8 +139,7 @@ module.exports = function( grunt, buildConfig ) {
     }
 
     // Copy the API files
-    var preload = packageJSON.phet[ 'phet-io' ].preload;
-    for ( var i = 0; i < preload.length; i++ ) {
+    for ( i = 0; i < preload.length; i++ ) {
       var lastSlash = preload[ i ].lastIndexOf( '/' );
       var filename = preload[ i ].substring( lastSlash + 1 );
       grunt.file.copy( preload[ i ], 'build/phet-io/protected/api/' + filename );
