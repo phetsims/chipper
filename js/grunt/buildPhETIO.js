@@ -79,13 +79,14 @@ module.exports = function( grunt, buildConfig ) {
     }
     var templateText = grunt.file.read( '../phet-io/html/templates/load-state.html' );
     var lines = templateText.split( '\n' );
-    var output = '[';
+    var templateString = '[';
     lines.forEach( function( line ) {
-      output = output + '\'' + line + '\',\n';
+      templateString = templateString + '\'' + line + '\',\n';
     } );
-    output = ChipperStringUtils.replaceAll( output, '<script>', '<scr\'+\'ipt>' );
-    output = ChipperStringUtils.replaceAll( output, '</script>', '</scr\'+\'ipt>' );
-    output = output + '\'\'].join(\'\\n\')';
+    // "<script>" does not parse in an HTML file (even if in JS), so we split it apart into separate substrings.
+    templateString = ChipperStringUtils.replaceAll( templateString, '<script>', '<scr\'+\'ipt>' );
+    templateString = ChipperStringUtils.replaceAll( templateString, '</script>', '</scr\'+\'ipt>' );
+    templateString = templateString + '\'\'].join(\'\\n\')';
 
     var filterWrapper = function( abspath, contents ) {
       if ( abspath.indexOf( '.html' ) >= 0 ) {
@@ -116,7 +117,7 @@ module.exports = function( grunt, buildConfig ) {
         );
         contents = ChipperStringUtils.replaceAll( contents,
           'var templateText = null;',
-          'var templateText = ' + output + ';'
+          'var templateText = ' + templateString + ';'
         ); //template uses exclusively "
         // END RULES FOR INSTANCE_PROXIES
 

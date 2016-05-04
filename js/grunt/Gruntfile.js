@@ -317,7 +317,8 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'build-phet-io',
-    'Full PhET-iO simulation build including PhET branded version, PhET-iO branded version and accompanying PhET-iO material',
+    'Full PhET-iO simulation build including PhET branded version, PhET-iO branded version and accompanying PhET-iO material.\n' +
+    '--skipBuild to create the supporting wrapper files and other things without building the sim itself',
     function() {
       buildPhETIO( grunt, buildConfig );
     } );
