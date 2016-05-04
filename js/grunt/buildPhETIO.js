@@ -75,7 +75,7 @@ module.exports = function( grunt, buildConfig ) {
     var preload = packageJSON.phet[ 'phet-io' ].preload;
     var simAPIDeclaration = '';
     for ( var i = 0; i < preload.length; i++ ) {
-      simAPIDeclaration = readUgly( preload[ i ] );
+      simAPIDeclaration = simAPIDeclaration + readUgly( preload[ i ] );
     }
     var templateText = grunt.file.read( '../phet-io/html/templates/load-state.html' );
     var lines = templateText.split( '\n' );
