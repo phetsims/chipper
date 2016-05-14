@@ -64,7 +64,7 @@
  * phet-io.log         - if set to 'console', will stream phetioEvents to console in JSON
  *                     - if set to 'lines', will stream colorized human-readable events to the console
  *                                        (only works for Chrome and Firefox)
- * phet-io.expressions - evaluate expressions on phet-io wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&phet-io.log=console&phet-io.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
+ * phet-io.expressions - evaluate expressions on phet-io wrapper objects, like: ?phet-io.expressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
  * phet-io.docs        - will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
  * phet-io.standalone  - query parameter will cause a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
  * phet-io.emitDeltas  - when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
