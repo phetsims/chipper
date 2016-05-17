@@ -36,12 +36,7 @@
   },
   "phet-io": {
     "preload": [
-      "../sherpa/lib/jsondiffpatch-0.1.31.js",
-      "../phet-io/js/phetio.js",
-      "../phet-io/js/SimIFrameAPI.js",
-      "../phet-io/js/phetioEvents.js",
-      "../phet-io/js/datamite.js",
-      "../phet-io/js/api/PhETIOCommon.js"
+      "../sherpa/lib/jsondiffpatch-0.1.31.js"
     ],
     "phetLibs": [
       "phet-io"

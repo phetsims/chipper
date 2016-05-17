@@ -122,12 +122,6 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
   mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
-  // Supply the phet-io startup sequence, see phet-io#181
-  if ( buildConfig.brand === 'phet-io' ) {
-    var phetIOLaunchTemplate = grunt.file.read( '../chipper/templates/phet-io-launch.js' );
-    mainInlineJavascript = ChipperStringUtils.replaceFirst( phetIOLaunchTemplate, '/*MAIN_INLINE_JAVASCRIPT*/', mainInlineJavascript );
-  }
-
   // License entries for third-party media files that were loaded by media plugins.
   // The media plugins populate global.phet.chipper.licenseEntries.
   var thirdPartyEntries = {
