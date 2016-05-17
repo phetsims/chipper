@@ -2,17 +2,15 @@
 define( function( module ) {
   'use strict';
 
-  var storedID = null;
   var buildMap = {};
   return {
     load: function( id, require, load, config ) {
-      storedID = id;
       if ( config.isBuild ) {
 
         var url = require.toUrl( id );
 
         if ( /\.js$/.test( url ) === false ) {
-          url += ".js";
+          url += '.js';
         }
 
         buildMap[ id ] = {
