@@ -3,13 +3,27 @@ define( function( module ) {
   'use strict';
 
   var storedID = null;
+  var buildMap = {};
   return {
     load: function( id, require, load, config ) {
       storedID = id;
       console.log( 'phetio loading id=' + id );
       if ( config.isBuild ) {
         console.log( 'phetio plugin isbuild, id = ' + id );
-        load();
+
+        var url = require.toUrl( id );
+
+        if ( /\.js$/.test( url ) === false ) {
+          url += ".js";
+        }
+
+        buildMap[ id ] = {
+          content: global.phet.chipper.grunt.file.read( url ),
+          attach: module.attach
+        };
+        console.log( 'build map got ', buildMap[ id ].content );
+
+        require( [ id ], load );
       }
       else {
         var brand = window.phet.chipper.brand;
@@ -29,14 +43,21 @@ define( function( module ) {
       var text = null;
       if ( global.phet.chipper.brand === 'phet-io' ) {
 
-        text = 'define("' + pluginName + '!' + moduleName + '", function(){});';
-        write( text );
+        console.log( '########' );
+        console.log( 'Build Map was' );
+        console.log( buildMap[ moduleName ].content );
 
-        // TODO: load the downstream module
+        // text = 'define("' + pluginName + '!' + moduleName + '", function(){' + buildMap[ moduleName ].content + '});';
+        text = 'define("' + moduleName + '", function(){' + buildMap[ moduleName ].content + '});';
+        console.log( '>>>>>WRITING MODULE\n' + text );
+        write.asModule( moduleName, text, buildMap[ moduleName ].content );
+
+        console.log( '########' );
       }
       else {
         // It wasn't phet-io so load an empty module instead
-        text = 'define("' + pluginName + '!' + moduleName + '", function(){});';
+        // text = 'define("' + pluginName + '!' + moduleName + '", function(){});';
+        text = 'define("' + moduleName + '", function(){});';
         write( text );
       }
     }
