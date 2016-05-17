@@ -23,7 +23,12 @@ define( function( module ) {
         };
         console.log( 'build map got ', buildMap[ id ].content );
 
-        require( [ id ], load );
+        if ( global.phet.chipper.brand === 'phet-io' ) {
+          require( [ id ], load );
+        }
+        else {
+          load();
+        }
       }
       else {
         var brand = window.phet.chipper.brand;
