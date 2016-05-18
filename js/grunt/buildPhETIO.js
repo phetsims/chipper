@@ -72,7 +72,12 @@ module.exports = function( grunt, buildConfig ) {
     grunt.file.mkdir( 'build/phet-io/protected/wrappers' );
 
     // Load the template for instance-proxies.html
-    var preload = packageJSON.phet[ 'phet-io' ].preload;
+    var entry = packageJSON.phet[ 'phet-io' ];
+    var preload = [];
+    if ( entry && entry.preload ) {
+      preload = entry.preload;
+    }
+
     var simAPIDeclaration = '';
     for ( var i = 0; i < preload.length; i++ ) {
       simAPIDeclaration = simAPIDeclaration + readUgly( preload[ i ] );
