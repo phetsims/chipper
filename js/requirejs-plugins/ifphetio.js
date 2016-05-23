@@ -13,12 +13,13 @@ define( function( module ) {
           url += '.js';
         }
 
-        buildMap[ id ] = {
-          content: global.phet.chipper.grunt.file.read( url ),
-          attach: module.attach
-        };
-
         if ( global.phet.chipper.brand === 'phet-io' ) {
+
+          buildMap[ id ] = {
+            content: global.phet.chipper.grunt.file.read( url ),
+            attach: module.attach
+          };
+          
           require( [ id ], load );
         }
         else {
