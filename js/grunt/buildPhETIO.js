@@ -117,10 +117,6 @@ module.exports = function( grunt, buildConfig ) {
           'var isBuiltMode = false;',
           'var isBuiltMode = true;' );
         contents = ChipperStringUtils.replaceAll( contents,
-          '<!--SIM_API_DECLARATION-->',
-          '<script>' + simAPIDeclaration + '</script>'
-        );
-        contents = ChipperStringUtils.replaceAll( contents,
           'var templateText = null;',
           'var templateText = ' + templateString + ';'
         ); //template uses exclusively "
