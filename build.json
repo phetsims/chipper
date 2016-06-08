@@ -24,7 +24,8 @@
       "../assert/js/assert.js",
       "../chipper/js/initialize-globals.js",
       "../phetcommon/js/analytics/google-analytics.js",
-      "../sherpa/lib/seedrandom-2.4.2.js"
+      "../sherpa/lib/seedrandom-2.4.2.js",
+      "../phet-io/html/brainpop/cameraProxyDOMCrossDomain.js"
     ],
     "licenseKeys": [
       "almond-0.2.9.js",
