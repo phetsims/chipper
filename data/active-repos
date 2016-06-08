@@ -5,10 +5,10 @@ arithmetic
 assert
 atomic-interactions
 axon
+babel
 balancing-act
 balancing-chemical-equations
 balloons-and-static-electricity
-babel
 beaker
 beers-law-lab
 bending-light
@@ -19,10 +19,12 @@ build-a-molecule
 build-an-atom
 calculus-grapher
 capacitor-lab-basics
-charges-and-fields
 chains
+charges-and-fields
 chipper
+circuit-construction-kit
 circuit-construction-kit-basics
+circuit-construction-kit-black-box
 color-vision
 concentration
 curve-fitting
@@ -81,6 +83,7 @@ phet-io
 phet-io-website
 plinko-probability
 projectile-motion
+proportion-playground
 protein-synthesis
 reactants-products-and-leftovers
 resistance-in-a-wire
@@ -106,3 +109,4 @@ unit-rates
 vegas
 vibe
 wave-on-a-string
+website

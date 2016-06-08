@@ -136,7 +136,7 @@ module.exports = function( grunt ) {
     'Invoke deployDev and then deploy a simulation to the production server.\n' +
     'Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
     'Deploys to figaro by default, but simian can be used for testing by setting:\n' +
-    '"productionServerName": "simian.colorado.edu" and "productionServerURL": "https://phet-dev.colorado.edu" in build-local.json\n' +
+    '"productionServerURL": "https://phet-dev.colorado.edu" in build-local.json\n' +
     '--dryRun : if true, preconditions will be checked and the build server URL will be printed but build and deploy will not occur\n' +
     '--noDev : if true, deploy to production only, not spot as well. Useful for testing\n' +
     '--email : optionally enter an email to be notified if the build fails or succeeds (overrides buildServerNotifyEmail in build-locale.json)\n' +
@@ -317,7 +317,8 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'build-phet-io',
-    'Full PhET-iO simulation build including PhET branded version, PhET-iO branded version and accompanying PhET-iO material',
+    'Full PhET-iO simulation build including PhET branded version, PhET-iO branded version and accompanying PhET-iO material.\n' +
+    '--skipBuild to create the supporting wrapper files and other things without building the sim itself',
     function() {
       buildPhETIO( grunt, buildConfig );
     } );

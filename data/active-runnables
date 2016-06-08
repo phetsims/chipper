@@ -15,7 +15,9 @@ calculus-grapher
 capacitor-lab-basics
 chains
 charges-and-fields
+circuit-construction-kit
 circuit-construction-kit-basics
+circuit-construction-kit-black-box
 color-vision
 concentration
 curve-fitting
@@ -55,6 +57,7 @@ ph-scale
 ph-scale-basics
 plinko-probability
 projectile-motion
+proportion-playground
 protein-synthesis
 reactants-products-and-leftovers
 resistance-in-a-wire
