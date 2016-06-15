@@ -106,8 +106,8 @@ module.exports = function( grunt, buildConfig ) {
           '"https://code.jquery.com/jquery-2.2.3.min.js"'
         );
         contents = ChipperStringUtils.replaceAll( contents,
-          '<script type="text/javascript" src="../../js/api/PhETIOCommon.js"></script>',
-          '<script>' + readUgly( '../phet-io/js/api/PhETIOCommon.js' ) + '</script>'
+          '<script type="text/javascript" src="../../js/PhETIOCommon.js"></script>',
+          '<script>' + readUgly( '../phet-io/js/PhETIOCommon.js' ) + '</script>'
         );
         contents = ChipperStringUtils.replaceAll( contents,
           '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
