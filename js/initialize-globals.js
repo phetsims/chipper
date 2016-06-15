@@ -47,6 +47,7 @@
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
  * eall - enable all assertions, as above but with more time consuming checks
  * gameUp - Launch the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
+ * gameUpLogging - Logging for gameUp code, see above
  * rootRenderer - specify a renderer for the Sim's rootNode to use, such as 'svg', 'webgl' or 'canvas'
  * locale - test with a specific locale
  * playbackInputEventLog - plays event logging back from the server, provide an optional name for the session
