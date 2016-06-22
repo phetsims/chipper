@@ -23,7 +23,8 @@
       "../sherpa/lib/FileSaver-b8054a2.js",
       "../assert/js/assert.js",
       "../chipper/js/initialize-globals.js",
-      "../phetcommon/js/analytics/google-analytics.js"
+      "../phetcommon/js/analytics/google-analytics.js",
+      "../sherpa/lib/game-up-camera-1.0.0.js"
     ],
     "licenseKeys": [
       "almond-0.2.9.js",
