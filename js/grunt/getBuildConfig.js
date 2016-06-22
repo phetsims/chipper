@@ -115,6 +115,11 @@ module.exports = function( grunt ) {
       preload = preload.concat( packageJSON.phet[ brand ].preload );
     }
 
+    // add preload that must be last for phet-io
+    if ( brand === 'phet-io' ) {
+      preload.push( '../phet-io/js/finishedPreloads.js' );
+    }
+
     // remove duplicates (do NOT sort, order is significant!)
     return _.uniq( preload );
   }

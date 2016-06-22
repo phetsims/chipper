@@ -1,5 +1,5 @@
 (function() {
-  var stringOverrides = JSON.parse( phet.chipper.getQueryParameter( 'strings' ) || '{}' );
+  var stringOverrides = JSON.parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
 
   var stringTest = ( typeof window !== 'undefined' && window.phet.chipper.getQueryParameter( 'stringTest' ) ) ?
                    window.phet.chipper.getQueryParameter( 'stringTest' ) :

@@ -42,6 +42,8 @@
  *
  * Other query parameters:
  *
+ * checkNamespaces - Currently a debugging aid that will add assertions to make sure all of the namespaces are created for
+ *                   modules that match the normal namespace patterns. See https://github.com/phetsims/tasks/issues/378
  * component - when running the scenery-phet example, select a particular component in the components screen
  * datamite.actionHistogram - when running with phetio.js + phetioEvents, display a histogram of the action types, see phetioEvents.jsadded action
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
@@ -58,13 +60,12 @@
  *                          - ?screens=2 would launch with just screen 2.
  *                          - Note that launching with a subset of screens can speed up the startup time significantly
  *                          - because only the selected screens are initialized
- * showVisibleBounds - shows the visible bounds in ScreenView.js, for debugging the layout outside of the "dev" bounds
  * showHomeScreen - if false, go immediate to screenIndex, defaults to screenIndex=0
  * strings - override strings, value is JSON that is identical to string.json files
  * phet-io.log         - if set to 'console', will stream phetioEvents to console in JSON
  *                     - if set to 'lines', will stream colorized human-readable events to the console
  *                                        (only works for Chrome and Firefox)
- * phet-io.expressions - evaluate expressions on phet-io wrapper objects, like: ?phet-io.expressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
+ * phet-io.expressions - evaluate expressions on phet-io wrapper objects, like: http://localhost/faradays-law/faradays-law_en.html?ea&brand=phet-io&phet-io.log=console&phet-io.expressions=faradaysLaw.faradaysLawScreen.resetAllButton_setVisible_true
  * phet-io.docs        - will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
  * phet-io.standalone  - query parameter will cause a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
  * phet-io.emitDeltas  - when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
@@ -95,6 +96,10 @@
  */
 (function() {
   'use strict';
+
+  // If phet-io has been preloaded, this line does nothing.  If phet-io needs to be loaded, it will
+  // overwrite this value with the phetio global.
+  window.phetio = window.phetio || null;
 
 // Initialize query parameters, see docs above
   (function() {

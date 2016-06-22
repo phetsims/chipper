@@ -24,7 +24,8 @@
       "../assert/js/assert.js",
       "../chipper/js/initialize-globals.js",
       "../phetcommon/js/analytics/google-analytics.js",
-      "../sherpa/lib/seedrandom-2.4.2.js"
+      "../sherpa/lib/seedrandom-2.4.2.js",
+      "../sherpa/lib/game-up-camera-1.0.0.js"
     ],
     "licenseKeys": [
       "almond-0.2.9.js",
@@ -36,7 +37,12 @@
   },
   "phet-io": {
     "preload": [
-      "../sherpa/lib/jsondiffpatch-0.1.31.js"
+      "../sherpa/lib/jsondiffpatch-0.1.31.js",
+      "../phet-io/js/phetio.js",
+      "../phet-io/js/SimIFrameAPI.js",
+      "../phet-io/js/phetioEvents.js",
+      "../phet-io/js/datamite.js",
+      "../phet-io/js/api/PhETIOCommon.js"
     ],
     "phetLibs": [
       "phet-io"

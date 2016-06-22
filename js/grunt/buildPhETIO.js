@@ -19,25 +19,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
-  // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
-  var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
-
-  // Read a JS file and uglify
-  var readUgly = function( filename ) {
-    var text = grunt.file.read( filename );
-    return uglify.minify( text, {
-      mangle: true,
-      fromString: true,
-      output: {
-        inline_script: true, // escape </script
-        beautify: false
-      },
-      compress: {
-        global_defs: {}
-      }
-    } ).code;
-  };
-
   var skipBuild = grunt.option( 'skipBuild' );
   var packageJSON = grunt.file.readJSON( 'package.json' );
 
@@ -71,61 +52,9 @@ module.exports = function( grunt, buildConfig ) {
     grunt.file.mkdir( 'build/phet-io/protected/api' );
     grunt.file.mkdir( 'build/phet-io/protected/wrappers' );
 
-    // Load the template for instance-proxies.html
-    var entry = packageJSON.phet[ 'phet-io' ];
-    var preload = [];
-    if ( entry && entry.preload ) {
-      preload = entry.preload;
-    }
-
-    var simAPIDeclaration = '';
-    for ( var i = 0; i < preload.length; i++ ) {
-      simAPIDeclaration = simAPIDeclaration + readUgly( preload[ i ] );
-    }
-    var templateText = grunt.file.read( '../phet-io/html/templates/load-state.html' );
-    var lines = templateText.split( '\n' );
-    var templateString = '[';
-    lines.forEach( function( line ) {
-      templateString = templateString + '\'' + line + '\',\n';
-    } );
-    // "<script>" does not parse in an HTML file (even if in JS), so we split it apart into separate substrings.
-    templateString = ChipperStringUtils.replaceAll( templateString, '<script>', '<scr\'+\'ipt>' );
-    templateString = ChipperStringUtils.replaceAll( templateString, '</script>', '</scr\'+\'ipt>' );
-    templateString = templateString + '\'\'].join(\'\\n\')';
-
     var filterWrapper = function( abspath, contents ) {
       if ( abspath.indexOf( '.html' ) >= 0 ) {
-
-        // RULES FOR INSTANCE_PROXIES
-        contents = ChipperStringUtils.replaceAll( contents,
-          '"../../../sherpa/lib/lodash-2.4.1.min.js"',
-          '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
-        );
-        contents = ChipperStringUtils.replaceAll( contents,
-          '"../../../sherpa/lib/jquery-2.1.0.min.js"',
-          '"https://code.jquery.com/jquery-2.2.3.min.js"'
-        );
-        contents = ChipperStringUtils.replaceAll( contents,
-          '<script type="text/javascript" src="../../js/api/PhETIOCommon.js"></script>',
-          '<script>' + readUgly( '../phet-io/js/api/PhETIOCommon.js' ) + '</script>'
-        );
-        contents = ChipperStringUtils.replaceAll( contents,
-          '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
-          '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
-        );
-        contents = ChipperStringUtils.replaceAll( contents,
-          'var isBuiltMode = false;',
-          'var isBuiltMode = true;' );
-        contents = ChipperStringUtils.replaceAll( contents,
-          'var templateText = null;',
-          'var templateText = ' + templateString + ';'
-        ); //template uses exclusively "
-        // END RULES FOR INSTANCE_PROXIES
-
-        contents = ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
-        contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_NAME$', buildConfig.name );
-        contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_VERSION$', buildConfig.version );
-        return contents;
+        return ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
       }
     };
     copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers', filterWrapper );
@@ -141,7 +70,8 @@ module.exports = function( grunt, buildConfig ) {
     }
 
     // Copy the API files
-    for ( i = 0; i < preload.length; i++ ) {
+    var preload = packageJSON.phet[ 'phet-io' ].preload;
+    for ( var i = 0; i < preload.length; i++ ) {
       var lastSlash = preload[ i ].lastIndexOf( '/' );
       var filename = preload[ i ].substring( lastSlash + 1 );
       grunt.file.copy( preload[ i ], 'build/phet-io/protected/api/' + filename );
@@ -156,6 +86,9 @@ module.exports = function( grunt, buildConfig ) {
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$PHET_IO_HTML_SIM_FILENAME$', buildConfig.name + '_en-phetio.html' );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM_NAME$', buildConfig.name );
     grunt.file.write( 'build/phet-io/protected/wrappers.html', wrapperHTML );
+
+    // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
+    var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
     var destinationPath = 'build/phet-io/lib';
 

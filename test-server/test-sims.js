@@ -1,10 +1,5 @@
-// How long to run each sim
 var durationOverride = phet.chipper.getQueryParameter( 'duration' );
-
-// value to be passed to fuzzMouse query parameter
 var fuzzOverride = phet.chipper.getQueryParameter( 'fuzz' );
-
-// verify that sims start in requirejs mode, skip other tests
 var loadOnly = !!phet.chipper.getQueryParameter( 'loadOnly' );
 
 var DURATION_PER_SIM = durationOverride ? parseInt( durationOverride, 10 ) : 30000; // ms

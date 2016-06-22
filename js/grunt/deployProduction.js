@@ -17,7 +17,7 @@ var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
  */
 module.exports = function( grunt, callback ) {
   'use strict';
-
+  
   // configuration info from external files
   var deployConfig = getDeployConfig( global.phet.chipper.fs );
 
@@ -29,6 +29,7 @@ module.exports = function( grunt, callback ) {
     'locales': grunt.option( 'locales' ) || '*',
     'simName': deployConfig.name,
     'version': deployConfig.version,
+    'serverName': deployConfig.productionServerName,
     'authorizationCode': deployConfig.buildServerAuthorizationCode
   };
 

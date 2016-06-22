@@ -11,10 +11,7 @@
 var assert = require( 'assert' );
 
 // third-party node APIs
-var nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
-
-// constants
-var Encoder = nodeHTMLEncoder.Encoder;
+var Encoder = require( 'node-html-encoder' ).Encoder;
 
 // modules
 var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
@@ -60,7 +57,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
                  'This Interoperable PhET Simulation file requires a license.\n' +
                  'USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
                  'Contact phethelp@colorado.edu regarding licensing.\n' +
-                 'https://phet.colorado.edu/en/licensing';
+                 'http://phet.colorado.edu/en/licensing';
   }
   else {
     htmlHeader = simTitleAndVersion + '\n' +
@@ -70,7 +67,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
                  'This file is licensed under Creative Commons Attribution 4.0\n' +
                  'For alternate source code licensing, see https://github.com/phetsims\n' +
                  'For licenses for third-party software used by this simulation, see below\n' +
-                 'For more information, see https://phet.colorado.edu/en/licensing/html\n' +
+                 'For more information, see http://phet.colorado.edu/en/licensing/html\n' +
                  '\n' +
                  'The PhET name and PhET logo are registered trademarks of The Regents of the\n' +
                  'University of Colorado. Permission is granted to use the PhET name and PhET logo\n' +
@@ -84,7 +81,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
   // Directory on the PhET website where the latest version of the sim lives
-  var latestDir = 'https://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
+  var latestDir = 'http://phet.colorado.edu/sims/html/' + buildConfig.name + '/latest/';
 
   // Load the splash SVG from the appropriate brand.
   var splashDataURI = loadFileAsDataURI( '../brand/' + buildConfig.brand + '/images/splash.svg' );
@@ -122,6 +119,12 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
   mainInlineJavascript = mainInlineJavascript.replace( '\x0B', '\\x0B' );
 
+  // Supply the phet-io startup sequence, see phet-io#181
+  if ( buildConfig.brand === 'phet-io' ) {
+    var phetIOLaunchTemplate = grunt.file.read( '../chipper/templates/phet-io-launch.js' );
+    mainInlineJavascript = ChipperStringUtils.replaceFirst( phetIOLaunchTemplate, '/*MAIN_INLINE_JAVASCRIPT*/', mainInlineJavascript );
+  }
+
   // License entries for third-party media files that were loaded by media plugins.
   // The media plugins populate global.phet.chipper.licenseEntries.
   var thirdPartyEntries = {
@@ -149,7 +152,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
                 grunt.log.error( 'No license.json entry for ' + resourceName );
               }
             }
-            else if ( licenseEntry.projectURL !== 'https://phet.colorado.edu' ) {
+            else if ( licenseEntry.projectURL !== 'http://phet.colorado.edu' ) {
               thirdPartyEntries[ mediaType ] = thirdPartyEntries[ mediaType ] || {};
               thirdPartyEntries[ mediaType ][ resourceName ] = licenseEntry;
             }
@@ -230,14 +233,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     var localeChipperStringSetupJavascript = replaceLocaleConstants( chipperStringSetupJavascript, locale );
 
     // phet-io simulations end in "phetio", see https://github.com/phetsims/phet-io/issues/288
-    var filename = 'build/' + buildConfig.name + '_' + locale;
-    if ( buildConfig.brand === 'phet-io' ) {
-      filename = filename + '-phetio';
-    }
-    filename = filename + '.html';
+    var brandSuffix = buildConfig.brand === 'phet-io' ? '-phetio' : '';
 
     // Write the single-file built simulation file
-    grunt.file.write( filename, localeHTML );
+    grunt.file.write( 'build/' + buildConfig.name + '_' + locale + brandSuffix + '.html', localeHTML );
 
     // Write the Chrome Web Store files
     if ( grunt.option( 'chromeWebStore' ) ) {

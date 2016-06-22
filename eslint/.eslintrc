@@ -86,7 +86,6 @@
     //
     //
     "require-statement-match": 2,
-    "no-property-in-require-statement": 2,
     // permit only one var declaration per line, see #390
     "one-var": [
       2,
@@ -111,9 +110,7 @@
     "browser": true
   },
   "globals": {
-
     // writable globals ---------------------------------
-
     "process": true,
     // allow assertions
     "assert": true,
@@ -129,7 +126,6 @@
     "Float32Array": true,
     "phet": true,
     "phetio": true,
-
     // read-only globals ---------------------------------
 
     // require.js
@@ -202,8 +198,6 @@
     "katex": false,
     // For qunit
     "equal": false,
-    "test": false,
-    // BigRational
-    "bigRat": false
+    "test": false
   }
 }

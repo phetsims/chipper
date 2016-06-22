@@ -141,7 +141,7 @@ define( function( require ) {
         repositoryName = requirejsNamespace.toLowerCase().split( '_' ).join( '-' );
 
         // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
-        var queryParameterStrings = parse( phet.chipper.getQueryParameter( 'strings' ) || '{}' );
+        var queryParameterStrings = parse( decodeURIComponent( phet.chipper.getQueryParameter( 'strings' ) || '{}' ) );
 
         // Read the locale from a query parameter, if it is there, or use the fallback locale
         locale = phet.chipper.getQueryParameter( 'locale' ) || ChipperConstants.FALLBACK_LOCALE;
