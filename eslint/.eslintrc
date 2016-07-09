@@ -111,7 +111,6 @@
     "browser": true
   },
   "globals": {
-
     // writable globals ---------------------------------
 
     "process": true,
@@ -129,7 +128,6 @@
     "Float32Array": true,
     "phet": true,
     "phetio": true,
-
     // read-only globals ---------------------------------
 
     // require.js
@@ -204,6 +202,8 @@
     "equal": false,
     "test": false,
     // BigRational
-    "bigRat": false
+    "bigRat": false,
+    // LZ-string, for compressing and decompressing strings
+    "LZString": false
   }
 }
