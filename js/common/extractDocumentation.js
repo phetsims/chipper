@@ -2,7 +2,7 @@
 
 /**
  * Given the AST output from Esprima for a JS file that conforms to PhET's style, this extracts the documentation and
- * returns a structured object containing all of the documetation.
+ * returns a structured object containing all of the documentation.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
