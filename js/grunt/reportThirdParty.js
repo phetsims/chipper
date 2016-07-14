@@ -119,10 +119,7 @@ module.exports = function( grunt ) {
       // load the file into a string
       var html = grunt.file.read( abspath ).trim();
 
-      if ( html.indexOf( 'was not found on this server' ) >= 0 && html.indexOf( 'was not found on this server' ) < 400 ) {
-
-      }
-      else {
+      if ( html.indexOf( 'was not found on this server' ) < 0 || html.indexOf( 'was not found on this server' ) > 400 ) {
 
         var startIndex = html.indexOf( ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
         var endIndex = html.indexOf( ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
