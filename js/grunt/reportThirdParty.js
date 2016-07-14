@@ -316,17 +316,29 @@ module.exports = function( grunt ) {
   // download them anyways but skip them in the report.
   var activeSimsString = fs.readFileSync( '../chipper/data/active-sims', 'utf-8' ).trim();
   var activeSimsArray = activeSimsString.split( '\n' );
-  var count = 0;
-  activeSimsArray.forEach( function( sim ) {
+
+  // Download files one at a time so we can make sure we get everything.
+  var downloadNext = function( index ) {
+    var sim = activeSimsArray[ index ];
+
     var url = 'http://phet.colorado.edu/sims/html/' + sim + '/latest/' + sim + '_en.html';
-    console.log( 'downloading ' + url );
+    console.log( 'downloading ' + (index + 1) + '/' + activeSimsArray.length + ': ' + url );
 
     download( url, 'downloaded-sims/' + sim + '_en.html', function() {
-      count++;
-      console.log( 'Finished downloading: ' + count + '/' + activeSimsArray.length );
-      if ( count === activeSimsArray.length ) {
+      var next = index + 1;
+
+      if ( next < activeSimsArray.length ) {
+        downloadNext( next );
+      }
+      else {
         writeReport();
       }
     } );
+  };
+
+  downloadNext( 0 );
+
+  activeSimsArray.forEach( function( sim ) {
+
   } );
 };
