@@ -1,28 +1,15 @@
 // Copyright 2015, University of Colorado Boulder
 
 /**
- * Creates a composite report of all of the 3rd party images, code, audio and other media used by all of the PhET
- * Simulations which appear in a directory (required argument) and updates the online version by automatically adding and
- * pushing the changes to GitHub.  One of the reports is published at:
- * https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
+ * Creates a composite report of all of the 3rd party images, code, audio and other media used by all of the published
+ * PhET Simulations. The reports is published at: https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
  *
  * Usage:
  * cd chipper
  * grunt report-third-party
  * // then push the updated license file to sherpa
  *
- * NOTE: sometimes for unknown reasons a file is missed or skipped, please inspect the third-party-licenses.md before
- * committing to make sure it is complete.
- *
  * Third party entries are parsed from HTML, see getLicenseEntry.js
- *
- * If the --active-runnables grunt option is supplied, the task iterates over the active-runnables and copies each built HTML file
- * into the directory specified with --input before running the report.  If any HTML files are missing, the report will fail.
- * Before using this options, the developer should run `grunt-all.sh` to make sure all of the HTML files are up-to-date.
- * The directory is neither automatically created nor automatically cleaned, this is the responsibility of the developer.
- * (Note that if you fail to manually clean the directory, you may end up with stale HTML files).
- *
- * See https://github.com/phetsims/chipper/issues/162
  *
  * @author Sam Reid
  */
