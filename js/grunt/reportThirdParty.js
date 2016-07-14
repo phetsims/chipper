@@ -119,26 +119,32 @@ module.exports = function( grunt ) {
       // load the file into a string
       var html = grunt.file.read( abspath ).trim();
 
-      var startIndex = html.indexOf( ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
-      var endIndex = html.indexOf( ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
-      var substring = html.substring( startIndex, endIndex );
+      if ( html.indexOf( 'was not found on this server' ) >= 0 && html.indexOf( 'was not found on this server' ) < 400 ) {
 
-      var firstCurlyBrace = substring.indexOf( '{' );
-      var lastCurlyBrace = substring.lastIndexOf( '}' );
-      var jsonString = substring.substring( firstCurlyBrace, lastCurlyBrace + 1 );
-
-      var json = JSON.parse( jsonString );
-
-      var title = parseTitle( html );
-      if ( !title || title.indexOf( 'undefined' ) === 0 || title.indexOf( 'TITLE' ) >= 0 ) {
-        grunt.log.writeln( 'title not found for ' + abspath );
-        title = filename;
       }
-      augment( title, json.lib, compositeCode );
-      augment( title, json.audio, compositeMedia );
-      augment( title, json.images, compositeMedia );
+      else {
 
-      simTitles.push( title );
+        var startIndex = html.indexOf( ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
+        var endIndex = html.indexOf( ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
+        var substring = html.substring( startIndex, endIndex );
+
+        var firstCurlyBrace = substring.indexOf( '{' );
+        var lastCurlyBrace = substring.lastIndexOf( '}' );
+        var jsonString = substring.substring( firstCurlyBrace, lastCurlyBrace + 1 );
+
+        var json = JSON.parse( jsonString );
+
+        var title = parseTitle( html );
+        if ( !title || title.indexOf( 'undefined' ) === 0 || title.indexOf( 'TITLE' ) >= 0 ) {
+          grunt.log.writeln( 'title not found for ' + abspath );
+          title = filename;
+        }
+        augment( title, json.lib, compositeCode );
+        augment( title, json.audio, compositeMedia );
+        augment( title, json.images, compositeMedia );
+
+        simTitles.push( title );
+      }
     }
   } );
 
@@ -246,10 +252,13 @@ module.exports = function( grunt ) {
     if ( compositeMedia[ mediaKey ].exception ) {
       mediaEntryLines.push( 'Exception: ' + compositeMedia[ mediaKey ].exception );
     }
-    mediaOutput.push( mediaEntryLines.join( '<br>' ) );
 
-    if ( mediaLicensesUsed.indexOf( license ) < 0 ) {
-      mediaLicensesUsed.push( license );
+    if ( license !== 'contact phethelp@colorado.edu' ) {
+      mediaOutput.push( mediaEntryLines.join( '<br>' ) );
+
+      if ( mediaLicensesUsed.indexOf( license ) < 0 ) {
+        mediaLicensesUsed.push( license );
+      }
     }
   }
 
