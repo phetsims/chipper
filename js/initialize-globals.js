@@ -43,7 +43,6 @@
  * Other query parameters:
  *
  * component - when running the scenery-phet example, select a particular component in the components screen
- * datamite.actionHistogram - when running with phetio.js + phetioEvents, display a histogram of the action types, see phetioEvents.jsadded action
  * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
  * eall - enable all assertions, as above but with more time consuming checks
  * gameUp - Launch the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
