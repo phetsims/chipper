@@ -16,6 +16,7 @@ var buildQueue = []; // {Array.<string>} - sim names that need to be built
 
 var simQueryParameters = [
   'ea', // assertions
+  'rootRenderer=canvas',
   'postMessageOnLoad', // send 'load' postMessage once the sim has fully loaded
   'postMessageOnError', // send 'error' postMessage on any error
   'fuzzMouse=' + FUZZ_MOUSE_RATE // send random mouse events

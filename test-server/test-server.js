@@ -4,6 +4,11 @@ var path = require( 'path' );
 
 var port = 45361;
 
+// constants
+var IS_WIN = /^win/.test( process.platform );
+var GRUNT_CMD = IS_WIN ? 'grunt.cmd' : 'grunt'; // needs to be a slightly different command for Windows
+var NPM_CMD = IS_WIN ? 'npm.cmd' : 'npm'; // needs to be a slightly different command for Windows
+
 var jsonHeaders = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*'
@@ -34,8 +39,7 @@ http.createServer( function( req, res ) {
   console.log( 'building ' + simName );
 
   // TODO: Why do these more portable versions not work?
-  // var npmInstall = spawn( 'node', [ 'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js', 'install' ], {
-  var npmInstall = spawn( 'npm', [ 'install' ], {
+  var npmInstall = spawn( NPM_CMD, [ 'install' ], {
     cwd: rootDir + simName
   } );
   console.log( 'running npm install on ' + simName );
@@ -56,8 +60,7 @@ http.createServer( function( req, res ) {
     }
     // npm install success, continue with grunt
     else {
-      // var grunt = spawn( 'node', [ 'C:\\Users\\jon\\AppData\\Roaming\\npm\\node_modules\\grunt-cli\\bin\\grunt', '--no-color' ], {
-      var grunt = spawn( 'grunt', [ '--no-color' ], {
+      var grunt = spawn( GRUNT_CMD, [ '--no-color' ], {
         cwd: rootDir + simName
       } );
       console.log( 'running grunt on ' + simName );
