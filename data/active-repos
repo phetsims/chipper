@@ -81,7 +81,6 @@ phet-metacog
 phetcommon
 phetmarks
 phet-io
-phet-io-website
 plinko-probability
 projectile-motion
 proportion-playground
@@ -110,4 +109,3 @@ unit-rates
 vegas
 vibe
 wave-on-a-string
-website
