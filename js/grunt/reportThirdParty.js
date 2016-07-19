@@ -223,17 +223,21 @@ module.exports = function( grunt ) {
       if ( copyrightStatement.length === 0 ) {
         copyrightStatement = '(no text)';
       }
+
       if ( projectURL.length === 0 ) {
         projectURL = '(no project url)';
       }
+
       var notes = compositeMedia[ mediaKey ].notes.trim();
       if ( notes.length === 0 ) {
         notes = '(no notes)';
       }
+
       var license = compositeMedia[ mediaKey ].license.trim();
       if ( license.length === 0 ) {
         license = '(no license)';
       }
+
       var mediaEntryLines = [
         '**' + mediaKey + '**',
         copyrightStatement,
