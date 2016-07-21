@@ -1,4 +1,11 @@
 // Copyright 2016, University of Colorado Boulder
+
+/**
+ * This plugin conditionally loads another module based on the brand.  If the brand is phet-io, it loads the module
+ * otherwise it returns undefined.  The module works for requirejs mode and during the build.
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
+ */
 define( function( module ) {
   'use strict';
 
