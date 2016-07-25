@@ -26,7 +26,7 @@ var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
 var fs = require( 'fs' );
 var http = require( 'http' );
 
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../' + SHERPA + '/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
 
 /**
  * @param grunt - the grunt instance
@@ -35,7 +35,7 @@ module.exports = function( grunt ) {
   'use strict';
 
   // The file where the report will be written
-  var output = '../sherpa/third-party-licenses.md';
+  var output = SHERPA + '/third-party-licenses.md';
 
   // Since we download the HTML files, this task must wait until it is complete
   var gruntDone = grunt.task.current.async();
