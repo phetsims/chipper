@@ -35,7 +35,7 @@ module.exports = function( grunt ) {
   'use strict';
 
   // The file where the report will be written
-  var output = SHERPA + '/third-party-licenses.md';
+  var outputFilename = SHERPA + '/third-party-licenses.md';
 
   // Since we download the HTML files, this task must wait until it is complete
   var gruntDone = grunt.task.current.async();
@@ -153,51 +153,51 @@ module.exports = function( grunt ) {
       }
     }
 
-    var json = grunt.file.readJSON( SHERPA + '/lib/license.json' );
+    var licenseJSON = grunt.file.readJSON( SHERPA + '/lib/license.json' );
 
-    var entries = [];
+    var codeOutput = [];
     var codeLicensesUsed = [];
     var mediaLicensesUsed = [];
 
     // Get a list of the library names
-    var libraries = [];
-    for ( var lib in json ) {
-      if ( json.hasOwnProperty( lib ) ) {
-        libraries.push( lib );
+    var libraryNames = [];
+    for ( var lib in licenseJSON ) {
+      if ( licenseJSON.hasOwnProperty( lib ) ) {
+        libraryNames.push( lib );
       }
     }
 
     // Use a case insensitive sort, see http://stackoverflow.com/questions/8996963/how-to-perform-case-insensitive-sorting-in-javascript
-    libraries.sort( function( a, b ) {
+    libraryNames.sort( function( a, b ) {
       return a.toLowerCase().localeCompare( b.toLowerCase() );
     } );
 
     // Add info for each library to the MD report
-    for ( var i = 0; i < libraries.length; i++ ) {
-      var library = libraries[ i ];
+    for ( var i = 0; i < libraryNames.length; i++ ) {
+      var library = libraryNames[ i ];
 
-      var lines = [
+      var lineElementsForLibrary = [
         '**' + library + '**',
-        json[ library ].text.join( '<br>' ),
-        json[ library ].projectURL,
-        'License: [' + json[ library ].license + '](licenses/' + library + '.txt)',
-        'Notes: ' + json[ library ].notes
+        licenseJSON[ library ].text.join( '<br>' ),
+        licenseJSON[ library ].projectURL,
+        'License: [' + licenseJSON[ library ].license + '](licenses/' + library + '.txt)',
+        'Notes: ' + licenseJSON[ library ].notes
       ];
 
-      if ( json[ library ].dependencies ) {
-        lines.push( 'Dependencies: **' + json[ library ].dependencies + '**' );
+      if ( licenseJSON[ library ].dependencies ) {
+        lineElementsForLibrary.push( 'Dependencies: **' + licenseJSON[ library ].dependencies + '**' );
       }
 
       if ( compositeCode.hasOwnProperty( library ) && compositeCode[ library ].usedBy instanceof Array ) {
-        lines.push( 'Used by: ' + compositeCode[ library ].usedBy.join( ', ' ) );
+        lineElementsForLibrary.push( 'Used by: ' + compositeCode[ library ].usedBy.join( ', ' ) );
       }
 
       // \n worked well when viewing GitHub markdown as an issue comment, but for unknown reasons <br> is necessary when
       // viewing from https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
-      entries.push( lines.join( '<br>' ) );
+      codeOutput.push( lineElementsForLibrary.join( '<br>' ) );
 
-      if ( codeLicensesUsed.indexOf( json[ library ].license ) < 0 ) {
-        codeLicensesUsed.push( json[ library ].license );
+      if ( codeLicensesUsed.indexOf( licenseJSON[ library ].license ) < 0 ) {
+        codeLicensesUsed.push( licenseJSON[ library ].license );
       }
     }
 
@@ -274,7 +274,7 @@ module.exports = function( grunt ) {
       'simulation, inspect the HTML file between the `' + ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES + '` and `' + ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES + '` ' +
       '(only exists in sim publications after Aug 7, 2015).\n' +
       '# <a name="third-party-code"></a>Third-party Code:<br>\n' +
-      entries.join( '\n\n' ) + '\n\n' +
+      codeOutput.join( '\n\n' ) + '\n\n' +
 
       '---\n' +
 
@@ -292,12 +292,12 @@ module.exports = function( grunt ) {
       mediaLicensesUsed.join( '<br>' ) + '\n\n';
 
     // Compare the file output to the existing file, and write & git commit only if different
-    if ( !grunt.file.exists( output ) || grunt.file.read( output ) !== outputString ) {
-      grunt.log.writeln( 'File output changed, writing file ' + output );
-      grunt.file.write( output, outputString );
+    if ( !grunt.file.exists( outputFilename ) || grunt.file.read( outputFilename ) !== outputString ) {
+      grunt.log.writeln( 'File output changed, writing file ' + outputFilename );
+      grunt.file.write( outputFilename, outputString );
     }
     else {
-      grunt.log.writeln( output + ' contents are the same.  No need to save.' );
+      grunt.log.writeln( outputFilename + ' contents are the same.  No need to save.' );
     }
 
     // Delete the temporarily downloaded files when task complete
