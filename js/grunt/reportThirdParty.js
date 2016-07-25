@@ -18,6 +18,7 @@
 // Load shared constants
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+var assert = require( 'assert' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
@@ -313,7 +314,9 @@ module.exports = function( grunt ) {
     var url = 'http://phet.colorado.edu/sims/html/' + sim + '/latest/' + sim + '_en.html';
     console.log( 'downloading ' + (index + 1) + '/' + activeSimsArray.length + ': ' + url );
 
-    download( url, 'downloaded-sims/' + sim + '_en.html', function() {
+    download( url, 'downloaded-sims/' + sim + '_en.html', function( err ) {
+      assert && assert( !err, 'Error during download: ' + err );
+
       var next = index + 1;
 
       if ( next < activeSimsArray.length ) {
