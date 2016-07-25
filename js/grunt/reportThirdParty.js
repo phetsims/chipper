@@ -107,10 +107,7 @@ module.exports = function( grunt ) {
     };
 
     grunt.file.recurse( 'downloaded-sims', function( abspath, rootdir, subdir, filename ) {
-      if ( ChipperStringUtils.endsWith( filename.toLowerCase(), '.html' ) &&
-
-           // shortcut to avoid looking at the -iframe.html files when testing on a build directory.
-           !ChipperStringUtils.endsWith( filename.toLowerCase(), '-iframe.html' ) ) {
+      if ( ChipperStringUtils.endsWith( filename.toLowerCase(), '.html' ) ) {
 
         // load the file into a string
         var html = grunt.file.read( abspath ).trim();
