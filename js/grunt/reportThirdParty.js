@@ -5,7 +5,6 @@
  * PhET Simulations. The reports is published at: https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
  *
  * Usage:
- * cd chipper
  * grunt report-third-party
  * // then push the updated license file to sherpa
  *
