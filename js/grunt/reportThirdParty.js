@@ -9,7 +9,8 @@
  * grunt report-third-party
  * // then push the updated license file to sherpa
  *
- * Third party entries are parsed from HTML, see getLicenseEntry.js
+ * Third party entries are parsed from the HTML files for all simulations published on the PhET website, see
+ * getLicenseEntry.js
  *
  * @author Sam Reid
  */
