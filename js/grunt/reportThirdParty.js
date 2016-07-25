@@ -234,9 +234,7 @@ module.exports = function( grunt ) {
       }
 
       var license = compositeMedia[ mediaKey ].license.trim();
-      if ( license.length === 0 ) {
-        license = '(no license)';
-      }
+      assert && assert( license.length > 0, 'All media entries must have a license' );
 
       var mediaEntryLines = [
         '**' + mediaKey + '**',
