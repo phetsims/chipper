@@ -329,8 +329,4 @@ module.exports = function( grunt ) {
   };
 
   downloadNext( 0 );
-
-  activeSimsArray.forEach( function( sim ) {
-
-  } );
 };
