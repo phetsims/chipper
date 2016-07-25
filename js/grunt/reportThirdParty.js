@@ -41,7 +41,9 @@ module.exports = function( grunt ) {
   // Since we download the HTML files, this task must wait until it is complete
   var gruntDone = grunt.task.current.async();
 
-  // Prepare a directory where the HTML files will be downloaded
+  // Prepare a directory where the HTML files will be downloaded.
+  // This directory should have been deleted at the end of the last task, but this could be useful if the task was
+  // interrupted before cleanup.
   if ( grunt.file.exists( 'downloaded-sims' ) ) {
     grunt.file.delete( 'downloaded-sims' );
   }
@@ -297,6 +299,11 @@ module.exports = function( grunt ) {
     }
     else {
       grunt.log.writeln( output + ' contents are the same.  No need to save.' );
+    }
+
+    // Delete the temporarily downloaded files when task complete
+    if ( grunt.file.exists( 'downloaded-sims' ) ) {
+      grunt.file.delete( 'downloaded-sims' );
     }
 
     gruntDone();
