@@ -217,11 +217,11 @@ module.exports = function( grunt ) {
     for ( i = 0; i < mediaKeys.length; i++ ) {
       var mediaKey = mediaKeys[ i ];
 
-      var copyrightStatement = compositeMedia[ mediaKey ].text.join( '<br>' ).trim();
+      var text = compositeMedia[ mediaKey ].text.join( '<br>' ).trim();
       var projectURL = compositeMedia[ mediaKey ].projectURL.trim();
 
-      if ( copyrightStatement.length === 0 ) {
-        copyrightStatement = '(no text)';
+      if ( text.length === 0 ) {
+        text = '(no text)';
       }
 
       if ( projectURL.length === 0 ) {
@@ -238,7 +238,7 @@ module.exports = function( grunt ) {
 
       var mediaEntryLines = [
         '**' + mediaKey + '**',
-        copyrightStatement,
+        text,
         projectURL,
         'License: ' + license,
         'Notes: ' + notes
