@@ -114,6 +114,10 @@ module.exports = function( grunt ) {
         // load the file into a string
         var html = grunt.file.read( abspath ).trim();
 
+        // If you request a page that doesn't exist, Apache returns HTML that says the page "was not found on this server"
+        // Since we are looping through all active-sims, there are likely to be many simulations for which published
+        // HTML is not available.  This is not an error, it is simply how we can differentiate between active-sims and
+        // published sims.
         if ( html.indexOf( 'was not found on this server' ) < 0 || html.indexOf( 'was not found on this server' ) > 400 ) {
 
           var startIndex = html.indexOf( ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
