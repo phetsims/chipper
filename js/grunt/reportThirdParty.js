@@ -1,4 +1,4 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2015-2016, University of Colorado Boulder
 
 /**
  * Creates a composite report of all of the 3rd party images, code, audio and other media used by all of the published
@@ -8,8 +8,8 @@
  * grunt report-third-party
  * // then push the updated license file to sherpa
  *
- * Third party entries are parsed from the HTML files for all simulations published on the PhET website, see
- * getLicenseEntry.js
+ * Third party entries are parsed from the HTML files for all simulations published on the PhET website.
+ * See getLicenseEntry.js for documentation of the fields in the entries.
  *
  * @author Sam Reid
  */
@@ -249,7 +249,7 @@ module.exports = function( grunt ) {
       ];
 
       // PhET has temporarily chosen to publish John Travoltage with incompatible licenses, so the reasons for
-      // making the exceptions are noted here.  The new artwork is beind developed now and the simulation
+      // making the exceptions are noted here.  The new artwork is being developed now and the simulation
       // will be republished without exception cases soon.
       // This code will remain in case we have other exception cases in the future.
       if ( compositeMedia[ mediaKey ].exception ) {
