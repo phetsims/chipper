@@ -245,7 +245,7 @@ module.exports = function( grunt ) {
       ];
 
       // PhET has temporarily chosen to publish John Travoltage with incompatible licenses, so the reasons for
-      // making the exceptions are noted here.  The new artwork is beind developed now and the simulation
+      // making the exceptions are noted here.  The new artwork is being developed now and the simulation
       // will be republished without exception cases soon.
       // This code will remain in case we have other exception cases in the future.
       if ( compositeMedia[ mediaKey ].exception ) {
