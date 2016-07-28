@@ -16,6 +16,10 @@ define( function( module ) {
 
   return {
 
+    /**
+     * Required API function that loads a resource.
+     * See http://requirejs.org/docs/plugins.html#apiload for description of parameters.
+     */
     load: function( id, require, load, config ) {
       if ( config.isBuild ) {
 
@@ -49,6 +53,10 @@ define( function( module ) {
       }
     },
 
+    /**
+     * Used by the optimizer to indicate when the plugin should write out a representation of the resource
+     * in the optimized file. See http://requirejs.org/docs/plugins.html#apiwrite for description of parameters.
+     */
     write: function( pluginName, moduleName, write ) {
       var text = null;
       if ( global.phet.chipper.brand === 'phet-io' ) {
