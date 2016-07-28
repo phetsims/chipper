@@ -140,12 +140,6 @@ module.exports = function( grunt, buildConfig ) {
       copyDirectory( grunt, simSpecificPath, 'build/phet-io/protected/wrappers', filterWrapper, { failOnExistingFiles: failOnExistingFiles } );
     }
 
-    // Copy the API files.  The file is located in e.g., phet-io/js/simulations/concentration/concentration-api.js
-    var apiFilename = buildConfig.name + '-api.js';
-    var apiFilePath = '../phet-io/js/simulations/' + buildConfig.name + '/' + apiFilename;
-    grunt.file.copy( apiFilePath, 'build/phet-io/protected/api/' + apiFilename );
-    // TODO: How to copy other dependencies, such as beers-law-lab?
-
     // The .htaccess file
     grunt.file.copy( '../phet-io/templates/.htaccess', 'build/phet-io/protected/.htaccess' );
 
