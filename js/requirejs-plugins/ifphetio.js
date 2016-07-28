@@ -15,6 +15,7 @@ define( function( module ) {
   var NO_OP = function() {};
 
   return {
+
     load: function( id, require, load, config ) {
       if ( config.isBuild ) {
 
@@ -47,6 +48,7 @@ define( function( module ) {
         }
       }
     },
+
     write: function( pluginName, moduleName, write ) {
       var text = null;
       if ( global.phet.chipper.brand === 'phet-io' ) {
