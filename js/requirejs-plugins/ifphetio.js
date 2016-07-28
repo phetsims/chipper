@@ -66,7 +66,7 @@ define( function( module ) {
       }
       else {
 
-        // It wasn't phet-io so load a no-op function instead
+        // It wasn't phet-io so write a no-op function instead
         text = 'define("' + moduleName + '", function(){return function(){};});';
         write( text );
       }
