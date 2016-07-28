@@ -12,7 +12,6 @@ define( function( module ) {
   'use strict';
 
   var buildMap = {};
-  var NO_OP = function() {};
 
   return {
 
@@ -48,7 +47,9 @@ define( function( module ) {
           require( [ id ], load );
         }
         else {
-          load( NO_OP );
+
+          // It wasn't phet-io so load a no-op function instead
+          load( function() {} );
         }
       }
     },
@@ -64,7 +65,8 @@ define( function( module ) {
         write.asModule( moduleName, text, buildMap[ moduleName ].content );
       }
       else {
-        // It wasn't phet-io so load an empty module instead
+
+        // It wasn't phet-io so load a no-op function instead
         text = 'define("' + moduleName + '", function(){return function(){};});';
         write( text );
       }
