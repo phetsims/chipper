@@ -2,7 +2,9 @@
 
 /**
  * This plugin conditionally loads another module based on the brand.  If the brand is phet-io, it loads the module
- * otherwise it returns undefined.  The module works for requirejs mode and during the build.
+ * otherwise it returns a no-op function, so that parametric wrapper types will not exception out even in "phet" brand.
+ *
+ * The module works for requirejs mode and during the build.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -10,6 +12,8 @@ define( function( module ) {
   'use strict';
 
   var buildMap = {};
+  var NO_OP = function() {};
+
   return {
     load: function( id, require, load, config ) {
       if ( config.isBuild ) {
@@ -26,7 +30,7 @@ define( function( module ) {
             content: global.phet.chipper.grunt.file.read( url ),
             attach: module.attach
           };
-          
+
           require( [ id ], load );
         }
         else {
@@ -39,7 +43,7 @@ define( function( module ) {
           require( [ id ], load );
         }
         else {
-          load();
+          load( NO_OP );
         }
       }
     },
@@ -51,7 +55,7 @@ define( function( module ) {
       }
       else {
         // It wasn't phet-io so load an empty module instead
-        text = 'define("' + moduleName + '", function(){});';
+        text = 'define("' + moduleName + '", function(){return function(){};});';
         write( text );
       }
     }
