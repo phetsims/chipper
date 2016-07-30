@@ -24,9 +24,13 @@ var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
 
 // node modules
 var fs = require( 'fs' );
-var http = require( 'http' );
+var https = require( 'https' );
 
 var _ = require( '../../' + SHERPA + '/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+
+// read configuration file - required to write to website database
+var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
+var buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
 
 /**
  * @param grunt - the grunt instance
@@ -52,7 +56,7 @@ module.exports = function( grunt ) {
   // http://stackoverflow.com/questions/11944932/how-to-download-a-file-with-node-js-without-using-third-party-libraries
   var download = function( url, dest, cb ) {
     var file = fs.createWriteStream( dest );
-    http.get( url, function( response ) {
+    https.get( url, function( response ) {
       response.pipe( file );
       file.on( 'finish', function() {
         file.close( cb );  // close() is async, call cb after close completes.
@@ -74,6 +78,10 @@ module.exports = function( grunt ) {
 
     // List of all of the repository names, so that we can detect which libraries are used by all-sims
     var simTitles = [];
+
+    // List of libraries for each sim
+    // Type: string in JSON format
+    var simLibraries = '{';
 
     /**
      * Given an HTML text, find the title attribute by parsing for <title>
@@ -118,7 +126,10 @@ module.exports = function( grunt ) {
         // Since we are looping through all active-sims, there are likely to be many simulations for which published
         // HTML is not available.  This is not an error, it is simply how we can differentiate between active-sims and
         // published sims.
-        if ( html.indexOf( 'was not found on this server' ) < 0 || html.indexOf( 'was not found on this server' ) > 400 ) {
+        // The request may be redirected to the PhET Website 404 page instead of the default Apache page in some 
+        // circumstances, which contains the text: "The requested page could not be found."
+        if ( (html.indexOf( 'was not found on this server' ) < 0 || html.indexOf( 'was not found on this server' ) > 400) 
+              && html.indexOf( 'The requested page could not be found.' ) === -1 ) {
 
           var startIndex = html.indexOf( ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
           var endIndex = html.indexOf( ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
@@ -130,6 +141,7 @@ module.exports = function( grunt ) {
 
           var json = JSON.parse( jsonString );
 
+
           var title = parseTitle( html );
           if ( !title || title.indexOf( 'undefined' ) === 0 || title.indexOf( 'TITLE' ) >= 0 ) {
             grunt.log.writeln( 'title not found for ' + abspath );
@@ -140,9 +152,58 @@ module.exports = function( grunt ) {
           augment( title, json.images, compositeMedia );
 
           simTitles.push( title );
+
+          // Get the name of the sim as referenced in the website database out of the filename
+          var hyphenatedTitle = filename.substring( 0, filename.indexOf( '_' ) );
+
+          // Concatenate all the libraries for this sim with html newline.
+          var libString = '';
+          for ( var entry in json.lib ) {
+            libString += entry + '<br/>';
+          }
+
+          //  Update the object to be pushed to the website database
+          simLibraries += '"' + hyphenatedTitle + '":"' + libString + '",';
         }
       }
     } );
+
+    simLibraries = simLibraries.slice( 0, simLibraries.length - 1 ) + '}';
+
+    // POST the library data to the website database
+    if ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode ) {
+      
+      // Semaphore for receipt of http response.  If we call gruntDone() before it exists the database query will fail silently.
+      var databaseResponseSemaphore;
+
+      var options = {
+        host: 'phet.colorado.edu',
+        path: '/services/add-simulation-libraries',
+        method: 'POST',
+        auth: 'token:' + buildLocalJSON.websiteAuthorizationCode,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Length': Buffer.byteLength( simLibraries )
+        }
+      };
+      var databaseRequest = https.request( options, function( res ) {
+        databaseResponseSemaphore = res;
+      } );
+      databaseRequest.on( 'error', function( e ) {
+        grunt.log.writeln( 'There was a problem uploading the data to the website: ' + e.message );
+        databaseResponseSemaphore = e.message;
+      } );
+
+      // write data to request body
+      databaseRequest.write( simLibraries );
+      
+      databaseRequest.end();
+    }
+    else {
+      grunt.log.writeln( 'build-local.json is missing the value "websiteAuthorizationCode". ' +
+        'The third party information was not uploaded to the website.  See a web developer for details.'
+      );
+    }
 
     // Sort to easily compare lists of repositoryNames with usedBy columns, to see which resources are used by everything.
     simTitles.sort();
@@ -309,10 +370,24 @@ module.exports = function( grunt ) {
 
     // Delete the temporarily downloaded files when task complete
     if ( grunt.file.exists( 'downloaded-sims' ) ) {
-      grunt.file.delete( 'downloaded-sims' );
+      grunt.file.delete( 'downloaded-sims', { force: true } );
     }
 
-    gruntDone();
+
+    if ( databaseRequest ) {
+      // If we sent a request to the website, wait for the file upload to finish or fail.
+      grunt.log.writeln( 'Uploading library information to wesite database ...' );
+      var interval = setInterval( function () {
+        if ( databaseResponseSemaphore ) {
+          clearInterval( interval );
+          grunt.log.writeln( 'Upload finished.' );
+          gruntDone();
+        }
+      }, 1000 );
+    }
+    else {
+      gruntDone();
+    }
   };
 
   // Download all of the simulations.  For simulations that are in "active-sims" but not published,
@@ -322,11 +397,9 @@ module.exports = function( grunt ) {
 
   // Download files one at a time so we can make sure we get everything.
   var downloadNext = function( index ) {
-    var sim = activeSimsArray[ index ];
-
-    var url = 'http://phet.colorado.edu/sims/html/' + sim + '/latest/' + sim + '_en.html';
+    var sim = activeSimsArray[ index ].trim();
+    var url = 'https://phet.colorado.edu/sims/html/' + sim + '/latest/' + sim + '_en.html';
     console.log( 'downloading ' + (index + 1) + '/' + activeSimsArray.length + ': ' + url );
-
     download( url, 'downloaded-sims/' + sim + '_en.html', function( err ) {
       assert && assert( !err, 'Error during download: ' + err );
 
