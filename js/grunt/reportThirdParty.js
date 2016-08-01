@@ -69,6 +69,45 @@ module.exports = function( grunt ) {
     } );
   };
 
+  /**
+   * 
+   * @param libraries
+   * @returns {{response: *, request: *}}
+   */
+  var postLibrariesToWebsite = function( libraries ) {
+    // Semaphore for receipt of http response.  If we call gruntDone() before it exists the database query will fail silently.
+      var response;
+      var libraryString = '{' + libraries.map( function (o) { return '{' + o.name + ':' + o.libraries + '}' } ).join(',') + '}';
+
+      var options = {
+        host: 'phet.colorado.edu',
+        path: '/services/add-simulation-libraries',
+        method: 'POST',
+        auth: 'token:' + buildLocalJSON.websiteAuthorizationCode,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Length': Buffer.byteLength( libraryString )
+        }
+      };
+      var request = https.request( options, function( res ) {
+        response = res;
+      } );
+      request.on( 'error', function( e ) {
+        grunt.log.writeln( 'There was a problem uploading the data to the website: ' + e.message );
+        response = e.message;
+      } );
+
+      // write data to request body
+      request.write( libraryString );
+      
+      request.end();
+
+      return {
+        response: response, 
+        request: request
+      };
+  }
+
   // After the downloads are complete, write the report based on the metadata in the files.
   var writeReport = function() {
 
@@ -81,7 +120,7 @@ module.exports = function( grunt ) {
 
     // List of libraries for each sim
     // Type: string in JSON format
-    var simLibraries = '{';
+    var simLibraries = [];
 
     /**
      * Given an HTML text, find the title attribute by parsing for <title>
@@ -163,41 +202,18 @@ module.exports = function( grunt ) {
           }
 
           //  Update the object to be pushed to the website database
-          simLibraries += '"' + hyphenatedTitle + '":"' + libString + '",';
+          simLibraries.push( {
+            name: hyphenatedTitle,
+            libraries: libString
+          });
         }
       }
     } );
 
-    simLibraries = simLibraries.slice( 0, simLibraries.length - 1 ) + '}';
-
+    var postObject;
     // POST the library data to the website database
     if ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode ) {
-      
-      // Semaphore for receipt of http response.  If we call gruntDone() before it exists the database query will fail silently.
-      var databaseResponseSemaphore;
-
-      var options = {
-        host: 'phet.colorado.edu',
-        path: '/services/add-simulation-libraries',
-        method: 'POST',
-        auth: 'token:' + buildLocalJSON.websiteAuthorizationCode,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Content-Length': Buffer.byteLength( simLibraries )
-        }
-      };
-      var databaseRequest = https.request( options, function( res ) {
-        databaseResponseSemaphore = res;
-      } );
-      databaseRequest.on( 'error', function( e ) {
-        grunt.log.writeln( 'There was a problem uploading the data to the website: ' + e.message );
-        databaseResponseSemaphore = e.message;
-      } );
-
-      // write data to request body
-      databaseRequest.write( simLibraries );
-      
-      databaseRequest.end();
+      postObject = postLibrariesToWebsite( simLibraries );
     }
     else {
       grunt.log.writeln( 'build-local.json is missing the value "websiteAuthorizationCode". ' +
@@ -370,15 +386,15 @@ module.exports = function( grunt ) {
 
     // Delete the temporarily downloaded files when task complete
     if ( grunt.file.exists( 'downloaded-sims' ) ) {
-      grunt.file.delete( 'downloaded-sims', { force: true } );
+      grunt.file.delete( 'downloaded-sims' );
     }
 
 
-    if ( databaseRequest ) {
+    if ( postObject && postObject.request ) {
       // If we sent a request to the website, wait for the file upload to finish or fail.
       grunt.log.writeln( 'Uploading library information to wesite database ...' );
       var interval = setInterval( function () {
-        if ( databaseResponseSemaphore ) {
+        if ( postObject.response ) {
           clearInterval( interval );
           grunt.log.writeln( 'Upload finished.' );
           gruntDone();
