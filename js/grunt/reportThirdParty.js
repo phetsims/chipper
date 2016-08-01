@@ -70,42 +70,47 @@ module.exports = function( grunt ) {
   };
 
   /**
+   * This takes a mapping of sims to libraries used and uploads it to the PhET Website.
+   * The response in the returned object is created asynchronously and will be null at return time.
    * 
-   * @param libraries
-   * @returns {{response: *, request: *}}
+   * @param libraries [{name:"sim-name",libraries:"Library Name<br/>Library Name"}]
+   * @returns {response: https.response || https.error.message, request: https.request}
    */
   var postLibrariesToWebsite = function( libraries ) {
     // Semaphore for receipt of http response.  If we call gruntDone() before it exists the database query will fail silently.
-      var response;
-      var libraryString = '{' + libraries.map( function (o) { return '{' + o.name + ':' + o.libraries + '}' } ).join(',') + '}';
+    var response;
 
-      var options = {
-        host: 'phet.colorado.edu',
-        path: '/services/add-simulation-libraries',
-        method: 'POST',
-        auth: 'token:' + buildLocalJSON.websiteAuthorizationCode,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Content-Length': Buffer.byteLength( libraryString )
-        }
-      };
-      var request = https.request( options, function( res ) {
-        response = res;
-      } );
-      request.on( 'error', function( e ) {
-        grunt.log.writeln( 'There was a problem uploading the data to the website: ' + e.message );
-        response = e.message;
-      } );
+    // Change libraryobject to string in format that the database will recognize.
+    // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'
+    var libraryString = '{' + libraries.map( function (o) { return '{' + o.name + ':' + o.libraries + '}' } ).join(',') + '}';
 
-      // write data to request body
-      request.write( libraryString );
-      
-      request.end();
+    var options = {
+      host: 'phet.colorado.edu',
+      path: '/services/add-simulation-libraries',
+      method: 'POST',
+      auth: 'token:' + buildLocalJSON.websiteAuthorizationCode,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength( libraryString )
+      }
+    };
+    var request = https.request( options, function( res ) {
+      response = res;
+    } );
+    request.on( 'error', function( e ) {
+      grunt.log.writeln( 'There was a problem uploading the data to the website: ' + e.message );
+      response = e.message;
+    } );
 
-      return {
-        response: response, 
-        request: request
-      };
+    // write data to request body
+    request.write( libraryString );
+    
+    request.end();
+
+    return {
+      response: response, 
+      request: request
+    };
   }
 
   // After the downloads are complete, write the report based on the metadata in the files.
