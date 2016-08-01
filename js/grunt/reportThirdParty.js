@@ -397,7 +397,7 @@ module.exports = function( grunt ) {
 
     if ( postObject && postObject.request ) {
       // If we sent a request to the website, wait for the file upload to finish or fail.
-      grunt.log.writeln( 'Uploading library information to wesite database ...' );
+      grunt.log.writeln( 'Uploading library information to website database ...' );
       var interval = setInterval( function () {
         if ( postObject.response ) {
           clearInterval( interval );
