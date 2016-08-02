@@ -81,8 +81,8 @@ module.exports = function( grunt ) {
     var response;
 
     // Change libraryobject to string in format that the database will recognize.
-    // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'
-    var libraryString = '{' + libraries.map( function (o) { return '{' + o.name + ':' + o.libraries + '}' } ).join(',') + '}';
+    // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'   
+    var libraryString = '{' + libraries.map( function (o) { return '{' + o.name + ':' + o.libraries + '}'; } ).join(',') + '}';
 
     var options = {
       host: 'phet.colorado.edu',
@@ -111,7 +111,7 @@ module.exports = function( grunt ) {
       response: response, 
       request: request
     };
-  }
+  };
 
   // After the downloads are complete, write the report based on the metadata in the files.
   var writeReport = function() {
