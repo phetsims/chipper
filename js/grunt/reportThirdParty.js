@@ -30,16 +30,17 @@ var https = require( 'https' );
 
 var _ = require( '../../' + SHERPA + '/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
 
-// read configuration file - required to write to website database
-var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
-var buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
-assert ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, 'websiteAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME);
 
 /**
  * @param grunt - the grunt instance
  */
 module.exports = function( grunt ) {
   'use strict';
+
+  // read configuration file - required to write to website database
+  var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
+  var buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
+  assert ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, 'websiteAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME);
 
   // The file where the report will be written
   var outputFilename = SHERPA + '/third-party-licenses.md';
