@@ -11,6 +11,8 @@
  * Third party entries are parsed from the HTML files for all simulations published on the PhET website.
  * See getLicenseEntry.js for documentation of the fields in the entries.
  *
+ * Copy the local-auth-code key value from phet-server:/etc/tomcat/context.xml into the value for websiteAuthorizationCode in ~/.phet/build-local.json
+ *
  * @author Sam Reid
  */
 
@@ -31,6 +33,7 @@ var _ = require( '../../' + SHERPA + '/lib/lodash-2.4.1.min' ); // eslint-disabl
 // read configuration file - required to write to website database
 var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
 var buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
+assert ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, 'websiteAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME);
 
 /**
  * @param grunt - the grunt instance
@@ -215,16 +218,8 @@ module.exports = function( grunt ) {
       }
     } );
 
-    var postObject;
     // POST the library data to the website database
-    if ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode ) {
-      postObject = postLibrariesToWebsite( simLibraries );
-    }
-    else {
-      grunt.log.writeln( 'build-local.json is missing the value "websiteAuthorizationCode". ' +
-        'The third party information was not uploaded to the website.  See a web developer for details.'
-      );
-    }
+    var postObject = postLibrariesToWebsite( simLibraries );
 
     // Sort to easily compare lists of repositoryNames with usedBy columns, to see which resources are used by everything.
     simTitles.sort();
@@ -396,7 +391,7 @@ module.exports = function( grunt ) {
 
 
     if ( postObject && postObject.request ) {
-      // If we sent a request to the website, wait for the file upload to finish or fail.
+      // Wait for the file upload to finish or fail.
       grunt.log.writeln( 'Uploading library information to website database ...' );
       var interval = setInterval( function () {
         if ( postObject.response ) {
