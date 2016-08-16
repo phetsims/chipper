@@ -74,6 +74,8 @@
  * phet-io.emitEmptyDeltas - when emitting deltas using phetio.js (see phet-io.emitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
  * phet-io.emitInputEvents - emit the Scenery input events
  * phet-io.emitStates  - when running a simulation using phetio.js, outputs the state at the end of every frame
+ * phet-io.validateTandems - when running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
+ *                         - Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
  * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
  *                         - if a value is specified, it will also simulate a context loss after the specified number
  *                         - of milliseconds has elapsed.
