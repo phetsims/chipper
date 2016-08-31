@@ -38,6 +38,8 @@ module.exports = function( grunt ) {
   'use strict';
 
   // read configuration file - required to write to website database
+  var httpsResponse;
+  var serverName = 'ox-dev.colorado.edu';
   var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
   var buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
   assert ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, 'websiteAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME);
@@ -82,15 +84,16 @@ module.exports = function( grunt ) {
    */
   var postLibrariesToWebsite = function( libraries ) {
     // Semaphore for receipt of http response.  If we call gruntDone() before it exists the database query will fail silently.
-    var response;
+    // var response;
 
     // Change libraryobject to string in format that the database will recognize.
     // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'   
     var libraryString = '{' + libraries.map( function (o) { return '{' + o.name + ':' + o.libraries + '}'; } ).join(',') + '}';
 
     var options = {
-      host: 'phet.colorado.edu',
+      host: serverName,
       path: '/services/add-simulation-libraries',
+      port: 443,
       method: 'POST',
       auth: 'token:' + buildLocalJSON.websiteAuthorizationCode,
       headers: {
@@ -99,11 +102,11 @@ module.exports = function( grunt ) {
       }
     };
     var request = https.request( options, function( res ) {
-      response = res;
+      httpsResponse = res;
     } );
     request.on( 'error', function( e ) {
       grunt.log.writeln( 'There was a problem uploading the data to the website: ' + e.message );
-      response = e.message;
+      httpsResponse = e.message;
     } );
 
     // write data to request body
@@ -112,7 +115,7 @@ module.exports = function( grunt ) {
     request.end();
 
     return {
-      response: response, 
+      // response: response, 
       request: request
     };
   };
@@ -395,7 +398,7 @@ module.exports = function( grunt ) {
       // Wait for the file upload to finish or fail.
       grunt.log.writeln( 'Uploading library information to website database ...' );
       var interval = setInterval( function () {
-        if ( postObject.response ) {
+        if ( httpsResponse ) {
           clearInterval( interval );
           grunt.log.writeln( 'Upload finished.' );
           gruntDone();
@@ -415,7 +418,7 @@ module.exports = function( grunt ) {
   // Download files one at a time so we can make sure we get everything.
   var downloadNext = function( index ) {
     var sim = activeSimsArray[ index ].trim();
-    var url = 'https://phet.colorado.edu/sims/html/' + sim + '/latest/' + sim + '_en.html';
+    var url = 'https://' + serverName + '/sims/html/' + sim + '/latest/' + sim + '_en.html';
     console.log( 'downloading ' + (index + 1) + '/' + activeSimsArray.length + ': ' + url );
     download( url, 'downloaded-sims/' + sim + '_en.html', function( err ) {
       assert && assert( !err, 'Error during download: ' + err );

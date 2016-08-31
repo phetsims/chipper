@@ -135,8 +135,8 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'deploy-production',
     'Invoke deployDev and then deploy a simulation to the production server.\n' +
     'Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
-    'Deploys to figaro by default, but simian can be used for testing by setting:\n' +
-    '"productionServerURL": "https://phet-dev.colorado.edu" in build-local.json\n' +
+    'Deploys to phet-server by default, but simian can be used for testing by setting:\n' +
+    '"productionServerURL": "https://ox-dev.colorado.edu" in build-local.json\n' +
     '--dryRun : if true, preconditions will be checked and the build server URL will be printed but build and deploy will not occur\n' +
     '--noDev : if true, deploy to production only, not spot as well. Useful for testing\n' +
     '--email : optionally enter an email to be notified if the build fails or succeeds (overrides buildServerNotifyEmail in build-locale.json)\n' +
