@@ -94,6 +94,11 @@ module.exports = function( grunt, buildConfig ) {
     templateString = templateString + '\'\'].join(\'\\n\')';
 
     var filterWrapper = function( abspath, contents ) {
+      var originalContents = contents + '';
+      if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
+        contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_NAME$', buildConfig.name );
+        contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_VERSION$', buildConfig.version );
+      }
       if ( abspath.indexOf( '.html' ) >= 0 ) {
 
         // RULES FOR INSTANCE_PROXIES
@@ -123,9 +128,12 @@ module.exports = function( grunt, buildConfig ) {
         // END RULES FOR INSTANCE_PROXIES
 
         contents = ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
-        contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_NAME$', buildConfig.name );
-        contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_VERSION$', buildConfig.version );
+      }
+      if ( contents !== originalContents ) {
         return contents;
+      }
+      else {
+        return null; // signify no change (helps for images)
       }
     };
     copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers', filterWrapper );
