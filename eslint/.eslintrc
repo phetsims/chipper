@@ -151,6 +151,8 @@
     "module": false,
     // jQuery
     "$": false,
+    // D3
+    "d3": false,
     // underscore, lodash
     "_": true,
     "clearTimeout": false,

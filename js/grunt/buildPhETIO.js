@@ -115,6 +115,10 @@ module.exports = function( grunt, buildConfig ) {
           '"https://code.jquery.com/jquery-2.2.3.min.js"'
         );
         contents = ChipperStringUtils.replaceAll( contents,
+          '"../../../sherpa/lib/d3-4.2.2.min.js"',
+          '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
+        );
+        contents = ChipperStringUtils.replaceAll( contents,
           '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
           '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
         );
