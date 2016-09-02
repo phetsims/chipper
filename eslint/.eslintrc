@@ -113,8 +113,7 @@
     "browser": true
   },
   "globals": {
-    // writable globals ---------------------------------
-
+    // Global symbols that are permissable to overwrite -----------------------
     "process": true,
     // allow assertions
     "assert": true,
@@ -130,6 +129,9 @@
     "Float32Array": true,
     "phet": true,
     "phetio": true,
+    // underscore, lodash
+    "_": true,
+
     // read-only globals ---------------------------------
 
     // require.js
@@ -153,8 +155,6 @@
     "$": false,
     // D3
     "d3": false,
-    // underscore, lodash
-    "_": true,
     "clearTimeout": false,
     // DOM.js
     "Image": false,
