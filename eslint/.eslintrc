@@ -113,7 +113,7 @@
     "browser": true
   },
   "globals": {
-    // Global symbols that are permissable to overwrite -----------------------
+    // Global symbols that are permissible to overwrite -----------------------
     "process": true,
     // allow assertions
     "assert": true,
