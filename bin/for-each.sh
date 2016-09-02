@@ -4,9 +4,9 @@
 # Visits each repository listed in a file and applies the same command to each.  If the specified file cannot be found
 # it will check for a matching file in chipper/bin/data.
 #
-# For example, to print the working directory of all instrumented simulations:
+# For example, to print the working directory of all active repos:
 #
-# for-each.sh instrumented-sims pwd
+# for-each.sh active-repos pwd
 #
 # Author: Sam Reid
 # Author: Chris Malley
