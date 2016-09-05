@@ -70,16 +70,6 @@ module.exports = function( grunt, buildConfig ) {
     grunt.file.mkdir( 'build/phet-io/protected' );
 
     // Load the template for instance-proxies.html
-    var entry = packageJSON.phet[ 'phet-io' ];
-    var preload = [];
-    if ( entry && entry.preload ) {
-      preload = entry.preload;
-    }
-
-    var simAPIDeclaration = '';
-    for ( var i = 0; i < preload.length; i++ ) {
-      simAPIDeclaration = simAPIDeclaration + readUgly( preload[ i ] );
-    }
     var templateText = grunt.file.read( '../phet-io/html/templates/load-state.html' );
     var lines = templateText.split( '\n' );
     var templateString = '[';
