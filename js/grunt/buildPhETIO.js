@@ -68,8 +68,6 @@ module.exports = function( grunt, buildConfig ) {
 
     // create protected/
     grunt.file.mkdir( 'build/phet-io/protected' );
-    grunt.file.mkdir( 'build/phet-io/protected/api' );
-    grunt.file.mkdir( 'build/phet-io/protected/wrappers' );
 
     // Load the template for instance-proxies.html
     var entry = packageJSON.phet[ 'phet-io' ];
@@ -140,7 +138,7 @@ module.exports = function( grunt, buildConfig ) {
         return null; // signify no change (helps for images)
       }
     };
-    copyDirectory( grunt, '../phet-io/html/wrappers', 'build/phet-io/protected/wrappers', filterWrapper );
+    copyDirectory( grunt, '../phet-io/apps', 'build/phet-io/protected/apps', filterWrapper );
 
     // TODO: what if something overwrites? These directories are being merged.
     var simSpecificPath = '../phet-io/html/' + buildConfig.name;
@@ -165,7 +163,7 @@ module.exports = function( grunt, buildConfig ) {
     var destinationPath = 'build/phet-io/lib';
 
     var minifyAndWrite = function( filename, precode ) {
-      var minified = uglify.minify( [ '../phet-io/js/' + filename ], {
+      var minified = uglify.minify( [ '../phet-io/apps/common/js/' + filename ], {
         mangle: true,
         output: {
           inline_script: true, // escape </script
