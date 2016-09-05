@@ -124,12 +124,12 @@ module.exports = function( grunt, buildConfig ) {
     // The .htaccess file
     grunt.file.copy( '../phet-io/templates/.htaccess', 'build/phet-io/protected/.htaccess' );
 
-    var wrapperHTML = grunt.file.read( '../phet-io/templates/wrappers.html' );
+    var wrapperHTML = grunt.file.read( '../phet-io/templates/app-index.html' );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM$', buildConfig.name );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$VERSION$', buildConfig.version );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$PHET_IO_HTML_SIM_FILENAME$', buildConfig.name + '_en-phetio.html' );
     wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM_NAME$', buildConfig.name );
-    grunt.file.write( 'build/phet-io/protected/wrappers.html', wrapperHTML );
+    grunt.file.write( 'build/phet-io/protected/index.html', wrapperHTML );
 
     var destinationPath = 'build/phet-io/lib';
 
