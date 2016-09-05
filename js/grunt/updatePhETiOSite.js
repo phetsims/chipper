@@ -102,7 +102,7 @@ module.exports = function( grunt, buildConfig ) {
 
   var destinationPath = '../phet-io-site/' + siteVersion + '/lib';
 
-  var minifyAndWrite = function( filename, precode ) {
+  var minifyAndWrite = function( filename ) {
     var minified = uglify.minify( [ '../phet-io/js/' + filename ], {
       mangle: true,
       output: {
@@ -118,17 +118,11 @@ module.exports = function( grunt, buildConfig ) {
                           '// This PhET-iO file requires a license\n' +
                           '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
                           '// For licensing, please contact phethelp@colorado.edu';
-    grunt.file.write( destinationPath + '/' + packageVersion + '/' + filename, copyrightHeader + '\n\n' + precode + minified );
+    grunt.file.write( destinationPath + '/' + packageVersion + '/' + filename, copyrightHeader + '\n\n' + minified );
   };
 
-  minifyAndWrite( 'SimIFrameClient.js', '' );
+  minifyAndWrite( 'SimIFrameClient.js' );
 
   // Determine which sim versions will be pointed to by SimWrapperUtils
-  minifyAndWrite( 'SimWrapperUtils.js', 'window.simWrapperUtilsVersions=' + JSON.stringify( {
-      'beers-law-lab': '1.4.0-phet-io.2',
-      'color-vision': '1.1.0-phet-io.3',
-      'concentration': '1.3.0-phet-io.2',
-      'faradays-law': '1.1.0-phet-io.2',
-      'molecules-and-light': '1.1.0-phet-io.2'
-    } ) + ';' );
+  minifyAndWrite( 'SimWrapperUtils.js' );
 };
