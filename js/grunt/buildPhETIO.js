@@ -44,7 +44,7 @@ module.exports = function( grunt, buildConfig ) {
       }
     } );
 
-    // output the SimIFrameClient.js and SimWrapperUtils.js to the top level lib (not protected), see https://github.com/phetsims/phet-io/issues/353
+    // output the SimIFrameClient.js and PhETIOAppUtils.js to the top level lib (not protected), see https://github.com/phetsims/phet-io/issues/353
     grunt.file.mkdir( 'build/phet-io/lib' );
 
     // create protected/
@@ -154,8 +154,8 @@ module.exports = function( grunt, buildConfig ) {
 
     minifyAndWrite( 'SimIFrameClient.js', '' );
 
-    // Determine which sim versions will be pointed to by SimWrapperUtils
-    minifyAndWrite( 'SimWrapperUtils.js', 'window.useRelativeSimPath=true;' );
+    // Determine which sim versions will be pointed to by PhETIOAppUtils
+    minifyAndWrite( 'PhETIOAppUtils.js', 'window.useRelativeSimPath=true;' );
   };
 
   if ( skipBuild ) {
