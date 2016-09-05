@@ -22,24 +22,7 @@ module.exports = function( grunt, buildConfig ) {
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
-  // Read a JS file and uglify
-  var readUgly = function( filename ) {
-    var text = grunt.file.read( filename );
-    return uglify.minify( text, {
-      mangle: true,
-      fromString: true,
-      output: {
-        inline_script: true, // escape </script
-        beautify: false
-      },
-      compress: {
-        global_defs: {}
-      }
-    } ).code;
-  };
-
   var skipBuild = grunt.option( 'skipBuild' );
-  var packageJSON = grunt.file.readJSON( 'package.json' );
 
   var cwd = process.cwd();
 
@@ -47,9 +30,7 @@ module.exports = function( grunt, buildConfig ) {
   var buildDir = cwd + '/build';
 
   // Clean
-  if ( grunt.file.exists( phetioBuildDir ) ) {
-    grunt.file.delete( phetioBuildDir );
-  }
+  grunt.file.exists( phetioBuildDir ) && grunt.file.delete( phetioBuildDir );
   grunt.file.mkdir( phetioBuildDir );
 
   var createOtherPhETIOFiles = function() {
