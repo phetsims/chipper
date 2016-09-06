@@ -208,6 +208,11 @@
     // BigRational
     "bigRat": false,
     // LZ-string, for compressing and decompressing strings
-    "LZString": false
+    "LZString": false,
+    // PhET-iO
+    "Metacog": false,
+    "PhETIOAppUtils": false,
+    "SimIFrameClient": false,
+    "readFile":false
   }
 }
