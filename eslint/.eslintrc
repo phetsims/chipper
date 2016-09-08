@@ -213,6 +213,8 @@
     "Metacog": false,
     "PhETIOAppUtils": false,
     "SimIFrameClient": false,
-    "readFile":false
+    "readFile": false,
+    // Misc
+    "QueryStringMachine": false
   }
 }
