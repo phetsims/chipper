@@ -88,6 +88,14 @@ module.exports = function( grunt, buildConfig ) {
           '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
         );
         contents = ChipperStringUtils.replaceAll( contents,
+          '"../../../sherpa/lib/toastr.min.js"',
+          '"https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"'
+        );
+        contents = ChipperStringUtils.replaceAll( contents,
+          '"../../../sherpa/lib/toastr.min.css"',
+          '"https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"'
+        );
+        contents = ChipperStringUtils.replaceAll( contents,
           '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
           '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
         );
