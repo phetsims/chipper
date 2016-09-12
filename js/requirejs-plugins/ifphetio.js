@@ -42,7 +42,7 @@ define( function( module ) {
         }
       }
       else {
-        var brand = window.phet.chipper.brand;
+        var brand = window.phet && window.phet.chipper && window.phet.chipper.brand;
         if ( brand === 'phet-io' ) {
           require( [ id ], load );
         }
