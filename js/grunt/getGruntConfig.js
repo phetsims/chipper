@@ -36,7 +36,7 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
 
     // When building for phet-io, we must lint the phet-io apps directory, see https://github.com/phetsims/phet-io/issues/600
     if ( phetLibs.indexOf( 'phet-io' ) >= 0 ) {
-      allFilesToLint.push( '../phet-io/apps/**/*.js' );
+      allFilesToLint.push( '../phet-io/wrappers/**/*.js' );
     }
 
     // brand repo has a non-standard directory structure, so add it explicitly if it's a dependency.
