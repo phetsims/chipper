@@ -231,6 +231,7 @@
     //
     "window": false,
     // allow ajax requests directly
-    "XMLHttpRequest": false
+    "XMLHttpRequest": false,
+    "toast": false
   }
 }
