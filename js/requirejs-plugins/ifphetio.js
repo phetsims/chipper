@@ -28,7 +28,7 @@ define( function( module ) {
           url += '.js';
         }
 
-        if ( global.phet.chipper.brand === 'phet-io' ) {
+        if ( global.phet && global.phet.chipper && global.phet.chipper.brand === 'phet-io' ) {
 
           buildMap[ id ] = {
             content: global.phet.chipper.grunt.file.read( url ),
@@ -60,7 +60,7 @@ define( function( module ) {
      */
     write: function( pluginName, moduleName, write ) {
       var text = null;
-      if ( global.phet.chipper.brand === 'phet-io' ) {
+      if ( global.phet && global.phet.chipper && global.phet.chipper.brand === 'phet-io' ) {
         text = 'define("' + moduleName + '", function(){' + buildMap[ moduleName ].content + '});';
         write.asModule( moduleName, text, buildMap[ moduleName ].content );
       }
