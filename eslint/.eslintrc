@@ -217,8 +217,6 @@
     "test": false,
     // For three.js 3d things
     "THREE": false,
-    // Toastr popup/notification library
-    "toastr": false,
     // sole/tween.js
     "TWEEN": false,
     //

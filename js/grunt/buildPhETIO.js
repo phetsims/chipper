@@ -83,16 +83,12 @@ module.exports = function( grunt, buildConfig ) {
           '"https://code.jquery.com/jquery-2.2.3.min.js"'
         );
         contents = ChipperStringUtils.replaceAll( contents,
+          '../../../sherpa/lib/jquery-ui-1.8.24.min.js"',
+          '"https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"'
+        );
+        contents = ChipperStringUtils.replaceAll( contents,
           '"../../../sherpa/lib/d3-4.2.2.js"',
           '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
-        );
-        contents = ChipperStringUtils.replaceAll( contents,
-          '"../../../sherpa/lib/toastr.min.js"',
-          '"https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"'
-        );
-        contents = ChipperStringUtils.replaceAll( contents,
-          '"../../../sherpa/lib/toastr.min.css"',
-          '"https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"'
         );
         contents = ChipperStringUtils.replaceAll( contents,
           '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
