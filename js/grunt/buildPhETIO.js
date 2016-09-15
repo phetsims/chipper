@@ -111,7 +111,7 @@ module.exports = function( grunt, buildConfig ) {
         return null; // signify no change (helps for images)
       }
     };
-    copyDirectory( grunt, '../phet-io/apps', 'build/phet-io/protected/apps', filterWrapper );
+    copyDirectory( grunt, '../phet-io/wrappers', 'build/phet-io/protected/wrappers', filterWrapper );
 
     // TODO: what if something overwrites? These directories are being merged.
     var simSpecificPath = '../phet-io/html/' + buildConfig.name;
@@ -136,7 +136,7 @@ module.exports = function( grunt, buildConfig ) {
     var destinationPath = 'build/phet-io/lib';
 
     var minifyAndWrite = function( filename, precode ) {
-      var minified = uglify.minify( [ '../phet-io/apps/common/js/' + filename ], {
+      var minified = uglify.minify( [ '../phet-io/wrappers/common/js/' + filename ], {
         mangle: true,
         output: {
           inline_script: true, // escape </script
