@@ -98,7 +98,11 @@
     // require default case for switch statements
     "default-case": 2,
     // do not allow fall-through cases in switch statements
-    "no-fallthrough": 2
+    "no-fallthrough": 2,
+    "consistent-this": [
+      2,
+      "self"
+    ]
     //
     // disallow trailing whitespace at the end of lines (fixable)
     //    "no-trailing-spaces": 2,
@@ -135,7 +139,6 @@
     "phetio": true,
     // underscore, lodash
     "_": true,
-
     // read-only globals ---------------------------------
 
     // jQuery
