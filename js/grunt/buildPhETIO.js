@@ -106,8 +106,7 @@ module.exports = function( grunt, buildConfig ) {
       }
       if ( contents !== originalContents ) {
         return contents;
-      }
-      else {
+      } else {
         return null; // signify no change (helps for images)
       }
     };
@@ -135,8 +134,14 @@ module.exports = function( grunt, buildConfig ) {
 
     var destinationPath = 'build/phet-io/lib';
 
-    var minifyAndWrite = function( filename, precode ) {
-      var minified = uglify.minify( [ '../phet-io/wrappers/common/js/' + filename ], {
+    /**
+     * @param  {string} path - relative path to file
+     * @param  {string} copyright - text containing copyright information
+     * @param  {string} precode - additional text to be prepended to file
+     */
+    var minifyAndWrite = function( path, copyright, precode ) {
+      var fileName = path.split( '/' ).pop();
+      var minified = uglify.minify( [ path ], {
         mangle: true,
         output: {
           inline_script: true, // escape </script
@@ -147,24 +152,27 @@ module.exports = function( grunt, buildConfig ) {
         }
       } ).code;
 
-      var copyrightHeader = '// Copyright 2002-2016, University of Colorado Boulder\n' +
-                            '// This PhET-iO file requires a license\n' +
-                            '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
-                            '// For licensing, please contact phethelp@colorado.edu';
-      grunt.file.write( destinationPath + '/' + filename, copyrightHeader + '\n\n' + precode + minified );
+      grunt.file.write( destinationPath + '/' + fileName, copyright + '\n\n' + precode + minified );
     };
 
-    minifyAndWrite( 'SimIFrameClient.js', '' );
+    var copyrightHeader = '// Copyright 2002-2016, University of Colorado Boulder\n' +
+      '// This PhET-iO file requires a license\n' +
+      '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
+      '// For licensing, please contact phethelp@colorado.edu';
+
+    minifyAndWrite( '../phet-io/wrappers/common/js/SimIFrameClient.js', copyrightHeader, '' );
 
     // Determine which sim versions will be pointed to by PhETIOAppUtils
-    minifyAndWrite( 'PhETIOAppUtils.js', 'window.useRelativeSimPath=true;' );
+    minifyAndWrite( '../phet-io/wrappers/common/js/PhETIOAppUtils.js', copyrightHeader, 'window.useRelativeSimPath=true;' );
+
+    minifyAndWrite( '../query-string-machine/js/QueryStringMachine.js',
+      '// Copyright 2016 University of Colorado Boulder\n// MIT License', '' );
   };
 
   if ( skipBuild ) {
     grunt.file.mkdir( 'build/phet-io' );
     createOtherPhETIOFiles();
-  }
-  else {
+  } else {
     var done = grunt.task.current.async();
     var command1 = 'grunt --brand=phet-io';
     var command2 = 'grunt --brand=phet';
