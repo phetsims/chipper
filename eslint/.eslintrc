@@ -94,7 +94,16 @@
     ],
     "string-require-statement-match": 2,
     // require radix argument for parseInt
-    "radix": 2
+    "radix": 2,
+    // require default case for switch statements
+    "default-case": 2,
+    // do not allow fall-through cases in switch statements
+    "no-fallthrough": 2,
+    // consistently use 'self' as the alias for 'this'
+    "consistent-this": [
+      2,
+      "self"
+    ]
     //
     // disallow trailing whitespace at the end of lines (fixable)
     //    "no-trailing-spaces": 2,
@@ -131,7 +140,6 @@
     "phetio": true,
     // underscore, lodash
     "_": true,
-
     // read-only globals ---------------------------------
 
     // jQuery
