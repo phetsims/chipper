@@ -42,7 +42,7 @@ module.exports = function( grunt, buildConfig ) {
 
       // If a string depends on an unlisted dependency, fail out
       if ( buildConfig.phetLibs.indexOf( repositoryName ) < 0 ) {
-        throw new Error( repositoryName + ' is missing from phetLib in package.json' );
+        throw new Error( repositoryName + ' is missing from phetLibs in package.json' );
       }
     }
   }
