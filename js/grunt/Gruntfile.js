@@ -37,7 +37,6 @@ var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
-var buildPhETIO = require( '../../../chipper/js/grunt/buildPhETIO' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -314,13 +313,6 @@ module.exports = function( grunt ) {
     'Copy the phet-io-site docs and materials from phet-io/phet-io-site to phet-io-site',
     function() {
       updatePhETiOSite( grunt, buildConfig );
-    } );
-
-  grunt.registerTask( 'build-phet-io',
-    'Full PhET-iO simulation build including PhET branded version, PhET-iO branded version and accompanying PhET-iO material.\n' +
-    '--skipBuild to create the supporting wrapper files and other things without building the sim itself',
-    function() {
-      buildPhETIO( grunt, buildConfig );
     } );
 
   /*

@@ -13,7 +13,7 @@ var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
 
 /**
  * @param grunt - the grunt instance
- * @param callback - optional callback to run when finished, defaults to grunt.task.current.async()
+ * @param {function} callback - optional callback to run when finished, defaults to grunt.task.current.async()
  */
 module.exports = function( grunt, callback ) {
   'use strict';
@@ -25,11 +25,11 @@ module.exports = function( grunt, callback ) {
   var dependenciesJSON = grunt.file.readJSON( 'build/dependencies.json' );
 
   var params = {
-    'repos': JSON.stringify( dependenciesJSON ),
-    'locales': grunt.option( 'locales' ) || '*',
-    'simName': deployConfig.name,
-    'version': deployConfig.version,
-    'authorizationCode': deployConfig.buildServerAuthorizationCode
+    repos: JSON.stringify( dependenciesJSON ),
+    locales: grunt.option( 'locales' ) || '*',
+    simName: deployConfig.name,
+    version: deployConfig.version,
+    authorizationCode: deployConfig.buildServerAuthorizationCode
   };
 
   if ( grunt.option( 'option' ) === 'rc' ) {

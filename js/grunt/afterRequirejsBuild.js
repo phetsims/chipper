@@ -13,6 +13,7 @@ var createMipmapsJavaScript = require( '../../../chipper/js/grunt/createMipmapsJ
 var createHTMLFiles = require( '../../../chipper/js/grunt/createHTMLFiles' );
 var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );
 var reportUnusedStrings = require( '../../../chipper/js/grunt/reportUnusedStrings' );
+var copySupplementalPhETIOFiles = require( '../../../chipper/js/grunt/copySupplementalPhETIOFiles' );
 
 /**
  * @param grunt - the grunt instance
@@ -30,6 +31,11 @@ module.exports = function( grunt, buildConfig ) {
 
   // After all strings have been loaded, report which of the translatable strings are unused.
   reportUnusedStrings( grunt, buildConfig );
+
+  // For phet-io simulations, copy the other phet-io files, including "lib", "wrappers", etc.
+  if ( buildConfig.brand === 'phet-io' ) {
+    copySupplementalPhETIOFiles( grunt, buildConfig );
+  }
 
   // Since this is an asynchronous task, each step in the task uses a callback to advance to the next step.
   // The final step in the task calls 'done', to tell grunt that the task has completed.
