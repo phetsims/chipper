@@ -216,6 +216,29 @@ module.exports = function( grunt ) {
     return _.uniq( locales.sort() );
   }
 
+  /**
+   * Verifies that preload repositories are included in phetLib.
+   *
+   * @param {string[]} preload
+   * @param {string[]} phetLibs
+   */
+  function validatePreload( preload, phetLibs ) {
+    var missingRepositories = [];
+    preload.forEach( function( entry ) {
+
+      // preload entries should start with '..', e.g. "../assert/js/assert.js"
+      assert( entry.split( '/' )[ 0 ] === '..', 'malformed preload entry: ' + entry );
+
+      // the preload's repository should be in phetLib
+      var repositoryName = entry.split( '/' )[ 1 ];
+      if ( phetLibs.indexOf( repositoryName ) === -1 && missingRepositories.indexOf( repositoryName ) === -1 ) {
+        missingRepositories.push( repositoryName);
+      }
+    } );
+    assert( missingRepositories.length === 0,
+      'phetLib is missing repositories required by preload: ' +  missingRepositories.toString() );
+  }
+
   //------------------------------------------------------------------------------------
   // read configuration files
 
@@ -272,6 +295,7 @@ module.exports = function( grunt ) {
   buildConfig.simTitleStringKey = buildConfig.requirejsNamespace + '/' + buildConfig.name + '.title'; // REPO/repo.name
   buildConfig.phetLibs = getPhetLibs( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.preload = getPreload( packageJSON, buildJSON, buildConfig.brand );
+  validatePreload( buildConfig.preload, buildConfig.phetLibs );
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
   buildConfig.locales = getLocales( grunt, buildConfig.name );
 
