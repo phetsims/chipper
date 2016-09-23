@@ -102,8 +102,7 @@ module.exports = function( grunt ) {
 
   var additionalTasks = [
     'clean',
-    // 'requirejs-build',
-    'requirejs:build',
+    'requirejs-build',
     'after-requirejs-build'
   ];
 

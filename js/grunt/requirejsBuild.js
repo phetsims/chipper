@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- * Combine and minify all of the source code + images + audio using r.js and almond.
+ * Combine and minify all of the code/images/audio using r.js, almond and uglify2.
  *
  * @author Sam Reid
  */
@@ -27,7 +27,7 @@ module.exports = function( grunt, buildConfig ) {
     // Includes a require.js stub called almond, so that we don't have to include the full require.js runtime
     // inside of builds. This helps reduce file size, and the rest of require.js isn't needed. See
     // https://github.com/phetsims/chipper/issues/277
-    // name of the single module to optimize
+    // See https://github.com/requirejs/almond for more about specifying name=almond
     name: 'almond',
 
     // Avoid optimization names that are outside the baseUrl, see http://requirejs.org/docs/optimization.html#pitfalls
