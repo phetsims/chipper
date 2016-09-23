@@ -35,6 +35,9 @@ module.exports = function( grunt, buildConfig ) {
       almond: '../../sherpa/lib/almond-0.2.9'
     },
 
+    // Start the main launch
+    insertRequire: [ repositoryName + '-main' ],
+
     // JS config file
     mainConfigFile: 'js/' + repositoryName + '-config.js',
 
