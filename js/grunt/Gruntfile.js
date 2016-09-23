@@ -322,10 +322,4 @@ module.exports = function( grunt ) {
     function() {
       updatePhETiOSite( grunt, buildConfig );
     } );
-
-  /*
-   * Load tasks from grunt plugins that have been installed locally using npm.
-   * Put these in package.json and run 'npm install' before running grunt.
-   */
-  grunt.loadNpmTasks( 'grunt-requirejs' );
 };
