@@ -98,11 +98,10 @@ module.exports = function( grunt, buildConfig ) {
     grunt.log.writeln( 'requirejs completed successfully' );
     done();
   }, function( err ) {
+
     //optimization err callback
     grunt.log.writeln( 'requirejs failed' );
     grunt.log.writeln( err );
     done();
   } );
-
-  grunt.log.writeln( 'done requirejs1' );
 };
