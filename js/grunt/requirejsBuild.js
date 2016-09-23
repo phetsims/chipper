@@ -91,16 +91,7 @@ module.exports = function( grunt, buildConfig ) {
     stubModules: [ 'string', 'audio', 'image', 'mipmap' ]
   };
 
-  grunt.log.writeln( 'starting requirejs' );
-  requirejs.optimize( config, function( buildResponse ) {
-
-    //buildResponse is just a text output of the modules
-    //included. Load the built file for the contents.
-    //Use config.out to get the optimized file contents.
-    // var contents = fs.readFileSync( config.out, 'utf8' );
-    grunt.log.writeln( 'requirejs completed successfully' );
-    done();
-  }, function( err ) {
+  requirejs.optimize( config, done, function( err ) {
 
     //optimization err callback
     grunt.log.writeln( 'requirejs failed' );
