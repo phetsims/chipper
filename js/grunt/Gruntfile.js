@@ -22,6 +22,7 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-lin
 
 // PhET custom grunt tasks
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
+var requirejsBuild = require( '../../../chipper/js/grunt/requirejsBuild' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var commitsSince = require( '../../../chipper/js/grunt/commitsSince' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
@@ -101,6 +102,7 @@ module.exports = function( grunt ) {
 
   var additionalTasks = [
     'clean',
+    // 'requirejs-build',
     'requirejs:build',
     'after-requirejs-build'
   ];
@@ -207,6 +209,13 @@ module.exports = function( grunt ) {
         grunt.file.delete( 'build' );
       }
       grunt.file.mkdir( 'build' );
+    } );
+
+
+  grunt.registerTask( 'requirejs-build',
+    '(internal use only) Do the requirejs build step',
+    function() {
+      requirejsBuild( grunt, buildConfig );
     } );
 
   grunt.registerTask( 'after-requirejs-build',
