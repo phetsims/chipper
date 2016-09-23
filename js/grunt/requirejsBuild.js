@@ -3,7 +3,7 @@
 /**
  * Combine and minify all of the code/images/audio using r.js, almond and uglify2.
  *
- * @author Sam Reid
+ * @author Sam Reid (PhET Interactive Simulations)
  */
 var requirejs = require( 'requirejs' );
 
@@ -21,7 +21,6 @@ module.exports = function( grunt, buildConfig ) {
   var done = grunt.task.current.async();
 
   // Copied from getGruntConfig
-  // TODO: Delete the other one once this works
   var config = {
 
     // Includes a require.js stub called almond, so that we don't have to include the full require.js runtime
