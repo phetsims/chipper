@@ -215,10 +215,9 @@ window.addEventListener( 'message', function( evt ) {
   var req = new XMLHttpRequest();
   req.onload = function() {
     var simListText = req.responseText;
-    // handle empty lines (or newline at the end) gracefully
-    simNames = simListText.replace( /\r/g, '' ).split( '\n' ).filter( function( simName ) {
-      return simName.length > 0;
-    } );
+
+    // split string into an array of sim names, ignoring blank lines
+    simNames = simListText.trim().replace( /^\s*[\r\n]/gm, '' ).split( '\n' );
 
     simNames.forEach( function( simName ) {
       createStatusElement( simName );
