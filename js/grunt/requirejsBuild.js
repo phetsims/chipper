@@ -34,17 +34,19 @@ module.exports = function( grunt, buildConfig ) {
       almond: '../../sherpa/lib/almond-0.2.9'
     },
 
-    // Start the main launch
-    insertRequire: [ repositoryName + '-main' ],
-
     // JS config file
     mainConfigFile: 'js/' + repositoryName + '-config.js',
 
     // optimized output file
     out: 'build/' + repositoryName + '.min.js',
 
-    // use the default wrapping strategy to wrap the module code, so that define/require are not globals
-    wrap: true,
+    // Wrap everything in an IIFE so that require/define are not globals, and launch main synchronously
+    // see https://github.com/phetsims/scenery/issues/567
+    wrap: {
+      start: '(function() {',
+      end: 'require(\'' + (repositoryName + '-main') + '\');\n' +
+           '}());'
+    },
 
     // turn off preservation of comments that have a license in them
     preserveLicenseComments: false,
