@@ -232,11 +232,11 @@ module.exports = function( grunt ) {
       // the preload's repository should be in phetLib
       var repositoryName = entry.split( '/' )[ 1 ];
       if ( phetLibs.indexOf( repositoryName ) === -1 && missingRepositories.indexOf( repositoryName ) === -1 ) {
-        missingRepositories.push( repositoryName);
+        missingRepositories.push( repositoryName );
       }
     } );
     assert( missingRepositories.length === 0,
-      'phetLib is missing repositories required by preload: ' +  missingRepositories.toString() );
+      'phetLib is missing repositories required by preload: ' + missingRepositories.toString() );
   }
 
   //------------------------------------------------------------------------------------
