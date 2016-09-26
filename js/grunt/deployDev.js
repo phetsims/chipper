@@ -44,6 +44,13 @@ module.exports = function( grunt, callback ) {
   var simPath = basePath + sim;
   var versionPath = simPath + '/' + version;
 
+  // If there is a protected directory and we are copying to spot, include the .htaccess file
+  // This is for PhET-iO simulations, to protected the password protected wrappers, see
+  // https://github.com/phetsims/phet-io/issues/641
+  if ( grunt.file.isDir( ChipperConstants.BUILD_DIR ) && deployConfig.devDeployServer === 'spot.colorado.edu' ) {
+    grunt.file.copy( '../phet-io/templates/spot/.htaccess', ChipperConstants.BUILD_DIR + '/protected/.htaccess' );
+  }
+
   var done = callback || grunt.task.current.async();
 
   var finish = function() {
