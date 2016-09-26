@@ -132,6 +132,12 @@ module.exports = function( grunt ) {
       updateCopyrightDates( grunt, buildConfig );
     } );
 
+  // Grunt task that builds only the JS (no HTML), for libraries like scenery
+  // see https://github.com/phetsims/scenery/issues/567
+  grunt.registerTask( 'build-js', 'Build only the JS, for scenery/kite/dot/sun/libraries',
+    [ 'clean', 'requirejs-build' ]
+  );
+
   grunt.registerTask( 'deploy-production',
     'Invoke deployDev and then deploy a simulation to the production server.\n' +
     'Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
