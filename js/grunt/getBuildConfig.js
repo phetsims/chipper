@@ -249,7 +249,7 @@ module.exports = function( grunt ) {
   assert( packageJSON.version, 'version missing from ' + PACKAGE_FILENAME );
   assert( packageJSON.license, 'license missing from ' + PACKAGE_FILENAME );
 
-  // only repositories in are runnable have PhET-specific entries
+  // only repositories that are runnable have PhET-specific entries
   if ( packageJSON.phet ) {
 
     // verify that required fields are present
