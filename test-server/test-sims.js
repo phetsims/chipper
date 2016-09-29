@@ -217,7 +217,7 @@ window.addEventListener( 'message', function( evt ) {
     var simListText = req.responseText;
 
     // split string into an array of sim names, ignoring blank lines
-    simNames = simListText.trim().replace( /^\s*[\r\n]/gm, '' ).split( '\n' );
+    simNames = simListText.trim().replace( /\r/g, '' ).split( '\n' );
 
     simNames.forEach( function( simName ) {
       createStatusElement( simName );
