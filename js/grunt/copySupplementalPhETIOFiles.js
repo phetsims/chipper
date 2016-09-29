@@ -120,10 +120,13 @@ module.exports = function( grunt, buildConfig ) {
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/js/', './js/' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/highlight.js-9.1.0/styles/tomorrow-night-bright.css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow-night-bright.min.css' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/highlight.js-9.1.0/highlight.js', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js' );
-  grunt.file.write( 'build/docs/devguid.html', devguideHTML );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/favicon.ico', './favicon.ico' );
+  grunt.file.write( 'build/docs/devguide.html', devguideHTML );
   copyDirectory( grunt, '../phet-io-website/root/assets/css', 'build/docs/css', filterWrapper, { failOnExistingFiles: failOnExistingFiles } );
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './build/docs/js/phet-io.js' );
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './build/docs/js/phet-io-ga.js' );
+  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './build/docs/favicon.ico' );
+  
 
   var destinationPath = 'build/lib';
 
