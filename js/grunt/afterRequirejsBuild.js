@@ -22,12 +22,6 @@ var copySupplementalPhETIOFiles = require( '../../../chipper/js/grunt/copySupple
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
-  // Validate phet-io brand naming, see https://github.com/phetsims/chipper/issues/504
-  if ( buildConfig.brand === 'phet-io' ) {
-    assert( buildConfig.version.indexOf( 'phetio' ) >= 0, 'phet-io branded things must have phetio in the string so they will be ' +
-                                                          'properly dealt with on build-server' );
-  }
-
   // Tell grunt to wait because this task is asynchronous.
   // Returns a handle to a function that must be called when the task has completed.
   var done = grunt.task.current.async();

@@ -6,6 +6,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 var requirejs = require( 'requirejs' );
+var assert = require( 'assert' );
 
 /**
  * @param {Object} grunt - the grunt instance
@@ -13,6 +14,16 @@ var requirejs = require( 'requirejs' );
  */
 module.exports = function( grunt, buildConfig ) {
   'use strict';
+
+  // Validate phet-io brand naming, see https://github.com/phetsims/chipper/issues/504
+  if ( buildConfig.brand === 'phet-io' ) {
+    assert( buildConfig.version.indexOf( 'phetio' ) >= 0, 'phet-io branded things must have phetio in the string so they will be ' +
+                                                          'properly dealt with on build-server' );
+  }
+
+  if ( buildConfig.brand === 'phet' ) {
+    assert( buildConfig.version.indexOf( 'phetio' ) === -1, 'phet versions cannot be named like phet-io versions' );
+  }
 
   // The name of the repository from which grunt was launched.
   var repositoryName = buildConfig.name;
