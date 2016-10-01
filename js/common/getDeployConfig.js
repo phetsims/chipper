@@ -67,10 +67,6 @@ var assert = require( 'assert' );
       productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu'
     };
 
-    // These fields depend on other entries in buildConfig.
-    //TODO simTitleStringKey default is duplicated from getBuildConfig.js
-    deployConfig.simTitleStringKey = deployConfig.requirejsNamespace + '/' + deployConfig.name + '.title';
-
     return deployConfig;
   }
 
