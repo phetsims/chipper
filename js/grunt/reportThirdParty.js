@@ -403,7 +403,7 @@ module.exports = function( grunt ) {
           clearInterval( interval );
           // Write any errors to the log
           if ( httpsResponse.statusCode && !( httpsResponse.statusCode >= 200 && httpsResponse.statusCode <= 299 ) ) {
-            grunt.log.writeln( "Error in website request: " + httpsResponse.statusCode + " " + httpsResponse.statusMessage );
+            grunt.log.writeln( 'Error in website request: ' + httpsResponse.statusCode + ' ' + httpsResponse.statusMessage );
           }else {
             grunt.log.writeln( 'Upload finished successfully.' );
           }
