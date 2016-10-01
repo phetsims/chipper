@@ -50,6 +50,7 @@
  * gameUp - Launch the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
  * gameUpLogging - Logging for gameUp code, see above
  * rootRenderer - specify a renderer for the Sim's rootNode to use, such as 'svg', 'webgl' or 'canvas'
+ * launchLocalVersion - for phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
  * locale - test with a specific locale
  * playbackInputEventLog - plays event logging back from the server, provide an optional name for the session
  * recordInputEventLog - enables input event logging, provide an optional name for the session, log is available via PhET menu
