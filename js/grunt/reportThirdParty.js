@@ -30,6 +30,7 @@ var https = require( 'https' );
 
 var _ = require( '../../' + SHERPA + '/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 /**
  * @param grunt - the grunt instance
@@ -88,7 +89,7 @@ module.exports = function( grunt ) {
 
     // Change libraryobject to string in format that the database will recognize.
     // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'   
-    var libraryString = '{' + libraries.map( function (o) { return '{' + o.name + ':' + o.libraries + '}'; } ).join(',') + '}';
+    var libraryString = '{' + libraries.map( function (o) { return '"' + o.name + '":"' + o.libraries + '"'; } ).join(',') + '}';
 
     var options = {
       host: serverName,
@@ -400,7 +401,13 @@ module.exports = function( grunt ) {
       var interval = setInterval( function () {
         if ( httpsResponse ) {
           clearInterval( interval );
-          grunt.log.writeln( 'Upload finished.' );
+          // Write any errors to the log
+          if ( httpsResponse.statusCode && !( httpsResponse.statusCode >= 200 && httpsResponse.statusCode <= 299 ) ) {
+            grunt.log.writeln( "Error in website request: " + httpsResponse.statusCode + " " + httpsResponse.statusMessage );
+          }else {
+            grunt.log.writeln( 'Upload finished successfully.' );
+          }
+
           gruntDone();
         }
       }, 1000 );
