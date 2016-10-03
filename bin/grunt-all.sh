@@ -22,7 +22,7 @@ do
   if [ -d "$sim" ]; then
     echo "Building" $sim
     cd $sim                 # build.sh needs to be run from the sim directory
-    npm install             # executes quickly when everything is up to date compared to build.sh
+    npm update             # executes quickly when everything is up to date compared to build.sh
     grunt $*                # run grunt with command-line args
     cd ..                   # and back to the original directory
   else

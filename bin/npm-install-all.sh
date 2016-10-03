@@ -1,7 +1,7 @@
 #!/bin/bash
 #====================================================================================================
 #
-# Does a 'npm install' on every active repo.
+# Does a 'npm update' on every active repo.
 #
 # Author: Jonathan Olson (small mod by Ariel Paul)
 #
@@ -16,7 +16,7 @@ do
   if [ -d "$repo" ]; then
     echo $repo
     cd $repo
-    npm install
+    npm update
     cd ..
   fi
 done

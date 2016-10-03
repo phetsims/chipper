@@ -39,26 +39,26 @@ http.createServer( function( req, res ) {
   console.log( 'building ' + simName );
 
   // TODO: Why do these more portable versions not work?
-  var npmInstall = spawn( NPM_CMD, [ 'install' ], {
+  var npmUpdate = spawn( NPM_CMD, [ 'update' ], {
     cwd: rootDir + simName
   } );
-  console.log( 'running npm install on ' + simName );
-  npmInstall.stderr.on( 'data', function( data ) {
+  console.log( 'running npm update on ' + simName );
+  npmUpdate.stderr.on( 'data', function( data ) {
     console.log( 'stderr: ' + data );
   } );
-  npmInstall.on( 'close', function( code ) {
-    console.log( 'npm install exit code: ' + code );
+  npmUpdate.on( 'close', function( code ) {
+    console.log( 'npm update exit code: ' + code );
 
-    // npm install failure
+    // npm update failure
     if ( code !== 0 ) {
       res.writeHead( 500, jsonHeaders );
       res.end( JSON.stringify( {
         sim: simName,
-        output: 'npm install exit code: ' + code,
+        output: 'npm update exit code: ' + code,
         success: false
       } ) );
     }
-    // npm install success, continue with grunt
+    // npm update success, continue with grunt
     else {
       var grunt = spawn( GRUNT_CMD, [ '--no-color' ], {
         cwd: rootDir + simName
