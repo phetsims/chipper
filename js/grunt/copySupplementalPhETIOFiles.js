@@ -58,7 +58,7 @@ module.exports = function( grunt, buildConfig ) {
         '"https://code.jquery.com/jquery-2.2.3.min.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '../../../sherpa/lib/jquery-ui-1.8.24.min.js"',
+        '"../../../sherpa/lib/jquery-ui-1.8.24.min.js"',
         '"https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
