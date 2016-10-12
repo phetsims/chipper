@@ -126,7 +126,7 @@ module.exports = function( grunt, buildConfig ) {
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './build/docs/js/phet-io.js' );
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './build/docs/js/phet-io-ga.js' );
   grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './build/docs/favicon.ico' );
-  
+
 
   var destinationPath = 'build/lib';
 
@@ -157,10 +157,8 @@ module.exports = function( grunt, buildConfig ) {
                         '// For licensing, please contact phethelp@colorado.edu';
 
   minifyAndWrite( '../phet-io/wrappers/common/js/SimIFrameClient.js', copyrightHeader, '' );
-
+  minifyAndWrite( '../phet-io/wrappers/common/js/initialize-query-parameters-asserts.js', copyrightHeader, '' );
   // Determine which sim versions will be pointed to by PhETIOAppUtils
   minifyAndWrite( '../phet-io/wrappers/common/js/PhETIOAppUtils.js', copyrightHeader, 'window.useRelativeSimPath=true;' );
-
-  minifyAndWrite( '../query-string-machine/js/QueryStringMachine.js',
-    '// Copyright 2016 University of Colorado Boulder\n// MIT License', '' );
+  minifyAndWrite( '../query-string-machine/js/QueryStringMachine.js', '// Copyright 2016 University of Colorado Boulder\n// MIT License', '' );
 };
