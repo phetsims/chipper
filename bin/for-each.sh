@@ -51,15 +51,12 @@ if [ ! -e $filename ]; then
   exit 1
 fi
 
-# command is all args after the filename
-command=${@:2}
-
 # run the command in each repository directory
 for repository in `cat $filename | xargs`
 do
   if [ -d "$repository" ]; then
     echo $repository
-    (cd $repository > /dev/null; $command)
+    (cd $repository > /dev/null; "${@:2}") # command is all args after the filename
   else
     echo ">>>>>>>>>>>>>>>> MISSING " ${WORKING_DIR}/$repository
   fi
