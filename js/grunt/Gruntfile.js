@@ -117,6 +117,7 @@ module.exports = function( grunt ) {
     '--lint=false : skip the lint sub-task\n' +
     '--mangle=false : skip the mangling portion of UglifyJS2, and beautify the output\n' +
     '--uglify=false : skip the UglifyJS2 step altogether\n' +
+    '--allHtml : Generate the _all.html file that contains information for all locales\n' +
     '--chromeWebStore : Output additional files that can be deployed to the Chrome Web Store',
     optionalTasks.concat( additionalTasks )
   );

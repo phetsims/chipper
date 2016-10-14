@@ -298,6 +298,7 @@ module.exports = function( grunt ) {
   validatePreload( buildConfig.preload, buildConfig.phetLibs );
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
   buildConfig.locales = getLocales( grunt, buildConfig.name );
+  buildConfig.availableLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( buildConfig.name ) );
 
   grunt.log.debug( 'buildConfig=' + JSON.stringify( buildConfig, null, 2 ) );
   return buildConfig;

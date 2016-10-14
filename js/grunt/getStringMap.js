@@ -23,10 +23,12 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
+  var locales = buildConfig.availableLocales;
+
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE; // local var to improve readability
 
   assert( global.phet && global.phet.chipper && global.phet.chipper.strings, 'missing global.phet.chipper.strings' );
-  assert( buildConfig.locales.indexOf( fallbackLocale ) !== -1, 'fallback locale is required' );
+  assert( locales.indexOf( fallbackLocale ) !== -1, 'fallback locale is required' );
 
   // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
   var stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
@@ -52,7 +54,7 @@ module.exports = function( grunt, buildConfig ) {
   stringRepositories.forEach( function( repository ) {
     repoStringMap[ repository.name ] = {};
 
-    buildConfig.locales.forEach( function( locale ) {
+    locales.forEach( function( locale ) {
 
       assert( localeInfo[ locale ], 'unsupported locale: ' + locale );
       var isRTL = localeInfo[ locale ].direction === 'rtl';
@@ -73,7 +75,7 @@ module.exports = function( grunt, buildConfig ) {
         fileContents = grunt.file.readJSON( stringsFilename );
       }
       catch( error ) {
-        grunt.log.warn( 'missing string file: ' + stringsFilename );
+        grunt.log.debug( 'missing string file: ' + stringsFilename );
         fileContents = {};
       }
       var fileMap = repoStringMap[ repository.name ][ locale ] = {};
@@ -90,7 +92,7 @@ module.exports = function( grunt, buildConfig ) {
 
   // combine our strings into [locale][stringKey] map, using the fallback locale where necessary
   var stringMap = {};
-  buildConfig.locales.forEach( function( locale ) {
+  locales.forEach( function( locale ) {
     stringMap[ locale ] = {};
 
     for ( var stringKey in global.phet.chipper.strings ) {
