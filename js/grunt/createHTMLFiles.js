@@ -46,14 +46,13 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // The HTML header is not internationalized, so order can just be hard coded here, see #156
   var simTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ buildConfig.simTitleStringKey ];
   assert( simTitle, 'missing entry for sim title, key = ' + buildConfig.simTitleStringKey );
-  var simTitleAndVersion = simTitle + ' ' + buildConfig.version;
 
   // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
   var htmlHeader = null;
   if ( buildConfig.brand === 'phet-io' ) {
 
     // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
-    htmlHeader = simTitleAndVersion + '\n' +
+    htmlHeader = simTitle + ' ' + buildConfig.version + '\n' +
                  'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
                  'PhET Interactive Simulations, University of Colorado Boulder\n' +
                  '\n' +
@@ -63,7 +62,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
                  'https://phet.colorado.edu/en/licensing';
   }
   else {
-    htmlHeader = simTitleAndVersion + '\n' +
+    htmlHeader = simTitle + ' ' + buildConfig.version + '\n' +
                  'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
                  'PhET Interactive Simulations, University of Colorado Boulder\n' +
                  '\n' +
@@ -203,7 +202,8 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   chipperStringSetupJavascript = replaceConstants( chipperStringSetupJavascript, false );
 
   function replaceLocaleConstants( string, locale, includeAllLocales ) {
-    var localeTitleAndVersion = stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version; //TODO: i18n order
+
+    var localizedTitle = stringMap[ locale ][ buildConfig.simTitleStringKey ];
 
     var stringObject = stringMap;
     if ( !includeAllLocales ) {
@@ -216,10 +216,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
     string = ChipperStringUtils.replaceFirst( string, 'PHET_LOCALE', locale );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_SIM_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_SIM_TITLE', encoder.htmlEncode( localizedTitle ) );
 
     // metadata for Open Graph protocol, see phet-edmodo#2
-    string = ChipperStringUtils.replaceFirst( string, 'OG_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
+    string = ChipperStringUtils.replaceFirst( string, 'OG_TITLE', encoder.htmlEncode( localizedTitle ) );
     string = ChipperStringUtils.replaceFirst( string, 'OG_URL', latestDir + buildConfig.name + '_' + locale + '.html' );
     string = ChipperStringUtils.replaceFirst( string, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
 
@@ -273,7 +273,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   if ( buildConfig.brand !== 'phet-io' ) {
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_TITLE', encoder.htmlEncode( simTitleAndVersion + ' iframe test' ) );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_TITLE', encoder.htmlEncode( simTitle + ' iframe test' ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_URL', buildConfig.name + '_en.html' );
     grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
   }
