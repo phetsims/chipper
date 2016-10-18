@@ -45,12 +45,16 @@ module.exports = function( grunt, buildConfig ) {
   }
 
   // Replace placeholders in the template.
-  html = ChipperStringUtils.replaceAll( html, '{BROWSER_WINDOW_TITLE}', repositoryName );
   html = ChipperStringUtils.replaceAll( html, '{REPOSITORY}', repositoryName );
   html = ChipperStringUtils.replaceAll( html, '{BRAND}', buildConfig.brand );
   html = ChipperStringUtils.replaceAll( html, '{SPLASH_URL}', splashURL );
   html = ChipperStringUtils.replaceAll( html, '{IO_PRELOADS}', stringifyArray( ioPreload ) );
   html = ChipperStringUtils.replaceAll( html, '{PRELOADS}', stringifyArray( normalPreload ) );
+
+  // Use the repository name for the browser window title, because getting the sim's title
+  // requires running the string plugin in build mode, which is too heavy-weight for this task.
+  // See https://github.com/phetsims/chipper/issues/510
+  html = ChipperStringUtils.replaceAll( html, '{BROWSER_WINDOW_TITLE}', repositoryName );
 
   // Write to the repository's root directory.
   grunt.file.write( repositoryName + '_en.html', html );
