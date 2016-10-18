@@ -9,6 +9,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+// modules
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 /**
@@ -44,6 +45,7 @@ module.exports = function( grunt, buildConfig ) {
   }
 
   // Replace placeholders in the template.
+  html = ChipperStringUtils.replaceAll( html, '{BROWSER_WINDOW_TITLE}', repositoryName );
   html = ChipperStringUtils.replaceAll( html, '{REPOSITORY}', repositoryName );
   html = ChipperStringUtils.replaceAll( html, '{BRAND}', buildConfig.brand );
   html = ChipperStringUtils.replaceAll( html, '{SPLASH_URL}', splashURL );
