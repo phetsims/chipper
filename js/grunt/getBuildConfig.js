@@ -22,6 +22,7 @@
  * {string[]} preload - scripts that need to be preloaded in the .html file, in the order that they will be preloaded
  * {string[]} licenseKeys - keys to licenses in sherpa/lib/license.json, for third-party dependencies
  * {string[]} locales - locales to build
+ * {string[]} availableLocales - locales for which translations are available
  * {Object} gruntConfig
  *
  * @author Chris Malley (PixelZoom, Inc.)
