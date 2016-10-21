@@ -102,15 +102,6 @@ module.exports = function( grunt, buildConfig ) {
     copyDirectory( grunt, simSpecificPath, 'build/protected/wrappers', filterWrapper, { failOnExistingFiles: failOnExistingFiles } );
   }
 
-  var wrapperHTML = grunt.file.read( '../phet-io/templates/protected/index.html' );
-  wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM$', buildConfig.name );
-  wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$VERSION$', buildConfig.version );
-  wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$PHET_IO_HTML_SIM_FILENAME$', buildConfig.name + '_en-phetio.html' );
-  wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM_NAME$', buildConfig.name );
-  grunt.file.write( 'build/protected/index.html', wrapperHTML );
-  grunt.file.copy( '../phet-io/templates/protected/favicon.ico', 'build/protected/favicon.ico' );
-  grunt.file.copy( '../phet-io/templates/protected/index.css', 'build/protected/index.css' );
-
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
