@@ -28,7 +28,7 @@ module.exports = function( grunt, callback ) {
   var test = !!grunt.option( 'test' ); // true = disable commit and push, and SCP to a test directory on spot
 
   // configuration info from external files
-  var deployConfig = getDeployConfig( global.phet.chipper.fs );
+  var deployConfig = getDeployConfig( grunt, global.phet.chipper.fs );
 
   // get the server name and server path if they are in the preferences file, otherwise use defaults
   var server = deployConfig.devDeployServer;

@@ -19,7 +19,7 @@ module.exports = function( grunt, callback ) {
   'use strict';
 
   // configuration info from external files
-  var deployConfig = getDeployConfig( global.phet.chipper.fs );
+  var deployConfig = getDeployConfig( grunt, global.phet.chipper.fs );
 
   // read dependencies.json (required)
   var dependenciesJSON = grunt.file.readJSON( 'build/dependencies.json' );
@@ -50,12 +50,12 @@ module.exports = function( grunt, callback ) {
 
   var done = callback || grunt.task.current.async();
 
-  if ( grunt.option( 'dryRun' ) ){
+  if ( grunt.option( 'dryRun' ) ) {
     grunt.log.writeln( 'Option \'dryRun\' set, URL will not be sent to build server.' );
     grunt.log.writeln( 'URL = ' + url );
     done();
   }
-  else{
+  else {
 
     // send the build request to the build server
     request( url, function( error, response, body ) {

@@ -17,6 +17,7 @@
 module.exports = function( brand, version ) {
   'use strict';
 
+  // RED ALERT: this is duplicated in packageJSON.js
   if ( brand === 'phet-io' ) {
 
     // Insert phetio into the version name

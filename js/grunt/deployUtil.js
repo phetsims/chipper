@@ -41,34 +41,34 @@ var exec = function( grunt, command, callback ) {
 var commitAndPushDependenciesJSON = function( grunt, callback ) {
   'use strict';
 
-  if ( !grunt.option( 'dryRun' ) ){
+  if ( !grunt.option( 'dryRun' ) ) {
     grunt.file.copy( ChipperConstants.BUILD_DIR + '/' + DEPENDENCIES_JSON, DEPENDENCIES_JSON );
     exec( grunt, 'git add ' + DEPENDENCIES_JSON, function() {
-      var version = getDeployConfig( global.phet.chipper.fs ).version;
+      var version = getDeployConfig( grunt, global.phet.chipper.fs ).version;
       exec( grunt, 'git commit --message "updated ' + DEPENDENCIES_JSON + ' for ' + version + ' "', function() {
         exec( grunt, 'git push', callback );
       } );
     } );
   }
-  else{
+  else {
     grunt.log.writeln( 'Option \'dryRun\' set, skipping commit and push of dependencies.' );
     callback();
   }
 };
 
-var getDependenciesList = function( grunt ){
+var getDependenciesList = function( grunt ) {
   'use strict';
 
   var dependencies;
-  if ( grunt.file.exists( DEPENDENCIES_JSON ) ){
+  if ( grunt.file.exists( DEPENDENCIES_JSON ) ) {
     dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
   }
-  else{
+  else {
     // There is no dependencies file yet, which means that this is probably the first RC on a branch.  Add the sim
     // itself as the only dependency.
     grunt.log.debug( 'No dependencies file found, sim itself will be the only dependency' );
     dependencies = {};
-    dependencies[ getDeployConfig( global.phet.chipper.fs ).name ] = {};
+    dependencies[ getDeployConfig( grunt, global.phet.chipper.fs ).name ] = {};
   }
 
   // make the list of dependencies, including the main sim repo
@@ -109,7 +109,7 @@ var checkForUncommittedChanges = function( grunt, callback ) {
           // fail (unless --force option is present)
           grunt.fail.warn( 'Working copy changes exist in repo ' + dependency + '.' );
         }
-        else{
+        else {
           grunt.log.debug( 'No uncommitted changes exist.' );
         }
         checkNextDependencyForChanges();
@@ -161,9 +161,9 @@ var checkForUnpushedChanges = function( grunt, callback ) {
 
           // the git command lists the branches on which the commit exists, so if it's empty, the commit has not been pushed
           if ( stdout.length === 0 ) {
-            grunt.fail.warn('Unpushed changes exist for repo ' + dependency + '.' );
+            grunt.fail.warn( 'Unpushed changes exist for repo ' + dependency + '.' );
           }
-          else{
+          else {
             grunt.log.debug( 'No unpushed changes exist for repo ' + dependency + '.' );
           }
           checkNextDependencyForUnpushedChanges();
@@ -187,7 +187,7 @@ var verifyDependenciesCheckedOut = function( grunt, callback ) {
 
   grunt.log.debug( 'verifying that correct dependencies are checked out' );
 
-  var deployConfig = getDeployConfig( global.phet.chipper.fs );
+  var deployConfig = getDeployConfig( grunt, global.phet.chipper.fs );
   var dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
   var dependenciesList = [];
 
@@ -201,7 +201,7 @@ var verifyDependenciesCheckedOut = function( grunt, callback ) {
   var getCurrentShaCommand = 'git rev-parse HEAD';
 
   // define a function to check the next dependency on list
-  (function checkNextDependency(){
+  (function checkNextDependency() {
     var dependency = dependenciesList.shift();
     if ( dependency ) {
       grunt.log.debug( 'Running command: ' + getCurrentShaCommand );
