@@ -123,6 +123,6 @@ module.exports = function( grunt, buildConfig ) {
 
   minifyAndWrite( 'SimIFrameClient.js' );
 
-  // Determine which sim versions will be pointed to by PhETIOAppUtils
-  minifyAndWrite( 'PhETIOAppUtils.js' );
+  // Determine which sim versions will be pointed to by WrapperUtils
+  minifyAndWrite( 'WrapperUtils.js' );
 };
