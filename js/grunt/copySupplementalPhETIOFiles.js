@@ -17,13 +17,8 @@ module.exports = function( grunt, buildConfig ) {
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
 
-  var skipBuild = grunt.option( 'skipBuild' );
-
-  // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not protected), see https://github.com/phetsims/phet-io/issues/353
+  // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not password-protected), see https://github.com/phetsims/phet-io/issues/353
   grunt.file.mkdir( 'build/lib' );
-
-  // create protected/
-  grunt.file.mkdir( 'build/protected' );
 
   // Load the template for instance-proxies.html
   var templateText = grunt.file.read( '../phet-io/html/templates/load-state.html' );
@@ -90,17 +85,7 @@ module.exports = function( grunt, buildConfig ) {
       return null; // signify no change (helps for images)
     }
   };
-  copyDirectory( grunt, '../phet-io/wrappers', 'build/protected/wrappers', filterWrapper );
-
-  // TODO: what if something overwrites? These directories are being merged.
-  var simSpecificPath = '../phet-io/html/' + buildConfig.name;
-  if ( grunt.file.exists( simSpecificPath ) ) {
-    var failOnExistingFiles = true;
-    if ( skipBuild ) {
-      failOnExistingFiles = false;
-    }
-    copyDirectory( grunt, simSpecificPath, 'build/protected/wrappers', filterWrapper, { failOnExistingFiles: failOnExistingFiles } );
-  }
+  copyDirectory( grunt, '../phet-io/wrappers', 'build/wrappers', filterWrapper );
 
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
@@ -113,7 +98,7 @@ module.exports = function( grunt, buildConfig ) {
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/highlight.js-9.1.0/highlight.js', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/favicon.ico', './favicon.ico' );
   grunt.file.write( 'build/docs/devguide.html', devguideHTML );
-  copyDirectory( grunt, '../phet-io-website/root/assets/css', 'build/docs/css', filterWrapper, { failOnExistingFiles: failOnExistingFiles } );
+  copyDirectory( grunt, '../phet-io-website/root/assets/css', 'build/docs/css', filterWrapper );
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './build/docs/js/phet-io.js' );
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './build/docs/js/phet-io-ga.js' );
   grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './build/docs/favicon.ico' );
