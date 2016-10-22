@@ -40,7 +40,7 @@ module.exports = function( grunt ) {
 
   // read configuration file - required to write to website database
   var httpsResponse;
-  var serverName = 'ox-dev.colorado.edu';
+  var serverName = 'phet.colorado.edu';
   var BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
   var buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
   assert ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, 'websiteAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME);
