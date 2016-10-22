@@ -19,7 +19,7 @@ module.exports = function( grunt, buildConfig ) {
 
   var skipBuild = grunt.option( 'skipBuild' );
 
-  // output the SimIFrameClient.js and PhETIOAppUtils.js to the top level lib (not protected), see https://github.com/phetsims/phet-io/issues/353
+  // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not protected), see https://github.com/phetsims/phet-io/issues/353
   grunt.file.mkdir( 'build/lib' );
 
   // create protected/
@@ -102,15 +102,6 @@ module.exports = function( grunt, buildConfig ) {
     copyDirectory( grunt, simSpecificPath, 'build/protected/wrappers', filterWrapper, { failOnExistingFiles: failOnExistingFiles } );
   }
 
-  var wrapperHTML = grunt.file.read( '../phet-io/templates/protected/index.html' );
-  wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM$', buildConfig.name );
-  wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$VERSION$', buildConfig.version );
-  wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$PHET_IO_HTML_SIM_FILENAME$', buildConfig.name + '_en-phetio.html' );
-  wrapperHTML = ChipperStringUtils.replaceAll( wrapperHTML, '$SIM_NAME$', buildConfig.name );
-  grunt.file.write( 'build/protected/index.html', wrapperHTML );
-  grunt.file.copy( '../phet-io/templates/protected/favicon.ico', 'build/protected/favicon.ico' );
-  grunt.file.copy( '../phet-io/templates/protected/index.css', 'build/protected/index.css' );
-
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
@@ -158,7 +149,7 @@ module.exports = function( grunt, buildConfig ) {
 
   minifyAndWrite( '../phet-io/wrappers/common/js/SimIFrameClient.js', copyrightHeader, '' );
   minifyAndWrite( '../phet-io/wrappers/common/js/initialize-query-parameters-asserts.js', copyrightHeader, '' );
-  // Determine which sim versions will be pointed to by PhETIOAppUtils
-  minifyAndWrite( '../phet-io/wrappers/common/js/PhETIOAppUtils.js', copyrightHeader, 'window.useRelativeSimPath=true;' );
+  // Determine which sim versions will be pointed to by WrapperUtils
+  minifyAndWrite( '../phet-io/wrappers/common/js/WrapperUtils.js', copyrightHeader, 'window.useRelativeSimPath=true;' );
   minifyAndWrite( '../query-string-machine/js/QueryStringMachine.js', '// Copyright 2016 University of Colorado Boulder\n// MIT License', '' );
 };

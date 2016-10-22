@@ -36,25 +36,14 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-lin
 
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+var getVersionForBrand = require( '../../../chipper/js/grunt/getVersionForBrand' );
+var getBrand = require( '../../../chipper/js/grunt/getBrand' );
 
 /**
  * @param {Object} grunt - the grunt instance
  */
 module.exports = function( grunt ) {
   'use strict';
-
-  /**
-   * Gets the brand identifier.
-   *
-   * @param {Object} grunt - the grunt instance
-   * @param {Object} buildLocalJSON - build-local.json
-   * @returns {string}
-   */
-  function getBrand( grunt, buildLocalJSON ) {
-    var brand = grunt.option( 'brand' ) || buildLocalJSON.brand || 'adapted-from-phet';
-    assert( grunt.file.exists( '../brand/' + brand ), 'no such brand: ' + brand );
-    return brand;
-  }
 
   /**
    * Gets phetLibs, the set of repositories on which the repository being built depends.
@@ -281,17 +270,17 @@ module.exports = function( grunt ) {
 
   //------------------------------------------------------------------------------------
   // Assemble the buildConfig
-
+  var brand = getBrand( grunt, buildLocalJSON );
   var buildConfig = {
 
     // These fields have no dependencies on other entries in buildConfig.
     name: packageJSON.name,
-    version: packageJSON.version,
+    version: getVersionForBrand( brand, packageJSON.version ),
     license: packageJSON.license,
     requirejsNamespace: packageJSON.phet.requirejsNamespace,
 
     // @public (read-write, phetIO)
-    brand: getBrand( grunt, buildLocalJSON ),
+    brand: brand,
 
     //TODO: better way to allow requesting different preload lists? chipper#63
     getPreload: getPreload // for generating HTML files for specific configurations, see chipper#63

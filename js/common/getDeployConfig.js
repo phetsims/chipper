@@ -27,13 +27,17 @@ var assert = require( 'assert' );
 (function() {
   'use strict';
 
+  var getVersionForBrand = require( '../../../chipper/js/grunt/getVersionForBrand' );
+  var getBrand = require( '../../../chipper/js/grunt/getBrand' );
+
   /**
+   * @param {Object} grunt
    * @param fs - the node fs API
    * @returns {Object} deploy configuration information, fields documented above
    *
    * @private
    */
-  function getDeployConfig( fs ) {
+  function getDeployConfig( grunt, fs ) {
 
     //------------------------------------------------------------------------------------
     // read configuration files
@@ -54,10 +58,12 @@ var assert = require( 'assert' );
     //------------------------------------------------------------------------------------
     // Assemble the deployConfig
 
+    var brand = getBrand( grunt, buildLocalJSON );
+
     var deployConfig = {
       // These fields have no dependencies on other entries in deployConfig.
       name: packageJSON.name,
-      version: packageJSON.version,
+      version: getVersionForBrand( brand, packageJSON.version ),
       requirejsNamespace: packageJSON.phet.requirejsNamespace,
       buildServerAuthorizationCode: buildLocalJSON.buildServerAuthorizationCode,
       buildServerNotifyEmail: buildLocalJSON.buildServerNotifyEmail || null,

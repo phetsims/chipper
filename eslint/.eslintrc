@@ -204,7 +204,7 @@
     // Numeric library used in energy skate park
     "numeric": false,
     // PhET-iO
-    "PhETIOAppUtils": false,
+    "WrapperUtils": false,
     // PhET-iO
     "phetioEvents": false,
     //
