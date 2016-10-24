@@ -262,6 +262,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     }
   }
 
+  //TODO use ChipperConstants.FALLBACK_LOCALE instead of 'en'
   // Create an _all.html file
   if ( grunt.option( 'allHTML' ) && buildConfig.brand === 'phet' ) {
     grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, 'en', true ) );
@@ -273,7 +274,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_TITLE', encoder.htmlEncode( simTitle + ' iframe test' ) );
-    //TODO should the next 2 lines be using ChipperConstants.FALLBACK_LOCALE instead of hardcoded to 'en'?
+    //TODO use ChipperConstants.FALLBACK_LOCALE instead of 'en' in next 2 lines
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_URL', buildConfig.name + '_en.html' );
     grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
   }
