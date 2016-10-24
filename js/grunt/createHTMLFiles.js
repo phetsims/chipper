@@ -263,7 +263,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   }
 
   // Create an _all.html file
-  if ( grunt.option( 'allHtml' ) && buildConfig.brand === 'phet' ) {
+  if ( grunt.option( 'allHTML' ) && buildConfig.brand === 'phet' ) {
     grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, 'en', true ) );
   }
 
