@@ -262,9 +262,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     }
   }
 
-  //TODO use ChipperConstants.FALLBACK_LOCALE instead of 'en'
   // Create an _all.html file
+  //TODO if allHTML is truly relevant only phet brand, then it should fail instead of being silently ignored
   if ( grunt.option( 'allHTML' ) && buildConfig.brand === 'phet' ) {
+    //TODO use ChipperConstants.FALLBACK_LOCALE instead of 'en'
     grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, 'en', true ) );
   }
 
