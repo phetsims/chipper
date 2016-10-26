@@ -142,6 +142,8 @@
     "_": true,
     // read-only globals ---------------------------------
 
+    // Javascript Set
+    "Set": false,
     // jQuery
     "$": false,
     // for full screen
