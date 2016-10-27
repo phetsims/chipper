@@ -125,6 +125,7 @@
      * Returns undefined if the query parameter is not found.
      * @param {string} key
      * @return {string}
+     * @deprecated - please use QueryStringMachine
      */
     window.phet.chipper.getQueryParameter = function( key ) {
       return queryParamsMap[ key ];
@@ -133,6 +134,7 @@
     /**
      * Retrieves the entire map of query parameters (may be empty)
      * @return {object} map from string->string
+     * @deprecated - please use QueryStringMachine
      */
     window.phet.chipper.getQueryParameters = function() {
       return queryParamsMap;
