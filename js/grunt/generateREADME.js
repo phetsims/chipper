@@ -38,9 +38,9 @@ module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, p
   var readme = grunt.file.read( '../chipper/templates/' + templateFile );
 
   // Replace placeholders in the template.
-  readme = ChipperStringUtils.replaceAll( readme, '{REPOSITORY}', repositoryName );
-  readme = ChipperStringUtils.replaceAll( readme, '{TITLE}', title );
-  readme = ChipperStringUtils.replaceAll( readme, '{CLONE_COMMANDS}', cloneCommands );
+  readme = ChipperStringUtils.replaceAll( readme, '{{REPOSITORY}}', repositoryName );
+  readme = ChipperStringUtils.replaceAll( readme, '{{TITLE}}', title );
+  readme = ChipperStringUtils.replaceAll( readme, '{{CLONE_COMMANDS}}', cloneCommands );
 
   // Write to the repository's root directory.
   grunt.file.write( 'README.md', readme );
