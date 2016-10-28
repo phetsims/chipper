@@ -34,6 +34,19 @@ module.exports = function( grunt, buildConfig ) {
 
   var filterWrapper = function( abspath, contents ) {
     var originalContents = contents + '';
+
+    if ( abspath.indexOf( '.js' ) >= 0 ) {
+
+      // Supply "launcher" template for instance-proxies
+      contents = ChipperStringUtils.replaceAll( contents,
+        'var isBuiltMode = false;',
+        'var isBuiltMode = true;' );
+
+      contents = ChipperStringUtils.replaceAll( contents,
+        'var templateText = null;',
+        'var templateText = ' + templateString + ';'
+      );
+    }
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', buildConfig.name );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', buildConfig.version );
@@ -72,13 +85,7 @@ module.exports = function( grunt, buildConfig ) {
         '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
         '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
       );
-      contents = ChipperStringUtils.replaceAll( contents,
-        'var isBuiltMode = false;',
-        'var isBuiltMode = true;' );
-      contents = ChipperStringUtils.replaceAll( contents,
-        'var templateText = null;',
-        'var templateText = ' + templateString + ';'
-      ); //template uses exclusively "
+      //template uses exclusively "
 
       contents = ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
     }
