@@ -8,7 +8,7 @@
   <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="phet-sim-level" content="production">
-  <title>PHET_SIM_TITLE</title>
+  <title>{{PHET_SIM_TITLE}}</title>
 </head>
 <body bgcolor="#FFFACD">
 <style>
@@ -23,7 +23,7 @@
 <iframe id="iframe" width="600" height="400" allowfullscreen scrolling="no"></iframe>
 <script type="application/javascript">
   var suffix = window.location.search || '';
-  document.getElementById( 'iframe' ).setAttribute( 'src', 'PHET_SIM_URL' + suffix );
+  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_SIM_URL}}' + suffix );
 </script>
 </body>
 </html>

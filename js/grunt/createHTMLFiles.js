@@ -169,13 +169,13 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     // See https://github.com/phetsims/joist/issues/164 and
     // https://msdn.microsoft.com/en-us/library/ms537628%28v=vs.85%29.aspx
     string = string.replace( /\r/g, '' );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_CARRIAGE_RETURN', '\r' );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_CARRIAGE_RETURN}}', '\r' );
 
     // Replace tokens in the template that are independent of locale
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_HTML_HEADER', htmlHeader );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_MIPMAPS_JAVASCRIPT', mipmapsJavaScript );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_SPLASH_DATA_URI', splashDataURI );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_PRELOAD_JAVASCRIPT', preloadScripts.map( function( script ) {
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_HTML_HEADER}}', htmlHeader );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_MIPMAPS_JAVASCRIPT}}', mipmapsJavaScript );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_SPLASH_DATA_URI}}', splashDataURI );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_PRELOAD_JAVASCRIPT}}', preloadScripts.map( function( script ) {
       if ( insertScripts ) {
         return '<script type="text/javascript">\n' + script + '\n</script>\n';
       }
@@ -183,15 +183,15 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
         return script + '\n';
       }
     } ).join( '\n' ) );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_MAIN_JAVASCRIPT', mainInlineJavascript );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_START_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_END_THIRD_PARTY_LICENSE_ENTRIES', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_DEPENDENCIES', dependencies );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_PROJECT', buildConfig.name );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_VERSION', buildConfig.version );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_BUILD_TIMESTAMP', timestamp );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_BRAND', buildConfig.brand );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_MAIN_JAVASCRIPT}}', mainInlineJavascript );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_START_THIRD_PARTY_LICENSE_ENTRIES}}', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_END_THIRD_PARTY_LICENSE_ENTRIES}}', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_DEPENDENCIES}}', dependencies );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_PROJECT}}', buildConfig.name );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_VERSION}}', buildConfig.version );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_BUILD_TIMESTAMP}}', timestamp );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_BRAND}}', buildConfig.brand );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_THIRD_PARTY_LICENSE_ENTRIES}}', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
     return string;
   }
@@ -211,17 +211,17 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
       stringObject[ locale ] = stringMap[ locale ];
     }
 
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_STRINGS', JSON.stringify( stringObject, null, '' ) );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_STRINGS}}', JSON.stringify( stringObject, null, '' ) );
 
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_LOCALE', locale );
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_SIM_TITLE', encoder.htmlEncode( localizedTitle ) );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_LOCALE}}', locale );
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( localizedTitle ) );
 
     // metadata for Open Graph protocol, see phet-edmodo#2
-    string = ChipperStringUtils.replaceFirst( string, 'OG_TITLE', encoder.htmlEncode( localizedTitle ) );
-    string = ChipperStringUtils.replaceFirst( string, 'OG_URL', latestDir + buildConfig.name + '_' + locale + '.html' );
-    string = ChipperStringUtils.replaceFirst( string, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
+    string = ChipperStringUtils.replaceFirst( string, '{{OG_TITLE}}', encoder.htmlEncode( localizedTitle ) );
+    string = ChipperStringUtils.replaceFirst( string, '{{OG_URL}}', latestDir + buildConfig.name + '_' + locale + '.html' );
+    string = ChipperStringUtils.replaceFirst( string, '{{OG_IMAGE}}', latestDir + buildConfig.name + '-600.png' );
 
     return string;
   }
@@ -273,8 +273,8 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   if ( buildConfig.brand !== 'phet-io' ) {
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_TITLE', encoder.htmlEncode( simTitle + ' iframe test' ) );
-    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_URL', buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( simTitle + ' iframe test' ) );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_URL}}', buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
     grunt.file.write( 'build/' + buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '-iframe' + '.html', iframeTestHtml );
   }
 
