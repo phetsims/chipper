@@ -35,8 +35,8 @@ module.exports = function( grunt, buildConfig ) {
   var filterWrapper = function( abspath, contents ) {
     var originalContents = contents + '';
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
-      contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_NAME$', buildConfig.name );
-      contents = ChipperStringUtils.replaceAll( contents, '$SIMULATION_VERSION$', buildConfig.version );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', buildConfig.name );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', buildConfig.version );
     }
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
