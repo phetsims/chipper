@@ -265,8 +265,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // Create an _all.html file
   //TODO if allHTML is truly relevant only when brand=phet, then it should fail instead of being silently ignored
   if ( grunt.option( 'allHTML' ) && buildConfig.brand === 'phet' ) {
-    //TODO use ChipperConstants.FALLBACK_LOCALE instead of 'en'
-    grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, 'en', true ) );
+    grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, ChipperConstants.FALLBACK_LOCALE, true ) );
   }
 
   // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
@@ -275,9 +274,8 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_TITLE', encoder.htmlEncode( simTitle + ' iframe test' ) );
-    //TODO use ChipperConstants.FALLBACK_LOCALE instead of 'en' in next 2 lines
-    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_URL', buildConfig.name + '_en.html' );
-    grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_URL', buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
+    grunt.file.write( 'build/' + buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '-iframe' + '.html', iframeTestHtml );
   }
 
   grunt.log.debug( 'Cleaning temporary files' );
