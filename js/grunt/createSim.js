@@ -95,10 +95,10 @@ module.exports = function( grunt ) {
         contents = ChipperStringUtils.replaceAll( contents, 'SimulaRasa', upperCamelCase );
 
         // Replace the title
-        contents = ChipperStringUtils.replaceAll( contents, '$TITLE$', title );
+        contents = ChipperStringUtils.replaceAll( contents, '{{TITLE}}', title );
 
         // Replace author
-        contents = ChipperStringUtils.replaceAll( contents, '$AUTHOR$', author );
+        contents = ChipperStringUtils.replaceAll( contents, '{{AUTHOR}}', author );
 
         // Fix copyright comments
         contents = contents.replace( /\/\/ Copyright \d\d\d\d.*/g, '// Copyright ' + yearToday + ', University of Colorado Boulder' );
