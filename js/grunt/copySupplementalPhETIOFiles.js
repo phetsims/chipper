@@ -20,33 +20,9 @@ module.exports = function( grunt, buildConfig ) {
   // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not password-protected), see https://github.com/phetsims/phet-io/issues/353
   grunt.file.mkdir( 'build/lib' );
 
-  // Load the template for instance-proxies.html
-  var templateText = grunt.file.read( '../phet-io/html/templates/load-state.html' );
-  var lines = templateText.split( '\n' );
-  var templateString = '[';
-  lines.forEach( function( line ) {
-    templateString = templateString + '\'' + line + '\',\n';
-  } );
-  // "<script>" does not parse in an HTML file (even if in JS), so we split it apart into separate substrings.
-  templateString = ChipperStringUtils.replaceAll( templateString, '<script>', '<scr\'+\'ipt>' );
-  templateString = ChipperStringUtils.replaceAll( templateString, '</script>', '</scr\'+\'ipt>' );
-  templateString = templateString + '\'\'].join(\'\\n\')';
-
   var filterWrapper = function( abspath, contents ) {
     var originalContents = contents + '';
 
-    if ( abspath.indexOf( '.js' ) >= 0 ) {
-
-      // Supply "launcher" template for instance-proxies
-      contents = ChipperStringUtils.replaceAll( contents,
-        'var isBuiltMode = false;',
-        'var isBuiltMode = true;' );
-
-      contents = ChipperStringUtils.replaceAll( contents,
-        'var templateText = null;',
-        'var templateText = ' + templateString + ';'
-      );
-    }
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', buildConfig.name );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', buildConfig.version );
