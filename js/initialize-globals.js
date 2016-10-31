@@ -77,6 +77,7 @@
  * phet-io.emitStates  - when running a simulation using phetio.js, outputs the state at the end of every frame
  * phet-io.validateTandems - when running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
  *                         - Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
+ * playbackMode - for PhET-iO: if true the sim clock won't run and instead the sim will receive dt events from stepSimulation calls.
  * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
  *                         - if a value is specified, it will also simulate a context loss after the specified number
  *                         - of milliseconds has elapsed.
