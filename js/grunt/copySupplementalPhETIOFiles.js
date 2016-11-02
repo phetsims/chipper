@@ -120,7 +120,7 @@ module.exports = function( grunt, buildConfig ) {
                         '// For licensing, please contact phethelp@colorado.edu';
 
   minifyAndWrite( '../phet-io/wrappers/common/js/SimIFrameClient.js', copyrightHeader, '' );
-  minifyAndWrite( '../phet-io/wrappers/common/js/initialize-query-parameters-asserts.js', copyrightHeader, '' );
+  minifyAndWrite( '../phet-io/wrappers/common/js/assert.js', copyrightHeader, '' );
   // Determine which sim versions will be pointed to by WrapperUtils
   minifyAndWrite( '../phet-io/wrappers/common/js/WrapperUtils.js', copyrightHeader, 'window.useRelativeSimPath=true;' );
   minifyAndWrite( '../query-string-machine/js/QueryStringMachine.js', '// Copyright 2016 University of Colorado Boulder\n// MIT License', '' );
