@@ -2,11 +2,11 @@
 
 /**
  * Report which translatable strings from a sim were not used in the simulation with a require statement.
- * 
- * Each time a string is loaded by the plugin, it is added to a global list.  After all strings are loaded, 
- * the global will contain the list of all strings that are actually used by the sim.  Comparing this list to 
+ *
+ * Each time a string is loaded by the plugin, it is added to a global list.  After all strings are loaded,
+ * the global will contain the list of all strings that are actually used by the sim.  Comparing this list to
  * the strings in the translatable strings JSON file will identify which strings are unused.
- * 
+ *
  * See https://github.com/phetsims/tasks/issues/460
  *
  * @author Jesse Greenberg
@@ -14,7 +14,7 @@
 
 /**
  * @param grunt - the grunt instance
- * @param {object} buildConfig - see getBuildConfig.js
+ * @param {Object} buildConfig - see getBuildConfig.js
  */
 module.exports = function( grunt, buildConfig ) {
   'use strict';
@@ -29,7 +29,7 @@ module.exports = function( grunt, buildConfig ) {
 
       var string = jsStrings[ key ].value;
       var requireStringKey = buildConfig.requirejsNamespace + '/' + key;
-      
+
       // global.phet.chipper.strings is initialized by the string plugin
       var chipperStrings = global.phet.chipper.strings || {};
 

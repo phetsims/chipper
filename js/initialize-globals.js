@@ -134,7 +134,7 @@
 
     /**
      * Retrieves the entire map of query parameters (may be empty)
-     * @return {object} map from string->string
+     * @return {Object} map from string->string
      * @deprecated - please use QueryStringMachine
      */
     window.phet.chipper.getQueryParameters = function() {
