@@ -30,6 +30,16 @@ define( function( require ) {
      */
     buildCompatible: { type: 'flag' },
 
+    //TODO not documented in initialize-globals.js
+    brand: {
+      type: 'string',
+      defaultValue: 'adapted-from-phet',
+      validValues: [ 'phet', 'phet-io', 'adapted-from-phet' ]
+    },
+
+    //TODO not documented in initialize-globals.js
+    cacheBuster: { type: 'flag' },
+
     /**
      * When running one of the UI demo applications, selects a particular UI component in the Components screen.
      * See sun.DemosView.
@@ -69,7 +79,7 @@ define( function( require ) {
       defaultValue: null
     },
 
-    //TODO not documented in initialize-globals.js
+    //TODO document, see https://github.com/phetsims/phet-app/issues/237
     'phet-app': { type: 'flag' },
 
     // when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
@@ -114,17 +124,17 @@ define( function( require ) {
       defaultValue: true
     },
 
+    // plays event logging back from the server, provide an optional name for the session
+    playbackInputEventLog: { type: 'flag' },
+
+    //TODO document or delete, see https://github.com/phetsims/joist/issues/370
+    playbackMode: { type: 'flag' },
+
     // triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
     postMessageOnLoad: { type: 'flag' },
 
     // passes errors to test-sims
     postMessageOnError: { type: 'flag' },
-
-    // plays event logging back from the server, provide an optional name for the session
-    playbackInputEventLog:{ type: 'flag' },
-
-    //TODO not documented in initialized-globals.js, used in Sim.js
-    playbackMode: { type: 'flag' },
 
     // shows profiling information for the sim
     profiler: { type: 'flag' },
@@ -157,6 +167,12 @@ define( function( require ) {
     sessionID: {
       type: 'string',
       defaultValue: null
+    },
+
+    //TODO not documented in initialize-globals.js
+    screenIndex: {
+      type: 'number',
+      defaultValue: 0
     },
 
     //TODO array processing should be done here
@@ -211,12 +227,18 @@ define( function( require ) {
 
     // override strings, value is JSON that is identical to string.json files
     strings: {
-       type: 'string',
+      type: 'string',
       defaultValue: null
     },
 
     // Whether accessibility features are enabled or not.
     virtualCursor: { type: 'flag' },
+
+    // Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
+    webgl: {
+      type: 'flag',
+      defaultValue: true
+    },
 
     /**
      * Puts the WebGLLayer into a testing mode which simulates context loss between successively increasing gl
@@ -234,12 +256,6 @@ define( function( require ) {
     webglContextLossTimeout: {
       type: 'number',
       defaultValue: 0
-    },
-
-    // Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
-    webgl: {
-      type: 'flag',
-      defaultValue: true
     }
   } );
 
