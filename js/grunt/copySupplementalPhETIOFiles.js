@@ -58,11 +58,11 @@ module.exports = function( grunt, buildConfig ) {
         '"../../../lib/QueryStringMachine.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '<!-- <script type="text/javascript" src="/assets/js/phet-io-ga.js"></script> -->',
+        '<!--{{GOOGLE_ANALYTICS.js}}-->',
         '<script type="text/javascript" src="/assets/js/phet-io-ga.js"></script>'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '<!-- <link rel="shortcut icon" href="/assets/favicon.ico"> -->',
+        '<!--{{FAVICON.ico}}-->',
         '<link rel="shortcut icon" href="/assets/favicon.ico">'
       );
       contents = ChipperStringUtils.replaceAll( contents,
