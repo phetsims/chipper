@@ -110,6 +110,11 @@
     window.phet = window.phet || {};
     window.phet.chipper = window.phet.chipper || {};
 
+    //TODO populate with chipper.QueryStringMachine, see https://github.com/phetsims/chipper/issues/516
+    window.phet.chipper.queryParameters = QueryStringMachine.getAll( {
+      dev: { type: 'flag' }
+    } );
+
     //Pre-populate the query parameters map so that multiple subsequent look-ups are fast
     var queryParamsMap = {};
 
