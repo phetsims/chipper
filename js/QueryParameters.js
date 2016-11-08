@@ -79,7 +79,8 @@ define( function( require ) {
       defaultValue: null
     },
 
-    //TODO document, see https://github.com/phetsims/phet-app/issues/237
+    // When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
+    // to Google Analytics and potentially other sources in the future.
     'phet-app': { type: 'flag' },
 
     // when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
