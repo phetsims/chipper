@@ -58,6 +58,14 @@ module.exports = function( grunt, buildConfig ) {
         '"../../../lib/QueryStringMachine.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
+        '<!-- <script type="text/javascript" src="/assets/js/phet-io-ga.js"></script> -->',
+        '<script type="text/javascript" src="/assets/js/phet-io-ga.js"></script>'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '<!-- <link rel="shortcut icon" href="/assets/favicon.ico"> -->',
+        '<link rel="shortcut icon" href="/assets/favicon.ico">'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
         '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
         '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
       );
