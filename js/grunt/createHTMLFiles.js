@@ -241,25 +241,6 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
     // Write the single-file built simulation file
     grunt.file.write( filename, localeHTML );
-
-    // Write the Chrome Web Store files
-    if ( grunt.option( 'chromeWebStore' ) ) {
-      var chromeLocaleHTML = replaceLocaleConstants( chromeHTML, locale, false );
-      var localeChipperNamespaceJavascript = replaceLocaleConstants( chipperNamespaceJavascript, locale, false );
-      var localeChipperStringSetupJavascript = replaceLocaleConstants( chipperStringSetupJavascript, locale, false );
-
-      var localeDir = 'build/chrome-web-store_' + locale;
-      var localeJSDir = localeDir + '/js';
-      grunt.file.mkdir( localeDir );
-      grunt.file.mkdir( localeJSDir );
-
-      grunt.file.write( localeDir + '/' + buildConfig.name + '_' + locale + '.html', chromeLocaleHTML );
-      grunt.file.write( localeJSDir + '/chipper-namespace.js', localeChipperNamespaceJavascript );
-      grunt.file.write( localeJSDir + '/chipper-string-setup.js', localeChipperStringSetupJavascript );
-      grunt.file.write( localeJSDir + '/mipmaps.js', mipmapsJavaScript );
-      grunt.file.write( localeJSDir + '/preload.js', preloadScripts.join( '\n' ) );
-      grunt.file.write( localeJSDir + '/main.js', mainInlineJavascript );
-    }
   }
 
   // Create an _all.html file
