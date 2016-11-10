@@ -41,6 +41,16 @@ define( function( require ) {
     cacheBuster: { type: 'flag' },
 
     /**
+     * The color profile used at startup, relevant only for sims that support multiple color profiles.
+     * Such sims are required to support the 'default' profile.  If a sim supports a 'project mode' then
+     * it should also have a 'projector' profile.  Other profile names are not currently standardized.
+     */
+    colorProfile: {
+      type: 'string',
+      defaultValue: 'default'
+    },
+
+    /**
      * When running one of the UI demo applications, selects a particular UI component in the Components screen.
      * See sun.DemosView.
      */
