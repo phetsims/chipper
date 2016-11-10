@@ -42,7 +42,7 @@ define( function( require ) {
 
     /**
      * The color profile used at startup, relevant only for sims that support multiple color profiles.
-     * Such sims are required to support the 'default' profile.  If a sim supports a 'project mode' then
+     * Such sims are required to have a 'default' profile.  If a sim supports a 'project mode' then
      * it should also have a 'projector' profile.  Other profile names are not currently standardized.
      */
     colorProfile: {
