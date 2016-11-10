@@ -160,9 +160,6 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   grunt.log.debug( 'Constructing HTML from template' );
   var html = grunt.file.read( '../chipper/templates/sim.html' );
-  var chromeHTML = grunt.file.read( '../chipper/templates/sim-chrome-web-store.html' );
-  var chipperNamespaceJavascript = grunt.file.read( '../chipper/templates/chipper-namespace.js' );
-  var chipperStringSetupJavascript = grunt.file.read( '../chipper/templates/chipper-string-setup.js' );
 
   function replaceConstants( string, insertScripts ) {
     // Strip out carriage returns (if building on Windows), then add in our own after the MOTW (Mark Of The Web).
@@ -197,9 +194,6 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   }
 
   html = replaceConstants( html, true );
-  chromeHTML = replaceConstants( chromeHTML, false );
-  chipperNamespaceJavascript = replaceConstants( chipperNamespaceJavascript, false );
-  chipperStringSetupJavascript = replaceConstants( chipperStringSetupJavascript, false );
 
   function replaceLocaleConstants( string, locale, includeAllLocales ) {
 
