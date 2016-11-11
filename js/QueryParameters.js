@@ -24,6 +24,12 @@ define( function( require ) {
     // enables accessibility features, such as keyboard navigation (mileage may vary!)
     accessibility: { type: 'flag' },
 
+    // Master volume control for the simulation (for Vibe sounds).
+    audioVolume: {
+      type: 'number',
+      defaultValue: 1
+    },
+
     /**
      * When present, will trigger changes that are more similar to the build environment.
      * Right now, this includes computing higher-resolution mipmaps for the mipmap plugin.
