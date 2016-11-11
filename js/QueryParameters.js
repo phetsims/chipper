@@ -24,6 +24,12 @@ define( function( require ) {
     // enables accessibility features, such as keyboard navigation (mileage may vary!)
     accessibility: { type: 'flag' },
 
+    // Master volume control for the simulation (for Vibe sounds).
+    audioVolume: {
+      type: 'number',
+      defaultValue: 1
+    },
+
     /**
      * When present, will trigger changes that are more similar to the build environment.
      * Right now, this includes computing higher-resolution mipmaps for the mipmap plugin.
@@ -39,6 +45,16 @@ define( function( require ) {
 
     //TODO not documented in initialize-globals.js
     cacheBuster: { type: 'flag' },
+
+    /**
+     * The color profile used at startup, relevant only for sims that support multiple color profiles.
+     * Such sims are required to have a 'default' profile.  If a sim supports a 'project mode' then
+     * it should also have a 'projector' profile.  Other profile names are not currently standardized.
+     */
+    colorProfile: {
+      type: 'string',
+      defaultValue: 'default'
+    },
 
     /**
      * When running one of the UI demo applications, selects a particular UI component in the Components screen.
