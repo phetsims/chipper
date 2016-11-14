@@ -52,10 +52,10 @@ PHET_HTML_HEADER
 {{PHET_PRELOAD_JAVASCRIPT}}
 <script type="text/javascript">
   (function() {
-    var stringOverrides = JSON.parse( phet.chipper.getQueryParameter( 'strings' ) || '{}' );
+    var stringOverrides = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
 
-    var stringTest = ( typeof window !== 'undefined' && window.phet.chipper.getQueryParameter( 'stringTest' ) ) ?
-                     window.phet.chipper.getQueryParameter( 'stringTest' ) :
+    var stringTest = ( typeof window !== 'undefined' && window.phet.chipper.queryParameters.stringTest ) ?
+                     window.phet.chipper.queryParameters.stringTest :
                      null;
 
     window.phet.chipper.strings.get = function( key ) {
