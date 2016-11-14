@@ -121,7 +121,7 @@
     // evaluate expressions on phet-io wrapper objects, like: ?phet-io.expressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
     'phet-io.expressions': {
       type: 'string',
-      defaultValue: null
+      defaultValue: '[]'
     },
 
     // Specifies where to log phetioEvents
