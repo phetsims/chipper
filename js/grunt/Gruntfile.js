@@ -30,6 +30,7 @@ var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
+var generateDevelopmentColorsHTML = require( '../../../chipper/js/grunt/generateDevelopmentColorsHTML' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
@@ -315,6 +316,12 @@ module.exports = function( grunt ) {
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
     function() {
       generateDevelopmentHTML( grunt, buildConfig );
+    } );
+
+  grunt.registerTask( 'generate-development-colors-html',
+    'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
+    function() {
+      generateDevelopmentColorsHTML( grunt, buildConfig );
     } );
 
   grunt.registerTask( 'commits-since',
