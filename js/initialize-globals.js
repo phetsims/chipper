@@ -276,25 +276,6 @@
     webgl: {
       type: 'flag',
       defaultValue: true
-    },
-
-    /**
-     * Puts the WebGLLayer into a testing mode which simulates context loss between successively increasing gl
-     * calls (starting at 1). This parameter should be used in conjunction with webglContextLossTimeout since
-     * it only triggers upon the first context loss.
-     */
-    webglContextLossIncremental: { type: 'flag' },
-
-    //TODO this one is problematic, it's both a 'flag' and a 'number'
-    //TODO not used?
-    /**
-     * Creates WebGL contexts that can simulate context loss. If a value is specified, it will simulate a context loss
-     * after the specified number of milliseconds has elapsed. The value can be omitted to manually simulate the
-     * context loss with simScene.simulateWebGLContextLoss()
-     */
-    webglContextLossTimeout: {
-      type: 'number',
-      defaultValue: 0
     }
   };
 
