@@ -197,17 +197,14 @@
       defaultValue: 0
     },
 
-    //TODO SR would like to investigate replacing this with an array of numbers
-    // Specifies the set of screens that appear in the sim, and their order.
-    // Uses 1-based (not zero-based) and "." delimited string such as "1.3.4" to get the 1st, 3rd and 4th screen.
-    // This is converted to an array of indices. For example "1.3.4" becomes [ 1, 3, 4 ].
+    // Specifies the set of screens that appear in the sim, and their order.  Uses 1-based (not zero-based) and ","
+    // delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
     screens: {
-      defaultValue: null,
-      parse: function( string ) {
-        return string.split( '.' ).map( function( screenString ) {
-          return parseInt( screenString, 10 );
-        } );
-      }
+      type: 'array',
+      elementSchema: {
+        type: 'number'
+      },
+      defaultValue: null
     },
 
     // Displays an overlay of the current bounds of each CanvasNode
