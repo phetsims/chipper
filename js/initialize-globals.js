@@ -78,13 +78,15 @@
     // enables all assertions, as above but with more time-consuming checks
     eall: { type: 'flag' },
 
-    // randomly sends mouse events to sim
-    fuzzMouse: { type: 'flag' },
+    // randomly sends mouse events to sim.
+    fuzzMouse: {
+      type: 'flag'
+    },
 
-    // The average number of mouse events to synthesize per frame, only relevant if fuzzMouse=true
-    fuzzRate: {
+    // if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
+    fuzzMouseEvents: {
       type: 'number',
-      defaultValue: 100
+      defaultValue: 10
     },
 
     // test with a specific locale
@@ -117,9 +119,6 @@
 
     // when running a simulation using phetio.js, outputs the state at the end of every frame
     'phet-io.emitStates': { type: 'flag' },
-
-    // will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
-    'phet-io.docs': { type: 'flag' },
 
     // evaluate expressions on phet-io wrapper objects, like: ?phet-io.expressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
     'phet-io.expressions': {
