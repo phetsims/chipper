@@ -217,7 +217,10 @@
     showFittedBlockBounds: { type: 'flag' },
 
     // if false, go immediately to screenIndex
-    showHomeScreen: { type: 'flag' },
+    showHomeScreen: {
+      type: 'flag',
+      defaultValue: true
+    },
 
     // Shows pointer areas as dashed lines. touchAreas are red, mouseAreas are blue.
     showPointerAreas: { type: 'flag' },
