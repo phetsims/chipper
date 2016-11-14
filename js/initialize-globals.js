@@ -1,8 +1,10 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2015-2016, University of Colorado Boulder
 
 /**
  * Initializes phet globals that are used by all simulations, including assertions, phetioEvents and query-parameters.
  * See https://github.com/phetsims/phetcommon/issues/23
+ * This file must be loaded before requirejs is started up, and this file cannot be loaded as an AMD module.
+ * The easiest way to do this is via a <script> tag in your HTML file.
  *
  * PhET Simulations can be launched with query parameters which enable certain features.  To use a query parameter,
  * provide the full URL of the simulation and append a question mark (?) then the query parameter (and optionally its
@@ -16,85 +18,9 @@
  * between other query parameters.  Here is an example of multiple query parameters:
  * http://www.colorado.edu/physics/phet/dev/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?dev&showPointerAreas&webgl=false
  *
- * For more on query parameters, please see http://en.wikipedia.org/wiki/Query_string
- *
- * Query parameters most useful for QA Testing:
- *
- * dev - enable developer-only features, such as showing the layout bounds
- * ea - enable assertions, internal code error checks
- * qrCode - adds a menu item that will open a window with a QR code with the URL of the simulation
- * fuzzMouse - randomly sends mouse events to sim
- *           - optional value is the average number of mouse events to synthesize per frame
- *           - default value is 10
- * profiler - shows profiling information for the sim
- * showPointerAreas - touch areas in red, mouse areas in blue, both dotted outlines
- * webgl - can be set to false with ?webgl=false to turn off WebGL rendering, see https://github.com/phetsims/scenery/issues/289
- * stringTest - if set to "double", duplicates all of the translated strings which will allow to see (a) if all strings
- *              are translated and (b) whether the layout can accommodate longer strings from other languages.
- *              Note this is a heuristic rule that does not cover all cases.
- *            - if set to "long", then an exceptionally long string will be substituted for all strings
- *            - if set to "rtl", then a string that tests RTL (right-to-left) capabilities will be substituted for all strings
- *            - if set to "xss", it will test for security issues related to https://github.com/phetsims/special-ops/issues/18,
- *                  and running a sim should NOT redirect to another page. Preferably should be used for built versions or
- *                  other versions where assertions are not enabled (brackets can cause issues for SubSupText, etc.)
- *            - if set to "none" or omitted, then the normal translated string will be shown
- *            - if set to anything else, it will use that string everywhere.  This will allow testing specific cases, like
- *                  whether the word 'vitesse' would substitute for 'speed' well.  Also, using "/u20" it will show whitespace for all
- *                  of the strings, making it easy to identify non-translated strings
- *
- * Other query parameters:
- *
- * component - when running the scenery-phet example, select a particular component in the components screen
- * accessibility - enable accessibility features, such as keyboard navigation (mileage may vary!)
- * eall - enable all assertions, as above but with more time consuming checks
- * gameUp - Launch the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
- * gameUpLogging - Logging for gameUp code, see above
- * rootRenderer - specify a renderer for the Sim's rootNode to use, such as 'svg', 'webgl' or 'canvas'
- * launchLocalVersion - for phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
- * locale - test with a specific locale
- * playbackInputEventLog - plays event logging back from the server, provide an optional name for the session
- * recordInputEventLog - enables input event logging, provide an optional name for the session, log is available via PhET menu
- * sceneryLog - list of one or more logs to enable in scenery 0.2+, delimited with .
- *                          - For example: ?sceneryLog=Display.Drawable.WebGLBlock
- * sceneryStringLog - Scenery logs will be output to a string instead of the window
- * screens - select one or more screens (with a 1-based index) to run in the sim, with a dot instead of a comma delimiter.
- *                          - For example ?screens=3.1 will launch with screen 1 and 3 with 3 first and 1 second.
- *                          - ?screens=2 would launch with just screen 2.
- *                          - Note that launching with a subset of screens can speed up the startup time significantly
- *                          - because only the selected screens are initialized
- * showVisibleBounds - shows the visible bounds in ScreenView.js, for debugging the layout outside of the "dev" bounds
- * showHomeScreen - if false, go immediate to screenIndex, defaults to screenIndex=0
- * strings - override strings, value is JSON that is identical to string.json files
- * phet-io.log         - if set to 'console', will stream phetioEvents to console in JSON
- *                     - if set to 'lines', will stream colorized human-readable events to the console
- *                                        (only works for Chrome and Firefox)
- * phet-io.expressions - evaluate expressions on phet-io wrapper objects, like: ?phet-io.expressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
- * phet-io.docs        - will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
- * phet-io.standalone  - query parameter will cause a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
- * phet-io.emitDeltas  - when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
- * phet-io.emitEmptyDeltas - when emitting deltas using phetio.js (see phet-io.emitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
- * phet-io.emitInputEvents - emit the Scenery input events
- * phet-io.emitStates  - when running a simulation using phetio.js, outputs the state at the end of every frame
- * phet-io.validateTandems - when running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
- *                         - Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
- * playbackMode - for PhET-iO: if true the sim clock won't run and instead the sim will receive dt events from stepSimulation calls.
- * webglContextLossTimeout - if enabled, will create WebGL contexts that can simulate context loss
- *                         - if a value is specified, it will also simulate a context loss after the specified number
- *                         - of milliseconds has elapsed.
- *                         - The value can be omitted to manually simulate the context loss with simScene.simulateWebGLContextLoss()
- * webglContextLossIncremental - if this option is present, it will put the WebGLLayer into a testing mode which
- *                             - simulates context loss between successively increasing gl calls (starting at 1)
- *                             - this option should be used in conjunction with webglContextLossTimeout since
- *                             - it only triggers upon the first context loss.
- * buildCompatible - When present, will trigger changes that are more similar to the build environment. Right now, this
- *                   includes computing higher-resolution mipmaps for the mipmap plugin.
- * showCanvasNodeBounds - Displays an overlay of the current bounds of each CanvasNode
- * showFittedBlockBounds - Displays an overlay of the current bounds of each scenery.FittedBlock
- * showPointers - Displays a semi-transparent cursor indicator for the location of each active pointer on the screen.
- *
- * This file reads query parameters from browser window's URL.
- * This file must be loaded before requirejs is started up, and this file cannot be loaded as an AMD module.
- * The easiest way to do this is via a <script> tag in your HTML file.
+ * For more on query parameters in general, see http://en.wikipedia.org/wiki/Query_string
+ * For details on common-code query parameters, see QUERY_PARAMETERS_SCHEMA below.
+ * For sim-specific query parameters (if there are any), see *QueryParameters.js in the simulation's repository.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
@@ -103,6 +29,265 @@
 (function() {
   'use strict';
 
+  // Schema that describes query parameters for PhET common code.
+  // These query parameters are available via global phet.chipper.queryParameters.
+  var QUERY_PARAMETERS_SCHEMA = {
+
+    // enables accessibility features, such as keyboard navigation (mileage may vary!)
+    accessibility: { type: 'flag' },
+
+    // Master volume control for the simulation (for Vibe sounds).
+    audioVolume: {
+      type: 'number',
+      defaultValue: 1
+    },
+
+    /**
+     * When present, will trigger changes that are more similar to the build environment.
+     * Right now, this includes computing higher-resolution mipmaps for the mipmap plugin.
+     */
+    buildCompatible: { type: 'flag' },
+
+    //TODO document
+    brand: {
+      type: 'string',
+      defaultValue: 'adapted-from-phet',
+      validValues: [ 'phet', 'phet-io', 'adapted-from-phet' ]
+    },
+
+    //TODO document
+    cacheBuster: { type: 'flag' },
+
+    /**
+     * The color profile used at startup, relevant only for sims that support multiple color profiles.
+     * Such sims are required to have a 'default' profile.  If a sim supports a 'project mode' then
+     * it should also have a 'projector' profile.  Other profile names are not currently standardized.
+     */
+    colorProfile: {
+      type: 'string',
+      defaultValue: 'default'
+    },
+
+    /**
+     * When running one of the UI demo applications, selects a particular UI component in the Components screen.
+     * See sun.DemosView.
+     */
+    component: {
+      type: 'string',
+      defaultValue: null
+    },
+
+    // enables developer-only features, such as showing the layout bounds
+    dev: { type: 'flag' },
+
+    // enables assertions
+    ea: { type: 'flag' },
+
+    // enables all assertions, as above but with more time-consuming checks
+    eall: { type: 'flag' },
+
+    // randomly sends mouse events to sim. value is the average number of mouse events to synthesize per frame.
+    fuzzMouse: {
+      type: 'number',
+      defaultValue: 10
+    },
+
+    // Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
+    gameUp: { type: 'flag' },
+
+    // Enables logging for game-up-camera, see gameUp
+    gameUpLogging: { type: 'flag' },
+
+    // for phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
+    launchLocalVersion: { type: 'flag' },
+
+    // test with a specific locale
+    locale: {
+      type: 'string',
+      defaultValue: null //TODO should this default to 'en', or are something things relying on null?
+    },
+
+    // When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
+    // to Google Analytics and potentially other sources in the future.
+    'phet-app': { type: 'flag' },
+
+    // when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
+    'phet-io.emitDeltas': { type: 'flag' },
+
+    // when emitting deltas using phetio.js (see phet-io.emitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
+    'phet-io.emitEmptyDeltas': { type: 'flag' },
+
+    // emit the Scenery input events
+    'phet-io.emitInputEvents': { type: 'flag' },
+
+    // when running a simulation using phetio.js, outputs the state at the end of every frame
+    'phet-io.emitStates': { type: 'flag' },
+
+    // will output type documentation to the console, see https://github.com/phetsims/phet-io/issues/218
+    'phet-io.docs': { type: 'flag' },
+
+    // evaluate expressions on phet-io wrapper objects, like: ?phet-io.expressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
+    'phet-io.expressions': {
+      type: 'string',
+      defaultValue: null
+    },
+
+    // Specifies where to log phetioEvents
+    'phet-io.log': {
+      type: 'string',
+      defaultValue: null,
+      validValues: [
+        null, // no logging
+        'console', // stream to console in JSON format
+        'lines' // stream colorized human-readable events to the console (Chrome and Firefox only)
+      ]
+    },
+
+    // Causes a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
+    'phet-io.standalone': { type: 'flag' },
+
+    // When running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
+    // Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
+    'phet-io.validateTandems': {
+      type: 'flag',
+      defaultValue: true
+    },
+
+    // plays event logging back from the server, provide an optional name for the session
+    playbackInputEventLog: { type: 'flag' },
+
+    //TODO document or delete, see https://github.com/phetsims/joist/issues/370
+    playbackMode: { type: 'flag' },
+
+    // triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
+    postMessageOnLoad: { type: 'flag' },
+
+    // passes errors to test-sims
+    postMessageOnError: { type: 'flag' },
+
+    // shows profiling information for the sim
+    profiler: { type: 'flag' },
+
+    // adds a menu item that will open a window with a QR code with the URL of the simulation
+    qrCode: { type: 'flag' },
+
+    // enables input event logging, provide an optional name for the session, log is available via PhET menu
+    recordInputEventLog: { type: 'flag' },
+
+    // Specify a renderer for the Sim's rootNode to use.
+    rootRenderer: {
+      type: 'string',
+      defaultValue: 'svg',
+      validValues: [ 'canvas', 'svg', 'dom', 'webgl' ] // see Node.setRenderer
+    },
+
+    //TODO array processing should be done here
+    // List of one or more logs to enable in scenery 0.2+, delimited with .
+    // For example: ?sceneryLog=Display.Drawable.WebGLBlock
+    sceneryLog: {
+      type: 'string',
+      defaultValue: null
+    },
+
+    // Scenery logs will be output to a string instead of the window
+    sceneryStringLog: { type: 'flag' },
+
+    // identifier for a single simulation run
+    sessionID: {
+      type: 'string',
+      defaultValue: null
+    },
+
+    //TODO document
+    screenIndex: {
+      type: 'number',
+      defaultValue: 0
+    },
+
+    //TODO array processing should be done here
+    screens: {
+      type: 'string',
+      defaultValue: null
+    },
+
+    // Displays an overlay of the current bounds of each CanvasNode
+    showCanvasNodeBounds: { type: 'flag' },
+
+    // Displays an overlay of the current bounds of each scenery.FittedBlock
+    showFittedBlockBounds: { type: 'flag' },
+
+    // if false, go immediately to screenIndex
+    showHomeScreen: { type: 'flag' },
+
+    // Shows pointer areas as dashed lines. touchAreas are red, mouseAreas are blue.
+    showPointerAreas: { type: 'flag' },
+
+    // Displays a semi-transparent cursor indicator for the location of each active pointer on the screen.
+    showPointers: { type: 'flag' },
+
+    // Shows the visible bounds in ScreenView.js, for debugging the layout outside of the "dev" bounds
+    showVisibleBounds: { type: 'flag' },
+
+    /**
+     * Sets a string used for various i18n test.  The values are:
+     *
+     * double: duplicates all of the translated strings which will allow to see (a) if all strings
+     *   are translated and (b) whether the layout can accommodate longer strings from other languages.
+     *   Note this is a heuristic rule that does not cover all cases.
+     *
+     * long: an exceptionally long string will be substituted for all strings. Use this to test for layout problems.
+     *
+     * rtl: a string that tests RTL (right-to-left) capabilities will be substituted for all strings
+     *
+     * xss: tests for security issues related to https://github.com/phetsims/special-ops/issues/18,
+     *   and running a sim should NOT redirect to another page. Preferably should be used for built versions or
+     *   other versions where assertions are not enabled (brackets can cause issues for SubSupText, etc.)
+     *
+     * none|null: the normal translated string will be shown
+     *
+     * {string}: if any other string provided, that string will be substituted everywhere. This facilitates testing
+     *   specific cases, like whether the word 'vitesse' would substitute for 'speed' well.  Also, using "/u20" it
+     *   will show whitespace for all of the strings, making it easy to identify non-translated strings.
+     */
+    stringTest: {
+      type: 'string',
+      defaultValue: null
+    },
+
+    // override strings, value is JSON that is identical to string.json files
+    strings: {
+      type: 'string',
+      defaultValue: null
+    },
+
+    // Whether accessibility features are enabled or not.
+    virtualCursor: { type: 'flag' },
+
+    // Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
+    webgl: {
+      type: 'flag',
+      defaultValue: true
+    },
+
+    /**
+     * Puts the WebGLLayer into a testing mode which simulates context loss between successively increasing gl
+     * calls (starting at 1). This parameter should be used in conjunction with webglContextLossTimeout since
+     * it only triggers upon the first context loss.
+     */
+    webglContextLossIncremental: { type: 'flag' },
+
+    //TODO this one is problematic, it's both a 'flag' and a 'number'
+    /**
+     * Creates WebGL contexts that can simulate context loss. If a value is specified, it will simulate a context loss
+     * after the specified number of milliseconds has elapsed. The value can be omitted to manually simulate the
+     * context loss with simScene.simulateWebGLContextLoss()
+     */
+    webglContextLossTimeout: {
+      type: 'number',
+      defaultValue: 0
+    }
+  };
+
   // Initialize query parameters, see docs above
   (function() {
 
@@ -110,14 +295,12 @@
     window.phet = window.phet || {};
     window.phet.chipper = window.phet.chipper || {};
 
-    //TODO populate with chipper.QueryStringMachine, see https://github.com/phetsims/chipper/issues/516
-    window.phet.chipper.queryParameters = QueryStringMachine.getAll( {
-      dev: { type: 'flag' }
-    } );
+    // Read query parameters
+    window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
 
+    //TODO delete this after conversion to QueryStringMachine, see https://github.com/phetsims/chipper/issues/516
     //Pre-populate the query parameters map so that multiple subsequent look-ups are fast
     var queryParamsMap = {};
-
     if ( typeof window !== 'undefined' && window.location.search ) {
       var params = window.location.search.slice( 1 ).split( '&' );
       for ( var i = 0; i < params.length; i++ ) {
@@ -126,6 +309,7 @@
       }
     }
 
+    //TODO delete this after conversion to QueryStringMachine, see https://github.com/phetsims/chipper/issues/516
     /**
      * Retrieves the first occurrence of a query parameter based on its key.
      * Returns undefined if the query parameter is not found.
@@ -138,23 +322,14 @@
     };
 
     /**
-     * Retrieves the entire map of query parameters (may be empty)
-     * @return {Object} map from string->string
-     * @deprecated - please use QueryStringMachine
-     */
-    window.phet.chipper.getQueryParameters = function() {
-      return queryParamsMap;
-    };
-
-    /**
-     * Gets the cache buster args based on the provided query parameters.  Dy default it is:
+     * Gets the cache buster args based on the provided query parameters.  By default it is:
      * ?bust=<number>
      * But this can be omitted if ?cacheBuster=false is provided
      * See https://github.com/phetsims/joist/issues/196
      * @returns {string}
      */
     window.phet.chipper.getCacheBusterArgs = function() {
-      return (phet.chipper.getQueryParameter( 'cacheBuster' ) !== 'false') ? ('bust=' + Date.now()) : '';
+      return phet.chipper.queryParameters.cacheBuster ? ('bust=' + Date.now()) : '';
     };
 
     /**
@@ -163,7 +338,7 @@
      * See https://github.com/phetsims/brand/issues/11
      * @returns {string}
      */
-    window.phet.chipper.brand = window.phet.chipper.brand || phet.chipper.getQueryParameter( 'brand' ) || 'adapted-from-phet';
+    window.phet.chipper.brand = window.phet.chipper.brand || phet.chipper.queryParameters.brand || 'adapted-from-phet';
 
     /**
      * Maps an input string to a final string, accommodating tricks like doubleStrings.
@@ -188,8 +363,8 @@
 
     // Need to initialize our locale before we send off Google Analytics queries (it was being done afterwards in
     // Sim.js before).
-    if ( phet.chipper.getQueryParameter( 'locale' ) ) {
-      window.phet.chipper.locale = phet.chipper.getQueryParameter( 'locale' );
+    if ( phet.chipper.queryParameters.locale ) {
+      window.phet.chipper.locale = phet.chipper.queryParameters.locale;
     }
   }());
 
@@ -209,8 +384,8 @@
     // TODO: separate this logic out into a more common area?
     var isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
 
-    var enableAllAssertions = !isProduction && !!phet.chipper.getQueryParameter( 'eall' ); // enables all assertions (basic and slow)
-    var enableBasicAssertions = enableAllAssertions || ( !isProduction && !!phet.chipper.getQueryParameter( 'ea' ) );  // enables basic assertions
+    var enableAllAssertions = !isProduction && phet.chipper.queryParameters.eall; // enables all assertions (basic and slow)
+    var enableBasicAssertions = enableAllAssertions || ( !isProduction && phet.chipper.queryParameters.ea );  // enables basic assertions
 
     if ( enableBasicAssertions ) {
       window.assertions.enableAssert();
@@ -220,7 +395,7 @@
     }
 
     // Communicate sim errors to joist/tests/test-sims.html
-    if ( phet.chipper.getQueryParameter( 'postMessageOnError' ) ) {
+    if ( phet.chipper.queryParameters.postMessageOnError ) {
       window.addEventListener( 'error', function( a, b, c, d, e ) {
         var message = '';
         var stack = '';
