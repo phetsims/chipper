@@ -69,16 +69,6 @@
       defaultValue: 'default'
     },
 
-    //TODO remove from here, duplicate in sun and scenery-phet
-    /**
-     * When running one of the UI demo applications, selects a particular UI component in the Components screen.
-     * See sun.DemosView.
-     */
-    component: {
-      type: 'string',
-      defaultValue: null //TODO should 'string' type automatically default to null?
-    },
-
     // enables developer-only features, such as showing the layout bounds
     dev: { type: 'flag' },
 
