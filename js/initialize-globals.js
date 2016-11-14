@@ -79,14 +79,12 @@
     eall: { type: 'flag' },
 
     // randomly sends mouse events to sim.
-    fuzzMouse: {
-      type: 'flag'
-    },
+    fuzzMouse: { type: 'flag' },
 
     // if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
-    fuzzMouseEvents: {
+    fuzzRate: {
       type: 'number',
-      defaultValue: 10
+      defaultValue: 100
     },
 
     // test with a specific locale
