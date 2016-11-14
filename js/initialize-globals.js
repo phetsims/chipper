@@ -192,6 +192,7 @@
       defaultValue: null
     },
 
+    //TODO document
     screenIndex: {
       type: 'number',
       defaultValue: 0
