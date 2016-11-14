@@ -205,7 +205,6 @@
       defaultValue: null
     },
 
-    //TODO delete
     screenIndex: {
       type: 'number',
       defaultValue: 0
@@ -230,7 +229,6 @@
     // Displays an overlay of the current bounds of each scenery.FittedBlock
     showFittedBlockBounds: { type: 'flag' },
 
-    //TODO delete
     // if false, go immediately to screenIndex
     showHomeScreen: {
       type: 'flag',
