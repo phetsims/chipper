@@ -86,7 +86,7 @@
     // enables all assertions, as above but with more time-consuming checks
     eall: { type: 'flag' },
 
-    //TODO this is problematic, we need a flag to turn if on/off, separate query parameter for value
+    //TODO this one is problematic, it's both a 'flag' and a 'number'
     // randomly sends mouse events to sim. value is the average number of mouse events to synthesize per frame.
     fuzzMouse: {
       type: 'number',
