@@ -144,7 +144,7 @@ define( function( require ) {
         var queryParameterStrings = parse( phet.chipper.queryParameters.strings || '{}' );
 
         // Read the locale from a query parameter, if it is there, or use the fallback locale
-        locale = phet.chipper.queryParameters.locale || ChipperConstants.FALLBACK_LOCALE;
+        locale = phet.chipper.queryParameters.locale;
         if ( !localeInfo[ locale ] ) {
           onload.error( new Error( 'unsupported locale: ' + locale ) );
         }

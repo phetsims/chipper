@@ -69,6 +69,7 @@
       defaultValue: 'default'
     },
 
+    //TODO remove from here, duplicate in sun and scenery-phet
     /**
      * When running one of the UI demo applications, selects a particular UI component in the Components screen.
      * See sun.DemosView.
@@ -87,9 +88,13 @@
     // enables all assertions, as above but with more time-consuming checks
     eall: { type: 'flag' },
 
-    //TODO this one is problematic, it's both a 'flag' and a 'number'
-    // randomly sends mouse events to sim. value is the average number of mouse events to synthesize per frame.
+    // randomly sends mouse events to sim.
     fuzzMouse: {
+      type: 'flag'
+    },
+
+    // if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
+    fuzzMouseEvents: {
       type: 'number',
       defaultValue: 10
     },
@@ -106,7 +111,7 @@
     // test with a specific locale
     locale: {
       type: 'string',
-      defaultValue: null //TODO should this default to 'en', or are something things relying on null?
+      defaultValue: 'en'
     },
 
     // When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
@@ -158,7 +163,7 @@
     // plays event logging back from the server, provide an optional name for the session
     playbackInputEventLog: { type: 'flag' },
 
-    //TODO document or delete, see https://github.com/phetsims/joist/issues/370
+    //TODO document
     playbackMode: { type: 'flag' },
 
     // triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
@@ -180,7 +185,6 @@
     rootRenderer: {
       type: 'string',
       defaultValue: null,
-      //TODO awkward to have to include null in validValues
       validValues: [ null, 'canvas', 'svg', 'dom', 'webgl' ] // see Node.setRenderer
     },
 
@@ -201,12 +205,13 @@
       defaultValue: null
     },
 
-    //TODO document
+    //TODO delete
     screenIndex: {
       type: 'number',
       defaultValue: 0
     },
 
+    //TODO SR would like to investigate replacing this with an array of numbers
     // Specifies the set of screens that appear in the sim, and their order.
     // Uses 1-based (not zero-based) and "." delimited string such as "1.3.4" to get the 1st, 3rd and 4th screen.
     // This is converted to an array of indices. For example "1.3.4" becomes [ 1, 3, 4 ].
@@ -225,6 +230,7 @@
     // Displays an overlay of the current bounds of each scenery.FittedBlock
     showFittedBlockBounds: { type: 'flag' },
 
+    //TODO delete
     // if false, go immediately to screenIndex
     showHomeScreen: {
       type: 'flag',
@@ -352,9 +358,8 @@
              stringTest;
     };
 
-    // Need to initialize our locale before we send off Google Analytics queries (it was being done afterwards in
-    // Sim.js before).
-    if ( phet.chipper.queryParameters.locale ) {
+    // If locale was provided as a query parameter, then change the locale used by Google Analytics.
+    if ( QueryStringMachine.containsKey( 'locale' ) ) {
       window.phet.chipper.locale = phet.chipper.queryParameters.locale;
     }
   }());
