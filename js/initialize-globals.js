@@ -78,15 +78,13 @@
     // enables all assertions, as above but with more time-consuming checks
     eall: { type: 'flag' },
 
-    // randomly sends mouse events to sim.
-    fuzzMouse: {
-      type: 'flag'
-    },
+    // randomly sends mouse events to sim
+    fuzzMouse: { type: 'flag' },
 
-    // if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
-    fuzzMouseEvents: {
+    // The average number of mouse events to synthesize per frame, only relevant if fuzzMouse=true
+    fuzzRate: {
       type: 'number',
-      defaultValue: 10
+      defaultValue: 100
     },
 
     // test with a specific locale
