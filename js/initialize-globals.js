@@ -260,6 +260,7 @@
       defaultValue: null
     },
 
+    //TODO how is this different from accessibility query parameter?
     // Whether accessibility features are enabled or not.
     virtualCursor: { type: 'flag' },
 
