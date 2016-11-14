@@ -89,15 +89,6 @@
       defaultValue: 10
     },
 
-    // Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
-    gameUp: { type: 'flag' },
-
-    // Enables logging for game-up-camera, see gameUp
-    gameUpLogging: { type: 'flag' },
-
-    // for phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
-    launchLocalVersion: { type: 'flag' },
-
     // test with a specific locale
     locale: {
       type: 'string',
@@ -107,6 +98,15 @@
     // When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
     // to Google Analytics and potentially other sources in the future.
     'phet-app': { type: 'flag' },
+
+    // Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
+    gameUp: { type: 'flag' },
+
+    // Enables logging for game-up-camera, see gameUp
+    gameUpLogging: { type: 'flag' },
+
+    // for phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
+    launchLocalVersion: { type: 'flag' },
 
     // when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
     'phet-io.emitDeltas': { type: 'flag' },
