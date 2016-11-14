@@ -74,7 +74,7 @@
      */
     component: {
       type: 'string',
-      defaultValue: null
+      defaultValue: null //TODO should 'string' type automatically default to null?
     },
 
     // enables developer-only features, such as showing the layout bounds
@@ -86,6 +86,7 @@
     // enables all assertions, as above but with more time-consuming checks
     eall: { type: 'flag' },
 
+    //TODO this is problematic, we need a flag to turn if on/off, separate query parameter for value
     // randomly sends mouse events to sim. value is the average number of mouse events to synthesize per frame.
     fuzzMouse: {
       type: 'number',
