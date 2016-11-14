@@ -178,8 +178,9 @@
     // Specify a renderer for the Sim's rootNode to use.
     rootRenderer: {
       type: 'string',
-      defaultValue: 'svg',
-      validValues: [ 'canvas', 'svg', 'dom', 'webgl' ] // see Node.setRenderer
+      defaultValue: null,
+      //TODO awkward to have to include null in validValues
+      validValues: [ null, 'canvas', 'svg', 'dom', 'webgl' ] // see Node.setRenderer
     },
 
     //TODO array processing should be done here
