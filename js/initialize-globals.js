@@ -33,7 +33,8 @@
   // These query parameters are available via global phet.chipper.queryParameters.
   var QUERY_PARAMETERS_SCHEMA = {
 
-    // enables accessibility features, such as keyboard navigation (mileage may vary!)
+    // Whether accessibility features are enabled or not.  Use this option to render the Parallel DOM for
+    // keyboard navigation and screen reader based auditory descriptions.
     accessibility: { type: 'flag' },
 
     // Master volume control for the simulation (for Vibe sounds).
@@ -270,10 +271,6 @@
       type: 'string',
       defaultValue: null
     },
-
-    //TODO how is this different from accessibility query parameter?
-    // Whether accessibility features are enabled or not.
-    virtualCursor: { type: 'flag' },
 
     // Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
     webgl: {
