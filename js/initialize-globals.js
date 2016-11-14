@@ -283,6 +283,7 @@
     webglContextLossIncremental: { type: 'flag' },
 
     //TODO this one is problematic, it's both a 'flag' and a 'number'
+    //TODO not used?
     /**
      * Creates WebGL contexts that can simulate context loss. If a value is specified, it will simulate a context loss
      * after the specified number of milliseconds has elapsed. The value can be omitted to manually simulate the
