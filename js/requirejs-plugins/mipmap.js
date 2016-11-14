@@ -119,7 +119,7 @@ define( function( require ) {
       }
       else {
         // if buildCompatible is provided, use the high-quality build-like mipmapping
-        var highQualityMipmaps = !!phet.chipper.getQueryParameter( 'buildCompatible' );
+        var highQualityMipmaps = phet.chipper.queryParameters.buildCompatible;
 
         // load our base resolution image
         var image = document.createElement( 'img' );
