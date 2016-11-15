@@ -279,29 +279,6 @@
     // Export for usage in phetmarks
     window.phet.chipper.queryParameterSchema = QUERY_PARAMETERS_SCHEMA;
 
-    //TODO delete this after conversion to QueryStringMachine, see https://github.com/phetsims/chipper/issues/516
-    //Pre-populate the query parameters map so that multiple subsequent look-ups are fast
-    var queryParamsMap = {};
-    if ( typeof window !== 'undefined' && window.location.search ) {
-      var params = window.location.search.slice( 1 ).split( '&' );
-      for ( var i = 0; i < params.length; i++ ) {
-        var nameValuePair = params[ i ].split( '=' );
-        queryParamsMap[ nameValuePair[ 0 ] ] = decodeURIComponent( nameValuePair[ 1 ] );
-      }
-    }
-
-    //TODO delete this after conversion to QueryStringMachine, see https://github.com/phetsims/chipper/issues/516
-    /**
-     * Retrieves the first occurrence of a query parameter based on its key.
-     * Returns undefined if the query parameter is not found.
-     * @param {string} key
-     * @return {string}
-     * @deprecated - please use QueryStringMachine
-     */
-    window.phet.chipper.getQueryParameter = function( key ) {
-      return queryParamsMap[ key ];
-    };
-
     /**
      * Gets the cache buster args based on the provided query parameters.  By default it is:
      * ?bust=<number>
