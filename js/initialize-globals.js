@@ -276,6 +276,9 @@
     // Read query parameters
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
 
+    // Export for usage in phetmarks
+    window.phet.chipper.queryParameterSchema = QUERY_PARAMETERS_SCHEMA;
+
     //TODO delete this after conversion to QueryStringMachine, see https://github.com/phetsims/chipper/issues/516
     //Pre-populate the query parameters map so that multiple subsequent look-ups are fast
     var queryParamsMap = {};
