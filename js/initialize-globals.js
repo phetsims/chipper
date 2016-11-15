@@ -177,11 +177,13 @@
       validValues: [ null, 'canvas', 'svg', 'dom', 'webgl' ] // see Node.setRenderer
     },
 
-    //TODO schema should be similar to screens, with format ?sceneryLog=Display,Drawable,WebGLBlock
-    // List of one or more logs to enable in scenery 0.2+, delimited with .
-    // For example: ?sceneryLog=Display.Drawable.WebGLBlock
+    // Array of one or more logs to enable in scenery 0.2+, delimited with commas.
+    // For example: ?sceneryLog=Display,Drawable,WebGLBlock results in [ 'Display', 'Drawable', 'WebGLBlock' ]
     sceneryLog: {
-      type: 'string',
+      type: 'array',
+      elementSchema: {
+        type: 'string'
+      },
       defaultValue: null
     },
 
