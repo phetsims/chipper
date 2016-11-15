@@ -57,7 +57,10 @@
     },
 
     // enables cache busting in requirejs mode.
-    cacheBuster: { type: 'flag' },
+    cacheBuster: {
+      type: 'flag',
+      defaultValue: true
+    },
 
     /**
      * The color profile used at startup, relevant only for sims that support multiple color profiles.
