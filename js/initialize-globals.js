@@ -49,14 +49,14 @@
      */
     buildCompatible: { type: 'flag' },
 
-    //TODO document
+    // specifies the brand that should be used in requirejs mode
     brand: {
       type: 'string',
       defaultValue: 'adapted-from-phet',
       validValues: [ 'phet', 'phet-io', 'adapted-from-phet' ]
     },
 
-    //TODO document
+    // enables cache busting in requirejs mode.
     cacheBuster: { type: 'flag' },
 
     /**
@@ -148,7 +148,8 @@
     // plays event logging back from the server, provide an optional name for the session
     playbackInputEventLog: { type: 'flag' },
 
-    //TODO document
+    // Intended for use with phet-io. If playbackMode is true, the sim clock won't run and instead
+    // the sim will receive dt events from Sim.stepSimulation calls.
     playbackMode: { type: 'flag' },
 
     // triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
@@ -173,7 +174,7 @@
       validValues: [ null, 'canvas', 'svg', 'dom', 'webgl' ] // see Node.setRenderer
     },
 
-    //TODO array processing should be done here
+    //TODO schema should be similar to screens, with format ?sceneryLog=Display,Drawable,WebGLBlock
     // List of one or more logs to enable in scenery 0.2+, delimited with .
     // For example: ?sceneryLog=Display.Drawable.WebGLBlock
     sceneryLog: {
@@ -190,7 +191,7 @@
       defaultValue: null
     },
 
-    //TODO document
+    // See showHomeScreen. Unlike screens, the value is zero-based
     screenIndex: {
       type: 'number',
       defaultValue: 0
