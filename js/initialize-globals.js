@@ -38,6 +38,7 @@
     accessibility: { type: 'flag' },
 
     // Master volume control for the simulation (for Vibe sounds).
+    // 1.0 is unity volume, 2.0 is double volume, etc.
     audioVolume: {
       type: 'number',
       defaultValue: 1,
