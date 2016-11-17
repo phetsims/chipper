@@ -40,7 +40,8 @@
     // Master volume control for the simulation (for Vibe sounds).
     audioVolume: {
       type: 'number',
-      defaultValue: 1
+      defaultValue: 1,
+      isValidValue: function( value ) { return value >= 0; }
     },
 
     /**
