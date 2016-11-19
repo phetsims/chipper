@@ -211,7 +211,7 @@
       elementSchema: {
         type: 'number'
       },
-      defaultValue: null
+      defaultValue: []
     },
 
     // Displays an overlay of the current bounds of each CanvasNode
