@@ -198,10 +198,10 @@
       defaultValue: null
     },
 
-    // See showHomeScreen. Unlike screens, the value is zero-based
+    // See showHomeScreen. Like screens, the value is 1-based
     screenIndex: {
       type: 'number',
-      defaultValue: 0
+      defaultValue: 1
     },
 
     // Specifies the set of screens that appear in the sim, and their order.  Uses 1-based (not zero-based) and ","
