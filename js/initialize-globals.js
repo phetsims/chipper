@@ -112,25 +112,25 @@
     launchLocalVersion: { type: 'flag' },
 
     // when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
-    'phet-io.emitDeltas': { type: 'flag' },
+    phetioEmitDeltas: { type: 'flag' },
 
-    // when emitting deltas using phetio.js (see phet-io.emitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
-    'phet-io.emitEmptyDeltas': { type: 'flag' },
+    // when emitting deltas using phetio.js (see phetioEmitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
+    phetioEmitEmptyDeltas: { type: 'flag' },
 
     // emit the Scenery input events
-    'phet-io.emitInputEvents': { type: 'flag' },
+    phetioEmitInputEvents: { type: 'flag' },
 
     // when running a simulation using phetio.js, outputs the state at the end of every frame
-    'phet-io.emitStates': { type: 'flag' },
+    phetioEmitStates: { type: 'flag' },
 
-    // evaluate expressions on phet-io wrapper objects, like: ?phet-io.expressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
-    'phet-io.expressions': {
+    // evaluate expressions on phet-io wrapper objects, like: ?phetioExpressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
+    phetioExpressions: {
       type: 'string',
       defaultValue: '[]'
     },
 
     // Specifies where to log phetioEvents
-    'phet-io.log': {
+    phetioLog: {
       type: 'string',
       defaultValue: null,
       validValues: [
@@ -141,11 +141,11 @@
     },
 
     // Causes a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
-    'phet-io.standalone': { type: 'flag' },
+    phetioStandalone: { type: 'flag' },
 
     // When running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
     // Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
-    'phet-io.validateTandems': {
+    phetioValidateTandems: {
       type: 'flag',
       defaultValue: true
     },
