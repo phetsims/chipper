@@ -9,7 +9,6 @@
 
 /**
  * @param grunt - the grunt instance
- * @param {Object} buildConfig - see getBuildConfig.js
  */
 module.exports = function( grunt ) {
   'use strict';

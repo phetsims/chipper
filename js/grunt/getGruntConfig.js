@@ -47,6 +47,7 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
     // Exclude svgPath.js, it was automatically generated and doesn't match pass lint.
     allFilesToLint.push( '!../kite/js/parser/svgPath.js' );
     allFilesToLint.push( '../chipper/eslint/rules/*.js' );
+    allFilesToLint.push( '../phetmarks/js/*.js' );
     allFilesToLint = _.uniq( allFilesToLint );
 
     return {

@@ -60,7 +60,7 @@
 
     // enables cache busting in requirejs mode.
     cacheBuster: {
-      type: 'flag',
+      type: 'boolean',
       defaultValue: true
     },
 
@@ -269,7 +269,7 @@
 
     // Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
     webgl: {
-      type: 'flag',
+      type: 'boolean',
       defaultValue: true
     }
   };
