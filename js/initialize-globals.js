@@ -198,7 +198,10 @@
       defaultValue: null
     },
 
-    // See showHomeScreen. Like screens, the value is 1-based
+    // Indicates the screen that will be initially selected on the home screen.
+    // If showHomeScreen is false, go immediately to this screen.
+    // Like query parameter 'screens', the value is 1-based; e.g. 'screenIndex=2' selects the 2nd screen.
+    // Use this query parameter only with multi-screen sims.
     screenIndex: {
       type: 'number',
       defaultValue: 1
