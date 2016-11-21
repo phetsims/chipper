@@ -45,18 +45,18 @@
       isValidValue: function( value ) { return value >= 0; }
     },
 
-    /**
-     * When present, will trigger changes that are more similar to the build environment.
-     * Right now, this includes computing higher-resolution mipmaps for the mipmap plugin.
-     */
-    buildCompatible: { type: 'flag' },
-
     // specifies the brand that should be used in requirejs mode
     brand: {
       type: 'string',
       defaultValue: 'adapted-from-phet',
       validValues: [ 'phet', 'phet-io', 'adapted-from-phet' ]
     },
+
+    /**
+     * When present, will trigger changes that are more similar to the build environment.
+     * Right now, this includes computing higher-resolution mipmaps for the mipmap plugin.
+     */
+    buildCompatible: { type: 'flag' },
 
     // enables cache busting in requirejs mode.
     cacheBuster: {
