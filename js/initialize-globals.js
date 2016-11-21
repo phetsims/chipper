@@ -92,12 +92,6 @@
       defaultValue: 100
     },
 
-    // test with a specific locale
-    locale: {
-      type: 'string',
-      defaultValue: 'en'
-    },
-
     // When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
     // to Google Analytics and potentially other sources in the future.
     'phet-app': { type: 'flag' },
@@ -110,6 +104,12 @@
 
     // for phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
     launchLocalVersion: { type: 'flag' },
+
+    // test with a specific locale
+    locale: {
+      type: 'string',
+      defaultValue: 'en'
+    },
 
     // when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
     phetioEmitDeltas: { type: 'flag' },
@@ -157,11 +157,11 @@
     // the sim will receive dt events from Sim.stepSimulation calls.
     playbackMode: { type: 'flag' },
 
-    // triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
-    postMessageOnLoad: { type: 'flag' },
-
     // passes errors to test-sims
     postMessageOnError: { type: 'flag' },
+
+    // triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
+    postMessageOnLoad: { type: 'flag' },
 
     // shows profiling information for the sim
     profiler: { type: 'flag' },
@@ -192,12 +192,6 @@
     // Scenery logs will be output to a string instead of the window
     sceneryStringLog: { type: 'flag' },
 
-    // identifier for a single simulation run
-    sessionID: {
-      type: 'string',
-      defaultValue: null
-    },
-
     // Indicates the screen that will be initially selected on the home screen.
     // If showHomeScreen is false, go immediately to this screen.
     // Like query parameter 'screens', the value is 1-based; e.g. 'screenIndex=2' selects the 2nd screen.
@@ -215,6 +209,12 @@
         type: 'number'
       },
       defaultValue: []
+    },
+
+    // identifier for a single simulation run
+    sessionID: {
+      type: 'string',
+      defaultValue: null
     },
 
     // Displays an overlay of the current bounds of each CanvasNode
@@ -238,6 +238,12 @@
     // Shows the visible bounds in ScreenView.js, for debugging the layout outside of the "dev" bounds
     showVisibleBounds: { type: 'flag' },
 
+    // override strings, value is JSON that is identical to string.json files
+    strings: {
+      type: 'string',
+      defaultValue: null
+    },
+
     /**
      * Sets a string used for various i18n test.  The values are:
      *
@@ -260,12 +266,6 @@
      *   will show whitespace for all of the strings, making it easy to identify non-translated strings.
      */
     stringTest: {
-      type: 'string',
-      defaultValue: null
-    },
-
-    // override strings, value is JSON that is identical to string.json files
-    strings: {
       type: 'string',
       defaultValue: null
     },
