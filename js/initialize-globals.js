@@ -208,7 +208,7 @@
       elementSchema: {
         type: 'number'
       },
-      defaultValue: []
+      defaultValue: null
     },
 
     // identifier for a single simulation run
@@ -288,7 +288,7 @@
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
 
     // Export for usage in phetmarks
-    window.phet.chipper.queryParameterSchema = QUERY_PARAMETERS_SCHEMA;
+    window.phet.chipper.queryParametersSchema = QUERY_PARAMETERS_SCHEMA;
 
     /**
      * Gets the cache buster args based on the provided query parameters.  By default it is:
