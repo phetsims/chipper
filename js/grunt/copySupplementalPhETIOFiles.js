@@ -30,10 +30,6 @@ module.exports = function( grunt, buildConfig ) {
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
       contents = ChipperStringUtils.replaceAll( contents,
-        '../../../query-string-machine/js/QueryStringMachine.js',
-        '../../lib/QueryStringMachine.js'
-      );
-      contents = ChipperStringUtils.replaceAll( contents,
         '"../../../sherpa/lib/lodash-2.4.1.min.js"',
         '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
       );
@@ -53,9 +49,15 @@ module.exports = function( grunt, buildConfig ) {
         '"../../../sherpa/lib/d3-4.2.2.js"',
         '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
       );
+
+      // Replacing queryStringMachine with empty because 'phetio.js' has it in them.
       contents = ChipperStringUtils.replaceAll( contents,
         '"../../../query-string-machine/js/QueryStringMachine.js"',
-        '"../../../lib/QueryStringMachine.js"'
+        ''
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '<!--{{phetio.js}}-->',
+        '<script type="text/javascript" src="../../lib/phetio.js"></script>'
       );
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
@@ -99,37 +101,35 @@ module.exports = function( grunt, buildConfig ) {
   grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './build/docs/favicon.ico' );
 
 
-  var destinationPath = 'build/lib';
+  // Minify phet libraries into 'lib/phetio.js'
+  var DESTINATION_PATH = 'build/lib';
+  var OUTPUT_FILE = 'phetio.js';
+  var COPYRIGHT_HEADER = '// Copyright 2002-2016, University of Colorado Boulder\n' +
+                         '// This PhET-iO file requires a license\n' +
+                         '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
+                         '// For licensing, please contact phethelp@colorado.edu';
 
-  /**
-   * @param  {string} path - relative path to file
-   * @param  {string} copyright - text containing copyright information
-   * @param  {string} precode - additional text to be prepended to file
-   */
-  var minifyAndWrite = function( path, copyright, precode ) {
-    var fileName = path.split( '/' ).pop();
-    var minified = uglify.minify( [ path ], {
-      mangle: true,
-      output: {
-        inline_script: true, // escape </script
-        beautify: false
-      },
-      compress: {
-        global_defs: {}
-      }
-    } ).code;
-
-    grunt.file.write( destinationPath + '/' + fileName, copyright + '\n\n' + precode + minified );
-  };
-
-  var copyrightHeader = '// Copyright 2002-2016, University of Colorado Boulder\n' +
-                        '// This PhET-iO file requires a license\n' +
-                        '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
-                        '// For licensing, please contact phethelp@colorado.edu';
-
-  minifyAndWrite( '../phet-io/wrappers/common/js/SimIFrameClient.js', copyrightHeader, '' );
-  minifyAndWrite( '../phet-io/wrappers/common/js/assert.js', copyrightHeader, '' );
   // Determine which sim versions will be pointed to by WrapperUtils
-  minifyAndWrite( '../phet-io/wrappers/common/js/WrapperUtils.js', copyrightHeader, 'window.useRelativeSimPath=true;' );
-  minifyAndWrite( '../query-string-machine/js/QueryStringMachine.js', '// Copyright 2016 University of Colorado Boulder\n// MIT License', '' );
+  var PRECODE = 'window.useRelativeSimPath=true;';
+
+  var LIB_FILES = [
+    '../query-string-machine/js/QueryStringMachine.js',
+    '../phet-io/wrappers/common/js/SimIFrameClient.js',
+    '../phet-io/wrappers/common/js/assert.js',
+    '../phet-io/wrappers/common/js/WrapperUtils.js' ];
+
+
+  var minified = uglify.minify( LIB_FILES, {
+    mangle: true,
+    output: {
+      inline_script: true, // escape </script
+      beautify: false
+    },
+    compress: {
+      global_defs: {}
+    }
+  } ).code;
+
+  grunt.file.write( DESTINATION_PATH + '/' + OUTPUT_FILE, COPYRIGHT_HEADER + '\n\n' + PRECODE + minified );
+
 };
