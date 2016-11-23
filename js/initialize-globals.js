@@ -146,7 +146,7 @@
     // When running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
     // Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
     phetioValidateTandems: {
-      type: 'flag',
+      type: 'boolean',
       defaultValue: true
     },
 
@@ -221,7 +221,7 @@
 
     // if false, go immediately to screenIndex
     showHomeScreen: {
-      type: 'flag',
+      type: 'boolean',
       defaultValue: true
     },
 
