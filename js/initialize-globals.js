@@ -153,10 +153,6 @@
     // plays event logging back from the server, provide an optional name for the session
     playbackInputEventLog: { type: 'flag' },
 
-    // Intended for use with phet-io. If playbackMode is true, the sim clock won't run and instead
-    // the sim will receive dt events from Sim.stepSimulation calls.
-    playbackMode: { type: 'flag' },
-
     // passes errors to test-sims
     postMessageOnError: { type: 'flag' },
 
