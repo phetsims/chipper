@@ -93,6 +93,18 @@
      */
     endsWith: function( string, suffix ) {
       return string.indexOf( suffix, string.length - suffix.length ) !== -1;
+    },
+
+    /**
+     * Return the first line that contains the substring 'find'
+     * @param {string} string - the parent string within which to search
+     * @param {string} find - the legal regex string to be found
+     * @returns {array} - the whole line containing the matched substring
+     */
+    firstLineThatContains: function( string, find ) {
+      var findRE = '.*' + find.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' ) + '.*';
+      var theReturn = string.match( new RegExp( findRE, 'g' ) );
+      return theReturn ? theReturn[ 0 ] : null;
     }
   };
 

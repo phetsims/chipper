@@ -50,11 +50,14 @@ module.exports = function( grunt, buildConfig ) {
         '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
       );
 
-      // Replacing queryStringMachine with empty because 'phetio.js' has it in them.
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../query-string-machine/js/QueryStringMachine.js"',
-        ''
-      );
+      // This returns the whole line that contains this substring, so it can be removed
+      var firstLine = ChipperStringUtils.firstLineThatContains( contents, '"../../../query-string-machine/js/QueryStringMachine.js"' );
+      if ( firstLine ) {
+        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
+        contents = ChipperStringUtils.replaceAll( contents, firstLine, '' );
+      }
+
+      // For info about phetio.js, see the end of this file
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{phetio.js}}-->',
         '<script type="text/javascript" src="../../lib/phetio.js"></script>'
