@@ -204,7 +204,7 @@
       elementSchema: {
         type: 'number'
       },
-      defaultValue: []
+      defaultValue: null
     },
 
     // identifier for a single simulation run
