@@ -52,7 +52,7 @@ if [ ! -e $filename ]; then
 fi
 
 # run the command in each repository directory
-for repository in `cat $filename | xargs`
+for repository in `cat $filename | tr -d '\r' | xargs`
 do
   if [ -d "$repository" ]; then
     echo $repository
