@@ -89,7 +89,8 @@
     // if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
     fuzzRate: {
       type: 'number',
-      defaultValue: 100
+      defaultValue: 100,
+      isValidValue: function( value ) { return value > 0; }
     },
 
     // When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
