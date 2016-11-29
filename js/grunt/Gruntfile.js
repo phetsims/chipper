@@ -208,6 +208,8 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'eslint:allFiles' ] );
 
+  grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', [ 'eslint:everything' ] );
+
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
     function() {

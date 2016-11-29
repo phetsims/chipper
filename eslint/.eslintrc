@@ -173,6 +173,7 @@
     //
     "document": false,
     // For qunit
+    "dot": false,
     "equal": false,
     // For file loading, see SaveLoadNode in Energy Skate Park: Basics
     "FileReader": false,
@@ -192,6 +193,7 @@
     // for generating diffs in phetio.js
     "jsondiffpatch": false,
     // QUnit
+    "kite": false,
     "QUnit": false,
     // For KaTeX
     "katex": false,
@@ -207,6 +209,7 @@
     "navigator": false,
     // Numeric library used in energy skate park
     "numeric": false,
+    "ok": false,
     // PhET-iO
     "WrapperUtils": false,
     // PhET-iO
@@ -222,6 +225,7 @@
     // require.js
     "require": false,
     //
+    "scenery": false,
     "SimIFrameClient": false,
     // For @mrdoob's stats + frame rate readout component
     "Stats": false,

@@ -6,6 +6,8 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
+var fs = require( 'fs' );
+
 // 3rd-party packages
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
 
@@ -50,6 +52,55 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
     allFilesToLint.push( '../phetmarks/js/*.js' );
     allFilesToLint = _.uniq( allFilesToLint );
 
+    // constants
+    var ACTIVE_REPOS_FILENAME = 'chipper/data/active-repos';  // The relative path to the list of active repos
+
+    // Start in the github checkout dir (above one of the sibling directories)
+    var directory = process.cwd();
+    var rootdir = directory + '/../';
+
+    // Iterate over all active-repos
+    var repos = grunt.file.read( rootdir + '/' + ACTIVE_REPOS_FILENAME ).trim();
+    var reposByLine = repos.split( /\r?\n/ );
+
+    var everythingToLint = [];
+    var visit = function( repo, path ) {
+      if ( repo === 'sherpa' ) {
+        // skip
+      }
+      else if ( repo === 'scenery' && path.endsWith( 'snapshots' ) ) {
+        // skip
+      }
+      else if ( path.endsWith( 'kite/js/parser/svgPath.js' ) ) {
+        // skip
+      }
+      else if ( path.endsWith( 'phet-io-website/root/assets/js' ) ) {
+        // skip
+      }
+      else if ( path.endsWith( 'phet-io-website/root/assets' ) ) {
+        // skip
+      }
+      else if ( grunt.file.isDir( path ) ) {
+
+        if ( path.endsWith( '/node_modules' ) || path.endsWith( '/.git' ) || path.endsWith( '/build' ) ) {
+          // skip
+        }
+        else {
+          var children = fs.readdirSync( path );
+          for ( var i = 0; i < children.length; i++ ) {
+            visit( repo, path + '/' + children[ i ] );
+          }
+        }
+      }
+      else {
+        if ( path.endsWith( '.js' ) ) {
+          everythingToLint.push( path );
+        }
+      }
+    };
+    for ( var i = 0; i < reposByLine.length; i++ ) {
+      visit( reposByLine[ i ], '../' + reposByLine[ i ] );
+    }
     return {
 
       // PhET-specific, passed to the 'lint' grunt task
@@ -58,7 +109,9 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
 
       // PhET-specific, passed to the 'lint-all' grunt task
       // All source files for this repository (repository-specific and dependencies).
-      allFiles: allFilesToLint
+      allFiles: allFilesToLint,
+
+      everything: everythingToLint
     };
   }
 
@@ -90,7 +143,8 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
 
       // When running eslint with an option like "eslint:allFiles" or "eslint:repoFiles", these fields are used.
       allFiles: lintPaths.allFiles,
-      repoFiles: lintPaths.repoFiles
+      repoFiles: lintPaths.repoFiles,
+      everything: lintPaths.everything
     }
   };
 
