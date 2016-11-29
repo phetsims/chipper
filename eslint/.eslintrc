@@ -191,6 +191,8 @@
     "io": false,
     // for generating diffs in phetio.js
     "jsondiffpatch": false,
+    // QUnit
+    "QUnit": false,
     // For KaTeX
     "katex": false,
     // For setting location.href to save to local file, see http"://stackoverflow.com/questions/2897619/using-html5-javascript-to-generate-and-save-a-file
