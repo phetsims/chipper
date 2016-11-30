@@ -59,9 +59,13 @@ module.exports = function( context ) {
         // If there is a PHET_IO import, but ifphetio! isn't the first part of the require
         if ( rhs && rhs.indexOf( 'PHET_IO' ) >= 0 && rhs.indexOf( 'ifphetio!' ) !== 0 ) {
 
+
+          // This regex will match 'phet-io' plus either a '/' or a '\' afterwards.
+          var regex = /phet-io[\/\\]/;
+
           // Don't check this rule in the phet-io repo
           // Match returns null if it doesn't find anything
-          if ( !context.getFilename().match( /phet-io[\/\\]/ ) ) {
+          if ( !context.getFilename().match( regex ) ) {
             context.report( {
               node: node,
               loc: node.loc.start,
