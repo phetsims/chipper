@@ -7,6 +7,7 @@
  */
 var requirejs = require( 'requirejs' );
 var assert = require( 'assert' );
+var istanbul = require( 'istanbul' );
 
 /**
  * @param {Object} grunt - the grunt instance
@@ -31,6 +32,8 @@ module.exports = function( grunt, buildConfig ) {
   // Wait until build complete
   var done = grunt.task.current.async();
 
+  var instrumenter = grunt.option( 'instrument' ) ? new istanbul.Instrumenter() : null;
+
   // Copied from getGruntConfig
   var config = {
 
@@ -50,6 +53,24 @@ module.exports = function( grunt, buildConfig ) {
 
     // JS config file
     mainConfigFile: 'js/' + repositoryName + '-config.js',
+
+    // Add instrumentation if required
+    onBuildWrite: function( moduleName, path, contents ) {
+      if ( instrumenter &&
+           path.indexOf( '.js' ) > 0 &&
+           path.indexOf( '..' ) < 0 &&
+           moduleName.indexOf( '!' ) < 0 ) {
+        var filePath = 'build/instrumentation/' + moduleName + '.js';
+        var fileDir = filePath.slice( 0, filePath.lastIndexOf( '/' ) );
+        grunt.file.mkdir( fileDir );
+        grunt.file.write( filePath, contents );
+        grunt.log.debug( 'instrumenting ' + filePath );
+        return instrumenter.instrumentSync( contents, filePath );
+      }
+      else {
+        return contents;
+      }
+    },
 
     // optimized output file
     out: 'build/' + repositoryName + '.min.js',

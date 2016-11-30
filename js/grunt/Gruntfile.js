@@ -29,6 +29,7 @@ var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
+var generateCoverage = require( '../../../chipper/js/grunt/generateCoverage' );
 var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
 var generateDevelopmentColorsHTML = require( '../../../chipper/js/grunt/generateDevelopmentColorsHTML' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
@@ -324,6 +325,12 @@ module.exports = function( grunt ) {
     'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
     function() {
       generateDevelopmentColorsHTML( grunt, buildConfig );
+    } );
+
+  grunt.registerTask( 'generate-coverage',
+    'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
+    function() {
+      generateCoverage( grunt, buildConfig );
     } );
 
   grunt.registerTask( 'commits-since',
