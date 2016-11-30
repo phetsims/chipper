@@ -86,6 +86,7 @@
     //
     //
     "require-statement-match": 2,
+    "phetio-require-contains-ifphetio": 2,
     "no-property-in-require-statement": 2,
     // permit only one var declaration per line, see #390
     "one-var": [
