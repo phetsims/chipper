@@ -89,7 +89,8 @@
     // if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
     fuzzRate: {
       type: 'number',
-      defaultValue: 100
+      defaultValue: 100,
+      isValidValue: function( value ) { return value > 0; }
     },
 
     // When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
@@ -112,16 +113,16 @@
     },
 
     // when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
-    phetioEmitDeltas: { type: 'flag' },
+    phetioEmitDeltas: { type: 'boolean', defaultValue: false },
 
     // when emitting deltas using phetio.js (see phetioEmitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
-    phetioEmitEmptyDeltas: { type: 'flag' },
+    phetioEmitEmptyDeltas: { type: 'boolean', defaultValue: false },
 
     // emit the Scenery input events
-    phetioEmitInputEvents: { type: 'flag' },
+    phetioEmitInputEvents: { type: 'boolean', defaultValue: false },
 
     // when running a simulation using phetio.js, outputs the state at the end of every frame
-    phetioEmitStates: { type: 'flag' },
+    phetioEmitStates: { type: 'boolean', defaultValue: false },
 
     // evaluate expressions on phet-io wrapper objects, like: ?phetioExpressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
     phetioExpressions: {
