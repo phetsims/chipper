@@ -1,3 +1,5 @@
+// Copyright 2016, University of Colorado Boulder
+
 window.phet = {};
 window.phet.chipper = {};
 window.phet.chipper.project = 'PHET_PROJECT';
