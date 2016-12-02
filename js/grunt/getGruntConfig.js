@@ -31,6 +31,10 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
     // Repository files to be linted. brand has a non-standard directory structure.
     var repoFilesToLint = ( repositoryName === 'brand' ) ? [ '*/js/**/*.js' ] : [ 'js/**/*.js' ];
 
+    // For phet-io make sure to include the wrappers folder
+    repoFilesToLint = ( repositoryName === 'phet-io' ) ? [ 'js/**/*.js', 'wrappers/**/*.js' ] : repoFilesToLint;
+
+
     // All files to be linted
     var allFilesToLint = _.map( phetLibs, function( repo ) {
       return '../' + repo + '/js/**/*.js';
