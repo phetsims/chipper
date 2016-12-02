@@ -188,9 +188,7 @@ module.exports = function( grunt ) {
    */
   function getLocales( grunt, repository ) {
 
-    // fallback locale is included in all cases
     var locales = [ ChipperConstants.FALLBACK_LOCALE ];
-
     var localesValue = grunt.option( 'locales' );
 
     if ( localesValue ) {
@@ -198,7 +196,8 @@ module.exports = function( grunt ) {
         locales = locales.concat( getLocalesFromRepository( repository ) ); // all locales for the repository that we're building
       }
       else {
-        locales = locales.concat( localesValue.split( ',' ) );
+        // use only the specified locales, which may not include the fallback
+        locales = localesValue.split( ',' );
       }
     }
     else {

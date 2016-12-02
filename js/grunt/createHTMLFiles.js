@@ -245,7 +245,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
   // phet-io sims should be tested in more powerful wrappers instead of the iframe test.
-  if ( buildConfig.brand !== 'phet-io' ) {
+  if ( buildConfig.locales.indexOf( ChipperConstants.FALLBACK_LOCALE ) !== -1 && buildConfig.brand !== 'phet-io' ) {
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( simTitle + ' iframe test' ) );
