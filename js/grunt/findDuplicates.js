@@ -19,8 +19,9 @@ module.exports = function( grunt, gruntConfig ) {
   var jscpd = require( 'jscpd' );
 
   // Choose the paths to check for duplicates
-  // If the user specified --all, then lint the repo and its dependencies
-  var paths = grunt.option( 'all' ) ? gruntConfig.eslint.allFiles : gruntConfig.eslint.repoFiles;
+  var paths = grunt.option( 'all' ) ? gruntConfig.eslint.allFiles :
+              grunt.option( 'everything' ) ? gruntConfig.eslint.everything :
+              gruntConfig.eslint.repoFiles;
 
   // For compatibility with jscpd, if there is only one entry, it should be a string (for glob)
   var files = paths.length === 1 ? paths[ 0 ] : paths;
