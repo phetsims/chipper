@@ -40,6 +40,7 @@ var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
+var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 
 module.exports = function( grunt ) {
   'use strict';
@@ -82,7 +83,8 @@ module.exports = function( grunt ) {
   };
 
   // Initialize grunt
-  grunt.initConfig( getGruntConfig( grunt, buildConfig.name, buildConfig.phetLibs ) );
+  var gruntConfig = getGruntConfig( grunt, buildConfig.name, buildConfig.phetLibs );
+  grunt.initConfig( gruntConfig );
 
   //---------------------------------------------------------------------------------------------------------------
   // Primary tasks
@@ -344,4 +346,9 @@ module.exports = function( grunt ) {
     function() {
       updatePhETiOSite( grunt, buildConfig );
     } );
+
+  grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.  Optionally specify --all to ' +
+                                         'search for duplicates in this repo and its dependencies.', function() {
+    findDuplicates( grunt, gruntConfig );
+  } );
 };
