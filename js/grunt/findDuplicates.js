@@ -19,7 +19,7 @@ module.exports = function( grunt, gruntConfig ) {
   var jscpd = require( 'jscpd' );
 
   // Choose the paths to check for duplicates
-  var paths = grunt.option( 'all' ) ? gruntConfig.eslint.allFiles :
+  var paths = grunt.option( 'dependencies' ) ? gruntConfig.eslint.allFiles :
               grunt.option( 'everything' ) ? gruntConfig.eslint.everything :
               gruntConfig.eslint.repoFiles;
 

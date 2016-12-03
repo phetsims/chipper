@@ -347,8 +347,9 @@ module.exports = function( grunt ) {
       updatePhETiOSite( grunt, buildConfig );
     } );
 
-  grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.  Optionally specify --all to ' +
-                                         'search for duplicates in this repo and its dependencies.', function() {
+  grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
+                                         '--dependencies to expand search to include dependencies\n' +
+                                         '--everything to expand search to all PhET code', function() {
     findDuplicates( grunt, gruntConfig );
   } );
 };
