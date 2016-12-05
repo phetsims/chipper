@@ -164,6 +164,8 @@
     //
     "canvg": false,
     //
+    "clarinet":false,
+    //
     "clearTimeout": false,
     //
     "console": false,
