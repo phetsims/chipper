@@ -25,18 +25,6 @@ axon/tests/qunit/unit-tests.js
   3:1   error  Use the function form of 'use strict'     strict
   3:10  error  'runAxonTests' is defined but never used  no-unused-vars
 
-blackbody-spectrum/js/blackbody-spectrum/model/BlackbodySpectrumModel.js
-  38:9  error  Unexpected alias 'thisModel' for 'this'  consistent-this
-
-blackbody-spectrum/js/blackbody-spectrum/view/BlackbodySpectrumScreenView.js
-  70:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-blackbody-spectrum/js/blackbody-spectrum/view/BlackbodySpectrumThermometer.js
-  39:9  error  Unexpected alias 'thisThermometer' for 'this'  consistent-this
-
-blackbody-spectrum/js/blackbody-spectrum/view/GraphDrawingNode.js
-  56:9  error  Unexpected alias 'thisGraph' for 'this'  consistent-this
-
 build-a-molecule/tests/qunit/js/model.js
   8:7  error  'Color' is assigned a value but never used  no-unused-vars
 
@@ -189,86 +177,6 @@ molecule-shapes/tests/qunit/unit-tests.js
    4:10  error  'runMoleculeShapesTests' is defined but never used  no-unused-vars
   17:2   error  Unnecessary semicolon                               no-extra-semi
 
-optics-lab/js/optics-lab/OpticsLabScreen.js
-  21:42  error  Parsing error: Unexpected token :
-
-optics-lab/js/optics-lab/model/ComponentModel.js
-  28:9  error  Unexpected alias 'componentModel' for 'this'  consistent-this
-
-optics-lab/js/optics-lab/model/SourceModel.js
-  41:13  error  Unexpected alias 'sourceModel' for 'this'  consistent-this
-
-optics-lab/js/optics-lab/view/ComponentGraphic.js
-  33:11  error  Unexpected alias 'componentGraphic' for 'this'  consistent-this
-  63:9   error  Expected a default case                         default-case
-
-optics-lab/js/optics-lab/view/ComponentNode.js
-  33:9  error  Unexpected alias 'componentNode' for 'this'  consistent-this
-
-optics-lab/js/optics-lab/view/ControlPanel.js
-   60:9   error  Unexpected alias 'controlPanel' for 'this'  consistent-this
-  176:17  error  Unexpected alias 'controlPanel' for 'this'  consistent-this
-  188:11  error  Expected a default case                     default-case
-
-optics-lab/js/optics-lab/view/ControlPanel2.js
-   60:13  error  Unexpected alias 'controlPanel' for 'this'  consistent-this
-  195:9   error  Expected a default case                     default-case
-
-optics-lab/js/optics-lab/view/ControlPanelManager.js
-  52:9  error  Unexpected alias 'controlPanelManager' for 'this'  consistent-this
-
-optics-lab/js/optics-lab/view/ControlPanelManager2.js
-   51:13  error  Unexpected alias 'controlPanelManager2' for 'this'  consistent-this
-  116:21  error  Unexpected alias 'controlPanelManager' for 'this'   consistent-this
-
-optics-lab/js/optics-lab/view/ControlPanels.js
-  157:7    error  Expected a default case                          default-case
-  167:104  error  'focalLengthHBox' is not defined                 no-undef
-  170:104  error  'focalLengthHBox' is not defined                 no-undef
-  173:92   error  'focalLengthHBox' is not defined                 no-undef
-  179:93   error  'focalLengthHBox' is not defined                 no-undef
-  275:50   error  'piece' is not defined                           no-undef
-  279:46   error  'pieceModel' is not defined                      no-undef
-  280:16   error  Unexpected alias 'controlPanelMaker' for 'this'  consistent-this
-  281:11   error  'pieceModel' is not defined                      no-undef
-  282:62   error  'pieceModel' is not defined                      no-undef
-  291:9    error  Expected a default case                          default-case
-  293:44   error  'pieceModel' is not defined                      no-undef
-  298:44   error  'pieceModel' is not defined                      no-undef
-  305:44   error  'pieceModel' is not defined                      no-undef
-  308:43   error  'pieceModel' is not defined                      no-undef
-  311:70   error  'piece' is not defined                           no-undef
-  317:40   error  'pieceModel' is not defined                      no-undef
-  320:39   error  'pieceModel' is not defined                      no-undef
-  323:66   error  'piece' is not defined                           no-undef
-  327:40   error  'pieceModel' is not defined                      no-undef
-  330:66   error  'piece' is not defined                           no-undef
-  337:40   error  'pieceModel' is not defined                      no-undef
-  340:66   error  'piece' is not defined                           no-undef
-
-optics-lab/js/optics-lab/view/FocalPointGraphic.js
-  29:13  error  Unexpected alias 'focalPointGraphic' for 'this'  consistent-this
-
-optics-lab/js/optics-lab/view/OpticsLabScreenView.js
-  11:16  error  Strings must use singlequote                       quotes
-  44:9   error  Unexpected alias 'opticsLabScreenView' for 'this'  consistent-this
-  88:9   error  Expected a default case                            default-case
-
-optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js
-   58:13  error  Unexpected alias 'thisControlPanel' for 'this'  consistent-this
-  182:25  error  Unexpected alias 'thisControlPanel' for 'this'  consistent-this
-  193:17  error  Expected a default case                         default-case
-
-optics-lab/js/optics-lab/view/SourceNode.js
-   35:13  error  Unexpected alias 'sourceNode' for 'this'  consistent-this
-  174:13  error  Expected a default case                   default-case
-
-optics-lab/js/optics-lab/view/ToolDrawerPanel.js
-  46:9  error  Unexpected alias 'toolDrawerPanel' for 'this'  consistent-this
-
-optics-lab/js/optics-lab-main.js
-  18:3  error  Mismatched var in require(string!), key=optics-lab.title, var=simTitle, desiredVar=opticsLabTitleString  string-require-statement-match
-
 perennial/js/build-server/build-server.js
   107:1  error  Mismatched require statement values, fs!==fs.extra         require-statement-match
   110:1  error  Mismatched require statement values, parseArgs!==minimist  require-statement-match
@@ -319,9 +227,6 @@ phet-core/tests/qunit/js/phetCore-tests.js
 phet-core/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'         strict
   4:10  error  'runPhetCoreTests' is defined but never used  no-unused-vars
-
-phetcommon/tests/qunit/js/testStringUtils.js
-  3:2  error  Use the function form of 'use strict'  strict
 
 phetcommon/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'  strict
@@ -658,153 +563,7 @@ scenery/tests/qunit/unit-tests.js
    4:10  error  'runSceneryTests' is defined but never used  no-unused-vars
   28:2   error  Unnecessary semicolon                        no-extra-semi
 
-sugar-and-salt-solutions/js/common/model/Compound.js
-  61:11  error  Unexpected alias 'thisCompound' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/model/ConductivityTester.js
-  33:9  error  Unexpected alias 'thisTester' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/model/ConstantDtClock.js
-  25:9  error  Unexpected alias 'thisClock' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/model/Dispenser.js
-  31:9  error  Unexpected alias 'thisDispenser' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/model/SaltShaker.js
-  33:9  error  Unexpected alias 'thisShaker' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/model/SugarAndSaltSolutionModel.js
-  37:9  error  Unexpected alias 'thisModel' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/model/SugarDispenser.js
-  33:9  error  Unexpected alias 'thisShaker' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/BeakerAndShakerView.js
-  45:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/BeakerNode.js
-  24:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/ConductivityTesterToolboxNode.js
-  37:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/CrystalMakerCanvasNode.js
-  31:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/DispenserNode.js
-  33:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/DispenserRadioButtonSet.js
-  25:9   error  Unexpected alias 'thisNode' for 'this'  consistent-this
-  60:11  error  Unexpected alias 'thisSet' for 'this'   consistent-this
-
-sugar-and-salt-solutions/js/common/view/EvaporationSlider.js
-  39:9  error  Unexpected alias 'thisControl' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/FaucetNodeContainer.js
-  39:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/MacroConcentrationBarChartNode.js
-  33:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/RemoveSoluteButtonNode.js
-  25:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/SaltShakerNode.js
-  32:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/SimpleSphereNode.js
-  23:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/SoluteControlPanelNode.js
-  28:9  error  Unexpected alias 'thisPanel' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/SolutionNode.js
-  25:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/SphericalParticleNode.js
-  27:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/SugarAndSaltSolutionsConductivityTesterNode.js
-  27:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/SugarAndSaltSolutionsView.js
-  23:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/SugarDispenserNode.js
-  51:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/VolumeIndicatorNode.js
-  38:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/WaterNode.js
-  25:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/barchart/Bar.js
-  43:9  error  Unexpected alias 'thisBar' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/common/view/barchart/ConcentrationBarChart.js
-  37:9  error  Unexpected alias 'thisChart' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/macro/MacroScreen.js
-  18:7  error  'Node' is assigned a value but never used  no-unused-vars
-  21:7  error  'Color' is already defined                 no-redeclare
-
-sugar-and-salt-solutions/js/macro/model/MacroCrystal.js
-  24:9  error  Unexpected alias 'thisCrsytal' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/macro/model/MacroModel.js
-   65:9   error  Unexpected alias 'thisModel' for 'this'  consistent-this
-  223:11  error  Unexpected alias 'thisModel' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/macro/model/MacroSugarDispenser.js
-  28:9  error  Unexpected alias 'thisDispenser' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/macro/model/SoluteModel.js
-  25:9  error  Unexpected alias 'thisSoluteModel' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/macro/view/MacroConcentrationBarChartNode.js
-  33:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/macro/view/MacroScreenView.js
-  64:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/macro/view/PrecipitateNode.js
-  25:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/macro/view/RemoveSoluteControlNode.js
-  30:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/macro/view/SugarSaltBarChart.js
-  34:9  error  Unexpected alias 'thisChart' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/micro/MicroScreen.js
-  24:7  error  'Node' is assigned a value but never used  no-unused-vars
-  27:7  error  'Color' is already defined                 no-redeclare
-
-sugar-and-salt-solutions/js/micro/model/IonConcentration.js
-  25:9  error  Unexpected alias 'thisProperty' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/micro/model/MicroModel.js
-  68:9  error  Unexpected alias 'thisModel' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/micro/model/SoluteConstituent.js
-  25:9  error  Unexpected alias 'thisSolute' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/micro/view/CompositeParticleNode.js
-  27:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/micro/view/ExpandableConcentrationBarChartNode.js
-  30:11  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/micro/view/MicroConcentrationBarChart.js
-  26:9   error  Unexpected alias 'thisChart' for 'this'  consistent-this
-  40:11  error  Unexpected alias 'thisChart' for 'this'  consistent-this
-
-sugar-and-salt-solutions/js/micro/view/MicroScreenView.js
-  41:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-✖ 558 problems (558 errors, 0 warnings)
+✖ 453 problems (453 errors, 0 warnings)
 
 Warning: Task "eslint:everything" failed. Use --force to continue.
 
