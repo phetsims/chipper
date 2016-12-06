@@ -108,9 +108,11 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
         }
       }
     };
+
     for ( var i = 0; i < reposByLine.length; i++ ) {
       visit( reposByLine[ i ], '../' + reposByLine[ i ] );
     }
+
     return {
 
       // PhET-specific, passed to the 'lint' grunt task
