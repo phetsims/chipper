@@ -1,6 +1,6 @@
 Running "eslint:everything" (eslint) task
 
-/Users/samreid/github/axon/tests/qunit/js/events.js
+/Volumes/b5 Data1/PhET/GitHub/axon/tests/qunit/js/events.js
     3:2   error  Use the function form of 'use strict'          strict
     7:22  error  'axon' is not defined                          no-undef
    50:22  error  'axon' is not defined                          no-undef
@@ -8,7 +8,7 @@ Running "eslint:everything" (eslint) task
    79:23  error  'axon' is not defined                          no-undef
   101:23  error  'axon' is not defined                          no-undef
 
-/Users/samreid/github/axon/tests/qunit/js/simple-tests.js
+/Volumes/b5 Data1/PhET/GitHub/axon/tests/qunit/js/simple-tests.js
   404:22  error  'throws' is not defined            no-undef
   404:42  error  Do not use 'new' for side effects  no-new
   409:22  error  'throws' is not defined            no-undef
@@ -21,62 +21,50 @@ Running "eslint:everything" (eslint) task
   436:22  error  'throws' is not defined            no-undef
   441:7   error  'expect' is not defined            no-undef
 
-/Users/samreid/github/axon/tests/qunit/unit-tests.js
+/Volumes/b5 Data1/PhET/GitHub/axon/tests/qunit/unit-tests.js
   3:1   error  Use the function form of 'use strict'     strict
   3:10  error  'runAxonTests' is defined but never used  no-unused-vars
 
-/Users/samreid/github/blackbody-spectrum/js/blackbody-spectrum/model/BlackbodySpectrumModel.js
-  38:9  error  Unexpected alias 'thisModel' for 'this'  consistent-this
-
-/Users/samreid/github/blackbody-spectrum/js/blackbody-spectrum/view/BlackbodySpectrumScreenView.js
-  70:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-/Users/samreid/github/blackbody-spectrum/js/blackbody-spectrum/view/BlackbodySpectrumThermometer.js
-  39:9  error  Unexpected alias 'thisThermometer' for 'this'  consistent-this
-
-/Users/samreid/github/blackbody-spectrum/js/blackbody-spectrum/view/GraphDrawingNode.js
-  56:9  error  Unexpected alias 'thisGraph' for 'this'  consistent-this
-
-/Users/samreid/github/build-a-molecule/tests/qunit/js/model.js
+/Volumes/b5 Data1/PhET/GitHub/build-a-molecule/tests/qunit/js/model.js
   8:7  error  'Color' is assigned a value but never used  no-unused-vars
 
-/Users/samreid/github/build-a-molecule/tests/qunit/unit-tests.js
+/Volumes/b5 Data1/PhET/GitHub/build-a-molecule/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'               strict
    4:10  error  'runBuildAMoleculeTests' is defined but never used  no-unused-vars
   17:2   error  Unnecessary semicolon                               no-extra-semi
 
-/Users/samreid/github/build-an-atom/js/common/view/AtomView.js
+/Volumes/b5 Data1/PhET/GitHub/build-an-atom/js/common/view/AtomView.js
   48:7  error  'TString' is assigned a value but never used  no-unused-vars
 
-/Users/samreid/github/chipper/templates/chipper-namespace.js
+/Volumes/b5 Data1/PhET/GitHub/chipper/templates/chipper-namespace.js
   15:48  error  'PHET_THIRD_PARTY_LICENSE_ENTRIES' is not defined  no-undef
   17:36  error  'PHET_DEPENDENCIES' is not defined                 no-undef
   18:31  error  'PHET_STRINGS' is not defined                      no-undef
 
-/Users/samreid/github/circuit-construction-kit-common/tests/qunit/unit-tests.js
+/Volumes/b5 Data1/PhET/GitHub/circuit-construction-kit-common/tests/qunit/unit-tests.js
   3:1   error  Use the function form of 'use strict'    strict
   3:10  error  'runCCKTests' is defined but never used  no-unused-vars
 
-/Users/samreid/github/circuit-construction-kit-dc/js/circuit-construction-kit-dc-main.js
+/Volumes/b5 Data1/PhET/GitHub/circuit-construction-kit-dc/js/circuit-construction-kit-dc-main.js
   24:3  error  Mismatched var in require(string!), key=circuit-construction-kit-dc.title, var=circuitConstructionKitDCTitleString, desiredVar=circuitConstructionKitDcTitleString  string-require-statement-match
 
-/Users/samreid/github/dot/Gruntfile.js
+/Volumes/b5 Data1/PhET/GitHub/dot/Gruntfile.js
   13:1   error  Mismatched require statement values, Gruntfile!==Gruntfile.js  require-statement-match
   16:18  error  Use the function form of 'use strict'                          strict
 
-/Users/samreid/github/dot/tests/qunit/js/binpacker.js
+/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/binpacker.js
     3:2   error  Use the function form of 'use strict'                 strict
     9:12  error  'approximateComplexEquals' is defined but never used  no-unused-vars
   152:15  error  'i' is already defined                                no-redeclare
 
-/Users/samreid/github/dot/tests/qunit/js/bounds2.js
+/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/bounds2.js
   3:2  error  Use the function form of 'use strict'  strict
 
-/Users/samreid/github/dot/tests/qunit/js/complex.js
+/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/complex.js
    3:2  error  Use the function form of 'use strict'   strict
   43:9  error  'd' is assigned a value but never used  no-unused-vars
 
-/Users/samreid/github/dot/tests/qunit/js/matrix3.js
+/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/matrix3.js
     3:2   error  Use the function form of 'use strict'              strict
    50:12  error  'V3' is defined but never used                     no-unused-vars
    98:5   error  Split 'var' declarations into multiple statements  one-var
@@ -86,35 +74,35 @@ Running "eslint:everything" (eslint) task
   175:5   error  Split 'var' declarations into multiple statements  one-var
   185:5   error  Split 'var' declarations into multiple statements  one-var
 
-/Users/samreid/github/dot/tests/qunit/js/modulo.js
+/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/modulo.js
   3:2  error  Use the function form of 'use strict'  strict
 
-/Users/samreid/github/dot/tests/qunit/js/simple-tests.js
+/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/simple-tests.js
    3:2  error  Use the function form of 'use strict'  strict
   82:5  error  'expect' is not defined                no-undef
 
-/Users/samreid/github/dot/tests/qunit/js/transform3.js
+/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/transform3.js
    3:2   error  Use the function form of 'use strict'   strict
   50:15  error  'throws' is not defined                 no-undef
   51:11  error  'x' is assigned a value but never used  no-unused-vars
   53:15  error  'throws' is not defined                 no-undef
   54:11  error  'y' is assigned a value but never used  no-unused-vars
 
-/Users/samreid/github/dot/tests/qunit/unit-tests.js
+/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'    strict
   4:10  error  'runDotTests' is defined but never used  no-unused-vars
 
-/Users/samreid/github/energy-skate-park-basics/js/energy-skate-park-basics/view/PlaybackSpeedControl.js
+/Volumes/b5 Data1/PhET/GitHub/energy-skate-park-basics/js/energy-skate-park-basics/view/PlaybackSpeedControl.js
   20:7  error  'TString' is assigned a value but never used  no-unused-vars
 
-/Users/samreid/github/kite/tests/qunit/unit-tests.js
+/Volumes/b5 Data1/PhET/GitHub/kite/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'     strict
   4:10  error  'runKiteTests' is defined but never used  no-unused-vars
 
-/Users/samreid/github/mobius/js/StageCenteringCanvasTransform.js
+/Volumes/b5 Data1/PhET/GitHub/mobius/js/StageCenteringCanvasTransform.js
   22:9  error  Unexpected alias 'that' for 'this'  consistent-this
 
-/Users/samreid/github/mobius/tests/triangle-css.js
+/Volumes/b5 Data1/PhET/GitHub/mobius/tests/triangle-css.js
     3:24  error  Use the function form of 'use strict'                  strict
    13:9   error  'overTwoN' is assigned a value but never used          no-unused-vars
    13:30  error  'triangleSize' is not defined                          no-undef
@@ -131,7 +119,7 @@ Running "eslint:everything" (eslint) task
   219:29  error  'triangleSize' is not defined                          no-undef
   232:21  error  Expected '!==' and instead saw '!='                    eqeqeq
 
-/Users/samreid/github/mobius/tests/webgl-test/webgl-test.js
+/Volumes/b5 Data1/PhET/GitHub/mobius/tests/webgl-test/webgl-test.js
     3:1   error  'requirejs' is not defined                       no-undef
     3:92  error  Use the function form of 'use strict'            strict
    18:7   error  Move function declaration to function body root  no-inner-declarations
@@ -163,7 +151,7 @@ Running "eslint:everything" (eslint) task
   203:25  error  Strings must use singlequote                     quotes
   208:25  error  Strings must use singlequote                     quotes
 
-/Users/samreid/github/molecule-shapes/tests/qunit/js/fastmath.js
+/Volumes/b5 Data1/PhET/GitHub/molecule-shapes/tests/qunit/js/fastmath.js
    14:7   error  'Color' is assigned a value but never used  no-unused-vars
    27:17  error  'ms' is not defined                         no-undef
    28:17  error  'ms' is not defined                         no-undef
@@ -184,100 +172,20 @@ Running "eslint:everything" (eslint) task
   101:17  error  'ms' is not defined                         no-undef
   105:17  error  'ms' is not defined                         no-undef
 
-/Users/samreid/github/molecule-shapes/tests/qunit/unit-tests.js
+/Volumes/b5 Data1/PhET/GitHub/molecule-shapes/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'               strict
    4:10  error  'runMoleculeShapesTests' is defined but never used  no-unused-vars
   17:2   error  Unnecessary semicolon                               no-extra-semi
 
-/Users/samreid/github/optics-lab/js/optics-lab/OpticsLabScreen.js
-  21:42  error  Parsing error: Unexpected token :
-
-/Users/samreid/github/optics-lab/js/optics-lab/model/ComponentModel.js
-  28:9  error  Unexpected alias 'componentModel' for 'this'  consistent-this
-
-/Users/samreid/github/optics-lab/js/optics-lab/model/SourceModel.js
-  41:13  error  Unexpected alias 'sourceModel' for 'this'  consistent-this
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/ComponentGraphic.js
-  33:11  error  Unexpected alias 'componentGraphic' for 'this'  consistent-this
-  63:9   error  Expected a default case                         default-case
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/ComponentNode.js
-  33:9  error  Unexpected alias 'componentNode' for 'this'  consistent-this
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/ControlPanel.js
-   60:9   error  Unexpected alias 'controlPanel' for 'this'  consistent-this
-  176:17  error  Unexpected alias 'controlPanel' for 'this'  consistent-this
-  188:11  error  Expected a default case                     default-case
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/ControlPanel2.js
-   60:13  error  Unexpected alias 'controlPanel' for 'this'  consistent-this
-  195:9   error  Expected a default case                     default-case
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/ControlPanelManager.js
-  52:9  error  Unexpected alias 'controlPanelManager' for 'this'  consistent-this
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/ControlPanelManager2.js
-   51:13  error  Unexpected alias 'controlPanelManager2' for 'this'  consistent-this
-  116:21  error  Unexpected alias 'controlPanelManager' for 'this'   consistent-this
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/ControlPanels.js
-  157:7    error  Expected a default case                          default-case
-  167:104  error  'focalLengthHBox' is not defined                 no-undef
-  170:104  error  'focalLengthHBox' is not defined                 no-undef
-  173:92   error  'focalLengthHBox' is not defined                 no-undef
-  179:93   error  'focalLengthHBox' is not defined                 no-undef
-  275:50   error  'piece' is not defined                           no-undef
-  279:46   error  'pieceModel' is not defined                      no-undef
-  280:16   error  Unexpected alias 'controlPanelMaker' for 'this'  consistent-this
-  281:11   error  'pieceModel' is not defined                      no-undef
-  282:62   error  'pieceModel' is not defined                      no-undef
-  291:9    error  Expected a default case                          default-case
-  293:44   error  'pieceModel' is not defined                      no-undef
-  298:44   error  'pieceModel' is not defined                      no-undef
-  305:44   error  'pieceModel' is not defined                      no-undef
-  308:43   error  'pieceModel' is not defined                      no-undef
-  311:70   error  'piece' is not defined                           no-undef
-  317:40   error  'pieceModel' is not defined                      no-undef
-  320:39   error  'pieceModel' is not defined                      no-undef
-  323:66   error  'piece' is not defined                           no-undef
-  327:40   error  'pieceModel' is not defined                      no-undef
-  330:66   error  'piece' is not defined                           no-undef
-  337:40   error  'pieceModel' is not defined                      no-undef
-  340:66   error  'piece' is not defined                           no-undef
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/FocalPointGraphic.js
-  29:13  error  Unexpected alias 'focalPointGraphic' for 'this'  consistent-this
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/OpticsLabScreenView.js
-  11:16  error  Strings must use singlequote                       quotes
-  44:9   error  Unexpected alias 'opticsLabScreenView' for 'this'  consistent-this
-  88:9   error  Expected a default case                            default-case
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js
-   58:13  error  Unexpected alias 'thisControlPanel' for 'this'  consistent-this
-  182:25  error  Unexpected alias 'thisControlPanel' for 'this'  consistent-this
-  193:17  error  Expected a default case                         default-case
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/SourceNode.js
-   35:13  error  Unexpected alias 'sourceNode' for 'this'  consistent-this
-  174:13  error  Expected a default case                   default-case
-
-/Users/samreid/github/optics-lab/js/optics-lab/view/ToolDrawerPanel.js
-  46:9  error  Unexpected alias 'toolDrawerPanel' for 'this'  consistent-this
-
-/Users/samreid/github/optics-lab/js/optics-lab-main.js
-  18:3  error  Mismatched var in require(string!), key=optics-lab.title, var=simTitle, desiredVar=opticsLabTitleString  string-require-statement-match
-
-/Users/samreid/github/perennial/js/build-server/build-server.js
+/Volumes/b5 Data1/PhET/GitHub/perennial/js/build-server/build-server.js
   107:1  error  Mismatched require statement values, fs!==fs.extra         require-statement-match
   110:1  error  Mismatched require statement values, parseArgs!==minimist  require-statement-match
   113:1  error  Mismatched require statement values, query!==pg-query      require-statement-match
 
-/Users/samreid/github/phet-app/assets/scripts/get-sims-for-app.js
+/Volumes/b5 Data1/PhET/GitHub/phet-app/assets/scripts/get-sims-for-app.js
   25:58  error  Missing semicolon  semi
 
-/Users/samreid/github/phet-core/tests/qunit/js/phetCore-tests.js
+/Volumes/b5 Data1/PhET/GitHub/phet-core/tests/qunit/js/phetCore-tests.js
     3:2   error  Use the function form of 'use strict'  strict
     7:9   error  'phetCore' is not defined              no-undef
     8:9   error  'phetCore' is not defined              no-undef
@@ -316,18 +224,15 @@ Running "eslint:everything" (eslint) task
   115:5   error  'phetCore' is not defined              no-undef
   129:5   error  'phetCore' is not defined              no-undef
 
-/Users/samreid/github/phet-core/tests/qunit/unit-tests.js
+/Volumes/b5 Data1/PhET/GitHub/phet-core/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'         strict
   4:10  error  'runPhetCoreTests' is defined but never used  no-unused-vars
 
-/Users/samreid/github/phetcommon/tests/qunit/js/testStringUtils.js
-  3:2  error  Use the function form of 'use strict'  strict
-
-/Users/samreid/github/phetcommon/tests/qunit/unit-tests.js
+/Volumes/b5 Data1/PhET/GitHub/phetcommon/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'  strict
   4:10  error  'runTests' is defined but never used   no-unused-vars
 
-/Users/samreid/github/phetmarks/phettest/index-server.js
+/Volumes/b5 Data1/PhET/GitHub/phetmarks/phettest/index-server.js
     4:1   error  property access in require statement          no-property-in-require-statement
    18:31  error  '__dirname' is not defined                    no-undef
    21:1   error  Use the function form of 'use strict'         strict
@@ -350,32 +255,32 @@ Running "eslint:everything" (eslint) task
   207:20  error  Use the function form of 'use strict'         strict
   245:7   error  'simName' is assigned a value but never used  no-unused-vars
 
-/Users/samreid/github/phet-io/wrappers/playback/playback.js
+/Volumes/b5 Data1/PhET/GitHub/phet-io/wrappers/playback/playback.js
   181:81  error  Missing semicolon  semi
 
-/Users/samreid/github/rosetta/js/LocaleInfo.js
+/Volumes/b5 Data1/PhET/GitHub/rosetta/js/LocaleInfo.js
   12:1  error  Mismatched require statement values, localeInfo!==localeInfo.js  require-statement-match
 
-/Users/samreid/github/rosetta/js/TranslationUtils.js
+/Volumes/b5 Data1/PhET/GitHub/rosetta/js/TranslationUtils.js
   16:1  error  Mismatched require statement values, _!==underscore  require-statement-match
 
-/Users/samreid/github/rosetta/js/commitQueue.js
+/Volumes/b5 Data1/PhET/GitHub/rosetta/js/commitQueue.js
   17:1  error  Mismatched require statement values, query!==pg-query  require-statement-match
   29:1  error  Mismatched require statement values, _!==underscore    require-statement-match
 
-/Users/samreid/github/rosetta/js/routes.js
+/Volumes/b5 Data1/PhET/GitHub/rosetta/js/routes.js
   14:1  error  Mismatched require statement values, query!==pg-query  require-statement-match
   21:1  error  property access in require statement                   no-property-in-require-statement
   27:1  error  Mismatched require statement values, _!==underscore    require-statement-match
 
-/Users/samreid/github/rosetta/js/translate-sim.js
+/Volumes/b5 Data1/PhET/GitHub/rosetta/js/translate-sim.js
   13:1   error  Use the function form of 'use strict'  strict
   40:22  error  Use the function form of 'use strict'  strict
 
-/Users/samreid/github/rosetta/rosetta.js
+/Volumes/b5 Data1/PhET/GitHub/rosetta/rosetta.js
   99:5  error  Parsing error: 'return' outside of function
 
-/Users/samreid/github/scenery/accessibility/accessibility-script.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/accessibility/accessibility-script.js
     2:1   error  Use the function form of 'use strict'          strict
    19:1   error  Use the function form of 'use strict'          strict
    31:1   error  Use the function form of 'use strict'          strict
@@ -391,7 +296,7 @@ Running "eslint:everything" (eslint) task
   139:90  error  Missing semicolon                              semi
   142:46  error  Missing semicolon                              semi
 
-/Users/samreid/github/scenery/tests/benchmarks/js/benchmarks.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/benchmarks.js
    22:2    error  Use the function form of 'use strict'  strict
    47:21   error  'Benchmark' is not defined             no-undef
    87:27   error  Expected '!==' and instead saw '!='    eqeqeq
@@ -401,7 +306,7 @@ Running "eslint:everything" (eslint) task
   117:89   error  Missing semicolon                      semi
   118:119  error  Missing semicolon                      semi
 
-/Users/samreid/github/scenery/tests/benchmarks/js/current.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/current.js
     6:2   error  Use the function form of 'use strict'         strict
    16:4   error  Missing semicolon                             semi
    27:13  error  'i' is already defined                        no-redeclare
@@ -429,7 +334,7 @@ Running "eslint:everything" (eslint) task
   155:5   error  'node' is not defined                         no-undef
   158:11  error  'node' is assigned a value but never used     no-unused-vars
 
-/Users/samreid/github/scenery/tests/benchmarks/js/marks.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/marks.js
    14:2   error  Use the function form of 'use strict'            strict
    75:11  error  'self' is assigned a value but never used        no-unused-vars
    94:9   error  Move function declaration to function body root  no-inner-declarations
@@ -442,7 +347,7 @@ Running "eslint:everything" (eslint) task
   398:50  error  Expected '!==' and instead saw '!='              eqeqeq
   398:53  error  Strings must use singlequote                     quotes
 
-/Users/samreid/github/scenery/tests/benchmarks/js/perf-current.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/perf-current.js
     3:2  error  Use the function form of 'use strict'                           strict
     5:7  error  'textNodeInstances' is assigned a value but never used          no-unused-vars
    39:7  error  'textPathInstances' is assigned a value but never used          no-unused-vars
@@ -452,7 +357,7 @@ Running "eslint:everything" (eslint) task
   557:7  error  'addingHexagons' is assigned a value but never used             no-unused-vars
   593:3  error  'marks' is not defined                                          no-undef
 
-/Users/samreid/github/scenery/tests/benchmarks/js/performance.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/performance.js
     5:2   error  Use the function form of 'use strict'            strict
    88:9   error  Move function declaration to function body root  no-inner-declarations
   101:49  error  'main' is not defined                            no-undef
@@ -463,10 +368,10 @@ Running "eslint:everything" (eslint) task
   203:50  error  Expected '!==' and instead saw '!='              eqeqeq
   203:53  error  Strings must use singlequote                     quotes
 
-/Users/samreid/github/scenery/tests/benchmarks/js/table-report.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/table-report.js
   5:2  error  Use the function form of 'use strict'  strict
 
-/Users/samreid/github/scenery/tests/browsers/unicode/inline-js-unicode.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/browsers/unicode/inline-js-unicode.js
    3:20  error  Use the function form of 'use strict'  strict
   44:11  error  Strings must use singlequote           quotes
   45:11  error  Strings must use singlequote           quotes
@@ -493,12 +398,12 @@ Running "eslint:everything" (eslint) task
   94:11  error  Strings must use singlequote           quotes
   95:11  error  Strings must use singlequote           quotes
 
-/Users/samreid/github/scenery/tests/event-logs/server/server.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/event-logs/server/server.js
   14:20  error  Use the function form of 'use strict'         strict
   38:20  error  Strings must use singlequote                  quotes
   43:11  error  'logname' is assigned a value but never used  no-unused-vars
 
-/Users/samreid/github/scenery/tests/qunit/js/display.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/display.js
   393:5  error  'expect' is not defined  no-undef
   403:5  error  'expect' is not defined  no-undef
   435:5  error  'expect' is not defined  no-undef
@@ -509,7 +414,7 @@ Running "eslint:everything" (eslint) task
   530:5  error  'expect' is not defined  no-undef
   552:5  error  'expect' is not defined  no-undef
 
-/Users/samreid/github/scenery/tests/qunit/js/from-fuzzer.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/from-fuzzer.js
     28:9   error  'text0' is assigned a value but never used  no-unused-vars
     29:9   error  'text1' is assigned a value but never used  no-unused-vars
     30:9   error  'text2' is assigned a value but never used  no-unused-vars
@@ -539,11 +444,11 @@ Running "eslint:everything" (eslint) task
   1300:22  error  Strings must use singlequote                quotes
   1311:5   error  'expect' is not defined                     no-undef
 
-/Users/samreid/github/scenery/tests/qunit/js/miscellaneous.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/miscellaneous.js
   48:11  error  'path' is assigned a value but never used  no-unused-vars
   48:22  error  'Path' is not defined                      no-undef
 
-/Users/samreid/github/scenery/tests/qunit/js/pixel-comparison.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/pixel-comparison.js
    17:9   error  'phetCore' is not defined           no-undef
    17:39  error  'phetCore' is not defined           no-undef
    33:5   error  'asyncTest' is not defined          no-undef
@@ -562,7 +467,7 @@ Running "eslint:everything" (eslint) task
   878:8   error  Missing semicolon                   semi
   905:8   error  Missing semicolon                   semi
 
-/Users/samreid/github/scenery/tests/qunit/js/scene.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/scene.js
     9:16   error  'createTestNodeTree' is not defined                no-undef
    55:16   error  'createTestNodeTree' is not defined                no-undef
   118:16   error  'createTestNodeTree' is not defined                no-undef
@@ -619,7 +524,7 @@ Running "eslint:everything" (eslint) task
   977:5    error  'throws' is not defined                            no-undef
   981:5    error  'throws' is not defined                            no-undef
 
-/Users/samreid/github/scenery/tests/qunit/js/shapes.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/shapes.js
    18:5  error  'strokeEqualsFill' is not defined  no-undef
    28:5  error  'strokeEqualsFill' is not defined  no-undef
    39:5  error  'strokeEqualsFill' is not defined  no-undef
@@ -637,7 +542,7 @@ Running "eslint:everything" (eslint) task
   210:5  error  'strokeEqualsFill' is not defined  no-undef
   223:5  error  'strokeEqualsFill' is not defined  no-undef
 
-/Users/samreid/github/scenery/tests/qunit/js/test-utils.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/test-utils.js
     7:3   error  Strings must use singlequote                       quotes
     8:3   error  Strings must use singlequote                       quotes
     9:3   error  Strings must use singlequote                       quotes
@@ -675,161 +580,15 @@ Running "eslint:everything" (eslint) task
   246:1   error  Use the function form of 'use strict'              strict
   246:10  error  'createTestNodeTree' is defined but never used     no-unused-vars
 
-/Users/samreid/github/scenery/tests/qunit/prepare-fixture.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/prepare-fixture.js
   3:2  error  Use the function form of 'use strict'  strict
 
-/Users/samreid/github/scenery/tests/qunit/unit-tests.js
+/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'        strict
    4:10  error  'runSceneryTests' is defined but never used  no-unused-vars
   28:2   error  Unnecessary semicolon                        no-extra-semi
 
-/Users/samreid/github/sugar-and-salt-solutions/js/common/model/Compound.js
-  61:11  error  Unexpected alias 'thisCompound' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/model/ConductivityTester.js
-  33:9  error  Unexpected alias 'thisTester' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/model/ConstantDtClock.js
-  25:9  error  Unexpected alias 'thisClock' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/model/Dispenser.js
-  31:9  error  Unexpected alias 'thisDispenser' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/model/SaltShaker.js
-  33:9  error  Unexpected alias 'thisShaker' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/model/SugarAndSaltSolutionModel.js
-  37:9  error  Unexpected alias 'thisModel' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/model/SugarDispenser.js
-  33:9  error  Unexpected alias 'thisShaker' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/BeakerAndShakerView.js
-  45:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/BeakerNode.js
-  24:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/ConductivityTesterToolboxNode.js
-  37:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/CrystalMakerCanvasNode.js
-  31:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/DispenserNode.js
-  33:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/DispenserRadioButtonSet.js
-  25:9   error  Unexpected alias 'thisNode' for 'this'  consistent-this
-  60:11  error  Unexpected alias 'thisSet' for 'this'   consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/EvaporationSlider.js
-  39:9  error  Unexpected alias 'thisControl' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/FaucetNodeContainer.js
-  39:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/MacroConcentrationBarChartNode.js
-  33:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/RemoveSoluteButtonNode.js
-  25:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/SaltShakerNode.js
-  32:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/SimpleSphereNode.js
-  23:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/SoluteControlPanelNode.js
-  28:9  error  Unexpected alias 'thisPanel' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/SolutionNode.js
-  25:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/SphericalParticleNode.js
-  27:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/SugarAndSaltSolutionsConductivityTesterNode.js
-  27:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/SugarAndSaltSolutionsView.js
-  23:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/SugarDispenserNode.js
-  51:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/VolumeIndicatorNode.js
-  38:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/WaterNode.js
-  25:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/barchart/Bar.js
-  43:9  error  Unexpected alias 'thisBar' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/common/view/barchart/ConcentrationBarChart.js
-  37:9  error  Unexpected alias 'thisChart' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/MacroScreen.js
-  18:7  error  'Node' is assigned a value but never used  no-unused-vars
-  21:7  error  'Color' is already defined                 no-redeclare
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/model/MacroCrystal.js
-  24:9  error  Unexpected alias 'thisCrsytal' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/model/MacroModel.js
-   65:9   error  Unexpected alias 'thisModel' for 'this'  consistent-this
-  223:11  error  Unexpected alias 'thisModel' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/model/MacroSugarDispenser.js
-  28:9  error  Unexpected alias 'thisDispenser' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/model/SoluteModel.js
-  25:9  error  Unexpected alias 'thisSoluteModel' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/view/MacroConcentrationBarChartNode.js
-  33:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/view/MacroScreenView.js
-  64:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/view/PrecipitateNode.js
-  25:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/view/RemoveSoluteControlNode.js
-  30:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/macro/view/SugarSaltBarChart.js
-  34:9  error  Unexpected alias 'thisChart' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/micro/MicroScreen.js
-  24:7  error  'Node' is assigned a value but never used  no-unused-vars
-  27:7  error  'Color' is already defined                 no-redeclare
-
-/Users/samreid/github/sugar-and-salt-solutions/js/micro/model/IonConcentration.js
-  25:9  error  Unexpected alias 'thisProperty' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/micro/model/MicroModel.js
-  68:9  error  Unexpected alias 'thisModel' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/micro/model/SoluteConstituent.js
-  25:9  error  Unexpected alias 'thisSolute' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/micro/view/CompositeParticleNode.js
-  27:9  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/micro/view/ExpandableConcentrationBarChartNode.js
-  30:11  error  Unexpected alias 'thisNode' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/micro/view/MicroConcentrationBarChart.js
-  26:9   error  Unexpected alias 'thisChart' for 'this'  consistent-this
-  40:11  error  Unexpected alias 'thisChart' for 'this'  consistent-this
-
-/Users/samreid/github/sugar-and-salt-solutions/js/micro/view/MicroScreenView.js
-  41:9  error  Unexpected alias 'thisView' for 'this'  consistent-this
-
-✖ 581 problems (581 errors, 0 warnings)
+✖ 476 problems (476 errors, 0 warnings)
 
 Warning: Task "eslint:everything" failed. Use --force to continue.
 
