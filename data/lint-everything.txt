@@ -1,6 +1,6 @@
 Running "eslint:everything" (eslint) task
 
-/Volumes/b5 Data1/PhET/GitHub/axon/tests/qunit/js/events.js
+axon/tests/qunit/js/events.js
     3:2   error  Use the function form of 'use strict'          strict
     7:22  error  'axon' is not defined                          no-undef
    50:22  error  'axon' is not defined                          no-undef
@@ -8,7 +8,7 @@ Running "eslint:everything" (eslint) task
    79:23  error  'axon' is not defined                          no-undef
   101:23  error  'axon' is not defined                          no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/axon/tests/qunit/js/simple-tests.js
+axon/tests/qunit/js/simple-tests.js
   404:22  error  'throws' is not defined            no-undef
   404:42  error  Do not use 'new' for side effects  no-new
   409:22  error  'throws' is not defined            no-undef
@@ -21,50 +21,50 @@ Running "eslint:everything" (eslint) task
   436:22  error  'throws' is not defined            no-undef
   441:7   error  'expect' is not defined            no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/axon/tests/qunit/unit-tests.js
+axon/tests/qunit/unit-tests.js
   3:1   error  Use the function form of 'use strict'     strict
   3:10  error  'runAxonTests' is defined but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/build-a-molecule/tests/qunit/js/model.js
+build-a-molecule/tests/qunit/js/model.js
   8:7  error  'Color' is assigned a value but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/build-a-molecule/tests/qunit/unit-tests.js
+build-a-molecule/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'               strict
    4:10  error  'runBuildAMoleculeTests' is defined but never used  no-unused-vars
   17:2   error  Unnecessary semicolon                               no-extra-semi
 
-/Volumes/b5 Data1/PhET/GitHub/build-an-atom/js/common/view/AtomView.js
+build-an-atom/js/common/view/AtomView.js
   48:7  error  'TString' is assigned a value but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/chipper/templates/chipper-namespace.js
+chipper/templates/chipper-namespace.js
   15:48  error  'PHET_THIRD_PARTY_LICENSE_ENTRIES' is not defined  no-undef
   17:36  error  'PHET_DEPENDENCIES' is not defined                 no-undef
   18:31  error  'PHET_STRINGS' is not defined                      no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/circuit-construction-kit-common/tests/qunit/unit-tests.js
+circuit-construction-kit-common/tests/qunit/unit-tests.js
   3:1   error  Use the function form of 'use strict'    strict
   3:10  error  'runCCKTests' is defined but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/circuit-construction-kit-dc/js/circuit-construction-kit-dc-main.js
+circuit-construction-kit-dc/js/circuit-construction-kit-dc-main.js
   24:3  error  Mismatched var in require(string!), key=circuit-construction-kit-dc.title, var=circuitConstructionKitDCTitleString, desiredVar=circuitConstructionKitDcTitleString  string-require-statement-match
 
-/Volumes/b5 Data1/PhET/GitHub/dot/Gruntfile.js
+dot/Gruntfile.js
   13:1   error  Mismatched require statement values, Gruntfile!==Gruntfile.js  require-statement-match
   16:18  error  Use the function form of 'use strict'                          strict
 
-/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/binpacker.js
+dot/tests/qunit/js/binpacker.js
     3:2   error  Use the function form of 'use strict'                 strict
     9:12  error  'approximateComplexEquals' is defined but never used  no-unused-vars
   152:15  error  'i' is already defined                                no-redeclare
 
-/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/bounds2.js
+dot/tests/qunit/js/bounds2.js
   3:2  error  Use the function form of 'use strict'  strict
 
-/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/complex.js
+dot/tests/qunit/js/complex.js
    3:2  error  Use the function form of 'use strict'   strict
   43:9  error  'd' is assigned a value but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/matrix3.js
+dot/tests/qunit/js/matrix3.js
     3:2   error  Use the function form of 'use strict'              strict
    50:12  error  'V3' is defined but never used                     no-unused-vars
    98:5   error  Split 'var' declarations into multiple statements  one-var
@@ -74,35 +74,35 @@ Running "eslint:everything" (eslint) task
   175:5   error  Split 'var' declarations into multiple statements  one-var
   185:5   error  Split 'var' declarations into multiple statements  one-var
 
-/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/modulo.js
+dot/tests/qunit/js/modulo.js
   3:2  error  Use the function form of 'use strict'  strict
 
-/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/simple-tests.js
+dot/tests/qunit/js/simple-tests.js
    3:2  error  Use the function form of 'use strict'  strict
   82:5  error  'expect' is not defined                no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/js/transform3.js
+dot/tests/qunit/js/transform3.js
    3:2   error  Use the function form of 'use strict'   strict
   50:15  error  'throws' is not defined                 no-undef
   51:11  error  'x' is assigned a value but never used  no-unused-vars
   53:15  error  'throws' is not defined                 no-undef
   54:11  error  'y' is assigned a value but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/dot/tests/qunit/unit-tests.js
+dot/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'    strict
   4:10  error  'runDotTests' is defined but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/energy-skate-park-basics/js/energy-skate-park-basics/view/PlaybackSpeedControl.js
+energy-skate-park-basics/js/energy-skate-park-basics/view/PlaybackSpeedControl.js
   20:7  error  'TString' is assigned a value but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/kite/tests/qunit/unit-tests.js
+kite/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'     strict
   4:10  error  'runKiteTests' is defined but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/mobius/js/StageCenteringCanvasTransform.js
+mobius/js/StageCenteringCanvasTransform.js
   22:9  error  Unexpected alias 'that' for 'this'  consistent-this
 
-/Volumes/b5 Data1/PhET/GitHub/mobius/tests/triangle-css.js
+mobius/tests/triangle-css.js
     3:24  error  Use the function form of 'use strict'                  strict
    13:9   error  'overTwoN' is assigned a value but never used          no-unused-vars
    13:30  error  'triangleSize' is not defined                          no-undef
@@ -119,7 +119,7 @@ Running "eslint:everything" (eslint) task
   219:29  error  'triangleSize' is not defined                          no-undef
   232:21  error  Expected '!==' and instead saw '!='                    eqeqeq
 
-/Volumes/b5 Data1/PhET/GitHub/mobius/tests/webgl-test/webgl-test.js
+mobius/tests/webgl-test/webgl-test.js
     3:1   error  'requirejs' is not defined                       no-undef
     3:92  error  Use the function form of 'use strict'            strict
    18:7   error  Move function declaration to function body root  no-inner-declarations
@@ -151,7 +151,7 @@ Running "eslint:everything" (eslint) task
   203:25  error  Strings must use singlequote                     quotes
   208:25  error  Strings must use singlequote                     quotes
 
-/Volumes/b5 Data1/PhET/GitHub/molecule-shapes/tests/qunit/js/fastmath.js
+molecule-shapes/tests/qunit/js/fastmath.js
    14:7   error  'Color' is assigned a value but never used  no-unused-vars
    27:17  error  'ms' is not defined                         no-undef
    28:17  error  'ms' is not defined                         no-undef
@@ -172,20 +172,20 @@ Running "eslint:everything" (eslint) task
   101:17  error  'ms' is not defined                         no-undef
   105:17  error  'ms' is not defined                         no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/molecule-shapes/tests/qunit/unit-tests.js
+molecule-shapes/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'               strict
    4:10  error  'runMoleculeShapesTests' is defined but never used  no-unused-vars
   17:2   error  Unnecessary semicolon                               no-extra-semi
 
-/Volumes/b5 Data1/PhET/GitHub/perennial/js/build-server/build-server.js
+perennial/js/build-server/build-server.js
   107:1  error  Mismatched require statement values, fs!==fs.extra         require-statement-match
   110:1  error  Mismatched require statement values, parseArgs!==minimist  require-statement-match
   113:1  error  Mismatched require statement values, query!==pg-query      require-statement-match
 
-/Volumes/b5 Data1/PhET/GitHub/phet-app/assets/scripts/get-sims-for-app.js
+phet-app/assets/scripts/get-sims-for-app.js
   25:58  error  Missing semicolon  semi
 
-/Volumes/b5 Data1/PhET/GitHub/phet-core/tests/qunit/js/phetCore-tests.js
+phet-core/tests/qunit/js/phetCore-tests.js
     3:2   error  Use the function form of 'use strict'  strict
     7:9   error  'phetCore' is not defined              no-undef
     8:9   error  'phetCore' is not defined              no-undef
@@ -224,15 +224,15 @@ Running "eslint:everything" (eslint) task
   115:5   error  'phetCore' is not defined              no-undef
   129:5   error  'phetCore' is not defined              no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/phet-core/tests/qunit/unit-tests.js
+phet-core/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'         strict
   4:10  error  'runPhetCoreTests' is defined but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/phetcommon/tests/qunit/unit-tests.js
+phetcommon/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'  strict
   4:10  error  'runTests' is defined but never used   no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/phetmarks/phettest/index-server.js
+phetmarks/phettest/index-server.js
     4:1   error  property access in require statement          no-property-in-require-statement
    18:31  error  '__dirname' is not defined                    no-undef
    21:1   error  Use the function form of 'use strict'         strict
@@ -255,32 +255,32 @@ Running "eslint:everything" (eslint) task
   207:20  error  Use the function form of 'use strict'         strict
   245:7   error  'simName' is assigned a value but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/phet-io/wrappers/playback/playback.js
+phet-io/wrappers/playback/playback.js
   181:81  error  Missing semicolon  semi
 
-/Volumes/b5 Data1/PhET/GitHub/rosetta/js/LocaleInfo.js
+rosetta/js/LocaleInfo.js
   12:1  error  Mismatched require statement values, localeInfo!==localeInfo.js  require-statement-match
 
-/Volumes/b5 Data1/PhET/GitHub/rosetta/js/TranslationUtils.js
+rosetta/js/TranslationUtils.js
   16:1  error  Mismatched require statement values, _!==underscore  require-statement-match
 
-/Volumes/b5 Data1/PhET/GitHub/rosetta/js/commitQueue.js
+rosetta/js/commitQueue.js
   17:1  error  Mismatched require statement values, query!==pg-query  require-statement-match
   29:1  error  Mismatched require statement values, _!==underscore    require-statement-match
 
-/Volumes/b5 Data1/PhET/GitHub/rosetta/js/routes.js
+rosetta/js/routes.js
   14:1  error  Mismatched require statement values, query!==pg-query  require-statement-match
   21:1  error  property access in require statement                   no-property-in-require-statement
   27:1  error  Mismatched require statement values, _!==underscore    require-statement-match
 
-/Volumes/b5 Data1/PhET/GitHub/rosetta/js/translate-sim.js
+rosetta/js/translate-sim.js
   13:1   error  Use the function form of 'use strict'  strict
   40:22  error  Use the function form of 'use strict'  strict
 
-/Volumes/b5 Data1/PhET/GitHub/rosetta/rosetta.js
+rosetta/rosetta.js
   99:5  error  Parsing error: 'return' outside of function
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/accessibility/accessibility-script.js
+scenery/accessibility/accessibility-script.js
     2:1   error  Use the function form of 'use strict'          strict
    19:1   error  Use the function form of 'use strict'          strict
    31:1   error  Use the function form of 'use strict'          strict
@@ -296,7 +296,7 @@ Running "eslint:everything" (eslint) task
   139:90  error  Missing semicolon                              semi
   142:46  error  Missing semicolon                              semi
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/benchmarks.js
+scenery/tests/benchmarks/js/benchmarks.js
    22:2    error  Use the function form of 'use strict'  strict
    47:21   error  'Benchmark' is not defined             no-undef
    87:27   error  Expected '!==' and instead saw '!='    eqeqeq
@@ -306,7 +306,7 @@ Running "eslint:everything" (eslint) task
   117:89   error  Missing semicolon                      semi
   118:119  error  Missing semicolon                      semi
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/current.js
+scenery/tests/benchmarks/js/current.js
     6:2   error  Use the function form of 'use strict'         strict
    16:4   error  Missing semicolon                             semi
    27:13  error  'i' is already defined                        no-redeclare
@@ -334,7 +334,7 @@ Running "eslint:everything" (eslint) task
   155:5   error  'node' is not defined                         no-undef
   158:11  error  'node' is assigned a value but never used     no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/marks.js
+scenery/tests/benchmarks/js/marks.js
    14:2   error  Use the function form of 'use strict'            strict
    75:11  error  'self' is assigned a value but never used        no-unused-vars
    94:9   error  Move function declaration to function body root  no-inner-declarations
@@ -347,7 +347,7 @@ Running "eslint:everything" (eslint) task
   398:50  error  Expected '!==' and instead saw '!='              eqeqeq
   398:53  error  Strings must use singlequote                     quotes
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/perf-current.js
+scenery/tests/benchmarks/js/perf-current.js
     3:2  error  Use the function form of 'use strict'                           strict
     5:7  error  'textNodeInstances' is assigned a value but never used          no-unused-vars
    39:7  error  'textPathInstances' is assigned a value but never used          no-unused-vars
@@ -357,7 +357,7 @@ Running "eslint:everything" (eslint) task
   557:7  error  'addingHexagons' is assigned a value but never used             no-unused-vars
   593:3  error  'marks' is not defined                                          no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/performance.js
+scenery/tests/benchmarks/js/performance.js
     5:2   error  Use the function form of 'use strict'            strict
    88:9   error  Move function declaration to function body root  no-inner-declarations
   101:49  error  'main' is not defined                            no-undef
@@ -368,10 +368,10 @@ Running "eslint:everything" (eslint) task
   203:50  error  Expected '!==' and instead saw '!='              eqeqeq
   203:53  error  Strings must use singlequote                     quotes
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/benchmarks/js/table-report.js
+scenery/tests/benchmarks/js/table-report.js
   5:2  error  Use the function form of 'use strict'  strict
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/browsers/unicode/inline-js-unicode.js
+scenery/tests/browsers/unicode/inline-js-unicode.js
    3:20  error  Use the function form of 'use strict'  strict
   44:11  error  Strings must use singlequote           quotes
   45:11  error  Strings must use singlequote           quotes
@@ -398,12 +398,12 @@ Running "eslint:everything" (eslint) task
   94:11  error  Strings must use singlequote           quotes
   95:11  error  Strings must use singlequote           quotes
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/event-logs/server/server.js
+scenery/tests/event-logs/server/server.js
   14:20  error  Use the function form of 'use strict'         strict
   38:20  error  Strings must use singlequote                  quotes
   43:11  error  'logname' is assigned a value but never used  no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/display.js
+scenery/tests/qunit/js/display.js
   393:5  error  'expect' is not defined  no-undef
   403:5  error  'expect' is not defined  no-undef
   435:5  error  'expect' is not defined  no-undef
@@ -414,7 +414,7 @@ Running "eslint:everything" (eslint) task
   530:5  error  'expect' is not defined  no-undef
   552:5  error  'expect' is not defined  no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/from-fuzzer.js
+scenery/tests/qunit/js/from-fuzzer.js
     28:9   error  'text0' is assigned a value but never used  no-unused-vars
     29:9   error  'text1' is assigned a value but never used  no-unused-vars
     30:9   error  'text2' is assigned a value but never used  no-unused-vars
@@ -444,11 +444,11 @@ Running "eslint:everything" (eslint) task
   1300:22  error  Strings must use singlequote                quotes
   1311:5   error  'expect' is not defined                     no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/miscellaneous.js
+scenery/tests/qunit/js/miscellaneous.js
   48:11  error  'path' is assigned a value but never used  no-unused-vars
   48:22  error  'Path' is not defined                      no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/pixel-comparison.js
+scenery/tests/qunit/js/pixel-comparison.js
    17:9   error  'phetCore' is not defined           no-undef
    17:39  error  'phetCore' is not defined           no-undef
    33:5   error  'asyncTest' is not defined          no-undef
@@ -467,7 +467,7 @@ Running "eslint:everything" (eslint) task
   878:8   error  Missing semicolon                   semi
   905:8   error  Missing semicolon                   semi
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/scene.js
+scenery/tests/qunit/js/scene.js
     9:16   error  'createTestNodeTree' is not defined                no-undef
    55:16   error  'createTestNodeTree' is not defined                no-undef
   118:16   error  'createTestNodeTree' is not defined                no-undef
@@ -524,7 +524,7 @@ Running "eslint:everything" (eslint) task
   977:5    error  'throws' is not defined                            no-undef
   981:5    error  'throws' is not defined                            no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/shapes.js
+scenery/tests/qunit/js/shapes.js
    18:5  error  'strokeEqualsFill' is not defined  no-undef
    28:5  error  'strokeEqualsFill' is not defined  no-undef
    39:5  error  'strokeEqualsFill' is not defined  no-undef
@@ -542,7 +542,7 @@ Running "eslint:everything" (eslint) task
   210:5  error  'strokeEqualsFill' is not defined  no-undef
   223:5  error  'strokeEqualsFill' is not defined  no-undef
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/js/test-utils.js
+scenery/tests/qunit/js/test-utils.js
     7:3   error  Strings must use singlequote                       quotes
     8:3   error  Strings must use singlequote                       quotes
     9:3   error  Strings must use singlequote                       quotes
@@ -580,10 +580,10 @@ Running "eslint:everything" (eslint) task
   246:1   error  Use the function form of 'use strict'              strict
   246:10  error  'createTestNodeTree' is defined but never used     no-unused-vars
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/prepare-fixture.js
+scenery/tests/qunit/prepare-fixture.js
   3:2  error  Use the function form of 'use strict'  strict
 
-/Volumes/b5 Data1/PhET/GitHub/scenery/tests/qunit/unit-tests.js
+scenery/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'        strict
    4:10  error  'runSceneryTests' is defined but never used  no-unused-vars
   28:2   error  Unnecessary semicolon                        no-extra-semi
