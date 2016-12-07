@@ -1,12 +1,10 @@
 Running "eslint:everything" (eslint) task
 
 axon/tests/qunit/js/events.js
-    3:2   error  Use the function form of 'use strict'          strict
-    7:22  error  'axon' is not defined                          no-undef
-   50:22  error  'axon' is not defined                          no-undef
-   58:14  error  'addIncrementAOnce' is defined but never used  no-unused-vars
-   79:23  error  'axon' is not defined                          no-undef
-  101:23  error  'axon' is not defined                          no-undef
+    9:22  error  'axon' is not defined  no-undef
+   52:22  error  'axon' is not defined  no-undef
+   79:23  error  'axon' is not defined  no-undef
+  101:23  error  'axon' is not defined  no-undef
 
 axon/tests/qunit/js/simple-tests.js
   404:22  error  'throws' is not defined            no-undef
@@ -22,19 +20,15 @@ axon/tests/qunit/js/simple-tests.js
   441:7   error  'expect' is not defined            no-undef
 
 axon/tests/qunit/unit-tests.js
-  3:1   error  Use the function form of 'use strict'     strict
   3:10  error  'runAxonTests' is defined but never used  no-unused-vars
 
 build-a-molecule/tests/qunit/js/model.js
-  8:7  error  'Color' is assigned a value but never used  no-unused-vars
+  8:7  error  'Color' is defined but never used  no-unused-vars
 
 build-a-molecule/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'               strict
    4:10  error  'runBuildAMoleculeTests' is defined but never used  no-unused-vars
   17:2   error  Unnecessary semicolon                               no-extra-semi
-
-build-an-atom/js/common/view/AtomView.js
-  48:7  error  'TString' is assigned a value but never used  no-unused-vars
 
 chipper/templates/chipper-namespace.js
   15:48  error  'PHET_THIRD_PARTY_LICENSE_ENTRIES' is not defined  no-undef
@@ -61,8 +55,8 @@ dot/tests/qunit/js/bounds2.js
   3:2  error  Use the function form of 'use strict'  strict
 
 dot/tests/qunit/js/complex.js
-   3:2  error  Use the function form of 'use strict'   strict
-  43:9  error  'd' is assigned a value but never used  no-unused-vars
+   3:2  error  Use the function form of 'use strict'  strict
+  43:9  error  'd' is defined but never used          no-unused-vars
 
 dot/tests/qunit/js/matrix3.js
     3:2   error  Use the function form of 'use strict'              strict
@@ -82,18 +76,15 @@ dot/tests/qunit/js/simple-tests.js
   82:5  error  'expect' is not defined                no-undef
 
 dot/tests/qunit/js/transform3.js
-   3:2   error  Use the function form of 'use strict'   strict
-  50:15  error  'throws' is not defined                 no-undef
-  51:11  error  'x' is assigned a value but never used  no-unused-vars
-  53:15  error  'throws' is not defined                 no-undef
-  54:11  error  'y' is assigned a value but never used  no-unused-vars
+   3:2   error  Use the function form of 'use strict'  strict
+  50:15  error  'throws' is not defined                no-undef
+  51:11  error  'x' is defined but never used          no-unused-vars
+  53:15  error  'throws' is not defined                no-undef
+  54:11  error  'y' is defined but never used          no-unused-vars
 
 dot/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'    strict
   4:10  error  'runDotTests' is defined but never used  no-unused-vars
-
-energy-skate-park-basics/js/energy-skate-park-basics/view/PlaybackSpeedControl.js
-  20:7  error  'TString' is assigned a value but never used  no-unused-vars
 
 kite/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'     strict
@@ -103,21 +94,21 @@ mobius/js/StageCenteringCanvasTransform.js
   22:9  error  Unexpected alias 'that' for 'this'  consistent-this
 
 mobius/tests/triangle-css.js
-    3:24  error  Use the function form of 'use strict'                  strict
-   13:9   error  'overTwoN' is assigned a value but never used          no-unused-vars
-   13:30  error  'triangleSize' is not defined                          no-undef
-   21:66  error  'triangleSize' is not defined                          no-undef
-   21:84  error  'triangleSize' is not defined                          no-undef
-   22:12  error  'triangleSize' is not defined                          no-undef
-   83:13  error  'subdivisions' is not defined                          no-undef
-   84:7   error  'subdivisions' is not defined                          no-undef
-  133:30  error  'triangleSize' is not defined                          no-undef
-  134:31  error  'triangleSize' is not defined                          no-undef
-  135:29  error  'triangleSize' is not defined                          no-undef
-  171:9   error  'projectionMatrix' is assigned a value but never used  no-unused-vars
-  188:83  error  'setTriangleTransform' is not defined                  no-undef
-  219:29  error  'triangleSize' is not defined                          no-undef
-  232:21  error  Expected '!==' and instead saw '!='                    eqeqeq
+    3:24  error  Use the function form of 'use strict'         strict
+   13:9   error  'overTwoN' is defined but never used          no-unused-vars
+   13:30  error  'triangleSize' is not defined                 no-undef
+   21:66  error  'triangleSize' is not defined                 no-undef
+   21:84  error  'triangleSize' is not defined                 no-undef
+   22:12  error  'triangleSize' is not defined                 no-undef
+   83:13  error  'subdivisions' is not defined                 no-undef
+   84:7   error  'subdivisions' is not defined                 no-undef
+  133:30  error  'triangleSize' is not defined                 no-undef
+  134:31  error  'triangleSize' is not defined                 no-undef
+  135:29  error  'triangleSize' is not defined                 no-undef
+  171:9   error  'projectionMatrix' is defined but never used  no-unused-vars
+  188:83  error  'setTriangleTransform' is not defined         no-undef
+  219:29  error  'triangleSize' is not defined                 no-undef
+  232:21  error  Expected '!==' and instead saw '!='           eqeqeq
 
 mobius/tests/webgl-test/webgl-test.js
     3:1   error  'requirejs' is not defined                       no-undef
@@ -134,7 +125,7 @@ mobius/tests/webgl-test/webgl-test.js
    41:78  error  Strings must use singlequote                     quotes
    53:7   error  Move function declaration to function body root  no-inner-declarations
    62:10  error  Missing semicolon                                semi
-   99:11  error  'rot' is assigned a value but never used         no-unused-vars
+   99:11  error  'rot' is defined but never used                  no-unused-vars
   103:7   error  Move function declaration to function body root  no-inner-declarations
   127:7   error  Move function declaration to function body root  no-inner-declarations
   131:7   error  Move function declaration to function body root  no-inner-declarations
@@ -152,25 +143,25 @@ mobius/tests/webgl-test/webgl-test.js
   208:25  error  Strings must use singlequote                     quotes
 
 molecule-shapes/tests/qunit/js/fastmath.js
-   14:7   error  'Color' is assigned a value but never used  no-unused-vars
-   27:17  error  'ms' is not defined                         no-undef
-   28:17  error  'ms' is not defined                         no-undef
-   29:17  error  'ms' is not defined                         no-undef
-   31:5   error  'ms' is not defined                         no-undef
-   34:5   error  'ms' is not defined                         no-undef
-   36:5   error  'ms' is not defined                         no-undef
-   38:5   error  'ms' is not defined                         no-undef
-   43:20  error  'ms' is not defined                         no-undef
-   45:17  error  'ms' is not defined                         no-undef
-   46:22  error  'ms' is not defined                         no-undef
-   47:21  error  'ms' is not defined                         no-undef
-   48:22  error  'ms' is not defined                         no-undef
-   96:20  error  'ms' is not defined                         no-undef
-   98:17  error  'ms' is not defined                         no-undef
-   99:17  error  'ms' is not defined                         no-undef
-  100:21  error  'ms' is not defined                         no-undef
-  101:17  error  'ms' is not defined                         no-undef
-  105:17  error  'ms' is not defined                         no-undef
+   14:7   error  'Color' is defined but never used  no-unused-vars
+   27:17  error  'ms' is not defined                no-undef
+   28:17  error  'ms' is not defined                no-undef
+   29:17  error  'ms' is not defined                no-undef
+   31:5   error  'ms' is not defined                no-undef
+   34:5   error  'ms' is not defined                no-undef
+   36:5   error  'ms' is not defined                no-undef
+   38:5   error  'ms' is not defined                no-undef
+   43:20  error  'ms' is not defined                no-undef
+   45:17  error  'ms' is not defined                no-undef
+   46:22  error  'ms' is not defined                no-undef
+   47:21  error  'ms' is not defined                no-undef
+   48:22  error  'ms' is not defined                no-undef
+   96:20  error  'ms' is not defined                no-undef
+   98:17  error  'ms' is not defined                no-undef
+   99:17  error  'ms' is not defined                no-undef
+  100:21  error  'ms' is not defined                no-undef
+  101:17  error  'ms' is not defined                no-undef
+  105:17  error  'ms' is not defined                no-undef
 
 molecule-shapes/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'               strict
@@ -233,27 +224,27 @@ phetcommon/tests/qunit/unit-tests.js
   4:10  error  'runTests' is defined but never used   no-unused-vars
 
 phetmarks/phettest/index-server.js
-    4:1   error  property access in require statement          no-property-in-require-statement
-   18:31  error  '__dirname' is not defined                    no-undef
-   21:1   error  Use the function form of 'use strict'         strict
-   46:1   error  Use the function form of 'use strict'         strict
-   51:1   error  Use the function form of 'use strict'         strict
-   56:1   error  Use the function form of 'use strict'         strict
-   60:1   error  Use the function form of 'use strict'         strict
-   64:1   error  Use the function form of 'use strict'         strict
-   70:1   error  Use the function form of 'use strict'         strict
-   76:1   error  Use the function form of 'use strict'         strict
-   86:1   error  Use the function form of 'use strict'         strict
-   96:1   error  Use the function form of 'use strict'         strict
-  115:1   error  Use the function form of 'use strict'         strict
-  125:1   error  Use the function form of 'use strict'         strict
-  135:1   error  Use the function form of 'use strict'         strict
-  145:1   error  Use the function form of 'use strict'         strict
-  160:1   error  Use the function form of 'use strict'         strict
-  181:1   error  Use the function form of 'use strict'         strict
-  196:1   error  Use the function form of 'use strict'         strict
-  207:20  error  Use the function form of 'use strict'         strict
-  245:7   error  'simName' is assigned a value but never used  no-unused-vars
+    4:1   error  property access in require statement   no-property-in-require-statement
+   18:31  error  '__dirname' is not defined             no-undef
+   21:1   error  Use the function form of 'use strict'  strict
+   46:1   error  Use the function form of 'use strict'  strict
+   51:1   error  Use the function form of 'use strict'  strict
+   56:1   error  Use the function form of 'use strict'  strict
+   60:1   error  Use the function form of 'use strict'  strict
+   64:1   error  Use the function form of 'use strict'  strict
+   70:1   error  Use the function form of 'use strict'  strict
+   76:1   error  Use the function form of 'use strict'  strict
+   86:1   error  Use the function form of 'use strict'  strict
+   96:1   error  Use the function form of 'use strict'  strict
+  115:1   error  Use the function form of 'use strict'  strict
+  125:1   error  Use the function form of 'use strict'  strict
+  135:1   error  Use the function form of 'use strict'  strict
+  145:1   error  Use the function form of 'use strict'  strict
+  160:1   error  Use the function form of 'use strict'  strict
+  181:1   error  Use the function form of 'use strict'  strict
+  196:1   error  Use the function form of 'use strict'  strict
+  207:20  error  Use the function form of 'use strict'  strict
+  245:7   error  'simName' is defined but never used    no-unused-vars
 
 rosetta/js/LocaleInfo.js
   12:1  error  Mismatched require statement values, localeInfo!==localeInfo.js  require-statement-match
@@ -304,38 +295,38 @@ scenery/tests/benchmarks/js/benchmarks.js
   118:119  error  Missing semicolon                      semi
 
 scenery/tests/benchmarks/js/current.js
-    6:2   error  Use the function form of 'use strict'         strict
-   16:4   error  Missing semicolon                             semi
-   27:13  error  'i' is already defined                        no-redeclare
-   32:16  error  'benchmarkTimer' is not defined               no-undef
-   34:3   error  'benchmarkTimer' is not defined               no-undef
-   50:3   error  'benchmarkTimer' is not defined               no-undef
-   67:3   error  'benchmarkTimer' is not defined               no-undef
-   69:7   error  'node' is not defined                         no-undef
-   91:3   error  'benchmarkTimer' is not defined               no-undef
-  115:3   error  'benchmarkTimer' is not defined               no-undef
-  119:3   error  'benchmarkTimer' is not defined               no-undef
-  121:9   error  'context' is assigned a value but never used  no-unused-vars
-  124:3   error  'benchmarkTimer' is not defined               no-undef
-  125:9   error  'node' is assigned a value but never used     no-unused-vars
-  128:3   error  'benchmarkTimer' is not defined               no-undef
-  129:9   error  'node' is assigned a value but never used     no-unused-vars
-  132:3   error  'benchmarkTimer' is not defined               no-undef
-  138:3   error  'benchmarkTimer' is not defined               no-undef
-  144:3   error  'benchmarkTimer' is not defined               no-undef
-  145:5   error  'node' is not defined                         no-undef
-  146:5   error  'node' is not defined                         no-undef
-  149:11  error  'node' is assigned a value but never used     no-unused-vars
-  153:3   error  'benchmarkTimer' is not defined               no-undef
-  154:5   error  'node' is not defined                         no-undef
-  155:5   error  'node' is not defined                         no-undef
-  158:11  error  'node' is assigned a value but never used     no-unused-vars
+    6:2   error  Use the function form of 'use strict'  strict
+   16:4   error  Missing semicolon                      semi
+   27:13  error  'i' is already defined                 no-redeclare
+   32:16  error  'benchmarkTimer' is not defined        no-undef
+   34:3   error  'benchmarkTimer' is not defined        no-undef
+   50:3   error  'benchmarkTimer' is not defined        no-undef
+   67:3   error  'benchmarkTimer' is not defined        no-undef
+   69:7   error  'node' is not defined                  no-undef
+   91:3   error  'benchmarkTimer' is not defined        no-undef
+  115:3   error  'benchmarkTimer' is not defined        no-undef
+  119:3   error  'benchmarkTimer' is not defined        no-undef
+  121:9   error  'context' is defined but never used    no-unused-vars
+  124:3   error  'benchmarkTimer' is not defined        no-undef
+  125:9   error  'node' is defined but never used       no-unused-vars
+  128:3   error  'benchmarkTimer' is not defined        no-undef
+  129:9   error  'node' is defined but never used       no-unused-vars
+  132:3   error  'benchmarkTimer' is not defined        no-undef
+  138:3   error  'benchmarkTimer' is not defined        no-undef
+  144:3   error  'benchmarkTimer' is not defined        no-undef
+  145:5   error  'node' is not defined                  no-undef
+  146:5   error  'node' is not defined                  no-undef
+  149:11  error  'node' is defined but never used       no-unused-vars
+  153:3   error  'benchmarkTimer' is not defined        no-undef
+  154:5   error  'node' is not defined                  no-undef
+  155:5   error  'node' is not defined                  no-undef
+  158:11  error  'node' is defined but never used       no-unused-vars
 
 scenery/tests/benchmarks/js/marks.js
    14:2   error  Use the function form of 'use strict'            strict
-   75:11  error  'self' is assigned a value but never used        no-unused-vars
+   75:11  error  'self' is defined but never used                 no-unused-vars
    94:9   error  Move function declaration to function body root  no-inner-declarations
-  131:11  error  'suite' is assigned a value but never used       no-unused-vars
+  131:11  error  'suite' is defined but never used                no-unused-vars
   142:18  error  'Benchmark' is not defined                       no-undef
   185:4   error  Missing semicolon                                semi
   382:12  error  'info' is defined but never used                 no-unused-vars
@@ -345,14 +336,14 @@ scenery/tests/benchmarks/js/marks.js
   398:53  error  Strings must use singlequote                     quotes
 
 scenery/tests/benchmarks/js/perf-current.js
-    3:2  error  Use the function form of 'use strict'                           strict
-    5:7  error  'textNodeInstances' is assigned a value but never used          no-unused-vars
-   39:7  error  'textPathInstances' is assigned a value but never used          no-unused-vars
-  373:7  error  'rotatedSquaresHardcodedXY' is assigned a value but never used  no-unused-vars
-  403:7  error  'rotatedSquaresTransformXY' is assigned a value but never used  no-unused-vars
-  435:7  error  'rotatedSquaresIndividual' is assigned a value but never used   no-unused-vars
-  557:7  error  'addingHexagons' is assigned a value but never used             no-unused-vars
-  593:3  error  'marks' is not defined                                          no-undef
+    3:2  error  Use the function form of 'use strict'                  strict
+    5:7  error  'textNodeInstances' is defined but never used          no-unused-vars
+   39:7  error  'textPathInstances' is defined but never used          no-unused-vars
+  373:7  error  'rotatedSquaresHardcodedXY' is defined but never used  no-unused-vars
+  403:7  error  'rotatedSquaresTransformXY' is defined but never used  no-unused-vars
+  435:7  error  'rotatedSquaresIndividual' is defined but never used   no-unused-vars
+  557:7  error  'addingHexagons' is defined but never used             no-unused-vars
+  593:3  error  'marks' is not defined                                 no-undef
 
 scenery/tests/benchmarks/js/performance.js
     5:2   error  Use the function form of 'use strict'            strict
@@ -396,9 +387,9 @@ scenery/tests/browsers/unicode/inline-js-unicode.js
   95:11  error  Strings must use singlequote           quotes
 
 scenery/tests/event-logs/server/server.js
-  14:20  error  Use the function form of 'use strict'         strict
-  38:20  error  Strings must use singlequote                  quotes
-  43:11  error  'logname' is assigned a value but never used  no-unused-vars
+  14:20  error  Use the function form of 'use strict'  strict
+  38:20  error  Strings must use singlequote           quotes
+  43:11  error  'logname' is defined but never used    no-unused-vars
 
 scenery/tests/qunit/js/display.js
   393:5  error  'expect' is not defined  no-undef
@@ -412,16 +403,16 @@ scenery/tests/qunit/js/display.js
   552:5  error  'expect' is not defined  no-undef
 
 scenery/tests/qunit/js/from-fuzzer.js
-    28:9  error  'text0' is assigned a value but never used  no-unused-vars
-    29:9  error  'text1' is assigned a value but never used  no-unused-vars
-    30:9  error  'text2' is assigned a value but never used  no-unused-vars
-   501:5  error  'expect' is not defined                     no-undef
-   521:5  error  'expect' is not defined                     no-undef
-  1311:5  error  'expect' is not defined                     no-undef
+    28:9  error  'text0' is defined but never used  no-unused-vars
+    29:9  error  'text1' is defined but never used  no-unused-vars
+    30:9  error  'text2' is defined but never used  no-unused-vars
+   501:5  error  'expect' is not defined            no-undef
+   521:5  error  'expect' is not defined            no-undef
+  1311:5  error  'expect' is not defined            no-undef
 
 scenery/tests/qunit/js/miscellaneous.js
-  48:11  error  'path' is assigned a value but never used  no-unused-vars
-  48:22  error  'Path' is not defined                      no-undef
+  48:11  error  'path' is defined but never used  no-unused-vars
+  48:22  error  'Path' is not defined             no-undef
 
 scenery/tests/qunit/js/pixel-comparison.js
    17:9   error  'phetCore' is not defined           no-undef
@@ -563,7 +554,10 @@ scenery/tests/qunit/unit-tests.js
    4:10  error  'runSceneryTests' is defined but never used  no-unused-vars
   28:2   error  Unnecessary semicolon                        no-extra-semi
 
-✖ 453 problems (453 errors, 0 warnings)
+sun/js/demo/DemosView.js
+  13:7  error  'Font' is defined but never used  no-unused-vars
+
+✖ 449 problems (449 errors, 0 warnings)
 
 Warning: Task "eslint:everything" failed. Use --force to continue.
 
