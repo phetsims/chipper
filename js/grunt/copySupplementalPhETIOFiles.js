@@ -51,7 +51,7 @@ module.exports = function( grunt, buildConfig ) {
       );
 
       // This returns the whole line that contains this substring, so it can be removed
-      var firstLine = ChipperStringUtils.firstLineThatContains( contents, '"../../../query-string-machine/js/QueryStringMachine.js"' );
+      var firstLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js"' );
       if ( firstLine ) {
         // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
         contents = ChipperStringUtils.replaceAll( contents, firstLine, '' );
