@@ -1,12 +1,12 @@
 Running "find-duplicates" task
-info: Preprocessors running time: durationMs=46280
-info: Scanning 3802 files for duplicates...
-info: Scanning for duplicates time: durationMs=117706
+info: Preprocessors running time: durationMs=51211
+info: Scanning 3805 files for duplicates...
+info: Scanning for duplicates time: durationMs=117898
 info: Scanning... done!
 
 info: Start report generation...
 
-info: Found 481 exact clones with 9290 duplicated lines in 443 files
+info: Found 485 exact clones with 9293 duplicated lines in 438 files
  
 	- ../acid-base-solutions/js/mysolution/view/ConcentrationSlider.js: 5-21
 	 ../acid-base-solutions/js/mysolution/view/StrengthSlider.js: 5-21
@@ -501,28 +501,28 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  24 │ 24 │                                                                                                                               
  25 │ 25 │   var minusChargeNode = new Node( {                                                                                           
 
-	- ../balloons-and-static-electricity/js/balloons-and-static-electricity/accessibility/BalloonDescriber.js: 478-496
+	- ../balloons-and-static-electricity/js/balloons-and-static-electricity/accessibility/BalloonDescriber.js: 469-487
 	 ../balloons-and-static-electricity/js/balloons-and-static-electricity/view/SweaterNode.js: 131-149
 
- 478 │ 131 │       var charge = Math.abs( balloon.chargeProperty.value );                                                              
- 479 │ 132 │       if ( charge === 0 ) {                                                                                               
- 480 │ 133 │         chargeString = noString;                                                                                          
- 481 │ 134 │         neutralityString = neutralString;                                                                                 
- 482 │ 135 │       }                                                                                                                   
- 483 │ 136 │       else if ( A_FEW_RANGE.contains( charge ) ) {                                                                        
- 484 │ 137 │         chargeString = aFewString;                                                                                        
- 485 │ 138 │         neutralityString = positiveString;                                                                                
- 486 │ 139 │       }                                                                                                                   
- 487 │ 140 │       else if ( SEVERAL_RANGE.contains( charge ) ) {                                                                      
- 488 │ 141 │         chargeString = severalString;                                                                                     
- 489 │ 142 │         neutralityString = positiveString;                                                                                
- 490 │ 143 │       }                                                                                                                   
- 491 │ 144 │       else if ( MANY_RANGE.contains( charge ) ) {                                                                         
- 492 │ 145 │         chargeString = manyString;                                                                                        
- 493 │ 146 │         neutralityString = positiveString;                                                                                
- 494 │ 147 │       }                                                                                                                   
- 495 │ 148 │                                                                                                                           
- 496 │ 149 │       assert && assert( chargeString, 'no description found for sweater with charge: ' + -balloon.chargeProperty.get() ); 
+ 469 │ 131 │       var charge = Math.abs( balloon.chargeProperty.value );                                                              
+ 470 │ 132 │       if ( charge === 0 ) {                                                                                               
+ 471 │ 133 │         chargeString = noString;                                                                                          
+ 472 │ 134 │         neutralityString = neutralString;                                                                                 
+ 473 │ 135 │       }                                                                                                                   
+ 474 │ 136 │       else if ( A_FEW_RANGE.contains( charge ) ) {                                                                        
+ 475 │ 137 │         chargeString = aFewString;                                                                                        
+ 476 │ 138 │         neutralityString = positiveString;                                                                                
+ 477 │ 139 │       }                                                                                                                   
+ 478 │ 140 │       else if ( SEVERAL_RANGE.contains( charge ) ) {                                                                      
+ 479 │ 141 │         chargeString = severalString;                                                                                     
+ 480 │ 142 │         neutralityString = positiveString;                                                                                
+ 481 │ 143 │       }                                                                                                                   
+ 482 │ 144 │       else if ( MANY_RANGE.contains( charge ) ) {                                                                         
+ 483 │ 145 │         chargeString = manyString;                                                                                        
+ 484 │ 146 │         neutralityString = positiveString;                                                                                
+ 485 │ 147 │       }                                                                                                                   
+ 486 │ 148 │                                                                                                                           
+ 487 │ 149 │       assert && assert( chargeString, 'no description found for sweater with charge: ' + -balloon.chargeProperty.get() ); 
 
 	- ../acid-base-solutions/js/acid-base-solutions-config.js: 15-36
 	 ../balloons-and-static-electricity/js/balloons-and-static-electricity-config.js: 16-37
@@ -572,39 +572,39 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  30 │ 37 │                                                                                
  31 │ 38 │   // phet-io modules                                                           
  32 │ 39 │   var TNode = require( 'ifphetio!PHET_IO/types/scenery/nodes/TNode' );         
- 33 │ 40 │   var TString = require( 'ifphetio!PHET_IO/types/TString' );                   
+ 33 │ 40 │                                                                                
 
-	- ../beers-law-lab/js/beerslaw/view/ATDetectorNode.js: 135-148
+	- ../beers-law-lab/js/beerslaw/view/ATDetectorNode.js: 132-145
 	 ../beers-law-lab/js/concentration/view/ConcentrationMeterNode.js: 173-186
 
- 135 │ 173 │     } );                                                                              
- 136 │ 174 │                                                                                       
- 137 │ 175 │     // meter body                                                                     
- 138 │ 176 │     var bodyWidth = vBox.width + ( 2 * BODY_X_MARGIN );                               
- 139 │ 177 │     var bodyHeight = vBox.height + ( 2 * BODY_Y_MARGIN );                             
- 140 │ 178 │     var bodyNode = new ShadedRectangle( new Bounds2( 0, 0, bodyWidth, bodyHeight ), { 
- 141 │ 179 │       baseColor: PROBE_COLOR,                                                         
- 142 │ 180 │       lightOffset: 0.95                                                               
- 143 │ 181 │     } );                                                                              
- 144 │ 182 │                                                                                       
- 145 │ 183 │     this.addChild( bodyNode );                                                        
- 146 │ 184 │     this.addChild( vBox );                                                            
- 147 │ 185 │     vBox.center = bodyNode.center;                                                    
- 148 │ 186 │                                                                                       
+ 132 │ 173 │     } );                                                                              
+ 133 │ 174 │                                                                                       
+ 134 │ 175 │     // meter body                                                                     
+ 135 │ 176 │     var bodyWidth = vBox.width + ( 2 * BODY_X_MARGIN );                               
+ 136 │ 177 │     var bodyHeight = vBox.height + ( 2 * BODY_Y_MARGIN );                             
+ 137 │ 178 │     var bodyNode = new ShadedRectangle( new Bounds2( 0, 0, bodyWidth, bodyHeight ), { 
+ 138 │ 179 │       baseColor: PROBE_COLOR,                                                         
+ 139 │ 180 │       lightOffset: 0.95                                                               
+ 140 │ 181 │     } );                                                                              
+ 141 │ 182 │                                                                                       
+ 142 │ 183 │     this.addChild( bodyNode );                                                        
+ 143 │ 184 │     this.addChild( vBox );                                                            
+ 144 │ 185 │     vBox.center = bodyNode.center;                                                    
+ 145 │ 186 │                                                                                       
 
-	- ../beers-law-lab/js/beerslaw/view/ATDetectorNode.js: 267-276
+	- ../beers-law-lab/js/beerslaw/view/ATDetectorNode.js: 264-273
 	 ../beers-law-lab/js/concentration/view/ConcentrationMeterNode.js: 341-350
 
- 267 │ 341 │       self.shape = new Shape()                                                                   
- 268 │ 342 │         .moveTo( bodyConnectionPoint.x, bodyConnectionPoint.y )                                  
- 269 │ 343 │         .cubicCurveTo( c1.x, c1.y, c2.x, c2.y, probeConnectionPoint.x, probeConnectionPoint.y ); 
- 270 │ 344 │     };                                                                                           
- 271 │ 345 │     body.locationProperty.link( updateCurve );                                                   
- 272 │ 346 │     probe.locationProperty.link( updateCurve );                                                  
- 273 │ 347 │   }                                                                                              
- 274 │ 348 │                                                                                                  
- 275 │ 349 │   beersLawLab.register( 'ATDetectorNode.WireNode', WireNode );                                   
- 276 │ 350 │                                                                                                  
+ 264 │ 341 │       self.shape = new Shape()                                                                   
+ 265 │ 342 │         .moveTo( bodyConnectionPoint.x, bodyConnectionPoint.y )                                  
+ 266 │ 343 │         .cubicCurveTo( c1.x, c1.y, c2.x, c2.y, probeConnectionPoint.x, probeConnectionPoint.y ); 
+ 267 │ 344 │     };                                                                                           
+ 268 │ 345 │     body.locationProperty.link( updateCurve );                                                   
+ 269 │ 346 │     probe.locationProperty.link( updateCurve );                                                  
+ 270 │ 347 │   }                                                                                              
+ 271 │ 348 │                                                                                                  
+ 272 │ 349 │   beersLawLab.register( 'ATDetectorNode.WireNode', WireNode );                                   
+ 273 │ 350 │                                                                                                  
 
 	- ../beers-law-lab/js/beerslaw/view/SolutionComboBox.js: 4-19
 	 ../beers-law-lab/js/concentration/view/SoluteComboBox.js: 4-19
@@ -904,23 +904,22 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  120 │ 241 │     return gradientFill;                                                                                
  121 │ 242 │   };                                                                                                    
 
-	- ../axon/tests/qunit/unit-tests.js: 2-15
-	 ../build-a-molecule/tests/qunit/unit-tests.js: 3-16
+	- ../axon/tests/qunit/unit-tests.js: 5-17
+	 ../build-a-molecule/tests/qunit/unit-tests.js: 4-16
 
- 2  │ 3  │ function runAxonTests( pathToTestBase ) {                                               
- 3  │ 4  │   function loadTestFile( src ) {                                                        
- 4  │ 5  │     var script = document.createElement( 'script' );                                    
- 5  │ 6  │     script.type = 'text/javascript';                                                    
- 6  │ 7  │     script.async = false;                                                               
- 7  │ 8  │                                                                                         
- 8  │ 9  │     // make sure things aren't cached, just in case                                     
- 9  │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
- 10 │ 11 │                                                                                         
- 11 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
- 12 │ 13 │   }                                                                                     
- 13 │ 14 │                                                                                         
- 14 │ 15 │   loadTestFile( 'js/simple-tests.js' );                                                 
- 15 │ 16 │   loadTestFile( 'js/events.js' );                                                       
+ 5  │ 4  │   function loadTestFile( src ) {                                                        
+ 6  │ 5  │     var script = document.createElement( 'script' );                                    
+ 7  │ 6  │     script.type = 'text/javascript';                                                    
+ 8  │ 7  │     script.async = false;                                                               
+ 9  │ 8  │                                                                                         
+ 10 │ 9  │     // make sure things aren't cached, just in case                                     
+ 11 │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
+ 12 │ 11 │                                                                                         
+ 13 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
+ 14 │ 13 │   }                                                                                     
+ 15 │ 14 │                                                                                         
+ 16 │ 15 │   loadTestFile( 'js/simple-tests.js' );                                                 
+ 17 │ 16 │   loadTestFile( 'js/events.js' );                                                       
 
 	- ../area-builder/js/area-builder-config.js: 18-37
 	 ../build-an-atom/js/build-an-atom-config.js: 13-32
@@ -1353,23 +1352,6 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  41 │ 40 │     TANDEM: '../../tandem/js',                                                                             
  42 │ 41 │                                                                                                            
 
-	- ../capacitor-lab-basics/js/common/model/circuit/ParallelCircuit.js: 329-341
-	 ../capacitor-lab-basics/js/common/model/circuit/ParallelCircuit.js: 350-362
-
- 329 │ 350 │         if ( this.connectedToBatteryTop( shape ) ) {                              
- 330 │ 351 │           voltage = this.getTotalVoltage();                                       
- 331 │ 352 │         }                                                                         
- 332 │ 353 │         else if ( this.connectedToBatteryBottom( shape ) ) {                      
- 333 │ 354 │           voltage = 0;                                                            
- 334 │ 355 │         }                                                                         
- 335 │ 356 │         else if (                                                                 
- 336 │ 357 │           this.shapeTouchesWireGroup( shape, this.getTopLightBulbWires() ) ||     
- 337 │ 358 │           this.shapeTouchesWireGroup( shape, this.getBottomLightBulbWires() ) ) { 
- 338 │ 359 │           voltage = 0;                                                            
- 339 │ 360 │         }                                                                         
- 340 │ 361 │       }                                                                           
- 341 │ 362 │                                                                                   
-
 	- ../capacitor-lab-basics/js/common/view/drag/PlateAreaDragHandleNode.js: 6-23
 	 ../capacitor-lab-basics/js/common/view/drag/PlateSeparationDragHandleNode.js: 5-22
 
@@ -1392,30 +1374,30 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  22 │ 21 │   var PlateAreaDragHandler = require( 'CAPACITOR_LAB_BASICS/common/view/drag/PlateAreaDragHandler' ); 
  23 │ 22 │   var UnitsUtils = require( 'CAPACITOR_LAB_BASICS/common/model/util/UnitsUtils' );                    
 
-	- ../capacitor-lab-basics/js/common/view/drag/PlateAreaDragHandleNode.js: 75-95
-	 ../capacitor-lab-basics/js/common/view/drag/PlateSeparationDragHandleNode.js: 72-92
+	- ../capacitor-lab-basics/js/common/view/drag/PlateAreaDragHandleNode.js: 76-96
+	 ../capacitor-lab-basics/js/common/view/drag/PlateSeparationDragHandleNode.js: 73-93
 
- 75 │ 72 │     this.valueNode = new DragHandleValueNode( plateAreaString, millimetersSquared, unitsMillimetersString + '<sup>' + 2 + '</sup>' ); 
- 76 │ 73 │                                                                                                                                       
- 77 │ 74 │     // Make text part of the draggable area                                                                                           
- 78 │ 75 │     this.valueNode.mouseArea = this.valueNode.bounds.dilated( 0 );                                                                    
- 79 │ 76 │     this.valueNode.touchArea = this.valueNode.bounds.dilated( 0 );                                                                    
- 80 │ 77 │                                                                                                                                       
- 81 │ 78 │     // Highlight the arrow on pointer over text                                                                                       
- 82 │ 79 │     this.valueNode.addInputListener( new ButtonListener( {                                                                            
- 83 │ 80 │       over: function( event ) {                                                                                                       
- 84 │ 81 │         arrowNode.fill = arrowNode.highlightColor;                                                                                    
- 85 │ 82 │       },                                                                                                                              
- 86 │ 83 │       up: function( event ) {                                                                                                         
- 87 │ 84 │         arrowNode.fill = arrowNode.normalColor;                                                                                       
- 88 │ 85 │       }                                                                                                                               
- 89 │ 86 │     } ) );                                                                                                                            
- 90 │ 87 │                                                                                                                                       
- 91 │ 88 │     // rendering order                                                                                                                
- 92 │ 89 │     this.addChild( lineNode );                                                                                                        
- 93 │ 90 │     this.addChild( arrowNode );                                                                                                       
- 94 │ 91 │     this.addChild( this.valueNode );                                                                                                  
- 95 │ 92 │                                                                                                                                       
+ 76 │ 73 │     this.valueNode = new DragHandleValueNode( plateAreaString, millimetersSquared, unitsMillimetersString + '<sup>' + 2 + '</sup>' ); 
+ 77 │ 74 │                                                                                                                                       
+ 78 │ 75 │     // Make text part of the draggable area                                                                                           
+ 79 │ 76 │     this.valueNode.mouseArea = this.valueNode.bounds.dilated( 0 );                                                                    
+ 80 │ 77 │     this.valueNode.touchArea = this.valueNode.bounds.dilated( 0 );                                                                    
+ 81 │ 78 │                                                                                                                                       
+ 82 │ 79 │     // Highlight the arrow on pointer over text                                                                                       
+ 83 │ 80 │     this.valueNode.addInputListener( new ButtonListener( {                                                                            
+ 84 │ 81 │       over: function( event ) {                                                                                                       
+ 85 │ 82 │         arrowNode.fill = arrowNode.highlightColor;                                                                                    
+ 86 │ 83 │       },                                                                                                                              
+ 87 │ 84 │       up: function( event ) {                                                                                                         
+ 88 │ 85 │         arrowNode.fill = arrowNode.normalColor;                                                                                       
+ 89 │ 86 │       }                                                                                                                               
+ 90 │ 87 │     } ) );                                                                                                                            
+ 91 │ 88 │                                                                                                                                       
+ 92 │ 89 │     // rendering order                                                                                                                
+ 93 │ 90 │     this.addChild( lineNode );                                                                                                        
+ 94 │ 91 │     this.addChild( arrowNode );                                                                                                       
+ 95 │ 92 │     this.addChild( this.valueNode );                                                                                                  
+ 96 │ 93 │                                                                                                                                       
 
 	- ../capacitor-lab-basics/js/capacitance/view/CapacitanceScreenView.js: 59-73
 	 ../capacitor-lab-basics/js/light-bulb/view/CLBLightBulbScreenView.js: 61-75
@@ -2143,23 +2125,23 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  72 │ 72 │       name: 'Intro', //TODO i18n                                                                                                                                                       
  73 │ 73 │       homeScreenIcon: icon,                                                                                                                                                            
 
-	- ../axon/tests/qunit/unit-tests.js: 2-15
+	- ../build-a-molecule/tests/qunit/unit-tests.js: 3-16
 	 ../circuit-construction-kit-common/tests/qunit/unit-tests.js: 2-15
 
- 2  │ 2  │ function runAxonTests( pathToTestBase ) {                                               
- 3  │ 3  │   function loadTestFile( src ) {                                                        
- 4  │ 4  │     var script = document.createElement( 'script' );                                    
- 5  │ 5  │     script.type = 'text/javascript';                                                    
- 6  │ 6  │     script.async = false;                                                               
- 7  │ 7  │                                                                                         
- 8  │ 8  │     // make sure things aren't cached, just in case                                     
- 9  │ 9  │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
- 10 │ 10 │                                                                                         
- 11 │ 11 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
- 12 │ 12 │   }                                                                                     
- 13 │ 13 │                                                                                         
- 14 │ 14 │   loadTestFile( 'js/simple-tests.js' );                                                 
- 15 │ 15 │   loadTestFile( 'js/events.js' );                                                       
+ 3  │ 2  │ function runBuildAMoleculeTests( pathToTestBase ) {                                     
+ 4  │ 3  │   function loadTestFile( src ) {                                                        
+ 5  │ 4  │     var script = document.createElement( 'script' );                                    
+ 6  │ 5  │     script.type = 'text/javascript';                                                    
+ 7  │ 6  │     script.async = false;                                                               
+ 8  │ 7  │                                                                                         
+ 9  │ 8  │     // make sure things aren't cached, just in case                                     
+ 10 │ 9  │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
+ 11 │ 10 │                                                                                         
+ 12 │ 11 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
+ 13 │ 12 │   }                                                                                     
+ 14 │ 13 │                                                                                         
+ 15 │ 14 │   loadTestFile( 'js/model.js' );                                                        
+ 16 │ 15 │ };                                                                                      
 
 	- ../area-model-multiplication/js/area-model-multiplication-config.js: 11-42
 	 ../circuit-construction-kit-black-box-study/js/circuit-construction-kit-black-box-study-config.js: 10-41
@@ -2952,24 +2934,24 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  72 │ 86 │   test( 'Column-major', function() {                             
  73 │ 87 │     var m = Matrix3.createFromPool();                            
 
-	- ../axon/tests/qunit/unit-tests.js: 2-16
+	- ../build-a-molecule/tests/qunit/unit-tests.js: 3-17
 	 ../dot/tests/qunit/unit-tests.js: 3-17
 
- 2  │ 3  │ function runAxonTests( pathToTestBase ) {                                               
- 3  │ 4  │   function loadTestFile( src ) {                                                        
- 4  │ 5  │     var script = document.createElement( 'script' );                                    
- 5  │ 6  │     script.type = 'text/javascript';                                                    
- 6  │ 7  │     script.async = false;                                                               
- 7  │ 8  │                                                                                         
- 8  │ 9  │     // make sure things aren't cached, just in case                                     
- 9  │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
- 10 │ 11 │                                                                                         
- 11 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
- 12 │ 13 │   }                                                                                     
- 13 │ 14 │                                                                                         
- 14 │ 15 │   loadTestFile( 'js/simple-tests.js' );                                                 
- 15 │ 16 │   loadTestFile( 'js/events.js' );                                                       
- 16 │ 17 │ }                                                                                       
+ 3  │ 3  │ function runBuildAMoleculeTests( pathToTestBase ) {                                     
+ 4  │ 4  │   function loadTestFile( src ) {                                                        
+ 5  │ 5  │     var script = document.createElement( 'script' );                                    
+ 6  │ 6  │     script.type = 'text/javascript';                                                    
+ 7  │ 7  │     script.async = false;                                                               
+ 8  │ 8  │                                                                                         
+ 9  │ 9  │     // make sure things aren't cached, just in case                                     
+ 10 │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
+ 11 │ 11 │                                                                                         
+ 12 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
+ 13 │ 13 │   }                                                                                     
+ 14 │ 14 │                                                                                         
+ 15 │ 15 │   loadTestFile( 'js/model.js' );                                                        
+ 16 │ 16 │ };                                                                                      
+ 17 │ 17 │                                                                                         
 
 	- ../area-model-multiplication/js/area-model-multiplication-config.js: 11-44
 	 ../energy-forms-and-changes/js/energy-forms-and-changes-config.js: 11-44
@@ -3162,21 +3144,21 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  202 │ 216 │         if ( EnergySkateParkBasicsQueryParameters.testTrackIndex === 13 ) {                                                                                                                                         
  203 │ 217 │                                                                                                                                                                                                                     
 
-	- ../energy-skate-park-basics/js/energy-skate-park-basics/model/Track.js: 653-664
-	 ../energy-skate-park-basics/js/energy-skate-park-basics/model/Track.js: 676-687
+	- ../energy-skate-park-basics/js/energy-skate-park-basics/model/Track.js: 657-668
+	 ../energy-skate-park-basics/js/energy-skate-park-basics/model/Track.js: 680-691
 
- 653 │ 676 │       var bestU = 0;                                                                                                    
- 654 │ 677 │                                                                                                                         
- 655 │ 678 │       // Search the entire space of the spline.  Larger number of divisions was chosen to prevent large curvatures at a 
- 656 │ 679 │       // single sampling point.                                                                                         
- 657 │ 680 │       var numDivisions = 400;                                                                                           
- 658 │ 681 │       var du = (this.maxPoint - this.minPoint) / numDivisions;                                                          
- 659 │ 682 │       for ( var u = this.minPoint; u < this.maxPoint; u += du ) {                                                       
- 660 │ 683 │         this.getCurvature( u, curvature );                                                                              
- 661 │ 684 │         var r = Math.abs( curvature.r );                                                                                
- 662 │ 685 │         if ( r < minRadius ) {                                                                                          
- 663 │ 686 │           minRadius = r;                                                                                                
- 664 │ 687 │           bestU = u;                                                                                                    
+ 657 │ 680 │       var bestU = 0;                                                                                                    
+ 658 │ 681 │                                                                                                                         
+ 659 │ 682 │       // Search the entire space of the spline.  Larger number of divisions was chosen to prevent large curvatures at a 
+ 660 │ 683 │       // single sampling point.                                                                                         
+ 661 │ 684 │       var numDivisions = 400;                                                                                           
+ 662 │ 685 │       var du = (this.maxPoint - this.minPoint) / numDivisions;                                                          
+ 663 │ 686 │       for ( var parametricPosition = this.minPoint; parametricPosition < this.maxPoint; parametricPosition += du ) {    
+ 664 │ 687 │         this.getCurvature( parametricPosition, curvature );                                                             
+ 665 │ 688 │         var r = Math.abs( curvature.r );                                                                                
+ 666 │ 689 │         if ( r < minRadius ) {                                                                                          
+ 667 │ 690 │           minRadius = r;                                                                                                
+ 668 │ 691 │           bestU = parametricPosition;                                                                                   
 
 	- ../energy-skate-park-basics/js/energy-skate-park-basics/view/FrictionControl.js: 4-21
 	 ../energy-skate-park-basics/js/energy-skate-park-basics/view/MassControlPanel.js: 4-21
@@ -5361,30 +5343,30 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  40 │ 39 │     SUN: '../../sun/js',                                                                                   
  41 │ 40 │     TANDEM: '../../tandem/js',                                                                             
 
-	- ../build-an-atom/js/common/model/BuildAnAtomModel.js: 36-41
+	- ../build-an-atom/js/common/model/BuildAnAtomModel.js: 41-46
 	 ../isotopes-and-atomic-mass/js/make-isotopes/model/MakeIsotopesModel.js: 34-39
 
- 36 │ 34 │   var BUCKET_Y_OFFSET = -205;                                                                                              
- 37 │ 35 │   var NUCLEUS_JUMP_PERIOD = 0.1; // In seconds                                                                             
- 38 │ 36 │   var MAX_NUCLEUS_JUMP = ShredConstants.NUCLEON_RADIUS * 0.5;                                                              
- 39 │ 37 │   var JUMP_ANGLES = [ Math.PI * 0.1, Math.PI * 1.6, Math.PI * 0.7, Math.PI * 1.1, Math.PI * 0.3 ];                         
- 40 │ 38 │   var JUMP_DISTANCES = [ MAX_NUCLEUS_JUMP * 0.4, MAX_NUCLEUS_JUMP * 0.8, MAX_NUCLEUS_JUMP * 0.2, MAX_NUCLEUS_JUMP * 0.9 ]; 
- 41 │ 39 │                                                                                                                            
+ 41 │ 34 │   var BUCKET_Y_OFFSET = -205;                                                                                              
+ 42 │ 35 │   var NUCLEUS_JUMP_PERIOD = 0.1; // In seconds                                                                             
+ 43 │ 36 │   var MAX_NUCLEUS_JUMP = ShredConstants.NUCLEON_RADIUS * 0.5;                                                              
+ 44 │ 37 │   var JUMP_ANGLES = [ Math.PI * 0.1, Math.PI * 1.6, Math.PI * 0.7, Math.PI * 1.1, Math.PI * 0.3 ];                         
+ 45 │ 38 │   var JUMP_DISTANCES = [ MAX_NUCLEUS_JUMP * 0.4, MAX_NUCLEUS_JUMP * 0.8, MAX_NUCLEUS_JUMP * 0.2, MAX_NUCLEUS_JUMP * 0.9 ]; 
+ 46 │ 39 │                                                                                                                            
 
-	- ../build-an-atom/js/common/view/AtomView.js: 123-133
+	- ../build-an-atom/js/common/view/AtomView.js: 120-130
 	 ../isotopes-and-atomic-mass/js/make-isotopes/view/InteractiveIsotopeNode.js: 89-99
 
- 123 │ 89 │           if ( particleView.particle === nucleon ) {                                                             
- 124 │ 90 │             onCorrectLayer = true;                                                                               
- 125 │ 91 │           }                                                                                                      
- 126 │ 92 │         } );                                                                                                     
- 127 │ 93 │                                                                                                                  
- 128 │ 94 │         if ( !onCorrectLayer ) {                                                                                 
- 129 │ 95 │                                                                                                                  
- 130 │ 96 │           // Remove particle view from its current layer.                                                        
- 131 │ 97 │           var particleView = null;                                                                               
- 132 │ 98 │           for ( var layerIndex = 0; layerIndex < nucleonLayers.length && particleView === null; layerIndex++ ) { 
- 133 │ 99 │             for ( var childIndex = 0; childIndex < nucleonLayers[ layerIndex ].children.length; childIndex++ ) { 
+ 120 │ 89 │           if ( particleView.particle === nucleon ) {                                                             
+ 121 │ 90 │             onCorrectLayer = true;                                                                               
+ 122 │ 91 │           }                                                                                                      
+ 123 │ 92 │         } );                                                                                                     
+ 124 │ 93 │                                                                                                                  
+ 125 │ 94 │         if ( !onCorrectLayer ) {                                                                                 
+ 126 │ 95 │                                                                                                                  
+ 127 │ 96 │           // Remove particle view from its current layer.                                                        
+ 128 │ 97 │           var particleView = null;                                                                               
+ 129 │ 98 │           for ( var layerIndex = 0; layerIndex < nucleonLayers.length && particleView === null; layerIndex++ ) { 
+ 130 │ 99 │             for ( var childIndex = 0; childIndex < nucleonLayers[ layerIndex ].children.length; childIndex++ ) { 
 
 	- ../isotopes-and-atomic-mass/js/mix-isotopes/model/MixIsotopesModel.js: 397-410
 	 ../isotopes-and-atomic-mass/js/mix-isotopes/model/MixIsotopesModel.js: 409-422
@@ -5808,23 +5790,23 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  695 │ 495 │       context.bezierCurveTo( this._control1.x, this._control1.y, this._control2.x, this._control2.y, this._end.x, this._end.y ); 
  696 │ 496 │     },                                                                                                                           
 
-	- ../axon/tests/qunit/unit-tests.js: 2-15
+	- ../build-a-molecule/tests/qunit/unit-tests.js: 3-16
 	 ../kite/tests/qunit/unit-tests.js: 3-16
 
- 2  │ 3  │ function runAxonTests( pathToTestBase ) {                                               
- 3  │ 4  │   function loadTestFile( src ) {                                                        
- 4  │ 5  │     var script = document.createElement( 'script' );                                    
- 5  │ 6  │     script.type = 'text/javascript';                                                    
- 6  │ 7  │     script.async = false;                                                               
- 7  │ 8  │                                                                                         
- 8  │ 9  │     // make sure things aren't cached, just in case                                     
- 9  │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
- 10 │ 11 │                                                                                         
- 11 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
- 12 │ 13 │   }                                                                                     
- 13 │ 14 │                                                                                         
- 14 │ 15 │   loadTestFile( 'js/simple-tests.js' );                                                 
- 15 │ 16 │   loadTestFile( 'js/events.js' );                                                       
+ 3  │ 3  │ function runBuildAMoleculeTests( pathToTestBase ) {                                     
+ 4  │ 4  │   function loadTestFile( src ) {                                                        
+ 5  │ 5  │     var script = document.createElement( 'script' );                                    
+ 6  │ 6  │     script.type = 'text/javascript';                                                    
+ 7  │ 7  │     script.async = false;                                                               
+ 8  │ 8  │                                                                                         
+ 9  │ 9  │     // make sure things aren't cached, just in case                                     
+ 10 │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
+ 11 │ 11 │                                                                                         
+ 12 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
+ 13 │ 13 │   }                                                                                     
+ 14 │ 14 │                                                                                         
+ 15 │ 15 │   loadTestFile( 'js/model.js' );                                                        
+ 16 │ 16 │ };                                                                                      
 
 	- ../graphing-lines/js/common/view/GraphNode.js: 97-134
 	 ../least-squares-regression/js/least-squares-regression/view/GraphAxesNode.js: 96-133
@@ -5927,36 +5909,20 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  43 │ 42 │     // this sim                                                                                            
  44 │ 43 │     AREA_MODEL_MULTIPLICATION: '.'                                                                         
 
-	- ../make-a-ten/js/make-a-ten/explore/view/MoveCueNode.js: 4-27
-	 ../make-a-ten/js/make-a-ten/explore/view/SplitCueNode.js: 4-27
+	- ../make-a-ten/js/make-a-ten/game/view/MakeATenRewardNode.js: 37-44
+	 ../make-a-ten/js/make-a-ten/game/view/MakeATenRewardNode.js: 38-45
 
- 4  │ 4  │  *                                                                                     
- 5  │ 5  │  * @author Jonathan Olson <jonathan.olson@colorado.edu>                                
- 6  │ 6  │  */                                                                                    
- 7  │ 7  │ define( function( require ) {                                                          
- 8  │ 8  │   'use strict';                                                                        
- 9  │ 9  │                                                                                        
- 10 │ 10 │   // modules                                                                           
- 11 │ 11 │   var makeATen = require( 'MAKE_A_TEN/makeATen' );                                     
- 12 │ 12 │   var inherit = require( 'PHET_CORE/inherit' );                                        
- 13 │ 13 │   var Image = require( 'SCENERY/nodes/Image' );                                        
- 14 │ 14 │   var ArrowNode = require( 'SCENERY_PHET/ArrowNode' );                                 
- 15 │ 15 │   var CueNode = require( 'MAKE_A_TEN/make-a-ten/explore/view/CueNode' );               
- 16 │ 16 │   var MakeATenConstants = require( 'MAKE_A_TEN/make-a-ten/common/MakeATenConstants' ); 
- 17 │ 17 │                                                                                        
- 18 │ 18 │   // images                                                                            
- 19 │ 19 │   var handImage = require( 'image!SCENERY_PHET/hand.png' );                            
- 20 │ 20 │                                                                                        
- 21 │ 21 │   /**                                                                                  
- 22 │ 22 │    * @constructor                                                                      
- 23 │ 23 │    *                                                                                   
- 24 │ 24 │    * @param {Cue} cue - Our cue model                                                  
- 25 │ 25 │    */                                                                                  
- 26 │ 26 │   function MoveCueNode( cue ) {                                                        
- 27 │ 27 │     CueNode.call( this, cue );                                                         
+ 37 │ 38 │         new StarNode(),                              
+ 38 │ 39 │         new FaceNode( 40, { headStroke: 'black' } ), 
+ 39 │ 40 │         new FaceNode( 40, { headStroke: 'black' } ), 
+ 40 │ 41 │         new FaceNode( 40, { headStroke: 'black' } ), 
+ 41 │ 42 │         new FaceNode( 40, { headStroke: 'black' } ), 
+ 42 │ 43 │         new FaceNode( 40, { headStroke: 'black' } ), 
+ 43 │ 44 │         new FaceNode( 40, { headStroke: 'black' } ), 
+ 44 │ 45 │         new FaceNode( 40, { headStroke: 'black' } ), 
 
-	- ../expression-exchange/js/expression-exchange-config.js: 10-44
-	 ../make-a-ten/js/make-a-ten-config.js: 10-44
+	- ../expression-exchange/js/expression-exchange-config.js: 10-43
+	 ../make-a-ten/js/make-a-ten-config.js: 10-43
 
  10 │ 10 │   deps: [ 'expression-exchange-main' ],                                                                    
  11 │ 11 │                                                                                                            
@@ -5992,7 +5958,6 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  41 │ 41 │     TANDEM: '../../tandem/js',                                                                             
  42 │ 42 │     VEGAS: '../../vegas/js',                                                                               
  43 │ 43 │     VIBE: '../../vibe/js',                                                                                 
- 44 │ 44 │                                                                                                            
 
 	- ../mobius/js/Cylinder.js: 90-141
 	 ../mobius/js/Quad.js: 74-125
@@ -6655,23 +6620,23 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  48 │ 48 │   urlArgs: phet.chipper.getCacheBusterArgs()                                                                          
  49 │ 49 │ } );                                                                                                                  
 
-	- ../axon/tests/qunit/unit-tests.js: 2-15
+	- ../build-a-molecule/tests/qunit/unit-tests.js: 3-16
 	 ../molecule-shapes/tests/qunit/unit-tests.js: 3-16
 
- 2  │ 3  │ function runAxonTests( pathToTestBase ) {                                               
- 3  │ 4  │   function loadTestFile( src ) {                                                        
- 4  │ 5  │     var script = document.createElement( 'script' );                                    
- 5  │ 6  │     script.type = 'text/javascript';                                                    
- 6  │ 7  │     script.async = false;                                                               
- 7  │ 8  │                                                                                         
- 8  │ 9  │     // make sure things aren't cached, just in case                                     
- 9  │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
- 10 │ 11 │                                                                                         
- 11 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
- 12 │ 13 │   }                                                                                     
- 13 │ 14 │                                                                                         
- 14 │ 15 │   loadTestFile( 'js/simple-tests.js' );                                                 
- 15 │ 16 │   loadTestFile( 'js/events.js' );                                                       
+ 3  │ 3  │ function runBuildAMoleculeTests( pathToTestBase ) {                                     
+ 4  │ 4  │   function loadTestFile( src ) {                                                        
+ 5  │ 5  │     var script = document.createElement( 'script' );                                    
+ 6  │ 6  │     script.type = 'text/javascript';                                                    
+ 7  │ 7  │     script.async = false;                                                               
+ 8  │ 8  │                                                                                         
+ 9  │ 9  │     // make sure things aren't cached, just in case                                     
+ 10 │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
+ 11 │ 11 │                                                                                         
+ 12 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
+ 13 │ 13 │   }                                                                                     
+ 14 │ 14 │                                                                                         
+ 15 │ 15 │   loadTestFile( 'js/model.js' );                                                        
+ 16 │ 16 │ };                                                                                      
 
 	- ../area-model-multiplication/js/area-model-multiplication-config.js: 11-45
 	 ../molecule-shapes-basics/js/molecule-shapes-basics-config.js: 11-45
@@ -7082,8 +7047,8 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  225 │ 234 │             case 'plane_mirror':                                                                                                                    
  226 │ 235 │               this.content = new HBox( { children: [ fillerBox, diameterVBox], spacing: spacing } );                                                
 
-	- ../optics-lab/js/optics-lab/view/ControlPanel2.js: 23-52
-	 ../optics-lab/js/optics-lab/view/ControlPanels.js: 23-52
+	- ../optics-lab/js/optics-lab/view/ControlPanel2.js: 23-49
+	 ../optics-lab/js/optics-lab/view/ControlPanels.js: 23-49
 
  23 │ 23 │ define( function ( require ) {                                      
  24 │ 24 │     'use strict';                                                   
@@ -7112,115 +7077,112 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  47 │ 47 │     //var PANEL_COLOR = Util.PANEL_COLOR;                           
  48 │ 48 │     //var BACKGROUND_COLOR = Util.BACKGROUND_COLOR;                 
  49 │ 49 │                                                                     
- 50 │ 50 │                                                                     
- 51 │ 51 │     /**                                                             
- 52 │ 52 │      * @param mainModel                                             
 
 	- ../optics-lab/js/optics-lab/view/ControlPanel2.js: 75-86
-	 ../optics-lab/js/optics-lab/view/ControlPanels.js: 75-86
+	 ../optics-lab/js/optics-lab/view/ControlPanels.js: 79-90
 
- 75 │ 75 │         var fontInfo = {font: DISPLAY_FONT};                      
- 76 │ 76 │         var whiteText = new Text('white', fontInfo);              
- 77 │ 77 │         var greenText = new Text('green', fontInfo);              
- 78 │ 78 │         var redText = new Text('red', fontInfo);                  
- 79 │ 79 │         var yellowText = new Text('yellow', fontInfo);            
- 80 │ 80 │                                                                   
- 81 │ 81 │         fontInfo = {font: DISPLAY_FONT, fill: TEXT_COLOR};        
- 82 │ 82 │         var nbrOfRaysText = new Text('number of rays', fontInfo); 
- 83 │ 83 │         var focalPointsText = new Text('focal points', fontInfo); 
- 84 │ 84 │         var widthText = new Text('width', fontInfo);              
- 85 │ 85 │         var spreadText = new Text('spread', fontInfo);            
- 86 │ 86 │         var diameterText = new Text('diameter', fontInfo);        
+ 75 │ 79 │         var fontInfo = {font: DISPLAY_FONT};                      
+ 76 │ 80 │         var whiteText = new Text('white', fontInfo);              
+ 77 │ 81 │         var greenText = new Text('green', fontInfo);              
+ 78 │ 82 │         var redText = new Text('red', fontInfo);                  
+ 79 │ 83 │         var yellowText = new Text('yellow', fontInfo);            
+ 80 │ 84 │                                                                   
+ 81 │ 85 │         fontInfo = {font: DISPLAY_FONT, fill: TEXT_COLOR};        
+ 82 │ 86 │         var nbrOfRaysText = new Text('number of rays', fontInfo); 
+ 83 │ 87 │         var focalPointsText = new Text('focal points', fontInfo); 
+ 84 │ 88 │         var widthText = new Text('width', fontInfo);              
+ 85 │ 89 │         var spreadText = new Text('spread', fontInfo);            
+ 86 │ 90 │         var diameterText = new Text('diameter', fontInfo);        
 
 	- ../optics-lab/js/optics-lab/view/ControlPanel2.js: 88-105
-	 ../optics-lab/js/optics-lab/view/ControlPanels.js: 88-105
+	 ../optics-lab/js/optics-lab/view/ControlPanels.js: 92-109
 
- 88  │ 88  │         var focalLengthText = new Text('f : ', fontInfo);                                         
- 89  │ 89  │         this.focalLengthReadoutText = new Text('filler', fontInfo);                               
- 90  │ 90  │         var indexText = new Text('refractive index', fontInfo);                                   
- 91  │ 91  │                                                                                                   
- 92  │ 92  │                                                                                                   
- 93  │ 93  │                                                                                                   
- 94  │ 94  │         // All controls are placed on display node, with visibility set by expand/collapse button 
- 95  │ 95  │         var panelOptions = {                                                                      
- 96  │ 96  │             fill: 'white',                                                                        
- 97  │ 97  │             stroke: 'black',                                                                      
- 98  │ 98  │             lineWidth: 1, // width of the background border                                       
- 99  │ 99  │             xMargin: 15,                                                                          
- 100 │ 100 │             yMargin: 5,                                                                           
- 101 │ 101 │             cornerRadius: 5, // radius of the rounded corners on the background                   
- 102 │ 102 │             resize: false, // dynamically resize when content bounds change                       
- 103 │ 103 │             backgroundPickable: false,                                                            
- 104 │ 104 │             align: 'left', // {string} horizontal of content in the pane, left|center|right       
- 105 │ 105 │             minWidth: 0 // minimum width of the panel                                             
+ 88  │ 92  │         var focalLengthText = new Text('f : ', fontInfo);                                         
+ 89  │ 93  │         this.focalLengthReadoutText = new Text('filler', fontInfo);                               
+ 90  │ 94  │         var indexText = new Text('refractive index', fontInfo);                                   
+ 91  │ 95  │                                                                                                   
+ 92  │ 96  │                                                                                                   
+ 93  │ 97  │                                                                                                   
+ 94  │ 98  │         // All controls are placed on display node, with visibility set by expand/collapse button 
+ 95  │ 99  │         var panelOptions = {                                                                      
+ 96  │ 100 │             fill: 'white',                                                                        
+ 97  │ 101 │             stroke: 'black',                                                                      
+ 98  │ 102 │             lineWidth: 1, // width of the background border                                       
+ 99  │ 103 │             xMargin: 15,                                                                          
+ 100 │ 104 │             yMargin: 5,                                                                           
+ 101 │ 105 │             cornerRadius: 5, // radius of the rounded corners on the background                   
+ 102 │ 106 │             resize: false, // dynamically resize when content bounds change                       
+ 103 │ 107 │             backgroundPickable: false,                                                            
+ 104 │ 108 │             align: 'left', // {string} horizontal of content in the pane, left|center|right       
+ 105 │ 109 │             minWidth: 0 // minimum width of the panel                                             
 
-	- ../optics-lab/js/optics-lab/view/ControlPanel.js: 244-264
-	 ../optics-lab/js/optics-lab/view/ControlPanels.js: 355-375
+	- ../optics-lab/js/optics-lab/view/ControlPanel.js: 246-266
+	 ../optics-lab/js/optics-lab/view/ControlPanels.js: 362-382
 
- 244 │ 355 │       },// end setControlsForSelectedPiece()                                                                                           
- 245 │ 356 │       setColorRadioButtonsForSourceNode: function( sourceNode ){                                                                       
- 246 │ 357 │         var radioButtonOptions = { radius: 8, fontSize: 12, deselectedColor: 'white' };                                                
- 247 │ 358 │         var whiteColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'white', this.whiteText, radioButtonOptions );      
- 248 │ 359 │         var greenColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'green', this.greenText, radioButtonOptions );      
- 249 │ 360 │         var redColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'red', this.redText, radioButtonOptions );            
- 250 │ 361 │         var yellowColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'yellow', this.yellowText, radioButtonOptions );   
- 251 │ 362 │         var spacing = 5;                                                                                                               
- 252 │ 363 │         this.colorVBox1 = new VBox( { children: [ whiteColorRadioButton, greenColorRadioButton ], align: 'left', spacing: spacing } ); 
- 253 │ 364 │         this.colorVBox2 = new VBox( { children: [ redColorRadioButton, yellowColorRadioButton ], align: 'left', spacing: spacing  } ); 
- 254 │ 365 │       }                                                                                                                                
- 255 │ 366 │                                                                                                                                        
- 256 │ 367 │                                                                                                                                        
- 257 │ 368 │     }//end inherit                                                                                                                     
- 258 │ 369 │   );                                                                                                                                   
- 259 │ 370 │ } );                                                                                                                                   
- 260 │ 371 │                                                                                                                                        
+ 246 │ 362 │       },// end setControlsForSelectedPiece()                                                                                           
+ 247 │ 363 │       setColorRadioButtonsForSourceNode: function( sourceNode ){                                                                       
+ 248 │ 364 │         var radioButtonOptions = { radius: 8, fontSize: 12, deselectedColor: 'white' };                                                
+ 249 │ 365 │         var whiteColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'white', this.whiteText, radioButtonOptions );      
+ 250 │ 366 │         var greenColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'green', this.greenText, radioButtonOptions );      
+ 251 │ 367 │         var redColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'red', this.redText, radioButtonOptions );            
+ 252 │ 368 │         var yellowColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'yellow', this.yellowText, radioButtonOptions );   
+ 253 │ 369 │         var spacing = 5;                                                                                                               
+ 254 │ 370 │         this.colorVBox1 = new VBox( { children: [ whiteColorRadioButton, greenColorRadioButton ], align: 'left', spacing: spacing } ); 
+ 255 │ 371 │         this.colorVBox2 = new VBox( { children: [ redColorRadioButton, yellowColorRadioButton ], align: 'left', spacing: spacing  } ); 
+ 256 │ 372 │       }                                                                                                                                
+ 257 │ 373 │                                                                                                                                        
+ 258 │ 374 │                                                                                                                                        
+ 259 │ 375 │     }//end inherit                                                                                                                     
+ 260 │ 376 │   );                                                                                                                                   
+ 261 │ 377 │ } );                                                                                                                                   
+ 262 │ 378 │                                                                                                                                        
 
 	- ../optics-lab/js/optics-lab/view/ControlPanels.js: 16-58
 	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 13-55
 
- 16 │ 13 │  * plane_mirror: diameter                                         
- 17 │ 14 │  * simple_mask: diameter                                          
- 18 │ 15 │  * slit_mask: diameter/ slit width                                
- 19 │ 16 │  * Created by dubson on 7/12/2015.                                
- 20 │ 17 │  */                                                               
- 21 │ 18 │                                                                   
- 22 │ 19 │                                                                   
- 23 │ 20 │ define( function ( require ) {                                    
- 24 │ 21 │   'use strict';                                                   
- 25 │ 22 │                                                                   
- 26 │ 23 │   // modules                                                      
- 27 │ 24 │   var AquaRadioButton = require('SUN/AquaRadioButton');           
- 28 │ 25 │   var CheckBox = require('SUN/CheckBox');                         
- 29 │ 26 │   var Dimension2 = require('DOT/Dimension2');                     
- 30 │ 27 │   var ExpandCollapseButton = require('SUN/ExpandCollapseButton'); 
- 31 │ 28 │   var HBox = require('SCENERY/nodes/HBox');                       
- 32 │ 29 │   var HSlider = require('SUN/HSlider');                           
- 33 │ 30 │   //var HStrut = require('SCENERY/nodes/HStrut');                 
- 34 │ 31 │   var inherit = require('PHET_CORE/inherit');                     
- 35 │ 32 │   var Node = require('SCENERY/nodes/Node');                       
- 36 │ 33 │   //var ObservableArray = require('AXON/ObservableArray');        
- 37 │ 34 │   var Panel = require('SUN/Panel');                               
- 38 │ 35 │   var PhetFont = require('SCENERY_PHET/PhetFont');                
- 39 │ 36 │   var Property = require('AXON/Property');                        
- 40 │ 37 │   var Text = require('SCENERY/nodes/Text');                       
- 41 │ 38 │   var Util = require('OPTICS_LAB/optics-lab/common/Util');        
- 42 │ 39 │   var VBox = require('SCENERY/nodes/VBox');                       
- 43 │ 40 │                                                                   
- 44 │ 41 │   // constants                                                    
- 45 │ 42 │   var DISPLAY_FONT = new PhetFont(12);                            
- 46 │ 43 │   var TEXT_COLOR = Util.TEXT_COLOR;                               
- 47 │ 44 │   //var PANEL_COLOR = Util.PANEL_COLOR;                           
- 48 │ 45 │   //var BACKGROUND_COLOR = Util.BACKGROUND_COLOR;                 
- 49 │ 46 │                                                                   
- 50 │ 47 │                                                                   
- 51 │ 48 │   /**                                                             
- 52 │ 49 │    * @param mainModel                                             
- 53 │ 50 │    * @param mainView                                              
- 54 │ 51 │    * @param selectedPiece                                         
- 55 │ 52 │    * @constructor                                                 
- 56 │ 53 │    */                                                             
- 57 │ 54 │   function   ControlPanels( mainModel, mainView ) {               
- 58 │ 55 │                                                                   
+ 16 │ 13 │  * plane_mirror: diameter                                                                                                       
+ 17 │ 14 │  * simple_mask: diameter                                                                                                        
+ 18 │ 15 │  * slit_mask: diameter/ slit width                                                                                              
+ 19 │ 16 │  * Created by dubson on 7/12/2015.                                                                                              
+ 20 │ 17 │  */                                                                                                                             
+ 21 │ 18 │                                                                                                                                 
+ 22 │ 19 │                                                                                                                                 
+ 23 │ 20 │ define( function ( require ) {                                                                                                  
+ 24 │ 21 │   'use strict';                                                                                                                 
+ 25 │ 22 │                                                                                                                                 
+ 26 │ 23 │   // modules                                                                                                                    
+ 27 │ 24 │   var AquaRadioButton = require('SUN/AquaRadioButton');                                                                         
+ 28 │ 25 │   var CheckBox = require('SUN/CheckBox');                                                                                       
+ 29 │ 26 │   var Dimension2 = require('DOT/Dimension2');                                                                                   
+ 30 │ 27 │   var ExpandCollapseButton = require('SUN/ExpandCollapseButton');                                                               
+ 31 │ 28 │   var HBox = require('SCENERY/nodes/HBox');                                                                                     
+ 32 │ 29 │   var HSlider = require('SUN/HSlider');                                                                                         
+ 33 │ 30 │   //var HStrut = require('SCENERY/nodes/HStrut');                                                                               
+ 34 │ 31 │   var inherit = require('PHET_CORE/inherit');                                                                                   
+ 35 │ 32 │   var Node = require('SCENERY/nodes/Node');                                                                                     
+ 36 │ 33 │   //var ObservableArray = require('AXON/ObservableArray');                                                                      
+ 37 │ 34 │   var Panel = require('SUN/Panel');                                                                                             
+ 38 │ 35 │   var PhetFont = require('SCENERY_PHET/PhetFont');                                                                              
+ 39 │ 36 │   var Property = require('AXON/Property');                                                                                      
+ 40 │ 37 │   var Text = require('SCENERY/nodes/Text');                                                                                     
+ 41 │ 38 │   var Util = require('OPTICS_LAB/optics-lab/common/Util');                                                                      
+ 42 │ 39 │   var VBox = require('SCENERY/nodes/VBox');                                                                                     
+ 43 │ 40 │                                                                                                                                 
+ 44 │ 41 │   // constants                                                                                                                  
+ 45 │ 42 │   var DISPLAY_FONT = new PhetFont(12);                                                                                          
+ 46 │ 43 │   var TEXT_COLOR = Util.TEXT_COLOR;                                                                                             
+ 47 │ 44 │   //var PANEL_COLOR = Util.PANEL_COLOR;                                                                                         
+ 48 │ 45 │   //var BACKGROUND_COLOR = Util.BACKGROUND_COLOR;                                                                               
+ 49 │ 46 │                                                                                                                                 
+ 50 │ 47 │   //TODO these were added here because they are undefined and failing lint, see https://github.com/phetsims/optics-lab/issues/6 
+ 51 │ 48 │   var focalLengthHBox;                                                                                                          
+ 52 │ 49 │   var piece;                                                                                                                    
+ 53 │ 50 │   var pieceModel;                                                                                                               
+ 54 │ 51 │                                                                                                                                 
+ 55 │ 52 │   /**                                                                                                                           
+ 56 │ 53 │    * @param mainModel                                                                                                           
+ 57 │ 54 │    * @param mainView                                                                                                            
+ 58 │ 55 │    * @param selectedPiece                                                                                                       
 
 	- ../optics-lab/js/optics-lab/view/ControlPanel.js: 76-92
 	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 66-82
@@ -7243,57 +7205,144 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  91 │ 81 │     this.indexText = new Text( 'refractive index', fontInfo );     
  92 │ 82 │     //this.showFocalPointsProperty = new Property( false );        
 
-	- ../optics-lab/js/optics-lab/view/ControlPanels.js: 244-268
+	- ../optics-lab/js/optics-lab/view/ControlPanels.js: 250-274
 	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 145-169
 
- 244 │ 145 │         var fillerBox = new Text(' ', {font: DISPLAY_FONT});       
- 245 │ 146 │         var nbrOfRaysVBox;                                         
- 246 │ 147 │         var diameterVBox;                                          
- 247 │ 148 │       var sliderOptions = {                                        
- 248 │ 149 │         trackSize: new Dimension2( 120, 5 ),                       
- 249 │ 150 │         thumbSize: new Dimension2( 12, 25 ),                       
- 250 │ 151 │         thumbTouchAreaXDilation: 6,                                
- 251 │ 152 │         thumbTouchAreaYDilation: 6                                 
- 252 │ 153 │       };                                                           
- 253 │ 154 │         var vBoxMaker = function( childrenArray ){                 
- 254 │ 155 │           return new VBox( {                                       
- 255 │ 156 │             children: childrenArray,                               
- 256 │ 157 │             align: 'center',                                       
- 257 │ 158 │             resize: false                                          
- 258 │ 159 │           });                                                      
- 259 │ 160 │         };                                                         
- 260 │ 161 │         var hBoxMaker = function( childrenArray ){                 
- 261 │ 162 │           return new HBox({                                        
- 262 │ 163 │             children: childrenArray,                               
- 263 │ 164 │             spacing: spacing,                                      
- 264 │ 165 │             resize: false                                          
- 265 │ 166 │           });                                                      
- 266 │ 167 │         };                                                         
- 267 │ 168 │         if ( type === 'fan_source' || type === 'beam_source' ) {   
- 268 │ 169 │           var maxNbrRays = this.mainModel.maxNbrOfRaysFromASource; 
+ 250 │ 145 │         var fillerBox = new Text(' ', {font: DISPLAY_FONT});       
+ 251 │ 146 │         var nbrOfRaysVBox;                                         
+ 252 │ 147 │         var diameterVBox;                                          
+ 253 │ 148 │       var sliderOptions = {                                        
+ 254 │ 149 │         trackSize: new Dimension2( 120, 5 ),                       
+ 255 │ 150 │         thumbSize: new Dimension2( 12, 25 ),                       
+ 256 │ 151 │         thumbTouchAreaXDilation: 6,                                
+ 257 │ 152 │         thumbTouchAreaYDilation: 6                                 
+ 258 │ 153 │       };                                                           
+ 259 │ 154 │         var vBoxMaker = function( childrenArray ){                 
+ 260 │ 155 │           return new VBox( {                                       
+ 261 │ 156 │             children: childrenArray,                               
+ 262 │ 157 │             align: 'center',                                       
+ 263 │ 158 │             resize: false                                          
+ 264 │ 159 │           });                                                      
+ 265 │ 160 │         };                                                         
+ 266 │ 161 │         var hBoxMaker = function( childrenArray ){                 
+ 267 │ 162 │           return new HBox({                                        
+ 268 │ 163 │             children: childrenArray,                               
+ 269 │ 164 │             spacing: spacing,                                      
+ 270 │ 165 │             resize: false                                          
+ 271 │ 166 │           });                                                      
+ 272 │ 167 │         };                                                         
+ 273 │ 168 │         if ( type === 'fan_source' || type === 'beam_source' ) {   
+ 274 │ 169 │           var maxNbrRays = this.mainModel.maxNbrOfRaysFromASource; 
 
-	- ../optics-lab/js/optics-lab/view/ControlPanel.js: 242-264
-	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 255-277
+	- ../optics-lab/js/optics-lab/view/ControlPanels.js: 282-293
+	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 178-189
 
- 242 │ 255 │           this.setControls();                                                                                                          
- 243 │ 256 │         }//end if (type != null)                                                                                                       
- 244 │ 257 │       },// end setControlsForSelectedPiece()                                                                                           
- 245 │ 258 │       setColorRadioButtonsForSourceNode: function( sourceNode ){                                                                       
- 246 │ 259 │         var radioButtonOptions = { radius: 8, fontSize: 12, deselectedColor: 'white' };                                                
- 247 │ 260 │         var whiteColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'white', this.whiteText, radioButtonOptions );      
- 248 │ 261 │         var greenColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'green', this.greenText, radioButtonOptions );      
- 249 │ 262 │         var redColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'red', this.redText, radioButtonOptions );            
- 250 │ 263 │         var yellowColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'yellow', this.yellowText, radioButtonOptions );   
- 251 │ 264 │         var spacing = 5;                                                                                                               
- 252 │ 265 │         this.colorVBox1 = new VBox( { children: [ whiteColorRadioButton, greenColorRadioButton ], align: 'left', spacing: spacing } ); 
- 253 │ 266 │         this.colorVBox2 = new VBox( { children: [ redColorRadioButton, yellowColorRadioButton ], align: 'left', spacing: spacing  } ); 
- 254 │ 267 │       }                                                                                                                                
- 255 │ 268 │                                                                                                                                        
- 256 │ 269 │                                                                                                                                        
- 257 │ 270 │     }//end inherit                                                                                                                     
- 258 │ 271 │   );                                                                                                                                   
- 259 │ 272 │ } );                                                                                                                                   
- 260 │ 273 │                                                                                                                                        
+ 282 │ 178 │           var diameterSlider = new HSlider( this.diameterProperty, {min: 50, max: 250}, sliderOptions); 
+ 283 │ 179 │           diameterVBox = vBoxMaker( [ diameterSlider, this.diameterText ] );                            
+ 284 │ 180 │           this.focalLengthReadoutText.text = pieceModel.f.toFixed(0);                                   
+ 285 │ 181 │           var  self = this;                                                                             
+ 286 │ 182 │           pieceModel.fProperty.link( function() {                                                       
+ 287 │ 183 │              self.focalLengthReadoutText.text = pieceModel.f.toFixed(0);                                
+ 288 │ 184 │             //console.log( 'focalLength' + focalLength.toFixed(0)  );                                   
+ 289 │ 185 │           });                                                                                           
+ 290 │ 186 │         }                                                                                               
+ 291 │ 187 │         var panelContent = new Node();                                                                  
+ 292 │ 188 │         var checkBoxOptions = {checkBoxColorBackground: 'white'};                                       
+ 293 │ 189 │         var spacing = 25;                                                                               
+
+	- ../optics-lab/js/optics-lab/view/ControlPanels.js: 292-300
+	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 188-196
+
+ 292 │ 188 │         var checkBoxOptions = {checkBoxColorBackground: 'white'};                                                  
+ 293 │ 189 │         var spacing = 25;                                                                                          
+ 294 │ 190 │         //console.log( 'setControlsForSelectedPiece' + piece.type );                                               
+ 295 │ 191 │         var focalLengthHBox = hBoxMaker( [ this.focalLengthText, this.focalLengthReadoutText ] );                  
+ 296 │ 192 │         switch (type) {                                                                                            
+ 297 │ 193 │           case 'fan_source':                                                                                       
+ 298 │ 194 │             var spreadSlider = new HSlider(pieceModel.spreadProperty, {min: 2, max: 180}, sliderOptions);          
+ 299 │ 195 │             var spreadVBox = vBoxMaker( [ spreadSlider, this.spreadText ] );                                       
+ 300 │ 196 │             panelContent = hBoxMaker( [ fillerBox, nbrOfRaysVBox, spreadVBox, this.colorVBox1, this.colorVBox2] ); 
+
+	- ../optics-lab/js/optics-lab/view/ControlPanels.js: 305-317
+	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 201-213
+
+ 305 │ 201 │             panelContent = hBoxMaker( [fillerBox, nbrOfRaysVBox, heightVBox, this.colorVBox1, this.colorVBox2] );             
+ 306 │ 202 │             break;                                                                                                            
+ 307 │ 203 │           case 'converging_lens':                                                                                             
+ 308 │ 204 │             //ComponentModel( mainModel, type, diameter, radiusCurvature, focalLength, index )                                
+ 309 │ 205 │             //radius of curvature R = 2*f*( n - 1 )                                                                           
+ 310 │ 206 │             var radiusSlider = new HSlider(pieceModel.radiusProperty, {min: 100, max: 800}, sliderOptions);                   
+ 311 │ 207 │             this.hSliders.push(radiusSlider);                                                                                 
+ 312 │ 208 │             var radiusVBox = vBoxMaker( [radiusSlider, this.radiusText] );                                                    
+ 313 │ 209 │             var indexSlider = new HSlider(pieceModel.indexProperty, {min: 1.4, max: 3}, sliderOptions);                       
+ 314 │ 210 │             this.hSliders.push(indexSlider);                                                                                  
+ 315 │ 211 │             var indexVBox = vBoxMaker( [ indexSlider, this.indexText ] );                                                     
+ 316 │ 212 │             var focalPtCheckBox = new CheckBox(this.focalPointsText, piece.showFocalPointsProperty, checkBoxOptions);         
+ 317 │ 213 │             panelContent = hBoxMaker( [ fillerBox, diameterVBox, radiusVBox, indexVBox, focalPtCheckBox, focalLengthHBox ] ); 
+
+	- ../optics-lab/js/optics-lab/view/ControlPanels.js: 317-329
+	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 213-225
+
+ 317 │ 213 │             panelContent = hBoxMaker( [ fillerBox, diameterVBox, radiusVBox, indexVBox, focalPtCheckBox, focalLengthHBox ] ); 
+ 318 │ 214 │             break;                                                                                                            
+ 319 │ 215 │           case 'diverging_lens':                                                                                              
+ 320 │ 216 │             //ComponentModel( mainModel, type, diameter, radiusCurvature, focalLength, index )                                
+ 321 │ 217 │             //radius of curvature R = 2*f*( n - 1 )                                                                           
+ 322 │ 218 │             radiusSlider = new HSlider(pieceModel.radiusProperty, {min: -100, max: -800}, sliderOptions);                     
+ 323 │ 219 │             this.hSliders.push(radiusSlider);                                                                                 
+ 324 │ 220 │             radiusVBox = vBoxMaker( [radiusSlider, this.radiusText] );                                                        
+ 325 │ 221 │             indexSlider = new HSlider(pieceModel.indexProperty, {min: 1.4, max: 3}, sliderOptions);                           
+ 326 │ 222 │             this.hSliders.push(indexSlider);                                                                                  
+ 327 │ 223 │             indexVBox = vBoxMaker( [ indexSlider, this.indexText ] );                                                         
+ 328 │ 224 │             focalPtCheckBox = new CheckBox(this.focalPointsText, piece.showFocalPointsProperty, checkBoxOptions);             
+ 329 │ 225 │             panelContent = hBoxMaker( [ fillerBox, diameterVBox, radiusVBox, indexVBox, focalPtCheckBox, focalLengthHBox ] ); 
+
+	- ../optics-lab/js/optics-lab/view/ControlPanels.js: 329-336
+	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 225-232
+
+ 329 │ 225 │             panelContent = hBoxMaker( [ fillerBox, diameterVBox, radiusVBox, indexVBox, focalPtCheckBox, focalLengthHBox ] ); 
+ 330 │ 226 │             break;                                                                                                            
+ 331 │ 227 │           case 'converging_mirror':                                                                                           
+ 332 │ 228 │             radiusSlider = new HSlider(pieceModel.radiusProperty, {min: 200, max: 1600}, sliderOptions);                      
+ 333 │ 229 │             this.hSliders.push(radiusSlider);                                                                                 
+ 334 │ 230 │             radiusVBox = vBoxMaker( [ radiusSlider, this.radiusText ] );                                                      
+ 335 │ 231 │             focalPtCheckBox = new CheckBox(this.focalPointsText, piece.showFocalPointsProperty, checkBoxOptions);             
+ 336 │ 232 │             panelContent = hBoxMaker( [fillerBox, diameterVBox, radiusVBox, focalPtCheckBox, focalLengthHBox] );              
+
+	- ../optics-lab/js/optics-lab/view/ControlPanels.js: 339-346
+	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 235-242
+
+ 339 │ 235 │             panelContent = hBoxMaker( [fillerBox, diameterVBox] );                                                 
+ 340 │ 236 │             break;                                                                                                 
+ 341 │ 237 │           case 'diverging_mirror':                                                                                 
+ 342 │ 238 │             radiusSlider = new HSlider(pieceModel.radiusProperty, {min: -200, max: -1600}, sliderOptions);         
+ 343 │ 239 │             this.hSliders.push(radiusSlider);                                                                      
+ 344 │ 240 │             radiusVBox = vBoxMaker( [ radiusSlider, this.radiusText ] );                                           
+ 345 │ 241 │             focalPtCheckBox = new CheckBox(this.focalPointsText, piece.showFocalPointsProperty, checkBoxOptions);  
+ 346 │ 242 │             panelContent = hBoxMaker( [ fillerBox, diameterVBox, radiusVBox, focalPtCheckBox, focalLengthHBox ] ); 
+
+	- ../optics-lab/js/optics-lab/view/ControlPanel.js: 244-266
+	 ../optics-lab/js/optics-lab/view/SelectedPieceControlPanel.js: 257-279
+
+ 244 │ 257 │           this.setControls();                                                                                                          
+ 245 │ 258 │         }//end if (type != null)                                                                                                       
+ 246 │ 259 │       },// end setControlsForSelectedPiece()                                                                                           
+ 247 │ 260 │       setColorRadioButtonsForSourceNode: function( sourceNode ){                                                                       
+ 248 │ 261 │         var radioButtonOptions = { radius: 8, fontSize: 12, deselectedColor: 'white' };                                                
+ 249 │ 262 │         var whiteColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'white', this.whiteText, radioButtonOptions );      
+ 250 │ 263 │         var greenColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'green', this.greenText, radioButtonOptions );      
+ 251 │ 264 │         var redColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'red', this.redText, radioButtonOptions );            
+ 252 │ 265 │         var yellowColorRadioButton = new AquaRadioButton( sourceNode.colorProperty, 'yellow', this.yellowText, radioButtonOptions );   
+ 253 │ 266 │         var spacing = 5;                                                                                                               
+ 254 │ 267 │         this.colorVBox1 = new VBox( { children: [ whiteColorRadioButton, greenColorRadioButton ], align: 'left', spacing: spacing } ); 
+ 255 │ 268 │         this.colorVBox2 = new VBox( { children: [ redColorRadioButton, yellowColorRadioButton ], align: 'left', spacing: spacing  } ); 
+ 256 │ 269 │       }                                                                                                                                
+ 257 │ 270 │                                                                                                                                        
+ 258 │ 271 │                                                                                                                                        
+ 259 │ 272 │     }//end inherit                                                                                                                     
+ 260 │ 273 │   );                                                                                                                                   
+ 261 │ 274 │ } );                                                                                                                                   
+ 262 │ 275 │                                                                                                                                        
 
 	- ../area-model-multiplication/js/area-model-multiplication-config.js: 11-44
 	 ../optics-lab/js/optics-lab-config.js: 10-43
@@ -7412,6 +7461,19 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  55 │ 53 │   }                                                                                                                                               
  56 │ 54 │ };                                                                                                                                                
 
+	- ../perennial/js/grunt/maintenance.js: 770-778
+	 ../perennial/js/grunt/maintenance.js: 832-840
+
+ 770 │ 832 │       this.gitCheckoutShas( simName, branch, function() {                             
+ 771 │ 833 │         self.npmUpdate( simName, function() {                                         
+ 772 │ 834 │           self.npmUpdate( 'chipper', function() {                                     
+ 773 │ 835 │             self.execute( GRUNT_CMD, [], '../' + simName, function() {                
+ 774 │ 836 │               // note, may need to enable ssh-agent? "exec ssh-agent bash"            
+ 775 │ 837 │               self.execute( GRUNT_CMD, [ 'deploy-rc' ], '../' + simName, function() { 
+ 776 │ 838 │                 self.gitCheckoutMaster( simName, function() {                         
+ 777 │ 839 │                   self.success( 'Deployed ' + simName );                              
+ 778 │ 840 │                 } );                                                                  
+
 	- ../perennial/js/grunt/maintenance.js: 796-806
 	 ../perennial/js/grunt/maintenance.js: 862-872
 
@@ -7440,7 +7502,7 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  831 │ 888 │             self.execute( 'git', [ 'commit', '-m', 'Bumping version to ' + newVersionString + ' for ' + message ], '../' + simName, function() { 
  832 │ 889 │               self.gitPush( simName, branch, function() {                                                                                        
  833 │ 890 │                 self.npmUpdate( simName, function() {                                                                                            
- 834 │ 891 │                   self.itnpmUpdate( 'chipper', function() {                                                                                      
+ 834 │ 891 │                   self.npmUpdate( 'chipper', function() {                                                                                        
  835 │ 892 │                     self.execute( GRUNT_CMD, [], '../' + simName, function() {                                                                   
 
 	- ../beers-law-lab/js/concentration/view/StockSolutionNode.js: 34-45
@@ -7628,41 +7690,41 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  39 │ 38 │     VEGAS: '../../vegas/js',                                             
  40 │ 39 │                                                                          
 
-	- ../axon/tests/qunit/unit-tests.js: 2-15
+	- ../build-a-molecule/tests/qunit/unit-tests.js: 3-16
 	 ../phet-core/tests/qunit/unit-tests.js: 3-16
 
- 2  │ 3  │ function runAxonTests( pathToTestBase ) {                                               
- 3  │ 4  │   function loadTestFile( src ) {                                                        
- 4  │ 5  │     var script = document.createElement( 'script' );                                    
- 5  │ 6  │     script.type = 'text/javascript';                                                    
- 6  │ 7  │     script.async = false;                                                               
- 7  │ 8  │                                                                                         
- 8  │ 9  │     // make sure things aren't cached, just in case                                     
- 9  │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
- 10 │ 11 │                                                                                         
- 11 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
- 12 │ 13 │   }                                                                                     
- 13 │ 14 │                                                                                         
- 14 │ 15 │   loadTestFile( 'js/simple-tests.js' );                                                 
- 15 │ 16 │   loadTestFile( 'js/events.js' );                                                       
+ 3  │ 3  │ function runBuildAMoleculeTests( pathToTestBase ) {                                     
+ 4  │ 4  │   function loadTestFile( src ) {                                                        
+ 5  │ 5  │     var script = document.createElement( 'script' );                                    
+ 6  │ 6  │     script.type = 'text/javascript';                                                    
+ 7  │ 7  │     script.async = false;                                                               
+ 8  │ 8  │                                                                                         
+ 9  │ 9  │     // make sure things aren't cached, just in case                                     
+ 10 │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
+ 11 │ 11 │                                                                                         
+ 12 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
+ 13 │ 13 │   }                                                                                     
+ 14 │ 14 │                                                                                         
+ 15 │ 15 │   loadTestFile( 'js/model.js' );                                                        
+ 16 │ 16 │ };                                                                                      
 
-	- ../axon/tests/qunit/unit-tests.js: 2-15
+	- ../build-a-molecule/tests/qunit/unit-tests.js: 3-16
 	 ../phetcommon/tests/qunit/unit-tests.js: 3-16
 
- 2  │ 3  │ function runAxonTests( pathToTestBase ) {                                               
- 3  │ 4  │   function loadTestFile( src ) {                                                        
- 4  │ 5  │     var script = document.createElement( 'script' );                                    
- 5  │ 6  │     script.type = 'text/javascript';                                                    
- 6  │ 7  │     script.async = false;                                                               
- 7  │ 8  │                                                                                         
- 8  │ 9  │     // make sure things aren't cached, just in case                                     
- 9  │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
- 10 │ 11 │                                                                                         
- 11 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
- 12 │ 13 │   }                                                                                     
- 13 │ 14 │                                                                                         
- 14 │ 15 │   loadTestFile( 'js/simple-tests.js' );                                                 
- 15 │ 16 │   loadTestFile( 'js/events.js' );                                                       
+ 3  │ 3  │ function runBuildAMoleculeTests( pathToTestBase ) {                                     
+ 4  │ 4  │   function loadTestFile( src ) {                                                        
+ 5  │ 5  │     var script = document.createElement( 'script' );                                    
+ 6  │ 6  │     script.type = 'text/javascript';                                                    
+ 7  │ 7  │     script.async = false;                                                               
+ 8  │ 8  │                                                                                         
+ 9  │ 9  │     // make sure things aren't cached, just in case                                     
+ 10 │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
+ 11 │ 11 │                                                                                         
+ 12 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
+ 13 │ 13 │   }                                                                                     
+ 14 │ 14 │                                                                                         
+ 15 │ 15 │   loadTestFile( 'js/model.js' );                                                        
+ 16 │ 16 │ };                                                                                      
 
 	- ../phet-io/js/simulations/build-an-atom/build-an-atom-api.js: 84-99
 	 ../phet-io/js/simulations/build-an-atom/build-an-atom-api.js: 111-126
@@ -7984,34 +8046,32 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  96 │ 93 │   }                                                                                                                                   
  97 │ 94 │                                                                                                                                       
 
-	- ../projectile-motion/js/drag/view/ProjectilePanel.js: 22-46
-	 ../projectile-motion/js/intro/view/IntroSecondPanel.js: 21-45
+	- ../projectile-motion/js/drag/view/ProjectilePanel.js: 23-45
+	 ../projectile-motion/js/intro/view/IntroSecondPanel.js: 21-43
 
- 22 │ 21 │   var ProjectileObjectViewFactory = require( 'PROJECTILE_MOTION/common/view/ProjectileObjectViewFactory' ); 
- 23 │ 22 │   var Rectangle = require( 'SCENERY/nodes/Rectangle' );                                                     
- 24 │ 23 │   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );                                               
- 25 │ 24 │   var Text = require( 'SCENERY/nodes/Text' );                                                               
- 26 │ 25 │   var VBox = require( 'SCENERY/nodes/VBox' );                                                               
- 27 │ 26 │                                                                                                             
- 28 │ 27 │   // strings                                                                                                
- 29 │ 28 │   var pattern0Label1UnitsString = require( 'string!PROJECTILE_MOTION/pattern0Label1Units' );                
- 30 │ 29 │   var massString = require( 'string!PROJECTILE_MOTION/mass' );                                              
- 31 │ 30 │   var kgString = require( 'string!PROJECTILE_MOTION/kg' );                                                  
- 32 │ 31 │   var diameterString = require( 'string!PROJECTILE_MOTION/diameter' );                                      
- 33 │ 32 │   var mString = require( 'string!PROJECTILE_MOTION/m' );                                                    
- 34 │ 33 │   var dragCoefficientString = require( 'string!PROJECTILE_MOTION/dragCoefficient' );                        
- 35 │ 34 │   var airResistanceString = require( 'string!PROJECTILE_MOTION/airResistance' );                            
- 36 │ 35 │                                                                                                             
- 37 │ 36 │   // constants                                                                                              
- 38 │ 37 │   var LABEL_OPTIONS = ProjectileMotionConstants.PANEL_LABEL_OPTIONS;                                        
- 39 │ 38 │   var BIGGER_LABEL_OPTIONS = ProjectileMotionConstants.PANEL_BIGGER_LABEL_OPTIONS;                          
- 40 │ 39 │   var TEXT_BACKGROUND_OPTIONS = {                                                                           
- 41 │ 40 │     fill: 'white',                                                                                          
- 42 │ 41 │     stroke: 'black'                                                                                         
- 43 │ 42 │   };                                                                                                        
- 44 │ 43 │                                                                                                             
- 45 │ 44 │   /**                                                                                                       
- 46 │ 45 │    * @param {ProjectileMotionModel} model                                                                   
+ 23 │ 21 │   var ProjectileObjectViewFactory = require( 'PROJECTILE_MOTION/common/view/ProjectileObjectViewFactory' ); 
+ 24 │ 22 │   var Rectangle = require( 'SCENERY/nodes/Rectangle' );                                                     
+ 25 │ 23 │   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );                                               
+ 26 │ 24 │   var Text = require( 'SCENERY/nodes/Text' );                                                               
+ 27 │ 25 │   var VBox = require( 'SCENERY/nodes/VBox' );                                                               
+ 28 │ 26 │                                                                                                             
+ 29 │ 27 │   // strings                                                                                                
+ 30 │ 28 │   var pattern0Label1UnitsString = require( 'string!PROJECTILE_MOTION/pattern0Label1Units' );                
+ 31 │ 29 │   var massString = require( 'string!PROJECTILE_MOTION/mass' );                                              
+ 32 │ 30 │   var kgString = require( 'string!PROJECTILE_MOTION/kg' );                                                  
+ 33 │ 31 │   var diameterString = require( 'string!PROJECTILE_MOTION/diameter' );                                      
+ 34 │ 32 │   var mString = require( 'string!PROJECTILE_MOTION/m' );                                                    
+ 35 │ 33 │   var dragCoefficientString = require( 'string!PROJECTILE_MOTION/dragCoefficient' );                        
+ 36 │ 34 │   var airResistanceString = require( 'string!PROJECTILE_MOTION/airResistance' );                            
+ 37 │ 35 │                                                                                                             
+ 38 │ 36 │   // constants                                                                                              
+ 39 │ 37 │   var LABEL_OPTIONS = ProjectileMotionConstants.PANEL_LABEL_OPTIONS;                                        
+ 40 │ 38 │   var BIGGER_LABEL_OPTIONS = ProjectileMotionConstants.PANEL_BIGGER_LABEL_OPTIONS;                          
+ 41 │ 39 │   var TEXT_BACKGROUND_OPTIONS = {                                                                           
+ 42 │ 40 │     fill: 'white',                                                                                          
+ 43 │ 41 │     stroke: 'black'                                                                                         
+ 44 │ 42 │   };                                                                                                        
+ 45 │ 43 │   var DRAG_OBJECT_DISPLAY_RADIUS = 12;                                                                      
 
 	- ../projectile-motion/js/intro/view/IntroSecondPanel.js: 125-143
 	 ../projectile-motion/js/lab/view/LabSecondPanel.js: 90-108
@@ -9725,23 +9785,23 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  255 │ 257 │   node.children[ 0 ].addChild( new scenery.Node() ); 
  256 │ 258 │                                                      
 
-	- ../axon/tests/qunit/unit-tests.js: 2-15
+	- ../build-a-molecule/tests/qunit/unit-tests.js: 3-16
 	 ../scenery/tests/qunit/unit-tests.js: 3-16
 
- 2  │ 3  │ function runAxonTests( pathToTestBase ) {                                               
- 3  │ 4  │   function loadTestFile( src ) {                                                        
- 4  │ 5  │     var script = document.createElement( 'script' );                                    
- 5  │ 6  │     script.type = 'text/javascript';                                                    
- 6  │ 7  │     script.async = false;                                                               
- 7  │ 8  │                                                                                         
- 8  │ 9  │     // make sure things aren't cached, just in case                                     
- 9  │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
- 10 │ 11 │                                                                                         
- 11 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
- 12 │ 13 │   }                                                                                     
- 13 │ 14 │                                                                                         
- 14 │ 15 │   loadTestFile( 'js/simple-tests.js' );                                                 
- 15 │ 16 │   loadTestFile( 'js/events.js' );                                                       
+ 3  │ 3  │ function runBuildAMoleculeTests( pathToTestBase ) {                                     
+ 4  │ 4  │   function loadTestFile( src ) {                                                        
+ 5  │ 5  │     var script = document.createElement( 'script' );                                    
+ 6  │ 6  │     script.type = 'text/javascript';                                                    
+ 7  │ 7  │     script.async = false;                                                               
+ 8  │ 8  │                                                                                         
+ 9  │ 9  │     // make sure things aren't cached, just in case                                     
+ 10 │ 10 │     script.src = pathToTestBase + '/' + src + '?random=' + Math.random().toFixed( 10 ); 
+ 11 │ 11 │                                                                                         
+ 12 │ 12 │     document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );                 
+ 13 │ 13 │   }                                                                                     
+ 14 │ 14 │                                                                                         
+ 15 │ 15 │   loadTestFile( 'js/model.js' );                                                        
+ 16 │ 16 │ };                                                                                      
 
 	- ../scenery-phet/js/CanvasWarningNode.js: 4-22
 	 ../scenery-phet/js/IE11StencilWarningNode.js: 6-24
@@ -9910,241 +9970,241 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  23 │ 25 │   function RewindButton( options ) {                              
  24 │ 26 │                                                                   
 
-	- ../scenery-phet/js/demo/ComponentsView.js: 571-640
-	 ../scenery-phet/js/demo/ComponentsView.js: 663-732
+	- ../scenery-phet/js/demo/ComponentsView.js: 573-642
+	 ../scenery-phet/js/demo/ComponentsView.js: 665-734
 
- 571 │ 663 │     var keysSet1 = [                  
- 572 │ 664 │       {                               
- 573 │ 665 │         column: 0,                    
- 574 │ 666 │         row: 0,                       
- 575 │ 667 │         verticalSpan: 1,              
- 576 │ 668 │         horizontalSpan: 1,            
- 577 │ 669 │         content: '7'                  
- 578 │ 670 │       },                              
- 579 │ 671 │       {                               
- 580 │ 672 │         column: 1,                    
- 581 │ 673 │         row: 0,                       
- 582 │ 674 │         verticalSpan: 1,              
- 583 │ 675 │         horizontalSpan: 1,            
- 584 │ 676 │         content: '8'                  
- 585 │ 677 │       },                              
- 586 │ 678 │       {                               
- 587 │ 679 │         column: 2,                    
- 588 │ 680 │         row: 0,                       
- 589 │ 681 │         verticalSpan: 1,              
- 590 │ 682 │         horizontalSpan: 1,            
- 591 │ 683 │         content: '9'                  
- 592 │ 684 │       },                              
- 593 │ 685 │       {                               
- 594 │ 686 │         column: 0,                    
- 595 │ 687 │         row: 1,                       
- 596 │ 688 │         verticalSpan: 1,              
- 597 │ 689 │         horizontalSpan: 1,            
- 598 │ 690 │         content: '4'                  
- 599 │ 691 │       },                              
- 600 │ 692 │       {                               
- 601 │ 693 │         column: 1,                    
- 602 │ 694 │         row: 1,                       
- 603 │ 695 │         verticalSpan: 1,              
- 604 │ 696 │         horizontalSpan: 1,            
- 605 │ 697 │         content: '5'                  
- 606 │ 698 │       },                              
- 607 │ 699 │       {                               
- 608 │ 700 │         column: 2,                    
- 609 │ 701 │         row: 1,                       
- 610 │ 702 │         verticalSpan: 1,              
- 611 │ 703 │         horizontalSpan: 1,            
- 612 │ 704 │         content: '6'                  
- 613 │ 705 │       },                              
- 614 │ 706 │       {                               
- 615 │ 707 │         column: 0,                    
- 616 │ 708 │         row: 2,                       
- 617 │ 709 │         verticalSpan: 1,              
- 618 │ 710 │         horizontalSpan: 1,            
- 619 │ 711 │         content: '1'                  
- 620 │ 712 │       },                              
- 621 │ 713 │       {                               
- 622 │ 714 │         column: 1,                    
- 623 │ 715 │         row: 2,                       
- 624 │ 716 │         verticalSpan: 1,              
- 625 │ 717 │         horizontalSpan: 1,            
- 626 │ 718 │         content: '2'                  
- 627 │ 719 │       },                              
- 628 │ 720 │       {                               
- 629 │ 721 │         column: 2,                    
- 630 │ 722 │         row: 2,                       
- 631 │ 723 │         verticalSpan: 1,              
- 632 │ 724 │         horizontalSpan: 1,            
- 633 │ 725 │         content: '3'                  
- 634 │ 726 │       },                              
- 635 │ 727 │       {                               
- 636 │ 728 │         column: 0,                    
- 637 │ 729 │         row: 3,                       
- 638 │ 730 │         verticalSpan: 1,              
- 639 │ 731 │         horizontalSpan: 1,            
- 640 │ 732 │         content: backSpaceIconLayout1 
+ 573 │ 665 │     var keysSet1 = [                  
+ 574 │ 666 │       {                               
+ 575 │ 667 │         column: 0,                    
+ 576 │ 668 │         row: 0,                       
+ 577 │ 669 │         verticalSpan: 1,              
+ 578 │ 670 │         horizontalSpan: 1,            
+ 579 │ 671 │         content: '7'                  
+ 580 │ 672 │       },                              
+ 581 │ 673 │       {                               
+ 582 │ 674 │         column: 1,                    
+ 583 │ 675 │         row: 0,                       
+ 584 │ 676 │         verticalSpan: 1,              
+ 585 │ 677 │         horizontalSpan: 1,            
+ 586 │ 678 │         content: '8'                  
+ 587 │ 679 │       },                              
+ 588 │ 680 │       {                               
+ 589 │ 681 │         column: 2,                    
+ 590 │ 682 │         row: 0,                       
+ 591 │ 683 │         verticalSpan: 1,              
+ 592 │ 684 │         horizontalSpan: 1,            
+ 593 │ 685 │         content: '9'                  
+ 594 │ 686 │       },                              
+ 595 │ 687 │       {                               
+ 596 │ 688 │         column: 0,                    
+ 597 │ 689 │         row: 1,                       
+ 598 │ 690 │         verticalSpan: 1,              
+ 599 │ 691 │         horizontalSpan: 1,            
+ 600 │ 692 │         content: '4'                  
+ 601 │ 693 │       },                              
+ 602 │ 694 │       {                               
+ 603 │ 695 │         column: 1,                    
+ 604 │ 696 │         row: 1,                       
+ 605 │ 697 │         verticalSpan: 1,              
+ 606 │ 698 │         horizontalSpan: 1,            
+ 607 │ 699 │         content: '5'                  
+ 608 │ 700 │       },                              
+ 609 │ 701 │       {                               
+ 610 │ 702 │         column: 2,                    
+ 611 │ 703 │         row: 1,                       
+ 612 │ 704 │         verticalSpan: 1,              
+ 613 │ 705 │         horizontalSpan: 1,            
+ 614 │ 706 │         content: '6'                  
+ 615 │ 707 │       },                              
+ 616 │ 708 │       {                               
+ 617 │ 709 │         column: 0,                    
+ 618 │ 710 │         row: 2,                       
+ 619 │ 711 │         verticalSpan: 1,              
+ 620 │ 712 │         horizontalSpan: 1,            
+ 621 │ 713 │         content: '1'                  
+ 622 │ 714 │       },                              
+ 623 │ 715 │       {                               
+ 624 │ 716 │         column: 1,                    
+ 625 │ 717 │         row: 2,                       
+ 626 │ 718 │         verticalSpan: 1,              
+ 627 │ 719 │         horizontalSpan: 1,            
+ 628 │ 720 │         content: '2'                  
+ 629 │ 721 │       },                              
+ 630 │ 722 │       {                               
+ 631 │ 723 │         column: 2,                    
+ 632 │ 724 │         row: 2,                       
+ 633 │ 725 │         verticalSpan: 1,              
+ 634 │ 726 │         horizontalSpan: 1,            
+ 635 │ 727 │         content: '3'                  
+ 636 │ 728 │       },                              
+ 637 │ 729 │       {                               
+ 638 │ 730 │         column: 0,                    
+ 639 │ 731 │         row: 3,                       
+ 640 │ 732 │         verticalSpan: 1,              
+ 641 │ 733 │         horizontalSpan: 1,            
+ 642 │ 734 │         content: backSpaceIconLayout1 
 
-	- ../scenery-phet/js/demo/ComponentsView.js: 571-641
-	 ../scenery-phet/js/demo/ComponentsView.js: 748-818
+	- ../scenery-phet/js/demo/ComponentsView.js: 573-643
+	 ../scenery-phet/js/demo/ComponentsView.js: 750-820
 
- 571 │ 748 │     var keysSet1 = [                  
- 572 │ 749 │       {                               
- 573 │ 750 │         column: 0,                    
- 574 │ 751 │         row: 0,                       
- 575 │ 752 │         verticalSpan: 1,              
- 576 │ 753 │         horizontalSpan: 1,            
- 577 │ 754 │         content: '7'                  
- 578 │ 755 │       },                              
- 579 │ 756 │       {                               
- 580 │ 757 │         column: 1,                    
- 581 │ 758 │         row: 0,                       
- 582 │ 759 │         verticalSpan: 1,              
- 583 │ 760 │         horizontalSpan: 1,            
- 584 │ 761 │         content: '8'                  
- 585 │ 762 │       },                              
- 586 │ 763 │       {                               
- 587 │ 764 │         column: 2,                    
- 588 │ 765 │         row: 0,                       
- 589 │ 766 │         verticalSpan: 1,              
- 590 │ 767 │         horizontalSpan: 1,            
- 591 │ 768 │         content: '9'                  
- 592 │ 769 │       },                              
- 593 │ 770 │       {                               
- 594 │ 771 │         column: 0,                    
- 595 │ 772 │         row: 1,                       
- 596 │ 773 │         verticalSpan: 1,              
- 597 │ 774 │         horizontalSpan: 1,            
- 598 │ 775 │         content: '4'                  
- 599 │ 776 │       },                              
- 600 │ 777 │       {                               
- 601 │ 778 │         column: 1,                    
- 602 │ 779 │         row: 1,                       
- 603 │ 780 │         verticalSpan: 1,              
- 604 │ 781 │         horizontalSpan: 1,            
- 605 │ 782 │         content: '5'                  
- 606 │ 783 │       },                              
- 607 │ 784 │       {                               
- 608 │ 785 │         column: 2,                    
- 609 │ 786 │         row: 1,                       
- 610 │ 787 │         verticalSpan: 1,              
- 611 │ 788 │         horizontalSpan: 1,            
- 612 │ 789 │         content: '6'                  
- 613 │ 790 │       },                              
- 614 │ 791 │       {                               
- 615 │ 792 │         column: 0,                    
- 616 │ 793 │         row: 2,                       
- 617 │ 794 │         verticalSpan: 1,              
- 618 │ 795 │         horizontalSpan: 1,            
- 619 │ 796 │         content: '1'                  
- 620 │ 797 │       },                              
- 621 │ 798 │       {                               
- 622 │ 799 │         column: 1,                    
- 623 │ 800 │         row: 2,                       
- 624 │ 801 │         verticalSpan: 1,              
- 625 │ 802 │         horizontalSpan: 1,            
- 626 │ 803 │         content: '2'                  
- 627 │ 804 │       },                              
- 628 │ 805 │       {                               
- 629 │ 806 │         column: 2,                    
- 630 │ 807 │         row: 2,                       
- 631 │ 808 │         verticalSpan: 1,              
- 632 │ 809 │         horizontalSpan: 1,            
- 633 │ 810 │         content: '3'                  
- 634 │ 811 │       },                              
- 635 │ 812 │       {                               
- 636 │ 813 │         column: 0,                    
- 637 │ 814 │         row: 3,                       
- 638 │ 815 │         verticalSpan: 1,              
- 639 │ 816 │         horizontalSpan: 1,            
- 640 │ 817 │         content: backSpaceIconLayout1 
- 641 │ 818 │       },                              
+ 573 │ 750 │     var keysSet1 = [                  
+ 574 │ 751 │       {                               
+ 575 │ 752 │         column: 0,                    
+ 576 │ 753 │         row: 0,                       
+ 577 │ 754 │         verticalSpan: 1,              
+ 578 │ 755 │         horizontalSpan: 1,            
+ 579 │ 756 │         content: '7'                  
+ 580 │ 757 │       },                              
+ 581 │ 758 │       {                               
+ 582 │ 759 │         column: 1,                    
+ 583 │ 760 │         row: 0,                       
+ 584 │ 761 │         verticalSpan: 1,              
+ 585 │ 762 │         horizontalSpan: 1,            
+ 586 │ 763 │         content: '8'                  
+ 587 │ 764 │       },                              
+ 588 │ 765 │       {                               
+ 589 │ 766 │         column: 2,                    
+ 590 │ 767 │         row: 0,                       
+ 591 │ 768 │         verticalSpan: 1,              
+ 592 │ 769 │         horizontalSpan: 1,            
+ 593 │ 770 │         content: '9'                  
+ 594 │ 771 │       },                              
+ 595 │ 772 │       {                               
+ 596 │ 773 │         column: 0,                    
+ 597 │ 774 │         row: 1,                       
+ 598 │ 775 │         verticalSpan: 1,              
+ 599 │ 776 │         horizontalSpan: 1,            
+ 600 │ 777 │         content: '4'                  
+ 601 │ 778 │       },                              
+ 602 │ 779 │       {                               
+ 603 │ 780 │         column: 1,                    
+ 604 │ 781 │         row: 1,                       
+ 605 │ 782 │         verticalSpan: 1,              
+ 606 │ 783 │         horizontalSpan: 1,            
+ 607 │ 784 │         content: '5'                  
+ 608 │ 785 │       },                              
+ 609 │ 786 │       {                               
+ 610 │ 787 │         column: 2,                    
+ 611 │ 788 │         row: 1,                       
+ 612 │ 789 │         verticalSpan: 1,              
+ 613 │ 790 │         horizontalSpan: 1,            
+ 614 │ 791 │         content: '6'                  
+ 615 │ 792 │       },                              
+ 616 │ 793 │       {                               
+ 617 │ 794 │         column: 0,                    
+ 618 │ 795 │         row: 2,                       
+ 619 │ 796 │         verticalSpan: 1,              
+ 620 │ 797 │         horizontalSpan: 1,            
+ 621 │ 798 │         content: '1'                  
+ 622 │ 799 │       },                              
+ 623 │ 800 │       {                               
+ 624 │ 801 │         column: 1,                    
+ 625 │ 802 │         row: 2,                       
+ 626 │ 803 │         verticalSpan: 1,              
+ 627 │ 804 │         horizontalSpan: 1,            
+ 628 │ 805 │         content: '2'                  
+ 629 │ 806 │       },                              
+ 630 │ 807 │       {                               
+ 631 │ 808 │         column: 2,                    
+ 632 │ 809 │         row: 2,                       
+ 633 │ 810 │         verticalSpan: 1,              
+ 634 │ 811 │         horizontalSpan: 1,            
+ 635 │ 812 │         content: '3'                  
+ 636 │ 813 │       },                              
+ 637 │ 814 │       {                               
+ 638 │ 815 │         column: 0,                    
+ 639 │ 816 │         row: 3,                       
+ 640 │ 817 │         verticalSpan: 1,              
+ 641 │ 818 │         horizontalSpan: 1,            
+ 642 │ 819 │         content: backSpaceIconLayout1 
+ 643 │ 820 │       },                              
 
-	- ../scenery-phet/js/demo/ComponentsView.js: 571-595
-	 ../scenery-phet/js/demo/ComponentsView.js: 833-857
+	- ../scenery-phet/js/demo/ComponentsView.js: 573-597
+	 ../scenery-phet/js/demo/ComponentsView.js: 835-859
 
- 571 │ 833 │     var keysSet1 = [       
- 572 │ 834 │       {                    
- 573 │ 835 │         column: 0,         
- 574 │ 836 │         row: 0,            
- 575 │ 837 │         verticalSpan: 1,   
- 576 │ 838 │         horizontalSpan: 1, 
- 577 │ 839 │         content: '7'       
- 578 │ 840 │       },                   
- 579 │ 841 │       {                    
- 580 │ 842 │         column: 1,         
- 581 │ 843 │         row: 0,            
- 582 │ 844 │         verticalSpan: 1,   
- 583 │ 845 │         horizontalSpan: 1, 
- 584 │ 846 │         content: '8'       
- 585 │ 847 │       },                   
- 586 │ 848 │       {                    
- 587 │ 849 │         column: 2,         
- 588 │ 850 │         row: 0,            
- 589 │ 851 │         verticalSpan: 1,   
- 590 │ 852 │         horizontalSpan: 1, 
- 591 │ 853 │         content: '9'       
- 592 │ 854 │       },                   
- 593 │ 855 │       {                    
- 594 │ 856 │         column: 0,         
- 595 │ 857 │         row: 1,            
+ 573 │ 835 │     var keysSet1 = [       
+ 574 │ 836 │       {                    
+ 575 │ 837 │         column: 0,         
+ 576 │ 838 │         row: 0,            
+ 577 │ 839 │         verticalSpan: 1,   
+ 578 │ 840 │         horizontalSpan: 1, 
+ 579 │ 841 │         content: '7'       
+ 580 │ 842 │       },                   
+ 581 │ 843 │       {                    
+ 582 │ 844 │         column: 1,         
+ 583 │ 845 │         row: 0,            
+ 584 │ 846 │         verticalSpan: 1,   
+ 585 │ 847 │         horizontalSpan: 1, 
+ 586 │ 848 │         content: '8'       
+ 587 │ 849 │       },                   
+ 588 │ 850 │       {                    
+ 589 │ 851 │         column: 2,         
+ 590 │ 852 │         row: 0,            
+ 591 │ 853 │         verticalSpan: 1,   
+ 592 │ 854 │         horizontalSpan: 1, 
+ 593 │ 855 │         content: '9'       
+ 594 │ 856 │       },                   
+ 595 │ 857 │       {                    
+ 596 │ 858 │         column: 0,         
+ 597 │ 859 │         row: 1,            
 
-	- ../scenery-phet/js/demo/ComponentsView.js: 592-616
-	 ../scenery-phet/js/demo/ComponentsView.js: 861-885
+	- ../scenery-phet/js/demo/ComponentsView.js: 594-618
+	 ../scenery-phet/js/demo/ComponentsView.js: 863-887
 
- 592 │ 861 │       },                   
- 593 │ 862 │       {                    
- 594 │ 863 │         column: 0,         
- 595 │ 864 │         row: 1,            
- 596 │ 865 │         verticalSpan: 1,   
- 597 │ 866 │         horizontalSpan: 1, 
- 598 │ 867 │         content: '4'       
- 599 │ 868 │       },                   
- 600 │ 869 │       {                    
- 601 │ 870 │         column: 1,         
- 602 │ 871 │         row: 1,            
- 603 │ 872 │         verticalSpan: 1,   
- 604 │ 873 │         horizontalSpan: 1, 
- 605 │ 874 │         content: '5'       
- 606 │ 875 │       },                   
- 607 │ 876 │       {                    
- 608 │ 877 │         column: 2,         
- 609 │ 878 │         row: 1,            
- 610 │ 879 │         verticalSpan: 1,   
- 611 │ 880 │         horizontalSpan: 1, 
- 612 │ 881 │         content: '6'       
- 613 │ 882 │       },                   
- 614 │ 883 │       {                    
- 615 │ 884 │         column: 0,         
- 616 │ 885 │         row: 2,            
+ 594 │ 863 │       },                   
+ 595 │ 864 │       {                    
+ 596 │ 865 │         column: 0,         
+ 597 │ 866 │         row: 1,            
+ 598 │ 867 │         verticalSpan: 1,   
+ 599 │ 868 │         horizontalSpan: 1, 
+ 600 │ 869 │         content: '4'       
+ 601 │ 870 │       },                   
+ 602 │ 871 │       {                    
+ 603 │ 872 │         column: 1,         
+ 604 │ 873 │         row: 1,            
+ 605 │ 874 │         verticalSpan: 1,   
+ 606 │ 875 │         horizontalSpan: 1, 
+ 607 │ 876 │         content: '5'       
+ 608 │ 877 │       },                   
+ 609 │ 878 │       {                    
+ 610 │ 879 │         column: 2,         
+ 611 │ 880 │         row: 1,            
+ 612 │ 881 │         verticalSpan: 1,   
+ 613 │ 882 │         horizontalSpan: 1, 
+ 614 │ 883 │         content: '6'       
+ 615 │ 884 │       },                   
+ 616 │ 885 │       {                    
+ 617 │ 886 │         column: 0,         
+ 618 │ 887 │         row: 2,            
 
-	- ../scenery-phet/js/demo/ComponentsView.js: 613-637
-	 ../scenery-phet/js/demo/ComponentsView.js: 889-913
+	- ../scenery-phet/js/demo/ComponentsView.js: 615-639
+	 ../scenery-phet/js/demo/ComponentsView.js: 891-915
 
- 613 │ 889 │       },                   
- 614 │ 890 │       {                    
- 615 │ 891 │         column: 0,         
- 616 │ 892 │         row: 2,            
- 617 │ 893 │         verticalSpan: 1,   
- 618 │ 894 │         horizontalSpan: 1, 
- 619 │ 895 │         content: '1'       
- 620 │ 896 │       },                   
- 621 │ 897 │       {                    
- 622 │ 898 │         column: 1,         
- 623 │ 899 │         row: 2,            
- 624 │ 900 │         verticalSpan: 1,   
- 625 │ 901 │         horizontalSpan: 1, 
- 626 │ 902 │         content: '2'       
- 627 │ 903 │       },                   
- 628 │ 904 │       {                    
- 629 │ 905 │         column: 2,         
- 630 │ 906 │         row: 2,            
- 631 │ 907 │         verticalSpan: 1,   
- 632 │ 908 │         horizontalSpan: 1, 
- 633 │ 909 │         content: '3'       
- 634 │ 910 │       },                   
- 635 │ 911 │       {                    
- 636 │ 912 │         column: 0,         
- 637 │ 913 │         row: 3,            
+ 615 │ 891 │       },                   
+ 616 │ 892 │       {                    
+ 617 │ 893 │         column: 0,         
+ 618 │ 894 │         row: 2,            
+ 619 │ 895 │         verticalSpan: 1,   
+ 620 │ 896 │         horizontalSpan: 1, 
+ 621 │ 897 │         content: '1'       
+ 622 │ 898 │       },                   
+ 623 │ 899 │       {                    
+ 624 │ 900 │         column: 1,         
+ 625 │ 901 │         row: 2,            
+ 626 │ 902 │         verticalSpan: 1,   
+ 627 │ 903 │         horizontalSpan: 1, 
+ 628 │ 904 │         content: '2'       
+ 629 │ 905 │       },                   
+ 630 │ 906 │       {                    
+ 631 │ 907 │         column: 2,         
+ 632 │ 908 │         row: 2,            
+ 633 │ 909 │         verticalSpan: 1,   
+ 634 │ 910 │         horizontalSpan: 1, 
+ 635 │ 911 │         content: '3'       
+ 636 │ 912 │       },                   
+ 637 │ 913 │       {                    
+ 638 │ 914 │         column: 0,         
+ 639 │ 915 │         row: 3,            
 
 	- ../balloons-and-static-electricity/js/balloons-and-static-electricity/accessibility/AccessibleDragNode.js: 236-257
 	 ../scenery-phet/js/input/MovableDragHandler.js: 92-113
@@ -10392,23 +10452,6 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  39 │ 38 │     VEGAS: '../../vegas/js',                                             
  40 │ 39 │                                                                          
 
-	- ../shred/js/model/NumberAtom.js: 52-64
-	 ../shred/js/model/ParticleAtom.js: 34-46
-
- 52 │ 34 │       } );                                                                                                                                 
- 53 │ 35 │                                                                                                                                            
- 54 │ 36 │     this.massNumberProperty = new DerivedProperty( [ this.protonCountProperty, this.neutronCountProperty ],                                
- 55 │ 37 │       function( protonCount, neutronCount ) {                                                                                              
- 56 │ 38 │         return protonCount + neutronCount;                                                                                                 
- 57 │ 39 │       } );                                                                                                                                 
- 58 │ 40 │     this.particleCountProperty = new DerivedProperty( [ this.protonCountProperty, this.neutronCountProperty, this.electronCountProperty ], 
- 59 │ 41 │       function( protonCount, neutronCount, electronCount ) {                                                                               
- 60 │ 42 │         return protonCount + neutronCount + electronCount;                                                                                 
- 61 │ 43 │       } );                                                                                                                                 
- 62 │ 44 │                                                                                                                                            
- 63 │ 45 │     // @public - events emitted by instances of this type                                                                                  
- 64 │ 46 │     this.atomUpdated = new Emitter();                                                                                                      
-
 	- ../shred/js/model/ParticleAtom.js: 133-142
 	 ../shred/js/model/ParticleAtom.js: 145-154
 
@@ -10457,78 +10500,78 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  32 │ 32 │                                                                          
  33 │ 33 │     // this app                                                          
 
-	- ../build-an-atom/js/common/view/AtomView.js: 79-90
+	- ../build-an-atom/js/common/view/AtomView.js: 76-87
 	 ../shred/js/view/InteractiveSchematicAtom.js: 41-52
 
- 79 │ 41 │     var atomNode = new AtomNode( model.particleAtom, modelViewTransform, {                         
- 80 │ 42 │       showElementNameProperty: model.showElementNameProperty,                                      
- 81 │ 43 │       showNeutralOrIonProperty: model.showNeutralOrIonProperty,                                    
- 82 │ 44 │       showStableOrUnstableProperty: model.showStableOrUnstableProperty,                            
- 83 │ 45 │       electronShellDepictionProperty: model.electronShellDepictionProperty                         
- 84 │ 46 │     } );                                                                                           
- 85 │ 47 │     this.addChild( atomNode );                                                                     
- 86 │ 48 │                                                                                                    
- 87 │ 49 │     // Add the bucket holes.  Done separately from the bucket front for layering.                  
- 88 │ 50 │     _.each( model.buckets, function( bucket ) {                                                    
- 89 │ 51 │       self.addChild( new BucketHole( bucket, modelViewTransform ).mutate( { pickable: false } ) ); 
- 90 │ 52 │     } );                                                                                           
+ 76 │ 41 │     var atomNode = new AtomNode( model.particleAtom, modelViewTransform, {                         
+ 77 │ 42 │       showElementNameProperty: model.showElementNameProperty,                                      
+ 78 │ 43 │       showNeutralOrIonProperty: model.showNeutralOrIonProperty,                                    
+ 79 │ 44 │       showStableOrUnstableProperty: model.showStableOrUnstableProperty,                            
+ 80 │ 45 │       electronShellDepictionProperty: model.electronShellDepictionProperty                         
+ 81 │ 46 │     } );                                                                                           
+ 82 │ 47 │     this.addChild( atomNode );                                                                     
+ 83 │ 48 │                                                                                                    
+ 84 │ 49 │     // Add the bucket holes.  Done separately from the bucket front for layering.                  
+ 85 │ 50 │     _.each( model.buckets, function( bucket ) {                                                    
+ 86 │ 51 │       self.addChild( new BucketHole( bucket, modelViewTransform ).mutate( { pickable: false } ) ); 
+ 87 │ 52 │     } );                                                                                           
 
-	- ../build-an-atom/js/common/view/AtomView.js: 116-154
+	- ../build-an-atom/js/common/view/AtomView.js: 113-151
 	 ../shred/js/view/InteractiveSchematicAtom.js: 75-113
 
- 116 │ 75  │       } ) );                                                                                                                               
- 117 │ 76  │       // Add a listener that adjusts a nucleon's z-order layering.                                                                         
- 118 │ 77  │       nucleon.zLayerProperty.link( function( zLayer ) {                                                                                    
- 119 │ 78  │         assert && assert( nucleonLayers.length > zLayer, 'zLayer for nucleon exceeds number of layers, max number may need increasing.' ); 
- 120 │ 79  │         // Determine whether nucleon view is on the correct layer.                                                                         
- 121 │ 80  │         var onCorrectLayer = false;                                                                                                        
- 122 │ 81  │         nucleonLayers[ zLayer ].children.forEach( function( particleView ) {                                                               
- 123 │ 82  │           if ( particleView.particle === nucleon ) {                                                                                       
- 124 │ 83  │             onCorrectLayer = true;                                                                                                         
- 125 │ 84  │           }                                                                                                                                
- 126 │ 85  │         } );                                                                                                                               
- 127 │ 86  │                                                                                                                                            
- 128 │ 87  │         if ( !onCorrectLayer ) {                                                                                                           
- 129 │ 88  │                                                                                                                                            
- 130 │ 89  │           // Remove particle view from its current layer.                                                                                  
- 131 │ 90  │           var particleView = null;                                                                                                         
- 132 │ 91  │           for ( var layerIndex = 0; layerIndex < nucleonLayers.length && particleView === null; layerIndex++ ) {                           
- 133 │ 92  │             for ( var childIndex = 0; childIndex < nucleonLayers[ layerIndex ].children.length; childIndex++ ) {                           
- 134 │ 93  │               if ( nucleonLayers[ layerIndex ].children[ childIndex ].particle === nucleon ) {                                             
- 135 │ 94  │                 particleView = nucleonLayers[ layerIndex ].children[ childIndex ];                                                         
- 136 │ 95  │                 nucleonLayers[ layerIndex ].removeChildAt( childIndex );                                                                   
- 137 │ 96  │                 break;                                                                                                                     
- 138 │ 97  │               }                                                                                                                            
- 139 │ 98  │             }                                                                                                                              
- 140 │ 99  │           }                                                                                                                                
- 141 │ 100 │                                                                                                                                            
- 142 │ 101 │           // Add the particle view to its new layer.                                                                                       
- 143 │ 102 │           assert && assert( particleView !== null, 'Particle view not found during relayering' );                                          
- 144 │ 103 │           nucleonLayers[ zLayer ].addChild( particleView );                                                                                
- 145 │ 104 │         }                                                                                                                                  
- 146 │ 105 │       } );                                                                                                                                 
- 147 │ 106 │     } );                                                                                                                                   
- 148 │ 107 │                                                                                                                                            
- 149 │ 108 │     // Add the electron particle views.                                                                                                    
- 150 │ 109 │     model.electrons.forEach( function( electron ) {                                                                                        
- 151 │ 110 │       electronLayer.addChild( new ParticleView( electron, modelViewTransform, {                                                            
- 152 │ 111 │         tandem: electronsTandem.createNextTandem()                                                                                         
- 153 │ 112 │       } ) );                                                                                                                               
- 154 │ 113 │     } );                                                                                                                                   
+ 113 │ 75  │       } ) );                                                                                                                               
+ 114 │ 76  │       // Add a listener that adjusts a nucleon's z-order layering.                                                                         
+ 115 │ 77  │       nucleon.zLayerProperty.link( function( zLayer ) {                                                                                    
+ 116 │ 78  │         assert && assert( nucleonLayers.length > zLayer, 'zLayer for nucleon exceeds number of layers, max number may need increasing.' ); 
+ 117 │ 79  │         // Determine whether nucleon view is on the correct layer.                                                                         
+ 118 │ 80  │         var onCorrectLayer = false;                                                                                                        
+ 119 │ 81  │         nucleonLayers[ zLayer ].children.forEach( function( particleView ) {                                                               
+ 120 │ 82  │           if ( particleView.particle === nucleon ) {                                                                                       
+ 121 │ 83  │             onCorrectLayer = true;                                                                                                         
+ 122 │ 84  │           }                                                                                                                                
+ 123 │ 85  │         } );                                                                                                                               
+ 124 │ 86  │                                                                                                                                            
+ 125 │ 87  │         if ( !onCorrectLayer ) {                                                                                                           
+ 126 │ 88  │                                                                                                                                            
+ 127 │ 89  │           // Remove particle view from its current layer.                                                                                  
+ 128 │ 90  │           var particleView = null;                                                                                                         
+ 129 │ 91  │           for ( var layerIndex = 0; layerIndex < nucleonLayers.length && particleView === null; layerIndex++ ) {                           
+ 130 │ 92  │             for ( var childIndex = 0; childIndex < nucleonLayers[ layerIndex ].children.length; childIndex++ ) {                           
+ 131 │ 93  │               if ( nucleonLayers[ layerIndex ].children[ childIndex ].particle === nucleon ) {                                             
+ 132 │ 94  │                 particleView = nucleonLayers[ layerIndex ].children[ childIndex ];                                                         
+ 133 │ 95  │                 nucleonLayers[ layerIndex ].removeChildAt( childIndex );                                                                   
+ 134 │ 96  │                 break;                                                                                                                     
+ 135 │ 97  │               }                                                                                                                            
+ 136 │ 98  │             }                                                                                                                              
+ 137 │ 99  │           }                                                                                                                                
+ 138 │ 100 │                                                                                                                                            
+ 139 │ 101 │           // Add the particle view to its new layer.                                                                                       
+ 140 │ 102 │           assert && assert( particleView !== null, 'Particle view not found during relayering' );                                          
+ 141 │ 103 │           nucleonLayers[ zLayer ].addChild( particleView );                                                                                
+ 142 │ 104 │         }                                                                                                                                  
+ 143 │ 105 │       } );                                                                                                                                 
+ 144 │ 106 │     } );                                                                                                                                   
+ 145 │ 107 │                                                                                                                                            
+ 146 │ 108 │     // Add the electron particle views.                                                                                                    
+ 147 │ 109 │     model.electrons.forEach( function( electron ) {                                                                                        
+ 148 │ 110 │       electronLayer.addChild( new ParticleView( electron, modelViewTransform, {                                                            
+ 149 │ 111 │         tandem: electronsTandem.createNextTandem()                                                                                         
+ 150 │ 112 │       } ) );                                                                                                                               
+ 151 │ 113 │     } );                                                                                                                                   
 
-	- ../build-an-atom/js/common/view/AtomView.js: 158-167
+	- ../build-an-atom/js/common/view/AtomView.js: 155-164
 	 ../shred/js/view/InteractiveSchematicAtom.js: 119-128
 
- 158 │ 119 │     var updateElectronVisibility = function() {                                                                                                            
- 159 │ 120 │       electronLayer.getChildren().forEach( function( electronNode ) {                                                                                      
- 160 │ 121 │         electronNode.visible = model.electronShellDepictionProperty.get() === 'orbits' || !model.particleAtom.electrons.contains( electronNode.particle ); 
- 161 │ 122 │       } );                                                                                                                                                 
- 162 │ 123 │     };                                                                                                                                                     
- 163 │ 124 │     model.particleAtom.electrons.lengthProperty.link( updateElectronVisibility );                                                                          
- 164 │ 125 │     model.electronShellDepictionProperty.link( updateElectronVisibility );                                                                                 
- 165 │ 126 │                                                                                                                                                            
- 166 │ 127 │     // Add the front portion of the buckets. This is done separately from the bucket holes for layering purposes.                                          
- 167 │ 128 │     var bucketFrontLayer = new Node();                                                                                                                     
+ 155 │ 119 │     var updateElectronVisibility = function() {                                                                                                            
+ 156 │ 120 │       electronLayer.getChildren().forEach( function( electronNode ) {                                                                                      
+ 157 │ 121 │         electronNode.visible = model.electronShellDepictionProperty.get() === 'orbits' || !model.particleAtom.electrons.contains( electronNode.particle ); 
+ 158 │ 122 │       } );                                                                                                                                                 
+ 159 │ 123 │     };                                                                                                                                                     
+ 160 │ 124 │     model.particleAtom.electrons.lengthProperty.link( updateElectronVisibility );                                                                          
+ 161 │ 125 │     model.electronShellDepictionProperty.link( updateElectronVisibility );                                                                                 
+ 162 │ 126 │                                                                                                                                                            
+ 163 │ 127 │     // Add the front portion of the buckets. This is done separately from the bucket holes for layering purposes.                                          
+ 164 │ 128 │     var bucketFrontLayer = new Node();                                                                                                                     
 
 	- ../area-model-multiplication/js/area-model-multiplication-config.js: 11-44
 	 ../simula-rasa/js/simula-rasa-config.js: 11-44
@@ -11046,14 +11089,14 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  29 │ 29 │    * @constructor                                                                                                                                          
  30 │ 30 │    */                                                                                                                                                      
  31 │ 31 │   function ExpandableConcentrationBarChartNode( showConcentrationBarChart, saltConcentration, sugarConcentration, showConcentrationValues, scaleFactor ) { 
- 32 │ 32 │     var thisNode = this;                                                                                                                                   
+ 32 │ 32 │     var self = this;                                                                                                                                       
 
 	- ../sugar-and-salt-solutions/js/common/view/MacroConcentrationBarChartNode.js: 31-62
 	 ../sugar-and-salt-solutions/js/macro/view/MacroConcentrationBarChartNode.js: 31-62
 
  31 │ 31 │   function ExpandableConcentrationBarChartNode( showConcentrationBarChart, saltConcentration, sugarConcentration, showConcentrationValues, scaleFactor ) { 
- 32 │ 32 │     var thisNode = this;                                                                                                                                   
- 33 │ 33 │     Node.call( thisNode, {fill: SugarAndSaltConstants.WATER_COLOR} );                                                                                      
+ 32 │ 32 │     var self = this;                                                                                                                                       
+ 33 │ 33 │     Node.call( self, {fill: SugarAndSaltConstants.WATER_COLOR} );                                                                                          
  34 │ 34 │                                                                                                                                                            
  35 │ 35 │     //The bar chart itself (when toggled to be visible)                                                                                                    
  36 │ 36 │     var barChartNode = new SugarSaltBarChart( saltConcentration, sugarConcentration, showConcentrationValues,                                              
@@ -11078,7 +11121,7 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  55 │ 55 │       expandedProperty: showConcentrationBarChart //Only show this bar chart if the user has opted to do so                                                
  56 │ 56 │     } );                                                                                                                                                   
  57 │ 57 │                                                                                                                                                            
- 58 │ 58 │     thisNode.addChild( accordionBoxNode );                                                                                                                 
+ 58 │ 58 │     self.addChild( accordionBoxNode );                                                                                                                     
  59 │ 59 │   }                                                                                                                                                        
  60 │ 60 │                                                                                                                                                            
  61 │ 61 │   return inherit( Node, ExpandableConcentrationBarChartNode );                                                                                             
@@ -11164,47 +11207,47 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  243 │ 275 │                                                                               
  244 │ 276 │   }, {                                                                        
 
-	- ../sun/js/ComboBox.js: 304-314
+	- ../sun/js/ComboBox.js: 311-321
 	 ../sun/js/UIComponent.js: 71-81
 
- 304 │ 71 │       this.disposeComboBox();                                                  
- 305 │ 72 │     },                                                                         
- 306 │ 73 │                                                                                
- 307 │ 74 │     // @public                                                                 
- 308 │ 75 │     setEnabled: function( enabled ) { this.enabledProperty.value = enabled; }, 
- 309 │ 76 │     set enabled( value ) { this.setEnabled( value ); },                        
- 310 │ 77 │                                                                                
- 311 │ 78 │     // @public                                                                 
- 312 │ 79 │     getEnabled: function() { return this.enabledProperty.value; },             
- 313 │ 80 │     get enabled() { return this.getEnabled(); }                                
- 314 │ 81 │   } );                                                                         
+ 311 │ 71 │       this.disposeComboBox();                                                  
+ 312 │ 72 │     },                                                                         
+ 313 │ 73 │                                                                                
+ 314 │ 74 │     // @public                                                                 
+ 315 │ 75 │     setEnabled: function( enabled ) { this.enabledProperty.value = enabled; }, 
+ 316 │ 76 │     set enabled( value ) { this.setEnabled( value ); },                        
+ 317 │ 77 │                                                                                
+ 318 │ 78 │     // @public                                                                 
+ 319 │ 79 │     getEnabled: function() { return this.enabledProperty.value; },             
+ 320 │ 80 │     get enabled() { return this.getEnabled(); }                                
+ 321 │ 81 │   } );                                                                         
 
-	- ../sun/js/buttons/RadioButtonGroup.js: 77-99
+	- ../sun/js/buttons/RadioButtonGroup.js: 85-107
 	 ../sun/js/buttons/RadioButtonGroupMember.js: 38-60
 
- 77 │ 38 │       // The fill for the rectangle behind the radio buttons.  Default color is bluish color, as in the other button library. 
- 78 │ 39 │       baseColor: ColorConstants.LIGHT_BLUE,                                                                                   
- 79 │ 40 │       disabledBaseColor: ColorConstants.LIGHT_GRAY,                                                                           
- 80 │ 41 │                                                                                                                               
- 81 │ 42 │       // Opacity can be set separately for the buttons and button content.                                                    
- 82 │ 43 │       selectedButtonOpacity: 1,                                                                                               
- 83 │ 44 │       deselectedButtonOpacity: 0.6,                                                                                           
- 84 │ 45 │       selectedContentOpacity: 1,                                                                                              
- 85 │ 46 │       deselectedContentOpacity: 0.6,                                                                                          
- 86 │ 47 │       overButtonOpacity: 0.8,                                                                                                 
- 87 │ 48 │       overContentOpacity: 0.8,                                                                                                
- 88 │ 49 │                                                                                                                               
- 89 │ 50 │       selectedStroke: 'black',                                                                                                
- 90 │ 51 │       deselectedStroke: new Color( 50, 50, 50 ),                                                                              
- 91 │ 52 │       selectedLineWidth: 1.5,                                                                                                 
- 92 │ 53 │       deselectedLineWidth: 1,                                                                                                 
- 93 │ 54 │                                                                                                                               
- 94 │ 55 │       // The following options specify highlight behavior overrides, leave as null to get the default behavior                
- 95 │ 56 │       // Note that highlighting applies only to deselected buttons                                                            
- 96 │ 57 │       overFill: null,                                                                                                         
- 97 │ 58 │       overStroke: null,                                                                                                       
- 98 │ 59 │       overLineWidth: null,                                                                                                    
- 99 │ 60 │                                                                                                                               
+ 85  │ 38 │       // The fill for the rectangle behind the radio buttons.  Default color is bluish color, as in the other button library. 
+ 86  │ 39 │       baseColor: ColorConstants.LIGHT_BLUE,                                                                                   
+ 87  │ 40 │       disabledBaseColor: ColorConstants.LIGHT_GRAY,                                                                           
+ 88  │ 41 │                                                                                                                               
+ 89  │ 42 │       // Opacity can be set separately for the buttons and button content.                                                    
+ 90  │ 43 │       selectedButtonOpacity: 1,                                                                                               
+ 91  │ 44 │       deselectedButtonOpacity: 0.6,                                                                                           
+ 92  │ 45 │       selectedContentOpacity: 1,                                                                                              
+ 93  │ 46 │       deselectedContentOpacity: 0.6,                                                                                          
+ 94  │ 47 │       overButtonOpacity: 0.8,                                                                                                 
+ 95  │ 48 │       overContentOpacity: 0.8,                                                                                                
+ 96  │ 49 │                                                                                                                               
+ 97  │ 50 │       selectedStroke: 'black',                                                                                                
+ 98  │ 51 │       deselectedStroke: new Color( 50, 50, 50 ),                                                                              
+ 99  │ 52 │       selectedLineWidth: 1.5,                                                                                                 
+ 100 │ 53 │       deselectedLineWidth: 1,                                                                                                 
+ 101 │ 54 │                                                                                                                               
+ 102 │ 55 │       // The following options specify highlight behavior overrides, leave as null to get the default behavior                
+ 103 │ 56 │       // Note that highlighting applies only to deselected buttons                                                            
+ 104 │ 57 │       overFill: null,                                                                                                         
+ 105 │ 58 │       overStroke: null,                                                                                                       
+ 106 │ 59 │       overLineWidth: null,                                                                                                    
+ 107 │ 60 │                                                                                                                               
 
 	- ../sun/js/buttons/RectangularButtonView.js: 231-249
 	 ../sun/js/buttons/RectangularButtonView.js: 346-364
@@ -11544,26 +11587,6 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  43 │ 43 │     // this sim                                                                                            
  44 │ 44 │     AREA_MODEL_MULTIPLICATION: '.'                                                                         
 
-	- ../vegas/js/ScoreboardBar.js: 16-31
-	 ../vegas/js/ScoreboardPanel.js: 17-32
-
- 16 │ 17 │   var Rectangle = require( 'SCENERY/nodes/Rectangle' );                                
- 17 │ 18 │   var SimpleClockIcon = require( 'SCENERY_PHET/SimpleClockIcon' );                     
- 18 │ 19 │   var StringUtils = require( 'PHETCOMMON/util/StringUtils' );                          
- 19 │ 20 │   var Text = require( 'SCENERY/nodes/Text' );                                          
- 20 │ 21 │   var TextPushButton = require( 'SUN/buttons/TextPushButton' );                        
- 21 │ 22 │   var vegas = require( 'VEGAS/vegas' );                                                
- 22 │ 23 │   var Tandem = require( 'TANDEM/Tandem' );                                             
- 23 │ 24 │                                                                                        
- 24 │ 25 │   // strings                                                                           
- 25 │ 26 │   var startOverString = require( 'string!VEGAS/startOver' );                           
- 26 │ 27 │   var labelLevelString = require( 'string!VEGAS/label.level' );                        
- 27 │ 28 │   var labelScoreString = require( 'string!VEGAS/label.score' );                        
- 28 │ 29 │   var pattern0Challenge1MaxString = require( 'string!VEGAS/pattern.0challenge.1max' ); 
- 29 │ 30 │                                                                                        
- 30 │ 31 │   /**                                                                                  
- 31 │ 32 │    * @param {number} screenWidth                                                       
-
 	- ../griddle/js/griddle-config.js: 4-33
 	 ../vegas/js/vegas-config.js: 4-33
 
@@ -11673,9 +11696,9 @@ info: Found 481 exact clones with 9290 duplicated lines in 443 files
  40 │ 42 │     VEGAS: '../../vegas/js',                                             
 
 
- 1.81% (9290 lines) duplicated lines out of 514538 total lines of code.
+ 1.81% (9293 lines) duplicated lines out of 514816 total lines of code.
 
 warn: output file is not provided
-info: Generate report time: durationMs=1160
+info: Generate report time: durationMs=992
 
 Done.
