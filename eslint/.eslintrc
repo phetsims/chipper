@@ -27,6 +27,9 @@
     // Custom rule for checking the copyright.
     "copyright": 2,
     //
+    // Custom rule for checking TODOs have issues
+    "todo-should-have-issue": 1,
+    //
     // disallow declaration of variables that are not used in the code (recommended)
     // Overriden to allow unused args
     "no-unused-vars": [
@@ -164,7 +167,7 @@
     //
     "canvg": false,
     //
-    "clarinet":false,
+    "clarinet": false,
     //
     "clearTimeout": false,
     //
