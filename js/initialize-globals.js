@@ -124,7 +124,8 @@
       defaultValue: false
     },
 
-    // emit the Scenery input events
+    // emit the Scenery input events such as pointer moves, presses, releases, dt values and window resizes
+    // to support playback in a live simulation.
     phetioEmitInputEvents: {
       type: 'boolean',
       defaultValue: false
