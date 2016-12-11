@@ -112,9 +112,6 @@ module.exports = function( grunt, buildConfig ) {
                          '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
                          '// For licensing, please contact phethelp@colorado.edu';
 
-  // Determine which sim versions will be pointed to by WrapperUtils
-  var PRECODE = 'window.useRelativeSimPath=true;';
-
   var LIB_FILES = [
     '../query-string-machine/js/QueryStringMachine.js',
     '../phet-io/wrappers/common/js/SimIFrameClient.js',
@@ -133,6 +130,5 @@ module.exports = function( grunt, buildConfig ) {
     }
   } ).code;
 
-  grunt.file.write( DESTINATION_PATH + '/' + OUTPUT_FILE, COPYRIGHT_HEADER + '\n\n' + PRECODE + minified );
-
+  grunt.file.write( DESTINATION_PATH + '/' + OUTPUT_FILE, COPYRIGHT_HEADER + '\n\n' + minified );
 };
