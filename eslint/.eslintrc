@@ -30,6 +30,9 @@
     // Custom rule for checking TODOs have issues
     "todo-should-have-issue": 1,
     //
+    // Custom rule for ensuring that images and text use scenery node
+    "no-html-constructors": 2,
+    //
     // disallow declaration of variables that are not used in the code (recommended)
     // Overriden to allow unused args
     "no-unused-vars": [
