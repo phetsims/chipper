@@ -144,7 +144,7 @@ define( function( require ) {
           var baseContext = baseCanvas.getContext( '2d' );
           baseContext.drawImage( image, 0, 0 );
           var baseURL = baseCanvas.toDataURL();
-          var baseImage = new Image();
+          var baseImage = new Image(); // eslint-disable-line no-html-constructors
           baseImage.src = baseURL;
           mipmaps.push( {
             canvas: baseCanvas,
@@ -194,7 +194,7 @@ define( function( require ) {
             mipmap.url = canvas.toDataURL();
 
             // preloading image
-            mipmap.img = new Image();
+            mipmap.img = new Image(); // eslint-disable-line no-html-constructors
             mipmap.img.src = mipmap.url;
 
             mipmaps.push( mipmap );
