@@ -28,7 +28,7 @@
     "copyright": 2,
     //
     // Custom rule for checking TODOs have issues
-    "todo-should-have-issue": 1,
+    "todo-should-have-issue": 0,
     //
     // Custom rule for ensuring that images and text use scenery node
     "no-html-constructors": 2,
