@@ -36,7 +36,7 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-lin
 
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var getVersionForBrand = require( '../../../chipper/js/grunt/getVersionForBrand' );
+var getVersionForBrand = require( '../../../chipper/js/getVersionForBrand' );
 var getBrand = require( '../../../chipper/js/grunt/getBrand' );
 
 /**
