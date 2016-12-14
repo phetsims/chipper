@@ -243,8 +243,8 @@ module.exports = function( grunt ) {
   assert( packageJSON.version, 'version missing from ' + PACKAGE_FILENAME );
   assert( packageJSON.license, 'license missing from ' + PACKAGE_FILENAME );
 
-  // only repositories that are runnable have PhET-specific entries
-  if ( packageJSON.phet ) {
+  // only repositories that are runnable have PhET-specific entries. The isJSOnly flag is used by dot/kite/scenery, so they need packageJSON.phet to exist.
+  if ( packageJSON.phet && !packageJSON.phet.isJSOnly ) {
 
     // verify that required fields are present
     assert( packageJSON.phet.requirejsNamespace, 'phet.requirejsNamespace missing from ' + PACKAGE_FILENAME );
@@ -252,7 +252,7 @@ module.exports = function( grunt ) {
   else {
 
     // default so that non-build tasks run for repositories that aren't runnable
-    packageJSON.phet = {};
+    packageJSON.phet = packageJSON.phet || {};
   }
 
   // chipper/build.json (required)
@@ -282,7 +282,16 @@ module.exports = function( grunt ) {
     brand: brand,
 
     //TODO: better way to allow requesting different preload lists? chipper#63
-    getPreload: getPreload // for generating HTML files for specific configurations, see chipper#63
+    getPreload: getPreload, // for generating HTML files for specific configurations, see chipper#63
+
+    // {boolean} [isJSOnly] - If true, the minified JS output is the main product, and we'll build it slightly differently, with the following options:
+    //   (NOTE: This different build skips post-build steps, see https://github.com/phetsims/scenery/issues/593)
+    isJSOnly: !!packageJSON.phet.isJSOnly,
+    requiresLodash: packageJSON.phet.requiresLodash, // {boolean} [requiresLodash] - If true, the built JS will check for Lodash's presence on startup.
+    requiresJQuery: packageJSON.phet.requiresJQuery, // {boolean} [requiresJQuery] - If true, the built JS will check for jQuery's presence on startup.
+    assignGlobals: packageJSON.phet.assignGlobals, // {Object} assignGlobals - If isJSOnly is true, this should be an object map from window globals
+                                                   // as {string}s to the require.js names as {string}s, e.g. ```window.key = require( 'value' );```
+    finalizeJS: packageJSON.phet.finalizeJS // {string} [finalizeJS] - If provided, this JS string will be inserted at the end of the main IIFE.
   };
 
   // These fields depend on other entries in buildConfig.

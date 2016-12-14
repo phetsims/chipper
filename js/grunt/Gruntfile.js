@@ -110,20 +110,30 @@ module.exports = function( grunt ) {
     'after-requirejs-build'
   ];
 
-  grunt.registerTask( 'build',
-    'Builds the simulation:\n' +
-    'with no options, builds HTML for English only\n' +
-    '--locales=* : all locales in strings/ directory\n' +
-    '--locales=fr : French\n' +
-    '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
-    '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
-    '--brand=$brand : build a specific brand. Choices are phet, phet-io, adapted-from-phet (default)\n' +
-    '--lint=false : skip the lint sub-task\n' +
-    '--mangle=false : skip the mangling portion of UglifyJS2, and beautify the output\n' +
-    '--uglify=false : skip the UglifyJS2 step altogether\n' +
-    '--allHTML : Generate the _all.html file that contains information for all locales',
-    optionalTasks.concat( additionalTasks )
-  );
+  // Determine what the 'build' command will do, so that 'grunt build-js' is not needed.
+  if ( !buildConfig.isJSOnly ) {
+    grunt.registerTask( 'build',
+      'Builds the simulation:\n' +
+      'with no options, builds HTML for English only\n' +
+      '--locales=* : all locales in strings/ directory\n' +
+      '--locales=fr : French\n' +
+      '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
+      '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
+      '--brand=$brand : build a specific brand. Choices are phet, phet-io, adapted-from-phet (default)\n' +
+      '--lint=false : skip the lint sub-task\n' +
+      '--mangle=false : skip the mangling portion of UglifyJS2, and beautify the output\n' +
+      '--uglify=false : skip the UglifyJS2 step altogether\n' +
+      '--allHTML : Generate the _all.html file that contains information for all locales',
+      optionalTasks.concat( additionalTasks )
+    );
+  }
+  else {
+    // Grunt task that builds only the JS (no HTML), for libraries like scenery
+    // see https://github.com/phetsims/scenery/issues/567
+    grunt.registerTask( 'build', 'Build only the JS, for scenery/kite/dot/sun/libraries',
+      [ 'clean', 'requirejs-build' ]
+    );
+  }
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
     [ 'build', 'generate-thumbnails' ]
@@ -135,12 +145,6 @@ module.exports = function( grunt ) {
     function() {
       updateCopyrightDates( grunt, buildConfig );
     } );
-
-  // Grunt task that builds only the JS (no HTML), for libraries like scenery
-  // see https://github.com/phetsims/scenery/issues/567
-  grunt.registerTask( 'build-js', 'Build only the JS, for scenery/kite/dot/sun/libraries',
-    [ 'clean', 'requirejs-build' ]
-  );
 
   grunt.registerTask( 'deploy-production',
     'Invoke deployDev and then deploy a simulation to the production server.\n' +

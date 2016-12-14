@@ -48,9 +48,6 @@ module.exports = function( grunt, buildConfig ) {
       almond: '../../sherpa/lib/almond-0.2.9'
     },
 
-    // Start the main launch
-    insertRequire: [ repositoryName + '-main' ],
-
     // JS config file
     mainConfigFile: 'js/' + repositoryName + '-config.js',
 
@@ -74,9 +71,6 @@ module.exports = function( grunt, buildConfig ) {
 
     // optimized output file
     out: 'build/' + repositoryName + '.min.js',
-
-    // use the default wrapping strategy to wrap the module code, so that define/require are not globals
-    wrap: true,
 
     // turn off preservation of comments that have a license in them
     preserveLicenseComments: false,
@@ -121,6 +115,41 @@ module.exports = function( grunt, buildConfig ) {
     // modules to stub out in the optimized file
     stubModules: [ 'string', 'audio', 'image', 'mipmap' ]
   };
+
+  // If we are compiling the JS only, we'll want to add start/end wrapping JS with an IIFE, that checks for dependencies and sets up globals.
+  // This needs to load synchronously, see https://github.com/phetsims/scenery/issues/593.
+  if ( buildConfig.isJSOnly ) {
+    // Checks if lodash exists
+    var testLodash = '  if ( !window.hasOwnProperty( \'_\' ) ) {\n' +
+                     '    throw new Error( \'Underscore/Lodash not found: _\' );\n' +
+                     '  }\n';
+    // Checks if jQuery exists
+    var testJQuery = '  if ( !window.hasOwnProperty( \'$\' ) ) {\n' +
+                     '    throw new Error( \'jQuery not found: $\' );\n' +
+                     '  }\n';
+    config.wrap = {
+      start: '(function() {\n' +
+             ( buildConfig.requiresLodash ? testLodash : '' ) +
+             ( buildConfig.requiresJQuery ? testJQuery : '' ) +
+             // Assert needs to be bundled directly in, as we can't preload it
+             grunt.file.read( '../assert/js/assert.js' ),
+      end: Object.keys( buildConfig.assignGlobals ).sort().map( function( global ) {
+        // For each key=>value in buildConfig.assignGlobals, we want to set window.key = require( 'value' ), to initialize our globals
+        return '  window.' + global + ' = require( \'' + buildConfig.assignGlobals[ global ] + '\' );\n';
+      } ).join( '' ) +
+           // Allow repositories to insert extra JS at the end (like Scenery polyfills)
+           ( buildConfig.finalizeJS ? buildConfig.finalizeJS : '' ) + '\n' +
+           '}());'
+    };
+  }
+  // Otherwise, asynchronous loading is fine, so we'll set up insertRequire/wrap.
+  else {
+    // Start the main launch
+    config.insertRequire = [ repositoryName + '-main' ];
+    
+    // use the default wrapping strategy to wrap the module code, so that define/require are not globals
+    config.wrap = true;
+  }
 
   requirejs.optimize( config, done, function( err ) {
 
