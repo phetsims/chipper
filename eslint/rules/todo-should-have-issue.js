@@ -33,8 +33,8 @@ module.exports = function( context ) {
             var comment = comments[ i ];
             if ( comment.value.indexOf( 'TODO' ) >= 0 && comment.value.indexOf( 'https://github.com/phetsims/' ) === -1 ) {
               context.report( {
-                node: node,
-                loc: node.loc.start,
+                node: comment,
+                loc: comment.loc.start,
                 message: 'TODO should have an issue: ' + comment.value
               } );
             }
