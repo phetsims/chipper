@@ -19,6 +19,7 @@
       "tandem"
     ],
     "preload": [
+      "../joist/js/splash.js",
       "../sherpa/lib/jquery-2.1.0.js",
       "../sherpa/lib/lodash-2.4.1.js",
       "../sherpa/lib/FileSaver-b8054a2.js",
