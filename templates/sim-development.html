@@ -26,24 +26,12 @@ Additionally, move the entire image up by a bit.  This is done by changing the t
 
 The logo dimensions are given in splash.svg, currently at width="273.172px" height="130.05px"
 -->
-<img id="splash" style="position: absolute;top: 45%;left: 50%;margin-left: -137px;margin-top: -65px;">
-<div id="progressBar"
-     style="position:absolute;top:50%;left:50%;margin-left:-147px;margin-top:50px;width:273px;height:10px">
-  <svg>
-    <rect id="progressBarBackground" x="10" y="10" width="273" height="10" rx="3" ry="3"
-          style="stroke: white;stroke-width:1"></rect>
-    <rect id="progressBarForeground" x="10" y="10" width="0" height="10" rx="3" ry="3" style="fill:#6acef5;"></rect>
-  </svg>
-</div>
 
 <script type="text/javascript">
   ( function() {
     // Identify the brand (assume generated brand if not provided with query parameters)
     var brandMatch = location.search.match( /brand=([^&]+)/ );
     var brand = brandMatch ? decodeURIComponent( brandMatch[ 1 ] ) : 'adapted-from-phet';
-
-    // Load the desired splash screen image
-    document.getElementById( 'splash' ).src = '../brand/' + brand + '/images/splash.svg';
 
     // Preloads, with more included for phet-io brand
     var preloads = ( brand === 'phet-io' ) ? {{IO_PRELOADS}} : {{PRELOADS}};
