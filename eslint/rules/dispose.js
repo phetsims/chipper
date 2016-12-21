@@ -1,6 +1,6 @@
 // Copyright 2002-2015, University of Colorado Boulder
 /**
- * @fileoverview Rule to check that a dispose function is present for objects that register obersvers and listeners.
+ * @fileoverview Rule to check that a dispose function is present for objects that register observers and listeners.
  * @author Jesse Greenberg (PhET Interactive Simulations)
  * @copyright 2015 University of Colorado Boulder
  */

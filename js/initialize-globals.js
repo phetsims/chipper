@@ -104,7 +104,7 @@
     gameUpLogging: { type: 'flag' },
 
     // for phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
-    launchLocalVersion: { type: 'flag' },
+    relativeSimPath: { type: 'flag' },
 
     // test with a specific locale
     locale: {
