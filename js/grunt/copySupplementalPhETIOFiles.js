@@ -50,11 +50,30 @@ module.exports = function( grunt, buildConfig ) {
         '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
       );
 
+      /*
+       * Remove individual common code imports because they are all in phetio.js
+       */
       // This returns the whole line that contains this substring, so it can be removed
-      var firstLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js"' );
-      if ( firstLine ) {
+      var firstQueryStringLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js">' );
+      // Don't remove the import if it is coming from the phet-io website, only if it is a relative path in requirejs mode.
+      if ( firstQueryStringLine && firstQueryStringLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
         // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
-        contents = ChipperStringUtils.replaceAll( contents, firstLine, '' );
+        contents = ChipperStringUtils.replaceAll( contents, firstQueryStringLine, '' );
+      }
+      var firstWrapperUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperUtils.js">' );
+      if ( firstWrapperUtilsLine && firstWrapperUtilsLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
+        contents = ChipperStringUtils.replaceAll( contents, firstWrapperUtilsLine, '' );
+      }
+      var firstAssertLine = ChipperStringUtils.firstLineThatContains( contents, 'assert.js">' );
+      if ( firstAssertLine && firstAssertLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
+        contents = ChipperStringUtils.replaceAll( contents, firstAssertLine, '' );
+      }
+      var firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'SimIFrameClient.js">' );
+      if ( firstIFrameClientLine && firstIFrameClientLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
+        contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' );
       }
 
       // For info about phetio.js, see the end of this file
