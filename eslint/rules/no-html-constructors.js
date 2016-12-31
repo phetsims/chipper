@@ -12,9 +12,11 @@
 module.exports = function( context ) {
   'use strict';
 
-  // path to each module which the dev might have accidentally used the HTML constructor instead.
-  var calleeModulePathMap = {
+  // maps a native JavaScript constructor to the corresponding PhET module with the same name
+  var moduleMap = {
     Image: '\'SCENERY/nodes/Image\'',
+    //TODO Range will fail because its implementation refers to itself and has no require statement, see https://github.com/phetsims/chipper/issues/454
+    // Range: '\'DOT/Range\'',
     Text: '\'SCENERY/nodes/Text\''
   };
 
@@ -34,28 +36,25 @@ module.exports = function( context ) {
       //     }
       //   }
       // }
-      
-      if ( node.callee && 
-           node.callee.name &&
-           node.callee.name === 'Image' ||
-           node.callee.name === 'Text' ) {
 
-        var sceneryModulePath = calleeModulePathMap[ node.callee.name ];
+      if ( node.callee && node.callee.name && moduleMap.hasOwnProperty( node.callee.name ) ) {
 
-        // search through source tokens for the path to the scenery Node
+        var usingModule = false;  // are we using a module loaded via requirejs?
+
+        // search through source tokens for the path to the module
         var source = context.getSourceCode();
-        var usingScenery = false;
+        var modulePath = moduleMap[ node.callee.name ];
         source.tokensAndComments.forEach( function( token ) {
-          if ( token.value === sceneryModulePath ) {
-            usingScenery = true;
+          if ( token.value === modulePath ) {
+            usingModule = true;
           }
         } );
 
-        if ( !usingScenery ) {
+        if ( !usingModule ) {
           context.report( {
             node: node,
             loc: node.loc.start,
-            message: 'using HTML ' + node.callee.name + ' instead of scenery Node'
+            message: 'using native ' + node.callee.name + ' instead of module ' + modulePath
           } );
         }
       }
