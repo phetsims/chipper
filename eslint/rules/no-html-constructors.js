@@ -12,9 +12,7 @@
 module.exports = function( context ) {
   'use strict';
 
-
-  // path to each module which the dev might have accidentally used
-  // the HTML constructor instead. 
+  // path to each module which the dev might have accidentally used the HTML constructor instead.
   var calleeModulePathMap = {
     Image: '\'SCENERY/nodes/Image\'',
     Text: '\'SCENERY/nodes/Text\''
