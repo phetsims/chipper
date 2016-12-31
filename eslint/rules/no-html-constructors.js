@@ -16,7 +16,7 @@ module.exports = function( context ) {
   var moduleMap = {
     Image: '\'SCENERY/nodes/Image\'',
     //TODO Range will fail because its implementation refers to itself and has no require statement, see https://github.com/phetsims/chipper/issues/454
-    // Range: '\'DOT/Range\'',
+    Range: '\'DOT/Range\'',
     Text: '\'SCENERY/nodes/Text\''
   };
 
