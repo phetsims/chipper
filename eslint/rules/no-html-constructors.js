@@ -1,6 +1,8 @@
-// Copyright 2002-2015, University of Colorado Boulder
+// Copyright 2016, University of Colorado Boulder
 /**
- * @fileoverview Rule to check that usages of Image are using scenery Image.
+ * @fileoverview Rule to check that we aren't using native JavaScript constructors.
+ * This typically occurs when we forget a require statement for a PhET module that has the same name as a native constructor.
+ *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  * @copyright 2015 University of Colorado Boulder
  */
@@ -15,7 +17,6 @@ module.exports = function( context ) {
   // maps a native JavaScript constructor to the corresponding PhET module with the same name
   var moduleMap = {
     Image: '\'SCENERY/nodes/Image\'',
-    //TODO Range will fail because its implementation refers to itself and has no require statement, see https://github.com/phetsims/chipper/issues/454
     Range: '\'DOT/Range\'',
     Text: '\'SCENERY/nodes/Text\''
   };
