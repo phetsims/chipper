@@ -25,9 +25,14 @@ module.exports = function( context ) {
 
     NewExpression: function noHTMLConstructor( node ) {
 
-      // Here is the AST of a typical creation of an Image node
-      // such as var imageNode = new Image( imgsrc );
-      // 
+      // Example...
+      //
+      // JavaScript:
+      //
+      // var imageNode = new Image( imgsrc );
+      //
+      // Corresponding AST:
+      //
       // exemplar: {
       //   {
       //     "type": "NewExpression",
