@@ -23,7 +23,7 @@ axon/tests/qunit/unit-tests.js
   3:10  error  'runAxonTests' is defined but never used  no-unused-vars
 
 build-a-molecule/tests/qunit/js/model.js
-  8:7  error  'Color' is defined but never used  no-unused-vars
+  8:7  error  'Color' is assigned a value but never used  no-unused-vars
 
 build-a-molecule/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'               strict
@@ -35,12 +35,21 @@ chipper/templates/chipper-namespace.js
   17:36  error  'PHET_DEPENDENCIES' is not defined                 no-undef
   18:31  error  'PHET_STRINGS' is not defined                      no-undef
 
+circuit-construction-kit-common/js/common/model/FixedLengthCircuitElement.js
+  16:7  error  'Property' is assigned a value but never used  no-unused-vars
+
 circuit-construction-kit-common/tests/qunit/unit-tests.js
   3:1   error  Use the function form of 'use strict'    strict
   3:10  error  'runCCKTests' is defined but never used  no-unused-vars
 
-circuit-construction-kit-dc/js/circuit-construction-kit-dc-main.js
-  24:3  error  Mismatched var in require(string!), key=circuit-construction-kit-dc.title, var=circuitConstructionKitDCTitleString, desiredVar=circuitConstructionKitDcTitleString  string-require-statement-match
+circuit-construction-kit-basics/js/energy/EnergyScreen.js
+  29:7  error  'Color' is assigned a value but never used  no-unused-vars
+
+circuit-construction-kit-basics/js/intro/IntroScreen.js
+  29:7  error  'Color' is assigned a value but never used  no-unused-vars
+
+circuit-construction-kit-basics/js/lab/LabScreen.js
+  29:7  error  'Color' is assigned a value but never used  no-unused-vars
 
 dot/Gruntfile.js
   13:1   error  Mismatched require statement values, Gruntfile!==Gruntfile.js  require-statement-match
@@ -55,18 +64,18 @@ dot/tests/qunit/js/bounds2.js
   3:2  error  Use the function form of 'use strict'  strict
 
 dot/tests/qunit/js/complex.js
-   3:2  error  Use the function form of 'use strict'  strict
-  43:9  error  'd' is defined but never used          no-unused-vars
+   3:2  error  Use the function form of 'use strict'   strict
+  43:9  error  'd' is assigned a value but never used  no-unused-vars
 
 dot/tests/qunit/js/matrix3.js
-    3:2   error  Use the function form of 'use strict'              strict
-   50:12  error  'V3' is defined but never used                     no-unused-vars
-   98:5   error  Split 'var' declarations into multiple statements  one-var
-  109:5   error  Split 'var' declarations into multiple statements  one-var
-  153:5   error  Split 'var' declarations into multiple statements  one-var
-  164:5   error  Split 'var' declarations into multiple statements  one-var
-  175:5   error  Split 'var' declarations into multiple statements  one-var
-  185:5   error  Split 'var' declarations into multiple statements  one-var
+    3:2  error  Use the function form of 'use strict'              strict
+    8:7  error  'Vector3' is assigned a value but never used       no-unused-vars
+   94:5  error  Split 'var' declarations into multiple statements  one-var
+  105:5  error  Split 'var' declarations into multiple statements  one-var
+  149:5  error  Split 'var' declarations into multiple statements  one-var
+  160:5  error  Split 'var' declarations into multiple statements  one-var
+  171:5  error  Split 'var' declarations into multiple statements  one-var
+  181:5  error  Split 'var' declarations into multiple statements  one-var
 
 dot/tests/qunit/js/modulo.js
   3:2  error  Use the function form of 'use strict'  strict
@@ -76,11 +85,11 @@ dot/tests/qunit/js/simple-tests.js
   82:5  error  'expect' is not defined                no-undef
 
 dot/tests/qunit/js/transform3.js
-   3:2   error  Use the function form of 'use strict'  strict
-  50:15  error  'throws' is not defined                no-undef
-  51:11  error  'x' is defined but never used          no-unused-vars
-  53:15  error  'throws' is not defined                no-undef
-  54:11  error  'y' is defined but never used          no-unused-vars
+   3:2   error  Use the function form of 'use strict'   strict
+  50:15  error  'throws' is not defined                 no-undef
+  51:11  error  'x' is assigned a value but never used  no-unused-vars
+  53:15  error  'throws' is not defined                 no-undef
+  54:11  error  'y' is assigned a value but never used  no-unused-vars
 
 dot/tests/qunit/unit-tests.js
   4:1   error  Use the function form of 'use strict'    strict
@@ -94,21 +103,21 @@ mobius/js/StageCenteringCanvasTransform.js
   22:9  error  Unexpected alias 'that' for 'this'  consistent-this
 
 mobius/tests/triangle-css.js
-    3:24  error  Use the function form of 'use strict'         strict
-   13:9   error  'overTwoN' is defined but never used          no-unused-vars
-   13:30  error  'triangleSize' is not defined                 no-undef
-   21:66  error  'triangleSize' is not defined                 no-undef
-   21:84  error  'triangleSize' is not defined                 no-undef
-   22:12  error  'triangleSize' is not defined                 no-undef
-   83:13  error  'subdivisions' is not defined                 no-undef
-   84:7   error  'subdivisions' is not defined                 no-undef
-  133:30  error  'triangleSize' is not defined                 no-undef
-  134:31  error  'triangleSize' is not defined                 no-undef
-  135:29  error  'triangleSize' is not defined                 no-undef
-  171:9   error  'projectionMatrix' is defined but never used  no-unused-vars
-  188:83  error  'setTriangleTransform' is not defined         no-undef
-  219:29  error  'triangleSize' is not defined                 no-undef
-  232:21  error  Expected '!==' and instead saw '!='           eqeqeq
+    3:24  error  Use the function form of 'use strict'                  strict
+   13:9   error  'overTwoN' is assigned a value but never used          no-unused-vars
+   13:30  error  'triangleSize' is not defined                          no-undef
+   21:66  error  'triangleSize' is not defined                          no-undef
+   21:84  error  'triangleSize' is not defined                          no-undef
+   22:12  error  'triangleSize' is not defined                          no-undef
+   83:13  error  'subdivisions' is not defined                          no-undef
+   84:7   error  'subdivisions' is not defined                          no-undef
+  133:30  error  'triangleSize' is not defined                          no-undef
+  134:31  error  'triangleSize' is not defined                          no-undef
+  135:29  error  'triangleSize' is not defined                          no-undef
+  171:9   error  'projectionMatrix' is assigned a value but never used  no-unused-vars
+  188:83  error  'setTriangleTransform' is not defined                  no-undef
+  219:29  error  'triangleSize' is not defined                          no-undef
+  232:21  error  Expected '!==' and instead saw '!='                    eqeqeq
 
 mobius/tests/webgl-test/webgl-test.js
     3:1   error  'requirejs' is not defined                       no-undef
@@ -125,7 +134,7 @@ mobius/tests/webgl-test/webgl-test.js
    41:78  error  Strings must use singlequote                     quotes
    53:7   error  Move function declaration to function body root  no-inner-declarations
    62:10  error  Missing semicolon                                semi
-   99:11  error  'rot' is defined but never used                  no-unused-vars
+   99:11  error  'rot' is assigned a value but never used         no-unused-vars
   103:7   error  Move function declaration to function body root  no-inner-declarations
   127:7   error  Move function declaration to function body root  no-inner-declarations
   131:7   error  Move function declaration to function body root  no-inner-declarations
@@ -143,25 +152,25 @@ mobius/tests/webgl-test/webgl-test.js
   208:25  error  Strings must use singlequote                     quotes
 
 molecule-shapes/tests/qunit/js/fastmath.js
-   14:7   error  'Color' is defined but never used  no-unused-vars
-   27:17  error  'ms' is not defined                no-undef
-   28:17  error  'ms' is not defined                no-undef
-   29:17  error  'ms' is not defined                no-undef
-   31:5   error  'ms' is not defined                no-undef
-   34:5   error  'ms' is not defined                no-undef
-   36:5   error  'ms' is not defined                no-undef
-   38:5   error  'ms' is not defined                no-undef
-   43:20  error  'ms' is not defined                no-undef
-   45:17  error  'ms' is not defined                no-undef
-   46:22  error  'ms' is not defined                no-undef
-   47:21  error  'ms' is not defined                no-undef
-   48:22  error  'ms' is not defined                no-undef
-   96:20  error  'ms' is not defined                no-undef
-   98:17  error  'ms' is not defined                no-undef
-   99:17  error  'ms' is not defined                no-undef
-  100:21  error  'ms' is not defined                no-undef
-  101:17  error  'ms' is not defined                no-undef
-  105:17  error  'ms' is not defined                no-undef
+   14:7   error  'Color' is assigned a value but never used  no-unused-vars
+   27:17  error  'ms' is not defined                         no-undef
+   28:17  error  'ms' is not defined                         no-undef
+   29:17  error  'ms' is not defined                         no-undef
+   31:5   error  'ms' is not defined                         no-undef
+   34:5   error  'ms' is not defined                         no-undef
+   36:5   error  'ms' is not defined                         no-undef
+   38:5   error  'ms' is not defined                         no-undef
+   43:20  error  'ms' is not defined                         no-undef
+   45:17  error  'ms' is not defined                         no-undef
+   46:22  error  'ms' is not defined                         no-undef
+   47:21  error  'ms' is not defined                         no-undef
+   48:22  error  'ms' is not defined                         no-undef
+   96:20  error  'ms' is not defined                         no-undef
+   98:17  error  'ms' is not defined                         no-undef
+   99:17  error  'ms' is not defined                         no-undef
+  100:21  error  'ms' is not defined                         no-undef
+  101:17  error  'ms' is not defined                         no-undef
+  105:17  error  'ms' is not defined                         no-undef
 
 molecule-shapes/tests/qunit/unit-tests.js
    4:1   error  Use the function form of 'use strict'               strict
@@ -224,27 +233,30 @@ phetcommon/tests/qunit/unit-tests.js
   4:10  error  'runTests' is defined but never used   no-unused-vars
 
 phetmarks/phettest/index-server.js
-    4:1   error  property access in require statement   no-property-in-require-statement
-   18:31  error  '__dirname' is not defined             no-undef
-   21:1   error  Use the function form of 'use strict'  strict
-   46:1   error  Use the function form of 'use strict'  strict
-   51:1   error  Use the function form of 'use strict'  strict
-   56:1   error  Use the function form of 'use strict'  strict
-   60:1   error  Use the function form of 'use strict'  strict
-   64:1   error  Use the function form of 'use strict'  strict
-   70:1   error  Use the function form of 'use strict'  strict
-   76:1   error  Use the function form of 'use strict'  strict
-   86:1   error  Use the function form of 'use strict'  strict
-   96:1   error  Use the function form of 'use strict'  strict
-  115:1   error  Use the function form of 'use strict'  strict
-  125:1   error  Use the function form of 'use strict'  strict
-  135:1   error  Use the function form of 'use strict'  strict
-  145:1   error  Use the function form of 'use strict'  strict
-  160:1   error  Use the function form of 'use strict'  strict
-  181:1   error  Use the function form of 'use strict'  strict
-  196:1   error  Use the function form of 'use strict'  strict
-  207:20  error  Use the function form of 'use strict'  strict
-  245:7   error  'simName' is defined but never used    no-unused-vars
+    4:1   error  property access in require statement          no-property-in-require-statement
+   18:31  error  '__dirname' is not defined                    no-undef
+   21:1   error  Use the function form of 'use strict'         strict
+   46:1   error  Use the function form of 'use strict'         strict
+   51:1   error  Use the function form of 'use strict'         strict
+   56:1   error  Use the function form of 'use strict'         strict
+   60:1   error  Use the function form of 'use strict'         strict
+   64:1   error  Use the function form of 'use strict'         strict
+   70:1   error  Use the function form of 'use strict'         strict
+   76:1   error  Use the function form of 'use strict'         strict
+   86:1   error  Use the function form of 'use strict'         strict
+   96:1   error  Use the function form of 'use strict'         strict
+  115:1   error  Use the function form of 'use strict'         strict
+  125:1   error  Use the function form of 'use strict'         strict
+  135:1   error  Use the function form of 'use strict'         strict
+  145:1   error  Use the function form of 'use strict'         strict
+  160:1   error  Use the function form of 'use strict'         strict
+  181:1   error  Use the function form of 'use strict'         strict
+  196:1   error  Use the function form of 'use strict'         strict
+  207:20  error  Use the function form of 'use strict'         strict
+  245:7   error  'simName' is assigned a value but never used  no-unused-vars
+
+phet-io/tests/test-iframe-api/test-iframe-api.js
+  128:11  error  'fuzzProperties' is assigned a value but never used  no-unused-vars
 
 rosetta/js/LocaleInfo.js
   12:1  error  Mismatched require statement values, localeInfo!==localeInfo.js  require-statement-match
@@ -295,38 +307,38 @@ scenery/tests/benchmarks/js/benchmarks.js
   118:119  error  Missing semicolon                      semi
 
 scenery/tests/benchmarks/js/current.js
-    6:2   error  Use the function form of 'use strict'  strict
-   16:4   error  Missing semicolon                      semi
-   27:13  error  'i' is already defined                 no-redeclare
-   32:16  error  'benchmarkTimer' is not defined        no-undef
-   34:3   error  'benchmarkTimer' is not defined        no-undef
-   50:3   error  'benchmarkTimer' is not defined        no-undef
-   67:3   error  'benchmarkTimer' is not defined        no-undef
-   69:7   error  'node' is not defined                  no-undef
-   91:3   error  'benchmarkTimer' is not defined        no-undef
-  115:3   error  'benchmarkTimer' is not defined        no-undef
-  119:3   error  'benchmarkTimer' is not defined        no-undef
-  121:9   error  'context' is defined but never used    no-unused-vars
-  124:3   error  'benchmarkTimer' is not defined        no-undef
-  125:9   error  'node' is defined but never used       no-unused-vars
-  128:3   error  'benchmarkTimer' is not defined        no-undef
-  129:9   error  'node' is defined but never used       no-unused-vars
-  132:3   error  'benchmarkTimer' is not defined        no-undef
-  138:3   error  'benchmarkTimer' is not defined        no-undef
-  144:3   error  'benchmarkTimer' is not defined        no-undef
-  145:5   error  'node' is not defined                  no-undef
-  146:5   error  'node' is not defined                  no-undef
-  149:11  error  'node' is defined but never used       no-unused-vars
-  153:3   error  'benchmarkTimer' is not defined        no-undef
-  154:5   error  'node' is not defined                  no-undef
-  155:5   error  'node' is not defined                  no-undef
-  158:11  error  'node' is defined but never used       no-unused-vars
+    6:2   error  Use the function form of 'use strict'         strict
+   16:4   error  Missing semicolon                             semi
+   27:13  error  'i' is already defined                        no-redeclare
+   32:16  error  'benchmarkTimer' is not defined               no-undef
+   34:3   error  'benchmarkTimer' is not defined               no-undef
+   50:3   error  'benchmarkTimer' is not defined               no-undef
+   67:3   error  'benchmarkTimer' is not defined               no-undef
+   69:7   error  'node' is not defined                         no-undef
+   91:3   error  'benchmarkTimer' is not defined               no-undef
+  115:3   error  'benchmarkTimer' is not defined               no-undef
+  119:3   error  'benchmarkTimer' is not defined               no-undef
+  121:9   error  'context' is assigned a value but never used  no-unused-vars
+  124:3   error  'benchmarkTimer' is not defined               no-undef
+  125:9   error  'node' is assigned a value but never used     no-unused-vars
+  128:3   error  'benchmarkTimer' is not defined               no-undef
+  129:9   error  'node' is assigned a value but never used     no-unused-vars
+  132:3   error  'benchmarkTimer' is not defined               no-undef
+  138:3   error  'benchmarkTimer' is not defined               no-undef
+  144:3   error  'benchmarkTimer' is not defined               no-undef
+  145:5   error  'node' is not defined                         no-undef
+  146:5   error  'node' is not defined                         no-undef
+  149:11  error  'node' is assigned a value but never used     no-unused-vars
+  153:3   error  'benchmarkTimer' is not defined               no-undef
+  154:5   error  'node' is not defined                         no-undef
+  155:5   error  'node' is not defined                         no-undef
+  158:11  error  'node' is assigned a value but never used     no-unused-vars
 
 scenery/tests/benchmarks/js/marks.js
    14:2   error  Use the function form of 'use strict'            strict
-   75:11  error  'self' is defined but never used                 no-unused-vars
+   75:11  error  'self' is assigned a value but never used        no-unused-vars
    94:9   error  Move function declaration to function body root  no-inner-declarations
-  131:11  error  'suite' is defined but never used                no-unused-vars
+  131:11  error  'suite' is assigned a value but never used       no-unused-vars
   142:18  error  'Benchmark' is not defined                       no-undef
   185:4   error  Missing semicolon                                semi
   382:12  error  'info' is defined but never used                 no-unused-vars
@@ -336,14 +348,14 @@ scenery/tests/benchmarks/js/marks.js
   398:53  error  Strings must use singlequote                     quotes
 
 scenery/tests/benchmarks/js/perf-current.js
-    3:2  error  Use the function form of 'use strict'                  strict
-    5:7  error  'textNodeInstances' is defined but never used          no-unused-vars
-   39:7  error  'textPathInstances' is defined but never used          no-unused-vars
-  373:7  error  'rotatedSquaresHardcodedXY' is defined but never used  no-unused-vars
-  403:7  error  'rotatedSquaresTransformXY' is defined but never used  no-unused-vars
-  435:7  error  'rotatedSquaresIndividual' is defined but never used   no-unused-vars
-  557:7  error  'addingHexagons' is defined but never used             no-unused-vars
-  593:3  error  'marks' is not defined                                 no-undef
+    3:2  error  Use the function form of 'use strict'                           strict
+    5:7  error  'textNodeInstances' is assigned a value but never used          no-unused-vars
+   39:7  error  'textPathInstances' is assigned a value but never used          no-unused-vars
+  373:7  error  'rotatedSquaresHardcodedXY' is assigned a value but never used  no-unused-vars
+  403:7  error  'rotatedSquaresTransformXY' is assigned a value but never used  no-unused-vars
+  435:7  error  'rotatedSquaresIndividual' is assigned a value but never used   no-unused-vars
+  557:7  error  'addingHexagons' is assigned a value but never used             no-unused-vars
+  593:3  error  'marks' is not defined                                          no-undef
 
 scenery/tests/benchmarks/js/performance.js
     5:2   error  Use the function form of 'use strict'            strict
@@ -387,9 +399,9 @@ scenery/tests/browsers/unicode/inline-js-unicode.js
   95:11  error  Strings must use singlequote           quotes
 
 scenery/tests/event-logs/server/server.js
-  14:20  error  Use the function form of 'use strict'  strict
-  38:20  error  Strings must use singlequote           quotes
-  43:11  error  'logname' is defined but never used    no-unused-vars
+  14:20  error  Use the function form of 'use strict'         strict
+  38:20  error  Strings must use singlequote                  quotes
+  43:11  error  'logname' is assigned a value but never used  no-unused-vars
 
 scenery/tests/qunit/js/display.js
   393:5  error  'expect' is not defined  no-undef
@@ -403,16 +415,16 @@ scenery/tests/qunit/js/display.js
   552:5  error  'expect' is not defined  no-undef
 
 scenery/tests/qunit/js/from-fuzzer.js
-    28:9  error  'text0' is defined but never used  no-unused-vars
-    29:9  error  'text1' is defined but never used  no-unused-vars
-    30:9  error  'text2' is defined but never used  no-unused-vars
-   501:5  error  'expect' is not defined            no-undef
-   521:5  error  'expect' is not defined            no-undef
-  1311:5  error  'expect' is not defined            no-undef
+    28:9  error  'text0' is assigned a value but never used  no-unused-vars
+    29:9  error  'text1' is assigned a value but never used  no-unused-vars
+    30:9  error  'text2' is assigned a value but never used  no-unused-vars
+   501:5  error  'expect' is not defined                     no-undef
+   521:5  error  'expect' is not defined                     no-undef
+  1311:5  error  'expect' is not defined                     no-undef
 
 scenery/tests/qunit/js/miscellaneous.js
-  48:11  error  'path' is defined but never used  no-unused-vars
-  48:22  error  'Path' is not defined             no-undef
+  48:11  error  'path' is assigned a value but never used  no-unused-vars
+  48:22  error  'Path' is not defined                      no-undef
 
 scenery/tests/qunit/js/pixel-comparison.js
    17:9   error  'phetCore' is not defined           no-undef
@@ -554,11 +566,700 @@ scenery/tests/qunit/unit-tests.js
    4:10  error  'runSceneryTests' is defined but never used  no-unused-vars
   28:2   error  Unnecessary semicolon                        no-extra-semi
 
-sun/js/demo/DemosView.js
-  13:7  error  'Font' is defined but never used  no-unused-vars
+yotta/js/batchGoogleAnalytics.js
+    2:1   error  Incorrect copyright statement in first comment                             copyright
+   10:1   error  Mismatched require statement values, googleAnalytics!==googleAnalytics.js  require-statement-match
+   11:1   error  Mismatched require statement values, simDataLoader!==simDataLoader.js      require-statement-match
+   12:1   error  Mismatched require statement values, _!==lodash-node                       require-statement-match
+   17:21  error  Use the function form of 'use strict'                                      strict
+   79:36  error  Missing semicolon                                                          semi
+  105:36  error  Missing semicolon                                                          semi
 
-✖ 449 problems (449 errors, 0 warnings)
+yotta/js/googleAnalytics.js
+    1:1   error  Incorrect copyright statement in first comment            copyright
+   32:1   error  Mismatched require statement values, google!==googleapis  require-statement-match
+   34:1   error  Mismatched require statement values, _!==lodash-node      require-statement-match
+   52:5   error  'isPhetFilter' is assigned a value but never used         no-unused-vars
+   53:5   error  'isThirdPartyFilter' is assigned a value but never used   no-unused-vars
+   58:1   error  Use the function form of 'use strict'                     strict
+   71:1   error  Use the function form of 'use strict'                     strict
+   81:1   error  Use the function form of 'use strict'                     strict
+   85:1   error  Use the function form of 'use strict'                     strict
+  139:11  error  Use the function form of 'use strict'                     strict
+  175:20  error  Use the function form of 'use strict'                     strict
+  192:23  error  Use the function form of 'use strict'                     strict
 
-Warning: Task "eslint:everything" failed. Use --force to continue.
+yotta/js/importApacheData.js
+    1:1   error  Incorrect copyright statement in first comment                         copyright
+   21:5   error  'fs' is assigned a value but never used                                no-unused-vars
+   24:1   error  Mismatched require statement values, simDataLoader!==simDataLoader.js  require-statement-match
+   29:16  error  Use the function form of 'use strict'                                  strict
+  126:21  error  Use the function form of 'use strict'                                  strict
+  213:9   error  'project' is assigned a value but never used                           no-unused-vars
+  214:9   error  'version' is assigned a value but never used                           no-unused-vars
+
+yotta/js/importOfflineData.js
+   1:1   error  Incorrect copyright statement in first comment                         copyright
+   8:5   error  'fs' is assigned a value but never used                                no-unused-vars
+  10:1   error  Mismatched require statement values, simDataLoader!==simDataLoader.js  require-statement-match
+  19:16  error  Use the function form of 'use strict'                                  strict
+  21:21  error  Use the function form of 'use strict'                                  strict
+
+yotta/js/importSummaryData.js
+   1:1   error  Incorrect copyright statement in first comment                         copyright
+   8:5   error  'readline' is assigned a value but never used                          no-unused-vars
+   9:5   error  'md5' is assigned a value but never used                               no-unused-vars
+  10:1   error  Mismatched require statement values, _!==lodash-node                   require-statement-match
+  11:1   error  Mismatched require statement values, simDataLoader!==simDataLoader.js  require-statement-match
+  22:5   error  'TYPE_JAVA' is assigned a value but never used                         no-unused-vars
+  23:5   error  'TYPE_FLASH' is assigned a value but never used                        no-unused-vars
+  24:5   error  'TYPE_HTML' is assigned a value but never used                         no-unused-vars
+  50:1   error  Use the function form of 'use strict'                                  strict
+  56:21  error  Use the function form of 'use strict'                                  strict
+
+yotta/js/importWebsiteLocalizedSimulations.js
+   1:1   error  Incorrect copyright statement in first comment                         copyright
+   8:5   error  'fs' is assigned a value but never used                                no-unused-vars
+  10:1   error  Mismatched require statement values, simDataLoader!==simDataLoader.js  require-statement-match
+  12:21  error  Use the function form of 'use strict'                                  strict
+  26:14  error  Missing radix parameter                                                radix
+
+yotta/js/importWebsiteSimulations.js
+   1:1   error  Incorrect copyright statement in first comment                         copyright
+   8:5   error  'fs' is assigned a value but never used                                no-unused-vars
+  10:1   error  Mismatched require statement values, simDataLoader!==simDataLoader.js  require-statement-match
+  12:21  error  Use the function form of 'use strict'                                  strict
+  31:9   error  'nameString' is assigned a value but never used                        no-unused-vars
+  32:9   error  'projectString' is assigned a value but never used                     no-unused-vars
+  33:9   error  'titleString' is assigned a value but never used                       no-unused-vars
+
+yotta/js/reports/server.js
+    1:1   error  Incorrect copyright statement in first comment                         copyright
+    9:1   error  Mismatched require statement values, doT!==dot                         require-statement-match
+   10:1   error  Mismatched require statement values, query!==pg-query                  require-statement-match
+   11:1   error  Mismatched require statement values, escape!==pg-escape                require-statement-match
+   12:1   error  Mismatched require statement values, basicAuth!==basic-auth            require-statement-match
+   14:1   error  Mismatched require statement values, _!==lodash-node                   require-statement-match
+   15:1   error  Mismatched require statement values, simDataLoader!==simDataLoader.js  require-statement-match
+   16:1   error  Mismatched require statement values, localeInfo!==localeInfo.js        require-statement-match
+   19:1   error  Mismatched require statement values, config!==config.json              require-statement-match
+   25:1   error  Use the function form of 'use strict'                                  strict
+   45:32  error  Use the function form of 'use strict'                                  strict
+   53:45  error  Use the function form of 'use strict'                                  strict
+   81:50  error  Use the function form of 'use strict'                                  strict
+  193:13  error  'id' is assigned a value but never used                                no-unused-vars
+  241:48  error  Use the function form of 'use strict'                                  strict
+  252:33  error  Use the function form of 'use strict'                                  strict
+  253:7   error  'host' is assigned a value but never used                              no-unused-vars
+
+yotta/js/salesforceInitialExport.js
+  1193:10  error  Parsing error: Unexpected token is
+
+yotta/js/sanitizeForSalesforce.js
+     1:1     error  Incorrect copyright statement in first comment                                           copyright
+    10:1     error  Mismatched require statement values, _!==lodash-node                                     require-statement-match
+    12:19    error  Strings must use singlequote                                                             quotes
+    12:34    error  Strings must use singlequote                                                             quotes
+    12:45    error  Strings must use singlequote                                                             quotes
+    12:56    error  Strings must use singlequote                                                             quotes
+    12:74    error  Strings must use singlequote                                                             quotes
+    12:84    error  Strings must use singlequote                                                             quotes
+    12:96    error  Strings must use singlequote                                                             quotes
+    12:109   error  Strings must use singlequote                                                             quotes
+    12:132   error  Strings must use singlequote                                                             quotes
+    12:145   error  Strings must use singlequote                                                             quotes
+    12:156   error  Strings must use singlequote                                                             quotes
+    12:165   error  Strings must use singlequote                                                             quotes
+    12:195   error  Strings must use singlequote                                                             quotes
+    12:208   error  Strings must use singlequote                                                             quotes
+    12:219   error  Strings must use singlequote                                                             quotes
+    12:233   error  Strings must use singlequote                                                             quotes
+    12:244   error  Strings must use singlequote                                                             quotes
+    12:255   error  Strings must use singlequote                                                             quotes
+    12:269   error  Strings must use singlequote                                                             quotes
+    12:281   error  Strings must use singlequote                                                             quotes
+    12:292   error  Strings must use singlequote                                                             quotes
+    12:303   error  Strings must use singlequote                                                             quotes
+    12:313   error  Strings must use singlequote                                                             quotes
+    12:322   error  Strings must use singlequote                                                             quotes
+    12:333   error  Strings must use singlequote                                                             quotes
+    12:343   error  Strings must use singlequote                                                             quotes
+    12:354   error  Strings must use singlequote                                                             quotes
+    12:380   error  Strings must use singlequote                                                             quotes
+    12:392   error  Strings must use singlequote                                                             quotes
+    12:402   error  Strings must use singlequote                                                             quotes
+    12:428   error  Strings must use singlequote                                                             quotes
+    12:438   error  Strings must use singlequote                                                             quotes
+    12:450   error  Strings must use singlequote                                                             quotes
+    12:466   error  Strings must use singlequote                                                             quotes
+    12:475   error  Strings must use singlequote                                                             quotes
+    12:486   error  Strings must use singlequote                                                             quotes
+    12:498   error  Strings must use singlequote                                                             quotes
+    12:510   error  Strings must use singlequote                                                             quotes
+    12:520   error  Strings must use singlequote                                                             quotes
+    12:534   error  Strings must use singlequote                                                             quotes
+    12:552   error  Strings must use singlequote                                                             quotes
+    12:580   error  Strings must use singlequote                                                             quotes
+    12:588   error  Strings must use singlequote                                                             quotes
+    12:597   error  Strings must use singlequote                                                             quotes
+    12:606   error  Strings must use singlequote                                                             quotes
+    12:626   error  Strings must use singlequote                                                             quotes
+    12:647   error  Strings must use singlequote                                                             quotes
+    12:674   error  Strings must use singlequote                                                             quotes
+    12:686   error  Strings must use singlequote                                                             quotes
+    12:697   error  Strings must use singlequote                                                             quotes
+    12:734   error  Strings must use singlequote                                                             quotes
+    12:760   error  Strings must use singlequote                                                             quotes
+    12:776   error  Strings must use singlequote                                                             quotes
+    12:790   error  Strings must use singlequote                                                             quotes
+    12:807   error  Strings must use singlequote                                                             quotes
+    12:818   error  Strings must use singlequote                                                             quotes
+    12:826   error  Strings must use singlequote                                                             quotes
+    12:836   error  Strings must use singlequote                                                             quotes
+    12:854   error  Strings must use singlequote                                                             quotes
+    12:865   error  Strings must use singlequote                                                             quotes
+    12:877   error  Strings must use singlequote                                                             quotes
+    12:889   error  Strings must use singlequote                                                             quotes
+    12:911   error  Strings must use singlequote                                                             quotes
+    12:922   error  Strings must use singlequote                                                             quotes
+    12:931   error  Strings must use singlequote                                                             quotes
+    12:946   error  Strings must use singlequote                                                             quotes
+    12:967   error  Strings must use singlequote                                                             quotes
+    12:978   error  Strings must use singlequote                                                             quotes
+    12:989   error  Strings must use singlequote                                                             quotes
+    12:1001  error  Strings must use singlequote                                                             quotes
+    12:1018  error  Strings must use singlequote                                                             quotes
+    12:1055  error  Strings must use singlequote                                                             quotes
+    12:1072  error  Strings must use singlequote                                                             quotes
+    12:1080  error  Strings must use singlequote                                                             quotes
+    12:1091  error  Strings must use singlequote                                                             quotes
+    12:1101  error  Strings must use singlequote                                                             quotes
+    12:1118  error  Strings must use singlequote                                                             quotes
+    12:1138  error  Strings must use singlequote                                                             quotes
+    12:1177  error  Strings must use singlequote                                                             quotes
+    12:1186  error  Strings must use singlequote                                                             quotes
+    12:1201  error  Strings must use singlequote                                                             quotes
+    12:1215  error  Strings must use singlequote                                                             quotes
+    12:1226  error  Strings must use singlequote                                                             quotes
+    12:1237  error  Strings must use singlequote                                                             quotes
+    12:1246  error  Strings must use singlequote                                                             quotes
+    12:1259  error  Strings must use singlequote                                                             quotes
+    12:1279  error  Strings must use singlequote                                                             quotes
+    12:1289  error  Strings must use singlequote                                                             quotes
+    12:1302  error  Strings must use singlequote                                                             quotes
+    12:1313  error  Strings must use singlequote                                                             quotes
+    12:1327  error  Strings must use singlequote                                                             quotes
+    12:1335  error  Strings must use singlequote                                                             quotes
+    12:1348  error  Strings must use singlequote                                                             quotes
+    12:1360  error  Strings must use singlequote                                                             quotes
+    12:1370  error  Strings must use singlequote                                                             quotes
+    12:1387  error  Strings must use singlequote                                                             quotes
+    12:1397  error  Strings must use singlequote                                                             quotes
+    12:1406  error  Strings must use singlequote                                                             quotes
+    12:1443  error  Strings must use singlequote                                                             quotes
+    12:1470  error  Strings must use singlequote                                                             quotes
+    12:1482  error  Strings must use singlequote                                                             quotes
+    12:1495  error  Strings must use singlequote                                                             quotes
+    12:1513  error  Strings must use singlequote                                                             quotes
+    12:1524  error  Strings must use singlequote                                                             quotes
+    12:1535  error  Strings must use singlequote                                                             quotes
+    12:1544  error  Strings must use singlequote                                                             quotes
+    12:1557  error  Strings must use singlequote                                                             quotes
+    12:1565  error  Strings must use singlequote                                                             quotes
+    12:1573  error  Strings must use singlequote                                                             quotes
+    12:1584  error  Strings must use singlequote                                                             quotes
+    12:1605  error  Strings must use singlequote                                                             quotes
+    12:1615  error  Strings must use singlequote                                                             quotes
+    12:1624  error  Strings must use singlequote                                                             quotes
+    12:1635  error  Strings must use singlequote                                                             quotes
+    12:1648  error  Strings must use singlequote                                                             quotes
+    12:1657  error  Strings must use singlequote                                                             quotes
+    12:1674  error  Strings must use singlequote                                                             quotes
+    12:1684  error  Strings must use singlequote                                                             quotes
+    12:1702  error  Strings must use singlequote                                                             quotes
+    12:1712  error  Strings must use singlequote                                                             quotes
+    12:1735  error  Strings must use singlequote                                                             quotes
+    12:1749  error  Strings must use singlequote                                                             quotes
+    12:1758  error  Strings must use singlequote                                                             quotes
+    12:1770  error  Strings must use singlequote                                                             quotes
+    12:1786  error  Strings must use singlequote                                                             quotes
+    12:1802  error  Strings must use singlequote                                                             quotes
+    12:1812  error  Strings must use singlequote                                                             quotes
+    12:1826  error  Strings must use singlequote                                                             quotes
+    12:1834  error  Strings must use singlequote                                                             quotes
+    12:1844  error  Strings must use singlequote                                                             quotes
+    12:1855  error  Strings must use singlequote                                                             quotes
+    12:1866  error  Strings must use singlequote                                                             quotes
+    12:1877  error  Strings must use singlequote                                                             quotes
+    12:1886  error  Strings must use singlequote                                                             quotes
+    12:1903  error  Strings must use singlequote                                                             quotes
+    12:1916  error  Strings must use singlequote                                                             quotes
+    12:1930  error  Strings must use singlequote                                                             quotes
+    12:1939  error  Strings must use singlequote                                                             quotes
+    12:1981  error  Strings must use singlequote                                                             quotes
+    12:1995  error  Strings must use singlequote                                                             quotes
+    12:2005  error  Strings must use singlequote                                                             quotes
+    12:2017  error  Strings must use singlequote                                                             quotes
+    12:2029  error  Strings must use singlequote                                                             quotes
+    12:2037  error  Strings must use singlequote                                                             quotes
+    12:2046  error  Strings must use singlequote                                                             quotes
+    12:2062  error  Strings must use singlequote                                                             quotes
+    12:2082  error  Strings must use singlequote                                                             quotes
+    12:2096  error  Strings must use singlequote                                                             quotes
+    12:2110  error  Strings must use singlequote                                                             quotes
+    12:2123  error  Strings must use singlequote                                                             quotes
+    12:2134  error  Strings must use singlequote                                                             quotes
+    12:2144  error  Strings must use singlequote                                                             quotes
+    12:2179  error  Strings must use singlequote                                                             quotes
+    12:2197  error  Strings must use singlequote                                                             quotes
+    12:2208  error  Strings must use singlequote                                                             quotes
+    12:2218  error  Strings must use singlequote                                                             quotes
+    12:2230  error  Strings must use singlequote                                                             quotes
+    12:2244  error  Strings must use singlequote                                                             quotes
+    12:2255  error  Strings must use singlequote                                                             quotes
+    12:2269  error  Strings must use singlequote                                                             quotes
+    12:2280  error  Strings must use singlequote                                                             quotes
+    12:2289  error  Strings must use singlequote                                                             quotes
+    12:2298  error  Strings must use singlequote                                                             quotes
+    12:2313  error  Strings must use singlequote                                                             quotes
+    12:2337  error  Strings must use singlequote                                                             quotes
+    12:2354  error  Strings must use singlequote                                                             quotes
+    12:2369  error  Strings must use singlequote                                                             quotes
+    12:2382  error  Strings must use singlequote                                                             quotes
+    12:2391  error  Strings must use singlequote                                                             quotes
+    12:2402  error  Strings must use singlequote                                                             quotes
+    12:2410  error  Strings must use singlequote                                                             quotes
+    12:2428  error  Strings must use singlequote                                                             quotes
+    12:2456  error  Strings must use singlequote                                                             quotes
+    12:2466  error  Strings must use singlequote                                                             quotes
+    12:2474  error  Strings must use singlequote                                                             quotes
+    12:2486  error  Strings must use singlequote                                                             quotes
+    12:2495  error  Strings must use singlequote                                                             quotes
+    12:2505  error  Strings must use singlequote                                                             quotes
+    12:2525  error  Strings must use singlequote                                                             quotes
+    12:2537  error  Strings must use singlequote                                                             quotes
+    12:2545  error  Strings must use singlequote                                                             quotes
+    12:2560  error  Strings must use singlequote                                                             quotes
+    12:2579  error  Strings must use singlequote                                                             quotes
+    12:2589  error  Strings must use singlequote                                                             quotes
+    12:2601  error  Strings must use singlequote                                                             quotes
+    12:2616  error  Strings must use singlequote                                                             quotes
+    12:2625  error  Strings must use singlequote                                                             quotes
+    12:2636  error  Strings must use singlequote                                                             quotes
+    12:2647  error  Strings must use singlequote                                                             quotes
+    12:2657  error  Strings must use singlequote                                                             quotes
+    12:2667  error  Strings must use singlequote                                                             quotes
+    12:2683  error  Strings must use singlequote                                                             quotes
+    12:2708  error  Strings must use singlequote                                                             quotes
+    12:2723  error  Strings must use singlequote                                                             quotes
+    12:2752  error  Strings must use singlequote                                                             quotes
+    12:2788  error  Strings must use singlequote                                                             quotes
+    12:2797  error  Strings must use singlequote                                                             quotes
+    12:2811  error  Strings must use singlequote                                                             quotes
+    12:2836  error  Strings must use singlequote                                                             quotes
+    12:2852  error  Strings must use singlequote                                                             quotes
+    12:2864  error  Strings must use singlequote                                                             quotes
+    12:2875  error  Strings must use singlequote                                                             quotes
+    12:2889  error  Strings must use singlequote                                                             quotes
+    12:2905  error  Strings must use singlequote                                                             quotes
+    12:2918  error  Strings must use singlequote                                                             quotes
+    12:2930  error  Strings must use singlequote                                                             quotes
+    12:2942  error  Strings must use singlequote                                                             quotes
+    12:2961  error  Strings must use singlequote                                                             quotes
+    12:2972  error  Strings must use singlequote                                                             quotes
+    12:2988  error  Strings must use singlequote                                                             quotes
+    12:3032  error  Strings must use singlequote                                                             quotes
+    12:3041  error  Strings must use singlequote                                                             quotes
+    12:3060  error  Strings must use singlequote                                                             quotes
+    12:3073  error  Strings must use singlequote                                                             quotes
+    12:3082  error  Strings must use singlequote                                                             quotes
+    12:3094  error  Strings must use singlequote                                                             quotes
+    12:3106  error  Strings must use singlequote                                                             quotes
+    12:3119  error  Strings must use singlequote                                                             quotes
+    12:3129  error  Strings must use singlequote                                                             quotes
+    12:3144  error  Strings must use singlequote                                                             quotes
+    12:3153  error  Strings must use singlequote                                                             quotes
+    12:3163  error  Strings must use singlequote                                                             quotes
+    12:3177  error  Strings must use singlequote                                                             quotes
+    12:3189  error  Strings must use singlequote                                                             quotes
+    12:3201  error  Strings must use singlequote                                                             quotes
+    12:3211  error  Strings must use singlequote                                                             quotes
+    12:3219  error  Strings must use singlequote                                                             quotes
+    12:3230  error  Strings must use singlequote                                                             quotes
+    12:3239  error  Strings must use singlequote                                                             quotes
+    12:3251  error  Strings must use singlequote                                                             quotes
+    12:3262  error  Strings must use singlequote                                                             quotes
+    12:3272  error  Strings must use singlequote                                                             quotes
+    12:3288  error  Strings must use singlequote                                                             quotes
+    12:3298  error  Strings must use singlequote                                                             quotes
+    12:3308  error  Strings must use singlequote                                                             quotes
+    12:3319  error  Strings must use singlequote                                                             quotes
+    12:3343  error  Strings must use singlequote                                                             quotes
+    12:3361  error  Strings must use singlequote                                                             quotes
+    12:3372  error  Strings must use singlequote                                                             quotes
+    12:3379  error  Strings must use singlequote                                                             quotes
+    12:3393  error  Strings must use singlequote                                                             quotes
+    12:3404  error  Strings must use singlequote                                                             quotes
+    12:3417  error  Strings must use singlequote                                                             quotes
+    12:3428  error  Strings must use singlequote                                                             quotes
+    12:3446  error  Strings must use singlequote                                                             quotes
+    12:3455  error  Strings must use singlequote                                                             quotes
+    12:3476  error  Strings must use singlequote                                                             quotes
+    12:3489  error  Strings must use singlequote                                                             quotes
+    12:3507  error  Strings must use singlequote                                                             quotes
+    12:3516  error  Strings must use singlequote                                                             quotes
+    12:3530  error  Strings must use singlequote                                                             quotes
+    12:3540  error  Strings must use singlequote                                                             quotes
+    14:3     error  Strings must use singlequote                                                             quotes
+    15:3     error  Strings must use singlequote                                                             quotes
+    16:3     error  Strings must use singlequote                                                             quotes
+    17:3     error  Strings must use singlequote                                                             quotes
+    18:3     error  Strings must use singlequote                                                             quotes
+    19:3     error  Strings must use singlequote                                                             quotes
+    20:3     error  Strings must use singlequote                                                             quotes
+    21:3     error  Strings must use singlequote                                                             quotes
+    22:3     error  Strings must use singlequote                                                             quotes
+    23:3     error  Strings must use singlequote                                                             quotes
+    24:3     error  Strings must use singlequote                                                             quotes
+    25:3     error  Strings must use singlequote                                                             quotes
+    26:3     error  Strings must use singlequote                                                             quotes
+    27:3     error  Strings must use singlequote                                                             quotes
+    28:3     error  Strings must use singlequote                                                             quotes
+    29:3     error  Strings must use singlequote                                                             quotes
+    30:3     error  Strings must use singlequote                                                             quotes
+    31:3     error  Strings must use singlequote                                                             quotes
+    32:3     error  Strings must use singlequote                                                             quotes
+    33:3     error  Strings must use singlequote                                                             quotes
+    34:3     error  Strings must use singlequote                                                             quotes
+    35:3     error  Strings must use singlequote                                                             quotes
+    36:3     error  Strings must use singlequote                                                             quotes
+    37:3     error  Strings must use singlequote                                                             quotes
+    38:3     error  Strings must use singlequote                                                             quotes
+    39:3     error  Strings must use singlequote                                                             quotes
+    40:3     error  Strings must use singlequote                                                             quotes
+    41:3     error  Strings must use singlequote                                                             quotes
+    42:3     error  Strings must use singlequote                                                             quotes
+    43:3     error  Strings must use singlequote                                                             quotes
+    44:3     error  Strings must use singlequote                                                             quotes
+    45:3     error  Strings must use singlequote                                                             quotes
+    46:3     error  Strings must use singlequote                                                             quotes
+    47:3     error  Strings must use singlequote                                                             quotes
+    48:3     error  Strings must use singlequote                                                             quotes
+    49:3     error  Strings must use singlequote                                                             quotes
+    50:3     error  Strings must use singlequote                                                             quotes
+    51:3     error  Strings must use singlequote                                                             quotes
+    52:3     error  Strings must use singlequote                                                             quotes
+    53:3     error  Strings must use singlequote                                                             quotes
+    54:3     error  Strings must use singlequote                                                             quotes
+    55:3     error  Strings must use singlequote                                                             quotes
+    56:3     error  Strings must use singlequote                                                             quotes
+    57:3     error  Strings must use singlequote                                                             quotes
+    58:3     error  Strings must use singlequote                                                             quotes
+    59:3     error  Strings must use singlequote                                                             quotes
+    60:3     error  Strings must use singlequote                                                             quotes
+    61:3     error  Strings must use singlequote                                                             quotes
+    62:3     error  Strings must use singlequote                                                             quotes
+    63:3     error  Strings must use singlequote                                                             quotes
+    64:3     error  Strings must use singlequote                                                             quotes
+    65:3     error  Strings must use singlequote                                                             quotes
+    66:3     error  Strings must use singlequote                                                             quotes
+    67:3     error  Strings must use singlequote                                                             quotes
+    68:3     error  Strings must use singlequote                                                             quotes
+    69:3     error  Strings must use singlequote                                                             quotes
+    70:3     error  Strings must use singlequote                                                             quotes
+    71:3     error  Strings must use singlequote                                                             quotes
+    72:3     error  Strings must use singlequote                                                             quotes
+    73:3     error  Strings must use singlequote                                                             quotes
+    74:3     error  Strings must use singlequote                                                             quotes
+    75:3     error  Strings must use singlequote                                                             quotes
+    76:3     error  Strings must use singlequote                                                             quotes
+    77:3     error  Strings must use singlequote                                                             quotes
+    78:3     error  Strings must use singlequote                                                             quotes
+    79:3     error  Strings must use singlequote                                                             quotes
+    80:3     error  Strings must use singlequote                                                             quotes
+    81:3     error  Strings must use singlequote                                                             quotes
+    82:3     error  Strings must use singlequote                                                             quotes
+    83:3     error  Strings must use singlequote                                                             quotes
+    84:3     error  Strings must use singlequote                                                             quotes
+    85:3     error  Strings must use singlequote                                                             quotes
+    86:3     error  Strings must use singlequote                                                             quotes
+    87:3     error  Strings must use singlequote                                                             quotes
+    88:3     error  Strings must use singlequote                                                             quotes
+    89:3     error  Strings must use singlequote                                                             quotes
+    90:3     error  Strings must use singlequote                                                             quotes
+    91:3     error  Strings must use singlequote                                                             quotes
+    92:3     error  Strings must use singlequote                                                             quotes
+    93:3     error  Strings must use singlequote                                                             quotes
+    94:3     error  Strings must use singlequote                                                             quotes
+    95:3     error  Strings must use singlequote                                                             quotes
+    96:3     error  Strings must use singlequote                                                             quotes
+    97:3     error  Strings must use singlequote                                                             quotes
+    98:3     error  Strings must use singlequote                                                             quotes
+    99:3     error  Strings must use singlequote                                                             quotes
+   100:3     error  Strings must use singlequote                                                             quotes
+   101:3     error  Strings must use singlequote                                                             quotes
+   102:3     error  Strings must use singlequote                                                             quotes
+   103:3     error  Strings must use singlequote                                                             quotes
+   104:3     error  Strings must use singlequote                                                             quotes
+   105:3     error  Strings must use singlequote                                                             quotes
+   106:3     error  Strings must use singlequote                                                             quotes
+   107:3     error  Strings must use singlequote                                                             quotes
+   108:3     error  Strings must use singlequote                                                             quotes
+   109:3     error  Strings must use singlequote                                                             quotes
+   110:3     error  Strings must use singlequote                                                             quotes
+   111:3     error  Strings must use singlequote                                                             quotes
+   112:3     error  Strings must use singlequote                                                             quotes
+   113:3     error  Strings must use singlequote                                                             quotes
+   114:3     error  Strings must use singlequote                                                             quotes
+   115:3     error  Strings must use singlequote                                                             quotes
+   116:3     error  Strings must use singlequote                                                             quotes
+   117:3     error  Strings must use singlequote                                                             quotes
+   118:3     error  Strings must use singlequote                                                             quotes
+   119:3     error  Strings must use singlequote                                                             quotes
+   120:3     error  Strings must use singlequote                                                             quotes
+   121:3     error  Strings must use singlequote                                                             quotes
+   122:3     error  Strings must use singlequote                                                             quotes
+   123:3     error  Strings must use singlequote                                                             quotes
+   124:3     error  Strings must use singlequote                                                             quotes
+   125:3     error  Strings must use singlequote                                                             quotes
+   126:3     error  Strings must use singlequote                                                             quotes
+   127:3     error  Strings must use singlequote                                                             quotes
+   128:3     error  Strings must use singlequote                                                             quotes
+   129:3     error  Strings must use singlequote                                                             quotes
+   130:3     error  Strings must use singlequote                                                             quotes
+   131:3     error  Strings must use singlequote                                                             quotes
+   132:3     error  Strings must use singlequote                                                             quotes
+   133:3     error  Strings must use singlequote                                                             quotes
+   134:3     error  Strings must use singlequote                                                             quotes
+   135:3     error  Strings must use singlequote                                                             quotes
+   136:3     error  Strings must use singlequote                                                             quotes
+   137:3     error  Strings must use singlequote                                                             quotes
+   138:3     error  Strings must use singlequote                                                             quotes
+   139:3     error  Strings must use singlequote                                                             quotes
+   140:3     error  Strings must use singlequote                                                             quotes
+   141:3     error  Strings must use singlequote                                                             quotes
+   142:3     error  Strings must use singlequote                                                             quotes
+   143:3     error  Strings must use singlequote                                                             quotes
+   144:3     error  Strings must use singlequote                                                             quotes
+   145:3     error  Strings must use singlequote                                                             quotes
+   146:3     error  Strings must use singlequote                                                             quotes
+   147:3     error  Strings must use singlequote                                                             quotes
+   148:3     error  Strings must use singlequote                                                             quotes
+   149:3     error  Strings must use singlequote                                                             quotes
+   150:3     error  Strings must use singlequote                                                             quotes
+   151:3     error  Strings must use singlequote                                                             quotes
+   152:3     error  Strings must use singlequote                                                             quotes
+   153:3     error  Strings must use singlequote                                                             quotes
+   154:3     error  Strings must use singlequote                                                             quotes
+   155:3     error  Strings must use singlequote                                                             quotes
+   156:3     error  Strings must use singlequote                                                             quotes
+   157:3     error  Strings must use singlequote                                                             quotes
+   158:3     error  Strings must use singlequote                                                             quotes
+   159:3     error  Strings must use singlequote                                                             quotes
+   160:3     error  Strings must use singlequote                                                             quotes
+   161:3     error  Strings must use singlequote                                                             quotes
+   162:3     error  Strings must use singlequote                                                             quotes
+   163:3     error  Strings must use singlequote                                                             quotes
+   164:3     error  Strings must use singlequote                                                             quotes
+   165:3     error  Strings must use singlequote                                                             quotes
+   166:3     error  Strings must use singlequote                                                             quotes
+   167:3     error  Strings must use singlequote                                                             quotes
+   168:3     error  Strings must use singlequote                                                             quotes
+   169:3     error  Strings must use singlequote                                                             quotes
+   170:3     error  Strings must use singlequote                                                             quotes
+   171:3     error  Strings must use singlequote                                                             quotes
+   172:3     error  Strings must use singlequote                                                             quotes
+   173:3     error  Strings must use singlequote                                                             quotes
+   174:3     error  Strings must use singlequote                                                             quotes
+   175:3     error  Strings must use singlequote                                                             quotes
+   176:3     error  Strings must use singlequote                                                             quotes
+   177:3     error  Strings must use singlequote                                                             quotes
+   178:3     error  Strings must use singlequote                                                             quotes
+   179:3     error  Strings must use singlequote                                                             quotes
+   180:3     error  Strings must use singlequote                                                             quotes
+   181:3     error  Strings must use singlequote                                                             quotes
+   182:3     error  Strings must use singlequote                                                             quotes
+   183:3     error  Strings must use singlequote                                                             quotes
+   184:3     error  Strings must use singlequote                                                             quotes
+   185:3     error  Strings must use singlequote                                                             quotes
+   186:3     error  Strings must use singlequote                                                             quotes
+   187:3     error  Strings must use singlequote                                                             quotes
+   188:3     error  Strings must use singlequote                                                             quotes
+   189:3     error  Strings must use singlequote                                                             quotes
+   190:3     error  Strings must use singlequote                                                             quotes
+   191:3     error  Strings must use singlequote                                                             quotes
+   192:3     error  Strings must use singlequote                                                             quotes
+   193:3     error  Strings must use singlequote                                                             quotes
+   194:3     error  Strings must use singlequote                                                             quotes
+   195:3     error  Strings must use singlequote                                                             quotes
+   196:3     error  Strings must use singlequote                                                             quotes
+   197:3     error  Strings must use singlequote                                                             quotes
+   198:3     error  Strings must use singlequote                                                             quotes
+   199:3     error  Strings must use singlequote                                                             quotes
+   200:3     error  Strings must use singlequote                                                             quotes
+   201:3     error  Strings must use singlequote                                                             quotes
+   202:3     error  Strings must use singlequote                                                             quotes
+   203:3     error  Strings must use singlequote                                                             quotes
+   204:3     error  Strings must use singlequote                                                             quotes
+   205:3     error  Strings must use singlequote                                                             quotes
+   206:3     error  Strings must use singlequote                                                             quotes
+   207:3     error  Strings must use singlequote                                                             quotes
+   208:3     error  Strings must use singlequote                                                             quotes
+   209:3     error  Strings must use singlequote                                                             quotes
+   210:3     error  Strings must use singlequote                                                             quotes
+   211:3     error  Strings must use singlequote                                                             quotes
+   212:3     error  Strings must use singlequote                                                             quotes
+   213:3     error  Strings must use singlequote                                                             quotes
+   214:3     error  Strings must use singlequote                                                             quotes
+   215:3     error  Strings must use singlequote                                                             quotes
+   216:3     error  Strings must use singlequote                                                             quotes
+   217:3     error  Strings must use singlequote                                                             quotes
+   218:3     error  Strings must use singlequote                                                             quotes
+   219:3     error  Strings must use singlequote                                                             quotes
+   220:3     error  Strings must use singlequote                                                             quotes
+   221:3     error  Strings must use singlequote                                                             quotes
+   222:3     error  Strings must use singlequote                                                             quotes
+   223:3     error  Strings must use singlequote                                                             quotes
+   224:3     error  Strings must use singlequote                                                             quotes
+   225:3     error  Strings must use singlequote                                                             quotes
+   226:3     error  Strings must use singlequote                                                             quotes
+   227:3     error  Strings must use singlequote                                                             quotes
+   228:3     error  Strings must use singlequote                                                             quotes
+   229:3     error  Strings must use singlequote                                                             quotes
+   230:3     error  Strings must use singlequote                                                             quotes
+   231:3     error  Strings must use singlequote                                                             quotes
+   232:3     error  Strings must use singlequote                                                             quotes
+   233:3     error  Strings must use singlequote                                                             quotes
+   234:3     error  Strings must use singlequote                                                             quotes
+   235:3     error  Strings must use singlequote                                                             quotes
+   236:3     error  Strings must use singlequote                                                             quotes
+   237:3     error  Strings must use singlequote                                                             quotes
+   238:3     error  Strings must use singlequote                                                             quotes
+   239:3     error  Strings must use singlequote                                                             quotes
+   240:3     error  Strings must use singlequote                                                             quotes
+   241:3     error  Strings must use singlequote                                                             quotes
+   242:3     error  Strings must use singlequote                                                             quotes
+   243:3     error  Strings must use singlequote                                                             quotes
+   244:3     error  Strings must use singlequote                                                             quotes
+   245:3     error  Strings must use singlequote                                                             quotes
+   246:3     error  Strings must use singlequote                                                             quotes
+   247:3     error  Strings must use singlequote                                                             quotes
+   248:3     error  Strings must use singlequote                                                             quotes
+   249:3     error  Strings must use singlequote                                                             quotes
+   250:3     error  Strings must use singlequote                                                             quotes
+   251:3     error  Strings must use singlequote                                                             quotes
+   252:3     error  Strings must use singlequote                                                             quotes
+   253:3     error  Strings must use singlequote                                                             quotes
+   254:3     error  Strings must use singlequote                                                             quotes
+   255:3     error  Strings must use singlequote                                                             quotes
+   256:3     error  Strings must use singlequote                                                             quotes
+   257:3     error  Strings must use singlequote                                                             quotes
+   258:3     error  Strings must use singlequote                                                             quotes
+   259:3     error  Strings must use singlequote                                                             quotes
+   260:3     error  Strings must use singlequote                                                             quotes
+   261:3     error  Strings must use singlequote                                                             quotes
+   262:3     error  Strings must use singlequote                                                             quotes
+   263:3     error  Strings must use singlequote                                                             quotes
+   264:3     error  Strings must use singlequote                                                             quotes
+   265:3     error  Strings must use singlequote                                                             quotes
+   266:3     error  Strings must use singlequote                                                             quotes
+   267:3     error  Strings must use singlequote                                                             quotes
+   267:7     error  Strings must use singlequote                                                             quotes
+   267:11    error  Strings must use singlequote                                                             quotes
+   270:20    error  Use the function form of 'use strict'                                                    strict
+   275:56    error  Use the function form of 'use strict'                                                    strict
+   281:28    error  ["US"] is better written in dot notation                                                 dot-notation
+   282:51    error  Use the function form of 'use strict'                                                    strict
+   610:36    error  Use the function form of 'use strict'                                                    strict
+   637:1     error  Use the function form of 'use strict'                                                    strict
+   657:1     error  Use the function form of 'use strict'                                                    strict
+   676:1     error  Use the function form of 'use strict'                                                    strict
+   693:5     error  'INPUT_CONFIRMED' is assigned a value but never used                                     no-unused-vars
+   695:5     error  'INPUT_RECEIVEEMAIL' is assigned a value but never used                                  no-unused-vars
+   696:5     error  'INPUT_NEWSLETTERONLYACCOUNT' is assigned a value but never used                         no-unused-vars
+   698:5     error  'INPUT_DELIVERYFAILURES' is assigned a value but never used                              no-unused-vars
+   701:5     error  'INPUT_RESEARCHER' is assigned a value but never used                                    no-unused-vars
+   702:5     error  'INPUT_TRANSLATOR' is assigned a value but never used                                    no-unused-vars
+   706:5     error  'INPUT_OTHERROLETEXT' is assigned a value but never used                                 no-unused-vars
+   707:5     error  'INPUT_GENERALSCIENCE' is assigned a value but never used                                no-unused-vars
+   708:5     error  'INPUT_EARTHSCIENCE' is assigned a value but never used                                  no-unused-vars
+   709:5     error  'INPUT_BIOLOGY' is assigned a value but never used                                       no-unused-vars
+   710:5     error  'INPUT_PHYSICS' is assigned a value but never used                                       no-unused-vars
+   711:5     error  'INPUT_CHEMISTRY' is assigned a value but never used                                     no-unused-vars
+   712:5     error  'INPUT_ASTRONOMY' is assigned a value but never used                                     no-unused-vars
+   713:5     error  'INPUT_MATH' is assigned a value but never used                                          no-unused-vars
+   714:5     error  'INPUT_OTHERSUBJECT' is assigned a value but never used                                  no-unused-vars
+   715:5     error  'INPUT_OTHERSUBJECTTEXT' is assigned a value but never used                              no-unused-vars
+   721:5     error  'INPUT_ADULTEDUCATION' is assigned a value but never used                                no-unused-vars
+   722:5     error  'INPUT_OTHERGRADE' is assigned a value but never used                                    no-unused-vars
+   723:5     error  'INPUT_OTHERGRADETEXT' is assigned a value but never used                                no-unused-vars
+   740:5     error  'INPUT_GRADUATE' is already defined                                                      no-redeclare
+   790:1     error  Use the function form of 'use strict'                                                    strict
+   790:10    error  'bool' is defined but never used                                                         no-unused-vars
+   802:1     error  Use the function form of 'use strict'                                                    strict
+   807:1     error  Use the function form of 'use strict'                                                    strict
+   807:10    error  'mapDate' is defined but never used                                                      no-unused-vars
+   831:1     error  Use the function form of 'use strict'                                                    strict
+   832:5     error  Split 'var' declarations into multiple statements                                        one-var
+   833:5     error  Split 'var' declarations into multiple statements                                        one-var
+   835:11    error  Strings must use singlequote                                                             quotes
+   840:5     error  Expected a default case                                                                  default-case
+   864:1     error  Use the function form of 'use strict'                                                    strict
+   881:47    error  Expected '!==' and instead saw '!='                                                      eqeqeq
+   915:1     error  Use the function form of 'use strict'                                                    strict
+   920:1     error  Use the function form of 'use strict'                                                    strict
+   921:24    error  Unexpected control character(s) in regular expression: \x08, \x09, \x1a, \n, \r"', \%]/  no-control-regex
+   922:9     error  Expected a default case                                                                  default-case
+   923:18    error  Strings must use singlequote                                                             quotes
+   924:24    error  Strings must use singlequote                                                             quotes
+   925:18    error  Strings must use singlequote                                                             quotes
+   926:24    error  Strings must use singlequote                                                             quotes
+   927:18    error  Strings must use singlequote                                                             quotes
+   928:24    error  Strings must use singlequote                                                             quotes
+   929:18    error  Strings must use singlequote                                                             quotes
+   930:24    error  Strings must use singlequote                                                             quotes
+   931:18    error  Strings must use singlequote                                                             quotes
+   932:24    error  Strings must use singlequote                                                             quotes
+   933:18    error  Strings must use singlequote                                                             quotes
+   934:24    error  Strings must use singlequote                                                             quotes
+   935:18    error  Strings must use singlequote                                                             quotes
+   936:18    error  Strings must use singlequote                                                             quotes
+   937:18    error  Strings must use singlequote                                                             quotes
+   938:18    error  Strings must use singlequote                                                             quotes
+   939:24    error  Strings must use singlequote                                                             quotes
+   946:34    error  Use the function form of 'use strict'                                                    strict
+   948:7     error  'rejected' is assigned a value but never used                                            no-unused-vars
+  1022:8     error  Missing radix parameter                                                                  radix
+  1054:7     error  'experience' is assigned a value but never used                                          no-unused-vars
+  1146:12    error  'multiSelect' is defined but never used                                                  no-unused-vars
+  1158:7     error  'secondaryEmail' is assigned a value but never used                                      no-unused-vars
+  1159:7     error  'isDonor' is assigned a value but never used                                             no-unused-vars
+  1160:7     error  'donationDate' is assigned a value but never used                                        no-unused-vars
+  1161:7     error  'donationAmount' is assigned a value but never used                                      no-unused-vars
+  1166:8     error  Missing radix parameter                                                                  radix
+  1291:24    error  Use the function form of 'use strict'                                                    strict
+  1293:11    error  Expected a conditional expression and instead saw an assignment                          no-cond-assign
+  1298:29    error  Use the function form of 'use strict'                                                    strict
+  1300:11    error  Expected a conditional expression and instead saw an assignment                          no-cond-assign
+  1305:29    error  Use the function form of 'use strict'                                                    strict
+  1307:11    error  Expected a conditional expression and instead saw an assignment                          no-cond-assign
+  1312:27    error  Use the function form of 'use strict'                                                    strict
+  1316:28    error  Use the function form of 'use strict'                                                    strict
+
+yotta/js/simDataLoader.js
+   2:1  error  Incorrect copyright statement in first comment             copyright
+  43:1  error  Mismatched require statement values, query!==pg-query      require-statement-match
+  44:1  error  Mismatched require statement values, _!==lodash-node       require-statement-match
+  47:1  error  Mismatched require statement values, config!==config.json  require-statement-match
+  51:9  error  Use the function form of 'use strict'                      strict
+
+yotta/js/transactionCounter.js
+   1:1   error  Incorrect copyright statement in first comment  copyright
+  10:11  error  Use the function form of 'use strict'           strict
+
+
+✖ 1119 problems (1119 errors, 0 warnings)
+
+Warning: Task "eslint:everything" failed. Use --force to continue.
 
 Aborted due to warnings.
