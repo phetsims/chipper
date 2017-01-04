@@ -24,19 +24,15 @@
 module.exports = function( context ) {
   'use strict';
 
-  // map enumerating native JavaScript constructor names
-  var typeMap = {
-    Image: 'Image',
-    Range: 'Range',
-    Text: 'Text'
-  };
+  // names of the native JavaScript constructors that clash with PhET type names
+  var nativeConstructors = [ 'Image', 'Range', 'Text' ];
 
   // list of all types that are declared in the file that have the same name as a native JavaScript constructor
   var declaredTypes = [];
 
   /**
    * Add a type to declared types if the 'declaration' node has a name which is equal to
-   * one of the entires in typeMap.  Called when eslint finds VariableDeclarator or FunctionDeclaration
+   * one of the entries in nativeConstructors.  Called when eslint finds VariableDeclarator or FunctionDeclaration
    * nodes as it traverses down the AST.
    * 
    * @param {ASTNode} node
@@ -59,7 +55,7 @@ module.exports = function( context ) {
     //   }
     // }
 
-    if ( node.id && typeMap.hasOwnProperty( node.id.name ) ) {
+    if ( node.id && nativeConstructors.indexOf( node.id.name ) !== -1 ) {
       declaredTypes.push( node.id.name );
     }
   }
@@ -95,12 +91,12 @@ module.exports = function( context ) {
       //   }
       // }
 
-      if ( node.callee && node.callee.name && typeMap.hasOwnProperty( node.callee.name ) ) {
+      if ( node.callee && node.callee.name && nativeConstructors.indexOf( node.callee.name ) !== -1 ) {
         if ( declaredTypes.indexOf( node.callee.name ) === -1 ) {
           context.report( {
             node: node,
             loc: node.loc.start,
-            message: 'using native ' + node.callee.name + ' instead of project module'
+            message: node.callee.name + ': using native constructor instead of project module, did you forget a requirejs statement?'
           } );
         }
       }
