@@ -1,4 +1,4 @@
-// Copyright 2017, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 /**
  * @fileoverview Rule to check that we aren't using native JavaScript constructors.
  * This typically occurs when we forget a require statement for a PhET module that has the same name as a native
@@ -14,7 +14,7 @@
  * of a type that wasn't declared.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
- * @copyright 2017 University of Colorado Boulder
+ * @copyright 2016-2017 University of Colorado Boulder
  */
 
 //------------------------------------------------------------------------------
