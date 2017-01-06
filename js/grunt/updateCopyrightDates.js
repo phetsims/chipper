@@ -58,14 +58,11 @@ module.exports = function( grunt ) {
           var concatted = [ copyrightLine ].concat( fileLines.slice( 1 ) );
           var newFileContents = concatted.join( lineSeparator );
           grunt.file.write( absPath, newFileContents );
-          console.log( absPath + ', overwritten with ' + copyrightLine );
+          console.log( absPath + ', updated with ' + copyrightLine );
         }
         else {
           console.log( absPath + ' FIRST LINE WAS NOT COPYRIGHT: ' + firstLine );
         }
-      }
-      else {
-        console.log( absPath + ' was already correct' );
       }
     }
   };
