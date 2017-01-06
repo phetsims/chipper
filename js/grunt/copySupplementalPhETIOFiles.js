@@ -14,8 +14,8 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 module.exports = function( grunt, buildConfig ) {
   'use strict';
 
-  // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
-  var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
+  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
+  var uglify = require( '../../../chipper/node_modules/uglify-js' );// eslint-disable-line require-statement-match
 
   // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not password-protected), see https://github.com/phetsims/phet-io/issues/353
   grunt.file.mkdir( 'build/lib' );
