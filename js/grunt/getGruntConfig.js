@@ -90,6 +90,9 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
       else if ( path.endsWith( 'phet-io-website/root/assets' ) ) {
         // skip
       }
+      else if ( path.indexOf( 'installer-builder/temp') >= 0 ){
+        // skip
+      }
       else if ( grunt.file.isDir( path ) ) {
 
         if ( path.endsWith( '/node_modules' ) || path.endsWith( '/.git' ) || path.endsWith( '/build' ) ) {
