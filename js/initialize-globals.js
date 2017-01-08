@@ -37,15 +37,19 @@
     // keyboard navigation and screen reader based auditory descriptions.
     accessibility: { type: 'flag' },
 
-    // Master volume control for the simulation (for Vibe sounds).
-    // 1.0 is unity volume, 2.0 is double volume, etc.
+    /**
+     * Master volume control for the simulation (for Vibe sounds).
+     * 1.0 is unity volume, 2.0 is double volume, etc.
+     */
     audioVolume: {
       type: 'number',
       defaultValue: 1,
       isValidValue: function( value ) { return value >= 0; }
     },
 
-    // specifies the brand that should be used in requirejs mode
+    /**
+     * specifies the brand that should be used in requirejs mode
+     */
     brand: {
       type: 'string',
       defaultValue: 'adapted-from-phet',
@@ -58,7 +62,9 @@
      */
     buildCompatible: { type: 'flag' },
 
-    // enables cache busting in requirejs mode.
+    /**
+     * enables cache busting in requirejs mode.
+     */
     cacheBuster: {
       type: 'boolean',
       defaultValue: true
@@ -74,76 +80,114 @@
       defaultValue: 'default'
     },
 
-    // enables developer-only features, such as showing the layout bounds
+    /**
+     * enables developer-only features, such as showing the layout bounds
+     */
     dev: { type: 'flag' },
 
-    // enables assertions
+    /**
+     * enables assertions
+     */
     ea: { type: 'flag' },
 
-    // enables all assertions, as above but with more time-consuming checks
+    /**
+     * Enables all assertions, as above but with more time-consuming checks
+     */
     eall: { type: 'flag' },
 
-    // randomly sends mouse events to sim.
+    /**
+     * Randomly sends mouse events to sim.
+     */
     fuzzMouse: { type: 'flag' },
 
-    // if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
+    /**
+     * if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
+     */
     fuzzRate: {
       type: 'number',
       defaultValue: 100,
       isValidValue: function( value ) { return value > 0; }
     },
 
-    // When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
-    // to Google Analytics and potentially other sources in the future.
+    /**
+     * When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
+     * to Google Analytics and potentially other sources in the future.
+     */
     'phet-app': { type: 'flag' },
 
-    // Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
+    /**
+     * Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
+     */
     gameUp: { type: 'flag' },
 
-    // Enables logging for game-up-camera, see gameUp
+    /**
+     * Enables logging for game-up-camera, see gameUp
+     */
     gameUpLogging: { type: 'flag' },
 
-    // for phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
+    /**
+     * For phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
+     * @phet-io
+     */
     relativeSimPath: { type: 'flag' },
 
-    // test with a specific locale
+    /**
+     * test with a specific locale
+     */
     locale: {
       type: 'string',
       defaultValue: 'en'
     },
 
-    // when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
+    /**
+     * when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
+     * @phet-io
+     */
     phetioEmitDeltas: {
       type: 'boolean',
       defaultValue: false
     },
 
-    // when emitting deltas using phetio.js (see phetioEmitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
+    /**
+     * when emitting deltas using phetio.js (see phetioEmitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
+     * @phet-io
+     */
     phetioEmitEmptyDeltas: {
       type: 'boolean',
       defaultValue: false
     },
 
-    // emit the Scenery input events such as pointer moves, presses, releases, dt values and window resizes
-    // to support playback in a live simulation.
+    /**
+     * emit the Scenery input events such as pointer moves, presses, releases, dt values and window resizes
+     * to support playback in a live simulation.
+     * @phet-io
+     */
     phetioEmitInputEvents: {
       type: 'boolean',
       defaultValue: false
     },
 
-    // when running a simulation using phetio.js, outputs the state at the end of every frame
+    /**
+     * when running a simulation using phetio.js, outputs the state at the end of every frame\
+     * @phet-io
+     */
     phetioEmitStates: {
       type: 'boolean',
       defaultValue: false
     },
 
-    // evaluate expressions on phet-io wrapper objects, like: ?phetioExpressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
+    /**
+     * evaluate expressions on phet-io wrapper objects, like: ?phetioExpressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
+     * @phet-io
+     */
     phetioExpressions: {
       type: 'string',
       defaultValue: '[]'
     },
 
-    // Specifies where to log phetioEvents
+    /**
+     * Specifies where to log phetioEvents
+     */
     phetioLog: {
       type: 'string',
       defaultValue: null,
@@ -154,43 +198,63 @@
       ]
     },
 
-    // Causes a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
+    /**
+     * Causes a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
+     */
     phetioStandalone: { type: 'flag' },
 
-    // When running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
-    // Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
+    /**
+     * When running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
+     * Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
+     */
     phetioValidateTandems: {
       type: 'boolean',
       defaultValue: true
     },
 
-    // plays event logging back from the server, provide an optional name for the session
+    /**
+     * plays event logging back from the server, provide an optional name for the session
+     */
     playbackInputEventLog: { type: 'flag' },
 
-    // passes errors to test-sims
+    /**
+     * passes errors to test-sims
+     */
     postMessageOnError: { type: 'flag' },
 
-    // triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
+    /**
+     * triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
+     */
     postMessageOnLoad: { type: 'flag' },
 
-    // shows profiling information for the sim
+    /**
+     * shows profiling information for the sim
+     */
     profiler: { type: 'flag' },
 
-    // adds a menu item that will open a window with a QR code with the URL of the simulation
+    /**
+     * adds a menu item that will open a window with a QR code with the URL of the simulation
+     */
     qrCode: { type: 'flag' },
 
-    // enables input event logging, provide an optional name for the session, log is available via PhET menu
+    /**
+     * enables input event logging, provide an optional name for the session, log is available via PhET menu
+     */
     recordInputEventLog: { type: 'flag' },
 
-    // Specify a renderer for the Sim's rootNode to use.
+    /**
+     * Specify a renderer for the Sim's rootNode to use.
+     */
     rootRenderer: {
       type: 'string',
       defaultValue: null,
       validValues: [ null, 'canvas', 'svg', 'dom', 'webgl' ] // see Node.setRenderer
     },
 
-    // Array of one or more logs to enable in scenery 0.2+, delimited with commas.
-    // For example: ?sceneryLog=Display,Drawable,WebGLBlock results in [ 'Display', 'Drawable', 'WebGLBlock' ]
+    /**
+     * Array of one or more logs to enable in scenery 0.2+, delimited with commas.
+     * For example: ?sceneryLog=Display,Drawable,WebGLBlock results in [ 'Display', 'Drawable', 'WebGLBlock' ]
+     */
     sceneryLog: {
       type: 'array',
       elementSchema: {
@@ -199,20 +263,26 @@
       defaultValue: null
     },
 
-    // Scenery logs will be output to a string instead of the window
+    /**
+     * Scenery logs will be output to a string instead of the window
+     */
     sceneryStringLog: { type: 'flag' },
 
-    // Indicates the screen that will be initially selected on the home screen.
-    // If showHomeScreen is false, go immediately to this screen.
-    // Like query parameter 'screens', the value is 1-based; e.g. 'screenIndex=2' selects the 2nd screen.
-    // Use this query parameter only with multi-screen sims.
+    /**
+     * Indicates the screen that will be initially selected on the home screen.
+     * If showHomeScreen is false, go immediately to this screen.
+     * Like query parameter 'screens', the value is 1-based; e.g. 'screenIndex=2' selects the 2nd screen.
+     * Use this query parameter only with multi-screen sims.
+     */
     screenIndex: {
       type: 'number',
       defaultValue: 1
     },
 
-    // Specifies the set of screens that appear in the sim, and their order.  Uses 1-based (not zero-based) and ","
-    // delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
+    /**
+     * Specifies the set of screens that appear in the sim, and their order.  Uses 1-based (not zero-based) and ","
+     * delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
+     */
     screens: {
       type: 'array',
       elementSchema: {
@@ -221,34 +291,50 @@
       defaultValue: null
     },
 
-    // identifier for a single simulation run
+    /**
+     * identifier for a single simulation run
+     */
     sessionID: {
       type: 'string',
       defaultValue: null
     },
 
-    // Displays an overlay of the current bounds of each CanvasNode
+    /**
+     * Displays an overlay of the current bounds of each CanvasNode
+     */
     showCanvasNodeBounds: { type: 'flag' },
 
-    // Displays an overlay of the current bounds of each scenery.FittedBlock
+    /**
+     * Displays an overlay of the current bounds of each scenery.FittedBlock
+     */
     showFittedBlockBounds: { type: 'flag' },
 
-    // if false, go immediately to screenIndex
+    /**
+     * if false, go immediately to screenIndex
+     */
     showHomeScreen: {
       type: 'boolean',
       defaultValue: true
     },
 
-    // Shows pointer areas as dashed lines. touchAreas are red, mouseAreas are blue.
+    /**
+     * Shows pointer areas as dashed lines. touchAreas are red, mouseAreas are blue.
+     */
     showPointerAreas: { type: 'flag' },
 
-    // Displays a semi-transparent cursor indicator for the location of each active pointer on the screen.
+    /**
+     * Displays a semi-transparent cursor indicator for the location of each active pointer on the screen.
+     */
     showPointers: { type: 'flag' },
 
-    // Shows the visible bounds in ScreenView.js, for debugging the layout outside of the "dev" bounds
+    /**
+     * Shows the visible bounds in ScreenView.js, for debugging the layout outside of the "dev" bounds
+     */
     showVisibleBounds: { type: 'flag' },
 
-    // override strings, value is JSON that is identical to string.json files
+    /**
+     * override strings, value is JSON that is identical to string.json files
+     */
     strings: {
       type: 'string',
       defaultValue: null
@@ -280,7 +366,9 @@
       defaultValue: null
     },
 
-    // Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
+    /**
+     * Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
+     */
     webgl: {
       type: 'boolean',
       defaultValue: true
