@@ -11,6 +11,8 @@
  *
  * @author Sam Reid
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
@@ -20,7 +22,6 @@ var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
  * @param {string} requirejsNamespace - requirejs namespace that appears in config.js, eg, BALANCING_ACT
  */
 module.exports = function( grunt, requirejsNamespace ) {
-  'use strict';
 
   var directory = process.cwd();
 

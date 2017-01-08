@@ -5,6 +5,8 @@
  *
  * @author Sam Reid
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var assert = require( 'assert' );
@@ -18,7 +20,6 @@ var directory = process.cwd();
  * @param buildConfig
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   var packageVersion = buildConfig.version;
 

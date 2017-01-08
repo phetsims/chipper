@@ -6,6 +6,8 @@
  *
  * @author Chris Malley {PixelZoom, Inc.}
  */
+/* eslint-env node */
+'use strict';
 
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
@@ -17,7 +19,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param {boolean} published - has the sim been published?
  */
 module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, published ) {
-  'use strict';
 
   // Read the title from the English strings file.
   var strings = grunt.file.readJSON( '../' + repositoryName + '/' + repositoryName + '-strings_en.json' );

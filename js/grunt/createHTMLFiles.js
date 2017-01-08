@@ -6,6 +6,8 @@
  * This is one step in the 'after-requirejs-build' task.
  * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous task.
  */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
@@ -31,7 +33,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param {function} callback - called when this step is completed
  */
 module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, callback ) {
-  'use strict';
 
   // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
   var uglify = require( '../../../chipper/node_modules/uglify-js' );// eslint-disable-line require-statement-match

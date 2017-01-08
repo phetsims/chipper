@@ -9,6 +9,8 @@
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Sam Reid (PhET Interactive Simulations)
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var assert = require( 'assert' );
@@ -22,7 +24,6 @@ var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses
  * @param {Object} buildConfig - see getBuildConfig.js
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   // Read license info
   var licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );

@@ -8,6 +8,8 @@
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
@@ -17,7 +19,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param {Object} buildConfig - see getBuildConfig.js
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   var repositoryName = buildConfig.name;
   var splashURL = '../brand/' + buildConfig.brand + '/images/splash.svg';

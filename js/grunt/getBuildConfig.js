@@ -27,6 +27,8 @@
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
@@ -43,7 +45,6 @@ var getBrand = require( '../../../chipper/js/grunt/getBrand' );
  * @param {Object} grunt - the grunt instance
  */
 module.exports = function( grunt ) {
-  'use strict';
 
   /**
    * Gets phetLibs, the set of repositories on which the repository being built depends.

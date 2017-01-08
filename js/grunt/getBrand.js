@@ -7,8 +7,10 @@
  * @param {Object} buildLocalJSON - build-local.json
  * @returns {string}
  */
+/* eslint-env node */
+'use strict';
+
 module.exports = function( grunt, buildLocalJSON ) {
-  'use strict';
 
   var assert = require( 'assert' );
 

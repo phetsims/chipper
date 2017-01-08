@@ -6,13 +6,14 @@
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Matt Pennington (PhET Interactive Simulations)
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var copyDirectory = require( '../../../chipper/js/grunt/copyDirectory' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
   var uglify = require( '../../../chipper/node_modules/uglify-js' );// eslint-disable-line require-statement-match

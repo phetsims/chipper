@@ -1,5 +1,8 @@
 // Copyright 2015, University of Colorado Boulder
 
+/* eslint-env node */
+'use strict';
+
 var fs = require( 'fs' );
 var jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
 var pngjs = require( 'pngjs' );
@@ -35,7 +38,6 @@ var mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
  *                              mipmaps[0] will be for level 0, etc.
  */
 module.exports = function createMipmap( filename, maxLevel, quality, grunt, callback ) {
-  'use strict';
 
   var mipmaps = []; // our array that will be passed to the callback when we are done
 

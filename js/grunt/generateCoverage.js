@@ -16,6 +16,8 @@
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var istanbul = require( 'istanbul' );
@@ -25,7 +27,6 @@ var istanbul = require( 'istanbul' );
  * @param {Object} buildConfig - see getBuildConfig.js
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   var collector = new istanbul.Collector();
   collector.add( JSON.parse( grunt.file.read( 'build/instrumentation/coverage.json' ) ) );

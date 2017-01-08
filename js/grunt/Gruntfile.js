@@ -9,9 +9,8 @@
  * @author Sam Reid
  * @author John Blanco
  */
-
-// use process.env
-/* jslint node: true */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
@@ -43,7 +42,6 @@ var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 
 module.exports = function( grunt ) {
-  'use strict';
 
   // For eslint
   require( 'load-grunt-tasks' )( grunt );

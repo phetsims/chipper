@@ -4,6 +4,9 @@
 /**
  * This grunt task checks out the shas for a project, as specified in a dependencies.json file in its top level.
  */
+/* eslint-env node */
+'use strict';
+
 var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
@@ -13,7 +16,6 @@ var child_process = require( 'child_process' );
  * @param {boolean} toMaster - whether master should be used, or dependencies.json shas should be used
  */
 module.exports = function( grunt, repositoryName, toMaster ) {
-  'use strict';
 
   // This option should be used only by build-server, to indicate that the task was invoked from build-server.
   var buildServer = !!grunt.option( 'buildServer' );

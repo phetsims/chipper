@@ -4,6 +4,8 @@
  * Copy a directory and all of its contents recursively
  * @author Sam Reid (PhET Interactive Simulations)
  */
+/* eslint-env node */
+'use strict';
 
 var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
 var assert = require( 'assert' );
@@ -15,7 +17,7 @@ var assert = require( 'assert' );
  * @param {function} [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
  */
 module.exports = function( grunt, src, dst, filter, options ) {
-  'use strict';
+
   options = _.extend( { failOnExistingFiles: false }, options );
 
   // Copy built sim files (assuming they exist from a prior grunt command)

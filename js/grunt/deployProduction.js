@@ -5,6 +5,8 @@
  *
  * @author Aaron Davis
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var querystring = require( 'querystring' );
@@ -16,7 +18,6 @@ var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
  * @param {function} callback - optional callback to run when finished, defaults to grunt.task.current.async()
  */
 module.exports = function( grunt, callback ) {
-  'use strict';
 
   // configuration info from external files
   var deployConfig = getDeployConfig( grunt, global.phet.chipper.fs );

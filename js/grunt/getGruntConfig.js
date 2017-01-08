@@ -5,6 +5,8 @@
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
+/* eslint-env node */
+'use strict';
 
 var fs = require( 'fs' );
 
@@ -17,7 +19,6 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-lin
  * @param {string[]} phetLibs - see getBuildConfig.js
  */
 module.exports = function( grunt, repositoryName, phetLibs ) {
-  'use strict';
 
   /**
    * Gets the paths to be linted.

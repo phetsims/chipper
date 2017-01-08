@@ -6,6 +6,8 @@
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
@@ -16,7 +18,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param {Object} buildConfig - see getBuildConfig.js
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   var repositoryName = buildConfig.name;
   var html = grunt.file.read( '../chipper/templates/sim-development-colors.html' ); // the template file

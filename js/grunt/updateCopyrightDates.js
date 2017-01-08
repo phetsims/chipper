@@ -6,12 +6,13 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+/* eslint-env node */
+'use strict';
 
 /**
  * @param grunt - the grunt instance
  */
 module.exports = function( grunt ) {
-  'use strict';
 
   // modules
   var child_process = require( 'child_process' );

@@ -12,8 +12,10 @@
  * @param {Object} grunt
  * @param {Object} gruntConfig
  */
+/* eslint-env node */
+'use strict';
+
 module.exports = function( grunt, gruntConfig ) {
-  'use strict';
 
   // Load the jscpd code duplicate finder
   var jscpd = require( 'jscpd' );

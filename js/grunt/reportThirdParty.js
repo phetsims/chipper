@@ -15,6 +15,8 @@
  *
  * @author Sam Reid
  */
+/* eslint-env node */
+'use strict';
 
 // Load shared constants
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
@@ -36,7 +38,6 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
  * @param grunt - the grunt instance
  */
 module.exports = function( grunt ) {
-  'use strict';
 
   // read configuration file - required to write to website database
   var httpsResponse;

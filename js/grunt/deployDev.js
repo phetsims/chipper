@@ -5,6 +5,8 @@
  *
  * @author Aaron Davis
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
@@ -21,7 +23,6 @@ var TEST_DIR_NAME = 'deploy-dev-tests';
  * @param callback - optional callback to run when finished, defaults to grunt.task.current.async()
  */
 module.exports = function( grunt, callback ) {
-  'use strict';
 
   // grunt options
   var mkdir = !!grunt.option( 'mkdir' ); // true = create the sim dir and .htaccess file before copying the version directory

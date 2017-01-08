@@ -13,6 +13,8 @@
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
@@ -26,7 +28,6 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-lin
  * @param {Object} buildConfig - see getBuildConfig.js
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   // Tell grunt to wait because this task is asynchronous.
   // Returns a handle to a function that must be called when the task has completed.

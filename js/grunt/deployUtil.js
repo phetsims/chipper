@@ -6,8 +6,9 @@
  * @author Aaron Davis
  * @author John Blanco
  */
+/* eslint-env node */
+'use strict';
 
-/* jslint node: true */
 var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
@@ -23,7 +24,6 @@ var DEPENDENCIES_JSON = 'dependencies.json';
  * @param callback
  */
 var exec = function( grunt, command, callback ) {
-  'use strict';
 
   grunt.log.debug( 'Running command: ' + command );
   child_process.exec( command, function( err, stdout, stderr ) {
@@ -39,7 +39,6 @@ var exec = function( grunt, command, callback ) {
  * @param callback
  */
 var commitAndPushDependenciesJSON = function( grunt, callback ) {
-  'use strict';
 
   if ( !grunt.option( 'dryRun' ) ) {
     grunt.file.copy( ChipperConstants.BUILD_DIR + '/' + DEPENDENCIES_JSON, DEPENDENCIES_JSON );
@@ -57,8 +56,7 @@ var commitAndPushDependenciesJSON = function( grunt, callback ) {
 };
 
 var getDependenciesList = function( grunt ) {
-  'use strict';
-
+  
   var dependencies;
   if ( grunt.file.exists( DEPENDENCIES_JSON ) ) {
     dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
@@ -88,8 +86,7 @@ var getDependenciesList = function( grunt ) {
  * @param callback
  */
 var checkForUncommittedChanges = function( grunt, callback ) {
-  'use strict';
-
+  
   // get of list of this sim's dependencies
   var dependenciesList = getDependenciesList( grunt );
 
@@ -129,8 +126,7 @@ var checkForUncommittedChanges = function( grunt, callback ) {
  * @param callback
  */
 var checkForUnpushedChanges = function( grunt, callback ) {
-  'use strict';
-
+  
   // get of list of this sim's dependencies
   var dependenciesList = getDependenciesList( grunt );
 
@@ -183,8 +179,7 @@ var checkForUnpushedChanges = function( grunt, callback ) {
  * @param callback
  */
 var verifyDependenciesCheckedOut = function( grunt, callback ) {
-  'use strict';
-
+  
   grunt.log.debug( 'verifying that correct dependencies are checked out' );
 
   var deployConfig = getDeployConfig( grunt, global.phet.chipper.fs );
