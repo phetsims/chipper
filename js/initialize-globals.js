@@ -213,14 +213,6 @@
     },
 
     /**
-     * identifier for a single simulation run
-     */
-    sessionID: {
-      type: 'string',
-      defaultValue: null
-    },
-
-    /**
      * Displays an overlay of the current bounds of each CanvasNode
      */
     showCanvasNodeBounds: { type: 'flag' },
