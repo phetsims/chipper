@@ -1,7 +1,7 @@
 // Copyright 2015-2016, University of Colorado Boulder
 
 /**
- * Initializes phet globals that are used by all simulations, including assertions, phetioEvents and query-parameters.
+ * Initializes phet globals that are used by all simulations, including assertions and query-parameters.
  * See https://github.com/phetsims/phetcommon/issues/23
  * This file must be loaded before requirejs is started up, and this file cannot be loaded as an AMD module.
  * The easiest way to do this is via a <script> tag in your HTML file.
@@ -126,90 +126,11 @@
     gameUpLogging: { type: 'flag' },
 
     /**
-     * For phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
-     * @phet-io
-     */
-    relativeSimPath: { type: 'flag' },
-
-    /**
      * test with a specific locale
      */
     locale: {
       type: 'string',
       defaultValue: 'en'
-    },
-
-    /**
-     * when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
-     * @phet-io
-     */
-    phetioEmitDeltas: {
-      type: 'boolean',
-      defaultValue: false
-    },
-
-    /**
-     * when emitting deltas using phetio.js (see phetioEmitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
-     * @phet-io
-     */
-    phetioEmitEmptyDeltas: {
-      type: 'boolean',
-      defaultValue: false
-    },
-
-    /**
-     * emit the Scenery input events such as pointer moves, presses, releases, dt values and window resizes
-     * to support playback in a live simulation.
-     * @phet-io
-     */
-    phetioEmitInputEvents: {
-      type: 'boolean',
-      defaultValue: false
-    },
-
-    /**
-     * when running a simulation using phetio.js, outputs the state at the end of every frame\
-     * @phet-io
-     */
-    phetioEmitStates: {
-      type: 'boolean',
-      defaultValue: false
-    },
-
-    /**
-     * evaluate expressions on phet-io wrapper objects, like: ?phetioExpressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
-     * @phet-io
-     */
-    phetioExpressions: {
-      type: 'string',
-      defaultValue: '[]'
-    },
-
-    /**
-     * Specifies where to log phetioEvents
-     */
-    phetioLog: {
-      type: 'string',
-      defaultValue: null,
-      validValues: [
-        null, // no logging
-        'console', // stream to console in JSON format
-        'lines' // stream colorized human-readable events to the console (Chrome and Firefox only)
-      ]
-    },
-
-    /**
-     * Causes a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
-     */
-    phetioStandalone: { type: 'flag' },
-
-    /**
-     * When running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
-     * Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
-     */
-    phetioValidateTandems: {
-      type: 'boolean',
-      defaultValue: true
     },
 
     /**
