@@ -108,15 +108,15 @@ module.exports = function( grunt, buildConfig ) {
   copyDirectory( grunt, '../phet-io/wrappers', 'build/wrappers', filterWrapper );
 
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/font-awesome-4.5.0/css/font-awesome.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/js/jquery-1.12.3.min.js', 'https://code.jquery.com/jquery-1.12.3.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/css/', './css/' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/js/', './js/' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/highlight.js-9.1.0/styles/tomorrow-night-bright.css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow-night-bright.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/highlight.js-9.1.0/highlight.js', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '/assets/favicon.ico', './favicon.ico' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/font-awesome-4.5.0/css/font-awesome.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/jquery-1.12.3.min.js', 'https://code.jquery.com/jquery-1.12.3.min.js' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/css/', './css/' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/', './js/' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/styles/tomorrow-night-bright.css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow-night-bright.min.css' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/highlight.js', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/favicon.ico', './favicon.ico' );
   grunt.file.write( 'build/docs/devguide.html', devguideHTML );
   copyDirectory( grunt, '../phet-io-website/root/assets/css', 'build/docs/css', filterWrapper );
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './build/docs/js/phet-io.js' );
