@@ -235,7 +235,7 @@ module.exports = function( grunt ) {
       if ( compositeCode.hasOwnProperty( entry ) ) {
         compositeCode[ entry ].usedBy.sort();
         if ( _.isEqual( simTitles, compositeCode[ entry ].usedBy ) ) {
-          compositeCode[ entry ].usedBy = 'all-sims';// Confusing that this matches a repo name, but since that repo isn't actually a sim, perhaps this will be ok
+          compositeCode[ entry ].usedBy = 'all-sims'; // this is an annotation, not the vestigial all-sims repo
         }
       }
     }
