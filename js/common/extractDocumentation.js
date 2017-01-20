@@ -7,8 +7,10 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+/* eslint-env browser, node */
+'use strict';
+
 ( function() {
-  'use strict';
 
   /**
    * Given esprima's block comment string value, strip off the leading spaces, a star, and up to one other space.

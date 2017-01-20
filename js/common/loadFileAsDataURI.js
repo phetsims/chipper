@@ -3,8 +3,11 @@
 /**
  * Converts a resource (like an image or audio file) to base64.
  */
+
+/* eslint-env browser, node */
+'use strict';
+
 (function() {
-  'use strict';
 
   function loadFileAsDataURI( filename ) {
     var filenameParts = filename.split( '.' );
