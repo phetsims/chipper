@@ -24,16 +24,13 @@ module.exports = function( grunt, buildConfig ) {
   var splashURL = '../brand/' + buildConfig.brand + '/images/splash.svg';
   var html = grunt.file.read( '../chipper/templates/sim-development.html' ); // the template file
 
-  var packageJSON = grunt.file.readJSON( 'package.json' );
-  var buildJSON = grunt.file.readJSON( '../chipper/build.json' );
-
   function notGA( preload ) {
     // skip the google-analytics preload
     return preload.indexOf( 'google-analytics' ) === -1;
   }
 
   var normalPreload = buildConfig.preload.filter( notGA );
-  var ioPreload = buildConfig.getPreload( packageJSON, buildJSON, 'phet-io' ).filter( notGA );
+  var ioSpecificPreloads = buildConfig.ioSpecificPreloads;
 
   // Formatting is very specific to the template file. Each preload is placed on separate line,
   // with an indentation that is specific indentation to the template. See chipper#462
@@ -49,7 +46,7 @@ module.exports = function( grunt, buildConfig ) {
   html = ChipperStringUtils.replaceAll( html, '{{REPOSITORY}}', repositoryName );
   html = ChipperStringUtils.replaceAll( html, '{{BRAND}}', buildConfig.brand );
   html = ChipperStringUtils.replaceAll( html, '{{SPLASH_URL}}', splashURL );
-  html = ChipperStringUtils.replaceAll( html, '{{IO_PRELOADS}}', stringifyArray( ioPreload ) );
+  html = ChipperStringUtils.replaceAll( html, '{{IO_PRELOADS}}', stringifyArray( ioSpecificPreloads ) );
   html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( normalPreload ) );
 
   // Use the repository name for the browser window title, because getting the sim's title

@@ -111,6 +111,20 @@ module.exports = function( grunt ) {
   }
 
   /**
+   * Used for retrieving brand specific preloads
+   * @param buildJSON
+   * @param brand
+   * @returns {string[]|*|string}
+   */
+  function getSpecificPreloads( buildJSON, brand ) {
+    if ( buildJSON[ brand ] ) {
+      return buildJSON[ brand ].preload;
+
+    }
+    return false;
+  }
+
+  /**
    * Gets the license keys for sherpa (third-party) libs that are used.
    *
    * @param {Object} packageJSON - package.json
@@ -282,8 +296,7 @@ module.exports = function( grunt ) {
     // @public (read-write, phetIO)
     brand: brand,
 
-    //TODO: better way to allow requesting different preload lists? chipper#63
-    getPreload: getPreload, // for generating HTML files for specific configurations, see chipper#63
+    ioSpecificPreloads: getSpecificPreloads( buildJSON, 'phet-io' ), // for generating HTML files for phet-io configurations.
 
     // {boolean} [isJSOnly] - If true, the minified JS output is the main product, and we'll build it slightly differently, with the following options:
     //   (NOTE: This different build skips post-build steps, see https://github.com/phetsims/scenery/issues/593)

@@ -46,7 +46,17 @@ The logo dimensions are given in splash.svg, currently at width="273.172px" heig
     document.getElementById( 'splash' ).src = '../brand/' + brand + '/images/splash.svg';
 
     // Preloads, with more included for phet-io brand
-    var preloads = ( brand === 'phet-io' ) ? {{IO_PRELOADS}} : {{PRELOADS}};
+    var preloads = {
+    {PRELOADS}
+  }
+    ;
+
+    if ( brand === 'phet-io' ) {
+      preloads = preloads.concat( {
+      {IO_PRELOADS}
+    } )
+      ;
+    }
 
     // Loads a synchronously-executed asynchronously-downloaded script tag, with optional data-main parameter.
     // See http://www.html5rocks.com/en/tutorials/speed/script-loading/ for more about script loading. It helps to
