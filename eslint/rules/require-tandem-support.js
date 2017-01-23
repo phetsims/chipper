@@ -13,17 +13,29 @@ module.exports = function( context ) {
   'use strict';
 
   // Whitelist of directories to check that Tandem has support.
-  var directoriesToRequireTandemSupport = [ /sun[\/\\]js/, /scenery-phet[\/\\]js/ ];
+  // var directoriesToRequireTandemSupport = [ /sun[\/\\]js/, /scenery-phet[\/\\]js/ ];
+  var directoriesToRequireTandemSupport = [ /sun[\/\\]js/ ];
 
+  var requireTandemSupportBlackList = [ /[\/\\]demo[\/\\]/, /-main\.js$/, /-config\.js$/, /sun\.js/, /sunQueryParameters\.js/ ];
   return {
 
     Program: function requreTandemSupport( node ) {
       // Check whether the given directory matches the whitelist
       var directoryShouldBeChecked = false;
       for ( var i = 0; i < directoriesToRequireTandemSupport.length; i++ ) {
+        var f = context.getFilename();
         var d = directoriesToRequireTandemSupport[ i ];
-        if ( context.getFilename().match( d ) ) {
-          directoryShouldBeChecked = true;
+        if ( f.match( d ) ) {
+          for ( var j = 0; j < requireTandemSupportBlackList.length; j++ ) {
+            var blackListFile = requireTandemSupportBlackList[ j ];
+            if ( f.match( blackListFile ) ) {
+              // Matches a blacklisted file, so don't check it
+              var matchedBlackList = true;
+              break;
+            }
+          }
+          // Didn't match any of the blacklisted files
+          directoryShouldBeChecked = !matchedBlackList;
           break;
         }
       }
