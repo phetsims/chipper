@@ -9,7 +9,7 @@ module.exports = function( context ) {
   'use strict';
 
   // Whitelist of directories to check that TODOs have GitHub issues
-  var directoriesToRequireIssues = [ 'joist/js' ];
+  var directoriesToRequireIssues = [ /joist[\/\\]js/ ];
 
   return {
 
@@ -19,7 +19,7 @@ module.exports = function( context ) {
       var directoryShouldBeChecked = false;
       for ( var i = 0; i < directoriesToRequireIssues.length; i++ ) {
         var d = directoriesToRequireIssues[ i ];
-        if ( context.getFilename().indexOf( d ) >= 0 ) {
+        if ( context.getFilename().match( d ) ) {
           directoryShouldBeChecked = true;
           break;
         }

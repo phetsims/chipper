@@ -12,18 +12,17 @@
 module.exports = function( context ) {
   'use strict';
 
-  // Whitelist of directories to check that TODOs have GitHub issues
-  var directoriesToRequireIssues = [ 'sun/js', 'scenery-phet/js' ];
+  // Whitelist of directories to check that Tandem has support.
+  var directoriesToRequireTandemSupport = [ /sun[\/\\]js/, /scenery-phet[\/\\]js/ ];
 
   return {
 
-    Program: function checkCopyright( node ) {
-
+    Program: function requreTandemSupport( node ) {
       // Check whether the given directory matches the whitelist
       var directoryShouldBeChecked = false;
-      for ( var i = 0; i < directoriesToRequireIssues.length; i++ ) {
-        var d = directoriesToRequireIssues[ i ];
-        if ( context.getFilename().indexOf( d ) >= 0 ) {
+      for ( var i = 0; i < directoriesToRequireTandemSupport.length; i++ ) {
+        var d = directoriesToRequireTandemSupport[ i ];
+        if ( context.getFilename().match( d ) ) {
           directoryShouldBeChecked = true;
           break;
         }
