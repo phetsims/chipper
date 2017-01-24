@@ -44,6 +44,7 @@ module.exports = function( context ) {
       if ( directoryShouldBeChecked ) {
         var source = context.getSource();
 
+        // TODO: update this after https://github.com/phetsims/phet-io/issues/985 more complete
         // Assume that Tandem.validateOptions() indicates a fully-instrumented file
         if ( source.indexOf( 'Tandem.validateOptions' ) === -1 && source.indexOf( 'Tandem.indicateUninstrumentedCode' ) === -1 ) {
           context.report( {
