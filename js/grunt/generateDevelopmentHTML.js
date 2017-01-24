@@ -30,7 +30,6 @@ module.exports = function( grunt, buildConfig ) {
   }
 
   var normalPreload = buildConfig.preload.filter( notGA );
-  var ioSpecificPreloads = buildConfig.ioSpecificPreloads;
 
   // Formatting is very specific to the template file. Each preload is placed on separate line,
   // with an indentation that is specific indentation to the template. See chipper#462
@@ -46,7 +45,7 @@ module.exports = function( grunt, buildConfig ) {
   html = ChipperStringUtils.replaceAll( html, '{{REPOSITORY}}', repositoryName );
   html = ChipperStringUtils.replaceAll( html, '{{BRAND}}', buildConfig.brand );
   html = ChipperStringUtils.replaceAll( html, '{{SPLASH_URL}}', splashURL );
-  html = ChipperStringUtils.replaceAll( html, '{{IO_PRELOADS}}', stringifyArray( ioSpecificPreloads ) );
+  html = ChipperStringUtils.replaceAll( html, '{{PHETIO_PRELOADS}}', stringifyArray( buildConfig.phetioPreload ) );
   html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( normalPreload ) );
 
   // Use the repository name for the browser window title, because getting the sim's title

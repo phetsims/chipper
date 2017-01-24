@@ -111,12 +111,12 @@ module.exports = function( grunt ) {
   }
 
   /**
-   * Used for retrieving brand specific preloads
+   * Used for retrieving brand-specific preload
    * @param buildJSON
    * @param brand
    * @returns {string[]} - empty array if there are no preloads
    */
-  function getSpecificPreloads( buildJSON, brand ) {
+  function getPreloadForBrand( buildJSON, brand ) {
     if ( buildJSON[ brand ] &&  buildJSON[ brand ].preload ) {
       return buildJSON[ brand ].preload;
     }
@@ -297,7 +297,8 @@ module.exports = function( grunt ) {
     // @public (read-write, phetIO)
     brand: brand,
 
-    ioSpecificPreloads: getSpecificPreloads( buildJSON, 'phet-io' ), // for generating HTML files for phet-io configurations.
+    // @public preload specific to PhET-iO
+    phetioPreload: getPreloadForBrand( buildJSON, 'phet-io' ),
 
     // {boolean} [isJSOnly] - If true, the minified JS output is the main product, and we'll build it slightly differently, with the following options:
     //   (NOTE: This different build skips post-build steps, see https://github.com/phetsims/scenery/issues/593)
