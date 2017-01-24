@@ -57,8 +57,7 @@ module.exports = function( grunt, repositoryName, toMaster ) {
           grunt.log.writeln( 'Finished checkout.' );
           numCheckedOut = numCheckedOut + 1;
           if ( numToCheckOut === numCheckedOut ) {
-            done();
-            // pruneAndUpdate();
+            pruneAndUpdate();
           }
         } );
       })( property );
