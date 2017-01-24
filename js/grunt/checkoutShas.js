@@ -17,6 +17,15 @@ var child_process = require( 'child_process' );
  */
 module.exports = function( grunt, repositoryName, toMaster ) {
 
+  var exec = function( command, args, callback){
+    child_process.exec( command, args, function( error1, stdout1, stderr1 ) {
+      grunt.log.writeln( stdout1 );
+      grunt.log.writeln( stderr1 );
+      callback( error1, stdout1, stderr1);
+    } );
+  };
+
+
   // This option should be used only by build-server, to indicate that the task was invoked from build-server.
   var buildServer = !!grunt.option( 'buildServer' );
 
@@ -43,17 +52,38 @@ module.exports = function( grunt, repositoryName, toMaster ) {
         //cp.exec('foocommand', { cwd: 'path/to/dir/' }, callback);
         //http://stackoverflow.com/questions/14026967/calling-child-process-exec-in-node-as-though-it-was-executed-in-a-specific-folde
         var command = 'git checkout ' + ( toMaster ? 'master' : dependencies[ property ].sha );
-        child_process.exec( command, { cwd: '../' + property }, function( error1, stdout1, stderr1 ) {
+        exec( command, { cwd: '../' + property }, function( error1 ) {
           assert( !error1, 'error in ' + command + ' for repo ' + property );
           grunt.log.writeln( 'Finished checkout.' );
-          grunt.log.writeln( stdout1 );
-          grunt.log.writeln( stderr1 );
           numCheckedOut = numCheckedOut + 1;
           if ( numToCheckOut === numCheckedOut ) {
             done();
+            // pruneAndUpdate();
           }
         } );
       })( property );
     }
   }
+
+  // npm prune and npm update in current repo and in chipper
+  var pruneAndUpdateRepo = function( repo, callback ){
+    exec( 'npm prune', { cwd: '../' + repo }, function( error1 ) {
+      assert( !error1, 'error in npm prune for repo ' + repo );
+      grunt.log.writeln( 'Finished npm prune.');
+      exec( 'npm update', { cwd: '../' + repo }, function( error1 ) {
+        assert( !error1, 'error in npm update for repo ' + repo );
+        grunt.log.writeln( 'Finished npm update.' );
+        callback();
+      } );
+    } );
+  };
+  var pruneAndUpdate = function(){
+    pruneAndUpdateRepo( repositoryName, function(){
+      pruneAndUpdateRepo( 'chipper', function(){
+        done();
+      });
+    });
+  };
+
+
 };
