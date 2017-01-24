@@ -13,11 +13,11 @@ module.exports = function( context ) {
   'use strict';
 
   // Whitelist of directories to check that Tandem has support.
-  // var directoriesToRequireTandemSupport = [ /sun[\/\\]js/, /scenery-phet[\/\\]js/ ];
-  var directoriesToRequireTandemSupport = [ /sun[\/\\]js/ ];
+  var directoriesToRequireTandemSupport = [ /sun[\/\\]js/, /scenery-phet[\/\\]js/ ];
+  // var directoriesToRequireTandemSupport = [ /sun[\/\\]js/ ];
 
   var requireTandemSupportBlackList = [ /[\/\\]demo[\/\\]/, /-main\.js$/, /-config\.js$/, /sun\.js/, /sunQueryParameters\.js/,
-    /[\/\\]ColorConstants\.js/ ];
+    /[\/\\]ColorConstants\.js/, /[\/\\][sS]ceneryPhet.*\.js/ ];
   return {
 
     Program: function requreTandemSupport( node ) {
