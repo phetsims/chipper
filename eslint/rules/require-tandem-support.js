@@ -17,7 +17,7 @@ module.exports = function( context ) {
   // var directoriesToRequireTandemSupport = [ /sun[\/\\]js/ ];
 
   var requireTandemSupportBlackList = [ /[\/\\]demo[\/\\]/, /-main\.js$/, /-config\.js$/, /sun\.js/, /sunQueryParameters\.js/,
-    /[\/\\]ColorConstants\.js/, /[\/\\][sS]ceneryPhet.*\.js/, /[\/\\]PhetColorScheme\.js/  ];
+    /[\/\\]ColorConstants\.js/, /[\/\\][sS]ceneryPhet.*\.js/, /[\/\\]PhetColorScheme\.js/ , /[\/\\]VisibleColor\.js/  ];
   return {
 
     Program: function requreTandemSupport( node ) {
