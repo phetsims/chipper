@@ -114,14 +114,15 @@ module.exports = function( grunt ) {
    * Used for retrieving brand specific preloads
    * @param buildJSON
    * @param brand
-   * @returns {string[]|*|string}
+   * @returns {string[]} - empty array if there are no preloads
    */
   function getSpecificPreloads( buildJSON, brand ) {
-    if ( buildJSON[ brand ] ) {
+    if ( buildJSON[ brand ] &&  buildJSON[ brand ].preload ) {
       return buildJSON[ brand ].preload;
-
     }
-    return false;
+    else {
+      return [];
+    }
   }
 
   /**
