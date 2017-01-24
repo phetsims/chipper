@@ -68,10 +68,10 @@ module.exports = function( grunt, repositoryName, toMaster ) {
   var pruneAndUpdateRepo = function( repo, callback ){
     exec( 'npm prune', { cwd: '../' + repo }, function( error1 ) {
       assert( !error1, 'error in npm prune for repo ' + repo );
-      grunt.log.writeln( 'Finished npm prune.');
+      grunt.log.writeln( 'Finished npm prune for repo ' + repo);
       exec( 'npm update', { cwd: '../' + repo }, function( error1 ) {
         assert( !error1, 'error in npm update for repo ' + repo );
-        grunt.log.writeln( 'Finished npm update.' );
+        grunt.log.writeln( 'Finished npm update for repo ' + repo );
         callback();
       } );
     } );
