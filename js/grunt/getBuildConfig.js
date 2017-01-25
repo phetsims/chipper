@@ -127,7 +127,7 @@ module.exports = function( grunt ) {
     if ( packageJSON.phet[ brand ] && packageJSON.phet[ brand ].preload ) {
       preload = preload.concat( packageJSON.phet[ brand ].preload );
     }
-    console.log(preload);
+    console.log( preload );
     return preload;
   }
 
@@ -239,7 +239,7 @@ module.exports = function( grunt ) {
    * @param {string[]} phetLibs
    */
   function validatePreload( preload, phetLibs ) {
-    console.log(phetLibs);
+    console.log( phetLibs );
     var missingRepositories = [];
     preload.forEach( function( entry ) {
 
@@ -322,8 +322,8 @@ module.exports = function( grunt ) {
   validatePreload( buildConfig.preload, buildConfig.phetLibs );
 
   // @public preload specific to PhET-iO
-  buildConfig.phetioPreload = getPreloadForBrand( buildJSON, 'phet-io');
-  // validatePreload( buildConfig.phetioPreload, buildConfig.phetLibs );
+  buildConfig.phetioPreload = getPreloadForBrand( buildJSON, 'phet-io' );
+  validatePreload( buildConfig.phetioPreload, getPhetLibs( packageJSON, buildJSON, 'phet-io' ) );
 
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
   buildConfig.locales = getLocales( grunt, buildConfig.name );
