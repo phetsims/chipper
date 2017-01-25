@@ -127,7 +127,6 @@ module.exports = function( grunt ) {
     if ( packageJSON.phet[ brand ] && packageJSON.phet[ brand ].preload ) {
       preload = preload.concat( packageJSON.phet[ brand ].preload );
     }
-    console.log( preload );
     return preload;
   }
 
@@ -239,7 +238,6 @@ module.exports = function( grunt ) {
    * @param {string[]} phetLibs
    */
   function validatePreload( preload, phetLibs ) {
-    console.log( phetLibs );
     var missingRepositories = [];
     preload.forEach( function( entry ) {
 
