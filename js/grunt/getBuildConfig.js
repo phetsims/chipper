@@ -117,12 +117,18 @@ module.exports = function( grunt ) {
    * @returns {string[]} - empty array if there are no preloads
    */
   function getPreloadForBrand( buildJSON, brand ) {
-    if ( buildJSON[ brand ] &&  buildJSON[ brand ].preload ) {
-      return buildJSON[ brand ].preload;
+    var preload = [];
+
+    // add brand-specific preloads from build.json
+    if ( buildJSON[ brand ] && buildJSON[ brand ].preload ) {
+      preload = buildJSON[ brand ].preload;
     }
-    else {
-      return [];
+
+    if ( packageJSON.phet[ brand ] && packageJSON.phet[ brand ].preload ) {
+      preload = preload.concat( packageJSON.phet[ brand ].preload );
     }
+    console.log(preload);
+    return preload;
   }
 
   /**
@@ -233,6 +239,7 @@ module.exports = function( grunt ) {
    * @param {string[]} phetLibs
    */
   function validatePreload( preload, phetLibs ) {
+    console.log(phetLibs);
     var missingRepositories = [];
     preload.forEach( function( entry ) {
 
@@ -297,8 +304,6 @@ module.exports = function( grunt ) {
     // @public (read-write, phetIO)
     brand: brand,
 
-    // @public preload specific to PhET-iO
-    phetioPreload: getPreloadForBrand( buildJSON, 'phet-io' ),
 
     // {boolean} [isJSOnly] - If true, the minified JS output is the main product, and we'll build it slightly differently, with the following options:
     //   (NOTE: This different build skips post-build steps, see https://github.com/phetsims/scenery/issues/593)
@@ -315,6 +320,11 @@ module.exports = function( grunt ) {
   buildConfig.phetLibs = getPhetLibs( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.preload = getPreload( packageJSON, buildJSON, buildConfig.brand );
   validatePreload( buildConfig.preload, buildConfig.phetLibs );
+
+  // @public preload specific to PhET-iO
+  buildConfig.phetioPreload = getPreloadForBrand( buildJSON, 'phet-io');
+  // validatePreload( buildConfig.phetioPreload, buildConfig.phetLibs );
+
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
   buildConfig.locales = getLocales( grunt, buildConfig.name );
   buildConfig.availableLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( buildConfig.name ) );
