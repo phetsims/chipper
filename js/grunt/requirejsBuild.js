@@ -68,7 +68,11 @@ module.exports = function( grunt, buildConfig ) {
       }
       else {
         console.log( 'outputting ' + moduleName );
-        return contents + 'console.log(12345);</script><p style="fill:white">HELLO</p><script>';
+        var rand = Math.floor( Math.random() * 100 );
+        return contents + '</script><p style="fill:white">HELLO</p><script>' +
+               '' +
+               "document.getElementById( 'progressBarForeground' ).setAttribute( 'width', " + rand + " )" +
+               '</script><script>';
         // return contents;
       }
     },
