@@ -1016,9 +1016,9 @@
   };
 
   // browser require.js-compatible definition
-  // global.define && global.define( function() {
-  //   return locales;
-  // } );
+  global.define && global.define( function() {
+    return locales;
+  } );
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {

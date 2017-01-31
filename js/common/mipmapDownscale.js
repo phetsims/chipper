@@ -99,9 +99,9 @@
   }
 
   // browser require.js-compatible definition
-  // global.define && global.define( function() {
-  //   return mipmapDownscale;
-  // } );
+  global.define && global.define( function() {
+    return mipmapDownscale;
+  } );
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {

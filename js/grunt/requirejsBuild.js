@@ -67,9 +67,7 @@ module.exports = function( grunt, buildConfig ) {
         return instrumenter.instrumentSync( contents, filePath );
       }
       else {
-        console.log( 'outputting ' + moduleName );
-        return contents + 'console.log(12345);</script><p style="fill:white">HELLO</p><script>';
-        // return contents;
+        return contents;
       }
     },
 
@@ -151,8 +149,8 @@ module.exports = function( grunt, buildConfig ) {
     // Start the main launch
     config.insertRequire = [ repositoryName + '-main' ];
 
-    // Keep define/require as globals so all modules can use them.
-    config.wrap = false;
+    // use the default wrapping strategy to wrap the module code, so that define/require are not globals
+    config.wrap = true;
   }
 
   requirejs.optimize( config, done, function( err ) {
