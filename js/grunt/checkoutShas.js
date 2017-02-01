@@ -47,7 +47,7 @@ module.exports = function( grunt, repositoryName, toMaster ) {
 
     // To execute something from a different directory:
     // cp.exec( 'foocommand', { cwd: 'path/to/dir/' }, callback);
-    // http://stackoverflow.com/questions/14026967/calling-child-process-exec-in-node-as-though-it-was-executed-in-a-specific-folde
+    // http://stackoverflow.com/questions/14026967/calling-child-process-exec-in-node-as-though-it-was-executed-in-a-specific-folder
     var command = 'git checkout ' + ( toMaster ? 'master' : dependencies[ dependencyName ].sha );
     exec( command, { cwd: '../' + dependencyName }, function( error1 ) {
       assert( !error1, 'error in ' + command + ' for repo ' + dependencyName );
