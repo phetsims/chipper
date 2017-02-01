@@ -1,8 +1,8 @@
 // Copyright 2013-2015, University of Colorado Boulder
 
-//TODO: should the parent project (the sim itself) also be checked out, ignored, or moved into its specified branch?  Right now it is ignored (i.e. left as it was when the task was started)
 /**
  * This grunt task checks out the shas for a project, as specified in a dependencies.json file in its top level.
+ * This grunt task will not checkout the parent repo (the sim itself), only its dependencies.
  */
 /* eslint-env node */
 'use strict';
@@ -17,11 +17,11 @@ var child_process = require( 'child_process' );
  */
 module.exports = function( grunt, repositoryName, toMaster ) {
 
-  var exec = function( command, args, callback){
-    child_process.exec( command, args, function( error1, stdout1, stderr1 ) {
-      grunt.log.writeln( stdout1 );
-      grunt.log.writeln( stderr1 );
-      callback( error1, stdout1, stderr1);
+  var exec = function( command, args, callback ) {
+    child_process.exec( command, args, function( error, stdout, stderr ) {
+      grunt.log.writeln( stdout );
+      grunt.log.writeln( stderr );
+      callback( error, stdout, stderr );
     } );
   };
 
@@ -31,44 +31,40 @@ module.exports = function( grunt, repositoryName, toMaster ) {
 
   var dependencies = grunt.file.readJSON( ( buildServer ) ? '../chipper/js/build-server/tmp/dependencies.json' : 'dependencies.json' );
   var done = grunt.task.current.async();
-  var numToCheckOut = 0;
   var numCheckedOut = 0;
-  for ( var property in dependencies ) {
-    if ( property !== 'comment' && property !== repositoryName ) {
-      numToCheckOut++;
-    }
-  }
+  var dependenciesToCheckOut = Object.keys( dependencies ).filter( function( repository ) {
+    return repository !== repositoryName && repository !== 'comment';
+  } );
 
-  for ( property in dependencies ) {
-    if ( property !== 'comment' && property !== repositoryName && dependencies.hasOwnProperty( property ) ) {
+  var numToCheckOut = dependenciesToCheckOut.length;
 
-      (function( property ) {
 
-        assert( typeof( dependencies[ property ].branch !== 'undefined' ) && typeof( dependencies[ property ].sha !== 'undefined' ) );
+  // Iterate through each dependency and check out the correct branch
+  dependenciesToCheckOut.forEach( function( dependencyName ) {
+    assert( dependencies[ dependencyName ].branch && dependencies[ dependencyName ].sha );
 
-        grunt.log.writeln( 'Checking out dependency ' + property + ': ' + dependencies[ property ].branch + '@' + dependencies[ property ].sha );
+    grunt.log.writeln( 'Checking out dependency ' + dependencyName + ': ' + dependencies[ dependencyName ].branch + '@' + dependencies[ dependencyName ].sha );
 
-        //To execute something from a different directory:
-        //cp.exec('foocommand', { cwd: 'path/to/dir/' }, callback);
-        //http://stackoverflow.com/questions/14026967/calling-child-process-exec-in-node-as-though-it-was-executed-in-a-specific-folde
-        var command = 'git checkout ' + ( toMaster ? 'master' : dependencies[ property ].sha );
-        exec( command, { cwd: '../' + property }, function( error1 ) {
-          assert( !error1, 'error in ' + command + ' for repo ' + property );
-          grunt.log.writeln( 'Finished checkout.' );
-          numCheckedOut = numCheckedOut + 1;
-          if ( numToCheckOut === numCheckedOut ) {
-            pruneAndUpdate();
-          }
-        } );
-      })( property );
-    }
-  }
+    // To execute something from a different directory:
+    // cp.exec( 'foocommand', { cwd: 'path/to/dir/' }, callback);
+    // http://stackoverflow.com/questions/14026967/calling-child-process-exec-in-node-as-though-it-was-executed-in-a-specific-folde
+    var command = 'git checkout ' + ( toMaster ? 'master' : dependencies[ dependencyName ].sha );
+    exec( command, { cwd: '../' + dependencyName }, function( error1 ) {
+      assert( !error1, 'error in ' + command + ' for repo ' + dependencyName );
+      grunt.log.writeln( 'Finished checkout.' );
+      numCheckedOut++;
+      if ( numToCheckOut === numCheckedOut ) {
+        pruneAndUpdate();
+      }
+    } );
+  } );
+
 
   // npm prune and npm update in current repo and in chipper
-  var pruneAndUpdateRepo = function( repo, callback ){
+  var pruneAndUpdateRepo = function( repo, callback ) {
     exec( 'npm prune', { cwd: '../' + repo }, function( error1 ) {
       assert( !error1, 'error in npm prune for repo ' + repo );
-      grunt.log.writeln( 'Finished npm prune for repo ' + repo);
+      grunt.log.writeln( 'Finished npm prune for repo ' + repo );
       exec( 'npm update', { cwd: '../' + repo }, function( error1 ) {
         assert( !error1, 'error in npm update for repo ' + repo );
         grunt.log.writeln( 'Finished npm update for repo ' + repo );
@@ -76,12 +72,12 @@ module.exports = function( grunt, repositoryName, toMaster ) {
       } );
     } );
   };
-  var pruneAndUpdate = function(){
-    pruneAndUpdateRepo( repositoryName, function(){
-      pruneAndUpdateRepo( 'chipper', function(){
+  var pruneAndUpdate = function() {
+    pruneAndUpdateRepo( repositoryName, function() {
+      pruneAndUpdateRepo( 'chipper', function() {
         done();
-      });
-    });
+      } );
+    } );
   };
 
 
