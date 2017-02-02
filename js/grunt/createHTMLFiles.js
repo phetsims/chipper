@@ -239,8 +239,8 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   }
 
   // Create an _all.html file
-  //TODO if allHTML is truly relevant only when brand=phet, then it should fail instead of being silently ignored
-  if ( grunt.option( 'allHTML' ) && buildConfig.brand === 'phet' ) {
+  if ( grunt.option( 'allHTML' ) ) {
+    assert( buildConfig.brand === 'phet', 'alLHTML option only supported with the \'phet\' brand' );
     grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, ChipperConstants.FALLBACK_LOCALE, true ) );
   }
 
