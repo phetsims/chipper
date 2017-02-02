@@ -240,7 +240,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   // Create an _all.html file
   if ( grunt.option( 'allHTML' ) ) {
-    assert( buildConfig.brand === 'phet', 'alLHTML option only supported with the \'phet\' brand' );
+    assert( buildConfig.brand === 'phet', 'allHTML option only supported with the \'phet\' brand' );
     grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, ChipperConstants.FALLBACK_LOCALE, true ) );
   }
 
