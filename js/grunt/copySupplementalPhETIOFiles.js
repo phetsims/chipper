@@ -31,7 +31,7 @@ module.exports = function( grunt, buildConfig ) {
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/lodash-2.4.1.min.js"',
+        '"../../../sherpa/lib/lodash-4.17.4.min.js"',
         '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,

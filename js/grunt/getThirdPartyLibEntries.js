@@ -14,7 +14,7 @@
 
 // modules
 var assert = require( 'assert' );
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 var THIRD_PARTY_LICENSES_FILENAME = '../sherpa/lib/license.json'; // contains third-party license info
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.

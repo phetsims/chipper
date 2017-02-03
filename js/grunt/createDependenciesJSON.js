@@ -16,7 +16,7 @@ var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 // 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 // modules
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );

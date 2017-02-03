@@ -30,7 +30,7 @@ var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
 var fs = require( 'fs' );
 var https = require( 'https' );
 
-var _ = require( '../../' + SHERPA + '/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../' + SHERPA + '/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 

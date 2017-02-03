@@ -34,7 +34,7 @@
 var assert = require( 'assert' );
 
 // 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
