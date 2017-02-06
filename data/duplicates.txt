@@ -1022,7 +1022,7 @@ info: Found 475 exact clones with 9125 duplicated lines in 434 files
                                             
  28 │ 35 │   var Vector2 = require( 'DOT/Vector2' );
                                       
- 29 │ 36 │   var TandemText = require( 'TANDEM/scenery/nodes/TandemText' );
+ 29 │ 36 │   var Text = require( 'SCENERY/nodes/Text' );
                
  30 │ 37 │ 
                                                                                
@@ -5768,7 +5768,7 @@ info: Found 475 exact clones with 9125 duplicated lines in 434 files
                                                            
  13 │ 13 │   var VBox = require( 'SCENERY/nodes/VBox' );
                                                              
- 14 │ 14 │   var TandemText = require( 'TANDEM/scenery/nodes/TandemText' );
+ 14 │ 14 │   var Text = require( 'SCENERY/nodes/Text' );
                                           
  15 │ 15 │   var PhetFont = require( 'SCENERY_PHET/PhetFont' );
                                                       
