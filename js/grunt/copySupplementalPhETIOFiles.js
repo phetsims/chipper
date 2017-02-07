@@ -135,7 +135,7 @@ module.exports = function( grunt, buildConfig ) {
   // Minify phet libraries into 'lib/phetio.js'
   var DESTINATION_PATH = 'build/lib';
   var OUTPUT_FILE = 'phetio.js';
-  var COPYRIGHT_HEADER = '// Copyright 2002-2016, University of Colorado Boulder\n' +
+  var COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Boulder\n' +
                          '// This PhET-iO file requires a license\n' +
                          '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
                          '// For licensing, please contact phethelp@colorado.edu';
