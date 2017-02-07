@@ -41,15 +41,6 @@
       font-size: 16px;
     }
 
-    /*Highlightig for the supertype links*/
-    a.supertypeLink {
-      text-decoration: underline;
-    }
-
-    /*It looks odd for the anchors to become colored, so suppress it.*/
-    a.supertypeLink:visited {
-      color: cornflowerblue;
-    }
   </style>
   <!-- syntax highlighting -->
   <link rel="stylesheet"
@@ -65,6 +56,88 @@
 <div id="api-documentation" class="content">
   <h1>API Documentation</h1>
   <p>This document is a snapshot of all of the phet-io and simulation api for this given sha.</p>
+  <pre><code id="phetio-query-parameters" class="javascript">{
+    /**
+     * For phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
+     */
+    relativeSimPath: { type: 'flag' },
+
+    /**
+     * when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
+     */
+    phetioEmitDeltas: {
+      type: 'boolean',
+      defaultValue: false
+    },
+
+    /**
+     * when emitting deltas using phetio.js (see phetioEmitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
+     */
+    phetioEmitEmptyDeltas: {
+      type: 'boolean',
+      defaultValue: false
+    },
+
+    /**
+     * emit the Scenery input events such as pointer moves, presses, releases, dt values and window resizes
+     * to support playback in a live simulation.
+     */
+    phetioEmitInputEvents: {
+      type: 'boolean',
+      defaultValue: false
+    },
+
+    /**
+     * when running a simulation using phetio.js, outputs the state at the end of every frame\
+     */
+    phetioEmitStates: {
+      type: 'boolean',
+      defaultValue: false
+    },
+
+    /**
+     * evaluate expressions on phet-io wrapper objects, like: ?phetioExpressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
+     */
+    phetioExpressions: {
+      type: 'string',
+      defaultValue: '[]'
+    },
+
+    /**
+     * Specifies where to log phetioEvents
+     */
+    phetioLog: {
+      type: 'string',
+      defaultValue: null,
+      validValues: [
+        null, // no logging
+        'console', // stream to console in JSON format
+        'lines' // stream colorized human-readable events to the console (Chrome and Firefox only)
+      ]
+    },
+
+    /**
+     * Causes a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
+     */
+    phetioStandalone: { type: 'flag' },
+
+    /**
+     * When running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
+     * Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
+     */
+    phetioValidateTandems: {
+      type: 'boolean',
+      defaultValue: true
+    },
+
+    /**
+     * Identifier for a single simulation run
+     */
+    sessionID: {
+      type: 'string',
+      defaultValue: null
+    }
+  }</code></pre>
   <pre><code id="phet-query-parameters" class="javascript">{
 
     // Whether accessibility features are enabled or not.  Use this option to render the Parallel DOM for
@@ -319,88 +392,6 @@
     webgl: {
       type: 'boolean',
       defaultValue: true
-    }
-  }</code></pre>
-  <pre><code id="phetio-query-parameters" class="javascript">{
-    /**
-     * For phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
-     */
-    relativeSimPath: { type: 'flag' },
-
-    /**
-     * when running a simulation using phetio.js, outputs states and deltas within the phetioEvents data stream, see phetio.js
-     */
-    phetioEmitDeltas: {
-      type: 'boolean',
-      defaultValue: false
-    },
-
-    /**
-     * when emitting deltas using phetio.js (see phetioEmitDeltas) emit deltas that are empty, to simplify playback in some systems like Metacog.
-     */
-    phetioEmitEmptyDeltas: {
-      type: 'boolean',
-      defaultValue: false
-    },
-
-    /**
-     * emit the Scenery input events such as pointer moves, presses, releases, dt values and window resizes
-     * to support playback in a live simulation.
-     */
-    phetioEmitInputEvents: {
-      type: 'boolean',
-      defaultValue: false
-    },
-
-    /**
-     * when running a simulation using phetio.js, outputs the state at the end of every frame\
-     */
-    phetioEmitStates: {
-      type: 'boolean',
-      defaultValue: false
-    },
-
-    /**
-     * evaluate expressions on phet-io wrapper objects, like: ?phetioExpressions=[["beaker.beakerScreen.soluteSelector","setVisible",[true]]]
-     */
-    phetioExpressions: {
-      type: 'string',
-      defaultValue: '[]'
-    },
-
-    /**
-     * Specifies where to log phetioEvents
-     */
-    phetioLog: {
-      type: 'string',
-      defaultValue: null,
-      validValues: [
-        null, // no logging
-        'console', // stream to console in JSON format
-        'lines' // stream colorized human-readable events to the console (Chrome and Firefox only)
-      ]
-    },
-
-    /**
-     * Causes a phet-io simulation to launch, even without a wrapper "go-ahead" step, see phet-io#181
-     */
-    phetioStandalone: { type: 'flag' },
-
-    /**
-     * When running as phet-io assertions are normally thrown when uninstrumented objects are encountered.
-     * Setting this to false will allow the simulation to proceed.  Useful for partially instrumented simulations.
-     */
-    phetioValidateTandems: {
-      type: 'boolean',
-      defaultValue: true
-    },
-
-    /**
-     * Identifier for a single simulation run
-     */
-    sessionID: {
-      type: 'string',
-      defaultValue: null
     }
   }</code></pre>
 

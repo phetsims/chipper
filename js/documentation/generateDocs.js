@@ -1,37 +1,40 @@
 // Copyright 2017, University of Colorado Boulder
 
-(function() {
-  'use strict';
-  var fs = require( 'fs' );
+/* eslint-env node */
+'use strict';
 
+var fs = require( 'fs' );
 
-  var phetQueryParamsLocation = '../../../chipper/js/initialize-globals.js';
-  var initGlobalsText = fs.readFileSync( phetQueryParamsLocation ).toString();
-  var schemaIndex = initGlobalsText.indexOf( 'QUERY_PARAMETERS_SCHEMA = ' );
+/**
+ * Returns the string of the query parameter schema that you are getting
+ * @param filename
+ * @param marker - the text to find the beginning of the query parameters
+ * @returns {string} - query parameter string
+ */
+function getQueryParameters( filename, marker) {
+
+  var initGlobalsText = fs.readFileSync( filename ).toString();
+  var schemaIndex = initGlobalsText.indexOf( marker );
   var objectStart = schemaIndex + initGlobalsText.substring( schemaIndex ).indexOf( '{' );
   var objectEnd = schemaIndex + initGlobalsText.substring( schemaIndex ).indexOf( '};' ) + 1;
 
-
-  var phetQueryParameters = initGlobalsText.substring( objectStart, objectEnd );
-
-
-  var phetioQueryParamsLocation = '../phetio-query-parameters.js';
-  var phetioParametersText = fs.readFileSync( phetioQueryParamsLocation ).toString();
-  var phetioSchemaIndex = phetioParametersText.indexOf( 'QUERY_PARAMETERS_SCHEMA = ' );
-  objectStart = phetioSchemaIndex + phetioParametersText.substring( phetioSchemaIndex ).indexOf( '{' );
-  objectEnd = phetioSchemaIndex + phetioParametersText.substring( phetioSchemaIndex ).indexOf( '};' ) + 1;
+  return initGlobalsText.substring( objectStart, objectEnd );
+}
 
 
-  var phetioQueryParameters = phetioParametersText.substring( objectStart, objectEnd );
+var phetQueryParameters = getQueryParameters( '../../../chipper/js/initialize-globals.js', 'QUERY_PARAMETERS_SCHEMA = ');
+var phetioQueryParameters = getQueryParameters( '../phetio-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ');
 
 
+// Replace the template strings with the api documentation
+var documentationFilename = 'phetioDocumentation';
+var phetioDocumentationTemplateText = fs.readFileSync( documentationFilename + '_template.html' ).toString();
 
-  var documentationFilename = 'phetioDocumentation';
-  var phetioDocumentationTemplateText = fs.readFileSync( documentationFilename + '_template.html').toString();
+phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHET_QUERY_PARAMETERS}}', phetQueryParameters );
+phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
 
 
-  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHET_QUERY_PARAMETERS}}', phetQueryParameters);
-  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters);
+// Write the new documentation to html
+fs.writeFileSync( documentationFilename + '.html', phetioDocumentationTemplateText );
 
-  fs.writeFileSync( documentationFilename + '.html', phetioDocumentationTemplateText);
-})();
+
