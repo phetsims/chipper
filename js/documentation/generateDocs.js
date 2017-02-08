@@ -7,6 +7,8 @@ var fs = require( 'fs' );
 var child_process = require( 'child_process' );
 var execSync = child_process.execSync;
 
+var createTypeDocumentation = require( './createTypeDocumentation' );
+
 
 /**
  * Returns the string of the query parameter schema that you are getting
@@ -33,9 +35,12 @@ function getQueryParameters( filename, marker ) {
 function getGitInfo( repoName ) {
 
   var sha = execSync( 'git rev-parse HEAD', { cwd: '../../../' + repoName, env: process.env } ).toString();
-  var branch = execSync( 'git rev-parse --abbrev-ref HEAD', { cwd: '../../../' + repoName, env: process.env } ).toString();
+  var branch = execSync( 'git rev-parse --abbrev-ref HEAD', {
+    cwd: '../../../' + repoName,
+    env: process.env
+  } ).toString();
 
-  return { branch: branch.replace('\n', ''), sha: sha.replace('\n', ''), repo: repoName };
+  return { branch: branch.replace( '\n', '' ), sha: sha.replace( '\n', '' ), repo: repoName };
 }
 
 
@@ -62,7 +67,15 @@ phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PH
 phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
 
 
+// This is async, so we have to finish in a callback
+createTypeDocumentation( function( typeDocumentation){
+  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{TYPE_DOCUMENTATION}}', typeDocumentation);
+
+
+
 // Write the new documentation to html
-fs.writeFileSync( documentationFilename + '.html', phetioDocumentationTemplateText );
+  fs.writeFileSync( documentationFilename + '.html', phetioDocumentationTemplateText );
+
+});
 
 
