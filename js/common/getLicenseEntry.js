@@ -17,8 +17,11 @@
  *
  * @author Sam Reid
  */
+
+/* eslint-env browser, node */
+'use strict';
+
 (function() {
-  'use strict';
 
   /**
    * Retrieves the license entry for a media file from license.json.

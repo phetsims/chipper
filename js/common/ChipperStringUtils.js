@@ -5,8 +5,11 @@
  *
  * @Chris Malley (PixelZoom, Inc.)
  */
+
+/* eslint-env browser, node */
+'use strict';
+
 (function() {
-  'use strict';
 
   var ChipperStringUtils = {
 

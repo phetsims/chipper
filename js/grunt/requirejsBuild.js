@@ -5,6 +5,9 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+/* eslint-env node */
+'use strict';
+
 var requirejs = require( 'requirejs' );
 var assert = require( 'assert' );
 var istanbul = require( 'istanbul' );
@@ -14,7 +17,6 @@ var istanbul = require( 'istanbul' );
  * @param {Object} buildConfig - the buildConfig
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   // Validate phet-io brand naming, see https://github.com/phetsims/chipper/issues/504
   if ( buildConfig.brand === 'phet-io' ) {
@@ -146,7 +148,7 @@ module.exports = function( grunt, buildConfig ) {
   else {
     // Start the main launch
     config.insertRequire = [ repositoryName + '-main' ];
-    
+
     // use the default wrapping strategy to wrap the module code, so that define/require are not globals
     config.wrap = true;
   }

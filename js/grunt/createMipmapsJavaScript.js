@@ -10,6 +10,8 @@
  * @author Johnathan Olson <jonathan.olson@colorado.edu>
  * @author Chris Malley (PixelZoom, Inc.)
  */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
@@ -23,7 +25,6 @@ var createMipmap = require( '../../../chipper/js/grunt/createMipmap' );
  * @param {function} callback - called when this step is completed
  */
 module.exports = function( grunt, buildConfig, callback ) {
-  'use strict';
 
   // globals that should be defined by this point
   assert( global.phet && global.phet.chipper, 'missing global.phet.chipper' );

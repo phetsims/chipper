@@ -9,16 +9,15 @@
  * @author Sam Reid
  * @author John Blanco
  */
-
-// use process.env
-/* jslint node: true */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
 var fs = require( 'fs' );
 
 // 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 // PhET custom grunt tasks
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
@@ -43,7 +42,6 @@ var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 
 module.exports = function( grunt ) {
-  'use strict';
 
   // For eslint
   require( 'load-grunt-tasks' )( grunt );
@@ -123,7 +121,7 @@ module.exports = function( grunt ) {
       '--lint=false : skip the lint sub-task\n' +
       '--mangle=false : skip the mangling portion of UglifyJS2, and beautify the output\n' +
       '--uglify=false : skip the UglifyJS2 step altogether\n' +
-      '--allHTML : Generate the _all.html file that contains information for all locales',
+      '--allHTML : (phet brand only) - Generate the _all.html file that contains information for all locales',
       optionalTasks.concat( additionalTasks )
     );
   }

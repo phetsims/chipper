@@ -6,6 +6,8 @@
  * This is one step in the 'after-requirejs-build' task.
  * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous task.
  */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
@@ -31,10 +33,9 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param {function} callback - called when this step is completed
  */
 module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, callback ) {
-  'use strict';
 
-  // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
-  var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
+  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
+  var uglify = require( '../../../chipper/node_modules/uglify-js' );// eslint-disable-line require-statement-match
 
   // stringMap[locale][stringKey] give us a string
   var stringMap = getStringMap( grunt, buildConfig );
@@ -238,8 +239,8 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   }
 
   // Create an _all.html file
-  //TODO if allHTML is truly relevant only when brand=phet, then it should fail instead of being silently ignored
-  if ( grunt.option( 'allHTML' ) && buildConfig.brand === 'phet' ) {
+  if ( grunt.option( 'allHTML' ) ) {
+    assert( buildConfig.brand === 'phet', 'allHTML option only supported with the \'phet\' brand' );
     grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, ChipperConstants.FALLBACK_LOCALE, true ) );
   }
 

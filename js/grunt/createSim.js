@@ -17,6 +17,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Chris Malley (PixelZoom, Inc.)
  */
+/* eslint-env node */
+'use strict';
 
 var assert = require( 'assert' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
@@ -25,7 +27,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
-  'use strict';
 
   // Coerces a repository name to a sim title. Eg, 'simula-rasa' -> 'Simula Rasa'
   function toTitle( input ) {

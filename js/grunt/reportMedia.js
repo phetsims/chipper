@@ -18,6 +18,8 @@
  *
  * @author Sam Reid
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var assert = require( 'assert' );
@@ -27,7 +29,6 @@ var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
  * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
-  'use strict';
 
   // modules
   var getLicenseEntry = require( '../../../chipper/js/common/getLicenseEntry' );

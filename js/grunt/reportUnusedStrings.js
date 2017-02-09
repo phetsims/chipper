@@ -11,13 +11,14 @@
  *
  * @author Jesse Greenberg
  */
+/* eslint-env node */
+'use strict';
 
 /**
  * @param grunt - the grunt instance
  * @param {Object} buildConfig - see getBuildConfig.js
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   // get the strings for this sim
   var simulationRoot = process.cwd();

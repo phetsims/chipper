@@ -12,19 +12,31 @@
 module.exports = function( context ) {
   'use strict';
 
-  // Whitelist of directories to check that TODOs have GitHub issues
-  var directoriesToRequireIssues = [ 'sun/js', 'scenery-phet/js' ];
+  // Whitelist of directories to check that Tandem has support.
+  var directoriesToRequireTandemSupport = [ /sun[\/\\]js/, /scenery-phet[\/\\]js/ ];
+  // var directoriesToRequireTandemSupport = [ /sun[\/\\]js/ ];
 
+  var requireTandemSupportBlackList = [ /[\/\\]demo[\/\\]/, /-main\.js$/, /-config\.js$/, /sun\.js/, /sunQueryParameters\.js/,
+    /[\/\\]ColorConstants\.js/, /[\/\\][sS]ceneryPhet.*\.js/, /[\/\\]PhetColorScheme\.js/ , /[\/\\]VisibleColor\.js/  ];
   return {
 
-    Program: function checkCopyright( node ) {
-
+    Program: function requreTandemSupport( node ) {
       // Check whether the given directory matches the whitelist
       var directoryShouldBeChecked = false;
-      for ( var i = 0; i < directoriesToRequireIssues.length; i++ ) {
-        var d = directoriesToRequireIssues[ i ];
-        if ( context.getFilename().indexOf( d ) >= 0 ) {
-          directoryShouldBeChecked = true;
+      for ( var i = 0; i < directoriesToRequireTandemSupport.length; i++ ) {
+        var f = context.getFilename();
+        var d = directoriesToRequireTandemSupport[ i ];
+        if ( f.match( d ) ) {
+          for ( var j = 0; j < requireTandemSupportBlackList.length; j++ ) {
+            var blackListFile = requireTandemSupportBlackList[ j ];
+            if ( f.match( blackListFile ) ) {
+              // Matches a blacklisted file, so don't check it
+              var matchedBlackList = true;
+              break;
+            }
+          }
+          // Didn't match any of the blacklisted files
+          directoryShouldBeChecked = !matchedBlackList;
           break;
         }
       }
@@ -32,6 +44,7 @@ module.exports = function( context ) {
       if ( directoryShouldBeChecked ) {
         var source = context.getSource();
 
+        // TODO: update this after https://github.com/phetsims/phet-io/issues/985 more complete
         // Assume that Tandem.validateOptions() indicates a fully-instrumented file
         if ( source.indexOf( 'Tandem.validateOptions' ) === -1 && source.indexOf( 'Tandem.indicateUninstrumentedCode' ) === -1 ) {
           context.report( {

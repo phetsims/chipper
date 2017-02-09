@@ -5,6 +5,8 @@
  * Loads each string file only once, and only loads the repository/locale combinations necessary.
  * Requires global.phet.chipper.strings to be set by the string.js plugin.
  */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
@@ -21,7 +23,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @returns map[locale][stringKey]
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   var locales = buildConfig.availableLocales;
 

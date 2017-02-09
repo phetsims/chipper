@@ -1,8 +1,20 @@
-// Copyright 2002-2015, University of Colorado Boulder
+// Copyright 2016-2017, University of Colorado Boulder
 /**
- * @fileoverview Rule to check that usages of Image are using scenery Image.
+ * @fileoverview Rule to check that we aren't using native JavaScript constructors.
+ * This typically occurs when we forget a require statement for a PhET module that has the same name as a native
+ * constructor.
+ *
+ * Using native JavaScript constructors for types like Image, Text, and Range will almost always result in errors
+ * that can be difficult to trace. A type can be defined in a file by loading a module through requireJS or by
+ * defining a constructor.
+ *
+ * This rule works by first traversing down the AST, searching for either variable or function declarations of
+ * the types that share a name with a native JavaScript constructor. We then traverse back up the AST searching
+ * for nodes that represent instantiation of these types.  An error is thrown when we encounter an instantiation
+ * of a type that wasn't declared.
+ *
  * @author Jesse Greenberg (PhET Interactive Simulations)
- * @copyright 2015 University of Colorado Boulder
+ * @copyright 2016-2017 University of Colorado Boulder
  */
 
 //------------------------------------------------------------------------------
@@ -12,21 +24,63 @@
 module.exports = function( context ) {
   'use strict';
 
+  // names of the native JavaScript constructors that clash with PhET type names
+  var nativeConstructors = [ 'Image', 'Range', 'Text' ];
 
-  // path to each module which the dev might have accidentally used
-  // the HTML constructor instead. 
-  var calleeModulePathMap = {
-    Image: '\'SCENERY/nodes/Image\'',
-    Text: '\'SCENERY/nodes/Text\''
-  };
+  // list of all types that are declared in the file that have the same name as a native JavaScript constructor
+  var declaredTypes = [];
+
+  /**
+   * Add a type to declared types if the 'declaration' node has a name which is equal to
+   * one of the entries in nativeConstructors.  Called when eslint finds VariableDeclarator or FunctionDeclaration
+   * nodes as it traverses down the AST.
+   * 
+   * @param {ASTNode} node
+   */
+  function addDeclaredType( node ) {
+
+    // Example...
+    // 
+    // JavaScript:
+    //
+    // function Range( min, max ) {...}
+    //
+    // Corresponding AST:
+    //
+    // FunctionDeclaration {
+    //   type: "FunctionDeclaration",
+    //   id: Identifier {
+    //     type: "Identifier",
+    //     name: "Range"
+    //   }
+    // }
+
+    if ( node.id && nativeConstructors.indexOf( node.id.name ) !== -1 ) {
+      declaredTypes.push( node.id.name );
+    }
+  }
 
   return {
+    VariableDeclarator: addDeclaredType,
+    FunctionDeclaration: addDeclaredType,
 
-    NewExpression: function noHTMLConstructor( node ) {
+    /**
+     * When eslint traverses back up the AST, search for a node representing an instantiation of a type.  If found,
+     * check to see if the type being instantiated is one of the entries that were added to declaredTypes on
+     * the first traversal down the AST.
+     * 
+     * @param  {ASTNode} node
+     */
+    'NewExpression:exit': function noHTMLConstructor( node ) {
 
-      // Here is the AST of a typical creation of an Image node
-      // such as var imageNode = new Image( imgsrc );
-      // 
+      // Example...
+      //
+      // JavaScript:
+      //
+      // var imageNode = new Image( imgsrc );
+      //
+      // Corresponding AST:
+      //
       // exemplar: {
       //   {
       //     "type": "NewExpression",
@@ -36,28 +90,13 @@ module.exports = function( context ) {
       //     }
       //   }
       // }
-      
-      if ( node.callee && 
-           node.callee.name &&
-           node.callee.name === 'Image' ||
-           node.callee.name === 'Text' ) {
 
-        var sceneryModulePath = calleeModulePathMap[ node.callee.name ];
-
-        // search through source tokens for the path to the scenery Node
-        var source = context.getSourceCode();
-        var usingScenery = false;
-        source.tokensAndComments.forEach( function( token ) {
-          if ( token.value === sceneryModulePath ) {
-            usingScenery = true;
-          }
-        } );
-
-        if ( !usingScenery ) {
+      if ( node.callee && node.callee.name && nativeConstructors.indexOf( node.callee.name ) !== -1 ) {
+        if ( declaredTypes.indexOf( node.callee.name ) === -1 ) {
           context.report( {
             node: node,
             loc: node.loc.start,
-            message: 'using HTML ' + node.callee.name + ' instead of scenery Node'
+            message: node.callee.name + ': using native constructor instead of project module, did you forget a requirejs statement?'
           } );
         }
       }

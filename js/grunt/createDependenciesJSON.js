@@ -8,13 +8,15 @@
  * This is one step in the 'after-requirejs-build' task.
  * See afterRequirejsBuild.js for documentation on how this step fits into that asynchronous task.
  */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
 var child_process = require( 'child_process' );
 
 // 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 // modules
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
@@ -25,7 +27,6 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param {function} callback - called when this step is completed
  */
 module.exports = function( grunt, buildConfig, callback ) {
-  'use strict';
 
   var phetLibsCopy = _.clone( buildConfig.phetLibs ); // clone because we'll be modifying this array
   grunt.log.debug( 'Scanning dependencies from:\n' + phetLibsCopy.toString() );

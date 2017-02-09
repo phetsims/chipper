@@ -6,6 +6,8 @@
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenciesJSON' );
@@ -20,7 +22,6 @@ var copySupplementalPhETIOFiles = require( '../../../chipper/js/grunt/copySupple
  * @param {Object} buildConfig - see getBuildConfig.js
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   // Tell grunt to wait because this task is asynchronous.
   // Returns a handle to a function that must be called when the task has completed.

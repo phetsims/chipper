@@ -1,7 +1,9 @@
 // Copyright 2015, University of Colorado Boulder
 
+/* eslint-env browser, node */
+'use strict';
+
 (function( global ) {
-  'use strict';
 
   /**
    * Takes in a mipmap object with data/width/height and returns another mipmap object with data/width/height that is

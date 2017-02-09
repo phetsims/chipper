@@ -146,6 +146,7 @@
     "Float32Array": true,
     "phet": true,
     "phetio": true,
+    "aqua": true, // For use in aqua tests
     // underscore, lodash
     "_": true,
     // read-only globals ---------------------------------

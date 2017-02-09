@@ -20,7 +20,6 @@ module.exports = function( context ) {
     ON: 'on',
     MULTILINK: 'multilink',
     ADD_LISTENER: 'addListener',
-    ADD_LISTENERS: 'addListeners',
     ADD_EVENT_LISTENER: 'addEventListener',
     ADD_INSTANCE: 'addInstance'
   };

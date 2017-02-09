@@ -1,5 +1,8 @@
 // Copyright 2015, University of Colorado Boulder
 
+/* eslint-env browser, node */
+'use strict';
+
 var assert = require( 'assert' );
 
 /**
@@ -25,7 +28,6 @@ var assert = require( 'assert' );
  * @author Chris Malley (PixelZoom, Inc.)
  */
 (function() {
-  'use strict';
 
   var getVersionForBrand = require( '../../../chipper/js/getVersionForBrand' );
   var getBrand = require( '../../../chipper/js/grunt/getBrand' );

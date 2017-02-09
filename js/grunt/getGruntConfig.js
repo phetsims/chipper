@@ -5,11 +5,13 @@
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
+/* eslint-env node */
+'use strict';
 
 var fs = require( 'fs' );
 
 // 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 /**
  * @param {Object} grunt - the grunt instance
@@ -17,7 +19,6 @@ var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-lin
  * @param {string[]} phetLibs - see getBuildConfig.js
  */
 module.exports = function( grunt, repositoryName, phetLibs ) {
-  'use strict';
 
   /**
    * Gets the paths to be linted.
@@ -88,6 +89,9 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
         // skip
       }
       else if ( path.endsWith( 'phet-io-website/root/assets' ) ) {
+        // skip
+      }
+      else if ( path.indexOf( 'installer-builder/temp') >= 0 ){
         // skip
       }
       else if ( grunt.file.isDir( path ) ) {

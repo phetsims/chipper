@@ -6,17 +6,18 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+/* eslint-env node */
+'use strict';
 
 /**
  * @param grunt - the grunt instance
  */
 module.exports = function( grunt ) {
-  'use strict';
 
   // modules
   var child_process = require( 'child_process' );
   var assert = require( 'assert' );
-  var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+  var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
   var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
   // constants
@@ -58,14 +59,11 @@ module.exports = function( grunt ) {
           var concatted = [ copyrightLine ].concat( fileLines.slice( 1 ) );
           var newFileContents = concatted.join( lineSeparator );
           grunt.file.write( absPath, newFileContents );
-          console.log( absPath + ', overwritten with ' + copyrightLine );
+          console.log( absPath + ', updated with ' + copyrightLine );
         }
         else {
           console.log( absPath + ' FIRST LINE WAS NOT COPYRIGHT: ' + firstLine );
         }
-      }
-      else {
-        console.log( absPath + ' was already correct' );
       }
     }
   };

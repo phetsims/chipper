@@ -7,8 +7,10 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+/* eslint-env browser, node */
+'use strict';
+
 ( function() {
-  'use strict';
 
   var typeURLs = {
     // is replaced by every documentationToHTML() call

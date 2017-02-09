@@ -15,6 +15,8 @@
  *
  * @author Sam Reid
  */
+/* eslint-env node */
+'use strict';
 
 // Load shared constants
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
@@ -28,7 +30,7 @@ var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
 var fs = require( 'fs' );
 var https = require( 'https' );
 
-var _ = require( '../../' + SHERPA + '/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../' + SHERPA + '/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -36,7 +38,6 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
  * @param grunt - the grunt instance
  */
 module.exports = function( grunt ) {
-  'use strict';
 
   // read configuration file - required to write to website database
   var httpsResponse;
@@ -234,7 +235,7 @@ module.exports = function( grunt ) {
       if ( compositeCode.hasOwnProperty( entry ) ) {
         compositeCode[ entry ].usedBy.sort();
         if ( _.isEqual( simTitles, compositeCode[ entry ].usedBy ) ) {
-          compositeCode[ entry ].usedBy = 'all-sims';// Confusing that this matches a repo name, but since that repo isn't actually a sim, perhaps this will be ok
+          compositeCode[ entry ].usedBy = 'all-sims'; // this is an annotation, not the vestigial all-sims repo
         }
       }
     }

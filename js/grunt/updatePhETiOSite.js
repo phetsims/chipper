@@ -5,6 +5,8 @@
  *
  * @author Sam Reid
  */
+/* eslint-env node */
+'use strict';
 
 // modules
 var assert = require( 'assert' );
@@ -18,7 +20,6 @@ var directory = process.cwd();
  * @param buildConfig
  */
 module.exports = function( grunt, buildConfig ) {
-  'use strict';
 
   var packageVersion = buildConfig.version;
 
@@ -97,8 +98,8 @@ module.exports = function( grunt, buildConfig ) {
     grunt.log.writeln( 'wrote ' + contentsPath );
   } );
 
-  // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
-  var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
+  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
+  var uglify = require( '../../../chipper/node_modules/uglify-js' );// eslint-disable-line require-statement-match
 
   var destinationPath = '../phet-io-site/' + siteVersion + '/lib';
 

@@ -27,12 +27,14 @@
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
+/* eslint-env node */
+'use strict';
 
 // built-in node APIs
 var assert = require( 'assert' );
 
 // 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-2.4.1.min' ); // eslint-disable-line require-statement-match
+var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
@@ -43,7 +45,6 @@ var getBrand = require( '../../../chipper/js/grunt/getBrand' );
  * @param {Object} grunt - the grunt instance
  */
 module.exports = function( grunt ) {
-  'use strict';
 
   /**
    * Gets phetLibs, the set of repositories on which the repository being built depends.
@@ -107,6 +108,26 @@ module.exports = function( grunt ) {
 
     // remove duplicates (do NOT sort, order is significant!)
     return _.uniq( preload );
+  }
+
+  /**
+   * Used for retrieving brand-specific preload
+   * @param buildJSON
+   * @param brand
+   * @returns {string[]} - empty array if there are no preloads
+   */
+  function getPreloadForBrand( buildJSON, brand ) {
+    var preload = [];
+
+    // add brand-specific preloads from build.json
+    if ( buildJSON[ brand ] && buildJSON[ brand ].preload ) {
+      preload = buildJSON[ brand ].preload;
+    }
+
+    if ( packageJSON.phet[ brand ] && packageJSON.phet[ brand ].preload ) {
+      preload = preload.concat( packageJSON.phet[ brand ].preload );
+    }
+    return preload;
   }
 
   /**
@@ -281,8 +302,6 @@ module.exports = function( grunt ) {
     // @public (read-write, phetIO)
     brand: brand,
 
-    //TODO: better way to allow requesting different preload lists? chipper#63
-    getPreload: getPreload, // for generating HTML files for specific configurations, see chipper#63
 
     // {boolean} [isJSOnly] - If true, the minified JS output is the main product, and we'll build it slightly differently, with the following options:
     //   (NOTE: This different build skips post-build steps, see https://github.com/phetsims/scenery/issues/593)
@@ -299,6 +318,11 @@ module.exports = function( grunt ) {
   buildConfig.phetLibs = getPhetLibs( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.preload = getPreload( packageJSON, buildJSON, buildConfig.brand );
   validatePreload( buildConfig.preload, buildConfig.phetLibs );
+
+  // @public preload specific to PhET-iO
+  buildConfig.phetioPreload = getPreloadForBrand( buildJSON, 'phet-io' );
+  validatePreload( buildConfig.phetioPreload, getPhetLibs( packageJSON, buildJSON, 'phet-io' ) );
+
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
   buildConfig.locales = getLocales( grunt, buildConfig.name );
   buildConfig.availableLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( buildConfig.name ) );

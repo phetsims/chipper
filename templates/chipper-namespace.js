@@ -12,7 +12,7 @@ window.phet.chipper.locale = 'PHET_LOCALE';
 // and provides its licensing information.  The START and END tags make it easy to automatically parse
 // and the entries are in JSON.  See getLicenseEntry.js for information about the attributes in each entry.
 // PHET_START_THIRD_PARTY_LICENSE_ENTRIES
-window.phet.chipper.thirdPartyLicenseEntries = PHET_THIRD_PARTY_LICENSE_ENTRIES;
+window.phet.chipper.thirdPartyLicenseEntries = PHET_THIRD_PARTY_LICENSE_ENTRIES; // eslint-disable-line no-undef
 // PHET_END_THIRD_PARTY_LICENSE_ENTRIES
-window.phet.chipper.dependencies = PHET_DEPENDENCIES;
-window.phet.chipper.strings = PHET_STRINGS;
+window.phet.chipper.dependencies = PHET_DEPENDENCIES; // eslint-disable-line no-undef
+window.phet.chipper.strings = PHET_STRINGS; // eslint-disable-line no-undef
