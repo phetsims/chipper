@@ -129,7 +129,7 @@ module.exports = function( grunt ) {
     // Grunt task that builds only the JS (no HTML), for libraries like scenery
     // see https://github.com/phetsims/scenery/issues/567
     grunt.registerTask( 'build', 'Build only the JS, for scenery/kite/dot/sun/libraries',
-      [ 'clean', 'requirejs-build' ]
+      optionalTasks.concat( [ 'clean', 'requirejs-build' ] )
     );
   }
 
