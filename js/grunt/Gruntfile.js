@@ -28,6 +28,7 @@ var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
+var generateA11yViewHTML = require( '../../../chipper/js/grunt/generateA11yViewHTML' );
 var generateCoverage = require( '../../../chipper/js/grunt/generateCoverage' );
 var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
 var generateDevelopmentColorsHTML = require( '../../../chipper/js/grunt/generateDevelopmentColorsHTML' );
@@ -329,6 +330,12 @@ module.exports = function( grunt ) {
     'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
     function() {
       generateDevelopmentColorsHTML( grunt, buildConfig );
+    } );
+
+  grunt.registerTask( 'generate-a11y-view-html',
+    'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
+    function() {
+      generateA11yViewHTML( grunt, buildConfig );
     } );
 
   grunt.registerTask( 'generate-coverage',
