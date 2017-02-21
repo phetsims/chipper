@@ -67,7 +67,7 @@
      */
     cacheBuster: {
       type: 'boolean',
-      defaultValue: true
+      defaultValue: false
     },
 
     /**
