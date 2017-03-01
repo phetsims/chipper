@@ -8,7 +8,7 @@
  */
 /* eslint-env node */
 'use strict';
-var requirejs = require( '../../node_modules/requirejs/bin/r.js' ); // eslint-disable-line require-statement-match
+var requirejs = require( '../../../node_modules/requirejs/bin/r.js' ); // eslint-disable-line require-statement-match
 var fs = require( 'fs' );
 
 // Mock up window globals for running in node mode
