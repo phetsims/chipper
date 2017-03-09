@@ -199,8 +199,6 @@
     "iframePhone": false,
     // DOM.js
     "Image": false,
-    // socket.io
-    "io": false,
     // for generating diffs in phetio.js
     "jsondiffpatch": false,
     // QUnit
