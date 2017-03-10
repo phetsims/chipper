@@ -12,7 +12,10 @@ var requirejs = require( '../../../node_modules/requirejs/bin/r.js' ); // eslint
 var fs = require( 'fs' );
 
 // Mock up window globals for running in node mode
-global.assert = require( 'assert' );
+
+// TODO: Why was this running with an error in TFunctionWrapper?
+// global.assert = require( 'assert' );
+global.assert = null;
 global._ = require( '../../../sherpa/lib/lodash-4.17.4.js' );
 global.phet = {
   chipper: {
@@ -95,7 +98,7 @@ var toHTML = function( json ) {
   return html;
 };
 
-module.exports = function(callback) {
+module.exports = function( callback ) {
   var allFiles = walkSync( '../types', [] );
   var result = {};
 
@@ -128,6 +131,11 @@ module.exports = function(callback) {
     }
 
     var html = toHTML( result );
-    callback(html);
-  });
+    callback( html );
+  } );
 };
+
+// Called from the command line, and not required
+if ( require.main === module ) {
+  module.exports( function( html ) { console.log( html ); } );
+}
