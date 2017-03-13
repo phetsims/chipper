@@ -14,7 +14,7 @@
 #
 # Example:
 # cd john-travoltage/
-# copy-history-to-different-repo.sh js/SomeButtonFile.js sun
+# copy-history-to-different-repo.sh js/SomeButtonFile.js ../sun
 #
 # Author: Sam Reid (PhET Interactive Simulations)
 # Author: Michael Kauzmann (PhET Interactive Simulations)
@@ -37,8 +37,13 @@ PATCHFILE="../patches/$RUN_DIR/$FILE_OR_DIRECTORY.txt"
 
 echo "running: copy-history-to-different-repo.sh $FILE_OR_DIRECTORY ${DESTINATION_REPOSITORY} $PATCHFILE"
 
-mkdir ../patches
+# Create the full path, including subdirectories for the patchfile, then delete the folder itself because we
+# will place the file there.  Remove it if it was there in a previous run.
+rm ${PATCHFILE}
+mkdir -p ${PATCHFILE}
+rm -r ${PATCHFILE}
 
-git log --pretty=email --patch-with-stat --reverse --full-index --binary -- FILE_OR_DIRECTORY > ${PATCHFILE}
-cd ../${DESTINATION_REPOSITORY}
+git log --pretty=email --patch-with-stat --reverse --full-index --binary -- ${FILE_OR_DIRECTORY} > ${PATCHFILE}
+cd ${DESTINATION_REPOSITORY}
 git am < ${PATCHFILE}
+echo "Finished, please review $PATCHFILE then push changes if you like them"
