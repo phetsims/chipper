@@ -34,7 +34,7 @@ DESTINATION_REPOSITORY=$2
 RUN_DIR=${PWD##*/}
 
 # Use a separate directory rather than cluttering up either repo
-PATCHFILE="../patches/$RUN_DIR/$FILE_OR_DIRECTORY.txt"
+PATCHFILE="../patches/$RUN_DIR/${FILE_OR_DIRECTORY}_patch.txt"
 
 echo "running: copy-history-to-different-repo.sh $FILE_OR_DIRECTORY ${DESTINATION_REPOSITORY} $PATCHFILE"
 
