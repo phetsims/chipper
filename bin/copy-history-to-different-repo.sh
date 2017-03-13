@@ -8,9 +8,10 @@
 # 1. cd into the directory of the source repository
 # 2. copy-history-to-different-repo.sh FILE_OR_DIRECTORY DESTINATION_REPOSITORY
 # 3. review the patch file to make sure nothing looks like trouble
-# 4. cd into the destination repository
-# 5. git push
-# 6. remove the patches/ directory
+# 4. move the file to the correct path in the destination repository
+# 5. cd into the destination repository
+# 6. git push
+# 7. remove the patches/ directory
 #
 # Example:
 # cd john-travoltage/
