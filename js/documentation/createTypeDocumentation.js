@@ -13,8 +13,7 @@ var fs = require( 'fs' );
 
 // Mock up window globals for running in node mode
 
-// TODO: Why was this running with an error in TFunctionWrapper?
-// global.assert = require( 'assert' );
+global.assert = require( 'assert' );
 global.assert = null;
 global._ = require( '../../../sherpa/lib/lodash-4.17.4.js' );
 global.phet = {
@@ -46,6 +45,7 @@ requirejs.config( {
 
 var TObject = requirejs( 'PHET_IO/types/TObject' );
 
+
 // Get a list of all of the types in the 'types' directory
 var walkSync = function( dir, filelist ) {
   var files = fs.readdirSync( dir );
@@ -55,10 +55,31 @@ var walkSync = function( dir, filelist ) {
       filelist = walkSync( dir + '/' + file, filelist );
     }
     else {
-      filelist.push( dir + '/' + file.replace( '.js', '' ) );
+      if ( file.match( /^T[A-Z].*\.js/ ) ) {
+        filelist.push( dir + file.replace( '.js', '' ) );
+      }
     }
   } );
   return filelist;
+};
+
+var findFilesAndWalk = function() {
+  var commonRepos = fs.readFileSync( '../../../chipper/data/active-runnables' ).toString();
+  commonRepos = commonRepos.split( '\r\n' );
+  commonRepos.splice( commonRepos.indexOf( 'babel' ), 1 );
+  commonRepos.splice( commonRepos.indexOf( 'exemplar' ), 1 );
+  commonRepos.splice( commonRepos.indexOf( 'function-basics' ), 1 );
+  commonRepos.splice( commonRepos.indexOf( 'phet-ios-app' ), 1 );
+  commonRepos.splice( commonRepos.indexOf( 'phet-android-app' ), 1 );
+  commonRepos.splice( commonRepos.indexOf( 'phet-cafepress' ), 1 );
+
+  var files = [];
+  commonRepos.forEach( function( repoName ) {
+    walkSync( '../../../' + repoName + '/js/', files );
+  } );
+
+  return files;
+
 };
 
 var toHTML = function( json ) {
@@ -99,7 +120,7 @@ var toHTML = function( json ) {
 };
 
 module.exports = function( callback ) {
-  var allFiles = walkSync( '../types', [] );
+  var allFiles = findFilesAndWalk();
   var result = {};
 
   // Load the files using the same strings as they are loaded in other files
