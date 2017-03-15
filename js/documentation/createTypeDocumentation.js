@@ -18,7 +18,8 @@ global.assert = null;
 global._ = require( '../../../sherpa/lib/lodash-4.17.4.js' );
 global.phet = {
   chipper: {
-    queryParameters: {}
+    queryParameters: {},
+    brand: 'phet-io'
   },
   phetio: {
     queryParameters: {
@@ -34,12 +35,31 @@ var assert = global.assert;
 requirejs.config( {
   paths: {
     text: '../../../sherpa/lib/text-2.0.12',
+    ifphetio: '../../../chipper/js/requirejs-plugins/ifphetio',
+
     AXON: '../../../axon/js',
+    DOT: '../../../dot/js',
+    JOIST: '../../../joist/js',
+    KITE: '../../../kite/js',
+    PHETCOMMON: '../../../phetcommon/js',
     REPOSITORY: '../..',
     PHET_CORE: '../../../phet-core/js',
-    PHETCOMMON: '../../../phetcommon/js',
     PHET_IO: '../../../phet-io/js',
-    TANDEM: '../../../tandem/js'
+    SHRED: '../../../shred/js',
+    SCENERY: '../../../scenery/js',
+    SCENERY_PHET: '../../../scenery-phet/js',
+    SUN: '../../../sun/js',
+    TANDEM: '../../../tandem/js',
+    VEGAS: '../../../vegas/js',
+    VIBE: '../../../vibe/js'
+
+
+    // Not sure how to handle individual simulations' documentation
+    // BALLOONS_AND_STATIC_ELECTRICITY: '../../../balloons-and-static-electricity/js',
+    // BEERS_LAW_LAB: '../../../beers-law-lab/js',
+    // BUILD_AN_ATOM: '../../../build-an-atom/js',
+    // CHARGES_AND_FIELDS: '../../../charges-and-fields/js',
+    // COLOR_VISION: '../../../color-vision/js',
   }
 } );
 
@@ -56,26 +76,40 @@ var walkSync = function( dir, filelist ) {
     }
     else {
       if ( file.match( /^T[A-Z].*\.js/ ) ) {
-        filelist.push( dir + file.replace( '.js', '' ) );
+        filelist.push( dir + '/' + file.replace( '.js', '' ) );
       }
     }
   } );
   return filelist;
 };
 
-var findFilesAndWalk = function() {
-  var commonRepos = fs.readFileSync( '../../../chipper/data/active-runnables' ).toString();
-  commonRepos = commonRepos.split( '\r\n' );
-  commonRepos.splice( commonRepos.indexOf( 'babel' ), 1 );
-  commonRepos.splice( commonRepos.indexOf( 'exemplar' ), 1 );
-  commonRepos.splice( commonRepos.indexOf( 'function-basics' ), 1 );
-  commonRepos.splice( commonRepos.indexOf( 'phet-ios-app' ), 1 );
-  commonRepos.splice( commonRepos.indexOf( 'phet-android-app' ), 1 );
-  commonRepos.splice( commonRepos.indexOf( 'phet-cafepress' ), 1 );
+var findFiles = function() {
+  var activeRepos = fs.readFileSync( '../../../chipper/data/active-repos' ).toString();
+  activeRepos = activeRepos.split( '\r\n' );
+
+  var activeSims = fs.readFileSync( '../../../chipper/data/active-sims' ).toString();
+  activeSims = activeSims.split( '\r\n' );
+
+  // Repos that we don't want to search because they have no js/ directories, and won't have TTypes
+  var blackList = [ 'babel', 'exemplar', 'function-basics', 'phet-info', 'phet-io-website', 'phet-ios-app',
+    'phet-android-app', 'phet-cafepress', 'sherpa', 'slater', 'tambo', 'tasks', 'yotta', 'scenery' ];
+
+  // TODO: this is a hack, we want these repos, but not the error
+  // These are common code repos that throw a 'document is not defined error' but have files that need to be entered.
+  blackList = blackList.concat( [ 'scenery-phet', 'sun', 'joist' ] );
+  blackList.forEach( function( repo ) {
+    activeRepos.splice( activeRepos.indexOf( repo ), 1 );
+  } );
+
+  activeSims.forEach( function( repo ) {
+    activeRepos.splice( activeRepos.indexOf( repo ), 1 );
+  } );
+
+  var commonRepos = activeRepos;
 
   var files = [];
   commonRepos.forEach( function( repoName ) {
-    walkSync( '../../../' + repoName + '/js/', files );
+    walkSync( '../../../' + repoName + '/js', files );
   } );
 
   return files;
@@ -120,20 +154,57 @@ var toHTML = function( json ) {
 };
 
 module.exports = function( callback ) {
-  var allFiles = findFilesAndWalk();
+  var allFiles = findFiles();
+
+  /*
+  These are problematic phet-io imports, need to investigate more. It seems like requirejs is just stopping and not
+  calling the callback that we give them. There aren't any errors though:
+
+  // TODO: Why the heck do these files make the program die silently on requirejs import?
+   '../../../phet-io/js/types/TString',
+   '../../../phet-io/js/types/TPhETIO',
+   '../../../phet-io/js/types/TFunctionWrapper',
+   '../../../phet-io/js/types/TVoid',
+
+   */
+
+
+
+  // These are gathered dynamically above, but to test I manually removed the files that make it die silently
+  allFiles = [
+    '../../../phet-io/js/types/TArray',
+    '../../../phet-io/js/types/TBoolean',
+    '../../../phet-io/js/types/TNumber',
+    '../../../phet-io/js/types/TSimIFrameAPI',
+    '../../../phet-io/js/types/TObject',
+
+    '../../../axon/js/TDerivedProperty',
+    '../../../axon/js/TEvents',
+    '../../../axon/js/TObservableArray',
+    '../../../axon/js/TProperty',
+    '../../../dot/js/TBounds2',
+    '../../../dot/js/TBounds3',
+    '../../../dot/js/TRandom',
+    '../../../dot/js/TVector2',
+    '../../../dot/js/TVector3',
+    '../../../phetcommon/js/model/TSphereBucket',
+
+    '../../../shred/js/model/TParticle',
+    '../../../shred/js/model/TParticleAtom',
+    '../../../shred/js/view/TPeriodicTableCell',
+    '../../../tandem/js/axon/TTandemEmitter',
+    '../../../tandem/js/scenery/input/TTandemSimpleDragHandler',
+    '../../../tandem/js/TTandem' ];
+
+  console.log( allFiles );
   var result = {};
 
-  // Load the files using the same strings as they are loaded in other files
-  // This way they aren't loaded twice.
-  // substring(3) to remove the '../' before the types directory
-  var filesToGet = allFiles.map( function( elm ) {return 'PHET_IO/' + elm.substring( 3 );} );
-
-
-  requirejs( filesToGet, function( /* arguments */ ) {
+  requirejs( allFiles, function( /* arguments */ ) {
+    console.log( 'in require callback');
     var args = Array.prototype.slice.call( arguments );
     for ( var i = 0; i < args.length; i++ ) {
       var arg = args[ i ];
-      var filename = filesToGet[ i ];
+      var filename = allFiles[ i ];
       if ( arg.typeName ) {
         result[ arg.typeName ] = arg;
       }
