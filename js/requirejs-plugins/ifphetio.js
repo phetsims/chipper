@@ -48,8 +48,9 @@ define( function( module ) {
         }
         else {
 
-          // It wasn't phet-io so load a no-op function instead
-          load( function() {} );
+          // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
+          // See https://github.com/phetsims/phet-io/issues/1074 for more details
+          load( function() { return function() {};} );
         }
       }
     },
@@ -66,8 +67,9 @@ define( function( module ) {
       }
       else {
 
-        // It wasn't phet-io so write a no-op function instead
-        text = 'define("' + moduleName + '", function(){return function(){};});';
+        // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
+        // See https://github.com/phetsims/phet-io/issues/1074 for more details
+        text = 'define("' + moduleName + '", function(){return function(){ return function(){}; };});';
         write( text );
       }
     }
