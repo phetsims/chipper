@@ -14,7 +14,6 @@ var fs = require( 'fs' );
 // Mock up window globals for running in node mode
 
 global.assert = require( 'assert' );
-global.assert = null;
 global._ = require( '../../../sherpa/lib/lodash-4.17.4.js' );
 global.phet = {
   chipper: {
@@ -27,6 +26,10 @@ global.phet = {
     }
   }
 };
+
+// This is a hack because we are now loading scenery.js as a namespace.
+global.document = { createElement: function() {return { getContext: function() {} };} };
+
 
 global.window = global; // eslint-disable-line no-native-reassign
 
@@ -53,13 +56,6 @@ requirejs.config( {
     VEGAS: '../../../vegas/js',
     VIBE: '../../../vibe/js'
 
-
-    // Not sure how to handle individual simulations' documentation
-    // BALLOONS_AND_STATIC_ELECTRICITY: '../../../balloons-and-static-electricity/js',
-    // BEERS_LAW_LAB: '../../../beers-law-lab/js',
-    // BUILD_AN_ATOM: '../../../build-an-atom/js',
-    // CHARGES_AND_FIELDS: '../../../charges-and-fields/js',
-    // COLOR_VISION: '../../../color-vision/js',
   }
 } );
 
@@ -92,11 +88,8 @@ var findFiles = function() {
 
   // Repos that we don't want to search because they have no js/ directories, and won't have TTypes
   var blackList = [ 'babel', 'exemplar', 'function-basics', 'phet-info', 'phet-io-website', 'phet-ios-app',
-    'phet-android-app', 'phet-cafepress', 'sherpa', 'slater', 'tambo', 'tasks', 'yotta', 'scenery' ];
+    'phet-android-app', 'phet-cafepress', 'sherpa', 'slater', 'tambo', 'tasks', 'yotta' ];
 
-  // TODO: this is a hack, we want these repos, but not the error
-  // These are common code repos that throw a 'document is not defined error' but have files that need to be entered.
-  blackList = blackList.concat( [ 'scenery-phet', 'sun', 'joist' ] );
   blackList.forEach( function( repo ) {
     activeRepos.splice( activeRepos.indexOf( repo ), 1 );
   } );
@@ -156,75 +149,45 @@ var toHTML = function( json ) {
 module.exports = function( callback ) {
   var allFiles = findFiles();
 
-  /*
-  These are problematic phet-io imports, need to investigate more. It seems like requirejs is just stopping and not
-  calling the callback that we give them. There aren't any errors though:
-
-  // TODO: Why the heck do these files make the program die silently on requirejs import?
-   '../../../phet-io/js/types/TString',
-   '../../../phet-io/js/types/TPhETIO',
-   '../../../phet-io/js/types/TFunctionWrapper',
-   '../../../phet-io/js/types/TVoid',
-
-   */
-
-
-
-  // These are gathered dynamically above, but to test I manually removed the files that make it die silently
-  allFiles = [
-    '../../../phet-io/js/types/TArray',
-    '../../../phet-io/js/types/TBoolean',
-    '../../../phet-io/js/types/TNumber',
-    '../../../phet-io/js/types/TSimIFrameAPI',
-    '../../../phet-io/js/types/TObject',
-
-    '../../../axon/js/TDerivedProperty',
-    '../../../axon/js/TEvents',
-    '../../../axon/js/TObservableArray',
-    '../../../axon/js/TProperty',
-    '../../../dot/js/TBounds2',
-    '../../../dot/js/TBounds3',
-    '../../../dot/js/TRandom',
-    '../../../dot/js/TVector2',
-    '../../../dot/js/TVector3',
-    '../../../phetcommon/js/model/TSphereBucket',
-
-    '../../../shred/js/model/TParticle',
-    '../../../shred/js/model/TParticleAtom',
-    '../../../shred/js/view/TPeriodicTableCell',
-    '../../../tandem/js/axon/TTandemEmitter',
-    '../../../tandem/js/scenery/input/TTandemSimpleDragHandler',
-    '../../../tandem/js/TTandem' ];
-
   console.log( allFiles );
   var result = {};
 
-  requirejs( allFiles, function( /* arguments */ ) {
-    console.log( 'in require callback');
-    var args = Array.prototype.slice.call( arguments );
-    for ( var i = 0; i < args.length; i++ ) {
-      var arg = args[ i ];
-      var filename = allFiles[ i ];
-      if ( arg.typeName ) {
-        result[ arg.typeName ] = arg;
+  // Preload all of the files.  This is a hack workaround that somehow allows the batch requirejs to proceed.
+  for ( var i = 0; i < allFiles.length; i++ ) {
+    var filename = allFiles[ i ];
+
+    global.phet = {
+      chipper: {
+        queryParameters: {},
+        brand: 'phet-io'
+      },
+      phetio: {
+        queryParameters: {
+          phetioExpressions: '[]'
+        }
+      }
+    };
+
+    console.log( 'hello: ' + filename );
+    var arg = requirejs( filename );
+    if ( arg.typeName ) {
+      result[ arg.typeName ] = arg;
+    }
+    else {
+      if ( filename.indexOf( 'TFunctionWrapper' ) >= 0 ) {
+        var returnType = TObject;
+        var parameterTypes = [ TObject ];
+        var instantiatedType = arg( returnType, parameterTypes );
+        result[ instantiatedType.typeName ] = instantiatedType;
       }
       else {
-        if ( filename.indexOf( 'TFunctionWrapper' ) >= 0 ) {
-          var returnType = TObject;
-          var parameterTypes = [ TObject ];
-          var instantiatedType = arg( returnType, parameterTypes );
-          result[ instantiatedType.typeName ] = instantiatedType;
-        }
-        else {
-          var instanceType = arg( TObject );
-          result[ instanceType.typeName ] = instanceType;
-        }
+        var instanceType = arg( TObject );
+        result[ instanceType.typeName ] = instanceType;
       }
     }
-
-    var html = toHTML( result );
-    callback( html );
-  } );
+  }
+  var html = toHTML( result );
+  callback( html );
 };
 
 // Called from the command line, and not required
