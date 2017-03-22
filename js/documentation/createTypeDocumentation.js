@@ -148,40 +148,42 @@ var toHTML = function( json ) {
 module.exports = function( callback ) {
   var allFiles = findFiles();
 
-  console.log( allFiles );
   var result = {};
 
   // Preload all of the files.  This is a hack workaround that somehow allows the batch requirejs to proceed.
   for ( var i = 0; i < allFiles.length; i++ ) {
     var filename = allFiles[ i ];
 
-    global.phet = {
-      chipper: {
-        queryParameters: {},
-        brand: 'phet-io'
-      },
-      phetio: {
-        queryParameters: {
-          phetioExpressions: '[]'
-        }
-      }
-    };
-
-    console.log( 'hello: ' + filename );
-    var arg = requirejs( filename );
-    if ( arg.typeName ) {
-      result[ arg.typeName ] = arg;
+    var TType = requirejs( filename );
+    if ( TType.typeName ) {
+      result[ TType.typeName ] = TType;
     }
     else {
       if ( filename.indexOf( 'TFunctionWrapper' ) >= 0 ) {
         var returnType = TObject;
         var parameterTypes = [ TObject ];
-        var instantiatedType = arg( returnType, parameterTypes );
+        var instantiatedType = TType( returnType, parameterTypes );
         result[ instantiatedType.typeName ] = instantiatedType;
       }
+      else if ( filename.indexOf( 'TTandemEmitter' ) >= 0 ) {
+        var tandemEmitterType = TType( [ TObject ] );
+        result[ tandemEmitterType.typeName ] = tandemEmitterType;
+      }
       else {
-        var instanceType = arg( TObject );
-        result[ instanceType.typeName ] = instanceType;
+        var otherType = TType( TObject );
+        result[ otherType.typeName ] = otherType;
+      }
+    }
+
+    // Hack to clear namespaces so duplicate registration doesn't throw an assertion error.
+    for ( var v in global.phet ) {
+      if ( global.phet[ v ].constructor.name === 'Namespace' ) {
+        var myObject = global.phet[ v ];
+
+        // Manually clear the namespace so it doesn't complain when getting repopulated in the next run
+        for ( var member in myObject ) {
+          delete myObject[ member ];
+        }
       }
     }
   }
