@@ -28,20 +28,13 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  */
 module.exports = function( grunt ) {
 
-  // Coerces a repository name to a sim title. Eg, 'simula-rasa' -> 'Simula Rasa'
-  function toTitle( input ) {
-    var tmpString = input.replace( /-(.)/g, function( match, group1 ) {
-      return ' ' + group1.toUpperCase();
-    } );
-    return tmpString.substring( 0, 1 ).toUpperCase() + tmpString.substring( 1 );
-  }
 
   // grunt options
   var repositoryName = grunt.option( 'name' );
   assert( repositoryName, 'missing required option: name (the new repository name)' );
   var author = grunt.option( 'author' );
   assert( author, 'missing required option: author' );
-  var title = grunt.option( 'title' ) || toTitle( repositoryName );
+  var title = grunt.option( 'title' ) || ChipperStringUtils.toTitle( repositoryName );
   var clean = !!grunt.option( 'clean' ); // {boolean}
 
   // Check for required parameters
