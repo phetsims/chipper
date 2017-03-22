@@ -150,7 +150,8 @@ module.exports = function( callback ) {
 
   var result = {};
 
-  // Preload all of the files.  This is a hack workaround that somehow allows the batch requirejs to proceed.
+  // Load the dependencies one at a time. This is a hack workaround that somehow allows requirejs to proceed.  Batching them
+  // (that is, loading them with an array) failed for unknown reasons.  See https://github.com/phetsims/phet-io/issues/972
   for ( var i = 0; i < allFiles.length; i++ ) {
     var filename = allFiles[ i ];
 
