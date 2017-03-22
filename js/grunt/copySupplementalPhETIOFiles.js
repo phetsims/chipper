@@ -76,6 +76,11 @@ module.exports = function( grunt, buildConfig ) {
         // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
         contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' );
       }
+      var firstWrapperTypeLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperTypes.js">' );
+      if ( firstWrapperTypeLine && firstWrapperTypeLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
+        contents = ChipperStringUtils.replaceAll( contents, firstWrapperTypeLine, '' );
+      }
 
       // For info about phetio.js, see the end of this file
       contents = ChipperStringUtils.replaceAll( contents,
@@ -143,6 +148,7 @@ module.exports = function( grunt, buildConfig ) {
   var LIB_FILES = [
     '../query-string-machine/js/QueryStringMachine.js',
     '../phet-io/wrappers/common/js/SimIFrameClient.js',
+    '../phet-io/wrappers/common/js/WrapperTypes.js',
     '../phet-io/wrappers/common/js/assert.js',
     '../phet-io/wrappers/common/js/WrapperUtils.js' ];
 
