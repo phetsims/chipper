@@ -8,7 +8,7 @@
  */
 /* eslint-env node */
 'use strict';
-var requirejs = require( '../../../node_modules/requirejs/bin/r.js' ); // eslint-disable-line require-statement-match
+var requirejs = require( '../../../chipper/node_modules/requirejs/bin/r.js' ); // eslint-disable-line require-statement-match
 var fs = require( 'fs' );
 
 // Mock up window globals for running in node mode
@@ -81,14 +81,14 @@ var walkSync = function( dir, filelist ) {
 
 var findFiles = function() {
   var activeRepos = fs.readFileSync( '../../../chipper/data/active-repos' ).toString();
-  activeRepos = activeRepos.split( '\r\n' );
-
+  activeRepos = activeRepos.split( /\r?\n/ )
   var activeSims = fs.readFileSync( '../../../chipper/data/active-sims' ).toString();
-  activeSims = activeSims.split( '\r\n' );
+  activeSims = activeSims.split( /\r?\n/ )
 
   // Repos that we don't want to search because they have no js/ directories, and won't have TTypes
   var blackList = [ 'babel', 'exemplar', 'function-basics', 'phet-info', 'phet-io-website', 'phet-ios-app',
     'phet-android-app', 'phet-cafepress', 'sherpa', 'slater', 'tambo', 'tasks', 'yotta' ];
+
 
   blackList.forEach( function( repo ) {
     activeRepos.splice( activeRepos.indexOf( repo ), 1 );
@@ -106,7 +106,6 @@ var findFiles = function() {
   } );
 
   return files;
-
 };
 
 var toHTML = function( json ) {
