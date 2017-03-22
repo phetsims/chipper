@@ -8,6 +8,7 @@
  */
 /* eslint-env node */
 'use strict';
+
 var requirejs = require( '../../../chipper/node_modules/requirejs/bin/r.js' ); // eslint-disable-line require-statement-match
 var fs = require( 'fs' );
 
@@ -35,28 +36,29 @@ global.window = global; // eslint-disable-line no-native-reassign
 
 var assert = global.assert;
 
+var paths = {
+  text: '../../../sherpa/lib/text-2.0.12',
+  ifphetio: '../../../chipper/js/requirejs-plugins/ifphetio',
+
+  AXON: '../../../axon/js',
+  DOT: '../../../dot/js',
+  JOIST: '../../../joist/js',
+  KITE: '../../../kite/js',
+  PHETCOMMON: '../../../phetcommon/js',
+  REPOSITORY: '../..',
+  PHET_CORE: '../../../phet-core/js',
+  PHET_IO: '../../../phet-io/js',
+  SHRED: '../../../shred/js',
+  SCENERY: '../../../scenery/js',
+  SCENERY_PHET: '../../../scenery-phet/js',
+  SUN: '../../../sun/js',
+  TANDEM: '../../../tandem/js',
+  VEGAS: '../../../vegas/js',
+  VIBE: '../../../vibe/js'
+
+};
 requirejs.config( {
-  paths: {
-    text: '../../../sherpa/lib/text-2.0.12',
-    ifphetio: '../../../chipper/js/requirejs-plugins/ifphetio',
-
-    AXON: '../../../axon/js',
-    DOT: '../../../dot/js',
-    JOIST: '../../../joist/js',
-    KITE: '../../../kite/js',
-    PHETCOMMON: '../../../phetcommon/js',
-    REPOSITORY: '../..',
-    PHET_CORE: '../../../phet-core/js',
-    PHET_IO: '../../../phet-io/js',
-    SHRED: '../../../shred/js',
-    SCENERY: '../../../scenery/js',
-    SCENERY_PHET: '../../../scenery-phet/js',
-    SUN: '../../../sun/js',
-    TANDEM: '../../../tandem/js',
-    VEGAS: '../../../vegas/js',
-    VIBE: '../../../vibe/js'
-
-  }
+  paths: paths
 } );
 
 var TObject = requirejs( 'PHET_IO/types/TObject' );
@@ -79,7 +81,7 @@ var walkSync = function( dir, filelist ) {
   return filelist;
 };
 
-var findFiles = function() {
+var getCommonCodeTTypes = function() {
   var activeRepos = fs.readFileSync( '../../../chipper/data/active-repos' ).toString();
   activeRepos = activeRepos.split( /\r?\n/ );
   var activeSims = fs.readFileSync( '../../../chipper/data/active-sims' ).toString();
@@ -145,31 +147,48 @@ var toHTML = function( json ) {
   return html;
 };
 
-module.exports = function( callback ) {
-  var allFiles = findFiles();
+
+/**
+ * Given as list of types files, return a json that holds the necessary information for the type documentation.
+ * It will have a structure like this: {
+ *    typeName: TType from the requirejs call,
+ *    nextTypeName: . . . ,
+ *    }
+ *
+ * Parameterized types like TTandemEmitter and TFunctionWrapper are hard coded because they have different constructors.
+ * @param ttypeFiles
+ */
+var getTypeJSON = function( ttypeFiles ) {
 
   var result = {};
 
   // Load the dependencies one at a time. This is a hack workaround that somehow allows requirejs to proceed.  Batching them
   // (that is, loading them with an array) failed for unknown reasons.  See https://github.com/phetsims/phet-io/issues/972
-  for ( var i = 0; i < allFiles.length; i++ ) {
-    var filename = allFiles[ i ];
+  for ( var i = 0; i < ttypeFiles.length; i++ ) {
+    var filename = ttypeFiles[ i ];
 
     var TType = requirejs( filename );
+
+    // See phetioInherit for more details
     if ( TType.typeName ) {
       result[ TType.typeName ] = TType;
     }
     else {
+
+      // Hack around the parametrized nature of TFunctionWrapper
       if ( filename.indexOf( 'TFunctionWrapper' ) >= 0 ) {
         var returnType = TObject;
         var parameterTypes = [ TObject ];
         var instantiatedType = TType( returnType, parameterTypes );
         result[ instantiatedType.typeName ] = instantiatedType;
       }
+
+      // Hack around the parametrized nature of TTandemEmitter
       else if ( filename.indexOf( 'TTandemEmitter' ) >= 0 ) {
         var tandemEmitterType = TType( [ TObject ] );
         result[ tandemEmitterType.typeName ] = tandemEmitterType;
       }
+
       else {
         var otherType = TType( TObject );
         result[ otherType.typeName ] = otherType;
@@ -178,7 +197,7 @@ module.exports = function( callback ) {
 
     // Hack to clear namespaces so duplicate registration doesn't throw an assertion error.
     for ( var v in global.phet ) {
-      if ( global.phet.hasOwnProperty( v)) {
+      if ( global.phet.hasOwnProperty( v ) ) {
         if ( global.phet[ v ].constructor.name === 'Namespace' ) {
           var myObject = global.phet[ v ];
 
@@ -192,11 +211,36 @@ module.exports = function( callback ) {
       }
     }
   }
-  var html = toHTML( result );
-  callback( html );
+  return result;
 };
 
-// Called from the command line, and not required
+module.exports = {
+  getCommonCodeTypeDocs: function() {
+    var commonCodeTTypeFiles = getCommonCodeTTypes();
+    var typeJSON = getTypeJSON( commonCodeTTypeFiles );
+
+    return toHTML( typeJSON );
+  },
+
+  getSimSpecificTypeDocs: function( simRepoName, simFormalName, simCapsForRequire ) {
+    var simHTMLHeader = '<h3>Specific Types for ' + simFormalName + '</h3>';
+    var ttypeFiles = [];
+
+    // Get the list of TTypes
+    walkSync( '../../../' + simRepoName + '/js', ttypeFiles );
+
+    paths[simCapsForRequire] = '../../../' + simRepoName + '/js';
+    console.log( JSON.stringify( paths, null, 2));
+    requirejs.config( {
+      paths: paths
+    } );
+    var typeJSON = getTypeJSON( ttypeFiles );
+    return simHTMLHeader + toHTML( typeJSON );
+  }
+};
+
+// Called from the command line, and not required, just print the common code type docs. This is used to update the
+// devGuide in the phet-io-website.
 if ( require.main === module ) {
-  module.exports( function( html ) { console.log( html ); } );
+  console.log( module.exports.getCommonCodeTypeDocs() );
 }

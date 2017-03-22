@@ -3,10 +3,8 @@
 /* eslint-env node */
 'use strict';
 
+// modules
 var fs = require( 'fs' );
-var child_process = require( 'child_process' );
-var execSync = child_process.execSync;
-
 var createTypeDocumentation = require( './createTypeDocumentation' );
 
 
@@ -26,56 +24,27 @@ function getQueryParameters( filename, marker ) {
   return initGlobalsText.substring( objectStart, objectEnd );
 }
 
-
-/**
- *
- * @param repoName
- * @returns {{branch: *, sha: *, repo: *}}
- */
-function getGitInfo( repoName ) {
-
-  var sha = execSync( 'git rev-parse HEAD', { cwd: '../../../' + repoName, env: process.env } ).toString();
-  var branch = execSync( 'git rev-parse --abbrev-ref HEAD', {
-    cwd: '../../../' + repoName,
-    env: process.env
-  } ).toString();
-
-  return { branch: branch.replace( '\n', '' ), sha: sha.replace( '\n', '' ), repo: repoName };
-}
-
-
-var phetQueryParameters = getQueryParameters( '../../../chipper/js/initialize-globals.js', 'QUERY_PARAMETERS_SCHEMA = ' );
-var phetioQueryParameters = getQueryParameters( '../phetio-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
-
-
-var phetioGitInfo = getGitInfo( 'phet-io' );
-var joistGitInfo = getGitInfo( 'joist' );
-var chipperGitInfo = getGitInfo( 'chipper' );
-
-var shaHTML = '';
-[ phetioGitInfo, joistGitInfo, chipperGitInfo ].forEach( function( info ) {
-  shaHTML += '<li>' + info.repo + ' on branch "' + info.branch + '" at sha + ' + info.sha + '</li><br>\n';
-} );
-
-// Replace the template strings with the api documentation
 var documentationFilename = 'phetioDocumentation';
 var phetioDocumentationTemplateText = fs.readFileSync( documentationFilename + '_template.html' ).toString();
 
 
-phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{SHAS}}', shaHTML );
+// Add the phet query parameters to the template
+var phetQueryParameters = getQueryParameters( '../../../chipper/js/initialize-globals.js', 'QUERY_PARAMETERS_SCHEMA = ' );
 phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHET_QUERY_PARAMETERS}}', phetQueryParameters );
+
+// Add the phet-io query parameters to the template
+var phetioQueryParameters = getQueryParameters( '../phetio-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
 phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
 
+var commonCodeTypes = createTypeDocumentation.getCommonCodeTypeDocs();
+phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{COMMON_TYPE_DOCUMENTATION}}', commonCodeTypes);
 
-// This is async, so we have to finish in a callback
-createTypeDocumentation( function( typeDocumentation){
-  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{TYPE_DOCUMENTATION}}', typeDocumentation);
 
+var simSpecificTypes = createTypeDocumentation.getSimSpecificTypeDocs( 'build-an-atom', 'Build An Atom', 'BUILD_AN_ATOM' );
+phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{SIM_TYPE_DOCUMENTATION}}', simSpecificTypes );
 
 
 // Write the new documentation to html
-  fs.writeFileSync( documentationFilename + '.html', phetioDocumentationTemplateText );
-
-});
+fs.writeFileSync( documentationFilename + '.html', phetioDocumentationTemplateText );
 
 
