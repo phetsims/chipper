@@ -178,12 +178,16 @@ module.exports = function( callback ) {
 
     // Hack to clear namespaces so duplicate registration doesn't throw an assertion error.
     for ( var v in global.phet ) {
-      if ( global.phet[ v ].constructor.name === 'Namespace' ) {
-        var myObject = global.phet[ v ];
+      if ( global.phet.hasOwnProperty( v)) {
+        if ( global.phet[ v ].constructor.name === 'Namespace' ) {
+          var myObject = global.phet[ v ];
 
-        // Manually clear the namespace so it doesn't complain when getting repopulated in the next run
-        for ( var member in myObject ) {
-          delete myObject[ member ];
+          // Manually clear the namespace so it doesn't complain when getting repopulated in the next run
+          for ( var member in myObject ) {
+            if ( myObject.hasOwnProperty( member ) ) {
+              delete myObject[ member ];
+            }
+          }
         }
       }
     }
