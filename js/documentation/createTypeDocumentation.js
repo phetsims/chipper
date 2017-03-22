@@ -81,9 +81,9 @@ var walkSync = function( dir, filelist ) {
 
 var findFiles = function() {
   var activeRepos = fs.readFileSync( '../../../chipper/data/active-repos' ).toString();
-  activeRepos = activeRepos.split( /\r?\n/ )
+  activeRepos = activeRepos.split( /\r?\n/ );
   var activeSims = fs.readFileSync( '../../../chipper/data/active-sims' ).toString();
-  activeSims = activeSims.split( /\r?\n/ )
+  activeSims = activeSims.split( /\r?\n/ );
 
   // Repos that we don't want to search because they have no js/ directories, and won't have TTypes
   var blackList = [ 'babel', 'exemplar', 'function-basics', 'phet-info', 'phet-io-website', 'phet-ios-app',
