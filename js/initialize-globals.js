@@ -110,10 +110,16 @@
     },
 
     /**
-     * When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
+     * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
      */
     'phet-app': { type: 'flag' },
+
+    /**
+     * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
+     * to Google Analytics and potentially other sources in the future.
+     */
+    'phet-android-app': { type: 'flag' },
 
     /**
      * Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
