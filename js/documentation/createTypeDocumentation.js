@@ -9,59 +9,99 @@
 /* eslint-env node */
 'use strict';
 
-var requirejs = require( '../../../chipper/node_modules/requirejs/bin/r.js' ); // eslint-disable-line require-statement-match
+// TODO: bad practice to load directly from chipper's node modules
+// var customRequirejs = require( '../../../chipper/node_modules/requirejs/bin/r.js' ); // eslint-disable-line require-statement-match
+var customRequirejs = require( 'requirejs' ); // eslint-disable-line require-statement-match
 var fs = require( 'fs' );
+
+
+var initializeHackyGlobalsForThisFile = function() {
 
 // Mock up window globals for running in node mode
 
-global.assert = require( 'assert' );
-global._ = require( '../../../sherpa/lib/lodash-4.17.4.js' );
-global.phet = {
-  chipper: {
-    queryParameters: {},
-    brand: 'phet-io'
-  },
-  phetio: {
+  global.assert = require( 'assert' );
+  global._ = require( '../../../sherpa/lib/lodash-4.17.4.js' );
+
+  global.phet = global.phet || {};
+
+  global.phet.chipper = global.phet.chipper || {};
+  global.phet.chipper.queryParameters = global.phet.chipper.queryParameters || {};
+  global.phet.chipper.brand = 'phet-io';
+  global.phet.phetio = {
     queryParameters: {
       phetioExpressions: '[]'
     }
-  }
+  };
+
+// This is a hack because we are loading scenery.js as a namespace.
+  global.document = { createElement: function() {return { getContext: function() {} };} };
+
+
+  global.window = global; // eslint-disable-line no-native-reassign
 };
-
-// This is a hack because we are now loading scenery.js as a namespace.
-global.document = { createElement: function() {return { getContext: function() {} };} };
-
-
-global.window = global; // eslint-disable-line no-native-reassign
 
 var assert = global.assert;
 
 var paths = {
-  text: '../../../sherpa/lib/text-2.0.12',
-  ifphetio: '../../../chipper/js/requirejs-plugins/ifphetio',
+  text: '../sherpa/lib/text-2.0.12',
+  ifphetio: '../chipper/js/requirejs-plugins/ifphetio',
 
-  AXON: '../../../axon/js',
-  DOT: '../../../dot/js',
-  JOIST: '../../../joist/js',
-  KITE: '../../../kite/js',
-  PHETCOMMON: '../../../phetcommon/js',
-  REPOSITORY: '../..',
-  PHET_CORE: '../../../phet-core/js',
-  PHET_IO: '../../../phet-io/js',
-  SHRED: '../../../shred/js',
-  SCENERY: '../../../scenery/js',
-  SCENERY_PHET: '../../../scenery-phet/js',
-  SUN: '../../../sun/js',
-  TANDEM: '../../../tandem/js',
-  VEGAS: '../../../vegas/js',
-  VIBE: '../../../vibe/js'
-
+  AXON: '../axon/js',
+  DOT: '../dot/js',
+  JOIST: '../joist/js',
+  KITE: '../kite/js',
+  PHETCOMMON: '../phetcommon/js',
+  PHET_CORE: '../phet-core/js',
+  PHET_IO: '../phet-io/js',
+  REPOSITORY: './',
+  SHRED: '../shred/js',
+  SCENERY: '../scenery/js',
+  SCENERY_PHET: '../scenery-phet/js',
+  SUN: '../sun/js',
+  TANDEM: '../tandem/js',
+  VEGAS: '../vegas/js',
+  VIBE: '../vibe/js'
 };
-requirejs.config( {
+
+customRequirejs.config( {
+  baseUrl: process.cwd(),
   paths: paths
 } );
+/*
+ requirejs.config( {
+ baseUrl: process.cwd(),
+ paths:{
+ //Load dependencies from sibling directories
+ AXON: '../axon/js',
+ BRAND: '../brand/' + phet.chipper.brand + '/js',
+ DOT: '../dot/js',
+ SCENERY: '../scenery/js',
+ SCENERY_PHET: '../scenery-phet/js',
+ KITE: '../kite/js',
+ PHET_CORE: '../phet-core/js',
+ PHET_IO: '../phet-io/js',
+ PHETCOMMON: '../phetcommon/js',
+ REPOSITORY: '..',
+ SUN: '../sun/js',
+ JOIST: '../joist/js',
+ FORCES_AND_MOTION_BASICS: '../forces-and-motion-basics/js',
+ VIBE: '../vibe/js',
+ TANDEM: '../tandem/js',
 
-var TObject = requirejs( 'PHET_IO/types/TObject' );
+ //Load plugins
+ audio: '../chipper/js/requirejs-plugins/audio',
+ image: '../chipper/js/requirejs-plugins/image',
+ mipmap: '../chipper/js/requirejs-plugins/mipmap',
+ string: '../chipper/js/requirejs-plugins/string',
+ ifphetio: '../chipper/js/requirejs-plugins/ifphetio',
+
+ // third-party libs
+ text: '../sherpa/lib/text-2.0.12'
+ }
+ });
+ var sim = requirejs( 'js/' +repositoryName + '-main');
+ console.log( sim);
+ */
 
 
 // Get a list of all of the types in the 'types' directory
@@ -82,9 +122,9 @@ var walkSync = function( dir, filelist ) {
 };
 
 var getCommonCodeTTypes = function() {
-  var activeRepos = fs.readFileSync( '../../../chipper/data/active-repos' ).toString();
+  var activeRepos = fs.readFileSync( '../chipper/data/active-repos' ).toString();
   activeRepos = activeRepos.split( /\r?\n/ );
-  var activeSims = fs.readFileSync( '../../../chipper/data/active-sims' ).toString();
+  var activeSims = fs.readFileSync( '../chipper/data/active-sims' ).toString();
   activeSims = activeSims.split( /\r?\n/ );
 
   // Repos that we don't want to search because they have no js/ directories, and won't have TTypes
@@ -104,7 +144,7 @@ var getCommonCodeTTypes = function() {
 
   var files = [];
   commonRepos.forEach( function( repoName ) {
-    walkSync( '../../../' + repoName + '/js', files );
+    walkSync( '../' + repoName + '/js', files );
   } );
 
   return files;
@@ -160,6 +200,13 @@ var toHTML = function( json ) {
  */
 var getTypeJSON = function( ttypeFiles ) {
 
+  console.log( customRequirejs.s.contexts );
+  // console.log( customRequirejs.s.contexts.typeDocumentation.config );
+
+  var TObject = customRequirejs( 'PHET_IO/types/TObject' );
+
+  console.log( 'This is TObject below.');
+  console.log( TObject );
   var result = {};
 
   // Load the dependencies one at a time. This is a hack workaround that somehow allows requirejs to proceed.  Batching them
@@ -167,8 +214,11 @@ var getTypeJSON = function( ttypeFiles ) {
   for ( var i = 0; i < ttypeFiles.length; i++ ) {
     var filename = ttypeFiles[ i ];
 
-    var TType = requirejs( filename );
+    console.log( process.cwd() );
+    var TType = customRequirejs( filename );
 
+    console.log( filename );
+    console.log( TType );
     // See phetioInherit for more details
     if ( TType.typeName ) {
       result[ TType.typeName ] = TType;
@@ -212,10 +262,12 @@ var getTypeJSON = function( ttypeFiles ) {
     }
   }
   return result;
+
 };
 
 module.exports = {
   getCommonCodeTypeDocs: function() {
+    initializeHackyGlobalsForThisFile();
     var commonCodeTTypeFiles = getCommonCodeTTypes();
     var typeJSON = getTypeJSON( commonCodeTTypeFiles );
 
@@ -223,17 +275,16 @@ module.exports = {
   },
 
   getSimSpecificTypeDocs: function( simRepoName, simFormalName, simCapsForRequire ) {
+    initializeHackyGlobalsForThisFile();
     var simHTMLHeader = '<h3>Specific Types for ' + simFormalName + '</h3>';
     var ttypeFiles = [];
 
     // Get the list of TTypes
-    walkSync( '../../../' + simRepoName + '/js', ttypeFiles );
+    walkSync( '../' + simRepoName + '/js', ttypeFiles );
 
-    paths[simCapsForRequire] = '../../../' + simRepoName + '/js';
-    console.log( JSON.stringify( paths, null, 2));
-    requirejs.config( {
-      paths: paths
-    } );
+    paths[ simCapsForRequire ] = '../' + simRepoName + '/js';
+
+    console.log( 'requiring ' + ttypeFiles );
     var typeJSON = getTypeJSON( ttypeFiles );
     return simHTMLHeader + toHTML( typeJSON );
   }
