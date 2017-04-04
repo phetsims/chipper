@@ -145,6 +145,11 @@
     playbackInputEventLog: { type: 'flag' },
 
     /**
+     * Fires a post-message when the sim is about to change to another URL
+     */
+    postMessageOnBeforeUnload: { type: 'flag' },
+
+    /**
      * passes errors to test-sims
      */
     postMessageOnError: { type: 'flag' },
@@ -392,6 +397,14 @@
           url: window.location.href,
           message: message,
           stack: stack
+        } ), '*' );
+      } );
+    }
+
+    if ( phet.chipper.queryParameters.postMessageOnBeforeUnload ) {
+      window.addEventListener( 'beforeunload', function( e ) {
+        window.parent && window.parent.postMessage( JSON.stringify( {
+          type: 'beforeUnload'
         } ), '*' );
       } );
     }
