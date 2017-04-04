@@ -9,7 +9,7 @@
 /* eslint-env node */
 'use strict';
 
-var requirejs = require( '../../../chipper/node_modules/requirejs/bin/r.js' ); // eslint-disable-line require-statement-match
+var requirejs = require( 'requirejs' ); // eslint-disable-line require-statement-match
 var fs = require( 'fs' );
 
 // Mock up window globals for running in node mode
