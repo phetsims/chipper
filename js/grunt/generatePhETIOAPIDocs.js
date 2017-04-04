@@ -10,9 +10,16 @@
 
 // modules
 var fs = require( 'fs' );
-var createTypeDocumentation = require( '../../../phet-io/js/documentation/createTypeDocumentation' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+var child_process = require( 'child_process');
+var execSync = child_process.execSync;
 
+// constants
+var PATH_TO_PHETIO_JS_DOCS = '../phet-io/js/documentation/';
+var TYPE_DOCS_RUNNABLE = 'createTypeDocumentation.js';
+
+// No '.html' because sometimes we need this for 'phetioDocumentation-template.html'
+var DOCUMENTATION_FILENAME = 'phetioDocumentation';
 
 /**
  * Returns the string of the query parameter schema that you are getting
@@ -30,16 +37,10 @@ function getQueryParameters( filename, marker ) {
   return initGlobalsText.substring( objectStart, objectEnd );
 }
 
-
 module.exports = function( grunt, buildConfig) {
 
-  console.log( 'generatePhETIOAPIDocs inside  ' + process.cwd());
-
-  var pathToTemplate = '../phet-io/js/documentation/';
-  var documentationFilename = 'phetioDocumentation';
-
-  var phetioDocumentationTemplateText = fs.readFileSync( pathToTemplate + documentationFilename + '_template.html' ).toString();
-
+  var phetioDocumentationTemplateText = fs.readFileSync( PATH_TO_PHETIO_JS_DOCS + DOCUMENTATION_FILENAME + '_template.html' ).toString();
+//
 // Add the phet query parameters to the template
   var phetQueryParameters = getQueryParameters( '../chipper/js/initialize-globals.js', 'QUERY_PARAMETERS_SCHEMA = ' );
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHET_QUERY_PARAMETERS}}', phetQueryParameters );
@@ -48,17 +49,18 @@ module.exports = function( grunt, buildConfig) {
   var phetioQueryParameters = getQueryParameters( '../phet-io/js/phetio-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
 
-  var commonCodeTypes = createTypeDocumentation.getCommonCodeTypeDocs();
+  var childProcessOptions = { cwd: PATH_TO_PHETIO_JS_DOCS };
+  var commonCodeTypes = execSync( 'node ' + TYPE_DOCS_RUNNABLE + ' --common', childProcessOptions).toString();
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{COMMON_TYPE_DOCUMENTATION}}', commonCodeTypes );
 
+  var simSpecificTypes = execSync( 'node ' + TYPE_DOCS_RUNNABLE + ' --sim ' +
+    buildConfig.name + ' "' + // repoName
+    ChipperStringUtils.toTitle( buildConfig.name ) + '" ' +// formal display name
+    buildConfig.requirejsNamespace, // requirejs namespace in all caps
+  childProcessOptions ).toString();
 
-  var simSpecificTypes = createTypeDocumentation.getSimSpecificTypeDocs(
-    buildConfig.name,  // repoName
-    ChipperStringUtils.toTitle( buildConfig.name ), // formal display name
-    buildConfig.requirejsNamespace ); // requirejsNamespace in all caps
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{SIM_TYPE_DOCUMENTATION}}', simSpecificTypes );
 
-
   // Write the new documentation to html
-  grunt.file.write( 'build/docs/' + documentationFilename + '.html', phetioDocumentationTemplateText );
+  grunt.file.write( 'build/docs/' + DOCUMENTATION_FILENAME + '.html', phetioDocumentationTemplateText );
 };
