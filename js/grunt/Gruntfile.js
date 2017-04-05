@@ -31,6 +31,7 @@ var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
+var generateTwitterCard = require( '../../../chipper/js/grunt/generateTwitterCard' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
@@ -122,7 +123,7 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
-    [ 'build', 'generate-thumbnails' ]
+    [ 'build', 'generate-thumbnails', 'generate-twitter-card' ]
   );
 
   // Grunt task that determines created and last modified dates from git, and
@@ -296,6 +297,12 @@ module.exports = function( grunt ) {
       var finished = _.after( 2, grunt.task.current.async() );
       generateThumbnails( grunt, buildConfig.name, 128, 84, finished );
       generateThumbnails( grunt, buildConfig.name, 600, 394, finished );
+    } );
+
+  grunt.registerTask( 'generate-twitter-card', 'Generate image for twitter summary card to be used on the website.',
+    function() {
+      var finished = _.after( 1, grunt.task.current.async() );
+      generateTwitterCard( grunt, buildConfig.name, finished );
     } );
 
   grunt.registerTask( 'generate-development-html',
