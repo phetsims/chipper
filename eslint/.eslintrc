@@ -190,6 +190,8 @@
     "FileReader": false,
     // for linting Node.js code
     "global": false,
+    // for HTML => JSON parsing
+    "himalaya": false,
     //for web audio
     "Howl": false,
     //
