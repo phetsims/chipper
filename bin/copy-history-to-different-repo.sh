@@ -40,11 +40,12 @@ echo "running: copy-history-to-different-repo.sh $FILE_OR_DIRECTORY ${DESTINATIO
 
 # Create the full path, including subdirectories for the patchfile, then delete the folder itself because we
 # will place the file there.  Remove it if it was there in a previous run.
+echo "Removing old patch file so it doesn't overwrite."
 rm ${PATCHFILE}
 mkdir -p ${PATCHFILE}
 rm -r ${PATCHFILE}
 
 git log --pretty=email --patch-with-stat --reverse --full-index --binary -- ${FILE_OR_DIRECTORY} > ${PATCHFILE}
 cd ${DESTINATION_REPOSITORY}
-git am < ${PATCHFILE}
+git am --whitespace=fix --reject < ${PATCHFILE}
 echo "Finished, please review $PATCHFILE then push changes if you like them"
