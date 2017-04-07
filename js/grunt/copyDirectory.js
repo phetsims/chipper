@@ -15,6 +15,7 @@ var assert = require( 'assert' );
  * @param {string} src - the source directory
  * @param {string} dst - the destination directory
  * @param {function} [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
+ * @param {object} options
  */
 module.exports = function( grunt, src, dst, filter, options ) {
 
@@ -26,8 +27,8 @@ module.exports = function( grunt, src, dst, filter, options ) {
   // Copy built sim files (assuming they exist from a prior grunt command)
   grunt.file.recurse( src, function callback( abspath, rootdir, subdir, filename ) {
 
-    // If you want to copy a repository, you can exclude copying the .git folder
-    if ( options.excludeGitFolder &&  subdir && subdir.indexOf('.git' ) < 0 ) {
+    // Exclude all of the files in the '.git' subdir. If there isn't a subdir, then the file can't be in the '.git' folder.
+    if ( !subdir || (options.excludeGitFolder && subdir.indexOf( '.git' ) < 0 ) ) {
 
       var contents = grunt.file.read( abspath );
 

@@ -54,6 +54,29 @@ module.exports = function( grunt, buildConfig ) {
         '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
       );
 
+      //TODO: these probably don't need to be repeated for a different path
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/lodash-4.17.4.min.js"',
+        '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/font-awesome-4.5.0/css/font-awesome.min.css"',
+        '"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/jquery-2.1.0.min.js"',
+        '"https://code.jquery.com/jquery-2.2.3.min.js"'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/jquery-ui-1.8.24.min.js"',
+        '"https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/d3-4.2.2.js"',
+        '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
+      );
+
+
       /*
        * Remove individual common code imports because they are all in phetio.js
        */
@@ -103,8 +126,9 @@ module.exports = function( grunt, buildConfig ) {
         '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
       );
       //template uses exclusively "
-
-      // TODO: for new wrappers structure we can replace 'phet-io-wrappers/common/' with 'common/
+      contents = ChipperStringUtils.replaceAll( contents,
+        'phet-io-wrappers/common/', 'common/'
+      );
     }
     if ( contents !== originalContents ) {
       return contents;
@@ -155,7 +179,7 @@ module.exports = function( grunt, buildConfig ) {
     }
 
     // Copy each wrapper's content into a dedicated folder under 'build/wrappers'
-    copyDirectory( grunt, '../' + wrapperPrefix + wrapperName, 'build/wrappers/' + wrapperName + '/', filterWrapper, { excludeGitFolder: true } );
+    copyDirectory( grunt, '../' + wrapperPrefix + wrapperName, 'build/wrappers/' + wrapperName, filterWrapper, { excludeGitFolder: true } );
   } );
 
 
@@ -194,10 +218,10 @@ module.exports = function( grunt, buildConfig ) {
 
   var LIB_FILES = [
     '../query-string-machine/js/QueryStringMachine.js',
-    '../phet-io/wrappers/common/js/SimIFrameClient.js',
-    '../phet-io/wrappers/common/js/WrapperTypes.js',
-    '../phet-io/wrappers/common/js/assert.js',
-    '../phet-io/wrappers/common/js/WrapperUtils.js' ];
+    '../phet-io-wrappers/common/js/SimIFrameClient.js',
+    '../phet-io-wrappers/common/js/WrapperTypes.js',
+    '../phet-io-wrappers/common/js/assert.js',
+    '../phet-io-wrappers/common/js/WrapperUtils.js' ];
 
 
   var minified = uglify.minify( LIB_FILES, {
