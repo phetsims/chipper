@@ -135,24 +135,28 @@ module.exports = function( grunt, buildConfig ) {
 
 
 // Copy the base wrapper suite to the build directory
-  copyDirectory( grunt, '../phet-io-wrappers', 'build/wrappers', filterWrapper ,{excludeGitFolder: true});
+  copyDirectory( grunt, '../phet-io-wrappers', 'build/wrappers', filterWrapper, { excludeGitFolder: true } );
 
-  var wrappersFromSuite = fs.readdirSync( '../phet-io-wrappers');
+  var wrappersFromSuite = fs.readdirSync( '../phet-io-wrappers' );
+
+  // Remove random files that aren't wrappers
+  wrappersFromSuite.splice( wrappersFromSuite.indexOf( '.git'), 1 ) ;
+  wrappersFromSuite.splice( wrappersFromSuite.indexOf( 'README.md'), 1 ) ;
 
   var wrapperPrefix = 'phet-io-wrapper-';
   var wrapperRepos = findAllDedicatedWrapperRepos( wrapperPrefix );
-  wrapperRepos.forEach( function( repo){
+  wrapperRepos.forEach( function( repo ) {
 
-    var wrapperName = repo.split( wrapperPrefix )[1];
+    var wrapperName = repo.split( wrapperPrefix )[ 1 ];
 
     // Check for collisions so we don't overwrite something in the wrapper suite
-    if ( wrappersFromSuite.includes( repo) ){
+    if ( wrappersFromSuite.includes( repo ) ) {
       throw new Error( 'Wrapper ' + repo + ' already exists in the wrapper suite' );
     }
 
     // Copy each wrapper's content into a dedicated folder under 'build/wrappers'
-    copyDirectory( grunt, '../' + wrapperPrefix + wrapperName, 'build/wrappers/' + wrapperName + '/', filterWrapper, {excludeGitFolder: true} );
-  });
+    copyDirectory( grunt, '../' + wrapperPrefix + wrapperName, 'build/wrappers/' + wrapperName + '/', filterWrapper, { excludeGitFolder: true } );
+  } );
 
 
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
