@@ -10,6 +10,7 @@
 'use strict';
 
 // modules
+var fs = require( 'fs' );
 var copyDirectory = require( '../../../chipper/js/grunt/copyDirectory' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 var generatePhETIOAPIDocs = require( '../../../chipper/js/grunt/generatePhETIOAPIDocs' );
@@ -103,7 +104,7 @@ module.exports = function( grunt, buildConfig ) {
       );
       //template uses exclusively "
 
-      contents = ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
+      // TODO: for new wrappers structure we can replace 'phet-io-wrappers/common/' with 'common/
     }
     if ( contents !== originalContents ) {
       return contents;
@@ -112,7 +113,47 @@ module.exports = function( grunt, buildConfig ) {
       return null; // signify no change (helps for images)
     }
   };
-  copyDirectory( grunt, '../phet-io/wrappers', 'build/wrappers', filterWrapper );
+
+
+  /**
+   * Dynamically generate a list of all current wrappers that have a dedicated github repository so that we can add them
+   * to the build.
+   * @returns {Array} - a list of wrapper repos
+   */
+  function findAllDedicatedWrapperRepos( wrapperPrefix ) {
+    var wrapperRepos = [];
+    var repos = fs.readdirSync( '../' );
+    repos.forEach( function( repo ) {
+
+      // If the repo begins with the wrapper prefix
+      if ( repo.indexOf( wrapperPrefix ) === 0 ) {
+        wrapperRepos.push( repo );
+      }
+    } );
+    return wrapperRepos;
+  }
+
+
+// Copy the base wrapper suite to the build directory
+  copyDirectory( grunt, '../phet-io-wrappers', 'build/wrappers', filterWrapper ,{excludeGitFolder: true});
+
+  var wrappersFromSuite = fs.readdirSync( '../phet-io-wrappers');
+
+  var wrapperPrefix = 'phet-io-wrapper-';
+  var wrapperRepos = findAllDedicatedWrapperRepos( wrapperPrefix );
+  wrapperRepos.forEach( function( repo){
+
+    var wrapperName = repo.split( wrapperPrefix )[1];
+
+    // Check for collisions so we don't overwrite something in the wrapper suite
+    if ( wrappersFromSuite.includes( repo) ){
+      throw new Error( 'Wrapper ' + repo + ' already exists in the wrapper suite' );
+    }
+
+    // Copy each wrapper's content into a dedicated folder under 'build/wrappers'
+    copyDirectory( grunt, '../' + wrapperPrefix + wrapperName, 'build/wrappers/' + wrapperName + '/', filterWrapper, {excludeGitFolder: true} );
+  });
+
 
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );

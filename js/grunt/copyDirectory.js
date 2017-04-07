@@ -18,26 +18,33 @@ var assert = require( 'assert' );
  */
 module.exports = function( grunt, src, dst, filter, options ) {
 
-  options = _.extend( { failOnExistingFiles: false }, options );
+  options = _.extend( {
+    failOnExistingFiles: false,
+    excludeGitFolder: false
+  }, options );
 
   // Copy built sim files (assuming they exist from a prior grunt command)
   grunt.file.recurse( src, function callback( abspath, rootdir, subdir, filename ) {
 
-    var contents = grunt.file.read( abspath );
+    // If you want to copy a repository, you can exclude copying the .git folder
+    if ( options.excludeGitFolder &&  subdir && subdir.indexOf('.git' ) < 0 ) {
 
-    // TODO: this line is duplicated around chipper
-    var dstPath = subdir ? ( dst + '/' + subdir + '/' + filename ) : ( dst + '/' + filename );
+      var contents = grunt.file.read( abspath );
 
-    if ( options.failOnExistingFiles && grunt.file.exists( dstPath ) ) {
-      assert && assert( false, 'file existed already' );
-    }
-    var filteredContents = filter && filter( abspath, contents );
+      // TODO: this line is duplicated around chipper
+      var dstPath = subdir ? ( dst + '/' + subdir + '/' + filename ) : ( dst + '/' + filename );
 
-    if ( filteredContents ) {
-      grunt.file.write( dstPath, filteredContents );
-    }
-    else {
-      grunt.file.copy( abspath, dstPath );
+      if ( options.failOnExistingFiles && grunt.file.exists( dstPath ) ) {
+        assert && assert( false, 'file existed already' );
+      }
+      var filteredContents = filter && filter( abspath, contents );
+
+      if ( filteredContents ) {
+        grunt.file.write( dstPath, filteredContents );
+      }
+      else {
+        grunt.file.copy( abspath, dstPath );
+      }
     }
   } );
 };
