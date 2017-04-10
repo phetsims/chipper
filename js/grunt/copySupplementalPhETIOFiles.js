@@ -12,7 +12,7 @@
 // modules
 var copyDirectory = require( '../../../chipper/js/grunt/copyDirectory' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
-var generatePhETIOAPIDocs = require( '../../../chipper/js/grunt/generatePhETIOAPIDocs' );
+// var generatePhETIOAPIDocs = require( '../../../chipper/js/grunt/generatePhETIOAPIDocs' );
 
 
 module.exports = function( grunt, buildConfig ) {
