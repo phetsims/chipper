@@ -34,23 +34,23 @@ module.exports = function( grunt, buildConfig ) {
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/lodash-4.17.4.min.js"',
+        '"../../sherpa/lib/lodash-4.17.4.min.js"',
         '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/font-awesome-4.5.0/css/font-awesome.min.css"',
+        '"../../sherpa/lib/font-awesome-4.5.0/css/font-awesome.min.css"',
         '"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/jquery-2.1.0.min.js"',
+        '"../../sherpa/lib/jquery-2.1.0.min.js"',
         '"https://code.jquery.com/jquery-2.2.3.min.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/jquery-ui-1.8.24.min.js"',
+        '"../../sherpa/lib/jquery-ui-1.8.24.min.js"',
         '"https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/d3-4.2.2.js"',
+        '"../../sherpa/lib/d3-4.2.2.js"',
         '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
       );
 
@@ -121,11 +121,7 @@ module.exports = function( grunt, buildConfig ) {
         '<!--{{FAVICON.ico}}-->',
         '<link rel="shortcut icon" href="/assets/favicon.ico">'
       );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
-        '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
-      );
-      //template uses exclusively "
+      // template uses exclusively "
       contents = ChipperStringUtils.replaceAll( contents,
         'phet-io-wrappers/common/', 'common/'
       );
