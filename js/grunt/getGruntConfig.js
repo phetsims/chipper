@@ -44,13 +44,13 @@ module.exports = function( grunt, repositoryName, phetLibs ) {
 
     // All files to be linted
     var allFilesToLint = _.map( phetLibs, function( repo ) {
+
+      // If it's a phet-io wrapper repo, lint all js folders within
+      if ( repo.indexOf( 'phet-io-wrapper' ) >= 0){
+        return '../' + repo + '/**/*.js';
+      }
       return '../' + repo + '/js/**/*.js';
     } );
-
-    // When building for phet-io, we must lint the phet-io apps directory, see https://github.com/phetsims/phet-io/issues/600
-    if ( phetLibs.indexOf( 'phet-io' ) >= 0 ) {
-      allFilesToLint.push( '../phet-io/wrappers/**/*.js' );
-    }
 
     // brand repo has a non-standard directory structure, so add it explicitly if it's a dependency.
     if ( repositoryName !== 'brand' ) {
