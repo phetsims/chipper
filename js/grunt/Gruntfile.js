@@ -171,7 +171,7 @@ module.exports = function( grunt ) {
               } );
             }
             else {
-              deployDev( grunt, function() {
+              deployDev( grunt, buildConfig, function() {
                 deployProduction( grunt, done );
               } );
             }
@@ -185,7 +185,7 @@ module.exports = function( grunt ) {
     '--mkdir : set to true to create the sim dir and .htaccess file before copying the version directory\n' +
     '--test : set to true to disable commit and push, and SCP to a test directory on spot',
     function() {
-      deployDev( grunt );
+      deployDev( grunt, buildConfig );
     }
   );
 
