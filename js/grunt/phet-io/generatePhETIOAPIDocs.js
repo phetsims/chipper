@@ -10,8 +10,8 @@
 
 // modules
 var fs = require( 'fs' );
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
-var child_process = require( 'child_process');
+var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
+var child_process = require( 'child_process' );
 var execSync = child_process.execSync;
 
 // constants
@@ -37,7 +37,7 @@ function getQueryParameters( filename, marker ) {
   return initGlobalsText.substring( objectStart, objectEnd );
 }
 
-module.exports = function( grunt, buildConfig) {
+module.exports = function( grunt, buildConfig ) {
 
   var phetioDocumentationTemplateText = fs.readFileSync( PATH_TO_PHETIO_JS_DOCS + DOCUMENTATION_FILENAME + '_template.html' ).toString();
 //
@@ -50,14 +50,14 @@ module.exports = function( grunt, buildConfig) {
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
 
   var childProcessOptions = { cwd: PATH_TO_PHETIO_JS_DOCS };
-  var commonCodeTypes = execSync( 'node ' + TYPE_DOCS_RUNNABLE + ' --common', childProcessOptions).toString();
+  var commonCodeTypes = execSync( 'node ' + TYPE_DOCS_RUNNABLE + ' --common', childProcessOptions ).toString();
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{COMMON_TYPE_DOCUMENTATION}}', commonCodeTypes );
 
   var simSpecificTypes = execSync( 'node ' + TYPE_DOCS_RUNNABLE + ' --sim ' +
-    buildConfig.name + ' "' + // repoName
-    ChipperStringUtils.toTitle( buildConfig.name ) + '" ' +// formal display name
-    buildConfig.requirejsNamespace, // requirejs namespace in all caps
-  childProcessOptions ).toString();
+                                   buildConfig.name + ' "' + // repoName
+                                   ChipperStringUtils.toTitle( buildConfig.name ) + '" ' +// formal display name
+                                   buildConfig.requirejsNamespace, // requirejs namespace in all caps
+    childProcessOptions ).toString();
 
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{SIM_TYPE_DOCUMENTATION}}', simSpecificTypes );
 

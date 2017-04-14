@@ -10,15 +10,15 @@
 'use strict';
 
 // modules
-var copyDirectory = require( '../../../chipper/js/grunt/copyDirectory' );
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
-var generatePhETIOAPIDocs = require( '../../../chipper/js/grunt/generatePhETIOAPIDocs' );
+var copyDirectory = require( './copyDirectory' );
+var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
+var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
 
 module.exports = function( grunt, buildConfig ) {
 
   // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
-  var uglify = require( '../../../chipper/node_modules/uglify-js' );// eslint-disable-line require-statement-match
+  var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
 
   // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not password-protected), see https://github.com/phetsims/phet-io/issues/353
   grunt.file.mkdir( 'build/lib' );
@@ -98,7 +98,7 @@ module.exports = function( grunt, buildConfig ) {
         '<link rel="shortcut icon" href="/assets/favicon.ico">'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '<script type="text/javascript" src="../../../assert/js/assert.js"></script>',
+        '<script type="text/javascript" src="../../../../assert/js/assert.js"></script>',
         '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
       );
       //template uses exclusively "
