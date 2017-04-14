@@ -20,9 +20,10 @@ var TEST_DIR_NAME = 'deploy-dev-tests';
 
 /**
  * @param grunt - the grunt instance
+ * @param buildConfig
  * @param callback - optional callback to run when finished, defaults to grunt.task.current.async()
  */
-module.exports = function( grunt, callback ) {
+module.exports = function( grunt, buildConfig, callback ) {
 
   // grunt options
   var mkdir = !!grunt.option( 'mkdir' ); // true = create the sim dir and .htaccess file before copying the version directory
@@ -48,7 +49,8 @@ module.exports = function( grunt, callback ) {
   // If there is a protected directory and we are copying to spot, include the .htaccess file
   // This is for PhET-iO simulations, to protected the password protected wrappers, see
   // https://github.com/phetsims/phet-io/issues/641
-  if ( grunt.file.isDir( ChipperConstants.BUILD_DIR ) && deployConfig.devDeployServer === 'spot.colorado.edu' ) {
+  if ( buildConfig.brand === 'phet-io' && grunt.file.isDir( ChipperConstants.BUILD_DIR ) &&
+       deployConfig.devDeployServer === 'spot.colorado.edu' ) {
     grunt.file.copy( '../phet-io/templates/spot/.htaccess', ChipperConstants.BUILD_DIR + '/wrappers/.htaccess' );
   }
 
