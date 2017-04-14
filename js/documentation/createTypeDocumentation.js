@@ -90,18 +90,28 @@ function getCommonCodeTTypes() {
 
   // Repos that we don't want to search because they have no js/ directories, and won't have TTypes
   var blackList = [ 'babel', 'exemplar', 'function-basics', 'phet-info', 'phet-io-website', 'phet-ios-app',
-    'phet-android-app', 'phet-cafepress', 'sherpa', 'slater', 'tambo', 'tasks', 'yotta' ];
+    'phet-android-app', 'phet-cafepress', 'sherpa', 'slater', 'tambo', 'tasks', 'yotta', 'phet-io-wrappers', 'phet-io-wrapper' ];
 
 
-  blackList.forEach( function( repo ) {
-    activeRepos.splice( activeRepos.indexOf( repo ), 1 );
+  var commonRepos = [];
+  activeRepos.forEach( function( repo ) {
+
+    // Don't include the black list above
+    if ( blackList.indexOf( repo ) ) {
+      return;
+    }
+
+    // Don't include any sims in the common repos
+    if ( activeSims.indexOf( repo ) ) {
+      return;
+    }
+
+    // There are no types in dedicated wrapper repos, exclude this special and dynamic case
+    else if ( repo.indexOf( 'phet-io-wrapper-' ) >= 0 ) {
+      return;
+    }
+    commonRepos.push( repo );
   } );
-
-  activeSims.forEach( function( repo ) {
-    activeRepos.splice( activeRepos.indexOf( repo ), 1 );
-  } );
-
-  var commonRepos = activeRepos;
 
   var files = [];
   commonRepos.forEach( function( repoName ) {
