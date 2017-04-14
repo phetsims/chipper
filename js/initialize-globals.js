@@ -335,7 +335,7 @@
      * It is used in string.js and sim.html.
      * @param string - the string to be mapped
      * @param stringTest - the value of the stringTest query parameter
-     * @returns {*}
+     * @returns {string}
      */
     window.phet.chipper.mapString = function( string, stringTest ) {
       return stringTest === null ? string :
