@@ -15,7 +15,7 @@ var fs = require( 'fs' );
 // Mock up window globals for running in node mode
 
 global.assert = require( 'assert' );
-global._ = require( '../../../sherpa/lib/lodash-4.17.4.js' );
+global._ = require( '../../../../sherpa/lib/lodash-4.17.4.js' );
 global.phet = {
   chipper: {
     queryParameters: {},
@@ -36,25 +36,26 @@ global.window = global; // eslint-disable-line no-native-reassign
 
 var assert = global.assert;
 
+// These paths are relative to this file location because they are used by requirejs.
 var paths = {
-  text: '../../../sherpa/lib/text-2.0.12',
-  ifphetio: '../../../chipper/js/requirejs-plugins/ifphetio',
+  text: '../../../../sherpa/lib/text-2.0.12',
+  ifphetio: '../../../../chipper/js/requirejs-plugins/ifphetio',
 
-  AXON: '../../../axon/js',
-  DOT: '../../../dot/js',
-  JOIST: '../../../joist/js',
-  KITE: '../../../kite/js',
-  PHETCOMMON: '../../../phetcommon/js',
-  REPOSITORY: '../..',
-  PHET_CORE: '../../../phet-core/js',
-  PHET_IO: '../../../phet-io/js',
-  SHRED: '../../../shred/js',
-  SCENERY: '../../../scenery/js',
-  SCENERY_PHET: '../../../scenery-phet/js',
-  SUN: '../../../sun/js',
-  TANDEM: '../../../tandem/js',
-  VEGAS: '../../../vegas/js',
-  VIBE: '../../../vibe/js'
+  AXON: '../../../../axon/js',
+  DOT: '../../../../dot/js',
+  JOIST: '../../../../joist/js',
+  KITE: '../../../../kite/js',
+  PHETCOMMON: '../../../../phetcommon/js',
+  REPOSITORY: '../../..',
+  PHET_CORE: '../../../../phet-core/js',
+  PHET_IO: '../../../../phet-io/js',
+  SHRED: '../../../../shred/js',
+  SCENERY: '../../../../scenery/js',
+  SCENERY_PHET: '../../../../scenery-phet/js',
+  SUN: '../../../../sun/js',
+  TANDEM: '../../../../tandem/js',
+  VEGAS: '../../../../vegas/js',
+  VIBE: '../../../../vibe/js'
 
 };
 
@@ -83,9 +84,9 @@ function walkSync( dir, filelist ) {
 }
 
 function getCommonCodeTTypes() {
-  var activeRepos = fs.readFileSync( '../../../chipper/data/active-repos' ).toString();
+  var activeRepos = fs.readFileSync( '../chipper/data/active-repos' ).toString();
   activeRepos = activeRepos.split( /\r?\n/ );
-  var activeSims = fs.readFileSync( '../../../chipper/data/active-sims' ).toString();
+  var activeSims = fs.readFileSync( '../chipper/data/active-sims' ).toString();
   activeSims = activeSims.split( /\r?\n/ );
 
   // Repos that we don't want to search because they have no js/ directories, and won't have TTypes
@@ -97,12 +98,12 @@ function getCommonCodeTTypes() {
   activeRepos.forEach( function( repo ) {
 
     // Don't include the black list above
-    if ( blackList.indexOf( repo ) ) {
+    if ( blackList.indexOf( repo ) >= 0 ) {
       return;
     }
 
     // Don't include any sims in the common repos
-    if ( activeSims.indexOf( repo ) ) {
+    if ( activeSims.indexOf( repo ) >= 0 ) {
       return;
     }
 
@@ -115,7 +116,7 @@ function getCommonCodeTTypes() {
 
   var files = [];
   commonRepos.forEach( function( repoName ) {
-    walkSync( '../../../' + repoName + '/js', files );
+    walkSync( '../' + repoName + '/js', files );
   } );
   return files;
 }
@@ -177,7 +178,8 @@ function getTypeJSON( ttypeFiles ) {
   for ( var i = 0; i < ttypeFiles.length; i++ ) {
     var filename = ttypeFiles[ i ];
 
-    var TType = requirejs( filename );
+    // The walking if from cwd ( sim repo) but requirejs is from the module ( chipper/js/grunt/phet-io)
+    var TType = requirejs( '../../../' + filename );
 
     // See phetioInherit for more details
     if ( TType.typeName ) {
@@ -235,10 +237,11 @@ function getSimSpecificTypeDocs( simRepoName, simFormalName, simCapsForRequire )
   var simHTMLHeader = '<h3>Specific Types for ' + simFormalName + '</h3>';
   var ttypeFiles = [];
 
-  // Get the list of TTypes
-  walkSync( '../../../' + simRepoName + '/js', ttypeFiles );
+  // Get the list of TTypes ( path from process.cwd())
+  walkSync( '../' + simRepoName + '/js', ttypeFiles );
 
-  paths[ simCapsForRequire ] = '../../../' + simRepoName + '/js';
+  // Path from grunt source code
+  paths[ simCapsForRequire ] = '../../../../' + simRepoName + '/js';
   requirejs.config( {
     paths: paths
   } );
