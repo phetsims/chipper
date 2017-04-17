@@ -55,7 +55,7 @@ module.exports = function( grunt, target, buildConfig ) {
     ignorePattern: [
       '**/build',
       '**/node_modules',
-      '../scenery/snapshots/**',
+      '**/snapshots',
       '../sherpa/**',
       '**/js/parser/svgPath.js',
       '../phet-io-website/root/assets/js/ua-parser-0.7.12.min.js',
