@@ -65,13 +65,20 @@ module.exports = function( grunt, buildConfig, callback ) {
    * scp file to dev server, and call commitAndPushDependenciesJSON if not testing
    */
   var scp = function() {
-    deployUtil.exec( grunt, 'scp -r ' + ChipperConstants.BUILD_DIR + ' ' + deployConfig.devUsername + '@' + server + ':' + versionPath, function() {
-      if ( test ) {
-        finish();
-      }
-      else {
-        deployUtil.commitAndPushDependenciesJSON( grunt, finish );
-      }
+    // create remote version directory if it does not exist
+    deployUtil.exec( grunt, 'ssh ' + deployConfig.devUsername + '@' + server + ' \'mkdir -p ' + versionPath + '\'', function() {
+      // add group write permissions to the remote version directory if they don't exist
+      deployUtil.exec( grunt, 'ssh ' + deployConfig.devUsername + '@' + server + ' \'chmod -R g+w ' + versionPath + '\'', function() {
+        // copy the local build directory contents to the remote version directory
+        deployUtil.exec( grunt, 'scp -r ' + ChipperConstants.BUILD_DIR + '/* ' + deployConfig.devUsername + '@' + server + ':' + versionPath, function() {
+          if ( test ) {
+            finish();
+          }
+          else {
+            deployUtil.commitAndPushDependenciesJSON( grunt, finish );
+          }
+        } );
+      } );
     } );
   };
 
