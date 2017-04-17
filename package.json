@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "grunt": "~1.0.0",
-    "grunt-eslint": "~19.0.0",
+    "eslint": "~3.19.0",
     "uglify-js": "~2.7.5",
     "requirejs": "~2.3.2",
     "jpeg-js": "~0.1.1",
