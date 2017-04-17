@@ -35,10 +35,10 @@ var generateDevelopmentColorsHTML = require( '../../../chipper/js/grunt/generate
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var generateTwitterCard = require( '../../../chipper/js/grunt/generateTwitterCard' );
+var lint = require( '../../../chipper/js/grunt/lint' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
-var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
@@ -81,10 +81,6 @@ module.exports = function( grunt ) {
       strings: {}
     }
   };
-
-  // Initialize grunt
-  var gruntConfig = getGruntConfig( grunt, buildConfig.name, buildConfig.phetLibs );
-  grunt.initConfig( gruntConfig );
 
   //---------------------------------------------------------------------------------------------------------------
   // Primary tasks
@@ -211,11 +207,21 @@ module.exports = function( grunt ) {
     }
   );
 
-  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'eslint:repoFiles' ] );
+  /**
+   * Returns a function that lints the specified target.
+   * @param {string} target 'dir'|'all'|'everything'
+   * @returns {function}
+   */
+  var runLint = function( target ) {
+    return function() {
+      lint( grunt, target, buildConfig );
+    };
+  };
+  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', runLint( 'dir' ) );
 
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'eslint:allFiles' ] );
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', runLint( 'all' ) );
 
-  grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', [ 'eslint:everything' ] );
+  grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', runLint( 'everything' ) );
 
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
@@ -366,6 +372,6 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
                                          '--dependencies to expand search to include dependencies\n' +
                                          '--everything to expand search to all PhET code', function() {
-    findDuplicates( grunt, gruntConfig );
+    findDuplicates( grunt, buildConfig );
   } );
 };
