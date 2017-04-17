@@ -53,6 +53,7 @@ module.exports = function( grunt, target, buildConfig ) {
 
     // Files to skip for linting
     ignorePattern: [
+      '**/.git',
       '**/build',
       '**/node_modules',
       '../scenery/snapshots/**',
