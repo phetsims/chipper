@@ -15,6 +15,8 @@ var copyDirectory = require( '../../../chipper/js/grunt/copyDirectory' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 // var generatePhETIOAPIDocs = require( '../../../chipper/js/grunt/generatePhETIOAPIDocs' );
 
+// constants
+var WRAPPER_PREFIX = 'phet-io-wrapper-';
 
 module.exports = function( grunt, buildConfig ) {
 
@@ -121,7 +123,8 @@ module.exports = function( grunt, buildConfig ) {
         '<!--{{FAVICON.ico}}-->',
         '<link rel="shortcut icon" href="/assets/favicon.ico">'
       );
-      // template uses exclusively "
+
+      // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
       contents = ChipperStringUtils.replaceAll( contents,
         'phet-io-wrappers/common/', 'common/'
       );
@@ -138,15 +141,15 @@ module.exports = function( grunt, buildConfig ) {
   /**
    * Dynamically generate a list of all current wrappers that have a dedicated github repository so that we can add them
    * to the build.
-   * @returns {Array} - a list of wrapper repos
+   * @returns {string[]} - a list of wrapper repos
    */
-  function findAllDedicatedWrapperRepos( wrapperPrefix ) {
+  function findAllDedicatedWrapperRepos() {
     var wrapperRepos = [];
     var repos = fs.readdirSync( '../' );
     repos.forEach( function( repo ) {
 
       // If the repo begins with the wrapper prefix
-      if ( repo.indexOf( wrapperPrefix ) === 0 ) {
+      if ( repo.indexOf( WRAPPER_PREFIX ) === 0 ) {
         wrapperRepos.push( repo );
       }
     } );
@@ -160,14 +163,13 @@ module.exports = function( grunt, buildConfig ) {
   var wrappersFromSuite = fs.readdirSync( '../phet-io-wrappers' );
 
   // Remove random files that aren't wrappers
-  wrappersFromSuite.splice( wrappersFromSuite.indexOf( '.git'), 1 ) ;
-  wrappersFromSuite.splice( wrappersFromSuite.indexOf( 'README.md'), 1 ) ;
+  wrappersFromSuite.splice( wrappersFromSuite.indexOf( '.git' ), 1 );
+  wrappersFromSuite.splice( wrappersFromSuite.indexOf( 'README.md' ), 1 );
 
-  var wrapperPrefix = 'phet-io-wrapper-';
-  var wrapperRepos = findAllDedicatedWrapperRepos( wrapperPrefix );
+  var wrapperRepos = findAllDedicatedWrapperRepos();
   wrapperRepos.forEach( function( repo ) {
 
-    var wrapperName = repo.split( wrapperPrefix )[ 1 ];
+    var wrapperName = repo.split( WRAPPER_PREFIX )[ 1 ];
 
     // Check for collisions so we don't overwrite something in the wrapper suite
     if ( wrappersFromSuite.includes( repo ) ) {
@@ -175,7 +177,7 @@ module.exports = function( grunt, buildConfig ) {
     }
 
     // Copy each wrapper's content into a dedicated folder under 'build/wrappers'
-    copyDirectory( grunt, '../' + wrapperPrefix + wrapperName, 'build/wrappers/' + wrapperName, filterWrapper, { excludeGitFolder: true } );
+    copyDirectory( grunt, '../' + WRAPPER_PREFIX + wrapperName, 'build/wrappers/' + wrapperName, filterWrapper, { excludeGitFolder: true } );
   } );
 
 
