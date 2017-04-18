@@ -21,31 +21,42 @@ module.exports = function( grunt, src, dst, filter, options ) {
 
   options = _.extend( {
     failOnExistingFiles: false,
-    excludeGitFolder: false
+    blacklist: []
   }, options );
 
   // Copy built sim files (assuming they exist from a prior grunt command)
   grunt.file.recurse( src, function callback( abspath, rootdir, subdir, filename ) {
 
-    // Exclude all of the files in the '.git' subdir. If there isn't a subdir, then the file can't be in the '.git' folder.
-    if ( !subdir || (options.excludeGitFolder && subdir.indexOf( '.git' ) < 0 ) ) {
 
-      var contents = grunt.file.read( abspath );
+    var isInBlacklistedDir = false;
+    subdir && subdir.split('/').forEach( function( pathPart ) {
 
-      // TODO: this line is duplicated around chipper
-      var dstPath = subdir ? ( dst + '/' + subdir + '/' + filename ) : ( dst + '/' + filename );
-
-      if ( options.failOnExistingFiles && grunt.file.exists( dstPath ) ) {
-        assert && assert( false, 'file existed already' );
+      // Exclude all directories that are in the blacklist
+      if ( options.blacklist.indexOf( pathPart ) >= 0 ) {
+        isInBlacklistedDir = true;
       }
-      var filteredContents = filter && filter( abspath, contents );
+    } );
 
-      if ( filteredContents ) {
-        grunt.file.write( dstPath, filteredContents );
-      }
-      else {
-        grunt.file.copy( abspath, dstPath );
-      }
+    // Exit out if the file is blacklisted or if it is in a blacklisted dir.
+    if ( isInBlacklistedDir || options.blacklist.indexOf( filename ) >= 0 ) {
+      return;
+    }
+
+    var contents = grunt.file.read( abspath );
+
+    // TODO: this line is duplicated around chipper
+    var dstPath = subdir ? ( dst + '/' + subdir + '/' + filename ) : ( dst + '/' + filename );
+
+    if ( options.failOnExistingFiles && grunt.file.exists( dstPath ) ) {
+      assert && assert( false, 'file existed already' );
+    }
+    var filteredContents = filter && filter( abspath, contents );
+
+    if ( filteredContents ) {
+      grunt.file.write( dstPath, filteredContents );
+    }
+    else {
+      grunt.file.copy( abspath, dstPath );
     }
   } );
 };

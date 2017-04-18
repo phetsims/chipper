@@ -141,7 +141,7 @@ module.exports = function( grunt, buildConfig ) {
   /**
    * Dynamically generate a list of all current wrappers that have a dedicated github repository so that we can add them
    * to the build.
-   * @returns {string[]} - a list of wrapper repos
+   * @returns {string[]} - a list of wrapper names, i.e. the repo 'phet-io-wrapper-classroom-activity' will return 'classroom-activity'
    */
   function findAllDedicatedWrapperRepos() {
     var wrapperRepos = [];
@@ -150,34 +150,32 @@ module.exports = function( grunt, buildConfig ) {
 
       // If the repo begins with the wrapper prefix
       if ( repo.indexOf( WRAPPER_PREFIX ) === 0 ) {
-        wrapperRepos.push( repo );
+        wrapperRepos.push( repo.split( WRAPPER_PREFIX )[ 1 ] );
       }
     } );
     return wrapperRepos;
   }
 
+  var wrapperSuiteBlacklist = [ '.git', 'README.md', '.gitignore' ];
 
-// Copy the base wrapper suite to the build directory
-  copyDirectory( grunt, '../phet-io-wrappers', 'build/wrappers', filterWrapper, { excludeGitFolder: true } );
-
+  // Files from the phet-io-wrappers repo
   var wrappersFromSuite = fs.readdirSync( '../phet-io-wrappers' );
 
-  // Remove random files that aren't wrappers
-  wrappersFromSuite.splice( wrappersFromSuite.indexOf( '.git' ), 1 );
-  wrappersFromSuite.splice( wrappersFromSuite.indexOf( 'README.md' ), 1 );
+  // Copy each wrapper from the wrapper suite
+  wrappersFromSuite.forEach( function( repo ) {
 
-  var wrapperRepos = findAllDedicatedWrapperRepos();
-  wrapperRepos.forEach( function( repo ) {
-
-    var wrapperName = repo.split( WRAPPER_PREFIX )[ 1 ];
-
-    // Check for collisions so we don't overwrite something in the wrapper suite
-    if ( wrappersFromSuite.includes( repo ) ) {
-      throw new Error( 'Wrapper ' + repo + ' already exists in the wrapper suite' );
+    // Don't copy over anything from blacklist
+    if ( wrapperSuiteBlacklist.indexOf( repo ) < 0 ) {
+      copyDirectory( grunt, '../phet-io-wrappers/' + repo, 'build/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
     }
+  } );
 
-    // Copy each wrapper's content into a dedicated folder under 'build/wrappers'
-    copyDirectory( grunt, '../' + WRAPPER_PREFIX + wrapperName, 'build/wrappers/' + wrapperName, filterWrapper, { excludeGitFolder: true } );
+  // a list of the rest of the phet-io wrappers that aren't in the phet-io-wrappers suite
+  var dedicatedWrapperRepos = findAllDedicatedWrapperRepos();
+
+  dedicatedWrapperRepos.forEach( function( repo ) {
+    // Copy each wrapper's content into a dedicated folder under 'build/wrappers.' As a sibling to other wrappers in the suite
+    copyDirectory( grunt, '../' + WRAPPER_PREFIX + repo, 'build/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
   } );
 
 
