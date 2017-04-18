@@ -277,7 +277,7 @@
      *
      * xss: tests for security issues related to https://github.com/phetsims/special-ops/issues/18,
      *   and running a sim should NOT redirect to another page. Preferably should be used for built versions or
-     *   other versions where assertions are not enabled (brackets can cause issues for SubSupText, etc.)
+     *   other versions where assertions are not enabled.
      *
      * none|null: the normal translated string will be shown
      *
@@ -335,7 +335,7 @@
      * It is used in string.js and sim.html.
      * @param string - the string to be mapped
      * @param stringTest - the value of the stringTest query parameter
-     * @returns {*}
+     * @returns {string}
      */
     window.phet.chipper.mapString = function( string, stringTest ) {
       return stringTest === null ? string :

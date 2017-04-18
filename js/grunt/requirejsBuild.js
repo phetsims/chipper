@@ -36,7 +36,6 @@ module.exports = function( grunt, buildConfig ) {
 
   var instrumenter = grunt.option( 'instrument' ) ? new istanbul.Instrumenter() : null;
 
-  // Copied from getGruntConfig
   var config = {
 
     // Includes a require.js stub called almond, so that we don't have to include the full require.js runtime
