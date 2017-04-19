@@ -15,7 +15,7 @@ var createMipmapsJavaScript = require( '../../../chipper/js/grunt/createMipmapsJ
 var createHTMLFiles = require( '../../../chipper/js/grunt/createHTMLFiles' );
 var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );
 var reportUnusedStrings = require( '../../../chipper/js/grunt/reportUnusedStrings' );
-var copySupplementalPhETIOFiles = require( '../../../chipper/js/grunt/copySupplementalPhETIOFiles' );
+var copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
 
 /**
  * @param grunt - the grunt instance

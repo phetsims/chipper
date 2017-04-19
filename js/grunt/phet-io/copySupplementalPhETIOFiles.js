@@ -11,9 +11,9 @@
 
 // modules
 var fs = require( 'fs' );
-var copyDirectory = require( '../../../chipper/js/grunt/copyDirectory' );
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
-// var generatePhETIOAPIDocs = require( '../../../chipper/js/grunt/generatePhETIOAPIDocs' );
+var copyDirectory = require( './copyDirectory' );
+var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
+var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
 // constants
 var WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -21,7 +21,7 @@ var WRAPPER_PREFIX = 'phet-io-wrapper-';
 module.exports = function( grunt, buildConfig ) {
 
   // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
-  var uglify = require( '../../../chipper/node_modules/uglify-js' );// eslint-disable-line require-statement-match
+  var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
 
   // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not password-protected), see https://github.com/phetsims/phet-io/issues/353
   grunt.file.mkdir( 'build/lib' );
@@ -125,9 +125,7 @@ module.exports = function( grunt, buildConfig ) {
       );
 
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
-      contents = ChipperStringUtils.replaceAll( contents,
-        'phet-io-wrappers/common/', 'common/'
-      );
+      contents = ChipperStringUtils.replaceAll( contents, 'phet-io-wrappers/common/', 'common/' );
     }
     if ( contents !== originalContents ) {
       return contents;
@@ -234,5 +232,5 @@ module.exports = function( grunt, buildConfig ) {
   grunt.file.write( DESTINATION_PATH + '/' + OUTPUT_FILE, COPYRIGHT_HEADER + '\n\n' + minified );
 
   // Generate API Documentation
-  // generatePhETIOAPIDocs( grunt, buildConfig );
+  generatePhETIOAPIDocs( grunt, buildConfig );
 };
