@@ -37,19 +37,19 @@ module.exports = function( grunt, buildConfig ) {
      * @param {string[]} phetLibs - see getBuildConfig.js
      * @returns {Object}
      */
-    function getLintPaths( repositoryName, phetLibs ) {
+    function getPaths( repositoryName, phetLibs ) {
 
       // Repository files to be linted. brand has a non-standard directory structure.
-      var repoFilesToLint;
+      var repoFilesToSearch;
       if ( repositoryName === 'brand' ) {
-        repoFilesToLint = [ '*/js/**/*.js' ];
+        repoFilesToSearch = [ '*/js/**/*.js' ];
       }
       else if ( repositoryName === 'phet-io' ) {
         // For phet-io make sure to include the wrappers folder
-        repoFilesToLint = [ 'js/**/*.js', 'wrappers/**/*.js' ];
+        repoFilesToSearch = [ '../phet-io-website/root/metacog/playback/*.js' ];
       }
       else {
-        repoFilesToLint = [ 'js/**/*.js' ];
+        repoFilesToSearch = [ 'js/**/*.js' ];
       }
 
       // All files to be linted
@@ -131,7 +131,7 @@ module.exports = function( grunt, buildConfig ) {
 
         // PhET-specific, passed to the 'lint' grunt task
         // Source files that are specific to this repository
-        repoFiles: repoFilesToLint,
+        repoFiles: repoFilesToSearch,
 
         // PhET-specific, passed to the 'lint-all' grunt task
         // All source files for this repository (repository-specific and dependencies).
@@ -141,7 +141,7 @@ module.exports = function( grunt, buildConfig ) {
       };
     }
 
-    var lintPaths = getLintPaths( repositoryName, phetLibs );
+    var lintPaths = getPaths( repositoryName, phetLibs );
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     var cache = !grunt.option( 'disable-eslint-cache' );
