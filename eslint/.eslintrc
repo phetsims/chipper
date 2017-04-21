@@ -205,6 +205,9 @@
     "jsondiffpatch": false,
     // QUnit
     "kite": false,
+    // for using native Map
+    "Map": false,
+    // QUnit
     "QUnit": false,
     // For KaTeX
     "katex": false,
