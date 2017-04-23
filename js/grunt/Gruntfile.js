@@ -233,23 +233,30 @@ module.exports = function( grunt ) {
     } );
 
 
-  grunt.registerTask( 'requirejs-build', '(internal use only) Do the requirejs build step', function() {
-    requirejsBuild( grunt, buildConfig );
-  } );
+  grunt.registerTask( 'requirejs-build',
+    '(internal use only) Do the requirejs build step',
+    function() {
+      requirejsBuild( grunt, buildConfig );
+    } );
 
-  grunt.registerTask( 'after-requirejs-build', '(internal use only) Do things after the requirejs:build task', function() {
-    afterRequirejsBuild( grunt, buildConfig );
-  } );
+  grunt.registerTask( 'after-requirejs-build',
+    '(internal use only) Do things after the requirejs:build task',
+    function() {
+      afterRequirejsBuild( grunt, buildConfig );
+    } );
 
   //---------------------------------------------------------------------------------------------------------------
   // Utility tasks
   //---------------------------------------------------------------------------------------------------------------
 
-  grunt.registerTask( 'checkout-shas', 'Check out shas for a project, as specified in dependencies.json', function() {
-    checkoutShas( grunt, buildConfig.name, false /* toMaster */ );
-  } );
+  grunt.registerTask( 'checkout-shas',
+    'Check out shas for a project, as specified in dependencies.json',
+    function() {
+      checkoutShas( grunt, buildConfig.name, false /* toMaster */ );
+    } );
 
-  grunt.registerTask( 'checkout-master', 'Check out master branch for all dependencies, as specified in dependencies.json',
+  grunt.registerTask( 'checkout-master',
+    'Check out master branch for all dependencies, as specified in dependencies.json',
     function() {
       checkoutShas( grunt, buildConfig.name, true /* toMaster */ );
     } );
