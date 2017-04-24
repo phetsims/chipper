@@ -10,10 +10,13 @@
 'use strict';
 
 // modules
+var fs = require( 'fs' );
 var copyDirectory = require( './copyDirectory' );
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
+// constants
+var WRAPPER_PREFIX = 'phet-io-wrapper-';
 
 module.exports = function( grunt, buildConfig ) {
 
@@ -33,25 +36,48 @@ module.exports = function( grunt, buildConfig ) {
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/lodash-4.17.4.min.js"',
+        '"../../sherpa/lib/lodash-4.17.4.min.js"',
         '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/font-awesome-4.5.0/css/font-awesome.min.css"',
+        '"../../sherpa/lib/font-awesome-4.5.0/css/font-awesome.min.css"',
         '"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/jquery-2.1.0.min.js"',
+        '"../../sherpa/lib/jquery-2.1.0.min.js"',
         '"https://code.jquery.com/jquery-2.2.3.min.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/jquery-ui-1.8.24.min.js"',
+        '"../../sherpa/lib/jquery-ui-1.8.24.min.js"',
         '"https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"'
       );
       contents = ChipperStringUtils.replaceAll( contents,
-        '"../../../sherpa/lib/d3-4.2.2.js"',
+        '"../../sherpa/lib/d3-4.2.2.js"',
         '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
       );
+
+      //TODO: these probably don't need to be repeated for a different path
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/lodash-4.17.4.min.js"',
+        '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/font-awesome-4.5.0/css/font-awesome.min.css"',
+        '"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/jquery-2.1.0.min.js"',
+        '"https://code.jquery.com/jquery-2.2.3.min.js"'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/jquery-ui-1.8.24.min.js"',
+        '"https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"'
+      );
+      contents = ChipperStringUtils.replaceAll( contents,
+        '"../sherpa/lib/d3-4.2.2.js"',
+        '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
+      );
+
 
       /*
        * Remove individual common code imports because they are all in phetio.js
@@ -97,13 +123,9 @@ module.exports = function( grunt, buildConfig ) {
         '<!--{{FAVICON.ico}}-->',
         '<link rel="shortcut icon" href="/assets/favicon.ico">'
       );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '<script type="text/javascript" src="../../../../assert/js/assert.js"></script>',
-        '<script>' + grunt.file.read( '../assert/js/assert.js' ) + '</script>'
-      );
-      //template uses exclusively "
 
-      contents = ChipperStringUtils.replaceAll( contents, '../../js/', '../../lib/' );
+      // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
+      contents = ChipperStringUtils.replaceAll( contents, 'phet-io-wrappers/common/', 'common/' );
     }
     if ( contents !== originalContents ) {
       return contents;
@@ -112,7 +134,48 @@ module.exports = function( grunt, buildConfig ) {
       return null; // signify no change (helps for images)
     }
   };
-  copyDirectory( grunt, '../phet-io/wrappers', 'build/wrappers', filterWrapper );
+
+
+  /**
+   * Dynamically generate a list of all current wrappers that have a dedicated github repository so that we can add them
+   * to the build.
+   * @returns {string[]} - a list of wrapper names, i.e. the repo 'phet-io-wrapper-classroom-activity' will return 'classroom-activity'
+   */
+  function findAllDedicatedWrapperRepos() {
+    var wrapperRepos = [];
+    var repos = fs.readdirSync( '../' );
+    repos.forEach( function( repo ) {
+
+      // If the repo begins with the wrapper prefix
+      if ( repo.indexOf( WRAPPER_PREFIX ) === 0 ) {
+        wrapperRepos.push( repo.split( WRAPPER_PREFIX )[ 1 ] );
+      }
+    } );
+    return wrapperRepos;
+  }
+
+  var wrapperSuiteBlacklist = [ '.git', 'README.md', '.gitignore' ];
+
+  // Files from the phet-io-wrappers repo
+  var wrappersFromSuite = fs.readdirSync( '../phet-io-wrappers' );
+
+  // Copy each wrapper from the wrapper suite
+  wrappersFromSuite.forEach( function( repo ) {
+
+    // Don't copy over anything from blacklist
+    if ( wrapperSuiteBlacklist.indexOf( repo ) < 0 ) {
+      copyDirectory( grunt, '../phet-io-wrappers/' + repo, 'build/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
+    }
+  } );
+
+  // a list of the rest of the phet-io wrappers that aren't in the phet-io-wrappers suite
+  var dedicatedWrapperRepos = findAllDedicatedWrapperRepos();
+
+  dedicatedWrapperRepos.forEach( function( repo ) {
+    // Copy each wrapper's content into a dedicated folder under 'build/wrappers.' As a sibling to other wrappers in the suite
+    copyDirectory( grunt, '../' + WRAPPER_PREFIX + repo, 'build/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
+  } );
+
 
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
@@ -149,10 +212,10 @@ module.exports = function( grunt, buildConfig ) {
 
   var LIB_FILES = [
     '../query-string-machine/js/QueryStringMachine.js',
-    '../phet-io/wrappers/common/js/SimIFrameClient.js',
-    '../phet-io/wrappers/common/js/WrapperTypes.js',
-    '../phet-io/wrappers/common/js/assert.js',
-    '../phet-io/wrappers/common/js/WrapperUtils.js' ];
+    '../phet-io-wrappers/common/js/SimIFrameClient.js',
+    '../phet-io-wrappers/common/js/WrapperTypes.js',
+    '../phet-io-wrappers/common/js/assert.js',
+    '../phet-io-wrappers/common/js/WrapperUtils.js' ];
 
 
   var minified = uglify.minify( LIB_FILES, {
