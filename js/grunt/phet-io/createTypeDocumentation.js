@@ -42,7 +42,10 @@ var paths = {
   ifphetio: '../../../../chipper/js/requirejs-plugins/ifphetio',
 
   AXON: '../../../../axon/js',
+  CIRCUIT_CONSTRUCTION_KIT_COMMON: '../../../../circuit-construction-kit-common/js',
   DOT: '../../../../dot/js',
+  GRIDDLE: '../../../../griddle/js',
+  INVERSE_SQUARE_LAW_COMMON: '../../../../inverse-square-law-common/js',
   JOIST: '../../../../joist/js',
   KITE: '../../../../kite/js',
   PHETCOMMON: '../../../../phetcommon/js',
@@ -54,9 +57,9 @@ var paths = {
   SCENERY_PHET: '../../../../scenery-phet/js',
   SUN: '../../../../sun/js',
   TANDEM: '../../../../tandem/js',
+  TWIXT: '../../../../twixt/js',
   VEGAS: '../../../../vegas/js',
   VIBE: '../../../../vibe/js'
-
 };
 
 requirejs.config( {
