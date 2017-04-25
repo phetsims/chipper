@@ -1,12 +1,10 @@
 // Copyright 2017, University of Colorado Boulder
 
 /**
- * This grunt task generates 128x84 and 600x394 thumbnails of the sim's screenshot in assets.
- * Thumbnails are put in the build directory of the sim. If the directory doesn't exist, it is created.
- * New grunt tasks can easily be created to generate different sized images by passing this function
- * different heights and widths.
+ * This grunt task generates the 800x400 letter-boxed version of the sim screenshot for use in twitter cards (metadata) on the website simulation
+ * pages.
  *
- * @author Aaron Davis
+ * @author Matt Pennington
  */
 /* eslint-env node */
 'use strict';
@@ -21,8 +19,6 @@ var BUILD_DIRECTORY = 'build';
 /**
  * @param grunt - the grunt instance
  * @param {string} repositoryName - name of the repository
- * @param {number} width of the resized image
- * @param {number} height of the resized image
  * @param {function} callback
  */
 module.exports = function( grunt, repositoryName, callback ) {
