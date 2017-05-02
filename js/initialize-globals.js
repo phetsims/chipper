@@ -155,6 +155,11 @@
     postMessageOnError: { type: 'flag' },
 
     /**
+     * on startup, sends parent.postMessage('init') for Legends of Learning integration.
+     */
+    legendsOfLearning: { type: 'flag' },
+
+    /**
      * triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
      */
     postMessageOnLoad: { type: 'flag' },
