@@ -45,9 +45,6 @@ var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 
 module.exports = function( grunt ) {
 
-  // For eslint
-  require( 'load-grunt-tasks' )( grunt );
-
   //---------------------------------------------------------------------------------------------------------------
   // Configuration
 
