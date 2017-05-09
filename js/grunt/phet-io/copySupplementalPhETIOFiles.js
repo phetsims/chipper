@@ -13,7 +13,7 @@
 var fs = require( 'fs' );
 var copyDirectory = require( './copyDirectory' );
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
-var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
+// var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
 // constants
 var WRAPPER_PREFIX = 'phet-io-wrapper-';
