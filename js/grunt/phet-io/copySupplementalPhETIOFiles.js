@@ -232,5 +232,7 @@ module.exports = function( grunt, buildConfig ) {
   grunt.file.write( DESTINATION_PATH + '/' + OUTPUT_FILE, COPYRIGHT_HEADER + '\n\n' + minified );
 
   // Generate API Documentation
-  generatePhETIOAPIDocs( grunt, buildConfig );
+  // TODO: these are broken right now, the cause has something to do with the string plugin loading chipper's localeInfo.js
+  // TODO: see https://github.com/phetsims/phet-io/issues/972 for more info
+  // generatePhETIOAPIDocs( grunt, buildConfig );
 };

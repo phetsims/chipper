@@ -38,10 +38,16 @@ var assert = global.assert;
 
 // These paths are relative to this file location because they are used by requirejs.
 var paths = {
+
+  // plugins
+  image: '../../../../chipper/js/requirejs-plugins/image',
+  mipmap: '../../../../chipper/js/requirejs-plugins/mipmap',
+  string: '../../../../chipper/js/requirejs-plugins/string',
   text: '../../../../sherpa/lib/text-2.0.12',
   ifphetio: '../../../../chipper/js/requirejs-plugins/ifphetio',
 
   AXON: '../../../../axon/js',
+  BRAND: '../../../../brand/phet-io/js',
   CIRCUIT_CONSTRUCTION_KIT_COMMON: '../../../../circuit-construction-kit-common/js',
   DOT: '../../../../dot/js',
   GRIDDLE: '../../../../griddle/js',
@@ -61,6 +67,8 @@ var paths = {
   VEGAS: '../../../../vegas/js',
   VIBE: '../../../../vibe/js'
 };
+paths['../../sherpa'] = '../../../../sherpa';
+paths['../../chipper'] = '../../../../chipper';
 
 requirejs.config( {
   paths: paths
