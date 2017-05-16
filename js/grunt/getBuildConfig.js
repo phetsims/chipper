@@ -72,7 +72,7 @@ module.exports = function( grunt ) {
       if ( buildJSON[ id ] && buildJSON[ id ].phetLibs ) {
 
         // We don't want common sim repos for wrappers
-        if ( packageJSON.isWrapper && id !== 'common' ) {
+        if ( !packageJSON.isWrapper || ( packageJSON.isWrapper && id !== 'common' ) ) {
           phetLibs = phetLibs.concat( buildJSON[ id ].phetLibs );
         }
       }
