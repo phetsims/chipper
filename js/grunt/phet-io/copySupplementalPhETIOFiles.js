@@ -13,6 +13,7 @@
 var fs = require( 'fs' );
 var copyDirectory = require( './copyDirectory' );
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
+var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 // var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
 // constants
@@ -24,7 +25,7 @@ module.exports = function( grunt, buildConfig ) {
   var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
 
   // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not password-protected), see https://github.com/phetsims/phet-io/issues/353
-  grunt.file.mkdir( 'build/lib' );
+  grunt.file.mkdir( ChipperConstants.BUILD_DIR + '/lib' );
 
   var filterWrapper = function( abspath, contents ) {
     var originalContents = contents + '';
@@ -164,7 +165,7 @@ module.exports = function( grunt, buildConfig ) {
 
     // Don't copy over anything from blacklist
     if ( wrapperSuiteBlacklist.indexOf( repo ) < 0 ) {
-      copyDirectory( grunt, '../phet-io-wrappers/' + repo, 'build/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
+      copyDirectory( grunt, '../phet-io-wrappers/' + repo, ChipperConstants.BUILD_DIR + '/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
     }
   } );
 
@@ -173,7 +174,7 @@ module.exports = function( grunt, buildConfig ) {
 
   dedicatedWrapperRepos.forEach( function( repo ) {
     // Copy each wrapper's content into a dedicated folder under 'build/wrappers.' As a sibling to other wrappers in the suite
-    copyDirectory( grunt, '../' + WRAPPER_PREFIX + repo, 'build/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
+    copyDirectory( grunt, '../' + WRAPPER_PREFIX + repo, ChipperConstants.BUILD_DIR + '/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
   } );
 
 
@@ -195,15 +196,15 @@ module.exports = function( grunt, buildConfig ) {
   var firstFooterLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="footer"' );
   devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
 
-  grunt.file.write( 'build/docs/devguide.html', devguideHTML );
-  copyDirectory( grunt, '../phet-io-website/root/assets/css', 'build/docs/css', filterWrapper );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './build/docs/js/phet-io.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './build/docs/js/phet-io-ga.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './build/docs/favicon.ico' );
+  grunt.file.write( ChipperConstants.BUILD_DIR + '/docs/devguide.html', devguideHTML );
+  copyDirectory( grunt, '../phet-io-website/root/assets/css', ChipperConstants.BUILD_DIR + '/docs/css', filterWrapper );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io.js' );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io-ga.js' );
+  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + ChipperConstants.BUILD_DIR + '/docs/favicon.ico' );
 
 
   // Minify phet libraries into 'lib/phetio.js'
-  var DESTINATION_PATH = 'build/lib';
+  var DESTINATION_PATH = ChipperConstants.BUILD_DIR + '/lib';
   var OUTPUT_FILE = 'phetio.js';
   var COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Boulder\n' +
                          '// This PhET-iO file requires a license\n' +

@@ -9,6 +9,7 @@
 // modules
 var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenciesJSON' );
 var copyDirectory = require( '../../../chipper/js/grunt/phet-io/copyDirectory' );
+var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 
 // Don't copy these files/folders into the built wrapper
 var WRAPPER_BLACKLIST = [ '.git', 'README.md', '.gitignore', 'node_modules', 'build' ];
@@ -28,12 +29,14 @@ module.exports = function( grunt, buildConfig ) {
   buildConfig.phetLibs.forEach( function( repo ) {
 
     //  We only need the common folder from this repo
-    if( repo === 'phet-io-wrappers'){
+    if ( repo === 'phet-io-wrappers' ) {
       repo = 'phet-io-wrappers/common';
     }
-    copyDirectory( grunt, '../' + repo, 'build/' + repo + '/', null, { blacklist: WRAPPER_BLACKLIST, minifyJS: true } );
+    copyDirectory( grunt, '../' + repo, ChipperConstants.BUILD_DIR + '/' + repo + '/', null, {
+      blacklist: WRAPPER_BLACKLIST, // list of files to not copy
+      minifyJS: true // we want to minify the built wrapper
+    } );
   } );
-
 
 
   // Since this is an asynchronous task, each step in the task uses a callback to advance to the next step.
