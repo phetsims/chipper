@@ -87,7 +87,12 @@ module.exports = function( grunt ) {
 
   // Default task ('grunt')
 
-  grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
+  if( buildConfig.isWrapper){
+    grunt.registerTask( 'default', 'Builds the PhET-iO Wrapper', [ 'build-wrapper' ] );
+  }
+  else{
+    grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
+  }
 
   // Add the linting step as an pre-build step.  Can be skipped with --lint=false
   var optionalTasks = [];
@@ -175,15 +180,25 @@ module.exports = function( grunt ) {
       } );
     } );
 
-  grunt.registerTask( 'deploy-dev',
-    'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
-    '--mkdir : set to true to create the sim dir and .htaccess file before copying the version directory\n' +
-    '--test : set to true to disable commit and push, and SCP to a test directory on spot',
-    function() {
-      deployDev( grunt, buildConfig );
-    }
-  );
+  if ( buildConfig.isWrapper ) {
 
+    // dev deploy for a PhET-iO wrapper
+    grunt.registerTask( 'deploy-dev', 'Deploy a PhET-iO wrapper to spot.', function() {
+      wrapperDeploy( grunt, buildConfig );
+    } );
+  }
+  else {
+
+    // Normal dev deploy for a phet sim
+    grunt.registerTask( 'deploy-dev',
+      'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
+      '--mkdir : set to true to create the sim dir and .htaccess file before copying the version directory\n' +
+      '--test : set to true to disable commit and push, and SCP to a test directory on spot',
+      function() {
+        deployDev( grunt, buildConfig );
+      }
+    );
+  }
   grunt.registerTask( 'deploy-rc',
     'Deploy a rc version to spot using the build server.\n' +
     'Behaves identically to grunt deploy-dev, except the sim is rebuilt and deployed from the build-server instead of locally.\n' +
@@ -379,8 +394,4 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'build-wrapper', 'Build PhET-iO wrapper', optionalTasks.concat( [ 'clean', 'wrapper-basic-build' ] ) );
-
-  grunt.registerTask( 'deploy-wrapper', 'Deploy a PhET-iO wrapper.', function() {
-    wrapperDeploy( grunt, buildConfig );
-  } );
 };
