@@ -21,15 +21,19 @@ module.exports = function( grunt, src, dst, filter, options ) {
 
   options = _.extend( {
     failOnExistingFiles: false,
-    blacklist: []
+    blacklist: [],
+    minifyJS: false
   }, options );
+
+  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
+  var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
 
   // Copy built sim files (assuming they exist from a prior grunt command)
   grunt.file.recurse( src, function callback( abspath, rootdir, subdir, filename ) {
 
 
     var isInBlacklistedDir = false;
-    subdir && subdir.split('/').forEach( function( pathPart ) {
+    subdir && subdir.split( '/' ).forEach( function( pathPart ) {
 
       // Exclude all directories that are in the blacklist
       if ( options.blacklist.indexOf( pathPart ) >= 0 ) {
@@ -51,6 +55,20 @@ module.exports = function( grunt, src, dst, filter, options ) {
       assert && assert( false, 'file existed already' );
     }
     var filteredContents = filter && filter( abspath, contents );
+
+    // Minify the file if it is javascript code
+    if ( options.minifyJS && filename.indexOf( '.js' ) === filename.length - 3 ) {
+      filteredContents = uglify.minify( abspath, {
+        mangle: true,
+        output: {
+          inline_script: true, // escape </script
+          beautify: false
+        },
+        compress: {
+          global_defs: {}
+        }
+      } ).code;
+    }
 
     if ( filteredContents ) {
       grunt.file.write( dstPath, filteredContents );

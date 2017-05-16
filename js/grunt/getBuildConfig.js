@@ -58,7 +58,7 @@ module.exports = function( grunt ) {
 
     // If working with a wrapper, then just use the wrapper's phetLibs
     if ( packageJSON.isWrapper && packageJSON.wrapper.phetLibs ) {
-      return packageJSON.wrapper.phetLibs;
+      return packageJSON.wrapper.phetLibs.concat( packageJSON.name );
     }
 
     // start with package.json
