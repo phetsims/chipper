@@ -13,7 +13,7 @@
 var fs = require( 'fs' );
 var copyDirectory = require( './copyDirectory' );
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
-var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+var ChipperConstants = require( '../../common/ChipperConstants' );
 // var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
 // constants
