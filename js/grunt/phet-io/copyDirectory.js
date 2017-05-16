@@ -22,7 +22,8 @@ module.exports = function( grunt, src, dst, filter, options ) {
   options = _.extend( {
     failOnExistingFiles: false,
     blacklist: [],
-    minifyJS: false
+    minifyJS: false,
+    licenseToPrepend: ''
   }, options );
 
   // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
@@ -68,6 +69,9 @@ module.exports = function( grunt, src, dst, filter, options ) {
           global_defs: {}
         }
       } ).code;
+
+      // Only add the license to the javascript code
+      filteredContents = options.licenseToPrepend + filteredContents;
     }
 
     if ( filteredContents ) {

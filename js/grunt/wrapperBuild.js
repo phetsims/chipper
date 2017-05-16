@@ -33,8 +33,12 @@ module.exports = function( grunt, buildConfig ) {
       repo = 'phet-io-wrappers/common';
     }
     copyDirectory( grunt, '../' + repo, ChipperConstants.BUILD_DIR + '/' + repo + '/', null, {
-      blacklist: WRAPPER_BLACKLIST, // list of files to not copy
-      minifyJS: true // we want to minify the built wrapper
+      blacklist: WRAPPER_BLACKLIST, // List of files to not copy
+      minifyJS: true, // We want to minify the built wrapper
+      licenseToPrepend: '// Copyright 2002-2017, University of Colorado Boulder\n' +
+                        '// This PhET-iO file requires a license\n' +
+                        '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
+                        '// For licensing, please contact phethelp@colorado.edu\n\n'
     } );
   } );
 
