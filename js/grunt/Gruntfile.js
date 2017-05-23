@@ -44,6 +44,7 @@ var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
 var wrapperDeploy = require( '../../../chipper/js/grunt/wrapperDeploy' );
+var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 
 module.exports = function( grunt ) {
 
@@ -87,10 +88,10 @@ module.exports = function( grunt ) {
 
   // Default task ('grunt')
 
-  if( buildConfig.isWrapper){
+  if ( buildConfig.isWrapper ) {
     grunt.registerTask( 'default', 'Builds the PhET-iO Wrapper', [ 'build-wrapper' ] );
   }
-  else{
+  else {
     grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
   }
 
@@ -283,6 +284,12 @@ module.exports = function( grunt ) {
     '--clean=true : (optional) deletes the repository directory if it exists',
     function() {
       createSim( grunt );
+    } );
+
+  grunt.registerTask( 'bump-version',
+    'Bumps the number after the last dot in the version\n' +
+    'then commits and pushes', function() {
+      bumpVersion( grunt );
     } );
 
   // See reportMedia.js
