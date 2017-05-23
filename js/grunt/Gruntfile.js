@@ -292,6 +292,21 @@ module.exports = function( grunt ) {
       bumpVersion( grunt );
     } );
 
+  grunt.registerTask( 'next-dev', 'Bumps the version, commits, builds and deploys dev', [
+
+    // check lint first to make sure everything is OK
+    'lint-all',
+
+    // update the version number
+    'bump-version',
+
+    // Build it
+    'build',
+
+    // deploy it
+    'deploy-dev'
+  ] );
+
   // See reportMedia.js
   grunt.registerTask( 'report-media',
     '(project-wide) Report on license.json files throughout all working copies. ' +
