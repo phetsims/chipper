@@ -16,7 +16,6 @@ cd ${WORKING_DIR}
 for repo in `cat chipper/data/active-repos | xargs | tr -d '\r'`
 do
   if [ -d "$repo" ]; then
-    echo $repo
     cd $repo
 
     # Run the pull in the background
