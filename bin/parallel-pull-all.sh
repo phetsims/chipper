@@ -2,6 +2,7 @@
 #====================================================================================================
 #
 # Does a 'git pull --rebase' on every active repo.  Done in parallel.  See pull-all.sh for the series one.
+# See https://github.com/phetsims/chipper/issues/576 for more information
 #
 # Author: Jonathan Olson
 # Author: Sam Reid
