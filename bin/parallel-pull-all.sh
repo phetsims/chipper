@@ -1,9 +1,10 @@
 #!/bin/bash
 #====================================================================================================
 #
-# Does a 'git pull --rebase' on every active repo.
+# Does a 'git pull --rebase' on every active repo.  Done in parallel.  See pull-all.sh for the series one.
 #
 # Author: Jonathan Olson
+# Author: Sam Reid
 #
 #====================================================================================================
 
@@ -16,8 +17,12 @@ do
   if [ -d "$repo" ]; then
     echo $repo
     cd $repo
+
+    # Run the pull in the background
     git pull --rebase &
     cd ..
   fi
 done
+
+# Wait for all background tasks to complete.
 wait
