@@ -294,13 +294,13 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'next-dev', 'Bumps the version, commits, builds and deploys dev', [
 
-    // check lint first to make sure everything is OK
-    'lint-all',
+    // Build & lint it to make sure there are no problems
+    'build',
 
     // update the version number
     'bump-version',
 
-    // Build it
+    // Build it with the new version number
     'build',
 
     // deploy it
