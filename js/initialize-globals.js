@@ -132,6 +132,11 @@
     gameUpLogging: { type: 'flag' },
 
     /**
+     * Enables support for Legends of Learning platform, including broadcasting 'init' and responding to pause/resume.
+     */
+    legendsOfLearning: { type: 'flag' },
+
+    /**
      * test with a specific locale
      */
     locale: {
