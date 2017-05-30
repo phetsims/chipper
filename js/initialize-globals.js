@@ -133,7 +133,6 @@
 
     /**
      * Enables support for communication with third parties through the postMessage API.
-     * @type {Object}
      */
     thirdPartySupport: { type: 'string', validValues: [ null, 'legendsOfLearning' ], defaultValue: null },
 
