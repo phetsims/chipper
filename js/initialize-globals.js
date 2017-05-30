@@ -132,9 +132,10 @@
     gameUpLogging: { type: 'flag' },
 
     /**
-     * Enables support for Legends of Learning platform, including broadcasting 'init' and responding to pause/resume.
+     * Enables support for communication with third parties through the postMessage API.
+     * @type {Object}
      */
-    legendsOfLearning: { type: 'flag' },
+    thirdPartySupport: { type: 'string', validValues: [ null, 'legendsOfLearning' ], defaultValue: null },
 
     /**
      * test with a specific locale
