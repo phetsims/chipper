@@ -66,7 +66,8 @@ module.exports = function( grunt, target, buildConfig ) {
       '../phet-io-website/root/assets/bootstrap-3.3.6-dist/js/npm.js',
       '../phet-io-website/root/assets/bootstrap-3.3.6-dist/js/bootstrap.min.js',
       '../phet-io-website/root/assets/bootstrap-3.3.6-dist/js/bootstrap.js',
-      '../phet-io-website/root/assets/js/phet-io-ga.js'
+      '../phet-io-website/root/assets/js/phet-io-ga.js',
+      '../installer-builder/temp/**'
     ]
   } );
 
