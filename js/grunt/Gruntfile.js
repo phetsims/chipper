@@ -168,12 +168,12 @@ module.exports = function( grunt ) {
           deployUtil.verifyDependenciesCheckedOut( grunt, function() {
             if ( grunt.option( 'noDev' ) || grunt.option( 'dryRun' ) ) {
               deployUtil.commitAndPushDependenciesJSON( grunt, function() {
-                deployProduction( grunt, done );
+                deployProduction( grunt, buildConfig, done );
               } );
             }
             else {
               deployDev( grunt, buildConfig, function() {
-                deployProduction( grunt, done );
+                deployProduction( grunt, buildConfig, done );
               } );
             }
           } );
@@ -215,7 +215,7 @@ module.exports = function( grunt ) {
       deployUtil.checkForUncommittedChanges( grunt, function() {
         deployUtil.checkForUnpushedChanges( grunt, function() {
           deployUtil.commitAndPushDependenciesJSON( grunt, function() {
-            deployProduction( grunt, done );
+            deployProduction( grunt, buildConfig, done );
           } );
         } );
       } );
