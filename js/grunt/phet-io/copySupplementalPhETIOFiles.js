@@ -155,7 +155,7 @@ module.exports = function( grunt, buildConfig ) {
     return wrapperRepos;
   }
 
-  var wrapperSuiteBlacklist = [ '.git', 'README.md', '.gitignore' ];
+  var wrapperSuiteBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json' ];
 
   // Files from the phet-io-wrappers repo
   var wrappersFromSuite = fs.readdirSync( '../phet-io-wrappers' );
