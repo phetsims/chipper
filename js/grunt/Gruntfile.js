@@ -322,22 +322,8 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'report-third-party',
     'This task is used to create a report of third-party resources (code, ' +
     'images, audio, etc) used in a set of PhET simulations by reading the ' +
-    'license information in built HTML files.\n' +
-    '--input (required argument) the path to the directory containing HTML ' +
-    'files which will be reported on.\n' +
-    '--output (required argument) the path to a file where the report should be ' +
-    'written. The file is in markdown syntax and the *.md suffix is ' +
-    'recommended. This will silently overwrite an existing file, if there is ' +
-    'one.\n' +
-    '--active-runnables (optional, default to false) If true, ' +
-    'the task iterates over the active-runnables and copies each ' +
-    'built HTML file into the directory specified with --input before ' +
-    'running the report. If any HTML files are missing, the report will fail. ' +
-    'Before using this flag, the developer should run `grunt-all.sh` to make ' +
-    'sure all of the HTML files are up-to-date. The directory is neither ' +
-    'automatically created nor automatically cleaned, this is the ' +
-    'responsibility of the developer. (Note that if you fail to manually ' +
-    'clean the directory, you may end up with stale HTML files).',
+    'license information in built HTML files. After running this task, you ' +
+    'must push sherpa/third-party-licenses.md',
     function() {
       reportThirdParty( grunt );
     } );
