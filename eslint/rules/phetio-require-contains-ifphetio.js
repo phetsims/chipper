@@ -57,7 +57,7 @@ module.exports = function( context ) {
         var rhs = node.declarations[ 0 ].init.arguments[ 0 ].value;
 
         // If there is a PHET_IO import, but ifphetio! isn't the first part of the require
-        if ( rhs && rhs.indexOf( 'PHET_IO' ) >= 0 && rhs.indexOf( 'ifphetio!' ) !== 0 ) {
+        if ( rhs && rhs.indexOf( 'PHET_IO/' ) >= 0 && rhs.indexOf( 'ifphetio!' ) !== 0 ) {
 
 
           // This regex will match 'phet-io' plus either a '/' or a '\' afterwards.
