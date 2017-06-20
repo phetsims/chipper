@@ -160,7 +160,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   }
 
   grunt.log.debug( 'Constructing HTML from template' );
-  var html = grunt.file.read( '../chipper/templates/sim.html' );
+  var htmlTemplate = grunt.file.read( '../chipper/templates/sim.html' );
 
   function replaceConstants( string, insertScripts ) {
     // Strip out carriage returns (if building on Windows), then add in our own after the MOTW (Mark Of The Web).
@@ -194,7 +194,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     return string;
   }
 
-  html = replaceConstants( html, true );
+  var html = replaceConstants( htmlTemplate, true );
 
   function replaceLocaleConstants( string, locale, includeAllLocales ) {
 
@@ -223,32 +223,21 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   /**
    * This function makes sure that the built file looks as expected. It checks that there aren't any template strings
-   * still in the build file, and that the first copyright is the correct year.
+   * still in the build file.
    * @param {String} html
    */
   function sanityCheckBuiltFile( html ) {
 
-    var copyrightIndex = html.indexOf( 'Copyright 2002-20' );
-    var endYear = html.substring( copyrightIndex + 15, copyrightIndex + 19 );
+    // Match template strings that look like "{{I_AM-A.TEMPLATE}}".
+    var templateHTMLTemplateStrings = htmlTemplate.match( /{{[A-z\-._ ]{1,100}}}/g );
 
-    // Make sure that the current year matches the ending
-    if ( new Date().getYear() + 1900 !== parseInt( endYear, 10 ) ) {
-      grunt.fail.warn( 'Copyright statement must be current through this year' );
+    if ( templateHTMLTemplateStrings ) {
+      templateHTMLTemplateStrings.forEach( function( templateString ) {
+        if ( html.indexOf( templateString ) >= 0 ) {
+          grunt.fail.warn( 'Template string detected in built file:  ' + templateString );
+        }
+      } );
     }
-
-    // Match template strings that look like "{{I_AM_A_TEMPLATE}}". Hyphens and periods also allowed.
-    var templateMatches = html.match( /{{[A-z\-._ ]{0,100}}}/g );
-    if ( templateMatches.length >= 0 ) {
-
-      if ( templateMatches.length === 1 && templateMatches[ 0 ] === '{{year}}' ) {
-
-        // This is an edge case for the year template string that is in brand and packaged with the built sim.
-      }
-      else {
-        grunt.fail.warn( 'Template strings detected in built file:  ' + templateMatches );
-      }
-    }
-    grunt.file.write( 'build/testHTML.html', html );
   }
 
   // Create locale-specific HTML files
