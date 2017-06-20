@@ -44,7 +44,7 @@
   "phet-io": {
     "preload": [
       "../sherpa/lib/jsondiffpatch-0.1.31.js",
-      "../phet-io/js/phetio-query-parameters.js"
+      "../phet-io/js/phet-io-query-parameters.js"
     ],
     "phetLibs": [
       "phet-io",

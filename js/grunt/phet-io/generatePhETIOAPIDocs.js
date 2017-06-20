@@ -45,7 +45,7 @@ module.exports = function( grunt, buildConfig ) {
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHET_QUERY_PARAMETERS}}', phetQueryParameters );
 
 // Add the phet-io query parameters to the template
-  var phetioQueryParameters = getQueryParameters( '../phet-io/js/phetio-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
+  var phetioQueryParameters = getQueryParameters( '../phet-io/js/phet-io-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
 
   var commonCodeTypes = execSync( 'node ' + TYPE_DOCS_RUNNABLE + ' --common' ).toString();
