@@ -92,7 +92,7 @@
     //
     //
     "require-statement-match": 2,
-    "phetio-require-contains-ifphetio": 2,
+    "phet-io-require-contains-ifphetio": 2,
     "require-tandem-support": 0,
     "no-property-in-require-statement": 2,
     // permit only one var declaration per line, see #390
