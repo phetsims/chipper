@@ -18,7 +18,7 @@ var execSync = child_process.execSync;
 var TYPE_DOCS_RUNNABLE = '../chipper/js/grunt/phet-io/createTypeDocumentation.js';
 
 var DOCUMENTATION_PATH = '../chipper/templates/';
-var DOCUMENTATION_FILENAME = 'phetio-documentation.html';
+var DOCUMENTATION_FILENAME = 'phet-io-documentation.html';
 
 /**
  * Returns the string of the query parameter schema that you are getting
