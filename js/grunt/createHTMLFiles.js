@@ -221,11 +221,43 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     return string;
   }
 
+  /**
+   * This function makes sure that the built file looks as expected. It checks that there aren't any template strings
+   * still in the build file, and that the first copyright is the correct year.
+   * @param {String} html
+   */
+  function sanityCheckBuiltFile( html ) {
+
+    var copyrightIndex = html.indexOf( 'Copyright 2002-20' );
+    var endYear = html.substring( copyrightIndex + 15, copyrightIndex + 19 );
+
+    // Make sure that the current year matches the ending
+    if ( new Date().getYear() + 1900 !== parseInt( endYear, 10 ) ) {
+      grunt.fail.warn( 'Copyright statement must be current through this year' );
+    }
+
+    // Match template strings that look like "{{I_AM_A_TEMPLATE}}". Hyphens and periods also allowed.
+    var templateMatches = html.match( /{{[A-z\-._ ]{0,100}}}/g );
+    if ( templateMatches.length >= 0 ) {
+
+      if ( templateMatches.length === 1 && templateMatches[ 0 ] === '{{year}}' ) {
+
+        // This is an edge case for the year template string that is in brand and packaged with the built sim.
+      }
+      else {
+        grunt.fail.warn( 'Template strings detected in built file:  ' + templateMatches );
+      }
+    }
+    grunt.file.write( 'build/testHTML.html', html );
+  }
+
   // Create locale-specific HTML files
   for ( var i = 0; i < buildConfig.locales.length; i++ ) {
     var locale = buildConfig.locales[ i ];
 
     var localeHTML = replaceLocaleConstants( html, locale, false );
+
+    sanityCheckBuiltFile( localeHTML );
 
     // phet-io simulations end in "phetio", see https://github.com/phetsims/phet-io/issues/288
     var filename = 'build/' + buildConfig.name + '_' + locale;
