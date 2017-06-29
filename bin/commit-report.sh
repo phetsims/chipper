@@ -6,4 +6,4 @@ if [ -z "$1" ]
     echo "Usage: commit-report.sh username"
     exit 1
 fi
-for-each.sh active-repos git log --all --remotes --since=7.days --author=$1 --pretty=format:"%an %ad %s" --date=relative; printf "\n"
+for-each.sh active-repos log.sh $1
