@@ -17,7 +17,7 @@ var ChipperConstants = require( '../../common/ChipperConstants' );
 // var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
 // constants
-var WRAPPER_PREFIX = 'phet-io-wrapper-';
+var DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 
 module.exports = function( grunt, buildConfig ) {
 
@@ -136,47 +136,21 @@ module.exports = function( grunt, buildConfig ) {
     }
   };
 
+  // Load the master list of all wrappers
+  var wrappers = fs.readFileSync( '../chipper/data/wrappers' ).toString().split( '\r\n' );
 
-  /**
-   * Dynamically generate a list of all current wrappers that have a dedicated github repository so that we can add them
-   * to the build.
-   * @returns {string[]} - a list of wrapper names, i.e. the repo 'phet-io-wrapper-classroom-activity' will return 'classroom-activity'
-   */
-  function findAllDedicatedWrapperRepos() {
-    var wrapperRepos = [];
-    var repos = fs.readdirSync( '../' );
-    repos.forEach( function( repo ) {
+  // Files and directories from wrapper folders that we don't want to copy
+  var wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json' ];
 
-      // If the repo begins with the wrapper prefix
-      if ( repo.indexOf( WRAPPER_PREFIX ) === 0 ) {
-        wrapperRepos.push( repo.split( WRAPPER_PREFIX )[ 1 ] );
-      }
-    } );
-    return wrapperRepos;
-  }
+  wrappers.forEach( function( wrapper ) {
 
-  var wrapperSuiteBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json' ];
+    var wrapperParts = wrapper.split( '/' );
 
-  // Files from the phet-io-wrappers repo
-  var wrappersFromSuite = fs.readdirSync( '../phet-io-wrappers' );
-
-  // Copy each wrapper from the wrapper suite
-  wrappersFromSuite.forEach( function( repo ) {
-
-    // Don't copy over anything from blacklist
-    if ( wrapperSuiteBlacklist.indexOf( repo ) < 0 ) {
-      copyDirectory( grunt, '../phet-io-wrappers/' + repo, ChipperConstants.BUILD_DIR + '/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
-    }
+    // either take the last path part, or take the first (repo name) and remove the wrapper prefix
+    var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length -1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
+    copyDirectory( grunt, '../' + wrapper, ChipperConstants.BUILD_DIR + '/wrappers/' + wrapperName, filterWrapper,
+      { blacklist: wrappersBlacklist } );
   } );
-
-  // a list of the rest of the phet-io wrappers that aren't in the phet-io-wrappers suite
-  var dedicatedWrapperRepos = findAllDedicatedWrapperRepos();
-
-  dedicatedWrapperRepos.forEach( function( repo ) {
-    // Copy each wrapper's content into a dedicated folder under 'build/wrappers.' As a sibling to other wrappers in the suite
-    copyDirectory( grunt, '../' + WRAPPER_PREFIX + repo, ChipperConstants.BUILD_DIR + '/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
-  } );
-
 
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
