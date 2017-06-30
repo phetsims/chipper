@@ -14,7 +14,7 @@ var fs = require( 'fs' );
 var copyDirectory = require( './copyDirectory' );
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 var ChipperConstants = require( '../../common/ChipperConstants' );
-// var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
+var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
 // constants
 var WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -233,7 +233,5 @@ module.exports = function( grunt, buildConfig ) {
   grunt.file.write( DESTINATION_PATH + '/' + OUTPUT_FILE, COPYRIGHT_HEADER + '\n\n' + minified );
 
   // Generate API Documentation
-  // TODO: these are broken right now, the cause has something to do with the string plugin loading chipper's localeInfo.js
-  // TODO: see https://github.com/phetsims/phet-io/issues/972 for more info
-  // generatePhETIOAPIDocs( grunt, buildConfig );
+  generatePhETIOAPIDocs( grunt, buildConfig );
 };

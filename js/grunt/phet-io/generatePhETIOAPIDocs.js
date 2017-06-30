@@ -10,12 +10,8 @@
 
 // modules
 var fs = require( 'fs' );
-var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
-var child_process = require( 'child_process' );
-var execSync = child_process.execSync;
+var testChromeHeadless = require( '../../../js/grunt/phet-io/test-chrome-headless' ); // eslint-disable-line
 
-// constants
-var TYPE_DOCS_RUNNABLE = '../chipper/js/grunt/phet-io/createTypeDocumentation.js';
 
 var DOCUMENTATION_PATH = '../chipper/templates/';
 var DOCUMENTATION_FILENAME = 'phet-io-documentation.html';
@@ -38,7 +34,7 @@ function getQueryParameters( filename, marker ) {
 
 module.exports = function( grunt, buildConfig ) {
 
-  var phetioDocumentationTemplateText = fs.readFileSync( DOCUMENTATION_PATH  + DOCUMENTATION_FILENAME ).toString();
+  var phetioDocumentationTemplateText = fs.readFileSync( DOCUMENTATION_PATH + DOCUMENTATION_FILENAME ).toString();
 
 // Add the phet query parameters to the template
   var phetQueryParameters = getQueryParameters( '../chipper/js/initialize-globals.js', 'QUERY_PARAMETERS_SCHEMA = ' );
@@ -48,17 +44,17 @@ module.exports = function( grunt, buildConfig ) {
   var phetioQueryParameters = getQueryParameters( '../phet-io/js/phet-io-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
 
-  var commonCodeTypes = execSync( 'node ' + TYPE_DOCS_RUNNABLE + ' --common' ).toString();
-  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{COMMON_TYPE_DOCUMENTATION}}', commonCodeTypes );
 
-  var simSpecificTypes = execSync( 'node ' + TYPE_DOCS_RUNNABLE + ' --sim ' +
-                                   buildConfig.name + ' "' + // repoName
-                                   ChipperStringUtils.toTitle( buildConfig.name ) + '" ' +// formal display name
-                                   buildConfig.requirejsNamespace // requirejs namespace in all caps
-  ).toString();
+  var done = grunt.task.current.async();
+  testChromeHeadless( function( tandemsAndTypesString ) {
 
-  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{SIM_TYPE_DOCUMENTATION}}', simSpecificTypes );
+    var tandemsAndTypes = JSON.parse( tandemsAndTypesString );
 
-  // Write the new documentation to html
-  grunt.file.write( 'build/docs/' + DOCUMENTATION_FILENAME, phetioDocumentationTemplateText );
+    phetioDocumentationTemplateText =
+      phetioDocumentationTemplateText.replace( '{{TANDEMS}}', JSON.stringify( tandemsAndTypes, null, 2 ));
+
+    // Write the new documentation to html
+    grunt.file.write( 'build/docs/' + DOCUMENTATION_FILENAME, phetioDocumentationTemplateText );
+    done();
+  } );
 };
