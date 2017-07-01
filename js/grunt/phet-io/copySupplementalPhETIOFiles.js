@@ -140,14 +140,14 @@ module.exports = function( grunt, buildConfig ) {
   var wrappers = fs.readFileSync( '../chipper/data/wrappers' ).toString().split( '\r\n' );
 
   // Files and directories from wrapper folders that we don't want to copy
-  var wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json' ];
+  var wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
 
   wrappers.forEach( function( wrapper ) {
 
     var wrapperParts = wrapper.split( '/' );
 
     // either take the last path part, or take the first (repo name) and remove the wrapper prefix
-    var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length -1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
+    var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
     copyDirectory( grunt, '../' + wrapper, ChipperConstants.BUILD_DIR + '/wrappers/' + wrapperName, filterWrapper,
       { blacklist: wrappersBlacklist } );
   } );
