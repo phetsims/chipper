@@ -2,10 +2,10 @@ active-repos is a list of all repositories that you should have checked out if d
 
 active-runnables is a list of all repositories that can be built with chipper and launched from an html file.
 
-active-sims is a list of all simulation directories that can be built with chipper.  Similar to runnables, but doesn't 
+active-sims is a list of all simulation repositories that can be built with chipper.  Similar to runnables, but doesn't 
     include repos with test code like sun, scenery-phet, etc.
 
-duplicates/duplicates.txt is a record of `grunt find-duplicates --everything` so we can track duplicates over time
+duplicates/duplicates.txt is a record of `grunt find-duplicates --everything` so we can track duplicates over time.
 
 phet-io is the list of all simulations that are instrumented with PhET-iO features. This list is automatically fuzz
     tested and is used by phetmarks to dictate which sims have wrapper links. See 
