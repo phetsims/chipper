@@ -25,7 +25,7 @@ var LIB_FILES = [
   '../phet-io-wrappers/common/js/WrapperUtils.js' ];
 
 var LIB_DIR = ChipperConstants.BUILD_DIR + '/lib';
-var LIB_OUTPUT_FILE = 'phetio.js';
+var LIB_OUTPUT_FILE = 'phet-io.js';
 var LIB_COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Boulder\n' +
                            '// This PhET-iO file requires a license\n' +
                            '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
@@ -196,8 +196,8 @@ module.exports = function( grunt, buildConfig ) {
 
       // For info about phetio.js, see the end of this file
       contents = ChipperStringUtils.replaceAll( contents,
-        '<!--{{phetio.js}}-->',
-        '<script type="text/javascript" src="../../lib/phetio.js"></script>'
+        '<!--{{phet-io.js}}-->',
+        '<script type="text/javascript" src="../../lib/' + LIB_OUTPUT_FILE + '"></script>'
       );
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
@@ -231,7 +231,7 @@ module.exports = function( grunt, buildConfig ) {
   } );
 
   // Don't copy over the files that are in the lib file, this way we can catch wrapper bugs that are not pointing to the lib.
-  var fullBlacklist = wrappersBlacklist.concat( libFileNames);
+  var fullBlacklist = wrappersBlacklist.concat( libFileNames );
 
   // Make sure to copy the phet-io-wrappers common wrapper code too.
   wrappers.push( 'phet-io-wrappers/common' );
