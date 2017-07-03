@@ -34,7 +34,8 @@ var LIB_COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Bould
 
 /**
  * Given the list of lib files, apply a filter function to them. Then minify them and consolidate into a single string.
- * Finally write them to the build dir with a license prepended.
+ * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
+
  * @param grunt
  * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
  *                            has arguments like "function(abspath, contents)"
@@ -44,7 +45,6 @@ var handleLib = function( grunt, filter ) {
   // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
   var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
 
-  // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not password-protected), see https://github.com/phetsims/phet-io/issues/353
   grunt.file.mkdir( LIB_DIR );
 
   var consolidated = '';
@@ -225,6 +225,14 @@ module.exports = function( grunt, buildConfig ) {
   // Files and directories from wrapper folders that we don't want to copy
   var wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
 
+  var libFileNames = LIB_FILES.map( function( filePath ) {
+    var parts = filePath.split( '/' );
+    return parts[ parts.length - 1 ];
+  } );
+
+  // Don't copy over the files that are in the lib file, this way we can catch wrapper bugs that are not pointing to the lib.
+  var fullBlacklist = wrappersBlacklist.concat( libFileNames);
+
   // Make sure to copy the phet-io-wrappers common wrapper code too.
   wrappers.push( 'phet-io-wrappers/common' );
   wrappers.forEach( function( wrapper ) {
@@ -234,7 +242,7 @@ module.exports = function( grunt, buildConfig ) {
     // either take the last path part, or take the first (repo name) and remove the wrapper prefix
     var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
     copyDirectory( grunt, '../' + wrapper, ChipperConstants.BUILD_DIR + '/wrappers/' + wrapperName, filterWrapper,
-      { blacklist: wrappersBlacklist } );
+      { blacklist: fullBlacklist } );
   } );
 
   handleDevGuide( grunt );
