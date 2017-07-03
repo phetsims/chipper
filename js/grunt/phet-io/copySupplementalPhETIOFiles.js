@@ -220,7 +220,7 @@ module.exports = function( grunt, buildConfig ) {
   };
 
   // Load the master list of all wrappers
-  var wrappers = grunt.file.read( '../chipper/data/wrappers' ).toString().split( '\r\n' );
+  var wrappers = grunt.file.read( '../chipper/data/wrappers' ).toString().split( /\r?\n/ );
 
   // Files and directories from wrapper folders that we don't want to copy
   var wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
