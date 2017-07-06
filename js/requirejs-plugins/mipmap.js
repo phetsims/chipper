@@ -220,6 +220,16 @@ define( function( require ) {
              '    mipmap.img = new Image();\n' +
              '    window.phetImages.push( mipmap.img );\n' + // make sure it's loaded before the sim launches
              '    mipmap.img.src = mipmap.url;\n' + // trigger the loading of the image for its level
+             '    mipmap.canvas = document.createElement( \'canvas\' );\n' +
+             '    mipmap.canvas.width = mipmap.width;\n' +
+             '    mipmap.canvas.height = mipmap.height;\n' +
+             '    var context = mipmap.canvas.getContext( \'2d\' );\n' +
+             '    mipmap.updateCanvas = function() {\n' +
+             '      if ( mipmap.img.complete && ( typeof mipmap.img.naturalWidth === \'undefined\' || mipmap.img.naturalWidth > 0 ) ) {\n' +
+             '        context.drawImage( mipmap.img, 0, 0 );\n' +
+             '        delete mipmap.updateCanvas;\n' +
+             '      }\n' +
+             '    };\n' +
              '  } );\n' +
              '  return mipmaps;\n' +
              '} );\n' );
