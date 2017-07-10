@@ -60,7 +60,9 @@ module.exports = function( grunt, src, dst, filter, options ) {
     // Minify the file if it is javascript code
     if ( options.minifyJS && filename.indexOf( '.js' ) === filename.length - 3 ) {
       filteredContents = uglify.minify( abspath, {
-        mangle: false,
+        mangle: {
+          except: [ 'require' ]
+        },
         output: {
           inline_script: true, // escape </script
           beautify: false
