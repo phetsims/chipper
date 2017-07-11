@@ -241,12 +241,18 @@ module.exports = function( grunt, buildConfig ) {
 
     // either take the last path part, or take the first (repo name) and remove the wrapper prefix
     var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
-    copyDirectory( grunt, '../' + wrapper, ChipperConstants.BUILD_DIR + '/wrappers/' + wrapperName, filterWrapper,
-      { blacklist: fullBlacklist } );
+
+    // Copy the wrapper into the build dir /wrappers/, exclude the blacklist, and minify the js code
+    copyDirectory( grunt, '../' + wrapper, ChipperConstants.BUILD_DIR + '/wrappers/' + wrapperName, filterWrapper, {
+      blacklist: fullBlacklist,
+      minifyJS: true
+      } );
   } );
 
+  // Copy over the dev guide and the needed dependencies
   handleDevGuide( grunt );
 
+  // Create the lib file that is minified and publicly available under the /lib folder of the build
   handleLib( grunt, filterWrapper );
 
   // Generate API Documentation
