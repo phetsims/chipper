@@ -59,7 +59,8 @@ module.exports = function( grunt, src, dst, filter, options ) {
 
     // Minify the file if it is javascript code
     if ( options.minifyJS && filename.indexOf( '.js' ) === filename.length - 3 ) {
-      filteredContents = uglify.minify( abspath, {
+      var toBeMinified = filteredContents ? filteredContents : contents;
+      filteredContents = uglify.minify( toBeMinified, {
         mangle: {
           except: [ 'require' ]
         },
@@ -69,7 +70,10 @@ module.exports = function( grunt, src, dst, filter, options ) {
         },
         compress: {
           global_defs: {}
-        }
+        },
+
+        // First argument is a string of code, not a filename
+        fromString: true
       } ).code;
 
       // Only add the license to the javascript code
