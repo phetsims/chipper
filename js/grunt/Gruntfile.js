@@ -320,10 +320,9 @@ module.exports = function( grunt ) {
 
   // see reportThirdParty.js
   grunt.registerTask( 'report-third-party',
-    'This task is used to create a report of third-party resources (code, ' +
-    'images, audio, etc) used in a set of PhET simulations by reading the ' +
-    'license information in built HTML files. After running this task, you ' +
-    'must push sherpa/third-party-licenses.md',
+    'Creates a report of third-party resources (code, images, audio, etc) used in the published PhET simulations by ' +
+    'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
+    'After running this task, you must push sherpa/third-party-licenses.md.',
     function() {
       reportThirdParty( grunt );
     } );
