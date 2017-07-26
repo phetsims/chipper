@@ -6,6 +6,12 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+// 3rd-party packages
+var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
+
+// constants
+var KEY = ' = require( '; // the substring that is searched to find require statements
+
 /**
  * @param grunt - the grunt instance
  */
@@ -39,17 +45,15 @@ module.exports = function( grunt ) {
         var line = lines[ i ];
 
         // If it was a require statement, store it for sorting.
-        if ( line.indexOf( ' = require( ' ) >= 0 ) {
+        if ( line.indexOf( KEY ) >= 0 ) {
           accumulator.push( line );
           count++;
         }
         else {
 
           // Not a require statement, sort and flush any pending require statements then continue
-          accumulator.sort( function( a, b ) {
-
-            // case insensitive
-            return a.toLowerCase().localeCompare( b.toLowerCase() );
+          accumulator = _.sortBy( accumulator, function( o ) {
+            return o.toLowerCase().substring( o.indexOf( KEY ) );
           } );
           accumulator.forEach( function( a ) {
             result.push( a );
