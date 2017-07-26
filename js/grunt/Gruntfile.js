@@ -43,6 +43,7 @@ var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDa
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
+var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
 var wrapperDeploy = require( '../../../chipper/js/grunt/wrapperDeploy' );
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 
@@ -401,4 +402,11 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'build-wrapper', 'Build PhET-iO wrapper', optionalTasks.concat( [ 'clean', 'wrapper-basic-build' ] ) );
+
+  grunt.registerTask( 'sort-require-statements', 'Sort the require statements for all *.js files in the js/ directory. ' +
+                                                 'This assumes the code is formatted  with IDEA code style and that ' +
+                                                 'require statements take one line each (not split across lines).  The ' +
+                                                 'files are overwritten.', function() {
+    sortRequireStatements( grunt, buildConfig );
+  } );
 };
