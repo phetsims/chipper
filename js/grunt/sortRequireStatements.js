@@ -46,7 +46,11 @@ module.exports = function( grunt ) {
         else {
 
           // Not a require statement, sort and flush any pending require statements then continue
-          accumulator.sort();
+          accumulator.sort( function( a, b ) {
+
+            // case insensitive
+            return a.toLowerCase().localeCompare( b.toLowerCase() );
+          } );
           accumulator.forEach( function( a ) {
             result.push( a );
           } );
