@@ -54,8 +54,15 @@ module.exports = function( grunt, file ) {
           accumulator = _.sortBy( accumulator, function( o ) {
             return o.toLowerCase().substring( o.indexOf( KEY ) );
           } );
+          var previous = null;
           accumulator.forEach( function( a ) {
-            result.push( a );
+
+            // Omit duplicate require statements
+            if ( a !== previous ) {
+              result.push( a );
+            }
+
+            previous = a;
           } );
           accumulator.length = 0;
           result.push( line );
