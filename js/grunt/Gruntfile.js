@@ -44,6 +44,7 @@ var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
 var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
+var insertRequireStatement = require( '../../../chipper/js/grunt/insertRequireStatement' );
 var wrapperDeploy = require( '../../../chipper/js/grunt/wrapperDeploy' );
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 
@@ -407,7 +408,13 @@ module.exports = function( grunt ) {
                                                  'This assumes the code is formatted  with IDEA code style and that ' +
                                                  'require statements take one line each (not split across lines).  The ' +
                                                  'files are overwritten.\n' +
-                                                 '--file (optional) absolute path of a single file to sort¬', function() {
-    sortRequireStatements( grunt, buildConfig );
+                                                 '--file (optional) absolute path of a single file to sort', function() {
+    sortRequireStatements( grunt, grunt.option( 'file' ) );
+  } );
+
+  grunt.registerTask( 'insert-require-statement', 'Insert a require statement into the specified file.\n' +
+                                                  '--file absolute path of a single file to sort\n' +
+                                                  '--name to be required', function() {
+    insertRequireStatement( grunt, buildConfig );
   } );
 };

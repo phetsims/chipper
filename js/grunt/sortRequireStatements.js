@@ -14,8 +14,9 @@ var KEY = ' = require( '; // the substring that is searched to find require stat
 
 /**
  * @param grunt - the grunt instance
+ * @param {string} [file] - optional absolute path to the file to sort
  */
-module.exports = function( grunt ) {
+module.exports = function( grunt, file ) {
   'use strict';
 
   var sourceRoot = process.cwd() + '/js';
@@ -68,7 +69,6 @@ module.exports = function( grunt ) {
   };
 
   // option to sort a single file
-  var file = grunt.option( 'file' );
   if ( file ) {
     sortRequireStatementsForFile( file );
   }
