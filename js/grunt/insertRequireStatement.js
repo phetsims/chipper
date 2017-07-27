@@ -61,7 +61,7 @@ module.exports = function( grunt ) {
   }
 
   if ( !statement ) {
-    grunt.log.warn.log( 'no import found for ' + name );
+    grunt.log.warn( 'no import found for ' + name );
   }
   else {
 
@@ -87,7 +87,7 @@ module.exports = function( grunt ) {
     }
 
     grunt.file.write( file, result.join( '\n' ) );
-    console.log( 'inserted a require statements in ' + file );
+    grunt.log.writeln( 'inserted a require statements in ' + file );
 
     // Make sure it ends up in the right place
     sortRequireStatements( grunt, file );

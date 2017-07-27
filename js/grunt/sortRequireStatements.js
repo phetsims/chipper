@@ -62,9 +62,8 @@ module.exports = function( grunt, file ) {
         }
       }
 
-      // console.log( result.join( '\n' ) );
       grunt.file.write( abspath, result.join( '\n' ) );
-      console.log( 'sorted ' + count + ' require statements in ' + abspath );
+      grunt.log.writeln( 'sorted ' + count + ' require statements in ' + abspath );
     }
   };
 
