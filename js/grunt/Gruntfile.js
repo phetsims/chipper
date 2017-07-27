@@ -406,7 +406,8 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'sort-require-statements', 'Sort the require statements for all *.js files in the js/ directory. ' +
                                                  'This assumes the code is formatted  with IDEA code style and that ' +
                                                  'require statements take one line each (not split across lines).  The ' +
-                                                 'files are overwritten.', function() {
+                                                 'files are overwritten.\n' +
+                                                 '--file (optional) absolute path of a single file to sort¬', function() {
     sortRequireStatements( grunt, buildConfig );
   } );
 };

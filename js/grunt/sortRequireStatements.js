@@ -20,9 +20,7 @@ module.exports = function( grunt ) {
 
   var sourceRoot = process.cwd() + '/js';
 
-  // Count the number of start and end dates we need
-  grunt.file.recurse( sourceRoot, function( abspath ) {
-
+  var sortRequireStatementsForFile = function( abspath ) {
     // only address js files
     if ( abspath.indexOf( '.js' ) ) {
 
@@ -67,5 +65,14 @@ module.exports = function( grunt ) {
       grunt.file.write( abspath, result.join( '\n' ) );
       console.log( 'sorted ' + count + ' require statements in ' + abspath );
     }
-  } );
+  };
+
+  // option to sort a single file
+  var file = grunt.option( 'file' );
+  if ( file ) {
+    sortRequireStatementsForFile( file );
+  }
+  else {
+    grunt.file.recurse( sourceRoot, sortRequireStatementsForFile );
+  }
 };
