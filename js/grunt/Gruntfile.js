@@ -294,7 +294,16 @@ module.exports = function( grunt ) {
       bumpVersion( grunt );
     } );
 
+  grunt.registerTask( 'ensure-dev-version', 'Makes sure the version contains "dev", for internal use only.', function() {
+    if ( buildConfig.version.indexOf( 'dev' ) === -1 ) {
+      grunt.fail.fatal( 'cannot deploy-next-dev unless the version number is a dev version' );
+    }
+  } );
+
   grunt.registerTask( 'deploy-next-dev', 'Bumps the version, commits, builds and deploys dev', [
+
+    // Make sure it is a dev version
+    'ensure-dev-version',
 
     // Build & lint it to make sure there are no problems
     'build',
