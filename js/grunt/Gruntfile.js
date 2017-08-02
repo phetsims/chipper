@@ -294,7 +294,7 @@ module.exports = function( grunt ) {
       bumpVersion( grunt );
     } );
 
-  grunt.registerTask( 'next-dev', 'Bumps the version, commits, builds and deploys dev', [
+  grunt.registerTask( 'deploy-next-dev', 'Bumps the version, commits, builds and deploys dev', [
 
     // Build & lint it to make sure there are no problems
     'build',
