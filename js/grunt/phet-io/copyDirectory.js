@@ -58,7 +58,7 @@ module.exports = function( grunt, src, dst, filter, options ) {
     var filteredContents = filter && filter( abspath, contents );
 
     // Minify the file if it is javascript code
-    if ( options.minifyJS && filename.indexOf( '.js' ) === filename.length - 3 ) {
+    if ( options.minifyJS && filename.endsWith( '.js' ) ) {
       var toBeMinified = filteredContents ? filteredContents : contents;
       filteredContents = uglify.minify( toBeMinified, {
         mangle: {
