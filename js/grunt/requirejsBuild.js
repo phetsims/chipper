@@ -18,6 +18,9 @@ var istanbul = require( 'istanbul' );
  */
 module.exports = function( grunt, buildConfig ) {
 
+  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
+  var uglify = require( '../../../chipper/node_modules/uglify-js' );// eslint-disable-line require-statement-match
+
   // Validate phet-io brand naming, see https://github.com/phetsims/chipper/issues/504
   if ( buildConfig.brand === 'phet-io' ) {
     assert( buildConfig.version.indexOf( 'phetio' ) >= 0, 'phet-io branded things must have phetio in the string so they will be ' +
@@ -128,12 +131,36 @@ module.exports = function( grunt, buildConfig ) {
     var testJQuery = '  if ( !window.hasOwnProperty( \'$\' ) ) {\n' +
                      '    throw new Error( \'jQuery not found: $\' );\n' +
                      '  }\n';
+    var includedPreloads = [
+      '../assert/js/assert.js'
+    ];
+    if ( buildConfig.name === 'scenery' ) {
+      includedPreloads.push( '../sherpa/lib/himalaya-0.2.7.js' );
+    }
+
+    var preloadJS = includedPreloads.map( function( file ) {
+      if ( grunt.option( 'uglify' ) === false ) {
+        return global.phet.chipper.fs.readFileSync( file, 'utf8' );
+      }
+      else {
+        return uglify.minify( [ file ], {
+          mangle: grunt.option( 'mangle' ) !== false,
+          output: {
+            inline_script: true, // escape </script
+            beautify: grunt.option( 'mangle' ) === false
+          },
+          compress: {
+            global_defs: {}
+          }
+        } ).code;
+      }
+    } ).join( '\n' );
+
     config.wrap = {
       start: '(function() {\n' +
              ( buildConfig.requiresLodash ? testLodash : '' ) +
              ( buildConfig.requiresJQuery ? testJQuery : '' ) +
-             // Assert needs to be bundled directly in, as we can't preload it
-             grunt.file.read( '../assert/js/assert.js' ),
+             preloadJS,
       end: Object.keys( buildConfig.assignGlobals ).sort().map( function( global ) {
         // For each key=>value in buildConfig.assignGlobals, we want to set window.key = require( 'value' ), to initialize our globals
         return '  window.' + global + ' = require( \'' + buildConfig.assignGlobals[ global ] + '\' );\n';
