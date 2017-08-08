@@ -44,6 +44,12 @@ define( function( require ) {
    * @param {???} headers
    */
   function getWithCache( url, callback, errback, headers ) {
+    // Read the locale from a query parameter, if it is there, or use the fallback locale
+    var locale = phet.chipper.queryParameters.locale;
+    if ( !localeInfo[ locale ] ) {
+      onload.error( new Error( 'unsupported locale: ' + locale ) );
+    }
+    var isRTL = localeInfo[ locale ].direction === 'rtl';
 
     // Check for cache hit
     if ( cache[ url ] ) {
@@ -52,7 +58,11 @@ define( function( require ) {
     else {
       // Cache miss: load the file parse, enter into cache and return it
       text.get( url, function( loadedText ) {
-        cache[ url ] = parse( loadedText );
+        var parsed = parse( loadedText );
+        for ( var stringKey in parsed ) {
+          parsed[ stringKey ].value = ChipperStringUtils.addDirectionalFormatting( parsed[ stringKey ].value, isRTL );
+        }
+        cache[ url ] = parsed;
         callback( cache[ url ] );
       }, errback, headers );
     }
@@ -142,14 +152,7 @@ define( function( require ) {
 
         // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
         var queryParameterStrings = parse( phet.chipper.queryParameters.strings || '{}' );
-
-        // Read the locale from a query parameter, if it is there, or use the fallback locale
         locale = phet.chipper.queryParameters.locale;
-        if ( !localeInfo[ locale ] ) {
-          onload.error( new Error( 'unsupported locale: ' + locale ) );
-        }
-        var isRTL = localeInfo[ locale ].direction === 'rtl';
-
         var fallbackSpecificPath = repositoryPath + '/' + getFilenameForLocale( ChipperConstants.FALLBACK_LOCALE );
         var localeSpecificPath = ( locale === ChipperConstants.FALLBACK_LOCALE ) ?
                                  fallbackSpecificPath :
@@ -172,10 +175,6 @@ define( function( require ) {
 
               // Now get the primary strings.
               getWithCache( localeSpecificPath, function( parsed ) {
-                  for ( var stringKey in parsed ) {
-                    parsed[ stringKey ].value = ChipperStringUtils.addDirectionalFormatting( parsed[ stringKey ].value, isRTL );
-                  }
-
                   // Combine the primary and fallback strings into one object hash.
                   var parsedStrings = _.extend( parsedFallbackStrings, parsed );
                   if ( parsedStrings[ key ] !== undefined ) {
