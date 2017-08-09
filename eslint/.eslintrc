@@ -92,7 +92,7 @@
     //
     //
     "require-statement-match": 2,
-    "phetio-require-contains-ifphetio": 2,
+    "phet-io-require-contains-ifphetio": 2,
     "require-tandem-support": 0,
     "no-property-in-require-statement": 2,
     // permit only one var declaration per line, see #390
@@ -190,6 +190,8 @@
     "FileReader": false,
     // for linting Node.js code
     "global": false,
+    // for HTML => JSON parsing
+    "himalaya": false,
     //for web audio
     "Howl": false,
     //
@@ -199,12 +201,13 @@
     "iframePhone": false,
     // DOM.js
     "Image": false,
-    // socket.io
-    "io": false,
     // for generating diffs in phetio.js
     "jsondiffpatch": false,
     // QUnit
     "kite": false,
+    // for using native Map
+    "Map": false,
+    // QUnit
     "QUnit": false,
     // For KaTeX
     "katex": false,

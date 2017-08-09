@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Phetio Documentation</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="Description" lang="en" content="PhET-iO documentation tracking the api for this version">
+  <meta name="author" content="Michael Kauzmann">
+  <meta name="robots" content="none">
+
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <style>
+    body{
+      background-color: #222;
+    }
+    div#api-documentation.content{
+      max-width: 850px;
+      margin: auto;
+      padding: 0 10px;
+      color:white;
+    }
+    ul {
+      color: #bbbbbb;
+    }
+
+    td {
+      color: #bbbbbb;
+    }
+
+    li {
+      color: #bbbbbb;
+    }
+
+    DD {
+      color: #bbbbbb;
+    }
+
+    .typeDeclarationBody span {
+      color: #bbbbbb;
+    }
+
+    p {
+      font-size: 16px;
+    }
+
+    li {
+      font-size: 16px;
+    }
+    /*Highlightig for the supertype links*/
+    a.supertypeLink {
+      text-decoration: underline;
+    }
+
+    /*It looks odd for the anchors to become colored, so suppress it.*/
+    a.supertypeLink:visited {
+      color: cornflowerblue;
+    }
+
+
+    pre,
+    .grayBackground {
+      background: #111;
+      color: #fff;
+    }
+    .grayBackground {
+      padding: 10px;
+      margin-top: 20px ;
+    }
+
+    pre {
+      border-color: #333;
+    }
+    .typeDeclarationBody {
+      padding: 0em 1.25em;
+    }
+    .typeName {
+      font-weight: 900;
+      font: 1.2em "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
+      color: cornflowerblue;
+    }
+  </style>
+  <!-- syntax highlighting -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow-night-bright.min.css">
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+  <script type="text/javascript">
+    hljs.initHighlightingOnLoad();
+  </script>
+</head>
+<body>
+
+<div id="api-documentation" class="content">
+  <h1>PhET-iO API Documentation</h1>
+  <p>This document is a snapshot of all of the phet-io and simulation api for this given sha.</p>
+
+  <div class="grayBackground">
+    <h2>Current Type Documentation</h2>
+    <h3>Common Code</h3>
+    {{COMMON_TYPE_DOCUMENTATION}}
+    {{SIM_TYPE_DOCUMENTATION}}
+
+</div>
+  <h2>PhET-iO Query Parameters</h2>
+  <pre><code id="phet-io-query-parameters" class="javascript">{{PHETIO_QUERY_PARAMETERS}}</code></pre>
+  <h2>PhET Query Parameters</h2>
+  <pre><code id="phet-query-parameters" class="javascript">{{PHET_QUERY_PARAMETERS}}</code></pre>
+
+</div>
+
+</body>
+
+</html>

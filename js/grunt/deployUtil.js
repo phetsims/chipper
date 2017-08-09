@@ -29,7 +29,7 @@ var exec = function( grunt, command, callback ) {
   child_process.exec( command, function( err, stdout, stderr ) {
     grunt.log.debug( stdout );
     grunt.log.debug( stderr );
-    callback();
+    callback( err, stdout, stderr );
   } );
 };
 
@@ -56,7 +56,7 @@ var commitAndPushDependenciesJSON = function( grunt, callback ) {
 };
 
 var getDependenciesList = function( grunt ) {
-  
+
   var dependencies;
   if ( grunt.file.exists( DEPENDENCIES_JSON ) ) {
     dependencies = grunt.file.readJSON( DEPENDENCIES_JSON );
@@ -86,7 +86,7 @@ var getDependenciesList = function( grunt ) {
  * @param callback
  */
 var checkForUncommittedChanges = function( grunt, callback ) {
-  
+
   // get of list of this sim's dependencies
   var dependenciesList = getDependenciesList( grunt );
 
@@ -126,7 +126,7 @@ var checkForUncommittedChanges = function( grunt, callback ) {
  * @param callback
  */
 var checkForUnpushedChanges = function( grunt, callback ) {
-  
+
   // get of list of this sim's dependencies
   var dependenciesList = getDependenciesList( grunt );
 
@@ -179,7 +179,7 @@ var checkForUnpushedChanges = function( grunt, callback ) {
  * @param callback
  */
 var verifyDependenciesCheckedOut = function( grunt, callback ) {
-  
+
   grunt.log.debug( 'verifying that correct dependencies are checked out' );
 
   var deployConfig = getDeployConfig( grunt, global.phet.chipper.fs );

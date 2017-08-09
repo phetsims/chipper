@@ -28,23 +28,27 @@ var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
+var generateA11yViewHTML = require( '../../../chipper/js/grunt/generateA11yViewHTML' );
 var generateCoverage = require( '../../../chipper/js/grunt/generateCoverage' );
 var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
 var generateDevelopmentColorsHTML = require( '../../../chipper/js/grunt/generateDevelopmentColorsHTML' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
+var generateTwitterCard = require( '../../../chipper/js/grunt/generateTwitterCard' );
+var lint = require( '../../../chipper/js/grunt/lint' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
-var getGruntConfig = require( '../../../chipper/js/grunt/getGruntConfig' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
+var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
+var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
+var insertRequireStatement = require( '../../../chipper/js/grunt/insertRequireStatement' );
+var wrapperDeploy = require( '../../../chipper/js/grunt/wrapperDeploy' );
+var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 
 module.exports = function( grunt ) {
-
-  // For eslint
-  require( 'load-grunt-tasks' )( grunt );
 
   //---------------------------------------------------------------------------------------------------------------
   // Configuration
@@ -80,17 +84,18 @@ module.exports = function( grunt ) {
     }
   };
 
-  // Initialize grunt
-  var gruntConfig = getGruntConfig( grunt, buildConfig.name, buildConfig.phetLibs );
-  grunt.initConfig( gruntConfig );
-
   //---------------------------------------------------------------------------------------------------------------
   // Primary tasks
   //---------------------------------------------------------------------------------------------------------------
 
   // Default task ('grunt')
 
-  grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
+  if ( buildConfig.isWrapper ) {
+    grunt.registerTask( 'default', 'Builds the PhET-iO Wrapper', [ 'build-wrapper' ] );
+  }
+  else {
+    grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
+  }
 
   // Add the linting step as an pre-build step.  Can be skipped with --lint=false
   var optionalTasks = [];
@@ -129,12 +134,12 @@ module.exports = function( grunt ) {
     // Grunt task that builds only the JS (no HTML), for libraries like scenery
     // see https://github.com/phetsims/scenery/issues/567
     grunt.registerTask( 'build', 'Build only the JS, for scenery/kite/dot/sun/libraries',
-      [ 'clean', 'requirejs-build' ]
+      optionalTasks.concat( [ 'clean', 'requirejs-build' ] )
     );
   }
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
-    [ 'build', 'generate-thumbnails' ]
+    [ 'build', 'generate-thumbnails', 'generate-twitter-card' ]
   );
 
   // Grunt task that determines created and last modified dates from git, and
@@ -165,12 +170,12 @@ module.exports = function( grunt ) {
           deployUtil.verifyDependenciesCheckedOut( grunt, function() {
             if ( grunt.option( 'noDev' ) || grunt.option( 'dryRun' ) ) {
               deployUtil.commitAndPushDependenciesJSON( grunt, function() {
-                deployProduction( grunt, done );
+                deployProduction( grunt, buildConfig, done );
               } );
             }
             else {
-              deployDev( grunt, function() {
-                deployProduction( grunt, done );
+              deployDev( grunt, buildConfig, function() {
+                deployProduction( grunt, buildConfig, done );
               } );
             }
           } );
@@ -178,15 +183,25 @@ module.exports = function( grunt ) {
       } );
     } );
 
-  grunt.registerTask( 'deploy-dev',
-    'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
-    '--mkdir : set to true to create the sim dir and .htaccess file before copying the version directory\n' +
-    '--test : set to true to disable commit and push, and SCP to a test directory on spot',
-    function() {
-      deployDev( grunt );
-    }
-  );
+  if ( buildConfig.isWrapper ) {
 
+    // dev deploy for a PhET-iO wrapper
+    grunt.registerTask( 'deploy-dev', 'Deploy a PhET-iO wrapper to spot.', function() {
+      wrapperDeploy( grunt, buildConfig );
+    } );
+  }
+  else {
+
+    // Normal dev deploy for a phet sim
+    grunt.registerTask( 'deploy-dev',
+      'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
+      '--mkdir : set to true to create the sim dir and .htaccess file before copying the version directory\n' +
+      '--test : set to true to disable commit and push, and SCP to a test directory on spot',
+      function() {
+        deployDev( grunt, buildConfig );
+      }
+    );
+  }
   grunt.registerTask( 'deploy-rc',
     'Deploy a rc version to spot using the build server.\n' +
     'Behaves identically to grunt deploy-dev, except the sim is rebuilt and deployed from the build-server instead of locally.\n' +
@@ -202,18 +217,28 @@ module.exports = function( grunt ) {
       deployUtil.checkForUncommittedChanges( grunt, function() {
         deployUtil.checkForUnpushedChanges( grunt, function() {
           deployUtil.commitAndPushDependenciesJSON( grunt, function() {
-            deployProduction( grunt, done );
+            deployProduction( grunt, buildConfig, done );
           } );
         } );
       } );
     }
   );
 
-  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', [ 'eslint:repoFiles' ] );
+  /**
+   * Returns a function that lints the specified target.
+   * @param {string} target 'dir'|'all'|'everything'
+   * @returns {function}
+   */
+  var runLint = function( target ) {
+    return function() {
+      lint( grunt, target, buildConfig );
+    };
+  };
+  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', runLint( 'dir' ) );
 
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', [ 'eslint:allFiles' ] );
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', runLint( 'all' ) );
 
-  grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', [ 'eslint:everything' ] );
+  grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', runLint( 'everything' ) );
 
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
@@ -263,6 +288,36 @@ module.exports = function( grunt ) {
       createSim( grunt );
     } );
 
+  grunt.registerTask( 'bump-version',
+    'Bumps the number after the last dot in the version\n' +
+    'then commits and pushes', function() {
+      bumpVersion( grunt );
+    } );
+
+  grunt.registerTask( 'ensure-dev-version', 'Makes sure the version contains "dev", for internal use only.', function() {
+    if ( buildConfig.version.indexOf( 'dev' ) === -1 ) {
+      grunt.fail.fatal( 'cannot deploy-next-dev unless the version number is a dev version' );
+    }
+  } );
+
+  grunt.registerTask( 'deploy-next-dev', 'Bumps the version, commits, builds and deploys dev', [
+
+    // Make sure it is a dev version
+    'ensure-dev-version',
+
+    // Build & lint it to make sure there are no problems
+    'build',
+
+    // update the version number
+    'bump-version',
+
+    // Build it with the new version number
+    'build',
+
+    // deploy it
+    'deploy-dev'
+  ] );
+
   // See reportMedia.js
   grunt.registerTask( 'report-media',
     '(project-wide) Report on license.json files throughout all working copies. ' +
@@ -276,24 +331,9 @@ module.exports = function( grunt ) {
 
   // see reportThirdParty.js
   grunt.registerTask( 'report-third-party',
-    'This task is used to create a report of third-party resources (code, ' +
-    'images, audio, etc) used in a set of PhET simulations by reading the ' +
-    'license information in built HTML files.\n' +
-    '--input (required argument) the path to the directory containing HTML ' +
-    'files which will be reported on.\n' +
-    '--output (required argument) the path to a file where the report should be ' +
-    'written. The file is in markdown syntax and the *.md suffix is ' +
-    'recommended. This will silently overwrite an existing file, if there is ' +
-    'one.\n' +
-    '--active-runnables (optional, default to false) If true, ' +
-    'the task iterates over the active-runnables and copies each ' +
-    'built HTML file into the directory specified with --input before ' +
-    'running the report. If any HTML files are missing, the report will fail. ' +
-    'Before using this flag, the developer should run `grunt-all.sh` to make ' +
-    'sure all of the HTML files are up-to-date. The directory is neither ' +
-    'automatically created nor automatically cleaned, this is the ' +
-    'responsibility of the developer. (Note that if you fail to manually ' +
-    'clean the directory, you may end up with stale HTML files).',
+    'Creates a report of third-party resources (code, images, audio, etc) used in the published PhET simulations by ' +
+    'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
+    'After running this task, you must push sherpa/third-party-licenses.md.',
     function() {
       reportThirdParty( grunt );
     } );
@@ -319,6 +359,12 @@ module.exports = function( grunt ) {
       generateThumbnails( grunt, buildConfig.name, 600, 394, finished );
     } );
 
+  grunt.registerTask( 'generate-twitter-card', 'Generate image for twitter summary card to be used on the website.',
+    function() {
+      var finished = _.after( 1, grunt.task.current.async() );
+      generateTwitterCard( grunt, buildConfig.name, finished );
+    } );
+
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
     function() {
@@ -329,6 +375,12 @@ module.exports = function( grunt ) {
     'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
     function() {
       generateDevelopmentColorsHTML( grunt, buildConfig );
+    } );
+
+  grunt.registerTask( 'generate-a11y-view-html',
+    'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
+    function() {
+      generateA11yViewHTML( grunt, buildConfig );
     } );
 
   grunt.registerTask( 'generate-coverage',
@@ -352,6 +404,26 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
                                          '--dependencies to expand search to include dependencies\n' +
                                          '--everything to expand search to all PhET code', function() {
-    findDuplicates( grunt, gruntConfig );
+    findDuplicates( grunt, buildConfig );
+  } );
+
+  grunt.registerTask( 'wrapper-basic-build', 'Build PhET-iO wrapper', function() {
+    wrapperBuild( grunt, buildConfig );
+  } );
+
+  grunt.registerTask( 'build-wrapper', 'Build PhET-iO wrapper', optionalTasks.concat( [ 'clean', 'wrapper-basic-build' ] ) );
+
+  grunt.registerTask( 'sort-require-statements', 'Sort the require statements for all *.js files in the js/ directory. ' +
+                                                 'This assumes the code is formatted  with IDEA code style and that ' +
+                                                 'require statements take one line each (not split across lines).  The ' +
+                                                 'files are overwritten.\n' +
+                                                 '--file (optional) absolute path of a single file to sort', function() {
+    sortRequireStatements( grunt, grunt.option( 'file' ) );
+  } );
+
+  grunt.registerTask( 'insert-require-statement', 'Insert a require statement into the specified file.\n' +
+                                                  '--file absolute path of a single file to sort\n' +
+                                                  '--name to be required', function() {
+    insertRequireStatement( grunt, buildConfig );
   } );
 };

@@ -31,12 +31,20 @@ module.exports = function( context ) {
         if ( comments ) {
           for ( i = 0; i < comments.length; i++ ) {
             var comment = comments[ i ];
-            if ( comment.value.indexOf( 'TODO' ) >= 0 && comment.value.indexOf( 'https://github.com/phetsims/' ) === -1 ) {
-              context.report( {
-                node: comment,
-                loc: comment.loc.start,
-                message: 'TODO should have an issue: ' + comment.value
-              } );
+
+            if ( comment.value.indexOf( 'TODO' ) >= 0 ) {
+
+              // '#' followed by any number of digits
+              var missingIssueNumber = comment.value.search( /#\d+/ ) === -1;
+              var missingLink = comment.value.indexOf( 'https://github.com/phetsims/' ) === -1;
+
+              if ( missingLink && missingIssueNumber ) {
+                context.report( {
+                  node: comment,
+                  loc: comment.loc.start,
+                  message: 'TODO should have an issue: ' + comment.value
+                } );
+              }
             }
           }
         }

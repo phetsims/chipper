@@ -6,12 +6,13 @@
  *
  * Usage:
  * grunt report-third-party
- * // then push the updated license file to sherpa
+ * // then push sherpa/third-party-licenses.md
  *
  * Third party entries are parsed from the HTML files for all simulations published on the PhET website.
  * See getLicenseEntry.js for documentation of the fields in the entries.
  *
- * Copy the local-auth-code key value from phet-server:/etc/tomcat/context.xml into the value for websiteAuthorizationCode in ~/.phet/build-local.json
+ * Copy the local-auth-code key value from phet-server:/etc/tomcat/context.xml into the value for
+ * websiteAuthorizationCode in ~/.phet/build-local.json
  *
  * @author Sam Reid
  */

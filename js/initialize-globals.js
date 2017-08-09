@@ -110,10 +110,16 @@
     },
 
     /**
-     * When a simulation is run from the PhET app, it should set this flag. It alters statistics that the sim sends
+     * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
      */
     'phet-app': { type: 'flag' },
+
+    /**
+     * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
+     * to Google Analytics and potentially other sources in the future.
+     */
+    'phet-android-app': { type: 'flag' },
 
     /**
      * Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
@@ -124,6 +130,11 @@
      * Enables logging for game-up-camera, see gameUp
      */
     gameUpLogging: { type: 'flag' },
+
+    /**
+     * Enables support for Legends of Learning platform, including broadcasting 'init' and responding to pause/resume.
+     */
+    legendsOfLearning: { type: 'flag' },
 
     /**
      * test with a specific locale
@@ -137,6 +148,11 @@
      * plays event logging back from the server, provide an optional name for the session
      */
     playbackInputEventLog: { type: 'flag' },
+
+    /**
+     * Fires a post-message when the sim is about to change to another URL
+     */
+    postMessageOnBeforeUnload: { type: 'flag' },
 
     /**
      * passes errors to test-sims
@@ -266,7 +282,7 @@
      *
      * xss: tests for security issues related to https://github.com/phetsims/special-ops/issues/18,
      *   and running a sim should NOT redirect to another page. Preferably should be used for built versions or
-     *   other versions where assertions are not enabled (brackets can cause issues for SubSupText, etc.)
+     *   other versions where assertions are not enabled.
      *
      * none|null: the normal translated string will be shown
      *
@@ -324,14 +340,14 @@
      * It is used in string.js and sim.html.
      * @param string - the string to be mapped
      * @param stringTest - the value of the stringTest query parameter
-     * @returns {*}
+     * @returns {string}
      */
     window.phet.chipper.mapString = function( string, stringTest ) {
       return stringTest === null ? string :
              stringTest === 'double' ? string + ':' + string :
              stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
              stringTest === 'rtl' ? '\u202b\u062a\u0633\u062a (\u0632\u0628\u0627\u0646)\u202c' :
-             stringTest === 'xss' ? '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABCQEBtxmN7wAAAABJRU5ErkJggg==" onload="window.location.href=atob(\'aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==\')" />' :
+             stringTest === 'xss' ? string + '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABCQEBtxmN7wAAAABJRU5ErkJggg==" onload="window.location.href=atob(\'aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==\')" />' :
              stringTest === 'none' ? string :
 
                //In the fallback case, supply whatever string was given in the query parameter value
@@ -386,6 +402,14 @@
           url: window.location.href,
           message: message,
           stack: stack
+        } ), '*' );
+      } );
+    }
+
+    if ( phet.chipper.queryParameters.postMessageOnBeforeUnload ) {
+      window.addEventListener( 'beforeunload', function( e ) {
+        window.parent && window.parent.postMessage( JSON.stringify( {
+          type: 'beforeUnload'
         } ), '*' );
       } );
     }

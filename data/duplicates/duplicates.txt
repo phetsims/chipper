@@ -1028,7 +1028,7 @@ info: Found 475 exact clones with 9125 duplicated lines in 434 files
                                                                                
  31 │ 38 │   // phet-io modules
                                                            
- 32 │ 39 │   var TNode = require( 'ifphetio!PHET_IO/types/scenery/nodes/TNode' );
+ 32 │ 39 │   var TNode = require( 'SCENERY/nodes/TNode' );
          
  33 │ 40 │ 
                                                                                

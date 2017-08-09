@@ -56,6 +56,11 @@ module.exports = function( grunt ) {
    */
   function getPhetLibs( packageJSON, buildJSON, brand ) {
 
+    // If working with a wrapper, then just use the wrapper's phetLibs
+    if ( packageJSON.isWrapper && packageJSON.wrapper.phetLibs ) {
+      return packageJSON.wrapper.phetLibs.concat( packageJSON.name );
+    }
+
     // start with package.json
     var phetLibs = packageJSON.phet.phetLibs || [];
 
@@ -65,7 +70,11 @@ module.exports = function( grunt ) {
     // add common and brand-specific entries from build.json
     [ 'common', brand ].forEach( function( id ) {
       if ( buildJSON[ id ] && buildJSON[ id ].phetLibs ) {
-        phetLibs = phetLibs.concat( buildJSON[ id ].phetLibs );
+
+        // We don't want common sim repos for wrappers
+        if ( !packageJSON.isWrapper || ( packageJSON.isWrapper && id !== 'common' ) ) {
+          phetLibs = phetLibs.concat( buildJSON[ id ].phetLibs );
+        }
       }
     } );
 
@@ -83,6 +92,11 @@ module.exports = function( grunt ) {
    * @returns {string[]}
    */
   function getPreload( packageJSON, buildJSON, brand ) {
+
+    // No preload needed for wrappers
+    if ( packageJSON.isWrapper ) {
+      return [];
+    }
 
     var preload = [];
 
@@ -117,6 +131,12 @@ module.exports = function( grunt ) {
    * @returns {string[]} - empty array if there are no preloads
    */
   function getPreloadForBrand( buildJSON, brand ) {
+
+    // No preload needed for wrappers
+    if ( packageJSON.isWrapper ) {
+      return [];
+    }
+
     var preload = [];
 
     // add brand-specific preloads from build.json
@@ -310,7 +330,9 @@ module.exports = function( grunt ) {
     requiresJQuery: packageJSON.phet.requiresJQuery, // {boolean} [requiresJQuery] - If true, the built JS will check for jQuery's presence on startup.
     assignGlobals: packageJSON.phet.assignGlobals, // {Object} assignGlobals - If isJSOnly is true, this should be an object map from window globals
                                                    // as {string}s to the require.js names as {string}s, e.g. ```window.key = require( 'value' );```
-    finalizeJS: packageJSON.phet.finalizeJS // {string} [finalizeJS] - If provided, this JS string will be inserted at the end of the main IIFE.
+    finalizeJS: packageJSON.phet.finalizeJS, // {string} [finalizeJS] - If provided, this JS string will be inserted at the end of the main IIFE.
+
+    isWrapper: packageJSON.isWrapper // true if grunt is working with a wrapper, rather than a sim.
   };
 
   // These fields depend on other entries in buildConfig.

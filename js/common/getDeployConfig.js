@@ -62,7 +62,7 @@ var assert = require( 'assert' );
 
     var brand = getBrand( grunt, buildLocalJSON );
 
-    var deployConfig = {
+    return {
       // These fields have no dependencies on other entries in deployConfig.
       name: packageJSON.name,
       version: getVersionForBrand( brand, packageJSON.version ),
@@ -72,10 +72,11 @@ var assert = require( 'assert' );
       devUsername: buildLocalJSON.devUsername,
       devDeployServer: buildLocalJSON.devDeployServer || 'spot.colorado.edu',
       devDeployPath: buildLocalJSON.devDeployPath || '/htdocs/physics/phet/dev/html/',
-      productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu'
+      productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu',
+      wrapperDeployServer: buildLocalJSON.wrapperDeployServer || 'spot.colorado.edu',
+      wrapperDeployPath: buildLocalJSON.wrapperDeployPath || '/htdocs/physics/phet/dev/wrapper/',
+      wrapperUsername: buildLocalJSON.devUsername
     };
-
-    return deployConfig;
   }
 
   // browser require.js-compatible definition

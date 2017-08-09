@@ -223,6 +223,16 @@
       localizedName: 'English',
       direction: 'ltr'
     },
+    en_CA: {
+      name: 'English, Canada',
+      localizedName: 'English (Canada)',
+      direction: 'ltr'
+    },
+    en_GB: {
+      name: 'English, United Kingdom',
+      localizedName: 'English (United Kingdom)',
+      direction: 'ltr'
+    },
     eo: {
       name: 'Esperanto',
       localizedName: 'Esperanto',

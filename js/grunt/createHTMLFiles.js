@@ -160,7 +160,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   }
 
   grunt.log.debug( 'Constructing HTML from template' );
-  var html = grunt.file.read( '../chipper/templates/sim.html' );
+  var htmlTemplate = grunt.file.read( '../chipper/templates/sim.html' );
 
   function replaceConstants( string, insertScripts ) {
     // Strip out carriage returns (if building on Windows), then add in our own after the MOTW (Mark Of The Web).
@@ -194,7 +194,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     return string;
   }
 
-  html = replaceConstants( html, true );
+  var html = replaceConstants( htmlTemplate, true );
 
   function replaceLocaleConstants( string, locale, includeAllLocales ) {
 
@@ -221,11 +221,32 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     return string;
   }
 
+  /**
+   * This function makes sure that the built file looks as expected. It checks that there aren't any template strings
+   * still in the build file.
+   * @param {String} html
+   */
+  function sanityCheckBuiltFile( html ) {
+
+    // Match template strings that look like "{{I_AM-A.TEMPLATE}}".
+    var templateHTMLTemplateStrings = htmlTemplate.match( /{{[A-z\-._ ]{1,100}}}/g );
+
+    if ( templateHTMLTemplateStrings ) {
+      templateHTMLTemplateStrings.forEach( function( templateString ) {
+        if ( html.indexOf( templateString ) >= 0 ) {
+          grunt.fail.warn( 'Template string detected in built file:  ' + templateString );
+        }
+      } );
+    }
+  }
+
   // Create locale-specific HTML files
   for ( var i = 0; i < buildConfig.locales.length; i++ ) {
     var locale = buildConfig.locales[ i ];
 
     var localeHTML = replaceLocaleConstants( html, locale, false );
+
+    sanityCheckBuiltFile( localeHTML );
 
     // phet-io simulations end in "phetio", see https://github.com/phetsims/phet-io/issues/288
     var filename = 'build/' + buildConfig.name + '_' + locale;

@@ -20,9 +20,10 @@ var TEST_DIR_NAME = 'deploy-dev-tests';
 
 /**
  * @param grunt - the grunt instance
+ * @param buildConfig
  * @param callback - optional callback to run when finished, defaults to grunt.task.current.async()
  */
-module.exports = function( grunt, callback ) {
+module.exports = function( grunt, buildConfig, callback ) {
 
   // grunt options
   var mkdir = !!grunt.option( 'mkdir' ); // true = create the sim dir and .htaccess file before copying the version directory
@@ -48,7 +49,8 @@ module.exports = function( grunt, callback ) {
   // If there is a protected directory and we are copying to spot, include the .htaccess file
   // This is for PhET-iO simulations, to protected the password protected wrappers, see
   // https://github.com/phetsims/phet-io/issues/641
-  if ( grunt.file.isDir( ChipperConstants.BUILD_DIR ) && deployConfig.devDeployServer === 'spot.colorado.edu' ) {
+  if ( buildConfig.brand === 'phet-io' && grunt.file.isDir( ChipperConstants.BUILD_DIR ) &&
+       deployConfig.devDeployServer === 'spot.colorado.edu' ) {
     grunt.file.copy( '../phet-io/templates/spot/.htaccess', ChipperConstants.BUILD_DIR + '/wrappers/.htaccess' );
   }
 
@@ -63,12 +65,29 @@ module.exports = function( grunt, callback ) {
    * scp file to dev server, and call commitAndPushDependenciesJSON if not testing
    */
   var scp = function() {
-    deployUtil.exec( grunt, 'scp -r ' + ChipperConstants.BUILD_DIR + ' ' + deployConfig.devUsername + '@' + server + ':' + versionPath, function() {
-      if ( test ) {
-        finish();
+    // Check if directory exists
+    deployUtil.exec( grunt, 'ssh ' + deployConfig.devUsername + '@' + server + ' \'file ' + versionPath + '\'', function( err, stdout, stderr ) {
+      // If the directory does not exist proceed
+      if ( stdout.indexOf('No such file or directory') >= 0 ) {
+        // create remote version directory if it does not exist
+        deployUtil.exec( grunt, 'ssh ' + deployConfig.devUsername + '@' + server + ' \'mkdir -p ' + versionPath + '\'', function() {
+          // add group write permissions to the remote version directory if they don't exist
+          deployUtil.exec( grunt, 'ssh ' + deployConfig.devUsername + '@' + server + ' \'chmod -R g+w ' + versionPath + '\'', function() {
+            // copy the local build directory contents to the remote version directory
+            deployUtil.exec( grunt, 'scp -r ' + ChipperConstants.BUILD_DIR + '/* ' + deployConfig.devUsername + '@' + server + ':' + versionPath, function() {
+              if ( test ) {
+                finish();
+              }
+              else {
+                deployUtil.commitAndPushDependenciesJSON( grunt, finish );
+              }
+            } );
+          } );
+        } );
       }
+        // If the directory does exist then bail
       else {
-        deployUtil.commitAndPushDependenciesJSON( grunt, finish );
+        grunt.fail.fatal('Directory ' + server + ':' + versionPath + ' already exists.  If you intend to replace the content then remove the directory manually from ' + server + '.' );
       }
     } );
   };

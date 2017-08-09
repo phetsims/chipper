@@ -44,6 +44,18 @@
     },
 
     /**
+     * Coerces a repository name to a sim title, eg, 'simula-rasa' -> 'Simula Rasa'
+     * @param {string} simName - the input string like 'build-an-atom'
+     * @returns {string}
+     */
+    toTitle: function toTitle( simName ) {
+      var tmpString = simName.replace( /-(.)/g, function( match, group1 ) {
+        return ' ' + group1.toUpperCase();
+      } );
+      return tmpString.substring( 0, 1 ).toUpperCase() + tmpString.substring( 1 );
+    },
+
+    /**
      * Appends spaces to a string
      *
      * @param {string} str - the input string

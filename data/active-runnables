@@ -17,11 +17,14 @@ chains
 charges-and-fields
 circuit-construction-kit-black-box-study
 circuit-construction-kit-dc
+circuit-construction-kit-dc-virtual-lab
 color-vision
 concentration
+coulombs-law
 curve-fitting
 energy-forms-and-changes
 energy-skate-park-basics
+equality-explorer
 estimation
 example-sim
 expression-exchange
@@ -30,11 +33,15 @@ fluid-pressure-and-flow
 forces-and-motion-basics
 fraction-comparison
 fraction-matcher
+fractions-intro
 friction
 function-builder
+function-builder-basics
+function-finder
 gene-expression-essentials
 graphing-lines
 graphing-quadratics
+graphing-slope-intercept
 gravity-and-orbits
 gravity-force-lab
 gravity-force-lab-basics
@@ -54,6 +61,7 @@ molecule-shapes-basics
 molecules-and-light
 neuron
 ohms-law
+optics-lab
 pendulum-lab
 ph-scale
 ph-scale-basics
@@ -71,6 +79,7 @@ states-of-matter
 states-of-matter-basics
 sun
 trig-tour
+twixt
 under-pressure
 unit-rates
 vegas

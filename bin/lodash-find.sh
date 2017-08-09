@@ -13,7 +13,7 @@ CHIPPER_BIN=`dirname "${BASH_SOURCE[0]}"`
 ROOT_DIR=${CHIPPER_BIN}/../..
 cd ${ROOT_DIR}
 
-sourceFiles=`find . -name "*.js" -print | grep -v node_modules | grep -v sherpa | grep -v "scenery/snapshots" | grep -v "litmus/jsmol"`
+sourceFiles=`find . -name "*.js" -print | grep -v node_modules | grep -v sherpa | grep -v "scenery/snapshots"`
 
 for sourceFile in ${sourceFiles}
 do

@@ -33,11 +33,10 @@
   /**
    * @param {string} brand - the name of the brand
    * @param {string} version - the version string in package.json
-   * @return {string} the updated version name
+   * @returns {string} the updated version name
    */
   return function( brand, version ) {
 
-    // RED ALERT: this is duplicated in packageJSON.js
     if ( brand === 'phet-io' ) {
 
       // Insert phetio into the version name
