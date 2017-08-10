@@ -177,7 +177,7 @@ function toHTML( json ) {
  *    nextTypeName: . . . ,
  *    }
  *
- * Parameterized types like TTandemEmitter and TFunctionWrapper are hard coded because they have different constructors.
+ * Parameterized types like TEmitter and TFunctionWrapper are hard coded because they have different constructors.
  * @param ttypeFiles
  */
 function getTypeJSON( ttypeFiles ) {
@@ -206,10 +206,10 @@ function getTypeJSON( ttypeFiles ) {
         result[ instantiatedType.typeName ] = instantiatedType;
       }
 
-      // Hack around the parametrized nature of TTandemEmitter
-      else if ( filename.indexOf( 'TTandemEmitter' ) >= 0 ) {
-        var tandemEmitterType = TType( [ TObject ] );
-        result[ tandemEmitterType.typeName ] = tandemEmitterType;
+      // Hack around the parametrized nature of TEmitter
+      else if ( filename.indexOf( 'TEmitter' ) >= 0 ) {
+        var emitterType = TType( [ TObject ] );
+        result[ emitterType.typeName ] = emitterType;
       }
 
       else {

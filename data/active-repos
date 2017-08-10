@@ -26,6 +26,7 @@ chipper
 circuit-construction-kit-common
 circuit-construction-kit-black-box-study
 circuit-construction-kit-dc
+circuit-construction-kit-dc-virtual-lab
 color-vision
 concentration
 curve-fitting
@@ -83,7 +84,6 @@ ph-scale
 ph-scale-basics
 phet-ios-app
 phet-android-app
-phet-cafepress
 phet-core
 phet-info
 phetcommon
@@ -110,6 +110,7 @@ sherpa
 shred
 simula-rasa
 slater
+smithers
 states-of-matter
 states-of-matter-basics
 sugar-and-salt-solutions

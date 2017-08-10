@@ -10,29 +10,112 @@
 'use strict';
 
 // modules
-var fs = require( 'fs' );
 var copyDirectory = require( './copyDirectory' );
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 var ChipperConstants = require( '../../common/ChipperConstants' );
 var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
 // constants
-var WRAPPER_PREFIX = 'phet-io-wrapper-';
+var DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
+var LIB_FILES = [
+  '../query-string-machine/js/QueryStringMachine.js',
+  '../phet-io-wrappers/common/js/SimIFrameClient.js',
+  '../phet-io-wrappers/common/js/WrapperTypes.js',
+  '../phet-io-wrappers/common/js/assert.js',
+  '../phet-io-wrappers/common/js/WrapperUtils.js' ];
 
-module.exports = function( grunt, buildConfig ) {
+var LIB_DIR = ChipperConstants.BUILD_DIR + '/lib';
+var LIB_OUTPUT_FILE = 'phet-io.js';
+var LIB_COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Boulder\n' +
+                           '// This PhET-iO file requires a license\n' +
+                           '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
+                           '// For licensing, please contact phethelp@colorado.edu';
+
+
+/**
+ * Given the list of lib files, apply a filter function to them. Then minify them and consolidate into a single string.
+ * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
+
+ * @param grunt
+ * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
+ *                            has arguments like "function(abspath, contents)"
+ */
+var handleLib = function( grunt, filter ) {
 
   // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
   var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
 
-  // output the SimIFrameClient.js and WrapperUtils.js to the top level lib (not password-protected), see https://github.com/phetsims/phet-io/issues/353
-  grunt.file.mkdir( ChipperConstants.BUILD_DIR + '/lib' );
+  grunt.file.mkdir( LIB_DIR );
 
+  var consolidated = '';
+  LIB_FILES.forEach( function( libFile ) {
+    var contents = grunt.file.read( libFile );
+
+    var filteredContents = filter && filter( libFile, contents );
+
+    // The filter should return null if nothing changes
+    consolidated += filteredContents ? filteredContents : contents;
+  } );
+
+  var minified = uglify.minify( consolidated, {
+    fromString: true,
+    mangle: true,
+    output: {
+      inline_script: true, // escape </script
+      beautify: false
+    },
+    compress: {
+      global_defs: {}
+    }
+  } ).code;
+
+  grunt.file.write( LIB_DIR + '/' + LIB_OUTPUT_FILE, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
+};
+
+/**
+ * Copy the appropriate resources and files to the build folder needed for the develeopment guide.
+ * @param grunt
+ * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
+ *                            has arguments like "function(abspath, contents)"
+ */
+var handleDevGuide = function( grunt, filter ) {
+  var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/font-awesome-4.5.0/css/font-awesome.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/jquery-1.12.3.min.js', 'https://code.jquery.com/jquery-1.12.3.min.js' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/css/', './css/' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/', './js/' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/styles/tomorrow-night-bright.css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow-night-bright.min.css' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/highlight.js', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/favicon.ico', './favicon.ico' );
+
+  // Remove the navbar and footer div tags
+  var firstNavbarLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="navbar"' );
+  devguideHTML = firstNavbarLine ? ChipperStringUtils.replaceAll( devguideHTML, firstNavbarLine, '' ) : devguideHTML;
+
+  var firstFooterLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="footer"' );
+  devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
+
+  grunt.file.write( ChipperConstants.BUILD_DIR + '/docs/devguide.html', devguideHTML );
+  copyDirectory( grunt, '../phet-io-website/root/assets/css', ChipperConstants.BUILD_DIR + '/docs/css', filter );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io.js' );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io-ga.js' );
+  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + ChipperConstants.BUILD_DIR + '/docs/favicon.ico' );
+
+};
+
+module.exports = function( grunt, buildConfig ) {
+
+  // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
+  // involves lots of hard coded copy replace of template strings and marker values.
   var filterWrapper = function( abspath, contents ) {
     var originalContents = contents + '';
 
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', buildConfig.name );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', buildConfig.version );
+      contents = ChipperStringUtils.replaceAll( contents, 'isBuilt: false', 'isBuilt: true' );
     }
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
@@ -113,8 +196,8 @@ module.exports = function( grunt, buildConfig ) {
 
       // For info about phetio.js, see the end of this file
       contents = ChipperStringUtils.replaceAll( contents,
-        '<!--{{phetio.js}}-->',
-        '<script type="text/javascript" src="../../lib/phetio.js"></script>'
+        '<!--{{phet-io.js}}-->',
+        '<script type="text/javascript" src="../../lib/' + LIB_OUTPUT_FILE + '"></script>'
       );
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
@@ -136,101 +219,41 @@ module.exports = function( grunt, buildConfig ) {
     }
   };
 
+  // Load the master list of all wrappers
+  var wrappers = grunt.file.read( '../chipper/data/wrappers' ).toString().split( /\r?\n/ );
 
-  /**
-   * Dynamically generate a list of all current wrappers that have a dedicated github repository so that we can add them
-   * to the build.
-   * @returns {string[]} - a list of wrapper names, i.e. the repo 'phet-io-wrapper-classroom-activity' will return 'classroom-activity'
-   */
-  function findAllDedicatedWrapperRepos() {
-    var wrapperRepos = [];
-    var repos = fs.readdirSync( '../' );
-    repos.forEach( function( repo ) {
+  // Files and directories from wrapper folders that we don't want to copy
+  var wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
 
-      // If the repo begins with the wrapper prefix
-      if ( repo.indexOf( WRAPPER_PREFIX ) === 0 ) {
-        wrapperRepos.push( repo.split( WRAPPER_PREFIX )[ 1 ] );
-      }
-    } );
-    return wrapperRepos;
-  }
-
-  var wrapperSuiteBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json' ];
-
-  // Files from the phet-io-wrappers repo
-  var wrappersFromSuite = fs.readdirSync( '../phet-io-wrappers' );
-
-  // Copy each wrapper from the wrapper suite
-  wrappersFromSuite.forEach( function( repo ) {
-
-    // Don't copy over anything from blacklist
-    if ( wrapperSuiteBlacklist.indexOf( repo ) < 0 ) {
-      copyDirectory( grunt, '../phet-io-wrappers/' + repo, ChipperConstants.BUILD_DIR + '/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
-    }
+  var libFileNames = LIB_FILES.map( function( filePath ) {
+    var parts = filePath.split( '/' );
+    return parts[ parts.length - 1 ];
   } );
 
-  // a list of the rest of the phet-io wrappers that aren't in the phet-io-wrappers suite
-  var dedicatedWrapperRepos = findAllDedicatedWrapperRepos();
+  // Don't copy over the files that are in the lib file, this way we can catch wrapper bugs that are not pointing to the lib.
+  var fullBlacklist = wrappersBlacklist.concat( libFileNames );
 
-  dedicatedWrapperRepos.forEach( function( repo ) {
-    // Copy each wrapper's content into a dedicated folder under 'build/wrappers.' As a sibling to other wrappers in the suite
-    copyDirectory( grunt, '../' + WRAPPER_PREFIX + repo, ChipperConstants.BUILD_DIR + '/wrappers/' + repo, filterWrapper, { blacklist: wrapperSuiteBlacklist } );
+  // Make sure to copy the phet-io-wrappers common wrapper code too.
+  wrappers.push( 'phet-io-wrappers/common' );
+  wrappers.forEach( function( wrapper ) {
+
+    var wrapperParts = wrapper.split( '/' );
+
+    // either take the last path part, or take the first (repo name) and remove the wrapper prefix
+    var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
+
+    // Copy the wrapper into the build dir /wrappers/, exclude the blacklist, and minify the js code
+    copyDirectory( grunt, '../' + wrapper, ChipperConstants.BUILD_DIR + '/wrappers/' + wrapperName, filterWrapper, {
+      blacklist: fullBlacklist,
+      minifyJS: true
+      } );
   } );
 
+  // Copy over the dev guide and the needed dependencies
+  handleDevGuide( grunt );
 
-  var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/font-awesome-4.5.0/css/font-awesome.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/jquery-1.12.3.min.js', 'https://code.jquery.com/jquery-1.12.3.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/css/', './css/' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/', './js/' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/styles/tomorrow-night-bright.css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow-night-bright.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/highlight.js', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/favicon.ico', './favicon.ico' );
-
-  // Remove the navbar and footer div tags
-  var firstNavbarLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="navbar"' );
-  devguideHTML = firstNavbarLine ? ChipperStringUtils.replaceAll( devguideHTML, firstNavbarLine, '' ) : devguideHTML;
-
-  var firstFooterLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="footer"' );
-  devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
-
-  grunt.file.write( ChipperConstants.BUILD_DIR + '/docs/devguide.html', devguideHTML );
-  copyDirectory( grunt, '../phet-io-website/root/assets/css', ChipperConstants.BUILD_DIR + '/docs/css', filterWrapper );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io-ga.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + ChipperConstants.BUILD_DIR + '/docs/favicon.ico' );
-
-
-  // Minify phet libraries into 'lib/phetio.js'
-  var DESTINATION_PATH = ChipperConstants.BUILD_DIR + '/lib';
-  var OUTPUT_FILE = 'phetio.js';
-  var COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Boulder\n' +
-                         '// This PhET-iO file requires a license\n' +
-                         '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
-                         '// For licensing, please contact phethelp@colorado.edu';
-
-  var LIB_FILES = [
-    '../query-string-machine/js/QueryStringMachine.js',
-    '../phet-io-wrappers/common/js/SimIFrameClient.js',
-    '../phet-io-wrappers/common/js/WrapperTypes.js',
-    '../phet-io-wrappers/common/js/assert.js',
-    '../phet-io-wrappers/common/js/WrapperUtils.js' ];
-
-
-  var minified = uglify.minify( LIB_FILES, {
-    mangle: true,
-    output: {
-      inline_script: true, // escape </script
-      beautify: false
-    },
-    compress: {
-      global_defs: {}
-    }
-  } ).code;
-
-  grunt.file.write( DESTINATION_PATH + '/' + OUTPUT_FILE, COPYRIGHT_HEADER + '\n\n' + minified );
+  // Create the lib file that is minified and publicly available under the /lib folder of the build
+  handleLib( grunt, filterWrapper );
 
   // Generate API Documentation
   generatePhETIOAPIDocs( grunt, buildConfig );

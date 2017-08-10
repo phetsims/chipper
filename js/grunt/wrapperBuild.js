@@ -34,7 +34,10 @@ module.exports = function( grunt, buildConfig ) {
     }
     copyDirectory( grunt, '../' + repo, ChipperConstants.BUILD_DIR + '/' + repo + '/', null, {
       blacklist: WRAPPER_BLACKLIST, // List of files to not copy
-      minifyJS: true, // We want to minify the built wrapper
+
+      // TODO: We want to minify the built wrapper, but currently it is causing an error,
+      // see https://github.com/phetsims/phet-io-wrapper-sonification/issues/19#event-1153696188
+      minifyJS: true,
       licenseToPrepend: '// Copyright 2002-2017, University of Colorado Boulder\n' +
                         '// This PhET-iO file requires a license\n' +
                         '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +

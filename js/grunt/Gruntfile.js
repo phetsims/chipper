@@ -43,6 +43,8 @@ var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDa
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
+var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
+var insertRequireStatement = require( '../../../chipper/js/grunt/insertRequireStatement' );
 var wrapperDeploy = require( '../../../chipper/js/grunt/wrapperDeploy' );
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 
@@ -292,7 +294,16 @@ module.exports = function( grunt ) {
       bumpVersion( grunt );
     } );
 
-  grunt.registerTask( 'next-dev', 'Bumps the version, commits, builds and deploys dev', [
+  grunt.registerTask( 'ensure-dev-version', 'Makes sure the version contains "dev", for internal use only.', function() {
+    if ( buildConfig.version.indexOf( 'dev' ) === -1 ) {
+      grunt.fail.fatal( 'cannot deploy-next-dev unless the version number is a dev version' );
+    }
+  } );
+
+  grunt.registerTask( 'deploy-next-dev', 'Bumps the version, commits, builds and deploys dev', [
+
+    // Make sure it is a dev version
+    'ensure-dev-version',
 
     // Build & lint it to make sure there are no problems
     'build',
@@ -320,10 +331,9 @@ module.exports = function( grunt ) {
 
   // see reportThirdParty.js
   grunt.registerTask( 'report-third-party',
-    'This task is used to create a report of third-party resources (code, ' +
-    'images, audio, etc) used in a set of PhET simulations by reading the ' +
-    'license information in built HTML files. After running this task, you ' +
-    'must push sherpa/third-party-licenses.md',
+    'Creates a report of third-party resources (code, images, audio, etc) used in the published PhET simulations by ' +
+    'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
+    'After running this task, you must push sherpa/third-party-licenses.md.',
     function() {
       reportThirdParty( grunt );
     } );
@@ -402,4 +412,18 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'build-wrapper', 'Build PhET-iO wrapper', optionalTasks.concat( [ 'clean', 'wrapper-basic-build' ] ) );
+
+  grunt.registerTask( 'sort-require-statements', 'Sort the require statements for all *.js files in the js/ directory. ' +
+                                                 'This assumes the code is formatted  with IDEA code style and that ' +
+                                                 'require statements take one line each (not split across lines).  The ' +
+                                                 'files are overwritten.\n' +
+                                                 '--file (optional) absolute path of a single file to sort', function() {
+    sortRequireStatements( grunt, grunt.option( 'file' ) );
+  } );
+
+  grunt.registerTask( 'insert-require-statement', 'Insert a require statement into the specified file.\n' +
+                                                  '--file absolute path of a single file to sort\n' +
+                                                  '--name to be required', function() {
+    insertRequireStatement( grunt, buildConfig );
+  } );
 };
