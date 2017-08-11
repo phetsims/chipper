@@ -16,12 +16,9 @@ function launchChrome() {
   });
 }
 
+module.exports = function(simName, done) {
 
-
-
-module.exports = function(done) {
-
-  (async function() { // eslint-disable-line
+  (async function() {
 
     var chrome = await launchChrome();
     var protocol = await    CDP( { port: chrome.port } );
@@ -31,7 +28,7 @@ module.exports = function(done) {
     var { Page, Runtime } = protocol;
     await    Promise.all( [ Page.enable(), Runtime.enable() ] );
 
-    Page.navigate( { url: 'http://localhost/phet-io-wrappers/documentation/documentation.html?sim=faradays-law&ea' } );
+    Page.navigate( { url: 'http://localhost/phet-io-wrappers/documentation/documentation.html?sim=' + simName + '&ea' } );
 
     // Wait for window.onload before doing stuff.
     Page.loadEventFired( async function(){
@@ -42,7 +39,7 @@ module.exports = function(done) {
         isLoaded = isLoadedResult.result.value;
       }
 
-      var result = await Runtime.evaluate( { expression: 'window.getInstances();' } );
+      var result = await Runtime.evaluate( { expression: 'window.getDocumentation();' } );
 
       done(  result.result.value) ;
       protocol.close();
@@ -51,6 +48,7 @@ module.exports = function(done) {
   } )();
 };
 
+// Run from the command line
 if ( require.main === module ) {
 
   module.exports(function( result){ console.log(result);});

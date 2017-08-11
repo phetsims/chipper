@@ -10,11 +10,46 @@
 
 // modules
 var fs = require( 'fs' );
-var testChromeHeadless = require( '../../../js/grunt/phet-io/test-chrome-headless' ); // eslint-disable-line
+var testChromeHeadless = require( '../../../js/grunt/phet-io/testChromeHeadless' ); // eslint-disable-line
 
-
+// constants
 var DOCUMENTATION_PATH = '../chipper/templates/';
 var DOCUMENTATION_FILENAME = 'phet-io-documentation.html';
+
+module.exports = function( grunt, buildConfig ) {
+
+  var phetioDocumentationTemplateText = fs.readFileSync( DOCUMENTATION_PATH + DOCUMENTATION_FILENAME ).toString();
+
+// Add the phet query parameters to the template
+  var phetQueryParameters = getQueryParameters( '../chipper/js/initialize-globals.js', 'QUERY_PARAMETERS_SCHEMA = ' );
+  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHET_QUERY_PARAMETERS}}', phetQueryParameters );
+
+// Add the phet-io query parameters to the template
+  var phetioQueryParameters = getQueryParameters( '../phet-io/js/phet-io-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
+  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
+
+
+  var done = grunt.task.current.async();
+  testChromeHeadless( buildConfig.name, function( tandemsAndTypesString ) {
+    var tandemInstancesAndTypes = JSON.parse( tandemsAndTypesString );
+
+    var types = tandemInstancesAndTypes.types;
+    var htmlTypes = typesToHTML( types );
+    phetioDocumentationTemplateText =
+      phetioDocumentationTemplateText.replace( '{{TYPES}}', htmlTypes );
+
+
+    var instances = tandemInstancesAndTypes.instances;
+    phetioDocumentationTemplateText =
+      phetioDocumentationTemplateText.replace( '{{TANDEMS}}', instancesToHTML( instances ) );
+
+
+    // Write the new documentation to html
+    grunt.file.write( 'build/docs/' + DOCUMENTATION_FILENAME, phetioDocumentationTemplateText );
+    grunt.log.debug( 'Wrote phet-io documentation file.' );
+    done();
+  } );
+};
 
 /**
  * Returns the string of the query parameter schema that you are getting
@@ -32,29 +67,59 @@ function getQueryParameters( filename, marker ) {
   return initGlobalsText.substring( objectStart, objectEnd );
 }
 
-module.exports = function( grunt, buildConfig ) {
-
-  var phetioDocumentationTemplateText = fs.readFileSync( DOCUMENTATION_PATH + DOCUMENTATION_FILENAME ).toString();
-
-// Add the phet query parameters to the template
-  var phetQueryParameters = getQueryParameters( '../chipper/js/initialize-globals.js', 'QUERY_PARAMETERS_SCHEMA = ' );
-  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHET_QUERY_PARAMETERS}}', phetQueryParameters );
-
-// Add the phet-io query parameters to the template
-  var phetioQueryParameters = getQueryParameters( '../phet-io/js/phet-io-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
-  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
-
-
-  var done = grunt.task.current.async();
-  testChromeHeadless( function( tandemsAndTypesString ) {
-
-    var tandemsAndTypes = JSON.parse( tandemsAndTypesString );
-
-    phetioDocumentationTemplateText =
-      phetioDocumentationTemplateText.replace( '{{TANDEMS}}', JSON.stringify( tandemsAndTypes, null, 2 ));
-
-    // Write the new documentation to html
-    grunt.file.write( 'build/docs/' + DOCUMENTATION_FILENAME, phetioDocumentationTemplateText );
-    done();
+/**
+ * @param {Object} json
+ * @returns {string} - the htmlified string
+ */
+function typesToHTML( json ) {
+  var html = '';
+  var types = _.sortBy( _.keys( json ), function( key ) {
+    return key;
   } );
-};
+  for ( var i = 0; i < types.length; i++ ) {
+
+    var typeName = types[ i ];
+    var typeObject = json[ typeName ];
+    var methods = '';
+    var sortedMethodNames = _.sortBy( _.keys( typeObject.methods ), function( key ) {
+      return key;
+    } );
+    for ( var k = 0; k < sortedMethodNames.length; k++ ) {
+      var methodName = sortedMethodNames[ k ];
+      var method = typeObject.methods[ methodName ];
+      var params = method.parameterTypes;
+      methods += '<DT>' + methodName + ': (' + params + ') &#10142; ' + method.returnType + '</DT>' +
+                 '<DD>' + method.documentation + '</DD>';
+    }
+    var eventsString = typeObject.events ? '<span>events: ' + ( typeObject.events || '' ) + '</span>' : '';
+
+    var supertype = typeObject.supertype;
+    html = html + '<h5 class="typeName" id="phetioType' + typeName + '">' + typeName + ' ' +
+           (supertype ? '(extends <a class="supertypeLink" href="#phetioType' + supertype + '">' + supertype + '</a>)' : '') +
+           '</h5>' +
+           '<div class="typeDeclarationBody">' +
+           '<span>' + typeObject.documentation + '</span><br>' +
+           eventsString +
+           '<DL>' + methods + '</DL></div>';
+  }
+  return html;
+}
+
+function instancesToHTML( json ) {
+  var html = '';
+  var types = _.sortBy( _.keys( json ), function( key ) {
+    return key;
+  } );
+  for ( var i = 0; i < types.length; i++ ) {
+    var tandem = types[ i ];
+    var typeObject = json[ tandem ];
+
+    html = html + '<h5 class="typeName" id="phetioTandem' + tandem + '">' + tandem + ' ' +
+           '</h5>' +
+           '<DT>' + typeObject.typeName + '</DT>' +
+           '<div class="typeDeclarationBody">' +
+           '<span>' + typeObject.instanceDocumentation + '</span></div><br>';
+  }
+  return html;
+
+}
