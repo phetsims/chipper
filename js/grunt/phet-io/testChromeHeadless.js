@@ -1,5 +1,11 @@
-var chromeLauncher = require('chrome-launcher');
-var CDP = require('chrome-remote-interface');
+// Copyright 2017, University of Colorado Boulder
+
+/* eslint-env node */
+'use strict';
+
+var chromeLauncher = require('chrome-launcher'); // eslint-disable-line require-statement-match
+var CDP = require('chrome-remote-interface'); // eslint-disable-line require-statement-match
+require('babel-polyfill');
 
 /**
  * Launches a debugging instance of Chrome.
@@ -18,6 +24,8 @@ function launchChrome() {
 
 module.exports = function(simName, done) {
 
+  /*
+  This code was used to create the below es5 code. It was converted using babel, see https://babeljs.io/repl/
   (async function() {
 
     var chrome = await launchChrome();
@@ -25,7 +33,8 @@ module.exports = function(simName, done) {
 
     // Extract the DevTools protocol domains we need and enable them.
     // See API docs: https://chromedevtools.github.io/devtools-protocol/
-    var { Page, Runtime } = protocol;
+    var Page= protocol.Page;
+    var Runtime = protocol.Runtime;
     await    Promise.all( [ Page.enable(), Runtime.enable() ] );
 
     Page.navigate( { url: 'http://localhost/phet-io-wrappers/documentation/documentation.html?sim=' + simName + '&ea' } );
@@ -46,10 +55,103 @@ module.exports = function(simName, done) {
       chrome.kill(); // Kill Chrome.
     });
   } )();
+  */
+
+
+  /* eslint-disable */
+
+  function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+  _asyncToGenerator(regeneratorRuntime.mark(function _callee2() {
+    var chrome;
+    var protocol;
+    var Page;
+    var Runtime;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.next = 2;
+            return launchChrome();
+
+          case 2:
+            chrome = _context2.sent;
+            _context2.next = 5;
+            return CDP({ port: chrome.port });
+
+          case 5:
+            protocol = _context2.sent;
+
+
+            // Extract the DevTools protocol domains we need and enable them.
+            // See API docs: https://chromedevtools.github.io/devtools-protocol/
+            Page = protocol.Page;
+            Runtime = protocol.Runtime;
+            _context2.next = 10;
+            return Promise.all([Page.enable(), Runtime.enable()]);
+
+          case 10:
+
+            Page.navigate({ url: 'http://localhost/phet-io-wrappers/documentation/documentation.html?sim=' + simName + '&ea' });
+
+            // Wait for window.onload before doing stuff.
+            Page.loadEventFired(_asyncToGenerator(regeneratorRuntime.mark(function _callee() {
+              var isLoaded, isLoadedResult, result;
+              return regeneratorRuntime.wrap(function _callee$(_context) {
+                while (1) {
+                  switch (_context.prev = _context.next) {
+                    case 0:
+                      isLoaded = false;
+
+                    case 1:
+                      if (!(isLoaded === false)) {
+                        _context.next = 8;
+                        break;
+                      }
+
+                      _context.next = 4;
+                      return Runtime.evaluate({ expression: 'window.isSimLoaded();' });
+
+                    case 4:
+                      isLoadedResult = _context.sent;
+
+                      isLoaded = isLoadedResult.result.value;
+                      _context.next = 1;
+                      break;
+
+                    case 8:
+                      _context.next = 10;
+                      return Runtime.evaluate({ expression: 'window.getDocumentation();' });
+
+                    case 10:
+                      result = _context.sent;
+
+
+                      done(result.result.value);
+                      protocol.close();
+                      chrome.kill(); // Kill Chrome.
+
+                    case 14:
+                    case 'end':
+                      return _context.stop();
+                  }
+                }
+              }, _callee, this);
+            })));
+
+          case 13:
+          case 'end':
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  }))();
+  /* eslint-enable */
+
 };
 
 // Run from the command line
 if ( require.main === module ) {
 
-  module.exports(function( result){ console.log(result);});
+  module.exports('faradays-law', function( result){ console.log(result);});
 }
