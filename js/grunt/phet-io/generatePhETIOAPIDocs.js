@@ -2,7 +2,11 @@
 
 /**
  * This file generates a file that holds all of the API information for the phet-io sim that is being built.
- * The output file will hold: query parameter information, type documentation (common code and the specific sim)
+ * The output file will hold:
+ * type documentation (common code and the specific sim)
+ * instance documentation (a list of tandems and their types)
+ * doc on simIFrameClient.launchSim() and its options
+ * query parameter information, (phet and phet-io)
  * @author - Michael Kauzmann (PhET Interactive Simulations)
  */
 /* eslint-env node */
@@ -21,13 +25,21 @@ module.exports = function( grunt, buildConfig, done ) {
 
   var phetioDocumentationTemplateText = fs.readFileSync( DOCUMENTATION_PATH + DOCUMENTATION_FILENAME ).toString();
 
-// Add the phet query parameters to the template
-  var phetQueryParameters = getQueryParameters( '../chipper/js/initialize-globals.js', 'QUERY_PARAMETERS_SCHEMA = ' );
+  // Add the phet query parameters to the template
+  var phetQueryParameters =
+    getSubstringFromFile( '../chipper/js/initialize-globals.js', 'QUERY_PARAMETERS_SCHEMA = ', '};' ) + '}';
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHET_QUERY_PARAMETERS}}', phetQueryParameters );
 
-// Add the phet-io query parameters to the template
-  var phetioQueryParameters = getQueryParameters( '../phet-io/js/phet-io-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
+  // Add the phet-io query parameters to the template
+  var phetioQueryParameters =
+    getSubstringFromFile( '../phet-io/js/phet-io-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ', '};' ) + '}';
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
+
+  // Add the phet-io query parameters to the template
+  var launchSimDocumentation =
+    '/**' + // hack to get the jsdoc to look nice in the final html file.
+    getSubstringFromFile( '../phet-io-wrappers/common/js/SimIFrameClient.js', '{{MARKER_FOR_GENERATING_DOCUMENTATION}}', '{{MARKER_END_FOR_GENERATING_DOCUMENTATION}}' );
+  phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{LAUNCH_SIM_DOC}}', launchSimDocumentation );
 
   getSimDocumentationFromWrapper( grunt, buildConfig.name, function( tandemsAndTypesString ) {
     var tandemInstancesAndTypes = JSON.parse( tandemsAndTypesString );
@@ -36,7 +48,6 @@ module.exports = function( grunt, buildConfig, done ) {
     var htmlTypes = typesToHTML( types );
     phetioDocumentationTemplateText =
       phetioDocumentationTemplateText.replace( '{{TYPES}}', htmlTypes );
-
 
     var instances = tandemInstancesAndTypes.instances;
     phetioDocumentationTemplateText =
@@ -50,19 +61,19 @@ module.exports = function( grunt, buildConfig, done ) {
 };
 
 /**
- * Returns the string of the query parameter schema that you are getting
+ * Returns the string from marker to endMarker. Excluding both in the final result.
  * @param filename
- * @param marker - the text to find the beginning of the query parameters
+ * @param marker - the text to find the beginning of the string
+ * @param endMarker - marker to signal the end of the string to be returned from the file.
  * @returns {string} - query parameter string
  */
-function getQueryParameters( filename, marker ) {
+function getSubstringFromFile( filename, marker, endMarker ) {
 
-  var initGlobalsText = fs.readFileSync( filename ).toString();
-  var schemaIndex = initGlobalsText.indexOf( marker );
-  var objectStart = schemaIndex + initGlobalsText.substring( schemaIndex ).indexOf( '{' );
-  var objectEnd = schemaIndex + initGlobalsText.substring( schemaIndex ).indexOf( '};' ) + 1;
+  var fileText = fs.readFileSync( filename ).toString();
+  var startIndex = fileText.indexOf( marker ) + marker.length;
+  var endIndex = startIndex + fileText.substring( startIndex ).indexOf( endMarker );
 
-  return initGlobalsText.substring( objectStart, objectEnd );
+  return fileText.substring( startIndex, endIndex );
 }
 
 /**
