@@ -103,7 +103,7 @@ function typesToHTML( json ) {
 
     // Include events if there are events, or if the `events` property is an empty array
     var eventsString = (typeObject.events && typeObject.events.length !== 0) ?
-                       '<span><b>events:</b> ' + ( typeObject.events || '' ) + '</span>' : '';
+                       '<span><b>events:</b> ' + typeObject.events.join( ', ' ) + '</span>' : '';
 
     var supertype = typeObject.supertype;
     html = html + '<h5 class="typeName" id="phetioType' + typeName + '">' + typeName + ' ' +
