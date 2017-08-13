@@ -96,15 +96,18 @@ function typesToHTML( json ) {
     for ( var k = 0; k < sortedMethodNames.length; k++ ) {
       var methodName = sortedMethodNames[ k ];
       var method = typeObject.methods[ methodName ];
-      var params = method.parameterTypes;
+      var params = method.parameterTypes.join( ', ' );
       methods += '<DT>' + methodName + ': (' + params + ') &#10142; ' + method.returnType + '</DT>' +
                  '<DD>' + method.documentation + '</DD>';
     }
-    var eventsString = typeObject.events ? '<span>events: ' + ( typeObject.events || '' ) + '</span>' : '';
+
+    // Include events if there are events, or if the `events` property is an empty array
+    var eventsString = (typeObject.events && typeObject.events.length !== 0) ?
+                       '<span><b>events:</b> ' + ( typeObject.events || '' ) + '</span>' : '';
 
     var supertype = typeObject.supertype;
     html = html + '<h5 class="typeName" id="phetioType' + typeName + '">' + typeName + ' ' +
-           (supertype ? '(extends <a class="supertypeLink" href="#phetioType' + supertype + '">' + supertype + '</a>)' : '') +
+           (supertype ? '(extends <a class="supertypeLink" href="#phetioType' + supertype.typeName + '">' + supertype.typeName + '</a>)' : '') +
            '</h5>' +
            '<div class="typeDeclarationBody">' +
            '<span>' + typeObject.documentation + '</span><br>' +
