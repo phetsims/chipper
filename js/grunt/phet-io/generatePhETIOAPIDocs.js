@@ -10,13 +10,14 @@
 
 // modules
 var fs = require( 'fs' );
-var testChromeHeadless = require( '../../../js/grunt/phet-io/testChromeHeadless' ); // eslint-disable-line
+var getSimDocumentationFromWrapper = require( './getSimDocumentationFromWrapper' );
 
 // constants
 var DOCUMENTATION_PATH = '../chipper/templates/';
 var DOCUMENTATION_FILENAME = 'phet-io-documentation.html';
 
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( grunt, buildConfig, done ) {
+  grunt.log.debug( 'Generating PhET-iO documentation' );
 
   var phetioDocumentationTemplateText = fs.readFileSync( DOCUMENTATION_PATH + DOCUMENTATION_FILENAME ).toString();
 
@@ -28,9 +29,7 @@ module.exports = function( grunt, buildConfig ) {
   var phetioQueryParameters = getQueryParameters( '../phet-io/js/phet-io-query-parameters.js', 'QUERY_PARAMETERS_SCHEMA = ' );
   phetioDocumentationTemplateText = phetioDocumentationTemplateText.replace( '{{PHETIO_QUERY_PARAMETERS}}', phetioQueryParameters );
 
-
-  var done = grunt.task.current.async();
-  testChromeHeadless( buildConfig.name, function( tandemsAndTypesString ) {
+  getSimDocumentationFromWrapper( grunt, buildConfig.name, function( tandemsAndTypesString ) {
     var tandemInstancesAndTypes = JSON.parse( tandemsAndTypesString );
 
     var types = tandemInstancesAndTypes.types;
@@ -43,10 +42,9 @@ module.exports = function( grunt, buildConfig ) {
     phetioDocumentationTemplateText =
       phetioDocumentationTemplateText.replace( '{{TANDEMS}}', instancesToHTML( instances ) );
 
-
     // Write the new documentation to html
     grunt.file.write( 'build/docs/' + DOCUMENTATION_FILENAME, phetioDocumentationTemplateText );
-    grunt.log.debug( 'Wrote phet-io documentation file.' );
+    grunt.log.debug( 'Wrote PhET-iO documentation file.' );
     done();
   } );
 };
