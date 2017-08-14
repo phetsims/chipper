@@ -13,7 +13,7 @@
 var copyDirectory = require( './copyDirectory' );
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 var ChipperConstants = require( '../../common/ChipperConstants' );
-var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
+// var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 
 // constants
 var DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -257,6 +257,6 @@ module.exports = function( grunt, buildConfig, done ) {
 
   // Generate API Documentation
   if ( grunt.option( 'phetioDocs' ) ) {
-    generatePhETIOAPIDocs( grunt, buildConfig, done );
+    // generatePhETIOAPIDocs( grunt, buildConfig, done );
   }
 };
