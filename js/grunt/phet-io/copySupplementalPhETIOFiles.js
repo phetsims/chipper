@@ -105,7 +105,7 @@ var handleDevGuide = function( grunt, filter ) {
 
 };
 
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( grunt, buildConfig, done ) {
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
@@ -246,7 +246,7 @@ module.exports = function( grunt, buildConfig ) {
     copyDirectory( grunt, '../' + wrapper, ChipperConstants.BUILD_DIR + '/wrappers/' + wrapperName, filterWrapper, {
       blacklist: fullBlacklist,
       minifyJS: true
-      } );
+    } );
   } );
 
   // Copy over the dev guide and the needed dependencies
@@ -256,7 +256,7 @@ module.exports = function( grunt, buildConfig ) {
   handleLib( grunt, filterWrapper );
 
   // Generate API Documentation
-  // TODO: these are broken right now, the cause has something to do with the string plugin loading chipper's localeInfo.js
-  // TODO: see https://github.com/phetsims/phet-io/issues/972 for more info
-  // generatePhETIOAPIDocs( grunt, buildConfig );
+  if ( grunt.option( 'phetioDocs' ) ) {
+    // generatePhETIOAPIDocs( grunt, buildConfig, done );
+  }
 };

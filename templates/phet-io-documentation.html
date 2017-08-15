@@ -13,15 +13,17 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <style>
-    body{
+    body {
       background-color: #222;
     }
-    div#api-documentation.content{
+
+    div#api-documentation.content {
       max-width: 850px;
       margin: auto;
       padding: 0 10px;
-      color:white;
+      color: white;
     }
+
     ul {
       color: #bbbbbb;
     }
@@ -35,6 +37,7 @@
     }
 
     DD {
+      margin-left: 40px;
       color: #bbbbbb;
     }
 
@@ -49,6 +52,7 @@
     li {
       font-size: 16px;
     }
+
     /*Highlightig for the supertype links*/
     a.supertypeLink {
       text-decoration: underline;
@@ -59,23 +63,25 @@
       color: cornflowerblue;
     }
 
-
     pre,
     .grayBackground {
       background: #111;
       color: #fff;
     }
+
     .grayBackground {
       padding: 10px;
-      margin-top: 20px ;
+      margin-top: 20px;
     }
 
     pre {
       border-color: #333;
     }
+
     .typeDeclarationBody {
       padding: 0em 1.25em;
     }
+
     .typeName {
       font-weight: 900;
       font: 1.2em "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
@@ -95,20 +101,23 @@
 
 <div id="api-documentation" class="content">
   <h1>PhET-iO API Documentation</h1>
-  <p>This document is a snapshot of all of the phet-io and simulation api for this given sha.</p>
+  <p>This document is a snapshot of the phet-io and simulation api for this given sim version.</p>
 
+  <h2>Type Documentation</h2>
   <div class="grayBackground">
-    <h2>Current Type Documentation</h2>
-    <h3>Common Code</h3>
-    {{COMMON_TYPE_DOCUMENTATION}}
-    {{SIM_TYPE_DOCUMENTATION}}
-
-</div>
+    {{TYPES}}
+  </div>
+  <br>
+  <h2>Current Instance Documentation</h2>
+  <div class="grayBackground">
+    {{TANDEMS}}
+  </div>
+  <h2>SimIFrameClient.launchSim()</h2>
+  <pre><code id="launch-sim" class="javascript">{{LAUNCH_SIM_DOC}}</code></pre>
   <h2>PhET-iO Query Parameters</h2>
   <pre><code id="phet-io-query-parameters" class="javascript">{{PHETIO_QUERY_PARAMETERS}}</code></pre>
   <h2>PhET Query Parameters</h2>
   <pre><code id="phet-query-parameters" class="javascript">{{PHET_QUERY_PARAMETERS}}</code></pre>
-
 </div>
 
 </body>

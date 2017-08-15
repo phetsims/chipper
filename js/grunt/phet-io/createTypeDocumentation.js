@@ -95,13 +95,13 @@ function walkSync( dir, filelist ) {
 }
 
 function getCommonCodeTTypes() {
-  var activeRepos = fs.readFileSync( '../chipper/data/active-repos' ).toString();
+  var activeRepos = fs.readFileSync( '../../../../chipper/data/active-repos' ).toString();
   activeRepos = activeRepos.split( /\r?\n/ );
-  var activeSims = fs.readFileSync( '../chipper/data/active-sims' ).toString();
+  var activeSims = fs.readFileSync( '../../../../chipper/data/active-sims' ).toString();
   activeSims = activeSims.split( /\r?\n/ );
 
   // Repos that we don't want to search because they have no js/ directories, and won't have TTypes
-  var blackList = [ 'babel', 'exemplar', 'function-basics', 'phet-info', 'phet-io-website', 'phet-ios-app',
+  var blackList = [ 'smithers', 'babel', 'exemplar', 'function-basics', 'phet-info', 'phet-io-website', 'phet-ios-app',
     'phet-android-app', 'phet-cafepress', 'sherpa', 'slater', 'tambo', 'tasks', 'yotta', 'phet-io-wrappers', 'phet-io-wrapper' ];
 
 
@@ -127,7 +127,7 @@ function getCommonCodeTTypes() {
 
   var files = [];
   commonRepos.forEach( function( repoName ) {
-    walkSync( '../' + repoName + '/js', files );
+    walkSync( '../../../../' + repoName + '/js', files );
   } );
   return files;
 }
@@ -190,7 +190,7 @@ function getTypeJSON( ttypeFiles ) {
     var filename = ttypeFiles[ i ];
 
     // The walking if from cwd ( sim repo) but requirejs is from the module ( chipper/js/grunt/phet-io)
-    var TType = requirejs( '../../../' + filename );
+    var TType = requirejs( filename );
 
     // See phetioInherit for more details
     if ( TType.typeName ) {
@@ -244,45 +244,8 @@ function getCommonCodeTypeDocs() {
   return toHTML( typeJSON );
 }
 
-function getSimSpecificTypeDocs( simRepoName, simFormalName, simCapsForRequire ) {
-  var simHTMLHeader = '<h3>Specific Types for ' + simFormalName + '</h3>';
-  var ttypeFiles = [];
-
-  // Get the list of TTypes ( path from process.cwd())
-  walkSync( '../' + simRepoName + '/js', ttypeFiles );
-
-  // Path from grunt source code
-  paths[ simCapsForRequire ] = '../../../../' + simRepoName + '/js';
-  requirejs.config( {
-    paths: paths
-  } );
-  var typeJSON = getTypeJSON( ttypeFiles );
-  var typeHTML = toHTML( typeJSON );
-  return typeHTML ? simHTMLHeader + typeHTML : simHTMLHeader + '<p>There are no specific types for this sim</p>';
-}
-
-
 // Called from the command line, and not required, option support for both modules, used by the grunt build process. This
 // can also be used to update the devGuide in the phet-io-website.
 if ( require.main === module ) {
-  var args = process.argv;
-
-  // Common code docs
-  if ( args.length === 3 && args[ 2 ] === '--common' ) {
     console.log( getCommonCodeTypeDocs() );
-  }
-
-  // Sim specific docs
-  else if ( args.length === 6 && args[ 2 ] === '--sim' ) {
-    var repoName = args[ 3 ];
-    var simFormalName = args[ 4 ];
-    var requirejsName = args[ 5 ];
-    console.log( getSimSpecificTypeDocs( repoName, simFormalName, requirejsName ) );
-  }
-  else {
-    console.error( 'Incorrect usage, given args: ', args );
-    console.error( 'Usage for common code \'node ../../createTypeDocumentation.js --common\'\n' +
-                   'Usage for a specific sim\'s docs \'node createTypeDocumention.js --sim [repo-name] [\"Sim Formal Name\"] [REQUIRE_JS_REPO_NAME]\'' );
-    process.exit();
-  }
 }

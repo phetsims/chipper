@@ -57,7 +57,14 @@ module.exports = function( grunt, buildConfig, callback ) {
   var done = callback || grunt.task.current.async();
 
   var finish = function() {
-    grunt.log.writeln( 'deployed: ' + URL_BASE + sim + '/' + version + '/' + sim + '_en.html' );
+    var finishedMessage = 'deployed: ' + URL_BASE + sim + '/' + version + '/';
+
+    if ( grunt.option( 'brand' ) === 'phet-io' ) {
+      grunt.log.writeln( finishedMessage + 'wrappers/index' );
+    }
+    else {
+      grunt.log.writeln( finishedMessage + sim + '_en.html' );
+    }
     done();
   };
 
@@ -68,7 +75,7 @@ module.exports = function( grunt, buildConfig, callback ) {
     // Check if directory exists
     deployUtil.exec( grunt, 'ssh ' + deployConfig.devUsername + '@' + server + ' \'file ' + versionPath + '\'', function( err, stdout, stderr ) {
       // If the directory does not exist proceed
-      if ( stdout.indexOf('No such file or directory') >= 0 ) {
+      if ( stdout.indexOf( 'No such file or directory' ) >= 0 ) {
         // create remote version directory if it does not exist
         deployUtil.exec( grunt, 'ssh ' + deployConfig.devUsername + '@' + server + ' \'mkdir -p ' + versionPath + '\'', function() {
           // add group write permissions to the remote version directory if they don't exist
@@ -85,9 +92,9 @@ module.exports = function( grunt, buildConfig, callback ) {
           } );
         } );
       }
-        // If the directory does exist then bail
+      // If the directory does exist then bail
       else {
-        grunt.fail.fatal('Directory ' + server + ':' + versionPath + ' already exists.  If you intend to replace the content then remove the directory manually from ' + server + '.' );
+        grunt.fail.fatal( 'Directory ' + server + ':' + versionPath + ' already exists.  If you intend to replace the content then remove the directory manually from ' + server + '.' );
       }
     } );
   };
