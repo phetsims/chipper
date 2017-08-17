@@ -175,6 +175,16 @@
     qrCode: { type: 'flag' },
 
     /**
+     * Random seed in the preload code that can be used to make sure playback simulations use the same seed (and thus
+     * the simulation state, given the input events and frames, can be exactly reproduced)
+     * See Random.js
+     */
+    randomSeed: {
+      type: 'number',
+      defaultValue: Math.random()
+    },
+
+    /**
      * enables input event logging, provide an optional name for the session, log is available via PhET menu
      */
     recordInputEventLog: { type: 'flag' },
@@ -363,7 +373,7 @@
   // Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
   // See Random.js
   // @public (writeable by phet-io) can be overwritten for replicable playback in phet-io.
-  window.phet.chipper.randomSeed = Math.random();
+  window.phet.chipper.randomSeed = phet.chipper.queryParameters.randomSeed;
 
   /**
    * Enables or disables assertions in common libraries using query parameters.
