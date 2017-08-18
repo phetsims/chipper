@@ -115,6 +115,30 @@
 
 <script type="application/javascript">
 
+  /**
+   * Get all 'element' nodes off the parent element, placing them in an array for easy traversal.  Note that this
+   * includes all elements, even those that are 'hidden' or purely for structure.
+   *
+   * @param  {HTMLElement} domElement - parent whose children will be linearized
+   * @returns {HTMLElement[]}
+   * @private
+   */
+  function getLinearDOMElements( domElement ) {
+
+    // gets ALL descendant children for the element
+    var children = domElement.getElementsByTagName( '*' );
+
+    var linearDOM = [];
+    for ( var i = 0; i < children.length; i++ ) {
+
+      // searching for the HTML element nodes (NOT Scenery nodes)
+      if ( children[ i ].nodeType === Node.ELEMENT_NODE ) {
+        linearDOM[ i ] = ( children[ i ] );
+      }
+    }
+    return linearDOM;
+  }
+
   // handling messages from sims
   window.addEventListener( 'message', function( evt ) {
     var data = JSON.parse( evt.data );
@@ -147,6 +171,11 @@
       assertiveAlertElementCopy.removeAttribute( 'style' );
       politeStatusElementCopy.removeAttribute( 'style' );
 
+      // strip style from all elements in the DOM
+      getLinearDOMElements( pDOMCopy ).forEach( function( element ) {
+        element.removeAttribute( 'style' );
+      } );
+
       // get the parent container for the parallel DOM copy and the alert content
       var copyContainer = document.getElementById( 'dom-copy-container' );
       var assertiveElementContainer = document.getElementById( 'assertive-element-container' );
@@ -170,6 +199,8 @@
       // whenever an element in the parallel DOM changes, we need to update its 
       // copied element as well
       var domObserver = new MutationObserver( function( mutations ) {
+
+        mutation.target.removeAttribute( 'style' );
         mutations.forEach( function( mutation ) {
 
           // This is extremely ineficient - every time the document changes, make a new copy, remove
