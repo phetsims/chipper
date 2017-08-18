@@ -150,6 +150,14 @@
     playbackInputEventLog: { type: 'flag' },
 
     /**
+     * If true, puts the simulation in a special mode where it will wait for manual control of the sim playback.
+     */
+    playbackMode: {
+      type: 'boolean',
+      defaultValue: false
+    },
+
+    /**
      * Fires a post-message when the sim is about to change to another URL
      */
     postMessageOnBeforeUnload: { type: 'flag' },
@@ -165,6 +173,11 @@
     postMessageOnLoad: { type: 'flag' },
 
     /**
+     * triggers a post-message that fires when the simulation is ready to start.
+     */
+    postMessageOnReady: { type: 'flag' },
+
+    /**
      * shows profiling information for the sim
      */
     profiler: { type: 'flag' },
@@ -173,6 +186,16 @@
      * adds a menu item that will open a window with a QR code with the URL of the simulation
      */
     qrCode: { type: 'flag' },
+
+    /**
+     * Random seed in the preload code that can be used to make sure playback simulations use the same seed (and thus
+     * the simulation state, given the input events and frames, can be exactly reproduced)
+     * See Random.js
+     */
+    randomSeed: {
+      type: 'number',
+      defaultValue: Math.random()
+    },
 
     /**
      * enables input event logging, provide an optional name for the session, log is available via PhET menu
@@ -363,7 +386,7 @@
   // Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
   // See Random.js
   // @public (writeable by phet-io) can be overwritten for replicable playback in phet-io.
-  window.phet.chipper.randomSeed = Math.random();
+  window.phet.chipper.randomSeed = phet.chipper.queryParameters.randomSeed;
 
   /**
    * Enables or disables assertions in common libraries using query parameters.
