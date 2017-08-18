@@ -200,7 +200,6 @@
       // copied element as well
       var domObserver = new MutationObserver( function( mutations ) {
 
-        mutation.target.removeAttribute( 'style' );
         mutations.forEach( function( mutation ) {
 
           // This is extremely ineficient - every time the document changes, make a new copy, remove
@@ -210,6 +209,7 @@
           pDOMCopy = pDOM.cloneNode( true );
           pDOMCopy.removeAttribute( 'style' );
           copyContainer.appendChild( pDOMCopy );
+          mutation.target.removeAttribute( 'style' );
 
           // make sure that the coppied html is completely out of navigation
           removeTabIndex();
