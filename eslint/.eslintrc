@@ -190,6 +190,8 @@
     "FileReader": false,
     // for linting Node.js code
     "global": false,
+    // jshashes library, for hashing strings (screenshot comparison)
+    "Hashes": false,
     // for HTML => JSON parsing
     "himalaya": false,
     //for web audio

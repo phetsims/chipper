@@ -150,6 +150,14 @@
     playbackInputEventLog: { type: 'flag' },
 
     /**
+     * If true, puts the simulation in a special mode where it will wait for manual control of the sim playback.
+     */
+    playbackMode: {
+      type: 'boolean',
+      defaultValue: false
+    },
+
+    /**
      * Fires a post-message when the sim is about to change to another URL
      */
     postMessageOnBeforeUnload: { type: 'flag' },
@@ -163,6 +171,11 @@
      * triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
      */
     postMessageOnLoad: { type: 'flag' },
+
+    /**
+     * triggers a post-message that fires when the simulation is ready to start.
+     */
+    postMessageOnReady: { type: 'flag' },
 
     /**
      * shows profiling information for the sim
