@@ -9,12 +9,16 @@
  * language codes are ISO 639-1, see http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
  * country codes are ISO 3166-1 alpha2, see http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
  *
- * NOTE: We are using an older version of ISO 639-1 because java.util.Locale maps some of the newer language codes to older codes.
- * See Locale.convertOldISOCodes.
+ * NOTE: We are using an older version of ISO 639-1 because java.util.Locale maps some of the newer language codes to
+ * older codes. See Locale.convertOldISOCodes.
  * The affected country codes are:
  * he -> iw (Hebrew)
  * yi -> ji (Yiddish)
  * id -> in (Indonesian)
+ *
+ * ALSO NOTE: We had a request to support Lakota, which is not included in ISO 639-1, and is only defined as a three-
+ * letter code in ISO 639-3.  The locale combination 'lk' was not taken in ISO 639-1, so we added it.  Strictly
+ * speaking, this is a deviation from the spec.
  */
 
 /* eslint-env browser, node */
@@ -556,6 +560,11 @@
     li: {
       name: 'Limburgish',
       localizedName: 'Limburgish',
+      direction: 'ltr'
+    },
+    lk: {
+      name: 'Lakota',
+      localizedName: 'Lakota',
       direction: 'ltr'
     },
     ln: {
