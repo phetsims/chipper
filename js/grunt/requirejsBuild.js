@@ -90,7 +90,7 @@ module.exports = function( grunt, buildConfig ) {
       // output options documented at https://github.com/mishoo/UglifyJS2#beautifier-options
       output: {
         inline_script: true, // escape </script
-
+        max_line_len: false,
         beautify: grunt.option( 'mangle' ) === false
       },
 
