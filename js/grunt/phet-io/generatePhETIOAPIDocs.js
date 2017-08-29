@@ -77,6 +77,14 @@ function getSubstringFromFile( filename, marker, endMarker ) {
 }
 
 /**
+ * HTML escape a string
+ * @param {string} string
+ */
+function escape( string ) {
+  return _.escape( string );
+}
+
+/**
  * @param {Object} json
  * @returns {string} - the htmlified string
  */
@@ -97,7 +105,7 @@ function typesToHTML( json ) {
       var methodName = sortedMethodNames[ k ];
       var method = typeObject.methods[ methodName ];
       var params = method.parameterTypes.join( ', ' );
-      methods += '<DT>' + methodName + ': (' + params + ') &#10142; ' + method.returnType + '</DT>' +
+      methods += '<DT>' + methodName + ': ( ' + escape( params ) + ' ) &#10142; ' + escape( method.returnType ) + '</DT>' +
                  '<DD>' + method.documentation + '</DD>';
     }
 
@@ -106,11 +114,12 @@ function typesToHTML( json ) {
                        '<span><b>events:</b> ' + typeObject.events.join( ', ' ) + '</span>' : '';
 
     var supertype = typeObject.supertype;
-    html = html + '<h5 class="typeName" id="phetioType' + typeName + '">' + typeName + ' ' +
-           (supertype ? '(extends <a class="supertypeLink" href="#phetioType' + supertype.typeName + '">' + supertype.typeName + '</a>)' : '') +
+    html = html + '<h5 class="typeName" id="phetioType' + escape( typeName ) + '">' + escape( typeName ) + ' ' +
+           (supertype ? '(extends <a class="supertypeLink" href="#phetioType' + escape( supertype.typeName ) + '">' +
+           escape( supertype.typeName ) + '</a>)' : '') +
            '</h5>' +
            '<div class="typeDeclarationBody">' +
-           '<span>' + typeObject.documentation + '</span><br>' +
+           '<span>' + escape( typeObject.documentation ) + '</span><br/>' +
            eventsString +
            '<DL>' + methods + '</DL></div>';
   }
@@ -128,9 +137,9 @@ function instancesToHTML( json ) {
 
     html = html + '<h5 class="typeName" id="phetioTandem' + tandem + '">' + tandem + ' ' +
            '</h5>' +
-           '<DT>' + typeObject.typeName + '</DT>' +
+           '<DT>' + escape( typeObject.typeName ) + '</DT>' +
            '<div class="typeDeclarationBody">' +
-           '<span>' + typeObject.instanceDocumentation + '</span></div><br>';
+           '<span>' + escape( typeObject.instanceDocumentation ) + '</span></div><br/>';
   }
   return html;
 

@@ -205,7 +205,7 @@ module.exports = function( grunt, buildConfig, done ) {
       );
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{FAVICON.ico}}-->',
-        '<link rel="shortcut icon" href="/assets/favicon.ico">'
+        '<link rel="shortcut icon" href="/assets/favicon.ico"/>'
       );
 
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
