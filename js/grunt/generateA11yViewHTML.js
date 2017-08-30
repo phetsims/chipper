@@ -23,8 +23,12 @@ module.exports = function( grunt, buildConfig ) {
   var repositoryName = buildConfig.name;
   var html = grunt.file.read( '../chipper/templates/sim-a11y-view.html' ); // the template file
 
+  var englishStringsString = grunt.file.read( repositoryName + '-strings_en.json' ); // the english strings file
+  var englishStringsJSON = JSON.parse( englishStringsString );
+  var englishSimTitle = englishStringsJSON[ buildConfig.simTitleStringKey.split( '/' )[ 1 ] ].value;
+
   // Replace placeholders in the template.
-  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', buildConfig.name );
+  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', englishSimTitle + ' A11y View' );
   html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
 
   // Write to the repository's root directory.
