@@ -153,12 +153,13 @@
       var pDOM = innerDoc.getElementsByClassName( 'accessibility' )[ 0 ];
       var pDOMCopy = pDOM.cloneNode( true );
 
-      // copy the alert content      
+      // get the alert dom elements from the iframe's pDOM
       var assertiveElement = innerDoc.getElementById( 'assertive' );
       var politeElement = innerDoc.getElementById( 'polite' );
       var assertiveAlertElement = innerDoc.getElementById( 'assertive-alert' );
       var politeStatusElement = innerDoc.getElementById( 'polite-status' );
 
+      // get the alert dom elements from the pDOM copy
       var assertiveElementCopy = document.getElementById( 'assertive-element-copy' );
       var politeElementCopy = document.getElementById( 'polite-element-copy' );
       var assertiveAlertElementCopy = document.getElementById( 'assertive-alert-element-copy' );
@@ -187,14 +188,35 @@
       copyContainer.appendChild( pDOMCopy );
 
       // remove all elements in the PDOM copy from the navigation order
-      function removeTabIndex() {
-        var allElements = pDOMCopy.getElementsByTagName( "*" );
+      function removeTabIndex( rootNode ) {
+        var allElements = rootNode.getElementsByTagName( "*" );
         for ( var i = 0; i < allElements.length; i++ ) {
+
           // Do something with the element here
-          allElements[ i ].tabIndex = '-1';
+          if ( allElements[ i ].ariaLabel ) {
+          }
         }
-      };
-      removeTabIndex();
+      }
+
+      removeTabIndex( pDOMCopy );
+
+      function addAriaLabelsToHTML( rootNode ) {
+        var allElements = rootNode.getElementsByTagName( "*" );
+        for ( var i = 0; i < allElements.length; i++ ) {
+
+          // Do something with the element here
+          if ( allElements[ i ].hasAttribute( 'aria-label' ) ) {
+
+            // remove the style
+            allElements[ i ].removeAttribute( 'style' );
+
+            // set the value of the input button to be the same as the aria-label so that it is displayed in the pDOM copy
+            allElements[ i ].setAttribute( 'value', allElements[ i ].getAttribute( 'aria-label' ) );
+          }
+        }
+      }
+
+      addAriaLabelsToHTML( pDOMCopy );
 
       // whenever an element in the parallel DOM changes, we need to update its 
       // copied element as well
@@ -210,9 +232,10 @@
           pDOMCopy.removeAttribute( 'style' );
           copyContainer.appendChild( pDOMCopy );
 
-          // make sure that the coppied html is completely out of navigation
-          removeTabIndex();
+          addAriaLabelsToHTML( pDOMCopy );
 
+          // make sure that the copied html is completely out of navigation
+          removeTabIndex( pDOMCopy );
         } );
       } );
 
