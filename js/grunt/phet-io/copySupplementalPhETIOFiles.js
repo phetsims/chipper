@@ -17,14 +17,15 @@ var ChipperConstants = require( '../../common/ChipperConstants' );
 
 // constants
 var DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
+var WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library
 var LIB_FILES = [
   '../query-string-machine/js/QueryStringMachine.js',
-  '../phet-io-wrappers/common/js/SimIFrameClient.js',
-  '../phet-io-wrappers/common/js/WrapperTypes.js',
-  '../phet-io-wrappers/common/js/assert.js',
-  '../phet-io-wrappers/common/js/WrapperUtils.js' ];
+  '../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js',
+  '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
+  '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
+  '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js' ];
 
 var LIB_DIR = ChipperConstants.BUILD_DIR + '/lib';
 var LIB_OUTPUT_FILE = 'phet-io.js';
@@ -51,30 +52,27 @@ module.exports = function( grunt, buildConfig, done ) {
   var filterWrapper = function( abspath, contents ) {
     var originalContents = contents + '';
 
-    if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
-      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', buildConfig.name );
-      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', buildConfig.version );
-      contents = ChipperStringUtils.replaceAll( contents, 'isBuilt: false', 'isBuilt: true' );
-
-      // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
-      contents = ChipperStringUtils.replaceAll( contents, 'phet-io-wrappers/common/', 'common/' );
-    }
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
       // change the paths of sherpa files to point to the contrib/ folder
       CONTRIB_FILES.forEach( function( filePath ) {
-        var filePathParts = filePath.split( '/' );
 
+        // No need to do this is this file doesn't have this contrib import in it.
+        if ( contents.indexOf( filePath ) >= 0 ) {
 
-        // If the file is in a dedicated wrapper repo, then it is one level higher in the dir tree, and needs 1 less set of dots
-        // see https://github.com/phetsims/phet-io-wrappers/issues/17 for more info. This is hopefully a temporary workaround
-        var eliminateExtraDotsForDedicatedWrappers = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
+          var filePathParts = filePath.split( '/' );
 
-        var contribFileName = 'contrib/' + filePathParts[ filePathParts.length - 1 ];
+          // If the file is in a dedicated wrapper repo, then it is one level higher in the dir tree, and needs 1 less set of dots.
+          // see https://github.com/phetsims/phet-io-wrappers/issues/17 for more info. This is hopefully a temporary workaround
+          var eliminateExtraDotsForDedicatedWrappers = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
 
-        var pathToContrib = eliminateExtraDotsForDedicatedWrappers ? '../../' + contribFileName : '../' + contribFileName;
+          var fileName = filePathParts[ filePathParts.length - 1 ];
+          var contribFileName = 'contrib/' + fileName;
 
-        contents = ChipperStringUtils.replaceAll( contents, filePath, pathToContrib );
+          var pathToContrib = eliminateExtraDotsForDedicatedWrappers ? '../../' + contribFileName : '../' + contribFileName;
+
+          contents = ChipperStringUtils.replaceAll( contents, filePath, pathToContrib );
+        }
       } );
 
       /*
@@ -122,6 +120,14 @@ module.exports = function( grunt, buildConfig, done ) {
         '<link rel="shortcut icon" href="/assets/favicon.ico"/>'
       );
     }
+    if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', buildConfig.name );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', buildConfig.version );
+      contents = ChipperStringUtils.replaceAll( contents, 'isBuilt: false', 'isBuilt: true' );
+
+      // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
+      contents = ChipperStringUtils.replaceAll( contents, WRAPPER_COMMON_FOLDER + '/', 'common/' );
+    }
     if ( contents !== originalContents ) {
       return contents;
     }
@@ -145,7 +151,7 @@ module.exports = function( grunt, buildConfig, done ) {
   var fullBlacklist = wrappersBlacklist.concat( libFileNames );
 
   // Make sure to copy the phet-io-wrappers common wrapper code too.
-  wrappers.push( 'phet-io-wrappers/common' );
+  wrappers.push( WRAPPER_COMMON_FOLDER );
   wrappers.forEach( function( wrapper ) {
 
     var wrapperParts = wrapper.split( '/' );
