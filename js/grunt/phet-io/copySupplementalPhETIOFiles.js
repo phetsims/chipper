@@ -17,6 +17,8 @@ var ChipperConstants = require( '../../common/ChipperConstants' );
 
 // constants
 var DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
+
+// phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library
 var LIB_FILES = [
   '../query-string-machine/js/QueryStringMachine.js',
   '../phet-io-wrappers/common/js/SimIFrameClient.js',
@@ -31,79 +33,16 @@ var LIB_COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Bould
                            '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
                            '// For licensing, please contact phethelp@colorado.edu';
 
+// All libraries and third party files that are used by phet-io wrappers, and need to be copied over for a build
+var CONTRIB_FILES = [
+  '../sherpa/lib/lodash-4.17.4.min.js',
+  '../sherpa/lib/font-awesome-4.5.0/css/font-awesome.min.css',
+  '../sherpa/lib/jquery-2.1.0.min.js',
+  '../sherpa/lib/jquery-ui-1.8.24.min.js',
+  '../sherpa/lib/d3-4.2.2.js'
+];
+var CONTRIB_DIR = ChipperConstants.BUILD_DIR + '/contrib';
 
-/**
- * Given the list of lib files, apply a filter function to them. Then minify them and consolidate into a single string.
- * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
-
- * @param grunt
- * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
- *                            has arguments like "function(abspath, contents)"
- */
-var handleLib = function( grunt, filter ) {
-
-  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
-  var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
-
-  grunt.file.mkdir( LIB_DIR );
-
-  var consolidated = '';
-  LIB_FILES.forEach( function( libFile ) {
-    var contents = grunt.file.read( libFile );
-
-    var filteredContents = filter && filter( libFile, contents );
-
-    // The filter should return null if nothing changes
-    consolidated += filteredContents ? filteredContents : contents;
-  } );
-
-  var minified = uglify.minify( consolidated, {
-    fromString: true,
-    mangle: true,
-    output: {
-      inline_script: true, // escape </script
-      beautify: false
-    },
-    compress: {
-      global_defs: {}
-    }
-  } ).code;
-
-  grunt.file.write( LIB_DIR + '/' + LIB_OUTPUT_FILE, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
-};
-
-/**
- * Copy the appropriate resources and files to the build folder needed for the develeopment guide.
- * @param grunt
- * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
- *                            has arguments like "function(abspath, contents)"
- */
-var handleDevGuide = function( grunt, filter ) {
-  var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/font-awesome-4.5.0/css/font-awesome.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/jquery-1.12.3.min.js', 'https://code.jquery.com/jquery-1.12.3.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/css/', './css/' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/', './js/' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/styles/tomorrow-night-bright.css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow-night-bright.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/highlight.js', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/favicon.ico', './favicon.ico' );
-
-  // Remove the navbar and footer div tags
-  var firstNavbarLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="navbar"' );
-  devguideHTML = firstNavbarLine ? ChipperStringUtils.replaceAll( devguideHTML, firstNavbarLine, '' ) : devguideHTML;
-
-  var firstFooterLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="footer"' );
-  devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
-
-  grunt.file.write( ChipperConstants.BUILD_DIR + '/docs/devguide.html', devguideHTML );
-  copyDirectory( grunt, '../phet-io-website/root/assets/css', ChipperConstants.BUILD_DIR + '/docs/css', filter );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io-ga.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + ChipperConstants.BUILD_DIR + '/docs/favicon.ico' );
-
-};
 
 module.exports = function( grunt, buildConfig, done ) {
 
@@ -119,52 +58,17 @@ module.exports = function( grunt, buildConfig, done ) {
     }
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../../sherpa/lib/lodash-4.17.4.min.js"',
-        '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
-      );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../../sherpa/lib/font-awesome-4.5.0/css/font-awesome.min.css"',
-        '"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"'
-      );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../../sherpa/lib/jquery-2.1.0.min.js"',
-        '"https://code.jquery.com/jquery-2.2.3.min.js"'
-      );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../../sherpa/lib/jquery-ui-1.8.24.min.js"',
-        '"https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"'
-      );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../../sherpa/lib/d3-4.2.2.js"',
-        '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
-      );
-
-      //TODO: these probably don't need to be repeated for a different path
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../sherpa/lib/lodash-4.17.4.min.js"',
-        '"https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"'
-      );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../sherpa/lib/font-awesome-4.5.0/css/font-awesome.min.css"',
-        '"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"'
-      );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../sherpa/lib/jquery-2.1.0.min.js"',
-        '"https://code.jquery.com/jquery-2.2.3.min.js"'
-      );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../sherpa/lib/jquery-ui-1.8.24.min.js"',
-        '"https://code.jquery.com/ui/1.8.24/jquery-ui.min.js"'
-      );
-      contents = ChipperStringUtils.replaceAll( contents,
-        '"../sherpa/lib/d3-4.2.2.js"',
-        '"https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"'
-      );
-
+      // change the paths of sherpa files to point to the contrib/ folder
+      CONTRIB_FILES.forEach( function( filePath ) {
+        var filePathParts = filePath.split( '/' );
+        contents = ChipperStringUtils.replaceAll( contents,
+          filePath,
+          '../contrib/' + filePathParts[ filePathParts.length - 1 ]
+        );
+      } );
 
       /*
-       * Remove individual common code imports because they are all in phetio.js
+       * Remove individual common phet-io code imports because they are all in phetio.js
        */
       // This returns the whole line that contains this substring, so it can be removed
       var firstQueryStringLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js">' );
@@ -255,8 +159,101 @@ module.exports = function( grunt, buildConfig, done ) {
   // Create the lib file that is minified and publicly available under the /lib folder of the build
   handleLib( grunt, filterWrapper );
 
+  // Create the contrib folder and add to it third party libraries used by wrappers.
+  handleContrib( grunt );
+
   // Generate API Documentation
   if ( grunt.option( 'phetioDocs' ) ) {
     // generatePhETIOAPIDocs( grunt, buildConfig, done );
   }
+};
+
+/**
+ * Given the list of lib files, apply a filter function to them. Then minify them and consolidate into a single string.
+ * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
+
+ * @param grunt
+ * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
+ *                            has arguments like "function(abspath, contents)"
+ */
+var handleLib = function( grunt, filter ) {
+
+  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
+  var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
+
+  grunt.file.mkdir( LIB_DIR );
+
+  var consolidated = '';
+  LIB_FILES.forEach( function( libFile ) {
+    var contents = grunt.file.read( libFile );
+
+    var filteredContents = filter && filter( libFile, contents );
+
+    // The filter should return null if nothing changes
+    consolidated += filteredContents ? filteredContents : contents;
+  } );
+
+  var minified = uglify.minify( consolidated, {
+    fromString: true,
+    mangle: true,
+    output: {
+      inline_script: true, // escape </script
+      beautify: false
+    },
+    compress: {
+      global_defs: {}
+    }
+  } ).code;
+
+  grunt.file.write( LIB_DIR + '/' + LIB_OUTPUT_FILE, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
+};
+
+/**
+ * Copy the appropriate resources and files to the build folder needed for the develeopment guide.
+ * @param grunt
+ * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
+ *                            has arguments like "function(abspath, contents)"
+ */
+var handleDevGuide = function( grunt, filter ) {
+  var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/font-awesome-4.5.0/css/font-awesome.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/jquery-1.12.3.min.js', 'https://code.jquery.com/jquery-1.12.3.min.js' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/css/', './css/' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/', './js/' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/styles/tomorrow-night-bright.css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow-night-bright.min.css' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/highlight.js', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js' );
+  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/favicon.ico', './favicon.ico' );
+
+  // Remove the navbar and footer div tags
+  var firstNavbarLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="navbar"' );
+  devguideHTML = firstNavbarLine ? ChipperStringUtils.replaceAll( devguideHTML, firstNavbarLine, '' ) : devguideHTML;
+
+  var firstFooterLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="footer"' );
+  devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
+
+  grunt.file.write( ChipperConstants.BUILD_DIR + '/docs/devguide.html', devguideHTML );
+  copyDirectory( grunt, '../phet-io-website/root/assets/css', ChipperConstants.BUILD_DIR + '/docs/css', filter );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io.js' );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io-ga.js' );
+  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + ChipperConstants.BUILD_DIR + '/docs/favicon.ico' );
+
+};
+
+/**
+ * Copy all of the third party libraries from sherpa to the build directory under the 'contrib' folder.
+ * @param grunt
+ */
+var handleContrib = function( grunt ) {
+  CONTRIB_FILES.forEach( function( filePath ) {
+    var filePathParts = filePath.split( '/' );
+
+    var fileName = filePathParts[ filePathParts.length - 1 ];
+
+    grunt.file.copy( filePath, './' + CONTRIB_DIR + '/' + fileName );
+
+  } );
+
+
 };
