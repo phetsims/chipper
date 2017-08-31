@@ -11,33 +11,42 @@
   <title>{{PHET_SIM_TITLE}} A11y View</title>
 
   <style>
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, Helvetica, sans-serif
+    html {
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     body {
+      display: block;
+      margin: 1em auto 2em;
+      width: 95%;
       background: #ccc;
     }
 
     div.simulation_frame {
-      position: absolute;
-      top: 0;
-      left: 2%;
-      bottom: 0;
-      width: 50%;
+      float: left;
+      width: 47%;
       background: #ccc;
+    }
+
+    /* This class was found online as a way to preserve an iframe aspect ratio, see https://fettblog.eu/blog/2013/06/16/preserving-aspect-ratio-for-embedded-iframes/*/
+    .aspect-ratio {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 66%;
+    }
+
+    .aspect-ratio iframe {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
     }
 
     div.pdom_copy {
       background: #ccc;
-      position: absolute;
-      top: 0;
-      left: 50%;
-      bottom: 0;
+      float: right;
       width: 50%;
       overflow: auto;
     }
@@ -53,6 +62,7 @@
     div.wrapper {
       height: auto;
       width: 100%;
+      margin-bottom: 2em;
     }
   </style>
 
@@ -60,58 +70,76 @@
 <body bgcolor="#F0F8FF">
 
 <div class="wrapper">
-  <div class="simulation_frame" id="simulation-frame">
-    <h2>{{PHET_SIM_TITLE}} embedded below</h2>
-    <iframe id="iframe" width=80% height=60% allowfullscreen scrolling="no"></iframe>
+  <div id="intro">
+    <h1>{{PHET_SIM_TITLE}} A11y View: Visual and Described content side by side</h1>
+    <p>
+      The accessible version of Ohm's Law is embedded in the iframe below. As you interact with the visual sim in the
+      iframe with either a keyboard or mouse, the descriptions for the sim automatically update on the right in a
+      structured Parallel Document Object Model, or PDOM. Interactive Alerts (in orange) anounce key changes of what is
+      happening during interaction, while the dynamic descriptions (in green) automatically update in the background,
+      maintaining an up-to-date description of the state of the sim and all its objects. Static descriptions (in blue)
+      identify regions and objects and do not change.
+    </p>
   </div>
+  <div id="content">
+    <div class="simulation_frame" id="simulation-frame">
+      <h2>{{PHET_SIM_TITLE}} in iframe</h2>
 
-  <script type="application/javascript">
-
-    // Grab all query parameters to pass to the simulation, and a couple of params that are required for this test
-    var simulationQueryString = window.location.search;
-    if ( simulationQueryString.indexOf( '?' ) >= 0 ) {
-      simulationQueryString += '&';
-    }
-    else {
-      simulationQueryString += '?';
-    }
-
-    var noPostMessage = simulationQueryString.indexOf( 'postMessageOnLoad&postMessageOnError' ) === -1;
-    var noAccessibility = simulationQueryString.indexOf( 'accessibility' ) === -1;
-
-    noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
-    noAccessibility && ( simulationQueryString += 'accessibility' );
-    document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_SIM_URL}}' + simulationQueryString );
-  </script>
-
-  <!--The PDOM copy will be placed in this container, along with a section just for alerts -->
-  <div class="pdom_copy" id="pdom-copy">
-    <h2>Parallel DOM is copied below</h2>
-    <h3>Interaction alerts</h3>
-    <div id=alert-copy-container class=alert_copy_container>
-      <div id='assertive-element-container'>
-        <p class='alert'>&#10092;assertive update&#10093;</p>
-        <p id="assertive-element-copy"></p>
-      </div>
-      <div id='polite-element-container'>
-        <p class='alert'>&#10092;polite update&#10093;</p>
-        <p id="polite-element-copy"></p>
-      </div>
-      <div id='assertive-alert-element-container'>
-        <p class='alert'>&#10092;assertive alert update&#10093;</p>
-        <p id="assertive-alert-element-copy"></p>
-      </div>
-      <div id='polite-alert-element-container'>
-        <p class='alert'>&#10092;polite status update&#10093;</p>
-        <p id="polite-status-element-copy"></p>
+      <div class="aspect-ratio">
+        <iframe id="iframe" allowfullscreen scrolling="no"></iframe>
       </div>
     </div>
-    <div id=dom-copy-container class="dom_copy_container"></div>
-  </div>
 
-  <!--clear the blocks after the float effect-->
-  <div class="clearfix"></div>
+    <!--The PDOM copy will be placed in this container, along with a section just for alerts -->
+    <div class="pdom_copy" id="pdom-copy">
+      <h2>{{PHET_SIM_TITLE}} descriptions structured in a Parallel DOM</h2>
+      <h3>Interactive alerts</h3>
+      <div id=alert-copy-container class=alert_copy_container>
+        <div id='assertive-element-container'>
+          <p class='alert'>&#10092;assertive update&#10093;</p>
+          <p id="assertive-element-copy"></p>
+        </div>
+        <div id='polite-element-container'>
+          <p class='alert'>&#10092;polite update&#10093;</p>
+          <p id="polite-element-copy"></p>
+        </div>
+        <div id='assertive-alert-element-container'>
+          <p class='alert'>&#10092;assertive alert update&#10093;</p>
+          <p id="assertive-alert-element-copy"></p>
+        </div>
+        <div id='polite-alert-element-container'>
+          <p class='alert'>&#10092;polite status update&#10093;</p>
+          <p id="polite-status-element-copy"></p>
+        </div>
+      </div>
+      <h3>Static and Dynamic Descriptions</h3>
+      <div id=dom-copy-container class="dom_copy_container"></div>
+    </div>
+
+    <!--clear the blocks after the float effect-->
+    <div class="clearfix"></div>
+  </div>
 </div>
+
+
+<script type="application/javascript">
+
+  // Grab all query parameters to pass to the simulation, and a couple of params that are required for this test
+  var simulationQueryString = window.location.search;
+  if ( simulationQueryString.indexOf( '?' ) >= 0 ) {
+    simulationQueryString += '&';
+  }
+  else {
+    simulationQueryString += '?';
+  }
+
+  var noPostMessage = simulationQueryString.indexOf( 'postMessageOnLoad&postMessageOnError' ) === -1;
+  var noAccessibility = simulationQueryString.indexOf( 'accessibility' ) === -1;
+
+  noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
+  noAccessibility && ( simulationQueryString += 'accessibility' );
+  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_SIM_URL}}' + simulationQueryString );
+</script>
 
 <script type="application/javascript">
 
