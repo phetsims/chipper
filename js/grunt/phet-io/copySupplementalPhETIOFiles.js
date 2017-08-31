@@ -55,6 +55,9 @@ module.exports = function( grunt, buildConfig, done ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', buildConfig.name );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', buildConfig.version );
       contents = ChipperStringUtils.replaceAll( contents, 'isBuilt: false', 'isBuilt: true' );
+
+      // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
+      contents = ChipperStringUtils.replaceAll( contents, 'phet-io-wrappers/common/', 'common/' );
     }
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
@@ -118,9 +121,6 @@ module.exports = function( grunt, buildConfig, done ) {
         '<!--{{FAVICON.ico}}-->',
         '<link rel="shortcut icon" href="/assets/favicon.ico"/>'
       );
-
-      // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
-      contents = ChipperStringUtils.replaceAll( contents, 'phet-io-wrappers/common/', 'common/' );
     }
     if ( contents !== originalContents ) {
       return contents;
