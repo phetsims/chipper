@@ -61,10 +61,17 @@ module.exports = function( grunt, buildConfig, done ) {
       // change the paths of sherpa files to point to the contrib/ folder
       CONTRIB_FILES.forEach( function( filePath ) {
         var filePathParts = filePath.split( '/' );
-        contents = ChipperStringUtils.replaceAll( contents,
-          filePath,
-          '../contrib/' + filePathParts[ filePathParts.length - 1 ]
-        );
+
+
+        // If the file is in a dedicated wrapper repo, then it is one level higher in the dir tree, and needs 1 less set of dots
+        // see https://github.com/phetsims/phet-io-wrappers/issues/17 for more info. This is hopefully a temporary workaround
+        var eliminateExtraDotsForDedicatedWrappers = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
+
+        var contribFileName = 'contrib/' + filePathParts[ filePathParts.length - 1 ];
+
+        var pathToContrib = eliminateExtraDotsForDedicatedWrappers ? '../../' + contribFileName : '../' + contribFileName;
+
+        contents = ChipperStringUtils.replaceAll( contents, filePath, pathToContrib );
       } );
 
       /*
