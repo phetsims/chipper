@@ -42,6 +42,7 @@
       height: 100%;
       left: 0;
       top: 0;
+      overflow: hidden; /* Prevents a scrollbar, and clips content. */
     }
 
     div.pdom_copy {
@@ -67,7 +68,7 @@
   </style>
 
 </head>
-<body bgcolor="#F0F8FF">
+<body>
 
 <div class="wrapper">
   <div id="intro">
@@ -86,7 +87,7 @@
       <h2>{{PHET_SIM_TITLE}} in iframe</h2>
 
       <div class="aspect-ratio">
-        <iframe id="iframe" allowfullscreen scrolling="no"></iframe>
+        <iframe id="iframe" allowfullscreen title="Interact with {{PHET_SIM_TITLE}}"></iframe>
       </div>
     </div>
 
