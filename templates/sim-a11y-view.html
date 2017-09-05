@@ -232,10 +232,7 @@
       function removeTabIndex( rootNode ) {
         var allElements = rootNode.getElementsByTagName( "*" );
         for ( var i = 0; i < allElements.length; i++ ) {
-
-          // Do something with the element here
-          if ( allElements[ i ].ariaLabel ) {
-          }
+          allElements[ i ].tabIndex = '-1';
         }
       }
 
