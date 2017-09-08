@@ -66,6 +66,11 @@
       padding: 1em;
     }
 
+    p.alert_copy {
+      min-height: 1em;
+      max-height: 1em; 
+    }
+
     div.dom_copy_container{
       background: #3a70ff;
       border-radius: 1em;
@@ -110,19 +115,19 @@
       <div id=alert-copy-container class=alert_copy_container>
         <div id='assertive-element-container'>
           <p class='alert'>&#10092;assertive update&#10093;</p>
-          <p id="assertive-element-copy"></p>
+          <p class='alert_copy' id="assertive-element-copy"></p>
         </div>
         <div id='polite-element-container'>
           <p class='alert'>&#10092;polite update&#10093;</p>
-          <p id="polite-element-copy"></p>
+          <p class='alert_copy' id="polite-element-copy"></p>
         </div>
         <div id='assertive-alert-element-container'>
           <p class='alert'>&#10092;assertive alert update&#10093;</p>
-          <p id="assertive-alert-element-copy"></p>
+          <p class='alert_copy' id="assertive-alert-element-copy"></p>
         </div>
         <div id='polite-alert-element-container'>
           <p class='alert'>&#10092;polite status update&#10093;</p>
-          <p id="polite-status-element-copy"></p>
+          <p class='alert_copy' id="polite-status-element-copy"></p>
         </div>
       </div>
       <h3>Static and Dynamic Descriptions</h3>
