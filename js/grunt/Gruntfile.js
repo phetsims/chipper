@@ -422,7 +422,7 @@ module.exports = function( grunt ) {
   } );
 
   grunt.registerTask( 'insert-require-statement', 'Insert a require statement into the specified file.\n' +
-                                                  '--file absolute path of a single file to sort\n' +
+                                                  '--file absolute path of the file that will receive the require statement\n' +
                                                   '--name to be required', function() {
     insertRequireStatement( grunt, buildConfig );
   } );
