@@ -20,10 +20,10 @@ define( function( require ) {
 
   // modules
   var _ = require( '../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-  var localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
-  var text = require( 'text' );
   var ChipperConstants = require( '../../chipper/js/common/ChipperConstants' );
   var ChipperStringUtils = require( '../../chipper/js/common/ChipperStringUtils' );
+  var localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
+  var text = require( 'text' );
 
   var parse = JSON.parse;
 

@@ -9,8 +9,8 @@
 'use strict';
 
 // modules
-var eslint = require( 'eslint' );
 var assert = require( 'assert' );
+var eslint = require( 'eslint' );
 
 // constants
 var CLIEngine = eslint.CLIEngine;

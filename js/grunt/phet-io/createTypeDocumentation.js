@@ -9,13 +9,13 @@
 /* eslint-env node */
 'use strict';
 
-var requirejs = require( 'requirejs' ); // eslint-disable-line require-statement-match
 var fs = require( 'fs' );
+var requirejs = require( 'requirejs' ); // eslint-disable-line require-statement-match
 
 // Mock up window globals for running in node mode
 
-global.assert = require( 'assert' );
 global._ = require( '../../../../sherpa/lib/lodash-4.17.4.js' );
+global.assert = require( 'assert' );
 global.phet = {
   chipper: {
     queryParameters: {},

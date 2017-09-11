@@ -7,9 +7,9 @@
  */
 
 // modules
-var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenciesJSON' );
-var copyDirectory = require( '../../../chipper/js/grunt/phet-io/copyDirectory' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+var copyDirectory = require( '../../../chipper/js/grunt/phet-io/copyDirectory' );
+var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenciesJSON' );
 
 // Don't copy these files/folders into the built wrapper
 var WRAPPER_BLACKLIST = [ '.git', 'README.md', '.gitignore', 'node_modules', 'build' ];

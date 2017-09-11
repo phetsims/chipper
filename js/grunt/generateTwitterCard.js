@@ -10,8 +10,8 @@
 'use strict';
 
 // modules
-var Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
 var assert = require( 'assert' );
+var Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
 
 // constants
 var BUILD_DIRECTORY = 'build';

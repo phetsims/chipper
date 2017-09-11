@@ -10,12 +10,12 @@
 'use strict';
 
 // modules
+var copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
 var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenciesJSON' );
-var createMipmapsJavaScript = require( '../../../chipper/js/grunt/createMipmapsJavaScript' );
 var createHTMLFiles = require( '../../../chipper/js/grunt/createHTMLFiles' );
+var createMipmapsJavaScript = require( '../../../chipper/js/grunt/createMipmapsJavaScript' );
 var reportUnusedMedia = require( '../../../chipper/js/grunt/reportUnusedMedia' );
 var reportUnusedStrings = require( '../../../chipper/js/grunt/reportUnusedStrings' );
-var copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
 
 /**
  * @param grunt - the grunt instance

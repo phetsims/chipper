@@ -20,9 +20,9 @@
 'use strict';
 
 // Load shared constants
+var assert = require( 'assert' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
-var assert = require( 'assert' );
 
 // constants
 var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path

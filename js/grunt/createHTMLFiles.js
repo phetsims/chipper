@@ -19,11 +19,11 @@ var nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line req
 var Encoder = nodeHTMLEncoder.Encoder;
 
 // modules
-var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
-var getStringMap = require( '../../../chipper/js/grunt/getStringMap' );
-var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+var getStringMap = require( '../../../chipper/js/grunt/getStringMap' );
+var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
+var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
 
 /**
  * @param grunt - the grunt instance

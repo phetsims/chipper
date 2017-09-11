@@ -9,9 +9,9 @@
 'use strict';
 
 // modules
-var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
-var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
+var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
 
 // constants
 var URL_BASE = 'http://www.colorado.edu/physics/phet/dev/html/';

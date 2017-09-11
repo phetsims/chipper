@@ -15,9 +15,9 @@
 module.exports = function( grunt ) {
 
   // modules
-  var child_process = require( 'child_process' );
-  var assert = require( 'assert' );
   var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
+  var assert = require( 'assert' );
+  var child_process = require( 'child_process' );
   var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
   // constants

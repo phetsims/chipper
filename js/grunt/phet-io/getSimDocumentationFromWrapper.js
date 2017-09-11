@@ -9,8 +9,8 @@
 /* eslint-env node */
 'use strict';
 
-var chromeLauncher = require( 'chrome-launcher' ); // eslint-disable-line require-statement-match
 var CDP = require( 'chrome-remote-interface' ); // eslint-disable-line require-statement-match
+var chromeLauncher = require( 'chrome-launcher' ); // eslint-disable-line require-statement-match
 require( 'babel-polyfill' );
 
 /**

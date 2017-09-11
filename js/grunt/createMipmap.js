@@ -5,8 +5,8 @@
 
 var fs = require( 'fs' );
 var jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
-var pngjs = require( 'pngjs' );
 var mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
+var pngjs = require( 'pngjs' );
 
 /**
  * Responsible for converting a single PNG/JPEG file to a structured list of mipmapped versions of it, each

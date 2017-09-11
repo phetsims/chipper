@@ -9,8 +9,8 @@
 'use strict';
 
 // modules
-var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var fs = require( 'fs' );
 
 /**

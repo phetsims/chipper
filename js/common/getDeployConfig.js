@@ -29,8 +29,8 @@ var assert = require( 'assert' );
  */
 (function() {
 
-  var getVersionForBrand = require( '../../../chipper/js/getVersionForBrand' );
   var getBrand = require( '../../../chipper/js/grunt/getBrand' );
+  var getVersionForBrand = require( '../../../chipper/js/getVersionForBrand' );
 
   /**
    * @param {Object} grunt

@@ -38,8 +38,8 @@ var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-li
 
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var getVersionForBrand = require( '../../../chipper/js/getVersionForBrand' );
 var getBrand = require( '../../../chipper/js/grunt/getBrand' );
+var getVersionForBrand = require( '../../../chipper/js/getVersionForBrand' );
 
 /**
  * @param {Object} grunt - the grunt instance

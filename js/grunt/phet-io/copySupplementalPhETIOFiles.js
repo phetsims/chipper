@@ -10,10 +10,10 @@
 'use strict';
 
 // modules
-var copyDirectory = require( './copyDirectory' );
-var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
-var ChipperConstants = require( '../../common/ChipperConstants' );
 // var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
+var ChipperConstants = require( '../../common/ChipperConstants' );
+var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
+var copyDirectory = require( './copyDirectory' );
 
 // constants
 var DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';

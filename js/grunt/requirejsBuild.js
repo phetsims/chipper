@@ -8,9 +8,9 @@
 /* eslint-env node */
 'use strict';
 
-var requirejs = require( 'requirejs' );
 var assert = require( 'assert' );
 var istanbul = require( 'istanbul' );
+var requirejs = require( 'requirejs' );
 
 /**
  * @param {Object} grunt - the grunt instance

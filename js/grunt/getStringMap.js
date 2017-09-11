@@ -13,9 +13,9 @@ var assert = require( 'assert' );
 var path = require( 'path' );
 
 // modules
-var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 
 /**
  * @param grunt - the grunt instance

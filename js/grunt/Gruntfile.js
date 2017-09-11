@@ -21,32 +21,32 @@ var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-li
 
 // PhET custom grunt tasks
 var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
-var requirejsBuild = require( '../../../chipper/js/grunt/requirejsBuild' );
+var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var commitsSince = require( '../../../chipper/js/grunt/commitsSince' );
 var createSim = require( '../../../chipper/js/grunt/createSim' );
-var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
+var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
+var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var generateA11yViewHTML = require( '../../../chipper/js/grunt/generateA11yViewHTML' );
 var generateCoverage = require( '../../../chipper/js/grunt/generateCoverage' );
-var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
 var generateDevelopmentColorsHTML = require( '../../../chipper/js/grunt/generateDevelopmentColorsHTML' );
+var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
 var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
 var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
 var generateTwitterCard = require( '../../../chipper/js/grunt/generateTwitterCard' );
+var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
+var insertRequireStatement = require( '../../../chipper/js/grunt/insertRequireStatement' );
 var lint = require( '../../../chipper/js/grunt/lint' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
-var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
+var requirejsBuild = require( '../../../chipper/js/grunt/requirejsBuild' );
+var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
-var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
-var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
-var insertRequireStatement = require( '../../../chipper/js/grunt/insertRequireStatement' );
 var wrapperDeploy = require( '../../../chipper/js/grunt/wrapperDeploy' );
-var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 
 module.exports = function( grunt ) {
 

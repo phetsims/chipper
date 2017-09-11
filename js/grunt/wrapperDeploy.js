@@ -7,9 +7,9 @@
  */
 
 // modules
-var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
-var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
+var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
 
 // constants
 var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';

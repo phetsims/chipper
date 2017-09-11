@@ -9,10 +9,10 @@
 'use strict';
 
 // modules
+var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
+var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
 var querystring = require( 'querystring' );
 var request = require( 'request' );
-var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
-var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 
 /**
  * @param grunt - the grunt instance

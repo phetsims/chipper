@@ -13,8 +13,8 @@
 'use strict';
 
 // modules
-var assert = require( 'assert' );
 var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
+var assert = require( 'assert' );
 
 var THIRD_PARTY_LICENSES_FILENAME = '../sherpa/lib/license.json'; // contains third-party license info
 var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.

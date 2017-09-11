@@ -18,9 +18,9 @@
 module.exports = function( grunt, buildConfig ) {
 
   // modules
-  var jscpd = require( 'jscpd' );
-  var fs = require( 'fs' );
   var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
+  var fs = require( 'fs' );
+  var jscpd = require( 'jscpd' );
 
   /**
    * TODO: Eliminate this function and unify paths with lint.js, see https://github.com/phetsims/chipper/issues/566
