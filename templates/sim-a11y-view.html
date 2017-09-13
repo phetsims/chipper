@@ -68,10 +68,10 @@
 
     p.alert_copy {
       min-height: 1em;
-      max-height: 1em; 
+      max-height: 1em;
     }
 
-    div.dom_copy_container{
+    div.dom_copy_container {
       background: #a0e1e7;
       border-radius: 1em;
       padding: 1em;
@@ -96,7 +96,8 @@
   <div id="intro">
     <h1>{{PHET_SIM_TITLE}} A11y View: Visual and Described content side by side</h1>
     <p>
-      The accessible version of {{PHET_SIM_TITLE}} is embedded in the iframe below. As you interact with the visual sim in the
+      The accessible version of {{PHET_SIM_TITLE}} is embedded in the iframe below. As you interact with the visual sim
+      in the
       iframe with either a keyboard or mouse, the descriptions for the sim automatically update on the right in a
       structured Parallel Document Object Model, or PDOM. Interactive Alerts (in orange) announce key changes of what is
       happening during interaction, while the dynamic descriptions (in green) automatically update in the background,
@@ -251,15 +252,23 @@
       function addAriaLabelsToHTML( rootNode ) {
         var allElements = rootNode.getElementsByTagName( "*" );
         for ( var i = 0; i < allElements.length; i++ ) {
+          var element = allElements[ i ];
 
-          // Do something with the element here
-          if ( allElements[ i ].hasAttribute( 'aria-label' ) ) {
+          if ( element.hasAttribute( 'aria-label' ) ) {
 
             // remove the style
-            allElements[ i ].removeAttribute( 'style' );
+            element.removeAttribute( 'style' );
 
-            // set the value of the input button to be the same as the aria-label so that it is displayed in the pDOM copy
-            allElements[ i ].setAttribute( 'value', allElements[ i ].getAttribute( 'aria-label' ) );
+            if ( element.tagName.toLowerCase() === 'input' ) {
+
+              // set the value of the input to be the same as the aria-label so that it is displayed in the pDOM copy
+              element.setAttribute( 'value', element.getAttribute( 'aria-label' ) );
+            }
+            else {
+
+              // if not an input, then add it to the innerHTML of an element, without overriding what is already there.
+              element.innerHTML = element.getAttribute( 'aria-label' ) + element.innerHTML;
+            }
           }
         }
       }
