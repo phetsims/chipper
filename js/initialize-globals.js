@@ -418,7 +418,7 @@
 
     // Communicate sim errors to joist/tests/test-sims.html
     if ( phet.chipper.queryParameters.postMessageOnError ) {
-      window.addEventListener( 'error', function( a, b, c, d, e ) {
+      window.addEventListener( 'error', function( a ) {
         var message = '';
         var stack = '';
         if ( a && a.message ) {
