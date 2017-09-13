@@ -158,6 +158,13 @@
     },
 
     /**
+     * Controls whether the preserveDrawingBuffer:true is set on WebGL Canvases. This allows canvas.toDataURL() to work
+     * (used for certain methods that require screenshot generation using foreign object rasterization, etc.).
+     * Generally reduces WebGL performance, so it should not always be on (thus the query parameter).
+     */
+    preserveDrawingBuffer: { type: 'flag' },
+
+    /**
      * Fires a post-message when the sim is about to change to another URL
      */
     postMessageOnBeforeUnload: { type: 'flag' },
