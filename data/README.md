@@ -1,3 +1,6 @@
+accessibility is a list of all repositories that have been outfitted with accessibility like keyboard navigation. Sims 
+    in progress are also included in this list.  
+
 active-repos is a list of all repositories that you should have checked out if doing common-code refactoring.
 
 active-runnables is a list of all repositories that can be built with chipper and launched from an html file.
