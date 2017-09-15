@@ -32,5 +32,5 @@ module.exports = function( grunt, buildConfig ) {
   html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
 
   // Write to the repository's root directory.
-  grunt.file.write( repositoryName + '-a11y-view.html', html );
+  grunt.file.write( repositoryName + ChipperConstants.A11Y_VIEW_HTML_SUFFIX, html );
 };

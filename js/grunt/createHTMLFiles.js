@@ -23,6 +23,8 @@ var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 var getStringMap = require( '../../../chipper/js/grunt/getStringMap' );
 var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
+var getSimsFromDataFile = require( '../../../chipper/js/grunt/getSimsFromDataFile' );
+var generateA11yViewHTML = require( '../../../chipper/js/grunt/generateA11yViewHTML' );
 var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
 
 /**
@@ -273,6 +275,17 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( simTitle + ' iframe test' ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_URL}}', buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
     grunt.file.write( 'build/' + buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '-iframe' + '.html', iframeTestHtml );
+  }
+
+  var a11ySims = getSimsFromDataFile( grunt, 'accessibility' );
+
+  // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir
+  if ( a11ySims.indexOf( buildConfig.name ) >= 0 ) {
+
+    // (a11y) Create the a11y-view HTML file for pDOM viewing.
+    generateA11yViewHTML( grunt, buildConfig );
+    var a11yViewFilename = buildConfig.name + ChipperConstants.A11Y_VIEW_HTML_SUFFIX;
+    grunt.file.copy( a11yViewFilename, ChipperConstants.BUILD_DIR + '/' + a11yViewFilename );
   }
 
   grunt.log.debug( 'Cleaning temporary files' );

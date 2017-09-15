@@ -28,7 +28,10 @@
     END_THIRD_PARTY_LICENSE_ENTRIES: '### END THIRD PARTY LICENSE ENTRIES ###',
 
     // name of build directory
-    BUILD_DIR: 'build'
+    BUILD_DIR: 'build',
+
+    // (a11y) tail suffix of the a11y-view template. Expected usage: {{repository-name}}{{A11Y_VIEW_HTML_SUFFIX}}
+    A11Y_VIEW_HTML_SUFFIX: '-a11y-view.html'
   };
 
   // browser require.js-compatible definition
