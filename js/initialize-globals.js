@@ -144,6 +144,12 @@
       defaultValue: 'en'
     },
 
+    /*
+     * Enables basic logging to the console.
+     * Usage in code: phet.log && phet.log( 'you message' );
+     */
+    log: { type: 'flag' },
+
     /**
      * plays event logging back from the server, provide an optional name for the session
      */
@@ -343,6 +349,13 @@
 
     // Read query parameters
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
+
+    // Add a log function that displays messages to the console.
+    if ( window.phet.chipper.queryParameters.log ) {
+      window.phet.log = function( message ) {
+        console.log( '%clog: ' + message, 'color: #009900' ); // green
+      };
+    }
 
     /**
      * Gets the cache buster args based on the provided query parameters.  By default it is:
