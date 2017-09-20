@@ -30,50 +30,46 @@ function launchChrome() {
 
 module.exports = function( grunt, simName, done ) {
 
-  /*
- // This code was used to create the below es5 code. It was converted using babel, see https://babeljs.io/repl/
- (async function() {
-
-   var chrome = await launchChrome();
-   var protocol = await CDP( { port: chrome.port } );
-
-   // Extract the DevTools protocol domains we need and enable them.
-   // See API docs: https://chromedevtools.github.io/devtools-protocol/
-   var Page= protocol.Page;
-   var Runtime = protocol.Runtime;
-   await Promise.all( [ Page.enable(), Runtime.enable() ] );
-
-   Page.navigate( { url: 'http://localhost/phet-io-wrappers/documentation/documentation.html?sim=' + simName + '&ea' } );
-
-   // Wait for window.onload before doing stuff.
-   Page.loadEventFired( async function(){
-     grunt.log.debug( 'loadEventFired in documentation wrapper.' );
-
-     var isLoaded = false;
-
-     // Poll to see if the sim is loaded, see phet-io-wrappers/documentation/
-     while( isLoaded === false ){
-       var isLoadedResult =  await Runtime.evaluate( { expression: 'window.isSimLoaded();' } )
-         .catch( function( e ) { grunt.fail.fatal(  e ) } );
-       if( isLoadedResult.exceptionDetails ){
-         grunt.fail.fatal( 'Error getting phet-io documentation, waiting for sim load: ' + isLoadedResult.exceptionDetails.exception.description)
-       }
-       isLoaded = isLoadedResult.result.value;
-     }
-
-     var result = await Runtime.evaluate( { expression: 'window.getDocumentation();' } )
-       .catch( function( e ) { grunt.fail.fatal( e ) } );
-
-     if( result.exceptionDetails ){
-       grunt.fail.fatal( 'Error getting phet-io documentation wrapper result: ' + isLoadedResult.exceptionDetails.exception.description)
-     }
-
-     done( result.result.value) ;
-     protocol.close();
-     chrome.kill(); // Kill Chrome.
-   } );
- } )();
-  */
+  // // This code was used to create the below es5 code. It was converted using babel, see https://babeljs.io/repl/
+  // (async function() {
+  //
+  //   var chrome = await launchChrome();
+  //   var protocol = await CDP( { port: chrome.port } );
+  //
+  //   // Extract the DevTools protocol domains we need and enable them.
+  //   // See API docs: https://chromedevtools.github.io/devtools-protocol/
+  //   var Page= protocol.Page;
+  //   var Runtime = protocol.Runtime;
+  //   await Promise.all( [ Page.enable(), Runtime.enable() ] );
+  //
+  //   Page.navigate( { url: 'http://localhost/phet-io-wrappers/documentation/documentation.html?sim=' + simName + '&ea' } );
+  //
+  //   // Wait for window.onload before doing stuff.
+  //   Page.loadEventFired( async function(){
+  //
+  //     var isLoaded = false;
+  //
+  //     // Poll to see if the sim is loaded, see phet-io-wrappers/documentation/
+  //     while( isLoaded === false ){
+  //       var isLoadedResult =  await Runtime.evaluate( { expression: 'window.isSimLoaded();' } )
+  //         .catch( function( e ) { grunt.fail.fatal(  e ) } );
+  //       if( isLoadedResult.exceptionDetails ){
+  //         grunt.fail.fatal( 'Error getting phet-io documentation, waiting for sim load: ' + isLoadedResult.exceptionDetails.exception.description)
+  //       }
+  //       isLoaded = isLoadedResult.result.value;
+  //     }
+  //     var result = await Runtime.evaluate( { expression: 'window.getDocumentation();' } )
+  //       .catch( function( e ) { grunt.fail.fatal( e ) } );
+  //
+  //     if( result.exceptionDetails ){
+  //       grunt.fail.fatal( 'Error getting phet-io documentation wrapper result: ' + isLoadedResult.exceptionDetails.exception.description)
+  //     }
+  //
+  //     done( result.result.value) ;
+  //     protocol.close();
+  //     chrome.kill(); // Kill Chrome.
+  //   } );
+  // } )();
 
 
   // Babel generated code, so disable lint for it.
@@ -100,7 +96,8 @@ module.exports = function( grunt, simName, done ) {
     };
   }
 
-  _asyncToGenerator( regeneratorRuntime.mark( function _callee2() {
+  // This code was used to create the below es5 code. It was converted using babel, see https://babeljs.io/repl/
+  _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark( function _callee2() {
     var chrome, protocol, Page, Runtime;
     return regeneratorRuntime.wrap( function _callee2$( _context2 ) {
       while ( 1 ) {
@@ -130,46 +127,44 @@ module.exports = function( grunt, simName, done ) {
             Page.navigate( { url: 'http://localhost/phet-io-wrappers/documentation/documentation.html?sim=' + simName + '&ea' } );
 
             // Wait for window.onload before doing stuff.
-            Page.loadEventFired( _asyncToGenerator( regeneratorRuntime.mark( function _callee() {
+            Page.loadEventFired( _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark( function _callee() {
               var isLoaded, isLoadedResult, result;
               return regeneratorRuntime.wrap( function _callee$( _context ) {
                 while ( 1 ) {
                   switch( _context.prev = _context.next ) {
                     case 0:
-                      grunt.log.debug( 'loadEventFired in documentation wrapper.' );
-
                       isLoaded = false;
 
                     // Poll to see if the sim is loaded, see phet-io-wrappers/documentation/
 
-                    case 2:
+                    case 1:
                       if ( !(isLoaded === false) ) {
-                        _context.next = 10;
+                        _context.next = 9;
                         break;
                       }
 
-                      _context.next = 5;
+                      _context.next = 4;
                       return Runtime.evaluate( { expression: 'window.isSimLoaded();' } ).catch( function( e ) {
                         grunt.fail.fatal( e );
                       } );
 
-                    case 5:
+                    case 4:
                       isLoadedResult = _context.sent;
 
                       if ( isLoadedResult.exceptionDetails ) {
                         grunt.fail.fatal( 'Error getting phet-io documentation, waiting for sim load: ' + isLoadedResult.exceptionDetails.exception.description );
                       }
                       isLoaded = isLoadedResult.result.value;
-                      _context.next = 2;
+                      _context.next = 1;
                       break;
 
-                    case 10:
-                      _context.next = 12;
+                    case 9:
+                      _context.next = 11;
                       return Runtime.evaluate( { expression: 'window.getDocumentation();' } ).catch( function( e ) {
                         grunt.fail.fatal( e );
                       } );
 
-                    case 12:
+                    case 11:
                       result = _context.sent;
 
 
@@ -181,7 +176,7 @@ module.exports = function( grunt, simName, done ) {
                       protocol.close();
                       chrome.kill(); // Kill Chrome.
 
-                    case 17:
+                    case 16:
                     case 'end':
                       return _context.stop();
                   }

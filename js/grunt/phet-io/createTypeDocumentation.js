@@ -2,7 +2,8 @@
 
 /**
  * Generates the PhET-iO API Type documentation which will be shown at https://phet-io.colorado.edu/devguide/
- *
+ * This is the legacy way of generating a list of PhETiO types to html. NOTE: don't use, see documentation wrapper instead.
+ * @deprecated
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -162,7 +163,7 @@ function toHTML( json ) {
            (supertype.typeName ? '(extends <a class="supertypeLink" href="#phetioType' + supertype.typeName + '">' + supertype.typeName + '</a>)' : '') +
            '</h5>' +
            '<div class="typeDeclarationBody">' +
-           '<span>' + wrapperType.documentation + '</span><br>' +
+           '<span>' + wrapperType.documentation + '</span><br/>' +
            eventsString +
            '<DL>' + methods + '</DL></div>';
   }
