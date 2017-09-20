@@ -353,7 +353,7 @@
     // Add a log function that displays messages to the console.
     if ( window.phet.chipper.queryParameters.log ) {
       window.phet.log = function( message ) {
-        console.log( '%clog: ' + message, 'color: #009900' ); // green
+        console.log( '%c' + message, 'color: #009900' ); // green
       };
     }
 
