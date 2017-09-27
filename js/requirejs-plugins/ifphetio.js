@@ -50,7 +50,15 @@ define( function( module ) {
 
           // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
           // See https://github.com/phetsims/phet-io/issues/1074 for more details
-          load( function() { return function() {};} );
+          load( function() {
+            var f = function() {};
+
+            // Add start and end messages for when phetioEvents is loaded, so we don't need to check for the existence
+            // of start/end.  TODO: only apply start and end in the case of phetioEvents
+            f.start = function() {};
+            f.end = function() {};
+            return f;
+          } );
         }
       }
     },
@@ -69,7 +77,9 @@ define( function( module ) {
 
         // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
         // See https://github.com/phetsims/phet-io/issues/1074 for more details
-        text = 'define("' + moduleName + '", function(){return function(){ return function(){}; };});';
+        // Also add start and end messages for when phetioEvents is loaded, so we don't need to check for the existence
+        // of start/end.  TODO: only apply start and end in the case of phetioEvents
+        text = 'define("' + moduleName + '", function(){return function(){ var f = function() {}; f.start = function() {}; f.end = function() {}; return f; };});';
         write( text );
       }
     }
