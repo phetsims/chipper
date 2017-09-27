@@ -50,18 +50,12 @@ define( function( module ) {
 
           // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
           // See https://github.com/phetsims/phet-io/issues/1074 for more details
-          var f2 = function() {
-            // var f = function() {};
-            //
-            // // Add start and end messages for when phetioEvents is loaded, so we don't need to check for the existence
-            // // of start/end.  TODO: only apply start and end in the case of phetioEvents
-            // f.start = function() {};
-            // f.end = function() {};
-            // return f;
-          };
-          f2.start = function() {};
-          f2.end = function() {};
-          load( f2 );
+          var f = function() { };
+          if ( id === 'PHET_IO/phetioEvents' ) {
+            f.start = function() {};
+            f.end = function() {};
+          }
+          load( f );
         }
       }
     },
@@ -81,8 +75,14 @@ define( function( module ) {
         // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
         // See https://github.com/phetsims/phet-io/issues/1074 for more details
         // Also add start and end messages for when phetioEvents is loaded, so we don't need to check for the existence
-        // of start/end.  TODO: only apply start and end in the case of phetioEvents
-        text = 'define("' + moduleName + '", function(){return function(){ var f = function() {}; f.start = function() {}; f.end = function() {}; return f; };});';
+        // of start/end.
+        if ( moduleName === 'PHET_IO/phetioEvents' ) {
+          text = 'define("' + moduleName + '", function(){return function(){ var f = function() {}; f.start = function() {}; f.end = function() {}; return f; };});';
+        }
+        else {
+          text = 'define("' + moduleName + '", function(){return function(){ return function(){}; };});';
+        }
+
         write( text );
       }
     }
