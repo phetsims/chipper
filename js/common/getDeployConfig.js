@@ -74,7 +74,7 @@ var assert = require( 'assert' );
       devDeployPath: buildLocalJSON.devDeployPath || '/htdocs/physics/phet/dev/html/',
       productionServerURL: buildLocalJSON.productionServerURL || 'https://phet.colorado.edu',
       wrapperDeployServer: buildLocalJSON.wrapperDeployServer || 'spot.colorado.edu',
-      wrapperDeployPath: buildLocalJSON.wrapperDeployPath || '/htdocs/physics/phet/dev/wrapper/',
+      wrapperDeployPath: buildLocalJSON.wrapperDeployPath || '/htdocs/physics/phet/dev/html/',
       wrapperUsername: buildLocalJSON.devUsername
     };
   }
