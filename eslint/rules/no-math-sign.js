@@ -21,7 +21,7 @@ module.exports = function( context ) {
         context.report( {
           node: node,
           loc: node.loc.start,
-          message: 'Math.sign is not supported on IE'
+          message: 'Math.sign is not supported on IE, please use DOT/Util.sign'
         } );
       }
     }
