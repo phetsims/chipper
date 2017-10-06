@@ -333,7 +333,7 @@ module.exports = function( grunt ) {
     finalizeJS: packageJSON.phet.finalizeJS, // {string} [finalizeJS] - If provided, this JS string will be inserted at the end of the main IIFE.
 
     isWrapper: packageJSON.isWrapper // true if grunt is working with a wrapper, rather than a sim.
-  };
+    };
 
   // These fields depend on other entries in buildConfig.
   buildConfig.simTitleStringKey = buildConfig.requirejsNamespace + '/' + buildConfig.name + '.title'; // REPO/repo.name
@@ -348,6 +348,10 @@ module.exports = function( grunt ) {
   buildConfig.licenseKeys = getLicenseKeys( packageJSON, buildJSON, buildConfig.brand, buildConfig.preload );
   buildConfig.locales = getLocales( grunt, buildConfig.name );
   buildConfig.availableLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( buildConfig.name ) );
+
+  // {Array.<String>} [wrapperSherpaDependencies] - used for building individual wrappers, see wrapperBuild.js
+  var sherpaDependencies = packageJSON.wrapper && packageJSON.wrapper.sherpaDependencies ;
+  buildConfig.wrapperSherpaDependencies = sherpaDependencies || undefined;
 
   grunt.log.debug( 'buildConfig=' + JSON.stringify( buildConfig, null, 2 ) );
   return buildConfig;
