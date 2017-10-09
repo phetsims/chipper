@@ -14,7 +14,6 @@ var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenc
 
 // build in node apis
 var fs = require( 'fs' );
-var assert = require( 'assert' );
 
 // Don't copy these files/folders into the built wrapper
 var WRAPPER_BLACKLIST = [ '.git', 'README.md', '.gitignore', 'node_modules', 'build' ];
@@ -41,38 +40,44 @@ module.exports = function( grunt, buildConfig ) {
     // Special case for the sherpa repo. Look for packageJSON.wrapper.sherpaDependencies for individual files to copy on build.
     if ( repo === 'sherpa' ) {
 
-      var pathToLib = '/sherpa/lib/';
-      fs.mkdirSync( ChipperConstants.BUILD_DIR + '/' + repo );
-      fs.mkdirSync( ChipperConstants.BUILD_DIR + pathToLib );
-      grunt.log.debug( 'created sherpa lib file: ' + ChipperConstants.BUILD_DIR + pathToLib );
+      // If there are no sherpaDependencies mentioned in the package.json, then still just copy the whole repo.
+      if ( !buildConfig.wrapperSherpaDependencies ) {
+        grunt.log.debug( 'To decrease the size of the sherpa dependency, use wrapper.sheraDependencies in package.json ' +
+                         'to specify sherpa libraries from sherpa/lib.' );
+      }
 
-      assert( buildConfig.wrapperSherpaDependencies,
-        'Must declare individual files of sherpaDependencies in wrapper\'s package.json to have "sherpa" repo as a dependency' );
-      buildConfig.wrapperSherpaDependencies.forEach( function( file ) {
-        grunt.file.copy( '..' + pathToLib + file, ChipperConstants.BUILD_DIR + pathToLib + file );
-      } );
+      else {
+        var pathToLib = '/sherpa/lib/';
+        fs.mkdirSync( ChipperConstants.BUILD_DIR + '/' + repo );
+        fs.mkdirSync( ChipperConstants.BUILD_DIR + pathToLib );
+        grunt.log.debug( 'created sherpa lib file: ' + ChipperConstants.BUILD_DIR + pathToLib );
+
+        buildConfig.wrapperSherpaDependencies.forEach( function( file ) {
+          grunt.file.copy( '..' + pathToLib + file, ChipperConstants.BUILD_DIR + pathToLib + file );
+        } );
+
+        return; // short circuit before the whole copy below.
+      }
     }
 
     // otherwise copy the whole directory over, except the black list from above
-    else {
-      copyDirectory( grunt, '../' + repo, ChipperConstants.BUILD_DIR + '/' + repo + '/', null, {
-        blacklist: WRAPPER_BLACKLIST, // List of files to not copy
+    copyDirectory( grunt, '../' + repo, ChipperConstants.BUILD_DIR + '/' + repo + '/', null, {
+      blacklist: WRAPPER_BLACKLIST, // List of files to not copy
 
-        // TODO: We want to minify the built wrapper, but currently it is causing an error,
-        // see https://github.com/phetsims/phet-io-wrapper-sonification/issues/19#event-1153696188
-        minifyJS: true,
-        licenseToPrepend: '// Copyright 2002-2017, University of Colorado Boulder\n' +
-                          '// This PhET-iO file requires a license\n' +
-                          '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
-                          '// For licensing, please contact phethelp@colorado.edu\n\n'
-      } );
-    }
+      // TODO: We want to minify the built wrapper, but currently it is causing an error,
+      // see https://github.com/phetsims/phet-io-wrapper-sonification/issues/19#event-1153696188
+      minifyJS: true,
+      licenseToPrepend: '// Copyright 2002-2017, University of Colorado Boulder\n' +
+                        '// This PhET-iO file requires a license\n' +
+                        '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
+                        '// For licensing, please contact phethelp@colorado.edu\n\n'
+    } );
   } );
 
 
   // Since this is an asynchronous task, each step in the task uses a callback to advance to the next step.
   // The final step in the task calls 'done', to tell grunt that the task has completed.
-  createDependenciesJSON( grunt, buildConfig, function( dependenciesJSON ) {
+  createDependenciesJSON( grunt, buildConfig, function() {
     done();
   } );
 };
