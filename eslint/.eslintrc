@@ -265,6 +265,7 @@
     "window": false,
     // allow ajax requests directly
     "XMLHttpRequest": false,
-    "toast": false
+    "toast": false,
+    "Fourier":false
   }
 }
