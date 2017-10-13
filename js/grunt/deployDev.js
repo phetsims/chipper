@@ -14,7 +14,7 @@ var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
 
 // constants
-var URL_BASE = 'http://www.colorado.edu/physics/phet/dev/html/';
+var URL_BASE = 'https://www.colorado.edu/physics/phet/dev/html/';
 var HTACCESS_TEXT = 'IndexOrderDefault Descending Date\n';
 var TEST_DIR_NAME = 'deploy-dev-tests';
 
