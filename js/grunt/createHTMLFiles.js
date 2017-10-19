@@ -21,10 +21,10 @@ var Encoder = nodeHTMLEncoder.Encoder;
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+var getA11yViewHTMLFromTemplate = require( '../../../chipper/js/grunt/getA11yViewHTMLFromTemplate' );
+var getSimsFromDataFile = require( '../../../chipper/js/grunt/getSimsFromDataFile' );
 var getStringMap = require( '../../../chipper/js/grunt/getStringMap' );
 var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
-var getSimsFromDataFile = require( '../../../chipper/js/grunt/getSimsFromDataFile' );
-var generateA11yViewHTML = require( '../../../chipper/js/grunt/generateA11yViewHTML' );
 var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
 
 /**
@@ -279,13 +279,13 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   var a11ySims = getSimsFromDataFile( grunt, 'accessibility' );
 
-  // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir
-  if ( a11ySims.indexOf( buildConfig.name ) >= 0 ) {
+  // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
+  if ( a11ySims.indexOf( buildConfig.name ) >= 0 && buildConfig.brand !== 'phet-io' ) {
 
     // (a11y) Create the a11y-view HTML file for pDOM viewing.
-    generateA11yViewHTML( grunt, buildConfig );
+    var a11yHTML = getA11yViewHTMLFromTemplate( grunt, buildConfig );
     var a11yViewFilename = buildConfig.name + ChipperConstants.A11Y_VIEW_HTML_SUFFIX;
-    grunt.file.copy( a11yViewFilename, ChipperConstants.BUILD_DIR + '/' + a11yViewFilename );
+    grunt.file.write( ChipperConstants.BUILD_DIR + '/' + a11yViewFilename, a11yHTML );
   }
 
   grunt.log.debug( 'Cleaning temporary files' );

@@ -12,7 +12,7 @@
 
 // modules
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+var getA11yViewHTMLFromTemplate = require( '../../../chipper/js/grunt/getA11yViewHTMLFromTemplate' );
 
 /**
  * @param {Object} grunt - The grunt runtime object
@@ -20,16 +20,9 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  */
 module.exports = function( grunt, buildConfig ) {
 
+  var html = getA11yViewHTMLFromTemplate( grunt, buildConfig );
+
   var repositoryName = buildConfig.name;
-  var html = grunt.file.read( '../chipper/templates/sim-a11y-view.html' ); // the template file
-
-  var englishStringsString = grunt.file.read( repositoryName + '-strings_en.json' ); // the english strings file
-  var englishStringsJSON = JSON.parse( englishStringsString );
-  var englishSimTitle = englishStringsJSON[ buildConfig.simTitleStringKey.split( '/' )[ 1 ] ].value;
-
-  // Replace placeholders in the template.
-  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', englishSimTitle );
-  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
 
   // Write to the repository's root directory.
   grunt.file.write( repositoryName + ChipperConstants.A11Y_VIEW_HTML_SUFFIX, html );
