@@ -21,13 +21,16 @@
 'use strict';
 
 var assert = require( 'assert' );
+var child_process = require( 'child_process' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 /**
  * @param grunt the grunt instance
  */
 module.exports = function( grunt ) {
-
+  // Tell grunt to wait because this task is asynchronous.
+  // Returns a handle to a function that must be called when the task has completed.
+  var done = grunt.task.current.async();
 
   // grunt options
   var repositoryName = grunt.option( 'name' );
@@ -71,44 +74,62 @@ module.exports = function( grunt ) {
   // Iterate over the file system and copy files, changing filenames and contents as we go.
   grunt.file.recurse( '../simula-rasa', function( abspath, rootdir, subdir, filename ) {
 
-      // skip these files
-      if ( abspath.indexOf( '../simula-rasa/README.md' ) === 0 ||
-           abspath.indexOf( '../simula-rasa/node_modules/' ) === 0 ||
-           abspath.indexOf( '../simula-rasa/.git/' ) === 0 ||
-           abspath.indexOf( '../simula-rasa/build/' ) === 0 ) {
+    // skip these files
+    if ( abspath.indexOf( '../simula-rasa/README.md' ) === 0 ||
+         abspath.indexOf( '../simula-rasa/node_modules/' ) === 0 ||
+         abspath.indexOf( '../simula-rasa/.git/' ) === 0 ||
+         abspath.indexOf( '../simula-rasa/build/' ) === 0 ) {
 
-        // do nothing
-      }
-      else {
-        var contents = grunt.file.read( abspath );
-
-        // Replace variations of the repository name
-        contents = ChipperStringUtils.replaceAll( contents, 'simula-rasa', repositoryName );
-        contents = ChipperStringUtils.replaceAll( contents, 'SIMULA_RASA', configPath );
-        contents = ChipperStringUtils.replaceAll( contents, 'simulaRasa', lowerCamelCase );
-        contents = ChipperStringUtils.replaceAll( contents, 'SimulaRasa', upperCamelCase );
-
-        // Replace the title
-        contents = ChipperStringUtils.replaceAll( contents, '{{TITLE}}', title );
-
-        // Replace author
-        contents = ChipperStringUtils.replaceAll( contents, '{{AUTHOR}}', author );
-
-        // Fix copyright comments
-        contents = contents.replace( /\/\/ Copyright \d\d\d\d.*/g, '// Copyright ' + yearToday + ', University of Colorado Boulder' );
-
-        // Replace names in the path where the contents will be written
-        var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
-        contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'simula-rasa', repositoryName );
-        contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'simulaRasa', lowerCamelCase );
-        contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'SimulaRasa', upperCamelCase );
-
-        // Write the file
-        grunt.file.write( contentsPath, contents );
-        grunt.log.writeln( 'wrote', contentsPath );
-      }
+      // do nothing
     }
-  );
+    else {
+      var contents = grunt.file.read( abspath );
 
-  grunt.log.writeln( 'Please generate README.md for your new repository by running "grunt unpublished-README"' );
+      // Replace variations of the repository name
+      contents = ChipperStringUtils.replaceAll( contents, 'simula-rasa', repositoryName );
+      contents = ChipperStringUtils.replaceAll( contents, 'SIMULA_RASA', configPath );
+      contents = ChipperStringUtils.replaceAll( contents, 'simulaRasa', lowerCamelCase );
+      contents = ChipperStringUtils.replaceAll( contents, 'SimulaRasa', upperCamelCase );
+
+      // Replace the title
+      contents = ChipperStringUtils.replaceAll( contents, '{{TITLE}}', title );
+
+      // Replace author
+      contents = ChipperStringUtils.replaceAll( contents, '{{AUTHOR}}', author );
+
+      // Fix copyright comments
+      contents = contents.replace( /\/\/ Copyright \d\d\d\d.*/g, '// Copyright ' + yearToday + ', University of Colorado Boulder' );
+
+      // Replace names in the path where the contents will be written
+      var contentsPath = subdir ? ( destinationPath + '/' + subdir + '/' + filename ) : ( destinationPath + '/' + filename );
+      contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'simula-rasa', repositoryName );
+      contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'simulaRasa', lowerCamelCase );
+      contentsPath = ChipperStringUtils.replaceFirst( contentsPath, 'SimulaRasa', upperCamelCase );
+
+      // Write the file
+      grunt.file.write( contentsPath, contents );
+      grunt.log.writeln( 'wrote', contentsPath );
+    }
+  } );
+
+  function exec( cmd, callback ) {
+    child_process.exec( cmd, { cwd: destinationPath }, function( err, stdout, stderr ) {
+      grunt.log.debug( stdout );
+      grunt.log.debug( stderr );
+
+      if ( err ) {
+        throw new Error( cmd + ' failed: ' + err );
+      }
+
+      callback();
+    } );
+  }
+
+  exec( 'npm update', function() {
+    exec( 'grunt unpublished-README', function() {
+      exec( 'grunt generate-config', function() {
+        done();
+      } );
+    } );
+  } );
 };
