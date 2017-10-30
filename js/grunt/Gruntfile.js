@@ -30,6 +30,7 @@ var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var generateA11yViewHTML = require( '../../../chipper/js/grunt/generateA11yViewHTML' );
+var generateConfig = require( '../../../chipper/js/grunt/generateConfig' );
 var generateCoverage = require( '../../../chipper/js/grunt/generateCoverage' );
 var generateDevelopmentColorsHTML = require( '../../../chipper/js/grunt/generateDevelopmentColorsHTML' );
 var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
@@ -381,6 +382,12 @@ module.exports = function( grunt ) {
     'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
     function() {
       generateA11yViewHTML( grunt, buildConfig );
+    } );
+
+  grunt.registerTask( 'generate-config',
+    'Generates the js/SIM-config.js file based on the dependencies in package.json.',
+    function() {
+      generateConfig( grunt, buildConfig );
     } );
 
   grunt.registerTask( 'generate-coverage',

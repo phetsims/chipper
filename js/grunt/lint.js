@@ -59,6 +59,10 @@ module.exports = function( grunt, target, buildConfig ) {
       '**/snapshots',
       '../sherpa/**',
       '**/js/parser/svgPath.js',
+      // grunt lint-all from chipper and other repositories requires slightly different path references to things in
+      // chipper. When in chipper, the '../chipper' does not function properly. Both are included here.
+      'templates/sim-config.js',
+      '../chipper/templates/sim-config.js',
       '../phet-io-website/root/assets/js/ua-parser-0.7.12.min.js',
       '../phet-io-website/root/assets/js/jquery-1.12.3.min.js',
       '../phet-io-website/root/assets/highlight.js-9.1.0/highlight.pack.js',
