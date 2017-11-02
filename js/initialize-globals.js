@@ -253,8 +253,8 @@
     },
 
     /**
-     * Specifies the set of screens that appear in the sim, and their order.  Uses 1-based (not zero-based) and ","
-     * delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
+     * Specifies the set of screens that appear in the sim, and their order.
+     * Uses 1-based (not zero-based) and "," delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
      * For external use.
      */
     screens: {
