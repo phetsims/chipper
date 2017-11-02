@@ -261,7 +261,12 @@
       elementSchema: {
         type: 'number'
       },
-      defaultValue: null
+      defaultValue: null,
+      isValidValue: function( value ) {
+
+        // screen indices cannot be duplicated
+        return value.length === _.uniq( value ).length;
+      }
     },
 
     /**
