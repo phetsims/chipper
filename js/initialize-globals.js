@@ -253,15 +253,21 @@
     },
 
     /**
-     * Specifies the set of screens that appear in the sim, and their order.  Uses 1-based (not zero-based) and ","
-     * delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
+     * Specifies the set of screens that appear in the sim, and their order.
+     * Uses 1-based (not zero-based) and "," delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
+     * For external use.
      */
     screens: {
       type: 'array',
       elementSchema: {
         type: 'number'
       },
-      defaultValue: null
+      defaultValue: null,
+      isValidValue: function( value ) {
+
+        // screen indices cannot be duplicated
+        return value === null || (value.length === _.uniq( value ).length);
+      }
     },
 
     /**
