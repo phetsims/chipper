@@ -265,7 +265,7 @@
       isValidValue: function( value ) {
 
         // screen indices cannot be duplicated
-        return value.length === _.uniq( value ).length;
+        return value === null || (value.length === _.uniq( value ).length);
       }
     },
 
