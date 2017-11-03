@@ -37,7 +37,20 @@
       padding-bottom: 72%;
     }
 
-    .aspect-ratio iframe {
+    .aspect-ratio iframe.fixed {
+      width: 44.8%;
+      height: 100%;
+      max-height: 30vw;
+      position: fixed;
+      left: 0;
+      top: 0;
+      overflow: hidden;
+      border: 0;
+      margin-left: 2.4vw;
+      margin-top: 3.5vh;
+    }
+
+    .aspect-ratio iframe.not-fixed {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -115,7 +128,7 @@
       <h2>{{PHET_SIM_TITLE}} in iframe</h2>
 
       <div class="aspect-ratio">
-        <iframe id="iframe" allowfullscreen title="Interact with {{PHET_SIM_TITLE}}"></iframe>
+        <iframe id="iframe" class="not-fixed" allowfullscreen title="Interact with {{PHET_SIM_TITLE}}"></iframe>
       </div>
     </div>
 
@@ -326,7 +339,7 @@
         } );
 
         liveObserver.observe( originalElement, config )
-      };
+      }
 
       addLiveObserver( assertiveElementContainer, assertiveElement, assertiveElementCopy );
       addLiveObserver( politeElementContainer, politeElement, politeElementCopy );
@@ -335,9 +348,36 @@
 
       // set focus to the loaded ifram
       document.getElementById( 'iframe' ).focus();
-
     }
   } );
+</script>
+<script>
+  /*
+  Update the css of the iframe so that it will scroll with you as you look at the pDOM
+   */
+  var iframe = document.getElementById( 'iframe' );
+
+  // keep track of the scrollY when we first fix the iframe so that we can unfix when we scroll back up to it.
+  var scrollYWhenFixed = null;
+
+  var transitionThreshold = window.screen.height * .035; // vh as a percent, should match the top-margin of the fixed iframe class
+
+  window.addEventListener( 'scroll', function() {
+
+    // swap to the fixed class when the top of the iframe is within the threshhold
+    if ( iframe.classList.contains( 'not-fixed' ) && findTop( iframe ) < transitionThreshold ) {
+      iframe.classList.replace( 'not-fixed', 'fixed' );
+      scrollYWhenFixed = window.scrollY;
+    }
+    else if ( window.scrollY < scrollYWhenFixed && iframe.classList.contains( 'fixed' ) ) {
+      iframe.classList.replace( 'fixed', 'not-fixed' );
+    }
+  } );
+
+  function findTop( element ) {
+    var rec = element.getBoundingClientRect();
+    return rec.top;
+  }
 </script>
 </body>
 </html>
