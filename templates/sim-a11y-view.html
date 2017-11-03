@@ -366,11 +366,13 @@
 
     // swap to the fixed class when the top of the iframe is within the threshhold
     if ( iframe.classList.contains( 'not-fixed' ) && findTop( iframe ) < transitionThreshold ) {
-      iframe.classList.replace( 'not-fixed', 'fixed' );
+      iframe.classList.remove( 'not-fixed');
+      iframe.classList.add(  'fixed' );
       scrollYWhenFixed = window.scrollY;
     }
     else if ( window.scrollY < scrollYWhenFixed && iframe.classList.contains( 'fixed' ) ) {
-      iframe.classList.replace( 'fixed', 'not-fixed' );
+      iframe.classList.remove( 'fixed');
+      iframe.classList.add(  'not-fixed' );
     }
   } );
 
