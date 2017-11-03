@@ -132,6 +132,15 @@
     gameUpLogging: { type: 'flag' },
 
     /**
+     * Indicates whether to include the home screen.
+     * For multi-screen sims only, throws an error if supplied for a single-screen sim.
+     */
+    homeScreen: {
+      type: 'boolean',
+      defaultValue: true
+    },
+
+    /**
      * Enables support for Legends of Learning platform, including broadcasting 'init' and responding to pause/resume.
      */
     legendsOfLearning: { type: 'flag' },
