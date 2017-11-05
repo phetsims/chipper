@@ -99,7 +99,7 @@
     "require-tandem-support": 0,
     //
     // Require @public/@private for this.something = result;
-    "property-visibility-annotation": 2,
+    "property-visibility-annotation": 0,
     "no-property-in-require-statement": 2,
     // permit only one var declaration per line, see #390
     "one-var": [
