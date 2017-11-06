@@ -263,17 +263,6 @@
     sceneryStringLog: { type: 'flag' },
 
     /**
-     * Indicates the screen that will be initially selected on the home screen.
-     * If showHomeScreen is false, go immediately to this screen.
-     * Like query parameter 'screens', the value is 1-based; e.g. 'screenIndex=2' selects the 2nd screen.
-     * Use this query parameter only with multi-screen sims.
-     */
-    screenIndex: {
-      type: 'number',
-      defaultValue: 1
-    },
-
-    /**
      * Specifies the set of screens that appear in the sim, and their order.
      * Uses 1-based (not zero-based) and "," delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
      * For external use.
@@ -300,14 +289,6 @@
      * Displays an overlay of the current bounds of each scenery.FittedBlock
      */
     showFittedBlockBounds: { type: 'flag' },
-
-    /**
-     * if false, go immediately to screenIndex
-     */
-    showHomeScreen: {
-      type: 'boolean',
-      defaultValue: true
-    },
 
     /**
      * Shows pointer areas as dashed lines. touchAreas are red, mouseAreas are blue.
