@@ -417,6 +417,30 @@
   window.phet.chipper.randomSeed = phet.chipper.queryParameters.randomSeed;
 
   /**
+   * Utility function to pause synchronously for the given number of milliseconds.
+   * @param {number} millis - amount of time to pause synchronously
+   */
+  function sleep( millis ) {
+    var date = new Date();
+    var curDate;
+    do {
+      curDate = new Date();
+    } while ( curDate - date < millis );
+  }
+
+  /*
+   * These are used to make sure our sims still behave properly with an artificially higher load (so we can test what happens
+   * at 30fps, 5fps, etc). There tend to be bugs that only happen on less-powerful devices, and these functions facilitate
+   * testing a sim for robustness, and allowing others to reproduce slow-behavior bugs.
+   */
+  window.phet.chipper.makeEverythingSlow = function() {
+    window.setInterval( function() { sleep( 64 ); }, 16 );
+  };
+  window.phet.chipper.makeRandomSlowness = function() {
+    window.setInterval( function() { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) );
+  };
+
+  /**
    * Enables or disables assertions in common libraries using query parameters.
    * There are two types of assertions: basic and slow. Enabling slow assertions will adversely impact performance.
    * 'ea' enables basic assertions, 'eall' enables basic and slow assertions.
