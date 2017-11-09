@@ -86,6 +86,7 @@ module.exports = function( grunt, buildConfig ) {
 
         // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
         stringData.value = stringData.value.trim();
+
         stringData.value = ChipperStringUtils.addDirectionalFormatting( stringData.value, isRTL );
 
         // Add the requirejs namespaces (eg, JOIST) to the key

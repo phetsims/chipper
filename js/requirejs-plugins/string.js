@@ -63,6 +63,7 @@ define( function( require ) {
           
           // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
           parsed[ stringKey ].value = parsed[ stringKey ].value.trim();
+
           parsed[ stringKey ].value = ChipperStringUtils.addDirectionalFormatting( parsed[ stringKey ].value, isRTL );
         }
         cache[ url ] = parsed;
