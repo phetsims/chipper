@@ -306,7 +306,10 @@
     showVisibleBounds: { type: 'flag' },
 
     /**
-     * override strings, value is JSON that is identical to string.json files
+     * Override translated strings.
+     * The value is encoded JSON of the form { "namespace.key":"value", "namespace.key":"value", ... }
+     * Example: { "PH_SCALE/logarithmic":"foo", "PH_SCALE/linear":"bar" }
+     * Encode the JSON in a browser console using: encodeURIComponent( JSON.stringify( value ) )
      */
     strings: {
       type: 'string',
