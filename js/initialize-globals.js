@@ -134,6 +134,7 @@
     /**
      * Indicates whether to include the home screen.
      * For multi-screen sims only, throws an assertion error if supplied for a single-screen sim.
+     * For external use.
      */
     homeScreen: {
       type: 'boolean',
@@ -146,6 +147,7 @@
      * The value is one of the values in the screens array, not an index into the screens array.
      * For example ?screens=1,3&initialScreen=3, not ?screens=1,3&initialScreen=2.
      * For multi-screen sims only, throws an assertion error if applied in a single-screen sims.
+     * For external use.
      */
     initialScreen: {
       type: 'number',
