@@ -169,7 +169,7 @@
 
     /*
      * Enables basic logging to the console.
-     * Usage in code: phet.log && phet.log( 'you message' );
+     * Usage in code: phet.log && phet.log( 'your message' );
      */
     log: { type: 'flag' },
 
