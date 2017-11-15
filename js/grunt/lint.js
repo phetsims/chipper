@@ -14,6 +14,8 @@ var eslint = require( 'eslint' );
 
 // constants
 var CLIEngine = eslint.CLIEngine;
+var LINT_EVERYTHING_OPTION = 'everything';
+var ES6_DIRECTORY = 'chipper/js/grunt/es6/';
 
 /**
  * Gets the relative path for the given repo.
@@ -29,7 +31,7 @@ var GET_PATH = function( repo ) { return '../' + repo; };
  */
 module.exports = function( grunt, target, buildConfig ) {
 
-  assert && assert( target === 'dir' || target === 'all' || target === 'everything', 'Bad lint target: ' + target );
+  assert && assert( target === 'dir' || target === 'all' || target === LINT_EVERYTHING_OPTION, 'Bad lint target: ' + target );
   var repositoryName = buildConfig.name;
 
   // --disable-eslint-cache disables the cache, useful for developing rules
@@ -69,7 +71,7 @@ module.exports = function( grunt, target, buildConfig ) {
       '../phet-io-website/root/assets/bootstrap-3.3.6-dist/js/bootstrap.js',
       '../phet-io-website/root/assets/js/phet-io-ga.js',
       '../installer-builder/temp/**',
-      '../chipper/js/grunt/es6/**'
+      '../' + ES6_DIRECTORY + '**'
     ]
   } );
 
@@ -82,12 +84,56 @@ module.exports = function( grunt, target, buildConfig ) {
   // Use the correct relative paths
   files = files.map( GET_PATH );
 
+  grunt.log.debug( 'executing main lint, target type: ' + target );
+
   // run the eslint step
   var report = cli.executeOnFiles( files );
 
-  // pretty print results to console if any
-  ( report.warningCount || report.errorCount ) && grunt.log.write( cli.getFormatter()( report.results ) );
+  var es6Report = {};
+  if ( target === LINT_EVERYTHING_OPTION ) {
+    grunt.log.debug( 'executing es6+ lint' );
+    es6Report = lintES6( cache );
+  }
 
-  report.warningCount && grunt.fail.warn( report.warningCount + ' Lint Warnings' );
-  report.errorCount && grunt.fail.fatal( report.errorCount + ' Lint Errors' );
+  // pretty print results to console if any
+  (report.warningCount || report.errorCount) && grunt.log.write( cli.getFormatter()( report.results ) );
+  (es6Report.warningCount || es6Report.errorCount) && grunt.log.write( cli.getFormatter()( es6Report.results ) );
+
+  var warnings = report.warningCount + es6Report.warningCount || 0;
+  report.warningCount && grunt.fail.warn( warnings + ' Lint Warnings' );
+
+  var errors = report.errorCount + es6Report.errorCount || 0;
+  report.errorCount && grunt.fail.fatal( errors + ' Lint Errors' );
+
+
 };
+
+
+/**
+ * Using the same format as above, lint the files needing a es6+ parser
+ * @param cache
+ * @param repositoryName
+ * @param target
+ * @returns {*}
+ */
+function lintES6( cache, repositoryName, target ) {
+  var es6_cli = new CLIEngine( {
+
+    // Rules are specified in the .eslintrc file
+    configFile: '../chipper/eslint/es8.eslintrc',
+
+    // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a
+    // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where
+    // grunt was run from.
+    cache: cache,
+
+    // Our custom rules live here
+    rulePaths: [ '../chipper/eslint/rules' ],
+
+    // Where to store the target-specific cache file
+    cacheFile: '../chipper/eslint/cache/' + repositoryName + '-' + target + 'es8.eslintcache'
+
+  } );
+
+  return es6_cli.executeOnFiles( [ GET_PATH( ES6_DIRECTORY ) ] );
+}

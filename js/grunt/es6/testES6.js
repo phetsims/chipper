@@ -9,16 +9,16 @@
 'use strict';
 
 module.exports = function( grunt ) {
-  let gruntDone = grunt.task.current.async();
+  let gruntDone = grunt.task.current.async(); // let: es6
 
   function sleep( ms ) {
-    return new Promise( resolve => setTimeout( resolve, ms ) );
+    return new Promise( resolve => setTimeout( resolve, ms ) ); // Promise: es6
   }
 
-  async function demo() {
+  async function demo() { // async: es8
     console.log( 'Taking a break...' );
-    await sleep( 2000 );
-    console.log( 'Two second later' );
+    await sleep( 25 ** 2.3 ); // exponent: es7
+    console.log( 25 ** 2.3, 'milliseconds later' );
     gruntDone();
   }
 
