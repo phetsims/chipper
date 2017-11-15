@@ -15,7 +15,7 @@ var eslint = require( 'eslint' );
 // constants
 var CLIEngine = eslint.CLIEngine;
 var LINT_EVERYTHING_OPTION = 'everything';
-var ES6_DIRECTORY = 'chipper/js/grunt/es6/';
+var ES6_DIRECTORY = 'chipper/js/grunt/es8/';
 
 /**
  * Gets the relative path for the given repo.
@@ -89,20 +89,20 @@ module.exports = function( grunt, target, buildConfig ) {
   // run the eslint step
   var report = cli.executeOnFiles( files );
 
-  var es6Report = {};
+  var es8Report = {};
   if ( target === LINT_EVERYTHING_OPTION ) {
-    grunt.log.debug( 'executing es6+ lint' );
-    es6Report = lintES6( cache );
+    grunt.log.debug( 'executing es8 lint' );
+    es8Report = lintES8( cache );
   }
 
   // pretty print results to console if any
   (report.warningCount || report.errorCount) && grunt.log.write( cli.getFormatter()( report.results ) );
-  (es6Report.warningCount || es6Report.errorCount) && grunt.log.write( cli.getFormatter()( es6Report.results ) );
+  (es8Report.warningCount || es8Report.errorCount) && grunt.log.write( cli.getFormatter()( es8Report.results ) );
 
-  var warnings = report.warningCount + es6Report.warningCount || 0;
+  var warnings = report.warningCount + es8Report.warningCount || 0;
   report.warningCount && grunt.fail.warn( warnings + ' Lint Warnings' );
 
-  var errors = report.errorCount + es6Report.errorCount || 0;
+  var errors = report.errorCount + es8Report.errorCount || 0;
   report.errorCount && grunt.fail.fatal( errors + ' Lint Errors' );
 
 
@@ -116,8 +116,8 @@ module.exports = function( grunt, target, buildConfig ) {
  * @param target
  * @returns {*}
  */
-function lintES6( cache, repositoryName, target ) {
-  var es6_cli = new CLIEngine( {
+function lintES8( cache, repositoryName, target ) {
+  var es8_cli = new CLIEngine( {
 
     // Rules are specified in the .eslintrc file
     configFile: '../chipper/eslint/es8.eslintrc',
@@ -135,5 +135,5 @@ function lintES6( cache, repositoryName, target ) {
 
   } );
 
-  return es6_cli.executeOnFiles( [ GET_PATH( ES6_DIRECTORY ) ] );
+  return es8_cli.executeOnFiles( [ GET_PATH( ES6_DIRECTORY ) ] );
 }

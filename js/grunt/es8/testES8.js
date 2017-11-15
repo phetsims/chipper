@@ -1,4 +1,4 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2017, University of Colorado Boulder
 
 /**
  * Runs a sleep command with es6 as a basic es6 script.
