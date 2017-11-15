@@ -44,6 +44,7 @@ var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var requirejsBuild = require( '../../../chipper/js/grunt/requirejsBuild' );
 var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
+var testES6 = require( '../../../chipper/js/grunt/es6/testES6' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
@@ -432,5 +433,9 @@ module.exports = function( grunt ) {
                                                   '--file absolute path of the file that will receive the require statement\n' +
                                                   '--name to be required', function() {
     insertRequireStatement( grunt, buildConfig );
+  } );
+
+  grunt.registerTask( 'es6Test', 'test es6 features', function() {
+    testES6( grunt, buildConfig );
   } );
 };
