@@ -15,7 +15,7 @@ var eslint = require( 'eslint' );
 // constants
 var CLIEngine = eslint.CLIEngine;
 var LINT_EVERYTHING_OPTION = 'everything';
-var ES6_DIRECTORY = 'chipper/js/grunt/es8/';
+var CHIPPER_ES6_DIRECTORY = 'chipper/js/grunt/es8/';
 
 /**
  * Gets the relative path for the given repo.
@@ -71,7 +71,8 @@ module.exports = function( grunt, target, buildConfig ) {
       '../phet-io-website/root/assets/bootstrap-3.3.6-dist/js/bootstrap.js',
       '../phet-io-website/root/assets/js/phet-io-ga.js',
       '../installer-builder/temp/**',
-      '../' + ES6_DIRECTORY + '**'
+      '../' + CHIPPER_ES6_DIRECTORY + '**',
+      '../perennial/**' // don't es5 lint perennial, only es8 lint it
     ]
   } );
 
@@ -131,9 +132,14 @@ function lintES8( cache, repositoryName, target ) {
     rulePaths: [ '../chipper/eslint/rules' ],
 
     // Where to store the target-specific cache file
-    cacheFile: '../chipper/eslint/cache/' + repositoryName + '-' + target + 'es8.eslintcache'
+    cacheFile: '../chipper/eslint/cache/' + repositoryName + '-' + target + 'es8.eslintcache',
 
+    ignorePattern: [ // TODO: this is copied from es5 lint task.
+      '**/.git',
+      '**/build',
+      '**/node_modules'
+    ]
   } );
 
-  return es8_cli.executeOnFiles( [ GET_PATH( ES6_DIRECTORY ) ] );
+  return es8_cli.executeOnFiles( [ GET_PATH( CHIPPER_ES6_DIRECTORY ), GET_PATH( 'perennial' ) ] );
 }
