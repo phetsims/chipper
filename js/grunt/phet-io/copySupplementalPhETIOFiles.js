@@ -222,7 +222,7 @@ var handleLib = function( grunt, filter ) {
 };
 
 /**
- * Copy the appropriate resources and files to the build folder needed for the develeopment guide.
+ * Copy the appropriate resources and files to the build folder needed for the development guide.
  * @param grunt
  * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
  *                            has arguments like "function(abspath, contents)"
