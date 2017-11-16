@@ -11,7 +11,6 @@
 // modules
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var getDeployConfig = require( '../../../chipper/js/common/getDeployConfig' );
-var querystring = require( 'querystring' );
 var request = require( 'request' );
 
 /**
