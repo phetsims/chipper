@@ -45,7 +45,7 @@ module.exports = function( grunt, buildConfig, callback ) {
     // read dependencies.json (required)
     var dependenciesJSON = grunt.file.readJSON( 'build/dependencies.json' );
 
-    var params = {
+    var json = {
       repos: JSON.stringify( dependenciesJSON ),
       locales: grunt.option( 'locales' ) || '*',
       simName: deployConfig.name,
@@ -54,32 +54,35 @@ module.exports = function( grunt, buildConfig, callback ) {
     };
 
     if ( grunt.option( 'option' ) === 'rc' ) {
-      params.option = 'rc';
+      json.option = 'rc';
     }
 
     if ( grunt.option( 'email' ) ) {
-      params.email = grunt.option( 'email' );
+      json.email = grunt.option( 'email' );
     }
     else if ( deployConfig.buildServerNotifyEmail ) {
-      params.email = deployConfig.buildServerNotifyEmail;
+      json.email = deployConfig.buildServerNotifyEmail;
     }
 
-    var query = querystring.stringify( params );
-
     var productionServerURL = deployConfig.productionServerURL;
-    var url = productionServerURL + '/deploy-html-simulation?' + query;
+    var url = productionServerURL + '/deploy-html-simulation';
 
     var done = callback || grunt.task.current.async();
 
     if ( grunt.option( 'dryRun' ) ) {
-      grunt.log.writeln( 'Option \'dryRun\' set, URL will not be sent to build server.' );
+      grunt.log.writeln( 'Option \'dryRun\' set, request will not be sent to build server.' );
       grunt.log.writeln( 'URL = ' + url );
+      for ( var key in json ) {
+        if ( json.hasOwnProperty( key ) ) {
+          grunt.log.writeln( key + ':' + json[ key ] );
+        }
+      }
       done();
     }
     else {
 
       // send the build request to the build server
-      request( url, function( error, response, body ) {
+      request.post( { url, json }, function( error, response, body ) {
         if ( error ) {
           grunt.fail.warn( 'Build request failed with error ' + error + '.' );
         }
