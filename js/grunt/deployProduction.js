@@ -82,7 +82,7 @@ module.exports = function( grunt, buildConfig, callback ) {
     else {
 
       // send the build request to the build server
-      request.post( { url, json }, function( error, response, body ) {
+      request.post( { url: url, json: json }, function( error, response, body ) {
         if ( error ) {
           grunt.fail.warn( 'Build request failed with error ' + error + '.' );
         }
