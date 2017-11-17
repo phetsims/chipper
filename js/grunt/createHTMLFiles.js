@@ -205,10 +205,16 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   chipperNamespaceJavascript = replaceConstants( chipperNamespaceJavascript, false );
   chipperStringSetupJavascript = replaceConstants( chipperStringSetupJavascript, false );
 
-  function replaceLocaleConstants( string, locale ) {
+  function replaceLocaleConstants( string, locale, includeAllLocales ) {
     var localeTitleAndVersion = stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version; //TODO: i18n order
 
-    string = ChipperStringUtils.replaceFirst( string, 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
+    var stringObject = stringMap;
+    if ( !includeAllLocales ) {
+      stringObject = {};
+      stringObject[ locale ] = stringMap[ locale ];
+    }
+
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_STRINGS', JSON.stringify( stringObject, null, '' ) );
 
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
@@ -233,10 +239,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   for ( var i = 0; i < buildConfig.locales.length; i++ ) {
     var locale = buildConfig.locales[ i ];
 
-    var localeHTML = replaceLocaleConstants( html, locale );
-    var chromeLocaleHTML = replaceLocaleConstants( chromeHTML, locale );
-    var localeChipperNamespaceJavascript = replaceLocaleConstants( chipperNamespaceJavascript, locale );
-    var localeChipperStringSetupJavascript = replaceLocaleConstants( chipperStringSetupJavascript, locale );
+    var localeHTML = replaceLocaleConstants( html, locale, false );
 
     // phet-io simulations end in "phetio", see https://github.com/phetsims/together/issues/288
     var brandSuffix = buildConfig.brand === 'phet-io' ? '-phetio' : '';
@@ -246,6 +249,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
     // Write the Chrome Web Store files
     if ( grunt.option( 'chromeWebStore' ) ) {
+      var chromeLocaleHTML = replaceLocaleConstants( chromeHTML, locale, false );
+      var localeChipperNamespaceJavascript = replaceLocaleConstants( chipperNamespaceJavascript, locale, false );
+      var localeChipperStringSetupJavascript = replaceLocaleConstants( chipperStringSetupJavascript, locale, false );
+
       var localeDir = 'build/chrome-web-store_' + locale;
       var localeJSDir = localeDir + '/js';
       grunt.file.mkdir( localeDir );
@@ -258,6 +265,11 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
       grunt.file.write( localeJSDir + '/preload.js', preloadScripts.join( '\n' ) );
       grunt.file.write( localeJSDir + '/main.js', mainInlineJavascript );
     }
+  }
+
+  // Create an _all.html file
+  if ( grunt.option( 'allHTML' ) && buildConfig.brand === 'phet' ) {
+    grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, 'en', true ) );
   }
 
   //TODO should this be using ChipperConstants.FALLBACK_LOCALE instead of hardcoded to 'en'?
