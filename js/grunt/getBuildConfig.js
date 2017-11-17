@@ -171,7 +171,12 @@ module.exports = function( grunt ) {
 
     // Get names of string files.
     var stringFiles = grunt.file.expand( stringsDirectory + '/' + repository + '-strings_*.json' );
-    assert( stringFiles.length > 0, 'no string files found in ' + stringsDirectory );
+
+    // Don't fail out if there are no string files, as this is a normal condition when building new simulations
+    if ( stringFiles.length === 0 ) {
+      grunt.log.debug( 'No string files found in ' + stringsDirectory + ' for repository ' + repository );
+      return [];
+    }
 
     // Extract the locales from the file names.
     // File names must have a form like 'graphing-lines-strings_ar_SA.json', where no '_' appear in the repo name.
@@ -274,6 +279,7 @@ module.exports = function( grunt ) {
   };
 
   // These fields depend on other entries in buildConfig.
+  buildConfig.availableLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( buildConfig.name ) );
   buildConfig.simTitleStringKey = buildConfig.requirejsNamespace + '/' + buildConfig.name + '.title'; // REPO/repo.name
   buildConfig.phetLibs = getPhetLibs( packageJSON, buildJSON, buildConfig.brand );
   buildConfig.preload = getPreload( packageJSON, buildJSON, buildConfig.brand );
