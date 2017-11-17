@@ -173,6 +173,12 @@
                //In the fallback case, supply whatever string was given in the query parameter value
              stringTest;
     };
+
+    // Need to initialize our locale before we send off Google Analytics queries (it was being done afterwards in
+    // Sim.js before).
+    if ( phet.chipper.getQueryParameter( 'locale' ) ) {
+      window.phet.chipper.locale = phet.chipper.getQueryParameter( 'locale' );
+    }
   }());
   /**
    * Enables or disables assertions in common libraries using query parameters.
