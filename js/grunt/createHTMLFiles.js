@@ -183,7 +183,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   for ( var i = 0; i < buildConfig.locales.length; i++ ) {
     var locale = buildConfig.locales[ i ];
 
-    var localeHTML = ChipperStringUtils.replaceFirst( html, 'PHET_STRINGS', JSON.stringify( stringMap[ locale ], null, '' ) );
+    var localeHTML = html;
 
     var localeTitleAndVersion = stringMap[ locale ][ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version; //TODO: i18n order
 
@@ -203,7 +203,29 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
       localeHTML = localeHTML.replace( devVersion, buildConfig.version );
     }
 
-    grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', localeHTML );
+    var specificStringMap = {};
+    specificStringMap[ locale ] = stringMap[ locale ];
+    var outputHTML = ChipperStringUtils.replaceFirst( localeHTML, 'PHET_STRINGS', JSON.stringify( specificStringMap, null, '' ) );
+
+    grunt.file.write( 'build/' + buildConfig.name + '_' + locale + '.html', outputHTML );
+  }
+  if ( grunt.option( 'allHTML' ) && buildConfig.brand === 'phet' ) {
+    var allHTML = html;
+
+    var localeTitleAndVersionAll = stringMap.en[ buildConfig.simTitleStringKey ] + ' ' + buildConfig.version; //TODO: i18n order
+
+    // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
+    allHTML = ChipperStringUtils.replaceFirst( allHTML, 'PHET_LOCALE', 'en' );
+    allHTML = ChipperStringUtils.replaceFirst( allHTML, 'PHET_SIM_TITLE', encoder.htmlEncode( localeTitleAndVersionAll ) );
+
+    // metadata for Open Graph protocol, see phet-edmodo#2
+    allHTML = ChipperStringUtils.replaceFirst( allHTML, 'OG_TITLE', encoder.htmlEncode( localeTitleAndVersionAll ) );
+    allHTML = ChipperStringUtils.replaceFirst( allHTML, 'OG_URL', latestDir + buildConfig.name + '_en.html' );
+    allHTML = ChipperStringUtils.replaceFirst( allHTML, 'OG_IMAGE', latestDir + buildConfig.name + '-600.png' );
+
+    allHTML = ChipperStringUtils.replaceFirst( allHTML, 'PHET_STRINGS', JSON.stringify( stringMap, null, '' ) );
+
+    grunt.file.write( 'build/' + buildConfig.name + '_all.html', allHTML );
   }
 
   //TODO should this be using ChipperConstants.FALLBACK_LOCALE instead of hardcoded to 'en'?
