@@ -319,17 +319,19 @@
       // add mutation observers to each of the aria-live elements
       function addLiveObserver( container, originalElement, copiedElement ) {
         var liveObserver = new MutationObserver( function( mutations ) {
+          mutations.forEach( function( mutation ) {
 
-          // remove all other aria-live content
-          assertiveElementCopy.textContent = '';
-          politeElementCopy.textContent = '';
-          assertiveAlertElementCopy.textContent = '';
-          politeStatusElementCopy.textContent = '';
+            // remove all other aria-live content
+            assertiveElementCopy.textContent = '';
+            politeElementCopy.textContent = '';
+            assertiveAlertElementCopy.textContent = '';
+            politeStatusElementCopy.textContent = '';
 
 
-          // update the text content of the copied element to match the element in
-          // the iframe document
-          copiedElement.textContent = mutation.target.textContent;
+            // update the text content of the copied element to match the element in
+            // the iframe document
+            copiedElement.textContent = mutation.target.textContent;
+          } );
         } );
 
         liveObserver.observe( originalElement, config )
