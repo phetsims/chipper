@@ -416,10 +416,19 @@
     }
   }());
 
-  // Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
-  // See Random.js
-  // @public (writeable by phet-io) can be overwritten for replicable playback in phet-io.
+  /** Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
+   * See `Random.js`
+   * @public (writable by phet-io) can be overwritten for replicable playback in phet-io.
+   * @type {number}
+   */
   window.phet.chipper.randomSeed = phet.chipper.queryParameters.randomSeed;
+
+  /**
+   * Global flag that dictates if accessibility is enabled for the simulation
+   * @public (writable by joist) can be overwritten in the constructor of Sim.js
+   * @type {boolean}
+   */
+  window.phet.chipper.a11yEnabled = phet.chipper.queryParameters.accessibility;
 
   /**
    * Utility function to pause synchronously for the given number of milliseconds.
@@ -457,7 +466,7 @@
     var isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
 
     var enableAllAssertions = !isProduction && phet.chipper.queryParameters.eall; // enables all assertions (basic and slow)
-    var enableBasicAssertions = enableAllAssertions || ( !isProduction && phet.chipper.queryParameters.ea );  // enables basic assertions
+    var enableBasicAssertions = enableAllAssertions || (!isProduction && phet.chipper.queryParameters.ea);  // enables basic assertions
 
     if ( enableBasicAssertions ) {
       window.assertions.enableAssert();
