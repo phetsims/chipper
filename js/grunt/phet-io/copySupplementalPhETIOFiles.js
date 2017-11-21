@@ -1,16 +1,16 @@
 // Copyright 2016, University of Colorado Boulder
 
 /**
- *
+ * Copies all supporting PhET-iO files, including wrappers, indices, lib files, etc.
  *
  * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Matt Pennington (PhET Interactive Simulations)
  */
 /* eslint-env node */
 'use strict';
 
 // modules
-// var generatePhETIOAPIDocs = require( './generatePhETIOAPIDocs' );
 var ChipperConstants = require( '../../common/ChipperConstants' );
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 var copyDirectory = require( './copyDirectory' );
@@ -44,7 +44,6 @@ var CONTRIB_FILES = [
 ];
 var CONTRIB_DIR = ChipperConstants.BUILD_DIR + '/contrib';
 
-
 module.exports = function( grunt, buildConfig, done ) {
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
@@ -65,12 +64,9 @@ module.exports = function( grunt, buildConfig, done ) {
           // If the file is in a dedicated wrapper repo, then it is one level higher in the dir tree, and needs 1 less set of dots.
           // see https://github.com/phetsims/phet-io-wrappers/issues/17 for more info. This is hopefully a temporary workaround
           var eliminateExtraDotsForDedicatedWrappers = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
-
           var fileName = filePathParts[ filePathParts.length - 1 ];
           var contribFileName = 'contrib/' + fileName;
-
           var pathToContrib = eliminateExtraDotsForDedicatedWrappers ? '../../' + contribFileName : '../' + contribFileName;
-
           contents = ChipperStringUtils.replaceAll( contents, filePath, pathToContrib );
         }
       } );
@@ -78,32 +74,29 @@ module.exports = function( grunt, buildConfig, done ) {
       /*
        * Remove individual common phet-io code imports because they are all in phetio.js
        */
+
       // This returns the whole line that contains this substring, so it can be removed
       var firstQueryStringLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js">' );
+
       // Don't remove the import if it is coming from the phet-io website, only if it is a relative path in requirejs mode.
       if ( firstQueryStringLine && firstQueryStringLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
-        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
-        contents = ChipperStringUtils.replaceAll( contents, firstQueryStringLine, '' );
+        contents = ChipperStringUtils.replaceAll( contents, firstQueryStringLine, '' ); // included in phetio.js
       }
       var firstWrapperUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperUtils.js">' );
       if ( firstWrapperUtilsLine && firstWrapperUtilsLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
-        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
-        contents = ChipperStringUtils.replaceAll( contents, firstWrapperUtilsLine, '' );
+        contents = ChipperStringUtils.replaceAll( contents, firstWrapperUtilsLine, '' ); // included in phetio.js
       }
       var firstAssertLine = ChipperStringUtils.firstLineThatContains( contents, 'assert.js">' );
       if ( firstAssertLine && firstAssertLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
-        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
-        contents = ChipperStringUtils.replaceAll( contents, firstAssertLine, '' );
+        contents = ChipperStringUtils.replaceAll( contents, firstAssertLine, '' ); // included in phetio.js
       }
       var firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'SimIFrameClient.js">' );
       if ( firstIFrameClientLine && firstIFrameClientLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
-        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
-        contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' );
+        contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' ); // included in phetio.js
       }
       var firstWrapperTypeLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperTypes.js">' );
       if ( firstWrapperTypeLine && firstWrapperTypeLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
-        // Replace queryStringMachine with an empty line because 'phetio.js' has it already.
-        contents = ChipperStringUtils.replaceAll( contents, firstWrapperTypeLine, '' );
+        contents = ChipperStringUtils.replaceAll( contents, firstWrapperTypeLine, '' ); // included in phetio.js
       }
 
       // For info about phetio.js, see the end of this file
@@ -251,7 +244,6 @@ var handleDevGuide = function( grunt, filter ) {
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io.js' );
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io-ga.js' );
   grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + ChipperConstants.BUILD_DIR + '/docs/favicon.ico' );
-
 };
 
 /**
@@ -267,6 +259,4 @@ var handleContrib = function( grunt ) {
     grunt.file.copy( filePath, './' + CONTRIB_DIR + '/' + fileName );
 
   } );
-
-
 };
