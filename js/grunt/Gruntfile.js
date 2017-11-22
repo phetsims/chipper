@@ -369,13 +369,35 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
     function() {
-      generateDevelopmentHTML( grunt, buildConfig, '', 'style="background-color:black;"', buildConfig.name + '_en.html', '', null, null, '' );
+      generateDevelopmentHTML( grunt, buildConfig );
     } );
 
   grunt.registerTask( 'generate-test-html',
-    'Generates top-level SIM_en.html file based on the preloads in package.json.',
+    'Generates top-level SIM_test.html file based on the preloads in package.json.',
     function() {
-      generateDevelopmentHTML( grunt, buildConfig, '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.0.1.css">', '', buildConfig.name + '-test.html', '<div id="qunit"></div>', '../sherpa/lib/qunit-2.0.1.js', '../joist/js/splash.js', 'test-' );
+      generateDevelopmentHTML( grunt, buildConfig, {
+
+        // Include QUnit CSS
+        stylesheets: '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.0.1.css">',
+
+        // Leave the background the default color white
+        bodystyle: '',
+
+        // Output to a test file
+        outputFile: buildConfig.name + '-test.html',
+
+        // Add the QUnit div
+        bodystart: '<div id="qunit"></div>',
+
+        // Add QUnit JS
+        addedPreload: '../sherpa/lib/qunit-2.0.1.js',
+
+        // Do not show the splash screen
+        stripPreload: '../joist/js/splash.js',
+
+        // Specify to use test config
+        qualifier: 'test-'
+      } );
     } );
 
   grunt.registerTask( 'generate-development-colors-html',
