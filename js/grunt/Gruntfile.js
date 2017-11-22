@@ -369,7 +369,13 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
     function() {
-      generateDevelopmentHTML( grunt, buildConfig );
+      generateDevelopmentHTML( grunt, buildConfig, '', 'style="background-color:black;"', buildConfig.name + '_en.html', '', null, null, '' );
+    } );
+
+  grunt.registerTask( 'generate-test-html',
+    'Generates top-level SIM_en.html file based on the preloads in package.json.',
+    function() {
+      generateDevelopmentHTML( grunt, buildConfig, '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.0.1.css">', '', buildConfig.name + '-test.html', '<div id="qunit"></div>', '../sherpa/lib/qunit-2.0.1.js', '../joist/js/splash.js', 'test-' );
     } );
 
   grunt.registerTask( 'generate-development-colors-html',
@@ -387,7 +393,13 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-config',
     'Generates the js/SIM-config.js file based on the dependencies in package.json.',
     function() {
-      generateConfig( grunt, buildConfig );
+      generateConfig( grunt, buildConfig, '../chipper/templates/sim-config.js', 'js/' + buildConfig.name + '-config.js' );
+    } );
+
+  grunt.registerTask( 'generate-test-config',
+    'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
+    function() {
+      generateConfig( grunt, buildConfig, '../chipper/templates/sim-test-config.js', 'js/' + buildConfig.name + '-test-config.js' );
     } );
 
   grunt.registerTask( 'generate-coverage',

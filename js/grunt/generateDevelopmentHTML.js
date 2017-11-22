@@ -18,7 +18,7 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param {Object} grunt - The grunt runtime object
  * @param {Object} buildConfig - see getBuildConfig.js
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( grunt, buildConfig, stylesheets, bodystyle, outputFile, bodystart, addedPreload, stripPreload, qualifier ) {
 
   var repositoryName = buildConfig.name;
   var splashURL = '../brand/' + buildConfig.brand + '/images/splash.svg';
@@ -30,6 +30,13 @@ module.exports = function( grunt, buildConfig ) {
   }
 
   var normalPreload = buildConfig.preload.filter( notGA );
+  addedPreload && normalPreload.push( addedPreload );
+
+  if ( stripPreload ) {
+    var index = normalPreload.indexOf( stripPreload );
+    if ( index === -1 ) { throw new Error( 'preload not found: ' + stripPreload );}
+    normalPreload.splice( index, 1 );
+  }
 
   // Formatting is very specific to the template file. Each preload is placed on separate line,
   // with an indentation that is specific indentation to the template. See chipper#462
@@ -42,7 +49,11 @@ module.exports = function( grunt, buildConfig ) {
   }
 
   // Replace placeholders in the template.
+  html = ChipperStringUtils.replaceAll( html, '{{BODYSTYLE}}', bodystyle );
+  html = ChipperStringUtils.replaceAll( html, '{{BODYSTART}}', bodystart );
+  html = ChipperStringUtils.replaceAll( html, '{{STYLESHEETS}}', stylesheets );
   html = ChipperStringUtils.replaceAll( html, '{{REPOSITORY}}', repositoryName );
+  html = ChipperStringUtils.replaceAll( html, '{{QUALIFIER}}', qualifier );
   html = ChipperStringUtils.replaceAll( html, '{{BRAND}}', buildConfig.brand );
   html = ChipperStringUtils.replaceAll( html, '{{SPLASH_URL}}', splashURL );
   html = ChipperStringUtils.replaceAll( html, '{{PHETIO_PRELOADS}}', stringifyArray( buildConfig.phetioPreload ) );
@@ -54,5 +65,5 @@ module.exports = function( grunt, buildConfig ) {
   html = ChipperStringUtils.replaceAll( html, '{{BROWSER_WINDOW_TITLE}}', repositoryName );
 
   // Write to the repository's root directory.
-  grunt.file.write( repositoryName + '_en.html', html );
+  grunt.file.write( outputFile, html );
 };

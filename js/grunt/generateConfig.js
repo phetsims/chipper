@@ -17,10 +17,10 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
  * @param {Object} grunt - The grunt runtime object
  * @param {Object} buildConfig - see getBuildConfig.js
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( grunt, buildConfig, templateFilename, destination ) {
 
   var repositoryName = buildConfig.name;
-  var configJS = grunt.file.read( '../chipper/templates/sim-config.js' ); // the template file
+  var configJS = grunt.file.read( templateFilename ); // the template file
 
   var requirements = {}; // {string} require.js prefix => {string} of what is included
   buildConfig.phetLibs.forEach( function( lib ) {
@@ -60,5 +60,5 @@ module.exports = function( grunt, buildConfig ) {
   } ).join( ',\n    ' ) );
 
   // Write to the repository's root directory.
-  grunt.file.write( 'js/' + repositoryName + '-config.js', configJS );
+  grunt.file.write( destination, configJS );
 };
