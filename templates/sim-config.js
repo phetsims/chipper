@@ -10,7 +10,7 @@
 
 require.config( {
 
-  deps: [ '{{REPOSITORY}}-main' ],
+  deps: [ '{{REPOSITORY}}-{{LAUNCH_SUFFIX}}' ],
 
   paths: {
 

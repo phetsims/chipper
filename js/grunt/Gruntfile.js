@@ -393,14 +393,17 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-config',
     'Generates the js/SIM-config.js file based on the dependencies in package.json.',
     function() {
-      generateConfig( grunt, buildConfig, '../chipper/templates/sim-config.js', 'js/' + buildConfig.name + '-config.js' );
+      generateConfig( grunt, buildConfig, 'js/' + buildConfig.name + '-config.js', 'main' );
     } );
 
   grunt.registerTask( 'generate-test-config',
     'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
     function() {
-      generateConfig( grunt, buildConfig, '../chipper/templates/sim-test-config.js', 'js/' + buildConfig.name + '-test-config.js' );
+      generateConfig( grunt, buildConfig, 'js/' + buildConfig.name + '-test-config.js', 'test' );
     } );
+
+  grunt.registerTask( 'generate-test-harness',
+    'Generates HTML and JS config file for running tests', [ 'generate-test-html', 'generate-test-config' ] );
 
   grunt.registerTask( 'generate-coverage',
     'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
