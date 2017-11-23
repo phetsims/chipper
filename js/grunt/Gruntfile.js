@@ -10,10 +10,9 @@
 
 // built-in node APIs
 const assert = require( 'assert' );
+const buildStandalone = require( '../buildStandalone' );
 const fs = require( 'fs' );
 const lint = require( '../lint' );
-const minify = require( '../minify' );
-const requireBuild = require( '../requireBuild' );
 
 module.exports = function( grunt ) {
   var brand = 'phet'; // TODO: don't hardcode
@@ -48,20 +47,31 @@ module.exports = function( grunt ) {
     }
   };
 
-  grunt.registerTask( 'default', 'Builds the repository', [ 'build' ] );
+  grunt.registerTask( 'default', 'Builds the repository', [ 'clean', 'build' ] );
+
+  grunt.registerTask( 'clean',
+    'Erases the build/ directory and all its contents, and recreates the build/ directory',
+    function() {
+      if ( grunt.file.exists( 'build' ) ) {
+        grunt.file.delete( 'build' );
+      }
+      grunt.file.mkdir( 'build' );
+    } );
 
   grunt.registerTask( 'build',
     'TODO',
-    function() {
+    async function() {
       const done = grunt.task.current.async();
-      requireBuild( grunt, 'js/acid-base-solutions-config.js' ).then( function( output ) {
-        console.log( output.length );
-        var minified = minify( grunt, output );
-        console.log( minified.length );
-      } ).catch( function( err ) {
-        grunt.log.error( err );
-        done();
-      } );
+      
+      const uglify = grunt.option( 'uglify' ) !== false;
+      const mangle = grunt.option( 'mangle' ) !== false;
+      const name = grunt.file.readJSON( 'package.json' ).name;
+
+      if ( name === 'scenery' || name === 'kite' || name === 'dot' ) {
+        fs.writeFileSync( 'build/' + name + '.min.js', await buildStandalone( grunt, uglify, mangle ) );
+      }
+
+      done();
     }
   );
 

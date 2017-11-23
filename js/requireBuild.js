@@ -11,7 +11,13 @@
 // modules
 const requirejs = require( 'requirejs' );
 
-module.exports = function( grunt, mainConfigFile ) {
+module.exports = function( grunt, mainConfigFile, options ) {
+
+  const {
+    wrap = true,
+    insertRequire = false // TODO repoName + '-main' for sims
+  } = options || {};
+
   /**
    * Runs the require.js optimizer to determine and combine all of the dependent .js files.
    * @public
@@ -30,6 +36,8 @@ module.exports = function( grunt, mainConfigFile ) {
       name: 'almond',
 
       optimize: 'none',
+
+      wrap,
 
       // Avoid optimization names that are outside the baseUrl, see http://requirejs.org/docs/optimization.html#pitfalls
       paths: {
@@ -50,6 +58,10 @@ module.exports = function( grunt, mainConfigFile ) {
       // modules to stub out in the optimized file
       stubModules: [ 'string', 'audio', 'image', 'mipmap' ]
     };
+
+    if ( insertRequire ) {
+      config.insertRequire = [ insertRequire ];
+    }
 
     requirejs.optimize( config, function( buildResponse ) {
       resolve( output );
