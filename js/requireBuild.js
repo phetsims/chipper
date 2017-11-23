@@ -9,7 +9,6 @@
 'use strict';
 
 // modules
-const fs = require( 'fs' );
 const requirejs = require( 'requirejs' );
 
 module.exports = function( grunt, mainConfigFile ) {

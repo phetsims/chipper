@@ -9,7 +9,7 @@
 'use strict';
 
 // modules
-const uglify = require( 'uglify-es' );
+const uglify = require( 'uglify-es' ); // eslint-disable-line require-statement-match
 
 /**
  * Returns a minified version of the code (with optional mangling).

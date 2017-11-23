@@ -11,17 +11,15 @@
 // built-in node APIs
 const assert = require( 'assert' );
 const fs = require( 'fs' );
+const lint = require( '../lint' );
 const minify = require( '../minify' );
 const requireBuild = require( '../requireBuild' );
 
-// 3rd-party packages
-const _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-
 module.exports = function( grunt ) {
-	var brand = 'phet'; // TODO: don't hardcode
+  var brand = 'phet'; // TODO: don't hardcode
 
-	// argh, hacky! TODO REMOVE
-	// Initialize and document all globals
+  // argh, hacky! TODO REMOVE
+  // Initialize and document all globals
   assert( !global.phet, 'global.phet already exists' );
   global.phet = {
 
@@ -55,15 +53,19 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build',
     'TODO',
     function() {
-    	const done = grunt.task.current.async();
+      const done = grunt.task.current.async();
       requireBuild( grunt, 'js/acid-base-solutions-config.js' ).then( function( output ) {
-      	console.log( output.length );
-      	var minified = minify( grunt, output );
-      	console.log( minified.length );
+        console.log( output.length );
+        var minified = minify( grunt, output );
+        console.log( minified.length );
       } ).catch( function( err ) {
-      	grunt.log.error( err );
-      	done();
+        grunt.log.error( err );
+        done();
       } );
     }
   );
+
+  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', function() {
+    lint( grunt, [ 'chipper' ] );
+  } );
 };

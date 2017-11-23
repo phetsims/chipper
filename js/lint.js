@@ -9,34 +9,27 @@
 'use strict';
 
 // modules
-var assert = require( 'assert' );
-var eslint = require( 'eslint' );
-
-// constants
-var CLIEngine = eslint.CLIEngine;
-var LINT_EVERYTHING_OPTION = 'everything';
+const eslint = require( 'eslint' );
+const md5 = require( 'md5' );
 
 /**
- * Gets the relative path for the given repo.
- * @param {string} repo
- * @returns {string}
+ * Lints the specified repositories.
+ * @public
+ *
+ * @param {Object} grunt
+ * @param {Array.<string>} repos
+ * @returns {Object} - ESLint report object.
  */
-var GET_PATH = function( repo ) { return '../' + repo; };
+module.exports = function( grunt, repos ) {
+  // TODO: grunt.file.read( '../chipper/data/active-repos' ).trim().split( /\r?\n/ )   for 'everything'
+  // TODO: buildConfig.phetLibs for 'all'
 
-/**
- * @param grunt - the grunt instance
- * @param {string} target - 'dir'|'all'|'everything'
- * @param {Object} buildConfig
- */
-module.exports = function( grunt, target, buildConfig ) {
-
-  assert && assert( target === 'dir' || target === 'all' || target === LINT_EVERYTHING_OPTION, 'Bad lint target: ' + target );
-  var repositoryName = buildConfig.name;
+  var cacheFile = '../chipper/eslint/cache/' + md5( repos.join( ',' ) ) + '.eslintcache';
 
   // --disable-eslint-cache disables the cache, useful for developing rules
   var cache = !grunt.option( 'disable-eslint-cache' );
 
-  var cli = new CLIEngine( {
+  var cli = new eslint.CLIEngine( {
 
     // Rules are specified in the .eslintrc file
     configFile: '../chipper/eslint/.eslintrc',
@@ -50,7 +43,7 @@ module.exports = function( grunt, target, buildConfig ) {
     rulePaths: [ '../chipper/eslint/rules' ],
 
     // Where to store the target-specific cache file
-    cacheFile: '../chipper/eslint/cache/' + repositoryName + '-' + target + '.eslintcache',
+    cacheFile,
 
     // Files to skip for linting
     ignorePattern: [
@@ -73,23 +66,19 @@ module.exports = function( grunt, target, buildConfig ) {
     ]
   } );
 
-  // Identify the repos to be linted
-  var files = target === 'dir' ? [ repositoryName ] :
-              target === 'all' ? buildConfig.phetLibs :
-              grunt.file.read( '../chipper/data/active-repos' ).trim().split( /\r?\n/ );
-  grunt.verbose.writeln( 'linting: ' + files );
+  grunt.verbose.writeln( 'linting: ' + repos );
 
   // Use the correct relative paths
-  files = files.map( GET_PATH );
-
-  grunt.log.debug( 'executing main lint, target type: ' + target );
+  repos = repos.map( repo => '../' + repo );
 
   // run the eslint step
-  var report = cli.executeOnFiles( files );
+  var report = cli.executeOnFiles( repos );
 
   // pretty print results to console if any
   ( report.warningCount || report.errorCount ) && grunt.log.write( cli.getFormatter()( report.results ) );
 
   report.warningCount && grunt.fail.warn( report.warningCount + ' Lint Warnings' );
   report.errorCount && grunt.fail.fatal( report.errorCount + ' Lint Errors' );
+
+  return report;
 };
