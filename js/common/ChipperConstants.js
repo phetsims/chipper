@@ -31,7 +31,10 @@
     BUILD_DIR: 'build',
 
     // (a11y) tail suffix of the a11y-view template. Expected usage: {{repository-name}}{{A11Y_VIEW_HTML_SUFFIX}}
-    A11Y_VIEW_HTML_SUFFIX: '-a11y-view.html'
+    A11Y_VIEW_HTML_SUFFIX: '-a11y-view.html',
+
+    // All brands that should be taken into account for dependency handling
+    BRANDS: [ 'phet', 'phet-io' ]
   };
 
   // browser require.js-compatible definition

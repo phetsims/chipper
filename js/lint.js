@@ -21,9 +21,6 @@ const md5 = require( 'md5' );
  * @returns {Object} - ESLint report object.
  */
 module.exports = function( grunt, repos ) {
-  // TODO: grunt.file.read( '../chipper/data/active-repos' ).trim().split( /\r?\n/ )   for 'everything'
-  // TODO: buildConfig.phetLibs for 'all'
-
   var cacheFile = '../chipper/eslint/cache/' + md5( repos.join( ',' ) ) + '.eslintcache';
 
   // --disable-eslint-cache disables the cache, useful for developing rules
@@ -66,7 +63,7 @@ module.exports = function( grunt, repos ) {
     ]
   } );
 
-  grunt.verbose.writeln( 'linting: ' + repos );
+  grunt.verbose.writeln( 'linting: ' + repos.join( ', ' ) );
 
   // Use the correct relative paths
   repos = repos.map( repo => '../' + repo );

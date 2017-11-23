@@ -12,10 +12,13 @@
 const assert = require( 'assert' );
 const buildStandalone = require( '../buildStandalone' );
 const fs = require( 'fs' );
+const getPhetLibs = require( '../getPhetLibs' );
 const lint = require( '../lint' );
 
 module.exports = function( grunt ) {
-  var brand = 'phet'; // TODO: don't hardcode
+  var brand = 'phet'; // TODO: don't hardcode! we'll need to rewrite some things that reference this
+
+  var packageObject = grunt.file.readJSON( 'package.json' );
 
   // argh, hacky! TODO REMOVE
   // Initialize and document all globals
@@ -47,7 +50,7 @@ module.exports = function( grunt ) {
     }
   };
 
-  grunt.registerTask( 'default', 'Builds the repository', [ 'clean', 'build' ] );
+  grunt.registerTask( 'default', 'Builds the repository', [ 'lint-all', 'clean', 'build' ] );
 
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
@@ -62,7 +65,7 @@ module.exports = function( grunt ) {
     'TODO',
     async function() {
       const done = grunt.task.current.async();
-      
+
       const uglify = grunt.option( 'uglify' ) !== false;
       const mangle = grunt.option( 'mangle' ) !== false;
       const name = grunt.file.readJSON( 'package.json' ).name;
@@ -76,6 +79,18 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', function() {
-    lint( grunt, [ 'chipper' ] );
+    lint( grunt, [ packageObject.name ] );
+  } );
+
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', async function() {
+    const done = grunt.task.current.async();
+
+    lint( grunt, await getPhetLibs( grunt, packageObject.name, brand ) );
+
+    done();
+  } );
+
+  grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', function() {
+    lint( grunt, grunt.file.read( '../chipper/data/active-repos' ).trim().split( /\r?\n/ ) );
   } );
 };
