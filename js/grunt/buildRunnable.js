@@ -15,6 +15,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
 const getDependencies = require( './getDependencies' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
+const getLocalesToBuild = require( './getLocalesToBuild' );
 const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );
 const getStringMap = require( './getStringMap' );
@@ -58,13 +59,14 @@ module.exports = async function( grunt, uglify, mangle, brand ) {
   } );
 
   const phetLibs = getPhetLibs( grunt, repo, brand );
-  const locales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( grunt, repo ) );
+  const allLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( grunt, repo ) );
+  const locales = getLocalesToBuild( grunt, repo );
   const dependencies = await getDependencies( grunt, repo );
   const version = getVersionForBrand( brand, packageObject.version );
 
   const commonOptions = {
     brand,
-    stringMap: getStringMap( grunt, locales, phetLibs ),
+    stringMap: getStringMap( grunt, allLocales, phetLibs ),
     mainInlineJavascript: requireJS,
     preloadScripts: preloads,
     mipmapsJavaScript: await buildMipmaps( grunt ),

@@ -35,7 +35,7 @@ module.exports = function( grunt, repo ) {
 
   if ( localesValue ) {
     if ( localesValue === '*' ) {
-      locales = locales.concat( getLocalesFromRepository( repo ) ); // all locales for the repository that we're building
+      locales = locales.concat( getLocalesFromRepository( grunt, repo ) ); // all locales for the repository that we're building
     }
     else {
       // use only the specified locales, which may not include the fallback
@@ -45,7 +45,7 @@ module.exports = function( grunt, repo ) {
   else {
     var localesRepo = grunt.option( 'localesRepo' );
     if ( localesRepo ) {
-      locales = locales.concat( getLocalesFromRepository( localesRepo ) ); // all locales for some other repository
+      locales = locales.concat( getLocalesFromRepository( grunt, localesRepo ) ); // all locales for some other repository
     }
   }
 
