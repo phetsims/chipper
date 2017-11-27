@@ -9,6 +9,8 @@
 /* eslint-env node */
 'use strict';
 
+const assert = require( 'assert' );
+
 /*
  * Gets the locales from a repository, by inspecting the names of the string files in babel for that repository.
  * @public

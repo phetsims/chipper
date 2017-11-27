@@ -71,11 +71,17 @@ module.exports = function( grunt ) {
       const mangle = grunt.option( 'mangle' ) !== false;
       const name = grunt.file.readJSON( 'package.json' ).name;
 
-      if ( name === 'scenery' || name === 'kite' || name === 'dot' ) {
-        fs.writeFileSync( 'build/' + name + '.min.js', await buildStandalone( grunt, uglify, mangle ) );
+      try {
+        if ( name === 'scenery' || name === 'kite' || name === 'dot' ) {
+          fs.writeFileSync( 'build/' + name + '.min.js', await buildStandalone( grunt, uglify, mangle ) );
+        }
+        else {
+          await buildRunnable( grunt, uglify, mangle, 'phet' ); // TODO: other brands
+        }
       }
-      else {
-        await buildRunnable( grunt, uglify, mangle, 'phet' ); // TODO: other brands
+      catch ( e ) {
+        console.log( e );
+        grunt.log.error( e );
       }
 
       done();
