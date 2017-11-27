@@ -11,7 +11,7 @@
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 
-module.exports = async function( grunt, repo, brand ) {
+module.exports = function( grunt, repo, brand ) {
 
   const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
   const buildObject = grunt.file.readJSON( '../chipper/build.json' );

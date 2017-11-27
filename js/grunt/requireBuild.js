@@ -15,7 +15,7 @@ module.exports = function( grunt, mainConfigFile, options ) {
 
   const {
     wrap = true,
-    insertRequire = false // TODO repoName + '-main' for sims
+    insertRequire = false
   } = options || {};
 
   /**

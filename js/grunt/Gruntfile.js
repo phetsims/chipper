@@ -10,10 +10,10 @@
 
 // built-in node APIs
 const assert = require( 'assert' );
-const buildStandalone = require( '../buildStandalone' );
+const buildStandalone = require( './buildStandalone' );
 const fs = require( 'fs' );
-const getPhetLibs = require( '../getPhetLibs' );
-const lint = require( '../lint' );
+const getPhetLibs = require( './getPhetLibs' );
+const lint = require( './lint' );
 
 module.exports = function( grunt ) {
   var brand = 'phet'; // TODO: don't hardcode! we'll need to rewrite some things that reference this
@@ -85,7 +85,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', async function() {
     const done = grunt.task.current.async();
 
-    lint( grunt, await getPhetLibs( grunt, packageObject.name, brand ) );
+    lint( grunt, getPhetLibs( grunt, packageObject.name, brand ) );
 
     done();
   } );
