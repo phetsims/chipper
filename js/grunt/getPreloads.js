@@ -17,13 +17,13 @@ const getPhetLibs = require( './getPhetLibs' );
  * NOTE! Order of the return value is significant, since it corresponds to the order in which scripts will be preloaded.
  *
  * @param {Object} grunt
+ * @param {string} repo
  * @param {string} brand
  * @returns {Array.<string>}
  */
-module.exports = function( grunt, brand ) {
-  // TODO: take in repo parameter
+module.exports = function( grunt, repo, brand ) {
 
-  const packageObject = grunt.file.readJSON( 'package.json' );
+  const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
   const buildObject = grunt.file.readJSON( '../chipper/build.json' );
 
   // No preload needed for wrappers
@@ -57,7 +57,7 @@ module.exports = function( grunt, brand ) {
   preload = _.uniq( preload );
 
   // Verifies that preload repositories are included in phetLib.
-  var phetLibs = getPhetLibs( grunt, packageObject.name, brand );
+  var phetLibs = getPhetLibs( grunt, repo, brand );
   var missingRepositories = [];
   preload.forEach( function( entry ) {
 

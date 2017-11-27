@@ -23,7 +23,7 @@ const getPreloads = require( './getPreloads' );
 module.exports = function( grunt, repo, brand ) {
   const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
   const buildObject = grunt.file.readJSON( '../chipper/build.json' );
-  const preload = getPreloads( grunt, brand );
+  const preload = getPreloads( grunt, repo, brand );
 
   // start with package.json
   var licenseKeys = packageObject.phet.licenseKeys || [];

@@ -47,7 +47,7 @@ module.exports = async function( grunt, uglify, mangle, brand ) {
     requireJS = minify( grunt, requireJS, { mangle: mangle } );
   }
 
-  const preloads = getPreloads( grunt, brand ).map( filename => {
+  const preloads = getPreloads( grunt, repo, brand ).map( filename => {
     var js = grunt.file.read( filename );
 
     if ( uglify ) {
