@@ -9,6 +9,9 @@
 /* eslint-env node */
 'use strict';
 
+const assert = require( 'assert' );
+const getPhetLibs = require( './getPhetLibs' );
+
 /**
  * Gets preload, the set of scripts to be preloaded in the .html file.
  * NOTE! Order of the return value is significant, since it corresponds to the order in which scripts will be preloaded.
@@ -18,6 +21,7 @@
  * @returns {Array.<string>}
  */
 module.exports = function( grunt, brand ) {
+  // TODO: take in repo parameter
 
   const packageObject = grunt.file.readJSON( 'package.json' );
   const buildObject = grunt.file.readJSON( '../chipper/build.json' );
@@ -50,5 +54,24 @@ module.exports = function( grunt, brand ) {
   }
 
   // remove duplicates (do NOT sort, order is significant!)
-  return _.uniq( preload );
+  preload = _.uniq( preload );
+
+  // Verifies that preload repositories are included in phetLib.
+  var phetLibs = getPhetLibs( grunt, packageObject.name, brand );
+  var missingRepositories = [];
+  preload.forEach( function( entry ) {
+
+    // preload entries should start with '..', e.g. "../assert/js/assert.js"
+    assert( entry.split( '/' )[ 0 ] === '..', 'malformed preload entry: ' + entry );
+
+    // the preload's repository should be in phetLib
+    var repositoryName = entry.split( '/' )[ 1 ];
+    if ( phetLibs.indexOf( repositoryName ) === -1 && missingRepositories.indexOf( repositoryName ) === -1 ) {
+      missingRepositories.push( repositoryName );
+    }
+  } );
+  assert( missingRepositories.length === 0,
+    'phetLib is missing repositories required by preload: ' + missingRepositories.toString() );
+
+  return preload;
 };

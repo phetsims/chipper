@@ -9,9 +9,7 @@
 /* eslint-env node */
 'use strict';
 
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const execute = require( './execute' );
 const getPhetLibs = require( './getPhetLibs' );
@@ -22,9 +20,7 @@ module.exports = async function( grunt, repo ) {
   const version = packageObject.version;
 
   // Accumulate depencies for all brands
-  const dependencies = _.reduce( ChipperConstants.BRANDS, ( dependencies, brand ) => {
-    return _.uniq( dependencies.concat( getPhetLibs( grunt, repo, brand ) ).sort() );
-  }, [] ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at master
+  const dependencies = getPhetLibs( grunt, repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at master
 
   grunt.log.debug( 'Scanning dependencies from:\n' + dependencies.toString() );
 

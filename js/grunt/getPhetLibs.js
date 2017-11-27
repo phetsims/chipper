@@ -10,34 +10,53 @@
 'use strict';
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const assert = require( 'assert' );
+const ChipperConstants = require( '../common/ChipperConstants' );
 
-module.exports = function( grunt, repo, brand ) {
+/**
+ * Returns a list of all dependent repositories.
+ * @public
+ *
+ * @param {Object} grunt
+ * @param {string} repo
+ * @param {string} [brand] - If not specified, it will return the dependencies for all brands.
+ */
+module.exports = function getPhetLibs( grunt, repo, brand ) {
+  assert( typeof repo === 'string', 'Repository required for getPhetLibs' );
+  assert( brand === undefined || _.includes( ChipperConstants.BRANDS, brand ), 'Invalid brand for getPhetLibs: ' + brand );
 
-  const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
-  const buildObject = grunt.file.readJSON( '../chipper/build.json' );
-
-  // If working with a wrapper, then just use the wrapper's phetLibs
-  if ( packageObject.isWrapper && packageObject.wrapper.phetLibs ) {
-    return packageObject.wrapper.phetLibs.concat( packageObject.name ).sort();
+  if ( brand === undefined ) {
+    return _.reduce( ChipperConstants.BRANDS, ( dependencies, brand ) => {
+      return _.uniq( dependencies.concat( getPhetLibs( grunt, repo, brand ) ).sort() );
+    }, [] );
   }
+  else {
+    const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
+    const buildObject = grunt.file.readJSON( '../chipper/build.json' );
 
-  // start with package.json
-  var phetLibs = packageObject.phet.phetLibs || [];
-
-  // add the repo that's being built
-  phetLibs.push( packageObject.name );
-
-  // add common and brand-specific entries from build.json
-  [ 'common', brand ].forEach( function( id ) {
-    if ( buildObject[ id ] && buildObject[ id ].phetLibs ) {
-
-      // We don't want common sim repos for wrappers
-      if ( !packageObject.isWrapper || ( packageObject.isWrapper && id !== 'common' ) ) {
-        phetLibs = phetLibs.concat( buildObject[ id ].phetLibs );
-      }
+    // If working with a wrapper, then just use the wrapper's phetLibs
+    if ( packageObject.isWrapper && packageObject.wrapper.phetLibs ) {
+      return packageObject.wrapper.phetLibs.concat( packageObject.name ).sort();
     }
-  } );
 
-  // sort and remove duplicates
-  return _.uniq( phetLibs.sort() );
+    // start with package.json
+    var phetLibs = packageObject.phet.phetLibs || [];
+
+    // add the repo that's being built
+    phetLibs.push( packageObject.name );
+
+    // add common and brand-specific entries from build.json
+    [ 'common', brand ].forEach( function( id ) {
+      if ( buildObject[ id ] && buildObject[ id ].phetLibs ) {
+
+        // We don't want common sim repos for wrappers
+        if ( !packageObject.isWrapper || ( packageObject.isWrapper && id !== 'common' ) ) {
+          phetLibs = phetLibs.concat( buildObject[ id ].phetLibs );
+        }
+      }
+    } );
+
+    // sort and remove duplicates
+    return _.uniq( phetLibs.sort() );
+  }
 };
