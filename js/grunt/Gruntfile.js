@@ -10,6 +10,7 @@
 
 // built-in node APIs
 const assert = require( 'assert' );
+const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const fs = require( 'fs' );
 const getPhetLibs = require( './getPhetLibs' );
@@ -72,6 +73,9 @@ module.exports = function( grunt ) {
 
       if ( name === 'scenery' || name === 'kite' || name === 'dot' ) {
         fs.writeFileSync( 'build/' + name + '.min.js', await buildStandalone( grunt, uglify, mangle ) );
+      }
+      else {
+        await buildRunnable( grunt, uglify, mangle, 'phet' ); // TODO: other brands
       }
 
       done();

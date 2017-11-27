@@ -61,6 +61,8 @@ module.exports = function( grunt, js, options ) {
     throw new Error( result.error );
   }
   else {
-    return result.code;
+    // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
+    // TODO: is this workaround still required?
+    return result.code.replace( '\x0B', '\\x0B' );
   }
 };
