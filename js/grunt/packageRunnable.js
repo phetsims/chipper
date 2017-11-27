@@ -17,7 +17,8 @@ const loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 
 module.exports = function( grunt, options ) {
-  var html = grunt.file.read( '../chipper/templates/sim.html' );
+  const htmlTemplate = grunt.file.read( '../chipper/templates/sim.html' );
+  var html = htmlTemplate;
   var encoder = new nodeHTMLEncoder.Encoder( 'entity' );
 
   const {
@@ -114,6 +115,17 @@ module.exports = function( grunt, options ) {
   html = ChipperStringUtils.replaceFirst( html, '{{OG_TITLE}}', encoder.htmlEncode( localizedTitle ) );
   html = ChipperStringUtils.replaceFirst( html, '{{OG_URL}}', latestDir + repo + '_' + locale + '.html' );
   html = ChipperStringUtils.replaceFirst( html, '{{OG_IMAGE}}', latestDir + repo + '-600.png' );
+
+  // Make sure all template-looking strings were replaced.
+  // Match template strings that look like "{{I_AM-A.TEMPLATE}}".
+  var templateHTMLTemplateStrings = htmlTemplate.match( /{{[A-z\-._ ]{1,100}}}/g );
+  if ( templateHTMLTemplateStrings ) {
+    templateHTMLTemplateStrings.forEach( function( templateString ) {
+      if ( html.indexOf( templateString ) >= 0 ) {
+        grunt.fail.warn( 'Template string detected in built file:  ' + templateString );
+      }
+    } );
+  }
 
   return html;
 };
