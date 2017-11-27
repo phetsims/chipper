@@ -40,14 +40,14 @@ module.exports = function( grunt ) {
 
       const uglify = grunt.option( 'uglify' ) !== false;
       const mangle = grunt.option( 'mangle' ) !== false;
-      const name = grunt.file.readJSON( 'package.json' ).name;
+      const repo = grunt.file.readJSON( 'package.json' ).name;
 
       try {
-        if ( name === 'scenery' || name === 'kite' || name === 'dot' ) {
-          fs.writeFileSync( 'build/' + name + '.min.js', await buildStandalone( grunt, uglify, mangle ) );
+        if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
+          fs.writeFileSync( 'build/' + repo + '.min.js', await buildStandalone( grunt, repo, uglify, mangle ) );
         }
         else {
-          await buildRunnable( grunt, uglify, mangle, 'phet' ); // TODO: other brands
+          await buildRunnable( grunt, repo, uglify, mangle, 'phet' ); // TODO: other brands
         }
       }
       catch ( e ) {

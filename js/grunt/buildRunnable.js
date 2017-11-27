@@ -10,6 +10,7 @@
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const assert = require( 'assert' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
@@ -26,9 +27,24 @@ const requireBuild = require( './requireBuild' );
 const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
 
-module.exports = async function( grunt, uglify, mangle, brand ) {
-  const packageObject = grunt.file.readJSON( 'package.json' );
-  const repo = packageObject.name;
+/**
+ * Builds a runnable (e.g. a simulation).
+ * @public
+ *
+ * @param {Object} grunt
+ * @param {string} repo
+ * @param {boolean} uglify - Whether to uglify or not
+ * @param {boolean} mangle - If uglifying, whether to mangle variable names
+ * @param {string} brand
+ * @returns {Promise} - Does not resolve a value
+ */
+module.exports = async function( grunt, repo, uglify, mangle, brand ) {
+  assert( typeof repo === 'string' );
+  assert( typeof uglify === 'boolean' );
+  assert( typeof mangle === 'boolean' );
+  assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
+
+  const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
 
   // All html files share the same build timestamp
   var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
@@ -36,7 +52,7 @@ module.exports = async function( grunt, uglify, mangle, brand ) {
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
   // TODO: Find a better way
-  var requireJS = await requireBuild( grunt, 'js/' + repo + '-config.js', { insertRequire: repo + '-main', brand } );
+  var requireJS = await requireBuild( grunt, '../' + repo + '/js/' + repo + '-config.js', { insertRequire: repo + '-main', brand } );
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( grunt, packageObject.phet.requirejsNamespace );
@@ -66,6 +82,7 @@ module.exports = async function( grunt, uglify, mangle, brand ) {
 
   const commonOptions = {
     brand,
+    repo,
     stringMap: getStringMap( grunt, allLocales, phetLibs ),
     mainInlineJavascript: requireJS,
     preloadScripts: preloads,
@@ -77,18 +94,18 @@ module.exports = async function( grunt, uglify, mangle, brand ) {
   };
 
   for ( let locale of locales ) {
-    grunt.file.write( 'build/' + repo + '_' + locale + '.html', packageRunnable( grunt, _.extend( {
+    grunt.file.write( '../' + repo + '/build/' + repo + '_' + locale + '.html', packageRunnable( grunt, _.extend( {
       locale,
       includeAllLocales: false
     }, commonOptions ) ) );
   }
 
-  grunt.file.write( 'build/' + repo + '_all.html', packageRunnable( grunt, _.extend( {
+  grunt.file.write( '../' + repo + '/build/' + repo + '_all.html', packageRunnable( grunt, _.extend( {
     locale: ChipperConstants.FALLBACK_LOCALE,
     includeAllLocales: true
   }, commonOptions ) ) );
 
-  grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencies, null, 2 ) );
+  grunt.file.write( '../' + repo + '/build/dependencies.json', JSON.stringify( dependencies, null, 2 ) );
 
   if ( brand === 'phet-io' ) {
     await copySupplementalPhETIOFiles( grunt, repo, version );

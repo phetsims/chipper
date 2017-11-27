@@ -14,8 +14,13 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const createMipmap = require( './createMipmap' );
 
-// Grabs the mipmaps from a global
-// TODO: Don't do it this way! OMG?
+/**
+ * Creates the mipmaps requested by the mipmap plugin (sets globals, see chipperGlobals.js and mipmap.js for more info).
+ * @public
+ *
+ * @param {Object} grunt
+ * @returns {string} - JS that assigns the mipmaps to window.phet.chipper.mipmaps.
+ */
 module.exports = async function( grunt ) {
   // globals that should be defined by this point
   assert( global.phet && global.phet.chipper, 'missing global.phet.chipper' );

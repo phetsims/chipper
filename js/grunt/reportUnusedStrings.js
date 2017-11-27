@@ -22,8 +22,7 @@
 module.exports = function( grunt, repo, requirejsNamespace ) {
 
   // get the strings for this sim
-  var simulationRoot = process.cwd();
-  var jsStrings = grunt.file.readJSON( simulationRoot + '/' + repo + '-strings_en.json' );
+  var jsStrings = grunt.file.readJSON( '../' + repo + '/' + repo + '-strings_en.json' );
 
   // iterate over the strings
   for( var key in jsStrings ) {

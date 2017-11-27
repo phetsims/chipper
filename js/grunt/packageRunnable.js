@@ -22,6 +22,7 @@ module.exports = function( grunt, options ) {
 
   const {
     brand, // {string}, e.g. 'phet', 'phet-io'
+    repo, // {string}
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
     version, // {string}
     mipmapsJavaScript, // {string}
@@ -36,9 +37,8 @@ module.exports = function( grunt, options ) {
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand: ' + brand );
   assert( stringMap, 'Invalid stringMap: ' + stringMap );
 
-  const packageObject = grunt.file.readJSON( 'package.json' );
-  const name = packageObject.name;
-  const simTitleStringKey = packageObject.phet.requirejsNamespace + '/' + name + '.title'; // REPO/repo.name
+  const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
+  const simTitleStringKey = packageObject.phet.requirejsNamespace + '/' + repo + '.title'; // REPO/repo.name
 
   // Get the title and version to display in the HTML header.
   // The HTML header is not internationalized, so order can just be hard coded here, see #156
@@ -53,7 +53,7 @@ module.exports = function( grunt, options ) {
   }
 
   // Directory on the PhET website where the latest version of the sim lives
-  var latestDir = 'https://phet.colorado.edu/sims/html/' + name + '/latest/';
+  var latestDir = 'https://phet.colorado.edu/sims/html/' + repo + '/latest/';
 
   // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
   var htmlHeader;
@@ -102,7 +102,7 @@ module.exports = function( grunt, options ) {
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_START_THIRD_PARTY_LICENSE_ENTRIES}}', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_END_THIRD_PARTY_LICENSE_ENTRIES}}', ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_DEPENDENCIES}}', JSON.stringify( dependencies, null, 2 ) );
-  html = ChipperStringUtils.replaceFirst( html, '{{PHET_PROJECT}}', name );
+  html = ChipperStringUtils.replaceFirst( html, '{{PHET_PROJECT}}', repo );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_VERSION}}', version );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_BUILD_TIMESTAMP}}', timestamp );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_THIRD_PARTY_LICENSE_ENTRIES}}', JSON.stringify( thirdPartyEntries, null, 2 ) );
@@ -112,8 +112,8 @@ module.exports = function( grunt, options ) {
 
   // metadata for Open Graph protocol, see phet-edmodo#2
   html = ChipperStringUtils.replaceFirst( html, '{{OG_TITLE}}', encoder.htmlEncode( localizedTitle ) );
-  html = ChipperStringUtils.replaceFirst( html, '{{OG_URL}}', latestDir + name + '_' + locale + '.html' );
-  html = ChipperStringUtils.replaceFirst( html, '{{OG_IMAGE}}', latestDir + name + '-600.png' );
+  html = ChipperStringUtils.replaceFirst( html, '{{OG_URL}}', latestDir + repo + '_' + locale + '.html' );
+  html = ChipperStringUtils.replaceFirst( html, '{{OG_IMAGE}}', latestDir + repo + '-600.png' );
 
   return html;
 };

@@ -13,11 +13,23 @@ const fs = require( 'fs' );
 const minify = require( './minify' );
 const requireBuild = require( './requireBuild' );
 
-module.exports = async function( grunt, uglify, mangle ) {
-  const packageObject = grunt.file.readJSON( 'package.json' );
-  const repo = packageObject.name;
+/**
+ * Builds standalone JS deliverables (e.g. dot/kite/scenery)
+ * @public
+ *
+ * @param {Object} grunt
+ * @param {string} repo
+ * @param {boolean} uglify
+ * @param {boolean} mangle
+ */
+module.exports = async function( grunt, repo, uglify, mangle ) {
+  assert( typeof repo === 'boolean' );
+  assert( typeof uglify === 'boolean' );
+  assert( typeof mangle === 'boolean' );
 
-  const requireJS = await requireBuild( grunt, 'js/' + repo + '-config.js', { wrap: false } );
+  const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
+
+  const requireJS = await requireBuild( grunt, '../' + repo + '/js/' + repo + '-config.js', { wrap: false } );
 
   const includedSources = [
     '../assert/js/assert.js'
