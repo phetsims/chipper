@@ -12,6 +12,7 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
+const copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
 const getDependencies = require( './getDependencies' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
 const getPhetLibs = require( './getPhetLibs' );
@@ -84,6 +85,10 @@ module.exports = async function( grunt, uglify, mangle, brand ) {
     locale: ChipperConstants.FALLBACK_LOCALE,
     includeAllLocales: true
   }, commonOptions ) ) );
+
+  if ( brand === 'phet-io' ) {
+    await copySupplementalPhETIOFiles( grunt, repo, version );
+  }
 
   // TODO: sanity checks
   // TODO: iframe bits, accessibility, etc.

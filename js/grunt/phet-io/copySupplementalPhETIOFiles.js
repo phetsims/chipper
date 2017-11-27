@@ -44,7 +44,7 @@ var CONTRIB_FILES = [
 ];
 var CONTRIB_DIR = ChipperConstants.BUILD_DIR + '/contrib';
 
-module.exports = function( grunt, buildConfig, done ) {
+module.exports = async function( grunt, repo, version ) {
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
@@ -114,8 +114,8 @@ module.exports = function( grunt, buildConfig, done ) {
       );
     }
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
-      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', buildConfig.name );
-      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', buildConfig.version );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', version );
       contents = ChipperStringUtils.replaceAll( contents, 'isBuilt: false', 'isBuilt: true' );
 
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
@@ -170,7 +170,7 @@ module.exports = function( grunt, buildConfig, done ) {
 
   // Generate API Documentation
   if ( grunt.option( 'phetioDocs' ) ) {
-    // generatePhETIOAPIDocs( grunt, buildConfig, done );
+    // generatePhETIOAPIDocs( grunt, buildConfig );
   }
 };
 
