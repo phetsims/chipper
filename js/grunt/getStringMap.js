@@ -9,22 +9,21 @@
 'use strict';
 
 // built-in node APIs
-var assert = require( 'assert' );
-var path = require( 'path' );
+const assert = require( 'assert' );
+const path = require( 'path' );
 
 // modules
-var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
-var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
+const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+const ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+const localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 
 /**
- * @param grunt - the grunt instance
- * @param {Object} buildConfig - see getBuildConfig.js
- * @returns map[locale][stringKey]
+ * @param {Object} grunt
+ * @param {Array.<string>} locales
+ * @param {Array.<string>} phetLibs - Used to check for bad string dependencies
+ * @returns {Object} - map[locale][stringKey] => {string}
  */
-module.exports = function( grunt, buildConfig ) {
-
-  var locales = buildConfig.availableLocales;
+module.exports = function( grunt, locales, phetLibs ) {
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE; // local var to improve readability
 
@@ -44,7 +43,7 @@ module.exports = function( grunt, buildConfig ) {
       } );
 
       // If a string depends on an unlisted dependency, fail out
-      if ( buildConfig.phetLibs.indexOf( repositoryName ) < 0 ) {
+      if ( phetLibs.indexOf( repositoryName ) < 0 ) {
         throw new Error( repositoryName + ' is missing from phetLibs in package.json' );
       }
     }
