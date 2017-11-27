@@ -61,5 +61,6 @@ module.exports = {
     global.phet.chipper.mipmapsToBuild = [];
     global.phet.chipper.strings = {};
     global.phet.chipper.brand = brand;
+    global.phet.chipper.licenseEntries = {};
   }
 };

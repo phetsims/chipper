@@ -14,6 +14,7 @@ const assert = require( 'assert' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
+const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
 const getLocalesToBuild = require( './getLocalesToBuild' );
@@ -79,6 +80,7 @@ module.exports = async function( grunt, repo, uglify, mangle, brand ) {
   const locales = getLocalesToBuild( grunt, repo );
   const dependencies = await getDependencies( grunt, repo );
   const version = getVersionForBrand( brand, packageObject.version );
+  const thirdPartyEntries = getAllThirdPartyEntries( grunt, repo, brand );
 
   const commonOptions = {
     brand,
@@ -90,7 +92,7 @@ module.exports = async function( grunt, repo, uglify, mangle, brand ) {
     dependencies,
     timestamp,
     version,
-    thirdPartyEntries: {}, // TODO
+    thirdPartyEntries
   };
 
   for ( let locale of locales ) {

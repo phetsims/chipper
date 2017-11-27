@@ -13,22 +13,24 @@
 'use strict';
 
 // modules
-var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-var assert = require( 'assert' );
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const assert = require( 'assert' );
+const getLicenseKeys = require( './getLicenseKeys' );
 
-var THIRD_PARTY_LICENSES_FILENAME = '../sherpa/lib/license.json'; // contains third-party license info
-var LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
+const THIRD_PARTY_LICENSES_FILENAME = '../sherpa/lib/license.json'; // contains third-party license info
+const LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
 /**
- * @param grunt - the grunt instance
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {Object} grunt - the grunt instance
+ * @param {string} repo
+ * @param {string} brand
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( grunt, repo, brand ) {
 
   // Read license info
   var licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );
 
-  var licenseKeys = buildConfig.licenseKeys.slice( 0 ); // make a copy, we'll be adding keys
+  var licenseKeys = getLicenseKeys( grunt, repo, brand );
 
   // Add all dependencies. Duplicates will be removed later.
   for ( var i = 0; i < licenseKeys.length; i++ ) {
