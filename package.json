@@ -13,6 +13,8 @@
     "requirejs": "~2.3.5",
     "md5": "~2",
     "lodash": "~4.17.4",
+    "babel-core": "6.26.0",
+    "babel-preset-env": "1.6.1",
 
     "eslint": "~3.19.0",
     "jpeg-js": "~0.1.1",

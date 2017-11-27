@@ -50,7 +50,7 @@ module.exports = function( grunt ) {
     }
   };
 
-  grunt.registerTask( 'default', 'Builds the repository', [ 'lint-all', 'clean', 'build' ] );
+  grunt.registerTask( 'default', 'Builds the repository', ( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ).concat( [ 'clean', 'build' ] ) );
 
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
