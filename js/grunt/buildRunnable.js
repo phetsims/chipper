@@ -86,6 +86,8 @@ module.exports = async function( grunt, uglify, mangle, brand ) {
     includeAllLocales: true
   }, commonOptions ) ) );
 
+  grunt.file.write( 'build/dependencies.json', JSON.stringify( dependencies, null, 2 ) );
+
   if ( brand === 'phet-io' ) {
     await copySupplementalPhETIOFiles( grunt, repo, version );
   }
