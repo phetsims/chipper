@@ -36,7 +36,7 @@ module.exports = async function( grunt, uglify, mangle, brand ) {
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
   // TODO: Find a better way
-  var requireJS = await requireBuild( grunt, 'js/' + repo + '-config.js', { insertRequire: repo + '-main' } );
+  var requireJS = await requireBuild( grunt, 'js/' + repo + '-config.js', { insertRequire: repo + '-main', brand } );
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( grunt, packageObject.phet.requirejsNamespace );

@@ -8,10 +8,9 @@
 /* eslint-env node */
 'use strict';
 
-// built-in node APIs
-const assert = require( 'assert' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
+const chipperGlobals = require( './chipperGlobals' );
 const fs = require( 'fs' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
@@ -21,35 +20,7 @@ module.exports = function( grunt ) {
 
   var packageObject = grunt.file.readJSON( 'package.json' );
 
-  // argh, hacky! TODO REMOVE
-  // Initialize and document all globals
-  assert( !global.phet, 'global.phet already exists' );
-  global.phet = {
-
-    chipper: {
-
-      // the grunt instance, for situations where we can't pass it as a function argument
-      grunt: grunt,
-
-      // for code that runs in both requirejs and build modes, and therefore doesn't have access to grunt.file
-      fs: fs,
-
-      // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
-      getCacheBusterArgs: function() { return ''; },
-
-      // media plugins populate this with license.json entries, see getLicenseEntry.js for format of entries
-      licenseEntries: {},
-
-      // use by media plugins, which don't have access to buildConfig
-      brand: brand,
-
-      // populated by mipmap.js
-      mipmapsToBuild: [],
-
-      // populated by string.js
-      strings: {}
-    }
-  };
+  chipperGlobals.initialize( grunt );
 
   grunt.registerTask( 'default', 'Builds the repository', ( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ).concat( [ 'clean', 'build' ] ) );
 

@@ -9,13 +9,15 @@
 'use strict';
 
 // modules
+const chipperGlobals = require( './chipperGlobals' );
 const requirejs = require( 'requirejs' );
 
 module.exports = function( grunt, mainConfigFile, options ) {
 
   const {
     wrap = true,
-    insertRequire = false
+    insertRequire = false,
+    brand = 'phet'
   } = options || {};
 
   /**
@@ -62,6 +64,9 @@ module.exports = function( grunt, mainConfigFile, options ) {
     if ( insertRequire ) {
       config.insertRequire = [ insertRequire ];
     }
+
+    // Initialize global state in preparation for the require.js step.
+    chipperGlobals.beforeBuild( brand );
 
     requirejs.optimize( config, function( buildResponse ) {
       resolve( output );
