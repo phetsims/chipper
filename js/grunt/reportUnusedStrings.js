@@ -15,21 +15,22 @@
 'use strict';
 
 /**
- * @param grunt - the grunt instance
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {Object} grunt - the grunt instance
+ * @param {string} repo
+ * @param {string} requirejsNamespace
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( grunt, repo, requirejsNamespace ) {
 
   // get the strings for this sim
   var simulationRoot = process.cwd();
-  var jsStrings = grunt.file.readJSON( simulationRoot + '/' + buildConfig.name + '-strings_en.json' );
+  var jsStrings = grunt.file.readJSON( simulationRoot + '/' + repo + '-strings_en.json' );
 
   // iterate over the strings
   for( var key in jsStrings ) {
     if( jsStrings.hasOwnProperty( key ) ) {
 
       var string = jsStrings[ key ].value;
-      var requireStringKey = buildConfig.requirejsNamespace + '/' + key;
+      var requireStringKey = requirejsNamespace + '/' + key;
 
       // global.phet.chipper.strings is initialized by the string plugin
       var chipperStrings = global.phet.chipper.strings || {};

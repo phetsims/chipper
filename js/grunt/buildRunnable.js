@@ -21,6 +21,8 @@ const getVersionForBrand = require( '../getVersionForBrand' );
 const minify = require( './minify' );
 const packageRunnable = require( './packageRunnable' );
 const requireBuild = require( './requireBuild' );
+const reportUnusedMedia = require( './reportUnusedMedia' );
+const reportUnusedStrings = require( './reportUnusedStrings' );
 
 module.exports = async function( grunt, uglify, mangle, brand ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
@@ -30,7 +32,15 @@ module.exports = async function( grunt, uglify, mangle, brand ) {
   var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
+  // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
+  // TODO: Find a better way
   var requireJS = await requireBuild( grunt, 'js/' + repo + '-config.js', { insertRequire: repo + '-main' } );
+
+  // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
+  reportUnusedMedia( grunt, packageObject.phet.requirejsNamespace );
+
+  // After all strings have been loaded, report which of the translatable strings are unused.
+  reportUnusedStrings( grunt, repo, packageObject.phet.requirejsNamespace );
 
   if ( uglify ) {
     requireJS = minify( grunt, requireJS, { mangle: mangle } );

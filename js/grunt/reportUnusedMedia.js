@@ -15,10 +15,10 @@
 'use strict';
 
 // modules
-var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 
 /**
- * @param grunt - the grunt instance
+ * @param {Object} grunt - the grunt instance
  * @param {string} requirejsNamespace - requirejs namespace that appears in config.js, eg, BALANCING_ACT
  */
 module.exports = function( grunt, requirejsNamespace ) {
