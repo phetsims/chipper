@@ -13,6 +13,7 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
@@ -23,6 +24,7 @@ const getPreloads = require( './getPreloads' );
 const getStringMap = require( './getStringMap' );
 const getVersionForBrand = require( '../getVersionForBrand' );
 const minify = require( './minify' );
+const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 const packageRunnable = require( './packageRunnable' );
 const requireBuild = require( './requireBuild' );
 const reportUnusedMedia = require( './reportUnusedMedia' );
@@ -46,6 +48,8 @@ module.exports = async function( grunt, repo, uglify, mangle, brand ) {
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
 
   const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
+
+  var encoder = new nodeHTMLEncoder.Encoder( 'entity' );
 
   // All html files share the same build timestamp
   var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
@@ -81,11 +85,12 @@ module.exports = async function( grunt, repo, uglify, mangle, brand ) {
   const dependencies = await getDependencies( grunt, repo );
   const version = getVersionForBrand( brand, packageObject.version );
   const thirdPartyEntries = getAllThirdPartyEntries( grunt, repo, brand );
+  const stringMap = getStringMap( grunt, allLocales, phetLibs );
 
   const commonOptions = {
     brand,
     repo,
-    stringMap: getStringMap( grunt, allLocales, phetLibs ),
+    stringMap,
     mainInlineJavascript: requireJS,
     preloadScripts: preloads,
     mipmapsJavaScript: await buildMipmaps( grunt ),
@@ -95,6 +100,7 @@ module.exports = async function( grunt, repo, uglify, mangle, brand ) {
     thirdPartyEntries
   };
 
+  // {{locale}}.html
   for ( let locale of locales ) {
     grunt.file.write( '../' + repo + '/build/' + repo + '_' + locale + '.html', packageRunnable( grunt, _.extend( {
       locale,
@@ -102,12 +108,26 @@ module.exports = async function( grunt, repo, uglify, mangle, brand ) {
     }, commonOptions ) ) );
   }
 
+  // _all.html
   grunt.file.write( '../' + repo + '/build/' + repo + '_all.html', packageRunnable( grunt, _.extend( {
     locale: ChipperConstants.FALLBACK_LOCALE,
     includeAllLocales: true
   }, commonOptions ) ) );
 
+  // dependencies.json
   grunt.file.write( '../' + repo + '/build/dependencies.json', JSON.stringify( dependencies, null, 2 ) );
+
+  // -iframe.html (English is assumed as the locale).
+  if ( _.includes( locales, ChipperConstants.FALLBACK_LOCALE ) && brand === 'phet' ) {
+    const simTitleStringKey = packageObject.phet.requirejsNamespace + '/' + repo + '.title'; // REPO/repo.name
+    const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ simTitleStringKey ];
+
+    grunt.log.debug( 'Constructing HTML for iframe testing from template' );
+    var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( englishTitle + ' iframe test' ) );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_URL}}', repo + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
+    grunt.file.write( '../' + repo + '/build/' + repo + '_' + ChipperConstants.FALLBACK_LOCALE + '-iframe' + '.html', iframeTestHtml );
+  }
 
   if ( brand === 'phet-io' ) {
     await copySupplementalPhETIOFiles( grunt, repo, version );
