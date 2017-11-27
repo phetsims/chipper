@@ -17,8 +17,8 @@ const lint = require( './lint' );
 
 module.exports = function( grunt ) {
   var brand = 'phet'; // TODO: don't hardcode! we'll need to rewrite some things that reference this
-
   var packageObject = grunt.file.readJSON( 'package.json' );
+  var repo = grunt.option( 'repo' ) || packageObject.name;
 
   chipperGlobals.initialize( grunt );
 
@@ -40,11 +40,10 @@ module.exports = function( grunt ) {
 
       const uglify = grunt.option( 'uglify' ) !== false;
       const mangle = grunt.option( 'mangle' ) !== false;
-      const repo = grunt.file.readJSON( 'package.json' ).name;
 
       try {
         if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
-          fs.writeFileSync( 'build/' + repo + '.min.js', await buildStandalone( grunt, repo, uglify, mangle ) );
+          fs.writeFileSync( '../' + repo + '/build/' + repo + '.min.js', await buildStandalone( grunt, repo, uglify, mangle ) );
         }
         else {
           await buildRunnable( grunt, repo, uglify, mangle, 'phet' ); // TODO: other brands
@@ -60,13 +59,13 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', function() {
-    lint( grunt, [ packageObject.name ] );
+    lint( grunt, [ repo ] );
   } );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', async function() {
     const done = grunt.task.current.async();
 
-    lint( grunt, getPhetLibs( grunt, packageObject.name, brand ) );
+    lint( grunt, getPhetLibs( grunt, repo, brand ) );
 
     done();
   } );

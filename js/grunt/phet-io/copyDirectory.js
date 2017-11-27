@@ -7,8 +7,9 @@
 /* eslint-env node */
 'use strict';
 
-var _ = require( '../../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-var assert = require( 'assert' );
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const assert = require( 'assert' );
+const minify = require( '../minify' );
 
 /**
  * @param grunt the grunt instance
@@ -25,9 +26,6 @@ module.exports = function( grunt, src, dst, filter, options ) {
     minifyJS: false,
     licenseToPrepend: ''
   }, options );
-
-  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
-  var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
 
   // Copy built sim files (assuming they exist from a prior grunt command)
   grunt.file.recurse( src, function callback( abspath, rootdir, subdir, filename ) {
@@ -60,21 +58,7 @@ module.exports = function( grunt, src, dst, filter, options ) {
     // Minify the file if it is javascript code
     if ( options.minifyJS && filename.endsWith( '.js' ) && abspath.indexOf( 'chipper/templates/' ) < 0 ) {
       var toBeMinified = filteredContents ? filteredContents : contents;
-      filteredContents = uglify.minify( toBeMinified, {
-        mangle: {
-          except: [ 'require' ]
-        },
-        output: {
-          inline_script: true, // escape </script
-          beautify: false
-        },
-        compress: {
-          global_defs: {}
-        },
-
-        // First argument is a string of code, not a filename
-        fromString: true
-      } ).code;
+      filteredContents = minify( toBeMinified );
 
       // Only add the license to the javascript code
       filteredContents = options.licenseToPrepend + filteredContents;

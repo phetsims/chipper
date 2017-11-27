@@ -13,19 +13,18 @@
 'use strict';
 
 // modules
-var ChipperConstants = require( '../../../../chipper/js/common/ChipperConstants' );
 var getSimDocumentationFromWrapper = require( './getSimDocumentationFromWrapper' );
 
 // constants
 var DOCUMENTATION_FILENAME = 'phet-io-documentation.html';
 
-module.exports = function( grunt, buildConfig, done ) {
+module.exports = function( grunt, repo, done ) {
   grunt.log.debug( 'Generating PhET-iO documentation' );
 
-  getSimDocumentationFromWrapper( grunt, buildConfig.name, function( html){
+  getSimDocumentationFromWrapper( grunt, repo, function( html){
 
     // Write the new documentation to html
-    grunt.file.write( ChipperConstants.BUILD_DIR + '/docs/' + DOCUMENTATION_FILENAME, html );
+    grunt.file.write( '../' + repo + '/build/docs/' + DOCUMENTATION_FILENAME, html );
     grunt.log.debug( 'Wrote PhET-iO documentation file.' );
     done();
   } );
