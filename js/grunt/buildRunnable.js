@@ -15,13 +15,16 @@ const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
+const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
 const getLocalesToBuild = require( './getLocalesToBuild' );
 const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );
+const getSimsFromDataFile = require( './getSimsFromDataFile' );
 const getStringMap = require( './getStringMap' );
+const getTitleStringKey = require( './getTitleStringKey' );
 const getVersionForBrand = require( '../getVersionForBrand' );
 const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
@@ -119,14 +122,22 @@ module.exports = async function( grunt, repo, uglify, mangle, brand ) {
 
   // -iframe.html (English is assumed as the locale).
   if ( _.includes( locales, ChipperConstants.FALLBACK_LOCALE ) && brand === 'phet' ) {
-    const simTitleStringKey = packageObject.phet.requirejsNamespace + '/' + repo + '.title'; // REPO/repo.name
-    const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ simTitleStringKey ];
+    const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( grunt, repo ) ];
 
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( englishTitle + ' iframe test' ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_URL}}', repo + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
     grunt.file.write( '../' + repo + '/build/' + repo + '_' + ChipperConstants.FALLBACK_LOCALE + '-iframe' + '.html', iframeTestHtml );
+  }
+
+  var a11ySims = getSimsFromDataFile( grunt, 'accessibility' );
+
+  // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
+  if ( a11ySims.indexOf( repo ) >= 0 && brand === 'phet' ) {
+    // (a11y) Create the a11y-view HTML file for pDOM viewing.
+    var a11yHTML = getA11yViewHTMLFromTemplate( grunt, repo );
+    grunt.file.write( '../' + repo + '/build/' + repo + ChipperConstants.A11Y_VIEW_HTML_SUFFIX, a11yHTML );
   }
 
   if ( brand === 'phet-io' ) {

@@ -14,10 +14,8 @@
 'use strict';
 
 module.exports = function( grunt, filename ) {
-  var contents = grunt.file.read( '../chipper/data/' + filename ).trim();
-
-  var sims = contents.split( '\n' );
+  const contents = grunt.file.read( '../chipper/data/' + filename ).trim();
 
   // Trim will remove any spaces and carriage returns if they are present.
-  return sims.map( function( sim ) { return sim.trim(); } );
+  return contents.split( '\n' ).map( sim => sim.trim() );
 };
