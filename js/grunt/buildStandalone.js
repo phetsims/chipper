@@ -9,6 +9,7 @@
 'use strict';
 
 // modules
+const assert = require( 'assert' );
 const fs = require( 'fs' );
 const minify = require( './minify' );
 const requireBuild = require( './requireBuild' );
@@ -23,7 +24,7 @@ const requireBuild = require( './requireBuild' );
  * @param {boolean} mangle
  */
 module.exports = async function( grunt, repo, uglify, mangle ) {
-  assert( typeof repo === 'boolean' );
+  assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
   assert( typeof mangle === 'boolean' );
 

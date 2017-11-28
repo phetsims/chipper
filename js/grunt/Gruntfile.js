@@ -8,6 +8,7 @@
 /* eslint-env node */
 'use strict';
 
+const assert = require( 'assert' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const chipperGlobals = require( './chipperGlobals' );
@@ -24,9 +25,21 @@ const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
 
 module.exports = function( grunt ) {
-  var brand = 'phet'; // TODO: don't hardcode! we'll need to rewrite some things that reference this
-  var packageObject = grunt.file.readJSON( 'package.json' );
-  var repo = grunt.option( 'repo' ) || packageObject.name;
+  const packageObject = grunt.file.readJSON( 'package.json' );
+
+  // Handle the lack of build.json
+  var buildObject;
+  try {
+    buildObject = grunt.file.readJSON( '../chipper/build.json' );
+  } 
+  catch ( e ) {
+    buildObject = {};
+  }
+
+  const brand = grunt.option( 'brand' ) || buildObject.brand || 'adapted-from-phet';
+  assert( grunt.file.exists( '../brand/' + brand ), 'no such brand: ' + brand );
+
+  const repo = grunt.option( 'repo' ) || packageObject.name;
 
   chipperGlobals.initialize( grunt );
 
@@ -35,10 +48,11 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
     function() {
-      if ( grunt.file.exists( 'build' ) ) {
-        grunt.file.delete( 'build' );
+      var buildDirectory = '../' + repo + '/build';
+      if ( grunt.file.exists( buildDirectory ) ) {
+        grunt.file.delete( buildDirectory );
       }
-      grunt.file.mkdir( 'build' );
+      grunt.file.mkdir( buildDirectory );
     } );
 
   grunt.registerTask( 'build',
@@ -55,7 +69,7 @@ module.exports = function( grunt ) {
           fs.writeFileSync( '../' + repo + '/build/' + repo + '.min.js', await buildStandalone( grunt, repo, uglify, mangle ) );
         }
         else {
-          await buildRunnable( grunt, repo, uglify, mangle, instrument, 'phet' ); // TODO: other brands
+          await buildRunnable( grunt, repo, uglify, mangle, instrument, brand );
         }
       }
       catch ( e ) {

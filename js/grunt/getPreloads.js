@@ -25,7 +25,13 @@ const getPhetLibs = require( './getPhetLibs' );
 module.exports = function( grunt, repo, brand ) {
 
   const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
-  const buildObject = grunt.file.readJSON( '../chipper/build.json' );
+  var buildObject;
+  try {
+    buildObject = grunt.file.readJSON( '../chipper/build.json' );
+  } 
+  catch ( e ) {
+    buildObject = {};
+  }
 
   // No preload needed for wrappers
   if ( packageObject.isWrapper ) {

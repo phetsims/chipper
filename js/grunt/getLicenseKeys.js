@@ -22,7 +22,13 @@ const getPreloads = require( './getPreloads' );
  */
 module.exports = function( grunt, repo, brand ) {
   const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
-  const buildObject = grunt.file.readJSON( '../chipper/build.json' );
+  var buildObject;
+  try {
+    buildObject = grunt.file.readJSON( '../chipper/build.json' );
+  } 
+  catch ( e ) {
+    buildObject = {};
+  }
   const preload = getPreloads( grunt, repo, brand );
 
   // start with package.json

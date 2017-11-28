@@ -32,7 +32,13 @@ module.exports = function getPhetLibs( grunt, repo, brand ) {
   }
   else {
     const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
-    const buildObject = grunt.file.readJSON( '../chipper/build.json' );
+    var buildObject;
+    try {
+      buildObject = grunt.file.readJSON( '../chipper/build.json' );
+    } 
+    catch ( e ) {
+      buildObject = {};
+    }
 
     // If working with a wrapper, then just use the wrapper's phetLibs
     if ( packageObject.isWrapper && packageObject.wrapper.phetLibs ) {

@@ -12,15 +12,7 @@
 /* eslint-env node */
 'use strict';
 
-// built-in node APIs
-var assert = require( 'assert' );
-var fs = require( 'fs' );
-
-// 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-
 // PhET custom grunt tasks
-var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var commitsSince = require( '../../../chipper/js/grunt/commitsSince' );
@@ -29,20 +21,10 @@ var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
-var generateA11yViewHTML = require( '../../../chipper/js/grunt/generateA11yViewHTML' );
-var generateConfig = require( '../../../chipper/js/grunt/generateConfig' );
-var generateCoverage = require( '../../../chipper/js/grunt/generateCoverage' );
-var generateDevelopmentColorsHTML = require( '../../../chipper/js/grunt/generateDevelopmentColorsHTML' );
-var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
-var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
-var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
-var generateTwitterCard = require( '../../../chipper/js/grunt/generateTwitterCard' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var insertRequireStatement = require( '../../../chipper/js/grunt/insertRequireStatement' );
-var lint = require( '../../../chipper/js/grunt/lint' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
-var requirejsBuild = require( '../../../chipper/js/grunt/requirejsBuild' );
 var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
@@ -56,35 +38,6 @@ module.exports = function( grunt ) {
 
   var buildConfig = getBuildConfig( grunt );
 
-  // Initialize and document all globals
-  assert( !global.phet, 'global.phet already exists' );
-  global.phet = {
-
-    chipper: {
-
-      // the grunt instance, for situations where we can't pass it as a function argument
-      grunt: grunt,
-
-      // for code that runs in both requirejs and build modes, and therefore doesn't have access to grunt.file
-      fs: fs,
-
-      // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
-      getCacheBusterArgs: function() { return ''; },
-
-      // media plugins populate this with license.json entries, see getLicenseEntry.js for format of entries
-      licenseEntries: {},
-
-      // use by media plugins, which don't have access to buildConfig
-      brand: buildConfig.brand,
-
-      // populated by mipmap.js
-      mipmapsToBuild: [],
-
-      // populated by string.js
-      strings: {}
-    }
-  };
-
   //---------------------------------------------------------------------------------------------------------------
   // Primary tasks
   //---------------------------------------------------------------------------------------------------------------
@@ -97,51 +50,6 @@ module.exports = function( grunt ) {
   else {
     grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
   }
-
-  // Add the linting step as an pre-build step.  Can be skipped with --lint=false
-  var optionalTasks = [];
-  if ( grunt.option( 'lint' ) === false ) {
-
-    // do nothing
-  }
-  else {
-    optionalTasks.push( 'lint-all' );
-  }
-
-  var additionalTasks = [
-    'clean',
-    'requirejs-build',
-    'after-requirejs-build'
-  ];
-
-  // Determine what the 'build' command will do, so that 'grunt build-js' is not needed.
-  if ( !buildConfig.isJSOnly ) {
-    grunt.registerTask( 'build',
-      'Builds the simulation:\n' +
-      'with no options, builds HTML for English only\n' +
-      '--locales=* : all locales in strings/ directory\n' +
-      '--locales=fr : French\n' +
-      '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
-      '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
-      '--brand=$brand : build a specific brand. Choices are phet, phet-io, adapted-from-phet (default)\n' +
-      '--lint=false : skip the lint sub-task\n' +
-      '--mangle=false : skip the mangling portion of UglifyJS2, and beautify the output\n' +
-      '--uglify=false : skip the UglifyJS2 step altogether\n' +
-      '--allHTML : (phet brand only) - Generate the _all.html file that contains information for all locales',
-      optionalTasks.concat( additionalTasks )
-    );
-  }
-  else {
-    // Grunt task that builds only the JS (no HTML), for libraries like scenery
-    // see https://github.com/phetsims/scenery/issues/567
-    grunt.registerTask( 'build', 'Build only the JS, for scenery/kite/dot/sun/libraries',
-      optionalTasks.concat( [ 'clean', 'requirejs-build' ] )
-    );
-  }
-
-  grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
-    [ 'build', 'generate-thumbnails', 'generate-twitter-card' ]
-  );
 
   // Grunt task that determines created and last modified dates from git, and
   // updates copyright statements accordingly, see #403
@@ -225,44 +133,6 @@ module.exports = function( grunt ) {
     }
   );
 
-  /**
-   * Returns a function that lints the specified target.
-   * @param {string} target 'dir'|'all'|'everything'
-   * @returns {function}
-   */
-  var runLint = function( target ) {
-    return function() {
-      lint( grunt, target, buildConfig );
-    };
-  };
-  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', runLint( 'dir' ) );
-
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', runLint( 'all' ) );
-
-  grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', runLint( 'everything' ) );
-
-  grunt.registerTask( 'clean',
-    'Erases the build/ directory and all its contents, and recreates the build/ directory',
-    function() {
-      if ( grunt.file.exists( 'build' ) ) {
-        grunt.file.delete( 'build' );
-      }
-      grunt.file.mkdir( 'build' );
-    } );
-
-
-  grunt.registerTask( 'requirejs-build',
-    '(internal use only) Do the requirejs build step',
-    function() {
-      requirejsBuild( grunt, buildConfig );
-    } );
-
-  grunt.registerTask( 'after-requirejs-build',
-    '(internal use only) Do things after the requirejs:build task',
-    function() {
-      afterRequirejsBuild( grunt, buildConfig );
-    } );
-
   //---------------------------------------------------------------------------------------------------------------
   // Utility tasks
   //---------------------------------------------------------------------------------------------------------------
@@ -339,63 +209,6 @@ module.exports = function( grunt ) {
       reportThirdParty( grunt );
     } );
 
-  grunt.registerTask( 'published-README',
-    'Generates README.md file for a published simulation.',
-    function() {
-      assert( buildConfig.simTitleStringKey, 'missing buildConfig.simTitleStringKey' );
-      generateREADME( grunt, buildConfig.name, buildConfig.phetLibs, buildConfig.simTitleStringKey, true /* published */ );
-    } );
-
-  grunt.registerTask( 'unpublished-README',
-    'Generates README.md file for an unpublished simulation.',
-    function() {
-      assert( buildConfig.simTitleStringKey, 'missing buildConfig.simTitleStringKey' );
-      generateREADME( grunt, buildConfig.name, buildConfig.phetLibs, buildConfig.simTitleStringKey, false /* published */ );
-    } );
-
-  grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.',
-    function() {
-      var finished = _.after( 2, grunt.task.current.async() );
-      generateThumbnails( grunt, buildConfig.name, 128, 84, finished );
-      generateThumbnails( grunt, buildConfig.name, 600, 394, finished );
-    } );
-
-  grunt.registerTask( 'generate-twitter-card', 'Generate image for twitter summary card to be used on the website.',
-    function() {
-      var finished = _.after( 1, grunt.task.current.async() );
-      generateTwitterCard( grunt, buildConfig.name, finished );
-    } );
-
-  grunt.registerTask( 'generate-development-html',
-    'Generates top-level SIM_en.html file based on the preloads in package.json.',
-    function() {
-      generateDevelopmentHTML( grunt, buildConfig );
-    } );
-
-  grunt.registerTask( 'generate-development-colors-html',
-    'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
-    function() {
-      generateDevelopmentColorsHTML( grunt, buildConfig );
-    } );
-
-  grunt.registerTask( 'generate-a11y-view-html',
-    'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
-    function() {
-      generateA11yViewHTML( grunt, buildConfig );
-    } );
-
-  grunt.registerTask( 'generate-config',
-    'Generates the js/SIM-config.js file based on the dependencies in package.json.',
-    function() {
-      generateConfig( grunt, buildConfig );
-    } );
-
-  grunt.registerTask( 'generate-coverage',
-    'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
-    function() {
-      generateCoverage( grunt, buildConfig );
-    } );
-
   grunt.registerTask( 'commits-since',
     'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
     function() {
@@ -417,8 +230,6 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'wrapper-basic-build', 'Build PhET-iO wrapper', function() {
     wrapperBuild( grunt, buildConfig );
   } );
-
-  grunt.registerTask( 'build-wrapper', 'Build PhET-iO wrapper', optionalTasks.concat( [ 'clean', 'wrapper-basic-build' ] ) );
 
   grunt.registerTask( 'sort-require-statements', 'Sort the require statements for all *.js files in the js/ directory. ' +
                                                  'This assumes the code is formatted  with IDEA code style and that ' +
