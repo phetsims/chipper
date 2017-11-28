@@ -10,13 +10,16 @@
 
 // modules
 const chipperGlobals = require( './chipperGlobals' );
+const istanbul = require( 'istanbul' );
 const requirejs = require( 'requirejs' );
 
-module.exports = function( grunt, mainConfigFile, options ) {
+// TODO: doc
+module.exports = function( grunt, repo, mainConfigFile, options ) {
 
   const {
     wrap = true,
     insertRequire = false,
+    instrument = false,
     brand = 'phet'
   } = options || {};
 
@@ -28,6 +31,8 @@ module.exports = function( grunt, mainConfigFile, options ) {
    */
   return new Promise( ( resolve, reject ) => {
     var output;
+
+    const instrumenter = instrument ? new istanbul.Instrumenter() : null;
 
     const config = {
 
@@ -48,6 +53,24 @@ module.exports = function( grunt, mainConfigFile, options ) {
 
       // JS config file
       mainConfigFile,
+
+      // Add instrumentation if required
+      onBuildWrite: function( moduleName, path, contents ) {
+        if ( instrumenter &&
+             path.indexOf( '.js' ) > 0 &&
+             path.indexOf( '..' ) < 0 &&
+             moduleName.indexOf( '!' ) < 0 ) {
+          var filePath = '../' + repo + '/build/instrumentation/' + moduleName + '.js';
+          var fileDir = filePath.slice( 0, filePath.lastIndexOf( '/' ) );
+          grunt.file.mkdir( fileDir );
+          grunt.file.write( filePath, contents );
+          grunt.log.debug( 'instrumenting ' + filePath );
+          return instrumenter.instrumentSync( contents, filePath );
+        }
+        else {
+          return contents;
+        }
+      },
 
       // optimized output file
       out( js, sourceMap ) {

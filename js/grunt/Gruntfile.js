@@ -12,6 +12,12 @@ const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const chipperGlobals = require( './chipperGlobals' );
 const fs = require( 'fs' );
+const generateA11yViewHTML = require( './generateA11yViewHTML' );
+const generateConfig = require( './generateConfig' );
+const generateCoverage = require( './generateCoverage' );
+const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
+const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+const generateREADME = require( './generateREADME' );
 const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
@@ -40,7 +46,8 @@ module.exports = function( grunt ) {
     async function() {
       const done = grunt.task.current.async();
 
-      const uglify = grunt.option( 'uglify' ) !== false;
+      const instrument = !!grunt.option( 'instrument' );
+      const uglify = !instrument && ( grunt.option( 'uglify' ) !== false ); // Do not uglify if it is being instrumented
       const mangle = grunt.option( 'mangle' ) !== false;
 
       try {
@@ -48,7 +55,7 @@ module.exports = function( grunt ) {
           fs.writeFileSync( '../' + repo + '/build/' + repo + '.min.js', await buildStandalone( grunt, repo, uglify, mangle ) );
         }
         else {
-          await buildRunnable( grunt, repo, uglify, mangle, 'phet' ); // TODO: other brands
+          await buildRunnable( grunt, repo, uglify, mangle, instrument, 'phet' ); // TODO: other brands
         }
       }
       catch ( e ) {
@@ -60,6 +67,9 @@ module.exports = function( grunt ) {
     }
   );
 
+  grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
+    [ 'build', 'generate-thumbnails', 'generate-twitter-card' ]
+  );
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', function() {
     lint( grunt, [ repo ] );
   } );
@@ -96,8 +106,47 @@ module.exports = function( grunt ) {
 
       done();
     } );
-  
-  grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
-    [ 'build', 'generate-thumbnails', 'generate-twitter-card' ]
-  );
+
+  grunt.registerTask( 'generate-development-html',
+    'Generates top-level SIM_en.html file based on the preloads in package.json.',
+    function() {
+      generateDevelopmentHTML( grunt, repo );
+    } );
+
+  grunt.registerTask( 'generate-development-colors-html',
+    'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
+    function() {
+      generateDevelopmentColorsHTML( grunt, repo );
+    } );
+
+  grunt.registerTask( 'generate-a11y-view-html',
+    'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
+    function() {
+      generateA11yViewHTML( grunt, repo );
+    } );
+
+  grunt.registerTask( 'generate-config',
+    'Generates the js/SIM-config.js file based on the dependencies in package.json.',
+    function() {
+      generateConfig( grunt, repo );
+    } );
+
+  grunt.registerTask( 'generate-coverage',
+    'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
+    function() {
+      generateCoverage( grunt, repo );
+    } );
+
+  grunt.registerTask( 'published-README',
+    'Generates README.md file for a published simulation.',
+    function() {
+      generateREADME( grunt, repo, true /* published */ );
+    } );
+
+  grunt.registerTask( 'unpublished-README',
+    'Generates README.md file for an unpublished simulation.',
+    function() {
+      generateREADME( grunt, repo, false /* published */ );
+    } );
+
 };

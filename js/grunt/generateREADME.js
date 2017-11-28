@@ -9,21 +9,23 @@
 /* eslint-env node */
 'use strict';
 
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const getPhetLibs = require( './getPhetLibs' );
+const getTitleStringKey = require( './getTitleStringKey' );
 
 /**
- * @param grunt - the grunt instance
- * @param {string} repositoryName - name of the repository
- * @param {string[]} phetLibs - repositories that repositoryName depends on
- * @param {string} simTitleStringKey - key for the sim's title string
+ * @param {Object} grunt - the grunt instance
+ * @param {string} repo - name of the repository
  * @param {boolean} published - has the sim been published?
  */
-module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, published ) {
+module.exports = function( grunt, repo, published ) {
 
   // Read the title from the English strings file.
-  var strings = grunt.file.readJSON( '../' + repositoryName + '/' + repositoryName + '-strings_en.json' );
-  var titleKey = simTitleStringKey.split( '/' ).pop(); // eg. 'EXAMPLE_SIM/example-sim.title' -> 'example-sim.title'
-  var title = strings[ titleKey ].value;
+  const simTitleStringKey = getTitleStringKey( grunt, repo );
+  const strings = grunt.file.readJSON( '../' + repo + '/' + repo + '-strings_en.json' );
+  const titleKey = simTitleStringKey.split( '/' ).pop(); // eg. 'EXAMPLE_SIM/example-sim.title' -> 'example-sim.title'
+  const title = strings[ titleKey ].value;
+  const phetLibs = getPhetLibs( grunt, repo, 'phet' );
 
   // Commands for cloning all required repositories
   var cloneCommands = '';
@@ -35,15 +37,15 @@ module.exports = function( grunt, repositoryName, phetLibs, simTitleStringKey, p
   }
 
   // Read the template.
-  var templateFile = published ? 'README-published.md' : 'README-unpublished.md';
+  const templateFile = published ? 'README-published.md' : 'README-unpublished.md';
   var readme = grunt.file.read( '../chipper/templates/' + templateFile );
 
   // Replace placeholders in the template.
-  readme = ChipperStringUtils.replaceAll( readme, '{{REPOSITORY}}', repositoryName );
+  readme = ChipperStringUtils.replaceAll( readme, '{{REPOSITORY}}', repo );
   readme = ChipperStringUtils.replaceAll( readme, '{{TITLE}}', title );
   readme = ChipperStringUtils.replaceAll( readme, '{{CLONE_COMMANDS}}', cloneCommands );
 
   // Write to the repository's root directory.
-  grunt.file.write( 'README.md', readme );
+  grunt.file.write( '../' + repo + '/README.md', readme );
 };
 

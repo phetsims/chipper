@@ -29,7 +29,7 @@ module.exports = async function( grunt, repo, uglify, mangle ) {
 
   const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
 
-  const requireJS = await requireBuild( grunt, '../' + repo + '/js/' + repo + '-config.js', { wrap: false } );
+  const requireJS = await requireBuild( grunt, repo, '../' + repo + '/js/' + repo + '-config.js', { wrap: false } );
 
   const includedSources = [
     '../assert/js/assert.js'
