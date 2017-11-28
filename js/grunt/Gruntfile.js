@@ -28,17 +28,17 @@ module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
 
   // Handle the lack of build.json
-  var buildObject;
+  var buildLocal;
   try {
-    buildObject = grunt.file.readJSON( '../chipper/build.json' );
+    buildLocal = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
   } 
   catch ( e ) {
-    buildObject = {};
+    buildLocal = {};
   }
 
    // TODO: grunt error on promise rejection
 
-  const brand = grunt.option( 'brand' ) || buildObject.brand || 'adapted-from-phet';
+  const brand = grunt.option( 'brand' ) || buildLocal.brand || 'adapted-from-phet';
   assert( grunt.file.exists( '../brand/' + brand ), 'no such brand: ' + brand );
 
   const repo = grunt.option( 'repo' ) || packageObject.name;

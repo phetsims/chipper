@@ -9,7 +9,7 @@
 'use strict';
 
 // modules
-// const transpile = require( './transpile' );
+const transpile = require( './transpile' );
 const uglify = require( 'uglify-es' ); // eslint-disable-line require-statement-match
 
 /**
@@ -23,11 +23,14 @@ const uglify = require( 'uglify-es' ); // eslint-disable-line require-statement-
  */
 module.exports = function( grunt, js, options ) {
   const {
-    mangle = true
+    mangle = true,
+    babelTranspile = false
   } = options || {};
 
   // Do transpilation before uglifying.
-  // js = transpile( grunt, js );
+  if ( babelTranspile ) {
+    js = transpile( grunt, js );
+  }
 
   var result = uglify.minify( js, {
     mangle: mangle ? {

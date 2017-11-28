@@ -70,7 +70,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, brand 
   reportUnusedStrings( grunt, repo, packageObject.phet.requirejsNamespace );
 
   if ( uglify ) {
-    requireJS = minify( grunt, requireJS, { mangle: mangle } );
+    requireJS = minify( grunt, requireJS, { mangle, babelTranspile: true } );
   }
 
   const preloads = getPreloads( grunt, repo, brand ).map( filename => {

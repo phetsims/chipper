@@ -107,4 +107,6 @@
   if ( typeof module !== 'undefined' ) {
     module.exports = mipmapDownscale;
   }
-})( this );
+})( ( 1, eval )( 'this' ) );
+// Indirect eval usage done since babel likes to wrap things in strict mode.
+// See http://perfectionkills.com/unnecessarily-comprehensive-look-into-a-rather-insignificant-issue-of-global-objects-creation/#ecmascript_5_strict_mode
