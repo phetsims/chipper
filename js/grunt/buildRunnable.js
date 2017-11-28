@@ -105,7 +105,8 @@ module.exports = async function( grunt, repo, uglify, mangle, brand ) {
 
   // {{locale}}.html
   for ( let locale of locales ) {
-    grunt.file.write( '../' + repo + '/build/' + repo + '_' + locale + '.html', packageRunnable( grunt, _.extend( {
+    const suffix = brand === 'phet-io' ? '-phetio' : '';
+    grunt.file.write( '../' + repo + '/build/' + repo + '_' + locale + suffix + '.html', packageRunnable( grunt, _.extend( {
       locale,
       includeAllLocales: false
     }, commonOptions ) ) );
@@ -143,7 +144,4 @@ module.exports = async function( grunt, repo, uglify, mangle, brand ) {
   if ( brand === 'phet-io' ) {
     await copySupplementalPhETIOFiles( grunt, repo, version );
   }
-
-  // TODO: sanity checks
-  // TODO: iframe bits, accessibility, etc.
 };

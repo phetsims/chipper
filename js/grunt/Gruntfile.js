@@ -12,6 +12,8 @@ const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const chipperGlobals = require( './chipperGlobals' );
 const fs = require( 'fs' );
+const generateThumbnails = require( './generateThumbnails' );
+const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
 
@@ -73,4 +75,29 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', function() {
     lint( grunt, grunt.file.read( '../chipper/data/active-repos' ).trim().split( /\r?\n/ ) );
   } );
+
+  grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.',
+    async function() {
+      const done = grunt.task.current.async();
+
+      await Promise.all( [
+        generateThumbnails( grunt, repo, 128, 84 ),
+        generateThumbnails( grunt, repo, 600, 394 )
+      ] );
+
+      done();
+    } );
+
+  grunt.registerTask( 'generate-twitter-card', 'Generate image for twitter summary card to be used on the website.',
+    async function() {
+      const done = grunt.task.current.async();
+
+      await generateTwitterCard( grunt, repo );
+
+      done();
+    } );
+  
+  grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
+    [ 'build', 'generate-thumbnails', 'generate-twitter-card' ]
+  );
 };

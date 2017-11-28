@@ -31,7 +31,7 @@
     A11Y_VIEW_HTML_SUFFIX: '-a11y-view.html',
 
     // All brands that should be taken into account for dependency handling
-    BRANDS: [ 'phet', 'phet-io' ]
+    BRANDS: [ 'phet', 'phet-io', 'adapted-from-phet' ]
   };
 
   // browser require.js-compatible definition
