@@ -22,7 +22,7 @@ module.exports = function( grunt, repo, published ) {
 
   // Read the title from the English strings file.
   const simTitleStringKey = getTitleStringKey( grunt, repo );
-  const strings = grunt.file.readJSON( '../' + repo + '/' + repo + '-strings_en.json' );
+  const strings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
   const titleKey = simTitleStringKey.split( '/' ).pop(); // eg. 'EXAMPLE_SIM/example-sim.title' -> 'example-sim.title'
   const title = strings[ titleKey ].value;
   const phetLibs = getPhetLibs( grunt, repo, 'phet' );
@@ -46,6 +46,6 @@ module.exports = function( grunt, repo, published ) {
   readme = ChipperStringUtils.replaceAll( readme, '{{CLONE_COMMANDS}}', cloneCommands );
 
   // Write to the repository's root directory.
-  grunt.file.write( '../' + repo + '/README.md', readme );
+  grunt.file.write( `../${repo}/README.md`, readme );
 };
 

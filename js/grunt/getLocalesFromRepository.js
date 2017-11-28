@@ -21,15 +21,15 @@ const assert = require( 'assert' );
 module.exports = function( grunt, repo ) {
 
   // confirm that the repository has a strings directory
-  var stringsDirectory = '../babel/' + repo;
-  assert( grunt.file.isDir(), stringsDirectory + 'is not a directory' );
+  var stringsDirectory = `../babel/${repo}`;
+  assert( grunt.file.isDir(), `${stringsDirectory} is not a directory` );
 
   // Get names of string files.
-  var stringFiles = grunt.file.expand( stringsDirectory + '/' + repo + '-strings_*.json' );
+  var stringFiles = grunt.file.expand( `${stringsDirectory}/${repo}-strings_*.json` );
 
   // Don't fail out if there are no string files, as this is a normal condition when building new simulations
   if ( stringFiles.length === 0 ) {
-    grunt.log.debug( 'No string files found in ' + stringsDirectory + ' for repository ' + repo );
+    grunt.log.debug( `No string files found in ${stringsDirectory} for repository ${repo}` );
     return [];
   }
 
@@ -38,7 +38,7 @@ module.exports = function( grunt, repo ) {
   var locales = stringFiles.map( function( filename ) {
     return filename.substring( filename.indexOf( '_' ) + 1, filename.lastIndexOf( '.' ) );
   } );
-  assert( locales.length > 0, 'no locales found in ' + stringsDirectory );
+  assert( locales.length > 0, `no locales found in ${stringsDirectory}` );
 
   return locales;
 };

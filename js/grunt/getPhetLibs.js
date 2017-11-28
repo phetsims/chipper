@@ -31,7 +31,7 @@ module.exports = function getPhetLibs( grunt, repo, brand ) {
     }, [] );
   }
   else {
-    const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
+    const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
     var buildObject;
     try {
       buildObject = grunt.file.readJSON( '../chipper/build.json' );

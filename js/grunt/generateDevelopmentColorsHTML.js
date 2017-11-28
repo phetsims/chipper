@@ -21,9 +21,9 @@ module.exports = function( grunt, repo ) {
   var html = grunt.file.read( '../chipper/templates/sim-development-colors.html' ); // the template file
 
   // Replace placeholders in the template.
-  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', repo + ' colors' );
-  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', repo + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
+  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', `${repo} colors` );
+  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', `${repo}_${ChipperConstants.FALLBACK_LOCALE}.html` );
 
   // Write to the repository's root directory.
-  grunt.file.write( '../' + repo + '/' + repo + '-colors.html', html );
+  grunt.file.write( `../${repo}/${repo}-colors.html`, html );
 };

@@ -28,9 +28,9 @@ module.exports = async function( grunt, repo, uglify, mangle ) {
   assert( typeof uglify === 'boolean' );
   assert( typeof mangle === 'boolean' );
 
-  const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
+  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-  const requireJS = await requireBuild( grunt, repo, '../' + repo + '/js/' + repo + '-config.js', { wrap: false } );
+  const requireJS = await requireBuild( grunt, repo, `../${repo}/js/${repo}-config.js`, { wrap: false } );
 
   const includedSources = [
     '../assert/js/assert.js'
@@ -61,7 +61,7 @@ module.exports = async function( grunt, repo, uglify, mangle ) {
   // include globals assignment
   fullSource += Object.keys( packageObject.phet.assignGlobals ).sort().map( function( global ) {
     // For each key=>value in packageObject.phet.assignGlobals, we want to set window.key = require( 'value' ), to initialize our globals
-    return '\n  window.' + global + ' = require( \'' + packageObject.phet.assignGlobals[ global ] + '\' );';
+    return `\n  window.${global} = require( \'${packageObject.phet.assignGlobals[ global ]}\' );`;
   } ).join( '' );
 
   if ( packageObject.phet.finalizeJS ) {
@@ -69,7 +69,7 @@ module.exports = async function( grunt, repo, uglify, mangle ) {
   }
 
   // Wrap with an IIFE
-  fullSource = '(function() {\n' + fullSource + '\n}());';
+  fullSource = `(function() {\n${fullSource}\n}());`;
 
   if ( uglify ) {
     fullSource = minify( grunt, fullSource, { mangle: mangle } );

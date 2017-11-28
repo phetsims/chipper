@@ -54,11 +54,11 @@ module.exports = function( grunt, repo, brand ) {
     var license = licenseInfo[ key ];
 
     // verify required keys
-    assert( license, THIRD_PARTY_LICENSES_FILENAME + ': no entry for key = ' + key );
-    assert( license.text, THIRD_PARTY_LICENSES_FILENAME + ': no text field for key = ' + key );
-    assert( license.license, THIRD_PARTY_LICENSES_FILENAME + ': no license field for key = ' + key );
-    assert( license.projectURL, THIRD_PARTY_LICENSES_FILENAME + ': no projectURL field for key = ' + key );
-    assert( license.notes, THIRD_PARTY_LICENSES_FILENAME + ': no notes field for key = ' + key );
+    assert( license, THIRD_PARTY_LICENSES_FILENAME + `: no entry for key = ${key}` );
+    assert( license.text, THIRD_PARTY_LICENSES_FILENAME + `: no text field for key = ${key}` );
+    assert( license.license, THIRD_PARTY_LICENSES_FILENAME + `: no license field for key = ${key}` );
+    assert( license.projectURL, THIRD_PARTY_LICENSES_FILENAME + `: no projectURL field for key = ${key}` );
+    assert( license.notes, THIRD_PARTY_LICENSES_FILENAME + `: no notes field for key = ${key}` );
 
     // read the license file
     var licenseText = grunt.file.read( LICENSES_DIRECTORY + key + '.txt', 'utf-8' );

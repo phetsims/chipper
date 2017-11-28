@@ -23,7 +23,7 @@ const getPreloads = require( './getPreloads' );
 module.exports = function( grunt, repo ) {
   const brand = 'phet';
 
-  const splashURL = '../brand/' + brand + '/images/splash.svg';
+  const splashURL = `../brand/${brand}/images/splash.svg`;
   var html = grunt.file.read( '../chipper/templates/sim-development.html' ); // the template file
 
   // Formatting is very specific to the template file. Each preload is placed on separate line,
@@ -56,5 +56,5 @@ module.exports = function( grunt, repo ) {
   html = ChipperStringUtils.replaceAll( html, '{{BROWSER_WINDOW_TITLE}}', repo );
 
   // Write to the repository's root directory.
-  grunt.file.write( '../' + repo + '/' + repo + '_en.html', html );
+  grunt.file.write( `../${repo}/${repo}_en.html`, html );
 };

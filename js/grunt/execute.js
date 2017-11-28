@@ -29,7 +29,7 @@ module.exports = function( grunt, cmd, args, cwd ) {
     const process = child_process.spawn( cmd, args, {
       cwd: cwd
     } );
-    grunt.log.debug( 'running ' + cmd + ' ' + args.join( ' ' ) + ' from ' + cwd );
+    grunt.log.debug( `running ${cmd} ${args.join( ' ' )} from ${cwd}` );
 
     var stdout = ''; // to be appended to
 

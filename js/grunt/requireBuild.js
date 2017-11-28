@@ -60,7 +60,7 @@ module.exports = function( grunt, repo, mainConfigFile, options ) {
              path.indexOf( '.js' ) > 0 &&
              path.indexOf( '..' ) < 0 &&
              moduleName.indexOf( '!' ) < 0 ) {
-          var filePath = '../' + repo + '/build/instrumentation/' + moduleName + '.js';
+          var filePath = `../${repo}/build/instrumentation/${moduleName}.js`;
           var fileDir = filePath.slice( 0, filePath.lastIndexOf( '/' ) );
           grunt.file.mkdir( fileDir );
           grunt.file.write( filePath, contents );

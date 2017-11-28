@@ -23,13 +23,13 @@ module.exports = function( grunt, repo ) {
   var html = grunt.file.read( '../chipper/templates/sim-a11y-view.html' ); // the template file
 
   // TODO: improved way of just grabbing the title
-  var englishStringsString = grunt.file.read( '../' + repo + '/' + repo + '-strings_en.json' ); // the english strings file
+  var englishStringsString = grunt.file.read( `../${repo}/${repo}-strings_en.json` ); // the english strings file
   var englishStringsJSON = JSON.parse( englishStringsString );
   var englishSimTitle = englishStringsJSON[ getTitleStringKey( grunt, repo ).split( '/' )[ 1 ] ].value;
 
   // Replace placeholders in the template.
   html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', englishSimTitle );
-  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', repo + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
+  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', `${repo}_${ChipperConstants.FALLBACK_LOCALE}.html` );
 
   return html;
 };

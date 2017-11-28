@@ -45,10 +45,10 @@ module.exports = async function( grunt ) {
     // Possibly use something like https://www.npmjs.com/package/json-stable-stringify in the future?
     const mipmapString = '{' + _.sortBy( allMipmaps, 'name' ).map( ( { name, mipmaps } ) => {
       return '"' + name + '":[' + mipmaps.map( mipmap => {
-        return '{width:' + mipmap.width + ',height:' + mipmap.height + ',url:"' + mipmap.url + '"}';
+        return `{width:${mipmap.width},height:${mipmap.height},url:"${mipmap.url}"}`;
       } ).join( ',' ) + ']';
     } ).join( ',' ) + '}';
 
-    return 'window.phet.chipper.mipmaps = ' + mipmapString + ';';
+    return `window.phet.chipper.mipmaps = ${mipmapString};`;
   }
 };

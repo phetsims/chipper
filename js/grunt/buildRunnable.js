@@ -53,7 +53,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   assert( typeof mangle === 'boolean' );
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
 
-  const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
+  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
   var encoder = new nodeHTMLEncoder.Encoder( 'entity' );
 
@@ -62,8 +62,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
-  // TODO: Find a better way
-  var requireJS = await requireBuild( grunt, repo, '../' + repo + '/js/' + repo + '-config.js', { insertRequire: repo + '-main', brand } );
+  var requireJS = await requireBuild( grunt, repo, `../${repo}/js/${repo}-config.js`, { insertRequire: repo + '-main', brand } );
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( grunt, packageObject.phet.requirejsNamespace );
@@ -109,7 +108,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   // {{locale}}.html
   for ( let locale of locales ) {
     const suffix = brand === 'phet-io' ? '-phetio' : '';
-    grunt.file.write( '../' + repo + '/build/' + repo + '_' + locale + suffix + '.html', packageRunnable( grunt, _.extend( {
+    grunt.file.write( `../${repo}/build/${repo}_${locale}${suffix}.html`, packageRunnable( grunt, _.extend( {
       locale,
       includeAllLocales: false
     }, commonOptions ) ) );
@@ -117,14 +116,14 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
 
   // _all.html
   if ( allHTML ) {
-    grunt.file.write( '../' + repo + '/build/' + repo + '_all.html', packageRunnable( grunt, _.extend( {
+    grunt.file.write( `../${repo}/build/${repo}_all.html`, packageRunnable( grunt, _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true
     }, commonOptions ) ) );
   }
 
   // dependencies.json
-  grunt.file.write( '../' + repo + '/build/dependencies.json', JSON.stringify( dependencies, null, 2 ) );
+  grunt.file.write( `../${repo}/build/dependencies.json`, JSON.stringify( dependencies, null, 2 ) );
 
   // -iframe.html (English is assumed as the locale).
   if ( _.includes( locales, ChipperConstants.FALLBACK_LOCALE ) && brand === 'phet' ) {
@@ -134,7 +133,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( englishTitle + ' iframe test' ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_URL}}', repo + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
-    grunt.file.write( '../' + repo + '/build/' + repo + '_' + ChipperConstants.FALLBACK_LOCALE + '-iframe' + '.html', iframeTestHtml );
+    grunt.file.write( `../${repo}/build/${repo}_${ChipperConstants.FALLBACK_LOCALE}-iframe.html`, iframeTestHtml );
   }
 
   var a11ySims = getSimsFromDataFile( grunt, 'accessibility' );
@@ -143,7 +142,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   if ( a11ySims.indexOf( repo ) >= 0 && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for pDOM viewing.
     var a11yHTML = getA11yViewHTMLFromTemplate( grunt, repo );
-    grunt.file.write( '../' + repo + '/build/' + repo + ChipperConstants.A11Y_VIEW_HTML_SUFFIX, a11yHTML );
+    grunt.file.write( `../${repo}/build/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );
   }
 
   if ( brand === 'phet-io' ) {

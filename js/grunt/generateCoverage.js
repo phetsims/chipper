@@ -29,12 +29,12 @@ const istanbul = require( 'istanbul' );
 module.exports = function( grunt, repo ) {
 
   const collector = new istanbul.Collector();
-  collector.add( JSON.parse( grunt.file.read( '../' + repo + '/build/instrumentation/coverage.json' ) ) );
+  collector.add( JSON.parse( grunt.file.read( `../${repo}/build/instrumentation/coverage.json` ) ) );
 
-  grunt.file.mkdir( '../' + repo + '/build/coverage-report' );
+  grunt.file.mkdir( `../${repo}/build/coverage-report` );
 
   const report = istanbul.Report.create( 'lcov', {
-    dir: '../' + repo + '/build/coverage-report'
+    dir: `../${repo}/build/coverage-report`
   } );
   report.writeReport( collector, true );
 };

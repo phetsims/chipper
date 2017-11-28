@@ -16,7 +16,7 @@
  * @param {string} repo
  */
 module.exports = function getPhetLibs( grunt, repo ) {
-  const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
+  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-  return packageObject.phet.requirejsNamespace + '/' + repo + '.title';
+  return `${packageObject.phet.requirejsNamespace}/${repo}.title`;
 };

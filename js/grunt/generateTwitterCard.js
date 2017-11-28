@@ -20,12 +20,12 @@ const Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
  */
 module.exports = function( grunt, repo ) {
   return new Promise( ( resolve, reject ) => {
-    const fullResImageName = '../' + repo + '/assets/' + repo + '-screenshot.png';
-    const buildDirectory = '../' + repo + '/build';
-    const destinationFile = buildDirectory + '/' + repo + '-twitter-card.png';
+    const fullResImageName = `../${repo}/assets/${repo}-screenshot.png`;
+    const buildDirectory = `../${repo}/build`;
+    const destinationFile = buildDirectory + `/${repo}-twitter-card.png`;
 
     if ( !grunt.file.exists( fullResImageName ) ) {
-      grunt.log.writeln( 'no image file exists: ' + fullResImageName + '. Not running task: generate-thumbnails' );
+      grunt.log.writeln( `no image file exists: ${fullResImageName}. Not running task: generate-thumbnails` );
       return;
     }
 

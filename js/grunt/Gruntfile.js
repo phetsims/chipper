@@ -39,7 +39,7 @@ module.exports = function( grunt ) {
    // TODO: grunt error on promise rejection
 
   const brand = grunt.option( 'brand' ) || buildLocal.brand || 'adapted-from-phet';
-  assert( grunt.file.exists( '../brand/' + brand ), 'no such brand: ' + brand );
+  assert( grunt.file.exists( `../brand/${brand}` ), `no such brand: ${brand}` );
 
   const repo = grunt.option( 'repo' ) || packageObject.name;
 
@@ -50,7 +50,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
     function() {
-      var buildDirectory = '../' + repo + '/build';
+      var buildDirectory = `../${repo}/build`;
       if ( grunt.file.exists( buildDirectory ) ) {
         grunt.file.delete( buildDirectory );
       }
@@ -69,7 +69,7 @@ module.exports = function( grunt ) {
 
       try {
         if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
-          fs.writeFileSync( '../' + repo + '/build/' + repo + '.min.js', await buildStandalone( grunt, repo, uglify, mangle ) );
+          fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( grunt, repo, uglify, mangle ) );
         }
         else {
           await buildRunnable( grunt, repo, uglify, mangle, instrument, allHTML, brand );
@@ -165,5 +165,4 @@ module.exports = function( grunt ) {
     function() {
       generateREADME( grunt, repo, false /* published */ );
     } );
-
 };

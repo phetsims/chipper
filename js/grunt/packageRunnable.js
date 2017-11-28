@@ -36,8 +36,8 @@ module.exports = function( grunt, options ) {
     locale, // {string}
     includeAllLocales, // {boolean}
   } = options;
-  assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand: ' + brand );
-  assert( stringMap, 'Invalid stringMap: ' + stringMap );
+  assert( _.includes( ChipperConstants.BRANDS, brand ), `Unknown brand: ${brand}` );
+  assert( stringMap, `Invalid stringMap: ${stringMap}` );
 
   const simTitleStringKey = getTitleStringKey( grunt, repo );
 
@@ -45,7 +45,7 @@ module.exports = function( grunt, options ) {
   // The HTML header is not internationalized, so order can just be hard coded here, see #156
   const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ simTitleStringKey ];
   const localizedTitle = stringMap[ locale ][ simTitleStringKey ];
-  assert( englishTitle, 'missing entry for sim title, key = ' + simTitleStringKey );
+  assert( englishTitle, `missing entry for sim title, key = ${simTitleStringKey}` );
 
   var phetStrings = stringMap;
   if ( !includeAllLocales ) {
@@ -54,7 +54,7 @@ module.exports = function( grunt, options ) {
   }
 
   // Directory on the PhET website where the latest version of the sim lives
-  var latestDir = 'https://phet.colorado.edu/sims/html/' + repo + '/latest/';
+  var latestDir = `https://phet.colorado.edu/sims/html/${repo}/latest/`;
 
   // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
   var htmlHeader;
@@ -95,9 +95,9 @@ module.exports = function( grunt, options ) {
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_BRAND}}', brand );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_HTML_HEADER}}', htmlHeader );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_MIPMAPS_JAVASCRIPT}}', mipmapsJavaScript );
-  html = ChipperStringUtils.replaceFirst( html, '{{PHET_SPLASH_DATA_URI}}', loadFileAsDataURI( '../brand/' + brand + '/images/splash.svg' ) );
+  html = ChipperStringUtils.replaceFirst( html, '{{PHET_SPLASH_DATA_URI}}', loadFileAsDataURI( `../brand/${brand}/images/splash.svg` ) );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_PRELOAD_JAVASCRIPT}}', preloadScripts.map( script => {
-    return '<script type="text/javascript">\n' + script + '\n</script>\n';
+    return `<script type="text/javascript">\n${script}\n</script>\n`;
   } ).join( '\n' ) );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_MAIN_JAVASCRIPT}}', mainInlineJavascript );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_START_THIRD_PARTY_LICENSE_ENTRIES}}', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
@@ -113,8 +113,8 @@ module.exports = function( grunt, options ) {
 
   // metadata for Open Graph protocol, see phet-edmodo#2
   html = ChipperStringUtils.replaceFirst( html, '{{OG_TITLE}}', encoder.htmlEncode( localizedTitle ) );
-  html = ChipperStringUtils.replaceFirst( html, '{{OG_URL}}', latestDir + repo + '_' + locale + '.html' );
-  html = ChipperStringUtils.replaceFirst( html, '{{OG_IMAGE}}', latestDir + repo + '-600.png' );
+  html = ChipperStringUtils.replaceFirst( html, '{{OG_URL}}', `${latestDir}${repo}_${locale}.html` );
+  html = ChipperStringUtils.replaceFirst( html, '{{OG_IMAGE}}', `${latestDir}${repo}-600.png` );
 
   // Make sure all template-looking strings were replaced.
   // Match template strings that look like "{{I_AM-A.TEMPLATE}}".
@@ -122,7 +122,7 @@ module.exports = function( grunt, options ) {
   if ( templateHTMLTemplateStrings ) {
     templateHTMLTemplateStrings.forEach( function( templateString ) {
       if ( html.indexOf( templateString ) >= 0 ) {
-        grunt.fail.warn( 'Template string detected in built file:  ' + templateString );
+        grunt.fail.warn( `Template string detected in built file: ${templateString}` );
       }
     } );
   }

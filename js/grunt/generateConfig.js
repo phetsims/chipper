@@ -21,11 +21,11 @@ const getPhetLibs = require( './getPhetLibs' );
 module.exports = function( grunt, repo ) {
 
   var configJS = grunt.file.read( '../chipper/templates/sim-config.js' ); // the template file
-  const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
+  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
   const requirements = {}; // {string} require.js prefix => {string} of what is included
   getPhetLibs( grunt, repo, 'phet' ).forEach( lib => {
-    const packageFilename = '../' + lib + '/package.json';
+    const packageFilename = `../${lib}/package.json`;
 
     if ( grunt.file.exists( packageFilename ) ) {
       const packageJSON = grunt.file.readJSON( packageFilename );
@@ -36,7 +36,7 @@ module.exports = function( grunt, repo ) {
           requirements[ prefix ] = '\'../../brand/\' + phet.chipper.brand + \'/js\'';
         }
         else {
-          requirements[ prefix ] = '\'../../' + lib + '/js\'';
+          requirements[ prefix ] = `'../../${lib}/js'`;
         }
       }
     }
@@ -61,5 +61,5 @@ module.exports = function( grunt, repo ) {
   } ).join( ',\n    ' ) );
 
   // Write to the repository's root directory.
-  grunt.file.write( '../' + repo + '/js/' + repo + '-config.js', configJS );
+  grunt.file.write( `../${repo}/js/${repo}-config.js`, configJS );
 };

@@ -22,7 +22,7 @@
 module.exports = function( grunt, repo, requirejsNamespace ) {
 
   // get the strings for this sim
-  var jsStrings = grunt.file.readJSON( '../' + repo + '/' + repo + '-strings_en.json' );
+  var jsStrings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
 
   // iterate over the strings
   for( var key in jsStrings ) {
@@ -36,7 +36,7 @@ module.exports = function( grunt, repo, requirejsNamespace ) {
 
       // If this string was not added to the global chipperStrings, it was not required in the sim
       if ( !chipperStrings.hasOwnProperty( requireStringKey ) ) {
-        grunt.log.warn( 'Unused string: key=' + requireStringKey + ', value=' + string );
+        grunt.log.warn( `Unused string: key=${requireStringKey}, value=${string}` );
       }
     }
   }

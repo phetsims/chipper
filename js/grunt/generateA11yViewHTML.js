@@ -23,5 +23,5 @@ module.exports = function( grunt, repo ) {
   const html = getA11yViewHTMLFromTemplate( grunt, repo );
 
   // Write to the repository's root directory.
-  grunt.file.write( '../' + repo + '/' + repo + ChipperConstants.A11Y_VIEW_HTML_SUFFIX, html );
+  grunt.file.write( `../${repo}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, html );
 };

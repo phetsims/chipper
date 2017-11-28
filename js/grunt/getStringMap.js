@@ -13,9 +13,9 @@ const assert = require( 'assert' );
 const path = require( 'path' );
 
 // modules
-const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-const ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
-const localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
+const ChipperConstants = require( '../common/ChipperConstants' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const localeInfo = require( '../data/localeInfo' ); // Locale information
 
 /**
  * @param {Object} grunt
@@ -44,7 +44,7 @@ module.exports = function( grunt, locales, phetLibs ) {
 
       // If a string depends on an unlisted dependency, fail out
       if ( phetLibs.indexOf( repositoryName ) < 0 ) {
-        throw new Error( repositoryName + ' is missing from phetLibs in package.json' );
+        throw new Error( `${repositoryName} is missing from phetLibs in package.json` );
       }
     }
   }
@@ -56,26 +56,26 @@ module.exports = function( grunt, locales, phetLibs ) {
 
     locales.forEach( function( locale ) {
 
-      assert( localeInfo[ locale ], 'unsupported locale: ' + locale );
+      assert( localeInfo[ locale ], `unsupported locale: ${locale}` );
       var isRTL = localeInfo[ locale ].direction === 'rtl';
 
       var basePath;
       // pick a location that is in the repo, or babel
       if ( locale === fallbackLocale ) {
-        basePath = repository.path + '/';
+        basePath = `${repository.path}/`;
       }
       else {
-        basePath = repository.path + '/../babel/' + repository.name + '/';
+        basePath = `${repository.path}/../babel/${repository.name}/`;
       }
 
       // Read optional string file
-      var stringsFilename = path.normalize( basePath + repository.name + '-strings_' + locale + '.json' );
+      var stringsFilename = path.normalize( `${basePath}${repository.name}-strings_${locale}.json` );
       var fileContents;
       try {
         fileContents = grunt.file.readJSON( stringsFilename );
       }
       catch( error ) {
-        grunt.log.debug( 'missing string file: ' + stringsFilename );
+        grunt.log.debug( `missing string file: ${stringsFilename}` );
         fileContents = {};
       }
       var fileMap = repoStringMap[ repository.name ][ locale ] = {};
@@ -104,7 +104,7 @@ module.exports = function( grunt, locales, phetLibs ) {
 
       // English fallback
       assert( repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ] !== undefined,
-        'Missing string: ' + stringKey + ' in ' + repositoryName + ' for fallback locale: ' + fallbackLocale );
+        `Missing string: ${stringKey} in ${repositoryName} for fallback locale: ${fallbackLocale}` );
       var fallbackString = repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ].value;
       stringMap[ locale ][ stringKey ] = fallbackString;
 
