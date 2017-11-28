@@ -65,13 +65,14 @@ module.exports = function( grunt ) {
       const instrument = !!grunt.option( 'instrument' );
       const uglify = !instrument && ( grunt.option( 'uglify' ) !== false ); // Do not uglify if it is being instrumented
       const mangle = grunt.option( 'mangle' ) !== false;
+      const allHTML = !!grunt.option( 'allHTML' );
 
       try {
         if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
           fs.writeFileSync( '../' + repo + '/build/' + repo + '.min.js', await buildStandalone( grunt, repo, uglify, mangle ) );
         }
         else {
-          await buildRunnable( grunt, repo, uglify, mangle, instrument, brand );
+          await buildRunnable( grunt, repo, uglify, mangle, instrument, allHTML, brand );
         }
       }
       catch ( e ) {

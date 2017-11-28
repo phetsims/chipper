@@ -31,6 +31,7 @@ module.exports = async function( grunt ) {
     return '<!-- no mipmaps -->';
   }
   else {
+    // Uses Promise.all to wait for all of the sub-promises (using createMipmap) to complete
     const allMipmaps = await Promise.all( global.phet.chipper.mipmapsToBuild.map( async function( { name, path, level, quality } ) {
       const mipmaps = await createMipmap( grunt, path, level, quality );
       return {

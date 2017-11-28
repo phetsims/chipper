@@ -42,10 +42,12 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {boolean} uglify - Whether to uglify or not
  * @param {boolean} mangle - If uglifying, whether to mangle variable names
  * @param {boolean} instrument - If the sim should be instrumented
+ * @param {boolean} allHTML - If the _all.html file should be generated
  * @param {string} brand
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( grunt, repo, uglify, mangle, instrument, brand ) {
+module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTML, brand ) {
+  // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
   assert( typeof mangle === 'boolean' );
@@ -114,10 +116,12 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, brand 
   }
 
   // _all.html
-  grunt.file.write( '../' + repo + '/build/' + repo + '_all.html', packageRunnable( grunt, _.extend( {
-    locale: ChipperConstants.FALLBACK_LOCALE,
-    includeAllLocales: true
-  }, commonOptions ) ) );
+  if ( allHTML ) {
+    grunt.file.write( '../' + repo + '/build/' + repo + '_all.html', packageRunnable( grunt, _.extend( {
+      locale: ChipperConstants.FALLBACK_LOCALE,
+      includeAllLocales: true
+    }, commonOptions ) ) );
+  }
 
   // dependencies.json
   grunt.file.write( '../' + repo + '/build/dependencies.json', JSON.stringify( dependencies, null, 2 ) );
