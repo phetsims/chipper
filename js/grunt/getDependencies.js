@@ -28,7 +28,6 @@ module.exports = async function( grunt, repo ) {
     comment: '# ' + repo + ' ' + version + ' ' + ( new Date().toString() )
   };
 
-  // TODO: use this pattern in other async/await cases
   for ( let dependency of dependencies ) {
     assert( !dependenciesInfo.dependency, 'there was already a dependency named ' + dependency );
 

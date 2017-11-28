@@ -62,6 +62,7 @@ module.exports = function( grunt, js, options ) {
   } );
 
   if ( result.error ) {
+    console.log( result.error );
     throw new Error( result.error );
   }
   else {

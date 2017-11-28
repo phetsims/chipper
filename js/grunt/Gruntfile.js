@@ -36,6 +36,8 @@ module.exports = function( grunt ) {
     buildObject = {};
   }
 
+   // TODO: grunt error on promise rejection
+
   const brand = grunt.option( 'brand' ) || buildObject.brand || 'adapted-from-phet';
   assert( grunt.file.exists( '../brand/' + brand ), 'no such brand: ' + brand );
 

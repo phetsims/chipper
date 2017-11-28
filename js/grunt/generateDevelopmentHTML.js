@@ -21,7 +21,7 @@ const getPreloads = require( './getPreloads' );
  * @param {string} repo
  */
 module.exports = function( grunt, repo ) {
-  const brand = 'phet'; // TODO: seems like this is correct to hard-code?
+  const brand = 'phet';
 
   const splashURL = '../brand/' + brand + '/images/splash.svg';
   var html = grunt.file.read( '../chipper/templates/sim-development.html' ); // the template file

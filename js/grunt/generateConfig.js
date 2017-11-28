@@ -24,7 +24,6 @@ module.exports = function( grunt, repo ) {
   const packageObject = grunt.file.readJSON( '../' + repo + '/package.json' );
 
   const requirements = {}; // {string} require.js prefix => {string} of what is included
-  // TODO: check with all brands, see if -that works?
   getPhetLibs( grunt, repo, 'phet' ).forEach( lib => {
     const packageFilename = '../' + lib + '/package.json';
 

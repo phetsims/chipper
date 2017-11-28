@@ -58,7 +58,7 @@ module.exports = function( grunt, src, dst, filter, options ) {
     // Minify the file if it is javascript code
     if ( options.minifyJS && filename.endsWith( '.js' ) && abspath.indexOf( 'chipper/templates/' ) < 0 ) {
       var toBeMinified = filteredContents ? filteredContents : contents;
-      filteredContents = minify( toBeMinified );
+      filteredContents = minify( grunt, toBeMinified );
 
       // Only add the license to the javascript code
       filteredContents = options.licenseToPrepend + filteredContents;

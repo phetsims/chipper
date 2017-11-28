@@ -13,6 +13,7 @@
 // modules
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 var copyDirectory = require( './copyDirectory' );
+var minify = require( '../minify' );
 
 // constants
 var DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -181,9 +182,6 @@ module.exports = async function( grunt, repo, version ) {
  */
 var handleLib = function( grunt, repo, filter ) {
 
-  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
-  var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
-
   grunt.file.mkdir( '../' + repo + '/build/lib' );
 
   var consolidated = '';
@@ -196,17 +194,7 @@ var handleLib = function( grunt, repo, filter ) {
     consolidated += filteredContents ? filteredContents : contents;
   } );
 
-  var minified = uglify.minify( consolidated, {
-    fromString: true,
-    mangle: true,
-    output: {
-      inline_script: true, // escape </script
-      beautify: false
-    },
-    compress: {
-      global_defs: {}
-    }
-  } ).code;
+  var minified = minify( grunt, consolidated );
 
   grunt.file.write( '../' + repo + '/build/lib/' + LIB_OUTPUT_FILE, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
 };
