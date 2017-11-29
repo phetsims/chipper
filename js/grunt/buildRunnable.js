@@ -11,6 +11,7 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
+const brandToSuffix = require( './brandToSuffix' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -104,11 +105,13 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
     version,
     thirdPartyEntries
   };
+  
+  // TODO: how to handle one-offs? Add another suffix presumably.
+  const brandSuffix = brandToSuffix( grunt, brand );
 
   // {{locale}}.html
   for ( let locale of locales ) {
-    const suffix = brand === 'phet-io' ? '-phetio' : '';
-    grunt.file.write( `../${repo}/build/${repo}_${locale}${suffix}.html`, packageRunnable( grunt, _.extend( {
+    grunt.file.write( `../${repo}/build/${repo}_${locale}${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
       locale,
       includeAllLocales: false
     }, commonOptions ) ) );
@@ -116,11 +119,13 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
 
   // _all.html
   if ( allHTML ) {
-    grunt.file.write( `../${repo}/build/${repo}_all.html`, packageRunnable( grunt, _.extend( {
+    grunt.file.write( `../${repo}/build/${repo}_all${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true
     }, commonOptions ) ) );
   }
+
+  // TODO: debug build here
 
   // dependencies.json
   grunt.file.write( `../${repo}/build/dependencies.json`, JSON.stringify( dependencies, null, 2 ) );
