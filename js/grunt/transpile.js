@@ -21,6 +21,6 @@ const babel = require( 'babel-core' ); // eslint-disable-line require-statement-
  */
 module.exports = function( grunt, jsInput ) {
   return babel.transform( jsInput, {
-    presets: [ 'env' ]
+    presets: [ '../chipper/node_modules/babel-preset-env' ]
   } ).code;
 };
