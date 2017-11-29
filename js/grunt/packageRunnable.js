@@ -35,6 +35,7 @@ module.exports = function( grunt, options ) {
     thirdPartyEntries, // {Object}
     locale, // {string}
     includeAllLocales, // {boolean}
+    isDebugBuild // {boolean}
   } = options;
   assert( _.includes( ChipperConstants.BRANDS, brand ), `Unknown brand: ${brand}` );
   assert( stringMap, `Invalid stringMap: ${stringMap}` );
@@ -107,9 +108,10 @@ module.exports = function( grunt, options ) {
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_VERSION}}', version );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_BUILD_TIMESTAMP}}', timestamp );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_THIRD_PARTY_LICENSE_ENTRIES}}', JSON.stringify( thirdPartyEntries, null, 2 ) );
-  html = ChipperStringUtils.replaceFirst( html, '{{PHET_STRINGS}}', JSON.stringify( phetStrings, null, '' ) );
+  html = ChipperStringUtils.replaceFirst( html, '{{PHET_STRINGS}}', JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ) );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_LOCALE}}', locale );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( localizedTitle ) );
+  html = ChipperStringUtils.replaceFirst( html, '{{PHET_IS_DEBUG_BUILD}}', !!isDebugBuild );
 
   // metadata for Open Graph protocol, see phet-edmodo#2
   html = ChipperStringUtils.replaceFirst( html, '{{OG_TITLE}}', encoder.htmlEncode( localizedTitle ) );

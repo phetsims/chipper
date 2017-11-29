@@ -466,7 +466,7 @@
     var isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
 
     var enableAllAssertions = !isProduction && phet.chipper.queryParameters.eall; // enables all assertions (basic and slow)
-    var enableBasicAssertions = enableAllAssertions || (!isProduction && phet.chipper.queryParameters.ea);  // enables basic assertions
+    var enableBasicAssertions = enableAllAssertions || ( !isProduction && phet.chipper.queryParameters.ea ) || phet.chipper.isDebugBuild;  // enables basic assertions
 
     if ( enableBasicAssertions ) {
       window.assertions.enableAssert();

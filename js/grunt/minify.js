@@ -24,7 +24,9 @@ const uglify = require( 'uglify-es' ); // eslint-disable-line require-statement-
 module.exports = function( grunt, js, options ) {
   const {
     mangle = true,
-    babelTranspile = false
+    babelTranspile = false,
+    stripAssertions = true,
+    stripLogging = true
   } = options || {};
 
   // Do transpilation before uglifying.
@@ -32,7 +34,7 @@ module.exports = function( grunt, js, options ) {
     js = transpile( grunt, js );
   }
 
-  var result = uglify.minify( js, {
+  const config = {
     mangle: mangle ? {
       safari10: true // works around a safari 10 bug. currently a supported platform
     } : false,
@@ -43,15 +45,6 @@ module.exports = function( grunt, js, options ) {
 
       // To define globals, use global_defs inside compress options, see https://github.com/jrburke/r.js/issues/377
       global_defs: {
-
-        // global assertions (PhET-specific)
-        assert: false,
-        assertSlow: false,
-
-        // scenery logging (PhET-specific)
-        sceneryLog: false,
-        sceneryAccessibilityLog: false,
-
         // for tracking object allocations, see phet-core/js/phetAllocation.js (PhET-specific)
         phetAllocation: false
       }
@@ -62,7 +55,21 @@ module.exports = function( grunt, js, options ) {
       inline_script: true, // escape </script
       beautify: !mangle
     }
-  } );
+  };
+
+  // global assertions (PhET-specific)
+  if ( stripAssertions ) {
+    config.compress.global_defs.assert = false;
+    config.compress.global_defs.assertSlow = false;
+  }
+
+  // scenery logging (PhET-specific)
+  if ( stripLogging ) {
+    config.compress.global_defs.sceneryLog = false;
+    config.compress.global_defs.sceneryAccessibilityLog = false;
+  }
+
+  const result = uglify.minify( js, config );
 
   if ( result.error ) {
     console.log( result.error );

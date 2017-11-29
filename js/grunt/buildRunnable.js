@@ -44,10 +44,11 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {boolean} mangle - If uglifying, whether to mangle variable names
  * @param {boolean} instrument - If the sim should be instrumented
  * @param {boolean} allHTML - If the _all.html file should be generated
+ * @param {boolean} debugHTML - If the _all.html file should be generated
  * @param {string} brand
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTML, brand ) {
+module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTML, debugHTML, brand ) {
   // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
@@ -63,7 +64,8 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
-  var requireJS = await requireBuild( grunt, repo, `../${repo}/js/${repo}-config.js`, { insertRequire: repo + '-main', brand } );
+  const requireJS = await requireBuild( grunt, repo, `../${repo}/js/${repo}-config.js`, { insertRequire: repo + '-main', brand } );
+  const productionJS = uglify ? minify( grunt, requireJS, { mangle, babelTranspile: true } ) : requireJS;
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( grunt, packageObject.phet.requirejsNamespace );
@@ -71,19 +73,9 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   // After all strings have been loaded, report which of the translatable strings are unused.
   reportUnusedStrings( grunt, repo, packageObject.phet.requirejsNamespace );
 
-  if ( uglify ) {
-    requireJS = minify( grunt, requireJS, { mangle, babelTranspile: true } );
-  }
 
-  const preloads = getPreloads( grunt, repo, brand ).map( filename => {
-    var js = grunt.file.read( filename );
-
-    if ( uglify ) {
-      js = minify( grunt, js, { mangle } );
-    }
-
-    return js;
-  } );
+  const rawPreloads = getPreloads( grunt, repo, brand ).map( filename => grunt.file.read( filename ) );
+  const productionPreloads = rawPreloads.map( js => uglify ? minify( grunt, js, { mangle } ) : js );
 
   const phetLibs = getPhetLibs( grunt, repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( grunt, repo ) );
@@ -97,8 +89,6 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
     brand,
     repo,
     stringMap,
-    mainInlineJavascript: requireJS,
-    preloadScripts: preloads,
     mipmapsJavaScript: await buildMipmaps( grunt ),
     dependencies,
     timestamp,
@@ -113,7 +103,10 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   for ( let locale of locales ) {
     grunt.file.write( `../${repo}/build/${repo}_${locale}${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
       locale,
-      includeAllLocales: false
+      includeAllLocales: false,
+      isDebugBuild: false,
+      mainInlineJavascript: productionJS,
+      preloadScripts: productionPreloads
     }, commonOptions ) ) );
   }
 
@@ -121,11 +114,24 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   if ( allHTML ) {
     grunt.file.write( `../${repo}/build/${repo}_all${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
-      includeAllLocales: true
+      includeAllLocales: true,
+      isDebugBuild: false,
+      mainInlineJavascript: productionJS,
+      preloadScripts: productionPreloads
     }, commonOptions ) ) );
   }
 
-  // TODO: debug build here
+  if ( debugHTML ) {
+    const debugJS = brand === 'phet-io' ? minify( grunt, requireJS, { mangle: true, babelTranspile: true, stripAssertions: false, stripLogging: false } ) : requireJS;
+    const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( grunt, js, { mangle: true } ) : js );
+    grunt.file.write( `../${repo}/build/${repo}_debug${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
+      locale: ChipperConstants.FALLBACK_LOCALE,
+      includeAllLocales: true,
+      isDebugBuild: true,
+      mainInlineJavascript: debugJS,
+      preloadScripts: debugPreloads
+    }, commonOptions ) ) );
+  }
 
   // dependencies.json
   grunt.file.write( `../${repo}/build/dependencies.json`, JSON.stringify( dependencies, null, 2 ) );
