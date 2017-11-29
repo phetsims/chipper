@@ -20,7 +20,13 @@ const babel = require( 'babel-core' ); // eslint-disable-line require-statement-
  * @returns {string} - The transpiled code
  */
 module.exports = function( grunt, jsInput ) {
+  // See options available at https://babeljs.io/docs/usage/api/
   return babel.transform( jsInput, {
+    // Avoids a warning that this gets disabled for >500kb of source. true/false doesn't affect the later minified size, and
+    // the 'true' option was faster by a hair.
+    compact: true,
+
+    // Use chipper's copy of babel-preset-env, so we don't have to have 30MB extra per sim checked out.
     presets: [ '../chipper/node_modules/babel-preset-env' ]
   } ).code;
 };
