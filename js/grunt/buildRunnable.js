@@ -65,7 +65,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
   const requireJS = await requireBuild( grunt, repo, `../${repo}/js/${repo}-config.js`, { insertRequire: repo + '-main', brand } );
-  const productionJS = uglify ? minify( grunt, requireJS, { mangle, babelTranspile: true } ) : requireJS;
+  const productionJS = uglify ? minify( grunt, requireJS, { mangle, babelTranspile: false } ) : requireJS;
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( grunt, packageObject.phet.requirejsNamespace );
@@ -122,7 +122,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   }
 
   if ( debugHTML ) {
-    const debugJS = brand === 'phet-io' ? minify( grunt, requireJS, { mangle: true, babelTranspile: true, stripAssertions: false, stripLogging: false } ) : requireJS;
+    const debugJS = brand === 'phet-io' ? minify( grunt, requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
     const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( grunt, js, { mangle: true } ) : js );
     grunt.file.write( `../${repo}/build/${repo}_debug${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
