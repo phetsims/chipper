@@ -4,8 +4,13 @@
  * When running unit tests in an iframe, connects to the parent frame to give results.
  * @author Sam Reid (PhET Interactive Simulations)
  */
-(function() {
+( function() {
   'use strict';
+
+  // By default, QUnit runs tests when load event is triggered on the window. If you’re loading tests asynchronously,
+  // you can set this property to false, then call QUnit.start() once everything is loaded.
+  // See https://api.qunitjs.com/config/QUnit.config
+  QUnit.config.autostart = false;
 
   QUnit.log( function( details ) {
     window.parent && window.parent.postMessage( JSON.stringify( {
@@ -19,13 +24,12 @@
     } ), '*' );
   } );
 
-  // TODO: convert to use on('runEnd'), see https://github.com/phetsims/aqua/issues/25
-  QUnit.done( function( details ) {
+  QUnit.on( 'runEnd', function( data ) {
     window.parent && window.parent.postMessage( JSON.stringify( {
       type: 'qunit-done',
-      failed: details.failed,
-      passed: details.passed,
-      total: details.total
+      failed: data.testCounts.failed,
+      passed: data.testCounts.passed,
+      total: data.testCounts.total
     } ), '*' );
   } );
-})();
+} )();
