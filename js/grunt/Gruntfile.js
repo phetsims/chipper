@@ -386,11 +386,11 @@ module.exports = function( grunt ) {
         // Output to a test file
         outputFile: buildConfig.name + '-test.html',
 
-        // Add the QUnit div
-        bodystart: '<div id="qunit"></div>',
+        // Add the QUnit divs
+        bodystart: '<div id="qunit"></div><div id="qunit-fixture"></div>',
 
         // Add QUnit JS
-        addedPreload: '../sherpa/lib/qunit-2.0.1.js',
+        addedPreloads: [ '../sherpa/lib/qunit-2.4.1.js', '../aqua/js/qunit-connector.js' ],
 
         // Do not show the splash screen
         stripPreload: '../joist/js/splash.js',

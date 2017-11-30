@@ -27,7 +27,7 @@ module.exports = function( grunt, buildConfig, options ) {
     bodystyle: 'style="background-color:black;"',
     outputFile: buildConfig.name + '_en.html',
     bodystart: '',
-    addedPreload: null, // none to add
+    addedPreloads: [], // none to add
     stripPreload: null, // none to add
     qualifier: ''
   }, options );
@@ -42,7 +42,9 @@ module.exports = function( grunt, buildConfig, options ) {
   }
 
   var normalPreload = buildConfig.preload.filter( notGA );
-  options.addedPreload && normalPreload.push( options.addedPreload );
+  options.addedPreloads.forEach( function( addedPreload ) {
+    normalPreload.push( addedPreload );
+  } );
 
   if ( options.stripPreload ) {
     var index = normalPreload.indexOf( options.stripPreload );
