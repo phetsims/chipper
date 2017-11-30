@@ -110,6 +110,11 @@
     },
 
     /**
+     * Randomly sends keyboard events to the sim. Must have accessibility enabled.
+     */
+    fuzzBoard: { type: 'flag' },
+
+    /**
      * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
      */
@@ -278,7 +283,7 @@
       isValidValue: function( value ) {
 
         // screen indices cannot be duplicated
-        return value === null || (value.length === _.uniq( value ).length);
+        return value === null || ( value.length === _.uniq( value ).length );
       }
     },
 
