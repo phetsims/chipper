@@ -384,7 +384,7 @@ module.exports = function( grunt ) {
         bodystyle: '',
 
         // Output to a test file
-        outputFile: buildConfig.name + '-test.html',
+        outputFile: buildConfig.name + '-tests.html',
 
         // Add the QUnit divs
         bodystart: '<div id="qunit"></div><div id="qunit-fixture"></div>',
