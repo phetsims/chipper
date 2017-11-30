@@ -26,7 +26,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  * @author Chris Malley (PixelZoom, Inc.)
  */
-(function() {
+( function() {
   'use strict';
 
   // Schema that describes query parameters for PhET common code.
@@ -359,7 +359,7 @@
   };
 
   // Initialize query parameters, see docs above
-  (function() {
+  ( function() {
 
     // Create the attachment point for all PhET globals
     window.phet = window.phet || {};
@@ -383,7 +383,7 @@
      * @returns {string}
      */
     window.phet.chipper.getCacheBusterArgs = function() {
-      return phet.chipper.queryParameters.cacheBuster ? ('bust=' + Date.now()) : '';
+      return phet.chipper.queryParameters.cacheBuster ? ( 'bust=' + Date.now() ) : '';
     };
 
     /**
@@ -419,7 +419,7 @@
     if ( QueryStringMachine.containsKey( 'locale' ) ) {
       window.phet.chipper.locale = phet.chipper.queryParameters.locale;
     }
-  }());
+  }() );
 
   /** Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
    * See `Random.js`
@@ -465,13 +465,13 @@
    * 'ea' enables basic assertions, 'eall' enables basic and slow assertions.
    * Must be run before RequireJS, and assumes that assert.js and query-parameters.js has been run.
    */
-  (function() {
+  ( function() {
 
     // TODO: separate this logic out into a more common area?
     var isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
 
     var enableAllAssertions = !isProduction && phet.chipper.queryParameters.eall; // enables all assertions (basic and slow)
-    var enableBasicAssertions = enableAllAssertions || (!isProduction && phet.chipper.queryParameters.ea);  // enables basic assertions
+    var enableBasicAssertions = enableAllAssertions || ( !isProduction && phet.chipper.queryParameters.ea );  // enables basic assertions
 
     if ( enableBasicAssertions ) {
       window.assertions.enableAssert();
@@ -507,5 +507,5 @@
         } ), '*' );
       } );
     }
-  }());
-}());
+  }() );
+}() );
