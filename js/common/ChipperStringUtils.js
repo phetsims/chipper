@@ -31,31 +31,6 @@
     },
 
     /**
-     * Converts a string to camel case, eg: 'simula-rasa' -> 'simulaRasa'
-     * See http://stackoverflow.com/questions/10425287/convert-string-to-camelcase-with-regular-expression
-     *
-     * @param {string} str - the input string
-     * @returns {string} a new string
-     */
-    toCamelCase: function( str ) {
-      return str.toLowerCase().replace( /-(.)/g, function( match, group1 ) {
-        return group1.toUpperCase();
-      } );
-    },
-
-    /**
-     * Coerces a repository name to a sim title, eg, 'simula-rasa' -> 'Simula Rasa'
-     * @param {string} simName - the input string like 'build-an-atom'
-     * @returns {string}
-     */
-    toTitle: function toTitle( simName ) {
-      var tmpString = simName.replace( /-(.)/g, function( match, group1 ) {
-        return ' ' + group1.toUpperCase();
-      } );
-      return tmpString.substring( 0, 1 ).toUpperCase() + tmpString.substring( 1 );
-    },
-
-    /**
      * Appends spaces to a string
      *
      * @param {string} str - the input string

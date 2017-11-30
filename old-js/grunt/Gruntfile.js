@@ -16,16 +16,13 @@
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var commitsSince = require( '../../../chipper/js/grunt/commitsSince' );
-var createSim = require( '../../../chipper/js/grunt/createSim' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
-var insertRequireStatement = require( '../../../chipper/js/grunt/insertRequireStatement' );
 var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
-var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
@@ -149,16 +146,6 @@ module.exports = function( grunt ) {
       checkoutShas( grunt, buildConfig.name, true /* toMaster */ );
     } );
 
-  grunt.registerTask( 'create-sim',
-    'Creates a sim based on the simula-rasa template.\n' +
-    '--name="string" : the repository name\n' +
-    '--author="string" : the author name\n' +
-    '--title="string" : (optional) the simulation title\n' +
-    '--clean=true : (optional) deletes the repository directory if it exists',
-    function() {
-      createSim( grunt );
-    } );
-
   grunt.registerTask( 'bump-version',
     'Bumps the number after the last dot in the version\n' +
     'then commits and pushes', function() {
@@ -229,19 +216,5 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'wrapper-basic-build', 'Build PhET-iO wrapper', function() {
     wrapperBuild( grunt, buildConfig );
-  } );
-
-  grunt.registerTask( 'sort-require-statements', 'Sort the require statements for all *.js files in the js/ directory. ' +
-                                                 'This assumes the code is formatted  with IDEA code style and that ' +
-                                                 'require statements take one line each (not split across lines).  The ' +
-                                                 'files are overwritten.\n' +
-                                                 '--file (optional) absolute path of a single file to sort', function() {
-    sortRequireStatements( grunt, grunt.option( 'file' ) );
-  } );
-
-  grunt.registerTask( 'insert-require-statement', 'Insert a require statement into the specified file.\n' +
-                                                  '--file absolute path of the file that will receive the require statement\n' +
-                                                  '--name to be required', function() {
-    insertRequireStatement( grunt, buildConfig );
   } );
 };
