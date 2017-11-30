@@ -14,7 +14,7 @@
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
 /**
- * @param {Object} grunt - The grunt rukntime object
+ * @param {Object} grunt - The grunt runtime object
  * @param {Object} buildConfig - see getBuildConfig.js
  * @param {string} destination - output location
  * @param {string} launchSuffix - text to use for the deps
