@@ -421,7 +421,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-test-config',
     'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
     function() {
-      generateConfig( grunt, buildConfig, 'js/' + buildConfig.name + '-test-config.js', 'test' );
+      generateConfig( grunt, buildConfig, 'js/' + buildConfig.name + '-test-config.js', 'tests' );
     } );
 
   grunt.registerTask( 'generate-test-harness',
