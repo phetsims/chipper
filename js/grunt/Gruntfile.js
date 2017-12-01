@@ -378,7 +378,7 @@ module.exports = function( grunt ) {
       generateDevelopmentHTML( grunt, buildConfig, {
 
         // Include QUnit CSS
-        stylesheets: '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.0.1.css">',
+        stylesheets: '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">',
 
         // Leave the background the default color white
         bodystyle: '',
