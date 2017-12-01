@@ -15,7 +15,7 @@
   QUnit.log( function( details ) {
     window.parent && window.parent.postMessage( JSON.stringify( {
       type: 'qunit-test',
-      main: 'scenery',
+      main: details.module, // TODO: what is this for?
       result: details.result,
       module: details.module,
       name: details.name,
