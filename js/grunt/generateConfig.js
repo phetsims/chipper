@@ -16,8 +16,10 @@ var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils
 /**
  * @param {Object} grunt - The grunt runtime object
  * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {string} destination - output location
+ * @param {string} launchSuffix - text to use for the deps
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( grunt, buildConfig, destination, launchSuffix ) {
 
   var repositoryName = buildConfig.name;
   var configJS = grunt.file.read( '../chipper/templates/sim-config.js' ); // the template file
@@ -53,6 +55,7 @@ module.exports = function( grunt, buildConfig ) {
 
   // Replace placeholders in the template.
   configJS = ChipperStringUtils.replaceAll( configJS, '{{SIM_REQUIREJS_NAMESPACE}}', buildConfig.requirejsNamespace );
+  configJS = ChipperStringUtils.replaceAll( configJS, '{{LAUNCH_SUFFIX}}', launchSuffix );
   configJS = ChipperStringUtils.replaceAll( configJS, '{{REPOSITORY}}', repositoryName );
   configJS = ChipperStringUtils.replaceAll( configJS, '{{CURRENT_YEAR}}', new Date().getFullYear() );
   configJS = ChipperStringUtils.replaceAll( configJS, '{{CONFIG_LINES}}', Object.keys( requirements ).sort().map( function( prefix ) {
@@ -60,5 +63,5 @@ module.exports = function( grunt, buildConfig ) {
   } ).join( ',\n    ' ) );
 
   // Write to the repository's root directory.
-  grunt.file.write( 'js/' + repositoryName + '-config.js', configJS );
+  grunt.file.write( destination, configJS );
 };
