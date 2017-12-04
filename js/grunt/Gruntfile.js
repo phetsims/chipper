@@ -65,7 +65,7 @@ module.exports = function( grunt ) {
       const instrument = !!grunt.option( 'instrument' );
       const uglify = !instrument && ( grunt.option( 'uglify' ) !== false ); // Do not uglify if it is being instrumented
       const mangle = grunt.option( 'mangle' ) !== false;
-      const allHTML = !!grunt.option( 'allHTML' );
+      const allHTML = !!grunt.option( 'allHTML' ) || brand === 'phet-io';
       const debugHTML = !!grunt.option( 'debugHTML' );
 
       try {

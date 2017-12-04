@@ -100,14 +100,16 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   const brandSuffix = brandToSuffix( grunt, brand );
 
   // {{locale}}.html
-  for ( let locale of locales ) {
-    grunt.file.write( `../${repo}/build/${repo}_${locale}${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
-      locale,
-      includeAllLocales: false,
-      isDebugBuild: false,
-      mainInlineJavascript: productionJS,
-      preloadScripts: productionPreloads
-    }, commonOptions ) ) );
+  if ( brand !== 'phet-io' ) {
+    for ( let locale of locales ) {
+      grunt.file.write( `../${repo}/build/${repo}_${locale}${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
+        locale,
+        includeAllLocales: false,
+        isDebugBuild: false,
+        mainInlineJavascript: productionJS,
+        preloadScripts: productionPreloads
+      }, commonOptions ) ) );
+    }
   }
 
   // _all.html
@@ -124,7 +126,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   if ( debugHTML ) {
     const debugJS = brand === 'phet-io' ? minify( grunt, requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
     const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( grunt, js, { mangle: true } ) : js );
-    grunt.file.write( `../${repo}/build/${repo}_debug${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
+    grunt.file.write( `../${repo}/build/${repo}_all${brandSuffix}-debug.html`, packageRunnable( grunt, _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: true,
