@@ -421,7 +421,8 @@ module.exports = function( grunt ) {
 
   // Download all of the simulations.  For simulations that are in "active-sims" but not published,
   // download them anyways but skip them in the report.
-  var activeSimsString = fs.readFileSync( '../chipper/data/active-sims', 'utf-8' ).trim();
+  // TODO: don't use this from chipper!
+  var activeSimsString = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim();
   var activeSimsArray = activeSimsString.split( '\n' );
 
   // Download files one at a time so we can make sure we get everything.

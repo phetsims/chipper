@@ -34,7 +34,8 @@ module.exports = function( grunt ) {
   var getLicenseEntry = require( '../../../chipper/js/common/getLicenseEntry' );
 
   // constants
-  var ACTIVE_REPOS_FILENAME = 'chipper/data/active-repos';  // The relative path to the list of active repos
+  // TODO: don't use this from chipper!
+  var ACTIVE_REPOS_FILENAME = 'perennial/data/active-repos';  // The relative path to the list of active repos
 
   // Start in the github checkout dir (above one of the sibling directories)
   var directory = process.cwd();
