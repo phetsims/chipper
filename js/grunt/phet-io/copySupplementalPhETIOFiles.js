@@ -128,7 +128,22 @@ module.exports = async function( grunt, repo, version ) {
   };
 
   // Load the master list of all wrappers
-  var wrappers = grunt.file.read( '../chipper/data/wrappers' ).toString().split( /\r?\n/ );
+  // TODO: Should this be in a file? Would we be duplicating perennial? We want a reproducible build
+  var wrappers = [
+    'phet-io-wrappers/active',
+    'phet-io-wrappers/audio',
+    'phet-io-wrappers/event-log',
+    'phet-io-wrappers/index',
+    'phet-io-wrappers/instance-proxies',
+    'phet-io-wrappers/login',
+    'phet-io-wrappers/mirror-inputs',
+    'phet-io-wrappers/record',
+    'phet-io-wrappers/screenshot',
+    'phet-io-wrappers/state',
+    'phet-io-wrappers/wrapper-template',
+    'phet-io-wrapper-classroom-activity',
+    'phet-io-wrapper-lab-book'
+  ];
 
   // Files and directories from wrapper folders that we don't want to copy
   var wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];

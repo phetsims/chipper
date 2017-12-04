@@ -23,7 +23,6 @@ const getLocalesFromRepository = require( './getLocalesFromRepository' );
 const getLocalesToBuild = require( './getLocalesToBuild' );
 const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );
-const getSimsFromDataFile = require( './getSimsFromDataFile' );
 const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const getVersionForBrand = require( '../getVersionForBrand' );
@@ -149,10 +148,8 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
     grunt.file.write( `../${repo}/build/${repo}_${ChipperConstants.FALLBACK_LOCALE}-iframe.html`, iframeTestHtml );
   }
 
-  var a11ySims = getSimsFromDataFile( grunt, 'accessibility' );
-
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
-  if ( a11ySims.indexOf( repo ) >= 0 && brand === 'phet' ) {
+  if ( packageObject.phet.accessible && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for pDOM viewing.
     var a11yHTML = getA11yViewHTMLFromTemplate( grunt, repo );
     grunt.file.write( `../${repo}/build/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );

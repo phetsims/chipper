@@ -36,7 +36,7 @@ module.exports = function( grunt ) {
     buildLocal = {};
   }
 
-   // TODO: grunt error on promise rejection
+  // TODO: grunt error on promise rejection
 
   const brand = grunt.option( 'brand' ) || buildLocal.brand || 'adapted-from-phet';
   assert( grunt.file.exists( `../brand/${brand}` ), `no such brand: ${brand}` );
@@ -92,16 +92,12 @@ module.exports = function( grunt ) {
     lint( grunt, [ repo ] );
   } );
 
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', async function() {
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', async function() {
     const done = grunt.task.current.async();
 
-    lint( grunt, getPhetLibs( grunt, repo, brand ) );
+    lint( grunt, getPhetLibs( grunt, repo ) );
 
     done();
-  } );
-
-  grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', function() {
-    lint( grunt, grunt.file.read( '../chipper/data/active-repos' ).trim().split( /\r?\n/ ) );
   } );
 
   grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.',
