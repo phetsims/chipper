@@ -13,6 +13,7 @@ const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
+const commitsSince = require( './commitsSince' );
 const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateConfig = require( './generateConfig' );
@@ -73,7 +74,7 @@ module.exports = function( grunt ) {
         else {
           // Determine what brands we want to build
           assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
-          
+
           var brands;
           if ( grunt.option( 'brands' ) ) {
             if ( grunt.option( 'brands' ) === '*' ) {
@@ -194,4 +195,18 @@ module.exports = function( grunt ) {
     function() {
       generateREADME( grunt, repo, false /* published */ );
     } );
+
+  grunt.registerTask( 'commits-since',
+    'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
+    async function() {
+      const dateString = grunt.option( 'date' );
+      assert( dateString, 'missing required option: --date={{DATE}}' );
+
+      const done = grunt.task.current.async();
+
+      await commitsSince( grunt, repo, dateString );
+
+      done();
+    } );
+
 };
