@@ -15,14 +15,11 @@
 // PhET custom grunt tasks
 var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
 var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
-var commitsSince = require( '../../../chipper/js/grunt/commitsSince' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
-var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
-var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
@@ -175,32 +172,6 @@ module.exports = function( grunt ) {
     // deploy it
     'deploy-dev'
   ] );
-
-  // See reportMedia.js
-  grunt.registerTask( 'report-media',
-    '(project-wide) Report on license.json files throughout all working copies. ' +
-    'Reports any media (such as images or audio) files that have any of the following problems:\n' +
-    '(1) incompatible-license (resource license not approved)\n' +
-    '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
-    '(3) missing-file (entry in the license.json but not on the file system)',
-    function() {
-      reportMedia( grunt );
-    } );
-
-  // see reportThirdParty.js
-  grunt.registerTask( 'report-third-party',
-    'Creates a report of third-party resources (code, images, audio, etc) used in the published PhET simulations by ' +
-    'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
-    'After running this task, you must push sherpa/third-party-licenses.md.',
-    function() {
-      reportThirdParty( grunt );
-    } );
-
-  grunt.registerTask( 'commits-since',
-    'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
-    function() {
-      commitsSince( grunt, buildConfig );
-    } );
 
   grunt.registerTask( 'update-phet-io-site',
     'Copy the phet-io-site docs and materials from phet-io/phet-io-site to phet-io-site',

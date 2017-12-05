@@ -25,6 +25,8 @@ const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
+const reportMedia = require( './reportMedia' );
+const reportThirdParty = require( './reportThirdParty' );
 
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
@@ -207,6 +209,26 @@ module.exports = function( grunt ) {
       await commitsSince( grunt, repo, dateString );
 
       done();
+    } );
+
+  // See reportMedia.js
+  grunt.registerTask( 'report-media',
+    '(project-wide) Report on license.json files throughout all working copies. ' +
+    'Reports any media (such as images or audio) files that have any of the following problems:\n' +
+    '(1) incompatible-license (resource license not approved)\n' +
+    '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
+    '(3) missing-file (entry in the license.json but not on the file system)',
+    function() {
+      reportMedia( grunt );
+    } );
+
+  // see reportThirdParty.js
+  grunt.registerTask( 'report-third-party',
+    'Creates a report of third-party resources (code, images, audio, etc) used in the published PhET simulations by ' +
+    'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
+    'After running this task, you must push sherpa/third-party-licenses.md.',
+    function() {
+      reportThirdParty( grunt );
     } );
 
 };

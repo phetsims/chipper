@@ -19,24 +19,17 @@
 /* eslint-env node */
 'use strict';
 
-// Load shared constants
+var _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 var assert = require( 'assert' );
-var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
-
-// constants
-var SHERPA = '../sherpa';  // The relative path to sherpa, from the chipper path
-
-// node modules
+var ChipperConstants = require( '../common/ChipperConstants' );
+var ChipperStringUtils = require( '../common/ChipperStringUtils' );
 var fs = require( 'fs' );
 var https = require( 'https' );
-
-var _ = require( '../../' + SHERPA + '/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 /**
- * @param grunt - the grunt instance
+ * @param {Object} grunt
  */
 module.exports = function( grunt ) {
 
@@ -48,7 +41,7 @@ module.exports = function( grunt ) {
   assert ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, 'websiteAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME);
 
   // The file where the report will be written
-  var outputFilename = SHERPA + '/third-party-licenses.md';
+  var outputFilename = '../sherpa/third-party-licenses.md';
 
   // Since we download the HTML files, this task must wait until it is complete
   var gruntDone = grunt.task.current.async();
@@ -241,7 +234,7 @@ module.exports = function( grunt ) {
       }
     }
 
-    var licenseJSON = grunt.file.readJSON( SHERPA + '/lib/license.json' );
+    var licenseJSON = grunt.file.readJSON( '../sherpa/lib/license.json' );
 
     var codeOutput = [];
     var codeLicensesUsed = [];
@@ -429,7 +422,7 @@ module.exports = function( grunt ) {
   var downloadNext = function( index ) {
     var sim = activeSimsArray[ index ].trim();
     var url = 'https://' + serverName + '/sims/html/' + sim + '/latest/' + sim + '_en.html';
-    console.log( 'downloading ' + (index + 1) + '/' + activeSimsArray.length + ': ' + url );
+    console.log( 'downloading ' + ( index + 1 ) + '/' + activeSimsArray.length + ': ' + url );
     download( url, 'downloaded-sims/' + sim + '_en.html', function( err ) {
       assert && assert( !err, 'Error during download: ' + err );
 
