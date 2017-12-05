@@ -83,29 +83,30 @@ module.exports = function( grunt ) {
           // Determine what brands we want to build
           assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
 
+          const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+          const supportedBrands = localPackageObject.phet.supportedBrands;
+
+          assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
+
           var brands;
           if ( grunt.option( 'brands' ) ) {
             if ( grunt.option( 'brands' ) === '*' ) {
-              brands = ChipperConstants.BRANDS;
+              brands = supportedBrands;
             }
             else {
               brands = grunt.option( 'brands' ).split( ',' );
             }
           }
           else if ( buildLocal.brands ) {
-            brands = buildLocal.brands;
+            brands = buildLocal.brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
           }
           else {
             brands = [ 'adapted-from-phet' ];
           }
 
           // Ensure all listed brands are valid
-          brands.forEach( brand => assert( ChipperConstants.BRANDS.includes( brand, `Unknown brand: ${brand}` ) ) );
-
-          // Filter out brands that aren't supported by the given runnable
-          const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
-          assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
-          brands = brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
+          brands.forEach( brand => assert( ChipperConstants.BRANDS.includes( brand ), `Unknown brand: ${brand}` ) );
+          brands.forEach( brand => assert( supportedBrands.includes( brand ), `Unsupported brand: ${brand}` ) );
 
           // Other options
           const allHTML = !!grunt.option( 'allHTML' );
