@@ -54,6 +54,10 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   assert( typeof mangle === 'boolean' );
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
 
+  if ( brand === 'phet-io' ) {
+    assert( grunt.file.exists( `../phet-io` ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
+  }
+
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
   var encoder = new nodeHTMLEncoder.Encoder( 'entity' );
