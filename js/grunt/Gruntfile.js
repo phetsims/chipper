@@ -96,7 +96,7 @@ module.exports = function( grunt ) {
             brands = buildLocal.brands;
           }
           else {
-            brands = ChipperConstants.BRANDS;
+            brands = [ 'adapted-from-phet' ];
           }
 
           // Ensure all listed brands are valid
