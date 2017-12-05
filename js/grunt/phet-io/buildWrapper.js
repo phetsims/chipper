@@ -7,30 +7,25 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-// modules
-var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var copyDirectory = require( '../../../chipper/js/grunt/phet-io/copyDirectory' );
-var createDependenciesJSON = require( '../../../chipper/js/grunt/createDependenciesJSON' );
-
-// build in node apis
-var fs = require( 'fs' );
+const copyDirectory = require( './copyDirectory' );
+const fs = require( 'fs' );
+const getDependencies = require( '../getDependencies' );
+const getPhetLibs = require( '../getPhetLibs' );
 
 // Don't copy these files/folders into the built wrapper
-var WRAPPER_BLACKLIST = [ '.git', 'README.md', '.gitignore', 'node_modules', 'build' ];
-
+const WRAPPER_BLACKLIST = [ '.git', 'README.md', '.gitignore', 'node_modules', 'build' ];
 
 /**
- * @param grunt - the grunt instance
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {Object} grunt
+ * @param {string} wrapperRepo
+ * @returns {Promise}
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = async function( grunt, wrapperRepo ) {
   'use strict';
 
-  // Tell grunt to wait because this task is asynchronous.
-  // Returns a handle to a function that must be called when the task has completed.
-  var done = grunt.task.current.async();
+  const packageObject = grunt.file.readJSON( `../${wrapperRepo}/package.json` );
 
-  buildConfig.phetLibs.forEach( function( repo ) {
+  getPhetLibs( grunt, wrapperRepo ).forEach( function( repo ) {
 
     //  We only need the common folder from this repo
     if ( repo === 'phet-io-wrappers' ) {
@@ -41,19 +36,17 @@ module.exports = function( grunt, buildConfig ) {
     if ( repo === 'sherpa' ) {
 
       // If there are no sherpaDependencies mentioned in the package.json, then still just copy the whole repo.
-      if ( !buildConfig.wrapperSherpaDependencies ) {
+      if ( !packageObject.wrapper.sherpaDependencies ) {
         grunt.log.debug( 'To decrease the size of the sherpa dependency, use wrapper.sheraDependencies in package.json ' +
                          'to specify sherpa libraries from sherpa/lib.' );
       }
 
       else {
-        var pathToLib = '/sherpa/lib/';
-        fs.mkdirSync( ChipperConstants.BUILD_DIR + '/' + repo );
-        fs.mkdirSync( ChipperConstants.BUILD_DIR + pathToLib );
-        grunt.log.debug( 'created sherpa lib file: ' + ChipperConstants.BUILD_DIR + pathToLib );
+        fs.mkdirSync( `../${wrapperRepo}/build/sherpa` );
+        fs.mkdirSync( `../${wrapperRepo}/build/sherpa/lib` );
 
-        buildConfig.wrapperSherpaDependencies.forEach( function( file ) {
-          grunt.file.copy( '..' + pathToLib + file, ChipperConstants.BUILD_DIR + pathToLib + file );
+        packageObject.wrapper.sherpaDependencies.forEach( function( file ) {
+          grunt.file.copy( `../sherpa/lib/${file}`, `../${wrapperRepo}/build/sherpa/lib/${file}` );
         } );
 
         return; // short circuit before the whole copy below.
@@ -61,7 +54,7 @@ module.exports = function( grunt, buildConfig ) {
     }
 
     // otherwise copy the whole directory over, except the black list from above
-    copyDirectory( grunt, '../' + repo, ChipperConstants.BUILD_DIR + '/' + repo + '/', null, {
+    copyDirectory( grunt, `../${repo}`, `../${wrapperRepo}/build/${repo}/`, null, {
       blacklist: WRAPPER_BLACKLIST, // List of files to not copy
 
       // TODO: We want to minify the built wrapper, but currently it is causing an error,
@@ -74,10 +67,6 @@ module.exports = function( grunt, buildConfig ) {
     } );
   } );
 
-
-  // Since this is an asynchronous task, each step in the task uses a callback to advance to the next step.
-  // The final step in the task calls 'done', to tell grunt that the task has completed.
-  createDependenciesJSON( grunt, buildConfig, function() {
-    done();
-  } );
+  const dependencies = await getDependencies( grunt, wrapperRepo );
+  grunt.file.write( `../${wrapperRepo}/build/dependencies.json`, dependencies );
 };

@@ -11,6 +11,7 @@
 const assert = require( 'assert' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
+const buildWrapper = require( './phet-io/buildWrapper' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
@@ -73,6 +74,9 @@ module.exports = function( grunt ) {
         // standalone
         if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
           fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( grunt, repo, uglify, mangle ) );
+        }
+        else if ( grunt.file.readJSON( `../${repo}/package.json` ).isWrapper ) {
+          await buildWrapper( grunt, repo );
         }
         // runnable
         else {
