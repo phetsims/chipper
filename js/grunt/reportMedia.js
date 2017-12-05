@@ -21,7 +21,7 @@
 /* eslint-env node */
 'use strict';
 
-// modules
+// TODO: File not brought up to es6+ standards
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );

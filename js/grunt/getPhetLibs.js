@@ -20,6 +20,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
  * @param {Object} grunt
  * @param {string} repo
  * @param {string} [brand] - If not specified, it will return the dependencies for all brands.
+ * @returns {Array.<string>}
  */
 module.exports = function getPhetLibs( grunt, repo, brand ) {
   assert( typeof repo === 'string', 'Repository required for getPhetLibs' );

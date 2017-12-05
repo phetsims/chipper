@@ -18,7 +18,6 @@ var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
 var deployDev = require( '../../../chipper/js/grunt/deployDev' );
 var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
-var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
 var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
@@ -178,12 +177,6 @@ module.exports = function( grunt ) {
     function() {
       updatePhETiOSite( grunt, buildConfig );
     } );
-
-  grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
-                                         '--dependencies to expand search to include dependencies\n' +
-                                         '--everything to expand search to all PhET code', function() {
-    findDuplicates( grunt, buildConfig );
-  } );
 
   grunt.registerTask( 'wrapper-basic-build', 'Build PhET-iO wrapper', function() {
     wrapperBuild( grunt, buildConfig );

@@ -14,6 +14,7 @@ const buildStandalone = require( './buildStandalone' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
+const findDuplicates = require( './findDuplicates' );
 const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateConfig = require( './generateConfig' );
@@ -230,5 +231,11 @@ module.exports = function( grunt ) {
     function() {
       reportThirdParty( grunt );
     } );
+
+  grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
+                                         '--dependencies to expand search to include dependencies\n' +
+                                         '--everything to expand search to all PhET code', function() {
+    findDuplicates( grunt, repo );
+  } );
 
 };

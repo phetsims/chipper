@@ -19,6 +19,7 @@
 /* eslint-env node */
 'use strict';
 
+// TODO: File not brought up to es6+ standards
 var _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 var assert = require( 'assert' );
 var ChipperConstants = require( '../common/ChipperConstants' );

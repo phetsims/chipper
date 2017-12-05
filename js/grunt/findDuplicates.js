@@ -15,12 +15,13 @@
 /* eslint-env node */
 'use strict';
 
-module.exports = function( grunt, buildConfig ) {
+// TODO: Looks like a decent amount of cleanup in this file. Not up to standards yet
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const fs = require( 'fs' );
+const getPhetLibs = require( './getPhetLibs' );
+const jscpd = require( 'jscpd' );
 
-  // modules
-  var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-  var fs = require( 'fs' );
-  var jscpd = require( 'jscpd' );
+module.exports = function( grunt, repo ) {
 
   /**
    * TODO: Eliminate this function and unify paths with lint.js, see https://github.com/phetsims/chipper/issues/566
@@ -191,7 +192,7 @@ module.exports = function( grunt, buildConfig ) {
   };
 
   // Initialize grunt
-  var gruntConfig = getGruntConfig( grunt, buildConfig.name, buildConfig.phetLibs );
+  var gruntConfig = getGruntConfig( grunt, repo, getPhetLibs( grunt, repo ) );
 
   // Choose the paths to check for duplicates
   var paths = grunt.option( 'dependencies' ) ? gruntConfig.eslint.allFiles :
