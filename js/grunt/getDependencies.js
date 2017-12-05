@@ -22,6 +22,9 @@ module.exports = async function( grunt, repo ) {
   // Accumulate depencies for all brands
   const dependencies = getPhetLibs( grunt, repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at master
 
+  // We need to check dependencies for the main brand, so we can know what is guaranteed to be public
+  const mainDependencies = getPhetLibs( grunt, repo, 'phet' ).filter( dependency => dependency !== 'babel' );
+
   grunt.log.debug( 'Scanning dependencies from:\n' + dependencies.toString() );
 
   const dependenciesInfo = {
@@ -30,6 +33,14 @@ module.exports = async function( grunt, repo ) {
 
   for ( let dependency of dependencies ) {
     assert( !dependenciesInfo.dependency, 'there was already a dependency named ' + dependency );
+
+    if ( !grunt.file.exists( `../${dependency}` ) ) {
+      if ( mainDependencies.includes( dependency ) ) {
+        throw new Error( `Dependency not found: ${dependency}` );
+      }
+      grunt.log.warn( `WARNING: Skipping potentially non-public dependency ${dependency}` );
+      continue;
+    }
 
     var sha = ( await execute( grunt, 'git', [ 'rev-parse', 'HEAD' ], `../${dependency}` ) ).trim();
     var branch = ( await execute( grunt, 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], `../${dependency}` ) ).trim();
