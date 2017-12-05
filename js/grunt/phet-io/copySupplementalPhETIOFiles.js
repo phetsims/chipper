@@ -166,7 +166,7 @@ module.exports = async function( grunt, repo, version ) {
     var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
 
     // Copy the wrapper into the build dir /wrappers/, exclude the blacklist, and minify the js code
-    copyDirectory( grunt, '../' + wrapper, '../' + repo + '/build/wrappers/' + wrapperName, filterWrapper, {
+    copyDirectory( grunt, '../' + wrapper, '../' + repo + '/build/phetio/wrappers/' + wrapperName, filterWrapper, {
       blacklist: fullBlacklist,
       minifyJS: true
     } );
@@ -197,7 +197,7 @@ module.exports = async function( grunt, repo, version ) {
  */
 var handleLib = function( grunt, repo, filter ) {
 
-  grunt.file.mkdir( '../' + repo + '/build/lib' );
+  grunt.file.mkdir( '../' + repo + '/build/phetio/lib' );
 
   var consolidated = '';
   LIB_FILES.forEach( function( libFile ) {
@@ -211,7 +211,7 @@ var handleLib = function( grunt, repo, filter ) {
 
   var minified = minify( grunt, consolidated );
 
-  grunt.file.write( '../' + repo + '/build/lib/' + LIB_OUTPUT_FILE, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
+  grunt.file.write( '../' + repo + '/build/phetio/lib/' + LIB_OUTPUT_FILE, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
 };
 
 /**
@@ -239,11 +239,11 @@ var handleDevGuide = function( grunt, repo, filter ) {
   var firstFooterLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="footer"' );
   devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
 
-  grunt.file.write( '../' + repo + '/build/docs/devguide.html', devguideHTML );
-  copyDirectory( grunt, '../phet-io-website/root/assets/css', '../' + repo + '/build/docs/css', filter );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + '../' + repo + '/build/docs/js/phet-io.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + '../' + repo + '/build/docs/js/phet-io-ga.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + '../' + repo + '/build/docs/favicon.ico' );
+  grunt.file.write( '../' + repo + '/build/phetio/docs/devguide.html', devguideHTML );
+  copyDirectory( grunt, '../phet-io-website/root/assets/css', '../' + repo + '/build/phetio/docs/css', filter );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + '../' + repo + '/build/phetio/docs/js/phet-io.js' );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + '../' + repo + '/build/phetio/docs/js/phet-io-ga.js' );
+  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + '../' + repo + '/build/phetio/docs/favicon.ico' );
 };
 
 /**
@@ -256,7 +256,7 @@ var handleContrib = function( grunt, repo ) {
 
     var fileName = filePathParts[ filePathParts.length - 1 ];
 
-    grunt.file.copy( filePath, '../' + repo + '/build/contrib/' + fileName );
+    grunt.file.copy( filePath, '../' + repo + '/build/phetio/contrib/' + fileName );
 
   } );
 };

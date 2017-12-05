@@ -83,12 +83,18 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   const version = getVersionForBrand( brand, packageObject.version );
   const thirdPartyEntries = getAllThirdPartyEntries( grunt, repo, brand );
   const stringMap = getStringMap( grunt, allLocales, phetLibs );
+  const mipmapsJavaScript = await buildMipmaps( grunt );
+
+  grunt.log.ok( `Minification for ${brand} complete` );
+  grunt.log.ok( `Require.js: ${productionJS.length} bytes` );
+  grunt.log.ok( `Preloads: ${_.sum( productionPreloads.map( preload => preload.length ) )} bytes` );
+  grunt.log.ok( `Mipmaps: ${mipmapsJavaScript.length} bytes` );
 
   const commonOptions = {
     brand,
     repo,
     stringMap,
-    mipmapsJavaScript: await buildMipmaps( grunt ),
+    mipmapsJavaScript,
     dependencies,
     timestamp,
     version,
@@ -98,10 +104,14 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   // TODO: how to handle one-offs? Add another suffix presumably.
   const brandSuffix = brandToSuffix( grunt, brand );
 
+  // Create the build-specific directory
+  const buildDir = `../${repo}/build/${brandSuffix}`;
+  grunt.file.mkdir( buildDir );
+
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
     for ( let locale of locales ) {
-      grunt.file.write( `../${repo}/build/${repo}_${locale}${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
+      grunt.file.write( `${buildDir}/${repo}_${locale}-${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
         locale,
         includeAllLocales: false,
         isDebugBuild: false,
@@ -111,9 +121,9 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
     }
   }
 
-  // _all.html
-  if ( allHTML ) {
-    grunt.file.write( `../${repo}/build/${repo}_all${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
+  // _all.html (forced for phet-io)
+  if ( allHTML || brand === 'phet-io' ) {
+    grunt.file.write( `${buildDir}/${repo}_all-${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: false,
@@ -125,7 +135,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   if ( debugHTML ) {
     const debugJS = brand === 'phet-io' ? minify( grunt, requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
     const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( grunt, js, { mangle: true } ) : js );
-    grunt.file.write( `../${repo}/build/${repo}_all${brandSuffix}-debug.html`, packageRunnable( grunt, _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all-${brandSuffix}-debug.html`, packageRunnable( grunt, _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: true,
@@ -135,7 +145,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   }
 
   // dependencies.json
-  grunt.file.write( `../${repo}/build/dependencies.json`, JSON.stringify( dependencies, null, 2 ) );
+  grunt.file.write( `${buildDir}/dependencies.json`, JSON.stringify( dependencies, null, 2 ) );
 
   // -iframe.html (English is assumed as the locale).
   if ( _.includes( locales, ChipperConstants.FALLBACK_LOCALE ) && brand === 'phet' ) {
@@ -145,14 +155,14 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( englishTitle + ' iframe test' ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_URL}}', repo + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
-    grunt.file.write( `../${repo}/build/${repo}_${ChipperConstants.FALLBACK_LOCALE}-iframe.html`, iframeTestHtml );
+    grunt.file.write( `${buildDir}/${repo}_${ChipperConstants.FALLBACK_LOCALE}-iframe.html`, iframeTestHtml );
   }
 
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
   if ( packageObject.phet.accessible && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for pDOM viewing.
     var a11yHTML = getA11yViewHTMLFromTemplate( grunt, repo );
-    grunt.file.write( `../${repo}/build/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );
+    grunt.file.write( `${buildDir}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );
   }
 
   if ( brand === 'phet-io' ) {

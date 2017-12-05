@@ -11,6 +11,7 @@
 const assert = require( 'assert' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
+const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
@@ -38,9 +39,6 @@ module.exports = function( grunt ) {
 
   // TODO: grunt error on promise rejection
 
-  const brand = grunt.option( 'brand' ) || buildLocal.brand || 'adapted-from-phet';
-  assert( grunt.file.exists( `../brand/${brand}` ), `no such brand: ${brand}` );
-
   const repo = grunt.option( 'repo' ) || packageObject.name;
 
   chipperGlobals.initialize( grunt );
@@ -65,15 +63,42 @@ module.exports = function( grunt ) {
       const instrument = !!grunt.option( 'instrument' );
       const uglify = !instrument && ( grunt.option( 'uglify' ) !== false ); // Do not uglify if it is being instrumented
       const mangle = grunt.option( 'mangle' ) !== false;
-      const allHTML = !!grunt.option( 'allHTML' ) || brand === 'phet-io';
-      const debugHTML = !!grunt.option( 'debugHTML' );
 
       try {
+        // standalone
         if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
           fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( grunt, repo, uglify, mangle ) );
         }
+        // runnable
         else {
-          await buildRunnable( grunt, repo, uglify, mangle, instrument, allHTML, debugHTML, brand );
+          // Determine what brands we want to build
+          var brands;
+          if ( grunt.option( 'brands' ) ) {
+            brands = grunt.option( 'brands' ).split( ',' );
+          }
+          else if ( buildLocal.brands ) {
+            brands = buildLocal.brands;
+          }
+          else {
+            brands = ChipperConstants.BRANDS;
+          }
+
+          // Ensure all listed brands are valid
+          brands.forEach( brand => assert( ChipperConstants.BRANDS.includes( brand, `Unknown brand: ${brand}` ) ) );
+
+          // Filter out brands that aren't supported by the given runnable
+          const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+          assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
+          brands = brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
+
+          // Other options
+          const allHTML = !!grunt.option( 'allHTML' );
+          const debugHTML = !!grunt.option( 'debugHTML' );
+
+          for ( let brand of brands ) {
+            grunt.log.writeln( `Building brand: ${brand}` );
+            await buildRunnable( grunt, repo, uglify, mangle, instrument, allHTML, debugHTML, brand );
+          }
         }
       }
       catch ( e ) {

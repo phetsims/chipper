@@ -92,6 +92,7 @@ module.exports = function( grunt, repo, mainConfigFile, options ) {
     chipperGlobals.beforeBuild( brand );
 
     requirejs.optimize( config, function( buildResponse ) {
+      grunt.log.ok( `require.js optimization for brand: ${brand} complete (${output.length} bytes)` );
       resolve( output );
     }, function( err ) {
       reject( err );
