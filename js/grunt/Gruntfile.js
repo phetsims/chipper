@@ -28,6 +28,7 @@ const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
+const updateCopyrightDates = require( './updateCopyrightDates' );
 
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
@@ -237,5 +238,12 @@ module.exports = function( grunt ) {
                                          '--everything to expand search to all PhET code', function() {
     findDuplicates( grunt, repo );
   } );
+
+  // Grunt task that determines created and last modified dates from git, and
+  // updates copyright statements accordingly, see #403
+  grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
+    function() {
+      updateCopyrightDates( grunt );
+    } );
 
 };

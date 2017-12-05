@@ -20,7 +20,6 @@ var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
 var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
 var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
 var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
-var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
 var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
 var wrapperDeploy = require( '../../../chipper/js/grunt/wrapperDeploy' );
 
@@ -171,12 +170,6 @@ module.exports = function( grunt ) {
     // deploy it
     'deploy-dev'
   ] );
-
-  grunt.registerTask( 'update-phet-io-site',
-    'Copy the phet-io-site docs and materials from phet-io/phet-io-site to phet-io-site',
-    function() {
-      updatePhETiOSite( grunt, buildConfig );
-    } );
 
   grunt.registerTask( 'wrapper-basic-build', 'Build PhET-iO wrapper', function() {
     wrapperBuild( grunt, buildConfig );

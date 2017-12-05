@@ -9,16 +9,15 @@
 /* eslint-env node */
 'use strict';
 
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const assert = require( 'assert' );
+const child_process = require( 'child_process' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+
 /**
- * @param grunt - the grunt instance
+ * @param {Object} grunt
  */
 module.exports = function( grunt ) {
-
-  // modules
-  var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-  var assert = require( 'assert' );
-  var child_process = require( 'child_process' );
-  var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
   // constants
   var sourceRoot = process.cwd() + '/js';
