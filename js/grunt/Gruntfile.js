@@ -168,6 +168,34 @@ module.exports = function( grunt ) {
       generateDevelopmentHTML( grunt, repo );
     } );
 
+  grunt.registerTask( 'generate-test-html',
+    'Generates top-level SIM_test.html file based on the preloads in package.json.',
+    function() {
+      generateDevelopmentHTML( grunt, repo, {
+
+        // Include QUnit CSS
+        stylesheets: '<link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">',
+
+        // Leave the background the default color white
+        bodystyle: '',
+
+        // Output to a test file
+        outputFile: `../${repo}/${repo}-tests.html`,
+
+        // Add the QUnit divs
+        bodystart: '<div id="qunit"></div><div id="qunit-fixture"></div>',
+
+        // Add QUnit JS
+        addedPreloads: [ '../sherpa/lib/qunit-2.4.1.js', '../aqua/js/qunit-connector.js' ],
+
+        // Do not show the splash screen
+        stripPreloads: [ '../joist/js/splash.js' ],
+
+        // Specify to use test config
+        qualifier: 'test-'
+      } );
+    } );
+
   grunt.registerTask( 'generate-development-colors-html',
     'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
     function() {
@@ -183,7 +211,13 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-config',
     'Generates the js/SIM-config.js file based on the dependencies in package.json.',
     function() {
-      generateConfig( grunt, repo );
+      generateConfig( grunt, repo, `../${repo}/js/${repo}-config.js`, 'main' );
+    } );
+
+  grunt.registerTask( 'generate-test-config',
+    'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
+    function() {
+      generateConfig( grunt, repo, `../${repo}/js/${repo}-test-config.js`, 'tests' );
     } );
 
   grunt.registerTask( 'generate-coverage',

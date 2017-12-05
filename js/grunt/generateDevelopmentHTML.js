@@ -19,8 +19,20 @@ const getPreloads = require( './getPreloads' );
 /**
  * @param {Object} grunt - The grunt runtime object
  * @param {string} repo
+ * @param {Object} [options]
  */
-module.exports = function( grunt, repo ) {
+module.exports = function( grunt, repo, options ) {
+
+  const {
+    stylesheets = '',
+    bodystyle = 'style="background-color =black;"',
+    outputFile = `../${repo}/${repo}_en.html`,
+    bodystart = '',
+    addedPreloads = [], // none to add
+    stripPreloads = [], // none to add
+    qualifier = ''
+  } = options || {};
+
   const brand = 'phet';
 
   const splashURL = `../brand/${brand}/images/splash.svg`;
@@ -36,15 +48,23 @@ module.exports = function( grunt, repo ) {
            '\n    ]';
   }
 
+  function isPreloadExcluded( preload ) {
+    return preload.includes( 'google-analytics' ) || stripPreloads.includes( preload );
+  }
+
   const preloads = getPreloads( grunt, repo, brand ).filter( preload => {
-    return preload.indexOf( 'google-analytics' ) === -1;
-  } );
+    return !isPreloadExcluded( preload );
+  } ).concat( addedPreloads );
   const phetioPreloads = getPreloads( grunt, repo, 'phet-io' ).filter( preload => {
-    return preload.indexOf( 'google-analytics' ) === -1 && !_.includes( preloads, preload );
+    return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
   } );
 
   // Replace placeholders in the template.
+  html = ChipperStringUtils.replaceAll( html, '{{BODYSTYLE}}', bodystyle );
+  html = ChipperStringUtils.replaceAll( html, '{{BODYSTART}}', bodystart );
+  html = ChipperStringUtils.replaceAll( html, '{{STYLESHEETS}}', stylesheets );
   html = ChipperStringUtils.replaceAll( html, '{{REPOSITORY}}', repo );
+  html = ChipperStringUtils.replaceAll( html, '{{QUALIFIER}}', qualifier );
   html = ChipperStringUtils.replaceAll( html, '{{BRAND}}', brand );
   html = ChipperStringUtils.replaceAll( html, '{{SPLASH_URL}}', splashURL );
   html = ChipperStringUtils.replaceAll( html, '{{PHETIO_PRELOADS}}', stringifyArray( phetioPreloads ) );
@@ -56,5 +76,5 @@ module.exports = function( grunt, repo ) {
   html = ChipperStringUtils.replaceAll( html, '{{BROWSER_WINDOW_TITLE}}', repo );
 
   // Write to the repository's root directory.
-  grunt.file.write( `../${repo}/${repo}_en.html`, html );
+  grunt.file.write( outputFile, html );
 };

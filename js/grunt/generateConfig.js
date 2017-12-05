@@ -17,8 +17,10 @@ const getPhetLibs = require( './getPhetLibs' );
 /**
  * @param {Object} grunt - The grunt runtime object
  * @param {string} repo
+ * @param {string} destination - output location
+ * @param {string} launchSuffix - text to use for the deps
  */
-module.exports = function( grunt, repo ) {
+module.exports = function( grunt, repo, destination, launchSuffix ) {
 
   var configJS = grunt.file.read( '../chipper/templates/sim-config.js' ); // the template file
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
@@ -54,6 +56,7 @@ module.exports = function( grunt, repo ) {
 
   // Replace placeholders in the template.
   configJS = ChipperStringUtils.replaceAll( configJS, '{{SIM_REQUIREJS_NAMESPACE}}', packageObject.phet.requirejsNamespace );
+  configJS = ChipperStringUtils.replaceAll( configJS, '{{LAUNCH_SUFFIX}}', launchSuffix );
   configJS = ChipperStringUtils.replaceAll( configJS, '{{REPOSITORY}}', repo );
   configJS = ChipperStringUtils.replaceAll( configJS, '{{CURRENT_YEAR}}', new Date().getFullYear() );
   configJS = ChipperStringUtils.replaceAll( configJS, '{{CONFIG_LINES}}', Object.keys( requirements ).sort().map( prefix => {
@@ -61,5 +64,5 @@ module.exports = function( grunt, repo ) {
   } ).join( ',\n    ' ) );
 
   // Write to the repository's root directory.
-  grunt.file.write( `../${repo}/js/${repo}-config.js`, configJS );
+  grunt.file.write( destination, configJS );
 };
