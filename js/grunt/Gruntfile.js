@@ -72,9 +72,16 @@ module.exports = function( grunt ) {
         // runnable
         else {
           // Determine what brands we want to build
+          assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
+          
           var brands;
           if ( grunt.option( 'brands' ) ) {
-            brands = grunt.option( 'brands' ).split( ',' );
+            if ( grunt.option( 'brands' ) === '*' ) {
+              brands = ChipperConstants.BRANDS;
+            }
+            else {
+              brands = grunt.option( 'brands' ).split( ',' );
+            }
           }
           else if ( buildLocal.brands ) {
             brands = buildLocal.brands;
