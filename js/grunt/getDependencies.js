@@ -38,7 +38,9 @@ module.exports = async function( grunt, repo ) {
       if ( mainDependencies.includes( dependency ) ) {
         throw new Error( `Dependency not found: ${dependency}` );
       }
-      grunt.log.warn( `WARNING: Skipping potentially non-public dependency ${dependency}` );
+
+      // NOTE NOTE NOTE: This error message is checked for on the perennial build side (it will fail the build). Do NOT change this without changing that.
+      grunt.log.warn( `WARNING404: Skipping potentially non-public dependency ${dependency}` );
       continue;
     }
 
