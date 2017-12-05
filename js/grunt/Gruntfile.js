@@ -12,6 +12,7 @@ const assert = require( 'assert' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const buildWrapper = require( './phet-io/buildWrapper' );
+const child_process = require( 'child_process' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
@@ -285,4 +286,55 @@ module.exports = function( grunt ) {
       updateCopyrightDates( grunt );
     } );
 
+  function forwardToPerennialGrunt( task ) {
+    // TODO: improve documentation
+    grunt.registerTask( task, 'Run grunt --help in perennial to see documentation', () => {
+      grunt.log.writeln( '(Forwarding task to perennial)' );
+
+      const done = grunt.task.current.async();
+
+      // Include the --repo flag
+      const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
+      const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
+      const spawned = child_process.spawn( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', args, {
+        cwd: '../perennial'
+      } );
+      grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
+
+      spawned.stderr.on( 'data', data => grunt.log.error( data.toString() ) );
+      spawned.stdout.on( 'data', data => grunt.log.write( data.toString() ) );
+      process.stdin.pipe( spawned.stdin );
+
+      spawned.on( 'close', code => {
+        if ( code !== 0 ) {
+          throw new Error( `perennial grunt ${argsString} failed with code ${code}` );
+        }
+        else {
+          done();
+        }
+      } );
+    } );
+  }
+
+  [
+    'checkout-shas',
+    'checkout-target',
+    'checkout-release',
+    'checkout-master',
+    'checkout-master-all',
+    'sha-check',
+    'sim-list',
+    'npm-update',
+    'create-release',
+    'cherry-pick',
+    'wrapper',
+    'dev',
+    'rc',
+    'production',
+    'create-sim',
+    'sort-require-statements',
+    'insert-require-statement',
+    'lint-everything',
+    'generate-data'
+  ].forEach( forwardToPerennialGrunt );
 };
