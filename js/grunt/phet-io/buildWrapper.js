@@ -56,10 +56,8 @@ module.exports = async function( grunt, wrapperRepo ) {
     // otherwise copy the whole directory over, except the black list from above
     copyDirectory( grunt, `../${repo}`, `../${wrapperRepo}/build/${repo}/`, null, {
       blacklist: WRAPPER_BLACKLIST, // List of files to not copy
-
-      // TODO: We want to minify the built wrapper, but currently it is causing an error,
-      // see https://github.com/phetsims/phet-io-wrapper-sonification/issues/19#event-1153696188
       minifyJS: true,
+      mangle: false,
       licenseToPrepend: '// Copyright 2002-2017, University of Colorado Boulder\n' +
                         '// This PhET-iO file requires a license\n' +
                         '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +

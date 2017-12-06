@@ -24,7 +24,8 @@ module.exports = function( grunt, src, dst, filter, options ) {
     failOnExistingFiles: false,
     blacklist: [],
     minifyJS: false,
-    licenseToPrepend: ''
+    licenseToPrepend: '',
+    mangle: true
   }, options );
 
   // Copy built sim files (assuming they exist from a prior grunt command)
@@ -58,7 +59,7 @@ module.exports = function( grunt, src, dst, filter, options ) {
     // Minify the file if it is javascript code
     if ( options.minifyJS && filename.endsWith( '.js' ) && abspath.indexOf( 'chipper/templates/' ) < 0 ) {
       var toBeMinified = filteredContents ? filteredContents : contents;
-      filteredContents = minify( grunt, toBeMinified );
+      filteredContents = minify( grunt, toBeMinified, { mangle: options.mangle } );
 
       // Only add the license to the javascript code
       filteredContents = options.licenseToPrepend + filteredContents;
