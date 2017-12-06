@@ -114,7 +114,7 @@ module.exports = async function( grunt, repo, version ) {
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', version );
-      contents = ChipperStringUtils.replaceAll( contents, 'isBuilt: false', 'isBuilt: true' );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_IS_BUILT}}', 'true' );
 
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
       contents = ChipperStringUtils.replaceAll( contents, WRAPPER_COMMON_FOLDER + '/', 'common/' );
@@ -192,6 +192,7 @@ module.exports = async function( grunt, repo, version ) {
  * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
 
  * @param grunt
+ * @param {string} repo
  * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
  *                            has arguments like "function(abspath, contents)"
  */
@@ -217,6 +218,7 @@ var handleLib = function( grunt, repo, filter ) {
 /**
  * Copy the appropriate resources and files to the build folder needed for the development guide.
  * @param grunt
+ * @param {string} repo
  * @param {Function} [filter] - the filter function used when copying over the dev guide, to fix relative paths and such
  *                              has arguments like "function(abspath, contents)"
  */
@@ -249,6 +251,7 @@ var handleDevGuide = function( grunt, repo, filter ) {
 /**
  * Copy all of the third party libraries from sherpa to the build directory under the 'contrib' folder.
  * @param grunt
+ * @param {string} repo
  */
 var handleContrib = function( grunt, repo ) {
   CONTRIB_FILES.forEach( function( filePath ) {
