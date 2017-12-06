@@ -27,13 +27,18 @@ module.exports = async function( grunt, wrapperRepo ) {
 
   getPhetLibs( grunt, wrapperRepo ).forEach( function( repo ) {
 
-    //  We only need the common folder from this repo
+    //  We only need the common folder from the general wrappers repo
     if ( repo === 'phet-io-wrappers' ) {
       repo = 'phet-io-wrappers/common';
     }
 
+    // we only need the plugins from chipper
+    else if ( repo === 'chipper' ) {
+      repo = 'chipper/js/requirejs-plugins';
+    }
+
     // Special case for the sherpa repo. Look for packageJSON.wrapper.sherpaDependencies for individual files to copy on build.
-    if ( repo === 'sherpa' ) {
+    else if ( repo === 'sherpa' ) {
 
       // If there are no sherpaDependencies mentioned in the package.json, then still just copy the whole repo.
       if ( !packageObject.wrapper.sherpaDependencies ) {
