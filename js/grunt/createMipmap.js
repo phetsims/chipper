@@ -5,6 +5,7 @@
 
 const fs = require( 'fs' );
 const jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
+const grunt = require( 'grunt' );
 const mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
 const pngjs = require( 'pngjs' );
 
@@ -29,7 +30,6 @@ const pngjs = require( 'pngjs' );
  *   <pngURL, pngBuffer, jpgURL, jpgBuffer may also be available, but is not meant for general use>
  * }
  *
- * @param {Object} grunt
  * @param {string} filename
  * @param {number} maxLevel - An integer denoting the maximum level of detail that should be included, or -1 to include
  *                            all levels up to and including a 1x1 image.
@@ -37,7 +37,7 @@ const pngjs = require( 'pngjs' );
  *                           JPEG encoding quality.
  * @returns {Prmomise} - Will be resolved with mipmaps: {Array} (consisting of the mipmap objects, mipmaps[0] will be level 0)
  */
-module.exports = function createMipmap( grunt, filename, maxLevel, quality ) {
+module.exports = function createMipmap( filename, maxLevel, quality ) {
   return new Promise( ( resolve, reject ) => {
     const mipmaps = [];
 

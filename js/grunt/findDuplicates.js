@@ -19,9 +19,10 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
 const getPhetLibs = require( './getPhetLibs' );
+const grunt = require( 'grunt' );
 const jscpd = require( 'jscpd' );
 
-module.exports = function( grunt, repo ) {
+module.exports = function( repo ) {
 
   /**
    * TODO: Eliminate this function and unify paths with lint.js, see https://github.com/phetsims/chipper/issues/566
@@ -29,7 +30,7 @@ module.exports = function( grunt, repo ) {
    * @param {string} repositoryName - name of the repository we're building
    * @param {string[]} phetLibs - see getBuildConfig.js
    */
-  var getGruntConfig = function( grunt, repositoryName, phetLibs ) {
+  var getGruntConfig = function( repositoryName, phetLibs ) {
 
     /**
      * Gets the paths to be linted.
@@ -192,7 +193,7 @@ module.exports = function( grunt, repo ) {
   };
 
   // Initialize grunt
-  var gruntConfig = getGruntConfig( grunt, repo, getPhetLibs( grunt, repo ) );
+  var gruntConfig = getGruntConfig( repo, getPhetLibs( repo ) );
 
   // Choose the paths to check for duplicates
   var paths = grunt.option( 'dependencies' ) ? gruntConfig.eslint.allFiles :

@@ -20,13 +20,13 @@
 'use strict';
 
 // modules
+const grunt = require( 'grunt' );
 const istanbul = require( 'istanbul' );
 
 /**
- * @param {Object} grunt - The grunt runtime object
  * @param {string} repo
  */
-module.exports = function( grunt, repo ) {
+module.exports = function( repo ) {
 
   const collector = new istanbul.Collector();
   collector.add( JSON.parse( grunt.file.read( `../${repo}/build/instrumentation/coverage.json` ) ) );

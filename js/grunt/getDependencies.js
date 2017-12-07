@@ -13,17 +13,19 @@ const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const execute = require( './execute' );
 const getPhetLibs = require( './getPhetLibs' );
+const grunt = require( 'grunt' );
 
-module.exports = async function( grunt, repo ) {
+// TODO: doc
+module.exports = async function( repo ) {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const version = packageObject.version;
 
   // Accumulate depencies for all brands
-  const dependencies = getPhetLibs( grunt, repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at master
+  const dependencies = getPhetLibs( repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at master
 
   // We need to check dependencies for the main brand, so we can know what is guaranteed to be public
-  const mainDependencies = getPhetLibs( grunt, repo, 'phet' ).filter( dependency => dependency !== 'babel' );
+  const mainDependencies = getPhetLibs( repo, 'phet' ).filter( dependency => dependency !== 'babel' );
 
   grunt.log.debug( 'Scanning dependencies from:\n' + dependencies.toString() );
 
@@ -44,8 +46,8 @@ module.exports = async function( grunt, repo ) {
       continue;
     }
 
-    var sha = ( await execute( grunt, 'git', [ 'rev-parse', 'HEAD' ], `../${dependency}` ) ).trim();
-    var branch = ( await execute( grunt, 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], `../${dependency}` ) ).trim();
+    var sha = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${dependency}` ) ).trim();
+    var branch = ( await execute( 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], `../${dependency}` ) ).trim();
 
     grunt.log.debug( ChipperStringUtils.padString( dependency, 20 ) + branch + ' ' + sha );
     dependenciesInfo[ dependency ] = { sha, branch };

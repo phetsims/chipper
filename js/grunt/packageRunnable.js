@@ -14,10 +14,12 @@ const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getTitleStringKey = require( './getTitleStringKey' );
+const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 
-module.exports = function( grunt, options ) {
+// TODO: doc
+module.exports = function( options ) {
   const htmlTemplate = grunt.file.read( '../chipper/templates/sim.html' );
   var html = htmlTemplate;
   var encoder = new nodeHTMLEncoder.Encoder( 'entity' );
@@ -40,7 +42,7 @@ module.exports = function( grunt, options ) {
   assert( _.includes( ChipperConstants.BRANDS, brand ), `Unknown brand: ${brand}` );
   assert( stringMap, `Invalid stringMap: ${stringMap}` );
 
-  const simTitleStringKey = getTitleStringKey( grunt, repo );
+  const simTitleStringKey = getTitleStringKey( repo );
 
   // Get the title and version to display in the HTML header.
   // The HTML header is not internationalized, so order can just be hard coded here, see #156

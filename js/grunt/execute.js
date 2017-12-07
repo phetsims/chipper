@@ -10,6 +10,7 @@
 
 // modules
 const child_process = require( 'child_process' );
+const grunt = require( 'grunt' );
 
 /**
  * Executes a command, with specific arguments and in a specific directory (cwd).
@@ -18,13 +19,12 @@ const child_process = require( 'child_process' );
  * Resolves with the stdout: {string}
  * Rejects with { code: {number}, stdout: {string} } -- Happens if the exit code is non-zero.
  *
- * @param {Object} grunt
  * @param {string} cmd - The process to execute. Should be on the current path.
  * @param {Array.<string>} args - Array of arguments. No need to extra-quote things.
  * @param {string} cwd - The working directory where the process should be run from
  * @returns {Promise}
  */
-module.exports = function( grunt, cmd, args, cwd ) {
+module.exports = function( cmd, args, cwd ) {
   return new Promise( ( resolve, reject ) => {
     const process = child_process.spawn( cmd, args, {
       cwd: cwd

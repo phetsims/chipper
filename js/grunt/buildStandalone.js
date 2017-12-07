@@ -11,6 +11,7 @@
 // modules
 const assert = require( 'assert' );
 const fs = require( 'fs' );
+const grunt = require( 'grunt' );
 const minify = require( './minify' );
 const requireBuild = require( './requireBuild' );
 
@@ -18,19 +19,18 @@ const requireBuild = require( './requireBuild' );
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)
  * @public
  *
- * @param {Object} grunt
  * @param {string} repo
  * @param {boolean} uglify
  * @param {boolean} mangle
  */
-module.exports = async function( grunt, repo, uglify, mangle ) {
+module.exports = async function( repo, uglify, mangle ) {
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
   assert( typeof mangle === 'boolean' );
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-  const requireJS = await requireBuild( grunt, repo, `../${repo}/js/${repo}-config.js`, { wrap: false } );
+  const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, { wrap: false } );
 
   const includedSources = [
     '../assert/js/assert.js'
@@ -72,7 +72,7 @@ module.exports = async function( grunt, repo, uglify, mangle ) {
   fullSource = `(function() {\n${fullSource}\n}());`;
 
   if ( uglify ) {
-    fullSource = minify( grunt, fullSource, { mangle: mangle } );
+    fullSource = minify( fullSource, { mangle: mangle } );
   }
 
   return fullSource;

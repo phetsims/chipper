@@ -16,12 +16,11 @@ const uglify = require( 'uglify-es' ); // eslint-disable-line require-statement-
  * Returns a minified version of the code (with optional mangling).
  * @public
  *
- * @param {Object} grunt
  * @param {string} js - The source code
  * @param {Object} [options]
  * @returns {string} - The minified code
  */
-module.exports = function( grunt, js, options ) {
+module.exports = function( js, options ) {
   const {
     mangle = true,
     babelTranspile = false,
@@ -31,7 +30,7 @@ module.exports = function( grunt, js, options ) {
 
   // Do transpilation before uglifying.
   if ( babelTranspile ) {
-    js = transpile( grunt, js );
+    js = transpile( js );
   }
 
   const config = {

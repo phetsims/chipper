@@ -18,19 +18,19 @@
 
 const execute = require( './execute' );
 const getPhetLibs = require( './getPhetLibs' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt
  * @param {string} repo
  * @param {string} dateString
  * @returns {Promise}
  */
-module.exports = async function( grunt, repo, dateString ) {
+module.exports = async function( repo, dateString ) {
 
   var output = '';
-  for ( let dependency of getPhetLibs( grunt, repo ) ) {
+  for ( let dependency of getPhetLibs( repo ) ) {
     output += `${dependency} since ${dateString} ----------------------------------------------\n`;
-    output += await execute( grunt, 'git', [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], `../${dependency}` );
+    output += await execute( 'git', [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], `../${dependency}` );
   }
 
   grunt.log.writeln( output );

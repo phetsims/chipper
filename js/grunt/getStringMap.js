@@ -15,15 +15,15 @@ const path = require( 'path' );
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const grunt = require( 'grunt' );
 const localeInfo = require( '../data/localeInfo' ); // Locale information
 
 /**
- * @param {Object} grunt
  * @param {Array.<string>} locales
  * @param {Array.<string>} phetLibs - Used to check for bad string dependencies
  * @returns {Object} - map[locale][stringKey] => {string}
  */
-module.exports = function( grunt, locales, phetLibs ) {
+module.exports = function( locales, phetLibs ) {
 
   var fallbackLocale = ChipperConstants.FALLBACK_LOCALE; // local var to improve readability
 

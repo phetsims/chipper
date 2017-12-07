@@ -48,7 +48,7 @@ module.exports = function( grunt ) {
 
   const repo = grunt.option( 'repo' ) || packageObject.name;
 
-  chipperGlobals.initialize( grunt );
+  chipperGlobals.initialize();
 
   grunt.registerTask( 'default', 'Builds the repository', ( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ).concat( [ 'clean', 'build' ] ) );
 
@@ -74,10 +74,10 @@ module.exports = function( grunt ) {
       try {
         // standalone
         if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
-          fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( grunt, repo, uglify, mangle ) );
+          fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( repo, uglify, mangle ) );
         }
         else if ( grunt.file.readJSON( `../${repo}/package.json` ).isWrapper ) {
-          await buildWrapper( grunt, repo );
+          await buildWrapper( repo );
         }
         // runnable
         else {
@@ -115,7 +115,7 @@ module.exports = function( grunt ) {
 
           for ( let brand of brands ) {
             grunt.log.writeln( `Building brand: ${brand}` );
-            await buildRunnable( grunt, repo, uglify, mangle, instrument, allHTML, debugHTML, brand );
+            await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, brand );
           }
         }
       }
@@ -132,13 +132,13 @@ module.exports = function( grunt ) {
     [ 'build', 'generate-thumbnails', 'generate-twitter-card' ]
   );
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', function() {
-    lint( grunt, [ repo ] );
+    lint( [ repo ] );
   } );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', async function() {
     const done = grunt.task.current.async();
 
-    lint( grunt, getPhetLibs( grunt, repo ) );
+    lint( getPhetLibs( repo ) );
 
     done();
   } );
@@ -148,8 +148,8 @@ module.exports = function( grunt ) {
       const done = grunt.task.current.async();
 
       await Promise.all( [
-        generateThumbnails( grunt, repo, 128, 84 ),
-        generateThumbnails( grunt, repo, 600, 394 )
+        generateThumbnails( repo, 128, 84 ),
+        generateThumbnails( repo, 600, 394 )
       ] );
 
       done();
@@ -159,7 +159,7 @@ module.exports = function( grunt ) {
     async function() {
       const done = grunt.task.current.async();
 
-      await generateTwitterCard( grunt, repo );
+      await generateTwitterCard( repo );
 
       done();
     } );
@@ -167,13 +167,13 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
     function() {
-      generateDevelopmentHTML( grunt, repo );
+      generateDevelopmentHTML( repo );
     } );
 
   grunt.registerTask( 'generate-test-html',
     'Generates top-level SIM_test.html file based on the preloads in package.json.',
     function() {
-      generateDevelopmentHTML( grunt, repo, {
+      generateDevelopmentHTML( repo, {
 
         // Include QUnit CSS
         stylesheets: '<link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">',
@@ -201,43 +201,43 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-development-colors-html',
     'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
     function() {
-      generateDevelopmentColorsHTML( grunt, repo );
+      generateDevelopmentColorsHTML( repo );
     } );
 
   grunt.registerTask( 'generate-a11y-view-html',
     'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
     function() {
-      generateA11yViewHTML( grunt, repo );
+      generateA11yViewHTML( repo );
     } );
 
   grunt.registerTask( 'generate-config',
     'Generates the js/SIM-config.js file based on the dependencies in package.json.',
     function() {
-      generateConfig( grunt, repo, `../${repo}/js/${repo}-config.js`, 'main' );
+      generateConfig( repo, `../${repo}/js/${repo}-config.js`, 'main' );
     } );
 
   grunt.registerTask( 'generate-test-config',
     'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
     function() {
-      generateConfig( grunt, repo, `../${repo}/js/${repo}-test-config.js`, 'tests' );
+      generateConfig( repo, `../${repo}/js/${repo}-test-config.js`, 'tests' );
     } );
 
   grunt.registerTask( 'generate-coverage',
     'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
     function() {
-      generateCoverage( grunt, repo );
+      generateCoverage( repo );
     } );
 
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
     function() {
-      generateREADME( grunt, repo, true /* published */ );
+      generateREADME( repo, true /* published */ );
     } );
 
   grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
     function() {
-      generateREADME( grunt, repo, false /* published */ );
+      generateREADME( repo, false /* published */ );
     } );
 
   grunt.registerTask( 'commits-since',
@@ -248,7 +248,7 @@ module.exports = function( grunt ) {
 
       const done = grunt.task.current.async();
 
-      await commitsSince( grunt, repo, dateString );
+      await commitsSince( repo, dateString );
 
       done();
     } );
@@ -261,7 +261,7 @@ module.exports = function( grunt ) {
     '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
     '(3) missing-file (entry in the license.json but not on the file system)',
     function() {
-      reportMedia( grunt );
+      reportMedia();
     } );
 
   // see reportThirdParty.js
@@ -270,20 +270,20 @@ module.exports = function( grunt ) {
     'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
     'After running this task, you must push sherpa/third-party-licenses.md.',
     function() {
-      reportThirdParty( grunt );
+      reportThirdParty();
     } );
 
   grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
                                          '--dependencies to expand search to include dependencies\n' +
                                          '--everything to expand search to all PhET code', function() {
-    findDuplicates( grunt, repo );
+    findDuplicates( repo );
   } );
 
   // Grunt task that determines created and last modified dates from git, and
   // updates copyright statements accordingly, see #403
   grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
     function() {
-      updateCopyrightDates( grunt );
+      updateCopyrightDates();
     } );
 
   function forwardToPerennialGrunt( task ) {

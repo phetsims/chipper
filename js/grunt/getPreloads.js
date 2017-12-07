@@ -12,17 +12,17 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const getPhetLibs = require( './getPhetLibs' );
+const grunt = require( 'grunt' );
 
 /**
  * Gets preload, the set of scripts to be preloaded in the .html file.
  * NOTE! Order of the return value is significant, since it corresponds to the order in which scripts will be preloaded.
  *
- * @param {Object} grunt
  * @param {string} repo
  * @param {string} brand
  * @returns {Array.<string>}
  */
-module.exports = function( grunt, repo, brand ) {
+module.exports = function( repo, brand ) {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   var buildObject;
@@ -64,7 +64,7 @@ module.exports = function( grunt, repo, brand ) {
   preload = _.uniq( preload );
 
   // Verifies that preload repositories are included in phetLib.
-  var phetLibs = getPhetLibs( grunt, repo, brand );
+  var phetLibs = getPhetLibs( repo, brand );
   var missingRepositories = [];
   preload.forEach( function( entry ) {
 

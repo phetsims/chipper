@@ -16,12 +16,12 @@
 
 // modules
 const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt - the grunt instance
  * @param {string} requirejsNamespace - requirejs namespace that appears in config.js, eg, BALANCING_ACT
  */
-module.exports = function( grunt, requirejsNamespace ) {
+module.exports = function( requirejsNamespace ) {
 
   var directory = process.cwd();
 

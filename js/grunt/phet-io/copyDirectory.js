@@ -9,16 +9,16 @@
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
+const grunt = require( 'grunt' );
 const minify = require( '../minify' );
 
 /**
- * @param grunt the grunt instance
  * @param {string} src - the source directory
  * @param {string} dst - the destination directory
  * @param {function} [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
  * @param {object} options
  */
-module.exports = function( grunt, src, dst, filter, options ) {
+module.exports = function( src, dst, filter, options ) {
 
   options = _.extend( {
     failOnExistingFiles: false,
@@ -59,7 +59,7 @@ module.exports = function( grunt, src, dst, filter, options ) {
     // Minify the file if it is javascript code
     if ( options.minifyJS && filename.endsWith( '.js' ) && abspath.indexOf( 'chipper/templates/' ) < 0 ) {
       var toBeMinified = filteredContents ? filteredContents : contents;
-      filteredContents = minify( grunt, toBeMinified, { mangle: options.mangle } );
+      filteredContents = minify( toBeMinified, { mangle: options.mangle } );
 
       // Only add the license to the javascript code
       filteredContents = options.licenseToPrepend + filteredContents;

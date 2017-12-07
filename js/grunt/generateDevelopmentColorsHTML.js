@@ -12,12 +12,13 @@
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const grunt = require( 'grunt' );
 
 /**
  * @param {Object} grunt - The grunt runtime object
  * @param {string} repo
  */
-module.exports = function( grunt, repo ) {
+module.exports = function( repo ) {
   var html = grunt.file.read( '../chipper/templates/sim-development-colors.html' ); // the template file
 
   // Replace placeholders in the template.

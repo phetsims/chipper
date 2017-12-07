@@ -10,11 +10,12 @@
 
 // modules
 const chipperGlobals = require( './chipperGlobals' );
+const grunt = require( 'grunt' );
 const istanbul = require( 'istanbul' );
 const requirejs = require( 'requirejs' );
 
 // TODO: doc
-module.exports = function( grunt, repo, mainConfigFile, options ) {
+module.exports = function( repo, mainConfigFile, options ) {
 
   const {
     wrap = true,

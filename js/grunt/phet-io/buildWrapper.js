@@ -11,21 +11,21 @@ const copyDirectory = require( './copyDirectory' );
 const fs = require( 'fs' );
 const getDependencies = require( '../getDependencies' );
 const getPhetLibs = require( '../getPhetLibs' );
+const grunt = require( 'grunt' );
 
 // Don't copy these files/folders into the built wrapper
 const WRAPPER_BLACKLIST = [ '.git', 'README.md', '.gitignore', 'node_modules', 'build' ];
 
 /**
- * @param {Object} grunt
  * @param {string} wrapperRepo
  * @returns {Promise}
  */
-module.exports = async function( grunt, wrapperRepo ) {
+module.exports = async function( wrapperRepo ) {
   'use strict';
 
   const packageObject = grunt.file.readJSON( `../${wrapperRepo}/package.json` );
 
-  getPhetLibs( grunt, wrapperRepo ).forEach( function( repo ) {
+  getPhetLibs( wrapperRepo ).forEach( function( repo ) {
 
     //  We only need the common folder from the general wrappers repo
     if ( repo === 'phet-io-wrappers' ) {
@@ -59,7 +59,7 @@ module.exports = async function( grunt, wrapperRepo ) {
     }
 
     // otherwise copy the whole directory over, except the black list from above
-    copyDirectory( grunt, `../${repo}`, `../${wrapperRepo}/build/${repo}/`, null, {
+    copyDirectory( `../${repo}`, `../${wrapperRepo}/build/${repo}/`, null, {
       blacklist: WRAPPER_BLACKLIST, // List of files to not copy
       minifyJS: true,
       mangle: false,
@@ -70,6 +70,6 @@ module.exports = async function( grunt, wrapperRepo ) {
     } );
   } );
 
-  const dependencies = await getDependencies( grunt, wrapperRepo );
+  const dependencies = await getDependencies( wrapperRepo );
   grunt.file.write( `../${wrapperRepo}/build/dependencies.json`, dependencies );
 };

@@ -13,6 +13,7 @@
 // modules
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 var copyDirectory = require( './copyDirectory' );
+const grunt = require( 'grunt' );
 var minify = require( '../minify' );
 
 // constants
@@ -42,7 +43,7 @@ var CONTRIB_FILES = [
   '../sherpa/lib/d3-4.2.2.js'
 ];
 
-module.exports = async function( grunt, repo, version ) {
+module.exports = async function( repo, version ) {
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
@@ -166,24 +167,24 @@ module.exports = async function( grunt, repo, version ) {
     var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
 
     // Copy the wrapper into the build dir /wrappers/, exclude the blacklist, and minify the js code
-    copyDirectory( grunt, '../' + wrapper, '../' + repo + '/build/phetio/wrappers/' + wrapperName, filterWrapper, {
+    copyDirectory( '../' + wrapper, '../' + repo + '/build/phetio/wrappers/' + wrapperName, filterWrapper, {
       blacklist: fullBlacklist,
       minifyJS: true
     } );
   } );
 
   // Copy over the dev guide and the needed dependencies
-  handleDevGuide( grunt, repo );
+  handleDevGuide( repo );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build
-  handleLib( grunt, repo, filterWrapper );
+  handleLib( repo, filterWrapper );
 
   // Create the contrib folder and add to it third party libraries used by wrappers.
-  handleContrib( grunt, repo );
+  handleContrib( repo );
 
   // Generate API Documentation
   if ( grunt.option( 'phetioDocs' ) ) {
-    // generatePhETIOAPIDocs( grunt, repo );
+    // generatePhETIOAPIDocs( repo );
   }
 };
 
@@ -196,7 +197,7 @@ module.exports = async function( grunt, repo, version ) {
  * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
  *                            has arguments like "function(abspath, contents)"
  */
-var handleLib = function( grunt, repo, filter ) {
+var handleLib = function( repo, filter ) {
 
   grunt.file.mkdir( '../' + repo + '/build/phetio/lib' );
 
@@ -210,7 +211,7 @@ var handleLib = function( grunt, repo, filter ) {
     consolidated += filteredContents ? filteredContents : contents;
   } );
 
-  var minified = minify( grunt, consolidated );
+  var minified = minify( consolidated );
 
   grunt.file.write( '../' + repo + '/build/phetio/lib/' + LIB_OUTPUT_FILE, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
 };
@@ -222,7 +223,7 @@ var handleLib = function( grunt, repo, filter ) {
  * @param {Function} [filter] - the filter function used when copying over the dev guide, to fix relative paths and such
  *                              has arguments like "function(abspath, contents)"
  */
-var handleDevGuide = function( grunt, repo, filter ) {
+var handleDevGuide = function( repo, filter ) {
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
@@ -242,7 +243,7 @@ var handleDevGuide = function( grunt, repo, filter ) {
   devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
 
   grunt.file.write( '../' + repo + '/build/phetio/docs/devguide.html', devguideHTML );
-  copyDirectory( grunt, '../phet-io-website/root/assets/css', '../' + repo + '/build/phetio/docs/css', filter );
+  copyDirectory( '../phet-io-website/root/assets/css', '../' + repo + '/build/phetio/docs/css', filter );
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + '../' + repo + '/build/phetio/docs/js/phet-io.js' );
   grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + '../' + repo + '/build/phetio/docs/js/phet-io-ga.js' );
   grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + '../' + repo + '/build/phetio/docs/favicon.ico' );
@@ -253,7 +254,7 @@ var handleDevGuide = function( grunt, repo, filter ) {
  * @param grunt
  * @param {string} repo
  */
-var handleContrib = function( grunt, repo ) {
+var handleContrib = function( repo ) {
   CONTRIB_FILES.forEach( function( filePath ) {
     var filePathParts = filePath.split( '/' );
 

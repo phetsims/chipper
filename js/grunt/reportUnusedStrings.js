@@ -14,12 +14,13 @@
 /* eslint-env node */
 'use strict';
 
+const grunt = require( 'grunt' );
+
 /**
- * @param {Object} grunt - the grunt instance
  * @param {string} repo
  * @param {string} requirejsNamespace
  */
-module.exports = function( grunt, repo, requirejsNamespace ) {
+module.exports = function( repo, requirejsNamespace ) {
 
   // get the strings for this sim
   var jsStrings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );

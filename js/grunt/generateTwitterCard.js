@@ -11,14 +11,14 @@
 
 // modules
 const assert = require( 'assert' );
+const grunt = require( 'grunt' );
 const Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
 
 /**
- * @param {Object} grunt - the grunt instance
  * @param {string} repo - name of the repository
  * @returns {Promise}
  */
-module.exports = function( grunt, repo ) {
+module.exports = function( repo ) {
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot.png`;
     const buildDirectory = `../${repo}/build`;

@@ -12,11 +12,10 @@
  * Returns the brand suffix, given a brand name (e.g. 'phet' => '-phet', 'phet-io' => '-phetio', 'adapted-from-phet' => '-adaptedFromPhet')
  * @public
  *
- * @param {Object} grunt
  * @param {string} brand
  * @returns {string}
  */
-module.exports = function( grunt, brand ) {
+module.exports = function( brand ) {
   if ( brand === 'phet-io' ) {
     return 'phetio';
   }

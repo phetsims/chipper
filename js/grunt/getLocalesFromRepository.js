@@ -10,15 +10,15 @@
 'use strict';
 
 const assert = require( 'assert' );
+const grunt = require( 'grunt' );
 
 /*
  * Gets the locales from a repository, by inspecting the names of the string files in babel for that repository.
  * @public
  *
- * @param {Object} grunt
  * @param {string} repo - name of the repository to get locales from
  */
-module.exports = function( grunt, repo ) {
+module.exports = function( repo ) {
 
   // confirm that the repository has a strings directory
   var stringsDirectory = `../babel/${repo}`;

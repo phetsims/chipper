@@ -12,20 +12,20 @@
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getPhetLibs = require( './getPhetLibs' );
 const getTitleStringKey = require( './getTitleStringKey' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt - the grunt instance
  * @param {string} repo - name of the repository
  * @param {boolean} published - has the sim been published?
  */
-module.exports = function( grunt, repo, published ) {
+module.exports = function( repo, published ) {
 
   // Read the title from the English strings file.
-  const simTitleStringKey = getTitleStringKey( grunt, repo );
+  const simTitleStringKey = getTitleStringKey( repo );
   const strings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
   const titleKey = simTitleStringKey.split( '/' ).pop(); // eg. 'EXAMPLE_SIM/example-sim.title' -> 'example-sim.title'
   const title = strings[ titleKey ].value;
-  const phetLibs = getPhetLibs( grunt, repo, 'phet' );
+  const phetLibs = getPhetLibs( repo, 'phet' );
 
   // Commands for cloning all required repositories
   var cloneCommands = '';

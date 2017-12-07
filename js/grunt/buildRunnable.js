@@ -26,6 +26,7 @@ const getPreloads = require( './getPreloads' );
 const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const getVersionForBrand = require( '../getVersionForBrand' );
+const grunt = require( 'grunt' );
 const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 const packageRunnable = require( './packageRunnable' );
@@ -37,7 +38,6 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * Builds a runnable (e.g. a simulation).
  * @public
  *
- * @param {Object} grunt
  * @param {string} repo
  * @param {boolean} uglify - Whether to uglify or not
  * @param {boolean} mangle - If uglifying, whether to mangle variable names
@@ -47,7 +47,7 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {string} brand
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTML, debugHTML, brand ) {
+module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, brand ) {
   // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
@@ -67,27 +67,27 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
-  const requireJS = await requireBuild( grunt, repo, `../${repo}/js/${repo}-config.js`, { insertRequire: repo + '-main', brand } );
-  const productionJS = uglify ? minify( grunt, requireJS, { mangle, babelTranspile: false } ) : requireJS;
+  const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, { insertRequire: repo + '-main', brand } );
+  const productionJS = uglify ? minify( requireJS, { mangle, babelTranspile: false } ) : requireJS;
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
-  reportUnusedMedia( grunt, packageObject.phet.requirejsNamespace );
+  reportUnusedMedia( packageObject.phet.requirejsNamespace );
 
   // After all strings have been loaded, report which of the translatable strings are unused.
-  reportUnusedStrings( grunt, repo, packageObject.phet.requirejsNamespace );
+  reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
 
 
-  const rawPreloads = getPreloads( grunt, repo, brand ).map( filename => grunt.file.read( filename ) );
-  const productionPreloads = rawPreloads.map( js => uglify ? minify( grunt, js, { mangle } ) : js );
+  const rawPreloads = getPreloads( repo, brand ).map( filename => grunt.file.read( filename ) );
+  const productionPreloads = rawPreloads.map( js => uglify ? minify( js, { mangle } ) : js );
 
-  const phetLibs = getPhetLibs( grunt, repo, brand );
-  const allLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( grunt, repo ) );
-  const locales = getLocalesToBuild( grunt, repo );
-  const dependencies = await getDependencies( grunt, repo );
+  const phetLibs = getPhetLibs( repo, brand );
+  const allLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( repo ) );
+  const locales = getLocalesToBuild( repo );
+  const dependencies = await getDependencies( repo );
   const version = getVersionForBrand( brand, packageObject.version );
-  const thirdPartyEntries = getAllThirdPartyEntries( grunt, repo, brand );
-  const stringMap = getStringMap( grunt, allLocales, phetLibs );
-  const mipmapsJavaScript = await buildMipmaps( grunt );
+  const thirdPartyEntries = getAllThirdPartyEntries( repo, brand );
+  const stringMap = getStringMap( allLocales, phetLibs );
+  const mipmapsJavaScript = await buildMipmaps();
 
   grunt.log.ok( `Minification for ${brand} complete` );
   grunt.log.ok( `Require.js: ${productionJS.length} bytes` );
@@ -106,7 +106,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   };
   
   // TODO: how to handle one-offs? Add another suffix presumably.
-  const brandSuffix = brandToSuffix( grunt, brand );
+  const brandSuffix = brandToSuffix( brand );
 
   // Create the build-specific directory
   const buildDir = `../${repo}/build/${brandSuffix}`;
@@ -115,7 +115,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
     for ( let locale of locales ) {
-      grunt.file.write( `${buildDir}/${repo}_${locale}-${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
+      grunt.file.write( `${buildDir}/${repo}_${locale}-${brandSuffix}.html`, packageRunnable( _.extend( {
         locale,
         includeAllLocales: false,
         isDebugBuild: false,
@@ -127,7 +127,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
 
   // _all.html (forced for phet-io)
   if ( allHTML || brand === 'phet-io' ) {
-    grunt.file.write( `${buildDir}/${repo}_all-${brandSuffix}.html`, packageRunnable( grunt, _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all-${brandSuffix}.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: false,
@@ -137,9 +137,9 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   }
 
   if ( debugHTML ) {
-    const debugJS = brand === 'phet-io' ? minify( grunt, requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
-    const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( grunt, js, { mangle: true } ) : js );
-    grunt.file.write( `${buildDir}/${repo}_all-${brandSuffix}-debug.html`, packageRunnable( grunt, _.extend( {
+    const debugJS = brand === 'phet-io' ? minify( requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
+    const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
+    grunt.file.write( `${buildDir}/${repo}_all-${brandSuffix}-debug.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: true,
@@ -153,7 +153,7 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
 
   // -iframe.html (English is assumed as the locale).
   if ( _.includes( locales, ChipperConstants.FALLBACK_LOCALE ) && brand === 'phet' ) {
-    const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( grunt, repo ) ];
+    const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
@@ -165,11 +165,11 @@ module.exports = async function( grunt, repo, uglify, mangle, instrument, allHTM
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
   if ( packageObject.phet.accessible && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for pDOM viewing.
-    var a11yHTML = getA11yViewHTMLFromTemplate( grunt, repo );
+    var a11yHTML = getA11yViewHTMLFromTemplate( repo );
     grunt.file.write( `${buildDir}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );
   }
 
   if ( brand === 'phet-io' ) {
-    await copySupplementalPhETIOFiles( grunt, repo, version );
+    await copySupplementalPhETIOFiles( repo, version );
   }
 };

@@ -9,8 +9,9 @@
 /* eslint-env node */
 'use strict';
 
-var CDP = require( 'chrome-remote-interface' ); // eslint-disable-line require-statement-match
-var chromeLauncher = require( 'chrome-launcher' ); // eslint-disable-line require-statement-match
+const CDP = require( 'chrome-remote-interface' ); // eslint-disable-line require-statement-match
+const chromeLauncher = require( 'chrome-launcher' ); // eslint-disable-line require-statement-match
+const grunt = require( 'grunt' );
 require( 'babel-polyfill' );
 
 /**
@@ -28,7 +29,8 @@ function launchChrome() {
   } );
 }
 
-module.exports = function( grunt, simName, done ) {
+// TODO: doc
+module.exports = function( simName, done ) {
 
   // // This code was used to create the below es5 code. It was converted using babel, see https://babeljs.io/repl/
   // (async function() {

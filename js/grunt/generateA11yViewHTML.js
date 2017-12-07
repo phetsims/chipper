@@ -13,14 +13,14 @@
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt - The grunt runtime object
  * @param {string} repo
  */
-module.exports = function( grunt, repo ) {
+module.exports = function( repo ) {
 
-  const html = getA11yViewHTMLFromTemplate( grunt, repo );
+  const html = getA11yViewHTMLFromTemplate( repo );
 
   // Write to the repository's root directory.
   grunt.file.write( `../${repo}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, html );

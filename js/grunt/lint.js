@@ -10,17 +10,17 @@
 
 // modules
 const eslint = require( 'eslint' );
+const grunt = require( 'grunt' );
 const md5 = require( 'md5' );
 
 /**
  * Lints the specified repositories.
  * @public
  *
- * @param {Object} grunt
  * @param {Array.<string>} repos
  * @returns {Object} - ESLint report object.
  */
-module.exports = function( grunt, repos ) {
+module.exports = function( repos ) {
   var cacheFile = '../chipper/eslint/cache/' + md5( repos.join( ',' ) ) + '.eslintcache';
 
   // --disable-eslint-cache disables the cache, useful for developing rules

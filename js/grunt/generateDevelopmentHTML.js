@@ -15,13 +15,13 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getPreloads = require( './getPreloads' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt - The grunt runtime object
  * @param {string} repo
  * @param {Object} [options]
  */
-module.exports = function( grunt, repo, options ) {
+module.exports = function( repo, options ) {
 
   const {
     stylesheets = '',
@@ -52,10 +52,10 @@ module.exports = function( grunt, repo, options ) {
     return preload.includes( 'google-analytics' ) || stripPreloads.includes( preload );
   }
 
-  const preloads = getPreloads( grunt, repo, brand ).filter( preload => {
+  const preloads = getPreloads( repo, brand ).filter( preload => {
     return !isPreloadExcluded( preload );
   } ).concat( addedPreloads );
-  const phetioPreloads = getPreloads( grunt, repo, 'phet-io' ).filter( preload => {
+  const phetioPreloads = getPreloads( repo, 'phet-io' ).filter( preload => {
     return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
   } );
 

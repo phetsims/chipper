@@ -12,23 +12,23 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
+const grunt = require( 'grunt' );
 
 /**
  * Returns a list of all dependent repositories.
  * @public
  *
- * @param {Object} grunt
  * @param {string} repo
  * @param {string} [brand] - If not specified, it will return the dependencies for all brands.
  * @returns {Array.<string>}
  */
-module.exports = function getPhetLibs( grunt, repo, brand ) {
+module.exports = function getPhetLibs( repo, brand ) {
   assert( typeof repo === 'string', 'Repository required for getPhetLibs' );
   assert( brand === undefined || _.includes( ChipperConstants.BRANDS, brand ), 'Invalid brand for getPhetLibs: ' + brand );
 
   if ( brand === undefined ) {
     return _.reduce( ChipperConstants.BRANDS, ( dependencies, brand ) => {
-      return _.uniq( dependencies.concat( getPhetLibs( grunt, repo, brand ) ).sort() );
+      return _.uniq( dependencies.concat( getPhetLibs( repo, brand ) ).sort() );
     }, [] );
   }
   else {

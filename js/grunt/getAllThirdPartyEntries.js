@@ -9,21 +9,21 @@
 'use strict';
 
 const getThirdPartyLibEntries = require( './getThirdPartyLibEntries' );
+const grunt = require( 'grunt' );
 
 /**
  * TODO: doc, and naming differences
  *
  * NOTE: This pulls entries from some of the chipper globals. Should be done only after thie build
  *
- * @param {Object} grunt
  * @param {string} repo
  * @param {string} brand
  */
-module.exports = function( grunt, repo, brand ) {
+module.exports = function( repo, brand ) {
   // License entries for third-party media files that were loaded by media plugins.
   // The media plugins populate global.phet.chipper.licenseEntries.
   var thirdPartyEntries = {
-    lib: getThirdPartyLibEntries( grunt, repo, brand )
+    lib: getThirdPartyLibEntries( repo, brand )
   };
   if ( global.phet.chipper.licenseEntries ) {
     for ( var mediaType in global.phet.chipper.licenseEntries ) {

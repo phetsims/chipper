@@ -13,11 +13,12 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const child_process = require( 'child_process' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt
+ * TODO: doc
  */
-module.exports = function( grunt ) {
+module.exports = function() {
 
   // constants
   var sourceRoot = process.cwd() + '/js';

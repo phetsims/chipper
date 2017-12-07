@@ -18,10 +18,9 @@ const createMipmap = require( './createMipmap' );
  * Creates the mipmaps requested by the mipmap plugin (sets globals, see chipperGlobals.js and mipmap.js for more info).
  * @public
  *
- * @param {Object} grunt
  * @returns {string} - JS that assigns the mipmaps to window.phet.chipper.mipmaps.
  */
-module.exports = async function( grunt ) {
+module.exports = async function() {
   // globals that should be defined by this point
   assert( global.phet && global.phet.chipper, 'missing global.phet.chipper' );
 
@@ -33,7 +32,7 @@ module.exports = async function( grunt ) {
   else {
     // Uses Promise.all to wait for all of the sub-promises (using createMipmap) to complete
     const allMipmaps = await Promise.all( global.phet.chipper.mipmapsToBuild.map( async function( { name, path, level, quality } ) {
-      const mipmaps = await createMipmap( grunt, path, level, quality );
+      const mipmaps = await createMipmap( path, level, quality );
       return {
         name,
         // Exclude other objects

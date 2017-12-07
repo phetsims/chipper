@@ -13,20 +13,20 @@
 // modules
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getPhetLibs = require( './getPhetLibs' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt - The grunt runtime object
  * @param {string} repo
  * @param {string} destination - output location
  * @param {string} launchSuffix - text to use for the deps
  */
-module.exports = function( grunt, repo, destination, launchSuffix ) {
+module.exports = function( repo, destination, launchSuffix ) {
 
   var configJS = grunt.file.read( '../chipper/templates/sim-config.js' ); // the template file
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
   const requirements = {}; // {string} require.js prefix => {string} of what is included
-  getPhetLibs( grunt, repo, 'phet' ).forEach( lib => {
+  getPhetLibs( repo, 'phet' ).forEach( lib => {
     const packageFilename = `../${lib}/package.json`;
 
     if ( grunt.file.exists( packageFilename ) ) {

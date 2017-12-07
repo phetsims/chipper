@@ -18,10 +18,13 @@ var getSimDocumentationFromWrapper = require( './getSimDocumentationFromWrapper'
 // constants
 var DOCUMENTATION_FILENAME = 'phet-io-documentation.html';
 
-module.exports = function( grunt, repo, done ) {
+const grunt = require( 'grunt' );
+
+// TODO: doc
+module.exports = function( repo, done ) {
   grunt.log.debug( 'Generating PhET-iO documentation' );
 
-  getSimDocumentationFromWrapper( grunt, repo, function( html){
+  getSimDocumentationFromWrapper( repo, function( html){
 
     // Write the new documentation to html
     grunt.file.write( '../' + repo + '/build/docs/' + DOCUMENTATION_FILENAME, html );

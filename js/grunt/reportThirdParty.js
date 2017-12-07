@@ -20,19 +20,20 @@
 'use strict';
 
 // TODO: File not brought up to es6+ standards
-var _ = require( 'lodash' ); // eslint-disable-line require-statement-match
-var assert = require( 'assert' );
-var ChipperConstants = require( '../common/ChipperConstants' );
-var ChipperStringUtils = require( '../common/ChipperStringUtils' );
-var fs = require( 'fs' );
-var https = require( 'https' );
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const assert = require( 'assert' );
+const ChipperConstants = require( '../common/ChipperConstants' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const fs = require( 'fs' );
+const grunt = require( 'grunt' );
+const https = require( 'https' );
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 /**
- * @param {Object} grunt
+ * TODO: doc
  */
-module.exports = function( grunt ) {
+module.exports = function() {
 
   // read configuration file - required to write to website database
   var httpsResponse;

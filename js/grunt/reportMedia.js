@@ -25,11 +25,12 @@
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt
+ * TODO: doc
  */
-module.exports = function( grunt ) {
+module.exports = function() {
 
   // constants
   const ACTIVE_REPOS_FILENAME = 'perennial/data/active-repos';  // The relative path to the list of active repos

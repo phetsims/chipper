@@ -16,21 +16,21 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const getLicenseKeys = require( './getLicenseKeys' );
+const grunt = require( 'grunt' );
 
 const THIRD_PARTY_LICENSES_FILENAME = '../sherpa/lib/license.json'; // contains third-party license info
 const LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
 /**
- * @param {Object} grunt - the grunt instance
  * @param {string} repo
  * @param {string} brand
  */
-module.exports = function( grunt, repo, brand ) {
+module.exports = function( repo, brand ) {
 
   // Read license info
   var licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );
 
-  var licenseKeys = getLicenseKeys( grunt, repo, brand );
+  var licenseKeys = getLicenseKeys( repo, brand );
 
   // Add all dependencies. Duplicates will be removed later.
   for ( var i = 0; i < licenseKeys.length; i++ ) {

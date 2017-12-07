@@ -15,11 +15,10 @@ const babel = require( 'babel-core' ); // eslint-disable-line require-statement-
  * Transpile some code from ES6+ to ES5.
  * @public
  *
- * @param {Object} grunt
  * @param {string} jsInput
  * @returns {string} - The transpiled code
  */
-module.exports = function( grunt, jsInput ) {
+module.exports = function( jsInput ) {
   // See options available at https://babeljs.io/docs/usage/api/
   return babel.transform( jsInput, {
     // Avoids a warning that this gets disabled for >500kb of source. true/false doesn't affect the later minified size, and

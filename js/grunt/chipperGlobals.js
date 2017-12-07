@@ -12,15 +12,14 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const fs = require( 'fs' );
+const grunt = require( 'grunt' );
 
 module.exports = {
   /**
    * Initializes the globals with a copy of grunt.
    * @public
-   *
-   * @param {Object} grunt
    */
-  initialize( grunt ) {
+  initialize() {
     assert( !global.phet, 'Attempted to double-initialize globals' );
 
     global.phet = {

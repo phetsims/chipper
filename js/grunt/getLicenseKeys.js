@@ -11,16 +11,16 @@
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const getPreloads = require( './getPreloads' );
+const grunt = require( 'grunt' );
 
 /**
  * Gets the license keys for sherpa (third-party) libs that are used.
  *
- * @param {Object} grunt
  * @param {string} repo
  * @param {string} brand
  * @returns {Array.<string>}
  */
-module.exports = function( grunt, repo, brand ) {
+module.exports = function( repo, brand ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   var buildObject;
   try {
@@ -29,7 +29,7 @@ module.exports = function( grunt, repo, brand ) {
   catch ( e ) {
     buildObject = {};
   }
-  const preload = getPreloads( grunt, repo, brand );
+  const preload = getPreloads( repo, brand );
 
   // start with package.json
   var licenseKeys = packageObject.phet.licenseKeys || [];
