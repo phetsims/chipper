@@ -36,23 +36,16 @@
    * @returns {string} the updated version name
    */
   return function( brand, version ) {
-
+    // TODO: just use brandToSuffix
     if ( brand === 'phet-io' ) {
-
-      // Insert phetio into the version name
-      // 1.2.0-dev.31 => 1.2.0-phetiodev.31
-      // 1.2.0 => 1.2.0-phetio
-
-      // if there is a hyphen, put phetio before it
-      // if there is no hyphen, append phetio
-      var hyphenIndex = version.indexOf( '-' );
-      if ( hyphenIndex >= 0 ) {
-        return version.substring( 0, hyphenIndex + 1 ) + 'phetio' + version.substring( hyphenIndex + 1 );
-      }
-      else {
-        return version + '-phetio';
-      }
+      brand = 'phetio';
     }
-    return version;
+    else {
+      brand = brand.split( '-' ).map( function( bit, index ) {
+        return ( index > 0 ? bit[ 0 ].toUpperCase() : bit[ 0 ] ) + bit.slice( 1 );
+      } ).join( '' );
+    }
+
+    return version + '-' + brand;
   };
 } ));
