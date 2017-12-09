@@ -4,9 +4,11 @@
 <head>
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="phet-sim-level" content="production">
+
+  <!--have to scroll right and left! allows to resize also-->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>{{PHET_SIM_TITLE}} A11y View</title>
 
@@ -18,52 +20,37 @@
 
     body {
       display: block;
-      margin: 1em auto 2em;
-      width: 95%;
+      margin: 1em 1em 2em;
+      width: 100%;
       background: #ccc;
     }
 
-    div.simulation_frame {
-      float: left;
-      width: 47%;
-      background: #ccc;
+    .left{
+      position:fixed;
+      width:47%;
     }
 
-    /* This class was found online as a way to preserve an iframe aspect ratio, see https://fettblog.eu/blog/2013/06/16/preserving-aspect-ratio-for-embedded-iframes/*/
+    /* This class was found online as a way to preserve an iframe aspect ratio,
+    see https://fettblog.eu/blog/2013/06/16/preserving-aspect-ratio-for-embedded-iframes/*/
     .aspect-ratio {
       position: relative;
       width: 100%;
-      height: 0;
-      padding-bottom: 72%;
+      height: 100%;
+      padding-bottom: 67%;
     }
 
-    .aspect-ratio iframe.fixed {
-      width: 44.8%;
-      height: 100%;
+    iframe {
+      width: 43%;
+      height: 30vw;
       max-height: 30vw;
+      margin: 7px auto 7px auto;
       position: fixed;
-      left: 0;
-      top: 0;
-      overflow: hidden;
-      border: 0;
-      margin-left: 2.4vw;
-      margin-top: 3.5vh;
     }
 
-    .aspect-ratio iframe.not-fixed {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      left: 0;
-      top: 0;
-      overflow: hidden; /* Prevents a scrollbar, and clips content. */
-      border: 0;
-    }
-
-    div.pdom_copy {
+    div.right {
       background: #ccc;
       float: right;
-      width: 50%;
+      width: 47%;
       overflow: auto;
     }
 
@@ -82,7 +69,7 @@
     }
 
     p.alert_copy {
-      min-height: 2em;
+      min-height: 5em;
     }
 
     div.dom_copy_container {
@@ -97,7 +84,7 @@
 
     div.wrapper {
       height: auto;
-      width: 100%;
+      width: 95%;
       margin-bottom: 2em;
     }
 
@@ -111,58 +98,51 @@
 <body>
 
 <div class="wrapper">
-  <div id="intro">
-    <h1>{{PHET_SIM_TITLE}} A11y View: Visual and Described content side by side</h1>
-    <p>
-      The accessible version of {{PHET_SIM_TITLE}} is embedded in the iframe below. As you interact with the visual sim
-      in the
-      iframe with either a keyboard or mouse, the descriptions for the sim automatically update on the right in a
-      structured Parallel Document Object Model, or PDOM. Interactive Alerts (in orange) announce key changes of what is
-      happening during interaction, while the dynamic descriptions (in green) automatically update in the background,
-      maintaining an up-to-date description of the state of the sim and all its objects. Static descriptions (in blue)
-      identify regions and objects and do not change.
-    </p>
-  </div>
+
   <div id="content">
-    <div class="simulation_frame" id="simulation-frame">
-      <h2>{{PHET_SIM_TITLE}} in iframe</h2>
+    <div class="left">
+      <h3>{{PHET_SIM_TITLE}} in iframe</h3>
 
       <div class="aspect-ratio">
-        <iframe id="iframe" class="not-fixed" allowfullscreen title="Interact with {{PHET_SIM_TITLE}}"></iframe>
+        <iframe id="iframe" allowfullscreen title="Interact with {{PHET_SIM_TITLE}}"></iframe>
+      </div>
+      <div id="alerts">
+        <h3>Interactive alerts</h3>
+        <div id=alert-copy-container class=alert_copy_container>
+          <div id='polite-element-container'>
+            <p class='alert_copy' id="polite-element-copy"></p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!--The PDOM copy will be placed in this container, along with a section just for alerts -->
-    <div class="pdom_copy" id="pdom-copy">
-      <h2>{{PHET_SIM_TITLE}} descriptions structured in a Parallel DOM</h2>
-      <h3>Interactive alerts</h3>
-      <div id=alert-copy-container class=alert_copy_container>
-        <div id='assertive-element-container'>
-          <p class='alert'>&#10092;assertive update&#10093;</p>
-          <p class='alert_copy' id="assertive-element-copy"></p>
-        </div>
-        <div id='polite-element-container'>
-          <p class='alert'>&#10092;polite update&#10093;</p>
-          <p class='alert_copy' id="polite-element-copy"></p>
-        </div>
-        <div id='assertive-alert-element-container'>
-          <p class='alert'>&#10092;assertive alert update&#10093;</p>
-          <p class='alert_copy' id="assertive-alert-element-copy"></p>
-        </div>
-        <div id='polite-alert-element-container'>
-          <p class='alert'>&#10092;polite status update&#10093;</p>
-          <p class='alert_copy' id="polite-status-element-copy"></p>
-        </div>
-      </div>
-      <h3>Static and Dynamic Descriptions</h3>
-      <div id=dom-copy-container class="dom_copy_container"></div>
-    </div>
 
-    <!--clear the blocks after the float effect-->
-    <div class="clearfix"></div>
+  <!--The PDOM copy will be placed in this container, along with a section just for alerts -->
+  <div class="right">
+    <div id="intro">
+      <h1>{{PHET_SIM_TITLE}} A11y View: Visual and Described content side by side</h1>
+      <p>
+        The accessible version of {{PHET_SIM_TITLE}} is embedded in the iframe below. As you interact with the visual
+        sim
+        in the
+        iframe with either a keyboard or mouse, the descriptions for the sim automatically update on the right in a
+        structured Parallel Document Object Model, or PDOM. Interactive Alerts (in orange) announce key changes of what
+        is
+        happening during interaction, while the dynamic descriptions (in green) automatically update in the background,
+        maintaining an up-to-date description of the state of the sim and all its objects. Static descriptions (in blue)
+        identify regions and objects and do not change.
+      </p>
+    </div>
+    <h2>{{PHET_SIM_TITLE}} descriptions structured in a Parallel DOM</h2>
+    <h3>Static and Dynamic Descriptions</h3>
+    <div id="dom-copy-container" class="dom_copy_container"></div>
   </div>
+
+  <!--clear the blocks after the float effect-->
+  <div class="clearfix"></div>
 </div>
 
+</div>
 
 <script type="application/javascript">
 
@@ -178,8 +158,8 @@
   var noPostMessage = simulationQueryString.indexOf( 'postMessageOnLoad&postMessageOnError' ) === -1;
   var noAccessibility = simulationQueryString.indexOf( 'accessibility' ) === -1;
 
-  noPostMessage && (simulationQueryString += 'postMessageOnLoad&postMessageOnError&');
-  noAccessibility && (simulationQueryString += 'accessibility');
+  noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
+  noAccessibility && ( simulationQueryString += 'accessibility' );
   document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_SIM_URL}}' + simulationQueryString );
 </script>
 
@@ -203,7 +183,7 @@
 
       // searching for the HTML element nodes (NOT Scenery nodes)
       if ( children[ i ].nodeType === Node.ELEMENT_NODE ) {
-        linearDOM[ i ] = (children[ i ]);
+        linearDOM[ i ] = ( children[ i ] );
       }
     }
     return linearDOM;
@@ -224,23 +204,14 @@
       var pDOMCopy = pDOM.cloneNode( true );
 
       // get the alert dom elements from the iframe's pDOM
-      var assertiveElement = innerDoc.getElementById( 'assertive' );
       var politeElement = innerDoc.getElementById( 'polite' );
-      var assertiveAlertElement = innerDoc.getElementById( 'assertive-alert' );
-      var politeStatusElement = innerDoc.getElementById( 'polite-status' );
 
       // get the alert dom elements from the pDOM copy
-      var assertiveElementCopy = document.getElementById( 'assertive-element-copy' );
       var politeElementCopy = document.getElementById( 'polite-element-copy' );
-      var assertiveAlertElementCopy = document.getElementById( 'assertive-alert-element-copy' );
-      var politeStatusElementCopy = document.getElementById( 'polite-status-element-copy' );
 
       // strip the styling from the copied DOM elements
       pDOMCopy.removeAttribute( 'style' );
-      assertiveElementCopy.removeAttribute( 'style' );
       politeElementCopy.removeAttribute( 'style' );
-      assertiveAlertElementCopy.removeAttribute( 'style' );
-      politeStatusElementCopy.removeAttribute( 'style' );
 
       // strip style from all elements in the DOM
       getAllDOMElementsAsLinear( pDOMCopy ).forEach( function( element ) {
@@ -249,10 +220,7 @@
 
       // get the parent container for the parallel DOM copy and the alert content
       var copyContainer = document.getElementById( 'dom-copy-container' );
-      var assertiveElementContainer = document.getElementById( 'assertive-element-container' );
       var politeElementContainer = document.getElementById( 'polite-element-container' );
-      var assertiveAlertElementContainer = document.getElementById( 'assertive-alert-element-container' );
-      var politeStatusElementContainer = document.getElementById( 'polite-status-element-container' );
 
       // add the copies to the outer document
       copyContainer.appendChild( pDOMCopy );
@@ -322,10 +290,7 @@
           mutations.forEach( function( mutation ) {
 
             // remove all other aria-live content
-            assertiveElementCopy.textContent = '';
             politeElementCopy.textContent = '';
-            assertiveAlertElementCopy.textContent = '';
-            politeStatusElementCopy.textContent = '';
 
 
             // update the text content of the copied element to match the element in
@@ -337,45 +302,12 @@
         liveObserver.observe( originalElement, config )
       }
 
-      addLiveObserver( assertiveElementContainer, assertiveElement, assertiveElementCopy );
       addLiveObserver( politeElementContainer, politeElement, politeElementCopy );
-      addLiveObserver( assertiveAlertElementCopy, assertiveAlertElement, assertiveAlertElementCopy );
-      addLiveObserver( politeStatusElementContainer, politeStatusElement, politeStatusElementCopy );
 
       // set focus to the loaded ifram
       document.getElementById( 'iframe' ).focus();
     }
   } );
-</script>
-<script>
-  /*
-  Update the css of the iframe so that it will scroll with you as you look at the pDOM
-   */
-  var iframe = document.getElementById( 'iframe' );
-
-  // keep track of the scrollY when we first fix the iframe so that we can unfix when we scroll back up to it.
-  var scrollYWhenFixed = null;
-
-  var transitionThreshold = window.screen.height * .035; // vh as a percent, should match the top-margin of the fixed iframe class
-
-  window.addEventListener( 'scroll', function() {
-
-    // swap to the fixed class when the top of the iframe is within the threshhold
-    if ( iframe.classList.contains( 'not-fixed' ) && findTop( iframe ) < transitionThreshold ) {
-      iframe.classList.remove( 'not-fixed' );
-      iframe.classList.add( 'fixed' );
-      scrollYWhenFixed = window.scrollY;
-    }
-    else if ( window.scrollY < scrollYWhenFixed && iframe.classList.contains( 'fixed' ) ) {
-      iframe.classList.remove( 'fixed' );
-      iframe.classList.add( 'not-fixed' );
-    }
-  } );
-
-  function findTop( element ) {
-    var rec = element.getBoundingClientRect();
-    return rec.top;
-  }
 </script>
 </body>
 </html>
