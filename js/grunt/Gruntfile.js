@@ -39,7 +39,7 @@ module.exports = function( grunt ) {
   var buildLocal;
   try {
     buildLocal = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
-  } 
+  }
   catch ( e ) {
     buildLocal = {};
   }
@@ -171,7 +171,8 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'generate-test-html',
-    'Generates top-level SIM_test.html file based on the preloads in package.json.',
+    'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/docs/adding-tests.md ' +
+    'for more information on automated testing',
     function() {
       generateDevelopmentHTML( repo, {
 
