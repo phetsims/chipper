@@ -24,7 +24,6 @@ const generateCoverage = require( './generateCoverage' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateREADME = require( './generateREADME' );
-const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
 const reportMedia = require( './reportMedia' );
@@ -128,7 +127,7 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
-    [ 'build', 'generate-twitter-card' ]
+    [ 'build' ]
   );
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', function() {
     lint( [ repo ] );
@@ -141,15 +140,6 @@ module.exports = function( grunt ) {
 
     done();
   } );
-
-  grunt.registerTask( 'generate-twitter-card', 'Generate image for twitter summary card to be used on the website.',
-    async function() {
-      const done = grunt.task.current.async();
-
-      await generateTwitterCard( repo );
-
-      done();
-    } );
 
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',

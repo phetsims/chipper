@@ -17,6 +17,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
 const generateThumbnails = require( './generateThumbnails' );
+const generateTwitterCard = require( './generateTwitterCard' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
@@ -181,5 +182,9 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   ];
   for ( let size of thumbnailSizes ) {
     grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height ) );
+  }
+
+  if ( brand === 'phet' ) {
+    grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
   }
 };
