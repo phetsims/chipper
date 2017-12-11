@@ -36,7 +36,7 @@
    * @returns {string} the updated version name
    */
   return function( brand, version ) {
-    // TODO: just use brandToSuffix
+    // TODO: just use brandToSuffix in the future
     if ( brand === 'phet-io' ) {
       brand = 'phetio';
     }

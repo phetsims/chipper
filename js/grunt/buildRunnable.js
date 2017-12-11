@@ -11,11 +11,12 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
-const brandToSuffix = require( './brandToSuffix' );
+const brandToSuffix = require( '../common/brandToSuffix' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
+const generateThumbnails = require( './generateThumbnails' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
@@ -109,13 +110,13 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   const brandSuffix = brandToSuffix( brand );
 
   // Create the build-specific directory
-  const buildDir = `../${repo}/build/${brandSuffix}`;
+  const buildDir = `../${repo}/build/${brand}`;
   grunt.file.mkdir( buildDir );
 
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
     for ( let locale of locales ) {
-      grunt.file.write( `${buildDir}/${repo}_${locale}-${brandSuffix}.html`, packageRunnable( _.extend( {
+      grunt.file.write( `${buildDir}/${repo}_${locale}_${brandSuffix}.html`, packageRunnable( _.extend( {
         locale,
         includeAllLocales: false,
         isDebugBuild: false,
@@ -127,7 +128,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
 
   // _all.html (forced for phet-io)
   if ( allHTML || brand === 'phet-io' ) {
-    grunt.file.write( `${buildDir}/${repo}_all-${brandSuffix}.html`, packageRunnable( _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all_${brandSuffix}.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: false,
@@ -139,7 +140,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   if ( debugHTML ) {
     const debugJS = brand === 'phet-io' ? minify( requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
     const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
-    grunt.file.write( `${buildDir}/${repo}_all-${brandSuffix}-debug.html`, packageRunnable( _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all_${brandSuffix}_debug.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: true,
@@ -159,7 +160,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( englishTitle + ' iframe test' ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_URL}}', repo + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
-    grunt.file.write( `${buildDir}/${repo}_${ChipperConstants.FALLBACK_LOCALE}-iframe.html`, iframeTestHtml );
+    grunt.file.write( `${buildDir}/${repo}_${ChipperConstants.FALLBACK_LOCALE}_iframe.html`, iframeTestHtml );
   }
 
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
@@ -171,5 +172,14 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
 
   if ( brand === 'phet-io' ) {
     await copySupplementalPhETIOFiles( repo, version );
+  }
+
+  // Thumbnails
+  const thumbnailSizes = [
+    { width: 128, height: 84 },
+    { width: 600, height: 394 }
+  ];
+  for ( let size of thumbnailSizes ) {
+    grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height ) );
   }
 };

@@ -24,7 +24,6 @@ const generateCoverage = require( './generateCoverage' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateREADME = require( './generateREADME' );
-const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
@@ -129,7 +128,7 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
-    [ 'build', 'generate-thumbnails', 'generate-twitter-card' ]
+    [ 'build', 'generate-twitter-card' ]
   );
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', function() {
     lint( [ repo ] );
@@ -142,18 +141,6 @@ module.exports = function( grunt ) {
 
     done();
   } );
-
-  grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.',
-    async function() {
-      const done = grunt.task.current.async();
-
-      await Promise.all( [
-        generateThumbnails( repo, 128, 84 ),
-        generateThumbnails( repo, 600, 394 )
-      ] );
-
-      done();
-    } );
 
   grunt.registerTask( 'generate-twitter-card', 'Generate image for twitter summary card to be used on the website.',
     async function() {
