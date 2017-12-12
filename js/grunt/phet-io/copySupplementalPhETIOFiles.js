@@ -45,6 +45,8 @@ var CONTRIB_FILES = [
 
 module.exports = async function( repo, version ) {
 
+  const buildDir = `../${repo}/build/phet-io`;
+
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
   var filterWrapper = function( abspath, contents ) {
@@ -167,7 +169,7 @@ module.exports = async function( repo, version ) {
     var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
 
     // Copy the wrapper into the build dir /wrappers/, exclude the blacklist, and minify the js code
-    copyDirectory( '../' + wrapper, '../' + repo + '/build/phetio/wrappers/' + wrapperName, filterWrapper, {
+    copyDirectory( `../${wrapper}`, `${buildDir}/wrappers/${wrapperName}`, filterWrapper, {
       blacklist: fullBlacklist,
       minifyJS: true
     } );
@@ -198,8 +200,9 @@ module.exports = async function( repo, version ) {
  *                            has arguments like "function(abspath, contents)"
  */
 var handleLib = function( repo, filter ) {
+  const buildDir = `../${repo}/build/phet-io`;
 
-  grunt.file.mkdir( '../' + repo + '/build/phetio/lib' );
+  grunt.file.mkdir( `${buildDir}/lib` );
 
   var consolidated = '';
   LIB_FILES.forEach( function( libFile ) {
@@ -213,7 +216,7 @@ var handleLib = function( repo, filter ) {
 
   var minified = minify( consolidated );
 
-  grunt.file.write( '../' + repo + '/build/phetio/lib/' + LIB_OUTPUT_FILE, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
+  grunt.file.write( `${buildDir}/lib/${LIB_OUTPUT_FILE}`, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
 };
 
 /**
@@ -224,6 +227,8 @@ var handleLib = function( repo, filter ) {
  *                              has arguments like "function(abspath, contents)"
  */
 var handleDevGuide = function( repo, filter ) {
+  const buildDir = `../${repo}/build/phet-io`;
+
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
@@ -242,11 +247,11 @@ var handleDevGuide = function( repo, filter ) {
   var firstFooterLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="footer"' );
   devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
 
-  grunt.file.write( '../' + repo + '/build/phetio/docs/devguide.html', devguideHTML );
-  copyDirectory( '../phet-io-website/root/assets/css', '../' + repo + '/build/phetio/docs/css', filter );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + '../' + repo + '/build/phetio/docs/js/phet-io.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + '../' + repo + '/build/phetio/docs/js/phet-io-ga.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + '../' + repo + '/build/phetio/docs/favicon.ico' );
+  grunt.file.write( `${buildDir}/docs/devguide.html`, devguideHTML );
+  copyDirectory( '../phet-io-website/root/assets/css', `${buildDir}/docs/css`, filter );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', `${buildDir}/docs/js/phet-io.js` );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', `${buildDir}/docs/js/phet-io-ga.js` );
+  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', `${buildDir}/docs/favicon.ico` );
 };
 
 /**
@@ -255,12 +260,14 @@ var handleDevGuide = function( repo, filter ) {
  * @param {string} repo
  */
 var handleContrib = function( repo ) {
+  const buildDir = `../${repo}/build/phet-io`;
+  
   CONTRIB_FILES.forEach( function( filePath ) {
     var filePathParts = filePath.split( '/' );
 
-    var fileName = filePathParts[ filePathParts.length - 1 ];
+    var filename = filePathParts[ filePathParts.length - 1 ];
 
-    grunt.file.copy( filePath, '../' + repo + '/build/phetio/contrib/' + fileName );
+    grunt.file.copy( filePath, `${buildDir}/contrib/${filename}` );
 
   } );
 };
