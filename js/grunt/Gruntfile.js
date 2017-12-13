@@ -68,6 +68,7 @@ module.exports = function( grunt ) {
       const instrument = !!grunt.option( 'instrument' );
       const uglify = !instrument && ( grunt.option( 'uglify' ) !== false ); // Do not uglify if it is being instrumented
       const mangle = grunt.option( 'mangle' ) !== false;
+      const oneOff = grunt.option( 'oneOff' ) || null;
 
       try {
         // standalone
@@ -113,7 +114,7 @@ module.exports = function( grunt ) {
 
           for ( let brand of brands ) {
             grunt.log.writeln( `Building brand: ${brand}` );
-            await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, brand );
+            await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, oneOff );
           }
         }
       }

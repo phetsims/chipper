@@ -46,13 +46,15 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {boolean} allHTML - If the _all.html file should be generated
  * @param {boolean} debugHTML - If the _all.html file should be generated
  * @param {string} brand
+ * @param {string|null} oneOff
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, brand ) {
+module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, oneOff ) {
   // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
   assert( typeof mangle === 'boolean' );
+  assert( typeof oneOff === 'string' || oneOff === null );
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
 
   if ( brand === 'phet-io' ) {
@@ -81,11 +83,14 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   const rawPreloads = getPreloads( repo, brand ).map( filename => grunt.file.read( filename ) );
   const productionPreloads = rawPreloads.map( js => uglify ? minify( js, { mangle } ) : js );
 
+
+  const brandSuffix = brandToSuffix( brand ); // does NOT include dash
+  const oneOffSuffix = oneOff ? `-${oneOff}` : ''; // includes dash
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( repo ) );
   const locales = getLocalesToBuild( repo );
   const dependencies = await getDependencies( repo );
-  const version = packageObject.version;
+  const version = packageObject.version + oneOffSuffix; // Include the one-off name in the version
   const thirdPartyEntries = getAllThirdPartyEntries( repo, brand );
   const stringMap = getStringMap( allLocales, phetLibs );
   const mipmapsJavaScript = await buildMipmaps();
@@ -105,9 +110,6 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
     version,
     thirdPartyEntries
   };
-  
-  // TODO: how to handle one-offs? Add another suffix presumably.
-  const brandSuffix = brandToSuffix( brand );
 
   // Create the build-specific directory
   const buildDir = `../${repo}/build/${brand}`;
@@ -116,7 +118,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
     for ( let locale of locales ) {
-      grunt.file.write( `${buildDir}/${repo}_${locale}_${brandSuffix}.html`, packageRunnable( _.extend( {
+      grunt.file.write( `${buildDir}/${repo}_${locale}_${brandSuffix}${oneOffSuffix}.html`, packageRunnable( _.extend( {
         locale,
         includeAllLocales: false,
         isDebugBuild: false,
@@ -128,7 +130,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
 
   // _all.html (forced for phet-io)
   if ( allHTML || brand === 'phet-io' ) {
-    grunt.file.write( `${buildDir}/${repo}_all_${brandSuffix}.html`, packageRunnable( _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all_${brandSuffix}${oneOffSuffix}.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: false,
@@ -140,7 +142,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   if ( debugHTML ) {
     const debugJS = brand === 'phet-io' ? minify( requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
     const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
-    grunt.file.write( `${buildDir}/${repo}_all_${brandSuffix}_debug.html`, packageRunnable( _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all_${brandSuffix}${oneOffSuffix}_debug.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: true,
