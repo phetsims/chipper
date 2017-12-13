@@ -71,5 +71,5 @@ module.exports = async function( wrapperRepo ) {
   } );
 
   const dependencies = await getDependencies( wrapperRepo );
-  grunt.file.write( `../${wrapperRepo}/build/dependencies.json`, dependencies );
+  grunt.file.write( `../${wrapperRepo}/build/dependencies.json`, JSON.stringify( dependencies, null, 2 ) );
 };
