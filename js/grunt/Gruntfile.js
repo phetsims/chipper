@@ -132,13 +132,21 @@ module.exports = function( grunt ) {
     [ 'build' ]
   );
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', function() {
-    lint( [ repo ] );
+
+    // --disable-eslint-cache disables the cache, useful for developing rules
+    var cache = !grunt.option( 'disable-eslint-cache' );
+
+    lint( [ repo ], cache );
   } );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', async function() {
+
+    // --disable-eslint-cache disables the cache, useful for developing rules
+    var cache = !grunt.option( 'disable-eslint-cache' );
+
     const done = grunt.task.current.async();
 
-    lint( getPhetLibs( repo ) );
+    lint( getPhetLibs( repo ), cache );
 
     done();
   } );
@@ -256,7 +264,11 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
                                          '--dependencies to expand search to include dependencies\n' +
                                          '--everything to expand search to all PhET code', function() {
-    findDuplicates( repo );
+
+    // --disable-eslint-cache disables the cache, useful for developing rules
+    var cache = !grunt.option( 'disable-eslint-cache' );
+
+    findDuplicates( repo, cache );
   } );
 
   // Grunt task that determines created and last modified dates from git, and

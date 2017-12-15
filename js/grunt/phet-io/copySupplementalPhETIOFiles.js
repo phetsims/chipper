@@ -183,11 +183,6 @@ module.exports = async function( repo, version ) {
 
   // Create the contrib folder and add to it third party libraries used by wrappers.
   handleContrib( repo );
-
-  // Generate API Documentation
-  if ( grunt.option( 'phetioDocs' ) ) {
-    // generatePhETIOAPIDocs( repo );
-  }
 };
 
 /**

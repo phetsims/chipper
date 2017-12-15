@@ -22,7 +22,7 @@ const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
 const jscpd = require( 'jscpd' );
 
-module.exports = function( repo ) {
+module.exports = function( repo, cache ) {
 
   /**
    * TODO: Eliminate this function and unify paths with lint.js, see https://github.com/phetsims/chipper/issues/566
@@ -156,9 +156,6 @@ module.exports = function( repo ) {
     }
 
     var lintPaths = getPaths( repositoryName, phetLibs );
-
-    // --disable-eslint-cache disables the cache, useful for developing rules
-    var cache = !grunt.option( 'disable-eslint-cache' );
 
     // grunt config
     var gruntConfig = {

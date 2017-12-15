@@ -18,13 +18,11 @@ const md5 = require( 'md5' );
  * @public
  *
  * @param {Array.<string>} repos
+ * @param {boolean} cache
  * @returns {Object} - ESLint report object.
  */
-module.exports = function( repos ) {
+module.exports = function( repos, cache ) {
   var cacheFile = '../chipper/eslint/cache/' + md5( repos.join( ',' ) ) + '.eslintcache';
-
-  // --disable-eslint-cache disables the cache, useful for developing rules
-  var cache = !grunt.option( 'disable-eslint-cache' );
 
   var cli = new eslint.CLIEngine( {
 
