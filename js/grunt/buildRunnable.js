@@ -22,7 +22,6 @@ const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
-const getLocalesToBuild = require( './getLocalesToBuild' );
 const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );
 const getStringMap = require( './getStringMap' );
@@ -47,9 +46,10 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {boolean} debugHTML - If the _all.html file should be generated
  * @param {string} brand
  * @param {string|null} oneOff
+ * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, oneOff ) {
+module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, oneOff, localesOption ) {
   // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
@@ -88,7 +88,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   const oneOffSuffix = oneOff ? `-${oneOff}` : ''; // includes dash
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( repo ) );
-  const locales = getLocalesToBuild( repo );
+  const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
   const dependencies = await getDependencies( repo );
   const version = packageObject.version + oneOffSuffix; // Include the one-off name in the version
   const thirdPartyEntries = getAllThirdPartyEntries( repo, brand );
