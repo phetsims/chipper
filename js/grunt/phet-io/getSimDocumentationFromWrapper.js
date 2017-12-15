@@ -86,7 +86,7 @@ module.exports = function( simName, done ) {
             var value = info.value;
           }
           catch( error ) {
-            reject( error );
+            reject( new Error( error ) );
             return;
           }
           if ( info.done ) { resolve( value ); }

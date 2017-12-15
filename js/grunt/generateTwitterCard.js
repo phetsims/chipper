@@ -33,7 +33,7 @@ module.exports = function( repo ) {
         .contain( 800, 400 )  // Add padding on right/left
         .getBuffer( Jimp.MIME_PNG, function( error, pngBuffer ) {
           if ( error ) {
-            reject( error );
+            reject( new Error( error ) );
           }
           else {
             resolve( pngBuffer );

@@ -33,7 +33,7 @@ module.exports = function( repo, width, height ) {
     new Jimp( fullResImageName, function() { //eslint-disable-line no-new
       this.resize( width, height ).getBuffer( Jimp.MIME_PNG, function( error, pngBuffer ) {
         if ( error ) {
-          reject( error );
+          reject( new Error( error ) );
         }
         else {
           resolve( pngBuffer );

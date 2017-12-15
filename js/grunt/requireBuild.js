@@ -96,7 +96,7 @@ module.exports = function( repo, mainConfigFile, options ) {
       grunt.log.ok( `require.js optimization for brand: ${brand} complete (${output.length} bytes)` );
       resolve( output );
     }, function( err ) {
-      reject( err );
+      reject( new Error( err ) );
     } );
   } );
 };
