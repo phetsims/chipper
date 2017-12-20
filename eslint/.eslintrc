@@ -165,8 +165,12 @@
     "ActiveXObject": false,
     //for debugging on ipad
     "alert": false,
+    // for Mocha tests
+    "afterEach": false,
     // backbone is currently run outside of requirejs
     "Backbone": false,
+    // for Mocha tests
+    "beforeEach": false,
     // BigRational
     "bigRat": false,
     // DOM.js

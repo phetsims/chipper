@@ -22,7 +22,6 @@ module.exports = function() {
 
   // constants
   var sourceRoot = process.cwd() + '/js';
-  var done = grunt.task.current.async();
 
   // Keep track of results from the git processes, key = absolute path, value = {startDate,endDate}
   var elements = {};
@@ -95,7 +94,6 @@ module.exports = function() {
               count--;
               if ( count === 0 ) {
                 updateAllFiles();
-                done();
               }
             } );
         }

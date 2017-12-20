@@ -11,7 +11,6 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
-const brandToSuffix = require( '../common/brandToSuffix' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -83,8 +82,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   const rawPreloads = getPreloads( repo, brand ).map( filename => grunt.file.read( filename ) );
   const productionPreloads = rawPreloads.map( js => uglify ? minify( js, { mangle } ) : js );
 
-  const brandSuffix = brandToSuffix( brand ); // does NOT include dash
-  const oneOffSuffix = oneOff ? `-${oneOff}` : ''; // includes dash
+  const oneOffSuffix = oneOff ? `_${oneOff}` : ''; // includes dash
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
@@ -117,7 +115,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
     for ( let locale of locales ) {
-      grunt.file.write( `${buildDir}/${repo}_${locale}_${brandSuffix}${oneOffSuffix}.html`, packageRunnable( _.extend( {
+      grunt.file.write( `${buildDir}/${repo}_${locale}_${brand}${oneOffSuffix}.html`, packageRunnable( _.extend( {
         locale,
         includeAllLocales: false,
         isDebugBuild: false,
@@ -129,7 +127,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
 
   // _all.html (forced for phet-io)
   if ( allHTML || brand === 'phet-io' ) {
-    grunt.file.write( `${buildDir}/${repo}_all_${brandSuffix}${oneOffSuffix}.html`, packageRunnable( _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all_${brand}${oneOffSuffix}.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: false,
@@ -141,7 +139,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   if ( debugHTML ) {
     const debugJS = brand === 'phet-io' ? minify( requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
     const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
-    grunt.file.write( `${buildDir}/${repo}_all_${brandSuffix}${oneOffSuffix}_debug.html`, packageRunnable( _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all_${brand}${oneOffSuffix}_debug.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: true,

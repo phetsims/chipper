@@ -80,7 +80,7 @@ module.exports = function( grunt ) {
    * @param {async function} asyncTaskFunction
    */
   function wrapTask( asyncTaskFunction ) {
-    return function() {
+    return () => {
       wrap( asyncTaskFunction() );
     };
   }
@@ -89,13 +89,13 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
-    function() {
+    wrapTask( async () => {
       var buildDirectory = `../${repo}/build`;
       if ( grunt.file.exists( buildDirectory ) ) {
         grunt.file.delete( buildDirectory );
       }
       grunt.file.mkdir( buildDirectory );
-    } );
+    } ) );
 
   grunt.registerTask( 'build',
     'Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.\n' +
@@ -109,7 +109,7 @@ module.exports = function( grunt ) {
     '--debugHTML - Includes a _debug.html version that includes assertions enabled (and, depending on the brand, may be un-uglified)\n' +
     '--locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales\n' +
     '--oneOff={{ONE_OFF_NAME}} - Builds as a one-off (adds a specific name to the version that identifies it as not-normal, or from a branch',
-    wrapTask( async function() {
+    wrapTask( async () => {
       // grunt options that apply to multiple build tasks
       const instrument = !!grunt.option( 'instrument' );
       const uglify = !instrument && ( grunt.option( 'uglify' ) !== false ); // Do not uglify if it is being instrumented
@@ -177,7 +177,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
     [ 'build' ]
   );
-  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', wrapTask( async function() {
+  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', wrapTask( async () => {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     var cache = !grunt.option( 'disable-eslint-cache' );
@@ -185,7 +185,7 @@ module.exports = function( grunt ) {
     lint( [ repo ], cache );
   } ) );
 
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async function() {
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     var cache = !grunt.option( 'disable-eslint-cache' );
@@ -195,14 +195,14 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       generateDevelopmentHTML( repo );
     } ) );
 
   grunt.registerTask( 'generate-test-html',
     'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/docs/adding-tests.md ' +
     'for more information on automated testing',
-    wrapTask( async function() {
+    wrapTask( async () => {
       generateDevelopmentHTML( repo, {
 
         // Include QUnit CSS
@@ -230,49 +230,49 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'generate-development-colors-html',
     'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       generateDevelopmentColorsHTML( repo );
     } ) );
 
   grunt.registerTask( 'generate-a11y-view-html',
     'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       generateA11yViewHTML( repo );
     } ) );
 
   grunt.registerTask( 'generate-config',
     'Generates the js/SIM-config.js file based on the dependencies in package.json.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       generateConfig( repo, `../${repo}/js/${repo}-config.js`, 'main' );
     } ) );
 
   grunt.registerTask( 'generate-test-config',
     'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       generateConfig( repo, `../${repo}/js/${repo}-test-config.js`, 'tests' );
     } ) );
 
   grunt.registerTask( 'generate-coverage',
     'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       generateCoverage( repo );
     } ) );
 
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       generateREADME( repo, true /* published */ );
     } ) );
 
   grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       generateREADME( repo, false /* published */ );
     } ) );
 
   grunt.registerTask( 'commits-since',
     'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       const dateString = grunt.option( 'date' );
       assert( dateString, 'missing required option: --date={{DATE}}' );
 
@@ -286,7 +286,7 @@ module.exports = function( grunt ) {
     '(1) incompatible-license (resource license not approved)\n' +
     '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
     '(3) missing-file (entry in the license.json but not on the file system)',
-    wrapTask( async function() {
+    wrapTask( async () => {
       reportMedia();
     } ) );
 
@@ -295,13 +295,13 @@ module.exports = function( grunt ) {
     'Creates a report of third-party resources (code, images, audio, etc) used in the published PhET simulations by ' +
     'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
     'After running this task, you must push sherpa/third-party-licenses.md.',
-    wrapTask( async function() {
+    wrapTask( async () => {
       reportThirdParty();
     } ) );
 
   grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
                                          '--dependencies to expand search to include dependencies\n' +
-                                         '--everything to expand search to all PhET code', wrapTask( async function() {
+                                         '--everything to expand search to all PhET code', wrapTask( async () => {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     var cache = !grunt.option( 'disable-eslint-cache' );
@@ -312,7 +312,7 @@ module.exports = function( grunt ) {
   // Grunt task that determines created and last modified dates from git, and
   // updates copyright statements accordingly, see #403
   grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
-    wrapTask( async function() {
+    wrapTask( async () => {
       updateCopyrightDates();
     } ) );
 

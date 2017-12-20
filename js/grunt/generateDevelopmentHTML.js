@@ -25,7 +25,7 @@ module.exports = function( repo, options ) {
 
   const {
     stylesheets = '',
-    bodystyle = 'style="background-color =black;"',
+    bodystyle = 'style="background-color:black;"',
     outputFile = `../${repo}/${repo}_en.html`,
     bodystart = '',
     addedPreloads = [], // none to add
