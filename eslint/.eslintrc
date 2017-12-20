@@ -187,6 +187,8 @@
     "d3": false,
     // require.js
     "define": false,
+    // for Mocha unit tests
+    "describe": false,
     //
     "document": false,
     // For qunit
@@ -209,6 +211,8 @@
     "iframePhone": false,
     // DOM.js
     "Image": false,
+    // for Mocha unit tests
+    "it": false,
     // for generating diffs in phetio.js
     "jsondiffpatch": false,
     // QUnit
