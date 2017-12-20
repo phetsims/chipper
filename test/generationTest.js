@@ -13,14 +13,13 @@ const execute = require( '../js/grunt/execute' );
 
 const gruntCommand = /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt';
 
-describe( 'hooks', function() {
+describe( 'Generation', () => {
   afterEach( async () => {
     // Hard reset to undo what we just did
     await execute( 'git', [ 'reset', '--hard' ], '../chains' );
+    await execute( 'git', [ 'clean', '-f' ], '../chains' );
   } );
-} );
-
-describe( 'Generation', () => {
+  
   it( 'Development HTML', async () => {
     await execute( gruntCommand, [ 'generate-development-html' ], '../chains' );
   } ).timeout( 120000 );
