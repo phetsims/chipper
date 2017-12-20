@@ -83,11 +83,10 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   const rawPreloads = getPreloads( repo, brand ).map( filename => grunt.file.read( filename ) );
   const productionPreloads = rawPreloads.map( js => uglify ? minify( js, { mangle } ) : js );
 
-
   const brandSuffix = brandToSuffix( brand ); // does NOT include dash
   const oneOffSuffix = oneOff ? `-${oneOff}` : ''; // includes dash
   const phetLibs = getPhetLibs( repo, brand );
-  const allLocales = [ ChipperConstants.FALLBACK_LOCALE ].concat( getLocalesFromRepository( repo ) );
+  const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
   const dependencies = await getDependencies( repo );
   const version = packageObject.version + oneOffSuffix; // Include the one-off name in the version

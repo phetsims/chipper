@@ -42,11 +42,48 @@ module.exports = function( grunt ) {
     buildLocal = {};
   }
 
-  // TODO: grunt error on promise rejection
-
   const repo = grunt.option( 'repo' ) || packageObject.name;
 
   chipperGlobals.initialize();
+
+  /**
+   * Wraps a promise's completion with grunt's asynchronous handling, with added helpful failure messages (including stack traces, regardless of whether --stack was provided).
+   * @public
+   *
+   * @param {Promise} promise
+   */
+  async function wrap( promise ) {
+    const done = grunt.task.current.async();
+
+    try {
+      await promise;
+    } catch ( e ) {
+      if ( e.stack ) {
+        grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
+      }
+      else if ( typeof e === 'string' ) {
+        grunt.fail.fatal( `Perennial task failed: ${e}` );
+      }
+      else {
+        grunt.fail.fatal( `Perennial task failed with unknown error: ${JSON.stringify( e, null, 2 )}` );
+      }
+    }
+
+    done();
+  }
+
+  /**
+   * Wraps an async function for a grunt task. Will run the async function when the task should be executed. Will properly handle grunt's async handling, and provides improved
+   * error reporting.
+   * @public
+   *
+   * @param {async function} asyncTaskFunction
+   */
+  function wrapTask( asyncTaskFunction ) {
+    return function() {
+      wrap( asyncTaskFunction() );
+    };
+  }
 
   grunt.registerTask( 'default', 'Builds the repository', ( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ).concat( [ 'clean', 'build' ] ) );
 
@@ -61,106 +98,111 @@ module.exports = function( grunt ) {
     } );
 
   grunt.registerTask( 'build',
-    'TODO',
-    async function() {
-      const done = grunt.task.current.async();
-
+    'Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.\n' +
+    '--uglify=false - Disables uglification, so the built file will include (essentially) concatenated source files.\n' +
+    '--mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.\n' +
+    'Runnable build options:\n' +
+    '--instrument - Builds a runnable with code coverage tooling inside. See phet-info/docs/code-coverage.md for more information\n' +
+    '--brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using\n' +
+    '                     build-local.json\'s brands (or adapted-from-phet if that does not exist)\n' +
+    '--allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)\n' +
+    '--debugHTML - Includes a _debug.html version that includes assertions enabled (and, depending on the brand, may be un-uglified)\n' +
+    '--locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales\n' +
+    '--oneOff={{ONE_OFF_NAME}} - Builds as a one-off (adds a specific name to the version that identifies it as not-normal, or from a branch',
+    wrapTask( async function() {
+      // grunt options that apply to multiple build tasks
       const instrument = !!grunt.option( 'instrument' );
       const uglify = !instrument && ( grunt.option( 'uglify' ) !== false ); // Do not uglify if it is being instrumented
       const mangle = grunt.option( 'mangle' ) !== false;
-      const oneOff = grunt.option( 'oneOff' ) || null;
 
-      try {
-        // standalone
-        if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
-          fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( repo, uglify, mangle ) );
-        }
-        else if ( grunt.file.readJSON( `../${repo}/package.json` ).isWrapper ) {
-          await buildWrapper( repo );
-        }
-        // runnable
-        else {
-          // Determine what brands we want to build
-          assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
+      const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-          const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
-          const supportedBrands = localPackageObject.phet.supportedBrands;
+      // standalone
+      if ( repoPackageObject.phet.buildStandalone ) {
+        grunt.log.writeln( 'Building standalone repository' );
 
-          assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
+        fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( repo, uglify, mangle ) );
+      }
+      else if ( repoPackageObject.isWrapper ) {
+        grunt.log.writeln( 'Building wrapper repository' );
 
-          var brands;
-          if ( grunt.option( 'brands' ) ) {
-            if ( grunt.option( 'brands' ) === '*' ) {
-              brands = supportedBrands;
-            }
-            else {
-              brands = grunt.option( 'brands' ).split( ',' );
-            }
-          }
-          else if ( buildLocal.brands ) {
-            brands = buildLocal.brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
+        await buildWrapper( repo );
+      }
+      else {
+
+        // Determine what brands we want to build
+        assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
+
+        const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+        const supportedBrands = localPackageObject.phet.supportedBrands;
+
+        assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
+
+        var brands;
+        if ( grunt.option( 'brands' ) ) {
+          if ( grunt.option( 'brands' ) === '*' ) {
+            brands = supportedBrands;
           }
           else {
-            brands = [ 'adapted-from-phet' ];
-          }
-
-          // Ensure all listed brands are valid
-          brands.forEach( brand => assert( ChipperConstants.BRANDS.includes( brand ), `Unknown brand: ${brand}` ) );
-          brands.forEach( brand => assert( supportedBrands.includes( brand ), `Unsupported brand: ${brand}` ) );
-
-          // Other options
-          const allHTML = !!grunt.option( 'allHTML' );
-          const debugHTML = !!grunt.option( 'debugHTML' );
-          const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
-
-          for ( let brand of brands ) {
-            grunt.log.writeln( `Building brand: ${brand}` );
-            await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, oneOff, localesOption );
+            brands = grunt.option( 'brands' ).split( ',' );
           }
         }
-      }
-      catch ( e ) {
-        console.log( e );
-        grunt.log.error( e );
-      }
+        else if ( buildLocal.brands ) {
+          brands = buildLocal.brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
+        }
+        else {
+          brands = [ 'adapted-from-phet' ];
+        }
 
-      done();
-    }
+        // Ensure all listed brands are valid
+        brands.forEach( brand => assert( ChipperConstants.BRANDS.includes( brand ), `Unknown brand: ${brand}` ) );
+        brands.forEach( brand => assert( supportedBrands.includes( brand ), `Unsupported brand: ${brand}` ) );
+
+        grunt.log.writeln( `Building runnable repository (${repo}, brands: ${brands.join( ', ')})` );
+
+        // Other options
+        const allHTML = !!grunt.option( 'allHTML' );
+        const debugHTML = !!grunt.option( 'debugHTML' );
+        const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
+        const oneOff = grunt.option( 'oneOff' ) || null;
+
+        for ( let brand of brands ) {
+          grunt.log.writeln( `Building brand: ${brand}` );
+          await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, oneOff, localesOption );
+        }
+      }
+    } )
   );
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
     [ 'build' ]
   );
-  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', function() {
+  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', wrapTask( async function() {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     var cache = !grunt.option( 'disable-eslint-cache' );
 
     lint( [ repo ], cache );
-  } );
+  } ) );
 
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', async function() {
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async function() {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     var cache = !grunt.option( 'disable-eslint-cache' );
 
-    const done = grunt.task.current.async();
-
     lint( getPhetLibs( repo ), cache );
-
-    done();
-  } );
+  } ) );
 
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
-    function() {
+    wrapTask( async function() {
       generateDevelopmentHTML( repo );
-    } );
+    } ) );
 
   grunt.registerTask( 'generate-test-html',
     'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/docs/adding-tests.md ' +
     'for more information on automated testing',
-    function() {
+    wrapTask( async function() {
       generateDevelopmentHTML( repo, {
 
         // Include QUnit CSS
@@ -184,62 +226,58 @@ module.exports = function( grunt ) {
         // Specify to use test config
         qualifier: 'test-'
       } );
-    } );
+    } ) );
 
   grunt.registerTask( 'generate-development-colors-html',
     'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
-    function() {
+    wrapTask( async function() {
       generateDevelopmentColorsHTML( repo );
-    } );
+    } ) );
 
   grunt.registerTask( 'generate-a11y-view-html',
     'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
-    function() {
+    wrapTask( async function() {
       generateA11yViewHTML( repo );
-    } );
+    } ) );
 
   grunt.registerTask( 'generate-config',
     'Generates the js/SIM-config.js file based on the dependencies in package.json.',
-    function() {
+    wrapTask( async function() {
       generateConfig( repo, `../${repo}/js/${repo}-config.js`, 'main' );
-    } );
+    } ) );
 
   grunt.registerTask( 'generate-test-config',
     'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
-    function() {
+    wrapTask( async function() {
       generateConfig( repo, `../${repo}/js/${repo}-test-config.js`, 'tests' );
-    } );
+    } ) );
 
   grunt.registerTask( 'generate-coverage',
     'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
-    function() {
+    wrapTask( async function() {
       generateCoverage( repo );
-    } );
+    } ) );
 
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
-    function() {
+    wrapTask( async function() {
       generateREADME( repo, true /* published */ );
-    } );
+    } ) );
 
   grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
-    function() {
+    wrapTask( async function() {
       generateREADME( repo, false /* published */ );
-    } );
+    } ) );
 
   grunt.registerTask( 'commits-since',
     'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
-    async function() {
+    wrapTask( async function() {
       const dateString = grunt.option( 'date' );
       assert( dateString, 'missing required option: --date={{DATE}}' );
 
-      const done = grunt.task.current.async();
-
       await commitsSince( repo, dateString );
-
-      done();
-    } );
+    } ) );
 
   // See reportMedia.js
   grunt.registerTask( 'report-media',
@@ -248,38 +286,44 @@ module.exports = function( grunt ) {
     '(1) incompatible-license (resource license not approved)\n' +
     '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
     '(3) missing-file (entry in the license.json but not on the file system)',
-    function() {
+    wrapTask( async function() {
       reportMedia();
-    } );
+    } ) );
 
   // see reportThirdParty.js
   grunt.registerTask( 'report-third-party',
     'Creates a report of third-party resources (code, images, audio, etc) used in the published PhET simulations by ' +
     'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
     'After running this task, you must push sherpa/third-party-licenses.md.',
-    function() {
+    wrapTask( async function() {
       reportThirdParty();
-    } );
+    } ) );
 
   grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
                                          '--dependencies to expand search to include dependencies\n' +
-                                         '--everything to expand search to all PhET code', function() {
+                                         '--everything to expand search to all PhET code', wrapTask( async function() {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     var cache = !grunt.option( 'disable-eslint-cache' );
 
     findDuplicates( repo, cache );
-  } );
+  } ) );
 
   // Grunt task that determines created and last modified dates from git, and
   // updates copyright statements accordingly, see #403
   grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
-    function() {
+    wrapTask( async function() {
       updateCopyrightDates();
-    } );
+    } ) );
 
+  /**
+   * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from perennial's directory with the same options
+   * (but with --repo={{REPO}} added, so that perennial is aware of what repository is the target).
+   * @public
+   *
+   * @param {string} task - The name of the task
+   */
   function forwardToPerennialGrunt( task ) {
-    // TODO: improve documentation
     grunt.registerTask( task, 'Run grunt --help in perennial to see documentation', () => {
       grunt.log.writeln( '(Forwarding task to perennial)' );
 
