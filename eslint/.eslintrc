@@ -240,6 +240,7 @@
     "WrapperUtils": false,
     // PhET-iO
     "phetioEvents": false,
+    "PhetioIDUtils":false,
     //
     "PIXI": false,
     // For poly2tri triangulation library
