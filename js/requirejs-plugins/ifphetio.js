@@ -2,7 +2,7 @@
 
 /**
  * This plugin conditionally loads another module based on the brand.  If the brand is phet-io, it loads the module
- * otherwise it returns a no-op function, so that parametric wrapper types will not exception out even in "phet" brand.
+ * otherwise it returns a no-op function, so that parametric IO types will not exception out even in "phet" brand.
  *
  * The module works for requirejs mode and during the build.
  *
