@@ -141,6 +141,7 @@ module.exports = async function( repo, version ) {
     'phet-io-wrappers/login',
     'phet-io-wrappers/mirror-inputs',
     'phet-io-wrappers/record',
+    'phet-io-wrappers/playback',
     'phet-io-wrappers/screenshot',
     'phet-io-wrappers/state',
     'phet-io-wrappers/wrapper-template',
