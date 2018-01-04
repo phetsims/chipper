@@ -103,11 +103,11 @@ module.exports = async function( repo, version ) {
       // For info about phetio.js, see the end of this file
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{phet-io.js}}-->',
-        '<script type="text/javascript" src="../../lib/' + LIB_OUTPUT_FILE + '"></script>'
+        '<script src="../../lib/' + LIB_OUTPUT_FILE + '"></script>'
       );
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
-        '<script type="text/javascript" src="/assets/js/phet-io-ga.js"></script>'
+        '<script src="/assets/js/phet-io-ga.js"></script>'
       );
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{FAVICON.ico}}-->',

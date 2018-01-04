@@ -96,7 +96,7 @@
           var exampleName = 'example-' + name;
 
           result += '<canvas id="' + exampleName + '" class="exampleScene"></canvas>';
-          result += '<script type="text/javascript">(function(){';
+          result += '<script>(function(){';
           result += 'var canvas = document.getElementById( "' + exampleName + '" );';
           result += 'canvas.width = ' + width + ';';
           result += 'canvas.height = ' + height + ';';
