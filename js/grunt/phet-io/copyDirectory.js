@@ -16,7 +16,7 @@ const minify = require( '../minify' );
  * @param {string} src - the source directory
  * @param {string} dst - the destination directory
  * @param {function} [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
- * @param {object} options
+ * @param {Object} [options]
  */
 module.exports = function( src, dst, filter, options ) {
 
