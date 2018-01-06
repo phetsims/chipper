@@ -173,16 +173,18 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
     await copySupplementalPhETIOFiles( repo, version );
   }
 
-  // Thumbnails
-  const thumbnailSizes = [
-    { width: 128, height: 84 },
-    { width: 600, height: 394 }
-  ];
-  for ( let size of thumbnailSizes ) {
-    grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height ) );
-  }
+  // Thumbnails and twitter card
+  if ( grunt.file.exists( `../${repo}/assets/${repo}-screenshot.png` ) ) {
+    const thumbnailSizes = [
+      { width: 128, height: 84 },
+      { width: 600, height: 394 }
+    ];
+    for ( let size of thumbnailSizes ) {
+      grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height ) );
+    }
 
-  if ( brand === 'phet' ) {
-    grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
+    if ( brand === 'phet' ) {
+      grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
+    }
   }
 };
