@@ -18,7 +18,7 @@ const grunt = require( 'grunt' );
 /**
  * TODO: doc
  */
-module.exports = function() {
+module.exports = function( done ) {
 
   // constants
   var sourceRoot = process.cwd() + '/js';
@@ -65,6 +65,8 @@ module.exports = function() {
         }
       }
     }
+
+    done();
   };
 
   var count = 0;

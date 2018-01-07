@@ -38,7 +38,7 @@ module.exports = function( grunt ) {
   try {
     buildLocal = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
   }
-  catch ( e ) {
+  catch( e ) {
     buildLocal = {};
   }
 
@@ -57,7 +57,8 @@ module.exports = function( grunt ) {
 
     try {
       await promise;
-    } catch ( e ) {
+    }
+    catch( e ) {
       if ( e.stack ) {
         grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
       }
@@ -158,7 +159,7 @@ module.exports = function( grunt ) {
         brands.forEach( brand => assert( ChipperConstants.BRANDS.includes( brand ), `Unknown brand: ${brand}` ) );
         brands.forEach( brand => assert( supportedBrands.includes( brand ), `Unsupported brand: ${brand}` ) );
 
-        grunt.log.writeln( `Building runnable repository (${repo}, brands: ${brands.join( ', ')})` );
+        grunt.log.writeln( `Building runnable repository (${repo}, brands: ${brands.join( ', ' )})` );
 
         // Other options
         const allHTML = !!grunt.option( 'allHTML' );
@@ -312,9 +313,11 @@ module.exports = function( grunt ) {
   // Grunt task that determines created and last modified dates from git, and
   // updates copyright statements accordingly, see #403
   grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
-    wrapTask( async () => {
-      updateCopyrightDates();
-    } ) );
+
+    // TODO: should we use wrapTask here?  It seems to be interfering with the this.async() which grunt seems to need
+    async function() {
+      updateCopyrightDates( this.async() );
+    } );
 
   /**
    * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from perennial's directory with the same options
