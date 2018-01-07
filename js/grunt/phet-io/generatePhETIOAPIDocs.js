@@ -7,7 +7,8 @@
  * instance documentation (a list of tandems and their types)
  * doc on simIFrameClient.launchSim() and its options
  * query parameter information, (phet and phet-io)
- * @author - Michael Kauzmann (PhET Interactive Simulations)
+ *
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 /* eslint-env node */
 'use strict';
