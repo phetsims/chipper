@@ -23,7 +23,8 @@ const grunt = require( 'grunt' );
  * @param {string} cmd - The process to execute. Should be on the current path.
  * @param {Array.<string>} args - Array of arguments. No need to extra-quote things.
  * @param {string} cwd - The working directory where the process should be run from
- * @returns {Promise}
+ * @returns {Promise.<string>} - The stdout of the process
+ * @rejects {ExecuteError}
  */
 module.exports = function( cmd, args, cwd ) {
   class ExecuteError extends Error {

@@ -22,6 +22,7 @@ const requireBuild = require( './requireBuild' );
  * @param {string} repo
  * @param {boolean} uglify
  * @param {boolean} mangle
+ * @returns {Promise}
  */
 module.exports = async function( repo, uglify, mangle ) {
   assert( typeof repo === 'string' );

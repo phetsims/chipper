@@ -14,7 +14,15 @@ const grunt = require( 'grunt' );
 const istanbul = require( 'istanbul' );
 const requirejs = require( 'requirejs' );
 
-// TODO: doc
+/**
+ * Runs a require.js optimizer build step.
+ * @public
+ *
+ * @param {string} repo
+ * @param {string} mainConfigFile - path to the config file
+ * @param {Object} [options]
+ * @returns {Promise.<string>} - The combined JS output from the optimizer
+ */
 module.exports = function( repo, mainConfigFile, options ) {
 
   const {

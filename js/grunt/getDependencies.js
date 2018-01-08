@@ -15,7 +15,13 @@ const execute = require( './execute' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
 
-// TODO: doc
+/**
+ * Returns an object in the dependencies.json format. Keys are repo names (or 'comment'). Repo keys have 'sha' and 'branch' fields.
+ * @public
+ *
+ * @param {string} repo
+ * @returns {Promise.<Object>} - In the dependencies.json format. JSON.stringify if you want to output to a file
+ */
 module.exports = async function( repo ) {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );

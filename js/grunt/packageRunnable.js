@@ -18,7 +18,13 @@ const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 
-// TODO: doc
+/**
+ * From a given set of options (including the JS and other required things), it creates an HTML file for a runnable.
+ * @public
+ *
+ * @param {Object} options
+ * @returns {string} - The HTML for the file.
+ */
 module.exports = function( options ) {
   const htmlTemplate = grunt.file.read( '../chipper/templates/sim.html' );
   var html = htmlTemplate;

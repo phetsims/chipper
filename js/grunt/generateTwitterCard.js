@@ -15,7 +15,7 @@ const Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
 
 /**
  * @param {string} repo - name of the repository
- * @returns {Promise} - Resolves with a PNG {Buffer}
+ * @returns {Promise.<Buffer>} - Resolves with a PNG {Buffer}
  */
 module.exports = function( repo ) {
   return new Promise( ( resolve, reject ) => {

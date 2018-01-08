@@ -18,7 +18,7 @@ const createMipmap = require( './createMipmap' );
  * Creates the mipmaps requested by the mipmap plugin (sets globals, see chipperGlobals.js and mipmap.js for more info).
  * @public
  *
- * @returns {string} - JS that assigns the mipmaps to window.phet.chipper.mipmaps.
+ * @returns {Promise.<string>} - JS that assigns the mipmaps to window.phet.chipper.mipmaps.
  */
 module.exports = async function() {
   // globals that should be defined by this point
