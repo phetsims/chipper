@@ -1,7 +1,7 @@
 // Copyright 2017, University of Colorado Boulder
 
 /**
- * Unit tests, run with `mocha`
+ * Unit tests, run with `qunit` at the top-level of chipper. May need `npm install -g qunit` beforehand, if it hasn't been run yet.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
