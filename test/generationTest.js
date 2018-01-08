@@ -10,49 +10,67 @@
 
 // const chai = require( 'chai' );
 const execute = require( '../js/grunt/execute' );
-
 const gruntCommand = /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt';
+const qunit = require( 'qunit' );
 
-describe( 'Generation', () => {
-  afterEach( async () => {
+qunit.module( 'Generation', {
+  afterEach: async () => {
     // Hard reset to undo what we just did
     await execute( 'git', [ 'reset', '--hard' ], '../chains' );
     await execute( 'git', [ 'clean', '-f' ], '../chains' );
-  } );
-  
-  it( 'Development HTML', async () => {
-    await execute( gruntCommand, [ 'generate-development-html' ], '../chains' );
-  } ).timeout( 120000 );
+  }
+} );
 
-  it( 'Test HTML', async () => {
-    await execute( gruntCommand, [ 'generate-test-html' ], '../chains' );
-  } ).timeout( 120000 );
+qunit.test( 'Development HTML', async ( assert ) => {
+  assert.timeout( 120000 );
+  await execute( gruntCommand, [ 'generate-development-html' ], '../chains' );
+  assert.expect( 0 );
+} );
 
-  it( 'Colors HTML', async () => {
-    await execute( gruntCommand, [ 'generate-development-colors-html' ], '../chains' );
-  } ).timeout( 120000 );
+qunit.test( 'Test HTML', async ( assert ) => {
+  assert.timeout( 120000 );
+  await execute( gruntCommand, [ 'generate-test-html' ], '../chains' );
+  assert.expect( 0 );
+} );
 
-  it( 'A11Y View HTML', async () => {
-    await execute( gruntCommand, [ 'generate-a11y-view-html' ], '../chains' );
-  } ).timeout( 120000 );
+qunit.test( 'Colors HTML', async ( assert ) => {
+  assert.timeout( 120000 );
+  await execute( gruntCommand, [ 'generate-development-colors-html' ], '../chains' );
+  assert.expect( 0 );
+} );
 
-  it( 'Config', async () => {
-    await execute( gruntCommand, [ 'generate-config' ], '../chains' );
-  } ).timeout( 120000 );
+qunit.test( 'A11Y View HTML', async ( assert ) => {
+  assert.timeout( 120000 );
+  await execute( gruntCommand, [ 'generate-a11y-view-html' ], '../chains' );
+  assert.expect( 0 );
+} );
 
-  it( 'Test Config', async () => {
-    await execute( gruntCommand, [ 'generate-test-config' ], '../chains' );
-  } ).timeout( 120000 );
+qunit.test( 'Config', async ( assert ) => {
+  assert.timeout( 120000 );
+  await execute( gruntCommand, [ 'generate-config' ], '../chains' );
+  assert.expect( 0 );
+} );
 
-  it( 'Published README', async () => {
-    await execute( gruntCommand, [ 'published-README' ], '../chains' );
-  } ).timeout( 120000 );
+qunit.test( 'Test Config', async ( assert ) => {
+  assert.timeout( 120000 );
+  await execute( gruntCommand, [ 'generate-test-config' ], '../chains' );
+  assert.expect( 0 );
+} );
 
-  it( 'Unpublished README', async () => {
-    await execute( gruntCommand, [ 'unpublished-README' ], '../chains' );
-  } ).timeout( 120000 );
+qunit.test( 'Published README', async ( assert ) => {
+  assert.timeout( 120000 );
+  await execute( gruntCommand, [ 'published-README' ], '../chains' );
+  assert.expect( 0 );
+} );
 
-  it( 'Copyright', async () => {
-    await execute( gruntCommand, [ 'update-copyright-dates' ], '../chains' );
-  } ).timeout( 120000 );
+qunit.test( 'Unpublished README', async ( assert ) => {
+  assert.timeout( 120000 );
+  await execute( gruntCommand, [ 'unpublished-README' ], '../chains' );
+  assert.expect( 0 );
+} );
+
+qunit.test( 'Copyright', async ( assert ) => {
+  assert.timeout( 120000 );
+  await execute( gruntCommand, [ 'update-copyright-dates' ], '../chains' );
+  assert.expect( 0 );
 } );
