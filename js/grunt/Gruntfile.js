@@ -149,6 +149,8 @@ module.exports = function( grunt ) {
           }
         }
         else if ( buildLocal.brands ) {
+          // Extra check, see https://github.com/phetsims/chipper/issues/640
+          assert( buildLocal.brands instanceof Array, 'If brands exists in build-local.json, it should be an array' );
           brands = buildLocal.brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
         }
         else {
