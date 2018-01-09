@@ -26,7 +26,9 @@ var LIB_FILES = [
   '../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js' ];
+  '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js',
+  '../tandem/js/PhetioIDUtils.js'
+];
 
 var LIB_OUTPUT_FILE = 'phet-io.js';
 var LIB_COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Boulder\n' +
@@ -78,6 +80,7 @@ module.exports = async function( repo, version ) {
        * Remove individual common phet-io code imports because they are all in phetio.js
        */
 
+      // TODO: use LIB_FILES and/or factor this outs
       // This returns the whole line that contains this substring, so it can be removed
       var firstQueryStringLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js">' );
 
@@ -100,6 +103,10 @@ module.exports = async function( repo, version ) {
       var firstWrapperTypeLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperTypes.js">' );
       if ( firstWrapperTypeLine && firstWrapperTypeLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstWrapperTypeLine, '' ); // included in phetio.js
+      }
+      var firstPhetioIDUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'PhetioIDUtils.js' );
+      if ( firstPhetioIDUtilsLine && firstPhetioIDUtilsLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+        contents = ChipperStringUtils.replaceAll( contents, firstPhetioIDUtilsLine, '' ); // included in phetio.js
       }
 
       // For info about phetio.js, see the end of this file
@@ -259,7 +266,7 @@ var handleDevGuide = function( repo, filter ) {
  */
 var handleContrib = function( repo ) {
   const buildDir = `../${repo}/build/phet-io`;
-  
+
   CONTRIB_FILES.forEach( function( filePath ) {
     var filePathParts = filePath.split( '/' );
 
