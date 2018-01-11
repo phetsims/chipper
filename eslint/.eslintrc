@@ -23,6 +23,7 @@
       2,
       "always"
     ],
+    "bad-text": 2,
     //
     // Custom rule for checking the copyright.
     "copyright": 2,
@@ -152,7 +153,8 @@
     "Float32Array": true,
     "phet": true,
     "phetio": true,
-    "aqua": true, // For use in aqua tests
+    "aqua": true,
+    // For use in aqua tests
     // underscore, lodash
     "_": true,
     // read-only globals ---------------------------------
@@ -244,7 +246,7 @@
     "WrapperUtils": false,
     // PhET-iO
     "phetioEvents": false,
-    "PhetioIDUtils":false,
+    "PhetioIDUtils": false,
     //
     "PIXI": false,
     // For poly2tri triangulation library
@@ -278,6 +280,6 @@
     // allow ajax requests directly
     "XMLHttpRequest": false,
     "toast": false,
-    "Fourier":false
+    "Fourier": false
   }
 }
