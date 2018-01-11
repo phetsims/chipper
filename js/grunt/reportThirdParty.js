@@ -52,7 +52,7 @@ module.exports = function() {
   // This directory should have been deleted at the end of the last task, but this could be useful if the task was
   // interrupted before cleanup.
   if ( grunt.file.exists( 'downloaded-sims' ) ) {
-    grunt.file.delete( 'downloaded-sims' );
+    grunt.file.delete( 'downloaded-sims', { force: true } );
   }
   grunt.file.mkdir( 'downloaded-sims' );
 
@@ -388,7 +388,7 @@ module.exports = function() {
 
     // Delete the temporarily downloaded files when task complete
     if ( grunt.file.exists( 'downloaded-sims' ) ) {
-      grunt.file.delete( 'downloaded-sims' );
+      grunt.file.delete( 'downloaded-sims', { force: true } );
     }
 
 
