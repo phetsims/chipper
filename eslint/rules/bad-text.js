@@ -10,7 +10,9 @@ module.exports = function( context ) {
 
   var badTexts = [
     'tool' + 'Box', // intentionally split to avoid getting caught in the lint, split manually because lint apparently rules cannot be disabled in their declarations
-    'Tool' + 'Box' // intentionally split to avoid getting caught in the lint, split manually because lint apparently rules cannot be disabled in their declarations
+    'Tool' + 'Box', // intentionally split to avoid getting caught in the lint, split manually because lint apparently rules cannot be disabled in their declarations
+    'Check' + 'Box', // intentionally split to avoid getting caught in the lint, split manually because lint apparently rules cannot be disabled in their declarations
+    'check' + 'Box' // intentionally split to avoid getting caught in the lint, split manually because lint apparently rules cannot be disabled in their declarations
   ];
 
   var checkNode = function( node, text ) {
