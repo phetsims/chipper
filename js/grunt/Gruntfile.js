@@ -299,7 +299,7 @@ module.exports = function( grunt ) {
     'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
     'After running this task, you must push sherpa/third-party-licenses.md.',
     wrapTask( async () => {
-      reportThirdParty();
+      await reportThirdParty();
     } ) );
 
   grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
