@@ -158,8 +158,13 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( englishTitle + ' iframe test' ) );
-    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_URL}}', repo + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
-    grunt.file.write( `${buildDir}/${repo}_${ChipperConstants.FALLBACK_LOCALE}_iframe.html`, iframeTestHtml );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_REPOSITORY}}', repo );
+
+    let iframeLocales = [ 'en' ].concat( allHTML ? [ 'all' ] : [] );
+    iframeLocales.forEach( locale => {
+      const iframeHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_LOCALE}}', locale );
+      grunt.file.write( `${buildDir}/${repo}_${locale}_iframe_phet.html`, iframeHtml );
+    } );
   }
 
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.

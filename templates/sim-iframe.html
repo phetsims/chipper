@@ -22,8 +22,12 @@
 
 <iframe id="iframe" width="600" height="400" allowfullscreen scrolling="no"></iframe>
 <script type="application/javascript">
-  var suffix = window.location.search || '';
-  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_SIM_URL}}' + suffix );
+  var queryString = window.location.search || '';
+
+  // We strip off the brand suffix when a sim is deployed to production.
+  var brandSuffix = window.location.hostname === 'phet.colorado.edu' ? '' : '_phet';
+
+  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_REPOSITORY}}_{{PHET_LOCALE}}' + brandSuffix + '.html' + queryString );
 </script>
 </body>
 </html>
