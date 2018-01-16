@@ -15,12 +15,14 @@
 /* eslint-env node */
 'use strict';
 
-module.exports = function( grunt, buildConfig ) {
+// TODO: Looks like a decent amount of cleanup in this file. Not up to standards yet
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const fs = require( 'fs' );
+const getPhetLibs = require( './getPhetLibs' );
+const grunt = require( 'grunt' );
+const jscpd = require( 'jscpd' );
 
-  // modules
-  var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-  var fs = require( 'fs' );
-  var jscpd = require( 'jscpd' );
+module.exports = function( repo, cache ) {
 
   /**
    * TODO: Eliminate this function and unify paths with lint.js, see https://github.com/phetsims/chipper/issues/566
@@ -28,7 +30,7 @@ module.exports = function( grunt, buildConfig ) {
    * @param {string} repositoryName - name of the repository we're building
    * @param {string[]} phetLibs - see getBuildConfig.js
    */
-  var getGruntConfig = function( grunt, repositoryName, phetLibs ) {
+  var getGruntConfig = function( repositoryName, phetLibs ) {
 
     /**
      * Gets the paths to be linted.
@@ -85,7 +87,8 @@ module.exports = function( grunt, buildConfig ) {
       allFilesToLint = _.uniq( allFilesToLint );
 
       // constants
-      var ACTIVE_REPOS_FILENAME = 'chipper/data/active-repos';  // The relative path to the list of active repos
+      // TODO: Don't use this from chipper!
+      var ACTIVE_REPOS_FILENAME = 'perennial/data/active-repos';  // The relative path to the list of active repos
 
       // Start in the github checkout dir (above one of the sibling directories)
       var directory = process.cwd();
@@ -154,9 +157,6 @@ module.exports = function( grunt, buildConfig ) {
 
     var lintPaths = getPaths( repositoryName, phetLibs );
 
-    // --disable-eslint-cache disables the cache, useful for developing rules
-    var cache = !grunt.option( 'disable-eslint-cache' );
-
     // grunt config
     var gruntConfig = {
 
@@ -190,7 +190,7 @@ module.exports = function( grunt, buildConfig ) {
   };
 
   // Initialize grunt
-  var gruntConfig = getGruntConfig( grunt, buildConfig.name, buildConfig.phetLibs );
+  var gruntConfig = getGruntConfig( repo, getPhetLibs( repo ) );
 
   // Choose the paths to check for duplicates
   var paths = grunt.option( 'dependencies' ) ? gruntConfig.eslint.allFiles :

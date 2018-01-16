@@ -16,60 +16,22 @@
 /* eslint-env node */
 'use strict';
 
-// built-in node APIs
-var assert = require( 'assert' );
-var child_process = require( 'child_process' );
-
-// 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
+const execute = require( './execute' );
+const getPhetLibs = require( './getPhetLibs' );
+const grunt = require( 'grunt' );
 
 /**
- * @param grunt - the grunt instance
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {string} repo
+ * @param {string} dateString
+ * @returns {Promise}
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = async function( repo, dateString ) {
 
-  // Tell grunt to wait because this task is asynchronous.
-  // Returns a handle to a function that must be called when the task has completed.
-  var done = grunt.task.current.async();
-
-  // Make a copy, because we'll be modifying this list.
-  var repositories = _.clone( buildConfig.phetLibs );
-
-  // Read date from command line.
-  var dateString = grunt.option( 'date' );
-  assert( dateString, 'missing required option: --date=\<date\>' );
-
-  // accumulate output here
   var output = '';
-
-  // Recursively process each repository, since this task is asynchronous.
-  function nextRepository() {
-
-    if ( repositories.length > 0 ) {
-
-      // remove first repository from the list
-      var repository = repositories.shift();
-      output += ( repository + ' since ' + dateString + ' ----------------------------------------------\n' );
-
-      // 'git log' command
-      child_process.exec(
-        'git --git-dir ../' + repository + '/.git log --since="' + dateString + '" --pretty=tformat:"%h | %ci | %cn | %s"',
-        function( error, stdout, stderr ) {
-          assert( !error, 'ERROR on git log attempt: ' + stderr );
-          output += stdout;
-          nextRepository();
-        } );
-    }
-    else {
-
-      // Write the output
-      grunt.log.writeln( output );
-
-      // Tell grunt that this aynchronous task is done.
-      done();
-    }
+  for ( let dependency of getPhetLibs( repo ) ) {
+    output += `${dependency} since ${dateString} ----------------------------------------------\n`;
+    output += await execute( 'git', [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], `../${dependency}` );
   }
 
-  nextRepository();
+  grunt.log.writeln( output );
 };

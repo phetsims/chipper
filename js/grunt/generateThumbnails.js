@@ -12,35 +12,33 @@
 'use strict';
 
 // modules
-var assert = require( 'assert' );
-var Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
-
-// constants
-var BUILD_DIRECTORY = 'build';
+const grunt = require( 'grunt' );
+const Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
 
 /**
- * @param grunt - the grunt instance
- * @param {string} repositoryName - name of the repository
+ * @param {string} repo - name of the repository
  * @param {number} width of the resized image
  * @param {number} height of the resized image
- * @param {function} callback
+ * @returns {Promise} - Resolves to a {Buffer} with the image data
  */
-module.exports = function( grunt, repositoryName, width, height, callback ) {
+module.exports = function( repo, width, height ) {
+  return new Promise( ( resolve, reject ) => {
+    const fullResImageName = `../${repo}/assets/${repo}-screenshot.png`;
 
-  var fullResImageName = 'assets/' + repositoryName + '-screenshot.png';
-  var destinationFile = BUILD_DIRECTORY + '/' + repositoryName + '-' + width + '.png';
+    if ( !grunt.file.exists( fullResImageName ) ) {
+      grunt.log.writeln( `no image file exists: ${fullResImageName}. Aborting generateThumbnails` );
+      return;
+    }
 
-  if ( !grunt.file.exists( fullResImageName ) ) {
-    grunt.log.writeln( 'no image file exists: ' + fullResImageName + '. Not running task: generate-thumbnails' );
-    return;
-  }
-
-  if ( !grunt.file.exists( BUILD_DIRECTORY ) ) {
-    grunt.file.mkdir( BUILD_DIRECTORY );
-  }
-  assert( grunt.file.isDir( BUILD_DIRECTORY ), 'Error: "build" is not a directory' );
-
-  new Jimp( fullResImageName, function() { //eslint-disable-line no-new
-    this.resize( width, height ).write( destinationFile, callback );
+    new Jimp( fullResImageName, function() { //eslint-disable-line no-new
+      this.resize( width, height ).getBuffer( Jimp.MIME_PNG, function( error, pngBuffer ) {
+        if ( error ) {
+          reject( new Error( error ) );
+        }
+        else {
+          resolve( pngBuffer );
+        }
+      } );
+    } );
   } );
 };

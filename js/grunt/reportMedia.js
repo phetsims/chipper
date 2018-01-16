@@ -21,28 +21,27 @@
 /* eslint-env node */
 'use strict';
 
-// modules
-var assert = require( 'assert' );
-var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+// TODO: File not brought up to es6+ standards
+const assert = require( 'assert' );
+const ChipperConstants = require( '../common/ChipperConstants' );
+const getLicenseEntry = require( '../common/getLicenseEntry' );
+const grunt = require( 'grunt' );
 
 /**
- * @param grunt the grunt instance
+ * TODO: doc
  */
-module.exports = function( grunt ) {
-
-  // modules
-  var getLicenseEntry = require( '../../../chipper/js/common/getLicenseEntry' );
+module.exports = function() {
 
   // constants
-  var ACTIVE_REPOS_FILENAME = 'chipper/data/active-repos';  // The relative path to the list of active repos
+  const ACTIVE_REPOS_FILENAME = 'perennial/data/active-repos';  // The relative path to the list of active repos
 
   // Start in the github checkout dir (above one of the sibling directories)
-  var directory = process.cwd();
-  var rootdir = directory + '/../';
+  const directory = process.cwd();
+  const rootdir = directory + '/../';
 
   // Iterate over all active-repos
-  var repos = grunt.file.read( rootdir + '/' + ACTIVE_REPOS_FILENAME ).trim();
-  var reposByLine = repos.split( /\r?\n/ );
+  const repos = grunt.file.read( rootdir + '/' + ACTIVE_REPOS_FILENAME ).trim();
+  const reposByLine = repos.split( /\r?\n/ );
 
   /**
    * Create a fast report based on the license.json files for the specified repository and directory (images or audio)
@@ -50,11 +49,11 @@ module.exports = function( grunt ) {
    * @param {string} directory - the name of the directory to search such as 'images'
    * @private
    */
-  var reportForDirectory = function( repo, directory ) {
+  function reportForDirectory( repo, directory ) {
 
     assert( grunt.file.exists( rootdir + repo ), 'missing required repo: ' + repo );
 
-    var searchDir = rootdir + repo + '/' + directory;
+    const searchDir = rootdir + repo + '/' + directory;
 
     // Not all projects have an audio/ directory
     if ( grunt.file.exists( searchDir ) ) {
@@ -67,7 +66,7 @@ module.exports = function( grunt ) {
              filename.indexOf( 'license.json' ) !== 0 ) {
 
           // Classify the resource
-          var result = getLicenseEntry( abspath );
+          const result = getLicenseEntry( abspath );
 
           if ( !result ) {
             grunt.log.writeln( 'not-annotated: ' + repo + '/' + directory + '/' + filename );
@@ -82,14 +81,14 @@ module.exports = function( grunt ) {
         // This helps to identify stale entries in the license.json files.
         if ( filename === 'license.json' ) {
 
-          var file = grunt.file.read( abspath );
-          var json = JSON.parse( file );
+          const file = grunt.file.read( abspath );
+          const json = JSON.parse( file );
 
           // For each key in the json file, make sure that file exists in the directory
           for ( var key in json ) {
             if ( json.hasOwnProperty( key ) ) {
-              var resourceFilename = searchDir + '/' + key;
-              var exists = grunt.file.exists( resourceFilename );
+              const resourceFilename = searchDir + '/' + key;
+              const exists = grunt.file.exists( resourceFilename );
               if ( !exists ) {
                 grunt.log.writeln( 'missing-file: ' + repo + '/' + directory + '/' + key );
               }
@@ -98,9 +97,9 @@ module.exports = function( grunt ) {
         }
       } );
     }
-  };
+  }
 
-  var mediaTypes = ChipperConstants.MEDIA_TYPES;
+  const mediaTypes = ChipperConstants.MEDIA_TYPES;
   for ( var i = 0; i < reposByLine.length; i++ ) {
     for ( var k = 0; k < mediaTypes.length; k++ ) {
       reportForDirectory( reposByLine[ i ], mediaTypes[ k ] );

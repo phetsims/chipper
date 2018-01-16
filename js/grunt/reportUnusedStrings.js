@@ -14,29 +14,30 @@
 /* eslint-env node */
 'use strict';
 
+const grunt = require( 'grunt' );
+
 /**
- * @param grunt - the grunt instance
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {string} repo
+ * @param {string} requirejsNamespace
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( repo, requirejsNamespace ) {
 
   // get the strings for this sim
-  var simulationRoot = process.cwd();
-  var jsStrings = grunt.file.readJSON( simulationRoot + '/' + buildConfig.name + '-strings_en.json' );
+  var jsStrings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
 
   // iterate over the strings
   for( var key in jsStrings ) {
     if( jsStrings.hasOwnProperty( key ) ) {
 
       var string = jsStrings[ key ].value;
-      var requireStringKey = buildConfig.requirejsNamespace + '/' + key;
+      var requireStringKey = requirejsNamespace + '/' + key;
 
       // global.phet.chipper.strings is initialized by the string plugin
       var chipperStrings = global.phet.chipper.strings || {};
 
       // If this string was not added to the global chipperStrings, it was not required in the sim
       if ( !chipperStrings.hasOwnProperty( requireStringKey ) ) {
-        grunt.log.warn( 'Unused string: key=' + requireStringKey + ', value=' + string );
+        grunt.log.warn( `Unused string: key=${requireStringKey}, value=${string}` );
       }
     }
   }

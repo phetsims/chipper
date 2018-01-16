@@ -3,10 +3,11 @@
 /* eslint-env node */
 'use strict';
 
-var fs = require( 'fs' );
-var jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
-var mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
-var pngjs = require( 'pngjs' );
+const fs = require( 'fs' );
+const jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
+const grunt = require( 'grunt' );
+const mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
+const pngjs = require( 'pngjs' );
 
 /**
  * Responsible for converting a single PNG/JPEG file to a structured list of mipmapped versions of it, each
@@ -34,22 +35,27 @@ var pngjs = require( 'pngjs' );
  *                            all levels up to and including a 1x1 image.
  * @param {number} quality - An integer from 1-100 determining the quality of the image. Currently only used for the
  *                           JPEG encoding quality.
- * @param {function} callback - Called with function( mipmaps: {Array} ), consisting of the array of mipmap objects.
- *                              mipmaps[0] will be for level 0, etc.
+ * @returns {Prmomise} - Will be resolved with mipmaps: {Array} (consisting of the mipmap objects, mipmaps[0] will be level 0)
  */
-module.exports = function createMipmap( filename, maxLevel, quality, grunt, callback ) {
+module.exports = function createMipmap( filename, maxLevel, quality ) {
+  return new Promise( ( resolve, reject ) => {
+    const mipmaps = [];
 
-  var mipmaps = []; // our array that will be passed to the callback when we are done
+    // kick everything off
+    const suffix = filename.slice( -4 );
+    if ( suffix === '.jpg' ) {
+      loadJPEG();
+    }
+    else if ( suffix === '.png' ) {
+      loadPNG();
+    }
+    else {
+      throw new Error( 'unknown image type: ' + filename );
+    }
 
-  // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
-  function loadJPEG() {
-    fs.readFile( filename, function( err, data ) {
-      if ( err ) {
-        throw err;
-      }
-
-      // pass the file data directly to jpeg-js
-      var imageData = jpeg.decode( data );
+    // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
+    function loadJPEG() {
+      var imageData = jpeg.decode( grunt.file.read( filename ) );
 
       mipmaps.push( {
         data: imageData.data,
@@ -57,172 +63,160 @@ module.exports = function createMipmap( filename, maxLevel, quality, grunt, call
         height: imageData.height
       } );
 
-      mipmapIt();
-    } );
-  }
+      startMipmapCreation();
+    }
 
-  // Loads / decodes the initial PNG image, and when done proceeds to the mipmapping
-  function loadPNG() {
-    var src = fs.createReadStream( filename );
+    // Loads / decodes the initial PNG image, and when done proceeds to the mipmapping
+    function loadPNG() {
+      var src = fs.createReadStream( filename );
 
-    var basePNG = new pngjs.PNG( {
-      // if we need a specific filter type, put it here
-    } );
-
-    basePNG.on( 'error', function( err ) {
-      throw err;
-    } );
-
-    basePNG.on( 'parsed', function() {
-      mipmaps.push( {
-        data: basePNG.data,
-        width: basePNG.width,
-        height: basePNG.height
+      var basePNG = new pngjs.PNG( {
+        // if we need a specific filter type, put it here
       } );
 
-      mipmapIt();
-    } );
+      basePNG.on( 'error', function( err ) {
+        throw err;
+      } );
 
-    // pass the stream to pngjs
-    src.pipe( basePNG );
-  }
+      basePNG.on( 'parsed', function() {
+        mipmaps.push( {
+          data: basePNG.data,
+          width: basePNG.width,
+          height: basePNG.height
+        } );
 
-  /**
-   * @param {Buffer} data - Should have 4*width*height elements
-   * @param {number} width
-   * @param {number} height
-   * @param {number} quality - Out of 100
-   * @param {function} callback - function( buffer )
-   */
-  function outputJPEG( data, width, height, quality, callback ) {
-    var encodedOuput = jpeg.encode( {
-      data: data,
-      width: width,
-      height: height
-    }, quality );
-    callback( encodedOuput.data );
-  }
+        startMipmapCreation();
+      } );
 
-  /**
-   * @param {Buffer} data - Should have 4*width*height elements
-   * @param {number} width
-   * @param {number} height
-   * @param {function} callback - function( buffer )
-   */
-  function outputPNG( data, width, height, callback ) {
-    // provides width/height so it is initialized with the correct-size buffer
-    var png = new pngjs.PNG( {
-      width: width,
-      height: height
-    } );
-
-    // copy our image data into the pngjs.PNG's data buffer;
-    data.copy( png.data, 0, 0, data.length );
-
-    // will concatenate the buffers from the stream into one once it is finished
-    var buffers = [];
-    png.on( 'data', function( buffer ) {
-      buffers.push( buffer );
-    } );
-    png.on( 'end', function() {
-      var buffer = Buffer.concat( buffers );
-
-      callback( buffer );
-    } );
-    png.on( 'error', function( err ) {
-      throw err;
-    } );
-
-    // kick off the encoding of the PNG
-    png.pack();
-  }
-
-  // called when our mipmap[0] level is loaded by decoding the main image (creates the mipmap levels)
-  function mipmapIt() {
-    // When reduced to 0, we'll be done with encoding (and can call our callback). Needed because they are asynchronous.
-    var encodeCounter = 1;
-
-    // Alpha detection on the level-0 image to see if we can swap jpg for png
-    var hasAlpha = false;
-    for ( var i = 3; i < mipmaps[ 0 ].data.length; i += 4 ) {
-      if ( mipmaps[ 0 ].data[ i ] < 255 ) {
-        hasAlpha = true;
-        break;
-      }
+      // pass the stream to pngjs
+      src.pipe( basePNG );
     }
 
-    // called when all of encoding is complete
-    function encodingComplete() {
-      grunt.log.debug( 'mipmapped ' + filename + ( maxLevel >= 0 ? ' to level ' + maxLevel : '' ) + ' with quality: ' + quality );
-
-      for ( var level = 0; level < mipmaps.length; level++ ) {
-        // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
-        var usePNG = hasAlpha || mipmaps[ level ].jpgURL.length > mipmaps[ level ].pngURL.length;
-        mipmaps[ level ].url = usePNG ? mipmaps[ level ].pngURL : mipmaps[ level ].jpgURL;
-        mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
-
-        grunt.log.debug( 'level ' + level + ' (' + ( usePNG ? 'PNG' : 'JPG' ) + ' ' +
-                         mipmaps[ level ].width + 'x' + mipmaps[ level ].height + ') base64: ' +
-                         mipmaps[ level ].url.length + ' bytes ' );
-      }
-
-      callback( mipmaps );
+    /**
+     * @param {Buffer} data - Should have 4*width*height elements
+     * @param {number} width
+     * @param {number} height
+     * @param {number} quality - Out of 100
+     * @param {function} callback - function( buffer )
+     */
+    function outputJPEG( data, width, height, quality, callback ) {
+      var encodedOuput = jpeg.encode( {
+        data: data,
+        width: width,
+        height: height
+      }, quality );
+      callback( encodedOuput.data );
     }
 
-    // kicks off asynchronous encoding for a specific level
-    function encodeLevel( level ) {
-      encodeCounter++;
-      outputPNG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, function( buffer ) {
-        mipmaps[ level ].pngBuffer = buffer;
-        mipmaps[ level ].pngURL = 'data:image/png;base64,' + buffer.toString( 'base64' );
-        if ( --encodeCounter === 0 ) {
-          encodingComplete();
+    /**
+     * @param {Buffer} data - Should have 4*width*height elements
+     * @param {number} width
+     * @param {number} height
+     * @param {function} callback - function( buffer )
+     */
+    function outputPNG( data, width, height, callback ) {
+      // provides width/height so it is initialized with the correct-size buffer
+      var png = new pngjs.PNG( {
+        width: width,
+        height: height
+      } );
+
+      // copy our image data into the pngjs.PNG's data buffer;
+      data.copy( png.data, 0, 0, data.length );
+
+      // will concatenate the buffers from the stream into one once it is finished
+      var buffers = [];
+      png.on( 'data', function( buffer ) {
+        buffers.push( buffer );
+      } );
+      png.on( 'end', function() {
+        var buffer = Buffer.concat( buffers );
+
+        callback( buffer );
+      } );
+      png.on( 'error', function( err ) {
+        throw err;
+      } );
+
+      // kick off the encoding of the PNG
+      png.pack();
+    }
+
+    // called when our mipmap[0] level is loaded by decoding the main image (creates the mipmap levels)
+    function startMipmapCreation() {
+      // When reduced to 0, we'll be done with encoding (and can call our callback). Needed because they are asynchronous.
+      var encodeCounter = 1;
+
+      // Alpha detection on the level-0 image to see if we can swap jpg for png
+      var hasAlpha = false;
+      for ( var i = 3; i < mipmaps[ 0 ].data.length; i += 4 ) {
+        if ( mipmaps[ 0 ].data[ i ] < 255 ) {
+          hasAlpha = true;
+          break;
         }
-      } );
+      }
 
-      // only encode JPEG if it has no alpha
-      if ( !hasAlpha ) {
+      // called when all of encoding is complete
+      function encodingComplete() {
+        grunt.log.debug( 'mipmapped ' + filename + ( maxLevel >= 0 ? ' to level ' + maxLevel : '' ) + ' with quality: ' + quality );
+
+        for ( var level = 0; level < mipmaps.length; level++ ) {
+          // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
+          var usePNG = hasAlpha || mipmaps[ level ].jpgURL.length > mipmaps[ level ].pngURL.length;
+          mipmaps[ level ].url = usePNG ? mipmaps[ level ].pngURL : mipmaps[ level ].jpgURL;
+          mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
+
+          grunt.log.debug( 'level ' + level + ' (' + ( usePNG ? 'PNG' : 'JPG' ) + ' ' +
+                           mipmaps[ level ].width + 'x' + mipmaps[ level ].height + ') base64: ' +
+                           mipmaps[ level ].url.length + ' bytes ' );
+        }
+
+        resolve( mipmaps );
+      }
+
+      // kicks off asynchronous encoding for a specific level
+      function encodeLevel( level ) {
         encodeCounter++;
-        outputJPEG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, quality, function( buffer ) {
-          mipmaps[ level ].jpgBuffer = buffer;
-          mipmaps[ level ].jpgURL = 'data:image/jpeg;base64,' + buffer.toString( 'base64' );
+        outputPNG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, function( buffer ) {
+          mipmaps[ level ].pngBuffer = buffer;
+          mipmaps[ level ].pngURL = 'data:image/png;base64,' + buffer.toString( 'base64' );
           if ( --encodeCounter === 0 ) {
             encodingComplete();
           }
         } );
+
+        // only encode JPEG if it has no alpha
+        if ( !hasAlpha ) {
+          encodeCounter++;
+          outputJPEG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, quality, function( buffer ) {
+            mipmaps[ level ].jpgBuffer = buffer;
+            mipmaps[ level ].jpgURL = 'data:image/jpeg;base64,' + buffer.toString( 'base64' );
+            if ( --encodeCounter === 0 ) {
+              encodingComplete();
+            }
+          } );
+        }
+      }
+
+      // encode all levels, and compute rasters for levels 1-N
+      encodeLevel( 0 );
+      function finestMipmap() {
+        return mipmaps[ mipmaps.length - 1 ];
+      }
+
+      // bail if we already have a 1x1 image, or if we reach the maxLevel (recall maxLevel===-1 means no maximum level)
+      while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
+        var level = mipmaps.length;
+        mipmaps.push( mipmapDownscale( finestMipmap(), function( width, height ) {
+          return new Buffer( 4 * width * height );
+        } ) );
+        encodeLevel( level );
+      }
+
+      // just in case everything happened synchronously
+      if ( --encodeCounter === 0 ) {
+        encodingComplete();
       }
     }
-
-    // encode all levels, and compute rasters for levels 1-N
-    encodeLevel( 0 );
-    function finestMipmap() {
-      return mipmaps[ mipmaps.length - 1 ];
-    }
-
-    // bail if we already have a 1x1 image, or if we reach the maxLevel (recall maxLevel===-1 means no maximum level)
-    while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
-      var level = mipmaps.length;
-      mipmaps.push( mipmapDownscale( finestMipmap(), function( width, height ) {
-        return new Buffer( 4 * width * height );
-      } ) );
-      encodeLevel( level );
-    }
-
-    // just in case everything happened synchronously
-    if ( --encodeCounter === 0 ) {
-      encodingComplete();
-    }
-  }
-
-  // kick everything off
-  var suffix = filename.slice( -4 );
-  if ( suffix === '.jpg' ) {
-    loadJPEG();
-  }
-  else if ( suffix === '.png' ) {
-    loadPNG();
-  }
-  else {
-    throw new Error( 'unknown image type: ' + filename );
-  }
+  } );
 };

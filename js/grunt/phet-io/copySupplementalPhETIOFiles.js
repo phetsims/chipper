@@ -11,9 +11,10 @@
 'use strict';
 
 // modules
-var ChipperConstants = require( '../../common/ChipperConstants' );
 var ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 var copyDirectory = require( './copyDirectory' );
+const grunt = require( 'grunt' );
+var minify = require( '../minify' );
 
 // constants
 var DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -25,9 +26,10 @@ var LIB_FILES = [
   '../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js' ];
+  '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js',
+  '../tandem/js/PhetioIDUtils.js'
+];
 
-var LIB_DIR = ChipperConstants.BUILD_DIR + '/lib';
 var LIB_OUTPUT_FILE = 'phet-io.js';
 var LIB_COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Boulder\n' +
                            '// This PhET-iO file requires a license\n' +
@@ -37,14 +39,17 @@ var LIB_COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Bould
 // All libraries and third party files that are used by phet-io wrappers, and need to be copied over for a build
 var CONTRIB_FILES = [
   '../sherpa/lib/lodash-4.17.4.min.js',
+  '../sherpa/lib/ua-parser-0.7.12.min.js',
+  '../sherpa/lib/bootstrap-2.2.2.js',
   '../sherpa/lib/font-awesome-4.5.0',
   '../sherpa/lib/jquery-2.1.0.min.js',
   '../sherpa/lib/jquery-ui-1.8.24.min.js',
   '../sherpa/lib/d3-4.2.2.js'
 ];
-var CONTRIB_DIR = ChipperConstants.BUILD_DIR + '/contrib';
 
-module.exports = function( grunt, buildConfig, done ) {
+module.exports = async function( repo, version ) {
+
+  const buildDir = `../${repo}/build/phet-io`;
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
@@ -75,6 +80,7 @@ module.exports = function( grunt, buildConfig, done ) {
        * Remove individual common phet-io code imports because they are all in phetio.js
        */
 
+      // TODO: use LIB_FILES and/or factor this outs
       // This returns the whole line that contains this substring, so it can be removed
       var firstQueryStringLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js">' );
 
@@ -98,15 +104,19 @@ module.exports = function( grunt, buildConfig, done ) {
       if ( firstWrapperTypeLine && firstWrapperTypeLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstWrapperTypeLine, '' ); // included in phetio.js
       }
+      var firstPhetioIDUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'PhetioIDUtils.js' );
+      if ( firstPhetioIDUtilsLine && firstPhetioIDUtilsLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+        contents = ChipperStringUtils.replaceAll( contents, firstPhetioIDUtilsLine, '' ); // included in phetio.js
+      }
 
       // For info about phetio.js, see the end of this file
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{phet-io.js}}-->',
-        '<script type="text/javascript" src="../../lib/' + LIB_OUTPUT_FILE + '"></script>'
+        '<script src="../../lib/' + LIB_OUTPUT_FILE + '"></script>'
       );
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
-        '<script type="text/javascript" src="/assets/js/phet-io-ga.js"></script>'
+        '<script src="/assets/js/phet-io-ga.js"></script>'
       );
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{FAVICON.ico}}-->',
@@ -114,9 +124,9 @@ module.exports = function( grunt, buildConfig, done ) {
       );
     }
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
-      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', buildConfig.name );
-      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', buildConfig.version );
-      contents = ChipperStringUtils.replaceAll( contents, 'isBuilt: false', 'isBuilt: true' );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', version );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_IS_BUILT}}', 'true' );
 
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
       contents = ChipperStringUtils.replaceAll( contents, WRAPPER_COMMON_FOLDER + '/', 'common/' );
@@ -130,7 +140,23 @@ module.exports = function( grunt, buildConfig, done ) {
   };
 
   // Load the master list of all wrappers
-  var wrappers = grunt.file.read( '../chipper/data/wrappers' ).toString().split( /\r?\n/ );
+  // TODO: Should this be in a file? Would we be duplicating perennial? We want a reproducible build
+  var wrappers = [
+    'phet-io-wrappers/active',
+    'phet-io-wrappers/audio',
+    'phet-io-wrappers/event-log',
+    'phet-io-wrappers/index',
+    'phet-io-wrappers/instance-proxies',
+    'phet-io-wrappers/login',
+    'phet-io-wrappers/mirror-inputs',
+    'phet-io-wrappers/record',
+    'phet-io-wrappers/playback',
+    'phet-io-wrappers/screenshot',
+    'phet-io-wrappers/state',
+    'phet-io-wrappers/wrapper-template',
+    'phet-io-wrapper-classroom-activity',
+    'phet-io-wrapper-lab-book'
+  ];
 
   // Files and directories from wrapper folders that we don't want to copy
   var wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
@@ -153,25 +179,20 @@ module.exports = function( grunt, buildConfig, done ) {
     var wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
 
     // Copy the wrapper into the build dir /wrappers/, exclude the blacklist, and minify the js code
-    copyDirectory( grunt, '../' + wrapper, ChipperConstants.BUILD_DIR + '/wrappers/' + wrapperName, filterWrapper, {
+    copyDirectory( `../${wrapper}`, `${buildDir}/wrappers/${wrapperName}`, filterWrapper, {
       blacklist: fullBlacklist,
       minifyJS: true
     } );
   } );
 
   // Copy over the dev guide and the needed dependencies
-  handleDevGuide( grunt );
+  handleDevGuide( repo );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build
-  handleLib( grunt, filterWrapper );
+  handleLib( repo, filterWrapper );
 
   // Create the contrib folder and add to it third party libraries used by wrappers.
-  handleContrib( grunt );
-
-  // Generate API Documentation
-  if ( grunt.option( 'phetioDocs' ) ) {
-    // generatePhETIOAPIDocs( grunt, buildConfig, done );
-  }
+  handleContrib( repo );
 };
 
 /**
@@ -179,15 +200,14 @@ module.exports = function( grunt, buildConfig, done ) {
  * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
 
  * @param grunt
+ * @param {string} repo
  * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
  *                            has arguments like "function(abspath, contents)"
  */
-var handleLib = function( grunt, filter ) {
+var handleLib = function( repo, filter ) {
+  const buildDir = `../${repo}/build/phet-io`;
 
-  // TODO: chipper#101 eek, this is scary! we are importing from the node_modules dir. ideally we should just have uglify-js installed once in sherpa?
-  var uglify = require( '../../../node_modules/uglify-js/tools/node' );// eslint-disable-line require-statement-match
-
-  grunt.file.mkdir( LIB_DIR );
+  grunt.file.mkdir( `${buildDir}/lib` );
 
   var consolidated = '';
   LIB_FILES.forEach( function( libFile ) {
@@ -199,28 +219,21 @@ var handleLib = function( grunt, filter ) {
     consolidated += filteredContents ? filteredContents : contents;
   } );
 
-  var minified = uglify.minify( consolidated, {
-    fromString: true,
-    mangle: true,
-    output: {
-      inline_script: true, // escape </script
-      beautify: false
-    },
-    compress: {
-      global_defs: {}
-    }
-  } ).code;
+  var minified = minify( consolidated );
 
-  grunt.file.write( LIB_DIR + '/' + LIB_OUTPUT_FILE, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
+  grunt.file.write( `${buildDir}/lib/${LIB_OUTPUT_FILE}`, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
 };
 
 /**
  * Copy the appropriate resources and files to the build folder needed for the development guide.
  * @param grunt
- * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
- *                            has arguments like "function(abspath, contents)"
+ * @param {string} repo
+ * @param {Function} [filter] - the filter function used when copying over the dev guide, to fix relative paths and such
+ *                              has arguments like "function(abspath, contents)"
  */
-var handleDevGuide = function( grunt, filter ) {
+var handleDevGuide = function( repo, filter ) {
+  const buildDir = `../${repo}/build/phet-io`;
+
   var devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
   devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
@@ -239,24 +252,27 @@ var handleDevGuide = function( grunt, filter ) {
   var firstFooterLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="footer"' );
   devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
 
-  grunt.file.write( ChipperConstants.BUILD_DIR + '/docs/devguide.html', devguideHTML );
-  copyDirectory( grunt, '../phet-io-website/root/assets/css', ChipperConstants.BUILD_DIR + '/docs/css', filter );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', './' + ChipperConstants.BUILD_DIR + '/docs/js/phet-io-ga.js' );
-  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', './' + ChipperConstants.BUILD_DIR + '/docs/favicon.ico' );
+  grunt.file.write( `${buildDir}/docs/devguide.html`, devguideHTML );
+  copyDirectory( '../phet-io-website/root/assets/css', `${buildDir}/docs/css`, filter );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', `${buildDir}/docs/js/phet-io.js` );
+  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', `${buildDir}/docs/js/phet-io-ga.js` );
+  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', `${buildDir}/docs/favicon.ico` );
 };
 
 /**
  * Copy all of the third party libraries from sherpa to the build directory under the 'contrib' folder.
  * @param grunt
+ * @param {string} repo
  */
-var handleContrib = function( grunt ) {
+var handleContrib = function( repo ) {
+  const buildDir = `../${repo}/build/phet-io`;
+
   CONTRIB_FILES.forEach( function( filePath ) {
     var filePathParts = filePath.split( '/' );
 
-    var fileName = filePathParts[ filePathParts.length - 1 ];
+    var filename = filePathParts[ filePathParts.length - 1 ];
 
-    grunt.file.copy( filePath, './' + CONTRIB_DIR + '/' + fileName );
+    grunt.file.copy( filePath, `${buildDir}/contrib/${filename}` );
 
   } );
 };

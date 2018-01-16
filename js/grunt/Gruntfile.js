@@ -2,389 +2,220 @@
 
 /**
  * Grunt configuration file for PhET projects.
- * Tasks share information via global.phet, see individual tasks for details.
  *
- * @author Chris Malley (PixelZoom, Inc.)
- * @author Jon Olson
- * @author Sam Reid
- * @author John Blanco
+ * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 /* eslint-env node */
 'use strict';
 
-// built-in node APIs
-var assert = require( 'assert' );
-var fs = require( 'fs' );
-
-// 3rd-party packages
-var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-
-// PhET custom grunt tasks
-var afterRequirejsBuild = require( '../../../chipper/js/grunt/afterRequirejsBuild' );
-var bumpVersion = require( '../../../chipper/js/grunt/bumpVersion' );
-var checkoutShas = require( '../../../chipper/js/grunt/checkoutShas' );
-var commitsSince = require( '../../../chipper/js/grunt/commitsSince' );
-var createSim = require( '../../../chipper/js/grunt/createSim' );
-var deployDev = require( '../../../chipper/js/grunt/deployDev' );
-var deployProduction = require( '../../../chipper/js/grunt/deployProduction' );
-var deployUtil = require( '../../../chipper/js/grunt/deployUtil' );
-var findDuplicates = require( '../../../chipper/js/grunt/findDuplicates' );
-var generateA11yViewHTML = require( '../../../chipper/js/grunt/generateA11yViewHTML' );
-var generateConfig = require( '../../../chipper/js/grunt/generateConfig' );
-var generateCoverage = require( '../../../chipper/js/grunt/generateCoverage' );
-var generateDevelopmentColorsHTML = require( '../../../chipper/js/grunt/generateDevelopmentColorsHTML' );
-var generateDevelopmentHTML = require( '../../../chipper/js/grunt/generateDevelopmentHTML' );
-var generateREADME = require( '../../../chipper/js/grunt/generateREADME' );
-var generateThumbnails = require( '../../../chipper/js/grunt/generateThumbnails' );
-var generateTwitterCard = require( '../../../chipper/js/grunt/generateTwitterCard' );
-var getBuildConfig = require( '../../../chipper/js/grunt/getBuildConfig' );
-var insertRequireStatement = require( '../../../chipper/js/grunt/insertRequireStatement' );
-var lint = require( '../../../chipper/js/grunt/lint' );
-var reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
-var reportThirdParty = require( '../../../chipper/js/grunt/reportThirdParty' );
-var requirejsBuild = require( '../../../chipper/js/grunt/requirejsBuild' );
-var sortRequireStatements = require( '../../../chipper/js/grunt/sortRequireStatements' );
-var updateCopyrightDates = require( '../../../chipper/js/grunt/updateCopyrightDates' );
-var updatePhETiOSite = require( '../../../chipper/js/grunt/updatePhETiOSite' );
-var wrapperBuild = require( '../../../chipper/js/grunt/wrapperBuild' );
-var wrapperDeploy = require( '../../../chipper/js/grunt/wrapperDeploy' );
+const assert = require( 'assert' );
+const buildRunnable = require( './buildRunnable' );
+const buildStandalone = require( './buildStandalone' );
+const buildWrapper = require( './phet-io/buildWrapper' );
+const child_process = require( 'child_process' );
+const ChipperConstants = require( '../common/ChipperConstants' );
+const chipperGlobals = require( './chipperGlobals' );
+const commitsSince = require( './commitsSince' );
+const findDuplicates = require( './findDuplicates' );
+const fs = require( 'fs' );
+const generateA11yViewHTML = require( './generateA11yViewHTML' );
+const generateConfig = require( './generateConfig' );
+const generateCoverage = require( './generateCoverage' );
+const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
+const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+const generateREADME = require( './generateREADME' );
+const getPhetLibs = require( './getPhetLibs' );
+const lint = require( './lint' );
+const reportMedia = require( './reportMedia' );
+const reportThirdParty = require( './reportThirdParty' );
+const updateCopyrightDates = require( './updateCopyrightDates' );
 
 module.exports = function( grunt ) {
+  const packageObject = grunt.file.readJSON( 'package.json' );
 
-  //---------------------------------------------------------------------------------------------------------------
-  // Configuration
-
-  var buildConfig = getBuildConfig( grunt );
-
-  // Initialize and document all globals
-  assert( !global.phet, 'global.phet already exists' );
-  global.phet = {
-
-    chipper: {
-
-      // the grunt instance, for situations where we can't pass it as a function argument
-      grunt: grunt,
-
-      // for code that runs in both requirejs and build modes, and therefore doesn't have access to grunt.file
-      fs: fs,
-
-      // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
-      getCacheBusterArgs: function() { return ''; },
-
-      // media plugins populate this with license.json entries, see getLicenseEntry.js for format of entries
-      licenseEntries: {},
-
-      // use by media plugins, which don't have access to buildConfig
-      brand: buildConfig.brand,
-
-      // populated by mipmap.js
-      mipmapsToBuild: [],
-
-      // populated by string.js
-      strings: {}
-    }
-  };
-
-  //---------------------------------------------------------------------------------------------------------------
-  // Primary tasks
-  //---------------------------------------------------------------------------------------------------------------
-
-  // Default task ('grunt')
-
-  if ( buildConfig.isWrapper ) {
-    grunt.registerTask( 'default', 'Builds the PhET-iO Wrapper', [ 'build-wrapper' ] );
+  // Handle the lack of build.json
+  var buildLocal;
+  try {
+    buildLocal = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
   }
-  else {
-    grunt.registerTask( 'default', 'Builds the English HTML', [ 'build' ] );
+  catch( e ) {
+    buildLocal = {};
   }
 
-  // Add the linting step as an pre-build step.  Can be skipped with --lint=false
-  var optionalTasks = [];
-  if ( grunt.option( 'lint' ) === false ) {
+  const repo = grunt.option( 'repo' ) || packageObject.name;
 
-    // do nothing
-  }
-  else {
-    optionalTasks.push( 'lint-all' );
-  }
-
-  var additionalTasks = [
-    'clean',
-    'requirejs-build',
-    'after-requirejs-build'
-  ];
-
-  // Determine what the 'build' command will do, so that 'grunt build-js' is not needed.
-  if ( !buildConfig.isJSOnly ) {
-    grunt.registerTask( 'build',
-      'Builds the simulation:\n' +
-      'with no options, builds HTML for English only\n' +
-      '--locales=* : all locales in strings/ directory\n' +
-      '--locales=fr : French\n' +
-      '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)\n' +
-      '--localesRepo=$repo : all locales in another repository\'s strings/ directory, ignored if --locales is present\n' +
-      '--brand=$brand : build a specific brand. Choices are phet, phet-io, adapted-from-phet (default)\n' +
-      '--lint=false : skip the lint sub-task\n' +
-      '--mangle=false : skip the mangling portion of UglifyJS2, and beautify the output\n' +
-      '--uglify=false : skip the UglifyJS2 step altogether\n' +
-      '--allHTML : (phet brand only) - Generate the _all.html file that contains information for all locales',
-      optionalTasks.concat( additionalTasks )
-    );
-  }
-  else {
-    // Grunt task that builds only the JS (no HTML), for libraries like scenery
-    // see https://github.com/phetsims/scenery/issues/567
-    grunt.registerTask( 'build', 'Build only the JS, for scenery/kite/dot/sun/libraries',
-      optionalTasks.concat( [ 'clean', 'requirejs-build' ] )
-    );
-  }
-
-  grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
-    [ 'build', 'generate-thumbnails', 'generate-twitter-card' ]
-  );
-
-  // Grunt task that determines created and last modified dates from git, and
-  // updates copyright statements accordingly, see #403
-  grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
-    function() {
-      updateCopyrightDates( grunt, buildConfig );
-    } );
-
-  grunt.registerTask( 'deploy-production',
-    'Invoke deployDev and then deploy a simulation to the production server.\n' +
-    'Should be run AFTER grunt build since it uses the shas from dependencies.json in the build directory.\n' +
-    'Deploys to the production server by default, but dev server can be used for testing by setting:\n' +
-    '"productionServerURL": "https://ox-dev.colorado.edu" in build-local.json\n' +
-    '--dryRun : if true, preconditions will be checked and the build server URL will be printed but build and deploy will not occur\n' +
-    '--noDev : if true, deploy to production only, not spot as well. Useful for testing\n' +
-    '--email : optionally enter an email to be notified if the build fails or succeeds (overrides buildServerNotifyEmail in build-locale.json)\n' +
-    '--locales=* : all locales that have been published so far. NOTE: for sims published after 11/9/15, this is the ' +
-    'default option, otherwise it must be explicitly passed to republish all translations.\n' +
-    '--locales=fr : French\n' +
-    '--locales=ar,fr,es : Arabic, French and Spanish (comma separated locales)',
-    function() {
-
-      var done = grunt.task.current.async();
-
-      deployUtil.checkForUncommittedChanges( grunt, function() {
-        deployUtil.checkForUnpushedChanges( grunt, function() {
-          deployUtil.verifyDependenciesCheckedOut( grunt, function() {
-            if ( grunt.option( 'noDev' ) || grunt.option( 'dryRun' ) ) {
-              deployUtil.commitAndPushDependenciesJSON( grunt, function() {
-                deployProduction( grunt, buildConfig, done );
-              } );
-            }
-            else {
-              deployDev( grunt, buildConfig, function() {
-                deployProduction( grunt, buildConfig, done );
-              } );
-            }
-          } );
-        } );
-      } );
-    } );
-
-  if ( buildConfig.isWrapper ) {
-
-    // dev deploy for a PhET-iO wrapper
-    grunt.registerTask( 'deploy-dev', 'Deploy a PhET-iO wrapper to spot.', function() {
-      wrapperDeploy( grunt, buildConfig );
-    } );
-  }
-  else {
-
-    // Normal dev deploy for a phet sim
-    grunt.registerTask( 'deploy-dev',
-      'Deploy a dev version to spot, or optionally to the server in your preferences file\n' +
-      '--mkdir : set to true to create the sim dir and .htaccess file before copying the version directory\n' +
-      '--test : set to true to disable commit and push, and SCP to a test directory on spot',
-      function() {
-        deployDev( grunt, buildConfig );
-      }
-    );
-  }
-  grunt.registerTask( 'deploy-rc',
-    'Deploy a rc version to spot using the build server.\n' +
-    'Behaves identically to grunt deploy-dev, except the sim is rebuilt and deployed from the build-server instead of locally.\n' +
-    'This is useful to ensure that the rc version is built in the same environment as our production deploys\n' +
-    '--dryRun : if true, preconditions will be checked and the build server URL will be printed but build and deploy will not occur',
-
-    function() {
-      grunt.option( 'noDev', true );
-      grunt.option( 'option', 'rc' );
-
-      var done = grunt.task.current.async();
-
-      deployUtil.checkForUncommittedChanges( grunt, function() {
-        deployUtil.checkForUnpushedChanges( grunt, function() {
-          deployUtil.commitAndPushDependenciesJSON( grunt, function() {
-            deployProduction( grunt, buildConfig, done );
-          } );
-        } );
-      } );
-    }
-  );
+  chipperGlobals.initialize();
 
   /**
-   * Returns a function that lints the specified target.
-   * @param {string} target 'dir'|'all'|'everything'
-   * @returns {function}
+   * Wraps a promise's completion with grunt's asynchronous handling, with added helpful failure messages (including stack traces, regardless of whether --stack was provided).
+   * @public
+   *
+   * @param {Promise} promise
    */
-  var runLint = function( target ) {
-    return function() {
-      lint( grunt, target, buildConfig );
+  async function wrap( promise ) {
+    const done = grunt.task.current.async();
+
+    try {
+      await promise;
+    }
+    catch( e ) {
+      if ( e.stack ) {
+        grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
+      }
+      else if ( typeof e === 'string' ) {
+        grunt.fail.fatal( `Perennial task failed: ${e}` );
+      }
+      else {
+        grunt.fail.fatal( `Perennial task failed with unknown error: ${JSON.stringify( e, null, 2 )}` );
+      }
+    }
+
+    done();
+  }
+
+  /**
+   * Wraps an async function for a grunt task. Will run the async function when the task should be executed. Will properly handle grunt's async handling, and provides improved
+   * error reporting.
+   * @public
+   *
+   * @param {async function} asyncTaskFunction
+   */
+  function wrapTask( asyncTaskFunction ) {
+    return () => {
+      wrap( asyncTaskFunction() );
     };
-  };
-  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', runLint( 'dir' ) );
+  }
 
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository', runLint( 'all' ) );
-
-  grunt.registerTask( 'lint-everything', 'lint all js files that are required to build this repository', runLint( 'everything' ) );
+  grunt.registerTask( 'default', 'Builds the repository', ( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ).concat( [ 'clean', 'build' ] ) );
 
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
-    function() {
-      if ( grunt.file.exists( 'build' ) ) {
-        grunt.file.delete( 'build' );
+    wrapTask( async () => {
+      var buildDirectory = `../${repo}/build`;
+      if ( grunt.file.exists( buildDirectory ) ) {
+        grunt.file.delete( buildDirectory );
       }
-      grunt.file.mkdir( 'build' );
-    } );
+      grunt.file.mkdir( buildDirectory );
+    } ) );
 
+  grunt.registerTask( 'build',
+    'Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.\n' +
+    '--uglify=false - Disables uglification, so the built file will include (essentially) concatenated source files.\n' +
+    '--mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.\n' +
+    'Runnable build options:\n' +
+    '--instrument - Builds a runnable with code coverage tooling inside. See phet-info/docs/code-coverage.md for more information\n' +
+    '--brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using\n' +
+    '                     build-local.json\'s brands (or adapted-from-phet if that does not exist)\n' +
+    '--allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)\n' +
+    '--debugHTML - Includes a _debug.html version that includes assertions enabled (and, depending on the brand, may be un-uglified)\n' +
+    '--locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales\n' +
+    '--oneOff={{ONE_OFF_NAME}} - Builds as a one-off (adds a specific name to the version that identifies it as not-normal, or from a branch',
+    wrapTask( async () => {
+      // grunt options that apply to multiple build tasks
+      const instrument = !!grunt.option( 'instrument' );
+      const uglify = !instrument && ( grunt.option( 'uglify' ) !== false ); // Do not uglify if it is being instrumented
+      const mangle = grunt.option( 'mangle' ) !== false;
 
-  grunt.registerTask( 'requirejs-build',
-    '(internal use only) Do the requirejs build step',
-    function() {
-      requirejsBuild( grunt, buildConfig );
-    } );
+      const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-  grunt.registerTask( 'after-requirejs-build',
-    '(internal use only) Do things after the requirejs:build task',
-    function() {
-      afterRequirejsBuild( grunt, buildConfig );
-    } );
+      // standalone
+      if ( repoPackageObject.phet.buildStandalone ) {
+        grunt.log.writeln( 'Building standalone repository' );
 
-  //---------------------------------------------------------------------------------------------------------------
-  // Utility tasks
-  //---------------------------------------------------------------------------------------------------------------
+        fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( repo, uglify, mangle ) );
+      }
+      else if ( repoPackageObject.isWrapper ) {
+        grunt.log.writeln( 'Building wrapper repository' );
 
-  grunt.registerTask( 'checkout-shas',
-    'Check out shas for a project, as specified in dependencies.json',
-    function() {
-      checkoutShas( grunt, buildConfig.name, false /* toMaster */ );
-    } );
+        await buildWrapper( repo );
+      }
+      else {
 
-  grunt.registerTask( 'checkout-master',
-    'Check out master branch for all dependencies, as specified in dependencies.json',
-    function() {
-      checkoutShas( grunt, buildConfig.name, true /* toMaster */ );
-    } );
+        // Determine what brands we want to build
+        assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
 
-  grunt.registerTask( 'create-sim',
-    'Creates a sim based on the simula-rasa template.\n' +
-    '--name="string" : the repository name\n' +
-    '--author="string" : the author name\n' +
-    '--title="string" : (optional) the simulation title\n' +
-    '--clean=true : (optional) deletes the repository directory if it exists',
-    function() {
-      createSim( grunt );
-    } );
+        const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+        const supportedBrands = localPackageObject.phet.supportedBrands;
 
-  grunt.registerTask( 'bump-version',
-    'Bumps the number after the last dot in the version\n' +
-    'then commits and pushes', function() {
-      bumpVersion( grunt );
-    } );
+        assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
 
-  grunt.registerTask( 'ensure-dev-version', 'Makes sure the version contains "dev", for internal use only.', function() {
-    if ( buildConfig.version.indexOf( 'dev' ) === -1 ) {
-      grunt.fail.fatal( 'cannot deploy-next-dev unless the version number is a dev version' );
-    }
-  } );
+        var brands;
+        if ( grunt.option( 'brands' ) ) {
+          if ( grunt.option( 'brands' ) === '*' ) {
+            brands = supportedBrands;
+          }
+          else {
+            brands = grunt.option( 'brands' ).split( ',' );
+          }
+        }
+        else if ( buildLocal.brands ) {
+          // Extra check, see https://github.com/phetsims/chipper/issues/640
+          assert( buildLocal.brands instanceof Array, 'If brands exists in build-local.json, it should be an array' );
+          brands = buildLocal.brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
+        }
+        else {
+          brands = [ 'adapted-from-phet' ];
+        }
 
-  grunt.registerTask( 'deploy-next-dev', 'Bumps the version, commits, builds and deploys dev', [
+        // Ensure all listed brands are valid
+        brands.forEach( brand => assert( ChipperConstants.BRANDS.includes( brand ), `Unknown brand: ${brand}` ) );
+        brands.forEach( brand => assert( supportedBrands.includes( brand ), `Unsupported brand: ${brand}` ) );
 
-    // Make sure it is a dev version
-    'ensure-dev-version',
+        grunt.log.writeln( `Building runnable repository (${repo}, brands: ${brands.join( ', ' )})` );
 
-    // Build & lint it to make sure there are no problems
-    'build',
+        // Other options
+        const allHTML = !!grunt.option( 'allHTML' );
+        const debugHTML = !!grunt.option( 'debugHTML' );
+        const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
+        const oneOff = grunt.option( 'oneOff' ) || null;
 
-    // update the version number
-    'bump-version',
+        for ( let brand of brands ) {
+          grunt.log.writeln( `Building brand: ${brand}` );
+          await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, oneOff, localesOption );
+        }
+      }
+    } )
+  );
 
-    // Build it with the new version number
-    'build',
+  grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
+    [ 'build' ]
+  );
+  grunt.registerTask( 'lint', 'lint js files that are specific to this repository', wrapTask( async () => {
 
-    // deploy it
-    'deploy-dev'
-  ] );
+    // --disable-eslint-cache disables the cache, useful for developing rules
+    var cache = !grunt.option( 'disable-eslint-cache' );
 
-  // See reportMedia.js
-  grunt.registerTask( 'report-media',
-    '(project-wide) Report on license.json files throughout all working copies. ' +
-    'Reports any media (such as images or audio) files that have any of the following problems:\n' +
-    '(1) incompatible-license (resource license not approved)\n' +
-    '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
-    '(3) missing-file (entry in the license.json but not on the file system)',
-    function() {
-      reportMedia( grunt );
-    } );
+    lint( [ repo ], cache );
+  } ) );
 
-  // see reportThirdParty.js
-  grunt.registerTask( 'report-third-party',
-    'Creates a report of third-party resources (code, images, audio, etc) used in the published PhET simulations by ' +
-    'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
-    'After running this task, you must push sherpa/third-party-licenses.md.',
-    function() {
-      reportThirdParty( grunt );
-    } );
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
 
-  grunt.registerTask( 'published-README',
-    'Generates README.md file for a published simulation.',
-    function() {
-      assert( buildConfig.simTitleStringKey, 'missing buildConfig.simTitleStringKey' );
-      generateREADME( grunt, buildConfig.name, buildConfig.phetLibs, buildConfig.simTitleStringKey, true /* published */ );
-    } );
+    // --disable-eslint-cache disables the cache, useful for developing rules
+    var cache = !grunt.option( 'disable-eslint-cache' );
 
-  grunt.registerTask( 'unpublished-README',
-    'Generates README.md file for an unpublished simulation.',
-    function() {
-      assert( buildConfig.simTitleStringKey, 'missing buildConfig.simTitleStringKey' );
-      generateREADME( grunt, buildConfig.name, buildConfig.phetLibs, buildConfig.simTitleStringKey, false /* published */ );
-    } );
-
-  grunt.registerTask( 'generate-thumbnails', 'Generate 128x84 and 600x394 thumbnails to be used on the website.',
-    function() {
-      var finished = _.after( 2, grunt.task.current.async() );
-      generateThumbnails( grunt, buildConfig.name, 128, 84, finished );
-      generateThumbnails( grunt, buildConfig.name, 600, 394, finished );
-    } );
-
-  grunt.registerTask( 'generate-twitter-card', 'Generate image for twitter summary card to be used on the website.',
-    function() {
-      var finished = _.after( 1, grunt.task.current.async() );
-      generateTwitterCard( grunt, buildConfig.name, finished );
-    } );
+    lint( getPhetLibs( repo ), cache );
+  } ) );
 
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
-    function() {
-      generateDevelopmentHTML( grunt, buildConfig );
-    } );
+    wrapTask( async () => {
+      generateDevelopmentHTML( repo );
+    } ) );
 
   grunt.registerTask( 'generate-test-html',
-    'Generates top-level SIM_test.html file based on the preloads in package.json.',
-    function() {
-      generateDevelopmentHTML( grunt, buildConfig, {
+    'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/docs/adding-tests.md ' +
+    'for more information on automated testing',
+    wrapTask( async () => {
+      generateDevelopmentHTML( repo, {
 
         // Include QUnit CSS
-        stylesheets: '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">',
+        stylesheets: '<link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">',
 
         // Leave the background the default color white
         bodystyle: '',
 
         // Output to a test file
-        outputFile: buildConfig.name + '-tests.html',
+        outputFile: `../${repo}/${repo}-tests.html`,
 
         // Add the QUnit divs
         bodystart: '<div id="qunit"></div><div id="qunit-fixture"></div>',
@@ -393,81 +224,156 @@ module.exports = function( grunt ) {
         addedPreloads: [ '../sherpa/lib/qunit-2.4.1.js', '../aqua/js/qunit-connector.js' ],
 
         // Do not show the splash screen
-        stripPreload: '../joist/js/splash.js',
+        stripPreloads: [ '../joist/js/splash.js' ],
 
         // Specify to use test config
         qualifier: 'test-'
       } );
-    } );
+    } ) );
 
   grunt.registerTask( 'generate-development-colors-html',
     'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
-    function() {
-      generateDevelopmentColorsHTML( grunt, buildConfig );
-    } );
+    wrapTask( async () => {
+      generateDevelopmentColorsHTML( repo );
+    } ) );
 
   grunt.registerTask( 'generate-a11y-view-html',
     'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
-    function() {
-      generateA11yViewHTML( grunt, buildConfig );
-    } );
+    wrapTask( async () => {
+      generateA11yViewHTML( repo );
+    } ) );
 
   grunt.registerTask( 'generate-config',
     'Generates the js/SIM-config.js file based on the dependencies in package.json.',
-    function() {
-      generateConfig( grunt, buildConfig, 'js/' + buildConfig.name + '-config.js', 'main' );
-    } );
+    wrapTask( async () => {
+      generateConfig( repo, `../${repo}/js/${repo}-config.js`, 'main' );
+    } ) );
 
   grunt.registerTask( 'generate-test-config',
     'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
-    function() {
-      generateConfig( grunt, buildConfig, 'js/' + buildConfig.name + '-test-config.js', 'tests' );
-    } );
-
-  grunt.registerTask( 'generate-test-harness',
-    'Generates HTML and JS config file for running tests', [ 'generate-test-html', 'generate-test-config' ] );
+    wrapTask( async () => {
+      generateConfig( repo, `../${repo}/js/${repo}-test-config.js`, 'tests' );
+    } ) );
 
   grunt.registerTask( 'generate-coverage',
     'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
-    function() {
-      generateCoverage( grunt, buildConfig );
-    } );
+    wrapTask( async () => {
+      generateCoverage( repo );
+    } ) );
+
+  grunt.registerTask( 'published-README',
+    'Generates README.md file for a published simulation.',
+    wrapTask( async () => {
+      generateREADME( repo, true /* published */ );
+    } ) );
+
+  grunt.registerTask( 'unpublished-README',
+    'Generates README.md file for an unpublished simulation.',
+    wrapTask( async () => {
+      generateREADME( repo, false /* published */ );
+    } ) );
 
   grunt.registerTask( 'commits-since',
     'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
-    function() {
-      commitsSince( grunt, buildConfig );
-    } );
+    wrapTask( async () => {
+      const dateString = grunt.option( 'date' );
+      assert( dateString, 'missing required option: --date={{DATE}}' );
 
-  grunt.registerTask( 'update-phet-io-site',
-    'Copy the phet-io-site docs and materials from phet-io/phet-io-site to phet-io-site',
-    function() {
-      updatePhETiOSite( grunt, buildConfig );
-    } );
+      await commitsSince( repo, dateString );
+    } ) );
+
+  // See reportMedia.js
+  grunt.registerTask( 'report-media',
+    '(project-wide) Report on license.json files throughout all working copies. ' +
+    'Reports any media (such as images or audio) files that have any of the following problems:\n' +
+    '(1) incompatible-license (resource license not approved)\n' +
+    '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
+    '(3) missing-file (entry in the license.json but not on the file system)',
+    wrapTask( async () => {
+      reportMedia();
+    } ) );
+
+  // see reportThirdParty.js
+  grunt.registerTask( 'report-third-party',
+    'Creates a report of third-party resources (code, images, audio, etc) used in the published PhET simulations by ' +
+    'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
+    'After running this task, you must push sherpa/third-party-licenses.md.',
+    wrapTask( async () => {
+      await reportThirdParty();
+    } ) );
 
   grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
                                          '--dependencies to expand search to include dependencies\n' +
-                                         '--everything to expand search to all PhET code', function() {
-    findDuplicates( grunt, buildConfig );
-  } );
+                                         '--everything to expand search to all PhET code', wrapTask( async () => {
 
-  grunt.registerTask( 'wrapper-basic-build', 'Build PhET-iO wrapper', function() {
-    wrapperBuild( grunt, buildConfig );
-  } );
+    // --disable-eslint-cache disables the cache, useful for developing rules
+    var cache = !grunt.option( 'disable-eslint-cache' );
 
-  grunt.registerTask( 'build-wrapper', 'Build PhET-iO wrapper', optionalTasks.concat( [ 'clean', 'wrapper-basic-build' ] ) );
+    findDuplicates( repo, cache );
+  } ) );
 
-  grunt.registerTask( 'sort-require-statements', 'Sort the require statements for all *.js files in the js/ directory. ' +
-                                                 'This assumes the code is formatted  with IDEA code style and that ' +
-                                                 'require statements take one line each (not split across lines).  The ' +
-                                                 'files are overwritten.\n' +
-                                                 '--file (optional) absolute path of a single file to sort', function() {
-    sortRequireStatements( grunt, grunt.option( 'file' ) );
-  } );
+  // Grunt task that determines created and last modified dates from git, and
+  // updates copyright statements accordingly, see #403
+  grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
+    wrapTask( async () => {
+      await updateCopyrightDates();
+    } ) );
 
-  grunt.registerTask( 'insert-require-statement', 'Insert a require statement into the specified file.\n' +
-                                                  '--file absolute path of the file that will receive the require statement\n' +
-                                                  '--name to be required', function() {
-    insertRequireStatement( grunt, buildConfig );
-  } );
+  /**
+   * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from perennial's directory with the same options
+   * (but with --repo={{REPO}} added, so that perennial is aware of what repository is the target).
+   * @public
+   *
+   * @param {string} task - The name of the task
+   */
+  function forwardToPerennialGrunt( task ) {
+    grunt.registerTask( task, 'Run grunt --help in perennial to see documentation', () => {
+      grunt.log.writeln( '(Forwarding task to perennial)' );
+
+      const done = grunt.task.current.async();
+
+      // Include the --repo flag
+      const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
+      const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
+      const spawned = child_process.spawn( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', args, {
+        cwd: '../perennial'
+      } );
+      grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
+
+      spawned.stderr.on( 'data', data => grunt.log.error( data.toString() ) );
+      spawned.stdout.on( 'data', data => grunt.log.write( data.toString() ) );
+      process.stdin.pipe( spawned.stdin );
+
+      spawned.on( 'close', code => {
+        if ( code !== 0 ) {
+          throw new Error( `perennial grunt ${argsString} failed with code ${code}` );
+        }
+        else {
+          done();
+        }
+      } );
+    } );
+  }
+
+  [
+    'checkout-shas',
+    'checkout-target',
+    'checkout-release',
+    'checkout-master',
+    'checkout-master-all',
+    'sha-check',
+    'sim-list',
+    'npm-update',
+    'create-release',
+    'cherry-pick',
+    'wrapper',
+    'dev',
+    'rc',
+    'production',
+    'create-sim',
+    'sort-require-statements',
+    'insert-require-statement',
+    'lint-everything',
+    'generate-data'
+  ].forEach( forwardToPerennialGrunt );
 };

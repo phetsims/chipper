@@ -11,33 +11,34 @@
 'use strict';
 
 // modules
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const getPhetLibs = require( './getPhetLibs' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt - The grunt runtime object
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {string} repo
  * @param {string} destination - output location
  * @param {string} launchSuffix - text to use for the deps
  */
-module.exports = function( grunt, buildConfig, destination, launchSuffix ) {
+module.exports = function( repo, destination, launchSuffix ) {
 
-  var repositoryName = buildConfig.name;
   var configJS = grunt.file.read( '../chipper/templates/sim-config.js' ); // the template file
+  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-  var requirements = {}; // {string} require.js prefix => {string} of what is included
-  buildConfig.phetLibs.forEach( function( lib ) {
-    var packageFilename = '../' + lib + '/package.json';
+  const requirements = {}; // {string} require.js prefix => {string} of what is included
+  getPhetLibs( repo, 'phet' ).forEach( lib => {
+    const packageFilename = `../${lib}/package.json`;
 
     if ( grunt.file.exists( packageFilename ) ) {
-      var packageJSON = grunt.file.readJSON( packageFilename );
-      var prefix = packageJSON && packageJSON.phet && packageJSON.phet.requirejsNamespace;
+      const packageJSON = grunt.file.readJSON( packageFilename );
+      const prefix = packageJSON && packageJSON.phet && packageJSON.phet.requirejsNamespace;
 
       if ( prefix ) {
         if ( lib === 'brand' ) {
           requirements[ prefix ] = '\'../../brand/\' + phet.chipper.brand + \'/js\'';
         }
         else {
-          requirements[ prefix ] = '\'../../' + lib + '/js\'';
+          requirements[ prefix ] = `'../../${lib}/js'`;
         }
       }
     }
@@ -51,14 +52,14 @@ module.exports = function( grunt, buildConfig, destination, launchSuffix ) {
   requirements.PHET_IO = '\'../../phet-io/js\'';
 
   // Override the simulation prefix to point to just '.'
-  requirements[ buildConfig.requirejsNamespace ] = '\'.\'';
+  requirements[ packageObject.phet.requirejsNamespace ] = '\'.\'';
 
   // Replace placeholders in the template.
-  configJS = ChipperStringUtils.replaceAll( configJS, '{{SIM_REQUIREJS_NAMESPACE}}', buildConfig.requirejsNamespace );
+  configJS = ChipperStringUtils.replaceAll( configJS, '{{SIM_REQUIREJS_NAMESPACE}}', packageObject.phet.requirejsNamespace );
   configJS = ChipperStringUtils.replaceAll( configJS, '{{LAUNCH_SUFFIX}}', launchSuffix );
-  configJS = ChipperStringUtils.replaceAll( configJS, '{{REPOSITORY}}', repositoryName );
+  configJS = ChipperStringUtils.replaceAll( configJS, '{{REPOSITORY}}', repo );
   configJS = ChipperStringUtils.replaceAll( configJS, '{{CURRENT_YEAR}}', new Date().getFullYear() );
-  configJS = ChipperStringUtils.replaceAll( configJS, '{{CONFIG_LINES}}', Object.keys( requirements ).sort().map( function( prefix ) {
+  configJS = ChipperStringUtils.replaceAll( configJS, '{{CONFIG_LINES}}', Object.keys( requirements ).sort().map( prefix => {
     return prefix + ': ' + requirements[ prefix ];
   } ).join( ',\n    ' ) );
 

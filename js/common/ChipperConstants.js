@@ -27,11 +27,11 @@
     // Used to fill in sim.html, the sim template
     END_THIRD_PARTY_LICENSE_ENTRIES: '### END THIRD PARTY LICENSE ENTRIES ###',
 
-    // name of build directory
-    BUILD_DIR: 'build',
-
     // (a11y) tail suffix of the a11y-view template. Expected usage: {{repository-name}}{{A11Y_VIEW_HTML_SUFFIX}}
-    A11Y_VIEW_HTML_SUFFIX: '-a11y-view.html'
+    A11Y_VIEW_HTML_SUFFIX: '_a11y_view.html',
+
+    // All brands that should be taken into account for dependency handling
+    BRANDS: [ 'phet', 'phet-io', 'adapted-from-phet' ]
   };
 
   // browser require.js-compatible definition

@@ -11,19 +11,17 @@
 'use strict';
 
 // modules
-var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var getA11yViewHTMLFromTemplate = require( '../../../chipper/js/grunt/getA11yViewHTMLFromTemplate' );
+const ChipperConstants = require( '../common/ChipperConstants' );
+const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt - The grunt runtime object
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {string} repo
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( repo ) {
 
-  var html = getA11yViewHTMLFromTemplate( grunt, buildConfig );
-
-  var repositoryName = buildConfig.name;
+  const html = getA11yViewHTMLFromTemplate( repo );
 
   // Write to the repository's root directory.
-  grunt.file.write( repositoryName + ChipperConstants.A11Y_VIEW_HTML_SUFFIX, html );
+  grunt.file.write( `../${repo}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, html );
 };

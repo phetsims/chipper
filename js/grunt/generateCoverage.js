@@ -20,21 +20,21 @@
 'use strict';
 
 // modules
-var istanbul = require( 'istanbul' );
+const grunt = require( 'grunt' );
+const istanbul = require( 'istanbul' );
 
 /**
- * @param {Object} grunt - The grunt runtime object
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {string} repo
  */
-module.exports = function( grunt, buildConfig ) {
+module.exports = function( repo ) {
 
-  var collector = new istanbul.Collector();
-  collector.add( JSON.parse( grunt.file.read( 'build/instrumentation/coverage.json' ) ) );
+  const collector = new istanbul.Collector();
+  collector.add( JSON.parse( grunt.file.read( `../${repo}/build/instrumentation/coverage.json` ) ) );
 
-  grunt.file.mkdir( 'build/coverage-report' );
+  grunt.file.mkdir( `../${repo}/build/coverage-report` );
 
-  var report = istanbul.Report.create( 'lcov', {
-    dir: 'build/coverage-report'
+  const report = istanbul.Report.create( 'lcov', {
+    dir: `../${repo}/build/coverage-report`
   } );
   report.writeReport( collector, true );
 };

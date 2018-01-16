@@ -10,22 +10,21 @@
 'use strict';
 
 // modules
-var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+const ChipperConstants = require( '../common/ChipperConstants' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const grunt = require( 'grunt' );
 
 /**
  * @param {Object} grunt - The grunt runtime object
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {string} repo
  */
-module.exports = function( grunt, buildConfig ) {
-
-  var repositoryName = buildConfig.name;
+module.exports = function( repo ) {
   var html = grunt.file.read( '../chipper/templates/sim-development-colors.html' ); // the template file
 
   // Replace placeholders in the template.
-  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', buildConfig.name + ' colors' );
-  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', buildConfig.name + '_' + ChipperConstants.FALLBACK_LOCALE + '.html' );
+  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', `${repo} colors` );
+  html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', `${repo}_${ChipperConstants.FALLBACK_LOCALE}.html` );
 
   // Write to the repository's root directory.
-  grunt.file.write( repositoryName + '-colors.html', html );
+  grunt.file.write( `../${repo}/${repo}-colors.html`, html );
 };

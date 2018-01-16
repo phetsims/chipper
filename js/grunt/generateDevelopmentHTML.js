@@ -12,45 +12,31 @@
 'use strict';
 
 // modules
-var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
-var _ = require( '../../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const getPreloads = require( './getPreloads' );
+const grunt = require( 'grunt' );
 
 /**
- * @param {Object} grunt - The grunt runtime object
- * @param {Object} buildConfig - see getBuildConfig.js
+ * @param {string} repo
  * @param {Object} [options]
  */
-module.exports = function( grunt, buildConfig, options ) {
+module.exports = function( repo, options ) {
 
-  options = _.extend( {
-    stylesheets: '',
-    bodystyle: 'style="background-color:black;"',
-    outputFile: buildConfig.name + '_en.html',
-    bodystart: '',
-    addedPreloads: [], // none to add
-    stripPreload: null, // none to add
-    qualifier: ''
-  }, options );
+  const {
+    stylesheets = '',
+    bodystyle = 'style="background-color:black;"',
+    outputFile = `../${repo}/${repo}_en.html`,
+    bodystart = '',
+    addedPreloads = [], // none to add
+    stripPreloads = [], // none to add
+    qualifier = ''
+  } = options || {};
 
-  var repositoryName = buildConfig.name;
-  var splashURL = '../brand/' + buildConfig.brand + '/images/splash.svg';
+  const brand = 'phet';
+
+  const splashURL = `../brand/${brand}/images/splash.svg`;
   var html = grunt.file.read( '../chipper/templates/sim-development.html' ); // the template file
-
-  function notGA( preload ) {
-    // skip the google-analytics preload
-    return preload.indexOf( 'google-analytics' ) === -1;
-  }
-
-  var normalPreload = buildConfig.preload.filter( notGA );
-  options.addedPreloads.forEach( function( addedPreload ) {
-    normalPreload.push( addedPreload );
-  } );
-
-  if ( options.stripPreload ) {
-    var index = normalPreload.indexOf( options.stripPreload );
-    if ( index === -1 ) { throw new Error( 'preload not found: ' + options.stripPreload );}
-    normalPreload.splice( index, 1 );
-  }
 
   // Formatting is very specific to the template file. Each preload is placed on separate line,
   // with an indentation that is specific indentation to the template. See chipper#462
@@ -62,22 +48,33 @@ module.exports = function( grunt, buildConfig, options ) {
            '\n    ]';
   }
 
+  function isPreloadExcluded( preload ) {
+    return preload.includes( 'google-analytics' ) || stripPreloads.includes( preload );
+  }
+
+  const preloads = getPreloads( repo, brand ).filter( preload => {
+    return !isPreloadExcluded( preload );
+  } ).concat( addedPreloads );
+  const phetioPreloads = getPreloads( repo, 'phet-io' ).filter( preload => {
+    return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
+  } );
+
   // Replace placeholders in the template.
-  html = ChipperStringUtils.replaceAll( html, '{{BODYSTYLE}}', options.bodystyle );
-  html = ChipperStringUtils.replaceAll( html, '{{BODYSTART}}', options.bodystart );
-  html = ChipperStringUtils.replaceAll( html, '{{STYLESHEETS}}', options.stylesheets );
-  html = ChipperStringUtils.replaceAll( html, '{{REPOSITORY}}', repositoryName );
-  html = ChipperStringUtils.replaceAll( html, '{{QUALIFIER}}', options.qualifier );
-  html = ChipperStringUtils.replaceAll( html, '{{BRAND}}', buildConfig.brand );
+  html = ChipperStringUtils.replaceAll( html, '{{BODYSTYLE}}', bodystyle );
+  html = ChipperStringUtils.replaceAll( html, '{{BODYSTART}}', bodystart );
+  html = ChipperStringUtils.replaceAll( html, '{{STYLESHEETS}}', stylesheets );
+  html = ChipperStringUtils.replaceAll( html, '{{REPOSITORY}}', repo );
+  html = ChipperStringUtils.replaceAll( html, '{{QUALIFIER}}', qualifier );
+  html = ChipperStringUtils.replaceAll( html, '{{BRAND}}', brand );
   html = ChipperStringUtils.replaceAll( html, '{{SPLASH_URL}}', splashURL );
-  html = ChipperStringUtils.replaceAll( html, '{{PHETIO_PRELOADS}}', stringifyArray( buildConfig.phetioPreload ) );
-  html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( normalPreload ) );
+  html = ChipperStringUtils.replaceAll( html, '{{PHETIO_PRELOADS}}', stringifyArray( phetioPreloads ) );
+  html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( preloads ) );
 
   // Use the repository name for the browser window title, because getting the sim's title
   // requires running the string plugin in build mode, which is too heavy-weight for this task.
   // See https://github.com/phetsims/chipper/issues/510
-  html = ChipperStringUtils.replaceAll( html, '{{BROWSER_WINDOW_TITLE}}', repositoryName );
+  html = ChipperStringUtils.replaceAll( html, '{{BROWSER_WINDOW_TITLE}}', repo );
 
   // Write to the repository's root directory.
-  grunt.file.write( options.outputFile, html );
+  grunt.file.write( outputFile, html );
 };
