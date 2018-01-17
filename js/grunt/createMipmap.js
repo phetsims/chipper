@@ -55,7 +55,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
 
     // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
     function loadJPEG() {
-      var imageData = jpeg.decode( grunt.file.read( filename ) );
+      var imageData = jpeg.decode( fs.readFileSync( filename ) );
 
       mipmaps.push( {
         data: imageData.data,
