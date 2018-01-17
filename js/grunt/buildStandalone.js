@@ -34,7 +34,8 @@ module.exports = async function( repo, uglify, mangle ) {
   const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, { wrap: false } );
 
   const includedSources = [
-    '../assert/js/assert.js'
+    '../assert/js/assert.js',
+    '../tandem/js/PhetioIDUtils.js'
   ];
   if ( repo === 'scenery' ) {
     includedSources.push( '../sherpa/lib/himalaya-0.2.7.js' );
