@@ -217,8 +217,8 @@ module.exports = function( grunt ) {
         // Output to a test file
         outputFile: `../${repo}/${repo}-tests.html`,
 
-        // Add the QUnit divs
-        bodystart: '<div id="qunit"></div><div id="qunit-fixture"></div>',
+        // Add the QUnit divs (and Scenery display div if relevant)
+        bodystart: '<div id="qunit"></div><div id="qunit-fixture"></div>' + ( repo === 'scenery' ? '<div id="display"></div>' : '' ),
 
         // Add QUnit JS
         addedPreloads: [ '../sherpa/lib/qunit-2.4.1.js', '../aqua/js/qunit-connector.js' ],
