@@ -109,6 +109,8 @@ module.exports = async function( repo, version ) {
         contents = ChipperStringUtils.replaceAll( contents, firstPhetioIDUtilsLine, '' ); // included in phetio.js
       }
 
+      contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
+
       // For info about phetio.js, see the end of this file
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{phet-io.js}}-->',
@@ -155,6 +157,7 @@ module.exports = async function( repo, version ) {
     'phet-io-wrappers/state',
     'phet-io-wrappers/wrapper-template',
     'phet-io-wrapper-classroom-activity',
+    'phet-io-wrapper-visualizing-engagement',
     'phet-io-wrapper-lab-book'
   ];
 
