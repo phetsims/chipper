@@ -109,6 +109,7 @@ module.exports = async function( repo, version ) {
         contents = ChipperStringUtils.replaceAll( contents, firstPhetioIDUtilsLine, '' ); // included in phetio.js
       }
 
+      // Support wrappers that use code from phet-io-wrappers
       contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
 
       // For info about phetio.js, see the end of this file
