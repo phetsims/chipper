@@ -44,16 +44,14 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {boolean} allHTML - If the _all.html file should be generated
  * @param {boolean} debugHTML - If the _all.html file should be generated
  * @param {string} brand
- * @param {string|null} oneOff
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, oneOff, localesOption ) {
+module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, localesOption ) {
   // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
   assert( typeof mangle === 'boolean' );
-  assert( typeof oneOff === 'string' || oneOff === null );
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
 
   if ( brand === 'phet-io' ) {
@@ -82,12 +80,11 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   const rawPreloads = getPreloads( repo, brand ).map( filename => grunt.file.read( filename ) );
   const productionPreloads = rawPreloads.map( js => uglify ? minify( js, { mangle } ) : js );
 
-  const oneOffSuffix = oneOff ? `_${oneOff}` : ''; // includes dash
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
   const dependencies = await getDependencies( repo );
-  const version = packageObject.version + oneOffSuffix; // Include the one-off name in the version
+  const version = packageObject.version; // Include the one-off name in the version
   const thirdPartyEntries = getAllThirdPartyEntries( repo, brand );
   const stringMap = getStringMap( allLocales, phetLibs );
   const mipmapsJavaScript = await buildMipmaps();
@@ -115,7 +112,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
     for ( let locale of locales ) {
-      grunt.file.write( `${buildDir}/${repo}_${locale}_${brand}${oneOffSuffix}.html`, packageRunnable( _.extend( {
+      grunt.file.write( `${buildDir}/${repo}_${locale}_${brand}.html`, packageRunnable( _.extend( {
         locale,
         includeAllLocales: false,
         isDebugBuild: false,
@@ -127,7 +124,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
 
   // _all.html (forced for phet-io)
   if ( allHTML || brand === 'phet-io' ) {
-    grunt.file.write( `${buildDir}/${repo}_all_${brand}${oneOffSuffix}.html`, packageRunnable( _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all_${brand}.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: false,
@@ -139,7 +136,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   if ( debugHTML ) {
     const debugJS = brand === 'phet-io' ? minify( requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
     const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
-    grunt.file.write( `${buildDir}/${repo}_all_${brand}${oneOffSuffix}_debug.html`, packageRunnable( _.extend( {
+    grunt.file.write( `${buildDir}/${repo}_all_${brand}_debug.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: true,
