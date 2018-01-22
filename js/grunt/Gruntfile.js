@@ -108,7 +108,7 @@ module.exports = function( grunt ) {
     '                     build-local.json\'s brands (or adapted-from-phet if that does not exist)\n' +
     '--allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)\n' +
     '--debugHTML - Includes a _debug.html version that includes assertions enabled (and, depending on the brand, may be un-uglified)\n' +
-    '--locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales\n' +
+    '--locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales',
     wrapTask( async () => {
       // grunt options that apply to multiple build tasks
       const instrument = !!grunt.option( 'instrument' );
