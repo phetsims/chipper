@@ -150,6 +150,7 @@ module.exports = async function( repo, version ) {
     'phet-io-wrappers/event-log',
     'phet-io-wrappers/index',
     'phet-io-wrappers/instance-proxies',
+    'phet-io-wrappers/embedded-recorder',
     'phet-io-wrappers/login',
     'phet-io-wrappers/mirror-inputs',
     'phet-io-wrappers/record',
