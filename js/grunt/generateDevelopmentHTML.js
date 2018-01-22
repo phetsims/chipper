@@ -25,7 +25,7 @@ module.exports = function( repo, options ) {
 
   const {
     stylesheets = '',
-    bodystyle = 'style="background-color:black;"',
+    bodystyle = ' style="background-color:black;"', // note the preceding ' ' which is essential
     outputFile = `../${repo}/${repo}_en.html`,
     bodystart = '',
     addedPreloads = [], // none to add
@@ -40,12 +40,12 @@ module.exports = function( repo, options ) {
 
   // Formatting is very specific to the template file. Each preload is placed on separate line,
   // with an indentation that is specific indentation to the template. See chipper#462
-  function stringifyArray( arr ) {
+  function stringifyArray( arr, prefix ) {
     return '[\n' +
            arr.map( function( string ) {
-             return '      \'' + string.replace( /'/g, '\\\'' ) + '\'';
-           } ).join( ', \n' ) +
-           '\n    ]';
+             return prefix + '      \'' + string.replace( /'/g, '\\\'' ) + '\'';
+           } ).join( ',\n' ) +
+           '\n'+prefix+'    ]';
   }
 
   function isPreloadExcluded( preload ) {
@@ -67,8 +67,8 @@ module.exports = function( repo, options ) {
   html = ChipperStringUtils.replaceAll( html, '{{QUALIFIER}}', qualifier );
   html = ChipperStringUtils.replaceAll( html, '{{BRAND}}', brand );
   html = ChipperStringUtils.replaceAll( html, '{{SPLASH_URL}}', splashURL );
-  html = ChipperStringUtils.replaceAll( html, '{{PHETIO_PRELOADS}}', stringifyArray( phetioPreloads ) );
-  html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( preloads ) );
+  html = ChipperStringUtils.replaceAll( html, '{{PHETIO_PRELOADS}}', stringifyArray( phetioPreloads, '  ' ) );
+  html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( preloads, '' ) );
 
   // Use the repository name for the browser window title, because getting the sim's title
   // requires running the string plugin in build mode, which is too heavy-weight for this task.

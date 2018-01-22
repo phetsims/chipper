@@ -12,10 +12,11 @@
 </head>
 
 <!-- body is only made black for the loading phase so that the splash screen is black -->
-<body {{BODYSTYLE}}>
+<body{{BODYSTYLE}}>
 {{BODYSTART}}
 <!-- a11y - aria-live attribute is used to send alerts and status updates to screen readers, otherwise invisible -->
-<div id='aria-live-elements' style="position: absolute; left: 0px; top: 0px; width: 0px; height: 0px; clip: rect(0px 0px 0px 0px); pointer-events: none;">
+<div id='aria-live-elements'
+     style="position: absolute; left: 0px; top: 0px; width: 0px; height: 0px; clip: rect(0px 0px 0px 0px); pointer-events: none;">
   <p id="assertive" aria-live="assertive"></p>
   <p id="polite" aria-live="polite"></p>
   <p id="assertive-alert" aria-live="assertive" role="alert"></p>
@@ -55,7 +56,7 @@
     preloads.forEach( loadURL );
 
     loadURL( '../sherpa/lib/require-2.1.11.js', 'js/{{REPOSITORY}}-{{QUALIFIER}}config.js' );
-  })();
+  } )();
 </script>
 </body>
 </html>

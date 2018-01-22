@@ -209,7 +209,7 @@ module.exports = function( grunt ) {
       generateDevelopmentHTML( repo, {
 
         // Include QUnit CSS
-        stylesheets: '<link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">',
+        stylesheets: '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">', // Note the preceding whitespace which makes the formatting match IDEA formatting
 
         // Leave the background the default color white
         bodystyle: '',
@@ -218,7 +218,7 @@ module.exports = function( grunt ) {
         outputFile: `../${repo}/${repo}-tests.html`,
 
         // Add the QUnit divs (and Scenery display div if relevant)
-        bodystart: '<div id="qunit"></div><div id="qunit-fixture"></div>' + ( repo === 'scenery' ? '<div id="display"></div>' : '' ),
+        bodystart: '<div id="qunit"></div>\n<div id="qunit-fixture"></div>' + ( repo === 'scenery' ? '<div id="display"></div>' : '' ),
 
         // Add QUnit JS
         addedPreloads: [ '../sherpa/lib/qunit-2.4.1.js', '../aqua/js/qunit-connector.js' ],
