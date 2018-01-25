@@ -168,6 +168,8 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   if ( packageObject.phet.accessible && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for pDOM viewing.
     var a11yHTML = getA11yViewHTMLFromTemplate( repo );
+    a11yHTML = ChipperStringUtils.replaceFirst( a11yHTML, '{{PHET_REPOSITORY}}', repo );
+
     grunt.file.write( `${buildDir}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );
   }
 

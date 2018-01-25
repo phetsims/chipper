@@ -160,7 +160,11 @@
 
   noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
   noAccessibility && ( simulationQueryString += 'accessibility' );
-  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_SIM_URL}}' + simulationQueryString );
+
+
+  // add brand name for dev deploys
+  var brandSuffix = window.location.hostname === 'www.colorado.edu' ? '_phet' : '';
+  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_REPOSITORY}}_en' + brandSuffix + '.html' + simulationQueryString );
 </script>
 
 <script type="application/javascript">
