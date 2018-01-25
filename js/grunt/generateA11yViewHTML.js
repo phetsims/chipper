@@ -12,6 +12,7 @@
 
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const grunt = require( 'grunt' );
 
@@ -20,7 +21,8 @@ const grunt = require( 'grunt' );
  */
 module.exports = function( repo ) {
 
-  const html = getA11yViewHTMLFromTemplate( repo );
+  var html = getA11yViewHTMLFromTemplate( repo );
+  html = ChipperStringUtils.replaceFirst( html, '{{PHET_REPOSITORY}}', repo );
 
   // Write to the repository's root directory.
   grunt.file.write( `../${repo}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, html );
