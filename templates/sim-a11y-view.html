@@ -264,18 +264,23 @@
       // whenever an element in the parallel DOM changes, we need to update its copied element as well
       var domObserver = new MutationObserver( function( mutations ) {
 
-        // This is extremely ineficient - every time the document changes, make a new copy, remove
-        // the visual dom, and add a new one
-        // TODO: Work on refining this, and only modifying the elements that change in the PDOM
-        copyContainer.removeChild( pDOMCopy );
-        pDOMCopy = pDOM.cloneNode( true );
-        pDOMCopy.removeAttribute( 'style' );
-        copyContainer.appendChild( pDOMCopy );
+        // update the PDOM copy after a delay to fix a FF/Safari bug where cloneNode prevents hidden DOM elements
+        // in the iframe from staying hidden - see https://github.com/phetsims/chipper/issues/648
+        setTimeout( function() {
 
-        addAriaLabelsToHTML( pDOMCopy );
+          // This is extremely ineficient - every time the document changes, make a new copy, remove
+          // the visual dom, and add a new one
+          // TODO: Work on refining this, and only modifying the elements that change in the PDOM
+          copyContainer.removeChild( pDOMCopy );
+          pDOMCopy = pDOM.cloneNode( true );
+          pDOMCopy.removeAttribute( 'style' );
+          copyContainer.appendChild( pDOMCopy );
 
-        // make sure that the copied html is completely out of navigation
-        removeTabIndex( pDOMCopy );
+          addAriaLabelsToHTML( pDOMCopy );
+
+          // make sure that the copied html is completely out of navigation
+          removeTabIndex( pDOMCopy );
+        }, 10 );
       } );
 
       // configuration of the dom observer:
