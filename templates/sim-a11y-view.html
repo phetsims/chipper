@@ -123,7 +123,7 @@
     <div id="intro">
       <h1>{{PHET_SIM_TITLE}} A11y View: Visual and Described content side by side</h1>
       <p>
-        The accessible version of {{PHET_SIM_TITLE}} is embedded in the iframe below. As you interact with the visual
+        The accessible version of {{PHET_SIM_TITLE}} is embedded in the iframe. As you interact with the visual
         sim
         in the
         iframe with either a keyboard or mouse, the descriptions for the sim automatically update on the right in a
@@ -338,7 +338,7 @@
         liveObserver.observe( originalElement, config )
       }
 
-      addLiveObserver( politeElementContainer, politeElement, politeElementCopy );
+      addLiveObserver( politeElement, alertList );
 
       // set focus to the loaded ifram
       document.getElementById( 'iframe' ).focus();
