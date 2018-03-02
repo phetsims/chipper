@@ -149,7 +149,7 @@ module.exports = async function( repo, version ) {
     'phet-io-wrappers/audio',
     'phet-io-wrappers/event-log',
     'phet-io-wrappers/index',
-    'phet-io-wrappers/instance-proxies',
+    'phet-io-wrappers/studio',
     'phet-io-wrappers/embedded-recorder',
     'phet-io-wrappers/login',
     'phet-io-wrappers/mirror-inputs',
