@@ -318,18 +318,18 @@
               var fadeArray = childrenArray.slice( 5, childrenArray.length );
 
               for ( var i = 0; i < fadeArray.length; i++ ) {
-                var firstChild = fadeArray[ 0 ];
+                var fadeChild = fadeArray[ i ];
 
                 var fadeout = function() {
-                  firstChild.style.opacity = firstChild.style.opacity * 0.95;
+                  fadeChild.style.opacity = fadeChild.style.opacity * 0.95;
 
                   // stop animating and remove child
-                  if( listElement.contains( firstChild ) && firstChild.style.opacity < 0.1 ) {
+                  if( listElement.contains( fadeChild ) && fadeChild.style.opacity < 0.1 ) {
                     window.clearInterval( intervalId );
-                    listElement.removeChild( firstChild );
+                    listElement.removeChild( fadeChild );
                   }
                 };
-                intervalId = window.setInterval( fadeout, 20 );
+                var intervalId = window.setInterval( fadeout, 20 );
               }
             }
           } );
