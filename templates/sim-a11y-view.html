@@ -273,8 +273,8 @@
         // in the iframe from staying hidden - see https://github.com/phetsims/chipper/issues/648
         setTimeout( function() {
 
-          // This is extremely ineficient - every time the document changes, make a new copy, remove
-          // the visual dom, and add a new one
+          // This is extremely inefficient - every time the document changes, make a new copy, remove
+          // the visual DOM, and add a new one
           // TODO: Work on refining this, and only modifying the elements that change in the PDOM
           copyContainer.removeChild( pDOMCopy );
           pDOMCopy = pDOM.cloneNode( true );
