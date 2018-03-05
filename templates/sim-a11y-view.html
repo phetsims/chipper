@@ -254,6 +254,15 @@
               element.innerHTML = element.getAttribute( 'aria-label' ) + element.innerHTML;
             }
           }
+          if ( element.hasAttribute( 'aria-valuetext' ) ) {
+
+            // if the element has aria-valuetext, render this text in a new element so we can see the content of this
+            // inline attribute
+            var valueTextElement = document.createElement( 'p' );
+            valueTextElement.style.opacity = 0.55;
+            valueTextElement.textContent = '<aria-valuetext: ' + element.getAttribute( 'aria-valuetext' ) + '>';
+            element.parentNode.appendChild( valueTextElement );
+          }
         }
       }
 
