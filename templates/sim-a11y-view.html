@@ -300,7 +300,7 @@
       function addLiveObserver( originalElement, listElement ) {
         var liveObserver = new MutationObserver( function( mutations ) {
           mutations.forEach( function( mutation ) {
-            var alertText = mutation.target.textContent
+            var alertText = mutation.target.textContent;
 
             // update the text content of the copied element to match the element in the iframe document
             // create a list item to add to the alert list
