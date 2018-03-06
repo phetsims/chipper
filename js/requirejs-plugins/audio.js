@@ -38,6 +38,7 @@ define( function( require ) {
         // Only the file stem has been specified, so assume that both mp3 and ogg files are available.
         urlList.push( { url: baseUrl + audioPath + '.mp3' } );
         urlList.push( { url: baseUrl + audioPath + '.ogg' } );
+        console.log( 'both' );
       }
       else {
 
