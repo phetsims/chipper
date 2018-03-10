@@ -184,7 +184,7 @@ module.exports = async function() {
       lineElementsForLibrary.push( 'Dependencies: **' + licenseJSON[ library ].dependencies + '**' );
     }
 
-    if ( compositeCode.hasOwnProperty( library ) && Array.isArray(compositeCode[ library ].usedBy) ) {
+    if ( compositeCode.hasOwnProperty( library ) && Array.isArray( compositeCode[ library ].usedBy ) ) {
       lineElementsForLibrary.push( 'Used by: ' + compositeCode[ library ].usedBy.join( ', ' ) );
     }
 
