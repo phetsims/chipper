@@ -1,33 +1,3 @@
-<!DOCTYPE HTML>
-<!-- saved from url=(0026)https://phet.colorado.edu/ -->{{PHET_CARRIAGE_RETURN}}
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1"/>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="phet-sim-level" content="production">
-
-  <!-- metadata for Open Graph protocol -->
-  <meta property="og:title" content="OG_TITLE"/>
-  <meta property="og:type" content="phet:simulation"/>
-  <meta property="og:url" content="OG_URL"/>
-  <meta property="og:image" content="OG_IMAGE"/>
-
-  <title>{{PHET_SIM_TITLE}}</title>
-</head>
-<!--  
-{{PHET_HTML_HEADER}}
--->
-<!-- body is only made black for the loading phase so that the splash screen is black -->
-<body style="background-color:black;">
-
-<!-- a11y - aria-live attribute is used to send alerts and status updates to screen readers, otherwise invisible -->
-<div id='aria-live-elements' style="position: absolute; left: 0px; top: 0px; width: 0px; height: 0px; clip: rect(0px 0px 0px 0px); pointer-events: none;">
-  <p id="polite" aria-live="polite"></p>
-</div>
-
-<script type="text/javascript">
   window.phet = {};
   window.phet.chipper = {};
   window.phet.chipper.project = '{{PHET_PROJECT}}';
@@ -44,16 +14,11 @@
   // {{PHET_END_THIRD_PARTY_LICENSE_ENTRIES}}
   window.phet.chipper.dependencies = {{PHET_DEPENDENCIES}};
   window.phet.chipper.strings = {{PHET_STRINGS}};
-  window.phet.chipper.isDebugBuild = {{PHET_IS_DEBUG_BUILD}}
-</script>
+  window.phet.chipper.isDebugBuild = {{PHET_IS_DEBUG_BUILD}};
 
-<!--
-Populate the splash image data for use in the splash screen.
--->
-<script>window.PHET_SPLASH_DATA_URI="{{PHET_SPLASH_DATA_URI}}"</script>
-<script type="text/javascript">{{PHET_MIPMAPS_JAVASCRIPT}}</script>
-{{PHET_PRELOAD_JAVASCRIPT}}
-<script type="text/javascript">
+window.PHET_SPLASH_DATA_URI="{{PHET_SPLASH_DATA_URI}}";
+{{PHET_MIPMAPS_JAVASCRIPT}};
+{{PHET_PRELOAD_JAVASCRIPT}};
   (function() {
     var stringOverrides = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
 
@@ -66,7 +31,4 @@ Populate the splash image data for use in the splash screen.
       return stringOverrides[ key ] || window.phet.chipper.mapString( window.phet.chipper.strings[ window.phet.chipper.locale ][ key ], stringTest );
     };
   })();
-</script>
-<script type="text/javascript">{{PHET_MAIN_JAVASCRIPT}}</script>
-</body>
-</html>
+{{PHET_MAIN_JAVASCRIPT}};;;;;

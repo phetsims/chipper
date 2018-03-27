@@ -106,7 +106,7 @@ module.exports = function( options ) {
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_MIPMAPS_JAVASCRIPT}}', mipmapsJavaScript );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_SPLASH_DATA_URI}}', loadFileAsDataURI( `../brand/${brand}/images/splash.svg` ) );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_PRELOAD_JAVASCRIPT}}', preloadScripts.map( script => {
-    return `<script>\n${script}\n</script>\n`;
+    return `\n${script};\n\n`;
   } ).join( '\n' ) );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_MAIN_JAVASCRIPT}}', mainInlineJavascript );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_START_THIRD_PARTY_LICENSE_ENTRIES}}', ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
