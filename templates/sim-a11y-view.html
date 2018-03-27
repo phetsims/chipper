@@ -206,8 +206,11 @@
       var pDOM = innerDoc.getElementsByClassName( 'accessibility' )[ 0 ];
       var pDOMCopy = pDOM.cloneNode( true );
 
-      // get the alert dom elements from the iframe's pDOM
-      var politeElement = innerDoc.getElementById( 'polite' );
+      // get the alert dom elements from the iframe's inner document
+      var politeElement1 = innerDoc.getElementById( 'polite-1' );
+      var politeElement2 = innerDoc.getElementById( 'polite-2' );
+      var politeElement3 = innerDoc.getElementById( 'polite-3' );
+      var politeElement4 = innerDoc.getElementById( 'polite-4' );
 
       // get the alert dom elements from the pDOM copy
       var alertList = document.getElementById( 'alert-list' );
@@ -344,7 +347,11 @@
         liveObserver.observe( originalElement, config )
       }
 
-      addLiveObserver( politeElement, alertList );
+      // observe each of the live elements and add new text content to the list view
+      addLiveObserver( politeElement1, alertList );
+      addLiveObserver( politeElement2, alertList );
+      addLiveObserver( politeElement3, alertList );
+      addLiveObserver( politeElement4, alertList );
 
       // set focus to the loaded iframe
       document.getElementById( 'iframe' ).focus();
