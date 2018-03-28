@@ -27,7 +27,7 @@ module.exports = async function() {
   if ( global.phet.chipper.mipmapsToBuild.length === 0 ) {
 
     // No mipmaps loaded, we're done.
-    return '// no mipmaps';
+    return '/* no mipmaps */';
   }
   else {
     // Uses Promise.all to wait for all of the sub-promises (using createMipmap) to complete
