@@ -313,6 +313,21 @@
     showVisibleBounds: { type: 'flag' },
 
     /**
+     * Speed multipler for everything in the sim, including the model and view (and any animations).
+     * Normal speed is 1. Larger values make animations run faster, smaller values make animations run slower.
+     * For example, ?speed=0.5 will make animations run at half the normal speed.
+     * Useful for testing multi-touch, so that terms are easier to grab while they're moving.
+     * For internal use only, not public facing.
+     */
+    speed: {
+      type: 'number',
+      defaultValue: 1,
+      isValidValue: function( value ) {
+        return value > 0;
+      }
+    },
+
+    /**
      * Override translated strings.
      * The value is encoded JSON of the form { "namespace.key":"value", "namespace.key":"value", ... }
      * Example: { "PH_SCALE/logarithmic":"foo", "PH_SCALE/linear":"bar" }
