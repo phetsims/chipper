@@ -106,8 +106,9 @@ module.exports = async function() {
   const requestPromise = new Promise( ( resolve, reject ) => {
     // Change libraryobject to string in format that the database will recognize.
     // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'   
-    const libraryString = '{' + simLibraries.map( o => `"${o.name}":"${o.simLibraries}"` ).join( ',' ) + '}';
-
+    const libraryString = '{' + simLibraries.map( o => `"${o.name}":"${o.libraries}"` ).join( ',' ) + '}';
+    grunt.log.write( libraryString );
+    
     const requestOptions = {
       host: serverName,
       path: '/services/add-simulation-libraries',
