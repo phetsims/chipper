@@ -19,6 +19,7 @@ const minify = require( '../minify' );
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
+const PRODUCTION_SITE = 'phet-io.colorado.edu';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library
 const LIB_FILES = [
@@ -85,27 +86,27 @@ module.exports = async function( repo, version ) {
       let firstQueryStringLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js">' );
 
       // Don't remove the import if it is coming from the phet-io website, only if it is a relative path in requirejs mode.
-      if ( firstQueryStringLine && firstQueryStringLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+      if ( firstQueryStringLine && firstQueryStringLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstQueryStringLine, '' ); // included in phetio.js
       }
       let firstWrapperUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperUtils.js">' );
-      if ( firstWrapperUtilsLine && firstWrapperUtilsLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+      if ( firstWrapperUtilsLine && firstWrapperUtilsLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstWrapperUtilsLine, '' ); // included in phetio.js
       }
       let firstAssertLine = ChipperStringUtils.firstLineThatContains( contents, 'assert.js">' );
-      if ( firstAssertLine && firstAssertLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+      if ( firstAssertLine && firstAssertLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstAssertLine, '' ); // included in phetio.js
       }
       let firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'SimIFrameClient.js">' );
-      if ( firstIFrameClientLine && firstIFrameClientLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+      if ( firstIFrameClientLine && firstIFrameClientLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' ); // included in phetio.js
       }
       let firstWrapperTypeLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperTypes.js">' );
-      if ( firstWrapperTypeLine && firstWrapperTypeLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+      if ( firstWrapperTypeLine && firstWrapperTypeLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstWrapperTypeLine, '' ); // included in phetio.js
       }
       let firstPhetioIDUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'PhetioIDUtils.js' );
-      if ( firstPhetioIDUtilsLine && firstPhetioIDUtilsLine.indexOf( 'phet-io.colorado.edu' ) === -1 ) {
+      if ( firstPhetioIDUtilsLine && firstPhetioIDUtilsLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstPhetioIDUtilsLine, '' ); // included in phetio.js
       }
 
@@ -189,9 +190,6 @@ module.exports = async function( repo, version ) {
     } );
   } );
 
-  // Copy over the dev guide and the needed dependencies
-  handleDevGuide( repo );
-
   // Create the lib file that is minified and publicly available under the /lib folder of the build
   handleLib( repo, filterWrapper );
 
@@ -204,8 +202,8 @@ module.exports = async function( repo, version ) {
  * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
 
  * @param {string} repo
- * @param {Function} filter - the filter function used when copying over the dev guide, to fix relative paths and such
- *                            has arguments like "function(abspath, contents)"
+ * @param {Function} filter - the filter function used when copying over wrapper files to fix relative paths and such.
+ *                            Has arguments like "function(abspath, contents)"
  */
 let handleLib = function( repo, filter ) {
   const buildDir = `../${repo}/build/phet-io`;
@@ -225,40 +223,6 @@ let handleLib = function( repo, filter ) {
   let minified = minify( consolidated );
 
   grunt.file.write( `${buildDir}/lib/${LIB_OUTPUT_FILE}`, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
-};
-
-/**
- * Copy the appropriate resources and files to the build folder needed for the development guide.
- * @param {string} repo
- * @param {Function} [filter] - the filter function used when copying over the dev guide, to fix relative paths and such
- *                              has arguments like "function(abspath, contents)"
- */
-let handleDevGuide = function( repo, filter ) {
-  const buildDir = `../${repo}/build/phet-io`;
-
-  let devguideHTML = grunt.file.read( '../phet-io-website/root/devguide/index.html' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/css/bootstrap.min.css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/bootstrap-3.3.6-dist/js/bootstrap.min.js', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/font-awesome-4.5.0/css/font-awesome.min.css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/jquery-1.12.3.min.js', 'https://code.jquery.com/jquery-1.12.3.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/css/', './css/' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/js/', './js/' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/styles/tomorrow-night-bright.css', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/tomorrow-night-bright.min.css' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/highlight.js-9.1.0/highlight.js', 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js' );
-  devguideHTML = ChipperStringUtils.replaceAll( devguideHTML, '../assets/favicon.ico', './favicon.ico' );
-
-  // Remove the navbar and footer div tags
-  let firstNavbarLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="navbar"' );
-  devguideHTML = firstNavbarLine ? ChipperStringUtils.replaceAll( devguideHTML, firstNavbarLine, '' ) : devguideHTML;
-
-  let firstFooterLine = ChipperStringUtils.firstLineThatContains( devguideHTML, 'id="footer"' );
-  devguideHTML = firstFooterLine ? ChipperStringUtils.replaceAll( devguideHTML, firstFooterLine, '' ) : devguideHTML;
-
-  grunt.file.write( `${buildDir}/docs/devguide.html`, devguideHTML );
-  copyDirectory( '../phet-io-website/root/assets/css', `${buildDir}/docs/css`, filter );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io.js', `${buildDir}/docs/js/phet-io.js` );
-  grunt.file.copy( '../phet-io-website/root/assets/js/phet-io-ga.js', `${buildDir}/docs/js/phet-io-ga.js` );
-  grunt.file.copy( '../phet-io-website/root/assets/favicon.ico', `${buildDir}/docs/favicon.ico` );
 };
 
 /**

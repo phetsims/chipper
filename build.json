@@ -50,7 +50,6 @@
     ],
     "phetLibs": [
       "phet-io",
-      "phet-io-website",
       "phet-io-wrapper-classroom-activity",
       "phet-io-wrapper-lab-book",
       "phet-io-wrappers"
