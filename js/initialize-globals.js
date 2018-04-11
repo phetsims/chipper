@@ -445,11 +445,11 @@
   window.phet.chipper.randomSeed = phet.chipper.queryParameters.randomSeed;
 
   /**
-   * Global flag that dictates if accessibility is enabled for the simulation
+   * Global flag that indictates whether accessibility is enabled for the simulation
    * @public (writable by joist) can be overwritten in the constructor of Sim.js
    * @type {boolean}
    */
-  window.phet.chipper.a11yEnabled = phet.chipper.queryParameters.accessibility;
+  window.phet.chipper.accessibility = phet.chipper.queryParameters.accessibility;
 
   /**
    * Utility function to pause synchronously for the given number of milliseconds.
