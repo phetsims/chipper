@@ -85,7 +85,7 @@ module.exports = function() {
           const json = JSON.parse( file );
 
           // For each key in the json file, make sure that file exists in the directory
-          for ( var key in json ) {
+          for ( let key in json ) {
             if ( json.hasOwnProperty( key ) ) {
               const resourceFilename = searchDir + '/' + key;
               const exists = grunt.file.exists( resourceFilename );
@@ -100,8 +100,8 @@ module.exports = function() {
   }
 
   const mediaTypes = ChipperConstants.MEDIA_TYPES;
-  for ( var i = 0; i < reposByLine.length; i++ ) {
-    for ( var k = 0; k < mediaTypes.length; k++ ) {
+  for ( let i = 0; i < reposByLine.length; i++ ) {
+    for ( let k = 0; k < mediaTypes.length; k++ ) {
       reportForDirectory( reposByLine[ i ], mediaTypes[ k ] );
     }
   }

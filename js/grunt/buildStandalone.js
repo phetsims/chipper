@@ -42,7 +42,7 @@ module.exports = async function( repo, uglify, mangle ) {
   }
 
   const includedJS = includedSources.map( file => fs.readFileSync( file, 'utf8' ) ).join( '\n' );
-  
+
   // Checks if lodash exists
   const testLodash = '  if ( !window.hasOwnProperty( \'_\' ) ) {\n' +
                      '    throw new Error( \'Underscore/Lodash not found: _\' );\n' +
@@ -52,7 +52,7 @@ module.exports = async function( repo, uglify, mangle ) {
                      '    throw new Error( \'jQuery not found: $\' );\n' +
                      '  }\n';
 
-  var fullSource = includedJS + '\n' + requireJS;
+  let fullSource = includedJS + '\n' + requireJS;
   if ( packageObject.phet.requiresJQuery ) {
     fullSource = testJQuery + fullSource;
   }

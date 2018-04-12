@@ -30,7 +30,7 @@ module.exports = function( repo, cache ) {
    * @param {string} repositoryName - name of the repository we're building
    * @param {string[]} phetLibs - see getBuildConfig.js
    */
-  var getGruntConfig = function( repositoryName, phetLibs ) {
+  const getGruntConfig = function( repositoryName, phetLibs ) {
 
     /**
      * Gets the paths to be linted.
@@ -42,7 +42,7 @@ module.exports = function( repo, cache ) {
     function getPaths( repositoryName, phetLibs ) {
 
       // Repository files to be linted. brand has a non-standard directory structure.
-      var repoFilesToSearch;
+      let repoFilesToSearch;
       if ( repositoryName === 'brand' ) {
         repoFilesToSearch = [ '*/js/**/*.js' ];
       }
@@ -52,14 +52,14 @@ module.exports = function( repo, cache ) {
       else if ( repositoryName === 'phet-io' ) {
 
         // For phet-io make sure to include the wrappers folder
-        repoFilesToSearch = [ '../phet-io-website/root/metacog/playback/*.js','js/**/*.js' ];
+        repoFilesToSearch = [ '../phet-io-website/root/metacog/playback/*.js', 'js/**/*.js' ];
       }
       else {
         repoFilesToSearch = [ 'js/**/*.js' ];
       }
 
       // All files to be linted
-      var allFilesToLint = _.map( phetLibs, function( repo ) {
+      let allFilesToLint = _.map( phetLibs, function( repo ) {
 
         // phet-io-wrapper* repos don't have js folders, see below for their structure
         if ( repo.indexOf( 'phet-io-wrapper' ) < 0 ) {
@@ -88,18 +88,18 @@ module.exports = function( repo, cache ) {
 
       // constants
       // TODO: Don't use this from chipper!
-      var ACTIVE_REPOS_FILENAME = 'perennial/data/active-repos';  // The relative path to the list of active repos
+      const ACTIVE_REPOS_FILENAME = 'perennial/data/active-repos';  // The relative path to the list of active repos
 
       // Start in the github checkout dir (above one of the sibling directories)
-      var directory = process.cwd();
-      var rootdir = directory + '/../';
+      const directory = process.cwd();
+      const rootdir = directory + '/../';
 
       // Iterate over all active-repos
-      var repos = grunt.file.read( rootdir + '/' + ACTIVE_REPOS_FILENAME ).trim();
-      var reposByLine = repos.split( /\r?\n/ );
+      const repos = grunt.file.read( rootdir + '/' + ACTIVE_REPOS_FILENAME ).trim();
+      const reposByLine = repos.split( /\r?\n/ );
 
-      var everythingToLint = [];
-      var visit = function( repo, path ) {
+      const everythingToLint = [];
+      const visit = function( repo, path ) {
         if ( repo === 'sherpa' ) {
           // skip
         }
@@ -124,8 +124,8 @@ module.exports = function( repo, cache ) {
             // skip
           }
           else {
-            var children = fs.readdirSync( path );
-            for ( var i = 0; i < children.length; i++ ) {
+            const children = fs.readdirSync( path );
+            for ( let i = 0; i < children.length; i++ ) {
               visit( repo, path + '/' + children[ i ] );
             }
           }
@@ -137,7 +137,7 @@ module.exports = function( repo, cache ) {
         }
       };
 
-      for ( var i = 0; i < reposByLine.length; i++ ) {
+      for ( let i = 0; i < reposByLine.length; i++ ) {
         visit( reposByLine[ i ], '../' + reposByLine[ i ] );
       }
 
@@ -155,10 +155,10 @@ module.exports = function( repo, cache ) {
       };
     }
 
-    var lintPaths = getPaths( repositoryName, phetLibs );
+    const lintPaths = getPaths( repositoryName, phetLibs );
 
     // grunt config
-    var gruntConfig = {
+    const gruntConfig = {
 
       // Configuration for ESLint
       eslint: {
@@ -190,15 +190,15 @@ module.exports = function( repo, cache ) {
   };
 
   // Initialize grunt
-  var gruntConfig = getGruntConfig( repo, getPhetLibs( repo ) );
+  const gruntConfig = getGruntConfig( repo, getPhetLibs( repo ) );
 
   // Choose the paths to check for duplicates
-  var paths = grunt.option( 'dependencies' ) ? gruntConfig.eslint.allFiles :
+  const paths = grunt.option( 'dependencies' ) ? gruntConfig.eslint.allFiles :
               grunt.option( 'everything' ) ? gruntConfig.eslint.everything :
               gruntConfig.eslint.repoFiles;
 
   // For compatibility with jscpd, if there is only one entry, it should be a string (for glob)
-  var files = paths.length === 1 ? paths[ 0 ] : paths;
+  const files = paths.length === 1 ? paths[ 0 ] : paths;
   jscpd.prototype.run( {
 
     // Paths are relative

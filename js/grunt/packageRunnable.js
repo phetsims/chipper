@@ -27,8 +27,8 @@ const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line r
  */
 module.exports = function( options ) {
   const htmlTemplate = grunt.file.read( '../chipper/templates/sim.html' );
-  var html = htmlTemplate;
-  var encoder = new nodeHTMLEncoder.Encoder( 'entity' );
+  let html = htmlTemplate;
+  const encoder = new nodeHTMLEncoder.Encoder( 'entity' );
 
   const {
     brand, // {string}, e.g. 'phet', 'phet-io'
@@ -56,17 +56,17 @@ module.exports = function( options ) {
   const localizedTitle = stringMap[ locale ][ simTitleStringKey ];
   assert( englishTitle, `missing entry for sim title, key = ${simTitleStringKey}` );
 
-  var phetStrings = stringMap;
+  let phetStrings = stringMap;
   if ( !includeAllLocales ) {
     phetStrings = {};
     phetStrings[ locale ] = stringMap[ locale ];
   }
 
   // Directory on the PhET website where the latest version of the sim lives
-  var latestDir = `https://phet.colorado.edu/sims/html/${repo}/latest/`;
+  const latestDir = `https://phet.colorado.edu/sims/html/${repo}/latest/`;
 
   // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
-  var htmlHeader;
+  let htmlHeader;
   if ( brand === 'phet-io' ) {
 
     // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
@@ -128,7 +128,7 @@ module.exports = function( options ) {
 
   // Make sure all template-looking strings were replaced.
   // Match template strings that look like "{{I_AM-A.TEMPLATE}}".
-  var templateHTMLTemplateStrings = htmlTemplate.match( /{{[A-z\-._ ]{1,100}}}/g );
+  const templateHTMLTemplateStrings = htmlTemplate.match( /{{[A-z\-._ ]{1,100}}}/g );
   if ( templateHTMLTemplateStrings ) {
     templateHTMLTemplateStrings.forEach( function( templateString ) {
       if ( html.indexOf( templateString ) >= 0 ) {

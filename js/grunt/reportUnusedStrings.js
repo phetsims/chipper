@@ -23,17 +23,17 @@ const grunt = require( 'grunt' );
 module.exports = function( repo, requirejsNamespace ) {
 
   // get the strings for this sim
-  var jsStrings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
+  const jsStrings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
 
   // iterate over the strings
-  for( var key in jsStrings ) {
-    if( jsStrings.hasOwnProperty( key ) ) {
+  for ( let key in jsStrings ) {
+    if ( jsStrings.hasOwnProperty( key ) ) {
 
-      var string = jsStrings[ key ].value;
-      var requireStringKey = requirejsNamespace + '/' + key;
+      const string = jsStrings[ key ].value;
+      const requireStringKey = requirejsNamespace + '/' + key;
 
       // global.phet.chipper.strings is initialized by the string plugin
-      var chipperStrings = global.phet.chipper.strings || {};
+      const chipperStrings = global.phet.chipper.strings || {};
 
       // If this string was not added to the global chipperStrings, it was not required in the sim
       if ( !chipperStrings.hasOwnProperty( requireStringKey ) ) {

@@ -22,17 +22,17 @@ const grunt = require( 'grunt' );
  */
 module.exports = function( repo, brand ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-  var buildObject;
+  let buildObject;
   try {
     buildObject = grunt.file.readJSON( '../chipper/build.json' );
-  } 
-  catch ( e ) {
+  }
+  catch( e ) {
     buildObject = {};
   }
   const preload = getPreloads( repo, brand );
 
   // start with package.json
-  var licenseKeys = packageObject.phet.licenseKeys || [];
+  let licenseKeys = packageObject.phet.licenseKeys || [];
 
   // add common and brand-specific entries from build.json
   [ 'common', brand ].forEach( id => {
@@ -44,8 +44,8 @@ module.exports = function( repo, brand ) {
   // Extract keys from preload for sherpa (third-party) dependencies
   preload.forEach( path => {
     if ( path.indexOf( '/sherpa/' ) !== -1 ) {
-      var lastSlash = path.lastIndexOf( '/' );
-      var key = path.substring( lastSlash + 1 );
+      const lastSlash = path.lastIndexOf( '/' );
+      const key = path.substring( lastSlash + 1 );
       licenseKeys.push( key );
     }
   } );

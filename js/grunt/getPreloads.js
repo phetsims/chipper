@@ -25,11 +25,11 @@ const grunt = require( 'grunt' );
 module.exports = function( repo, brand ) {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-  var buildObject;
+  let buildObject;
   try {
     buildObject = grunt.file.readJSON( '../chipper/build.json' );
-  } 
-  catch ( e ) {
+  }
+  catch( e ) {
     buildObject = {};
   }
 
@@ -38,7 +38,7 @@ module.exports = function( repo, brand ) {
     return [];
   }
 
-  var preload = [];
+  let preload = [];
 
   // add preloads that are common to all sims, from build.json
   if ( buildObject.common && buildObject.common.preload ) {
@@ -64,15 +64,15 @@ module.exports = function( repo, brand ) {
   preload = _.uniq( preload );
 
   // Verifies that preload repositories are included in phetLib.
-  var phetLibs = getPhetLibs( repo, brand );
-  var missingRepositories = [];
+  const phetLibs = getPhetLibs( repo, brand );
+  const missingRepositories = [];
   preload.forEach( function( entry ) {
 
     // preload entries should start with '..', e.g. "../assert/js/assert.js"
     assert( entry.split( '/' )[ 0 ] === '..', 'malformed preload entry: ' + entry );
 
     // the preload's repository should be in phetLib
-    var repositoryName = entry.split( '/' )[ 1 ];
+    const repositoryName = entry.split( '/' )[ 1 ];
     if ( phetLibs.indexOf( repositoryName ) === -1 && missingRepositories.indexOf( repositoryName ) === -1 ) {
       missingRepositories.push( repositoryName );
     }

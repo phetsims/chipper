@@ -21,7 +21,7 @@ const grunt = require( 'grunt' );
  */
 module.exports = function( repo ) {
 
-  var html = getA11yViewHTMLFromTemplate( repo );
+  let html = getA11yViewHTMLFromTemplate( repo );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_REPOSITORY}}', repo );
 
   // Write to the repository's root directory.

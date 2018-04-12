@@ -21,11 +21,11 @@ const grunt = require( 'grunt' );
 module.exports = function( repo ) {
 
   // confirm that the repository has a strings directory
-  var stringsDirectory = `../babel/${repo}`;
+  const stringsDirectory = `../babel/${repo}`;
   assert( grunt.file.isDir(), `${stringsDirectory} is not a directory` );
 
   // Get names of string files.
-  var stringFiles = grunt.file.expand( `${stringsDirectory}/${repo}-strings_*.json` );
+  const stringFiles = grunt.file.expand( `${stringsDirectory}/${repo}-strings_*.json` );
 
   // Don't fail out if there are no string files, as this is a normal condition when building new simulations
   if ( stringFiles.length === 0 ) {
@@ -35,7 +35,7 @@ module.exports = function( repo ) {
 
   // Extract the locales from the file names.
   // File names must have a form like 'graphing-lines-strings_ar_SA.json', where no '_' appear in the repo name.
-  var locales = stringFiles.map( function( filename ) {
+  const locales = stringFiles.map( function( filename ) {
     return filename.substring( filename.indexOf( '_' ) + 1, filename.lastIndexOf( '.' ) );
   } );
   assert( locales.length > 0, `no locales found in ${stringsDirectory}` );

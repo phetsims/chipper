@@ -60,14 +60,17 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-  var encoder = new nodeHTMLEncoder.Encoder( 'entity' );
+  const encoder = new nodeHTMLEncoder.Encoder( 'entity' );
 
   // All html files share the same build timestamp
-  var timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
+  let timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
-  const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, { insertRequire: repo + '-main', brand } );
+  const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, {
+    insertRequire: repo + '-main',
+    brand
+  } );
   const productionJS = uglify ? minify( requireJS, { mangle, babelTranspile: false } ) : requireJS;
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
@@ -134,7 +137,12 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   }
 
   if ( debugHTML ) {
-    const debugJS = brand === 'phet-io' ? minify( requireJS, { mangle: true, babelTranspile: false, stripAssertions: false, stripLogging: false } ) : requireJS;
+    const debugJS = brand === 'phet-io' ? minify( requireJS, {
+      mangle: true,
+      babelTranspile: false,
+      stripAssertions: false,
+      stripLogging: false
+    } ) : requireJS;
     const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
     grunt.file.write( `${buildDir}/${repo}_all_${brand}_debug.html`, packageRunnable( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
@@ -153,7 +161,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
     const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
-    var iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
+    let iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( englishTitle + ' iframe test' ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_REPOSITORY}}', repo );
 
@@ -167,7 +175,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
   if ( packageObject.phet.accessible && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for pDOM viewing.
-    var a11yHTML = getA11yViewHTMLFromTemplate( repo );
+    let a11yHTML = getA11yViewHTMLFromTemplate( repo );
     a11yHTML = ChipperStringUtils.replaceFirst( a11yHTML, '{{PHET_REPOSITORY}}', repo );
 
     grunt.file.write( `${buildDir}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );

@@ -22,7 +22,7 @@ const grunt = require( 'grunt' );
  */
 module.exports = function( repo, destination, launchSuffix ) {
 
-  var configJS = grunt.file.read( '../chipper/templates/sim-config.js' ); // the template file
+  let configJS = grunt.file.read( '../chipper/templates/sim-config.js' ); // the template file
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
   const requirements = {}; // {string} require.js prefix => {string} of what is included

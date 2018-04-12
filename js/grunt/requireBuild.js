@@ -39,7 +39,7 @@ module.exports = function( repo, mainConfigFile, options ) {
    * @returns {Promise} - Resolves with js: {string}
    */
   return new Promise( ( resolve, reject ) => {
-    var output;
+    let output;
 
     const instrumenter = instrument ? new istanbul.Instrumenter() : null;
 
@@ -69,8 +69,8 @@ module.exports = function( repo, mainConfigFile, options ) {
              path.indexOf( '.js' ) > 0 &&
              path.indexOf( '..' ) < 0 &&
              moduleName.indexOf( '!' ) < 0 ) {
-          var filePath = `../${repo}/build/instrumentation/${moduleName}.js`;
-          var fileDir = filePath.slice( 0, filePath.lastIndexOf( '/' ) );
+          const filePath = `../${repo}/build/instrumentation/${moduleName}.js`;
+          const fileDir = filePath.slice( 0, filePath.lastIndexOf( '/' ) );
           grunt.file.mkdir( fileDir );
           grunt.file.write( filePath, contents );
           grunt.log.debug( 'instrumenting ' + filePath );

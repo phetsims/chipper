@@ -34,7 +34,7 @@ module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
 
   // Handle the lack of build.json
-  var buildLocal;
+  let buildLocal;
   try {
     buildLocal = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
   }
@@ -91,7 +91,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
     wrapTask( async () => {
-      var buildDirectory = `../${repo}/build`;
+      const buildDirectory = `../${repo}/build`;
       if ( grunt.file.exists( buildDirectory ) ) {
         grunt.file.delete( buildDirectory );
       }
@@ -138,7 +138,7 @@ module.exports = function( grunt ) {
 
         assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
 
-        var brands;
+        let brands;
         if ( grunt.option( 'brands' ) ) {
           if ( grunt.option( 'brands' ) === '*' ) {
             brands = supportedBrands;
@@ -181,7 +181,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', wrapTask( async () => {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
-    var cache = !grunt.option( 'disable-eslint-cache' );
+    const cache = !grunt.option( 'disable-eslint-cache' );
 
     lint( [ repo ], cache );
   } ) );
@@ -189,7 +189,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
-    var cache = !grunt.option( 'disable-eslint-cache' );
+    const cache = !grunt.option( 'disable-eslint-cache' );
 
     lint( getPhetLibs( repo ), cache );
   } ) );
@@ -305,7 +305,7 @@ module.exports = function( grunt ) {
                                          '--everything to expand search to all PhET code', wrapTask( async () => {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
-    var cache = !grunt.option( 'disable-eslint-cache' );
+    const cache = !grunt.option( 'disable-eslint-cache' );
 
     findDuplicates( repo, cache );
   } ) );

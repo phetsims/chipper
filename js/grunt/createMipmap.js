@@ -55,7 +55,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
 
     // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
     function loadJPEG() {
-      var imageData = jpeg.decode( fs.readFileSync( filename ) );
+      const imageData = jpeg.decode( fs.readFileSync( filename ) );
 
       mipmaps.push( {
         data: imageData.data,
@@ -68,9 +68,9 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
 
     // Loads / decodes the initial PNG image, and when done proceeds to the mipmapping
     function loadPNG() {
-      var src = fs.createReadStream( filename );
+      const src = fs.createReadStream( filename );
 
-      var basePNG = new pngjs.PNG( {
+      const basePNG = new pngjs.PNG( {
         // if we need a specific filter type, put it here
       } );
 
@@ -100,7 +100,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
      * @param {function} callback - function( buffer )
      */
     function outputJPEG( data, width, height, quality, callback ) {
-      var encodedOuput = jpeg.encode( {
+      const encodedOuput = jpeg.encode( {
         data: data,
         width: width,
         height: height
@@ -116,7 +116,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
      */
     function outputPNG( data, width, height, callback ) {
       // provides width/height so it is initialized with the correct-size buffer
-      var png = new pngjs.PNG( {
+      const png = new pngjs.PNG( {
         width: width,
         height: height
       } );
@@ -125,12 +125,12 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       data.copy( png.data, 0, 0, data.length );
 
       // will concatenate the buffers from the stream into one once it is finished
-      var buffers = [];
+      const buffers = [];
       png.on( 'data', function( buffer ) {
         buffers.push( buffer );
       } );
       png.on( 'end', function() {
-        var buffer = Buffer.concat( buffers );
+        const buffer = Buffer.concat( buffers );
 
         callback( buffer );
       } );
@@ -145,11 +145,11 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
     // called when our mipmap[0] level is loaded by decoding the main image (creates the mipmap levels)
     function startMipmapCreation() {
       // When reduced to 0, we'll be done with encoding (and can call our callback). Needed because they are asynchronous.
-      var encodeCounter = 1;
+      let encodeCounter = 1;
 
       // Alpha detection on the level-0 image to see if we can swap jpg for png
-      var hasAlpha = false;
-      for ( var i = 3; i < mipmaps[ 0 ].data.length; i += 4 ) {
+      let hasAlpha = false;
+      for ( let i = 3; i < mipmaps[ 0 ].data.length; i += 4 ) {
         if ( mipmaps[ 0 ].data[ i ] < 255 ) {
           hasAlpha = true;
           break;
@@ -160,9 +160,9 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       function encodingComplete() {
         grunt.log.debug( 'mipmapped ' + filename + ( maxLevel >= 0 ? ' to level ' + maxLevel : '' ) + ' with quality: ' + quality );
 
-        for ( var level = 0; level < mipmaps.length; level++ ) {
+        for ( let level = 0; level < mipmaps.length; level++ ) {
           // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
-          var usePNG = hasAlpha || mipmaps[ level ].jpgURL.length > mipmaps[ level ].pngURL.length;
+          const usePNG = hasAlpha || mipmaps[ level ].jpgURL.length > mipmaps[ level ].pngURL.length;
           mipmaps[ level ].url = usePNG ? mipmaps[ level ].pngURL : mipmaps[ level ].jpgURL;
           mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
 
@@ -206,7 +206,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
 
       // bail if we already have a 1x1 image, or if we reach the maxLevel (recall maxLevel===-1 means no maximum level)
       while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
-        var level = mipmaps.length;
+        const level = mipmaps.length;
         mipmaps.push( mipmapDownscale( finestMipmap(), function( width, height ) {
           return new Buffer( 4 * width * height );
         } ) );

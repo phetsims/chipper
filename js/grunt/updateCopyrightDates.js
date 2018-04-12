@@ -22,42 +22,42 @@ const grunt = require( 'grunt' );
 module.exports = function() {
   return new Promise( ( resolve, reject ) => {
     // constants
-    var sourceRoot = process.cwd() + '/js';
+    const sourceRoot = process.cwd() + '/js';
 
     // Keep track of results from the git processes, key = absolute path, value = {startDate,endDate}
-    var elements = {};
+    const elements = {};
 
     // After every file has a startDate and endDate, update the files in the file system
-    var updateAllFiles = function() {
-      var keys = _.keys( elements );
-      for ( var i = 0; i < keys.length; i++ ) {
-        var absPath = keys[ i ];
+    const updateAllFiles = function() {
+      const keys = _.keys( elements );
+      for ( let i = 0; i < keys.length; i++ ) {
+        const absPath = keys[ i ];
 
-        var startDate = elements[ absPath ].startDate;
-        var endDate = elements[ absPath ].endDate;
+        const startDate = elements[ absPath ].startDate;
+        const endDate = elements[ absPath ].endDate;
 
         // Create the single date or date range to use in the copyright statement
-        var dateString = ( startDate === endDate ) ? startDate : ( '' + startDate + '-' + endDate );
+        const dateString = ( startDate === endDate ) ? startDate : ( '' + startDate + '-' + endDate );
 
-        var fileText = grunt.file.read( absPath );
+        const fileText = grunt.file.read( absPath );
 
         // Infer the line separator for the platform
-        var firstR = fileText.indexOf( '\r' );
-        var firstN = fileText.indexOf( '\n' );
-        var lineSeparator = firstR >= 0 && firstR < firstN ? '\r' : '\n';
+        const firstR = fileText.indexOf( '\r' );
+        const firstN = fileText.indexOf( '\n' );
+        const lineSeparator = firstR >= 0 && firstR < firstN ? '\r' : '\n';
 
         // Parse by line separator
-        var fileLines = fileText.split( lineSeparator ); // splits using both unix and windows newlines
+        const fileLines = fileText.split( lineSeparator ); // splits using both unix and windows newlines
 
         // Check if the first line is already correct
-        var firstLine = fileLines[ 0 ];
-        var copyrightLine = '// Copyright ' + dateString + ', University of Colorado Boulder';
+        const firstLine = fileLines[ 0 ];
+        const copyrightLine = '// Copyright ' + dateString + ', University of Colorado Boulder';
 
         // Update the line
         if ( firstLine !== copyrightLine ) {
           if ( firstLine.indexOf( '// Copyright' ) === 0 ) {
-            var concatted = [ copyrightLine ].concat( fileLines.slice( 1 ) );
-            var newFileContents = concatted.join( lineSeparator );
+            const concatted = [ copyrightLine ].concat( fileLines.slice( 1 ) );
+            const newFileContents = concatted.join( lineSeparator );
             grunt.file.write( absPath, newFileContents );
             console.log( absPath + ', updated with ' + copyrightLine );
           }
@@ -70,7 +70,7 @@ module.exports = function() {
       resolve();
     };
 
-    var count = 0;
+    let count = 0;
     if ( grunt.file.exists( sourceRoot ) ) {
 
       // Count the number of start and end dates we need
@@ -83,7 +83,7 @@ module.exports = function() {
       } );
 
       // Using the git command, gather the dates specified
-      var gatherDates = function( dateName, gitCommand ) {
+      const gatherDates = function( dateName, gitCommand ) {
         grunt.file.recurse( sourceRoot, function( abspath ) {
           if ( ChipperStringUtils.endsWith( abspath, '.js' ) ) {
 
@@ -92,7 +92,7 @@ module.exports = function() {
               gitCommand + abspath,
               function( error, stdout, stderr ) {
                 assert( !error, 'ERROR on git log attempt: ' + stderr );
-                var date = stdout.split( '-' )[ 0 ];
+                const date = stdout.split( '-' )[ 0 ];
                 elements[ abspath ][ dateName ] = date;
                 count--;
                 if ( count === 0 ) {

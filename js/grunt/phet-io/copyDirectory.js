@@ -32,7 +32,7 @@ module.exports = function( src, dst, filter, options ) {
   grunt.file.recurse( src, function callback( abspath, rootdir, subdir, filename ) {
 
 
-    var isInBlacklistedDir = false;
+    let isInBlacklistedDir = false;
     subdir && subdir.split( '/' ).forEach( function( pathPart ) {
 
       // Exclude all directories that are in the blacklist
@@ -46,19 +46,19 @@ module.exports = function( src, dst, filter, options ) {
       return;
     }
 
-    var contents = grunt.file.read( abspath );
+    const contents = grunt.file.read( abspath );
 
     // TODO: this line is duplicated around chipper
-    var dstPath = subdir ? ( dst + '/' + subdir + '/' + filename ) : ( dst + '/' + filename );
+    const dstPath = subdir ? ( dst + '/' + subdir + '/' + filename ) : ( dst + '/' + filename );
 
     if ( options.failOnExistingFiles && grunt.file.exists( dstPath ) ) {
       assert && assert( false, 'file existed already' );
     }
-    var filteredContents = filter && filter( abspath, contents );
+    let filteredContents = filter && filter( abspath, contents );
 
     // Minify the file if it is javascript code
     if ( options.minifyJS && filename.endsWith( '.js' ) && abspath.indexOf( 'chipper/templates/' ) < 0 ) {
-      var toBeMinified = filteredContents ? filteredContents : contents;
+      const toBeMinified = filteredContents ? filteredContents : contents;
       filteredContents = minify( toBeMinified, { mangle: options.mangle } );
 
       // Only add the license to the javascript code

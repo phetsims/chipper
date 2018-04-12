@@ -33,11 +33,11 @@ module.exports = function getPhetLibs( repo, brand ) {
   }
   else {
     const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-    var buildObject;
+    let buildObject;
     try {
       buildObject = grunt.file.readJSON( '../chipper/build.json' );
-    } 
-    catch ( e ) {
+    }
+    catch( e ) {
       buildObject = {};
     }
 
@@ -47,7 +47,7 @@ module.exports = function getPhetLibs( repo, brand ) {
     }
 
     // start with package.json
-    var phetLibs = packageObject.phet.phetLibs || [];
+    let phetLibs = packageObject.phet.phetLibs || [];
 
     // add the repo that's being built
     phetLibs.push( packageObject.name );

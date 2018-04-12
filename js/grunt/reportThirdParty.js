@@ -39,7 +39,7 @@ module.exports = async function() {
   const serverName = 'phet.colorado.edu';
   const BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
   const buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
-  assert ( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, 'websiteAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME);
+  assert( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, 'websiteAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME );
 
   // The file where the report will be written
   const outputFilename = '../sherpa/third-party-licenses.md';
@@ -64,7 +64,7 @@ module.exports = async function() {
     console.log( `downloading ${sim}` );
     try {
       const html = ( await rp( url ) ).trim();
-      
+
       const startIndex = html.indexOf( ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
       const endIndex = html.indexOf( ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
       const substring = html.substring( startIndex, endIndex );
@@ -75,7 +75,7 @@ module.exports = async function() {
 
       const json = JSON.parse( jsonString );
 
-      var title = parseTitle( html );
+      let title = parseTitle( html );
       if ( !title || title.indexOf( 'undefined' ) === 0 || title.indexOf( 'TITLE' ) >= 0 ) {
         grunt.log.writeln( `title not found for ${sim}` );
         title = sim;
@@ -98,7 +98,7 @@ module.exports = async function() {
         libraries: libString
       } );
     }
-    catch ( e ) {
+    catch( e ) {
       console.log( `${sim} not found on production` );
     }
   }
@@ -107,7 +107,7 @@ module.exports = async function() {
     // Change libraryobject to string in format that the database will recognize.
     // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'   
     const libraryString = '{' + simLibraries.map( o => `"${o.name}":"${o.libraries}"` ).join( ',' ) + '}';
-    
+
     const requestOptions = {
       host: serverName,
       path: '/services/add-simulation-libraries',
@@ -128,7 +128,7 @@ module.exports = async function() {
 
     // write data to request body
     request.write( libraryString );
-    
+
     request.end();
   } );
 
@@ -140,7 +140,7 @@ module.exports = async function() {
   simTitles.sort();
 
   // If anything is used by every sim indicate that here
-  for ( var entry in compositeCode ) {
+  for ( let entry in compositeCode ) {
     if ( compositeCode.hasOwnProperty( entry ) ) {
       compositeCode[ entry ].usedBy.sort();
       if ( _.isEqual( simTitles, compositeCode[ entry ].usedBy ) ) {
@@ -149,15 +149,15 @@ module.exports = async function() {
     }
   }
 
-  var licenseJSON = grunt.file.readJSON( '../sherpa/lib/license.json' );
+  const licenseJSON = grunt.file.readJSON( '../sherpa/lib/license.json' );
 
-  var codeOutput = [];
-  var codeLicensesUsed = [];
-  var mediaLicensesUsed = [];
+  const codeOutput = [];
+  const codeLicensesUsed = [];
+  const mediaLicensesUsed = [];
 
   // Get a list of the library names
-  var libraryNames = [];
-  for ( var lib in licenseJSON ) {
+  const libraryNames = [];
+  for ( let lib in licenseJSON ) {
     if ( licenseJSON.hasOwnProperty( lib ) ) {
       libraryNames.push( lib );
     }
@@ -169,10 +169,10 @@ module.exports = async function() {
   } );
 
   // Add info for each library to the MD report
-  for ( var i = 0; i < libraryNames.length; i++ ) {
-    var library = libraryNames[ i ];
+  for ( let i = 0; i < libraryNames.length; i++ ) {
+    const library = libraryNames[ i ];
 
-    var lineElementsForLibrary = [
+    const lineElementsForLibrary = [
       '**' + library + '**',
       licenseJSON[ library ].text.join( '<br>' ),
       licenseJSON[ library ].projectURL,
@@ -197,9 +197,9 @@ module.exports = async function() {
     }
   }
 
-  var mediaOutput = [];
-  var mediaKeys = [];
-  for ( var imageAudioEntry in compositeMedia ) {
+  const mediaOutput = [];
+  const mediaKeys = [];
+  for ( let imageAudioEntry in compositeMedia ) {
     if ( compositeMedia.hasOwnProperty( imageAudioEntry ) ) {
       mediaKeys.push( imageAudioEntry );
     }
@@ -210,11 +210,11 @@ module.exports = async function() {
   } );
 
   // Create the text for the image and audio, and keep track of which licenses were used by them.
-  for ( i = 0; i < mediaKeys.length; i++ ) {
-    var mediaKey = mediaKeys[ i ];
+  for ( let i = 0; i < mediaKeys.length; i++ ) {
+    const mediaKey = mediaKeys[ i ];
 
-    var text = compositeMedia[ mediaKey ].text.join( '<br>' ).trim();
-    var projectURL = compositeMedia[ mediaKey ].projectURL.trim();
+    let text = compositeMedia[ mediaKey ].text.join( '<br>' ).trim();
+    let projectURL = compositeMedia[ mediaKey ].projectURL.trim();
 
     if ( text.length === 0 ) {
       text = '(no text)';
@@ -224,15 +224,15 @@ module.exports = async function() {
       projectURL = '(no project url)';
     }
 
-    var notes = compositeMedia[ mediaKey ].notes.trim();
+    let notes = compositeMedia[ mediaKey ].notes.trim();
     if ( notes.length === 0 ) {
       notes = '(no notes)';
     }
 
-    var license = compositeMedia[ mediaKey ].license.trim();
+    const license = compositeMedia[ mediaKey ].license.trim();
     assert && assert( license.length > 0, 'All media entries must have a license' );
 
-    var mediaEntryLines = [
+    const mediaEntryLines = [
       '**' + mediaKey + '**',
       text,
       projectURL,
@@ -260,9 +260,9 @@ module.exports = async function() {
   }
 
   // Summarize licenses used
-  var fileList = simTitles.join( '\n* ' );
+  const fileList = simTitles.join( '\n* ' );
 
-  var outputString =
+  const outputString =
     'This report enumerates the third-party resources (code, images, audio, etc) used in a set of simulations.\n' +
     '* [Third-party Code](#third-party-code)\n' +
     '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +

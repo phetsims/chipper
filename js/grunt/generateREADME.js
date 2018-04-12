@@ -28,8 +28,8 @@ module.exports = function( repo, published ) {
   const phetLibs = getPhetLibs( repo, 'phet' );
 
   // Commands for cloning all required repositories
-  var cloneCommands = '';
-  for ( var i = 0; i < phetLibs.length; i++ ) {
+  let cloneCommands = '';
+  for ( let i = 0; i < phetLibs.length; i++ ) {
     cloneCommands = cloneCommands + 'git clone https://github.com/phetsims/' + phetLibs[ i ] + '.git';
     if ( i !== phetLibs.length - 1 ) {
       cloneCommands += '\n';
@@ -38,7 +38,7 @@ module.exports = function( repo, published ) {
 
   // Read the template.
   const templateFile = published ? 'README-published.md' : 'README-unpublished.md';
-  var readme = grunt.file.read( '../chipper/templates/' + templateFile );
+  let readme = grunt.file.read( '../chipper/templates/' + templateFile );
 
   // Replace placeholders in the template.
   readme = ChipperStringUtils.replaceAll( readme, '{{REPOSITORY}}', repo );

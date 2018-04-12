@@ -25,15 +25,15 @@ const localeInfo = require( '../data/localeInfo' ); // Locale information
  */
 module.exports = function( locales, phetLibs ) {
 
-  var fallbackLocale = ChipperConstants.FALLBACK_LOCALE; // local var to improve readability
+  const fallbackLocale = ChipperConstants.FALLBACK_LOCALE; // local const to improve readability
 
   assert( global.phet && global.phet.chipper && global.phet.chipper.strings, 'missing global.phet.chipper.strings' );
   assert( locales.indexOf( fallbackLocale ) !== -1, 'fallback locale is required' );
 
   // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
-  var stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
-  for ( var stringKey in global.phet.chipper.strings ) {
-    var repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
+  const stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
+  for ( let stringKey in global.phet.chipper.strings ) {
+    const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
     if ( stringRepositories.every( function( repo ) { return repo.name !== repositoryName; } ) ) {
       stringRepositories.push( {
@@ -50,16 +50,16 @@ module.exports = function( locales, phetLibs ) {
   }
 
   // Load all the required string files into memory, so we don't load them multiple times (for each usage)
-  var repoStringMap = {}; // maps [repositoryName][locale] => contents of locale string file
+  const repoStringMap = {}; // maps [repositoryName][locale] => contents of locale string file
   stringRepositories.forEach( function( repository ) {
     repoStringMap[ repository.name ] = {};
 
     locales.forEach( function( locale ) {
 
       assert( localeInfo[ locale ], `unsupported locale: ${locale}` );
-      var isRTL = localeInfo[ locale ].direction === 'rtl';
+      const isRTL = localeInfo[ locale ].direction === 'rtl';
 
-      var basePath;
+      let basePath;
       // pick a location that is in the repo, or babel
       if ( locale === fallbackLocale ) {
         basePath = `${repository.path}/`;
@@ -69,8 +69,8 @@ module.exports = function( locales, phetLibs ) {
       }
 
       // Read optional string file
-      var stringsFilename = path.normalize( `${basePath}${repository.name}-strings_${locale}.json` );
-      var fileContents;
+      const stringsFilename = path.normalize( `${basePath}${repository.name}-strings_${locale}.json` );
+      let fileContents;
       try {
         fileContents = grunt.file.readJSON( stringsFilename );
       }
@@ -78,10 +78,10 @@ module.exports = function( locales, phetLibs ) {
         grunt.log.debug( `missing string file: ${stringsFilename}` );
         fileContents = {};
       }
-      var fileMap = repoStringMap[ repository.name ][ locale ] = {};
+      const fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
-      for ( var stringKeyMissingPrefix in fileContents ) {
-        var stringData = fileContents[ stringKeyMissingPrefix ];
+      for ( let stringKeyMissingPrefix in fileContents ) {
+        const stringData = fileContents[ stringKeyMissingPrefix ];
 
         // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
         stringData.value = stringData.value.trim();
@@ -95,17 +95,17 @@ module.exports = function( locales, phetLibs ) {
   } );
 
   // combine our strings into [locale][stringKey] map, using the fallback locale where necessary
-  var stringMap = {};
+  const stringMap = {};
   locales.forEach( function( locale ) {
     stringMap[ locale ] = {};
 
-    for ( var stringKey in global.phet.chipper.strings ) {
-      var repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
+    for ( let stringKey in global.phet.chipper.strings ) {
+      const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
       // English fallback
       assert( repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ] !== undefined,
         `Missing string: ${stringKey} in ${repositoryName} for fallback locale: ${fallbackLocale}` );
-      var fallbackString = repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ].value;
+      const fallbackString = repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ].value;
       stringMap[ locale ][ stringKey ] = fallbackString;
 
       // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.

@@ -22,20 +22,20 @@ const grunt = require( 'grunt' );
 module.exports = function( repo, brand ) {
   // License entries for third-party media files that were loaded by media plugins.
   // The media plugins populate global.phet.chipper.licenseEntries.
-  var thirdPartyEntries = {
+  const thirdPartyEntries = {
     lib: getThirdPartyLibEntries( repo, brand )
   };
   if ( global.phet.chipper.licenseEntries ) {
-    for ( var mediaType in global.phet.chipper.licenseEntries ) {
+    for ( let mediaType in global.phet.chipper.licenseEntries ) {
       if ( global.phet.chipper.licenseEntries.hasOwnProperty( mediaType ) ) {
 
-        var mediaEntry = global.phet.chipper.licenseEntries[ mediaType ];
+        const mediaEntry = global.phet.chipper.licenseEntries[ mediaType ];
 
         // For each resource of that type
-        for ( var resourceName in mediaEntry ) {
+        for ( let resourceName in mediaEntry ) {
           if ( mediaEntry.hasOwnProperty( resourceName ) ) {
 
-            var licenseEntry = mediaEntry[ resourceName ];
+            const licenseEntry = mediaEntry[ resourceName ];
 
             // If it is not from PhET, it is from a 3rd party and we must include it in the report
             // But lift this restriction when building a non-phet brand
@@ -56,6 +56,6 @@ module.exports = function( repo, brand ) {
       }
     }
   }
-  
+
   return thirdPartyEntries;
 };

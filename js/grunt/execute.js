@@ -36,7 +36,7 @@ module.exports = function( cmd, args, cwd ) {
      * @param {number} code - exit code
      */
     constructor( cmd, args, cwd, stdout, code ) {
-      super( `${cmd} ${args.join( ' ')} in ${cwd} failed with exit code ${code} and stdout:\n${stdout}` );
+      super( `${cmd} ${args.join( ' ' )} in ${cwd} failed with exit code ${code} and stdout:\n${stdout}` );
 
       // @public
       this.cmd = cmd;
@@ -46,14 +46,14 @@ module.exports = function( cmd, args, cwd ) {
       this.code = code;
     }
   }
-  
+
   return new Promise( ( resolve, reject ) => {
     const process = child_process.spawn( cmd, args, {
       cwd: cwd
     } );
     grunt.log.debug( `running ${cmd} ${args.join( ' ' )} from ${cwd}` );
 
-    var stdout = ''; // to be appended to
+    let stdout = ''; // to be appended to
 
     process.stderr.on( 'data', data => grunt.log.debug( 'stderr: ' + data ) );
     process.stdout.on( 'data', data => {

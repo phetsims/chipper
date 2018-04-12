@@ -28,15 +28,15 @@ const LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licens
 module.exports = function( repo, brand ) {
 
   // Read license info
-  var licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );
+  const licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );
 
-  var licenseKeys = getLicenseKeys( repo, brand );
+  let licenseKeys = getLicenseKeys( repo, brand );
 
   // Add all dependencies. Duplicates will be removed later.
-  for ( var i = 0; i < licenseKeys.length; i++ ) {
-    var license = licenseInfo[ licenseKeys[ i ] ];
+  for ( let i = 0; i < licenseKeys.length; i++ ) {
+    const license = licenseInfo[ licenseKeys[ i ] ];
     assert( license, THIRD_PARTY_LICENSES_FILENAME + ': no entry for key = ' + licenseKeys[ i ] );
-    var dependencies = license.dependencies;
+    const dependencies = license.dependencies;
     if ( typeof dependencies === 'object' ) {
       licenseKeys = licenseKeys.concat( dependencies );
     }
@@ -48,10 +48,10 @@ module.exports = function( repo, brand ) {
   grunt.log.debug( 'licenseKeys = ' + licenseKeys.toString() );
 
   // Combine all licenses into 1 object literal
-  var libEntries = {};
+  const libEntries = {};
   licenseKeys.forEach( function( key ) {
 
-    var license = licenseInfo[ key ];
+    const license = licenseInfo[ key ];
 
     // verify required keys
     assert( license, THIRD_PARTY_LICENSES_FILENAME + `: no entry for key = ${key}` );
@@ -61,7 +61,7 @@ module.exports = function( repo, brand ) {
     assert( license.notes, THIRD_PARTY_LICENSES_FILENAME + `: no notes field for key = ${key}` );
 
     // read the license file
-    var licenseText = grunt.file.read( LICENSES_DIRECTORY + key + '.txt', 'utf-8' );
+    const licenseText = grunt.file.read( LICENSES_DIRECTORY + key + '.txt', 'utf-8' );
     license.licenseText = licenseText.split( /\r?\n/ );
 
     libEntries[ key ] = license;

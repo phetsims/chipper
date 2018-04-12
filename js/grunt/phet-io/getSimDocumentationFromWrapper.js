@@ -35,13 +35,13 @@ module.exports = function( simName, done ) {
   // // This code was used to create the below es5 code. It was converted using babel, see https://babeljs.io/repl/
   // (async function() {
   //
-  //   var chrome = await launchChrome();
-  //   var protocol = await CDP( { port: chrome.port } );
+  //   const chrome = await launchChrome();
+  //   const protocol = await CDP( { port: chrome.port } );
   //
   //   // Extract the DevTools protocol domains we need and enable them.
   //   // See API docs: https://chromedevtools.github.io/devtools-protocol/
-  //   var Page= protocol.Page;
-  //   var Runtime = protocol.Runtime;
+  //   const Page= protocol.Page;
+  //   const Runtime = protocol.Runtime;
   //   await Promise.all( [ Page.enable(), Runtime.enable() ] );
   //
   //   Page.navigate( { url: 'http://localhost/phet-io-wrappers/documentation/documentation.html?sim=' + simName + '&ea' } );
@@ -49,18 +49,18 @@ module.exports = function( simName, done ) {
   //   // Wait for window.onload before doing stuff.
   //   Page.loadEventFired( async function(){
   //
-  //     var isLoaded = false;
+  //     const isLoaded = false;
   //
   //     // Poll to see if the sim is loaded, see phet-io-wrappers/documentation/
   //     while( isLoaded === false ){
-  //       var isLoadedResult =  await Runtime.evaluate( { expression: 'window.isSimLoaded();' } )
+  //       const isLoadedResult =  await Runtime.evaluate( { expression: 'window.isSimLoaded();' } )
   //         .catch( function( e ) { grunt.fail.fatal(  e ) } );
   //       if( isLoadedResult.exceptionDetails ){
   //         grunt.fail.fatal( 'Error getting phet-io documentation, waiting for sim load: ' + isLoadedResult.exceptionDetails.exception.description)
   //       }
   //       isLoaded = isLoadedResult.result.value;
   //     }
-  //     var result = await Runtime.evaluate( { expression: 'window.getDocumentation();' } )
+  //     const result = await Runtime.evaluate( { expression: 'window.getDocumentation();' } )
   //       .catch( function( e ) { grunt.fail.fatal( e ) } );
   //
   //     if( result.exceptionDetails ){
@@ -78,12 +78,12 @@ module.exports = function( simName, done ) {
   /* eslint-disable */
   function _asyncToGenerator( fn ) {
     return function() {
-      var gen = fn.apply( this, arguments );
+      const gen = fn.apply( this, arguments );
       return new Promise( function( resolve, reject ) {
         function step( key, arg ) {
           try {
-            var info = gen[ key ]( arg );
-            var value = info.value;
+            const info = gen[ key ]( arg );
+            const value = info.value;
           }
           catch( error ) {
             reject( new Error( error ) );
@@ -140,7 +140,7 @@ module.exports = function( simName, done ) {
                     // Poll to see if the sim is loaded, see phet-io-wrappers/documentation/
 
                     case 1:
-                      if ( !(isLoaded === false) ) {
+                      if ( !( isLoaded === false ) ) {
                         _context.next = 9;
                         break;
                       }

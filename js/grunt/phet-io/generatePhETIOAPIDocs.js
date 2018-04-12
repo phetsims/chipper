@@ -14,10 +14,10 @@
 'use strict';
 
 // modules
-var getSimDocumentationFromWrapper = require( './getSimDocumentationFromWrapper' );
+const getSimDocumentationFromWrapper = require( './getSimDocumentationFromWrapper' );
 
 // constants
-var DOCUMENTATION_FILENAME = 'phet-io-documentation.html';
+const DOCUMENTATION_FILENAME = 'phet-io-documentation.html';
 
 const grunt = require( 'grunt' );
 
@@ -25,7 +25,7 @@ const grunt = require( 'grunt' );
 module.exports = function( repo, done ) {
   grunt.log.debug( 'Generating PhET-iO documentation' );
 
-  getSimDocumentationFromWrapper( repo, function( html){
+  getSimDocumentationFromWrapper( repo, function( html ) {
 
     // Write the new documentation to html
     grunt.file.write( '../' + repo + '/build/docs/' + DOCUMENTATION_FILENAME, html );

@@ -36,7 +36,7 @@ module.exports = function( repo, options ) {
   const brand = 'phet';
 
   const splashURL = `../brand/${brand}/images/splash.svg`;
-  var html = grunt.file.read( '../chipper/templates/sim-development.html' ); // the template file
+  let html = grunt.file.read( '../chipper/templates/sim-development.html' ); // the template file
 
   // Formatting is very specific to the template file. Each preload is placed on separate line,
   // with an indentation that is specific indentation to the template. See chipper#462
@@ -45,7 +45,7 @@ module.exports = function( repo, options ) {
            arr.map( function( string ) {
              return prefix + '      \'' + string.replace( /'/g, '\\\'' ) + '\'';
            } ).join( ',\n' ) +
-           '\n'+prefix+'    ]';
+           '\n' + prefix + '    ]';
   }
 
   function isPreloadExcluded( preload ) {

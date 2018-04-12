@@ -19,7 +19,7 @@ const grunt = require( 'grunt' );
  * @param {string} repo
  */
 module.exports = function( repo ) {
-  var html = grunt.file.read( '../chipper/templates/sim-development-colors.html' ); // the template file
+  let html = grunt.file.read( '../chipper/templates/sim-development-colors.html' ); // the template file
 
   // Replace placeholders in the template.
   html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', `${repo} colors` );

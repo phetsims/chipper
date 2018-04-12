@@ -23,21 +23,21 @@ const grunt = require( 'grunt' );
  */
 module.exports = function( requirejsNamespace ) {
 
-  var directory = process.cwd();
+  const directory = process.cwd();
 
   ChipperConstants.MEDIA_TYPES.forEach( function( mediaType ) {
 
     // Iterate over media directories and sub-directories
-    var subdirectory = `${directory}/${mediaType}`;
+    const subdirectory = `${directory}/${mediaType}`;
     if ( grunt.file.isDir( subdirectory ) ) {
       grunt.file.recurse( subdirectory, function( abspath, rootdir, subdir, filename ) {
 
         // check if the file was loaded during requirejs
-        var key = subdir ?
+        const key = subdir ?
                   `${requirejsNamespace}/${subdir}/${filename}` :
                   `${requirejsNamespace}/${filename}`;
 
-        var licenseEntries = global.phet.chipper.licenseEntries || {}; // global.phet.chipper.licenseEntries is initialized by media plugins
+        const licenseEntries = global.phet.chipper.licenseEntries || {}; // global.phet.chipper.licenseEntries is initialized by media plugins
         if ( filename !== 'license.json' && filename !== 'README.md' ) {
 
           // If no licenseEntries were registered, or some were registered but not one corresponding to this file

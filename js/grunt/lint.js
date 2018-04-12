@@ -22,9 +22,9 @@ const md5 = require( 'md5' );
  * @returns {Object} - ESLint report object.
  */
 module.exports = function( repos, cache ) {
-  var cacheFile = '../chipper/eslint/cache/' + md5( repos.join( ',' ) ) + '.eslintcache';
+  const cacheFile = '../chipper/eslint/cache/' + md5( repos.join( ',' ) ) + '.eslintcache';
 
-  var cli = new eslint.CLIEngine( {
+  const cli = new eslint.CLIEngine( {
 
     // Rules are specified in the .eslintrc file
     configFile: '../chipper/eslint/.eslintrc',
@@ -67,7 +67,7 @@ module.exports = function( repos, cache ) {
   repos = repos.map( repo => '../' + repo );
 
   // run the eslint step
-  var report = cli.executeOnFiles( repos );
+  const report = cli.executeOnFiles( repos );
 
   // pretty print results to console if any
   ( report.warningCount || report.errorCount ) && grunt.log.write( cli.getFormatter()( report.results ) );
