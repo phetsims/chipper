@@ -162,7 +162,8 @@
 
 
   // add brand name for dev deploys
-  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_REPOSITORY}}_en_phet'+ '.html' + simulationQueryString );
+  var brandSuffix = window.location.hostname === 'www.colorado.edu' ? '_phet' : '';
+  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_REPOSITORY}}_en' + brandSuffix +'.html' + simulationQueryString );
 </script>
 
 <script type="application/javascript">
@@ -239,25 +240,46 @@
 
       removeTabIndex( pDOMCopy );
 
-      function addAriaLabelsToHTML( rootNode ) {
-        var allElements = rootNode.getElementsByTagName( "*" );
+      /**
+       * Convert the inline ARIA labels with label information to input values or additional label elements in the
+       * PDOM copy so that they are visible in demonstrations. For example, this could be an aria-label, aria-valuetext,
+       * and so on.
+       *
+       * @param {HTMLElement} rootNod - descendants of this root are traversed so we have 
+       */
+      function addInlineAttributesTHTML( rootNode ) {
+
+        // all elements in the PDOM - a defensive copy since we may be adding new elements to the DOM
+        var allElements = Array.prototype.slice.call( rootNode.getElementsByTagName( "*" ) );
+
         for ( var i = 0; i < allElements.length; i++ ) {
           var element = allElements[ i ];
 
           if ( element.hasAttribute( 'aria-label' ) ) {
+            var ariaLabel = element.getAttribute( 'aria-label' );
 
             // remove the style
             element.removeAttribute( 'style' );
 
             if ( element.tagName.toLowerCase() === 'input' ) {
+              if ( element.type === 'button' ) {
 
-              // set the value of the input to be the same as the aria-label so that it is displayed in the pDOM copy
-              element.setAttribute( 'value', element.getAttribute( 'aria-label' ) );
+                // set the value of the input to be the same as the aria-label appears inside the button
+                element.setAttribute( 'value', ariaLabel );
+              }
+              else {
+
+                // add a special label element to appear before the input element
+                var labelElement = document.createElement( 'label' );
+                labelElement.textContent = ariaLabel;
+                var parentElement = element.parentNode;
+                parentElement.insertBefore( labelElement, parentElement.firstChild );
+              }
             }
             else {
 
               // if not an input, then add it to the innerHTML of an element, without overriding what is already there.
-              element.innerHTML = element.getAttribute( 'aria-label' ) + element.innerHTML;
+              element.innerHTML = ariaLabel + element.innerHTML;
             }
           }
           if ( element.hasAttribute( 'aria-valuetext' ) ) {
@@ -272,7 +294,7 @@
         }
       }
 
-      addAriaLabelsToHTML( pDOMCopy );
+      addInlineAttributesTHTML( pDOMCopy );
 
       // whenever an element in the parallel DOM changes, we need to update its copied element as well
       var domObserver = new MutationObserver( function( mutations ) {
@@ -289,7 +311,7 @@
           pDOMCopy.removeAttribute( 'style' );
           copyContainer.appendChild( pDOMCopy );
 
-          addAriaLabelsToHTML( pDOMCopy );
+          addInlineAttributesTHTML( pDOMCopy );
 
           // make sure that the copied html is completely out of navigation
           removeTabIndex( pDOMCopy );
