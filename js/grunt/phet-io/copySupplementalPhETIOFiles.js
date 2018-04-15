@@ -183,10 +183,9 @@ module.exports = async function( repo, version ) {
     // either take the last path part, or take the first (repo name) and remove the wrapper prefix
     let wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
 
-    // Copy the wrapper into the build dir /wrappers/, exclude the blacklist, and minify the js code
+    // Copy the wrapper into the build dir /wrappers/, exclude the blacklist
     copyDirectory( `../${wrapper}`, `${buildDir}/wrappers/${wrapperName}`, filterWrapper, {
       blacklist: fullBlacklist,
-      minifyJS: true
     } );
   } );
 
