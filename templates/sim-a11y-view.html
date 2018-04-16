@@ -25,6 +25,14 @@
       background: #ccc;
     }
 
+    h3 {
+      margin-top: 0
+    }
+
+    .alert_copy_container ul {
+      -webkit-padding-start: 20px
+    }
+
     .left {
       position: fixed;
       width: 47%;
@@ -43,7 +51,6 @@
       width: 43%;
       height: 30vw;
       max-height: 30vw;
-      margin: 7px auto 7px auto;
       position: fixed;
     }
 
@@ -65,8 +72,8 @@
     div.alert_copy_container {
       background: #e5c45b;
       border-radius: 1em;
-      padding: 1em;
-      min-height: 10em;
+      padding: .25em .75em 1em;
+      min-height: 7em;
     }
 
     p.alert_copy {
@@ -89,13 +96,21 @@
       margin-bottom: 2em;
     }
 
-    em {
+    .dynamic {
+      background-color: #9adaa6;
+      border-bottom: double 3px #000; /*or a border in dark green*/
+    }
+    em { /* this is the same as the dynamic class, but should be changed as part of https://github.com/phetsims/a11y-research/issues/67*/
       background-color: #9adaa6;
       border-bottom: double 3px #000; /*or a border in dark green*/
     }
 
     .highlight {
       border: thick double red;
+    }
+
+    .bold {
+      font-weight: bold;
     }
   </style>
 
@@ -106,13 +121,12 @@
 
   <div id="content">
     <div class="left">
-      <h3>{{PHET_SIM_TITLE}} in iframe</h3>
-
+      <h3>{{PHET_SIM_TITLE}} A11y View: Visual and Described content side by side</h3>
       <div class="aspect-ratio">
         <iframe id="iframe" allowfullscreen title="Interact with {{PHET_SIM_TITLE}}"></iframe>
       </div>
       <div id="alerts">
-        <h3>Activity log - The most recent Interactive Alerts.</h3>
+        <h4>Activity log - The most recent interactive alerts.</h4>
         <div id=alert-copy-container class=alert_copy_container>
           <div id='polite-element-container'>
             <ul class='alert_copy' id='alert-list'></ul>
@@ -124,16 +138,15 @@
     <!--The PDOM copy will be placed in this container, along with a section just for alerts -->
     <div class="right">
       <div id="intro">
-        <h1>{{PHET_SIM_TITLE}} A11y View: Visual and Described content side by side</h1>
-        <p>
-          The accessible version of {{PHET_SIM_TITLE}} is embedded in the iframe. As you interact with the visual sim in
-          the iframe with either a keyboard or mouse, the descriptions for the sim automatically update on the right in
-          a
-          copy of the sim's structured Parallel Document Object Model, or PDOM.
+        <p><span class="bold">In this web page</span>, the accessible version of {{PHET_SIM_TITLE}} is embedded in the
+          iframe. Below, in blue, is the copy of the sim's structured Parallel Document Object Model, or PDOM.
+          As you interact with the visual sim in the iframe with either a keyboard or mouse,
+          the descriptions for the sim automatically update on the right, key dynamic elements will be highlighted
+          <span class="dynamic">like this</span>. Any alerts set on an element with an
+          "aria-live" attribute will be displayed in the activity log, with the most recent interactive alerts first.
         </p>
       </div>
-      <h2>{{PHET_SIM_TITLE}} descriptions structured in a Parallel DOM</h2>
-      <h3>Static and Dynamic Descriptions</h3>
+      <h4>The {{PHET_SIM_TITLE}} descriptions structured in a Parallel DOM</h4>
       <div id="dom-copy-container" class="dom_copy_container" role="presentation"></div>
     </div>
 
@@ -163,7 +176,7 @@
 
   // add brand name for dev deploys
   var brandSuffix = window.location.hostname === 'www.colorado.edu' ? '_phet' : '';
-  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_REPOSITORY}}_en' + brandSuffix +'.html' + simulationQueryString );
+  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_REPOSITORY}}_en' + brandSuffix + '.html' + simulationQueryString );
 </script>
 
 <script type="application/javascript">
@@ -245,7 +258,7 @@
        * PDOM copy so that they are visible in demonstrations. For example, this could be an aria-label, aria-valuetext,
        * and so on.
        *
-       * @param {HTMLElement} rootNod - descendants of this root are traversed so we have 
+       * @param {HTMLElement} rootNode - descendants of this root are traversed so we have
        */
       function addInlineAttributesTHTML( rootNode ) {
 
