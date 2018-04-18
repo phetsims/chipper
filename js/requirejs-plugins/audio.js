@@ -1,14 +1,17 @@
 // Copyright 2013-2015, University of Colorado Boulder
 
 /**
- * Audio plugin that loads an audio clip dynamically from the file system at
- * development time, but from base64 content after a build. For development time,
- * this is pretty similar to the image plugin at https://github.com/millermedeiros/requirejs-plugins.
+ * A RequireJS plugin for loading audio clips dynamically from the file system at development time and from base64
+ * in built versions of simulation. It also provides the ability to convert audio files into base64 data so that it can
+ * be built into a single-file simulation.  For development time, this is pretty similar to the image
+ * plugin at https://github.com/millermedeiros/requirejs-plugins.
+ *
+ * General documentation about RequireJS plugins is available at http://requirejs.org/docs/plugins.html.
  *
  * The plugin code itself is excluded from the build by declaring it as a stubModule.
  *
- * @author Sam Reid
  * @author John Blanco
+ * @author Sam Reid
  */
 define( function( require ) {
   'use strict';
@@ -19,59 +22,35 @@ define( function( require ) {
   var loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
   var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
 
-  // Keep track of the audio URL lists that are used during dependency
-  // resolution so they can be converted to base64 at build time.
+  // Keep track of the audio URL lists that are used during dependency resolution so they can be converted to base64
+  // during builds.
   var buildMap = {};
 
-  // Define the plugin operations based on the RequireJS plugin API.
+  // define the plugin operations based on the RequireJS plugin API
   return {
     load: function( name, parentRequire, onload, config ) {
 
       // everything after the repository namespace, eg 'MY_REPO/explosions/boom' -> '/explosions/boom'
       var audioPath = name.substring( name.indexOf( '/' ) );
       var baseUrl = getProjectURL( name, parentRequire ) + 'audio';
-      var urlList = [];
-
-      // Create an array containing a list of URLs pointing to audio files.
-      if ( audioPath.indexOf( '.' ) === -1 ) {
-
-        // Only the file stem has been specified, so assume that both mp3 and ogg files are available.
-        urlList.push( { url: baseUrl + audioPath + '.mp3' } );
-        urlList.push( { url: baseUrl + audioPath + '.ogg' } );
-      }
-      else {
-
-        // The sound name included a type extension (e.g. '.mp3'), so just insert the full path name into the URL list.
-        // This is done, at least in part, for backwards compatibility with the first version of this plugin.
-        urlList.push( { url: baseUrl + audioPath } );
-      }
+      var soundInfo = { url: baseUrl + audioPath };
 
       if ( config.isBuild ) {
 
-        // Save in the build map for the 'write' function to use.
-        buildMap[ name ] = urlList;
+        // save in the build map for the 'write' function to use
+        buildMap[ name ] = soundInfo;
 
-        // Create an adapter whose API matches the requirejs onload function.
-        // This is necessary because we only want to call onload(null) once per invocation of a media plugin.
-        // As a side-effect of calling registerLicenseEntry, this adapter will populate the errors array for any problem
-        // license entries.
+        // Create an adapter whose API matches the RequireJS onload function. This is necessary because we only want to
+        // call onload(null) once per invocation of a media plugin. As a side-effect of calling registerLicenseEntry,
+        // this adapter will populate the errors array for any license entry problems.
         var errors = [];
         var onloadAdapter = function( value ) { };
         onloadAdapter.error = function( error ) {
           errors.push( error );
         };
 
-        // Register the license entries for each file.
-        for ( var i = 0; i < urlList.length; i++ ) {
-
-          // If the name has no suffix, borrow the suffix from the URL so that each file is registered, see #261
-          var nameToRegister = name;
-          if ( name.lastIndexOf( '.' ) < 0 ) {
-            var suffix = urlList[ i ].url.substring( urlList[ i ].url.lastIndexOf( '.' ) + 1 );
-            nameToRegister = name + '.' + suffix;
-          }
-          registerLicenseEntry( nameToRegister, getLicenseEntry( urlList[ i ].url ), global.phet.chipper.brand, 'audio', onloadAdapter );
-        }
+        // register the license for this audio clip
+        registerLicenseEntry( name, getLicenseEntry( soundInfo.url ), global.phet.chipper.brand, 'audio', onloadAdapter );
 
         // If any license entry was a problem, then we must fail the build. For simplicity, just report the first error.
         if ( errors.length > 0 ) {
@@ -82,30 +61,26 @@ define( function( require ) {
         }
       }
       else {
-        // add the cache buster args to each url
-        urlList.forEach( function( urlObject ){
-          urlObject.url = urlObject.url + '?' + config.urlArgs;
-        } );
-        // Provide the list of URLs corresponding to the specified sound.
-        onload( urlList );
+        // add the cache buster args to the URL
+        soundInfo.url += '?' + config.urlArgs;
+
+        // provide the URL corresponding to the specified sound
+        onload( soundInfo );
       }
     },
 
-    //write method based on RequireJS official text plugin by James Burke
-    //https://github.com/jrburke/requirejs/blob/master/text.js
+    // The 'write' method is used during the build process to obtain the audio resource and then encode it as base64 so
+    // that it can be embedded in the built HTML file.  This implementation is based on RequireJS official text plugin
+    // by James Burke, see https://github.com/requirejs/text/blob/master/text.js.
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
-        var urlList = buildMap[ moduleName ];
-        var base64ListText = '[';
-        for ( var i = 0; i < urlList.length; i++ ) {
-          var base64 = loadFileAsDataURI( urlList[ i ].url );
-          base64ListText += '{base64:\'' + base64 + '\'}';
-          base64ListText += i === urlList.length - 1 ? '\n' : ',\n';
-        }
-        base64ListText += ']';
-        // Return an array of objects with {base64:''} for interpretation by VIBE/Sound
+        var soundInfo = buildMap[ moduleName ];
+        var base64SoundData = '{base64:\'' + loadFileAsDataURI( soundInfo.url ) + '\'}';
+
+        // Write the base64 representation of the audio file as the return value of a function so that it can be
+        // extracted and loaded in the built version of the sim.
         write( 'define("' + pluginName + '!' + moduleName + '", function(){ ' +
-               'return ' + base64ListText + ';});\n' );
+               'return ' + base64SoundData + ';});\n' );
       }
     }
   };
