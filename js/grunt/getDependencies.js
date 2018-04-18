@@ -52,8 +52,8 @@ module.exports = async function( repo ) {
       continue;
     }
 
-    const sha = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${dependency}` ) ).trim();
-    const branch = ( await execute( 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], `../${dependency}` ) ).trim();
+    const sha = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], { cwd: `../${dependency}` } ) ).trim();
+    const branch = ( await execute( 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], { cwd: `../${dependency}` } ) ).trim();
 
     grunt.log.debug( ChipperStringUtils.padString( dependency, 20 ) + branch + ' ' + sha );
     dependenciesInfo[ dependency ] = { sha, branch };

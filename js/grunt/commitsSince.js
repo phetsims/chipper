@@ -30,7 +30,7 @@ module.exports = async function( repo, dateString ) {
   let output = '';
   for ( let dependency of getPhetLibs( repo ) ) {
     output += `${dependency} since ${dateString} ----------------------------------------------\n`;
-    output += await execute( 'git', [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], `../${dependency}` );
+    output += await execute( 'git', [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], { cwd: `../${dependency}` } );
   }
 
   grunt.log.writeln( output );

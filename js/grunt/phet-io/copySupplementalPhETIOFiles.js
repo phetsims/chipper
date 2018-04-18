@@ -15,6 +15,7 @@ const ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 const copyDirectory = require( './copyDirectory' );
 const grunt = require( 'grunt' );
 const minify = require( '../minify' );
+const execute = require( '../execute' );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -33,9 +34,9 @@ const LIB_FILES = [
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
 const LIB_COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Boulder\n' +
-                           '// This PhET-iO file requires a license\n' +
-                           '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
-                           '// For licensing, please contact phethelp@colorado.edu';
+                             '// This PhET-iO file requires a license\n' +
+                             '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
+                             '// For licensing, please contact phethelp@colorado.edu';
 
 // All libraries and third party files that are used by phet-io wrappers, and need to be copied over for a build
 const CONTRIB_FILES = [
@@ -46,6 +47,13 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jquery-2.1.0.min.js',
   '../sherpa/lib/jquery-ui-1.8.24.min.js',
   '../sherpa/lib/d3-4.2.2.js'
+];
+
+// list of files to run jsdoc generation with
+const filesToGenerateJSDOCFor = [
+  ' ../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js',
+  ' ../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js',
+  ' ../phet-io/js/phet-io-initialize-globals.js',
 ];
 
 module.exports = async function( repo, version ) {
@@ -194,6 +202,9 @@ module.exports = async function( repo, version ) {
 
   // Create the contrib folder and add to it third party libraries used by wrappers.
   handleContrib( repo );
+
+  // Create the rendered jsdoc in the `doc` folder
+  await handleJSDOC( repo );
 };
 
 /**
@@ -239,4 +250,20 @@ let handleContrib = function( repo ) {
     grunt.file.copy( filePath, `${buildDir}/contrib/${filename}` );
 
   } );
+};
+
+/**
+ * Generate jsdoc and put it in "build/phet-io/doc"
+ * @param {string} repo
+ * @returns {Promise<void>}
+ */
+let handleJSDOC = async function( repo ) {
+  const buildDir = `../${repo}/build/phet-io`;
+
+  // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
+  // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method
+  // (node executable with jsdoc js file)
+  await execute( 'node', [ '../chipper/node_modules/jsdoc/jsdoc.js' ].concat(
+    filesToGenerateJSDOCFor.concat( [ '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
+      '-d', `${buildDir}/doc/` ] ) ), { cwd: process.cwd(), shell: true } );
 };

@@ -22,11 +22,11 @@ const grunt = require( 'grunt' );
  *
  * @param {string} cmd - The process to execute. Should be on the current path.
  * @param {Array.<string>} args - Array of arguments. No need to extra-quote things.
- * @param {string} cwd - The working directory where the process should be run from
+ * @param {Object} options - options for the child process, cwd and shell supported, https://nodejs.org/dist/latest-v4.x/docs/api/child_process.html#child_process_child_process_spawn_command_args_options
  * @returns {Promise.<string>} - The stdout of the process
  * @rejects {ExecuteError}
  */
-module.exports = function( cmd, args, cwd ) {
+module.exports = function( cmd, args, options ) {
   class ExecuteError extends Error {
     /**
      * @param {string} cmd
@@ -47,9 +47,20 @@ module.exports = function( cmd, args, cwd ) {
     }
   }
 
+  // options
+  const {
+    cwd = process.cwd(),
+
+    // from https://nodejs.org/dist/latest-v4.x/docs/api/child_process.html#child_process_child_process_spawn_command_args_options
+    // "If true, runs command inside of a shell. Uses '/bin/sh' on UNIX, and 'cmd.exe' on Windows. . ."
+    // added to support jsdoc, see https://github.com/phetsims/phet-io-wrappers/issues/74
+    shell = false
+  } = options || {};
+
   return new Promise( ( resolve, reject ) => {
     const process = child_process.spawn( cmd, args, {
-      cwd: cwd
+      cwd: cwd,
+      shell: shell
     } );
     grunt.log.debug( `running ${cmd} ${args.join( ' ' )} from ${cwd}` );
 
@@ -69,5 +80,5 @@ module.exports = function( cmd, args, cwd ) {
         resolve( stdout );
       }
     } );
-  } );
+  } ).catch( function( err ) { grunt.fail.fatal( `error executing binary "${cmd}": ${err}` );} );
 };

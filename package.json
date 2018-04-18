@@ -7,22 +7,23 @@
     "url": "https://github.com/phetsims/chipper.git"
   },
   "devDependencies": {
+    "babel-core": "~6.26.0",
+    "babel-preset-env": "~1.6.1",
+    "eslint": "~3.19.0",
     "grunt": "~1.0.0",
-    "uglify-es": "~3.1.10",
+    "istanbul": "~0.4.5",
+    "jimp": "^0.2.0",
+    "jpeg-js": "~0.1.1",
+    "jscpd": "~0.6.5",
+    "jsdoc": "~3.5.5",
+    "lodash": "~4.17.4",
+    "md5": "~2",
+    "node-html-encoder": "~0.0.2",
+    "pngjs": "~0.4.0",
+    "qunit": "~2.4.1",
     "request": "^2.83.0",
     "request-promise-native": "~1.0.5",
     "requirejs": "~2.3.5",
-    "md5": "~2",
-    "lodash": "~4.17.4",
-    "babel-core": "~6.26.0",
-    "babel-preset-env": "~1.6.1",
-    "qunit": "~2.4.1",
-    "eslint": "~3.19.0",
-    "jpeg-js": "~0.1.1",
-    "pngjs": "~0.4.0",
-    "jimp": "^0.2.0",
-    "node-html-encoder": "~0.0.2",
-    "istanbul": "~0.4.5",
-    "jscpd": "~0.6.5"
+    "uglify-es": "~3.1.10"
   }
 }
