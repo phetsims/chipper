@@ -10,7 +10,7 @@
   <!--have to scroll right and left! allows to resize also-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{{PHET_SIM_TITLE}} A11y View</title>
+  <title>A11y View: {{PHET_SIM_TITLE}}</title>
 
   <style>
     html {
@@ -121,7 +121,7 @@
 
   <div id="content">
     <div class="left">
-      <h3>{{PHET_SIM_TITLE}} A11y View: Visual and Described content side by side</h3>
+      <h3>A11y View: {{PHET_SIM_TITLE}}</h3>
       <div class="aspect-ratio">
         <iframe id="iframe" allowfullscreen title="Interact with {{PHET_SIM_TITLE}}"></iframe>
       </div>
@@ -138,7 +138,8 @@
     <!--The PDOM copy will be placed in this container, along with a section just for alerts -->
     <div class="right">
       <div id="intro">
-        <p><span class="bold">In this web page</span>, the accessible version of {{PHET_SIM_TITLE}} is embedded in the
+        <h4>What is the A11y View?</h4>
+        <p>In this web page, the accessible version of {{PHET_SIM_TITLE}} is embedded in the
           iframe. Below, in blue, is the copy of the sim's structured Parallel Document Object Model, or PDOM.
           As you interact with the visual sim in the iframe with either a keyboard or mouse,
           the descriptions for the sim automatically update on the right, key dynamic elements will be highlighted
