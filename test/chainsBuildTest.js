@@ -26,29 +26,26 @@ function assertChainsExistence( assert, brand, options ) {
   const {
     allHTML = false,
     debugHTML = false,
-    locales = [ 'en' ],
-    oneOff = null
+    locales = [ 'en' ]
   } = options || {};
-
-  const oneOffSuffix = oneOff ? `_${oneOff}` : '';
 
   if ( brand === 'phet' ) {
     if ( locales.includes( 'en' ) ) {
       assertFileExistence( assert, '../chains/build/phet/chains_en_iframe_phet.html' );
     }
     for ( let locale of locales ) {
-      assertFileExistence( assert, `../chains/build/phet/chains_${locale}_phet${oneOffSuffix}.html` );
+      assertFileExistence( assert, `../chains/build/phet/chains_${locale}_phet.html` );
     }
     assertFileExistence( assert, '../chains/build/phet/chains-128.png' );
     assertFileExistence( assert, '../chains/build/phet/chains-600.png' );
     assertFileExistence( assert, '../chains/build/phet/chains-twitter-card.png' );
     assertFileExistence( assert, '../chains/build/phet/dependencies.json' );
-    allHTML && assertFileExistence( assert, `../chains/build/phet/chains_all_phet${oneOffSuffix}.html` );
-    debugHTML && assertFileExistence( assert, `../chains/build/phet/chains_all_phet${oneOffSuffix}_debug.html` );
+    allHTML && assertFileExistence( assert, '../chains/build/phet/chains_all_phet.html' );
+    debugHTML && assertFileExistence( assert, '../chains/build/phet/chains_all_phet_debug.html' );
   }
 
   if ( brand === 'phet-io' ) {
-    assertFileExistence( assert, `../chains/build/phet-io/chains_all_phet-io${oneOffSuffix}.html` );
+    assertFileExistence( assert, '../chains/build/phet-io/chains_all_phet-io.html' );
     assertFileExistence( assert, '../chains/build/phet-io/chains-128.png' );
     assertFileExistence( assert, '../chains/build/phet-io/chains-600.png' );
     assertFileExistence( assert, '../chains/build/phet-io/contrib' );
@@ -56,7 +53,7 @@ function assertChainsExistence( assert, brand, options ) {
     assertFileExistence( assert, '../chains/build/phet-io/lib' );
     assertFileExistence( assert, '../chains/build/phet-io/wrappers' );
     assertFileExistence( assert, '../chains/build/phet-io/dependencies.json' );
-    debugHTML && assertFileExistence( assert, `../chains/build/phet-io/chains_all_phet-io${oneOffSuffix}_debug.html` );
+    debugHTML && assertFileExistence( assert, '../chains/build/phet-io/chains_all_phet-io_debug.html' );
   }
 }
 
@@ -119,11 +116,4 @@ qunit.test( 'Build (phet-io brand only)', async ( assert ) => {
   assert.timeout( 120000 );
   await execute( gruntCommand, [ '--brands=phet-io' ], { cwd: '../chains' } );
   assertChainsExistence( assert, 'phet-io', {} );
-} );
-
-qunit.test( 'Build (one-off)', async ( assert ) => {
-  assert.timeout( 120000 );
-  await execute( gruntCommand, [ '--brands=phet,phet-io', '--oneOff=foobar' ], { cwd: '../chains' } );
-  assertChainsExistence( assert, 'phet', { oneOff: 'foobar' } );
-  assertChainsExistence( assert, 'phet-io', { oneOff: 'foobar' } );
 } );
