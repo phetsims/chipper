@@ -100,6 +100,7 @@
       background-color: #9adaa6;
       border-bottom: double 3px #000; /*or a border in dark green*/
     }
+
     em { /* this is the same as the dynamic class, but should be changed as part of https://github.com/phetsims/a11y-research/issues/67*/
       background-color: #9adaa6;
       border-bottom: double 3px #000; /*or a border in dark green*/
@@ -175,8 +176,11 @@
   noAccessibility && ( simulationQueryString += 'accessibility' );
 
 
-  // add brand name for dev deploys
-  var brandSuffix = window.location.hostname === 'bayes.colorado.edu' ? '_phet' : '';
+  // support multiple dev sites
+  var onDevSite = [ 'bayes.colorado.edu', 'phet-dev.colorado.edu', 'www.colorado.edu' ].indexOf( window.location.hostname ) >= 0;
+
+  var brandSuffix = onDevSite ? '_phet' : '';   // add brand name for dev deploys
+
   document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_REPOSITORY}}_en' + brandSuffix + '.html' + simulationQueryString );
 </script>
 
