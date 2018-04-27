@@ -47,7 +47,9 @@ const CONTRIB_FILES = [
   '../sherpa/lib/font-awesome-4.5.0',
   '../sherpa/lib/jquery-2.1.0.min.js',
   '../sherpa/lib/jquery-ui-1.8.24.min.js',
-  '../sherpa/lib/d3-4.2.2.js'
+  '../sherpa/lib/d3-4.2.2.js',
+  '../sherpa/lib/highlight.js-9.1.0/styles/tomorrow-night-bright.css',
+  '../sherpa/lib/highlight.js-9.1.0/highlight.js'
 ];
 
 // list of files to run jsdoc generation with. Assume that anything in the public lib file needs documentation
