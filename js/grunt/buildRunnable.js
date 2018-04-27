@@ -42,7 +42,7 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {boolean} mangle - If uglifying, whether to mangle variable names
  * @param {boolean} instrument - If the sim should be instrumented
  * @param {boolean} allHTML - If the _all.html file should be generated
- * @param {boolean} debugHTML - If the _all.html file should be generated
+ * @param {boolean} debugHTML - If the _debug.html file should be generated
  * @param {string} brand
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @returns {Promise} - Does not resolve a value
