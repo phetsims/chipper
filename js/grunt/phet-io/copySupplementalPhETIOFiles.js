@@ -159,7 +159,6 @@ module.exports = async function( repo, version ) {
     'phet-io-wrappers/state',
     'phet-io-wrappers/wrapper-template',
     'phet-io-wrapper-classroom-activity',
-    'phet-io-wrapper-visualizing-engagement',
     'phet-io-wrapper-lab-book'
   ];
 
