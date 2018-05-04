@@ -57,6 +57,8 @@ const JSDOC_FILES = LIB_FILES.concat( [
   ' ../phet-io/js/phet-io-initialize-globals.js',
   ' ../chipper/js/initialize-globals.js'
 ] );
+const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
+
 
 module.exports = async function( repo, version ) {
 
@@ -270,5 +272,6 @@ let handleJSDOC = async function( repo ) {
   // (node executable with jsdoc js file)
   await execute( 'node', [ '../chipper/node_modules/jsdoc/jsdoc.js' ].concat(
     JSDOC_FILES.concat( [ '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
-      '-d', `${buildDir}/doc/` ] ) ), { cwd: process.cwd(), shell: true } );
+      '-d', `${buildDir}/doc/`, '--readme', JSDOC_README_FILE ] ) ),
+    { cwd: process.cwd(), shell: true } );
 };
