@@ -29,17 +29,33 @@
 ( function() {
   'use strict';
 
-  // Schema that describes query parameters for PhET common code.
-  // These query parameters are available via global phet.chipper.queryParameters.
+  // Note: the following jsdoc is for the public facing phet-io api. In addition, all query parameters in the schema
+  // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
+  // phet-io documentation. Private comments about implementation details will be in comments above the jsdoc, and marked as such.
+  // Note: this had to be jsdoc directly for QUERY_PARAMETERS_SCHEMA to support the correct auto formatting.
+  /**
+   * Query parameters that manipulate the startup state of the PhET simulation. This is not
+   * an object defined in the global scope, but rather it serves as documentation about available query parameters.
+   * @namespace {Object} PhetQueryParameters
+   */
   var QUERY_PARAMETERS_SCHEMA = {
+    // Schema that describes query parameters for PhET common code.
+    // These query parameters are available via global phet.chipper.queryParameters.
 
-    // Whether accessibility features are enabled or not.  Use this option to render the Parallel DOM for
-    // keyboard navigation and screen reader based auditory descriptions.
-    accessibility: { type: 'flag' },
 
     /**
-     * Master volume control for the simulation (for Vibe sounds).
+     * Whether accessibility features are enabled or not.  Use this option to render the Parallel DOM for
+     * keyboard navigation and screen reader based auditory descriptions.
+     */
+    accessibility: { type: 'flag' },
+
+    // Private doc: This is primarily for Vibe sounds. For external use. The below jsdoc is public to the
+    // phet-io api documentation. Change wisely.
+    /**
+     * Master volume control for the simulation.
      * 1.0 is unity volume, 2.0 is double volume, etc.
+     * @memberOf PhetQueryParameters
+     * @type {number}
      */
     audioVolume: {
       type: 'number',
@@ -136,23 +152,27 @@
      */
     gameUpLogging: { type: 'flag' },
 
+    // Private doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
     /**
      * Indicates whether to include the home screen.
      * For multi-screen sims only, throws an assertion error if supplied for a single-screen sim.
-     * For external use.
+     * @memberOf PhetQueryParameters
+     * @type {boolean}
      */
     homeScreen: {
       type: 'boolean',
       defaultValue: true
     },
 
+    // Private doc: For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
     /**
      * Specifies the initial screen that will be visible when the sim starts.
      * See screens query parameter for screen numbering.
      * The value is one of the values in the screens array, not an index into the screens array.
      * For example ?screens=1,3&initialScreen=3, not ?screens=1,3&initialScreen=2.
      * For multi-screen sims only, throws an assertion error if applied in a single-screen sims.
-     * For external use.
+     * @memberOf PhetQueryParameters
+     * @type {number}
      */
     initialScreen: {
       type: 'number',
@@ -269,10 +289,12 @@
      */
     sceneryStringLog: { type: 'flag' },
 
+    // Private doc: For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
     /**
      * Specifies the set of screens that appear in the sim, and their order.
      * Uses 1-based (not zero-based) and "," delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
-     * For external use.
+     * @memberOf PhetQueryParameters
+     * @type {Array.<number>}
      */
     screens: {
       type: 'array',
