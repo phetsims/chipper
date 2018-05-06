@@ -7,7 +7,7 @@
     "url": "https://github.com/phetsims/chipper.git"
   },
   "devDependencies": {
-    "babel-core": "~6.26.0",
+    "babel-core": "^6.26.3",
     "babel-preset-env": "~1.6.1",
     "eslint": "~3.19.0",
     "grunt": "~1.0.0",
@@ -16,7 +16,7 @@
     "jpeg-js": "~0.1.1",
     "jscpd": "~0.6.5",
     "jsdoc": "~3.5.5",
-    "lodash": "~4.17.4",
+    "lodash": "^4.17.10",
     "md5": "~2",
     "node-html-encoder": "~0.0.2",
     "pngjs": "~0.4.0",
