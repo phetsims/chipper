@@ -234,15 +234,6 @@
     binder: { type: 'flag' },
 
     /**
-     * Prints a message to the console when loading is complete.  This enables seamless operation with puppeteer,
-     * so that puppeteer can get a callback when the sim is launched.
-     */
-    consoleLogOnLoad: {
-      type: 'string',
-      defaultValue: null
-    },
-
-    /**
      * triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
      */
     postMessageOnLoad: { type: 'flag' },
