@@ -134,7 +134,11 @@
     //    ]
   },
   "env": {
-    "browser": true
+    "browser": true,
+    "es6": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 8
   },
   "globals": {
     // Global symbols that are permissible to overwrite -----------------------

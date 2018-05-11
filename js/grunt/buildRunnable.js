@@ -71,7 +71,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
     insertRequire: repo + '-main',
     brand
   } );
-  const productionJS = uglify ? minify( requireJS, { mangle, babelTranspile: false } ) : requireJS;
+  const productionJS = uglify ? minify( requireJS, { mangle, babelTranspile: true } ) : requireJS;
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( packageObject.phet.requirejsNamespace );
@@ -139,7 +139,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   if ( debugHTML ) {
     const debugJS = brand === 'phet-io' ? minify( requireJS, {
       mangle: true,
-      babelTranspile: false,
+      babelTranspile: true,
       stripAssertions: false,
       stripLogging: false
     } ) : requireJS;
