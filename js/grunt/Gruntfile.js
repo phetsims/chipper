@@ -259,6 +259,31 @@ module.exports = function( grunt ) {
       generateCoverage( repo );
     } ) );
 
+  grunt.registerTask( 'update',
+    'Updates the normal automatically-generated files for this repository. Includes:\n' +
+    '  runnables: generate-development-html, generate-config\n' +
+    '  accessible runnables: generate-a11y-view-html\n' +
+    '  color-profile runnables: generate-development-colors-html\n' +
+    '  unit tests: generate-test-html, generate-test-config',
+    wrapTask( async () => {
+      if ( packageObject.phet.runnable ) {
+        grunt.task.run( 'generate-development-html' );
+        grunt.task.run( 'generate-config' );
+
+        if ( packageObject.phet.accessible ) {
+          grunt.task.run( 'generate-a11y-view-html' );
+        }
+        if ( packageObject.phet.colorProfile ) {
+          grunt.task.run( 'generate-development-colors-html' );
+        }
+      }
+
+      if ( packageObject.phet.generatedUnitTests ) {
+        grunt.task.run( 'generate-test-html' );
+        grunt.task.run( 'generate-test-config' );
+      }
+    } ) );
+
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
     wrapTask( async () => {
