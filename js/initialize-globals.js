@@ -117,6 +117,19 @@
     fuzzMouse: { type: 'flag' },
 
     /**
+     * The maximum number of concurrent pointers allowed for fuzzing.
+     */
+    fuzzPointers: {
+      type: 'number',
+      defaultValue: 1
+    },
+
+    /**
+     * Randomly sends touch events to sim.
+     */
+    fuzzTouch: { type: 'flag' },
+
+    /**
      * if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
      */
     fuzzRate: {
