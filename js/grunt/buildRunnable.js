@@ -20,15 +20,18 @@ const generateTwitterCard = require( './generateTwitterCard' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
+const getInitializationScript = require( './getInitializationScript' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
 const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );
 const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
+const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 const packageRunnable = require( './packageRunnable' );
+const packageXHTML = require( './packageXHTML' );
 const requireBuild = require( './requireBuild' );
 const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
@@ -43,11 +46,12 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {boolean} instrument - If the sim should be instrumented
  * @param {boolean} allHTML - If the _all.html file should be generated
  * @param {boolean} debugHTML - If the _debug.html file should be generated
+ * @param {boolean} XHTML - If the xhtml/ structure should be generated
  * @param {string} brand
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, localesOption ) {
+module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, XHTML, brand, localesOption ) {
   // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
@@ -92,16 +96,53 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   const stringMap = getStringMap( allLocales, phetLibs );
   const mipmapsJavaScript = await buildMipmaps();
 
+  const simTitleStringKey = getTitleStringKey( repo );
+  const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ simTitleStringKey ];
+  assert( englishTitle, `missing entry for sim title, key = ${simTitleStringKey}` );
+
+  // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
+  let htmlHeader;
+  if ( brand === 'phet-io' ) {
+
+    // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
+    htmlHeader = englishTitle + ' ' + version + '\n' +
+                 'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
+                 'PhET Interactive Simulations, University of Colorado Boulder\n' +
+                 '\n' +
+                 'This Interoperable PhET Simulation file requires a license.\n' +
+                 'USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
+                 'Contact phethelp@colorado.edu regarding licensing.\n' +
+                 'https://phet.colorado.edu/en/licensing';
+  }
+  else {
+    htmlHeader = englishTitle + ' ' + version + '\n' +
+                 'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
+                 'PhET Interactive Simulations, University of Colorado Boulder\n' +
+                 '\n' +
+                 'This file is licensed under Creative Commons Attribution 4.0\n' +
+                 'For alternate source code licensing, see https://github.com/phetsims\n' +
+                 'For licenses for third-party software used by this simulation, see below\n' +
+                 'For more information, see https://phet.colorado.edu/en/licensing/html\n' +
+                 '\n' +
+                 'The PhET name and PhET logo are registered trademarks of The Regents of the\n' +
+                 'University of Colorado. Permission is granted to use the PhET name and PhET logo\n' +
+                 'only for attribution purposes. Use of the PhET name and/or PhET logo for promotional,\n' +
+                 'marketing, or advertising purposes requires a separate license agreement from the\n' +
+                 'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
+  }
+
+  const chipperStringsScript = grunt.file.read( '../chipper/templates/chipper-strings.js' );
+  const splashScript = `window.PHET_SPLASH_DATA_URI="${loadFileAsDataURI( `../brand/${brand}/images/splash.svg` )}";`;
+
   grunt.log.ok( `Minification for ${brand} complete` );
   grunt.log.ok( `Require.js: ${productionJS.length} bytes` );
   grunt.log.ok( `Preloads: ${_.sum( productionPreloads.map( preload => preload.length ) )} bytes` );
   grunt.log.ok( `Mipmaps: ${mipmapsJavaScript.length} bytes` );
 
-  const commonOptions = {
+  const commonInitializationOptions = {
     brand,
     repo,
     stringMap,
-    mipmapsJavaScript,
     dependencies,
     timestamp,
     version,
@@ -115,25 +156,35 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
     for ( let locale of locales ) {
-      grunt.file.write( `${buildDir}/${repo}_${locale}_${brand}.html`, packageRunnable( _.extend( {
+      const initializationScript = getInitializationScript( _.extend( {
         locale,
         includeAllLocales: false,
-        isDebugBuild: false,
-        mainInlineJavascript: productionJS,
-        preloadScripts: productionPreloads
-      }, commonOptions ) ) );
+        isDebugBuild: false
+      }, commonInitializationOptions ) );
+      grunt.file.write( `${buildDir}/${repo}_${locale}_${brand}.html`, packageRunnable( {
+        repo,
+        stringMap,
+        htmlHeader,
+        locale,
+        scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
+      } ) );
     }
   }
 
   // _all.html (forced for phet-io)
   if ( allHTML || brand === 'phet-io' ) {
-    grunt.file.write( `${buildDir}/${repo}_all_${brand}.html`, packageRunnable( _.extend( {
+    const initializationScript = getInitializationScript( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
-      isDebugBuild: false,
-      mainInlineJavascript: productionJS,
-      preloadScripts: productionPreloads
-    }, commonOptions ) ) );
+      isDebugBuild: false
+    }, commonInitializationOptions ) );
+    grunt.file.write( `${buildDir}/${repo}_all_${brand}.html`, packageRunnable( {
+      repo,
+      stringMap,
+      htmlHeader,
+      locale: ChipperConstants.FALLBACK_LOCALE,
+      scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
+    } ) );
   }
 
   if ( debugHTML ) {
@@ -144,13 +195,36 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
       stripLogging: false
     } ) : requireJS;
     const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
-    grunt.file.write( `${buildDir}/${repo}_all_${brand}_debug.html`, packageRunnable( _.extend( {
+    const initializationScript = getInitializationScript( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
-      isDebugBuild: true,
-      mainInlineJavascript: debugJS,
-      preloadScripts: debugPreloads
-    }, commonOptions ) ) );
+      isDebugBuild: true
+    }, commonInitializationOptions ) );
+    grunt.file.write( `${buildDir}/${repo}_all_${brand}_debug.html`, packageRunnable( {
+      repo,
+      stringMap,
+      htmlHeader,
+      locale: ChipperConstants.FALLBACK_LOCALE,
+      scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...debugPreloads, chipperStringsScript, debugJS ]
+    } ) );
+  }
+
+  if ( XHTML ) {
+    const xhtmlDir = `${buildDir}/xhtml`;
+    grunt.file.mkdir( xhtmlDir );
+
+    const initializationScript = getInitializationScript( _.extend( {
+      locale: ChipperConstants.FALLBACK_LOCALE,
+      includeAllLocales: true,
+      isDebugBuild: false
+    }, commonInitializationOptions ) );
+    packageXHTML( xhtmlDir, {
+      repo,
+      stringMap,
+      htmlHeader,
+      locale: ChipperConstants.FALLBACK_LOCALE,
+      scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
+    } );
   }
 
   // dependencies.json

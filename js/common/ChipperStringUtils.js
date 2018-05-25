@@ -76,6 +76,31 @@
     },
 
     /**
+     * Returns a string with all of the keys of the mapping replaced with the values.
+     * @public
+     *
+     * @param {string} str
+     * @param {Object} mapping
+     * @returns {string}
+     */
+    replacePlaceholders: function( str, mapping ) {
+      Object.keys( mapping ).forEach( function( key ) {
+        var replacement = mapping[ key ];
+        key = '{{' + key + '}}';
+        var index;
+        while ( ( index = str.indexOf( key ) ) >= 0 ) {
+          str = str.slice( 0, index ) + replacement + str.slice( index + key.length );
+        }
+      } );
+      Object.keys( mapping ).forEach( function( key ) {
+        if ( str.indexOf( '{{' + key + '}}' ) >= 0 ) {
+          throw new Error( 'Template string detected in placeholders: ' + key + '\n\n' + str.slice( 0, str.indexOf( '{{' + key + '}}' ) + 10 ) );
+        }
+      } );
+      return str;
+    },
+
+    /**
      * Returns true if one string ends with another.  See http://stackoverflow.com/questions/280634/endswith-in-javascript
      * @param {string} string - the parent string within which to search
      * @param {string} suffix - the suffix

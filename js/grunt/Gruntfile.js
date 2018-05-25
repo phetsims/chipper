@@ -165,11 +165,12 @@ module.exports = function( grunt ) {
         // Other options
         const allHTML = !!grunt.option( 'allHTML' );
         const debugHTML = !!grunt.option( 'debugHTML' );
+        const XHTML = !!grunt.option( 'XHTML' );
         const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
 
         for ( let brand of brands ) {
           grunt.log.writeln( `Building brand: ${brand}` );
-          await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, localesOption );
+          await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, XHTML, brand, localesOption );
         }
       }
     } )
