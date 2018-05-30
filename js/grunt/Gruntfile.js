@@ -103,7 +103,7 @@ module.exports = function( grunt ) {
     '--uglify=false - Disables uglification, so the built file will include (essentially) concatenated source files.\n' +
     '--mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.\n' +
     'Runnable build options:\n' +
-    '--instrument - Builds a runnable with code coverage tooling inside. See phet-info/docs/code-coverage.md for more information\n' +
+    '--instrument - Builds a runnable with code coverage tooling inside. See phet-info/doc/code-coverage.md for more information\n' +
     '--brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using\n' +
     '                     build-local.json\'s brands (or adapted-from-phet if that does not exist)\n' +
     '--allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)\n' +
