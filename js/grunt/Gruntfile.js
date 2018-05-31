@@ -166,13 +166,19 @@ module.exports = function( grunt ) {
 
         // Other options
         const allHTML = !!grunt.option( 'allHTML' );
-        const debugHTML = !!grunt.option( 'debugHTML' );
+        let debugHTML = !!grunt.option( 'debugHTML' );
         const XHTML = !!grunt.option( 'XHTML' );
         const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
 
         for ( let brand of brands ) {
           grunt.log.writeln( `Building brand: ${brand}` );
+
+          const previousDebugHTML = debugHTML;
+          if ( brand === 'phet-io' ) { // phet-io override, it should always build the debugHTML, see https://github.com/phetsims/chipper/issues/674
+            debugHTML = true;
+          }
           await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, XHTML, brand, localesOption );
+          debugHTML = previousDebugHTML; // restore the previous debugHTML option value
         }
       }
     } )
