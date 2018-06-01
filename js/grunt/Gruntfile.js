@@ -173,12 +173,8 @@ module.exports = function( grunt ) {
         for ( let brand of brands ) {
           grunt.log.writeln( `Building brand: ${brand}` );
 
-          const previousDebugHTML = debugHTML;
-          if ( brand === 'phet-io' ) { // phet-io override, it should always build the debugHTML, see https://github.com/phetsims/chipper/issues/674
-            debugHTML = true;
-          }
-          await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, XHTML, brand, localesOption );
-          debugHTML = previousDebugHTML; // restore the previous debugHTML option value
+          // phet-io override, it should always build the debugHTML, see https://github.com/phetsims/chipper/issues/674
+          await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML || brand === 'phet-io', XHTML, brand, localesOption );
         }
       }
     } )
