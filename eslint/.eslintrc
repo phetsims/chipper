@@ -37,6 +37,9 @@
     // Custom rule for avoiding Math.sign which is not supported on IE
     "no-math-sign": 2,
     //
+    // Custom rule for avoiding instanceof Array.
+    "no-instanceof-array": 2,
+    //
     // disallow declaration of variables that are not used in the code (recommended)
     // Overriden to allow unused args
     "no-unused-vars": [
