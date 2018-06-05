@@ -157,6 +157,15 @@
     'phet-android-app': { type: 'flag' },
 
     /**
+     * Used for providing a external Google Analytics property for tracking, see
+     * https://github.com/phetsims/phetcommon/issues/46 for more information.
+     */
+    ga: {
+      type: 'string',
+      defaultValue: null
+    },
+
+    /**
      * Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
      */
     gameUp: { type: 'flag' },
