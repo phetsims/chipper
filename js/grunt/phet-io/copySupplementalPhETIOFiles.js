@@ -26,9 +26,9 @@ const PRODUCTION_SITE = 'phet-io.colorado.edu';
 // Make sure to add new files to the jsdoc generation list below also
 const LIB_FILES = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
+  '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js',
   '../tandem/js/PhetioIDUtils.js'
 ];
