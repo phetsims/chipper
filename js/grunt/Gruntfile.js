@@ -107,7 +107,6 @@ module.exports = function( grunt ) {
     '--brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using\n' +
     '                     build-local.json\'s brands (or adapted-from-phet if that does not exist)\n' +
     '--allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)\n' +
-    '--debugHTML - Includes a _debug.html version that includes assertions enabled (and, depending on the brand, may be un-uglified)\n' +
     '--XHTML - Includes an xhtml/ directory in the build output that contains a runnable XHTML form of the sim (with\n' +
     '          a separated-out JS file).\n' +
     '--locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales',
@@ -166,15 +165,13 @@ module.exports = function( grunt ) {
 
         // Other options
         const allHTML = !!grunt.option( 'allHTML' );
-        let debugHTML = !!grunt.option( 'debugHTML' );
         const XHTML = !!grunt.option( 'XHTML' );
         const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
 
         for ( let brand of brands ) {
           grunt.log.writeln( `Building brand: ${brand}` );
 
-          // phet-io override, it should always build the debugHTML, see https://github.com/phetsims/chipper/issues/674
-          await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML || brand === 'phet-io', XHTML, brand, localesOption );
+          await buildRunnable( repo, uglify, mangle, instrument, allHTML, XHTML, brand, localesOption );
         }
       }
     } )
