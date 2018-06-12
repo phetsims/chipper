@@ -45,13 +45,12 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {boolean} mangle - If uglifying, whether to mangle variable names
  * @param {boolean} instrument - If the sim should be instrumented
  * @param {boolean} allHTML - If the _all.html file should be generated
- * @param {boolean} debugHTML - If the _debug.html file should be generated
  * @param {boolean} XHTML - If the xhtml/ structure should be generated
  * @param {string} brand
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, uglify, mangle, instrument, allHTML, debugHTML, XHTML, brand, localesOption ) {
+module.exports = async function( repo, uglify, mangle, instrument, allHTML, XHTML, brand, localesOption ) {
   // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
@@ -75,7 +74,13 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
     insertRequire: repo + '-main',
     brand
   } );
-  const productionJS = uglify ? minify( requireJS, { mangle, babelTranspile: false } ) : requireJS;
+  const productionJS = uglify ? minify( requireJS, {mangle, babelTranspile: false } ) : requireJS;
+  const debugJS = brand === 'phet-io' ? minify( requireJS, {
+    mangle: true,
+    babelTranspile: false,
+    stripAssertions: false,
+    stripLogging: false
+  } ) : requireJS;
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( packageObject.phet.requirejsNamespace );
@@ -86,6 +91,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
 
   const rawPreloads = getPreloads( repo, brand ).map( filename => grunt.file.read( filename ) );
   const productionPreloads = rawPreloads.map( js => uglify ? minify( js, { mangle } ) : js );
+  const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
 
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
@@ -187,27 +193,19 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
     } ) );
   }
 
-  if ( debugHTML ) {
-    const debugJS = brand === 'phet-io' ? minify( requireJS, {
-      mangle: true,
-      babelTranspile: false,
-      stripAssertions: false,
-      stripLogging: false
-    } ) : requireJS;
-    const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
-    const initializationScript = getInitializationScript( _.extend( {
-      locale: ChipperConstants.FALLBACK_LOCALE,
-      includeAllLocales: true,
-      isDebugBuild: true
-    }, commonInitializationOptions ) );
-    grunt.file.write( `${buildDir}/${repo}_all_${brand}_debug.html`, packageRunnable( {
-      repo,
-      stringMap,
-      htmlHeader,
-      locale: ChipperConstants.FALLBACK_LOCALE,
-      scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...debugPreloads, chipperStringsScript, debugJS ]
-    } ) );
-  }
+  // Debug build (always included)
+  const debugInitializationScript = getInitializationScript( _.extend( {
+    locale: ChipperConstants.FALLBACK_LOCALE,
+    includeAllLocales: true,
+    isDebugBuild: true
+  }, commonInitializationOptions ) );
+  grunt.file.write( `${buildDir}/${repo}_all_${brand}_debug.html`, packageRunnable( {
+    repo,
+    stringMap,
+    htmlHeader,
+    locale: ChipperConstants.FALLBACK_LOCALE,
+    scripts: [ debugInitializationScript, splashScript, mipmapsJavaScript, ...debugPreloads, chipperStringsScript, debugJS ]
+  } ) );
 
   if ( XHTML ) {
     const xhtmlDir = `${buildDir}/xhtml`;
