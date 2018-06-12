@@ -159,6 +159,9 @@
     /**
      * Used for providing a external Google Analytics property for tracking, see
      * https://github.com/phetsims/phetcommon/issues/46 for more information.
+     *
+     * This is useful for various users/clients that want to embed simulations, or direct users to simulations. For
+     * example, if a sim is included in an epub, the sim HTML won't have to be modified to include page tracking.
      */
     ga: {
       type: 'string',
