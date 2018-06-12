@@ -195,7 +195,7 @@ module.exports = async function( repo, version ) {
 
     // Copy the wrapper into the build dir /wrappers/, exclude the blacklist
     copyDirectory( `../${wrapper}`, `${buildDir}/wrappers/${wrapperName}`, filterWrapper, {
-      blacklist: fullBlacklist,
+      blacklist: fullBlacklist
     } );
   } );
 
