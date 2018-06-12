@@ -17,6 +17,8 @@
       2,
       "single"
     ],
+    // No dangling commas, see https://github.com/phetsims/tasks/issues/940
+    "comma-dangle": 2,
     //
     // require or disallow use of semicolons instead of ASI (fixable)
     "semi": [
