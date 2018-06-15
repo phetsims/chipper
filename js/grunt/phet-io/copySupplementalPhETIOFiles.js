@@ -234,7 +234,9 @@ let handleLib = function( repo, filter ) {
     consolidated += filteredContents ? filteredContents : contents;
   } );
 
-  let minified = minify( consolidated );
+  let minified = minify( consolidated, {
+    stripAssertions: false
+  } );
 
   grunt.file.write( `${buildDir}/lib/${LIB_OUTPUT_FILE}`, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
 };
