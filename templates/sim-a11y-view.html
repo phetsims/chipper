@@ -172,6 +172,9 @@
 </div>
 
 <script type="application/javascript">
+  var IS_BUILT_STRING = '{{IS_BUILT}}';
+  var IS_BUILT = IS_BUILT_STRING.indexOf( '{{' ) !== 0;
+
 
   // Grab all query parameters to pass to the simulation, and a couple of params that are required for this test
   var simulationQueryString = window.location.search;
@@ -188,30 +191,12 @@
   noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
   noAccessibility && ( simulationQueryString += 'accessibility' );
 
-  // we will try to find the sim with and without brand because it may or may not be there depending on build, use
-  // XHR to determine if file is there, solution from
-  // https://stackoverflow.com/questions/10418031/how-do-i-capture-the-http-code-of-an-iframe/
   var repoLocale = '{{PHET_REPOSITORY}}_en';
-  var withBrand = repoLocale + '_phet.html' + simulationQueryString;
-  var withoutBrand = repoLocale + '.html' + simulationQueryString;
+  var filenameEnding = IS_BUILT ? '_phet.html' : '.html';
+  var simURL = repoLocale + filenameEnding + simulationQueryString;
 
-  var httpRequest = new XMLHttpRequest();
-  httpRequest.onreadystatechange = function() {
-    if ( httpRequest.readyState === 4 ) {
-      if ( httpRequest.status === 200 ) {
-
-        // success without suffix, go ahead and set the src
-        document.getElementById( 'iframe' ).setAttribute( 'src', withoutBrand );
-      }
-      else {
-
-        // file without suffix didn't exist, try with the brand suffix
-        document.getElementById( 'iframe' ).setAttribute( 'src', withBrand );
-      }
-    }
-  };
-  httpRequest.open( 'GET', withoutBrand );
-  httpRequest.send();
+  // set the source of the sim iframe
+  document.getElementById( 'iframe' ).setAttribute( 'src', simURL );
 </script>
 
 <script type="application/javascript">

@@ -74,7 +74,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, XHTM
     insertRequire: repo + '-main',
     brand
   } );
-  const productionJS = uglify ? minify( requireJS, {mangle, babelTranspile: false } ) : requireJS;
+  const productionJS = uglify ? minify( requireJS, { mangle, babelTranspile: false } ) : requireJS;
   const debugJS = brand === 'phet-io' ? minify( requireJS, {
     mangle: true,
     babelTranspile: false,
@@ -248,7 +248,9 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, XHTM
   if ( packageObject.phet.accessible && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for pDOM viewing.
     let a11yHTML = getA11yViewHTMLFromTemplate( repo );
-    a11yHTML = ChipperStringUtils.replaceFirst( a11yHTML, '{{PHET_REPOSITORY}}', repo );
+
+    // this replaceAll is outside of the getA11yViewHTMLFromTemplate because we only want it filled in during the build
+    a11yHTML = ChipperStringUtils.replaceAll( a11yHTML, '{{IS_BUILT}}', 'true' );
 
     grunt.file.write( `${buildDir}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );
   }
