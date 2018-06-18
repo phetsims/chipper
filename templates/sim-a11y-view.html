@@ -175,13 +175,30 @@
   noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
   noAccessibility && ( simulationQueryString += 'accessibility' );
 
+  // we will try to find the sim with and without brand because it may or may not be there depending on build, use
+  // XHR to determine if file is there, solution from
+  // https://stackoverflow.com/questions/10418031/how-do-i-capture-the-http-code-of-an-iframe/
+  var repoLocale = '{{PHET_REPOSITORY}}_en';
+  var withBrand = repoLocale + '_phet.html' + simulationQueryString;
+  var withoutBrand = repoLocale + '.html' + simulationQueryString;
 
-  // support multiple dev sites
-  var onDevSite = [ 'bayes.colorado.edu', 'phet-dev.colorado.edu', 'www.colorado.edu' ].indexOf( window.location.hostname ) >= 0;
+  var httpRequest = new XMLHttpRequest();
+  httpRequest.onreadystatechange = function() {
+    if ( httpRequest.readyState === 4 ) {
+      if ( httpRequest.status === 200 ) {
 
-  var brandSuffix = onDevSite ? '_phet' : '';   // add brand name for dev deploys
+        // success without suffix, go ahead and set the src
+        document.getElementById( 'iframe' ).setAttribute( 'src', withoutBrand );
+      }
+      else {
 
-  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_REPOSITORY}}_en' + brandSuffix + '.html' + simulationQueryString );
+        // file without suffix didn't exist, try with the brand suffix
+        document.getElementById( 'iframe' ).setAttribute( 'src', withBrand );
+      }
+    }
+  };
+  httpRequest.open( 'GET', withoutBrand );
+  httpRequest.send();
 </script>
 
 <script type="application/javascript">
