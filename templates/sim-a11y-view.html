@@ -122,12 +122,15 @@
 
   <div id="content">
     <div class="left">
-      <h3>A11y View: {{PHET_SIM_TITLE}}</h3>
+      <h1>A11y View: {{PHET_SIM_TITLE}}</h1>
       <div class="aspect-ratio">
         <iframe id="iframe" allowfullscreen scrolling="no" title="Interact with {{PHET_SIM_TITLE}}"></iframe>
       </div>
       <div id="alerts">
-        <h4>Activity log - The most recent interactive alerts.</h4>
+        <h3>Activity log of Interactive Alerts</h3>
+        <p>
+          Interactive alerts are read out as the user interacts providing a description of what is happening in real-time. Alerts appear in reverse chronological order with the latest on top.
+        </p>
         <div id=alert-copy-container class=alert_copy_container>
           <div id='polite-element-container'>
             <ul class='alert_copy' id='alert-list'></ul>
@@ -139,16 +142,16 @@
     <!--The PDOM copy will be placed in this container, along with a section just for alerts -->
     <div class="right">
       <div id="intro">
-        <h4>What is the A11y View?</h4>
-        <p>In this web page, the accessible version of {{PHET_SIM_TITLE}} is embedded in the
-          iframe. Below, in blue, is the copy of the sim's structured Parallel Document Object Model, or PDOM.
-          As you interact with the visual sim in the iframe with either a keyboard or mouse,
-          the descriptions for the sim automatically update on the right, key dynamic elements will be highlighted
-          <span class="dynamic">like this</span>. Any alerts set on an element with an
-          "aria-live" attribute will be displayed in the activity log, with the most recent interactive alerts first.
+        <h2>What is the A11y View?</h2>
+        <p>
+          The A11y View is a design and presentation tool that allows us to visually demonstrate the accessibility layer of the simulation. We refer to this layer as the Parallel DOM, or PDOM. The PDOM (copied into the blue box) exposes the simulation’s full document structure and all the dynamic descriptive content that lives within that structure to a student accessing the simulation using assistive technology, such as screen reader software. The activity log (copied into the orange box), exposes the interactive alerts that a student would hear in real-time as they interact with the simulation. Interact with the accessible version of {{PHET_SIM_TITLE}} in the iframe, with either a keyboard or a mouse, and notice how the activity log (orange box) and the content of the PDOM (blue box) update as you interact.
+        </p>
+        <p>
+          <b>Please note</b> that students do not use the A11y View, they use the accessible simulation, alone, which is rendered here inside the iframe. 
         </p>
       </div>
-      <h4>The {{PHET_SIM_TITLE}} descriptions structured in a Parallel DOM</h4>
+      <h3>PDOM & Descriptions for {{PHET_SIM_TITLE}}</h3>
+      <p>Content in the blue box updates in real-time to provide an always-available description of the current state of the sim.</p>
       <div id="dom-copy-container" class="dom_copy_container" role="presentation"></div>
     </div>
 
