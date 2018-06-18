@@ -255,7 +255,6 @@
           allElements[ i ].tabIndex = '-1';
         }
       }
-
       removeTabIndex( pDOMCopy );
 
       /**
@@ -306,7 +305,7 @@
             // inline attribute
             var valueTextElement = document.createElement( 'p' );
             valueTextElement.style.opacity = 0.55;
-            valueTextElement.textContent = '<aria-valuetext: ' + element.getAttribute( 'aria-valuetext' ) + '>';
+            valueTextElement.textContent = element.getAttribute( 'aria-valuetext' );
             element.parentNode.appendChild( valueTextElement );
           }
         }
