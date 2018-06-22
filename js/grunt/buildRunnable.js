@@ -74,10 +74,11 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, XHTM
     insertRequire: repo + '-main',
     brand
   } );
-  const productionJS = uglify ? minify( requireJS, { mangle, babelTranspile: false } ) : requireJS;
+
+  const productionJS = uglify ? minify( requireJS, { mangle, babelTranspile: true } ) : requireJS;
   const debugJS = brand === 'phet-io' ? minify( requireJS, {
     mangle: true,
-    babelTranspile: false,
+    babelTranspile: true,
     stripAssertions: false,
     stripLogging: false
   } ) : requireJS;
