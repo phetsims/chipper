@@ -122,12 +122,16 @@
 
   <div id="content">
     <div class="left">
-      <h3>A11y View: {{PHET_SIM_TITLE}}</h3>
+      <h1>A11y View: {{PHET_SIM_TITLE}}</h1>
       <div class="aspect-ratio">
-        <iframe id="iframe" allowfullscreen title="Interact with {{PHET_SIM_TITLE}}"></iframe>
+        <iframe id="iframe" allowfullscreen scrolling="no" title="Interact with {{PHET_SIM_TITLE}}"></iframe>
       </div>
       <div id="alerts">
-        <h4>Activity log - The most recent interactive alerts.</h4>
+        <h3>Activity log of Interactive Alerts</h3>
+        <p>
+          Interactive alerts are read out as the user interacts providing a description of what is happening in
+          real-time. Alerts appear in reverse chronological order with the latest on top.
+        </p>
         <div id=alert-copy-container class=alert_copy_container>
           <div id='polite-element-container'>
             <ul class='alert_copy' id='alert-list'></ul>
@@ -139,16 +143,25 @@
     <!--The PDOM copy will be placed in this container, along with a section just for alerts -->
     <div class="right">
       <div id="intro">
-        <h4>What is the A11y View?</h4>
-        <p>In this web page, the accessible version of {{PHET_SIM_TITLE}} is embedded in the
-          iframe. Below, in blue, is the copy of the sim's structured Parallel Document Object Model, or PDOM.
-          As you interact with the visual sim in the iframe with either a keyboard or mouse,
-          the descriptions for the sim automatically update on the right, key dynamic elements will be highlighted
-          <span class="dynamic">like this</span>. Any alerts set on an element with an
-          "aria-live" attribute will be displayed in the activity log, with the most recent interactive alerts first.
+        <h2>What is the A11y View?</h2>
+        <p>
+          The A11y View is a design and presentation tool that allows us to visually demonstrate the accessibility layer
+          of the simulation. We refer to this layer as the Parallel DOM, or PDOM. The PDOM (copied into the blue box)
+          exposes the simulation’s full document structure and all the dynamic descriptive content that lives within
+          that structure to a student accessing the simulation using assistive technology, such as screen reader
+          software. The activity log (copied into the orange box), exposes the interactive alerts that a student would
+          hear in real-time as they interact with the simulation. Interact with the accessible version of
+          {{PHET_SIM_TITLE}} in the iframe, with either a keyboard or a mouse, and notice how the activity log (orange
+          box) and the content of the PDOM (blue box) update as you interact.
+        </p>
+        <p>
+          <b>Please note</b> that students do not use the A11y View, they use the accessible simulation, alone, which is
+          rendered here inside the iframe.
         </p>
       </div>
-      <h4>The {{PHET_SIM_TITLE}} descriptions structured in a Parallel DOM</h4>
+      <h3>PDOM & Descriptions for {{PHET_SIM_TITLE}}</h3>
+      <p>Content in the blue box updates in real-time to provide an always-available description of the current state of
+        the sim.</p>
       <div id="dom-copy-container" class="dom_copy_container" role="presentation"></div>
     </div>
 
@@ -159,6 +172,9 @@
 </div>
 
 <script type="application/javascript">
+  var IS_BUILT_STRING = '{{IS_BUILT}}';
+  var IS_BUILT = IS_BUILT_STRING.indexOf( '{{' ) !== 0;
+
 
   // Grab all query parameters to pass to the simulation, and a couple of params that are required for this test
   var simulationQueryString = window.location.search;
@@ -175,13 +191,12 @@
   noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
   noAccessibility && ( simulationQueryString += 'accessibility' );
 
+  var repoLocale = '{{PHET_REPOSITORY}}_en';
+  var filenameEnding = IS_BUILT ? '_phet.html' : '.html';
+  var simURL = repoLocale + filenameEnding + simulationQueryString;
 
-  // support multiple dev sites
-  var onDevSite = [ 'bayes.colorado.edu', 'phet-dev.colorado.edu', 'www.colorado.edu' ].indexOf( window.location.hostname ) >= 0;
-
-  var brandSuffix = onDevSite ? '_phet' : '';   // add brand name for dev deploys
-
-  document.getElementById( 'iframe' ).setAttribute( 'src', '{{PHET_REPOSITORY}}_en' + brandSuffix + '.html' + simulationQueryString );
+  // set the source of the sim iframe
+  document.getElementById( 'iframe' ).setAttribute( 'src', simURL );
 </script>
 
 <script type="application/javascript">
@@ -210,8 +225,34 @@
     return linearDOM;
   }
 
+  /**
+   * Apply the necessary styling to the PDOM copy so that it looks and behaves well. This includes removing from
+   * navigation order and ensuring that all of the styling copied from the actual PDOM is removed so that the copy
+   * is visible and elements have proper dimensions.
+   *
+   * @param {HTMLElement} root - ancestor element, this and all descendants will be styled
+   */
+  function styleCopy( root ) {
+    var allElements = getAllDOMElementsAsLinear( root );
+
+    for ( var i = 0; i < allElements.length; i++ ) {
+      var element = allElements[ i ];
+
+      // make sure nothing in copy is focusable
+      element.tabIndex = "-1";
+
+      // make sure that styling is removed, unless some styling was added just for the copy
+      if ( element.className !== "pdom-style" ) {
+        element.removeAttribute( 'style' );
+      }
+    }
+  }
+
   // handling messages from sims
   window.addEventListener( 'message', function( evt ) {
+    if ( !evt.data ) {
+      return;
+    }
     var data = JSON.parse( evt.data );
 
     // if load is successful, create a visualization of the parallel DOM
@@ -248,15 +289,7 @@
       // add the copies to the outer document
       copyContainer.appendChild( pDOMCopy );
 
-      // remove all elements in the PDOM copy from the navigation order
-      function removeTabIndex( rootNode ) {
-        var allElements = rootNode.getElementsByTagName( "*" );
-        for ( var i = 0; i < allElements.length; i++ ) {
-          allElements[ i ].tabIndex = '-1';
-        }
-      }
-
-      removeTabIndex( pDOMCopy );
+      styleCopy( pDOMCopy );
 
       /**
        * Convert the inline ARIA labels with label information to input values or additional label elements in the
@@ -305,8 +338,9 @@
             // if the element has aria-valuetext, render this text in a new element so we can see the content of this
             // inline attribute
             var valueTextElement = document.createElement( 'p' );
+            valueTextElement.className = "pdom-style";
             valueTextElement.style.opacity = 0.55;
-            valueTextElement.textContent = '<aria-valuetext: ' + element.getAttribute( 'aria-valuetext' ) + '>';
+            valueTextElement.textContent = element.getAttribute( 'aria-valuetext' );
             element.parentNode.appendChild( valueTextElement );
           }
         }
@@ -331,8 +365,8 @@
 
           addInlineAttributesTHTML( pDOMCopy );
 
-          // make sure that the copied html is completely out of navigation
-          removeTabIndex( pDOMCopy );
+          // we have to update styles of all elements when they are cloned
+          styleCopy( pDOMCopy );
         }, 10 );
       } );
 

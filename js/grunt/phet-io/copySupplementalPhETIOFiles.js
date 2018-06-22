@@ -26,9 +26,9 @@ const PRODUCTION_SITE = 'phet-io.colorado.edu';
 // Make sure to add new files to the jsdoc generation list below also
 const LIB_FILES = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
+  '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js',
   '../tandem/js/PhetioIDUtils.js'
 ];
@@ -159,11 +159,9 @@ module.exports = async function( repo, version ) {
   // TODO: Should this be in a file? Would we be duplicating perennial? We want a reproducible build
   let wrappers = [
     'phet-io-wrappers/active',
-    'phet-io-wrappers/audio',
     'phet-io-wrappers/event-log',
     'phet-io-wrappers/index',
     'phet-io-wrappers/studio',
-    'phet-io-wrappers/embedded-recorder',
     'phet-io-wrappers/login',
     'phet-io-wrappers/mirror-inputs',
     'phet-io-wrappers/record',
@@ -172,7 +170,8 @@ module.exports = async function( repo, version ) {
     'phet-io-wrappers/state',
     'phet-io-wrappers/wrapper-template',
     'phet-io-wrapper-classroom-activity',
-    'phet-io-wrapper-lab-book'
+    'phet-io-wrapper-lab-book',
+    'phet-io-wrapper-hookes-law-energy'
   ];
 
   // Files and directories from wrapper folders that we don't want to copy
@@ -197,7 +196,7 @@ module.exports = async function( repo, version ) {
 
     // Copy the wrapper into the build dir /wrappers/, exclude the blacklist
     copyDirectory( `../${wrapper}`, `${buildDir}/wrappers/${wrapperName}`, filterWrapper, {
-      blacklist: fullBlacklist,
+      blacklist: fullBlacklist
     } );
   } );
 
@@ -235,7 +234,9 @@ let handleLib = function( repo, filter ) {
     consolidated += filteredContents ? filteredContents : contents;
   } );
 
-  let minified = minify( consolidated );
+  let minified = minify( consolidated, {
+    stripAssertions: false
+  } );
 
   grunt.file.write( `${buildDir}/lib/${LIB_OUTPUT_FILE}`, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
 };

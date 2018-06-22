@@ -1,7 +1,7 @@
-// Copyright 2017, University of Colorado Boulder
+// Copyright 2018, University of Colorado Boulder
 
 /**
- * Combines all parts of a runnable's built file into one HTML file.
+ * Combines all parts of a runnable's built file into an XHTML structure (with separate files)
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
@@ -16,14 +16,14 @@ const grunt = require( 'grunt' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 
 /**
- * From a given set of config (including the JS and other required things), it creates an HTML file for a runnable.
+ * From a given set of config (including the JS and other required things), it creates an XHTML structure.
  * @public
  *
+ * @param {string} xhtmlDir
  * @param {Object} config
  * @returns {string} - The HTML for the file.
  */
-module.exports = function( config ) {
-
+module.exports = function( xhtmlDir, config ) {
   const encoder = new nodeHTMLEncoder.Encoder( 'entity' );
 
   const {
@@ -41,18 +41,14 @@ module.exports = function( config ) {
 
   const localizedTitle = stringMap[ locale ][ getTitleStringKey( repo ) ];
 
-  // Directory on the PhET website where the latest version of the sim lives
-  const latestDir = `https://phet.colorado.edu/sims/html/${repo}/latest/`;
+  const script = scripts.join( '\n' );
+  const scriptFilename = `${repo}_phet.js`;
 
-  return ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/sim.html' ), {
-    PHET_CARRIAGE_RETURN: '\r',
+  const xhtml = ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/sim.xhtml' ), {
     PHET_SIM_TITLE: encoder.htmlEncode( localizedTitle ),
     PHET_HTML_HEADER: htmlHeader,
-    PHET_SIM_SCRIPTS: scripts.map( script => `<script type="text/javascript">${script}</script>` ).join( '\n' ),
-
-    // metadata for Open Graph protocol, see phet-edmodo#2
-    OG_TITLE: encoder.htmlEncode( localizedTitle ),
-    OG_URL: `${latestDir}${repo}_${locale}.html`,
-    OG_IMAGE: `${latestDir}${repo}-600.png`
+    PHET_SIM_SCRIPTS: `<script type="text/javascript" src="${scriptFilename}" charset="utf-8"></script>`
   } );
+  grunt.file.write( `${xhtmlDir}/${repo}_${locale}_phet.html`, xhtml );
+  grunt.file.write( `${xhtmlDir}/${scriptFilename}`, script );
 };

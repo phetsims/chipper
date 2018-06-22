@@ -117,6 +117,20 @@
     fuzzMouse: { type: 'flag' },
 
     /**
+     * The maximum number of concurrent pointers allowed for fuzzing. Using a value larger than 1 with fuzzMouse will
+     * test multitouch behavior.
+     */
+    fuzzPointers: {
+      type: 'number',
+      defaultValue: 1
+    },
+
+    /**
+     * Randomly sends touch events to sim.
+     */
+    fuzzTouch: { type: 'flag' },
+
+    /**
      * if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
      */
     fuzzRate: {
@@ -141,6 +155,18 @@
      * to Google Analytics and potentially other sources in the future.
      */
     'phet-android-app': { type: 'flag' },
+
+    /**
+     * Used for providing a external Google Analytics property for tracking, see
+     * https://github.com/phetsims/phetcommon/issues/46 for more information.
+     *
+     * This is useful for various users/clients that want to embed simulations, or direct users to simulations. For
+     * example, if a sim is included in an epub, the sim HTML won't have to be modified to include page tracking.
+     */
+    ga: {
+      type: 'string',
+      defaultValue: null
+    },
 
     /**
      * Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought

@@ -103,11 +103,12 @@ module.exports = function( grunt ) {
     '--uglify=false - Disables uglification, so the built file will include (essentially) concatenated source files.\n' +
     '--mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.\n' +
     'Runnable build options:\n' +
-    '--instrument - Builds a runnable with code coverage tooling inside. See phet-info/docs/code-coverage.md for more information\n' +
+    '--instrument - Builds a runnable with code coverage tooling inside. See phet-info/doc/code-coverage.md for more information\n' +
     '--brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using\n' +
     '                     build-local.json\'s brands (or adapted-from-phet if that does not exist)\n' +
     '--allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)\n' +
-    '--debugHTML - Includes a _debug.html version that includes assertions enabled (and, depending on the brand, may be un-uglified)\n' +
+    '--XHTML - Includes an xhtml/ directory in the build output that contains a runnable XHTML form of the sim (with\n' +
+    '          a separated-out JS file).\n' +
     '--locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales',
     wrapTask( async () => {
       // grunt options that apply to multiple build tasks
@@ -164,12 +165,13 @@ module.exports = function( grunt ) {
 
         // Other options
         const allHTML = !!grunt.option( 'allHTML' );
-        const debugHTML = !!grunt.option( 'debugHTML' );
+        const XHTML = !!grunt.option( 'XHTML' );
         const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
 
         for ( let brand of brands ) {
           grunt.log.writeln( `Building brand: ${brand}` );
-          await buildRunnable( repo, uglify, mangle, instrument, allHTML, debugHTML, brand, localesOption );
+
+          await buildRunnable( repo, uglify, mangle, instrument, allHTML, XHTML, brand, localesOption );
         }
       }
     } )
@@ -257,6 +259,31 @@ module.exports = function( grunt ) {
     'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
     wrapTask( async () => {
       generateCoverage( repo );
+    } ) );
+
+  grunt.registerTask( 'update',
+    'Updates the normal automatically-generated files for this repository. Includes:\n' +
+    '  runnables: generate-development-html, generate-config\n' +
+    '  accessible runnables: generate-a11y-view-html\n' +
+    '  color-profile runnables: generate-development-colors-html\n' +
+    '  unit tests: generate-test-html, generate-test-config',
+    wrapTask( async () => {
+      if ( packageObject.phet.runnable ) {
+        grunt.task.run( 'generate-development-html' );
+        grunt.task.run( 'generate-config' );
+
+        if ( packageObject.phet.accessible ) {
+          grunt.task.run( 'generate-a11y-view-html' );
+        }
+        if ( packageObject.phet.colorProfile ) {
+          grunt.task.run( 'generate-development-colors-html' );
+        }
+      }
+
+      if ( packageObject.phet.generatedUnitTests ) {
+        grunt.task.run( 'generate-test-html' );
+        grunt.task.run( 'generate-test-config' );
+      }
     } ) );
 
   grunt.registerTask( 'published-README',

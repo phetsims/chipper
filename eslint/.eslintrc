@@ -17,6 +17,8 @@
       2,
       "single"
     ],
+    // No dangling commas, see https://github.com/phetsims/tasks/issues/940
+    "comma-dangle": 2,
     //
     // require or disallow use of semicolons instead of ASI (fixable)
     "semi": [
@@ -36,6 +38,9 @@
     //
     // Custom rule for avoiding Math.sign which is not supported on IE
     "no-math-sign": 2,
+    //
+    // Custom rule for avoiding instanceof Array.
+    "no-instanceof-array": 2,
     //
     // disallow declaration of variables that are not used in the code (recommended)
     // Overriden to allow unused args
@@ -210,6 +215,8 @@
     "global": false,
     // jshashes library, for hashing strings (screenshot comparison)
     "Hashes": false,
+    // for HTML entity parsing
+    "he": false,
     // for HTML => JSON parsing
     "himalaya": false,
     //for web audio

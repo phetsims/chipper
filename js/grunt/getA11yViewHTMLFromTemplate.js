@@ -30,6 +30,7 @@ module.exports = function( repo ) {
   // Replace placeholders in the template.
   html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', englishSimTitle );
   html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', `${repo}_${ChipperConstants.FALLBACK_LOCALE}.html` );
+  html = ChipperStringUtils.replaceAll( html, '{{PHET_REPOSITORY}}', repo );
 
   return html;
 };

@@ -1,7 +1,7 @@
 // Copyright 2017, University of Colorado Boulder
 
 /**
- * Unit tests, run with `qunit` at the top-level of chipper. May need `npm install -g qunit` beforehand, if it hasn't been run yet.
+ * Unit tests, run with `qunit` at the *top-level* of chipper. May need `npm install -g qunit` beforehand, if it hasn't been run yet.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
@@ -53,7 +53,7 @@ function assertChainsExistence( assert, brand, options ) {
     assertFileExistence( assert, '../chains/build/phet-io/lib' );
     assertFileExistence( assert, '../chains/build/phet-io/wrappers' );
     assertFileExistence( assert, '../chains/build/phet-io/dependencies.json' );
-    debugHTML && assertFileExistence( assert, '../chains/build/phet-io/chains_all_phet-io_debug.html' );
+    assertFileExistence( assert, '../chains/build/phet-io/chains_all_phet-io_debug.html' ); // phet-io brand should always have debug html.
   }
 }
 
