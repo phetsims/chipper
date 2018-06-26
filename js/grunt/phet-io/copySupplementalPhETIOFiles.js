@@ -27,10 +27,10 @@ const PRODUCTION_SITE = 'phet-io.colorado.edu';
 const LIB_FILES = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
   '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
+  '../tandem/js/PhetioIDUtils.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js',
-  '../tandem/js/PhetioIDUtils.js'
+  '../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js'
 ];
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
