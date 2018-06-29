@@ -262,8 +262,8 @@
       var innerDoc = simFrame.contentDocument || simFrame.contentWindow.document;
 
       // copy of the parallel DOM
-      var pDOM = innerDoc.getElementsByClassName( 'accessibility' )[ 0 ];
-      var pDOMCopy = pDOM.cloneNode( true );
+      var pDOMRoot = simFrame.contentWindow.phet.joist.sim.display.accessibleDOMElement;
+      var pDOMCopy = pDOMRoot.cloneNode( true );
 
       // get the alert dom elements from the iframe's inner document
       var politeElement1 = innerDoc.getElementById( 'polite-1' );
@@ -359,7 +359,7 @@
           // the visual DOM, and add a new one
           // TODO: Work on refining this, and only modifying the elements that change in the PDOM
           copyContainer.removeChild( pDOMCopy );
-          pDOMCopy = pDOM.cloneNode( true );
+          pDOMCopy = pDOMRoot.cloneNode( true );
           pDOMCopy.removeAttribute( 'style' );
           copyContainer.appendChild( pDOMCopy );
 
@@ -374,7 +374,7 @@
       var config = { attributes: true, childList: true, characterData: true, subtree: true };
 
       // pass in the target node, as well as the observer options
-      domObserver.observe( pDOM, config );
+      domObserver.observe( pDOMRoot, config );
 
       // add mutation observers to each of the aria-live elements
       function addLiveObserver( originalElement, listElement ) {
