@@ -365,6 +365,20 @@
      */
     showVisibleBounds: { type: 'flag' },
 
+
+    /**
+     * Indicates whether sonification should be enabled.  If true, the nav bar icon to turn sonification on/off will be
+     * present.
+     */
+    sonification: { type: 'flag' },
+
+    /**
+     * Indicates whether enhanced sounds are used in addition to basic sound as part of the sonification.  If true, the
+     * PhET menu will have an option for enabling enhanced sounds.  This should never be set when sonification is NOT
+     * set.
+     */
+    hasEnhancedSounds: { type: 'flag' },
+
     /**
      * Speed multiplier for everything in the sim. This scales the value of dt for PHET_CORE/Timer,
      * model.step, view.step, and anything else that is controlled from Sim.stepSimulation.
@@ -498,11 +512,25 @@
   window.phet.chipper.randomSeed = phet.chipper.queryParameters.randomSeed;
 
   /**
-   * Global flag that indictates whether accessibility is enabled for the simulation
+   * Global flag that indicates whether accessibility is enabled for the simulation
    * @public (writable by joist) can be overwritten in the constructor of Sim.js
    * @type {boolean}
    */
   window.phet.chipper.accessibility = phet.chipper.queryParameters.accessibility;
+
+  /**
+   * Global flag that indicates whether sound generation is enabled for the simulation
+   * @public (writable by joist) can be overwritten in the constructor of Sim.js
+   * @type {boolean}
+   */
+  window.phet.chipper.sonification = phet.chipper.queryParameters.sonification;
+
+  /**
+   * Global flag that indicates whether enhanced sounds are available for the simulation
+   * @public (writable by joist) can be overwritten in the constructor of Sim.js
+   * @type {boolean}
+   */
+  window.phet.chipper.hasEnhancedSounds = phet.chipper.queryParameters.hasEnhancedSounds;
 
   /**
    * Utility function to pause synchronously for the given number of milliseconds.
