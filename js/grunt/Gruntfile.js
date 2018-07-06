@@ -203,7 +203,7 @@ module.exports = function( grunt ) {
     } ) );
 
   grunt.registerTask( 'generate-test-html',
-    'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/docs/adding-tests.md ' +
+    'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-tests.md ' +
     'for more information on automated testing',
     wrapTask( async () => {
       generateDevelopmentHTML( repo, {
