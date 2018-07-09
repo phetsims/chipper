@@ -367,15 +367,15 @@
 
 
     /**
-     * Indicates whether sonification should be enabled.  If true, the nav bar icon to turn sonification on/off will be
-     * present.
+     * Indicates whether the tambo sound library should be enabled.  If true, the nav bar icon to turn sound on/off
+     * will be present.
      */
-    sonification: { type: 'flag' },
+    tambo: { type: 'flag' },
 
     /**
-     * Indicates whether enhanced sounds are used in addition to basic sound as part of the sonification.  If true, the
-     * PhET menu will have an option for enabling enhanced sounds.  This should never be set when sonification is NOT
-     * set.
+     * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
+     * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
+     * NOT being used.
      */
     hasEnhancedSounds: { type: 'flag' },
 
@@ -523,7 +523,7 @@
    * @public (writable by joist) can be overwritten in the constructor of Sim.js
    * @type {boolean}
    */
-  window.phet.chipper.sonification = phet.chipper.queryParameters.sonification;
+  window.phet.chipper.tambo = phet.chipper.queryParameters.tambo;
 
   /**
    * Global flag that indicates whether enhanced sounds are available for the simulation
