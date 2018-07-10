@@ -262,8 +262,8 @@
       var innerDoc = simFrame.contentDocument || simFrame.contentWindow.document;
 
       // copy of the parallel DOM
-      var pDOMRoot = simFrame.contentWindow.phet.joist.sim.display.accessibleDOMElement;
-      var pDOMCopy = pDOMRoot.cloneNode( true );
+      var PDOMRoot = simFrame.contentWindow.phet.joist.sim.display.accessibleDOMElement;
+      var PDOMCopy = PDOMRoot.cloneNode( true );
 
       // get the alert dom elements from the iframe's inner document
       var politeElement1 = innerDoc.getElementById( 'polite-1' );
@@ -271,15 +271,15 @@
       var politeElement3 = innerDoc.getElementById( 'polite-3' );
       var politeElement4 = innerDoc.getElementById( 'polite-4' );
 
-      // get the alert dom elements from the pDOM copy
+      // get the alert dom elements from the PDOM copy
       var alertList = document.getElementById( 'alert-list' );
 
       // strip the styling from the copied DOM elements
-      pDOMCopy.removeAttribute( 'style' );
+      PDOMCopy.removeAttribute( 'style' );
       alertList.removeAttribute( 'style' );
 
       // strip style from all elements in the DOM
-      getAllDOMElementsAsLinear( pDOMCopy ).forEach( function( element ) {
+      getAllDOMElementsAsLinear( PDOMCopy ).forEach( function( element ) {
         element.removeAttribute( 'style' );
       } );
 
@@ -287,9 +287,9 @@
       var copyContainer = document.getElementById( 'dom-copy-container' );
 
       // add the copies to the outer document
-      copyContainer.appendChild( pDOMCopy );
+      copyContainer.appendChild( PDOMCopy );
 
-      styleCopy( pDOMCopy );
+      styleCopy( PDOMCopy );
 
       /**
        * Convert the inline ARIA labels with label information to input values or additional label elements in the
@@ -346,7 +346,7 @@
         }
       }
 
-      addInlineAttributesTHTML( pDOMCopy );
+      addInlineAttributesTHTML( PDOMCopy );
 
       // whenever an element in the parallel DOM changes, we need to update its copied element as well
       var domObserver = new MutationObserver( function( mutations ) {
@@ -358,15 +358,15 @@
           // This is extremely inefficient - every time the document changes, make a new copy, remove
           // the visual DOM, and add a new one
           // TODO: Work on refining this, and only modifying the elements that change in the PDOM
-          copyContainer.removeChild( pDOMCopy );
-          pDOMCopy = pDOMRoot.cloneNode( true );
-          pDOMCopy.removeAttribute( 'style' );
-          copyContainer.appendChild( pDOMCopy );
+          copyContainer.removeChild( PDOMCopy );
+          PDOMCopy = PDOMRoot.cloneNode( true );
+          PDOMCopy.removeAttribute( 'style' );
+          copyContainer.appendChild( PDOMCopy );
 
-          addInlineAttributesTHTML( pDOMCopy );
+          addInlineAttributesTHTML( PDOMCopy );
 
           // we have to update styles of all elements when they are cloned
-          styleCopy( pDOMCopy );
+          styleCopy( PDOMCopy );
         }, 10 );
       } );
 
@@ -374,7 +374,7 @@
       var config = { attributes: true, childList: true, characterData: true, subtree: true };
 
       // pass in the target node, as well as the observer options
-      domObserver.observe( pDOMRoot, config );
+      domObserver.observe( PDOMRoot, config );
 
       // add mutation observers to each of the aria-live elements
       function addLiveObserver( originalElement, listElement ) {
