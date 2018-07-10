@@ -451,10 +451,15 @@
     // Read query parameters
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
 
-    // Add a log function that displays messages to the console.
+    // Add a log function that displays messages to the console. Examples:
+    // phet.log && phet.log( 'You win!' );
+    // phet.log && phet.log( 'You lose', { color: 'red' } );
     if ( window.phet.chipper.queryParameters.log ) {
-      window.phet.log = function( message ) {
-        console.log( '%c' + message, 'color: #009900' ); // green
+      window.phet.log = function( message, options ) {
+        options = _.extend( {
+          color: '#009900' // green
+        }, options );
+        console.log( '%c' + message, 'color: ' + options.color ); // green
       };
     }
 
