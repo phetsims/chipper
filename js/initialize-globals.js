@@ -377,7 +377,7 @@
      * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
      * NOT being used.
      */
-    hasEnhancedSounds: { type: 'flag' },
+    supportsEnhancedSound: { type: 'flag' },
 
     /**
      * Speed multiplier for everything in the sim. This scales the value of dt for PHET_CORE/Timer,
@@ -530,7 +530,7 @@
    * @public (writable by joist) can be overwritten in the constructor of Sim.js
    * @type {boolean}
    */
-  window.phet.chipper.hasEnhancedSounds = phet.chipper.queryParameters.hasEnhancedSounds;
+  window.phet.chipper.supportsEnhancedSound = phet.chipper.queryParameters.supportsEnhancedSound;
 
   /**
    * Utility function to pause synchronously for the given number of milliseconds.
