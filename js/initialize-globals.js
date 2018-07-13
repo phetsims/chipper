@@ -343,7 +343,7 @@
     /**
      * Typically used to show answers (or hidden controls that show answers) to challenges in sim games.
      * Disabled in the primary built html file, see https://github.com/phetsims/joist/issues/406.
-     * For internal use only, not public facing.
+     * For internal use only.
      */
     showAnswers: { type: 'flag' },
 
