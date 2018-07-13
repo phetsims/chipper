@@ -365,13 +365,6 @@
      */
     showVisibleBounds: { type: 'flag' },
 
-
-    /**
-     * Indicates whether the tambo sound library should be enabled.  If true, the nav bar icon to turn sound on/off
-     * will be present.
-     */
-    tambo: { type: 'flag' },
-
     /**
      * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
      * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
@@ -431,6 +424,12 @@
       type: 'string',
       defaultValue: null
     },
+
+    /**
+     * Indicates whether the tambo sound library should be enabled.  If true, the nav bar icon to turn sound on/off
+     * will be present.
+     */
+    tambo: { type: 'flag' },
 
     /**
      * Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
