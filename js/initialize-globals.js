@@ -64,6 +64,11 @@
     },
 
     /**
+     * Generates object reports that can be used by binder.
+     */
+    binder: { type: 'flag' },
+
+    /**
      * specifies the brand that should be used in requirejs mode
      */
     brand: {
@@ -253,11 +258,6 @@
      * passes errors to test-sims
      */
     postMessageOnError: { type: 'flag' },
-
-    /**
-     * Generates object reports that can be used by binder.
-     */
-    binder: { type: 'flag' },
 
     /**
      * triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
