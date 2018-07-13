@@ -561,6 +561,9 @@
     window.setInterval( function() { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) );
   };
 
+  // Are we running a built html file?
+  window.phet.chipper.isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
+
   /**
    * Enables or disables assertions in common libraries using query parameters.
    * There are two types of assertions: basic and slow. Enabling slow assertions will adversely impact performance.
@@ -569,11 +572,13 @@
    */
   ( function() {
 
-    // TODO: separate this logic out into a more common area?
-    var isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
+    // enables all assertions (basic and slow)
+    var enableAllAssertions = !phet.chipper.isProduction && phet.chipper.queryParameters.eall;
 
-    var enableAllAssertions = !isProduction && phet.chipper.queryParameters.eall; // enables all assertions (basic and slow)
-    var enableBasicAssertions = enableAllAssertions || ( !isProduction && phet.chipper.queryParameters.ea ) || phet.chipper.isDebugBuild;  // enables basic assertions
+    // enables basic assertions
+    var enableBasicAssertions = enableAllAssertions ||
+                                ( !phet.chipper.isProduction && phet.chipper.queryParameters.ea ) ||
+                                phet.chipper.isDebugBuild;
 
     if ( enableBasicAssertions ) {
       window.assertions.enableAssert();
