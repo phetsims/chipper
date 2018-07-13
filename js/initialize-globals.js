@@ -366,13 +366,6 @@
     showVisibleBounds: { type: 'flag' },
 
     /**
-     * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
-     * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
-     * NOT being used.
-     */
-    supportsEnhancedSound: { type: 'flag' },
-
-    /**
      * Speed multiplier for everything in the sim. This scales the value of dt for PHET_CORE/Timer,
      * model.step, view.step, and anything else that is controlled from Sim.stepSimulation.
      * Normal speed is 1. Larger values make time go faster, smaller values make time go slower.
@@ -424,6 +417,13 @@
       type: 'string',
       defaultValue: null
     },
+
+    /**
+     * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
+     * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
+     * NOT being used.
+     */
+    supportsEnhancedSound: { type: 'flag' },
 
     /**
      * Indicates whether the tambo sound library should be enabled.  If true, the nav bar icon to turn sound on/off
