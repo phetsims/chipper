@@ -429,12 +429,14 @@
      * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
      * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
      * NOT being used.
+     * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
     supportsEnhancedSound: { type: 'flag' },
 
     /**
-     * Indicates whether the tambo sound library should be enabled.  If true, the nav bar icon to turn sound on/off
-     * will be present.
+     * Indicates whether the tambo sound library should be enabled.  If true, an icon is added to the nav bar icon to
+     * enable the user to turn sound on/off.
+     * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
     tambo: { type: 'flag' },
 
