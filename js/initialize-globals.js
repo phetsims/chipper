@@ -435,7 +435,7 @@
 
     /**
      * Indicates whether the tambo sound library should be enabled.  If true, an icon is added to the nav bar icon to
-     * enable the user to turn sound on/off.
+     * enable the user to turn sound on/off.  There is also a Sim option for tambo which can override this.
      * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
     tambo: { type: 'flag' },
@@ -543,7 +543,7 @@
    * @public (writable by joist) can be overwritten in the constructor of Sim.js
    * @type {boolean}
    */
-  window.phet.chipper.supportsEnhancedSound = phet.chipper.queryParameters.supportsEnhancedSound;
+  window.phet.chipper.supportsEnhancedSound = phet.chipper.queryParameters.supportsEnhancedSound; // REVIEW: See other note in Sim.js about not using a global for this
 
   /**
    * Utility function to pause synchronously for the given number of milliseconds.
