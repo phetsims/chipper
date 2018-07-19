@@ -53,14 +53,14 @@
     // phet-io api documentation. Change wisely.
     /**
      * Master volume control for the simulation.
-     * 1.0 is unity volume, 2.0 is double volume, etc.
+     * 1.0 is unity volume, 0.5 is half volume, etc.
      * @memberOf PhetQueryParameters
      * @type {number}
      */
     audioVolume: {
       type: 'number',
       defaultValue: 1,
-      isValidValue: function( value ) { return value >= 0; }
+      isValidValue: function( value ) { return value >= 0 && value <= 1; }
     },
 
     /**
