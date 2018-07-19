@@ -116,6 +116,17 @@
      */
     eall: { type: 'flag' },
 
+    // Private doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
+    /**
+     * Controls whether enhanced sound is on or off at startup (user can change later)
+     * @memberOf PhetQueryParameters
+     * @type {boolean}
+     */
+    enhancedSoundInitiallyEnabled: {
+      type: 'boolean',
+      defaultValue: false
+    },
+
     /**
      * Randomly sends mouse events to sim.
      */
@@ -371,6 +382,17 @@
      * Shows the visible bounds in ScreenView.js, for debugging the layout outside of the "dev" bounds
      */
     showVisibleBounds: { type: 'flag' },
+
+    // Private doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
+    /**
+     * Controls whether sound is on or off at startup (user can change later)
+     * @memberOf PhetQueryParameters
+     * @type {boolean}
+     */
+    soundInitiallyEnabled: {
+      type: 'boolean',
+      defaultValue: true
+    },
 
     /**
      * Speed multiplier for everything in the sim. This scales the value of dt for PHET_CORE/Timer,
