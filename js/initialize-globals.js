@@ -532,20 +532,6 @@
   window.phet.chipper.accessibility = phet.chipper.queryParameters.accessibility;
 
   /**
-   * Global flag that indicates whether sound generation is enabled for the simulation
-   * @public (writable by joist) can be overwritten in the constructor of Sim.js
-   * @type {boolean}
-   */
-  window.phet.chipper.tambo = phet.chipper.queryParameters.tambo;
-
-  /**
-   * Global flag that indicates whether enhanced sounds are available for the simulation
-   * @public (writable by joist) can be overwritten in the constructor of Sim.js
-   * @type {boolean}
-   */
-  window.phet.chipper.supportsEnhancedSound = phet.chipper.queryParameters.supportsEnhancedSound; // REVIEW: See other note in Sim.js about not using a global for this
-
-  /**
    * Utility function to pause synchronously for the given number of milliseconds.
    * @param {number} millis - amount of time to pause synchronously
    */
