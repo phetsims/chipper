@@ -254,8 +254,6 @@
     "numeric": false,
     "ok": false,
     // PhET-iO
-    "WrapperUtils": false,
-    // PhET-iO
     "phetioEvents": false,
     "PhetioIDUtils": false,
     //

@@ -29,7 +29,6 @@ const LIB_FILES = [
   '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
   '../tandem/js/PhetioIDUtils.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperUtils.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js'
 ];
 
@@ -100,10 +99,6 @@ module.exports = async function( repo, version ) {
       // Don't remove the import if it is coming from the phet-io website, only if it is a relative path in requirejs mode.
       if ( firstQueryStringLine && firstQueryStringLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstQueryStringLine, '' ); // included in phetio.js
-      }
-      let firstWrapperUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperUtils.js">' );
-      if ( firstWrapperUtilsLine && firstWrapperUtilsLine.indexOf( PRODUCTION_SITE ) === -1 ) {
-        contents = ChipperStringUtils.replaceAll( contents, firstWrapperUtilsLine, '' ); // included in phetio.js
       }
       let firstAssertLine = ChipperStringUtils.firstLineThatContains( contents, 'assert.js">' );
       if ( firstAssertLine && firstAssertLine.indexOf( PRODUCTION_SITE ) === -1 ) {
