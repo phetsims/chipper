@@ -21,6 +21,7 @@ const execute = require( '../execute' );
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 const PRODUCTION_SITE = 'phet-io.colorado.edu';
+const WRAPPERS_FOLDER = 'wrappers/'; // The index wrapper assumes this constant, please see phet-io-wrappers/index/index.js before changing
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
@@ -61,12 +62,15 @@ const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.m
 
 module.exports = async function( repo, version ) {
 
-  const buildDir = `../${repo}/build/phet-io`;
+  const buildDir = `../${repo}/build/phet-io/`;
+  const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
   let filterWrapper = function( abspath, contents ) {
     let originalContents = contents + '';
+
+    let isIndexWrapper = abspath.indexOf( 'index/index.html' ) >= 0;
 
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
@@ -80,10 +84,18 @@ module.exports = async function( repo, version ) {
 
           // If the file is in a dedicated wrapper repo, then it is one level higher in the dir tree, and needs 1 less set of dots.
           // see https://github.com/phetsims/phet-io-wrappers/issues/17 for more info. This is hopefully a temporary workaround
-          let eliminateExtraDotsForDedicatedWrappers = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
+          let needsExtraDots = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
           let fileName = filePathParts[ filePathParts.length - 1 ];
           let contribFileName = 'contrib/' + fileName;
-          let pathToContrib = eliminateExtraDotsForDedicatedWrappers ? '../../' + contribFileName : '../' + contribFileName;
+          let pathToContrib = needsExtraDots ? '../../' + contribFileName : '../' + contribFileName;
+
+
+          // The index "wrapper" is a different case because it is placed at the top level of the build dir.
+          if ( isIndexWrapper ) {
+
+            pathToContrib = contribFileName;
+            filePath = '../' + filePath; // filePath has one less set of relative than are actually in the index.html file.
+          }
           contents = ChipperStringUtils.replaceAll( contents, filePath, pathToContrib );
         }
       } );
@@ -120,11 +132,18 @@ module.exports = async function( repo, version ) {
       // Support wrappers that use code from phet-io-wrappers
       contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
 
-      // For info about phetio.js, see the end of this file
+
+      // For info about LIB_OUTPUT_FILE, see handleLib()
+      let pathToLib = `lib/${LIB_OUTPUT_FILE}`;
+
+      // index wrapper is moved to the top level of build dir, and needs no relative dots.
+      pathToLib = isIndexWrapper ? pathToLib : `../../${pathToLib}`;
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{phet-io.js}}-->',
-        '<script src="../../lib/' + LIB_OUTPUT_FILE + '"></script>'
+        `<script src="${pathToLib}"></script>`
       );
+
+
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
         '<script src="/assets/js/phet-io-ga.js"></script>'
@@ -155,7 +174,6 @@ module.exports = async function( repo, version ) {
   let wrappers = [
     'phet-io-wrappers/active',
     'phet-io-wrappers/event-log',
-    'phet-io-wrappers/index',
     'phet-io-wrappers/studio',
     'phet-io-wrappers/login',
     'phet-io-wrappers/mirror-inputs',
@@ -181,6 +199,13 @@ module.exports = async function( repo, version ) {
   // Don't copy over the files that are in the lib file, this way we can catch wrapper bugs that are not pointing to the lib.
   let fullBlacklist = wrappersBlacklist.concat( libFileNames );
 
+  // wrapping function for copying the wrappers to the build dir
+  let copyWrapper = function( src, dest ) {
+    copyDirectory( src, dest, filterWrapper, {
+      blacklist: fullBlacklist
+    } );
+  };
+
   // Make sure to copy the phet-io-wrappers common wrapper code too.
   wrappers.push( WRAPPER_COMMON_FOLDER );
   wrappers.forEach( function( wrapper ) {
@@ -191,34 +216,34 @@ module.exports = async function( repo, version ) {
     let wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
 
     // Copy the wrapper into the build dir /wrappers/, exclude the blacklist
-    copyDirectory( `../${wrapper}`, `${buildDir}/wrappers/${wrapperName}`, filterWrapper, {
-      blacklist: fullBlacklist
-    } );
+    copyWrapper( `../${wrapper}`, `${wrappersLocation}${wrapperName}` );
   } );
 
+  // Copy the index wrapper into the top level of the build dir, exclude the blacklist
+  copyWrapper( '../phet-io-wrappers/index', `${buildDir}` );
+
   // Create the lib file that is minified and publicly available under the /lib folder of the build
-  handleLib( repo, filterWrapper );
+  handleLib( buildDir, filterWrapper );
 
   // Create the contrib folder and add to it third party libraries used by wrappers.
-  handleContrib( repo );
+  handleContrib( buildDir );
 
   // Create the rendered jsdoc in the `doc` folder
-  await handleJSDOC( repo );
+  await handleJSDOC( buildDir );
 };
 
 /**
  * Given the list of lib files, apply a filter function to them. Then minify them and consolidate into a single string.
  * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
 
- * @param {string} repo
+ * @param {string} buildDir
  * @param {Function} filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(abspath, contents)"
  */
-let handleLib = function( repo, filter ) {
+let handleLib = function( buildDir, filter ) {
   grunt.log.debug( 'Creating phet-io lib file from: ', LIB_FILES );
-  const buildDir = `../${repo}/build/phet-io`;
 
-  grunt.file.mkdir( `${buildDir}/lib` );
+  grunt.file.mkdir( `${buildDir}lib` );
 
   let consolidated = '';
   LIB_FILES.forEach( function( libFile ) {
@@ -234,41 +259,39 @@ let handleLib = function( repo, filter ) {
     stripAssertions: false
   } );
 
-  grunt.file.write( `${buildDir}/lib/${LIB_OUTPUT_FILE}`, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
+  grunt.file.write( `${buildDir}lib/${LIB_OUTPUT_FILE}`, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
 };
 
 /**
  * Copy all of the third party libraries from sherpa to the build directory under the 'contrib' folder.
- * @param {string} repo
+ * @param {string} buildDir
  */
-let handleContrib = function( repo ) {
+let handleContrib = function( buildDir ) {
   grunt.log.debug( 'Creating phet-io contrib folder' );
-  const buildDir = `../${repo}/build/phet-io`;
 
   CONTRIB_FILES.forEach( function( filePath ) {
     let filePathParts = filePath.split( '/' );
 
     let filename = filePathParts[ filePathParts.length - 1 ];
 
-    grunt.file.copy( filePath, `${buildDir}/contrib/${filename}` );
+    grunt.file.copy( filePath, `${buildDir}contrib/${filename}` );
 
   } );
 };
 
 /**
  * Generate jsdoc and put it in "build/phet-io/doc"
- * @param {string} repo
+ * @param {string} buildDir
  * @returns {Promise<void>}
  */
-let handleJSDOC = async function( repo ) {
+let handleJSDOC = async function( buildDir ) {
   grunt.log.debug( 'generating jsdoc for phet-io from: ', JSDOC_FILES );
-  const buildDir = `../${repo}/build/phet-io`;
 
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
   // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method
   // (node executable with jsdoc js file)
   await execute( 'node', [ '../chipper/node_modules/jsdoc/jsdoc.js' ].concat(
     JSDOC_FILES.concat( [ '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
-      '-d', `${buildDir}/doc/`, '--readme', JSDOC_README_FILE ] ) ),
+      '-d', `${buildDir}doc/`, '--readme', JSDOC_README_FILE ] ) ),
     { cwd: process.cwd(), shell: true } );
 };
