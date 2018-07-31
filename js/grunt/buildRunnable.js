@@ -45,12 +45,11 @@ const reportUnusedStrings = require( './reportUnusedStrings' );
  * @param {boolean} mangle - If uglifying, whether to mangle variable names
  * @param {boolean} instrument - If the sim should be instrumented
  * @param {boolean} allHTML - If the _all.html file should be generated
- * @param {boolean} XHTML - If the xhtml/ structure should be generated
  * @param {string} brand
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, uglify, mangle, instrument, allHTML, XHTML, brand, localesOption ) {
+module.exports = async function( repo, uglify, mangle, instrument, allHTML, brand, localesOption ) {
   // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof uglify === 'boolean' );
@@ -208,23 +207,21 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, XHTM
     scripts: [ debugInitializationScript, splashScript, mipmapsJavaScript, ...debugPreloads, chipperStringsScript, debugJS ]
   } ) );
 
-  if ( XHTML ) {
-    const xhtmlDir = `${buildDir}/xhtml`;
-    grunt.file.mkdir( xhtmlDir );
-
-    const initializationScript = getInitializationScript( _.extend( {
-      locale: ChipperConstants.FALLBACK_LOCALE,
-      includeAllLocales: true,
-      isDebugBuild: false
-    }, commonInitializationOptions ) );
-    packageXHTML( xhtmlDir, {
-      repo,
-      stringMap,
-      htmlHeader,
-      locale: ChipperConstants.FALLBACK_LOCALE,
-      scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
-    } );
-  }
+  // XHTML build (ePub compatibility, etc.)
+  const xhtmlDir = `${buildDir}/xhtml`;
+  grunt.file.mkdir( xhtmlDir );
+  const xhtmlInitializationScript = getInitializationScript( _.extend( {
+    locale: ChipperConstants.FALLBACK_LOCALE,
+    includeAllLocales: true,
+    isDebugBuild: false
+  }, commonInitializationOptions ) );
+  packageXHTML( xhtmlDir, {
+    repo,
+    stringMap,
+    htmlHeader,
+    locale: ChipperConstants.FALLBACK_LOCALE,
+    scripts: [ xhtmlInitializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
+  } );
 
   // dependencies.json
   grunt.file.write( `${buildDir}/dependencies.json`, JSON.stringify( dependencies, null, 2 ) );
