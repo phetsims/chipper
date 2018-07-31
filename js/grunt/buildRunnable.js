@@ -219,7 +219,6 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, bran
     repo,
     stringMap,
     htmlHeader,
-    locale: ChipperConstants.FALLBACK_LOCALE,
     scripts: [ xhtmlInitializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
   } );
 

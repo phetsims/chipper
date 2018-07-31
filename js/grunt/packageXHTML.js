@@ -10,6 +10,7 @@
 
 // modules
 const assert = require( 'assert' );
+const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
@@ -30,16 +31,14 @@ module.exports = function( xhtmlDir, config ) {
     repo, // {string}
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
     scripts, // {Array.<string>}
-    locale, // {string}
     htmlHeader // {string}
   } = config;
   assert( typeof repo === 'string', 'Requires repo' );
   assert( stringMap, 'Requires stringMap' );
   assert( scripts, 'Requires scripts' );
-  assert( typeof locale === 'string', 'Requires locale' );
   assert( typeof htmlHeader === 'string', 'Requires htmlHeader' );
 
-  const localizedTitle = stringMap[ locale ][ getTitleStringKey( repo ) ];
+  const localizedTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 
   const script = scripts.join( '\n' );
   const scriptFilename = `${repo}_phet.js`;
@@ -49,6 +48,6 @@ module.exports = function( xhtmlDir, config ) {
     PHET_HTML_HEADER: htmlHeader,
     PHET_SIM_SCRIPTS: `<script type="text/javascript" src="${scriptFilename}" charset="utf-8"></script>`
   } );
-  grunt.file.write( `${xhtmlDir}/${repo}_${locale}_phet.html`, xhtml );
+  grunt.file.write( `${xhtmlDir}/${repo}_all_phet.html`, xhtml );
   grunt.file.write( `${xhtmlDir}/${scriptFilename}`, script );
 };
