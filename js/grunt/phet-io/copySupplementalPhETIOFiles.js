@@ -67,10 +67,10 @@ module.exports = async function( repo, version ) {
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
-  let filterWrapper = function( abspath, contents ) {
-    let originalContents = contents + '';
+  const filterWrapper = function( abspath, contents ) {
+    const originalContents = contents + '';
 
-    let isIndexWrapper = abspath.indexOf( 'index/index.html' ) >= 0;
+    const isIndexWrapper = abspath.indexOf( 'index/index.html' ) >= 0;
 
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
@@ -80,15 +80,14 @@ module.exports = async function( repo, version ) {
         // No need to do this is this file doesn't have this contrib import in it.
         if ( contents.indexOf( filePath ) >= 0 ) {
 
-          let filePathParts = filePath.split( '/' );
+          const filePathParts = filePath.split( '/' );
 
           // If the file is in a dedicated wrapper repo, then it is one level higher in the dir tree, and needs 1 less set of dots.
           // see https://github.com/phetsims/phet-io-wrappers/issues/17 for more info. This is hopefully a temporary workaround
-          let needsExtraDots = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
-          let fileName = filePathParts[ filePathParts.length - 1 ];
-          let contribFileName = 'contrib/' + fileName;
+          const needsExtraDots = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
+          const fileName = filePathParts[ filePathParts.length - 1 ];
+          const contribFileName = 'contrib/' + fileName;
           let pathToContrib = needsExtraDots ? '../../' + contribFileName : '../' + contribFileName;
-
 
           // The index "wrapper" is a different case because it is placed at the top level of the build dir.
           if ( isIndexWrapper ) {
@@ -106,25 +105,25 @@ module.exports = async function( repo, version ) {
 
       // TODO: use LIB_FILES and/or factor this outs
       // This returns the whole line that contains this substring, so it can be removed
-      let firstQueryStringLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js">' );
+      const firstQueryStringLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js">' );
 
       // Don't remove the import if it is coming from the phet-io website, only if it is a relative path in requirejs mode.
       if ( firstQueryStringLine && firstQueryStringLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstQueryStringLine, '' ); // included in phetio.js
       }
-      let firstAssertLine = ChipperStringUtils.firstLineThatContains( contents, 'assert.js">' );
+      const firstAssertLine = ChipperStringUtils.firstLineThatContains( contents, 'assert.js">' );
       if ( firstAssertLine && firstAssertLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstAssertLine, '' ); // included in phetio.js
       }
-      let firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'SimIFrameClient.js">' );
+      const firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'SimIFrameClient.js">' );
       if ( firstIFrameClientLine && firstIFrameClientLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' ); // included in phetio.js
       }
-      let firstWrapperTypeLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperTypes.js">' );
+      const firstWrapperTypeLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperTypes.js">' );
       if ( firstWrapperTypeLine && firstWrapperTypeLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstWrapperTypeLine, '' ); // included in phetio.js
       }
-      let firstPhetioIDUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'PhetioIDUtils.js' );
+      const firstPhetioIDUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'PhetioIDUtils.js' );
       if ( firstPhetioIDUtilsLine && firstPhetioIDUtilsLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstPhetioIDUtilsLine, '' ); // included in phetio.js
       }
@@ -171,7 +170,7 @@ module.exports = async function( repo, version ) {
 
   // Load the master list of all wrappers
   // TODO: Should this be in a file? Would we be duplicating perennial? We want a reproducible build
-  let wrappers = [
+  const wrappers = [
     'phet-io-wrappers/active',
     'phet-io-wrappers/event-log',
     'phet-io-wrappers/studio',
@@ -189,18 +188,18 @@ module.exports = async function( repo, version ) {
   ];
 
   // Files and directories from wrapper folders that we don't want to copy
-  let wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
+  const wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
 
-  let libFileNames = LIB_FILES.map( function( filePath ) {
-    let parts = filePath.split( '/' );
+  const libFileNames = LIB_FILES.map( function( filePath ) {
+    const parts = filePath.split( '/' );
     return parts[ parts.length - 1 ];
   } );
 
   // Don't copy over the files that are in the lib file, this way we can catch wrapper bugs that are not pointing to the lib.
-  let fullBlacklist = wrappersBlacklist.concat( libFileNames );
+  const fullBlacklist = wrappersBlacklist.concat( libFileNames );
 
   // wrapping function for copying the wrappers to the build dir
-  let copyWrapper = function( src, dest ) {
+  const copyWrapper = function( src, dest ) {
     copyDirectory( src, dest, filterWrapper, {
       blacklist: fullBlacklist
     } );
@@ -210,10 +209,10 @@ module.exports = async function( repo, version ) {
   wrappers.push( WRAPPER_COMMON_FOLDER );
   wrappers.forEach( function( wrapper ) {
 
-    let wrapperParts = wrapper.split( '/' );
+    const wrapperParts = wrapper.split( '/' );
 
     // either take the last path part, or take the first (repo name) and remove the wrapper prefix
-    let wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
+    const wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
 
     // Copy the wrapper into the build dir /wrappers/, exclude the blacklist
     copyWrapper( `../${wrapper}`, `${wrappersLocation}${wrapperName}` );
@@ -240,22 +239,22 @@ module.exports = async function( repo, version ) {
  * @param {Function} filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(abspath, contents)"
  */
-let handleLib = function( buildDir, filter ) {
+const handleLib = function( buildDir, filter ) {
   grunt.log.debug( 'Creating phet-io lib file from: ', LIB_FILES );
 
   grunt.file.mkdir( `${buildDir}lib` );
 
   let consolidated = '';
   LIB_FILES.forEach( function( libFile ) {
-    let contents = grunt.file.read( libFile );
+    const contents = grunt.file.read( libFile );
 
-    let filteredContents = filter && filter( libFile, contents );
+    const filteredContents = filter && filter( libFile, contents );
 
     // The filter should return null if nothing changes
     consolidated += filteredContents ? filteredContents : contents;
   } );
 
-  let minified = minify( consolidated, {
+  const minified = minify( consolidated, {
     stripAssertions: false
   } );
 
@@ -266,13 +265,13 @@ let handleLib = function( buildDir, filter ) {
  * Copy all of the third party libraries from sherpa to the build directory under the 'contrib' folder.
  * @param {string} buildDir
  */
-let handleContrib = function( buildDir ) {
+const handleContrib = function( buildDir ) {
   grunt.log.debug( 'Creating phet-io contrib folder' );
 
   CONTRIB_FILES.forEach( function( filePath ) {
-    let filePathParts = filePath.split( '/' );
+    const filePathParts = filePath.split( '/' );
 
-    let filename = filePathParts[ filePathParts.length - 1 ];
+    const filename = filePathParts[ filePathParts.length - 1 ];
 
     grunt.file.copy( filePath, `${buildDir}contrib/${filename}` );
 
@@ -284,7 +283,7 @@ let handleContrib = function( buildDir ) {
  * @param {string} buildDir
  * @returns {Promise<void>}
  */
-let handleJSDOC = async function( buildDir ) {
+const handleJSDOC = async function( buildDir ) {
   grunt.log.debug( 'generating jsdoc for phet-io from: ', JSDOC_FILES );
 
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
