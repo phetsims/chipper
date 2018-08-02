@@ -86,7 +86,6 @@
    * @returns {?}
    */
   function parseType( typeString ) {
-    // TODO!
     // For now, get rid of the brackets
     typeString = typeString.slice( 1, typeString.length - 1 );
 
