@@ -244,7 +244,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, bran
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
   if ( packageObject.phet.accessible && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for PDOM viewing.
-    let a11yHTML = getA11yViewHTMLFromTemplate( repo, title );
+    let a11yHTML = getA11yViewHTMLFromTemplate( repo );
 
     // this replaceAll is outside of the getA11yViewHTMLFromTemplate because we only want it filled in during the build
     a11yHTML = ChipperStringUtils.replaceAll( a11yHTML, '{{IS_BUILT}}', 'true' );
