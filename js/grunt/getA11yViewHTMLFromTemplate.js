@@ -16,16 +16,12 @@ const grunt = require( 'grunt' );
 
 /**
  * @param {string} repo
+ * @param {string} englishSimTitle
  * @returns {string} - the html string, filled in from the template.
  */
-module.exports = function( repo ) {
+module.exports = function( repo, englishSimTitle ) {
 
   let html = grunt.file.read( '../chipper/templates/sim-a11y-view.html' ); // the template file
-
-  // TODO: improved way of just grabbing the title
-  const englishStringsString = grunt.file.read( `../${repo}/${repo}-strings_en.json` ); // the english strings file
-  const englishStringsJSON = JSON.parse( englishStringsString );
-  const englishSimTitle = englishStringsJSON[ getTitleStringKey( repo ).split( '/' )[ 1 ] ].value;
 
   // Replace placeholders in the template.
   html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_TITLE}}', englishSimTitle );
