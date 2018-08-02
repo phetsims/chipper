@@ -27,9 +27,6 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );
 const grunt = require( 'grunt' );
 
-/**
- * TODO: doc
- */
 module.exports = function() {
 
   // constants
