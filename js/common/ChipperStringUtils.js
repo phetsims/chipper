@@ -58,7 +58,7 @@
 
     //TODO chipper#316 determine why this behaves differently than str.replace for some cases (eg, 'MAIN_INLINE_JAVASCRIPT')
     /**
-     * Replaces the first occurrence of {string} find with {string} replace in {string} str
+     * Replaces the first occurrence of {string} find with {string} replaceWith in {string} str
      *
      * @param {string} str - the input string
      * @param {string} find - the string to find
