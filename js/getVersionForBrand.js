@@ -2,7 +2,7 @@
 
 /**
  * Brand is now not included in the version. Used to handle https://github.com/phetsims/chipper/issues/507
- * TODO: remove this stub once we merge to master (joist/preloads have usage)
+ * TODO: #697 remove this stub once we merge to master (joist/preloads have usage)
  */
 (function(){
   'use strict';
