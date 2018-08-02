@@ -1,8 +1,6 @@
 // Copyright 2017, University of Colorado Boulder
 
 /**
- * TODO doc
- *
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
