@@ -87,7 +87,7 @@ module.exports = function( repo, cache ) {
       allFilesToLint = _.uniq( allFilesToLint );
 
       // constants
-      // TODO: Don't use this from chipper!
+      // WARNING: Don't use this from chipper!
       const ACTIVE_REPOS_FILENAME = 'perennial/data/active-repos';  // The relative path to the list of active repos
 
       // Start in the github checkout dir (above one of the sibling directories)
