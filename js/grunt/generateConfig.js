@@ -14,13 +14,15 @@
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
+const updateCopyrightDate = require( './updateCopyrightDate' );
 
 /**
  * @param {string} repo
- * @param {string} destination - output location
+ * @param {string} relativeFile - output location
  * @param {string} launchSuffix - text to use for the deps
+ * @returns {Promise}
  */
-module.exports = function( repo, destination, launchSuffix ) {
+module.exports = async function( repo, relativeFile, launchSuffix ) {
 
   let configJS = grunt.file.read( '../chipper/templates/sim-config.js' ); // the template file
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
@@ -64,5 +66,7 @@ module.exports = function( repo, destination, launchSuffix ) {
   } ).join( ',\n    ' ) );
 
   // Write to the repository's root directory.
-  grunt.file.write( destination, configJS );
+  grunt.file.write( `../${repo}/${relativeFile}`, configJS );
+
+  await updateCopyrightDate( repo, relativeFile );
 };

@@ -245,13 +245,13 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-config',
     'Generates the js/SIM-config.js file based on the dependencies in package.json.',
     wrapTask( async () => {
-      generateConfig( repo, `../${repo}/js/${repo}-config.js`, 'main' );
+      await generateConfig( repo, `js/${repo}-config.js`, 'main' );
     } ) );
 
   grunt.registerTask( 'generate-test-config',
     'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
     wrapTask( async () => {
-      generateConfig( repo, `../${repo}/js/${repo}-test-config.js`, 'tests' );
+      await generateConfig( repo, `js/${repo}-test-config.js`, 'tests' );
     } ) );
 
   grunt.registerTask( 'generate-coverage',
@@ -341,7 +341,7 @@ module.exports = function( grunt ) {
   grunt.registerTask(
     'update-copyright-dates',
     'Update the copyright dates in JS source files based on Github dates',
-    wrapTask( async () => await updateCopyrightDates( process.cwd() + '/js' ) )
+    wrapTask( async () => await updateCopyrightDates( repo ) )
   );
 
   /**
