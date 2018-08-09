@@ -64,7 +64,8 @@
     },
 
     /**
-     * Generates object reports that can be used by binder.
+     * Generates object reports that can be used by binder. For internal use.
+     * See InstanceRegistry.js and binder repo (specifically getFromSimInMaster.js) sfor more details.
      */
     binder: { type: 'flag' },
 
