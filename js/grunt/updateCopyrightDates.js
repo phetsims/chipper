@@ -17,12 +17,12 @@ const grunt = require( 'grunt' );
 
 /**
  * @public
+ * @param {string} sourceRoot - directory to start at
+ * @param {function} predicate - takes an absolute path {string} and returns {boolean} if the path should be updated.
  * @returns {Promise}
  */
-module.exports = function() {
+module.exports = function( sourceRoot, predicate = () => true ) {
   return new Promise( ( resolve, reject ) => {
-    // constants
-    const sourceRoot = process.cwd() + '/js';
 
     // Keep track of results from the git processes, key = absolute path, value = {startDate,endDate}
     const elements = {};
@@ -75,7 +75,7 @@ module.exports = function() {
 
       // Count the number of start and end dates we need
       grunt.file.recurse( sourceRoot, function( abspath ) {
-        if ( ChipperStringUtils.endsWith( abspath, '.js' ) ) {
+        if ( ChipperStringUtils.endsWith( abspath, '.js' ) && predicate( abspath ) ) {
           elements[ abspath ] = {};
           count++;// for getting start date
           count++;// for getting end date
@@ -85,7 +85,7 @@ module.exports = function() {
       // Using the git command, gather the dates specified
       const gatherDates = function( dateName, gitCommand ) {
         grunt.file.recurse( sourceRoot, function( abspath ) {
-          if ( ChipperStringUtils.endsWith( abspath, '.js' ) ) {
+          if ( ChipperStringUtils.endsWith( abspath, '.js' ) && predicate( abspath ) ) {
 
             // Look up the GitHub dates for the file
             child_process.exec(

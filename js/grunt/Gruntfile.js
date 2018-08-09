@@ -341,7 +341,7 @@ module.exports = function( grunt ) {
   grunt.registerTask(
     'update-copyright-dates',
     'Update the copyright dates in JS source files based on Github dates',
-    wrapTask( async () => await updateCopyrightDates() )
+    wrapTask( async () => await updateCopyrightDates( process.cwd() + '/js' ) )
   );
 
   /**
