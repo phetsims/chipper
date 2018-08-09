@@ -338,10 +338,11 @@ module.exports = function( grunt ) {
 
   // Grunt task that determines created and last modified dates from git, and
   // updates copyright statements accordingly, see #403
-  grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
-    wrapTask( async () => {
-      await updateCopyrightDates();
-    } ) );
+  grunt.registerTask(
+    'update-copyright-dates',
+    'Update the copyright dates in JS source files based on Github dates',
+    wrapTask( async () => await updateCopyrightDates() )
+  );
 
   /**
    * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from perennial's directory with the same options
