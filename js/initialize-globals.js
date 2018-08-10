@@ -185,6 +185,17 @@
 
     // Private doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
     /**
+     * Used for providing a Google Analytics page ID for tracking, see
+     * https://github.com/phetsims/phetcommon/issues/46 for more information.
+     *
+     * This is given as the 3rd parameter to a pageview send when provided
+     */
+    gaPage: {
+      type: 'string',
+      defaultValue: null
+    },
+
+    /**
      * Indicates whether to include the home screen.
      * For multi-screen sims only, throws an assertion error if supplied for a single-screen sim.
      * @memberOf PhetQueryParameters
