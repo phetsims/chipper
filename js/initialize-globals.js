@@ -97,11 +97,34 @@
     // to Google Analytics and potentially other sources in the future.
     'phet-app': { type: 'flag' },
 
+    /**
+     * Used for providing a external Google Analytics property for tracking, see
+     * https://github.com/phetsims/phetcommon/issues/46 for more information.
+     *
+     * This is useful for various users/clients that want to embed simulations, or direct users to simulations. For
+     * example, if a sim is included in an epub, the sim HTML won't have to be modified to include page tracking.
+     */
+    ga: {
+      type: 'string',
+      defaultValue: null
+    },
+
     // Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
     gameUp: { type: 'flag' },
 
     // Enables logging for game-up-camera, see gameUp
     gameUpLogging: { type: 'flag' },
+
+    /**
+     * Used for providing a Google Analytics page ID for tracking, see
+     * https://github.com/phetsims/phetcommon/issues/46 for more information.
+     *
+     * This is given as the 3rd parameter to a pageview send when provided
+     */
+    gaPage: {
+      type: 'string',
+      defaultValue: null
+    },
 
     // for phet-io use relative path for finding the sim, instead of launching from phet-io.colorado.edu
     launchLocalVersion: { type: 'flag' },
