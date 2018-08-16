@@ -30,7 +30,7 @@ const LIB_FILES = [
   '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
   '../tandem/js/PhetioIDUtils.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/SimIFrameClient.js'
+  '../' + WRAPPER_COMMON_FOLDER + '/js/Client.js'
 ];
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
@@ -115,7 +115,7 @@ module.exports = async function( repo, version ) {
       if ( firstAssertLine && firstAssertLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstAssertLine, '' ); // included in phetio.js
       }
-      const firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'SimIFrameClient.js">' );
+      const firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'Client.js">' );
       if ( firstIFrameClientLine && firstIFrameClientLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' ); // included in phetio.js
       }
