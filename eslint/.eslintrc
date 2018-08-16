@@ -253,9 +253,6 @@
     // Numeric library used in energy skate park
     "numeric": false,
     "ok": false,
-    // PhET-iO
-    "phetioEvents": false,
-    "PhetioIDUtils": false,
     //
     "PIXI": false,
     // For poly2tri triangulation library
@@ -268,7 +265,6 @@
     "require": false,
     //
     "scenery": false,
-    "SimIFrameClient": false,
     // For @mrdoob's stats + frame rate readout component
     "Stats": false,
     // qunit
