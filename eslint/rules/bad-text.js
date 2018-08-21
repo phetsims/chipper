@@ -1,7 +1,9 @@
 // Copyright 2018, University of Colorado Boulder
+/* eslint-disable */
 
 /**
- * Lint detector for invalid text.
+ * Lint detector for invalid text.  Checks the entire file and does not correctly report line number.
+ * Lint is disabled for this file so the bad texts aren't themselves flagged.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -9,28 +11,25 @@ module.exports = function( context ) {
   'use strict';
 
   var badTexts = [
-    'tool' + 'Box', // intentionally split to avoid getting caught in the lint, split manually because lint apparently rules cannot be disabled in their declarations
-    'Tool' + 'Box', // intentionally split to avoid getting caught in the lint, split manually because lint apparently rules cannot be disabled in their declarations
-    'Check' + 'Box', // intentionally split to avoid getting caught in the lint, split manually because lint apparently rules cannot be disabled in their declarations
-    'check' + 'Box' // intentionally split to avoid getting caught in the lint, split manually because lint apparently rules cannot be disabled in their declarations
+    'toolBox',
+    'ToolBox',
+    'CheckBox',
+    'checkBox',
+    'extends Object'
   ];
 
-  var checkNode = function( node, text ) {
-    badTexts.forEach( function( badText ) {
-      if ( text.indexOf( badText ) >= 0 ) {
-        context.report( {
-          node: node,
-          message: 'Bad text: ' + badText + ' in ' + node.type
-        } );
-      }
-    } );
-  };
   return {
-    Identifier: function checkCopyright( node ) {
-      checkNode( node, node.name );
-    },
-    Literal: function checkLiteral( node ) {
-      checkNode( node, node.raw );
+    Program: function( node ) {
+      var sourceCode = context.getSourceCode();
+      var text = sourceCode.text;
+      badTexts.forEach( function( badText ) {
+        if ( text.indexOf( badText ) >= 0 ) {
+          context.report( {
+            node: node,
+            message: 'File contains bad text: \'' + badText + '\''
+          } );
+        }
+      } )
     }
   };
 };
