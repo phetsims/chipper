@@ -172,6 +172,7 @@ module.exports = async function( repo, version ) {
   // TODO: Should this be in a file? Would we be duplicating perennial? We want a reproducible build
   const wrappers = [
     'phet-io-wrappers/active',
+    'phet-io-wrappers/api-diff',
     'phet-io-wrappers/event-log',
     'phet-io-wrappers/studio',
     'phet-io-wrappers/login',
