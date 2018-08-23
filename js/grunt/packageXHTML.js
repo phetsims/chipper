@@ -29,6 +29,7 @@ module.exports = function( xhtmlDir, config ) {
 
   const {
     repo, // {string}
+    brand, // {string}
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
     scripts, // {Array.<string>}
     htmlHeader // {string}
@@ -41,13 +42,13 @@ module.exports = function( xhtmlDir, config ) {
   const localizedTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 
   const script = scripts.join( '\n' );
-  const scriptFilename = `${repo}_phet.js`;
+  const scriptFilename = `${repo}_${brand}.js`;
 
   const xhtml = ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/sim.xhtml' ), {
     PHET_SIM_TITLE: encoder.htmlEncode( localizedTitle ),
     PHET_HTML_HEADER: htmlHeader,
     PHET_SIM_SCRIPTS: `<script type="text/javascript" src="${scriptFilename}" charset="utf-8"></script>`
   } );
-  grunt.file.write( `${xhtmlDir}/${repo}_all_phet.html`, xhtml );
+  grunt.file.write( `${xhtmlDir}/${repo}_all_${brand}.html`, xhtml );
   grunt.file.write( `${xhtmlDir}/${scriptFilename}`, script );
 };

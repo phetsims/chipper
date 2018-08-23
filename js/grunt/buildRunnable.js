@@ -217,6 +217,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, bran
   }, commonInitializationOptions ) );
   packageXHTML( xhtmlDir, {
     repo,
+    brand,
     stringMap,
     htmlHeader,
     scripts: [ xhtmlInitializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
