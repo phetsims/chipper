@@ -15,7 +15,8 @@ module.exports = function( context ) {
     'ToolBox',
     'CheckBox',
     'checkBox',
-    'extends Object'
+    'extends Object',
+    ' the the '
   ];
 
   return {
