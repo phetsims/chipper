@@ -11,12 +11,19 @@ module.exports = function( context ) {
   'use strict';
 
   var badTexts = [
+
+    // Proper casing for *boxes
     'toolBox',
     'ToolBox',
     'CheckBox',
     'checkBox',
+
+    // In ES6, extending object causes methods to be dropped
     'extends Object',
-    ' the the '
+
+    // Forbid common duplicate words
+    ' the the ',
+    ' a a '
   ];
 
   return {
