@@ -156,8 +156,6 @@
     "sceneryLog": true,
     // scenery accessibility levels
     "sceneryAccessibilityLog": true,
-    // for tracking object allocations, see phet-core's phetAllocation
-    "phetAllocation": true,
     // we actually polyfill this, so allow it to be set
     "Float32Array": true,
     "phet": true,

@@ -44,8 +44,6 @@ module.exports = function( js, options ) {
 
       // To define globals, use global_defs inside compress options, see https://github.com/jrburke/r.js/issues/377
       global_defs: {
-        // for tracking object allocations, see phet-core/js/phetAllocation.js (PhET-specific)
-        phetAllocation: false
       }
     },
 
