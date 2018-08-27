@@ -36,6 +36,8 @@
   /**
    * Query parameters that manipulate the startup state of the PhET simulation. This is not
    * an object defined in the global scope, but rather it serves as documentation about available query parameters.
+   * Note: The "flag" type for query parameters does not expect a value for the key, but rather just the presence of
+   * the key itself.
    * @namespace {Object} PhetQueryParameters
    */
   var QUERY_PARAMETERS_SCHEMA = {
