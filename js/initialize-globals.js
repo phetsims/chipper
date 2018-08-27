@@ -468,11 +468,11 @@
     supportsEnhancedSound: { type: 'flag' },
 
     /**
-     * Indicates whether the tambo sound library should be enabled.  If true, an icon is added to the nav bar icon to
-     * enable the user to turn sound on/off.  There is also a Sim option for tambo which can override this.
+     * Indicates whether the sound library should be enabled.  If true, an icon is added to the nav bar icon to enable
+     * the user to turn sound on/off.  There is also a Sim option for enabling sound which can override this.
      * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
-    tambo: { type: 'flag' },
+    supportsSound: { type: 'flag' },
 
     /**
      * Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
