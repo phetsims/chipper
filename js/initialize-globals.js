@@ -255,6 +255,19 @@
     log: { type: 'flag' },
 
     /**
+     * Enables transforming the PDOM for accessibility on mobile devices. This work is experimental, and still hidden
+     * in a scenery branch pdom-transform. Must be used in combination with the accessibility query parameter, or
+     * on a sim that has accessibility enabled by default. This query parameter is not intended to be long lived,
+     * in the future these features should be always enabled in the scenery a11y framework.
+     * See https://github.com/phetsims/scenery/issues/852
+     *
+     * For internal use and testing only, though links with this may be shared with collaborators.
+     *
+     * @a11y
+     */
+    mobileA11yTest: { type: 'flag' },
+
+    /**
      * plays event logging back from the server, provide an optional name for the session
      */
     playbackInputEventLog: { type: 'flag' },
