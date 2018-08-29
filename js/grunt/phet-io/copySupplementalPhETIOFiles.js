@@ -49,7 +49,10 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jquery-ui-1.8.24.min.js',
   '../sherpa/lib/d3-4.2.2.js',
   '../sherpa/lib/highlight.js-9.1.0/styles/tomorrow-night-bright.css',
-  '../sherpa/lib/highlight.js-9.1.0/highlight.js'
+  '../sherpa/lib/highlight.js-9.1.0/highlight.js',
+  '../sherpa/lib/jsondiffpatch-v0.3.11.umd.js',
+  '../sherpa/lib/jsondiffpatch-v0.3.11-annotated.css',
+  '../sherpa/lib/jsondiffpatch-v0.3.11-html.css'
 ];
 
 // list of files to run jsdoc generation with. Assume that anything in the public lib file needs documentation
