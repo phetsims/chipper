@@ -4,7 +4,7 @@
  * This grunt task generates the README.md file for a simulation.
  * Placeholders in a template file are replaced with values specific to the simulation.
  *
- * @author Chris Malley {PixelZoom, Inc.}
+ * @author Chris Malley (PixelZoom, Inc.)
  */
 /* eslint-env node */
 'use strict';
