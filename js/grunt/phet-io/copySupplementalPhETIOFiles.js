@@ -13,6 +13,7 @@
 // modules
 const ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 const copyDirectory = require( './copyDirectory' );
+const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const minify = require( '../minify' );
 const execute = require( '../execute' );
@@ -61,7 +62,6 @@ const JSDOC_FILES = LIB_FILES.concat( [
   ' ../chipper/js/initialize-globals.js'
 ] );
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
-
 
 module.exports = async function( repo, version ) {
 
@@ -171,25 +171,8 @@ module.exports = async function( repo, version ) {
     }
   };
 
-  // Load the master list of all wrappers
-  // TODO: Should this be in a file? Would we be duplicating perennial? We want a reproducible build
-  const wrappers = [
-    'phet-io-wrappers/active',
-    'phet-io-wrappers/api-diff',
-    'phet-io-wrappers/event-log',
-    'phet-io-wrappers/studio',
-    'phet-io-wrappers/login',
-    'phet-io-wrappers/mirror-inputs',
-    'phet-io-wrappers/multi',
-    'phet-io-wrappers/record',
-    'phet-io-wrappers/playback',
-    'phet-io-wrappers/screenshot',
-    'phet-io-wrappers/state',
-    'phet-io-wrappers/wrapper-template',
-    'phet-io-wrapper-classroom-activity',
-    'phet-io-wrapper-lab-book',
-    'phet-io-wrapper-hookes-law-energy'
-  ];
+// a list of the phet-io wrappers that are built with the phet-io sim
+  const wrappers = fs.readFileSync( '../chipper/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
 
   // Files and directories from wrapper folders that we don't want to copy
   const wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
