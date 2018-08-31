@@ -71,6 +71,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, bran
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
   const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, {
     insertRequire: repo + '-main',
+    instrument,
     brand
   } );
 
