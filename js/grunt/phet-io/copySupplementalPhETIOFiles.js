@@ -75,6 +75,9 @@ module.exports = async function( repo, version ) {
 
     const isIndexWrapper = abspath.indexOf( 'index/index.html' ) >= 0;
 
+    // For info about LIB_OUTPUT_FILE, see handleLib()
+    let pathToLib = `lib/${LIB_OUTPUT_FILE}`;
+
     if ( abspath.indexOf( '.html' ) >= 0 ) {
 
       // change the paths of sherpa files to point to the contrib/ folder
@@ -134,10 +137,6 @@ module.exports = async function( repo, version ) {
       // Support wrappers that use code from phet-io-wrappers
       contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
 
-
-      // For info about LIB_OUTPUT_FILE, see handleLib()
-      let pathToLib = `lib/${LIB_OUTPUT_FILE}`;
-
       // index wrapper is moved to the top level of build dir, and needs no relative dots.
       pathToLib = isIndexWrapper ? pathToLib : `../../${pathToLib}`;
       contents = ChipperStringUtils.replaceAll( contents,
@@ -159,6 +158,7 @@ module.exports = async function( repo, version ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', version );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_IS_BUILT}}', 'true' );
+      contents = ChipperStringUtils.replaceAll( contents, '{{PHET_IO_LIB_RELATIVE_PATH}}', pathToLib );
 
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
       contents = ChipperStringUtils.replaceAll( contents, WRAPPER_COMMON_FOLDER + '/', 'common/' );
