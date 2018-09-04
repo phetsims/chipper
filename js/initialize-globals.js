@@ -422,7 +422,7 @@
     },
 
     /**
-     * Speed multiplier for everything in the sim. This scales the value of dt for PHET_CORE/Timer,
+     * Speed multiplier for everything in the sim. This scales the value of dt for PHET_CORE/timer,
      * model.step, view.step, and anything else that is controlled from Sim.stepSimulation.
      * Normal speed is 1. Larger values make time go faster, smaller values make time go slower.
      * For example, ?speed=0.5 is half the normal speed.
