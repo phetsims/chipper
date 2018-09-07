@@ -144,6 +144,13 @@ module.exports = async function( repo, version ) {
         `<script src="${pathToLib}"></script>`
       );
 
+      // This must be after the above phet-io.js import and Client.js stripping. This case is to support wrappers
+      // that use the data-client-name attribute to dictate their own Type name.
+      contents = ChipperStringUtils.replaceAll( contents,
+        '../common/js/Client.js',
+        `${pathToLib}`
+      );
+
 
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
