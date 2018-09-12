@@ -68,6 +68,16 @@ module.exports = async function( repo, version ) {
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
 
+
+  // This regex was copied from perennial's `SimVersion.parse()` consult that code before changing things here.
+  const matches = version.match( /^(\d+)\.(\d+)\.(\d+)(-(([^\.-]+)\.(\d+)))?(-([^.-]+))?$/ );
+  if ( !matches ) {
+    throw new Error( 'could not parse version: ' + version );
+  }
+  const major = parseInt( matches[ 1 ], 10 );
+  const minor = parseInt( matches[ 2 ], 10 );
+  var latestVersion = `${major}.${minor}`;
+
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
   const filterWrapper = function( abspath, contents ) {
@@ -164,6 +174,7 @@ module.exports = async function( repo, version ) {
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', version );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_LATEST_VERSION}}', latestVersion );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_IS_BUILT}}', 'true' );
       contents = ChipperStringUtils.replaceAll( contents, '{{PHET_IO_LIB_RELATIVE_PATH}}', pathToLib );
 
