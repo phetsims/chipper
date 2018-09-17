@@ -9,7 +9,7 @@
  * The reasons we need our own string plugin:
  * So we can only include the (possibly) strings that are needed for a sim
  * So we can enumerate all of the used strings, for purposed of a translation utility
- * For uniformity with image and audio plugin
+ * For uniformity with image and sound plugin
  *
  * The plugin code itself is excluded from the build by declaring it as a stubModule
  *

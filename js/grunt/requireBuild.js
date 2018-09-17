@@ -90,7 +90,7 @@ module.exports = function( repo, mainConfigFile, options ) {
       preserveLicenseComments: false,
 
       // modules to stub out in the optimized file
-      stubModules: [ 'string', 'audio', 'image', 'mipmap' ]
+      stubModules: [ 'string', 'sound', 'image', 'mipmap' ]
     };
 
     if ( insertRequire ) {

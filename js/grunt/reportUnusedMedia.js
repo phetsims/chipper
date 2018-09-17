@@ -1,9 +1,10 @@
 // Copyright 2015, University of Colorado Boulder
 
 /**
- * Report which media files (such as images and audio) from a sim were not used in the simulation with a require statement.
+ * Report which media files (such as images and sounds) from a sim were not used in the simulation with a require
+ * statement.
  *
- * Each time a resource is loaded by a plugin (image, audio, mipmap,...) its license info is added to this global by
+ * Each time a resource is loaded by a plugin (image, sounds, mipmap,...) its license info is added to this global by
  * the plugin.  After all resources are loaded, the global will contain the list of all resources that are actually used
  * by the sim.  Comparing what's in the filesystem to this list identifies resources that are unused.
  *

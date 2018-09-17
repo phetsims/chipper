@@ -2,7 +2,7 @@
 
 /**
  * Retrieves the license entry for a media file from license.json.
- * This file is used when loading media files (images, audio,...) via media plugins.
+ * This file is used when loading media files (images, sounds,...) via media plugins.
  *
  * A license entry for a media file is found in a license.json file that is in
  * the same directory as the media file. A license entry has the following fields:

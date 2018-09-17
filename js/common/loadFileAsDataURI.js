@@ -1,7 +1,7 @@
 // Copyright 2013-2015, University of Colorado Boulder
 
 /**
- * Converts a resource (like an image or audio file) to base64.
+ * Converts a resource (like an image or sound file) to base64.
  */
 
 /* eslint-env browser, node */

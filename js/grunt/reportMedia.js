@@ -1,7 +1,7 @@
 // Copyright 2015, University of Colorado Boulder
 
 /**
- * This grunt task iterates over all of the license.json files and reports any media files (images, audio, ...)
+ * This grunt task iterates over all of the license.json files and reports any media files (images, sound, ...)
  * that have any of the following problems:
  *
  * incompatible-license    Known to be from an unapproved source outside of PhET
@@ -41,7 +41,7 @@ module.exports = function() {
   const reposByLine = repos.split( /\r?\n/ );
 
   /**
-   * Create a fast report based on the license.json files for the specified repository and directory (images or audio)
+   * Create a fast report based on the license.json files for the specified repository and directory (images or sound)
    * @param {string} repo - the name of the repository, such as 'balancing-act'
    * @param {string} directory - the name of the directory to search such as 'images'
    * @private

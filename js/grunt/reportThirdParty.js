@@ -1,7 +1,7 @@
 // Copyright 2015-2016, University of Colorado Boulder
 
 /**
- * Creates a composite report of all of the 3rd party images, code, audio and other media used by all of the published
+ * Creates a composite report of all of the 3rd party images, code, sounds and other media used by all of the published
  * PhET Simulations. The reports is published at: https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
  *
  * Usage:
@@ -209,7 +209,7 @@ module.exports = async function() {
     return a.toLowerCase().localeCompare( b.toLowerCase() );
   } );
 
-  // Create the text for the image and audio, and keep track of which licenses were used by them.
+  // Create the text for the image and sound, and keep track of which licenses were used by them.
   for ( let i = 0; i < mediaKeys.length; i++ ) {
     const mediaKey = mediaKeys[ i ];
 
@@ -263,7 +263,7 @@ module.exports = async function() {
   const fileList = simTitles.join( '\n* ' );
 
   const outputString =
-    'This report enumerates the third-party resources (code, images, audio, etc) used in a set of simulations.\n' +
+    'This report enumerates the third-party resources (code, images, sounds, etc) used in a set of simulations.\n' +
     '* [Third-party Code](#third-party-code)\n' +
     '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
     '* [Third-party Media](#third-party-media)\n' +
@@ -315,7 +315,7 @@ module.exports = async function() {
   }
 
   /**
-   * Add the source (images/audio/media or code) entries to the destination object, keyed by name.
+   * Add the source (images/sounds/media or code) entries to the destination object, keyed by name.
    * @param {string} repositoryName - the name of the repository, such as 'energy-skate-park-basics'
    * @param {Object} source - the object from which to read the entry
    * @param {Object} destination - the object to which to append the entry
