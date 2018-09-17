@@ -19,7 +19,7 @@
     FALLBACK_LOCALE: 'en',
 
     // Media types, also the directory names where the media files live
-    MEDIA_TYPES: [ 'audio', 'images' ],
+    MEDIA_TYPES: [ 'sounds', 'images' ],
 
     // Used to fill in sim.html, the sim template
     START_THIRD_PARTY_LICENSE_ENTRIES: '### START THIRD PARTY LICENSE ENTRIES ###',

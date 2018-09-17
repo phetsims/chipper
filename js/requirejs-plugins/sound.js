@@ -32,7 +32,7 @@ define( function( require ) {
 
       // everything after the repository namespace, eg 'MY_REPO/explosions/boom' -> '/explosions/boom'
       var soundPath = name.substring( name.indexOf( '/' ) );
-      var baseUrl = getProjectURL( name, parentRequire ) + 'audio';
+      var baseUrl = getProjectURL( name, parentRequire ) + 'sounds';
       var soundInfo = { url: baseUrl + soundPath };
 
       if ( config.isBuild ) {
@@ -50,7 +50,7 @@ define( function( require ) {
         };
 
         // register the license for this sound clip
-        registerLicenseEntry( name, getLicenseEntry( soundInfo.url ), global.phet.chipper.brand, 'audio', onloadAdapter );
+        registerLicenseEntry( name, getLicenseEntry( soundInfo.url ), global.phet.chipper.brand, 'sounds', onloadAdapter );
 
         // If any license entry was a problem, then we must fail the build. For simplicity, just report the first error.
         if ( errors.length > 0 ) {

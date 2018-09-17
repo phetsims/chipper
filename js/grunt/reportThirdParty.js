@@ -81,7 +81,7 @@ module.exports = async function() {
         title = sim;
       }
       augment( title, json.lib, compositeCode );
-      augment( title, json.audio, compositeMedia );
+      augment( title, json.sounds, compositeMedia );
       augment( title, json.images, compositeMedia );
 
       simTitles.push( title );

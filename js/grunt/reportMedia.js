@@ -52,10 +52,10 @@ module.exports = function() {
 
     const searchDir = rootdir + repo + '/' + directory;
 
-    // Not all projects have an audio/ directory
+    // Not all projects have an sounds/ directory
     if ( grunt.file.exists( searchDir ) ) {
 
-      // Iterate over all media directories, such as images and audio recursively
+      // Iterate over all media directories, such as images and sounds recursively
       grunt.file.recurse( searchDir, function( abspath, rootdir, subdir, filename ) {
 
         // Some files don't need to be attributed in the license.json
