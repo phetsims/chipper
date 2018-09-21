@@ -8,8 +8,6 @@
  *
  * @author Aaron Davis
  */
-/* eslint-env node */
-'use strict';
 
 // modules
 var Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
@@ -26,6 +24,7 @@ var BUILD_DIRECTORY = 'build';
  * @param {function} callback
  */
 module.exports = function( grunt, repositoryName, callback ) {
+  'use strict';
 
   var fullResImageName = 'assets/' + repositoryName + '-screenshot.png';
   var destinationFile = BUILD_DIRECTORY + '/' + repositoryName + '-twitter-card.png';
