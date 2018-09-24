@@ -412,13 +412,14 @@
 
     // Private doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
     /**
-     * Controls whether sound is on or off at startup (user can change later)
+     * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
+     * must be supported by the sim for this to have any effect.
      * @memberOf PhetQueryParameters
-     * @type {boolean}
+     * @type {string}
      */
-    soundInitiallyEnabled: {
-      type: 'boolean',
-      defaultValue: true
+    sound: {
+      type: 'string',
+      defaultValue: 'enabled'
     },
 
     /**
