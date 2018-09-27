@@ -419,7 +419,8 @@
      */
     sound: {
       type: 'string',
-      defaultValue: 'enabled'
+      defaultValue: 'enabled',
+      validValues: [ 'enabled', 'disabled', 'muted' ]
     },
 
     /**
