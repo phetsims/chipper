@@ -101,16 +101,6 @@
     },
 
     /**
-     * Returns true if one string ends with another.  See http://stackoverflow.com/questions/280634/endswith-in-javascript
-     * @param {string} string - the parent string within which to search
-     * @param {string} suffix - the suffix
-     * @returns {boolean}
-     */
-    endsWith: function( string, suffix ) {
-      return string.indexOf( suffix, string.length - suffix.length ) !== -1;
-    },
-
-    /**
      * Return the first line that contains the substring 'find'
      * @param {string} string - the parent string within which to search
      * @param {string} find - the legal regex string to be found
