@@ -51,9 +51,8 @@ define( function( module ) {
           // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
           // See https://github.com/phetsims/phet-io/issues/1074 for more details
           var f = function() { };
-          if ( id === 'PHET_IO/phetioEvents' ) {
-            f.start = function() {};
-            f.end = function() {};
+          if ( id === 'PHET_IO/phetioInherit' ) {
+            f = function( ignore1, ignore2, subType ) { return subType;};
           }
           load( f );
         }
@@ -76,8 +75,8 @@ define( function( module ) {
         // See https://github.com/phetsims/phet-io/issues/1074 for more details
         // Also add start and end messages for when phetioEvents is loaded, so we don't need to check for the existence
         // of start/end.
-        if ( moduleName === 'PHET_IO/phetioEvents' ) {
-          text = 'define("' + moduleName + '", function(){return function(){ var f = function() {}; f.start = function() {}; f.end = function() {}; return f; };});';
+        if ( moduleName === 'PHET_IO/phetioInherit' ) {
+          text = 'define("' + moduleName + '", function(){return function( ignore1, ignore2, subtype){ return subtype};});';
         }
         else {
           text = 'define("' + moduleName + '", function(){return function(){ return function(){}; };});';
