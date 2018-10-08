@@ -52,7 +52,7 @@ define( function( module ) {
           // See https://github.com/phetsims/phet-io/issues/1074 for more details
           var f = function() { };
           if ( id === 'PHET_IO/phetioInherit' ) {
-            f = function( ignore1, ignore2, subType ) { return subType;};
+            f = function( supertype, typeName, subtype, methods, staticProperties ) { return subtype;};
           }
           load( f );
         }
@@ -76,7 +76,7 @@ define( function( module ) {
         // Also add start and end messages for when phetioEvents is loaded, so we don't need to check for the existence
         // of start/end.
         if ( moduleName === 'PHET_IO/phetioInherit' ) {
-          text = 'define("' + moduleName + '", function(){return function( ignore1, ignore2, subtype){ return subtype};});';
+          text = 'define("' + moduleName + '", function(){return function( supertype, typeName, subtype, methods, staticProperties ) { return subtype;};});';
         }
         else {
           text = 'define("' + moduleName + '", function(){return function(){ return function(){}; };});';
