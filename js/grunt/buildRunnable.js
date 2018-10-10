@@ -14,7 +14,7 @@ const assert = require( 'assert' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const copySupplementalPhETIOFiles = require( './phet-io/copySupplementalPhETIOFiles' );
+const copySupplementalPhetioFiles = require( './phet-io/copySupplementalPhetioFiles' );
 const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
@@ -255,7 +255,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, bran
   }
 
   if ( brand === 'phet-io' ) {
-    await copySupplementalPhETIOFiles( repo, version );
+    await copySupplementalPhetioFiles( repo, version );
   }
 
   // Thumbnails and twitter card
