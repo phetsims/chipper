@@ -67,7 +67,7 @@ module.exports = function( repo, options ) {
   html = ChipperStringUtils.replaceAll( html, '{{QUALIFIER}}', qualifier );
   html = ChipperStringUtils.replaceAll( html, '{{BRAND}}', brand );
   html = ChipperStringUtils.replaceAll( html, '{{SPLASH_URL}}', splashURL );
-  html = ChipperStringUtils.replaceAll( html, '{{PHETIO_PRELOADS}}', stringifyArray( phetioPreloads, '  ' ) );
+  html = ChipperStringUtils.replaceAll( html, '{{PHET_IO_PRELOADS}}', stringifyArray( phetioPreloads, '  ' ) );
   html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( preloads, '' ) );
 
   // Use the repository name for the browser window title, because getting the sim's title
