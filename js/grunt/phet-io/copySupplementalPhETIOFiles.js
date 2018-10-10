@@ -176,6 +176,7 @@ module.exports = async function( repo, version ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', version );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_LATEST_VERSION}}', latestVersion );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_IS_BUILT}}', 'true' );
+      contents = ChipperStringUtils.replaceAll( contents, '{{LIB_OUTPUT_FILE}}', LIB_OUTPUT_FILE );
       contents = ChipperStringUtils.replaceAll( contents, '{{PHET_IO_LIB_RELATIVE_PATH}}', pathToLib );
 
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
