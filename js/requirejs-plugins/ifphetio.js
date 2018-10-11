@@ -73,8 +73,6 @@ define( function( module ) {
 
         // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
         // See https://github.com/phetsims/phet-io/issues/1074 for more details
-        // Also add start and end messages for when phetioEvents is loaded, so we don't need to check for the existence
-        // of start/end.
         if ( moduleName === 'PHET_IO/phetioInherit' ) {
           text = 'define("' + moduleName + '", function(){return function( supertype, typeName, subtype, methods, staticProperties ) { return subtype;};});';
         }
