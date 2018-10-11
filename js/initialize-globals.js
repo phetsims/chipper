@@ -150,7 +150,7 @@
     fuzzTouch: { type: 'flag' },
 
     /**
-     * if fuzzMouse=true, this is the average number of mouse events to synthesize per frame.
+     * if fuzzMouse=true or fuzzTouch=true, this is the average number of mouse events to synthesize per frame.
      */
     fuzzRate: {
       type: 'number',
