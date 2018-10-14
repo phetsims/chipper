@@ -31,7 +31,9 @@ const LIB_FILES = [
   '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
   '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
   '../tandem/js/PhetioIDUtils.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/Client.js'
+  '../' + WRAPPER_COMMON_FOLDER + '/js/Client.js',
+  '../' + WRAPPER_COMMON_FOLDER + '/js/readFile.js',
+  '../' + WRAPPER_COMMON_FOLDER + '/js/loadTemplate.js'
 ];
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
@@ -135,6 +137,16 @@ module.exports = async function( repo, version ) {
       if ( firstIFrameClientLine && firstIFrameClientLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' ); // included in phetio.js
       }
+
+      // Bundle in readFile and loadTemplate so they can be used uniformly by index (in root location) and wrappers (nested locations)
+      const firstReadFileLine = ChipperStringUtils.firstLineThatContains( contents, 'readFile.js">' );
+      if ( firstReadFileLine && firstReadFileLine.indexOf( PRODUCTION_SITE ) === -1 ) {
+        contents = ChipperStringUtils.replaceAll( contents, firstReadFileLine, '' ); // included in phetio.js
+      }
+      const firstLoadTemplateLine = ChipperStringUtils.firstLineThatContains( contents, 'loadTemplate.js">' );
+      if ( firstLoadTemplateLine && firstLoadTemplateLine.indexOf( PRODUCTION_SITE ) === -1 ) {
+        contents = ChipperStringUtils.replaceAll( contents, firstLoadTemplateLine, '' ); // included in phetio.js
+      }
       const firstWrapperTypeLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperTypes.js">' );
       if ( firstWrapperTypeLine && firstWrapperTypeLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstWrapperTypeLine, '' ); // included in phetio.js
@@ -160,7 +172,6 @@ module.exports = async function( repo, version ) {
         '../common/js/Client.js',
         `${pathToLib}`
       );
-
 
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',

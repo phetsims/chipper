@@ -217,6 +217,8 @@
     "he": false,
     // for HTML => JSON parsing
     "himalaya": false,
+    // for hightlighting
+    "hljs": false,
     //for web audio
     "Howl": false,
     //
