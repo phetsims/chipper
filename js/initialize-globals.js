@@ -147,8 +147,8 @@
     fuzzMouse: { type: 'flag' },
 
     /**
-     * The maximum number of concurrent pointers allowed for fuzzing. Using a value larger than 1 with fuzzMouse will
-     * test multitouch behavior.
+     * The maximum number of concurrent pointers allowed for fuzzing. Using a value larger than 1 will test multitouch
+     * behavior (with ?fuzz, ?fuzzMouse, ?fuzzTouch, etc.)
      */
     fuzzPointers: {
       type: 'number',
