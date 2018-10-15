@@ -131,6 +131,11 @@
     },
 
     /**
+     * Randomly sends mouse events and touch events to sim.
+     */
+    fuzz: { type: 'flag' },
+
+    /**
      * Randomly sends mouse events to sim.
      */
     fuzzMouse: { type: 'flag' },
