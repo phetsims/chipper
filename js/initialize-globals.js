@@ -31,8 +31,10 @@
 
   // Note: the following jsdoc is for the public facing phet-io api. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
-  // phet-io documentation. Private comments about implementation details will be in comments above the jsdoc, and marked as such.
+  // phet-io documentation. Private comments about implementation details will be in comments above the jsdoc, and
+  // marked as such.
   // Note: this had to be jsdoc directly for QUERY_PARAMETERS_SCHEMA to support the correct auto formatting.
+
   /**
    * Query parameters that manipulate the startup state of the PhET simulation. This is not
    * an object defined in the global scope, but rather it serves as documentation about available query parameters.
@@ -43,7 +45,6 @@
   var QUERY_PARAMETERS_SCHEMA = {
     // Schema that describes query parameters for PhET common code.
     // These query parameters are available via global phet.chipper.queryParameters.
-
 
     /**
      * Whether accessibility features are enabled or not.  Use this option to render the Parallel DOM for
@@ -136,6 +137,11 @@
     fuzz: { type: 'flag' },
 
     /**
+     * Randomly sends keyboard events to the sim. Must have accessibility enabled.
+     */
+    fuzzBoard: { type: 'flag' },
+
+    /**
      * Randomly sends mouse events to sim.
      */
     fuzzMouse: { type: 'flag' },
@@ -162,23 +168,6 @@
       defaultValue: 100,
       isValidValue: function( value ) { return value > 0; }
     },
-
-    /**
-     * Randomly sends keyboard events to the sim. Must have accessibility enabled.
-     */
-    fuzzBoard: { type: 'flag' },
-
-    /**
-     * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
-     * to Google Analytics and potentially other sources in the future.
-     */
-    'phet-app': { type: 'flag' },
-
-    /**
-     * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
-     * to Google Analytics and potentially other sources in the future.
-     */
-    'phet-android-app': { type: 'flag' },
 
     /**
      * Used for providing a external Google Analytics property for tracking, see
@@ -273,6 +262,18 @@
     mobileA11yTest: { type: 'flag' },
 
     /**
+     * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
+     * to Google Analytics and potentially other sources in the future.
+     */
+    'phet-app': { type: 'flag' },
+
+    /**
+     * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
+     * to Google Analytics and potentially other sources in the future.
+     */
+    'phet-android-app': { type: 'flag' },
+
+    /**
      * plays event logging back from the server, provide an optional name for the session
      */
     playbackInputEventLog: { type: 'flag' },
@@ -284,13 +285,6 @@
       type: 'boolean',
       defaultValue: false
     },
-
-    /**
-     * Controls whether the preserveDrawingBuffer:true is set on WebGL Canvases. This allows canvas.toDataURL() to work
-     * (used for certain methods that require screenshot generation using foreign object rasterization, etc.).
-     * Generally reduces WebGL performance, so it should not always be on (thus the query parameter).
-     */
-    preserveDrawingBuffer: { type: 'flag' },
 
     /**
      * Fires a post-message when the sim is about to change to another URL
@@ -312,6 +306,13 @@
      */
     postMessageOnReady: { type: 'flag' },
 
+    /**
+     * Controls whether the preserveDrawingBuffer:true is set on WebGL Canvases. This allows canvas.toDataURL() to work
+     * (used for certain methods that require screenshot generation using foreign object rasterization, etc.).
+     * Generally reduces WebGL performance, so it should not always be on (thus the query parameter).
+     */
+    preserveDrawingBuffer: { type: 'flag' },
+    
     /**
      * shows profiling information for the sim
      */
