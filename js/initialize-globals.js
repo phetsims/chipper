@@ -48,9 +48,17 @@
 
     /**
      * Whether accessibility features are enabled or not.  Use this option to render the Parallel DOM for
-     * keyboard navigation and screen reader based auditory descriptions.
+     * keyboard navigation and screen reader based auditory descriptions. This query parameter is meant for internal
+     * use only, simulations published with accessibility enabled should use the Sim option `accessibility: true`.
      */
     accessibility: { type: 'flag' },
+
+    /**
+     * An alias for the "accessibility" query parameter above. Shorter and easier to type for convenience, see
+     * https://github.com/phetsims/chipper/issues/716. Like "accessibility", meant for internal use only though
+     * colaborators could use this.
+     */
+    a11y: { type: 'flag' },
 
     // Private doc: This is primarily for Vibe sounds. For external use. The below jsdoc is public to the
     // phet-io api documentation. Change wisely.
@@ -586,7 +594,7 @@
    * @public (writable by joist) can be overwritten in the constructor of Sim.js
    * @type {boolean}
    */
-  window.phet.chipper.accessibility = phet.chipper.queryParameters.accessibility;
+  window.phet.chipper.accessibility = phet.chipper.queryParameters.accessibility || phet.chipper.queryParameters.a11y;
 
   /**
    * Utility function to pause synchronously for the given number of milliseconds.
