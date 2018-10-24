@@ -34,10 +34,7 @@
     var preloads = {{PRELOADS}};
 
     if ( brand === 'phet-io' ) {
-      preloads = preloads.concat( {
-      {PHET_IO_PRELOADS}
-    } )
-      ;
+      preloads = preloads.concat( {{PHET_IO_PRELOADS}} );
     }
 
     // Loads a synchronously-executed asynchronously-downloaded script tag, with optional data-main parameter.
