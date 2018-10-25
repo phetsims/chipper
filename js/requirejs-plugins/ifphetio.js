@@ -47,14 +47,7 @@ define( function( module ) {
           require( [ id ], load );
         }
         else {
-
-          // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
-          // See https://github.com/phetsims/phet-io/issues/1074 for more details
-          var f = function() { };
-          if ( id === 'PHET_IO/phetioInherit' ) {
-            f = function( supertype, typeName, subtype, methods, staticProperties ) { return subtype;};
-          }
-          load( f );
+          load( function() {} );
         }
       }
     },
@@ -70,16 +63,7 @@ define( function( module ) {
         write.asModule( moduleName, text, buildMap[ moduleName ].content );
       }
       else {
-
-        // It wasn't phet-io so load a 'no-op function' that returns a function (hack for the parameterized types).
-        // See https://github.com/phetsims/phet-io/issues/1074 for more details
-        if ( moduleName === 'PHET_IO/phetioInherit' ) {
-          text = 'define("' + moduleName + '", function(){return function( supertype, typeName, subtype, methods, staticProperties ) { return subtype;};});';
-        }
-        else {
-          text = 'define("' + moduleName + '", function(){return function(){ return function(){}; };});';
-        }
-
+        text = 'define("' + moduleName + '", function(){return function(){ return function(){}; };});';
         write( text );
       }
     }
