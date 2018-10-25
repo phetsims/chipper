@@ -4,8 +4,8 @@
 'use strict';
 
 const fs = require( 'fs' );
-const jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
 const grunt = require( 'grunt' );
+const jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
 const mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
 const pngjs = require( 'pngjs' );
 

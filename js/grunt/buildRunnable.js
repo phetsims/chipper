@@ -32,9 +32,9 @@ const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 const packageRunnable = require( './packageRunnable' );
 const packageXHTML = require( './packageXHTML' );
-const requireBuild = require( './requireBuild' );
 const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
+const requireBuild = require( './requireBuild' );
 
 /**
  * Builds a runnable (e.g. a simulation).
