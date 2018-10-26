@@ -250,11 +250,25 @@
       defaultValue: 'en'
     },
 
-    /*
+    /**
      * Enables basic logging to the console.
      * Usage in code: phet.log && phet.log( 'your message' );
      */
     log: { type: 'flag' },
+
+    /**
+     * Sets a maximum "memory" limit (in MB). If the simulation's running average of memory usage goes over this amount
+     * in operation (as determined currently by using Chome's window.performance), then an error will be thrown.
+     *
+     * This is useful for continuous testing, to ensure we aren't leaking huge amounts of memory, and can also be used
+     * with the Chrome command-line flag --enable-precise-memory-info to make the determination more accurate.
+     *
+     * The value 0 will be ignored, since our sims are likely to use more than that much memory.
+     */
+    memoryLimit: {
+      type: 'number',
+      defaultValue: 0
+    },
 
     /**
      * Enables transforming the PDOM for accessibility on mobile devices. This work is experimental, and still hidden
