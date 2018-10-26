@@ -22,7 +22,7 @@ const minify = require( '../minify' );
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 const PRODUCTION_SITE = 'phet-io.colorado.edu';
-const WRAPPERS_FOLDER = 'wrappers/'; // The index wrapper assumes this constant, please see phet-io-wrappers/index/index.js before changing
+const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant, please see phet-io-wrappers/index/index.js before changing
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
@@ -85,7 +85,7 @@ module.exports = async function( repo, version ) {
   const filterWrapper = function( abspath, contents ) {
     const originalContents = contents + '';
 
-    const isIndexWrapper = abspath.indexOf( 'index/index.html' ) >= 0;
+    const isWrapperIndex = abspath.indexOf( 'index/index.html' ) >= 0;
 
     // For info about LIB_OUTPUT_FILE, see handleLib()
     let pathToLib = `lib/${LIB_OUTPUT_FILE}`;
@@ -107,8 +107,8 @@ module.exports = async function( repo, version ) {
           const contribFileName = 'contrib/' + fileName;
           let pathToContrib = needsExtraDots ? '../../' + contribFileName : '../' + contribFileName;
 
-          // The index "wrapper" is a different case because it is placed at the top level of the build dir.
-          if ( isIndexWrapper ) {
+          // The wrapper index is a different case because it is placed at the top level of the build dir.
+          if ( isWrapperIndex ) {
 
             pathToContrib = contribFileName;
             filePath = '../' + filePath; // filePath has one less set of relative than are actually in the index.html file.
@@ -159,8 +159,8 @@ module.exports = async function( repo, version ) {
       // Support wrappers that use code from phet-io-wrappers
       contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
 
-      // index wrapper is moved to the top level of build dir, and needs no relative dots.
-      pathToLib = isIndexWrapper ? pathToLib : `../../${pathToLib}`;
+      // wrapper index is moved to the top level of build dir, and needs no relative dots.
+      pathToLib = isWrapperIndex ? pathToLib : `../../${pathToLib}`;
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{phet-io.js}}-->',
         `<script src="${pathToLib}"></script>`
@@ -236,7 +236,7 @@ module.exports = async function( repo, version ) {
     copyWrapper( `../${wrapper}`, `${wrappersLocation}${wrapperName}` );
   } );
 
-  // Copy the index wrapper into the top level of the build dir, exclude the blacklist
+  // Copy the wrapper index into the top level of the build dir, exclude the blacklist
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}` );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build
