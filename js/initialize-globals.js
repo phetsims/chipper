@@ -63,7 +63,7 @@
     // Private doc: This is primarily for Vibe sounds. For external use. The below jsdoc is public to the
     // phet-io api documentation. Change wisely.
     /**
-     * Master volume control for the simulation.
+     * Master volume control for the simulation.  Range is from 0 to 1, which is typical for web audio gain nodes.
      * 1.0 is unity volume, 0.5 is half volume, etc.
      * @memberOf PhetQueryParameters
      * @type {number}
