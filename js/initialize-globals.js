@@ -56,16 +56,14 @@
     /**
      * An alias for the "accessibility" query parameter above. Shorter and easier to type for convenience, see
      * https://github.com/phetsims/chipper/issues/716. Like "accessibility", meant for internal use only though
-     * colaborators could use this.
+     * collaborators could use this.
      */
     a11y: { type: 'flag' },
 
-    // Private doc: This is primarily for Vibe sounds. For external use. The below jsdoc is public to the
-    // phet-io api documentation. Change wisely.
     /**
      * Master volume control for the simulation.  Range is from 0 to 1, which is typical for web audio gain nodes.
-     * 1.0 is unity volume, 0.5 is half volume, etc.
-     * @memberOf PhetQueryParameters
+     * 1.0 is unity volume, 0.5 is half volume, etc. This is primarily for Vibe sounds.
+     * @deprecated see https://github.com/phetsims/vibe/issues/33
      * @type {number}
      */
     audioVolume: {
@@ -128,10 +126,8 @@
      */
     eall: { type: 'flag' },
 
-    // Private doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
     /**
      * Controls whether enhanced sound is on or off at startup (user can change later)
-     * @memberOf PhetQueryParameters
      * @type {boolean}
      */
     enhancedSoundInitiallyEnabled: {
@@ -223,12 +219,12 @@
     },
 
     // Private doc: For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
+    // The value is one of the values in the screens array, not an index into the screens array.
     /**
      * Specifies the initial screen that will be visible when the sim starts.
      * See screens query parameter for screen numbering.
-     * The value is one of the values in the screens array, not an index into the screens array.
-     * For example ?screens=1,3&initialScreen=3, not ?screens=1,3&initialScreen=2.
      * For multi-screen sims only, throws an assertion error if applied in a single-screen sims.
+     * The default value of 0 is the home screen.
      * @memberOf PhetQueryParameters
      * @type {number}
      */
