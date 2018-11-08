@@ -37,7 +37,7 @@ const LIB_FILES = [
 ];
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
-const LIB_COPYRIGHT_HEADER = '// Copyright 2002-2017, University of Colorado Boulder\n' +
+const LIB_COPYRIGHT_HEADER = '// Copyright 2002-2018, University of Colorado Boulder\n' +
                              '// This PhET-iO file requires a license\n' +
                              '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
                              '// For licensing, please contact phethelp@colorado.edu';
