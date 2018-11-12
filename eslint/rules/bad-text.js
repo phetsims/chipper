@@ -23,7 +23,10 @@ module.exports = function( context ) {
 
     // Forbid common duplicate words
     ' the the ',
-    ' a a '
+    ' a a ',
+
+    // For phet-io use PHET_IO in constants
+    'PHETIO'
   ];
 
   return {
