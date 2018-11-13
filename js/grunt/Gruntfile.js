@@ -203,7 +203,8 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'generate-test-html',
     'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-tests.md ' +
-    'for more information on automated testing',
+    'for more information on automated testing. Usually you should ' +
+    'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
       generateDevelopmentHTML( repo, {
 
@@ -231,13 +232,15 @@ module.exports = function( grunt ) {
     } ) );
 
   grunt.registerTask( 'generate-development-colors-html',
-    'Generates top-level SIM-colors.html file used for testing color profiles and color values.',
+    'Generates top-level SIM-colors.html file used for testing color profiles and color values. Usually you should ' +
+    'set the "colorProfile":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
       generateDevelopmentColorsHTML( repo );
     } ) );
 
   grunt.registerTask( 'generate-a11y-view-html',
-    'Generates top-level SIM-a11y-view.html file used for visualizing accessible content.',
+    'Generates top-level SIM-a11y-view.html file used for visualizing accessible content. Usually you should ' +
+    'set the "accessible":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
       generateA11yViewHTML( repo );
     } ) );
@@ -249,7 +252,8 @@ module.exports = function( grunt ) {
     } ) );
 
   grunt.registerTask( 'generate-test-config',
-    'Generates the js/SIM-test-config.js file based on the dependencies in package.json.',
+    'Generates the js/SIM-test-config.js file based on the dependencies in package.json. Usually you should ' +
+    'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
       await generateConfig( repo, `js/${repo}-test-config.js`, 'tests' );
     } ) );
