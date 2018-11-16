@@ -1,8 +1,8 @@
 // Copyright 2017, University of Colorado Boulder
 
 /**
- * This grunt task generates the 800x400 letter-boxed version of the sim screenshot for use in twitter cards (metadata) on the website simulation
- * pages.
+ * This grunt task generates the 800x400 letter-boxed version of the sim screenshot for use in
+ * twitter cards (metadata) on the website simulation pages.
  *
  * @author Matt Pennington
  */
