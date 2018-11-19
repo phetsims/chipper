@@ -21,7 +21,7 @@
       if ( data && data.error && data.error.stack ) {
         stack = data.error.stack;
       }
-      window.parent && window.parent.postMessage( JSON.stringify( {
+      ( window.parent !== window.top ) && window.parent.postMessage( JSON.stringify( {
         type: 'pageload-error',
         url: window.location.href,
         message: message,
@@ -35,7 +35,7 @@
     // Wait 4 seconds before reporting load, to see if it errors first
     setTimeout( function() {
       if ( !hasErrored ) {
-        window.parent && window.parent.postMessage( JSON.stringify( {
+        ( window.parent !== window.top ) && window.parent.postMessage( JSON.stringify( {
           type: 'pageload-load',
           url: window.location.href
         } ), '*' );
