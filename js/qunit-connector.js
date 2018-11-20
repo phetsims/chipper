@@ -13,7 +13,7 @@
   QUnit.config.autostart = false;
 
   QUnit.log( function( details ) {
-    ( window.parent !== window.top ) && window.parent.postMessage( JSON.stringify( {
+    ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {
       type: 'qunit-test',
       main: details.module, // TODO: what is this for?
       result: details.result,
@@ -25,7 +25,7 @@
   } );
 
   QUnit.on( 'runEnd', function( data ) {
-    ( window.parent !== window.top ) && window.parent.postMessage( JSON.stringify( {
+    ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {
       type: 'qunit-done',
       failed: data.testCounts.failed,
       passed: data.testCounts.passed,
