@@ -677,7 +677,7 @@
         if ( a && a.error && a.error.stack ) {
           stack = a.error.stack;
         }
-        ( window.parent !== window.top ) && window.parent.postMessage( JSON.stringify( {
+        ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {
           type: 'error',
           url: window.location.href,
           message: message,
@@ -688,7 +688,7 @@
 
     if ( phet.chipper.queryParameters.postMessageOnBeforeUnload ) {
       window.addEventListener( 'beforeunload', function( e ) {
-        ( window.parent !== window.top ) && window.parent.postMessage( JSON.stringify( {
+        ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {
           type: 'beforeUnload'
         } ), '*' );
       } );
