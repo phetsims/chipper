@@ -337,7 +337,7 @@ module.exports = function( grunt ) {
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
 
-    findDuplicates( repo, cache );
+    findDuplicates( grunt, repo, cache );
   } ) );
 
   // Grunt task that determines created and last modified dates from git, and
