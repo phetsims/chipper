@@ -25,7 +25,7 @@ module.exports = function( context ) {
   'use strict';
 
   // names of the native JavaScript constructors that clash with PhET type names
-  var nativeConstructors = [ 'Image', 'Range', 'Text' ];
+  var nativeConstructors = [ 'Image', 'Range', 'Text', 'Node', 'Event' ];
 
   // list of all types that are declared in the file that have the same name as a native JavaScript constructor
   var declaredTypes = [];
@@ -34,7 +34,7 @@ module.exports = function( context ) {
    * Add a type to declared types if the 'declaration' node has a name which is equal to
    * one of the entries in nativeConstructors.  Called when eslint finds VariableDeclarator or FunctionDeclaration
    * nodes as it traverses down the AST.
-   * 
+   *
    * @param {ASTNode} node
    */
   function addDeclaredType( node ) {
@@ -68,7 +68,7 @@ module.exports = function( context ) {
      * When eslint traverses back up the AST, search for a node representing an instantiation of a type.  If found,
      * check to see if the type being instantiated is one of the entries that were added to declaredTypes on
      * the first traversal down the AST.
-     * 
+     *
      * @param  {ASTNode} node
      */
     'NewExpression:exit': function noHTMLConstructor( node ) {
