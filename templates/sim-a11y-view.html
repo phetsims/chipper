@@ -306,7 +306,7 @@
         for ( var i = 0; i < allElements.length; i++ ) {
           var element = allElements[ i ];
 
-          if ( element.hasAttribute( 'aria-label' ) ) {
+          if ( element.hasAttribute( 'aria-label' ) && element.innerHTML === '' ) {
             var ariaLabel = element.getAttribute( 'aria-label' );
 
             // remove the style
