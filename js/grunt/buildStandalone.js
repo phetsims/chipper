@@ -20,14 +20,12 @@ const requireBuild = require( './requireBuild' );
  * @public
  *
  * @param {string} repo
- * @param {boolean} uglify
- * @param {boolean} mangle
+ * @param {Object} minifyOptions
  * @returns {Promise}
  */
-module.exports = async function( repo, uglify, mangle ) {
+module.exports = async function( repo, minifyOptions ) {
   assert( typeof repo === 'string' );
-  assert( typeof uglify === 'boolean' );
-  assert( typeof mangle === 'boolean' );
+  assert( typeof minifyOptions === 'object' );
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
@@ -73,9 +71,7 @@ module.exports = async function( repo, uglify, mangle ) {
   // Wrap with an IIFE
   fullSource = `(function() {\n${fullSource}\n}());`;
 
-  if ( uglify ) {
-    fullSource = minify( fullSource, { mangle: mangle } );
-  }
+  fullSource = minify( fullSource, minifyOptions );
 
   return fullSource;
 };

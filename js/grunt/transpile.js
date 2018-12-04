@@ -27,6 +27,10 @@ module.exports = function( jsInput ) {
 
     // Use chipper's copy of babel-preset-env, so we don't have to have 30MB extra per sim checked out.
     presets: [ [ '../chipper/node_modules/babel-preset-env', {
+
+      // Parse as "script" type, so "this" will refer to "window" instead of being transpiled to `void 0` aka undefined
+      // see https://github.com/phetsims/chipper/issues/723#issuecomment-443966550
+      modules: false,
       targets: {
         browsers: [
           // See http://browserl.ist/?q=%3E+0.5%25%2C+safari+9-11%2C+Firefox+ESR%2C+IE+11%2C+ios_saf+11

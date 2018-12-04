@@ -10,23 +10,23 @@
 
 // modules
 const transpile = require( './transpile' );
-const uglify = require( 'uglify-es' ); // eslint-disable-line require-statement-match
+const uglifyES = require( 'uglify-es' ); // eslint-disable-line require-statement-match
 
-/**
- * Returns a minified version of the code (with optional mangling).
- * @public
- *
- * @param {string} js - The source code
- * @param {Object} [options]
- * @returns {string} - The minified code
- */
-module.exports = function( js, options ) {
-  const {
-    mangle = true,
-    babelTranspile = false,
-    stripAssertions = true,
-    stripLogging = true
-  } = options || {};
+const MINIFY_DEFAULTS = {
+  babelTranspile: true,
+  uglify: true,
+
+  // Only enabled if uglify is true
+  mangle: true,
+  stripAssertions: true,
+  stripLogging: true
+};
+
+const minify = function( js, options ) {
+  options = _.extend( {}, MINIFY_DEFAULTS, options );
+
+  // Promote to top level variables
+  const { babelTranspile, uglify, mangle, stripAssertions, stripLogging } = options;
 
   // Do transpilation before uglifying.
   if ( babelTranspile ) {
@@ -43,8 +43,7 @@ module.exports = function( js, options ) {
       dead_code: true, // remove unreachable code
 
       // To define globals, use global_defs inside compress options, see https://github.com/jrburke/r.js/issues/377
-      global_defs: {
-      }
+      global_defs: {}
     },
 
     // output options documented at https://github.com/mishoo/UglifyJS2#beautifier-options
@@ -66,15 +65,34 @@ module.exports = function( js, options ) {
     config.compress.global_defs.sceneryAccessibilityLog = false;
   }
 
-  const result = uglify.minify( js, config );
+  if ( uglify ) {
 
-  if ( result.error ) {
-    console.log( result.error );
-    throw new Error( result.error );
+    const result = uglifyES.minify( js, config );
+
+    if ( result.error ) {
+      console.log( result.error );
+      throw new Error( result.error );
+    }
+    else {
+      // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
+      // TODO: is this workaround still required?
+      return result.code.replace( '\x0B', '\\x0B' );
+    }
   }
   else {
-    // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
-    // TODO: is this workaround still required?
-    return result.code.replace( '\x0B', '\\x0B' );
+    return js;
   }
 };
+
+// @public (read-only) - export defaults
+minify.MINIFY_DEFAULTS = MINIFY_DEFAULTS;
+
+/**
+ * Returns a minified version of the code (with optional mangling).
+ * @public
+ *
+ * @param {string} js - The source code
+ * @param {Object} [options]
+ * @returns {string} - The minified code
+ */
+module.exports = minify;

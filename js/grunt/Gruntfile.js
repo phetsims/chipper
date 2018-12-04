@@ -26,6 +26,7 @@ const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateREADME = require( './generateREADME' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
+const minify = require( './minify' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
@@ -100,8 +101,11 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'build',
     'Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.\n' +
-    '--uglify=false - Disables uglification, so the built file will include (essentially) concatenated source files.\n' +
-    '--mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.\n' +
+    '--minify.babelTranspile=false - Disables babel transpilation phase.\n' +
+    '--minify.uglify=false - Disables uglification, so the built file will include (essentially) concatenated source files.\n' +
+    '--minify.mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.)\n' +
+    '--minify.stripAssertions=false - During uglification, it will strip assertions.\n' +
+    '--minify.stripLogging=false - During uglification, it will not strip logging statements.\n' +
     'Runnable build options:\n' +
     '--instrument - Builds a runnable with code coverage tooling inside. See phet-info/doc/code-coverage.md for more information\n' +
     '--brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using\n' +
@@ -111,10 +115,25 @@ module.exports = function( grunt ) {
     '          a separated-out JS file).\n' +
     '--locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales',
     wrapTask( async () => {
+
+      // Parse minification keys
+      const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
+      let minifyOptions = {};
+      minifyKeys.forEach( minifyKey => {
+        const option = grunt.option( 'minify.' + minifyKey );
+        if ( option === true || option === false ) {
+          minifyOptions[ minifyKey ] = option;
+        }
+      } );
+
       // grunt options that apply to multiple build tasks
       const instrument = !!grunt.option( 'instrument' );
-      const uglify = !instrument && ( grunt.option( 'uglify' ) !== false ); // Do not uglify if it is being instrumented
-      const mangle = grunt.option( 'mangle' ) !== false;
+
+      // Do not uglify or transpile if it is being instrumented, so it will match development code as closely as possible
+      if ( instrument ) {
+        minifyOptions.babelTranspile = false;
+        minifyOptions.uglify = false;
+      }
 
       const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
@@ -122,7 +141,7 @@ module.exports = function( grunt ) {
       if ( repoPackageObject.phet.buildStandalone ) {
         grunt.log.writeln( 'Building standalone repository' );
 
-        fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( repo, uglify, mangle ) );
+        fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( repo, minifyOptions ) );
       }
       else if ( repoPackageObject.isWrapper ) {
         grunt.log.writeln( 'Building wrapper repository' );
@@ -170,7 +189,7 @@ module.exports = function( grunt ) {
         for ( let brand of brands ) {
           grunt.log.writeln( `Building brand: ${brand}` );
 
-          await buildRunnable( repo, uglify, mangle, instrument, allHTML, brand, localesOption );
+          await buildRunnable( repo, minifyOptions, instrument, allHTML, brand, localesOption );
         }
       }
     } )

@@ -41,19 +41,17 @@ const requireBuild = require( './requireBuild' );
  * @public
  *
  * @param {string} repo
- * @param {boolean} uglify - Whether to uglify or not
- * @param {boolean} mangle - If uglifying, whether to mangle variable names
+ * @param {Object} minifyOptions - see minify.js
  * @param {boolean} instrument - If the sim should be instrumented
  * @param {boolean} allHTML - If the _all.html file should be generated
  * @param {string} brand
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, uglify, mangle, instrument, allHTML, brand, localesOption ) {
+module.exports = async function( repo, minifyOptions, instrument, allHTML, brand, localesOption ) {
   // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
-  assert( typeof uglify === 'boolean' );
-  assert( typeof mangle === 'boolean' );
+  assert( typeof minifyOptions === 'object' );
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
 
   if ( brand === 'phet-io' ) {
@@ -75,13 +73,20 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, bran
     brand
   } );
 
-  const productionJS = uglify ? minify( requireJS, { mangle, babelTranspile: true } ) : requireJS;
-  const debugJS = brand === 'phet-io' ? minify( requireJS, {
-    mangle: true,
-    babelTranspile: true,
+  // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.
+  const debugMinifyOptions = brand === 'phet-io' ? {
     stripAssertions: false,
     stripLogging: false
-  } ) : requireJS;
+  } : {
+    babelTranspile: false,
+    uglify: false,
+    mangle: false,
+    stripAssertions: false,
+    stripLogging: false
+  };
+
+  const productionJS = minify( requireJS, minifyOptions );
+  const debugJS = minify( requireJS, debugMinifyOptions );
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( packageObject.phet.requirejsNamespace );
@@ -89,10 +94,9 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, bran
   // After all strings have been loaded, report which of the translatable strings are unused.
   reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
 
-
   const rawPreloads = getPreloads( repo, brand ).map( filename => grunt.file.read( filename ) );
-  const productionPreloads = rawPreloads.map( js => uglify ? minify( js, { mangle } ) : js );
-  const debugPreloads = rawPreloads.map( js => brand === 'phet-io' ? minify( js, { mangle: true } ) : js );
+  const productionPreloads = rawPreloads.map( js => minify( js, minifyOptions ) );
+  const debugPreloads = rawPreloads.map( js => minify( js, debugMinifyOptions ) );
 
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
