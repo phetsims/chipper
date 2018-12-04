@@ -78,11 +78,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     stripAssertions: false,
     stripLogging: false
   } : {
-    babelTranspile: false,
-    uglify: false,
-    mangle: false,
-    stripAssertions: false,
-    stripLogging: false
+    minify: false
   };
 
   const productionJS = minify( requireJS, minifyOptions );

@@ -13,6 +13,9 @@ const transpile = require( './transpile' );
 const uglifyES = require( 'uglify-es' ); // eslint-disable-line require-statement-match
 
 const MINIFY_DEFAULTS = {
+  minify: true,
+
+  // Only enabled if minify is true
   babelTranspile: true,
   uglify: true,
 
@@ -26,7 +29,11 @@ const minify = function( js, options ) {
   options = _.extend( {}, MINIFY_DEFAULTS, options );
 
   // Promote to top level variables
-  const { babelTranspile, uglify, mangle, stripAssertions, stripLogging } = options;
+  const { minify, babelTranspile, uglify, mangle, stripAssertions, stripLogging } = options;
+
+  if ( !minify ) {
+    return js;
+  }
 
   // Do transpilation before uglifying.
   if ( babelTranspile ) {
