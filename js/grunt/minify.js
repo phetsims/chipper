@@ -9,6 +9,7 @@
 'use strict';
 
 // modules
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const transpile = require( './transpile' );
 const uglifyES = require( 'uglify-es' ); // eslint-disable-line require-statement-match
 
