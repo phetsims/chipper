@@ -13,6 +13,7 @@ const eslint = require( 'eslint' );
 const grunt = require( 'grunt' );
 const md5 = require( 'md5' );
 const path = require( 'path' );
+const child_process = require( 'child_process' );
 
 /**
  * Lints the specified repositories.
@@ -20,9 +21,10 @@ const path = require( 'path' );
  *
  * @param {Array.<string>} repos
  * @param {boolean} cache
+ * @param {boolean} say - whether errors should be read out loud
  * @returns {Object} - ESLint report object.
  */
-module.exports = function( repos, cache ) {
+module.exports = function( repos, cache, say = false ) {
   const cli = new eslint.CLIEngine( {
 
     cwd: path.dirname( process.cwd() ),
@@ -71,6 +73,9 @@ module.exports = function( repos, cache ) {
 
   // pretty print results to console if any
   ( report.warningCount || report.errorCount ) && grunt.log.write( cli.getFormatter()( report.results ) );
+
+  say && report.warningCount && child_process.execSync( 'say Lint warnings detected!' );
+  say && report.errorCount && child_process.execSync( 'say Lint errors detected!' );
 
   report.warningCount && grunt.fail.warn( report.warningCount + ' Lint Warnings' );
   report.errorCount && grunt.fail.fatal( report.errorCount + ' Lint Errors' );
