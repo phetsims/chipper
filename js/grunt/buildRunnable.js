@@ -14,6 +14,7 @@ const assert = require( 'assert' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const copyDirectory = require( './phet-io/copyDirectory' );
 const copySupplementalPhetioFiles = require( './phet-io/copySupplementalPhetioFiles' );
 const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
@@ -252,6 +253,23 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     a11yHTML = ChipperStringUtils.replaceAll( a11yHTML, '{{IS_BUILT}}', 'true' );
 
     grunt.file.write( `${buildDir}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );
+  }
+
+  // copy over supplemental files or dirs to package with the build. Only supported in phet brand
+  if ( brand === 'phet' && packageObject.phet && packageObject.phet.packageWithBuild ) {
+
+    assert( Array.isArray( packageObject.phet.packageWithBuild ) );
+    packageObject.phet.packageWithBuild.forEach( path => {
+
+      assert( typeof path === 'string', 'path should be a string' );
+      assert( grunt.file.exists( path ), `path does not exist: ${path}` );
+      if ( grunt.file.isDir( path ) ) {
+        copyDirectory( path, `${buildDir}/${path}` );
+      }
+      else {
+        grunt.file.copy( path, `${buildDir}/${path}` );
+      }
+    } );
   }
 
   if ( brand === 'phet-io' ) {
