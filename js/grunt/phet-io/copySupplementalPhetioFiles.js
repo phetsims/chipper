@@ -12,7 +12,7 @@
 
 // modules
 const ChipperStringUtils = require( '../../common/ChipperStringUtils' );
-const copyDirectory = require( './copyDirectory' );
+const copyDirectory = require( '../copyDirectory' );
 const execute = require( '../execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );

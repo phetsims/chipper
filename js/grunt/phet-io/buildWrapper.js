@@ -7,7 +7,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-const copyDirectory = require( './copyDirectory' );
+const copyDirectory = require( '../copyDirectory' );
 const fs = require( 'fs' );
 const getDependencies = require( '../getDependencies' );
 const getPhetLibs = require( '../getPhetLibs' );

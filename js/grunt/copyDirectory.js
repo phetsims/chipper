@@ -10,7 +10,7 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const grunt = require( 'grunt' );
-const minify = require( '../minify' );
+const minify = require( './minify' );
 
 /**
  * @param {string} src - the source directory
