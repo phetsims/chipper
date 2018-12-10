@@ -65,7 +65,7 @@ const JSDOC_FILES = LIB_FILES.concat( [
 ] );
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
-module.exports = async function( repo, version ) {
+module.exports = async function( repo, version, simulationDisplayName ) {
 
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
@@ -184,6 +184,7 @@ module.exports = async function( repo, version ) {
     }
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_DISPLAY_NAME}}', simulationDisplayName );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', version );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_LATEST_VERSION}}', latestVersion );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_IS_BUILT}}', 'true' );

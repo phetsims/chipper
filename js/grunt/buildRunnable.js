@@ -273,7 +273,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   }
 
   if ( brand === 'phet-io' ) {
-    await copySupplementalPhetioFiles( repo, version );
+    await copySupplementalPhetioFiles( repo, version, englishTitle );
   }
 
   // Thumbnails and twitter card
