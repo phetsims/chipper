@@ -104,6 +104,7 @@ module.exports = function( grunt ) {
     '--minify.babelTranspile=false - Disables babel transpilation phase.\n' +
     '--minify.uglify=false - Disables uglification, so the built file will include (essentially) concatenated source files.\n' +
     '--minify.mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.)\n' +
+    '--minify.beautify=true - After uglification, the source code will be syntax formatted nicely\n' +
     '--minify.stripAssertions=false - During uglification, it will strip assertions.\n' +
     '--minify.stripLogging=false - During uglification, it will not strip logging statements.\n' +
     'Runnable build options:\n' +

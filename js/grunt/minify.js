@@ -23,14 +23,15 @@ const MINIFY_DEFAULTS = {
   // Only enabled if uglify is true
   mangle: true,
   stripAssertions: true,
-  stripLogging: true
+  stripLogging: true,
+  beautify: false
 };
 
 const minify = function( js, options ) {
   options = _.extend( {}, MINIFY_DEFAULTS, options );
 
   // Promote to top level variables
-  const { minify, babelTranspile, uglify, mangle, stripAssertions, stripLogging } = options;
+  const { minify, babelTranspile, uglify, mangle, stripAssertions, stripLogging, beautify } = options;
 
   if ( !minify ) {
     return js;
@@ -41,7 +42,7 @@ const minify = function( js, options ) {
     js = transpile( js );
   }
 
-  const config = {
+  const uglifyOptions = {
     mangle: mangle ? {
       safari10: true // works around a safari 10 bug. currently a supported platform
     } : false,
@@ -57,25 +58,25 @@ const minify = function( js, options ) {
     // output options documented at https://github.com/mishoo/UglifyJS2#beautifier-options
     output: {
       inline_script: true, // escape </script
-      beautify: !mangle
+      beautify: beautify
     }
   };
 
   // global assertions (PhET-specific)
   if ( stripAssertions ) {
-    config.compress.global_defs.assert = false;
-    config.compress.global_defs.assertSlow = false;
+    uglifyOptions.compress.global_defs.assert = false;
+    uglifyOptions.compress.global_defs.assertSlow = false;
   }
 
   // scenery logging (PhET-specific)
   if ( stripLogging ) {
-    config.compress.global_defs.sceneryLog = false;
-    config.compress.global_defs.sceneryAccessibilityLog = false;
+    uglifyOptions.compress.global_defs.sceneryLog = false;
+    uglifyOptions.compress.global_defs.sceneryAccessibilityLog = false;
   }
 
   if ( uglify ) {
 
-    const result = uglifyES.minify( js, config );
+    const result = uglifyES.minify( js, uglifyOptions );
 
     if ( result.error ) {
       console.log( result.error );
