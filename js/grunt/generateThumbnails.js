@@ -13,14 +13,14 @@
 
 // modules
 const grunt = require( 'grunt' );
-const Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
+const jimp = require( 'jimp' );
 
 /**
  * @param {string} repo - name of the repository
  * @param {number} width of the resized image
  * @param {number} height of the resized image
  * @param {number} quality - percent quality, in the range [0..100]
- * @param {string} mime - Mime type - one of Jimp.MIME_PNG, Jimp.MIME_JPEG, Jimp.MIME_BMP
+ * @param {string} mime - Mime type - one of jimp.MIME_PNG, jimp.MIME_JPEG, jimp.MIME_BMP
  * @returns {Promise} - Resolves to a {Buffer} with the image data
  */
 module.exports = function( repo, width, height, quality, mime ) {
@@ -32,7 +32,7 @@ module.exports = function( repo, width, height, quality, mime ) {
     }
 
     if ( !mime ) {
-      mime = Jimp.MIME_PNG;
+      mime = jimp.MIME_PNG;
     }
 
     if ( !grunt.file.exists( fullResImageName ) ) {
@@ -40,8 +40,8 @@ module.exports = function( repo, width, height, quality, mime ) {
       return;
     }
 
-    new Jimp( fullResImageName, function() { //eslint-disable-line no-new
-      if ( mime === Jimp.MIME_JPEG ) {
+    new jimp( fullResImageName, function() { //eslint-disable-line no-new
+      if ( mime === jimp.MIME_JPEG ) {
         this.quality( quality );
       }
       this.resize( width, height ).getBuffer( mime, function( error, buffer ) {

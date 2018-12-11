@@ -28,7 +28,7 @@ const getPreloads = require( './getPreloads' );
 const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
-const Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
+const jimp = require( 'jimp' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
@@ -288,7 +288,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     }
 
     if ( brand === 'phet' ) {
-      grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, Jimp.MIME_JPEG ) );
+      grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, jimp.MIME_JPEG ) );
       grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
     }
   }
