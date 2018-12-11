@@ -368,6 +368,7 @@
     /**
      * Array of one or more logs to enable in scenery 0.2+, delimited with commas.
      * For example: ?sceneryLog=Display,Drawable,WebGLBlock results in [ 'Display', 'Drawable', 'WebGLBlock' ]
+     * Don't change this without updating the signature in scenery unit tests too.
      */
     sceneryLog: {
       type: 'array',
