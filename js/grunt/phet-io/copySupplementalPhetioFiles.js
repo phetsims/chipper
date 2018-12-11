@@ -185,6 +185,7 @@ module.exports = async function( repo, version, simulationDisplayName ) {
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_DISPLAY_NAME}}', simulationDisplayName );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_DISPLAY_NAME_ESCAPED}}', simulationDisplayName.replace( /'/g, '\\\'' ) );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', version );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_LATEST_VERSION}}', latestVersion );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_IS_BUILT}}', 'true' );
