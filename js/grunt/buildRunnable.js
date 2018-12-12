@@ -164,7 +164,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
 
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
-    for ( let locale of locales ) { // eslint-disable-line no-restricted-syntax
+    for ( const locale of locales ) { // eslint-disable-line no-restricted-syntax
       const initializationScript = getInitializationScript( _.extend( {
         locale,
         includeAllLocales: false,
@@ -238,7 +238,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( englishTitle + ' iframe test' ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_REPOSITORY}}', repo );
 
-    let iframeLocales = [ 'en' ].concat( allHTML ? [ 'all' ] : [] );
+    const iframeLocales = [ 'en' ].concat( allHTML ? [ 'all' ] : [] );
     iframeLocales.forEach( locale => {
       const iframeHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_LOCALE}}', locale );
       grunt.file.write( `${buildDir}/${repo}_${locale}_iframe_phet.html`, iframeHtml );
@@ -283,7 +283,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       { width: 128, height: 84 },
       { width: 600, height: 394 }
     ];
-    for ( let size of thumbnailSizes ) { // eslint-disable-line no-restricted-syntax
+    for ( const size of thumbnailSizes ) { // eslint-disable-line no-restricted-syntax
       grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height ) );
     }
 

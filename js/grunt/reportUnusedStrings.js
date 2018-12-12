@@ -26,7 +26,7 @@ module.exports = function( repo, requirejsNamespace ) {
   const jsStrings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
 
   // iterate over the strings
-  for ( let key in jsStrings ) {
+  for ( const key in jsStrings ) {
     if ( jsStrings.hasOwnProperty( key ) ) {
 
       const string = jsStrings[ key ].value;

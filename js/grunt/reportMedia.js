@@ -82,7 +82,7 @@ module.exports = function() {
           const json = JSON.parse( file );
 
           // For each key in the json file, make sure that file exists in the directory
-          for ( let key in json ) {
+          for ( const key in json ) {
             if ( json.hasOwnProperty( key ) ) {
               const resourceFilename = searchDir + '/' + key;
               const exists = grunt.file.exists( resourceFilename );

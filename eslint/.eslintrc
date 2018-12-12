@@ -59,6 +59,12 @@
         "args": "none"
       }
     ],
+    // error when let is used but the variable is never reassigned, see https://github.com/phetsims/tasks/issues/973
+    "prefer-const": [
+      "error", {
+      "destructuring": "any",
+      "ignoreReadBeforeAssign": false
+    }],
     //    "require-jsdoc": [
     //      2
     //    ],

@@ -26,13 +26,13 @@ module.exports = function( repo, brand ) {
     lib: getThirdPartyLibEntries( repo, brand )
   };
   if ( global.phet.chipper.licenseEntries ) {
-    for ( let mediaType in global.phet.chipper.licenseEntries ) {
+    for ( const mediaType in global.phet.chipper.licenseEntries ) {
       if ( global.phet.chipper.licenseEntries.hasOwnProperty( mediaType ) ) {
 
         const mediaEntry = global.phet.chipper.licenseEntries[ mediaType ];
 
         // For each resource of that type
-        for ( let resourceName in mediaEntry ) {
+        for ( const resourceName in mediaEntry ) {
           if ( mediaEntry.hasOwnProperty( resourceName ) ) {
 
             const licenseEntry = mediaEntry[ resourceName ];

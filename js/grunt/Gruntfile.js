@@ -119,7 +119,7 @@ module.exports = function( grunt ) {
 
       // Parse minification keys
       const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
-      let minifyOptions = {};
+      const minifyOptions = {};
       minifyKeys.forEach( minifyKey => {
         const option = grunt.option( 'minify.' + minifyKey );
         if ( option === true || option === false ) {
@@ -187,7 +187,7 @@ module.exports = function( grunt ) {
         const allHTML = !!grunt.option( 'allHTML' );
         const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
 
-        for ( let brand of brands ) { // eslint-disable-line no-restricted-syntax
+        for ( const brand of brands ) { // eslint-disable-line no-restricted-syntax
           grunt.log.writeln( `Building brand: ${brand}` );
 
           await buildRunnable( repo, minifyOptions, instrument, allHTML, brand, localesOption );

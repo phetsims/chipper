@@ -32,7 +32,7 @@ module.exports = function( locales, phetLibs ) {
 
   // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
   const stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
-  for ( let stringKey in global.phet.chipper.strings ) {
+  for ( const stringKey in global.phet.chipper.strings ) {
     const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
     if ( stringRepositories.every( function( repo ) { return repo.name !== repositoryName; } ) ) {
@@ -80,7 +80,7 @@ module.exports = function( locales, phetLibs ) {
       }
       const fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
-      for ( let stringKeyMissingPrefix in fileContents ) {
+      for ( const stringKeyMissingPrefix in fileContents ) {
         const stringData = fileContents[ stringKeyMissingPrefix ];
 
         // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
@@ -99,7 +99,7 @@ module.exports = function( locales, phetLibs ) {
   locales.forEach( function( locale ) {
     stringMap[ locale ] = {};
 
-    for ( let stringKey in global.phet.chipper.strings ) {
+    for ( const stringKey in global.phet.chipper.strings ) {
       const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
       // English fallback

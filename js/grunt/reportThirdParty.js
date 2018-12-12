@@ -59,7 +59,7 @@ module.exports = async function() {
   // TODO: don't use this from chipper!
   const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
 
-  for ( let sim of activeSims ) { // eslint-disable-line no-restricted-syntax
+  for ( const sim of activeSims ) { // eslint-disable-line no-restricted-syntax
     const url = `https://${serverName}/sims/html/${sim}/latest/${sim}_en.html`;
     console.log( `downloading ${sim}` );
     try {
@@ -88,7 +88,7 @@ module.exports = async function() {
 
       // Concatenate all the libraries for this sim with html newline.
       let libString = '';
-      for ( let entry in json.lib ) {
+      for ( const entry in json.lib ) {
         libString += entry + '<br/>';
       }
 
@@ -140,7 +140,7 @@ module.exports = async function() {
   simTitles.sort();
 
   // If anything is used by every sim indicate that here
-  for ( let entry in compositeCode ) {
+  for ( const entry in compositeCode ) {
     if ( compositeCode.hasOwnProperty( entry ) ) {
       compositeCode[ entry ].usedBy.sort();
       if ( _.isEqual( simTitles, compositeCode[ entry ].usedBy ) ) {
@@ -157,7 +157,7 @@ module.exports = async function() {
 
   // Get a list of the library names
   const libraryNames = [];
-  for ( let lib in licenseJSON ) {
+  for ( const lib in licenseJSON ) {
     if ( licenseJSON.hasOwnProperty( lib ) ) {
       libraryNames.push( lib );
     }
@@ -199,7 +199,7 @@ module.exports = async function() {
 
   const mediaOutput = [];
   const mediaKeys = [];
-  for ( let imageAudioEntry in compositeMedia ) {
+  for ( const imageAudioEntry in compositeMedia ) {
     if ( compositeMedia.hasOwnProperty( imageAudioEntry ) ) {
       mediaKeys.push( imageAudioEntry );
     }
@@ -321,7 +321,7 @@ module.exports = async function() {
    * @param {Object} destination - the object to which to append the entry
    */
   function augment( repositoryName, source, destination ) {
-    for ( let entry in source ) {
+    for ( const entry in source ) {
       if ( source.hasOwnProperty( entry ) ) {
         if ( !destination.hasOwnProperty( entry ) ) {
           destination[ entry ] = source[ entry ];//overwrites
