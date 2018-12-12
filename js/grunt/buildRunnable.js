@@ -257,7 +257,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   }
 
   // copy over supplemental files or dirs to package with the build. Only supported in phet brand
-  if ( brand === 'phet' && packageObject.phet && packageObject.phet.packageWithBuild ) {
+  if ( packageObject.phet && packageObject.phet.packageWithBuild ) {
 
     assert( Array.isArray( packageObject.phet.packageWithBuild ) );
     packageObject.phet.packageWithBuild.forEach( path => {
