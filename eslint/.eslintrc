@@ -19,6 +19,14 @@
     ],
     // No dangling commas, see https://github.com/phetsims/tasks/issues/940
     "comma-dangle": 2,
+    // Prohibit for...of statements
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "ForOfStatement",
+        "message": "Babel transpiles for...of to use Symbol which is not supported on all our platforms."
+      }
+    ],
     //
     // require or disallow use of semicolons instead of ASI (fixable)
     "semi": [

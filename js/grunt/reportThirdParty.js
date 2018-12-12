@@ -59,7 +59,7 @@ module.exports = async function() {
   // TODO: don't use this from chipper!
   const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
 
-  for ( let sim of activeSims ) {
+  for ( let sim of activeSims ) { // eslint-disable-line no-restricted-syntax
     const url = `https://${serverName}/sims/html/${sim}/latest/${sim}_en.html`;
     console.log( `downloading ${sim}` );
     try {
