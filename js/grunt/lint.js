@@ -14,6 +14,8 @@ const grunt = require( 'grunt' );
 const md5 = require( 'md5' );
 const path = require( 'path' );
 const child_process = require( 'child_process' );
+const baseEslintConfig = require( '../../eslint/.eslintrc' ); // eslint-disable-line require-statement-match
+const getDataFile = require( './getDataFile' );
 
 /**
  * Lints the specified repositories.
@@ -25,12 +27,22 @@ const child_process = require( 'child_process' );
  * @returns {Object} - ESLint report object.
  */
 module.exports = function( repos, cache, say = false ) {
+
+  // get a list of all the repos that can't be linted
+  const eslintBlacklist = getDataFile( 'not-lintable' );
+
+  // filter out all unlintable repo. An unlintable repo is one that has no js in it, so it will fail when trying to
+  // lint it.
+  const filteredRepos = repos.filter( repo => {
+    return eslintBlacklist.indexOf( repo ) < 0;
+  } );
+
   const cli = new eslint.CLIEngine( {
 
     cwd: path.dirname( process.cwd() ),
 
-    // Rules are specified in the .eslintrc file
-    configFile: 'chipper/eslint/.eslintrc',
+    // Rules are specified in the .eslintrc.js file
+    baseConfig: baseEslintConfig,
 
     // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a
     // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where
@@ -66,10 +78,10 @@ module.exports = function( repos, cache, say = false ) {
     ]
   } );
 
-  grunt.verbose.writeln( 'linting: ' + repos.join( ', ' ) );
+  grunt.verbose.writeln( 'linting: ' + filteredRepos.join( ', ' ) );
 
   // run the eslint step
-  const report = cli.executeOnFiles( repos );
+  const report = cli.executeOnFiles( filteredRepos );
 
   // pretty print results to console if any
   ( report.warningCount || report.errorCount ) && grunt.log.write( cli.getFormatter()( report.results ) );

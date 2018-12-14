@@ -25,7 +25,7 @@ module.exports = async function( repo, predicate = () => true ) {
   } );
   relativeFiles = relativeFiles.filter( file => file.startsWith( 'js/' ) ).filter( predicate );
 
-  for ( const relativeFile of relativeFiles ) { // eslint-disable-line no-restricted-syntax
+  for ( const relativeFile of relativeFiles ) {
     await updateCopyrightDate( repo, relativeFile );
   }
 };

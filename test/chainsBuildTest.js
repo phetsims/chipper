@@ -33,7 +33,7 @@ function assertChainsExistence( assert, brand, options ) {
     if ( locales.includes( 'en' ) ) {
       assertFileExistence( assert, '../chains/build/phet/chains_en_iframe_phet.html' );
     }
-    for ( const locale of locales ) { // eslint-disable-line no-restricted-syntax
+    for ( const locale of locales ) {
       assertFileExistence( assert, `../chains/build/phet/chains_${locale}_phet.html` );
     }
     assertFileExistence( assert, '../chains/build/phet/chains-128.png' );

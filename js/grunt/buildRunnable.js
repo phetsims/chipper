@@ -164,7 +164,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
 
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
-    for ( const locale of locales ) { // eslint-disable-line no-restricted-syntax
+    for ( const locale of locales ) {
       const initializationScript = getInitializationScript( _.extend( {
         locale,
         includeAllLocales: false,
@@ -283,7 +283,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       { width: 128, height: 84 },
       { width: 600, height: 394 }
     ];
-    for ( const size of thumbnailSizes ) { // eslint-disable-line no-restricted-syntax
+    for ( const size of thumbnailSizes ) {
       grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height ) );
     }
 

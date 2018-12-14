@@ -187,7 +187,7 @@ module.exports = function( grunt ) {
         const allHTML = !!grunt.option( 'allHTML' );
         const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
 
-        for ( const brand of brands ) { // eslint-disable-line no-restricted-syntax
+        for ( const brand of brands ) {
           grunt.log.writeln( `Building brand: ${brand}` );
 
           await buildRunnable( repo, minifyOptions, instrument, allHTML, brand, localesOption );

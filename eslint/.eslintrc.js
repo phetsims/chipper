@@ -1,17 +1,25 @@
-// Copyright 2002-2015 University of Colorado Boulder
+// Copyright 2015-2018 University of Colorado Boulder
 // @author Sam Reid
-// Note: IDEA wants to shrink all the line breaks in the file, so I'm using // to simulate line breakes where desired
-{
+// @author Michael Kauzmann
+
+/**
+ * The base eslint configuration for the project
+ */
+module.exports = {
   // Use all of the default rules from eslint, unless overriden below.
   "extends": "eslint:recommended",
+
+  // specify that this file is the root of the eslintrc tree, so eslint won't search past this file looking for a file
+  // in a parent dir
+  "root": true,
   // The new rules, overrides, etc.
   "rules": {
-    //
+
     // Permit console.log statements (we have a lot of them)
     // TODO: Find a way to make sure no console.log statements make it to production.  Can use the no-console rule
     // but we want to be able to use console.log during development.
     "no-console": 0,
-    //
+
     // specify whether backticks, double or single quotes should be used (fixable)
     "quotes": [
       2,
@@ -27,29 +35,29 @@
         "message": "Babel transpiles for...of to use Symbol which is not supported on all our platforms."
       }
     ],
-    //
+
     // require or disallow use of semicolons instead of ASI (fixable)
     "semi": [
       2,
       "always"
     ],
     "bad-text": 2,
-    //
+
     // Custom rule for checking the copyright.
     "copyright": 2,
-    //
+
     // Custom rule for checking TODOs have issues
     "todo-should-have-issue": 2,
-    //
+
     // Custom rule for ensuring that images and text use scenery node
     "no-html-constructors": 2,
-    //
+
     // Custom rule for avoiding Math.sign which is not supported on IE
     "no-math-sign": 2,
-    //
+
     // Custom rule for avoiding instanceof Array.
     "no-instanceof-array": 2,
-    //
+
     // disallow declaration of variables that are not used in the code (recommended)
     // Overriden to allow unused args
     "no-unused-vars": [
@@ -61,17 +69,19 @@
     ],
     // error when let is used but the variable is never reassigned, see https://github.com/phetsims/tasks/issues/973
     "prefer-const": [
-      "error", {
-      "destructuring": "any",
-      "ignoreReadBeforeAssign": false
-    }],
+      "error",
+      {
+        "destructuring": "any",
+        "ignoreReadBeforeAssign": false
+      }
+    ],
     //    "require-jsdoc": [
     //      2
     //    ],
-    //
+
     // require the use of === and !== (fixable)
     "eqeqeq": 2,
-    //
+
     // specify curly brace conventions for all control statements
     "curly": 2,
     //    "no-use-before-define": [
@@ -81,43 +91,43 @@
     //    "new-cap": [
     //      2
     //    ],
-    //
+
     // disallow use of arguments.caller or arguments.callee
     "no-caller": 2,
-    //
+
     // disallow use of the new operator when not part of an assignment or comparison
     "no-new": 2,
-    //
+
     // controls location of Use Strict Directives
     "strict": 2,
-    //
+
     // Avoid code that looks like two expressions but is actually one
     "no-unexpected-multiline": 2,
-    //
+
     // encourages use of dot notation whenever possible
     "dot-notation": 2,
-    //
+
     // disallow adding to native types
     "no-extend-native": 2,
-    //
+
     // disallow use of assignment in return statement
     "no-return-assign": 2,
-    //
+
     // disallow comparisons where both sides are exactly the same
     "no-self-compare": 2,
-    //
+
     // disallow unnecessary .call() and .apply()
     // TODO: Under discussion in https://github.com/phetsims/scenery-phet/issues/193
     //    "no-useless-call": 2,
-    //
+
     // disallow use of undefined when initializing variables
     "no-undef-init": 2,
-    //
+
     //
     "require-statement-match": 2,
     "phet-io-require-contains-ifphetio": 2,
     "require-tandem-support": 0,
-    //
+
     // Require @public/@private for this.something = result;
     "property-visibility-annotation": 0,
     "no-property-in-require-statement": 2,
@@ -138,10 +148,10 @@
       2,
       "self"
     ]
-    //
+
     // disallow trailing whitespace at the end of lines (fixable)
     //    "no-trailing-spaces": 2,
-    //
+
     // USE THIS DURING CODE REVIEW
     // specify the maximum length of a line in your program
     //    "max-len": [
@@ -200,15 +210,15 @@
     "Blob": false,
     // Box2D physics engine
     "Box2D": false,
-    //
+
     "Buffer": false,
-    //
+
     "canvg": false,
-    //
+
     "clarinet": false,
-    //
+
     "clearTimeout": false,
-    //
+
     "console": false,
     // d3.js data visualization library
     "d3": false,
@@ -216,7 +226,7 @@
     "define": false,
     // for Mocha unit tests
     "describe": false,
-    //
+
     "document": false,
     // For qunit
     "dot": false,
@@ -235,7 +245,7 @@
     "hljs": false,
     //for web audio
     "Howl": false,
-    //
+
     "HTMLCanvasElement": false,
     "HTMLImageElement": false,
     // for CODAP or other Concord communication
@@ -267,17 +277,17 @@
     // Numeric library used in energy skate park
     "numeric": false,
     "ok": false,
-    //
+
     "PIXI": false,
     // For poly2tri triangulation library
     "poly2tri": false,
     // Misc
     "QueryStringMachine": false,
-    //
+
     "readFile": false,
     // require.js
     "require": false,
-    //
+
     "scenery": false,
     // For @mrdoob's stats + frame rate readout component
     "Stats": false,
@@ -287,18 +297,18 @@
     "THREE": false,
     // sole/tween.js
     "TWEEN": false,
-    //
+
     "Uint16Array": false,
     "Uint32Array": false,
     // for khronos webgl-debug.js debugging utilities
     "WebGLDebugUtils": false,
     // for WebSocket communication
     "WebSocket": false,
-    //
+
     "window": false,
     // allow ajax requests directly
     "XMLHttpRequest": false,
     "toast": false,
     "Fourier": false
   }
-}
+};

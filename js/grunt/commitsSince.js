@@ -28,7 +28,7 @@ const grunt = require( 'grunt' );
 module.exports = async function( repo, dateString ) {
 
   let output = '';
-  for ( const dependency of getPhetLibs( repo ) ) { // eslint-disable-line no-restricted-syntax
+  for ( const dependency of getPhetLibs( repo ) ) {
     output += `${dependency} since ${dateString} ----------------------------------------------\n`;
     output += await execute( 'git', [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], { cwd: `../${dependency}` } );
   }

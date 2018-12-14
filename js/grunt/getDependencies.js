@@ -39,7 +39,7 @@ module.exports = async function( repo ) {
     comment: `# ${repo} ${version} ` + ( new Date().toString() )
   };
 
-  for ( const dependency of dependencies ) { // eslint-disable-line no-restricted-syntax
+  for ( const dependency of dependencies ) {
     assert( !dependenciesInfo.dependency, 'there was already a dependency named ' + dependency );
 
     if ( !grunt.file.exists( `../${dependency}` ) ) {
