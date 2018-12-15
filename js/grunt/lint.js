@@ -14,7 +14,6 @@ const grunt = require( 'grunt' );
 const md5 = require( 'md5' );
 const path = require( 'path' );
 const child_process = require( 'child_process' );
-const baseEslintConfig = require( '../../eslint/.eslintrc' ); // eslint-disable-line require-statement-match
 const getDataFile = require( './getDataFile' );
 
 /**
@@ -40,9 +39,6 @@ module.exports = function( repos, cache, say = false ) {
   const cli = new eslint.CLIEngine( {
 
     cwd: path.dirname( process.cwd() ),
-
-    // Rules are specified in the .eslintrc.js file
-    baseConfig: baseEslintConfig,
 
     // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a
     // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where
