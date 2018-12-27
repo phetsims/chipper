@@ -28,7 +28,7 @@ const getDataFile = require( './getDataFile' );
 module.exports = function( repos, cache, say = false ) {
 
   // get a list of all the repos that can't be linted
-  const eslintBlacklist = getDataFile( 'not-lintable' );
+  const eslintBlacklist = getDataFile( 'no-lint' );
 
   // filter out all unlintable repo. An unlintable repo is one that has no js in it, so it will fail when trying to
   // lint it.
