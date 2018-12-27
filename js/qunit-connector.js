@@ -1,11 +1,12 @@
 // Copyright 2017, University of Colorado Boulder
 
+'use strict';
+
 /**
  * When running unit tests in an iframe, connects to the parent frame to give results.
  * @author Sam Reid (PhET Interactive Simulations)
  */
 ( function() {
-  'use strict';
 
   // By default, QUnit runs tests when load event is triggered on the window. If you’re loading tests asynchronously,
   // you can set this property to false, then call QUnit.start() once everything is loaded.
