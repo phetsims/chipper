@@ -5,11 +5,7 @@
 'use strict';
 
 /**
- * The node-specific eslint config applied only to "server-side" files that aren't run in sims. See perennial/data/node
- * for list.
- *
- * The general pattern to support node is to add a `.eslintrc` file in a node dir that "extends" this file, for example
- * see `chipper/js/grunt/.eslintrc`.
+ * The node-specific eslint config applied only to "server-side" files that aren't run in sims.
  */
 module.exports = {
   extends: './.eslintrc.js',
