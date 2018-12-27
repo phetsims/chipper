@@ -7,6 +7,8 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
+'use strict';
+
 const copyDirectory = require( '../copyDirectory' );
 const fs = require( 'fs' );
 const getDependencies = require( '../getDependencies' );
@@ -21,7 +23,6 @@ const WRAPPER_BLACKLIST = [ '.git', 'README.md', '.gitignore', 'node_modules', '
  * @returns {Promise}
  */
 module.exports = async function( wrapperRepo ) {
-  'use strict';
 
   const packageObject = grunt.file.readJSON( `../${wrapperRepo}/package.json` );
 
