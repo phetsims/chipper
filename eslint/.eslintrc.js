@@ -2,11 +2,14 @@
 // @author Sam Reid
 // @author Michael Kauzmann
 
+/* eslint-env node */
+'use strict';
+
 /**
  * The base eslint configuration for the project
  */
 module.exports = {
-  // Use all of the default rules from eslint, unless overriden below.
+  // Use all of the default rules from eslint, unless overridden below.
   "extends": "eslint:recommended",
 
   // specify that this file is the root of the eslintrc tree, so eslint won't search past this file looking for a file
