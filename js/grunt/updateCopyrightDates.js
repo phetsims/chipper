@@ -6,7 +6,7 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-/* eslint-env node */
+
 'use strict';
 
 const grunt = require( 'grunt' );

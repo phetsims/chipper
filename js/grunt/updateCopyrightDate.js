@@ -7,7 +7,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-/* eslint-env node */
+
 'use strict';
 
 const execute = require( './execute' );

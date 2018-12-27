@@ -5,7 +5,7 @@
  * Loads each string file only once, and only loads the repository/locale combinations necessary.
  * Requires global.phet.chipper.strings to be set by the string.js plugin.
  */
-/* eslint-env node */
+
 'use strict';
 
 // built-in node APIs

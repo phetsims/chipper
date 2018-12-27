@@ -7,7 +7,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Matt Pennington (PhET Interactive Simulations)
  */
-/* eslint-env node */
+
 'use strict';
 
 // modules

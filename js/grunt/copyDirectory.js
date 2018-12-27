@@ -4,7 +4,7 @@
  * Copy a directory and all of its contents recursively
  * @author Sam Reid (PhET Interactive Simulations)
  */
-/* eslint-env node */
+
 'use strict';
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match

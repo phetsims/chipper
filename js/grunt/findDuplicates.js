@@ -12,7 +12,7 @@
  * @param {Object} grunt
  * @param {Object} gruntConfig
  */
-/* eslint-env node */
+
 'use strict';
 
 // TODO: Looks like a decent amount of cleanup in this file. Not up to standards yet

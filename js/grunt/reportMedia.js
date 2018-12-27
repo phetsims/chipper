@@ -18,7 +18,7 @@
  *
  * @author Sam Reid
  */
-/* eslint-env node */
+
 'use strict';
 
 // TODO: File not brought up to es6+ standards

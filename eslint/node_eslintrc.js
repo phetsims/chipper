@@ -11,5 +11,11 @@ module.exports = {
   extends: './.eslintrc.js',
   rules: {
     'no-restricted-syntax': [ 'off', 'ForOfStatement' ]
+  },
+  env: {
+
+    // specify appropriate environment vars for node code
+    browser: false,
+    node: true
   }
 };

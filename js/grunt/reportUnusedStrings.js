@@ -11,7 +11,7 @@
  *
  * @author Jesse Greenberg
  */
-/* eslint-env node */
+
 'use strict';
 
 const grunt = require( 'grunt' );

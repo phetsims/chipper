@@ -5,7 +5,7 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-/* eslint-env node */
+
 'use strict';
 
 // modules

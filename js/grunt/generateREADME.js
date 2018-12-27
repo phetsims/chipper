@@ -6,7 +6,7 @@
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
-/* eslint-env node */
+
 'use strict';
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );

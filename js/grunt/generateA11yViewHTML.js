@@ -7,7 +7,7 @@
  *
  * @author Jesse Greenberg
  */
-/* eslint-env node */
+
 'use strict';
 
 // modules

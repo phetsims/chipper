@@ -1,7 +1,6 @@
 // Copyright 2018, University of Colorado Boulder
 // @author Michael Kauzmann
 
-/* eslint-env node */
 'use strict';
 
 module.exports = {

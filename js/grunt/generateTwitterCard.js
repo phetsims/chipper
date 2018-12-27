@@ -6,7 +6,7 @@
  *
  * @author Matt Pennington
  */
-/* eslint-env node */
+
 'use strict';
 
 // modules

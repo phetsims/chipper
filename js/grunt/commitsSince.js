@@ -13,7 +13,7 @@
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
-/* eslint-env node */
+
 'use strict';
 
 const execute = require( './execute' );

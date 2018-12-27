@@ -12,7 +12,7 @@
  *
  * @author Sam Reid
  */
-/* eslint-env node */
+
 'use strict';
 
 // modules
