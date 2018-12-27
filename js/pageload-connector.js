@@ -4,8 +4,10 @@
  * Reports a (delayed) page load (or error) to the parent frame for Aqua continuous testing.
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
+
+'use strict';
+
 ( function() {
-  'use strict';
 
   var hasErrored = false;
 
