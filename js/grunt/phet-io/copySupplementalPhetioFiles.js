@@ -56,7 +56,9 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jsondiffpatch-v0.3.11.umd.js',
   '../sherpa/lib/jsondiffpatch-v0.3.11-annotated.css',
   '../sherpa/lib/jsondiffpatch-v0.3.11-html.css',
-  '../sherpa/lib/split-1.5.9.min.js'
+  '../sherpa/lib/split-1.5.9.min.js',
+  '../sherpa/lib/highlight.js-9.1.0/styles/tomorrow-night-bright.css',
+  '../sherpa/lib/highlight.js-9.1.0/highlight.js'
 ];
 
 // list of files to run jsdoc generation with. Assume that anything in the public lib file needs documentation
@@ -87,11 +89,12 @@ module.exports = async function( repo, version, simulationDisplayName ) {
     const originalContents = contents + '';
 
     const isWrapperIndex = abspath.indexOf( 'index/index.html' ) >= 0;
+    const isStudioJS = abspath.indexOf( 'studio/studio.js' ) >= 0;
 
     // For info about LIB_OUTPUT_FILE, see handleLib()
     let pathToLib = `lib/${LIB_OUTPUT_FILE}`;
 
-    if ( abspath.indexOf( '.html' ) >= 0 ) {
+    if ( abspath.indexOf( '.html' ) >= 0 || isStudioJS ) {
 
       // change the paths of sherpa files to point to the contrib/ folder
       CONTRIB_FILES.forEach( function( filePath ) {
