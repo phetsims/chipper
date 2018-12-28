@@ -9,14 +9,14 @@
 
 ( function() {
 
-  var hasErrored = false;
+  let hasErrored = false;
 
   window.addEventListener( 'error', function( data ) {
     if ( !hasErrored ) {
       hasErrored = true;
 
-      var message = '';
-      var stack = '';
+      let message = '';
+      let stack = '';
       if ( data && data.message ) {
         message = data.message;
       }
