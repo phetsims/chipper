@@ -10,7 +10,8 @@
 module.exports = {
   extends: './.eslintrc.js',
   rules: {
-    'no-restricted-syntax': [ 'off', 'ForOfStatement' ]
+    'no-restricted-syntax': [ 'off', 'ForOfStatement' ],
+    'no-var': 2
   },
   env: {
 

@@ -79,7 +79,7 @@ module.exports = async function( repo, version, simulationDisplayName ) {
   }
   const major = parseInt( matches[ 1 ], 10 );
   const minor = parseInt( matches[ 2 ], 10 );
-  var latestVersion = `${major}.${minor}`;
+  const latestVersion = `${major}.${minor}`;
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
