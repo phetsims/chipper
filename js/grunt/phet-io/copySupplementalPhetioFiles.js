@@ -201,7 +201,9 @@ module.exports = async function( repo, version, simulationDisplayName ) {
       contents = ChipperStringUtils.replaceAll( contents, WRAPPER_COMMON_FOLDER + '/', 'common/' );
     }
     if ( abspath.indexOf( '.js' ) >= 0 ) {
-      contents = minify( contents );
+      contents = minify( contents, {
+        stripAssertions: false
+      } );
     }
     if ( contents !== originalContents ) {
       return contents;
