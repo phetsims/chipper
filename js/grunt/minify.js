@@ -21,7 +21,7 @@ const MINIFY_DEFAULTS = {
   uglify: true,
 
   // Only enabled if uglify is true
-  mangle: true``,
+  mangle: true,
   stripAssertions: true,
   stripLogging: true,
   beautify: false
