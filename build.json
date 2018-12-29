@@ -46,7 +46,6 @@
   },
   "phet-io": {
     "preload": [
-      "../sherpa/lib/jsondiffpatch-v0.3.11.umd.js",
       "../phet-io/js/phet-io-initialize-globals.js"
     ],
     "phetLibs": [

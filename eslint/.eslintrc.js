@@ -257,8 +257,6 @@ module.exports = {
     "Image": false,
     // for Mocha unit tests
     "it": false,
-    // for generating diffs in phetio.js
-    "jsondiffpatch": false,
     // QUnit
     "kite": false,
     // for using native Map
