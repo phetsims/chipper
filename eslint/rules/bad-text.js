@@ -26,7 +26,8 @@ module.exports = function( context ) {
     ' a a ',
 
     // For phet-io use PHET_IO in constants
-    'PHETIO'
+    'PHETIO',
+    '@return '
   ];
 
   return {
