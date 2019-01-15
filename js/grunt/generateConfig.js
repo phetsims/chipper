@@ -14,7 +14,9 @@
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
-const updateCopyrightDate = require( './updateCopyrightDate' );
+
+//TODO https://github.com/phetsims/perennial/issues/120, this causes 'grunt create-sim' to fail
+// const updateCopyrightDate = require( './updateCopyrightDate' );
 
 /**
  * @param {string} repo
@@ -68,6 +70,6 @@ module.exports = async function( repo, relativeFile, launchSuffix ) {
   // Write to the repository's root directory.
   grunt.file.write( `../${repo}/${relativeFile}`, configJS );
 
-  //TOOD https://github.com/phetsims/perennial/issues/120, this causes 'grunt create-sim' to fail
+  //TODO https://github.com/phetsims/perennial/issues/120, this causes 'grunt create-sim' to fail
   // await updateCopyrightDate( repo, relativeFile );
 };
