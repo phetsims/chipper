@@ -68,5 +68,6 @@ module.exports = async function( repo, relativeFile, launchSuffix ) {
   // Write to the repository's root directory.
   grunt.file.write( `../${repo}/${relativeFile}`, configJS );
 
-  await updateCopyrightDate( repo, relativeFile );
+  //TOOD https://github.com/phetsims/perennial/issues/120, this causes 'grunt create-sim' to fail
+  // await updateCopyrightDate( repo, relativeFile );
 };
