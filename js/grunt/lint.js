@@ -14,7 +14,6 @@ const grunt = require( 'grunt' );
 const md5 = require( 'md5' );
 const path = require( 'path' );
 const child_process = require( 'child_process' );
-const getDataFile = require( './getDataFile' );
 
 /**
  * Lints the specified repositories.
@@ -26,15 +25,6 @@ const getDataFile = require( './getDataFile' );
  * @returns {Object} - ESLint report object.
  */
 module.exports = function( repos, cache, say = false ) {
-
-  // get a list of all the repos that can't be linted
-  const eslintBlacklist = getDataFile( 'not-lintable' );
-
-  // filter out all unlintable repo. An unlintable repo is one that has no js in it, so it will fail when trying to
-  // lint it.
-  const filteredRepos = repos.filter( repo => {
-    return eslintBlacklist.indexOf( repo ) < 0;
-  } );
 
   const cli = new eslint.CLIEngine( {
 
@@ -74,10 +64,10 @@ module.exports = function( repos, cache, say = false ) {
     ]
   } );
 
-  grunt.verbose.writeln( 'linting: ' + filteredRepos.join( ', ' ) );
+  grunt.verbose.writeln( 'linting: ' + repos.join( ', ' ) );
 
   // run the eslint step
-  const report = cli.executeOnFiles( filteredRepos );
+  const report = cli.executeOnFiles( repos );
 
   // pretty print results to console if any
   ( report.warningCount || report.errorCount ) && grunt.log.write( cli.getFormatter()( report.results ) );
