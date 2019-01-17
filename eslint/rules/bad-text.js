@@ -17,6 +17,8 @@ module.exports = function( context ) {
     'ToolBox',
     'CheckBox',
     'checkBox',
+    'Combobox',
+    'combobox',
 
     // In ES6, extending object causes methods to be dropped
     'extends Object',
