@@ -15,7 +15,11 @@ module.exports = function( context ) {
 
   var badTextsForSimCode = [
 
+    // should be using dot.Util.roundSymmetric, Math.round does not treat positive and negative numbers
+    // symmetrically see https://github.com/phetsims/dot/issues/35#issuecomment-113587879
     'Math.round',
+
+    // should be using `phet.joist.random`
     'Math.random',
     '_.shuffle',
     '_.sample',
@@ -26,9 +30,11 @@ module.exports = function( context ) {
     'Number.parseInt()',
     'Array.prototype.find',
 
-    // support regex with english names this way
+    // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
+    // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
+    // because the spec doesn't specify whether to round or floor.
     {
-      name: '.toFixed(',
+      name: '.toFixed(',     // support regex with english names this way
       regex: new RegExp( '(?<!Util)\\.toFixed\\(' )
     },
   ];
