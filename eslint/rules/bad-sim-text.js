@@ -1,38 +1,32 @@
-// Copyright 2018-2019, University of Colorado Boulder
+// Copyright 2019, University of Colorado Boulder
 /* eslint-disable */
 
 /**
+ * NOTE: this file is a duplicate of bad-text.js, but it is only run on sim specific code, if you are looking for
+ * adding general bad text, see `./bad-text.js`
+ *
  * Lint detector for invalid text.  Checks the entire file and does not correctly report line number.
  * Lint is disabled for this file so the bad texts aren't themselves flagged.
  *
- * NOTE: this lint rule is applied to all lintable files in the project. If you are looking to add rules that only apply
- * to sim specific code, see `./bad-sim-text.js`
- *
  * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 module.exports = function( context ) {
   'use strict';
 
-  var badTexts = [
+  var badTextsForSimCode = [
 
-    // Proper casing for *boxes
-    'toolBox',
-    'ToolBox',
-    'CheckBox',
-    'checkBox',
-    'Combobox',
-    'combobox',
+    'Math.round',
+    'Math.random',
+    '_.shuffle',
+    '_.sample',
+    '_.random',
+    'new Random()',
 
-    // In ES6, extending object causes methods to be dropped
-    'extends Object',
+    // IE doesn't support:
+    'Number.parseInt()',
+    'Array.prototype.find'
 
-    // Forbid common duplicate words
-    ' the the ',
-    ' a a ',
-
-    // For phet-io use PHET_IO in constants
-    'PHETIO',
-    '@return '
   ];
 
   // NOTE: this code is duplicated in `bad-text.js`, don't edit this without updating there too
@@ -40,7 +34,7 @@ module.exports = function( context ) {
     Program: function( node ) {
       var sourceCode = context.getSourceCode();
       var text = sourceCode.text;
-      badTexts.forEach( function( badText ) {
+      badTextsForSimCode.forEach( function( badText ) {
         if ( text.indexOf( badText ) >= 0 ) {
           context.report( {
             node: node,
