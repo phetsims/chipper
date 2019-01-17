@@ -27,6 +27,6 @@
     "uglify-es": "~3.1.10"
   },
   "eslintConfig": {
-    "extends": "../chipper/eslint/.eslintrc.js"
+    "extends": "../chipper/eslint/sim_eslintrc.js"
   }
 }
