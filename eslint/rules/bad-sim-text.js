@@ -2,9 +2,6 @@
 /* eslint-disable */
 
 /**
- * NOTE: this file is a duplicate of bad-text.js, but it is only run on sim specific code, if you are looking for
- * adding general bad text, see `./bad-text.js`
- *
  * Lint detector for invalid text.  Checks the entire file and does not correctly report line number.
  * Lint is disabled for this file so the bad texts aren't themselves flagged.
  *
@@ -13,6 +10,8 @@
  */
 module.exports = function( context ) {
   'use strict';
+
+  const getBadTextTester = require( './getBadTextTester' );
 
   var badTextsForSimCode = [
 
@@ -25,24 +24,17 @@ module.exports = function( context ) {
 
     // IE doesn't support:
     'Number.parseInt()',
-    'Array.prototype.find'
+    'Array.prototype.find',
 
+    // support regex with english names this way
+    {
+      name: '.toFixed(',
+      regex: new RegExp( '(?<!Util)\\.toFixed\\(' )
+    },
   ];
 
-  // NOTE: this code is duplicated in `bad-text.js`, don't edit this without updating there too
   return {
-    Program: function( node ) {
-      var sourceCode = context.getSourceCode();
-      var text = sourceCode.text;
-      badTextsForSimCode.forEach( function( badText ) {
-        if ( text.indexOf( badText ) >= 0 ) {
-          context.report( {
-            node: node,
-            message: 'File contains bad text: \'' + badText + '\''
-          } );
-        }
-      } )
-    }
+    Program: getBadTextTester( badTextsForSimCode, context )
   };
 };
 
