@@ -5,8 +5,9 @@
 In general, PhET's eslint configuration can be found in `./.eslintrc.js`. This base configuration specifies the majority
 of the rules used in the project, including the custom rules that have been created for the project (see `./rules/`).
 
-More configuration files can be used instead of the base configuration:
+Here is a list of all the available configuration files and why to use them for a repo:
 
+* `.eslintrc.js` is the main set of rules, and should be used for browser code that isn't used in sims, see `sim_eslint.js` for sim configuration (i.e. `phetmarks`).
 * `node_eslintrc.js` expands on the base rules and adds configuration only intended for Node.js code (i.e. `perennial`).
 * `sim_eslint.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5 sim rules)
 * `sim_es6_eslint.js` expands on the sim rules and adds configuration intended for sims that have no es5 in them (i.e. `wave-interference`)
