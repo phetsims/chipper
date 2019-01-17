@@ -1,4 +1,5 @@
 // Copyright 2015-2016, University of Colorado Boulder
+/* eslint-disable bad-sim-text */
 
 /**
  * Initializes phet globals that are used by all simulations, including assertions and query-parameters.
