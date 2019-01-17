@@ -8,7 +8,17 @@ of the rules used in the project, including the custom rules that have been crea
 More configuration files can be used instead of the base configuration:
 
 * `node_eslintrc.js` expands on the base rules and adds configuration only intended for Node.js code (i.e. `perennial`).
-* `sim_es6_eslint.js` expands on the base rules and adds configuration intended for sims that have no es5 in them (i.e. `wave-interference`)
+* `sim_eslint.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5 sim rules)
+* `sim_es6_eslint.js` expands on the sim rules and adds configuration intended for sims that have no es5 in them (i.e. `wave-interference`)
+
+So here is the hierarchy of chipper's config files. Indentation symbolized the "extends" relationship.
+
+```
+.eslint.js
+  node_eslintrc.js
+  sim_eslint.js
+    sim_es6_eslint.js
+```
 
 The project is set up based on configuration files extending others using the "extends" key. By default, a configuration 
 file in a child dir will completely override a parent directory. Be sure appropriately extend, and don't blow away a 
