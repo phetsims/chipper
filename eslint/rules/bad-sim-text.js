@@ -33,10 +33,11 @@ module.exports = function( context ) {
     // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
     // because the spec doesn't specify whether to round or floor.
-    {
-      name: '.toFixed(',     // support regex with english names this way
-      regex: new RegExp( '(?<!Util)\\.toFixed\\(' )
-    },
+    // TODO: comment back in and fix, https://github.com/phetsims/chipper/issues/737
+    // {
+    //   name: '.toFixed(',     // support regex with english names this way
+    //   regex: new RegExp( '(?<!Util)\\.toFixed\\(' )
+    // },
   ];
 
   return {
