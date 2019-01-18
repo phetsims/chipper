@@ -20,14 +20,14 @@ module.exports = function( context ) {
     'Math.round',
 
     // should be using `phet.joist.random`
-    'Math.random',
-    '_.shuffle',
-    '_.sample',
-    '_.random',
+    'Math.random()',
+    '_.shuffle(',
+    '_.sample(',
+    '_.random(',
     'new Random()',
 
     // IE doesn't support:
-    'Number.parseInt()',
+    'Number.parseInt(',
     'Array.prototype.find',
 
     // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
