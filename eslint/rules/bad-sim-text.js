@@ -28,7 +28,7 @@ module.exports = function( context ) {
 
     // IE doesn't support:
     'Number.parseInt(',
-    'Array.prototype.find',
+    'Array.prototype.find'
 
     // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
