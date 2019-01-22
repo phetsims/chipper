@@ -35,6 +35,8 @@
 
     var lastSlashIndex = absolutePath.lastIndexOf( '/' );
     var prefix = absolutePath.substring( 0, lastSlashIndex );
+
+    // TODO: check if licenseFileName exist and log error. See https://github.com/phetsims/chipper/issues/710#issue-361522102
     var licenseFilename = prefix + '/license.json'; // license.json is a sibling of the media file
     var mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
 
