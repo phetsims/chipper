@@ -40,12 +40,17 @@ module.exports = async ( repo ) => {
   const directory = process.cwd();
   const rootdir = directory + '/../';
 
+  // Determines if our report was successful.
+  let success = true;
+
   // Create a fast report based on the license.json files for the specified repository and directory (images or sound)
   for ( const repo of dependencies ) {
 
     // Check if the repo is missing from the directory
     if ( !grunt.file.exists( rootdir + repo ) ) {
+
       console.log( 'missing repo: ' + repo );
+      success = false;
       continue;
     }
     for ( const directory of ChipperConstants.MEDIA_TYPES ) {
@@ -65,11 +70,13 @@ module.exports = async ( repo ) => {
             const result = getLicenseEntry( abspath );
 
             if ( !result ) {
-              grunt.log.writeln( 'not-annotated: ' + repo + '/' + directory + '/' + filename );
+              grunt.log.error( 'not-annotated: ' + repo + '/' + directory + '/' + filename );
+              success = false;
             }
             // Report if it is a problem
             else if ( result.isProblematic === true ) {
-              grunt.log.writeln( 'incompatible-license: ' + repo + '/' + directory + '/' + filename );
+              grunt.log.error( 'incompatible-license: ' + repo + '/' + directory + '/' + filename );
+              success = false;
             }
           }
 
@@ -89,7 +96,8 @@ module.exports = async ( repo ) => {
                 const exists = grunt.file.exists( resourceFilename );
 
                 if ( !exists ) {
-                  grunt.log.writeln( 'missing-file: ' + repo + '/' + directory + '/' + key );
+                  grunt.log.error( 'missing-file: ' + repo + '/' + directory + '/' + key );
+                  success = false;
                 }
               }
             }
@@ -97,5 +105,9 @@ module.exports = async ( repo ) => {
         } );
       }
     }
+  }
+
+  if ( !success ) {
+    throw new Error( 'There is an issue with the licenses for media types.' );
   }
 };
