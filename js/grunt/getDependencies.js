@@ -27,7 +27,7 @@ module.exports = async function( repo ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const version = packageObject.version;
 
-  // Accumulate depencies for all brands
+  // Accumulate dependencies for all brands
   const dependencies = getPhetLibs( repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at master
 
   // We need to check dependencies for the main brand, so we can know what is guaranteed to be public
