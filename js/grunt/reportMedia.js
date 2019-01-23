@@ -108,6 +108,6 @@ module.exports = async ( repo ) => {
   }
 
   if ( !success ) {
-    throw new Error( 'There is an issue with the licenses for media types.' );
+    grunt.fail.fatal( 'There is an issue with the licenses for media types.' );
   }
 };

@@ -87,7 +87,12 @@ module.exports = function( grunt ) {
     };
   }
 
-  grunt.registerTask( 'default', 'Builds the repository', ( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ).concat( [ 'clean', 'build' ] ) );
+  grunt.registerTask( 'default', 'Builds the repository', [
+    ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
+    ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
+    'clean',
+    'build'
+  ] );
 
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
@@ -108,6 +113,7 @@ module.exports = function( grunt ) {
     '--minify.stripAssertions=false - During uglification, it will strip assertions.\n' +
     '--minify.stripLogging=false - During uglification, it will not strip logging statements.\n' +
     'Runnable build options:\n' +
+    '--report-media - Will iterates over all of the license.json files and reports any media files\n' +
     '--instrument - Builds a runnable with code coverage tooling inside. See phet-info/doc/code-coverage.md for more information\n' +
     '--brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using\n' +
     '                     build-local.json\'s brands (or adapted-from-phet if that does not exist)\n' +
