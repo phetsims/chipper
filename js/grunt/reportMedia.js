@@ -22,84 +22,76 @@
 'use strict';
 
 // TODO: File not brought up to es6+ standards
-const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );
+const getPhetLibs = require( '../grunt/getPhetLibs' );
 const grunt = require( 'grunt' );
 
-module.exports = function() {
+/**
+ * @param {string} repo
+ */
+module.exports = async ( repo ) => {
 
-  // constants
-  const ACTIVE_REPOS_FILENAME = 'perennial/data/active-repos';  // The relative path to the list of active repos
+  // Check for the dependencies of the target repo
+  const dependencies = getPhetLibs( repo );
 
   // Start in the github checkout dir (above one of the sibling directories)
   const directory = process.cwd();
   const rootdir = directory + '/../';
 
-  // Iterate over all active-repos
-  const repos = grunt.file.read( rootdir + '/' + ACTIVE_REPOS_FILENAME ).trim();
-  const reposByLine = repos.split( /\r?\n/ );
+  // Create a fast report based on the license.json files for the specified repository and directory (images or sound)
+  for ( const repo of dependencies ) {
 
-  /**
-   * Create a fast report based on the license.json files for the specified repository and directory (images or sound)
-   * @param {string} repo - the name of the repository, such as 'balancing-act'
-   * @param {string} directory - the name of the directory to search such as 'images'
-   * @private
-   */
-  function reportForDirectory( repo, directory ) {
+    // Check if the repo is missing from the directory
+    if ( !grunt.file.exists( rootdir + repo ) ) {
+      console.log( 'missing repo: ' + repo );
+      continue;
+    }
+    for ( const directory of ChipperConstants.MEDIA_TYPES ) {
+      const searchDir = rootdir + repo + '/' + directory;
 
-    assert( grunt.file.exists( rootdir + repo ), 'missing required repo: ' + repo );
+      // Projects don't necessarily have all media directories
+      if ( grunt.file.exists( searchDir ) ) {
 
-    const searchDir = rootdir + repo + '/' + directory;
+        // Iterate over all media directories, such as images and sounds recursively
+        grunt.file.recurse( searchDir, function( abspath, rootdir, subdir, filename ) {
 
-    // Projects don't necessarily have all media directories
-    if ( grunt.file.exists( searchDir ) ) {
+          // Some files don't need to be attributed in the license.json
+          if ( abspath.indexOf( 'README.md' ) < 0 &&
+               filename.indexOf( 'license.json' ) !== 0 ) {
 
-      // Iterate over all media directories, such as images and sounds recursively
-      grunt.file.recurse( searchDir, function( abspath, rootdir, subdir, filename ) {
+            // Classify the resource
+            const result = getLicenseEntry( abspath );
 
-        // Some files don't need to be attributed in the license.json
-        if ( abspath.indexOf( 'README.md' ) < 0 &&
-             filename.indexOf( 'license.json' ) !== 0 ) {
-
-          // Classify the resource
-          const result = getLicenseEntry( abspath );
-
-          if ( !result ) {
-            grunt.log.writeln( 'not-annotated: ' + repo + '/' + directory + '/' + filename );
+            if ( !result ) {
+              grunt.log.writeln( 'not-annotated: ' + repo + '/' + directory + '/' + filename );
+            }
+            // Report if it is a problem
+            else if ( result.isProblematic === true ) {
+              grunt.log.writeln( 'incompatible-license: ' + repo + '/' + directory + '/' + filename );
+            }
           }
-          // Report if it is a problem
-          else if ( result.isProblematic === true ) {
-            grunt.log.writeln( 'incompatible-license: ' + repo + '/' + directory + '/' + filename );
-          }
-        }
 
-        // Now iterate through the license.json entries and see which are missing files
-        // This helps to identify stale entries in the license.json files.
-        if ( filename === 'license.json' ) {
+          // Now iterate through the license.json entries and see which are missing files
+          // This helps to identify stale entries in the license.json files.
+          if ( filename === 'license.json' ) {
 
-          const file = grunt.file.read( abspath );
-          const json = JSON.parse( file );
+            const file = grunt.file.read( abspath );
+            const json = JSON.parse( file );
 
-          // For each key in the json file, make sure that file exists in the directory
-          for ( const key in json ) {
-            if ( json.hasOwnProperty( key ) ) {
-              const resourceFilename = searchDir + '/' + key;
-              const exists = grunt.file.exists( resourceFilename );
-              if ( !exists ) {
-                grunt.log.writeln( 'missing-file: ' + repo + '/' + directory + '/' + key );
+            // For each key in the json file, make sure that file exists in the directory
+            for ( const key in json ) {
+              if ( json.hasOwnProperty( key ) ) {
+                const resourceFilename = searchDir + '/' + key;
+                const exists = grunt.file.exists( resourceFilename );
+                if ( !exists ) {
+                  grunt.log.writeln( 'missing-file: ' + repo + '/' + directory + '/' + key );
+                }
               }
             }
           }
-        }
-      } );
-    }
-  }
-
-  const mediaTypes = ChipperConstants.MEDIA_TYPES;
-  for ( let i = 0; i < reposByLine.length; i++ ) {
-    for ( let k = 0; k < mediaTypes.length; k++ ) {
-      reportForDirectory( reposByLine[ i ], mediaTypes[ k ] );
+        } );
+      }
     }
   }
 };

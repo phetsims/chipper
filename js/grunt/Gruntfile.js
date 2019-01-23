@@ -338,7 +338,7 @@ module.exports = function( grunt ) {
     '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
     '(3) missing-file (entry in the license.json but not on the file system)',
     wrapTask( async () => {
-      reportMedia();
+      await reportMedia( repo );
     } ) );
 
   // see reportThirdParty.js
