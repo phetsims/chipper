@@ -26,6 +26,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );
 const getPhetLibs = require( '../grunt/getPhetLibs' );
 const grunt = require( 'grunt' );
+const path = require( 'path' );
 
 /**
  * @param {string} repo
@@ -82,8 +83,11 @@ module.exports = async ( repo ) => {
             // For each key in the json file, make sure that file exists in the directory
             for ( const key in json ) {
               if ( json.hasOwnProperty( key ) ) {
-                const resourceFilename = searchDir + '/' + key;
+
+                // Checks for files in directory and subdirectory
+                const resourceFilename = path.dirname( abspath ) + '/' + key;
                 const exists = grunt.file.exists( resourceFilename );
+
                 if ( !exists ) {
                   grunt.log.writeln( 'missing-file: ' + repo + '/' + directory + '/' + key );
                 }
