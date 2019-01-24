@@ -10,6 +10,6 @@
 module.exports = {
   extends: './.eslintrc.js',
   rules: {
-    'bad-sim-text': 0 // commented out until lint errors are fixed, see https://github.com/phetsims/chipper/issues/728
+    'bad-sim-text': 2 // commented out until lint errors are fixed, see https://github.com/phetsims/chipper/issues/728
   }
 };
