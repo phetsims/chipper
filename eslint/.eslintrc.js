@@ -1,6 +1,4 @@
-// Copyright 2015-2019 University of Colorado Boulder
-// @author Sam Reid
-// @author Michael Kauzmann
+// Copyright 2015-2019, University of Colorado Boulder
 
 /* eslint-env node */
 'use strict';
@@ -11,6 +9,9 @@
  * 0 - no error
  * 1 - warn
  * 2 - error
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 module.exports = {
 
@@ -93,14 +94,6 @@ module.exports = {
     // specify curly brace conventions for all control statements
     curly: 2,
 
-    //    'no-use-before-define': [
-    //      2
-    //    ],
-    // TODO: This may be good to have
-    //    'new-cap': [
-    //      2
-    //    ],
-
     // disallow use of arguments.caller or arguments.callee
     'no-caller': 2,
 
@@ -161,19 +154,6 @@ module.exports = {
       2,
       'self'
     ]
-
-    // disallow trailing whitespace at the end of lines (fixable)
-    //    'no-trailing-spaces': 2,
-
-    // USE THIS DURING CODE REVIEW
-    // specify the maximum length of a line in your program
-    //    'max-len': [
-    //      2,
-    //      // this many columns per line
-    //      120,
-    //      // tab counts for this many spaces
-    //      4
-    //    ]
   },
   env: {
     browser: true,
