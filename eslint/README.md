@@ -11,6 +11,7 @@ Here is a list of all the available configuration files and why to use them for 
 * `node_eslintrc.js` expands on the base rules and adds configuration only intended for Node.js code (i.e. `perennial`).
 * `sim_eslint.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5 sim rules)
 * `sim_es6_eslint.js` expands on the sim rules and adds configuration intended for sims that have no es5 in them (i.e. `wave-interference`)
+* `sim_es6_eslint_review.js` expands on `sim_es6_eslint.js` and adds rules that could be helpful during a code review
 
 So here is the hierarchy of chipper's config files. Indentation symbolized the "extends" relationship.
 
