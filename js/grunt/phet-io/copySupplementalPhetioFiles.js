@@ -230,7 +230,8 @@ module.exports = async function( repo, version, simulationDisplayName ) {
   // wrapping function for copying the wrappers to the build dir
   const copyWrapper = function( src, dest ) {
     copyDirectory( src, dest, filterWrapper, {
-      blacklist: fullBlacklist
+      blacklist: fullBlacklist,
+      minifyJS: true
     } );
   };
 
