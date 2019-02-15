@@ -71,8 +71,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
   const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, {
     insertRequire: repo + '-main',
-    instrument,
-    brand
+    instrument: instrument,
+    brand: brand
   } );
 
   // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.
@@ -149,13 +149,13 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   grunt.log.ok( `Mipmaps: ${mipmapsJavaScript.length} bytes` );
 
   const commonInitializationOptions = {
-    brand,
-    repo,
-    stringMap,
-    dependencies,
-    timestamp,
-    version,
-    thirdPartyEntries
+    brand: brand,
+    repo: repo,
+    stringMap: stringMap,
+    dependencies: dependencies,
+    timestamp: timestamp,
+    version: version,
+    thirdPartyEntries: thirdPartyEntries
   };
 
   // Create the build-specific directory
@@ -166,15 +166,15 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   if ( brand !== 'phet-io' ) {
     for ( const locale of locales ) {
       const initializationScript = getInitializationScript( _.extend( {
-        locale,
+        locale: locale,
         includeAllLocales: false,
         isDebugBuild: false
       }, commonInitializationOptions ) );
       grunt.file.write( `${buildDir}/${repo}_${locale}_${brand}.html`, packageRunnable( {
-        repo,
-        stringMap,
-        htmlHeader,
-        locale,
+        repo: repo,
+        stringMap: stringMap,
+        htmlHeader: htmlHeader,
+        locale: locale,
         scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
       } ) );
     }
@@ -188,9 +188,9 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       isDebugBuild: false
     }, commonInitializationOptions ) );
     grunt.file.write( `${buildDir}/${repo}_all_${brand}.html`, packageRunnable( {
-      repo,
-      stringMap,
-      htmlHeader,
+      repo: repo,
+      stringMap: stringMap,
+      htmlHeader: htmlHeader,
       locale: ChipperConstants.FALLBACK_LOCALE,
       scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
     } ) );
@@ -203,9 +203,9 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     isDebugBuild: true
   }, commonInitializationOptions ) );
   grunt.file.write( `${buildDir}/${repo}_all_${brand}_debug.html`, packageRunnable( {
-    repo,
-    stringMap,
-    htmlHeader,
+    repo: repo,
+    stringMap: stringMap,
+    htmlHeader: htmlHeader,
     locale: ChipperConstants.FALLBACK_LOCALE,
     scripts: [ debugInitializationScript, splashScript, mipmapsJavaScript, ...debugPreloads, chipperStringsScript, debugJS ]
   } ) );
@@ -219,10 +219,10 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     isDebugBuild: false
   }, commonInitializationOptions ) );
   packageXHTML( xhtmlDir, {
-    repo,
-    brand,
-    stringMap,
-    htmlHeader,
+    repo: repo,
+    brand: brand,
+    stringMap: stringMap,
+    htmlHeader: htmlHeader,
     scripts: [ xhtmlInitializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
   } );
 

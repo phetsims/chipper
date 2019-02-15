@@ -25,10 +25,10 @@ module.exports = {
     global.phet = {
       chipper: {
         // the grunt instance, for situations where we can't pass it as a function argument
-        grunt,
+        grunt: grunt,
 
         // for code that runs in both requirejs and build modes, and therefore doesn't have access to grunt.file
-        fs,
+        fs: fs,
 
         // polyfill to work around the cache buster arg in the *-config.js file that all sims have.
         getCacheBusterArgs() { return ''; },

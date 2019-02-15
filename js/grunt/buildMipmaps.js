@@ -34,9 +34,9 @@ module.exports = async function() {
     const allMipmaps = await Promise.all( global.phet.chipper.mipmapsToBuild.map( async function( { name, path, level, quality } ) {
       const mipmaps = await createMipmap( path, level, quality );
       return {
-        name,
+        name: name,
         // Exclude other objects
-        mipmaps: mipmaps.map( ( { width, height, url } ) => { return { width, height, url }; } )
+        mipmaps: mipmaps.map( ( { width, height, url } ) => { return { width: width, height: height, url: url }; } )
       };
     } ) );
 

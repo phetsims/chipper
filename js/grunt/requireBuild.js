@@ -53,7 +53,7 @@ module.exports = function( repo, mainConfigFile, options ) {
 
       optimize: 'none',
 
-      wrap,
+      wrap: wrap,
 
       // Avoid optimization names that are outside the baseUrl, see http://requirejs.org/docs/optimization.html#pitfalls
       paths: {
@@ -61,7 +61,7 @@ module.exports = function( repo, mainConfigFile, options ) {
       },
 
       // JS config file
-      mainConfigFile,
+      mainConfigFile: mainConfigFile,
 
       // Add instrumentation if required
       onBuildWrite: function( moduleName, path, contents ) {
