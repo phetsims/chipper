@@ -15,6 +15,9 @@ module.exports = function( context ) {
 
   var badTextsForSimCode = [
 
+    // babel doesn't support compiling static getters, see https://github.com/phetsims/tasks/issues/983
+    ' static get ',
+
     // should be using dot.Util.roundSymmetric, Math.round does not treat positive and negative numbers
     // symmetrically see https://github.com/phetsims/dot/issues/35#issuecomment-113587879
     'Math.round',
