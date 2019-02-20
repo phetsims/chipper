@@ -63,7 +63,9 @@ module.exports = async function( wrapperRepo ) {
     copyDirectory( `../${repo}`, `../${wrapperRepo}/build/${repo}/`, null, {
       blacklist: WRAPPER_BLACKLIST, // List of files to not copy
       minifyJS: true,
-      mangle: false,
+      minifyOptions: {
+        mangle: false
+      },
       licenseToPrepend: '// Copyright 2002-2017, University of Colorado Boulder\n' +
                         '// This PhET-iO file requires a license\n' +
                         '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +

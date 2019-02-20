@@ -200,11 +200,6 @@ module.exports = async function( repo, version, simulationDisplayName ) {
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
       contents = ChipperStringUtils.replaceAll( contents, WRAPPER_COMMON_FOLDER + '/', 'common/' );
     }
-    if ( abspath.indexOf( '.js' ) >= 0 ) {
-      contents = minify( contents, {
-        stripAssertions: false
-      } );
-    }
     if ( contents !== originalContents ) {
       return contents;
     }
@@ -231,7 +226,10 @@ module.exports = async function( repo, version, simulationDisplayName ) {
   const copyWrapper = function( src, dest ) {
     copyDirectory( src, dest, filterWrapper, {
       blacklist: fullBlacklist,
-      minifyJS: true
+      minifyJS: true,
+      minifyOptions: {
+        stripAssertions: false
+      }
     } );
   };
 
