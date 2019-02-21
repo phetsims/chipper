@@ -10,6 +10,7 @@
 module.exports = {
   extends: './sim_eslintrc.js',
   rules: {
-    'no-var': 2
+    'no-var': 2,
+    'phet-object-shorthand': 2 // never allow properties only
   }
 };

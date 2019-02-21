@@ -11,7 +11,8 @@ module.exports = {
   extends: './.eslintrc.js',
   rules: {
     'no-restricted-syntax': [ 'off', 'ForOfStatement' ],
-    'no-var': 2
+    'no-var': 2,
+    'phet-object-shorthand': 2 // never allow properties only
   },
   env: {
 
