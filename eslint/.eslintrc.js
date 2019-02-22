@@ -153,7 +153,10 @@ module.exports = {
     'consistent-this': [
       2,
       'self'
-    ]
+    ],
+
+    // added for 5.14.1 update but should likely be removed once discussed in https://github.com/phetsims/chipper/issues/726
+    'no-useless-escape': 0
   },
   env: {
     browser: true,

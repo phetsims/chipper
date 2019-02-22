@@ -218,7 +218,18 @@ module.exports = function( grunt ) {
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
 
-    lint( getPhetLibs( repo ), cache );
+    const repos = getPhetLibs( repo );
+
+    // TODO: don't use this from chipper! see https://github.com/phetsims/chipper/issues/726
+    const eslintBlacklist = fs.readFileSync( '../perennial/data/no-lint', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
+
+    // filter out all unlintable repo. An unlintable repo is one that has no js in it, so it will fail when trying to
+    // lint it.
+    const filteredRepos = repos.filter( repo => {
+      return eslintBlacklist.indexOf( repo ) < 0;
+    } );
+
+    lint( filteredRepos, cache );
   } ) );
 
   grunt.registerTask( 'generate-development-html',
