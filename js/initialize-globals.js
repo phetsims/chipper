@@ -406,10 +406,12 @@
 
     /**
      * Typically used to show answers (or hidden controls that show answers) to challenges in sim games.
-     * Disabled in the primary built html file, see https://github.com/phetsims/joist/issues/406.
-     * For internal use only.
+     * For internal use by PhET team members only.
      */
-    showAnswers: { type: 'flag' },
+    showAnswers: {
+      type: 'flag',
+      private: true
+    },
 
     /**
      * Displays an overlay of the current bounds of each CanvasNode
@@ -634,16 +636,6 @@
 
   // Are we running a built html file?
   window.phet.chipper.isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
-
-  /**
-   * Overrides query parameters when running the primary built html file.  Does not affect debug.html.
-   * See https://github.com/phetsims/joist/issues/406
-   */
-  ( function() {
-    if ( phet.chipper.isProduction && !phet.chipper.isDebugBuild ) {
-      phet.chipper.queryParameters.showAnswers = false;
-    }
-  }() );
 
   /**
    * Enables or disables assertions in common libraries using query parameters.
