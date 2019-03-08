@@ -12,7 +12,6 @@ module.exports = {
   rules: {
     'no-restricted-syntax': [ 'off', 'ForOfStatement' ],
     'no-var': 2,
-    'phet-object-shorthand': 2, // never allow properties only
     'no-template-curly-in-string': 2
   },
   env: {

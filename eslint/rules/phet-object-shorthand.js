@@ -17,7 +17,6 @@ module.exports = function( context ) {
 
   return {
     'Property:exit'( node ) {
-      const isConciseProperty = node.method || node.shorthand;
 
       // Ignore destructuring assignment
       if ( node.parent.type === 'ObjectPattern' ) {
@@ -34,17 +33,12 @@ module.exports = function( context ) {
         return;
       }
 
-      //--------------------------------------------------------------
-      // Checks for property shorthand.
-      if ( isConciseProperty && !node.method ) {
-
-        // { x } should be written as { x: x }
-        context.report( {
-          node,
-          message: 'Expected longform property syntax.',
-          fix: fixer => fixer.insertTextAfter( node.key, `: ${node.key.name}` )
-        } );
-      }
+      // { x } should be written as { x: x }
+      node.shorthand && context.report( {
+        node: node,
+        message: 'Expected longform property syntax.',
+        fix: fixer => fixer.insertTextAfter( node.key, `: ${node.key.name}` )
+      } );
     }
   };
 };

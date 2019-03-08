@@ -11,7 +11,6 @@ module.exports = {
   extends: './sim_eslintrc.js',
   rules: {
     'no-var': 2,
-    'phet-object-shorthand': 2, // never allow properties only
     'no-template-curly-in-string': 2
   }
 };
