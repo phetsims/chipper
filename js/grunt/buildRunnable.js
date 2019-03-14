@@ -16,6 +16,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copyDirectory = require( './copyDirectory' );
 const copySupplementalPhetioFiles = require( './phet-io/copySupplementalPhetioFiles' );
+const fs = require( 'fs' );
 const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
@@ -30,6 +31,7 @@ const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 const jimp = require( 'jimp' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
+const lzma = require( 'lzma-native' ); // eslint-disable-line require-statement-match
 const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 const packageRunnable = require( './packageRunnable' );
@@ -187,13 +189,27 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       includeAllLocales: true,
       isDebugBuild: false
     }, commonInitializationOptions ) );
-    grunt.file.write( `${buildDir}/${repo}_all_${brand}.html`, packageRunnable( {
+
+    const allHTMLFilename = `${buildDir}/${repo}_all_${brand}.html`;
+
+    grunt.file.write( allHTMLFilename, packageRunnable( {
       repo: repo,
       stringMap: stringMap,
       htmlHeader: htmlHeader,
       locale: ChipperConstants.FALLBACK_LOCALE,
       scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
     } ) );
+
+    try {
+      // Create LZMA compressed asset
+      fs.createReadStream( allHTMLFilename )
+        .pipe( lzma.createCompressor() )
+        .pipe( fs.createWriteStream( `${allHTMLFilename}.xz` ) );
+    }
+    catch ( error ) {
+      grunt.log.error( error );
+      throw new Error( 'lzma compression failed' );
+    }
   }
 
   // Debug build (always included)
