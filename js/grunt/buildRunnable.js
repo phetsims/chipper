@@ -16,7 +16,6 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copyDirectory = require( './copyDirectory' );
 const copySupplementalPhetioFiles = require( './phet-io/copySupplementalPhetioFiles' );
-const fs = require( 'fs' );
 const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
@@ -191,20 +190,19 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     }, commonInitializationOptions ) );
 
     const allHTMLFilename = `${buildDir}/${repo}_all_${brand}.html`;
-
-    grunt.file.write( allHTMLFilename, packageRunnable( {
+    const allHTMLContents = packageRunnable( {
       repo: repo,
       stringMap: stringMap,
       htmlHeader: htmlHeader,
       locale: ChipperConstants.FALLBACK_LOCALE,
       scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
-    } ) );
+    } );
+
+    grunt.file.write( allHTMLFilename, allHTMLContents );
 
     try {
       // Create LZMA compressed asset
-      fs.createReadStream( allHTMLFilename )
-        .pipe( lzma.createCompressor() )
-        .pipe( fs.createWriteStream( `${allHTMLFilename}.xz` ) );
+      grunt.file.write( `${allHTMLFilename}.xz`, await lzma.compress( allHTMLContents ) );
     }
     catch ( error ) {
       grunt.log.error( error );
