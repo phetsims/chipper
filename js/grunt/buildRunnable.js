@@ -30,7 +30,6 @@ const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 const jimp = require( 'jimp' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
-const lzma = require( 'lzma-native' ); // eslint-disable-line require-statement-match
 const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 const packageRunnable = require( './packageRunnable' );
@@ -199,15 +198,6 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     } );
 
     grunt.file.write( allHTMLFilename, allHTMLContents );
-
-    try {
-      // Create LZMA compressed asset
-      grunt.file.write( `${allHTMLFilename}.xz`, await lzma.compress( allHTMLContents ) );
-    }
-    catch ( error ) {
-      grunt.log.error( error );
-      throw new Error( 'lzma compression failed' );
-    }
   }
 
   // Debug build (always included)
