@@ -11,6 +11,7 @@
       "kite",
       "phet-core",
       "phetcommon",
+      "phetmarks",
       "scenery",
       "scenery-phet",
       "sherpa",
