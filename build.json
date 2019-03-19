@@ -11,6 +11,7 @@
       "kite",
       "phet-core",
       "phetcommon",
+      "phetmarks",
       "query-string-machine",
       "scenery",
       "scenery-phet",
