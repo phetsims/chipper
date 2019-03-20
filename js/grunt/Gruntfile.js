@@ -30,6 +30,7 @@ const minify = require( './minify' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
+const writePhetioElementsApiFile = require( './phet-io/writePhetioElementsApiFile' );
 
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
@@ -63,7 +64,10 @@ module.exports = function( grunt ) {
       if ( e.stack ) {
         grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
       }
-      else if ( typeof e === 'string' ) {
+
+      // The toString check handles a weird case found from an Error object from puppeteer that doesn't stringify with
+      // JSON or have a stack, JSON.stringifies to "{}", but has a `toString` method
+      else if ( typeof e === 'string' || ( JSON.stringify( e ).length === 2 && e.toString ) ) {
         grunt.fail.fatal( `Perennial task failed: ${e}` );
       }
       else {
@@ -383,6 +387,17 @@ module.exports = function( grunt ) {
     'update-copyright-dates',
     'Update the copyright dates in JS source files based on Github dates',
     wrapTask( async () => await updateCopyrightDates( repo ) )
+  );
+
+  grunt.registerTask(
+    'write-phet-io-elements-api-file',
+    'Write the api file for a phet-io sim.',
+    wrapTask( async () => {
+      assert( typeof buildLocal.localTestingURL === 'string', 'must specify localTestingURL in build-local.json' );
+      assert( buildLocal.localTestingURL.endsWith( '/' ), 'localTestingURL should end in a "/"' );
+
+      return await writePhetioElementsApiFile( repo, buildLocal.localTestingURL );
+    } )
   );
 
   /**
