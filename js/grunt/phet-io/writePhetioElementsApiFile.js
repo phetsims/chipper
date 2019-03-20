@@ -24,8 +24,8 @@ module.exports = async ( simName, localTestingURL ) => {
     const page = await browser.newPage();
     page.on( 'console', async function( msg ) {
 
-      if ( msg.text().indexOf( 'window.phetioElementMetadata=' ) >= 0 ) {
-        fs.writeFileSync( 'phet-io-elements.js', msg.text() );
+      if ( msg.text().indexOf( 'window.phet.phetio.phetioElementsAPI' ) >= 0 ) {
+        fs.writeFileSync( 'js/phet-io-elements-api.js', msg.text() );
         await browser.close();
         resolve();
       }
