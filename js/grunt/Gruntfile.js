@@ -228,9 +228,9 @@ module.exports = function( grunt ) {
     const eslintBlacklist = fs.readFileSync( '../perennial/data/no-lint', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
 
     // filter out all unlintable repo. An unlintable repo is one that has no js in it, so it will fail when trying to
-    // lint it.
+    // lint it.  Also, if the user doesn't have phet-io* repos checked out, those should be skipped
     const filteredRepos = repos.filter( repo => {
-      return eslintBlacklist.indexOf( repo ) < 0;
+      return eslintBlacklist.indexOf( repo ) < 0 && fs.existsSync( '../' + repo );
     } );
 
     lint( filteredRepos, cache );
