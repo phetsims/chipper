@@ -7,6 +7,7 @@
     "url": "https://github.com/phetsims/chipper.git"
   },
   "devDependencies": {
+    "7zip-min": "^1.0.1",
     "babel-core": "^6.26.3",
     "babel-preset-env": "~1.6.1",
     "eslint": "~5.14.1",
@@ -20,12 +21,12 @@
     "md5": "~2",
     "node-html-encoder": "~0.0.2",
     "pngjs": "~0.4.0",
+    "puppeteer": "~1.11.0",
     "qunit": "~2.4.1",
     "request": "^2.87.0",
     "request-promise-native": "^1.0.7",
     "requirejs": "~2.3.5",
-    "uglify-es": "~3.1.10",
-    "puppeteer": "~1.11.0"
+    "uglify-es": "~3.1.10"
   },
   "eslintConfig": {
     "extends": "../chipper/eslint/sim_eslintrc.js"

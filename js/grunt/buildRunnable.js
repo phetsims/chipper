@@ -10,6 +10,7 @@
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _7z = require('7zip-min'); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
@@ -198,6 +199,10 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     } );
 
     grunt.file.write( allHTMLFilename, allHTMLContents );
+
+    _7z.cmd( [ 'a', '-txz', allHTMLFilename + '.xz', allHTMLFilename ], err => {
+      console.log( err );
+    } );
   }
 
   // Debug build (always included)
