@@ -63,8 +63,8 @@ const CONTRIB_FILES = [
 
 // list of files to run jsdoc generation with. Assume that anything in the public lib file needs documentation
 const JSDOC_FILES = LIB_FILES.concat( [
-  ' ../phet-io/js/phet-io-initialize-globals.js',
-  ' ../chipper/js/initialize-globals.js'
+  '../phet-io/js/phet-io-initialize-globals.js',
+  '../chipper/js/initialize-globals.js'
 ] );
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
