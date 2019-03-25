@@ -63,8 +63,8 @@ const CONTRIB_FILES = [
 
 // list of files to run jsdoc generation with. Assume that anything in the public lib file needs documentation
 const JSDOC_FILES = LIB_FILES.concat( [
-  ' ../phet-io/js/phet-io-initialize-globals.js',
-  ' ../chipper/js/initialize-globals.js'
+  '../phet-io/js/phet-io-initialize-globals.js',
+  '../chipper/js/initialize-globals.js'
 ] );
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
@@ -312,7 +312,13 @@ const handleContrib = function( buildDir ) {
  * @returns {Promise<void>}
  */
 const handleJSDOC = async function( buildDir ) {
-  grunt.log.debug( 'generating jsdoc for phet-io from: ', JSDOC_FILES );
+
+  // Make sure each file exists
+  for ( let i = 0; i < JSDOC_FILES.length; i++ ) {
+    if ( !fs.existsSync( JSDOC_FILES[ i ] ) ) {
+      throw new Error( 'file doesnt exist: ' + JSDOC_FILES[ i ] );
+    }
+  }
 
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
   // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method

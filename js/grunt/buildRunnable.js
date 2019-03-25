@@ -10,7 +10,7 @@
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
-const _7z = require('7zip-min'); // eslint-disable-line require-statement-match
+const _7z = require( '7zip-min' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
@@ -296,7 +296,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       { width: 600, height: 394 }
     ];
     for ( const size of thumbnailSizes ) {
-      grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height ) );
+      grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, jimp.MIME_PNG ) );
     }
 
     if ( brand === 'phet' ) {
