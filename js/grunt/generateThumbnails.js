@@ -27,14 +27,6 @@ module.exports = function( repo, width, height, quality, mime ) {
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot.png`;
 
-    if ( !quality ) {
-      quality = 100;
-    }
-
-    if ( !mime ) {
-      mime = jimp.MIME_PNG;
-    }
-
     if ( !grunt.file.exists( fullResImageName ) ) {
       grunt.log.writeln( `no image file exists: ${fullResImageName}. Aborting generateThumbnails` );
       return;
