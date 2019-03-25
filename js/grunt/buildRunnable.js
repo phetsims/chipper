@@ -201,8 +201,10 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     grunt.file.write( allHTMLFilename, allHTMLContents );
 
     _7z.cmd( [ 'a', '-txz', allHTMLFilename + '.xz', allHTMLFilename ], err => {
-      grunt.log.error( err );
-      throw new Error( err );
+      if ( err !== null ) {
+        grunt.log.error( err );
+        throw new Error( err );
+      }
     } );
   }
 
