@@ -58,7 +58,8 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jsondiffpatch-v0.3.11-html.css',
   '../sherpa/lib/split-1.5.9.min.js',
   '../sherpa/lib/highlight.js-9.1.0/styles/tomorrow-night-bright.css',
-  '../sherpa/lib/highlight.js-9.1.0/highlight.js'
+  '../sherpa/lib/highlight.js-9.1.0/highlight.js',
+  '../phet-core/js/copyWithSortedKeys.js'
 ];
 
 // list of files to run jsdoc generation with. Assume that anything in the public lib file needs documentation
