@@ -7,7 +7,6 @@
     "url": "https://github.com/phetsims/chipper.git"
   },
   "devDependencies": {
-    "7zip-min": "^1.0.1",
     "babel-core": "^6.26.3",
     "babel-preset-env": "~1.6.1",
     "eslint": "~5.14.1",
