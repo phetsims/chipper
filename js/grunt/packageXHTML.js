@@ -49,5 +49,6 @@ module.exports = function( xhtmlDir, config ) {
     PHET_SIM_SCRIPTS: `<script type="text/javascript" src="${scriptFilename}" charset="utf-8"></script>`
   } );
   grunt.file.write( `${xhtmlDir}/${repo}_all_phet.html`, xhtml );
+  grunt.file.write( `${xhtmlDir}/${repo}_all.xhtml`, xhtml );
   grunt.file.write( `${xhtmlDir}/${scriptFilename}`, script );
 };
