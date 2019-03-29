@@ -10,10 +10,26 @@
 
 // modules
 const eslint = require( 'eslint' );
+const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const md5 = require( 'md5' );
 const path = require( 'path' );
 const child_process = require( 'child_process' );
+
+// constants
+// don't lint these repos
+const NO_LINT_REPOS = [
+  'babel',
+  'eliot',
+  'phet-android-app',
+  'phet-info',
+  'phet-io-wrapper-arithmetic',
+  'phet-io-wrapper-hookes-law-energy',
+  'phet-ios-app',
+  'sherpa',
+  'smithers',
+  'tasks'
+];
 
 /**
  * Lints the specified repositories.
@@ -25,6 +41,12 @@ const child_process = require( 'child_process' );
  * @returns {Object} - ESLint report object.
  */
 module.exports = function( repos, cache, say = false ) {
+
+  // filter out all unlintable repo. An unlintable repo is one that has no `js` in it, so it will fail when trying to
+  // lint it.  Also, if the user doesn't have some repos checked out, those should be skipped
+  const filteredRepos = repos.filter( repo => {
+    return NO_LINT_REPOS.indexOf( repo ) < 0 && fs.existsSync( '../' + repo );
+  } );
 
   const cli = new eslint.CLIEngine( {
 
@@ -39,7 +61,7 @@ module.exports = function( repos, cache, say = false ) {
     rulePaths: [ 'chipper/eslint/rules' ],
 
     // Where to store the target-specific cache file
-    cacheFile: `chipper/eslint/cache/${md5( repos.join( ',' ) )}.eslintcache`,
+    cacheFile: `chipper/eslint/cache/${md5( filteredRepos.join( ',' ) )}.eslintcache`,
 
     // Files to skip for linting
     ignorePattern: [
@@ -64,10 +86,10 @@ module.exports = function( repos, cache, say = false ) {
     ]
   } );
 
-  grunt.verbose.writeln( 'linting: ' + repos.join( ', ' ) );
+  grunt.verbose.writeln( 'linting: ' + filteredRepos.join( ', ' ) );
 
   // run the eslint step
-  const report = cli.executeOnFiles( repos );
+  const report = cli.executeOnFiles( filteredRepos );
 
   // pretty print results to console if any
   ( report.warningCount || report.errorCount ) && grunt.log.write( cli.getFormatter()( report.results ) );
