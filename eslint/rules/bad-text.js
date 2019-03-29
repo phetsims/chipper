@@ -31,6 +31,7 @@ module.exports = function( context ) {
 
     // For phet-io use PHET_IO in constants
     'PHETIO',
+    'phetio element', // use "phet-io element" or "PhET-iO element"
     '@return '
   ];
 
