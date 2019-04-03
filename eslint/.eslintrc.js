@@ -170,31 +170,31 @@ module.exports = {
   },
   globals: {
 
-    // Global symbols that are permissible to overwrite -----------------------
-    process: true,
+    // read-only globals ---------------------------------
+
+    process: false,
 
     // allow assertions
-    assert: true,
+    assert: false,
 
     // allow slow assertions
-    assertSlow: true,
+    assertSlow: false,
 
     // scenery logging levels
-    sceneryLog: true,
+    sceneryLog: false,
 
     // scenery accessibility levels
-    sceneryAccessibilityLog: true,
+    sceneryAccessibilityLog: false,
 
     // we actually polyfill this, so allow it to be set
-    Float32Array: true,
+    Float32Array: false,
 
-    phet: true,
-    phetio: true,
+    phetio: false,
 
     // For use in aqua tests
-    aqua: true,
+    aqua: false,
 
-    // read-only globals ---------------------------------
+    phet: false,
 
     // underscore, lodash
     _: false,
