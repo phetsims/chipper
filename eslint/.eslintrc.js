@@ -190,13 +190,14 @@ module.exports = {
 
     phet: true,
     phetio: true,
-    aqua: true,
 
     // For use in aqua tests
-    // underscore, lodash
-    _: true,
+    aqua: true,
 
     // read-only globals ---------------------------------
+
+    // underscore, lodash
+    _: false,
 
     // Javascript Set
     Set: false,
