@@ -180,9 +180,6 @@ module.exports = {
     // allow slow assertions
     assertSlow: false,
 
-    // scenery logging levels
-    sceneryLog: false,
-
     phetio: false,
 
     // underscore, lodash
@@ -190,12 +187,6 @@ module.exports = {
 
     // jQuery
     $: false,
-
-    //for debugging on ipad
-    alert: false,
-
-    // d3.js data visualization library
-    d3: false,
 
     // require.js
     define: false,
@@ -205,32 +196,17 @@ module.exports = {
     // for linting Node.js code
     global: false,
 
-    // for HTML entity parsing
-    he: false,
-
     // QUnit
     QUnit: false,
-
-    // For KaTeX
-    katex: false,
-
-    // PhET-iO
-    Metacog: false,
 
     // as used in Gruntfile.js
     module: false,
 
-    // Numeric library used in energy skate park TODO: move to ESPB lint rules
-    numeric: false,
-
     // Misc
     QueryStringMachine: false,
-    //
+
     // require.js
     require: false,
-
-    // For three.js 3d things
-    THREE: false,
 
     // sole/tween.js
     TWEEN: false,
