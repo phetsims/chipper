@@ -51,16 +51,17 @@ define( function( require ) {
     }
     var isRTL = localeInfo[ locale ].direction === 'rtl';
 
-    // Check for cache hit
+    // Check for cache hit, see discussion in https://github.com/phetsims/chipper/issues/730
     if ( cache[ url ] ) {
       callback( cache[ url ] );
     }
     else {
+
       // Cache miss: load the file parse, enter into cache and return it
       text.get( url, function( loadedText ) {
         var parsed = parse( loadedText );
         for ( var stringKey in parsed ) {
-          
+
           // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
           parsed[ stringKey ].value = parsed[ stringKey ].value.trim();
 
