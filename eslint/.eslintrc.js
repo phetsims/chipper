@@ -172,7 +172,7 @@ module.exports = {
 
     // read-only globals ---------------------------------
 
-    process: false,
+    phet: false,
 
     // allow assertions
     assert: false,
@@ -183,61 +183,16 @@ module.exports = {
     // scenery logging levels
     sceneryLog: false,
 
-    // scenery accessibility levels
-    sceneryAccessibilityLog: false,
-
-    // we actually polyfill this, so allow it to be set
-    Float32Array: false,
-
     phetio: false,
-
-    // For use in aqua tests
-    aqua: false,
-
-    phet: false,
 
     // underscore, lodash
     _: false,
 
-    // Javascript Set
-    Set: false,
-
     // jQuery
     $: false,
 
-    // for full screen
-    ActiveXObject: false,
-
     //for debugging on ipad
     alert: false,
-
-    // for Mocha tests
-    afterEach: false,
-
-    // backbone is currently run outside of requirejs
-    Backbone: false,
-
-    // for Mocha tests
-    beforeEach: false,
-
-    // BigRational
-    bigRat: false,
-
-    // DOM.js
-    Blob: false,
-
-    // Box2D physics engine
-    Box2D: false,
-
-    Buffer: false,
-
-    canvg: false,
-
-    clarinet: false,
-
-    clearTimeout: false,
-
-    console: false,
 
     // d3.js data visualization library
     d3: false,
@@ -245,54 +200,13 @@ module.exports = {
     // require.js
     define: false,
 
-    // for Mocha unit tests
-    describe: false,
-
     document: false,
-
-    // For qunit
-    dot: false,
-
-    equal: false,
-
-    // For file loading, see SaveLoadNode in Energy Skate Park: Basics
-    FileReader: false,
 
     // for linting Node.js code
     global: false,
 
-    // jshashes library, for hashing strings (screenshot comparison)
-    Hashes: false,
-
     // for HTML entity parsing
     he: false,
-
-    // for HTML => JSON parsing
-    himalaya: false,
-
-    // for hightlighting
-    hljs: false,
-
-    //for web audio
-    Howl: false,
-
-    HTMLCanvasElement: false,
-    HTMLImageElement: false,
-
-    // for CODAP or other Concord communication
-    iframePhone: false,
-
-    // DOM.js
-    Image: false,
-
-    // for Mocha unit tests
-    it: false,
-
-    // QUnit
-    kite: false,
-
-    // for using native Map
-    Map: false,
 
     // QUnit
     QUnit: false,
@@ -300,43 +214,20 @@ module.exports = {
     // For KaTeX
     katex: false,
 
-    // For setting location.href to save to local file, see http://stackoverflow.com/questions/2897619/using-html5-javascript-to-generate-and-save-a-file
-    location: false,
-
-    // LZ-string, for compressing and decompressing strings
-    LZString: false,
-
     // PhET-iO
     Metacog: false,
 
     // as used in Gruntfile.js
     module: false,
 
-    // For Mobile Safari detection, see http://stackoverflow.com/questions/3007480/determine-if-user-navigated-from-mobile-safari
-    navigator: false,
-
-    // Numeric library used in energy skate park
+    // Numeric library used in energy skate park TODO: move to ESPB lint rules
     numeric: false,
-
-    ok: false,
-    PIXI: false,
-
-    // For poly2tri triangulation library
-    poly2tri: false,
 
     // Misc
     QueryStringMachine: false,
-
+    //
     // require.js
     require: false,
-
-    scenery: false,
-
-    // For @mrdoob's stats + frame rate readout component
-    Stats: false,
-
-    // qunit
-    test: false,
 
     // For three.js 3d things
     THREE: false,
@@ -344,21 +235,6 @@ module.exports = {
     // sole/tween.js
     TWEEN: false,
 
-    Uint16Array: false,
-    Uint32Array: false,
-
-    // for khronos webgl-debug.js debugging utilities
-    WebGLDebugUtils: false,
-
-    // for WebSocket communication
-    WebSocket: false,
-
-    window: false,
-
-    // allow ajax requests directly
-    XMLHttpRequest: false,
-
-    toast: false,
-    Fourier: false
+    window: false
   }
 };
