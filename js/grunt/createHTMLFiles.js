@@ -24,6 +24,7 @@ var getStringMap = require( '../../../chipper/js/grunt/getStringMap' );
 var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+var zlib = require( 'zlib' );
 
 /**
  * @param grunt - the grunt instance
@@ -262,7 +263,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   // Create an _all.html file
   if ( grunt.option( 'allHTML' ) ) {
     assert( buildConfig.brand === 'phet', 'allHTML option only supported with the \'phet\' brand' );
-    grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, ChipperConstants.FALLBACK_LOCALE, true ) );
+    var allHTMLFilename = 'build/' + buildConfig.name + '_all.html';
+    var allHTMLContents = replaceLocaleConstants( html, ChipperConstants.FALLBACK_LOCALE, true );
+    grunt.file.write( allHTMLFilename, allHTMLContents );
+    grunt.file.write( allHTMLFilename + '.gz', zlib.gzipSync( allHTMLContents ) );
   }
 
   // Create a file for testing iframe embedding.  English (en) is assumed as the locale.
