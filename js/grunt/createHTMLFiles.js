@@ -19,6 +19,7 @@ var getStringMap = require( '../../../chipper/js/grunt/getStringMap' );
 var getThirdPartyLibEntries = require( '../../../chipper/js/grunt/getThirdPartyLibEntries' );
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+var zlib = require( 'zlib' );
 
 /**
  * @param grunt - the grunt instance
@@ -263,7 +264,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
 
   // Create an _all.html file
   if ( grunt.option( 'allHTML' ) && buildConfig.brand === 'phet' ) {
-    grunt.file.write( 'build/' + buildConfig.name + '_all.html', replaceLocaleConstants( html, 'en', true ) );
+    var allHTMLFilename = 'build/' + buildConfig.name + '_all.html';
+    var allHTMLContents = replaceLocaleConstants( html, 'en', true );
+    grunt.file.write( allHTMLFilename, allHTMLContents );
+    grunt.file.write( allHTMLFilename + '.gz', zlib.gzipSync( allHTMLContents ) );
   }
 
   //TODO should this be using ChipperConstants.FALLBACK_LOCALE instead of hardcoded to 'en'?
