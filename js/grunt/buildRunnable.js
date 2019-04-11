@@ -36,6 +36,7 @@ const packageXHTML = require( './packageXHTML' );
 const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
 const requireBuild = require( './requireBuild' );
+const zlib = require( 'zlib' );
 
 /**
  * Builds a runnable (e.g. a simulation).
@@ -186,13 +187,17 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       includeAllLocales: true,
       isDebugBuild: false
     }, commonInitializationOptions ) );
-    grunt.file.write( `${buildDir}/${repo}_all_${brand}.html`, packageRunnable( {
+
+    const allHTMLFilename = `${buildDir}/${repo}_all_${brand}.html`;
+    const allHTMLContents = packageRunnable( {
       repo,
       stringMap,
       htmlHeader,
       locale: ChipperConstants.FALLBACK_LOCALE,
       scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
-    } ) );
+    } );
+    grunt.file.write( allHTMLFilename, allHTMLContents );
+    grunt.file.write( `${allHTMLFilename}.gz`, zlib.gzipSync( allHTMLContents ) );
   }
 
   // Debug build (always included)
