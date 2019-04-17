@@ -20,12 +20,30 @@ module.exports = async ( repo, localTestingURL ) => {
 
   return new Promise( async ( resolve, reject ) => {
 
+    const phetioDirectory = 'js/phet-io';
+    const baselineFileName = `${phetioDirectory}/${repo}-phet-io-elements-baseline.js`;
+    const overridesFileName = `${phetioDirectory}/${repo}-phet-io-elements-overrides.js`;
+
+    if ( !fs.existsSync( phetioDirectory ) ) {
+      fs.mkdirSync( phetioDirectory );
+    }
+
+    // empty the current baseline file so we know that a stale version is not left behind
+    fs.writeFileSync( baselineFileName, '' );
+
+    // if there is already an overrides file, don't overwrite it with an empty one
+    if ( !fs.existsSync( overridesFileName ) ) {
+      fs.writeFileSync( overridesFileName,
+        '/* eslint-disable */\nwindow.phet.phetio.phetioElementsOverrides = {};' );
+    }
+
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     page.on( 'console', async function( msg ) {
 
       if ( msg.text().indexOf( 'window.phet.phetio.phetioElementsBaseline' ) >= 0 ) {
-        fs.writeFileSync( `js/phet-io/${repo}-phet-io-elements-baseline.js`, msg.text() );
+
+        fs.writeFileSync( baselineFileName, msg.text() );
         await browser.close();
         resolve();
       }

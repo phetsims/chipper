@@ -30,7 +30,7 @@ const minify = require( './minify' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
-const generatePhetioElementsBaseline = require( './phet-io/generatePhetioElementsBaseline' );
+const generatePhetioElementsFiles = require( './phet-io/generatePhetioElementsFiles' );
 
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
@@ -311,6 +311,9 @@ module.exports = function( grunt ) {
         if ( packageObject.phet.colorProfile ) {
           grunt.task.run( 'generate-development-colors-html' );
         }
+        if ( packageObject.phet.supportedBrands.indexOf( 'phet-io' ) >= 0 ) {
+          grunt.task.run( 'generate-phet-io-elements-files' );
+        }
       }
 
       if ( packageObject.phet.generatedUnitTests ) {
@@ -379,13 +382,13 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask(
-    'generate-phet-io-elements-baseline',
+    'generate-phet-io-elements-files',
     'Write the api file for a phet-io sim.',
     wrapTask( async () => {
       assert( typeof buildLocal.localTestingURL === 'string', 'must specify localTestingURL in build-local.json' );
       assert( buildLocal.localTestingURL.endsWith( '/' ), 'localTestingURL should end in a "/"' );
 
-      return await generatePhetioElementsBaseline( repo, buildLocal.localTestingURL );
+      return await generatePhetioElementsFiles( repo, buildLocal.localTestingURL );
     } )
   );
 

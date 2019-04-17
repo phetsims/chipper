@@ -9,6 +9,7 @@
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
 
@@ -25,7 +26,9 @@ module.exports = function( repo, brand ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   let buildObject;
   try {
-    buildObject = grunt.file.readJSON( '../chipper/build.json' );
+    const buildString = grunt.file.read( '../chipper/build.json' );
+    const filledInBuildString = ChipperStringUtils.replaceAll( buildString, '{{REPO}}', repo );
+    buildObject = JSON.parse( filledInBuildString );
   }
   catch( e ) {
     buildObject = {};
