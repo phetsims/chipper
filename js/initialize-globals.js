@@ -209,7 +209,7 @@
 
     // Private doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
     /**
-     * Indicates whether to include the home screen.
+     * Indicates whether to display the home screen.
      * For multi-screen sims only, throws an assertion error if supplied for a single-screen sim.
      * @memberOf PhetQueryParameters
      * @type {boolean}
@@ -223,7 +223,7 @@
     // The value is one of the values in the screens array, not an index into the screens array.
     /**
      * Specifies the initial screen that will be visible when the sim starts.
-     * See screens query parameter for screen numbering.
+     * See `?screens` query parameter for screen numbering.
      * For multi-screen sims only, throws an assertion error if applied in a single-screen sims.
      * The default value of 0 is the home screen.
      * @memberOf PhetQueryParameters
