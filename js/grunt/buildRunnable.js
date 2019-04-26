@@ -10,7 +10,6 @@
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
-const _7z = require('7zip-min'); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
@@ -38,6 +37,7 @@ const packageXHTML = require( './packageXHTML' );
 const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
 const requireBuild = require( './requireBuild' );
+const zlib = require( 'zlib' );
 
 /**
  * Builds a runnable (e.g. a simulation).
@@ -199,10 +199,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     } );
 
     grunt.file.write( allHTMLFilename, allHTMLContents );
-
-    _7z.cmd( [ 'a', '-txz', allHTMLFilename + '.xz', allHTMLFilename ], err => {
-      console.log( err );
-    } );
+    grunt.file.write( `${allHTMLFilename}.gz`, zlib.gzipSync( allHTMLContents ) );
   }
 
   // Debug build (always included)
