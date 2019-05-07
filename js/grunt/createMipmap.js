@@ -207,7 +207,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
         const level = mipmaps.length;
         mipmaps.push( mipmapDownscale( finestMipmap(), function( width, height ) {
-          return new Buffer( 4 * width * height );
+          return Buffer.alloc( 4 * width * height );
         } ) );
         encodeLevel( level );
       }
