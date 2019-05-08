@@ -48,7 +48,9 @@
   },
   "phet-io": {
     "preload": [
-      "../phet-io/js/phet-io-initialize-globals.js",
+      "../phet-io/js/phet-io-initialize-globals.js"
+    ],
+    "simulationSpecificPreload": [
       "../{{REPO}}/js/phet-io/{{REPO}}-phet-io-elements-baseline.js",
       "../{{REPO}}/js/phet-io/{{REPO}}-phet-io-elements-overrides.js"
     ],

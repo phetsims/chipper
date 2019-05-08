@@ -30,7 +30,8 @@ module.exports = function( repo, options ) {
     bodystart = '',
     addedPreloads = [], // none to add
     stripPreloads = [], // none to add
-    qualifier = ''
+    qualifier = '',
+    forSim = true // is this html used for a sim, or something else like tests.
   } = options || {};
 
   const brand = 'phet';
@@ -52,10 +53,10 @@ module.exports = function( repo, options ) {
     return preload.includes( 'google-analytics' ) || stripPreloads.includes( preload );
   }
 
-  const preloads = getPreloads( repo, brand ).filter( preload => {
+  const preloads = getPreloads( repo, brand, forSim ).filter( preload => {
     return !isPreloadExcluded( preload );
   } ).concat( addedPreloads );
-  const phetioPreloads = getPreloads( repo, 'phet-io' ).filter( preload => {
+  const phetioPreloads = getPreloads( repo, 'phet-io', forSim ).filter( preload => {
     return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
   } );
 

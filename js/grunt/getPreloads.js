@@ -19,9 +19,10 @@ const grunt = require( 'grunt' );
  *
  * @param {string} repo
  * @param {string} brand
+ * @param {boolean} [forSim] - if the preloads are specifically for a simulation
  * @returns {Array.<string>}
  */
-module.exports = function( repo, brand ) {
+module.exports = function( repo, brand, forSim ) {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   let buildObject;
@@ -54,6 +55,12 @@ module.exports = function( repo, brand ) {
   // add brand-specific preloads from build.json
   if ( buildObject[ brand ] && buildObject[ brand ].preload ) {
     preload = preload.concat( buildObject[ brand ].preload );
+  }
+
+  // simulationSpecificPreload are not needed for any other runtimes, like tests
+  // No need to support this for package.json, just in chipper for now.
+  if ( forSim && buildObject[ brand ] && buildObject[ brand ].simulationSpecificPreload ) {
+    preload = preload.concat( buildObject[ brand ].simulationSpecificPreload );
   }
 
   // add brand-specific preloads from package.json

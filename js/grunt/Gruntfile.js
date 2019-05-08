@@ -257,7 +257,10 @@ module.exports = function( grunt ) {
         stripPreloads: [ '../joist/js/splash.js' ],
 
         // Specify to use test config
-        qualifier: 'test-'
+        qualifier: 'test-',
+
+        // Unit tests do not include the phet-io baseline and overrides files
+        forSim: false
       } );
     } ) );
 
