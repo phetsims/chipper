@@ -331,7 +331,7 @@
      * Generally reduces WebGL performance, so it should not always be on (thus the query parameter).
      */
     preserveDrawingBuffer: { type: 'flag' },
-    
+
     /**
      * shows profiling information for the sim
      */
@@ -520,7 +520,10 @@
     supportsSound: { type: 'flag' },
 
     /**
-     * Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289
+     * Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289.
+     * Note that simulations can opt-in to webgl via new Sim({webgl:true}), but using ?webgl=true takes
+     * precedence.  If no webgl query parameter is supplied, then simulations take the Sim option value, which
+     * defaults to false.  See see https://github.com/phetsims/scenery/issues/621
      */
     webgl: {
       type: 'boolean',
