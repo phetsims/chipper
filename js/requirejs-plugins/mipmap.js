@@ -204,7 +204,7 @@ define( function( require ) {
         };
 
         // trigger loading of the image, so that our onload is guaranteed to be called
-        image.src = path + '?' + config.urlArgs;
+        image.src = path + config.urlArgs( name, path );
       }
     },
 

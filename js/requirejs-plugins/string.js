@@ -104,7 +104,7 @@ define( function( require ) {
       var key = name.substring( name.lastIndexOf( '/' ) + 1 );
 
       // Apply the cache buster args (but only during requirejs mode)
-      var suffix = config.isBuild ? '' : '?' + config.urlArgs;
+      var suffix = config.isBuild ? '' : config.urlArgs( name, '' );
 
       var requirejsNamespace = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
       var requirePath;
