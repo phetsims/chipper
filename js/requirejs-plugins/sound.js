@@ -62,7 +62,7 @@ define( function( require ) {
       }
       else {
         // add the cache buster args to the URL
-        soundInfo.url += '?' + config.urlArgs;
+        soundInfo.url += config.urlArgs( name, soundInfo.url );
 
         // provide the URL corresponding to the specified sound
         onload( soundInfo );
