@@ -424,6 +424,11 @@
     showFittedBlockBounds: { type: 'flag' },
 
     /**
+     * Shows hit areas as dashed lines.
+     */
+    showHitAreas: { type: 'flag' },
+
+    /**
      * Shows pointer areas as dashed lines. touchAreas are red, mouseAreas are blue.
      */
     showPointerAreas: { type: 'flag' },
