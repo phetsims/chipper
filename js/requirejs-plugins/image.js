@@ -48,7 +48,7 @@ define( function( require ) {
           }
         };
 
-        // add the cache buster args to the URL
+        // add the cache bust args to the URL
         image.src = path + config.urlArgs( name, path );
       }
     },

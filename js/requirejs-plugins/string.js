@@ -103,7 +103,7 @@ define( function( require ) {
       // Extract the key. Eg for 'JOHN_TRAVOLTAGE/john-travoltage.title', the key is 'john-travoltage.title'.
       var key = name.substring( name.lastIndexOf( '/' ) + 1 );
 
-      // Apply the cache buster args (but only during requirejs mode)
+      // Apply the cache bust args (but only during requirejs mode)
       var suffix = config.isBuild ? '' : config.urlArgs( name, '' );
 
       var requirejsNamespace = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'

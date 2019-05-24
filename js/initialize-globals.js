@@ -97,7 +97,7 @@
     /**
      * enables cache busting in requirejs mode.
      */
-    cacheBuster: {
+    cacheBust: {
       type: 'boolean',
       defaultValue: true
     },
@@ -559,14 +559,14 @@
     }
 
     /**
-     * Gets the cache buster args based on the provided query parameters.  By default it is:
+     * Gets the cache bust args based on the provided query parameters.  By default it is:
      * ?bust=<number>
-     * But this can be omitted if ?cacheBuster=false is provided
+     * But this can be omitted if ?cacheBust=false is provided
      * See https://github.com/phetsims/joist/issues/196
      * @returns {string}
      */
-    window.phet.chipper.getCacheBusterArgs = function() {
-      return phet.chipper.queryParameters.cacheBuster ? ( 'bust=' + Date.now() ) : '';
+    window.phet.chipper.getCacheBustArgs = function() {
+      return phet.chipper.queryParameters.cacheBust ? ( 'bust=' + Date.now() ) : '';
     };
 
     /**
