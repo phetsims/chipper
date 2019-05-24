@@ -53,10 +53,7 @@
     ],
     "phetLibs": [
       "phet-io",
-      "phet-io-wrapper-classroom-activity",
-      "phet-io-wrapper-lab-book",
-      "phet-io-wrappers",
-      "phet-io-wrapper-hookes-law-energy"
+      "phet-io-wrappers"
     ]
   }
 }
