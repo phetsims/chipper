@@ -36,7 +36,7 @@ module.exports = function getPhetLibs( repo, brand ) {
     var buildObject;
     try {
       buildObject = grunt.file.readJSON( '../chipper/build.json' );
-    } 
+    }
     catch ( e ) {
       buildObject = {};
     }
@@ -62,6 +62,11 @@ module.exports = function getPhetLibs( repo, brand ) {
         }
       }
     } );
+
+    // add brand specific dependencies from the package json
+    if ( packageObject.phet[ brand ] && packageObject.phet[ brand ].phetLibs ) {
+      phetLibs = phetLibs.concat( packageObject.phet[ brand ].phetLibs );
+    }
 
     // sort and remove duplicates
     return _.uniq( phetLibs.sort() );
