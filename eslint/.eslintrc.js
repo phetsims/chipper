@@ -128,7 +128,6 @@ module.exports = {
     //
     'require-statement-match': 2,
     'phet-io-require-contains-ifphetio': 2,
-    'require-tandem-support': 0,
 
     // Require @public/@private for this.something = result;
     'property-visibility-annotation': 0,
