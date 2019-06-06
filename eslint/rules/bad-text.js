@@ -34,6 +34,7 @@ module.exports = function( context ) {
     'Phet-iO',
     ' Phet ',
     'phetio element', // use "phet-io element" or "PhET-iO element"
+    'Phet-iO',
     '@return '
   ];
 
