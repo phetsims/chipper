@@ -452,6 +452,7 @@ module.exports = function( grunt ) {
     'sort-require-statements',
     'insert-require-statement',
     'lint-everything',
-    'generate-data'
+    'generate-data',
+    'pdom-comparison'
   ].forEach( forwardToPerennialGrunt );
 };
