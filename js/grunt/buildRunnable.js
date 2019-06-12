@@ -93,7 +93,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   // After all strings have been loaded, report which of the translatable strings are unused.
   reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
 
-  const rawPreloads = getPreloads( repo, brand ).map( filename => grunt.file.read( filename ) );
+  const rawPreloads = getPreloads( repo, brand, true ).map( filename => grunt.file.read( filename ) );
   const productionPreloads = rawPreloads.map( js => minify( js, minifyOptions ) );
   const debugPreloads = rawPreloads.map( js => minify( js, debugMinifyOptions ) );
 
