@@ -44,9 +44,9 @@ module.exports = function( repo, options ) {
   function stringifyArray( arr, prefix ) {
     return '[\n' +
            arr.map( function( string ) {
-             return prefix + '      \'' + string.replace( /'/g, '\\\'' ) + '\'';
+             return prefix + '    \'' + string.replace( /'/g, '\\\'' ) + '\'';
            } ).join( ',\n' ) +
-           '\n' + prefix + '    ]';
+           '\n' + prefix + '  ]';
   }
 
   function isPreloadExcluded( preload ) {

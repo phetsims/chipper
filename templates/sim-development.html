@@ -24,39 +24,37 @@
 </div>
 
 <script type="text/javascript">
-  ( function() {
 
-    // Identify the brand (assume generated brand if not provided with query parameters)
-    var brandMatch = location.search.match( /brand=([^&]+)/ );
-    var brand = brandMatch ? decodeURIComponent( brandMatch[ 1 ] ) : 'adapted-from-phet';
+  // Identify the brand (assume generated brand if not provided with query parameters)
+  const brandMatch = location.search.match( /brand=([^&]+)/ );
+  const brand = brandMatch ? decodeURIComponent( brandMatch[ 1 ] ) : 'adapted-from-phet';
 
-    // Preloads, with more included for phet-io brand
-    var preloads = {{PRELOADS}};
+  // Preloads, with more included for phet-io brand
+  let preloads = {{PRELOADS}};
 
-    if ( brand === 'phet-io' ) {
-      preloads = preloads.concat( {{PHET_IO_PRELOADS}} );
+  if ( brand === 'phet-io' ) {
+    preloads = preloads.concat( {{PHET_IO_PRELOADS}} );
+  }
+
+  // Loads a synchronously-executed asynchronously-downloaded script tag, with optional data-main parameter.
+  // See http://www.html5rocks.com/en/tutorials/speed/script-loading/ for more about script loading. It helps to
+  // load all of the scripts with this method, so they are treated the same (and placed in the correct execution
+  // order).
+  const loadURL = ( preloadURL, main ) => {
+    const script = document.createElement( 'script' );
+    if ( typeof main === 'string' ) {
+      script.setAttribute( 'data-main', main );
     }
+    script.type = 'text/javascript';
+    script.src = preloadURL;
+    script.async = false;
+    document.head.appendChild( script );
+  };
 
-    // Loads a synchronously-executed asynchronously-downloaded script tag, with optional data-main parameter.
-    // See http://www.html5rocks.com/en/tutorials/speed/script-loading/ for more about script loading. It helps to
-    // load all of the scripts with this method, so they are treated the same (and placed in the correct execution
-    // order).
-    function loadURL( preloadURL, main ) {
-      var script = document.createElement( 'script' );
-      if ( typeof main === 'string' ) {
-        script.setAttribute( 'data-main', main );
-      }
-      script.type = 'text/javascript';
-      script.src = preloadURL;
-      script.async = false;
-      document.head.appendChild( script );
-    }
+  // Queue all of the preloads to be loaded.
+  preloads.forEach( loadURL );
 
-    // Queue all of the preloads to be loaded.
-    preloads.forEach( loadURL );
-
-    loadURL( '../sherpa/lib/require-2.3.6.js', 'js/{{REPOSITORY}}-{{QUALIFIER}}config.js' );
-  } )();
+  loadURL( '../sherpa/lib/require-2.3.6.js', 'js/{{REPOSITORY}}-{{QUALIFIER}}config.js' );
 </script>
 </body>
 </html>
