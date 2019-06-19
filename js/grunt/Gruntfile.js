@@ -49,7 +49,8 @@ module.exports = function( grunt ) {
   chipperGlobals.initialize();
 
   /**
-   * Wraps a promise's completion with grunt's asynchronous handling, with added helpful failure messages (including stack traces, regardless of whether --stack was provided).
+   * Wraps a promise's completion with grunt's asynchronous handling, with added helpful failure messages (including
+   * stack traces, regardless of whether --stack was provided).
    * @public
    *
    * @param {Promise} promise
@@ -79,8 +80,8 @@ module.exports = function( grunt ) {
   }
 
   /**
-   * Wraps an async function for a grunt task. Will run the async function when the task should be executed. Will properly handle grunt's async handling, and provides improved
-   * error reporting.
+   * Wraps an async function for a grunt task. Will run the async function when the task should be executed. Will
+   * properly handle grunt's async handling, and provides improved error reporting.
    * @public
    *
    * @param {async function} asyncTaskFunction
@@ -396,8 +397,9 @@ module.exports = function( grunt ) {
   );
 
   /**
-   * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from perennial's directory with the same options
-   * (but with --repo={{REPO}} added, so that perennial is aware of what repository is the target).
+   * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from
+   * perennial's directory with the same options (but with --repo={{REPO}} added, so that perennial is aware of what
+   * repository is the target).
    * @public
    *
    * @param {string} task - The name of the task
