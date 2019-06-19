@@ -23,6 +23,7 @@ module.exports = async ( repo, localTestingURL ) => {
     const phetioDirectory = 'js/phet-io';
     const baselineFileName = `${phetioDirectory}/${repo}-phet-io-elements-baseline.js`;
     const overridesFileName = `${phetioDirectory}/${repo}-phet-io-elements-overrides.js`;
+    const typesFileName = `${phetioDirectory}/${repo}-phet-io-types.js`;
 
     if ( !fs.existsSync( phetioDirectory ) ) {
       fs.mkdirSync( phetioDirectory );
@@ -37,23 +38,38 @@ module.exports = async ( repo, localTestingURL ) => {
         '/* eslint-disable */\nwindow.phet.phetio.phetioElementsOverrides = {};' );
     }
 
+    let receivedBaseline = false;
+    let receivedTypes = false;
+
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    page.on( 'console', async function( msg ) {
 
+    page.on( 'console', async msg => {
       if ( msg.text().indexOf( 'window.phet.phetio.phetioElementsBaseline' ) >= 0 ) {
-
         fs.writeFileSync( baselineFileName, msg.text() );
+        receivedBaseline = true;
+        await resolved();
+      }
+
+      if ( msg.text().indexOf( 'window.phet.phetio.phetioTypes' ) >= 0 ) {
+        fs.writeFileSync( typesFileName, msg.text() );
+        receivedTypes = true;
+        await resolved();
+      }
+    } );
+
+    const resolved = async () => {
+      if ( receivedBaseline && receivedTypes ) {
         await browser.close();
         resolve();
       }
-    } );
+    };
 
     page.on( 'error', msg => reject( msg ) );
     page.on( 'pageerror', msg => reject( msg ) );
 
     try {
-      await page.goto( `${localTestingURL}${repo}/${repo}_en.html?brand=phet-io&phetioStandalone&ea&phetioPrintPhetioElementsBaseline` );
+      await page.goto( `${localTestingURL}${repo}/${repo}_en.html?brand=phet-io&phetioStandalone&ea&phetioPrintPhetioFiles` );
     }
     catch( e ) {
       reject( e );

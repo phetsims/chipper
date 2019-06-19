@@ -30,7 +30,7 @@ const minify = require( './minify' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
-const generatePhetioElementsFiles = require( './phet-io/generatePhetioElementsFiles' );
+const generatePhetioFiles = require( './phet-io/generatePhetioFiles' );
 
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
@@ -392,7 +392,7 @@ module.exports = function( grunt ) {
       assert( typeof buildLocal.localTestingURL === 'string', 'must specify localTestingURL in build-local.json' );
       assert( buildLocal.localTestingURL.endsWith( '/' ), 'localTestingURL should end in a "/"' );
 
-      return await generatePhetioElementsFiles( repo, buildLocal.localTestingURL );
+      return await generatePhetioFiles( repo, buildLocal.localTestingURL );
     } )
   );
 
