@@ -52,7 +52,8 @@
     ],
     "simulationSpecificPreload": [
       "../{{REPO}}/js/phet-io/{{REPO}}-phet-io-elements-baseline.js",
-      "../{{REPO}}/js/phet-io/{{REPO}}-phet-io-elements-overrides.js"
+      "../{{REPO}}/js/phet-io/{{REPO}}-phet-io-elements-overrides.js",
+      "../{{REPO}}/js/phet-io/{{REPO}}-phet-io-types.js"
     ],
     "phetLibs": [
       "phet-io",
