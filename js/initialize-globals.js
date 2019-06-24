@@ -189,6 +189,16 @@
       defaultValue: null
     },
 
+    gaDeliver: {
+      type: 'boolean',
+      defaultValue: true
+    },
+
+    gaLoad: {
+      type: 'boolean',
+      defaultValue: true
+    },
+
     /**
      * Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
      */
@@ -208,6 +218,11 @@
     gaPage: {
       type: 'string',
       defaultValue: null
+    },
+
+    gaTimeout: {
+      type: 'number',
+      defaultValue: 0
     },
 
     // Private Doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
@@ -527,6 +542,11 @@
      */
     supportsSound: { type: 'flag' },
 
+    updateCheck: {
+      type: 'boolean',
+      defaultValue: true
+    },
+
     /**
      * Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289.
      * Note that simulations can opt-in to webgl via new Sim({webgl:true}), but using ?webgl=true takes
@@ -536,6 +556,16 @@
     webgl: {
       type: 'boolean',
       defaultValue: true
+    },
+
+    yottaDeliver: {
+      type: 'boolean',
+      defaultValue: true
+    },
+
+    yottaTimeout: {
+      type: 'number',
+      defaultValue: 0
     }
   };
 
