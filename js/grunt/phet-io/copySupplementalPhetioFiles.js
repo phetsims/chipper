@@ -1,4 +1,4 @@
-// Copyright 2016, University of Colorado Boulder
+// Copyright 2016-2019, University of Colorado Boulder
 
 /**
  * Copies all supporting PhET-iO files, including wrappers, indices, lib files, etc.
@@ -11,6 +11,7 @@
 'use strict';
 
 // modules
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 const copyDirectory = require( '../copyDirectory' );
 const execute = require( '../execute' );
@@ -75,7 +76,6 @@ module.exports = async function( repo, version, simulationDisplayName ) {
 
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
-
 
   // This regex was copied from perennial's `SimVersion.parse()` consult that code before changing things here.
   const matches = version.match( /^(\d+)\.(\d+)\.(\d+)(-(([^\.-]+)\.(\d+)))?(-([^.-]+))?$/ );
@@ -260,6 +260,31 @@ module.exports = async function( repo, version, simulationDisplayName ) {
 
   // Create the rendered jsdoc in the `doc` folder
   await handleJSDOC( buildDir );
+
+  writeAPIFile( buildDir, repo );
+};
+
+/**
+ * Create and write the full JSON file for the PhET-iO API.
+ * @param {string} buildDir
+ * @param {string} repo
+ */
+const writeAPIFile = ( buildDir, repo ) => {
+
+  const phetioDirectory = `../${repo}/js/phet-io`;
+  const baselineFileName = `${phetioDirectory}/${repo}-phet-io-elements-baseline.js`;
+  const overridesFileName = `${phetioDirectory}/${repo}-phet-io-elements-overrides.js`;
+  const typesFileName = `${phetioDirectory}/${repo}-phet-io-types.js`;
+
+  const loadAPIFile = ( name ) => {
+    const contents = fs.readFileSync( name ).toString();
+    return JSON.parse( contents.slice( contents.indexOf( '{' ), contents.lastIndexOf( '}' ) + 1 ) );
+  };
+
+  grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, JSON.stringify( {
+    phetioElements: _.extend( loadAPIFile( baselineFileName ), loadAPIFile( overridesFileName ) ),
+    phetioTypes: loadAPIFile( typesFileName )
+  }, null, 2 ) );
 };
 
 /**
