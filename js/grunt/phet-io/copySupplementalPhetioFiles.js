@@ -282,7 +282,7 @@ const writeAPIFile = ( buildDir, repo ) => {
   };
 
   grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, JSON.stringify( {
-    phetioElements: _.extend( loadAPIFile( baselineFileName ), loadAPIFile( overridesFileName ) ),
+    phetioElements: _.merge( loadAPIFile( baselineFileName ), loadAPIFile( overridesFileName ) ),
     phetioTypes: loadAPIFile( typesFileName )
   }, null, 2 ) );
 };
