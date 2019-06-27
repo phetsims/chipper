@@ -73,7 +73,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, {
     insertRequire: repo + '-main',
     instrument: instrument,
-    brand: brand
+    brand: brand,
+    wrapPath: 'phet.chipper.runRequireJS'
   } );
 
   // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.
@@ -141,7 +142,14 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
                  'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
   }
 
-  const chipperStringsScript = grunt.file.read( '../chipper/templates/chipper-strings.js' );
+  const stringsJS = grunt.file.read( '../chipper/templates/chipper-strings.js' );
+  const productionStringsJS = minify( stringsJS, minifyOptions );
+  const debugStringsJS = minify( stringsJS, debugMinifyOptions );
+
+  const startupJS = grunt.file.read( '../chipper/templates/chipper-startup.js' );
+  const productionStartupJS = minify( startupJS, minifyOptions );
+  const debugStartupJS = minify( startupJS, debugMinifyOptions );
+
   const splashScript = `window.PHET_SPLASH_DATA_URI="${loadFileAsDataURI( `../brand/${brand}/images/splash.svg` )}";`;
 
   grunt.log.ok( `Minification for ${brand} complete` );
@@ -176,7 +184,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
         stringMap: stringMap,
         htmlHeader: htmlHeader,
         locale: locale,
-        scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
+        scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, productionStringsJS, productionJS, productionStartupJS ]
       } ) );
     }
   }
@@ -195,7 +203,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       stringMap: stringMap,
       htmlHeader: htmlHeader,
       locale: ChipperConstants.FALLBACK_LOCALE,
-      scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
+      scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, productionStringsJS, productionJS, productionStartupJS ]
     } );
 
     grunt.file.write( allHTMLFilename, allHTMLContents );
@@ -214,7 +222,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     stringMap: stringMap,
     htmlHeader: htmlHeader,
     locale: ChipperConstants.FALLBACK_LOCALE,
-    scripts: [ debugInitializationScript, splashScript, mipmapsJavaScript, ...debugPreloads, chipperStringsScript, debugJS ]
+    scripts: [ debugInitializationScript, splashScript, mipmapsJavaScript, ...debugPreloads, debugStringsJS, debugJS, debugStartupJS ]
   } ) );
 
   // XHTML build (ePub compatibility, etc.)
@@ -230,7 +238,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     brand: brand,
     stringMap: stringMap,
     htmlHeader: htmlHeader,
-    scripts: [ xhtmlInitializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, chipperStringsScript, productionJS ]
+    scripts: [ xhtmlInitializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, productionStringsJS, productionJS, productionStartupJS ]
   } );
 
   // dependencies.json

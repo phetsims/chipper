@@ -29,7 +29,7 @@ module.exports = async function( repo, minifyOptions ) {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-  const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, { wrap: false } );
+  const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js` );
 
   const includedSources = [
     '../assert/js/assert.js',

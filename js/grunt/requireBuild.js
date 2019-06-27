@@ -26,7 +26,7 @@ const requirejs = require( 'requirejs' );
 module.exports = function( repo, mainConfigFile, options ) {
 
   const {
-    wrap = true,
+    wrapPath = null,
     insertRequire = false,
     instrument = false,
     brand = 'phet'
@@ -53,7 +53,10 @@ module.exports = function( repo, mainConfigFile, options ) {
 
       optimize: 'none',
 
-      wrap: wrap,
+      wrap: wrapPath ? {
+        start: 'phet.chipper.runRequireJS = function() {',
+        end: '};'
+      } : false,
 
       // Avoid optimization names that are outside the baseUrl, see http://requirejs.org/docs/optimization.html#pitfalls
       paths: {
