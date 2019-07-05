@@ -7,7 +7,7 @@
  * The require.js part is wrapped in a phet.chipper.runRequireJS() method.
  */
 
-(function() {
+( function() {
   'use strict';
 
   // constants
@@ -68,13 +68,13 @@
   }
 
   // Attempt to start based on timeouts (in case other methods don't work). This will call attemptStart() at least once.
-  (function timeoutListener() {
+  ( function timeoutListener() {
     attemptStart();
 
     if ( !started ) {
       setTimeout( timeoutListener, 1000 );
     }
-  })();
+  } )();
 
   if ( !started ) {
     // Attempt to start on window resizes
@@ -86,4 +86,4 @@
       }
     } );
   }
-})();
+} )();
