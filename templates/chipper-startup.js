@@ -5,8 +5,9 @@
  * See https://github.com/phetsims/chipper/issues/764 for more information.
  *
  * The require.js part is wrapped in a phet.chipper.runRequireJS() method.
+ *
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
-
 ( function() {
   'use strict';
 
@@ -17,6 +18,7 @@
   let started = false;
 
   function isReady() {
+
     // NOTE: We do NOT care about window.innerWidth/innerHeight. We can start up with those equal to 0, as long as our
     // SVG bounds detection works. See https://github.com/phetsims/tasks/issues/1002.
     if ( !document.body ) {
@@ -77,6 +79,7 @@
   } )();
 
   if ( !started ) {
+
     // Attempt to start on window resizes
     window.addEventListener( 'resize', function resizeListener() {
       attemptStart();
