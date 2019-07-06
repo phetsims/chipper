@@ -62,7 +62,6 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   }
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-
   const encoder = new nodeHTMLEncoder.Encoder( 'entity' );
 
   // All html files share the same build timestamp
@@ -85,18 +84,11 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     minify: false
   };
 
-  const productionJS = minify( requireJS, minifyOptions );
-  const debugJS = minify( requireJS, debugMinifyOptions );
-
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   reportUnusedMedia( packageObject.phet.requirejsNamespace );
 
   // After all strings have been loaded, report which of the translatable strings are unused.
   reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
-
-  const rawPreloads = getPreloads( repo, brand, true ).map( filename => grunt.file.read( filename ) );
-  const productionPreloads = rawPreloads.map( js => minify( js, minifyOptions ) );
-  const debugPreloads = rawPreloads.map( js => minify( js, debugMinifyOptions ) );
 
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
@@ -105,7 +97,6 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const version = packageObject.version; // Include the one-off name in the version
   const thirdPartyEntries = getAllThirdPartyEntries( repo, brand );
   const stringMap = getStringMap( allLocales, phetLibs );
-  const mipmapsJavaScript = await buildMipmaps();
 
   const simTitleStringKey = getTitleStringKey( repo );
   const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ simTitleStringKey ];
@@ -142,20 +133,40 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
                  'University of Colorado. Contact phethelp@colorado.edu regarding licensing.';
   }
 
-  const stringsJS = grunt.file.read( '../chipper/templates/chipper-strings.js' );
-  const productionStringsJS = minify( stringsJS, minifyOptions );
-  const debugStringsJS = minify( stringsJS, debugMinifyOptions );
+  // Scripts that are run before our main minifiable content
+  const startupScripts = [
+    // Splash image
+    `window.PHET_SPLASH_DATA_URI="${loadFileAsDataURI( `../brand/${brand}/images/splash.svg` )}";`,
 
-  const startupJS = grunt.file.read( '../chipper/templates/chipper-startup.js' );
-  const productionStartupJS = minify( startupJS, minifyOptions );
-  const debugStartupJS = minify( startupJS, debugMinifyOptions );
+    // Mipmaps
+    await buildMipmaps()
+  ];
 
-  const splashScript = `window.PHET_SPLASH_DATA_URI="${loadFileAsDataURI( `../brand/${brand}/images/splash.svg` )}";`;
+  const minifiableScripts = [
+    // Preloads
+    ...getPreloads( repo, brand, true ).map( filename => grunt.file.read( filename ) ),
+
+    // Strings code (requires preloads first, and should be done before requireJS)
+    grunt.file.read( '../chipper/templates/chipper-strings.js' ),
+
+    // Our main require.js content, wrapped in a function called in the startup below
+    requireJS,
+
+    // Main startup
+    grunt.file.read( '../chipper/templates/chipper-startup.js' )
+  ];
+
+  const productionScripts = [
+    ...startupScripts,
+    ...minifiableScripts.map( js => minify( js, minifyOptions ) )
+  ];
+  const debugScripts = [
+    ...startupScripts,
+    ...minifiableScripts.map( js => minify( js, debugMinifyOptions ) )
+  ];
 
   grunt.log.ok( `Minification for ${brand} complete` );
-  grunt.log.ok( `Require.js: ${productionJS.length} bytes` );
-  grunt.log.ok( `Preloads: ${_.sum( productionPreloads.map( preload => preload.length ) )} bytes` );
-  grunt.log.ok( `Mipmaps: ${mipmapsJavaScript.length} bytes` );
+  grunt.log.ok( `Production scripts: ${_.sum( productionScripts.map( js => js.length ) )} bytes` );
 
   const commonInitializationOptions = {
     brand: brand,
@@ -184,7 +195,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
         stringMap: stringMap,
         htmlHeader: htmlHeader,
         locale: locale,
-        scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, productionStringsJS, productionJS, productionStartupJS ]
+        scripts: [ initializationScript, ...productionScripts ]
       } ) );
     }
   }
@@ -203,7 +214,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       stringMap: stringMap,
       htmlHeader: htmlHeader,
       locale: ChipperConstants.FALLBACK_LOCALE,
-      scripts: [ initializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, productionStringsJS, productionJS, productionStartupJS ]
+      scripts: [ initializationScript, ...productionScripts ]
     } );
 
     grunt.file.write( allHTMLFilename, allHTMLContents );
@@ -222,7 +233,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     stringMap: stringMap,
     htmlHeader: htmlHeader,
     locale: ChipperConstants.FALLBACK_LOCALE,
-    scripts: [ debugInitializationScript, splashScript, mipmapsJavaScript, ...debugPreloads, debugStringsJS, debugJS, debugStartupJS ]
+    scripts: [ debugInitializationScript, ...debugScripts ]
   } ) );
 
   // XHTML build (ePub compatibility, etc.)
@@ -238,7 +249,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     brand: brand,
     stringMap: stringMap,
     htmlHeader: htmlHeader,
-    scripts: [ xhtmlInitializationScript, splashScript, mipmapsJavaScript, ...productionPreloads, productionStringsJS, productionJS, productionStartupJS ]
+    scripts: [ xhtmlInitializationScript, ...productionScripts ]
   } );
 
   // dependencies.json

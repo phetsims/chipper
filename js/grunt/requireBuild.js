@@ -26,7 +26,10 @@ const requirejs = require( 'requirejs' );
 module.exports = function( repo, mainConfigFile, options ) {
 
   const {
+    // {string|null} - If provided, the contents of the require.js build will be wrapped inside a function that is
+    // assigned to the given path (e.g. phet.chipper.runRequireJS).
     wrapPath = null,
+
     insertRequire = false,
     instrument = false,
     brand = 'phet'
@@ -43,6 +46,7 @@ module.exports = function( repo, mainConfigFile, options ) {
 
     const instrumenter = instrument ? new istanbul.Instrumenter() : null;
 
+    // All options are documented at https://github.com/requirejs/r.js/blob/master/build/example.build.js
     const config = {
 
       // Includes a require.js stub called almond, so that we don't have to include the full require.js runtime
@@ -54,7 +58,7 @@ module.exports = function( repo, mainConfigFile, options ) {
       optimize: 'none',
 
       wrap: wrapPath ? {
-        start: 'phet.chipper.runRequireJS = function() {',
+        start: `${wrapPath} = function() {`,
         end: '};'
       } : false,
 
