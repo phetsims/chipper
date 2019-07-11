@@ -21,11 +21,16 @@ const fs = require( 'fs' );
  */
 module.exports = async ( repo, relativeFile ) => {
 
-  const startDate = ( await execute( 'git', [
+  let startDate = ( await execute( 'git', [
     'log', '--diff-filter=A', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
   ], {
     cwd: `../${repo}`
   } ) ).trim().split( '-' )[ 0 ];
+
+  // There is a bug with the above git log command that sometimes yields a blank link as output
+  if ( startDate === '' ) {
+    startDate = '2002';
+  }
 
   const endDate = ( await execute( 'git', [
     'log', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
