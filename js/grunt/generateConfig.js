@@ -12,11 +12,10 @@
 
 // modules
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const execute = require( './execute' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
-
-//TODO https://github.com/phetsims/perennial/issues/120, this causes 'grunt create-sim' to fail
-// const updateCopyrightDate = require( './updateCopyrightDate' );
+const updateCopyrightDate = require( './updateCopyrightDate' );
 
 /**
  * @param {string} repo
@@ -67,9 +66,31 @@ module.exports = async function( repo, relativeFile, launchSuffix ) {
     return prefix + ': ' + requirements[ prefix ];
   } ).join( ',\n    ' ) );
 
-  // Write to the repository's root directory.
-  grunt.file.write( `../${repo}/${relativeFile}`, configJS );
+  const configFilename = `../${repo}/${relativeFile}`;
 
-  //TODO https://github.com/phetsims/perennial/issues/120, this causes 'grunt create-sim' to fail
-  // await updateCopyrightDate( repo, relativeFile );
+  // Write to the repository's root directory.
+  grunt.file.write( configFilename, configJS );
+
+  //////////////////////////////
+  // This is somewhat more complicated than it needs to be to support proper copyright dates
+  //
+  const tempBashFileName = 'temp.sh';
+  grunt.file.write( tempBashFileName, '[ -d .git ] || git rev-parse --git-dir > /dev/null 2>&1' );
+  await execute( 'chmod', [ 'u+x', tempBashFileName ], '' );
+
+  try {
+
+    // Test if this is a git repo, fail out if it isn't
+    await execute( 'sh', [ './temp.sh' ], '' );
+
+    // Test if the config file is checked in to git, fail if not
+    await execute( 'git', [ 'ls-files', '--error-unmatch', relativeFile ], `../${repo}` );
+
+    // If we get here, then we are overwriting the config file, so let's update the copyright to be appropriate.
+    await updateCopyrightDate( repo, relativeFile );
+  }
+  catch( e ) {
+    // if we errored out, then the config file isn't tracked, so don't update the copyright date
+  }
+  grunt.file.delete( tempBashFileName );
 };
