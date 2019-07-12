@@ -101,8 +101,7 @@
      * enables cache busting in requirejs mode.
      */
     cacheBust: {
-      type: 'boolean',
-      defaultValue: true
+      type: 'flag'
     },
 
     /**
@@ -562,10 +561,8 @@
     }
 
     /**
-     * Gets the cache bust args based on the provided query parameters.  By default it is:
-     * ?bust=<number>
-     * But this can be omitted if ?cacheBust=false is provided
-     * See https://github.com/phetsims/joist/issues/196
+     * Gets the cache bust args based on the provided query parameters. When enabled, the parameter is added to
+     * resources like: ?bust=<number>
      * @returns {string}
      */
     window.phet.chipper.getCacheBustArgs = function() {
