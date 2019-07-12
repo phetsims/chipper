@@ -54,6 +54,10 @@
      * Whether accessibility features are enabled or not.  Use this option to render the Parallel DOM for
      * keyboard navigation and screen reader based auditory descriptions. This query parameter is meant for internal
      * use only, simulations published with accessibility enabled should use the Sim option `accessibility: true`.
+     *
+     * Use this to enable accessibility, but do NOT use this to determine whether accessibility is enabled for 
+     * a sim. Sim options can also enable accessibility so please use phet.joist.sim.isAccessible if you need
+     * to know whether accessibility is enabled globally.
      */
     accessibility: { type: 'flag' },
 
