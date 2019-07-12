@@ -80,5 +80,5 @@ module.exports = function( cmd, args, options ) {
         resolve( stdout );
       }
     } );
-  } ).catch( function( err ) { grunt.fail.fatal( `error executing binary "${cmd}": ${err}` );} );
+  } );
 };
