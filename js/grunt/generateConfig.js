@@ -75,6 +75,8 @@ module.exports = async function( repo, relativeFile, launchSuffix ) {
   // This is somewhat more complicated than it needs to be to support proper copyright dates
   //
   const tempBashFileName = 'temp.sh';
+
+  // write to a bash file to support this complicated bash command
   grunt.file.write( tempBashFileName, '[ -d .git ] || git rev-parse --git-dir > /dev/null 2>&1' );
   await execute( 'chmod', [ 'u+x', tempBashFileName ], '' );
 
