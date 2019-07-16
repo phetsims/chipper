@@ -1,4 +1,4 @@
-// Copyright 2013-2015, University of Colorado Boulder
+// Copyright 2013-2019, University of Colorado Boulder
 
 /**
  * String plugin, loads a string using a syntax like:
@@ -43,9 +43,8 @@ define( function( require ) {
    * @param {string} url path for the string
    * @param {function} callback callback when the check succeeds
    * @param {function} errback callback for when an error occurred
-   * @param {???} headers
    */
-  function getWithCache( url, callback, errback, headers ) {
+  function getWithCache( url, callback, errback ) {
 
     var isRTL = localeInfo[ phet.chipper.queryParameters.locale ].direction === 'rtl';
 
@@ -69,7 +68,7 @@ define( function( require ) {
         }
         cache[ url ] = parsed;
         callback( cache[ url ] );
-      }, errback, headers );
+      }, errback, { accept: 'application/json' } );
     }
   }
 
@@ -178,42 +177,39 @@ define( function( require ) {
 
           // Load & parse just once per file, getting the fallback strings first.
           getWithCache( fallbackSpecificPath, function( parsedFallbackStrings ) {
-              if ( parsedFallbackStrings[ key ] === undefined ) {
-                throw new Error( 'Missing string: ' + key + ' in ' + fallbackSpecificPath );
-              }
-              var fallback = parsedFallbackStrings[ key ].value;
+            if ( parsedFallbackStrings[ key ] === undefined ) {
+              onload.error( new Error( 'Missing string: ' + key + ' in ' + fallbackSpecificPath ) );
+            }
 
-              // Now get the primary strings.
-              getWithCache( localeSpecificPath, function( parsed ) {
+            // Now get the primary strings.
+            getWithCache( localeSpecificPath, function( parsed ) {
 
-                  // Combine the primary and fallback strings into one object hash.
-                  var parsedStrings = _.extend( parsedFallbackStrings, parsed );
-                  if ( parsedStrings[ key ] !== undefined ) {
-                    onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
-                  }
-                  else {
-
-                    // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
-                    throw new Error( 'no entry for string key: ' + key );
-                  }
-                },
-
-                // Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
-                function() {
+                // Combine the primary and fallback strings into one object hash.
+                var parsedStrings = _.extend( parsedFallbackStrings, parsed );
+                if ( parsedStrings[ key ] !== undefined ) {
+                  onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
+                }
+                else {
 
                   // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
-                  if ( !parsedFallbackStrings[ key ] ) {
-                    throw new Error( 'no fallback for string key:' + key );
-                  }
+                  onload.error( new Error( 'no entry for string key: ' + key ) );
+                }
+              },
 
-                  // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
-                  console.log( 'no string file for ' + localeSpecificPath );
+              // Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
+              function() {
 
-                  // TODO: why not call chipper.mapString on this too?
-                  onload( fallback );
-                }, { accept: 'application/json' } );
-            },
-            onload.error, { accept: 'application/json' } );
+                // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
+                if ( !parsedFallbackStrings[ key ] ) {
+                  onload.error( new Error( 'no fallback for string key:' + key ) );
+                }
+
+                // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
+                console.log( 'no string file for ' + localeSpecificPath );
+
+                onload( window.phet.chipper.mapString( parsedFallbackStrings[ key ].value, stringTest ) );
+              } );
+          }, onload.error );
         }
       }
     },
