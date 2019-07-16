@@ -2,7 +2,7 @@
 
 /**
  * String plugin, loads a string using a syntax like:
- * var title = require( 'string!JOHN_TRAVOLTAGE/john-travoltage.title' );
+ * const title = require( 'string!JOHN_TRAVOLTAGE/john-travoltage.title' );
  *
  * This file conforms to the RequireJS plugin API which is described here: http://requirejs.org/docs/plugins.html#api
  *
@@ -13,40 +13,39 @@
  *
  * The plugin code itself is excluded from the build by declaring it as a stubModule
  *
- * @author Sam Reid
+ * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules
-  var _ = require( '../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-  var ChipperConstants = require( '../../chipper/js/common/ChipperConstants' );
-  var ChipperStringUtils = require( '../../chipper/js/common/ChipperStringUtils' );
-  var localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
-  var text = require( 'text' );
-
-  var parse = JSON.parse;
+  const _ = require( '../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
+  const ChipperConstants = require( '../../chipper/js/common/ChipperConstants' );
+  const ChipperStringUtils = require( '../../chipper/js/common/ChipperStringUtils' );
+  const localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
+  const text = require( 'text' );
 
   // Cache the loaded strings so they only have to be read once through file.read (for performance)
   // Object.<loadedURL:string,Object.<stringKeyName:string, stringValueObject:{value:string}>>}
   // Where stringValueObject is the value of each key in string json files.
-  var cache = {};
+  const cache = {};
 
   // See documentation of stringTest query parameter in initialize-globals.js
-  var stringTest = ( typeof window !== 'undefined' && window.phet.chipper.queryParameters.stringTest ) ?
-                   window.phet.chipper.queryParameters.stringTest :
-                   null;
+  const stringTest = ( typeof window !== 'undefined' && window.phet.chipper.queryParameters.stringTest ) ?
+                     window.phet.chipper.queryParameters.stringTest :
+                     null;
 
   /**
    * When running in requirejs mode, check to see if we have already loaded the specified file
    * Also parses it so that only happens once per file (instead of once per string key)
    * @param {string} url path for the string
    * @param {function} callback callback when the check succeeds
-   * @param {function} errback callback for when an error occurred
+   * @param {function} errorBack callback for when an error occurred
    */
-  function getWithCache( url, callback, errback ) {
+  const getWithCache = ( url, callback, errorBack ) => {
 
-    var isRTL = localeInfo[ phet.chipper.queryParameters.locale ].direction === 'rtl';
+    const isRTL = localeInfo[ phet.chipper.queryParameters.locale ].direction === 'rtl';
 
     // Check for cache hit, see discussion in https://github.com/phetsims/chipper/issues/730
     if ( cache[ url ] ) {
@@ -55,9 +54,9 @@ define( function( require ) {
     else {
 
       // Cache miss: load the file parse, enter into cache and return it
-      text.get( url, function( loadedText ) {
-        var parsed = parse( loadedText );
-        for ( var stringKey in parsed ) {
+      text.get( url, loadedText => {
+        const parsed = JSON.parse( loadedText );
+        for ( const stringKey in parsed ) {
           if ( parsed.hasOwnProperty( stringKey ) ) {
 
             // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
@@ -68,9 +67,9 @@ define( function( require ) {
         }
         cache[ url ] = parsed;
         callback( cache[ url ] );
-      }, errback, { accept: 'application/json' } );
+      }, errorBack, { accept: 'application/json' } );
     }
-  }
+  };
 
   return {
 
@@ -97,30 +96,28 @@ define( function( require ) {
      *        the web app wants to force a specific locale. The optimizer will set an isBuild property in the config to
      *        true if this plugin (or pluginBuilder) is being called as part of an optimizer build.
      */
-    load: function( name, parentRequire, onload, config ) {
+    load: ( name, parentRequire, onload, config ) => {
 
       // Extract the key. Eg for 'JOHN_TRAVOLTAGE/john-travoltage.title', the key is 'john-travoltage.title'.
-      var key = name.substring( name.lastIndexOf( '/' ) + 1 );
+      const key = name.substring( name.lastIndexOf( '/' ) + 1 );
 
       // Apply the cache bust args (but only during requirejs mode)
-      var suffix = config.isBuild ? '' : config.urlArgs( name, '' );
+      const suffix = config.isBuild ? '' : config.urlArgs( name, '' );
 
-      var requirejsNamespace = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
-      var requirePath;
-      var repositoryPath;
-      var repositoryName;
-      var locale;
+      const requirejsNamespace = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
+      let requirePath;
+      let repositoryPath;
+      let repositoryName;
 
-      function getFilenameForLocale( locale ) {
-        return repositoryName + '-strings_' + locale + '.json' + suffix;
-      }
+      // {function(string):string} - map locale to strings filename
+      const getFilenameForLocale = locale => `${repositoryName}-strings_${locale}.json${suffix}`;
 
+      // config.isBuild is set by to true when building the sim, i.e. running with the requirejs optimizer
       if ( config.isBuild ) {
 
         // --- build mode ---
 
         // extract information about the repository name, prefix, and path that will be recorded for later in the build
-        requirejsNamespace = name.substring( 0, name.indexOf( '/' ) ); // e.g. 'SOME_SIM'
         requirePath = parentRequire.toUrl( requirejsNamespace ); // e.g. '/Users/something/phet/git/some-sim/js'
         if ( requirePath.substring( requirePath.lastIndexOf( '/' ) ) !== '/js' ) {
           onload.error( new Error( 'requirejs namespace REPO must resolve to repo/js' ) );
@@ -151,20 +148,20 @@ define( function( require ) {
         if ( requirePath.indexOf( '?' ) >= 0 ) {
           requirePath = requirePath.substring( 0, requirePath.indexOf( '?' ) );
         }
-        repositoryPath = requirePath + '/..';
+        repositoryPath = `${requirePath}/..`;
         repositoryName = requirejsNamespace.toLowerCase().split( '_' ).join( '-' );
 
         // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
-        var queryParameterStrings = parse( phet.chipper.queryParameters.strings || '{}' );
-        locale = phet.chipper.queryParameters.locale;
-        var fallbackSpecificPath = repositoryPath + '/' + getFilenameForLocale( ChipperConstants.FALLBACK_LOCALE );
-        var localeSpecificPath = ( locale === ChipperConstants.FALLBACK_LOCALE ) ?
-                                 fallbackSpecificPath :
-                                 repositoryPath + '/../babel/' + repositoryName + '/' + getFilenameForLocale( locale );
+        const queryParameterStrings = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
+        const locale = phet.chipper.queryParameters.locale;
+        const fallbackSpecificPath = `${repositoryPath}/${getFilenameForLocale( ChipperConstants.FALLBACK_LOCALE )}`;
+        const localeSpecificPath = ( locale === ChipperConstants.FALLBACK_LOCALE ) ?
+                                   fallbackSpecificPath :
+                                   `${repositoryPath}/../babel/${repositoryName}/${getFilenameForLocale( locale )}`;
 
-        // In the browser, a string specified via the 'strings' query parameter overrides anything,
+        // In the browser, a string specified via the '?strings' query parameter overrides anything,
         // to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
-        var queryParameterStringValue = queryParameterStrings[ name ];
+        const queryParameterStringValue = queryParameterStrings[ name ];
         if ( queryParameterStringValue ) {
           onload( queryParameterStringValue );
         }
@@ -172,40 +169,40 @@ define( function( require ) {
 
           // Read the locale from a query parameter, if it is there, or use the fallback locale
           if ( !localeInfo[ locale ] ) {
-            onload.error( new Error( 'unsupported locale: ' + locale ) );
+            onload.error( new Error( `unsupported locale: ${locale}` ) );
           }
 
           // Load & parse just once per file, getting the fallback strings first.
-          getWithCache( fallbackSpecificPath, function( parsedFallbackStrings ) {
+          getWithCache( fallbackSpecificPath, parsedFallbackStrings => {
             if ( parsedFallbackStrings[ key ] === undefined ) {
-              onload.error( new Error( 'Missing string: ' + key + ' in ' + fallbackSpecificPath ) );
+              onload.error( new Error( `Missing string: ${key} in ${fallbackSpecificPath}` ) );
             }
 
             // Now get the primary strings.
-            getWithCache( localeSpecificPath, function( parsed ) {
+            getWithCache( localeSpecificPath, parsed => {
 
                 // Combine the primary and fallback strings into one object hash.
-                var parsedStrings = _.extend( parsedFallbackStrings, parsed );
+                const parsedStrings = _.extend( parsedFallbackStrings, parsed );
                 if ( parsedStrings[ key ] !== undefined ) {
                   onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
                 }
                 else {
 
                   // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
-                  onload.error( new Error( 'no entry for string key: ' + key ) );
+                  onload.error( new Error( `no entry for string key: ${key}` ) );
                 }
               },
 
               // Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
-              function() {
+              () => {
 
                 // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
                 if ( !parsedFallbackStrings[ key ] ) {
-                  onload.error( new Error( 'no fallback for string key:' + key ) );
+                  onload.error( new Error( `no fallback for string key:${key}` ) );
                 }
 
                 // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
-                console.log( 'no string file for ' + localeSpecificPath );
+                console.log( `no string file for ${localeSpecificPath}` );
 
                 onload( window.phet.chipper.mapString( parsedFallbackStrings[ key ].value, stringTest ) );
               } );
@@ -232,8 +229,8 @@ define( function( require ) {
      *          contains implicit require("") dependencies that need to be pulled out for the optimized file. asModule
      *          is useful for text transform plugins, like a CoffeeScript plugin.
      */
-    write: function( pluginName, moduleName, write ) {
-      write( 'define("' + pluginName + '!' + moduleName + '",function(){return window.phet.chipper.strings.get(\"' + moduleName + '\");});\n' );
+    write: ( pluginName, moduleName, write ) => {
+      write( `define("${pluginName}!${moduleName}",function(){return window.phet.chipper.strings.get(\"${moduleName}\");});\n` );
     }
   };
 } );

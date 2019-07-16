@@ -55,7 +55,7 @@
      * keyboard navigation and screen reader based auditory descriptions. This query parameter is meant for internal
      * use only, simulations published with accessibility enabled should use the Sim option `accessibility: true`.
      *
-     * Use this to enable accessibility, but do NOT use this to determine whether accessibility is enabled for 
+     * Use this to enable accessibility, but do NOT use this to determine whether accessibility is enabled for
      * a sim. Sim options can also enable accessibility so please use phet.joist.sim.isAccessible if you need
      * to know whether accessibility is enabled globally.
      */
@@ -479,7 +479,7 @@
     },
 
     /**
-     * Override translated strings.
+     * Override translated strings. This is only supported in requirejs mode.
      * The value is encoded JSON of the form { "namespace.key":"value", "namespace.key":"value", ... }
      * Example: { "PH_SCALE/logarithmic":"foo", "PH_SCALE/linear":"bar" }
      * Encode the JSON in a browser console using: encodeURIComponent( JSON.stringify( value ) )
