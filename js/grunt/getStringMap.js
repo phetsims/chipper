@@ -35,7 +35,8 @@ module.exports = function( locales, phetLibs ) {
   for ( const stringKey in global.phet.chipper.strings ) {
     const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
-    if ( stringRepositories.every( function( repo ) { return repo.name !== repositoryName; } ) ) {
+    // If this repo is not yet in the list
+    if ( stringRepositories.every( repo => repo.name !== repositoryName ) ) {
       stringRepositories.push( {
         name: repositoryName,
         path: global.phet.chipper.strings[ stringKey ].repositoryPath,
@@ -80,13 +81,10 @@ module.exports = function( locales, phetLibs ) {
       }
       const fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
+      // format the string values
+      // TODO: this refactor made it so we loop twice. Zepumph thinks it's worth it to avoid duplication with the string plugin, see https://github.com/phetsims/rosetta/issues/193
+      ChipperStringUtils.formatStringValues( fileContents, isRTL );
       for ( const stringKeyMissingPrefix in fileContents ) {
-        const stringData = fileContents[ stringKeyMissingPrefix ];
-
-        // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
-        stringData.value = stringData.value.trim();
-
-        stringData.value = ChipperStringUtils.addDirectionalFormatting( stringData.value, isRTL );
 
         // Add the requirejs namespaces (eg, JOIST) to the key
         fileMap[ repository.requirejsNamespace + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
@@ -103,9 +101,12 @@ module.exports = function( locales, phetLibs ) {
       const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
       // English fallback
-      assert( repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ] !== undefined,
-        `Missing string: ${stringKey} in ${repositoryName} for fallback locale: ${fallbackLocale}` );
-      const fallbackString = repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ].value;
+      const stringsForFallbackLocale = repoStringMap[ repositoryName ][ fallbackLocale ];
+
+      // This method will recurse if needed to find nested string values as well.
+      const fallbackString = ChipperStringUtils.getStringFromStringFileContents( stringsForFallbackLocale, stringKey, locale === 'en' );
+
+      // TODO: this does not support nesting at all, does that matter? https://github.com/phetsims/rosetta/issues/193
       stringMap[ locale ][ stringKey ] = fallbackString;
 
       // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.

@@ -1,6 +1,6 @@
 // Copyright 2018, University of Colorado Boulder
 
-(function() {
+( function() {
   'use strict';
 
   var stringOverrides = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
@@ -29,4 +29,4 @@
     }
     return window.phet.chipper.mapString( stringMap[ key ], stringTest );
   };
-})();
+} )();

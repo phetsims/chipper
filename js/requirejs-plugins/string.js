@@ -26,12 +26,13 @@ define( require => {
   const localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
   const text = require( 'text' );
 
+  // constants
   // Cache the loaded strings so they only have to be read once through file.read (for performance)
   // Object.<loadedURL:string,Object.<stringKeyName:string, stringValueObject:{value:string}>>}
   // Where stringValueObject is the value of each key in string json files.
   const cache = {};
 
-  // See documentation of stringTest query parameter in initialize-globals.js
+  // {string|null} - See documentation of stringTest query parameter in initialize-globals.js
   const stringTest = ( typeof window !== 'undefined' && window.phet.chipper.queryParameters.stringTest ) ?
                      window.phet.chipper.queryParameters.stringTest :
                      null;
@@ -45,8 +46,6 @@ define( require => {
    */
   const getWithCache = ( url, callback, errorBack ) => {
 
-    const isRTL = localeInfo[ phet.chipper.queryParameters.locale ].direction === 'rtl';
-
     // Check for cache hit, see discussion in https://github.com/phetsims/chipper/issues/730
     if ( cache[ url ] ) {
       callback( cache[ url ] );
@@ -56,19 +55,25 @@ define( require => {
       // Cache miss: load the file parse, enter into cache and return it
       text.get( url, loadedText => {
         const parsed = JSON.parse( loadedText );
-        for ( const stringKey in parsed ) {
-          if ( parsed.hasOwnProperty( stringKey ) ) {
 
-            // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
-            parsed[ stringKey ].value = parsed[ stringKey ].value.trim();
+        const isRTL = localeInfo[ phet.chipper.queryParameters.locale ].direction === 'rtl';
 
-            parsed[ stringKey ].value = ChipperStringUtils.addDirectionalFormatting( parsed[ stringKey ].value, isRTL );
-          }
-        }
+        ChipperStringUtils.formatStringValues( parsed, isRTL );
         cache[ url ] = parsed;
         callback( cache[ url ] );
       }, errorBack, { accept: 'application/json' } );
     }
+  };
+
+  /**
+   *
+   * @param {function} onload see doc for load()
+   * @param {Object} map - loaded from a string file
+   * @param {string} key - the key of the string to be loaded
+   * @param {string} fileURL - for better error messaging
+   */
+  const getStringFromMap = ( map, key ) => {
+    return window.phet.chipper.mapString( ChipperStringUtils.getStringFromStringFileContents( map, key ), stringTest );
   };
 
   return {
@@ -174,37 +179,21 @@ define( require => {
 
           // Load & parse just once per file, getting the fallback strings first.
           getWithCache( fallbackSpecificPath, parsedFallbackStrings => {
-            if ( parsedFallbackStrings[ key ] === undefined ) {
-              onload.error( new Error( `Missing string: ${key} in ${fallbackSpecificPath}` ) );
-            }
 
             // Now get the primary strings.
             getWithCache( localeSpecificPath, parsed => {
 
                 // Combine the primary and fallback strings into one object hash.
                 const parsedStrings = _.extend( parsedFallbackStrings, parsed );
-                if ( parsedStrings[ key ] !== undefined ) {
-                  onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
-                }
-                else {
-
-                  // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
-                  onload.error( new Error( `no entry for string key: ${key}` ) );
-                }
+                onload( getStringFromMap( parsedStrings, key ) );
               },
 
               // Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
               () => {
 
-                // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
-                if ( !parsedFallbackStrings[ key ] ) {
-                  onload.error( new Error( `no fallback for string key:${key}` ) );
-                }
-
                 // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
                 console.log( `no string file for ${localeSpecificPath}` );
-
-                onload( window.phet.chipper.mapString( parsedFallbackStrings[ key ].value, stringTest ) );
+                onload( getStringFromMap( parsedFallbackStrings, key ) );
               } );
           }, onload.error );
         }

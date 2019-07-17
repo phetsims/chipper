@@ -27,7 +27,9 @@ module.exports = function( repo, requirejsNamespace ) {
 
   // iterate over the strings
   for ( const key in jsStrings ) {
-    if ( jsStrings.hasOwnProperty( key ) ) {
+
+    // TODO: support this tool for nested a11y strings, see https://github.com/phetsims/rosetta/issues/193
+    if ( jsStrings.hasOwnProperty( key ) && key !== 'a11y' ) {
 
       const string = jsStrings[ key ].value;
       const requireStringKey = requirejsNamespace + '/' + key;

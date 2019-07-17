@@ -9,7 +9,14 @@
 /* eslint-env browser, node */
 'use strict';
 
-(function() {
+( function() {
+
+  // constants
+  // This key marker notes that the key exists in a part of the string file in which strings can be nested
+  // TODO: Perhaps just call this A11Y_STRING_MARKER, it is pretty a11y specific anyways.
+  // TODO: Doesn't this exclude us from having a top level key like `"a11ySomethingString":{"value":"a11y something string"}`
+  // TODO: https://github.com/phetsims/rosetta/issues/193
+  const SUPPORTS_NESTING_MARKER = 'a11y';
 
   var ChipperStringUtils = {
 
@@ -110,7 +117,105 @@
       var findRE = '.*' + find.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' ) + '.*';
       var theReturn = string.match( new RegExp( findRE, 'g' ) );
       return theReturn ? theReturn[ 0 ] : null;
-    }
+    },
+
+    /**
+     * Recurse through a string file and format each string value appropriately
+     * @param {Object.<string, intermediary:Object|{value:string}>} stringObject - if "intermediary", then recurse to
+     *                                                                             find more nested keys
+     * @param {boolean} isRTL - is right to left language
+     */
+    formatStringValues: function( stringObject, isRTL ) {
+      for ( const stringKey in stringObject ) {
+        if ( stringObject.hasOwnProperty( stringKey ) ) {
+
+          // This will either have a "value" key, or be an object with keys that will eventually have 'value' in it
+          const element = stringObject[ stringKey ];
+          if ( element.hasOwnProperty( 'value' ) ) {
+
+            // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
+            element.value = element.value.trim();
+            element.value = ChipperStringUtils.addDirectionalFormatting( element.value, isRTL );
+          }
+          else {
+
+            // Recurse a level deeper
+            ChipperStringUtils.formatStringValues( element, isRTL );
+          }
+        }
+      }
+    },
+
+    /**
+     * Given a key, get the appropriate string from the "map" object. This method was primarily created to support
+     * nested string keys in https://github.com/phetsims/rosetta/issues/193
+     * @param {Object.<string, intermediate:Object|{value: string}>} map - where 'intermediate' could hold nested strings
+     * @param {string} key - like `friction.title` or `FRICTION/friction.title` or using nesting like `a11y.nested.string.here`
+     * @returns {string}
+     * TODO: well this isn't a very good name is it, https://github.com/phetsims/rosetta/issues/193
+     */
+    getStringFromStringFileContents( map, key ) {
+      let repoPrefix = '';
+      if ( key.indexOf( '/' ) >= 0 ) {
+        if ( key.match( /\//g ).length > 1 ) {
+          throw new Error( `more forward slashes than expected in key: ${key}` );
+        }
+        repoPrefix = key.split( '/' )[ 0 ];
+      }
+
+      // Normal case where the key holds an object with the string in the "value" key, i.e. "friction.title": { "value": "Friction" },
+      if ( map[ key ] !== undefined ) {
+        if ( map[ key ].value === undefined ) {
+          throw new Error( `no value entry for string key: ${key}` );
+        }
+        return map[ key ].value;
+      }
+
+      // `key` begins with nested section marker in requirejs case, where there isn't a prefix repo, like `a11y.string`
+      // instead of `FRICTION/a11y.string`
+      else if ( key.indexOf( SUPPORTS_NESTING_MARKER ) === 0 ) {
+        if ( repoPrefix !== '' ) {
+          throw new Error( `unexpected repo prefex ${repoPrefix}` );
+        }
+
+        // access the nested object with a key like `a11y.my.string.is.all.the.way.down.here`
+        const string = _.at( map, key )[ 0 ];
+        if ( string === undefined || string.value === undefined ) {
+          throw new Error( `no entry for nested string key: ${key}` );
+        }
+
+        // TODO: recurse through each and assert that there is no "value" key in each nested object? (maybe)
+        // TODO: for example `a11y.my.string.is.all.the.way.value` should not have a key because
+        // TODO: `a11y.my.string.is.all.the.way.down.here` is a string value
+        // TODO: perhaps also do this for getStringMap case below, but maybe this is only needed here for requirejs mode
+        // TODO: https://github.com/phetsims/rosetta/issues/193
+        return string.value;
+      }
+
+      // This supports being called from getStringMap with keys like `FRICTION/a11y.some.string.here`
+      else if ( repoPrefix && key.indexOf( `${repoPrefix}/${SUPPORTS_NESTING_MARKER}` ) === 0 ) {
+
+        // The first key in the map is like "FRICTION/a11y": { . . . }
+        const nestedStringsKey = `${repoPrefix}/${SUPPORTS_NESTING_MARKER}`;
+        const nestedStrings = map[ nestedStringsKey ];
+
+        // access the nested object, remove the `FRICTION/a11y` piece because we already accessed that nested object above
+        const string = _.at( nestedStrings, key.replace( `${nestedStringsKey}.`, '' ) )[ 0 ];
+        if ( string === undefined || string.value === undefined ) {
+          throw new Error( `no entry for nested string key: ${key}` );
+        }
+
+        return string.value;
+      }
+      else {
+
+        // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
+        throw new Error( `no entry for string key: ${key}` );
+      }
+    },
+
+    // @public {string} - if a key starts with this, then it supports nested objects
+    SUPPORTS_NESTING_MARKER: SUPPORTS_NESTING_MARKER
   };
 
   // browser require.js-compatible definition
@@ -125,4 +230,4 @@
     module.exports = ChipperStringUtils;
   }
 
-})();
+} )();
