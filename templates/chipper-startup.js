@@ -44,7 +44,7 @@
     // Equivalent setup to TextBounds.approximateSVGBounds
     element.setAttribute( 'direction', 'ltr' );
     element.setAttribute( 'font-family', 'Arial' );
-    element.setAttribute( 'font-size', 16 );
+    element.setAttribute( 'font-size', '16px' );
     element.setAttribute( 'font-style', 'normal' );
     element.setAttribute( 'font-weight', 'normal' );
     element.setAttribute( 'font-stretch', 'normal' );
