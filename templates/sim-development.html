@@ -55,10 +55,20 @@
     document.head.appendChild( script );
   };
 
+  // Create the attachment point for all PhET globals
+  window.phet = window.phet || {};
+  window.phet.chipper = window.phet.chipper || {};
+
+  // Create a hook that will run the main require.js code block
+  phet.chipper.runRequireJS = function() {
+    loadURL( '../sherpa/lib/require-2.3.6.js', 'js/{{REPOSITORY}}-{{QUALIFIER}}config.js' );
+  };
+
   // Queue all of the preloads to be loaded.
   preloads.forEach( loadURL );
 
-  loadURL( '../sherpa/lib/require-2.3.6.js', 'js/{{REPOSITORY}}-{{QUALIFIER}}config.js' );
+  // Run our startup procedure (will call phet.chipper.runRequireJS when ready)
+  loadURL( '../chipper/templates/chipper-startup.js' );
 </script>
 </body>
 </html>
