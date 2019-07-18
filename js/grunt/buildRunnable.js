@@ -73,7 +73,10 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     insertRequire: repo + '-main',
     instrument: instrument,
     brand: brand,
-    wrapPath: 'phet.chipper.runRequireJS'
+    wrap: {
+      start: 'phet.chipper.runRequireJS = function() {',
+      end: '};'
+    }
   } );
 
   // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.
