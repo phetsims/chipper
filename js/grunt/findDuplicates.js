@@ -1,4 +1,4 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2016-2018, University of Colorado Boulder
 
 /**
  * Find code duplicates in the paths that are linted.  Usage:

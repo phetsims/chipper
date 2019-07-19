@@ -1,4 +1,4 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2017-2019, University of Colorado Boulder
 
 /**
  * This grunt task generates 128x84 and 600x394 thumbnails of the sim's screenshot in assets.

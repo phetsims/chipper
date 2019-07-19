@@ -1,4 +1,4 @@
-// Copyright 2013-2015, University of Colorado Boulder
+// Copyright 2017-2019, University of Colorado Boulder
 
 /**
  * Global variables for chipper (helpful to have in one place, and need to reset some after builds).
