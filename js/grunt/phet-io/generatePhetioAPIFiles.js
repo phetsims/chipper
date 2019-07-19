@@ -51,10 +51,13 @@ module.exports = async ( repo, localTestingURL ) => {
         await resolved();
       }
 
-      if ( msg.text().indexOf( 'window.phet.phetio.phetioTypes' ) >= 0 ) {
+      else if ( msg.text().indexOf( 'window.phet.phetio.phetioTypes' ) >= 0 ) {
         fs.writeFileSync( typesFileName, msg.text() );
         receivedTypes = true;
         await resolved();
+      }
+      else {
+        console.log( msg.text() );
       }
     } );
 
