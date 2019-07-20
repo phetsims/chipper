@@ -1,4 +1,4 @@
-// Copyright 2015-2018, University of Colorado Boulder
+// Copyright 2015-2019, University of Colorado Boulder
 
 /**
  * Given the AST output from Esprima for a JS file that conforms to PhET's style, this extracts the documentation and

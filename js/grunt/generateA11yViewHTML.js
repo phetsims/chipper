@@ -1,4 +1,4 @@
-// Copyright 2016-2018, University of Colorado Boulder
+// Copyright 2016-2019, University of Colorado Boulder
 
 /**
  * Generates the top-level simName-accessibility-view.html file for simulations (or runnables). Lets one

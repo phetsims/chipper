@@ -1,4 +1,4 @@
-// Copyright 2016-2018, University of Colorado Boulder
+// Copyright 2016-2019, University of Colorado Boulder
 
 /**
  * This plugin conditionally loads another module based on the brand.  If the brand is phet-io, it loads the module
