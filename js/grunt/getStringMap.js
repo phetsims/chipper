@@ -81,9 +81,10 @@ module.exports = function( locales, phetLibs ) {
       }
       const fileMap = repoStringMap[ repository.name ][ locale ] = {};
 
-      // format the string values
-      // TODO: this refactor made it so we loop twice. Zepumph thinks it's worth it to avoid duplication with the string plugin, see https://github.com/phetsims/rosetta/issues/193
+      // Format the string values
       ChipperStringUtils.formatStringValues( fileContents, isRTL );
+
+      // Loop through all top level keys and add the repo prefix, since fileMap is cross repo for all the sim's strings.
       for ( const stringKeyMissingPrefix in fileContents ) {
 
         // Add the requirejs namespaces (eg, JOIST) to the key
@@ -93,6 +94,10 @@ module.exports = function( locales, phetLibs ) {
   } );
 
   // combine our strings into [locale][stringKey] map, using the fallback locale where necessary
+  // TODO: in regards to nested a11y strings, this data structure doesn't nest. Instead it gets nested
+  // TODO: string values, and then sets them with the flat key string like
+  // TODO: `"FRICTION/a11y.some.string.here": { value: 'My Some Strong' }` Zepumph think this is easiest, but
+  // TODO: let's discuss! https://github.com/phetsims/rosetta/issues/193
   const stringMap = {};
   locales.forEach( function( locale ) {
     stringMap[ locale ] = {};
@@ -104,9 +109,8 @@ module.exports = function( locales, phetLibs ) {
       const stringsForFallbackLocale = repoStringMap[ repositoryName ][ fallbackLocale ];
 
       // This method will recurse if needed to find nested string values as well.
-      const fallbackString = ChipperStringUtils.getStringFromStringFileContents( stringsForFallbackLocale, stringKey, locale === 'en' );
+      const fallbackString = ChipperStringUtils.getStringFromMap( stringsForFallbackLocale, stringKey, locale === 'en' );
 
-      // TODO: this does not support nesting at all, does that matter? https://github.com/phetsims/rosetta/issues/193
       stringMap[ locale ][ stringKey ] = fallbackString;
 
       // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.

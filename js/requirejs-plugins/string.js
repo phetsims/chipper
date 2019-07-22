@@ -68,12 +68,12 @@ define( require => {
   /**
    *
    * @param {function} onload see doc for load()
-   * @param {Object} map - loaded from a string file
+   * @param {Object} fileContents - loaded from a string file
    * @param {string} key - the key of the string to be loaded
    * @param {string} fileURL - for better error messaging
    */
-  const getStringFromMap = ( map, key ) => {
-    return window.phet.chipper.mapString( ChipperStringUtils.getStringFromStringFileContents( map, key ), stringTest );
+  const getStringFromFileContents = ( fileContents, key ) => {
+    return window.phet.chipper.mapString( ChipperStringUtils.getStringFromMap( fileContents, key ), stringTest );
   };
 
   return {
@@ -185,7 +185,7 @@ define( require => {
 
                 // Combine the primary and fallback strings into one object hash.
                 const parsedStrings = _.extend( parsedFallbackStrings, parsed );
-                onload( getStringFromMap( parsedStrings, key ) );
+                onload( getStringFromFileContents( parsedStrings, key ) );
               },
 
               // Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
@@ -193,7 +193,7 @@ define( require => {
 
                 // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
                 console.log( `no string file for ${localeSpecificPath}` );
-                onload( getStringFromMap( parsedFallbackStrings, key ) );
+                onload( getStringFromFileContents( parsedFallbackStrings, key ) );
               } );
           }, onload.error );
         }

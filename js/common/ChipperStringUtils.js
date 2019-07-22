@@ -12,11 +12,11 @@
 ( function() {
 
   // constants
-  // This key marker notes that the key exists in a part of the string file in which strings can be nested
-  // TODO: Perhaps just call this A11Y_STRING_MARKER, it is pretty a11y specific anyways.
-  // TODO: Doesn't this exclude us from having a top level key like `"a11ySomethingString":{"value":"a11y something string"}`
-  // TODO: https://github.com/phetsims/rosetta/issues/193
-  const SUPPORTS_NESTING_MARKER = 'a11y';
+  // This string key supports nested string objects, see https://github.com/phetsims/rosetta/issues/193
+  const A11Y_STRING_KEY_NAME = 'a11y';
+
+  // Any string keys beginning with this marker support nested string values
+  const A11Y_KEY_MARKER = `${A11Y_STRING_KEY_NAME}.`;
 
   var ChipperStringUtils = {
 
@@ -147,14 +147,16 @@
     },
 
     /**
-     * Given a key, get the appropriate string from the "map" object. This method was primarily created to support
-     * nested string keys in https://github.com/phetsims/rosetta/issues/193
-     * @param {Object.<string, intermediate:Object|{value: string}>} map - where 'intermediate' could hold nested strings
+     * Given a key, get the appropriate string from the "map" object. The map is most likely a loaded JSON string file.
+     * This method also supports being called from CHIPPER/getStringMap, which adds the REPO prefix to all string keys
+     * in the map. This method supports recursing through keys that support string nesting. This method was
+     * created to support nested string keys in https://github.com/phetsims/rosetta/issues/193
+     * @param {Object.<string, intermediate:Object|{value: string}>} map - where 'intermediate' should hold nested strings
      * @param {string} key - like `friction.title` or `FRICTION/friction.title` or using nesting like `a11y.nested.string.here`
-     * @returns {string}
-     * TODO: well this isn't a very good name is it, https://github.com/phetsims/rosetta/issues/193
+     * @returns {string} - the string value of the key
+     * @throws  {Error} - if the key doesn't hold a string value in the map
      */
-    getStringFromStringFileContents( map, key ) {
+    getStringFromMap( map, key ) {
       let repoPrefix = '';
       if ( key.indexOf( '/' ) >= 0 ) {
         if ( key.match( /\//g ).length > 1 ) {
@@ -173,7 +175,7 @@
 
       // `key` begins with nested section marker in requirejs case, where there isn't a prefix repo, like `a11y.string`
       // instead of `FRICTION/a11y.string`
-      else if ( key.indexOf( SUPPORTS_NESTING_MARKER ) === 0 ) {
+      else if ( key.indexOf( A11Y_KEY_MARKER ) === 0 ) {
         if ( repoPrefix !== '' ) {
           throw new Error( `unexpected repo prefex ${repoPrefix}` );
         }
@@ -186,17 +188,17 @@
 
         // TODO: recurse through each and assert that there is no "value" key in each nested object? (maybe)
         // TODO: for example `a11y.my.string.is.all.the.way.value` should not have a key because
-        // TODO: `a11y.my.string.is.all.the.way.down.here` is a string value
+        // TODO: `a11y.my.string.is.all.the.way.down.here.value` is a string value
         // TODO: perhaps also do this for getStringMap case below, but maybe this is only needed here for requirejs mode
         // TODO: https://github.com/phetsims/rosetta/issues/193
         return string.value;
       }
 
-      // This supports being called from getStringMap with keys like `FRICTION/a11y.some.string.here`
-      else if ( repoPrefix && key.indexOf( `${repoPrefix}/${SUPPORTS_NESTING_MARKER}` ) === 0 ) {
+      // This supports being called from CHIPPER/getStringMap with keys like `FRICTION/a11y.some.string.here`
+      else if ( repoPrefix && key.indexOf( `${repoPrefix}/${A11Y_KEY_MARKER}` ) === 0 ) {
 
         // The first key in the map is like "FRICTION/a11y": { . . . }
-        const nestedStringsKey = `${repoPrefix}/${SUPPORTS_NESTING_MARKER}`;
+        const nestedStringsKey = `${repoPrefix}/${A11Y_STRING_KEY_NAME}`;
         const nestedStrings = map[ nestedStringsKey ];
 
         // access the nested object, remove the `FRICTION/a11y` piece because we already accessed that nested object above
@@ -212,10 +214,7 @@
         // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
         throw new Error( `no entry for string key: ${key}` );
       }
-    },
-
-    // @public {string} - if a key starts with this, then it supports nested objects
-    SUPPORTS_NESTING_MARKER: SUPPORTS_NESTING_MARKER
+    }
   };
 
   // browser require.js-compatible definition
