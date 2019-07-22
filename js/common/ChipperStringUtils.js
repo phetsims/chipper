@@ -1,4 +1,4 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2015-2019, University of Colorado Boulder
 
 /**
  * String utilities used throughout chipper.

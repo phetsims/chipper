@@ -1,4 +1,4 @@
-// Copyright 2013-2015, University of Colorado Boulder
+// Copyright 2013-2019, University of Colorado Boulder
 
 /**
  * A RequireJS plugin for loading sound clips dynamically from the file system at development time and from base64

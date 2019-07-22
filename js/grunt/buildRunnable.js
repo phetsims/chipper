@@ -1,4 +1,4 @@
-// Copyright 2017, University of Colorado Boulder
+// Copyright 2017-2019, University of Colorado Boulder
 
 /**
  * Builds a runnable (something that builds like a simulation)
@@ -73,7 +73,10 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     insertRequire: repo + '-main',
     instrument: instrument,
     brand: brand,
-    wrapPath: 'phet.chipper.runRequireJS'
+    wrap: {
+      start: 'phet.chipper.runRequireJS = function() {',
+      end: '};'
+    }
   } );
 
   // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.

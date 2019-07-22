@@ -1,4 +1,4 @@
-// Copyright 2015, University of Colorado Boulder
+// Copyright 2015-2019, University of Colorado Boulder
 
 /**
  * Generates the top-level main HTML file for simulations (or runnables), using the current brand's splash and preloads

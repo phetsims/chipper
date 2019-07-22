@@ -1,4 +1,4 @@
-// Copyright 2013-2015, University of Colorado Boulder
+// Copyright 2013-2019, University of Colorado Boulder
 
 /**
  * Image plugin that loads an image dynamically from the file system at development time, but from base64 content after a build.

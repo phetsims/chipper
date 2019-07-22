@@ -1,4 +1,4 @@
-// Copyright 2017, University of Colorado Boulder
+// Copyright 2017-2019, University of Colorado Boulder
 
 /**
  * Runs the require.js optimizer step on a given config file.
@@ -26,9 +26,9 @@ const requirejs = require( 'requirejs' );
 module.exports = function( repo, mainConfigFile, options ) {
 
   const {
-    // {string|null} - If provided, the contents of the require.js build will be wrapped inside a function that is
-    // assigned to the given path (e.g. phet.chipper.runRequireJS).
-    wrapPath = null,
+    // {Object|boolean} - See https://github.com/requirejs/r.js/blob/master/build/example.build.js for the wrap
+    // documentation, as it lists all of the available options.
+    wrap = false,
 
     insertRequire = false,
     instrument = false,
@@ -57,10 +57,7 @@ module.exports = function( repo, mainConfigFile, options ) {
 
       optimize: 'none',
 
-      wrap: wrapPath ? {
-        start: `${wrapPath} = function() {`,
-        end: '};'
-      } : false,
+      wrap: wrap,
 
       // Avoid optimization names that are outside the baseUrl, see http://requirejs.org/docs/optimization.html#pitfalls
       paths: {
