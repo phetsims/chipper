@@ -60,15 +60,11 @@ module.exports = function( context ) {
             var tail = rhs.substring( lastSlash + 1 );
 
             if ( tail !== lhs ) {
-
-              // TODO: make this work, https://github.com/phetsims/rosetta/issues/193
-              if ( lhs.replace( 'a11y.', '' ) !== tail ) {
-                context.report( {
-                  node: node,
-                  loc: node.loc.start,
-                  message: 'Mismatched require statement values, ' + lhs + ' !== ' + tail
-                } );
-              }
+              context.report( {
+                node: node,
+                loc: node.loc.start,
+                message: 'Mismatched require statement values, ' + lhs + ' !== ' + tail
+              } );
             }
           }
         }

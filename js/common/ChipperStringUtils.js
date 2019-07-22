@@ -13,6 +13,7 @@
 
   // constants
   // This string key supports nested string objects, see https://github.com/phetsims/rosetta/issues/193
+  // NOTE: don't change this without consulting the duplication in the `string-require-statement-match.js` eslint rule.
   const A11Y_STRING_KEY_NAME = 'a11y';
 
   // Any string keys beginning with this marker support nested string values

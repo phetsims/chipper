@@ -21,7 +21,7 @@ module.exports = function( context ) {
 
     // Split on whitespace, remove whitespace and uppercase the first word in each term
     withWhitespaceAfterDigits.split( ' ' ).forEach( function( element, index ) {
-      out += (index === 0 ? element : element[ 0 ].toUpperCase() + element.slice( 1 ));
+      out += ( index === 0 ? element : element[ 0 ].toUpperCase() + element.slice( 1 ) );
     } );
 
     // lowercase the first character
@@ -55,8 +55,13 @@ module.exports = function( context ) {
             var lastSlash = rhs.lastIndexOf( '/' );
             var key = rhs.substring( lastSlash + 1 );
 
+            // For a11y strings, no need to prefix vars with "a11y"
+            if ( key.indexOf( 'a11y.' ) === 0 ) {
+              key = key.replace( 'a11y.', '' );
+            }
+
             // Convert various separators to whitespace
-            var withWhitespace = key.replace( /\./g, ' ' ).replace( /\-/g, ' ' ).replace( /\_/g, ' ' );
+            var withWhitespace = key.replace( /[\.\-\_]/g, ' ' );
 
             // Convert whitespace delimited string to camel case and append string suffix
             var desiredVarName = toCamelCase( withWhitespace ) + 'String';
