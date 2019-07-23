@@ -3,7 +3,8 @@
 /**
  * String utilities used throughout chipper.
  *
- * @Chris Malley (PixelZoom, Inc.)
+ * @author Chris Malley (PixelZoom, Inc.)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
 /* eslint-env browser, node */
@@ -64,7 +65,7 @@
       return str.replace( new RegExp( find.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' ), 'g' ), replaceWith );
     },
 
-    //TODO chipper#316 determine why this behaves differently than str.replace for some cases (eg, 'MAIN_INLINE_JAVASCRIPT')
+    // TODO chipper#316 determine why this behaves differently than str.replace for some cases (eg, 'MAIN_INLINE_JAVASCRIPT')
     /**
      * Replaces the first occurrence of {string} find with {string} replaceWith in {string} str
      *
@@ -122,7 +123,7 @@
 
     /**
      * Recurse through a string file and format each string value appropriately
-     * @param {Object.<string, intermediary:Object|{value:string}>} stringObject - if "intermediary", then recurse to
+     * @param {Object.<string, intermediary:Object|{value:string}>} stringsMap - if "intermediary", then recurse to
      *                                                                             find more nested keys
      * @param {boolean} isRTL - is right to left language
      */
@@ -215,6 +216,45 @@
 
         // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
         throw new Error( `no entry for string key: ${key}` );
+      }
+    },
+
+    /**
+     * Call a function on each string object in a string map. Recursively dive into each object that doesn't have a
+     * `value` to find nested string objects too.
+     * @param {Object.<string, Object|{value:string}>} map - string map, like a loaded JSON strings file
+     * @param {function(key:string, {value:string})} func
+     * @public
+     */
+    forEachString( map, func ) {
+      forEachStringImplementation( '', map, func );
+    },
+
+    /**
+     * @type {string}
+     * @pubic
+     */
+    A11Y_STRING_KEY_NAME: A11Y_STRING_KEY_NAME
+  };
+
+  /**
+   * This implementation function helps keep a better api for `forEachString`.
+   * @param {string} keySoFar - as we recurse down, build up a string of the key separated with dots.
+   * @param {Object} map - string key map
+   * @param {function(key:string, {value:string})} func
+   */
+  const forEachStringImplementation = ( keySoFar, map, func ) => {
+    for ( const key in map ) {
+      if ( map.hasOwnProperty( key ) ) {
+        const nextKey = keySoFar ? `${keySoFar}.${key}` : key; // don't start with period
+        if ( map[ key ].value ) {
+          func( nextKey, map[ key ] );
+        }
+        else {
+
+          // recurse to the next level since this wasn't the `value` key
+          forEachStringImplementation( nextKey, map[ key ], func );
+        }
       }
     }
   };

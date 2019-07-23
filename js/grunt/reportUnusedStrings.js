@@ -15,6 +15,7 @@
 'use strict';
 
 const grunt = require( 'grunt' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 
 /**
  * @param {string} repo
@@ -28,7 +29,7 @@ module.exports = function( repo, requirejsNamespace ) {
   // iterate over the strings
   for ( const key in jsStrings ) {
 
-    if ( jsStrings.hasOwnProperty( key ) && key !== 'a11y' ) {
+    if ( jsStrings.hasOwnProperty( key ) ) {
 
       const string = jsStrings[ key ].value;
       const requireStringKey = requirejsNamespace + '/' + key;
@@ -36,9 +37,33 @@ module.exports = function( repo, requirejsNamespace ) {
       // global.phet.chipper.strings is initialized by the string plugin
       const chipperStrings = global.phet.chipper.strings || {};
 
-      // If this string was not added to the global chipperStrings, it was not required in the sim
-      if ( !chipperStrings.hasOwnProperty( requireStringKey ) ) {
-        grunt.log.warn( `Unused string: key=${requireStringKey}, value=${string}` );
+      /**
+       * Warn if the string is not used.
+       * @param {string} fullKey - with the `REPO/` included
+       * @param {string} key - just the key, no `REPO/`
+       * @param {string} value - the value of the string
+       */
+      const warnIfStringUnused = ( fullKey, key, value ) => {
+
+        // If this string was not added to the global chipperStrings, it was not required in the sim
+        if ( !chipperStrings.hasOwnProperty( fullKey ) ) {
+          grunt.log.warn( `Unused string: key=${key}, value=${value}` );
+        }
+      };
+
+      // for top level strings
+      warnIfStringUnused( requireStringKey, key, string );
+
+      // support nesting into a11y strings
+      if ( key === ChipperStringUtils.A11Y_STRING_KEY_NAME ) {
+
+        const a11yStrings = jsStrings[ key ];
+
+        ChipperStringUtils.forEachString( a11yStrings, ( a11ySubKey, stringObject ) => {
+          const keyWithRepo = `${requireStringKey}.${a11ySubKey}`;
+          const fullKeyNoRepo = `${ChipperStringUtils.A11Y_STRING_KEY_NAME}.${a11ySubKey}`;
+          warnIfStringUnused( keyWithRepo, fullKeyNoRepo, stringObject.value );
+        } );
       }
     }
   }
