@@ -51,8 +51,8 @@ module.exports = function( repo, requirejsNamespace ) {
         }
       };
 
-      // for top level strings
-      warnIfStringUnused( requireStringKey, key, string );
+      // for top level strings, warn if there is a `value` key in the string object
+      jsStrings[ key ].value && warnIfStringUnused( requireStringKey, key, string );
 
       // support nesting into a11y strings
       if ( key === ChipperStringUtils.A11Y_STRING_KEY_NAME ) {
