@@ -72,7 +72,7 @@ const JSDOC_FILES = [
 ];
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
-module.exports = async function( repo, version, simulationDisplayName ) {
+module.exports = async function( repo, version, simulationDisplayName, packageObject ) {
 
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
@@ -238,6 +238,11 @@ module.exports = async function( repo, version, simulationDisplayName ) {
 
   // Make sure to copy the phet-io-wrappers common wrapper code too.
   wrappers.push( WRAPPER_COMMON_FOLDER );
+
+  // Add sim-specific wrappers
+  const simSpecificWrappers = packageObject.phet && packageObject.phet[ 'phet-io' ] && packageObject.phet[ 'phet-io' ].wrappers ? packageObject.phet[ 'phet-io' ].wrappers : [];
+  simSpecificWrappers.forEach( simSpecificWrapper => wrappers.push( simSpecificWrapper ) );
+
   wrappers.forEach( function( wrapper ) {
 
     const wrapperParts = wrapper.split( '/' );
