@@ -69,7 +69,7 @@ module.exports = function getPhetLibs( repo, brand ) {
     }
 
     // wrappers are also marked as phetLibs, so we can get their shas without listing them twice
-    if ( brand === 'phet-io' ) {
+    if ( brand === 'phet-io' && packageObject.phet[ brand ] ) {
       phetLibs = phetLibs.concat( packageObject.phet[ brand ].wrappers || [] );
     }
 
