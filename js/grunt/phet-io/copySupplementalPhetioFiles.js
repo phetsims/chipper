@@ -226,8 +226,21 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
   const fullBlacklist = wrappersBlacklist.concat( libFileNames );
 
   // wrapping function for copying the wrappers to the build dir
-  const copyWrapper = function( src, dest ) {
-    copyDirectory( src, dest, filterWrapper, {
+  const copyWrapper = function( src, dest, wrapper, wrapperName ) {
+
+    const wrapperFilterWithNameFilter = function( abspath, contents ) {
+      const result = filterWrapper( abspath, contents );
+
+      // Support loading relative-path resources, like
+      //{ url: '../phet-io-wrapper-hookes-law-energy/sounds/precipitate-chimes-v1-shorter.mp3' }
+      // -->
+      //{ url: 'wrappers/hookes-law-energy/sounds/precipitate-chimes-v1-shorter.mp3' }
+      if ( wrapper && wrapperName && result ) {
+        return ChipperStringUtils.replaceAll( result, `../${wrapper}/`, `wrappers/${wrapperName}/` );
+      }
+      return result;
+    };
+    copyDirectory( src, dest, wrapperFilterWithNameFilter, {
       blacklist: fullBlacklist,
       minifyJS: true,
       minifyOptions: {
@@ -251,11 +264,11 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
     const wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
 
     // Copy the wrapper into the build dir /wrappers/, exclude the blacklist
-    copyWrapper( `../${wrapper}`, `${wrappersLocation}${wrapperName}` );
+    copyWrapper( `../${wrapper}`, `${wrappersLocation}${wrapperName}`, wrapper, wrapperName );
   } );
 
   // Copy the wrapper index into the top level of the build dir, exclude the blacklist
-  copyWrapper( '../phet-io-wrappers/index', `${buildDir}` );
+  copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build
   handleLib( buildDir, filterWrapper );
