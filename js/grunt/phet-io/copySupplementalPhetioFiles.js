@@ -253,7 +253,11 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
   wrappers.push( WRAPPER_COMMON_FOLDER );
 
   // Add sim-specific wrappers
-  const simSpecificWrappers = packageObject.phet && packageObject.phet[ 'phet-io' ] && packageObject.phet[ 'phet-io' ].wrappers ? packageObject.phet[ 'phet-io' ].wrappers : [];
+  const simSpecificWrappers = packageObject.phet &&
+                              packageObject.phet[ 'phet-io' ] &&
+                              packageObject.phet[ 'phet-io' ].wrappers ?
+                              packageObject.phet[ 'phet-io' ].wrappers : [];
+
   simSpecificWrappers.forEach( simSpecificWrapper => wrappers.push( simSpecificWrapper ) );
 
   wrappers.forEach( function( wrapper ) {
