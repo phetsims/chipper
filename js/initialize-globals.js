@@ -33,6 +33,8 @@
 ( function() {
   'use strict';
 
+  assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
+
   // Private Doc: Note: the following jsdoc is for the public facing phet-io api. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
   // phet-io documentation. Private comments about implementation details will be in comments above the jsdoc, and

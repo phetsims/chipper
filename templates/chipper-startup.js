@@ -11,6 +11,8 @@
 ( function() {
   'use strict';
 
+  assert && assert( !!phet.chipper.runRequireJS, 'The require.js code should have run and defined this method' );
+
   // constants
   const svgns = 'http://www.w3.org/2000/svg';
 
