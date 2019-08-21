@@ -291,12 +291,24 @@
     /**
      * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
+     * 
+     * Also removes the following items from the "PhET Menu":
+     * Report a Problem
+     * Check for Updates
+     * Screenshot
+     * Full Screen
      */
     'phet-app': { type: 'flag' },
 
     /**
      * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
+     * 
+     * Also removes the following items from the "PhET Menu":
+     * Report a Problem
+     * Check for Updates
+     * Screenshot
+     * Full Screen
      */
     'phet-android-app': { type: 'flag' },
 
