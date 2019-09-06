@@ -23,7 +23,7 @@ module.exports = function( context ) {
     'combobox',
 
     // In ES6, extending object causes methods to be dropped
-    'extends Object',
+    'extends Object ',
 
     // Forbid common duplicate words
     ' the the ',
