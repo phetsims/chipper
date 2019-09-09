@@ -19,9 +19,10 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
 const getPhetLibs = require( './getPhetLibs' );
+const grunt = require( 'grunt' );
 const jscpd = require( 'jscpd' );
 
-module.exports = function( grunt, repo, cache ) {
+module.exports = function( repo, cache ) {
 
   /**
    * TODO: Eliminate this function and unify paths with lint.js, see https://github.com/phetsims/chipper/issues/566
