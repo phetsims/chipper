@@ -33,6 +33,8 @@
 ( function() {
   'use strict';
 
+  assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
+
   // Private Doc: Note: the following jsdoc is for the public facing phet-io api. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
   // phet-io documentation. Private comments about implementation details will be in comments above the jsdoc, and
@@ -289,12 +291,24 @@
     /**
      * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
+     * 
+     * Also removes the following items from the "PhET Menu":
+     * Report a Problem
+     * Check for Updates
+     * Screenshot
+     * Full Screen
      */
     'phet-app': { type: 'flag' },
 
     /**
      * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
+     * 
+     * Also removes the following items from the "PhET Menu":
+     * Report a Problem
+     * Check for Updates
+     * Screenshot
+     * Full Screen
      */
     'phet-android-app': { type: 'flag' },
 
