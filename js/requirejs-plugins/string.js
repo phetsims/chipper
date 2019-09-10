@@ -41,7 +41,7 @@ define( require => {
    * When running in requirejs mode, check to see if we have already loaded the specified file
    * Also parses it so that only happens once per file (instead of once per string key)
    * @param {string} url path for the string
-   * @param {function} callback callback when the check succeeds
+   * @param {function} callback callback when the check succeeds, returning the parsed JSON object
    * @param {function} errorBack callback for when an error occurred
    */
   const getWithCache = ( url, callback, errorBack ) => {
@@ -201,7 +201,7 @@ define( require => {
     },
 
     /**
-     * Write code that will look up the string in the compiled sim, used in the compilation step.  write is only used
+     * Write code that will look up the string in the compiled sim, used in the compilation step. `write` is only used
      * by the optimizer, and it only needs to be implemented if the plugin can output something that would belong in an
      * optimized layer.
      *

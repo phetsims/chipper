@@ -12,13 +12,8 @@
 
 ( function() {
 
-  // constants
-  // This string key supports nested string objects, see https://github.com/phetsims/rosetta/issues/193
-  // NOTE: don't change this without consulting the duplication in the `string-require-statement-match.js` eslint rule.
-  const A11Y_STRING_KEY_NAME = 'a11y';
-
-  // Any string keys beginning with this marker support nested string values
-  const A11Y_KEY_MARKER = `${A11Y_STRING_KEY_NAME}.`;
+  // What divides the repo prefix from the rest of the string key, like `FRICTION/friction.title`
+  const NAMESPACE_PREFIX_DIVIDER = '/';
 
   var ChipperStringUtils = {
 
@@ -154,21 +149,14 @@
      * This method also supports being called from CHIPPER/getStringMap, which adds the REPO prefix to all string keys
      * in the map. This method supports recursing through keys that support string nesting. This method was
      * created to support nested string keys in https://github.com/phetsims/rosetta/issues/193
-     * @param {Object.<string, intermediate:Object|{value: string}>} map - where 'intermediate' should hold nested strings
+     * @param {Object.<string, Object|{value: string}>} map - where an "intermediate" Object should hold nested strings
      * @param {string} key - like `friction.title` or `FRICTION/friction.title` or using nesting like `a11y.nested.string.here`
      * @returns {string} - the string value of the key
      * @throws  {Error} - if the key doesn't hold a string value in the map
      */
     getStringFromMap( map, key ) {
-      let repoPrefix = '';
-      if ( key.indexOf( '/' ) >= 0 ) {
-        if ( key.match( /\//g ).length > 1 ) {
-          throw new Error( `more forward slashes than expected in key: ${key}` );
-        }
-        repoPrefix = key.split( '/' )[ 0 ];
-      }
 
-      // Normal case where the key holds an object with the string in the "value" key, i.e. "friction.title": { "value": "Friction" },
+      // Normal case where the map is "flat," and the key holds an object with the string in the "value" key, i.e. "friction.title": { "value": "Friction" },
       if ( map[ key ] !== undefined ) {
         if ( map[ key ].value === undefined ) {
           throw new Error( `no value entry for string key: ${key}` );
@@ -176,47 +164,30 @@
         return map[ key ].value;
       }
 
-      // `key` begins with nested section marker in requirejs case, where there isn't a prefix repo, like `a11y.string`
-      // instead of `FRICTION/a11y.string`
-      else if ( key.indexOf( A11Y_KEY_MARKER ) === 0 ) {
-        if ( repoPrefix !== '' ) {
-          throw new Error( `unexpected repo prefex ${repoPrefix}` );
-        }
-
-        // access the nested object with a key like `a11y.my.string.is.all.the.way.down.here`
-        const string = _.at( map, key )[ 0 ];
-        if ( string === undefined || string.value === undefined ) {
-          throw new Error( `no entry for nested string key: ${key}` );
-        }
-
-        // TODO: recurse through each and assert that there is no "value" key in each nested object? (maybe)
-        // TODO: for example `a11y.my.string.is.all.the.way.value` should not have a key because
-        // TODO: `a11y.my.string.is.all.the.way.down.here.value` is a string value
-        // TODO: perhaps also do this for getStringMap case below, but maybe this is only needed here for requirejs mode
-        // TODO: https://github.com/phetsims/rosetta/issues/193
-        return string.value;
+      // If not directly accessing the top level of the map, then treat the map like a nested object
+      // Test for the presence of the namespace prefix, as that will dictate how the string is accessed
+      const dividerMatches = key.match( new RegExp( NAMESPACE_PREFIX_DIVIDER, 'g' ) );
+      if ( dividerMatches && dividerMatches.length > 1 ) {
+        throw new Error( `more forward slashes than expected in key: ${key}` );
       }
 
-      // This supports being called from CHIPPER/getStringMap with keys like `FRICTION/a11y.some.string.here`
-      else if ( repoPrefix && key.indexOf( `${repoPrefix}/${A11Y_KEY_MARKER}` ) === 0 ) {
-
-        // The first key in the map is like "FRICTION/a11y": { . . . }
-        const nestedStringsKey = `${repoPrefix}/${A11Y_STRING_KEY_NAME}`;
-        const nestedStrings = map[ nestedStringsKey ];
-
-        // access the nested object, remove the `FRICTION/a11y` piece because we already accessed that nested object above
-        const string = _.at( nestedStrings, key.replace( `${nestedStringsKey}.`, '' ) )[ 0 ];
-        if ( string === undefined || string.value === undefined ) {
-          throw new Error( `no entry for nested string key: ${key}` );
-        }
-
-        return string.value;
+      // In this case the map and key have a namespace prefix, but the map is using nested objects, so the following are
+      // needed:
+      // Take the string key `FRICTION/a11y.temperature.hotter
+      // The map looks like `FRICTION/a11y: { temperature: { hotter: { value: '. . .' } } }`
+      // So we need to peel off the first key
+      if ( key.indexOf( NAMESPACE_PREFIX_DIVIDER ) >= 0 ) {
+        const keyParts = key.split( '.' );
+        const firstKeyPart = keyParts.splice( 0, 1 );
+        map = map[ firstKeyPart ];
+        key = keyParts.join( '.' ); // this no longer has the first key in it
       }
-      else {
 
-        // It would be really strange for there to be no fallback for a certain string, that means it exists in the translation but not the original English
-        throw new Error( `no entry for string key: ${key}` );
+      const string = _.at( map, key )[ 0 ];
+      if ( string === undefined || string.value === undefined ) {
+        throw new Error( `no entry for nested string key: ${key}` );
       }
+      return string.value;
     },
 
     /**
@@ -228,13 +199,7 @@
      */
     forEachString( map, func ) {
       forEachStringImplementation( '', map, func );
-    },
-
-    /**
-     * @type {string}
-     * @pubic
-     */
-    A11Y_STRING_KEY_NAME: A11Y_STRING_KEY_NAME
+    }
   };
 
   /**
@@ -246,15 +211,14 @@
   const forEachStringImplementation = ( keySoFar, map, func ) => {
     for ( const key in map ) {
       if ( map.hasOwnProperty( key ) ) {
-        const nextKey = keySoFar ? `${keySoFar}.${key}` : key; // don't start with period
-        if ( map[ key ].value ) {
-          func( nextKey, map[ key ] );
+        const nextKey = keySoFar ? `${keySoFar}.${key}` : key; // don't start with period, assumes '' is falsey
+        const stringObject = map[ key ];
+        if ( stringObject.value ) {
+          func( nextKey, stringObject );
         }
-        else {
 
-          // recurse to the next level since this wasn't the `value` key
-          forEachStringImplementation( nextKey, map[ key ], func );
-        }
+        // recurse to the next level since if it wasn't the `value` key
+        key !== 'value' && forEachStringImplementation( nextKey, stringObject, func );
       }
     }
   };

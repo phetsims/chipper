@@ -26,7 +26,6 @@ const localeInfo = require( '../data/localeInfo' ); // Locale information
 module.exports = function( locales, phetLibs ) {
 
   const fallbackLocale = ChipperConstants.FALLBACK_LOCALE; // local const to improve readability
-
   assert( global.phet && global.phet.chipper && global.phet.chipper.strings, 'missing global.phet.chipper.strings' );
   assert( locales.indexOf( fallbackLocale ) !== -1, 'fallback locale is required' );
 
@@ -109,9 +108,7 @@ module.exports = function( locales, phetLibs ) {
       const stringsForFallbackLocale = repoStringMap[ repositoryName ][ fallbackLocale ];
 
       // This method will recurse if needed to find nested string values as well.
-      const fallbackString = ChipperStringUtils.getStringFromMap( stringsForFallbackLocale, stringKey, locale === 'en' );
-
-      stringMap[ locale ][ stringKey ] = fallbackString;
+      stringMap[ locale ][ stringKey ] = ChipperStringUtils.getStringFromMap( stringsForFallbackLocale, stringKey );
 
       // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.
       if ( locale !== fallbackLocale &&

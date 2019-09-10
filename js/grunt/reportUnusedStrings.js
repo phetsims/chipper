@@ -26,45 +26,14 @@ module.exports = function( repo, requirejsNamespace ) {
   // get the strings for this sim
   const jsStrings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
 
-  // iterate over the strings
-  for ( const key in jsStrings ) {
+  // global.phet.chipper.strings is initialized by the string plugin
+  const chipperStrings = global.phet.chipper.strings || {};
 
-    if ( jsStrings.hasOwnProperty( key ) ) {
+  ChipperStringUtils.forEachString( jsStrings, ( key, stringObject ) => {
 
-      const string = jsStrings[ key ].value;
-      const requireStringKey = requirejsNamespace + '/' + key;
-
-      // global.phet.chipper.strings is initialized by the string plugin
-      const chipperStrings = global.phet.chipper.strings || {};
-
-      /**
-       * Warn if the string is not used.
-       * @param {string} fullKey - with the `REPO/` included
-       * @param {string} key - just the key, no `REPO/`
-       * @param {string} value - the value of the string
-       */
-      const warnIfStringUnused = ( fullKey, key, value ) => {
-
-        // If this string was not added to the global chipperStrings, it was not required in the sim
-        if ( !chipperStrings.hasOwnProperty( fullKey ) ) {
-          grunt.log.warn( `Unused string: key=${key}, value=${value}` );
-        }
-      };
-
-      // for top level strings, warn if there is a `value` key in the string object
-      jsStrings[ key ].value && warnIfStringUnused( requireStringKey, key, string );
-
-      // support nesting into a11y strings
-      if ( key === ChipperStringUtils.A11Y_STRING_KEY_NAME ) {
-
-        const a11yStrings = jsStrings[ key ];
-
-        ChipperStringUtils.forEachString( a11yStrings, ( a11ySubKey, stringObject ) => {
-          const keyWithRepo = `${requireStringKey}.${a11ySubKey}`;
-          const fullKeyNoRepo = `${ChipperStringUtils.A11Y_STRING_KEY_NAME}.${a11ySubKey}`;
-          warnIfStringUnused( keyWithRepo, fullKeyNoRepo, stringObject.value );
-        } );
-      }
+    // If this string was not added to the global chipperStrings, it was not required in the sim
+    if ( !chipperStrings.hasOwnProperty( `${requirejsNamespace}/${key}` ) ) {
+      grunt.log.warn( `Unused string: key=${key}, value=${stringObject.value}` );
     }
-  }
+  } );
 };

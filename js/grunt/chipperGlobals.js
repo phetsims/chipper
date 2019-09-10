@@ -58,7 +58,7 @@ module.exports = {
     assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in beforeBuild: ' + brand );
 
     global.phet.chipper.mipmapsToBuild = [];
-    global.phet.chipper.strings = {};
+    global.phet.chipper.strings = {}; // See string.js for when this is set; only when running requirejs optimizer.
     global.phet.chipper.brand = brand;
     global.phet.chipper.licenseEntries = {};
   }

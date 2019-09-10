@@ -11,7 +11,7 @@
 /* eslint-env browser, node */
 'use strict';
 
-(function() {
+( function() {
 
   var ChipperConstants = {
 
@@ -46,4 +46,4 @@
     module.exports = ChipperConstants;
   }
 
-})();
+} )();
