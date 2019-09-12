@@ -61,7 +61,7 @@ module.exports = function( context ) {
 
 
           // This regex will match 'phet-io' plus either a '/' or a '\' afterwards.
-          var regex = /phet-io[\/\\]/;
+          var regex = /phet-io[/\\]/;
 
           // Don't check this rule in the phet-io repo
           // Match returns null if it doesn't find anything

@@ -121,7 +121,7 @@ module.exports = function( grunt ) {
  --report-media - Will iterate over all of the license.json files and reports any media files
  --instrument - Builds a runnable with code coverage tooling inside. See phet-info/doc/code-coverage.md for more information
  --brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using
-                      build-local.json\'s brands (or adapted-from-phet if that does not exist)
+                      build-local.json's brands (or adapted-from-phet if that does not exist)
  --allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)
  --XHTML - Includes an xhtml/ directory in the build output that contains a runnable XHTML form of the sim (with
            a separated-out JS file).
@@ -339,7 +339,7 @@ module.exports = function( grunt ) {
     } ) );
 
   grunt.registerTask( 'commits-since',
-    'Shows commits since a specified date. Use --date=\<date\> to specify the date.',
+    'Shows commits since a specified date. Use --date=<date> to specify the date.',
     wrapTask( async () => {
       const dateString = grunt.option( 'date' );
       assert( dateString, 'missing required option: --date={{DATE}}' );

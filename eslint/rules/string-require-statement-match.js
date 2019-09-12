@@ -56,7 +56,7 @@ module.exports = function( context ) {
             var key = rhs.substring( lastSlash + 1 );
 
             // Convert various separators to whitespace
-            var withWhitespace = key.replace( /\./g, ' ' ).replace( /\-/g, ' ' ).replace( /\_/g, ' ' );
+            var withWhitespace = key.replace( /\./g, ' ' ).replace( /-/g, ' ' ).replace( /_/g, ' ' );
 
             // Convert whitespace delimited string to camel case and append string suffix
             var desiredVarName = toCamelCase( withWhitespace ) + 'String';

@@ -53,7 +53,7 @@
      * @returns {string} a new string
      */
     replaceAll: function( str, find, replaceWith ) {
-      return str.replace( new RegExp( find.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' ), 'g' ), replaceWith );
+      return str.replace( new RegExp( find.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' ), 'g' ), replaceWith );
     },
 
     //TODO chipper#316 determine why this behaves differently than str.replace for some cases (eg, 'MAIN_INLINE_JAVASCRIPT')
@@ -107,7 +107,7 @@
      * @returns {array} - the whole line containing the matched substring
      */
     firstLineThatContains: function( string, find ) {
-      var findRE = '.*' + find.replace( /[-\/\\^$*+?.()|[\]{}]/g, '\\$&' ) + '.*';
+      var findRE = '.*' + find.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' ) + '.*';
       var theReturn = string.match( new RegExp( findRE, 'g' ) );
       return theReturn ? theReturn[ 0 ] : null;
     }

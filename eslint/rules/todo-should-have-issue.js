@@ -9,7 +9,7 @@ module.exports = function( context ) {
   'use strict';
 
   // Whitelist of directories to check that TODOs have GitHub issues
-  var directoriesToRequireIssues = [ /joist[\/\\]js/ ];
+  var directoriesToRequireIssues = [ /joist[/\\]js/ ];
 
   return {
 

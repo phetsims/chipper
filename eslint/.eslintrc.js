@@ -155,7 +155,7 @@ module.exports = {
     ],
 
     // added for 5.14.1 update but should likely be removed once discussed in https://github.com/phetsims/chipper/issues/726
-    'no-useless-escape': 0,
+    'no-useless-escape': 2,
 
     // never allow object shorthand for properties, functions are ok.
     'phet-object-shorthand': 2

@@ -24,8 +24,8 @@
       .replace( /&/g, '&amp;' )
       .replace( /</g, '&lt;' )
       .replace( />/g, '&gt;' )
-      .replace( /\"/g, '&quot;' )
-      .replace( /\'/g, '&#x27;' )
+      .replace( /"/g, '&quot;' )
+      .replace( /'/g, '&#x27;' )
       .replace( /\//g, '&#x2F;' );
   }
 
@@ -85,7 +85,7 @@
         var runString = runLines.join( '\n' );
         var displayString = displayLines.join( '\n' );
 
-        var canvasExampleMatch = initialLine.match( /^\#begin canvasExample ([^ ]+) ([^x]+)x([^x]+)$/ );
+        var canvasExampleMatch = initialLine.match( /^#begin canvasExample ([^ ]+) ([^x]+)x([^x]+)$/ );
         if ( canvasExampleMatch ) {
           outsideParagraph();
 

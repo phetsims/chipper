@@ -288,7 +288,7 @@
     if ( string.indexOf( '@public' ) >= 0 ) {
       if ( string.indexOf( '-internal)' ) >= 0 ) {
         visibility = 'internal';
-        string = string.replace( '/@public.*-internal\)', '' );
+        string = string.replace( '/@public.*-internal)', '' );
       }
       else {
         visibility = 'public';

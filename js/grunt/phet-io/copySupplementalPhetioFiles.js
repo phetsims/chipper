@@ -78,7 +78,7 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
 
   // This regex was copied from perennial's `SimVersion.parse()` consult that code before changing things here.
-  const matches = version.match( /^(\d+)\.(\d+)\.(\d+)(-(([^\.-]+)\.(\d+)))?(-([^.-]+))?$/ );
+  const matches = version.match( /^(\d+)\.(\d+)\.(\d+)(-(([^.-]+)\.(\d+)))?(-([^.-]+))?$/ );
   if ( !matches ) {
     throw new Error( 'could not parse version: ' + version );
   }
