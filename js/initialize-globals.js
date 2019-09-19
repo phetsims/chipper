@@ -291,7 +291,7 @@
     /**
      * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
-     * 
+     *
      * Also removes the following items from the "PhET Menu":
      * Report a Problem
      * Check for Updates
@@ -303,7 +303,7 @@
     /**
      * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
-     * 
+     *
      * Also removes the following items from the "PhET Menu":
      * Report a Problem
      * Check for Updates
@@ -543,6 +543,22 @@
      * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
     supportsSound: { type: 'flag' },
+
+    /**
+     * Indicates whether or not vibration and its library should be initialized. There are a few prototype strategies
+     * that we are exploring which can be selected by the valid values.
+     *   - null: Default value, vibration disabled
+     *   - objects: Vibration designed to indicate relative location of objects on screen
+     *   - interaction: Vibration designed to indicate successful interaction with objects
+     *   - state: Vibration designed to convey current state of the simulation
+     *
+     * Used internally, though links are shared with collaborators and possibly in publications.
+     */
+    vibration: {
+      type: 'string',
+      defaultValue: null,
+      validValues: [ null, 'objects', 'interaction', 'state' ]
+    },
 
     /**
      * Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289.
