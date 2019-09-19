@@ -12,7 +12,7 @@
 
 ( function() {
 
-  var typeURLs = {
+  let typeURLs = {
     // is replaced by every documentationToHTML() call
   };
 
@@ -39,10 +39,10 @@
    * @returns {string}
    */
   function descriptionHTML( string ) {
-    var result = '';
-    var lines = string.split( '\n' );
+    let result = '';
+    const lines = string.split( '\n' );
 
-    var inParagraph = false;
+    let inParagraph = false;
     function insideParagraph() {
       if ( !inParagraph ) {
         result += '<p>\n';
@@ -56,14 +56,14 @@
       }
     }
 
-    for ( var i = 0; i < lines.length; i++ ) {
-      var line = lines[ i ];
+    for ( let i = 0; i < lines.length; i++ ) {
+      const line = lines[ i ];
 
       if ( line.indexOf( '#begin' ) === 0 ) {
-        var initialLine = lines[ i ];
-        var runLines = [];
-        var displayLines = [];
-        var isDisplayed = false;
+        const initialLine = lines[ i ];
+        const runLines = [];
+        const displayLines = [];
+        let isDisplayed = false;
         for ( i++; i < lines.length; i++ ) {
           if ( lines[ i ].indexOf( '#end' ) === 0 ) {
             break;
@@ -82,18 +82,18 @@
           }
         }
 
-        var runString = runLines.join( '\n' );
-        var displayString = displayLines.join( '\n' );
+        const runString = runLines.join( '\n' );
+        const displayString = displayLines.join( '\n' );
 
-        var canvasExampleMatch = initialLine.match( /^#begin canvasExample ([^ ]+) ([^x]+)x([^x]+)$/ );
+        const canvasExampleMatch = initialLine.match( /^#begin canvasExample ([^ ]+) ([^x]+)x([^x]+)$/ );
         if ( canvasExampleMatch ) {
           outsideParagraph();
 
-          var name = canvasExampleMatch[ 1 ];
-          var width = canvasExampleMatch[ 2 ];
-          var height = canvasExampleMatch[ 3 ];
+          const name = canvasExampleMatch[ 1 ];
+          const width = canvasExampleMatch[ 2 ];
+          const height = canvasExampleMatch[ 3 ];
 
-          var exampleName = 'example-' + name;
+          const exampleName = 'example-' + name;
 
           result += '<canvas id="' + exampleName + '" class="exampleScene"></canvas>';
           result += '<script>(function(){';
@@ -124,7 +124,7 @@
   }
 
   function typeString( type ) {
-    var url = typeURLs[ type ];
+    const url = typeURLs[ type ];
     if ( url ) {
       return ' <a href="' + url + '" class="type">' + escapeHTML( type ) + '</a>';
     }
@@ -134,10 +134,10 @@
   }
 
   function inlineParameterList( object ) {
-    var result = '';
+    let result = '';
     if ( object.parameters ) {
       result += '( ' + object.parameters.map( function( parameter ) {
-        var name = parameter.name;
+        let name = parameter.name;
         if ( parameter.optional ) {
           name = '<span class="optional">' + name + '</span>';
         }
@@ -151,16 +151,16 @@
   }
 
   function parameterDetailsList( object ) {
-    var result = '';
-    var parametersWithDescriptions = object.parameters ? object.parameters.filter( function( parameter ) {
+    let result = '';
+    const parametersWithDescriptions = object.parameters ? object.parameters.filter( function( parameter ) {
       return !!parameter.description;
     } ) : [];
 
     if ( parametersWithDescriptions.length ) {
       result += '<table class="params">\n';
       parametersWithDescriptions.forEach( function( parameter ) {
-        var name = parameter.name;
-        var description = parameter.description || '';
+        let name = parameter.name;
+        const description = parameter.description || '';
         if ( parameter.optional ) {
           name = '<span class="optional">' + name + '</span>';
         }
@@ -172,9 +172,9 @@
   }
 
   function returnOrConstant( object ) {
-    var result = '';
+    let result = '';
     if ( object.returns || object.constant ) {
-      var type = ( object.returns || object.constant ).type;
+      const type = ( object.returns || object.constant ).type;
       if ( object.returns ) {
         result += ' :';
       }
@@ -184,7 +184,7 @@
   }
 
   function nameLookup( array, name ) {
-    for ( var i = 0; i < array.length; i++ ) {
+    for ( let i = 0; i < array.length; i++ ) {
       if ( array[ i ].name === name ) {
         return array[ i ];
       }
@@ -209,8 +209,8 @@
    * @returns {Object} - With indexHTML and contentHTML fields, both strings of HTML.
    */
   function documentationToHTML( doc, baseName, typeNames, localTypeIds, externalTypeURLs ) {
-    var indexHTML = '';
-    var contentHTML = '';
+    let indexHTML = '';
+    let contentHTML = '';
 
     // Initialize typeURLs for the output
     typeURLs = {};
@@ -221,7 +221,7 @@
       typeURLs[ typeId ] = '#' + localTypeIds[ typeId ];
     } );
 
-    var baseURL = typeURLs[ baseName ];
+    const baseURL = typeURLs[ baseName ];
 
     indexHTML += '<a class="navlink" href="' + baseURL + '" data-toggle="collapse" data-target="#collapse-' + baseName + '" onclick="$( \'.collapse.in\' ).collapse( \'toggle\' ); return true;">' + baseName + '</a><br>\n';
     indexHTML += '<div id="collapse-' + baseName + '" class="collapse">\n';
@@ -230,8 +230,8 @@
     contentHTML += descriptionHTML( doc.topLevelComment.description );
 
     typeNames.forEach( function( typeName ) {
-      var baseObject = doc[ typeName ];
-      var baseURLPrefix = localTypeIds[ typeName ] + '-';
+      const baseObject = doc[ typeName ];
+      const baseURLPrefix = localTypeIds[ typeName ] + '-';
 
       // constructor
       if ( baseObject.type === 'type' ) {
@@ -239,7 +239,7 @@
         if ( typeName !== baseName ) {
           contentHTML += '<div id="' + baseURLPrefix.slice( 0, baseURLPrefix.length - 1 ) + '"></div>';
         }
-        var constructorLine = typeName + inlineParameterList( baseObject.comment );
+        let constructorLine = typeName + inlineParameterList( baseObject.comment );
         if ( baseObject.supertype ) {
           constructorLine += ' <span class="inherit">extends ' + typeString( baseObject.supertype ) + '</span>';
         }
@@ -248,14 +248,14 @@
         contentHTML += parameterDetailsList( baseObject.comment );
       }
 
-      var staticProperties = baseObject.staticProperties || baseObject.properties || [];
-      var staticNames = staticProperties.map( function( prop ) { return prop.name; } ).sort();
+      const staticProperties = baseObject.staticProperties || baseObject.properties || [];
+      const staticNames = staticProperties.map( function( prop ) { return prop.name; } ).sort();
       staticNames.forEach( function( name ) {
-        var object = nameLookup( staticProperties, name );
+        const object = nameLookup( staticProperties, name );
 
         indexHTML += '<a class="sublink" href="#' + baseURLPrefix + object.name + '">' + object.name + '</a><br>';
 
-        var typeLine = '<span class="entryName">' + typeName + '.' + object.name + '</span>';
+        let typeLine = '<span class="entryName">' + typeName + '.' + object.name + '</span>';
         typeLine += inlineParameterList( object );
         typeLine += returnOrConstant( object );
         contentHTML += '<h5 id="' + baseURLPrefix + object.name + '" class="section">' + typeLine + '</h5>';
@@ -267,13 +267,13 @@
       } );
 
       if ( baseObject.type === 'type' ) {
-        var constructorNames = baseObject.constructorProperties.map( function( prop ) { return prop.name; } ).sort();
+        const constructorNames = baseObject.constructorProperties.map( function( prop ) { return prop.name; } ).sort();
         constructorNames.forEach( function( name ) {
-          var object = nameLookup( baseObject.constructorProperties, name );
+          const object = nameLookup( baseObject.constructorProperties, name );
 
           indexHTML += '<a class="sublink" href="#' + baseURLPrefix + object.name + '">' + object.name + '</a><br>';
 
-          var typeLine = '<span class="entryName">' + object.name + '</span>';
+          let typeLine = '<span class="entryName">' + object.name + '</span>';
           typeLine += ' <span class="property">' + typeString( object.type ) + '</span>';
           contentHTML += '<h5 id="' + baseURLPrefix + object.name + '" class="section">' + typeLine + '</h5>';
           if ( object.description ) {
@@ -282,13 +282,13 @@
         } );
       }
       if ( baseObject.type === 'type' ) {
-        var instanceNames = baseObject.instanceProperties.map( function( prop ) { return prop.name; } ).sort();
+        const instanceNames = baseObject.instanceProperties.map( function( prop ) { return prop.name; } ).sort();
         instanceNames.forEach( function( name ) {
-          var object = nameLookup( baseObject.instanceProperties, name );
+          const object = nameLookup( baseObject.instanceProperties, name );
 
           indexHTML += '<a class="sublink" href="#' + baseURLPrefix + object.name + '">' + object.name + '</a><br>';
 
-          var typeLine = '<span class="entryName">' + object.name + '</span>';
+          let typeLine = '<span class="entryName">' + object.name + '</span>';
           if ( object.explicitGetName ) {
             typeLine += ' <span class="property">' + typeString( object.returns.type ) + '</span>';
             typeLine += ' <span class="entryName explicitSetterGetter">' + object.explicitGetName;

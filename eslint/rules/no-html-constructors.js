@@ -25,10 +25,10 @@ module.exports = function( context ) {
   'use strict';
 
   // names of the native JavaScript constructors that clash with PhET type names
-  var nativeConstructors = [ 'Image', 'Range', 'Text', 'Node', 'Event' ];
+  const nativeConstructors = [ 'Image', 'Range', 'Text', 'Node', 'Event' ];
 
   // list of all types that are declared in the file that have the same name as a native JavaScript constructor
-  var declaredTypes = [];
+  const declaredTypes = [];
 
   /**
    * Add a type to declared types if the 'declaration' node has a name which is equal to

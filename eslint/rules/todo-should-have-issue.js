@@ -9,16 +9,16 @@ module.exports = function( context ) {
   'use strict';
 
   // Whitelist of directories to check that TODOs have GitHub issues
-  var directoriesToRequireIssues = [ /joist[/\\]js/ ];
+  const directoriesToRequireIssues = [ /joist[/\\]js/ ];
 
   return {
 
     Program: function checkTodoShouldHaveIssue( node ) {
 
       // Check whether the given directory matches the whitelist
-      var directoryShouldBeChecked = false;
+      let directoryShouldBeChecked = false;
       for ( var i = 0; i < directoriesToRequireIssues.length; i++ ) {
-        var d = directoriesToRequireIssues[ i ];
+        const d = directoriesToRequireIssues[ i ];
         if ( context.getFilename().match( d ) ) {
           directoryShouldBeChecked = true;
           break;
@@ -26,17 +26,17 @@ module.exports = function( context ) {
       }
 
       if ( directoryShouldBeChecked ) {
-        var comments = context.getSourceCode().getAllComments();
+        const comments = context.getSourceCode().getAllComments();
 
         if ( comments ) {
           for ( i = 0; i < comments.length; i++ ) {
-            var comment = comments[ i ];
+            const comment = comments[ i ];
 
             if ( comment.value.indexOf( 'TODO' ) >= 0 ) {
 
               // '#' followed by any number of digits
-              var missingIssueNumber = comment.value.search( /#\d+/ ) === -1;
-              var missingLink = comment.value.indexOf( 'https://github.com/phetsims/' ) === -1;
+              const missingIssueNumber = comment.value.search( /#\d+/ ) === -1;
+              const missingLink = comment.value.indexOf( 'https://github.com/phetsims/' ) === -1;
 
               if ( missingLink && missingIssueNumber ) {
                 context.report( {

@@ -11,7 +11,7 @@
 
 (function() {
 
-  var ChipperStringUtils = {
+  const ChipperStringUtils = {
 
     /**
      * Pad LTR/RTL language values with unicode embedding marks (see https://github.com/phetsims/joist/issues/152)
@@ -66,7 +66,7 @@
      * @returns {string} a new string
      */
     replaceFirst: function( str, find, replaceWith ) {
-      var idx = str.indexOf( find );
+      const idx = str.indexOf( find );
       if ( str.indexOf( find ) !== -1 ) {
         return str.slice( 0, idx ) + replaceWith + str.slice( idx + find.length );
       }
@@ -85,9 +85,9 @@
      */
     replacePlaceholders: function( str, mapping ) {
       Object.keys( mapping ).forEach( function( key ) {
-        var replacement = mapping[ key ];
+        const replacement = mapping[ key ];
         key = '{{' + key + '}}';
-        var index;
+        let index;
         while ( ( index = str.indexOf( key ) ) >= 0 ) {
           str = str.slice( 0, index ) + replacement + str.slice( index + key.length );
         }
@@ -107,8 +107,8 @@
      * @returns {array} - the whole line containing the matched substring
      */
     firstLineThatContains: function( string, find ) {
-      var findRE = '.*' + find.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' ) + '.*';
-      var theReturn = string.match( new RegExp( findRE, 'g' ) );
+      const findRE = '.*' + find.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' ) + '.*';
+      const theReturn = string.match( new RegExp( findRE, 'g' ) );
       return theReturn ? theReturn[ 0 ] : null;
     }
   };

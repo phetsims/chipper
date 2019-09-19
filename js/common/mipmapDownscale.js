@@ -23,18 +23,18 @@
    */
   function mipmapDownscale( mipmap, createData ) {
     // array index constants for the channels
-    var R = 0;
-    var G = 1;
-    var B = 2;
-    var A = 3;
+    const R = 0;
+    const G = 1;
+    const B = 2;
+    const A = 3;
 
     // hard-coded gamma (assuming the exponential part of the sRGB curve as a simplification)
-    var GAMMA = 2.2;
+    const GAMMA = 2.2;
 
     // dimension handling for the larger image
-    var width = mipmap.width;
-    var height = mipmap.height;
-    var data = mipmap.data;
+    const width = mipmap.width;
+    const height = mipmap.height;
+    const data = mipmap.data;
 
     function inside( row, col ) {
       return row < height && col < width;
@@ -45,7 +45,7 @@
       if ( !inside( row, col ) ) {
         return [ 0, 0, 0, 0 ];
       }
-      var index = 4 * ( row * width + col );
+      const index = 4 * ( row * width + col );
       return [
         // maps to [0,1]
         Math.pow( data[ index + R ] / 255, GAMMA ), // red
@@ -56,25 +56,25 @@
     }
 
     // dimension h andling for the smaller downscaled image
-    var smallWidth = Math.ceil( width / 2 );
-    var smallHeight = Math.ceil( height / 2 );
-    var smallData = createData( smallWidth, smallHeight );
+    const smallWidth = Math.ceil( width / 2 );
+    const smallHeight = Math.ceil( height / 2 );
+    const smallData = createData( smallWidth, smallHeight );
 
     function smallPixel( row, col ) {
       return 4 * ( row * smallWidth + col );
     }
 
     // for each pixel in our downscaled image
-    for ( var row = 0; row < height; row++ ) {
-      for ( var col = 0; col < width; col++ ) {
+    for ( let row = 0; row < height; row++ ) {
+      for ( let col = 0; col < width; col++ ) {
         // Original pixel values for the quadrant
-        var p1 = pixel( 2 * row, 2 * col ); // upper-left
-        var p2 = pixel( 2 * row, 2 * col + 1 ); // upper-right
-        var p3 = pixel( 2 * row + 1, 2 * col ); // lower-left
-        var p4 = pixel( 2 * row + 1, 2 * col + 1 ); // lower-right
-        var output = [ 0, 0, 0, 0 ];
+        const p1 = pixel( 2 * row, 2 * col ); // upper-left
+        const p2 = pixel( 2 * row, 2 * col + 1 ); // upper-right
+        const p3 = pixel( 2 * row + 1, 2 * col ); // lower-left
+        const p4 = pixel( 2 * row + 1, 2 * col + 1 ); // lower-right
+        const output = [ 0, 0, 0, 0 ];
 
-        var alphaSum = p1[ A ] + p2[ A ] + p3[ A ] + p4[ A ];
+        const alphaSum = p1[ A ] + p2[ A ] + p3[ A ] + p4[ A ];
 
         // blending of pixels, weighted by alphas
         output[ R ] = ( p1[ R ] * p1[ A ] + p2[ R ] * p2[ A ] + p3[ R ] * p3[ A ] + p4[ R ] * p4[ A ] ) / alphaSum;
@@ -83,7 +83,7 @@
         output[ A ] = alphaSum / 4; // average of alphas
 
         // convert back into [0,255] range with reverse corrections, and store in our buffer
-        var outputIndex = smallPixel( row, col );
+        const outputIndex = smallPixel( row, col );
         smallData[ outputIndex + R ] = Math.floor( Math.pow( output[ R ], 1 / GAMMA ) * 255 );
         smallData[ outputIndex + G ] = Math.floor( Math.pow( output[ G ], 1 / GAMMA ) * 255 );
         smallData[ outputIndex + B ] = Math.floor( Math.pow( output[ B ], 1 / GAMMA ) * 255 );

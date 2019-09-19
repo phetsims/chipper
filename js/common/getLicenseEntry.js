@@ -33,17 +33,17 @@
    */
   function getLicenseEntry( absolutePath ) {
 
-    var lastSlashIndex = absolutePath.lastIndexOf( '/' );
-    var prefix = absolutePath.substring( 0, lastSlashIndex );
-    var licenseFilename = prefix + '/license.json'; // license.json is a sibling of the media file
-    var mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
+    const lastSlashIndex = absolutePath.lastIndexOf( '/' );
+    const prefix = absolutePath.substring( 0, lastSlashIndex );
+    const licenseFilename = prefix + '/license.json'; // license.json is a sibling of the media file
+    const mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
 
     // read license.json if it exists
     if ( !global.phet.chipper.fs.existsSync( licenseFilename ) ) {
       return null;
     }
-    var fileContents = global.phet.chipper.fs.readFileSync( licenseFilename, 'utf8' );
-    var json = null;
+    const fileContents = global.phet.chipper.fs.readFileSync( licenseFilename, 'utf8' );
+    let json = null;
     try {
       json = JSON.parse( fileContents );
     }
@@ -58,7 +58,7 @@
     }
 
     // get the media file's license entry
-    var entry = json[ mediaFilename ];
+    const entry = json[ mediaFilename ];
     if ( !entry ) {
       return null; // Not annotated in file
     }

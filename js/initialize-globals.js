@@ -48,7 +48,7 @@
    * the key itself.
    * @namespace {Object} PhetQueryParameters
    */
-  var QUERY_PARAMETERS_SCHEMA = {
+  const QUERY_PARAMETERS_SCHEMA = {
     // Schema that describes query parameters for PhET common code.
     // These query parameters are available via global phet.chipper.queryParameters.
 
@@ -650,8 +650,8 @@
    * @param {number} millis - amount of time to pause synchronously
    */
   function sleep( millis ) {
-    var date = new Date();
-    var curDate;
+    const date = new Date();
+    let curDate;
     do {
       curDate = new Date();
     } while ( curDate - date < millis );
@@ -681,10 +681,10 @@
   ( function() {
 
     // enables all assertions (basic and slow)
-    var enableAllAssertions = !phet.chipper.isProduction && phet.chipper.queryParameters.eall;
+    const enableAllAssertions = !phet.chipper.isProduction && phet.chipper.queryParameters.eall;
 
     // enables basic assertions
-    var enableBasicAssertions = enableAllAssertions ||
+    const enableBasicAssertions = enableAllAssertions ||
                                 ( !phet.chipper.isProduction && phet.chipper.queryParameters.ea ) ||
                                 phet.chipper.isDebugBuild;
 
@@ -698,8 +698,8 @@
     // Communicate sim errors to joist/tests/test-sims.html
     if ( phet.chipper.queryParameters.postMessageOnError ) {
       window.addEventListener( 'error', function( a ) {
-        var message = '';
-        var stack = '';
+        let message = '';
+        let stack = '';
         if ( a && a.message ) {
           message = a.message;
         }

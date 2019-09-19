@@ -26,7 +26,7 @@
 
 (function( global ) {
 
-  var locales = {
+  const locales = {
     aa: {
       name: 'Afar',
       localizedName: 'Afar',
