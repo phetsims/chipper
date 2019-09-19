@@ -298,7 +298,7 @@ const writeAPIFile = ( buildDir, repo ) => {
   const overridesFileName = `${phetioDirectory}/${repo}-phet-io-elements-overrides.js`;
   const typesFileName = `${phetioDirectory}/${repo}-phet-io-types.js`;
 
-  const loadAPIFile = ( name ) => {
+  const loadAPIFile = name => {
     const contents = fs.readFileSync( name ).toString();
 
     // TODO: This will be nicer once the files are JSON, see https://github.com/phetsims/phet-io/issues/1520
