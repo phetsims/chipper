@@ -685,8 +685,8 @@
 
     // enables basic assertions
     const enableBasicAssertions = enableAllAssertions ||
-                                ( !phet.chipper.isProduction && phet.chipper.queryParameters.ea ) ||
-                                phet.chipper.isDebugBuild;
+                                  ( !phet.chipper.isProduction && phet.chipper.queryParameters.ea ) ||
+                                  phet.chipper.isDebugBuild;
 
     if ( enableBasicAssertions ) {
       window.assertions.enableAssert();
