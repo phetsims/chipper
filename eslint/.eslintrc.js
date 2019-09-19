@@ -158,7 +158,10 @@ module.exports = {
     'no-useless-escape': 2,
 
     // never allow object shorthand for properties, functions are ok.
-    'phet-object-shorthand': 2
+    'phet-object-shorthand': 2,
+
+    // disallow parens surrounding single args in arrow functions
+    'arrow-parens': [ 2, 'as-needed' ]
   },
   env: {
     browser: true,
