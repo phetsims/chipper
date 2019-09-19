@@ -10,14 +10,14 @@
  * PhET Simulations can be launched with query parameters which enable certain features.  To use a query parameter,
  * provide the full URL of the simulation and append a question mark (?) then the query parameter (and optionally its
  * value assignment).  For instance:
- * http://www.colorado.edu/physics/phet/dev/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?dev
+ * https://phet-dev.colorado.edu/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?dev
  *
  * Here is an example of a value assignment:
- * http://www.colorado.edu/physics/phet/dev/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?webgl=false
+ * https://phet-dev.colorado.edu/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?webgl=false
  *
  * To use multiple query parameters, specify the question mark before the first query parameter, then ampersands (&)
  * between other query parameters.  Here is an example of multiple query parameters:
- * http://www.colorado.edu/physics/phet/dev/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?dev&showPointerAreas&webgl=false
+ * https://phet-dev.colorado.edu/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?dev&showPointerAreas&webgl=false
  *
  * For more on query parameters in general, see http://en.wikipedia.org/wiki/Query_string
  * For details on common-code query parameters, see QUERY_PARAMETERS_SCHEMA below.
