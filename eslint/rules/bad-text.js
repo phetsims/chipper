@@ -35,7 +35,9 @@ module.exports = function( context ) {
     ' Phet ',
     'phetio element', // use "phet-io element" or "PhET-iO element"
     'Phet-iO',
-    '@return '
+
+    '@return ',
+    ' => { return ', // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
   ];
 
   return {

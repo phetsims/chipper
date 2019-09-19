@@ -36,7 +36,7 @@ module.exports = async function() {
       return {
         name: name,
         // Exclude other objects
-        mipmaps: mipmaps.map( ( { width, height, url } ) => { return { width: width, height: height, url: url }; } )
+        mipmaps: mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) )
       };
     } ) );
 

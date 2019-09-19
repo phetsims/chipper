@@ -44,9 +44,7 @@ module.exports = function( repos, cache, say = false ) {
 
   // filter out all unlintable repo. An unlintable repo is one that has no `js` in it, so it will fail when trying to
   // lint it.  Also, if the user doesn't have some repos checked out, those should be skipped
-  const filteredRepos = repos.filter( repo => {
-    return NO_LINT_REPOS.indexOf( repo ) < 0 && fs.existsSync( '../' + repo );
-  } );
+  const filteredRepos = repos.filter( repo => NO_LINT_REPOS.indexOf( repo ) < 0 && fs.existsSync( '../' + repo ) );
 
   const cli = new eslint.CLIEngine( {
 
