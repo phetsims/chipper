@@ -13,14 +13,14 @@
  * @author John Blanco
  * @author Sam Reid
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules - paths are relative to the requirejs config.js file
-  var getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
-  var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
-  var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
+  const getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
+  const getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
+  const loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
+  const registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
 
   // Keep track of the sound URL lists that are used during dependency resolution so they can be converted to base64
   // during builds.

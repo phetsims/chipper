@@ -60,14 +60,14 @@
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules - paths are relative to the requirejs config.js file
-  var getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
-  var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var mipmapDownscale = require( '../../chipper/js/common/mipmapDownscale' );
-  var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
+  const getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
+  const getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
+  const mipmapDownscale = require( '../../chipper/js/common/mipmapDownscale' );
+  const registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
 
   return {
     // called both in-browser and during build
