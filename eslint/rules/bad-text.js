@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 /**
- * Lint detector for invalid text.  Checks the entire file and does not correctly report line number.
+ * Lint detector for invalid text.
  * Lint is disabled for this file so the bad texts aren't themselves flagged.
  *
  * @author Sam Reid (PhET Interactive Simulations)
