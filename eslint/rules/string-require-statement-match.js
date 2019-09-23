@@ -14,10 +14,10 @@ module.exports = function( context ) {
 
   // Adapted from Stack Overflow, see http://stackoverflow.com/questions/25085306/javascript-space-separated-string-to-camelcase
   function toCamelCase( string ) {
-    var out = '';
+    let out = '';
 
     // Add whitespace after each digit so that strings like myString1pattern will get camelcased with uppercase P
-    var withWhitespaceAfterDigits = string.replace( /\d/g, function( a ) {return a + ' ';} ).trim();
+    const withWhitespaceAfterDigits = string.replace( /\d/g, function( a ) {return a + ' ';} ).trim();
 
     // Split on whitespace, remove whitespace and uppercase the first word in each term
     withWhitespaceAfterDigits.split( ' ' ).forEach( function( element, index ) {
@@ -47,13 +47,13 @@ module.exports = function( context ) {
            node.declarations[ 0 ].init.arguments.length > 0 ) {
         if ( node.declarations[ 0 ].init &&
              node.declarations[ 0 ].init.callee.name === 'require' ) {
-          var varName = node.declarations[ 0 ].id.name;
-          var rhs = node.declarations[ 0 ].init.arguments[ 0 ].value;
+          const varName = node.declarations[ 0 ].id.name;
+          const rhs = node.declarations[ 0 ].init.arguments[ 0 ].value;
 
           if ( rhs && rhs.indexOf( 'string!' ) === 0 ) {
 
-            var lastSlash = rhs.lastIndexOf( '/' );
-            var key = rhs.substring( lastSlash + 1 );
+            const lastSlash = rhs.lastIndexOf( '/' );
+            let key = rhs.substring( lastSlash + 1 );
 
             // For a11y strings, no need to prefix vars with "a11y"
             if ( key.indexOf( 'a11y.' ) === 0 ) {
@@ -61,10 +61,10 @@ module.exports = function( context ) {
             }
 
             // Convert various separators to whitespace
-            var withWhitespace = key.replace( /[\.\-\_]/g, ' ' );
+            const withWhitespace = key.replace( /[.\-_]/g, ' ' );
 
             // Convert whitespace delimited string to camel case and append string suffix
-            var desiredVarName = toCamelCase( withWhitespace ) + 'String';
+            const desiredVarName = toCamelCase( withWhitespace ) + 'String';
 
             if ( varName !== desiredVarName ) {
               context.report( {
