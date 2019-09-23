@@ -1,7 +1,7 @@
 // Copyright 2015-2019, University of Colorado Boulder
 
 /**
- * Returns a map such that map[locale][stringKey] will be the string value (with fallbacks to English where needed).
+ * Returns a map such that map["locale"]["REPO/stringKey"] will be the string value (with fallbacks to English where needed).
  * Loads each string file only once, and only loads the repository/locale combinations necessary.
  * Requires global.phet.chipper.strings to be set by the string.js plugin.
  */
@@ -50,9 +50,9 @@ module.exports = function( locales, phetLibs ) {
   }
 
   // Load all the required string files into memory, so we don't load them multiple times (for each usage)
-  const repoStringMap = {}; // maps [repositoryName][locale] => contents of locale string file
+  const stringFilesContents = {}; // maps [repositoryName][locale] => contents of locale string file
   stringRepositories.forEach( function( repository ) {
-    repoStringMap[ repository.name ] = {};
+    stringFilesContents[ repository.name ] = {};
 
     locales.forEach( function( locale ) {
 
@@ -78,7 +78,7 @@ module.exports = function( locales, phetLibs ) {
         grunt.log.debug( `missing string file: ${stringsFilename}` );
         fileContents = {};
       }
-      const fileMap = repoStringMap[ repository.name ][ locale ] = {};
+      const fileMap = stringFilesContents[ repository.name ][ locale ] = {};
 
       // Format the string values
       ChipperStringUtils.formatStringValues( fileContents, isRTL );
@@ -92,11 +92,9 @@ module.exports = function( locales, phetLibs ) {
     } );
   } );
 
-  // combine our strings into [locale][stringKey] map, using the fallback locale where necessary
-  // TODO: in regards to nested a11y strings, this data structure doesn't nest. Instead it gets nested
-  // TODO: string values, and then sets them with the flat key string like
-  // TODO: `"FRICTION/a11y.some.string.here": { value: 'My Some Strong' }` Zepumph think this is easiest, but
-  // TODO: let's discuss! https://github.com/phetsims/rosetta/issues/193
+  // combine our strings into [locale][stringKey] map, using the fallback locale where necessary. In regards to nested
+  // strings, this data structure doesn't nest. Instead it gets nested string values, and then sets them with the
+  // flat key string like `"FRICTION/a11y.some.string.here": { value: 'My Some String' }`
   const stringMap = {};
   locales.forEach( function( locale ) {
     stringMap[ locale ] = {};
@@ -105,20 +103,20 @@ module.exports = function( locales, phetLibs ) {
       const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
       // English fallback
-      const stringsForFallbackLocale = repoStringMap[ repositoryName ][ fallbackLocale ];
+      const fallbackStringFileContents = stringFilesContents[ repositoryName ][ fallbackLocale ];
 
       // This method will recurse if needed to find nested string values as well.
-      stringMap[ locale ][ stringKey ] = ChipperStringUtils.getStringFromMap( stringsForFallbackLocale, stringKey );
+      stringMap[ locale ][ stringKey ] = ChipperStringUtils.getStringFromMap( fallbackStringFileContents, stringKey );
 
       // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.
       if ( locale !== fallbackLocale &&
-           repoStringMap[ repositoryName ] &&
-           repoStringMap[ repositoryName ][ locale ] &&
-           repoStringMap[ repositoryName ][ locale ][ stringKey ] &&
+           stringFilesContents[ repositoryName ] &&
+           stringFilesContents[ repositoryName ][ locale ] &&
+           stringFilesContents[ repositoryName ][ locale ][ stringKey ] &&
 
            // if the string in rosetta is empty we want to use the fallback english string
-           repoStringMap[ repositoryName ][ locale ][ stringKey ].value.length > 0 ) {
-        stringMap[ locale ][ stringKey ] = repoStringMap[ repositoryName ][ locale ][ stringKey ].value;
+           stringFilesContents[ repositoryName ][ locale ][ stringKey ].value.length > 0 ) {
+        stringMap[ locale ][ stringKey ] = ChipperStringUtils.getStringFromMap( stringFilesContents[ repositoryName ][ locale ], stringKey );
       }
     }
   } );

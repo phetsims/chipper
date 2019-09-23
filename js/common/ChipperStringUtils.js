@@ -121,6 +121,7 @@
      * @param {Object.<string, intermediary:Object|{value:string}>} stringsMap - if "intermediary", then recurse to
      *                                                                             find more nested keys
      * @param {boolean} isRTL - is right to left language
+     * @public
      */
     formatStringValues: function( stringObject, isRTL ) {
       for ( const stringKey in stringObject ) {
@@ -145,18 +146,19 @@
     },
 
     /**
-     * Given a key, get the appropriate string from the "map" object. The map is most likely a loaded JSON string file.
-     * This method also supports being called from CHIPPER/getStringMap, which adds the REPO prefix to all string keys
-     * in the map. This method supports recursing through keys that support string nesting. This method was
-     * created to support nested string keys in https://github.com/phetsims/rosetta/issues/193
+     * Given a key, get the appropriate string from the "map" object. This method is called during requirejs mode from
+     * the string plugin and during the build via CHIPPER/getStringMap, which adds the REPO prefix to all string keys
+     * in the map. This method supports recursing through keys that support string nesting. This method was created to
+     * support nested string keys in https://github.com/phetsims/rosetta/issues/193
      * @param {Object.<string, Object|{value: string}>} map - where an "intermediate" Object should hold nested strings
      * @param {string} key - like `friction.title` or `FRICTION/friction.title` or using nesting like `a11y.nested.string.here`
      * @returns {string} - the string value of the key
      * @throws  {Error} - if the key doesn't hold a string value in the map
+     * @public
      */
     getStringFromMap( map, key ) {
 
-      // Normal case where the map is "flat," and the key holds an object with the string in the "value" key, i.e. "friction.title": { "value": "Friction" },
+      // Case where the map is "flat," and the key holds an object with the string in the "value" key, i.e. "friction.title": { "value": "Friction" },
       if ( map[ key ] !== undefined ) {
         if ( map[ key ].value === undefined ) {
           throw new Error( `no value entry for string key: ${key}` );
