@@ -132,7 +132,6 @@
           if ( element.hasOwnProperty( 'value' ) ) {
 
             // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
-            // TODO: some a11y strings have leading/trailing whitespace purposefully, perhaps we should formalize that somehow, https://github.com/phetsims/chipper/issues/779
             element.value = element.value.trim();
             element.value = ChipperStringUtils.addDirectionalFormatting( element.value, isRTL );
           }
