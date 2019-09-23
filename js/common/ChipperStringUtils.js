@@ -118,29 +118,17 @@
 
     /**
      * Recurse through a string file and format each string value appropriately
-     * @param {StringMapNode} stringMapNode
+     * @param {StringMap} stringMap
      * @param {boolean} isRTL - is right to left language
      * @public
      */
-    formatStringValues: function( stringMapNode, isRTL ) {
-      for ( const stringKey in stringMapNode ) {
-        if ( stringMapNode.hasOwnProperty( stringKey ) ) {
+    formatStringValues: function( stringMap, isRTL ) {
+      ChipperStringUtils.forEachString( stringMap, ( key, stringObject ) => {
 
-          // This will either have a "value" key, or be an object with keys that will eventually have 'value' in it
-          const element = stringMapNode[ stringKey ];
-          if ( element.hasOwnProperty( 'value' ) ) {
-
-            // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
-            element.value = element.value.trim();
-            element.value = ChipperStringUtils.addDirectionalFormatting( element.value, isRTL );
-          }
-          else {
-
-            // Recurse a level deeper
-            ChipperStringUtils.formatStringValues( element, isRTL );
-          }
-        }
-      }
+        // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
+        stringObject.value = stringObject.value.trim();
+        stringObject.value = ChipperStringUtils.addDirectionalFormatting( stringObject.value, isRTL );
+      } );
     },
 
     /**
@@ -196,6 +184,11 @@
       if ( map.hasOwnProperty( key ) ) {
         const nextKey = keySoFar ? `${keySoFar}.${key}` : key; // don't start with period, assumes '' is falsey
         const stringObject = map[ key ];
+
+        // no need to support arrays in the string map, for example stringObject.history in locale specific files.
+        if ( Array.isArray( stringObject ) ) {
+          return;
+        }
         if ( stringObject.value ) {
           func( nextKey, stringObject );
         }

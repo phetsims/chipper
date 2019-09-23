@@ -54,6 +54,12 @@ define( require => {
 
       // Cache miss: load the file parse, enter into cache and return it
       text.get( url, loadedText => {
+
+        // the cache didn't exist before the text load, but it may exist now.
+        if ( cache[ url ] ) {
+          return callback( cache[ url ] );
+        }
+
         const parsed = JSON.parse( loadedText );
 
         const isRTL = localeInfo[ phet.chipper.queryParameters.locale ].direction === 'rtl';
