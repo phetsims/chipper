@@ -13,27 +13,27 @@
  * @author John Blanco
  * @author Sam Reid
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules - paths are relative to the requirejs config.js file
-  var getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
-  var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
-  var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
+  const getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
+  const getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
+  const loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
+  const registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
 
   // Keep track of the sound URL lists that are used during dependency resolution so they can be converted to base64
   // during builds.
-  var buildMap = {};
+  const buildMap = {};
 
   // define the plugin operations based on the RequireJS plugin API
   return {
     load: function( name, parentRequire, onload, config ) {
 
       // everything after the repository namespace, eg 'MY_REPO/explosions/boom' -> '/explosions/boom'
-      var soundPath = name.substring( name.indexOf( '/' ) );
-      var baseUrl = getProjectURL( name, parentRequire ) + 'sounds';
-      var soundInfo = { url: baseUrl + soundPath };
+      const soundPath = name.substring( name.indexOf( '/' ) );
+      const baseUrl = getProjectURL( name, parentRequire ) + 'sounds';
+      const soundInfo = { url: baseUrl + soundPath };
 
       if ( config.isBuild ) {
 
@@ -43,8 +43,8 @@ define( function( require ) {
         // Create an adapter whose API matches the RequireJS onload function. This is necessary because we only want to
         // call onload(null) once per invocation of a media plugin. As a side-effect of calling registerLicenseEntry,
         // this adapter will populate the errors array for any license entry problems.
-        var errors = [];
-        var onloadAdapter = function( value ) { };
+        const errors = [];
+        const onloadAdapter = function( value ) { };
         onloadAdapter.error = function( error ) {
           errors.push( error );
         };
@@ -74,8 +74,8 @@ define( function( require ) {
     // by James Burke, see https://github.com/requirejs/text/blob/master/text.js.
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
-        var soundInfo = buildMap[ moduleName ];
-        var base64SoundData = '{base64:\'' + loadFileAsDataURI( soundInfo.url ) + '\'}';
+        const soundInfo = buildMap[ moduleName ];
+        const base64SoundData = '{base64:\'' + loadFileAsDataURI( soundInfo.url ) + '\'}';
 
         // Write the base64 representation of the sound file as the return value of a function so that it can be
         // extracted and loaded in the built version of the sim.

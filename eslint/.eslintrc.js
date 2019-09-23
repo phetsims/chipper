@@ -154,11 +154,14 @@ module.exports = {
       'self'
     ],
 
-    // added for 5.14.1 update but should likely be removed once discussed in https://github.com/phetsims/chipper/issues/726
-    'no-useless-escape': 0,
+    // don't escape characters that don't need to be escaped
+    'no-useless-escape': 2,
 
     // never allow object shorthand for properties, functions are ok.
-    'phet-object-shorthand': 2
+    'phet-object-shorthand': 2,
+
+    // disallow parens surrounding single args in arrow functions
+    'arrow-parens': [ 2, 'as-needed' ]
   },
   env: {
     browser: true,

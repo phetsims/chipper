@@ -11,7 +11,7 @@
 define( function( module ) {
   'use strict';
 
-  var buildMap = {};
+  const buildMap = {};
 
   return {
 
@@ -22,7 +22,7 @@ define( function( module ) {
     load: function( id, require, load, config ) {
       if ( config.isBuild ) {
 
-        var url = require.toUrl( id );
+        let url = require.toUrl( id );
 
         if ( /\.js$/.test( url ) === false ) {
           url += '.js';
@@ -42,7 +42,7 @@ define( function( module ) {
         }
       }
       else {
-        var brand = window.phet && window.phet.chipper && window.phet.chipper.brand;
+        const brand = window.phet && window.phet.chipper && window.phet.chipper.brand;
         if ( brand === 'phet-io' ) {
           require( [ id ], load );
         }
@@ -57,7 +57,7 @@ define( function( module ) {
      * in the optimized file. See http://requirejs.org/docs/plugins.html#apiwrite for description of parameters.
      */
     write: function( pluginName, moduleName, write ) {
-      var text = null;
+      let text = null;
       if ( global.phet && global.phet.chipper && global.phet.chipper.brand === 'phet-io' ) {
         text = 'define("' + moduleName + '", function(){' + buildMap[ moduleName ].content + '});';
         write.asModule( moduleName, text, buildMap[ moduleName ].content );

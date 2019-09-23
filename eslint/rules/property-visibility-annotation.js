@@ -18,9 +18,9 @@ module.exports = function( context ) {
     AssignmentExpression: function propertyVisibilityAnnotation( node ) {
 
       if ( node.left && node.left && node.left.object && node.left.object.type === 'ThisExpression' ) {
-        var leadingComments = node.parent.leadingComments;
-        var i;
-        var a;
+        const leadingComments = node.parent.leadingComments;
+        let i;
+        let a;
         var isAnnotated = false;
         if ( leadingComments ) {
           for ( i = 0; i < leadingComments.length; i++ ) {
@@ -31,7 +31,7 @@ module.exports = function( context ) {
           }
         }
 
-        var trailingComments = node.parent.trailingComments;
+        const trailingComments = node.parent.trailingComments;
         if ( trailingComments ) {
           for ( i = 0; i < trailingComments.length; i++ ) {
             a = trailingComments[ i ];
@@ -43,7 +43,7 @@ module.exports = function( context ) {
       }
 
       if ( node.parent && node.parent.parent && node.parent.parent.parent ) {
-        var parentFunction = node.parent.parent.parent;
+        const parentFunction = node.parent.parent.parent;
         if ( parentFunction.id && parentFunction.id.name ) {
           if ( parentFunction.type === 'FunctionDeclaration' && parentFunction.id.name[ 0 ].toUpperCase() === parentFunction.id.name[ 0 ] ) {
             if ( !isAnnotated ) {

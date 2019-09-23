@@ -78,7 +78,7 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
 
   // This regex was copied from perennial's `SimVersion.parse()` consult that code before changing things here.
-  const matches = version.match( /^(\d+)\.(\d+)\.(\d+)(-(([^\.-]+)\.(\d+)))?(-([^.-]+))?$/ );
+  const matches = version.match( /^(\d+)\.(\d+)\.(\d+)(-(([^.-]+)\.(\d+)))?(-([^.-]+))?$/ );
   if ( !matches ) {
     throw new Error( 'could not parse version: ' + version );
   }
@@ -298,7 +298,7 @@ const writeAPIFile = ( buildDir, repo ) => {
   const overridesFileName = `${phetioDirectory}/${repo}-phet-io-elements-overrides.js`;
   const typesFileName = `${phetioDirectory}/${repo}-phet-io-types.js`;
 
-  const loadAPIFile = ( name ) => {
+  const loadAPIFile = name => {
     const contents = fs.readFileSync( name ).toString();
 
     // TODO: This will be nicer once the files are JSON, see https://github.com/phetsims/phet-io/issues/1520

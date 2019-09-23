@@ -14,7 +14,7 @@ module.exports = function( context ) {
 
   // the following holds the possible ways to register various PhET listeners and observers
   // TODO: derivedProperty
-  var OBSERVER_REGISTRATIONS = {
+  const OBSERVER_REGISTRATIONS = {
     LINK: 'link',
     LAZY_LINK: 'lazyLink',
     ON: 'on',
@@ -33,13 +33,13 @@ module.exports = function( context ) {
            node.expression.callee &&
            node.expression.callee.property &&
            node.expression.callee.property.name ) {
-        var calleeName = node.expression.callee.property.name;
-        for ( var key in OBSERVER_REGISTRATIONS ) {
+        const calleeName = node.expression.callee.property.name;
+        for ( const key in OBSERVER_REGISTRATIONS ) {
           if( OBSERVER_REGISTRATIONS.hasOwnProperty( key ) ) {
             if( calleeName === OBSERVER_REGISTRATIONS[ key ] ) {
               // we have found an observer registration, start at the root and look through its tokens for dispose
               var disposeFound = false;
-              var rootNode = context.getSourceCode().ast;
+              const rootNode = context.getSourceCode().ast;
               if( rootNode &&
                   rootNode.tokens ) {
                 rootNode.tokens.forEach( function( token ) {

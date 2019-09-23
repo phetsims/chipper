@@ -10,10 +10,10 @@
 (function() {
 
   function loadFileAsDataURI( filename ) {
-    var filenameParts = filename.split( '.' );
-    var suffix = filenameParts[ filenameParts.length - 1 ];
+    const filenameParts = filename.split( '.' );
+    const suffix = filenameParts[ filenameParts.length - 1 ];
 
-    var mimeType = {
+    const mimeType = {
       'png': 'image/png',
       'svg': 'image/svg+xml',
       'jpg': 'image/jpeg',
@@ -32,7 +32,7 @@
       throw new Error( 'Unknown mime type for filename: ' + filename );
     }
 
-    var base64 = 'data:' + mimeType + ';base64,' + Buffer.from( global.phet.chipper.fs.readFileSync( filename ) ).toString( 'base64' );
+    const base64 = 'data:' + mimeType + ';base64,' + Buffer.from( global.phet.chipper.fs.readFileSync( filename ) ).toString( 'base64' );
     return base64;
   }
 

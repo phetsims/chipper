@@ -8,31 +8,31 @@
  *
  * @author Sam Reid
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules - paths are relative to the requirejs config.js file
-  var getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
-  var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
-  var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
+  const getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
+  const getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
+  const loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
+  const registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
 
   //Keep track of the images that are used during dependency resolution so they can be converted to base64 at compile time
-  var buildMap = {};
+  const buildMap = {};
 
   return {
     load: function( name, parentRequire, onload, config ) {
 
       // everything after the repository namespace, eg 'FUNCTION_BUILDER/functions/feet.png' -> '/functions/feet.png'
-      var imagePath = name.substring( name.indexOf( '/' ) );
-      var path = getProjectURL( name, parentRequire ) + 'images' + imagePath;
+      const imagePath = name.substring( name.indexOf( '/' ) );
+      const path = getProjectURL( name, parentRequire ) + 'images' + imagePath;
 
       if ( config.isBuild ) {
         buildMap[ name ] = path;
         registerLicenseEntry( name, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
       }
       else {
-        var image = document.createElement( 'img' );
+        const image = document.createElement( 'img' );
         image.onerror = function( error ) {
           onload.error( error );
         };
@@ -57,9 +57,9 @@ define( function( require ) {
     //https://github.com/jrburke/requirejs/blob/master/text.js
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
-        var content = buildMap[ moduleName ];
+        const content = buildMap[ moduleName ];
 
-        var base64 = loadFileAsDataURI( content );
+        const base64 = loadFileAsDataURI( content );
 
         //Write code that will load the image and register with a global `phetImages` to make sure everything loaded, see SimLauncher.js
         write( 'define("' + pluginName + '!' + moduleName + '", function(){ ' +

@@ -37,7 +37,7 @@
    */
   function destarBlockComment( string ) {
     return string.split( '\n' ).map( function( line ) {
-      var destarred = line.replace( /^ *\* ?/, '' );
+      let destarred = line.replace( /^ *\* ?/, '' );
 
       // If the line is effectively empty (composed of only spaces), set it to the empty string.
       if ( destarred.replace( / /g, '' ).length === 0 ) {
@@ -57,10 +57,10 @@
    * @returns {string}
    */
   function trimLines( string ) {
-    var lines = string.split( '\n' );
+    const lines = string.split( '\n' );
 
     // remove consecutive blank lines
-    for ( var i = lines.length - 1; i >= 1; i-- ) {
+    for ( let i = lines.length - 1; i >= 1; i-- ) {
       if ( lines[ i ].length === 0 && lines[ i - 1 ].length === 0 ) {
         lines.splice( i, 1 );
       }
@@ -118,8 +118,8 @@
    * @returns {Object}
    */
   function splitTypeDocLine( line, hasName ) {
-    var braceCount = 0;
-    for ( var i = 0; i < line.length; i++ ) {
+    let braceCount = 0;
+    for ( let i = 0; i < line.length; i++ ) {
       if ( line[ i ] === '{' ) {
         braceCount++;
       }
@@ -128,13 +128,13 @@
 
         // If we have matched the first brace, parse the type, check for a name, and return the rest as a description.
         if ( braceCount === 0 ) {
-          var endOfType = i + 1;
-          var type = line.slice( 0, endOfType );
-          var rest = line.slice( endOfType + 1 );
+          const endOfType = i + 1;
+          const type = line.slice( 0, endOfType );
+          const rest = line.slice( endOfType + 1 );
           var name;
           var description;
           if ( hasName ) {
-            var spaceIndex = rest.indexOf( ' ' );
+            const spaceIndex = rest.indexOf( ' ' );
             if ( spaceIndex < 0 ) {
               // all name
               name = rest;
@@ -148,7 +148,7 @@
           else {
             description = line.slice( endOfType + 1 );
           }
-          var result = {
+          const result = {
             type: parseType( type )
           };
           if ( name ) {
@@ -192,17 +192,17 @@
    * @returns {Object}
    */
   function parseBlockDoc( string ) {
-    var result = {};
+    let result = {};
 
-    var descriptionLines = [];
-    var jsdocLines = [];
+    const descriptionLines = [];
+    const jsdocLines = [];
 
-    var lines = string.split( '\n' );
-    for ( var i = 0; i < lines.length; i++ ) {
-      var line = lines[ i ];
+    const lines = string.split( '\n' );
+    for ( let i = 0; i < lines.length; i++ ) {
+      let line = lines[ i ];
       if ( line.charAt( 0 ) === '@' ) {
-        for ( var j = i + 1; j < lines.length; j++ ) {
-          var nextLine = lines[ j ];
+        for ( let j = i + 1; j < lines.length; j++ ) {
+          const nextLine = lines[ j ];
           if ( nextLine.charAt( 0 ) === ' ' ) {
             // strip out all but one space, and concatenate
             line = line + nextLine.replace( /^ +/, ' ' );
@@ -225,8 +225,8 @@
       description: trimLines( descriptionLines.join( '\n' ) )
     };
 
-    for ( var k = jsdocLines.length - 1; k >= 0; k-- ) {
-      var jsdocLine = jsdocLines[ k ];
+    for ( let k = jsdocLines.length - 1; k >= 0; k-- ) {
+      const jsdocLine = jsdocLines[ k ];
       if ( jsdocLine.indexOf( '@public' ) === 0 ) {
         if ( jsdocLine.indexOf( 'internal' ) === 0 ) {
           result.visibility = 'internal';
@@ -282,13 +282,13 @@
    * @returns {Object}
    */
   function parseLineDoc( string ) {
-    var visibility;
+    let visibility;
 
     // Strip visibility tags, recording the visibility
     if ( string.indexOf( '@public' ) >= 0 ) {
       if ( string.indexOf( '-internal)' ) >= 0 ) {
         visibility = 'internal';
-        string = string.replace( '/@public.*-internal\)', '' );
+        string = string.replace( '/@public.*-internal)', '' );
       }
       else {
         visibility = 'public';
@@ -310,7 +310,7 @@
 
     // Assume leading '{' is for a type
     if ( /^ *{/.test( string ) ) {
-      var result = splitTypeDocLine( string, false );
+      const result = splitTypeDocLine( string, false );
       result.visibility = visibility;
       return result;
     }
@@ -338,9 +338,9 @@
     function lineCommentFilter( comment ) {
       return comment.type === 'Line' && comment.value.indexOf( '@public' ) >= 0;
     }
-    var lineComments = [];
+    let lineComments = [];
     if ( node.leadingComments ) {
-      var blockComments = node.leadingComments.filter( blockCommentFilter );
+      const blockComments = node.leadingComments.filter( blockCommentFilter );
       if ( blockComments.length ) {
         return parseBlockDoc( destarBlockComment( blockComments[ blockComments.length - 1 ].value ) );
       }
@@ -354,7 +354,7 @@
     //   lineComments = lineComments.concat( node.trailingComments.filter( lineCommentFilter ) );
     // }
     if ( lineComments.length ) {
-      var comment = lineComments[ lineComments.length - 1 ];
+      const comment = lineComments[ lineComments.length - 1 ];
       return parseLineDoc( comment.value.replace( /^ /, '' ) ); // strip off a single leading space
     }
 
@@ -386,10 +386,10 @@
 
   // e.g. console.log( JSON.stringify( extractDocumentation( program ), null, 2 ) );
   function extractDocumentation( program ) {
-    var doc = {};
+    const doc = {};
 
     function parseTypeExpression( typeStatement, typeExpression, name, parentName ) {
-      var typeDoc = {
+      const typeDoc = {
         comment: extractDocFromNode( typeStatement ),
         instanceProperties: [],
         staticProperties: [],
@@ -403,11 +403,11 @@
         typeDoc.parentName = parentName;
       }
 
-      var constructorStatements = typeExpression.body.body; // statements in the constructor function body
+      const constructorStatements = typeExpression.body.body; // statements in the constructor function body
       constructorStatements.forEach( function( constructorStatement ) {
         if ( constructorStatement.type === 'ExpressionStatement' ) {
           if ( isSimpleThisAssignment( constructorStatement.expression ) ) {
-            var comment = extractDocFromNode( constructorStatement );
+            const comment = extractDocFromNode( constructorStatement );
             if ( comment ) {
               comment.name = constructorStatement.expression.left.property.name;
               typeDoc.constructorProperties.push( comment );
@@ -420,11 +420,11 @@
     }
 
     function parseStaticProperty( property ) {
-      var key = property.key.name;
+      const key = property.key.name;
 
       // TODO: support static constants?
       if ( property.value.type === 'FunctionExpression' ) {
-        var staticDoc = extractDocFromNode( property );
+        const staticDoc = extractDocFromNode( property );
 
         if ( staticDoc ) {
           staticDoc.type = 'function';
@@ -436,8 +436,8 @@
     }
 
     function parseInherit( expression ) {
-      var supertype = expression.arguments[ 0 ].name;
-      var subtype = expression.arguments[ 1 ].name;
+      const supertype = expression.arguments[ 0 ].name;
+      const subtype = expression.arguments[ 1 ].name;
 
       // If we haven't caught the constructor/type declaration, skip the inherit parsing
       if ( !doc[ subtype ] ) {
@@ -449,24 +449,24 @@
 
       // Instance (prototype) properties
       if ( expression.arguments.length >= 3 ) {
-        var instanceProperties = expression.arguments[ 2 ].properties;
+        const instanceProperties = expression.arguments[ 2 ].properties;
 
         // For-iteration, so we can skip some items by incrementing i.
-        for ( var i = 0; i < instanceProperties.length; i++ ) {
-          var property = instanceProperties[ i ];
-          var key = property.key.name;
+        for ( let i = 0; i < instanceProperties.length; i++ ) {
+          const property = instanceProperties[ i ];
+          const key = property.key.name;
           if ( property.value.type === 'FunctionExpression' ) {
             if ( doc[ subtype ] ) {
-              var instanceDoc = extractDocFromNode( property );
+              const instanceDoc = extractDocFromNode( property );
 
               if ( instanceDoc ) {
                 // Check to see if we have an ES5 getter/setter defined below
                 if ( i + 1 < instanceProperties.length ) {
-                  var nextProperty = instanceProperties[ i + 1 ];
-                  var nextExpression = nextProperty.value;
+                  const nextProperty = instanceProperties[ i + 1 ];
+                  const nextExpression = nextProperty.value;
                   if ( nextExpression.type === 'FunctionExpression' ) {
-                    var nextKey = nextProperty.key.name;
-                    var capitalizedNextName = capitalize( nextKey );
+                    const nextKey = nextProperty.key.name;
+                    const capitalizedNextName = capitalize( nextKey );
                     if ( nextProperty.kind === 'get' &&
                          ( 'get' + capitalizedNextName === key ) ||
                          ( 'is' + capitalizedNextName === key ) ) {
@@ -495,10 +495,10 @@
 
       // Static (constructor) properties
       if ( expression.arguments.length >= 4 ) {
-        var staticProperties = expression.arguments[ 3 ].properties;
+        const staticProperties = expression.arguments[ 3 ].properties;
 
         staticProperties.forEach( function( property ) {
-          var staticDoc = parseStaticProperty( property );
+          const staticDoc = parseStaticProperty( property );
           if ( doc[ subtype ] && staticDoc ) {
             doc[ subtype ].staticProperties.push( staticDoc );
           }
@@ -509,21 +509,21 @@
     }
 
     // Dig into require.js structure
-    var mainStatements = program.body[ 0 ].expression.arguments[ 0 ].body.body;
+    const mainStatements = program.body[ 0 ].expression.arguments[ 0 ].body.body;
 
     doc.topLevelComment = extractDocFromNode( program.body[ 0 ] );
 
-    for ( var i = 0; i < mainStatements.length; i++ ) {
-      var topLevelStatement = mainStatements[ i ];
+    for ( let i = 0; i < mainStatements.length; i++ ) {
+      const topLevelStatement = mainStatements[ i ];
 
       // Top-level capitalized function declaration? Parse it as a Type
       if ( topLevelStatement.type === 'FunctionDeclaration' &&
            isCapitalized( topLevelStatement.id.name ) ) {
-        var typeName = topLevelStatement.id.name;
+        const typeName = topLevelStatement.id.name;
         doc[ typeName ] = parseTypeExpression( topLevelStatement, topLevelStatement, typeName, null );
       }
       else if ( topLevelStatement.type === 'ExpressionStatement' ) {
-        var expression = topLevelStatement.expression;
+        const expression = topLevelStatement.expression;
 
         // Call to inherit()
         if ( expression.type === 'CallExpression' && expression.callee.name === 'inherit' ) {
@@ -531,12 +531,12 @@
         }
         else if ( expression.type === 'AssignmentExpression' &&
                   expression.left.type === 'MemberExpression' ) {
-          var comment = extractDocFromNode( topLevelStatement );
+          const comment = extractDocFromNode( topLevelStatement );
           if ( comment &&
                expression.left.object.type === 'Identifier' &&
                expression.left.property.type === 'Identifier' &&
                doc[ expression.left.object.name ] ) {
-            var innerName = expression.left.property.name;
+            const innerName = expression.left.property.name;
             var type;
 
             // Inner Type, e.g. BinPacker.Bin = function Bin( ... ) { ... };
@@ -575,7 +575,7 @@
 
         // Process properties in the object
         topLevelStatement.declarations[ 0 ].init.properties.forEach( function( property ) {
-          var staticDoc = parseStaticProperty( property );
+          const staticDoc = parseStaticProperty( property );
           if ( staticDoc ) {
             doc[ objectName ].properties.push( staticDoc );
           }

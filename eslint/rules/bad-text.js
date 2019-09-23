@@ -2,7 +2,7 @@
 /* eslint-disable */
 
 /**
- * Lint detector for invalid text.  Checks the entire file and does not correctly report line number.
+ * Lint detector for invalid text.
  * Lint is disabled for this file so the bad texts aren't themselves flagged.
  *
  * @author Sam Reid (PhET Interactive Simulations)
@@ -35,7 +35,9 @@ module.exports = function( context ) {
     ' Phet ',
     'phetio element', // use "phet-io element" or "PhET-iO element"
     'Phet-iO',
-    '@return '
+
+    '@return ',
+    ' => { return ', // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
   ];
 
   return {

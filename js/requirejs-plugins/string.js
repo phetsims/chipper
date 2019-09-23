@@ -219,7 +219,7 @@ define( require => {
      *          is useful for text transform plugins, like a CoffeeScript plugin.
      */
     write: ( pluginName, moduleName, write ) => {
-      write( `define("${pluginName}!${moduleName}",function(){return window.phet.chipper.strings.get(\"${moduleName}\");});\n` );
+      write( `define("${pluginName}!${moduleName}",function(){return window.phet.chipper.strings.get("${moduleName}");});\n` );
     }
   };
 } );

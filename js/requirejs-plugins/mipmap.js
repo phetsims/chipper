@@ -60,21 +60,21 @@
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-define( function( require ) {
+define( require => {
   'use strict';
 
   // modules - paths are relative to the requirejs config.js file
-  var getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
-  var getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
-  var mipmapDownscale = require( '../../chipper/js/common/mipmapDownscale' );
-  var registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
+  const getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
+  const getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
+  const mipmapDownscale = require( '../../chipper/js/common/mipmapDownscale' );
+  const registerLicenseEntry = require( '../../chipper/js/requirejs-plugins/registerLicenseEntry' );
 
   return {
     // called both in-browser and during build
     load: function( name, parentRequire, onload, config ) {
 
       // everything after the repository namespace, eg 'FUNCTION_BUILDER/functions/feet.png' -> '/functions/feet.png'
-      var imagePath = name.substring( name.indexOf( '/' ) );
+      let imagePath = name.substring( name.indexOf( '/' ) );
 
       // strip off optional arguments, eg '/functions/feet.png,level=5,quality=90' -> '/functions/feet.png'
       if ( imagePath.indexOf( ',' ) >= 0 ) {
@@ -82,10 +82,10 @@ define( function( require ) {
       }
 
       // the path to our image file.
-      var path = getProjectURL( name, parentRequire ) + 'images' + imagePath;
+      const path = getProjectURL( name, parentRequire ) + 'images' + imagePath;
 
       // defaults
-      var options = {
+      const options = {
         level: 4, // maximum level
         quality: 98
       };
@@ -93,9 +93,9 @@ define( function( require ) {
       // allow overriding the options via comma-separated clauses (see grammar above)
       if ( name.indexOf( ',' ) ) {
         name.substring( name.indexOf( ',' ) + 1 ).split( ',' ).forEach( function( clause ) {
-          var keyValue = clause.split( '=' );
-          var key = keyValue[ 0 ];
-          var value = keyValue[ 1 ];
+          const keyValue = clause.split( '=' );
+          const key = keyValue[ 0 ];
+          const value = keyValue[ 1 ];
           options[ key ] = parseInt( value, 10 );
         } );
       }
@@ -112,17 +112,17 @@ define( function( require ) {
         } );
 
         // remove optional args from name
-        var optionsIndex = name.indexOf( ',' );
-        var nameNoArgs = ( optionsIndex === -1 ) ? name : name.substring( 0, optionsIndex );
+        const optionsIndex = name.indexOf( ',' );
+        const nameNoArgs = ( optionsIndex === -1 ) ? name : name.substring( 0, optionsIndex );
 
         registerLicenseEntry( nameNoArgs, getLicenseEntry( path ), global.phet.chipper.brand, 'images', onload );
       }
       else {
         // if buildCompatible is provided, use the high-quality build-like mipmapping
-        var highQualityMipmaps = phet.chipper.queryParameters.buildCompatible;
+        const highQualityMipmaps = phet.chipper.queryParameters.buildCompatible;
 
         // load our base resolution image
-        var image = document.createElement( 'img' );
+        const image = document.createElement( 'img' );
         image.onerror = function( error ) {
           onload.error( error );
         };
@@ -135,16 +135,16 @@ define( function( require ) {
             // do nothing
           }
 
-          var mipmaps = [];
+          const mipmaps = [];
 
           // draw it to a Canvas and set up the base mipmap level information
-          var baseCanvas = document.createElement( 'canvas' );
+          const baseCanvas = document.createElement( 'canvas' );
           baseCanvas.width = image.naturalWidth;
           baseCanvas.height = image.naturalHeight;
-          var baseContext = baseCanvas.getContext( '2d' );
+          const baseContext = baseCanvas.getContext( '2d' );
           baseContext.drawImage( image, 0, 0 );
-          var baseURL = baseCanvas.toDataURL();
-          var baseImage = new Image(); // eslint-disable-line no-html-constructors
+          const baseURL = baseCanvas.toDataURL();
+          const baseImage = new Image(); // eslint-disable-line no-html-constructors
           baseImage.src = baseURL;
           mipmaps.push( {
             canvas: baseCanvas,
@@ -162,7 +162,7 @@ define( function( require ) {
           // compute the non-level-0 mipmaps
           while ( ( mipmaps.length - 1 < options.level || options.level < 0 ) &&
                   ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
-            var canvas = document.createElement( 'canvas' );
+            const canvas = document.createElement( 'canvas' );
             var context = canvas.getContext( '2d' );
             var mipmap;
             if ( highQualityMipmaps ) {
@@ -182,7 +182,7 @@ define( function( require ) {
               // Lower-quality downscale by using the built-in Canvas drawImage. Somewhat dependent on the browser
               // implementation.
               mipmap = {};
-              var largeCanvas = finestMipmap().canvas;
+              const largeCanvas = finestMipmap().canvas;
               canvas.width = mipmap.width = Math.ceil( largeCanvas.width / 2 );
               canvas.height = mipmap.height = Math.ceil( largeCanvas.height / 2 );
               context.setTransform( 0.5, 0, 0, 0.5, 0, 0 );

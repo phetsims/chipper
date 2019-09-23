@@ -13,7 +13,7 @@
 
 ( function() {
 
-  var ChipperConstants = {
+  const ChipperConstants = {
 
     // Locale to use when no locale is specified
     FALLBACK_LOCALE: 'en',

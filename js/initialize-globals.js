@@ -10,14 +10,14 @@
  * PhET Simulations can be launched with query parameters which enable certain features.  To use a query parameter,
  * provide the full URL of the simulation and append a question mark (?) then the query parameter (and optionally its
  * value assignment).  For instance:
- * http://www.colorado.edu/physics/phet/dev/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?dev
+ * https://phet-dev.colorado.edu/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?dev
  *
  * Here is an example of a value assignment:
- * http://www.colorado.edu/physics/phet/dev/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?webgl=false
+ * https://phet-dev.colorado.edu/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?webgl=false
  *
  * To use multiple query parameters, specify the question mark before the first query parameter, then ampersands (&)
  * between other query parameters.  Here is an example of multiple query parameters:
- * http://www.colorado.edu/physics/phet/dev/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?dev&showPointerAreas&webgl=false
+ * https://phet-dev.colorado.edu/html/reactants-products-and-leftovers/1.0.0-dev.13/reactants-products-and-leftovers_en.html?dev&showPointerAreas&webgl=false
  *
  * For more on query parameters in general, see http://en.wikipedia.org/wiki/Query_string
  * For details on common-code query parameters, see QUERY_PARAMETERS_SCHEMA below.
@@ -48,7 +48,7 @@
    * the key itself.
    * @namespace {Object} PhetQueryParameters
    */
-  var QUERY_PARAMETERS_SCHEMA = {
+  const QUERY_PARAMETERS_SCHEMA = {
     // Schema that describes query parameters for PhET common code.
     // These query parameters are available via global phet.chipper.queryParameters.
 
@@ -291,7 +291,7 @@
     /**
      * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
-     * 
+     *
      * Also removes the following items from the "PhET Menu":
      * Report a Problem
      * Check for Updates
@@ -303,7 +303,7 @@
     /**
      * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
-     * 
+     *
      * Also removes the following items from the "PhET Menu":
      * Report a Problem
      * Check for Updates
@@ -545,6 +545,22 @@
     supportsSound: { type: 'flag' },
 
     /**
+     * Indicates whether or not vibration and its library should be initialized. There are a few prototype strategies
+     * that we are exploring which can be selected by the valid values.
+     *   - null: Default value, vibration disabled
+     *   - objects: Vibration designed to indicate relative location of objects on screen
+     *   - interaction: Vibration designed to indicate successful interaction with objects
+     *   - state: Vibration designed to convey current state of the simulation
+     *
+     * Used internally, though links are shared with collaborators and possibly in publications.
+     */
+    vibration: {
+      type: 'string',
+      defaultValue: null,
+      validValues: [ null, 'objects', 'interaction', 'state' ]
+    },
+
+    /**
      * Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289.
      * Note that simulations can opt-in to webgl via new Sim({webgl:true}), but using ?webgl=true takes
      * precedence.  If no webgl query parameter is supplied, then simulations take the Sim option value, which
@@ -634,8 +650,8 @@
    * @param {number} millis - amount of time to pause synchronously
    */
   function sleep( millis ) {
-    var date = new Date();
-    var curDate;
+    const date = new Date();
+    let curDate;
     do {
       curDate = new Date();
     } while ( curDate - date < millis );
@@ -665,12 +681,12 @@
   ( function() {
 
     // enables all assertions (basic and slow)
-    var enableAllAssertions = !phet.chipper.isProduction && phet.chipper.queryParameters.eall;
+    const enableAllAssertions = !phet.chipper.isProduction && phet.chipper.queryParameters.eall;
 
     // enables basic assertions
-    var enableBasicAssertions = enableAllAssertions ||
-                                ( !phet.chipper.isProduction && phet.chipper.queryParameters.ea ) ||
-                                phet.chipper.isDebugBuild;
+    const enableBasicAssertions = enableAllAssertions ||
+                                  ( !phet.chipper.isProduction && phet.chipper.queryParameters.ea ) ||
+                                  phet.chipper.isDebugBuild;
 
     if ( enableBasicAssertions ) {
       window.assertions.enableAssert();
@@ -682,8 +698,8 @@
     // Communicate sim errors to joist/tests/test-sims.html
     if ( phet.chipper.queryParameters.postMessageOnError ) {
       window.addEventListener( 'error', function( a ) {
-        var message = '';
-        var stack = '';
+        let message = '';
+        let stack = '';
         if ( a && a.message ) {
           message = a.message;
         }

@@ -31,7 +31,7 @@ const path = require( 'path' );
 /**
  * @param {string} repo
  */
-module.exports = async ( repo ) => {
+module.exports = async repo => {
 
   // Check for the dependencies of the target repo
   const dependencies = getPhetLibs( repo );

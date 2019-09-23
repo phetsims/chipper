@@ -52,12 +52,12 @@ module.exports = function( context ) {
            node.declarations[ 0 ].init.arguments.length > 0 ) {
         if ( node.declarations[ 0 ].init &&
              node.declarations[ 0 ].init.callee.name === 'require' ) {
-          var lhs = node.declarations[ 0 ].id.name;
-          var rhs = node.declarations[ 0 ].init.arguments[ 0 ].value;
+          const lhs = node.declarations[ 0 ].id.name;
+          const rhs = node.declarations[ 0 ].init.arguments[ 0 ].value;
 
           if ( rhs && rhs.indexOf( '!' ) < 0 ) {
-            var lastSlash = rhs.lastIndexOf( '/' );
-            var tail = rhs.substring( lastSlash + 1 );
+            const lastSlash = rhs.lastIndexOf( '/' );
+            const tail = rhs.substring( lastSlash + 1 );
 
             if ( tail !== lhs ) {
               context.report( {
