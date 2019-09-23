@@ -66,14 +66,16 @@ define( require => {
   };
 
   /**
-   *
-   * @param {function} onload see doc for load()
+   * Only called in requirejs mode
    * @param {Object} fileContents - loaded from a string file
    * @param {string} key - the key of the string to be loaded
-   * @param {string} fileURL - for better error messaging
    */
   const getStringFromFileContents = ( fileContents, key ) => {
-    return window.phet.chipper.mapString( ChipperStringUtils.getStringFromMap( fileContents, key ), stringTest );
+    const stringFromMap = ChipperStringUtils.getStringFromMap( fileContents, key );
+    if ( stringFromMap === null ) {
+      throw new Error( `String not found: ${key}` );
+    }
+    return window.phet.chipper.mapString( stringFromMap, stringTest );
   };
 
   return {
@@ -139,7 +141,8 @@ define( require => {
           requirejsNamespace: requirejsNamespace, // 'SOME_SIM'
           requirePath: requirePath, // '/Users/something/phet/git/some-sim/js'
           repositoryPath: repositoryPath, // '/Users/something/phet/git/some-sim'
-          repositoryName: repositoryName // 'some-sim'
+          repositoryName: repositoryName, // 'some-sim'
+          key: key // 'string.title
         };
 
         // tell require.js we're done processing
@@ -184,7 +187,7 @@ define( require => {
             getWithCache( localeSpecificPath, parsed => {
 
                 // Combine the primary and fallback strings into one object hash.
-                const parsedStrings = _.extend( parsedFallbackStrings, parsed );
+                const parsedStrings = _.extend( {}, parsedFallbackStrings, parsed );
                 onload( getStringFromFileContents( parsedStrings, key ) );
               },
 

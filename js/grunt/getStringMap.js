@@ -31,6 +31,8 @@ module.exports = function( locales, phetLibs ) {
 
   // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
   const stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
+
+  // TODO: Use map/unique to get repository names
   for ( const stringKey in global.phet.chipper.strings ) {
     const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 
@@ -78,17 +80,11 @@ module.exports = function( locales, phetLibs ) {
         grunt.log.debug( `missing string file: ${stringsFilename}` );
         fileContents = {};
       }
-      const fileMap = stringFilesContents[ repository.name ][ locale ] = {};
 
       // Format the string values
       ChipperStringUtils.formatStringValues( fileContents, isRTL );
 
-      // Loop through all top level keys and add the repo prefix, since fileMap is cross repo for all the sim's strings.
-      for ( const stringKeyMissingPrefix in fileContents ) {
-
-        // Add the requirejs namespaces (eg, JOIST) to the key
-        fileMap[ repository.requirejsNamespace + '/' + stringKeyMissingPrefix ] = fileContents[ stringKeyMissingPrefix ];
-      }
+      stringFilesContents[ repository.name ][ locale ] = fileContents;
     } );
   } );
 
@@ -100,24 +96,15 @@ module.exports = function( locales, phetLibs ) {
     stringMap[ locale ] = {};
 
     for ( const stringKey in global.phet.chipper.strings ) {
-      const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
-
-      // English fallback
-      const fallbackStringFileContents = stringFilesContents[ repositoryName ][ fallbackLocale ];
-
-      // This method will recurse if needed to find nested string values as well.
-      stringMap[ locale ][ stringKey ] = ChipperStringUtils.getStringFromMap( fallbackStringFileContents, stringKey );
+      const stringMetadata = global.phet.chipper.strings[ stringKey ];
+      const repositoryName = stringMetadata.repositoryName;
+      const key = stringMetadata.key;
 
       // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.
-      if ( locale !== fallbackLocale &&
-           stringFilesContents[ repositoryName ] &&
-           stringFilesContents[ repositoryName ][ locale ] &&
-           stringFilesContents[ repositoryName ][ locale ][ stringKey ] &&
+      const value = ChipperStringUtils.getStringFromMap( stringFilesContents[ repositoryName ][ locale ], key ) ||
+                    ChipperStringUtils.getStringFromMap( stringFilesContents[ repositoryName ][ fallbackLocale ], key );
 
-           // if the string in rosetta is empty we want to use the fallback english string
-           stringFilesContents[ repositoryName ][ locale ][ stringKey ].value.length > 0 ) {
-        stringMap[ locale ][ stringKey ] = ChipperStringUtils.getStringFromMap( stringFilesContents[ repositoryName ][ locale ], stringKey );
-      }
+      stringMap[ locale ][ stringKey ] = value;
     }
   } );
 
