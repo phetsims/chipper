@@ -95,7 +95,7 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
     const isStudioJS = abspath.indexOf( 'studio/studio.js' ) >= 0;
 
     // For info about LIB_OUTPUT_FILE, see handleLib()
-    let pathToLib = `lib/${LIB_OUTPUT_FILE}`;
+    const pathToLib = `lib/${LIB_OUTPUT_FILE}`;
 
     if ( abspath.indexOf( '.html' ) >= 0 || isStudioJS ) {
 
@@ -166,11 +166,10 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
       // Support wrappers that use code from phet-io-wrappers
       contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
 
-      // wrapper index is moved to the top level of build dir, and needs no relative dots.
-      pathToLib = isWrapperIndex ? pathToLib : `../../${pathToLib}`;
-      contents = ChipperStringUtils.replaceAll( contents,
-        '<!--{{phet-io.js}}-->',
-        `<script src="${pathToLib}"></script>`
+      // Don't use ChipperStringUtils because we want to capture the relative path and transfer it to the new script.
+      // This is to support providing the relative path through the build instead of just hard coding it.
+      contents = contents.replace( /<!--\{\{([./]*)phet-io.js}}-->/g,
+        `<script src="$1${pathToLib}"></script>`
       );
 
       // This must be after the above phet-io.js import and Client.js stripping. This case is to support wrappers
