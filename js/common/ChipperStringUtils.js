@@ -9,7 +9,7 @@
 /* eslint-env browser, node */
 'use strict';
 
-(function() {
+( function() {
 
   const ChipperStringUtils = {
 
@@ -125,4 +125,4 @@
     module.exports = ChipperStringUtils;
   }
 
-})();
+} )();

@@ -211,8 +211,8 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
     }
   };
 
-// a list of the phet-io wrappers that are built with the phet-io sim
-  const wrappers = fs.readFileSync( '../chipper/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
+  // a list of the phet-io wrappers that are built with the phet-io sim
+  let wrappers = fs.readFileSync( '../chipper/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
 
   // Files and directories from wrapper folders that we don't want to copy
   const wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
@@ -253,12 +253,10 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
   wrappers.push( WRAPPER_COMMON_FOLDER );
 
   // Add sim-specific wrappers
-  const simSpecificWrappers = packageObject.phet &&
-                              packageObject.phet[ 'phet-io' ] &&
-                              packageObject.phet[ 'phet-io' ].wrappers ?
-                              packageObject.phet[ 'phet-io' ].wrappers : [];
-
-  simSpecificWrappers.forEach( simSpecificWrapper => wrappers.push( simSpecificWrapper ) );
+  wrappers = packageObject.phet &&
+             packageObject.phet[ 'phet-io' ] &&
+             packageObject.phet[ 'phet-io' ].wrappers ?
+             wrappers.concat( packageObject.phet[ 'phet-io' ].wrappers ) : wrappers;
 
   wrappers.forEach( function( wrapper ) {
 
@@ -363,7 +361,7 @@ const handleContrib = function( buildDir ) {
  * @param {string} buildDir
  * @returns {Promise<void>}
  */
-const handleJSDOC = async function( buildDir ) {
+const handleJSDOC = async buildDir => {
 
   // Make sure each file exists
   for ( let i = 0; i < JSDOC_FILES.length; i++ ) {
@@ -372,11 +370,19 @@ const handleJSDOC = async function( buildDir ) {
     }
   }
 
+  const args = [
+    '../chipper/node_modules/jsdoc/jsdoc.js',
+    ...JSDOC_FILES,
+    '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
+    '-d', `${buildDir}doc/`,
+    '--readme', JSDOC_README_FILE
+  ];
+
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
   // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method
   // (node executable with jsdoc js file)
-  await execute( 'node', [ '../chipper/node_modules/jsdoc/jsdoc.js' ].concat(
-    JSDOC_FILES.concat( [ '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
-      '-d', `${buildDir}doc/`, '--readme', JSDOC_README_FILE ] ) ),
-    { cwd: process.cwd(), shell: true } );
+  await execute( 'node', args, {
+    cwd: process.cwd(),
+    shell: true
+  } );
 };
