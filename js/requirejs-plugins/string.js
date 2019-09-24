@@ -28,9 +28,14 @@ define( require => {
 
   // constants
   // Cache the loaded strings so they only have to be read once through file.read (for performance)
-  // Object.<loadedURL:string,Object.<stringKeyName:string, stringValueObject:{value:string}>>}
+  // Object.<loadedURL:string, StringMap>} - see ChipperStringUtils for typedef of StringMap
   // Where stringValueObject is the value of each key in string json files.
   const cache = {};
+
+  // {Object.<url:string, Array.<function>} - keep track of actions to trigger once the first load comes back for that
+  // url. This way there aren't many text.get calls kicked off before the first.
+  // can come back with text.
+  const urlsCurrentlyBeingLoaded = {};
 
   // {string|null} - See documentation of stringTest query parameter in initialize-globals.js
   const stringTest = ( typeof window !== 'undefined' && window.phet.chipper.queryParameters.stringTest ) ?
@@ -50,16 +55,28 @@ define( require => {
     if ( cache[ url ] ) {
       callback( cache[ url ] );
     }
+    else if ( urlsCurrentlyBeingLoaded[ url ] ) {
+
+      // this url is currently being loaded, so don't kick off another `text.get()`.
+      urlsCurrentlyBeingLoaded[ url ].push( () => callback( cache[ url ] ) );
+    }
     else {
+
+      urlsCurrentlyBeingLoaded[ url ] = [];
 
       // Cache miss: load the file parse, enter into cache and return it
       text.get( url, loadedText => {
+
         const parsed = JSON.parse( loadedText );
 
         const isRTL = localeInfo[ phet.chipper.queryParameters.locale ].direction === 'rtl';
-
         ChipperStringUtils.formatStringValues( parsed, isRTL );
         cache[ url ] = parsed;
+
+        // clear the entries added during the async loading process
+        urlsCurrentlyBeingLoaded[ url ] && urlsCurrentlyBeingLoaded[ url ].forEach( action => action && action() );
+        delete urlsCurrentlyBeingLoaded[ url ];
+
         callback( cache[ url ] );
       }, errorBack, { accept: 'application/json' } );
     }

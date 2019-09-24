@@ -118,31 +118,17 @@
 
     /**
      * Recurse through a string file and format each string value appropriately
-     * @param {Object.<string, intermediary:Object|{value:string}>} stringsMap - if "intermediary", then recurse to
-     *                                                                             find more nested keys
+     * @param {StringMap} stringMap
      * @param {boolean} isRTL - is right to left language
      * @public
      */
-    formatStringValues: function( stringObject, isRTL ) {
-      for ( const stringKey in stringObject ) {
-        if ( stringObject.hasOwnProperty( stringKey ) ) {
+    formatStringValues: function( stringMap, isRTL ) {
+      ChipperStringUtils.forEachString( stringMap, ( key, stringObject ) => {
 
-          // This will either have a "value" key, or be an object with keys that will eventually have 'value' in it
-          const element = stringObject[ stringKey ];
-          if ( element.hasOwnProperty( 'value' ) ) {
-
-            // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
-            // TODO: some a11y strings have leading/trailing whitespace purposefully, perhaps we should formalize that somehow, https://github.com/phetsims/chipper/issues/779
-            element.value = element.value.trim();
-            element.value = ChipperStringUtils.addDirectionalFormatting( element.value, isRTL );
-          }
-          else {
-
-            // Recurse a level deeper
-            ChipperStringUtils.formatStringValues( element, isRTL );
-          }
-        }
-      }
+        // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
+        stringObject.value = stringObject.value.trim();
+        stringObject.value = ChipperStringUtils.addDirectionalFormatting( stringObject.value, isRTL );
+      } );
     },
 
     /**
@@ -150,7 +136,7 @@
      * This method is called during requirejs mode from the string plugin and during the build via CHIPPER/getStringMap.
      * This method supports recursing through keys that support string nesting. This method was created to support
      * nested string keys in https://github.com/phetsims/rosetta/issues/193
-     * @param {Object.<string, Object|{value: string}>} map - where an "intermediate" Object should hold nested strings
+     * @param {StringMap} map - where an "intermediate" Object should hold nested strings
      * @param {string} key - like `FRICTION/friction.title` or using nesting like `a11y.nested.string.here`
      * @returns {string|null} - the string value of the key, or null if the key does not appear in the map
      * @throws  {Error} - if the key doesn't hold a string value in the map
@@ -192,14 +178,19 @@
   /**
    * This implementation function helps keep a better api for `forEachString`.
    * @param {string} keySoFar - as we recurse down, build up a string of the key separated with dots.
-   * @param {Object} map - string key map
-   * @param {function(key:string, {value:string})} func
+   * @param {StringMapNode} map
+   * @param {function(key:string, StringObject)} func
    */
   const forEachStringImplementation = ( keySoFar, map, func ) => {
     for ( const key in map ) {
       if ( map.hasOwnProperty( key ) ) {
         const nextKey = keySoFar ? `${keySoFar}.${key}` : key; // don't start with period, assumes '' is falsey
         const stringObject = map[ key ];
+
+        // no need to support arrays in the string map, for example stringObject.history in locale specific files.
+        if ( Array.isArray( stringObject ) ) {
+          return;
+        }
         if ( stringObject.value ) {
           func( nextKey, stringObject );
         }
@@ -209,6 +200,24 @@
       }
     }
   };
+
+  /**
+   * @typedef {Object} StringMapNode
+   * @property {StringMapNode} * - A key that stores a StringMapNode inside this one.
+   */
+  /**
+   * @typedef {Object} StringObject
+   * An object that has a "value" field that holds the string. It can still include more nested `StringObject`s.
+   * Each StringMapNode should have at least one StringObject nested inside it.
+   * @extends {StringMapNode}
+   * @property {string} value - the value key is used in
+   */
+  /**
+   * @typedef {Object.<string, StringMapNode>>} StringMap
+   * @extends {StringMapNode}
+   * A string map can be either a flat map of StringObject (see the output of CHIPPER/getStringMap), or can be a nested
+   * Object with StringObjects throughout the object structure (as supported in English JSON string files).
+   */
 
   // browser require.js-compatible definition
   if ( typeof define !== 'undefined' ) {
