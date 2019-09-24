@@ -168,6 +168,9 @@
         if ( result.value === undefined ) {
           throw new Error( `no value for string: ${key}` );
         }
+        if ( typeof result.value !== 'string' ) {
+          throw new Error( `value should be a string for key ${key}` );
+        }
         return result.value;
       }
 
@@ -176,8 +179,7 @@
     },
 
     /**
-     * Call a function on each string object in a string map. Recursively dive into each object that doesn't have a
-     * `value` to find nested string objects too.
+     * Call a function on each object with a value attribute in an object tree.
      * @param {Object.<string, Object|{value:string}>} map - string map, like a loaded JSON strings file
      * @param {function(key:string, {value:string})} func
      * @public
