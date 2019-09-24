@@ -32,7 +32,7 @@ define( require => {
   // Where stringValueObject is the value of each key in string json files.
   const cache = {};
 
-  // {Object.<url:string, Array.<function>} - keep track of actions to trigger once the first load comes back for that
+  // {Object.<url:string, Array.<function>>} - keep track of actions to trigger once the first load comes back for that
   // url. This way there aren't many text.get calls kicked off before the first.
   // can come back with text.
   const urlsCurrentlyBeingLoaded = {};
@@ -74,7 +74,7 @@ define( require => {
         cache[ url ] = parsed;
 
         // clear the entries added during the async loading process
-        urlsCurrentlyBeingLoaded[ url ] && urlsCurrentlyBeingLoaded[ url ].forEach( action => action && action() );
+        urlsCurrentlyBeingLoaded[ url ] && urlsCurrentlyBeingLoaded[ url ].forEach( action => action() );
         delete urlsCurrentlyBeingLoaded[ url ];
 
         callback( cache[ url ] );
