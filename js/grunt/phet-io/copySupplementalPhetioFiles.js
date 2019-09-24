@@ -169,7 +169,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
       // Don't use ChipperStringUtils because we want to capture the relative path and transfer it to the new script.
       // This is to support providing the relative path through the build instead of just hard coding it.
       contents = contents.replace( /<!--\{\{([./]*)phet-io.js}}-->/g,
-        `<script src = "$1${pathToLib}" > < /script>`
+        `<script src = "$1${pathToLib}" ></script>`
       );
 
       // This must be after the above phet-io.js import and Client.js stripping. This case is to support wrappers
