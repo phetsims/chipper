@@ -32,10 +32,9 @@ define( require => {
   // Where stringValueObject is the value of each key in string json files.
   const cache = {};
 
-  // {Object.<url:string, Array.<function>>} - keep track of actions to trigger once the first load comes back for that
-  // url. This way there aren't many text.get calls kicked off before the first.
-  // can come back with text.
-  const urlsCurrentlyBeingLoaded = {};
+  // {Object.<url:string, Array.<callback:function>>} - keep track of the callbacks to trigger once the first load comes
+  // back for that url. This way there aren't many `text.get` calls kicked off before the first can come back with text.
+  const callbacksFromUnloadedURLs = {};
 
   // {string|null} - See documentation of stringTest query parameter in initialize-globals.js
   const stringTest = ( typeof window !== 'undefined' && window.phet.chipper.queryParameters.stringTest ) ?
@@ -55,14 +54,14 @@ define( require => {
     if ( cache[ url ] ) {
       callback( cache[ url ] );
     }
-    else if ( urlsCurrentlyBeingLoaded[ url ] ) {
+    else if ( callbacksFromUnloadedURLs[ url ] ) {
 
       // this url is currently being loaded, so don't kick off another `text.get()`.
-      urlsCurrentlyBeingLoaded[ url ].push( () => callback( cache[ url ] ) );
+      callbacksFromUnloadedURLs[ url ].push( callback );
     }
     else {
 
-      urlsCurrentlyBeingLoaded[ url ] = [];
+      callbacksFromUnloadedURLs[ url ] = [];
 
       // Cache miss: load the file parse, enter into cache and return it
       text.get( url, loadedText => {
@@ -74,8 +73,8 @@ define( require => {
         cache[ url ] = parsed;
 
         // clear the entries added during the async loading process
-        urlsCurrentlyBeingLoaded[ url ] && urlsCurrentlyBeingLoaded[ url ].forEach( action => action() );
-        delete urlsCurrentlyBeingLoaded[ url ];
+        callbacksFromUnloadedURLs[ url ] && callbacksFromUnloadedURLs[ url ].forEach( callback => callback( parsed ) );
+        delete callbacksFromUnloadedURLs[ url ];
 
         callback( cache[ url ] );
       }, errorBack, { accept: 'application/json' } );
