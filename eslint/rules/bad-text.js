@@ -28,6 +28,7 @@ module.exports = function( context ) {
     // Forbid common duplicate words
     ' the the ',
     ' a a ',
+    'dipose', // happens more than you'd think
 
     // For phet-io use PHET_IO in constants
     'PHETIO',
