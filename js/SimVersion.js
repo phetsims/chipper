@@ -4,9 +4,9 @@
  * Handles serializing and deserializing versions for simulations.
  *
  **************************************************************
- * IMPORTANT NOTE: This file is copied from PERENNIAL to CHIPPER frequently. If this is in CHIPPER, do not edit, as
- * it will be overwritten. Make sure that any change here is supported by usages of CHIPPER's SimVersion (i.e.
- * in JOIST/UpdateCheck.js), see https://github.com/phetsims/perennial/issues/111 for more details
+ * IMPORTANT NOTE: This file is copied from PERENNIAL to CHIPPER frequently. If this is in CHIPPER, then it is AUTO
+ * GENERATED; do not edit, as it will be overwritten. Make sure that any change here is supported by usages of
+ * CHIPPER's SimVersion (i.e. in JOIST/UpdateCheck.js), see https://github.com/phetsims/perennial/issues/111 for more
  **************************************************************
  *
  * See https://github.com/phetsims/chipper/issues/560 for discussion on version ID definition.
@@ -72,10 +72,10 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
         testNumber = null
       } = options || {};
 
-      assert( typeof major === 'number' && major >= 0 && major % 1 === 0, 'major version should be a non-negative integer' );
-      assert( typeof minor === 'number' && minor >= 0 && minor % 1 === 0, 'minor version should be a non-negative integer' );
-      assert( typeof maintenance === 'number' && maintenance >= 0 && maintenance % 1 === 0, 'maintenance version should be a non-negative integer' );
-      assert( typeof testType !== 'string' || typeof testNumber === 'number', 'if testType is provided, testNumber should be a number' );
+      assert && assert( typeof major === 'number' && major >= 0 && major % 1 === 0, 'major version should be a non-negative integer' );
+      assert && assert( typeof minor === 'number' && minor >= 0 && minor % 1 === 0, 'minor version should be a non-negative integer' );
+      assert && assert( typeof maintenance === 'number' && maintenance >= 0 && maintenance % 1 === 0, 'maintenance version should be a non-negative integer' );
+      assert && assert( typeof testType !== 'string' || typeof testNumber === 'number', 'if testType is provided, testNumber should be a number' );
 
       // @public {number}
       this.major = major;
@@ -198,7 +198,7 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
      */
     static fromBranch( branch ) {
       const bits = branch.split( '.' );
-      assert( bits.length === 2, `Bad branch, should be {{MAJOR}}.{{MINOR}}, had: ${branch}` );
+      assert && assert( bits.length === 2, `Bad branch, should be {{MAJOR}}.{{MINOR}}, had: ${branch}` );
 
       const major = parseInt( branch.split( '.' )[ 0 ], 10 );
       const minor = parseInt( branch.split( '.' )[ 1 ], 10 );
@@ -214,8 +214,8 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
      */
     static ensureReleaseBranch( branch ) {
       const version = SimVersion.fromBranch( branch );
-      assert( version.major > 0, 'Major version for a branch should be greater than zero' );
-      assert( version.minor >= 0, 'Minor version for a branch should be greater than (or equal) to zero' );
+      assert && assert( version.major > 0, 'Major version for a branch should be greater than zero' );
+      assert && assert( version.minor >= 0, 'Minor version for a branch should be greater than (or equal) to zero' );
     }
   }
 
