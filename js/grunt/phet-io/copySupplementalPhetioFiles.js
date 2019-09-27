@@ -29,12 +29,12 @@ const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant,
 // Make sure to add new files to the jsdoc generation list below also
 const LIB_FILES = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
-  '../' + WRAPPER_COMMON_FOLDER + '/js/assert.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/WrapperTypes.js',
+  `../${WRAPPER_COMMON_FOLDER}/js/assert.js`,
+  `../${WRAPPER_COMMON_FOLDER}/js/WrapperTypes.js`,
   '../tandem/js/PhetioIDUtils.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/Client.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/readFile.js',
-  '../' + WRAPPER_COMMON_FOLDER + '/js/loadWrapperTemplate.js'
+  `../${WRAPPER_COMMON_FOLDER}/js/Client.js`,
+  `../${WRAPPER_COMMON_FOLDER}/js/readFile.js`,
+  `../${WRAPPER_COMMON_FOLDER}/js/loadWrapperTemplate.js`
 ];
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
@@ -65,14 +65,14 @@ const CONTRIB_FILES = [
 
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
 const JSDOC_FILES = [
-  '../' + WRAPPER_COMMON_FOLDER + '/js/Client.js',
+  `../${WRAPPER_COMMON_FOLDER}/js/Client.js`,
   '../tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
   '../chipper/js/initialize-globals.js'
 ];
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
-module.exports = async function( repo, version, simulationDisplayName, packageObject ) {
+module.exports = async ( repo, version, simulationDisplayName, packageObject ) => {
 
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
@@ -80,7 +80,7 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
   // This regex was copied from perennial's `SimVersion.parse()` consult that code before changing things here.
   const matches = version.match( /^(\d+)\.(\d+)\.(\d+)(-(([^.-]+)\.(\d+)))?(-([^.-]+))?$/ );
   if ( !matches ) {
-    throw new Error( 'could not parse version: ' + version );
+    throw new Error( `could not parse version: ${version}` );
   }
   const major = parseInt( matches[ 1 ], 10 );
   const minor = parseInt( matches[ 2 ], 10 );
@@ -88,19 +88,19 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
-  const filterWrapper = function( abspath, contents ) {
+  const filterWrapper = ( abspath, contents ) => {
     const originalContents = contents + '';
 
     const isWrapperIndex = abspath.indexOf( 'index/index.html' ) >= 0;
     const isStudioJS = abspath.indexOf( 'studio/studio.js' ) >= 0;
 
     // For info about LIB_OUTPUT_FILE, see handleLib()
-    let pathToLib = `lib/${LIB_OUTPUT_FILE}`;
+    const pathToLib = `lib/${LIB_OUTPUT_FILE}`;
 
     if ( abspath.indexOf( '.html' ) >= 0 || isStudioJS ) {
 
       // change the paths of sherpa files to point to the contrib/ folder
-      CONTRIB_FILES.forEach( function( filePath ) {
+      CONTRIB_FILES.forEach( filePath => {
 
         // No need to do this is this file doesn't have this contrib import in it.
         if ( contents.indexOf( filePath ) >= 0 ) {
@@ -111,14 +111,14 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
           // see https://github.com/phetsims/phet-io-wrappers/issues/17 for more info. This is hopefully a temporary workaround
           const needsExtraDots = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
           const fileName = filePathParts[ filePathParts.length - 1 ];
-          const contribFileName = 'contrib/' + fileName;
-          let pathToContrib = needsExtraDots ? '../../' + contribFileName : '../' + contribFileName;
+          const contribFileName = `contrib/${fileName}`;
+          let pathToContrib = needsExtraDots ? `../../${contribFileName}` : `../${contribFileName}`;
 
           // The wrapper index is a different case because it is placed at the top level of the build dir.
           if ( isWrapperIndex ) {
 
             pathToContrib = contribFileName;
-            filePath = '../' + filePath; // filePath has one less set of relative than are actually in the index.html file.
+            filePath = `../${filePath}`; // filePath has one less set of relative than are actually in the index.html file.
           }
           contents = ChipperStringUtils.replaceAll( contents, filePath, pathToContrib );
         }
@@ -166,11 +166,10 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
       // Support wrappers that use code from phet-io-wrappers
       contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
 
-      // wrapper index is moved to the top level of build dir, and needs no relative dots.
-      pathToLib = isWrapperIndex ? pathToLib : `../../${pathToLib}`;
-      contents = ChipperStringUtils.replaceAll( contents,
-        '<!--{{phet-io.js}}-->',
-        `<script src="${pathToLib}"></script>`
+      // Don't use ChipperStringUtils because we want to capture the relative path and transfer it to the new script.
+      // This is to support providing the relative path through the build instead of just hard coding it.
+      contents = contents.replace( /<!--\{\{([./]*)phet-io.js}}-->/g,
+        `<script src = "$1${pathToLib}" ></script>`
       );
 
       // This must be after the above phet-io.js import and Client.js stripping. This case is to support wrappers
@@ -211,13 +210,13 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
     }
   };
 
-// a list of the phet-io wrappers that are built with the phet-io sim
-  const wrappers = fs.readFileSync( '../chipper/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
+  // a list of the phet-io wrappers that are built with the phet-io sim
+  let wrappers = fs.readFileSync( '../chipper/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
 
   // Files and directories from wrapper folders that we don't want to copy
   const wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
 
-  const libFileNames = LIB_FILES.map( function( filePath ) {
+  const libFileNames = LIB_FILES.map( filePath => {
     const parts = filePath.split( '/' );
     return parts[ parts.length - 1 ];
   } );
@@ -226,9 +225,9 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
   const fullBlacklist = wrappersBlacklist.concat( libFileNames );
 
   // wrapping function for copying the wrappers to the build dir
-  const copyWrapper = function( src, dest, wrapper, wrapperName ) {
+  const copyWrapper = ( src, dest, wrapper, wrapperName ) => {
 
-    const wrapperFilterWithNameFilter = function( abspath, contents ) {
+    const wrapperFilterWithNameFilter = ( abspath, contents ) => {
       const result = filterWrapper( abspath, contents );
 
       // Support loading relative-path resources, like
@@ -249,18 +248,16 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
     } );
   };
 
-  // Make sure to copy the phet-io-wrappers common wrapper code too.
+// Make sure to copy the phet-io-wrappers common wrapper code too.
   wrappers.push( WRAPPER_COMMON_FOLDER );
 
-  // Add sim-specific wrappers
-  const simSpecificWrappers = packageObject.phet &&
-                              packageObject.phet[ 'phet-io' ] &&
-                              packageObject.phet[ 'phet-io' ].wrappers ?
-                              packageObject.phet[ 'phet-io' ].wrappers : [];
+// Add sim-specific wrappers
+  wrappers = packageObject.phet &&
+             packageObject.phet[ 'phet-io' ] &&
+             packageObject.phet[ 'phet-io' ].wrappers ?
+             wrappers.concat( packageObject.phet[ 'phet-io' ].wrappers ) : wrappers;
 
-  simSpecificWrappers.forEach( simSpecificWrapper => wrappers.push( simSpecificWrapper ) );
-
-  wrappers.forEach( function( wrapper ) {
+  wrappers.forEach( wrapper => {
 
     const wrapperParts = wrapper.split( '/' );
 
@@ -271,16 +268,16 @@ module.exports = async function( repo, version, simulationDisplayName, packageOb
     copyWrapper( `../${wrapper}`, `${wrappersLocation}${wrapperName}`, wrapper, wrapperName );
   } );
 
-  // Copy the wrapper index into the top level of the build dir, exclude the blacklist
+// Copy the wrapper index into the top level of the build dir, exclude the blacklist
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );
 
-  // Create the lib file that is minified and publicly available under the /lib folder of the build
+// Create the lib file that is minified and publicly available under the /lib folder of the build
   handleLib( buildDir, filterWrapper );
 
-  // Create the contrib folder and add to it third party libraries used by wrappers.
+// Create the contrib folder and add to it third party libraries used by wrappers.
   handleContrib( buildDir );
 
-  // Create the rendered jsdoc in the `doc` folder
+// Create the rendered jsdoc in the `doc` folder
   await handleJSDOC( buildDir );
 
   writeAPIFile( buildDir, repo );
@@ -319,13 +316,13 @@ const writeAPIFile = ( buildDir, repo ) => {
  * @param {Function} filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(abspath, contents)"
  */
-const handleLib = function( buildDir, filter ) {
+const handleLib = ( buildDir, filter ) => {
   grunt.log.debug( 'Creating phet-io lib file from: ', LIB_FILES );
 
   grunt.file.mkdir( `${buildDir}lib` );
 
   let consolidated = '';
-  LIB_FILES.forEach( function( libFile ) {
+  LIB_FILES.forEach( libFile => {
     const contents = grunt.file.read( libFile );
 
     const filteredContents = filter && filter( libFile, contents );
@@ -338,19 +335,18 @@ const handleLib = function( buildDir, filter ) {
     stripAssertions: false
   } );
 
-  grunt.file.write( `${buildDir}lib/${LIB_OUTPUT_FILE}`, LIB_COPYRIGHT_HEADER + '\n\n' + minified );
+  grunt.file.write( `${buildDir}lib/${LIB_OUTPUT_FILE}`, `${LIB_COPYRIGHT_HEADER}\n\n${minified}` );
 };
 
 /**
  * Copy all of the third party libraries from sherpa to the build directory under the 'contrib' folder.
  * @param {string} buildDir
  */
-const handleContrib = function( buildDir ) {
+const handleContrib = buildDir => {
   grunt.log.debug( 'Creating phet-io contrib folder' );
 
-  CONTRIB_FILES.forEach( function( filePath ) {
+  CONTRIB_FILES.forEach( filePath => {
     const filePathParts = filePath.split( '/' );
-
     const filename = filePathParts[ filePathParts.length - 1 ];
 
     grunt.file.copy( filePath, `${buildDir}contrib/${filename}` );
@@ -363,20 +359,28 @@ const handleContrib = function( buildDir ) {
  * @param {string} buildDir
  * @returns {Promise<void>}
  */
-const handleJSDOC = async function( buildDir ) {
+const handleJSDOC = async buildDir => {
 
   // Make sure each file exists
   for ( let i = 0; i < JSDOC_FILES.length; i++ ) {
     if ( !fs.existsSync( JSDOC_FILES[ i ] ) ) {
-      throw new Error( 'file doesnt exist: ' + JSDOC_FILES[ i ] );
+      throw new Error( `file doesnt exist: ${JSDOC_FILES[ i ]}` );
     }
   }
+
+  const args = [
+    '../chipper/node_modules/jsdoc/jsdoc.js',
+    ...JSDOC_FILES,
+    '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
+    '-d', `${buildDir}doc/`,
+    '--readme', JSDOC_README_FILE
+  ];
 
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
   // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method
   // (node executable with jsdoc js file)
-  await execute( 'node', [ '../chipper/node_modules/jsdoc/jsdoc.js' ].concat(
-    JSDOC_FILES.concat( [ '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
-      '-d', `${buildDir}doc/`, '--readme', JSDOC_README_FILE ] ) ),
-    { cwd: process.cwd(), shell: true } );
+  await execute( 'node', args, {
+    cwd: process.cwd(),
+    shell: true
+  } );
 };
