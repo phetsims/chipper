@@ -6,7 +6,7 @@
  **************************************************************
  * IMPORTANT NOTE: This file is copied from PERENNIAL to CHIPPER frequently. If this is in CHIPPER, then it is AUTO
  * GENERATED; do not edit, as it will be overwritten. Make sure that any change here is supported by usages of
- * CHIPPER's SimVersion (i.e. in JOIST/UpdateCheck.js), see https://github.com/phetsims/perennial/issues/111 for more
+ * CHIPPER's SimVersion (i.e. in JOIST/updateCheck.js), see https://github.com/phetsims/perennial/issues/111 for more
  **************************************************************
  *
  * See https://github.com/phetsims/chipper/issues/560 for discussion on version ID definition.
@@ -111,6 +111,18 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
         testNumber: this.testNumber,
         buildTimestamp: this.buildTimestamp
       };
+    }
+
+    /**
+     * @returns {boolean}
+     * @public
+     */
+    get isSimNotPublished() {
+      return this.major < 1 || // e.g. 0.0.0-dev.1
+             ( this.major === 1 && // e.g. 1.0.0-dev.1
+               this.minor === 0 &&
+               this.maintenance === 0 &&
+               this.testType );
     }
 
     /**
