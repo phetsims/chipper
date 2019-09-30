@@ -14,6 +14,7 @@
 
   // What divides the repo prefix from the rest of the string key, like `FRICTION/friction.title`
   const NAMESPACE_PREFIX_DIVIDER = '/';
+  const A11Y_MARKER = 'a11y.';
 
   const ChipperStringUtils = {
 
@@ -127,7 +128,11 @@
 
         // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
         stringObject.value = stringObject.value.trim();
-        stringObject.value = ChipperStringUtils.addDirectionalFormatting( stringObject.value, isRTL );
+
+        // A11Y can't support i18n with this conditional in, this is more of a workaround, see https://github.com/phetsims/chipper/issues/798
+        if ( !ChipperStringUtils.isA11yStringKey( key ) ) {
+          stringObject.value = ChipperStringUtils.addDirectionalFormatting( stringObject.value, isRTL );
+        }
       } );
     },
 
@@ -162,6 +167,15 @@
 
       // They key does not appear in the map
       return null;
+    },
+
+    /**
+     * @public
+     * @param {string} key - without "string!REPO" at the beginning, just the actual "string key"
+     * @returns {boolean}
+     */
+    isA11yStringKey( key ) {
+      return key.indexOf( ChipperStringUtils.A11Y_MARKER ) === 0;
     },
 
     /**
