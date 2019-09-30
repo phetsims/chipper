@@ -12,6 +12,8 @@
 module.exports = function( context ) {
   'use strict';
 
+  const ChipperStringUtils = require( '../../js/common/ChipperStringUtils' );
+
   // Adapted from Stack Overflow, see http://stackoverflow.com/questions/25085306/javascript-space-separated-string-to-camelcase
   function toCamelCase( string ) {
     let out = '';
@@ -56,8 +58,8 @@ module.exports = function( context ) {
             let key = rhs.substring( lastSlash + 1 );
 
             // For a11y strings, no need to prefix vars with "a11y"
-            if ( key.indexOf( 'a11y.' ) === 0 ) {
-              key = key.replace( 'a11y.', '' );
+            if ( ChipperStringUtils.isA11yStringKey( key ) ) {
+              key = key.replace( ChipperStringUtils.A11Y_MARKER, '' );
             }
 
             // Convert various separators to whitespace

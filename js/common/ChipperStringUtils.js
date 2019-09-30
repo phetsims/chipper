@@ -186,7 +186,14 @@
      */
     forEachString( map, func ) {
       forEachStringImplementation( '', map, func );
-    }
+    },
+
+    /**
+     * The start of any a11y specific string key.
+     * @public
+     * @type {string}
+     */
+    A11Y_MARKER: A11Y_MARKER
   };
 
   /**
