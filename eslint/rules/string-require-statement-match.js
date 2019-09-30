@@ -52,7 +52,7 @@ module.exports = function( context ) {
 
           if ( rhs && rhs.indexOf( 'string!' ) === 0 ) {
 
-            const lastSlash = rhs.lastIndexOf( '/' );
+            const lastSlash = rhs.lastIndexOf( '/' ); // Looking for the right side of `string!FRICTION/hello.goose`
             let key = rhs.substring( lastSlash + 1 );
 
             // For a11y strings, no need to prefix vars with "a11y"
