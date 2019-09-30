@@ -179,6 +179,13 @@
     },
 
     /**
+     * The start of any a11y specific string key.
+     * @public
+     * @type {string}
+     */
+    A11Y_MARKER: A11Y_MARKER,
+
+    /**
      * Call a function on each object with a value attribute in an object tree.
      * @param {Object.<string, Object|{value:string}>} map - string map, like a loaded JSON strings file
      * @param {function(key:string, {value:string})} func
@@ -186,14 +193,7 @@
      */
     forEachString( map, func ) {
       forEachStringImplementation( '', map, func );
-    },
-
-    /**
-     * The start of any a11y specific string key.
-     * @public
-     * @type {string}
-     */
-    A11Y_MARKER: A11Y_MARKER
+    }
   };
 
   /**
