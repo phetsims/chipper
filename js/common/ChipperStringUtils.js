@@ -186,38 +186,29 @@
     A11Y_MARKER: A11Y_MARKER,
 
     /**
-     * Call a function on each object with a value attribute in an object tree.
-     * @param {Object.<string, Object|{value:string}>} map - string map, like a loaded JSON strings file
-     * @param {function(key:string, {value:string})} func
+     * Call a function on each object with a "value" attribute in an object tree.
+     * @param {StringMap} map - string map, like a loaded JSON strings file
+     * @param {function(key:string, StringObject)} func
+     * @param {string} [keySoFar] - while recursing, build up a string of the key separated with dots.
      * @public
      */
-    forEachString( map, func ) {
-      forEachStringImplementation( '', map, func );
-    }
-  };
+    forEachString( map, func, keySoFar = '' ) {
+      for ( const key in map ) {
+        if ( map.hasOwnProperty( key ) ) {
+          const nextKey = keySoFar ? `${keySoFar}.${key}` : key; // don't start with period, assumes '' is falsey
+          const stringObject = map[ key ];
 
-  /**
-   * This implementation function helps keep a better api for `forEachString`.
-   * @param {string} keySoFar - as we recurse down, build up a string of the key separated with dots.
-   * @param {StringMapNode} map
-   * @param {function(key:string, StringObject)} func
-   */
-  const forEachStringImplementation = ( keySoFar, map, func ) => {
-    for ( const key in map ) {
-      if ( map.hasOwnProperty( key ) ) {
-        const nextKey = keySoFar ? `${keySoFar}.${key}` : key; // don't start with period, assumes '' is falsey
-        const stringObject = map[ key ];
+          // no need to support arrays in the string map, for example stringObject.history in locale specific files.
+          if ( Array.isArray( stringObject ) ) {
+            return;
+          }
+          if ( stringObject.value ) {
+            func( nextKey, stringObject );
+          }
 
-        // no need to support arrays in the string map, for example stringObject.history in locale specific files.
-        if ( Array.isArray( stringObject ) ) {
-          return;
+          // recurse to the next level since if it wasn't the `value` key
+          key !== 'value' && ChipperStringUtils.forEachString( stringObject, func, nextKey );
         }
-        if ( stringObject.value ) {
-          func( nextKey, stringObject );
-        }
-
-        // recurse to the next level since if it wasn't the `value` key
-        key !== 'value' && forEachStringImplementation( nextKey, stringObject, func );
       }
     }
   };
