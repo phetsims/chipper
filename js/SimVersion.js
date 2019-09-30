@@ -114,6 +114,18 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
     }
 
     /**
+     * @returns {boolean}
+     * @public
+     */
+    get isSimNotPublished() {
+      return this.major < 1 || // e.g. 0.0.0-dev.1
+             ( this.major === 1 && // e.g. 1.0.0-dev.1
+               this.minor === 0 &&
+               this.maintenance === 0 &&
+               this.testType );
+    }
+
+    /**
      * Takes a serialized form of the SimVersion and returns an actual instance.
      * @public
      *
