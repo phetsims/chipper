@@ -168,9 +168,11 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
 
       // Don't use ChipperStringUtils because we want to capture the relative path and transfer it to the new script.
       // This is to support providing the relative path through the build instead of just hard coding it.
-      contents = contents.replace( /<!--\{\{([./]*)phet-io.js}}-->/g,
-        `<script src = "$1${pathToLib}" ></script>`
+      contents = contents.replace(
+        /<!--(<script src="[./]*\{\{PATH_TO_LIB_FILE}}"><\/script>)-->/g,
+        '$1' // just uncomment, dont fill it in yet
       );
+      contents = ChipperStringUtils.replaceAll( contents, '{{PATH_TO_LIB_FILE}}', pathToLib );
 
       // This must be after the above phet-io.js import and Client.js stripping. This case is to support wrappers
       // that use the data-client-name attribute to dictate their own Type name. Like the "multi" wrapper.
