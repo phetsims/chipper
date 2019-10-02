@@ -557,7 +557,7 @@
     vibration: {
       type: 'string',
       defaultValue: null,
-      validValues: [ null, 'objects', 'interaction', 'state' ]
+      validValues: [ null, 'objects', 'manipulation', 'interaction-changes', 'result' ]
     },
 
     /**
