@@ -140,7 +140,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
       if ( firstAssertLine && firstAssertLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstAssertLine, '' ); // included in phetio.js
       }
-      const firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'Client.js">' );
+      const firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'js/Client.js"' ); // no ending '>' to support data-client-main
       if ( firstIFrameClientLine && firstIFrameClientLine.indexOf( PRODUCTION_SITE ) === -1 ) {
         contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' ); // included in phetio.js
       }
@@ -169,17 +169,10 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
       // Don't use ChipperStringUtils because we want to capture the relative path and transfer it to the new script.
       // This is to support providing the relative path through the build instead of just hard coding it.
       contents = contents.replace(
-        /<!--(<script src="[./]*\{\{PATH_TO_LIB_FILE}}"><\/script>)-->/g,
+        /<!--(<script src="[./]*\{\{PATH_TO_LIB_FILE}}".*><\/script>)-->/g, // '.*' is to support `data-client-name` in wrappers like "multi"
         '$1' // just uncomment, dont fill it in yet
       );
       contents = ChipperStringUtils.replaceAll( contents, '{{PATH_TO_LIB_FILE}}', pathToLib );
-
-      // This must be after the above phet-io.js import and Client.js stripping. This case is to support wrappers
-      // that use the data-client-name attribute to dictate their own Type name. Like the "multi" wrapper.
-      contents = ChipperStringUtils.replaceAll( contents,
-        '../common/js/Client.js',
-        `../../${pathToLib}`
-      );
 
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
