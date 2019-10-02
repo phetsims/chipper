@@ -173,10 +173,10 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
       );
 
       // This must be after the above phet-io.js import and Client.js stripping. This case is to support wrappers
-      // that use the data-client-name attribute to dictate their own Type name.
+      // that use the data-client-name attribute to dictate their own Type name. Like the "multi" wrapper.
       contents = ChipperStringUtils.replaceAll( contents,
         '../common/js/Client.js',
-        `${pathToLib}`
+        `../../${pathToLib}`
       );
 
       contents = ChipperStringUtils.replaceAll( contents,
