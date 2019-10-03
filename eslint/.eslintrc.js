@@ -79,6 +79,7 @@ module.exports = {
         args: 'none'
       }
     ],
+
     // error when let is used but the variable is never reassigned, see https://github.com/phetsims/tasks/issues/973
     'prefer-const': [
       2,
@@ -125,19 +126,20 @@ module.exports = {
     // disallow use of undefined when initializing variables
     'no-undef-init': 2,
 
-    //
+    // phet-specific require statement rules
     'require-statement-match': 2,
     'phet-io-require-contains-ifphetio': 2,
+    'string-require-statement-match': 2,
 
     // Require @public/@private for this.something = result;
     'property-visibility-annotation': 0,
     'no-property-in-require-statement': 2,
+
     // permit only one var declaration per line, see #390
     'one-var': [
       2,
       'never'
     ],
-    'string-require-statement-match': 2,
 
     // require radix argument for parseInt
     radix: 2,
