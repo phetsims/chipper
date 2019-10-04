@@ -29,6 +29,6 @@ require.config( {
     {{CONFIG_LINES}}
   },
 
-// Cache busting is applied by default, but can be disabled via ?cacheBust=false, see initialize-globals.js
+  // Cache busting is applied by default, but can be disabled via ?cacheBust=false, see initialize-globals.js
   urlArgs: phet.chipper.getCacheBustArgs()
 } );
