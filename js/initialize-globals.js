@@ -107,7 +107,8 @@
      * enables cache busting in requirejs mode.
      */
     cacheBust: {
-      type: 'flag'
+      type: 'boolean',
+      defaultValue: true
     },
 
     /**
