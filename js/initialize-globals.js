@@ -648,7 +648,7 @@
     /**
      * Get a string given the key. This implementation is meant for use only in the build sim. For more info see the
      * string plugin.
-     * @param {string} key
+     * @param {string} key - like "REPO/string.key.here" which includes the requirejs namespace
      * @returns {string}
      */
     phet.chipper.getStringForBuiltSim = key => {
