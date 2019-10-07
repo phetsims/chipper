@@ -109,10 +109,14 @@
      * Recurse through a string file and format each string value appropriately
      * @param {StringMap} stringMap
      * @param {boolean} isRTL - is right to left language
+     * @param {boolean} [assertNoWhitespace] - when true, assert that trimming each string value doesn't change the string.
      * @public
      */
-    formatStringValues: function( stringMap, isRTL ) {
+    formatStringValues: function( stringMap, isRTL, assertNoWhitespace ) {
       ChipperStringUtils.forEachString( stringMap, ( key, stringObject ) => {
+
+        assert && assertNoWhitespace && assert( stringObject.value === stringObject.value.trim(),
+          `String should not have trailing or leading whitespace, key: ${key}, value: "${stringObject.value}"` );
 
         // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
         stringObject.value = stringObject.value.trim();

@@ -42,8 +42,9 @@ define( require => {
    * @param {string} url path for the string
    * @param {function} callback callback when the check succeeds, returning the parsed JSON object
    * @param {function} errorBack callback for when an error occurred
+   * @param {boolean} [assertNoWhitespace] - when true, assert that trimming each string value doesn't change the string.
    */
-  const getWithCache = ( url, callback, errorBack ) => {
+  const getWithCache = ( url, callback, errorBack, assertNoWhitespace ) => {
 
     // Check for cache hit, see discussion in https://github.com/phetsims/chipper/issues/730
     if ( cache[ url ] ) {
@@ -64,7 +65,7 @@ define( require => {
         const parsed = JSON.parse( loadedText );
 
         const isRTL = localeInfo[ phet.chipper.queryParameters.locale ].direction === 'rtl';
-        ChipperStringUtils.formatStringValues( parsed, isRTL );
+        ChipperStringUtils.formatStringValues( parsed, isRTL, assertNoWhitespace );
         cache[ url ] = parsed;
 
         // clear the entries added during the async loading process
@@ -174,7 +175,8 @@ define( require => {
         const queryParameterStrings = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
         const locale = phet.chipper.queryParameters.locale;
         const fallbackSpecificPath = `${repositoryPath}/${getFilenameForLocale( ChipperConstants.FALLBACK_LOCALE )}`;
-        const localeSpecificPath = ( locale === ChipperConstants.FALLBACK_LOCALE ) ?
+        const isFallbackLocale = locale === ChipperConstants.FALLBACK_LOCALE;
+        const localeSpecificPath = isFallbackLocale ?
                                    fallbackSpecificPath :
                                    `${repositoryPath}/../babel/${repositoryName}/${getFilenameForLocale( locale )}`;
 
@@ -208,8 +210,8 @@ define( require => {
                 // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
                 console.log( `no string file for ${localeSpecificPath}` );
                 onload( getStringFromFileContents( parsedFallbackStrings, key ) );
-              } );
-          }, onload.error );
+              }, isFallbackLocale ); // if the main strings file is the fallback, then assert no surrounding whitespace
+          }, onload.error, true );
         }
       }
     },
