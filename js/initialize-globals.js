@@ -494,7 +494,7 @@
     },
 
     /**
-     * Override translated strings. This is only supported in requirejs mode.
+     * Override translated strings.
      * The value is encoded JSON of the form { "namespace.key":"value", "namespace.key":"value", ... }
      * Example: { "PH_SCALE/logarithmic":"foo", "PH_SCALE/linear":"bar" }
      * Encode the JSON in a browser console using: encodeURIComponent( JSON.stringify( value ) )
