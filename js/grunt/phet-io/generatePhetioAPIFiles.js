@@ -56,8 +56,8 @@ module.exports = async ( repo, localTestingURL ) => {
         receivedTypes = true;
         await resolved();
       }
-      else {
-        console.log( msg.text() );
+      else if ( msg.type() === 'error' ) {
+        console.error( msg.text() );
       }
     } );
 

@@ -106,18 +106,6 @@
     },
 
     /**
-     * Return the first line that contains the substring 'find'
-     * @param {string} string - the parent string within which to search
-     * @param {string} find - the legal regex string to be found
-     * @returns {array} - the whole line containing the matched substring
-     */
-    firstLineThatContains: function( string, find ) {
-      const findRE = '.*' + find.replace( /[-/\\^$*+?.()|[\]{}]/g, '\\$&' ) + '.*';
-      const theReturn = string.match( new RegExp( findRE, 'g' ) );
-      return theReturn ? theReturn[ 0 ] : null;
-    },
-
-    /**
      * Recurse through a string file and format each string value appropriately
      * @param {StringMap} stringMap
      * @param {boolean} isRTL - is right to left language

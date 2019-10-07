@@ -107,7 +107,8 @@
      * enables cache busting in requirejs mode.
      */
     cacheBust: {
-      type: 'flag'
+      type: 'boolean',
+      defaultValue: true
     },
 
     /**
@@ -557,7 +558,7 @@
     vibration: {
       type: 'string',
       defaultValue: null,
-      validValues: [ null, 'objects', 'interaction', 'state' ]
+      validValues: [ null, 'objects', 'manipulation', 'interaction-changes', 'result' ]
     },
 
     /**

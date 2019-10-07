@@ -22,7 +22,6 @@ const minify = require( '../minify' );
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
-const PRODUCTION_SITE = 'phet-io.colorado.edu';
 const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant, please see phet-io-wrappers/index/index.js before changing
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
@@ -124,43 +123,16 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
         }
       } );
 
-      /*
-       * Remove individual common phet-io code imports because they are all in phetio.js
-       */
+      // Remove individual common phet-io code imports because they are all in phetio.js
+      // NOTE: don't use Array.prototype.forEach here. After bashing my head against a wall I think it is because of
+      // race conditions editing `contents`.
+      for ( let i = 0; i < LIB_FILES.length; i++ ) {
+        const filePath = LIB_FILES[ i ];
+        const fileName = filePath.slice( filePath.lastIndexOf( '/' ) + 1 ); // plus one to not include the slash
 
-      // TODO: use LIB_FILES and/or factor this outs
-      // This returns the whole line that contains this substring, so it can be removed
-      const firstQueryStringLine = ChipperStringUtils.firstLineThatContains( contents, 'QueryStringMachine.js">' );
-
-      // Don't remove the import if it is coming from the phet-io website, only if it is a relative path in requirejs mode.
-      if ( firstQueryStringLine && firstQueryStringLine.indexOf( PRODUCTION_SITE ) === -1 ) {
-        contents = ChipperStringUtils.replaceAll( contents, firstQueryStringLine, '' ); // included in phetio.js
-      }
-      const firstAssertLine = ChipperStringUtils.firstLineThatContains( contents, 'assert.js">' );
-      if ( firstAssertLine && firstAssertLine.indexOf( PRODUCTION_SITE ) === -1 ) {
-        contents = ChipperStringUtils.replaceAll( contents, firstAssertLine, '' ); // included in phetio.js
-      }
-      const firstIFrameClientLine = ChipperStringUtils.firstLineThatContains( contents, 'Client.js">' );
-      if ( firstIFrameClientLine && firstIFrameClientLine.indexOf( PRODUCTION_SITE ) === -1 ) {
-        contents = ChipperStringUtils.replaceAll( contents, firstIFrameClientLine, '' ); // included in phetio.js
-      }
-
-      // Bundle in readFile and loadWrapperTemplate so they can be used uniformly by index (in root location) and wrappers (nested locations)
-      const firstReadFileLine = ChipperStringUtils.firstLineThatContains( contents, 'readFile.js">' );
-      if ( firstReadFileLine && firstReadFileLine.indexOf( PRODUCTION_SITE ) === -1 ) {
-        contents = ChipperStringUtils.replaceAll( contents, firstReadFileLine, '' ); // included in phetio.js
-      }
-      const firstLoadWrapperTemplateLine = ChipperStringUtils.firstLineThatContains( contents, 'loadWrapperTemplate.js">' );
-      if ( firstLoadWrapperTemplateLine && firstLoadWrapperTemplateLine.indexOf( PRODUCTION_SITE ) === -1 ) {
-        contents = ChipperStringUtils.replaceAll( contents, firstLoadWrapperTemplateLine, '' ); // included in phetio.js
-      }
-      const firstWrapperTypeLine = ChipperStringUtils.firstLineThatContains( contents, 'WrapperTypes.js">' );
-      if ( firstWrapperTypeLine && firstWrapperTypeLine.indexOf( PRODUCTION_SITE ) === -1 ) {
-        contents = ChipperStringUtils.replaceAll( contents, firstWrapperTypeLine, '' ); // included in phetio.js
-      }
-      const firstPhetioIDUtilsLine = ChipperStringUtils.firstLineThatContains( contents, 'PhetioIDUtils.js' );
-      if ( firstPhetioIDUtilsLine && firstPhetioIDUtilsLine.indexOf( PRODUCTION_SITE ) === -1 ) {
-        contents = ChipperStringUtils.replaceAll( contents, firstPhetioIDUtilsLine, '' ); // included in phetio.js
+        // a newline at the end of this regex breaks it. Likely because the "$" matches the newline. I tried `\n` and `\\n`
+        const regExp = new RegExp( `^.*/js/${fileName}".*$`, 'gm' );
+        contents = contents.replace( regExp, '' );
       }
 
       // Support wrappers that use code from phet-io-wrappers
@@ -168,16 +140,11 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
 
       // Don't use ChipperStringUtils because we want to capture the relative path and transfer it to the new script.
       // This is to support providing the relative path through the build instead of just hard coding it.
-      contents = contents.replace( /<!--\{\{([./]*)phet-io.js}}-->/g,
-        `<script src = "$1${pathToLib}" ></script>`
+      contents = contents.replace(
+        /<!--(<script src="[./]*\{\{PATH_TO_LIB_FILE}}".*><\/script>)-->/g, // '.*' is to support `data-client-name` in wrappers like "multi"
+        '$1' // just uncomment, dont fill it in yet
       );
-
-      // This must be after the above phet-io.js import and Client.js stripping. This case is to support wrappers
-      // that use the data-client-name attribute to dictate their own Type name.
-      contents = ChipperStringUtils.replaceAll( contents,
-        '../common/js/Client.js',
-        `${pathToLib}`
-      );
+      contents = ChipperStringUtils.replaceAll( contents, '{{PATH_TO_LIB_FILE}}', pathToLib );
 
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
