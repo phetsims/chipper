@@ -186,9 +186,10 @@
           const nextKey = keySoFar ? `${keySoFar}.${key}` : key; // don't start with period, assumes '' is falsey
           const stringObject = map[ key ];
 
-          // no need to support arrays in the string map, for example stringObject.history in locale specific files.
-          if ( Array.isArray( stringObject ) ) {
-            return;
+          // no need to support non-object, null, or arrays in the string map, for example stringObject.history in
+          // locale specific files.
+          if ( typeof stringObject !== 'object' || stringObject === null || Array.isArray( stringObject ) ) {
+            continue;
           }
           if ( stringObject.value ) {
             func( nextKey, stringObject );
