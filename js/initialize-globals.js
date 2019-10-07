@@ -612,16 +612,21 @@
      */
     window.phet.chipper.brand = window.phet.chipper.brand || phet.chipper.queryParameters.brand || 'adapted-from-phet';
 
+    // {string|null} - See documentation of stringTest query parameter - we need to support this during build, where
+    //                 there aren't any query parameters.
+    const stringTest = ( typeof window !== 'undefined' && phet.chipper.queryParameters.stringTest ) ?
+                       phet.chipper.queryParameters.stringTest :
+                       null;
+
     /**
      * Maps an input string to a final string, accommodating tricks like doubleStrings.
      * This function is used to modify all strings in a sim when the stringTest query parameter is used.
      * The stringTest query parameter and its options are documented in the query parameter docs above.
      * It is used in string.js and sim.html.
      * @param string - the string to be mapped
-     * @param stringTest - the value of the stringTest query parameter
      * @returns {string}
      */
-    window.phet.chipper.mapString = function( string, stringTest ) {
+    window.phet.chipper.mapString = function( string ) {
       return stringTest === null ? string :
              stringTest === 'double' ? string + ':' + string :
              stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
@@ -629,7 +634,7 @@
              stringTest === 'xss' ? string + '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABCQEBtxmN7wAAAABJRU5ErkJggg==" onload="window.location.href=atob(\'aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==\')" />' :
              stringTest === 'none' ? string :
 
-               //In the fallback case, supply whatever string was given in the query parameter value
+               // In the fallback case, supply whatever string was given in the query parameter value
              stringTest;
     };
 
@@ -637,6 +642,38 @@
     if ( QueryStringMachine.containsKey( 'locale' ) ) {
       window.phet.chipper.locale = phet.chipper.queryParameters.locale;
     }
+
+    const stringOverrides = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
+
+    /**
+     * Get a string given the key. This implementation is meant for use only in the build sim. For more info see the
+     * string plugin.
+     * @param {string} key
+     * @returns {string}
+     */
+    phet.chipper.getStringForBuiltSim = key => {
+      assert && assert( !!phet.chipper.isProduction, 'expected to be running a built sim' );
+      assert && assert( !!phet.chipper.strings, 'phet.chipper.strings should be filled out by initialization script' );
+      assert && assert( !!phet.chipper.locale, 'locale is required to look up the correct strings' );
+
+      // override strings via the 'strings' query parameter
+      if ( stringOverrides[ key ] ) {
+        return stringOverrides[ key ];
+      }
+      let stringMap = phet.chipper.strings[ phet.chipper.locale ];
+
+      // Don't fail out on unsupported locales, see https://github.com/phetsims/chipper/issues/694
+      if ( !stringMap ) {
+
+        // See if there's a translation for just the language code
+        stringMap = phet.chipper.strings[ phet.chipper.locale.slice( 0, 2 ) ];
+
+        if ( !stringMap ) {
+          stringMap = phet.chipper.strings.en;
+        }
+      }
+      return phet.chipper.mapString( stringMap[ key ] );
+    };
   }() );
 
   /** Create a random seed in the preload code that can be used to make sure playback simulations use the same seed

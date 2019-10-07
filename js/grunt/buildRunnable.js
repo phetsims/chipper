@@ -149,9 +149,6 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     // Preloads
     ...getPreloads( repo, brand, true ).map( filename => grunt.file.read( filename ) ),
 
-    // Strings code (requires preloads first, and should be done before requireJS)
-    grunt.file.read( '../chipper/templates/chipper-strings.js' ),
-
     // Our main require.js content, wrapped in a function called in the startup below
     requireJS,
 

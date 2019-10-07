@@ -36,11 +36,6 @@ define( require => {
   // back for that url. This way there aren't many `text.get` calls kicked off before the first can come back with text.
   const callbacksFromUnloadedURLs = {};
 
-  // {string|null} - See documentation of stringTest query parameter in initialize-globals.js
-  const stringTest = ( typeof window !== 'undefined' && window.phet.chipper.queryParameters.stringTest ) ?
-                     window.phet.chipper.queryParameters.stringTest :
-                     null;
-
   /**
    * When running in requirejs mode, check to see if we have already loaded the specified file
    * Also parses it so that only happens once per file (instead of once per string key)
@@ -91,7 +86,7 @@ define( require => {
     if ( stringFromMap === null ) {
       throw new Error( `String not found: ${key}` );
     }
-    return window.phet.chipper.mapString( stringFromMap, stringTest );
+    return window.phet.chipper.mapString( stringFromMap );
   };
 
   return {
@@ -238,7 +233,7 @@ define( require => {
      *          is useful for text transform plugins, like a CoffeeScript plugin.
      */
     write: ( pluginName, moduleName, write ) => {
-      write( `define("${pluginName}!${moduleName}",function(){return window.phet.chipper.strings.get("${moduleName}");});\n` );
+      write( `define("${pluginName}!${moduleName}",function(){return window.phet.chipper.getStringForBuiltSim("${moduleName}");});\n` );
     }
   };
 } );
