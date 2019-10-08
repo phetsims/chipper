@@ -12,15 +12,24 @@ module.exports = function( context ) {
 
   const getBadTextTester = require( './getBadTextTester' );
 
-  var badTexts = [
+  const badTexts = [
 
     // Proper casing for *boxes
-    'toolBox',
-    'ToolBox',
-    'CheckBox',
-    'checkBox',
-    'Combobox',
-    'combobox',
+
+    // toolbox is one word
+    'toolBox', // prefer toolbox
+    'ToolBox', // prefer Toolbox
+    'TOOL_BOX', // prefer TOOLBOX
+
+    // checkbox is one word
+    'checkBox', // prefer checkbox
+    'CheckBox', // prefer Checkbox
+    'CHECK_BOX', // prefer CHECKBOX
+
+    // combo box is two words
+    'combobox', // prefer combo box
+    'Combobox', // prefer Combo Box
+    'COMBOBOX', // prefer COMBO_BOX
 
     // In ES6, extending object causes methods to be dropped
     'extends Object ',
