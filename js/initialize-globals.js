@@ -464,6 +464,11 @@
      */
     showVisibleBounds: { type: 'flag' },
 
+    /**
+     * Shuffles listeners each time they are notified, to help us test order dependence, see https://github.com/phetsims/axon/issues/215
+     */
+    shuffleListeners: { type: 'flag' },
+
     // Private Doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
     /**
      * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
