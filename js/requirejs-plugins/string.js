@@ -182,7 +182,7 @@ define( require => {
             getWithCache( localeSpecificPath, parsed => {
 
                 // Combine the primary and fallback strings into one object hash.
-                const parsedStrings = merge( parsedFallbackStrings, parsed );
+                const parsedStrings = _.extend( parsedFallbackStrings, parsed ); // extend to avoid the phet-core dependency
                 if ( parsedStrings[ key ] !== undefined ) {
                   onload( window.phet.chipper.mapString( parsedStrings[ key ].value, stringTest ) );
                 }
