@@ -48,7 +48,7 @@ module.exports = function( repos, cache, say = false ) {
 
   const cli = new eslint.CLIEngine( {
 
-    fix: true, // make this true if you want to fix lint rules, make sure to uncomment the fix output below
+    fix: false, // make this true if you want to fix lint rules, make sure to uncomment the fix output below
 
     cwd: path.dirname( process.cwd() ),
 
@@ -90,7 +90,7 @@ module.exports = function( repos, cache, say = false ) {
   const report = cli.executeOnFiles( filteredRepos );
 
   // comment this back in to apply fixes; make sure to set fix: true in the above config
-  eslint.CLIEngine.outputFixes( report );
+  // eslint.CLIEngine.outputFixes( report );
 
   // pretty print results to console if any
   ( report.warningCount || report.errorCount ) && grunt.log.write( cli.getFormatter()( report.results ) );
