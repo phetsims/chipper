@@ -54,7 +54,7 @@ module.exports = {
       'always'
     ],
     'bad-text': 2,
-    'no-extend': 0,// wait to turn this on until there are less usages, https://github.com/phetsims/phet-core/issues/71
+    'no-extend': 2,// wait to turn this on until there are less usages, https://github.com/phetsims/phet-core/issues/71
 
     // Custom rule for checking the copyright.
     copyright: 2,
