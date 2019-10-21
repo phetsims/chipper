@@ -1,10 +1,10 @@
 // Copyright 2013-2019, University of Colorado Boulder
 
 /**
- * A RequireJS plugin for loading sound clips dynamically from the file system at development time and from base64
- * in built versions of simulation. It also provides the ability to convert sound files into base64 data so that it can
- * be built into a single-file simulation.  For development time, this is pretty similar to the image
- * plugin at https://github.com/millermedeiros/requirejs-plugins.
+ * A RequireJS plugin for loading sound files dynamically from the file system at development time and from base64 in
+ * built versions of simulation. It also provides the ability to convert sound files into base64 data so that it can be
+ * built into a single-file simulation.  For development time, this is pretty similar to the image plugin at
+ * https://github.com/millermedeiros/requirejs-plugins.
  *
  * General documentation about RequireJS plugins is available at http://requirejs.org/docs/plugins.html.
  *
@@ -16,7 +16,7 @@
 define( require => {
   'use strict';
 
-  // modules - paths are relative to the requirejs config.js file
+  // modules - paths are relative to the RequireJS config.js file
   const getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
   const getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   const loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
@@ -49,7 +49,7 @@ define( require => {
           errors.push( error );
         };
 
-        // register the license for this sound clip
+        // register the license for this sound file
         registerLicenseEntry( name, getLicenseEntry( soundInfo.url ), global.phet.chipper.brand, 'sounds', onloadAdapter );
 
         // If any license entry was a problem, then we must fail the build. For simplicity, just report the first error.
