@@ -18,7 +18,8 @@
       "sherpa",
       "sun",
       "tambo",
-      "tandem"
+      "tandem",
+      "utterance-queue"
     ],
     "preload": [
       "../joist/js/splash.js",
