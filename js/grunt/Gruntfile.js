@@ -12,6 +12,7 @@ const assert = require( 'assert' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const buildWrapper = require( './phet-io/buildWrapper' );
+require( './checkNodeVersion' );
 const child_process = require( 'child_process' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
