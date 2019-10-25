@@ -32,7 +32,7 @@ module.exports = function( context ) {
     'COMBOBOX', // prefer COMBO_BOX
 
     // In ES6, extending object causes methods to be dropped
-    'extends Object ',
+    { name: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
 
     // Forbid common duplicate words
     ' the the ',
@@ -47,6 +47,8 @@ module.exports = function( context ) {
     'Phet-iO',
 
     '@return ',
+
+    // TODO: this isn't yet supported with current getBadTextTester.js
     ' => { return ', // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
   ];
 
