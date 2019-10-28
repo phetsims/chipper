@@ -17,8 +17,8 @@ const path = require( 'path' );
 const child_process = require( 'child_process' );
 
 // constants
-// don't lint these repos
-const NO_LINT_REPOS = [
+const NO_LINT_REPOS = [ // don't lint these repos
+
   'babel',
   'eliot',
   'phet-android-app',

@@ -16,22 +16,22 @@ module.exports = function( context ) {
   var badTextsForSimCode = [
 
     // babel doesn't support compiling static getters, see https://github.com/phetsims/tasks/issues/983
-    ' static get ',
+    { name: ' static get ', codeTokens: [ 'static', 'get' ] },
 
     // should be using dot.Util.roundSymmetric, Math.round does not treat positive and negative numbers
     // symmetrically see https://github.com/phetsims/dot/issues/35#issuecomment-113587879
-    'Math.round',
+    { name: 'Math.round', codeTokens: [ 'Math', '.', 'round' ] },
 
     // should be using `phet.joist.random`
-    'Math.random()',
-    '_.shuffle(',
-    '_.sample(',
-    '_.random(',
-    'new Random()',
+    { name: 'Math.random()', codeTokens: [ 'Math', '.', 'random', '(', ')' ] },
+    { name: '_.shuffle(', codeTokens: [ '_', '.', 'shuffle', '(' ] },
+    { name: '_.sample(', codeTokens: [ '_', '.', 'sample', '(' ] },
+    { name: '_.random(', codeTokens: [ '_', '.', 'random', '(' ] },
+    { name: 'new Random()', codeTokens: [ 'new', 'Random', '(', ')' ] },
 
     // IE doesn't support:
-    'Number.parseInt(',
-    'Array.prototype.find'
+    { name: 'Number.parseInt(', codeTokens: [ 'Number', '.', 'parseInt', '(' ] },
+    { name: 'Array.prototype.find', codeTokens: [ 'Array', '.', 'prototype', '.', 'find' ] }
 
     // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
