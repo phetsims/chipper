@@ -17,29 +17,29 @@ module.exports = function( context ) {
   var forbiddenTextObjects = [
 
     // babel doesn't support compiling static getters, see https://github.com/phetsims/tasks/issues/983
-    { name: ' static get ', codeOnly: true, codeTokens: [ 'static', 'get' ] },
+    { id: ' static get ', codeOnly: true, codeTokens: [ 'static', 'get' ] },
 
     // should be using dot.Util.roundSymmetric, Math.round does not treat positive and negative numbers
     // symmetrically see https://github.com/phetsims/dot/issues/35#issuecomment-113587879
-    { name: 'Math.round(', codeOnly: true, codeTokens: [ 'Math', '.', 'round', '(' ] },
+    { id: 'Math.round(', codeOnly: true, codeTokens: [ 'Math', '.', 'round', '(' ] },
 
     // should be using `phet.joist.random`
-    { name: 'Math.random()', codeOnly: true, codeTokens: [ 'Math', '.', 'random', '(', ')' ] },
-    { name: '_.shuffle(', codeOnly: true, codeTokens: [ '_', '.', 'shuffle', '(' ] },
-    { name: '_.sample(', codeOnly: true, codeTokens: [ '_', '.', 'sample', '(' ] },
-    { name: '_.random(', codeOnly: true, codeTokens: [ '_', '.', 'random', '(' ] },
-    { name: 'new Random()', codeOnly: true, codeTokens: [ 'new', 'Random', '(', ')' ] },
+    { id: 'Math.random()', codeOnly: true, codeTokens: [ 'Math', '.', 'random', '(', ')' ] },
+    { id: '_.shuffle(', codeOnly: true, codeTokens: [ '_', '.', 'shuffle', '(' ] },
+    { id: '_.sample(', codeOnly: true, codeTokens: [ '_', '.', 'sample', '(' ] },
+    { id: '_.random(', codeOnly: true, codeTokens: [ '_', '.', 'random', '(' ] },
+    { id: 'new Random()', codeOnly: true, codeTokens: [ 'new', 'Random', '(', ')' ] },
 
     // IE doesn't support:
-    { name: 'Number.parseInt(', codeOnly: true, codeTokens: [ 'Number', '.', 'parseInt', '(' ] },
-    { name: 'Array.prototype.find', codeOnly: true, codeTokens: [ 'Array', '.', 'prototype', '.', 'find' ] }
+    { id: 'Number.parseInt(', codeOnly: true, codeTokens: [ 'Number', '.', 'parseInt', '(' ] },
+    { id: 'Array.prototype.find', codeOnly: true, codeTokens: [ 'Array', '.', 'prototype', '.', 'find' ] }
 
     // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
     // because the spec doesn't specify whether to round or floor.
     // TODO: comment back in and fix, https://github.com/phetsims/chipper/issues/737
     // {
-    //   name: '.toFixed(',     // support regex with english names this way
+    //   id: '.toFixed(',     // support regex with english names this way
     //   regex: new RegExp( '(?<!Util)\\.toFixed\\(' )
     // },
   ];

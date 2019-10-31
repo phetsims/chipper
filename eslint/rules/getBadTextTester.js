@@ -1,5 +1,4 @@
 // Copyright 2019, University of Colorado Boulder
-/* eslint-disable */
 
 /**
  * Bad text testing function for testing bad text in the project. Supports bad text as string ForbiddenTextObject.
@@ -26,9 +25,14 @@ module.exports = ( badTexts, context ) => {
     const commentTokens = sourceCode.getAllComments();
     const text = sourceCode.text;
 
-    // test an array of code tokens
+    /**
+     * @param {ForbiddenTextObject} forbiddenTextObject
+     * @returns {boolean} - false if no errors found via code tokens
+     */
     const testCodeTokens = forbiddenTextObject => {
       const codeTokensArray = forbiddenTextObject.codeTokens;
+
+      let foundFailure = false;
 
       // iterate through each code token in the node
       for ( let i = 0; i < codeTokens.length; i++ ) {
@@ -51,6 +55,7 @@ module.exports = ( badTexts, context ) => {
             // if at the end of the sequence, then we have successfully found bad code text, add it to a list of failures.
             if ( j === codeTokensArray.length - 1 ) {
               failures.push( forbiddenTextObject );
+              foundFailure = true;
             }
           }
           else {
@@ -61,11 +66,13 @@ module.exports = ( badTexts, context ) => {
         failures.forEach( failedTextObject => {
           context.report( {
             loc: token.loc.start,
-            message: `bad code text: "${failedTextObject.name}"`,
+            message: `bad code text: "${failedTextObject.id}"`
           } );
         } );
       }
+      return foundFailure;
     };
+
     /**
      *
      * @param {ForbiddenTextObject} forbiddenText
@@ -73,33 +80,42 @@ module.exports = ( badTexts, context ) => {
     const testBadText = forbiddenText => {
 
       // no need to iterate through tokens if it isn't anywhere in the source code
-      if ( text.indexOf( forbiddenText.name ) >= 0 ) {
+      if ( text.indexOf( forbiddenText.id ) >= 0 ) {
+
+        let foundError = false;
 
         // search through the tokenized code for the forbidden code tokens, like [ 'Math', '.', 'round' ],
-        testCodeTokens( forbiddenText );
+        foundError = testCodeTokens( forbiddenText );
 
         // look through comments
         !forbiddenText.codeOnly && commentTokens.forEach( token => {
-          if ( token.value.indexOf( forbiddenText.name ) >= 0 ) {
+          if ( token.value.indexOf( forbiddenText.id ) >= 0 ) {
+            foundError = true;
             context.report( {
               loc: token.loc.start,
-              message: `bad comment text: "${forbiddenText.name}"`,
+              message: `bad comment text: "${forbiddenText.id}"`
             } );
           }
         } );
 
         // TODO: support REGEX
         // if ( forbiddenText.regex instanceof RegExp && forbiddenText.regex.test( token.value ) ) {
-        //   failedText = forbiddenText.name;
+        //   failedText = forbiddenText.id;
         // }
+
+        // If a specific process couldn't find the error, then error out for the whole Node.
+        !foundError && context.report( {
+          node: node,
+          message: 'File contains bad text: \'' + forbiddenText.id + '\''
+        } );
       }
     };
 
     badTexts.forEach( badText => {
       if ( typeof badText === 'string' ) {
-        badText = { name: badText, codeTokens: [ badText ] }
+        badText = { id: badText, codeTokens: [ badText ] };
       }
-      assert( typeof badText.name === 'string', 'name required' );
+      assert( typeof badText.id === 'string', 'id required' );
       assert( Array.isArray( badText.codeTokens ), 'code tokens expected' );
       testBadText( badText );
     } );
@@ -107,10 +123,12 @@ module.exports = ( badTexts, context ) => {
 
   /**
    * @typedef {Object} ForbiddenTextObject
-   * @property {string} name - the "string-form" name of the bad text. should occur in the source code. Also what is
+   * @property {string} id - the "string-form" id of the bad text. should occur in the source code. Also what is
    *                            displayed on error. Used when checking for bad text in comments.
    * @property {Array.<string>} codeTokens - a list of the tokenized, ordered code sections that make up the bad text
-   *                                          within the javascript code (not used for checking comments)
-   * @property {boolean} codeOnly - if true, this object will not be checked for in comments, only in code.
+   *                                          within the javascript code (not used for checking comments). If there
+   *                                          is only one codeToken, then it will also be checked as a substring of each
+   *                                          code tokens.
+   * @property {boolean} [codeOnly] - if true, this object will not be checked for in comments, only in code.
    */
 };

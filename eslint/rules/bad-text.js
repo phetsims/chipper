@@ -33,7 +33,7 @@ module.exports = function( context ) {
     'COMBOBOX', // prefer COMBO_BOX
 
     // In ES6, extending object causes methods to be dropped
-    { name: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
+    { id: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
 
     // Forbid common duplicate words
     ' the the ',
