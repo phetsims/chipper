@@ -82,15 +82,12 @@ module.exports = ( badTexts, context ) => {
       // no need to iterate through tokens if it isn't anywhere in the source code
       if ( text.indexOf( forbiddenText.id ) >= 0 ) {
 
-        let foundError = false;
-
         // search through the tokenized code for the forbidden code tokens, like [ 'Math', '.', 'round' ],
-        foundError = testCodeTokens( forbiddenText );
+        testCodeTokens( forbiddenText );
 
         // look through comments
         !forbiddenText.codeOnly && commentTokens.forEach( token => {
           if ( token.value.indexOf( forbiddenText.id ) >= 0 ) {
-            foundError = true;
             context.report( {
               loc: token.loc.start,
               message: `bad comment text: "${forbiddenText.id}"`
@@ -103,11 +100,11 @@ module.exports = ( badTexts, context ) => {
         //   failedText = forbiddenText.id;
         // }
 
-        // If a specific process couldn't find the error, then error out for the whole Node.
-        !foundError && context.report( {
-          node: node,
-          message: 'File contains bad text: \'' + forbiddenText.id + '\''
-        } );
+        // // If a specific process couldn't find the error, then error out for the whole Node.
+        // !foundError && context.report( {
+        //   node: node,
+        //   message: 'File contains bad text: \'' + forbiddenText.id + '\''
+        // } );
       }
     };
 
