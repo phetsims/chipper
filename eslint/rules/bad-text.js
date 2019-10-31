@@ -1,5 +1,5 @@
 // Copyright 2018-2019, University of Colorado Boulder
-/* eslint-disable */
+/* eslint-disable bad-text */
 
 /**
  * Lint detector for invalid text.
@@ -49,7 +49,7 @@ module.exports = function( context ) {
     '@return ',
 
     // TODO: this isn't yet supported with current getBadTextTester.js
-    ' => { return ', // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
+    ' => { return ' // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
   ];
 
   return {

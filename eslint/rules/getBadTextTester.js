@@ -68,7 +68,7 @@ module.exports = ( badTexts, context ) => {
     };
     /**
      *
-     * @param forbiddenText
+     * @param {ForbiddenTextObject} forbiddenText
      */
     const testBadText = forbiddenText => {
 
@@ -111,5 +111,6 @@ module.exports = ( badTexts, context ) => {
    *                            displayed on error. Used when checking for bad text in comments.
    * @property {Array.<string>} codeTokens - a list of the tokenized, ordered code sections that make up the bad text
    *                                          within the javascript code (not used for checking comments)
+   * @property {boolean} codeOnly - if true, this object will not be checked for in comments, only in code.
    */
 };
