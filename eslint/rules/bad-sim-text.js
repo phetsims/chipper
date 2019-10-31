@@ -13,7 +13,8 @@ module.exports = function( context ) {
 
   const getBadTextTester = require( './getBadTextTester' );
 
-  var badTextsForSimCode = [
+  // see getBadTextTester for schema.
+  var forbiddenTextObjects = [
 
     // babel doesn't support compiling static getters, see https://github.com/phetsims/tasks/issues/983
     { name: ' static get ', codeOnly: true, codeTokens: [ 'static', 'get' ] },
@@ -44,7 +45,7 @@ module.exports = function( context ) {
   ];
 
   return {
-    Program: getBadTextTester( badTextsForSimCode, context )
+    Program: getBadTextTester( forbiddenTextObjects, context )
   };
 };
 

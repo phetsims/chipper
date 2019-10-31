@@ -12,7 +12,8 @@ module.exports = function( context ) {
 
   const getBadTextTester = require( './getBadTextTester' );
 
-  const badTexts = [
+  // see getBadTextTester for schema
+  const forbiddenTextObjects = [
 
     // Proper casing for *boxes
 
@@ -53,7 +54,7 @@ module.exports = function( context ) {
   ];
 
   return {
-    Program: getBadTextTester( badTexts, context )
+    Program: getBadTextTester( forbiddenTextObjects, context )
   };
 };
 
