@@ -1,5 +1,4 @@
 // Copyright 2015-2019, University of Colorado Boulder
-/* eslint-disable bad-sim-text */
 
 /**
  * Initializes phet globals that are used by all simulations, including assertions and query-parameters.
@@ -370,7 +369,7 @@
      */
     randomSeed: {
       type: 'number',
-      defaultValue: Math.random()
+      defaultValue: Math.random() // eslint-disable-line bad-sim-text
     },
 
     /**
@@ -672,7 +671,7 @@
     window.setInterval( function() { sleep( 64 ); }, 16 );
   };
   window.phet.chipper.makeRandomSlowness = function() {
-    window.setInterval( function() { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) );
+    window.setInterval( function() { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) ); // eslint-disable-line bad-sim-text
   };
 
   // Are we running a built html file?

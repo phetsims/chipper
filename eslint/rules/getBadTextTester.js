@@ -79,7 +79,7 @@ module.exports = ( badTexts, context ) => {
         testCodeTokens( forbiddenText );
 
         // look through comments
-        commentTokens.forEach( token => {
+        !forbiddenText.codeOnly && commentTokens.forEach( token => {
           if ( token.value.indexOf( forbiddenText.name ) >= 0 ) {
             context.report( {
               loc: token.loc.start,
