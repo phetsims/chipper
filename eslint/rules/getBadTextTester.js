@@ -82,29 +82,33 @@ module.exports = ( badTexts, context ) => {
       // no need to iterate through tokens if it isn't anywhere in the source code
       if ( text.indexOf( forbiddenText.id ) >= 0 ) {
 
-        // search through the tokenized code for the forbidden code tokens, like [ 'Math', '.', 'round' ],
-        testCodeTokens( forbiddenText );
+        // If marked as global, then report the global failure based on the source code indexOf check
+        if ( forbiddenText.global ) {
+          context.report( {
+            node: node,
+            message: 'File contains bad text: \'' + forbiddenText.id + '\''
+          } );
+        }
+        else {
 
-        // look through comments
-        !forbiddenText.codeOnly && commentTokens.forEach( token => {
-          if ( token.value.indexOf( forbiddenText.id ) >= 0 ) {
-            context.report( {
-              loc: token.loc.start,
-              message: `bad comment text: "${forbiddenText.id}"`
-            } );
-          }
-        } );
+          // search through the tokenized code for the forbidden code tokens, like [ 'Math', '.', 'round' ],
+          testCodeTokens( forbiddenText );
 
-        // TODO: support REGEX
-        // if ( forbiddenText.regex instanceof RegExp && forbiddenText.regex.test( token.value ) ) {
-        //   failedText = forbiddenText.id;
-        // }
+          // look through comments
+          !forbiddenText.codeOnly && commentTokens.forEach( token => {
+            if ( token.value.indexOf( forbiddenText.id ) >= 0 ) {
+              context.report( {
+                loc: token.loc.start,
+                message: `bad comment text: "${forbiddenText.id}"`
+              } );
+            }
+          } );
 
-        // // If a specific process couldn't find the error, then error out for the whole Node.
-        // !foundError && context.report( {
-        //   node: node,
-        //   message: 'File contains bad text: \'' + forbiddenText.id + '\''
-        // } );
+          // TODO: support REGEX
+          // if ( forbiddenText.regex instanceof RegExp && forbiddenText.regex.test( token.value ) ) {
+          //   failedText = forbiddenText.id;
+          // }
+        }
       }
     };
 
@@ -113,7 +117,7 @@ module.exports = ( badTexts, context ) => {
         badText = { id: badText, codeTokens: [ badText ] };
       }
       assert( typeof badText.id === 'string', 'id required' );
-      assert( Array.isArray( badText.codeTokens ), 'code tokens expected' );
+      assert( Array.isArray( badText.codeTokens ) || badText.global, 'code tokens or global flag expected' );
       testBadText( badText );
     } );
   };
@@ -122,10 +126,13 @@ module.exports = ( badTexts, context ) => {
    * @typedef {Object} ForbiddenTextObject
    * @property {string} id - the "string-form" id of the bad text. should occur in the source code. Also what is
    *                            displayed on error. Used when checking for bad text in comments.
-   * @property {Array.<string>} codeTokens - a list of the tokenized, ordered code sections that make up the bad text
+   * @property {Array.<string>} [codeTokens] - a list of the tokenized, ordered code sections that make up the bad text
    *                                          within the javascript code (not used for checking comments). If there
    *                                          is only one codeToken, then it will also be checked as a substring of each
-   *                                          code tokens.
+   *                                          code tokens. Required unless specifying "global".
    * @property {boolean} [codeOnly] - if true, this object will not be checked for in comments, only in code.
+   * @property {boolean} [global] - if true, then ignore comment and code token checks, and just error out based on the
+   *                                   presence of the `id` in the source code for the file. If provided, then codeTokens
+   *                                   is not needed
    */
 };

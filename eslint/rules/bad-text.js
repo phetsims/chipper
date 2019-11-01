@@ -47,10 +47,10 @@ module.exports = function( context ) {
     'phetio element', // use "phet-io element" or "PhET-iO element"
     'Phet-iO',
 
-    '@return ',
+    '@return '
 
-    // TODO: this isn't yet supported with current getBadTextTester.js
-    ' => { return ' // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
+    // TODO: uncomment once ESP(B) lint errors fixed, see https://github.com/phetsims/energy-skate-park/issues/140
+    // { id: ' => { return ', global: true } // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
   ];
 
   return {
