@@ -7,8 +7,11 @@
  *
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
+
+/* eslint-env node */
+'use strict';
+
 module.exports = context => {
-  'use strict';
 
   const badTextParts = [ '_', '.', 'extend' ];
   return {

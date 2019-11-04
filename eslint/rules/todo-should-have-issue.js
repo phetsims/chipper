@@ -5,8 +5,10 @@
  * @copyright 2015 University of Colorado Boulder
  */
 
+/* eslint-env node */
+'use strict';
+
 module.exports = function( context ) {
-  'use strict';
 
   // Whitelist of directories to check that TODOs have GitHub issues
   const directoriesToRequireIssues = [ /joist[/\\]js/ ];
@@ -17,7 +19,7 @@ module.exports = function( context ) {
 
       // Check whether the given directory matches the whitelist
       let directoryShouldBeChecked = false;
-      for ( var i = 0; i < directoriesToRequireIssues.length; i++ ) {
+      for ( let i = 0; i < directoriesToRequireIssues.length; i++ ) {
         const d = directoriesToRequireIssues[ i ];
         if ( context.getFilename().match( d ) ) {
           directoryShouldBeChecked = true;
@@ -29,7 +31,7 @@ module.exports = function( context ) {
         const comments = context.getSourceCode().getAllComments();
 
         if ( comments ) {
-          for ( i = 0; i < comments.length; i++ ) {
+          for ( let i = 0; i < comments.length; i++ ) {
             const comment = comments[ i ];
 
             if ( comment.value.indexOf( 'TODO' ) >= 0 ) {

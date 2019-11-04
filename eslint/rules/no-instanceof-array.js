@@ -5,12 +5,14 @@
  * @copyright 2018 University of Colorado Boulder
  */
 
+/* eslint-env node */
+'use strict';
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
 
 module.exports = function( context ) {
-  'use strict';
 
   return {
     BinaryExpression: function( node ) {

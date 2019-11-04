@@ -8,13 +8,16 @@
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
+
+/* eslint-env node */
+'use strict';
+
 module.exports = function( context ) {
-  'use strict';
 
   const getBadTextTester = require( './getBadTextTester' );
 
   // see getBadTextTester for schema.
-  var forbiddenTextObjects = [
+  const forbiddenTextObjects = [
 
     // babel doesn't support compiling static getters, see https://github.com/phetsims/tasks/issues/983
     { id: ' static get ', codeOnly: true, codeTokens: [ 'static', 'get' ] },

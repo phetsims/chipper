@@ -5,12 +5,14 @@
  * @copyright 2015 University of Colorado Boulder
  */
 
+/* eslint-env node */
+'use strict';
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
 
 module.exports = function( context ) {
-  'use strict';
 
   // Adapted from Stack Overflow, see http://stackoverflow.com/questions/25085306/javascript-space-separated-string-to-camelcase
   function toCamelCase( string ) {

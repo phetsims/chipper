@@ -9,6 +9,9 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+/* eslint-env node */
+'use strict';
+
 const assert = require( 'assert' );
 
 /**
@@ -17,7 +20,6 @@ const assert = require( 'assert' );
  * @returns {function(node:Object)} - function that reports any bad text lint errors to the context
  */
 module.exports = ( badTexts, context ) => {
-  'use strict';
 
   return node => {
     const sourceCode = context.getSourceCode();

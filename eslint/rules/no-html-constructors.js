@@ -17,12 +17,14 @@
  * @copyright 2016-2017 University of Colorado Boulder
  */
 
+/* eslint-env node */
+'use strict';
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
 
 module.exports = function( context ) {
-  'use strict';
 
   // names of the native JavaScript constructors that clash with PhET type names
   const nativeConstructors = [ 'Image', 'Range', 'Text', 'Node', 'Event' ];

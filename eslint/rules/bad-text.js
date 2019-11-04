@@ -7,8 +7,11 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+/* eslint-env node */
+'use strict';
+
 module.exports = function( context ) {
-  'use strict';
 
   const getBadTextTester = require( './getBadTextTester' );
 
