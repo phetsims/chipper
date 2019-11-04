@@ -28,54 +28,6 @@ module.exports = ( badTexts, context ) => {
     const text = sourceCode.text;
 
     /**
-     * @param {ForbiddenTextObject} forbiddenTextObject
-     * @returns {boolean} - false if no errors found via code tokens
-     */
-    const testCodeTokens = forbiddenTextObject => {
-      const codeTokensArray = forbiddenTextObject.codeTokens;
-
-      let foundFailure = false;
-
-      // iterate through each code token in the node
-      for ( let i = 0; i < codeTokens.length; i++ ) {
-        const token = codeTokens[ i ]; // {Token}
-        const failures = []; // a list of the tokens that match the forbidden code tokens,
-
-        // loop through, looking ahead at each subsequent code token, breaking if they don't match the  forbidden tokens
-        for ( let j = 0; j < codeTokensArray.length; j++ ) {
-          const forbiddenCodePart = codeTokensArray[ j ];
-          const combinedIndex = i + j;
-
-          const tokenValue = codeTokens[ combinedIndex ].value;
-
-          // multiple code tokens must match perfectly to conglomerate
-          if ( ( combinedIndex < codeTokens.length && tokenValue === forbiddenCodePart ) ||
-
-               // if there is only one, then check as a substring too
-               ( codeTokensArray.length === 1 && tokenValue.indexOf( forbiddenCodePart ) >= 0 ) ) {
-
-            // if at the end of the sequence, then we have successfully found bad code text, add it to a list of failures.
-            if ( j === codeTokensArray.length - 1 ) {
-              failures.push( forbiddenTextObject );
-              foundFailure = true;
-            }
-          }
-          else {
-            break; // quit early because it was a non-match
-          }
-        }
-
-        failures.forEach( failedTextObject => {
-          context.report( {
-            loc: token.loc.start,
-            message: `bad code text: "${failedTextObject.id}"`
-          } );
-        } );
-      }
-      return foundFailure;
-    };
-
-    /**
      *
      * @param {ForbiddenTextObject} forbiddenText
      */
@@ -94,7 +46,7 @@ module.exports = ( badTexts, context ) => {
         else {
 
           // search through the tokenized code for the forbidden code tokens, like [ 'Math', '.', 'round' ],
-          testCodeTokens( forbiddenText );
+          testCodeTokens( context, codeTokens, forbiddenText );
 
           // look through comments
           !forbiddenText.codeOnly && commentTokens.forEach( token => {
@@ -137,4 +89,54 @@ module.exports = ( badTexts, context ) => {
    *                                   presence of the `id` in the source code for the file. If provided, then codeTokens
    *                                   is not needed
    */
+};
+
+/**
+ * @param {Object} context
+ * @param {Object} codeTokens - from sourceCode object
+ * @param {ForbiddenTextObject} forbiddenTextObject
+ * @returns {boolean} - false if no errors found via code tokens
+ */
+const testCodeTokens = ( context, codeTokens, forbiddenTextObject ) => {
+  const codeTokensArray = forbiddenTextObject.codeTokens;
+
+  let foundFailure = false;
+
+  // iterate through each code token in the node
+  for ( let i = 0; i < codeTokens.length; i++ ) {
+    const token = codeTokens[ i ]; // {Token}
+    const failures = []; // a list of the tokens that match the forbidden code tokens,
+
+    // loop through, looking ahead at each subsequent code token, breaking if they don't match the  forbidden tokens
+    for ( let j = 0; j < codeTokensArray.length; j++ ) {
+      const forbiddenCodePart = codeTokensArray[ j ];
+      const combinedIndex = i + j;
+
+      const tokenValue = codeTokens[ combinedIndex ].value;
+
+      // multiple code tokens must match perfectly to conglomerate
+      if ( ( combinedIndex < codeTokens.length && tokenValue === forbiddenCodePart ) ||
+
+           // if there is only one, then check as a substring too
+           ( codeTokensArray.length === 1 && tokenValue.indexOf( forbiddenCodePart ) >= 0 ) ) {
+
+        // if at the end of the sequence, then we have successfully found bad code text, add it to a list of failures.
+        if ( j === codeTokensArray.length - 1 ) {
+          failures.push( forbiddenTextObject );
+          foundFailure = true;
+        }
+      }
+      else {
+        break; // quit early because it was a non-match
+      }
+    }
+
+    failures.forEach( failedTextObject => {
+      context.report( {
+        loc: token.loc.start,
+        message: `bad code text: "${failedTextObject.id}"`
+      } );
+    } );
+  }
+  return foundFailure;
 };
