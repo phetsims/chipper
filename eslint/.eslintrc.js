@@ -121,8 +121,7 @@ module.exports = {
     'no-self-compare': 2,
 
     // disallow unnecessary .call() and .apply()
-    // TODO: Under discussion in https://github.com/phetsims/scenery-phet/issues/193
-    //    'no-useless-call': 2,
+    'no-useless-call': 2,
 
     // disallow use of undefined when initializing variables
     'no-undef-init': 2,
