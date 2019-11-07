@@ -136,6 +136,9 @@ module.exports = {
     'property-visibility-annotation': 0,
     'no-property-in-require-statement': 2,
 
+    // disallow assignment within variable declaration, see https://github.com/phetsims/chipper/issues/794
+    'no-multi-assign-on-declaration': 2,
+
     // permit only one var declaration per line, see #390
     'one-var': [
       2,
