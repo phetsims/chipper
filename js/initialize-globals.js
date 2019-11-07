@@ -592,7 +592,7 @@
     // phet.log && phet.log( 'You lose', { color: 'red' } );
     if ( window.phet.chipper.queryParameters.log ) {
       window.phet.log = function( message, options ) {
-        options = _.extend( {
+        options = _.extend( { // eslint-disable-line bad-sim-text
           color: '#009900' // green
         }, options );
         console.log( '%c' + message, 'color: ' + options.color ); // green

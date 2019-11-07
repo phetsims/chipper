@@ -35,7 +35,12 @@ module.exports = function( context ) {
 
     // IE doesn't support:
     { id: 'Number.parseInt(', codeTokens: [ 'Number', '.', 'parseInt', '(' ] },
-    { id: 'Array.prototype.find', codeTokens: [ 'Array', '.', 'prototype', '.', 'find' ] }
+    { id: 'Array.prototype.find', codeTokens: [ 'Array', '.', 'prototype', '.', 'find' ] },
+
+    // Use merge instead of _.extend for combining options/config. Leave out first letter to allow for `options = `
+    // and `sliderOptions = _.extend` to both be caught.
+    'ptions = _.extend(',
+    'onfig = _.extend('
 
     // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
