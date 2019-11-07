@@ -12,6 +12,7 @@
 /* eslint-env node */
 'use strict';
 
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 
 /**
@@ -28,6 +29,26 @@ module.exports = ( badTexts, context ) => {
     const text = sourceCode.text;
 
     /**
+     * @param {number} lineNumber
+     * @param {number} columnIndex
+     * @param {string} text
+     */
+    const reportBadText = ( lineNumber, columnIndex, text ) => {
+
+      // esprima Token loc object, see https://esprima.readthedocs.io/en/latest/lexical-analysis.html
+      const loc = {
+        start: { line: lineNumber, column: columnIndex },
+        end: { line: lineNumber, column: columnIndex + text.length }
+      };
+
+      context.report( {
+        node: node,
+        loc: loc,
+        message: `Line contains bad text: '${text}'`
+      } );
+    };
+
+    /**
      *
      * @param {ForbiddenTextObject} forbiddenText
      */
@@ -42,30 +63,25 @@ module.exports = ( badTexts, context ) => {
         }
         else {
 
-          // TODO: support REGEX
-          // if ( forbiddenText.regex instanceof RegExp && forbiddenText.regex.test( token.value ) ) {
-          //   failedText = forbiddenText.id;
-          // }
 
           // test each line for the presence of the bad text
           for ( let i = 0; i < codeLines.length; i++ ) {
-            const columnIndex = codeLines[ i ].indexOf( forbiddenText.id );
-            if ( columnIndex >= 0 ) {
+            const lineString = codeLines[ i ];
 
-              // lines are 1 based, codeLines array is 0 based
-              const badLine = i + 1;
+            // lines are 1 based, codeLines array is 0 based
+            const badLineNumber = i + 1;
 
-              // esprima Token loc object, see https://esprima.readthedocs.io/en/latest/lexical-analysis.html
-              const loc = {
-                start: { line: badLine, column: columnIndex },
-                end: { line: badLine, column: columnIndex + forbiddenText.id.length }
-              };
-
-              context.report( {
-                node: node,
-                loc: loc,
-                message: 'Line contains bad text: \'' + forbiddenText.id + '\''
-              } );
+            // only test regex if provided
+            if ( forbiddenText.regex ) {
+              if ( forbiddenText.regex.test( lineString ) ) {
+                reportBadText( badLineNumber, 0, forbiddenText.id );
+              }
+            }
+            else {
+              const columnIndex = lineString.indexOf( forbiddenText.id );
+              if ( columnIndex >= 0 ) {
+                reportBadText( badLineNumber, columnIndex, forbiddenText.id );
+              }
             }
           }
         }
@@ -76,6 +92,12 @@ module.exports = ( badTexts, context ) => {
       if ( typeof badText === 'string' ) {
         badText = { id: badText };
       }
+      badText.regex && assert( badText.regex instanceof RegExp, 'regex, if provided, should be a RegExp' );
+      badText.codeTokens && assert( Array.isArray( badText.codeTokens ) &&
+      _.every( badText.codeTokens, token => typeof token === 'string' ),
+        'codeTokens, if provided, should be an array of strings' );
+      ( !!badText.regex || !!badText.codeTokens ) && assert( badText.regex !== badText.codeTokens,
+        'bad text can have codeTokens or regex, but not both' );
       assert( typeof badText.id === 'string', 'id required' );
       testBadText( badText );
     } );
@@ -90,6 +112,7 @@ module.exports = ( badTexts, context ) => {
    *                                           is only one codeToken, then it will also be checked as a substring of each
    *                                           code tokens. Required unless specifying "global". If this is provided,
    *                                           then the bad text will only be checked in code, and not via each line.
+   * @property {RegExp} [regex] - if provided, instead of checking the id as a string, test each line with this regex.
    */
 };
 
