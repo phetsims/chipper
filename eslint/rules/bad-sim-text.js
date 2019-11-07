@@ -20,22 +20,22 @@ module.exports = function( context ) {
   const forbiddenTextObjects = [
 
     // babel doesn't support compiling static getters, see https://github.com/phetsims/tasks/issues/983
-    { id: ' static get ', codeOnly: true, codeTokens: [ 'static', 'get' ] },
+    { id: ' static get ', codeTokens: [ 'static', 'get' ] },
 
     // should be using dot.Util.roundSymmetric, Math.round does not treat positive and negative numbers
     // symmetrically see https://github.com/phetsims/dot/issues/35#issuecomment-113587879
-    { id: 'Math.round(', codeOnly: true, codeTokens: [ 'Math', '.', 'round', '(' ] },
+    { id: 'Math.round(', codeTokens: [ 'Math', '.', 'round', '(' ] },
 
     // should be using `phet.joist.random`
-    { id: 'Math.random()', codeOnly: true, codeTokens: [ 'Math', '.', 'random', '(', ')' ] },
-    { id: '_.shuffle(', codeOnly: true, codeTokens: [ '_', '.', 'shuffle', '(' ] },
-    { id: '_.sample(', codeOnly: true, codeTokens: [ '_', '.', 'sample', '(' ] },
-    { id: '_.random(', codeOnly: true, codeTokens: [ '_', '.', 'random', '(' ] },
-    { id: 'new Random()', codeOnly: true, codeTokens: [ 'new', 'Random', '(', ')' ] },
+    { id: 'Math.random()', codeTokens: [ 'Math', '.', 'random', '(', ')' ] },
+    { id: '_.shuffle(', codeTokens: [ '_', '.', 'shuffle', '(' ] },
+    { id: '_.sample(', codeTokens: [ '_', '.', 'sample', '(' ] },
+    { id: '_.random(', codeTokens: [ '_', '.', 'random', '(' ] },
+    { id: 'new Random()', codeTokens: [ 'new', 'Random', '(', ')' ] },
 
     // IE doesn't support:
-    { id: 'Number.parseInt(', codeOnly: true, codeTokens: [ 'Number', '.', 'parseInt', '(' ] },
-    { id: 'Array.prototype.find', codeOnly: true, codeTokens: [ 'Array', '.', 'prototype', '.', 'find' ] }
+    { id: 'Number.parseInt(', codeTokens: [ 'Number', '.', 'parseInt', '(' ] },
+    { id: 'Array.prototype.find', codeTokens: [ 'Array', '.', 'prototype', '.', 'find' ] }
 
     // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,

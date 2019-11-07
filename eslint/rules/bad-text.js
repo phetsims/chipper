@@ -45,15 +45,16 @@ module.exports = function( context ) {
 
     // For phet-io use PHET_IO in constants
     'PHETIO',
+    'PHET-IO',
     'Phet-iO',
     ' Phet ',
     'phetio element', // use "phet-io element" or "PhET-iO element"
     'Phet-iO',
 
-    '@return '
+    '@return ',
 
-    // TODO: uncomment once ESP(B) lint errors fixed, see https://github.com/phetsims/energy-skate-park/issues/140
-    // { id: ' => { return ', global: true } // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
+    // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
+    ' => { return '
   ];
 
   return {

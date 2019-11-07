@@ -24,7 +24,7 @@ module.exports = ( badTexts, context ) => {
   return node => {
     const sourceCode = context.getSourceCode();
     const codeTokens = sourceCode.getTokens( node );
-    const commentTokens = sourceCode.getAllComments();
+    const codeLines = sourceCode.lines;
     const text = sourceCode.text;
 
     /**
@@ -33,45 +33,50 @@ module.exports = ( badTexts, context ) => {
      */
     const testBadText = forbiddenText => {
 
-      // no need to iterate through tokens if it isn't anywhere in the source code
+      // no need to iterate through lines if the bad text isn't anywhere in the source code
       if ( text.indexOf( forbiddenText.id ) >= 0 ) {
 
-        // If marked as global, then report the global failure based on the source code indexOf check
-        if ( forbiddenText.global ) {
-          context.report( {
-            node: node,
-            message: 'File contains bad text: \'' + forbiddenText.id + '\''
-          } );
+        // If codeTokens are provided, only test this bad text in code, and not anywhere else.
+        if ( forbiddenText.codeTokens ) {
+          testCodeTokens( context, codeTokens, forbiddenText );
         }
         else {
-
-          // search through the tokenized code for the forbidden code tokens, like [ 'Math', '.', 'round' ],
-          testCodeTokens( context, codeTokens, forbiddenText );
-
-          // look through comments
-          !forbiddenText.codeOnly && commentTokens.forEach( token => {
-            if ( token.value.indexOf( forbiddenText.id ) >= 0 ) {
-              context.report( {
-                loc: token.loc.start,
-                message: `bad comment text: "${forbiddenText.id}"`
-              } );
-            }
-          } );
 
           // TODO: support REGEX
           // if ( forbiddenText.regex instanceof RegExp && forbiddenText.regex.test( token.value ) ) {
           //   failedText = forbiddenText.id;
           // }
+
+          // test each line for the presence of the bad text
+          for ( let i = 0; i < codeLines.length; i++ ) {
+            const columnIndex = codeLines[ i ].indexOf( forbiddenText.id );
+            if ( columnIndex >= 0 ) {
+
+              // lines are 1 based, codeLines array is 0 based
+              const badLine = i + 1;
+
+              // esprima Token loc object, see https://esprima.readthedocs.io/en/latest/lexical-analysis.html
+              const loc = {
+                start: { line: badLine, column: columnIndex },
+                end: { line: badLine, column: columnIndex + forbiddenText.id.length }
+              };
+
+              context.report( {
+                node: node,
+                loc: loc,
+                message: 'Line contains bad text: \'' + forbiddenText.id + '\''
+              } );
+            }
+          }
         }
       }
     };
 
     badTexts.forEach( badText => {
       if ( typeof badText === 'string' ) {
-        badText = { id: badText, codeTokens: [ badText ] };
+        badText = { id: badText };
       }
       assert( typeof badText.id === 'string', 'id required' );
-      assert( Array.isArray( badText.codeTokens ) || badText.global, 'code tokens or global flag expected' );
       testBadText( badText );
     } );
   };
@@ -81,13 +86,10 @@ module.exports = ( badTexts, context ) => {
    * @property {string} id - the "string-form" id of the bad text. should occur in the source code. Also what is
    *                            displayed on error. Used when checking for bad text in comments.
    * @property {Array.<string>} [codeTokens] - a list of the tokenized, ordered code sections that make up the bad text
-   *                                          within the javascript code (not used for checking comments). If there
-   *                                          is only one codeToken, then it will also be checked as a substring of each
-   *                                          code tokens. Required unless specifying "global".
-   * @property {boolean} [codeOnly] - if true, this object will not be checked for in comments, only in code.
-   * @property {boolean} [global] - if true, then ignore comment and code token checks, and just error out based on the
-   *                                   presence of the `id` in the source code for the file. If provided, then codeTokens
-   *                                   is not needed
+   *                                           within the javascript code (not used for checking comments). If there
+   *                                           is only one codeToken, then it will also be checked as a substring of each
+   *                                           code tokens. Required unless specifying "global". If this is provided,
+   *                                           then the bad text will only be checked in code, and not via each line.
    */
 };
 
