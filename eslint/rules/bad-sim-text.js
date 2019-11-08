@@ -42,13 +42,24 @@ module.exports = function( context ) {
     'ptions = _.extend(',
     'onfig = _.extend('
 
+    // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
+    // TODO: comment back in when all lint errors are taken care of, https://github.com/phetsims/phet-info/issues/59
+    // {
+    //   id: 'setTimeout(',
+    //   regex: /(window\.| )setTimeout\(/
+    // },
+    // {
+    //   id: 'setInterval(',
+    //   regex: /(window\.| )setInterval\(/
+    // }
+
     // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
     // because the spec doesn't specify whether to round or floor.
-    // TODO: comment back in when all issues are done, https://github.com/phetsims/chipper/issues/737
+    // TODO: comment back in when all lint errors are taken care of, https://github.com/phetsims/chipper/issues/737
     // {
     //   id: '.toFixed(',     // support regex with english names this way
-    //   regex: new RegExp( '(?<!Util)\\.toFixed\\(' )
+    //   regex: /(?<!Util)\.toFixed\(/
     // }
   ];
 

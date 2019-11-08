@@ -668,7 +668,7 @@
    * testing a sim for robustness, and allowing others to reproduce slow-behavior bugs.
    */
   window.phet.chipper.makeEverythingSlow = function() {
-    window.setInterval( function() { sleep( 64 ); }, 16 );
+    window.setInterval( function() { sleep( 64 ); }, 16 ); // eslint-disable-line bad-sim-text
   };
   window.phet.chipper.makeRandomSlowness = function() {
     window.setInterval( function() { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) ); // eslint-disable-line bad-sim-text
