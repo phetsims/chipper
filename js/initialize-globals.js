@@ -574,6 +574,18 @@
     webgl: {
       type: 'boolean',
       defaultValue: true
+    },
+
+    /**
+     * Enables zooming and panning of the simulation.
+     *
+     * This feature is still in development and so defaults to false. For now it is used internally. But in the
+     * future, this will likely default to true and become a public query parameter defaulting to false
+     * for users that may want to disable this.
+     */
+    zoom: {
+      type: 'boolean',
+      defaultValue: false
     }
   };
 
