@@ -262,14 +262,14 @@
     if ( data.type === 'load' ) {
 
       var simFrame = document.getElementById( 'iframe' );
-      var innerDoc = simFrame.contentDocument || simFrame.contentWindow.document;
+      var innerWindow = simFrame.contentWindow;
 
       // copy of the parallel DOM
-      var PDOMRoot = simFrame.contentWindow.phet.joist.sim.display.accessibleDOMElement;
+      var PDOMRoot = innerWindow.phet.joist.sim.display.accessibleDOMElement;
       var PDOMCopy = PDOMRoot.cloneNode( true );
 
       // get the alert dom elements from the iframe's inner document
-      var ariaLiveElementsContainer = innerDoc.getElementById( 'aria-live-elements-1' );
+      var ariaLiveElementsContainer = innerWindow.phet.joist.sim.display.utteranceQueue.getAriaLiveContainer();
 
       // get the alert dom elements from the PDOM copy
       var alertList = document.getElementById( 'alert-list' );
