@@ -59,10 +59,14 @@ module.exports = async function( repo, minifyOptions ) {
   }
 
   // include globals assignment
-  fullSource += Object.keys( packageObject.phet.assignGlobals ).sort().map( function( global ) {
-    // For each key=>value in packageObject.phet.assignGlobals, we want to set window.key = require( 'value' ), to initialize our globals
-    return `\n  window.${global} = require( '${packageObject.phet.assignGlobals[ global ]}' );`;
-  } ).join( '' );
+  if ( packageObject.phet.assignGlobals ) {
+    fullSource += '\n window.phet = window.phet || {};\n';
+    fullSource += Object.keys( packageObject.phet.assignGlobals ).sort().map( global => {
+
+      // For each key=>value in packageObject.phet.assignGlobals, we want to set window.key = require( 'value' ), to initialize our globals
+      return `\n  window.${global} = require( '${packageObject.phet.assignGlobals[ global ]}' );`;
+    } ).join( '' );
+  }
 
   if ( packageObject.phet.finalizeJS ) {
     fullSource += packageObject.phet.finalizeJS;
