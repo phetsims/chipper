@@ -12,6 +12,7 @@
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const archiver = require( 'archiver' );
 const ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 const copyDirectory = require( '../copyDirectory' );
 const execute = require( '../execute' );
@@ -23,6 +24,7 @@ const minify = require( '../minify' );
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant, please see phet-io-wrappers/index/index.js before changing
+const OFFLINE_ZIP_NAME = 'offline-phet-io-files.zip';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
@@ -215,10 +217,10 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
     } );
   };
 
-// Make sure to copy the phet-io-wrappers common wrapper code too.
+  // Make sure to copy the phet-io-wrappers common wrapper code too.
   wrappers.push( WRAPPER_COMMON_FOLDER );
 
-// Add sim-specific wrappers
+  // Add sim-specific wrappers
   wrappers = packageObject.phet &&
              packageObject.phet[ 'phet-io' ] &&
              packageObject.phet[ 'phet-io' ].wrappers ?
@@ -235,16 +237,19 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
     copyWrapper( `../${wrapper}`, `${wrappersLocation}${wrapperName}`, wrapper, wrapperName );
   } );
 
-// Copy the wrapper index into the top level of the build dir, exclude the blacklist
+  // Copy the wrapper index into the top level of the build dir, exclude the blacklist
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );
 
-// Create the lib file that is minified and publicly available under the /lib folder of the build
+  // Create the lib file that is minified and publicly available under the /lib folder of the build
   handleLib( buildDir, filterWrapper );
 
-// Create the contrib folder and add to it third party libraries used by wrappers.
+  // Create the zipped file that holds all needed items to run PhET-iO offline
+  await handleOfflineArtifact( buildDir, repo );
+
+  // Create the contrib folder and add to it third party libraries used by wrappers.
   handleContrib( buildDir );
 
-// Create the rendered jsdoc in the `doc` folder
+  // Create the rendered jsdoc in the `doc` folder
   await handleJSDOC( buildDir );
 
   writeAPIFile( buildDir, repo );
@@ -318,6 +323,34 @@ const handleContrib = buildDir => {
 
     grunt.file.copy( filePath, `${buildDir}contrib/${filename}` );
 
+  } );
+};
+
+/**
+ * Combine the files necessary to run and host PhET-iO locally into a zip that can be easily downloaded by the client.
+ * This does not include any documentation, or wrapper suite wrapper examples.
+ * @param {string} buildDir
+ * @param {string} repo
+ * @returns {Promise<void>}
+ */
+const handleOfflineArtifact = async ( buildDir, repo ) => {
+
+  const output = fs.createWriteStream( `${buildDir}${OFFLINE_ZIP_NAME}` );
+  const archive = archiver( 'zip' );
+
+  archive.on( 'error', function( err ) {
+    grunt.fail.fatal( 'error creating archive: ' + err );
+  } );
+
+  archive.pipe( output );
+  archive.directory( `${buildDir}lib`, 'lib' ); // copy over the lib file
+
+  // get the all html and the debug version too, use `cwd` so that they are at the top level of the zip.
+  archive.glob( `${repo}*all*.html`, { cwd: `${buildDir}` } );
+  archive.finalize();
+
+  return new Promise( resolve => {
+    output.on( 'close', () => resolve() );
   } );
 };
 
