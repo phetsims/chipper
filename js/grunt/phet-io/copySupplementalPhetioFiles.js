@@ -338,20 +338,16 @@ const handleOfflineArtifact = async ( buildDir, repo ) => {
   const output = fs.createWriteStream( `${buildDir}${OFFLINE_ZIP_NAME}` );
   const archive = archiver( 'zip' );
 
-  archive.on( 'error', function( err ) {
-    grunt.fail.fatal( 'error creating archive: ' + err );
-  } );
+  archive.on( 'error', err => grunt.fail.fatal( 'error creating archive: ' + err ) );
 
   archive.pipe( output );
-  archive.directory( `${buildDir}lib`, 'lib' ); // copy over the lib file
+  archive.directory( `${buildDir}lib`, 'lib' ); // copy over the lib directory and its contents
 
   // get the all html and the debug version too, use `cwd` so that they are at the top level of the zip.
   archive.glob( `${repo}*all*.html`, { cwd: `${buildDir}` } );
   archive.finalize();
 
-  return new Promise( resolve => {
-    output.on( 'close', () => resolve() );
-  } );
+  return new Promise( resolve => output.on( 'close', resolve ) );
 };
 
 /**
