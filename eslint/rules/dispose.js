@@ -5,12 +5,14 @@
  * @copyright 2015 University of Colorado Boulder
  */
 
+/* eslint-env node */
+'use strict';
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
 
 module.exports = function( context ) {
-  'use strict';
 
   // the following holds the possible ways to register various PhET listeners and observers
   // TODO: derivedProperty
@@ -38,7 +40,7 @@ module.exports = function( context ) {
           if( OBSERVER_REGISTRATIONS.hasOwnProperty( key ) ) {
             if( calleeName === OBSERVER_REGISTRATIONS[ key ] ) {
               // we have found an observer registration, start at the root and look through its tokens for dispose
-              var disposeFound = false;
+              let disposeFound = false;
               const rootNode = context.getSourceCode().ast;
               if( rootNode &&
                   rootNode.tokens ) {

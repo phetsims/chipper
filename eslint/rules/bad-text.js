@@ -1,5 +1,5 @@
 // Copyright 2018-2019, University of Colorado Boulder
-/* eslint-disable */
+/* eslint-disable bad-text */
 
 /**
  * Lint detector for invalid text.
@@ -7,12 +7,16 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+/* eslint-env node */
+'use strict';
+
 module.exports = function( context ) {
-  'use strict';
 
   const getBadTextTester = require( './getBadTextTester' );
 
-  const badTexts = [
+  // see getBadTextTester for schema
+  const forbiddenTextObjects = [
 
     // Proper casing for *boxes
 
@@ -32,7 +36,7 @@ module.exports = function( context ) {
     'COMBOBOX', // prefer COMBO_BOX
 
     // In ES6, extending object causes methods to be dropped
-    { name: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
+    { id: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
 
     // Forbid common duplicate words
     ' the the ',
@@ -41,6 +45,7 @@ module.exports = function( context ) {
 
     // For phet-io use PHET_IO in constants
     'PHETIO',
+    'PHET-IO',
     'Phet-iO',
     ' Phet ',
     'phetio element', // use "phet-io element" or "PhET-iO element"
@@ -48,12 +53,12 @@ module.exports = function( context ) {
 
     '@return ',
 
-    // TODO: this isn't yet supported with current getBadTextTester.js
-    ' => { return ', // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
+    // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
+    ' => { return '
   ];
 
   return {
-    Program: getBadTextTester( badTexts, context )
+    Program: getBadTextTester( forbiddenTextObjects, context )
   };
 };
 

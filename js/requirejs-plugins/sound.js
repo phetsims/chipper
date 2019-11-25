@@ -28,12 +28,20 @@ define( require => {
 
   // define the plugin operations based on the RequireJS plugin API
   return {
+
+    /**
+     * @param {string} name - the name of the sound to load, consisting of a repo and file name, for example:
+     * TAMBO/boundary-reached.mp3.
+     * @param {function} parentRequire - a local "require" function used to load other modules
+     * @param {function} onload - function to call with the value when it's ready
+     * @param {Object} config - configuration info, mostly used to indicate if this is a RequireJS or build load
+     */
     load: function( name, parentRequire, onload, config ) {
 
       // everything after the repository namespace, eg 'MY_REPO/explosions/boom' -> '/explosions/boom'
       const soundPath = name.substring( name.indexOf( '/' ) );
       const baseUrl = getProjectURL( name, parentRequire ) + 'sounds';
-      const soundInfo = { url: baseUrl + soundPath };
+      const soundInfo = { name: name, url: baseUrl + soundPath };
 
       if ( config.isBuild ) {
 
@@ -75,7 +83,7 @@ define( require => {
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
         const soundInfo = buildMap[ moduleName ];
-        const base64SoundData = '{base64:\'' + loadFileAsDataURI( soundInfo.url ) + '\'}';
+        const base64SoundData = '{name:\'' + soundInfo.name + '\',base64:\'' + loadFileAsDataURI( soundInfo.url ) + '\'}';
 
         // Write the base64 representation of the sound file as the return value of a function so that it can be
         // extracted and loaded in the built version of the sim.

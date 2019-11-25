@@ -1,5 +1,4 @@
 // Copyright 2015-2019, University of Colorado Boulder
-/* eslint-disable bad-sim-text */
 
 /**
  * Initializes phet globals that are used by all simulations, including assertions and query-parameters.
@@ -370,7 +369,7 @@
      */
     randomSeed: {
       type: 'number',
-      defaultValue: Math.random()
+      defaultValue: Math.random() // eslint-disable-line bad-sim-text
     },
 
     /**
@@ -575,6 +574,18 @@
     webgl: {
       type: 'boolean',
       defaultValue: true
+    },
+
+    /**
+     * Enables zooming and panning of the simulation.
+     *
+     * This feature is still in development and so defaults to false. For now it is used internally. But in the
+     * future, this will likely default to true and become a public query parameter defaulting to false
+     * for users that may want to disable this.
+     */
+    zoom: {
+      type: 'boolean',
+      defaultValue: false
     }
   };
 
@@ -593,7 +604,7 @@
     // phet.log && phet.log( 'You lose', { color: 'red' } );
     if ( window.phet.chipper.queryParameters.log ) {
       window.phet.log = function( message, options ) {
-        options = _.extend( {
+        options = _.extend( { // eslint-disable-line bad-sim-text
           color: '#009900' // green
         }, options );
         console.log( '%c' + message, 'color: ' + options.color ); // green
@@ -669,10 +680,10 @@
    * testing a sim for robustness, and allowing others to reproduce slow-behavior bugs.
    */
   window.phet.chipper.makeEverythingSlow = function() {
-    window.setInterval( function() { sleep( 64 ); }, 16 );
+    window.setInterval( function() { sleep( 64 ); }, 16 ); // eslint-disable-line bad-sim-text
   };
   window.phet.chipper.makeRandomSlowness = function() {
-    window.setInterval( function() { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) );
+    window.setInterval( function() { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) ); // eslint-disable-line bad-sim-text
   };
 
   // Are we running a built html file?

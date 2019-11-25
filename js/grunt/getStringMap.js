@@ -78,7 +78,8 @@ module.exports = function( locales, phetLibs ) {
         grunt.log.debug( `missing string file: ${stringsFilename}` );
         fileContents = {};
       }
-      const fileMap = repoStringMap[ repository.name ][ locale ] = {};
+      const fileMap = {};
+      repoStringMap[ repository.name ][ locale ] = fileMap;
 
       for ( const stringKeyMissingPrefix in fileContents ) {
         const stringData = fileContents[ stringKeyMissingPrefix ];

@@ -44,16 +44,19 @@ module.exports = function( repo, brand, forSim ) {
 
   // add preloads that are common to all sims, from build.json
   if ( buildObject.common && buildObject.common.preload ) {
+    assert( Array.isArray( buildObject.common.preload ), 'preload should be an array' );
     preload = preload.concat( buildObject.common.preload );
   }
 
   // add sim-specific preloads from package.json
   if ( packageObject.phet.preload ) {
+    assert( Array.isArray( packageObject.phet.preload ), 'preload should be an array' );
     preload = preload.concat( packageObject.phet.preload );
   }
 
   // add brand-specific preloads from build.json
   if ( buildObject[ brand ] && buildObject[ brand ].preload ) {
+    assert( Array.isArray( buildObject[ brand ].preload ), 'preload should be an array' );
     preload = preload.concat( buildObject[ brand ].preload );
   }
 
@@ -65,6 +68,7 @@ module.exports = function( repo, brand, forSim ) {
 
   // add brand-specific preloads from package.json
   if ( packageObject.phet[ brand ] && packageObject.phet[ brand ].preload ) {
+    assert( Array.isArray( packageObject.phet[ brand ].preload ), 'preload should be an array' );
     preload = preload.concat( packageObject.phet[ brand ].preload );
   }
 
