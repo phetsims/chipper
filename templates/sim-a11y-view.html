@@ -236,9 +236,8 @@
   // set the source of the sim iframe
   document.getElementById( 'iframe' ).setAttribute( 'src', simURL );
 
-  var left = document.getElementById( 'left' )
-  var right = document.getElementById( 'right' )
-  var intro = document.getElementById('intro')
+  var left = document.getElementById( 'left' );
+  var right = document.getElementById( 'right' );
   var ua = navigator.userAgent.toLowerCase();
   if ( ua.indexOf( 'safari' ) != -1 ) {
     if ( ua.indexOf( 'chrome' ) > -1 ) {
@@ -247,7 +246,7 @@
     else {
       var offsetHeight = left.offsetTop;
       left.classList.add( 'left-safari' );
-      right.setAttribute('style', `position: absolute; top: ${offsetHeight}px; right: 2em`)
+      right.setAttribute( 'style', `position: absolute; top: ${offsetHeight}px; right: 2em` )
     }
   }
 
