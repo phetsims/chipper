@@ -207,12 +207,12 @@
 </div>
 
 <script type="application/javascript">
-  var IS_BUILT_STRING = '{{IS_BUILT}}';
-  var IS_BUILT = IS_BUILT_STRING.indexOf( '{{' ) !== 0;
+  const IS_BUILT_STRING = '{{IS_BUILT}}';
+  const IS_BUILT = IS_BUILT_STRING.indexOf( '{{' ) !== 0;
 
 
   // Grab all query parameters to pass to the simulation, and a couple of params that are required for this test
-  var simulationQueryString = window.location.search;
+  let simulationQueryString = window.location.search;
   if ( simulationQueryString.indexOf( '?' ) >= 0 ) {
     simulationQueryString += '&';
   }
@@ -220,21 +220,22 @@
     simulationQueryString += '?';
   }
 
-  var noPostMessage = simulationQueryString.indexOf( 'postMessageOnLoad&postMessageOnError' ) === -1;
-  var noAccessibility = simulationQueryString.indexOf( 'accessibility' ) === -1;
+  const noPostMessage = simulationQueryString.indexOf( 'postMessageOnLoad&postMessageOnError' ) === -1;
+  const noAccessibility = simulationQueryString.indexOf( 'accessibility' ) === -1;
 
   noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
   noAccessibility && ( simulationQueryString += 'accessibility' );
 
-  var repoLocale = '{{PHET_REPOSITORY}}_en';
-  var filenameEnding = IS_BUILT ? '_phet.html' : '.html';
-  var simURL = repoLocale + filenameEnding + simulationQueryString;
+  const repoLocale = '{{PHET_REPOSITORY}}_en';
+  const filenameEnding = IS_BUILT ? '_phet.html' : '.html';
+  const simURL = repoLocale + filenameEnding + simulationQueryString;
 
   // set the source of the sim iframe
   document.getElementById( 'iframe' ).setAttribute( 'src', simURL );
 
-  var left = document.getElementById( 'left' );
-  var ua = navigator.userAgent.toLowerCase();
+  // apply sticky styling for all browsers except chrome.
+  const left = document.getElementById( 'left' );
+  const ua = navigator.userAgent.toLowerCase();
   if ( ua.indexOf( 'safari' ) != -1 ) {
     if ( ua.indexOf( 'chrome' ) > -1 ) {
       left.classList.add( 'left' )
@@ -258,10 +259,10 @@
   function getAllDOMElementsAsLinear( ancestor ) {
 
     // gets ALL descendant children for the element
-    var children = ancestor.getElementsByTagName( '*' );
+    const children = ancestor.getElementsByTagName( '*' );
 
-    var linearDOM = [];
-    for ( var i = 0; i < children.length; i++ ) {
+    const linearDOM = [];
+    for ( let i = 0; i < children.length; i++ ) {
 
       // searching for the HTML element nodes (NOT Scenery nodes)
       if ( children[ i ].nodeType === Node.ELEMENT_NODE ) {
@@ -279,10 +280,10 @@
    * @param {HTMLElement} root - ancestor element, this and all descendants will be styled
    */
   function styleCopy( root ) {
-    var allElements = getAllDOMElementsAsLinear( root );
+    const allElements = getAllDOMElementsAsLinear( root );
 
-    for ( var i = 0; i < allElements.length; i++ ) {
-      var element = allElements[ i ];
+    for ( let i = 0; i < allElements.length; i++ ) {
+      const element = allElements[ i ];
 
       // TODO: see https://github.com/phetsims/chipper/issues/740, for some reason this makes Chrome very slow
       // make sure nothing in copy is focusable
@@ -300,23 +301,23 @@
     if ( !evt.data ) {
       return;
     }
-    var data = JSON.parse( evt.data );
+    const data = JSON.parse( evt.data );
 
     // if load is successful, create a visualization of the parallel DOM
     if ( data.type === 'load' ) {
 
-      var simFrame = document.getElementById( 'iframe' );
-      var innerWindow = simFrame.contentWindow;
+      const simFrame = document.getElementById( 'iframe' );
+      const innerWindow = simFrame.contentWindow;
 
       // copy of the parallel DOM
-      var PDOMRoot = innerWindow.phet.joist.sim.display.accessibleDOMElement;
-      var PDOMCopy = PDOMRoot.cloneNode( true );
+      const PDOMRoot = innerWindow.phet.joist.sim.display.accessibleDOMElement;
+      let PDOMCopy = PDOMRoot.cloneNode( true );
 
       // get the alert dom elements from the iframe's inner document
-      var ariaLiveElementsContainer = innerWindow.phet.joist.sim.utteranceQueue.getAriaLiveContainer();
+      const ariaLiveElementsContainer = innerWindow.phet.joist.sim.utteranceQueue.getAriaLiveContainer();
 
       // get the alert dom elements from the PDOM copy
-      var alertList = document.getElementById( 'alert-list' );
+      const alertList = document.getElementById( 'alert-list' );
 
       // strip the styling from the copied DOM elements
       PDOMCopy.removeAttribute( 'style' );
@@ -328,7 +329,7 @@
       } );
 
       // get the parent container for the parallel DOM copy and the alert content
-      var copyContainer = document.getElementById( 'dom-copy-container' );
+      const copyContainer = document.getElementById( 'dom-copy-container' );
 
       // add the copies to the outer document
       copyContainer.appendChild( PDOMCopy );
@@ -345,13 +346,13 @@
       function addInlineAttributesTHTML( rootNode ) {
 
         // all elements in the PDOM - a defensive copy since we may be adding new elements to the DOM
-        var allElements = Array.prototype.slice.call( rootNode.getElementsByTagName( "*" ) );
+        const allElements = Array.prototype.slice.call( rootNode.getElementsByTagName( "*" ) );
 
-        for ( var i = 0; i < allElements.length; i++ ) {
-          var element = allElements[ i ];
+        for ( let i = 0; i < allElements.length; i++ ) {
+          const element = allElements[ i ];
 
           if ( element.hasAttribute( 'aria-label' ) && element.innerHTML === '' ) {
-            var ariaLabel = element.getAttribute( 'aria-label' );
+            const ariaLabel = element.getAttribute( 'aria-label' );
 
             // remove the style
             element.removeAttribute( 'style' );
@@ -365,9 +366,9 @@
               else {
 
                 // add a special label element to appear before the input element
-                var labelElement = document.createElement( 'label' );
+                const labelElement = document.createElement( 'label' );
                 labelElement.textContent = ariaLabel;
-                var parentElement = element.parentNode;
+                const parentElement = element.parentNode;
                 parentElement.insertBefore( labelElement, parentElement.firstChild );
               }
             }
@@ -381,7 +382,7 @@
 
             // if the element has aria-valuetext, render this text in a new element so we can see the content of this
             // inline attribute
-            var valueTextElement = document.createElement( 'p' );
+            const valueTextElement = document.createElement( 'p' );
             valueTextElement.className = "pdom-style";
             valueTextElement.style.opacity = 0.55;
             valueTextElement.textContent = element.getAttribute( 'aria-valuetext' );
@@ -393,7 +394,7 @@
       addInlineAttributesTHTML( PDOMCopy );
 
       // whenever an element in the parallel DOM changes, we need to update its copied element as well
-      var domObserver = new MutationObserver( function( mutations ) {
+      const domObserver = new MutationObserver( function( mutations ) {
 
         // update the PDOM copy after a delay to fix a FF/Safari bug where cloneNode prevents hidden DOM elements
         // in the iframe from staying hidden - see https://github.com/phetsims/chipper/issues/648
@@ -415,43 +416,43 @@
       } );
 
       // configuration of the dom observer:
-      var config = { attributes: true, childList: true, characterData: true, subtree: true };
+      const config = { attributes: true, childList: true, characterData: true, subtree: true };
 
       // pass in the target node, as well as the observer options
       domObserver.observe( PDOMRoot, config );
 
       // add mutation observers to each of the aria-live elements
       function addLiveObserver( originalElement, listElement ) {
-        var liveObserver = new MutationObserver( function( mutations ) {
+        const liveObserver = new MutationObserver( function( mutations ) {
           mutations.forEach( function( mutation ) {
 
             // Only display added DOM nodes. ariaHerald will remove the content from aria-live elements so that it
             // can't be read by the virtual cursor. This registers as a "mutation", but we don't want to display
             // the removal.
             if ( mutation.addedNodes.length > 0 ) {
-              var alertText = mutation.target.textContent;
+              const alertText = mutation.target.textContent;
 
               // update the text content of the copied element to match the element in the iframe document
               // create a list item to add to the alert list
               if ( alertText.length > 0 ) {
-                var listItem = document.createElement( 'li' );
+                const listItem = document.createElement( 'li' );
                 listItem.style.opacity = 1.0;
                 listItem.textContent = alertText;
                 listElement.insertBefore( listItem, listElement.children[ 0 ] );
 
                 // items fade out as they get older
-                for ( var j = 0; j < listElement.children.length; j++ ) {
+                for ( let j = 0; j < listElement.children.length; j++ ) {
                   listElement.children[ j ].style.opacity = 1.0 / ( j + 1 ) + 0.25;
                 }
 
                 // if the list is too large, remove the last items from the list
-                var childrenArray = Array.prototype.slice.call( listElement.children );
-                var fadeArray = childrenArray.slice( 5, childrenArray.length );
+                const childrenArray = Array.prototype.slice.call( listElement.children );
+                const fadeArray = childrenArray.slice( 5, childrenArray.length );
 
-                for ( var i = 0; i < fadeArray.length; i++ ) {
-                  var fadeChild = fadeArray[ i ];
+                for ( let i = 0; i < fadeArray.length; i++ ) {
+                  const fadeChild = fadeArray[ i ];
 
-                  var fadeout = function() {
+                  const fadeout = function() {
                     fadeChild.style.opacity = fadeChild.style.opacity * 0.95;
 
                     // stop animating and remove child
@@ -460,7 +461,7 @@
                       listElement.removeChild( fadeChild );
                     }
                   };
-                  var intervalId = window.setInterval( fadeout, 20 );
+                  const intervalId = window.setInterval( fadeout, 20 );
                 }
               }
             }
@@ -479,7 +480,7 @@
       document.getElementById( 'iframe' ).focus();
 
       // Provide fake focus highlighting to the PDOM copy based on what is actually highlighted in the sim.
-      var previousElement = null;
+      let previousElement = null;
       setInterval( function() {
 
         if ( previousElement ) {
