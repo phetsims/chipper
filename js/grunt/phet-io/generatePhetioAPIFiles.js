@@ -72,7 +72,7 @@ module.exports = async ( repo, localTestingURL ) => {
     page.on( 'pageerror', msg => reject( msg ) );
 
     try {
-      await page.goto( `${localTestingURL}${repo}/${repo}_en.html?brand=phet-io&phetioStandalone&ea&phetioPrintPhetioFiles` );
+      await page.goto( `${localTestingURL}${repo}/${repo}_en.html?brand=phet-io&phetioStandalone&phetioPrintPhetioFiles` );
     }
     catch( e ) {
       reject( e );
