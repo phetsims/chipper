@@ -151,20 +151,23 @@
   <div id="content">
     <div id="intro">
       <h1>A11y View: {{PHET_SIM_TITLE}}</h1>
-      <p>
-        The A11y View is a design and presentation tool that allows us to visually demonstrate the accessibility layer
-        of the simulation. We refer to this layer as the Parallel DOM, or PDOM. The PDOM (copied into the blue box)
-        exposes the simulation’s full document structure and all the dynamic descriptive content that lives within
-        that structure to a student accessing the simulation using assistive technology, such as screen reader
-        software. The activity log (copied into the orange box), exposes the interactive alerts that a student would
-        hear in real-time as they interact with the simulation. Interact with the accessible version of
-        {{PHET_SIM_TITLE}} in the iframe, with either a keyboard or a mouse, and notice how the activity log (orange
-        box) and the content of the PDOM (blue box) update as you interact.
-      </p>
-      <p>
-        <b>Please note</b> that students do not use the A11y View, they use the accessible simulation, alone, which is
-        rendered here inside the iframe.
-      </p>
+      <details>
+        <summary>About the A11y View</summary>
+        <p>
+          The A11y View is a design and presentation tool that allows us to visually demonstrate the accessibility layer
+          of the simulation. We refer to this layer as the Parallel DOM, or PDOM. The PDOM (copied into the blue box)
+          exposes the simulation’s full document structure and all the dynamic descriptive content that lives within
+          that structure to a student accessing the simulation using assistive technology, such as screen reader
+          software. The activity log (copied into the orange box), exposes the interactive alerts that a student would
+          hear in real-time as they interact with the simulation. Interact with the accessible version of
+          {{PHET_SIM_TITLE}} in the iframe, with either a keyboard or a mouse, and notice how the activity log (orange
+          box) and the content of the PDOM (blue box) update as you interact.
+        </p>
+        <p>
+          <b>Please note</b> that students do not use the A11y View, they use the accessible simulation, alone, which is
+          rendered here inside the iframe.
+        </p>
+      </details>
     </div>
 
     <!--The sim and alert containers will both be placed in here -->
