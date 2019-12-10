@@ -1,10 +1,10 @@
 // Copyright 2013-2019, University of Colorado Boulder
 
 /**
- * A RequireJS plugin for loading sound clips dynamically from the file system at development time and from base64
- * in built versions of simulation. It also provides the ability to convert sound files into base64 data so that it can
- * be built into a single-file simulation.  For development time, this is pretty similar to the image
- * plugin at https://github.com/millermedeiros/requirejs-plugins.
+ * A RequireJS plugin for loading sound files dynamically from the file system at development time and from base64 in
+ * built versions of simulation. It also provides the ability to convert sound files into base64 data so that it can be
+ * built into a single-file simulation.  For development time, this is pretty similar to the image plugin at
+ * https://github.com/millermedeiros/requirejs-plugins.
  *
  * General documentation about RequireJS plugins is available at http://requirejs.org/docs/plugins.html.
  *
@@ -16,7 +16,7 @@
 define( require => {
   'use strict';
 
-  // modules - paths are relative to the requirejs config.js file
+  // modules - paths are relative to the RequireJS config.js file
   const getLicenseEntry = require( '../../chipper/js/common/getLicenseEntry' );
   const getProjectURL = require( '../../chipper/js/requirejs-plugins/getProjectURL' );
   const loadFileAsDataURI = require( '../../chipper/js/common/loadFileAsDataURI' );
@@ -28,12 +28,20 @@ define( require => {
 
   // define the plugin operations based on the RequireJS plugin API
   return {
+
+    /**
+     * @param {string} name - the name of the sound to load, consisting of a repo and file name, for example:
+     * TAMBO/boundary-reached.mp3.
+     * @param {function} parentRequire - a local "require" function used to load other modules
+     * @param {function} onload - function to call with the value when it's ready
+     * @param {Object} config - configuration info, mostly used to indicate if this is a RequireJS or build load
+     */
     load: function( name, parentRequire, onload, config ) {
 
       // everything after the repository namespace, eg 'MY_REPO/explosions/boom' -> '/explosions/boom'
       const soundPath = name.substring( name.indexOf( '/' ) );
       const baseUrl = getProjectURL( name, parentRequire ) + 'sounds';
-      const soundInfo = { url: baseUrl + soundPath };
+      const soundInfo = { name: name, url: baseUrl + soundPath };
 
       if ( config.isBuild ) {
 
@@ -49,7 +57,7 @@ define( require => {
           errors.push( error );
         };
 
-        // register the license for this sound clip
+        // register the license for this sound file
         registerLicenseEntry( name, getLicenseEntry( soundInfo.url ), global.phet.chipper.brand, 'sounds', onloadAdapter );
 
         // If any license entry was a problem, then we must fail the build. For simplicity, just report the first error.
@@ -75,7 +83,7 @@ define( require => {
     write: function( pluginName, moduleName, write ) {
       if ( moduleName in buildMap ) {
         const soundInfo = buildMap[ moduleName ];
-        const base64SoundData = '{base64:\'' + loadFileAsDataURI( soundInfo.url ) + '\'}';
+        const base64SoundData = '{name:\'' + soundInfo.name + '\',base64:\'' + loadFileAsDataURI( soundInfo.url ) + '\'}';
 
         // Write the base64 representation of the sound file as the return value of a function so that it can be
         // extracted and loaded in the built version of the sim.

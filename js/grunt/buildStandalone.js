@@ -28,15 +28,20 @@ module.exports = async function( repo, minifyOptions ) {
   assert( typeof minifyOptions === 'object' );
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  assert( packageObject.phet, '`phet` object expected in package.json' );
 
   const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js` );
 
-  const includedSources = [
+  let includedSources = [
+    '../sherpa/lib/mdn-array-from-polyfill.js',
     '../assert/js/assert.js',
     '../tandem/js/PhetioIDUtils.js'
   ];
-  if ( repo === 'scenery' ) {
-    includedSources.push( '../sherpa/lib/himalaya-0.2.7.js' );
+
+  // add repo-specific preloads from package.json
+  if ( packageObject.phet.preload ) {
+    assert( Array.isArray( packageObject.phet.preload ), 'preload should be an array' );
+    includedSources = includedSources.concat( packageObject.phet.preload );
   }
 
   const includedJS = includedSources.map( file => fs.readFileSync( file, 'utf8' ) ).join( '\n' );
@@ -59,10 +64,14 @@ module.exports = async function( repo, minifyOptions ) {
   }
 
   // include globals assignment
-  fullSource += Object.keys( packageObject.phet.assignGlobals ).sort().map( function( global ) {
-    // For each key=>value in packageObject.phet.assignGlobals, we want to set window.key = require( 'value' ), to initialize our globals
-    return `\n  window.${global} = require( '${packageObject.phet.assignGlobals[ global ]}' );`;
-  } ).join( '' );
+  if ( packageObject.phet.assignGlobals ) {
+    fullSource += '\n window.phet = window.phet || {};\n';
+    fullSource += Object.keys( packageObject.phet.assignGlobals ).sort().map( global => {
+
+      // For each key=>value in packageObject.phet.assignGlobals, we want to set window.key = require( 'value' ), to initialize our globals
+      return `\n  window.${global} = require( '${packageObject.phet.assignGlobals[ global ]}' );`;
+    } ).join( '' );
+  }
 
   if ( packageObject.phet.finalizeJS ) {
     fullSource += packageObject.phet.finalizeJS;

@@ -54,6 +54,7 @@ module.exports = {
       'always'
     ],
     'bad-text': 2,
+    'no-extend': 0,// wait to turn this on until there are less usages, https://github.com/phetsims/phet-core/issues/71
 
     // Custom rule for checking the copyright.
     copyright: 2,
@@ -120,8 +121,7 @@ module.exports = {
     'no-self-compare': 2,
 
     // disallow unnecessary .call() and .apply()
-    // TODO: Under discussion in https://github.com/phetsims/scenery-phet/issues/193
-    //    'no-useless-call': 2,
+    'no-useless-call': 2,
 
     // disallow use of undefined when initializing variables
     'no-undef-init': 2,
@@ -134,6 +134,9 @@ module.exports = {
     // Require @public/@private for this.something = result;
     'property-visibility-annotation': 0,
     'no-property-in-require-statement': 2,
+
+    // disallow assignment within variable declaration, see https://github.com/phetsims/chipper/issues/794
+    'no-multi-assign-on-declaration': 2,
 
     // permit only one var declaration per line, see #390
     'one-var': [

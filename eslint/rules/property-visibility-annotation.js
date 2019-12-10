@@ -6,22 +6,24 @@
  * @copyright 2016 University of Colorado Boulder
  */
 
+/* eslint-env node */
+'use strict';
+
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
 
 module.exports = function( context ) {
-  'use strict';
 
   return {
 
     AssignmentExpression: function propertyVisibilityAnnotation( node ) {
+      let isAnnotated = false;
 
       if ( node.left && node.left && node.left.object && node.left.object.type === 'ThisExpression' ) {
         const leadingComments = node.parent.leadingComments;
         let i;
         let a;
-        var isAnnotated = false;
         if ( leadingComments ) {
           for ( i = 0; i < leadingComments.length; i++ ) {
             a = leadingComments[ i ];

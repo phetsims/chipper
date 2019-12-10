@@ -17,8 +17,8 @@ const path = require( 'path' );
 const child_process = require( 'child_process' );
 
 // constants
-// don't lint these repos
-const NO_LINT_REPOS = [
+const NO_LINT_REPOS = [ // don't lint these repos
+
   'babel',
   'eliot',
   'phet-android-app',
@@ -47,6 +47,8 @@ module.exports = function( repos, cache, say = false ) {
   const filteredRepos = repos.filter( repo => NO_LINT_REPOS.indexOf( repo ) < 0 && fs.existsSync( '../' + repo ) );
 
   const cli = new eslint.CLIEngine( {
+
+    fix: false, // make this true if you want to fix lint rules, make sure to uncomment the fix output below
 
     cwd: path.dirname( process.cwd() ),
 
@@ -86,6 +88,9 @@ module.exports = function( repos, cache, say = false ) {
 
   // run the eslint step
   const report = cli.executeOnFiles( filteredRepos );
+
+  // comment this back in to apply fixes; make sure to set fix: true in the above config
+  // eslint.CLIEngine.outputFixes( report );
 
   // pretty print results to console if any
   ( report.warningCount || report.errorCount ) && grunt.log.write( cli.getFormatter()( report.results ) );

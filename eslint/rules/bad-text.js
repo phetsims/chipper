@@ -1,5 +1,5 @@
 // Copyright 2018-2019, University of Colorado Boulder
-/* eslint-disable */
+/* eslint-disable bad-text */
 
 /**
  * Lint detector for invalid text.
@@ -7,23 +7,36 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+/* eslint-env node */
+'use strict';
+
 module.exports = function( context ) {
-  'use strict';
 
   const getBadTextTester = require( './getBadTextTester' );
 
-  var badTexts = [
+  // see getBadTextTester for schema
+  const forbiddenTextObjects = [
 
     // Proper casing for *boxes
-    'toolBox',
-    'ToolBox',
-    'CheckBox',
-    'checkBox',
-    'Combobox',
-    'combobox',
+
+    // toolbox is one word
+    'toolBox', // prefer toolbox
+    'ToolBox', // prefer Toolbox
+    'TOOL_BOX', // prefer TOOLBOX
+
+    // checkbox is one word
+    'checkBox', // prefer checkbox
+    'CheckBox', // prefer Checkbox
+    'CHECK_BOX', // prefer CHECKBOX
+
+    // combo box is two words
+    'combobox', // prefer combo box
+    'Combobox', // prefer Combo Box
+    'COMBOBOX', // prefer COMBO_BOX
 
     // In ES6, extending object causes methods to be dropped
-    'extends Object ',
+    { id: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
 
     // Forbid common duplicate words
     ' the the ',
@@ -32,17 +45,20 @@ module.exports = function( context ) {
 
     // For phet-io use PHET_IO in constants
     'PHETIO',
+    'PHET-IO',
     'Phet-iO',
     ' Phet ',
     'phetio element', // use "phet-io element" or "PhET-iO element"
     'Phet-iO',
 
     '@return ',
-    ' => { return ', // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
+
+    // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
+    ' => { return '
   ];
 
   return {
-    Program: getBadTextTester( badTexts, context )
+    Program: getBadTextTester( forbiddenTextObjects, context )
   };
 };
 

@@ -200,7 +200,7 @@ define( require => {
             getWithCache( localeSpecificPath, parsed => {
 
                 // Combine the primary and fallback strings into one object hash.
-                const parsedStrings = _.extend( {}, parsedFallbackStrings, parsed );
+                const parsedStrings = _.extend( {}, parsedFallbackStrings, parsed ); // extend to avoid the phet-core dependency
                 onload( getStringFromFileContents( parsedStrings, key ) );
               },
 

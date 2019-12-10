@@ -28,8 +28,6 @@ const grunt = require( 'grunt' );
 const https = require( 'https' );
 const rp = require( 'request-promise-native' ); // eslint-disable-line require-statement-match
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
 /**
  * @returns {Promise} - Resolves when complete.
  */

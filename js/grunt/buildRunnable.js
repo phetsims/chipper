@@ -101,6 +101,14 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const thirdPartyEntries = getAllThirdPartyEntries( repo, brand );
   const stringMap = getStringMap( allLocales, phetLibs );
 
+  // If we have NO strings for a given locale that we want, we'll need to fill it in with all English strings, see
+  // https://github.com/phetsims/perennial/issues/83
+  for ( const locale of locales ) {
+    if ( !stringMap[ locale ] ) {
+      stringMap[ locale ] = stringMap[ ChipperConstants.FALLBACK_LOCALE ];
+    }
+  }
+
   const simTitleStringKey = getTitleStringKey( repo );
   const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ simTitleStringKey ];
   assert( englishTitle, `missing entry for sim title, key = ${simTitleStringKey}` );
