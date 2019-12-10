@@ -10,7 +10,8 @@
 /* eslint-env browser, node */
 'use strict';
 
-( function() {
+// pass global as a function to support a
+( function( global ) {
 
   // What divides the repo prefix from the rest of the string key, like `FRICTION/friction.title`
   const NAMESPACE_PREFIX_DIVIDER = '/';
@@ -115,7 +116,7 @@
     formatStringValues: function( stringMap, isRTL, assertNoWhitespace ) {
       ChipperStringUtils.forEachString( stringMap, ( key, stringObject ) => {
 
-        assert && assertNoWhitespace && assert( stringObject.value === stringObject.value.trim(),
+        global.assert && assertNoWhitespace && global.assert( stringObject.value === stringObject.value.trim(),
           `String should not have trailing or leading whitespace, key: ${key}, value: "${stringObject.value}"` );
 
         // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
@@ -225,15 +226,14 @@
    */
 
   // browser require.js-compatible definition
-  if ( typeof define !== 'undefined' ) {
-    define( function() {
-      return ChipperStringUtils;
-    } );
-  }
+  global.define && global.define( function() {
+    return ChipperStringUtils;
+  } );
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {
     module.exports = ChipperStringUtils;
   }
-
-} )();
+} )( ( 1, eval )( 'this' ) );
+// Indirect eval usage done since babel likes to wrap things in strict mode.
+// See http://perfectionkills.com/unnecessarily-comprehensive-look-into-a-rather-insignificant-issue-of-global-objects-creation/#ecmascript_5_strict_mode
