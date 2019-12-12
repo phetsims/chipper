@@ -482,6 +482,17 @@
     },
 
     /**
+     * In environments where users should not be able to navigate hyperlinks away from the simulation, clients can use
+     * ?allowLinks=false.  In this case, links are displayed and not clickable.
+     * @memberOf PhetQueryParameters
+     * @type {string}
+     */
+    allowLinks: {
+      type: 'boolean',
+      defaultValue: true
+    },
+
+    /**
      * Speed multiplier for everything in the sim. This scales the value of dt for AXON/timer,
      * model.step, view.step, and anything else that is controlled from Sim.stepSimulation.
      * Normal speed is 1. Larger values make time go faster, smaller values make time go slower.
