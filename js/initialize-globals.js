@@ -483,7 +483,7 @@
 
     /**
      * In environments where users should not be able to navigate hyperlinks away from the simulation, clients can use
-     * ?allowLinks=false.  In this case, links are displayed and not clickable.
+     * ?allowLinks=false.  In this case, links are displayed and not clickable. This query parameter is public facing.
      * @memberOf PhetQueryParameters
      * @type {string}
      */
