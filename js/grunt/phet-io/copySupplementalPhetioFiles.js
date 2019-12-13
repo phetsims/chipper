@@ -24,7 +24,6 @@ const minify = require( '../minify' );
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant, please see phet-io-wrappers/index/index.js before changing
-const OFFLINE_ZIP_NAME = 'offline-phet-io-files.zip';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
@@ -73,6 +72,12 @@ const JSDOC_FILES = [
 ];
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
+/**
+ * @param {string} repo
+ * @param {string} version
+ * @param {string} simulationDisplayName
+ * @param {Object} packageObject
+ */
 module.exports = async ( repo, version, simulationDisplayName, packageObject ) => {
 
   const buildDir = `../${repo}/build/phet-io/`;
@@ -244,7 +249,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
   handleLib( buildDir, filterWrapper );
 
   // Create the zipped file that holds all needed items to run PhET-iO offline
-  await handleOfflineArtifact( buildDir, repo );
+  await handleOfflineArtifact( buildDir, repo, version );
 
   // Create the contrib folder and add to it third party libraries used by wrappers.
   handleContrib( buildDir );
@@ -331,11 +336,12 @@ const handleContrib = buildDir => {
  * This does not include any documentation, or wrapper suite wrapper examples.
  * @param {string} buildDir
  * @param {string} repo
+ * @param {string} version
  * @returns {Promise<void>}
  */
-const handleOfflineArtifact = async ( buildDir, repo ) => {
+const handleOfflineArtifact = async ( buildDir, repo, version ) => {
 
-  const output = fs.createWriteStream( `${buildDir}${OFFLINE_ZIP_NAME}` );
+  const output = fs.createWriteStream( `${buildDir}${repo}-phet-io-${version}.zip` );
   const archive = archiver( 'zip' );
 
   archive.on( 'error', err => grunt.fail.fatal( 'error creating archive: ' + err ) );
