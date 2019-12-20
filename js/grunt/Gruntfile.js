@@ -18,6 +18,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
 const findDuplicates = require( './findDuplicates' );
+const migrate = require( './migrate' );
 const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateConfig = require( './generateConfig' );
@@ -67,7 +68,7 @@ module.exports = function( grunt ) {
         grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
       }
 
-      // The toString check handles a weird case found from an Error object from puppeteer that doesn't stringify with
+        // The toString check handles a weird case found from an Error object from puppeteer that doesn't stringify with
       // JSON or have a stack, JSON.stringifies to "{}", but has a `toString` method
       else if ( typeof e === 'string' || ( JSON.stringify( e ).length === 2 && e.toString ) ) {
         grunt.fail.fatal( `Perennial task failed: ${e}` );
@@ -376,6 +377,10 @@ module.exports = function( grunt ) {
     const cache = !grunt.option( 'disable-eslint-cache' );
 
     findDuplicates( repo, cache );
+  } ) );
+
+  grunt.registerTask( 'migrate', '', wrapTask( async () => {
+    migrate( repo );
   } ) );
 
   // Grunt task that determines created and last modified dates from git, and
