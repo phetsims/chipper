@@ -19,6 +19,12 @@ const replace = ( str, search, replacement ) => {
 };
 
 const migrateFile = async ( repo, relativeFile ) => {
+  if ( relativeFile.endsWith( '/PhetioIDUtils.js' ) ) {
+    return;
+  }
+  if ( relativeFile.endsWith( '/copyWithSortedKeys.js' ) ) {
+    return;
+  }
   console.log( repo, relativeFile );
   const path = '../' + repo + '/' + relativeFile;
   let contents = fs.readFileSync( path, 'utf-8' );
@@ -52,7 +58,48 @@ const migrateFile = async ( repo, relativeFile ) => {
 
   const packageJSON = JSON.parse( packageString );
 
-  joist.register( 'packageJSON', packageJSON );`, `const packageJSON = require( 'REPOSITORY/package.json' );` )
+  joist.register( 'packageJSON', packageJSON );`, `const packageJSON = require( 'REPOSITORY/package.json' );` );
+
+  contents = replace( contents, `define( require => {`, `//define( require => {` );
+
+  if ( !contents.endsWith( '} )();' ) ) {
+    const lastIndex = contents.lastIndexOf( '} );' );
+    contents = contents.substring( 0, lastIndex ) + '//' + contents.substring( lastIndex );
+  }
+
+  const returnInherit = contents.lastIndexOf( 'return inherit( ' );
+  if ( returnInherit >= 0 ) {
+    contents = replace( contents, `return inherit( `, `export default inherit( ` );
+  }
+
+  const lastReturn = contents.lastIndexOf( 'return ' );
+  if ( lastReturn >= 0 && returnInherit === -1 ) {
+    contents = contents.substring( 0, lastReturn ) + 'export default ' + contents.substring( lastReturn + 'return '.length );
+  }
+
+  // contents = replace(contents,`return inherit( Node, ScreenView, {`,`export default inherit( Node, ScreenView, {`);
+  // contents = replace(contents,`export default Math.min( width / this.layoutBounds.width, height / this.layoutBounds.height );`,`return Math.min( width / this.layoutBounds.width, height / this.layoutBounds.height );`);
+
+  // const Namespace = require( 'PHET_CORE/Namespace' );
+  contents = replace( contents, `const Namespace = require( 'PHET_CORE/Namespace' );`, `import Namespace from 'PHET_CORE/Namespace'` );
+
+  let lines = contents.split( /\r?\n/ );
+  lines = lines.map( line => {
+    // return 'hello ' + line;
+    if ( line.trim().startsWith( 'const ' ) && line.indexOf( ' = require( ' ) >= 0 ) {
+      // const Bounds2 = require( 'DOT/Bounds2' );
+      // becomes
+      // import Bounds2 from 'DOT/Bounds2';
+      line = replace( line, 'const ', 'import ' );
+      line = replace( line, ' = require( ', ' from ' );
+      line = replace( line, '\' );', '\';' );
+    }
+    return line;
+  } );
+  contents = lines.join( '\n' );
+
+  contents = replace( contents, `return inherit;`, `export default inherit;` );
+  contents = replace( contents, `' ).default;`, `';` );
 
   fs.writeFileSync( path, contents, 'utf-8' );
 };
@@ -63,7 +110,6 @@ module.exports = function( repo, cache ) {
   const repos = `axon
 brand
 dot
-example-sim
 joist
 kite
 phetcommon
@@ -84,7 +130,10 @@ utterance-queue`.trim().split( /\r?\n/ ).map( sim => sim.trim() );
     grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
       relativeFiles.push( `${subdir}/${filename}` );
     } );
-    relativeFiles = relativeFiles.filter( file => file.startsWith( 'js/' ) );
+    relativeFiles = relativeFiles.filter( file => file.startsWith( 'js/' ) ||
+
+                                                  // that's for brand
+                                                  file.startsWith( 'phet/js' ) );
 
     relativeFiles.forEach( ( rel, i ) => {
       console.log( '    ' + i + '/' + relativeFiles.length );
