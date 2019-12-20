@@ -41,8 +41,8 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, 'require( \'sound!TAMBO/general-button-v4.mp3\' )', 'require( \'TAMBO/../sounds/general-button-v4.mp3\' ).default' );
   contents = replace( contents, 'assert && assert( Array.isArray( brightIconMipmap ), \'icon must be a mipmap\' );', '//assert && assert( Array.isArray( brightIconMipmap ), \'icon must be a mipmap\' );' );
   contents = replace( contents, 'assert && assert( Array.isArray( brightLogoMipmap ), \'logo must be a mipmap\' );', '// assert && assert( Array.isArray( brightLogoMipmap ), \'logo must be a mipmap\' );' );
-  contents = replace( contents, 'brightIconMipmap[ 0 ].height', '12' );
-  contents = replace( contents, 'brightLogoMipmap[ 0 ].height', '12' );
+  contents = replace( contents, 'brightIconMipmap[ 0 ].height', '108' );
+  contents = replace( contents, 'brightLogoMipmap[ 0 ].height', '108' );
 
   contents = replace( contents, `  // text
   const packageString = require( 'text!REPOSITORY/package.json' );
@@ -100,6 +100,57 @@ const migrateFile = async ( repo, relativeFile ) => {
 
   contents = replace( contents, `return inherit;`, `export default inherit;` );
   contents = replace( contents, `' ).default;`, `';` );
+
+  // contents = replace(contents,`from 'AXON/`,`from '/axon/js/`);
+  // contents = replace(contents,`from 'BRAND/`,`from '/brand/phet/js/`);
+  // contents = replace(contents,`from 'DOT/`,`from '/dot/js/`);
+  // contents = replace(contents,`from 'EXAMPLE_SIM/`,`from '/example-sim/js/`);
+  // contents = replace(contents,`from 'JOIST/`,`from '/joist/js/`);
+  // contents = replace(contents,`from 'KITE/`,`from '/kite/js/`);
+  // contents = replace(contents,`from 'PHETCOMMON/`,`from '/phetcommon/js/`);
+  // contents = replace(contents,`from 'PHET_CORE/`,`from '/phet-core/js/`);
+  // contents = replace(contents,`from 'PHET_IO/`,`from '/phet-io/js/`);
+  // contents = replace(contents,`from 'REPOSITORY/`,`from '/example-sim/js/`);
+  // contents = replace(contents,`from 'SCENERY/`,`from '/scenery/js/`);
+  // contents = replace(contents,`from 'SCENERY_PHET/`,`from '/scenery-phet/js/`);
+  // contents = replace(contents,`from 'SUN/`,`from '/sun/js/`);
+  // contents = replace(contents,`from 'TAMBO/`,`from '/tambo/js/`);
+  // contents = replace(contents,`from 'TANDEM/`,`from '/tandem/js/`);
+  // contents = replace(contents,`from 'UTTERANCE_QUEUE/`,`from '/utterance-queue/js/`);
+
+  // AXON
+  // BRAND
+  // DOT
+  // EXAMPLE_SIM
+  // JOIST
+  // KITE
+  // PHETCOMMON
+  // PHET_CORE
+  // PHET_IO
+  // REPOSITORY
+  // SCENERY
+  // SCENERY_PHET
+  // SUN
+  // TAMBO
+  // TANDEM
+  // UTTERANCE_QUEUE
+
+  // : '../../axon/js',
+  //   : '../../brand/' + phet.chipper.brand + '/js',
+  //   : '../../dot/js',
+  //   : '.',
+  //   : '../../joist/js',
+  //   : '../../kite/js',
+  //   : '../../phetcommon/js',
+  //   : '../../phet-core/js',
+  //   : '../../phet-io/js',
+  //   : '..',
+  //   : '../../scenery/js',
+  //   : '../../scenery-phet/js',
+  //   : '../../sun/js',
+  //   : '../../tambo/js',
+  //   : '../../tandem/js',
+  //   : '../../utterance-queue/js'
 
   fs.writeFileSync( path, contents, 'utf-8' );
 };
