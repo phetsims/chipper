@@ -84,6 +84,40 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, `const Namespace = require( 'PHET_CORE/Namespace' );`, `import Namespace from 'PHET_CORE/Namespace'` );
 
   let lines = contents.split( /\r?\n/ );
+
+  let fixMipmap = line => {
+    if ( line.trim().startsWith( 'import ' ) && line.indexOf( `from 'mipmap!` ) >= 0 ) {
+      const term = line.trim().split( ' ' )[ 1 ];
+      const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
+      const tail = line.substring( line.indexOf( '/' ) + 1 );
+      console.log( term, repo, tail );
+      line = `import ${term} from '${repo}/../images/${tail}`;
+    }
+    return line;
+  };
+
+  let fixImage = line => {
+    if ( line.trim().startsWith( 'import ' ) && line.indexOf( `from 'image!` ) >= 0 ) {
+      const term = line.trim().split( ' ' )[ 1 ];
+      const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
+      const tail = line.substring( line.indexOf( '/' ) + 1 );
+      console.log( term, repo, tail );
+      line = `import ${term} from '${repo}/../images/${tail}`;
+    }
+    return line;
+  };
+
+  let fixSounds = line => {
+    if ( line.trim().startsWith( 'import ' ) && line.indexOf( `from 'sound!` ) >= 0 ) {
+      const term = line.trim().split( ' ' )[ 1 ];
+      const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
+      const tail = line.substring( line.indexOf( '/' ) + 1 );
+      console.log( term, repo, tail );
+      line = `import ${term} from '${repo}/../sounds/${tail}`;
+    }
+    return line;
+  };
+
   lines = lines.map( line => {
     // return 'hello ' + line;
     if ( line.trim().startsWith( 'const ' ) && line.indexOf( ' = require( ' ) >= 0 ) {
@@ -94,12 +128,19 @@ const migrateFile = async ( repo, relativeFile ) => {
       line = replace( line, ' = require( ', ' from ' );
       line = replace( line, '\' );', '\';' );
     }
+    line = fixMipmap( line );
+    line = fixImage( line );
+    line = fixSounds( line );
+
     return line;
   } );
   contents = lines.join( '\n' );
 
   contents = replace( contents, `return inherit;`, `export default inherit;` );
   contents = replace( contents, `' ).default;`, `';` );
+
+  // contents = replace( contents, `import lightBulbImage from 'mipmap!CIRCUIT_CONSTRUCTION_KIT_COMMON/lightbulb-middle.png';`, `import lightBulbImage from 'CIRCUIT_CONSTRUCTION_KIT_COMMON/../images/lightbulb-middle.png';` )
+  // contents = replace( contents, `import lightBulbImageHigh from 'mipmap!CIRCUIT_CONSTRUCTION_KIT_COMMON/lightbulb-middle-high.png';`, `import lightBulbImageHigh from 'CIRCUIT_CONSTRUCTION_KIT_COMMON/../lightbulb-middle-high.png';/../images/lightbulb-middle.png';` )
 
   // contents = replace(contents,`from 'AXON/`,`from '/axon/js/`);
   // contents = replace(contents,`from 'BRAND/`,`from '/brand/phet/js/`);
@@ -158,9 +199,13 @@ const migrateFile = async ( repo, relativeFile ) => {
 module.exports = function( repo, cache ) {
 
   // const repos = fs.readFileSync( '../perennial/data/migrate-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
+
   const repos = `axon
+  circuit-construction-kit-ac
+  circuit-construction-kit-common
 brand
 dot
+griddle
 joist
 kite
 phetcommon
@@ -172,6 +217,7 @@ scenery-phet
 sun
 tambo
 tandem
+twixt
 utterance-queue`.trim().split( /\r?\n/ ).map( sim => sim.trim() );
   repos.forEach( ( repo, index ) => {
 
