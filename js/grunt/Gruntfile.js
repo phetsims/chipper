@@ -380,7 +380,7 @@ module.exports = function( grunt ) {
   } ) );
 
   grunt.registerTask( 'migrate', '', wrapTask( async () => {
-    migrate( repo );
+    await migrate( repo );
   } ) );
 
   // Grunt task that determines created and last modified dates from git, and

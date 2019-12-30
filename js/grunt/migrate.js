@@ -11,6 +11,7 @@
 
 'use strict';
 
+const execute = require( './execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 
@@ -44,7 +45,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, 'brightIconMipmap[ 0 ].height', '108' );
   contents = replace( contents, 'brightLogoMipmap[ 0 ].height', '108' );
 
-  contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( window.phet.chipper.packageObject )' );
+  contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( phet.chipper.packageObject )' );
 
   contents = replace( contents, `define( require => {`, `//define( require => {` );
 
@@ -128,87 +129,40 @@ const migrateFile = async ( repo, relativeFile ) => {
   // contents = replace( contents, `import lightBulbImage from 'mipmap!CIRCUIT_CONSTRUCTION_KIT_COMMON/lightbulb-middle.png';`, `import lightBulbImage from 'CIRCUIT_CONSTRUCTION_KIT_COMMON/../images/lightbulb-middle.png';` )
   // contents = replace( contents, `import lightBulbImageHigh from 'mipmap!CIRCUIT_CONSTRUCTION_KIT_COMMON/lightbulb-middle-high.png';`, `import lightBulbImageHigh from 'CIRCUIT_CONSTRUCTION_KIT_COMMON/../lightbulb-middle-high.png';/../images/lightbulb-middle.png';` )
 
-  // contents = replace(contents,`from 'AXON/`,`from '/axon/js/`);
-  // contents = replace(contents,`from 'BRAND/`,`from '/brand/phet/js/`);
-  // contents = replace(contents,`from 'DOT/`,`from '/dot/js/`);
-  // contents = replace(contents,`from 'EXAMPLE_SIM/`,`from '/example-sim/js/`);
-  // contents = replace(contents,`from 'JOIST/`,`from '/joist/js/`);
-  // contents = replace(contents,`from 'KITE/`,`from '/kite/js/`);
-  // contents = replace(contents,`from 'PHETCOMMON/`,`from '/phetcommon/js/`);
-  // contents = replace(contents,`from 'PHET_CORE/`,`from '/phet-core/js/`);
-  // contents = replace(contents,`from 'PHET_IO/`,`from '/phet-io/js/`);
-  // contents = replace(contents,`from 'REPOSITORY/`,`from '/example-sim/js/`);
-  // contents = replace(contents,`from 'SCENERY/`,`from '/scenery/js/`);
-  // contents = replace(contents,`from 'SCENERY_PHET/`,`from '/scenery-phet/js/`);
-  // contents = replace(contents,`from 'SUN/`,`from '/sun/js/`);
-  // contents = replace(contents,`from 'TAMBO/`,`from '/tambo/js/`);
-  // contents = replace(contents,`from 'TANDEM/`,`from '/tandem/js/`);
-  // contents = replace(contents,`from 'UTTERANCE_QUEUE/`,`from '/utterance-queue/js/`);
-
-  // AXON
-  // BRAND
-  // DOT
-  // EXAMPLE_SIM
-  // JOIST
-  // KITE
-  // PHETCOMMON
-  // PHET_CORE
-  // PHET_IO
-  // REPOSITORY
-  // SCENERY
-  // SCENERY_PHET
-  // SUN
-  // TAMBO
-  // TANDEM
-  // UTTERANCE_QUEUE
-
-  // : '../../axon/js',
-  //   : '../../brand/' + phet.chipper.brand + '/js',
-  //   : '../../dot/js',
-  //   : '.',
-  //   : '../../joist/js',
-  //   : '../../kite/js',
-  //   : '../../phetcommon/js',
-  //   : '../../phet-core/js',
-  //   : '../../phet-io/js',
-  //   : '..',
-  //   : '../../scenery/js',
-  //   : '../../scenery-phet/js',
-  //   : '../../sun/js',
-  //   : '../../tambo/js',
-  //   : '../../tandem/js',
-  //   : '../../utterance-queue/js'
-
   fs.writeFileSync( path, contents, 'utf-8' );
 };
 
-module.exports = function( repo, cache ) {
+module.exports = async function( repo, cache ) {
 
   // const repos = fs.readFileSync( '../perennial/data/migrate-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
 
-  const repos = `axon
-  circuit-construction-kit-ac
-  circuit-construction-kit-common
-brand
-dot
-griddle
-joist
-kite
-phetcommon
-phet-core
-phet-io
-example-sim
-scenery
-scenery-phet
-sun
-tambo
-tandem
-twixt
-utterance-queue`.trim().split( /\r?\n/ ).map( sim => sim.trim() );
-  repos.forEach( ( repo, index ) => {
+  const repos = [
+    'axon',
+    'circuit-construction-kit-ac',
+    'circuit-construction-kit-common',
+    'brand',
+    'dot',
+    'griddle',
+    'joist',
+    'kite',
+    'phetcommon',
+    'phet-core',
+    'phet-io',
+    'example-sim',
+    'scenery',
+    'scenery-phet',
+    'sun',
+    'tambo',
+    'tandem',
+    'twixt',
+    'utterance-queue'
+  ];
 
-    console.log( index + '/' + repos.length );
+  const simRepos = [
+    'example-sim'
+  ];
 
+  for ( const repo of repos ) {
     let relativeFiles = [];
     grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
       relativeFiles.push( `${subdir}/${filename}` );
@@ -222,5 +176,9 @@ utterance-queue`.trim().split( /\r?\n/ ).map( sim => sim.trim() );
       console.log( '    ' + i + '/' + relativeFiles.length );
       migrateFile( repo, rel );
     } );
-  } );
+
+    // if ( simRepos.includes( repo ) ) {
+    //   await execute( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', [ 'generate-development-html' ], `../${repo}` );
+    // }
+  }
 };
