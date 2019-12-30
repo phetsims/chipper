@@ -559,7 +559,7 @@
           }
         }
       }
-      // Variable object initialization: e.g. var Util = { ... };
+      // Variable object initialization: e.g. var Utils = { ... };
       else if ( topLevelStatement.type === 'VariableDeclaration' &&
                 topLevelStatement.declarations[ 0 ].type === 'VariableDeclarator' &&
                 topLevelStatement.declarations[ 0 ].init &&
