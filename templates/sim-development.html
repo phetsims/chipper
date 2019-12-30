@@ -17,6 +17,10 @@
 
 <script type="text/javascript">
 
+  window.phet = window.phet || {};
+  window.phet.chipper = window.phet.chipper || {};
+  window.phet.chipper.packageObject = {{PACKAGE_OBJECT}};
+
   // Identify the brand (assume generated brand if not provided with query parameters)
   const brandMatch = location.search.match( /brand=([^&]+)/ );
   const brand = brandMatch ? decodeURIComponent( brandMatch[ 1 ] ) : 'adapted-from-phet';
@@ -47,10 +51,10 @@
     document.head.appendChild( script );
   };
 
+  preloads.push( '/js/{{REPOSITORY}}.js' ); // or dist/example-sim.js for `npx webpack`
+
   // Queue all of the preloads to be loaded.
   preloads.forEach( loadURL );
-
-  loadURL( '../sherpa/lib/require-2.3.6.js', 'js/{{REPOSITORY}}-{{QUALIFIER}}config.js' );
 </script>
 </body>
 </html>

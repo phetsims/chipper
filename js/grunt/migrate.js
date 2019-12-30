@@ -44,21 +44,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, 'brightIconMipmap[ 0 ].height', '108' );
   contents = replace( contents, 'brightLogoMipmap[ 0 ].height', '108' );
 
-  contents = replace( contents, `  // text
-  const packageString = require( 'text!REPOSITORY/package.json' );
-
-  // constants
-  const packageJSON = JSON.parse( packageString ); // Tandem can't depend on joist, so cannot use packageJSON module`, `const packageJSON = require('REPOSITORY/package.json');` );
-
-  contents = replace( contents, `  // modules
-  const joist = require( 'JOIST/joist' );
-
-  // strings
-  const packageString = require( 'text!REPOSITORY/package.json' );
-
-  const packageJSON = JSON.parse( packageString );
-
-  joist.register( 'packageJSON', packageJSON );`, `const packageJSON = require( 'REPOSITORY/package.json' );` );
+  contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'window.phet.chipper.packageObject' );
 
   contents = replace( contents, `define( require => {`, `//define( require => {` );
 

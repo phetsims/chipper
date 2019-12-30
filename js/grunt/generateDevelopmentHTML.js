@@ -34,6 +34,8 @@ module.exports = function( repo, options ) {
     forSim = true // is this html used for a sim, or something else like tests.
   } = options || {};
 
+  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+
   const brand = 'phet';
 
   const splashURL = `../brand/${brand}/images/splash.svg`;
@@ -70,6 +72,7 @@ module.exports = function( repo, options ) {
   html = ChipperStringUtils.replaceAll( html, '{{SPLASH_URL}}', splashURL );
   html = ChipperStringUtils.replaceAll( html, '{{PHET_IO_PRELOADS}}', stringifyArray( phetioPreloads, '  ' ) );
   html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( preloads, '' ) );
+  html = ChipperStringUtils.replaceAll( html, '{{PACKAGE_OBJECT}}', JSON.stringify( packageObject ) );
 
   // Use the repository name for the browser window title, because getting the sim's title
   // requires running the string plugin in build mode, which is too heavy-weight for this task.
