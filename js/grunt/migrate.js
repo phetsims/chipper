@@ -44,7 +44,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, 'brightIconMipmap[ 0 ].height', '108' );
   contents = replace( contents, 'brightLogoMipmap[ 0 ].height', '108' );
 
-  contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'window.phet.chipper.packageObject' );
+  contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( window.phet.chipper.packageObject )' );
 
   contents = replace( contents, `define( require => {`, `//define( require => {` );
 
