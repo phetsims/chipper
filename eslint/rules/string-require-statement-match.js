@@ -8,8 +8,6 @@
 /* eslint-env node */
 'use strict';
 
-const _ = require( 'lodash' ); // eslint-disable-line
-
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
@@ -17,6 +15,29 @@ const _ = require( 'lodash' ); // eslint-disable-line
 module.exports = function( context ) {
 
   const ChipperStringUtils = require( '../../js/common/ChipperStringUtils' );
+
+  // Adapted from Stack Overflow, see http://stackoverflow.com/questions/25085306/javascript-space-separated-string-to-camelcase
+  function toCamelCase( string ) {
+    let out = '';
+
+    // Add whitespace after each digit so that strings like myString1pattern will get camelcased with uppercase P
+    const withWhitespaceAfterDigits = string.replace( /\d/g, function( a ) {return a + ' ';} ).trim();
+
+    // Split on whitespace, remove whitespace and uppercase the first word in each term
+    withWhitespaceAfterDigits.split( ' ' ).forEach( function( element, index ) {
+      out += ( index === 0 ? element : element[ 0 ].toUpperCase() + element.slice( 1 ) );
+    } );
+
+    // lowercase the first character
+    if ( out.length > 1 ) {
+      out = out.charAt( 0 ).toLowerCase() + out.slice( 1 );
+    }
+    else if ( out.length === 1 ) {
+      out = out.toLowerCase();
+    }
+
+    return out;
+  }
 
   return {
 
@@ -47,7 +68,7 @@ module.exports = function( context ) {
             const withWhitespace = key.replace( /[.\-_]/g, ' ' );
 
             // Convert whitespace delimited string to camel case and append string suffix
-            const desiredVarName = _.camelCase( withWhitespace ) + 'String';
+            const desiredVarName = toCamelCase( withWhitespace ) + 'String';
 
             if ( varName !== desiredVarName ) {
               context.report( {
