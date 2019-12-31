@@ -54,6 +54,12 @@ module.exports = {
 
   // watch:true,
 
+  resolveLoader: {
+    alias: {
+      mipmap: path.resolve( __dirname, 'js/webpack/mipmap-loader.js' )
+    }
+  },
+
   resolve: {
     alias: aliases,
     plugins: [
@@ -82,7 +88,7 @@ import strings from '${namespace}/../${repo}-strings_en.json';
 export default strings[ ${JSON.stringify( key )} ].value;
 ` );
 
-              console.log( request );
+              console.log( stringKey );
               const newRequest = {
                 ...request,
                 request: request.request,
