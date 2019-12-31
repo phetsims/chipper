@@ -2,6 +2,8 @@
 
 const fs = require( 'fs' );
 const path = require( 'path' );
+const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
+const getPreloads = require( './js/grunt/getPreloads' );
 
 const sims = [
   'acid-base-solutions',
@@ -56,8 +58,28 @@ module.exports = {
   output: {
     path: path.resolve( __dirname, 'build' ),
     filename: '[name].js',
-    publicPath: '/js/'
+    publicPath: '/dist/'
   },
+
+  // NOTE: Should be possible to include other brands here as well
+  plugins: sims.map( sim => {
+    return new HtmlWebpackPlugin( {
+      title: sim,
+      filename: `${sim}_phet.html`,
+      template: 'templates/sim-webpack.ejs',
+      templateParameters: {
+        packageObject: fs.readFileSync( `../${sim}/package.json`, 'utf-8' ),
+        preloads: getPreloads( sim, 'phet', true ).filter( file => {
+          return !file.includes( 'google-analytics' );
+        } ).map( file => `<script src="${file}"></script>` ).join( '\n' ),
+        title: sim
+      },
+      inject: 'body',
+      minify: false,
+      hash: true,
+      chunks: [ sim ]
+    } );
+  } ),
 
   watchOptions: {
     poll: true
@@ -66,7 +88,7 @@ module.exports = {
     contentBase: path.join( __dirname, '../' ),
     compress: true,
     port: 9000,
-    publicPath: '/js/',
+    publicPath: '/dist/',
     hot: true
   },
   devtool: 'inline-source-map',

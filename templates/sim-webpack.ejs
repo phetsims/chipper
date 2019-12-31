@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="phet-sim-level" content="development">
+  <title><%= title %></title>
+</head>
+
+<!-- body is only made black for the loading phase so that the splash screen is black -->
+<body style="background-color:black;">
+
+<script type="text/javascript">
+  window.phet = window.phet || {};
+  window.phet.chipper = window.phet.chipper || {};
+  window.phet.chipper.packageObject = <%= packageObject %>;
+</script>
+<%= preloads %>
+
+</body>
+</html>
