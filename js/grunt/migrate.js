@@ -31,19 +31,10 @@ const migrateFile = async ( repo, relativeFile ) => {
   let contents = fs.readFileSync( path, 'utf-8' );
   contents = replace( contents, '= require( \'string!', '= require( \'string:' );
   contents = replace( contents, '= require( \'ifphetio!', '= function(){return function(){ return function(){}; };}; // ' );
-  contents = replace( contents, 'require( \'mipmap!BRAND/logo.png\' )', 'require( \'BRAND/../images/logo.png\' ).default' );
-  contents = replace( contents, 'require( \'mipmap!BRAND/logo-on-white.png\' )', 'require( \'BRAND/../images/logo-on-white.png\' ).default' );
-  contents = replace( contents, 'require( \'image!EXAMPLE_SIM/barMagnet.png\' )', 'require( \'EXAMPLE_SIM/../images/barMagnet.png\' ).default' );
-  contents = replace( contents, 'require( \'mipmap!JOIST/keyboard-icon-on-white.png\' )', 'require( \'JOIST/../images/keyboard-icon-on-white.png\' ).default' );
-  contents = replace( contents, 'require( \'mipmap!JOIST/keyboard-icon.png\' )', 'require( \'JOIST/../images/keyboard-icon.png\' ).default' );
   contents = replace( contents, 'require( \'sound!TAMBO/empty_apartment_bedroom_06_resampled.mp3\' )', 'require( \'TAMBO/../sounds/empty_apartment_bedroom_06_resampled.mp3\' ).default' );
   contents = replace( contents, 'require( \'sound!TAMBO/short-silence.wav\' )', 'require( \'TAMBO/../sounds/short-silence.wav\' ).default' );
   contents = replace( contents, 'require( \'sound!TAMBO/reset-all.mp3\' )', 'require( \'TAMBO/../sounds/reset-all.mp3\' ).default' );
   contents = replace( contents, 'require( \'sound!TAMBO/general-button-v4.mp3\' )', 'require( \'TAMBO/../sounds/general-button-v4.mp3\' ).default' );
-  contents = replace( contents, 'assert && assert( Array.isArray( brightIconMipmap ), \'icon must be a mipmap\' );', '//assert && assert( Array.isArray( brightIconMipmap ), \'icon must be a mipmap\' );' );
-  contents = replace( contents, 'assert && assert( Array.isArray( brightLogoMipmap ), \'logo must be a mipmap\' );', '// assert && assert( Array.isArray( brightLogoMipmap ), \'logo must be a mipmap\' );' );
-  contents = replace( contents, 'brightIconMipmap[ 0 ].height', '108' );
-  contents = replace( contents, 'brightLogoMipmap[ 0 ].height', '108' );
 
   contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( phet.chipper.packageObject )' );
 
@@ -78,7 +69,7 @@ const migrateFile = async ( repo, relativeFile ) => {
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
       console.log( term, repo, tail );
-      line = `import ${term} from '${repo}/../images/${tail}`;
+      line = `  import ${term} from 'mipmap!${repo}/../images/${tail}`;
     }
     return line;
   };
@@ -89,7 +80,7 @@ const migrateFile = async ( repo, relativeFile ) => {
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
       console.log( term, repo, tail );
-      line = `import ${term} from '${repo}/../images/${tail}`;
+      line = `  import ${term} from '${repo}/../images/${tail}`;
     }
     return line;
   };
