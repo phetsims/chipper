@@ -156,7 +156,6 @@ const sims = [
 // NOTE: Load dependencies more specifically from a sim list in the future, so we don't have such a direct dependency.
 // Repos could be deleted in the future and then prior checkouts with this wouldn't work.
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim () );
-const namespaces = {};
 const reposByNamespace = {};
 const aliases = {};
 const entries = {};
@@ -166,7 +165,6 @@ for ( const repo of activeRepos ) {
   if ( fs.existsSync( packageFile ) ) {
     const packageObject = JSON.parse( fs.readFileSync( packageFile, 'utf-8' ) );
     if ( packageObject.phet && packageObject.phet.requirejsNamespace ) {
-      namespaces[ repo ] = packageObject.phet.requirejsNamespace;
       reposByNamespace[ packageObject.phet.requirejsNamespace ] = repo;
       aliases[ packageObject.phet.requirejsNamespace ] = path.resolve( __dirname, `../${repo}${repo === 'brand' ? '/phet' : ''}/js` );
     }

@@ -36,7 +36,7 @@ const packageRunnable = require( './packageRunnable' );
 const packageXHTML = require( './packageXHTML' );
 const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
-const requireBuild = require( './requireBuild' );
+const webpackBuild = require( './webpackBuild' );
 const zlib = require( 'zlib' );
 
 /**
@@ -69,15 +69,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
-  const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js`, {
-    insertRequire: repo + '-main',
-    instrument: instrument,
-    brand: brand,
-    wrap: {
-      start: 'phet.chipper.runRequireJS = function() {',
-      end: '};'
-    }
-  } );
+  const webpackJS = 'phet.chipper.runRequireJS = function() {' + await webpackBuild( repo ) + '};';
 
   // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.
   const debugMinifyOptions = brand === 'phet-io' ? {
@@ -88,10 +80,10 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   };
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
-  reportUnusedMedia( packageObject.phet.requirejsNamespace );
+  // reportUnusedMedia( packageObject.phet.requirejsNamespace );
 
   // After all strings have been loaded, report which of the translatable strings are unused.
-  reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
+  // reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
 
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
@@ -99,17 +91,24 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const dependencies = await getDependencies( repo );
   const version = packageObject.version; // Include the one-off name in the version
   const thirdPartyEntries = getAllThirdPartyEntries( repo, brand );
-  const stringMap = getStringMap( allLocales, phetLibs );
+  const simTitleStringKey = getTitleStringKey( repo );
+
+  // const stringMap = getStringMap( allLocales, phetLibs );
+  const stringMap = {
+    en: {
+      [ simTitleStringKey ]: repo
+    }
+  };
 
   // If we have NO strings for a given locale that we want, we'll need to fill it in with all English strings, see
   // https://github.com/phetsims/perennial/issues/83
-  for ( const locale of locales ) {
-    if ( !stringMap[ locale ] ) {
-      stringMap[ locale ] = stringMap[ ChipperConstants.FALLBACK_LOCALE ];
-    }
-  }
+  // for ( const locale of locales ) {
+  //   if ( !stringMap[ locale ] ) {
+  //     stringMap[ locale ] = stringMap[ ChipperConstants.FALLBACK_LOCALE ];
+  //   }
+  // }
 
-  const simTitleStringKey = getTitleStringKey( repo );
+
   const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ simTitleStringKey ];
   assert( englishTitle, `missing entry for sim title, key = ${simTitleStringKey}` );
 
@@ -158,7 +157,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     ...getPreloads( repo, brand, true ).map( filename => grunt.file.read( filename ) ),
 
     // Our main require.js content, wrapped in a function called in the startup below
-    requireJS,
+    webpackJS,
 
     // Main startup
     grunt.file.read( '../chipper/templates/chipper-startup.js' )
@@ -183,7 +182,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     dependencies: dependencies,
     timestamp: timestamp,
     version: version,
-    thirdPartyEntries: thirdPartyEntries
+    thirdPartyEntries: thirdPartyEntries,
+    packageObject: packageObject
   };
 
   // Create the build-specific directory

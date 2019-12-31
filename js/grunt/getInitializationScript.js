@@ -33,7 +33,8 @@ module.exports = function( config ) {
     thirdPartyEntries, // {Object}
     locale, // {string}
     includeAllLocales, // {boolean}
-    isDebugBuild // {boolean}
+    isDebugBuild, // {boolean}
+    packageObject
   } = config;
   assert( _.includes( ChipperConstants.BRANDS, brand ), `Unknown brand: ${brand}` );
   assert( typeof repo === 'string', 'Requires repo' );
@@ -63,6 +64,7 @@ module.exports = function( config ) {
     PHET_END_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES,
     PHET_DEPENDENCIES: JSON.stringify( dependencies, null, 2 ),
     PHET_STRINGS: JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ),
-    PHET_IS_DEBUG_BUILD: !!isDebugBuild
+    PHET_IS_DEBUG_BUILD: !!isDebugBuild,
+    PHET_PACKAGE_OBJECT: JSON.stringify( packageObject )
   } );
 };

@@ -15,3 +15,4 @@ window.phet.chipper.thirdPartyLicenseEntries = {{PHET_THIRD_PARTY_LICENSE_ENTRIE
 window.phet.chipper.dependencies = {{PHET_DEPENDENCIES}};
 window.phet.chipper.strings = {{PHET_STRINGS}};
 window.phet.chipper.isDebugBuild = {{PHET_IS_DEBUG_BUILD}};
+window.phet.chipper.packageObject = {{PHET_PACKAGE_OBJECT}};

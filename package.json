@@ -32,7 +32,8 @@
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.10.1",
-    "html-webpack-plugin": "4.0.0-beta.11"
+    "html-webpack-plugin": "4.0.0-beta.11",
+    "memfs": "^3.0.3"
   },
   "eslintConfig": {
     "extends": "../chipper/eslint/sim_eslintrc.js"
