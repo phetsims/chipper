@@ -22,7 +22,7 @@ module.exports = function( context ) {
     // babel doesn't support compiling static getters, see https://github.com/phetsims/tasks/issues/983
     { id: ' static get ', codeTokens: [ 'static', 'get' ] },
 
-    // should be using dot.Util.roundSymmetric, Math.round does not treat positive and negative numbers
+    // should be using dot.Utils.roundSymmetric, Math.round does not treat positive and negative numbers
     // symmetrically see https://github.com/phetsims/dot/issues/35#issuecomment-113587879
     { id: 'Math.round(', codeTokens: [ 'Math', '.', 'round', '(' ] },
 
@@ -53,13 +53,13 @@ module.exports = function( context ) {
     //   regex: /(window\.| )setInterval\(/
     // }
 
-    // DOT/Util.toFixed or DOT/Util.toFixedNumber should be used instead of toFixed.
+    // DOT/Utils.toFixed or DOT/Utils.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
     // because the spec doesn't specify whether to round or floor.
     // TODO: comment back in when all lint errors are taken care of, https://github.com/phetsims/chipper/issues/737
     // {
     //   id: '.toFixed(',     // support regex with english names this way
-    //   regex: /(?<!Util)\.toFixed\(/
+    //   regex: /(?<!Utils)\.toFixed\(/
     // }
   ];
 
