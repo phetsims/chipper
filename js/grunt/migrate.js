@@ -102,6 +102,10 @@ const migrateFile = async ( repo, relativeFile ) => {
 
     return line;
   } );
+
+  // Omit 'use strict' directives
+  lines = lines.filter( line => line.trim() !== '\'use strict\';' );
+
   contents = lines.join( '\n' );
 
   // Seems to be for inherit.js
