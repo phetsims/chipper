@@ -129,6 +129,12 @@ module.exports = async function( repo, cache ) {
   // const repos = fs.readFileSync( '../perennial/data/migrate-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
 
   const repos = [
+    'acid-base-solutions',
+    'area-model-algebra',
+    'area-model-common',
+    'area-model-decimals',
+    'area-model-introduction',
+    'area-model-multiplication',
     'axon',
     'circuit-construction-kit-ac',
     'circuit-construction-kit-common',
@@ -137,7 +143,9 @@ module.exports = async function( repo, cache ) {
     'griddle',
     'joist',
     'kite',
+    'molarity',
     'molecule-shapes',
+    'molecule-shapes-basics',
     'nitroglycerin',
     'phetcommon',
     'phet-core',
@@ -149,13 +157,21 @@ module.exports = async function( repo, cache ) {
     'tambo',
     'tandem',
     'twixt',
-    'utterance-queue'
+    'utterance-queue',
+    'vegas'
   ];
 
   const simRepos = [
+    'acid-base-solutions',
+    'area-model-algebra',
+    'area-model-decimals',
+    'area-model-introduction',
+    'area-model-multiplication',
     'circuit-construction-kit-ac',
     'example-sim',
-    'molecule-shapes'
+    'molarity',
+    'molecule-shapes',
+    'molecule-shapes-basics'
   ];
 
   for ( const repo of repos ) {

@@ -3,12 +3,25 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 
+const sims = [
+  'acid-base-solutions',
+  'area-model-algebra',
+  'area-model-decimals',
+  'area-model-introduction',
+  'area-model-multiplication',
+  'circuit-construction-kit-ac',
+  'example-sim',
+  'molecule-shapes',
+  'molecule-shapes-basics'
+];
+
 // NOTE: Load dependencies more specifically from a sim list in the future, so we don't have such a direct dependency.
 // Repos could be deleted in the future and then prior checkouts with this wouldn't work.
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim () );
 const namespaces = {};
 const reposByNamespace = {};
 const aliases = {};
+const entries = {};
 
 for ( const repo of activeRepos ) {
   const packageFile = path.resolve( __dirname, `../${repo}/package.json` );
@@ -22,6 +35,10 @@ for ( const repo of activeRepos ) {
   }
 }
 
+for ( const sim of sims ) {
+  entries[ sim ] = `../${sim}/js/${sim}-main.js`;
+}
+
 // NOTE: https://webpack.js.org/plugins/split-chunks-plugin/
 // Should help combine things so we don't duplicate things across bundles
 
@@ -29,13 +46,13 @@ module.exports = {
   optimization: {
     // disable uglification for development iteration
     minimize: false,
+
+    splitChunks: {
+      chunks: 'all'
+    }
   },
 
-  entry: {
-    'circuit-construction-kit-ac': '../circuit-construction-kit-ac/js/circuit-construction-kit-ac-main.js',
-    'example-sim': '../example-sim/js/example-sim-main.js',
-    'molecule-shapes': '../molecule-shapes/js/molecule-shapes-main.js'
-  },
+  entry: entries,
   output: {
     path: path.resolve( __dirname, 'build' ),
     filename: '[name].js',
