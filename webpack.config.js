@@ -13,6 +13,7 @@ const sims = [
   'area-model-multiplication',
   'circuit-construction-kit-ac',
   'example-sim',
+  'molarity',
   'molecule-shapes',
   'molecule-shapes-basics'
 ];
@@ -126,7 +127,7 @@ module.exports = {
               // TODO: alternate locale lookup
               fs.writeFileSync( stringModuleFile, `
 import strings from '${namespace}/../${repo}-strings_en.json';
-export default strings[ ${JSON.stringify( key )} ].value;
+export default _.get( strings, ${JSON.stringify( key )} ).value;
 ` );
 
               const newRequest = {
