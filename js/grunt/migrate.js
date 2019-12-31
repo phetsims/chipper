@@ -29,7 +29,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   console.log( repo, relativeFile );
   const path = '../' + repo + '/' + relativeFile;
   let contents = fs.readFileSync( path, 'utf-8' );
-  contents = replace( contents, '= require( \'string!', '= (\'' );
+  contents = replace( contents, '= require( \'string!', '= require( \'string:' );
   contents = replace( contents, '= require( \'ifphetio!', '= function(){return function(){ return function(){}; };}; // ' );
   contents = replace( contents, 'require( \'mipmap!BRAND/logo.png\' )', 'require( \'BRAND/../images/logo.png\' ).default' );
   contents = replace( contents, 'require( \'mipmap!BRAND/logo-on-white.png\' )', 'require( \'BRAND/../images/logo-on-white.png\' ).default' );
