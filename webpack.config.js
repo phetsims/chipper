@@ -7,6 +7,7 @@ const path = require( 'path' );
 // Repos could be deleted in the future and then prior checkouts with this wouldn't work.
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim () );
 const namespaces = {};
+const reposByNamespace = {};
 const aliases = {};
 
 for ( const repo of activeRepos ) {
@@ -15,6 +16,7 @@ for ( const repo of activeRepos ) {
     const packageObject = JSON.parse( fs.readFileSync( packageFile, 'utf-8' ) );
     if ( packageObject.phet && packageObject.phet.requirejsNamespace ) {
       namespaces[ repo ] = packageObject.phet.requirejsNamespace;
+      reposByNamespace[ packageObject.phet.requirejsNamespace ] = repo;
       aliases[ packageObject.phet.requirejsNamespace ] = path.resolve( __dirname, `../${repo}${repo === 'brand' ? '/phet' : ''}/js` );
     }
   }
@@ -53,10 +55,60 @@ module.exports = {
   // watch:true,
 
   resolve: {
-    alias: aliases
+    alias: aliases,
+    plugins: [
+      {
+        apply: resolver => {
+          resolver.hooks.resolve.tapAsync( 'StringPlugin', ( request, resolveContext, callback ) => {
+            if ( request.request.startsWith( 'string:' ) ) {
+              const buildDir = path.resolve( __dirname, 'build' );
+              const stringsDir = path.resolve( buildDir, 'strings' );
+              if ( !fs.existsSync( buildDir ) ) {
+                fs.mkdirSync( buildDir );
+              }
+              if ( !fs.existsSync( stringsDir ) ) {
+                fs.mkdirSync( stringsDir );
+              }
+
+              const stringKey = request.request.slice( 'string:'.length );
+              const namespace = stringKey.slice( 0, stringKey.indexOf( '/' ) );
+              const key = stringKey.slice( namespace.length + 1 );
+              const repo = reposByNamespace[ namespace ];
+              const stringModuleFile = path.resolve( stringsDir, stringKey.replace( /[ \\\/\.-]/g, '_' ) + '.js' );
+
+              // TODO: alternate locale lookup
+              fs.writeFileSync( stringModuleFile, `
+import strings from '${namespace}/../${repo}-strings_en.json';
+export default strings[ ${JSON.stringify( key )} ].value;
+` );
+
+              console.log( request );
+              const newRequest = {
+                ...request,
+                request: request.request,
+                path: stringModuleFile
+              };
+              return resolver.doResolve( resolver.ensureHook( 'file' ), newRequest, null, resolveContext, callback );
+            }
+
+            const result = resolver.doResolve( resolver.ensureHook( 'parsedResolve' ), request, null, resolveContext, callback );
+            return result;
+          } );
+        }
+      }
+    ]
   },
   module: {
     rules: [
+      {
+        test: /^string:/,
+        use: [
+          {
+            loader: path.resolve( '../chipper/js/webpack/string-loader.js' ),
+            options: {/* ... */ }
+          }
+        ]
+      },
       {
         test: /\.(png|jpg|gif)$/i,
         use: [
