@@ -27,23 +27,17 @@ const migrateFile = async ( repo, relativeFile ) => {
   if ( relativeFile.endsWith( '/copyWithSortedKeys.js' ) ) {
     return;
   }
-  console.log( repo, relativeFile );
   const path = '../' + repo + '/' + relativeFile;
+
   let contents = fs.readFileSync( path, 'utf-8' );
   contents = replace( contents, '= require( \'string!', '= require( \'string:' );
   contents = replace( contents, '= require( \'ifphetio!', '= function(){return function(){ return function(){}; };}; // ' );
-  contents = replace( contents, 'require( \'sound!TAMBO/empty_apartment_bedroom_06_resampled.mp3\' )', 'require( \'TAMBO/../sounds/empty_apartment_bedroom_06_resampled.mp3\' ).default' );
-  contents = replace( contents, 'require( \'sound!TAMBO/short-silence.wav\' )', 'require( \'TAMBO/../sounds/short-silence.wav\' ).default' );
-  contents = replace( contents, 'require( \'sound!TAMBO/reset-all.mp3\' )', 'require( \'TAMBO/../sounds/reset-all.mp3\' ).default' );
-  contents = replace( contents, 'require( \'sound!TAMBO/general-button-v4.mp3\' )', 'require( \'TAMBO/../sounds/general-button-v4.mp3\' ).default' );
 
   contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( phet.chipper.packageObject )' );
 
-  contents = replace( contents, `define( require => {`, `//define( require => {` );
-
-  if ( !contents.endsWith( '} )();' ) ) {
-    const lastIndex = contents.lastIndexOf( '} );' );
-    contents = contents.substring( 0, lastIndex ) + '//' + contents.substring( lastIndex );
+  if ( contents.includes( 'define( require => {' ) ) {
+    contents = replace( contents, `define( require => {`, `` );
+    contents = contents.slice( 0, contents.lastIndexOf( '}' ) );
   }
 
   const returnInherit = contents.lastIndexOf( 'return inherit( ' );
@@ -69,7 +63,6 @@ const migrateFile = async ( repo, relativeFile ) => {
       const term = line.trim().split( ' ' )[ 1 ];
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
-      console.log( term, repo, tail );
       line = `  import ${term} from 'mipmap!${repo}/../images/${tail}`;
     }
     return line;
@@ -80,7 +73,6 @@ const migrateFile = async ( repo, relativeFile ) => {
       const term = line.trim().split( ' ' )[ 1 ];
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
-      console.log( term, repo, tail );
       line = `  import ${term} from '${repo}/../images/${tail}`;
     }
     return line;
@@ -91,7 +83,6 @@ const migrateFile = async ( repo, relativeFile ) => {
       const term = line.trim().split( ' ' )[ 1 ];
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
-      console.log( term, repo, tail );
       line = `import ${term} from '${repo}/../sounds/${tail}`;
     }
     return line;
@@ -128,189 +119,187 @@ module.exports = async function( repo, cache ) {
 
   // const repos = fs.readFileSync( '../perennial/data/migrate-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
 
-  // const repos = [
-  //   'acid-base-solutions',
-  //   'area-model-algebra',
-  //   'area-model-common',
-  //   'area-model-decimals',
-  //   'area-model-introduction',
-  //   'area-model-multiplication',
-  //   'axon',
-  //   'circuit-construction-kit-ac',
-  //   'circuit-construction-kit-common',
-  //   'brand',
-  //   'dot',
-  //   'griddle',
-  //   'joist',
-  //   'kite',
-  //   'molarity',
-  //   'molecule-shapes',
-  //   'molecule-shapes-basics',
-  //   'nitroglycerin',
-  //   'phetcommon',
-  //   'phet-core',
-  //   'phet-io',
-  //   'example-sim',
-  //   'scenery',
-  //   'scenery-phet',
-  //   'sun',
-  //   'tambo',
-  //   'tandem',
-  //   'twixt',
-  //   'utterance-queue',
-  //   'vegas'
-  // ];
-
   const simRepos = [
-    // 'acid-base-solutions',
-    // 'area-model-algebra',
-    // 'area-model-decimals',
-    // 'area-model-introduction',
-    // 'area-model-multiplication',
-    // 'circuit-construction-kit-ac',
-    // 'example-sim',
-    // 'molarity',
-    // 'molecule-shapes',
-    // 'molecule-shapes-basics'
     'acid-base-solutions',
-    'area-builder',
     'area-model-algebra',
     'area-model-decimals',
     'area-model-introduction',
     'area-model-multiplication',
-    'arithmetic',
-    'atomic-interactions',
-    'balancing-act',
-    'balancing-chemical-equations',
-    'balloons-and-static-electricity',
-    'beers-law-lab',
-    'bending-light',
-    'blackbody-spectrum',
-    'blast',
-    'build-a-fraction',
-    'build-a-molecule',
-    'build-an-atom',
-    'bumper',
-    'buoyancy',
-    'calculus-grapher',
-    'capacitor-lab-basics',
-    'chains',
-    'charges-and-fields',
     'circuit-construction-kit-ac',
-    'circuit-construction-kit-black-box-study',
-    'circuit-construction-kit-dc',
-    'circuit-construction-kit-dc-virtual-lab',
-    'color-vision',
-    'collision-lab',
-    'concentration',
-    'coulombs-law',
-    'curve-fitting',
-    'density',
-    'diffusion',
-    'energy-forms-and-changes',
-    'energy-skate-park',
-    'energy-skate-park-basics',
-    'equality-explorer',
-    'equality-explorer-basics',
-    'equality-explorer-two-variables',
-    'estimation',
     'example-sim',
-    'expression-exchange',
-    'faradays-law',
-    'fluid-pressure-and-flow',
-    'forces-and-motion-basics',
-    'fraction-comparison',
-    'fraction-matcher',
-    'fractions-equality',
-    'fractions-intro',
-    'fractions-mixed-numbers',
-    'friction',
-    'function-builder',
-    'function-builder-basics',
-    'gas-properties',
-    'gases-intro',
-    'gene-expression-essentials',
-    'graphing-lines',
-    'graphing-quadratics',
-    'graphing-slope-intercept',
-    'gravity-and-orbits',
-    'gravity-force-lab',
-    'gravity-force-lab-basics',
-    'hookes-law',
-    'interaction-dashboard',
-    'isotopes-and-atomic-mass',
-    'john-travoltage',
-    'least-squares-regression',
-    'make-a-ten',
-    'masses-and-springs',
-    'masses-and-springs-basics',
-    'models-of-the-hydrogen-atom',
     'molarity',
-    'molecules-and-light',
-    'molecule-polarity',
     'molecule-shapes',
-    'molecule-shapes-basics',
-    'natural-selection',
-    'neuron',
-    'number-line-integers',
-    'number-play',
-    'ohms-law',
-    'optics-lab',
-    'pendulum-lab',
-    'ph-scale',
-    'ph-scale-basics',
-    'phet-io-test-sim',
-    'plinko-probability',
-    'projectile-motion',
-    'proportion-playground',
-    'reactants-products-and-leftovers',
-    'resistance-in-a-wire',
-    'rutherford-scattering',
-    'simula-rasa',
-    'states-of-matter',
-    'states-of-matter-basics',
-    'trig-tour',
-    'under-pressure',
-    'unit-rates',
-    'vector-addition',
-    'vector-addition-equations',
-    'wave-interference',
-    'wave-on-a-string',
-    'waves-intro',
-    'wilder'
+    'molecule-shapes-basics'
+    // 'acid-base-solutions',
+    // 'area-builder',
+    // 'area-model-algebra',
+    // 'area-model-decimals',
+    // 'area-model-introduction',
+    // 'area-model-multiplication',
+    // 'arithmetic',
+    // 'atomic-interactions',
+    // 'balancing-act',
+    // 'balancing-chemical-equations',
+    // 'balloons-and-static-electricity',
+    // 'beers-law-lab',
+    // 'bending-light',
+    // 'blackbody-spectrum',
+    // 'blast',
+    // 'build-a-fraction',
+    // 'build-a-molecule',
+    // 'build-an-atom',
+    // 'bumper',
+    // 'buoyancy',
+    // 'calculus-grapher',
+    // 'capacitor-lab-basics',
+    // 'chains',
+    // 'charges-and-fields',
+    // 'circuit-construction-kit-ac',
+    // 'circuit-construction-kit-black-box-study',
+    // 'circuit-construction-kit-dc',
+    // 'circuit-construction-kit-dc-virtual-lab',
+    // 'color-vision',
+    // 'collision-lab',
+    // 'concentration',
+    // 'coulombs-law',
+    // 'curve-fitting',
+    // 'density',
+    // 'diffusion',
+    // 'energy-forms-and-changes',
+    // 'energy-skate-park',
+    // 'energy-skate-park-basics',
+    // 'equality-explorer',
+    // 'equality-explorer-basics',
+    // 'equality-explorer-two-variables',
+    // 'estimation',
+    // 'example-sim',
+    // 'expression-exchange',
+    // 'faradays-law',
+    // 'fluid-pressure-and-flow',
+    // 'forces-and-motion-basics',
+    // 'fraction-comparison',
+    // 'fraction-matcher',
+    // 'fractions-equality',
+    // 'fractions-intro',
+    // 'fractions-mixed-numbers',
+    // 'friction',
+    // 'function-builder',
+    // 'function-builder-basics',
+    // 'gas-properties',
+    // 'gases-intro',
+    // 'gene-expression-essentials',
+    // 'graphing-lines',
+    // 'graphing-quadratics',
+    // 'graphing-slope-intercept',
+    // 'gravity-and-orbits',
+    // 'gravity-force-lab',
+    // 'gravity-force-lab-basics',
+    // 'hookes-law',
+    // 'interaction-dashboard',
+    // 'isotopes-and-atomic-mass',
+    // 'john-travoltage',
+    // 'least-squares-regression',
+    // 'make-a-ten',
+    // 'masses-and-springs',
+    // 'masses-and-springs-basics',
+    // 'models-of-the-hydrogen-atom',
+    // 'molarity',
+    // 'molecules-and-light',
+    // 'molecule-polarity',
+    // 'molecule-shapes',
+    // 'molecule-shapes-basics',
+    // 'natural-selection',
+    // 'neuron',
+    // 'number-line-integers',
+    // 'number-play',
+    // 'ohms-law',
+    // 'optics-lab',
+    // 'pendulum-lab',
+    // 'ph-scale',
+    // 'ph-scale-basics',
+    // 'phet-io-test-sim',
+    // 'plinko-probability',
+    // 'projectile-motion',
+    // 'proportion-playground',
+    // 'reactants-products-and-leftovers',
+    // 'resistance-in-a-wire',
+    // 'rutherford-scattering',
+    // 'simula-rasa',
+    // 'states-of-matter',
+    // 'states-of-matter-basics',
+    // 'trig-tour',
+    // 'under-pressure',
+    // 'unit-rates',
+    // 'vector-addition',
+    // 'vector-addition-equations',
+    // 'wave-interference',
+    // 'wave-on-a-string',
+    // 'waves-intro',
+    // 'wilder'
   ];
 
   const repos = [
-    ...simRepos,
+    'acid-base-solutions',
+    'area-model-algebra',
     'area-model-common',
+    'area-model-decimals',
+    'area-model-introduction',
+    'area-model-multiplication',
     'axon',
-    'brand',
+    'circuit-construction-kit-ac',
     'circuit-construction-kit-common',
-    'density-buoyancy-common',
+    'brand',
     'dot',
-    'fractions-common',
     'griddle',
-    'inverse-square-law-common',
     'joist',
     'kite',
-    'mobius',
+    'molarity',
+    'molecule-shapes',
+    'molecule-shapes-basics',
     'nitroglycerin',
     'phetcommon',
     'phet-core',
     'phet-io',
+    'example-sim',
     'scenery',
     'scenery-phet',
-    'shred',
     'sun',
     'tambo',
     'tandem',
     'twixt',
     'utterance-queue',
-    'vegas',
-    'vibe'
+    'vegas'
+    // ...simRepos,
+    // 'area-model-common',
+    // 'axon',
+    // 'brand',
+    // 'circuit-construction-kit-common',
+    // 'density-buoyancy-common',
+    // 'dot',
+    // 'fractions-common',
+    // 'griddle',
+    // 'inverse-square-law-common',
+    // 'joist',
+    // 'kite',
+    // 'mobius',
+    // 'nitroglycerin',
+    // 'phetcommon',
+    // 'phet-core',
+    // 'phet-io',
+    // 'scenery',
+    // 'scenery-phet',
+    // 'shred',
+    // 'sun',
+    // 'tambo',
+    // 'tandem',
+    // 'twixt',
+    // 'utterance-queue',
+    // 'vegas',
+    // 'vibe'
   ];
 
   for ( const repo of repos ) {
+    console.log( repo );
     let relativeFiles = [];
     grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
       relativeFiles.push( `${subdir}/${filename}` );
@@ -321,13 +310,11 @@ module.exports = async function( repo, cache ) {
                                                   file.startsWith( 'phet/js' ) );
 
     relativeFiles.forEach( ( rel, i ) => {
-      console.log( '    ' + i + '/' + relativeFiles.length );
       migrateFile( repo, rel );
     } );
 
     if ( simRepos.includes( repo ) ) {
       generateDevelopmentHTML( repo );
-      // await execute( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', [ 'generate-development-html' ], `../${repo}` );
     }
   }
 };
