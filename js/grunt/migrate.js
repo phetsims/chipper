@@ -14,6 +14,7 @@
 const execute = require( './execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
+const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 
 const replace = ( str, search, replacement ) => {
   return str.split( search ).join( replacement );
@@ -152,7 +153,9 @@ module.exports = async function( repo, cache ) {
   ];
 
   const simRepos = [
-    'example-sim'
+    'circuit-construction-kit-ac',
+    'example-sim',
+    'molecule-shapes'
   ];
 
   for ( const repo of repos ) {
@@ -170,8 +173,9 @@ module.exports = async function( repo, cache ) {
       migrateFile( repo, rel );
     } );
 
-    // if ( simRepos.includes( repo ) ) {
-    //   await execute( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', [ 'generate-development-html' ], `../${repo}` );
-    // }
+    if ( simRepos.includes( repo ) ) {
+      generateDevelopmentHTML( repo );
+      // await execute( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', [ 'generate-development-html' ], `../${repo}` );
+    }
   }
 };

@@ -22,7 +22,7 @@ for ( const repo of activeRepos ) {
   }
 }
 
-// NOTE: Consider CommonChunkPlugin from https://www.toptal.com/javascript/a-guide-to-managing-webpack-dependencies
+// NOTE: https://webpack.js.org/plugins/split-chunks-plugin/
 // Should help combine things so we don't duplicate things across bundles
 
 module.exports = {
@@ -32,6 +32,7 @@ module.exports = {
   },
 
   entry: {
+    'circuit-construction-kit-ac': '../circuit-construction-kit-ac/js/circuit-construction-kit-ac-main.js',
     'example-sim': '../example-sim/js/example-sim-main.js',
     'molecule-shapes': '../molecule-shapes/js/molecule-shapes-main.js'
   },
