@@ -50,12 +50,6 @@ const migrateFile = async ( repo, relativeFile ) => {
     contents = contents.substring( 0, lastReturn ) + 'export default ' + contents.substring( lastReturn + 'return '.length );
   }
 
-  // contents = replace(contents,`return inherit( Node, ScreenView, {`,`export default inherit( Node, ScreenView, {`);
-  // contents = replace(contents,`export default Math.min( width / this.layoutBounds.width, height / this.layoutBounds.height );`,`return Math.min( width / this.layoutBounds.width, height / this.layoutBounds.height );`);
-
-  // const Namespace = require( 'PHET_CORE/Namespace' );
-  contents = replace( contents, `const Namespace = require( 'PHET_CORE/Namespace' );`, `import Namespace from 'PHET_CORE/Namespace'` );
-
   let lines = contents.split( /\r?\n/ );
 
   let fixMipmap = line => {
@@ -89,7 +83,6 @@ const migrateFile = async ( repo, relativeFile ) => {
   };
 
   lines = lines.map( line => {
-    // return 'hello ' + line;
     if ( line.trim().startsWith( 'const ' ) && line.indexOf( ' = require( ' ) >= 0 ) {
       // const Bounds2 = require( 'DOT/Bounds2' );
       // becomes
@@ -102,15 +95,18 @@ const migrateFile = async ( repo, relativeFile ) => {
     line = fixImage( line );
     line = fixSounds( line );
 
+    // Trim off indentation
+    if ( line.startsWith( '  ' ) ) {
+      line = line.slice( 2 );
+    }
+
     return line;
   } );
   contents = lines.join( '\n' );
 
+  // Seems to be for inherit.js
   contents = replace( contents, `return inherit;`, `export default inherit;` );
   contents = replace( contents, `' ).default;`, `';` );
-
-  // contents = replace( contents, `import lightBulbImage from 'mipmap!CIRCUIT_CONSTRUCTION_KIT_COMMON/lightbulb-middle.png';`, `import lightBulbImage from 'CIRCUIT_CONSTRUCTION_KIT_COMMON/../images/lightbulb-middle.png';` )
-  // contents = replace( contents, `import lightBulbImageHigh from 'mipmap!CIRCUIT_CONSTRUCTION_KIT_COMMON/lightbulb-middle-high.png';`, `import lightBulbImageHigh from 'CIRCUIT_CONSTRUCTION_KIT_COMMON/../lightbulb-middle-high.png';/../images/lightbulb-middle.png';` )
 
   fs.writeFileSync( path, contents, 'utf-8' );
 };
