@@ -136,6 +136,8 @@ module.exports = async function( repo, cache ) {
     'griddle',
     'joist',
     'kite',
+    'molecule-shapes',
+    'nitroglycerin',
     'phetcommon',
     'phet-core',
     'phet-io',

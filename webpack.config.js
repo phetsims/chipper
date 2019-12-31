@@ -32,7 +32,8 @@ module.exports = {
   },
 
   entry: {
-    'example-sim': '../example-sim/js/example-sim-main.js'
+    'example-sim': '../example-sim/js/example-sim-main.js',
+    'molecule-shapes': '../molecule-shapes/js/molecule-shapes-main.js'
   },
   output: {
     path: path.resolve( __dirname, 'build' ),
@@ -88,7 +89,6 @@ import strings from '${namespace}/../${repo}-strings_en.json';
 export default strings[ ${JSON.stringify( key )} ].value;
 ` );
 
-              console.log( stringKey );
               const newRequest = {
                 ...request,
                 request: request.request,
