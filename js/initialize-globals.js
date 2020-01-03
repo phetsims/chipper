@@ -489,7 +489,8 @@
      */
     allowLinks: {
       type: 'boolean',
-      defaultValue: true
+      defaultValue: true,
+      public: true
     },
 
     /**
