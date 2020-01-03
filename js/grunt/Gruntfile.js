@@ -19,6 +19,7 @@ const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
 const findDuplicates = require( './findDuplicates' );
 const migrate = require( './migrate' );
+const modulify = require( './modulify' );
 const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateConfig = require( './generateConfig' );
@@ -381,6 +382,10 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'migrate', '', wrapTask( async () => {
     await migrate( repo );
+  } ) );
+
+  grunt.registerTask( 'modulify', '', wrapTask( async () => {
+    await modulify( repo );
   } ) );
 
   // Grunt task that determines created and last modified dates from git, and

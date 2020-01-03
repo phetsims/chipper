@@ -16,6 +16,148 @@ const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 
+const simRepos = [
+  'acid-base-solutions',
+  'area-builder',
+  'area-model-algebra',
+  'area-model-decimals',
+  'area-model-introduction',
+  'area-model-multiplication',
+  'arithmetic',
+  'atomic-interactions',
+  'balancing-act',
+  'balancing-chemical-equations',
+  'balloons-and-static-electricity',
+  'beers-law-lab',
+  'bending-light',
+  'blackbody-spectrum',
+  'blast',
+  'build-a-fraction',
+  'build-a-molecule',
+  'build-an-atom',
+  'bumper',
+  'buoyancy',
+  'calculus-grapher',
+  'capacitor-lab-basics',
+  'chains',
+  'charges-and-fields',
+  'circuit-construction-kit-ac',
+  'circuit-construction-kit-black-box-study',
+  'circuit-construction-kit-dc',
+  'circuit-construction-kit-dc-virtual-lab',
+  'color-vision',
+  'collision-lab',
+  'concentration',
+  'coulombs-law',
+  'curve-fitting',
+  'density',
+  'diffusion',
+  'energy-forms-and-changes',
+  'energy-skate-park',
+  'energy-skate-park-basics',
+  'equality-explorer',
+  'equality-explorer-basics',
+  'equality-explorer-two-variables',
+  'estimation',
+  'example-sim',
+  'expression-exchange',
+  'faradays-law',
+  'fluid-pressure-and-flow',
+  'forces-and-motion-basics',
+  'fraction-comparison',
+  'fraction-matcher',
+  'fractions-equality',
+  'fractions-intro',
+  'fractions-mixed-numbers',
+  'friction',
+  'function-builder',
+  'function-builder-basics',
+  'gas-properties',
+  'gases-intro',
+  'gene-expression-essentials',
+  'graphing-lines',
+  'graphing-quadratics',
+  'graphing-slope-intercept',
+  'gravity-and-orbits',
+  'gravity-force-lab',
+  'gravity-force-lab-basics',
+  'hookes-law',
+  'interaction-dashboard',
+  'isotopes-and-atomic-mass',
+  'john-travoltage',
+  'least-squares-regression',
+  'make-a-ten',
+  'masses-and-springs',
+  'masses-and-springs-basics',
+  'models-of-the-hydrogen-atom',
+  'molarity',
+  'molecules-and-light',
+  'molecule-polarity',
+  'molecule-shapes',
+  'molecule-shapes-basics',
+  'natural-selection',
+  'neuron',
+  'number-line-integers',
+  'number-play',
+  'ohms-law',
+  'optics-lab',
+  'pendulum-lab',
+  'ph-scale',
+  'ph-scale-basics',
+  'phet-io-test-sim',
+  'plinko-probability',
+  'projectile-motion',
+  'proportion-playground',
+  'reactants-products-and-leftovers',
+  'resistance-in-a-wire',
+  'rutherford-scattering',
+  'simula-rasa',
+  'states-of-matter',
+  'states-of-matter-basics',
+  'trig-tour',
+  'under-pressure',
+  'unit-rates',
+  'vector-addition',
+  'vector-addition-equations',
+  'wave-interference',
+  'wave-on-a-string',
+  'waves-intro',
+  'wilder'
+];
+
+const commonRepos = [
+  'area-model-common',
+  'axon',
+  'brand',
+  'circuit-construction-kit-common',
+  'density-buoyancy-common',
+  'dot',
+  'fractions-common',
+  'griddle',
+  'inverse-square-law-common',
+  'joist',
+  'kite',
+  'mobius',
+  'nitroglycerin',
+  'phetcommon',
+  'phet-core',
+  'phet-io',
+  'scenery-phet', // has to run first for string replacements
+  'scenery',
+  'shred',
+  'sun',
+  'tambo',
+  'tandem',
+  'twixt',
+  'utterance-queue',
+  'vegas',
+  'vibe'
+];
+const repos = [
+  ...simRepos,
+  ...commonRepos
+];
+
 const replace = ( str, search, replacement ) => {
   return str.split( search ).join( replacement );
 };
@@ -30,7 +172,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   const path = '../' + repo + '/' + relativeFile;
 
   let contents = fs.readFileSync( path, 'utf-8' );
-  contents = replace( contents, '= require( \'string!', '= require( \'string:' );
+  contents = replace( contents, '= require( \'string!', `= 'test string';//` );
   contents = replace( contents, '= require( \'ifphetio!', '= function(){return function(){ return function(){}; };}; // ' );
 
   contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( phet.chipper.packageObject )' );
@@ -112,6 +254,55 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, `return inherit;`, `export default inherit;` );
   contents = replace( contents, `' ).default;`, `';` );
 
+  // Specify absolute paths for compilation-free mode
+  repos.forEach( repo => {
+    let upper = repo.toUpperCase();
+    upper = replace( upper, '-', '_' );
+    contents = replace( contents, `from '${upper}`, `from '/${repo}/js` );
+  } );
+
+  // Any export default that is not the last line (when trimmed) should be turned back into return.
+
+  lines = contents.split( /\r?\n/ );
+  for ( var i = 0; i < lines.length - 2; i++ ) {
+    if ( lines[ i ].indexOf( 'inherit(' ) === -1 ) {
+      lines[ i ] = replace( lines[ i ], 'export default ', 'return ' );
+    }
+
+    // import magnifierImage from '/acid-base-solutions/js/../images/magnifier-icon.png';
+    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.png' ) >= 0 ) {
+      lines[ i ] = replace( lines[ i ], '.png', '_png' );
+    }
+
+    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.mp3' ) >= 0 ) {
+      lines[ i ] = replace( lines[ i ], '.mp3', '_mp3' );
+    }
+
+    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.wav' ) >= 0 ) {
+      lines[ i ] = replace( lines[ i ], '.wav', '_wav' );
+    }
+  }
+  contents = lines.join( '\n' );
+  contents = replace( contents, `from '/brand/js/`, `from '/brand/phet/js/` );// TODO: how to deal with different brands?
+
+  contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
+
+  // TODO: mipmap plugin
+  contents = replace( contents, `import offImage from 'mipmap!SCENERY_PHET/../images/light-bulb-off_png';`, `import offImage from '/scenery-phet/images/light-bulb-off_png';` );
+  contents = replace( contents, `import onImage from 'mipmap!SCENERY_PHET/../images/light-bulb-on_png';`, `import onImage from '/scenery-phet/images/light-bulb-on_png';` );
+  contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '/scenery/js/display/BackboneDrawable'` );
+
+  const stringsToConvertReturnBackToExportDefault = [
+    'return AlertableDef;',
+    'return RadioButtonGroupAppearance;',
+    'return joist.register( \'UpdateState\', Enumeration.byKeys( ['
+  ];
+
+  stringsToConvertReturnBackToExportDefault.forEach( string => {
+    const withExport = replace( string, 'return ', 'export default ' );
+    contents = replace( contents, string, withExport );
+  } );
+
   fs.writeFileSync( path, contents, 'utf-8' );
 };
 
@@ -119,146 +310,10 @@ module.exports = async function( repo, cache ) {
 
   // const repos = fs.readFileSync( '../perennial/data/migrate-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
 
-  const simRepos = [
-    'acid-base-solutions',
-    'area-builder',
-    'area-model-algebra',
-    'area-model-decimals',
-    'area-model-introduction',
-    'area-model-multiplication',
-    'arithmetic',
-    'atomic-interactions',
-    'balancing-act',
-    'balancing-chemical-equations',
-    'balloons-and-static-electricity',
-    'beers-law-lab',
-    'bending-light',
-    'blackbody-spectrum',
-    'blast',
-    'build-a-fraction',
-    'build-a-molecule',
-    'build-an-atom',
-    'bumper',
-    'buoyancy',
-    'calculus-grapher',
-    'capacitor-lab-basics',
-    'chains',
-    'charges-and-fields',
-    'circuit-construction-kit-ac',
-    'circuit-construction-kit-black-box-study',
-    'circuit-construction-kit-dc',
-    'circuit-construction-kit-dc-virtual-lab',
-    'color-vision',
-    'collision-lab',
-    'concentration',
-    'coulombs-law',
-    'curve-fitting',
-    'density',
-    'diffusion',
-    'energy-forms-and-changes',
-    'energy-skate-park',
-    'energy-skate-park-basics',
-    'equality-explorer',
-    'equality-explorer-basics',
-    'equality-explorer-two-variables',
-    'estimation',
-    'example-sim',
-    'expression-exchange',
-    'faradays-law',
-    'fluid-pressure-and-flow',
-    'forces-and-motion-basics',
-    'fraction-comparison',
-    'fraction-matcher',
-    'fractions-equality',
-    'fractions-intro',
-    'fractions-mixed-numbers',
-    'friction',
-    'function-builder',
-    'function-builder-basics',
-    'gas-properties',
-    'gases-intro',
-    'gene-expression-essentials',
-    'graphing-lines',
-    'graphing-quadratics',
-    'graphing-slope-intercept',
-    'gravity-and-orbits',
-    'gravity-force-lab',
-    'gravity-force-lab-basics',
-    'hookes-law',
-    'interaction-dashboard',
-    'isotopes-and-atomic-mass',
-    'john-travoltage',
-    'least-squares-regression',
-    'make-a-ten',
-    'masses-and-springs',
-    'masses-and-springs-basics',
-    'models-of-the-hydrogen-atom',
-    'molarity',
-    'molecules-and-light',
-    'molecule-polarity',
-    'molecule-shapes',
-    'molecule-shapes-basics',
-    'natural-selection',
-    'neuron',
-    'number-line-integers',
-    'number-play',
-    'ohms-law',
-    'optics-lab',
-    'pendulum-lab',
-    'ph-scale',
-    'ph-scale-basics',
-    'phet-io-test-sim',
-    'plinko-probability',
-    'projectile-motion',
-    'proportion-playground',
-    'reactants-products-and-leftovers',
-    'resistance-in-a-wire',
-    'rutherford-scattering',
-    'simula-rasa',
-    'states-of-matter',
-    'states-of-matter-basics',
-    'trig-tour',
-    'under-pressure',
-    'unit-rates',
-    'vector-addition',
-    'vector-addition-equations',
-    'wave-interference',
-    'wave-on-a-string',
-    'waves-intro',
-    'wilder'
-  ];
-
-  const repos = [
-    ...simRepos,
-    'area-model-common',
-    'axon',
-    'brand',
-    'circuit-construction-kit-common',
-    'density-buoyancy-common',
-    'dot',
-    'fractions-common',
-    'griddle',
-    'inverse-square-law-common',
-    'joist',
-    'kite',
-    'mobius',
-    'nitroglycerin',
-    'phetcommon',
-    'phet-core',
-    'phet-io',
-    'scenery',
-    'scenery-phet',
-    'shred',
-    'sun',
-    'tambo',
-    'tandem',
-    'twixt',
-    'utterance-queue',
-    'vegas',
-    'vibe'
-  ];
-
-  for ( const repo of repos ) {
+  // Run a subset for fast iteration.
+  let myrepos = [ 'acid-base-solutions', ...commonRepos ];
+  // let myrepos = repos;
+  for ( const repo of myrepos ) {
     console.log( repo );
     let relativeFiles = [];
     grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
