@@ -8,15 +8,15 @@ const StringPlugin = require( './js/webpack/StringPlugin' );
 
 const sims = [
   'acid-base-solutions',
-  'area-model-algebra',
-  'area-model-decimals',
-  'area-model-introduction',
-  'area-model-multiplication',
-  'circuit-construction-kit-ac',
-  'example-sim',
-  'molarity',
-  'molecule-shapes',
-  'molecule-shapes-basics'
+  // 'area-model-algebra',
+  // 'area-model-decimals',
+  // 'area-model-introduction',
+  // 'area-model-multiplication',
+  // 'circuit-construction-kit-ac',
+  // 'example-sim',
+  // 'molarity',
+  // 'molecule-shapes',
+  // 'molecule-shapes-basics'
 
   // 'area-builder',
   // 'arithmetic',

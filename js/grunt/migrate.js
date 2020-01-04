@@ -314,10 +314,11 @@ const migrateFile = async ( repo, relativeFile ) => {
 
   contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
 
+
   // TODO: mipmap plugin
-  contents = replace( contents, `import offImage from 'mipmap!SCENERY_PHET/../images/light-bulb-off_png';`, `import offImage from '/scenery-phet/images/light-bulb-off_png';` );
-  contents = replace( contents, `import onImage from 'mipmap!SCENERY_PHET/../images/light-bulb-on_png';`, `import onImage from '/scenery-phet/images/light-bulb-on_png';` );
-  contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '/scenery/js/display/BackboneDrawable'` );
+  contents = replace( contents, `import offImage from 'mipmap!SCENERY_PHET/../images/light-bulb-off_png';`, `import offImage from '../../scenery-phet/images/light-bulb-off_png';` );
+  contents = replace( contents, `import onImage from 'mipmap!SCENERY_PHET/../images/light-bulb-on_png';`, `import onImage from '../../scenery-phet/images/light-bulb-on_png';` );
+  contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '../../../scenery/js/display/BackboneDrawable'` );
 
   const stringsToConvertReturnBackToExportDefault = [
     'return AlertableDef;',
