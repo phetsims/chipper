@@ -281,9 +281,36 @@ const migrateFile = async ( repo, relativeFile ) => {
     if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.wav' ) >= 0 ) {
       lines[ i ] = replace( lines[ i ], '.wav', '_wav' );
     }
+
+    // Map to relative paths for compilation free mode
+    const depth = relativeFile.split( '/' ).length;
+    const createDots = d => {
+      if ( d === 0 ) {
+        return './';
+      }
+      else {
+        let s = '';
+        for ( let i = 0; i < d; i++ ) {
+          s = s + '../';
+        }
+        return s;
+      }
+    };
+    let key = ` from '/`;
+    if ( lines[ i ].indexOf( 'import' ) >= 0 && lines[ i ].indexOf( key ) >= 0 ) {
+      const index = lines[ i ].indexOf( key ) + key.length - 1;
+      lines[ i ] = lines[ i ].substring( 0, index ) + createDots( depth ) + lines[ i ].substring( index + 1 );
+    }
+
   }
   contents = lines.join( '\n' );
-  contents = replace( contents, `from '/brand/js/`, `from '/brand/phet/js/` );// TODO: how to deal with different brands?
+  // contents = replace( contents, `from '/brand/js/`, `from '/brand/phet/js/` );// TODO: how to deal with different brands? https://github.com/phetsims/chipper/issues/820
+  contents = replace( contents, `../../brand/js/Brand`, `../../brand/phet/js/Brand` );
+  contents = replace( contents, `import brand from '../../../brand/js/../../js/brand';`, `import brand from '../../../brand/js/brand';` );
+  contents = replace( contents, `import getLinks from '../../../brand/js/../../js/getLinks';`, `import getLinks from '../../../brand/js/getLinks';` );
+  contents = replace( contents, `from '../../brand/js/../images`, `from '../../brand/phet/images` );
+  contents = replace( contents, `import brand from '../../brand/js/../../js/brand';`, `import brand from './brand';` );
+
 
   contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
 
