@@ -22,7 +22,7 @@ const replace = ( str, search, replacement ) => {
 };
 
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
-  if ( subdir && (subdir.startsWith( 'images' )|| subdir.startsWith('phet/images') )) { // for brand
+  if ( subdir && ( subdir.startsWith( 'images' ) || subdir.startsWith( 'phet/images' ) ) ) { // for brand
     if ( filename.endsWith( '.png' ) ) {
       const x = loadFileAsDataURI( abspath );
 
@@ -38,7 +38,7 @@ export default img;
       fs.writeFileSync( outputFilename, contents );
     }
   }
-  if ( subdir && (subdir.startsWith( 'sounds' )) ) {
+  if ( subdir && ( subdir.startsWith( 'sounds' ) ) ) {
     if ( filename.endsWith( '.mp3' ) ) {
       const x = loadFileAsDataURI( abspath );
 
@@ -62,6 +62,22 @@ export default {name:'${filename}',base64:'${x}'};
   }
 };
 
+const bundleStrings = repo => {
+  try {
+    const englishStringsString = grunt.file.read( `../${repo}/${repo}-strings_en.json` ); // the english strings file
+    const englishStringsJSON = JSON.parse( englishStringsString );
+    console.log( englishStringsJSON );
+    const stringsObject = {
+      en: englishStringsJSON // TODO: embed all strings in this file?  Do we support modes where not all strings are built-in? https://github.com/phetsims/chipper/issues/820
+    };
+    const sourceCode = `export default ${JSON.stringify( stringsObject, null, 2 )}`;
+    fs.writeFileSync( `../${repo}/${repo}-strings.js`, sourceCode );
+  }
+  catch( e ) {
+    console.log( 'string problem for ' + repo );
+  }
+};
+
 module.exports = async function( repo, cache ) {
 
   // Run a subset for fast iteration.
@@ -72,6 +88,6 @@ module.exports = async function( repo, cache ) {
     grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
       modulifyFile( abspath, rootdir, subdir, filename );
     } );
-
+    bundleStrings( repo );
   }
 };
