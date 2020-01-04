@@ -163,6 +163,7 @@ const replace = ( str, search, replacement ) => {
 };
 
 const migrateFile = async ( repo, relativeFile ) => {
+  // const packageObject = JSON.parse( fs.readFileSync( `../${repo}/package.json`, 'utf-8' ) );
   if ( relativeFile.endsWith( '/PhetioIDUtils.js' ) ) {
     return;
   }
@@ -172,7 +173,6 @@ const migrateFile = async ( repo, relativeFile ) => {
   const path = '../' + repo + '/' + relativeFile;
 
   let contents = fs.readFileSync( path, 'utf-8' );
-  contents = replace( contents, '= require( \'string!', `= 'test string';//` );
   contents = replace( contents, '= require( \'ifphetio!', '= function(){return function(){ return function(){}; };}; // ' );
 
   contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( phet.chipper.packageObject )' );
@@ -224,6 +224,35 @@ const migrateFile = async ( repo, relativeFile ) => {
     return line;
   };
 
+  const alreadyLoadedStrings = [];
+
+  //   // strings
+  //   const acidBaseSolutionsTitleString = require( 'string!ACID_BASE_SOLUTIONS/acid-base-solutions.title' );
+  // becomes
+  // // strings
+  // import ACID_BASE_SOLUTIONS_strings from '../../acid-base-solutions/js/../acid-base-solutions-strings';
+  // const acidBaseSolutionsTitleString = ACID_BASE_SOLUTIONS_strings.localized['acid-base-solutions.title'];
+  // and we take care not to duplicate the import more than once per file
+  let fixString = line => {
+    if ( line.trim().startsWith( 'import ' ) && line.indexOf( `from 'string!` ) >= 0 ) {
+      const variableName = line.trim().split( ' ' )[ 1 ];
+      const repoCap = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
+
+      let repoLower = repoCap.toLowerCase();
+      repoLower = replace( repoLower, '_', '-' );
+
+      const tail = line.substring( line.indexOf( '/' ) + 1 );
+      const stringKey = tail.split( `'` )[ 0 ];
+      let prefix = '';
+      if ( alreadyLoadedStrings.indexOf( repoCap ) === -1 ) {
+        prefix = `import ${repoCap}_strings from '${repoCap}/../${repoLower}-strings';\n`;
+      }
+      line = `${prefix}const ${variableName} = ${repoCap}_strings.localized['${stringKey}'];`;
+      alreadyLoadedStrings.push( repoCap );
+    }
+    return line;
+  };
+
   lines = lines.map( line => {
     if ( line.trim().startsWith( 'const ' ) && line.indexOf( ' = require( ' ) >= 0 ) {
       // const Bounds2 = require( 'DOT/Bounds2' );
@@ -236,6 +265,7 @@ const migrateFile = async ( repo, relativeFile ) => {
     line = fixMipmap( line );
     line = fixImage( line );
     line = fixSounds( line );
+    line = fixString( line );
 
     // Trim off indentation
     if ( line.startsWith( '  ' ) ) {

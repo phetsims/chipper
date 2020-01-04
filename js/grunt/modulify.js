@@ -70,7 +70,10 @@ const bundleStrings = repo => {
     const stringsObject = {
       en: englishStringsJSON // TODO: embed all strings in this file?  Do we support modes where not all strings are built-in? https://github.com/phetsims/chipper/issues/820
     };
-    const sourceCode = `export default ${JSON.stringify( stringsObject, null, 2 )}`;
+    const sourceCode =
+      `import LocalizedStringBundle from '../chipper/js/webpack/LocalizedStringBundle';
+export default new LocalizedStringBundle(${JSON.stringify( stringsObject, null, 2 )});
+`
     fs.writeFileSync( `../${repo}/${repo}-strings.js`, sourceCode );
   }
   catch( e ) {
