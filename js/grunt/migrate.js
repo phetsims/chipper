@@ -199,7 +199,9 @@ const migrateFile = async ( repo, relativeFile ) => {
       const term = line.trim().split( ' ' )[ 1 ];
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
-      line = `  import ${term} from 'mipmap!${repo}/../images/${tail}`;
+      line = `  import ${term} from '${repo}/../images/${tail}`;
+      const a = line.lastIndexOf( `'` );
+      line = line.substring( 0, a ) + `_mipmap` + line.substring( a );
     }
     return line;
   };
@@ -340,14 +342,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, `import getLinks from '../../../brand/js/../../js/getLinks';`, `import getLinks from '../../../brand/js/getLinks';` );
   contents = replace( contents, `from '../../brand/js/../images`, `from '../../brand/phet/images` );
   contents = replace( contents, `import brand from '../../brand/js/../../js/brand';`, `import brand from './brand';` );
-
-
   contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
-
-
-  // TODO: mipmap plugin
-  contents = replace( contents, `import offImage from 'mipmap!SCENERY_PHET/../images/light-bulb-off_png';`, `import offImage from '../../scenery-phet/images/light-bulb-off_png';` );
-  contents = replace( contents, `import onImage from 'mipmap!SCENERY_PHET/../images/light-bulb-on_png';`, `import onImage from '../../scenery-phet/images/light-bulb-on_png';` );
   contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '../../../scenery/js/display/BackboneDrawable'` );
 
   const stringsToConvertReturnBackToExportDefault = [

@@ -11,7 +11,6 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
-const buildMipmaps = require( './buildMipmaps' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copyDirectory = require( './copyDirectory' );
@@ -146,10 +145,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   // Scripts that are run before our main minifiable content
   const startupScripts = [
     // Splash image
-    `window.PHET_SPLASH_DATA_URI="${loadFileAsDataURI( `../brand/${brand}/images/splash.svg` )}";`,
-
-    // Mipmaps
-    await buildMipmaps()
+    `window.PHET_SPLASH_DATA_URI="${loadFileAsDataURI( `../brand/${brand}/images/splash.svg` )}";`
   ];
 
   const minifiableScripts = [

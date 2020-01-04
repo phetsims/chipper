@@ -69,6 +69,10 @@ module.exports = async repo => {
         // Iterate over all media directories, such as images and sounds recursively
         grunt.file.recurse( searchDir, function( abspath, rootdir, subdir, filename ) {
 
+          if ( filename.endsWith( '.js' ) ) {
+            return; // modulified data doesn't need to be checked
+          }
+
           // Some files don't need to be attributed in the license.json
           if ( abspath.indexOf( 'README.md' ) < 0 &&
                filename.indexOf( 'license.json' ) !== 0 ) {
