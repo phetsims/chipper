@@ -182,6 +182,11 @@ const migrateFile = async ( repo, relativeFile ) => {
     contents = contents.slice( 0, contents.lastIndexOf( '}' ) );
   }
 
+  if ( contents.includes( 'define( require => {' ) ) {
+    contents = replace( contents, `define( require => {`, `` );
+    contents = contents.slice( 0, contents.lastIndexOf( '}' ) );
+  }
+
   const returnInherit = contents.lastIndexOf( 'return inherit( ' );
   if ( returnInherit >= 0 ) {
     contents = replace( contents, `return inherit( `, `export default inherit( ` );
@@ -334,6 +339,14 @@ const migrateFile = async ( repo, relativeFile ) => {
       lines[ i ] = lines[ i ].substring( 0, index ) + createDots( depth ) + lines[ i ].substring( index + 1 );
     }
 
+    // Catch some missed return => export default
+    if (lines[i].indexOf('return ')>=0 && lines[i].indexOf('.register( \'')>=0 &&
+
+        // opt out for dot
+        lines[i].indexOf(`function( x, y`)===-1){
+      lines[i]= replace(lines[i],'return ','export default ');
+    }
+
   }
   contents = lines.join( '\n' );
   // contents = replace( contents, `from '/brand/js/`, `from '/brand/phet/js/` );// TODO: how to deal with different brands? https://github.com/phetsims/chipper/issues/820
@@ -345,10 +358,20 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
   contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '../../../scenery/js/display/BackboneDrawable'` );
 
+  contents = replace(contents,`validateIconSize( `,`// validateIconSize( `); // TODO: eliminate this when mipmaps are fixed
+
+  // catch more return => export default
   const stringsToConvertReturnBackToExportDefault = [
     'return AlertableDef;',
     'return RadioButtonGroupAppearance;',
-    'return joist.register( \'UpdateState\', Enumeration.byKeys( ['
+    'return SOMConstants;',
+    'return GameState;',
+    'return scenery;',
+    `return new Namespace( '`,
+    `return utteranceQueueNamespace;`,
+    `return SigmaTable;`,
+    `return DataSet;`,
+    `return EESharedConstants;`
   ];
 
   stringsToConvertReturnBackToExportDefault.forEach( string => {
@@ -364,8 +387,8 @@ module.exports = async function( repo, cache ) {
   // const repos = fs.readFileSync( '../perennial/data/migrate-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
 
   // Run a subset for fast iteration.
-  let myrepos = [ 'acid-base-solutions', ...commonRepos ];
-  // let myrepos = repos;
+  // let myrepos = [ 'acid-base-solutions', ...commonRepos ];
+  let myrepos = repos;
   for ( const repo of myrepos ) {
     console.log( repo );
     let relativeFiles = [];
