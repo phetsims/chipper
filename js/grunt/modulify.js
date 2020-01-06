@@ -17,6 +17,7 @@ const grunt = require( 'grunt' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const buildMipmaps = require( '../grunt/buildMipmaps' );
+const createMipmap = require( './createMipmap' );
 
 const simRepos = [
   'acid-base-solutions',
@@ -181,33 +182,36 @@ export default img;
       const outputFilename = replace( abspath, '.png', '_png.js' );
       fs.writeFileSync( outputFilename, contents );
 
-      /*
-TODO: use mipmap plugin
-       */
+      // defaults.  TODO: do we need to support non-defaults?  See https://github.com/phetsims/chipper/issues/820
+      const options = {
+        level: 4, // maximum level
+        quality: 98
+      };
+
+      const mipmaps = await createMipmap( abspath, options.level, options.quality );
+      const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
       const mipmapContents = `
-var img = new Image();
-window.phetImages = window.phetImages || [];
-window.phetImages.push(img);
-img.src='${x}';
-const m = {
-  img: img,
-  width: 100,
-  height:100,
-  canvas: document.createElement('canvas'),
-};
-m.canvas.width = 100;
-m.canvas.height = 100;
-var context = m.canvas.getContext('2d');
-m.updateCanvas = ()=>{
-  if (m.img.complete && ( typeof m.img.naturalWidth === 'undefined' || m.img.naturalWidth > 0 ) ) {
-  context.drawImage(m.img,0,0);
-  delete m.updateCanvas;
-  }
-}
+var mipmaps = ${JSON.stringify( entry )};
+window.phetImages = window.phetImages || [] // ensure reference
+mipmaps.forEach( function( mipmap ) {
+  mipmap.img = new Image();
+  window.phetImages.push( mipmap.img ); // make sure it's loaded before the sim launches
+  mipmap.img.src = mipmap.url; // trigger the loading of the image for its level
+  mipmap.canvas = document.createElement( 'canvas' );
+  mipmap.canvas.width = mipmap.width;
+  mipmap.canvas.height = mipmap.height;
+  var context = mipmap.canvas.getContext( '2d' );
+  mipmap.updateCanvas = function() {
+    if ( mipmap.img.complete && ( typeof mipmap.img.naturalWidth === 'undefined' || mipmap.img.naturalWidth > 0 ) ) {
+      context.drawImage( mipmap.img, 0, 0 );
+      delete mipmap.updateCanvas;
+    }
+  };
+} );
+export default mipmaps;
+      `;
 
-export default [m];
-`;
 
       const mipmapFilename = replace( abspath, '.png', '_png_mipmap.js' );
       fs.writeFileSync( mipmapFilename, mipmapContents ); // https://github.com/phetsims/chipper/issues/820 TODO: mipmap
@@ -248,7 +252,7 @@ const bundleStrings = repo => {
     const sourceCode =
       `import LocalizedStringBundle from '../chipper/js/webpack/LocalizedStringBundle';
 export default new LocalizedStringBundle(${JSON.stringify( stringsObject, null, 2 )});
-`
+`;
     fs.writeFileSync( `../${repo}/${repo}-strings.js`, sourceCode );
   }
   catch( e ) {
@@ -265,8 +269,13 @@ module.exports = async function( repo, cache ) {
     console.log( repo );
     let relativeFiles = [];
     grunt.file.recurse( `../${repo}`, async ( abspath, rootdir, subdir, filename ) => {
-      await modulifyFile( abspath, rootdir, subdir, filename );
+      relativeFiles.push( { abspath: abspath, rootdir: rootdir, subdir: subdir, filename: filename } );
     } );
+
+    for ( let entry of relativeFiles ) {
+      await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename );
+    }
+
     bundleStrings( repo );
   }
 };
