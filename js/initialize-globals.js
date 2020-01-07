@@ -136,7 +136,8 @@
     eall: { type: 'flag' },
 
     /**
-     * Controls whether enhanced sound is on or off at startup (user can change later)
+     * Controls whether enhanced sound is on or off at startup (user can change later).  This query parameter is public
+     * facing.
      * @type {boolean}
      */
     enhancedSoundInitiallyEnabled: {
