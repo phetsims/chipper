@@ -16,12 +16,14 @@
   QUnit.log( function( details ) {
     ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {
       type: 'qunit-test',
-      main: details.module, // TODO: what is this for?
+      main: details.module, // TODO: what is this for? (https://github.com/phetsims/aqua/issues/81)
       result: details.result,
       module: details.module,
       name: details.name,
       message: details.message,
-      source: details.source // TODO: consider expected/actual, or don't worry because we'll run finer tests once it fails.
+
+      // TODO: consider expected/actual, or don't worry because we'll run finer tests once it fails. (https://github.com/phetsims/aqua/issues/81)
+      source: details.source
     } ), '*' );
   } );
 
