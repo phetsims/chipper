@@ -49,7 +49,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       loadPNG();
     }
     else {
-      throw new Error( 'unknown image type: ' + filename );
+      reject( new Error( 'unknown image type: ' + filename ) );
     }
 
     // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
@@ -74,7 +74,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       } );
 
       basePNG.on( 'error', function( err ) {
-        throw err;
+        reject( err );
       } );
 
       basePNG.on( 'parsed', function() {
@@ -134,7 +134,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
         callback( buffer );
       } );
       png.on( 'error', function( err ) {
-        throw err;
+        reject( err );
       } );
 
       // kick off the encoding of the PNG
@@ -199,6 +199,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
 
       // encode all levels, and compute rasters for levels 1-N
       encodeLevel( 0 );
+
       function finestMipmap() {
         return mipmaps[ mipmaps.length - 1 ];
       }

@@ -167,7 +167,7 @@ const replace = ( str, search, replacement ) => {
 
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
   if ( subdir && ( subdir.startsWith( 'images' ) || subdir.startsWith( 'phet/images' ) ) ) { // for brand
-    if ( filename.endsWith( '.png' ) ) {
+    if ( filename.endsWith( '.png' ) ) { // TODO: JPEGs?
       const x = loadFileAsDataURI( abspath );
       const source = x;
 
@@ -188,10 +188,11 @@ export default img;
         quality: 98
       };
 
-      const mipmaps = await createMipmap( abspath, options.level, options.quality );
-      const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
+      try {
+        const mipmaps = await createMipmap( abspath, options.level, options.quality );
+        const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
-      const mipmapContents = `
+        const mipmapContents = `
 var mipmaps = ${JSON.stringify( entry )};
 window.phetImages = window.phetImages || [] // ensure reference
 mipmaps.forEach( function( mipmap ) {
@@ -213,8 +214,12 @@ export default mipmaps;
       `;
 
 
-      const mipmapFilename = replace( abspath, '.png', '_png_mipmap.js' );
-      fs.writeFileSync( mipmapFilename, mipmapContents ); // https://github.com/phetsims/chipper/issues/820 TODO: mipmap
+        const mipmapFilename = replace( abspath, '.png', '_png_mipmap.js' );
+        fs.writeFileSync( mipmapFilename, mipmapContents ); // https://github.com/phetsims/chipper/issues/820 TODO: mipmap
+      }
+      catch( e ) {
+        console.log( `Image could not be mipmapped: ${abspath}` );
+      }
     }
   }
   if ( subdir && ( subdir.startsWith( 'sounds' ) ) ) {
