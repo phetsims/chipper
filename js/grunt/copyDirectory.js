@@ -48,7 +48,6 @@ module.exports = function( src, dst, filter, options ) {
 
     const contents = grunt.file.read( abspath );
 
-    // TODO: this line is duplicated around chipper
     const dstPath = subdir ? ( dst + '/' + subdir + '/' + filename ) : ( dst + '/' + filename );
 
     if ( options.failOnExistingFiles && grunt.file.exists( dstPath ) ) {

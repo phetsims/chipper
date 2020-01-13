@@ -84,7 +84,6 @@ const minify = function( js, options ) {
     }
     else {
       // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
-      // TODO: is this workaround still required?
       return result.code.replace( '\x0B', '\\x0B' );
     }
   }

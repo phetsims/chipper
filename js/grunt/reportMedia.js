@@ -21,7 +21,6 @@
 
 'use strict';
 
-// TODO: File not brought up to es6+ standards
 const ChipperConstants = require( '../common/ChipperConstants' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );
 const getPhetLibs = require( '../grunt/getPhetLibs' );

@@ -54,7 +54,6 @@ module.exports = async function() {
   const simLibraries = [];
 
   // Download all sims. If it's not published, it will be skipped in the report
-  // TODO: don't use this from chipper!
   const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
 
   for ( const sim of activeSims ) {
@@ -103,7 +102,7 @@ module.exports = async function() {
 
   const requestPromise = new Promise( ( resolve, reject ) => {
     // Change libraryobject to string in format that the database will recognize.
-    // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'   
+    // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'
     const libraryString = '{' + simLibraries.map( o => `"${o.name}":"${o.libraries}"` ).join( ',' ) + '}';
 
     const requestOptions = {

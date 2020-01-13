@@ -52,7 +52,6 @@ const zlib = require( 'zlib' );
  * @returns {Promise} - Does not resolve a value
  */
 module.exports = async function( repo, minifyOptions, instrument, allHTML, brand, localesOption ) {
-  // TODO: too many parameters. use options pattern instead.
   assert( typeof repo === 'string' );
   assert( typeof minifyOptions === 'object' );
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
