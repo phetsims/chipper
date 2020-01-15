@@ -31,6 +31,7 @@ const lint = require( './lint' );
 const minify = require( './minify' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
+const SimVersion = require( '../SimVersion' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
 const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
 
@@ -325,6 +326,17 @@ module.exports = function( grunt ) {
       if ( packageObject.phet.generatedUnitTests ) {
         grunt.task.run( 'generate-test-html' );
         grunt.task.run( 'generate-test-config' );
+      }
+
+      // update readmes only for simulations
+      if ( packageObject.phet.simulation ) {
+        const simVersion = SimVersion.parse( packageObject.version );
+        if ( simVersion.isSimNotPublished ) {
+          generateREADME( repo, false /* not published */ );
+        }
+        else {
+          generateREADME( repo, true /* published */ );
+        }
       }
     } ) );
 
