@@ -155,6 +155,12 @@
         if ( typeof result.value !== 'string' ) {
           throw new Error( `value should be a string for key ${key}` );
         }
+
+        // Until rosetta supports nested strings in https://github.com/phetsims/rosetta/issues/215, keep this assertion.
+        // This should be after because the above errors are more specific. This is better as a fallback.
+        global.assert && !ChipperStringUtils.isA11yStringKey( key ) && global.assert( map[ key ],
+          'non a11y strings do not yet support nesting' );
+
         return result.value;
       }
 
