@@ -43,7 +43,7 @@ add it in the `package.json`.
 
 If there is a sub directory that requires specific configuration, you should create a file called `.eslintrc.js` in that
 directory, and specify the necessary configuration there. Don't forget that you also need to "extend" the default 
-configuration too. See `phet-io-wrappers/studio/.eslintrc.js` for an example.
+configuration too. TODO: https://github.com/phetsims/chipper/issues/835.
 
 NOTE: before creating a specific configuration file, answer these questions:
   * Why does this rule apply here but not everywhere?
