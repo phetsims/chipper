@@ -28,13 +28,7 @@ module.exports = function( repo, published ) {
   const phetLibs = getPhetLibs( repo, 'phet' );
 
   // Commands for cloning all required repositories
-  let cloneCommands = '';
-  for ( let i = 0; i < phetLibs.length; i++ ) {
-    cloneCommands = cloneCommands + 'git clone https://github.com/phetsims/' + phetLibs[ i ] + '.git';
-    if ( i !== phetLibs.length - 1 ) {
-      cloneCommands += '\n';
-    }
-  }
+  const cloneCommands = phetLibs.map( phetLib => `git clone https://github.com/phetsims/${phetLib}.git` ).join( '\n' );
 
   // Read the template.
   const templateFile = published ? 'README-published.md' : 'README-unpublished.md';
@@ -48,4 +42,3 @@ module.exports = function( repo, published ) {
   // Write to the repository's root directory.
   grunt.file.write( `../${repo}/README.md`, readme );
 };
-
