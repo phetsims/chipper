@@ -3,7 +3,6 @@ phet-io-wrappers/diff
 phet-io-wrappers/data-stream
 phet-io-wrappers/engagement-metrics
 phet-io-wrappers/index
-phet-io-wrappers/studio
 phet-io-wrappers/login
 phet-io-wrappers/mirror-inputs
 phet-io-wrappers/multi
@@ -11,3 +10,4 @@ phet-io-wrappers/record
 phet-io-wrappers/playback
 phet-io-wrappers/screenshot
 phet-io-wrappers/state
+studio
