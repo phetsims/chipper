@@ -328,15 +328,10 @@ module.exports = function( grunt ) {
         grunt.task.run( 'generate-test-config' );
       }
 
-      // update readmes only for simulations
+      // update README.md only for simulations
       if ( packageObject.phet.simulation ) {
         const simVersion = SimVersion.parse( packageObject.version );
-        if ( simVersion.isSimNotPublished ) {
-          generateREADME( repo, false /* not published */ );
-        }
-        else {
-          generateREADME( repo, true /* published */ );
-        }
+        generateREADME( repo, simVersion.isSimPublished );
       }
     } ) );
 
