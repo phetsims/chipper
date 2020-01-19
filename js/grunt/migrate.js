@@ -365,8 +365,6 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
   contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '../../../scenery/js/display/BackboneDrawable'` );
 
-  contents = replace( contents, `validateIconSize( `, `// validateIconSize( ` ); // TODO: eliminate this when mipmaps are fixed
-
   // catch more return => export default
   const stringsToConvertReturnBackToExportDefault = [
     'return AlertableDef;',
