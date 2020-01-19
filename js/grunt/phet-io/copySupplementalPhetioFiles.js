@@ -1,4 +1,4 @@
-// Copyright 2016-2019, University of Colorado Boulder
+// Copyright 2016-2020, University of Colorado Boulder
 
 /**
  * Copies all supporting PhET-iO files, including wrappers, indices, lib files, etc.
@@ -176,6 +176,12 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
       contents = ChipperStringUtils.replaceAll( contents, WRAPPER_COMMON_FOLDER + '/', 'common/' );
     }
+
+    // Special handling for studio paths since it is not nested under phet-io-wrappers
+    if ( abspath.indexOf( 'studio/index.html' ) >= 0 ) {
+      contents = ChipperStringUtils.replaceAll( contents, '<script src="../contrib/', '<script src="../../contrib/' );
+    }
+
     if ( contents !== originalContents ) {
       return contents;
     }

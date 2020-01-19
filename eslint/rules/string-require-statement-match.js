@@ -17,6 +17,7 @@ module.exports = function( context ) {
   const ChipperStringUtils = require( '../../js/common/ChipperStringUtils' );
 
   // Adapted from Stack Overflow, see http://stackoverflow.com/questions/25085306/javascript-space-separated-string-to-camelcase
+  // NOTE: This behaves slightly differently than _.camelCase, which is why it is being used instead, see https://github.com/phetsims/phet-core/issues/72#issuecomment-570291388
   function toCamelCase( string ) {
     let out = '';
 

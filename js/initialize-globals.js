@@ -1,4 +1,4 @@
-// Copyright 2015-2019, University of Colorado Boulder
+// Copyright 2015-2020, University of Colorado Boulder
 
 /**
  * Initializes phet globals that are used by all simulations, including assertions and query-parameters.
@@ -136,7 +136,8 @@
     eall: { type: 'flag' },
 
     /**
-     * Controls whether enhanced sound is on or off at startup (user can change later)
+     * Controls whether enhanced sound is on or off at startup (user can change later).  This query parameter is public
+     * facing.
      * @type {boolean}
      */
     enhancedSoundInitiallyEnabled: {
@@ -489,7 +490,8 @@
      */
     allowLinks: {
       type: 'boolean',
-      defaultValue: true
+      defaultValue: true,
+      public: true
     },
 
     /**

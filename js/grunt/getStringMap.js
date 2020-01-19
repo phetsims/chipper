@@ -1,4 +1,4 @@
-// Copyright 2015-2019, University of Colorado Boulder
+// Copyright 2015-2020, University of Colorado Boulder
 
 /**
  * Returns a map such that map["locale"]["REPO/stringKey"] will be the string value (with fallbacks to English where needed).
@@ -32,7 +32,6 @@ module.exports = function( locales, phetLibs ) {
   // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
   const stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
 
-  // TODO: Use map/unique to get repository names
   for ( const stringKey in global.phet.chipper.strings ) {
     const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
 

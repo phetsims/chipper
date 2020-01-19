@@ -1,4 +1,4 @@
-// Copyright 2015-2019, University of Colorado Boulder
+// Copyright 2015-2020, University of Colorado Boulder
 
 /**
  * This grunt task iterates over all of the license.json files and reports any media files (images, sound, ...)
@@ -21,7 +21,6 @@
 
 'use strict';
 
-// TODO: File not brought up to es6+ standards
 const ChipperConstants = require( '../common/ChipperConstants' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );
 const getPhetLibs = require( '../grunt/getPhetLibs' );

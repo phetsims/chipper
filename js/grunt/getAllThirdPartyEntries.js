@@ -1,8 +1,6 @@
-// Copyright 2017-2019, University of Colorado Boulder
+// Copyright 2017-2020, University of Colorado Boulder
 
 /**
- * TODO doc
- *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
@@ -12,7 +10,7 @@ const getThirdPartyLibEntries = require( './getThirdPartyLibEntries' );
 const grunt = require( 'grunt' );
 
 /**
- * TODO: doc, and naming differences
+ * Returns an object with information about third-party license entries.
  *
  * NOTE: This pulls entries from some of the chipper globals. Should be done only after thie build
  *

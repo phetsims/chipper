@@ -1,4 +1,4 @@
-// Copyright 2017-2019, University of Colorado Boulder
+// Copyright 2017-2020, University of Colorado Boulder
 
 /**
  * Uglifies the given JS code (with phet-relevant options)
@@ -84,7 +84,6 @@ const minify = function( js, options ) {
     }
     else {
       // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
-      // TODO: is this workaround still required?
       return result.code.replace( '\x0B', '\\x0B' );
     }
   }

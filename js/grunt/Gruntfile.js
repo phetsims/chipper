@@ -1,4 +1,4 @@
-// Copyright 2013-2019, University of Colorado Boulder
+// Copyright 2013-2020, University of Colorado Boulder
 
 /**
  * Grunt configuration file for PhET projects.
@@ -32,6 +32,7 @@ const lint = require( './lint' );
 const minify = require( './minify' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
+const SimVersion = require( '../SimVersion' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
 const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
 
@@ -326,6 +327,12 @@ module.exports = function( grunt ) {
       if ( packageObject.phet.generatedUnitTests ) {
         grunt.task.run( 'generate-test-html' );
         grunt.task.run( 'generate-test-config' );
+      }
+
+      // update README.md only for simulations
+      if ( packageObject.phet.simulation ) {
+        const simVersion = SimVersion.parse( packageObject.version );
+        generateREADME( repo, simVersion.isSimPublished );
       }
     } ) );
 

@@ -1,4 +1,4 @@
-// Copyright 2016-2019, University of Colorado Boulder
+// Copyright 2016-2020, University of Colorado Boulder
 
 /**
  * Copy a directory and all of its contents recursively
@@ -48,7 +48,6 @@ module.exports = function( src, dst, filter, options ) {
 
     const contents = grunt.file.read( abspath );
 
-    // TODO: this line is duplicated around chipper
     const dstPath = subdir ? ( dst + '/' + subdir + '/' + filename ) : ( dst + '/' + filename );
 
     if ( options.failOnExistingFiles && grunt.file.exists( dstPath ) ) {

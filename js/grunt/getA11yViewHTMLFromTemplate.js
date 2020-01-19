@@ -1,4 +1,4 @@
-// Copyright 2016-2019, University of Colorado Boulder
+// Copyright 2016-2020, University of Colorado Boulder
 
 /**
  * From the a11y view template file, fill in the templated values and return the html as a string.
@@ -23,7 +23,6 @@ module.exports = function( repo ) {
 
   let html = grunt.file.read( '../chipper/templates/sim-a11y-view.html' ); // the template file
 
-  // TODO: improved way of just grabbing the title
   const englishStringsString = grunt.file.read( `../${repo}/${repo}-strings_en.json` ); // the english strings file
   const englishStringsJSON = JSON.parse( englishStringsString );
   const englishSimTitle = englishStringsJSON[ getTitleStringKey( repo ).split( '/' )[ 1 ] ].value;
