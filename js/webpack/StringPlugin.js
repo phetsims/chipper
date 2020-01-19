@@ -1,3 +1,4 @@
+/* eslint-disable */ // TODO: make lintable if we keep this file, see https://github.com/phetsims/chipper/issues/820
 const fs = require( 'fs' );
 const path = require( 'path' );
 
