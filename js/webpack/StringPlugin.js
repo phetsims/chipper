@@ -31,7 +31,6 @@ export default _.get( strings, ${JSON.stringify( key )} ).value;
 ` );
 
         const newRequest = {
-          ...request,
           request: request.request,
           path: stringModuleFile
         };
