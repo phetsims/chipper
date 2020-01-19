@@ -22,9 +22,9 @@ const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
 const getInitializationScript = require( './getInitializationScript' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
-const getPhetLibs = require( './getPhetLibs' );
+// const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );
-const getStringMap = require( './getStringMap' );
+// const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 const jimp = require( 'jimp' );
@@ -33,8 +33,10 @@ const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 const packageRunnable = require( './packageRunnable' );
 const packageXHTML = require( './packageXHTML' );
-const reportUnusedMedia = require( './reportUnusedMedia' );
-const reportUnusedStrings = require( './reportUnusedStrings' );
+
+// TODO: Re-enable these? https://github.com/phetsims/chipper/issues/820
+// const reportUnusedMedia = require( './reportUnusedMedia' );
+// const reportUnusedStrings = require( './reportUnusedStrings' );
 const webpackBuild = require( './webpackBuild' );
 const zlib = require( 'zlib' );
 
@@ -84,7 +86,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   // After all strings have been loaded, report which of the translatable strings are unused.
   // reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
 
-  const phetLibs = getPhetLibs( repo, brand );
+  // const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
   const dependencies = await getDependencies( repo );

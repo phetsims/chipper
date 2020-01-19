@@ -19,113 +19,116 @@ const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const buildMipmaps = require( '../grunt/buildMipmaps' );
 const createMipmap = require( './createMipmap' );
 
+// disable lint in compiled files
+const HEADER = `/* eslint-disable */`
+
 const simRepos = [
   'acid-base-solutions',
-  'area-builder',
-  'area-model-algebra',
-  'area-model-decimals',
-  'area-model-introduction',
-  'area-model-multiplication',
-  'arithmetic',
-  'atomic-interactions',
-  'balancing-act',
-  'balancing-chemical-equations',
-  'balloons-and-static-electricity',
-  'beers-law-lab',
-  'bending-light',
-  'blackbody-spectrum',
-  'blast',
-  'build-a-fraction',
-  'build-a-molecule',
-  'build-an-atom',
-  'bumper',
-  'buoyancy',
-  'calculus-grapher',
-  'capacitor-lab-basics',
-  'chains',
-  'charges-and-fields',
-  'circuit-construction-kit-ac',
-  'circuit-construction-kit-black-box-study',
-  'circuit-construction-kit-dc',
-  'circuit-construction-kit-dc-virtual-lab',
-  'color-vision',
-  'collision-lab',
-  'concentration',
-  'coulombs-law',
-  'curve-fitting',
-  'density',
-  'diffusion',
-  'energy-forms-and-changes',
-  'energy-skate-park',
-  'energy-skate-park-basics',
-  'equality-explorer',
-  'equality-explorer-basics',
-  'equality-explorer-two-variables',
-  'estimation',
-  'example-sim',
-  'expression-exchange',
-  'faradays-law',
-  'fluid-pressure-and-flow',
-  'forces-and-motion-basics',
-  'fraction-comparison',
-  'fraction-matcher',
-  'fractions-equality',
-  'fractions-intro',
-  'fractions-mixed-numbers',
-  'friction',
-  'function-builder',
-  'function-builder-basics',
-  'gas-properties',
-  'gases-intro',
-  'gene-expression-essentials',
-  'graphing-lines',
-  'graphing-quadratics',
-  'graphing-slope-intercept',
-  'gravity-and-orbits',
-  'gravity-force-lab',
-  'gravity-force-lab-basics',
-  'hookes-law',
-  'interaction-dashboard',
-  'isotopes-and-atomic-mass',
-  'john-travoltage',
-  'least-squares-regression',
-  'make-a-ten',
-  'masses-and-springs',
-  'masses-and-springs-basics',
-  'models-of-the-hydrogen-atom',
-  'molarity',
-  'molecules-and-light',
-  'molecule-polarity',
-  'molecule-shapes',
-  'molecule-shapes-basics',
-  'natural-selection',
-  'neuron',
-  'number-line-integers',
-  'number-play',
-  'ohms-law',
-  'optics-lab',
-  'pendulum-lab',
-  'ph-scale',
-  'ph-scale-basics',
-  'phet-io-test-sim',
-  'plinko-probability',
-  'projectile-motion',
-  'proportion-playground',
-  'reactants-products-and-leftovers',
-  'resistance-in-a-wire',
-  'rutherford-scattering',
-  'simula-rasa',
-  'states-of-matter',
-  'states-of-matter-basics',
-  'trig-tour',
-  'under-pressure',
-  'unit-rates',
-  'vector-addition',
-  'vector-addition-equations',
-  'wave-interference',
-  'wave-on-a-string',
-  'waves-intro',
-  'wilder'
+  // 'area-builder',
+  // 'area-model-algebra',
+  // 'area-model-decimals',
+  // 'area-model-introduction',
+  // 'area-model-multiplication',
+  // 'arithmetic',
+  // 'atomic-interactions',
+  // 'balancing-act',
+  // 'balancing-chemical-equations',
+  // 'balloons-and-static-electricity',
+  // 'beers-law-lab',
+  // 'bending-light',
+  // 'blackbody-spectrum',
+  // 'blast',
+  // 'build-a-fraction',
+  // 'build-a-molecule',
+  // 'build-an-atom',
+  // 'bumper',
+  // 'buoyancy',
+  // 'calculus-grapher',
+  // 'capacitor-lab-basics',
+  // 'chains',
+  // 'charges-and-fields',
+  // 'circuit-construction-kit-ac',
+  // 'circuit-construction-kit-black-box-study',
+  // 'circuit-construction-kit-dc',
+  // 'circuit-construction-kit-dc-virtual-lab',
+  // 'color-vision',
+  // 'collision-lab',
+  // 'concentration',
+  // 'coulombs-law',
+  // 'curve-fitting',
+  // 'density',
+  // 'diffusion',
+  // 'energy-forms-and-changes',
+  // 'energy-skate-park',
+  // 'energy-skate-park-basics',
+  // 'equality-explorer',
+  // 'equality-explorer-basics',
+  // 'equality-explorer-two-variables',
+  // 'estimation',
+  // 'example-sim',
+  // 'expression-exchange',
+  // 'faradays-law',
+  // 'fluid-pressure-and-flow',
+  // 'forces-and-motion-basics',
+  // 'fraction-comparison',
+  // 'fraction-matcher',
+  // 'fractions-equality',
+  // 'fractions-intro',
+  // 'fractions-mixed-numbers',
+  // 'friction',
+  // 'function-builder',
+  // 'function-builder-basics',
+  // 'gas-properties',
+  // 'gases-intro',
+  // 'gene-expression-essentials',
+  // 'graphing-lines',
+  // 'graphing-quadratics',
+  // 'graphing-slope-intercept',
+  // 'gravity-and-orbits',
+  // 'gravity-force-lab',
+  // 'gravity-force-lab-basics',
+  // 'hookes-law',
+  // 'interaction-dashboard',
+  // 'isotopes-and-atomic-mass',
+  // 'john-travoltage',
+  // 'least-squares-regression',
+  // 'make-a-ten',
+  // 'masses-and-springs',
+  // 'masses-and-springs-basics',
+  // 'models-of-the-hydrogen-atom',
+  // 'molarity',
+  // 'molecules-and-light',
+  // 'molecule-polarity',
+  // 'molecule-shapes',
+  // 'molecule-shapes-basics',
+  // 'natural-selection',
+  // 'neuron',
+  // 'number-line-integers',
+  // 'number-play',
+  // 'ohms-law',
+  // 'optics-lab',
+  // 'pendulum-lab',
+  // 'ph-scale',
+  // 'ph-scale-basics',
+  // 'phet-io-test-sim',
+  // 'plinko-probability',
+  // 'projectile-motion',
+  // 'proportion-playground',
+  // 'reactants-products-and-leftovers',
+  // 'resistance-in-a-wire',
+  // 'rutherford-scattering',
+  // 'simula-rasa',
+  // 'states-of-matter',
+  // 'states-of-matter-basics',
+  // 'trig-tour',
+  // 'under-pressure',
+  // 'unit-rates',
+  // 'vector-addition',
+  // 'vector-addition-equations',
+  // 'wave-interference',
+  // 'wave-on-a-string',
+  // 'waves-intro',
+  // 'wilder'
 ];
 
 const commonRepos = [
@@ -171,7 +174,7 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
       const x = loadFileAsDataURI( abspath );
       const source = x;
 
-      const contents = `
+      const contents = `${HEADER}
 var img = new Image();
 window.phetImages = window.phetImages || [];
 window.phetImages.push(img);
@@ -192,7 +195,7 @@ export default img;
         const mipmaps = await createMipmap( abspath, options.level, options.quality );
         const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
-        const mipmapContents = `
+        const mipmapContents = `${HEADER}
 var mipmaps = ${JSON.stringify( entry )};
 window.phetImages = window.phetImages || [] // ensure reference
 mipmaps.forEach( function( mipmap ) {
@@ -226,7 +229,7 @@ export default mipmaps;
     if ( filename.endsWith( '.mp3' ) ) {
       const x = loadFileAsDataURI( abspath );
 
-      const contents = `
+      const contents = `${HEADER}
 export default {name:'${filename}',base64:'${x}'};
 `;
 
@@ -236,7 +239,7 @@ export default {name:'${filename}',base64:'${x}'};
     if ( filename.endsWith( '.wav' ) ) {
       const x = loadFileAsDataURI( abspath );
 
-      const contents = `
+      const contents = `${HEADER}
 export default {name:'${filename}',base64:'${x}'};
 `;
 
@@ -254,8 +257,8 @@ const bundleStrings = repo => {
     const stringsObject = {
       en: englishStringsJSON // TODO: embed all strings in this file?  Do we support modes where not all strings are built-in? https://github.com/phetsims/chipper/issues/820
     };
-    const sourceCode =
-      `import LocalizedStringBundle from '../chipper/js/webpack/LocalizedStringBundle';
+    const sourceCode = `${HEADER}
+import LocalizedStringBundle from '../chipper/js/webpack/LocalizedStringBundle';
 export default new LocalizedStringBundle(${JSON.stringify( stringsObject, null, 2 )});
 `;
     fs.writeFileSync( `../${repo}/${repo}-strings.js`, sourceCode );

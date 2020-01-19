@@ -103,7 +103,7 @@ module.exports = {
     'no-new': 2,
 
     // controls location of Use Strict Directives
-    strict: 2,
+    // strict: 2, // TODO: restore this, see https://github.com/phetsims/chipper/issues/820
 
     // Avoid code that looks like two expressions but is actually one
     'no-unexpected-multiline': 2,

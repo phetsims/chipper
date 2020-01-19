@@ -1,4 +1,5 @@
 // Copyright 2019, University of Colorado Boulder
+/* eslint-disable */ // TODO: lint this file https://github.com/phetsims/chipper/issues/820
 
 const fs = require( 'fs' );
 const path = require( 'path' );

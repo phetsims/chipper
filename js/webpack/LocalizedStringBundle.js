@@ -1,3 +1,5 @@
+// Copyright 2020, University of Colorado Boulder
+
 export default class LocalizedStringBundle {
   // data[locale][key]
   constructor( data ) {

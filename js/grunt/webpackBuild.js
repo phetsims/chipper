@@ -11,12 +11,9 @@
 // modules
 const chipperGlobals = require( './chipperGlobals' );
 const fs = require( 'fs' );
-const grunt = require( 'grunt' );
 const path = require( 'path' );
-const requirejs = require( 'requirejs' );
 const webpack = require( 'webpack' );
 const StringPlugin = require( '../webpack/StringPlugin' );
-const urlLoader = require( 'url-loader' );
 
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim () );
 const reposByNamespace = {};
