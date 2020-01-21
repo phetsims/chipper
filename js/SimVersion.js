@@ -1,4 +1,4 @@
-// Copyright 2019-2020, University of Colorado Boulder
+// Copyright 2019, University of Colorado Boulder
 
 /**
  * Handles serializing and deserializing versions for simulations.
@@ -123,14 +123,6 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
                this.minor === 0 &&
                this.maintenance === 0 &&
                this.testType );
-    }
-
-    /**
-     * @returns {boolean}
-     * @public
-     */
-    get isSimPublished() {
-      return !this.isSimNotPublished;
     }
 
     /**
