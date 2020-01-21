@@ -18,7 +18,6 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
 const findDuplicates = require( './findDuplicates' );
-const migrate = require( './migrate' );
 const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateConfig = require( './generateConfig' );
@@ -384,10 +383,6 @@ module.exports = function( grunt ) {
     const cache = !grunt.option( 'disable-eslint-cache' );
 
     findDuplicates( repo, cache );
-  } ) );
-
-  grunt.registerTask( 'migrate', '', wrapTask( async () => {
-    migrate( repo );
   } ) );
 
   // Grunt task that determines created and last modified dates from git, and
