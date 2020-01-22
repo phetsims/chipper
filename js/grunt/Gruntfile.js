@@ -328,7 +328,7 @@ module.exports = function( grunt ) {
       }
 
       // update README.md only for simulations
-      if ( packageObject.phet.simulation ) {
+      if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {
         const simVersion = SimVersion.parse( packageObject.version );
         generateREADME( repo, simVersion.isSimPublished );
       }
