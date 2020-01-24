@@ -17,9 +17,10 @@ const fs = require( 'fs' );
  * @public
  * @param {string} repo - The repository of the file to update (should be a git root)
  * @param {string} relativeFile - The filename relative to the repository root.
+ * @param {boolean} silent - if true, no console logging will occur
  * @returns {Promise}
  */
-module.exports = async ( repo, relativeFile ) => {
+module.exports = async ( repo, relativeFile, silent = false ) => {
 
   let startDate = ( await execute( 'git', [
     'log', '--diff-filter=A', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
@@ -63,10 +64,10 @@ module.exports = async ( repo, relativeFile ) => {
       const concatted = [ copyrightLine ].concat( fileLines.slice( 1 ) );
       const newFileContents = concatted.join( lineSeparator );
       fs.writeFileSync( absPath, newFileContents );
-      console.log( absPath + ', updated with ' + copyrightLine );
+      !silent && console.log( absPath + ', updated with ' + copyrightLine );
     }
     else {
-      console.log( absPath + ' FIRST LINE WAS NOT COPYRIGHT: ' + firstLine );
+      !silent && console.log( absPath + ' FIRST LINE WAS NOT COPYRIGHT: ' + firstLine );
     }
   }
 };

@@ -89,7 +89,7 @@ module.exports = async function( repo, relativeFile, launchSuffix ) {
     await execute( 'git', [ 'ls-files', '--error-unmatch', relativeFile ], `../${repo}` );
 
     // If we get here, then we are overwriting the config file, so let's update the copyright to be appropriate.
-    await updateCopyrightDate( repo, relativeFile );
+    await updateCopyrightDate( repo, relativeFile, true /* don't log to the console */ );
   }
   catch( e ) {
     // if we errored out, then the config file isn't tracked, so don't update the copyright date
