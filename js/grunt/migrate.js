@@ -367,7 +367,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, `from '../../brand/js/../images`, `from '../../brand/phet/images` );
   contents = replace( contents, `import brand from '../../brand/js/../../js/brand.js';`, `import brand from './brand.js';` );
   contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
-  contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '../../../scenery/js/display/BackboneDrawable'; // eslint-disable-line` ); // TODO: deal with this https://github.com/phetsims/chipper/issues/820
+  contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '../../../scenery/js/display/BackboneDrawable.js'; // eslint-disable-line` ); // TODO: deal with this https://github.com/phetsims/chipper/issues/820
 
   // catch more return => export default
   const stringsToConvertReturnBackToExportDefault = [
