@@ -93,7 +93,8 @@ module.exports = async function( repo, relativeFile, launchSuffix ) {
     // instead of creating a new one (like simula-rasa would do). So let's update the copyright to have the creation
     // date and the last modified date. Don't log to the console because that is just noise; we aren't "updating"
     // the copyright date but instead keeping it in sync with our conventions which here are different than for new files.
-    // See https://github.com/phetsims/chipper/issues/830, https://github.com/phetsims/chipper/issues/763, and https://github.com/phetsims/perennial/issues/120
+    // See https://github.com/phetsims/chipper/issues/830, https://github.com/phetsims/chipper/issues/763, and
+    // https://github.com/phetsims/perennial/issues/120
     await updateCopyrightDate( repo, relativeFile, true );
   }
   catch( e ) {
