@@ -346,6 +346,11 @@ const migrateFile = async ( repo, relativeFile ) => {
       lines[ i ] = lines[ i ].substring( 0, index ) + createDots( depth ) + lines[ i ].substring( index + 1 );
     }
 
+    // End with *.js suffix, which is necessary on windows but not on mac
+    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from \'' ) ) {
+      lines[ i ] = replace( lines[ i ], `';`, `.js';` );
+    }
+
     // Catch some missed return => export default
     if ( lines[ i ].indexOf( 'return ' ) >= 0 && lines[ i ].indexOf( '.register( \'' ) >= 0 &&
 
@@ -353,15 +358,14 @@ const migrateFile = async ( repo, relativeFile ) => {
          lines[ i ].indexOf( `function( x, y` ) === -1 ) {
       lines[ i ] = replace( lines[ i ], 'return ', 'export default ' );
     }
-
   }
   contents = lines.join( '\n' );
   // contents = replace( contents, `from '/brand/js/`, `from '/brand/phet/js/` );// TODO: how to deal with different brands? https://github.com/phetsims/chipper/issues/820
   contents = replace( contents, `../../brand/js/Brand`, `../../brand/phet/js/Brand` );
-  contents = replace( contents, `import brand from '../../../brand/js/../../js/brand';`, `import brand from '../../../brand/js/brand';` );
-  contents = replace( contents, `import getLinks from '../../../brand/js/../../js/getLinks';`, `import getLinks from '../../../brand/js/getLinks';` );
+  contents = replace( contents, `import brand from '../../../brand/js/../../js/brand.js';`, `import brand from '../../../brand/js/brand.js';` );
+  contents = replace( contents, `import getLinks from '../../../brand/js/../../js/getLinks.js';`, `import getLinks from '../../../brand/js/getLinks.js';` );
   contents = replace( contents, `from '../../brand/js/../images`, `from '../../brand/phet/images` );
-  contents = replace( contents, `import brand from '../../brand/js/../../js/brand';`, `import brand from './brand';` );
+  contents = replace( contents, `import brand from '../../brand/js/../../js/brand.js';`, `import brand from './brand.js';` );
   contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
   contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '../../../scenery/js/display/BackboneDrawable'; // eslint-disable-line` ); // TODO: deal with this https://github.com/phetsims/chipper/issues/820
 
