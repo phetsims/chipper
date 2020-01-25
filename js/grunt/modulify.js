@@ -11,6 +11,7 @@
 
 'use strict';
 
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const execute = require( './execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
@@ -249,23 +250,74 @@ export default {name:'${filename}',base64:'${x}'};
   }
 };
 
+// TODO: query strings for string tests
+/**
+ * For a given repo, create the string files, if any.
+ * @param {string} repo - lowercase repo name
+ */
 const bundleStrings = repo => {
+
+  let englishStringsString = null;
   try {
-    const englishStringsString = grunt.file.read( `../${repo}/${repo}-strings_en.json` ); // the english strings file
-    const englishStringsJSON = JSON.parse( englishStringsString );
-    // console.log( englishStringsJSON );
-    const stringsObject = {
-      en: englishStringsJSON // TODO: embed all strings in this file?  Do we support modes where not all strings are built-in? https://github.com/phetsims/chipper/issues/820
-    };
-    const sourceCode = `${HEADER}
-import LocalizedStringBundle from '../chipper/js/webpack/LocalizedStringBundle.js';
-export default new LocalizedStringBundle(${JSON.stringify( stringsObject, null, 2 )});
-`;
-    fs.writeFileSync( `../${repo}/${repo}-strings.js`, sourceCode );
+
+    // Load the primary english string file
+    englishStringsString = grunt.file.read( `../${repo}/${repo}-strings_en.json` ); // the english strings file
   }
   catch( e ) {
-    console.log( 'string problem for ' + repo );
+    return;
   }
+  const englishStringsJSON = JSON.parse( englishStringsString );
+
+  // read from babel, if it has any translations.  Key = locale, value = translation file
+  const translatedStringsMap = {};
+
+  try {
+    const results = fs.readdirSync( `../babel/${repo}` );
+
+    // read each file once
+    results.forEach( result => {
+      const locale = result.substring( result.indexOf( '_' ) + 1, result.lastIndexOf( '.json' ) );
+      const contents = grunt.file.read( `../babel/${repo}/${result}` );
+      translatedStringsMap[ locale ] = JSON.parse( contents );
+    } );
+  }
+  catch( e ) {
+
+    // no babel translations yet, probably
+  }
+
+  try {
+    fs.mkdirSync( `../${repo}/strings/` );
+  }
+  catch( e ) {
+
+    // maybe that directory already existed?
+  }
+
+  // TODO: traverse nested substructure for structured strings
+  Object.keys( englishStringsJSON ).forEach( key => {
+
+    const stringsObject = {
+      en: englishStringsJSON[ key ]
+    };
+    Object.keys( translatedStringsMap ).forEach( locale => {
+      const translatedStrings = translatedStringsMap[ locale ];
+      if ( translatedStrings[ key ] ) {
+        stringsObject[ locale ] = translatedStrings[ key ]; // value plucked out later
+      }
+    } );
+
+    // Pluck out the values to streamline the file
+    const o = _.mapValues( stringsObject, 'value' );
+
+    // Output one string file per string key
+    const stringSourceCode = `${HEADER}
+const values = ${JSON.stringify( o, null, 2 )};
+export default values[window.phet.chipper.locale] || values.en; // fallback to English if no locale specified, or if there is no string for that file
+`;
+
+    fs.writeFileSync( `../${repo}/strings/${key}.js`, stringSourceCode );
+  } );
 };
 
 module.exports = async function( repo, cache ) {

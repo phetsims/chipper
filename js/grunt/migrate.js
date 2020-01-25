@@ -231,8 +231,6 @@ const migrateFile = async ( repo, relativeFile ) => {
     return line;
   };
 
-  const alreadyLoadedStrings = [];
-
   //   // strings
   //   const acidBaseSolutionsTitleString = require( 'string!ACID_BASE_SOLUTIONS/acid-base-solutions.title' );
   // becomes
@@ -245,24 +243,9 @@ const migrateFile = async ( repo, relativeFile ) => {
       const variableName = line.trim().split( ' ' )[ 1 ];
       const repoCap = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
 
-      let repoLower = repoCap.toLowerCase();
-      repoLower = replace( repoLower, '_', '-' );
-
       const tail = line.substring( line.indexOf( '/' ) + 1 );
       const stringKey = tail.split( `'` )[ 0 ];
-      let prefix = '';
-      if ( alreadyLoadedStrings.indexOf( repoCap ) === -1 ) {
-        prefix = `import ${repoCap}_strings from '${repoCap}/../${repoLower}-strings';\n`;
-      }
-
-      if ( stringKey.indexOf( '.' ) >= 0 || stringKey.indexOf( ' ' ) >= 0 ) {
-        line = `${prefix}const ${variableName} = ${repoCap}_strings.localized['${stringKey}'];`;
-      }
-      else {
-        line = `${prefix}const ${variableName} = ${repoCap}_strings.localized.${stringKey};`; // use shorthand where possible
-      }
-
-      alreadyLoadedStrings.push( repoCap );
+      line = `import ${variableName} from '${repoCap}/../strings/${stringKey}';`; // .js added later
     }
     return line;
   };
@@ -369,6 +352,11 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
   contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '../../../scenery/js/display/BackboneDrawable.js'; // eslint-disable-line` ); // TODO: deal with this https://github.com/phetsims/chipper/issues/820
 
+  // Allow repeat migrations
+  contents = replace( contents, `.js.js';`, `.js';` );
+  contents = replace( contents, `.js.js';`, `.js';` );
+  contents = replace( contents, `.js.js';`, `.js';` );
+
   // catch more return => export default
   const stringsToConvertReturnBackToExportDefault = [
     'return AlertableDef;',
@@ -387,6 +375,7 @@ const migrateFile = async ( repo, relativeFile ) => {
     const withExport = replace( string, 'return ', 'export default ' );
     contents = replace( contents, string, withExport );
   } );
+
 
   fs.writeFileSync( path, contents, 'utf-8' );
 };
