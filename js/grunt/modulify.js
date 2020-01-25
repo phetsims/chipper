@@ -11,17 +11,14 @@
 
 'use strict';
 
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
-const execute = require( './execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
-const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
-const buildMipmaps = require( '../grunt/buildMipmaps' );
 const createMipmap = require( './createMipmap' );
+const modulifyStrings = require( './modulifyStrings' );
 
 // disable lint in compiled files
-const HEADER = `/* eslint-disable */`;
+const HEADER = '/* eslint-disable */';
 
 const simRepos = [
   'acid-base-solutions',
@@ -173,7 +170,6 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
   if ( subdir && ( subdir.startsWith( 'images' ) || subdir.startsWith( 'phet/images' ) ) ) { // for brand
     if ( filename.endsWith( '.png' ) ) { // TODO: JPEGs?
       const x = loadFileAsDataURI( abspath );
-      const source = x;
 
       const contents = `${HEADER}
 var img = new Image();
@@ -250,84 +246,14 @@ export default {name:'${filename}',base64:'${x}'};
   }
 };
 
-// TODO: query strings for string tests
-/**
- * For a given repo, create the string files, if any.
- * @param {string} repo - lowercase repo name
- */
-const bundleStrings = repo => {
-
-  let englishStringsString = null;
-  try {
-
-    // Load the primary english string file
-    englishStringsString = grunt.file.read( `../${repo}/${repo}-strings_en.json` ); // the english strings file
-  }
-  catch( e ) {
-    return;
-  }
-  const englishStringsJSON = JSON.parse( englishStringsString );
-
-  // read from babel, if it has any translations.  Key = locale, value = translation file
-  const translatedStringsMap = {};
-
-  try {
-    const results = fs.readdirSync( `../babel/${repo}` );
-
-    // read each file once
-    results.forEach( result => {
-      const locale = result.substring( result.indexOf( '_' ) + 1, result.lastIndexOf( '.json' ) );
-      const contents = grunt.file.read( `../babel/${repo}/${result}` );
-      translatedStringsMap[ locale ] = JSON.parse( contents );
-    } );
-  }
-  catch( e ) {
-
-    // no babel translations yet, probably
-  }
-
-  try {
-    fs.mkdirSync( `../${repo}/strings/` );
-  }
-  catch( e ) {
-
-    // maybe that directory already existed?
-  }
-
-  // TODO: traverse nested substructure for structured strings
-  Object.keys( englishStringsJSON ).forEach( key => {
-
-    const stringsObject = {
-      en: englishStringsJSON[ key ]
-    };
-    Object.keys( translatedStringsMap ).forEach( locale => {
-      const translatedStrings = translatedStringsMap[ locale ];
-      if ( translatedStrings[ key ] ) {
-        stringsObject[ locale ] = translatedStrings[ key ]; // value plucked out later
-      }
-    } );
-
-    // Pluck out the values to streamline the file
-    const o = _.mapValues( stringsObject, 'value' );
-
-    // Output one string file per string key
-    const stringSourceCode = `${HEADER}
-const values = ${JSON.stringify( o, null, 2 )};
-export default values[window.phet.chipper.locale] || values.en; // fallback to English if no locale specified, or if there is no string for that file
-`;
-
-    fs.writeFileSync( `../${repo}/strings/${key}.js`, stringSourceCode );
-  } );
-};
-
 module.exports = async function( repo, cache ) {
 
   // Run a subset for fast iteration.
   // let myrepos = [ 'acid-base-solutions', 'joist', 'brand', 'scenery-phet' ];
-  let myrepos = repos;
+  const myrepos = repos;
   for ( const repo of myrepos ) {
     console.log( repo );
-    let relativeFiles = [];
+    const relativeFiles = [];
     grunt.file.recurse( `../${repo}`, async ( abspath, rootdir, subdir, filename ) => {
       relativeFiles.push( { abspath: abspath, rootdir: rootdir, subdir: subdir, filename: filename } );
     } );
@@ -336,6 +262,6 @@ module.exports = async function( repo, cache ) {
       await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename );
     }
 
-    bundleStrings( repo );
+    modulifyStrings( repo );
   }
 };
