@@ -120,12 +120,7 @@
           `String should not have trailing or leading whitespace, key: ${key}, value: "${stringObject.value}"` );
 
         // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
-        stringObject.value = stringObject.value.trim();
-
-        // A11Y can't support i18n with this conditional in, this is more of a workaround, see https://github.com/phetsims/chipper/issues/798
-        if ( !ChipperStringUtils.isA11yStringKey( key ) ) {
-          stringObject.value = ChipperStringUtils.addDirectionalFormatting( stringObject.value, isRTL );
-        }
+        stringObject.value = ChipperStringUtils.addDirectionalFormatting( stringObject.value.trim(), isRTL );
       } );
     },
 
