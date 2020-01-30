@@ -168,7 +168,7 @@ const replace = ( str, search, replacement ) => {
 
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
   if ( subdir && ( subdir.startsWith( 'images' ) || subdir.startsWith( 'phet/images' ) ) ) { // for brand
-    if ( filename.endsWith( '.png' ) ) { // TODO: JPEGs?
+    if ( filename.endsWith( '.png' ) ) { // TODO: JPEGs
       const x = loadFileAsDataURI( abspath );
 
       const contents = `${HEADER}
@@ -215,7 +215,7 @@ export default mipmaps;
 
 
         const mipmapFilename = replace( abspath, '.png', '_png_mipmap.js' );
-        fs.writeFileSync( mipmapFilename, mipmapContents ); // https://github.com/phetsims/chipper/issues/820 TODO: mipmap
+        fs.writeFileSync( mipmapFilename, mipmapContents );
       }
       catch( e ) {
         console.log( `Image could not be mipmapped: ${abspath}` );
