@@ -72,7 +72,6 @@ module.exports = function( repos, cache, say = false ) {
       'sherpa/**',
       '**/js/parser/svgPath.js',
       '**/templates/*.js',
-      'phet-io-website/root/assets/js/ua-parser-0.7.12.min.js',
       'phet-io-website/root/assets/js/jquery-1.12.3.min.js',
       'phet-io-website/root/assets/highlight.js-9.1.0/highlight.pack.js',
       'phet-io-website/root/assets/highlight.js-9.1.0/highlight.js',

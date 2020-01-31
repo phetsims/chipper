@@ -46,7 +46,7 @@ const LIB_COPYRIGHT_HEADER = '// Copyright 2002-2018, University of Colorado Bou
 // All libraries and third party files that are used by phet-io wrappers, and need to be copied over for a build
 const CONTRIB_FILES = [
   '../sherpa/lib/lodash-4.17.4.min.js',
-  '../sherpa/lib/ua-parser-0.7.12.min.js',
+  '../sherpa/lib/ua-parser-0.7.21.min.js',
   '../sherpa/lib/bootstrap-2.2.2.js',
   '../sherpa/lib/font-awesome-4.5.0',
   '../sherpa/lib/jquery-2.1.0.min.js',
