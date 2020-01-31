@@ -1,3 +1,4 @@
+/* eslint-disable */
 window.isPhetio = true;
 window.isPhetio = false;
 if ( window.isPhetio ) {
