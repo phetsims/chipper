@@ -9,3 +9,4 @@ eslint/cache
 *.sublime-workspace
 package-lock.json
 build
+test-webpack-multi-brands/dist/main.js
