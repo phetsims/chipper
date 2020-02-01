@@ -236,6 +236,16 @@ const migrateFile = async ( repo, relativeFile ) => {
     contents = replace( contents, string, withExport );
   } );
 
+  // Eliminate double blank space before modules, which was left by 'use strict', see https://github.com/phetsims/chipper/issues/847
+  contents = replace( contents, ` */
+
+
+// modules
+import `, ` */
+
+// modules
+import ` );
+
 
   fs.writeFileSync( path, contents, 'utf-8' );
 };
