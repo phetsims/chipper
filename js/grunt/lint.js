@@ -1,4 +1,4 @@
-// Copyright 2017-2019, University of Colorado Boulder
+// Copyright 2017-2020, University of Colorado Boulder
 
 /**
  * Runs the lint rules on the specified files.
@@ -63,6 +63,8 @@ module.exports = function( repos, cache, say = false ) {
     // Where to store the target-specific cache file
     cacheFile: `chipper/eslint/cache/${md5( filteredRepos.join( ',' ) )}.eslintcache`,
 
+    resolvePluginsRelativeTo: 'chipper/',
+
     // Files to skip for linting
     ignorePattern: [
       '**/.git',
@@ -72,7 +74,6 @@ module.exports = function( repos, cache, say = false ) {
       'sherpa/**',
       '**/js/parser/svgPath.js',
       '**/templates/*.js',
-      'phet-io-website/root/assets/js/ua-parser-0.7.12.min.js',
       'phet-io-website/root/assets/js/jquery-1.12.3.min.js',
       'phet-io-website/root/assets/highlight.js-9.1.0/highlight.pack.js',
       'phet-io-website/root/assets/highlight.js-9.1.0/highlight.js',

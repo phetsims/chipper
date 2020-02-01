@@ -25,6 +25,11 @@ module.exports = {
   // The new rules, overrides, etc.
   rules: {
 
+    // Match with 5.0 recommended rules after our upgrade to 6.0, see https://eslint.org/docs/user-guide/migrating-to-6.0.0
+    "no-async-promise-executor": "off",
+    "no-prototype-builtins": "off",
+    "no-useless-catch": "off",
+
     // Permit console.log statements (we have a lot of them)
     // TODO: Find a way to make sure no console.log statements make it to production.  Can use the no-console rule
     // but we want to be able to use console.log during development.
