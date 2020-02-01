@@ -10,6 +10,7 @@
 'use strict';
 
 const fs = require( 'fs' );
+const path = require( 'path' );
 const grunt = require( 'grunt' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 
@@ -27,9 +28,9 @@ const migrateFile = async ( repo, relativeFile ) => {
   if ( relativeFile.endsWith( '/copyWithSortedKeys.js' ) ) {
     return;
   }
-  const path = '../' + repo + '/' + relativeFile;
+  const pathToFile = '../' + repo + '/' + relativeFile;
 
-  let contents = fs.readFileSync( path, 'utf-8' );
+  let contents = fs.readFileSync( pathToFile, 'utf-8' );
   contents = replace( contents, '= require( \'ifphetio!', '= function(){return function(){ return function(){}; };}; // ' );
 
   contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( phet.chipper.packageObject )' );
@@ -169,6 +170,8 @@ const migrateFile = async ( repo, relativeFile ) => {
       lines[ i ] = replace( lines[ i ], '.wav', '_wav' );
     }
 
+    // TODO: *.cur
+
     // Map to relative paths for compilation free mode
     const depth = relativeFile.split( '/' ).length;
     const createDots = d => {
@@ -246,10 +249,38 @@ import `, ` */
 // modules
 import ` );
 
+  // Use short relative imports, see https://github.com/phetsims/chipper/issues/853
+
+  // import IntroductionScreen from '../../acid-base-solutions/js/introduction/IntroductionScreen.js';
+  lines = contents.split( /\r?\n/ );
+
+  for ( let i = 0; i < lines.length; i++ ) {
+    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.js\';' ) >= 0 ) {
+      const target = lines[ i ].substring( lines[ i ].indexOf( '\'' ) + 1, lines[ i ].lastIndexOf( '\'' ) );
+      const importTerm = lines[ i ].trim().split( ' ' )[ 1 ];
+      const fromAbsolute = path.resolve( pathToFile );
+      const dirname = path.dirname( fromAbsolute );
+      const j = path.join( dirname, target );
+
+      const toAbsolute = path.resolve( j );
+      let rel = path.relative( fromAbsolute, toAbsolute );
+
+      if ( rel.indexOf( '../' ) === 0 ) {
+        rel = rel.substring( 3 );
+      }
+      if ( rel[ 0 ] !== '.' ) {
+        rel = './' + rel;
+      }
+
+      lines[ i ] = `import ${importTerm} from '${rel}';`;
+    }
+  }
+  contents = lines.join( '\n' );
+
   // Unify whether files end in a newline or not
   contents = contents.trim();
 
-  fs.writeFileSync( path, contents, 'utf-8' );
+  fs.writeFileSync( pathToFile, contents, 'utf-8' );
 };
 
 module.exports = async function( repo, cache ) {
@@ -263,9 +294,7 @@ module.exports = async function( repo, cache ) {
                                                 // that's for brand
                                                 file.startsWith( 'phet/js' ) );
 
-  relativeFiles.forEach( ( rel, i ) => {
-    migrateFile( repo, rel );
-  } );
+  relativeFiles.forEach( ( rel, i ) => migrateFile( repo, rel ) );
 
   if ( activeSims.includes( repo ) ) {
     generateDevelopmentHTML( repo );
