@@ -63,6 +63,8 @@ module.exports = function( repos, cache, say = false ) {
     // Where to store the target-specific cache file
     cacheFile: `chipper/eslint/cache/${md5( filteredRepos.join( ',' ) )}.eslintcache`,
 
+    resolvePluginsRelativeTo: 'chipper/',
+
     // Files to skip for linting
     ignorePattern: [
       '**/.git',
