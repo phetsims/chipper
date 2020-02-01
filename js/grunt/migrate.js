@@ -246,6 +246,8 @@ import `, ` */
 // modules
 import ` );
 
+  // Unify whether files end in a newline or not
+  contents = contents.trim();
 
   fs.writeFileSync( path, contents, 'utf-8' );
 };
