@@ -1,7 +1,5 @@
 // Copyright 2019, University of Colorado Boulder
 
-/* eslint-disable */
-
 /**
  * Prototyping for https://github.com/phetsims/chipper/issues/820
  *
@@ -11,152 +9,11 @@
 
 'use strict';
 
-const execute = require( './execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 
-const simRepos = [
-  'acid-base-solutions',
-  'area-builder',
-  'area-model-algebra',
-  'area-model-decimals',
-  'area-model-introduction',
-  'area-model-multiplication',
-  'arithmetic',
-  'atomic-interactions',
-  'balancing-act',
-  'balancing-chemical-equations',
-  'balloons-and-static-electricity',
-  'beers-law-lab',
-  'bending-light',
-  'blackbody-spectrum',
-  'blast',
-  'build-a-fraction',
-  'build-a-molecule',
-  'build-an-atom',
-  'bumper',
-  'buoyancy',
-  'calculus-grapher',
-  'capacitor-lab-basics',
-  'chains',
-  'charges-and-fields',
-  'circuit-construction-kit-ac',
-  'circuit-construction-kit-black-box-study',
-  'circuit-construction-kit-dc',
-  'circuit-construction-kit-dc-virtual-lab',
-  'color-vision',
-  'collision-lab',
-  'concentration',
-  'coulombs-law',
-  'curve-fitting',
-  'density',
-  'diffusion',
-  'energy-forms-and-changes',
-  'energy-skate-park',
-  'energy-skate-park-basics',
-  'equality-explorer',
-  'equality-explorer-basics',
-  'equality-explorer-two-variables',
-  'estimation',
-  'example-sim',
-  'expression-exchange',
-  'faradays-law',
-  'fluid-pressure-and-flow',
-  'forces-and-motion-basics',
-  'fraction-comparison',
-  'fraction-matcher',
-  'fractions-equality',
-  'fractions-intro',
-  'fractions-mixed-numbers',
-  'friction',
-  'function-builder',
-  'function-builder-basics',
-  'gas-properties',
-  'gases-intro',
-  'gene-expression-essentials',
-  'graphing-lines',
-  'graphing-quadratics',
-  'graphing-slope-intercept',
-  'gravity-and-orbits',
-  'gravity-force-lab',
-  'gravity-force-lab-basics',
-  'hookes-law',
-  'interaction-dashboard',
-  'isotopes-and-atomic-mass',
-  'john-travoltage',
-  'least-squares-regression',
-  'make-a-ten',
-  'masses-and-springs',
-  'masses-and-springs-basics',
-  'models-of-the-hydrogen-atom',
-  'molarity',
-  'molecules-and-light',
-  'molecule-polarity',
-  'molecule-shapes',
-  'molecule-shapes-basics',
-  'natural-selection',
-  'neuron',
-  'number-line-integers',
-  'number-play',
-  'ohms-law',
-  'optics-lab',
-  'pendulum-lab',
-  'ph-scale',
-  'ph-scale-basics',
-  'phet-io-test-sim',
-  'plinko-probability',
-  'projectile-motion',
-  'proportion-playground',
-  'reactants-products-and-leftovers',
-  'resistance-in-a-wire',
-  'rutherford-scattering',
-  'simula-rasa',
-  'states-of-matter',
-  'states-of-matter-basics',
-  'trig-tour',
-  'under-pressure',
-  'unit-rates',
-  'vector-addition',
-  'vector-addition-equations',
-  'wave-interference',
-  'wave-on-a-string',
-  'waves-intro',
-  'wilder'
-];
-
-const commonRepos = [
-  'area-model-common',
-  'axon',
-  'brand',
-  'circuit-construction-kit-common',
-  'density-buoyancy-common',
-  'dot',
-  'fractions-common',
-  'griddle',
-  'inverse-square-law-common',
-  'joist',
-  'kite',
-  'mobius',
-  'nitroglycerin',
-  'phetcommon',
-  'phet-core',
-  'phet-io',
-  'scenery-phet', // has to run first for string replacements
-  'scenery',
-  'shred',
-  'sun',
-  'tambo',
-  'tandem',
-  'twixt',
-  'utterance-queue',
-  'vegas',
-  'vibe'
-];
-const repos = [
-  ...simRepos,
-  ...commonRepos
-];
+const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
 
 const replace = ( str, search, replacement ) => {
   return str.split( search ).join( replacement );
@@ -178,18 +35,18 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( phet.chipper.packageObject )' );
 
   if ( contents.includes( 'define( require => {' ) ) {
-    contents = replace( contents, `define( require => {`, `` );
+    contents = replace( contents, 'define( require => {', '' );
     contents = contents.slice( 0, contents.lastIndexOf( '}' ) );
   }
 
   if ( contents.includes( 'define( require => {' ) ) {
-    contents = replace( contents, `define( require => {`, `` );
+    contents = replace( contents, 'define( require => {', '' );
     contents = contents.slice( 0, contents.lastIndexOf( '}' ) );
   }
 
   const returnInherit = contents.lastIndexOf( 'return inherit( ' );
   if ( returnInherit >= 0 ) {
-    contents = replace( contents, `return inherit( `, `export default inherit( ` );
+    contents = replace( contents, 'return inherit( ', 'export default inherit( ' );
   }
 
   const lastReturn = contents.lastIndexOf( 'return ' );
@@ -199,20 +56,20 @@ const migrateFile = async ( repo, relativeFile ) => {
 
   let lines = contents.split( /\r?\n/ );
 
-  let fixMipmap = line => {
-    if ( line.trim().startsWith( 'import ' ) && line.indexOf( `from 'mipmap!` ) >= 0 ) {
+  const fixMipmap = line => {
+    if ( line.trim().startsWith( 'import ' ) && line.indexOf( 'from \'mipmap!' ) >= 0 ) {
       const term = line.trim().split( ' ' )[ 1 ];
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
       line = `  import ${term} from '${repo}/../images/${tail}`;
-      const a = line.lastIndexOf( `'` );
-      line = line.substring( 0, a ) + `_mipmap` + line.substring( a );
+      const a = line.lastIndexOf( '\'' );
+      line = line.substring( 0, a ) + '_mipmap' + line.substring( a );
     }
     return line;
   };
 
-  let fixImage = line => {
-    if ( line.trim().startsWith( 'import ' ) && line.indexOf( `from 'image!` ) >= 0 ) {
+  const fixImage = line => {
+    if ( line.trim().startsWith( 'import ' ) && line.indexOf( 'from \'image!' ) >= 0 ) {
       const term = line.trim().split( ' ' )[ 1 ];
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
@@ -221,8 +78,8 @@ const migrateFile = async ( repo, relativeFile ) => {
     return line;
   };
 
-  let fixSounds = line => {
-    if ( line.trim().startsWith( 'import ' ) && line.indexOf( `from 'sound!` ) >= 0 ) {
+  const fixSounds = line => {
+    if ( line.trim().startsWith( 'import ' ) && line.indexOf( 'from \'sound!' ) >= 0 ) {
       const term = line.trim().split( ' ' )[ 1 ];
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
@@ -238,13 +95,13 @@ const migrateFile = async ( repo, relativeFile ) => {
   // import ACID_BASE_SOLUTIONS_strings from '../../acid-base-solutions/js/../acid-base-solutions-strings';
   // const acidBaseSolutionsTitleString = ACID_BASE_SOLUTIONS_strings.localized['acid-base-solutions.title'];
   // and we take care not to duplicate the import more than once per file
-  let fixString = line => {
-    if ( line.trim().startsWith( 'import ' ) && line.indexOf( `from 'string!` ) >= 0 ) {
+  const fixString = line => {
+    if ( line.trim().startsWith( 'import ' ) && line.indexOf( 'from \'string!' ) >= 0 ) {
       const variableName = line.trim().split( ' ' )[ 1 ];
       const repoCap = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
 
       const tail = line.substring( line.indexOf( '/' ) + 1 );
-      const stringKey = tail.split( `'` )[ 0 ];
+      const stringKey = tail.split( '\'' )[ 0 ];
       line = `import ${variableName} from '${repoCap}/../strings/${stringKey}';`; // .js added later
     }
     return line;
@@ -278,8 +135,11 @@ const migrateFile = async ( repo, relativeFile ) => {
   contents = lines.join( '\n' );
 
   // Seems to be for inherit.js
-  contents = replace( contents, `return inherit;`, `export default inherit;` );
-  contents = replace( contents, `' ).default;`, `';` );
+  contents = replace( contents, 'return inherit;', 'export default inherit;' );
+  contents = replace( contents, '\' ).default;', '\';' );
+
+  const activeCommon = fs.readFileSync( '../perennial/data/active-common-sim-repos', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
+  const repos = activeSims.concat( activeCommon );
 
   // Specify absolute paths for compilation-free mode
   repos.forEach( repo => {
@@ -291,7 +151,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   // Any export default that is not the last line (when trimmed) should be turned back into return.
 
   lines = contents.split( /\r?\n/ );
-  for ( var i = 0; i < lines.length - 2; i++ ) {
+  for ( let i = 0; i < lines.length - 2; i++ ) {
     if ( lines[ i ].indexOf( 'inherit(' ) === -1 ) {
       lines[ i ] = replace( lines[ i ], 'export default ', 'return ' );
     }
@@ -323,7 +183,7 @@ const migrateFile = async ( repo, relativeFile ) => {
         return s;
       }
     };
-    let key = ` from '/`;
+    const key = ' from \'/';
     if ( lines[ i ].indexOf( 'import' ) >= 0 && lines[ i ].indexOf( key ) >= 0 ) {
       const index = lines[ i ].indexOf( key ) + key.length - 1;
       lines[ i ] = lines[ i ].substring( 0, index ) + createDots( depth ) + lines[ i ].substring( index + 1 );
@@ -331,31 +191,31 @@ const migrateFile = async ( repo, relativeFile ) => {
 
     // End with *.js suffix, which is necessary on windows but not on mac
     if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from \'' ) ) {
-      lines[ i ] = replace( lines[ i ], `';`, `.js';` );
+      lines[ i ] = replace( lines[ i ], '\';', '.js\';' );
     }
 
     // Catch some missed return => export default
     if ( lines[ i ].indexOf( 'return ' ) >= 0 && lines[ i ].indexOf( '.register( \'' ) >= 0 &&
 
          // opt out for dot
-         lines[ i ].indexOf( `function( x, y` ) === -1 ) {
+         lines[ i ].indexOf( 'function( x, y' ) === -1 ) {
       lines[ i ] = replace( lines[ i ], 'return ', 'export default ' );
     }
   }
   contents = lines.join( '\n' );
   // contents = replace( contents, `from '/brand/js/`, `from '/brand/phet/js/` );// TODO: how to deal with different brands? https://github.com/phetsims/chipper/issues/820
-  contents = replace( contents, `../../brand/js/Brand`, `../../brand/phet/js/Brand` );
-  contents = replace( contents, `import brand from '../../../brand/js/../../js/brand.js';`, `import brand from '../../../brand/js/brand.js';` );
-  contents = replace( contents, `import getLinks from '../../../brand/js/../../js/getLinks.js';`, `import getLinks from '../../../brand/js/getLinks.js';` );
-  contents = replace( contents, `from '../../brand/js/../images`, `from '../../brand/phet/images` );
-  contents = replace( contents, `import brand from '../../brand/js/../../js/brand.js';`, `import brand from './brand.js';` );
-  contents = replace( contents, `return scenery.register( 'SceneryStyle'`, `export default scenery.register( 'SceneryStyle'` );
-  contents = replace( contents, `require( 'SCENERY/display/BackboneDrawable' );`, `import BackboneDrawable from  '../../../scenery/js/display/BackboneDrawable.js'; // eslint-disable-line` ); // TODO: deal with this https://github.com/phetsims/chipper/issues/820
+  contents = replace( contents, '../../brand/js/Brand', '../../brand/phet/js/Brand' );
+  contents = replace( contents, 'import brand from \'../../../brand/js/../../js/brand.js\';', 'import brand from \'../../../brand/js/brand.js\';' );
+  contents = replace( contents, 'import getLinks from \'../../../brand/js/../../js/getLinks.js\';', 'import getLinks from \'../../../brand/js/getLinks.js\';' );
+  contents = replace( contents, 'from \'../../brand/js/../images', 'from \'../../brand/phet/images' );
+  contents = replace( contents, 'import brand from \'../../brand/js/../../js/brand.js\';', 'import brand from \'./brand.js\';' );
+  contents = replace( contents, 'return scenery.register( \'SceneryStyle\'', 'export default scenery.register( \'SceneryStyle\'' );
+  contents = replace( contents, 'require( \'SCENERY/display/BackboneDrawable\' );', 'import BackboneDrawable from  \'../../../scenery/js/display/BackboneDrawable.js\'; // eslint-disable-line' ); // TODO: deal with this https://github.com/phetsims/chipper/issues/820
 
   // Allow repeat migrations
-  contents = replace( contents, `.js.js';`, `.js';` );
-  contents = replace( contents, `.js.js';`, `.js';` );
-  contents = replace( contents, `.js.js';`, `.js';` );
+  contents = replace( contents, '.js.js\';', '.js\';' );
+  contents = replace( contents, '.js.js\';', '.js\';' );
+  contents = replace( contents, '.js.js\';', '.js\';' );
 
   // catch more return => export default
   const stringsToConvertReturnBackToExportDefault = [
@@ -364,11 +224,11 @@ const migrateFile = async ( repo, relativeFile ) => {
     'return SOMConstants;',
     'return GameState;',
     'return scenery;',
-    `return new Namespace( '`,
-    `return utteranceQueueNamespace;`,
-    `return SigmaTable;`,
-    `return DataSet;`,
-    `return EESharedConstants;`
+    'return new Namespace( \'',
+    'return utteranceQueueNamespace;',
+    'return SigmaTable;',
+    'return DataSet;',
+    'return EESharedConstants;'
   ];
 
   stringsToConvertReturnBackToExportDefault.forEach( string => {
@@ -381,29 +241,21 @@ const migrateFile = async ( repo, relativeFile ) => {
 };
 
 module.exports = async function( repo, cache ) {
+  console.log( `migrating ${repo}` );
+  let relativeFiles = [];
+  grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
+    relativeFiles.push( `${subdir}/${filename}` );
+  } );
+  relativeFiles = relativeFiles.filter( file => file.startsWith( 'js/' ) ||
 
-  // const repos = fs.readFileSync( '../perennial/data/migrate-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
+                                                // that's for brand
+                                                file.startsWith( 'phet/js' ) );
 
-  // Run a subset for fast iteration.
-  // let myrepos = [ 'acid-base-solutions', ...commonRepos ];
-  let myrepos = repos;
-  for ( const repo of myrepos ) {
-    console.log( repo );
-    let relativeFiles = [];
-    grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
-      relativeFiles.push( `${subdir}/${filename}` );
-    } );
-    relativeFiles = relativeFiles.filter( file => file.startsWith( 'js/' ) ||
+  relativeFiles.forEach( ( rel, i ) => {
+    migrateFile( repo, rel );
+  } );
 
-                                                  // that's for brand
-                                                  file.startsWith( 'phet/js' ) );
-
-    relativeFiles.forEach( ( rel, i ) => {
-      migrateFile( repo, rel );
-    } );
-
-    if ( simRepos.includes( repo ) ) {
-      generateDevelopmentHTML( repo );
-    }
+  if ( activeSims.includes( repo ) ) {
+    generateDevelopmentHTML( repo );
   }
 };

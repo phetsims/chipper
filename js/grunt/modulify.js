@@ -20,148 +20,6 @@ const modulifyStrings = require( './modulifyStrings' );
 // disable lint in compiled files
 const HEADER = '/* eslint-disable */';
 
-const simRepos = [
-  'acid-base-solutions',
-  'area-builder',
-  'area-model-algebra',
-  'area-model-decimals',
-  'area-model-introduction',
-  'area-model-multiplication',
-  'arithmetic',
-  'atomic-interactions',
-  'balancing-act',
-  'balancing-chemical-equations',
-  'balloons-and-static-electricity',
-  'beers-law-lab',
-  'bending-light',
-  'blackbody-spectrum',
-  'blast',
-  'build-a-fraction',
-  'build-a-molecule',
-  'build-an-atom',
-  'bumper',
-  'buoyancy',
-  'calculus-grapher',
-  'capacitor-lab-basics',
-  'chains',
-  'charges-and-fields',
-  'circuit-construction-kit-ac',
-  'circuit-construction-kit-black-box-study',
-  'circuit-construction-kit-dc',
-  'circuit-construction-kit-dc-virtual-lab',
-  'color-vision',
-  'collision-lab',
-  'concentration',
-  'coulombs-law',
-  'curve-fitting',
-  'density',
-  'diffusion',
-  'energy-forms-and-changes',
-  'energy-skate-park',
-  'energy-skate-park-basics',
-  'equality-explorer',
-  'equality-explorer-basics',
-  'equality-explorer-two-variables',
-  'estimation',
-  'example-sim',
-  'expression-exchange',
-  'faradays-law',
-  'fluid-pressure-and-flow',
-  'forces-and-motion-basics',
-  'fraction-comparison',
-  'fraction-matcher',
-  'fractions-equality',
-  'fractions-intro',
-  'fractions-mixed-numbers',
-  'friction',
-  'function-builder',
-  'function-builder-basics',
-  'gas-properties',
-  'gases-intro',
-  'gene-expression-essentials',
-  'graphing-lines',
-  'graphing-quadratics',
-  'graphing-slope-intercept',
-  'gravity-and-orbits',
-  'gravity-force-lab',
-  'gravity-force-lab-basics',
-  'hookes-law',
-  'interaction-dashboard',
-  'isotopes-and-atomic-mass',
-  'john-travoltage',
-  'least-squares-regression',
-  'make-a-ten',
-  'masses-and-springs',
-  'masses-and-springs-basics',
-  'models-of-the-hydrogen-atom',
-  'molarity',
-  'molecules-and-light',
-  'molecule-polarity',
-  'molecule-shapes',
-  'molecule-shapes-basics',
-  'natural-selection',
-  'neuron',
-  'number-line-integers',
-  'number-play',
-  'ohms-law',
-  'optics-lab',
-  'pendulum-lab',
-  'ph-scale',
-  'ph-scale-basics',
-  'phet-io-test-sim',
-  'plinko-probability',
-  'projectile-motion',
-  'proportion-playground',
-  'reactants-products-and-leftovers',
-  'resistance-in-a-wire',
-  'rutherford-scattering',
-  'simula-rasa',
-  'states-of-matter',
-  'states-of-matter-basics',
-  'trig-tour',
-  'under-pressure',
-  'unit-rates',
-  'vector-addition',
-  'vector-addition-equations',
-  'wave-interference',
-  'wave-on-a-string',
-  'waves-intro',
-  'wilder'
-];
-
-const commonRepos = [
-  'area-model-common',
-  'axon',
-  'brand',
-  'circuit-construction-kit-common',
-  'density-buoyancy-common',
-  'dot',
-  'fractions-common',
-  'griddle',
-  'inverse-square-law-common',
-  'joist',
-  'kite',
-  'mobius',
-  'nitroglycerin',
-  'phetcommon',
-  'phet-core',
-  'phet-io',
-  'scenery-phet', // has to run first for string replacements
-  'scenery',
-  'shred',
-  'sun',
-  'tambo',
-  'tandem',
-  'twixt',
-  'utterance-queue',
-  'vegas',
-  'vibe'
-];
-const repos = [
-  ...simRepos,
-  ...commonRepos
-];
-
 const replace = ( str, search, replacement ) => {
   return str.split( search ).join( replacement );
 };
@@ -246,22 +104,16 @@ export default {name:'${filename}',base64:'${x}'};
   }
 };
 
-module.exports = async function( repo, cache ) {
+module.exports = async function( repo ) {
+  console.log( `modulifying ${repo}` );
+  const relativeFiles = [];
+  grunt.file.recurse( `../${repo}`, async ( abspath, rootdir, subdir, filename ) => {
+    relativeFiles.push( { abspath: abspath, rootdir: rootdir, subdir: subdir, filename: filename } );
+  } );
 
-  // Run a subset for fast iteration.
-  // let myrepos = [ 'acid-base-solutions', 'joist', 'brand', 'scenery-phet' ];
-  const myrepos = repos;
-  for ( const repo of myrepos ) {
-    console.log( repo );
-    const relativeFiles = [];
-    grunt.file.recurse( `../${repo}`, async ( abspath, rootdir, subdir, filename ) => {
-      relativeFiles.push( { abspath: abspath, rootdir: rootdir, subdir: subdir, filename: filename } );
-    } );
-
-    for ( let entry of relativeFiles ) {
-      await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename );
-    }
-
-    modulifyStrings( repo );
+  for ( let entry of relativeFiles ) {
+    await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename );
   }
+
+  modulifyStrings( repo );
 };
