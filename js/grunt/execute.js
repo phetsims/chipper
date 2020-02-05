@@ -22,7 +22,7 @@ const grunt = require( 'grunt' );
  *
  * @param {string} cmd - The process to execute. Should be on the current path.
  * @param {Array.<string>} args - Array of arguments. No need to extra-quote things.
- * @param {Object} options - options for the child process, cwd and shell supported, https://nodejs.org/dist/latest-v4.x/docs/api/child_process.html#child_process_child_process_spawn_command_args_options
+ * @param {Object} [options] - options for the child process, cwd and shell supported, https://nodejs.org/dist/latest-v4.x/docs/api/child_process.html#child_process_child_process_spawn_command_args_options
  * @returns {Promise.<string>} - The stdout of the process
  * @rejects {ExecuteError}
  */
