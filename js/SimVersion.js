@@ -58,7 +58,7 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
      * @param {number} major - The major part of the version (the 3 in 3.1.2)
      * @param {number} minor - The minor part of the version (the 1 in 3.1.2)
      * @param {number} maintenance - The maintenance part of the version (the 2 in 3.1.2)
-     * @param {Object} options
+     * @param {Object} [options]
      */
     constructor( major, minor, maintenance, options ) {
       const {
