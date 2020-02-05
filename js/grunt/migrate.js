@@ -255,6 +255,15 @@ import ` );
   contents = replace( contents, ` */
 
 
+
+// modules
+import `, ` */
+
+// modules
+import ` );
+  contents = replace( contents, ` */
+
+
 import `, ` */
 
 // modules
