@@ -108,6 +108,7 @@ const migrateFile = async ( repo, relativeFile ) => {
     return line;
   };
 
+  const newLines = [];
   lines = lines.map( line => {
     if ( line.trim().startsWith( 'const ' ) && line.indexOf( ' = require( ' ) >= 0 ) {
       // const Bounds2 = require( 'DOT/Bounds2' );
@@ -120,6 +121,18 @@ const migrateFile = async ( repo, relativeFile ) => {
     if ( line.trim().startsWith( 'require( ' ) ) {
       line = replace( line, 'require( ', 'import ' );
       line = replace( line, '\' );', '\';' );
+    }
+    // Handle scenery-main.js and similar files
+    // window.axon = require( 'AXON/main' );
+    // becomes
+    // window.axon = axon;
+    // with the following added near the top:
+    // import axon from 'AXON/main'
+    if ( line.trim().startsWith( 'window.' ) && line.includes( ' = require( ' ) ) {
+      const name = line.substring( line.indexOf( 'window.' ) + 'window.'.length, line.indexOf( ' = require( ' ) );
+      const importName = line.substring( line.indexOf( '\'' ) + 1, line.lastIndexOf( '\'' ) );
+      line = `  window.${name} = ${name};`;
+      newLines.push( `import ${name} from '${importName}';` );
     }
     line = fixMipmap( line );
     line = fixImage( line );
@@ -137,7 +150,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   // Omit 'use strict' directives
   lines = lines.filter( line => line.trim() !== '\'use strict\';' );
 
-  contents = lines.join( '\n' );
+  contents = newLines.concat( lines ).join( '\n' );
 
   // Seems to be for inherit.js
   contents = replace( contents, 'return inherit;', 'export default inherit;' );

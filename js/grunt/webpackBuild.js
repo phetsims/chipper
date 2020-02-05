@@ -113,6 +113,7 @@ module.exports = function( repo ) {
 
     compiler.run( ( err, stats ) => {
       if ( err || stats.hasErrors() ) {
+        console.log( stats );
         reject( err );
       }
       else {

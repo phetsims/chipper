@@ -13,7 +13,7 @@ const assert = require( 'assert' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const minify = require( './minify' );
-const requireBuild = require( './requireBuild' );
+const webpackBuild = require( './webpackBuild' );
 
 /**
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)
@@ -30,7 +30,7 @@ module.exports = async function( repo, minifyOptions ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   assert( packageObject.phet, '`phet` object expected in package.json' );
 
-  const requireJS = await requireBuild( repo, `../${repo}/js/${repo}-config.js` );
+  const webpackJS = await webpackBuild( repo );
 
   let includedSources = [
     '../sherpa/lib/mdn-array-from-polyfill.js',
@@ -55,7 +55,7 @@ module.exports = async function( repo, minifyOptions ) {
                      '    throw new Error( \'jQuery not found: $\' );\n' +
                      '  }\n';
 
-  let fullSource = includedJS + '\n' + requireJS;
+  let fullSource = includedJS + '\n' + webpackJS;
   if ( packageObject.phet.requiresJQuery ) {
     fullSource = testJQuery + fullSource;
   }
