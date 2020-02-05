@@ -45,6 +45,14 @@ const migrateFile = async ( repo, relativeFile ) => {
     contents = contents.slice( 0, contents.lastIndexOf( '}' ) );
   }
 
+  if ( relativeFile.includes( 'scenery-main.js' ) || relativeFile.includes( 'kite-main.js' ) || relativeFile.includes( 'dot-main.js' ) ) {
+    console.log( contents );
+
+    // Get rid of the IIFE that was badly converted
+    contents = replace( contents, '( function() {', '' );
+    contents = replace( contents, '} );', '' );
+  }
+
   const returnInherit = contents.lastIndexOf( 'return inherit( ' );
   if ( returnInherit >= 0 ) {
     contents = replace( contents, 'return inherit( ', 'export default inherit( ' );
