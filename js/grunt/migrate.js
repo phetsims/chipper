@@ -117,6 +117,10 @@ const migrateFile = async ( repo, relativeFile ) => {
       line = replace( line, ' = require( ', ' from ' );
       line = replace( line, '\' );', '\';' );
     }
+    if ( line.trim().startsWith( 'require( ' ) ) {
+      line = replace( line, 'require( ', 'import ' );
+      line = replace( line, '\' );', '\';' );
+    }
     line = fixMipmap( line );
     line = fixImage( line );
     line = fixSounds( line );
@@ -146,7 +150,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   repos.forEach( repo => {
     let upper = repo.toUpperCase();
     upper = replace( upper, '-', '_' );
-    contents = replace( contents, `from '${upper}`, `from '/${repo}/js` );
+    contents = replace( contents, `'${upper}/`, `'/${repo}/js/` );
   } );
 
   // Any export default that is not the last line (when trimmed) should be turned back into return.
@@ -186,8 +190,8 @@ const migrateFile = async ( repo, relativeFile ) => {
         return s;
       }
     };
-    const key = ' from \'/';
-    if ( lines[ i ].indexOf( 'import' ) >= 0 && lines[ i ].indexOf( key ) >= 0 ) {
+    const key = ' \'/';
+    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( key ) >= 0 ) {
       const index = lines[ i ].indexOf( key ) + key.length - 1;
       lines[ i ] = lines[ i ].substring( 0, index ) + createDots( depth ) + lines[ i ].substring( index + 1 );
     }
@@ -248,16 +252,28 @@ import `, ` */
 
 // modules
 import ` );
+  contents = replace( contents, ` */
+
+
+import `, ` */
+
+// modules
+import ` );
+  contents = replace( contents, ` */
+
+
+
+import `, ` */
+
+// modules
+import ` );
 
   // Use short relative imports, see https://github.com/phetsims/chipper/issues/853
+  {
+    // import IntroductionScreen from '../../acid-base-solutions/js/introduction/IntroductionScreen.js';
+    lines = contents.split( /\r?\n/ );
 
-  // import IntroductionScreen from '../../acid-base-solutions/js/introduction/IntroductionScreen.js';
-  lines = contents.split( /\r?\n/ );
-
-  for ( let i = 0; i < lines.length; i++ ) {
-    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.js\';' ) >= 0 ) {
-      const target = lines[ i ].substring( lines[ i ].indexOf( '\'' ) + 1, lines[ i ].lastIndexOf( '\'' ) );
-      const importTerm = lines[ i ].trim().split( ' ' )[ 1 ];
+    const shortenImportPath = target => {
       const fromAbsolute = path.resolve( pathToFile );
       const dirname = path.dirname( fromAbsolute );
       const j = path.join( dirname, target );
@@ -272,13 +288,23 @@ import ` );
         rel = './' + rel;
       }
 
-      lines[ i ] = `import ${importTerm} from '${rel}';`;
-    }
-  }
-  contents = lines.join( '\n' );
+      return rel;
+    };
 
-  // Unify whether files end in a newline or not
-  contents = contents.trim();
+    for ( let i = 0; i < lines.length; i++ ) {
+      if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( '.js\';' ) >= 0 ) {
+        const startIndex = lines[ i ].indexOf( '\'' ) + 1;
+        const endIndex = lines[ i ].lastIndexOf( '\'' );
+        const replacement = shortenImportPath( lines[ i ].substring( startIndex, endIndex ) );
+
+        lines[ i ] = lines[ i ].substring( 0, startIndex ) + replacement + lines[ i ].slice( endIndex );
+      }
+    }
+    contents = lines.join( '\n' );
+
+    // Unify whether files end in a newline or not
+    contents = contents.trim();
+  }
 
   fs.writeFileSync( pathToFile, contents, 'utf-8' );
 };
