@@ -49,6 +49,7 @@ const migrateFile = async ( repo, relativeFile ) => {
     console.log( contents );
 
     // Get rid of the IIFE that was badly converted
+    contents = replace( contents, '(function() {', '' );
     contents = replace( contents, '( function() {', '' );
     contents = replace( contents, '} );', '' );
   }
