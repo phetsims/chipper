@@ -33,7 +33,7 @@ const migrateFile = async ( repo, relativeFile ) => {
   let contents = fs.readFileSync( pathToFile, 'utf-8' );
   contents = replace( contents, '= require( \'ifphetio!', '= function(){return function(){ return function(){}; };}; // ' );
 
-  contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( phet.chipper.packageObject )' );
+  contents = replace( contents, 'require( \'text!REPOSITORY/package.json\' )', 'JSON.stringify( ( window.phet && phet.chipper ) ? phet.chipper.packageObject : { name: \'placeholder\' } )' );
 
   if ( contents.includes( 'define( require => {' ) ) {
     contents = replace( contents, 'define( require => {', '' );
