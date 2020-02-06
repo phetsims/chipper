@@ -90,7 +90,7 @@
     typeString = typeString.slice( 1, typeString.length - 1 );
 
     // for ( var i = 0; i < line.length; i++ ) {
-      // TODO: handle |, {}, etc.
+      // TODO: handle |, {}, etc. https://github.com/phetsims/chipper/issues/411
     // }
 
     return typeString;
@@ -422,7 +422,7 @@
     function parseStaticProperty( property ) {
       const key = property.key.name;
 
-      // TODO: support static constants?
+      // TODO: support static constants? https://github.com/phetsims/chipper/issues/411
       if ( property.value.type === 'FunctionExpression' ) {
         const staticDoc = extractDocFromNode( property );
 
