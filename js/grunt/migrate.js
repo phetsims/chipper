@@ -9,6 +9,7 @@
 
 'use strict';
 
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
 const path = require( 'path' );
 const grunt = require( 'grunt' );
@@ -20,7 +21,86 @@ const replace = ( str, search, replacement ) => {
   return str.split( search ).join( replacement );
 };
 
-const migrateFile = async ( repo, relativeFile ) => {
+const shortenImportPath = ( target, pathToFile ) => {
+  const fromAbsolute = path.resolve( pathToFile );
+  const dirname = path.dirname( fromAbsolute );
+  const j = path.join( dirname, target );
+
+  const toAbsolute = path.resolve( j );
+  let rel = path.relative( fromAbsolute, toAbsolute );
+
+  if ( rel.indexOf( '../' ) === 0 ) {
+    rel = rel.substring( 3 );
+  }
+  if ( rel[ 0 ] !== '.' ) {
+    rel = './' + rel;
+  }
+
+  return rel;
+};
+
+const migrateTestHTMLFile = async ( repo, relativeFile ) => {
+  const pathToFile = '../' + repo + '/' + relativeFile;
+  let contents = fs.readFileSync( pathToFile, 'utf-8' );
+
+  const repoToNameMap = {
+    'phet-core': 'phetCore',
+    axon: 'axon',
+    dot: 'dot',
+    kite: 'kite',
+    scenery: 'scenery',
+    'utterance-queue': 'utteranceQueue'
+  };
+
+  if ( contents.includes( 'sherpa/lib/require-' ) ) {
+    let lines = contents.split( /\r?\n/ );
+
+    lines = lines.filter( line => !( line.includes( '<script ' ) && line.includes( 'sherpa/lib/require-' ) ) );
+
+    const firstRequireLineIndex = _.findIndex( lines, line => line.includes( 'require( [ \'' ) && line.includes( '\' ], function() {' ) );
+    const secondLine = lines[ firstRequireLineIndex + 1 ];
+
+    const reposUsed = [ repo ];
+    secondLine.includes( 'PHET_CORE/main' ) && reposUsed.push( 'phet-core' );
+    secondLine.includes( 'AXON/main' ) && reposUsed.push( 'axon' );
+    secondLine.includes( 'DOT/main' ) && reposUsed.push( 'dot' );
+    secondLine.includes( 'KITE/main' ) && reposUsed.push( 'kite' );
+    secondLine.includes( 'SCENERY/main' ) && reposUsed.push( 'scenery' );
+    secondLine.includes( 'UTTERANCE_QUEUE/main' ) && reposUsed.push( 'utterance-queue' );
+
+    const lastLineIndex = _.findLastIndex( lines, line => line === '  } );' );
+    const scriptIndex = _.findLastIndex( lines.slice( 0, firstRequireLineIndex ), line => line.startsWith( '<script' ) );
+
+    // Fix the indentation
+    for ( let i = firstRequireLineIndex + 2; i < lastLineIndex - 1; i++ ) {
+      if ( lines[ i ].startsWith( '    ' ) ) {
+        lines[ i ] = lines[ i ].slice( 4 );
+      }
+    }
+
+    // Fix the script tag to type="module"
+    lines[ scriptIndex ] = '<script type="module">';
+
+    // Remove both of the '  } );' lines
+    lines.splice( lastLineIndex - 1, 2 );
+
+    // Remove the two require lines
+    lines.splice( firstRequireLineIndex, 2 );
+
+    // Add in imports
+    const importLines = [];
+    reposUsed.forEach( repo => {
+      importLines.push( `  import ${repoToNameMap[ repo ]} from '${shortenImportPath( `../../${repo}/js/main.js`, pathToFile )}';` );
+    } );
+    lines.splice( firstRequireLineIndex, 0, ...importLines );
+
+    contents = lines.join( '\n' );
+
+    fs.writeFileSync( pathToFile, contents, 'utf-8' );
+  }
+};
+
+const migrateJavascriptFile = async ( repo, relativeFile ) => {
   // const packageObject = JSON.parse( fs.readFileSync( `../${repo}/package.json`, 'utf-8' ) );
   if ( relativeFile.endsWith( '/PhetioIDUtils.js' ) ) {
     return;
@@ -45,31 +125,7 @@ const migrateFile = async ( repo, relativeFile ) => {
     contents = contents.slice( 0, contents.lastIndexOf( '}' ) );
   }
 
-  /*
-  INFO for handling loading
-  require( [ 'config' ], function() {
-    require( [ 'main', 'KITE/main', 'DOT/main', 'PHET_CORE/main', 'AXON/main', 'UTTERANCE_QUEUE/main' ],
-      function( scenery, kite, dot, phetCore, axon, utteranceQueue ) {
-
-  <script data-main="../js/config.js" src="../../sherpa/lib/require-2.3.6.js"></script>
-  <script type="module">
-    import scenery from '../js/main.js';
-  import kite from '../../kite/js/main.js';
-  import dot from '../../dot/js/main.js';
-  import phetCore from '../../phet-core/js/main.js';
-  import axon from '../../axon/js/main.js';
-  import utteranceQueue from '../../utterance-queue/js/main.js';
-  window.scenery = scenery;
-  window.kite = kite;
-  window.dot = dot;
-  window.phetCore = phetCore;
-  window.axon = axon;
-  window.utteranceQueue = utteranceQueue;
-  */
-
   if ( relativeFile.includes( 'scenery-main.js' ) || relativeFile.includes( 'kite-main.js' ) || relativeFile.includes( 'dot-main.js' ) ) {
-    console.log( contents );
-
     // Get rid of the IIFE that was badly converted
     contents = replace( contents, '(function() {', '' );
     contents = replace( contents, '( function() {', '' );
@@ -326,29 +382,11 @@ import ` );
     // import IntroductionScreen from '../../acid-base-solutions/js/introduction/IntroductionScreen.js';
     lines = contents.split( /\r?\n/ );
 
-    const shortenImportPath = target => {
-      const fromAbsolute = path.resolve( pathToFile );
-      const dirname = path.dirname( fromAbsolute );
-      const j = path.join( dirname, target );
-
-      const toAbsolute = path.resolve( j );
-      let rel = path.relative( fromAbsolute, toAbsolute );
-
-      if ( rel.indexOf( '../' ) === 0 ) {
-        rel = rel.substring( 3 );
-      }
-      if ( rel[ 0 ] !== '.' ) {
-        rel = './' + rel;
-      }
-
-      return rel;
-    };
-
     for ( let i = 0; i < lines.length; i++ ) {
       if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( '.js\';' ) >= 0 ) {
         const startIndex = lines[ i ].indexOf( '\'' ) + 1;
         const endIndex = lines[ i ].lastIndexOf( '\'' );
-        const replacement = shortenImportPath( lines[ i ].substring( startIndex, endIndex ) );
+        const replacement = shortenImportPath( lines[ i ].substring( startIndex, endIndex ), pathToFile );
 
         lines[ i ] = lines[ i ].substring( 0, startIndex ) + replacement + lines[ i ].slice( endIndex );
       }
@@ -364,16 +402,18 @@ import ` );
 
 module.exports = async function( repo, cache ) {
   console.log( `migrating ${repo}` );
-  let relativeFiles = [];
+  const relativeFiles = [];
   grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
     relativeFiles.push( `${subdir}/${filename}` );
   } );
-  relativeFiles = relativeFiles.filter( file => file.startsWith( 'js/' ) ||
+  const jsDirFiles = relativeFiles.filter( file => file.startsWith( 'js/' ) ||
 
-                                                // that's for brand
-                                                file.startsWith( 'phet/js' ) );
+                                                   // that's for brand
+                                                   file.startsWith( 'phet/js' ) );
+  const testHTMLFiles = relativeFiles.filter( file => file.startsWith( 'tests/' ) && file.endsWith( '.html' ) );
 
-  relativeFiles.forEach( ( rel, i ) => migrateFile( repo, rel ) );
+  jsDirFiles.forEach( ( rel, i ) => migrateJavascriptFile( repo, rel ) );
+  testHTMLFiles.forEach( file => migrateTestHTMLFile( repo, file ) );
 
   if ( activeSims.includes( repo ) ) {
     generateDevelopmentHTML( repo );
