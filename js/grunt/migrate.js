@@ -45,6 +45,28 @@ const migrateFile = async ( repo, relativeFile ) => {
     contents = contents.slice( 0, contents.lastIndexOf( '}' ) );
   }
 
+  /*
+  INFO for handling loading
+  require( [ 'config' ], function() {
+    require( [ 'main', 'KITE/main', 'DOT/main', 'PHET_CORE/main', 'AXON/main', 'UTTERANCE_QUEUE/main' ],
+      function( scenery, kite, dot, phetCore, axon, utteranceQueue ) {
+
+  <script data-main="../js/config.js" src="../../sherpa/lib/require-2.3.6.js"></script>
+  <script type="module">
+    import scenery from '../js/main.js';
+  import kite from '../../kite/js/main.js';
+  import dot from '../../dot/js/main.js';
+  import phetCore from '../../phet-core/js/main.js';
+  import axon from '../../axon/js/main.js';
+  import utteranceQueue from '../../utterance-queue/js/main.js';
+  window.scenery = scenery;
+  window.kite = kite;
+  window.dot = dot;
+  window.phetCore = phetCore;
+  window.axon = axon;
+  window.utteranceQueue = utteranceQueue;
+  */
+
   if ( relativeFile.includes( 'scenery-main.js' ) || relativeFile.includes( 'kite-main.js' ) || relativeFile.includes( 'dot-main.js' ) ) {
     console.log( contents );
 
