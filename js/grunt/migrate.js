@@ -209,6 +209,15 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       line = replace( line, 'require( ', 'import ' );
       line = replace( line, '\' );', '\';' );
     }
+    // Handle cyclic dependencies (https://github.com/phetsims/chipper/issues/871)
+    if ( line.trim().startsWith( '// require( ' ) ) {
+      line = replace( line, '// require( ', 'import ' );
+      line = replace( line, '\' );', '\';' );
+      // Remove the circular dependency comments after
+      if ( line.includes( ' //' ) ) {
+        line = line.slice( 0, line.indexOf( ' //' ) );
+      }
+    }
     // Handle scenery-main.js and similar files
     // window.axon = require( 'AXON/main' );
     // becomes
