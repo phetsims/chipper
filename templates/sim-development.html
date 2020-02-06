@@ -41,20 +41,17 @@
   // See http://www.html5rocks.com/en/tutorials/speed/script-loading/ for more about script loading. It helps to
   // load all of the scripts with this method, so they are treated the same (and placed in the correct execution
   // order).
-  const loadURL = ( preloadURL, main ) => {
+  const loadURL = ( preloadURL, type = 'text/javascript' ) => {
     const script = document.createElement( 'script' );
-    if ( typeof main === 'string' ) {
-      script.setAttribute( 'data-main', main );
-    }
-    script.type = 'text/javascript';
+    script.type = type;
     script.src = preloadURL + queryAppend;
     script.async = false;
     document.head.appendChild( script );
   };
 
   // Queue all of the preloads to be loaded.
-  preloads.forEach( loadURL );
+  preloads.forEach( preload => loadURL( preload ) );
+  loadURL( 'js/{{REPOSITORY}}-main.js', 'module' );
 </script>
-<script type="module" src="js/{{REPOSITORY}}-main.js"></script>
 </body>
 </html>
