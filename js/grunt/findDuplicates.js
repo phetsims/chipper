@@ -15,7 +15,7 @@
 
 'use strict';
 
-// TODO: Looks like a decent amount of cleanup in this file. Not up to standards yet
+// TODO: Looks like a decent amount of cleanup in this file. Not up to standards yet https://github.com/phetsims/chipper/issues/526
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
 const getPhetLibs = require( './getPhetLibs' );
