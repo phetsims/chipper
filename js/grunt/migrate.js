@@ -15,7 +15,19 @@ const path = require( 'path' );
 const grunt = require( 'grunt' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 
-const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
+const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
+const activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim () );
+const reposByNamespace = {}; // map {string} namespace => {string} repo
+
+for ( const repo of activeRepos ) {
+  const packageFile = path.resolve( __dirname, `../../../${repo}/package.json` );
+  if ( fs.existsSync( packageFile ) ) {
+    const packageObject = JSON.parse( fs.readFileSync( packageFile, 'utf-8' ) );
+    if ( packageObject.phet && packageObject.phet.requirejsNamespace ) {
+      reposByNamespace[ packageObject.phet.requirejsNamespace ] = repo;
+    }
+  }
+}
 
 const replace = ( str, search, replacement ) => {
   return str.split( search ).join( replacement );
@@ -176,6 +188,9 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
     return line;
   };
 
+  const reposWithImportedStrings = [];
+  const indexOfFirstStringImport = _.findIndex( lines, line => line.includes( ' = require( \'string!' ) && line.trim().startsWith( 'const ' ) );
+
   //   // strings
   //   const acidBaseSolutionsTitleString = require( 'string!ACID_BASE_SOLUTIONS/acid-base-solutions.title' );
   // becomes
@@ -186,11 +201,22 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
   const fixString = line => {
     if ( line.trim().startsWith( 'import ' ) && line.indexOf( 'from \'string!' ) >= 0 ) {
       const variableName = line.trim().split( ' ' )[ 1 ];
-      const repoCap = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
+      const requirejsNamespace = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
 
       const tail = line.substring( line.indexOf( '/' ) + 1 );
       const stringKey = tail.split( '\'' )[ 0 ];
-      line = `import ${variableName} from '${repoCap}/../strings/${stringKey}';`; // .js added later
+
+      const stringKeyParts = stringKey.split( '.' ).map( stringKeyPart => {
+        // .foo vs [ 'foo' ]
+        const validIdentifier = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/u;
+        return validIdentifier.test( stringKeyPart ) ? `.${stringKeyPart}` : `[ '${stringKeyPart}' ]`;
+      } );
+
+      // NOTE: Borrow this for string assertions for linting
+      const repo = reposByNamespace[ requirejsNamespace ];
+      line = `const ${variableName} = ${_.camelCase( repo )}Strings${stringKeyParts.join( '' )};`;
+
+      reposWithImportedStrings.push( repo );
     }
     return line;
   };
@@ -242,6 +268,11 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
 
     return line;
   } );
+
+  const stringImportLines = _.uniq( reposWithImportedStrings ).map( repo => {
+    return `import ${_.camelCase( repo )}Strings from '${relativeFile.split( '/' ).map( () => '../' ).join( '' )}${repo}/js/${repo}-strings.js';`;
+  } );
+  lines.splice( indexOfFirstStringImport, 0, ...stringImportLines );
 
   // Omit 'use strict' directives
   lines = lines.filter( line => line.trim() !== '\'use strict\';' );

@@ -11,11 +11,11 @@
 
 'use strict';
 
+const createMipmap = require( './createMipmap' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
-const createMipmap = require( './createMipmap' );
-const modulifyStrings = require( './modulifyStrings' );
+const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedFile' );
 
 // disable lint in compiled files
 const HEADER = '/* eslint-disable */';
@@ -115,5 +115,16 @@ module.exports = async function( repo ) {
     await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename );
   }
 
-  modulifyStrings( repo );
+  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
+    const stringModuleFile = `../${repo}/js/${repo}-strings.js`;
+    fs.writeFileSync( stringModuleFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+
+import getStringModule from '../../chipper/js/getStringModule.js';
+
+export default getStringModule( '${packageObject.phet.requirejsNamespace}' );
+` );
+
+    await updateCopyrightForGeneratedFile( repo, stringModuleFile );
+  }
 };
