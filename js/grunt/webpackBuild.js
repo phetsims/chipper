@@ -1,7 +1,7 @@
 // Copyright 2019, University of Colorado Boulder
 
 /**
- * Runs webpack
+ * Runs webpack - DO NOT RUN MULTIPLE CONCURRENTLY
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
@@ -30,8 +30,29 @@ for ( const repo of activeRepos ) {
   }
 }
 
+const usedModules = [];
+class ListUsedModulesPlugin {
+  apply( compiler ) {
+    compiler.hooks.emit.tap( 'ListUsedModulesPlugin', compilation => {
+      compilation.chunks.forEach( chunk => {
+        usedModules.push( ...Array.from( chunk.entryModule.buildInfo.fileDependencies ) );
+      } );
+    } );
+  }
+}
+const getRelativeModules = () => {
+  for ( let i = 0; i < usedModules[ 0 ].length; i++ ) {
+    for ( let usedModule of usedModules ) {
+      if ( usedModule[ i ] !== usedModules[ 0 ][ i ] ) {
+        return usedModules.map( module => module.slice( i ) );
+      }
+    }
+  }
+  throw new Error( 'modules are all the same?' );
+};
+
 /**
- * Runs webpack
+ * Runs webpack - DO NOT RUN MULTIPLE CONCURRENTLY
  * @public
  *
  * @param {string} repo
@@ -41,6 +62,9 @@ module.exports = function( repo ) {
   return new Promise( ( resolve, reject ) => {
     // Initialize global state in preparation for the require.js step.
     chipperGlobals.beforeBuild( 'phet' );
+
+    // Zero out used modules
+    usedModules.length = 0;
 
     const compiler = webpack( {
       optimization: {
@@ -57,26 +81,15 @@ module.exports = function( repo ) {
 
       resolveLoader: {
         alias: {
-          mipmap: path.resolve( __dirname, '../webpack/mipmap-loader.js' ),
           'url-loader': path.resolve( __dirname, '../../node_modules/url-loader/dist/index.js' )
         }
       },
 
-      resolve: {
-        alias: aliases,
-        plugins: [ new StringPlugin( reposByNamespace ) ]
-      },
+      plugins: [
+        new ListUsedModulesPlugin()
+      ],
       module: {
         rules: [
-          {
-            test: /^string:/,
-            use: [
-              {
-                loader: path.resolve( __dirname, '../webpack/string-loader.js' ),
-                options: {/* ... */ }
-              }
-            ]
-          },
           {
             test: /\.(png|jpg|gif)$/i,
             use: [
@@ -117,7 +130,12 @@ module.exports = function( repo ) {
         reject( err );
       }
       else {
-        resolve( fs.readFileSync( path.resolve( __dirname, `../../build/${repo}.js` ), 'utf-8' ) );
+
+
+        resolve( {
+          js: fs.readFileSync( path.resolve( __dirname, `../../build/${repo}.js` ), 'utf-8' ),
+          usedModules: getRelativeModules()
+        } );
       }
     } );
   } );

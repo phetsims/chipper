@@ -30,7 +30,7 @@ module.exports = async function( repo, minifyOptions ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   assert( packageObject.phet, '`phet` object expected in package.json' );
 
-  const webpackJS = await webpackBuild( repo );
+  const webpackJS = ( await webpackBuild( repo ) ).js;
 
   let includedSources = [
     '../sherpa/lib/mdn-array-from-polyfill.js',

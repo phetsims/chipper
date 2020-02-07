@@ -22,9 +22,9 @@ const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
 const getInitializationScript = require( './getInitializationScript' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
-// const getPhetLibs = require( './getPhetLibs' );
+const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );
-// const getStringMap = require( './getStringMap' );
+const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 const jimp = require( 'jimp' );
@@ -68,8 +68,10 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   let timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
+  const webpackResult = await webpackBuild( repo );
+
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
-  const webpackJS = 'phet.chipper.runRequireJS = function() {' + await webpackBuild( repo ) + '};';
+  const webpackJS = 'phet.chipper.runRequireJS = function() {' + webpackResult.js + '};';
 
   // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.
   const debugMinifyOptions = brand === 'phet-io' ? {
@@ -85,7 +87,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   // After all strings have been loaded, report which of the translatable strings are unused.
   // reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
 
-  // const phetLibs = getPhetLibs( repo, brand );
+  const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
   const dependencies = await getDependencies( repo );
@@ -93,12 +95,12 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const thirdPartyEntries = getAllThirdPartyEntries( repo, brand );
   const simTitleStringKey = getTitleStringKey( repo );
 
-  // const stringMap = getStringMap( allLocales, phetLibs );
-  const stringMap = {
-    en: {
-      [ simTitleStringKey ]: repo
-    }
-  };
+  const stringMap = getStringMap( allLocales, phetLibs, webpackResult.usedModules );
+  // const stringMap = {
+  //   en: {
+  //     [ simTitleStringKey ]: repo
+  //   }
+  // };
 
   // If we have NO strings for a given locale that we want, we'll need to fill it in with all English strings, see
   // https://github.com/phetsims/perennial/issues/83
