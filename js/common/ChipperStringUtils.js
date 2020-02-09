@@ -10,6 +10,9 @@
 /* eslint-env browser, node */
 'use strict';
 
+// NOTE: We are now NOT used during the compilation-free process
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+
 // pass global as a function to support a
 ( function( global ) {
 

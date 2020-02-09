@@ -29,6 +29,16 @@ const localeInfo = require( '../data/localeInfo' ); // Locale information
  */
 module.exports = function( locales, phetLibs, usedModules ) {
 
+  assert( locales.indexOf( ChipperConstants.FALLBACK_LOCALE ) !== -1, 'fallback locale is required' );
+
+  const localeFallbacks = locale => {
+    return [
+      ...( locale !== ChipperConstants.FALLBACK_LOCALE ? [ locale ] : [] ), // e.g. 'zh_CN'
+      ...( locale.length > 2 ? [ locale.slice( 0, 2 ) ] : [] ), // e.g. 'zh'
+      ChipperConstants.FALLBACK_LOCALE // e.g. 'en'
+    ];
+  };
+
   const usedFileContents = usedModules.map( usedModule => fs.readFileSync( `../${usedModule}`, 'utf-8' ) );
 
   let reposUsed = [];
@@ -40,8 +50,11 @@ module.exports = function( locales, phetLibs, usedModules ) {
   } );
   reposUsed = _.uniq( reposUsed );
 
-  // include zh for zh_CN
-  const localesWithFallback = _.uniq( locales.concat( locales.filter( locale => locale.length > 2 ).map( locale => locale.slice( 0, 2 ) ) ) );
+  const requirejsNamespaceMap = {};
+  reposUsed.forEach( repo => {
+    const packageObject = JSON.parse( fs.readFileSync( `../${repo}/package.json`, 'utf-8' ) );
+    requirejsNamespaceMap[ repo ] = packageObject.phet.requirejsNamespace;
+  } );
 
   // Load all the required string files into memory, so we don't load them multiple times (for each usage)
   const stringFilesContents = {}; // maps [repositoryName][locale] => contents of locale string file
@@ -50,7 +63,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
 
     const addLocale = ( locale, isRTL ) => {
       // Read optional string file
-      const stringsFilename = path.normalize( `../${locale === 'en' ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json` );
+      const stringsFilename = path.normalize( `../${locale === ChipperConstants.FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json` );
       let fileContents;
       try {
         fileContents = grunt.file.readJSON( stringsFilename );
@@ -80,13 +93,23 @@ module.exports = function( locales, phetLibs, usedModules ) {
     } );
   } );
 
+  const stringMap = {};
+  locales.forEach( locale => {
+    stringMap[ locale ] = {};
+  } );
+
+  // combine our strings into [locale][stringKey] map, using the fallback locale where necessary. In regards to nested
+  // strings, this data structure doesn't nest. Instead it gets nested string values, and then sets them with the
+  // flat key string like `"FRICTION/a11y.some.string.here": { value: 'My Some String' }`
   reposUsed.forEach( repo => {
     let stringAccesses = [];
     const prefix = `${_.camelCase( repo )}Strings`;
     usedFileContents.forEach( ( fileContent, i ) => {
-      const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[ '[^']+' \\])+[^\\.\\[]`, 'g' ) );
-      if ( matches ) {
-        stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ) ) );
+      if ( fileContent.includes( `import ${prefix} from` ) ) {
+        const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[ '[^']+' \\])+[^\\.\\[]`, 'g' ) );
+        if ( matches ) {
+          stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ) ) );
+        }
       }
     } );
     stringAccesses = _.uniq( stringAccesses ).map( str => str.slice( prefix.length ) );
@@ -95,55 +118,25 @@ module.exports = function( locales, phetLibs, usedModules ) {
       return token.startsWith( '.' ) ? token.slice( 1 ) : token.slice( 3, token.length - 3 );
     } ) );
 
-    console.log( repo );
-    console.log( stringKeysByParts );
-  } );
+    const partialStringKeys = _.uniq( stringKeysByParts.map( parts => parts.join( '.' ) ) );
 
-  throw new Error();
+    partialStringKeys.forEach( partialStringKey => {
+      locales.forEach( locale => {
+        let stringValue = null;
+        for ( const fallbackLocale of localeFallbacks( locale ) ) {
+          const stringFileContents = stringFilesContents[ repo ][ fallbackLocale ];
+          if ( stringFileContents ) {
+            stringValue = ChipperStringUtils.getStringFromMap( stringFileContents, partialStringKey );
+            if ( stringValue ) {
+              break;
+            }
+          }
+        }
+        assert( !!stringValue, `Missing string information for ${repo} ${partialStringKey}` );
 
-  const fallbackLocale = ChipperConstants.FALLBACK_LOCALE; // local const to improve readability
-  assert( global.phet && global.phet.chipper && global.phet.chipper.strings, 'missing global.phet.chipper.strings' );
-  assert( locales.indexOf( fallbackLocale ) !== -1, 'fallback locale is required' );
-
-  // Get metadata of repositories that we want to load strings from (that were referenced in the sim)
-  const stringRepositories = []; // { name: {string}, path: {string}, requirejsNamespace: {string} }
-
-  for ( const stringKey in global.phet.chipper.strings ) {
-    const repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
-
-    // If this repo is not yet in the list
-    if ( stringRepositories.every( repo => repo.name !== repositoryName ) ) {
-      stringRepositories.push( {
-        name: repositoryName,
-        path: global.phet.chipper.strings[ stringKey ].repositoryPath,
-        requirejsNamespace: global.phet.chipper.strings[ stringKey ].requirejsNamespace
+        stringMap[ locale ][ `${requirejsNamespaceMap[ repo ]}/${partialStringKey}` ] = stringValue;
       } );
-
-      // If a string depends on an unlisted dependency, fail out
-      if ( phetLibs.indexOf( repositoryName ) < 0 ) {
-        throw new Error( `${repositoryName} is missing from phetLibs in package.json` );
-      }
-    }
-  }
-
-  // combine our strings into [locale][stringKey] map, using the fallback locale where necessary. In regards to nested
-  // strings, this data structure doesn't nest. Instead it gets nested string values, and then sets them with the
-  // flat key string like `"FRICTION/a11y.some.string.here": { value: 'My Some String' }`
-  const stringMap = {};
-  locales.forEach( function( locale ) {
-    stringMap[ locale ] = {};
-
-    for ( const stringKey in global.phet.chipper.strings ) {
-      const stringMetadata = global.phet.chipper.strings[ stringKey ];
-      const repositoryName = stringMetadata.repositoryName;
-      const key = stringMetadata.key;
-
-      // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.
-      const value = ChipperStringUtils.getStringFromMap( stringFilesContents[ repositoryName ][ locale ], key ) ||
-                    ChipperStringUtils.getStringFromMap( stringFilesContents[ repositoryName ][ fallbackLocale ], key );
-
-      stringMap[ locale ][ stringKey ] = value;
-    }
+    } );
   } );
 
   return stringMap;

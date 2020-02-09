@@ -13,7 +13,6 @@ const chipperGlobals = require( './chipperGlobals' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
-const StringPlugin = require( '../webpack/StringPlugin' );
 
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim () );
 const reposByNamespace = {};
@@ -42,7 +41,7 @@ class ListUsedModulesPlugin {
 }
 const getRelativeModules = () => {
   for ( let i = 0; i < usedModules[ 0 ].length; i++ ) {
-    for ( let usedModule of usedModules ) {
+    for ( const usedModule of usedModules ) {
       if ( usedModule[ i ] !== usedModules[ 0 ][ i ] ) {
         return usedModules.map( module => module.slice( i ) );
       }
