@@ -71,7 +71,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const webpackResult = await webpackBuild( repo );
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
-  const webpackJS = 'phet.chipper.runRequireJS = function() {' + webpackResult.js + '};';
+  const webpackJS = 'phet.chipper.runWebpack = function() {' + webpackResult.js + '};';
 
   // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.
   const debugMinifyOptions = brand === 'phet-io' ? {

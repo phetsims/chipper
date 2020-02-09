@@ -50,7 +50,14 @@ module.exports = function( config ) {
   let phetStrings = stringMap;
   if ( !includeAllLocales ) {
     phetStrings = {};
-    phetStrings[ locale ] = stringMap[ locale ];
+    phetStrings[ ChipperConstants.FALLBACK_LOCALE ] = stringMap[ ChipperConstants.FALLBACK_LOCALE ];
+    if ( locale !== ChipperConstants.FALLBACK_LOCALE ) {
+      phetStrings[ locale ] = stringMap[ locale ];
+    }
+    const splitLocale = locale.slice( 0, 2 );
+    if ( locale.length > 2 && splitLocale !== ChipperConstants.FALLBACK_LOCALE ) {
+      phetStrings[ splitLocale ] = stringMap[ splitLocale ];
+    }
   }
 
   return ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/chipper-initialization.js' ), {

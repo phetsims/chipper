@@ -80,7 +80,7 @@
   const locales = [
     'en',
     ...( loadCustomLocale ? [ customLocale ] : [] ), // e.g. 'zh_CN'
-    ...( ( loadCustomLocale && customLocale.length > 2 ) ? [ customLocale.slice( 0, 2 ) ] : [] ) // e.g. 'zh'
+    ...( ( loadCustomLocale && customLocale.length > 2 && customLocale.slice( 0, 2 ) !== 'en' ) ? [ customLocale.slice( 0, 2 ) ] : [] ) // e.g. 'zh'
   ];
 
   phet.chipper.stringRepos.forEach( stringRepoData => {

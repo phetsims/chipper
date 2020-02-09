@@ -671,7 +671,8 @@
     if ( QueryStringMachine.containsKey( 'locale' ) ) {
       window.phet.chipper.locale = phet.chipper.queryParameters.locale;
     }
-    else {
+    else if ( !window.phet.chipper.locale ) {
+      // Fill in a default
       window.phet.chipper.locale = 'en';
     }
 

@@ -4,19 +4,19 @@
  * Delayed simulation/runnable startup so that we can ensure we are in an environment suitable for the sim to start up.
  * See https://github.com/phetsims/chipper/issues/764 for more information.
  *
- * The require.js part is wrapped in a phet.chipper.runRequireJS() method.
+ * The webpack part is wrapped in a phet.chipper.runWebpack() method.
  *
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 ( function() {
   'use strict';
 
-  assert && assert( !!phet.chipper.runRequireJS, 'The require.js code should have run and defined this method' );
+  assert && assert( !!phet.chipper.runWebpack, 'The require.js code should have run and defined this method' );
 
   // constants
   const svgns = 'http://www.w3.org/2000/svg';
 
-  // Whether phet.chipper.runRequireJS has been called yet.
+  // Whether phet.chipper.runWebpack has been called yet.
   let started = false;
 
   function isReady() {
@@ -67,7 +67,7 @@
     if ( !started && isReady() ) {
       started = true;
 
-      phet.chipper.runRequireJS();
+      phet.chipper.runWebpack();
     }
   }
 

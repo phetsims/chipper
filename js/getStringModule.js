@@ -29,7 +29,7 @@ export default requirejsNamespace => {
   const stringKeyPrefix = `${requirejsNamespace}/`;
 
   // e.g. for zh_CN, we want to push 'zh' (the partial fallback) on
-  if ( phet.chipper.locale.indexOf( '_' ) >= 0 ) {
+  if ( phet.chipper.locale.indexOf( '_' ) >= 0 && phet.chipper.locale.slice( 0, 2 ) !== FALLBACK_LOCALE ) {
     locales.push( phet.chipper.locale.slice( 0, 2 ) );
   }
   // push the full locale if it is NOT the fallback

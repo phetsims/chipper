@@ -34,7 +34,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
   const localeFallbacks = locale => {
     return [
       ...( locale !== ChipperConstants.FALLBACK_LOCALE ? [ locale ] : [] ), // e.g. 'zh_CN'
-      ...( locale.length > 2 ? [ locale.slice( 0, 2 ) ] : [] ), // e.g. 'zh'
+      ...( ( locale.length > 2 && locale.slice( 0, 2 ) !== ChipperConstants.FALLBACK_LOCALE ) ? [ locale.slice( 0, 2 ) ] : [] ), // e.g. 'zh'
       ChipperConstants.FALLBACK_LOCALE // e.g. 'en'
     ];
   };
