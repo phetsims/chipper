@@ -32,7 +32,7 @@
         if ( key === 'value' ) {
           stringMap[ `${prefix}${path}` ] = object.value;
         }
-        else if ( typeof object[ key ] === 'object' ) {
+        else if ( object[ key ] && typeof object[ key ] === 'object' ) {
           recurse( `${path}${path.length ? '.' : ''}${key}`, object[ key ] );
         }
       } );
@@ -45,11 +45,15 @@
 
     const request = new XMLHttpRequest();
     request.addEventListener( 'load', () => {
+      let json;
       try {
-        processStringFile( JSON.parse( request.responseText ), requirejsNamespace, locale );
+        json = JSON.parse( request.responseText );
       }
       catch ( e ) {
-        console.log( `Could not parse string file for ${repo} with locale ${locale}` );
+        console.log( `Could not parse string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
+      }
+      if ( json ) {
+        processStringFile( json, requirejsNamespace, locale );
       }
       if ( --remainingFilesToProcess === 0 ) {
         finishProcessing();
