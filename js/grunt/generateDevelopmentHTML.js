@@ -14,14 +14,18 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const fs = require( 'fs' );
+const getDependencies = require( './getDependencies' );
 const getPreloads = require( './getPreloads' );
 const grunt = require( 'grunt' );
 
 /**
  * @param {string} repo
  * @param {Object} [options]
+ *
+ * @returns {Promise}
  */
-module.exports = function( repo, options ) {
+module.exports = async function( repo, options ) {
 
   const {
     stylesheets = '',
@@ -62,6 +66,15 @@ module.exports = function( repo, options ) {
     return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
   } );
 
+  const stringRepos = Object.keys( await getDependencies( repo ) ).filter( repo => repo !== 'comment' ).filter( repo => {
+    return fs.existsSync( `../${repo}/${repo}-strings_en.json` );
+  } ).map( repo => {
+    return {
+      repo: repo,
+      requirejsNamespace: grunt.file.readJSON( `../${repo}/package.json` ).phet.requirejsNamespace
+    };
+  } );
+
   // Replace placeholders in the template.
   html = ChipperStringUtils.replaceAll( html, '{{BODYSTYLE}}', bodystyle );
   html = ChipperStringUtils.replaceAll( html, '{{BODYSTART}}', bodystart );
@@ -73,6 +86,7 @@ module.exports = function( repo, options ) {
   html = ChipperStringUtils.replaceAll( html, '{{PHET_IO_PRELOADS}}', stringifyArray( phetioPreloads, '  ' ) );
   html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( preloads, '' ) );
   html = ChipperStringUtils.replaceAll( html, '{{PACKAGE_OBJECT}}', JSON.stringify( packageObject ) );
+  html = ChipperStringUtils.replaceAll( html, '{{STRING_REPOS}}', JSON.stringify( stringRepos ) );
 
   // Use the repository name for the browser window title, because getting the sim's title
   // requires running the string plugin in build mode, which is too heavy-weight for this task.

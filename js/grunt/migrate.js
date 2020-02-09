@@ -456,6 +456,6 @@ module.exports = async function( repo, cache ) {
   testHTMLFiles.forEach( file => migrateTestHTMLFile( repo, file ) );
 
   if ( activeSims.includes( repo ) ) {
-    generateDevelopmentHTML( repo );
+    await generateDevelopmentHTML( repo );
   }
 };

@@ -79,7 +79,7 @@ export default requirejsNamespace => {
 
         assert && assert( typeof object[ lastKeyPart ] !== 'object',
           'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
-          `of the other. The string key ${stringKey} is extended by another key, something containing ${Object.keys( object[ lastKeyPart ] ).toString()}.` );
+          `of the other. The string key ${stringKey} is extended by another key, something containing ${object[ lastKeyPart ] && Object.keys( object[ lastKeyPart ] )}.` );
         assert && assert( !object[ lastKeyPart ],
           `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
         object[ lastKeyPart ] = stringValue;

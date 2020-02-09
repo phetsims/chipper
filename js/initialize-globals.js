@@ -671,6 +671,9 @@
     if ( QueryStringMachine.containsKey( 'locale' ) ) {
       window.phet.chipper.locale = phet.chipper.queryParameters.locale;
     }
+    else {
+      window.phet.chipper.locale = 'en';
+    }
 
     const stringOverrides = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
 

@@ -20,6 +20,7 @@
   window.phet = window.phet || {};
   window.phet.chipper = window.phet.chipper || {};
   window.phet.chipper.packageObject = {{PACKAGE_OBJECT}};
+  window.phet.chipper.stringRepos = {{STRING_REPOS}};
 
   // Identify the brand (assume generated brand if not provided with query parameters)
   const brandMatch = location.search.match( /brand=([^&]+)/ );
@@ -50,8 +51,10 @@
   };
 
   // Queue all of the preloads to be loaded.
+  loadURL( '../chipper/js/load-runtime-strings.js' );
   preloads.forEach( preload => loadURL( preload ) );
-  loadURL( 'js/{{REPOSITORY}}-main.js', 'module' );
+
+  window.phet.chipper.loadModules = () => loadURL( 'js/{{REPOSITORY}}-main.js', 'module' );
 </script>
 </body>
 </html>

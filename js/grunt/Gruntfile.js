@@ -233,7 +233,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
     wrapTask( async () => {
-      generateDevelopmentHTML( repo );
+      await generateDevelopmentHTML( repo );
     } ) );
 
   grunt.registerTask( 'generate-test-html',
@@ -241,7 +241,7 @@ module.exports = function( grunt ) {
     'for more information on automated testing. Usually you should ' +
     'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
-      generateDevelopmentHTML( repo, {
+      await generateDevelopmentHTML( repo, {
 
         // Include QUnit CSS
         stylesheets: '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">', // Note the preceding whitespace which makes the formatting match IDEA formatting
