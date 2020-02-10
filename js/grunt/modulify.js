@@ -11,6 +11,7 @@
 
 'use strict';
 
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const createMipmap = require( './createMipmap' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
@@ -118,13 +119,34 @@ module.exports = async function( repo ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
     const stringModuleFile = `../${repo}/js/${repo}-strings.js`;
+    const namespace = _.camelCase( repo );
     fs.writeFileSync( stringModuleFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
 import getStringModule from '../../chipper/js/getStringModule.js';
+import ${namespace} from './${namespace}.js';
 
-export default getStringModule( '${packageObject.phet.requirejsNamespace}' );
+const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' );
+
+${namespace}.register( '${namespace}Strings', ${namespace}Strings );
+
+export default ${namespace}Strings;
 ` );
-
     await updateCopyrightForGeneratedFile( repo, stringModuleFile );
+
+    const namespaceFile = `../${repo}/js/${namespace}.js`;
+    if ( !fs.existsSync( namespaceFile ) ) {
+      fs.writeFileSync( namespaceFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+
+/**
+ * Creates the namespace for this simulation.
+ */
+
+// modules
+import Namespace from '../../phet-core/js/Namespace.js';
+
+export default new Namespace( '${namespace}' );
+` );
+      await updateCopyrightForGeneratedFile( repo, namespaceFile );
+    }
   }
 };

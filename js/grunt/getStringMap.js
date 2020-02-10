@@ -108,8 +108,39 @@ module.exports = function( locales, phetLibs, usedModules ) {
       if ( fileContent.includes( `import ${prefix} from` ) ) {
         const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[ '[^']+' \\])+[^\\.\\[]`, 'g' ) );
         if ( matches ) {
-          stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ) ) );
+          stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ) ).filter( m => m !== `${prefix}.get` ) );
         }
+
+        const workaroundMatches = fileContent.match( new RegExp( `${prefix}\\.get\\( '([^']+)' \\)`, 'g' ) );
+        if ( workaroundMatches ) {
+          stringAccesses.push( ...workaroundMatches.map( match => `${prefix}.${match.slice( match.indexOf( '\'' ) + 1, match.lastIndexOf( '\'' ) )}` ) );
+        }
+
+        // Workarounds:
+
+        // ( requirejsNamespace === 'AREA_MODEL_COMMON' && (
+        //   stringKey === 'levelPrompt.oneProduct' ||
+        //   stringKey === 'levelPrompt.oneProduct.totalArea' ||
+        //   stringKey === 'levelPrompt.oneProduct.oneLength' ) ) ||
+        // ( requirejsNamespace === 'VEGAS' && (
+        //   stringKey === 'label.score' ||
+        //   stringKey === 'label.score.max' ) ) ||
+        // ( requirejsNamespace === 'GAS_PROPERTIES' && (
+        //   stringKey === 'holdConstant' ||
+        //   stringKey === 'holdConstant.nothing' ||
+        //   stringKey === 'holdConstant.volume' ||
+        //   stringKey === 'holdConstant.temperature' ||
+        //   stringKey === 'holdConstant.pressureV' ||
+        //   stringKey === 'holdConstant.pressureT' ) ) ||
+        // ( requirejsNamespace === 'MOLARITY' && (
+        //   stringKey === 'molarity' ||
+        //   stringKey === 'molarity.title' ) ) ||
+        // ( requirejsNamespace === 'WAVE_INTERFERENCE' && (
+        //   stringKey === 'screen' ||
+        //   stringKey === 'screen.waves' ||
+        //   stringKey === 'screen.interference' ||
+        //   stringKey === 'screen.slits' ||
+        //   stringKey === 'screen.diffraction' ) );
       }
     } );
     stringAccesses = _.uniq( stringAccesses ).map( str => str.slice( prefix.length ) );

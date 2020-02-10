@@ -66,9 +66,15 @@ export default requirejsNamespace => {
 
           // Don't allow e.g. JOIST/a and JOIST/a.b, since localeObject.a would need to be a string AND an object at the
           // same time.
-          assert && assert( typeof object[ keyPart ] !== 'string',
-            'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
-            `of the other. The string key ${partialKey} is extended by ${stringKey} in this case, and should be changed.` );
+          if ( typeof object[ keyPart ] === 'string' ) {
+            console.log(
+              'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
+              `of the other. The string key ${partialKey} is extended by ${stringKey} in this case, and should be changed.`
+            );
+          }
+          // assert && assert( typeof object[ keyPart ] !== 'string',
+          //   'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
+          //   `of the other. The string key ${partialKey} is extended by ${stringKey} in this case, and should be changed.` );
 
           // Create the next nested level, and move into it
           if ( !object[ keyPart ] ) {
@@ -77,12 +83,24 @@ export default requirejsNamespace => {
           object = object[ keyPart ];
         } );
 
-        assert && assert( typeof object[ lastKeyPart ] !== 'object',
-          'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
-          `of the other. The string key ${stringKey} is extended by another key, something containing ${object[ lastKeyPart ] && Object.keys( object[ lastKeyPart ] )}.` );
-        assert && assert( !object[ lastKeyPart ],
-          `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
-        object[ lastKeyPart ] = stringValue;
+        if ( typeof object[ lastKeyPart ] === 'object' ) {
+          console.log(
+            'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
+            `of the other. The string key ${stringKey} is extended by another key, something containing ${object[ lastKeyPart ] && Object.keys( object[ lastKeyPart ] )}.`
+          );
+        }
+        // assert && assert( typeof object[ lastKeyPart ] !== 'object',
+        //   'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
+        //   `of the other. The string key ${stringKey} is extended by another key, something containing ${object[ lastKeyPart ] && Object.keys( object[ lastKeyPart ] )}.` );
+        if ( object[ lastKeyPart ] ) {
+          console.log( `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
+        }
+        // assert && assert( !object[ lastKeyPart ],
+        //   `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
+        // TODO: yikes we shouldn't need to do this, we'll need fixed up string keys
+        if ( typeof object !== 'string' ) {
+          object[ lastKeyPart ] = stringValue;
+        }
       } );
 
       // Combine the strings together, overriding any more "default" string values with their more specific translated
@@ -90,6 +108,28 @@ export default requirejsNamespace => {
       _.merge( result, localeObject );
     }
   } );
+
+  /**
+   * Allow a semi-manual getter for a string, using the partial key (every part of it not including the require.js
+   * namespace).
+   * @public
+   *
+   * @param {string} partialKey - e.g 'ResetAllButton.name' for the string key 'SCENERY_PHET/ResetAllButton.name'
+   * @returns {string}
+   */
+  result.get = partialKey => {
+    const fullKey = `${requirejsNamespace}/${partialKey}`;
+
+    // Iterate locales backwards for the lookup, so we get the most specific string first.
+    for ( let i = locales.length - 1; i >= 0; i-- ) {
+      const map = phet.chipper.strings[ locales[ i ] ];
+      if ( map && map[ fullKey ] ) {
+        return map[ fullKey ];
+      }
+    }
+
+    throw new Error( `Unable to find string ${fullKey} in get( '${partialKey}' )` );
+  };
 
   return result;
 };
