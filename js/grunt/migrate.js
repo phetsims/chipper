@@ -14,6 +14,7 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const grunt = require( 'grunt' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+const generateTestHTML = require( './generateTestHTML' );
 
 const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
 const activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim () );
@@ -441,6 +442,8 @@ import ` );
 };
 
 module.exports = async function( repo, cache ) {
+  const packageObject = JSON.parse( fs.readFileSync( `../${repo}/package.json`, 'utf-8' ) );
+
   console.log( `migrating ${repo}` );
   const relativeFiles = [];
   grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
@@ -457,5 +460,8 @@ module.exports = async function( repo, cache ) {
 
   if ( activeSims.includes( repo ) ) {
     await generateDevelopmentHTML( repo );
+  }
+  if ( packageObject.phet.generatedUnitTests ) {
+    await generateTestHTML( repo );
   }
 };

@@ -27,6 +27,7 @@ const generateCoverage = require( './generateCoverage' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateREADME = require( './generateREADME' );
+const generateTestHTML = require( './generateTestHTML' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
 const minify = require( './minify' );
@@ -241,32 +242,7 @@ module.exports = function( grunt ) {
     'for more information on automated testing. Usually you should ' +
     'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
-      await generateDevelopmentHTML( repo, {
-
-        // Include QUnit CSS
-        stylesheets: '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">', // Note the preceding whitespace which makes the formatting match IDEA formatting
-
-        // Leave the background the default color white
-        bodystyle: '',
-
-        // Output to a test file
-        outputFile: `../${repo}/${repo}-tests.html`,
-
-        // Add the QUnit divs (and Scenery display div if relevant)
-        bodystart: '<div id="qunit"></div>\n<div id="qunit-fixture"></div>' + ( repo === 'scenery' ? '<div id="display"></div>' : '' ),
-
-        // Add QUnit JS
-        addedPreloads: [ '../sherpa/lib/qunit-2.4.1.js', '../aqua/js/qunit-connector.js' ],
-
-        // Do not show the splash screen
-        stripPreloads: [ '../joist/js/splash.js' ],
-
-        // Specify to use test config
-        qualifier: 'test-',
-
-        // Unit tests do not include the phet-io baseline and overrides files
-        forSim: false
-      } );
+      await generateTestHTML( repo );
     } ) );
 
   grunt.registerTask( 'generate-development-colors-html',

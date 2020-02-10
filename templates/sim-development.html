@@ -58,7 +58,7 @@
 
   // Module loading in compilation-free (development) mode will be kicked off once strings are loaded.
   // This is done in load-runtime-strings.js
-  window.phet.chipper.loadModules = () => loadURL( 'js/{{REPOSITORY}}-main.js', 'module' );
+  window.phet.chipper.loadModules = () => loadURL( '{{MAIN_FILE}}', 'module' );
 </script>
 </body>
 </html>
