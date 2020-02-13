@@ -18,7 +18,7 @@ const generateTestHTML = require( './generateTestHTML' );
 const sortImports = require( './sortImports' );
 
 const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
-const activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim () );
+const activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
 const reposByNamespace = {}; // map {string} namespace => {string} repo
 
 for ( const repo of activeRepos ) {
@@ -452,19 +452,20 @@ import ` );
 
   // Use short relative imports, see https://github.com/phetsims/chipper/issues/853
   {
-    // import IntroductionScreen from '../../acid-base-solutions/js/introduction/IntroductionScreen.js';
-    lines = contents.split( /\r?\n/ );
 
-    for ( let i = 0; i < lines.length; i++ ) {
-      if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( '.js\';' ) >= 0 ) {
-        const startIndex = lines[ i ].indexOf( '\'' ) + 1;
-        const endIndex = lines[ i ].lastIndexOf( '\'' );
-        const replacement = shortenImportPath( lines[ i ].substring( startIndex, endIndex ), pathToFile );
-
-        lines[ i ] = lines[ i ].substring( 0, startIndex ) + replacement + lines[ i ].slice( endIndex );
-      }
-    }
-    contents = lines.join( '\n' );
+    // TODO: This is commented out until it works on Windows.
+    // lines = contents.split( /\r?\n/ );
+    //
+    // for ( let i = 0; i < lines.length; i++ ) {
+    //   if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( '.js\';' ) >= 0 ) {
+    //     const startIndex = lines[ i ].indexOf( '\'' ) + 1;
+    //     const endIndex = lines[ i ].lastIndexOf( '\'' );
+    //     const replacement = shortenImportPath( lines[ i ].substring( startIndex, endIndex ), pathToFile );
+    //
+    //     lines[ i ] = lines[ i ].substring( 0, startIndex ) + replacement + lines[ i ].slice( endIndex );
+    //   }
+    // }
+    // contents = lines.join( '\n' );
 
     // Unify whether files end in a newline or not
     contents = contents.trim();
