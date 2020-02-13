@@ -15,6 +15,7 @@ const path = require( 'path' );
 const grunt = require( 'grunt' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateTestHTML = require( './generateTestHTML' );
+const sortImports = require( './sortImports' );
 
 const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim() );
 const activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( sim => sim.trim () );
@@ -470,6 +471,8 @@ import ` );
   }
 
   fs.writeFileSync( pathToFile, contents, 'utf-8' );
+
+  sortImports( pathToFile );
 };
 
 module.exports = async function( repo, cache ) {
