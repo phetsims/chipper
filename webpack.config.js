@@ -5,7 +5,6 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
 const getPreloads = require( './js/grunt/getPreloads' );
-const StringPlugin = require( './js/webpack/StringPlugin' );
 
 const sims = [
   'acid-base-solutions',
@@ -156,7 +155,7 @@ const sims = [
 
 // NOTE: Load dependencies more specifically from a sim list in the future, so we don't have such a direct dependency.
 // Repos could be deleted in the future and then prior checkouts with this wouldn't work.
-const activeRepos = fs.readFileSync( path.resolve( __dirname, '../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim () );
+const activeRepos = fs.readFileSync( path.resolve( __dirname, '../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
 const reposByNamespace = {};
 const aliases = {};
 const entries = {};
@@ -235,51 +234,12 @@ module.exports = {
       mipmap: path.resolve( __dirname, 'js/webpack/mipmap-loader.js' )
     }
   },
-
-  resolve: {
-    alias: aliases,
-    plugins: [ new StringPlugin( reposByNamespace ) ]
-  },
   module: {
     rules: [
+      // rules for modules (configure loaders, parser options, etc.)
       {
-        test: /^string:/,
-        use: [
-          {
-            loader: path.resolve( '../chipper/js/webpack/string-loader.js' ),
-            options: {/* ... */ }
-          }
-        ]
-      },
-      {
-        test: /\.(png|jpg|gif)$/i,
-        use: [
-          {
-            loader: path.resolve( '../chipper/js/webpack/image-loader.js' ),
-            options: {/* ... */ }
-          },
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 999999999
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(mp3|wav)$/i,
-        use: [
-          {
-            loader: path.resolve( '../chipper/js/webpack/sound-loader.js' ),
-            options: {/* ... */ }
-          },
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 999999999
-            }
-          }
-        ]
+        test: /phetioEngine/,
+        use: path.resolve( __dirname, 'test-webpack-multi-brands/phetioStub-loader.js' )
       }
     ]
   }
