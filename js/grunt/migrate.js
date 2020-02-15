@@ -498,7 +498,10 @@ module.exports = async function( repo, cache ) {
   const jsDirFiles = relativeFiles.filter( file => file.startsWith( 'js/' ) ||
 
                                                    // that's for brand
-                                                   file.startsWith( 'phet/js' ) );
+                                                   file.startsWith( 'phet/js' ) ||
+                                                   file.startsWith( 'phet-io/js' ) ||
+                                                   file.startsWith( 'adapted-from-phet/js' )
+  );
   const testHTMLFiles = relativeFiles.filter( file => file.startsWith( 'tests/' ) && file.endsWith( '.html' ) );
 
   jsDirFiles.forEach( rel => migrateJavascriptFile( repo, rel ) );
