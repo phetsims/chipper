@@ -53,6 +53,13 @@ const shortenImportPath = ( target, pathToFile ) => {
   return rel;
 };
 
+const migratePackageJSON = async repo => {
+  const pathToFile = `../${repo}/package.json`;
+  let contents = fs.readFileSync( pathToFile, 'utf-8' );
+  contents = replace( contents, '"sourceType": "script"', '"sourceType": "module"' );
+  fs.writeFileSync( pathToFile, contents, 'utf-8' );
+};
+
 const migrateTestHTMLFile = async ( repo, relativeFile ) => {
   const pathToFile = '../' + repo + '/' + relativeFile;
   let contents = fs.readFileSync( pathToFile, 'utf-8' );
@@ -494,8 +501,9 @@ module.exports = async function( repo, cache ) {
                                                    file.startsWith( 'phet/js' ) );
   const testHTMLFiles = relativeFiles.filter( file => file.startsWith( 'tests/' ) && file.endsWith( '.html' ) );
 
-  jsDirFiles.forEach( ( rel, i ) => migrateJavascriptFile( repo, rel ) );
+  jsDirFiles.forEach( rel => migrateJavascriptFile( repo, rel ) );
   testHTMLFiles.forEach( file => migrateTestHTMLFile( repo, file ) );
+  migratePackageJSON( repo, 'package.json' );
 
   if ( activeSims.includes( repo ) ) {
     await generateDevelopmentHTML( repo );
