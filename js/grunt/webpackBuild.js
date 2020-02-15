@@ -14,7 +14,7 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 
-const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim () );
+const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
 const reposByNamespace = {};
 const aliases = {};
 
@@ -30,6 +30,7 @@ for ( const repo of activeRepos ) {
 }
 
 const usedModules = [];
+
 class ListUsedModulesPlugin {
   apply( compiler ) {
     compiler.hooks.emit.tap( 'ListUsedModulesPlugin', compilation => {
@@ -39,6 +40,7 @@ class ListUsedModulesPlugin {
     } );
   }
 }
+
 const getRelativeModules = () => {
   for ( let i = 0; i < usedModules[ 0 ].length; i++ ) {
     for ( const usedModule of usedModules ) {
@@ -55,9 +57,10 @@ const getRelativeModules = () => {
  * @public
  *
  * @param {string} repo
+ * @param {string} brand
  * @returns {Promise.<string>} - The combined JS output from the process
  */
-module.exports = function( repo ) {
+module.exports = function( repo, brand ) {
   return new Promise( ( resolve, reject ) => {
     // Initialize global state in preparation for the require.js step.
     chipperGlobals.beforeBuild( 'phet' );
@@ -88,37 +91,17 @@ module.exports = function( repo ) {
         new ListUsedModulesPlugin()
       ],
       module: {
+
+        // rules for modules (configure loaders, parser options, etc.)
         rules: [
-          {
-            test: /\.(png|jpg|gif)$/i,
-            use: [
-              {
-                loader: path.resolve( __dirname, '../webpack/image-loader.js' ),
-                options: {/* ... */ }
-              },
-              {
-                loader: 'url-loader',
-                options: {
-                  limit: 999999999
-                }
-              }
-            ]
-          },
-          {
-            test: /\.(mp3|wav)$/i,
-            use: [
-              {
-                loader: path.resolve( __dirname, '../webpack/sound-loader.js' ),
-                options: {/* ... */ }
-              },
-              {
-                loader: 'url-loader',
-                options: {
-                  limit: 999999999
-                }
-              }
-            ]
-          }
+
+          ...( brand === 'phet-io' ? [] : [
+
+            {
+              test: /phetio/,
+              use: path.resolve( __dirname, '../../test-webpack-multi-brands/phetioStub-loader.js' )
+            }
+          ] )
         ]
       }
     } );

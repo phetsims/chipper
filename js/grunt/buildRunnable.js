@@ -68,7 +68,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   let timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
-  const webpackResult = await webpackBuild( repo );
+  const webpackResult = await webpackBuild( repo, brand );
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
   const webpackJS = 'phet.chipper.runWebpack = function() {' + webpackResult.js + '};';
