@@ -88,21 +88,16 @@ module.exports = function( repo, brand ) {
       },
 
       plugins: [
-        new ListUsedModulesPlugin()
+        new ListUsedModulesPlugin(),
+
+        // Allow builds for developers that do not have the phet-io repo checked out. IgnorePlugin will skip any require
+        // that matches the following regex.
+        ...( brand === 'phet-io' ? [] : [ new webpack.IgnorePlugin( /phetioEngine/ ) ] )
       ],
       module: {
 
         // rules for modules (configure loaders, parser options, etc.)
-        rules: [
-
-          ...( brand === 'phet-io' ? [] : [
-
-            {
-              test: /phetio/,
-              use: path.resolve( __dirname, '../../test-webpack-multi-brands/phetioStub-loader.js' )
-            }
-          ] )
-        ]
+        rules: []
       }
     } );
 
