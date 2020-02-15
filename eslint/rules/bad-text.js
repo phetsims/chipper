@@ -58,7 +58,11 @@ module.exports = function( context ) {
     // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
     ' => { return ',
 
-    'define( function( require ) {' // use define( require => { to standardize before es6 module migration
+    'define( function( require ) {', // use define( require => { to standardize before es6 module migration
+
+    // optional 'options' should use brackets and required 'config' shouldn't use brackets, see https://github.com/phetsims/chipper/issues/859
+    '@param {Object} options',
+    '@param {Object} [config]'
   ];
 
   return {

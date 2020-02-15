@@ -743,6 +743,9 @@
   // Are we running a built html file?
   window.phet.chipper.isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
 
+  // Are we running in an app?
+  window.phet.chipper.isApp = phet.chipper.queryParameters[ 'phet-app' ] || phet.chipper.queryParameters[ 'phet-android-app' ];
+
   /**
    * Enables or disables assertions in common libraries using query parameters.
    * There are two types of assertions: basic and slow. Enabling slow assertions will adversely impact performance.

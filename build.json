@@ -60,7 +60,8 @@
     ],
     "phetLibs": [
       "phet-io",
-      "phet-io-wrappers"
+      "phet-io-wrappers",
+      "studio"
     ]
   }
 }
