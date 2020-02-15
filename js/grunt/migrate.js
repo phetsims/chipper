@@ -310,6 +310,9 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
   // Omit 'use strict' directives
   lines = lines.filter( line => line.trim() !== '\'use strict\';' );
 
+  // Filter out DELETE directive lines
+  lines = lines.filter( line => line.indexOf( '// ES6-MIGRATE-DELETE' ) === -1 );
+
   contents = newLines.concat( lines ).join( '\n' );
 
   // Seems to be for inherit.js
@@ -391,6 +394,7 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
   contents = replace( contents, 'import brand from \'../../brand/js/../../js/brand.js\';', 'import brand from \'./brand.js\';' );
   contents = replace( contents, 'return scenery.register( \'SceneryStyle\'', 'export default scenery.register( \'SceneryStyle\'' );
   contents = replace( contents, 'require( \'SCENERY/display/BackboneDrawable\' );', 'import BackboneDrawable from  \'../../../scenery/js/display/BackboneDrawable.js\'; // eslint-disable-line' ); // TODO: deal with this https://github.com/phetsims/chipper/issues/820
+  contents = replace( contents, '// ES6-MIGRATE-ADD ', '' ); // Add any lines via the directive
 
   // Allow repeat migrations
   contents = replace( contents, '.js.js\';', '.js\';' );
