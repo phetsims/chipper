@@ -396,12 +396,13 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
   // contents = replace( contents, `from '/brand/js/`, `from '/brand/phet/js/` );// TODO: how to deal with different brands? https://github.com/phetsims/chipper/issues/820
   contents = replace( contents, '../../brand/js/Brand', '../../brand/phet/js/Brand' );
   contents = replace( contents, 'import brand from \'../../../brand/js/../../js/brand.js\';', 'import brand from \'../../../brand/js/brand.js\';' );
-  contents = replace( contents, 'import getLinks from \'../../../brand/js/../../js/getLinks.js\';', 'import getLinks from \'../../../brand/js/getLinks.js\';' );
+  contents = replace( contents, 'import getLinks from \'../../../brand/js/../../js/getLinks.js\';', 'import getLinks from \'../../brand/js/getLinks.js\';' );
   contents = replace( contents, 'from \'../../brand/js/../images', 'from \'../../brand/phet/images' );
   contents = replace( contents, 'import brand from \'../../brand/js/../../js/brand.js\';', 'import brand from \'./brand.js\';' );
   contents = replace( contents, 'return scenery.register( \'SceneryStyle\'', 'export default scenery.register( \'SceneryStyle\'' );
   contents = replace( contents, 'require( \'SCENERY/display/BackboneDrawable\' );', 'import BackboneDrawable from  \'../../../scenery/js/display/BackboneDrawable.js\'; // eslint-disable-line' ); // TODO: deal with this https://github.com/phetsims/chipper/issues/820
   contents = replace( contents, '// ES6-MIGRATE-ADD ', '' ); // Add any lines via the directive
+  contents = replace( contents, 'import getLinks from \'../../brand/js/../../js/getLinks.js\';', 'import getLinks from \'../../brand/js/getLinks.js\';' );
 
   // Allow repeat migrations
   contents = replace( contents, '.js.js\';', '.js\';' );
