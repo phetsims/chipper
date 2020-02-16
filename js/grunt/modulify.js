@@ -26,7 +26,11 @@ const replace = ( str, search, replacement ) => {
 };
 
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
-  if ( subdir && ( subdir.startsWith( 'images' ) || subdir.startsWith( 'phet/images' ) ) ) { // for brand
+  if ( subdir && ( subdir.startsWith( 'images' ) ||
+                   subdir.startsWith( 'phet/images' ) ||
+                   subdir.startsWith( 'phet-io/images' ) ||
+                   subdir.startsWith( 'adapted-from-phet/images' )
+  ) ) { // for brand
     if ( filename.endsWith( '.png' ) ) { // TODO: JPEGs
       const x = loadFileAsDataURI( abspath );
 
