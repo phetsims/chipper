@@ -1,14 +1,11 @@
-// Copyright 2019, University of Colorado Boulder
-
-/* eslint-disable */
+// Copyright 2020, University of Colorado Boulder
 
 /**
- * Prototyping for https://github.com/phetsims/chipper/issues/820
+ * Generates JS modules from resources such as images or sounds.
  *
- * @param {Object} grunt
- * @param {Object} gruntConfig
+ * @author Sam Reid (PhET Interactive Simulations)
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
-
 'use strict';
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
@@ -21,9 +18,7 @@ const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedF
 // disable lint in compiled files
 const HEADER = '/* eslint-disable */';
 
-const replace = ( str, search, replacement ) => {
-  return str.split( search ).join( replacement );
-};
+const replace = ( str, search, replacement ) => str.split( search ).join( replacement );
 
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
   if ( subdir && ( subdir.startsWith( 'images' ) ||
@@ -116,7 +111,8 @@ module.exports = async function( repo ) {
     relativeFiles.push( { abspath: abspath, rootdir: rootdir, subdir: subdir, filename: filename } );
   } );
 
-  for ( let entry of relativeFiles ) {
+  for ( let i = 0; i < relativeFiles.length; i++ ) {
+    const entry = relativeFiles[ i ];
     await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename );
   }
 
