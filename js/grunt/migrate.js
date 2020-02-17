@@ -170,9 +170,9 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       const term = line.trim().split( ' ' )[ 1 ];
       const repo = line.substring( line.indexOf( '!' ) + 1, line.indexOf( '/' ) );
       const tail = line.substring( line.indexOf( '/' ) + 1 );
-      line = `  import ${term} from '${repo}/../images/${tail}`;
+      line = `  import ${term} from '${repo}/../mipmaps/${tail}`;
       const a = line.lastIndexOf( '\'' );
-      line = line.substring( 0, a ) + '_mipmap' + line.substring( a );
+      line = line.substring( 0, a ) + line.substring( a );
     }
     return line;
   };

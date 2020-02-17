@@ -18,39 +18,45 @@ const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedF
 // disable lint in compiled files
 const HEADER = '/* eslint-disable */';
 
+// supported image types, not case-sensitive
+const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur' ];
+
+// String replacement
 const replace = ( str, search, replacement ) => str.split( search ).join( replacement );
 
-const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
-  if ( subdir && ( subdir.startsWith( 'images' ) ||
-                   subdir.startsWith( 'phet/images' ) ||
-                   subdir.startsWith( 'phet-io/images' ) ||
-                   subdir.startsWith( 'adapted-from-phet/images' )
-  ) ) { // for brand
-    if ( filename.endsWith( '.png' ) ) { // TODO: JPEGs
-      const x = loadFileAsDataURI( abspath );
+/**
+ * Transform an image file to a JS file that loads the image.
+ */
+const modulifyImage = abspath => {
+  const dataURI = loadFileAsDataURI( abspath );
 
-      const contents = `${HEADER}
+  const contents = `${HEADER}
 var img = new Image();
 window.phetImages = window.phetImages || [];
 window.phetImages.push(img);
-img.src='${x}';
+img.src='${dataURI}';
 export default img;
 `;
 
-      const outputFilename = replace( abspath, '.png', '_png.js' );
-      fs.writeFileSync( outputFilename, contents );
+  fs.writeFileSync( convertSuffix( abspath, '.js' ), contents );
+};
 
-      // defaults.  TODO: do we need to support non-defaults?  See https://github.com/phetsims/chipper/issues/820
-      const options = {
-        level: 4, // maximum level
-        quality: 98
-      };
+/**
+ * Transform an image file to a JS file that loads the image as a mipmap.
+ */
+const modulifyMipmap = async abspath => {
 
-      try {
-        const mipmaps = await createMipmap( abspath, options.level, options.quality );
-        const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
+  // defaults.  TODO: do we need to support non-defaults?  See https://github.com/phetsims/chipper/issues/820
+  const options = {
+    level: 4, // maximum level
+    quality: 98
+  };
 
-        const mipmapContents = `${HEADER}
+  try {
+    const mipmaps = await createMipmap( abspath, options.level, options.quality );
+    const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
+
+    const mipmapContents = `${HEADER}
 var mipmaps = ${JSON.stringify( entry )};
 window.phetImages = window.phetImages || [] // ensure reference
 mipmaps.forEach( function( mipmap ) {
@@ -68,19 +74,45 @@ mipmaps.forEach( function( mipmap ) {
     }
   };
 } );
-export default mipmaps;
-      `;
-
-
-        const mipmapFilename = replace( abspath, '.png', '_png_mipmap.js' );
-        fs.writeFileSync( mipmapFilename, mipmapContents );
-      }
-      catch( e ) {
-        console.log( `Image could not be mipmapped: ${abspath}` );
-      }
-    }
+export default mipmaps;`;
+    fs.writeFileSync( convertSuffix( abspath, '.js' ), mipmapContents );
   }
-  if ( subdir && ( subdir.startsWith( 'sounds' ) ) ) {
+  catch( e ) {
+    console.log( `Image could not be mipmapped: ${abspath}` );
+  }
+};
+
+// Convert .png => _png_mipmap.js, etc.
+const convertSuffix = ( abspath, suffix ) => {
+  const lastDotIndex = abspath.lastIndexOf( '.' );
+  return abspath.substring( 0, lastDotIndex ) + '_' + abspath.substring( lastDotIndex + 1 ) + suffix;
+};
+
+const getSuffix = filename => {
+  const index = filename.lastIndexOf( '.' );
+  return filename.substring( index );
+};
+
+const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
+  if ( subdir && ( subdir.startsWith( 'images' ) ||
+
+                   // for brand
+                   subdir.startsWith( 'phet/images' ) ||
+                   subdir.startsWith( 'phet-io/images' ) ||
+                   subdir.startsWith( 'adapted-from-phet/images' ) )
+       && IMAGE_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
+    modulifyImage( abspath );
+  }
+  if ( subdir && ( subdir.startsWith( 'mipmaps' ) ||
+
+                   // for brand
+                   subdir.startsWith( 'phet/mipmaps' ) ||
+                   subdir.startsWith( 'phet-io/mipmaps' ) ||
+                   subdir.startsWith( 'adapted-from-phet/mipmaps' ) )
+       && IMAGE_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
+    await modulifyMipmap( abspath );
+  }
+  if ( subdir && subdir.startsWith( 'sounds' ) ) {
     if ( filename.endsWith( '.mp3' ) ) {
       const x = loadFileAsDataURI( abspath );
 
