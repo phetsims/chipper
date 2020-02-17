@@ -66,7 +66,7 @@ define( function() {
    * @param {string} name - the symbolic media filename as supplied to the plugin, e.g. JOHN_TRAVOLTAGE/arm.png
    * @param {Object} licenseEntry - license entry for the media file, documented in getLicenseEntry.js
    * @param {string} brand - the string for the selected brand, such as 'phet'
-   * @param {string} mediaType - the type of media and name of the media subdirectory ('sound'|'image'|'mipmap'|...)
+   * @param {string} mediaType - the type of media and name of the media subdirectory ('sound'|'image'|...).  Mipmaps are tracked as 'image'
    * @param {function} onload - a function that conforms to the requirejs onload API
    */
   function registerLicenseEntry( name, licenseEntry, brand, mediaType, onload ) {

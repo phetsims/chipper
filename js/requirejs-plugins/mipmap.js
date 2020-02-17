@@ -82,7 +82,7 @@ define( require => {
       }
 
       // the path to our image file.
-      const path = getProjectURL( name, parentRequire ) + 'images' + imagePath;
+      const path = getProjectURL( name, parentRequire ) + 'mipmaps' + imagePath;
 
       // defaults
       const options = {
