@@ -32,7 +32,7 @@ module.exports = {
 
     // Permit console.log statements (we have a lot of them)
     // TODO: Find a way to make sure no console.log statements make it to production.  Can use the no-console rule
-    // but we want to be able to use console.log during development.
+    // TODO: but we want to be able to use console.log during development. https://github.com/phetsims/chipper/issues/876
     'no-console': 0,
 
     // specify whether backticks, double or single quotes should be used (fixable)
