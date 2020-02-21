@@ -1,4 +1,4 @@
-// Copyright 2015-2019, University of Colorado Boulder
+// Copyright 2015-2020, University of Colorado Boulder
 
 /**
  * Alternative to the image plugin, that during development (require.js) will generate mipmaps, but during a chipper
@@ -82,7 +82,7 @@ define( require => {
       }
 
       // the path to our image file.
-      const path = getProjectURL( name, parentRequire ) + 'images' + imagePath;
+      const path = getProjectURL( name, parentRequire ) + 'mipmaps' + imagePath;
 
       // defaults
       const options = {
