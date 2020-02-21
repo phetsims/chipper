@@ -509,7 +509,8 @@ module.exports = async function( repo, cache ) {
   testHTMLFiles.forEach( file => migrateTestHTMLFile( repo, file ) );
   migratePackageJSON( repo, 'package.json' );
 
-  if ( activeSims.includes( repo ) ) {
+  // Migrate the development html if there already was one
+  if ( fs.existsSync( `../${repo}/${repo}_en.html` ) ) {
     await generateDevelopmentHTML( repo );
   }
   if ( packageObject.phet.generatedUnitTests ) {
