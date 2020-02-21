@@ -1,16 +1,11 @@
 /* eslint-disable */
 window.isPhetio = true;
-window.isPhetio = false;
+
+import './phet.js';
 
 // TODO: See https://github.com/phetsims/chipper/issues/857
-// if ( window.isPhetio ) {
-//
-//   import(   /* webpackMode: "eager" */ './phetio/phetio.js').then( m => {
-//     console.log( 'io', m.default );
-//   } );
-// }
-// else {
-//   import(   /* webpackMode: "eager" */ './phet.js').then( m => {
-//     console.log( 'phet', m.default );
-//   } );
-// }
+if ( window.isPhetio ) {
+  // /* webpackMode: "eager" */
+  import(   './phetio/phetio.js').then( m => {
+  } );
+}
