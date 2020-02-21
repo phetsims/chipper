@@ -349,6 +349,10 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       lines[ i ] = replace( lines[ i ], '.png', '_png' );
     }
 
+    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.jpg' ) >= 0 ) {
+      lines[ i ] = replace( lines[ i ], '.jpg', '_jpg' );
+    }
+
     if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.mp3' ) >= 0 ) {
       lines[ i ] = replace( lines[ i ], '.mp3', '_mp3' );
     }
