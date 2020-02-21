@@ -32,7 +32,6 @@ const modulifyImage = abspath => {
 
   const contents = `${HEADER}
 var img = new Image();
-window.phetImages = window.phetImages || [];
 window.phetImages.push(img);
 img.src='${dataURI}';
 export default img;
@@ -58,7 +57,6 @@ const modulifyMipmap = async abspath => {
 
     const mipmapContents = `${HEADER}
 var mipmaps = ${JSON.stringify( entry )};
-window.phetImages = window.phetImages || [] // ensure reference
 mipmaps.forEach( function( mipmap ) {
   mipmap.img = new Image();
   window.phetImages.push( mipmap.img ); // make sure it's loaded before the sim launches
