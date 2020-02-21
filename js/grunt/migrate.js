@@ -12,6 +12,7 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
 const path = require( 'path' );
+const process = require( 'process' );
 const grunt = require( 'grunt' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateTestHTML = require( './generateTestHTML' );
@@ -36,9 +37,6 @@ const replace = ( str, search, replacement ) => {
 };
 
 const shortenImportPath = ( target, pathToFile ) => {
-  const fromAbsolute = path.resolve( pathToFile );
-  const dirname = path.dirname( fromAbsolute );
-  const j = path.join( dirname, target );
 
   const toAbsolute = path.resolve( j );
   let rel = path.relative( fromAbsolute, toAbsolute );
@@ -482,19 +480,23 @@ import ` );
   // Use short relative imports, see https://github.com/phetsims/chipper/issues/853
   {
 
-    // TODO: This is commented out until it works on Windows.
-    // lines = contents.split( /\r?\n/ );
-    //
-    // for ( let i = 0; i < lines.length; i++ ) {
-    //   if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( '.js\';' ) >= 0 ) {
-    //     const startIndex = lines[ i ].indexOf( '\'' ) + 1;
-    //     const endIndex = lines[ i ].lastIndexOf( '\'' );
-    //     const replacement = shortenImportPath( lines[ i ].substring( startIndex, endIndex ), pathToFile );
-    //
-    //     lines[ i ] = lines[ i ].substring( 0, startIndex ) + replacement + lines[ i ].slice( endIndex );
-    //   }
-    // }
-    // contents = lines.join( '\n' );
+    if ( process.platform === 'win32' ) {
+      console.warn( 'simplified relative paths is not supported on windows, continuing. . .' );
+    }
+    else {
+      lines = contents.split( /\r?\n/ );
+
+      for ( let i = 0; i < lines.length; i++ ) {
+        if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( '.js\';' ) >= 0 ) {
+          const startIndex = lines[ i ].indexOf( '\'' ) + 1;
+          const endIndex = lines[ i ].lastIndexOf( '\'' );
+          const replacement = shortenImportPath( lines[ i ].substring( startIndex, endIndex ), pathToFile );
+
+          lines[ i ] = lines[ i ].substring( 0, startIndex ) + replacement + lines[ i ].slice( endIndex );
+        }
+      }
+      contents = lines.join( '\n' );
+    }
 
     // Unify whether files end in a newline or not
     contents = contents.trim();
