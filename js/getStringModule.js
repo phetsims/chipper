@@ -50,7 +50,7 @@ export default requirejsNamespace => {
       stringKeys.forEach( stringKey => {
         // strip off the require.js namespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'
         const key = stringKey.slice( stringKeyPrefix.length );
-        const stringValue = partialStringMap[ stringKey ];
+        const stringValue = phet.chipper.mapString( partialStringMap[ stringKey ] );
 
         const keyParts = key.split( '.' );
         const lastKeyPart = keyParts[ keyParts.length - 1 ];
