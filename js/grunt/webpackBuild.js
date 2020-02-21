@@ -92,7 +92,7 @@ module.exports = function( repo, brand ) {
 
         // Allow builds for developers that do not have the phet-io repo checked out. IgnorePlugin will skip any require
         // that matches the following regex.
-        ...( brand === 'phet-io' ? [] : [ new webpack.IgnorePlugin( /phetioEngine/ ) ] )
+        ...( brand === 'phet-io' ? [] : [ new webpack.IgnorePlugin( { resourceRegExp: /phet-io\// } ) ] )
       ],
       module: {
 
