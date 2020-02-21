@@ -38,6 +38,9 @@ const replace = ( str, search, replacement ) => {
 
 const shortenImportPath = ( target, pathToFile ) => {
 
+  const fromAbsolute = path.resolve( pathToFile );
+  const dirname = path.dirname( fromAbsolute );
+  const j = path.join( dirname, target );
   const toAbsolute = path.resolve( j );
   let rel = path.relative( fromAbsolute, toAbsolute );
 
