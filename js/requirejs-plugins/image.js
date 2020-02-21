@@ -33,6 +33,7 @@ define( require => {
       }
       else {
         const image = document.createElement( 'img' );
+        window.phetImages.push( image );
         image.onerror = function( error ) {
           onload.error( error );
         };
