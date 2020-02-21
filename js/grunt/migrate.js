@@ -353,6 +353,10 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       lines[ i ] = replace( lines[ i ], '.jpg', '_jpg' );
     }
 
+    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.cur' ) >= 0 ) {
+      lines[ i ] = replace( lines[ i ], '.cur', '_cur' );
+    }
+
     if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.mp3' ) >= 0 ) {
       lines[ i ] = replace( lines[ i ], '.mp3', '_mp3' );
     }
@@ -361,7 +365,9 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       lines[ i ] = replace( lines[ i ], '.wav', '_wav' );
     }
 
-    // TODO: *.cur
+    if ( lines[ i ].indexOf( 'import ' ) >= 0 && lines[ i ].indexOf( ' from ' ) >= 0 && lines[ i ].indexOf( '.wav' ) >= 0 ) {
+      lines[ i ] = replace( lines[ i ], '.wav', '_wav' );
+    }
 
     // Map to relative paths for compilation free mode
     const depth = relativeFile.split( '/' ).length;
@@ -407,6 +413,10 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
   contents = replace( contents, 'require( \'SCENERY/display/BackboneDrawable\' );', 'import BackboneDrawable from  \'../../../scenery/js/display/BackboneDrawable.js\'; // eslint-disable-line' ); // TODO: deal with this https://github.com/phetsims/chipper/issues/820
   contents = replace( contents, '// ES6-MIGRATE-ADD ', '' ); // Add any lines via the directive
   contents = replace( contents, 'import getLinks from \'../../brand/js/../../js/getLinks.js\';', 'import getLinks from \'../../brand/js/getLinks.js\';' );
+
+  // Eliminate mimpmap options
+  contents = replace( contents, 'png,level=5.js', 'png.js' );
+  contents = replace( contents, 'png,level=1.js', 'png.js' );
 
   // Allow repeat migrations
   contents = replace( contents, '.js.js\';', '.js\';' );
