@@ -500,9 +500,54 @@ import ` );
       }
       contents = lines.join( '\n' );
     }
+  }
 
-    // Unify whether files end in a newline or not
-    contents = contents.trim();
+  // Unify whether files end in a newline or not
+  contents = contents.trim();
+
+  const countTokens = ( string, token ) => {
+    let count = 0;
+    for ( let i = 0; i < string.length; i++ ) {
+      if ( string[ i ] === token ) {
+        count++;
+      }
+    }
+    return count;
+  };
+
+  // Separate single export default inherit lines
+  {
+
+    lines = contents.split( /\r?\n/ );
+
+    for ( let i = 0; i < lines.length; i++ ) {
+      if ( lines[ i ].indexOf( 'export default inherit(' ) === 0 && countTokens( lines[ i ], ',' ) === 1 && countTokens( lines[ i ], '(' ) === 1 &&
+           lines[ i ].trim().endsWith( ';' ) ) {
+
+        const typeName = lines[ i ].substring( lines[ i ].indexOf( ',' ) + 1, lines[ i ].lastIndexOf( ')' ) - 1 ).trim();
+        const inheritLine = lines[ i ].substring( lines[ i ].indexOf( 'inherit(' ) );
+        lines[ i ] = inheritLine + '\n' + lines[ i ].substring( 0, 'export default '.length ) + typeName + ';';
+      }
+    }
+    contents = lines.join( '\n' );
+  }
+
+  // export default blackbodySpectrum.register( 'BGRAndStarDisplay', BGRAndStarDisplay );
+  // Separate single export default namespace lines
+  {
+
+    lines = contents.split( /\r?\n/ );
+
+    for ( let i = 0; i < lines.length; i++ ) {
+      if ( lines[ i ].indexOf( 'export default ' ) === 0 && countTokens( lines[ i ], ',' ) === 1 && countTokens( lines[ i ], '(' ) === 1
+           && lines[ i ].indexOf( '.register( ' ) >= 0 && lines[ i ].trim().endsWith( ';' ) ) {
+
+        const typeName = lines[ i ].substring( lines[ i ].indexOf( ',' ) + 1, lines[ i ].lastIndexOf( ')' ) - 1 ).trim();
+        const namespaceLine = lines[ i ].substring( 'export default '.length );
+        lines[ i ] = namespaceLine + '\n' + lines[ i ].substring( 0, 'export default '.length ) + typeName + ';';
+      }
+    }
+    contents = lines.join( '\n' );
   }
 
   fs.writeFileSync( pathToFile, contents, 'utf-8' );
