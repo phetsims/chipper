@@ -69,11 +69,11 @@ module.exports = function( repo, brand ) {
     usedModules.length = 0;
 
     // Create plugins to ignore brands that we are not building at this time.
-    const ignorePhetBrand = new webpack.IgnorePlugin( { resourceRegExp: /\/phet\//, contextRegExp: /brand/, } );
-    const ignorePhetioBrand = new webpack.IgnorePlugin( { resourceRegExp: /\/phet-io\//, contextRegExp: /brand/, } );
+    const ignorePhetBrand = new webpack.IgnorePlugin( { resourceRegExp: /\/phet\//, contextRegExp: /brand/ } );
+    const ignorePhetioBrand = new webpack.IgnorePlugin( { resourceRegExp: /\/phet-io\//, contextRegExp: /brand/ } );
     const ignoreAdaptedFromPhetBrand = new webpack.IgnorePlugin( {
       resourceRegExp: /\/adapted-from-phet\//,
-      contextRegExp: /brand/,
+      contextRegExp: /brand/
     } );
 
     // Allow builds for developers that do not have the phet-io repo checked out. IgnorePlugin will skip any require
@@ -104,7 +104,7 @@ module.exports = function( repo, brand ) {
       plugins: [
         new ListUsedModulesPlugin(),
 
-        // Exclude brand specific code. This includes all of the the `phet-io` repo for non phet-io builds.
+        // Exclude brand specific code. This includes all of the `phet-io` repo for non phet-io builds.
         ...( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
              brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
              brand === 'adapted-from-phet' ? [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] : [] )
