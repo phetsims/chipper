@@ -66,15 +66,9 @@ export default requirejsNamespace => {
 
           // Don't allow e.g. JOIST/a and JOIST/a.b, since localeObject.a would need to be a string AND an object at the
           // same time.
-          if ( typeof object[ keyPart ] === 'string' ) {
-            console.log(
-              'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
-              `of the other. The string key ${partialKey} is extended by ${stringKey} in this case, and should be changed.`
-            );
-          }
-          // assert && assert( typeof object[ keyPart ] !== 'string',
-          //   'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
-          //   `of the other. The string key ${partialKey} is extended by ${stringKey} in this case, and should be changed.` );
+          assert && assert( locale !== FALLBACK_LOCALE || typeof object[ keyPart ] !== 'string',
+            'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
+            `of the other. The string key ${partialKey} is extended by ${stringKey} in this case, and should be changed.` );
 
           // Create the next nested level, and move into it
           if ( !object[ keyPart ] ) {
@@ -83,21 +77,13 @@ export default requirejsNamespace => {
           object = object[ keyPart ];
         } );
 
-        if ( typeof object[ lastKeyPart ] === 'object' ) {
-          console.log(
-            'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
-            `of the other. The string key ${stringKey} is extended by another key, something containing ${object[ lastKeyPart ] && Object.keys( object[ lastKeyPart ] )}.`
-          );
-        }
-        // assert && assert( typeof object[ lastKeyPart ] !== 'object',
-        //   'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
-        //   `of the other. The string key ${stringKey} is extended by another key, something containing ${object[ lastKeyPart ] && Object.keys( object[ lastKeyPart ] )}.` );
-        if ( object[ lastKeyPart ] ) {
-          console.log( `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
-        }
-        // assert && assert( !object[ lastKeyPart ],
-        //   `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
-        // TODO: yikes we shouldn't need to do this, we'll need fixed up string keys
+        assert && assert( locale !== FALLBACK_LOCALE || typeof object[ lastKeyPart ] !== 'object',
+          'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
+          `of the other. The string key ${stringKey} is extended by another key, something containing ${object[ lastKeyPart ] && Object.keys( object[ lastKeyPart ] )}.` );
+        assert && assert( locale !== FALLBACK_LOCALE || !object[ lastKeyPart ],
+          `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
+
+        // We'll need this check anyway for babel string handling
         if ( typeof object !== 'string' ) {
           object[ lastKeyPart ] = stringValue;
         }

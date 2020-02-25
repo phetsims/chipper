@@ -216,31 +216,6 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       const tail = line.substring( line.indexOf( '/' ) + 1 );
       const stringKey = tail.split( '\'' )[ 0 ];
 
-      const needsStringKeyOverride =
-        ( requirejsNamespace === 'AREA_MODEL_COMMON' && (
-          stringKey === 'levelPrompt.oneProduct' ||
-          stringKey === 'levelPrompt.oneProduct.totalArea' ||
-          stringKey === 'levelPrompt.oneProduct.oneLength' ) ) ||
-        ( requirejsNamespace === 'VEGAS' && (
-          stringKey === 'label.score' ||
-          stringKey === 'label.score.max' ) ) ||
-        ( requirejsNamespace === 'GAS_PROPERTIES' && (
-          stringKey === 'holdConstant' ||
-          stringKey === 'holdConstant.nothing' ||
-          stringKey === 'holdConstant.volume' ||
-          stringKey === 'holdConstant.temperature' ||
-          stringKey === 'holdConstant.pressureV' ||
-          stringKey === 'holdConstant.pressureT' ) ) ||
-        ( requirejsNamespace === 'MOLARITY' && (
-          stringKey === 'molarity' ||
-          stringKey === 'molarity.title' ) ) ||
-        ( requirejsNamespace === 'WAVE_INTERFERENCE' && (
-          stringKey === 'screen' ||
-          stringKey === 'screen.waves' ||
-          stringKey === 'screen.interference' ||
-          stringKey === 'screen.slits' ||
-          stringKey === 'screen.diffraction' ) );
-
       const stringKeyParts = stringKey.split( '.' ).map( stringKeyPart => {
         // .foo vs [ 'foo' ]
         const validIdentifier = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/u;
@@ -250,12 +225,7 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       // NOTE: Borrow this for string assertions for linting
       const repo = reposByNamespace[ requirejsNamespace ];
 
-      if ( !needsStringKeyOverride ) {
-        line = `const ${variableName} = ${_.camelCase( repo )}Strings${stringKeyParts.join( '' )};`;
-      }
-      else {
-        line = `const ${variableName} = ${_.camelCase( repo )}Strings.get( '${stringKey}' );`;
-      }
+      line = `const ${variableName} = ${_.camelCase( repo )}Strings${stringKeyParts.join( '' )};`;
 
       reposWithImportedStrings.push( repo );
     }
