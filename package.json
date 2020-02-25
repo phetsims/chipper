@@ -28,7 +28,7 @@
     "request": "^2.87.0",
     "request-promise-native": "^1.0.7",
     "requirejs": "~2.3.5",
-    "uglify-es": "~3.1.10",
+    "terser": "~4.6.4",
     "url-loader": "^3.0.0",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",

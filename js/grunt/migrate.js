@@ -216,31 +216,6 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       const tail = line.substring( line.indexOf( '/' ) + 1 );
       const stringKey = tail.split( '\'' )[ 0 ];
 
-      const needsStringKeyOverride =
-        ( requirejsNamespace === 'AREA_MODEL_COMMON' && (
-          stringKey === 'levelPrompt.oneProduct' ||
-          stringKey === 'levelPrompt.oneProduct.totalArea' ||
-          stringKey === 'levelPrompt.oneProduct.oneLength' ) ) ||
-        ( requirejsNamespace === 'VEGAS' && (
-          stringKey === 'label.score' ||
-          stringKey === 'label.score.max' ) ) ||
-        ( requirejsNamespace === 'GAS_PROPERTIES' && (
-          stringKey === 'holdConstant' ||
-          stringKey === 'holdConstant.nothing' ||
-          stringKey === 'holdConstant.volume' ||
-          stringKey === 'holdConstant.temperature' ||
-          stringKey === 'holdConstant.pressureV' ||
-          stringKey === 'holdConstant.pressureT' ) ) ||
-        ( requirejsNamespace === 'MOLARITY' && (
-          stringKey === 'molarity' ||
-          stringKey === 'molarity.title' ) ) ||
-        ( requirejsNamespace === 'WAVE_INTERFERENCE' && (
-          stringKey === 'screen' ||
-          stringKey === 'screen.waves' ||
-          stringKey === 'screen.interference' ||
-          stringKey === 'screen.slits' ||
-          stringKey === 'screen.diffraction' ) );
-
       const stringKeyParts = stringKey.split( '.' ).map( stringKeyPart => {
         // .foo vs [ 'foo' ]
         const validIdentifier = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/u;
@@ -250,12 +225,7 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       // NOTE: Borrow this for string assertions for linting
       const repo = reposByNamespace[ requirejsNamespace ];
 
-      if ( !needsStringKeyOverride ) {
-        line = `const ${variableName} = ${_.camelCase( repo )}Strings${stringKeyParts.join( '' )};`;
-      }
-      else {
-        line = `const ${variableName} = ${_.camelCase( repo )}Strings.get( '${stringKey}' );`;
-      }
+      line = `const ${variableName} = ${_.camelCase( repo )}Strings${stringKeyParts.join( '' )};`;
 
       reposWithImportedStrings.push( repo );
     }
@@ -500,9 +470,54 @@ import ` );
       }
       contents = lines.join( '\n' );
     }
+  }
 
-    // Unify whether files end in a newline or not
-    contents = contents.trim();
+  // Unify whether files end in a newline or not
+  contents = contents.trim();
+
+  const countTokens = ( string, token ) => {
+    let count = 0;
+    for ( let i = 0; i < string.length; i++ ) {
+      if ( string[ i ] === token ) {
+        count++;
+      }
+    }
+    return count;
+  };
+
+  // Separate single export default inherit lines
+  {
+
+    lines = contents.split( /\r?\n/ );
+
+    for ( let i = 0; i < lines.length; i++ ) {
+      if ( lines[ i ].indexOf( 'export default inherit(' ) === 0 && countTokens( lines[ i ], ',' ) === 1 && countTokens( lines[ i ], '(' ) === 1 &&
+           lines[ i ].trim().endsWith( ';' ) ) {
+
+        const typeName = lines[ i ].substring( lines[ i ].indexOf( ',' ) + 1, lines[ i ].lastIndexOf( ')' ) - 1 ).trim();
+        const inheritLine = lines[ i ].substring( lines[ i ].indexOf( 'inherit(' ) );
+        lines[ i ] = inheritLine + '\n' + lines[ i ].substring( 0, 'export default '.length ) + typeName + ';';
+      }
+    }
+    contents = lines.join( '\n' );
+  }
+
+  // export default blackbodySpectrum.register( 'BGRAndStarDisplay', BGRAndStarDisplay );
+  // Separate single export default namespace lines
+  {
+
+    lines = contents.split( /\r?\n/ );
+
+    for ( let i = 0; i < lines.length; i++ ) {
+      if ( lines[ i ].indexOf( 'export default ' ) === 0 && countTokens( lines[ i ], ',' ) === 1 && countTokens( lines[ i ], '(' ) === 1
+           && lines[ i ].indexOf( '.register( ' ) >= 0 && lines[ i ].trim().endsWith( ';' ) ) {
+
+        const typeName = lines[ i ].substring( lines[ i ].indexOf( ',' ) + 1, lines[ i ].lastIndexOf( ')' ) - 1 ).trim();
+        const namespaceLine = lines[ i ].substring( 'export default '.length );
+        lines[ i ] = namespaceLine + '\n' + lines[ i ].substring( 0, 'export default '.length ) + typeName + ';';
+      }
+    }
+    contents = lines.join( '\n' );
   }
 
   fs.writeFileSync( pathToFile, contents, 'utf-8' );

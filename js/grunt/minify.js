@@ -11,7 +11,7 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const transpile = require( './transpile' );
-const uglifyES = require( 'uglify-es' ); // eslint-disable-line require-statement-match
+const terser = require( 'terser' );
 
 const MINIFY_DEFAULTS = {
   minify: true,
@@ -75,8 +75,7 @@ const minify = function( js, options ) {
   }
 
   if ( uglify ) {
-
-    const result = uglifyES.minify( js, uglifyOptions );
+    const result = terser.minify( js, uglifyOptions );
 
     if ( result.error ) {
       console.log( result.error );

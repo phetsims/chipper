@@ -40,6 +40,14 @@ const packageXHTML = require( './packageXHTML' );
 const webpackBuild = require( './webpackBuild' );
 const zlib = require( 'zlib' );
 
+const recordTime = async ( asyncCallback, timeCallback ) => {
+  const beforeTime = Date.now();
+  const result = await asyncCallback();
+  const afterTime = Date.now();
+  timeCallback( afterTime - beforeTime, result );
+  return result;
+};
+
 /**
  * Builds a runnable (e.g. a simulation).
  * @public
@@ -68,7 +76,11 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   let timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
-  const webpackResult = await webpackBuild( repo, brand );
+  const webpackResult = await recordTime( async () => {
+    return await webpackBuild( repo, brand );
+  }, time => {
+    grunt.log.ok( `Webpack build complete: ${time}ms` );
+  } );
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
   const webpackJS = 'phet.chipper.runWebpack = function() {' + webpackResult.js + '};';
@@ -162,17 +174,22 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     grunt.file.read( '../chipper/templates/chipper-startup.js' )
   ];
 
-  const productionScripts = [
-    ...startupScripts,
-    ...minifiableScripts.map( js => minify( js, minifyOptions ) )
-  ];
-  const debugScripts = [
-    ...startupScripts,
-    ...minifiableScripts.map( js => minify( js, debugMinifyOptions ) )
-  ];
-
-  grunt.log.ok( `Minification for ${brand} complete` );
-  grunt.log.ok( `Production scripts: ${_.sum( productionScripts.map( js => js.length ) )} bytes` );
+  const productionScripts = await recordTime( async () => {
+    return [
+      ...startupScripts,
+      ...minifiableScripts.map( js => minify( js, minifyOptions ) )
+    ];
+  }, ( time, scripts ) => {
+    grunt.log.ok( `Production minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
+  } );
+  const debugScripts = await recordTime( async () => {
+    return [
+      ...startupScripts,
+      ...minifiableScripts.map( js => minify( js, debugMinifyOptions ) )
+    ];
+  }, ( time, scripts ) => {
+    grunt.log.ok( `Debug minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
+  } );
 
   const commonInitializationOptions = {
     brand: brand,

@@ -6,7 +6,7 @@
  *
  * To generate coverage for a sim (or other codebase):
  * 1. Build with instrumentation added (preferably without minification):
- *    $ grunt --uglify=false --instrument=true
+ *    $ grunt --minify.uglify=false --instrument=true
  * 2. Run the instrumented version from the build directory.
  * 3. When done, in the JS console, `copy( __coverage__ )` to copy JSON coverage information into your clipboard.
  * 4. Paste it into build/instrumentation/coverage.json
