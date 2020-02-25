@@ -68,6 +68,20 @@ module.exports = function( repo, brand ) {
     // Zero out used modules
     usedModules.length = 0;
 
+    // Create plugins to ignore brands that we are not building at this time.
+    const ignorePhetBrand = new webpack.IgnorePlugin( { resourceRegExp: /\/phet\//, contextRegExp: /brand/, } );
+    const ignorePhetioBrand = new webpack.IgnorePlugin( { resourceRegExp: /\/phet-io\//, contextRegExp: /brand/, } );
+    const ignoreAdaptedFromPhetBrand = new webpack.IgnorePlugin( {
+      resourceRegExp: /\/adapted-from-phet\//,
+      contextRegExp: /brand/,
+    } );
+
+    // Allow builds for developers that do not have the phet-io repo checked out. IgnorePlugin will skip any require
+    // that matches the following regex.
+    const ignorePhetioRepo = new webpack.IgnorePlugin( {
+      resourceRegExp: /\/phet-io\// // ignore anyting in a phet-io named directory
+    } );
+
     const compiler = webpack( {
       optimization: {
         minimize: false
@@ -90,9 +104,10 @@ module.exports = function( repo, brand ) {
       plugins: [
         new ListUsedModulesPlugin(),
 
-        // Allow builds for developers that do not have the phet-io repo checked out. IgnorePlugin will skip any require
-        // that matches the following regex.
-        ...( brand === 'phet-io' ? [] : [ new webpack.IgnorePlugin( { resourceRegExp: /phet-io\// } ) ] )
+        // Exclude brand specific code. This includes all of the the `phet-io` repo for non phet-io builds.
+        ...( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
+             brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
+             brand === 'adapted-from-phet' ? [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] : [] )
       ],
       module: {
 
@@ -107,8 +122,6 @@ module.exports = function( repo, brand ) {
         reject( err );
       }
       else {
-
-
         resolve( {
           js: fs.readFileSync( path.resolve( __dirname, `../../build/${repo}.js` ), 'utf-8' ),
           usedModules: getRelativeModules()
