@@ -92,6 +92,7 @@ const getSuffix = filename => {
 };
 
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
+
   if ( subdir && ( subdir.startsWith( 'images' ) ||
 
                    // for brand
@@ -101,6 +102,7 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
        && IMAGE_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
     modulifyImage( abspath );
   }
+
   if ( subdir && ( subdir.startsWith( 'mipmaps' ) ||
 
                    // for brand
@@ -110,13 +112,13 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
        && IMAGE_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
     await modulifyMipmap( abspath );
   }
+
   if ( subdir && subdir.startsWith( 'sounds' ) ) {
     if ( filename.endsWith( '.mp3' ) ) {
       const x = loadFileAsDataURI( abspath );
 
       const contents = `${HEADER}
-export default {name:'${filename}',base64:'${x}'};
-`;
+export default {name:'${filename}',base64:'${x}'};`;
 
       const outputFilename = replace( abspath, '.mp3', '_mp3.js' );
       fs.writeFileSync( outputFilename, contents );
@@ -125,8 +127,7 @@ export default {name:'${filename}',base64:'${x}'};
       const x = loadFileAsDataURI( abspath );
 
       const contents = `${HEADER}
-export default {name:'${filename}',base64:'${x}'};
-`;
+export default {name:'${filename}',base64:'${x}'};`;
 
       const outputFilename = replace( abspath, '.wav', '_wav.js' );
       fs.writeFileSync( outputFilename, contents );
