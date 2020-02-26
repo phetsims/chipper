@@ -22,10 +22,11 @@ const HEADER = '/* eslint-disable */';
 const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur' ];
 
 // String replacement
-const replace = ( str, search, replacement ) => str.split( search ).join( replacement );
+const replace = ( string, search, replacement ) => string.split( search ).join( replacement );
 
 /**
  * Transform an image file to a JS file that loads the image.
+ * @param {string} abspath - the absolute path of the image
  */
 const modulifyImage = abspath => {
   const dataURI = loadFileAsDataURI( abspath );
@@ -42,6 +43,7 @@ export default img;
 
 /**
  * Transform an image file to a JS file that loads the image as a mipmap.
+ * @param {string} abspath - the absolute path of the image
  */
 const modulifyMipmap = async abspath => {
 
@@ -80,17 +82,32 @@ export default mipmaps;`;
   }
 };
 
-// Convert .png => _png_mipmap.js, etc.
+/**
+ * Convert .png => _png_mipmap.js, etc.
+ * @param {string} abspath - the absolute path
+ * @param {string} suffix - the new suffix, such as '.js'
+ */
 const convertSuffix = ( abspath, suffix ) => {
   const lastDotIndex = abspath.lastIndexOf( '.' );
   return abspath.substring( 0, lastDotIndex ) + '_' + abspath.substring( lastDotIndex + 1 ) + suffix;
 };
 
+/**
+ * Determines the suffix from a filename, everything after the final '.'
+ * @param {string} filename
+ */
 const getSuffix = filename => {
   const index = filename.lastIndexOf( '.' );
   return filename.substring( index );
 };
 
+/**
+ * Creates a *.js file corresponding to matching resources such as images or sounds.
+ * @param {string} abspath
+ * @param {string} rootdir
+ * @param {string} subdir
+ * @param {string} filename
+ */
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
 
   if ( subdir && ( subdir.startsWith( 'images' ) ||
@@ -113,6 +130,7 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
     await modulifyMipmap( abspath );
   }
 
+  // TODO: https://github.com/phetsims/chipper/issues/872 factor out duplicates
   if ( subdir && subdir.startsWith( 'sounds' ) ) {
     if ( filename.endsWith( '.mp3' ) ) {
       const x = loadFileAsDataURI( abspath );
@@ -135,6 +153,10 @@ export default {name:'${filename}',base64:'${x}'};`;
   }
 };
 
+/**
+ * Entry point for modulify, which transforms all of the resources in a repo to *.js files.
+ * @parm {string} repo, the name of a repo, such as 'joist'
+ */
 module.exports = async function( repo ) {
   console.log( `modulifying ${repo}` );
   const relativeFiles = [];
