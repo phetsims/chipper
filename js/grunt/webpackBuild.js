@@ -121,8 +121,13 @@ module.exports = function( repo, brand ) {
         reject( err );
       }
       else {
+        const jsFile = path.resolve( __dirname, `../../build/${repo}.js` );
+        const js = fs.readFileSync( jsFile, 'utf-8' );
+
+        fs.unlinkSync( jsFile );
+
         resolve( {
-          js: fs.readFileSync( path.resolve( __dirname, `../../build/${repo}.js` ), 'utf-8' ),
+          js: js,
           usedModules: getRelativeModules( Array.from( stats.compilation.fileDependencies ) )
         } );
       }
