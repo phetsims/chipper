@@ -108,21 +108,14 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const simTitleStringKey = getTitleStringKey( repo );
 
   const stringMap = getStringMap( allLocales, phetLibs, webpackResult.usedModules );
-  // TODO: delete me? https://github.com/phetsims/chipper/issues/872
-  // const stringMap = {
-  //   en: {
-  //     [ simTitleStringKey ]: repo
-  //   }
-  // };
 
   // If we have NO strings for a given locale that we want, we'll need to fill it in with all English strings, see
   // https://github.com/phetsims/perennial/issues/83
-  // for ( const locale of locales ) {
-  //   if ( !stringMap[ locale ] ) {
-  //     stringMap[ locale ] = stringMap[ ChipperConstants.FALLBACK_LOCALE ];
-  //   }
-  // }
-
+  for ( const locale of locales ) {
+    if ( !stringMap[ locale ] ) {
+      stringMap[ locale ] = stringMap[ ChipperConstants.FALLBACK_LOCALE ];
+    }
+  }
 
   const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ simTitleStringKey ];
   assert( englishTitle, `missing entry for sim title, key = ${simTitleStringKey}` );
