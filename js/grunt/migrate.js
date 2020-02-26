@@ -553,4 +553,12 @@ module.exports = async function( repo, cache ) {
   if ( packageObject.phet.generatedUnitTests ) {
     await generateTestHTML( repo );
   }
+  if ( packageObject.phet.runnable ) {
+    const configFile = `../${repo}/js/${repo}-config.js`;
+    fs.existsSync( configFile ) && fs.unlinkSync( configFile );
+  }
+  if ( packageObject.phet.generatedUnitTests ) {
+    const configFile = `../${repo}/js/${repo}-test-config.js`;
+    fs.existsSync( configFile ) && fs.unlinkSync( configFile );
+  }
 };

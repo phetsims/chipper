@@ -45,18 +45,6 @@ qunit.test( 'A11Y View HTML', async assert => {
   assert.expect( 0 );
 } );
 
-qunit.test( 'Config', async assert => {
-  assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'generate-config' ], { cwd: '../chains' } );
-  assert.expect( 0 );
-} );
-
-qunit.test( 'Test Config', async assert => {
-  assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'generate-test-config' ], { cwd: '../chains' } );
-  assert.expect( 0 );
-} );
-
 qunit.test( 'Published README', async assert => {
   assert.timeout( 120000 );
   await execute( gruntCommand, [ 'published-README' ], { cwd: '../chains' } );
