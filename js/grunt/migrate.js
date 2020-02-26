@@ -124,10 +124,18 @@ const migrateTestHTMLFile = async ( repo, relativeFile ) => {
 
 const migrateJavascriptFile = async ( repo, relativeFile ) => {
   // const packageObject = JSON.parse( fs.readFileSync( `../${repo}/package.json`, 'utf-8' ) );
+
+  // Don't muck with preload files
   if ( relativeFile.endsWith( '/PhetioIDUtils.js' ) ) {
     return;
   }
   if ( relativeFile.endsWith( '/copyWithSortedKeys.js' ) ) {
+    return;
+  }
+  if ( relativeFile.endsWith( '/google-analytics.js' ) ) {
+    return;
+  }
+  if ( relativeFile.endsWith( '/splash.js' ) ) {
     return;
   }
   const pathToFile = '../' + repo + '/' + relativeFile;
