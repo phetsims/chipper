@@ -48,7 +48,7 @@ module.exports = async repo => {
     // Check if the repo is missing from the directory
     if ( !grunt.file.exists( rootdir + repo ) ) {
 
-      if ( repo.indexOf( 'phet-io' ) === 0 ) {
+      if ( repo.indexOf( 'phet-io' ) === 0 || repo === 'studio' ) {
         console.log( 'skipping repo (not checked out): ' + repo );
         success = true;
         continue;
