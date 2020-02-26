@@ -29,23 +29,16 @@ for ( const repo of activeRepos ) {
   }
 }
 
-const usedModules = [];
-
-class ListUsedModulesPlugin {
-  apply( compiler ) {
-    compiler.hooks.emit.tap( 'ListUsedModulesPlugin', compilation => {
-      compilation.chunks.forEach( chunk => {
-        usedModules.push( ...Array.from( chunk.entryModule.buildInfo.fileDependencies ) );
-      } );
-    } );
-  }
-}
-
-const getRelativeModules = () => {
-  for ( let i = 0; i < usedModules[ 0 ].length; i++ ) {
-    for ( const usedModule of usedModules ) {
-      if ( usedModule[ i ] !== usedModules[ 0 ][ i ] ) {
-        return usedModules.map( module => module.slice( i ) );
+/**
+ * Convert absolute paths of modules to relative ones
+ * @param {Array.<string>} modules
+ * @returns {Array.<string>}
+ */
+const getRelativeModules = modules => {
+  for ( let i = 0; i < modules[ 0 ].length; i++ ) {
+    for ( const usedModule of modules ) {
+      if ( usedModule[ i ] !== modules[ 0 ][ i ] ) {
+        return modules.map( module => module.slice( i ) );
       }
     }
   }
@@ -64,9 +57,6 @@ module.exports = function( repo, brand ) {
   return new Promise( ( resolve, reject ) => {
     // Initialize global state in preparation for the require.js step.
     chipperGlobals.beforeBuild( 'phet' );
-
-    // Zero out used modules
-    usedModules.length = 0;
 
     // Create plugins to ignore brands that we are not building at this time.
     const ignorePhetBrand = new webpack.IgnorePlugin( { resourceRegExp: /\/phet\//, contextRegExp: /brand/ } );
@@ -101,14 +91,14 @@ module.exports = function( repo, brand ) {
         }
       },
 
-      plugins: [
-        new ListUsedModulesPlugin(),
+      // {Array.<Plugin>}
+      plugins:
 
-        // Exclude brand specific code. This includes all of the `phet-io` repo for non phet-io builds.
-        ...( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
-             brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
-             brand === 'adapted-from-phet' ? [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] : [] )
-      ],
+      // Exclude brand specific code. This includes all of the `phet-io` repo for non phet-io builds.
+        ( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
+          brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
+          brand === 'adapted-from-phet' ? [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] : [] ),
+
       module: {
 
         // rules for modules (configure loaders, parser options, etc.)
@@ -124,7 +114,7 @@ module.exports = function( repo, brand ) {
       else {
         resolve( {
           js: fs.readFileSync( path.resolve( __dirname, `../../build/${repo}.js` ), 'utf-8' ),
-          usedModules: getRelativeModules()
+          usedModules: getRelativeModules( Array.from( stats.compilation.fileDependencies ) )
         } );
       }
     } );

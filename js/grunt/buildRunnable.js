@@ -108,6 +108,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const simTitleStringKey = getTitleStringKey( repo );
 
   const stringMap = getStringMap( allLocales, phetLibs, webpackResult.usedModules );
+  // TODO: delete me? https://github.com/phetsims/chipper/issues/872
   // const stringMap = {
   //   en: {
   //     [ simTitleStringKey ]: repo

@@ -23,7 +23,7 @@ const localeInfo = require( '../data/localeInfo' ); // Locale information
 /**
  * @param {Array.<string>} locales
  * @param {Array.<string>} phetLibs - Used to check for bad string dependencies
- * @param {Array.<string>} usedModules
+ * @param {Array.<string>} usedModules - relative file path of the module (filename) from the repos root
  *
  * @returns {Object} - map[locale][stringKey] => {string}
  */
