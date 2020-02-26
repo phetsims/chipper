@@ -22,7 +22,6 @@ const migrate = require( './migrate' );
 const modulify = require( './modulify' );
 const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
-const generateConfig = require( './generateConfig' );
 const generateCoverage = require( './generateCoverage' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
@@ -259,19 +258,6 @@ module.exports = function( grunt ) {
       generateA11yViewHTML( repo );
     } ) );
 
-  grunt.registerTask( 'generate-config',
-    'Generates the js/SIM-config.js file based on the dependencies in package.json.',
-    wrapTask( async () => {
-      await generateConfig( repo, `js/${repo}-config.js`, 'main' );
-    } ) );
-
-  grunt.registerTask( 'generate-test-config',
-    'Generates the js/SIM-test-config.js file based on the dependencies in package.json. Usually you should ' +
-    'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
-    wrapTask( async () => {
-      await generateConfig( repo, `js/${repo}-test-config.js`, 'tests' );
-    } ) );
-
   grunt.registerTask( 'generate-coverage',
     'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
     wrapTask( async () => {
@@ -280,14 +266,13 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'update',
     'Updates the normal automatically-generated files for this repository. Includes:\n' +
-    '  runnables: generate-development-html, generate-config\n' +
+    '  runnables: generate-development-html\n' +
     '  accessible runnables: generate-a11y-view-html\n' +
     '  color-profile runnables: generate-development-colors-html\n' +
-    '  unit tests: generate-test-html, generate-test-config',
+    '  unit tests: generate-test-html',
     wrapTask( async () => {
       if ( packageObject.phet.runnable ) {
         grunt.task.run( 'generate-development-html' );
-        grunt.task.run( 'generate-config' );
 
         if ( packageObject.phet.accessible ) {
           grunt.task.run( 'generate-a11y-view-html' );
@@ -302,7 +287,6 @@ module.exports = function( grunt ) {
 
       if ( packageObject.phet.generatedUnitTests ) {
         grunt.task.run( 'generate-test-html' );
-        grunt.task.run( 'generate-test-config' );
       }
 
       // update README.md only for simulations

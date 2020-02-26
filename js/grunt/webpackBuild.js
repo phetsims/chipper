@@ -83,13 +83,17 @@ module.exports = function( repo, brand ) {
     } );
 
     const compiler = webpack( {
+      // We uglify as a step after this, with many custom rules
       optimization: {
         minimize: false
       },
 
+      // Simulations or runnables will have a single entry point
       entry: {
         repo: `../${repo}/js/${repo}-main.js`
       },
+
+      // We output our builds to chipper/build/
       output: {
         path: path.resolve( __dirname, '../../build' ),
         filename: `${repo}.js`
@@ -110,7 +114,6 @@ module.exports = function( repo, brand ) {
              brand === 'adapted-from-phet' ? [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] : [] )
       ],
       module: {
-
         // rules for modules (configure loaders, parser options, etc.)
         rules: []
       }

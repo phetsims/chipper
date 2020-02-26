@@ -4,6 +4,8 @@
  * Generates build/coverage-report/ which contains a code coverage report based on the file
  * build/instrumentation/coverage.json
  *
+ * NOTE NOTE: WILL NOT WORK CURRENTLY, see https://github.com/phetsims/chipper/issues/895
+ *
  * To generate coverage for a sim (or other codebase):
  * 1. Build with instrumentation added (preferably without minification):
  *    $ grunt --minify.uglify=false --instrument=true

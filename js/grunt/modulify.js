@@ -153,6 +153,10 @@ module.exports = async function( repo ) {
     const namespace = _.camelCase( repo );
     fs.writeFileSync( stringModuleFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
+/**
+ * Auto-generated from modulify, DO NOT manually modify.
+ */
+
 import getStringModule from '../../chipper/js/getStringModule.js';
 import ${namespace} from './${namespace}.js';
 
