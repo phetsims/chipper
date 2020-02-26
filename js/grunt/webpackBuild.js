@@ -58,7 +58,13 @@ module.exports = function( repo, brand ) {
     // Initialize global state in preparation for the require.js step.
     chipperGlobals.beforeBuild( 'phet' );
 
-    // Create plugins to ignore brands that we are not building at this time.
+    // Create plugins to ignore brands that we are not building at this time. Here "resource" is the module getting
+    // imported, and "context" is the directory that holds the module doing the importing. This is split up because
+    // of how brands are loaded in SimLauncher.js. They are a dynamic import who's import path resolves to the current
+    // brand. The way that webpack builds this is by creating a map of all the potential resources that could be loaded
+    // by that import (by looking at the file structure). Thus the following resource/context regex split is accounting
+    // for the "map" created in the built webpack file, in which the "resource" starts with "./{{brand}}" even though
+    // the SimLauncher line includes the parent directory: "brand/". For more details see https://github.com/phetsims/chipper/issues/879
     const ignorePhetBrand = new webpack.IgnorePlugin( { resourceRegExp: /\/phet\//, contextRegExp: /brand/ } );
     const ignorePhetioBrand = new webpack.IgnorePlugin( { resourceRegExp: /\/phet-io\//, contextRegExp: /brand/ } );
     const ignoreAdaptedFromPhetBrand = new webpack.IgnorePlugin( {
