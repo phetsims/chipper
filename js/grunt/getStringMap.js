@@ -137,7 +137,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
             }
           }
         }
-        assert( !!stringValue, `Missing string information for ${repo} ${partialStringKey}` );
+        assert( stringValue !== null, `Missing string information for ${repo} ${partialStringKey}` );
 
         stringMap[ locale ][ `${requirejsNamespaceMap[ repo ]}/${partialStringKey}` ] = stringValue;
       } );
