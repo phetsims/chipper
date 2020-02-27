@@ -14,9 +14,8 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const fs = require( 'fs' );
-const getDependencies = require( './getDependencies' );
 const getPreloads = require( './getPreloads' );
+const getStringRepos = require( './getStringRepos' );
 const grunt = require( 'grunt' );
 
 /**
@@ -66,14 +65,7 @@ module.exports = async function( repo, options ) {
     return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
   } );
 
-  const stringRepos = Object.keys( await getDependencies( repo ) ).filter( repo => repo !== 'comment' ).filter( repo => {
-    return fs.existsSync( `../${repo}/${repo}-strings_en.json` );
-  } ).map( repo => {
-    return {
-      repo: repo,
-      requirejsNamespace: grunt.file.readJSON( `../${repo}/package.json` ).phet.requirejsNamespace
-    };
-  } );
+  const stringRepos = await getStringRepos( repo );
 
   // Replace placeholders in the template.
   html = ChipperStringUtils.replaceAll( html, '{{BODYSTYLE}}', bodystyle );
