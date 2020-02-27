@@ -33,11 +33,6 @@ module.exports = async function( wrapperRepo ) {
       repo = 'phet-io-wrappers/common';
     }
 
-    // we only need the plugins from chipper
-    else if ( repo === 'chipper' ) {
-      repo = 'chipper/js/requirejs-plugins';
-    }
-
     // Special case for the sherpa repo. Look for packageJSON.wrapper.sherpaDependencies for individual files to copy on build.
     else if ( repo === 'sherpa' ) {
 
