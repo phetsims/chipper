@@ -67,18 +67,27 @@ module.exports = ( async () => {
         title: sim,
         filename: `${sim}_phet.html`,
         template: 'templates/sim-webpack.ejs',
-        templateParameters: {
-          packageObject: fs.readFileSync( `../${sim}/package.json`, 'utf-8' ),
-          stringRepos: JSON.stringify( stringReposMap[ sim ] ),
-          preloads: [
-            '../chipper/js/load-runtime-strings.js',
-            ...getPreloads( sim, 'phet', true ).filter( file => {
-              return !file.includes( 'google-analytics' );
-            } )
-          ].map( file => `<script src="${file}"></script>` ).join( '\n' ),
-          title: sim
+        templateParameters: ( compilation, assets, assetTags, options ) => {
+          return {
+            compilation: compilation,
+            webpackConfig: compilation.options,
+            htmlWebpackPlugin: {
+              tags: assetTags,
+              files: assets,
+              options: options
+            },
+            packageObject: fs.readFileSync( `../${sim}/package.json`, 'utf-8' ),
+            stringRepos: JSON.stringify( stringReposMap[ sim ] ),
+            preloads: [
+              '../chipper/js/load-runtime-strings.js',
+              ...getPreloads( sim, 'phet', true ).filter( file => {
+                return !file.includes( 'google-analytics' );
+              } )
+            ].map( file => `<script src="${file}"></script>` ).join( '\n' ),
+            title: sim
+          };
         },
-        inject: 'body',
+        inject: false,
         minify: false,
         hash: true,
         chunks: [ sim ]

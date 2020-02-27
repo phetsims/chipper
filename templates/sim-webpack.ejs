@@ -17,6 +17,18 @@
   window.phet.chipper = window.phet.chipper || {};
   window.phet.chipper.packageObject = <%= packageObject %>;
   window.phet.chipper.stringRepos = <%= stringRepos %>;
+
+  const loadURL = ( preloadURL, type = 'text/javascript' ) => {
+    const script = document.createElement( 'script' );
+    script.type = type;
+    script.src = preloadURL;
+    script.async = false;
+    document.head.appendChild( script );
+  };
+
+  window.phet.chipper.loadModules = () => {
+<%= htmlWebpackPlugin.tags.bodyTags.map( tag => `    loadURL( '${tag.attributes.src}' );` ).join( '\n' ) %>
+  };
 </script>
 <%= preloads %>
 
