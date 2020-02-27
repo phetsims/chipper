@@ -371,7 +371,8 @@ module.exports = function( grunt ) {
 
   grunt.registerTask(
     'webpack-dev-server',
-    'Runs a webpack server for a given list of simulations',
+    'Runs a webpack server for a given list of simulations. Use --repos=REPOS for a comma-separated list of repos, or ' +
+    '--port=9000 to adjust the running port.',
     () => {
       // We don't finish! Don't tell grunt this...
       grunt.task.current.async();
