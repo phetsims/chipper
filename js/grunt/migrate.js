@@ -390,9 +390,6 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
   contents = replace( contents, 'import brand from \'../../brand/js/../../js/brand.js\';', 'import brand from \'./brand.js\';' );
   contents = replace( contents, 'import brand from \'../../../brand/js/../../js/brand.js\';', 'import brand from \'../../../brand/js/brand.js\';' );
 
-  contents = replace( contents, 'import getLinks from \'../../../brand/js/../../js/getLinks.js\';', 'import getLinks from \'../../brand/js/getLinks.js\';' );
-  contents = replace( contents, 'import getLinks from \'../../brand/js/../../js/getLinks.js\';', 'import getLinks from \'../../brand/js/getLinks.js\';' );
-
   contents = replace( contents, 'import logoOnWhiteBackground from \'../../../brand/js/../images/logo-on-white_png.js\';', 'import logoOnWhiteBackground from \'../images/logo-on-white_png.js\';' );
   contents = replace( contents, 'import logoOnBlackBackground from \'../../../brand/js/../images/logo_png.js\';', 'import logoOnBlackBackground from \'../images/logo_png.js\';' );
 
