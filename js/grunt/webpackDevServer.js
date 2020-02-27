@@ -110,6 +110,6 @@ module.exports = async ( repos, port ) => {
   } );
 
   server.listen( port, '127.0.0.1', () => {
-    console.log( `Starting server on http://localhost:${port}` );
+    repos.forEach( repo => console.log( `http://localhost:${port}/dist/${repo}_phet.html?brand=phet&ea` ) );
   });
 };
