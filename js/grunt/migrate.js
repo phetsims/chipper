@@ -525,6 +525,8 @@ import ` );
     contents = lines.join( '\n' );
   }
 
+  contents = replace( contents, 'import getLinks from \'../../../js/getLinks.js\';', 'import getLinks from \'../../js/getLinks.js\';' );
+
   fs.writeFileSync( pathToFile, contents, 'utf-8' );
 
   sortImports( pathToFile );
