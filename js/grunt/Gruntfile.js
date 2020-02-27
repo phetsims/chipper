@@ -35,6 +35,7 @@ const reportThirdParty = require( './reportThirdParty' );
 const SimVersion = require( '../SimVersion' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
 const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
+const webpackDevServer = require( './webpackDevServer' );
 
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
@@ -366,6 +367,20 @@ module.exports = function( grunt ) {
     'update-copyright-dates',
     'Update the copyright dates in JS source files based on Github dates',
     wrapTask( async () => await updateCopyrightDates( repo ) )
+  );
+
+  grunt.registerTask(
+    'webpack-dev-server',
+    'Runs a webpack server for a given list of simulations',
+    () => {
+      // We don't finish! Don't tell grunt this...
+      grunt.task.current.async();
+
+      const repos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [ repo ];
+      const port = grunt.option( 'port' ) || 9000;
+
+      webpackDevServer( repos, port );
+    }
   );
 
   grunt.registerTask(
