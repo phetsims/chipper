@@ -39,7 +39,7 @@ module.exports = function( file ) {
   const nonImportLines = lines.filter( _.negate( isImport ) );
   lines = [
     ...nonImportLines.slice( 0, firstImportIndex ),
-    ..._.sortBy( importLines, line => line.slice( line.indexOf( '\'' ) ) ), // sort after the first '
+    ..._.sortBy( importLines, line => line.slice( line.indexOf( '\'' ) ).toLowerCase() ), // sort after the first '
     ...nonImportLines.slice( firstImportIndex )
   ];
 
