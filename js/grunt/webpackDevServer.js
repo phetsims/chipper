@@ -109,7 +109,7 @@ module.exports = async ( repos, port ) => {
     hot: true
   } );
 
-  server.listen( port, '127.0.0.1', () => {
+  server.listen( port, '0.0.0.0', () => {
     repos.forEach( repo => console.log( `http://localhost:${port}/dist/${repo}_phet.html?brand=phet&ea` ) );
   });
 };
