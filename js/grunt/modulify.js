@@ -136,7 +136,10 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
       const x = loadFileAsDataURI( abspath );
 
       const contents = `${HEADER}
-export default {name:'${filename}',base64:'${x}'};`;
+export default {
+  name: '${filename}',
+  base64: '${x}'
+};`;
 
       const outputFilename = replace( abspath, '.mp3', '_mp3.js' );
       fs.writeFileSync( outputFilename, contents );
@@ -145,7 +148,10 @@ export default {name:'${filename}',base64:'${x}'};`;
       const x = loadFileAsDataURI( abspath );
 
       const contents = `${HEADER}
-export default {name:'${filename}',base64:'${x}'};`;
+export default {
+  name: '${filename}',
+  base64: '${x}'
+};`;
 
       const outputFilename = replace( abspath, '.wav', '_wav.js' );
       fs.writeFileSync( outputFilename, contents );
