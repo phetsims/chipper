@@ -7,7 +7,7 @@
   <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1"/>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="phet-sim-level" content="development">
-  {{STYLESHEETS}}
+{{STYLESHEETS}}
   <title>{{BROWSER_WINDOW_TITLE}}</title>
 </head>
 
@@ -19,8 +19,10 @@
 
   window.phet = window.phet || {};
   window.phet.chipper = window.phet.chipper || {};
-  window.phet.chipper.packageObject = {{PACKAGE_OBJECT}};
-  window.phet.chipper.stringRepos = {{STRING_REPOS}};
+  window.phet.chipper.packageObject =
+    {{PACKAGE_OBJECT}};
+  window.phet.chipper.stringRepos =
+    {{STRING_REPOS}};
 
   // Identify the brand (assume generated brand if not provided with query parameters)
   const brandMatch = location.search.match( /brand=([^&]+)/ );

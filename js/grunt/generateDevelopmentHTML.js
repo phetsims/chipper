@@ -65,6 +65,10 @@ module.exports = async function( repo, options ) {
     return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
   } );
 
+  const indentLines = string => {
+    return string.split( '\n' ).join( '\n    ' );
+  };
+
   const stringRepos = await getStringRepos( repo );
 
   // Replace placeholders in the template.
@@ -77,8 +81,8 @@ module.exports = async function( repo, options ) {
   html = ChipperStringUtils.replaceAll( html, '{{MAIN_FILE}}', mainFile );
   html = ChipperStringUtils.replaceAll( html, '{{PHET_IO_PRELOADS}}', stringifyArray( phetioPreloads, '  ' ) );
   html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( preloads, '' ) );
-  html = ChipperStringUtils.replaceAll( html, '{{PACKAGE_OBJECT}}', JSON.stringify( packageObject ) );
-  html = ChipperStringUtils.replaceAll( html, '{{STRING_REPOS}}', JSON.stringify( stringRepos ) );
+  html = ChipperStringUtils.replaceAll( html, '{{PACKAGE_OBJECT}}', indentLines( JSON.stringify( packageObject, null, 2 ) ) );
+  html = ChipperStringUtils.replaceAll( html, '{{STRING_REPOS}}', indentLines( JSON.stringify( stringRepos, null, 2 ) ) );
 
   // Use the repository name for the browser window title, because getting the sim's title
   // requires running the string plugin in build mode, which is too heavy-weight for this task.
