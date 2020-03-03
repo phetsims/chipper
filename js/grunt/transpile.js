@@ -9,7 +9,7 @@
 'use strict';
 
 // modules
-const babel = require( 'babel-core' ); // eslint-disable-line require-statement-match
+const babel = require( '@babel/core' ); // eslint-disable-line require-statement-match
 
 /**
  * Transpile some code from ES6+ to ES5.
@@ -26,7 +26,7 @@ module.exports = function( jsInput ) {
     compact: true,
 
     // Use chipper's copy of babel-preset-env, so we don't have to have 30MB extra per sim checked out.
-    presets: [ [ '../chipper/node_modules/babel-preset-env', {
+    presets: [ [ '../chipper/node_modules/@babel/preset-env', {
 
       // Parse as "script" type, so "this" will refer to "window" instead of being transpiled to `void 0` aka undefined
       // see https://github.com/phetsims/chipper/issues/723#issuecomment-443966550
