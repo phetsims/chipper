@@ -111,8 +111,8 @@ module.exports = function( repo, brand ) {
 
     compiler.run( ( err, stats ) => {
       if ( err || stats.hasErrors() ) {
-        console.log( stats );
-        reject( err );
+        console.error( 'Webpack build errors:', stats.compilations.errors );
+        reject( err || stats.compilation.errors[ 0 ] );
       }
       else {
         const jsFile = path.resolve( __dirname, `../../build/${repo}.js` );
