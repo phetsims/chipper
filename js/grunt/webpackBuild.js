@@ -95,12 +95,6 @@ module.exports = function( repo, brand ) {
         filename: `${repo}.js`
       },
 
-      resolveLoader: {
-        alias: {
-          'url-loader': path.resolve( __dirname, '../../node_modules/url-loader/dist/index.js' )
-        }
-      },
-
       // {Array.<Plugin>}
       plugins:
 
