@@ -111,7 +111,7 @@ module.exports = function( repo, brand ) {
 
     compiler.run( ( err, stats ) => {
       if ( err || stats.hasErrors() ) {
-        console.error( 'Webpack build errors:', stats.compilations.errors );
+        console.error( 'Webpack build errors:', stats.compilation.errors );
         reject( err || stats.compilation.errors[ 0 ] );
       }
       else {
