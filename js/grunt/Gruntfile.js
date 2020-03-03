@@ -379,8 +379,12 @@ module.exports = function( grunt ) {
 
       const repos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [ repo ];
       const port = grunt.option( 'port' ) || 9000;
+      let devtool = grunt.option( 'devtool' ) || 'inline-source-map';
+      if ( devtool === 'none' || devtool === 'undefined' ) {
+        devtool = undefined;
+      }
 
-      webpackDevServer( repos, port );
+      webpackDevServer( repos, port, devtool );
     }
   );
 

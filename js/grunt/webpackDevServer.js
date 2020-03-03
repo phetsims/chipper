@@ -15,7 +15,14 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const WebpackDevServer = require( 'webpack-dev-server' ); // eslint-disable-line require-statement-match
 
-module.exports = async ( repos, port ) => {
+/**
+ * @param {string[]} repos
+ * @param {number} port
+ * @param {string|undefined} devtool - one of the values for sourcemap generation specified at
+ *                                   - https://webpack.js.org/configuration/devtool/ or undefined for (none)
+ * @returns {Promise<void>}
+ */
+module.exports = async ( repos, port, devtool ) => {
   // NOTE: Load dependencies more specifically from a sim list in the future, so we don't have such a direct dependency.
   // Repos could be deleted in the future and then prior checkouts with this wouldn't work.
   const activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
@@ -98,7 +105,7 @@ module.exports = async ( repos, port ) => {
       poll: true
     },
 
-    devtool: 'inline-source-map'
+    devtool: devtool
   } );
 
   const server = new WebpackDevServer( compiler, {
@@ -111,5 +118,5 @@ module.exports = async ( repos, port ) => {
 
   server.listen( port, '0.0.0.0', () => {
     repos.forEach( repo => console.log( `http://localhost:${port}/dist/${repo}_phet.html?brand=phet&ea` ) );
-  });
+  } );
 };
