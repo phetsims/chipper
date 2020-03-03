@@ -58,7 +58,7 @@ const modulifyMipmap = async abspath => {
     const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
     const mipmapContents = `${HEADER}
-var mipmaps = ${JSON.stringify( entry )};
+var mipmaps = ${JSON.stringify( entry, null, 2 )};
 mipmaps.forEach( function( mipmap ) {
   mipmap.img = new Image();
   window.phetImages.push( mipmap.img ); // make sure it's loaded before the sim launches
