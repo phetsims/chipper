@@ -33,8 +33,8 @@ const modulifyImage = abspath => {
 
   const contents = `${HEADER}
 var img = new Image();
-window.phetImages.push(img);
-img.src='${dataURI}';
+window.phetImages.push( img );
+img.src = '${dataURI}';
 export default img;
 `;
 
