@@ -7,6 +7,7 @@
 'use strict';
 
 // modules
+const child_process = require( 'child_process' );
 const fs = require( 'fs' );
 const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
@@ -20,9 +21,10 @@ const WebpackDevServer = require( 'webpack-dev-server' ); // eslint-disable-line
  * @param {number} port
  * @param {string|undefined} devtool - one of the values for sourcemap generation specified at
  *                                   - https://webpack.js.org/configuration/devtool/ or undefined for (none)
+ * @param {boolean} openChrome - if true, opens the launched URLs in Chrome using "open -a".  Tested on Mac
  * @returns {Promise<void>}
  */
-module.exports = async ( repos, port, devtool ) => {
+module.exports = async ( repos, port, devtool, openChrome = false ) => {
   // NOTE: Load dependencies more specifically from a sim list in the future, so we don't have such a direct dependency.
   // Repos could be deleted in the future and then prior checkouts with this wouldn't work.
   const activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
@@ -117,6 +119,13 @@ module.exports = async ( repos, port, devtool ) => {
   } );
 
   server.listen( port, '0.0.0.0', () => {
-    repos.forEach( repo => console.log( `http://localhost:${port}/dist/${repo}_phet.html?brand=phet&ea` ) );
+    repos.forEach( repo => {
+      const URL = `http://localhost:${port}/dist/${repo}_phet.html?brand=phet&ea`;
+      console.log( URL );
+
+      if ( openChrome ) {
+        child_process.exec( `open -a "Google Chrome" ${URL}`, () => {} );
+      }
+    } );
   } );
 };

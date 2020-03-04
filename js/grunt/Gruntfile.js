@@ -383,8 +383,9 @@ module.exports = function( grunt ) {
       if ( devtool === 'none' || devtool === 'undefined' ) {
         devtool = undefined;
       }
+      const openChrome = grunt.option( 'chrome' ) || false;
 
-      webpackDevServer( repos, port, devtool );
+      webpackDevServer( repos, port, devtool, openChrome );
     }
   );
 
