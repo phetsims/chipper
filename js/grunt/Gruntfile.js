@@ -25,6 +25,7 @@ const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateCoverage = require( './generateCoverage' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+const generateImageAssets = require( './generateImageAssets' );
 const generateREADME = require( './generateREADME' );
 const generateTestHTML = require( './generateTestHTML' );
 const getPhetLibs = require( './getPhetLibs' );
@@ -37,7 +38,7 @@ const updateCopyrightDates = require( './updateCopyrightDates' );
 const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
 const webpackDevServer = require( './webpackDevServer' );
 
-module.exports = function( grunt ) {
+module.exports = function ( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
 
   // Handle the lack of build.json
@@ -45,7 +46,7 @@ module.exports = function( grunt ) {
   try {
     buildLocal = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
   }
-  catch( e ) {
+  catch ( e ) {
     buildLocal = {};
   }
 
@@ -66,12 +67,12 @@ module.exports = function( grunt ) {
     try {
       await promise;
     }
-    catch( e ) {
+    catch ( e ) {
       if ( e.stack ) {
         grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
       }
 
-        // The toString check handles a weird case found from an Error object from puppeteer that doesn't stringify with
+      // The toString check handles a weird case found from an Error object from puppeteer that doesn't stringify with
       // JSON or have a stack, JSON.stringifies to "{}", but has a `toString` method
       else if ( typeof e === 'string' || ( JSON.stringify( e ).length === 2 && e.toString ) ) {
         grunt.fail.fatal( `Perennial task failed: ${e}` );
@@ -230,6 +231,17 @@ module.exports = function( grunt ) {
 
     lint( getPhetLibs( repo ), cache );
   } ) );
+
+  grunt.registerTask( 'generate-image-assets',
+    'Generates all images assets required by the brand',
+    wrapTask( async () => {
+      if ( grunt.option( 'brands' ) ) {
+        grunt.option( 'brands' ).split(',').forEach( async brand => await generateImageAssets( repo, brand ) );
+      }
+      else {
+        await generateImageAssets( repo, 'phet' );
+      }
+    } ) );
 
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',

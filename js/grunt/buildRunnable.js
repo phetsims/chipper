@@ -15,8 +15,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copyDirectory = require( './copyDirectory' );
 const copySupplementalPhetioFiles = require( './phet-io/copySupplementalPhetioFiles' );
-const generateThumbnails = require( './generateThumbnails' );
-const generateTwitterCard = require( './generateTwitterCard' );
+const generateImageAssets = require( './generateImageAssets' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
@@ -27,7 +26,6 @@ const getPreloads = require( './getPreloads' );
 const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
-const jimp = require( 'jimp' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
@@ -60,7 +58,7 @@ const recordTime = async ( asyncCallback, timeCallback ) => {
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, minifyOptions, instrument, allHTML, brand, localesOption ) {
+module.exports = async function ( repo, minifyOptions, instrument, allHTML, brand, localesOption ) {
   assert( typeof repo === 'string' );
   assert( typeof minifyOptions === 'object' );
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
@@ -321,19 +319,6 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject );
   }
 
-  // Thumbnails and twitter card
-  if ( grunt.file.exists( `../${repo}/assets/${repo}-screenshot.png` ) ) {
-    const thumbnailSizes = [
-      { width: 128, height: 84 },
-      { width: 600, height: 394 }
-    ];
-    for ( const size of thumbnailSizes ) {
-      grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, jimp.MIME_PNG ) );
-    }
 
-    if ( brand === 'phet' ) {
-      grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, jimp.MIME_JPEG ) );
-      grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
-    }
-  }
+  await generateImageAssets( buildDir, repo, brand );
 };
