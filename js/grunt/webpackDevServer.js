@@ -115,7 +115,7 @@ module.exports = async ( repos, port, devtool, openChrome = false ) => {
     compress: true,
     port: port,
     publicPath: '/dist/',
-    hot: true
+    hot: false
   } );
 
   server.listen( port, '0.0.0.0', () => {

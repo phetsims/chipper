@@ -65,13 +65,7 @@ module.exports = async function( repo, minifyOptions ) {
 
   // include globals assignment
   if ( packageObject.phet.assignGlobals ) {
-    // window.phet.chipper.packageObject = {{PHET_PACKAGE_OBJECT}};
     fullSource = `\nwindow.phet=window.phet||{};phet.chipper=phet.chipper||{};phet.chipper.packageObject=${JSON.stringify( packageObject )}\n` + fullSource;
-    // fullSource += Object.keys( packageObject.phet.assignGlobals ).sort().map( global => {
-
-    //   // For each key=>value in packageObject.phet.assignGlobals, we want to set window.key = require( 'value' ), to initialize our globals
-    //   return `\n  window.${global} = require( '${packageObject.phet.assignGlobals[ global ]}' );`;
-    // } ).join( '' );
   }
 
   // Wrap with an IIFE
