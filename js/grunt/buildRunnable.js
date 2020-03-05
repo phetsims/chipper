@@ -34,7 +34,7 @@ const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line r
 const packageRunnable = require( './packageRunnable' );
 const packageXHTML = require( './packageXHTML' );
 
-// TODO: Re-enable these? https://github.com/phetsims/chipper/issues/820
+// TODO: Re-enable these? https://github.com/phetsims/chipper/issues/909
 // const reportUnusedMedia = require( './reportUnusedMedia' );
 // const reportUnusedStrings = require( './reportUnusedStrings' );
 const webpackBuild = require( './webpackBuild' );
@@ -94,9 +94,11 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   };
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
+  // TODO: Re-enable this? https://github.com/phetsims/chipper/issues/909
   // reportUnusedMedia( packageObject.phet.requirejsNamespace );
 
   // After all strings have been loaded, report which of the translatable strings are unused.
+  // TODO: Re-enable this? https://github.com/phetsims/chipper/issues/909
   // reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
 
   const phetLibs = getPhetLibs( repo, brand );
