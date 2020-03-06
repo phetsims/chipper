@@ -13,18 +13,14 @@ const jimp = require( 'jimp' );
  * @returns {Promise<void>}
  */
 const generateImageAssets = async ( repo, brand ) => {
-  console.log( 'hellooo' );
-
   // Create the build-specific directory, if it doesn't exist yet
   const buildDir = `../${repo}/build/${brand}`;
   if ( !grunt.file.exists( buildDir ) ) {
     grunt.file.mkdir( buildDir );
-    console.log( 'made the build dir' );
   }
 
   // Thumbnails and twitter card
   if ( grunt.file.exists( `../${repo}/assets/${repo}-screenshot.png` ) ) {
-    console.log( 'souce file exists, generating images' );
     const thumbnailConfigs = [
       { width: 600, height: 394 },
       { width: 420, height: 276 },
@@ -32,7 +28,6 @@ const generateImageAssets = async ( repo, brand ) => {
       { width: 15, height: 10 }
     ];
     for ( const config of thumbnailConfigs ) {
-      console.log( 'processing image for ', `${config.width}` );
       try {
         grunt.file.write( `${buildDir}/${repo}-${config.width}${config.quality ? `-${config.quality}` : ''}.png`, await generateThumbnails( repo, config.width, config.height, config.quality || 100, config.mime || jimp.MIME_PNG ) );
       }

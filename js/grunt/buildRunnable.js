@@ -320,5 +320,5 @@ module.exports = async function ( repo, minifyOptions, instrument, allHTML, bran
   }
 
 
-  await generateImageAssets( buildDir, repo, brand );
+  await generateImageAssets( repo, brand );
 };

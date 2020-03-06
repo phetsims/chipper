@@ -24,35 +24,32 @@ const jimp = require( 'jimp' );
  * @returns {Promise} - Resolves to a {Buffer} with the image data
  */
 module.exports = function ( repo, width, height, quality, mime ) {
-  console.log( 'generating thumbnail for ', repo, width, height, quality, mime );
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot.png`;
 
-    console.log( 'generating thumbnail for ', fullResImageName );
     try {
       if ( !grunt.file.exists( fullResImageName ) ) {
-        console.log( `no image file exists: ${fullResImageName}. Aborting generateThumbnails` );
+        console.error( `no image file exists: ${fullResImageName}. Aborting generateThumbnails` );
+        reject( 'file not found' );
         return;
       }
     }
     catch ( e ) {
       console.error( 'check for file existence failed', e );
+      reject( 'file existence check failed' );
+      return;
     }
-    console.log( 'file exists! ', fullResImageName );
 
     try {
-      new jimp( fullResImageName, function() { //eslint-disable-line no-new
-        console.log( 'jimping', repo, width, height, quality, mime );
+      new jimp( fullResImageName, function () { //eslint-disable-line no-new
         if ( mime === jimp.MIME_JPEG ) {
           this.quality( quality );
         }
         this.resize( width, height ).getBuffer( mime, function ( error, buffer ) {
           if ( error ) {
-            console.log( 'jimp fail :(' );
             reject( new Error( error ) );
           }
           else {
-            console.log( 'jimp success!' );
             resolve( buffer );
           }
         } );
@@ -62,6 +59,5 @@ module.exports = function ( repo, width, height, quality, mime ) {
       console.error( 'new jimp failed', e );
       reject( e );
     }
-    console.log( 'jimp finished', repo, width, height, quality, mime );
   } );
 };
