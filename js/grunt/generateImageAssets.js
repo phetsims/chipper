@@ -27,7 +27,7 @@ const generateImageAssets = async ( repo, brand ) => {
     console.log( 'souce file exists, generating images' );
     const thumbnailConfigs = [
       { width: 600, height: 394 },
-      { width: 210, height: 140 },
+      { width: 420, height: 276 },
       { width: 128, height: 84 },
       { width: 15, height: 10 }
     ];
