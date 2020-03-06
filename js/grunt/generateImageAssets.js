@@ -19,6 +19,8 @@ const generateImageAssets = async ( repo, brand ) => {
     grunt.file.mkdir( buildDir );
   }
 
+  grunt.log.writeln( `generating images for ${repo}` );
+
   // Thumbnails and twitter card
   if ( grunt.file.exists( `../${repo}/assets/${repo}-screenshot.png` ) ) {
     const thumbnailConfigs = [
@@ -32,9 +34,9 @@ const generateImageAssets = async ( repo, brand ) => {
         grunt.file.write( `${buildDir}/${repo}-${config.width}${config.quality ? `-${config.quality}` : ''}.png`, await generateThumbnails( repo, config.width, config.height, config.quality || 100, config.mime || jimp.MIME_PNG ) );
       }
       catch ( e ) {
-        console.error( 'unable to write image', e );
+        grunt.log.error( 'unable to write image', e );
       }
-      console.log( 'writing image to ', `${buildDir}/${repo}-${config.width}.png` );
+      grunt.log.writeln( 'writing image to ', `${buildDir}/${repo}-${config.width}.png` );
     }
 
     if ( brand === 'phet' ) {
@@ -43,7 +45,7 @@ const generateImageAssets = async ( repo, brand ) => {
     }
   }
   else {
-    console.error( 'Missing image source!' );
+    grunt.log.error( 'Missing image source!' );
   }
 };
 
