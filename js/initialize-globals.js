@@ -120,6 +120,9 @@
       defaultValue: 'default'
     },
 
+    // Output deprecation warnings via console.warn, see https://github.com/phetsims/chipper/issues/882
+    deprecationWarnings: { type: 'flag' },
+
     /**
      * enables developer-only features, such as showing the layout bounds
      */
