@@ -3,7 +3,7 @@
 const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const grunt = require( 'grunt' );
-const jimp = require( 'jimp' );
+const sharp = require( 'sharp' );
 
 /**
  *
@@ -29,9 +29,10 @@ const generateImageAssets = async ( repo, brand ) => {
       { width: 128, height: 84 },
       { width: 15, height: 10 }
     ];
+    grunt.log.writeln( `Building configs: ${JSON.stringify( thumbnailConfigs )}` );
     for ( const config of thumbnailConfigs ) {
       try {
-        grunt.file.write( `${buildDir}/${repo}-${config.width}${config.quality ? `-${config.quality}` : ''}.png`, await generateThumbnails( repo, config.width, config.height, config.quality || 100, config.mime || jimp.MIME_PNG ) );
+        await generateThumbnails( repo, config.width, config.height, config.quality || 100, config.mime || sharp.format.png.id, `${buildDir}/${repo}-${config.width}${config.quality ? `-${config.quality}` : ''}.png` );
       }
       catch ( e ) {
         grunt.log.error( 'unable to write image', e );
@@ -40,8 +41,8 @@ const generateImageAssets = async ( repo, brand ) => {
     }
 
     if ( brand === 'phet' ) {
-      grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, jimp.MIME_JPEG ) );
-      grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
+      await generateThumbnails( repo, 420, 276, 90, sharp.format.jpeg.id, `${buildDir}/${repo}-ios.png` );
+      await generateTwitterCard( repo, `${buildDir}/${repo}-twitter-card.png` );
     }
   }
   else {

@@ -7,20 +7,21 @@
     "url": "https://github.com/phetsims/chipper.git"
   },
   "devDependencies": {
-    "archiver": "~3.1.1",
     "@babel/core": "~7.8.6",
     "@babel/preset-env": "~7.8.6",
+    "archiver": "~3.1.1",
     "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.18.0",
     "grunt": "~1.0.0",
+    "html-webpack-plugin": "4.0.0-beta.11",
     "istanbul": "~0.4.5",
-    "jimp": "^0.2.0",
     "jpeg-js": "~0.1.1",
     "jscpd": "^0.6.18",
     "jsdoc": "~3.6.3",
     "lodash": "^4.17.10",
     "md5": "~2",
+    "memfs": "^3.0.3",
     "node-html-encoder": "~0.0.2",
     "pngjs": "~0.4.0",
     "puppeteer": "~1.11.0",
@@ -31,11 +32,12 @@
     "terser": "~4.6.4",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1",
-    "html-webpack-plugin": "4.0.0-beta.11",
-    "memfs": "^3.0.3"
+    "webpack-dev-server": "^3.10.1"
   },
   "eslintConfig": {
     "extends": "../chipper/eslint/sim_eslintrc.js"
+  },
+  "dependencies": {
+    "sharp": "^0.25.1"
   }
 }
