@@ -120,7 +120,8 @@
       defaultValue: 'default'
     },
 
-    // Output deprecation warnings via console.warn, see https://github.com/phetsims/chipper/issues/882
+    // Output deprecation warnings via console.warn, see https://github.com/phetsims/chipper/issues/882. For internal
+    // use only.
     deprecationWarnings: { type: 'flag' },
 
     /**
