@@ -226,6 +226,8 @@ module.exports = {
     // sole/tween.js
     TWEEN: false,
 
-    window: false
+    window: false,
+
+    handlePlaybackEvent: false
   }
 };
