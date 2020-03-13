@@ -37,6 +37,11 @@ const updateCopyrightDates = require( './updateCopyrightDates' );
 const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
 const webpackDevServer = require( './webpackDevServer' );
 
+// See https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd for how
+// to get unhandled promise rejections to fail out the node process.
+// Relevant for https://github.com/phetsims/wave-interference/issues/491
+process.on( 'unhandledRejection', up => { throw up } );
+
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
 
