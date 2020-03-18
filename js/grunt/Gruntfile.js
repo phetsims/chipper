@@ -280,7 +280,7 @@ module.exports = function( grunt ) {
       if ( packageObject.phet.runnable ) {
         grunt.task.run( 'generate-development-html' );
 
-        if ( packageObject.phet.accessible ) {
+        if ( packageObject.phet.supportsInteractiveDescriptions ) {
           grunt.task.run( 'generate-a11y-view-html' );
         }
         if ( packageObject.phet.colorProfile ) {
