@@ -57,18 +57,11 @@
      * meant for internal use only, simulations published with accessibility enabled should use the
      * `package.json` flag `"supportsInteractiveDescriptions": true`.
      *
-     * Use this to enable accessibility, but do NOT use this to determine whether accessibility is enabled for
-     * a sim. package.json flags can also enable accessibility features so please use phet.joist.sim.supportsInteractiveDescriptions if
-     * you need to know whether accessibility is enabled globally.
+     * Use this to enable accessibility, but do NOT use this to determine whether interactive descriptions are enabled for
+     * a sim. This is because `package.json` flags can also enable accessibility features,  so please use
+     * phet.joist.sim.supportsInteractiveDescriptions if you need to know whether description is enabled globally.
      */
-    accessibility: { type: 'flag' },
-
-    /**
-     * An alias for the "accessibility" query parameter above. Shorter and easier to type for convenience, see
-     * https://github.com/phetsims/chipper/issues/716. Like "accessibility", meant for internal use only though
-     * collaborators could use this.
-     */
-    a11y: { type: 'flag' },
+    supportsDescriptions: { type: 'flag' },
 
     /**
      * Master volume control for the simulation.  Range is from 0 to 1, which is typical for web audio gain nodes.
