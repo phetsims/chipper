@@ -58,7 +58,7 @@
      * `package.json` flag `"supportsInteractiveDescriptions": true`.
      *
      * Use this to enable accessibility, but do NOT use this to determine whether accessibility is enabled for
-     * a sim. package.json flags can also enable accessibility features so please use phet.joist.sim.isAccessible if
+     * a sim. package.json flags can also enable accessibility features so please use phet.joist.sim.supportsInteractiveDescriptions if
      * you need to know whether accessibility is enabled globally.
      */
     accessibility: { type: 'flag' },
