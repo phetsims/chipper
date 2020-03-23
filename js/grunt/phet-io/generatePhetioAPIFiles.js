@@ -1,4 +1,4 @@
-// Copyright 2019, University of Colorado Boulder
+// Copyright 2019-2020, University of Colorado Boulder
 
 /**
  * Launch an instance of the simulation using puppeteer, gather the phet-io api of the simulation, see phetioEngine.getPhetioElementsBaseline
@@ -30,7 +30,7 @@ module.exports = async ( repo, localTestingURL ) => {
     }
 
     // empty the current baseline file so we know that a stale version is not left behind
-    fs.writeFileSync( baselineFileName, '' );
+    fs.writeFileSync( baselineFileName, '/* eslint-disable */' );
 
     // if there is already an overrides file, don't overwrite it with an empty one
     if ( !fs.existsSync( overridesFileName ) ) {
