@@ -21,7 +21,13 @@ const HEADER = '/* eslint-disable */';
 // supported image types, not case-sensitive
 const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur' ];
 
-// String replacement
+/**
+ * String replacement
+ * @param {string} string - the string which will be searched
+ * @param {string} search - the text to be replaced
+ * @param {string} replacement - the new text
+ * @returns {string}
+ */
 const replace = ( string, search, replacement ) => string.split( search ).join( replacement );
 
 /**
@@ -47,7 +53,8 @@ export default img;
  */
 const modulifyMipmap = async abspath => {
 
-  // defaults.  TODO: do we need to support non-defaults?  See https://github.com/phetsims/chipper/issues/820
+  // Defaults.  TODO: do we need to support non-defaults?  See https://github.com/phetsims/chipper/issues/820
+  // TODO: Or do we need to support mipmaps at all?  See https://github.com/phetsims/chipper/issues/840
   const options = {
     level: 4, // maximum level
     quality: 98
@@ -57,6 +64,7 @@ const modulifyMipmap = async abspath => {
     const mipmaps = await createMipmap( abspath, options.level, options.quality );
     const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
+    // To the REVIEWER, should we use const/let/arrow functions in the modulified files?  See https://github.com/phetsims/chipper/issues/872
     const mipmapContents = `${HEADER}
 var mipmaps = ${JSON.stringify( entry, null, 2 )};
 mipmaps.forEach( function( mipmap ) {
@@ -78,6 +86,8 @@ export default mipmaps;`;
     fs.writeFileSync( convertSuffix( abspath, '.js' ), mipmapContents );
   }
   catch( e ) {
+
+    // This is an async function, so I'm not sure whether we can throw out of it.  To the REVIEWER, what do you recommend?  See https://github.com/phetsims/chipper/issues/872
     console.log( `Image could not be mipmapped: ${abspath}` );
   }
 };
@@ -110,6 +120,7 @@ const getSuffix = filename => {
  */
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
 
+  // To the REVIEWER: Should this code be factored out?  Note that one is await and the other is not.  See https://github.com/phetsims/chipper/issues/872
   if ( subdir && ( subdir.startsWith( 'images' ) ||
 
                    // for brand
@@ -132,30 +143,29 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
 
   // TODO: https://github.com/phetsims/chipper/issues/872 factor out duplicates
   if ( subdir && subdir.startsWith( 'sounds' ) ) {
-    if ( filename.endsWith( '.mp3' ) ) {
-      const x = loadFileAsDataURI( abspath );
 
-      const contents = `${HEADER}
+    /**
+     * Output supported sound formats.
+     * @param {string} soundFileSuffix
+     * @param {string} jsFileSuffix
+     */
+    const mapSounds = ( soundFileSuffix, jsFileSuffix ) => {
+      if ( filename.endsWith( soundFileSuffix ) ) {
+        const x = loadFileAsDataURI( abspath );
+
+        const contents = `${HEADER}
 export default {
   name: '${filename}',
   base64: '${x}'
 };`;
 
-      const outputFilename = replace( abspath, '.mp3', '_mp3.js' );
-      fs.writeFileSync( outputFilename, contents );
-    }
-    if ( filename.endsWith( '.wav' ) ) {
-      const x = loadFileAsDataURI( abspath );
+        const outputFilename = replace( abspath, soundFileSuffix, jsFileSuffix );
+        fs.writeFileSync( outputFilename, contents );
+      }
+    };
 
-      const contents = `${HEADER}
-export default {
-  name: '${filename}',
-  base64: '${x}'
-};`;
-
-      const outputFilename = replace( abspath, '.wav', '_wav.js' );
-      fs.writeFileSync( outputFilename, contents );
-    }
+    mapSounds( '.mp3', '_mp3.js' );
+    mapSounds( '.wav', '_wav.js' );
   }
 };
 
@@ -175,11 +185,14 @@ module.exports = async function( repo ) {
     await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename );
   }
 
+  // Create the namespace file, if it did not already exist
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
     const stringModuleFile = `../${repo}/js/${repo}-strings.js`;
     const namespace = _.camelCase( repo );
-    fs.writeFileSync( stringModuleFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+    fs.writeFileSync( stringModuleFile,
+
+      `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
 /**
  * Auto-generated from modulify, DO NOT manually modify.
