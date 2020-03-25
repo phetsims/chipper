@@ -80,6 +80,8 @@ module.exports = function( repo, brand ) {
 
     const compiler = webpack( {
       // We uglify as a step after this, with many custom rules
+      // REVIEW: Is this still true? The module:{ rules:[]} field below is empty. If the uglify step isn't supposed to be
+      // REVIEW: done below and is done elsewhere please ignore this REVIEW.
       optimization: {
         minimize: false
       },
