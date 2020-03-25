@@ -38,9 +38,10 @@ const NO_LINT_REPOS = [ // don't lint these repos
  * @param {Array.<string>} repos
  * @param {boolean} cache
  * @param {boolean} say - whether errors should be read out loud
+ * @param {boolean} warn - whether errors should reported with grunt.warn
  * @returns {Object} - ESLint report object.
  */
-module.exports = function( repos, cache, say = false ) {
+module.exports = function( repos, cache, say = false, warn = true ) {
 
   // filter out all unlintable repo. An unlintable repo is one that has no `js` in it, so it will fail when trying to
   // lint it.  Also, if the user doesn't have some repos checked out, those should be skipped
@@ -99,8 +100,10 @@ module.exports = function( repos, cache, say = false ) {
   say && report.warningCount && child_process.execSync( 'say Lint warnings detected!' );
   say && report.errorCount && child_process.execSync( 'say Lint errors detected!' );
 
-  report.warningCount && grunt.fail.warn( report.warningCount + ' Lint Warnings' );
-  report.errorCount && grunt.fail.fatal( report.errorCount + ' Lint Errors' );
+  if ( warn ) {
+    report.warningCount && grunt.fail.warn( report.warningCount + ' Lint Warnings' );
+    report.errorCount && grunt.fail.fatal( report.errorCount + ' Lint Errors' );
+  }
 
   return report;
 };
