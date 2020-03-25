@@ -76,6 +76,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   let timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
   timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
 
+  // Start running webpack
   const webpackResult = await recordTime( async () => {
     return await webpackBuild( repo, brand );
   }, time => {

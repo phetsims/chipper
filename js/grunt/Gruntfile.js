@@ -392,6 +392,8 @@ module.exports = function( grunt ) {
       }
       const openChrome = grunt.option( 'chrome' ) || false;
 
+      // REVIEW: webpackDevServer.js exports an async module. Does this need to be wrapped in wrapTask(), similarly to how
+      // REVIEW: 'report-media' is handled above? If it isn't needed, could you (JO) explain in a commit message and remove this REVIEW
       webpackDevServer( repos, port, devtool, openChrome );
     }
   );
