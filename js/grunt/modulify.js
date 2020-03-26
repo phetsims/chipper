@@ -15,7 +15,7 @@ const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedFile' );
 
-// disable lint in compiled files
+// disable lint in compiled files, because it increases the linting time
 const HEADER = '/* eslint-disable */';
 
 // supported image types, not case-sensitive
