@@ -7,7 +7,6 @@
  * the sim is being run with.
  *
  * @author Jonathan Olson <jonathan.olson>
- * @author Michael
  */
 
 // constants
