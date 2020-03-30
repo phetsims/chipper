@@ -170,6 +170,57 @@ export default {
 };
 
 /**
+ * Creates the string module at js/${repo}-strings.js for repos that need it.
+ * @public
+ *
+ * @param {string} repo
+ */
+const createStringModule = async repo => {
+  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const stringModuleFile = `../${repo}/js/${repo}-strings.js`;
+  const namespace = _.camelCase( repo );
+  fs.writeFileSync( stringModuleFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+
+/**
+ * Auto-generated from modulify, DO NOT manually modify.
+ */
+
+import getStringModule from '../../chipper/js/getStringModule.js';
+import ${namespace} from './${namespace}.js';
+
+const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' );
+
+${namespace}.register( '${namespace}Strings', ${namespace}Strings );
+
+export default ${namespace}Strings;
+` );
+  await updateCopyrightForGeneratedFile( repo, stringModuleFile );
+};
+
+/**
+ * Creates the namespace module at js/${_.camelCase( repo )}.js for repos that need it.
+ * @public
+ *
+ * @param {string} repo
+ */
+const createNamespaceModule = async repo => {
+  const namespace = _.camelCase( repo );
+  const namespaceFile = `../${repo}/js/${namespace}.js`;
+  fs.writeFileSync( namespaceFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+
+/**
+ * Creates the namespace for this simulation.
+ */
+
+// modules
+import Namespace from '../../phet-core/js/Namespace.js';
+
+export default new Namespace( '${namespace}' );
+` );
+  await updateCopyrightForGeneratedFile( repo, namespaceFile );
+};
+
+/**
  * Entry point for modulify, which transforms all of the resources in a repo to *.js files.
  * @parm {string} repo, the name of a repo, such as 'joist'
  */
@@ -188,41 +239,12 @@ module.exports = async function( repo ) {
   // Create the namespace file, if it did not already exist
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
-    const stringModuleFile = `../${repo}/js/${repo}-strings.js`;
+    await createStringModule( repo );
+
     const namespace = _.camelCase( repo );
-    fs.writeFileSync( stringModuleFile,
-
-      `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
-
-/**
- * Auto-generated from modulify, DO NOT manually modify.
- */
-
-import getStringModule from '../../chipper/js/getStringModule.js';
-import ${namespace} from './${namespace}.js';
-
-const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' );
-
-${namespace}.register( '${namespace}Strings', ${namespace}Strings );
-
-export default ${namespace}Strings;
-` );
-    await updateCopyrightForGeneratedFile( repo, stringModuleFile );
-
     const namespaceFile = `../${repo}/js/${namespace}.js`;
     if ( !fs.existsSync( namespaceFile ) ) {
-      fs.writeFileSync( namespaceFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
-
-/**
- * Creates the namespace for this simulation.
- */
-
-// modules
-import Namespace from '../../phet-core/js/Namespace.js';
-
-export default new Namespace( '${namespace}' );
-` );
-      await updateCopyrightForGeneratedFile( repo, namespaceFile );
+      await createNamespaceModule( repo );
     }
   }
 };
