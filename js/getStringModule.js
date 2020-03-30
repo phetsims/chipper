@@ -51,7 +51,6 @@ const getStringModule = requirejsNamespace => {
       stringKeysInRepo.forEach( stringKey => {
         // strip off the require.js namespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'
         const stringKeyWithoutPrefix = stringKey.slice( stringKeyPrefix.length );
-        const stringValue = phet.chipper.mapString( partialStringMap[ stringKey ] );
 
         const keyParts = stringKeyWithoutPrefix.split( '.' );
         const lastKeyPart = keyParts[ keyParts.length - 1 ];
@@ -92,7 +91,7 @@ const getStringModule = requirejsNamespace => {
 
         // We'll need this check anyway for babel string handling
         if ( typeof reference !== 'string' ) {
-          reference[ lastKeyPart ] = stringValue;
+          reference[ lastKeyPart ] = phet.chipper.mapString( partialStringMap[ stringKey ] );
         }
       } );
 
