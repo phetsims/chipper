@@ -57,7 +57,7 @@ const getStringModule = requirejsNamespace => {
 
         // During traversal into the string object, this will hold the object where the next level needs to be defined,
         // whether that's another child object, or the string value itself.
-        let object = localeObject;
+        let reference = localeObject;
 
         let partialKey = stringKeyPrefix;
         allButLastKeyPart.forEach( ( keyPart, i ) => {
@@ -68,26 +68,26 @@ const getStringModule = requirejsNamespace => {
 
           // Don't allow e.g. JOIST/a and JOIST/a.b, since localeObject.a would need to be a string AND an object at the
           // same time.
-          assert && assert( locale !== FALLBACK_LOCALE || typeof object[ keyPart ] !== 'string',
+          assert && assert( locale !== FALLBACK_LOCALE || typeof reference[ keyPart ] !== 'string',
             'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
             `of the other. The string key ${partialKey} is extended by ${stringKey} in this case, and should be changed.` );
 
           // Create the next nested level, and move into it
-          if ( !object[ keyPart ] ) {
-            object[ keyPart ] = {};
+          if ( !reference[ keyPart ] ) {
+            reference[ keyPart ] = {};
           }
-          object = object[ keyPart ];
+          reference = reference[ keyPart ];
         } );
 
-        assert && assert( locale !== FALLBACK_LOCALE || typeof object[ lastKeyPart ] !== 'object',
+        assert && assert( locale !== FALLBACK_LOCALE || typeof reference[ lastKeyPart ] !== 'object',
           'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
-          `of the other. The string key ${stringKey} is extended by another key, something containing ${object[ lastKeyPart ] && Object.keys( object[ lastKeyPart ] )}.` );
-        assert && assert( locale !== FALLBACK_LOCALE || !object[ lastKeyPart ],
+          `of the other. The string key ${stringKey} is extended by another key, something containing ${reference[ lastKeyPart ] && Object.keys( reference[ lastKeyPart ] )}.` );
+        assert && assert( locale !== FALLBACK_LOCALE || !reference[ lastKeyPart ],
           `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
 
         // We'll need this check anyway for babel string handling
-        if ( typeof object !== 'string' ) {
-          object[ lastKeyPart ] = stringValue;
+        if ( typeof reference !== 'string' ) {
+          reference[ lastKeyPart ] = stringValue;
         }
       } );
 
