@@ -61,6 +61,9 @@ export default requirejsNamespace => {
 
         let partialKey = stringKeyPrefix;
         allButLastKeyPart.forEach( ( keyPart, i ) => {
+          // When concatenating each level into the final string key, we don't want to put a '.' directly after the
+          // slash, because `JOIST/.ResetAllButton.name` would be invalid.
+          // See https://github.com/phetsims/chipper/issues/922
           partialKey += `${i > 0 ? '.' : ''}${keyPart}`;
 
           // Don't allow e.g. JOIST/a and JOIST/a.b, since localeObject.a would need to be a string AND an object at the
