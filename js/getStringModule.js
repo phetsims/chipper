@@ -16,7 +16,7 @@ const FALLBACK_LOCALE = 'en';
  * @param {string} requirejsNamespace - E.g. 'JOIST', to pull string keys out from that namespace
  * @returns {Object} - Nested object to be accessed like joistStrings.ResetAllButton.name
  */
-export default requirejsNamespace => {
+const getStringModule = requirejsNamespace => {
   // Our string information is pulled globally, e.g. phet.chipper.strings[ locale ][ stringKey ] = stringValue;
   // Our locale information is from phet.chipper.locale
 
@@ -121,3 +121,4 @@ export default requirejsNamespace => {
 
   return result;
 };
+export default getStringModule;
