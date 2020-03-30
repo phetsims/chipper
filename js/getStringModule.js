@@ -46,6 +46,8 @@ const getStringModule = requirejsNamespace => {
 
       const stringKeysInRepo = Object.keys( partialStringMap ).filter( stringKey => stringKey.indexOf( stringKeyPrefix ) === 0 );
 
+      // We'll iterate over every string key that has this repo's prefix, so that we can add any relevant information
+      // for it into the localeObject.
       stringKeysInRepo.forEach( stringKey => {
         // strip off the require.js namespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'
         const stringKeyWithoutPrefix = stringKey.slice( stringKeyPrefix.length );
@@ -59,6 +61,9 @@ const getStringModule = requirejsNamespace => {
         // whether that's another child object, or the string value itself.
         let reference = localeObject;
 
+        // We'll traverse down through the parts of a string key (separated by '.'), creating a new level in the
+        // string object for each one. This is done for all BUT the last part, since we'll want to assign the result
+        // of that to a raw string value (rather than an object).
         let partialKey = stringKeyPrefix;
         allButLastKeyPart.forEach( ( keyPart, i ) => {
           // When concatenating each level into the final string key, we don't want to put a '.' directly after the
