@@ -89,7 +89,8 @@ const getStringModule = requirejsNamespace => {
         assert && assert( locale !== FALLBACK_LOCALE || !reference[ lastKeyPart ],
           `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
 
-        // We'll need this check anyway for babel string handling
+        // In case our assertions are not enabled, we'll need to proceed without failing out (so we allow for the
+        // extended string keys in our actual code, even though assertions should prevent that).
         if ( typeof reference !== 'string' ) {
           reference[ lastKeyPart ] = phet.chipper.mapString( partialStringMap[ stringKey ] );
         }
