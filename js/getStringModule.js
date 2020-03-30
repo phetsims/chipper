@@ -44,9 +44,9 @@ export default requirejsNamespace => {
       // The object where our locale-specific string object is built
       const localeObject = {};
 
-      const stringKeys = Object.keys( partialStringMap ).filter( stringKey => stringKey.indexOf( stringKeyPrefix ) === 0 );
+      const stringKeysInRepo = Object.keys( partialStringMap ).filter( stringKey => stringKey.indexOf( stringKeyPrefix ) === 0 );
 
-      stringKeys.forEach( stringKey => {
+      stringKeysInRepo.forEach( stringKey => {
         // strip off the require.js namespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'
         const stringKeyWithoutPrefix = stringKey.slice( stringKeyPrefix.length );
         const stringValue = phet.chipper.mapString( partialStringMap[ stringKey ] );
