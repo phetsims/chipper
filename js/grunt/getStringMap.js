@@ -122,7 +122,9 @@ module.exports = function( locales, phetLibs, usedModules ) {
       } ) );
     }
   } );
-  reposWithUsedStrings = _.uniq( reposWithUsedStrings );
+  reposWithUsedStrings = _.uniq( reposWithUsedStrings ).filter( repo => {
+    return fs.existsSync( `../${repo}/package.json` );
+  } );
 
   // Compute a map of {repo:string} => {requirejsNamepsace:string}, so we can construct full string keys from strings
   // that would be accessing them, e.g. `joistStrings.ResetAllButton.name` => `JOIST/ResetAllButton.name`.
