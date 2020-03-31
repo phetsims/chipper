@@ -363,8 +363,9 @@
   }
 
   /**
+   * Copy the necessary PDOM content over to the a11y view
    * @param {HTMLElement} pdomRoot
-   * @param {HTMLElement} copyContainer
+   * @param {HTMLElement} copyContainer - the parent of where the copy will be added in the a11y view
    */
   function setPDOMCopyContent( pdomRoot, copyContainer ) {
 
@@ -383,20 +384,32 @@
   }
 
   /**
+   * Add an observer to the PDOM root that will update the a11y view copy whenever the sim pdom changes.
    * @param {HTMLElement} pdomRoot
-   * @param {HTMLElement} copyContainer
+   * @param {HTMLElement} copyContainer - the PDOM copy will be added as a child here, see setPDOMCopyContent
    * @param {Object} mutationConfig
    */
   function addPDOMObserver( pdomRoot, copyContainer, mutationConfig ) {
 
+    let dirty = false;
+
+    // poll for updates to help performance on chrome
+    setInterval( () => {
+
+      if ( dirty ) {
+
+        // update the PDOM copy after a delay to fix a FF/Safari bug where cloneNode prevents hidden DOM elements
+        // in the iframe from staying hidden - see https://github.com/phetsims/chipper/issues/648
+        setTimeout( function() {
+          setPDOMCopyContent( pdomRoot, copyContainer );
+          dirty = false;
+        }, 10 );
+      }
+    }, 300 ); // as of this writing, 200 ms was pretty good, but could get a bit laggy at times on chrome while using NVDA.
+
     // whenever an element in the parallel DOM changes, we need to update its copied element as well
     const domObserver = new MutationObserver( function( mutations ) {
-
-      // update the PDOM copy after a delay to fix a FF/Safari bug where cloneNode prevents hidden DOM elements
-      // in the iframe from staying hidden - see https://github.com/phetsims/chipper/issues/648
-      setTimeout( function() {
-        setPDOMCopyContent( pdomRoot, copyContainer );
-      }, 10 );
+      dirty = true;
     } );
 
     // pass in the target node, as well as the observer configuration options
