@@ -38,16 +38,16 @@
    */
   const processStringFile = ( stringObject, requirejsNamespace, locale ) => {
 
-    const prefix = `${requirejsNamespace}/`;
+    const stringKeyPrefix = `${requirejsNamespace}/`;
 
     // Ensure a locale-specific sub-object
     phet.chipper.strings[ locale ] = phet.chipper.strings[ locale ] || {};
-    const stringMap = phet.chipper.strings[ locale ];
+    const localeStringMap = phet.chipper.strings[ locale ];
 
     const recurse = ( path, object ) => {
       Object.keys( object ).forEach( key => {
         if ( key === 'value' ) {
-          stringMap[ `${prefix}${path}` ] = object.value;
+          localeStringMap[ `${stringKeyPrefix}${path}` ] = object.value;
         }
         else if ( object[ key ] && typeof object[ key ] === 'object' ) {
           recurse( `${path}${path.length ? '.' : ''}${key}`, object[ key ] );
