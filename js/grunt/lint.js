@@ -20,6 +20,7 @@ const child_process = require( 'child_process' );
 const NO_LINT_REPOS = [ // don't lint these repos
 
   'babel',
+  'decaf',
   'eliot',
   'phet-android-app',
   'phet-info',
