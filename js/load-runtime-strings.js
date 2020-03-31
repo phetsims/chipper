@@ -92,7 +92,7 @@
       }
     } );
 
-    request.open( 'GET', `../${locale === 'en' ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json`, true ); // enable CORS
+    request.open( 'GET', `../${locale === 'en' ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json`, true );
     request.send();
   };
 
