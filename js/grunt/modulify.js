@@ -170,14 +170,14 @@ export default {
 };
 
 /**
- * Creates the string module at js/${repo}-strings.js for repos that need it.
+ * Creates the string module at js/${_.camelCase( repo )}Strings.js for repos that need it.
  * @public
  *
  * @param {string} repo
  */
 const createStringModule = async repo => {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-  const stringModuleFile = `../${repo}/js/${repo}-strings.js`;
+  const stringModuleFile = `../${repo}/js/${_.camelCase( repo )}Strings.js`;
   const namespace = _.camelCase( repo );
   fs.writeFileSync( stringModuleFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
