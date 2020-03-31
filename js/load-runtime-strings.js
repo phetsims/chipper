@@ -37,7 +37,6 @@
    * @param {string} locale
    */
   const processStringFile = ( stringObject, requirejsNamespace, locale ) => {
-    // if a key has `value`, it's a string with that value
 
     const prefix = `${requirejsNamespace}/`;
 
