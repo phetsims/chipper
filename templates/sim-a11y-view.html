@@ -262,7 +262,6 @@
    *
    * @param  {HTMLElement} ancestor - parent whose children will be linearized
    * @returns {HTMLElement[]}
-   * @private
    */
   function getAllDOMElementsAsLinear( ancestor ) {
 
@@ -352,7 +351,7 @@
         // if the element has aria-valuetext, render this text in a new element so we can see the content of this
         // inline attribute
         const valueTextElement = document.createElement( 'p' );
-        valueTextElement.className = "pdom-style";
+        valueTextElement.className = 'pdom-style';
         valueTextElement.style.opacity = 0.55;
         valueTextElement.textContent = element.getAttribute( 'aria-valuetext' );
 
@@ -408,9 +407,7 @@
     }, 300 ); // as of this writing, 200 ms was pretty good, but could get a bit laggy at times on chrome while using NVDA.
 
     // whenever an element in the parallel DOM changes, we need to update its copied element as well
-    const domObserver = new MutationObserver( function( mutations ) {
-      dirty = true;
-    } );
+    const domObserver = new MutationObserver( mutations => { dirty = true; } );
 
     // pass in the target node, as well as the observer configuration options
     domObserver.observe( pdomRoot, MUTATION_OBSERVER_CONFIG );
@@ -423,8 +420,8 @@
    * @param {Object} mutationConfig
    */
   function addLiveObserver( originalElement, listElement, mutationConfig ) {
-    const liveObserver = new MutationObserver( function( mutations ) {
-      mutations.forEach( function( mutation ) {
+    const liveObserver = new MutationObserver( mutations => {
+      mutations.forEach( mutation => {
 
         // Only display added DOM nodes. ariaHerald will remove the content from aria-live elements so that it
         // can't be read by the virtual cursor. This registers as a "mutation", but we don't want to display
@@ -484,7 +481,7 @@
   };
 
   // handling messages from sims
-  window.addEventListener( 'message', function( evt ) {
+  window.addEventListener( 'message', evt => {
     if ( !evt.data ) {
       return;
     }
@@ -527,8 +524,9 @@
       document.getElementById( 'iframe' ).focus();
 
       // Provide fake focus highlighting to the PDOM copy based on what is actually highlighted in the sim.
+      // TODO: is polling the best way to do this? If so why 500? https://github.com/phetsims/chipper/issues/916
       let previousElement = null;
-      setInterval( function() {
+      setInterval( () => {
 
         if ( previousElement ) {
           previousElement.classList.remove( 'highlight' );
