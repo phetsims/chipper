@@ -1,9 +1,16 @@
 // Copyright 2020, University of Colorado Boulder
 
 /**
- * Kicks off the loading of runtime strings very early in the compilation-free loading process, ideally so that it
+ * Kicks off the loading of runtime strings very early in the unbuilt loading process, ideally so that it
  * doesn't block the loading of modules. This is because we need the string information to be loaded before we can
  * kick off the module process.
+ *
+ * It will fill up phet.chipper.strings with the needed values, for use by simulation code and in particular
+ * getStringModule. It will then call window.phet.chipper.loadModules() once complete, to progress with the module
+ * process.
+ *
+ * To function properly, phet.chipper.stringRepos will need to be defined before this executes (generally in the
+ * initialization script, or in the dev .html).
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
@@ -18,6 +25,15 @@
 
   let remainingFilesToProcess = 0;
 
+  /**
+   * Takes the string-file object for a given locale/requirejsNamespace, and fills in the phet.chipper.strings inside
+   * that locale with any recognized strings inside.
+   *
+   * @param {Object} stringObject - In general, an object where if it has a `value: {string}` key then it represents
+   *                                a string key with a value, otherwise each level represents a grouping.
+   * @param {string} requirejsNamespace - e.g. 'JOIST'
+   * @param {string} locale
+   */
   const processStringFile = ( stringObject, requirejsNamespace, locale ) => {
     // if a key has `value`, it's a string with that value
 
@@ -40,6 +56,15 @@
     recurse( '', stringObject );
   };
 
+  /**
+   * Fires off a request for a string object file, either in babel (for non-English) strings, or in the actual repo
+   * (for English) strings. When it is loaded, it will try to parse the response and then pass the object for
+   * processing.
+   *
+   * @param {string} repo - The repository name
+   * @param {string} requirejsNamespace - e.g. 'JOIST'
+   * @param {string} locale
+   */
   const requestStringFile = ( repo, requirejsNamespace, locale ) => {
     remainingFilesToProcess++;
 
@@ -71,10 +96,13 @@
     request.send();
   };
 
+  // The callback to execute when all string files are processed.
   const finishProcessing = () => {
+    // Progress with loading modules
     window.phet.chipper.loadModules();
   };
 
+  // We don't use QueryStringMachine, because we are loaded first.
   const customLocale = new window.URLSearchParams( window.location.search ).get( 'locale' );
   const loadCustomLocale = customLocale && customLocale !== 'en';
   const locales = [
