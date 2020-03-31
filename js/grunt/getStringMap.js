@@ -106,9 +106,20 @@ module.exports = function( locales, phetLibs, usedModules ) {
   // repositories).
   let reposWithUsedStrings = [];
   usedFileContents.forEach( fileContent => {
-    const allImportStatements = fileContent.match( /import [a-zA-Z_$][a-zA-Z0-9_$]*Strings from '[^\n\r]+-strings.js';/g );
+    const allImportStatements = fileContent.match( /import [a-zA-Z_$][a-zA-Z0-9_$]*Strings from '[^\n\r]+Strings.js';/g );
     if ( allImportStatements ) {
-      reposWithUsedStrings.push( ...allImportStatements.map( importStatement => importStatement.match( /\/([\w-]+)-strings\.js/ )[ 1 ] ) );
+      reposWithUsedStrings.push( ...allImportStatements.map( importStatement => {
+        const importName = importStatement.match( /\/([\w-]+)Strings\.js/ )[ 1 ];
+
+        // un-camel-case
+        let repo = importName;
+        for ( let i = 0; i < repo.length; i++ ) {
+          if ( repo[ i ] >= 'A' && repo[ i ] <= 'Z' ) {
+            repo = repo.slice( 0, i ) + '-' + repo[ i ].toLowerCase() + repo.slice( i + 1 );
+          }
+        }
+        return repo;
+      } ) );
     }
   } );
   reposWithUsedStrings = _.uniq( reposWithUsedStrings );
@@ -175,7 +186,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
 
     // Concatenate the string parts for each access into something that looks like a partial string key, e.g.
     // [ 'ResetAllButton', 'name' ] => 'ResetAllButton.name'
-    const partialStringKeys = _.uniq( stringKeysByParts.map( parts => parts.join( '.' ) ) );
+    const partialStringKeys = _.uniq( stringKeysByParts.map( parts => parts.join( '.' ) ) ).filter( key => key !== 'js' );
 
     // For each string key and locale, we'll look up the string entry and fill it into the stringMap
     partialStringKeys.forEach( partialStringKey => {

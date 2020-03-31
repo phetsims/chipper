@@ -88,7 +88,7 @@ module.exports = async ( repos, port, devtool, openChrome = false ) => {
             packageObject: fs.readFileSync( `../${repo}/package.json`, 'utf-8' ),
             stringRepos: JSON.stringify( stringReposMap[ repo ] ),
             preloads: [
-              '../chipper/js/load-runtime-strings.js',
+              '../chipper/js/load-unbuilt-strings.js',
               ...getPreloads( repo, 'phet', true ).filter( file => {
                 return !file.includes( 'google-analytics' );
               } )

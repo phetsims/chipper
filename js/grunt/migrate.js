@@ -289,7 +289,7 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
   } );
 
   const stringImportLines = _.uniq( reposWithImportedStrings ).map( repo => {
-    return `import ${_.camelCase( repo )}Strings from '${relativeFile.split( '/' ).map( () => '../' ).join( '' )}${repo}/js/${repo}-strings.js';`;
+    return `import ${_.camelCase( repo )}Strings from '${relativeFile.split( '/' ).map( () => '../' ).join( '' )}${repo}/js/${_.camelCase( repo )}Strings.js';`;
   } );
   lines.splice( indexOfFirstStringImport, 0, ...stringImportLines );
 
