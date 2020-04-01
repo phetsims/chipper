@@ -68,7 +68,7 @@ module.exports = {
     'todo-should-have-issue': 2,
 
     // Custom rule for ensuring that images and text use scenery node
-    // 'no-html-constructors': 2,
+    'no-html-constructors': 2,
 
     // Custom rule for avoiding Math.sign which is not supported on IE
     'no-math-sign': 2,
