@@ -79,9 +79,7 @@ module.exports = function( repo, brand ) {
     } );
 
     const compiler = webpack( {
-      // We uglify as a step after this, with many custom rules
-      // REVIEW: Is this still true? The module:{ rules:[]} field below is empty. If the uglify step isn't supposed to be
-      // REVIEW: done below and is done elsewhere please ignore this REVIEW.
+      // We uglify as a step after this, with many custom rules. So we do NOT optimize or uglify in this step.
       optimization: {
         minimize: false
       },
@@ -103,12 +101,7 @@ module.exports = function( repo, brand ) {
       // Exclude brand specific code. This includes all of the `phet-io` repo for non phet-io builds.
         ( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
           brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
-          brand === 'adapted-from-phet' ? [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] : [] ),
-
-      module: {
-        // rules for modules (configure loaders, parser options, etc.)
-        rules: []
-      }
+          brand === 'adapted-from-phet' ? [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] : [] )
     } );
 
     compiler.run( ( err, stats ) => {

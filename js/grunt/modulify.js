@@ -38,7 +38,7 @@ const modulifyImage = abspath => {
   const dataURI = loadFileAsDataURI( abspath );
 
   const contents = `${HEADER}
-var img = new Image();
+const img = new Image();
 window.phetImages.push( img );
 img.src = '${dataURI}';
 export default img;
@@ -64,17 +64,16 @@ const modulifyMipmap = async abspath => {
     const mipmaps = await createMipmap( abspath, options.level, options.quality );
     const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
-    // To the REVIEWER, should we use const/let/arrow functions in the modulified files?  See https://github.com/phetsims/chipper/issues/872
     const mipmapContents = `${HEADER}
-var mipmaps = ${JSON.stringify( entry, null, 2 )};
-mipmaps.forEach( function( mipmap ) {
+const mipmaps = ${JSON.stringify( entry, null, 2 )};
+mipmaps.forEach( mipmap => {
   mipmap.img = new Image();
   window.phetImages.push( mipmap.img ); // make sure it's loaded before the sim launches
   mipmap.img.src = mipmap.url; // trigger the loading of the image for its level
   mipmap.canvas = document.createElement( 'canvas' );
   mipmap.canvas.width = mipmap.width;
   mipmap.canvas.height = mipmap.height;
-  var context = mipmap.canvas.getContext( '2d' );
+  const context = mipmap.canvas.getContext( '2d' );
   mipmap.updateCanvas = function() {
     if ( mipmap.img.complete && ( typeof mipmap.img.naturalWidth === 'undefined' || mipmap.img.naturalWidth > 0 ) ) {
       context.drawImage( mipmap.img, 0, 0 );
