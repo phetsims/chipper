@@ -106,9 +106,12 @@ module.exports = function( locales, phetLibs, usedModules ) {
   // repositories).
   let reposWithUsedStrings = [];
   usedFileContents.forEach( fileContent => {
+    // [a-zA-Z_$][a-zA-Z0-9_$] ---- general JS identifiers, first character can't be a number
+    // [^\n\r] ---- grab everything except for newlines here, so we get everything
     const allImportStatements = fileContent.match( /import [a-zA-Z_$][a-zA-Z0-9_$]*Strings from '[^\n\r]+Strings.js';/g );
     if ( allImportStatements ) {
       reposWithUsedStrings.push( ...allImportStatements.map( importStatement => {
+        // Grabs out the prefix before `Strings.js` (without the leading slash too)
         const importName = importStatement.match( /\/([\w-]+)Strings\.js/ )[ 1 ];
 
         // un-camel-case
@@ -164,6 +167,9 @@ module.exports = function( locales, phetLibs, usedModules ) {
         // [ 'aStringInBracketsBecauseOfSpecialCharacters' ]
         //
         // It will also then end on anything that doesn't look like another one of those chunks
+        // [a-zA-Z_$][a-zA-Z0-9_$]* ---- this grabs things that looks like valid JS identifiers
+        // \\[ '[^']+' \\])+ ---- this grabs things like our second case above
+        // [^\\.\\[] ---- matches something at the end that is NOT either of those other two cases
         const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[ '[^']+' \\])+[^\\.\\[]`, 'g' ) );
         if ( matches ) {
           stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ) ).filter( m => m !== `${prefix}.get` ) );
@@ -182,6 +188,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
 
     // Turn each string access into an array of parts, e.g. '.ResetAllButton.name' => [ 'ResetAllButton', 'name' ]
     // or '[ \'A\' ].B[ \'C\' ]' => [ 'A', 'B', 'C' ]
+    // Regex grabs either `.identifier` or `[ 'text' ]`.
     const stringKeysByParts = stringAccesses.map( access => access.match( /\.[a-zA-Z_$][a-zA-Z0-9_$]*|\[ '[^']+' \]/g ).map( token => {
       return token.startsWith( '.' ) ? token.slice( 1 ) : token.slice( 3, token.length - 3 );
     } ) );
