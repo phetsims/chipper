@@ -15,25 +15,44 @@
 'use strict';
 
 const grunt = require( 'grunt' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 
 /**
  * @param {string} repo
  * @param {string} requirejsNamespace
+ * @param {Object} usedStringMap - Maps full keys to string values, FOR USED STRINGS ONLY
  */
-module.exports = function( repo, requirejsNamespace ) {
+module.exports = function( repo, requirejsNamespace, usedStringMap ) {
 
-  // get the strings for this sim
-  const jsStrings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
+  /**
+   * Builds a string map recursively from a string-file-like object.
+   *
+   * @param {Object} object
+   * @returns {Object}
+   */
+  const buildStringMap = object => {
+    const result = {};
 
-  // global.phet.chipper.strings is initialized by the string plugin
-  const chipperStrings = global.phet.chipper.strings || {};
+    if ( typeof object.value === 'string' ) {
+      result[ '' ] = object.value;
+    }
+    Object.keys( object ).filter( key => key !== 'value' ).forEach( key => {
+      if ( typeof object[ key ] === 'object' ) {
+        const subresult = buildStringMap( object[ key ] );
 
-  ChipperStringUtils.forEachString( jsStrings, ( key, stringObject ) => {
+        Object.keys( subresult ).forEach( subkey => {
+          result[ key + ( subkey.length ? '.' + subkey : '' ) ] = subresult[ subkey ];
+        } );
+      }
+    } );
 
-    // If this string was not added to the global chipperStrings, it was not required in the sim
-    if ( !chipperStrings.hasOwnProperty( `${requirejsNamespace}/${key}` ) ) {
-      grunt.log.warn( `Unused string: key=${key}, value=${stringObject.value}` );
+    return result;
+  };
+
+  const availableStringMap = buildStringMap( grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` ) );
+
+  Object.keys( availableStringMap ).forEach( availableStringKey => {
+    if ( !usedStringMap[ `${requirejsNamespace}/${availableStringKey}` ] ) {
+      grunt.log.warn( `Unused string: key=${availableStringKey}, value=${availableStringMap[ availableStringKey ]}` );
     }
   } );
 };

@@ -33,12 +33,12 @@ const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 const packageRunnable = require( './packageRunnable' );
 const packageXHTML = require( './packageXHTML' );
+const reportUnusedStrings = require( './reportUnusedStrings' );
+const webpackBuild = require( './webpackBuild' );
+const zlib = require( 'zlib' );
 
 // TODO: Re-enable these? https://github.com/phetsims/chipper/issues/909
 // const reportUnusedMedia = require( './reportUnusedMedia' );
-// const reportUnusedStrings = require( './reportUnusedStrings' );
-const webpackBuild = require( './webpackBuild' );
-const zlib = require( 'zlib' );
 
 const recordTime = async ( asyncCallback, timeCallback ) => {
   const beforeTime = Date.now();
@@ -98,10 +98,6 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   // TODO: Re-enable this? https://github.com/phetsims/chipper/issues/909
   // reportUnusedMedia( packageObject.phet.requirejsNamespace );
 
-  // After all strings have been loaded, report which of the translatable strings are unused.
-  // TODO: Re-enable this? https://github.com/phetsims/chipper/issues/909
-  // reportUnusedStrings( repo, packageObject.phet.requirejsNamespace );
-
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
@@ -111,6 +107,9 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const simTitleStringKey = getTitleStringKey( repo );
 
   const stringMap = getStringMap( allLocales, phetLibs, webpackResult.usedModules );
+
+  // After our string map is consturcted, report which of the translatable strings are unused.
+  reportUnusedStrings( repo, packageObject.phet.requirejsNamespace, stringMap[ ChipperConstants.FALLBACK_LOCALE ] );
 
   // If we have NO strings for a given locale that we want, we'll need to fill it in with all English strings, see
   // https://github.com/phetsims/perennial/issues/83
