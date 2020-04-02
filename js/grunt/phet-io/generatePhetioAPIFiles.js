@@ -35,7 +35,7 @@ module.exports = async ( repo, localTestingURL ) => {
     // if there is already an overrides file, don't overwrite it with an empty one
     if ( !fs.existsSync( overridesFileName ) ) {
       fs.writeFileSync( overridesFileName,
-        '/* eslint-disable */\nwindow.phet.phetio.phetioElementsOverrides = {};' );
+        '/* eslint-disable */\nwindow.phet.phetio.preload.phetioElementsOverrides = {};' );
     }
 
     let receivedBaseline = false;
@@ -45,13 +45,13 @@ module.exports = async ( repo, localTestingURL ) => {
     const page = await browser.newPage();
 
     page.on( 'console', async msg => {
-      if ( msg.text().indexOf( 'window.phet.phetio.phetioElementsBaseline' ) >= 0 ) {
+      if ( msg.text().indexOf( 'window.phet.phetio.preload.phetioElementsBaseline' ) >= 0 ) {
         fs.writeFileSync( baselineFileName, msg.text() );
         receivedBaseline = true;
         await resolved();
       }
 
-      else if ( msg.text().indexOf( 'window.phet.phetio.phetioTypes' ) >= 0 ) {
+      else if ( msg.text().indexOf( 'window.phet.phetio.preload.phetioTypes' ) >= 0 ) {
         fs.writeFileSync( typesFileName, msg.text() );
         receivedTypes = true;
         await resolved();
