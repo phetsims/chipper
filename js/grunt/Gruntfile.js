@@ -22,7 +22,6 @@ const migrate = require( './migrate' );
 const modulify = require( './modulify' );
 const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
-const generateCoverage = require( './generateCoverage' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateREADME = require( './generateREADME' );
@@ -262,12 +261,6 @@ module.exports = function( grunt ) {
     'set the "supportsInteractiveDescriptions":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
       generateA11yViewHTML( repo );
-    } ) );
-
-  grunt.registerTask( 'generate-coverage',
-    'Generates a code coverage report using Istanbul. See generateCoverage.js for details.',
-    wrapTask( async () => {
-      generateCoverage( repo );
     } ) );
 
   grunt.registerTask( 'update',

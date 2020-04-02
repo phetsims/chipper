@@ -21,7 +21,7 @@ const path = require( 'path' );
  *
  * @param {Array.<string>} reposWithUsedStrings - All of the repos that have 1+ used strings
  * @param {Array.<string>} locales - All supported locales for this build
- * @returns {Object} - maps [repositoryName][locale] => contents of locale string file
+ * @returns {Object} - maps {locale:string} => Another map with: {stringKey:string} => {stringValue:string}
  */
 const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
   const stringFilesContents = {}; // maps [repositoryName][locale] => contents of locale string file
