@@ -130,7 +130,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
         }
       } );
 
-      // Remove individual common phet-io code imports because they are all in phetio.js
+      // Remove individual common phet-io code imports because they are all in phet-io.js
       // NOTE: don't use Array.prototype.forEach here. After bashing my head against a wall I think it is because of
       // race conditions editing `contents`.
       for ( let i = 0; i < LIB_FILES.length; i++ ) {
