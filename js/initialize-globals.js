@@ -795,9 +795,4 @@
       } );
     }
   }() );
-
-  assert && assert( !window.hasOwnProperty( 'phetImages' ), 'Unexpected phetImages' );
-
-  // Images are populated here, and SimLauncher makes sure they are all loaded before launching
-  window.phetImages = [];
 }() );
