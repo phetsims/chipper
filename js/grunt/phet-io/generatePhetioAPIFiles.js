@@ -57,7 +57,8 @@ module.exports = async ( repo, localTestingURL ) => {
         await resolved();
       }
       else if ( msg.type() === 'error' ) {
-        console.error( msg.text() );
+        const location = msg.location ? msg.location().url : '';
+        console.error( 'Error from sim:', msg.text(), location );
       }
     } );
 
