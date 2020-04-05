@@ -60,11 +60,10 @@ const modulifyMipmap = async abspath => {
     quality: 98
   };
 
-  try {
-    const mipmaps = await createMipmap( abspath, options.level, options.quality );
-    const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
+  const mipmaps = await createMipmap( abspath, options.level, options.quality );
+  const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
-    const mipmapContents = `${HEADER}
+  const mipmapContents = `${HEADER}
 const mipmaps = ${JSON.stringify( entry, null, 2 )};
 mipmaps.forEach( mipmap => {
   mipmap.img = new Image();
@@ -82,13 +81,7 @@ mipmaps.forEach( mipmap => {
   };
 } );
 export default mipmaps;`;
-    fs.writeFileSync( convertSuffix( abspath, '.js' ), mipmapContents );
-  }
-  catch( e ) {
-
-    // This is an async function, so I'm not sure whether we can throw out of it.  To the REVIEWER, what do you recommend?  See https://github.com/phetsims/chipper/issues/872
-    console.log( `Image could not be mipmapped: ${abspath}` );
-  }
+  fs.writeFileSync( convertSuffix( abspath, '.js' ), mipmapContents );
 };
 
 /**
