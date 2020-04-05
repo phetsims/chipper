@@ -112,7 +112,6 @@ const getSuffix = filename => {
  */
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
 
-  // To the REVIEWER: Should this code be factored out?  Note that one is await and the other is not.  See https://github.com/phetsims/chipper/issues/872
   if ( subdir && ( subdir.startsWith( 'images' ) ||
 
                    // for brand
@@ -133,7 +132,6 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
     await modulifyMipmap( abspath );
   }
 
-  // TODO: https://github.com/phetsims/chipper/issues/872 factor out duplicates
   if ( subdir && subdir.startsWith( 'sounds' ) ) {
 
     /**
