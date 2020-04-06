@@ -136,6 +136,13 @@
     },
 
     /**
+     * Use the stubbed audio context in tambo regardless of whether support for the audioContext exists in Web Audio.
+     * This is useful for testing and debugging of the stubbed audio context in browsers where it isn't needed (e.g.
+     * Chrome), since the main browser where it *is* needed (Internet Explorer) can be difficult to debug in.
+     */
+    forceStubbedAudioContext: { type: 'flag' },
+
+    /**
      * Randomly sends mouse events and touch events to sim.
      */
     fuzz: { type: 'flag' },
