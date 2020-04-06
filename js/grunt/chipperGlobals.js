@@ -30,9 +30,6 @@ module.exports = {
         // for code that runs in both requirejs and build modes, and therefore doesn't have access to grunt.file
         fs: fs,
 
-        // polyfill to work around the cache bust arg in the *-config.js file that all sims have.
-        getCacheBustArgs() { return ''; },
-
         // media plugins populate this with license.json entries, see getLicenseEntry.js for format of entries
         licenseEntries: {},
 

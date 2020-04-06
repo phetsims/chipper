@@ -97,14 +97,6 @@
     buildCompatible: { type: 'flag' },
 
     /**
-     * enables cache busting in requirejs mode.
-     */
-    cacheBust: {
-      type: 'boolean',
-      defaultValue: true
-    },
-
-    /**
      * The color profile used at startup, relevant only for sims that support multiple color profiles.
      * Such sims are required to have a 'default' profile.  If a sim supports a 'projector mode' then
      * it should also have a 'projector' profile.  Other profile names are not currently standardized.
@@ -621,15 +613,6 @@
         console.log( '%c' + message, 'color: ' + options.color ); // green
       };
     }
-
-    /**
-     * Gets the cache bust args based on the provided query parameters. When enabled, the parameter is added to
-     * resources like: ?bust=<number>
-     * @returns {string}
-     */
-    window.phet.chipper.getCacheBustArgs = function() {
-      return phet.chipper.queryParameters.cacheBust ? ( 'bust=' + Date.now() ) : '';
-    };
 
     /**
      * Gets the name of brand to use, which determines which logo to show in the navbar as well as what options
