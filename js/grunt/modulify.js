@@ -13,6 +13,7 @@ const createMipmap = require( './createMipmap' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
+const os = require( 'os' );
 const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedFile' );
 
 // disable lint in compiled files, because it increases the linting time
@@ -31,6 +32,13 @@ const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur' ];
 const replace = ( string, search, replacement ) => string.split( search ).join( replacement );
 
 /**
+ * Output with an OS-specific EOL sequence, see https://github.com/phetsims/chipper/issues/908
+ * @param string
+ * @returns {string}
+ */
+const fixEOL = string => replace( string, '\n', os.EOL );
+
+/**
  * Transform an image file to a JS file that loads the image.
  * @param {string} abspath - the absolute path of the image
  */
@@ -44,7 +52,7 @@ img.src = '${dataURI}';
 export default img;
 `;
 
-  fs.writeFileSync( convertSuffix( abspath, '.js' ), contents );
+  fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( contents ) );
 };
 
 /**
@@ -81,7 +89,7 @@ mipmaps.forEach( mipmap => {
   };
 } );
 export default mipmaps;`;
-  fs.writeFileSync( convertSuffix( abspath, '.js' ), mipmapContents );
+  fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( mipmapContents ) );
 };
 
 /**
@@ -150,7 +158,7 @@ export default {
 };`;
 
         const outputFilename = replace( abspath, soundFileSuffix, jsFileSuffix );
-        fs.writeFileSync( outputFilename, contents );
+        fs.writeFileSync( outputFilename, fixEOL( contents ) );
       }
     };
 
@@ -169,7 +177,7 @@ const createStringModule = async repo => {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const stringModuleFile = `../${repo}/js/${_.camelCase( repo )}Strings.js`;
   const namespace = _.camelCase( repo );
-  fs.writeFileSync( stringModuleFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+  fs.writeFileSync( stringModuleFile, fixEOL(`// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
 /**
  * Auto-generated from modulify, DO NOT manually modify.
@@ -183,7 +191,7 @@ const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsName
 ${namespace}.register( '${namespace}Strings', ${namespace}Strings );
 
 export default ${namespace}Strings;
-` );
+`) );
   await updateCopyrightForGeneratedFile( repo, stringModuleFile );
 };
 
@@ -196,7 +204,7 @@ export default ${namespace}Strings;
 const createNamespaceModule = async repo => {
   const namespace = _.camelCase( repo );
   const namespaceFile = `../${repo}/js/${namespace}.js`;
-  fs.writeFileSync( namespaceFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+  fs.writeFileSync( namespaceFile, fixEOL(`// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
 /**
  * Creates the namespace for this simulation.
@@ -206,7 +214,7 @@ const createNamespaceModule = async repo => {
 import Namespace from '../../phet-core/js/Namespace.js';
 
 export default new Namespace( '${namespace}' );
-` );
+`) );
   await updateCopyrightForGeneratedFile( repo, namespaceFile );
 };
 
