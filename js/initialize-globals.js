@@ -66,6 +66,7 @@
     /**
      * Master volume control for the simulation.  Range is from 0 to 1, which is typical for web audio gain nodes.
      * 1.0 is unity volume, 0.5 is half volume, etc. This is primarily for Vibe sounds.
+     * TODO: This should be removed once all usages of Vibe have been converted to Tambo, see https://github.com/phetsims/vibe/issues/33.
      * @deprecated see https://github.com/phetsims/vibe/issues/33
      * @type {number}
      */
