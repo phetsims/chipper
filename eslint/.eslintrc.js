@@ -140,7 +140,6 @@ module.exports = {
     // phet-specific require statement rules
     'require-statement-match': 2,
     'phet-io-require-contains-ifphetio': 2,
-    'string-require-statement-match': 2,
 
     // Require @public/@private for this.something = result;
     'property-visibility-annotation': 0,
