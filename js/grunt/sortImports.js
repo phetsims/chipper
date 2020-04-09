@@ -34,7 +34,7 @@ module.exports = function( file ) {
   } );
 
   // pull out and sort imports
-  const firstImportIndex = _.findIndex( lines, isImport );
+  let firstImportIndex = _.findIndex( lines, isImport );
   const importLines = lines.filter( isImport );
   const nonImportLines = lines.filter( _.negate( isImport ) );
   lines = [
@@ -52,6 +52,12 @@ module.exports = function( file ) {
   // add a blank line after imports if there was none
   if ( lines[ lastImportIndex + 1 ].length !== 0 ) {
     lines.splice( lastImportIndex + 1, 0, '' );
+  }
+
+  // remove multiple blank lines above the imports
+  while ( lines[ firstImportIndex - 1 ] === '' && lines[ firstImportIndex - 2 ] === '' ) {
+    lines.splice( firstImportIndex - 1, 1 );
+    firstImportIndex--;
   }
 
   contents = lines.join( '\n' );
