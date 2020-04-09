@@ -14,23 +14,31 @@
 //------------------------------------------------------------------------------
 
 module.exports = function( context ) {
-
-  // annotations that must be used to each method
   const annotations = [ '@private', '@public', '@protected' ];
+
+  // these are still MethodDefinition nodes, but don't require an annotation
+  const exemptMethods = [ 'get', 'set', 'constructor' ];
 
   return {
     MethodDefinition: node => {
-      if ( node.kind !== 'constructor' ) {
+      if ( !exemptMethods.includes( node.kind ) ) {
+        let includesAnnotation = false;
         const commentsBefore = context.getSourceCode().getCommentsBefore( node );
-        commentsBefore.forEach( comment => {
-          if ( !annotations.some( annotation => comment.value.includes( annotation ) ) ) {
-            context.report( {
-              node: node,
-              loc: node.loc,
-              message: node.key.name + ': Missing visibility annotation.'
-            } );
+
+        // OK as long as any comment above the method (block or line) has an annotation
+        for ( let i = 0; i < commentsBefore.length; i++ ) {
+          if ( annotations.some( annotation => commentsBefore[ i ].value.includes( annotation ) ) ) {
+            includesAnnotation = true;
+            break;
           }
-        } );
+        }
+        if ( !includesAnnotation ) {
+          context.report( {
+            node: node,
+            loc: node.loc,
+            message: node.key.name + ': Missing visibility annotation.'
+          } );
+        }
       }
     }
   };
