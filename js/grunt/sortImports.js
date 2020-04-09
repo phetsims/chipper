@@ -30,7 +30,8 @@ module.exports = function( file ) {
 
   // remove the grouping comments
   lines = lines.filter( ( line, i ) => {
-    return !disallowedComments.includes( line ) || !lines[ i + 1 ] || !isImport( lines[ i + 1 ] );
+    const nextLine = lines[ i + 1 ];
+    return !disallowedComments.includes( line ) || !nextLine || !isImport( nextLine );
   } );
 
   // pull out and sort imports
