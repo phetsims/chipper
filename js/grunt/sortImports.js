@@ -45,13 +45,14 @@ module.exports = function( file ) {
 
   // get rid of blank lines
   const lastImportIndex = _.findLastIndex( lines, isImport );
-  while ( lines[ lastImportIndex + 1 ].length === 0 && lines[ lastImportIndex + 2 ].length === 0 ) {
-    lines.splice( lastImportIndex + 1, 1 );
+  const afterLastImportIndex = lastImportIndex + 1;
+  while ( lines[ afterLastImportIndex ].length === 0 && lines[ lastImportIndex + 2 ].length === 0 ) {
+    lines.splice( afterLastImportIndex, 1 );
   }
 
   // add a blank line after imports if there was none
-  if ( lines[ lastImportIndex + 1 ].length !== 0 ) {
-    lines.splice( lastImportIndex + 1, 0, '' );
+  if ( lines[ afterLastImportIndex ].length !== 0 ) {
+    lines.splice( afterLastImportIndex, 0, '' );
   }
 
   // remove multiple blank lines above the imports
