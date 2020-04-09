@@ -1,7 +1,12 @@
 // Copyright 2020, University of Colorado Boulder
 
 /**
- * Sorts imports for a given file
+ * Sorts imports for a given file.
+ *
+ * This follows the Intellij/Webstorm defaults, where we do NOT sort based on the eventual name, but instead only based
+ * on the import path (e.g. everything after the `from` in the import).
+ *
+ * This will attempt to group all of the imports in one block.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
