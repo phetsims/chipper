@@ -32,6 +32,7 @@ const minify = require( './minify' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const SimVersion = require( '../SimVersion' );
+const sortImports = require( './sortImports' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
 const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
 const webpackDevServer = require( './webpackDevServer' );
@@ -307,6 +308,17 @@ module.exports = function( grunt ) {
       generateREADME( repo, false /* published */ );
     } ) );
 
+  grunt.registerTask( 'sort-imports', 'Sort the import statements for a single file (if --file={{FILE}} is provided), or does so for all JS files if not specified', wrapTask( async () => {
+    const file = grunt.option( 'file' );
+
+    if ( file ) {
+      sortImports( file );
+    }
+    else {
+      grunt.file.recurse( `../${repo}/js`, absfile => sortImports( absfile ) );
+    }
+  } ) );
+
   grunt.registerTask( 'commits-since',
     'Shows commits since a specified date. Use --date=<date> to specify the date.',
     wrapTask( async () => {
@@ -457,7 +469,6 @@ module.exports = function( grunt ) {
     'rc',
     'production',
     'create-sim',
-    'sort-require-statements',
     'insert-require-statement',
     'lint-everything',
     'generate-data',
