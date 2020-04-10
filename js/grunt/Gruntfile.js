@@ -119,6 +119,32 @@ module.exports = function( grunt ) {
       grunt.file.mkdir( buildDirectory );
     } ) );
 
+  grunt.registerTask( 'build-images',
+    'Build images only',
+    wrapTask( async () => {
+      const brand = 'phet';
+      grunt.log.writeln( `Building images for brand: ${brand}` );
+
+      const buildDir = `../${repo}/build/${brand}`;
+      // Thumbnails and twitter card
+      if ( grunt.file.exists( `../${repo}/assets/${repo}-screenshot.png` ) ) {
+        const thumbnailSizes = [
+          { width: 600, height: 394 },
+          { width: 420, height: 276 },
+          { width: 128, height: 84 },
+          { width: 15, height: 10 }
+        ];
+        for ( const size of thumbnailSizes ) {
+          grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, jimp.MIME_PNG ) );
+        }
+
+        if ( brand === 'phet' ) {
+          grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, jimp.MIME_JPEG ) );
+          grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
+        }
+      }
+    } ) );
+
   grunt.registerTask( 'build',
     `Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
  --minify.babelTranspile=false - Disables babel transpilation phase.
