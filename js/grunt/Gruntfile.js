@@ -18,6 +18,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
 const findDuplicates = require( './findDuplicates' );
+const jimp = require( 'jimp' );
 const migrate = require( './migrate' );
 const modulify = require( './modulify' );
 const fs = require( 'fs' );
