@@ -18,7 +18,6 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
 const findDuplicates = require( './findDuplicates' );
-const jimp = require( 'jimp' );
 const migrate = require( './migrate' );
 const modulify = require( './modulify' );
 const fs = require( 'fs' );
@@ -27,8 +26,6 @@ const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML'
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateREADME = require( './generateREADME' );
 const generateTestHTML = require( './generateTestHTML' );
-const generateThumbnails = require( './generateThumbnails' );
-const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
 const minify = require( './minify' );
@@ -40,13 +37,12 @@ const updateCopyrightDates = require( './updateCopyrightDates' );
 const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
 const webpackDevServer = require( './webpackDevServer' );
 
-
 // See https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd for how
 // to get unhandled promise rejections to fail out the node process.
 // Relevant for https://github.com/phetsims/wave-interference/issues/491
 process.on( 'unhandledRejection', up => { throw up; } );
 
-module.exports = function ( grunt ) {
+module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
 
   // Handle the lack of build.json
@@ -54,7 +50,7 @@ module.exports = function ( grunt ) {
   try {
     buildLocal = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
   }
-  catch ( e ) {
+  catch( e ) {
     buildLocal = {};
   }
 
@@ -75,12 +71,12 @@ module.exports = function ( grunt ) {
     try {
       await promise;
     }
-    catch ( e ) {
+    catch( e ) {
       if ( e.stack ) {
         grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
       }
 
-      // The toString check handles a weird case found from an Error object from puppeteer that doesn't stringify with
+        // The toString check handles a weird case found from an Error object from puppeteer that doesn't stringify with
       // JSON or have a stack, JSON.stringifies to "{}", but has a `toString` method
       else if ( typeof e === 'string' || ( JSON.stringify( e ).length === 2 && e.toString ) ) {
         grunt.fail.fatal( `Perennial task failed: ${e}` );
@@ -121,32 +117,6 @@ module.exports = function ( grunt ) {
         grunt.file.delete( buildDirectory );
       }
       grunt.file.mkdir( buildDirectory );
-    } ) );
-
-  grunt.registerTask( 'build-images',
-    'Build images only',
-    wrapTask( async () => {
-      const brand = 'phet';
-      grunt.log.writeln( `Building images for brand: ${brand}` );
-
-      const buildDir = `../${repo}/build/${brand}`;
-      // Thumbnails and twitter card
-      if ( grunt.file.exists( `../${repo}/assets/${repo}-screenshot.png` ) ) {
-        const thumbnailSizes = [
-          { width: 600, height: 394 },
-          { width: 420, height: 276 },
-          { width: 128, height: 84 },
-          { width: 15, height: 10 }
-        ];
-        for ( const size of thumbnailSizes ) {
-          grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, jimp.MIME_PNG ) );
-        }
-
-        if ( brand === 'phet' ) {
-          grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, jimp.MIME_JPEG ) );
-          grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
-        }
-      }
     } ) );
 
   grunt.registerTask( 'build',
