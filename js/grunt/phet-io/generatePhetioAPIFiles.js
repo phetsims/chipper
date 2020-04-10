@@ -21,9 +21,9 @@ module.exports = async ( repo, localTestingURL ) => {
   return new Promise( async ( resolve, reject ) => {
 
     const phetioDirectory = 'js/phet-io';
-    const baselineFileName = `${phetioDirectory}/${repo}-phet-io-elements-baseline.js`;
-    const overridesFileName = `${phetioDirectory}/${repo}-phet-io-elements-overrides.js`;
-    const typesFileName = `${phetioDirectory}/${repo}-phet-io-types.js`;
+    const baselineFileName = `${phetioDirectory}/${repo}-baseline.js`;
+    const overridesFileName = `${phetioDirectory}/${repo}-overrides.js`;
+    const typesFileName = `${phetioDirectory}/${repo}-types.js`;
 
     if ( !fs.existsSync( phetioDirectory ) ) {
       fs.mkdirSync( phetioDirectory );
