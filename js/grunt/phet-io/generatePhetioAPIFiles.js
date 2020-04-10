@@ -9,8 +9,11 @@
 
 'use strict';
 
-const puppeteer = require( 'puppeteer' );
+const fixEOL = require( '../fixEOL' );
 const fs = require( 'fs' );
+const puppeteer = require( 'puppeteer' );
+
+const writeFile = ( filePath, contents ) => { fs.writeFileSync( filePath, fixEOL( contents ) ); };
 
 /**
  * @param {string} repo
@@ -30,11 +33,11 @@ module.exports = async ( repo, localTestingURL ) => {
     }
 
     // empty the current baseline file so we know that a stale version is not left behind
-    fs.writeFileSync( baselineFileName, '/* eslint-disable */' );
+    writeFile( baselineFileName, '/* eslint-disable */' );
 
     // if there is already an overrides file, don't overwrite it with an empty one
     if ( !fs.existsSync( overridesFileName ) ) {
-      fs.writeFileSync( overridesFileName,
+      writeFile( overridesFileName,
         '/* eslint-disable */\nwindow.phet.preloads.phetio.phetioElementsOverrides = {};' );
     }
 
@@ -46,13 +49,13 @@ module.exports = async ( repo, localTestingURL ) => {
 
     page.on( 'console', async msg => {
       if ( msg.text().indexOf( 'window.phet.preloads.phetio.phetioElementsBaseline' ) >= 0 ) {
-        fs.writeFileSync( baselineFileName, msg.text() );
+        writeFile( baselineFileName, msg.text() );
         receivedBaseline = true;
         await resolved();
       }
 
       else if ( msg.text().indexOf( 'window.phet.preloads.phetio.phetioTypes' ) >= 0 ) {
-        fs.writeFileSync( typesFileName, msg.text() );
+        writeFile( typesFileName, msg.text() );
         receivedTypes = true;
         await resolved();
       }

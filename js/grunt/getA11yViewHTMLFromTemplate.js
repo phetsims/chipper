@@ -11,12 +11,12 @@
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const fixEOL = require( './fixEOL' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 
 /**
  * @param {string} repo
- * @param {string} englishSimTitle
  * @returns {string} - the html string, filled in from the template.
  */
 module.exports = function( repo ) {
@@ -32,5 +32,5 @@ module.exports = function( repo ) {
   html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', `${repo}_${ChipperConstants.FALLBACK_LOCALE}.html` );
   html = ChipperStringUtils.replaceAll( html, '{{PHET_REPOSITORY}}', repo );
 
-  return html;
+  return fixEOL( html );
 };

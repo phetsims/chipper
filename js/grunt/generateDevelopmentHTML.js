@@ -14,6 +14,7 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const fixEOL = require( './fixEOL' );
 const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
 const grunt = require( 'grunt' );
@@ -90,5 +91,5 @@ module.exports = async function( repo, options ) {
   html = ChipperStringUtils.replaceAll( html, '{{BROWSER_WINDOW_TITLE}}', repo );
 
   // Write to the repository's root directory.
-  grunt.file.write( outputFile, html );
+  grunt.file.write( outputFile, fixEOL( html ) );
 };
