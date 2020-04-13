@@ -7,10 +7,11 @@
 'use strict';
 
 // modules
-const child_process = require( 'child_process' );
-const fs = require( 'fs' );
+const ChipperConstants = require( '../common/ChipperConstants' );
 const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
+const child_process = require( 'child_process' );
+const fs = require( 'fs' );
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' ); // eslint-disable-line require-statement-match
 const path = require( 'path' );
 const webpack = require( 'webpack' );
@@ -65,7 +66,7 @@ module.exports = async ( repos, port, devtool, openChrome = false ) => {
     entry: entries,
 
     output: {
-      path: path.resolve( __dirname, '../../build' ),
+      path: path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}` ),
       filename: '[name].js',
       publicPath: '/dist/'
     },
