@@ -70,6 +70,10 @@ module.exports = async function( repo, options ) {
 
   const stringRepos = await getStringRepos( repo );
 
+  // Don't include the version from package.json in the dev html, see https://github.com/phetsims/chipper/issues/926
+  const outputPackageObject = _.clone( packageObject );
+  delete outputPackageObject.version;
+
   // Replace placeholders in the template.
   html = ChipperStringUtils.replaceAll( html, '{{BODYSTYLE}}', bodystyle );
   html = ChipperStringUtils.replaceAll( html, '{{BODYSTART}}', bodystart );
@@ -80,7 +84,7 @@ module.exports = async function( repo, options ) {
   html = ChipperStringUtils.replaceAll( html, '{{MAIN_FILE}}', mainFile );
   html = ChipperStringUtils.replaceAll( html, '{{PHET_IO_PRELOADS}}', stringifyArray( phetioPreloads, '  ' ) );
   html = ChipperStringUtils.replaceAll( html, '{{PRELOADS}}', stringifyArray( preloads, '' ) );
-  html = ChipperStringUtils.replaceAll( html, '{{PACKAGE_OBJECT}}', indentLines( JSON.stringify( packageObject, null, 2 ) ) );
+  html = ChipperStringUtils.replaceAll( html, '{{PACKAGE_OBJECT}}', indentLines( JSON.stringify( outputPackageObject, null, 2 ) ) );
   html = ChipperStringUtils.replaceAll( html, '{{STRING_REPOS}}', indentLines( JSON.stringify( stringRepos, null, 2 ) ) );
 
   // Use the repository name for the browser window title, because getting the sim's title
