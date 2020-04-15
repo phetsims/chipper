@@ -18,12 +18,15 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
 const findDuplicates = require( './findDuplicates' );
+const jimp = require( 'jimp' );
 const migrate = require( './migrate' );
 const modulify = require( './modulify' );
 const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+const generateThumbnails = require( './generateThumbnails' );
+const generateTwitterCard = require( './generateTwitterCard' );
 const generateREADME = require( './generateREADME' );
 const generateTestHTML = require( './generateTestHTML' );
 const getPhetLibs = require( './getPhetLibs' );
@@ -32,6 +35,7 @@ const minify = require( './minify' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const SimVersion = require( '../SimVersion' );
+const sortImports = require( './sortImports' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
 const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
 const webpackDevServer = require( './webpackDevServer' );
@@ -116,6 +120,32 @@ module.exports = function( grunt ) {
         grunt.file.delete( buildDirectory );
       }
       grunt.file.mkdir( buildDirectory );
+    } ) );
+
+  grunt.registerTask( 'build-images',
+    'Build images only',
+    wrapTask( async () => {
+      const brand = 'phet';
+      grunt.log.writeln( `Building images for brand: ${brand}` );
+
+      const buildDir = `../${repo}/build/${brand}`;
+      // Thumbnails and twitter card
+      if ( grunt.file.exists( `../${repo}/assets/${repo}-screenshot.png` ) ) {
+        const thumbnailSizes = [
+          { width: 600, height: 394 },
+          { width: 420, height: 276 },
+          { width: 128, height: 84 },
+          { width: 15, height: 10 }
+        ];
+        for ( const size of thumbnailSizes ) {
+          grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, jimp.MIME_PNG ) );
+        }
+
+        if ( brand === 'phet' ) {
+          grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, jimp.MIME_JPEG ) );
+          grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
+        }
+      }
     } ) );
 
   grunt.registerTask( 'build',
@@ -307,6 +337,17 @@ module.exports = function( grunt ) {
       generateREADME( repo, false /* published */ );
     } ) );
 
+  grunt.registerTask( 'sort-imports', 'Sort the import statements for a single file (if --file={{FILE}} is provided), or does so for all JS files if not specified', wrapTask( async () => {
+    const file = grunt.option( 'file' );
+
+    if ( file ) {
+      sortImports( file );
+    }
+    else {
+      grunt.file.recurse( `../${repo}/js`, absfile => sortImports( absfile ) );
+    }
+  } ) );
+
   grunt.registerTask( 'commits-since',
     'Shows commits since a specified date. Use --date=<date> to specify the date.',
     wrapTask( async () => {
@@ -457,7 +498,6 @@ module.exports = function( grunt ) {
     'rc',
     'production',
     'create-sim',
-    'sort-require-statements',
     'insert-require-statement',
     'lint-everything',
     'generate-data',

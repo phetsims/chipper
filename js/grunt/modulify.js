@@ -13,6 +13,7 @@ const createMipmap = require( './createMipmap' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
+const os = require( 'os' );
 const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedFile' );
 
 // disable lint in compiled files, because it increases the linting time
@@ -43,6 +44,13 @@ const expandDots = depth => {
 };
 
 /**
+ * Output with an OS-specific EOL sequence, see https://github.com/phetsims/chipper/issues/908
+ * @param string
+ * @returns {string}
+ */
+const fixEOL = string => replace( string, '\n', os.EOL );
+
+/**
  * Transform an image file to a JS file that loads the image.
  * @param {string} abspath - the absolute path of the image
  */
@@ -58,7 +66,7 @@ image.onload = unlock;
 image.src = '${dataURI}';
 export default image;`;
 
-  fs.writeFileSync( convertSuffix( abspath, '.js' ), contents );
+  fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( contents ) );
 };
 
 /**
@@ -74,9 +82,8 @@ const modulifyMipmap = async abspath => {
     quality: 98
   };
 
-  try {
-    const mipmaps = await createMipmap( abspath, options.level, options.quality );
-    const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
+  const mipmaps = await createMipmap( abspath, options.level, options.quality );
+  const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
     const mipmapContents = `${HEADER}
 import SimLauncher from '${expandDots( getDepth( abspath ) )}joist/js/SimLauncher.js';
@@ -98,13 +105,7 @@ mipmaps.forEach( mipmap => {
   };
 } );
 export default mipmaps;`;
-    fs.writeFileSync( convertSuffix( abspath, '.js' ), mipmapContents );
-  }
-  catch( e ) {
-
-    // This is an async function, so I'm not sure whether we can throw out of it.  To the REVIEWER, what do you recommend?  See https://github.com/phetsims/chipper/issues/872
-    console.log( `Image could not be mipmapped: ${abspath}` );
-  }
+  fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( mipmapContents ) );
 };
 
 /**
@@ -135,7 +136,6 @@ const getSuffix = filename => {
  */
 const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
 
-  // To the REVIEWER: Should this code be factored out?  Note that one is await and the other is not.  See https://github.com/phetsims/chipper/issues/872
   if ( subdir && ( subdir.startsWith( 'images' ) ||
 
                    // for brand
@@ -156,7 +156,6 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
     await modulifyMipmap( abspath );
   }
 
-  // TODO: https://github.com/phetsims/chipper/issues/872 factor out duplicates
   if ( subdir && subdir.startsWith( 'sounds' ) ) {
 
     /**
@@ -175,7 +174,7 @@ export default {
 };`;
 
         const outputFilename = replace( abspath, soundFileSuffix, jsFileSuffix );
-        fs.writeFileSync( outputFilename, contents );
+        fs.writeFileSync( outputFilename, fixEOL( contents ) );
       }
     };
 
@@ -194,7 +193,7 @@ const createStringModule = async repo => {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const stringModuleFile = `../${repo}/js/${_.camelCase( repo )}Strings.js`;
   const namespace = _.camelCase( repo );
-  fs.writeFileSync( stringModuleFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+  fs.writeFileSync( stringModuleFile, fixEOL(`// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
 /**
  * Auto-generated from modulify, DO NOT manually modify.
@@ -208,7 +207,7 @@ const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsName
 ${namespace}.register( '${namespace}Strings', ${namespace}Strings );
 
 export default ${namespace}Strings;
-` );
+`) );
   await updateCopyrightForGeneratedFile( repo, stringModuleFile );
 };
 
@@ -221,7 +220,7 @@ export default ${namespace}Strings;
 const createNamespaceModule = async repo => {
   const namespace = _.camelCase( repo );
   const namespaceFile = `../${repo}/js/${namespace}.js`;
-  fs.writeFileSync( namespaceFile, `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+  fs.writeFileSync( namespaceFile, fixEOL(`// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
 /**
  * Creates the namespace for this simulation.
@@ -231,7 +230,7 @@ const createNamespaceModule = async repo => {
 import Namespace from '../../phet-core/js/Namespace.js';
 
 export default new Namespace( '${namespace}' );
-` );
+`) );
   await updateCopyrightForGeneratedFile( repo, namespaceFile );
 };
 

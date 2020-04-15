@@ -1,8 +1,8 @@
 // Copyright 2015-2020, University of Colorado Boulder
 
 /**
- * Generates the top-level main HTML file for simulations (or runnables), using the current brand's splash and preloads
- * that should be the same as the build-time preloads (minus Google Analytics).
+ * Generates the top-level main HTML file for simulations (or runnables) using phet-brand splash and loading phet-io
+ * preloads when brand=phet-io is specified.
  *
  * See https://github.com/phetsims/chipper/issues/63
  *
@@ -14,6 +14,7 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const fixEOL = require( './fixEOL' );
 const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
 const grunt = require( 'grunt' );
@@ -46,17 +47,19 @@ module.exports = async function( repo, options ) {
 
   // Formatting is very specific to the template file. Each preload is placed on separate line,
   // with an indentation that is specific indentation to the template. See chipper#462
-  function stringifyArray( arr, prefix ) {
+  function stringifyArray( arr, indentation ) {
     return '[\n' +
-           arr.map( function( string ) {
-             return prefix + '    \'' + string.replace( /'/g, '\\\'' ) + '\'';
-           } ).join( ',\n' ) +
-           '\n' + prefix + '  ]';
+           arr.map( string => indentation + '    \'' + string.replace( /'/g, '\\\'' ) + '\'' ).join( ',\n' ) +
+           '\n' + indentation + '  ]';
   }
 
   function isPreloadExcluded( preload ) {
     return preload.includes( 'google-analytics' ) || stripPreloads.includes( preload );
   }
+
+  const indentLines = string => {
+    return string.split( '\n' ).join( '\n    ' );
+  };
 
   const preloads = getPreloads( repo, brand, forSim ).filter( preload => {
     return !isPreloadExcluded( preload );
@@ -64,10 +67,6 @@ module.exports = async function( repo, options ) {
   const phetioPreloads = getPreloads( repo, 'phet-io', forSim ).filter( preload => {
     return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
   } );
-
-  const indentLines = string => {
-    return string.split( '\n' ).join( '\n    ' );
-  };
 
   const stringRepos = await getStringRepos( repo );
 
@@ -90,5 +89,5 @@ module.exports = async function( repo, options ) {
   html = ChipperStringUtils.replaceAll( html, '{{BROWSER_WINDOW_TITLE}}', repo );
 
   // Write to the repository's root directory.
-  grunt.file.write( outputFile, html );
+  grunt.file.write( outputFile, fixEOL( html ) );
 };

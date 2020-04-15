@@ -9,6 +9,7 @@
 'use strict';
 
 // modules
+const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const fs = require( 'fs' );
 const path = require( 'path' );
@@ -91,7 +92,7 @@ module.exports = function( repo, brand ) {
 
       // We output our builds to chipper/build/
       output: {
-        path: path.resolve( __dirname, '../../build' ),
+        path: path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}` ),
         filename: `${repo}.js`
       },
 
@@ -110,7 +111,7 @@ module.exports = function( repo, brand ) {
         reject( err || stats.compilation.errors[ 0 ] );
       }
       else {
-        const jsFile = path.resolve( __dirname, `../../build/${repo}.js` );
+        const jsFile = path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}/${repo}.js` );
         const js = fs.readFileSync( jsFile, 'utf-8' );
 
         fs.unlinkSync( jsFile );

@@ -274,9 +274,9 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
 const writeAPIFile = ( buildDir, repo ) => {
 
   const phetioDirectory = `../${repo}/js/phet-io`;
-  const baselineFileName = `${phetioDirectory}/${repo}-phet-io-elements-baseline.js`;
-  const overridesFileName = `${phetioDirectory}/${repo}-phet-io-elements-overrides.js`;
-  const typesFileName = `${phetioDirectory}/${repo}-phet-io-types.js`;
+  const baselineFileName = `${phetioDirectory}/${repo}-baseline.js`;
+  const overridesFileName = `${phetioDirectory}/${repo}-overrides.js`;
+  const typesFileName = `${phetioDirectory}/${repo}-types.js`;
 
   const loadAPIFile = name => {
     const contents = fs.readFileSync( name ).toString();

@@ -66,6 +66,7 @@
     /**
      * Master volume control for the simulation.  Range is from 0 to 1, which is typical for web audio gain nodes.
      * 1.0 is unity volume, 0.5 is half volume, etc. This is primarily for Vibe sounds.
+     * TODO: This should be removed once all usages of Vibe have been converted to Tambo, see https://github.com/phetsims/vibe/issues/33.
      * @deprecated see https://github.com/phetsims/vibe/issues/33
      * @type {number}
      */
@@ -95,14 +96,6 @@
      * Right now, this includes computing higher-resolution mipmaps for the mipmap plugin.
      */
     buildCompatible: { type: 'flag' },
-
-    /**
-     * enables cache busting in requirejs mode.
-     */
-    cacheBust: {
-      type: 'boolean',
-      defaultValue: true
-    },
 
     /**
      * The color profile used at startup, relevant only for sims that support multiple color profiles.
@@ -142,6 +135,13 @@
       type: 'boolean',
       defaultValue: false
     },
+
+    /**
+     * Use the stubbed audio context in tambo regardless of whether support for the audioContext exists in Web Audio.
+     * This is useful for testing and debugging of the stubbed audio context in browsers where it isn't needed (e.g.
+     * Chrome), since the main browser where it *is* needed (Internet Explorer) can be difficult to debug in.
+     */
+    forceStubbedAudioContext: { type: 'flag' },
 
     /**
      * Randomly sends mouse events and touch events to sim.
@@ -621,15 +621,6 @@
         console.log( '%c' + message, 'color: ' + options.color ); // green
       };
     }
-
-    /**
-     * Gets the cache bust args based on the provided query parameters. When enabled, the parameter is added to
-     * resources like: ?bust=<number>
-     * @returns {string}
-     */
-    window.phet.chipper.getCacheBustArgs = function() {
-      return phet.chipper.queryParameters.cacheBust ? ( 'bust=' + Date.now() ) : '';
-    };
 
     /**
      * Gets the name of brand to use, which determines which logo to show in the navbar as well as what options

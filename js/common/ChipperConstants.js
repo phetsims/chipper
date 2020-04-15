@@ -1,4 +1,4 @@
-// Copyright 2015-2019, University of Colorado Boulder
+// Copyright 2015-2020, University of Colorado Boulder
 
 /**
  * Constants used throughout chipper.
@@ -31,7 +31,10 @@
     A11Y_VIEW_HTML_SUFFIX: '_a11y_view.html',
 
     // All brands that should be taken into account for dependency handling
-    BRANDS: [ 'phet', 'phet-io', 'adapted-from-phet' ]
+    BRANDS: [ 'phet', 'phet-io', 'adapted-from-phet' ],
+
+    // Where temporary build output will go in chipper, see https://github.com/phetsims/chipper/issues/900
+    BUILD_DIR: 'build'
   };
 
   // browser require.js-compatible definition

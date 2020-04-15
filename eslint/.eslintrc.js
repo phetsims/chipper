@@ -76,6 +76,12 @@ module.exports = {
     // Custom rule for avoiding instanceof Array.
     'no-instanceof-array': 2,
 
+    // Custom rule for keeping import statements on a single line.
+    'single-line-import': 2,
+
+    // method declarations must have a visibility annotation
+    // 'visibility-annotation': 2,
+
     // disallow declaration of variables that are not used in the code (recommended)
     // Overriden to allow unused args
     'no-unused-vars': [
@@ -134,7 +140,6 @@ module.exports = {
     // phet-specific require statement rules
     'require-statement-match': 2,
     'phet-io-require-contains-ifphetio': 2,
-    'string-require-statement-match': 2,
 
     // Require @public/@private for this.something = result;
     'property-visibility-annotation': 0,

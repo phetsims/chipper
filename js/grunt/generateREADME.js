@@ -10,6 +10,7 @@
 'use strict';
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const fixEOL = require( './fixEOL' );
 const getPhetLibs = require( './getPhetLibs' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
@@ -40,5 +41,5 @@ module.exports = function( repo, published ) {
   readme = ChipperStringUtils.replaceAll( readme, '{{CLONE_COMMANDS}}', cloneCommands );
 
   // Write to the repository's root directory.
-  grunt.file.write( `../${repo}/README.md`, readme );
+  grunt.file.write( `../${repo}/README.md`, fixEOL( readme ) );
 };

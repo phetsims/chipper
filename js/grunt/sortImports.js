@@ -1,7 +1,12 @@
 // Copyright 2020, University of Colorado Boulder
 
 /**
- * Sorts imports for a given file
+ * Sorts imports for a given file.
+ *
+ * This follows the Intellij/Webstorm defaults, where we do NOT sort based on the eventual name, but instead only based
+ * on the import path (e.g. everything after the `from` in the import).
+ *
+ * This will attempt to group all of the imports in one block.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
@@ -30,11 +35,12 @@ module.exports = function( file ) {
 
   // remove the grouping comments
   lines = lines.filter( ( line, i ) => {
-    return !disallowedComments.includes( line ) || !lines[ i + 1 ] || !isImport( lines[ i + 1 ] );
+    const nextLine = lines[ i + 1 ];
+    return !disallowedComments.includes( line ) || !nextLine || !isImport( nextLine );
   } );
 
   // pull out and sort imports
-  const firstImportIndex = _.findIndex( lines, isImport );
+  let firstImportIndex = _.findIndex( lines, isImport );
   const importLines = lines.filter( isImport );
   const nonImportLines = lines.filter( _.negate( isImport ) );
   lines = [
@@ -45,13 +51,20 @@ module.exports = function( file ) {
 
   // get rid of blank lines
   const lastImportIndex = _.findLastIndex( lines, isImport );
-  while ( lines[ lastImportIndex + 1 ].length === 0 && lines[ lastImportIndex + 2 ].length === 0 ) {
-    lines.splice( lastImportIndex + 1, 1 );
+  const afterLastImportIndex = lastImportIndex + 1;
+  while ( lines[ afterLastImportIndex ].length === 0 && lines[ lastImportIndex + 2 ].length === 0 ) {
+    lines.splice( afterLastImportIndex, 1 );
   }
 
   // add a blank line after imports if there was none
-  if ( lines[ lastImportIndex + 1 ].length !== 0 ) {
-    lines.splice( lastImportIndex + 1, 0, '' );
+  if ( lines[ afterLastImportIndex ].length !== 0 ) {
+    lines.splice( afterLastImportIndex, 0, '' );
+  }
+
+  // remove multiple blank lines above the imports
+  while ( lines[ firstImportIndex - 1 ] === '' && lines[ firstImportIndex - 2 ] === '' ) {
+    lines.splice( firstImportIndex - 1, 1 );
+    firstImportIndex--;
   }
 
   contents = lines.join( '\n' );
