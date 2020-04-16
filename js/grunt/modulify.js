@@ -85,7 +85,7 @@ const modulifyMipmap = async abspath => {
   const mipmaps = await createMipmap( abspath, options.level, options.quality );
   const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
-    const mipmapContents = `${HEADER}
+  const mipmapContents = `${HEADER}
 import SimLauncher from '${expandDots( getDepth( abspath ) )}joist/js/SimLauncher.js';
 const mipmaps = ${JSON.stringify( entry, null, 2 )};
 mipmaps.forEach( mipmap => {
@@ -193,7 +193,7 @@ const createStringModule = async repo => {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const stringModuleFile = `../${repo}/js/${_.camelCase( repo )}Strings.js`;
   const namespace = _.camelCase( repo );
-  fs.writeFileSync( stringModuleFile, fixEOL(`// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+  fs.writeFileSync( stringModuleFile, fixEOL( `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
 /**
  * Auto-generated from modulify, DO NOT manually modify.
@@ -207,7 +207,7 @@ const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsName
 ${namespace}.register( '${namespace}Strings', ${namespace}Strings );
 
 export default ${namespace}Strings;
-`) );
+` ) );
   await updateCopyrightForGeneratedFile( repo, stringModuleFile );
 };
 
@@ -220,7 +220,7 @@ export default ${namespace}Strings;
 const createNamespaceModule = async repo => {
   const namespace = _.camelCase( repo );
   const namespaceFile = `../${repo}/js/${namespace}.js`;
-  fs.writeFileSync( namespaceFile, fixEOL(`// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+  fs.writeFileSync( namespaceFile, fixEOL( `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
 
 /**
  * Creates the namespace for this simulation.
@@ -230,7 +230,7 @@ const createNamespaceModule = async repo => {
 import Namespace from '../../phet-core/js/Namespace.js';
 
 export default new Namespace( '${namespace}' );
-`) );
+` ) );
   await updateCopyrightForGeneratedFile( repo, namespaceFile );
 };
 
