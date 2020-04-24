@@ -8,37 +8,38 @@
 
 'use strict';
 
-const assert = require( 'assert' );
+const SimVersion = require( '../SimVersion' );
+const ChipperConstants = require( '../common/ChipperConstants' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
-const buildWrapper = require( './phet-io/buildWrapper' );
-require( './checkNodeVersion' );
-const child_process = require( 'child_process' );
-const ChipperConstants = require( '../common/ChipperConstants' );
 const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
 const findDuplicates = require( './findDuplicates' );
-const jimp = require( 'jimp' );
-const migrate = require( './migrate' );
-const modulify = require( './modulify' );
-const fs = require( 'fs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
-const generateThumbnails = require( './generateThumbnails' );
-const generateTwitterCard = require( './generateTwitterCard' );
 const generateREADME = require( './generateREADME' );
 const generateTestHTML = require( './generateTestHTML' );
+const generateThumbnails = require( './generateThumbnails' );
+const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
+const migrate = require( './migrate' );
 const minify = require( './minify' );
+const modulify = require( './modulify' );
+const buildWrapper = require( './phet-io/buildWrapper' );
+const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
-const SimVersion = require( '../SimVersion' );
 const sortImports = require( './sortImports' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
-const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
 const webpackDevServer = require( './webpackDevServer' );
+const assert = require( 'assert' );
+const child_process = require( 'child_process' );
+const fs = require( 'fs' );
+const jimp = require( 'jimp' );
+const path = require( 'path' );
+require( './checkNodeVersion' );
 
 // See https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd for how
 // to get unhandled promise rejections to fail out the node process.
@@ -193,6 +194,12 @@ module.exports = function( grunt ) {
         grunt.log.writeln( 'Building standalone repository' );
 
         fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( repo, minifyOptions ) );
+
+        if ( repoPackageObject.phet.standaloneTranspiles ) {
+          for ( const file of repoPackageObject.phet.standaloneTranspiles ) {
+            fs.writeFileSync( `../${repo}/build/${path.basename( file )}`, minify( grunt.file.read( file ) ) );
+          }
+        }
       }
       else if ( repoPackageObject.isWrapper ) {
         grunt.log.writeln( 'Building wrapper repository' );
