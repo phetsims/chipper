@@ -31,11 +31,11 @@ const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur' ];
  */
 const replace = ( string, search, replacement ) => string.split( search ).join( replacement );
 
-// Finds the depths of a directory relative to the root of where grunt.recurse was called from (a repo root)
-const getDepth = abspath => abspath.split( '/' ).length - 2;
-
 // Gets the relative path to the root based on the depth of a resource
-const expandDots = depth => {
+const expandDots = abspath => {
+
+  // Finds the depths of a directory relative to the root of where grunt.recurse was called from (a repo root)
+  const depth = abspath.split( '/' ).length - 2;
   let x = '';
   for ( let i = 0; i < depth; i++ ) {
     x = x + '../';
@@ -59,7 +59,7 @@ const modulifyImage = abspath => {
   const dataURI = loadFileAsDataURI( abspath );
 
   const contents = `${HEADER}
-import SimLauncher from '${expandDots( getDepth( abspath ) )}joist/js/SimLauncher.js';
+import SimLauncher from '${expandDots( abspath )}joist/js/SimLauncher.js';
 const image = new Image();
 const unlock = SimLauncher.createLock( image );
 image.onload = unlock;
@@ -86,7 +86,7 @@ const modulifyMipmap = async abspath => {
   const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
   const mipmapContents = `${HEADER}
-import SimLauncher from '${expandDots( getDepth( abspath ) )}joist/js/SimLauncher.js';
+import SimLauncher from '${expandDots( abspath )}joist/js/SimLauncher.js';
 const mipmaps = ${JSON.stringify( entry, null, 2 )};
 mipmaps.forEach( mipmap => {
   mipmap.img = new Image();
