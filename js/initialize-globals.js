@@ -98,6 +98,15 @@
     buildCompatible: { type: 'flag' },
 
     /**
+     * When provided a non-zero-length value, the sim will send out assorted events meant for continus testing
+     * integration (see sim-test.js).
+     */
+    continuousTest: {
+      type: 'string',
+      defaultValue: ''
+    },
+
+    /**
      * The color profile used at startup, relevant only for sims that support multiple color profiles.
      * Such sims are required to have a 'default' profile.  If a sim supports a 'projector mode' then
      * it should also have a 'projector' profile.  Other profile names are not currently standardized.
@@ -756,6 +765,49 @@
     }
     if ( enableAllAssertions ) {
       window.assertions.enableAssertSlow();
+    }
+
+    /**
+     * Sends a message to a continuous testing container.
+     * @public
+     *
+     * @param {Object} [options] - Specific object results sent to CT.
+     */
+    window.phet.chipper.reportContinuousTestResult = options => {
+      window.parent && window.parent.postMessage( JSON.stringify( _.extend( {
+        continuousTest: JSON.parse( phet.chipper.queryParameters.continuousTest ),
+        url: window.location.href
+      }, options ) ), '*' );
+    };
+
+    if ( phet.chipper.queryParameters.continuousTest ) {
+      window.addEventListener( 'error', function( a ) {
+        let message = '';
+        let stack = '';
+        if ( a && a.message ) {
+          message = a.message;
+        }
+        if ( a && a.error && a.error.stack ) {
+          stack = a.error.stack;
+        }
+        phet.chipper.reportContinuousTestResult( {
+          type: 'continuous-test-error',
+          message: message,
+          stack: stack
+        } );
+      } );
+      window.addEventListener( 'beforeunload', function( e ) {
+        phet.chipper.reportContinuousTestResult( {
+          type: 'continuous-test-unload'
+        } );
+      } );
+      // window.open stub. otherwise we get tons of "Report Problem..." popups that stall
+      window.open = () => {
+        return {
+          focus: () => {},
+          blur: () => {}
+        };
+      };
     }
 
     // Communicate sim errors to joist/tests/test-sims.html
