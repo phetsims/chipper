@@ -13,7 +13,7 @@ const fixEOL = require( '../fixEOL' );
 const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
 
-const writeFile = ( filePath, contents ) => { fs.writeFileSync( filePath, fixEOL( contents ) ); };
+const writeFile = ( filePath, contents ) => fs.writeFileSync( filePath, fixEOL( contents ) );
 
 /**
  * @param {string} repo
