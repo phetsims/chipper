@@ -279,7 +279,7 @@ module.exports = function( grunt ) {
     } ) );
 
   grunt.registerTask( 'generate-test-html',
-    'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-tests.md ' +
+    'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-unit-tests.md ' +
     'for more information on automated testing. Usually you should ' +
     'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
