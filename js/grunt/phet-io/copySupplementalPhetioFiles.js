@@ -77,8 +77,10 @@ const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.m
  * @param {string} version
  * @param {string} simulationDisplayName
  * @param {Object} packageObject
+ * @param {Object} buildLocal
+ * @param {Object} [options]
  */
-module.exports = async ( repo, version, simulationDisplayName, packageObject, buildLocal ) => {
+module.exports = async ( repo, version, simulationDisplayName, packageObject, buildLocal, generatePhetioAPIFile = false ) => {
 
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
@@ -263,8 +265,10 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // Create the rendered jsdoc in the `doc` folder
   await handleJSDOC( buildDir );
 
-  const fullAPI = await generatePhetioAPIFiles( repo, buildLocal.localTestingURL );
-  grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
+  if ( generatePhetioAPIFile ) {
+    const fullAPI = await generatePhetioAPIFiles( repo, buildLocal.localTestingURL );
+    grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
+  }
 };
 
 /**
