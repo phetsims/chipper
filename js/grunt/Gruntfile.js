@@ -24,6 +24,7 @@ const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
+const fixEOL = require( './fixEOL' );
 const migrate = require( './migrate' );
 const minify = require( './minify' );
 const modulify = require( './modulify' );
@@ -168,10 +169,6 @@ module.exports = function( grunt ) {
  --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales`,
     wrapTask( async () => {
 
-      if ( packageObject.phet.supportedBrands.indexOf( 'phet-io' ) >= 0 ) {
-        await generatePhetioAPIFiles( repo, buildLocal.localTestingURL );
-      }
-
       // Parse minification keys
       const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
       const minifyOptions = {};
@@ -251,7 +248,7 @@ module.exports = function( grunt ) {
         for ( const brand of brands ) {
           grunt.log.writeln( `Building brand: ${brand}` );
 
-          await buildRunnable( repo, minifyOptions, instrument, allHTML, brand, localesOption );
+          await buildRunnable( repo, minifyOptions, instrument, allHTML, brand, localesOption, buildLocal );
         }
       }
     } )
@@ -442,12 +439,22 @@ module.exports = function( grunt ) {
 
   grunt.registerTask(
     'generate-phet-io-api-files',
-    'Write the api file for a phet-io sim.',
+    'Output the phet-io API as JSON to the build-phet-io-api directory, with a timestamp.',
     wrapTask( async () => {
       assert( typeof buildLocal.localTestingURL === 'string', 'must specify localTestingURL in build-local.json' );
       assert( buildLocal.localTestingURL.endsWith( '/' ), 'localTestingURL should end in a "/"' );
 
-      return await generatePhetioAPIFiles( repo, buildLocal.localTestingURL );
+      const writeFile = ( filePath, contents ) => fs.writeFileSync( filePath, fixEOL( contents ) );
+      const buildDirectory = 'build-phet-io-api';
+
+      if ( !fs.existsSync( buildDirectory ) ) {
+        fs.mkdirSync( buildDirectory );
+      }
+
+      const filePath = `${buildDirectory}/${new Date().toLocaleString().split( ', ' ).join( '_' ).split( '/' ).join( '-' ).split( ' ' ).join( '_' ).split( ':' ).join( '.' )}.json`;
+
+      const api = await generatePhetioAPIFiles( repo, buildLocal.localTestingURL );
+      writeFile( filePath, api );
     } )
   );
 

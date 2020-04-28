@@ -60,7 +60,7 @@ const recordTime = async ( asyncCallback, timeCallback ) => {
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, minifyOptions, instrument, allHTML, brand, localesOption ) {
+module.exports = async function( repo, minifyOptions, instrument, allHTML, brand, localesOption, buildLocal ) {
   assert( typeof repo === 'string' );
   assert( typeof minifyOptions === 'object' );
   assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
@@ -320,7 +320,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   }
 
   if ( brand === 'phet-io' ) {
-    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject );
+    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, buildLocal );
   }
 
   // Thumbnails and twitter card

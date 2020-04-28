@@ -11,13 +11,13 @@
 'use strict';
 
 // modules
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const archiver = require( 'archiver' );
 const ChipperStringUtils = require( '../../common/ChipperStringUtils' );
 const copyDirectory = require( '../copyDirectory' );
 const execute = require( '../execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
+const generatePhetioAPIFiles = require( './generatePhetioAPIFiles' );
 const minify = require( '../minify' );
 
 // constants
@@ -78,7 +78,7 @@ const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.m
  * @param {string} simulationDisplayName
  * @param {Object} packageObject
  */
-module.exports = async ( repo, version, simulationDisplayName, packageObject ) => {
+module.exports = async ( repo, version, simulationDisplayName, packageObject, buildLocal ) => {
 
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
@@ -263,32 +263,8 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject ) =
   // Create the rendered jsdoc in the `doc` folder
   await handleJSDOC( buildDir );
 
-  writeAPIFile( buildDir, repo );
-};
-
-/**
- * Create and write the full JSON file for the PhET-iO API.
- * @param {string} buildDir
- * @param {string} repo
- */
-const writeAPIFile = ( buildDir, repo ) => {
-
-  const phetioDirectory = `../${repo}/js/phet-io`;
-  const baselineFileName = `${phetioDirectory}/${repo}-baseline.js`;
-  const overridesFileName = `${phetioDirectory}/${repo}-overrides.js`;
-  const typesFileName = `${phetioDirectory}/${repo}-types.js`;
-
-  const loadAPIFile = name => {
-    const contents = fs.readFileSync( name ).toString();
-
-    // TODO: This will be nicer once the files are JSON, see https://github.com/phetsims/phet-io/issues/1520
-    return JSON.parse( contents.slice( contents.indexOf( '{' ), contents.lastIndexOf( '}' ) + 1 ) );
-  };
-
-  grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, JSON.stringify( {
-    phetioElements: _.merge( loadAPIFile( baselineFileName ), loadAPIFile( overridesFileName ) ),
-    phetioTypes: loadAPIFile( typesFileName )
-  }, null, 2 ) );
+  const fullAPI = await generatePhetioAPIFiles( repo, buildLocal.localTestingURL );
+  grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
 };
 
 /**
