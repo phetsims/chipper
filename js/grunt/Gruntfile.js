@@ -168,6 +168,10 @@ module.exports = function( grunt ) {
  --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales`,
     wrapTask( async () => {
 
+      if ( packageObject.phet.supportedBrands.indexOf( 'phet-io' ) >= 0 ) {
+        await generatePhetioAPIFiles( repo, buildLocal.localTestingURL );
+      }
+
       // Parse minification keys
       const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
       const minifyOptions = {};
@@ -315,9 +319,6 @@ module.exports = function( grunt ) {
         }
         if ( packageObject.phet.colorProfile ) {
           grunt.task.run( 'generate-development-colors-html' );
-        }
-        if ( packageObject.phet.supportedBrands.indexOf( 'phet-io' ) >= 0 ) {
-          grunt.task.run( 'generate-phet-io-api-files' );
         }
       }
 

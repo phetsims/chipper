@@ -54,11 +54,6 @@
     "preload": [
       "../phet-io/js/phet-io-initialize-globals.js"
     ],
-    "simulationSpecificPreload": [
-      "../{{REPO}}/js/phet-io/{{REPO}}-baseline.js",
-      "../{{REPO}}/js/phet-io/{{REPO}}-overrides.js",
-      "../{{REPO}}/js/phet-io/{{REPO}}-types.js"
-    ],
     "phetLibs": [
       "phet-io",
       "phet-io-wrappers",
