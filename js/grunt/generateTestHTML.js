@@ -32,7 +32,7 @@ module.exports = async ( repo, options ) => {
     bodystart: '<div id="qunit"></div>\n<div id="qunit-fixture"></div>' + ( repo === 'scenery' ? '<div id="display"></div>' : '' ),
 
     // Add QUnit JS
-    addedPreloads: [ '../sherpa/lib/qunit-2.4.1.js', '../aqua/js/qunit-connector.js' ],
+    addedPreloads: [ '../sherpa/lib/qunit-2.4.1.js', '../chipper/js/sim-tests/qunit-connector.js' ],
 
     // Do not show the splash screen
     stripPreloads: [ '../joist/js/splash.js' ],
