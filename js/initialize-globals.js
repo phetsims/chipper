@@ -52,16 +52,16 @@
     // These query parameters are available via global phet.chipper.queryParameters.
 
     /**
-     * Whether interactive description accessibility features are enabled or not. Use this option to render the
-     * Parallel DOM for keyboard navigation and screen reader based auditory descriptions. This query parameter is
-     * meant for internal use only, simulations published with accessibility enabled should use the
-     * `package.json` flag `"supportsInteractiveDescriptions": true`.
-     *
-     * Use this to enable accessibility, but do NOT use this to determine whether interactive descriptions are enabled for
-     * a sim. This is because `package.json` flags can also enable accessibility features,  so please use
-     * phet.joist.sim.supportsInteractiveDescriptions if you need to know whether description is enabled globally.
+     * In environments where users should not be able to navigate hyperlinks away from the simulation, clients can use
+     * ?allowLinks=false.  In this case, links are displayed and not clickable. This query parameter is public facing.
+     * @memberOf PhetQueryParameters
+     * @type {string}
      */
-    supportsDescriptions: { type: 'flag' },
+    allowLinks: {
+      type: 'boolean',
+      defaultValue: true,
+      public: true
+    },
 
     /**
      * Master volume control for the simulation.  Range is from 0 to 1, which is typical for web audio gain nodes.
@@ -297,18 +297,6 @@
     mobileA11yTest: { type: 'flag' },
 
     /**
-     * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
-     * to Google Analytics and potentially other sources in the future.
-     *
-     * Also removes the following items from the "PhET Menu":
-     * Report a Problem
-     * Check for Updates
-     * Screenshot
-     * Full Screen
-     */
-    'phet-app': { type: 'flag' },
-
-    /**
      * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
      *
@@ -319,6 +307,18 @@
      * Full Screen
      */
     'phet-android-app': { type: 'flag' },
+
+    /**
+     * When a simulation is run from the PhET iOS app, it should set this flag. It alters statistics that the sim sends
+     * to Google Analytics and potentially other sources in the future.
+     *
+     * Also removes the following items from the "PhET Menu":
+     * Report a Problem
+     * Check for Updates
+     * Screenshot
+     * Full Screen
+     */
+    'phet-app': { type: 'flag' },
 
     /**
      * plays event logging back from the server, provide an optional name for the session
@@ -490,18 +490,6 @@
     },
 
     /**
-     * In environments where users should not be able to navigate hyperlinks away from the simulation, clients can use
-     * ?allowLinks=false.  In this case, links are displayed and not clickable. This query parameter is public facing.
-     * @memberOf PhetQueryParameters
-     * @type {string}
-     */
-    allowLinks: {
-      type: 'boolean',
-      defaultValue: true,
-      public: true
-    },
-
-    /**
      * Speed multiplier for everything in the sim. This scales the value of dt for AXON/timer,
      * model.step, view.step, and anything else that is controlled from Sim.stepSimulation.
      * Normal speed is 1. Larger values make time go faster, smaller values make time go slower.
@@ -553,6 +541,18 @@
       type: 'string',
       defaultValue: null
     },
+
+    /**
+     * Whether interactive description accessibility features are enabled or not. Use this option to render the
+     * Parallel DOM for keyboard navigation and screen reader based auditory descriptions. This query parameter is
+     * meant for internal use only, simulations published with accessibility enabled should use the
+     * `package.json` flag `"supportsInteractiveDescriptions": true`.
+     *
+     * Use this to enable accessibility, but do NOT use this to determine whether interactive descriptions are enabled for
+     * a sim. This is because `package.json` flags can also enable accessibility features,  so please use
+     * phet.joist.sim.supportsInteractiveDescriptions if you need to know whether description is enabled globally.
+     */
+    supportsDescriptions: { type: 'flag' },
 
     /**
      * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
