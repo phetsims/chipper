@@ -17,7 +17,7 @@ const copyDirectory = require( '../copyDirectory' );
 const execute = require( '../execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
-const generatePhetioAPIFiles = require( './generatePhetioAPIFiles' );
+const generatePhetioAPI = require( './generatePhetioAPI' );
 const minify = require( '../minify' );
 
 // constants
@@ -266,7 +266,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   await handleJSDOC( buildDir );
 
   if ( generatePhetioAPIFile ) {
-    const fullAPI = await generatePhetioAPIFiles( repo, buildLocal.localTestingURL );
+    const fullAPI = await generatePhetioAPI( repo, buildLocal.localTestingURL );
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
   }
 };

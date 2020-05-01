@@ -29,7 +29,7 @@ const migrate = require( './migrate' );
 const minify = require( './minify' );
 const modulify = require( './modulify' );
 const buildWrapper = require( './phet-io/buildWrapper' );
-const generatePhetioAPIFiles = require( './phet-io/generatePhetioAPIFiles' );
+const generatePhetioAPI = require( './phet-io/generatePhetioAPI' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const sortImports = require( './sortImports' );
@@ -453,7 +453,7 @@ module.exports = function( grunt ) {
 
       const filePath = `${buildDirectory}/${new Date().toLocaleString().split( ', ' ).join( '_' ).split( '/' ).join( '-' ).split( ' ' ).join( '_' ).split( ':' ).join( '.' )}.json`;
 
-      const api = await generatePhetioAPIFiles( repo, buildLocal.localTestingURL );
+      const api = await generatePhetioAPI( repo, buildLocal.localTestingURL );
       writeFile( filePath, api );
     } )
   );
