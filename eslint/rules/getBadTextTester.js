@@ -54,15 +54,14 @@ module.exports = ( badTexts, context ) => {
      */
     const testBadText = forbiddenText => {
 
-      // no need to iterate through lines if the bad text isn't anywhere in the source code
-      if ( text.indexOf( forbiddenText.id ) >= 0 ) {
+      // no need to iterate through lines if the bad text isn't anywhere in the source code (unless we are checking a predicate)
+      if ( text.indexOf( forbiddenText.id ) >= 0 || forbiddenText.predicate ) {
 
         // If codeTokens are provided, only test this bad text in code, and not anywhere else.
         if ( forbiddenText.codeTokens ) {
           testCodeTokens( context, codeTokens, forbiddenText );
         }
         else {
-
 
           // test each line for the presence of the bad text
           for ( let i = 0; i < codeLines.length; i++ ) {
@@ -74,6 +73,12 @@ module.exports = ( badTexts, context ) => {
             // only test regex if provided
             if ( forbiddenText.regex ) {
               if ( forbiddenText.regex.test( lineString ) ) {
+                reportBadText( badLineNumber, 0, forbiddenText.id );
+              }
+            }
+            else if ( forbiddenText.predicate ) {
+              const ok = forbiddenText.predicate( lineString );
+              if ( !ok ) {
                 reportBadText( badLineNumber, 0, forbiddenText.id );
               }
             }
@@ -89,10 +94,15 @@ module.exports = ( badTexts, context ) => {
     };
 
     badTexts.forEach( badText => {
+
       if ( typeof badText === 'string' ) {
         badText = { id: badText };
       }
       badText.regex && assert( badText.regex instanceof RegExp, 'regex, if provided, should be a RegExp' );
+      badText.predicate && assert( typeof badText.predicate === 'function', 'predicate, if provided, should be a function' );
+      if ( badText.predicate ) {
+        assert( !badText.regex, 'Cannot supply predicate and regex' );
+      }
       badText.codeTokens && assert( Array.isArray( badText.codeTokens ) &&
       _.every( badText.codeTokens, token => typeof token === 'string' ),
         'codeTokens, if provided, should be an array of strings' );
@@ -113,6 +123,7 @@ module.exports = ( badTexts, context ) => {
    *                                           code tokens. Required unless specifying "global". If this is provided,
    *                                           then the bad text will only be checked in code, and not via each line.
    * @property {RegExp} [regex] - if provided, instead of checking the id as a string, test each line with this regex.
+   * @property {function} [predicate] - if provided, instead of checking the id as a string, test each line with this function
    */
 };
 
