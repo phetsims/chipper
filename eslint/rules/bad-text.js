@@ -62,7 +62,31 @@ module.exports = function( context ) {
 
     // optional 'options' should use brackets and required 'config' shouldn't use brackets, see https://github.com/phetsims/chipper/issues/859
     '@param {Object} options',
-    '@param {Object} [config]'
+    '@param {Object} [config]',
+
+    {
+      id: 'Import from statements require a *.js suffix',
+      predicate: line => {
+        if ( line.trim().indexOf( 'import ' ) === 0 && line.indexOf( ' from ' ) > 0 && line.indexOf( '.js' ) === -1 ) {
+          return false;
+        }
+        else {
+          return true;
+        }
+      }
+    },
+
+    {
+      id: 'Import statements require a *.js suffix',
+      predicate: line => {
+        if ( line.trim().indexOf( 'import \'' ) === 0 && line.indexOf( ';' ) >= 0 && line.indexOf( '.js' ) === -1 ) {
+          return false;
+        }
+        else {
+          return true;
+        }
+      }
+    }
   ];
 
   return {
