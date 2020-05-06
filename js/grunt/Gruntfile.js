@@ -392,15 +392,15 @@ module.exports = function( grunt ) {
     findDuplicates( repo, cache );
   } ) );
 
-  grunt.registerTask( 'migrate', '', wrapTask( async () => {
+  grunt.registerTask( 'migrate', 'Migrates RequireJS code to ES6 modules using a number of heuristics', wrapTask( async () => {
     await migrate( repo );
   } ) );
 
-  grunt.registerTask( 'modulify', '', wrapTask( async () => {
+  grunt.registerTask( 'modulify', 'Creates *.js modules for all images/strings/audio/etc in a repo', wrapTask( async () => {
     await modulify( repo );
   } ) );
 
-  grunt.registerTask( 'milagro', '', wrapTask( async () => {
+  grunt.registerTask( 'milagro', 'Runs both migrate and modulify', wrapTask( async () => {
     await migrate( repo );
     await modulify( repo );
   } ) );
