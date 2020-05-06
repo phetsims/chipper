@@ -164,7 +164,7 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
 
   const returnInherit = contents.lastIndexOf( 'return inherit( ' );
   if ( returnInherit >= 0 ) {
-    contents = replace( contents, 'return inherit( ', 'export default inherit( ' );
+    contents = replace( contents, 'return inherit( ', 'export default inherit( ' ); // eslint-disable-line
   }
 
   const lastReturn = contents.lastIndexOf( 'return ' );
@@ -496,7 +496,7 @@ import ` );
     lines = contents.split( /\r?\n/ );
 
     for ( let i = 0; i < lines.length; i++ ) {
-      if ( lines[ i ].indexOf( 'export default inherit(' ) === 0 && countTokens( lines[ i ], ',' ) === 1 && countTokens( lines[ i ], '(' ) === 1 &&
+      if ( lines[ i ].indexOf( 'export default inherit(' ) === 0 && countTokens( lines[ i ], ',' ) === 1 && countTokens( lines[ i ], '(' ) === 1 && // eslint-disable-line
            lines[ i ].trim().endsWith( ';' ) ) {
 
         const typeName = lines[ i ].substring( lines[ i ].indexOf( ',' ) + 1, lines[ i ].lastIndexOf( ')' ) - 1 ).trim();
