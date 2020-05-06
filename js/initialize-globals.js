@@ -3,7 +3,7 @@
 /**
  * Initializes phet globals that are used by all simulations, including assertions and query-parameters.
  * See https://github.com/phetsims/phetcommon/issues/23
- * This file must be loaded before requirejs is started up, and this file cannot be loaded as an AMD module.
+ * This file must be loaded before the simulation is started up, and this file cannot be loaded as an AMD module.
  * The easiest way to do this is via a <script> tag in your HTML file.
  *
  * PhET Simulations can be launched with query parameters which enable certain features.  To use a query parameter,
@@ -83,7 +83,7 @@
     binder: { type: 'flag' },
 
     /**
-     * specifies the brand that should be used in requirejs mode
+     * specifies the brand that should be used in unbuilt mode
      */
     brand: {
       type: 'string',
@@ -679,7 +679,7 @@
     /**
      * Get a string given the key. This implementation is meant for use only in the build sim. For more info see the
      * string plugin.
-     * @param {string} key - like "REPO/string.key.here" which includes the requirejs namespace
+     * @param {string} key - like "REPO/string.key.here" which includes the requirejsNamespace, which is specified in package.json
      * @returns {string}
      */
     phet.chipper.getStringForBuiltSim = key => {

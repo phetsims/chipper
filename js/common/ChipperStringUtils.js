@@ -129,7 +129,7 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 
     /**
      * Given a key, get the appropriate string from the "map" object, or null if the key does not appear in the map.
-     * This method is called during requirejs mode from the string plugin and during the build via CHIPPER/getStringMap.
+     * This method is called in unbuilt mode from the string plugin and during the build via CHIPPER/getStringMap.
      * This method supports recursing through keys that support string nesting. This method was created to support
      * nested string keys in https://github.com/phetsims/rosetta/issues/193
      * @param {StringMap} map - where an "intermediate" Object should hold nested strings

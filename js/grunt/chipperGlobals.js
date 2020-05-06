@@ -27,7 +27,7 @@ module.exports = {
         // the grunt instance, for situations where we can't pass it as a function argument
         grunt: grunt,
 
-        // for code that runs in both requirejs and build modes, and therefore doesn't have access to grunt.file
+        // for code that runs in both built and unbuilt modes, and therefore doesn't have access to grunt.file
         fs: fs,
 
         // media plugins populate this with license.json entries, see getLicenseEntry.js for format of entries
