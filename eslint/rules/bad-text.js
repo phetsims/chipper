@@ -88,6 +88,18 @@ module.exports = function( context ) {
           return true;
         }
       }
+    },
+
+    {
+      id: 'Export statements should not have a register call',
+      predicate: line => {
+        if ( line.trim().indexOf( 'export default' ) === 0 && line.indexOf( '.register(' ) >= 0 ) {
+          return false;
+        }
+        else {
+          return true;
+        }
+      }
     }
   ];
 
