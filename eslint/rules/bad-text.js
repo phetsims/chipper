@@ -64,6 +64,8 @@ module.exports = function( context ) {
     '@param {Object} options',
     '@param {Object} [config]',
 
+    'export default inherit(',
+
     {
       id: 'Import from statements require a *.js suffix',
       predicate: line => {
