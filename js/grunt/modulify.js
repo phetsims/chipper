@@ -59,9 +59,9 @@ const modulifyImage = abspath => {
   const dataURI = loadFileAsDataURI( abspath );
 
   const contents = `${HEADER}
-import SimLauncher from '${expandDots( abspath )}joist/js/SimLauncher.js';
+import simLauncher from '${expandDots( abspath )}joist/js/simLauncher.js';
 const image = new Image();
-const unlock = SimLauncher.createLock( image );
+const unlock = simLauncher.createLock( image );
 image.onload = unlock;
 image.src = '${dataURI}';
 export default image;`;
@@ -86,11 +86,11 @@ const modulifyMipmap = async abspath => {
   const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
   const mipmapContents = `${HEADER}
-import SimLauncher from '${expandDots( abspath )}joist/js/SimLauncher.js';
+import simLauncher from '${expandDots( abspath )}joist/js/simLauncher.js';
 const mipmaps = ${JSON.stringify( entry, null, 2 )};
 mipmaps.forEach( mipmap => {
   mipmap.img = new Image();
-  const unlock = SimLauncher.createLock( mipmap.img );
+  const unlock = simLauncher.createLock( mipmap.img );
   mipmap.img.onload = unlock;
   mipmap.img.src = mipmap.url; // trigger the loading of the image for its level
   mipmap.canvas = document.createElement( 'canvas' );
