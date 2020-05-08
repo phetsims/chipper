@@ -72,9 +72,7 @@ module.exports = function( context ) {
         if ( line.trim().indexOf( 'import ' ) === 0 && line.indexOf( ' from ' ) > 0 && line.indexOf( '.js' ) === -1 ) {
           return false;
         }
-        else {
-          return true;
-        }
+        return true;
       }
     },
 
@@ -84,9 +82,7 @@ module.exports = function( context ) {
         if ( line.trim().indexOf( 'import \'' ) === 0 && line.indexOf( ';' ) >= 0 && line.indexOf( '.js' ) === -1 ) {
           return false;
         }
-        else {
-          return true;
-        }
+        return true;
       }
     },
 
