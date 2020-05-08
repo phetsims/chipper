@@ -80,7 +80,7 @@ module.exports = {
     'single-line-import': 2,
 
     // method declarations must have a visibility annotation
-    // 'visibility-annotation': 2,
+    'visibility-annotation': 2,
 
     // disallow declaration of variables that are not used in the code (recommended)
     // Overriden to allow unused args
