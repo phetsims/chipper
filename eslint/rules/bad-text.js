@@ -92,9 +92,7 @@ module.exports = function( context ) {
         if ( line.trim().indexOf( 'export default' ) === 0 && line.indexOf( '.register(' ) >= 0 ) {
           return false;
         }
-        else {
-          return true;
-        }
+        return true;
       }
     }
   ];
