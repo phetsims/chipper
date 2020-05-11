@@ -26,7 +26,6 @@
     "qunit": "~2.4.1",
     "request": "^2.87.0",
     "request-promise-native": "^1.0.7",
-    "requirejs": "~2.3.5",
     "terser": "~4.6.4",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",
