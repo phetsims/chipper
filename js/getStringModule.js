@@ -39,6 +39,10 @@ const getStringModule = requirejsNamespace => {
   // consecutively create locale-specific string objects, and merge them into our result
   const result = {};
   locales.forEach( locale => {
+    // We may have other older (unused) keys in babel, and we are only doing the search that matters with the English
+    // string keys.
+    const assertStructure = locale === FALLBACK_LOCALE;
+
     const partialStringMap = phet.chipper.strings[ locale ];
     if ( partialStringMap ) {
       // The object where our locale-specific string object is built
@@ -72,7 +76,7 @@ const getStringModule = requirejsNamespace => {
 
           // Don't allow e.g. JOIST/a and JOIST/a.b, since localeObject.a would need to be a string AND an object at the
           // same time.
-          assert && assert( locale !== FALLBACK_LOCALE || typeof reference[ keyPart ] !== 'string',
+          assert && assert( !assertStructure || typeof reference[ keyPart ] !== 'string',
             'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
             `of the other. The string key ${partialKey} is extended by ${stringKey} in this case, and should be changed.` );
 
@@ -83,10 +87,10 @@ const getStringModule = requirejsNamespace => {
           reference = reference[ keyPart ];
         } );
 
-        assert && assert( locale !== FALLBACK_LOCALE || typeof reference[ lastKeyPart ] !== 'object',
+        assert && assert( !assertStructure || typeof reference[ lastKeyPart ] !== 'object',
           'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
           `of the other. The string key ${stringKey} is extended by another key, something containing ${reference[ lastKeyPart ] && Object.keys( reference[ lastKeyPart ] )}.` );
-        assert && assert( locale !== FALLBACK_LOCALE || !reference[ lastKeyPart ],
+        assert && assert( !assertStructure || !reference[ lastKeyPart ],
           `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
 
         // In case our assertions are not enabled, we'll need to proceed without failing out (so we allow for the
