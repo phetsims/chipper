@@ -4,7 +4,8 @@
  * One exception to this rule is when a function is added directly to the namespace. This is valid and useful
  * particularly in common libraries like dot and scenery.
  *
- * Note that this rule looks for ANY CallExpression so it will test any usage of register(), even if it isn't called
+ * Note that this rule looks for ANY CallExpression whose first argument is a Literal node and whose second
+ * argument is an Identifier node. So it will test any usage of register(), even if it isn't called
  * on a namespace. There is no way for the rule to determine if the type of the CallExpression.object is a Namespace,
  * so it cannot be more exclusive.
  *
