@@ -29,6 +29,8 @@
 
   let remainingFilesToProcess = 0;
 
+  const FALLBACK_LOCALE = 'en';
+
   /**
    * Takes the string-file object for a given locale/requirejsNamespace, and fills in the phet.chipper.strings inside
    * that locale with any recognized strings inside.
@@ -95,7 +97,7 @@
       }
     } );
 
-    request.open( 'GET', `../${locale === 'en' ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json`, true );
+    request.open( 'GET', `../${locale === FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json`, true );
     request.send();
   };
 
@@ -107,11 +109,11 @@
 
   // We don't use QueryStringMachine, because we are loaded first.
   const customLocale = new window.URLSearchParams( window.location.search ).get( 'locale' );
-  const loadCustomLocale = customLocale && customLocale !== 'en';
+  const loadCustomLocale = customLocale && customLocale !== FALLBACK_LOCALE;
   const locales = [
-    'en',
+    FALLBACK_LOCALE,
     ...( loadCustomLocale ? [ customLocale ] : [] ), // e.g. 'zh_CN'
-    ...( ( loadCustomLocale && customLocale.length > 2 && customLocale.slice( 0, 2 ) !== 'en' ) ? [ customLocale.slice( 0, 2 ) ] : [] ) // e.g. 'zh'
+    ...( ( loadCustomLocale && customLocale.length > 2 && customLocale.slice( 0, 2 ) !== FALLBACK_LOCALE ) ? [ customLocale.slice( 0, 2 ) ] : [] ) // e.g. 'zh'
   ];
 
   phet.chipper.stringRepos.forEach( stringRepoData => {
