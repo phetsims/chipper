@@ -57,7 +57,7 @@ module.exports = function( context ) {
             const secondArg = registerArgs[ 1 ];
 
             // we allow adding functions directly to the namespace
-            if ( secondArg.type !== 'ArrowFunctionExpression' && secondArg.type !== 'FunctionExpression' ) {
+            if ( firstArg.type === 'Literal' && secondArg.type === 'Identifier' ) {
               const firstArgValue = firstArg.value; // string from the Literal node value
               const secondArgName = secondArg.name; // string from the Identifier node name
 
@@ -69,13 +69,6 @@ module.exports = function( context ) {
                 } );
               }
             }
-          }
-          else {
-            context.report( {
-              node: node,
-              loc: node.loc,
-              message: 'wrong number of arguments to namespace.register'
-            } );
           }
         }
       }
