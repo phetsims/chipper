@@ -83,7 +83,7 @@ module.exports = {
     // 'visibility-annotation': 2,
 
     // key and value arguments to namespace.register() must match
-    // 'namespace-match': 2,
+    'namespace-match': 2,
 
     // disallow declaration of variables that are not used in the code (recommended)
     // Overriden to allow unused args
