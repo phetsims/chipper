@@ -3,6 +3,8 @@
 /**
  * NOTE: This is only for loading strings in the unbuilt mode.
  *
+ * NOTE: This will check the query string value for ?locale directly. See initialize-globals.js for reference.
+ *
  * Kicks off the loading of runtime strings very early in the unbuilt loading process, ideally so that it
  * doesn't block the loading of modules. This is because we need the string information to be loaded before we can
  * kick off the module process.
