@@ -22,6 +22,9 @@ const HEADER = '/* eslint-disable */';
 // supported image types, not case-sensitive
 const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur' ];
 
+// supported sound file types, not case-sensitive
+const SOUND_SUFFIXES = [ '.mp3', '.wav' ];
+
 /**
  * String replacement
  * @param {string} string - the string which will be searched
@@ -109,6 +112,45 @@ export default mipmaps;`;
 };
 
 /**
+ * Decode a sound file into a Web Audio AudioBuffer.
+ * @param {string} abspath - the absolute path of the sound file
+ */
+const modulifySound = abspath => {
+
+  // load the sound file
+  const dataURI = loadFileAsDataURI( abspath );
+
+  // output the contents of the file that will define the sound in JS format
+  const contents = `${HEADER}
+import simLauncher from '${expandDots( abspath )}joist/js/simLauncher.js';
+import base64SoundToByteArray from '${expandDots( abspath )}chipper/js/grunt/base64SoundToByteArray.js';
+import WrappedAudioBuffer from '${expandDots( abspath )}chipper/js/grunt/WrappedAudioBuffer.js';
+import phetAudioContext from '${expandDots( abspath )}tambo/js/phetAudioContext.js';
+
+const soundURI = '${dataURI}';
+const soundByteArray = base64SoundToByteArray( phetAudioContext, soundURI );
+const unlock = simLauncher.createLock( soundURI );
+const wrappedAudioBuffer = new WrappedAudioBuffer();
+const onDecodeSuccess = decodedAudio => {
+  wrappedAudioBuffer.audioBuffer = decodedAudio;
+  wrappedAudioBuffer.loadedProperty.set( true );
+  unlock();
+};
+const onDecodeError = decodeError => { 
+  console.warn( 'decode of audio data failed, using stubbed sound, error: ' + decodeError );
+  wrappedAudioBuffer.audioBuffer = phetAudioContext.createBuffer( 1, 0, phetAudioContext.sampleRate );
+  wrappedAudioBuffer.loadedProperty.set( true );
+  unlock();
+};
+phetAudioContext.decodeAudioData( soundByteArray.buffer, onDecodeSuccess, onDecodeError );
+export default wrappedAudioBuffer;`;
+
+  fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( contents ) );
+};
+
+
+
+/**
  * Convert .png => _png_mipmap.js, etc.
  * @param {string} abspath - the absolute path
  * @param {string} suffix - the new suffix, such as '.js'
@@ -156,30 +198,8 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
     await modulifyMipmap( abspath );
   }
 
-  if ( subdir && subdir.startsWith( 'sounds' ) ) {
-
-    /**
-     * Output supported sound formats.
-     * @param {string} soundFileSuffix
-     * @param {string} jsFileSuffix
-     */
-    const mapSounds = ( soundFileSuffix, jsFileSuffix ) => {
-      if ( filename.endsWith( soundFileSuffix ) ) {
-        const x = loadFileAsDataURI( abspath );
-
-        const contents = `${HEADER}
-export default {
-  name: '${filename}',
-  base64: '${x}'
-};`;
-
-        const outputFilename = replace( abspath, soundFileSuffix, jsFileSuffix );
-        fs.writeFileSync( outputFilename, fixEOL( contents ) );
-      }
-    };
-
-    mapSounds( '.mp3', '_mp3.js' );
-    mapSounds( '.wav', '_wav.js' );
+  if ( subdir && subdir.startsWith( 'sounds' ) && SOUND_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
+    await modulifySound( abspath );
   }
 };
 
