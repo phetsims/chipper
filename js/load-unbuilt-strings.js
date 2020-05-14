@@ -16,6 +16,8 @@
  * To function properly, phet.chipper.stringRepos will need to be defined before this executes (generally in the
  * initialization script, or in the dev .html).
  *
+ * A string "key" is in the form of "NAMESPACE/key.from.strings.json"
+ *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 

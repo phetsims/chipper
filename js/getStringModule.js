@@ -6,6 +6,8 @@
  * access, e.g. getStringModule( 'JOIST' ).ResetAllButton.name will give the desired string value for whatever locale
  * the sim is being run with.
  *
+ * A string "key" is in the form of "NAMESPACE/key.from.strings.json"
+ *
  * @author Jonathan Olson <jonathan.olson>
  */
 
