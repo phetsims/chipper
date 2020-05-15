@@ -1,7 +1,7 @@
 // Copyright 2020, University of Colorado Boulder
 
 /**
- * Generates JS modules from resources such as images or sounds.
+ * Generates JS modules from resources such as images/strings/audio/etc.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Jonathan Olson (PhET Interactive Simulations)
@@ -34,16 +34,20 @@ const SOUND_SUFFIXES = [ '.mp3', '.wav' ];
  */
 const replace = ( string, search, replacement ) => string.split( search ).join( replacement );
 
-// Gets the relative path to the root based on the depth of a resource
+/**
+ * Gets the relative path to the root based on the depth of a resource
+ *
+ * @returns {string}
+ */
 const expandDots = abspath => {
 
   // Finds the depths of a directory relative to the root of where grunt.recurse was called from (a repo root)
   const depth = abspath.split( '/' ).length - 2;
-  let x = '';
+  let parentDirectory = '';
   for ( let i = 0; i < depth; i++ ) {
-    x = x + '../';
+    parentDirectory = parentDirectory + '../';
   }
-  return x;
+  return parentDirectory;
 };
 
 /**
@@ -57,7 +61,7 @@ const fixEOL = string => replace( string, '\n', os.EOL );
  * Transform an image file to a JS file that loads the image.
  * @param {string} abspath - the absolute path of the image
  */
-const modulifyImage = abspath => {
+const modulifyImage = async abspath => {
 
   const dataURI = loadFileAsDataURI( abspath );
 
@@ -78,14 +82,14 @@ export default image;`;
  */
 const modulifyMipmap = async abspath => {
 
-  // Defaults.  TODO: do we need to support non-defaults?  See https://github.com/phetsims/chipper/issues/820
-  // TODO: Or do we need to support mipmaps at all?  See https://github.com/phetsims/chipper/issues/840
-  const options = {
+  // Defaults. NOTE: using the default settings because we have not run into a need, see
+  // https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/945
+  const config = {
     level: 4, // maximum level
     quality: 98
   };
 
-  const mipmaps = await createMipmap( abspath, options.level, options.quality );
+  const mipmaps = await createMipmap( abspath, config.level, config.quality );
   const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
   const mipmapContents = `${HEADER}
@@ -136,7 +140,7 @@ const onDecodeSuccess = decodedAudio => {
   wrappedAudioBuffer.loadedProperty.set( true );
   unlock();
 };
-const onDecodeError = decodeError => { 
+const onDecodeError = decodeError => {
   console.warn( 'decode of audio data failed, using stubbed sound, error: ' + decodeError );
   wrappedAudioBuffer.audioBuffer = phetAudioContext.createBuffer( 1, 0, phetAudioContext.sampleRate );
   wrappedAudioBuffer.loadedProperty.set( true );
@@ -148,12 +152,12 @@ export default wrappedAudioBuffer;`;
   fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( contents ) );
 };
 
-
-
 /**
  * Convert .png => _png_mipmap.js, etc.
+ *
  * @param {string} abspath - the absolute path
  * @param {string} suffix - the new suffix, such as '.js'
+ * @returns {string}
  */
 const convertSuffix = ( abspath, suffix ) => {
   const lastDotIndex = abspath.lastIndexOf( '.' );
@@ -162,7 +166,9 @@ const convertSuffix = ( abspath, suffix ) => {
 
 /**
  * Determines the suffix from a filename, everything after the final '.'
+ *
  * @param {string} filename
+ * @returns {string}
  */
 const getSuffix = filename => {
   const index = filename.lastIndexOf( '.' );
@@ -185,7 +191,7 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
                    subdir.startsWith( 'phet-io/images' ) ||
                    subdir.startsWith( 'adapted-from-phet/images' ) )
        && IMAGE_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
-    modulifyImage( abspath );
+    await modulifyImage( abspath );
   }
 
   if ( subdir && ( subdir.startsWith( 'mipmaps' ) ||
@@ -256,9 +262,9 @@ export default new Namespace( '${namespace}' );
 
 /**
  * Entry point for modulify, which transforms all of the resources in a repo to *.js files.
- * @parm {string} repo, the name of a repo, such as 'joist'
+ * @param {string} repo - the name of a repo, such as 'joist'
  */
-module.exports = async function( repo ) {
+const modulify = async repo => {
   console.log( `modulifying ${repo}` );
   const relativeFiles = [];
   grunt.file.recurse( `../${repo}`, async ( abspath, rootdir, subdir, filename ) => {
@@ -282,3 +288,5 @@ module.exports = async function( repo ) {
     }
   }
 };
+
+module.exports = modulify;
