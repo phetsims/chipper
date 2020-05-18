@@ -462,7 +462,7 @@
     showPointerAreas: { type: 'flag' },
 
     /**
-     * Displays a semi-transparent cursor indicator for the location of each active pointer on the screen.
+     * Displays a semi-transparent cursor indicator for the position of each active pointer on the screen.
      */
     showPointers: { type: 'flag' },
 
@@ -573,7 +573,7 @@
      * Indicates whether or not vibration and its library should be initialized. There are a few prototype strategies
      * that we are exploring which can be selected by the valid values.
      *   - null: Default value, vibration disabled
-     *   - objects: Vibration designed to indicate relative location of objects on screen
+     *   - objects: Vibration designed to indicate relative position of objects on screen
      *   - interaction: Vibration designed to indicate successful interaction with objects
      *   - state: Vibration designed to convey current state of the simulation
      *
