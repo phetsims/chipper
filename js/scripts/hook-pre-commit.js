@@ -16,7 +16,6 @@
  */
 
 // Require statements which should be generally available via node or perennial
-const assert = require( 'assert' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const puppeteer = require( 'puppeteer' );
@@ -60,8 +59,8 @@ try {
         // phet-io repo unit tests must be run with brand=phet-io
         const queryString = repo === 'phet-io' ? '&brand=phet-io' : '';
 
-        assert( buildLocal.localTestingURL.endsWith( '/' ), 'localTestingURL should end in a forward slash' );
-        const result = await puppeteerQUnit( browser, `${buildLocal.localTestingURL}${testFilePath}?ea${queryString}` );
+        const localTestingURL = buildLocal.localTestingURL.endsWith( '/' ) ? buildLocal.localTestingURL : `${buildLocal.localTestingURL}/`;
+        const result = await puppeteerQUnit( browser, `${localTestingURL}${testFilePath}?ea${queryString}` );
         await browser.close();
         outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
         if ( !result.ok ) {
