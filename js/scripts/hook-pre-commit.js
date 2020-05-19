@@ -37,6 +37,7 @@ try {
   const report = lint( [ repo ], true, false, true );
 
   if ( report.errorCount > 0 || report.warningCount > 0 ) {
+    console.error( `lint failed in ${repo}`, report.results );
     process.exit( 1 );
   }
 
@@ -49,7 +50,7 @@ catch( e ) {
 // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
 try {
   const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
-  if ( repo !== 'scenery' ) {
+  if ( repo !== 'scenery' ) { // scenery unit tests take too long, so skip those
     ( async () => {
       const testFilePath = `${repo}/${repo}-tests.html`;
       const exists = fs.existsSync( `../${testFilePath}` );
@@ -64,6 +65,7 @@ try {
         await browser.close();
         outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
         if ( !result.ok ) {
+          console.error( `unit tests failed in ${repo}`, result );
           process.exit( 1 ); // fail as soon as there is one problem
         }
       }
