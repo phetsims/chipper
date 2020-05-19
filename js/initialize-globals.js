@@ -429,7 +429,8 @@
 
         // screen indices cannot be duplicated
         return value === null || ( value.length === _.uniq( value ).length );
-      }
+      },
+      public: true
     },
 
     /**
