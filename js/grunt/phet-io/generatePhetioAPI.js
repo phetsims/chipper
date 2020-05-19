@@ -17,6 +17,7 @@ const puppeteer = require( 'puppeteer' );
  * @param {string} localTestingURL - the browser url to access the root of phet repos
  */
 module.exports = async ( repo, localTestingURL ) => {
+  assert( localTestingURL.endsWith( '/' ), 'localTestingURL should end in a forward slash' );
 
   return new Promise( async ( resolve, reject ) => {
 
