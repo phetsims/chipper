@@ -232,7 +232,8 @@
      */
     homeScreen: {
       type: 'boolean',
-      defaultValue: true
+      defaultValue: true,
+      public: true
     },
 
     // Private Doc: For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
@@ -247,7 +248,8 @@
      */
     initialScreen: {
       type: 'number',
-      defaultValue: 0 // the home screen
+      defaultValue: 0, // the home screen
+      public: true
     },
 
     /**
