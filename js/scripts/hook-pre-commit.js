@@ -49,7 +49,7 @@ catch( e ) {
 // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
 try {
   const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
-  if ( repo !== 'scenery' ) { // scenery unit tests take too long, so skip those
+  if ( repo !== 'scenery' && repo !== 'phet-io-wrappers' ) { // scenery unit tests take too long, so skip those
     ( async () => {
       const testFilePath = `${repo}/${repo}-tests.html`;
       const exists = fs.existsSync( `../${testFilePath}` );
