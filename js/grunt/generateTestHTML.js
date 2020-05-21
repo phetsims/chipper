@@ -20,7 +20,7 @@ module.exports = async ( repo, options ) => {
   await generateDevelopmentHTML( repo, _.merge( {
 
     // Include QUnit CSS
-    stylesheets: '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.4.1.css">', // Note the preceding whitespace which makes the formatting match IDEA formatting
+    stylesheets: '  <link rel="stylesheet" href="../sherpa/lib/qunit-2.10.0.css">', // Note the preceding whitespace which makes the formatting match IDEA formatting
 
     // Leave the background the default color white
     bodystyle: '',
@@ -32,7 +32,7 @@ module.exports = async ( repo, options ) => {
     bodystart: '<div id="qunit"></div>\n<div id="qunit-fixture"></div>' + ( repo === 'scenery' ? '<div id="display"></div>' : '' ),
 
     // Add QUnit JS
-    addedPreloads: [ '../sherpa/lib/qunit-2.4.1.js', '../chipper/js/sim-tests/qunit-connector.js' ],
+    addedPreloads: [ '../sherpa/lib/qunit-2.10.0.js', '../chipper/js/sim-tests/qunit-connector.js' ],
 
     // Do not show the splash screen
     stripPreloads: [ '../joist/js/splash.js' ],

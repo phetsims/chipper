@@ -7,13 +7,24 @@ import Tandem from '../../../tandem/js/Tandem.js';
  */
 const qunitStart = () => {
 
-  if ( Tandem.PHET_IO_ENABLED ) {
-    import( /* webpackMode: "eager" */ '../../../phet-io/js/phetioEngine.js').then( () => {
+  const start = () => {
+    if ( Tandem.PHET_IO_ENABLED ) {
+      import( /* webpackMode: "eager" */ '../../../phet-io/js/phetioEngine.js').then( () => {
+        QUnit.start();
+      } );
+    }
+    else {
       QUnit.start();
-    } );
+    }
+  };
+
+  // When running in the puppeteer harness, we need the opportunity to wire up listeners
+  // before QUnit begins.
+  if ( QueryStringMachine.containsKey( 'qunitHooks' ) ) {
+    window.qunitLaunchAfterHooks = start;
   }
   else {
-    QUnit.start();
+    start();
   }
 };
 
