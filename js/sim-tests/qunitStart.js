@@ -18,8 +18,7 @@ const qunitStart = () => {
     }
   };
 
-  // When running in the puppeteer harness, we need the opportunity to wire up listeners
-  // before QUnit begins.
+  // When running in the puppeteer harness, we need the opportunity to wire up listeners before QUnit begins.
   if ( QueryStringMachine.containsKey( 'qunitHooks' ) ) {
     window.qunitLaunchAfterHooks = start;
   }
