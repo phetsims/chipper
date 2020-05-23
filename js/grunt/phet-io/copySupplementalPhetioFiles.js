@@ -78,7 +78,7 @@ const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.m
  * @param {string} simulationDisplayName
  * @param {Object} packageObject
  * @param {Object} buildLocal
- * @param {Object} [options]
+ * @param {boolean} [generatePhetioAPIFile]
  */
 module.exports = async ( repo, version, simulationDisplayName, packageObject, buildLocal, generatePhetioAPIFile = false ) => {
 
