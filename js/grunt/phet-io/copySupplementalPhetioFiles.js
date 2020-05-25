@@ -266,7 +266,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   await handleJSDOC( buildDir );
 
   if ( generatePhetioAPIFile ) {
-    const fullAPI = await generatePhetioAPI( repo, buildLocal.localTestingURL );
+    const fullAPI = await generatePhetioAPI( repo, true );
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
   }
 };

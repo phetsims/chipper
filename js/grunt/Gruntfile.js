@@ -453,7 +453,7 @@ module.exports = function( grunt ) {
 
       const filePath = `${buildDirectory}/${new Date().toLocaleString().split( ', ' ).join( '_' ).split( '/' ).join( '-' ).split( ' ' ).join( '_' ).split( ':' ).join( '.' )}.json`;
 
-      const api = await generatePhetioAPI( repo, buildLocal.localTestingURL );
+      const api = await generatePhetioAPI( repo, false );
       writeFile( filePath, api );
     } )
   );
