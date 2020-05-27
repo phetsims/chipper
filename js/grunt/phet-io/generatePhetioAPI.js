@@ -60,12 +60,16 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
+    // Fail if this takes too long
+    const id = setTimeout( () => reject( 'Timeout in generatePhetioAPI' ), 30000 );
+
     page.on( 'console', async msg => {
 
       if ( msg.text().indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
         const fullAPI = msg.text();
         await browser.close();
+        clearTimeout( id );
         resolve( fullAPI );
       }
 
@@ -76,8 +80,12 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
       }
     } );
 
-    page.on( 'error', msg => reject( msg ) );
-    page.on( 'pageerror', msg => reject( msg ) );
+    const failCallback = msg => {
+      clearTimeout( id );
+      reject( msg );
+    };
+    page.on( 'error', failCallback );
+    page.on( 'pageerror', failCallback );
 
     try {
       const relativePath = fromBuiltVersion ?
@@ -87,6 +95,7 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
       await page.goto( url );
     }
     catch( e ) {
+      clearTimeout( id );
       reject( e );
     }
   } );
