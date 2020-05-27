@@ -441,9 +441,6 @@ module.exports = function( grunt ) {
     'generate-phet-io-api',
     'Output the phet-io API as JSON to the build-phet-io-api directory, with a timestamp.',
     wrapTask( async () => {
-      assert( typeof buildLocal.localTestingURL === 'string', 'must specify localTestingURL in build-local.json' );
-      assert( buildLocal.localTestingURL.endsWith( '/' ), 'localTestingURL should end in a "/"' );
-
       const writeFile = ( filePath, contents ) => fs.writeFileSync( filePath, fixEOL( contents ) );
       const buildDirectory = 'build-phet-io-api';
 
