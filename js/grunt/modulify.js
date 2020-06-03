@@ -127,8 +127,8 @@ const modulifySound = abspath => {
   // output the contents of the file that will define the sound in JS format
   const contents = `${HEADER}
 import simLauncher from '${expandDots( abspath )}joist/js/simLauncher.js';
-import base64SoundToByteArray from '${expandDots( abspath )}chipper/js/grunt/base64SoundToByteArray.js';
-import WrappedAudioBuffer from '${expandDots( abspath )}chipper/js/grunt/WrappedAudioBuffer.js';
+import base64SoundToByteArray from '${expandDots( abspath )}tambo/js/base64SoundToByteArray.js';
+import WrappedAudioBuffer from '${expandDots( abspath )}tambo/js/WrappedAudioBuffer.js';
 import phetAudioContext from '${expandDots( abspath )}tambo/js/phetAudioContext.js';
 
 const soundURI = '${dataURI}';
