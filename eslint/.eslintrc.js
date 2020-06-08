@@ -79,7 +79,7 @@ module.exports = {
     'single-line-import': 2,
 
     // method declarations must have a visibility annotation
-    'visibility-annotation': 2,
+    // 'visibility-annotation': 2,
 
     // key and value arguments to namespace.register() must match
     'namespace-match': 2,
