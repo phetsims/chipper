@@ -16,18 +16,19 @@ const grunt = require( 'grunt' );
  *
  * @param {string} repo
  * @param {string} brand
+ * @param {Object} licenseEntries
  */
-module.exports = function( repo, brand ) {
+module.exports = function( repo, brand, licenseEntries ) {
   // License entries for third-party media files that were loaded by media plugins.
   // The media plugins populate global.phet.chipper.licenseEntries.
   const thirdPartyEntries = {
     lib: getThirdPartyLibEntries( repo, brand )
   };
-  if ( global.phet.chipper.licenseEntries ) {
-    for ( const mediaType in global.phet.chipper.licenseEntries ) {
-      if ( global.phet.chipper.licenseEntries.hasOwnProperty( mediaType ) ) {
+  if ( licenseEntries ) {
+    for ( const mediaType in licenseEntries ) {
+      if ( licenseEntries.hasOwnProperty( mediaType ) ) {
 
-        const mediaEntry = global.phet.chipper.licenseEntries[ mediaType ];
+        const mediaEntry = licenseEntries[ mediaType ];
 
         // For each resource of that type
         for ( const resourceName in mediaEntry ) {
@@ -45,7 +46,8 @@ module.exports = function( repo, brand ) {
                 grunt.log.error( 'No license.json entry for ' + resourceName );
               }
             }
-            else if ( licenseEntry.projectURL !== 'https://phet.colorado.edu' ) {
+            else if ( licenseEntry.projectURL !== 'https://phet.colorado.edu' &&
+                      licenseEntry.projectURL !== 'http://phet.colorado.edu' ) {
               thirdPartyEntries[ mediaType ] = thirdPartyEntries[ mediaType ] || {};
               thirdPartyEntries[ mediaType ][ resourceName ] = licenseEntry;
             }

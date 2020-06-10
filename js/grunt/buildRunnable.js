@@ -13,6 +13,7 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const getLicenseEntry = require( '../common/getLicenseEntry' );
 const copyDirectory = require( './copyDirectory' );
 const copySupplementalPhetioFiles = require( './phet-io/copySupplementalPhetioFiles' );
 const generateThumbnails = require( './generateThumbnails' );
@@ -33,12 +34,10 @@ const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 const packageRunnable = require( './packageRunnable' );
 const packageXHTML = require( './packageXHTML' );
+const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
 const webpackBuild = require( './webpackBuild' );
 const zlib = require( 'zlib' );
-
-// TODO: Re-enable these? https://github.com/phetsims/chipper/issues/909
-// const reportUnusedMedia = require( './reportUnusedMedia' );
 
 const recordTime = async ( asyncCallback, timeCallback ) => {
   const beforeTime = Date.now();
@@ -95,15 +94,33 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   };
 
   // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
-  // TODO: Re-enable this? https://github.com/phetsims/chipper/issues/909
-  // reportUnusedMedia( packageObject.phet.requirejsNamespace );
+  const usedModules = webpackResult.usedModules;
+  reportUnusedMedia( repo, usedModules );
+
+  const licenseEntries = {};
+  ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
+    licenseEntries[ mediaType ] = {};
+  } );
+
+  usedModules.forEach( module => {
+    ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
+      if ( module.split( '/' )[ 1 ] === mediaType ) {
+
+        // The file suffix is stripped and restored to its none .js extention. This is because getLicenseEntry doesn't
+        // handle modulified media files.
+        const index = module.lastIndexOf( '_' );
+        const path = module.slice( 0, index ) + '.' + module.slice( index + 1, -3 );
+        licenseEntries[ mediaType ][ module ] = getLicenseEntry( `../${path}` );
+      }
+    } );
+  } );
 
   const phetLibs = getPhetLibs( repo, brand );
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
   const dependencies = await getDependencies( repo );
   const version = packageObject.version; // Include the one-off name in the version
-  const thirdPartyEntries = getAllThirdPartyEntries( repo, brand );
+  const thirdPartyEntries = getAllThirdPartyEntries( repo, brand, licenseEntries );
   const simTitleStringKey = getTitleStringKey( repo );
 
   const stringMap = getStringMap( allLocales, phetLibs, webpackResult.usedModules );

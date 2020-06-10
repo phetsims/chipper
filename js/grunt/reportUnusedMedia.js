@@ -11,6 +11,8 @@
  * See https://github.com/phetsims/chipper/issues/172
  *
  * @author Sam Reid
+ * @author Denzell Barnett (Phet Interactive Simulations)
+ * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
 'use strict';
@@ -20,30 +22,26 @@ const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' 
 const grunt = require( 'grunt' );
 
 /**
- * @param {string} requirejsNamespace - requirejs namespace that appears in config.js, eg, BALANCING_ACT
+ * @param {string} repo - Name of the repo
+ * @param {Array.<string>} usedModules - Used modules within the repo
  */
-module.exports = function( requirejsNamespace ) {
+module.exports = ( repo, usedModules ) => {
 
-  const directory = process.cwd();
-
-  ChipperConstants.MEDIA_TYPES.forEach( function( mediaType ) {
+  ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
 
     // Iterate over media directories and sub-directories
-    const subdirectory = `${directory}/${mediaType}`;
+    const subdirectory = `../${repo}/${mediaType}`;
     if ( grunt.file.isDir( subdirectory ) ) {
-      grunt.file.recurse( subdirectory, function( abspath, rootdir, subdir, filename ) {
+      grunt.file.recurse( subdirectory, ( abspath, rootdir, subdir, filename ) => {
 
-        // check if the file was loaded during requirejs
-        const key = subdir ?
-                  `${requirejsNamespace}/${subdir}/${filename}` :
-                  `${requirejsNamespace}/${filename}`;
-
-        const licenseEntries = global.phet.chipper.licenseEntries || {}; // global.phet.chipper.licenseEntries is initialized by media plugins
-        if ( filename !== 'license.json' && filename !== 'README.md' ) {
+        if ( filename !== 'license.json' && filename !== 'README.md' && filename.indexOf( '.js' ) !== -1 ) {
+          const module = subdir ?
+                         `${repo}/${mediaType}/${subdir}/${filename}` :
+                         `${repo}/${mediaType}/${filename}`;
 
           // If no licenseEntries were registered, or some were registered but not one corresponding to this file
-          if ( !licenseEntries.hasOwnProperty( mediaType ) || !licenseEntries[ mediaType ].hasOwnProperty( key ) ) {
-            grunt.log.warn( `Unused ${mediaType} file: ${key}` );
+          if ( !usedModules.includes( module ) ) {
+            grunt.log.warn( `Unused ${mediaType} module: ${module}` );
           }
         }
       } );
