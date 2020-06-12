@@ -59,6 +59,7 @@
     ],
     "phetLibs": [
       "phet-io",
+      "phet-io-client-guides",
       "phet-io-wrappers",
       "studio"
     ]
