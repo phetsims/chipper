@@ -24,6 +24,7 @@ const NO_LINT_REPOS = [ // don't lint these repos
   'eliot',
   'phet-android-app',
   'phet-info',
+  'phet-io-client-guides',
   'phet-io-wrapper-arithmetic',
   'phet-io-wrapper-hookes-law-energy',
   'phet-ios-app',
