@@ -27,6 +27,9 @@ const grunt = require( 'grunt' );
  */
 module.exports = ( repo, usedModules ) => {
 
+  // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
+  usedModules = usedModules.map( module => module.split( '\\' ).join( '/' ) );
+
   ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
 
     // Iterate over media directories and sub-directories
