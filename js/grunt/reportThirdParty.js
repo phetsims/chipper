@@ -245,8 +245,6 @@ module.exports = async function() {
       mediaEntryLines.push( 'Exception: ' + compositeMedia[ mediaKey ].exception );
     }
 
-    // TODO: is this a real license?  Why is there logic here but nowhere else?  Perhaps files annotated with
-    // TODO: contact phethelp@colorado.edu are leaking into the HTML files unnecessarily, see https://github.com/phetsims/sherpa/issues/64
     if ( license !== 'contact phethelp@colorado.edu' ) {
       mediaOutput.push( mediaEntryLines.join( '<br>' ) );
 
