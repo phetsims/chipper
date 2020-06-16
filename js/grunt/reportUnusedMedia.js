@@ -28,7 +28,7 @@ const grunt = require( 'grunt' );
 module.exports = ( repo, usedModules ) => {
 
   // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
-  usedModules = usedModules.map( module => module.split( '\\' ).join( '/' ) );
+  const normalizedUsedModules = usedModules.map( module => module.split( '\\' ).join( '/' ) );
 
   ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
 
@@ -43,7 +43,7 @@ module.exports = ( repo, usedModules ) => {
                          `${repo}/${mediaType}/${filename}`;
 
           // If no licenseEntries were registered, or some were registered but not one corresponding to this file
-          if ( !usedModules.includes( module ) ) {
+          if ( !normalizedUsedModules.includes( module ) ) {
             grunt.log.warn( `Unused ${mediaType} module: ${module}` );
           }
         }
