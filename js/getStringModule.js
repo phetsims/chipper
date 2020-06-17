@@ -55,7 +55,7 @@ const getStringModule = requirejsNamespace => {
       // We'll iterate over every string key that has this repo's prefix, so that we can add any relevant information
       // for it into the localeObject.
       stringKeysInRepo.forEach( stringKey => {
-        // strip off the require.js namespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'
+        // strip off the requirejsNamespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'
         const stringKeyWithoutPrefix = stringKey.slice( stringKeyPrefix.length );
 
         const keyParts = stringKeyWithoutPrefix.split( '.' );
@@ -109,8 +109,8 @@ const getStringModule = requirejsNamespace => {
   } );
 
   /**
-   * Allow a semi-manual getter for a string, using the partial key (every part of it not including the require.js
-   * namespace).
+   * Allow a semi-manual getter for a string, using the partial key (every part of it not including the
+   * requireNamespace).
    * @public
    *
    * @param {string} partialKey - e.g 'ResetAllButton.name' for the string key 'SCENERY_PHET/ResetAllButton.name'

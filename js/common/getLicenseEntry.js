@@ -18,62 +18,51 @@
  * @author Sam Reid
  */
 
-/* eslint-env browser, node */
+/* eslint-env node */
 'use strict';
 
-(function() {
+const fs = require( 'fs' );
 
-  /**
-   * Retrieves the license entry for a media file from license.json.
-   *
-   * @param {string} absolutePath - the path for the media file
-   * @returns {Object|null} the entry from the license.json file, null if there is no entry
-   *
-   * @private
-   */
-  function getLicenseEntry( absolutePath ) {
+/**
+ * Retrieves the license entry for a media file from license.json.
+ *
+ * @param {string} absolutePath - the path for the media file
+ * @returns {Object|null} the entry from the license.json file, null if there is no entry
+ *
+ * @private
+ */
+function getLicenseEntry( absolutePath ) {
 
-    const lastSlashIndex = absolutePath.lastIndexOf( '/' );
-    const prefix = absolutePath.substring( 0, lastSlashIndex );
-    const licenseFilename = prefix + '/license.json'; // license.json is a sibling of the media file
-    const mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
+  const lastSlashIndex = absolutePath.lastIndexOf( '/' );
+  const prefix = absolutePath.substring( 0, lastSlashIndex );
+  const licenseFilename = prefix + '/license.json'; // license.json is a sibling of the media file
+  const mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
 
-    // read license.json if it exists
-    if ( !global.phet.chipper.fs.existsSync( licenseFilename ) ) {
-      return null;
+  // read license.json if it exists
+  if ( !fs.existsSync( licenseFilename ) ) {
+    return null;
+  }
+  const fileContents = fs.readFileSync( licenseFilename, 'utf8' );
+  let json = null;
+  try {
+    json = JSON.parse( fileContents );
+  }
+  catch( err ) {
+    if ( err instanceof SyntaxError ) {
+      // default message is incomprehensible, see chipper#449
+      throw new Error( 'syntax error in ' + licenseFilename + ': ' + err.message );
     }
-    const fileContents = global.phet.chipper.fs.readFileSync( licenseFilename, 'utf8' );
-    let json = null;
-    try {
-      json = JSON.parse( fileContents );
+    else {
+      throw err;
     }
-    catch( err ) {
-      if ( err instanceof SyntaxError ) {
-        // default message is incomprehensible, see chipper#449
-        throw new Error( 'syntax error in ' + licenseFilename + ': ' + err.message );
-      }
-      else {
-        throw err;
-      }
-    }
-
-    // get the media file's license entry
-    const entry = json[ mediaFilename ];
-    if ( !entry ) {
-      return null; // Not annotated in file
-    }
-    return entry;
   }
 
-  // browser require.js-compatible definition
-  if ( typeof define !== 'undefined' ) {
-    define( function() {
-      return getLicenseEntry;
-    } );
+  // get the media file's license entry
+  const entry = json[ mediaFilename ];
+  if ( !entry ) {
+    return null; // Not annotated in file
   }
+  return entry;
+}
 
-  // Node.js-compatible definition
-  if ( typeof module !== 'undefined' ) {
-    module.exports = getLicenseEntry;
-  }
-})();
+module.exports = getLicenseEntry;

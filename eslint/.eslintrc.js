@@ -210,9 +210,6 @@ module.exports = {
     // jQuery
     $: false,
 
-    // require.js
-    define: false,
-
     document: false,
 
     // for linting Node.js code
@@ -226,9 +223,6 @@ module.exports = {
 
     // Misc
     QueryStringMachine: false,
-
-    // require.js
-    require: false,
 
     // sole/tween.js
     TWEEN: false,

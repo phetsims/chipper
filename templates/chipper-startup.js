@@ -11,7 +11,7 @@
 ( function() {
   'use strict';
 
-  assert && assert( !!phet.chipper.runWebpack, 'The require.js code should have run and defined this method' );
+  assert && assert( !!phet.chipper.runWebpack, 'The webpack module code should have run and defined this method' );
 
   // constants
   const svgns = 'http://www.w3.org/2000/svg';
