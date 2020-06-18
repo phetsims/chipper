@@ -265,6 +265,11 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // Create the rendered jsdoc in the `doc` folder
   await handleJSDOC( buildDir );
 
+  // create the client guides
+  await generateClientGuide( `../phet-io-client-guides/${repo}/`, 'phet-io-guide.md', buildDir, 'phet-io-guide.html', repo );
+  // await generateClientGuide( `../phet-io-client-guides/${repo}/client-requests.md`, buildDir, 'client-requests.html' );
+  copyDirectory( `../phet-io-client-guides/${repo}/images/`, `${buildDir}doc/guides/images/` );
+
   if ( generatePhetioAPIFile ) {
     const fullAPI = await generatePhetioAPI( repo, true );
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
@@ -367,6 +372,44 @@ const handleJSDOC = async buildDir => {
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
   // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method
   // (node executable with jsdoc js file)
+  await execute( 'node', args, {
+    cwd: process.cwd(),
+    shell: true
+  } );
+};
+
+/**
+ * Generate a client guide and puts it in "build/phet-io/doc/guides"
+ * @param {string} clientGuidesDir
+ * @param {string} clientGuideFileName
+ * @param {string} buildDirPath
+ * @param {string} outputFileName
+ * @param {string} repo
+ * @returns {Promise<void>}
+ */
+const generateClientGuide = async ( clientGuidesDir, clientGuideFileName, buildDirPath, outputFileName, repo ) => {
+
+  const originalClientGuidePath = `${clientGuidesDir}${clientGuideFileName}`;
+  const destClientGuidesDir = `${buildDirPath}doc/guides/`;
+  const tempClientGuidePath = `${destClientGuidesDir}${clientGuideFileName}`;
+
+  // Make sure file exists
+  if ( !fs.existsSync( originalClientGuidePath ) ) {
+    throw new Error( `file doesnt exist: ${originalClientGuidePath}` );
+  }
+
+  let contents = grunt.file.read( originalClientGuidePath );
+  contents = ChipperStringUtils.replaceAll( contents, '{{WRAPPER_INDEX_PATH}}', '../../' );
+  contents = ChipperStringUtils.replaceAll( contents, '{{SIM_PATH}}', `../../${repo}_all_phet-io.html?postMessageOnError&phetioStandalone` );
+  contents = ChipperStringUtils.replaceAll( contents, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
+  grunt.file.write( tempClientGuidePath, contents );
+
+  const args = [
+    '../chipper/node_modules/marked/bin/marked',
+    '-i', tempClientGuidePath,
+    '-o', `${destClientGuidesDir}${outputFileName}`
+  ];
+
   await execute( 'node', args, {
     cwd: process.cwd(),
     shell: true
