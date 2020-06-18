@@ -269,6 +269,13 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   await generateClientGuide( `../phet-io-client-guides/${repo}/`, 'phet-io-guide.md', buildDir, 'phet-io-guide.html', repo );
   // await generateClientGuide( `../phet-io-client-guides/${repo}/client-requests.md`, buildDir, 'client-requests.html' );
   copyDirectory( `../phet-io-client-guides/${repo}/images/`, `${buildDir}doc/guides/images/` );
+  copyDirectory( '../phet-io-client-guides/common/', `${buildDir}doc/guides/common/` );
+  let clientGuideHTML = grunt.file.read( `${buildDir}doc/guides/phet-io-guide.html` );
+  clientGuideHTML = `<head>
+                      <link rel='stylesheet' href='common/css/main.css' type='text/css' charset='utf-8'>
+                     </head>\n` + clientGuideHTML;
+  grunt.file.write( `${buildDir}doc/guides/phet-io-guide.html`, clientGuideHTML );
+
 
   if ( generatePhetioAPIFile ) {
     const fullAPI = await generatePhetioAPI( repo, true );
