@@ -595,13 +595,17 @@
     /**
      * Enables zooming and panning of the simulation.
      *
-     * This feature is still in development and so defaults to false. For now it is used internally. But in the
-     * future, this will likely default to true and become a public query parameter defaulting to false
-     * for users that may want to disable this.
+     * This parameter is intended for internal use only. If a sim is published with zoom, it should use the
+     * package.json item `supportsZoom: true`.
+     *
+     * If the value is null, the behavior will default to the value specified in the package.json entry.
+     * Using the query parameter ('true' or 'false') will override the value in package.json. This feature was recently
+     * introduced and is still not enabled in most simulations.
      */
-    zoom: {
-      type: 'boolean',
-      defaultValue: false
+    supportsZoom: {
+      type: 'string',
+      validValues: [ null, 'true', 'false' ],
+      defaultValue: null
     }
   };
 
