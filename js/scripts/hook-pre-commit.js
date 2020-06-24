@@ -75,5 +75,5 @@ try {
   }
 }
 catch( e ) {
-  console.log( 'puppeteerQUnit not found.' );
+  console.log( e );
 }
