@@ -1,0 +1,60 @@
+<style>
+  #ie-dialog-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, .3);
+    z-index: 10000;
+    align-items: center;
+  }
+
+  #ie-dialog {
+    position: relative;
+    background: #efefef;
+    border-radius: 10px;
+    max-width: 410px;
+    margin: auto;
+    padding: 30px;
+    font-size: 20px;
+    font-weight: 500;
+    font-family: sans-serif;
+  }
+</style>
+
+<div id="ie-dialog-container">
+  <div id="ie-dialog">
+    <p>Internet Explorer is not supported.</p>
+  </div>
+</div>
+
+<script type="text/javascript">
+  // This script needs to be compatible with only IE supported features.
+  'use strict';
+
+  // Detect which version of IE is in use. Remains -1 if not using IE. Copied from phet-core/platform.js.
+  var userAgent = navigator.userAgent;
+  var releaseVersion = -1;
+  var regex = null;
+  if ( navigator.appName === 'Microsoft Internet Explorer' ) {
+    regex = new RegExp( 'MSIE ([0-9]{1,}[.0-9]{0,})' );
+    if ( regex.exec( userAgent ) !== null ) {
+      releaseVersion = parseFloat( RegExp.$1 );
+    }
+  }
+  else if ( navigator.appName === 'Netscape' ) {
+    regex = new RegExp( 'Trident/.*rv:([0-9]{1,}[.0-9]{0,})' );
+    if ( regex.exec( userAgent ) !== null ) {
+      releaseVersion = parseFloat( RegExp.$1 );
+    }
+  }
+
+  // Browser is IE, so set a global to alert other scripts and display warning dialog
+  if ( releaseVersion !== -1 ) {
+    window.isIE = true;
+    document.getElementById( 'ie-dialog-container' ).style.display = 'flex';
+  }
+</script>

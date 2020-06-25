@@ -19,8 +19,6 @@ const grunt = require( 'grunt' );
  * @param {Object} licenseEntries
  */
 module.exports = function( repo, brand, licenseEntries ) {
-  // License entries for third-party media files that were loaded by media plugins.
-  // The media plugins populate global.phet.chipper.licenseEntries.
   const thirdPartyEntries = {
     lib: getThirdPartyLibEntries( repo, brand )
   };

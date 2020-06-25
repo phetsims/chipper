@@ -508,7 +508,7 @@
       return doc[ subtype ];
     }
 
-    // Dig into require.js structure
+    // Dig into require structure
     const mainStatements = program.body[ 0 ].expression.arguments[ 0 ].body.body;
 
     doc.topLevelComment = extractDocFromNode( program.body[ 0 ] );

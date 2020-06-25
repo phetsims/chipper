@@ -12,7 +12,6 @@ const SimVersion = require( '../SimVersion' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
-const chipperGlobals = require( './chipperGlobals' );
 const commitsSince = require( './commitsSince' );
 const findDuplicates = require( './findDuplicates' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
@@ -60,8 +59,6 @@ module.exports = function( grunt ) {
   }
 
   const repo = grunt.option( 'repo' ) || packageObject.name;
-
-  chipperGlobals.initialize();
 
   /**
    * Wraps a promise's completion with grunt's asynchronous handling, with added helpful failure messages (including

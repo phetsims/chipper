@@ -10,7 +10,6 @@
 
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );
-const chipperGlobals = require( './chipperGlobals' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
@@ -56,9 +55,6 @@ const getRelativeModules = modules => {
  */
 module.exports = function( repo, brand ) {
   return new Promise( ( resolve, reject ) => {
-    // Initialize global state in preparation for the require.js step.
-    chipperGlobals.beforeBuild( 'phet' );
-
     // Create plugins to ignore brands that we are not building at this time. Here "resource" is the module getting
     // imported, and "context" is the directory that holds the module doing the importing. This is split up because
     // of how brands are loaded in simLauncher.js. They are a dynamic import who's import path resolves to the current

@@ -83,6 +83,8 @@ module.exports = function( repos, cache, say = false, warn = true ) {
       'phet-io-website/root/assets/bootstrap-3.3.6-dist/js/npm.js',
       'phet-io-website/root/assets/bootstrap-3.3.6-dist/js/bootstrap.min.js',
       'phet-io-website/root/assets/bootstrap-3.3.6-dist/js/bootstrap.js',
+      'phet-io-website/root/assets/js/QueryStringMachine_1.0.js',
+      'phet-io-website/root/assets/js/QueryStringMachine_2.0.js',
       'phet-io-website/root/assets/js/phet-io-ga.js',
       'installer-builder/temp/**'
     ]

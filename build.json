@@ -43,11 +43,9 @@
       "../chipper/js/SimVersion.js"
     ],
     "licenseKeys": [
-      "almond-0.2.9.js",
       "font-awesome-4.5.0",
       "jama-1.0.2",
-      "pegjs-0.7.0.js",
-      "text-2.0.12.js"
+      "pegjs-0.7.0.js"
     ]
   },
   "phet-io": {

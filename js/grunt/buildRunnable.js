@@ -93,7 +93,6 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     minify: false
   };
 
-  // After all media plugins have completed (which happens in requirejs:build), report which media files in the repository are unused.
   const usedModules = webpackResult.usedModules;
   reportUnusedMedia( repo, usedModules );
 
@@ -180,7 +179,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     // Preloads
     ...getPreloads( repo, brand, true ).map( filename => grunt.file.read( filename ) ),
 
-    // Our main require.js content, wrapped in a function called in the startup below
+    // Our main module content, wrapped in a function called in the startup below
     webpackJS,
 
     // Main startup

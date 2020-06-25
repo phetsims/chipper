@@ -146,13 +146,6 @@
     },
 
     /**
-     * Use the stubbed audio context in tambo regardless of whether support for the audioContext exists in Web Audio.
-     * This is useful for testing and debugging of the stubbed audio context in browsers where it isn't needed (e.g.
-     * Chrome), since the main browser where it *is* needed (Internet Explorer) can be difficult to debug in.
-     */
-    forceStubbedAudioContext: { type: 'flag' },
-
-    /**
      * Randomly sends mouse events and touch events to sim.
      */
     fuzz: { type: 'flag' },
@@ -602,13 +595,17 @@
     /**
      * Enables zooming and panning of the simulation.
      *
-     * This feature is still in development and so defaults to false. For now it is used internally. But in the
-     * future, this will likely default to true and become a public query parameter defaulting to false
-     * for users that may want to disable this.
+     * This parameter is intended for internal use only. If a sim is published with zoom, it should use the
+     * package.json item `supportsZoom: true`.
+     *
+     * If the value is null, the behavior will default to the value specified in the package.json entry.
+     * Using the query parameter ('true' or 'false') will override the value in package.json. This feature was recently
+     * introduced and is still not enabled in most simulations.
      */
-    zoom: {
-      type: 'boolean',
-      defaultValue: false
+    supportsZoom: {
+      type: 'string',
+      validValues: [ null, 'true', 'false' ],
+      defaultValue: null
     }
   };
 
@@ -751,7 +748,7 @@
    * Enables or disables assertions in common libraries using query parameters.
    * There are two types of assertions: basic and slow. Enabling slow assertions will adversely impact performance.
    * 'ea' enables basic assertions, 'eall' enables basic and slow assertions.
-   * Must be run before RequireJS, and assumes that assert.js and query-parameters.js has been run.
+   * Must be run before the main modules, and assumes that assert.js and query-parameters.js has been run.
    */
   ( function() {
 
