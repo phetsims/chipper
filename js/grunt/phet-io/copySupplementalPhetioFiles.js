@@ -73,6 +73,7 @@ const JSDOC_FILES = [
 ];
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
+const STUDIO_BUILT_FILENAME = 'studio.min.js';
 /**
  * @param {string} repo
  * @param {string} version
@@ -101,12 +102,11 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     const originalContents = contents + '';
 
     const isWrapperIndex = abspath.indexOf( 'index/index.html' ) >= 0;
-    const isStudioJS = abspath.indexOf( 'studio/studio.js' ) >= 0;
 
     // For info about LIB_OUTPUT_FILE, see handleLib()
     const pathToLib = `lib/${LIB_OUTPUT_FILE}`;
 
-    if ( abspath.indexOf( '.html' ) >= 0 || isStudioJS ) {
+    if ( abspath.indexOf( '.html' ) >= 0 ) {
 
       // change the paths of sherpa files to point to the contrib/ folder
       CONTRIB_FILES.forEach( filePath => {
@@ -183,6 +183,8 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     // Special handling for studio paths since it is not nested under phet-io-wrappers
     if ( abspath.indexOf( 'studio/index.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '<script src="../contrib/', '<script src="../../contrib/' );
+      contents = ChipperStringUtils.replaceAll( contents, '<script type="module" src="js/studio-main.js"></script>',
+        `<script src="./${STUDIO_BUILT_FILENAME}"></script>` );
     }
 
     if ( contents !== originalContents ) {
@@ -273,6 +275,8 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     const fullAPI = await generatePhetioAPI( repo, true );
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
   }
+
+  await handleStudio( wrappersLocation );
 };
 
 /**
@@ -442,4 +446,21 @@ const generateClientGuide = ( repoName, mdFilePath ) => {
                  </body>`;
 
   return clientGuide;
+};
+
+/**
+ * Support building studio. This compiles the studio modules into a runnabled, and copies that over to the expected spot
+ * on build.
+ * @param {string} wrappersLocation
+ * @returns {Promise<void>}
+ */
+const handleStudio = async wrappersLocation => {
+
+  grunt.log.debug( 'running grunt in ../studio' );
+  await execute( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', [ 'build' ], {
+    cwd: '../studio',
+    shell: true
+  } );
+
+  grunt.file.copy( `../studio/build/${STUDIO_BUILT_FILENAME}`, `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}` );
 };

@@ -72,7 +72,7 @@ module.exports = function( repo, brand ) {
     // Allow builds for developers that do not have the phet-io repo checked out. IgnorePlugin will skip any require
     // that matches the following regex.
     const ignorePhetioRepo = new webpack.IgnorePlugin( {
-      resourceRegExp: /\/phet-io\// // ignore anyting in a phet-io named directory
+      resourceRegExp: /\/phet-io\// // ignore anything in a phet-io named directory
     } );
 
     const compiler = webpack( {
