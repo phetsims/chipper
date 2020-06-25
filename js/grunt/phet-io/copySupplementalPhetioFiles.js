@@ -389,8 +389,10 @@ const handleClientGuides = ( repo, buildDir ) => {
   copyDirectory( '../phet-io-client-guides/common/', `${buildDir}doc/guides/common/` );
 
   const clientGuideHTML = generateClientGuide( repo, `../phet-io-client-guides/${repo}/phet-io-guide.md` );
+  const clientRequestsHTML = generateClientGuide( repo, `../phet-io-client-guides/${repo}/client-requests.md` );
 
   grunt.file.write( `${buildDir}doc/guides/phet-io-guide.html`, clientGuideHTML );
+  grunt.file.write( `${buildDir}doc/guides/client-requests.html`, clientRequestsHTML );
 };
 
 /**
