@@ -379,39 +379,51 @@ const handleJSDOC = async buildDir => {
 
 /**
  * Generates the phet-io client guides and puts them in `build/phet-io/doc/guides/`
- * @param {string} repo
+ * @param {string} repoName
  * @param {string} buildDir
  */
-const handleClientGuides = ( repo, buildDir ) => {
+const handleClientGuides = ( repoName, buildDir ) => {
 
-  // copy over images and common images/styles
-  copyDirectory( `../phet-io-client-guides/${repo}/images/`, `${buildDir}doc/guides/images/` );
-  copyDirectory( '../phet-io-client-guides/common/', `${buildDir}doc/guides/common/` );
+  const phetioClientGuidesDir = '../phet-io-client-guides/';
+  const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
+  const phetioGuideFileName = 'phet-io-guide';
+  const clientRequestsFileName = 'client-requests';
 
-  const clientGuideHTML = generateClientGuide( repo, `../phet-io-client-guides/${repo}/phet-io-guide.md` );
-  const clientRequestsHTML = generateClientGuide( repo, `../phet-io-client-guides/${repo}/client-requests.md` );
+  // copy over common images and styles
+  copyDirectory( `${phetioClientGuidesDir}common/`, `${builtClientGuidesOutputDir}common/` );
 
-  grunt.file.write( `${buildDir}doc/guides/phet-io-guide.html`, clientGuideHTML );
-  grunt.file.write( `${buildDir}doc/guides/client-requests.html`, clientRequestsHTML );
+  // copy over the sim-specific phet-io guide images
+  const simSpecificGuideImagesDir = `${phetioClientGuidesDir}${repoName}/images/`;
+  if ( fs.existsSync( simSpecificGuideImagesDir ) ) {
+    copyDirectory( simSpecificGuideImagesDir, `${builtClientGuidesOutputDir}images/` );
+  }
+
+  // generate html for each client guide
+  const clientGuideHTML = generateClientGuide( repoName, `${phetioClientGuidesDir}${repoName}/${phetioGuideFileName}.md` );
+  const clientRequestsHTML = generateClientGuide( repoName, `${phetioClientGuidesDir}${repoName}/${clientRequestsFileName}.md` );
+
+  // write the output to the build directory
+  grunt.file.write( `${builtClientGuidesOutputDir}${phetioGuideFileName}.html`, clientGuideHTML );
+  grunt.file.write( `${builtClientGuidesOutputDir}${clientRequestsFileName}.html`, clientRequestsHTML );
 };
 
 /**
  * Takes a markdown client guides, fills in the links, and then generates and returns it as html
+ * @param {string} repoName
  * @param {string} mdFilePath
- * @param {string} repo
  * @returns {string}
  */
-const generateClientGuide = ( repo, mdFilePath ) => {
+const generateClientGuide = ( repoName, mdFilePath ) => {
 
-  // make sure file exists
+  // make sure the source markdown file exists
   if ( !fs.existsSync( mdFilePath ) ) {
-    throw new Error( `file doesnt exist: ${mdFilePath}` );
+    throw new Error( `Missing or incorrectly named client guide: ${mdFilePath}` );
   }
 
   // fill in links
   let clientGuide = grunt.file.read( mdFilePath );
   clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{WRAPPER_INDEX_PATH}}', '../../' );
-  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{SIM_PATH}}', `../../${repo}_all_phet-io.html?postMessageOnError&phetioStandalone` );
+  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
   clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
 
   // convert to html
