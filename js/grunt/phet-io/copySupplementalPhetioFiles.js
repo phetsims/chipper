@@ -271,12 +271,13 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // create the client guides
   handleClientGuides( repo, buildDir );
 
+  await handleStudio( wrappersLocation );
+
   if ( generatePhetioAPIFile ) {
     const fullAPI = await generatePhetioAPI( repo, true );
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
   }
 
-  await handleStudio( wrappersLocation );
 };
 
 /**
