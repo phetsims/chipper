@@ -383,7 +383,6 @@ const handleJSDOC = async buildDir => {
  * @param {string} buildDir
  */
 const handleClientGuides = ( repoName, buildDir ) => {
-
   const phetioClientGuidesDir = '../phet-io-client-guides/';
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
   const phetioGuideFileName = 'phet-io-guide';
