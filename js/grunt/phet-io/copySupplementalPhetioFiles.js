@@ -364,7 +364,7 @@ const handleJSDOC = async buildDir => {
     '../chipper/node_modules/jsdoc/jsdoc.js',
     ...JSDOC_FILES,
     '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
-    '-d', `${buildDir}doc/`,
+    '-d', `${buildDir}doc/api`,
     '--readme', JSDOC_README_FILE
   ];
 
