@@ -19,6 +19,7 @@ const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const generatePhetioAPI = require( './generatePhetioAPI' );
 const minify = require( '../minify' );
+const marked = require( 'marked' );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -266,16 +267,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   await handleJSDOC( buildDir );
 
   // create the client guides
-  await generateClientGuide( `../phet-io-client-guides/${repo}/`, 'phet-io-guide.md', buildDir, 'phet-io-guide.html', repo );
-  // await generateClientGuide( `../phet-io-client-guides/${repo}/client-requests.md`, buildDir, 'client-requests.html' );
-  copyDirectory( `../phet-io-client-guides/${repo}/images/`, `${buildDir}doc/guides/images/` );
-  copyDirectory( '../phet-io-client-guides/common/', `${buildDir}doc/guides/common/` );
-  let clientGuideHTML = grunt.file.read( `${buildDir}doc/guides/phet-io-guide.html` );
-  clientGuideHTML = `<head>
-                      <link rel='stylesheet' href='common/css/main.css' type='text/css' charset='utf-8'>
-                     </head>\n` + clientGuideHTML;
-  grunt.file.write( `${buildDir}doc/guides/phet-io-guide.html`, clientGuideHTML );
-
+  handleClientGuides( repo, buildDir );
 
   if ( generatePhetioAPIFile ) {
     const fullAPI = await generatePhetioAPI( repo, true );
@@ -386,39 +378,51 @@ const handleJSDOC = async buildDir => {
 };
 
 /**
- * Generate a client guide and puts it in "build/phet-io/doc/guides"
- * @param {string} clientGuidesDir
- * @param {string} clientGuideFileName
- * @param {string} buildDirPath
- * @param {string} outputFileName
+ * Generates the phet-io client guides and puts them in `build/phet-io/doc/guides/`
  * @param {string} repo
- * @returns {Promise<void>}
+ * @param {string} buildDir
  */
-const generateClientGuide = async ( clientGuidesDir, clientGuideFileName, buildDirPath, outputFileName, repo ) => {
+const handleClientGuides = ( repo, buildDir ) => {
 
-  const originalClientGuidePath = `${clientGuidesDir}${clientGuideFileName}`;
-  const destClientGuidesDir = `${buildDirPath}doc/guides/`;
-  const tempClientGuidePath = `${destClientGuidesDir}${clientGuideFileName}`;
+  // copy over images and common images/styles
+  copyDirectory( `../phet-io-client-guides/${repo}/images/`, `${buildDir}doc/guides/images/` );
+  copyDirectory( '../phet-io-client-guides/common/', `${buildDir}doc/guides/common/` );
 
-  // Make sure file exists
-  if ( !fs.existsSync( originalClientGuidePath ) ) {
-    throw new Error( `file doesnt exist: ${originalClientGuidePath}` );
+  const clientGuideHTML = generateClientGuide( repo, `../phet-io-client-guides/${repo}/phet-io-guide.md` );
+
+  grunt.file.write( `${buildDir}doc/guides/phet-io-guide.html`, clientGuideHTML );
+};
+
+/**
+ * Takes a markdown client guides, fills in the links, and then generates and returns it as html
+ * @param {string} mdFilePath
+ * @param {string} repo
+ * @returns {string}
+ */
+const generateClientGuide = ( repo, mdFilePath ) => {
+
+  // make sure file exists
+  if ( !fs.existsSync( mdFilePath ) ) {
+    throw new Error( `file doesnt exist: ${mdFilePath}` );
   }
 
-  let contents = grunt.file.read( originalClientGuidePath );
-  contents = ChipperStringUtils.replaceAll( contents, '{{WRAPPER_INDEX_PATH}}', '../../' );
-  contents = ChipperStringUtils.replaceAll( contents, '{{SIM_PATH}}', `../../${repo}_all_phet-io.html?postMessageOnError&phetioStandalone` );
-  contents = ChipperStringUtils.replaceAll( contents, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
-  grunt.file.write( tempClientGuidePath, contents );
+  // fill in links
+  let clientGuide = grunt.file.read( mdFilePath );
+  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{WRAPPER_INDEX_PATH}}', '../../' );
+  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{SIM_PATH}}', `../../${repo}_all_phet-io.html?postMessageOnError&phetioStandalone` );
+  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
 
-  const args = [
-    '../chipper/node_modules/marked/bin/marked',
-    '-i', tempClientGuidePath,
-    '-o', `${destClientGuidesDir}${outputFileName}`
-  ];
-
-  await execute( 'node', args, {
-    cwd: process.cwd(),
-    shell: true
+  // convert to html
+  marked.setOptions( {
+    renderer: new marked.Renderer()
   } );
+  clientGuide = marked( clientGuide );
+
+  // link a stylesheet
+  clientGuide = `<head>
+                   <link rel='stylesheet' href='common/css/main.css' type='text/css' charset='utf-8'>
+                 </head>
+                 ${clientGuide}`;
+
+  return clientGuide;
 };
