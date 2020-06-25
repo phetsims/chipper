@@ -420,9 +420,13 @@ const generateClientGuide = ( repo, mdFilePath ) => {
 
   // link a stylesheet
   clientGuide = `<head>
-                   <link rel='stylesheet' href='common/css/main.css' type='text/css' charset='utf-8'>
+                   <link rel='stylesheet' href='common/css/github-markdown.css' type='text/css'>
                  </head>
-                 ${clientGuide}`;
+                 <body>
+                 <div class="markdown-body">
+                   ${clientGuide}
+                 </div>
+                 </body>`;
 
   return clientGuide;
 };
