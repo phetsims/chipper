@@ -191,7 +191,10 @@ module.exports = function( grunt ) {
       if ( repoPackageObject.phet.buildStandalone ) {
         grunt.log.writeln( 'Building standalone repository' );
 
-        fs.writeFileSync( `../${repo}/build/${repo}.min.js`, await buildStandalone( repo, minifyOptions ) );
+        const parentDir = `../${repo}/build/`;
+        fs.mkdirSync( parentDir );
+
+        fs.writeFileSync( `${parentDir}/${repo}.min.js`, await buildStandalone( repo, minifyOptions ) );
 
         if ( repoPackageObject.phet.standaloneTranspiles ) {
           for ( const file of repoPackageObject.phet.standaloneTranspiles ) {
