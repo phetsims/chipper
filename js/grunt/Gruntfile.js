@@ -192,7 +192,9 @@ module.exports = function( grunt ) {
         grunt.log.writeln( 'Building standalone repository' );
 
         const parentDir = `../${repo}/build/`;
-        fs.mkdirSync( parentDir );
+        if ( !fs.existsSync( parentDir ) ) {
+          fs.mkdirSync( parentDir );
+        }
 
         fs.writeFileSync( `${parentDir}/${repo}.min.js`, await buildStandalone( repo, minifyOptions ) );
 
