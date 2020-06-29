@@ -450,7 +450,7 @@ const generateClientGuide = ( repoName, mdFilePath ) => {
 };
 
 /**
- * Support building studio. This compiles the studio modules into a runnabled, and copies that over to the expected spot
+ * Support building studio. This compiles the studio modules into a runnable, and copies that over to the expected spot
  * on build.
  * @param {string} wrappersLocation
  * @returns {Promise<void>}
