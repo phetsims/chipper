@@ -90,7 +90,7 @@
   }
 
   // Browser is IE, so set a global to alert other scripts and create the warning message
-  if ( true ) {
+  if ( releaseVersion !== -1 ) {
     window.isIE = true;
     document.getElementById( 'ie-warning-container' ).style.display = 'flex';
   }
