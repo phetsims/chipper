@@ -25,6 +25,7 @@ const marked = require( 'marked' );
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant, please see phet-io-wrappers/index/index.js before changing
+const PHET_IO_GUIDE_FILE_NAME = 'phet-io-guide';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
@@ -390,7 +391,6 @@ const handleJSDOC = async buildDir => {
 const handleClientGuides = ( repoName, buildDir ) => {
   const phetioClientGuidesDir = '../phet-io-client-guides/';
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
-  const phetioGuideFileName = 'phet-io-guide';
   const clientRequestsFileName = 'client-requests';
 
   // copy over common images and styles
@@ -403,11 +403,11 @@ const handleClientGuides = ( repoName, buildDir ) => {
   }
 
   // generate html for each client guide
-  const clientGuideHTML = generateClientGuide( repoName, `${phetioClientGuidesDir}${repoName}/${phetioGuideFileName}.md` );
+  const clientGuideHTML = generateClientGuide( repoName, `${phetioClientGuidesDir}${repoName}/${PHET_IO_GUIDE_FILE_NAME}.md` );
   const clientRequestsHTML = generateClientGuide( repoName, `${phetioClientGuidesDir}${repoName}/${clientRequestsFileName}.md` );
 
   // write the output to the build directory
-  grunt.file.write( `${builtClientGuidesOutputDir}${phetioGuideFileName}.html`, clientGuideHTML );
+  grunt.file.write( `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILE_NAME}.html`, clientGuideHTML );
   grunt.file.write( `${builtClientGuidesOutputDir}${clientRequestsFileName}.html`, clientRequestsHTML );
 };
 
@@ -429,6 +429,7 @@ const generateClientGuide = ( repoName, mdFilePath ) => {
   clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{WRAPPER_INDEX_PATH}}', '../../' );
   clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
   clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
+  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILE_NAME}.html` );
 
   // convert to html
   marked.setOptions( {
