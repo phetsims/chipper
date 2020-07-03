@@ -436,11 +436,6 @@ const generateAndWriteClientGuide = ( repoName, mdFilePath, destinationPath ) =>
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILE_NAME}.html` );
-
-  // convert to html
-  marked.setOptions( {
-    renderer: new marked.Renderer()
-  } );
   const renderedClientGuide = marked( clientGuideSource );
 
   // link a stylesheet
