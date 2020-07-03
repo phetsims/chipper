@@ -431,30 +431,30 @@ const generateAndWriteClientGuide = ( repoName, mdFilePath, destinationPath ) =>
   }
 
   // fill in links
-  let clientGuide = grunt.file.read( mdFilePath );
-  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{WRAPPER_INDEX_PATH}}', '../../' );
-  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
-  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
-  clientGuide = ChipperStringUtils.replaceAll( clientGuide, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILE_NAME}.html` );
+  let clientGuideSource = grunt.file.read( mdFilePath );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{WRAPPER_INDEX_PATH}}', '../../' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILE_NAME}.html` );
 
   // convert to html
   marked.setOptions( {
     renderer: new marked.Renderer()
   } );
-  clientGuide = marked( clientGuide );
+  const renderedClientGuide = marked( clientGuideSource );
 
   // link a stylesheet
-  clientGuide = `<head>
+  const clientGuideHTML = `<head>
                    <link rel='stylesheet' href='common/css/github-markdown.css' type='text/css'>
                  </head>
                  <body>
                  <div class="markdown-body">
-                   ${clientGuide}
+                   ${renderedClientGuide}
                  </div>
                  </body>`;
 
   // write the output to the build directory
-  grunt.file.write( destinationPath, clientGuide );
+  grunt.file.write( destinationPath, clientGuideHTML );
 };
 
 /**
