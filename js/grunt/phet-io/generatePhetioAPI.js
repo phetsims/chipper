@@ -55,13 +55,13 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
 
   const port = server.address().port;
 
-  return new Promise( async ( resolve, reject ) => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
 
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+  return await new Promise( ( resolve, reject ) => {
 
-    // Fail if this takes too long
-    const id = setTimeout( () => reject( 'Timeout in generatePhetioAPI' ), 30000 );
+    // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
+    setTimeout( () => reject( 'Timeout in generatePhetioAPI' ), 30000 );
 
     page.on( 'console', async msg => {
 
@@ -69,7 +69,6 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
 
         const fullAPI = msg.text();
         await browser.close();
-        clearTimeout( id );
         resolve( fullAPI );
       }
 
@@ -80,23 +79,13 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
       }
     } );
 
-    const failCallback = msg => {
-      clearTimeout( id );
-      reject( msg );
-    };
-    page.on( 'error', failCallback );
-    page.on( 'pageerror', failCallback );
+    page.on( 'error', reject );
+    page.on( 'pageerror', reject );
 
-    try {
-      const relativePath = fromBuiltVersion ?
-                           `build/phet-io/${repo}_all_phet-io.html` :
-                           `${repo}_en.html`;
-      const url = `http://localhost:${port}/${repo}/${relativePath}?brand=phet-io&phetioStandalone&phetioPrintAPI`;
-      await page.goto( url );
-    }
-    catch( e ) {
-      clearTimeout( id );
-      reject( e );
-    }
+    const relativePath = fromBuiltVersion ?
+                         `build/phet-io/${repo}_all_phet-io.html` :
+                         `${repo}_en.html`;
+    const url = `http://localhost:${port}/${repo}/${relativePath}?brand=phet-io&phetioStandalone&phetioPrintAPI`;
+    page.goto( url ).catch( reject );
   } );
 };
