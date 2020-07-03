@@ -25,6 +25,10 @@ const marked = require( 'marked' );
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant, please see phet-io-wrappers/index/index.js before changing
+
+// For Client Guides
+const CLIENT_GUIDES_DIR = '../phet-io-client-guides/';
+const CLIENT_REQUESTS_FILENAME = 'client-requests';
 const PHET_IO_GUIDE_FILE_NAME = 'phet-io-guide';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
@@ -389,39 +393,41 @@ const handleJSDOC = async buildDir => {
  * @param {string} buildDir
  */
 const handleClientGuides = ( repoName, buildDir ) => {
-  const phetioClientGuidesDir = '../phet-io-client-guides/';
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
-  const clientRequestsFileName = 'client-requests';
+  const clientGuidesSourceRoot = `${CLIENT_GUIDES_DIR}${repoName}/`;
+
+  // gracefully support no client guides
+  if ( !fs.existsSync( clientGuidesSourceRoot ) ) {
+    grunt.log.warn( `No client guides found at ${clientGuidesSourceRoot}, no guides being built.` );
+    return;
+  }
 
   // copy over common images and styles
-  copyDirectory( `${phetioClientGuidesDir}common/`, `${builtClientGuidesOutputDir}common/` );
+  copyDirectory( `${CLIENT_GUIDES_DIR}common/`, `${builtClientGuidesOutputDir}common/` );
 
   // copy over the sim-specific phet-io guide images
-  const simSpecificGuideImagesDir = `${phetioClientGuidesDir}${repoName}/images/`;
+  const simSpecificGuideImagesDir = `${CLIENT_GUIDES_DIR}${repoName}/images/`;
   if ( fs.existsSync( simSpecificGuideImagesDir ) ) {
     copyDirectory( simSpecificGuideImagesDir, `${builtClientGuidesOutputDir}images/` );
   }
 
-  // generate html for each client guide
-  const clientGuideHTML = generateClientGuide( repoName, `${phetioClientGuidesDir}${repoName}/${PHET_IO_GUIDE_FILE_NAME}.md` );
-  const clientRequestsHTML = generateClientGuide( repoName, `${phetioClientGuidesDir}${repoName}/${clientRequestsFileName}.md` );
-
-  // write the output to the build directory
-  grunt.file.write( `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILE_NAME}.html`, clientGuideHTML );
-  grunt.file.write( `${builtClientGuidesOutputDir}${clientRequestsFileName}.html`, clientRequestsHTML );
+  // handle generating and writing the html file for each client guide
+  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${PHET_IO_GUIDE_FILE_NAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILE_NAME}.html` );
+  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${CLIENT_REQUESTS_FILENAME}.md`, `${builtClientGuidesOutputDir}${CLIENT_REQUESTS_FILENAME}.html` );
 };
 
 /**
- * Takes a markdown client guides, fills in the links, and then generates and returns it as html
+ * Takes a markdown client guides, fills in the links, and then generates and writes it as html
  * @param {string} repoName
- * @param {string} mdFilePath
- * @returns {string}
+ * @param {string} mdFilePath - to get the source md file
+ * @param {string} destinationPath - to write to
  */
-const generateClientGuide = ( repoName, mdFilePath ) => {
+const generateAndWriteClientGuide = ( repoName, mdFilePath, destinationPath ) => {
 
   // make sure the source markdown file exists
   if ( !fs.existsSync( mdFilePath ) ) {
-    throw new Error( `Missing or incorrectly named client guide: ${mdFilePath}` );
+    grunt.log.warn( `no client guide found at ${mdFilePath}, no guide being built.` );
+    return;
   }
 
   // fill in links
@@ -447,7 +453,8 @@ const generateClientGuide = ( repoName, mdFilePath ) => {
                  </div>
                  </body>`;
 
-  return clientGuide;
+  // write the output to the build directory
+  grunt.file.write( destinationPath, clientGuide );
 };
 
 /**
