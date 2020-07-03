@@ -32,7 +32,7 @@
   }
 
   #ie-warning .header .h1 {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 500;
     margin: 0 0 0 10px;
   }
@@ -61,10 +61,10 @@
           </g>
         </g>
       </svg>
-      <h1 class="h1">Platform Warning</h1>
+      <h1 id="ie-warning-header" class="h1"></h1>
     </div>
-    <p>Internet Explorer is not supported.</p>
-    <p>Please use a different browser to run this simulation.</p>
+    <p id="ie-warning-not-supported"></p>
+    <p id="ie-warning-different-browser"></p>
   </div>
 </div>
 
@@ -89,9 +89,18 @@
     }
   }
 
-  // Browser is IE, so set a global to alert other scripts and create the warning message
-  if ( releaseVersion !== -1 ) {
+  // Browser is IE, so set a global to alert other scripts and show the warning message
+  if ( releaseVersion !== -1 || true ) {
     window.isIE = true;
+
+    const locale = 'en'; // TODO: get from query param and/or html path?
+    const strings = window.phet.chipper.strings[ locale ];
+
+    document.getElementById( 'ie-warning-header' ).innerText = strings[ 'JOIST/ieWarningPage.platformWarning' ];
+    document.getElementById( 'ie-warning-not-supported' ).innerText = strings[ 'JOIST/ieWarningPage.ieIsNotSupported' ];
+    document.getElementById( 'ie-warning-different-browser' ).innerText = strings[ 'JOIST/ieWarningPage.useDifferentBrowser' ];
+
+    // reveal the warning
     document.getElementById( 'ie-warning-container' ).style.display = 'flex';
   }
 </script>

@@ -231,7 +231,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
         stringMap: stringMap,
         htmlHeader: htmlHeader,
         locale: locale,
-        scripts: [ initializationScript, ...productionScripts ]
+        initializationScript: initializationScript,
+        scripts: productionScripts
       } ) );
     }
   }
@@ -250,7 +251,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       stringMap: stringMap,
       htmlHeader: htmlHeader,
       locale: ChipperConstants.FALLBACK_LOCALE,
-      scripts: [ initializationScript, ...productionScripts ]
+      initializationScript: initializationScript,
+      scripts: productionScripts
     } );
 
     grunt.file.write( allHTMLFilename, allHTMLContents );
@@ -269,7 +271,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     stringMap: stringMap,
     htmlHeader: htmlHeader,
     locale: ChipperConstants.FALLBACK_LOCALE,
-    scripts: [ debugInitializationScript, ...debugScripts ]
+    initializationScript: debugInitializationScript,
+    scripts: debugScripts
   } ) );
 
   // XHTML build (ePub compatibility, etc.)
@@ -285,7 +288,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     brand: brand,
     stringMap: stringMap,
     htmlHeader: htmlHeader,
-    scripts: [ xhtmlInitializationScript, ...productionScripts ]
+    initializationScript: xhtmlInitializationScript,
+    scripts: productionScripts
   } );
 
   // dependencies.json

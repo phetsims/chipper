@@ -29,6 +29,7 @@ module.exports = function( config ) {
   const {
     repo, // {string}
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
+    initializationScript, // {string}
     scripts, // {Array.<string>}
     locale, // {string}
     htmlHeader // {string}
@@ -50,6 +51,7 @@ module.exports = function( config ) {
     PHET_CARRIAGE_RETURN: '\r',
     PHET_SIM_TITLE: encoder.htmlEncode( localizedTitle ),
     PHET_HTML_HEADER: htmlHeader,
+    PHET_INITIALIZATION_SCRIPT: `<script type="text/javascript">${initializationScript}</script>`,
     PHET_IE_DETECTION: simIEDetection,
 
     // wrap scripts in global check for IE
