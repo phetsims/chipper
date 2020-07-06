@@ -39,8 +39,6 @@ module.exports = function( xhtmlDir, config ) {
   assert( scripts, 'Requires scripts' );
   assert( typeof htmlHeader === 'string', 'Requires htmlHeader' );
 
-  const simIEDetection = grunt.file.read( '../chipper/templates/sim-ie-detection.html' );
-
   const localizedTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 
   const script = scripts.join( '\n' );
@@ -49,7 +47,6 @@ module.exports = function( xhtmlDir, config ) {
   const xhtml = ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/sim.xhtml' ), {
     PHET_SIM_TITLE: encoder.htmlEncode( localizedTitle ),
     PHET_HTML_HEADER: htmlHeader,
-    PHET_IE_DETECTION: simIEDetection,
     PHET_SIM_SCRIPTS: `<script type="text/javascript" src="${scriptFilename}" charset="utf-8"></script>`
   } );
   grunt.file.write( `${xhtmlDir}/${repo}_all${brand === 'phet' ? '' : `_${brand}`}.xhtml`, xhtml );

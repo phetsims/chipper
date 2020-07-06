@@ -29,7 +29,6 @@ module.exports = function( config ) {
   const {
     repo, // {string}
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
-    initializationScript, // {string}
     scripts, // {Array.<string>}
     locale, // {string}
     htmlHeader // {string}
@@ -40,8 +39,6 @@ module.exports = function( config ) {
   assert( typeof locale === 'string', 'Requires locale' );
   assert( typeof htmlHeader === 'string', 'Requires htmlHeader' );
 
-  const simIEDetection = grunt.file.read( '../chipper/templates/sim-ie-detection.html' );
-
   const localizedTitle = stringMap[ locale ][ getTitleStringKey( repo ) ];
 
   // Directory on the PhET website where the latest version of the sim lives
@@ -51,8 +48,6 @@ module.exports = function( config ) {
     PHET_CARRIAGE_RETURN: '\r',
     PHET_SIM_TITLE: encoder.htmlEncode( localizedTitle ),
     PHET_HTML_HEADER: htmlHeader,
-    PHET_INITIALIZATION_SCRIPT: `<script type="text/javascript">${initializationScript}</script>`,
-    PHET_IE_DETECTION: simIEDetection,
 
     // wrap scripts in global check for IE
     PHET_SIM_SCRIPTS: scripts.map( script => `<script type="text/javascript">if(!window.isIE){${script}}</script>` ).join( '\n' ),
