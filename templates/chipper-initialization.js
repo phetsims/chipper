@@ -67,7 +67,7 @@ const CSS_STYLING =
     margin: 11px 0;
   }`;
 const WARNING_ICON_SVG =
-  `<svg class="" x="0px" y="0px" viewBox="0 0 27.75 24.44">
+  `<svg xmlns="http://www.w3.org/2000/svg" class="" x="0px" y="0px" viewBox="0 0 27.75 24.44">
      <g>
        <path style="fill:red" d="M12.52,0.78L0.21,22.1c-0.6,1.04,0.15,2.34,1.35,2.34h24.62c1.2,0,1.95-1.3,1.35-2.34L15.22,0.78
          C14.62-0.26,13.12-0.26,12.52,0.78z"/>
@@ -103,7 +103,7 @@ if ( releaseVersion !== -1 ) {
 
   // create the html elements dynamically
   const ieWarningStyling = document.createElement( 'style' );
-  ieWarningStyling.innerText = CSS_STYLING;
+  ieWarningStyling.innerHTML = CSS_STYLING;
   const ieWarningContainer = document.createElement( 'div' );
   ieWarningContainer.id = 'ie-warning-container';
   const ieWarning = document.createElement( 'div' );
