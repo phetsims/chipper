@@ -58,7 +58,7 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  return await new Promise( ( resolve, reject ) => {
+  const result = await new Promise( ( resolve, reject ) => {
 
     // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
     setTimeout( () => reject( 'Timeout in generatePhetioAPI' ), 30000 );
@@ -68,7 +68,6 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
       if ( msg.text().indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
         const fullAPI = msg.text();
-        await browser.close();
         resolve( fullAPI );
       }
 
@@ -88,4 +87,6 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
     const url = `http://localhost:${port}/${repo}/${relativePath}?brand=phet-io&phetioStandalone&phetioPrintAPI`;
     page.goto( url ).catch( reject );
   } );
+  await browser.close();
+  return result;
 };
