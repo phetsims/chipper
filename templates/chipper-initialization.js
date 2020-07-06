@@ -118,7 +118,16 @@ if ( releaseVersion !== -1 ) {
   const ieWarningDifferentBrowser = document.createElement( 'p' );
   ieWarningDifferentBrowser.id = 'ie-warning-header';
 
-  const locale = 'en'; // TODO: get from query param and/or html path?
+  // get the locale specified as a query parameter, if there is one
+  const localeRegEx = /locale=[a-z]{2}(_[A-Z]{2}){0,1}/g;
+  const localeQueryParameterMatches = window.location.search.match( localeRegEx ) || [];
+  const localeQueryParameter = localeQueryParameterMatches.length ? localeQueryParameterMatches[ 0 ] : null;
+  const localeQueryParameterValue = localeQueryParameter ? localeQueryParameter.split( '=' )[ 1 ] : null;
+
+  // Prioritize the locale specified as a query parameter, otherwise fallback to the built locale. Then get the strings
+  // in that locale.
+  const locale = localeQueryParameterValue && window.phet.chipper.strings[ localeQueryParameterValue ] ?
+                 localeQueryParameterValue : window.phet.chipper.locale;
   const strings = window.phet.chipper.strings[ locale ];
 
   // fill in the translated strings
