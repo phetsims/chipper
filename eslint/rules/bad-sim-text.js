@@ -40,7 +40,10 @@ module.exports = function( context ) {
     // Use merge instead of _.extend for combining options/config. Leave out first letter to allow for `options = `
     // and `sliderOptions = _.extend` to both be caught.
     'ptions = _.extend(',
-    'onfig = _.extend('
+    'onfig = _.extend(',
+
+    // ParallelDOM.accessibleOrder should not be mutated, instead only set with `setAccessibleOrder`
+    '.accessibleOrder.push('
 
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     // TODO: comment back in when all lint errors are taken care of, https://github.com/phetsims/phet-info/issues/59
