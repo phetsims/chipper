@@ -221,11 +221,13 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
     for ( const locale of locales ) {
-      const initializationScript = getInitializationScript( _.extend( {
+      let initializationScript = getInitializationScript( _.extend( {
         locale: locale,
         includeAllLocales: false,
         isDebugBuild: false
       }, commonInitializationOptions ) );
+      initializationScript = minify( initializationScript, minifyOptions );
+
       grunt.file.write( `${buildDir}/${repo}_${locale}_${brand}.html`, packageRunnable( {
         repo: repo,
         stringMap: stringMap,
@@ -238,11 +240,12 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
 
   // _all.html (forced for phet-io)
   if ( allHTML || brand === 'phet-io' ) {
-    const initializationScript = getInitializationScript( _.extend( {
+    let initializationScript = getInitializationScript( _.extend( {
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: false
     }, commonInitializationOptions ) );
+    initializationScript = minify( initializationScript, minifyOptions );
 
     const allHTMLFilename = `${buildDir}/${repo}_all_${brand}.html`;
     const allHTMLContents = packageRunnable( {
@@ -259,11 +262,13 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   }
 
   // Debug build (always included)
-  const debugInitializationScript = getInitializationScript( _.extend( {
+  let debugInitializationScript = getInitializationScript( _.extend( {
     locale: ChipperConstants.FALLBACK_LOCALE,
     includeAllLocales: true,
     isDebugBuild: true
   }, commonInitializationOptions ) );
+  debugInitializationScript = minify( debugInitializationScript, debugMinifyOptions );
+
   grunt.file.write( `${buildDir}/${repo}_all_${brand}_debug.html`, packageRunnable( {
     repo: repo,
     stringMap: stringMap,
@@ -275,11 +280,13 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   // XHTML build (ePub compatibility, etc.)
   const xhtmlDir = `${buildDir}/xhtml`;
   grunt.file.mkdir( xhtmlDir );
-  const xhtmlInitializationScript = getInitializationScript( _.extend( {
+  let xhtmlInitializationScript = getInitializationScript( _.extend( {
     locale: ChipperConstants.FALLBACK_LOCALE,
     includeAllLocales: true,
     isDebugBuild: false
   }, commonInitializationOptions ) );
+  xhtmlInitializationScript = minify( xhtmlInitializationScript, minifyOptions );
+
   packageXHTML( xhtmlDir, {
     repo: repo,
     brand: brand,
