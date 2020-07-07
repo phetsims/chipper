@@ -17,11 +17,11 @@ window.phet.chipper.strings = {{PHET_STRINGS}};
 window.phet.chipper.isDebugBuild = {{PHET_IS_DEBUG_BUILD}};
 window.phet.chipper.packageObject = {{PHET_PACKAGE_OBJECT}};
 
-// IE warning page
+// IE error page
 
 // constants
 const CSS_STYLING =
-  `#ie-warning-container {
+  `#ie-error-container {
     display: none;
     position: fixed;
     top: 0;
@@ -34,7 +34,7 @@ const CSS_STYLING =
     align-items: center;
   }
 
-  #ie-warning {
+  #ie-error {
     position: relative;
     border-radius: 10px;
     max-width: 550px;
@@ -46,27 +46,27 @@ const CSS_STYLING =
     text-align: center;
   }
 
-  #ie-warning .header {
+  #ie-error .header {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 46px;
   }
 
-  #ie-warning .header .h1 {
+  #ie-error .header .h1 {
     font-size: 30px;
     font-weight: 500;
     margin: 0 0 0 10px;
   }
 
-  #ie-warning .header svg {
+  #ie-error .header svg {
     width: 36px;
   }
 
-  #ie-warning p {
+  #ie-error p {
     margin: 14px 0;
   }`;
-const WARNING_ICON_SVG =
+const ERROR_ICON_SVG =
   `<svg xmlns="http://www.w3.org/2000/svg" class="" x="0px" y="0px" viewBox="0 0 27.75 24.44">
      <g>
        <path style="fill:red" d="M12.52,0.78L0.21,22.1c-0.6,1.04,0.15,2.34,1.35,2.34h24.62c1.2,0,1.95-1.3,1.35-2.34L15.22,0.78
@@ -97,27 +97,27 @@ else if ( navigator.appName === 'Netscape' ) {
   }
 }
 
-// Browser is IE, so set a global to alert other scripts and show the warning message. Can also be revealed with the
-// flag `showInternetExplorerWarning`
-if ( releaseVersion !== -1 || window.location.search.indexOf( 'showInternetExplorerWarning' ) >= 0 ) {
+// Browser is IE, so set a global to alert other scripts and show the error message. Can also be revealed with the
+// flag `showInternetExplorerError`
+if ( releaseVersion !== -1 || window.location.search.indexOf( 'showInternetExplorerError' ) >= 0 ) {
   window.isIE = true;
 
   // create the html elements dynamically
-  const ieWarningStyling = document.createElement( 'style' );
-  ieWarningStyling.innerHTML = CSS_STYLING;
-  const ieWarningContainer = document.createElement( 'div' );
-  ieWarningContainer.id = 'ie-warning-container';
-  const ieWarning = document.createElement( 'div' );
-  ieWarning.id = 'ie-warning';
+  const ieErrorStyling = document.createElement( 'style' );
+  ieErrorStyling.innerHTML = CSS_STYLING;
+  const ieErrorContainer = document.createElement( 'div' );
+  ieErrorContainer.id = 'ie-error-container';
+  const ieError = document.createElement( 'div' );
+  ieError.id = 'ie-error';
   const header = document.createElement( 'div' );
   header.className = 'header';
-  const ieWarningHeader = document.createElement( 'h1' );
-  ieWarningHeader.id = 'ie-warning-header';
-  ieWarningHeader.className = 'h1';
-  const ieWarningNotSupported = document.createElement( 'p' );
-  ieWarningNotSupported.id = 'ie-warning-not-supported';
-  const ieWarningDifferentBrowser = document.createElement( 'p' );
-  ieWarningDifferentBrowser.id = 'ie-warning-header';
+  const ieErrorHeader = document.createElement( 'h1' );
+  ieErrorHeader.id = 'ie-error-header';
+  ieErrorHeader.className = 'h1';
+  const ieErrorNotSupported = document.createElement( 'p' );
+  ieErrorNotSupported.id = 'ie-error-not-supported';
+  const ieErrorDifferentBrowser = document.createElement( 'p' );
+  ieErrorDifferentBrowser.id = 'ie-error-header';
 
   // get the locale specified as a query parameter, if there is one
   const localeRegEx = /locale=[a-z]{2}(_[A-Z]{2}){0,1}/g;
@@ -132,20 +132,20 @@ if ( releaseVersion !== -1 || window.location.search.indexOf( 'showInternetExplo
   const strings = window.phet.chipper.strings[ locale ];
 
   // fill in the translated strings
-  ieWarningHeader.innerText = strings[ 'JOIST/ieWarningPage.platformWarning' ];
-  ieWarningNotSupported.innerText = strings[ 'JOIST/ieWarningPage.ieIsNotSupported' ];
-  ieWarningDifferentBrowser.innerText = strings[ 'JOIST/ieWarningPage.useDifferentBrowser' ];
+  ieErrorHeader.innerText = strings[ 'JOIST/ieErrorPage.platformError' ];
+  ieErrorNotSupported.innerText = strings[ 'JOIST/ieErrorPage.ieIsNotSupported' ];
+  ieErrorDifferentBrowser.innerText = strings[ 'JOIST/ieErrorPage.useDifferentBrowser' ];
 
   // add the html elements to the page
-  header.innerHTML = WARNING_ICON_SVG;
-  header.appendChild( ieWarningHeader );
-  ieWarning.appendChild( header );
-  ieWarning.appendChild( ieWarningNotSupported );
-  ieWarning.appendChild( ieWarningDifferentBrowser );
-  ieWarningContainer.appendChild( ieWarning );
-  document.body.appendChild( ieWarningStyling );
-  document.body.appendChild( ieWarningContainer );
+  header.innerHTML = ERROR_ICON_SVG;
+  header.appendChild( ieErrorHeader );
+  ieError.appendChild( header );
+  ieError.appendChild( ieErrorNotSupported );
+  ieError.appendChild( ieErrorDifferentBrowser );
+  ieErrorContainer.appendChild( ieError );
+  document.body.appendChild( ieErrorStyling );
+  document.body.appendChild( ieErrorContainer );
 
-  // reveal the warning
-  document.getElementById( 'ie-warning-container' ).style.display = 'flex';
+  // reveal the error
+  document.getElementById( 'ie-error-container' ).style.display = 'flex';
 }
