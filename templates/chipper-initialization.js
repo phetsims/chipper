@@ -64,7 +64,7 @@ const CSS_STYLING =
   }
 
   #ie-warning p {
-    margin: 11px 0;
+    margin: 14px 0;
   }`;
 const WARNING_ICON_SVG =
   `<svg xmlns="http://www.w3.org/2000/svg" class="" x="0px" y="0px" viewBox="0 0 27.75 24.44">
