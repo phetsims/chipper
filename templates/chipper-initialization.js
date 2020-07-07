@@ -97,8 +97,9 @@ else if ( navigator.appName === 'Netscape' ) {
   }
 }
 
-// Browser is IE, so set a global to alert other scripts and show the warning message
-if ( releaseVersion !== -1 ) {
+// Browser is IE, so set a global to alert other scripts and show the warning message. Can also be revealed with the
+// flag `showInternetExplorerWarning`
+if ( releaseVersion !== -1 || window.location.search.indexOf( 'showInternetExplorerWarning' ) >= 0 ) {
   window.isIE = true;
 
   // create the html elements dynamically
