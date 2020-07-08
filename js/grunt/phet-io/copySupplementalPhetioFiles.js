@@ -29,7 +29,7 @@ const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant,
 // For Client Guides
 const CLIENT_GUIDES_DIR = '../phet-io-client-guides/';
 const CLIENT_REQUESTS_FILENAME = 'client-requests';
-const PHET_IO_GUIDE_FILE_NAME = 'phet-io-guide';
+const PHET_IO_GUIDE_FILENAME = 'phet-io-guide';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
@@ -412,7 +412,7 @@ const handleClientGuides = ( repoName, buildDir ) => {
   }
 
   // handle generating and writing the html file for each client guide
-  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${PHET_IO_GUIDE_FILE_NAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILE_NAME}.html` );
+  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html` );
   generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${CLIENT_REQUESTS_FILENAME}.md`, `${builtClientGuidesOutputDir}${CLIENT_REQUESTS_FILENAME}.html` );
 };
 
@@ -435,7 +435,7 @@ const generateAndWriteClientGuide = ( repoName, mdFilePath, destinationPath ) =>
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{WRAPPER_INDEX_PATH}}', '../../' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILE_NAME}.html` );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILENAME}.html` );
   const renderedClientGuide = marked( clientGuideSource );
 
   // link a stylesheet
