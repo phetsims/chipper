@@ -465,10 +465,12 @@ const generateAndWriteClientGuide = ( repoName, mdFilePath, destinationPath ) =>
 const handleStudio = async wrappersLocation => {
 
   grunt.log.debug( 'running grunt in ../studio' );
-  await execute( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', [ 'build' ], {
-    cwd: '../studio',
-    shell: true
-  } );
+  const gruntCommand = /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt';
+  const npmCommand = /^win/.test( process.platform ) ? 'npm.cmd' : 'npm';
+
+  await execute( npmCommand, [ 'prune' ], { cwd: '../studio', shell: true } );
+  await execute( npmCommand, [ 'update' ], { cwd: '../studio', shell: true } );
+  await execute( gruntCommand, [ 'build' ], { cwd: '../studio', shell: true } );
 
   grunt.file.copy( `../studio/build/${STUDIO_BUILT_FILENAME}`, `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}` );
 };
