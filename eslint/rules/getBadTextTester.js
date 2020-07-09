@@ -9,7 +9,6 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-/* eslint-env node */
 'use strict';
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match

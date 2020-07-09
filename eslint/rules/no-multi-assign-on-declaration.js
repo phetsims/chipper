@@ -9,8 +9,6 @@
  * original file: https://github.com/eslint/eslint/blob/7ad86de/lib/rules/no-multi-assign.js
  */
 
-/* eslint-env node */
-
 'use strict';
 
 module.exports = {

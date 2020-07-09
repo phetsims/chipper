@@ -5,7 +5,6 @@
  * @copyright 2016 University of Colorado Boulder
  */
 
-/* eslint-env node */
 'use strict';
 
 //------------------------------------------------------------------------------

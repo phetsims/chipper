@@ -5,7 +5,6 @@
  * @copyright 2015 University of Colorado Boulder
  */
 
-/* eslint-env node */
 'use strict';
 
 module.exports = function( context ) {

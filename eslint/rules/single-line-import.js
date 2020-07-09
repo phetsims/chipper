@@ -7,7 +7,6 @@
  * @copyright 2020 University of Colorado Boulder
  */
 
-/* eslint-env node */
 'use strict';
 
 //------------------------------------------------------------------------------
