@@ -69,9 +69,6 @@ module.exports = {
     // Custom rule for ensuring that images and text use scenery node
     'no-html-constructors': 2,
 
-    // Custom rule for avoiding Math.sign which is not supported on IE
-    'no-math-sign': 2,
-
     // Custom rule for avoiding instanceof Array.
     'no-instanceof-array': 2,
 
