@@ -30,7 +30,7 @@ const CSS_STYLING =
     height: 100vh;
     width: 100vw;
     background: white;
-    z-index: 10000;
+    z-index: 1000000;
     align-items: center;
   }
 
