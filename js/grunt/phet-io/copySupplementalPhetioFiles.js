@@ -18,6 +18,7 @@ const execute = require( '../execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const generatePhetioAPI = require( './generatePhetioAPI' );
+const buildStandalone = require( '../buildStandalone' );
 const minify = require( '../minify' );
 const marked = require( 'marked' );
 
@@ -464,13 +465,7 @@ const generateAndWriteClientGuide = ( repoName, mdFilePath, destinationPath ) =>
  */
 const handleStudio = async wrappersLocation => {
 
-  grunt.log.debug( 'running grunt in ../studio' );
-  const gruntCommand = /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt';
-  const npmCommand = /^win/.test( process.platform ) ? 'npm.cmd' : 'npm';
+  grunt.log.debug( 'building studio' );
 
-  await execute( npmCommand, [ 'prune' ], { cwd: '../studio', shell: true } );
-  await execute( npmCommand, [ 'update' ], { cwd: '../studio', shell: true } );
-  await execute( gruntCommand, [ 'build' ], { cwd: '../studio', shell: true } );
-
-  grunt.file.copy( `../studio/build/${STUDIO_BUILT_FILENAME}`, `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}` );
+  fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {} ) );
 };
