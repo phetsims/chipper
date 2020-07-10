@@ -30,7 +30,7 @@ const CSS_STYLING =
     height: 100vh;
     width: 100vw;
     background: white;
-    z-index: 10000;
+    z-index: 1000000;
     align-items: center;
   }
 
@@ -100,7 +100,6 @@ else if ( navigator.appName === 'Netscape' ) {
 // Browser is IE, so set a global to alert other scripts and show the error message. Can also be revealed with the
 // flag `showInternetExplorerError`
 if ( releaseVersion !== -1 || window.location.search.indexOf( 'showInternetExplorerError' ) >= 0 ) {
-  window.isIE = true;
 
   // create the html elements dynamically
   const ieErrorStyling = document.createElement( 'style' );
