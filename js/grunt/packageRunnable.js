@@ -50,7 +50,7 @@ module.exports = function( config ) {
     PHET_HTML_HEADER: htmlHeader,
 
     // wrap scripts in global check for IE
-    PHET_SIM_SCRIPTS: scripts.map( script => `<script type="text/javascript">if(!window.isIE){${script}}</script>` ).join( '\n' ),
+    PHET_SIM_SCRIPTS: scripts.map( script => `<script type="text/javascript">${script}</script>` ).join( '\n' ),
 
     // metadata for Open Graph protocol, see phet-edmodo#2
     OG_TITLE: encoder.htmlEncode( localizedTitle ),
