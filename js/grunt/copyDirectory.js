@@ -20,7 +20,7 @@ const minify = require( './minify' );
  */
 module.exports = function( src, dst, filter, options ) {
 
-  options = _.extend( {
+  options = _.assignIn( {
     failOnExistingFiles: false,
     blacklist: [],
     minifyJS: false,

@@ -28,7 +28,7 @@ const MINIFY_DEFAULTS = {
 };
 
 const minify = function( js, options ) {
-  options = _.extend( {}, MINIFY_DEFAULTS, options );
+  options = _.assignIn( {}, MINIFY_DEFAULTS, options );
 
   // Promote to top level variables
   const { minify, babelTranspile, uglify, mangle, stripAssertions, stripLogging, beautify } = options;

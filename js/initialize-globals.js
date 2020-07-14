@@ -624,7 +624,7 @@
     // phet.log && phet.log( 'You lose', { color: 'red' } );
     if ( window.phet.chipper.queryParameters.log ) {
       window.phet.log = function( message, options ) {
-        options = _.extend( { // eslint-disable-line bad-sim-text
+        options = _.assignIn( { // eslint-disable-line bad-sim-text
           color: '#009900' // green
         }, options );
         console.log( '%c' + message, 'color: ' + options.color ); // green
@@ -774,7 +774,7 @@
      * @param {Object} [options] - Specific object results sent to CT.
      */
     window.phet.chipper.reportContinuousTestResult = options => {
-      window.parent && window.parent.postMessage( JSON.stringify( _.extend( {
+      window.parent && window.parent.postMessage( JSON.stringify( _.assignIn( {
         continuousTest: JSON.parse( phet.chipper.queryParameters.continuousTest ),
         url: window.location.href
       }, options ) ), '*' );
