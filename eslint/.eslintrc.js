@@ -1,6 +1,5 @@
 // Copyright 2015-2019, University of Colorado Boulder
 
-/* eslint-env node */
 'use strict';
 
 /**
