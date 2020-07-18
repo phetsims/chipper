@@ -84,7 +84,7 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
     const relativePath = fromBuiltVersion ?
                          `build/phet-io/${repo}_all_phet-io.html` :
                          `${repo}_en.html`;
-    const url = `http://localhost:${port}/${repo}/${relativePath}?brand=phet-io&phetioStandalone&phetioPrintAPI`;
+    const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI`;
     page.goto( url ).catch( reject );
   } );
   await browser.close();
