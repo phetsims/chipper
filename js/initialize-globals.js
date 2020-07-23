@@ -201,6 +201,11 @@
     gameUp: { type: 'flag' },
 
     /**
+     * Enables the game-up-camera code to respond to messages from any origin
+     */
+    gameUpTestHarness: { type: 'flag' },
+
+    /**
      * Enables logging for game-up-camera, see gameUp
      */
     gameUpLogging: { type: 'flag' },
