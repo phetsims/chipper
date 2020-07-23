@@ -417,7 +417,8 @@
     screens: {
       type: 'array',
       elementSchema: {
-        type: 'number'
+        type: 'number',
+        isValidValue: Number.isInteger
       },
       defaultValue: null,
       isValidValue: function( value ) {
