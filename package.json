@@ -15,7 +15,7 @@
     "eslint-plugin-react": "^7.18.0",
     "grunt": "~1.1.0",
     "jimp": "^0.2.0",
-    "jpeg-js": "~0.1.1",
+    "jpeg-js": "~0.4.1",
     "jscpd": "^0.6.18",
     "jsdoc": "~3.6.3",
     "lodash": "^4.17.10",
