@@ -33,7 +33,7 @@ module.exports = function( jsInput ) {
       modules: false,
       targets: {
         browsers: [
-          // See http://browserl.ist/?q=%3E+0.5%25%2C+safari+9-11%2C+Firefox+ESR%2C+IE+11%2C+ios_saf+11
+          // See http://browserl.ist/?q=%3E+0.5%25%2C+safari+10-11%2C+Firefox+ESR%2C+not+IE+11%2C+ios_saf+11
           '> 0.5%',
           'safari 10-11',
           'Firefox ESR',
