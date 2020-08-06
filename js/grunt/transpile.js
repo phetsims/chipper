@@ -35,9 +35,9 @@ module.exports = function( jsInput ) {
         browsers: [
           // See http://browserl.ist/?q=%3E+0.5%25%2C+safari+9-11%2C+Firefox+ESR%2C+IE+11%2C+ios_saf+11
           '> 0.5%',
-          'safari 9-11',
+          'safari 10-11',
           'Firefox ESR',
-          'IE 11',
+          'not IE 11',
           'ios_saf 11'
         ]
       }
