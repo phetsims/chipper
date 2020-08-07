@@ -288,7 +288,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     brand: brand,
     stringMap: stringMap,
     htmlHeader: htmlHeader,
-    scripts: [ xhtmlInitializationScript, ...productionScripts ]
+    initializationScript: xhtmlInitializationScript,
+    scripts: productionScripts
   } );
 
   // dependencies.json
