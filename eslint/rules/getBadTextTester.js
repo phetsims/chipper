@@ -54,7 +54,7 @@ module.exports = ( badTexts, context ) => {
     const testBadText = forbiddenText => {
 
       // no need to iterate through lines if the bad text isn't anywhere in the source code (unless we are checking a predicate)
-      if ( text.indexOf( forbiddenText.id ) >= 0 || forbiddenText.predicate ) {
+      if ( text.indexOf( forbiddenText.id ) >= 0 || forbiddenText.predicate || forbiddenText.regex ) {
 
         // If codeTokens are provided, only test this bad text in code, and not anywhere else.
         if ( forbiddenText.codeTokens ) {
