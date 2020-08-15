@@ -29,6 +29,7 @@ const path = require( 'path' );
 
 /**
  * @param {string} repo
+ * @returns {boolean} success
  */
 module.exports = async repo => {
 
@@ -120,4 +121,6 @@ module.exports = async repo => {
   if ( !success ) {
     grunt.fail.fatal( 'There is an issue with the licenses for media types.' );
   }
+
+  return success;
 };
