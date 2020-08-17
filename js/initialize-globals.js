@@ -713,7 +713,8 @@
     };
   }() );
 
-  /** Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
+  /**
+   * Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
    * See `Random.js`
    * @public (writable by phet-io) can be overwritten for replicable playback in phet-io.
    * @type {number}
