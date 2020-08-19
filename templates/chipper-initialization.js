@@ -17,7 +17,7 @@ window.phet.chipper.strings = {{PHET_STRINGS}};
 window.phet.chipper.isDebugBuild = {{PHET_IS_DEBUG_BUILD}};
 window.phet.chipper.packageObject = {{PHET_PACKAGE_OBJECT}};
 
-// IE error page. Note: this is not transpiled and needs to support IE.
+// IE error page
 
 // constants
 var CSS_STYLING =
