@@ -31,7 +31,7 @@ module.exports = function( xhtmlDir, config ) {
     repo, // {string}
     brand, // {string}
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
-    initializationScript, // {string}
+    initializationScript, // {string} - separate from the rest of the scripts since it needs to be able to run in IE.
     scripts, // {Array.<string>}
     htmlHeader // {string}
   } = config;

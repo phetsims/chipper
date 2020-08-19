@@ -14,6 +14,7 @@ const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const grunt = require( 'grunt' );
+const transpile = require( './transpile' );
 
 /**
  * Returns a string for the JS of the initialization script.
@@ -72,6 +73,7 @@ module.exports = function( config ) {
     PHET_DEPENDENCIES: JSON.stringify( dependencies, null, 2 ),
     PHET_STRINGS: JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ),
     PHET_IS_DEBUG_BUILD: !!isDebugBuild,
-    PHET_PACKAGE_OBJECT: JSON.stringify( packageObject )
+    PHET_PACKAGE_OBJECT: JSON.stringify( packageObject ),
+    IE_DETECTION_SCRIPT: transpile( grunt.file.read( '../chipper/js/scripts/ie-detection.js' ), true )
   } );
 };
