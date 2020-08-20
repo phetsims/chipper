@@ -73,11 +73,8 @@ try {
       if ( exists ) {
         const browser = await puppeteer.launch();
 
-        // phet-io repo unit tests must be run with brand=phet-io
-        const queryString = repo === 'phet-io' ? '&brand=phet-io' : '';
-
         const localTestingURL = buildLocal.localTestingURL.endsWith( '/' ) ? buildLocal.localTestingURL : `${buildLocal.localTestingURL}/`;
-        const result = await puppeteerQUnit( browser, `${localTestingURL}${testFilePath}?ea${queryString}` );
+        const result = await puppeteerQUnit( browser, `${localTestingURL}${testFilePath}?ea&brand=phet-io` );
         await browser.close();
         outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
         if ( !result.ok ) {
