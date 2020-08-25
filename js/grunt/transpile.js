@@ -16,7 +16,7 @@ const babel = require( '@babel/core' ); // eslint-disable-line require-statement
  * @public
  *
  * @param {string} jsInput
- * @param {boolean} [forIE] - whether the jsInput should be transpiled for IE
+ * @param {boolean} [forIE] - whether the jsInput should be transpiled for Internet Explorer
  * @returns {string} - The transpiled code
  */
 module.exports = function( jsInput, forIE = false ) {
@@ -29,13 +29,7 @@ module.exports = function( jsInput, forIE = false ) {
     'Firefox ESR',
     'ios_saf 11'
   ];
-
-  if ( forIE ) {
-    browsers.push( 'IE 11');
-  }
-  else {
-    browsers.push( 'not IE 11' );
-  }
+  browsers.push( forIE ? 'IE 11' : 'not IE 11' );
 
   return babel.transform( jsInput, {
     // Avoids a warning that this gets disabled for >500kb of source. true/false doesn't affect the later minified size, and
