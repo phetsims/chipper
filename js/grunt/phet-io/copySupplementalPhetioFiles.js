@@ -376,6 +376,7 @@ const handleJSDOC = async buildDir => {
     ...JSDOC_FILES,
     '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
     '-d', `${buildDir}doc/api`,
+    '-t', '../sherpa/lib/docdash-1.2.0',
     '--readme', JSDOC_README_FILE
   ];
 
@@ -386,6 +387,13 @@ const handleJSDOC = async buildDir => {
     cwd: process.cwd(),
     shell: true
   } );
+
+  // Copy the logo file
+  const imageDir = `${buildDir}doc/images`;
+  if ( !fs.existsSync( imageDir ) ) {
+    fs.mkdirSync( imageDir );
+  }
+  fs.copyFileSync( '../brand/phet-io/images/logo-on-white.png', `${imageDir}/logo.png` );
 };
 
 /**
