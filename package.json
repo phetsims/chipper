@@ -27,6 +27,7 @@
     "qunit": "~2.10.0",
     "request": "^2.87.0",
     "request-promise-native": "^1.0.7",
+    "taffydb": "^2.7.3",
     "terser": "~4.6.4",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",
