@@ -16,7 +16,7 @@ const babel = require( '@babel/core' ); // eslint-disable-line require-statement
  * @public
  *
  * @param {string} jsInput
- * @param {boolean} [forIE] - whether the jsInput should be transpiled for Internet Explorer
+ * @param {boolean} [forIE=false] - whether the jsInput should be transpiled for Internet Explorer
  * @returns {string} - The transpiled code
  */
 module.exports = function( jsInput, forIE = false ) {

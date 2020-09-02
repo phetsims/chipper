@@ -74,6 +74,6 @@ module.exports = function( config ) {
     PHET_STRINGS: JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ),
     PHET_IS_DEBUG_BUILD: !!isDebugBuild,
     PHET_PACKAGE_OBJECT: JSON.stringify( packageObject ),
-    IE_DETECTION_SCRIPT: transpile( grunt.file.read( '../chipper/js/scripts/ie-detection.js' ), true )
+    IE_DETECTION_SCRIPT: transpile( grunt.file.read( '../chipper/js/ie-detection.js' ), true )
   } );
 };
