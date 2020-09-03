@@ -34,6 +34,8 @@
 
   assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
 
+  const packageObject = window.phet.chipper.packageObject;
+
   // Private Doc: Note: the following jsdoc is for the public facing phet-io api. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
   // phet-io documentation. Private comments about implementation details will be in comments above the jsdoc, and
@@ -599,19 +601,15 @@
     },
 
     /**
-     * Enables zooming and panning of the simulation.
+     * Enables zooming and panning of the simulation. Zoom can be permanently disabled if supportsZoom: false is
+     * added under the `phet` entry of package.json. Query parameter value will always override package.json entry.
      *
-     * This parameter is intended for internal use only. If a sim is published with zoom, it should use the
-     * package.json item `supportsZoom: true`.
-     *
-     * If the value is null, the behavior will default to the value specified in the package.json entry.
-     * Using the query parameter ('true' or 'false') will override the value in package.json. This feature was recently
-     * introduced and is still not enabled in most simulations.
+     * Public, so that users can disable this feature if they need to.
      */
     supportsZoom: {
-      type: 'string',
-      validValues: [ null, 'true', 'false' ],
-      defaultValue: null
+      type: 'boolean',
+      defaultValue: packageObject.phet.supportsZoom === undefined || packageObject.phet.supportsZoom,
+      public: true
     }
   };
 
