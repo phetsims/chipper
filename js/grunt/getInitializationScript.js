@@ -3,6 +3,9 @@
 /**
  * Fills in values for the chipper initialization script script.
  *
+ * NOTE: This should not be minified! It contains licenses that should be human readable as well as important formatting
+ * for rosetta translation.
+ *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
