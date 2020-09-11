@@ -611,14 +611,14 @@
     },
 
     /**
-     * Enables zooming and panning of the simulation. Zoom can be permanently disabled if supportsZoom: false is
+     * Enables panning and zooming of the simulation. Can be permanently disabled if supportsPanAndZoom: false is
      * added under the `phet` entry of package.json. Query parameter value will always override package.json entry.
      *
      * Public, so that users can disable this feature if they need to.
      */
-    supportsZoom: {
+    supportsPanAndZoom: {
       type: 'boolean',
-      defaultValue: packageObject.phet.supportsZoom === undefined || packageObject.phet.supportsZoom,
+      defaultValue: packageObject.phet.supportsPanAndZoom === undefined || packageObject.phet.supportsPanAndZoom,
       public: true
     }
   };
