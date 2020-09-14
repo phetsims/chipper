@@ -94,6 +94,7 @@ const modulifyMipmap = async abspath => {
 
   const mipmapContents = `${HEADER}
 import simLauncher from '${expandDots( abspath )}joist/js/simLauncher.js';
+
 const mipmaps = ${JSON.stringify( entry, null, 2 )};
 mipmaps.forEach( mipmap => {
   mipmap.img = new Image();
