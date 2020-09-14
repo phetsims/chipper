@@ -67,6 +67,7 @@ const modulifyImage = async abspath => {
 
   const contents = `${HEADER}
 import simLauncher from '${expandDots( abspath )}joist/js/simLauncher.js';
+
 const image = new Image();
 const unlock = simLauncher.createLock( image );
 image.onload = unlock;
