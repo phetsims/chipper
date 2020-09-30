@@ -68,7 +68,7 @@ const CONTRIB_FILES = [
   '../sherpa/lib/split-1.5.11.min.js',
   '../sherpa/lib/highlight.js-9.1.0/styles/tomorrow-night-bright.css',
   '../sherpa/lib/highlight.js-9.1.0/highlight.js',
-  '../sherpa/lib/clarinet-1.0.0.js'
+  '../sherpa/lib/clarinet-0.12.4.js'
 ];
 
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
