@@ -90,7 +90,7 @@ module.exports = function( repos, cache, say = false, warn = true ) {
     ]
   } );
 
-  grunt.verbose.writeln( 'linting: ' + filteredRepos.join( ', ' ) );
+  grunt.verbose.writeln(  `linting: ${filteredRepos.join( ', ' )}` );
 
   // run the eslint step
   const report = cli.executeOnFiles( filteredRepos );
