@@ -8,6 +8,10 @@ import Tandem from '../../../tandem/js/Tandem.js';
 const qunitStart = () => {
 
   const start = () => {
+
+    // Uncomment for a debugger whenever a test fails
+    // QUnit.log( context => { if ( !context.result ) { debugger; }} );
+
     if ( Tandem.PHET_IO_ENABLED ) {
       import( /* webpackMode: "eager" */ '../../../phet-io/js/phetioEngine.js').then( () => {
 
