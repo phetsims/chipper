@@ -584,19 +584,19 @@
     supportsSound: { type: 'flag' },
 
     /**
-     * Indicates whether or not vibration and its library should be initialized. There are a few prototype strategies
-     * that we are exploring which can be selected by the valid values.
-     *   - null: Default value, vibration disabled
-     *   - objects: Vibration designed to indicate relative position of objects on screen
-     *   - interaction: Vibration designed to indicate successful interaction with objects
-     *   - state: Vibration designed to convey current state of the simulation
+     * Indicates whether or not vibration is enabled, and which paradigm is enabled for testing. There
+     * are several "paradigms", which are different vibration output designs.  For temporary use
+     * while we investigate use of this feature. In the long run there will probably be only
+     * one design and it can be enabled/disabled with something more like `supportsVibration`.
      *
-     * Used internally, though links are shared with collaborators and possibly in publications.
+     * These are numbered, but type is string so default can be null, where all vibration is disabled.
+     *
+     * Used internally, though links are shared with collaborators and possibly in paper publications.
      */
-    vibration: {
+    vibrationParadigm: {
       type: 'string',
       defaultValue: null,
-      validValues: [ null, 'objects', 'manipulation', 'interaction-changes', 'result' ]
+      validValues: [ null, '1' ]
     },
 
     /**
