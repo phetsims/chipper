@@ -18,9 +18,6 @@ module.exports = function( context ) {
   // see getBadTextTester for schema.
   const forbiddenTextObjects = [
 
-    // babel doesn't support compiling static getters, see https://github.com/phetsims/tasks/issues/983
-    { id: ' static get ', codeTokens: [ 'static', 'get' ] },
-
     // should be using dot.Utils.roundSymmetric, Math.round does not treat positive and negative numbers
     // symmetrically see https://github.com/phetsims/dot/issues/35#issuecomment-113587879
     { id: 'Math.round(', codeTokens: [ 'Math', '.', 'round', '(' ] },
