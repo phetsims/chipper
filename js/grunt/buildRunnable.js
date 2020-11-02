@@ -90,7 +90,9 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     stripAssertions: false,
     stripLogging: false
   } : {
-    minify: false
+    minify: true,
+    beautify: true,
+    mangle: false
   };
 
   const usedModules = webpackResult.usedModules;
