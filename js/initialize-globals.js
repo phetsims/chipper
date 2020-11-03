@@ -568,6 +568,16 @@
     supportsEnhancedSound: { type: 'flag' },
 
     /**
+     * Indicates whether custom gesture control is enabled by default in the simulation.
+     * This input method is still in development, mostly to be used in combination with the self-voicing
+     * feature. It allows you to swipe the screen to move focus, double tap the screen to activate
+     * components, and tap and hold to initiate custom gestures.
+     *
+     * For internal use, though may be used in shared links with collaborators.
+     */
+    supportsGestureControl: { type: 'flag' },
+
+    /**
      * Indicates whether or not the "Self Voicing" feature is enabled. This is a prototype
      * feature that uses the web-speech API to provide speech output to the user about
      * what is happening in the simulation.
