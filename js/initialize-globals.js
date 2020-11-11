@@ -606,7 +606,7 @@
     vibrationParadigm: {
       type: 'string',
       defaultValue: null,
-      validValues: [ null, '1', '2' ]
+      validValues: [ null, '1', '2', '3', '4', '5', '6' ]
     },
 
     /**
