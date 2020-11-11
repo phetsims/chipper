@@ -330,6 +330,18 @@ module.exports = function( grunt ) {
         const simVersion = SimVersion.parse( packageObject.version );
         generateREADME( repo, simVersion.isSimPublished );
       }
+
+      if ( packageObject.phet.supportedBrands.includes( 'phet-io' ) ) {
+
+        // Copied from build.json and used as a preload for phet-io brand
+        const overridesFile = `../${repo}/js/${repo}-phet-io-overrides.js`;
+
+        // If there is already an overrides file, don't overwrite it with an empty one
+        if ( !fs.existsSync( overridesFile ) ) {
+          fs.writeFileSync( overridesFile,
+            '/* eslint-disable */\nwindow.phet.phetio.phetioElementsOverrides = {};' );
+        }
+      }
     } ) );
 
   grunt.registerTask( 'published-README',
