@@ -13,7 +13,6 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
-const findDuplicates = require( './findDuplicates' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
@@ -395,16 +394,6 @@ module.exports = function( grunt ) {
     wrapTask( async () => {
       await reportThirdParty();
     } ) );
-
-  grunt.registerTask( 'find-duplicates', 'Find duplicated code in this repo.\n' +
-                                         '--dependencies to expand search to include dependencies\n' +
-                                         '--everything to expand search to all PhET code', wrapTask( async () => {
-
-    // --disable-eslint-cache disables the cache, useful for developing rules
-    const cache = !grunt.option( 'disable-eslint-cache' );
-
-    findDuplicates( repo, cache );
-  } ) );
 
   grunt.registerTask( 'migrate', 'Migrates RequireJS code to ES6 modules using a number of heuristics', wrapTask( async () => {
     await migrate( repo );
