@@ -285,6 +285,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
   }
 
+  // The nested index wrapper will be broken on build, so get rid of it for clarity
   fs.rmdirSync( `${wrappersLocation}index/`, { recursive: true } );
 };
 
