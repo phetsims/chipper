@@ -266,7 +266,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // Create the lib file that is minified and publicly available under the /lib folder of the build
   handleLib( buildDir, filterWrapper );
 
-  // Create the zipped file that holds all needed items to run PhET-iO offline
+  // Create the zipped file that holds all needed items to run PhET-iO offline. NOTE: this must happen after copying wrapper
   await handleOfflineArtifact( buildDir, repo, version );
 
   // Create the contrib folder and add to it third party libraries used by wrappers.
@@ -349,7 +349,11 @@ const handleOfflineArtifact = async ( buildDir, repo, version ) => {
   archive.on( 'error', err => grunt.fail.fatal( 'error creating archive: ' + err ) );
 
   archive.pipe( output );
-  archive.directory( `${buildDir}lib`, 'lib' ); // copy over the lib directory and its contents
+
+  // copy over the lib directory and its contents, and an index to test. Note that these use the files from the buildDir
+  // because they have been post-processed and contain filled in template vars.
+  archive.directory( `${buildDir}lib`, 'lib' );
+  archive.file( `${buildDir}${WRAPPERS_FOLDER}/common/html/offline-example.html`, { name: 'index.html' } );
 
   // get the all html and the debug version too, use `cwd` so that they are at the top level of the zip.
   archive.glob( `${repo}*all*.html`, { cwd: `${buildDir}` } );
