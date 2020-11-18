@@ -285,6 +285,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
   }
 
+  fs.rmdirSync( `${wrappersLocation}index/`, { recursive: true } );
 };
 
 /**
