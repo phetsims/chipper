@@ -76,6 +76,10 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
         const message = msg.text() + location;
         console.error( 'Error from sim:', message );
       }
+
+      else {
+        console.log( 'Message from sim:', msg.text() );
+      }
     } );
 
     page.on( 'error', reject );
