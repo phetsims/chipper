@@ -333,7 +333,7 @@ Updates the normal automatically-generated files for this repository. Includes:
         generateREADME( repo, simVersion.isSimPublished );
       }
 
-      if ( packageObject.phet.supportedBrands.includes( 'phet-io' ) ) {
+      if ( packageObject.phet.supportedBrands && packageObject.phet.supportedBrands.includes( 'phet-io' ) ) {
 
         // Copied from build.json and used as a preload for phet-io brand
         const overridesFile = `../${repo}/js/${repo}-phet-io-overrides.js`;
