@@ -302,14 +302,17 @@ module.exports = function( grunt ) {
       generateA11yViewHTML( repo );
     } ) );
 
-  grunt.registerTask( 'update',
-    'Updates the normal automatically-generated files for this repository. Includes:\n' +
-    '  runnables: generate-development-html\n' +
-    '  accessible runnables: generate-a11y-view-html\n' +
-    '  color-profile runnables: generate-development-colors-html\n' +
-    '  unit tests: generate-test-html',
+  grunt.registerTask( 'update', `
+Updates the normal automatically-generated files for this repository. Includes:
+  * runnables: generate-development-html and modulfy  
+  * accessible runnables: generate-a11y-view-html  
+  * color-profile runnables: generate-development-colors-html
+  * unit tests: generate-test-html
+  * simulations: generateREADME()
+  * phet-io simulations: generate overrides file if needed`,
     wrapTask( async () => {
       if ( packageObject.phet.runnable ) {
+        grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
 
         if ( packageObject.phet.supportsInteractiveDescriptions ) {
