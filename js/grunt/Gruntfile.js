@@ -311,6 +311,12 @@ Updates the normal automatically-generated files for this repository. Includes:
   * simulations: generateREADME()
   * phet-io simulations: generate overrides file if needed`,
     wrapTask( async () => {
+
+      // support repos that don't have a phet object
+      if ( !packageObject.phet ) {
+        return;
+      }
+
       if ( packageObject.phet.runnable ) {
         grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
