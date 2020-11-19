@@ -35,11 +35,6 @@ module.exports = function( repo, brand, forSim ) {
     buildObject = {};
   }
 
-  // No preload needed for wrappers
-  if ( packageObject.isWrapper ) {
-    return [];
-  }
-
   let preload = [];
 
   // add preloads that are common to all sims, from build.json

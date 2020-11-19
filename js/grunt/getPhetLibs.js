@@ -41,11 +41,6 @@ module.exports = function getPhetLibs( repo, brand ) {
       buildObject = {};
     }
 
-    // If working with a wrapper, then just use the wrapper's phetLibs
-    if ( packageObject.isWrapper && packageObject.wrapper.phetLibs ) {
-      return packageObject.wrapper.phetLibs.concat( packageObject.name ).sort();
-    }
-
     // start with package.json
     let phetLibs = packageObject.phet.phetLibs || [];
 
@@ -55,11 +50,7 @@ module.exports = function getPhetLibs( repo, brand ) {
     // add common and brand-specific entries from build.json
     [ 'common', brand ].forEach( function( id ) {
       if ( buildObject[ id ] && buildObject[ id ].phetLibs ) {
-
-        // We don't want common sim repos for wrappers
-        if ( !packageObject.isWrapper || ( packageObject.isWrapper && id !== 'common' ) ) {
-          phetLibs = phetLibs.concat( buildObject[ id ].phetLibs );
-        }
+        phetLibs = phetLibs.concat( buildObject[ id ].phetLibs );
       }
     } );
 

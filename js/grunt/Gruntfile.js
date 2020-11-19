@@ -26,7 +26,6 @@ const fixEOL = require( './fixEOL' );
 const migrate = require( './migrate' );
 const minify = require( './minify' );
 const modulify = require( './modulify' );
-const buildWrapper = require( './phet-io/buildWrapper' );
 const generatePhetioAPI = require( './phet-io/generatePhetioAPI' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
@@ -202,11 +201,6 @@ module.exports = function( grunt ) {
             fs.writeFileSync( `../${repo}/build/${path.basename( file )}`, minify( grunt.file.read( file ) ) );
           }
         }
-      }
-      else if ( repoPackageObject.isWrapper ) {
-        grunt.log.writeln( 'Building wrapper repository' );
-
-        await buildWrapper( repo );
       }
       else {
 
