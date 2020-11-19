@@ -119,6 +119,11 @@
       defaultValue: 'default'
     },
 
+    /**
+     * enables debugger commands in certain cases like thrown errors and failed tests.
+     */
+    debugger: { type: 'flag' },
+
     // Output deprecation warnings via console.warn, see https://github.com/phetsims/chipper/issues/882. For internal
     // use only.
     deprecationWarnings: { type: 'flag' },

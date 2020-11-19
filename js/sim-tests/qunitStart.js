@@ -10,7 +10,9 @@ const qunitStart = () => {
   const start = () => {
 
     // Uncomment for a debugger whenever a test fails
-    // QUnit.log( context => { if ( !context.result ) { debugger; }} );
+    if ( _.hasIn( window, 'phet.chipper.queryParameters' ) && phet.chipper.queryParameters.debugger ) {
+      QUnit.log( context => { if ( !context.result ) { debugger; }} ); // eslint-disable-line no-debugger
+    }
 
     if ( Tandem.PHET_IO_ENABLED ) {
       import( /* webpackMode: "eager" */ '../../../phet-io/js/phetioEngine.js').then( () => {
