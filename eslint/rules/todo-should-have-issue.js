@@ -10,17 +10,7 @@
 module.exports = function( context ) {
 
   // Whitelist of directories to check that TODOs have GitHub issues
-  const directoriesToRequireIssues = [
-    /axon[/\\]js/,
-    /dot[/\\]js/,
-    /joist[/\\]js/,
-    /kite[/\\]js/,
-    /phet-io[/\\]js/,
-    /sun[/\\]js/,
-    /scenery[/\\]js/,
-    /scenery-phet[/\\]js/,
-    /tandem[/\\]js/
-  ];
+  const directoriesToRequireIssues = [ /joist[/\\]js/ ];
 
   return {
 
