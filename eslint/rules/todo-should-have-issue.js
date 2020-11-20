@@ -7,11 +7,13 @@
 
 'use strict';
 
+const fs = require( 'fs' );
+const buildJSON = JSON.parse( fs.readFileSync( '../chipper/build.json' ).toString() );
+
+// Whitelist of directories to check that TODOs have GitHub issues
+const directoriesToRequireIssues = buildJSON.common.phetLibs.filter( x => x !== 'scenery' && x !== 'dot' && x !== 'kite' );
+
 module.exports = function( context ) {
-
-  // Whitelist of directories to check that TODOs have GitHub issues
-  const directoriesToRequireIssues = [ /joist[/\\]js/ ];
-
   return {
 
     Program: function checkTodoShouldHaveIssue( node ) {
@@ -19,8 +21,9 @@ module.exports = function( context ) {
       // Check whether the given directory matches the whitelist
       let directoryShouldBeChecked = false;
       for ( let i = 0; i < directoriesToRequireIssues.length; i++ ) {
-        const d = directoriesToRequireIssues[ i ];
-        if ( context.getFilename().match( d ) ) {
+        const directory = directoriesToRequireIssues[ i ];
+        const regex = new RegExp( `${directory}[/\\\\]js` );
+        if ( context.getFilename().match( regex ) ) {
           directoryShouldBeChecked = true;
           break;
         }
