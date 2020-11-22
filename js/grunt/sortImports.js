@@ -28,10 +28,12 @@ const isImport = line => line.startsWith( 'import ' );
 
 /**
  * @param {string} file
+ * @param {boolean} verifyOnly - Don't rewrite file, just verify already sorted
+ * @returns {boolean} - Was the file properly sorted to begin with?
  */
-module.exports = function( file ) {
-  let contents = fs.readFileSync( file, 'utf-8' );
-  let lines = contents.split( /\r?\n/ );
+module.exports = function( file, verifyOnly = false ) {
+  const before = fs.readFileSync( file, 'utf-8' );
+  let lines = before.split( /\r?\n/ );
 
   // remove the grouping comments
   lines = lines.filter( ( line, i ) => {
@@ -67,6 +69,9 @@ module.exports = function( file ) {
     firstImportIndex--;
   }
 
-  contents = lines.join( '\n' );
-  fs.writeFileSync( file, contents, 'utf-8' );
+  const after = lines.join( '\n' );
+  if (!verifyOnly){
+    fs.writeFileSync( file, after, 'utf-8' );
+  }
+  return (after == before);
 };

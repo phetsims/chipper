@@ -21,6 +21,7 @@ const generateTestHTML = require( './generateTestHTML' );
 const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
+const format = require( './format' );
 const lint = require( './lint' );
 const fixEOL = require( './fixEOL' );
 const migrate = require( './migrate' );
@@ -266,6 +267,22 @@ module.exports = function( grunt ) {
     const cache = !grunt.option( 'disable-eslint-cache' );
 
     lint( getPhetLibs( repo ), cache );
+  } ) );
+
+  grunt.registerTask( 'format', 'format js files that are specific to this repository', wrapTask( async () => {
+
+    //Don't actually modify the files, just verify them?
+    const verifyOnly = !!grunt.option( 'verify' );
+
+    format( [ repo ], verifyOnly );
+  } ) );
+
+  grunt.registerTask( 'format-all', 'format all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
+
+    //Don't actually modify the files, just verify them?
+    const verifyOnly = !!grunt.option( 'verify' );
+
+    format( getPhetLibs( repo ), verifyOnly );
   } ) );
 
   grunt.registerTask( 'generate-development-html',
