@@ -33,7 +33,6 @@ module.exports = async function( repo, minifyOptions ) {
   const webpackJS = ( await webpackBuild( repo, 'phet' ) ).js;
 
   let includedSources = [
-    '../sherpa/lib/mdn-array-from-polyfill.js',
     '../assert/js/assert.js',
     '../tandem/js/PhetioIDUtils.js'
   ];
