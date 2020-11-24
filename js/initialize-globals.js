@@ -150,7 +150,8 @@
      */
     enhancedSoundInitiallyEnabled: {
       type: 'boolean',
-      defaultValue: false
+      defaultValue: false,
+      public: true
     },
 
     /**
