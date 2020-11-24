@@ -496,7 +496,8 @@
     sound: {
       type: 'string',
       defaultValue: 'enabled',
-      validValues: [ 'enabled', 'disabled', 'muted' ]
+      validValues: [ 'enabled', 'disabled', 'muted' ],
+      public: true
     },
 
     /**
