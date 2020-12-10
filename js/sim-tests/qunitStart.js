@@ -19,7 +19,6 @@ const qunitStart = () => {
 
         // no api validation in unit tests
         phet.tandem.phetioAPIValidation.enabled = false;
-        Tandem.launch();
         QUnit.start();
       } );
     }
