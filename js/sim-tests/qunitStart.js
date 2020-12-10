@@ -19,6 +19,7 @@ const qunitStart = () => {
 
         // no api validation in unit tests
         phet.tandem.phetioAPIValidation.enabled = false;
+        phet.phetio.phetioEngine.flushPhetioObjectBuffer();
         QUnit.start();
       } );
     }
