@@ -118,6 +118,12 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
   const dependencies = await getDependencies( repo );
+
+  webpackResult.usedModules.forEach( moduleDependency => {
+    const moduleRepo = moduleDependency.slice( 0, moduleDependency.indexOf( '/' ) );
+    assert( Object.keys( dependencies ).includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
+  } );
+
   const version = packageObject.version; // Include the one-off name in the version
   const thirdPartyEntries = getAllThirdPartyEntries( repo, brand, licenseEntries );
   const simTitleStringKey = getTitleStringKey( repo );
