@@ -44,7 +44,7 @@ require( './checkNodeVersion' );
 // Relevant for https://github.com/phetsims/wave-interference/issues/491
 process.on( 'unhandledRejection', up => { throw up; } );
 
-module.exports = function( grunt ) {
+module.exports = function ( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
 
   // Handle the lack of build.json
@@ -52,7 +52,7 @@ module.exports = function( grunt ) {
   try {
     buildLocal = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
   }
-  catch( e ) {
+  catch ( e ) {
     buildLocal = {};
   }
 
@@ -71,7 +71,7 @@ module.exports = function( grunt ) {
     try {
       await promise;
     }
-    catch( e ) {
+    catch ( e ) {
       if ( e.stack ) {
         grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
       }
@@ -103,8 +103,8 @@ module.exports = function( grunt ) {
   }
 
   grunt.registerTask( 'default', 'Builds the repository', [
-    ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
-    ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
+    ...( grunt.option( 'lint' ) === false ? [] : ['lint-all'] ),
+    ...( grunt.option( 'report-media' ) === false ? [] : ['report-media'] ),
     'clean',
     'build'
   ] );
@@ -136,6 +136,16 @@ module.exports = function( grunt ) {
         ];
         for ( const size of thumbnailSizes ) {
           grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, jimp.MIME_PNG ) );
+        }
+
+
+        const altScreenshots = grunt.file.expand( { filter: 'isFile', cwd: `../${repo}/assets` }, [`./${repo}-screenshot-alt[0123456789].png`] );
+        for ( const altScreenshot of altScreenshots ) {
+          grunt.log.writeln( altScreenshot );
+          grunt.log.writeln( `./${repo}-screenshot-alt`.length );
+          grunt.log.writeln( altScreenshot.substr( `./${repo}-screenshot-alt`.length, 1 ) );
+          const imageNumber = parseInt( altScreenshot.substr( `./${repo}-screenshot-alt`.length, 1 ), 10 );
+          grunt.file.write( `${buildDir}/${repo}-${600}-alt${imageNumber}.png`, await generateThumbnails( repo, 600, 394, 100, jimp.MIME_PNG, `-alt${imageNumber}` ) );
         }
 
         if ( brand === 'phet' ) {
@@ -227,7 +237,7 @@ module.exports = function( grunt ) {
           brands = buildLocal.brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
         }
         else {
-          brands = [ 'adapted-from-phet' ];
+          brands = ['adapted-from-phet'];
         }
 
         // Ensure all listed brands are valid
@@ -250,14 +260,14 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
-    [ 'build' ]
+    ['build']
   );
   grunt.registerTask( 'lint', 'lint js files that are specific to this repository', wrapTask( async () => {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
 
-    lint( [ repo ], cache );
+    lint( [repo], cache );
   } ) );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
@@ -429,7 +439,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       // We don't finish! Don't tell grunt this...
       grunt.task.current.async();
 
-      const repos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [ repo ];
+      const repos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [repo];
       const port = grunt.option( 'port' ) || 9000;
       let devtool = grunt.option( 'devtool' ) || 'inline-source-map';
       if ( devtool === 'none' || devtool === 'undefined' ) {
@@ -476,7 +486,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       const done = grunt.task.current.async();
 
       // Include the --repo flag
-      const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
+      const args = [`--repo=${repo}`, ...process.argv.slice( 2 )];
       const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
       const spawned = child_process.spawn( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', args, {
         cwd: '../perennial'

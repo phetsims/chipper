@@ -21,22 +21,23 @@ const jimp = require( 'jimp' );
  * @param {number} height of the resized image
  * @param {number} quality - percent quality, in the range [0..100]
  * @param {string} mime - Mime type - one of jimp.MIME_PNG, jimp.MIME_JPEG, jimp.MIME_BMP
+ * @param {string} altSuffix - ending for the filename e.g. -alt1
  * @returns {Promise} - Resolves to a {Buffer} with the image data
  */
-module.exports = function( repo, width, height, quality, mime ) {
+module.exports = function ( repo, width, height, quality, mime, altSuffix ) {
   return new Promise( ( resolve, reject ) => {
-    const fullResImageName = `../${repo}/assets/${repo}-screenshot.png`;
+    const fullResImageName = `../${repo}/assets/${repo}-screenshot${altSuffix || ''}.png`;
 
     if ( !grunt.file.exists( fullResImageName ) ) {
       grunt.log.writeln( `no image file exists: ${fullResImageName}. Aborting generateThumbnails` );
       return;
     }
 
-    new jimp( fullResImageName, function() { //eslint-disable-line no-new
+    new jimp( fullResImageName, function () { //eslint-disable-line no-new
       if ( mime === jimp.MIME_JPEG ) {
         this.quality( quality );
       }
-      this.resize( width, height ).getBuffer( mime, function( error, buffer ) {
+      this.resize( width, height ).getBuffer( mime, function ( error, buffer ) {
         if ( error ) {
           reject( new Error( error ) );
         }
