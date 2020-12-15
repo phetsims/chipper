@@ -28,6 +28,7 @@ const getPreloads = require( './getPreloads' );
 const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
+const path = require( 'path' );
 const jimp = require( 'jimp' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const minify = require( './minify' );
@@ -120,7 +121,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const dependencies = await getDependencies( repo );
 
   webpackResult.usedModules.forEach( moduleDependency => {
-    const moduleRepo = moduleDependency.slice( 0, moduleDependency.indexOf( '/' ) );
+    const moduleRepo = moduleDependency.slice( 0, moduleDependency.indexOf( path.sep ) );
     assert( Object.keys( dependencies ).includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
   } );
 
