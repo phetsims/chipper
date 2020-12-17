@@ -64,8 +64,6 @@ module.exports = function( context ) {
     '@param {Object} options',
     '@param {Object} [config]',
 
-    'export default inherit(',
-
     // PhET prefers to use the term "position" to refer to the physical (x,y) position of objects.
     // The lint rule can be disabled for occurrences where we do prefer locationProperty, for instance if we
     // had a sim about people that are from three different named locations.
