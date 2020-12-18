@@ -8,10 +8,22 @@
 'use strict';
 
 const fs = require( 'fs' );
-const buildJSON = JSON.parse( fs.readFileSync( '../chipper/build.json' ).toString() );
 
-// Whitelist of directories to check that TODOs have GitHub issues
-const directoriesToRequireIssues = buildJSON.common.phetLibs.filter( x => x !== 'scenery' && x !== 'dot' && x !== 'kite' );
+// Handle the lack of build.json
+let buildJSON = {};
+try {
+  buildJSON = JSON.parse( fs.readFileSync( '../chipper/build.json' ).toString() );
+}
+catch( e ) {
+  buildJSON = {};
+}
+
+let directoriesToRequireIssues = [];
+if ( buildJSON && buildJSON.common && buildJSON.common.phetLibs ) {
+
+  // Whitelist of directories to check that TODOs have GitHub issues
+  directoriesToRequireIssues = buildJSON.common.phetLibs.filter( x => x !== 'scenery' && x !== 'dot' && x !== 'kite' );
+}
 
 module.exports = function( context ) {
   return {
