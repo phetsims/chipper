@@ -14,6 +14,22 @@ const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const sortImports = require( './sortImports' );
 
+// TODO: copied from lint.js, for testing right now, see https://github.com/phetsims/phet-info/issues/150
+const NO_FORMAT_REPOS = [ // don't format these repos
+  'babel',
+  'decaf',
+  'eliot',
+  'phet-android-app',
+  'phet-info',
+  'phet-io-client-guides',
+  'phet-io-wrapper-arithmetic',
+  'phet-io-wrapper-hookes-law-energy',
+  'phet-ios-app',
+  'sherpa',
+  'smithers',
+  'tasks'
+];
+
 const OPTIONS = {
   'html': {
     'allowed_file_extensions': [ 'htm', 'html', 'xhtml', 'shtml', 'xml', 'svg' ],
@@ -82,10 +98,11 @@ function formatFile( absPath, verifyOnly = false ) {
 module.exports = function( repos, verifyOnly = false ) {
 
   repos.forEach( repo => {
-    grunt.file.recurse(
-      `../${repo}/js`,
-      absPath => formatFile( absPath, verifyOnly )
-    );
+    if ( !NO_FORMAT_REPOS.includes( repo ) ) {
+      grunt.file.recurse(
+        `../${repo}/js`,
+        absPath => formatFile( absPath, verifyOnly )
+      );
+    }
   } );
-
 };
