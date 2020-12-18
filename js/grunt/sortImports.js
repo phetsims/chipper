@@ -70,8 +70,8 @@ module.exports = function( file, verifyOnly = false ) {
   }
 
   const after = lines.join( '\n' );
-  if (!verifyOnly){
+  if ( !verifyOnly ) {
     fs.writeFileSync( file, after, 'utf-8' );
   }
-  return (after == before);
+  return ( after === before );
 };
