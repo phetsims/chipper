@@ -9,7 +9,6 @@
 'use strict';
 
 // modules
-const beautify = require( 'js-beautify' ); // eslint-disable-line 
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const sortImports = require( './sortImports' );
@@ -78,7 +77,7 @@ const OPTIONS = {
   }
 };
 
-function formatFile( absPath, verifyOnly = false ) {
+function formatFile( beautify, absPath, verifyOnly = false ) {
   const before = fs.readFileSync( absPath, 'utf-8' );
   const formatted = beautify.js( before, OPTIONS );
   if ( !verifyOnly ) {
@@ -95,13 +94,16 @@ function formatFile( absPath, verifyOnly = false ) {
  * @param {Array.<string>} repos
  * @param {boolean} verifyOnly - Don't rewrite files
  */
-module.exports = function( repos, verifyOnly = false ) {
+module.exports = function ( repos, verifyOnly = false ) {
+
+  // TODO: require at top level if this makes it to production,   https://github.com/phetsims/phet-info/issues/150
+  const beautify = require( 'js-beautify' ); // eslint-disable-line
 
   repos.forEach( repo => {
     if ( !NO_FORMAT_REPOS.includes( repo ) ) {
       grunt.file.recurse(
         `../${repo}/js`,
-        absPath => formatFile( absPath, verifyOnly )
+        absPath => formatFile( beautify, absPath, verifyOnly )
       );
     }
   } );
