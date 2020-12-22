@@ -29,7 +29,7 @@ const NO_FORMAT_REPOS = [ // don't format these repos
   'tasks'
 ];
 
-const OPTIONS = {
+const JS_BEAUTIFY_OPTIONS = {
   'html': {
     'allowed_file_extensions': [ 'htm', 'html', 'xhtml', 'shtml', 'xml', 'svg' ],
     'brace_style': 'collapse',
@@ -77,9 +77,34 @@ const OPTIONS = {
   }
 };
 
-function formatFile( beautify, absPath, verifyOnly = false ) {
+const PRETTIER_OPTIONS = {
+  parser: 'babel',
+  arrowParens: 'avoid',
+  bracketSpacing: true,
+  cursorOffset: -1,
+  embeddedLanguageFormatting: 'auto',
+  endOfLine: 'lf',
+  htmlWhitespaceSensitivity: 'css',
+  insertPragma: false,
+  jsxBracketSameLine: false,
+  jsxSingleQuote: true,
+  printWidth: 180, // I'm not sure we want to actually wrap here
+  proseWrap: 'preserve', // perhaps "always", but probably not
+  quoteProps: 'as-needed',
+  rangeEnd: null,
+  rangeStart: 0,
+  requirePragma: false,
+  semi: true,
+  singleQuote: true,
+  tabWidth: 2,
+  trailingComma: 'none', // possibly "all" at some point
+  useTabs: false,
+  vueIndentScriptAndStyle: false
+};
+
+function formatFile( format, absPath, verifyOnly = false ) {
   const before = fs.readFileSync( absPath, 'utf-8' );
-  const formatted = beautify.js( before, OPTIONS );
+  const formatted = format( before );
   if ( !verifyOnly ) {
     fs.writeFileSync( absPath, formatted, 'utf-8' );
   }
@@ -92,18 +117,24 @@ function formatFile( beautify, absPath, verifyOnly = false ) {
  * @public
  *
  * @param {Array.<string>} repos
+ * @param {boolean} usePrettier
  * @param {boolean} verifyOnly - Don't rewrite files
  */
-module.exports = function ( repos, verifyOnly = false ) {
+module.exports = function( repos, usePrettier = false, verifyOnly = false ) {
+  // TODO: if we use Prettier, use prettier.check instead of current verifyOnly checking https://github.com/phetsims/phet-info/issues/150
 
   // TODO: require at top level if this makes it to production,   https://github.com/phetsims/phet-info/issues/150
-  const beautify = require( 'js-beautify' ); // eslint-disable-line
+  const prettier = require( 'prettier' ); // eslint-disable-line
+  const js_beautify = require( 'js-beautify' ); // eslint-disable-line
+
+  const format = usePrettier ? string => prettier.format( string, PRETTIER_OPTIONS ) :
+                 string => js_beautify.js( string, JS_BEAUTIFY_OPTIONS );
 
   repos.forEach( repo => {
     if ( !NO_FORMAT_REPOS.includes( repo ) ) {
       grunt.file.recurse(
         `../${repo}/js`,
-        absPath => formatFile( beautify, absPath, verifyOnly )
+        absPath => formatFile( format, absPath, verifyOnly )
       );
     }
   } );
