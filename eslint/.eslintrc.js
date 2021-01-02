@@ -25,9 +25,9 @@ module.exports = {
   rules: {
 
     // Match with 5.0 recommended rules after our upgrade to 6.0, see https://eslint.org/docs/user-guide/migrating-to-6.0.0
-    "no-async-promise-executor": "off",
-    "no-prototype-builtins": "off",
-    "no-useless-catch": "off",
+    'no-async-promise-executor': 'off',
+    'no-prototype-builtins': 'off',
+    'no-useless-catch': 'off',
 
     // specify whether backticks, double or single quotes should be used (fixable)
     quotes: [
