@@ -9,58 +9,61 @@
 'use strict';
 
 // modules
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const { ESLint } = require( 'eslint' ); // eslint-disable-line
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const md5 = require( 'md5' );
 
 // constants
-const NO_LINT_REPOS = [ // don't lint these repos
+const EXCLUDE_PATTERNS = [ // patterns that have no code and lint should not be attempted
 
-  'babel',
-  'decaf',
-  'eliot',
-  'phet-android-app',
-  'phet-info',
-  'phet-io-client-guides',
-  'phet-io-wrapper-arithmetic',
-  'phet-io-wrapper-hookes-law-energy',
-  'phet-ios-app',
-  'sherpa',
-  'smithers',
-  'tasks'
+  '../babel',
+  '../decaf',
+  '../eliot',
+  '../phet-android-app',
+  '../phet-info',
+  '../phet-io-client-guides',
+  '../phet-io-wrapper-arithmetic',
+  '../phet-io-wrapper-hookes-law-energy',
+  '../phet-ios-app',
+  '../sherpa',
+  '../smithers',
+  '../tasks'
 ];
 
 /**
  * Lints the specified repositories.
  * @public
  *
- * @param {Array.<string>} repos
- * @param {boolean} cache
- * @param {boolean} fix - whether fixes should be written to disk
- * @param {boolean} warn - whether errors should reported with grunt.warn
  * @returns {Promise} - results from linting files, see ESLint.lintFiles
  */
-const lint = async function( repos, cache, fix = false, warn = true ) {
+const lint = async ( patterns, options ) => {
 
-  // filter out all unlintable repo. An unlintable repo is one that has no `js` in it, so it will fail when trying to
+  options = _.assignIn( {
+    cache: true,
+    fix: false, // whether fixes should be written to disk
+    warn: true // whether errors should reported with grunt.warn
+  }, options );
+
+  // filter out all unlintable pattern. An unlintable repo is one that has no `js` in it, so it will fail when trying to
   // lint it.  Also, if the user doesn't have some repos checked out, those should be skipped
-  const filteredRepos = repos.filter( repo => NO_LINT_REPOS.indexOf( repo ) < 0 &&
-                                              fs.existsSync( '../' + repo ) ).map( repo => '../' + repo );
+  patterns = patterns.filter( pattern => !EXCLUDE_PATTERNS.includes( pattern ) &&
+                                         fs.existsSync( pattern ) );
 
   // 1. Create an instance with the `fix` option.
   const eslint = new ESLint( {
 
     // optional auto-fix
-    fix: fix,
+    fix: options.fix,
 
     // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a
     // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where
     // grunt was run from.
-    cache: cache,
+    cache: options.cache,
 
     // Where to store the target-specific cache file
-    cacheLocation: `../chipper/eslint/cache/${md5( filteredRepos.join( ',' ) )}.eslintcache`,
+    cacheLocation: `../chipper/eslint/cache/${md5( patterns.join( ',' ) )}.eslintcache`,
 
     ignorePath: '../chipper/eslint/.eslintignore',
 
@@ -69,14 +72,15 @@ const lint = async function( repos, cache, fix = false, warn = true ) {
     // Our custom rules live here
     rulePaths: [ '../chipper/eslint/rules' ]
   } );
+  console.log('linting ',patterns.join(','));
 
-  grunt.verbose.writeln( `linting: ${filteredRepos.join( ', ' )}` );
+  grunt.verbose.writeln( `linting: ${patterns.join( ', ' )}` );
 
   // 2. Lint files. This doesn't modify target files.
-  const results = await eslint.lintFiles( filteredRepos );
+  const results = await eslint.lintFiles( patterns );
 
   // 3. Modify the files with the fixed code.
-  if ( fix ) {
+  if ( options.fix ) {
     await ESLint.outputFixes( results );
   }
 
@@ -94,7 +98,7 @@ const lint = async function( repos, cache, fix = false, warn = true ) {
   // 5. Output it.
   if ( total > 0 ) {
     console.log( resultText );
-    warn && grunt.fail.warn( `${totalErrors} errors and ${totalWarnings} warnings` );
+    options.warn && grunt.fail.warn( `${totalErrors} errors and ${totalWarnings} warnings` );
   }
 
   return results;
