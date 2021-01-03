@@ -37,7 +37,11 @@ try {
 
       // lint() automatically filters out non-lintable repos
       // TODO: https://github.com/phetsims/phet-info/issues/150 we may want to autofix
-      const results = await lint( [ repo ], true, false /*autofix*/, true );
+      const results = await lint( [ `../${repo}` ], {
+        cache: true,
+        fix: false,
+        warn: false
+      } );
 
       results.forEach( result => {
         let failed = false;
