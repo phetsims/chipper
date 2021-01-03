@@ -85,8 +85,10 @@ const lint = async function( repos, cache, fix = false, warn = true ) {
   const resultText = formatter.format( results );
 
   const sum = ( a, b ) => a + b;
-  const totalWarnings = results.map( result => result.warningCount ).reduce( sum );
-  const totalErrors = results.map( result => result.errorCount ).reduce( sum );
+  const count = numbers => numbers.length === 0 ? 0 : numbers.reduce( sum );
+
+  const totalWarnings = count( results.map( result => result.warningCount ) );
+  const totalErrors = count( results.map( result => result.errorCount ) );
   const total = totalWarnings + totalErrors;
 
   // 5. Output it.
