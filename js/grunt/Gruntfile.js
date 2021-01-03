@@ -264,16 +264,18 @@ module.exports = function( grunt ) {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
+    const fix = grunt.option( 'fix' );
 
-    lint( [ repo ], cache );
+    await lint( [ repo ], cache, fix );
   } ) );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
+    const fix = grunt.option( 'fix' );
 
-    lint( getPhetLibs( repo ), cache );
+    await lint( getPhetLibs( repo ), cache, fix );
   } ) );
 
   grunt.registerTask( 'format', 'format js files that are specific to this repository', wrapTask( async () => {
