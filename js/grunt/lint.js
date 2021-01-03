@@ -72,7 +72,6 @@ const lint = async ( patterns, options ) => {
     // Our custom rules live here
     rulePaths: [ '../chipper/eslint/rules' ]
   } );
-  console.log('linting ',patterns.join(','));
 
   grunt.verbose.writeln( `linting: ${patterns.join( ', ' )}` );
 
