@@ -16,7 +16,7 @@ const grunt = require( 'grunt' );
 const md5 = require( 'md5' );
 
 // constants
-const EXCLUDE_PATTERNS = [ // patterns that have no code and lint should not be attempted
+const EXCLUDE_PATTERNS = [ // patterns that have no code that should be linted
 
   '../babel',
   '../decaf',
