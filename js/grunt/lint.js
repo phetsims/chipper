@@ -87,11 +87,9 @@ const lint = async ( patterns, options ) => {
   const formatter = await eslint.loadFormatter( 'stylish' );
   const resultText = formatter.format( results );
 
-  const sum = ( a, b ) => a + b;
-  const count = numbers => numbers.length === 0 ? 0 : numbers.reduce( sum );
+  const totalWarnings = _.sum( results.map( result => result.warningCount ) );
+  const totalErrors = _.sum( results.map( result => result.errorCount ) );
 
-  const totalWarnings = count( results.map( result => result.warningCount ) );
-  const totalErrors = count( results.map( result => result.errorCount ) );
   const total = totalWarnings + totalErrors;
 
   // 5. Output it.
