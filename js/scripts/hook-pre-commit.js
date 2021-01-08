@@ -43,16 +43,11 @@ try {
         warn: false
       } );
 
-      results.forEach( result => {
-        let failed = false;
-        if ( result.errorCount > 0 || result.warningCount > 0 ) {
-          console.error( `lint failed in ${repo}`, result.filePath, result );
-          failed = true;
-        }
-        if ( failed ) {
-          process.exit( 1 );
-        }
-      } );
+      const problems = results.filter( result => result.errorCount > 0 || result.warningCount > 0 );
+      problems.forEach( result => console.error( `lint failed in ${repo}`, result.filePath, result.messages.map( m => JSON.stringify( m, null, 2 ) ).join( '\n' ) ) );
+      if ( problems.length > 0 ) {
+        process.exit( 1 );
+      }
 
       outputToConsole && console.log( 'Linting passed with results.length: ' + results.length );
     } )();
