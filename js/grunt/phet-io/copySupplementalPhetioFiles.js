@@ -161,7 +161,6 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
         /<!--(<script src="[./]*\{\{PATH_TO_LIB_FILE}}".*><\/script>)-->/g, // '.*' is to support `data-client-name` in wrappers like "multi"
         '$1' // just uncomment, dont fill it in yet
       );
-      contents = ChipperStringUtils.replaceAll( contents, '{{PATH_TO_LIB_FILE}}', pathToLib );
 
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{GOOGLE_ANALYTICS.js}}-->',
@@ -173,6 +172,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       );
     }
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
+      contents = ChipperStringUtils.replaceAll( contents, '{{PATH_TO_LIB_FILE}}', pathToLib ); // This must be after the script replacement that uses this variable above.
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_DISPLAY_NAME}}', simulationDisplayName );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_DISPLAY_NAME_ESCAPED}}', simulationDisplayName.replace( /'/g, '\\\'' ) );
