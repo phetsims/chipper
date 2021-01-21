@@ -655,10 +655,10 @@
      * @returns {boolean}
      */
     window.phet.chipper.isFuzzEnabled = () =>
-      ( phet.chipper.queryParameters.fuzz ||
-        phet.chipper.queryParameters.fuzzMouse ||
-        phet.chipper.queryParameters.fuzzTouch ||
-        phet.chipper.queryParameters.fuzzBoard
+      ( window.phet.chipper.queryParameters.fuzz ||
+        window.phet.chipper.queryParameters.fuzzMouse ||
+        window.phet.chipper.queryParameters.fuzzTouch ||
+        window.phet.chipper.queryParameters.fuzzBoard
       );
 
     // Add a log function that displays messages to the console. Examples:
