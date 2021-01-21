@@ -649,6 +649,18 @@
     // Read query parameters
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
 
+    /**
+     * Determines whether any type of fuzzing is enabled. This is a function so that the associated query parameters
+     * can be changed from the console while the sim is running. See https://github.com/phetsims/sun/issues/677.
+     * @returns {boolean}
+     */
+    window.phet.chipper.isFuzzEnabled = () =>
+      ( phet.chipper.queryParameters.fuzz ||
+        phet.chipper.queryParameters.fuzzMouse ||
+        phet.chipper.queryParameters.fuzzTouch ||
+        phet.chipper.queryParameters.fuzzBoard
+      );
+
     // Add a log function that displays messages to the console. Examples:
     // phet.log && phet.log( 'You win!' );
     // phet.log && phet.log( 'You lose', { color: 'red' } );
