@@ -22,7 +22,7 @@ module.exports = function( context ) {
     // symmetrically see https://github.com/phetsims/dot/issues/35#issuecomment-113587879
     { id: 'Math.round(', codeTokens: [ 'Math', '.', 'round', '(' ] },
 
-    // should be using `phet.joist.random`
+    // should be using `DOT/dotRandom`
     { id: 'Math.random()', codeTokens: [ 'Math', '.', 'random', '(', ')' ] },
     { id: '_.shuffle(', codeTokens: [ '_', '.', 'shuffle', '(' ] },
     { id: '_.sample(', codeTokens: [ '_', '.', 'sample', '(' ] },

@@ -750,14 +750,6 @@
   }() );
 
   /**
-   * Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
-   * See `Random.js`
-   * @public (writable by phet-io) can be overwritten for replicable playback in phet-io.
-   * @type {number}
-   */
-  window.phet.chipper.randomSeed = phet.chipper.queryParameters.randomSeed;
-
-  /**
    * Utility function to pause synchronously for the given number of milliseconds.
    * @param {number} millis - amount of time to pause synchronously
    */
