@@ -66,10 +66,10 @@ const modulifyImage = async abspath => {
   const dataURI = loadFileAsDataURI( abspath );
 
   const contents = `${HEADER}
-import simLauncher from '${expandDots( abspath )}joist/js/simLauncher.js';
+import asyncLoader from '${expandDots( abspath )}phet-core/js/asyncLoader.js';
 
 const image = new Image();
-const unlock = simLauncher.createLock( image );
+const unlock = asyncLoader.createLock( image );
 image.onload = unlock;
 image.src = '${dataURI}';
 export default image;`;
@@ -94,12 +94,12 @@ const modulifyMipmap = async abspath => {
   const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
 
   const mipmapContents = `${HEADER}
-import simLauncher from '${expandDots( abspath )}joist/js/simLauncher.js';
+import asyncLoader from '${expandDots( abspath )}phet-core/js/asyncLoader.js';
 
 const mipmaps = ${JSON.stringify( entry, null, 2 )};
 mipmaps.forEach( mipmap => {
   mipmap.img = new Image();
-  const unlock = simLauncher.createLock( mipmap.img );
+  const unlock = asyncLoader.createLock( mipmap.img );
   mipmap.img.onload = unlock;
   mipmap.img.src = mipmap.url; // trigger the loading of the image for its level
   mipmap.canvas = document.createElement( 'canvas' );
@@ -128,14 +128,14 @@ const modulifySound = abspath => {
 
   // output the contents of the file that will define the sound in JS format
   const contents = `${HEADER}
-import simLauncher from '${expandDots( abspath )}joist/js/simLauncher.js';
+import asyncLoader from '${expandDots( abspath )}phet-core/js/asyncLoader.js';
 import base64SoundToByteArray from '${expandDots( abspath )}tambo/js/base64SoundToByteArray.js';
 import WrappedAudioBuffer from '${expandDots( abspath )}tambo/js/WrappedAudioBuffer.js';
 import phetAudioContext from '${expandDots( abspath )}tambo/js/phetAudioContext.js';
 
 const soundURI = '${dataURI}';
 const soundByteArray = base64SoundToByteArray( phetAudioContext, soundURI );
-const unlock = simLauncher.createLock( soundURI );
+const unlock = asyncLoader.createLock( soundURI );
 const wrappedAudioBuffer = new WrappedAudioBuffer();
 const onDecodeSuccess = decodedAudio => {
   wrappedAudioBuffer.audioBufferProperty.set( decodedAudio );
