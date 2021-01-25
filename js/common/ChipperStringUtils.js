@@ -10,6 +10,7 @@
 /* eslint-env node */
 'use strict';
 
+const assert = require( 'assert' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 
 // What divides the repo prefix from the rest of the string key, like `FRICTION/friction.title`
@@ -115,7 +116,7 @@ const ChipperStringUtils = {
   formatStringValues: function( stringMap, isRTL, assertNoWhitespace ) {
     ChipperStringUtils.forEachString( stringMap, ( key, stringObject ) => {
 
-      global.assert && assertNoWhitespace && global.assert( stringObject.value === stringObject.value.trim(),
+      assert && assertNoWhitespace && assert( stringObject.value === stringObject.value.trim(),
         `String should not have trailing or leading whitespace, key: ${key}, value: "${stringObject.value}"` );
 
       // remove leading/trailing whitespace, see chipper#619. Do this before addDirectionalFormatting
@@ -152,8 +153,8 @@ const ChipperStringUtils = {
 
       // Until rosetta supports nested strings in https://github.com/phetsims/rosetta/issues/215, keep this assertion.
       // This should be after because the above errors are more specific. This is better as a fallback.
-      global.assert && !ChipperStringUtils.isA11yStringKey( key ) && global.assert( map[ key ],
-        'non a11y strings do not yet support nesting' );
+      assert && !ChipperStringUtils.isA11yStringKey( key ) && assert( map[ key ],
+        `nested strings are not allowed outside of a11y string object for key: ${key}` );
 
       return result.value;
     }
