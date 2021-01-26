@@ -39,7 +39,10 @@ module.exports = function( context ) {
     'onfig = _.extend(',
 
     // ParallelDOM.accessibleOrder should not be mutated, instead only set with `setAccessibleOrder`
-    '.accessibleOrder.push('
+    '.accessibleOrder.push(',
+
+    // Should import dotRandom instead of using the namespace
+    'phet.dot.dotRandom'
 
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     // TODO: comment back in when all lint errors are taken care of, https://github.com/phetsims/phet-info/issues/59
