@@ -34,6 +34,9 @@ module.exports = function( context ) {
     'Combobox', // prefer Combo Box
     'COMBOBOX', // prefer COMBO_BOX
 
+    // event.keyCode according to spec, rather than event.keykode
+    'keycode',
+
     // In ES6, extending object causes methods to be dropped
     { id: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
 
