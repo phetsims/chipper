@@ -37,7 +37,7 @@ module.exports = function( context ) {
     'Overriden', // should have 2 "d"s
     'overriden', // should have 2 "d"s
 
-    // event.keyCode according to spec, rather than event.keykode
+    // event.keyCode according to spec, rather than event.keycode
     'keycode',
 
     // In ES6, extending object causes methods to be dropped
