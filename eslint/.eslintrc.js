@@ -63,6 +63,9 @@ module.exports = {
     // method declarations must have a visibility annotation
     'visibility-annotation': 2,
 
+    // Enumerations should be named like classes/types
+    'enumeration-casing': 2,
+
     // key and value arguments to namespace.register() must match
     'namespace-match': 2,
 
