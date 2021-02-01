@@ -67,7 +67,7 @@ module.exports = {
     'namespace-match': 2,
 
     // disallow declaration of variables that are not used in the code (recommended)
-    // Overriden to allow unused args
+    // Overridden to allow unused args
     'no-unused-vars': [
       2,
       {
