@@ -34,6 +34,9 @@ module.exports = function( context ) {
     'Combobox', // prefer Combo Box
     'COMBOBOX', // prefer COMBO_BOX
 
+    'Overriden', // should have 2 "d"s
+    'overriden', // should have 2 "d"s
+
     // event.keyCode according to spec, rather than event.keykode
     'keycode',
 
