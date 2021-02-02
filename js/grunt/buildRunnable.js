@@ -319,7 +319,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   }
 
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
-  if ( packageObject.phet.supportsInteractiveDescriptions && brand === 'phet' ) {
+  if ( packageObject.phet.supportsInteractiveDescription && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for PDOM viewing.
     let a11yHTML = getA11yViewHTMLFromTemplate( repo );
 
