@@ -38,8 +38,8 @@ module.exports = function( context ) {
     'ptions = _.extend(',
     'onfig = _.extend(',
 
-    // ParallelDOM.accessibleOrder should not be mutated, instead only set with `setAccessibleOrder`
-    '.accessibleOrder.push(',
+    // ParallelDOM.pdomOrder should not be mutated, instead only set with `setPDOMOrder`
+    '.pdomOrder.push(',
 
     // Should import dotRandom instead of using the namespace
     'phet.dot.dotRandom'
