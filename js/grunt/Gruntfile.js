@@ -343,8 +343,8 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'update', `
 Updates the normal automatically-generated files for this repository. Includes:
-  * runnables: generate-development-html and modulfy  
-  * accessible runnables: generate-a11y-view-html  
+  * runnables: generate-development-html and modulfy
+  * accessible runnables: generate-a11y-view-html
   * color-profile runnables: generate-development-colors-html
   * unit tests: generate-test-html
   * simulations: generateREADME()
@@ -564,6 +564,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     'insert-require-statement',
     'lint-everything',
     'generate-data',
-    'pdom-comparison'
+    'pdom-comparison',
+    'release-branch-list'
   ].forEach( forwardToPerennialGrunt );
 };
