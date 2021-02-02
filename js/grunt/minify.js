@@ -71,7 +71,6 @@ const minify = function( js, options ) {
   // scenery logging (PhET-specific)
   if ( stripLogging ) {
     uglifyOptions.compress.global_defs.sceneryLog = false;
-    uglifyOptions.compress.global_defs.sceneryAccessibilityLog = false;
   }
 
   if ( uglify ) {
