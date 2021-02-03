@@ -340,7 +340,7 @@ const handleContrib = buildDir => {
  * @param {string} buildDir
  * @param {string} repo
  * @param {string} version
- * @returns {Promise<void>}
+ * @returns {Promise.<void>}
  */
 const handleOfflineArtifact = async ( buildDir, repo, version ) => {
 
@@ -366,7 +366,7 @@ const handleOfflineArtifact = async ( buildDir, repo, version ) => {
 /**
  * Generate jsdoc and put it in "build/phet-io/doc"
  * @param {string} buildDir
- * @returns {Promise<void>}
+ * @returns {Promise.<void>}
  */
 const handleJSDOC = async buildDir => {
 
@@ -475,7 +475,7 @@ const generateAndWriteClientGuide = ( repoName, mdFilePath, destinationPath ) =>
  * Support building studio. This compiles the studio modules into a runnable, and copies that over to the expected spot
  * on build.
  * @param {string} wrappersLocation
- * @returns {Promise<void>}
+ * @returns {Promise.<void>}
  */
 const handleStudio = async wrappersLocation => {
 

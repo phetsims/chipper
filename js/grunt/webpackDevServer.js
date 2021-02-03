@@ -23,7 +23,7 @@ const WebpackDevServer = require( 'webpack-dev-server' ); // eslint-disable-line
  * @param {string|undefined} devtool - one of the values for sourcemap generation specified at
  *                                   - https://webpack.js.org/configuration/devtool/ or undefined for (none)
  * @param {boolean} openChrome - if true, opens the launched URLs in Chrome using "open -a".  Tested on Mac
- * @returns {Promise<void>}
+ * @returns {Promise.<void>}
  */
 module.exports = async ( repos, port, devtool, openChrome = false ) => {
   // NOTE: Load dependencies more specifically from a sim list in the future, so we don't have such a direct dependency.
