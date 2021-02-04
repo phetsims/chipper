@@ -61,20 +61,22 @@ catch( e ) {
 }
 
 // Make sure license.json for images/audio is up-to-date
-try {
-  const reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
+if (repo!=='decaf') {
+  try {
+    const reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 
-  ( async () => {
-    const success = await reportMedia( repo );
+    ( async () => {
+      const success = await reportMedia( repo );
 
-    // At the moment reportMedia uses grunt.fail, but we defensively use the return value here in case that changes.
-    if ( !success ) {
-      process.exit( 1 );
-    }
-  } )();
-}
-catch( e ) {
-  console.log( 'chipper/js/grunt/reportMedia not found' );
+      // At the moment reportMedia uses grunt.fail, but we defensively use the return value here in case that changes.
+      if ( !success ) {
+        process.exit( 1 );
+      }
+    } )();
+  }
+  catch( e ) {
+    console.log( 'chipper/js/grunt/reportMedia not found' );
+  }
 }
 
 // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
