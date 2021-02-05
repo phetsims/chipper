@@ -15,7 +15,7 @@
  *
  * For an example, see any of the license.json files in a PhET simulation's images directory.
  *
- * @author Sam Reid
+ * @author Sam Reid (PhET Interactive Simulations)
  */
 
 /* eslint-env node */
