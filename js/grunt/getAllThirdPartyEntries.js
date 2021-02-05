@@ -12,7 +12,7 @@ const grunt = require( 'grunt' );
 /**
  * Returns an object with information about third-party license entries.
  *
- * NOTE: This pulls entries from some of the chipper globals. Should be done only after thie build
+ * NOTE: This pulls entries from some of the chipper globals. Should be done only after the build
  *
  * @param {string} repo
  * @param {string} brand
