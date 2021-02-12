@@ -111,8 +111,8 @@ catch( e ) {
 // If there is a PhET-iO API Safety Net, compare to it
 try {
 
-  const generatePhetioAPI = require( '../../../chipper/js/grunt/phet-io/generatePhetioAPI' );
-  const compareMacroAPIs = require( '../../../chipper/js/grunt/phet-io/compareMacroAPIs' );
+  const generatePhetioAPI = require( '../../../chipper/js/phet-io/generatePhetioAPI' );
+  const compareMacroAPIs = require( '../../../chipper/js/phet-io/compareMacroAPIs' );
   const REFERENCE_MACRO_API_PATH = '../perennial/build-phet-io/reference-macro-api.json';
   const exists = fs.existsSync( REFERENCE_MACRO_API_PATH );
 
