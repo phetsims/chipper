@@ -2,7 +2,7 @@
 
 /**
  * Launch an instance of the simulation using puppeteer, gather the phet-io api of the simulation, see phetioEngine.getPhetioElementsBaseline
- * TODO: https://github.com/phetsims/phet-io/issues/1733 rename to generatePhetioAPI after commit
+ * TODO: https://github.com/phetsims/phet-io/issues/1733 rename to generateMacroAPI after commit
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Chris Klusendorf (PhET Interactive Simulations)
  * @author Sam Reid (PhET Interactive Simulations)
@@ -89,7 +89,7 @@ module.exports = async ( repos, options ) => {
       return new Promise( ( resolve, reject ) => {
 
         // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-        const id = setTimeout( () => reject( 'Timeout in generatePhetioAPI' ), 30000 );
+        const id = setTimeout( () => reject( 'Timeout in generateMacroAPI' ), 30000 );
 
         page.on( 'console', async msg => {
 

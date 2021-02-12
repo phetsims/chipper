@@ -2,7 +2,7 @@
 
 const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
-const generatePhetioAPI = require( './generatePhetioAPI' );
+const generateMacroAPI = require( './generateMacroAPI' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
 
 // constants
@@ -55,7 +55,7 @@ let repos = contents.split( '\n' ).map( sim => sim.trim() );
 
   // console.log( 'running on repos: ' + repos.join( ', ' ) );
   const chunkSize = 4;
-  const results = await generatePhetioAPI( repos, {
+  const results = await generateMacroAPI( repos, {
     showProgressBar: true, // Interferes with file output
     chunkSize: chunkSize,
     showMessagesFromSim: false // must be pure JSON
