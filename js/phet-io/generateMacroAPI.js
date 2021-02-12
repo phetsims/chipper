@@ -2,7 +2,6 @@
 
 /**
  * Launch an instance of the simulation using puppeteer, gather the phet-io api of the simulation, see phetioEngine.getPhetioElementsBaseline
- * TODO: https://github.com/phetsims/phet-io/issues/1733 rename to generateMacroAPI after commit
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Chris Klusendorf (PhET Interactive Simulations)
  * @author Sam Reid (PhET Interactive Simulations)
