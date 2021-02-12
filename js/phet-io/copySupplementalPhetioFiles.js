@@ -12,15 +12,15 @@
 
 // modules
 const archiver = require( 'archiver' );
-const ChipperStringUtils = require( '../../common/ChipperStringUtils' );
-const copyDirectory = require( '../copyDirectory' );
-const execute = require( '../execute' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const copyDirectory = require( '../grunt/copyDirectory' );
+const execute = require( '../grunt/execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const generatePhetioAPI = require( './generatePhetioAPI' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
-const buildStandalone = require( '../buildStandalone' );
-const minify = require( '../minify' );
+const buildStandalone = require( '../grunt/buildStandalone' );
+const minify = require( '../grunt/minify' );
 const marked = require( 'marked' );
 
 // constants

@@ -5,7 +5,7 @@ const fs = require( 'fs' );
 const compareMacroAPIs = require( './compareMacroAPIs' );
 
 /**
- * Compare two macro apis specified on the command line.
+ * Compare two macro apis specified on the command line.  Command-line adapter to run compareMacroAPIs.js
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
