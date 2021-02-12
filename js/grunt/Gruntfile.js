@@ -28,6 +28,7 @@ const migrate = require( './migrate' );
 const minify = require( './minify' );
 const modulify = require( './modulify' );
 const generatePhetioAPI = require( './phet-io/generatePhetioAPI' );
+const formatPhetioAPI = require( './phet-io/formatPhetioAPI' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const sortImports = require( './sortImports' );
@@ -501,8 +502,8 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       const filePath = `${buildDirectory}/${new Date().toLocaleString().split( ', ' ).join( '_' ).split( '/' ).join( '-' ).split( ' ' ).join( '_' ).split( ':' ).join( '.' )}.json`;
 
-      const api = await generatePhetioAPI( repo, false );
-      writeFile( filePath, api );
+      const api = ( await generatePhetioAPI( [ repo ] ) )[ repo ];
+      writeFile( filePath, formatPhetioAPI( api ) );
     } )
   );
 

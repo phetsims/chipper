@@ -18,6 +18,7 @@ const execute = require( '../execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const generatePhetioAPI = require( './generatePhetioAPI' );
+const formatPhetioAPI = require( './formatPhetioAPI' );
 const buildStandalone = require( '../buildStandalone' );
 const minify = require( '../minify' );
 const marked = require( 'marked' );
@@ -280,8 +281,10 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   await handleStudio( wrappersLocation );
 
   if ( generatePhetioAPIFile ) {
-    const fullAPI = await generatePhetioAPI( repo, true );
-    grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, fullAPI );
+    const fullAPI = ( await generatePhetioAPI( [ repo ], {
+      fromBuiltVersion: true
+    } ) )[ repo ];
+    grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, formatPhetioAPI( fullAPI ) );
   }
 
   // The nested index wrapper will be broken on build, so get rid of it for clarity
