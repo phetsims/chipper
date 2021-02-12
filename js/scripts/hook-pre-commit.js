@@ -18,6 +18,7 @@
 // Require statements which should be generally available via node or perennial
 const fs = require( 'fs' );
 const path = require( 'path' );
+const _ = require( 'lodash' ); // eslint-disable-line
 const puppeteer = require( 'puppeteer' );
 const buildLocal = require( '../common/buildLocal' );
 
@@ -100,6 +101,44 @@ try {
       }
 
       outputToConsole && console.log( 'no problems detected' );
+    } )();
+  }
+}
+catch( e ) {
+  console.log( e );
+}
+
+// If there is a PhET-iO API Safety Net, compare to it
+try {
+
+  const generatePhetioAPI = require( '../../../chipper/js/grunt/phet-io/generatePhetioAPI' );
+  const compareMacroAPIs = require( '../../../chipper/js/grunt/phet-io/compareMacroAPIs' );
+  const REFERENCE_MACRO_API_PATH = '../perennial/build-phet-io/reference-macro-api.json';
+  const exists = fs.existsSync( REFERENCE_MACRO_API_PATH );
+
+  if ( exists ) {
+
+    // load the safety net
+    const safetyNetText = fs.readFileSync( REFERENCE_MACRO_API_PATH, 'utf8' );
+    const safetyNetJSON = JSON.parse( safetyNetText );
+
+    const repos = Object.keys( safetyNetJSON );
+    console.log( 'Checking PhET-iO API compatibility for ' + repos.join( ', ' ) );
+
+    const chunkSize = 4;
+    ( async () => {
+      const results = await generatePhetioAPI( repos, {
+        chunkSize: chunkSize,
+        showMessagesFromSim: false // must be pure JSON
+      } );
+      const comparisonResults = compareMacroAPIs( safetyNetJSON, results );
+      if ( comparisonResults.problems.length > 0 ) {
+        console.log( comparisonResults.formatted );
+        process.exit( 1 );
+      }
+      else {
+        process.exit( 0 );
+      }
     } )();
   }
 }
