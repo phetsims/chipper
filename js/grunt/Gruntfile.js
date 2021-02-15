@@ -387,7 +387,7 @@ Updates the normal automatically-generated files for this repository. Includes:
         // If there is already an overrides file, don't overwrite it with an empty one
         if ( !fs.existsSync( overridesFile ) ) {
           fs.writeFileSync( overridesFile,
-            '/* eslint-disable */\nwindow.phet.phetio.phetioElementsOverrides = {};' );
+            '/* eslint-disable */\nwindow.phet.preloads.phetio.phetioElementsOverrides = {};' );
         }
       }
     } ) );
