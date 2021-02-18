@@ -11,11 +11,10 @@ let repos = contents.split( '\n' ).map( sim => sim.trim() );
 
 /**
  * Runs generate-phet-io-api for the specified simulations, or all phet-io sims if not specified.
- * This is in perennial since it should work across multiple versions, and may use tools like execute()
  *
  * USAGE:
- * cd ${root containing all repos}
- * node perennial/js/scripts/compare-macro-apis.js [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N]
+ * cd chipper
+ * node js/phet-io/output-macro-api.js [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N] [--out=filename.json]
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
