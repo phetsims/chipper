@@ -42,7 +42,10 @@ module.exports = function getPhetLibs( repo, brand ) {
     }
 
     // start with package.json
-    let phetLibs = packageObject.phet.phetLibs || [];
+    let phetLibs = packageObject &&
+                   packageObject.phet &&
+                   packageObject.phet.phetLibs ?
+                   packageObject.phet.phetLibs : [];
 
     // add the repo that's being built
     phetLibs.push( packageObject.name );
@@ -55,12 +58,12 @@ module.exports = function getPhetLibs( repo, brand ) {
     } );
 
     // add brand specific dependencies from the package json
-    if ( packageObject.phet[ brand ] && packageObject.phet[ brand ].phetLibs ) {
+    if ( packageObject.phet && packageObject.phet[ brand ] && packageObject.phet[ brand ].phetLibs ) {
       phetLibs = phetLibs.concat( packageObject.phet[ brand ].phetLibs );
     }
 
     // wrappers are also marked as phetLibs, so we can get their shas without listing them twice
-    if ( brand === 'phet-io' && packageObject.phet[ brand ] ) {
+    if ( brand === 'phet-io' && packageObject.phet && packageObject.phet[ brand ] ) {
       phetLibs = phetLibs.concat( packageObject.phet[ brand ].wrappers || [] );
     }
 
