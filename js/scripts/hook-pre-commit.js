@@ -30,38 +30,53 @@ const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.indexOf( '--console' ) >= 0;
 
 // Run lint tests if they exist in the checked-out SHAs.
-try {
-  const lint = require( '../../../chipper/js/grunt/lint' );
-  if ( lint.chipperAPIVersion === 'promises1' ) {
+const optOutOfLint = [ 'phet-io-website' ];
+if ( !optOutOfLint.includes( repo ) ) {
+  try {
+    const lint = require( '../../../chipper/js/grunt/lint' );
+    if ( lint.chipperAPIVersion === 'promises1' ) {
 
-    ( async () => {
+      ( async () => {
 
-      // lint() automatically filters out non-lintable repos
-      // TODO: https://github.com/phetsims/phet-info/issues/150 we may want to autofix
-      const results = await lint( [ `../${repo}` ], {
-        cache: true,
-        fix: false,
-        warn: false
-      } );
+        // lint() automatically filters out non-lintable repos
+        // TODO: https://github.com/phetsims/phet-info/issues/150 we may want to autofix
+        const results = await lint( [ `../${repo}` ], {
+          cache: true,
+          fix: false,
+          warn: false
+        } );
 
-      const problems = results.filter( result => result.errorCount > 0 || result.warningCount > 0 );
-      problems.forEach( result => console.error( `lint failed in ${repo}`, result.filePath, result.messages.map( m => JSON.stringify( m, null, 2 ) ).join( '\n' ) ) );
-      if ( problems.length > 0 ) {
-        process.exit( 1 );
-      }
+        const problems = results.filter( result => result.errorCount > 0 || result.warningCount > 0 );
+        problems.forEach( result => console.error( `lint failed in ${repo}`, result.filePath, result.messages.map( m => JSON.stringify( m, null, 2 ) ).join( '\n' ) ) );
+        if ( problems.length > 0 ) {
+          process.exit( 1 );
+        }
 
-      outputToConsole && console.log( 'Linting passed with results.length: ' + results.length );
-    } )();
+        outputToConsole && console.log( 'Linting passed with results.length: ' + results.length );
+      } )();
+    }
+    else {
+      console.log( 'chipper/js/grunt/lint not compatible' );
+    }
   }
-  else {
-    console.log( 'chipper/js/grunt/lint not compatible' );
+  catch( e ) {
+    console.log( 'chipper/js/grunt/lint not found' );
   }
 }
-catch( e ) {
-  console.log( 'chipper/js/grunt/lint not found' );
-}
 
-const optOutOfReportMedia = [ 'decaf', 'phet-android-app' ];
+// These sims don't have package.json or media that requires checking.
+const optOutOfReportMedia = [
+  'decaf',
+  'phet-android-app',
+  'babel',
+  'phet-info',
+  'phet-io-client-guides',
+  'phet-ios-app',
+  'sherpa',
+  'smithers',
+  'tasks',
+  'weddell'
+];
 
 // Make sure license.json for images/audio is up-to-date
 if ( !optOutOfReportMedia.includes( repo ) ) {
