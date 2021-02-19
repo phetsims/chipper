@@ -61,8 +61,10 @@ catch( e ) {
   console.log( 'chipper/js/grunt/lint not found' );
 }
 
+const optOutOfReportMedia = [ 'decaf', 'phet-android-app' ];
+
 // Make sure license.json for images/audio is up-to-date
-if (repo!=='decaf') {
+if ( !optOutOfReportMedia.includes( repo ) ) {
   try {
     const reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 
