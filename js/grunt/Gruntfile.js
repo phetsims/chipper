@@ -75,7 +75,7 @@ module.exports = function( grunt ) {
     }
     catch( e ) {
       if ( e.stack ) {
-        grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
+        grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${e}` );
       }
 
         // The toString check handles a weird case found from an Error object from puppeteer that doesn't stringify with
