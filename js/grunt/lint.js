@@ -41,6 +41,7 @@ const lint = async ( patterns, options ) => {
 
   options = _.assignIn( {
     cache: true,
+    format: false, // Use a separate set of rules purely for formatting code.
     fix: false, // whether fixes should be written to disk
     warn: true // whether errors should reported with grunt.warn
   }, options );
@@ -51,7 +52,7 @@ const lint = async ( patterns, options ) => {
                                          fs.existsSync( pattern ) );
 
   // 1. Create an instance with the `fix` option.
-  const eslint = new ESLint( {
+  const eslintConfig = {
 
     // optional auto-fix
     fix: options.fix,
@@ -70,7 +71,15 @@ const lint = async ( patterns, options ) => {
 
     // Our custom rules live here
     rulePaths: [ '../chipper/eslint/rules' ]
-  } );
+  };
+
+  if ( options.format ) {
+    eslintConfig.baseConfig = {
+      extends: [ '../chipper/eslint/format_eslintrc.js' ]
+    };
+  }
+
+  const eslint = new ESLint( eslintConfig );
 
   grunt.verbose.writeln( `linting: ${patterns.join( ', ' )}` );
 

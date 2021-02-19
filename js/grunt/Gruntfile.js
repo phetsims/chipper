@@ -75,7 +75,7 @@ module.exports = function( grunt ) {
     }
     catch( e ) {
       if ( e.stack ) {
-        grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${JSON.stringify( e, null, 2 )}` );
+        grunt.fail.fatal( `Perennial task failed:\n${e.stack}\nFull Error details:\n${e}` );
       }
 
         // The toString check handles a weird case found from an Error object from puppeteer that doesn't stringify with
@@ -271,6 +271,7 @@ module.exports = function( grunt ) {
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
     const fix = grunt.option( 'fix' );
+    const format = grunt.option( 'format' );
 
     // If patterns are specified, lint them, otherwise lint the repo where the command was run from
     // Use '../repo' instead of '.' so that it can be filtered if necessary.
@@ -278,7 +279,8 @@ module.exports = function( grunt ) {
 
     await lint( patterns, {
       cache: cache,
-      fix: fix
+      fix: fix,
+      format: format
     } );
   } ) );
 
@@ -287,11 +289,13 @@ module.exports = function( grunt ) {
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
     const fix = grunt.option( 'fix' );
+    const format = grunt.option( 'format' );
     assert && assert( !grunt.option( 'patterns' ), 'patterns not support for lint-all' );
 
     await lint( getPhetLibs( repo ).map( repo => `../${repo}` ), {
       cache: cache,
-      fix: fix
+      fix: fix,
+      format: format
     } );
   } ) );
 
