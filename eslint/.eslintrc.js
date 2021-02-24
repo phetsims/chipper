@@ -156,6 +156,15 @@ module.exports = {
       'self'
     ],
 
+    // require a capital letter for constructors
+    'new-cap': [ 'error', {
+      newIsCap: true,
+      newIsCapExceptionPattern: '^(options|this|window)\\.\\w+', // Allow constructors to be passed through options.
+      newIsCapExceptions: [ 'rsync', 'jimp', 'Math.seedrandom' ],
+      capIsNew: false,
+      capIsNewExceptions: [ 'Immutable.Map', 'Immutable.Set', 'Immutable.List' ]
+    } ],
+
     // don't escape characters that don't need to be escaped
     'no-useless-escape': 2,
 

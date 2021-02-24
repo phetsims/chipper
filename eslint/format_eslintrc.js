@@ -268,14 +268,6 @@ module.exports = {
     // TODO: enable?
     'multiline-ternary': [ 'off', 'never' ],
 
-    // require a capital letter for constructors
-    'new-cap': [ 'error', {
-      newIsCap: true,
-      newIsCapExceptions: [],
-      capIsNew: false,
-      capIsNewExceptions: [ 'Immutable.Map', 'Immutable.Set', 'Immutable.List' ]
-    } ],
-
     // disallow the omission of parentheses when invoking a constructor with no arguments
     // https://eslint.org/docs/rules/new-parens
     'new-parens': 'error',
