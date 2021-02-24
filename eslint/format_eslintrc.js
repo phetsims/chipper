@@ -373,6 +373,10 @@ module.exports = {
     // https://eslint.org/docs/rules/no-whitespace-before-property
     'no-whitespace-before-property': 'error',
 
+    // get rid of extra spaces within lines of code
+    // https://eslint.org/docs/rules/no-multi-spaces
+    'no-multi-spaces': 'error',
+
     // enforce the location of single-line statements
     // https://eslint.org/docs/rules/nonblock-statement-body-position
     'nonblock-statement-body-position': [ 'error', 'beside', { overrides: {} } ],
