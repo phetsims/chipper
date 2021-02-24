@@ -166,6 +166,33 @@ module.exports = {
     'arrow-parens': [ 2, 'as-needed' ],
 
     'no-trailing-spaces': [ 2, { skipBlankLines: true, ignoreComments: true } ]
+
+    //
+    // // disallow certain syntax forms
+    // // https://eslint.org/docs/rules/no-restricted-syntax
+    // // TODO: Add back in https://github.com/phetsims/chipper/issues/1009
+    // 'no-restricted-syntax': [
+    //   'error',
+    //
+    //   // TODO: https://github.com/phetsims/phet-info/issues/ should we turn this on?
+    //   // It showed an error in Fourier so I disabled it
+    //   // {
+    //   //   selector: 'ForInStatement',
+    //   //   message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.'
+    //   // },
+    //   {
+    //     selector: 'ForOfStatement',
+    //     message: 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.'
+    //   },
+    //   {
+    //     selector: 'LabeledStatement',
+    //     message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.'
+    //   },
+    //   {
+    //     selector: 'WithStatement',
+    //     message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.'
+    //   }
+    // ]
   },
   env: {
     browser: true,
