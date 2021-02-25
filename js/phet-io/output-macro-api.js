@@ -16,6 +16,14 @@ let repos = contents.split( '\n' ).map( sim => sim.trim() );
  * cd chipper
  * node js/phet-io/output-macro-api.js [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N] [--out=filename.json]
  *
+ * OPTIONS:
+ * It will default to include all phet-io sims unless you specify a subset
+ * --sims=sim1,sim2: a listed subset of sims
+ * --slice=take a slice of all phet-io sims
+ * --mod=take a modulus of all phet-io sims (every Nth sim)
+ *
+ * --out=filename: where to output the macro API file.  JSON suffix is recommended but not required.
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 ( async () => {
