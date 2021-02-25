@@ -1,7 +1,7 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Compare macro APIs (files that contain 1+ APIs).  TODO: https://github.com/phetsims/phet-io/issues/1733, see
+ * Compare phet-io APIs for two versions of the same sim.  TODO: https://github.com/phetsims/phet-io/issues/1733, see
  * TODO: compareAPIs.js and make sure this can run in all appropriate contexts, not just node
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -54,6 +54,7 @@ module.exports = ( api1, api2 ) => {
       reportDifferences( 'phetioReadOnly', true ); // Only need to report if something became readOnly
 
       // The following metadata keys are non-breaking:
+      // 'phetioDocumentation'
       // 'phetioFeatured'
       // 'phetioStudioControl'
       // 'phetioHighFrequency', non-breaking, assuming clients with data have the full data stream

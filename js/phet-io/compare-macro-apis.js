@@ -7,8 +7,11 @@ const compareMacroAPIs = require( './compareMacroAPIs' );
 /**
  * Compare two macro apis specified on the command line.  Command-line adapter to run compareMacroAPIs.js
  * USAGE:
- * cd root
- * node chipper/js/phet-io/compare-macro-apis.js macroapi1.json macroapi2.json
+ * cd chipper
+ * node js/phet-io/compare-macro-apis.js macroapi1.json macroapi2.json [--delta]
+ *
+ * OPTIONS:
+ * --delta: shows the entire delta
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -19,4 +22,8 @@ const b = JSON.parse( fs.readFileSync( args[ 1 ], 'utf8' ) );
 const result = compareMacroAPIs( a, b );
 if ( result.problemCount > 0 ) {
   console.log( result.formatted );
+}
+
+if ( args.includes( '--delta' ) && result.delta ) {
+  console.log( JSON.stringify( result.delta, null, 2 ) );
 }
