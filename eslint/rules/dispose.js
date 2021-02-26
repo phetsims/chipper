@@ -27,7 +27,7 @@ module.exports = function( context ) {
 
   return {
 
-    ExpressionStatement: function checkForDispose( node ) {
+    ExpressionStatement: function( node ) {
 
       // look through the AST of a typical observer registration, see https://github.com/phetsims/chipper/issues/418
       if ( node.expression &&

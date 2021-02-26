@@ -219,6 +219,13 @@ module.exports = {
     // https://eslint.org/docs/rules/func-call-spacing
     'func-call-spacing': [ 'error', 'never' ],
 
+    // requires function names to match the name of the variable or property to which they are assigned
+    // https://eslint.org/docs/rules/func-name-matching
+    'func-name-matching': [ 'error', 'always', {
+      includeCommonJSModuleExports: false,
+      considerPropertyDescriptor: true
+    } ],
+
     // enforces spacing between keys and values in object literal properties
     'key-spacing': [ 'error', { beforeColon: false, afterColon: true } ],
 

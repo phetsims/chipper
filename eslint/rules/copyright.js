@@ -15,7 +15,7 @@ module.exports = function( context ) {
 
   return {
 
-    Program: function checkCopyright( node ) {
+    Program: function( node ) {
       // Get the whole source code, not for node only.
       const comments = context.getSourceCode().getAllComments();
 

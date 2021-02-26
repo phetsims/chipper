@@ -103,7 +103,7 @@ module.exports = function( context ) {
      *
      * @param  {ASTNode} node
      */
-    'NewExpression:exit': function noHTMLConstructor( node ) {
+    'NewExpression:exit': function( node ) {
 
       // Example...
       //

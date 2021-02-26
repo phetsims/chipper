@@ -16,7 +16,7 @@ module.exports = function( context ) {
 
   return {
 
-    AssignmentExpression: function propertyVisibilityAnnotation( node ) {
+    AssignmentExpression: function( node ) {
       let isAnnotated = false;
 
       if ( node.left && node.left && node.left.object && node.left.object.type === 'ThisExpression' ) {

@@ -28,7 +28,7 @@ if ( buildJSON && buildJSON.common && buildJSON.common.phetLibs ) {
 module.exports = function( context ) {
   return {
 
-    Program: function checkTodoShouldHaveIssue( node ) {
+    Program: function() {
 
       // Check whether the given directory matches the whitelist
       let directoryShouldBeChecked = false;

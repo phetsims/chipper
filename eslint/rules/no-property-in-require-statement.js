@@ -15,7 +15,7 @@ module.exports = function( context ) {
 
   return {
 
-    VariableDeclaration: function noAttributesInRequireStatement( node ) {
+    VariableDeclaration: function( node ) {
 
       if ( node.declarations &&
            node.declarations.length > 0 &&

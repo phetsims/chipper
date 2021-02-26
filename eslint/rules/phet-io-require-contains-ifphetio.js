@@ -15,7 +15,7 @@ module.exports = function( context ) {
 
   return {
 
-    VariableDeclaration: function phetioRequireContainsIfphetio( node ) {
+    VariableDeclaration: function( node ) {
 
       // Here is the AST of a typical require statement node, for reference
       // ( should be the same comment as in require-statement-match.js)
