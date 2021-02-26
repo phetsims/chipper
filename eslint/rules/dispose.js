@@ -36,16 +36,16 @@ module.exports = function( context ) {
            node.expression.callee.property.name ) {
         const calleeName = node.expression.callee.property.name;
         for ( const key in OBSERVER_REGISTRATIONS ) {
-          if( OBSERVER_REGISTRATIONS.hasOwnProperty( key ) ) {
-            if( calleeName === OBSERVER_REGISTRATIONS[ key ] ) {
+          if ( OBSERVER_REGISTRATIONS.hasOwnProperty( key ) ) {
+            if ( calleeName === OBSERVER_REGISTRATIONS[ key ] ) {
               // we have found an observer registration, start at the root and look through its tokens for dispose
               let disposeFound = false;
               const rootNode = context.getSourceCode().ast;
-              if( rootNode &&
+              if ( rootNode &&
                   rootNode.tokens ) {
                 rootNode.tokens.forEach( function( token ) {
-                  if( token ) {
-                    if( token.type === 'Identifier' &&
+                  if ( token ) {
+                    if ( token.type === 'Identifier' &&
                         token.value === 'dispose' ) {
                       // we have found a dispose function
                       disposeFound = true;
@@ -53,7 +53,7 @@ module.exports = function( context ) {
                   }
                 } );
               }
-              if( !disposeFound ) {
+              if ( !disposeFound ) {
                 context.report( {
                   node: node,
                   loc: node.loc.start,

@@ -135,17 +135,6 @@ module.exports = {
     // https://eslint.org/docs/rules/jsx-quotes
     'jsx-quotes': [ 'off', 'prefer-double' ],
 
-    // require a space before & after certain keywords
-    'keyword-spacing': [ 'error', {
-      before: true,
-      after: true,
-      overrides: {
-        return: { after: true },
-        throw: { after: true },
-        case: { after: true }
-      }
-    } ],
-
     // enforce position of line comments
     // https://eslint.org/docs/rules/line-comment-position
     // TODO: enable?

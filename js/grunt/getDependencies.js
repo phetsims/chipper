@@ -59,7 +59,7 @@ module.exports = async function( repo ) {
       sha = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], { cwd: `../${dependency}` } ) ).trim();
       branch = ( await execute( 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], { cwd: `../${dependency}` } ) ).trim();
     }
-    catch ( e ) {
+    catch( e ) {
       // We support repos that are not git repositories, see https://github.com/phetsims/chipper/issues/1011
       console.log( `Did not find git information for ${dependency}` );
     }

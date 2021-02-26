@@ -216,6 +216,17 @@ module.exports = {
     // enforces spacing between keys and values in object literal properties
     'key-spacing': [ 'error', { beforeColon: false, afterColon: true } ],
 
+    // require a space before & after certain keywords
+    'keyword-spacing': [ 'error', {
+      before: true,
+      after: true,
+      overrides: {
+        case: { after: true }, // default
+        switch: { after: false },
+        catch: { after: false }
+      }
+    } ],
+
     // require or disallow an empty line between class members
     // https://eslint.org/docs/rules/lines-between-class-members
     'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: false } ],
