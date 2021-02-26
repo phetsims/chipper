@@ -56,7 +56,8 @@ module.exports = {
     } ],
 
     // enforce newline at the end of file, with no multiple empty lines
-    'eol-last': [ 'error', 'never' ],
+    // TODO: add to knit picky rules, https://github.com/phetsims/phet-info/issues/150
+    // 'eol-last': [ 'error', 'never' ],
 
     // requires function names to match the name of the variable or property to which they are
     // assigned
