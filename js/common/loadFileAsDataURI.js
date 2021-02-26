@@ -18,18 +18,18 @@ function loadFileAsDataURI( filename ) {
   const suffix = filenameParts[ filenameParts.length - 1 ];
 
   const mimeType = {
-    'png': 'image/png',
-    'svg': 'image/svg+xml',
-    'jpg': 'image/jpeg',
-    'gif': 'image/gif',
-    'cur': 'image/x-icon', // cursor files (used in build-a-molecule). x-win-bitmap gives off warnings in Chrome
-    'mp3': 'audio/mpeg',
-    'm4a': 'audio/mp4',
-    'ogg': 'audio/ogg',
-    'oga': 'audio/ogg',
-    'bma': 'audio/webm', // webma is the full extension
-    'wav': 'audio/wav',
-    'woff': 'application/x-font-woff'
+    png: 'image/png',
+    svg: 'image/svg+xml',
+    jpg: 'image/jpeg',
+    gif: 'image/gif',
+    cur: 'image/x-icon', // cursor files (used in build-a-molecule). x-win-bitmap gives off warnings in Chrome
+    mp3: 'audio/mpeg',
+    m4a: 'audio/mp4',
+    ogg: 'audio/ogg',
+    oga: 'audio/ogg',
+    bma: 'audio/webm', // webma is the full extension
+    wav: 'audio/wav',
+    woff: 'application/x-font-woff'
   }[ suffix ];
 
   if ( !mimeType ) {

@@ -354,10 +354,6 @@ module.exports = {
     // https://eslint.org/docs/rules/prefer-object-spread
     'prefer-object-spread': 'error',
 
-    // require quotes around object literal property names
-    // https://eslint.org/docs/rules/quote-props.html
-    'quote-props': [ 'error', 'as-needed', { keywords: false, unnecessary: true, numbers: false } ],
-
     // do not require jsdoc
     // https://eslint.org/docs/rules/require-jsdoc
     'require-jsdoc': 'off',
