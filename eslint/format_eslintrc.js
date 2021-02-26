@@ -127,10 +127,11 @@ module.exports = {
 
     // require or disallow newlines around directives
     // https://eslint.org/docs/rules/lines-around-directive
-    'lines-around-directive': [ 'error', {
-      before: 'always',
-      after: 'always'
-    } ],
+    // "use strict" can do what ever it wants!
+    // 'lines-around-directive': [ 'error', {
+    //   before: 'always',
+    //   after: 'always'
+    // } ],
 
     // specify the maximum depth that blocks can be nested
     'max-depth': [ 'off', 4 ],
@@ -213,86 +214,86 @@ module.exports = {
     // disallow un-paren'd mixes of different operators
     // https://eslint.org/docs/rules/no-mixed-operators
     // 'no-mixed-operators': [ 'error', {
+    // //
+    // //   // the list of arithmetic groups disallows mixing `%` and `**`
+    // //   // with other arithmetic operators.
+    // //   groups: [
+    // //     [ '%', '**' ],
+    // //     [ '%', '+' ],
+    // //     [ '%', '-' ],
+    // //     [ '%', '*' ],
+    // //     [ '%', '/' ],
+    // //     [ '/', '*' ],
+    // //     [ '&', '|', '<<', '>>', '>>>' ],
+    // //     [ '==', '!=', '===', '!==' ],
+    // //     [ '&&', '||' ],
+    // //   ],
+    // //   allowSamePrecedence: false
+    // // } ],
     //
-    //   // the list of arithmetic groups disallows mixing `%` and `**`
-    //   // with other arithmetic operators.
-    //   groups: [
-    //     [ '%', '**' ],
-    //     [ '%', '+' ],
-    //     [ '%', '-' ],
-    //     [ '%', '*' ],
-    //     [ '%', '/' ],
-    //     [ '/', '*' ],
-    //     [ '&', '|', '<<', '>>', '>>>' ],
-    //     [ '==', '!=', '===', '!==' ],
-    //     [ '&&', '||' ],
-    //   ],
-    //   allowSamePrecedence: false
-    // } ],
-
-    // disallow use of chained assignment expressions
-    // https://eslint.org/docs/rules/no-multi-assign
-    // 'no-multi-assign': [ 'error' ],
-
-    // disallow negated conditions
-    // https://eslint.org/docs/rules/no-negated-condition
-    'no-negated-condition': 'off',
-
-    // disallow nested ternary expressions
-    // 'no-nested-ternary': 'error',
-
-    // disallow the use of ternary operators
-    'no-ternary': 'off',
-
-    // disallow dangling underscores in identifiers
-    // https://eslint.org/docs/rules/no-underscore-dangle
-    // 'no-underscore-dangle': [ 'error', {
-    //   allow: [],
-    //   allowAfterThis: false,
-    //   allowAfterSuper: false,
-    //   enforceInMethodNames: true
-    // } ],
-
-    // disallow the use of Boolean literals in conditional expressions
-    // also, prefer `a || b` over `a ? a : b`
-    // https://eslint.org/docs/rules/no-unneeded-ternary
-    'no-unneeded-ternary': [ 'error', { defaultAssignment: false } ],
-
-    // get rid of extra spaces within lines of code
-    // https://eslint.org/docs/rules/no-multi-spaces
-    'no-multi-spaces': 'error',
-
-    // enforce "same line" or "multiple line" on object properties.
-    // https://eslint.org/docs/rules/object-property-newline
-    // 'object-property-newline': [ 'error', {
-    //   allowAllPropertiesOnSameLine: true,
-    // } ],
-
-    // Requires operator at the beginning of the line in multiline statements
-    // https://eslint.org/docs/rules/operator-linebreak
-    // 'operator-linebreak': [ 'error', 'after', { overrides: { '=': 'none' } } ],
-
-    // disallow padding within blocks
-    // 'padded-blocks': [ 'error', {
-    //   blocks: 'never',
-    //   classes: 'never',
-    //   switches: 'never',
-    // }, {
-    //   allowSingleLineBlocks: true,
-    // } ],
-
-    // Require or disallow padding lines between statements
-    // https://eslint.org/docs/rules/padding-line-between-statements
-    'padding-line-between-statements': 'off',
-
-    // Disallow the use of Math.pow in favor of the ** operator
-    // https://eslint.org/docs/rules/prefer-exponentiation-operator
-    // TODO: enable, semver-major when eslint 5 is dropped
-    'prefer-exponentiation-operator': 'off',
-
-    // do not require jsdoc
-    // https://eslint.org/docs/rules/require-jsdoc
-    'require-jsdoc': 'off',
+    // // disallow use of chained assignment expressions
+    // // https://eslint.org/docs/rules/no-multi-assign
+    // // 'no-multi-assign': [ 'error' ],
+    //
+    // // disallow negated conditions
+    // // https://eslint.org/docs/rules/no-negated-condition
+    // 'no-negated-condition': 'off',
+    //
+    // // disallow nested ternary expressions
+    // // 'no-nested-ternary': 'error',
+    //
+    // // disallow the use of ternary operators
+    // 'no-ternary': 'off',
+    //
+    // // disallow dangling underscores in identifiers
+    // // https://eslint.org/docs/rules/no-underscore-dangle
+    // // 'no-underscore-dangle': [ 'error', {
+    // //   allow: [],
+    // //   allowAfterThis: false,
+    // //   allowAfterSuper: false,
+    // //   enforceInMethodNames: true
+    // // } ],
+    //
+    // // disallow the use of Boolean literals in conditional expressions
+    // // also, prefer `a || b` over `a ? a : b`
+    // // https://eslint.org/docs/rules/no-unneeded-ternary
+    // 'no-unneeded-ternary': [ 'error', { defaultAssignment: false } ],
+    //
+    // // get rid of extra spaces within lines of code
+    // // https://eslint.org/docs/rules/no-multi-spaces
+    // 'no-multi-spaces': 'error',
+    //
+    // // enforce "same line" or "multiple line" on object properties.
+    // // https://eslint.org/docs/rules/object-property-newline
+    // // 'object-property-newline': [ 'error', {
+    // //   allowAllPropertiesOnSameLine: true,
+    // // } ],
+    //
+    // // Requires operator at the beginning of the line in multiline statements
+    // // https://eslint.org/docs/rules/operator-linebreak
+    // // 'operator-linebreak': [ 'error', 'after', { overrides: { '=': 'none' } } ],
+    //
+    // // disallow padding within blocks
+    // // 'padded-blocks': [ 'error', {
+    // //   blocks: 'never',
+    // //   classes: 'never',
+    // //   switches: 'never',
+    // // }, {
+    // //   allowSingleLineBlocks: true,
+    // // } ],
+    //
+    // // Require or disallow padding lines between statements
+    // // https://eslint.org/docs/rules/padding-line-between-statements
+    // 'padding-line-between-statements': 'off',
+    //
+    // // Disallow the use of Math.pow in favor of the ** operator
+    // // https://eslint.org/docs/rules/prefer-exponentiation-operator
+    // // TODO: enable, semver-major when eslint 5 is dropped
+    // 'prefer-exponentiation-operator': 'off',
+    //
+    // // do not require jsdoc
+    // // https://eslint.org/docs/rules/require-jsdoc
+    // 'require-jsdoc': 'off',
 
     // requires object keys to be sorted
     'sort-keys': [ 'off', 'asc', { caseSensitive: false, natural: true } ],
