@@ -346,10 +346,6 @@ module.exports = {
     // TODO: enable, semver-major when eslint 5 is dropped
     'prefer-exponentiation-operator': 'off',
 
-    // Prefer use of an object spread over Object.assign
-    // https://eslint.org/docs/rules/prefer-object-spread
-    'prefer-object-spread': 'error',
-
     // do not require jsdoc
     // https://eslint.org/docs/rules/require-jsdoc
     'require-jsdoc': 'off',
