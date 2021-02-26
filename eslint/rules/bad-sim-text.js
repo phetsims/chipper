@@ -44,7 +44,8 @@ module.exports = function( context ) {
     // Should import dotRandom instead of using the namespace
     'phet.dot.dotRandom',
 
-    // Prefer using Pointer.isTouchLike() to support Pen, https://github.com/phetsims/scenery/issues/1156
+    // Prefer using Pointer.isTouchLike() to help support Pen. This is not set in stone, please see
+    // https://github.com/phetsims/scenery/issues/1156 and feel free to discuss if there are usages you want to support.
     ' instanceof Touch ',
 
     // Should have a period before "<", see https://github.com/phetsims/chipper/issues/1005
