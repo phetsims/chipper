@@ -59,7 +59,7 @@ module.exports = function( context ) {
 
     '@return ',
 
-    'Util = require( \'',// Utils should now be plural, see https://github.com/phetsims/tasks/issues/966
+    'Util = require( \'', // Utils should now be plural, see https://github.com/phetsims/tasks/issues/966
 
     // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
     ' => { return ',
