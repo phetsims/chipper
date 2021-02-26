@@ -54,6 +54,9 @@ module.exports = {
     // Custom rule for ensuring that images and text use scenery node
     'no-html-constructors': 2,
 
+    // enforce one true brace style
+    'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
+
     // Custom rule for avoiding instanceof Array.
     'no-instanceof-array': 2,
 
@@ -266,6 +269,14 @@ module.exports = {
 
     // require or disallow space before blocks
     'space-before-blocks': 'error',
+
+    // require or disallow space before function opening parenthesis
+    // https://eslint.org/docs/rules/space-before-function-paren
+    'space-before-function-paren': [ 'error', {
+      anonymous: 'never',
+      named: 'never',
+      asyncArrow: 'always'
+    } ],
 
     // require or disallow spaces inside parentheses
     'space-in-parens': [ 'error', 'always' ],

@@ -36,13 +36,9 @@ module.exports = {
 
     // enforce spacing inside single-line blocks
     // https://eslint.org/docs/rules/block-spacing
-    'block-spacing': [ 'error', 'always' ],
-
-    // enforce one true brace style
-    'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
-
-    // require camel case names
-    camelcase: [ 'error', { properties: 'never', ignoreDestructuring: false } ],
+    // Leave it off because Webstorm doesn't add spacing to `() => {this.pLDChanged = true;}` to make it `() => { this.pLDChanged = true; }
+    // TODO: perhaps update webstorm rules, https://github.com/phetsims/phet-info/issues/150
+    // 'block-spacing': [ 'error', 'always' ],
 
     // enforce or disallow capitalization of the first letter of a comment
     // https://eslint.org/docs/rules/capitalized-comments
@@ -60,7 +56,8 @@ module.exports = {
     } ],
 
     // enforce newline at the end of file, with no multiple empty lines
-    'eol-last': [ 'error', 'never' ],
+    // TODO: add to knit picky rules, https://github.com/phetsims/phet-info/issues/150
+    // 'eol-last': [ 'error', 'never' ],
 
     // requires function names to match the name of the variable or property to which they are
     // assigned
@@ -346,10 +343,6 @@ module.exports = {
     // TODO: enable, semver-major when eslint 5 is dropped
     'prefer-exponentiation-operator': 'off',
 
-    // Prefer use of an object spread over Object.assign
-    // https://eslint.org/docs/rules/prefer-object-spread
-    'prefer-object-spread': 'error',
-
     // do not require jsdoc
     // https://eslint.org/docs/rules/require-jsdoc
     'require-jsdoc': 'off',
@@ -359,14 +352,6 @@ module.exports = {
 
     // sort variables within the same declaration block
     'sort-vars': 'off',
-
-    // require or disallow space before function opening parenthesis
-    // https://eslint.org/docs/rules/space-before-function-paren
-    'space-before-function-paren': [ 'error', {
-      anonymous: 'never',
-      named: 'never',
-      asyncArrow: 'always'
-    } ],
 
     // require or disallow a space immediately following the // or /* in a comment
     // https://eslint.org/docs/rules/spaced-comment
