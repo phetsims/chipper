@@ -251,6 +251,10 @@ module.exports = {
     // https://eslint.org/docs/rules/one-var-declaration-per-line
     'one-var-declaration-per-line': [ 'error', 'always' ],
 
+    // require quotes around object literal property names
+    // https://eslint.org/docs/rules/quote-props.html
+    'quote-props': [ 'error', 'as-needed', { keywords: false, unnecessary: true, numbers: false } ],
+
     // enforce spacing before and after semicolons
     'semi-spacing': [ 'error', { before: false, after: true } ],
 
