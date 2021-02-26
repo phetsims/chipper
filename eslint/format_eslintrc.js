@@ -14,14 +14,6 @@
  */
 module.exports = {
 
-  // Use all of the default rules from eslint, unless overridden below.
-  extends: 'eslint:recommended', // TODO: is this needed? https://github.com/phetsims/phet-info/issues/150
-
-  // specify that this file is the root of the eslintrc tree, so eslint won't search past this file looking for a file
-  // in a parent dir
-  root: true, // TODO: is this needed? https://github.com/phetsims/phet-info/issues/150
-
-  // The new rules, overrides, etc.
   // SR and MK deleted rules that we think we would never use.
   rules: {
     'object-curly-newline': [ 'error', {
@@ -64,23 +56,20 @@ module.exports = {
 
     // enforce line breaks after opening and before closing array brackets
     // https://eslint.org/docs/rules/array-bracket-newline
-    // TODO: enable? semver-major
-    'array-bracket-newline': [ 'off', 'consistent' ], // object option alternative: { multiline: true, minItems: 3 }
+    // 'array-bracket-newline': [ 'off', 'consistent' ], // object option alternative: { multiline: true, minItems: 3 }
 
     // enforce line breaks between array elements
     // https://eslint.org/docs/rules/array-element-newline
-    // TODO: enable? semver-major
-    'array-element-newline': [ 'off', { multiline: true, minItems: 3 } ],
+    // 'array-element-newline': [ 'off', { multiline: true, minItems: 3 } ],
 
     // enforce spacing inside single-line blocks
     // https://eslint.org/docs/rules/block-spacing
     // Leave it off because Webstorm doesn't add spacing to `() => {this.pLDChanged = true;}` to make it `() => { this.pLDChanged = true; }
-    // TODO: perhaps update webstorm rules, https://github.com/phetsims/phet-info/issues/150
+    // perhaps update webstorm rules
     // 'block-spacing': [ 'error', 'always' ],
 
     // enforce consistent line breaks inside function parentheses
     // https://eslint.org/docs/rules/function-paren-newline
-    // TODO: https://github.com/phetsims/phet-info/issues/150 should we turn this on?
     // I disabled it for compatibility with some formatting I saw in fourier
     // 'function-paren-newline': [ 'error', 'consistent' ],
 
@@ -90,16 +79,16 @@ module.exports = {
 
     // specify the maximum length of a line in your program
     // https://eslint.org/docs/rules/max-len
-    'max-len': [ 'off', 120, 2, {
-      ignoreUrls: true,
-      ignoreComments: false,
-      ignoreRegExpLiterals: true,
-      ignoreStrings: true,
-      ignoreTemplateLiterals: true
-    } ],
+    // 'max-len': [ 'off', 120, 2, {
+    //   ignoreUrls: true,
+    //   ignoreComments: false,
+    //   ignoreRegExpLiterals: true,
+    //   ignoreStrings: true,
+    //   ignoreTemplateLiterals: true
+    // } ],
 
     // limits the number of parameters that can be used in the function declaration.
-    'max-params': [ 'off', 3 ],
+    // 'max-params': [ 'off', 3 ],
 
     // disallow un-paren'd mixes of different operators
     // https://eslint.org/docs/rules/no-mixed-operators
@@ -133,11 +122,10 @@ module.exports = {
 
     // do not require jsdoc
     // https://eslint.org/docs/rules/require-jsdoc
-    'require-jsdoc': 'off',
+    // 'require-jsdoc': 'off'
 
     // require or disallow a space immediately following the // or /* in a comment
     // https://eslint.org/docs/rules/spaced-comment
-    // TODO: https://github.com/phetsims/phet-info/issues/150
     // SR is opinionated about having a space after line comment slashes, but I saw places in fourier where that
     // isn't happening, so this is commented out for now.
     // 'spaced-comment': [ 'error', 'always', {
@@ -157,24 +145,14 @@ module.exports = {
      *******/
 
     // enforce newline at the end of file, with no multiple empty lines
-    // TODO: add to knit picky rules, https://github.com/phetsims/phet-info/issues/150
     'eol-last': [ 'error', 'never' ],
 
     // enforces empty lines around comments
     // PhET devs do not want this to be so strict in general
-    // TODO: add to extra knit-picky rules in the future. https://github.com/phetsims/phet-info/issues/150
     'lines-around-comment': [ 'error', { beforeLineComment: true } ]
 
     /********************************
      * End of the Nit Picky rules
      *******/
-  },
-  env: {
-    browser: true,
-    es6: true
-  },
-  parserOptions: {
-    ecmaVersion: 8,
-    sourceType: 'module'
   }
 };
