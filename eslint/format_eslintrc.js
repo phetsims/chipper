@@ -164,7 +164,9 @@ module.exports = {
     // 'linebreak-style': [ 'error', 'unix' ],
 
     // enforces empty lines around comments
-    'lines-around-comment': [ 'error', { beforeLineComment: true } ],
+    // PhET devs do not want this to be so strict in general
+    // TODO: add to extra knit-picky rules in the future. https://github.com/phetsims/phet-info/issues/150
+    // 'lines-around-comment': [ 'error', { beforeLineComment: true } ],
 
     // require or disallow newlines around directives
     // https://eslint.org/docs/rules/lines-around-directive
