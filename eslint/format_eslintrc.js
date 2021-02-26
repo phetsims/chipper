@@ -36,9 +36,6 @@ module.exports = {
     // TODO: enable? semver-major
     'array-element-newline': [ 'off', { multiline: true, minItems: 3 } ],
 
-    // enforce spacing inside array brackets
-    'array-bracket-spacing': [ 'error', 'always' ],
-
     // enforce spacing inside single-line blocks
     // https://eslint.org/docs/rules/block-spacing
     'block-spacing': [ 'error', 'always' ],

@@ -174,7 +174,10 @@ module.exports = {
     // disallow parens surrounding single args in arrow functions
     'arrow-parens': [ 2, 'as-needed' ],
 
-    'no-trailing-spaces': [ 2, { skipBlankLines: true, ignoreComments: true } ]
+    'no-trailing-spaces': [ 2, { skipBlankLines: true, ignoreComments: true } ],
+
+    // enforce spacing inside array brackets
+    'array-bracket-spacing': [ 'error', 'always' ]
 
     //
     // // disallow certain syntax forms
