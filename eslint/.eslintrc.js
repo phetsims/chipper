@@ -54,6 +54,9 @@ module.exports = {
     // Custom rule for ensuring that images and text use scenery node
     'no-html-constructors': 2,
 
+    // enforce one true brace style
+    'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
+
     // Custom rule for avoiding instanceof Array.
     'no-instanceof-array': 2,
 

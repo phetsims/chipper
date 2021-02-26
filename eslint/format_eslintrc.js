@@ -38,9 +38,6 @@ module.exports = {
     // https://eslint.org/docs/rules/block-spacing
     'block-spacing': [ 'error', 'always' ],
 
-    // enforce one true brace style
-    'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
-
     // enforce or disallow capitalization of the first letter of a comment
     // https://eslint.org/docs/rules/capitalized-comments
     'capitalized-comments': [ 'off', 'never', {
