@@ -191,11 +191,6 @@ module.exports = {
     // https://eslint.org/docs/rules/newline-before-return
     'newline-before-return': 'off',
 
-    // enforces new line after each method call in the chain to make it
-    // more readable and easy to maintain
-    // https://eslint.org/docs/rules/newline-per-chained-call
-    'newline-per-chained-call': [ 'error', { ignoreChainWithDepth: 4 } ],
-
     // disallow use of bitwise operators
     // https://eslint.org/docs/rules/no-bitwise
     'no-bitwise': 'error', // SO MANY ERRORS IN SCENERY
