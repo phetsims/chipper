@@ -44,6 +44,9 @@ module.exports = function( context ) {
     // Should import dotRandom instead of using the namespace
     'phet.dot.dotRandom',
 
+    // Prefer using Pointer.isTouchLike() to support Pen, https://github.com/phetsims/scenery/issues/1156
+    ' instanceof Touch ',
+
     // Should have a period before "<", see https://github.com/phetsims/chipper/issues/1005
     { id: 'Type<Parameter>', regex: /{[^\n ]*\b[A-z]+<[A-z]+>/ }
 
