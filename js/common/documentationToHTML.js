@@ -43,12 +43,14 @@
     const lines = string.split( '\n' );
 
     let inParagraph = false;
+
     function insideParagraph() {
       if ( !inParagraph ) {
         result += '<p>\n';
         inParagraph = true;
       }
     }
+
     function outsideParagraph() {
       if ( inParagraph ) {
         result += '</p>\n';
@@ -164,7 +166,7 @@
         if ( parameter.optional ) {
           name = '<span class="optional">' + name + '</span>';
         }
-        result += '<tr class="param"><td>' + typeString( parameter.type ) + '</td><td>' + name  + '</td><td> - </td><td>' + description + '</td></tr>\n';
+        result += '<tr class="param"><td>' + typeString( parameter.type ) + '</td><td>' + name + '</td><td> - </td><td>' + description + '</td></tr>\n';
       } );
       result += '</table>\n';
     }

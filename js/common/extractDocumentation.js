@@ -90,7 +90,7 @@
     typeString = typeString.slice( 1, typeString.length - 1 );
 
     // for ( var i = 0; i < line.length; i++ ) {
-      // TODO: handle |, {}, etc. https://github.com/phetsims/chipper/issues/411
+    // TODO: handle |, {}, etc. https://github.com/phetsims/chipper/issues/411
     // }
 
     return typeString;
@@ -335,9 +335,11 @@
     function blockCommentFilter( comment ) {
       return comment.type === 'Block' && comment.value.charAt( 0 ) === '*';
     }
+
     function lineCommentFilter( comment ) {
       return comment.type === 'Line' && comment.value.indexOf( '@public' ) >= 0;
     }
+
     let lineComments = [];
     if ( node.leadingComments ) {
       const blockComments = node.leadingComments.filter( blockCommentFilter );

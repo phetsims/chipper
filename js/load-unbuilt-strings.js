@@ -81,7 +81,7 @@
       try {
         json = JSON.parse( request.responseText );
       }
-      catch ( e ) {
+      catch( e ) {
         console.log( `Could not parse string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
       }
       if ( json ) {

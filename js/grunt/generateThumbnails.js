@@ -24,7 +24,7 @@ const jimp = require( 'jimp' );
  * @param {string} altSuffix - ending for the filename e.g. -alt1
  * @returns {Promise} - Resolves to a {Buffer} with the image data
  */
-module.exports = function ( repo, width, height, quality, mime, altSuffix ) {
+module.exports = function( repo, width, height, quality, mime, altSuffix ) {
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot${altSuffix || ''}.png`;
 
@@ -33,11 +33,11 @@ module.exports = function ( repo, width, height, quality, mime, altSuffix ) {
       return;
     }
 
-    new jimp( fullResImageName, function () { //eslint-disable-line no-new
+    new jimp( fullResImageName, function() { //eslint-disable-line no-new
       if ( mime === jimp.MIME_JPEG ) {
         this.quality( quality );
       }
-      this.resize( width, height ).getBuffer( mime, function ( error, buffer ) {
+      this.resize( width, height ).getBuffer( mime, function( error, buffer ) {
         if ( error ) {
           reject( new Error( error ) );
         }
