@@ -168,6 +168,9 @@ module.exports = {
       capIsNewExceptions: [ 'Immutable.Map', 'Immutable.Set', 'Immutable.List' ]
     } ],
 
+    // disallow too many empty lines
+    'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 0, maxEOF: 1 } ],
+
     // don't escape characters that don't need to be escaped
     'no-useless-escape': 2,
 

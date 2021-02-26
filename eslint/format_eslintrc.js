@@ -102,35 +102,6 @@ module.exports = {
     // https://eslint.org/docs/rules/implicit-arrow-linebreak
     // 'implicit-arrow-linebreak': [ 'error', 'beside' ],
 
-    // this option sets a specific tab width for your code
-    // https://eslint.org/docs/rules/indent
-    indent: [ 'error', 2, {
-      SwitchCase: 1,
-      VariableDeclarator: 'first',
-      outerIIFEBody: 1,
-
-      // MemberExpression: null,
-      FunctionDeclaration: {
-        parameters: 'first',
-        body: 1
-      },
-      FunctionExpression: {
-        parameters: 'first',
-        body: 1
-      },
-      CallExpression: {
-        arguments: 1
-      },
-      ArrayExpression: 'first',
-      ObjectExpression: 'first',
-      ImportDeclaration: 'first',
-      flatTernaryExpressions: true,
-
-      // list derived from https://github.com/benjamn/ast-types/blob/HEAD/def/jsx.js
-      ignoredNodes: [ 'ConditionalExpression' ],
-      ignoreComments: false
-    } ],
-
     // specify whether double or single quotes should be used in JSX attributes
     // https://eslint.org/docs/rules/jsx-quotes
     'jsx-quotes': [ 'off', 'prefer-double' ],
@@ -263,10 +234,6 @@ module.exports = {
     // https://eslint.org/docs/rules/no-multi-assign
     // 'no-multi-assign': [ 'error' ],
 
-    // disallow multiple empty lines, only one newline at the end, and no new lines at the beginning
-    // https://eslint.org/docs/rules/no-multiple-empty-lines
-    'no-multiple-empty-lines': [ 'error', { max: 1, maxBOF: 0, maxEOF: 0 } ],
-
     // disallow negated conditions
     // https://eslint.org/docs/rules/no-negated-condition
     'no-negated-condition': 'off',
@@ -294,15 +261,6 @@ module.exports = {
     // get rid of extra spaces within lines of code
     // https://eslint.org/docs/rules/no-multi-spaces
     'no-multi-spaces': 'error',
-
-    // enforce line breaks between braces
-    // https://eslint.org/docs/rules/object-curly-newline
-    'object-curly-newline': [ 'error', {
-      ObjectExpression: { minProperties: 4, multiline: true, consistent: true },
-      ObjectPattern: { minProperties: 4, multiline: true, consistent: true },
-      ImportDeclaration: { minProperties: 4, multiline: true, consistent: true },
-      ExportDeclaration: { minProperties: 4, multiline: true, consistent: true }
-    } ],
 
     // enforce "same line" or "multiple line" on object properties.
     // https://eslint.org/docs/rules/object-property-newline
