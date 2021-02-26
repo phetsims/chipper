@@ -230,6 +230,8 @@ module.exports = {
     // disallow use of the Object constructor
     'no-new-object': 'error',
 
+    'no-template-curly-in-string': 2,
+
     // disallow space between function identifier and application
     'no-spaced-func': 'error',
 
