@@ -36,7 +36,9 @@ module.exports = {
 
     // enforce spacing inside single-line blocks
     // https://eslint.org/docs/rules/block-spacing
-    'block-spacing': [ 'error', 'always' ],
+    // Leave it off because Webstorm doesn't add spacing to `() => {this.pLDChanged = true;}` to make it `() => { this.pLDChanged = true; }
+    // TODO: perhaps update webstorm rules, https://github.com/phetsims/phet-info/issues/150
+    // 'block-spacing': [ 'error', 'always' ],
 
     // enforce or disallow capitalization of the first letter of a comment
     // https://eslint.org/docs/rules/capitalized-comments
