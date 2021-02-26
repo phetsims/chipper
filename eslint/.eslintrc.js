@@ -177,7 +177,115 @@ module.exports = {
     'no-trailing-spaces': [ 2, { skipBlankLines: true, ignoreComments: true } ],
 
     // enforce spacing inside array brackets
-    'array-bracket-spacing': [ 'error', 'always' ]
+    'array-bracket-spacing': [ 'error', 'always' ],
+
+    // enforce spacing before and after comma
+    'comma-spacing': [ 'error', { before: false, after: true } ],
+
+    // enforce one true comma style
+    'comma-style': [ 'error', 'last', { // good
+      exceptions: {
+        ArrayExpression: false,
+        ArrayPattern: false,
+        ArrowFunctionExpression: false,
+        CallExpression: false,
+        FunctionDeclaration: false,
+        FunctionExpression: false,
+        ImportDeclaration: false,
+        ObjectExpression: false,
+        ObjectPattern: false,
+        VariableDeclaration: false,
+        NewExpression: false
+      }
+    } ],
+
+    // disallow padding inside computed properties
+    'computed-property-spacing': [ 'error', 'always' ],
+
+    // https://eslint.org/docs/rules/function-call-argument-newline
+    // TODO: enable, semver-minor, once eslint v6.2 is required (which is a major)
+    'function-call-argument-newline': [ 'off', 'consistent' ],
+
+    // enforce spacing between functions and their invocations
+    // https://eslint.org/docs/rules/func-call-spacing
+    'func-call-spacing': [ 'error', 'never' ],
+
+    // enforces spacing between keys and values in object literal properties
+    'key-spacing': [ 'error', { beforeColon: false, afterColon: true } ],
+
+    // require or disallow an empty line between class members
+    // https://eslint.org/docs/rules/lines-between-class-members
+    'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: false } ],
+
+    // disallow the omission of parentheses when invoking a constructor with no arguments
+    // https://eslint.org/docs/rules/new-parens
+    'new-parens': 'error',
+
+    // disallow use of the Array constructor
+    'no-array-constructor': 'error',
+
+    // disallow mixed spaces and tabs for indentation
+    'no-mixed-spaces-and-tabs': 'error',
+
+    // disallow use of the Object constructor
+    'no-new-object': 'error',
+
+    // disallow space between function identifier and application
+    'no-spaced-func': 'error',
+
+    // disallow tab characters entirely
+    'no-tabs': 'error',
+
+    // disallow whitespace before properties
+    // https://eslint.org/docs/rules/no-whitespace-before-property
+    'no-whitespace-before-property': 'error',
+
+    // enforce the location of single-line statements
+    // https://eslint.org/docs/rules/nonblock-statement-body-position
+    'nonblock-statement-body-position': [ 'error', 'beside', { overrides: {} } ],
+
+    // require padding inside curly braces
+    'object-curly-spacing': [ 'error', 'always' ],
+
+    // require a newline around variable declaration
+    // https://eslint.org/docs/rules/one-var-declaration-per-line
+    'one-var-declaration-per-line': [ 'error', 'always' ],
+
+    // enforce spacing before and after semicolons
+    'semi-spacing': [ 'error', { before: false, after: true } ],
+
+    // Enforce location of semicolons
+    // https://eslint.org/docs/rules/semi-style
+    'semi-style': [ 'error', 'last' ],
+
+    // require or disallow space before blocks
+    'space-before-blocks': 'error',
+
+    // require or disallow spaces inside parentheses
+    'space-in-parens': [ 'error', 'always' ],
+
+    // require spaces around operators
+    'space-infix-ops': 'error',
+
+    // Require or disallow spaces before/after unary operators
+    // https://eslint.org/docs/rules/space-unary-ops
+    'space-unary-ops': [ 'error', {
+      words: true,
+      nonwords: false,
+      overrides: {}
+    } ],
+
+    // Enforce spacing around colons of switch statements
+    // https://eslint.org/docs/rules/switch-colon-spacing
+    'switch-colon-spacing': [ 'error', { after: true, before: false } ],
+
+    // Require or disallow spacing between template tags and their literals
+    // https://eslint.org/docs/rules/template-tag-spacing
+    'template-tag-spacing': [ 'error', 'never' ],
+
+    // require or disallow the Unicode Byte Order Mark
+    // https://eslint.org/docs/rules/unicode-bom
+    'unicode-bom': [ 'error', 'never' ]
 
     //
     // // disallow certain syntax forms
