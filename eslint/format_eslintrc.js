@@ -360,14 +360,6 @@ module.exports = {
     // sort variables within the same declaration block
     'sort-vars': 'off',
 
-    // require or disallow space before function opening parenthesis
-    // https://eslint.org/docs/rules/space-before-function-paren
-    'space-before-function-paren': [ 'error', {
-      anonymous: 'never',
-      named: 'never',
-      asyncArrow: 'always'
-    } ],
-
     // require or disallow a space immediately following the // or /* in a comment
     // https://eslint.org/docs/rules/spaced-comment
     // TODO: https://github.com/phetsims/phet-info/issues/150
