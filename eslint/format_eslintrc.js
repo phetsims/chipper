@@ -41,9 +41,6 @@ module.exports = {
     // enforce one true brace style
     'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
 
-    // require camel case names
-    camelcase: [ 'error', { properties: 'never', ignoreDestructuring: false } ],
-
     // enforce or disallow capitalization of the first letter of a comment
     // https://eslint.org/docs/rules/capitalized-comments
     'capitalized-comments': [ 'off', 'never', {
