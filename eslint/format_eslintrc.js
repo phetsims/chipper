@@ -245,10 +245,6 @@ module.exports = {
     // https://eslint.org/docs/rules/no-multi-assign
     // 'no-multi-assign': [ 'error' ],
 
-    // disallow multiple empty lines, only one newline at the end, and no new lines at the beginning
-    // https://eslint.org/docs/rules/no-multiple-empty-lines
-    'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 0, maxEOF: 1 } ],
-
     // disallow negated conditions
     // https://eslint.org/docs/rules/no-negated-condition
     'no-negated-condition': 'off',
