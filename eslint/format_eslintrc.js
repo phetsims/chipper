@@ -191,10 +191,6 @@ module.exports = {
     // https://eslint.org/docs/rules/newline-before-return
     'newline-before-return': 'off',
 
-    // disallow use of bitwise operators
-    // https://eslint.org/docs/rules/no-bitwise
-    'no-bitwise': 'error', // SO MANY ERRORS IN SCENERY
-
     // disallow use of the continue statement
     // https://eslint.org/docs/rules/no-continue
     // 'no-continue': 'error',
