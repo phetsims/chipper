@@ -39,7 +39,6 @@ if ( !optOutOfLint.includes( repo ) ) {
       ( async () => {
 
         // lint() automatically filters out non-lintable repos
-        // TODO: https://github.com/phetsims/phet-info/issues/150 we may want to autofix
         const results = await lint( [ `../${repo}` ], {
           cache: true,
           fix: false,
