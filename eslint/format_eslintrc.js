@@ -249,11 +249,6 @@ module.exports = {
     //   enforceInMethodNames: true
     // } ],
 
-    // disallow the use of Boolean literals in conditional expressions
-    // also, prefer `a || b` over `a ? a : b`
-    // https://eslint.org/docs/rules/no-unneeded-ternary
-    'no-unneeded-ternary': [ 'error', { defaultAssignment: false } ],
-
     // enforce "same line" or "multiple line" on object properties.
     // https://eslint.org/docs/rules/object-property-newline
     // 'object-property-newline': [ 'error', {
