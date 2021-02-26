@@ -138,6 +138,9 @@ module.exports = {
     // disallow assignment within variable declaration, see https://github.com/phetsims/chipper/issues/794
     'no-multi-assign-on-declaration': 2,
 
+    // get rid of extra spaces within lines of code
+    'no-multi-spaces': [ 'error', { ignoreEOLComments: true } ],
+
     // permit only one var declaration per line, see #390
     'one-var': [
       2,

@@ -259,10 +259,6 @@ module.exports = {
     // https://eslint.org/docs/rules/no-unneeded-ternary
     'no-unneeded-ternary': [ 'error', { defaultAssignment: false } ],
 
-    // get rid of extra spaces within lines of code
-    // https://eslint.org/docs/rules/no-multi-spaces
-    'no-multi-spaces': 'error',
-
     // enforce "same line" or "multiple line" on object properties.
     // https://eslint.org/docs/rules/object-property-newline
     // 'object-property-newline': [ 'error', {
