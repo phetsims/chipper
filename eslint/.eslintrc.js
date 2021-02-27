@@ -112,6 +112,9 @@ module.exports = {
     // encourages use of dot notation whenever possible
     'dot-notation': 2,
 
+    // disallow use of bitwise operators https://eslint.org/docs/rules/no-bitwise
+    'no-bitwise': 'error',
+
     // disallow adding to native types
     'no-extend-native': 2,
 
