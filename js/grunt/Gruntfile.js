@@ -260,12 +260,14 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
     [ 'build' ]
   );
-  grunt.registerTask( 'lint', 'lint js files that are specific to this repository.  Options:' +
-                              '' +
-                              '--disable-eslint-cache: cache will not be read or written' +
-                              '--fix: autofixable changes will be written to disk' +
-                              '--patterns: comma-separated list of directory/file patterns.  ' +
-                              'If not supplied, it will default to the repo where the command was run from.', wrapTask( async () => {
+  
+  grunt.registerTask( 'lint',
+    `lint js files. Options:
+--disable-eslint-cache: cache will not be read or written
+--fix: autofixable changes will be written to disk
+--format: Append an additional set of rules for formatting
+--patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.`,
+    wrapTask( async () => {
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
