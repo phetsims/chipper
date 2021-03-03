@@ -30,37 +30,34 @@ const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.indexOf( '--console' ) >= 0;
 
 // Run lint tests if they exist in the checked-out SHAs.
-const optOutOfLint = [ 'phet-io-website' ];
-if ( !optOutOfLint.includes( repo ) ) {
-  try {
-    const lint = require( '../../../chipper/js/grunt/lint' );
-    if ( lint.chipperAPIVersion === 'promises1' ) {
+try {
+  const lint = require( '../../../chipper/js/grunt/lint' );
+  if ( lint.chipperAPIVersion === 'promises1' ) {
 
-      ( async () => {
+    ( async () => {
 
-        // lint() automatically filters out non-lintable repos
-        const results = await lint( [ `../${repo}` ], {
-          cache: true,
-          fix: false,
-          warn: false
-        } );
+      // lint() automatically filters out non-lintable repos
+      const results = await lint( [ `../${repo}` ], {
+        cache: true,
+        fix: false,
+        warn: false
+      } );
 
-        const problems = results.filter( result => result.errorCount > 0 || result.warningCount > 0 );
-        problems.forEach( result => console.error( `lint failed in ${repo}`, result.filePath, result.messages.map( m => JSON.stringify( m, null, 2 ) ).join( '\n' ) ) );
-        if ( problems.length > 0 ) {
-          process.exit( 1 );
-        }
+      const problems = results.filter( result => result.errorCount > 0 || result.warningCount > 0 );
+      problems.forEach( result => console.error( `lint failed in ${repo}`, result.filePath, result.messages.map( m => JSON.stringify( m, null, 2 ) ).join( '\n' ) ) );
+      if ( problems.length > 0 ) {
+        process.exit( 1 );
+      }
 
-        outputToConsole && console.log( 'Linting passed with results.length: ' + results.length );
-      } )();
-    }
-    else {
-      console.log( 'chipper/js/grunt/lint not compatible' );
-    }
+      outputToConsole && console.log( 'Linting passed with results.length: ' + results.length );
+    } )();
   }
-  catch( e ) {
-    console.log( 'chipper/js/grunt/lint not found' );
+  else {
+    console.log( 'chipper/js/grunt/lint not compatible' );
   }
+}
+catch( e ) {
+  console.log( 'chipper/js/grunt/lint not found' );
 }
 
 // These sims don't have package.json or media that requires checking.
