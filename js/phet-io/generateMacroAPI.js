@@ -88,7 +88,7 @@ module.exports = async ( repos, options ) => {
       return new Promise( ( resolve, reject ) => {
 
         // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-        const id = setTimeout( () => reject( 'Timeout in generateMacroAPI' ), 30000 );
+        const id = setTimeout( () => reject( new Error( 'Timeout in generateMacroAPI' ) ), 30000 );
 
         page.on( 'console', async msg => {
 
@@ -127,9 +127,9 @@ module.exports = async ( repos, options ) => {
             }
           }
         } );
-        const cleanupAndReject = () => {
+        const cleanupAndReject = e => {
           clearTimeout( id );
-          reject();
+          reject( e );
         };
 
         page.on( 'error', cleanupAndReject );
