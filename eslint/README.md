@@ -21,8 +21,11 @@ We use these tools at several stages of development:
 
 For developers looking to ensure their changes pass ESLint, the typical entry point
 is to run `grunt lint`. See `grunt lint --help` for options. If your code passes
-`grunt lint`, then it is good to merge. You can add the `--format` option to
-[WHEN SHOULD I ACTUALLY USE FORMAT? AS AN EXTERNAL DEV]
+`grunt lint`, then it is good to merge. You can add the `--format` option to achieve 
+formatting that comes close to PhET's code standards defined by the Webstorm code style 
+[here](https://github.com/phetsims/phet-info/blob/master/ide/idea/phet-idea-codestyle.xml).
+That is considered the ground truth for formatting currently, and `--format` attempts to get as close at we can to those
+rules.
 
 ## Shared Configuration Files
 
