@@ -81,4 +81,5 @@ answer these questions:
   https://github.com/phetsims/phet-info/issues/150
 
 - While ESLint can be plugged into many IDEs to perform code formatting automatically, many
-  PhET developers use other plugins in their IDEs. See https://github.com/phetsims/phet-info/tree/master/ide
+  PhET developers use other plugins 
+  their IDEs. See https://github.com/phetsims/phet-info/tree/master/ide

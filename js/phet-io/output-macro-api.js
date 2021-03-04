@@ -5,16 +5,15 @@ const fs = require( 'fs' );
 const generateMacroAPI = require( './generateMacroAPI' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
 
-// constants
-const contents = fs.readFileSync( '../perennial/data/phet-io', 'utf8' ).trim();
-let repos = contents.split( '\n' ).map( sim => sim.trim() );
-
 /**
  * Runs generate-phet-io-api for the specified simulations, or all phet-io sims if not specified.
  *
  * USAGE:
  * cd chipper
- * node js/phet-io/output-macro-api.js [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N] [--out=filename.json]
+ * node js/phet-io/output-macro-api.js [--simList=path] [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N] [--name=filename.json]
+ *
+ * e.g.,
+ * node js/phet-io/output-macro-api.js --simList=../perennial/data/phet-io
  *
  * OPTIONS:
  * It will default to include all phet-io sims unless you specify a subset
@@ -29,7 +28,7 @@ let repos = contents.split( '\n' ).map( sim => sim.trim() );
 ( async () => {
 
   const args = process.argv.slice( 2 );
-  let outputFile = null;
+  let name = null;
   const processKey = ( key, callback ) => {
     const prefix = `--${key}=`;
     const values = args.filter( arg => arg.startsWith( prefix ) );
@@ -41,9 +40,14 @@ let repos = contents.split( '\n' ).map( sim => sim.trim() );
       process.exit( 1 );
     }
   };
+
+  let repos = [];
+  processKey( 'simList', value => {
+    const contents = fs.readFileSync( value, 'utf8' ).trim();
+    repos = contents.split( '\n' ).map( sim => sim.trim() );
+  } );
   processKey( 'sims', value => {
     repos = value.split( ',' );
-    console.error( `sims: ${repos.join( ', ' )}` );
   } );
   processKey( 'slice', value => {
     repos = repos.slice( parseInt( value, 10 ) );
@@ -54,10 +58,10 @@ let repos = contents.split( '\n' ).map( sim => sim.trim() );
       newArray.push( repos[ i ] );
     }
     repos = newArray;
-    console.error( `mod: ${repos.join( ', ' )}` );
+    console.log( `after mod: ${repos.join( ', ' )}` );
   } );
-  processKey( 'out', value => {
-    outputFile = value;
+  processKey( 'name', value => {
+    name = value;
   } );
 
   // console.log( 'running on repos: ' + repos.join( ', ' ) );
@@ -68,9 +72,11 @@ let repos = contents.split( '\n' ).map( sim => sim.trim() );
     showMessagesFromSim: false // must be pure JSON
   } );
 
+  name = name || new Date().toISOString().replace( /T/, '_' ).replace( /\..+/, '' ).replace( /:/, '-' ).replace( /:/, '-' );
+
   const result = formatPhetioAPI( results );
-  if ( outputFile ) {
-    fs.writeFileSync( outputFile, result );
+  if ( name ) {
+    fs.writeFileSync( `./build-phet-io-macro-api/${name}.json`, result );
   }
   else {
     console.log( result );

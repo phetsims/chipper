@@ -9,3 +9,4 @@ eslint/cache
 *.sublime-workspace
 package-lock.json
 build
+build-phet-io-macro-api
