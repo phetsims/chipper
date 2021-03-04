@@ -1,48 +1,84 @@
+# ESLint with PhET
 
-## eslint configuration for PhET
+## Overview
 
-### Overview
-In general, PhET's eslint configuration can be found in `./.eslintrc.js`. This base configuration specifies the majority
-of the rules used in the project, including the custom rules that have been created for the project (see `./rules/`).
+PhET uses [ESLint](https://eslint.org/) to statically analyze our code, solving several tasks:
+
+- Find logical and syntax errors, eg misspelled variables.
+- Ensure code conforms to PhET's style guideline, eg files must start with a copyright notice.
+- Ensure code is formatted correctly, eg indentation is two spaces.
+- Something else?
+- Autofix as many of these issues as possible.
+
+We use these tools at several stages of development:
+
+- Automatically highlighting errors and formatting code in our IDEs as we code.
+- Checking code during pre-commit hooks.
+- In continuous integration tests in [aqua](https://github.com/phetsims/aqua).
+- Elsewhere as well?
+
+## Usage
+
+For developers looking to ensure their changes pass ESLint, the typical entry point
+is to run `grunt lint`. See `grunt lint --help` for options. If your code passes
+`grunt lint`, then it is good to merge. You can add the `--format` option to
+[WHEN SHOULD I ACTUALLY USE FORMAT? AS AN EXTERNAL DEV]
+
+## Shared Configuration Files
+
+This directory (`chipper/eslint`) contains most of the
+[configuration for ESLint](https://eslint.org/docs/user-guide/configuring/).
+ESLint uses cascading configuration, similar to CSS, so we can provide an inheritance
+tree of configuration settings.
 
 Here is a list of all the available configuration files and why to use them for a repo:
 
-* `.eslintrc.js` is the main set of rules, and should be used for browser code that isn't used in sims, see `sim_eslint.js` for sim configuration (i.e. `phetmarks`).
-* `node_eslintrc.js` expands on the base rules and adds configuration only intended for Node.js code (i.e. `perennial`).
-* `sim_eslint.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5 sim rules)
-* `sim_es6_eslint.js` expands on the sim rules and adds configuration intended for sims that have no es5 in them (i.e. `wave-interference`)
-* `sim_es6_eslint_review.js` expands on `sim_es6_eslint.js` and adds rules that could be helpful during a code review
+- `.eslintrc.js` is the base set of rules. You probably shouldn't use this directly, instead you should use one
+  of the derived configurations below.
+- `node_eslintrc.js` expands on the base rules and adds configuration only intended for Node.js code (i.e. `perennial`).
+- `sim_eslintrc.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5 sim rules)
+- `sim_es6_eslintrc.js` expands on the sim rules and adds configuration for sims that have no es5 in them (i.e. `wave-interference`)
+- `format_eslintrc.js` contains additional rules used for enforcing code formatting. These are not required, they are just
+  recommended.
 
 So here is the hierarchy of chipper's config files. Indentation symbolized the "extends" relationship.
 
 ```
-.eslint.js
+format_eslintrc.js
+.eslintrc.js
   node_eslintrc.js
-  sim_eslint.js
-    sim_es6_eslint.js
+  sim_eslintrc.js
+    sim_es6_eslintrc.js
 ```
 
-The project is set up based on configuration files extending others using the "extends" key. By default, a configuration 
-file in a child dir will completely override a parent directory. Be sure appropriately extend, and don't blow away a 
-default configuration when you think you are just overriding. 
+PhET also uses some custom linting rules to detect PhET-specific errors, such as
+ensuring that each file contains a copyright notice. These custom rules live
+under the `./rules/` directory.
 
-A few definitions of terms:
-* The "base config" file is `chipper/eslint/.eslintrc.js`. All config files should at some point in the chain extend back 
-to it. It defines the core rules for the project.
-* The "default config" file for a repo is the file that it extends that applies to the whole repository, must be a 
-configuration file located in `chipper/eslint/`.
+## Configuring a repo
 
-### Usage
+Each PhET repo specifies which of the above configurations to use. This is
+usually specified in the `eslintConfig` section of the repo's `package.json`.
+Usually you should use the `extends` keyword to build upon one of the
+above configurations. Linting rules specific to the repo can be declared
+or modified here. For example see `scenery/package.json`.
 
-In each repo's `package.json`, the key `eslintConfig` specifies the eslint config for the repo, and should extend one of 
-the default config files here in `./chipper/eslint`, (described above). Additional rules specific to the directory (like 
-whitelisted globals) can be specified here to. For example see `studio/package.json`.
+If there is a sub-directory that requires specific configuration (or the repo
+doesn't have a `package.json`, like `sherpa`), you can
+create a file called `.eslintrc.js` in that directory, and specify the
+necessary configuration there. For example see `chipper/test/eslintrc.js`.
 
-If there is a sub directory that requires specific configuration, you should create a file called `.eslintrc.js` in that
-directory, and specify the necessary configuration there. Don't forget that you also need to "extend" the default 
-configuration too. For example see `chipper/test/eslintrc.js`.
+Before creating a special configuration unique to one repo or sub-directory,
+answer these questions:
 
-NOTE: before creating a specific configuration file, answer these questions:
-  * Why does this rule apply here but not everywhere?
-  * May it apply in other places soon, and thus I should just add it to a configuration in `chipper/eslint/`?
-  * Though it only applies here, is it easier to maintain if we just add it to a default configuration file.
+- Why does this rule apply here but not everywhere?
+- May it apply in other places soon, and thus I should just add it to a configuration in `chipper/eslint/`?
+- Though it only applies here, is it easier to maintain if we just add it to a default configuration file?
+
+## See Also
+
+- For a discussion of how PhET decided to use ESLint for formatting, see
+  https://github.com/phetsims/phet-info/issues/150
+
+- While ESLint can be plugged into many IDEs to perform code formatting automatically, many
+  PhET developers use other plugins in their IDEs. See https://github.com/phetsims/phet-info/tree/master/ide
