@@ -36,7 +36,7 @@ configuration file located in `chipper/eslint/`.
 
 In each repo's `package.json`, the key `eslintConfig` specifies the eslint config for the repo, and should extend one of 
 the default config files here in `./chipper/eslint`, (described above). Additional rules specific to the directory (like 
-whitelisted globals) can be specified here to. For example see `studio/package.json`.
+whitelisted globals) can be specified here to. For example see `scenery/package.json`.
 
 If there is a sub directory that requires specific configuration, you should create a file called `.eslintrc.js` in that
 directory, and specify the necessary configuration there. Don't forget that you also need to "extend" the default 
