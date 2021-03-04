@@ -3,11 +3,7 @@
 'use strict';
 
 /**
- * The base eslint configuration for the project
- * values for rules:
- * 0 - no error
- * 1 - warn
- * 2 - error
+ * Additional rules for formatting js. See ./README.md for more info.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)

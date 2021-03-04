@@ -41,7 +41,7 @@ const lint = async ( patterns, options ) => {
 
   options = _.assignIn( {
     cache: true,
-    format: false, // Use a separate set of rules purely for formatting code.
+    format: false, // append an extra set of rules for formatting code.
     fix: false, // whether fixes should be written to disk
     warn: true // whether errors should reported with grunt.warn
   }, options );
@@ -91,17 +91,14 @@ const lint = async ( patterns, options ) => {
     await ESLint.outputFixes( results );
   }
 
-  // 4. Format the results.
-  const formatter = await eslint.loadFormatter( 'stylish' );
-  const resultText = formatter.format( results );
-
+  // 4. Parse the results.
   const totalWarnings = _.sum( results.map( result => result.warningCount ) );
   const totalErrors = _.sum( results.map( result => result.errorCount ) );
 
-  const total = totalWarnings + totalErrors;
-
-  // 5. Output it.
-  if ( total > 0 ) {
+  // 5. Output results on errors.
+  if ( totalWarnings + totalErrors > 0 ) {
+    const formatter = await eslint.loadFormatter( 'stylish' );
+    const resultText = formatter.format( results );
     console.log( resultText );
     options.warn && grunt.fail.warn( `${totalErrors} errors and ${totalWarnings} warnings` );
   }

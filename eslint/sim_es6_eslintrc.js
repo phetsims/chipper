@@ -9,7 +9,7 @@
 module.exports = {
   extends: './sim_eslintrc.js',
   rules: {
-    'no-var': 2,
-    'no-template-curly-in-string': 2
+    'no-var': 'error',
+    'no-template-curly-in-string': 'error'
   }
 };

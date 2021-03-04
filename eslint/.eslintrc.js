@@ -3,11 +3,7 @@
 'use strict';
 
 /**
- * The base eslint configuration for the project
- * values for rules:
- * 0 - no error
- * 1 - warn
- * 2 - error
+ * The base eslint configuration for the PhET projects.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -30,52 +26,47 @@ module.exports = {
     'no-useless-catch': 'off',
 
     // specify whether backticks, double or single quotes should be used (fixable)
-    quotes: [
-      2,
-      'single'
-    ],
+    quotes: [ 'error', 'single' ],
 
     // No dangling commas, see https://github.com/phetsims/tasks/issues/940
-    'comma-dangle': 2,
+    'comma-dangle': 'error',
 
     // require or disallow use of semicolons instead of ASI (fixable)
-    semi: [
-      2,
-      'always'
-    ],
-    'bad-text': 2,
+    semi: [ 'error', 'always' ],
+    
+    'bad-text': 'error',
 
     // Custom rule for checking the copyright.
-    copyright: 2,
+    copyright: 'error',
 
     // Custom rule for checking TODOs have issues
-    'todo-should-have-issue': 2,
+    'todo-should-have-issue': 'error',
 
     // Custom rule for ensuring that images and text use scenery node
-    'no-html-constructors': 2,
+    'no-html-constructors': 'error',
 
     // enforce one true brace style
     'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
 
     // Custom rule for avoiding instanceof Array.
-    'no-instanceof-array': 2,
+    'no-instanceof-array': 'error',
 
     // Custom rule for keeping import statements on a single line.
-    'single-line-import': 2,
+    'single-line-import': 'error',
 
     // method declarations must have a visibility annotation
-    'visibility-annotation': 2,
+    'visibility-annotation': 'error',
 
     // Enumerations should be named like classes/types
-    'enumeration-casing': 2,
+    'enumeration-casing': 'error',
 
     // key and value arguments to namespace.register() must match
-    'namespace-match': 2,
+    'namespace-match': 'error',
 
     // disallow declaration of variables that are not used in the code (recommended)
     // Overridden to allow unused args
     'no-unused-vars': [
-      2,
+      'error',
       {
         vars: 'all',
         args: 'none'
@@ -84,7 +75,7 @@ module.exports = {
 
     // error when let is used but the variable is never reassigned, see https://github.com/phetsims/tasks/issues/973
     'prefer-const': [
-      2,
+      'error',
       {
         destructuring: 'any',
         ignoreReadBeforeAssign: false
@@ -92,78 +83,72 @@ module.exports = {
     ],
 
     // require the use of === and !== (fixable)
-    eqeqeq: 2,
+    eqeqeq: 'error',
 
     // specify curly brace conventions for all control statements
-    curly: 2,
+    curly: 'error',
 
     // disallow use of arguments.caller or arguments.callee
-    'no-caller': 2,
+    'no-caller': 'error',
 
     // disallow use of the new operator when not part of an assignment or comparison
-    'no-new': 2,
+    'no-new': 'error',
 
     // controls location of Use Strict Directives
     // strict: 2, // TODO: restore this, see https://github.com/phetsims/chipper/issues/820
 
     // Avoid code that looks like two expressions but is actually one
-    'no-unexpected-multiline': 2,
+    'no-unexpected-multiline': 'error',
 
     // encourages use of dot notation whenever possible
-    'dot-notation': 2,
+    'dot-notation': 'error',
 
     // disallow use of bitwise operators https://eslint.org/docs/rules/no-bitwise
     'no-bitwise': 'error',
 
     // disallow adding to native types
-    'no-extend-native': 2,
+    'no-extend-native': 'error',
 
     // disallow use of assignment in return statement
-    'no-return-assign': 2,
+    'no-return-assign': 'error',
 
     // disallow comparisons where both sides are exactly the same
-    'no-self-compare': 2,
+    'no-self-compare': 'error',
 
     // disallow unnecessary .call() and .apply()
-    'no-useless-call': 2,
+    'no-useless-call': 'error',
 
     // disallow use of undefined when initializing variables
-    'no-undef-init': 2,
+    'no-undef-init': 'error',
 
     // phet-specific require statement rules
-    'require-statement-match': 2,
-    'phet-io-require-contains-ifphetio': 2,
+    'require-statement-match': 'error',
+    'phet-io-require-contains-ifphetio': 'error',
 
     // Require @public/@private for this.something = result;
-    'property-visibility-annotation': 0,
-    'no-property-in-require-statement': 2,
+    'property-visibility-annotation': 'off',
+    'no-property-in-require-statement': 'error',
 
     // disallow assignment within variable declaration, see https://github.com/phetsims/chipper/issues/794
-    'no-multi-assign-on-declaration': 2,
+    'no-multi-assign-on-declaration': 'error',
 
     // get rid of extra spaces within lines of code
     'no-multi-spaces': [ 'error', { ignoreEOLComments: true } ],
 
     // permit only one var declaration per line, see #390
-    'one-var': [
-      2,
-      'never'
-    ],
+    'one-var': [ 'error', 'never' ],
 
     // require radix argument for parseInt
-    radix: 2,
+    radix: 'error',
 
     // require default case for switch statements
-    'default-case': 2,
+    'default-case': 'error',
 
     // do not allow fall-through cases in switch statements
-    'no-fallthrough': 2,
+    'no-fallthrough': 'error',
 
     // consistently use 'self' as the alias for 'this'
-    'consistent-this': [
-      2,
-      'self'
-    ],
+    'consistent-this': [ 'error', 'self' ],
 
     // require a capital letter for constructors
     'new-cap': [ 'error', {
@@ -178,15 +163,15 @@ module.exports = {
     'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 0, maxEOF: 1 } ],
 
     // don't escape characters that don't need to be escaped
-    'no-useless-escape': 2,
+    'no-useless-escape': 'error',
 
     // never allow object shorthand for properties, functions are ok.
-    'phet-object-shorthand': 2,
+    'phet-object-shorthand': 'error',
 
     // disallow parens surrounding single args in arrow functions
-    'arrow-parens': [ 2, 'as-needed' ],
+    'arrow-parens': [ 'error', 'as-needed' ],
 
-    'no-trailing-spaces': [ 2, { skipBlankLines: true, ignoreComments: true } ],
+    'no-trailing-spaces': [ 'error', { skipBlankLines: true, ignoreComments: true } ],
 
     // enforce spacing inside array brackets
     'array-bracket-spacing': [ 'error', 'always' ],
@@ -260,7 +245,7 @@ module.exports = {
     // disallow use of the Object constructor
     'no-new-object': 'error',
 
-    'no-template-curly-in-string': 2,
+    'no-template-curly-in-string': 'error',
 
     // disallow space between function identifier and application
     'no-spaced-func': 'error',
@@ -374,41 +359,41 @@ module.exports = {
     event: 'off',
 
     // read-only globals ---------------------------------
-    phet: false,
+    phet: 'readonly',
 
     // allow assertions
-    assert: false,
+    assert: 'readonly',
 
     // allow slow assertions
-    assertSlow: false,
+    assertSlow: 'readonly',
 
-    phetio: false,
+    phetio: 'readonly',
 
     // underscore, lodash
-    _: false,
+    _: 'readonly',
 
     // jQuery
-    $: false,
+    $: 'readonly',
 
-    document: false,
+    document: 'readonly',
 
     // for linting Node.js code
-    global: false,
+    global: 'readonly',
 
     // QUnit
-    QUnit: false,
+    QUnit: 'readonly',
 
     // as used in Gruntfile.js
-    module: false,
+    module: 'readonly',
 
     // Misc
-    QueryStringMachine: false,
+    QueryStringMachine: 'readonly',
 
     // sole/tween.js
-    TWEEN: false,
+    TWEEN: 'readonly',
 
-    window: false,
+    window: 'readonly',
 
-    handlePlaybackEvent: false
+    handlePlaybackEvent: 'readonly'
   }
 };
