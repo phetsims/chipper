@@ -33,7 +33,7 @@ module.exports = {
 
     // require or disallow use of semicolons instead of ASI (fixable)
     semi: [ 'error', 'always' ],
-
+    
     'bad-text': 'error',
 
     // Custom rule for checking the copyright.
@@ -359,41 +359,41 @@ module.exports = {
     event: 'off',
 
     // read-only globals ---------------------------------
-    phet: false,
+    phet: 'readonly',
 
     // allow assertions
-    assert: false,
+    assert: 'readonly',
 
     // allow slow assertions
-    assertSlow: false,
+    assertSlow: 'readonly',
 
-    phetio: false,
+    phetio: 'readonly',
 
     // underscore, lodash
-    _: false,
+    _: 'readonly',
 
     // jQuery
-    $: false,
+    $: 'readonly',
 
-    document: false,
+    document: 'readonly',
 
     // for linting Node.js code
-    global: false,
+    global: 'readonly',
 
     // QUnit
-    QUnit: false,
+    QUnit: 'readonly',
 
     // as used in Gruntfile.js
-    module: false,
+    module: 'readonly',
 
     // Misc
-    QueryStringMachine: false,
+    QueryStringMachine: 'readonly',
 
     // sole/tween.js
-    TWEEN: false,
+    TWEEN: 'readonly',
 
-    window: false,
+    window: 'readonly',
 
-    handlePlaybackEvent: false
+    handlePlaybackEvent: 'readonly'
   }
 };
