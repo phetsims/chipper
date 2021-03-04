@@ -143,9 +143,12 @@ module.exports = async ( repos, options ) => {
       } );
     } );
 
-    const chunkResults = await Promise.all( promises );
+    const chunkResults = await Promise.allSettled( promises );
+
     chunkResults.forEach( chunkResult => {
-      macroAPI[ chunkResult.repo ] = chunkResult.api;
+      if ( chunkResult.status === 'fulfilled' ) {
+        macroAPI[ chunkResult.value.repo ] = chunkResult.value.api;
+      }
     } );
   }
 
