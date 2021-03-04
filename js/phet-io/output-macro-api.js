@@ -10,7 +10,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  *
  * USAGE:
  * cd chipper
- * node js/phet-io/output-macro-api.js [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N] [--out=filename.json]
+ * node js/phet-io/output-macro-api.js [--simList=path] [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N] [--out=filename.json]
  *
  * e.g.,
  * node js/phet-io/output-macro-api.js --simList=../perennial/data/phet-io
