@@ -15,11 +15,7 @@ const puppeteer = require( 'puppeteer' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const assert = require( 'assert' );
 
-/**
- * @param {string[]} repos
- * @param {Object} [options]
- */
-module.exports = async ( repos, options ) => {
+const generateMacroAPI = async ( repos, options ) => {
 
   assert( repos.length === _.uniq( repos ).length, 'repos should be unique' );
 
@@ -159,3 +155,9 @@ module.exports = async ( repos, options ) => {
   server.unref();
   return macroAPI;
 };
+generateMacroAPI.apiVersion = '1.0.0-dev.0';
+/**
+ * @param {string[]} repos
+ * @param {Object} [options]
+ */
+module.exports = generateMacroAPI;
