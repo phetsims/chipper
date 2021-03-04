@@ -260,7 +260,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
     [ 'build' ]
   );
-  
+
   grunt.registerTask( 'lint',
     `lint js files. Options:
 --disable-eslint-cache: cache will not be read or written
@@ -269,21 +269,21 @@ module.exports = function( grunt ) {
 --patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.`,
     wrapTask( async () => {
 
-    // --disable-eslint-cache disables the cache, useful for developing rules
-    const cache = !grunt.option( 'disable-eslint-cache' );
-    const fix = grunt.option( 'fix' );
-    const format = grunt.option( 'format' );
+      // --disable-eslint-cache disables the cache, useful for developing rules
+      const cache = !grunt.option( 'disable-eslint-cache' );
+      const fix = grunt.option( 'fix' );
+      const format = grunt.option( 'format' );
 
-    // If patterns are specified, lint them, otherwise lint the repo where the command was run from
-    // Use '../repo' instead of '.' so that it can be filtered if necessary.
-    const patterns = grunt.option( 'patterns' ) ? grunt.option( 'patterns' ).split( ',' ) : [ `../${repo}` ];
+      // If patterns are specified, lint them, otherwise lint the repo where the command was run from
+      // Use '../repo' instead of '.' so that it can be filtered if necessary.
+      const patterns = grunt.option( 'patterns' ) ? grunt.option( 'patterns' ).split( ',' ) : [ `../${repo}` ];
 
-    await lint( patterns, {
-      cache: cache,
-      fix: fix,
-      format: format
-    } );
-  } ) );
+      await lint( patterns, {
+        cache: cache,
+        fix: fix,
+        format: format
+      } );
+    } ) );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
 

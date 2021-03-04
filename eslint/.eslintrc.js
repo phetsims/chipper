@@ -1,4 +1,4 @@
-// Copyright 2015-2019, University of Colorado Boulder
+// Copyright 2015-2021, University of Colorado Boulder
 
 'use strict';
 
@@ -33,7 +33,7 @@ module.exports = {
 
     // require or disallow use of semicolons instead of ASI (fixable)
     semi: [ 'error', 'always' ],
-    
+
     'bad-text': 'error',
 
     // Custom rule for checking the copyright.
