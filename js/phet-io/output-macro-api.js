@@ -10,7 +10,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  *
  * USAGE:
  * cd chipper
- * node js/phet-io/output-macro-api.js [--simList=path] [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N] [--out=filename.json]
+ * node js/phet-io/output-macro-api.js [--simList=path] [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N] [--name=filename.json]
  *
  * e.g.,
  * node js/phet-io/output-macro-api.js --simList=../perennial/data/phet-io
@@ -28,7 +28,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
 ( async () => {
 
   const args = process.argv.slice( 2 );
-  let outputFile = null;
+  let name = null;
   const processKey = ( key, callback ) => {
     const prefix = `--${key}=`;
     const values = args.filter( arg => arg.startsWith( prefix ) );
@@ -60,8 +60,8 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
     repos = newArray;
     console.log( `after mod: ${repos.join( ', ' )}` );
   } );
-  processKey( 'out', value => {
-    outputFile = value;
+  processKey( 'name', value => {
+    name = value;
   } );
 
   // console.log( 'running on repos: ' + repos.join( ', ' ) );
@@ -72,9 +72,11 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
     showMessagesFromSim: false // must be pure JSON
   } );
 
+  name = name || new Date().toISOString().replace( /T/, '_' ).replace( /\..+/, '' ).replace( /:/, '-' ).replace( /:/, '-' );
+
   const result = formatPhetioAPI( results );
-  if ( outputFile ) {
-    fs.writeFileSync( outputFile, result );
+  if ( name ) {
+    fs.writeFileSync( `./build-phet-io-macro-api/${name}.json`, result );
   }
   else {
     console.log( result );
