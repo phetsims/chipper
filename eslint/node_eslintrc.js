@@ -9,7 +9,7 @@
 module.exports = {
   extends: './.eslintrc.js',
   rules: {
-    'no-var': 2
+    'no-var': 'error'
   },
   env: {
 

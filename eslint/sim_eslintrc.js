@@ -4,11 +4,11 @@
 'use strict';
 
 /**
- * Eslint config applied only to sims that are completely written in es6, with no es5 code.
+ * Eslint config applied only to sims.
  */
 module.exports = {
   extends: './.eslintrc.js',
   rules: {
-    'bad-sim-text': 2
+    'bad-sim-text': 'error'
   }
 };
