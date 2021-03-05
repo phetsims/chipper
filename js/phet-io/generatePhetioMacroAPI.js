@@ -15,7 +15,7 @@ const puppeteer = require( 'puppeteer' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const assert = require( 'assert' );
 
-const generateMacroAPI = async ( repos, options ) => {
+const generatePhetioMacroAPI = async ( repos, options ) => {
 
   assert( repos.length === _.uniq( repos ).length, 'repos should be unique' );
 
@@ -84,7 +84,7 @@ const generateMacroAPI = async ( repos, options ) => {
       return new Promise( ( resolve, reject ) => {
 
         // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-        const id = setTimeout( () => reject( new Error( 'Timeout in generateMacroAPI' ) ), 30000 );
+        const id = setTimeout( () => reject( new Error( 'Timeout in generatePhetioMacroAPI' ) ), 30000 );
 
         page.on( 'console', async msg => {
 
@@ -155,9 +155,9 @@ const generateMacroAPI = async ( repos, options ) => {
   server.unref();
   return macroAPI;
 };
-generateMacroAPI.apiVersion = '1.0.0-dev.0';
+generatePhetioMacroAPI.apiVersion = '1.0.0-dev.0';
 /**
  * @param {string[]} repos
  * @param {Object} [options]
  */
-module.exports = generateMacroAPI;
+module.exports = generatePhetioMacroAPI;

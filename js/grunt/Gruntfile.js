@@ -26,7 +26,7 @@ const fixEOL = require( './fixEOL' );
 const migrate = require( './migrate' );
 const minify = require( './minify' );
 const modulify = require( './modulify' );
-const generateMacroAPI = require( '../phet-io/generateMacroAPI' );
+const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
 const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
@@ -488,7 +488,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       const filePath = `${buildDirectory}/${new Date().toLocaleString().split( ', ' ).join( '_' ).split( '/' ).join( '-' ).split( ' ' ).join( '_' ).split( ':' ).join( '.' )}.json`;
 
-      const api = ( await generateMacroAPI( [ repo ] ) )[ repo ];
+      const api = ( await generatePhetioMacroAPI( [ repo ] ) )[ repo ];
       writeFile( filePath, formatPhetioAPI( api ) );
     } )
   );

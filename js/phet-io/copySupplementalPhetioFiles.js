@@ -17,7 +17,7 @@ const copyDirectory = require( '../grunt/copyDirectory' );
 const execute = require( '../grunt/execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
-const generateMacroAPI = require( './generateMacroAPI' );
+const generatePhetioMacroAPI = require( './generatePhetioMacroAPI' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
 const buildStandalone = require( '../grunt/buildStandalone' );
 const minify = require( '../grunt/minify' );
@@ -281,7 +281,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   await handleStudio( wrappersLocation );
 
   if ( generateMacroAPIFile ) {
-    const fullAPI = ( await generateMacroAPI( [ repo ], {
+    const fullAPI = ( await generatePhetioMacroAPI( [ repo ], {
       fromBuiltVersion: true
     } ) )[ repo ];
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, formatPhetioAPI( fullAPI ) );

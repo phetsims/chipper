@@ -2,7 +2,7 @@
 
 const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
-const generateMacroAPI = require( './generateMacroAPI' );
+const generatePhetioMacroAPI = require( './generatePhetioMacroAPI' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
 
 /**
@@ -66,7 +66,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
 
   // console.log( 'running on repos: ' + repos.join( ', ' ) );
   const chunkSize = 4;
-  const results = await generateMacroAPI( repos, {
+  const results = await generatePhetioMacroAPI( repos, {
     showProgressBar: true, // Interferes with file output
     chunkSize: chunkSize,
     showMessagesFromSim: false // must be pure JSON
