@@ -124,7 +124,7 @@ catch( e ) {
 // If there is a PhET-iO API Safety Net, compare to it
 try {
 
-  const generateMacroAPI = require( '../../../chipper/js/phet-io/generateMacroAPI' );
+  const generatePhetioMacroAPI = require( '../../../chipper/js/phet-io/generatePhetioMacroAPI' );
   const compareMacroAPIs = require( '../../../chipper/js/phet-io/compareMacroAPIs' );
   const REFERENCE_MACRO_API_PATH = '../perennial/build-phet-io/reference-macro-api.json';
   const exists = fs.existsSync( REFERENCE_MACRO_API_PATH );
@@ -140,7 +140,7 @@ try {
 
     const chunkSize = 4;
     ( async () => {
-      const results = await generateMacroAPI( repos, {
+      const results = await generatePhetioMacroAPI( repos, {
         chunkSize: chunkSize,
         showMessagesFromSim: false // must be pure JSON
       } );
