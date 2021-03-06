@@ -8,17 +8,13 @@
 
 'use strict';
 
-const _ = require( 'lodash' ); // eslint-disable-line
-
-module.exports = ( api1, api2 ) => {
+const compareAPIs = ( api1, api2, _ ) => {
   const problems = [];
   const elements1 = Object.keys( api1.phetioElements );
   const elements2 = Object.keys( api2.phetioElements );
   if ( !_.isEqual( elements1, elements2 ) ) {
     const missingFrom2 = elements1.filter( e => !elements2.includes( e ) );
-    if ( missingFrom2.length > 0 ) {
-      problems.push( { message: `Second API missing elements:\n\t${missingFrom2.join( '\n\t' )}` } );
-    }
+    missingFrom2.forEach( missing => problems.push( `PhET-iO Element missing: ${missing}` ) );
   }
   elements1.forEach( phetioID => {
     if ( elements2.includes( phetioID ) ) {
@@ -28,12 +24,12 @@ module.exports = ( api1, api2 ) => {
         const newValue = api2.phetioElements[ phetioID ][ metadataKey ];
         if ( oldValue !== newValue ) {
           if ( invalidNewValue === undefined ) {
-            problems.push( { message: `${phetioID}.${metadataKey} changed from ${oldValue} to ${newValue}` } );
+            problems.push( `${phetioID}.${metadataKey} changed from ${oldValue} to ${newValue}` );
           }
           else {
 
             if ( newValue === invalidNewValue ) {
-              problems.push( { message: `${phetioID}.${metadataKey} changed from ${oldValue} to ${newValue}` } );
+              problems.push( `${phetioID}.${metadataKey} changed from ${oldValue} to ${newValue}` );
             }
             else {
 
@@ -67,7 +63,7 @@ module.exports = ( api1, api2 ) => {
 
       // make sure we have the desired type
       if ( !api2.phetioTypes.hasOwnProperty( type ) ) {
-        problems.push( { message: 'Desired type missing: ' + type } );
+        problems.push( 'Type missing: ' + type );
       }
       else {
 
@@ -77,7 +73,7 @@ module.exports = ( api1, api2 ) => {
         for ( const method in methods1 ) {
           if ( methods1.hasOwnProperty( method ) ) {
             if ( !methods2.hasOwnProperty( method ) ) {
-              problems.push( { message: `Missing method, type=${type}, method=${method}` } );
+              problems.push( `Method missing, type=${type}, method=${method}` );
             }
             else {
 
@@ -86,13 +82,13 @@ module.exports = ( api1, api2 ) => {
               const params2 = methods2[ method ].parameterTypes;
 
               if ( params1.join( ',' ) !== params2.join( ',' ) ) {
-                problems.push( { message: `${type}.${method} has different parameter types: ${params1.join( ', ' )} => ${params2.join( ', ' )}` } );
+                problems.push( `${type}.${method} has different parameter types: ${params1.join( ', ' )} => ${params2.join( ', ' )}` );
               }
 
               const returnType1 = methods1[ method ].returnType;
               const returnType2 = methods2[ method ].returnType;
               if ( returnType1 !== returnType2 ) {
-                problems.push( { message: `${type}.${method} has a different return type ${returnType1} => ${returnType2}` } );
+                problems.push( `${type}.${method} has a different return type ${returnType1} => ${returnType2}` );
               }
             }
           }
@@ -103,3 +99,10 @@ module.exports = ( api1, api2 ) => {
 
   return problems;
 };
+
+if ( typeof window === 'undefined' ) {
+  module.exports = compareAPIs;
+}
+else {
+  window.compareAPIs = compareAPIs;
+}

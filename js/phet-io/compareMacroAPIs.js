@@ -23,10 +23,10 @@ module.exports = ( macroAPI1, macroAPI2 ) => {
   repos1.forEach( repo => {
 
     if ( !repos2.includes( repo ) ) {
-      problems[ repo ] = [ { message: 'Repo is missing in second macro API' } ];
+      problems[ repo ] = [ 'Repo is missing in second macro API: ' + repo ];
     }
     else {
-      problems[ repo ] = compareAPIs( macroAPI1[ repo ], macroAPI2[ repo ] );
+      problems[ repo ] = compareAPIs( macroAPI1[ repo ], macroAPI2[ repo ], _ );
     }
   } );
 
@@ -37,7 +37,7 @@ module.exports = ( macroAPI1, macroAPI2 ) => {
     problemCount += problems[ repo ].length;
     formatted += repo + '\n';
     problems[ repo ].forEach( problem => {
-      formatted += `  ${problem.message}\n`;
+      formatted += `  ${problem}\n`;
     } );
     formatted += '\n';
   } );
