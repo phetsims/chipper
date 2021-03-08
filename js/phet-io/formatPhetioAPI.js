@@ -12,6 +12,8 @@
 
 'use strict';
 
+const assert = require( 'assert' );
+
 /**
  * Creates a new object, recursively, by sorting the keys at each level.
  * @param {Object} unordered - jsonifiable object to be sorted by key name.  Sorting is recursive.
@@ -36,6 +38,7 @@ const copyWithSortedKeys = unordered => {
  * @param {Object} api
  */
 module.exports = api => {
+  assert( api, 'api expected' );
   const objectString = JSON.stringify( copyWithSortedKeys( api ), null, 2 );
   return objectString.replace( /\n/g, '\n  ' ); // for proper file formatting
 };

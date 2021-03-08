@@ -11,6 +11,7 @@
 'use strict';
 
 // modules
+const assert = require( 'assert' );
 const archiver = require( 'archiver' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copyDirectory = require( '../grunt/copyDirectory' );
@@ -289,6 +290,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     const fullAPI = ( await generatePhetioMacroAPI( [ repo ], {
       fromBuiltVersion: true
     } ) )[ repo ];
+    assert( fullAPI, 'full api expected' );
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, formatPhetioAPI( fullAPI ) );
   }
 
