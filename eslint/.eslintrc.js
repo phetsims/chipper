@@ -11,18 +11,154 @@
 module.exports = {
 
   // Use all of the default rules from eslint, unless overridden below.
-  extends: 'eslint:recommended',
+  extends: 'eslint:recommended', // TODO: This can be removed once https://github.com/phetsims/chipper/issues/814 is complete
 
   // specify that this file is the root of the eslintrc tree, so eslint won't search past this file looking for a file
   // in a parent dir
   root: true,
 
-  // The new rules, overrides, etc.
+  // The rules are organized like they are in the list at https://eslint.org/docs/rules/
+  // First by type, then alphabetically within type
+  // Explicitly list all rules so it is easy to see what's here and to keep organized
   rules: {
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Errors
+    //
+
+    // enforce "for" loop update clause moving the counter in the right direction.
+    'for-direction': 'error',
+
+    // enforce `return` statements in getters
+    'getter-return': 'error',
+
+    // disallow using an async function as a Promise executor
+    'no-async-promise-executor': 'off', // TODO: Enable this rule, see https://github.com/phetsims/perennial/issues/216
+
+    // disallow `await` inside of loops
+    'no-await-in-loop': 'off', // We use await in loops all the time in build tools
+
+    // disallow comparing against -0
+    'no-compare-neg-zero': 'error',
+
+    // disallow assignment operators in conditional expressions
+    'no-cond-assign': 'error',
+
+    // disallow the use of `console`
+    'no-console': 'off', // We like to be able to commit console.log
+
+    // disallow constant expressions in conditions
+    'no-constant-condition': 'error',
+
+    // disallow control characters in regular expressions
+    'no-control-regex': 'error',
+
+    // disallow the use of `debugger`
+    'no-debugger': 'error',
+
+    // disallow duplicate arguments in `function` definitions
+    'no-dupe-args': 'error',
+
+    // disallow duplicate conditions in if-else-if chains
+    'no-dupe-else-if': 'error',
+
+    // disallow duplicate keys in object literals
+    'no-dupe-keys': 'error',
+
+    // disallow duplicate case labels
+    'no-duplicate-case': 'error',
+
+    // disallow empty block statements
+    'no-empty': 'error',
+
+    // disallow empty character classes in regular expressions
+    'no-empty-character-class': 'error',
+
+    // disallow reassigning exceptions in `catch` clauses
+    'no-ex-assign': 'error',
+
+    // disallow unnecessary boolean casts
+    'no-extra-boolean-cast': 'error',
+
+    // disallow unnecessary parentheses
+    'no-extra-parens': 'off', // we find that extraneous parentheses sometimes improve readability
+
+    // disallow unnecessary semicolons
+    'no-extra-semi': 'error',
+
+    // disallow reassigning `function` declarations
+    'no-func-assign': 'error',
+
+    // disallow assigning to imported bindings
+    'no-import-assign': 'error',
+
+    // disallow variable or `function` declarations in nested blocks
+    'no-inner-declarations': 'error',
+
+    // disallow invalid regular expression strings in `RegExp` constructors
+    'no-invalid-regexp': 'error',
+
+    // disallow irregular whitespace
+    'no-irregular-whitespace': 'error',
+
+    // disallow literal numbers that lose precision
+    'no-loss-of-precision': 'error',
+
+    // disallow characters which are made with multiple code points in character class syntax
+    'no-misleading-character-class': 'error',
+
+    // disallow calling global object properties as functions
+    'no-obj-calls': 'error',
+
+    // disallow returning values from Promise executor functions
+    'no-promise-executor-return': 'off', // We turn this rule off so you can use an arrow function as an executor
+
+    // disallow calling some `Object.prototype` methods directly on objects
+    'no-prototype-builtins': 'off', // TODO: explain why this rule is off, see https://github.com/phetsims/chipper/issues/814
+
+    // disallow multiple spaces in regular expressions
+    'no-regex-spaces': 'error',
+
+    // disallow returning values from setters
+    'no-setter-return': 'error',
+
+    // disallow sparse arrays
+    'no-sparse-arrays': 'error',
+
+    // disallow template literal placeholder syntax in regular strings
+    'no-template-curly-in-string': 'error',
+
+    // disallow confusing multiline expressions
+    'no-unexpected-multiline': 'error', // Avoid code that looks like two expressions but is actually one
+
+    // disallow unreachable code after `return`, `throw`, `continue`, and `break` statements
+    'no-unreachable': 'error',
+
+    // disallow loops with a body that allows only one iteration
+    'no-unreachable-loop': 'off', // TODO: We should enable this rule, see https://github.com/phetsims/chipper/issues/814
+
+    // disallow control flow statements in `finally` blocks
+    'no-unsafe-finally': 'error',
+
+    // disallow negating the left operand of relational operators
+    'no-unsafe-negation': 'error',
+
+    // disallow use of optional chaining in contexts where the `undefined` value is not allowed
+    'no-unsafe-optional-chaining': 'error',
+
+    // disallow useless backreferences in regular expressions
+    'no-useless-backreference': 'error',
+
+    // disallow assignments that can lead to race conditions due to usage of `await` or `yield`
+    'require-atomic-updates': 'off', // TODO: can we turn this on? see https://github.com/phetsims/chipper/issues/814
+
+    // require calls to `isNaN()` when checking for `NaN`
+    'use-isnan': 'error',
+
+    // enforce comparing `typeof` expressions against valid strings
+    'valid-typeof': 'error',
+
     // Match with 5.0 recommended rules after our upgrade to 6.0, see https://eslint.org/docs/user-guide/migrating-to-6.0.0
-    'no-async-promise-executor': 'off',
-    'no-prototype-builtins': 'off',
     'no-useless-catch': 'off',
 
     // specify whether backticks, double or single quotes should be used (fixable)
@@ -96,9 +232,6 @@ module.exports = {
 
     // controls location of Use Strict Directives
     // strict: 2, // TODO: restore this, see https://github.com/phetsims/chipper/issues/820
-
-    // Avoid code that looks like two expressions but is actually one
-    'no-unexpected-multiline': 'error',
 
     // encourages use of dot notation whenever possible
     'dot-notation': 'error',
@@ -244,8 +377,6 @@ module.exports = {
 
     // disallow use of the Object constructor
     'no-new-object': 'error',
-
-    'no-template-curly-in-string': 'error',
 
     // disallow space between function identifier and application
     'no-spaced-func': 'error',
