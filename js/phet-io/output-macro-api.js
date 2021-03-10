@@ -77,6 +77,14 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
 
   const result = formatPhetioAPI( results );
   if ( name ) {
+    try {
+      fs.mkdirSync( './build-phet-io-macro-api/' );
+    }
+    catch( e ) {
+      if ( !e.message.includes( 'file already exists' ) ) {
+        throw e;
+      }
+    }
     fs.writeFileSync( `./build-phet-io-macro-api/${name}.json`, result );
   }
   else {
