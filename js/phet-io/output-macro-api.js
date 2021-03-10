@@ -6,7 +6,8 @@ const generatePhetioMacroAPI = require( './generatePhetioMacroAPI' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
 
 /**
- * Runs generate-phet-io-api for the specified simulations, or all phet-io sims if not specified.
+ * Runs generate-phet-io-api for the specified simulations, or all phet-io sims if not specified. This may take a couple
+ * of minutes to run fully, depending on how many sims are being run.
  *
  * USAGE:
  * cd chipper
