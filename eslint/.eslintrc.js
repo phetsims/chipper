@@ -114,7 +114,7 @@ module.exports = {
     'no-promise-executor-return': 'off', // We turn this rule off so you can use an arrow function as an executor
 
     // disallow calling some `Object.prototype` methods directly on objects
-    'no-prototype-builtins': 'off', // TODO: explain why this rule is off, see https://github.com/phetsims/chipper/issues/814
+    'no-prototype-builtins': 'off', // We prefer `foo.hasOwnProperty("bar");` to `Object.prototype.hasOwnProperty.call(foo, "bar");`
 
     // disallow multiple spaces in regular expressions
     'no-regex-spaces': 'error',
