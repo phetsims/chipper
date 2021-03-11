@@ -23,6 +23,11 @@ const compareAPIs = ( api1, api2, _ ) => {
   elements1.forEach( phetioID => {
     if ( elements2.includes( phetioID ) ) {
 
+      /**
+       * Push any problems that may exist for the provided metadataKey.
+       * @param {string} metadataKey - See PhetioObject.getMetadata()
+       * @param {*} [invalidNewValue] - an option new value that would signify a breaking change. Any other value would be acceptable.
+       */
       const reportDifferences = ( metadataKey, invalidNewValue ) => {
         const oldValue = api1.phetioElements[ phetioID ][ metadataKey ];
         const newValue = api2.phetioElements[ phetioID ][ metadataKey ];
