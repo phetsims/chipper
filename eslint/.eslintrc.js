@@ -567,7 +567,7 @@ module.exports = {
     'line-comment-position': 'off',
 
     // enforce consistent linebreak style
-    'linebreak-style': 'off', // TODO 726 fails, many in x-ray diffraction, https://github.com/phetsims/chipper/issues/814 enable this rule, it seems to only affect X-Ray Diffraction?
+    'linebreak-style': 'off', // Windows may check out a different line style than mac, so we cannot test this on local working copies cross-platform
 
     // require empty lines around comments
     'lines-around-comment': 'off', // SR Would like this rule enabled in his repos like so: 'lines-around-comment': [ 'error', { beforeLineComment: true } ]
