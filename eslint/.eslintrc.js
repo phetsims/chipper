@@ -238,7 +238,7 @@ module.exports = {
     'no-eq-null': 'error',
 
     // disallow the use of `eval()`
-    'no-eval': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on to help developers know we discourage eval
+    'no-eval': 'error',
 
     // disallow extending native types
     'no-extend-native': 'error',
