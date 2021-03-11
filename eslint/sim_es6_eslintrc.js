@@ -69,10 +69,10 @@ module.exports = {
     'no-var': 'error',
 
     // require or disallow method and property shorthand syntax for object literals
-    'object-shorthand': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 We determined this is difficult to refactor and maintain, find a way to disallow
+    'object-shorthand': 'off', // TODO: 448 fails, https://github.com/phetsims/chipper/issues/814 We determined this is difficult to refactor and maintain, find a way to disallow
 
     // require using arrow functions for callbacks
-    'prefer-arrow-callback': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 enable this rule
+    'prefer-arrow-callback': 'off', // TODO: 9 fails, https://github.com/phetsims/chipper/issues/814 enable this rule
 
     // require `const` declarations for variables that are never reassigned after declared
     'prefer-const': 'error',
@@ -84,13 +84,13 @@ module.exports = {
     'prefer-numeric-literals': 'error',
 
     // require rest parameters instead of `arguments`
-    'prefer-rest-params': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we have 2 fails and we should fix them
+    'prefer-rest-params': 'off', // TODO: 2 fails, https://github.com/phetsims/chipper/issues/814 we have 2 fails and we should fix them
 
     // require spread operators instead of `.apply()`
     'prefer-spread': 'error',
 
     // require template literals instead of string concatenation
-    'prefer-template': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we have 99 fails, but we should fix them
+    'prefer-template': 'off', // TODO: 99 fails, https://github.com/phetsims/chipper/issues/814 we have 99 fails, but we should fix them
 
     // require generator functions to contain `yield`
     'require-yield': 'error',

@@ -33,7 +33,7 @@ module.exports = {
     'getter-return': 'error',
 
     // disallow using an async function as a Promise executor
-    'no-async-promise-executor': 'off', // TODO: Enable this rule, see https://github.com/phetsims/perennial/issues/216
+    'no-async-promise-executor': 'off', // TODO: 4 fails, Enable this rule, see https://github.com/phetsims/perennial/issues/216
 
     // disallow `await` inside of loops
     'no-await-in-loop': 'off', // We use await in loops all the time in build tools
@@ -150,7 +150,7 @@ module.exports = {
     'no-useless-backreference': 'error',
 
     // disallow assignments that can lead to race conditions due to usage of `await` or `yield`
-    'require-atomic-updates': 'off', // TODO: can we turn this on? see https://github.com/phetsims/chipper/issues/814
+    'require-atomic-updates': 'off', // TODO: 6 fails, can we turn this on? see https://github.com/phetsims/chipper/issues/814
 
     // require calls to `isNaN()` when checking for `NaN`
     'use-isnan': 'error',
@@ -166,7 +166,7 @@ module.exports = {
     'accessor-pairs': 'off', // Only 17 fails, but I'm not sure we need this.  Perhaps once it bites us we will change our mind?
 
     // enforce `return` statements in callbacks of array methods
-    'array-callback-return': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
+    'array-callback-return': 'off', // TODO: 14 fails, https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
 
     // enforce the use of variables within the scope they are defined
     'block-scoped-var': 'off', // We have too much old code with var i being used across several loops.
@@ -178,7 +178,7 @@ module.exports = {
     complexity: 'off', // We have around 242 offenders as of March, 2021
 
     // require `return` statements to either always or never specify values
-    'consistent-return': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
+    'consistent-return': 'off', // TODO: 79 fails, https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
 
     // enforce consistent brace style for all control statements
     curly: 'error',
@@ -190,7 +190,7 @@ module.exports = {
     'default-case-last': 'error',
 
     // enforce default parameters to be last
-    'default-param-last': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 only 1 fail, we should turn this rule on
+    'default-param-last': 'off', // TODO: 1 failure, https://github.com/phetsims/chipper/issues/814 only 1 fail, we should turn this rule on
 
     // enforce consistent newlines before and after dots
     'dot-location': 'off', // We use WebStorm formatting which moves lower dots to the left
@@ -220,7 +220,7 @@ module.exports = {
     'no-case-declarations': 'error',
 
     // disallow returning value from constructor
-    'no-constructor-return': 'off', // TODO https://github.com/phetsims/chipper/issues/814 the occurrences look clever and should be rewritten
+    'no-constructor-return': 'off', // TODO 10 fails, https://github.com/phetsims/chipper/issues/814 the occurrences look clever and should be rewritten
 
     // disallow division operators explicitly at the beginning of regular expressions
     'no-div-regex': 'error',
@@ -247,13 +247,13 @@ module.exports = {
     'no-extra-bind': 'error',
 
     // disallow unnecessary labels
-    'no-extra-label': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+    'no-extra-label': 'off', // TODO: 4 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on
 
     // disallow fallthrough of `case` statements
     'no-fallthrough': 'error',
 
     // disallow leading or trailing decimal points in numeric literals
-    'no-floating-decimal': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+    'no-floating-decimal': 'off', // TODO: 155 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on
 
     // disallow assignments to native objects or read-only global variables
     'no-global-assign': 'error',
@@ -274,10 +274,10 @@ module.exports = {
     'no-iterator': 'error',
 
     // disallow labeled statements
-    'no-labels': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  ESLint says: While convenient in some cases, labels tend to be used only rarely and are frowned upon by some as a remedial form of flow control that is more error prone and harder to understand.
+    'no-labels': 'off', // TODO: 20 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  ESLint says: While convenient in some cases, labels tend to be used only rarely and are frowned upon by some as a remedial form of flow control that is more error prone and harder to understand.
 
     // disallow unnecessary nested blocks
-    'no-lone-blocks': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+    'no-lone-blocks': 'off', // TODO: 17 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on
 
     // disallow function declarations that contain unsafe references inside loop statements
     'no-loop-func': 'off', // It seems we are dealing with this safely, we have 38 occurrences on March 2021
@@ -325,7 +325,7 @@ module.exports = {
     'no-return-assign': 'error',
 
     // disallow unnecessary `return await`
-    'no-return-await': 'off', // TODO https://github.com/phetsims/chipper/issues/814 this seems like a good rule to enable
+    'no-return-await': 'off', // TODO 19 fails, https://github.com/phetsims/chipper/issues/814 this seems like a good rule to enable
 
     // disallow `javascript:` urls
     'no-script-url': 'error',
@@ -337,13 +337,13 @@ module.exports = {
     'no-self-compare': 'error',
 
     // disallow comma operators
-    'no-sequences': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-sequences': 'off', // TODO: 2 failures, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
 
     // disallow throwing literals as exceptions
-    'no-throw-literal': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-throw-literal': 'off', // TODO: 1 failure, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
 
     // disallow unmodified loop conditions
-    'no-unmodified-loop-condition': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on.  Only 1 fail.
+    'no-unmodified-loop-condition': 'off', // TODO: 1 failure https://github.com/phetsims/chipper/issues/814 we should turn this rule on.  Only 1 fail.
 
     // disallow unused expressions
     'no-unused-expressions': 'off', // This blocks things like circuitLayerNode && circuitLayerNode.circuit.circuitChangedEmitter.removeListener( updateText );
@@ -355,16 +355,16 @@ module.exports = {
     'no-useless-call': 'error',
 
     // disallow unnecessary `catch` clauses
-    'no-useless-catch': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 Match with 5.0 recommended rules after our upgrade to 6.0, see https://eslint.org/docs/user-guide/migrating-to-6.0.0
+    'no-useless-catch': 'off', // TODO: 1 fail, https://github.com/phetsims/chipper/issues/814 Match with 5.0 recommended rules after our upgrade to 6.0, see https://eslint.org/docs/user-guide/migrating-to-6.0.0
 
     // disallow unnecessary concatenation of literals or template literals
-    'no-useless-concat': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-useless-concat': 'off', // TODO: 38 fails, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
 
     // disallow unnecessary escape characters
     'no-useless-escape': 'error',
 
     // disallow redundant return statements
-    'no-useless-return': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-useless-return': 'off', // TODO: 5 fails, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
 
     // disallow `void` operators
     'no-void': 'error',
@@ -379,7 +379,7 @@ module.exports = {
     'prefer-named-capture-group': 'off', // We have many occurrences in yotta/js/apacheParsing.js
 
     // require using Error objects as Promise rejection reasons
-    'prefer-promise-reject-errors': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+    'prefer-promise-reject-errors': 'off', // TODO: 14 failures https://github.com/phetsims/chipper/issues/814 this seems like it should be on
 
     // disallow use of the `RegExp` constructor in favor of regular expression literals
     'prefer-regex-literals': 'off', // new RegExp() looks natural to me
@@ -388,10 +388,10 @@ module.exports = {
     radix: 'error',
 
     // disallow async functions which have no `await` expression
-    'require-await': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+    'require-await': 'off', // TODO: 53 fails, https://github.com/phetsims/chipper/issues/814 this seems like it should be on
 
     // enforce the use of `u` flag on RegExp
-    'require-unicode-regexp': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 is there a good reason for this rule?
+    'require-unicode-regexp': 'off', // TODO: 272 fails or so, https://github.com/phetsims/chipper/issues/814 is there a good reason for this rule?
 
     // require `var` declarations be placed at the top of their containing scope
     'vars-on-top': 'off',
@@ -400,14 +400,14 @@ module.exports = {
     'wrap-iife': 'off', // Not our style
 
     // require or disallow "Yoda" conditions
-    yoda: 'off', // TODO: https://github.com/phetsims/chipper/issues/814 this seems like it should be on, we only have a few problems
+    yoda: 'off', // TODO: 9 fails, https://github.com/phetsims/chipper/issues/814 this seems like it should be on, we only have a few problems
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Strict Mode
     //
 
     // controls location of Use Strict Directives
-    // strict: 2, // TODO: restore this, see https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/814
+    strict: 'off', // TODO: 338 occurrences. restore this, see https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/814
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Variables
@@ -567,7 +567,7 @@ module.exports = {
     'line-comment-position': 'off',
 
     // enforce consistent linebreak style
-    'linebreak-style': 'off', // TODO https://github.com/phetsims/chipper/issues/814 enable this rule, it seems to only affect X-Ray Diffraction?
+    'linebreak-style': 'off', // TODO 726 fails, many in x-ray diffraction, https://github.com/phetsims/chipper/issues/814 enable this rule, it seems to only affect X-Ray Diffraction?
 
     // require empty lines around comments
     'lines-around-comment': 'off', // SR Would like this rule enabled in his repos like so: 'lines-around-comment': [ 'error', { beforeLineComment: true } ]
@@ -696,7 +696,7 @@ module.exports = {
     'no-underscore-dangle': 'off', // We often use this for private variables
 
     // disallow ternary operators when simpler alternatives exist
-    'no-unneeded-ternary': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 turn this rule on
+    'no-unneeded-ternary': 'off', // TODO: 5 fails, https://github.com/phetsims/chipper/issues/814 turn this rule on
 
     // disallow whitespace before properties
     'no-whitespace-before-property': 'error',
@@ -782,7 +782,7 @@ module.exports = {
     } ],
 
     // enforce consistent spacing after the `//` or `/*` in a comment
-    'spaced-comment': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be turned on
+    'spaced-comment': 'off',
 
     // enforce spacing around colons of switch statements
     'switch-colon-spacing': [ 'error', { after: true, before: false } ],
