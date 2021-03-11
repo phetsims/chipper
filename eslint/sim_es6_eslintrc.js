@@ -69,7 +69,7 @@ module.exports = {
     'no-var': 'error',
 
     // require or disallow method and property shorthand syntax for object literals
-    'object-shorthand': 'off', // TODO: 448 fails, https://github.com/phetsims/chipper/issues/814 We determined this is difficult to refactor and maintain, find a way to disallow
+    'object-shorthand': [ 'off', 'never' ], // PhET has a rule phet-object-shorthand that detects this in object literals
 
     // require using arrow functions for callbacks
     'prefer-arrow-callback': 'off', // TODO: 9 fails, https://github.com/phetsims/chipper/issues/814 enable this rule
