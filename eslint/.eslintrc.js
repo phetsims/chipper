@@ -253,7 +253,7 @@ module.exports = {
     'no-fallthrough': 'error',
 
     // disallow leading or trailing decimal points in numeric literals
-    'no-floating-decimal': 'off', // TODO: 155 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+    'no-floating-decimal': 'error',
 
     // disallow assignments to native objects or read-only global variables
     'no-global-assign': 'error',
@@ -734,7 +734,7 @@ module.exports = {
     'prefer-exponentiation-operator': 'off', // Math.pow() seems very clear.
 
     // disallow using Object.assign with an object literal as the first argument and prefer the use of object spread instead.
-    'prefer-object-spread': 'off', // TODO: Only 1 fail, let's take a closer look, see https://github.com/phetsims/chipper/issues/814
+    'prefer-object-spread': 'off', // The fix for this says "unexpected token", so let's go without it.
 
     // require quotes around object literal property names
     'quote-props': [ 'error', 'as-needed', { keywords: false, unnecessary: true, numbers: false } ],
