@@ -94,6 +94,11 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     minify: false
   };
 
+  // If turning off minification for the main build, don't minify the debug version also
+  if ( minifyOptions.minify === false ) {
+    debugMinifyOptions.minify = false;
+  }
+
   const usedModules = webpackResult.usedModules;
   reportUnusedMedia( repo, usedModules );
 

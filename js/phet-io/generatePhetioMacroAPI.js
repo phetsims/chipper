@@ -87,33 +87,31 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
         const id = setTimeout( () => reject( new Error( 'Timeout in generatePhetioMacroAPI' ) ), 30000 );
 
         page.on( 'console', async msg => {
+          const messageText = msg.text();
 
-          if ( msg.text().indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
+          if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
-            const fullAPI = msg.text();
+            const fullAPI = messageText;
             await page.close();
             clearTimeout( id );
-            resolve( {
+            return resolve( {
 
               // to keep track of which repo this is for
               repo: repo,
 
               // For machine readability
-              api: JSON.parse( fullAPI ),
-
-              // in case there is important formatting
-              text: fullAPI
+              api: JSON.parse( fullAPI )
             } );
           }
 
           else if ( msg.type() === 'error' ) {
             const location = msg.location ? ':\n  ' + msg.location().url : '';
-            const message = msg.text() + location;
+            const message = messageText + location;
             console.error( 'Error from sim:', message );
           }
 
           else {
-            const text = msg.text();
+            const text = messageText;
             const list = [
               'The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu',
               'enabling assert'
@@ -143,7 +141,11 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
     chunkResults.forEach( chunkResult => {
       if ( chunkResult.status === 'fulfilled' ) {
+        assert( chunkResult.value.api instanceof Object, 'api expected from Promise results' );
         macroAPI[ chunkResult.value.repo ] = chunkResult.value.api;
+      }
+      else {
+        console.error( 'Error', chunkResult.reason );
       }
     } );
   }
@@ -155,7 +157,10 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
   server.unref();
   return macroAPI;
 };
+
+// @public (read-only)
 generatePhetioMacroAPI.apiVersion = '1.0.0-dev.0';
+
 /**
  * @param {string[]} repos
  * @param {Object} [options]
