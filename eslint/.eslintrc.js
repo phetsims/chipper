@@ -400,7 +400,7 @@ module.exports = {
     'wrap-iife': 'off', // Not our style
 
     // require or disallow "Yoda" conditions
-    yoda: 'off', // TODO: 9 fails, https://github.com/phetsims/chipper/issues/814 this seems like it should be on, we only have a few problems
+    yoda: 'error',
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Strict Mode
