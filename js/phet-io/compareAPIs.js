@@ -67,22 +67,22 @@ const compareAPIs = ( api1, api2, _ ) => {
   } );
 
   // Check for: missing IO Types, missing methods, or differing parameter types or return types
-  for ( const type in api1.phetioTypes ) {
-    if ( api1.phetioTypes.hasOwnProperty( type ) ) {
+  for ( const typeName in api1.phetioTypes ) {
+    if ( api1.phetioTypes.hasOwnProperty( typeName ) ) {
 
       // make sure we have the desired type
-      if ( !api2.phetioTypes.hasOwnProperty( type ) ) {
-        problems.push( 'Type missing: ' + type );
+      if ( !api2.phetioTypes.hasOwnProperty( typeName ) ) {
+        problems.push( 'Type missing: ' + typeName );
       }
       else {
 
         // make sure we have all of the methods
-        const methods1 = api1.phetioTypes[ type ].methods;
-        const methods2 = api2.phetioTypes[ type ].methods;
+        const methods1 = api1.phetioTypes[ typeName ].methods;
+        const methods2 = api2.phetioTypes[ typeName ].methods;
         for ( const method in methods1 ) {
           if ( methods1.hasOwnProperty( method ) ) {
             if ( !methods2.hasOwnProperty( method ) ) {
-              problems.push( `Method missing, type=${type}, method=${method}` );
+              problems.push( `Method missing, type=${typeName}, method=${method}` );
             }
             else {
 
@@ -91,13 +91,13 @@ const compareAPIs = ( api1, api2, _ ) => {
               const params2 = methods2[ method ].parameterTypes;
 
               if ( params1.join( ',' ) !== params2.join( ',' ) ) {
-                problems.push( `${type}.${method} has different parameter types: ${params1.join( ', ' )} => ${params2.join( ', ' )}` );
+                problems.push( `${typeName}.${method} has different parameter types: ${params1.join( ', ' )} => ${params2.join( ', ' )}` );
               }
 
               const returnType1 = methods1[ method ].returnType;
               const returnType2 = methods2[ method ].returnType;
               if ( returnType1 !== returnType2 ) {
-                problems.push( `${type}.${method} has a different return type ${returnType1} => ${returnType2}` );
+                problems.push( `${typeName}.${method} has a different return type ${returnType1} => ${returnType2}` );
               }
             }
           }
