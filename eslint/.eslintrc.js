@@ -135,7 +135,7 @@ module.exports = {
     'no-unreachable': 'error',
 
     // disallow loops with a body that allows only one iteration
-    'no-unreachable-loop': 'off', // TODO: We should enable this rule, see https://github.com/phetsims/chipper/issues/814
+    'no-unreachable-loop': 'error',
 
     // disallow control flow statements in `finally` blocks
     'no-unsafe-finally': 'error',
