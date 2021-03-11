@@ -158,8 +158,249 @@ module.exports = {
     // enforce comparing `typeof` expressions against valid strings
     'valid-typeof': 'error',
 
-    // Match with 5.0 recommended rules after our upgrade to 6.0, see https://eslint.org/docs/user-guide/migrating-to-6.0.0
-    'no-useless-catch': 'off',
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Best Practices
+    //
+
+    // enforce getter and setter pairs in objects and classes
+    'accessor-pairs': 'off', // Only 17 fails, but I'm not sure we need this.  Perhaps once it bites us we will change our mind?
+
+    // enforce `return` statements in callbacks of array methods
+    'array-callback-return': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
+
+    // enforce the use of variables within the scope they are defined
+    'block-scoped-var': 'off', // We have too much old code with var i being used across several loops.
+
+    // enforce that class methods utilize `this`
+    'class-methods-use-this': 'off', // We have many overrideable methods that just throw an error
+
+    // enforce a maximum cyclomatic complexity allowed in a program
+    complexity: 'off', // We have around 242 offenders as of March, 2021
+
+    // require `return` statements to either always or never specify values
+    'consistent-return': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
+
+    // enforce consistent brace style for all control statements
+    curly: 'error',
+
+    // require `default` cases in `switch` statements
+    'default-case': 'error',
+
+    // enforce default clauses in switch statements to be last
+    'default-case-last': 'error',
+
+    // enforce default parameters to be last
+    'default-param-last': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 only 1 fail, we should turn this rule on
+
+    // enforce consistent newlines before and after dots
+    'dot-location': 'off', // We use WebStorm formatting which moves lower dots to the left
+
+    // enforce dot notation whenever possible
+    'dot-notation': 'error',
+
+    // require the use of `===` and `!==`
+    eqeqeq: 'error',
+
+    // require grouped accessor pairs in object literals and classes
+    'grouped-accessor-pairs': 'off', // In scenery, we group all the getters together, then the setters together
+
+    // require `for-in` loops to include an `if` statement
+    'guard-for-in': 'off', // This hasn't bit us yet
+
+    // enforce a maximum number of classes per file
+    'max-classes-per-file': 'off', // have as many as you need!
+
+    // disallow the use of `alert`, `confirm`, and `prompt`
+    'no-alert': 'off', // We sometimes use this when necessary
+
+    // disallow the use of `arguments.caller` or `arguments.callee`
+    'no-caller': 'error',
+
+    // disallow lexical declarations in case clauses
+    'no-case-declarations': 'error',
+
+    // disallow returning value from constructor
+    'no-constructor-return': 'off', // TODO https://github.com/phetsims/chipper/issues/814 the occurrences look clever and should be rewritten
+
+    // disallow division operators explicitly at the beginning of regular expressions
+    'no-div-regex': 'error',
+
+    // disallow `else` blocks after `return` statements in `if` statements
+    'no-else-return': 'off', // Allow the extra else for symmetry
+
+    // disallow empty functions
+    'no-empty-function': 'off', // It is natural and convenient to specify empty functions instead of having to share a lodash _.noop
+
+    // disallow empty destructuring patterns
+    'no-empty-pattern': 'error',
+
+    // disallow `null` comparisons without type-checking operators
+    'no-eq-null': 'error',
+
+    // disallow the use of `eval()`
+    'no-eval': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on to help developers know we discourage eval
+
+    // disallow extending native types
+    'no-extend-native': 'error',
+
+    // disallow unnecessary calls to `.bind()`
+    'no-extra-bind': 'error',
+
+    // disallow unnecessary labels
+    'no-extra-label': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+
+    // disallow fallthrough of `case` statements
+    'no-fallthrough': 'error',
+
+    // disallow leading or trailing decimal points in numeric literals
+    'no-floating-decimal': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+
+    // disallow assignments to native objects or read-only global variables
+    'no-global-assign': 'error',
+
+    // disallow shorthand type conversions
+    'no-implicit-coercion': 'off', // We like using !!value and number+''.  Maybe one day we will turn this rule on
+
+    // disallow declarations in the global scope
+    'no-implicit-globals': 'error',
+
+    // disallow the use of `eval()`-like methods
+    'no-implied-eval': 'error',
+
+    // disallow `this` keywords outside of classes or class-like objects
+    'no-invalid-this': 'off', // We have too much old code that uses functions with this (outside of classes)
+
+    // disallow the use of the `__iterator__` property
+    'no-iterator': 'error',
+
+    // disallow labeled statements
+    'no-labels': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  ESLint says: While convenient in some cases, labels tend to be used only rarely and are frowned upon by some as a remedial form of flow control that is more error prone and harder to understand.
+
+    // disallow unnecessary nested blocks
+    'no-lone-blocks': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+
+    // disallow function declarations that contain unsafe references inside loop statements
+    'no-loop-func': 'off', // It seems we are dealing with this safely, we have 38 occurrences on March 2021
+
+    // disallow magic numbers
+    'no-magic-numbers': 'off', // We have many magic numbers
+
+    // disallow multiple spaces
+    'no-multi-spaces': [ 'error', { ignoreEOLComments: true } ],
+
+    // disallow multiline strings
+    'no-multi-str': 'error',
+
+    // disallow `new` operators outside of assignments or comparisons
+    'no-new': 'error',
+
+    // disallow `new` operators with the `Function` object
+    'no-new-func': 'error',
+
+    // disallow `new` operators with the `String`, `Number`, and `Boolean` objects
+    'no-new-wrappers': 'error',
+
+    // disallow `\8` and `\9` escape sequences in string literals
+    'no-nonoctal-decimal-escape': 'error',
+
+    // disallow octal literals
+    'no-octal': 'error',
+
+    // disallow octal escape sequences in string literals
+    'no-octal-escape': 'error',
+
+    // disallow reassigning `function` parameters
+    'no-param-reassign': 'off', // We reassign options frequently
+
+    // disallow the use of the `__proto__` property
+    'no-proto': 'error',
+
+    // disallow variable redeclaration
+    'no-redeclare': 'error',
+
+    // disallow certain properties on certain objects
+    'no-restricted-properties': 'error',
+
+    // disallow assignment operators in `return` statements
+    'no-return-assign': 'error',
+
+    // disallow unnecessary `return await`
+    'no-return-await': 'off', // TODO https://github.com/phetsims/chipper/issues/814 this seems like a good rule to enable
+
+    // disallow `javascript:` urls
+    'no-script-url': 'error',
+
+    // disallow assignments where both sides are exactly the same
+    'no-self-assign': 'error',
+
+    // disallow comparisons where both sides are exactly the same
+    'no-self-compare': 'error',
+
+    // disallow comma operators
+    'no-sequences': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+
+    // disallow throwing literals as exceptions
+    'no-throw-literal': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+
+    // disallow unmodified loop conditions
+    'no-unmodified-loop-condition': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on.  Only 1 fail.
+
+    // disallow unused expressions
+    'no-unused-expressions': 'off', // This blocks things like circuitLayerNode && circuitLayerNode.circuit.circuitChangedEmitter.removeListener( updateText );
+
+    // disallow unused labels
+    'no-unused-labels': 'error',
+
+    // disallow unnecessary calls to `.call()` and `.apply()`
+    'no-useless-call': 'error',
+
+    // disallow unnecessary `catch` clauses
+    'no-useless-catch': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 Match with 5.0 recommended rules after our upgrade to 6.0, see https://eslint.org/docs/user-guide/migrating-to-6.0.0
+
+    // disallow unnecessary concatenation of literals or template literals
+    'no-useless-concat': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+
+    // disallow unnecessary escape characters
+    'no-useless-escape': 'error',
+
+    // disallow redundant return statements
+    'no-useless-return': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+
+    // disallow `void` operators
+    'no-void': 'error',
+
+    // disallow specified warning terms in comments
+    'no-warning-comments': 'off', // We don't want TODOs to be lint errors
+
+    // disallow `with` statements
+    'no-with': 'error',
+
+    // enforce using named capture group in regular expression
+    'prefer-named-capture-group': 'off', // We have many occurrences in yotta/js/apacheParsing.js
+
+    // require using Error objects as Promise rejection reasons
+    'prefer-promise-reject-errors': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+
+    // disallow use of the `RegExp` constructor in favor of regular expression literals
+    'prefer-regex-literals': 'off', // new RegExp() looks natural to me
+
+    // enforce the consistent use of the radix argument when using `parseInt()`
+    radix: 'error',
+
+    // disallow async functions which have no `await` expression
+    'require-await': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+
+    // enforce the use of `u` flag on RegExp
+    'require-unicode-regexp': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 is there a good reason for this rule?
+
+    // require `var` declarations be placed at the top of their containing scope
+    'vars-on-top': 'off',
+
+    // require parentheses around immediate `function` invocations
+    'wrap-iife': 'off', // Not our style
+
+    // require or disallow "Yoda" conditions
+    yoda: 'off', // TODO: https://github.com/phetsims/chipper/issues/814 this seems like it should be on, we only have a few problems
 
     // specify whether backticks, double or single quotes should be used (fixable)
     quotes: [ 'error', 'single' ],
@@ -218,38 +459,11 @@ module.exports = {
       }
     ],
 
-    // require the use of === and !== (fixable)
-    eqeqeq: 'error',
-
-    // specify curly brace conventions for all control statements
-    curly: 'error',
-
-    // disallow use of arguments.caller or arguments.callee
-    'no-caller': 'error',
-
-    // disallow use of the new operator when not part of an assignment or comparison
-    'no-new': 'error',
-
     // controls location of Use Strict Directives
     // strict: 2, // TODO: restore this, see https://github.com/phetsims/chipper/issues/820
 
-    // encourages use of dot notation whenever possible
-    'dot-notation': 'error',
-
     // disallow use of bitwise operators https://eslint.org/docs/rules/no-bitwise
     'no-bitwise': 'error',
-
-    // disallow adding to native types
-    'no-extend-native': 'error',
-
-    // disallow use of assignment in return statement
-    'no-return-assign': 'error',
-
-    // disallow comparisons where both sides are exactly the same
-    'no-self-compare': 'error',
-
-    // disallow unnecessary .call() and .apply()
-    'no-useless-call': 'error',
 
     // disallow use of undefined when initializing variables
     'no-undef-init': 'error',
@@ -265,20 +479,8 @@ module.exports = {
     // disallow assignment within variable declaration, see https://github.com/phetsims/chipper/issues/794
     'no-multi-assign-on-declaration': 'error',
 
-    // get rid of extra spaces within lines of code
-    'no-multi-spaces': [ 'error', { ignoreEOLComments: true } ],
-
     // permit only one var declaration per line, see #390
     'one-var': [ 'error', 'never' ],
-
-    // require radix argument for parseInt
-    radix: 'error',
-
-    // require default case for switch statements
-    'default-case': 'error',
-
-    // do not allow fall-through cases in switch statements
-    'no-fallthrough': 'error',
 
     // consistently use 'self' as the alias for 'this'
     'consistent-this': [ 'error', 'self' ],
@@ -294,9 +496,6 @@ module.exports = {
 
     // disallow too many empty lines
     'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 0, maxEOF: 1 } ],
-
-    // don't escape characters that don't need to be escaped
-    'no-useless-escape': 'error',
 
     // never allow object shorthand for properties, functions are ok.
     'phet-object-shorthand': 'error',
