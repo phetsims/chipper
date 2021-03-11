@@ -355,7 +355,7 @@ module.exports = {
     'no-useless-call': 'error',
 
     // disallow unnecessary `catch` clauses
-    'no-useless-catch': 'off', // TODO: 1 fail, https://github.com/phetsims/chipper/issues/814 Match with 5.0 recommended rules after our upgrade to 6.0, see https://eslint.org/docs/user-guide/migrating-to-6.0.0
+    'no-useless-catch': 'error',
 
     // disallow unnecessary concatenation of literals or template literals
     'no-useless-concat': 'off', // TODO: 38 fails, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
