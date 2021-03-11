@@ -277,7 +277,7 @@ module.exports = {
     'no-labels': 'off', // TODO: 20 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  ESLint says: While convenient in some cases, labels tend to be used only rarely and are frowned upon by some as a remedial form of flow control that is more error prone and harder to understand.
 
     // disallow unnecessary nested blocks
-    'no-lone-blocks': 'off', // TODO: 17 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+    'no-lone-blocks': 'off', // TODO: 17 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  But some cases may be reasonable?  Seems like it requires discussion.
 
     // disallow function declarations that contain unsafe references inside loop statements
     'no-loop-func': 'off', // It seems we are dealing with this safely, we have 38 occurrences on March 2021
