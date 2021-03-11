@@ -1,7 +1,11 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Compare phet-io APIs for two versions of the same sim.  TODO: https://github.com/phetsims/phet-io/issues/1733, see
+ * Compare phet-io APIs for two versions of the same sim. This function treats the first api as the "ground truth"
+ * and compares the second api to see if it has any breaking changes against the first api. This function returns a
+ * list of "problems".
+ *
+ * TODO: https://github.com/phetsims/phet-io/issues/1733, see
  * TODO: compareAPIs.js and make sure this can run in all appropriate contexts, not just node
  * @author Sam Reid (PhET Interactive Simulations)
  */
