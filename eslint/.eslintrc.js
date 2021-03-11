@@ -453,15 +453,352 @@ module.exports = {
     'no-use-before-define': 'off', // We often declare auxiliary classes at the bottom of a file, which are used in the primary class
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Stylistic Issues
+    //
 
-    // specify whether backticks, double or single quotes should be used (fixable)
+    // enforce linebreaks after opening and before closing array brackets
+    'array-bracket-newline': 'off',
+
+    // enforce consistent spacing inside array brackets
+    'array-bracket-spacing': [ 'error', 'always' ],
+
+    // enforce line breaks after each array element
+    'array-element-newline': 'off',
+
+    // disallow or enforce spaces inside of blocks after opening block and before closing block
+    'block-spacing': 'off', // Our code style supports e.g.,: if ( !isFinite( newState.getTotalEnergy() ) ) { throw new Error( 'not finite' );}
+
+    // enforce consistent brace style for blocks
+    'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
+
+    // enforce camelcase naming convention
+    camelcase: 'off', // 3512 occurrences March 2021
+
+    // enforce or disallow capitalization of the first letter of a comment
+    'capitalized-comments': 'off',
+
+    // require or disallow trailing commas
+    'comma-dangle': 'error', // see https://github.com/phetsims/tasks/issues/940
+
+    // enforce consistent spacing before and after commas
+    'comma-spacing': [ 'error', { before: false, after: true } ],
+
+    // enforce consistent comma style
+    'comma-style': [ 'error', 'last', { // good
+      exceptions: {
+        ArrayExpression: false,
+        ArrayPattern: false,
+        ArrowFunctionExpression: false,
+        CallExpression: false,
+        FunctionDeclaration: false,
+        FunctionExpression: false,
+        ImportDeclaration: false,
+        ObjectExpression: false,
+        ObjectPattern: false,
+        VariableDeclaration: false,
+        NewExpression: false
+      }
+    } ],
+
+    // enforce consistent spacing inside computed property brackets
+    'computed-property-spacing': [ 'error', 'always' ],
+
+    // enforce consistent naming when capturing the current execution context
+    'consistent-this': [ 'error', 'self' ],
+
+    // require or disallow newline at the end of files
+    'eol-last': 'off', // 5000 problems in March 2021.
+
+    // require or disallow spacing between function identifiers and their invocations
+    'func-call-spacing': [ 'error', 'never' ],
+
+    // require function names to match the name of the variable or property to which they are assigned
+    'func-name-matching': [ 'error', 'always', {
+      includeCommonJSModuleExports: false,
+      considerPropertyDescriptor: true
+    } ],
+
+    // require or disallow named `function` expressions
+    'func-names': 'off', // we sometimes name our functions for debugging
+
+    // enforce the consistent use of either `function` declarations or expressions
+    'func-style': 'off', // 1179 occurrences on March 2021
+
+    // enforce line breaks between arguments of a function call
+    // TODO: enable, semver-minor, once eslint v6.2 is required (which is a major)
+    'function-call-argument-newline': [ 'off', 'consistent' ],
+
+    // enforce consistent line breaks inside function parentheses
+    'function-paren-newline': 'off', // we often prefer parameters on the same line
+
+    // disallow specified identifiers
+    'id-denylist': 'error',
+
+    // enforce minimum and maximum identifier lengths
+    'id-length': 'off',
+
+    // require identifiers to match a specified regular expression
+    'id-match': 'error',
+
+    // enforce the location of arrow function bodies
+    'implicit-arrow-linebreak': 'off', // OK to line break in arrow functions if it improves readability.
+
+    // enforce consistent indentation
+    indent: 'off', // TODO https://github.com/phetsims/chipper/issues/814
+
+    // enforce the consistent use of either double or single quotes in JSX attributes
+    'jsx-quotes': 'error',
+
+    // enforce consistent spacing between keys and values in object literal properties
+    'key-spacing': [ 'error', { beforeColon: false, afterColon: true } ],
+
+    // enforce consistent spacing before and after keywords
+    'keyword-spacing': [ 'error', {
+      before: true,
+      after: true,
+      overrides: {
+        case: { after: true }, // default
+        switch: { after: false },
+        catch: { after: false }
+      }
+    } ],
+
+    // enforce position of line comments
+    'line-comment-position': 'off',
+
+    // enforce consistent linebreak style
+    'linebreak-style': 'off', // TODO https://github.com/phetsims/chipper/issues/814 enable this rule, it seems to only affect X-Ray Diffraction?
+
+    // require empty lines around comments
+    'lines-around-comment': 'off', // TODO https://github.com/phetsims/chipper/issues/814 enable this rule, see options
+
+    // require or disallow an empty line between class members
+    'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: false } ],
+
+    // enforce a maximum depth that blocks can be nested
+    'max-depth': 'off', // Go for it!
+
+    // enforce a maximum line length
+    'max-len': 'off', // Not a strict rule
+
+    // enforce a maximum number of lines per file
+    'max-lines': 'off', // Go for it!
+
+    // enforce a maximum number of lines of code in a function
+    'max-lines-per-function': 'off', // Go for it!
+
+    // enforce a maximum depth that callbacks can be nested
+    'max-nested-callbacks': 'error',
+
+    // enforce a maximum number of parameters in function definitions
+    'max-params': 'off',
+
+    // enforce a maximum number of statements allowed in function blocks
+    'max-statements': 'off',
+
+    // enforce a maximum number of statements allowed per line
+    'max-statements-per-line': 'off', // 700+ occurrences in March 2021
+
+    // enforce a particular style for multiline comments
+    'multiline-comment-style': 'off',
+
+    // enforce newlines between operands of ternary expressions
+    'multiline-ternary': 'off', // We use all styles of ternaries
+
+    // require constructor names to begin with a capital letter
+    'new-cap': [ 'error', {
+      newIsCap: true,
+      newIsCapExceptionPattern: '^(options|this|window)\\.\\w+', // Allow constructors to be passed through options.
+      newIsCapExceptions: [ 'rsync', 'jimp', 'Math.seedrandom' ],
+      capIsNew: false,
+      capIsNewExceptions: [ 'Immutable.Map', 'Immutable.Set', 'Immutable.List' ]
+    } ],
+
+    // enforce or disallow parentheses when invoking a constructor with no arguments
+    'new-parens': 'error',
+
+    // require a newline after each call in a method chain
+    'newline-per-chained-call': 'off', // should be flexible
+
+    // disallow `Array` constructors
+    'no-array-constructor': 'error',
+
+    // disallow bitwise operators
+    'no-bitwise': 'error',
+
+    // disallow `continue` statements
+    'no-continue': 'off', // 57 continues as of March 2021
+
+    // disallow inline comments after code
+    'no-inline-comments': 'off',
+
+    // disallow `if` statements as the only statement in `else` blocks
+    'no-lonely-if': 'off', // Sometimes this seems more readable or symmetric
+
+    // disallow mixed binary operators
+    'no-mixed-operators': 'off',  // 3+2/4 should be allowed
+
+    // disallow mixed spaces and tabs for indentation
+    'no-mixed-spaces-and-tabs': 'error',
+
+    // disallow use of chained assignment expressions
+    'no-multi-assign': 'off', // SR would like to disable this in his sims, see https://github.com/phetsims/chipper/issues/814
+
+    // disallow multiple empty lines
+    'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 0, maxEOF: 1 } ],
+
+    // disallow negated conditions
+    'no-negated-condition': 'off', // sometimes a negated condition is clearer
+
+    // disallow nested ternary expressions
+    'no-nested-ternary': 'off', // Go for it!
+
+    // disallow `Object` constructors
+    'no-new-object': 'error',
+
+    // disallow the unary operators `++` and `--`
+    'no-plusplus': 'off',
+
+    // disallow specified syntax
+    'no-restricted-syntax': [
+      'off', // TODO: Add back in https://github.com/phetsims/chipper/issues/1009
+
+      // TODO: https://github.com/phetsims/phet-info/issues/ should we turn this on?
+      // It showed an error in Fourier so I disabled it
+      // {
+      //   selector: 'ForInStatement',
+      //   message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.'
+      // },
+      {
+        selector: 'ForOfStatement',
+        message: 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.'
+      },
+      {
+        selector: 'LabeledStatement',
+        message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.'
+      },
+      {
+        selector: 'WithStatement',
+        message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.'
+      }
+    ],
+
+    // disallow all tabs
+    'no-tabs': 'error',
+
+    // disallow ternary operators
+    'no-ternary': 'off', // PhET loves the ternary
+
+    // disallow trailing whitespace at the end of lines
+    'no-trailing-spaces': [ 'error', { skipBlankLines: true, ignoreComments: true } ],
+
+    // disallow dangling underscores in identifiers
+    'no-underscore-dangle': 'off', // We often use this for private variables
+
+    // disallow ternary operators when simpler alternatives exist
+    'no-unneeded-ternary': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 turn this rule on
+
+    // disallow whitespace before properties
+    'no-whitespace-before-property': 'error',
+
+    // enforce the location of single-line statements
+    'nonblock-statement-body-position': [ 'error', 'beside', { overrides: {} } ],
+
+    // enforce consistent line breaks inside braces
+    'object-curly-newline': 'error',
+
+    // enforce consistent spacing inside braces
+    'object-curly-spacing': [ 'error', 'always' ],
+
+    // enforce placing object properties on separate lines
+    'object-property-newline': 'off',
+
+    // enforce variables to be declared either together or separately in functions
+    'one-var': [ 'error', 'never' ], // See #390
+
+    // require or disallow newlines around variable declarations
+    'one-var-declaration-per-line': [ 'error', 'always' ],
+
+    // require or disallow assignment operator shorthand where possible
+    'operator-assignment': 'off', // Operator assignment can often be harder to read
+
+    // enforce consistent linebreak style for operators
+    'operator-linebreak': 'off',
+
+    // require or disallow padding within blocks
+    'padded-blocks': 'off', // 109k fails
+
+    // require or disallow padding lines between statements
+    'padding-line-between-statements': 'error',
+
+    // disallow the use of `Math.pow` in favor of the `**` operator
+    'prefer-exponentiation-operator': 'off', // Math.pow() seems very clear.
+
+    // disallow using Object.assign with an object literal as the first argument and prefer the use of object spread instead.
+    'prefer-object-spread': 'off', // TODO: Only 1 fail, let's take a closer look, see https://github.com/phetsims/chipper/issues/814
+
+    // require quotes around object literal property names
+    'quote-props': [ 'error', 'as-needed', { keywords: false, unnecessary: true, numbers: false } ],
+
+    // enforce the consistent use of either backticks, double, or single quotes
     quotes: [ 'error', 'single' ],
 
-    // No dangling commas, see https://github.com/phetsims/tasks/issues/940
-    'comma-dangle': 'error',
-
-    // require or disallow use of semicolons instead of ASI (fixable)
+    // require or disallow semicolons instead of ASI
     semi: [ 'error', 'always' ],
+
+    // enforce consistent spacing before and after semicolons
+    'semi-spacing': [ 'error', { before: false, after: true } ],
+
+    // enforce location of semicolons
+    'semi-style': [ 'error', 'last' ],
+
+    // require object keys to be sorted
+    'sort-keys': 'off',
+
+    // require variables within the same declaration block to be sorted
+    'sort-vars': 'off',
+
+    // enforce consistent spacing before blocks
+    'space-before-blocks': 'error',
+
+    // enforce consistent spacing before `function` definition opening parenthesis
+    'space-before-function-paren': [ 'error', {
+      anonymous: 'never',
+      named: 'never',
+      asyncArrow: 'always'
+    } ],
+
+    // enforce consistent spacing inside parentheses
+    'space-in-parens': [ 'error', 'always' ],
+
+    // require spacing around infix operators
+    'space-infix-ops': 'error',
+
+    // enforce consistent spacing before or after unary operators
+    'space-unary-ops': [ 'error', {
+      words: true,
+      nonwords: false,
+      overrides: {}
+    } ],
+
+    // enforce consistent spacing after the `//` or `/*` in a comment
+    'spaced-comment': 'off', // TODO: https://github.com/phetsims/chipper/issues/814 I think this rule should be turned on
+
+    // enforce spacing around colons of switch statements
+    'switch-colon-spacing': [ 'error', { after: true, before: false } ],
+
+    // require or disallow spacing between template tags and their literals
+    'template-tag-spacing': [ 'error', 'never' ],
+
+    // require or disallow Unicode byte order mark (BOM)
+    'unicode-bom': [ 'error', 'never' ],
+
+    // require parenthesis around regex literals
+    'wrap-regex': 'off', // It already seems pretty ambiguous to me, but then again we only have 17 occurrences at the moment.
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Custom Rules
+    //
 
     'bad-text': 'error',
 
@@ -473,9 +810,6 @@ module.exports = {
 
     // Custom rule for ensuring that images and text use scenery node
     'no-html-constructors': 'error',
-
-    // enforce one true brace style
-    'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
 
     // Custom rule for avoiding instanceof Array.
     'no-instanceof-array': 'error',
@@ -501,9 +835,6 @@ module.exports = {
       }
     ],
 
-    // disallow use of bitwise operators https://eslint.org/docs/rules/no-bitwise
-    'no-bitwise': 'error',
-
     // phet-specific require statement rules
     'require-statement-match': 'error',
     'phet-io-require-contains-ifphetio': 'error',
@@ -515,199 +846,16 @@ module.exports = {
     // disallow assignment within variable declaration, see https://github.com/phetsims/chipper/issues/794
     'no-multi-assign-on-declaration': 'error',
 
-    // permit only one var declaration per line, see #390
-    'one-var': [ 'error', 'never' ],
-
-    // consistently use 'self' as the alias for 'this'
-    'consistent-this': [ 'error', 'self' ],
-
-    // require a capital letter for constructors
-    'new-cap': [ 'error', {
-      newIsCap: true,
-      newIsCapExceptionPattern: '^(options|this|window)\\.\\w+', // Allow constructors to be passed through options.
-      newIsCapExceptions: [ 'rsync', 'jimp', 'Math.seedrandom' ],
-      capIsNew: false,
-      capIsNewExceptions: [ 'Immutable.Map', 'Immutable.Set', 'Immutable.List' ]
-    } ],
-
-    // disallow too many empty lines
-    'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 0, maxEOF: 1 } ],
-
     // never allow object shorthand for properties, functions are ok.
     'phet-object-shorthand': 'error',
 
     // disallow parens surrounding single args in arrow functions
     'arrow-parens': [ 'error', 'as-needed' ],
 
-    'no-trailing-spaces': [ 'error', { skipBlankLines: true, ignoreComments: true } ],
-
-    // enforce spacing inside array brackets
-    'array-bracket-spacing': [ 'error', 'always' ],
-
-    // enforce spacing before and after comma
-    'comma-spacing': [ 'error', { before: false, after: true } ],
-
-    // enforce one true comma style
-    'comma-style': [ 'error', 'last', { // good
-      exceptions: {
-        ArrayExpression: false,
-        ArrayPattern: false,
-        ArrowFunctionExpression: false,
-        CallExpression: false,
-        FunctionDeclaration: false,
-        FunctionExpression: false,
-        ImportDeclaration: false,
-        ObjectExpression: false,
-        ObjectPattern: false,
-        VariableDeclaration: false,
-        NewExpression: false
-      }
-    } ],
-
-    // disallow padding inside computed properties
-    'computed-property-spacing': [ 'error', 'always' ],
-
-    // https://eslint.org/docs/rules/function-call-argument-newline
-    // TODO: enable, semver-minor, once eslint v6.2 is required (which is a major)
-    'function-call-argument-newline': [ 'off', 'consistent' ],
-
-    // enforce spacing between functions and their invocations
-    // https://eslint.org/docs/rules/func-call-spacing
-    'func-call-spacing': [ 'error', 'never' ],
-
-    // requires function names to match the name of the variable or property to which they are assigned
-    // https://eslint.org/docs/rules/func-name-matching
-    'func-name-matching': [ 'error', 'always', {
-      includeCommonJSModuleExports: false,
-      considerPropertyDescriptor: true
-    } ],
-
-    // enforces spacing between keys and values in object literal properties
-    'key-spacing': [ 'error', { beforeColon: false, afterColon: true } ],
-
-    // require a space before & after certain keywords
-    'keyword-spacing': [ 'error', {
-      before: true,
-      after: true,
-      overrides: {
-        case: { after: true }, // default
-        switch: { after: false },
-        catch: { after: false }
-      }
-    } ],
-
-    // require or disallow an empty line between class members
-    // https://eslint.org/docs/rules/lines-between-class-members
-    'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: false } ],
-
-    // disallow the omission of parentheses when invoking a constructor with no arguments
-    // https://eslint.org/docs/rules/new-parens
-    'new-parens': 'error',
-
-    // disallow use of the Array constructor
-    'no-array-constructor': 'error',
-
-    // disallow mixed spaces and tabs for indentation
-    'no-mixed-spaces-and-tabs': 'error',
-
-    // disallow use of the Object constructor
-    'no-new-object': 'error',
-
     // disallow space between function identifier and application
-    'no-spaced-func': 'error',
+    'no-spaced-func': 'error'
 
-    // disallow tab characters entirely
-    'no-tabs': 'error',
-
-    // disallow whitespace before properties
-    // https://eslint.org/docs/rules/no-whitespace-before-property
-    'no-whitespace-before-property': 'error',
-
-    // enforce the location of single-line statements
-    // https://eslint.org/docs/rules/nonblock-statement-body-position
-    'nonblock-statement-body-position': [ 'error', 'beside', { overrides: {} } ],
-
-    // require padding inside curly braces
-    'object-curly-spacing': [ 'error', 'always' ],
-
-    // require a newline around variable declaration
-    // https://eslint.org/docs/rules/one-var-declaration-per-line
-    'one-var-declaration-per-line': [ 'error', 'always' ],
-
-    // require quotes around object literal property names
-    // https://eslint.org/docs/rules/quote-props.html
-    'quote-props': [ 'error', 'as-needed', { keywords: false, unnecessary: true, numbers: false } ],
-
-    // enforce spacing before and after semicolons
-    'semi-spacing': [ 'error', { before: false, after: true } ],
-
-    // Enforce location of semicolons
-    // https://eslint.org/docs/rules/semi-style
-    'semi-style': [ 'error', 'last' ],
-
-    // require or disallow space before blocks
-    'space-before-blocks': 'error',
-
-    // require or disallow space before function opening parenthesis
-    // https://eslint.org/docs/rules/space-before-function-paren
-    'space-before-function-paren': [ 'error', {
-      anonymous: 'never',
-      named: 'never',
-      asyncArrow: 'always'
-    } ],
-
-    // require or disallow spaces inside parentheses
-    'space-in-parens': [ 'error', 'always' ],
-
-    // require spaces around operators
-    'space-infix-ops': 'error',
-
-    // Require or disallow spaces before/after unary operators
-    // https://eslint.org/docs/rules/space-unary-ops
-    'space-unary-ops': [ 'error', {
-      words: true,
-      nonwords: false,
-      overrides: {}
-    } ],
-
-    // Enforce spacing around colons of switch statements
-    // https://eslint.org/docs/rules/switch-colon-spacing
-    'switch-colon-spacing': [ 'error', { after: true, before: false } ],
-
-    // Require or disallow spacing between template tags and their literals
-    // https://eslint.org/docs/rules/template-tag-spacing
-    'template-tag-spacing': [ 'error', 'never' ],
-
-    // require or disallow the Unicode Byte Order Mark
-    // https://eslint.org/docs/rules/unicode-bom
-    'unicode-bom': [ 'error', 'never' ]
-
-    //
-    // // disallow certain syntax forms
-    // // https://eslint.org/docs/rules/no-restricted-syntax
-    // // TODO: Add back in https://github.com/phetsims/chipper/issues/1009
-    // 'no-restricted-syntax': [
-    //   'error',
-    //
-    //   // TODO: https://github.com/phetsims/phet-info/issues/ should we turn this on?
-    //   // It showed an error in Fourier so I disabled it
-    //   // {
-    //   //   selector: 'ForInStatement',
-    //   //   message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.'
-    //   // },
-    //   {
-    //     selector: 'ForOfStatement',
-    //     message: 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.'
-    //   },
-    //   {
-    //     selector: 'LabeledStatement',
-    //     message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.'
-    //   },
-    //   {
-    //     selector: 'WithStatement',
-    //     message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.'
-    //   }
-    // ]
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
     browser: true,
