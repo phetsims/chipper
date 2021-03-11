@@ -507,7 +507,7 @@ module.exports = {
     'consistent-this': [ 'error', 'self' ],
 
     // require or disallow newline at the end of files
-    'eol-last': 'off', // 5000 problems in March 2021.
+    'eol-last': 'off', // 5000 problems in March 2021.  SR would prefer 'eol-last': [ 'error', 'never' ], in his code
 
     // require or disallow spacing between function identifiers and their invocations
     'func-call-spacing': [ 'error', 'never' ],
@@ -570,7 +570,7 @@ module.exports = {
     'linebreak-style': 'off', // TODO https://github.com/phetsims/chipper/issues/814 enable this rule, it seems to only affect X-Ray Diffraction?
 
     // require empty lines around comments
-    'lines-around-comment': 'off', // TODO https://github.com/phetsims/chipper/issues/814 enable this rule, see options
+    'lines-around-comment': 'off', // SR Would like this rule enabled in his repos like so: 'lines-around-comment': [ 'error', { beforeLineComment: true } ]
 
     // require or disallow an empty line between class members
     'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: false } ],
