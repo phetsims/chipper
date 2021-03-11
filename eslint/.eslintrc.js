@@ -402,6 +402,58 @@ module.exports = {
     // require or disallow "Yoda" conditions
     yoda: 'off', // TODO: https://github.com/phetsims/chipper/issues/814 this seems like it should be on, we only have a few problems
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Strict Mode
+    //
+
+    // controls location of Use Strict Directives
+    // strict: 2, // TODO: restore this, see https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/814
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Variables
+    //
+
+    // require or disallow initialization in variable declarations
+    'init-declarations': 'off', // 1286 failures as of March 2021
+
+    // disallow deleting variables
+    'no-delete-var': 'error',
+
+    // disallow labels that share a name with a variable
+    'no-label-var': 'error',
+
+    // disallow specified global variables
+    'no-restricted-globals': 'error',
+
+    // disallow variable declarations from shadowing variables declared in the outer scope
+    'no-shadow': 'off', // We have 462 shadows as of March, 2021
+
+    // disallow identifiers from shadowing restricted names
+    'no-shadow-restricted-names': 'error',
+
+    // disallow the use of undeclared variables unless mentioned in `/*global */` comments
+    'no-undef': 'error',
+
+    // disallow initializing variables to `undefined`
+    'no-undef-init': 'error',
+
+    // disallow the use of `undefined` as an identifier
+    'no-undefined': 'off', // 608 fails as of March 2021
+
+    // disallow unused variables
+    'no-unused-vars': [ // Overridden to allow unused args
+      'error',
+      {
+        vars: 'all',
+        args: 'none'
+      }
+    ],
+
+    // disallow the use of variables before they are defined
+    'no-use-before-define': 'off', // We often declare auxiliary classes at the bottom of a file, which are used in the primary class
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     // specify whether backticks, double or single quotes should be used (fixable)
     quotes: [ 'error', 'single' ],
 
@@ -440,16 +492,6 @@ module.exports = {
     // key and value arguments to namespace.register() must match
     'namespace-match': 'error',
 
-    // disallow declaration of variables that are not used in the code (recommended)
-    // Overridden to allow unused args
-    'no-unused-vars': [
-      'error',
-      {
-        vars: 'all',
-        args: 'none'
-      }
-    ],
-
     // error when let is used but the variable is never reassigned, see https://github.com/phetsims/tasks/issues/973
     'prefer-const': [
       'error',
@@ -459,14 +501,8 @@ module.exports = {
       }
     ],
 
-    // controls location of Use Strict Directives
-    // strict: 2, // TODO: restore this, see https://github.com/phetsims/chipper/issues/820
-
     // disallow use of bitwise operators https://eslint.org/docs/rules/no-bitwise
     'no-bitwise': 'error',
-
-    // disallow use of undefined when initializing variables
-    'no-undef-init': 'error',
 
     // phet-specific require statement rules
     'require-statement-match': 'error',
