@@ -364,7 +364,7 @@ module.exports = {
     'no-useless-escape': 'error',
 
     // disallow redundant return statements
-    'no-useless-return': 'off', // TODO: 5 fails, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-useless-return': 'error',
 
     // disallow `void` operators
     'no-void': 'error',
