@@ -358,7 +358,7 @@ module.exports = {
     'no-useless-catch': 'error',
 
     // disallow unnecessary concatenation of literals or template literals
-    'no-useless-concat': 'off', // TODO: 38 fails, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-useless-concat': 'error',
 
     // disallow unnecessary escape characters
     'no-useless-escape': 'error',

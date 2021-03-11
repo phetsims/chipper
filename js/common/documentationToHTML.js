@@ -104,7 +104,7 @@
           result += 'canvas.height = ' + height + ';';
           result += 'var context = canvas.getContext( "2d" );';
           result += runString;
-          result += '})();</' + 'script>'; // paranoia!
+          result += '})();</' + 'script>'; // eslint-disable-line no-useless-concat
           result += '<pre class="brush: js">\n';
           result += displayString;
           result += '</pre>';
