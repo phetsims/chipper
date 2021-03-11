@@ -525,8 +525,7 @@ module.exports = {
     'func-style': 'off', // 1179 occurrences on March 2021
 
     // enforce line breaks between arguments of a function call
-    // TODO: enable, semver-minor, once eslint v6.2 is required (which is a major)
-    'function-call-argument-newline': [ 'off', 'consistent' ],
+    'function-call-argument-newline': [ 'off', 'consistent' ], // Not PhET's style
 
     // enforce consistent line breaks inside function parentheses
     'function-paren-newline': 'off', // we often prefer parameters on the same line
@@ -696,7 +695,7 @@ module.exports = {
     'no-underscore-dangle': 'off', // We often use this for private variables
 
     // disallow ternary operators when simpler alternatives exist
-    'no-unneeded-ternary': 'off', // TODO: 5 fails, https://github.com/phetsims/chipper/issues/814 turn this rule on
+    'no-unneeded-ternary': 'error',
 
     // disallow whitespace before properties
     'no-whitespace-before-property': 'error',
