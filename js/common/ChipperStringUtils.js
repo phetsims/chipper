@@ -90,7 +90,7 @@ const ChipperStringUtils = {
    * @returns {string}
    */
   replacePlaceholders: function( str, mapping ) {
-    Object.keys( mapping ).forEach( function( key ) {
+    Object.keys( mapping ).forEach( key => {
       const replacement = mapping[ key ];
       key = '{{' + key + '}}';
       let index;
@@ -98,7 +98,7 @@ const ChipperStringUtils = {
         str = str.slice( 0, index ) + replacement + str.slice( index + key.length );
       }
     } );
-    Object.keys( mapping ).forEach( function( key ) {
+    Object.keys( mapping ).forEach( key => {
       if ( str.indexOf( '{{' + key + '}}' ) >= 0 ) {
         throw new Error( 'Template string detected in placeholders: ' + key + '\n\n' + str.slice( 0, str.indexOf( '{{' + key + '}}' ) + 10 ) );
       }

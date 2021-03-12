@@ -43,7 +43,7 @@ module.exports = function( context ) {
               const rootNode = context.getSourceCode().ast;
               if ( rootNode &&
                   rootNode.tokens ) {
-                rootNode.tokens.forEach( function( token ) {
+                rootNode.tokens.forEach( token => {
                   if ( token ) {
                     if ( token.type === 'Identifier' &&
                         token.value === 'dispose' ) {

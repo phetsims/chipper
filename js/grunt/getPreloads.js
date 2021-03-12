@@ -73,7 +73,7 @@ module.exports = function( repo, brand, forSim ) {
   // Verifies that preload repositories are included in phetLib.
   const phetLibs = getPhetLibs( repo, brand );
   const missingRepositories = [];
-  preload.forEach( function( entry ) {
+  preload.forEach( entry => {
 
     // preload entries should start with '..', e.g. "../assert/js/assert.js"
     assert( entry.split( '/' )[ 0 ] === '..', 'malformed preload entry: ' + entry );

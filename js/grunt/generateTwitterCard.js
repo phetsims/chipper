@@ -32,7 +32,7 @@ module.exports = function( repo ) {
       this.resize( 600, 394 ) // Preserve original dimensions
         .contain( 585, 400 )  // Resize to allow padding on top/bottom
         .contain( 800, 400 )  // Add padding on right/left
-        .getBuffer( Jimp.MIME_PNG, function( error, pngBuffer ) {
+        .getBuffer( Jimp.MIME_PNG, ( error, pngBuffer ) => {
           if ( error ) {
             reject( new Error( error ) );
           }

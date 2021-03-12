@@ -47,7 +47,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     };
     const mimeType = mimeTypes[ path.split( '.' ).pop() ] || 'text/plain';
 
-    fs.readFile( path, function( err, data ) {
+    fs.readFile( path, ( err, data ) => {
       if ( err ) {
         res.writeHead( 404 );
         res.end( JSON.stringify( err ) );

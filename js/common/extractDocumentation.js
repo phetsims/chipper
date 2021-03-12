@@ -36,7 +36,7 @@
    * @returns {string}
    */
   function destarBlockComment( string ) {
-    return string.split( '\n' ).map( function( line ) {
+    return string.split( '\n' ).map( line => {
       let destarred = line.replace( /^ *\* ?/, '' );
 
       // If the line is effectively empty (composed of only spaces), set it to the empty string.
@@ -406,7 +406,7 @@
       }
 
       const constructorStatements = typeExpression.body.body; // statements in the constructor function body
-      constructorStatements.forEach( function( constructorStatement ) {
+      constructorStatements.forEach( constructorStatement => {
         if ( constructorStatement.type === 'ExpressionStatement' ) {
           if ( isSimpleThisAssignment( constructorStatement.expression ) ) {
             const comment = extractDocFromNode( constructorStatement );
@@ -499,7 +499,7 @@
       if ( expression.arguments.length >= 4 ) {
         const staticProperties = expression.arguments[ 3 ].properties;
 
-        staticProperties.forEach( function( property ) {
+        staticProperties.forEach( property => {
           const staticDoc = parseStaticProperty( property );
           if ( doc[ subtype ] && staticDoc ) {
             doc[ subtype ].staticProperties.push( staticDoc );
@@ -576,7 +576,7 @@
         };
 
         // Process properties in the object
-        topLevelStatement.declarations[ 0 ].init.properties.forEach( function( property ) {
+        topLevelStatement.declarations[ 0 ].init.properties.forEach( property => {
           const staticDoc = parseStaticProperty( property );
           if ( staticDoc ) {
             doc[ objectName ].properties.push( staticDoc );

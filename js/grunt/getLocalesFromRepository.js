@@ -33,7 +33,7 @@ module.exports = function( repo ) {
 
   // Extract the locales from the file names.
   // File names must have a form like 'graphing-lines-strings_ar_SA.json', where no '_' appear in the repo name.
-  const locales = stringFiles.map( function( filename ) {
+  const locales = stringFiles.map( filename => {
     return filename.substring( filename.indexOf( '_' ) + 1, filename.lastIndexOf( '.' ) );
   } );
   assert( locales.length > 0, `no locales found in ${stringsDirectory}` );

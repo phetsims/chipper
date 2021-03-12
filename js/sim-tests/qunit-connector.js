@@ -13,7 +13,7 @@
   // See https://api.qunitjs.com/config/QUnit.config
   QUnit.config.autostart = false;
 
-  QUnit.log( function( details ) {
+  QUnit.log( details => {
     ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {
       type: 'qunit-test',
       main: details.module, // TODO: what is this for? (https://github.com/phetsims/aqua/issues/81)
@@ -27,7 +27,7 @@
     } ), '*' );
   } );
 
-  QUnit.on( 'runEnd', function( data ) {
+  QUnit.on( 'runEnd', data => {
     ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {
       type: 'qunit-done',
       failed: data.testCounts.failed,

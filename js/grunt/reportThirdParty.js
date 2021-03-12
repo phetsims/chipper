@@ -118,7 +118,7 @@ module.exports = async function() {
     };
 
     const request = https.request( requestOptions, res => resolve( res ) );
-    request.on( 'error', function( e ) {
+    request.on( 'error', e => {
       grunt.log.writeln( 'There was a problem uploading the data to the website: ' + e.message );
       reject( e );
     } );
@@ -161,7 +161,7 @@ module.exports = async function() {
   }
 
   // Use a case insensitive sort, see http://stackoverflow.com/questions/8996963/how-to-perform-case-insensitive-sorting-in-javascript
-  libraryNames.sort( function( a, b ) {
+  libraryNames.sort( ( a, b ) => {
     return a.toLowerCase().localeCompare( b.toLowerCase() );
   } );
 
@@ -202,7 +202,7 @@ module.exports = async function() {
     }
   }
   // Use a case insensitive sort, see http://stackoverflow.com/questions/8996963/how-to-perform-case-insensitive-sorting-in-javascript
-  mediaKeys.sort( function( a, b ) {
+  mediaKeys.sort( ( a, b ) => {
     return a.toLowerCase().localeCompare( b.toLowerCase() );
   } );
 

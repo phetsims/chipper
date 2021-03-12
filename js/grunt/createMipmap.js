@@ -73,11 +73,11 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
         // if we need a specific filter type, put it here
       } );
 
-      basePNG.on( 'error', function( err ) {
+      basePNG.on( 'error', err => {
         reject( err );
       } );
 
-      basePNG.on( 'parsed', function() {
+      basePNG.on( 'parsed', () => {
         mipmaps.push( {
           data: basePNG.data,
           width: basePNG.width,
@@ -125,15 +125,15 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
 
       // will concatenate the buffers from the stream into one once it is finished
       const buffers = [];
-      png.on( 'data', function( buffer ) {
+      png.on( 'data', buffer => {
         buffers.push( buffer );
       } );
-      png.on( 'end', function() {
+      png.on( 'end', () => {
         const buffer = Buffer.concat( buffers );
 
         callback( buffer );
       } );
-      png.on( 'error', function( err ) {
+      png.on( 'error', err => {
         reject( err );
       } );
 
@@ -176,7 +176,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       // kicks off asynchronous encoding for a specific level
       function encodeLevel( level ) {
         encodeCounter++;
-        outputPNG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, function( buffer ) {
+        outputPNG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, buffer => {
           mipmaps[ level ].pngBuffer = buffer;
           mipmaps[ level ].pngURL = 'data:image/png;base64,' + buffer.toString( 'base64' );
           if ( --encodeCounter === 0 ) {
@@ -187,7 +187,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
         // only encode JPEG if it has no alpha
         if ( !hasAlpha ) {
           encodeCounter++;
-          outputJPEG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, quality, function( buffer ) {
+          outputJPEG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, quality, buffer => {
             mipmaps[ level ].jpgBuffer = buffer;
             mipmaps[ level ].jpgURL = 'data:image/jpeg;base64,' + buffer.toString( 'base64' );
             if ( --encodeCounter === 0 ) {
@@ -207,7 +207,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       // bail if we already have a 1x1 image, or if we reach the maxLevel (recall maxLevel===-1 means no maximum level)
       while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
         const level = mipmaps.length;
-        mipmaps.push( mipmapDownscale( finestMipmap(), function( width, height ) {
+        mipmaps.push( mipmapDownscale( finestMipmap(), ( width, height ) => {
           return Buffer.alloc( 4 * width * height );
         } ) );
         encodeLevel( level );

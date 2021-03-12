@@ -138,7 +138,7 @@
   function inlineParameterList( object ) {
     let result = '';
     if ( object.parameters ) {
-      result += '( ' + object.parameters.map( function( parameter ) {
+      result += '( ' + object.parameters.map( parameter => {
         let name = parameter.name;
         if ( parameter.optional ) {
           name = '<span class="optional">' + name + '</span>';
@@ -154,13 +154,13 @@
 
   function parameterDetailsList( object ) {
     let result = '';
-    const parametersWithDescriptions = object.parameters ? object.parameters.filter( function( parameter ) {
+    const parametersWithDescriptions = object.parameters ? object.parameters.filter( parameter => {
       return !!parameter.description;
     } ) : [];
 
     if ( parametersWithDescriptions.length ) {
       result += '<table class="params">\n';
-      parametersWithDescriptions.forEach( function( parameter ) {
+      parametersWithDescriptions.forEach( parameter => {
         let name = parameter.name;
         const description = parameter.description || '';
         if ( parameter.optional ) {
@@ -216,10 +216,10 @@
 
     // Initialize typeURLs for the output
     typeURLs = {};
-    Object.keys( externalTypeURLs ).forEach( function( typeId ) {
+    Object.keys( externalTypeURLs ).forEach( typeId => {
       typeURLs[ typeId ] = externalTypeURLs[ typeId ];
     } );
-    Object.keys( localTypeIds ).forEach( function( typeId ) {
+    Object.keys( localTypeIds ).forEach( typeId => {
       typeURLs[ typeId ] = '#' + localTypeIds[ typeId ];
     } );
 
@@ -231,7 +231,7 @@
     contentHTML += '<h3 id="' + baseURL.slice( 1 ) + '" class="section">' + baseName + '</h3>\n';
     contentHTML += descriptionHTML( doc.topLevelComment.description );
 
-    typeNames.forEach( function( typeName ) {
+    typeNames.forEach( typeName => {
       const baseObject = doc[ typeName ];
       const baseURLPrefix = localTypeIds[ typeName ] + '-';
 
@@ -251,8 +251,8 @@
       }
 
       const staticProperties = baseObject.staticProperties || baseObject.properties || [];
-      const staticNames = staticProperties.map( function( prop ) { return prop.name; } ).sort();
-      staticNames.forEach( function( name ) {
+      const staticNames = staticProperties.map( prop => prop.name ).sort();
+      staticNames.forEach( name => {
         const object = nameLookup( staticProperties, name );
 
         indexHTML += '<a class="sublink" href="#' + baseURLPrefix + object.name + '">' + object.name + '</a><br>';
@@ -269,8 +269,8 @@
       } );
 
       if ( baseObject.type === 'type' ) {
-        const constructorNames = baseObject.constructorProperties.map( function( prop ) { return prop.name; } ).sort();
-        constructorNames.forEach( function( name ) {
+        const constructorNames = baseObject.constructorProperties.map( prop => prop.name ).sort();
+        constructorNames.forEach( name => {
           const object = nameLookup( baseObject.constructorProperties, name );
 
           indexHTML += '<a class="sublink" href="#' + baseURLPrefix + object.name + '">' + object.name + '</a><br>';
@@ -284,8 +284,8 @@
         } );
       }
       if ( baseObject.type === 'type' ) {
-        const instanceNames = baseObject.instanceProperties.map( function( prop ) { return prop.name; } ).sort();
-        instanceNames.forEach( function( name ) {
+        const instanceNames = baseObject.instanceProperties.map( prop => prop.name ).sort();
+        instanceNames.forEach( name => {
           const object = nameLookup( baseObject.instanceProperties, name );
 
           indexHTML += '<a class="sublink" href="#' + baseURLPrefix + object.name + '">' + object.name + '</a><br>';

@@ -51,7 +51,7 @@ module.exports = function getPhetLibs( repo, brand ) {
     phetLibs.push( packageObject.name );
 
     // add common and brand-specific entries from build.json
-    [ 'common', brand ].forEach( function( id ) {
+    [ 'common', brand ].forEach( id => {
       if ( buildObject[ id ] && buildObject[ id ].phetLibs ) {
         phetLibs = phetLibs.concat( buildObject[ id ].phetLibs );
       }

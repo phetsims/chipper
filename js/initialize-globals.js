@@ -769,10 +769,10 @@
    * testing a sim for robustness, and allowing others to reproduce slow-behavior bugs.
    */
   window.phet.chipper.makeEverythingSlow = function() {
-    window.setInterval( function() { sleep( 64 ); }, 16 ); // eslint-disable-line bad-sim-text
+    window.setInterval( () => { sleep( 64 ); }, 16 ); // eslint-disable-line bad-sim-text
   };
   window.phet.chipper.makeRandomSlowness = function() {
-    window.setInterval( function() { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) ); // eslint-disable-line bad-sim-text
+    window.setInterval( () => { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) ); // eslint-disable-line bad-sim-text
   };
 
   // Are we running a built html file?
@@ -818,7 +818,7 @@
     };
 
     if ( phet.chipper.queryParameters.continuousTest ) {
-      window.addEventListener( 'error', function( a ) {
+      window.addEventListener( 'error', a => {
         let message = '';
         let stack = '';
         if ( a && a.message ) {
@@ -833,7 +833,7 @@
           stack: stack
         } );
       } );
-      window.addEventListener( 'beforeunload', function( e ) {
+      window.addEventListener( 'beforeunload', e => {
         phet.chipper.reportContinuousTestResult( {
           type: 'continuous-test-unload'
         } );
@@ -849,7 +849,7 @@
 
     // Communicate sim errors to joist/tests/test-sims.html
     if ( phet.chipper.queryParameters.postMessageOnError ) {
-      window.addEventListener( 'error', function( a ) {
+      window.addEventListener( 'error', a => {
         let message = '';
         let stack = '';
         if ( a && a.message ) {
@@ -868,7 +868,7 @@
     }
 
     if ( phet.chipper.queryParameters.postMessageOnBeforeUnload ) {
-      window.addEventListener( 'beforeunload', function( e ) {
+      window.addEventListener( 'beforeunload', e => {
         window.parent && window.parent.postMessage( JSON.stringify( {
           type: 'beforeUnload'
         } ), '*' );

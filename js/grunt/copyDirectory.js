@@ -29,11 +29,11 @@ module.exports = function( src, dst, filter, options ) {
   }, options );
 
   // Copy built sim files (assuming they exist from a prior grunt command)
-  grunt.file.recurse( src, function callback( abspath, rootdir, subdir, filename ) {
+  grunt.file.recurse( src, ( abspath, rootdir, subdir, filename ) => {
 
 
     let isInBlacklistedDir = false;
-    subdir && subdir.split( '/' ).forEach( function( pathPart ) {
+    subdir && subdir.split( '/' ).forEach( pathPart => {
 
       // Exclude all directories that are in the blacklist
       if ( options.blacklist.indexOf( pathPart ) >= 0 ) {

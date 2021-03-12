@@ -43,13 +43,13 @@ module.exports = function( repo, brand ) {
   }
 
   // Sort keys and remove duplicates
-  licenseKeys = _.uniq( _.sortBy( licenseKeys, function( key ) { return key.toUpperCase(); } ) );
+  licenseKeys = _.uniq( _.sortBy( licenseKeys, key => key.toUpperCase() ) );
 
   grunt.log.debug( 'licenseKeys = ' + licenseKeys.toString() );
 
   // Combine all licenses into 1 object literal
   const libEntries = {};
-  licenseKeys.forEach( function( key ) {
+  licenseKeys.forEach( key => {
 
     const license = licenseInfo[ key ];
 

@@ -37,7 +37,7 @@ module.exports = function( repo, width, height, quality, mime, altSuffix ) {
       if ( mime === jimp.MIME_JPEG ) {
         this.quality( quality );
       }
-      this.resize( width, height ).getBuffer( mime, function( error, buffer ) {
+      this.resize( width, height ).getBuffer( mime, ( error, buffer ) => {
         if ( error ) {
           reject( new Error( error ) );
         }
