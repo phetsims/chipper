@@ -30,7 +30,7 @@ module.exports = {
     'getter-return': 'error',
 
     // disallow using an async function as a Promise executor
-    'no-async-promise-executor': 'off', // TODO: 4 fails, Enable this rule, see https://github.com/phetsims/perennial/issues/216
+    'no-async-promise-executor': 'off', // TODO: Enable: 4 fails, Enable this rule, see https://github.com/phetsims/perennial/issues/216
 
     // disallow `await` inside of loops
     'no-await-in-loop': 'off', // We use await in loops all the time in build tools
@@ -147,7 +147,7 @@ module.exports = {
     'no-useless-backreference': 'error',
 
     // disallow assignments that can lead to race conditions due to usage of `await` or `yield`
-    'require-atomic-updates': 'off', // TODO: 6 fails, can we turn this on? see https://github.com/phetsims/chipper/issues/814
+    'require-atomic-updates': 'off', // TODO: Enable: 6 fails, can we turn this on? see https://github.com/phetsims/chipper/issues/814
 
     // require calls to `isNaN()` when checking for `NaN`
     'use-isnan': 'error',
@@ -163,7 +163,7 @@ module.exports = {
     'accessor-pairs': 'off', // Only 17 fails, but I'm not sure we need this.  Perhaps once it bites us we will change our mind?
 
     // enforce `return` statements in callbacks of array methods
-    'array-callback-return': 'off', // TODO: 14 fails, https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
+    'array-callback-return': 'off', // TODO: Enable: 14 fails, https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
 
     // enforce the use of variables within the scope they are defined
     'block-scoped-var': 'off', // We have too much old code with var i being used across several loops.
@@ -175,7 +175,7 @@ module.exports = {
     complexity: 'off', // We have around 242 offenders as of March, 2021
 
     // require `return` statements to either always or never specify values
-    'consistent-return': 'off', // TODO: 79 fails, https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
+    'consistent-return': 'off', // TODO: Enable: 79 fails, https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
 
     // enforce consistent brace style for all control statements
     curly: 'error',
@@ -187,7 +187,7 @@ module.exports = {
     'default-case-last': 'error',
 
     // enforce default parameters to be last
-    'default-param-last': 'off', // TODO: 1 failure, https://github.com/phetsims/chipper/issues/814 only 1 fail, we should turn this rule on
+    'default-param-last': 'off', // TODO: Enable: 1 failure, https://github.com/phetsims/chipper/issues/814 only 1 fail, we should turn this rule on
 
     // enforce consistent newlines before and after dots
     'dot-location': 'off', // We use WebStorm formatting which moves lower dots to the left
@@ -244,7 +244,7 @@ module.exports = {
     'no-extra-bind': 'error',
 
     // disallow unnecessary labels
-    'no-extra-label': 'off', // TODO: 4 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+    'no-extra-label': 'off', // TODO: Enable: 4 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on
 
     // disallow fallthrough of `case` statements
     'no-fallthrough': 'error',
@@ -271,10 +271,10 @@ module.exports = {
     'no-iterator': 'error',
 
     // disallow labeled statements
-    'no-labels': 'off', // TODO: 20 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  ESLint says: While convenient in some cases, labels tend to be used only rarely and are frowned upon by some as a remedial form of flow control that is more error prone and harder to understand.
+    'no-labels': 'off', // TODO: Enable: 20 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  ESLint says: While convenient in some cases, labels tend to be used only rarely and are frowned upon by some as a remedial form of flow control that is more error prone and harder to understand.
 
     // disallow unnecessary nested blocks
-    'no-lone-blocks': 'off', // TODO: 17 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  But some cases may be reasonable?  Seems like it requires discussion.
+    'no-lone-blocks': 'off', // TODO: Enable: 17 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  But some cases may be reasonable?  Seems like it requires discussion.
 
     // disallow function declarations that contain unsafe references inside loop statements
     'no-loop-func': 'off', // It seems we are dealing with this safely, we have 38 occurrences on March 2021
@@ -334,13 +334,13 @@ module.exports = {
     'no-self-compare': 'error',
 
     // disallow comma operators
-    'no-sequences': 'off', // TODO: 2 failures, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-sequences': 'off', // TODO: Enable: 2 failures, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
 
     // disallow throwing literals as exceptions
-    'no-throw-literal': 'off', // TODO: 1 failure, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-throw-literal': 'off', // TODO: Enable: 1 failure, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
 
     // disallow unmodified loop conditions
-    'no-unmodified-loop-condition': 'off', // TODO: 1 failure https://github.com/phetsims/chipper/issues/814 we should turn this rule on.  Only 1 fail.
+    'no-unmodified-loop-condition': 'off', // TODO: Enable: 1 failure https://github.com/phetsims/chipper/issues/814 we should turn this rule on.  Only 1 fail.
 
     // disallow unused expressions
     'no-unused-expressions': 'off', // This blocks things like circuitLayerNode && circuitLayerNode.circuit.circuitChangedEmitter.removeListener( updateText );
@@ -854,7 +854,7 @@ module.exports = {
     'object-shorthand': [ 'off', 'never' ], // PhET has a rule phet-object-shorthand that detects this in object literals
 
     // require using arrow functions for callbacks
-    'prefer-arrow-callback': 'off', // TODO: 9 fails, https://github.com/phetsims/chipper/issues/814 enable this rule
+    'prefer-arrow-callback': 'off', // TODO: Enable: 9 fails, https://github.com/phetsims/chipper/issues/814 enable this rule
 
     // require `const` declarations for variables that are never reassigned after declared
     'prefer-const': [ // error when let is used but the variable is never reassigned, see https://github.com/phetsims/tasks/issues/973
@@ -872,13 +872,13 @@ module.exports = {
     'prefer-numeric-literals': 'error',
 
     // require rest parameters instead of `arguments`
-    'prefer-rest-params': 'off', // TODO: 2 fails, https://github.com/phetsims/chipper/issues/814 we have 2 fails and we should fix them
+    'prefer-rest-params': 'off', // TODO: Enable: 2 fails, https://github.com/phetsims/chipper/issues/814 we have 2 fails and we should fix them
 
     // require spread operators instead of `.apply()`
-    'prefer-spread': 'off', // // TODO: 21 fails, https://github.com/phetsims/chipper/issues/814 we have 99 fails, but we should fix them
+    'prefer-spread': 'off', // // TODO: Enable: 21 fails, https://github.com/phetsims/chipper/issues/814 we have 99 fails, but we should fix them
 
     // require template literals instead of string concatenation
-    'prefer-template': 'off', // TODO: 99 fails, https://github.com/phetsims/chipper/issues/814 we have 99 fails, but we should fix them
+    'prefer-template': 'off', // TODO: Enable: 99 fails, https://github.com/phetsims/chipper/issues/814 we have 99 fails, but we should fix them
 
     // require generator functions to contain `yield`
     'require-yield': 'error',
