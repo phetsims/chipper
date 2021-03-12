@@ -244,7 +244,7 @@ module.exports = {
     'no-extra-bind': 'error',
 
     // disallow unnecessary labels
-    'no-extra-label': 'off', // TODO: Enable: 4 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on
+    'no-extra-label': 'error',
 
     // disallow fallthrough of `case` statements
     'no-fallthrough': 'error',
