@@ -40,7 +40,7 @@ Here is a list of all the available configuration files and why to use them for 
   of the derived configurations below.
 - `node_eslintrc.js` expands on the base rules and adds configuration only intended for Node.js code (i.e. `perennial`).
 - `sim_eslintrc.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5 sim rules)
-- `sim_es6_eslintrc.js` expands on the sim rules and adds configuration for sims that have no es5 in them (i.e. `wave-interference`)
+- `sim_eslintrc.js'` expands on the sim rules and adds configuration for sims that have no es5 in them (i.e. `wave-interference`)
 - `format_eslintrc.js` contains additional rules used for enforcing code formatting. These are not required, they are just
   recommended.
 
@@ -51,7 +51,6 @@ format_eslintrc.js
 .eslintrc.js
   node_eslintrc.js
   sim_eslintrc.js
-    sim_es6_eslintrc.js
 ```
 
 PhET also uses some custom linting rules to detect PhET-specific errors, such as

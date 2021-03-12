@@ -131,8 +131,8 @@
           const endOfType = i + 1;
           const type = line.slice( 0, endOfType );
           const rest = line.slice( endOfType + 1 );
-          var name;
-          var description;
+          let name;
+          let description;
           if ( hasName ) {
             const spaceIndex = rest.indexOf( ' ' );
             if ( spaceIndex < 0 ) {
@@ -539,7 +539,7 @@
                expression.left.property.type === 'Identifier' &&
                doc[ expression.left.object.name ] ) {
             const innerName = expression.left.property.name;
-            var type;
+            let type;
 
             // Inner Type, e.g. BinPacker.Bin = function Bin( ... ) { ... };
             if ( expression.right.type === 'FunctionExpression' &&
@@ -567,7 +567,7 @@
                 topLevelStatement.declarations[ 0 ].init &&
                 topLevelStatement.declarations[ 0 ].init.type === 'ObjectExpression' &&
                 isCapitalized( topLevelStatement.declarations[ 0 ].id.name ) ) {
-        var objectName = topLevelStatement.declarations[ 0 ].id.name;
+        const objectName = topLevelStatement.declarations[ 0 ].id.name;
         doc[ objectName ] = {
           comment: extractDocFromNode( topLevelStatement ), // maybe not needed?
           properties: [],
