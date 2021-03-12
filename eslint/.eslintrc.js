@@ -376,7 +376,7 @@ module.exports = {
     'prefer-named-capture-group': 'off', // We have many occurrences in yotta/js/apacheParsing.js
 
     // require using Error objects as Promise rejection reasons
-    'prefer-promise-reject-errors': 'off', // TODO: 14 failures https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+    'prefer-promise-reject-errors': 'off', // TODO: Enable: 14 failures https://github.com/phetsims/chipper/issues/814 this seems like it should be on
 
     // disallow use of the `RegExp` constructor in favor of regular expression literals
     'prefer-regex-literals': 'off', // new RegExp() looks natural to me
@@ -385,10 +385,10 @@ module.exports = {
     radix: 'error',
 
     // disallow async functions which have no `await` expression
-    'require-await': 'off', // TODO: 53 fails, https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+    'require-await': 'off', // TODO: Enable: 53 fails, https://github.com/phetsims/chipper/issues/814 this seems like it should be on
 
     // enforce the use of `u` flag on RegExp
-    'require-unicode-regexp': 'off', // TODO: 272 fails or so, https://github.com/phetsims/chipper/issues/814 is there a good reason for this rule?
+    'require-unicode-regexp': 'off', // TODO: Discuss: 272 fails or so, https://github.com/phetsims/chipper/issues/814 is there a good reason for this rule?
 
     // require `var` declarations be placed at the top of their containing scope
     'vars-on-top': 'off',
@@ -404,7 +404,7 @@ module.exports = {
     //
 
     // controls location of Use Strict Directives
-    strict: 'off', // TODO: 338 occurrences. restore this, see https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/814
+    strict: 'off', // TODO: Discuss: 338 occurrences. restore this, see https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/814
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Variables
@@ -887,7 +887,7 @@ module.exports = {
     'rest-spread-spacing': 'error',
 
     // enforce sorted import declarations within modules
-    'sort-imports': 'off', // TODO https://github.com/phetsims/chipper/issues/814 would be nice to turn this rule on, if we can match it to WebStorm sorting rules
+    'sort-imports': 'off', // TODO: Discuss https://github.com/phetsims/chipper/issues/814 would be nice to turn this rule on, if we can match it to WebStorm sorting rules
 
     // require symbol descriptions
     'symbol-description': 'error',
