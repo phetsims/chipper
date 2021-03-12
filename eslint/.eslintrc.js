@@ -887,7 +887,7 @@ module.exports = {
     'rest-spread-spacing': 'error',
 
     // enforce sorted import declarations within modules
-    'sort-imports': 'off', // TODO: Discuss https://github.com/phetsims/chipper/issues/814 would be nice to turn this rule on, if we can match it to WebStorm sorting rules
+    'sort-imports': 'off', // Webstorm and ESLint sorting rules don't align
 
     // require symbol descriptions
     'symbol-description': 'error',
