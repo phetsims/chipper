@@ -8,9 +8,6 @@
  */
 module.exports = {
   extends: './.eslintrc.js',
-  rules: {
-    'no-var': 'error'
-  },
   env: {
 
     // specify appropriate environment vars for node code
