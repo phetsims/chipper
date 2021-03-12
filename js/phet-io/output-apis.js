@@ -67,7 +67,6 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
     showMessagesFromSim: false // must be pure JSON
   } );
 
-  const result = formatPhetioAPI( results );
   try {
     fs.mkdirSync( './build-phet-io-macro-api/' );
   }
@@ -76,5 +75,5 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
       throw e;
     }
   }
-  repos.forEach( repo => fs.writeFileSync( `../phet-io/api/${repo}.json`, result ) );
+  repos.forEach( repo => fs.writeFileSync( `../phet-io/api/${repo}.json`, formatPhetioAPI( results[ repo ] ) ) );
 } )();
