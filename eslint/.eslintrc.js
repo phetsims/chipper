@@ -854,7 +854,7 @@ module.exports = {
     'object-shorthand': [ 'off', 'never' ], // PhET has a rule phet-object-shorthand that detects this in object literals
 
     // require using arrow functions for callbacks
-    'prefer-arrow-callback': 'off', // TODO: Enable: 9 fails, https://github.com/phetsims/chipper/issues/814 enable this rule
+    'prefer-arrow-callback': 'error',
 
     // require `const` declarations for variables that are never reassigned after declared
     'prefer-const': [ // error when let is used but the variable is never reassigned, see https://github.com/phetsims/tasks/issues/973
