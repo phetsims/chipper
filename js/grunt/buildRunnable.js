@@ -63,7 +63,7 @@ const recordTime = async ( asyncCallback, timeCallback ) => {
 module.exports = async function( repo, minifyOptions, instrument, allHTML, brand, localesOption, buildLocal ) {
   assert( typeof repo === 'string' );
   assert( typeof minifyOptions === 'object' );
-  assert( _.includes( ChipperConstants.BRANDS, brand ), 'Unknown brand in buildRunnable: ' + brand );
+  assert( _.includes( ChipperConstants.BRANDS, brand ), `Unknown brand in buildRunnable: ${brand}` );
 
   if ( brand === 'phet-io' ) {
     assert( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
@@ -74,7 +74,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
 
   // All html files share the same build timestamp
   let timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
-  timestamp = timestamp.substring( 0, timestamp.indexOf( '.' ) ) + ' UTC';
+  timestamp = `${timestamp.substring( 0, timestamp.indexOf( '.' ) )} UTC`;
 
   // Start running webpack
   const webpackResult = await recordTime( async () => {
@@ -84,7 +84,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   } );
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
-  const webpackJS = 'phet.chipper.runWebpack = function() {' + webpackResult.js + '};';
+  const webpackJS = `phet.chipper.runWebpack = function() {${webpackResult.js}};`;
 
   // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.
   const debugMinifyOptions = brand === 'phet-io' ? {
@@ -114,7 +114,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
         // The file suffix is stripped and restored to its none .js extention. This is because getLicenseEntry doesn't
         // handle modulified media files.
         const index = module.lastIndexOf( '_' );
-        const path = module.slice( 0, index ) + '.' + module.slice( index + 1, -3 );
+        const path = `${module.slice( 0, index )}.${module.slice( index + 1, -3 )}`;
         licenseEntries[ mediaType ][ module ] = getLicenseEntry( `../${path}` );
       }
     } );
@@ -155,8 +155,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   if ( brand === 'phet-io' ) {
 
     // License text provided by @kathy-phet in https://github.com/phetsims/chipper/issues/148#issuecomment-112584773
-    htmlHeader = englishTitle + ' ' + version + '\n' +
-                 'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
+    htmlHeader = `${englishTitle} ${version}\n` +
+                 `Copyright 2002-${grunt.template.today( 'yyyy' )}, Regents of the University of Colorado\n` +
                  'PhET Interactive Simulations, University of Colorado Boulder\n' +
                  '\n' +
                  'This Interoperable PhET Simulation file requires a license.\n' +
@@ -165,8 +165,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
                  'https://phet.colorado.edu/en/licensing';
   }
   else {
-    htmlHeader = englishTitle + ' ' + version + '\n' +
-                 'Copyright 2002-' + grunt.template.today( 'yyyy' ) + ', Regents of the University of Colorado\n' +
+    htmlHeader = `${englishTitle} ${version}\n` +
+                 `Copyright 2002-${grunt.template.today( 'yyyy' )}, Regents of the University of Colorado\n` +
                  'PhET Interactive Simulations, University of Colorado Boulder\n' +
                  '\n' +
                  'This file is licensed under Creative Commons Attribution 4.0\n' +
@@ -267,7 +267,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     } );
 
     grunt.file.write( allHTMLFilename, allHTMLContents );
-    grunt.file.write( allHTMLFilename + '.gz', zlib.gzipSync( allHTMLContents ) );
+    grunt.file.write( `${allHTMLFilename}.gz`, zlib.gzipSync( allHTMLContents ) );
 
   }
 
@@ -313,7 +313,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
 
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     let iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
-    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( englishTitle + ' iframe test' ) );
+    iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( `${englishTitle} iframe test` ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_REPOSITORY}}', repo );
 
     const iframeLocales = [ 'en' ].concat( allHTML ? [ 'all' ] : [] );

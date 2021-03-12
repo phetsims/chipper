@@ -58,7 +58,7 @@ module.exports = function( context ) {
                 context.report( {
                   node: comment,
                   loc: comment.loc.start,
-                  message: 'TODO should have an issue: ' + comment.value
+                  message: `TODO should have an issue: ${comment.value}`
                 } );
               }
             }

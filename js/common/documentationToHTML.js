@@ -95,13 +95,13 @@
           const width = canvasExampleMatch[ 2 ];
           const height = canvasExampleMatch[ 3 ];
 
-          const exampleName = 'example-' + name;
+          const exampleName = `example-${name}`;
 
-          result += '<canvas id="' + exampleName + '" class="exampleScene"></canvas>';
+          result += `<canvas id="${exampleName}" class="exampleScene"></canvas>`;
           result += '<script>(function(){';
-          result += 'var canvas = document.getElementById( "' + exampleName + '" );';
-          result += 'canvas.width = ' + width + ';';
-          result += 'canvas.height = ' + height + ';';
+          result += `var canvas = document.getElementById( "${exampleName}" );`;
+          result += `canvas.width = ${width};`;
+          result += `canvas.height = ${height};`;
           result += 'var context = canvas.getContext( "2d" );';
           result += runString;
           result += '})();</' + 'script>'; // eslint-disable-line no-useless-concat
@@ -116,7 +116,7 @@
         }
         else {
           insideParagraph();
-          result += line + '\n';
+          result += `${line}\n`;
         }
       }
     }
@@ -128,23 +128,23 @@
   function typeString( type ) {
     const url = typeURLs[ type ];
     if ( url ) {
-      return ' <a href="' + url + '" class="type">' + escapeHTML( type ) + '</a>';
+      return ` <a href="${url}" class="type">${escapeHTML( type )}</a>`;
     }
     else {
-      return ' <span class="type">' + escapeHTML( type ) + '</span>';
+      return ` <span class="type">${escapeHTML( type )}</span>`;
     }
   }
 
   function inlineParameterList( object ) {
     let result = '';
     if ( object.parameters ) {
-      result += '( ' + object.parameters.map( parameter => {
+      result += `( ${object.parameters.map( parameter => {
         let name = parameter.name;
         if ( parameter.optional ) {
-          name = '<span class="optional">' + name + '</span>';
+          name = `<span class="optional">${name}</span>`;
         }
-        return '<span class="args">' + typeString( parameter.type ) + ' ' + name + '</span>';
-      } ).join( ', ' ) + ' )';
+        return `<span class="args">${typeString( parameter.type )} ${name}</span>`;
+      } ).join( ', ' )} )`;
     }
     else if ( object.type === 'function' ) {
       result += '()';
@@ -164,9 +164,9 @@
         let name = parameter.name;
         const description = parameter.description || '';
         if ( parameter.optional ) {
-          name = '<span class="optional">' + name + '</span>';
+          name = `<span class="optional">${name}</span>`;
         }
-        result += '<tr class="param"><td>' + typeString( parameter.type ) + '</td><td>' + name + '</td><td> - </td><td>' + description + '</td></tr>\n';
+        result += `<tr class="param"><td>${typeString( parameter.type )}</td><td>${name}</td><td> - </td><td>${description}</td></tr>\n`;
       } );
       result += '</table>\n';
     }
@@ -180,7 +180,7 @@
       if ( object.returns ) {
         result += ' :';
       }
-      result += '<span class="return">' + typeString( type ) + '</span>';
+      result += `<span class="return">${typeString( type )}</span>`;
     }
     return result;
   }
@@ -220,32 +220,32 @@
       typeURLs[ typeId ] = externalTypeURLs[ typeId ];
     } );
     Object.keys( localTypeIds ).forEach( typeId => {
-      typeURLs[ typeId ] = '#' + localTypeIds[ typeId ];
+      typeURLs[ typeId ] = `#${localTypeIds[ typeId ]}`;
     } );
 
     const baseURL = typeURLs[ baseName ];
 
-    indexHTML += '<a class="navlink" href="' + baseURL + '" data-toggle="collapse" data-target="#collapse-' + baseName + '" onclick="$( \'.collapse.in\' ).collapse( \'toggle\' ); return true;">' + baseName + '</a><br>\n';
-    indexHTML += '<div id="collapse-' + baseName + '" class="collapse">\n';
+    indexHTML += `<a class="navlink" href="${baseURL}" data-toggle="collapse" data-target="#collapse-${baseName}" onclick="$( '.collapse.in' ).collapse( 'toggle' ); return true;">${baseName}</a><br>\n`;
+    indexHTML += `<div id="collapse-${baseName}" class="collapse">\n`;
 
-    contentHTML += '<h3 id="' + baseURL.slice( 1 ) + '" class="section">' + baseName + '</h3>\n';
+    contentHTML += `<h3 id="${baseURL.slice( 1 )}" class="section">${baseName}</h3>\n`;
     contentHTML += descriptionHTML( doc.topLevelComment.description );
 
     typeNames.forEach( typeName => {
       const baseObject = doc[ typeName ];
-      const baseURLPrefix = localTypeIds[ typeName ] + '-';
+      const baseURLPrefix = `${localTypeIds[ typeName ]}-`;
 
       // constructor
       if ( baseObject.type === 'type' ) {
         // Add a target for #-links if we aren't the baseName.
         if ( typeName !== baseName ) {
-          contentHTML += '<div id="' + baseURLPrefix.slice( 0, baseURLPrefix.length - 1 ) + '"></div>';
+          contentHTML += `<div id="${baseURLPrefix.slice( 0, baseURLPrefix.length - 1 )}"></div>`;
         }
         let constructorLine = typeName + inlineParameterList( baseObject.comment );
         if ( baseObject.supertype ) {
-          constructorLine += ' <span class="inherit">extends ' + typeString( baseObject.supertype ) + '</span>';
+          constructorLine += ` <span class="inherit">extends ${typeString( baseObject.supertype )}</span>`;
         }
-        contentHTML += '<h4 id="' + baseURLPrefix + 'constructor" class="section">' + constructorLine + '</h4>';
+        contentHTML += `<h4 id="${baseURLPrefix}constructor" class="section">${constructorLine}</h4>`;
         contentHTML += descriptionHTML( baseObject.comment.description );
         contentHTML += parameterDetailsList( baseObject.comment );
       }
@@ -255,12 +255,12 @@
       staticNames.forEach( name => {
         const object = nameLookup( staticProperties, name );
 
-        indexHTML += '<a class="sublink" href="#' + baseURLPrefix + object.name + '">' + object.name + '</a><br>';
+        indexHTML += `<a class="sublink" href="#${baseURLPrefix}${object.name}">${object.name}</a><br>`;
 
-        let typeLine = '<span class="entryName">' + typeName + '.' + object.name + '</span>';
+        let typeLine = `<span class="entryName">${typeName}.${object.name}</span>`;
         typeLine += inlineParameterList( object );
         typeLine += returnOrConstant( object );
-        contentHTML += '<h5 id="' + baseURLPrefix + object.name + '" class="section">' + typeLine + '</h5>';
+        contentHTML += `<h5 id="${baseURLPrefix}${object.name}" class="section">${typeLine}</h5>`;
         if ( object.description ) {
           contentHTML += descriptionHTML( object.description );
         }
@@ -273,11 +273,11 @@
         constructorNames.forEach( name => {
           const object = nameLookup( baseObject.constructorProperties, name );
 
-          indexHTML += '<a class="sublink" href="#' + baseURLPrefix + object.name + '">' + object.name + '</a><br>';
+          indexHTML += `<a class="sublink" href="#${baseURLPrefix}${object.name}">${object.name}</a><br>`;
 
-          let typeLine = '<span class="entryName">' + object.name + '</span>';
-          typeLine += ' <span class="property">' + typeString( object.type ) + '</span>';
-          contentHTML += '<h5 id="' + baseURLPrefix + object.name + '" class="section">' + typeLine + '</h5>';
+          let typeLine = `<span class="entryName">${object.name}</span>`;
+          typeLine += ` <span class="property">${typeString( object.type )}</span>`;
+          contentHTML += `<h5 id="${baseURLPrefix}${object.name}" class="section">${typeLine}</h5>`;
           if ( object.description ) {
             contentHTML += descriptionHTML( object.description );
           }
@@ -288,23 +288,23 @@
         instanceNames.forEach( name => {
           const object = nameLookup( baseObject.instanceProperties, name );
 
-          indexHTML += '<a class="sublink" href="#' + baseURLPrefix + object.name + '">' + object.name + '</a><br>';
+          indexHTML += `<a class="sublink" href="#${baseURLPrefix}${object.name}">${object.name}</a><br>`;
 
-          let typeLine = '<span class="entryName">' + object.name + '</span>';
+          let typeLine = `<span class="entryName">${object.name}</span>`;
           if ( object.explicitGetName ) {
-            typeLine += ' <span class="property">' + typeString( object.returns.type ) + '</span>';
-            typeLine += ' <span class="entryName explicitSetterGetter">' + object.explicitGetName;
+            typeLine += ` <span class="property">${typeString( object.returns.type )}</span>`;
+            typeLine += ` <span class="entryName explicitSetterGetter">${object.explicitGetName}`;
           }
           if ( object.explicitSetName ) {
-            typeLine += ' <span class="property">' + typeString( object.returns.type ) + '</span>';
-            typeLine += ' <span class="entryName explicitSetterGetter">' + object.explicitSetName;
+            typeLine += ` <span class="property">${typeString( object.returns.type )}</span>`;
+            typeLine += ` <span class="entryName explicitSetterGetter">${object.explicitSetName}`;
           }
           typeLine += inlineParameterList( object );
           typeLine += returnOrConstant( object );
           if ( object.explicitSetName || object.explicitGetName ) {
             typeLine += '</span>';
           }
-          contentHTML += '<h5 id="' + baseURLPrefix + object.name + '" class="section">' + typeLine + '</h5>';
+          contentHTML += `<h5 id="${baseURLPrefix}${object.name}" class="section">${typeLine}</h5>`;
           contentHTML += descriptionHTML( object.description );
           contentHTML += parameterDetailsList( object );
         } );

@@ -29,7 +29,7 @@ const ChipperStringUtils = {
    */
   addDirectionalFormatting: function( str, isRTL ) {
     if ( str.length > 0 ) {
-      return ( isRTL ? '\u202b' : '\u202a' ) + str + '\u202c';
+      return `${( isRTL ? '\u202b' : '\u202a' ) + str}\u202c`;
     }
     else {
       return str;
@@ -92,15 +92,15 @@ const ChipperStringUtils = {
   replacePlaceholders: function( str, mapping ) {
     Object.keys( mapping ).forEach( key => {
       const replacement = mapping[ key ];
-      key = '{{' + key + '}}';
+      key = `{{${key}}}`;
       let index;
       while ( ( index = str.indexOf( key ) ) >= 0 ) {
         str = str.slice( 0, index ) + replacement + str.slice( index + key.length );
       }
     } );
     Object.keys( mapping ).forEach( key => {
-      if ( str.indexOf( '{{' + key + '}}' ) >= 0 ) {
-        throw new Error( 'Template string detected in placeholders: ' + key + '\n\n' + str.slice( 0, str.indexOf( '{{' + key + '}}' ) + 10 ) );
+      if ( str.indexOf( `{{${key}}}` ) >= 0 ) {
+        throw new Error( `Template string detected in placeholders: ${key}\n\n${str.slice( 0, str.indexOf( `{{${key}}}` ) + 10 )}` );
       }
     } );
     return str;

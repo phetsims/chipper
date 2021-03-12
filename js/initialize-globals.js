@@ -671,7 +671,7 @@
         options = _.assignIn( { // eslint-disable-line bad-sim-text
           color: '#009900' // green
         }, options );
-        console.log( '%c' + message, 'color: ' + options.color ); // green
+        console.log( `%c${message}`, `color: ${options.color}` ); // green
       };
     }
 
@@ -699,10 +699,10 @@
      */
     window.phet.chipper.mapString = function( string ) {
       return stringTest === null ? string :
-             stringTest === 'double' ? string + ':' + string :
+             stringTest === 'double' ? `${string}:${string}` :
              stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
              stringTest === 'rtl' ? '\u202b\u062a\u0633\u062a (\u0632\u0628\u0627\u0646)\u202c' :
-             stringTest === 'xss' ? string + '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABCQEBtxmN7wAAAABJRU5ErkJggg==" onload="window.location.href=atob(\'aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==\')" />' :
+             stringTest === 'xss' ? `${string}<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABCQEBtxmN7wAAAABJRU5ErkJggg==" onload="window.location.href=atob('aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==')" />` :
              stringTest === 'none' ? string :
 
                // In the fallback case, supply whatever string was given in the query parameter value

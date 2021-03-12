@@ -37,7 +37,7 @@ module.exports = context => {
           context.report( {
             node: node,
             loc: node.loc,
-            message: specifier.local.name + ': import statement should be on a single line.'
+            message: `${specifier.local.name}: import statement should be on a single line.`
           } );
         } );
       }

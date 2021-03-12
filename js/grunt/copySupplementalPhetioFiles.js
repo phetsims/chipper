@@ -109,7 +109,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
   const filterWrapper = ( abspath, contents ) => {
-    const originalContents = contents + '';
+    const originalContents = `${contents}`;
 
     const isWrapperIndex = abspath.indexOf( 'index/index.html' ) >= 0;
 
@@ -190,7 +190,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       contents = ChipperStringUtils.replaceAll( contents, '{{Built API Docs not available in unbuilt mode}}', 'API Docs' );
 
       // phet-io-wrappers/common will be in the top level of wrappers/ in the build directory
-      contents = ChipperStringUtils.replaceAll( contents, WRAPPER_COMMON_FOLDER + '/', 'common/' );
+      contents = ChipperStringUtils.replaceAll( contents, `${WRAPPER_COMMON_FOLDER}/`, 'common/' );
     }
 
     // Special handling for studio paths since it is not nested under phet-io-wrappers
@@ -357,7 +357,7 @@ const handleOfflineArtifact = async ( buildDir, repo, version ) => {
   const output = fs.createWriteStream( `${buildDir}${repo}-phet-io-${version}.zip` );
   const archive = archiver( 'zip' );
 
-  archive.on( 'error', err => grunt.fail.fatal( 'error creating archive: ' + err ) );
+  archive.on( 'error', err => grunt.fail.fatal( `error creating archive: ${err}` ) );
 
   archive.pipe( output );
 

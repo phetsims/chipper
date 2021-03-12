@@ -33,14 +33,14 @@ module.exports = async function( repo ) {
   // We need to check dependencies for the main brand, so we can know what is guaranteed to be public
   const mainDependencies = getPhetLibs( repo, 'phet' ).filter( dependency => dependency !== 'babel' );
 
-  grunt.log.debug( 'Scanning dependencies from:\n' + dependencies.toString() );
+  grunt.log.debug( `Scanning dependencies from:\n${dependencies.toString()}` );
 
   const dependenciesInfo = {
-    comment: `# ${repo} ${version} ` + ( new Date().toString() )
+    comment: `# ${repo} ${version} ${new Date().toString()}`
   };
 
   for ( const dependency of dependencies ) {
-    assert( !dependenciesInfo.dependency, 'there was already a dependency named ' + dependency );
+    assert( !dependenciesInfo.dependency, `there was already a dependency named ${dependency}` );
 
     if ( !grunt.file.exists( `../${dependency}` ) ) {
       if ( mainDependencies.includes( dependency ) ) {
@@ -64,7 +64,7 @@ module.exports = async function( repo ) {
       console.log( `Did not find git information for ${dependency}` );
     }
 
-    grunt.log.debug( ChipperStringUtils.padString( dependency, 20 ) + branch + ' ' + sha );
+    grunt.log.debug( `${ChipperStringUtils.padString( dependency, 20 ) + branch} ${sha}` );
     dependenciesInfo[ dependency ] = { sha: sha, branch: branch };
   }
 

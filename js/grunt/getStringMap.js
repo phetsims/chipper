@@ -118,7 +118,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
         let repo = importName;
         for ( let i = 0; i < repo.length; i++ ) {
           if ( repo[ i ] >= 'A' && repo[ i ] <= 'Z' ) {
-            repo = repo.slice( 0, i ) + '-' + repo[ i ].toLowerCase() + repo.slice( i + 1 );
+            repo = `${repo.slice( 0, i )}-${repo[ i ].toLowerCase()}${repo.slice( i + 1 )}`;
           }
         }
         return repo;

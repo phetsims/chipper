@@ -72,7 +72,7 @@ const compareAPIs = ( api1, api2, _ ) => {
 
       // make sure we have the desired type
       if ( !api2.phetioTypes.hasOwnProperty( typeName ) ) {
-        problems.push( 'Type missing: ' + typeName );
+        problems.push( `Type missing: ${typeName}` );
       }
       else {
 

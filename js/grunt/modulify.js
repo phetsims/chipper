@@ -45,7 +45,7 @@ const expandDots = abspath => {
   const depth = abspath.split( '/' ).length - 2;
   let parentDirectory = '';
   for ( let i = 0; i < depth; i++ ) {
-    parentDirectory = parentDirectory + '../';
+    parentDirectory = `${parentDirectory}../`;
   }
   return parentDirectory;
 };
@@ -161,7 +161,7 @@ export default wrappedAudioBuffer;`;
  */
 const convertSuffix = ( abspath, suffix ) => {
   const lastDotIndex = abspath.lastIndexOf( '.' );
-  return abspath.substring( 0, lastDotIndex ) + '_' + abspath.substring( lastDotIndex + 1 ) + suffix;
+  return `${abspath.substring( 0, lastDotIndex )}_${abspath.substring( lastDotIndex + 1 )}${suffix}`;
 };
 
 /**

@@ -35,7 +35,7 @@ function getLicenseEntry( absolutePath ) {
 
   const lastSlashIndex = absolutePath.lastIndexOf( '/' );
   const prefix = absolutePath.substring( 0, lastSlashIndex );
-  const licenseFilename = prefix + '/license.json'; // license.json is a sibling of the media file
+  const licenseFilename = `${prefix}/license.json`; // license.json is a sibling of the media file
   const mediaFilename = absolutePath.substring( lastSlashIndex + 1 ); // field name in license.json
 
   // read license.json if it exists
@@ -50,7 +50,7 @@ function getLicenseEntry( absolutePath ) {
   catch( err ) {
     if ( err instanceof SyntaxError ) {
       // default message is incomprehensible, see chipper#449
-      throw new Error( 'syntax error in ' + licenseFilename + ': ' + err.message );
+      throw new Error( `syntax error in ${licenseFilename}: ${err.message}` );
     }
     else {
       throw err;

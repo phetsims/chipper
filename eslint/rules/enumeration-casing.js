@@ -25,7 +25,7 @@ module.exports = function( context ) {
       context.report( {
         node: node,
         loc: node.loc,
-        message: nameString + ': Enumerations should be named like classes/types.'
+        message: `${nameString}: Enumerations should be named like classes/types.`
       } );
     }
   };

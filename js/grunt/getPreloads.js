@@ -76,7 +76,7 @@ module.exports = function( repo, brand, forSim ) {
   preload.forEach( entry => {
 
     // preload entries should start with '..', e.g. "../assert/js/assert.js"
-    assert( entry.split( '/' )[ 0 ] === '..', 'malformed preload entry: ' + entry );
+    assert( entry.split( '/' )[ 0 ] === '..', `malformed preload entry: ${entry}` );
 
     // the preload's repository should be in phetLib
     const repositoryName = entry.split( '/' )[ 1 ];
@@ -85,7 +85,7 @@ module.exports = function( repo, brand, forSim ) {
     }
   } );
   assert( missingRepositories.length === 0,
-    'phetLib is missing repositories required by preload: ' + missingRepositories.toString() );
+    `phetLib is missing repositories required by preload: ${missingRepositories.toString()}` );
 
   return preload;
 };

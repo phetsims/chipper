@@ -64,7 +64,7 @@ module.exports = function( context ) {
               context.report( {
                 node: node,
                 loc: node.loc.start,
-                message: 'Mismatched require statement values, ' + lhs + ' !== ' + tail
+                message: `Mismatched require statement values, ${lhs} !== ${tail}`
               } );
             }
           }

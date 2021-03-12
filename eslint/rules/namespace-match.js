@@ -65,7 +65,7 @@ module.exports = function( context ) {
                 context.report( {
                   node: node,
                   loc: node.loc,
-                  message: 'namespace key must match value - key: ' + firstArgValue + ', value: ' + secondArgName
+                  message: `namespace key must match value - key: ${firstArgValue}, value: ${secondArgName}`
                 } );
               }
             }

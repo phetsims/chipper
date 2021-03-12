@@ -470,15 +470,15 @@
                     const nextKey = nextProperty.key.name;
                     const capitalizedNextName = capitalize( nextKey );
                     if ( nextProperty.kind === 'get' &&
-                         ( 'get' + capitalizedNextName === key ) ||
-                         ( 'is' + capitalizedNextName === key ) ) {
+                         ( `get${capitalizedNextName}` === key ) ||
+                         ( `is${capitalizedNextName}` === key ) ) {
                       // Skip processing the ES5 getter next
                       i++;
                       instanceDoc.name = nextKey;
                       instanceDoc.explicitGetName = key;
                     }
                     else if ( nextProperty.kind === 'set' &&
-                              'set' + capitalizedNextName === key ) {
+                              `set${capitalizedNextName}` === key ) {
                       // Skip processing the ES5 setter next
                       i++;
                       instanceDoc.name = nextKey;

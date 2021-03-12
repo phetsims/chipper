@@ -38,7 +38,7 @@ module.exports = async repo => {
 
   // Start in the github checkout dir (above one of the sibling directories)
   const directory = process.cwd();
-  const rootdir = directory + '/../';
+  const rootdir = `${directory}/../`;
 
   // Determines if our report was successful.
   let success = true;
@@ -50,18 +50,18 @@ module.exports = async repo => {
     if ( !grunt.file.exists( rootdir + repo ) ) {
 
       if ( repo.indexOf( 'phet-io' ) === 0 || repo === 'studio' ) {
-        console.log( 'skipping repo (not checked out): ' + repo );
+        console.log( `skipping repo (not checked out): ${repo}` );
         success = true;
         continue;
       }
       else {
-        console.log( 'missing repo: ' + repo );
+        console.log( `missing repo: ${repo}` );
         success = false;
         continue;
       }
     }
     for ( const directory of ChipperConstants.MEDIA_TYPES ) {
-      const searchDir = rootdir + repo + '/' + directory;
+      const searchDir = `${rootdir + repo}/${directory}`;
 
       // Projects don't necessarily have all media directories
       if ( grunt.file.exists( searchDir ) ) {
@@ -81,12 +81,12 @@ module.exports = async repo => {
             const result = getLicenseEntry( abspath );
 
             if ( !result ) {
-              grunt.log.error( 'not-annotated: ' + repo + '/' + directory + '/' + filename );
+              grunt.log.error( `not-annotated: ${repo}/${directory}/${filename}` );
               success = false;
             }
             // Report if it is a problem
             else if ( result.isProblematic === true ) {
-              grunt.log.error( 'incompatible-license: ' + repo + '/' + directory + '/' + filename );
+              grunt.log.error( `incompatible-license: ${repo}/${directory}/${filename}` );
               success = false;
             }
           }
@@ -103,11 +103,11 @@ module.exports = async repo => {
               if ( json.hasOwnProperty( key ) ) {
 
                 // Checks for files in directory and subdirectory
-                const resourceFilename = path.dirname( abspath ) + '/' + key;
+                const resourceFilename = `${path.dirname( abspath )}/${key}`;
                 const exists = grunt.file.exists( resourceFilename );
 
                 if ( !exists ) {
-                  grunt.log.error( 'missing-file: ' + repo + '/' + directory + '/' + key );
+                  grunt.log.error( `missing-file: ${repo}/${directory}/${key}` );
                   success = false;
                 }
               }

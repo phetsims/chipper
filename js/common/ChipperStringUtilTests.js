@@ -41,7 +41,7 @@ qunit.test( 'forEachString', assert => {
   ChipperStringUtils.forEachString( map1, key => {
     count++;
     const keyIndex = expectedKeys.indexOf( key );
-    assert.ok( keyIndex >= 0, 'unexpected key:' + key );
+    assert.ok( keyIndex >= 0, `unexpected key:${key}` );
     expectedKeys.splice( keyIndex, 1 ); // just remove the single item
   } );
   assert.ok( expectedKeys.length === 0, 'all keys should be accounted for' );

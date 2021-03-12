@@ -49,7 +49,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       loadPNG();
     }
     else {
-      reject( new Error( 'unknown image type: ' + filename ) );
+      reject( new Error( `unknown image type: ${filename}` ) );
     }
 
     // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
@@ -157,7 +157,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
 
       // called when all of encoding is complete
       function encodingComplete() {
-        grunt.log.debug( 'mipmapped ' + filename + ( maxLevel >= 0 ? ' to level ' + maxLevel : '' ) + ' with quality: ' + quality );
+        grunt.log.debug( `mipmapped ${filename}${maxLevel >= 0 ? ` to level ${maxLevel}` : ''} with quality: ${quality}` );
 
         for ( let level = 0; level < mipmaps.length; level++ ) {
           // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
@@ -165,9 +165,9 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
           mipmaps[ level ].url = usePNG ? mipmaps[ level ].pngURL : mipmaps[ level ].jpgURL;
           mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
 
-          grunt.log.debug( 'level ' + level + ' (' + ( usePNG ? 'PNG' : 'JPG' ) + ' ' +
-                           mipmaps[ level ].width + 'x' + mipmaps[ level ].height + ') base64: ' +
-                           mipmaps[ level ].url.length + ' bytes ' );
+          grunt.log.debug( `level ${level} (${usePNG ? 'PNG' : 'JPG'} ${
+                           mipmaps[ level ].width}x${mipmaps[ level ].height}) base64: ${
+                           mipmaps[ level ].url.length} bytes ` );
         }
 
         resolve( mipmaps );
@@ -178,7 +178,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
         encodeCounter++;
         outputPNG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, buffer => {
           mipmaps[ level ].pngBuffer = buffer;
-          mipmaps[ level ].pngURL = 'data:image/png;base64,' + buffer.toString( 'base64' );
+          mipmaps[ level ].pngURL = `data:image/png;base64,${buffer.toString( 'base64' )}`;
           if ( --encodeCounter === 0 ) {
             encodingComplete();
           }
@@ -189,7 +189,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
           encodeCounter++;
           outputJPEG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, quality, buffer => {
             mipmaps[ level ].jpgBuffer = buffer;
-            mipmaps[ level ].jpgURL = 'data:image/jpeg;base64,' + buffer.toString( 'base64' );
+            mipmaps[ level ].jpgURL = `data:image/jpeg;base64,${buffer.toString( 'base64' )}`;
             if ( --encodeCounter === 0 ) {
               encodingComplete();
             }

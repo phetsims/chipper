@@ -41,7 +41,7 @@ module.exports = function( repo, brand, licenseEntries ) {
               // Fail if there is no license entry.  Though this error should have been caught
               if ( brand === 'phet' || brand === 'phet-io' ) {
                 // during plugin loading, so this is a "double check"
-                grunt.log.error( 'No license.json entry for ' + resourceName );
+                grunt.log.error( `No license.json entry for ${resourceName}` );
               }
             }
             else if ( licenseEntry.projectURL !== 'https://phet.colorado.edu' &&

@@ -51,7 +51,7 @@ module.exports = function( grunt ) {
   // Handle the lack of build.json
   let buildLocal;
   try {
-    buildLocal = grunt.file.readJSON( process.env.HOME + '/.phet/build-local.json' );
+    buildLocal = grunt.file.readJSON( `${process.env.HOME}/.phet/build-local.json` );
   }
   catch( e ) {
     buildLocal = {};
@@ -176,7 +176,7 @@ module.exports = function( grunt ) {
       const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
       const minifyOptions = {};
       minifyKeys.forEach( minifyKey => {
-        const option = grunt.option( 'minify.' + minifyKey );
+        const option = grunt.option( `minify.${minifyKey}` );
         if ( option === true || option === false ) {
           minifyOptions[ minifyKey ] = option;
         }

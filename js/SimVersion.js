@@ -193,7 +193,7 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
       const matches = versionString.match( /^(\d+)\.(\d+)\.(\d+)(-(([^.-]+)\.(\d+)))?(-([^.-]+))?$/ );
 
       if ( !matches ) {
-        throw new Error( 'could not parse version: ' + versionString );
+        throw new Error( `could not parse version: ${versionString}` );
       }
 
       const major = parseInt( matches[ 1 ], 10 );

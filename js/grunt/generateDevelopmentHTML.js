@@ -48,9 +48,9 @@ module.exports = async function( repo, options ) {
   // Formatting is very specific to the template file. Each preload is placed on separate line,
   // with an indentation that is specific indentation to the template. See chipper#462
   function stringifyArray( arr, indentation ) {
-    return '[\n' +
-           arr.map( string => indentation + '    \'' + string.replace( /'/g, '\\\'' ) + '\'' ).join( ',\n' ) +
-           '\n' + indentation + '  ]';
+    return `[\n${
+           arr.map( string => `${indentation}    '${string.replace( /'/g, '\\\'' )}'` ).join( ',\n' )
+           }\n${indentation}  ]`;
   }
 
   function isPreloadExcluded( preload ) {

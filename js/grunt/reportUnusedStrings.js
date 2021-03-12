@@ -40,7 +40,7 @@ module.exports = function( repo, requirejsNamespace, usedStringMap ) {
         const subresult = buildStringMap( object[ key ] );
 
         Object.keys( subresult ).forEach( subkey => {
-          result[ key + ( subkey.length ? '.' + subkey : '' ) ] = subresult[ subkey ];
+          result[ key + ( subkey.length ? `.${subkey}` : '' ) ] = subresult[ subkey ];
         } );
       }
     } );

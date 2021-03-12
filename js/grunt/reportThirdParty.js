@@ -35,9 +35,9 @@ module.exports = async function() {
 
   // read configuration file - required to write to website database
   const serverName = 'phet.colorado.edu';
-  const BUILD_LOCAL_FILENAME = process.env.HOME + '/.phet/build-local.json';
+  const BUILD_LOCAL_FILENAME = `${process.env.HOME}/.phet/build-local.json`;
   const buildLocalJSON = JSON.parse( fs.readFileSync( BUILD_LOCAL_FILENAME, { encoding: 'utf-8' } ) );
-  assert( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, 'websiteAuthorizationCode missing from ' + BUILD_LOCAL_FILENAME );
+  assert( buildLocalJSON && buildLocalJSON.websiteAuthorizationCode, `websiteAuthorizationCode missing from ${BUILD_LOCAL_FILENAME}` );
 
   // The file where the report will be written
   const outputFilename = '../sherpa/third-party-licenses.md';
@@ -86,7 +86,7 @@ module.exports = async function() {
       // Concatenate all the libraries for this sim with html newline.
       let libString = '';
       for ( const entry in json.lib ) {
-        libString += entry + '<br/>';
+        libString += `${entry}<br/>`;
       }
 
       //  Update the object to be pushed to the website database
@@ -103,14 +103,14 @@ module.exports = async function() {
   const requestPromise = new Promise( ( resolve, reject ) => {
     // Change libraryobject to string in format that the database will recognize.
     // i.e. '{"sim-name":"Library Name<br/>Library Name", ...}'
-    const libraryString = '{' + simLibraries.map( o => `"${o.name}":"${o.libraries}"` ).join( ',' ) + '}';
+    const libraryString = `{${simLibraries.map( o => `"${o.name}":"${o.libraries}"` ).join( ',' )}}`;
 
     const requestOptions = {
       host: serverName,
       path: '/services/add-simulation-libraries',
       port: 443,
       method: 'POST',
-      auth: 'token:' + buildLocalJSON.websiteAuthorizationCode,
+      auth: `token:${buildLocalJSON.websiteAuthorizationCode}`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': Buffer.byteLength( libraryString )
@@ -119,7 +119,7 @@ module.exports = async function() {
 
     const request = https.request( requestOptions, res => resolve( res ) );
     request.on( 'error', e => {
-      grunt.log.writeln( 'There was a problem uploading the data to the website: ' + e.message );
+      grunt.log.writeln( `There was a problem uploading the data to the website: ${e.message}` );
       reject( e );
     } );
 
@@ -170,19 +170,19 @@ module.exports = async function() {
     const library = libraryNames[ i ];
 
     const lineElementsForLibrary = [
-      '**' + library + '**',
+      `**${library}**`,
       licenseJSON[ library ].text.join( '<br>' ),
       licenseJSON[ library ].projectURL,
-      'License: [' + licenseJSON[ library ].license + '](licenses/' + library + '.txt)',
-      'Notes: ' + licenseJSON[ library ].notes
+      `License: [${licenseJSON[ library ].license}](licenses/${library}.txt)`,
+      `Notes: ${licenseJSON[ library ].notes}`
     ];
 
     if ( licenseJSON[ library ].dependencies ) {
-      lineElementsForLibrary.push( 'Dependencies: **' + licenseJSON[ library ].dependencies + '**' );
+      lineElementsForLibrary.push( `Dependencies: **${licenseJSON[ library ].dependencies}**` );
     }
 
     if ( compositeCode.hasOwnProperty( library ) && Array.isArray( compositeCode[ library ].usedBy ) ) {
-      lineElementsForLibrary.push( 'Used by: ' + compositeCode[ library ].usedBy.join( ', ' ) );
+      lineElementsForLibrary.push( `Used by: ${compositeCode[ library ].usedBy.join( ', ' )}` );
     }
 
     // \n worked well when viewing GitHub markdown as an issue comment, but for unknown reasons <br> is necessary when
@@ -230,11 +230,11 @@ module.exports = async function() {
     assert && assert( license.length > 0, 'All media entries must have a license' );
 
     const mediaEntryLines = [
-      '**' + mediaKey + '**',
+      `**${mediaKey}**`,
       text,
       projectURL,
-      'License: ' + license,
-      'Notes: ' + notes
+      `License: ${license}`,
+      `Notes: ${notes}`
     ];
 
     // PhET has temporarily chosen to publish John Travoltage with incompatible licenses, so the reasons for
@@ -242,7 +242,7 @@ module.exports = async function() {
     // will be republished without exception cases soon.
     // This code will remain in case we have other exception cases in the future.
     if ( compositeMedia[ mediaKey ].exception ) {
-      mediaEntryLines.push( 'Exception: ' + compositeMedia[ mediaKey ].exception );
+      mediaEntryLines.push( `Exception: ${compositeMedia[ mediaKey ].exception}` );
     }
 
     if ( license !== 'contact phethelp@colorado.edu' ) {
@@ -258,40 +258,40 @@ module.exports = async function() {
   const fileList = simTitles.join( '\n* ' );
 
   const outputString =
-    'This report enumerates the third-party resources (code, images, sounds, etc) used in a set of simulations.\n' +
+    `${'This report enumerates the third-party resources (code, images, sounds, etc) used in a set of simulations.\n' +
     '* [Third-party Code](#third-party-code)\n' +
     '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
     '* [Third-party Media](#third-party-media)\n' +
     '* [Third-party Media License Summary](#third-party-media-license-summary)\n' +
     '\n' +
-    'This report is for the following simulations: \n\n* ' + fileList + '\n\nTo see the third party resources used in a particular published ' +
-    'simulation, inspect the HTML file between the `' + ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES + '` and `' + ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES + '` ' +
+    'This report is for the following simulations: \n\n* '}${fileList}\n\nTo see the third party resources used in a particular published ` +
+    `simulation, inspect the HTML file between the \`${ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES}\` and \`${ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES}\` ` +
     '(only exists in sim publications after Aug 7, 2015).\n' +
-    '# <a name="third-party-code"></a>Third-party Code:<br>\n' +
-    codeOutput.join( '\n\n' ) + '\n\n' +
+    `# <a name="third-party-code"></a>Third-party Code:<br>\n${
+    codeOutput.join( '\n\n' )}\n\n` +
 
     '---\n' +
 
-    '# <a name="third-party-code-and-license-summary"></a>Third-party Code License Summary:<br>\n' +
-    codeLicensesUsed.join( '<br>' ) + '\n\n' +
+    `# <a name="third-party-code-and-license-summary"></a>Third-party Code License Summary:<br>\n${
+    codeLicensesUsed.join( '<br>' )}\n\n` +
 
     '---\n' +
 
-    '# <a name="third-party-media"></a>Third-party Media:<br>\n' +
-    mediaOutput.join( '\n\n' ) + '\n\n' +
+    `# <a name="third-party-media"></a>Third-party Media:<br>\n${
+    mediaOutput.join( '\n\n' )}\n\n` +
 
     '---\n' +
 
-    '# <a name="third-party-media-license-summary"></a>Third-party Media License Summary:<br>\n' +
-    mediaLicensesUsed.join( '<br>' ) + '\n\n';
+    `# <a name="third-party-media-license-summary"></a>Third-party Media License Summary:<br>\n${
+    mediaLicensesUsed.join( '<br>' )}\n\n`;
 
   // Compare the file output to the existing file, and write & git commit only if different
   if ( !grunt.file.exists( outputFilename ) || grunt.file.read( outputFilename ) !== outputString ) {
-    grunt.log.writeln( 'File output changed, writing file ' + outputFilename );
+    grunt.log.writeln( `File output changed, writing file ${outputFilename}` );
     grunt.file.write( outputFilename, outputString );
   }
   else {
-    grunt.log.writeln( outputFilename + ' contents are the same.  No need to save.' );
+    grunt.log.writeln( `${outputFilename} contents are the same.  No need to save.` );
   }
 
   /**

@@ -33,7 +33,7 @@ module.exports = function( repo, published ) {
 
   // Read the template.
   const templateFile = published ? 'README-published.md' : 'README-unpublished.md';
-  let readme = grunt.file.read( '../chipper/templates/' + templateFile );
+  let readme = grunt.file.read( `../chipper/templates/${templateFile}` );
 
   // Replace placeholders in the template.
   readme = ChipperStringUtils.replaceAll( readme, '{{REPOSITORY}}', repo );

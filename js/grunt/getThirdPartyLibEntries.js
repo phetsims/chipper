@@ -35,7 +35,7 @@ module.exports = function( repo, brand ) {
   // Add all dependencies. Duplicates will be removed later.
   for ( let i = 0; i < licenseKeys.length; i++ ) {
     const license = licenseInfo[ licenseKeys[ i ] ];
-    assert( license, THIRD_PARTY_LICENSES_FILENAME + ': no entry for key = ' + licenseKeys[ i ] );
+    assert( license, `${THIRD_PARTY_LICENSES_FILENAME}: no entry for key = ${licenseKeys[ i ]}` );
     const dependencies = license.dependencies;
     if ( typeof dependencies === 'object' ) {
       licenseKeys = licenseKeys.concat( dependencies );
@@ -45,7 +45,7 @@ module.exports = function( repo, brand ) {
   // Sort keys and remove duplicates
   licenseKeys = _.uniq( _.sortBy( licenseKeys, key => key.toUpperCase() ) );
 
-  grunt.log.debug( 'licenseKeys = ' + licenseKeys.toString() );
+  grunt.log.debug( `licenseKeys = ${licenseKeys.toString()}` );
 
   // Combine all licenses into 1 object literal
   const libEntries = {};
@@ -54,14 +54,14 @@ module.exports = function( repo, brand ) {
     const license = licenseInfo[ key ];
 
     // verify required keys
-    assert( license, THIRD_PARTY_LICENSES_FILENAME + `: no entry for key = ${key}` );
-    assert( license.text, THIRD_PARTY_LICENSES_FILENAME + `: no text field for key = ${key}` );
-    assert( license.license, THIRD_PARTY_LICENSES_FILENAME + `: no license field for key = ${key}` );
-    assert( license.projectURL, THIRD_PARTY_LICENSES_FILENAME + `: no projectURL field for key = ${key}` );
-    assert( license.notes, THIRD_PARTY_LICENSES_FILENAME + `: no notes field for key = ${key}` );
+    assert( license, `${THIRD_PARTY_LICENSES_FILENAME}: no entry for key = ${key}` );
+    assert( license.text, `${THIRD_PARTY_LICENSES_FILENAME}: no text field for key = ${key}` );
+    assert( license.license, `${THIRD_PARTY_LICENSES_FILENAME}: no license field for key = ${key}` );
+    assert( license.projectURL, `${THIRD_PARTY_LICENSES_FILENAME}: no projectURL field for key = ${key}` );
+    assert( license.notes, `${THIRD_PARTY_LICENSES_FILENAME}: no notes field for key = ${key}` );
 
     // read the license file
-    const licenseText = grunt.file.read( LICENSES_DIRECTORY + key + '.txt', 'utf-8' );
+    const licenseText = grunt.file.read( `${LICENSES_DIRECTORY + key}.txt`, 'utf-8' );
     license.licenseText = licenseText.split( /\r?\n/ );
 
     libEntries[ key ] = license;

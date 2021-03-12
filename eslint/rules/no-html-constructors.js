@@ -128,7 +128,7 @@ module.exports = function( context ) {
           context.report( {
             node: node,
             loc: node.callee.loc,
-            message: node.callee.name + ': using native constructor instead of project module, did you forget an import statement?'
+            message: `${node.callee.name}: using native constructor instead of project module, did you forget an import statement?`
           } );
         }
       }

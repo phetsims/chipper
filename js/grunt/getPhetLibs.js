@@ -24,7 +24,7 @@ const grunt = require( 'grunt' );
  */
 module.exports = function getPhetLibs( repo, brand ) {
   assert( typeof repo === 'string', 'Repository required for getPhetLibs' );
-  assert( brand === undefined || _.includes( ChipperConstants.BRANDS, brand ), 'Invalid brand for getPhetLibs: ' + brand );
+  assert( brand === undefined || _.includes( ChipperConstants.BRANDS, brand ), `Invalid brand for getPhetLibs: ${brand}` );
 
   if ( brand === undefined ) {
     return _.reduce( ChipperConstants.BRANDS, ( dependencies, brand ) => {

@@ -42,7 +42,7 @@ module.exports = async ( repo, relativeFile, silent = false ) => {
   const absPath = `../${repo}/${relativeFile}`;
 
   // Create the single date or date range to use in the copyright statement
-  const dateString = ( startDate === endDate ) ? startDate : ( '' + startDate + '-' + endDate );
+  const dateString = ( startDate === endDate ) ? startDate : ( `${startDate}-${endDate}` );
 
   const fileText = fs.readFileSync( absPath, 'utf8' );
 
@@ -56,7 +56,7 @@ module.exports = async ( repo, relativeFile, silent = false ) => {
 
   // Check if the first line is already correct
   const firstLine = fileLines[ 0 ];
-  const copyrightLine = '// Copyright ' + dateString + ', University of Colorado Boulder';
+  const copyrightLine = `// Copyright ${dateString}, University of Colorado Boulder`;
 
   // Update the line
   if ( firstLine !== copyrightLine ) {
@@ -64,10 +64,10 @@ module.exports = async ( repo, relativeFile, silent = false ) => {
       const concatted = [ copyrightLine ].concat( fileLines.slice( 1 ) );
       const newFileContents = concatted.join( lineSeparator );
       fs.writeFileSync( absPath, newFileContents );
-      !silent && console.log( absPath + ', updated with ' + copyrightLine );
+      !silent && console.log( `${absPath}, updated with ${copyrightLine}` );
     }
     else {
-      !silent && console.log( absPath + ' FIRST LINE WAS NOT COPYRIGHT: ' + firstLine );
+      !silent && console.log( `${absPath} FIRST LINE WAS NOT COPYRIGHT: ${firstLine}` );
     }
   }
 };

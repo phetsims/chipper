@@ -54,7 +54,7 @@ module.exports = async function( repo, minifyOptions ) {
                      '    throw new Error( \'jQuery not found: $\' );\n' +
                      '  }\n';
 
-  let fullSource = includedJS + '\n' + webpackJS;
+  let fullSource = `${includedJS}\n${webpackJS}`;
   if ( packageObject.phet.requiresJQuery ) {
     fullSource = testJQuery + fullSource;
   }
@@ -64,7 +64,7 @@ module.exports = async function( repo, minifyOptions ) {
 
   // include globals assignment
   if ( packageObject.phet.assignGlobals ) {
-    fullSource = `\nwindow.phet=window.phet||{};phet.chipper=phet.chipper||{};phet.chipper.packageObject=${JSON.stringify( packageObject )}\n` + fullSource;
+    fullSource = `\nwindow.phet=window.phet||{};phet.chipper=phet.chipper||{};phet.chipper.packageObject=${JSON.stringify( packageObject )}\n${fullSource}`;
   }
 
   // Wrap with an IIFE

@@ -29,7 +29,7 @@ module.exports = async ( repo, options ) => {
     outputFile: `../${repo}/${repo}-tests.html`,
 
     // Add the QUnit divs (and Scenery display div if relevant)
-    bodystart: '<div id="qunit"></div>\n<div id="qunit-fixture"></div>' + ( repo === 'scenery' ? '<div id="display"></div>' : '' ),
+    bodystart: `<div id="qunit"></div>\n<div id="qunit-fixture"></div>${repo === 'scenery' ? '<div id="display"></div>' : ''}`,
 
     // Add QUnit JS
     addedPreloads: [ '../sherpa/lib/qunit-2.10.0.js', '../chipper/js/sim-tests/qunit-connector.js' ],

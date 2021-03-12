@@ -48,7 +48,7 @@ module.exports = function( src, dst, filter, options ) {
 
     const contents = grunt.file.read( abspath );
 
-    const dstPath = subdir ? ( dst + '/' + subdir + '/' + filename ) : ( dst + '/' + filename );
+    const dstPath = subdir ? ( `${dst}/${subdir}/${filename}` ) : ( `${dst}/${filename}` );
 
     if ( options.failOnExistingFiles && grunt.file.exists( dstPath ) ) {
       assert && assert( false, 'file existed already' );

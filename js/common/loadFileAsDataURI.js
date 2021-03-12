@@ -33,10 +33,10 @@ function loadFileAsDataURI( filename ) {
   }[ suffix ];
 
   if ( !mimeType ) {
-    throw new Error( 'Unknown mime type for filename: ' + filename );
+    throw new Error( `Unknown mime type for filename: ${filename}` );
   }
 
-  const base64 = 'data:' + mimeType + ';base64,' + Buffer.from( fs.readFileSync( filename ) ).toString( 'base64' );
+  const base64 = `data:${mimeType};base64,${Buffer.from( fs.readFileSync( filename ) ).toString( 'base64' )}`;
   return base64;
 }
 

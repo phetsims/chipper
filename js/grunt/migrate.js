@@ -48,7 +48,7 @@ const shortenImportPath = ( target, pathToFile ) => {
     rel = rel.substring( 3 );
   }
   if ( rel[ 0 ] !== '.' ) {
-    rel = './' + rel;
+    rel = `./${rel}`;
   }
 
   return rel;
@@ -62,7 +62,7 @@ const migratePackageJSON = async repo => {
 };
 
 const migrateTestHTMLFile = async ( repo, relativeFile ) => {
-  const pathToFile = '../' + repo + '/' + relativeFile;
+  const pathToFile = `../${repo}/${relativeFile}`;
   let contents = fs.readFileSync( pathToFile, 'utf-8' );
 
   const repoToNameMap = {
@@ -138,7 +138,7 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
   if ( relativeFile.endsWith( '/splash.js' ) ) {
     return;
   }
-  const pathToFile = '../' + repo + '/' + relativeFile;
+  const pathToFile = `../${repo}/${relativeFile}`;
 
   let contents = fs.readFileSync( pathToFile, 'utf-8' );
   contents = replace( contents, '= require( \'ifphetio!', '= function(){return function(){ return function(){}; };}; // ' );
@@ -169,7 +169,7 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
 
   const lastReturn = contents.lastIndexOf( 'return ' );
   if ( lastReturn >= 0 && returnInherit === -1 ) {
-    contents = contents.substring( 0, lastReturn ) + 'export default ' + contents.substring( lastReturn + 'return '.length );
+    contents = `${contents.substring( 0, lastReturn )}export default ${contents.substring( lastReturn + 'return '.length )}`;
   }
 
   let lines = contents.split( /\r?\n/ );
@@ -357,7 +357,7 @@ const migrateJavascriptFile = async ( repo, relativeFile ) => {
       else {
         let s = '';
         for ( let i = 0; i < d; i++ ) {
-          s = s + '../';
+          s = `${s}../`;
         }
         return s;
       }
@@ -501,7 +501,7 @@ import ` );
 
         const typeName = lines[ i ].substring( lines[ i ].indexOf( ',' ) + 1, lines[ i ].lastIndexOf( ')' ) - 1 ).trim();
         const inheritLine = lines[ i ].substring( lines[ i ].indexOf( 'inherit(' ) );
-        lines[ i ] = inheritLine + '\n' + lines[ i ].substring( 0, 'export default '.length ) + typeName + ';';
+        lines[ i ] = `${inheritLine}\n${lines[ i ].substring( 0, 'export default '.length )}${typeName};`;
       }
     }
     contents = lines.join( '\n' );
@@ -519,7 +519,7 @@ import ` );
 
         const typeName = lines[ i ].substring( lines[ i ].indexOf( ',' ) + 1, lines[ i ].lastIndexOf( ')' ) - 1 ).trim();
         const namespaceLine = lines[ i ].substring( 'export default '.length );
-        lines[ i ] = namespaceLine + '\n' + lines[ i ].substring( 0, 'export default '.length ) + typeName + ';';
+        lines[ i ] = `${namespaceLine}\n${lines[ i ].substring( 0, 'export default '.length )}${typeName};`;
       }
     }
     contents = lines.join( '\n' );

@@ -66,10 +66,10 @@ module.exports = function( cmd, args, options ) {
 
     let stdout = ''; // to be appended to
 
-    process.stderr.on( 'data', data => grunt.log.debug( 'stderr: ' + data ) );
+    process.stderr.on( 'data', data => grunt.log.debug( `stderr: ${data}` ) );
     process.stdout.on( 'data', data => {
       stdout += data;
-      grunt.log.debug( 'stdout: ' + data );
+      grunt.log.debug( `stdout: ${data}` );
     } );
 
     process.on( 'close', code => {

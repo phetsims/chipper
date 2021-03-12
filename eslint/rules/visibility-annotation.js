@@ -35,7 +35,7 @@ module.exports = function( context ) {
           context.report( {
             node: node,
             loc: node.loc,
-            message: node.key.name + ': Missing visibility annotation.'
+            message: `${node.key.name}: Missing visibility annotation.`
           } );
         }
       }
