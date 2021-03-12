@@ -11,7 +11,7 @@
 
   let hasErrored = false;
 
-  window.addEventListener( 'error', function( data ) {
+  window.addEventListener( 'error', data => {
     if ( !hasErrored ) {
       hasErrored = true;
 
@@ -33,9 +33,9 @@
     }
   } );
 
-  window.addEventListener( 'load', function( event ) {
+  window.addEventListener( 'load', event => {
     // Wait 4 seconds before reporting load, to see if it errors first
-    setTimeout( function() {
+    setTimeout( () => {
       if ( !hasErrored ) {
         ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {
           type: 'pageload-load',
