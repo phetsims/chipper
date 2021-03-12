@@ -477,16 +477,20 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   grunt.registerTask(
     'generate-phet-io-api',
-    'Output the phet-io API as JSON to the build-phet-io-api directory, with a timestamp.',
+    'Output the phet-io API as JSON to phet-io/api.',
     wrapTask( async () => {
       const writeFile = ( filePath, contents ) => fs.writeFileSync( filePath, fixEOL( contents ) );
-      const buildDirectory = 'build-phet-io-api';
 
-      if ( !fs.existsSync( buildDirectory ) ) {
-        fs.mkdirSync( buildDirectory );
+      const dir = '../phet-io/api/';
+      try {
+        fs.mkdirSync( dir );
       }
-
-      const filePath = `${buildDirectory}/${new Date().toLocaleString().split( ', ' ).join( '_' ).split( '/' ).join( '-' ).split( ' ' ).join( '_' ).split( ':' ).join( '.' )}.json`;
+      catch( e ) {
+        if ( !e.message.includes( 'file already exists' ) ) {
+          throw e;
+        }
+      }
+      const filePath = `../phet-io/api/${repo}.json`;
 
       const api = ( await generatePhetioMacroAPI( [ repo ] ) )[ repo ];
       writeFile( filePath, formatPhetioAPI( api ) );

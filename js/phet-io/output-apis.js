@@ -11,7 +11,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  *
  * USAGE:
  * cd chipper
- * node js/phet-io/output-macro-api.js [--simList=path] [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N] [--name=filename.json]
+ * node js/phet-io/output-macro-api.js [--simList=path] [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N]
  *
  * e.g.,
  * node js/phet-io/output-macro-api.js --simList=../perennial/data/phet-io
@@ -22,14 +22,11 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  * --slice=take a slice of all phet-io sims
  * --mod=take a modulus of all phet-io sims (every Nth sim)
  *
- * --out=filename: where to output the macro API file.  JSON suffix is recommended but not required.
- *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 ( async () => {
 
   const args = process.argv.slice( 2 );
-  let name = null;
   const processKey = ( key, callback ) => {
     const prefix = `--${key}=`;
     const values = args.filter( arg => arg.startsWith( prefix ) );
@@ -61,9 +58,6 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
     repos = newArray;
     console.log( `after mod: ${repos.join( ', ' )}` );
   } );
-  processKey( 'name', value => {
-    name = value;
-  } );
 
   // console.log( 'running on repos: ' + repos.join( ', ' ) );
   const chunkSize = 4;
@@ -73,21 +67,14 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
     showMessagesFromSim: false // must be pure JSON
   } );
 
-  name = name || new Date().toISOString().replace( /T/, '_' ).replace( /\..+/, '' ).replace( /:/, '-' ).replace( /:/, '-' );
-
   const result = formatPhetioAPI( results );
-  if ( name ) {
-    try {
-      fs.mkdirSync( './build-phet-io-macro-api/' );
-    }
-    catch( e ) {
-      if ( !e.message.includes( 'file already exists' ) ) {
-        throw e;
-      }
-    }
-    fs.writeFileSync( `./build-phet-io-macro-api/${name}.json`, result );
+  try {
+    fs.mkdirSync( './build-phet-io-macro-api/' );
   }
-  else {
-    console.log( result );
+  catch( e ) {
+    if ( !e.message.includes( 'file already exists' ) ) {
+      throw e;
+    }
   }
+  repos.forEach( repo => fs.writeFileSync( `../phet-io/api/${repo}.json`, result ) );
 } )();
