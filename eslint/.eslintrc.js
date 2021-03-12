@@ -10,9 +10,6 @@
  */
 module.exports = {
 
-  // Use all of the default rules from eslint, unless overridden below.
-  extends: 'eslint:recommended', // TODO: This can be removed once https://github.com/phetsims/chipper/issues/814 is complete
-
   // specify that this file is the root of the eslintrc tree, so eslint won't search past this file looking for a file
   // in a parent dir
   root: true,
