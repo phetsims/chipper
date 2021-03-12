@@ -540,7 +540,7 @@ module.exports = {
     'implicit-arrow-linebreak': 'off', // OK to line break in arrow functions if it improves readability.
 
     // enforce consistent indentation
-    indent: 'off', // TODO https://github.com/phetsims/chipper/issues/814
+    indent: 'off',
 
     // enforce the consistent use of either double or single quotes in JSX attributes
     'jsx-quotes': 'error',
