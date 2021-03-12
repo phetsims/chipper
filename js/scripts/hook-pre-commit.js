@@ -49,7 +49,7 @@ try {
         process.exit( 1 );
       }
 
-      outputToConsole && console.log( 'Linting passed with results.length: ' + results.length );
+      outputToConsole && console.log( `Linting passed with results.length: ${results.length}` );
     } )();
   }
   else {
@@ -136,7 +136,7 @@ try {
     const safetyNetJSON = JSON.parse( safetyNetText );
 
     const repos = Object.keys( safetyNetJSON );
-    console.log( 'Checking PhET-iO API compatibility for ' + repos.join( ', ' ) );
+    console.log( `Checking PhET-iO API compatibility for ${repos.join( ', ' )}` );
 
     const chunkSize = 4;
     ( async () => {
