@@ -14,7 +14,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  * node js/phet-io/output-macro-api.js [--simList=path] [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N]
  *
  * e.g.,
- * node js/phet-io/output-macro-api.js --simList=../perennial/data/phet-io
+ * node js/phet-io/output-apis.js --simList=../perennial/data/phet-io
  *
  * OPTIONS:
  * It will default to include all phet-io sims unless you specify a subset
