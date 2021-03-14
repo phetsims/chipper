@@ -6,7 +6,7 @@
  * list of "problems".
  *
  * This file runs in node (command line API comparison), in the diff wrapper (client-facing API comparison) and
- * in simulations in phetioEngine when ?ea&phetioCreateArchetypes&phetioCompareAPI is specified, for CT.
+ * in simulations in phetioEngine when ?ea&phetioCreateArchetypes&phetioCompareAPI is specified (for CT).
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
