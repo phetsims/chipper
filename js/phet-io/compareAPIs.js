@@ -5,8 +5,9 @@
  * and compares the second api to see if it has any breaking changes against the first api. This function returns a
  * list of "problems".
  *
- * TODO: https://github.com/phetsims/phet-io/issues/1733, see
- * TODO: compareAPIs.js and make sure this can run in all appropriate contexts, not just node
+ * This file runs in node (command line API comparison), in the diff wrapper (client-facing API comparison) and
+ * in simulations in phetioEngine when ?ea&phetioCreateArchetypes&phetioCompareAPI is specified, for CT.
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
