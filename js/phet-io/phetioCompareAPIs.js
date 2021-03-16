@@ -117,5 +117,6 @@ if ( typeof window === 'undefined' ) {
   module.exports = phetioCompareAPIs;
 }
 else {
+  assert && assert( !window.hasOwnProperty( 'phetioCompareAPIs' ), 'phetioCompareAPIs was unexpectedly already defined' );
   window.phetioCompareAPIs = phetioCompareAPIs;
 }
