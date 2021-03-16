@@ -12,7 +12,7 @@ const getSimList = require( './getSimList' );
  * node js/phet-io/compare-apis.js [--delta] [--simList=path] [--sims=sim1,sim2,...] [--mod=N]
  *
  * EXAMPLE:
- * node js/phet-io/compare-apis.js --delta
+ * node js/phet-io/compare-apis.js --simList=../perennial/data/phet-io
  *
  * OPTIONS:
  * --delta: shows the entire delta, otherwise just shows breaking changes
