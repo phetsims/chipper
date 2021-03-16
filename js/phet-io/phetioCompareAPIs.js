@@ -121,9 +121,13 @@ const phetioCompareAPIs = ( api1, api2, _ ) => {
 };
 
 if ( typeof window === 'undefined' ) {
+
+  // running in node
   module.exports = phetioCompareAPIs;
 }
 else {
+
+  // running in browser as a preload
   assert && assert( !window.hasOwnProperty( 'phetioCompareAPIs' ), 'phetioCompareAPIs was unexpectedly already defined' );
   window.phetioCompareAPIs = phetioCompareAPIs;
 }
