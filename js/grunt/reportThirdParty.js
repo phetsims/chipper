@@ -268,22 +268,22 @@ module.exports = async function() {
     `simulation, inspect the HTML file between the \`${ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES}\` and \`${ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES}\` ` +
     '(only exists in sim publications after Aug 7, 2015).\n' +
     `# <a name="third-party-code"></a>Third-party Code:<br>\n${
-    codeOutput.join( '\n\n' )}\n\n` +
+      codeOutput.join( '\n\n' )}\n\n` +
 
     '---\n' +
 
     `# <a name="third-party-code-and-license-summary"></a>Third-party Code License Summary:<br>\n${
-    codeLicensesUsed.join( '<br>' )}\n\n` +
+      codeLicensesUsed.join( '<br>' )}\n\n` +
 
     '---\n' +
 
     `# <a name="third-party-media"></a>Third-party Media:<br>\n${
-    mediaOutput.join( '\n\n' )}\n\n` +
+      mediaOutput.join( '\n\n' )}\n\n` +
 
     '---\n' +
 
     `# <a name="third-party-media-license-summary"></a>Third-party Media License Summary:<br>\n${
-    mediaLicensesUsed.join( '<br>' )}\n\n`;
+      mediaLicensesUsed.join( '<br>' )}\n\n`;
 
   // Compare the file output to the existing file, and write & git commit only if different
   if ( !grunt.file.exists( outputFilename ) || grunt.file.read( outputFilename ) !== outputString ) {

@@ -49,8 +49,8 @@ module.exports = async function( repo, options ) {
   // with an indentation that is specific indentation to the template. See chipper#462
   function stringifyArray( arr, indentation ) {
     return `[\n${
-           arr.map( string => `${indentation}    '${string.replace( /'/g, '\\\'' )}'` ).join( ',\n' )
-           }\n${indentation}  ]`;
+      arr.map( string => `${indentation}    '${string.replace( /'/g, '\\\'' )}'` ).join( ',\n' )
+    }\n${indentation}  ]`;
   }
 
   function isPreloadExcluded( preload ) {

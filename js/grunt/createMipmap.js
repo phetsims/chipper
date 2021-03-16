@@ -166,8 +166,8 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
           mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
 
           grunt.log.debug( `level ${level} (${usePNG ? 'PNG' : 'JPG'} ${
-                           mipmaps[ level ].width}x${mipmaps[ level ].height}) base64: ${
-                           mipmaps[ level ].url.length} bytes ` );
+            mipmaps[ level ].width}x${mipmaps[ level ].height}) base64: ${
+            mipmaps[ level ].url.length} bytes ` );
         }
 
         resolve( mipmaps );
