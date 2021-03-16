@@ -37,8 +37,7 @@
       "../sherpa/lib/base64-js-1.2.0.js",
       "../sherpa/lib/TextEncoderLite-3c9f6f0.js",
       "../tandem/js/PhetioIDUtils.js",
-      "../chipper/js/SimVersion.js",
-      "../chipper/js/phet-io/phetioCompareAPIs.js"
+      "../chipper/js/SimVersion.js"
     ],
     "licenseKeys": [
       "font-awesome-4.5.0",
@@ -49,6 +48,7 @@
   },
   "phet-io": {
     "preload": [
+      "../chipper/js/phet-io/phetioCompareAPIs.js",
       "../phet-io/js/phet-io-initialize-globals.js"
     ],
     "simulationSpecificPreload": [
