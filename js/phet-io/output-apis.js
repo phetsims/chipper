@@ -11,7 +11,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  *
  * USAGE:
  * cd chipper
- * node js/phet-io/output-macro-api.js [--simList=path] [--sims=sim1,sim2,...] [--chunkSize=N] [--slice=N] [--mod=N]
+ * node js/phet-io/output-apis.js [--simList=path] [--sims=sim1,sim2,...] [--mod=N] [--chunkSize=N]
  *
  * e.g.,
  * node js/phet-io/output-apis.js --simList=../perennial/data/phet-io
@@ -47,9 +47,6 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
   processKey( 'sims', value => {
     repos = value.split( ',' );
   } );
-  processKey( 'slice', value => {
-    repos = repos.slice( parseInt( value, 10 ) );
-  } );
   processKey( 'mod', value => {
     const newArray = [];
     for ( let i = 0; i < repos.length; i += parseInt( value, 10 ) ) {
@@ -59,7 +56,6 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
     console.log( `after mod: ${repos.join( ', ' )}` );
   } );
 
-  // console.log( 'running on repos: ' + repos.join( ', ' ) );
   const chunkSize = 4;
   const results = await generatePhetioMacroAPI( repos, {
     showProgressBar: true, // Interferes with file output
