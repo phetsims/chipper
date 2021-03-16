@@ -8,8 +8,8 @@
  * This file runs in node (command line API comparison), in the diff wrapper (client-facing API comparison) and
  * in simulations in phetioEngine when ?ea&phetioCreateArchetypes&phetioCompareAPI is specified (for CT).
  *
- * Note that it uses a different global/namespacing pattern than phet-io-initialize-globals.js in order to simplify usage
- * in all these sites.
+ * Note that even though it is a preload, it uses a different global/namespacing pattern than phet-io-initialize-globals.js
+ * in order to simplify usage in all these sites.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
