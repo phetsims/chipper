@@ -11,7 +11,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  *
  * USAGE:
  * cd chipper
- * node js/phet-io/output-apis.js [--simList=path] [--sims=sim1,sim2,...] [--mod=N] [--chunkSize=N]
+ * node js/phet-io/output-apis.js [--simList=path] [--sims=sim1,sim2,...] [--mod=N] [--chunkSize=N] [--temporary]
  *
  * e.g.,
  * node js/phet-io/output-apis.js --simList=../perennial/data/phet-io
@@ -63,5 +63,17 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
     showMessagesFromSim: false // must be pure JSON
   } );
 
-  repos.forEach( repo => fs.writeFileSync( `../phet-io/api/${repo}.json`, formatPhetioAPI( results[ repo ] ) ) );
+  let dir = 'api';
+  if ( args.includes( '--temporary' ) ) {
+    dir = 'api-temporary';
+    try {
+      fs.mkdirSync( `../phet-io/${dir}/` );
+    }
+    catch( e ) {
+      if ( !e.message.includes( 'file already exists' ) ) {
+        throw e;
+      }
+    }
+  }
+  repos.forEach( repo => fs.writeFileSync( `../phet-io/${dir}/${repo}.json`, formatPhetioAPI( results[ repo ] ) ) );
 } )();
