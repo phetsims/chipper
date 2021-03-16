@@ -4,6 +4,7 @@ const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
 const generatePhetioMacroAPI = require( './generatePhetioMacroAPI' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
+const getSimList = require( './getSimList' );
 
 /**
  * Runs generate-phet-io-api for the specified simulations, or all phet-io sims if not specified. This may take a couple
@@ -11,7 +12,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  *
  * USAGE:
  * cd chipper
- * node js/phet-io/output-apis.js [--simList=path] [--sims=sim1,sim2,...] [--mod=N] [--chunkSize=N] [--temporary]
+ * node js/phet-io/output-apis.js [--simList=path] [--sims=sim1,sim2,...] [--mod=N] [--temporary]
  *
  * e.g.,
  * node js/phet-io/output-apis.js --simList=../perennial/data/phet-io
@@ -26,35 +27,8 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  */
 ( async () => {
 
+  const repos = getSimList();
   const args = process.argv.slice( 2 );
-  const processKey = ( key, callback ) => {
-    const prefix = `--${key}=`;
-    const values = args.filter( arg => arg.startsWith( prefix ) );
-    if ( values.length === 1 ) {
-      callback( values[ 0 ].substring( prefix.length ) );
-    }
-    else if ( values.length > 1 ) {
-      console.log( `Too many --${prefix}... specified` );
-      process.exit( 1 );
-    }
-  };
-
-  let repos = [];
-  processKey( 'simList', value => {
-    const contents = fs.readFileSync( value, 'utf8' ).trim();
-    repos = contents.split( '\n' ).map( sim => sim.trim() );
-  } );
-  processKey( 'sims', value => {
-    repos = value.split( ',' );
-  } );
-  processKey( 'mod', value => {
-    const newArray = [];
-    for ( let i = 0; i < repos.length; i += parseInt( value, 10 ) ) {
-      newArray.push( repos[ i ] );
-    }
-    repos = newArray;
-    console.log( `after mod: ${repos.join( ', ' )}` );
-  } );
 
   const chunkSize = 4;
   const results = await generatePhetioMacroAPI( repos, {
