@@ -8,7 +8,7 @@
 'use strict';
 
 const _ = require( 'lodash' ); // eslint-disable-line
-const compareAPIs = require( './compareAPIs' );
+const phetioCompareAPIs = require( './phetioCompareAPIs' );
 
 /**
  * @param {Object} macroAPI1
@@ -26,7 +26,7 @@ module.exports = ( macroAPI1, macroAPI2 ) => {
       problems[ repo ] = [ `Repo is missing in second macro API: ${repo}` ];
     }
     else {
-      problems[ repo ] = compareAPIs( macroAPI1[ repo ], macroAPI2[ repo ], _ );
+      problems[ repo ] = phetioCompareAPIs( macroAPI1[ repo ], macroAPI2[ repo ], _ );
     }
   } );
 

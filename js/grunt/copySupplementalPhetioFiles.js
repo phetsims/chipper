@@ -40,7 +40,7 @@ const PHET_IO_GUIDE_FILENAME = 'phet-io-guide';
 const LIB_FILES = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
   `../${WRAPPER_COMMON_FOLDER}/js/assert.js`,
-  '../chipper/js/phet-io/compareAPIs.js',
+  '../chipper/js/phet-io/phetioCompareAPIs.js',
   `../${WRAPPER_COMMON_FOLDER}/js/WrapperTypes.js`,
   '../tandem/js/PhetioIDUtils.js',
   `../${WRAPPER_COMMON_FOLDER}/js/Client.js`,
@@ -157,7 +157,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
       // TODO: https://github.com/phetsims/phet-io/issues/1733 the preceding for loop should handle this, perhaps it is missing because there is
       // a different number of '../'?
-      contents = ChipperStringUtils.replaceAll( contents, '<script src="../../chipper/js/phet-io/compareAPIs.js"></script>', '' );
+      contents = ChipperStringUtils.replaceAll( contents, '<script src="../../chipper/js/phet-io/phetioCompareAPIs.js"></script>', '' );
 
       // Support wrappers that use code from phet-io-wrappers
       contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
