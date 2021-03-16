@@ -21,7 +21,7 @@
  * @param {Object} api1 - the "ground truth" or reference API
  * @param {Object} api2 - the proposed API for comparison with api1
  * @param _ - lodash, so this can be used from different contexts.
- * @returns {[]} - an array of backward incompatible problems, if any.
+ * @returns {[]} - an array of backward-incompatible problems, if any.
  */
 const phetioCompareAPIs = ( api1, api2, _ ) => {
   const problems = [];
@@ -37,7 +37,7 @@ const phetioCompareAPIs = ( api1, api2, _ ) => {
       /**
        * Push any problems that may exist for the provided metadataKey.
        * @param {string} metadataKey - See PhetioObject.getMetadata()
-       * @param {*} [invalidNewValue] - an option new value that would signify a breaking change. Any other value would be acceptable.
+       * @param {*} [invalidNewValue] - an optional new value that would signify a breaking change. Any other value would be acceptable.
        */
       const reportDifferences = ( metadataKey, invalidNewValue ) => {
         const oldValue = api1.phetioElements[ phetioID ][ metadataKey ];
