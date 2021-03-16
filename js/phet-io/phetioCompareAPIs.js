@@ -16,6 +16,13 @@
 
 'use strict';
 
+/**
+ * Compare two APIs for breaking changes.
+ * @param {Object} api1 - the "ground truth" or reference API
+ * @param {Object} api2 - the proposed API for comparison with api1
+ * @param _ - lodash, so this can be used from different contexts.
+ * @returns {[]} - an array of backward incompatible problems, if any.
+ */
 const phetioCompareAPIs = ( api1, api2, _ ) => {
   const problems = [];
   const elements1 = Object.keys( api1.phetioElements );
