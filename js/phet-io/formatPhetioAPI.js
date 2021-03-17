@@ -13,6 +13,7 @@
 'use strict';
 
 const assert = require( 'assert' );
+const fixEOL = require( '../grunt/fixEOL' );
 
 /**
  * Creates a new object, recursively, by sorting the keys at each level.
@@ -40,5 +41,5 @@ const copyWithSortedKeys = unordered => {
 module.exports = api => {
   assert( api, 'api expected' );
   const objectString = JSON.stringify( copyWithSortedKeys( api ), null, 2 );
-  return objectString.replace( /\n/g, '\n  ' ); // for proper file formatting
+  return fixEOL( objectString.replace( /\n/g, '\n  ' ) ); // for proper file formatting
 };
