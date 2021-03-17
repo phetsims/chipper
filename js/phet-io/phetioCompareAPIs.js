@@ -113,6 +113,39 @@ const phetioCompareAPIs = ( api1, api2, _ ) => {
             }
           }
         }
+
+        // make sure we have all of the events (OK to add more)
+        const events1 = api1.phetioTypes[ typeName ].events;
+        const events2 = api2.phetioTypes[ typeName ].events;
+        events1.forEach( event => {
+          if ( !events2.includes( event ) ) {
+            problems.push( `${typeName} is missing event: ${event}` );
+          }
+        } );
+
+        // make sure we have matching supertype names
+        const supertypeName1 = api1.phetioTypes[ typeName ].supertype;
+        const supertypeName2 = api2.phetioTypes[ typeName ].supertype;
+        if ( supertypeName1 !== supertypeName2 ) {
+          problems.push( `${typeName} supertype changed from ${supertypeName1} to ${supertypeName2}. This may or may not 
+          be a breaking change, but we are reporting it just in case.` );
+        }
+
+        // make sure we have matching parameter types
+        const parameterTypes1 = api1.phetioTypes[ typeName ].parameterTypes;
+        const parameterTypes2 = api2.phetioTypes[ typeName ].parameterTypes;
+        if ( !_.isEqual( parameterTypes1, parameterTypes2 ) ) {
+          problems.push( `${typeName} parameter types changed from ${parameterTypes1.join( ', ' )} to ${parameterTypes2.join( ', ' )}. This may or may not 
+          be a breaking change, but we are reporting it just in case.` );
+        }
+
+        // make sure we have matching metadata keys
+        const metadataKeys1 = api1.phetioTypes[ typeName ].metadataKeys;
+        const metadataKeys2 = api2.phetioTypes[ typeName ].metadataKeys;
+        if ( !_.isEqual( metadataKeys1, metadataKeys2 ) ) {
+          problems.push( `${typeName} metadata keys changed from ${metadataKeys1.join( ', ' )} to ${metadataKeys2.join( ', ' )}. This may or may not 
+          be a breaking change, but we are reporting it just in case.` );
+        }
       }
     }
   }
