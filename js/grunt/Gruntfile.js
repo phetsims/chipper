@@ -22,7 +22,6 @@ const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
 const lint = require( './lint' );
-const fixEOL = require( './fixEOL' );
 const migrate = require( './migrate' );
 const minify = require( './minify' );
 const modulify = require( './modulify' );
@@ -479,7 +478,6 @@ Updates the normal automatically-generated files for this repository. Includes:
     'generate-phet-io-api',
     'Output the phet-io API as JSON to phet-io/api.',
     wrapTask( async () => {
-      const writeFile = ( filePath, contents ) => fs.writeFileSync( filePath, fixEOL( contents ) );
 
       const dir = '../phet-io/api/';
       try {
@@ -493,7 +491,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       const filePath = `../phet-io/api/${repo}.json`;
 
       const api = ( await generatePhetioMacroAPI( [ repo ] ) )[ repo ];
-      writeFile( filePath, formatPhetioAPI( api ) );
+      fs.writeFileSync( filePath, formatPhetioAPI( api ) );
     } )
   );
 
