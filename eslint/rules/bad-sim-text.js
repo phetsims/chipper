@@ -49,18 +49,17 @@ module.exports = function( context ) {
     ' instanceof Touch ',
 
     // Should have a period before "<", see https://github.com/phetsims/chipper/issues/1005
-    { id: 'Type<Parameter>', regex: /{[^\n ]*\b[A-z]+<[A-z]+>/ }
+    { id: 'Type<Parameter>', regex: /{[^\n ]*\b[A-z]+<[A-z]+>/ },
 
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
-    // TODO: comment back in when all lint errors are taken care of, https://github.com/phetsims/phet-info/issues/59
-    // {
-    //   id: 'setTimeout(',
-    //   regex: /(window\.| )setTimeout\(/
-    // },
-    // {
-    //   id: 'setInterval(',
-    //   regex: /(window\.| )setInterval\(/
-    // }
+    {
+      id: 'setTimeout(',
+      regex: /(window\.| )setTimeout\(/
+    },
+    {
+      id: 'setInterval(',
+      regex: /(window\.| )setInterval\(/
+    }
 
     // DOT/Utils.toFixed or DOT/Utils.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
