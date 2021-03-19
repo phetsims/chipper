@@ -23,7 +23,7 @@
  * @param _ - lodash, so this can be used from different contexts.
  * @returns {[]} - an array of backward-incompatible problems, if any.
  */
-const phetioCompareAPIs = ( api1, api2, _ ) => {
+const _phetioCompareAPIs = ( api1, api2, _ ) => { // Named with an underscore to avoid automatically defining `window.phetioCompareAPIs` as a global
   const problems = [];
   const elements1 = Object.keys( api1.phetioElements );
   const elements2 = Object.keys( api2.phetioElements );
@@ -156,11 +156,11 @@ const phetioCompareAPIs = ( api1, api2, _ ) => {
 if ( typeof window === 'undefined' ) {
 
   // running in node
-  module.exports = phetioCompareAPIs;
+  module.exports = _phetioCompareAPIs;
 }
 else {
 
   // running in browser as a preload
   assert && assert( !window.hasOwnProperty( 'phetioCompareAPIs' ), 'phetioCompareAPIs was unexpectedly already defined' );
-  window.phetioCompareAPIs = phetioCompareAPIs;
+  window.phetioCompareAPIs = _phetioCompareAPIs;
 }
