@@ -322,7 +322,7 @@ module.exports = {
     'no-return-assign': 'error',
 
     // disallow unnecessary `return await`
-    'no-return-await': 'off', // TODO 19 fails, https://github.com/phetsims/chipper/issues/814 this seems like a good rule to enable
+    'no-return-await': 'off', // TODO: Enable: 19 fails, https://github.com/phetsims/chipper/issues/814 this seems like a good rule to enable
 
     // disallow `javascript:` urls
     'no-script-url': 'error',
@@ -404,7 +404,7 @@ module.exports = {
     //
 
     // controls location of Use Strict Directives
-    strict: 'off', // TODO: Discuss: 338 occurrences. restore this, see https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/814
+    strict: 'off', // TODO: Enable: Discuss: 338 occurrences. restore this, see https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/814
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Variables
