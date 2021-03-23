@@ -2,7 +2,7 @@
 
 /**
  * Generates the top-level simName-accessibility-view.html file for simulations (or runnables). Lets one
- * see the accessible content by placing the sim in an iFrame and running an up to date copy of the parallel
+ * see the accessible content by placing the sim in an iframe and running an up to date copy of the parallel
  * DOM next to it.
  *
  * @author Jesse Greenberg
