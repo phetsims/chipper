@@ -34,6 +34,8 @@ module.exports = function( context ) {
     'Combobox', // prefer Combo Box
     'COMBOBOX', // prefer COMBO_BOX
 
+    'iFrame', // should be iframe
+
     // In ES6, extending object causes methods to be dropped
     { id: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
 
