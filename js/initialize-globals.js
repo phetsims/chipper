@@ -587,13 +587,13 @@
     supportsGestureControl: { type: 'flag' },
 
     /**
-     * Indicates whether or not the "Self Voicing" feature is enabled. This is a prototype
+     * Indicates whether or not the "Voicing" feature is enabled. This is a prototype
      * feature that uses the web-speech API to provide speech output to the user about
      * what is happening in the simulation.
      *
      * For internal use only. This is currently only used in prototypes.
      */
-    supportsSelfVoicing: { type: 'flag' },
+    supportsVoicing: { type: 'flag' },
 
     /**
      * Indicates whether the sound library should be enabled.  If true, an icon is added to the nav bar icon to enable
