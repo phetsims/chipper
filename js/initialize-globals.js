@@ -578,7 +578,7 @@
 
     /**
      * Indicates whether custom gesture control is enabled by default in the simulation.
-     * This input method is still in development, mostly to be used in combination with the self-voicing
+     * This input method is still in development, mostly to be used in combination with the voicing
      * feature. It allows you to swipe the screen to move focus, double tap the screen to activate
      * components, and tap and hold to initiate custom gestures.
      *
