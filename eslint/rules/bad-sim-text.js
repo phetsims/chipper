@@ -59,16 +59,15 @@ module.exports = function( context ) {
     {
       id: 'setInterval(',
       regex: /(window\.| )setInterval\(/
-    }
+    },
 
     // DOT/Utils.toFixed or DOT/Utils.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
     // because the spec doesn't specify whether to round or floor.
-    // TODO: comment back in when all lint errors are taken care of, https://github.com/phetsims/chipper/issues/737
-    // {
-    //   id: '.toFixed(',     // support regex with english names this way
-    //   regex: /(?<!Utils)\.toFixed\(/
-    // }
+    {
+      id: '.toFixed(', // support regex with english names this way
+      regex: new RegExp( '(?<!Utils)\\.toFixed\\(' ) // NOTE: eslint parsing breaks when using regex syntax like `/regex/`
+    }
   ];
 
   return {
