@@ -43,7 +43,7 @@ const LIB_FILES = [
   `../${WRAPPER_COMMON_FOLDER}/js/Client.js`,
   `../${WRAPPER_COMMON_FOLDER}/js/readFile.js`,
   `../${WRAPPER_COMMON_FOLDER}/js/loadWrapperTemplate.js`,
-  `../${WRAPPER_COMMON_FOLDER}/js/addPanAndZoomKeyboardEventForwardingListener.js`
+  `../${WRAPPER_COMMON_FOLDER}/js/keyboardEventForwarding.js`
 ];
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
