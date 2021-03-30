@@ -13,6 +13,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
+const comparePhetioAPIs = require( '../phet-io/comparePhetioAPIs' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
@@ -21,6 +22,7 @@ const generateTestHTML = require( './generateTestHTML' );
 const generateThumbnails = require( './generateThumbnails' );
 const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
+const getSimList = require( '../phet-io/getSimList' );
 const lint = require( './lint' );
 const migrate = require( './migrate' );
 const minify = require( './minify' );
@@ -492,6 +494,19 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       const api = ( await generatePhetioMacroAPI( [ repo ] ) )[ repo ];
       fs.writeFileSync( filePath, formatPhetioAPI( api ) );
+    } )
+  );
+
+  grunt.registerTask(
+    'compare-phet-io-api',
+    'Compares the phet-io-api against the reference version(s).  Options:\n' +
+    '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
+    '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
+    '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes',
+    wrapTask( async () => {
+      await comparePhetioAPIs( getSimList().length === 0 ? [ repo ] : getSimList(), {
+        delta: grunt.option( 'delta' )
+      } );
     } )
   );
 
