@@ -4,6 +4,7 @@ const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
 const phetioCompareAPIs = require( './phetioCompareAPIs' );
 const getSimList = require( './getSimList' );
+const formatPhetioAPI = require( './formatPhetioAPI' );
 
 /**
  * Compare two sets of APIs
@@ -34,7 +35,8 @@ repos.forEach( repo => {
   const api1 = JSON.parse( fs.readFileSync( `${API_DIR}/${repo}.json`, 'utf8' ) );
   const api2 = JSON.parse( fs.readFileSync( `${TMP_DIR}/${repo}.json`, 'utf8' ) );
 
-  const problems = phetioCompareAPIs( api1, api2, _ );
+  const comparisonData = phetioCompareAPIs( api1, api2, _ );
+  const problems = comparisonData.problems;
 
   if ( problems.length ) {
     console.log( repo );
@@ -47,5 +49,9 @@ repos.forEach( repo => {
     if ( delta ) {
       console.log( JSON.stringify( delta, null, 2 ) );
     }
+  }
+
+  if ( args.includes( '--overwriteChanges' ) ) {
+    fs.writeFileSync( `${API_DIR}/${repo}.json`, formatPhetioAPI( comparisonData.newAPI ), 'utf8' );
   }
 } );

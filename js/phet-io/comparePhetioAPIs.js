@@ -2,6 +2,7 @@
 const generatePhetioMacroAPI = require( './generatePhetioMacroAPI' );
 const fs = require( 'fs' );
 const phetioCompareAPIs = require( './phetioCompareAPIs' );
+const formatPhetioAPI = require( './formatPhetioAPI' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const jsondiffpatch = require( 'jsondiffpatch' ).create( {} );
 
@@ -15,7 +16,10 @@ const API_DIR = '../phet-io/api';
  * @returns {Promise<void>}
  */
 module.exports = async ( repos, options ) => {
-  options = _.extend( { delta: false }, options );
+  options = _.extend( {
+    delta: false,
+    overwriteChanges: false
+  }, options );
   console.log( options.delta );
   const results = await generatePhetioMacroAPI( repos, {
     showProgressBar: true,
@@ -28,7 +32,8 @@ module.exports = async ( repos, options ) => {
     const referenceAPI = JSON.parse( fs.readFileSync( `${API_DIR}/${repo}.json`, 'utf8' ) );
     const proposedAPI = results[ repo ];
 
-    const problems = phetioCompareAPIs( referenceAPI, proposedAPI, _ );
+    const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _ );
+    const problems = comparisonData.problems;
 
     if ( problems.length ) {
       console.log( repo );
@@ -41,6 +46,10 @@ module.exports = async ( repos, options ) => {
       if ( delta ) {
         console.log( JSON.stringify( delta, null, 2 ) );
       }
+    }
+
+    if ( options.overwriteChanges ) {
+      fs.writeFileSync( `${API_DIR}/${repo}.json`, formatPhetioAPI( comparisonData.newAPI ), 'utf8' );
     }
   } );
 };

@@ -505,7 +505,8 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes',
     wrapTask( async () => {
       await comparePhetioAPIs( getSimList().length === 0 ? [ repo ] : getSimList(), {
-        delta: grunt.option( 'delta' )
+        delta: grunt.option( 'delta' ),
+        overwriteChanges: grunt.option( 'overwriteChanges' )
       } );
     } )
   );
