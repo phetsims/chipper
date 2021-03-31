@@ -57,13 +57,13 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _ ) => { // Named with a
         if ( referenceValue !== proposedValue ) {
           if ( invalidProposedValue === undefined ) {
             appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}` );
-            newReferenceAPI.phetioElements[ phetioID ][ metadataKey ] === proposedValue;
+            newReferenceAPI.phetioElements[ phetioID ][ metadataKey ] = proposedValue;
           }
           else {
 
             if ( proposedValue === invalidProposedValue ) {
               appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}` );
-              newReferenceAPI.phetioElements[ phetioID ][ metadataKey ] === proposedValue;
+              newReferenceAPI.phetioElements[ phetioID ][ metadataKey ] = proposedValue;
             }
             else {
 
