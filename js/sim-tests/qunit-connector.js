@@ -35,4 +35,20 @@
       total: data.testCounts.total
     } ), '*' );
   } );
+
+  window.addEventListener( 'error', a => {
+    let message = '';
+    let stack = '';
+    if ( a && a.message ) {
+      message = a.message;
+    }
+    if ( a && a.error && a.error.stack ) {
+      stack = a.error.stack;
+    }
+    ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {
+      type: 'error',
+      message: message,
+      stack: stack
+    } ), '*' );
+  } );
 } )();
