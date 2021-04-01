@@ -17,20 +17,51 @@
 'use strict';
 
 /**
+ * Copied from PhetioIDUtils, see https://github.com/phetsims/tandem/issues/231
+ * @param {string} phetioID
+ * @returns {null|string}
+ */
+function getParentID( phetioID ) {
+  const indexOfLastSeparator = phetioID.lastIndexOf( '.' );
+  return indexOfLastSeparator === -1 ? null : phetioID.substring( 0, indexOfLastSeparator );
+}
+
+/**
  * Compare two APIs for breaking changes.
+ *
+ * NOTE: Named with an underscore to avoid automatically defining `window.phetioCompareAPIs` as a global
+ *
  * @param {Object} referenceAPI - the "ground truth" or reference API
  * @param {Object} proposedAPI - the proposed API for comparison with referenceAPI
  * @param _ - lodash, so this can be used from different contexts.
- * @returns {{problems:string[], newAPI:Object}} - an array of backward-incompatible problems, if any.
+ * @param {Object} [options]
+ * @returns {{breakingProblems:string[], designedProblems:string[], newAPI:Object}}
  */
-const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _ ) => { // Named with an underscore to avoid automatically defining `window.phetioCompareAPIs` as a global
+const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, options ) => {
 
-  const problems = [];
+  options = _.merge( {
+    compareDesignedAPIChanges: true,
+    compareBreakingAPIChanges: true
+  }, options );
+
+  const isPhetioDesigned = ( api, phetioID ) => {
+    return phetioID && // base case to prevent going beyond the root
+           ( ( api.phetioElements[ phetioID ] && api.phetioElements[ phetioID ].phetioDesigned ) ||
+             isPhetioDesigned( api, getParentID( phetioID ) ) );
+  };
+
+  const breakingProblems = [];
+  const designedProblems = [];
 
   const newReferenceAPI = _.cloneDeep( referenceAPI );
 
-  const appendProblem = problemString => {
-    problems.push( problemString );
+  const appendProblem = ( problemString, isDesignedProblem = false ) => {
+    if ( isDesignedProblem && options.compareDesignedAPIChanges ) {
+      designedProblems.push( problemString );
+    }
+    else if ( !isDesignedProblem && options.compareBreakingAPIChanges ) {
+      breakingProblems.push( problemString );
+    }
   };
 
   const referencePhetioIDs = Object.keys( referenceAPI.phetioElements );
@@ -38,7 +69,8 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _ ) => { // Named with a
   if ( !_.isEqual( referencePhetioIDs, proposedPhetioIDs ) ) {
     const missingFromProposed = referencePhetioIDs.filter( e => !proposedPhetioIDs.includes( e ) );
     missingFromProposed.forEach( missingPhetioID => {
-      appendProblem( `PhET-iO Element missing: ${missingPhetioID}` );
+      appendProblem( `PhET-iO Element missing: ${missingPhetioID}`, false );
+      appendProblem( `PhET-iO Element missing: ${missingPhetioID}`, true );
 
       delete newReferenceAPI.phetioElements[ missingPhetioID ];
     } );
@@ -49,18 +81,18 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _ ) => { // Named with a
       /**
        * Push any problems that may exist for the provided metadataKey.
        * @param {string} metadataKey - See PhetioObject.getMetadata()
+       * @param {boolean} isDesignedChange - if the difference is from a design change, and not from a breaking change test
        * @param {*} [invalidProposedValue] - an optional new value that would signify a breaking change. Any other value would be acceptable.
        */
-      const reportDifferences = ( metadataKey, invalidProposedValue ) => {
+      const reportDifferences = ( metadataKey, isDesignedChange = false, invalidProposedValue ) => {
         const referenceValue = referenceAPI.phetioElements[ phetioID ][ metadataKey ];
         const proposedValue = proposedAPI.phetioElements[ phetioID ][ metadataKey ];
         if ( referenceValue !== proposedValue ) {
-          if ( invalidProposedValue === undefined ) {
-            appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}` );
+          if ( invalidProposedValue === undefined || isDesignedChange ) {
+            appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}`, isDesignedChange );
             newReferenceAPI.phetioElements[ phetioID ][ metadataKey ] = proposedValue;
           }
-          else {
-
+          else if ( !isDesignedChange ) {
             if ( proposedValue === invalidProposedValue ) {
               appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}` );
               newReferenceAPI.phetioElements[ phetioID ][ metadataKey ] = proposedValue;
@@ -80,18 +112,22 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _ ) => { // Named with a
       reportDifferences( 'phetioDynamicElement' );
       reportDifferences( 'phetioIsArchetype' );
       reportDifferences( 'phetioArchetypePhetioID' );
-      reportDifferences( 'phetioState', false ); // Only report if something became non-stateful
-      reportDifferences( 'phetioReadOnly', true ); // Only need to report if something became readOnly
+      reportDifferences( 'phetioState', false, false ); // Only report if something became non-stateful
+      reportDifferences( 'phetioReadOnly', false, true ); // Only need to report if something became readOnly
 
       // The following metadata keys are non-breaking:
       // 'phetioDocumentation'
       // 'phetioFeatured'
       // 'phetioStudioControl'
       // 'phetioHighFrequency', non-breaking, assuming clients with data have the full data stream
+
+      if ( isPhetioDesigned( referenceAPI, phetioID ) ) {
+        Object.keys( referenceAPI.phetioElements[ phetioID ] ).forEach( metadataKey => {
+          reportDifferences( metadataKey, true );
+        } );
+      }
     }
   } );
-
-  // TODO: if phetioDesigned is true, overwrite that values of the whole metadata entry into the newReferenceAPI (recursively) https://github.com/phetsims/phet-io/issues/1750
 
   // Check for: missing IO Types, missing methods, or differing parameter types or return types
   for ( const typeName in referenceAPI.phetioTypes ) {
@@ -179,7 +215,8 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _ ) => { // Named with a
 
   return {
     newAPI: newReferenceAPI,
-    problems: problems
+    breakingProblems: breakingProblems,
+    designedProblems: designedProblems
   };
 };
 

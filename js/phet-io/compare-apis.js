@@ -36,11 +36,16 @@ repos.forEach( repo => {
   const api2 = JSON.parse( fs.readFileSync( `${TMP_DIR}/${repo}.json`, 'utf8' ) );
 
   const comparisonData = phetioCompareAPIs( api1, api2, _ );
-  const problems = comparisonData.problems;
 
-  if ( problems.length ) {
-    console.log( repo );
-    console.log( problems.join( '\n' ) );
+  if ( comparisonData.breakingProblems.length ) {
+    console.log( `${repo} BREAKING PROBLEMS` );
+    console.log( comparisonData.breakingProblems.join( '\n' ) );
+    console.log( '\n' );
+  }
+
+  if ( comparisonData.designedProblems.length ) {
+    console.log( `${repo} DESIGN PROBLEMS` );
+    console.log( comparisonData.designedProblems.join( '\n' ) );
     console.log( '\n' );
   }
 

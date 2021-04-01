@@ -33,11 +33,16 @@ module.exports = async ( repos, options ) => {
     const proposedAPI = results[ repo ];
 
     const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _ );
-    const problems = comparisonData.problems;
 
-    if ( problems.length ) {
-      console.log( repo );
-      console.log( problems.join( '\n' ) );
+    if ( comparisonData.breakingProblems.length ) {
+      console.log( `${repo} BREAKING PROBLEMS` );
+      console.log( comparisonData.breakingProblems.join( '\n' ) );
+      console.log( '\n' );
+    }
+
+    if ( comparisonData.designedProblems.length ) {
+      console.log( `${repo} DESIGN PROBLEMS` );
+      console.log( comparisonData.designedProblems.join( '\n' ) );
       console.log( '\n' );
     }
 
