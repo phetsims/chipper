@@ -81,7 +81,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     const promises = chunk.map( async repo => {
       const page = await browser.newPage();
 
-      return new Promise( ( resolve, reject ) => {
+      return new Promise( async ( resolve, reject ) => { // eslint-disable-line no-async-promise-executor
 
         // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
         const id = setTimeout( () => reject( new Error( 'Timeout in generatePhetioMacroAPI' ) ), 30000 );
@@ -133,7 +133,12 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
                              `build/phet-io/${repo}_all_phet-io.html` :
                              `${repo}_en.html`;
         const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI`;
-        page.goto( url ).catch( cleanupAndReject );
+        try {
+          await page.goto( url );
+        }
+        catch( e ) {
+          cleanupAndReject( e );
+        }
       } );
     } );
 
