@@ -163,7 +163,7 @@ module.exports = {
     'accessor-pairs': 'off', // Only 17 fails, but I'm not sure we need this.  Perhaps once it bites us we will change our mind?
 
     // enforce `return` statements in callbacks of array methods
-    'array-callback-return': 'off', // TODO: Enable: 14 fails, https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
+    'array-callback-return': 'error',
 
     // enforce the use of variables within the scope they are defined
     'block-scoped-var': 'off', // We have too much old code with var i being used across several loops.
