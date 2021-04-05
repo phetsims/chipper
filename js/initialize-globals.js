@@ -35,7 +35,7 @@
   assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
 
   // packageObject may not always be available if initialize-globals used without chipper-initialization.js
-  const packageObject = _.hasIn( window, 'phet.chipper.packageObject' ) ? phet.chipper.packageObject : { phet: 'placeholder' };
+  const packageObject = _.hasIn( window, 'phet.chipper.packageObject' ) ? phet.chipper.packageObject : { phet: {} };
 
   // Private Doc: Note: the following jsdoc is for the public facing phet-io api. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
