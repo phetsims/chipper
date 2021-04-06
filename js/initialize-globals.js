@@ -35,7 +35,11 @@
   assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
 
   // packageObject may not always be available if initialize-globals used without chipper-initialization.js
-  const packageObject = _.hasIn( window, 'phet.chipper.packageObject' ) ? phet.chipper.packageObject : { phet: { features: {} } };
+  const packageObject = _.hasIn( window, 'phet.chipper.packageObject' ) ? phet.chipper.packageObject : {};
+  const packagePhet = packageObject.phet || {};
+
+  // duck type defaults so that not all package.json files need to have a phet.features section.
+  const packageFeatures = packagePhet.features || {};
 
   // Private Doc: Note: the following jsdoc is for the public facing phet-io api. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
@@ -578,7 +582,7 @@
      */
     supportsGestureControl: {
       type: 'boolean',
-      defaultValue: !!( packageObject.phet.features && packageObject.phet.features.supportsGestureControl )
+      defaultValue: !!packageFeatures.supportsGestureControl
     },
 
     /**
@@ -598,8 +602,10 @@
      */
     supportsPanAndZoom: {
       type: 'boolean',
-      defaultValue: packageObject.phet.supportsPanAndZoom === undefined || packageObject.phet.supportsPanAndZoom,
-      public: true
+      public: true,
+
+      // even if not provided in package.json, this defaults to being true
+      defaultValue: !packageFeatures.hasOwnProperty( 'supportsPanAndZoom' ) || packageFeatures.supportsPanAndZoom
     },
 
     /**
