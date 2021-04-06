@@ -437,13 +437,17 @@
       return null;
     }
 
+    /**
+     * @param expression
+     * @returns {null|Object}
+     */
     function parseInherit( expression ) {
       const supertype = expression.arguments[ 0 ].name;
       const subtype = expression.arguments[ 1 ].name;
 
       // If we haven't caught the constructor/type declaration, skip the inherit parsing
       if ( !doc[ subtype ] ) {
-        return;
+        return null;
       }
 
       // Assign the supertype on the subtype
