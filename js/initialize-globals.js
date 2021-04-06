@@ -35,7 +35,7 @@
   assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
 
   // packageObject may not always be available if initialize-globals used without chipper-initialization.js
-  const packageObject = _.hasIn( window, 'phet.chipper.packageObject' ) ? phet.chipper.packageObject : { phet: {} };
+  const packageObject = _.hasIn( window, 'phet.chipper.packageObject' ) ? phet.chipper.packageObject : { phet: { features: {} } };
 
   // Private Doc: Note: the following jsdoc is for the public facing phet-io api. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
@@ -569,14 +569,6 @@
     supportsDescription: { type: 'flag' },
 
     /**
-     * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
-     * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
-     * NOT being used.
-     * Primarily for internal use, though we may share links with collaborates that use this parameter.
-     */
-    supportsEnhancedSound: { type: 'flag' },
-
-    /**
      * Indicates whether custom gesture control is enabled by default in the simulation.
      * This input method is still in development, mostly to be used in combination with the voicing
      * feature. It allows you to swipe the screen to move focus, double tap the screen to activate
@@ -584,7 +576,10 @@
      *
      * For internal use, though may be used in shared links with collaborators.
      */
-    supportsGestureControl: { type: 'flag' },
+    supportsGestureControl: {
+      type: 'boolean',
+      defaultValue: !!( packageObject.phet.features && packageObject.phet.features.supportsGestureControl )
+    },
 
     /**
      * Indicates whether or not the "Voicing" feature is enabled. This is a prototype
@@ -596,11 +591,31 @@
     supportsVoicing: { type: 'flag' },
 
     /**
+     * Enables panning and zooming of the simulation. Can be permanently disabled if supportsPanAndZoom: false is
+     * added under the `phet` entry of package.json. Query parameter value will always override package.json entry.
+     *
+     * Public, so that users can disable this feature if they need to.
+     */
+    supportsPanAndZoom: {
+      type: 'boolean',
+      defaultValue: packageObject.phet.supportsPanAndZoom === undefined || packageObject.phet.supportsPanAndZoom,
+      public: true
+    },
+
+    /**
      * Indicates whether the sound library should be enabled.  If true, an icon is added to the nav bar icon to enable
      * the user to turn sound on/off.  There is also a Sim option for enabling sound which can override this.
      * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
     supportsSound: { type: 'flag' },
+
+    /**
+     * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
+     * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
+     * NOT being used.
+     * Primarily for internal use, though we may share links with collaborates that use this parameter.
+     */
+    supportsEnhancedSound: { type: 'flag' },
 
     /**
      * Indicates whether or not vibration is enabled, and which paradigm is enabled for testing. There
@@ -626,18 +641,6 @@
     webgl: {
       type: 'boolean',
       defaultValue: true
-    },
-
-    /**
-     * Enables panning and zooming of the simulation. Can be permanently disabled if supportsPanAndZoom: false is
-     * added under the `phet` entry of package.json. Query parameter value will always override package.json entry.
-     *
-     * Public, so that users can disable this feature if they need to.
-     */
-    supportsPanAndZoom: {
-      type: 'boolean',
-      defaultValue: packageObject.phet.supportsPanAndZoom === undefined || packageObject.phet.supportsPanAndZoom,
-      public: true
     }
   };
 
