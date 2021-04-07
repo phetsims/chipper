@@ -10,7 +10,7 @@ const formatPhetioAPI = require( './formatPhetioAPI' );
  * Compare two sets of APIs
  * USAGE:
  * cd chipper
- * node js/phet-io/compare-apis.js [--delta] [--simList=path] [--sims=sim1,sim2,...] [--mod=N]
+ * node js/phet-io/compare-apis.js [--delta] [--simList=path] [--sims=sim1,sim2,...]
  *
  * EXAMPLE:
  * node js/phet-io/compare-apis.js --simList=../perennial/data/phet-io
@@ -32,10 +32,10 @@ const jsondiffpatch = require( 'jsondiffpatch' ).create( {} );
 repos.forEach( repo => {
 
   // Fails on missing file or parse error.
-  const api1 = JSON.parse( fs.readFileSync( `${API_DIR}/${repo}.json`, 'utf8' ) );
-  const api2 = JSON.parse( fs.readFileSync( `${TMP_DIR}/${repo}.json`, 'utf8' ) );
+  const referenceAPI = JSON.parse( fs.readFileSync( `${API_DIR}/${repo}.json`, 'utf8' ) );
+  const proposedAPI = JSON.parse( fs.readFileSync( `${TMP_DIR}/${repo}.json`, 'utf8' ) );
 
-  const comparisonData = phetioCompareAPIs( api1, api2, _ );
+  const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _ );
 
   if ( comparisonData.breakingProblems.length ) {
     console.log( `${repo} BREAKING PROBLEMS` );
@@ -50,7 +50,7 @@ repos.forEach( repo => {
   }
 
   if ( args.includes( '--delta' ) ) {
-    const delta = jsondiffpatch.diff( api1, api2 );
+    const delta = jsondiffpatch.diff( referenceAPI, proposedAPI );
     if ( delta ) {
       console.log( JSON.stringify( delta, null, 2 ) );
     }

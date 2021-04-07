@@ -12,7 +12,7 @@ const getSimList = require( '../common/getSimList' );
  *
  * USAGE:
  * cd chipper
- * node js/phet-io/output-apis.js [--simList=path] [--sims=sim1,sim2,...] [--mod=N] [--temporary]
+ * node js/phet-io/output-apis.js [--simList=path] [--sims=sim1,sim2,...] [--temporary]
  *
  * e.g.,
  * node js/phet-io/output-apis.js --simList=../perennial/data/phet-io
@@ -20,8 +20,7 @@ const getSimList = require( '../common/getSimList' );
  * OPTIONS:
  * It will default to include all phet-io sims unless you specify a subset
  * --sims=sim1,sim2: a listed subset of sims
- * --slice=take a slice of all phet-io sims
- * --mod=take a modulus of all phet-io sims (every Nth sim)
+ * --simList=path/to/list
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
