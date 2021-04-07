@@ -18,7 +18,7 @@ const API_DIR = '../phet-io/api';
 module.exports = async ( repos, proposedAPIs, options ) => {
   options = _.extend( {
     delta: false,
-    overwriteChanges: false
+    overwrite: false
   }, options );
 
   repos.forEach( repo => {
@@ -48,7 +48,7 @@ module.exports = async ( repos, proposedAPIs, options ) => {
       }
     }
 
-    if ( options.overwriteChanges ) {
+    if ( options.overwrite ) {
       fs.writeFileSync( `${API_DIR}/${repo}.json`, formatPhetioAPI( comparisonData.newAPI ), 'utf8' );
     }
   } );

@@ -514,7 +514,8 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes\n' +
-    '--temporary, compares api files in the temporary directory (otherwise compares to freshly generated apis)',
+    '--temporary, compares api files in the temporary directory (otherwise compares to freshly generated apis)\n' +
+    '--overwrite - to adopt the changes, breaking or design changes (depending on package.json) and write the new api in phet-io/api/',
     wrapTask( async () => {
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
@@ -535,7 +536,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       await phetioCompareAPISets( sims, proposedAPIs, {
         delta: grunt.option( 'delta' ),
-        overwriteChanges: grunt.option( 'overwriteChanges' )
+        overwrite: grunt.option( 'overwrite' )
       } );
     } )
   );
