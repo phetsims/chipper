@@ -502,7 +502,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     'Compares the phet-io-api against the reference version(s).  Options:\n' +
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
-    '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes',
+    '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes\n' +
     '--temporary, compares api files in the temporary directory (otherwise compares to freshly generated apis)',
     wrapTask( async () => {
 
