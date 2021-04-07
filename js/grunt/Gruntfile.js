@@ -13,7 +13,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
-const comparePhetioAPIs = require( '../phet-io/comparePhetioAPIs' );
+const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
@@ -503,8 +503,26 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes',
+    '--temporary, compares api files in the temporary directory (otherwise compares to freshly generated apis)',
     wrapTask( async () => {
-      await comparePhetioAPIs( getSimList().length === 0 ? [ repo ] : getSimList(), {
+
+      const sims = getSimList().length === 0 ? [ repo ] : getSimList();
+      const temporary = grunt.option( 'temporary' );
+      let proposedAPIs = null;
+      if ( temporary ) {
+        proposedAPIs = {};
+        sims.forEach( sim => {
+          proposedAPIs[ sim ] = JSON.parse( fs.readFileSync( `../phet-io/api-temporary/${repo}.json`, 'utf8' ) );
+        } );
+      }
+      else {
+        proposedAPIs = await generatePhetioMacroAPI( sims, {
+          showProgressBar: true,
+          showMessagesFromSim: false
+        } );
+      }
+
+      await phetioCompareAPISets( sims, proposedAPIs, {
         delta: grunt.option( 'delta' ),
         overwriteChanges: grunt.option( 'overwriteChanges' )
       } );

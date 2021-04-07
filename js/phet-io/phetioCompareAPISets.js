@@ -1,5 +1,4 @@
 // Copyright 2021, University of Colorado Boulder
-const generatePhetioMacroAPI = require( './generatePhetioMacroAPI' );
 const fs = require( 'fs' );
 const phetioCompareAPIs = require( './phetioCompareAPIs' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
@@ -9,27 +8,24 @@ const jsondiffpatch = require( 'jsondiffpatch' ).create( {} );
 const API_DIR = '../phet-io/api';
 
 /**
- * This task runs from the main chipper gruntfile and provides a convenient way to compare a proposed
- * API (in memory) with a reference version.
+ * Compare two sets of APIs using phetioCompareAPIs. Can overwrite the changes if an option is set.
+ *
  * @param {string[]} repos
+ * @param {Object} proposedAPIs - map where key=repo, value=proposed API for that repo
  * @param {Object} [options]
  * @returns {Promise<void>}
  */
-module.exports = async ( repos, options ) => {
+module.exports = async ( repos, proposedAPIs, options ) => {
   options = _.extend( {
     delta: false,
     overwriteChanges: false
   }, options );
-  const results = await generatePhetioMacroAPI( repos, {
-    showProgressBar: true,
-    showMessagesFromSim: false
-  } );
 
   repos.forEach( repo => {
 
     // Fails on missing file or parse error.
     const referenceAPI = JSON.parse( fs.readFileSync( `${API_DIR}/${repo}.json`, 'utf8' ) );
-    const proposedAPI = results[ repo ];
+    const proposedAPI = proposedAPIs[ repo ];
 
     const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _ );
 
