@@ -70,7 +70,10 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, options ) => {
     const missingFromProposed = referencePhetioIDs.filter( e => !proposedPhetioIDs.includes( e ) );
     missingFromProposed.forEach( missingPhetioID => {
       appendProblem( `PhET-iO Element missing: ${missingPhetioID}`, false );
-      appendProblem( `PhET-iO Element missing: ${missingPhetioID}`, true );
+
+      if ( isPhetioDesigned( referenceAPI, missingPhetioID ) ) {
+        appendProblem( `PhET-iO Element missing: ${missingPhetioID}`, true );
+      }
 
       delete newReferenceAPI.phetioElements[ missingPhetioID ];
     } );

@@ -23,11 +23,17 @@ module.exports = async ( repos, proposedAPIs, options ) => {
 
   repos.forEach( repo => {
 
+    const packageObject = JSON.parse( fs.readFileSync( `../${repo}/package.json`, 'utf8' ) );
+    const phetioSection = packageObject.phet[ 'phet-io' ] || {};
+
     // Fails on missing file or parse error.
     const referenceAPI = JSON.parse( fs.readFileSync( `${API_DIR}/${repo}.json`, 'utf8' ) );
     const proposedAPI = proposedAPIs[ repo ];
 
-    const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _ );
+    const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _, {
+      compareBreakingAPIChanges: !!phetioSection.compareBreakingAPIChanges,
+      compareDesignedAPIChanges: !!phetioSection.compareDesignedAPIChanges
+    } );
 
     if ( comparisonData.breakingProblems.length ) {
       console.log( `${repo} BREAKING PROBLEMS` );
