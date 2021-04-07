@@ -30,14 +30,6 @@ module.exports = () => {
   processKey( 'sims', value => {
     repos = value.split( ',' );
   } );
-  processKey( 'mod', value => {
-    const newArray = [];
-    for ( let i = 0; i < repos.length; i += parseInt( value, 10 ) ) {
-      newArray.push( repos[ i ] );
-    }
-    repos = newArray;
-    console.log( `after mod: ${repos.join( ', ' )}` );
-  } );
 
   return repos;
 };
