@@ -3,7 +3,7 @@
 const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
 const phetioCompareAPIs = require( './phetioCompareAPIs' );
-const getSimList = require( './getSimList' );
+const getSimList = require( '../common/getSimList' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
 
 /**

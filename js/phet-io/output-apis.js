@@ -4,7 +4,7 @@ const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
 const generatePhetioMacroAPI = require( './generatePhetioMacroAPI' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
-const getSimList = require( './getSimList' );
+const getSimList = require( '../common/getSimList' );
 
 /**
  * Runs generate-phet-io-api for the specified simulations, or all phet-io sims if not specified. This may take a couple
