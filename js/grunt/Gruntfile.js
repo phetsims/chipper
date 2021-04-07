@@ -478,10 +478,16 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   grunt.registerTask(
     'generate-phet-io-api',
-    'Output the phet-io API as JSON to phet-io/api.',
+    'Output the phet-io API as JSON to phet-io/api.\n' +
+    'Options\n:' +
+    '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
+    '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
+    '--temporary - outputs to the temporary directory',
     wrapTask( async () => {
 
-      const dir = '../phet-io/api/';
+      const sims = getSimList().length === 0 ? [ repo ] : getSimList();
+
+      const dir = grunt.option( 'temporary' ) ? '../phet-io/api-temporary' : '../phet-io/api';
       try {
         fs.mkdirSync( dir );
       }
@@ -490,10 +496,15 @@ Updates the normal automatically-generated files for this repository. Includes:
           throw e;
         }
       }
-      const filePath = `../phet-io/api/${repo}.json`;
 
-      const api = ( await generatePhetioMacroAPI( [ repo ] ) )[ repo ];
-      fs.writeFileSync( filePath, formatPhetioAPI( api ) );
+      const results = await generatePhetioMacroAPI( sims, {
+        showProgressBar: sims.length > 1
+      } );
+      sims.forEach( sim => {
+        const filePath = `${dir}/${sim}.json`;
+        const api = results[ sim ];
+        fs.writeFileSync( filePath, formatPhetioAPI( api ) );
+      } );
     } )
   );
 
