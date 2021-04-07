@@ -20,7 +20,6 @@ module.exports = async ( repos, options ) => {
     delta: false,
     overwriteChanges: false
   }, options );
-  console.log( options.delta );
   const results = await generatePhetioMacroAPI( repos, {
     showProgressBar: true,
     showMessagesFromSim: false
