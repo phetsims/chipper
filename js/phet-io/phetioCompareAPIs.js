@@ -230,7 +230,6 @@ if ( typeof window === 'undefined' ) {
 }
 else {
 
-  // running in browser as a preload
-  assert && assert( !window.hasOwnProperty( 'phetioCompareAPIs' ), 'phetioCompareAPIs was unexpectedly already defined' );
-  window.phetioCompareAPIs = _phetioCompareAPIs;
+  window.phetio = window.phetio || {};
+  window.phetio.phetioCompareAPIs = _phetioCompareAPIs;
 }
