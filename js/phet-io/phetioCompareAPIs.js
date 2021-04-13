@@ -27,7 +27,7 @@ function getParentID( phetioID ) {
 }
 
 /**
- * Compare two APIs for breaking changes.
+ * Compare two APIs for breaking or design changes.
  *
  * NOTE: Named with an underscore to avoid automatically defining `window.phetioCompareAPIs` as a global
  *
