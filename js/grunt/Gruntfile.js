@@ -59,6 +59,7 @@ module.exports = function( grunt ) {
   }
 
   const repo = grunt.option( 'repo' ) || packageObject.name;
+  assert( typeof repo === 'string' && /^[a-z]+(-[a-z]+)*$/u.test( repo ), 'repo name should be composed of lower-case characters, optionally with dashes used as separators' );
 
   /**
    * Wraps a promise's completion with grunt's asynchronous handling, with added helpful failure messages (including
