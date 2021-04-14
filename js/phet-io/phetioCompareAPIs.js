@@ -12,43 +12,143 @@
  * in order to simplify usage in all these sites.
  *
  * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
 'use strict';
 
 /**
- * Copied from PhetioIDUtils, see https://github.com/phetsims/tandem/issues/231
- * @param {string} phetioID
- * @returns {null|string}
+ * @typedef API
+ * @property {boolean} phetioFullAPI
+ * @property {Object} phetioElements - phetioElements for version >=1.0 this will be a sparse, tree like structure with
+ *                    metadata in key: `_metadata`. For version<1 this will be a flat list with phetioIDs as keys,
+ *                    and values as metadata.
+ * @property {Object} phetioTypes
  */
-function getParentID( phetioID ) {
-  const indexOfLastSeparator = phetioID.lastIndexOf( '.' );
-  return indexOfLastSeparator === -1 ? null : phetioID.substring( 0, indexOfLastSeparator );
-}
+
+/**
+ * See phetioEngine.js for where this is generated in master. Keep in mind that we support different versions, including
+ * APIs that don't have a version attribute.
+ * @typedef API_1_0
+ * @extends API
+ * @property {{major:number, minor:number}} version
+ * @property {string} sim
+ */
+
+
+const METADATA_KEY_NAME = '_metadata';
+
+/**
+ * "up-convert" an API to be in the format of API version >=1.0. This generally is thought of as a "sparse, tree-like"
+ * api.
+ * @param {API} api
+ * @param _
+ * @returns {API} - In this version, phetioElements will be structured as a tree, but will have a verbose and complete
+ *                  set of all metadata keys for each element. There will not be `metadataDefaults` in each type.
+ */
+const toStructuredTree = ( api, _ ) => {
+  const sparseAPI = _.cloneDeep( api );
+
+  // DUPLICATED with phetioEngine.js
+  const sparseElements = {};
+  Object.keys( api.phetioElements ).forEach( phetioID => {
+    const entry = api.phetioElements[ phetioID ];
+
+    const chain = phetioID.split( '.' ); // TODO: use PhETIOIDUtils separator, see https://github.com/phetsims/phet-io/issues/1753
+
+    // Fill in each level
+    let level = sparseElements;
+    chain.forEach( componentName => {
+      level[ componentName ] = level[ componentName ] || {};
+      level = level[ componentName ];
+    } );
+
+    level[ METADATA_KEY_NAME ] = {};
+
+    Object.keys( entry ).forEach( key => {
+
+        // write all values without trying to factor out defaults
+        level[ METADATA_KEY_NAME ][ key ] = entry[ key ];
+      }
+    );
+  } );
+
+  sparseAPI.phetioElements = sparseElements;
+  return sparseAPI;
+};
+
+/**
+ * @param {Object} phetioElement
+ * @param {API} api
+ * @param {Object} _ - lodash
+ * @param {function|undefined} assert - optional assert
+ * @returns {Object}
+ */
+const getMetadataValues = ( phetioElement, api, _, assert ) => {
+  const typeName = phetioElement[ METADATA_KEY_NAME ].phetioTypeName || 'ObjectIO';
+
+  if ( api.version ) {
+    const defaults = getMetadataDefaults( typeName, api, _, assert );
+    return _.merge( defaults, phetioElement[ METADATA_KEY_NAME ] );
+  }
+  else {
+
+    // Dense version supplies all metadata values
+    return phetioElement[ METADATA_KEY_NAME ];
+  }
+};
+
+/**
+ * @param {string} typeName
+ * @param {API} api
+ * @param {Object} _ - lodash
+ * @param {function|undefined} assert - optional assert
+ * @returns {Object} - defensive copy, non-mutating
+ */
+const getMetadataDefaults = ( typeName, api, _, assert ) => {
+  const entry = api.phetioTypes[ typeName ];
+  assert && assert( entry, `entry missing: ${typeName}` );
+  if ( entry.supertype ) {
+    return _.merge( getMetadataDefaults( entry.supertype, api, _ ), entry.metadataDefaults );
+  }
+  else {
+    return _.merge( {}, entry.metadataDefaults );
+  }
+};
+
+/**
+ * @param {API} api
+ * @returns {boolean} - whether or not the API is of type API_1_0
+ */
+const isOldAPIVersion = api => {
+  return !api.hasOwnProperty( 'version' );
+};
 
 /**
  * Compare two APIs for breaking or design changes.
  *
  * NOTE: Named with an underscore to avoid automatically defining `window.phetioCompareAPIs` as a global
  *
- * @param {Object} referenceAPI - the "ground truth" or reference API
- * @param {Object} proposedAPI - the proposed API for comparison with referenceAPI
+ * @param {API_1_0} referenceAPI - the "ground truth" or reference API
+ * @param {API} proposedAPI - the proposed API for comparison with referenceAPI
  * @param _ - lodash, so this can be used from different contexts.
+ * @param {function|undefined} assert - so this can be used from different contexts
  * @param {Object} [options]
  * @returns {{breakingProblems:string[], designedProblems:string[], newAPI:Object}}
  */
-const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, options ) => {
+const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
+
+  assert && assert( !isOldAPIVersion( referenceAPI ) && referenceAPI.version.major >= 1, 'referenceAPI must be versioned >= 1.0' );
+
+  // If the proposed version predates 1.0, then bring it forward to the structured tree with metadata under `_metadata`.
+  if ( isOldAPIVersion( proposedAPI ) ) {
+    proposedAPI = toStructuredTree( proposedAPI, _ );
+  }
 
   options = _.merge( {
     compareDesignedAPIChanges: true,
     compareBreakingAPIChanges: true
   }, options );
-
-  const isPhetioDesigned = ( api, phetioID ) => {
-    return phetioID && // base case to prevent going beyond the root
-           ( ( api.phetioElements[ phetioID ] && api.phetioElements[ phetioID ].phetioDesigned ) ||
-             isPhetioDesigned( api, getParentID( phetioID ) ) );
-  };
 
   const breakingProblems = [];
   const designedProblems = [];
@@ -64,23 +164,25 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, options ) => {
     }
   };
 
-  const referencePhetioIDs = Object.keys( referenceAPI.phetioElements );
-  const proposedPhetioIDs = Object.keys( proposedAPI.phetioElements );
-  if ( !_.isEqual( referencePhetioIDs, proposedPhetioIDs ) ) {
-    const missingFromProposed = referencePhetioIDs.filter( e => !proposedPhetioIDs.includes( e ) );
-    missingFromProposed.forEach( missingPhetioID => {
-      appendProblem( `PhET-iO Element missing: ${missingPhetioID}`, false );
+  /**
+   * Visit one element along the APIs.
+   * @param {string[]} trail - the path of tandem componentNames
+   * @param {Object} reference - current value in the referenceAPI
+   * @param {Object} proposed - current value in the proposedAPI
+   * @param {Object} newReference - current value in the newReferenceAPI - mutated with changes
+   * @param {boolean} isDesigned
+   */
+  const visit = ( trail, reference, proposed, newReference, isDesigned ) => {
+    const phetioID = trail.join( '.' );
 
-      if ( isPhetioDesigned( referenceAPI, missingPhetioID ) ) {
-        appendProblem( `PhET-iO Element missing: ${missingPhetioID}`, true );
-      }
+    // Detect an instrumented instance
+    if ( reference.hasOwnProperty( METADATA_KEY_NAME ) ) {
 
-      delete newReferenceAPI.phetioElements[ missingPhetioID ];
-    } );
-  }
-  referencePhetioIDs.forEach( phetioID => {
-    if ( proposedPhetioIDs.includes( phetioID ) ) {
+      // Override isDesigned, if specified
+      isDesigned = isDesigned || reference[ METADATA_KEY_NAME ].phetioDesigned;
 
+      const referenceCompleteMetadata = getMetadataValues( reference, referenceAPI, _, assert );
+      const proposedCompleteMetadata = getMetadataValues( proposed, proposedAPI, _, assert );
       /**
        * Push any problems that may exist for the provided metadataKey.
        * @param {string} metadataKey - See PhetioObject.getMetadata()
@@ -88,27 +190,39 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, options ) => {
        * @param {*} [invalidProposedValue] - an optional new value that would signify a breaking change. Any other value would be acceptable.
        */
       const reportDifferences = ( metadataKey, isDesignedChange = false, invalidProposedValue ) => {
-        const referenceValue = referenceAPI.phetioElements[ phetioID ][ metadataKey ];
-        const proposedValue = proposedAPI.phetioElements[ phetioID ][ metadataKey ];
-        if ( referenceValue !== proposedValue ) {
-          if ( invalidProposedValue === undefined || isDesignedChange ) {
-            appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}`, isDesignedChange );
-            newReferenceAPI.phetioElements[ phetioID ][ metadataKey ] = proposedValue;
-          }
-          else if ( !isDesignedChange ) {
-            if ( proposedValue === invalidProposedValue ) {
-              appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}` );
-              newReferenceAPI.phetioElements[ phetioID ][ metadataKey ] = proposedValue;
-            }
-            else {
+        const referenceValue = referenceCompleteMetadata[ metadataKey ];
+        const proposedValue = proposedCompleteMetadata[ metadataKey ];
 
-              // value changed, but it was a widening API (adding something to state, or making something read/write)
+        if ( referenceValue !== proposedValue ) {
+
+          // if proposed API is older (no version specified), ignore phetioArchetypePhetioID changed from null to undefined
+          // because it used to be sparse, and in version 1.0 it became a default.
+          const ignore = isOldAPIVersion( proposedAPI ) &&
+                         metadataKey === 'phetioArchetypePhetioID' &&
+                         referenceValue === null &&
+                         proposedValue === undefined;
+
+          if ( !ignore ) {
+
+            if ( invalidProposedValue === undefined || isDesignedChange ) {
+              appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}`, isDesignedChange );
+              newReference[ METADATA_KEY_NAME ][ metadataKey ] = proposedValue;
+            }
+            else if ( !isDesignedChange ) {
+              if ( proposedValue === invalidProposedValue ) {
+                appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}` );
+                newReference[ METADATA_KEY_NAME ][ metadataKey ] = proposedValue;
+              }
+              else {
+
+                // value changed, but it was a widening API (adding something to state, or making something read/write)
+              }
             }
           }
         }
       };
 
-      // appears in both, now check its metadata
+      // Check for breaking changes
       reportDifferences( 'phetioTypeName' );
       reportDifferences( 'phetioEventType' );
       reportDifferences( 'phetioPlayback' );
@@ -124,13 +238,41 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, options ) => {
       // 'phetioStudioControl'
       // 'phetioHighFrequency', non-breaking, assuming clients with data have the full data stream
 
-      if ( isPhetioDesigned( referenceAPI, phetioID ) ) {
-        Object.keys( referenceAPI.phetioElements[ phetioID ] ).forEach( metadataKey => {
+      // Check for design changes
+      if ( isDesigned ) {
+        Object.keys( referenceCompleteMetadata ).forEach( metadataKey => {
           reportDifferences( metadataKey, true );
         } );
       }
     }
-  } );
+
+    // Recurse to children
+    for ( const componentName in reference ) {
+      if ( reference.hasOwnProperty( componentName ) && componentName !== METADATA_KEY_NAME ) {
+
+        if ( !proposed.hasOwnProperty( componentName ) ) {
+          appendProblem( `PhET-iO Element missing: ${phetioID}.${componentName}`, false );
+
+          if ( isDesigned ) {
+            appendProblem( `PhET-iO Element missing: ${phetioID}.${componentName}`, true );
+          }
+
+          delete newReference[ componentName ];
+        }
+        else {
+          visit(
+            trail.concat( componentName ),
+            reference[ componentName ],
+            proposed[ componentName ],
+            newReference[ componentName ],
+            isDesigned
+          );
+        }
+      }
+    }
+  };
+
+  visit( [], referenceAPI.phetioElements, proposedAPI.phetioElements, newReferenceAPI.phetioElements, false );
 
   // Check for: missing IO Types, missing methods, or differing parameter types or return types
   for ( const typeName in referenceAPI.phetioTypes ) {
@@ -204,13 +346,18 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, options ) => {
           newReferenceType.parameterTypes = _.clone( proposedParameterTypes );
         }
 
-        // make sure we have matching metadata keys
-        const referenceMetadataKeys = referenceType.metadataKeys;
-        const proposedMetadataKeys = proposedType.metadataKeys;
-        if ( !_.isEqual( referenceMetadataKeys, proposedMetadataKeys ) ) {
-          appendProblem( `${typeName} metadata keys changed from ${referenceMetadataKeys.join( ', ' )} to ${proposedMetadataKeys.join( ', ' )}. This may or may not 
-          be a breaking change, but we are reporting it just in case.` );
-          newReferenceType.metadataKeys = _.clone( proposedMetadataKeys );
+
+        if ( referenceAPI.version && proposedAPI.version ) {
+
+          // Check whether the default values have changed. See https://github.com/phetsims/phet-io/issues/1753
+          const referenceDefaults = referenceAPI.phetioTypes[ typeName ].metadataDefaults;
+          const proposedDefaults = proposedAPI.phetioTypes[ typeName ].metadataDefaults;
+
+          Object.keys( referenceDefaults ).forEach( key => {
+            if ( referenceDefaults[ key ] !== proposedDefaults[ key ] ) {
+              appendProblem( `${typeName} metadata value ${key} changed from ${referenceDefaults[ key ]} to ${proposedDefaults[ key ]}. This may or may not be a breaking change, but we are reporting it just in case.` );
+            }
+          } );
         }
       }
     }
@@ -222,6 +369,9 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, options ) => {
     designedProblems: designedProblems
   };
 };
+
+// @public - used to "up-convert" an old versioned API to the new (version >=1), structured tree api.
+_phetioCompareAPIs.toStructuredTree = toStructuredTree;
 
 if ( typeof window === 'undefined' ) {
 

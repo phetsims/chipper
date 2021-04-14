@@ -4,6 +4,7 @@ const phetioCompareAPIs = require( './phetioCompareAPIs' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const jsondiffpatch = require( 'jsondiffpatch' ).create( {} );
+const assert = require( 'assert' );
 
 const API_DIR = '../phet-io/api';
 
@@ -30,7 +31,7 @@ module.exports = async ( repos, proposedAPIs, options ) => {
     const referenceAPI = JSON.parse( fs.readFileSync( `${API_DIR}/${repo}.json`, 'utf8' ) );
     const proposedAPI = proposedAPIs[ repo ];
 
-    const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _, {
+    const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, {
       compareBreakingAPIChanges: !!phetioSection.compareBreakingAPIChanges,
       compareDesignedAPIChanges: !!phetioSection.compareDesignedAPIChanges
     } );
