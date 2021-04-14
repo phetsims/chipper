@@ -41,5 +41,5 @@ const copyWithSortedKeys = unordered => {
 module.exports = api => {
   assert( api, 'api expected' );
   const objectString = JSON.stringify( copyWithSortedKeys( api ), null, 2 );
-  return fixEOL( objectString.replace( /\n/g, '\n  ' ) ); // for proper file formatting
+  return fixEOL( objectString );
 };
