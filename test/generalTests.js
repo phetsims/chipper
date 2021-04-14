@@ -10,3 +10,4 @@
 'use strict';
 
 require( '../js/common/ChipperStringUtilTests' );
+require( '../js/phet-io/phetioCompareAPIsTests' );
