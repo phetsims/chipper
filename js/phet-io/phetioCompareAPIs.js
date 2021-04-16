@@ -54,7 +54,9 @@ const toStructuredTree = ( api, _ ) => {
   Object.keys( api.phetioElements ).forEach( phetioID => {
     const entry = api.phetioElements[ phetioID ];
 
-    const chain = phetioID.split( '.' ); // TODO: use PhETIOIDUtils separator, see https://github.com/phetsims/phet-io/issues/1753
+    // API versions < 1.0, use a tandem separator of '.'  If we ever change this separator in master (hopefully not!)
+    // this value wouldn't change since it reflects the prior committed versions which do use '.'
+    const chain = phetioID.split( '.' );
 
     // Fill in each level
     let level = sparseElements;
