@@ -87,7 +87,7 @@ const toStructuredTree = ( api, _ ) => {
  * @returns {Object}
  */
 const getMetadataValues = ( phetioElement, api, _, assert ) => {
-  const typeName = phetioElement[ METADATA_KEY_NAME ].phetioTypeName || 'ObjectIO';
+  const typeName = phetioElement[ METADATA_KEY_NAME ] ? ( phetioElement[ METADATA_KEY_NAME ].phetioTypeName || 'ObjectIO' ) : 'ObjectIO';
 
   if ( api.version ) {
     const defaults = getMetadataDefaults( typeName, api, _, assert );
@@ -193,7 +193,9 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => 
        */
       const reportDifferences = ( metadataKey, isDesignedChange = false, invalidProposedValue ) => {
         const referenceValue = referenceCompleteMetadata[ metadataKey ];
-        const proposedValue = proposedCompleteMetadata[ metadataKey ];
+
+        // Gracefully handle missing metadata from the <1.0 API format
+        const proposedValue = proposedCompleteMetadata ? proposedCompleteMetadata[ metadataKey ] : {};
 
         if ( referenceValue !== proposedValue ) {
 
