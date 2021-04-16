@@ -24,7 +24,6 @@ const generateTwitterCard = require( './generateTwitterCard' );
 const getPhetLibs = require( './getPhetLibs' );
 const getSimList = require( '../common/getSimList' );
 const lint = require( './lint' );
-const migrate = require( './migrate' );
 const minify = require( './minify' );
 const modulify = require( './modulify' );
 const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
@@ -431,10 +430,6 @@ Updates the normal automatically-generated files for this repository. Includes:
     wrapTask( async () => {
       await reportThirdParty();
     } ) );
-
-  grunt.registerTask( 'migrate', 'Migrates RequireJS code to ES6 modules using a number of heuristics', wrapTask( async () => {
-    await migrate( repo );
-  } ) );
 
   grunt.registerTask( 'modulify', 'Creates *.js modules for all images/strings/audio/etc in a repo', wrapTask( async () => {
     await modulify( repo );
