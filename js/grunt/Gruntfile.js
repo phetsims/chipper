@@ -440,11 +440,6 @@ Updates the normal automatically-generated files for this repository. Includes:
     await modulify( repo );
   } ) );
 
-  grunt.registerTask( 'milagro', 'Runs both migrate and modulify', wrapTask( async () => {
-    await migrate( repo );
-    await modulify( repo );
-  } ) );
-
   // Grunt task that determines created and last modified dates from git, and
   // updates copyright statements accordingly, see #403
   grunt.registerTask(
