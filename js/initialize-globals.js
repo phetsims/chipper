@@ -561,18 +561,15 @@
     },
 
     /**
-     * Whether interactive description accessibility features are enabled or not. Use this option to render the
-     * Parallel DOM for keyboard navigation and screen reader based auditory descriptions. This query parameter is
-     * meant for internal use only, simulations published with accessibility enabled should use the
-     * `package.json` flag `"supportsInteractiveDescription": true`.
      *
-     * Use this to enable accessibility, but do NOT use this to determine whether interactive description is enabled for
-     * a sim. This is because `package.json` flags can also enable accessibility features,  so please use
-     * phet.joist.sim.supportsInteractiveDescription if you need to know whether description is enabled globally.
+     * Enables interactive description in the simulation. Use this option to render the Parallel DOM for keyboard
+     * navigation and screen-reader-based auditory descriptions. Can be permanently enabled if
+     * `supportsInteractiveDescription: true` is added under the `phet.features` entry of package.json. Query parameter
+     * value will always override package.json entry.
      */
     supportsInteractiveDescription: {
       type: 'boolean',
-      defaultValue: false
+      defaultValue: !!packagePhet.supportsInteractiveDescription
     },
 
     /**
@@ -599,7 +596,7 @@
 
     /**
      * Enables panning and zooming of the simulation. Can be permanently disabled if supportsPanAndZoom: false is
-     * added under the `phet` entry of package.json. Query parameter value will always override package.json entry.
+     * added under the `phet.features` entry of package.json. Query parameter value will always override package.json entry.
      *
      * Public, so that users can disable this feature if they need to.
      */
