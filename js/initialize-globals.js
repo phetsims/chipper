@@ -569,7 +569,7 @@
      */
     supportsInteractiveDescription: {
       type: 'boolean',
-      defaultValue: !!packagePhet.supportsInteractiveDescription
+      defaultValue: !!packageFeatures.supportsInteractiveDescription
     },
 
     /**

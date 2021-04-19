@@ -324,7 +324,8 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'generate-a11y-view-html',
     'Generates top-level SIM-a11y-view.html file used for visualizing accessible content. Usually you should ' +
-    'set the "supportsInteractiveDescription":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
+    'set the "phet.features.supportsInteractiveDescription":true flag in the sim package.json and run `grunt update` ' +
+    'instead of manually generating this.',
     wrapTask( async () => {
       generateA11yViewHTML( repo );
     } ) );
@@ -348,7 +349,7 @@ Updates the normal automatically-generated files for this repository. Includes:
         grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
 
-        if ( packageObject.phet.supportsInteractiveDescription ) {
+        if ( packageObject.phet.features && packageObject.phet.features.supportsInteractiveDescription ) {
           grunt.task.run( 'generate-a11y-view-html' );
         }
         if ( packageObject.phet.colorProfile ) {
