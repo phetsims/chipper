@@ -570,7 +570,10 @@
      * a sim. This is because `package.json` flags can also enable accessibility features,  so please use
      * phet.joist.sim.supportsInteractiveDescription if you need to know whether description is enabled globally.
      */
-    supportsInteractiveDescription: { type: 'flag' },
+    supportsInteractiveDescription: {
+      type: 'boolean',
+      defaultValue: false
+    },
 
     /**
      * Indicates whether custom gesture control is enabled by default in the simulation.
