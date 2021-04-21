@@ -291,7 +291,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     const fullAPI = ( await generatePhetioMacroAPI( [ repo ], {
       fromBuiltVersion: true
     } ) )[ repo ];
-    assert( fullAPI, 'full api expected' );
+    assert( fullAPI, 'Full api expected but not created from puppeteer step, likely caused by https://github.com/phetsims/chipper/issues/1022.' );
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, formatPhetioAPI( fullAPI ) );
   }
 
