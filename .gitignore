@@ -10,3 +10,4 @@ eslint/cache
 package-lock.json
 build
 typescript
+runts.html
