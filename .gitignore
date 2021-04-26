@@ -9,5 +9,3 @@ eslint/cache
 *.sublime-workspace
 package-lock.json
 build
-typescript
-runts.html
