@@ -131,7 +131,7 @@
    *
    * NOTE: Named with an underscore to avoid automatically defining `window.phetioCompareAPIs` as a global
    *
-   * @param {API_1_0} referenceAPI - the "ground truth" or reference API
+   * @param {API} referenceAPI - the "ground truth" or reference API
    * @param {API} proposedAPI - the proposed API for comparison with referenceAPI
    * @param _ - lodash, so this can be used from different contexts.
    * @param {function|undefined} assert - so this can be used from different contexts
@@ -140,11 +140,13 @@
    */
   const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
 
-    assert && assert( !isOldAPIVersion( referenceAPI ) && referenceAPI.version.major >= 1, 'referenceAPI must be versioned >= 1.0' );
-
     // If the proposed version predates 1.0, then bring it forward to the structured tree with metadata under `_metadata`.
     if ( isOldAPIVersion( proposedAPI ) ) {
       proposedAPI = toStructuredTree( proposedAPI, _ );
+    }
+
+    if ( isOldAPIVersion( referenceAPI ) ) {
+      referenceAPI = toStructuredTree( referenceAPI, _ );
     }
 
     options = _.merge( {
@@ -201,10 +203,17 @@
 
             // if proposed API is older (no version specified), ignore phetioArchetypePhetioID changed from null to undefined
             // because it used to be sparse, and in version 1.0 it became a default.
-            const ignore = isOldAPIVersion( proposedAPI ) &&
-                           metadataKey === 'phetioArchetypePhetioID' &&
-                           referenceValue === null &&
-                           proposedValue === undefined;
+            const ignoreBrokenProposed = isOldAPIVersion( proposedAPI ) &&
+                                         metadataKey === 'phetioArchetypePhetioID' &&
+                                         referenceValue === null &&
+                                         proposedValue === undefined;
+
+            const ignoreBrokenReference = isOldAPIVersion( referenceAPI ) &&
+                                          metadataKey === 'phetioArchetypePhetioID' &&
+                                          proposedValue === null &&
+                                          referenceValue === undefined;
+
+            const ignore = ignoreBrokenProposed || ignoreBrokenReference;
 
             if ( !ignore ) {
 
