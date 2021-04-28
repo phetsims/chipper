@@ -317,7 +317,7 @@
                 const proposedParams = proposedMethods[ referenceMethod ].parameterTypes;
 
                 if ( referenceParams.join( ',' ) !== proposedParams.join( ',' ) ) {
-                  appendProblem( `${typeName}.${referenceMethod} has different parameter types: ${referenceParams.join( ', ' )} => ${proposedParams.join( ', ' )}` );
+                  appendProblem( `${typeName}.${referenceMethod} has different parameter types: [${referenceParams.join( ', ' )}] => [${proposedParams.join( ', ' )}]` );
                   newReferenceType.methods[ referenceMethod ].parameterTypes = _.clone( proposedParams );
                 }
 
@@ -354,7 +354,7 @@
           const referenceParameterTypes = referenceType.parameterTypes;
           const proposedParameterTypes = proposedType.parameterTypes;
           if ( !_.isEqual( referenceParameterTypes, proposedParameterTypes ) ) {
-            appendProblem( `${typeName} parameter types changed from ${referenceParameterTypes.join( ', ' )} to ${proposedParameterTypes.join( ', ' )}. This may or may not 
+            appendProblem( `${typeName} parameter types changed from [${referenceParameterTypes.join( ', ' )}] to [${proposedParameterTypes.join( ', ' )}]. This may or may not 
           be a breaking change, but we are reporting it just in case.` );
             newReferenceType.parameterTypes = _.clone( proposedParameterTypes );
           }
