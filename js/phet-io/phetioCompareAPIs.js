@@ -205,7 +205,7 @@ const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, options ) => {
         }
 
         // make sure we have matching metadata keys
-        const referenceMetadataKeys = referenceType.metadataKeys;
+        const referenceMetadataKeys = referenceType.metadataKeys || [];
         const proposedMetadataKeys = proposedType.metadataKeys;
         if ( !_.isEqual( referenceMetadataKeys, proposedMetadataKeys ) ) {
           appendProblem( `${typeName} metadata keys changed from ${referenceMetadataKeys.join( ', ' )} to ${proposedMetadataKeys.join( ', ' )}. This may or may not 
