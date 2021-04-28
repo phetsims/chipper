@@ -359,6 +359,7 @@
             newReferenceType.parameterTypes = _.clone( proposedParameterTypes );
           }
 
+          // This check assumes that each API will be of a version that has metadataDefaults
           if ( referenceAPI.version && proposedAPI.version ) {
 
             // Check whether the default values have changed. See https://github.com/phetsims/phet-io/issues/1753
