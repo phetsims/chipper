@@ -15,6 +15,12 @@ const puppeteer = require( 'puppeteer' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const assert = require( 'assert' );
 
+/**
+ * Load each sim provided and get the
+ * @param {string[]} repos
+ * @param {Object} [options]
+ * @returns {Promise<Object.<string, Object>>} - keys are the repos, values are the APIs for each repo.
+ */
 const generatePhetioMacroAPI = async ( repos, options ) => {
 
   assert( repos.length === _.uniq( repos ).length, 'repos should be unique' );
@@ -74,6 +80,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     const newlineString = newline ? '\n' : '';
     process.stdout.write( `\r[${dots}${empty}] ${( progress * 100 ).toFixed( 2 )}%${newlineString}` );
   };
+
   for ( let i = 0; i < chunks.length; i++ ) {
     const chunk = chunks[ i ];
     options.showProgressBar && showProgress( i / chunks.length );
@@ -81,10 +88,19 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     const promises = chunk.map( async repo => {
       const page = await browser.newPage();
 
+      // Flags to make sure we only complete the Promise a single time. Two to support more specific error handling.
+      let rejected = false;
+      let resolved = false;
+
       return new Promise( async ( resolve, reject ) => { // eslint-disable-line no-async-promise-executor
 
         // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
         const id = setTimeout( () => reject( new Error( 'Timeout in generatePhetioMacroAPI' ) ), 30000 );
+
+        const cleanup = async () => {
+          await page.close();
+          clearTimeout( id );
+        };
 
         page.on( 'console', async msg => {
           const messageText = msg.text();
@@ -92,8 +108,11 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
             const fullAPI = messageText;
-            await page.close();
-            clearTimeout( id );
+            assert && assert( !rejected, 'should not have rejected if we were able to get the api' );
+
+            // page.close() (in cleanup) will potentially trigger a pageerror race condition, so guard on that with a flag.
+            resolved = true;
+            await cleanup();
             return resolve( {
 
               // to keep track of which repo this is for
@@ -121,9 +140,14 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
             }
           }
         } );
-        const cleanupAndReject = e => {
-          clearTimeout( id );
-          reject( e );
+        const cleanupAndReject = async e => {
+
+          // If already resolved, we don't care about errors afterwards
+          if ( !rejected && !resolved ) {
+            rejected = true;
+            await cleanup();
+            reject( e );
+          }
         };
 
         page.on( 'error', cleanupAndReject );
@@ -137,7 +161,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           await page.goto( url );
         }
         catch( e ) {
-          cleanupAndReject( e );
+          await cleanupAndReject( e );
         }
       } );
     } );
@@ -150,7 +174,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
         macroAPI[ chunkResult.value.repo ] = chunkResult.value.api;
       }
       else {
-        console.error( 'Error', chunkResult.reason );
+        console.error( 'Error in fulfilling chunk Promise:', chunkResult.reason );
       }
     } );
   }
