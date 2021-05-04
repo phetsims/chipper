@@ -5,6 +5,7 @@ phet-io-wrappers/engagement-metrics
 phet-io-wrappers/index
 phet-io-wrappers/login
 phet-io-wrappers/mirror-inputs
+phet-io-wrappers/mirror-inputs-popup
 phet-io-wrappers/multi
 phet-io-wrappers/record
 phet-io-wrappers/playback
