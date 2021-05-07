@@ -283,6 +283,12 @@
           }
         }
       }
+
+      for ( const componentName in proposed ) {
+        if ( isDesigned && proposed.hasOwnProperty( componentName ) && componentName !== METADATA_KEY_NAME && !reference.hasOwnProperty( componentName ) ) {
+          appendProblem( `New PhET-iO Element not in reference: ${phetioID}.${componentName}`, true );
+        }
+      }
     };
 
     visit( [], referenceAPI.phetioElements, proposedAPI.phetioElements, newReferenceAPI.phetioElements, false );
