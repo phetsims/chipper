@@ -156,7 +156,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
         const relativePath = options.fromBuiltVersion ?
                              `build/phet-io/${repo}_all_phet-io.html` :
                              `${repo}_en.html`;
-        const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI`;
+        const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI&randomSeed=12345`;
         try {
           await page.goto( url );
         }
