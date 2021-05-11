@@ -95,7 +95,6 @@ module.exports = async ( repos, options ) => {
           if ( msg.text().indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
             const fullAPI = msg.text();
-            await page.close();
             clearTimeout( id );
             resolve( {
 
@@ -108,6 +107,7 @@ module.exports = async ( repos, options ) => {
               // in case there is important formatting
               text: fullAPI
             } );
+            await page.close();
           }
 
           else if ( msg.type() === 'error' ) {
