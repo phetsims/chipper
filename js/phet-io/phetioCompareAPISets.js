@@ -19,7 +19,8 @@ const API_DIR = '../phet-io/api';
 module.exports = async ( repos, proposedAPIs, options ) => {
   options = _.extend( {
     delta: false,
-    overwrite: false
+    overwrite: false,
+    compareBreakingAPIChanges: false
   }, options );
 
   repos.forEach( repo => {
@@ -32,8 +33,8 @@ module.exports = async ( repos, proposedAPIs, options ) => {
     const proposedAPI = proposedAPIs[ repo ];
 
     const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, {
-      compareBreakingAPIChanges: !!phetioSection.compareBreakingAPIChanges,
-      compareDesignedAPIChanges: !!phetioSection.compareDesignedAPIChanges
+      compareBreakingAPIChanges: options.compareBreakingAPIChanges,
+      compareDesignedAPIChanges: !!phetioSection.compareDesignedAPIChanges // determined from the package.json flag
     } );
 
     if ( comparisonData.breakingProblems.length ) {

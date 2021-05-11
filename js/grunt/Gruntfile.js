@@ -502,12 +502,14 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   grunt.registerTask(
     'compare-phet-io-api',
-    'Compares the phet-io-api against the reference version(s).  Options:\n' +
+    'Compares the phet-io-api against the reference version(s) if this sim\'s package.json marks compareDesignedAPIChanges.  ' +
+    'This will by default compare designed changes only. Options:\n' +
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes\n' +
     '--temporary, compares api files in the temporary directory (otherwise compares to freshly generated apis)\n' +
-    '--overwrite - to adopt the changes, breaking or design changes (depending on package.json) and write the new api in phet-io/api/',
+    '--overwrite - to adopt the changes, breaking or design changes (depending on package.json) and write the new api in phet-io/api/\n' +
+    '--compareBreakingAPIChanges - add this flag to compare breaking changes in addition to designed changes',
     wrapTask( async () => {
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
@@ -526,10 +528,18 @@ Updates the normal automatically-generated files for this repository. Includes:
         } );
       }
 
-      await phetioCompareAPISets( sims, proposedAPIs, {
-        delta: grunt.option( 'delta' ),
-        overwrite: grunt.option( 'overwrite' )
-      } );
+      // Don't add to options object if values are `undefined` (as _.extend will keep those entries and not mix in defaults
+      const options = {};
+      if ( grunt.option( 'delta' ) ) {
+        options.delta = grunt.option( 'delta' );
+      }
+      if ( grunt.option( 'overwrite' ) ) {
+        options.overwrite = grunt.option( 'overwrite' );
+      }
+      if ( grunt.option( 'compareBreakingAPIChanges' ) ) {
+        options.compareBreakingAPIChanges = grunt.option( 'compareBreakingAPIChanges' );
+      }
+      await phetioCompareAPISets( sims, proposedAPIs, options );
     } )
   );
 

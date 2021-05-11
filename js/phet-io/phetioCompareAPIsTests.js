@@ -30,6 +30,7 @@ const DEFAULT_API = {
         phetioDesigned: false,
         phetioDocumentation: '',
         phetioDynamicElement: false,
+        phetioEventType: 'MODEL',
         phetioFeatured: false,
         phetioHighFrequency: false,
         phetioIsArchetype: false,
@@ -138,10 +139,10 @@ qunit.test( 'designed changes', assert => {
 } );
 
 
-qunit.test( 'breaking to miss element', assert => {
+qunit.test( 'breaking element API changes', assert => {
   const referenceAPI = _.merge( {
     phetioElements: {
-      element: {
+      breakingElement: {
         _metadata: {
           phetioDesigned: true
         },
@@ -152,17 +153,63 @@ qunit.test( 'breaking to miss element', assert => {
     }
   }, DEFAULT_API );
 
-  const proposedAPI = _.cloneDeep( referenceAPI );
+  let proposedAPI = _.cloneDeep( referenceAPI );
 
-  delete proposedAPI.phetioElements.element.designedChild;
+  delete proposedAPI.phetioElements.breakingElement.designedChild;
 
   let report = phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 1, 'missing an element' );
   assert.ok( report.designedProblems.length === 1, 'missing element is also a designed problem' );
 
-  referenceAPI.phetioElements.element._metadata.phetioDesigned = false;
+  referenceAPI.phetioElements.breakingElement._metadata.phetioDesigned = false;
 
   report = phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 1, 'missing an element' );
   assert.ok( report.designedProblems.length === 0, 'not a problem if not designed in the reference' );
+
+  const testMetadataKeyChange = ( metadataKey, valueThatBreaksAPI ) => {
+
+    proposedAPI = _.cloneDeep( referenceAPI );
+
+    proposedAPI.phetioElements.breakingElement._metadata[ metadataKey ] = valueThatBreaksAPI;
+
+    report = phetioCompareAPIs( referenceAPI, proposedAPI, {
+      compareDesignedAPIChanges: false,
+      compareBreakingAPIChanges: true
+    } );
+    assert.ok( report.breakingProblems.length === 1, `it is a breaking change for ${metadataKey} to become ${valueThatBreaksAPI}` );
+  };
+
+  // All values that would constitute a breaking change, sometimes breaking the comparison task with an assertion.
+  const metadataBreakingData = [
+    { metadataKey: 'phetioTypeName', value: 'OtherTypeIO', assert: true },
+    { metadataKey: 'phetioTypeName', value: true, assert: true },
+    { metadataKey: 'phetioEventType', value: true },
+    { metadataKey: 'phetioEventType', value: 'MOdDEL' },
+    { metadataKey: 'phetioEventType', value: 'USER' },
+    { metadataKey: 'phetioPlayback', value: true },
+    { metadataKey: 'phetioPlayback', value: '"a string"' },
+    { metadataKey: 'phetioDynamicElement', value: true },
+    { metadataKey: 'phetioIsArchetype', value: true },
+    { metadataKey: 'phetioIsArchetype', value: 'hi' },
+    { metadataKey: 'phetioArchetypePhetioID', value: true },
+    { metadataKey: 'phetioArchetypePhetioID', value: false },
+    { metadataKey: 'phetioArchetypePhetioID', value: 'wrongPhetioID' },
+    { metadataKey: 'phetioState', value: false },
+    { metadataKey: 'phetioReadOnly', value: true }
+  ];
+
+  metadataBreakingData.forEach( testData => {
+
+    const test = () => testMetadataKeyChange( testData.metadataKey, testData.value );
+
+    if ( testData.assert ) {
+      assert.throws( () => {
+        test();
+      }, `assertion expected with key: ${testData.key}, and wrong value: ${testData.value}` );
+    }
+    else {
+      test();
+    }
+  } );
 } );

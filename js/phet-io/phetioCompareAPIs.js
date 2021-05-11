@@ -187,6 +187,7 @@
 
         const referenceCompleteMetadata = getMetadataValues( reference, referenceAPI, _, assert );
         const proposedCompleteMetadata = getMetadataValues( proposed, proposedAPI, _, assert );
+
         /**
          * Push any problems that may exist for the provided metadataKey.
          * @param {string} metadataKey - See PhetioObject.getMetadata()
