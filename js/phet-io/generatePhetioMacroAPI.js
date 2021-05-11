@@ -92,9 +92,8 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
             const fullAPI = messageText;
-            await page.close();
             clearTimeout( id );
-            return resolve( {
+            resolve( {
 
               // to keep track of which repo this is for
               repo: repo,
@@ -102,6 +101,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
               // For machine readability
               api: JSON.parse( fullAPI )
             } );
+            await page.close();
           }
 
           else if ( msg.type() === 'error' ) {
