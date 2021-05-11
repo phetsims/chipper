@@ -37,6 +37,10 @@
 ( () => {
 
   const METADATA_KEY_NAME = '_metadata';
+  const DATA_KEY_NAME = '_data';
+
+  // Is not the reserved keys to store data/metadata on PhET-iO elements.
+  const isChildKey = key => key !== METADATA_KEY_NAME && key !== DATA_KEY_NAME;
 
   /**
    * "up-convert" an API to be in the format of API version >=1.0. This generally is thought of as a "sparse, tree-like"
@@ -262,7 +266,7 @@
 
       // Recurse to children
       for ( const componentName in reference ) {
-        if ( reference.hasOwnProperty( componentName ) && componentName !== METADATA_KEY_NAME ) {
+        if ( reference.hasOwnProperty( componentName ) && isChildKey( componentName ) ) {
 
           if ( !proposed.hasOwnProperty( componentName ) ) {
             appendProblem( `PhET-iO Element missing: ${phetioID}.${componentName}`, false );
@@ -286,7 +290,7 @@
       }
 
       for ( const componentName in proposed ) {
-        if ( isDesigned && proposed.hasOwnProperty( componentName ) && componentName !== METADATA_KEY_NAME && !reference.hasOwnProperty( componentName ) ) {
+        if ( isDesigned && proposed.hasOwnProperty( componentName ) && isChildKey( componentName ) && !reference.hasOwnProperty( componentName ) ) {
           appendProblem( `New PhET-iO Element not in reference: ${phetioID}.${componentName}`, true );
         }
       }
