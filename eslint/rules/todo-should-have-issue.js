@@ -18,11 +18,15 @@ catch( e ) {
   buildJSON = {};
 }
 
+// Whitelist of directories to check that TODOs have GitHub issues
 let directoriesToRequireIssues = [];
 if ( buildJSON && buildJSON.common && buildJSON.common.phetLibs ) {
 
-  // Whitelist of directories to check that TODOs have GitHub issues
   directoriesToRequireIssues = buildJSON.common.phetLibs.filter( x => x !== 'scenery' && x !== 'dot' && x !== 'kite' );
+
+  if ( buildJSON && buildJSON[ 'phet-io' ] && buildJSON[ 'phet-io' ].phetLibs ) {
+    directoriesToRequireIssues = directoriesToRequireIssues.concat( buildJSON[ 'phet-io' ].phetLibs );
+  }
 }
 
 module.exports = function( context ) {
