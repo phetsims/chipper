@@ -182,6 +182,10 @@
     if ( phet.chipper.getQueryParameter( 'locale' ) ) {
       window.phet.chipper.locale = phet.chipper.getQueryParameter( 'locale' );
     }
+
+    window.phet.chipper.queryParameters = window.phet.chipper.queryParameter || {};
+    window.phet.chipper.queryParameters.homeScreen = phet.chipper.getQueryParameter( 'homeScreen' ) !== 'false';
+    window.phet.chipper.queryParameters.initialScreen = phet.chipper.getQueryParameter( 'initialScreen' ) ? parseInt( phet.chipper.getQueryParameter( 'initialScreen' ), 10 ) : 0;
   }());
 
   // Create a random seed in the preload code that can be used to make sure playback simulations use the same seed
