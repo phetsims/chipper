@@ -8,6 +8,8 @@
  * npm install --save-dev qunit
  * node node_modules/qunit/bin/qunit.js test/generalTests.js
  *
+ * I didn't use a global qunit, since it seems we will eventually need a way to version qunit with chipper.
+ *
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
