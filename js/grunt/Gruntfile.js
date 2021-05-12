@@ -508,7 +508,6 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes\n' +
     '--temporary, compares api files in the temporary directory (otherwise compares to freshly generated apis)\n' +
-    '--overwrite - to adopt the changes, breaking or design changes (depending on package.json) and write the new api in phet-io/api/\n' +
     '--compareBreakingAPIChanges - add this flag to compare breaking changes in addition to designed changes',
     wrapTask( async () => {
 
@@ -532,9 +531,6 @@ Updates the normal automatically-generated files for this repository. Includes:
       const options = {};
       if ( grunt.option( 'delta' ) ) {
         options.delta = grunt.option( 'delta' );
-      }
-      if ( grunt.option( 'overwrite' ) ) {
-        options.overwrite = grunt.option( 'overwrite' );
       }
       if ( grunt.option( 'compareBreakingAPIChanges' ) ) {
         options.compareBreakingAPIChanges = grunt.option( 'compareBreakingAPIChanges' );

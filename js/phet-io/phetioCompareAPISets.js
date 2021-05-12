@@ -1,7 +1,6 @@
 // Copyright 2021, University of Colorado Boulder
 const fs = require( 'fs' );
 const phetioCompareAPIs = require( './phetioCompareAPIs' );
-const formatPhetioAPI = require( './formatPhetioAPI' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const jsondiffpatch = require( 'jsondiffpatch' ).create( {} );
 const assert = require( 'assert' );
@@ -9,7 +8,7 @@ const assert = require( 'assert' );
 const API_DIR = '../phet-io/api';
 
 /**
- * Compare two sets of APIs using phetioCompareAPIs. Can overwrite the changes if an option is set.
+ * Compare two sets of APIs using phetioCompareAPIs.
  *
  * @param {string[]} repos
  * @param {Object} proposedAPIs - map where key=repo, value=proposed API for that repo
@@ -19,7 +18,6 @@ const API_DIR = '../phet-io/api';
 module.exports = async ( repos, proposedAPIs, options ) => {
   options = _.extend( {
     delta: false,
-    overwrite: false,
     compareBreakingAPIChanges: false
   }, options );
 
@@ -54,10 +52,6 @@ module.exports = async ( repos, proposedAPIs, options ) => {
       if ( delta ) {
         console.log( JSON.stringify( delta, null, 2 ) );
       }
-    }
-
-    if ( options.overwrite ) {
-      fs.writeFileSync( `${API_DIR}/${repo}.json`, formatPhetioAPI( comparisonData.newAPI ), 'utf8' );
     }
   } );
 };
