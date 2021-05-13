@@ -136,6 +136,33 @@
      */
     legendsOfLearning: { type: 'flag' },
 
+    // Private Doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
+    /**
+     * Indicates whether to display the home screen.
+     * For multi-screen sims only, throws an assertion error if supplied for a single-screen sim.
+     * @memberOf PhetQueryParameters
+     * @type {boolean}
+     */
+    homeScreen: {
+      type: 'boolean',
+      defaultValue: true
+    },
+
+    // Private Doc: For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
+    // The value is one of the values in the screens array, not an index into the screens array.
+    /**
+     * Specifies the initial screen that will be visible when the sim starts.
+     * See `?screens` query parameter for screen numbering.
+     * For multi-screen sims only, throws an assertion error if applied in a single-screen sims.
+     * The default value of 0 is the home screen.
+     * @memberOf PhetQueryParameters
+     * @type {number}
+     */
+    initialScreen: {
+      type: 'number',
+      defaultValue: 0 // the home screen
+    },
+
     /**
      * test with a specific locale
      */
