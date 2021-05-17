@@ -13,7 +13,7 @@
     "babel-eslint": "^10.0.3",
     "eslint": "~7.22.0",
     "eslint-plugin-react": "^7.18.0",
-    "grunt": "~1.1.0",
+    "grunt": "~1.4.0",
     "jimp": "^0.2.0",
     "jpeg-js": "~0.4.3",
     "jsdoc": "~3.6.3",
