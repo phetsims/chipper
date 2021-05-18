@@ -262,6 +262,32 @@
             reportDifferences( metadataKey, true );
           } );
         }
+
+        // If the reference file declares an initial state, check that it hasn't changed
+        if ( reference._data && reference._data.initialState ) {
+
+          // Detect missing expected state
+          if ( !proposed._data || !proposed._data.initialState ) {
+
+            // Missing but expected state is a breaking problem
+            appendProblem( `${phetioID}._data.initialState is missing`, false );
+
+            // It is also a designed problem if we expected state in a designed subtree
+            isDesigned && appendProblem( `${phetioID}._data.initialState is missing`, true );
+          }
+          else {
+
+            const equals = _.isEqual( reference._data.initialState, proposed._data.initialState );
+            if ( !equals ) {
+
+              // A changed state value could break a client wrapper, so identify it with breaking changes.
+              appendProblem( `${phetioID}._data.initialState differs. Expected: ${JSON.stringify( reference._data.initialState )}, actual: ${JSON.stringify( proposed._data.initialState )}`, false );
+
+              // It is also a designed problem if the proposed values deviate from the specified designed values
+              isDesigned && appendProblem( `${phetioID}._data.initialState differs. Expected: ${JSON.stringify( reference._data.initialState )}, actual: ${JSON.stringify( proposed._data.initialState )}`, true );
+            }
+          }
+        }
       }
 
       // Recurse to children
