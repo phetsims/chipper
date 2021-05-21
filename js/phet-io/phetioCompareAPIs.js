@@ -268,23 +268,25 @@
 
           // Detect missing expected state
           if ( !proposed._data || !proposed._data.initialState ) {
+            const problemString = `${phetioID}._data.initialState is missing`;
 
             // Missing but expected state is a breaking problem
-            appendProblem( `${phetioID}._data.initialState is missing`, false );
+            appendProblem( problemString, false );
 
             // It is also a designed problem if we expected state in a designed subtree
-            isDesigned && appendProblem( `${phetioID}._data.initialState is missing`, true );
+            isDesigned && appendProblem( problemString, true );
           }
           else {
 
             const equals = _.isEqual( reference._data.initialState, proposed._data.initialState );
             if ( !equals ) {
+              const problemString = `${phetioID}._data.initialState differs. Expected: ${JSON.stringify( reference._data.initialState )}, actual: ${JSON.stringify( proposed._data.initialState )}`;
 
               // A changed state value could break a client wrapper, so identify it with breaking changes.
-              appendProblem( `${phetioID}._data.initialState differs. Expected: ${JSON.stringify( reference._data.initialState )}, actual: ${JSON.stringify( proposed._data.initialState )}`, false );
+              appendProblem( problemString, false );
 
               // It is also a designed problem if the proposed values deviate from the specified designed values
-              isDesigned && appendProblem( `${phetioID}._data.initialState differs. Expected: ${JSON.stringify( reference._data.initialState )}, actual: ${JSON.stringify( proposed._data.initialState )}`, true );
+              isDesigned && appendProblem( problemString, true );
             }
           }
         }
@@ -295,10 +297,11 @@
         if ( reference.hasOwnProperty( componentName ) && isChildKey( componentName ) ) {
 
           if ( !proposed.hasOwnProperty( componentName ) ) {
-            appendProblem( `PhET-iO Element missing: ${phetioID}.${componentName}`, false );
+            const problemString = `PhET-iO Element missing: ${phetioID}.${componentName}`;
+            appendProblem( problemString, false );
 
             if ( isDesigned ) {
-              appendProblem( `PhET-iO Element missing: ${phetioID}.${componentName}`, true );
+              appendProblem( problemString, true );
             }
 
             delete newReference[ componentName ];
