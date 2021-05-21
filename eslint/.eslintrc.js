@@ -998,6 +998,8 @@ module.exports = {
 
     window: 'readonly',
 
-    handlePlaybackEvent: 'readonly'
+    handlePlaybackEvent: 'readonly',
+
+    pako: 'readonly'
   }
 };
