@@ -1,4 +1,4 @@
-// Copyright 2015-2020, University of Colorado Boulder
+// Copyright 2015-2021, University of Colorado Boulder
 
 /**
  * Returns a map such that map["locale"]["REPO/stringKey"] will be the string value (with fallbacks to English where needed).
