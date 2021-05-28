@@ -408,11 +408,11 @@ const handleJSDOC = async buildDir => {
     shell: true
   } );
 
+  // Running with explanation -X appears to not output the files, so we have to run it twice.
   const explanation = ( await execute( 'node', getArgs( true ), {
     cwd: process.cwd(),
     shell: true
   } ) ).trim();
-  console.log( 'HELLO EXPLANATION', explanation );
 
   // Copy the logo file
   const imageDir = `${buildDir}doc/images`;
@@ -420,7 +420,19 @@ const handleJSDOC = async buildDir => {
     fs.mkdirSync( imageDir );
   }
   fs.copyFileSync( '../brand/phet-io/images/logo-on-white.png', `${imageDir}/logo.png` );
-  fs.writeFileSync( `${buildDir}doc/jsdoc-explanation-stdout.txt`, explanation );
+
+  const json = explanation.substring( explanation.indexOf( '[' ), explanation.lastIndexOf( ']' ) + 1 );
+
+  // basic sanity checks
+  assert( json.length > 5000, 'JSON seems odd' );
+  try {
+    JSON.parse( json );
+  }
+  catch( e ) {
+    assert( false, 'JSON parsing failed' );
+  }
+
+  fs.writeFileSync( `${buildDir}doc/jsdoc-explanation.json`, json );
 };
 
 /**
