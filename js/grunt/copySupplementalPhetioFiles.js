@@ -390,8 +390,9 @@ const handleJSDOC = async buildDir => {
     }
   }
 
-  const args = [
+  const getArgs = explain => [
     '../chipper/node_modules/jsdoc/jsdoc.js',
+    ...( explain ? [ '-X' ] : [] ),
     ...JSDOC_FILES,
     '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
     '-d', `${buildDir}doc/api`,
@@ -402,10 +403,16 @@ const handleJSDOC = async buildDir => {
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
   // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method
   // (node executable with jsdoc js file)
-  await execute( 'node', args, {
+  await execute( 'node', getArgs( false ), {
     cwd: process.cwd(),
     shell: true
   } );
+
+  const explanation = ( await execute( 'node', getArgs( true ), {
+    cwd: process.cwd(),
+    shell: true
+  } ) ).trim();
+  console.log( 'HELLO EXPLANATION', explanation );
 
   // Copy the logo file
   const imageDir = `${buildDir}doc/images`;
@@ -413,6 +420,7 @@ const handleJSDOC = async buildDir => {
     fs.mkdirSync( imageDir );
   }
   fs.copyFileSync( '../brand/phet-io/images/logo-on-white.png', `${imageDir}/logo.png` );
+  fs.writeFileSync( `${buildDir}doc/jsdoc-explanation-stdout.txt`, explanation );
 };
 
 /**
