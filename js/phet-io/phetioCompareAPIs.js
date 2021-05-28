@@ -391,7 +391,7 @@
           }
 
           // make sure we have matching parameter types
-          const referenceParameterTypes = referenceType.parameterTypes;
+          const referenceParameterTypes = referenceType.parameterTypes || [];
           const proposedParameterTypes = proposedType.parameterTypes;
           if ( !_.isEqual( referenceParameterTypes, proposedParameterTypes ) ) {
             appendProblem( `${typeName} parameter types changed from [${referenceParameterTypes.join( ', ' )}] to [${proposedParameterTypes.join( ', ' )}]. This may or may not 
