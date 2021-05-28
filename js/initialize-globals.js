@@ -573,6 +573,19 @@
     },
 
     /**
+     * Enables support for the "Interactive Highlights" feature, where highlights appear around interactive
+     * UI components as an accessibility tool to make it clear what components are available on screen for
+     * interaction. Though enabled here, the feature will be turned off until explicitly enabled by the
+     * user from the Preferences dialog. Can be permanently enabled if `supportsInteractiveHighlights` is true
+     * under `phet.features` in package.json. Query parameter will always override the package.json entry.
+     * The query parameter is meant for internal project use only.
+     */
+    supportsInteractiveHighlights: {
+      type: 'boolean',
+      defaultValue: !!packageFeatures.supportsInteractiveDescription
+    },
+
+    /**
      * Indicates whether custom gesture control is enabled by default in the simulation.
      * This input method is still in development, mostly to be used in combination with the voicing
      * feature. It allows you to swipe the screen to move focus, double tap the screen to activate
@@ -592,7 +605,10 @@
      *
      * For internal use only. This is currently only used in prototypes.
      */
-    supportsVoicing: { type: 'flag' },
+    supportsVoicing: {
+      type: 'boolean',
+      defaultValue: !!packageFeatures.supportsVoicing
+    },
 
     /**
      * Enables panning and zooming of the simulation. Can be permanently disabled if supportsPanAndZoom: false is
