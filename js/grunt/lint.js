@@ -27,6 +27,7 @@ const EXCLUDE_PATTERNS = [ // patterns that have no code that should be linted
   '../phet-io-wrapper-arithmetic',
   '../phet-io-wrapper-hookes-law-energy',
   '../phet-ios-app',
+  '../QA',
   '../smithers',
   '../tasks'
 ];
