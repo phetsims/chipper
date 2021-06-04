@@ -10,7 +10,7 @@
  *
  * See https://github.com/phetsims/chipper/issues/172
  *
- * @author Sam Reid
+ * @author Sam Reid (PhET Interactive Simulations)
  * @author Denzell Barnett (Phet Interactive Simulations)
  * @author Jonathan Olson (PhET Interactive Simulations)
  */

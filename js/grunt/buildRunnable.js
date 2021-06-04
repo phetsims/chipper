@@ -111,7 +111,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
       if ( module.split( '/' )[ 1 ] === mediaType ) {
 
-        // The file suffix is stripped and restored to its none .js extention. This is because getLicenseEntry doesn't
+        // The file suffix is stripped and restored to its non-js extension. This is because getLicenseEntry doesn't
         // handle modulified media files.
         const index = module.lastIndexOf( '_' );
         const path = `${module.slice( 0, index )}.${module.slice( index + 1, -3 )}`;
