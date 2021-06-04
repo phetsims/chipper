@@ -35,14 +35,18 @@ for ( const repo of activeRepos ) {
  * @returns {Array.<string>}
  */
 const getRelativeModules = modules => {
-  for ( let i = 0; i < modules[ 0 ].length; i++ ) {
-    for ( const usedModule of modules ) {
-      if ( usedModule[ i ] !== modules[ 0 ][ i ] ) {
-        return modules.map( module => module.slice( i ) );
-      }
-    }
-  }
-  throw new Error( 'modules are all the same?' );
+  const root = path.resolve( __dirname, '../../../' );
+  return modules
+
+    // Webpack 5 reports intermediate paths which need to be filtered out
+    .filter( m => fs.lstatSync( m ).isFile() )
+
+    // Get the relative path to the root, like "joist/js/Sim.js" or, on Windows, "joist\js\Sim.js"
+    .map( m => path.relative( root, m ) )
+
+    // Some developers check in a package.json to the root of the checkouts, as described in https://github.com/phetsims/chipper/issues/494#issuecomment-821292542
+    // like: /Users/samreid/apache-document-root/package.json. This powers grunt only and should not be included in the modules
+    .filter( m => m !== '../package.json' && m !== '..\\package.json' );
 };
 
 /**
@@ -76,6 +80,7 @@ module.exports = function( repo, brand ) {
     } );
 
     const compiler = webpack( {
+
       // We uglify as a step after this, with many custom rules. So we do NOT optimize or uglify in this step.
       optimization: {
         minimize: false

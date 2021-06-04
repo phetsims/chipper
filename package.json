@@ -29,9 +29,9 @@
     "request-promise-native": "^1.0.7",
     "taffydb": "^2.7.3",
     "terser": "~4.6.4",
-    "webpack": "^4.41.4",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2",
     "html-webpack-plugin": "4.0.0-beta.11",
     "memfs": "^3.0.3"
   },
