@@ -39,8 +39,8 @@ module.exports = ( repo, usedModules ) => {
 
         if ( filename !== 'license.json' && filename !== 'README.md' && filename.indexOf( '.js' ) !== -1 ) {
           const module = subdir ?
-                         `${repo}/${mediaType}/${subdir}/${filename}` :
-                         `${repo}/${mediaType}/${filename}`;
+                         `chipper/dist/${repo}/${mediaType}/${subdir}/${filename}` :
+                         `chipper/dist/${repo}/${mediaType}/${filename}`;
 
           // If no licenseEntries were registered, or some were registered but not one corresponding to this file
           if ( !normalizedUsedModules.includes( module ) ) {

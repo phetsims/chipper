@@ -31,6 +31,7 @@ const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const sortImports = require( './sortImports' );
+const tsc = require( './tsc' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
 const webpackDevServer = require( './webpackDevServer' );
 const assert = require( 'assert' );
@@ -108,6 +109,7 @@ module.exports = function( grunt ) {
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
     ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
     'clean',
+    'tsc',
     'build'
   ] );
 
@@ -152,6 +154,11 @@ module.exports = function( grunt ) {
           grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
         }
       }
+    } ) );
+
+  grunt.registerTask( 'tsc', 'Runs tsc --build --incremental to transpile JS/TS before the webpack step.  Requires the chipper branch "typescript"',
+    wrapTask( async () => {
+      await tsc( repo );
     } ) );
 
   grunt.registerTask( 'build',

@@ -88,7 +88,7 @@ module.exports = function( repo, brand ) {
 
       // Simulations or runnables will have a single entry point
       entry: {
-        repo: `../${repo}/js/${repo}-main.js`
+        repo: `../chipper/dist/${repo}/js/${repo}-main.js`
       },
 
       // We output our builds to chipper/build/
