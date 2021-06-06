@@ -136,7 +136,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
 
   const stringMap = getStringMap( allLocales, phetLibs, webpackResult.usedModules );
 
-  // After our string map is consturcted, report which of the translatable strings are unused.
+  // After our string map is constructed, report which of the translatable strings are unused.
   reportUnusedStrings( repo, packageObject.phet.requirejsNamespace, stringMap[ ChipperConstants.FALLBACK_LOCALE ] );
 
   // If we have NO strings for a given locale that we want, we'll need to fill it in with all English strings, see

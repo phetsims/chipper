@@ -163,7 +163,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
       if ( fileContent.includes( `import ${prefix} from` ) ) {
 
         // Look for normal matches, e.g. `joistStrings.` followed by one or more chunks like:
-        // .somethingValuely_alphaNum3r1c
+        // .somethingVaguely_alphaNum3r1c
         // [ 'aStringInBracketsBecauseOfSpecialCharacters' ]
         //
         // It will also then end on anything that doesn't look like another one of those chunks
