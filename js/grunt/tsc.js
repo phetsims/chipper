@@ -1,7 +1,7 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Runs `tsc --build --incremental` before the webpack step, so webpack can use the transpiled outputs (in chipper/dist)
+ * Runs `tsc --build` before the webpack step, so webpack can use the transpiled outputs (in chipper/dist)
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -27,7 +27,7 @@ module.exports = async function( repo ) {
   try {
     const version = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', '--version' ], `../${repo}` ) ).trim();
     assert && assert( version === 'Version 4.3.2', `Incompatible tsc version: ${version}, expected Version 4.3.2` );
-    const stdout = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', '--build', '--incremental' ], `../${repo}` ) ).trim();
+    const stdout = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', '--build' ], `../${repo}` ) ).trim();
     const endTime = Date.now();
     const elapsedTime = endTime - startTime;
     if ( stdout.length === 0 ) {

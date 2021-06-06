@@ -156,7 +156,7 @@ module.exports = function( grunt ) {
       }
     } ) );
 
-  grunt.registerTask( 'tsc', 'Runs tsc --build --incremental to transpile JS/TS before the webpack step.  Requires the chipper branch "typescript"',
+  grunt.registerTask( 'tsc', 'Runs tsc --build to transpile JS/TS before the webpack step.  Requires the chipper branch "typescript"',
     wrapTask( async () => {
       await tsc( repo );
     } ) );
