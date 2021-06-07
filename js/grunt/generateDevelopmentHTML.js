@@ -34,7 +34,7 @@ module.exports = async function( repo, options ) {
     bodystart = '',
     addedPreloads = [], // none to add
     stripPreloads = [], // none to add
-    mainFile = `js/${repo}-main.js`,
+    mainFile = `../chipper/dist/${repo}/js/${repo}-main.js`,
     forSim = true // is this html used for a sim, or something else like tests.
   } = options || {};
 

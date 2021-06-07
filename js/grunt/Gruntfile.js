@@ -17,6 +17,7 @@ const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+const generateTSConfig = require( './generateTSConfig' );
 const generateREADME = require( './generateREADME' );
 const generateTestHTML = require( './generateTestHTML' );
 const generateThumbnails = require( './generateThumbnails' );
@@ -314,6 +315,12 @@ module.exports = function( grunt ) {
       await generateDevelopmentHTML( repo );
     } ) );
 
+  grunt.registerTask( 'generate-tsconfig',
+    'Generates tsconfig.js for typescript builds.',
+    wrapTask( async () => {
+      await generateTSConfig( repo );
+    } ) );
+
   grunt.registerTask( 'generate-test-html',
     'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-unit-tests.md ' +
     'for more information on automated testing. Usually you should ' +
@@ -355,6 +362,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       if ( packageObject.phet.runnable ) {
         grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
+        grunt.task.run( 'generate-tsconfig' );
 
         if ( packageObject.phet.features && packageObject.phet.features.supportsInteractiveDescription ) {
           grunt.task.run( 'generate-a11y-view-html' );
