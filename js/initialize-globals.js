@@ -41,7 +41,7 @@
   // duck type defaults so that not all package.json files need to have a phet.features section.
   const packageFeatures = packagePhet.features || {};
 
-  // Private Doc: Note: the following jsdoc is for the public facing phet-io api. In addition, all query parameters in the schema
+  // Private Doc: Note: the following jsdoc is for the public facing phet-io API. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
   // phet-io documentation. Private comments about implementation details will be in comments above the jsdoc, and
   // marked as such.
@@ -234,7 +234,7 @@
       defaultValue: null
     },
 
-    // Private Doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
+    // Private Doc:  For external use. The below jsdoc is public to the phet-io API documentation. Change wisely.
     /**
      * Indicates whether to display the home screen.
      * For multi-screen sims only, throws an assertion error if supplied for a single-screen sim.
@@ -247,7 +247,7 @@
       public: true
     },
 
-    // Private Doc: For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
+    // Private Doc: For external use. The below jsdoc is public to the phet-io API documentation. Change wisely.
     // The value is one of the values in the screens array, not an index into the screens array.
     /**
      * Specifies the initial screen that will be visible when the sim starts.
@@ -427,7 +427,7 @@
      */
     sceneryStringLog: { type: 'flag' },
 
-    // Private Doc: For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
+    // Private Doc: For external use. The below jsdoc is public to the phet-io API documentation. Change wisely.
     /**
      * Specifies the set of screens that appear in the sim, and their order.
      * Uses 1-based (not zero-based) and "," delimited string such as "1,3,4" to get the 1st, 3rd and 4th screen.
@@ -493,7 +493,7 @@
      */
     shuffleListeners: { type: 'flag' },
 
-    // Private Doc:  For external use. The below jsdoc is public to the phet-io api documentation. Change wisely.
+    // Private Doc:  For external use. The below jsdoc is public to the phet-io API documentation. Change wisely.
     /**
      * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
      * must be supported by the sim for this to have any effect.

@@ -1,8 +1,8 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Compare phet-io APIs for two versions of the same sim. This function treats the first api as the "ground truth"
- * and compares the second api to see if it has any breaking changes against the first api. This function returns a
+ * Compare phet-io APIs for two versions of the same sim. This function treats the first API as the "ground truth"
+ * and compares the second API to see if it has any breaking changes against the first API. This function returns a
  * list of "problems".
  *
  * This file runs in node (command line API comparison), in the diff wrapper (client-facing API comparison) and
@@ -43,8 +43,7 @@
   const isChildKey = key => key !== METADATA_KEY_NAME && key !== DATA_KEY_NAME;
 
   /**
-   * "up-convert" an API to be in the format of API version >=1.0. This generally is thought of as a "sparse, tree-like"
-   * api.
+   * "up-convert" an API to be in the format of API version >=1.0. This generally is thought of as a "sparse, tree-like" API.
    * @param {API} api
    * @param _
    * @returns {API} - In this version, phetioElements will be structured as a tree, but will have a verbose and complete
@@ -423,7 +422,7 @@
     };
   };
 
-// @public - used to "up-convert" an old versioned API to the new (version >=1), structured tree api.
+// @public - used to "up-convert" an old versioned API to the new (version >=1), structured tree API.
   _phetioCompareAPIs.toStructuredTree = toStructuredTree;
 
   if ( typeof window === 'undefined' ) {

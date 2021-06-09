@@ -470,7 +470,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   grunt.registerTask(
     'generate-phet-io-api',
-    'Output the phet-io API as JSON to phet-io/api.\n' +
+    'Output the PhET-iO API as JSON to phet-io/api.\n' +
     'Options\n:' +
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
@@ -507,7 +507,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes\n' +
-    '--temporary, compares api files in the temporary directory (otherwise compares to freshly generated apis)\n' +
+    '--temporary, compares API files in the temporary directory (otherwise compares to freshly generated APIs)\n' +
     '--compareBreakingAPIChanges - add this flag to compare breaking changes in addition to designed changes',
     wrapTask( async () => {
 
