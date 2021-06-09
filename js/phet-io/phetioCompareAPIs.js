@@ -1,7 +1,7 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Compare phet-io APIs for two versions of the same sim. This function treats the first API as the "ground truth"
+ * Compare PhET-iO APIs for two versions of the same sim. This function treats the first API as the "ground truth"
  * and compares the second API to see if it has any breaking changes against the first API. This function returns a
  * list of "problems".
  *
