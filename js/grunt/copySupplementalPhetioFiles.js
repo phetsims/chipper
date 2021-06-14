@@ -69,7 +69,6 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jsondiffpatch-v0.3.11.umd.js',
   '../sherpa/lib/jsondiffpatch-v0.3.11-annotated.css',
   '../sherpa/lib/jsondiffpatch-v0.3.11-html.css',
-  '../sherpa/lib/split-1.5.11.min.js',
   '../sherpa/lib/pako-2.0.3/pako-2.0.3.min.js',
   '../sherpa/lib/pako-2.0.3/pako_inflate-2.0.3.min.js',
   '../sherpa/lib/highlight.js-9.1.0/styles/tomorrow-night-bright.css',
