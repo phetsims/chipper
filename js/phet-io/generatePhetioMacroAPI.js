@@ -1,7 +1,8 @@
 // Copyright 2019-2021, University of Colorado Boulder
 
 /**
- * Launch an instance of the simulation using puppeteer, gather the phet-io api of the simulation, see phetioEngine.getPhetioElementsBaseline
+ * Launch an instance of the simulation using puppeteer, gather the PhET-iO API of the simulation,
+ * see phetioEngine.getPhetioElementsBaseline
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Chris Klusendorf (PhET Interactive Simulations)
  * @author Sam Reid (PhET Interactive Simulations)

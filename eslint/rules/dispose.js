@@ -42,11 +42,11 @@ module.exports = function( context ) {
               let disposeFound = false;
               const rootNode = context.getSourceCode().ast;
               if ( rootNode &&
-                  rootNode.tokens ) {
+                   rootNode.tokens ) {
                 rootNode.tokens.forEach( token => {
                   if ( token ) {
                     if ( token.type === 'Identifier' &&
-                        token.value === 'dispose' ) {
+                         token.value === 'dispose' ) {
                       // we have found a dispose function
                       disposeFound = true;
                     }

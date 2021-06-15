@@ -69,7 +69,6 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jsondiffpatch-v0.3.11.umd.js',
   '../sherpa/lib/jsondiffpatch-v0.3.11-annotated.css',
   '../sherpa/lib/jsondiffpatch-v0.3.11-html.css',
-  '../sherpa/lib/split-1.5.11.min.js',
   '../sherpa/lib/pako-2.0.3/pako-2.0.3.min.js',
   '../sherpa/lib/pako-2.0.3/pako_inflate-2.0.3.min.js',
   '../sherpa/lib/highlight.js-9.1.0/styles/tomorrow-night-bright.css',
@@ -293,7 +292,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     const fullAPI = ( await generatePhetioMacroAPI( [ repo ], {
       fromBuiltVersion: true
     } ) )[ repo ];
-    assert( fullAPI, 'Full api expected but not created from puppeteer step, likely caused by https://github.com/phetsims/chipper/issues/1022.' );
+    assert( fullAPI, 'Full API expected but not created from puppeteer step, likely caused by https://github.com/phetsims/chipper/issues/1022.' );
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, formatPhetioAPI( fullAPI ) );
   }
 
