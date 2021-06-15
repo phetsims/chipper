@@ -31,9 +31,13 @@ module.exports = async function( repo ) {
       "path": "../chipper"
     }
   ],
-  "files": [
-    "js/${repo}-main.js"
-  ]
+  "include": [
+    "js/**/*",
+    "images/**/*",
+    "sounds/**/*",
+    "mipmaps/**/*"
+  ],
+  "exclude": ["node_modules"]
 }`;
 
   const outputFile = `../${repo}/tsconfig.json`;
