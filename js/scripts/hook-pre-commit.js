@@ -120,3 +120,28 @@ try {
 catch( e ) {
   console.log( e );
 }
+
+// Run typescript type checker if it exists in the checked-out shas
+try {
+  const tsc = require( '../../../chipper/js/grunt/tsc' );
+  if ( tsc.apiVersion === '1.0' ) {
+
+    ( async () => {
+
+      // lint() automatically filters out non-lintable repos
+      const results = await tsc( `../${repo}`, [] );
+      if ( results.stderr.length > 0 ) {
+        console.log( results.stderr );
+        process.exit( 1 );
+      }
+
+      outputToConsole && console.log( 'tsc passed' );
+    } )();
+  }
+  else {
+    console.log( 'chipper/js/grunt/tsc not compatible' );
+  }
+}
+catch( e ) {
+  console.log( 'chipper/js/grunt/tsc not found' );
+}
