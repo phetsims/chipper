@@ -15,6 +15,7 @@ const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const os = require( 'os' );
 const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedFile' );
+const getCopyrightLine = require( './getCopyrightLine' );
 
 // disable lint in compiled files, because it increases the linting time
 const HEADER = '/* eslint-disable */';
@@ -219,7 +220,10 @@ const createStringModule = async repo => {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const stringModuleFile = `../${repo}/js/${_.camelCase( repo )}Strings.js`;
   const namespace = _.camelCase( repo );
-  fs.writeFileSync( stringModuleFile, fixEOL( `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
+
+  const copyrightLine = await getCopyrightLine( repo, `js/${_.camelCase( repo )}Strings.js` );
+  fs.writeFileSync( stringModuleFile, fixEOL(
+    `${copyrightLine}
 
 /**
  * Auto-generated from modulify, DO NOT manually modify.
