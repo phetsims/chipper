@@ -20,7 +20,7 @@
     // "outFile": "../chipper/dist/example-sim.js",                             /* Concatenate and emit output to single file. */
     // "outDir": "../chipper/dist/gravity-and-orbits",                              /* Redirect output structure to the directory. */
     // "rootDir": "./",                             /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
-    // "composite": false,                          /* Enable project compilation */
+     "composite": true,                             /* Enable project compilation */
     // "tsBuildInfoFile": "./",                     /* Specify file to store incremental compilation information */
     // "removeComments": true,                      /* Do not emit comments to output. */
     // "noEmit": true,                              /* Do not emit outputs. */
