@@ -33,7 +33,7 @@ module.exports = async ( repo, relativeFile, silent = false ) => {
 
   // Check if the first line is already correct
   const firstLine = fileLines[ 0 ];
-  const copyrightLine = getCopyrightLine( repo, relativeFile );
+  const copyrightLine = await getCopyrightLine( repo, relativeFile );
 
   // Update the line
   if ( firstLine !== copyrightLine ) {
