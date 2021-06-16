@@ -238,7 +238,6 @@ ${namespace}.register( '${namespace}Strings', ${namespace}Strings );
 
 export default ${namespace}Strings;
 ` ) );
-  await updateCopyrightForGeneratedFile( repo, stringModuleFile );
 };
 
 /**
