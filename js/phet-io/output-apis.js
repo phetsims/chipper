@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2021, University of Colorado Boulder
 
 const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );

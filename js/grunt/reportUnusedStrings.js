@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2015-2021, University of Colorado Boulder
 
 /**
  * Report which translatable strings from a sim were not used in the simulation with a require statement.

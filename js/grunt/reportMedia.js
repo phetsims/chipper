@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2015-2021, University of Colorado Boulder
 
 /**
  * This grunt task iterates over all of the license.json files and reports any media files (images, sound, ...)

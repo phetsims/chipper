@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2020-2021, University of Colorado Boulder
 
 /**
  * Isolating out our logic for updating copyright dates on generated files.

@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2019-2021, University of Colorado Boulder
 
 /**
  * Launch an instance of the simulation using puppeteer, gather the PhET-iO API of the simulation,

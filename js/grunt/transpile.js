@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2017-2021, University of Colorado Boulder
 
 /**
  * Handles transpilation of code using Babel

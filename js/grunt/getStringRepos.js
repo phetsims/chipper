@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2020-2021, University of Colorado Boulder
 
 /**
  * For a given repository, it returns the JSON object content that should go in phet.chipper.stringRepos for a

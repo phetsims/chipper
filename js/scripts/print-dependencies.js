@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2020-2021, University of Colorado Boulder
 
 /**
  * Prints out a comma-separated list of repos that this repository depends on (used by things like CT)

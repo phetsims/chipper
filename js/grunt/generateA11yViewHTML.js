@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2016-2021, University of Colorado Boulder
 
 /**
  * Generates the top-level simName-accessibility-view.html file for simulations (or runnables). Lets one

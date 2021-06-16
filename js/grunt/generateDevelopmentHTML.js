@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2015-2021, University of Colorado Boulder
 
 /**
  * Generates the top-level main HTML file for simulations (or runnables) using phet-brand splash and loading phet-io

@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2015-2021, University of Colorado Boulder
 
 /**
  * Grunt task that determines created and last modified dates from git, and updates copyright statements accordingly,

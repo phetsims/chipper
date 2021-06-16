@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2021, University of Colorado Boulder
 
 /**
  * Parses command line arguments--sims=sim1,sim2,... or --simList=path/to/filename to get a list of sims.

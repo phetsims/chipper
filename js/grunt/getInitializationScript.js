@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2018-2021, University of Colorado Boulder
 
 /**
  * Fills in values for the chipper initialization script script.

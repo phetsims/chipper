@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2021, University of Colorado Boulder
 const fs = require( 'fs' );
 const phetioCompareAPIs = require( './phetioCompareAPIs' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match

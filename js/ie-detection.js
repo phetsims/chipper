@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2018-2021, University of Colorado Boulder
 
 /**
  * Detects if the browser in use is Internet Explorer, and shows an error page if so.

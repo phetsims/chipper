@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2018-2021, University of Colorado Boulder
 
 /**
  * Combines all parts of a runnable's built file into an XHTML structure (with separate files)

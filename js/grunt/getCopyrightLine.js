@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2021, University of Colorado Boulder
 
 /**
  * Function that determines created and last modified dates from git, see #403. If the file is not tracked in git

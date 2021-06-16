@@ -1,4 +1,4 @@
-[object Promise]
+// Copyright 2016-2021, University of Colorado Boulder
 
 /**
  * From the a11y view template file, fill in the templated values and return the html as a string.
