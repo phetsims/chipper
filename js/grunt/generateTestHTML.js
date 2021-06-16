@@ -37,7 +37,7 @@ module.exports = async ( repo, options ) => {
     // Do not show the splash screen
     stripPreloads: [ '../joist/js/splash.js' ],
 
-    mainFile: `js/${repo}-tests.js`,
+    mainFile: `../chipper/dist/axon/js/${repo}-tests.js`,
 
     // Specify to use test config
     qualifier: 'test-',
