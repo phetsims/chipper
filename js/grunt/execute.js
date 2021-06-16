@@ -33,9 +33,10 @@ module.exports = function( cmd, args, options ) {
      * @param {Array.<string>} args
      * @param {string} cwd
      * @param {string} stdout
+     * @param {string} stderr
      * @param {number} code - exit code
      */
-    constructor( cmd, args, cwd, stdout, code ) {
+    constructor( cmd, args, cwd, stdout, stderr, code ) {
       super( `${cmd} ${args.join( ' ' )} in ${cwd} failed with exit code ${code} and stdout:\n${stdout}` );
 
       // @public
@@ -43,6 +44,7 @@ module.exports = function( cmd, args, options ) {
       this.args = args;
       this.cwd = cwd;
       this.stdout = stdout;
+      this.stderr = stderr;
       this.code = code;
     }
   }
@@ -64,9 +66,14 @@ module.exports = function( cmd, args, options ) {
     } );
     grunt.log.debug( `running ${cmd} ${args.join( ' ' )} from ${cwd}` );
 
-    let stdout = ''; // to be appended to
+    // to be appended to
+    let stdout = '';
+    let stderr = '';
 
-    process.stderr.on( 'data', data => grunt.log.debug( `stderr: ${data}` ) );
+    process.stderr.on( 'data', data => {
+      stderr += data;
+      grunt.log.debug( `stderr: ${data}` );
+    } );
     process.stdout.on( 'data', data => {
       stdout += data;
       grunt.log.debug( `stdout: ${data}` );
@@ -74,7 +81,7 @@ module.exports = function( cmd, args, options ) {
 
     process.on( 'close', code => {
       if ( code !== 0 ) {
-        reject( new ExecuteError( cmd, args, cwd, stdout, code ) );
+        reject( new ExecuteError( cmd, args, cwd, stdout, stderr, code ) );
       }
       else {
         resolve( stdout );

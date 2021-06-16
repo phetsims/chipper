@@ -12,12 +12,7 @@
 const execute = require( './execute' );
 const assert = require( 'assert' );
 
-/**
- * @public
- *
- * @param {string} repo
- */
-module.exports = async function( repo ) {
+const tsc = async function( repo, commandLineArgs ) {
   const startTime = Date.now();
 
   // make sure we are using the right version of the tsc compiler, so we all get the same output
@@ -27,14 +22,28 @@ module.exports = async function( repo ) {
   try {
     const version = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', '--version' ], `../${repo}` ) ).trim();
     assert && assert( version === 'Version 4.3.2', `Incompatible tsc version: ${version}, expected Version 4.3.2` );
-    const stdout = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', '--build' ], `../${repo}` ) ).trim();
+    let stdout;
+    try {
+      stdout = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs ], `../${repo}` ) ).trim();
+    }
+    catch( e ) {
+      console.log( `tsc completed with stdout:\n${e.stderr}` );
+      console.log( `tsc completed with stderr:\n${e.stdout}` );
+      return e;
+    }
     const endTime = Date.now();
     const elapsedTime = endTime - startTime;
     if ( stdout.length === 0 ) {
       console.log( `tsc completed in ${elapsedTime} ms` );
+      return {
+        stderr: '',
+        stdout: ''
+      };
     }
     else {
       console.log( `tsc completed with stdout: ${stdout}` );
+
+      return { stderr: '', stdout: stdout };
     }
   }
   catch( e ) {
@@ -44,3 +53,12 @@ module.exports = async function( repo ) {
     throw e;
   }
 };
+
+tsc.apiVersion = '1.0';
+/**
+ * @public
+ *
+ * @param {string} repo
+ * @param {string[]} commandLineArgs
+ */
+module.exports = tsc;

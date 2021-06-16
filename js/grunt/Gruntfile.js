@@ -110,7 +110,7 @@ module.exports = function( grunt ) {
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
     ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
     'clean',
-    'tsc',
+    'tsc-build',
     'build'
   ] );
 
@@ -143,7 +143,6 @@ module.exports = function( grunt ) {
           grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, jimp.MIME_PNG ) );
         }
 
-
         const altScreenshots = grunt.file.expand( { filter: 'isFile', cwd: `../${repo}/assets` }, [ `./${repo}-screenshot-alt[0123456789].png` ] );
         for ( const altScreenshot of altScreenshots ) {
           const imageNumber = parseInt( altScreenshot.substr( `./${repo}-screenshot-alt`.length, 1 ), 10 );
@@ -157,10 +156,13 @@ module.exports = function( grunt ) {
       }
     } ) );
 
-  grunt.registerTask( 'tsc', 'Runs tsc --build to transpile JS/TS before the webpack step.  Requires the chipper branch "typescript"',
-    wrapTask( async () => {
-      await tsc( repo );
-    } ) );
+  grunt.registerTask( 'tsc', 'Runs tsc with any command line options. Requires the chipper branch "typescript"',
+    wrapTask( async () => await tsc( repo, process.argv.slice( 3 ) ) )
+  );
+
+  grunt.registerTask( 'tsc-build', 'Runs tsc --build to transpile JS/TS before the webpack step. Requires the chipper branch "typescript"',
+    wrapTask( async () => await tsc( repo, [ '--build' ] ) )
+  );
 
   grunt.registerTask( 'build',
     `Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
