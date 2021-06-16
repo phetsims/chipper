@@ -1,4 +1,4 @@
-// Copyright 2018-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Reports a (delayed) page load (or error) to the parent frame for Aqua continuous testing.
