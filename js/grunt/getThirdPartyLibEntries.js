@@ -1,4 +1,4 @@
-// Copyright 2015-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * This function returns an object literal that describes the third-party libraries that are included in the html deliverable.

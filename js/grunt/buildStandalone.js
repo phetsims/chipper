@@ -1,4 +1,4 @@
-// Copyright 2017-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)

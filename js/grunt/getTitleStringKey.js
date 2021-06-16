@@ -1,4 +1,4 @@
-// Copyright 2017-2019, University of Colorado Boulder
+[object Promise]
 
 /**
  * Returns the string key for the title of a runnable.

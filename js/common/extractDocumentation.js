@@ -1,4 +1,4 @@
-// Copyright 2015-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Given the AST output from Esprima for a JS file that conforms to PhET's style, this extracts the documentation and

@@ -1,4 +1,4 @@
-// Copyright 2017-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * This grunt task generates the 800x400 letter-boxed version of the sim screenshot for use in

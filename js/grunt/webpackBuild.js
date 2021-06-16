@@ -1,4 +1,4 @@
-// Copyright 2019-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Runs webpack - DO NOT RUN MULTIPLE CONCURRENTLY

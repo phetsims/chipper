@@ -1,4 +1,4 @@
-// Copyright 2017-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Determines a list of all dependent repositories (for dependencies.json or other creation)

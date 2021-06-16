@@ -1,4 +1,4 @@
-// Copyright 2016-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Copies all supporting PhET-iO files, including wrappers, indices, lib files, etc.

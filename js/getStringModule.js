@@ -1,4 +1,4 @@
-// Copyright 2020, University of Colorado Boulder
+[object Promise]
 
 /**
  * Given a requirejsNamespace, we filter out strings from phet.chipper.strings that start with it, and construct an

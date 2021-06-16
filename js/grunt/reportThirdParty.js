@@ -1,4 +1,4 @@
-// Copyright 2015-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Creates a composite report of all of the 3rd party images, code, sounds and other media used by all of the published

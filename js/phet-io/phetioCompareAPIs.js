@@ -1,4 +1,4 @@
-// Copyright 2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Compare PhET-iO APIs for two versions of the same sim. This function treats the first API as the "ground truth"

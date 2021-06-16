@@ -1,4 +1,4 @@
-// Copyright 2017-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Creates an object that stores information about all dependencies (including their SHAs and current branches)

@@ -1,4 +1,4 @@
-// Copyright 2016-2019, University of Colorado Boulder
+[object Promise]
 
 /**
  * Generates the top-level simName-colors.html file for simulations (or runnables) that provides a color-picker

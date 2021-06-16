@@ -1,4 +1,4 @@
-// Copyright 2017-2019, University of Colorado Boulder
+[object Promise]
 
 /**
  * Gets the license keys for sherpa (third-party) libs that are used.

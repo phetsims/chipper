@@ -1,4 +1,4 @@
-// Copyright 2017-2019, University of Colorado Boulder
+[object Promise]
 
 /**
  * Prints commits since a specified date, for all dependencies of the build target.

@@ -1,4 +1,4 @@
-// Copyright 2019, University of Colorado Boulder
+[object Promise]
 
 /**
  * Error out if Node version is out of date. Uses process.version

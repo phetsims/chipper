@@ -1,4 +1,4 @@
-// Copyright 2015-2021, University of Colorado Boulder
+[object Promise]
 
 /**
  * Given structured documentation output from extractDocumentation (and associated other metadata), this outputs both
