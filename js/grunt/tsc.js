@@ -29,7 +29,11 @@ const tsc = async function( repo, commandLineArgs ) {
     catch( e ) {
       console.log( `tsc completed with stdout:\n${e.stderr}` );
       console.log( `tsc completed with stderr:\n${e.stdout}` );
-      return e;
+
+      return {
+        stderr: e.stderr,
+        stdout: e.stdout
+      };
     }
     const endTime = Date.now();
     const elapsedTime = endTime - startTime;

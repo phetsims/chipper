@@ -161,7 +161,15 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'tsc-build', 'Runs tsc --build to transpile JS/TS before the webpack step. Requires the chipper branch "typescript"',
-    wrapTask( async () => await tsc( repo, [ '--build' ] ) )
+    wrapTask( async () => {
+      const result = await tsc( repo, [ '--build' ] );
+      if ( result.stderr && result.stderr.length > 0 ) {
+        grunt.fail.fatal( result.stderr );
+      }
+      if ( result.stdout && result.stdout.length > 0 ) {
+        grunt.fail.fatal( result.stdout );
+      }
+    } )
   );
 
   grunt.registerTask( 'build',
@@ -376,6 +384,17 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       if ( packageObject.phet.generatedUnitTests ) {
         grunt.task.run( 'generate-test-html' );
+      }
+
+      const gruntfile = `../${repo}/Gruntfile.js`;
+      if ( fs.existsSync( gruntfile ) ) {
+        fs.writeFileSync( gruntfile, `// Copyright 2021, University of Colorado Boulder
+
+/* eslint-env node */
+
+// use chipper's gruntfile
+module.exports = require( '../chipper/dist/chipper/js/grunt/Gruntfile.js' );
+` );
       }
 
       // update README.md only for simulations
