@@ -8,7 +8,6 @@
     "composite": true                             /* Enable project compilation */
   },
   "include": [
-    "../chipper/js",
     "../chipper/phet-types.d.ts",
     "../chipper/js/getStringModule.js",
     "../chipper/js/sim-tests/qunitStart.js",
