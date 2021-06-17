@@ -51,7 +51,7 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
 
 ( function( global, assert ) {
 
-  class SimVersion {
+  const SimVersion = class {
     /**
      * @constructor
      *
@@ -237,7 +237,7 @@ const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && w
       assert && assert( version.major > 0, 'Major version for a branch should be greater than zero' );
       assert && assert( version.minor >= 0, 'Minor version for a branch should be greater than (or equal) to zero' );
     }
-  }
+  };
 
   // Node.js-compatible definition
   if ( typeof module !== 'undefined' ) {

@@ -126,7 +126,10 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const dependencies = await getDependencies( repo );
 
   webpackResult.usedModules.forEach( moduleDependency => {
-    const moduleRepo = moduleDependency.slice( 0, moduleDependency.indexOf( path.sep ) );
+    if ( moduleDependency.startsWith( '../../' ) || moduleDependency.startsWith( '..\\..\\' ) ) {
+      moduleDependency = moduleDependency.substring( '../../'.length );
+    }
+    const moduleRepo = moduleDependency.substring( 0, moduleDependency.indexOf( path.sep ) );
     assert( Object.keys( dependencies ).includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
   } );
 

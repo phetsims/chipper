@@ -30,7 +30,7 @@
  * See phetioEngine.js for where this is generated in master. Keep in mind that we support different versions, including
  * APIs that don't have a version attribute.
  * @typedef API_1_0
- * @extends API
+ * extends API // TODO: https://github.com/phetsims/chipper/issues/1054 TS cannot support the at symbol on this extends
  * @property {{major:number, minor:number}} version
  * @property {string} sim
  */

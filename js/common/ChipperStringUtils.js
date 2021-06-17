@@ -216,12 +216,12 @@ const ChipperStringUtils = {
  * @typedef {Object} StringObject
  * An object that has a "value" field that holds the string. It can still include more nested `StringObject`s.
  * Each StringMapNode should have at least one StringObject nested inside it.
- * @extends {StringMapNode}
+ * extends {StringMapNode} TODO: https://github.com/phetsims/chipper/issues/1054 using at symbol not compatible with TS
  * @property {string} value - the value key is used in
  */
 /**
  * @typedef {Object.<string, StringMapNode>>} StringMap
- * @extends {StringMapNode}
+ * extends {StringMapNode} TODO: https://github.com/phetsims/chipper/issues/1054 using at symbol not compatible with TS
  * A string map can be either a flat map of StringObject (see the output of CHIPPER/getStringMap), or can be a nested
  * Object with StringObjects throughout the object structure (as supported in English JSON string files).
  */

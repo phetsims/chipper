@@ -1,48 +1,9 @@
-/**
- * Compiles the common code repos together as a unit.
- * @author Sam Reid (PhET Interactive Simulations)
- */
 {
   "extends": "./tsconfig-core.json",
-  "compilerOptions": {
-    "outDir": "../chipper/dist/",                 /* Redirect output structure to the directory. */
-    "rootDir": "../",                             /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
-    "composite": true                             /* Enable project compilation */
-  },
   "include": [
-    "../chipper/phet-types.d.ts",
-    "../chipper/js/getStringModule.js",
-    "../chipper/js/sim-tests/qunitStart.js",
-    "../axon/js/**/*",
-    "../brand/js/**/*",
-    "../brand/phet/js/Brand.js",
-    "../brand/phet/images/**/*",
-    "../brand/phet-io/js/Brand.js",
-    "../brand/phet-io/images/**/*",
-    "../brand/adapted-from-phet/js/Brand.js",
-    "../brand/adapted-from-phet/images/**/*",
-    "../dot/js/**/*",
-    "../joist/js/**/*",
-    "../joist/images/**/*",
-    "../joist/sounds/**/*",
-    "../kite/js/**/*",
-    "../phet-core/js/**/*",
-    "../phet-io/js/**/*",
-    "../phetcommon/js/**/*",
-    "../scenery/js/**/*",
-    "../sherpa/js/**/*",
-    "../sherpa/lib/lodash-4.17.4.min.js",
-    "../sun/js/**/*",
-    "../scenery-phet/js/**/*",
-    "../scenery-phet/images/**/*",
-    "../scenery-phet/mipmaps/**/*",
-    "../scenery-phet/sounds/**/*",
-    "../sherpa/lib/game-up-camera-1.0.0.js",
-    "../tambo/js/**/*",
-    "../tambo/sounds/**/*",
-    "../tambo/images/**/*",
-    "../tandem/js/**/*",
-    "../twixt/js/**/*",
-    "../utterance-queue/js/**/*"
+    "./js/**/*"
+  ],
+  "exclude": [
+    "./js/sim-tests/qunitStart.js"
   ]
 }

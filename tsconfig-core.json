@@ -17,8 +17,8 @@
     // "declaration": true,                         /* Generates corresponding '.d.ts' file. */
     // "declarationMap": true,                      /* Generates a sourcemap for each corresponding '.d.ts' file. */
     "sourceMap": true,                           /* Generates corresponding '.map' file. */
-    // "outFile": "../chipper/dist/example-sim.js",                             /* Concatenate and emit output to single file. */
-    // "outDir": "../chipper/dist/gravity-and-orbits",                              /* Redirect output structure to the directory. */
+    "outDir": "../chipper/dist/",                 /* Redirect output structure to the directory. */
+    "rootDir": "../",                             /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
     // "rootDir": "./",                             /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
      "composite": true,                             /* Enable project compilation */
     // "tsBuildInfoFile": "./",                     /* Specify file to store incremental compilation information */
@@ -72,10 +72,5 @@
     /* Advanced Options */
     "skipLibCheck": true,                           /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true        /* Disallow inconsistently-cased references to the same file. */
-  },
-  "references": [
-    {
-      "path": "../chipper/tsconfig.json"
-    }
-  ]
+  }
 }

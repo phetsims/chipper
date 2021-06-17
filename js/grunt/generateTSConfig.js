@@ -23,12 +23,9 @@ module.exports = async function( repo ) {
 
   const string = `{
   "extends": "../chipper/tsconfig-core.json",
-  "compilerOptions": {
-    "outDir": "../chipper/dist/${repo}"
-  },
   "references": [
     {
-      "path": "../chipper"
+      "path": "../chipper/tsconfig-common.json"
     }
   ],
   "include": [
@@ -37,7 +34,10 @@ module.exports = async function( repo ) {
     "sounds/**/*",
     "mipmaps/**/*"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
 }`;
 
   const outputFile = `../${repo}/tsconfig.json`;
