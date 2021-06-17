@@ -21,7 +21,7 @@ const tsc = async function( repo, commandLineArgs ) {
   // https://stackoverflow.com/a/56073979
   try {
     const version = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', '--version' ], `../${repo}` ) ).trim();
-    assert && assert( version === 'Version 4.3.2', `Incompatible tsc version: ${version}, expected Version 4.3.2` );
+    assert && assert( version === 'Version 4.3.4', `Incompatible tsc version: ${version}, expected Version 4.3.4` );
     let stdout;
     try {
       stdout = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs ], `../${repo}` ) ).trim();
