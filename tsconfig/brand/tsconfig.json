@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../phet-core"
+    },{
+      "path": "../chipper-get-string-module"
+    }
+  ],
+  "include": [
+    "../../../brand/js/**/*",
+    "../../../brand/phet/js/Brand.js",
+    "../../../brand/phet/images/**/*",
+    "../../../brand/phet-io/js/Brand.js",
+    "../../../brand/phet-io/images/**/*",
+    "../../../brand/adapted-from-phet/js/Brand.js",
+    "../../../brand/adapted-from-phet/images/**/*",
+    "../../../joist/js/joist.js",
+    "../../../joist/js/joistStrings.js",
+  ]
+}

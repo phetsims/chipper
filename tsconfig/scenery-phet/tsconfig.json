@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../sun"
+    }
+  ],
+  "include": [
+    "../../../scenery-phet/js/**/*",
+    "../../../scenery-phet/sounds/**/*",
+    "../../../scenery-phet/mipmaps/**/*",
+    "../../../scenery-phet/images/**/*"
+  ],
+  "exclude": [
+    "../../../scenery-phet/js/**/*test*",
+    "../../../scenery-phet/js/scenery-phet-main.js",
+    "../../../scenery-phet/js/demo/**/*",
+
+    // Unfortunately, these had to be put in sun layer
+    "../../../scenery-phet/js/NumberDisplay.js",
+    "../../../scenery-phet/js/PhetFont.js",
+    "../../../scenery-phet/js/MathSymbols.js",
+    "../../../scenery-phet/js/sceneryPhetStrings.js",
+    "../../../scenery-phet/js/sceneryPhet.js",
+
+    // has to wait for joist layer
+    "../../../scenery-phet/js/ContextLossFailureDialog.js",
+    "../../../scenery-phet/js/OopsDialog.js",
+//
+//    // Included in scenery for now
+//    "../../../scenery-phet/js/SunConstants.js",
+//    "../../../scenery-phet/js/scenery-phet.js"
+  ]
+}
