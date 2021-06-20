@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "include": [
+    "../../../phet-core/js/**/*"
+  ],
+  "exclude": [
+    "../../../phet-core/js/**/*test*",
+    "../../../phet-core/js/EnumerationIO.js"
+  ]
+}

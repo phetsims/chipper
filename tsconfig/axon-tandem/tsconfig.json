@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../phet-core/tsconfig.json"
+    }
+  ],
+  "include": [
+    "../../../axon/js/**/*",
+    "../../../tandem/js/**/*",
+    "../../../phet-core/js/EnumerationIO.js",
+    "../../../dot/js/Range.js",
+    "../../../dot/js/dot.js"
+  ],
+  "exclude": [
+    "../../../**/*test*",
+    "../../../tandem/js/**/*test*"
+  ]
+}

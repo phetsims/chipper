@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../axon-tandem"
+    }
+  ],
+  "include": [
+    "../../../dot/js/**/*",
+  ],
+  "exclude": [
+    "../../../dot/js/**/*test*"
+  ]
+}
