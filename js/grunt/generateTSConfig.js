@@ -25,7 +25,7 @@ module.exports = async function( repo ) {
   "extends": "../chipper/tsconfig-core.json",
   "references": [
     {
-      "path": "../chipper/tsconfig-common.json"
+      "path": "../chipper/tsconfig/joist"
     }
   ],
   "include": [
