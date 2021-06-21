@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../joist"
+    }
+  ],
+  "include": [
+    "../../../vegas/js/**/*",
+    "../../../vegas/sounds/**/*",
+    "../../../vegas/images/**/*",
+    "../../../vegas/mipmaps/**/*"
+  ],
+  "exclude": [
+    "../../../vegas/js/**/*tests.js",
+    "../../../vegas/js/vegas-main.js",
+    "../../../vegas/js/demo/**/*"
+  ]
+}

@@ -12,7 +12,7 @@
     "../../../scenery-phet/images/**/*"
   ],
   "exclude": [
-    "../../../scenery-phet/js/**/*test*",
+    "../../../scenery-phet/js/**/*tests.js", // ConductivityTesterNode.js
     "../../../scenery-phet/js/scenery-phet-main.js",
     "../../../scenery-phet/js/demo/**/*",
 
