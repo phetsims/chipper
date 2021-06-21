@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../simula-rasa/js/**/*",
+    "../../../simula-rasa/sounds/**/*",
+    "../../../simula-rasa/mipmaps/**/*",
+    "../../../simula-rasa/images/**/*"
+  ]
+}

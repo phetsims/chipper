@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../mobius"},{"path":"../nitroglycerin"},{"path":"../joist"}],
+  "include": [
+    "../../../molecule-shapes/js/**/*",
+    "../../../molecule-shapes/sounds/**/*",
+    "../../../molecule-shapes/mipmaps/**/*",
+    "../../../molecule-shapes/images/**/*"
+  ]
+}

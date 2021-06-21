@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../griddle"},{"path":"../joist"}],
+  "include": [
+    "../../../neuron/js/**/*",
+    "../../../neuron/sounds/**/*",
+    "../../../neuron/mipmaps/**/*",
+    "../../../neuron/images/**/*"
+  ]
+}

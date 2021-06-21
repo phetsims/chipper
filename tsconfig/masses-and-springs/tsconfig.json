@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../griddle"},{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../masses-and-springs/js/**/*",
+    "../../../masses-and-springs/sounds/**/*",
+    "../../../masses-and-springs/mipmaps/**/*",
+    "../../../masses-and-springs/images/**/*"
+  ]
+}

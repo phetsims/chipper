@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../interaction-dashboard/js/**/*",
+    "../../../interaction-dashboard/sounds/**/*",
+    "../../../interaction-dashboard/mipmaps/**/*",
+    "../../../interaction-dashboard/images/**/*"
+  ]
+}

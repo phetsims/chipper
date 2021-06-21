@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../graphing-lines"},{"path":"../joist"}],
+  "include": [
+    "../../../graphing-quadratics/js/**/*",
+    "../../../graphing-quadratics/sounds/**/*",
+    "../../../graphing-quadratics/mipmaps/**/*",
+    "../../../graphing-quadratics/images/**/*"
+  ]
+}

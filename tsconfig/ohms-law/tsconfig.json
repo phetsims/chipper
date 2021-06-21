@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../ohms-law/js/**/*",
+    "../../../ohms-law/sounds/**/*",
+    "../../../ohms-law/mipmaps/**/*",
+    "../../../ohms-law/images/**/*"
+  ]
+}

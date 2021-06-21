@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../energy-skate-park"},{"path":"../griddle"},{"path":"../joist"}],
+  "include": [
+    "../../../energy-skate-park-basics/js/**/*",
+    "../../../energy-skate-park-basics/sounds/**/*",
+    "../../../energy-skate-park-basics/mipmaps/**/*",
+    "../../../energy-skate-park-basics/images/**/*"
+  ]
+}

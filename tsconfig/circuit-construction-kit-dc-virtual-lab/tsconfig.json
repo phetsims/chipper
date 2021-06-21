@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../circuit-construction-kit-common"},{"path":"../circuit-construction-kit-dc"},{"path":"../twixt"},{"path":"../griddle"},{"path":"../bamboo"},{"path":"../joist"}],
+  "include": [
+    "../../../circuit-construction-kit-dc-virtual-lab/js/**/*",
+    "../../../circuit-construction-kit-dc-virtual-lab/sounds/**/*",
+    "../../../circuit-construction-kit-dc-virtual-lab/mipmaps/**/*",
+    "../../../circuit-construction-kit-dc-virtual-lab/images/**/*"
+  ]
+}

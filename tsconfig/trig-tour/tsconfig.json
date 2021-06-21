@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../trig-tour/js/**/*",
+    "../../../trig-tour/sounds/**/*",
+    "../../../trig-tour/mipmaps/**/*",
+    "../../../trig-tour/images/**/*"
+  ]
+}

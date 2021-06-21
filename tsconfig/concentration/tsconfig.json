@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../beers-law-lab"},{"path":"../nitroglycerin"},{"path":"../joist"}],
+  "include": [
+    "../../../concentration/js/**/*",
+    "../../../concentration/sounds/**/*",
+    "../../../concentration/mipmaps/**/*",
+    "../../../concentration/images/**/*"
+  ]
+}

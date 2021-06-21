@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../vector-addition/js/**/*",
+    "../../../vector-addition/sounds/**/*",
+    "../../../vector-addition/mipmaps/**/*",
+    "../../../vector-addition/images/**/*"
+  ]
+}

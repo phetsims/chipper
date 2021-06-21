@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../hookes-law/js/**/*",
+    "../../../hookes-law/sounds/**/*",
+    "../../../hookes-law/mipmaps/**/*",
+    "../../../hookes-law/images/**/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../nitroglycerin"},{"path":"../joist"}],
+  "include": [
+    "../../../ph-scale/js/**/*",
+    "../../../ph-scale/sounds/**/*",
+    "../../../ph-scale/mipmaps/**/*",
+    "../../../ph-scale/images/**/*"
+  ]
+}

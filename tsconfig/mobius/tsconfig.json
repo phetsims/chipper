@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../mobius/js/**/*",
+    "../../../mobius/sounds/**/*",
+    "../../../mobius/mipmaps/**/*",
+    "../../../mobius/images/**/*"
+  ]
+}

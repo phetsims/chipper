@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../xray-diffraction/js/**/*",
+    "../../../xray-diffraction/sounds/**/*",
+    "../../../xray-diffraction/mipmaps/**/*",
+    "../../../xray-diffraction/images/**/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../inverse-square-law-common"},{"path":"../joist"}],
+  "include": [
+    "../../../gravity-force-lab/js/**/*",
+    "../../../gravity-force-lab/sounds/**/*",
+    "../../../gravity-force-lab/mipmaps/**/*",
+    "../../../gravity-force-lab/images/**/*"
+  ]
+}

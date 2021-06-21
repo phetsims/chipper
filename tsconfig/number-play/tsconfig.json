@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../counting-common"},{"path":"../fractions-common"},{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../number-play/js/**/*",
+    "../../../number-play/sounds/**/*",
+    "../../../number-play/mipmaps/**/*",
+    "../../../number-play/images/**/*"
+  ]
+}

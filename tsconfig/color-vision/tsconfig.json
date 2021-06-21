@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../color-vision/js/**/*",
+    "../../../color-vision/sounds/**/*",
+    "../../../color-vision/mipmaps/**/*",
+    "../../../color-vision/images/**/*"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../joist"
+    }
+  ],
+  "include": [
+    "../../../bamboo/js/**/*",
+    "../../../bamboo/sounds/**/*",
+    "../../../bamboo/mipmaps/**/*",
+    "../../../bamboo/images/**/*"
+  ]
+}

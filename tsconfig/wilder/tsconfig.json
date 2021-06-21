@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../wilder/js/**/*",
+    "../../../wilder/sounds/**/*",
+    "../../../wilder/mipmaps/**/*",
+    "../../../wilder/images/**/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../counting-common"},{"path":"../twixt"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../make-a-ten/js/**/*",
+    "../../../make-a-ten/sounds/**/*",
+    "../../../make-a-ten/mipmaps/**/*",
+    "../../../make-a-ten/images/**/*"
+  ]
+}

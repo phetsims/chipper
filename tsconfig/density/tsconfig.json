@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../density-buoyancy-common"},{"path":"../mobius"},{"path":"../joist"}],
+  "include": [
+    "../../../density/js/**/*",
+    "../../../density/sounds/**/*",
+    "../../../density/mipmaps/**/*",
+    "../../../density/images/**/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../number-line-common"},{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../number-line-operations/js/**/*",
+    "../../../number-line-operations/sounds/**/*",
+    "../../../number-line-operations/mipmaps/**/*",
+    "../../../number-line-operations/images/**/*"
+  ]
+}
