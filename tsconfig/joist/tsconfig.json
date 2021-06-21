@@ -23,7 +23,10 @@
     "../../../sun/js/Popupable.js",
     "../../../sun/js/Dialog.js",
     "../../../scenery-phet/js/ContextLossFailureDialog.js",
-    "../../../scenery-phet/js/OopsDialog.js"
+    "../../../scenery-phet/js/OopsDialog.js",
+
+    "../../../chipper/js/sim-tests/qunitStart.js",
+    "../../../sun/js/demo/DemosScreenView.js"
   ],
   "exclude": [
     "../../../joist/js/**/*tests.js", // Cannot use **test** like we do elsewhere because of UpdaTESTate
