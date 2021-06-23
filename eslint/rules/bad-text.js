@@ -46,6 +46,7 @@ module.exports = function( context ) {
     'hot key',
     'hotKey',
     'HotKey',
+    'HOT_KEY',
 
     // In ES6, extending object causes methods to be dropped
     { id: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
