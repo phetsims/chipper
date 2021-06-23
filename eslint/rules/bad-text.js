@@ -42,6 +42,11 @@ module.exports = function( context ) {
     // event.keyCode according to spec, rather than event.keycode
     'keycode',
 
+    // prefer hotkey (one word)
+    'hot key',
+    'hotKey',
+    'HotKey',
+
     // In ES6, extending object causes methods to be dropped
     { id: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
 
