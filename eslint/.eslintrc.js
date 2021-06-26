@@ -993,6 +993,8 @@ module.exports = {
     // Misc
     QueryStringMachine: 'readonly',
 
+    Prism: 'readonly',
+
     // sole/tween.js
     TWEEN: 'readonly',
 
