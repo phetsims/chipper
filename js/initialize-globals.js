@@ -582,7 +582,7 @@
      */
     supportsInteractiveHighlights: {
       type: 'boolean',
-      defaultValue: !!packageFeatures.supportsInteractiveDescription
+      defaultValue: !!packageFeatures.supportsInteractiveHighlights
     },
 
     /**
