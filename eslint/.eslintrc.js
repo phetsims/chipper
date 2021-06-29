@@ -334,7 +334,7 @@ module.exports = {
     'no-self-compare': 'error',
 
     // disallow comma operators
-    'no-sequences': 'off', // TODO: Enable: 2 failures, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-sequences': 'error',
 
     // disallow throwing literals as exceptions
     'no-throw-literal': 'off', // TODO: Enable: 1 failure, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
