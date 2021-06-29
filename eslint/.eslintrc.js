@@ -322,7 +322,7 @@ module.exports = {
     'no-return-assign': 'error',
 
     // disallow unnecessary `return await`
-    'no-return-await': 'off', // TODO: Enable: 19 fails, https://github.com/phetsims/chipper/issues/814 this seems like a good rule to enable
+    'no-return-await': 'error',
 
     // disallow `javascript:` urls
     'no-script-url': 'error',

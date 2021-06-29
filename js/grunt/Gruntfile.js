@@ -441,7 +441,7 @@ Updates the normal automatically-generated files for this repository. Includes:
   grunt.registerTask(
     'update-copyright-dates',
     'Update the copyright dates in JS source files based on Github dates',
-    wrapTask( async () => await updateCopyrightDates( repo ) )
+    wrapTask( async () => updateCopyrightDates( repo ) )
   );
 
   grunt.registerTask(
