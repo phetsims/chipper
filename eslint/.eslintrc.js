@@ -340,7 +340,7 @@ module.exports = {
     'no-throw-literal': 'error',
 
     // disallow unmodified loop conditions
-    'no-unmodified-loop-condition': 'off', // TODO: Enable: 1 failure https://github.com/phetsims/chipper/issues/814 we should turn this rule on.  Only 1 fail.
+    'no-unmodified-loop-condition': 'error',
 
     // disallow unused expressions
     'no-unused-expressions': 'off', // This blocks things like circuitLayerNode && circuitLayerNode.circuit.circuitChangedEmitter.removeListener( updateText );

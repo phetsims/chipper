@@ -205,6 +205,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       }
 
       // bail if we already have a 1x1 image, or if we reach the maxLevel (recall maxLevel===-1 means no maximum level)
+      // eslint-disable-next-line no-unmodified-loop-condition
       while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
         const level = mipmaps.length;
         mipmaps.push( mipmapDownscale( finestMipmap(), ( width, height ) => {
