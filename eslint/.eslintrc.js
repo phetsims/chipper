@@ -175,7 +175,7 @@ module.exports = {
     complexity: 'off', // We have around 242 offenders as of March, 2021
 
     // require `return` statements to either always or never specify values
-    'consistent-return': 'off', // TODO: Enable: 79 fails, https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
+    'consistent-return': 'error',
 
     // enforce consistent brace style for all control statements
     curly: 'error',
