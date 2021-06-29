@@ -9,7 +9,7 @@
  */
 
 /* eslint-env node */
-'use strict';
+
 
 const ChipperConstants = {
 

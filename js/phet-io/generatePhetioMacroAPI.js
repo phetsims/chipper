@@ -8,7 +8,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-'use strict';
 
 const http = require( 'http' );
 const fs = require( 'fs' );

@@ -4,7 +4,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-'use strict';
 
 const qunit = require( 'qunit' );
 const assert = require( 'assert' );

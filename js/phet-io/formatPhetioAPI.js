@@ -10,7 +10,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-'use strict';
 
 const assert = require( 'assert' );
 const fixEOL = require( '../grunt/fixEOL' );

@@ -6,7 +6,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-'use strict';
 
 // modules
 const os = require( 'os' );

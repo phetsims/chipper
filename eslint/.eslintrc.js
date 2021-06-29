@@ -1,6 +1,5 @@
 // Copyright 2015-2021, University of Colorado Boulder
 
-'use strict';
 
 /**
  * The base eslint configuration for the PhET projects.
@@ -30,7 +29,7 @@ module.exports = {
     'getter-return': 'error',
 
     // disallow using an async function as a Promise executor
-    'no-async-promise-executor': 'off', // TODO: Enable: 4 fails, Enable this rule, see https://github.com/phetsims/perennial/issues/216
+    'no-async-promise-executor': 'error',
 
     // disallow `await` inside of loops
     'no-await-in-loop': 'off', // We use await in loops all the time in build tools
@@ -175,7 +174,7 @@ module.exports = {
     complexity: 'off', // We have around 242 offenders as of March, 2021
 
     // require `return` statements to either always or never specify values
-    'consistent-return': 'off', // TODO: Enable: 79 fails, https://github.com/phetsims/chipper/issues/814 We should find a way to turn this rule on.  Every occurrence I saw looked buggy.
+    'consistent-return': 'error',
 
     // enforce consistent brace style for all control statements
     curly: 'error',
@@ -187,7 +186,7 @@ module.exports = {
     'default-case-last': 'error',
 
     // enforce default parameters to be last
-    'default-param-last': 'off', // TODO: Enable: 1 failure, https://github.com/phetsims/chipper/issues/814 only 1 fail, we should turn this rule on
+    'default-param-last': 'error',
 
     // enforce consistent newlines before and after dots
     'dot-location': 'off', // We use WebStorm formatting which moves lower dots to the left
@@ -217,7 +216,7 @@ module.exports = {
     'no-case-declarations': 'error',
 
     // disallow returning value from constructor
-    'no-constructor-return': 'off', // TODO 10 fails, https://github.com/phetsims/chipper/issues/814 the occurrences look clever and should be rewritten
+    'no-constructor-return': 'error',
 
     // disallow division operators explicitly at the beginning of regular expressions
     'no-div-regex': 'error',
@@ -271,7 +270,7 @@ module.exports = {
     'no-iterator': 'error',
 
     // disallow labeled statements
-    'no-labels': 'off', // TODO: Enable: 20 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  ESLint says: While convenient in some cases, labels tend to be used only rarely and are frowned upon by some as a remedial form of flow control that is more error prone and harder to understand.
+    'no-labels': 'error',
 
     // disallow unnecessary nested blocks
     'no-lone-blocks': 'off', // Even though lone blocks are currently rare for our project, we agree they are appropriate in some situations.  Details are in https://github.com/phetsims/chipper/issues/1026
@@ -322,7 +321,7 @@ module.exports = {
     'no-return-assign': 'error',
 
     // disallow unnecessary `return await`
-    'no-return-await': 'off', // TODO: Enable: 19 fails, https://github.com/phetsims/chipper/issues/814 this seems like a good rule to enable
+    'no-return-await': 'error',
 
     // disallow `javascript:` urls
     'no-script-url': 'error',
@@ -334,13 +333,13 @@ module.exports = {
     'no-self-compare': 'error',
 
     // disallow comma operators
-    'no-sequences': 'off', // TODO: Enable: 2 failures, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-sequences': 'error',
 
     // disallow throwing literals as exceptions
-    'no-throw-literal': 'off', // TODO: Enable: 1 failure, https://github.com/phetsims/chipper/issues/814 we should turn this rule on
+    'no-throw-literal': 'error',
 
     // disallow unmodified loop conditions
-    'no-unmodified-loop-condition': 'off', // TODO: Enable: 1 failure https://github.com/phetsims/chipper/issues/814 we should turn this rule on.  Only 1 fail.
+    'no-unmodified-loop-condition': 'error',
 
     // disallow unused expressions
     'no-unused-expressions': 'off', // This blocks things like circuitLayerNode && circuitLayerNode.circuit.circuitChangedEmitter.removeListener( updateText );
@@ -376,7 +375,7 @@ module.exports = {
     'prefer-named-capture-group': 'off', // We have many occurrences in yotta/js/apacheParsing.js
 
     // require using Error objects as Promise rejection reasons
-    'prefer-promise-reject-errors': 'off', // TODO: Enable: 14 failures https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+    'prefer-promise-reject-errors': 'error',
 
     // disallow use of the `RegExp` constructor in favor of regular expression literals
     'prefer-regex-literals': 'off', // new RegExp() looks natural to me
@@ -404,7 +403,7 @@ module.exports = {
     //
 
     // controls location of Use Strict Directives
-    strict: 'off', // TODO: Enable: Discuss: 338 occurrences. restore this, see https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/814
+    strict: 'error',
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Variables
@@ -872,10 +871,10 @@ module.exports = {
     'prefer-numeric-literals': 'error',
 
     // require rest parameters instead of `arguments`
-    'prefer-rest-params': 'off', // TODO: Enable: 2 fails, https://github.com/phetsims/chipper/issues/814 we have 2 fails and we should fix them
+    'prefer-rest-params': 'error',
 
     // require spread operators instead of `.apply()`
-    'prefer-spread': 'off', // TODO: Enable: 21 fails, https://github.com/phetsims/chipper/issues/814 we have 99 fails, but we should fix them
+    'prefer-spread': 'error',
 
     // require template literals instead of string concatenation
     'prefer-template': 'off', // We decided it is convenient to sometimes use string concatenation, see discussion in https://github.com/phetsims/chipper/issues/1027
@@ -992,6 +991,8 @@ module.exports = {
 
     // Misc
     QueryStringMachine: 'readonly',
+
+    Prism: 'readonly',
 
     // sole/tween.js
     TWEEN: 'readonly',

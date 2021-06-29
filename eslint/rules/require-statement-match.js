@@ -5,7 +5,6 @@
  * @copyright 2015 University of Colorado Boulder
  */
 
-'use strict';
 
 //------------------------------------------------------------------------------
 // Rule Definition

@@ -6,7 +6,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-'use strict';
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
@@ -77,9 +76,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   timestamp = `${timestamp.substring( 0, timestamp.indexOf( '.' ) )} UTC`;
 
   // Start running webpack
-  const webpackResult = await recordTime( async () => {
-    return await webpackBuild( repo, brand );
-  }, time => {
+  const webpackResult = await recordTime( async () => webpackBuild( repo, brand ), time => {
     grunt.log.ok( `Webpack build complete: ${time}ms` );
   } );
 

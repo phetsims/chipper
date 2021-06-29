@@ -13,7 +13,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-'use strict';
 
 require( '../js/common/ChipperStringUtilTests' );
 require( '../js/phet-io/phetioCompareAPIsTests' );

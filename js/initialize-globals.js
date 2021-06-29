@@ -30,7 +30,7 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 ( function() {
-  'use strict';
+  
 
   assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
 
@@ -582,7 +582,7 @@
      */
     supportsInteractiveHighlights: {
       type: 'boolean',
-      defaultValue: !!packageFeatures.supportsInteractiveDescription
+      defaultValue: !!packageFeatures.supportsInteractiveHighlights
     },
 
     /**

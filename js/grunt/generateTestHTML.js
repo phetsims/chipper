@@ -6,7 +6,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-'use strict';
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );

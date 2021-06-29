@@ -8,8 +8,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-'use strict';
-
 // modules
 const fixEOL = require( './fixEOL' );
 const grunt = require( 'grunt' );

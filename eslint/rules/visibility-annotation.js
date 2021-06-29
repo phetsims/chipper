@@ -6,7 +6,6 @@
  * @copyright 2020 University of Colorado Boulder
  */
 
-'use strict';
 
 //------------------------------------------------------------------------------
 // Rule Definition

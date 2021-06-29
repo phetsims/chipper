@@ -11,7 +11,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-'use strict';
 
 // 3rd-party packages
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match

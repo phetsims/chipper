@@ -12,7 +12,6 @@
  * @author Jesse Greenberg
  */
 
-'use strict';
 
 const grunt = require( 'grunt' );
 

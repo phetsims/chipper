@@ -5,7 +5,7 @@
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-'use strict';
+
 
 const getPhetLibs = require( '../grunt/getPhetLibs' );
 const assert = require( 'assert' );

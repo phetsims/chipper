@@ -9,7 +9,6 @@
  * original file: https://github.com/eslint/eslint/blob/7ad86de/lib/rules/no-multi-assign.js
  */
 
-'use strict';
 
 module.exports = {
   create( context ) {

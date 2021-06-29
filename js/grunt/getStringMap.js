@@ -5,7 +5,6 @@
  * Loads each string file only once, and only loads the repository/locale combinations necessary.
  */
 
-'use strict';
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );

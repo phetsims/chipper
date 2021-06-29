@@ -6,7 +6,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-'use strict';
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match

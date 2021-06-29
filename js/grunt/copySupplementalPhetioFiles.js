@@ -8,7 +8,6 @@
  * @author Matt Pennington (PhET Interactive Simulations)
  */
 
-'use strict';
 
 // modules
 const assert = require( 'assert' );
@@ -64,15 +63,13 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jquery-2.1.0.min.js',
   '../sherpa/lib/jquery-ui-1.8.24.min.js',
   '../sherpa/lib/d3-4.2.2.js',
-  '../sherpa/lib/highlight.js-9.1.0/styles/tomorrow-night-bright.css',
-  '../sherpa/lib/highlight.js-9.1.0/highlight.js',
   '../sherpa/lib/jsondiffpatch-v0.3.11.umd.js',
   '../sherpa/lib/jsondiffpatch-v0.3.11-annotated.css',
   '../sherpa/lib/jsondiffpatch-v0.3.11-html.css',
   '../sherpa/lib/pako-2.0.3/pako-2.0.3.min.js',
   '../sherpa/lib/pako-2.0.3/pako_inflate-2.0.3.min.js',
-  '../sherpa/lib/highlight.js-9.1.0/styles/tomorrow-night-bright.css',
-  '../sherpa/lib/highlight.js-9.1.0/highlight.js',
+  '../sherpa/lib/prism-1.23.0.js',
+  '../sherpa/lib/prism-okaidia-1.23.0.css',
   '../sherpa/lib/clarinet-0.12.4.js'
 ];
 

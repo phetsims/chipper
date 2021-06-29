@@ -14,7 +14,6 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
-'use strict';
 
 const execute = require( './execute' );
 const getPhetLibs = require( './getPhetLibs' );

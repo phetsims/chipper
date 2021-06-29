@@ -5,7 +5,7 @@
  *
  * @author Chris Klusendorf (PhET Interactive Simulations)
  */
-'use strict';
+
 
 // constants
 const CSS_STYLING =

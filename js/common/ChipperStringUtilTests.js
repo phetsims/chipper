@@ -6,7 +6,7 @@
  */
 
 /* eslint-env node*/
-'use strict';
+
 
 const ChipperStringUtils = require( './ChipperStringUtils' );
 const qunit = require( 'qunit' );

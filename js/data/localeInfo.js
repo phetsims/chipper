@@ -22,7 +22,7 @@
  */
 
 /* eslint-env browser, node */
-'use strict';
+
 
 const locales = {
   aa: {

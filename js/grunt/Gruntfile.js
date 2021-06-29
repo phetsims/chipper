@@ -6,7 +6,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-'use strict';
 
 const SimVersion = require( '../SimVersion' );
 const ChipperConstants = require( '../common/ChipperConstants' );
@@ -157,7 +156,7 @@ module.exports = function( grunt ) {
     } ) );
 
   grunt.registerTask( 'tsc', 'Runs tsc with any command line options. Requires the chipper branch "typescript"',
-    wrapTask( async () => await tsc( repo, process.argv.slice( 3 ) ) )
+    wrapTask( async () => tsc( repo, process.argv.slice( 3 ) ) )
   );
 
   grunt.registerTask( 'tsc-build', 'Runs tsc --build to transpile JS/TS before the webpack step. Requires the chipper branch "typescript"',
@@ -477,7 +476,7 @@ module.exports = require( '../chipper/dist/chipper/js/grunt/Gruntfile.js' );
   grunt.registerTask(
     'update-copyright-dates',
     'Update the copyright dates in JS source files based on Github dates',
-    wrapTask( async () => await updateCopyrightDates( repo ) )
+    wrapTask( async () => updateCopyrightDates( repo ) )
   );
 
   grunt.registerTask(

@@ -6,7 +6,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
-'use strict';
+
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const createMipmap = require( './createMipmap' );
