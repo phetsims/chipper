@@ -30,7 +30,7 @@ module.exports = {
     'getter-return': 'error',
 
     // disallow using an async function as a Promise executor
-    'no-async-promise-executor': 'off', // TODO: Enable: 4 fails, Enable this rule, see https://github.com/phetsims/perennial/issues/216
+    'no-async-promise-executor': 'error',
 
     // disallow `await` inside of loops
     'no-await-in-loop': 'off', // We use await in loops all the time in build tools
