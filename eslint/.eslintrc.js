@@ -872,7 +872,7 @@ module.exports = {
     'prefer-numeric-literals': 'error',
 
     // require rest parameters instead of `arguments`
-    'prefer-rest-params': 'off', // TODO: Enable: 2 fails, https://github.com/phetsims/chipper/issues/814 we have 2 fails and we should fix them
+    'prefer-rest-params': 'error',
 
     // require spread operators instead of `.apply()`
     'prefer-spread': 'off', // TODO: Enable: 21 fails, https://github.com/phetsims/chipper/issues/814 we have 99 fails, but we should fix them
