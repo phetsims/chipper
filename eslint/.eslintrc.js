@@ -217,7 +217,7 @@ module.exports = {
     'no-case-declarations': 'error',
 
     // disallow returning value from constructor
-    'no-constructor-return': 'off', // TODO 10 fails, https://github.com/phetsims/chipper/issues/814 the occurrences look clever and should be rewritten
+    'no-constructor-return': 'error',
 
     // disallow division operators explicitly at the beginning of regular expressions
     'no-div-regex': 'error',
