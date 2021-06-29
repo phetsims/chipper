@@ -271,7 +271,7 @@ module.exports = {
     'no-iterator': 'error',
 
     // disallow labeled statements
-    'no-labels': 'off', // TODO: Enable: 20 fails, https://github.com/phetsims/chipper/issues/814 I think this rule should be on.  ESLint says: While convenient in some cases, labels tend to be used only rarely and are frowned upon by some as a remedial form of flow control that is more error prone and harder to understand.
+    'no-labels': 'error',
 
     // disallow unnecessary nested blocks
     'no-lone-blocks': 'off', // Even though lone blocks are currently rare for our project, we agree they are appropriate in some situations.  Details are in https://github.com/phetsims/chipper/issues/1026
