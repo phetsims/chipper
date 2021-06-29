@@ -1,6 +1,5 @@
 // Copyright 2021, University of Colorado Boulder
 
-'use strict';
 
 /**
  * Additional rules for formatting js. See ./README.md for more info.

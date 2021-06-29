@@ -9,7 +9,6 @@
  * @author Aaron Davis
  */
 
-'use strict';
 
 // modules
 const grunt = require( 'grunt' );

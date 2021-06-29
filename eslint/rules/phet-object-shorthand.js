@@ -9,7 +9,6 @@
  * original file: https://github.com/eslint/eslint/blob/550de1e611a1e9af873bcb18d74cf2056e8d2e1b/lib/rules/object-shorthand.js
  */
 
-'use strict';
 
 //------------------------------------------------------------------------------
 // Rule Definition

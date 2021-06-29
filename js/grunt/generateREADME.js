@@ -7,7 +7,6 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
-'use strict';
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fixEOL = require( './fixEOL' );

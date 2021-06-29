@@ -8,7 +8,6 @@
  * @author Matt Pennington (PhET Interactive Simulations)
  */
 
-'use strict';
 
 // modules
 const assert = require( 'assert' );

@@ -7,7 +7,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-'use strict';
 
 const grunt = require( 'grunt' );
 const updateCopyrightDate = require( './updateCopyrightDate' );

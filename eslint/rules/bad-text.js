@@ -8,7 +8,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-'use strict';
 
 module.exports = function( context ) {
 

@@ -8,7 +8,6 @@
  * @author Jesse Greenberg
  */
 
-'use strict';
 
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );

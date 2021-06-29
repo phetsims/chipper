@@ -1,6 +1,5 @@
 // Copyright 2017-2021, University of Colorado Boulder
 
-'use strict';
 
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );

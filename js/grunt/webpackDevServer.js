@@ -4,7 +4,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-'use strict';
 
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );

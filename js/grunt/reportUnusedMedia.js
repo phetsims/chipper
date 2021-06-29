@@ -15,7 +15,6 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
-'use strict';
 
 // modules
 const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );

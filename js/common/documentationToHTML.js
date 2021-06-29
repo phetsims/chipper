@@ -8,7 +8,7 @@
  */
 
 /* eslint-env browser, node */
-'use strict';
+
 
 ( function() {
 

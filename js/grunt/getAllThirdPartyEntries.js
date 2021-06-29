@@ -4,7 +4,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-'use strict';
 
 const getThirdPartyLibEntries = require( './getThirdPartyLibEntries' );
 const grunt = require( 'grunt' );

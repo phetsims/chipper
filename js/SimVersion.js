@@ -44,7 +44,7 @@
  */
 
 /* eslint-env browser, node */
-'use strict';
+
 
 // To support loading in Node.js and the browser
 const assert = typeof module !== 'undefined' ? require( 'assert' ) : window && window.assert;

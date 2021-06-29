@@ -6,7 +6,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-'use strict';
 
 // modules
 const babel = require( '@babel/core' ); // eslint-disable-line require-statement-match

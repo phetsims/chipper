@@ -1,6 +1,5 @@
 // Copyright 2020-2021, University of Colorado Boulder
 
-'use strict';
 
 /**
  * When running unit tests in an iframe, connects to the parent frame to give results.

@@ -8,7 +8,6 @@
  * @copyright 2021 University of Colorado Boulder
  */
 
-'use strict';
 
 //------------------------------------------------------------------------------
 // Rule Definition

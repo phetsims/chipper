@@ -1,6 +1,5 @@
 // Copyright 2015-2021, University of Colorado Boulder
 
-'use strict';
 
 /**
  * The base eslint configuration for the PhET projects.
@@ -404,7 +403,7 @@ module.exports = {
     //
 
     // controls location of Use Strict Directives
-    strict: 'off', // TODO: Enable: Discuss: 338 occurrences. restore this, see https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/814
+    strict: 'error',
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Variables

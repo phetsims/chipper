@@ -19,7 +19,6 @@
  * @author Sam Reid
  */
 
-'use strict';
 
 const ChipperConstants = require( '../common/ChipperConstants' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );

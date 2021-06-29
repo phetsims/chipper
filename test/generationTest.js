@@ -6,7 +6,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-'use strict';
 
 // const chai = require( 'chai' );
 const execute = require( '../js/grunt/execute' );

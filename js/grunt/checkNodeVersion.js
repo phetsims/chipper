@@ -6,7 +6,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-'use strict';
 
 // constants
 const NODE_VERSION_STRING_PARTS = process.version.replace( 'v', '' ).split( '.' );

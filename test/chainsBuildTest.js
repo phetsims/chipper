@@ -6,7 +6,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-'use strict';
 
 // const assert = require( 'assert' );
 // const chai = require( 'chai' );

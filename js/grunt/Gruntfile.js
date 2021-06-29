@@ -6,7 +6,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-'use strict';
 
 const SimVersion = require( '../SimVersion' );
 const ChipperConstants = require( '../common/ChipperConstants' );
