@@ -376,7 +376,7 @@ module.exports = {
     'prefer-named-capture-group': 'off', // We have many occurrences in yotta/js/apacheParsing.js
 
     // require using Error objects as Promise rejection reasons
-    'prefer-promise-reject-errors': 'off', // TODO: Enable: 14 failures https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+    'prefer-promise-reject-errors': 'error',
 
     // disallow use of the `RegExp` constructor in favor of regular expression literals
     'prefer-regex-literals': 'off', // new RegExp() looks natural to me
