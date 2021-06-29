@@ -197,7 +197,7 @@
          * @param {boolean} isDesignedChange - if the difference is from a design change, and not from a breaking change test
          * @param {*} [invalidProposedValue] - an optional new value that would signify a breaking change. Any other value would be acceptable.
          */
-        const reportDifferences = ( metadataKey, isDesignedChange = false, invalidProposedValue ) => {
+        const reportDifferences = ( metadataKey, isDesignedChange, invalidProposedValue ) => {
           const referenceValue = referenceCompleteMetadata[ metadataKey ];
 
           // Gracefully handle missing metadata from the <1.0 API format
@@ -240,12 +240,12 @@
         };
 
         // Check for breaking changes
-        reportDifferences( 'phetioTypeName' );
-        reportDifferences( 'phetioEventType' );
-        reportDifferences( 'phetioPlayback' );
-        reportDifferences( 'phetioDynamicElement' );
-        reportDifferences( 'phetioIsArchetype' );
-        reportDifferences( 'phetioArchetypePhetioID' );
+        reportDifferences( 'phetioTypeName', false );
+        reportDifferences( 'phetioEventType', false );
+        reportDifferences( 'phetioPlayback', false );
+        reportDifferences( 'phetioDynamicElement', false );
+        reportDifferences( 'phetioIsArchetype', false );
+        reportDifferences( 'phetioArchetypePhetioID', false );
         reportDifferences( 'phetioState', false, false ); // Only report if something became non-stateful
         reportDifferences( 'phetioReadOnly', false, true ); // Only need to report if something became readOnly
 

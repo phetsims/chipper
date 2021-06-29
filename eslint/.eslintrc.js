@@ -187,7 +187,7 @@ module.exports = {
     'default-case-last': 'error',
 
     // enforce default parameters to be last
-    'default-param-last': 'off', // TODO: Enable: 1 failure, https://github.com/phetsims/chipper/issues/814 only 1 fail, we should turn this rule on
+    'default-param-last': 'error',
 
     // enforce consistent newlines before and after dots
     'dot-location': 'off', // We use WebStorm formatting which moves lower dots to the left
