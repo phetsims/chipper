@@ -875,7 +875,7 @@ module.exports = {
     'prefer-rest-params': 'error',
 
     // require spread operators instead of `.apply()`
-    'prefer-spread': 'off', // TODO: Enable: 21 fails, https://github.com/phetsims/chipper/issues/814 we have 99 fails, but we should fix them
+    'prefer-spread': 'error',
 
     // require template literals instead of string concatenation
     'prefer-template': 'off', // We decided it is convenient to sometimes use string concatenation, see discussion in https://github.com/phetsims/chipper/issues/1027
