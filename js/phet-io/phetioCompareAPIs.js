@@ -159,8 +159,6 @@
     const breakingProblems = [];
     const designedProblems = [];
 
-    const newReferenceAPI = _.cloneDeep( referenceAPI );
-
     const appendProblem = ( problemString, isDesignedProblem = false ) => {
       if ( isDesignedProblem && options.compareDesignedAPIChanges ) {
         designedProblems.push( problemString );
@@ -175,10 +173,9 @@
      * @param {string[]} trail - the path of tandem componentNames
      * @param {Object} reference - current value in the referenceAPI
      * @param {Object} proposed - current value in the proposedAPI
-     * @param {Object} newReference - current value in the newReferenceAPI - mutated with changes
      * @param {boolean} isDesigned
      */
-    const visit = ( trail, reference, proposed, newReference, isDesigned ) => {
+    const visit = ( trail, reference, proposed, isDesigned ) => {
       const phetioID = trail.join( '.' );
 
       // Detect an instrumented instance
@@ -222,12 +219,10 @@
 
               if ( invalidProposedValue === undefined || isDesignedChange ) {
                 appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}`, isDesignedChange );
-                newReference[ METADATA_KEY_NAME ][ metadataKey ] = proposedValue;
               }
               else if ( !isDesignedChange ) {
                 if ( proposedValue === invalidProposedValue ) {
                   appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}` );
-                  newReference[ METADATA_KEY_NAME ][ metadataKey ] = proposedValue;
                 }
                 else {
 
@@ -301,15 +296,12 @@
             if ( isDesigned ) {
               appendProblem( problemString, true );
             }
-
-            delete newReference[ componentName ];
           }
           else {
             visit(
               trail.concat( componentName ),
               reference[ componentName ],
               proposed[ componentName ],
-              newReference[ componentName ],
               isDesigned
             );
           }
@@ -323,7 +315,7 @@
       }
     };
 
-    visit( [], referenceAPI.phetioElements, proposedAPI.phetioElements, newReferenceAPI.phetioElements, false );
+    visit( [], referenceAPI.phetioElements, proposedAPI.phetioElements, false );
 
     // Check for: missing IO Types, missing methods, or differing parameter types or return types
     for ( const typeName in referenceAPI.phetioTypes ) {
@@ -332,12 +324,10 @@
         // make sure we have the desired type
         if ( !proposedAPI.phetioTypes.hasOwnProperty( typeName ) ) {
           appendProblem( `Type missing: ${typeName}` );
-          delete newReferenceAPI.phetioTypes[ typeName ];
         }
         else {
           const referenceType = referenceAPI.phetioTypes[ typeName ];
           const proposedType = proposedAPI.phetioTypes[ typeName ];
-          const newReferenceType = newReferenceAPI.phetioTypes[ typeName ];
 
           // make sure we have all of the methods
           const referenceMethods = referenceType.methods;
@@ -346,7 +336,6 @@
             if ( referenceMethods.hasOwnProperty( referenceMethod ) ) {
               if ( !proposedMethods.hasOwnProperty( referenceMethod ) ) {
                 appendProblem( `Method missing, type=${typeName}, method=${referenceMethod}` );
-                delete newReferenceType.methods[ referenceMethod ];
               }
               else {
 
@@ -356,14 +345,12 @@
 
                 if ( referenceParams.join( ',' ) !== proposedParams.join( ',' ) ) {
                   appendProblem( `${typeName}.${referenceMethod} has different parameter types: [${referenceParams.join( ', ' )}] => [${proposedParams.join( ', ' )}]` );
-                  newReferenceType.methods[ referenceMethod ].parameterTypes = _.clone( proposedParams );
                 }
 
                 const referenceReturnType = referenceMethods[ referenceMethod ].returnType;
                 const proposedReturnType = proposedMethods[ referenceMethod ].returnType;
                 if ( referenceReturnType !== proposedReturnType ) {
                   appendProblem( `${typeName}.${referenceMethod} has a different return type ${referenceReturnType} => ${proposedReturnType}` );
-                  newReferenceType.methods[ referenceMethod ].returnType = proposedReturnType;
                 }
               }
             }
@@ -375,7 +362,6 @@
           referenceEvents.forEach( event => {
             if ( !proposedEvents.includes( event ) ) {
               appendProblem( `${typeName} is missing event: ${event}` );
-              newReferenceType.events = _.clone( proposedEvents );
             }
           } );
 
@@ -385,7 +371,6 @@
           if ( referenceSupertypeName !== proposedSupertypeName ) {
             appendProblem( `${typeName} supertype changed from ${referenceSupertypeName} to ${proposedSupertypeName}. This may or may not 
           be a breaking change, but we are reporting it just in case.` );
-            newReferenceType.supertype = proposedSupertypeName;
           }
 
           // make sure we have matching parameter types
@@ -394,7 +379,6 @@
           if ( !_.isEqual( referenceParameterTypes, proposedParameterTypes ) ) {
             appendProblem( `${typeName} parameter types changed from [${referenceParameterTypes.join( ', ' )}] to [${proposedParameterTypes.join( ', ' )}]. This may or may not 
           be a breaking change, but we are reporting it just in case.` );
-            newReferenceType.parameterTypes = _.clone( proposedParameterTypes );
           }
 
           // This check assumes that each API will be of a version that has metadataDefaults
@@ -415,7 +399,6 @@
     }
 
     return {
-      newAPI: newReferenceAPI,
       breakingProblems: breakingProblems,
       designedProblems: designedProblems
     };
