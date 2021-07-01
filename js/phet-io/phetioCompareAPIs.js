@@ -138,7 +138,7 @@
    * @param _ - lodash, so this can be used from different contexts.
    * @param {function|undefined} assert - so this can be used from different contexts
    * @param {Object} [options]
-   * @returns {{breakingProblems:string[], designedProblems:string[], newAPI:Object}}
+   * @returns {{breakingProblems:string[], designedProblems:string[]}}
    */
   const _phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
 
