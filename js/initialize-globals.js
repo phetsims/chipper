@@ -636,7 +636,11 @@
      * the user to turn sound on/off.  There is also a Sim option for enabling sound which can override this.
      * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
-    supportsSound: { type: 'flag' },
+    supportsSound: {
+      type: 'boolean',
+      defaultValue: !!packageFeatures.supportsSound
+    },
+
 
     /**
      * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
