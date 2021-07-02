@@ -30,7 +30,7 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 ( function() {
-  
+
 
   assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
 
@@ -608,6 +608,13 @@
     supportsVoicing: {
       type: 'boolean',
       defaultValue: !!packageFeatures.supportsVoicing
+    },
+
+    /**
+     * By default, voicing is not enabled on startup. Add this flag to start the sim with voicing enabled.
+     */
+    voicingInitiallyEnabled: {
+      type: 'flag'
     },
 
     /**
