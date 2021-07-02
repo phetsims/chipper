@@ -656,23 +656,21 @@ module.exports = {
 
     // disallow specified syntax
     'no-restricted-syntax': [
-      'off', // TODO: Add back in https://github.com/phetsims/chipper/issues/1009
+      'off',
 
-      // TODO: https://github.com/phetsims/chipper/issues/1009 should we turn this on?
-      // It showed an error in Fourier so I disabled it
-      // {
-      //   selector: 'ForInStatement',
-      //   message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.'
-      // },
-      {
+      { // We allow for...in loops at dev discretion.
+        selector: 'ForInStatement',
+        message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.'
+      },
+      { // We allow for...of loops at dev discretion.
         selector: 'ForOfStatement',
         message: 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.'
       },
-      {
+      { // Duplicate of the no-labels rule
         selector: 'LabeledStatement',
         message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.'
       },
-      {
+      { // Duplicate of no-with rule
         selector: 'WithStatement',
         message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.'
       }
