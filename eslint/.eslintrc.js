@@ -146,7 +146,7 @@ module.exports = {
     'no-useless-backreference': 'error',
 
     // disallow assignments that can lead to race conditions due to usage of `await` or `yield`
-    'require-atomic-updates': 'off', // TODO: Enable: 6 fails, can we turn this on? see https://github.com/phetsims/chipper/issues/814
+    'require-atomic-updates': 'off', // TODO: Enable: 6 fails, can we turn this on? see https://github.com/phetsims/rosetta/issues/265
 
     // require calls to `isNaN()` when checking for `NaN`
     'use-isnan': 'error',
@@ -384,10 +384,10 @@ module.exports = {
     radix: 'error',
 
     // disallow async functions which have no `await` expression
-    'require-await': 'off', // TODO: Enable: 53 fails, https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+    'require-await': 'off', // TODO: Enable: 53 fails, https://github.com/phetsims/chipper/issues/1028 this seems like it should be on
 
     // enforce the use of `u` flag on RegExp
-    'require-unicode-regexp': 'off', // TODO: Discuss: 272 fails or so, https://github.com/phetsims/chipper/issues/814 is there a good reason for this rule?
+    'require-unicode-regexp': 'off', // TODO: Discuss: 272 fails or so, https://github.com/phetsims/chipper/issues/1029 is there a good reason for this rule?
 
     // require `var` declarations be placed at the top of their containing scope
     'vars-on-top': 'off',
@@ -658,7 +658,7 @@ module.exports = {
     'no-restricted-syntax': [
       'off', // TODO: Add back in https://github.com/phetsims/chipper/issues/1009
 
-      // TODO: https://github.com/phetsims/phet-info/issues/ should we turn this on?
+      // TODO: https://github.com/phetsims/chipper/issues/1009 should we turn this on?
       // It showed an error in Fourier so I disabled it
       // {
       //   selector: 'ForInStatement',
