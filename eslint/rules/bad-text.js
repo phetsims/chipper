@@ -110,7 +110,10 @@ module.exports = function( context ) {
         }
         return true;
       }
-    }
+    },
+
+    // Should have a period before "<", see https://github.com/phetsims/chipper/issues/1005 and https://github.com/phetsims/chipper/issues/1003
+    { id: 'Type<Parameter> (add a dot)', regex: /{[^\n:]*[A-z]<[A-z][|'<>A-z]+>[^\n:{}]*}}/ }
   ];
 
   return {

@@ -19,7 +19,7 @@ const assert = require( 'assert' );
  * Load each sim provided and get the
  * @param {string[]} repos
  * @param {Object} [options]
- * @returns {Promise<Object.<string, Object>>} - keys are the repos, values are the APIs for each repo.
+ * @returns {Promise.<Object.<string, Object>>} - keys are the repos, values are the APIs for each repo.
  */
 const generatePhetioMacroAPI = async ( repos, options ) => {
 
