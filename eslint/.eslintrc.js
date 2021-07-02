@@ -384,7 +384,7 @@ module.exports = {
     radix: 'error',
 
     // disallow async functions which have no `await` expression
-    'require-await': 'off', // TODO: Enable: 53 fails, https://github.com/phetsims/chipper/issues/1028 this seems like it should be on
+    'require-await': 'off', // 59 errors as of 7/21, but we will keep off, see https://github.com/phetsims/chipper/issues/1028
 
     // enforce the use of `u` flag on RegExp
     'require-unicode-regexp': 'off', // TODO: Discuss: 272 fails or so, https://github.com/phetsims/chipper/issues/1029 is there a good reason for this rule?
