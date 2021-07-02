@@ -640,11 +640,15 @@
 
     /**
      * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
-     * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
-     * NOT being used.
+     * PhET menu will have an option for enabling enhanced sounds.  This will be ignored if sound is not generally
+     * enabled (see ?supportsSound).
+     *
      * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
-    supportsEnhancedSound: { type: 'flag' },
+    supportsEnhancedSound: {
+      type: 'boolean',
+      defaultValue: !!packageFeatures.supportsEnhancedSound
+    },
 
     /**
      * Indicates whether or not vibration is enabled, and which paradigm is enabled for testing. There
