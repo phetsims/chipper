@@ -147,16 +147,15 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       // race conditions editing `contents`.
       for ( let i = 0; i < LIB_FILES.length; i++ ) {
         const filePath = LIB_FILES[ i ];
-        const fileName = filePath.slice( filePath.lastIndexOf( '/' ) + 1 ); // plus one to not include the slash
+        const SOURCE_DIR = 'js/';
+        const lastIndex = filePath.lastIndexOf( SOURCE_DIR );
+        assert( lastIndex >= 0, 'paths should contain ' + SOURCE_DIR );
+        const fileName = filePath.slice( lastIndex + SOURCE_DIR.length ); // don't include the 'js/'
 
         // a newline at the end of this regex breaks it. Likely because the "$" matches the newline. I tried `\n` and `\\n`
         const regExp = new RegExp( `^.*/js/${fileName}".*$`, 'gm' );
         contents = contents.replace( regExp, '' );
       }
-
-      // TODO: https://github.com/phetsims/phet-io/issues/1733 the preceding for loop should handle this, perhaps it is missing because there is
-      // a different number of '../'?
-      contents = ChipperStringUtils.replaceAll( contents, '<script src="../../chipper/js/phet-io/phetioCompareAPIs.js"></script>', '' );
 
       // Support wrappers that use code from phet-io-wrappers
       contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
