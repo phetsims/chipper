@@ -7,7 +7,7 @@
  */
 
 
-const SimVersion = require( '../SimVersion' );
+const SimVersion = require( '../dual/SimVersion' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
