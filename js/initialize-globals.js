@@ -611,6 +611,13 @@
     },
 
     /**
+     * By default, voicing is not enabled on startup. Add this flag to start the sim with voicing enabled.
+     */
+    voicingInitiallyEnabled: {
+      type: 'flag'
+    },
+
+    /**
      * Enables panning and zooming of the simulation. Can be permanently disabled if supportsPanAndZoom: false is
      * added under the `phet.features` entry of package.json. Query parameter value will always override package.json entry.
      *
