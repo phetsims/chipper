@@ -273,7 +273,7 @@
 
             const equals = _.isEqual( reference._data.initialState, proposed._data.initialState );
             if ( !equals ) {
-              const problemString = `${phetioID}._data.initialState differs. Expected: ${JSON.stringify( reference._data.initialState )}, actual: ${JSON.stringify( proposed._data.initialState )}`;
+              const problemString = `${phetioID}._data.initialState differs. \nExpected:\n${JSON.stringify( reference._data.initialState )}\n actual:\n${JSON.stringify( proposed._data.initialState )}\n`;
 
               // A changed state value could break a client wrapper, so identify it with breaking changes.
               appendProblem( problemString, false );
