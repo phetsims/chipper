@@ -493,6 +493,7 @@
      */
     shuffleListeners: { type: 'flag' },
 
+    //TODO https://github.com/phetsims/joist/issues/724 as a workaround, this is currently being used to affect ALL audio
     // Private Doc:  For external use. The below jsdoc is public to the PhET-iO API documentation. Change wisely.
     /**
      * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
