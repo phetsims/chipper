@@ -5,6 +5,11 @@
  *
  * The PhET team decided this was not required for strings.
  *
+ * TODO: See https://github.com/phetsims/chipper/issues/1060 - We aren't sure if images should have this convention
+ * yet, that is to be discussed at an upcoming developer meeting.
+ * See https://github.com/phetsims/chipper/issues/1060#issuecomment-877475545 in particular. Code related to
+ * checking images import variable names has been commented out for now until we decide.
+ *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  * @copyright 2021 University of Colorado Boulder
  */
