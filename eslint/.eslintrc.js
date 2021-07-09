@@ -940,8 +940,10 @@ module.exports = {
     'phet-object-shorthand': 'error',
 
     // disallow space between function identifier and application
-    'no-spaced-func': 'error'
+    'no-spaced-func': 'error',
 
+    // import variables for sounds and images must have the conventional suffix
+    'import-resource-variable-suffix': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
