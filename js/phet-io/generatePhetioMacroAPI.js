@@ -147,6 +147,9 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
         const relativePath = options.fromBuiltVersion ?
                              `build/phet-io/${repo}_all_phet-io.html` :
                              `${repo}_en.html`;
+
+        // This random seed is copied wherever API comparison is done against the generated API. Don't change this
+        // without looking for other usages of `randomSeed=12345`.
         const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI&randomSeed=12345`;
         try {
           await page.goto( url );
