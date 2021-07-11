@@ -12,6 +12,12 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 
 qunit.module( 'phetioCompareAPIs' );
 
+/**
+ * @param referenceAPI
+ * @param proposedAPI
+ * @param options
+ * @returns {{breakingProblems: string[], designedProblems: string[], newAPI: Object}}
+ */
 const phetioCompareAPIs = ( referenceAPI, proposedAPI, options ) => {
   return _phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, options );
 };
@@ -83,10 +89,6 @@ qunit.test( 'basics', assert => {
 
   assert.ok( report.breakingProblems.length === 1, 'no breaking problems when compare to self' );
   assert.ok( report.designedProblems.length === 0, 'no designed problems when compare to self' );
-  assert.ok( report.newAPI.phetioElements.phetioEngine._metadata.phetioPlayback ===
-             proposedAPI.phetioElements.phetioEngine._metadata.phetioPlayback,
-    'no designed problems when compare to self' );
-
 } );
 
 
@@ -118,9 +120,6 @@ qunit.test( 'designed changes', assert => {
   report = phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 0, 'no breaking problems when compare to design change' );
   assert.ok( report.designedProblems.length === 2, 'no designed problems when changing designed problem on child' );
-  assert.ok( report.newAPI.phetioElements.designedElement.designedChild._metadata.phetioDocumentation ===
-             proposedAPI.phetioElements.designedElement.designedChild._metadata.phetioDocumentation,
-    'overwrite should work for designed differences' );
 
 
   // in the reference, but not the proposed

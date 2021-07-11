@@ -146,7 +146,7 @@ module.exports = {
     'no-useless-backreference': 'error',
 
     // disallow assignments that can lead to race conditions due to usage of `await` or `yield`
-    'require-atomic-updates': 'off', // TODO: Enable: 6 fails, can we turn this on? see https://github.com/phetsims/chipper/issues/814
+    'require-atomic-updates': 'off', // TODO: Enable: 6 fails, can we turn this on? see https://github.com/phetsims/rosetta/issues/265
 
     // require calls to `isNaN()` when checking for `NaN`
     'use-isnan': 'error',
@@ -384,10 +384,10 @@ module.exports = {
     radix: 'error',
 
     // disallow async functions which have no `await` expression
-    'require-await': 'off', // TODO: Enable: 53 fails, https://github.com/phetsims/chipper/issues/814 this seems like it should be on
+    'require-await': 'off', // 59 errors as of 7/21, but we will keep off, see https://github.com/phetsims/chipper/issues/1028
 
     // enforce the use of `u` flag on RegExp
-    'require-unicode-regexp': 'off', // TODO: Discuss: 272 fails or so, https://github.com/phetsims/chipper/issues/814 is there a good reason for this rule?
+    'require-unicode-regexp': 'off', // TODO: Discuss: 272 fails or so, https://github.com/phetsims/chipper/issues/1029 is there a good reason for this rule?
 
     // require `var` declarations be placed at the top of their containing scope
     'vars-on-top': 'off',
@@ -656,23 +656,21 @@ module.exports = {
 
     // disallow specified syntax
     'no-restricted-syntax': [
-      'off', // TODO: Add back in https://github.com/phetsims/chipper/issues/1009
+      'off',
 
-      // TODO: https://github.com/phetsims/phet-info/issues/ should we turn this on?
-      // It showed an error in Fourier so I disabled it
-      // {
-      //   selector: 'ForInStatement',
-      //   message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.'
-      // },
-      {
+      { // We allow for...in loops at dev discretion.
+        selector: 'ForInStatement',
+        message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.'
+      },
+      { // We allow for...of loops at dev discretion.
         selector: 'ForOfStatement',
         message: 'iterators/generators require regenerator-runtime, which is too heavyweight for this guide to allow them. Separately, loops should be avoided in favor of array iterations.'
       },
-      {
+      { // Duplicate of the no-labels rule
         selector: 'LabeledStatement',
         message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.'
       },
-      {
+      { // Duplicate of no-with rule
         selector: 'WithStatement',
         message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.'
       }
@@ -942,8 +940,10 @@ module.exports = {
     'phet-object-shorthand': 'error',
 
     // disallow space between function identifier and application
-    'no-spaced-func': 'error'
+    'no-spaced-func': 'error',
 
+    // import variables for sounds and images must have the conventional suffix
+    'import-resource-variable-suffix': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
@@ -992,6 +992,8 @@ module.exports = {
     // Misc
     QueryStringMachine: 'readonly',
 
+    // Prism is a syntax highlighter that renders code in the browser.  It is used for PhET-iO wrappers
+    // and for a11y
     Prism: 'readonly',
 
     // sole/tween.js

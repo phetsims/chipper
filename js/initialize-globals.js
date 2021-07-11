@@ -30,7 +30,7 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 ( function() {
-  
+
 
   assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
 
@@ -493,6 +493,7 @@
      */
     shuffleListeners: { type: 'flag' },
 
+    //TODO https://github.com/phetsims/joist/issues/724 as a workaround, this is currently being used to affect ALL audio
     // Private Doc:  For external use. The below jsdoc is public to the PhET-iO API documentation. Change wisely.
     /**
      * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
@@ -611,6 +612,13 @@
     },
 
     /**
+     * By default, voicing is not enabled on startup. Add this flag to start the sim with voicing enabled.
+     */
+    voicingInitiallyEnabled: {
+      type: 'flag'
+    },
+
+    /**
      * Enables panning and zooming of the simulation. Can be permanently disabled if supportsPanAndZoom: false is
      * added under the `phet.features` entry of package.json. Query parameter value will always override package.json entry.
      *
@@ -629,15 +637,23 @@
      * the user to turn sound on/off.  There is also a Sim option for enabling sound which can override this.
      * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
-    supportsSound: { type: 'flag' },
+    supportsSound: {
+      type: 'boolean',
+      defaultValue: !!packageFeatures.supportsSound
+    },
+
 
     /**
      * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
-     * PhET menu will have an option for enabling enhanced sounds.  This should never be set when the tambo sound lib is
-     * NOT being used.
+     * PhET menu will have an option for enabling enhanced sounds.  This will be ignored if sound is not generally
+     * enabled (see ?supportsSound).
+     *
      * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
-    supportsEnhancedSound: { type: 'flag' },
+    supportsEnhancedSound: {
+      type: 'boolean',
+      defaultValue: !!packageFeatures.supportsEnhancedSound
+    },
 
     /**
      * Indicates whether or not vibration is enabled, and which paradigm is enabled for testing. There

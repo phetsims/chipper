@@ -13,7 +13,7 @@ const API_DIR = '../phet-io/api';
  * @param {string[]} repos
  * @param {Object} proposedAPIs - map where key=repo, value=proposed API for that repo
  * @param {Object} [options]
- * @returns {Promise<void>}
+ * @returns {Promise.<void>}
  */
 module.exports = async ( repos, proposedAPIs, options ) => {
   options = _.extend( {
