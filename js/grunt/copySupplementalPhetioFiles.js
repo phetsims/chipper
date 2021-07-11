@@ -34,6 +34,7 @@ const CLIENT_GUIDES_DIR = '../phet-io-client-guides/';
 const COMMON_DIR = 'common/';
 const CLIENT_REQUESTS_FILENAME = 'client-requests';
 const PHET_IO_GUIDE_FILENAME = 'phet-io-guide';
+const PHET_IO_MIGRATION_GUIDE_FILENAME = 'migration-guide';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
@@ -459,6 +460,7 @@ const handleClientGuides = ( repoName, buildDir ) => {
   // handle generating and writing the html file for each client guide
   generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html` );
   generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${CLIENT_REQUESTS_FILENAME}.md`, `${builtClientGuidesOutputDir}${CLIENT_REQUESTS_FILENAME}.html` );
+  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${PHET_IO_MIGRATION_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_MIGRATION_GUIDE_FILENAME}.html` );
 };
 
 /**
