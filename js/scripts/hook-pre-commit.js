@@ -20,7 +20,7 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const puppeteer = require( 'puppeteer' );
-const buildLocal = require( '../common/buildLocal' );
+const withServer = require( '../common/withServer' );
 
 // Identify the current repo
 const repo = process.cwd().split( path.sep ).pop();
@@ -103,9 +103,12 @@ try {
       if ( exists ) {
         const browser = await puppeteer.launch();
 
-        const localTestingURL = buildLocal.localTestingURL.endsWith( '/' ) ? buildLocal.localTestingURL : `${buildLocal.localTestingURL}/`;
-        const result = await puppeteerQUnit( browser, `${localTestingURL}${testFilePath}?ea&brand=phet-io` );
+        const result = await withServer( async port => {
+          return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
+        } );
+
         await browser.close();
+
         outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
         if ( !result.ok ) {
           console.error( `unit tests failed in ${repo}`, result );
