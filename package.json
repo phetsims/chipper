@@ -38,6 +38,9 @@
   "eslintConfig": {
     "extends": "../chipper/eslint/sim_eslintrc.js",
     "parser": "../chipper/node_modules/babel-eslint",
+    "ignorePatterns": [
+      "dist/"
+    ],
     "parserOptions": {
       "sourceType": "module",
       "allowImportExportEverywhere": true
