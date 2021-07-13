@@ -32,6 +32,7 @@
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^3.11.2",
+    "winston": "2.4.5",
     "html-webpack-plugin": "^5.3.1",
     "memfs": "^3.0.3"
   },
@@ -39,7 +40,8 @@
     "extends": "../chipper/eslint/sim_eslintrc.js",
     "parser": "../chipper/node_modules/babel-eslint",
     "ignorePatterns": [
-      "dist/"
+      "dist/",
+      "node_modules/"
     ],
     "parserOptions": {
       "sourceType": "module",

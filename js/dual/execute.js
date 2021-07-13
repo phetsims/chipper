@@ -11,6 +11,7 @@ const child_process = require( 'child_process' );
 const winston = require( 'winston' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const assert = require( 'assert' );
+const grunt = require( 'grunt' );
 
 /**
  * Executes a command, with specific arguments and in a specific directory (cwd).
@@ -85,9 +86,11 @@ module.exports = function( cmd, args, cwd, options ) {
 
     process.stderr.on( 'data', data => {
       stderr += data;
+      grunt.log.debug( `stderr: ${data}` );
     } );
     process.stdout.on( 'data', data => {
       stdout += data;
+      grunt.log.debug( `stdout: ${data}` );
     } );
 
     process.on( 'close', code => {

@@ -10,7 +10,7 @@
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const execute = require( './execute' );
+const execute = require( '../dual/execute' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
 
@@ -55,8 +55,8 @@ module.exports = async function( repo ) {
     let branch = null;
 
     try {
-      sha = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], { cwd: `../${dependency}` } ) ).trim();
-      branch = ( await execute( 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], { cwd: `../${dependency}` } ) ).trim();
+      sha = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${dependency}` ) ).trim();
+      branch = ( await execute( 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], `../${dependency}` ) ).trim();
     }
     catch( e ) {
       // We support repos that are not git repositories, see https://github.com/phetsims/chipper/issues/1011
