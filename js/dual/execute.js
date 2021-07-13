@@ -3,6 +3,13 @@
 /**
  * Command execution wrapper (with common settings)
  *
+ **************************************************************
+ * IMPORTANT NOTE: This file is copied from PERENNIAL to CHIPPER frequently.
+ * If this is in CHIPPER, then it is AUTO GENERATED; do not edit, as it will be overwritten.
+ * If this is in PERENNIAL, make sure your changes are compatible with CHIPPER.
+ * See https://github.com/phetsims/perennial/issues/111 and https://github.com/phetsims/chipper/issues/1018
+ **************************************************************
+ *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
