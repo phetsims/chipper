@@ -14,7 +14,7 @@ const assert = require( 'assert' );
 const archiver = require( 'archiver' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const copyDirectory = require( '../grunt/copyDirectory' );
-const execute = require( '../grunt/execute' );
+const execute = require( '../dual/execute' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
@@ -399,14 +399,12 @@ const handleJSDOC = async buildDir => {
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
   // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method
   // (node executable with jsdoc js file)
-  await execute( 'node', getArgs( false ), {
-    cwd: process.cwd(),
+  await execute( 'node', getArgs( false ), process.cwd(), {
     shell: true
   } );
 
   // Running with explanation -X appears to not output the files, so we have to run it twice.
-  const explanation = ( await execute( 'node', getArgs( true ), {
-    cwd: process.cwd(),
+  const explanation = ( await execute( 'node', getArgs( true ), process.cwd(), {
     shell: true
   } ) ).trim();
 
