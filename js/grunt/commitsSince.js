@@ -15,7 +15,7 @@
  */
 
 
-const execute = require( '../dual/execute' );
+const execute = require( '../../../annual/js/dual/execute' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
 
