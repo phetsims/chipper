@@ -642,7 +642,6 @@
       defaultValue: !!packageFeatures.supportsSound
     },
 
-
     /**
      * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
      * PhET menu will have an option for enabling enhanced sounds.  This will be ignored if sound is not generally
