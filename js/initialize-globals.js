@@ -71,9 +71,23 @@
     },
 
     /**
+     * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
+     * must be supported by the sim for this to have any effect.
+     * @memberOf PhetQueryParameters
+     * @type {string}
+     */
+    audio: {
+      type: 'string',
+      defaultValue: 'enabled',
+      validValues: [ 'enabled', 'disabled', 'muted' ],
+      public: true
+    },
+
+    /**
      * Master volume control for the simulation.  Range is from 0 to 1, which is typical for web audio gain nodes.
      * 1.0 is unity volume, 0.5 is half volume, etc. This is primarily for Vibe sounds.
      * TODO: This should be removed once all usages of Vibe have been converted to Tambo, see https://github.com/phetsims/vibe/issues/33.
+     * TODO: After https://github.com/phetsims/joist/issues/724, This should be called soundVolume, but not changing because it is deprecated.
      * @deprecated see https://github.com/phetsims/vibe/issues/33
      * @type {number}
      */
@@ -493,7 +507,6 @@
      */
     shuffleListeners: { type: 'flag' },
 
-    //TODO https://github.com/phetsims/joist/issues/724 as a workaround, this is currently being used to affect ALL audio
     // Private Doc:  For external use. The below jsdoc is public to the PhET-iO API documentation. Change wisely.
     /**
      * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
