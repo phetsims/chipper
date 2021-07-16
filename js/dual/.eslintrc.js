@@ -1,6 +1,4 @@
 // Copyright 2018-2021, University of Colorado Boulder
-// @author Michael Kauzmann
-
 
 module.exports = {
 

@@ -6,7 +6,8 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const SimVersion = require( '../../../annual/js/dual/SimVersion' );
+
+const SimVersion = require( '../dual/SimVersion' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );

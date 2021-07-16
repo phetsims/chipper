@@ -1,7 +1,6 @@
 {
   "common": {
     "phetLibs": [
-      "annual",
       "assert",
       "axon",
       "babel",
@@ -38,7 +37,7 @@
       "../sherpa/lib/base64-js-1.2.0.js",
       "../sherpa/lib/TextEncoderLite-3c9f6f0.js",
       "../tandem/js/PhetioIDUtils.js",
-      "../annual/js/dual/SimVersion.js"
+      "../chipper/js/dual/SimVersion.js"
     ],
     "licenseKeys": [
       "font-awesome-4.5.0",

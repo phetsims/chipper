@@ -13,7 +13,7 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 
-const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../annual/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
+const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
 const reposByNamespace = {};
 const aliases = {};
 

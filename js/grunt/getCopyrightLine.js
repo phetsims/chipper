@@ -9,7 +9,7 @@
  */
 
 
-const execute = require( '../../../annual/js/dual/execute' );
+const execute = require( '../dual/execute' );
 
 /**
  * @public

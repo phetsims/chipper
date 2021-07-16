@@ -8,7 +8,7 @@
  */
 
 // modules
-const execute = require( '../../../annual/js/dual/execute' );
+const execute = require( '../dual/execute' );
 const grunt = require( 'grunt' );
 const updateCopyrightDate = require( './updateCopyrightDate' );
 
