@@ -351,7 +351,10 @@ Updates the normal automatically-generated files for this repository. Includes:
         if ( packageObject.phet.features && packageObject.phet.features.supportsInteractiveDescription ) {
           grunt.task.run( 'generate-a11y-view-html' );
         }
-        if ( packageObject.phet.colorProfile ) {
+
+        // TODO: See https://github.com/phetsims/scenery-phet/issues/515 eventually delete colorProfile: true
+        // and just use colorProfiles
+        if ( packageObject.phet.colorProfile || packageObject.phet.colorProfiles ) {
           grunt.task.run( 'generate-development-colors-html' );
         }
       }

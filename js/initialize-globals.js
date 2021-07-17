@@ -41,6 +41,9 @@
   // duck type defaults so that not all package.json files need to have a phet.features section.
   const packageFeatures = packagePhet.features || {};
 
+  // The possible color profiles for the current simulation.
+  const colorProfiles = packagePhet.colorProfiles || [ 'default' ];
+
   // Private Doc: Note: the following jsdoc is for the public facing PhET-iO API. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
   // phet-io documentation. Private comments about implementation details will be in comments above the jsdoc, and
@@ -134,7 +137,8 @@
      */
     colorProfile: {
       type: 'string',
-      defaultValue: 'default'
+      defaultValue: 'default',
+      validValues: colorProfiles
     },
 
     /**
@@ -703,6 +707,7 @@
 
     // Read query parameters
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
+    window.phet.chipper.colorProfiles = colorProfiles;
 
     /**
      * Determines whether any type of fuzzing is enabled. This is a function so that the associated query parameters
