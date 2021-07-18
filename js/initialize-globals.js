@@ -137,7 +137,7 @@
      */
     colorProfile: {
       type: 'string',
-      defaultValue: 'default',
+      defaultValue: colorProfiles[ 0 ], // usually "default", but some sims like masses-and-springs-basics do not use default at all
       validValues: colorProfiles
     },
 
