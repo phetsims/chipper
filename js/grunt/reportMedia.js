@@ -16,7 +16,7 @@
  *
  * See https://github.com/phetsims/tasks/issues/274
  *
- * @author Sam Reid
+ * @author Sam Reid (PhET Interactive Simulations)
  */
 
 
