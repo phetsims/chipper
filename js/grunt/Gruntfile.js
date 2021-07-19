@@ -14,7 +14,6 @@ const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
 const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
-const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateREADME = require( './generateREADME' );
 const generateTestHTML = require( './generateTestHTML' );
@@ -312,13 +311,6 @@ module.exports = function( grunt ) {
     'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
       await generateTestHTML( repo );
-    } ) );
-
-  grunt.registerTask( 'generate-development-colors-html',
-    'Generates top-level SIM-colors.html file used for testing color profiles and color values. Usually you should ' +
-    'set the "colorProfile":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
-    wrapTask( async () => {
-      generateDevelopmentColorsHTML( repo );
     } ) );
 
   grunt.registerTask( 'generate-a11y-view-html',
