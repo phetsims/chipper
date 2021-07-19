@@ -325,7 +325,6 @@ module.exports = function( grunt ) {
 Updates the normal automatically-generated files for this repository. Includes:
   * runnables: generate-development-html and modulfy
   * accessible runnables: generate-a11y-view-html
-  * color-profile runnables: generate-development-colors-html
   * unit tests: generate-test-html
   * simulations: generateREADME()
   * phet-io simulations: generate overrides file if needed`,
@@ -342,12 +341,6 @@ Updates the normal automatically-generated files for this repository. Includes:
 
         if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
           grunt.task.run( 'generate-a11y-view-html' );
-        }
-
-        // TODO: See https://github.com/phetsims/scenery-phet/issues/515 eventually delete colorProfile: true
-        // and just use colorProfiles
-        if ( packageObject.phet.colorProfile || packageObject.phet.colorProfiles ) {
-          grunt.task.run( 'generate-development-colors-html' );
         }
       }
 
