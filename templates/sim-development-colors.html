@@ -61,6 +61,7 @@
   window.addEventListener( 'message', function( evt ) {
     var data = JSON.parse( evt.data );
     if ( data.type === 'reportColor' ) {
+
       var name = data.name;
       var value = data.value;
 
@@ -70,17 +71,37 @@
         input = colorInputMap[ name ] = document.createElement( 'input' );
         input.type = 'color';
 
+        const slider = document.createElement( 'input' );
+
         // Send user changes to the sim
         input.addEventListener( 'input', function( evt ) {
           document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
             type: 'setColor',
             name: name,
-            value: input.value
+            value: input.value,
+            alpha: slider.valueAsNumber
           } ), '*' );
         } );
 
-
         colorColumn.appendChild( input );
+
+        slider.style.width = '100px';
+        slider.type = 'range';
+        slider.min = '0';
+        slider.max = '1';
+        slider.step = '0.01';
+        slider.value = data.alpha;
+        slider.addEventListener( 'input', evt => {
+          console.log( name + ' opacity: ' + slider.valueAsNumber );
+          document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
+            type: 'setColor',
+            name: name,
+            value: input.value,
+            alpha: slider.valueAsNumber
+          } ), '*' );
+        } );
+        colorColumn.appendChild( slider );
+
         colorColumn.appendChild( document.createTextNode( ' ' + name ) );
         colorColumn.appendChild( document.createElement( 'br' ) );
 
