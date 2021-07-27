@@ -73,15 +73,17 @@
 
         const slider = document.createElement( 'input' );
 
-        // Send user changes to the sim
-        input.addEventListener( 'input', function( evt ) {
+        const applyColorToSim = () => {
+          console.log( name + ' opacity: ' + slider.valueAsNumber );
           document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
             type: 'setColor',
             name: name,
             value: input.value,
             alpha: slider.valueAsNumber
           } ), '*' );
-        } );
+        };
+        // Send user changes to the sim
+        input.addEventListener( 'input', applyColorToSim );
 
         colorColumn.appendChild( input );
 
@@ -92,15 +94,7 @@
         slider.max = '1';
         slider.step = '0.01';
         slider.value = data.alpha;
-        slider.addEventListener( 'input', evt => {
-          console.log( name + ' opacity: ' + slider.valueAsNumber );
-          document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
-            type: 'setColor',
-            name: name,
-            value: input.value,
-            alpha: slider.valueAsNumber
-          } ), '*' );
-        } );
+        slider.addEventListener( 'input', applyColorToSim );
         colorColumn.appendChild( slider );
 
         colorColumn.appendChild( document.createTextNode( ' ' + name ) );
