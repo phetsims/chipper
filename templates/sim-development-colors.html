@@ -44,7 +44,6 @@
   const simFrame = document.getElementById( 'sim-iframe' );
   const colorColumn = document.getElementById( 'color-column' );
   const updateIFrameDimensions = () => {
-    console.log( colorColumn.getBoundingClientRect().width );
     const width = Math.round( window.innerWidth - colorColumn.getBoundingClientRect().width - 30 );
 
     // Maintain aspect ratio with the dimensions listed in ScreenView.js
