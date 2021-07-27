@@ -20,6 +20,10 @@
       display: inline-block;
     }
 
+    div {
+      display: inline-block;
+    }
+
     #sim-iframe {
       grid-area: sim;
       position: fixed;
@@ -73,8 +77,9 @@
 
         const slider = document.createElement( 'input' );
 
+        const sliderReadout = document.createElement( 'div' );
         const applyColorToSim = () => {
-          console.log( name + ' opacity: ' + slider.valueAsNumber );
+          sliderReadout.innerText = slider.valueAsNumber.toFixed( 2 );
           document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
             type: 'setColor',
             name: name,
@@ -95,7 +100,10 @@
         slider.step = '0.01';
         slider.value = data.alpha;
         slider.addEventListener( 'input', applyColorToSim );
+        colorColumn.appendChild( sliderReadout );
         colorColumn.appendChild( slider );
+
+        sliderReadout.innerText = data.alpha.toFixed( 2 );
 
         colorColumn.appendChild( document.createTextNode( ' ' + name ) );
         colorColumn.appendChild( document.createElement( 'br' ) );
