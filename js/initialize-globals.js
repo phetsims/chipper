@@ -41,8 +41,12 @@
   // duck type defaults so that not all package.json files need to have a phet.simFeatures section.
   const packageSimFeatures = packagePhet.simFeatures || {};
 
+  // The color profile used by default, if no colorProfiles are specified in package.json.
+  // NOTE: Duplicated in SceneryConstants.js since scenery does not include initialize-globals.js
+  const DEFAULT_COLOR_PROFILE = 'default';
+
   // The possible color profiles for the current simulation.
-  const colorProfiles = packagePhet.colorProfiles || [ 'default' ];
+  const colorProfiles = packagePhet.colorProfiles || [ DEFAULT_COLOR_PROFILE ];
 
   // Private Doc: Note: the following jsdoc is for the public facing PhET-iO API. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
