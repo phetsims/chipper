@@ -12,20 +12,52 @@
 
   <style>
     body {
-      font-family: Arial, Helvetica, sans-serif
+      font-family: Arial, Helvetica, sans-serif;
+      background: #888;
+    }
+
+    #color-column {
+      display: inline-block;
+    }
+
+    #sim-iframe {
+      grid-area: sim;
+      position: fixed;
+      right: 10px;
+      top: 10px;
+      border: 0;
     }
   </style>
 </head>
-<body bgcolor="#888">
-<iframe width="768" height="504" id="sim-iframe" style="position: absolute; top: 20px; left: 300px;"></iframe>
+<body>
+<div id="main-container">
+  <div id="color-column"></div>
+  <iframe id="sim-iframe"></iframe>
+</div>
+
 <script type="text/javascript">
-  const urlParams = new URLSearchParams(window.location.search);
-  const sim = urlParams.get('sim');
-  var suffix = window.location.search || '?brand=phet';
+  const urlParams = new URLSearchParams( window.location.search );
+  const sim = urlParams.get( 'sim' );
+  const suffix = window.location.search || '?brand=phet';
   document.getElementById( 'sim-iframe' ).setAttribute( 'src', `../../${sim}/${sim}_en.html` + suffix );
 
+  const simFrame = document.getElementById( 'sim-iframe' );
+  const colorColumn = document.getElementById( 'color-column' );
+  const updateIFrameDimensions = () => {
+    console.log( colorColumn.getBoundingClientRect().width );
+    const width = Math.round( window.innerWidth - colorColumn.getBoundingClientRect().width - 30 );
+
+    // Maintain aspect ratio with the dimensions listed in ScreenView.js
+    const height = width / 1024 * 618;
+    simFrame.style.width = `${width}px`;
+    simFrame.style.height = `${height}px`;
+  };
+
+  window.addEventListener( 'resize', updateIFrameDimensions );
+  updateIFrameDimensions();
+
   // Maps color keys {string} => input elements {HTMLInputElement}
-  var colorInputMap = {};
+  const colorInputMap = {};
 
   window.addEventListener( 'message', function( evt ) {
     var data = JSON.parse( evt.data );
@@ -48,9 +80,12 @@
           } ), '*' );
         } );
 
-        document.body.appendChild( document.createElement( 'br' ) );
-        document.body.appendChild( input );
-        document.body.appendChild( document.createTextNode( ' ' + name ) );
+
+        colorColumn.appendChild( input );
+        colorColumn.appendChild( document.createTextNode( ' ' + name ) );
+        colorColumn.appendChild( document.createElement( 'br' ) );
+
+        updateIFrameDimensions();
       }
 
       input.value = value;
