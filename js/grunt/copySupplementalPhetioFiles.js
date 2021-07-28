@@ -192,6 +192,27 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       contents = ChipperStringUtils.replaceAll( contents, `${WRAPPER_COMMON_FOLDER}/`, 'common/' );
     }
 
+    if ( isWrapperIndex ) {
+      const getGuideRowText = ( fileName, linkText, description ) => {
+        console.log( fs.existsSync( `${CLIENT_GUIDES_DIR}${repo}/${fileName}.md` ), fileName, linkText, description );
+        return fs.existsSync( `${CLIENT_GUIDES_DIR}${repo}/${fileName}.md` ) ? `<tr>
+        <td><a href="doc/guides/${fileName}.html">${linkText}</a>
+        </td>
+        <td>${description}</td>
+      </tr>` : '';
+      };
+
+      contents = ChipperStringUtils.replaceAll( contents, '{{PHET_IO_GUIDE_ROW}}',
+        getGuideRowText( PHET_IO_GUIDE_FILENAME, 'PhET-iO Guide',
+          'Documentation for instructional designers about best practices for simulation customization with PhET-iO Studio.' ) );
+      contents = ChipperStringUtils.replaceAll( contents, '{{CLIENT_REQUESTS_ROW}}',
+        getGuideRowText( CLIENT_REQUESTS_FILENAME, 'Client Requests',
+          'Provides instructions and the specific phetioIDs for client-requested customizations.' ) );
+      contents = ChipperStringUtils.replaceAll( contents, '{{MIGRATION_GUIDE_ROW}}',
+        getGuideRowText( PHET_IO_MIGRATION_GUIDE_FILENAME, 'Migration Guide',
+          'Provides a list of changes that have occurred to the API since the previous version.' ) );
+    }
+
     // Special handling for studio paths since it is not nested under phet-io-wrappers
     if ( abspath.indexOf( 'studio/index.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '<script src="../contrib/', '<script src="../../contrib/' );
