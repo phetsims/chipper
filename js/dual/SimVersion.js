@@ -1,12 +1,13 @@
-// Copyright 2019-2021, University of Colorado Boulder
+// Copyright 2021, University of Colorado Boulder
 
 /**
  * Handles serializing and deserializing versions for simulations.
  *
  **************************************************************
- * IMPORTANT NOTE: This file is copied from PERENNIAL to CHIPPER frequently. If this is in CHIPPER, then it is AUTO
- * GENERATED; do not edit, as it will be overwritten. Make sure that any change here is supported by usages of
- * CHIPPER's SimVersion (i.e. in JOIST/updateCheck.js), see https://github.com/phetsims/perennial/issues/111 for more
+ * IMPORTANT NOTE: This file is copied from PERENNIAL to CHIPPER frequently.
+ * If this is in CHIPPER, then it is AUTO GENERATED; do not edit, as it will be overwritten.
+ * If this is in PERENNIAL, make sure your changes are compatible with CHIPPER.
+ * See https://github.com/phetsims/perennial/issues/111 and https://github.com/phetsims/chipper/issues/1018
  **************************************************************
  *
  * See https://github.com/phetsims/chipper/issues/560 for discussion on version ID definition.

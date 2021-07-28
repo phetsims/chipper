@@ -32,12 +32,6 @@ qunit.test( 'Test HTML', async assert => {
   assert.expect( 0 );
 } );
 
-qunit.test( 'Colors HTML', async assert => {
-  assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'generate-development-colors-html' ], { cwd: '../chains' } );
-  assert.expect( 0 );
-} );
-
 qunit.test( 'A11Y View HTML', async assert => {
   assert.timeout( 120000 );
   await execute( gruntCommand, [ 'generate-a11y-view-html' ], { cwd: '../chains' } );

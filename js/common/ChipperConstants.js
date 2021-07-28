@@ -4,7 +4,7 @@
  * Constants used throughout chipper.
  * All fields are @public (read-only)
  *
- * @author Sam Reid
+ * @author Sam Reid (PhET Interactive Simulations)
  * @author Chris Malley (PixelZoom, Inc.)
  */
 

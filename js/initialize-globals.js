@@ -38,8 +38,15 @@
   const packageObject = _.hasIn( window, 'phet.chipper.packageObject' ) ? phet.chipper.packageObject : {};
   const packagePhet = packageObject.phet || {};
 
-  // duck type defaults so that not all package.json files need to have a phet.features section.
-  const packageFeatures = packagePhet.features || {};
+  // duck type defaults so that not all package.json files need to have a phet.simFeatures section.
+  const packageSimFeatures = packagePhet.simFeatures || {};
+
+  // The color profile used by default, if no colorProfiles are specified in package.json.
+  // NOTE: Duplicated in SceneryConstants.js since scenery does not include initialize-globals.js
+  const DEFAULT_COLOR_PROFILE = 'default';
+
+  // The possible color profiles for the current simulation.
+  const colorProfiles = packagePhet.colorProfiles || [ DEFAULT_COLOR_PROFILE ];
 
   // Private Doc: Note: the following jsdoc is for the public facing PhET-iO API. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
@@ -71,9 +78,23 @@
     },
 
     /**
+     * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
+     * must be supported by the sim for this to have any effect.
+     * @memberOf PhetQueryParameters
+     * @type {string}
+     */
+    audio: {
+      type: 'string',
+      defaultValue: 'enabled',
+      validValues: [ 'enabled', 'disabled', 'muted' ],
+      public: true
+    },
+
+    /**
      * Master volume control for the simulation.  Range is from 0 to 1, which is typical for web audio gain nodes.
      * 1.0 is unity volume, 0.5 is half volume, etc. This is primarily for Vibe sounds.
      * TODO: This should be removed once all usages of Vibe have been converted to Tambo, see https://github.com/phetsims/vibe/issues/33.
+     * TODO: After https://github.com/phetsims/joist/issues/724, This should be called soundVolume, but not changing because it is deprecated.
      * @deprecated see https://github.com/phetsims/vibe/issues/33
      * @type {number}
      */
@@ -120,7 +141,8 @@
      */
     colorProfile: {
       type: 'string',
-      defaultValue: 'default'
+      defaultValue: colorProfiles[ 0 ], // usually "default", but some sims like masses-and-springs-basics do not use default at all
+      validValues: colorProfiles
     },
 
     /**
@@ -493,7 +515,6 @@
      */
     shuffleListeners: { type: 'flag' },
 
-    //TODO https://github.com/phetsims/joist/issues/724 as a workaround, this is currently being used to affect ALL audio
     // Private Doc:  For external use. The below jsdoc is public to the PhET-iO API documentation. Change wisely.
     /**
      * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
@@ -565,12 +586,12 @@
      *
      * Enables interactive description in the simulation. Use this option to render the Parallel DOM for keyboard
      * navigation and screen-reader-based auditory descriptions. Can be permanently enabled if
-     * `supportsInteractiveDescription: true` is added under the `phet.features` entry of package.json. Query parameter
+     * `supportsInteractiveDescription: true` is added under the `phet.simFeatures` entry of package.json. Query parameter
      * value will always override package.json entry.
      */
     supportsInteractiveDescription: {
       type: 'boolean',
-      defaultValue: !!packageFeatures.supportsInteractiveDescription
+      defaultValue: !!packageSimFeatures.supportsInteractiveDescription
     },
 
     /**
@@ -578,12 +599,12 @@
      * UI components as an accessibility tool to make it clear what components are available on screen for
      * interaction. Though enabled here, the feature will be turned off until explicitly enabled by the
      * user from the Preferences dialog. Can be permanently enabled if `supportsInteractiveHighlights` is true
-     * under `phet.features` in package.json. Query parameter will always override the package.json entry.
+     * under `phet.simFeatures` in package.json. Query parameter will always override the package.json entry.
      * The query parameter is meant for internal project use only.
      */
     supportsInteractiveHighlights: {
       type: 'boolean',
-      defaultValue: !!packageFeatures.supportsInteractiveHighlights
+      defaultValue: !!packageSimFeatures.supportsInteractiveHighlights
     },
 
     /**
@@ -596,7 +617,7 @@
      */
     supportsGestureControl: {
       type: 'boolean',
-      defaultValue: !!packageFeatures.supportsGestureControl
+      defaultValue: !!packageSimFeatures.supportsGestureControl
     },
 
     /**
@@ -608,7 +629,7 @@
      */
     supportsVoicing: {
       type: 'boolean',
-      defaultValue: !!packageFeatures.supportsVoicing
+      defaultValue: !!packageSimFeatures.supportsVoicing
     },
 
     /**
@@ -619,8 +640,15 @@
     },
 
     /**
+     * Console log the voicing responses that are spoken by SpeechSynthesis
+     */
+    printVoicingResponses: {
+      type: 'flag'
+    },
+
+    /**
      * Enables panning and zooming of the simulation. Can be permanently disabled if supportsPanAndZoom: false is
-     * added under the `phet.features` entry of package.json. Query parameter value will always override package.json entry.
+     * added under the `phet.simFeatures` entry of package.json. Query parameter value will always override package.json entry.
      *
      * Public, so that users can disable this feature if they need to.
      */
@@ -629,7 +657,7 @@
       public: true,
 
       // even if not provided in package.json, this defaults to being true
-      defaultValue: !packageFeatures.hasOwnProperty( 'supportsPanAndZoom' ) || packageFeatures.supportsPanAndZoom
+      defaultValue: !packageSimFeatures.hasOwnProperty( 'supportsPanAndZoom' ) || packageSimFeatures.supportsPanAndZoom
     },
 
     /**
@@ -639,9 +667,8 @@
      */
     supportsSound: {
       type: 'boolean',
-      defaultValue: !!packageFeatures.supportsSound
+      defaultValue: !!packageSimFeatures.supportsSound
     },
-
 
     /**
      * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
@@ -652,7 +679,7 @@
      */
     supportsEnhancedSound: {
       type: 'boolean',
-      defaultValue: !!packageFeatures.supportsEnhancedSound
+      defaultValue: !!packageSimFeatures.supportsEnhancedSound
     },
 
     /**
@@ -691,6 +718,7 @@
 
     // Read query parameters
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
+    window.phet.chipper.colorProfiles = colorProfiles;
 
     /**
      * Determines whether any type of fuzzing is enabled. This is a function so that the associated query parameters

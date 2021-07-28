@@ -14,7 +14,7 @@
  * Copy the local-auth-code key value from phet-server:/etc/tomcat/context.xml into the value for
  * websiteAuthorizationCode in ~/.phet/build-local.json
  *
- * @author Sam Reid
+ * @author Sam Reid (PhET Interactive Simulations)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 

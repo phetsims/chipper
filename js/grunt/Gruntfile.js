@@ -14,7 +14,6 @@ const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
 const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
-const generateDevelopmentColorsHTML = require( './generateDevelopmentColorsHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateTSConfig = require( './generateTSConfig' );
 const generateREADME = require( './generateREADME' );
@@ -338,16 +337,9 @@ module.exports = function( grunt ) {
       await generateTestHTML( repo );
     } ) );
 
-  grunt.registerTask( 'generate-development-colors-html',
-    'Generates top-level SIM-colors.html file used for testing color profiles and color values. Usually you should ' +
-    'set the "colorProfile":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
-    wrapTask( async () => {
-      generateDevelopmentColorsHTML( repo );
-    } ) );
-
   grunt.registerTask( 'generate-a11y-view-html',
     'Generates top-level SIM-a11y-view.html file used for visualizing accessible content. Usually you should ' +
-    'set the "phet.features.supportsInteractiveDescription":true flag in the sim package.json and run `grunt update` ' +
+    'set the "phet.simFeatures.supportsInteractiveDescription":true flag in the sim package.json and run `grunt update` ' +
     'instead of manually generating this.',
     wrapTask( async () => {
       generateA11yViewHTML( repo );
@@ -357,7 +349,6 @@ module.exports = function( grunt ) {
 Updates the normal automatically-generated files for this repository. Includes:
   * runnables: generate-development-html and modulfy
   * accessible runnables: generate-a11y-view-html
-  * color-profile runnables: generate-development-colors-html
   * unit tests: generate-test-html
   * simulations: generateREADME()
   * phet-io simulations: generate overrides file if needed`,
@@ -373,11 +364,8 @@ Updates the normal automatically-generated files for this repository. Includes:
         grunt.task.run( 'generate-development-html' );
         grunt.task.run( 'generate-tsconfig' );
 
-        if ( packageObject.phet.features && packageObject.phet.features.supportsInteractiveDescription ) {
+        if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
           grunt.task.run( 'generate-a11y-view-html' );
-        }
-        if ( packageObject.phet.colorProfile ) {
-          grunt.task.run( 'generate-development-colors-html' );
         }
       }
 

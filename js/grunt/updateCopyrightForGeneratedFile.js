@@ -8,7 +8,7 @@
  */
 
 // modules
-const execute = require( './execute' );
+const execute = require( '../dual/execute' );
 const grunt = require( 'grunt' );
 const updateCopyrightDate = require( './updateCopyrightDate' );
 
@@ -25,13 +25,13 @@ module.exports = async ( repo, relativeFile ) => {
 
   // write to a bash file to support this complicated bash command
   grunt.file.write( tempBashFileName, '[ -d .git ] || git rev-parse --git-dir > /dev/null 2>&1' );
-  await execute( 'chmod', [ 'u+x', tempBashFileName ], '' );
+  await execute( 'chmod', [ 'u+x', tempBashFileName ], process.cwd() );
 
   // Wrapped in a try catch because the below execute calls will fail if we don't want to
   try {
 
     // Test if this is a git repo, fail out if it isn't
-    await execute( 'sh', [ `./${tempBashFileName}` ], '' );
+    await execute( 'sh', [ `./${tempBashFileName}` ], process.cwd() );
 
     // Test if the config file is checked in to git, fail if not
     await execute( 'git', [ 'ls-files', '--error-unmatch', relativeFile ], `../${repo}` );

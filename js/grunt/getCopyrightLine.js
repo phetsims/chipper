@@ -9,7 +9,7 @@
  */
 
 
-const execute = require( './execute' );
+const execute = require( '../dual/execute' );
 
 /**
  * @public
@@ -21,15 +21,11 @@ module.exports = async ( repo, relativeFile ) => {
 
   let startDate = ( await execute( 'git', [
     'log', '--diff-filter=A', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
-  ], {
-    cwd: `../${repo}`
-  } ) ).trim().split( '-' )[ 0 ];
+  ], `../${repo}` ) ).trim().split( '-' )[ 0 ];
 
   const endDate = ( await execute( 'git', [
     'log', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
-  ], {
-    cwd: `../${repo}`
-  } ) ).trim().split( '-' )[ 0 ];
+  ], `../${repo}` ) ).trim().split( '-' )[ 0 ];
 
   let dateString = '';
 
