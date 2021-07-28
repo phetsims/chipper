@@ -66,13 +66,14 @@
     var data = JSON.parse( evt.data );
     if ( data.type === 'reportColor' ) {
 
-      var name = data.name;
-      var value = data.value;
+      const name = data.name;
+      const value = data.value;
 
       // Lazily create color inputs, so we don't need an up-front sim-specific list
-      var input = colorInputMap[ name ];
-      if ( !input ) {
-        input = colorInputMap[ name ] = document.createElement( 'input' );
+      let element = colorInputMap[ name ];
+      if ( !element ) {
+
+        const input = document.createElement( 'input' );
         input.type = 'color';
 
         const slider = document.createElement( 'input' );
@@ -109,9 +110,16 @@
         colorColumn.appendChild( document.createElement( 'br' ) );
 
         updateIFrameDimensions();
+
+        element = {
+          input: input,
+          slider: slider
+        };
+        colorInputMap[ name ] = element;
       }
 
-      input.value = value;
+      element.input.value = value;
+      element.slider.value = data.alpha;
     }
   } );
 </script>
