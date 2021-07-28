@@ -194,7 +194,6 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
     if ( isWrapperIndex ) {
       const getGuideRowText = ( fileName, linkText, description ) => {
-        console.log( fs.existsSync( `${CLIENT_GUIDES_DIR}${repo}/${fileName}.md` ), fileName, linkText, description );
         return fs.existsSync( `${CLIENT_GUIDES_DIR}${repo}/${fileName}.md` ) ? `<tr>
         <td><a href="doc/guides/${fileName}.html">${linkText}</a>
         </td>
