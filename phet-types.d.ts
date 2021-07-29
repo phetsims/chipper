@@ -2,7 +2,7 @@
 
 // import Tandem from "../../../tandem/js/Tandem";
 
-declare var assert: undefined | ( ( x: boolean, s?: string ) => void );
+declare var assert: undefined | ( ( x: any, s?: string ) => void );
 declare var phet: any;
 declare var phetio: any;
 declare var _: any;
