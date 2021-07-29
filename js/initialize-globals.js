@@ -621,6 +621,16 @@
     },
 
     /**
+     * Indicates whether SpeechSynthesis is used in the sim. With supportsSpeechSynthesis, basic use of
+     * voicingManager will be enabled, but the sim will not include other aspects of the voicing feature,
+     * like ReadingBlocks, different layers of speech output, and the Voicing toolbar.
+     */
+    supportsSpeechSynthesis: {
+      type: 'boolean',
+      defaultValue: !!packageSimFeatures.supportsSpeechSynthesis
+    },
+
+    /**
      * Indicates whether or not the "Voicing" feature is enabled. This is a prototype
      * feature that uses the web-speech API to provide speech output to the user about
      * what is happening in the simulation.
