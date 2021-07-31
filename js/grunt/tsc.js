@@ -7,22 +7,25 @@
  */
 
 // modules
-const execute = require( './execute' );
+const execute = require( '../dual/execute' );
 const assert = require( 'assert' );
 
 const tsc = async function( repo, commandLineArgs ) {
   const startTime = Date.now();
 
-  // make sure we are using the right version of the tsc compiler, so we all get the same output
   // TODO: Or could use compiler API: https://github.com/Microsoft/TypeScript/issues/6387 https://github.com/phetsims/tasks/issues/987
 
   // https://stackoverflow.com/a/56073979
   try {
+
+    // make sure we are using the right version of the tsc compiler, so we guarantee reproducible output
     const version = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', '--version' ], `../${repo}` ) ).trim();
     assert && assert( version === 'Version 4.3.4', `Incompatible tsc version: ${version}, expected Version 4.3.4` );
     let stdout;
     try {
-      stdout = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs ], `../${repo}` ) ).trim();
+
+      const args = [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs ];
+      stdout = ( await execute( 'node', args, `../${repo}` ) ).trim();
     }
     catch( e ) {
       console.log( `tsc completed with stdout:\n${e.stderr}` );
