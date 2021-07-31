@@ -99,7 +99,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
   };
 
   // Load the file contents of every single JS module that used any strings
-  const usedFileContents = usedModules.map( usedModule => fs.readFileSync( `../chipper/dist/${usedModule}`, 'utf-8' ) );
+  const usedFileContents = usedModules.map( usedModule => fs.readFileSync( `../${usedModule}`, 'utf-8' ) );
 
   // Compute which repositories contain one more more used strings (since we'll need to load string files for those
   // repositories).

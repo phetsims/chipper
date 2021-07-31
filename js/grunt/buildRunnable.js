@@ -123,10 +123,11 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const dependencies = await getDependencies( repo );
 
   webpackResult.usedModules.forEach( moduleDependency => {
-    if ( moduleDependency.startsWith( '../../' ) || moduleDependency.startsWith( '..\\..\\' ) ) {
-      moduleDependency = moduleDependency.substring( '../../'.length );
-    }
-    const moduleRepo = moduleDependency.substring( 0, moduleDependency.indexOf( path.sep ) );
+
+    // The first part of the path is the repo.  Or if no directory is specified, the file is in the sim repo.
+    const pathSeparatorIndex = moduleDependency.indexOf( path.sep );
+    const moduleRepo = pathSeparatorIndex >= 0 ? moduleDependency.slice( 0, pathSeparatorIndex ) :
+                       repo;
     assert( Object.keys( dependencies ).includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
   } );
 

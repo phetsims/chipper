@@ -380,7 +380,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 /* eslint-env node */
 
 // use chipper's gruntfile
-module.exports = require( '../chipper/dist/chipper/js/grunt/Gruntfile.js' );
+module.exports = require( '../chipper/js/grunt/Gruntfile.js' );
 ` );
       }
 
