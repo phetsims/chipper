@@ -30,7 +30,8 @@ module.exports = async function( repo ) {
     "js/**/*",
     "images/**/*",
     "sounds/**/*",
-    "mipmaps/**/*"
+    "mipmaps/**/*",
+    "../chipper/phet-types.d.ts"
   ],
   "exclude": [
     "node_modules",
