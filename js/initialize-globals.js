@@ -521,6 +521,7 @@
      * must be supported by the sim for this to have any effect.
      * @memberOf PhetQueryParameters
      * @type {string}
+     * @deprecated see https://github.com/phetsims/joist/issues/734
      */
     sound: {
       type: 'string',
