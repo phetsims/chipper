@@ -33,8 +33,7 @@
     "terser": "~4.6.4",
     "webpack": "^5.47.1",
     "webpack-cli": "^4.7.0",
-    "webpack-dev-server": "^3.11.2",
-    "winston": "2.4.5"
+    "webpack-dev-server": "^3.11.2"
   },
   "eslintConfig": {
     "extends": "../chipper/eslint/sim_eslintrc.js",
