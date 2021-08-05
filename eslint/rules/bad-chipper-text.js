@@ -16,7 +16,7 @@ module.exports = function( context ) {
   // see getBadTextTester for schema.
   const forbiddenTextObjects = [
 
-    // chipper should use annual instead of perennial, so that it can check out specific versions
+    // chipper should use perennial-alias instead of perennial, so that it can check out specific versions
     '../perennial/js/'
   ];
 

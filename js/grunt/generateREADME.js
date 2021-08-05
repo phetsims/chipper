@@ -30,8 +30,8 @@ module.exports = function( repo, published ) {
   // Commands for cloning all required repositories
   const cloneCommands = phetLibs.map( phetLib => {
 
-    return phetLib === 'annual' ?
-           'git clone https://github.com/phetsims/perennial.git annual' :
+    return phetLib === 'perennial-alias' ?
+           'git clone https://github.com/phetsims/perennial.git perennial-alias' :
            `git clone https://github.com/phetsims/${phetLib}.git`;
   } ).join( '\n' );
 

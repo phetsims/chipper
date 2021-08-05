@@ -27,7 +27,7 @@ const WebpackDevServer = require( 'webpack-dev-server' ); // eslint-disable-line
 module.exports = async ( repos, port, devtool, openChrome = false ) => {
   // NOTE: Load dependencies more specifically from a sim list in the future, so we don't have such a direct dependency.
   // Repos could be deleted in the future and then prior checkouts with this wouldn't work.
-  const activeRepos = fs.readFileSync( '../annual/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
+  const activeRepos = fs.readFileSync( '../perennial-alias/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
   const reposByNamespace = {};
   const aliases = {};
 

@@ -22,7 +22,7 @@ let directoriesToRequireIssues = [];
 if ( buildJSON && buildJSON.common && buildJSON.common.phetLibs ) {
 
   // Don't require issues in these repos:
-  directoriesToRequireIssues = buildJSON.common.phetLibs.filter( x => x !== 'scenery' && x !== 'dot' && x !== 'kite' && x !== 'annual' );
+  directoriesToRequireIssues = buildJSON.common.phetLibs.filter( x => x !== 'scenery' && x !== 'dot' && x !== 'kite' && x !== 'perennial-alias' );
 
   if ( buildJSON && buildJSON[ 'phet-io' ] && buildJSON[ 'phet-io' ].phetLibs ) {
     directoriesToRequireIssues = directoriesToRequireIssues.concat( buildJSON[ 'phet-io' ].phetLibs );
