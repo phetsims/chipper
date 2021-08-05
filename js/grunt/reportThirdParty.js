@@ -53,7 +53,7 @@ module.exports = async function() {
   const simLibraries = [];
 
   // Download all sims. If it's not published, it will be skipped in the report
-  const activeSims = fs.readFileSync( '../perennial/data/active-sims', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
+  const activeSims = fs.readFileSync( '../annual/data/active-sims', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
 
   for ( const sim of activeSims ) {
     const url = `https://${serverName}/sims/html/${sim}/latest/${sim}_en.html`;

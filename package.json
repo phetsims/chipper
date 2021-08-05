@@ -43,6 +43,9 @@
       "dist/",
       "node_modules/"
     ],
+    "rules": {
+      "bad-chipper-text": "error"
+    },
     "parserOptions": {
       "sourceType": "module",
       "allowImportExportEverywhere": true
