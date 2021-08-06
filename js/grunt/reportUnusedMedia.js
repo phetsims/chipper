@@ -38,12 +38,13 @@ module.exports = ( repo, usedModules ) => {
 
         if ( filename !== 'license.json' && filename !== 'README.md' && filename.indexOf( '.js' ) !== -1 ) {
           const module = subdir ?
-                    `${repo}/${mediaType}/${subdir}/${filename}` :
-                    `${repo}/${mediaType}/${filename}`;
+                         `${repo}/${mediaType}/${subdir}/${filename}` :
+                         `${repo}/${mediaType}/${filename}`;
 
           // If no licenseEntries were registered, or some were registered but not one corresponding to this file
-          if ( !normalizedUsedModules.includes( module ) ) {
+          if ( !normalizedUsedModules.includes( `chipper/dist/${module}` ) ) {
             grunt.log.warn( `Unused ${mediaType} module: ${module}` );
+            console.log( normalizedUsedModules.join( '\n' ) );
           }
         }
       } );
