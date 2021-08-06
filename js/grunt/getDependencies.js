@@ -10,7 +10,7 @@
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const execute = require( '../dual/execute' );
+const execute = require( '../../../perennial-alias/js/dual/execute' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
 

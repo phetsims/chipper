@@ -28,7 +28,12 @@ module.exports = function( repo, published ) {
   const phetLibs = getPhetLibs( repo, 'phet' );
 
   // Commands for cloning all required repositories
-  const cloneCommands = phetLibs.map( phetLib => `git clone https://github.com/phetsims/${phetLib}.git` ).join( '\n' );
+  const cloneCommands = phetLibs.map( phetLib => {
+
+    return phetLib === 'perennial-alias' ?
+           'git clone https://github.com/phetsims/perennial.git perennial-alias' :
+           `git clone https://github.com/phetsims/${phetLib}.git`;
+  } ).join( '\n' );
 
   // Read the template.
   const templateFile = published ? 'README-published.md' : 'README-unpublished.md';

@@ -9,7 +9,7 @@
  */
 
 
-const execute = require( '../dual/execute' );
+const execute = require( '../../../perennial-alias/js/dual/execute' );
 
 /**
  * @public

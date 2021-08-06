@@ -9,6 +9,7 @@
       "dot",
       "joist",
       "kite",
+      "perennial-alias",
       "phet-core",
       "phetcommon",
       "phetmarks",
@@ -37,7 +38,7 @@
       "../sherpa/lib/base64-js-1.2.0.js",
       "../sherpa/lib/TextEncoderLite-3c9f6f0.js",
       "../tandem/js/PhetioIDUtils.js",
-      "../chipper/js/dual/SimVersion.js"
+      "../perennial-alias/js/dual/SimVersion.js"
     ],
     "licenseKeys": [
       "font-awesome-4.5.0",

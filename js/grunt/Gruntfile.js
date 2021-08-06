@@ -6,8 +6,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-const SimVersion = require( '../dual/SimVersion' );
+const SimVersion = require( '../../../perennial-alias/js/dual/SimVersion' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
@@ -132,6 +131,7 @@ module.exports = function( grunt ) {
       // Thumbnails and twitter card
       if ( grunt.file.exists( `../${repo}/assets/${repo}-screenshot.png` ) ) {
         const thumbnailSizes = [
+          { width: 900, height: 591 },
           { width: 600, height: 394 },
           { width: 420, height: 276 },
           { width: 128, height: 84 },
@@ -145,6 +145,7 @@ module.exports = function( grunt ) {
         for ( const altScreenshot of altScreenshots ) {
           const imageNumber = parseInt( altScreenshot.substr( `./${repo}-screenshot-alt`.length, 1 ), 10 );
           grunt.file.write( `${buildDir}/${repo}-${600}-alt${imageNumber}.png`, await generateThumbnails( repo, 600, 394, 100, jimp.MIME_PNG, `-alt${imageNumber}` ) );
+          grunt.file.write( `${buildDir}/${repo}-${900}-alt${imageNumber}.png`, await generateThumbnails( repo, 900, 591, 100, jimp.MIME_PNG, `-alt${imageNumber}` ) );
         }
 
         if ( brand === 'phet' ) {
