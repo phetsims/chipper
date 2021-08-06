@@ -7,7 +7,7 @@
  */
 
 // modules
-const execute = require( '../dual/execute' );
+const execute = require( '../../../perennial-alias/js/dual/execute' );
 const assert = require( 'assert' );
 
 const tsc = async function( repo, commandLineArgs ) {
