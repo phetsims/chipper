@@ -651,7 +651,8 @@
     },
 
     /**
-     * A debug query parameter that will save and load you preferences (from the Preferences Dialog) through multiple runtimes
+     * A debug query parameter that will save and load you preferences (from the Preferences Dialog) through multiple runtimes.
+     * See PreferencesStorage.register to see what Properties support this save/load feature.
      */
     preferencesStorage: {
       type: 'flag'
