@@ -651,6 +651,13 @@
     },
 
     /**
+     * A debug query parameter that will save and load you preferences (from the Preferences Dialog) through multiple runtimes
+     */
+    preferencesStorage: {
+      type: 'flag'
+    },
+
+    /**
      * Console log the voicing responses that are spoken by SpeechSynthesis
      */
     printVoicingResponses: {
