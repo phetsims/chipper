@@ -970,6 +970,9 @@ module.exports = {
     // allow slow assertions
     assertSlow: 'readonly',
 
+    // decimal.js library
+    Decimal: 'readonly',
+
     phetio: 'readonly',
 
     // underscore, lodash
