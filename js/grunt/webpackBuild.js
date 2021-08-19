@@ -102,7 +102,9 @@ module.exports = function( repo, brand ) {
       // Exclude brand specific code. This includes all of the `phet-io` repo for non phet-io builds.
         ( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
           brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
-          brand === 'adapted-from-phet' ? [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] : [] )
+
+            // adapted-from-phet and all other brands
+            [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] )
     } );
 
     compiler.run( ( err, stats ) => {
