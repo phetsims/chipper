@@ -115,8 +115,7 @@
      */
     brand: {
       type: 'string',
-      defaultValue: 'adapted-from-phet',
-      validValues: [ 'phet', 'phet-io', 'adapted-from-phet' ]
+      defaultValue: 'adapted-from-phet'
     },
 
     /**
