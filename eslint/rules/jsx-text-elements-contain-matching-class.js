@@ -30,7 +30,7 @@ module.exports = {
             }
             else {
               status = CLASS_UNDETERMINABLE;
-              if ( attribute.value.type === 'JSXExpressionContainer' && attribute.value.expression === 'TemplateLiteral') {
+              if ( attribute.value.type === 'JSXExpressionContainer' && attribute.value.expression === 'TemplateLiteral' ) {
                 attribute.value.expression.quasis.forEach( quasi => {
                   if ( quasi.value.raw.split( ' ' ).find( clazz => clazz === 'p' ) ) {
                     status = CLASS_FOUND;
