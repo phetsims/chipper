@@ -170,7 +170,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
         // [a-zA-Z_$][a-zA-Z0-9_$]* ---- this grabs things that looks like valid JS identifiers
         // \\[ '[^']+' \\])+ ---- this grabs things like our second case above
         // [^\\.\\[] ---- matches something at the end that is NOT either of those other two cases
-        const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[ '[^']+' \\])+[^\\.\\[]`, 'g' ) );
+        const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[\\s*['"][^'"]+['"]\\s*\\])+[^\\.\\[]`, 'g' ) );
         if ( matches ) {
           stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ) ).filter( m => m !== `${prefix}.get` ) );
         }
@@ -192,7 +192,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
     // Turn each string access into an array of parts, e.g. '.ResetAllButton.name' => [ 'ResetAllButton', 'name' ]
     // or '[ \'A\' ].B[ \'C\' ]' => [ 'A', 'B', 'C' ]
     // Regex grabs either `.identifier` or `[ 'text' ]`.
-    const stringKeysByParts = stringAccesses.map( access => access.match( /\.[a-zA-Z_$][a-zA-Z0-9_$]*|\['[^']+'\]/g ).map( token => {
+    const stringKeysByParts = stringAccesses.map( access => access.match( /\.[a-zA-Z_$][a-zA-Z0-9_$]*|\[\s*['"][^'"]+['"]\s*\]/g ).map( token => {
       return token.startsWith( '.' ) ? token.slice( 1 ) : token.slice( depth, token.length - depth );
     } ) );
 
