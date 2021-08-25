@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig-core.json",
-  "include": [
-    "./js/**/*"
-  ],
-  "exclude": [
-    "./js/sim-tests/qunitStart.js"
-  ]
-}
