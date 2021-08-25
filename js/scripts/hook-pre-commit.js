@@ -126,13 +126,15 @@ catch( e ) {
 
 // Run typescript type checker if it exists in the checked-out shas
 try {
+  const ChipperUtils = require( '../../../chipper/js/common/ChipperUtils' );
   const tsc = require( '../../../chipper/js/grunt/tsc' );
-  if ( tsc.apiVersion === '1.0' ) {
+  if ( ChipperUtils.apiVersion === '1.0' && tsc.apiVersion === '1.0' &&
+       ChipperUtils.isRepoTypeScript( repo ) ) {
 
     ( async () => {
 
       // lint() automatically filters out non-lintable repos
-      const results = await tsc( `../${repo}`, [] );
+      const results = await tsc( `${repo}`, [] );
       if ( results.stderr.length > 0 ) {
         console.log( results.stderr );
         process.exit( 1 );
