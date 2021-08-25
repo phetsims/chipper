@@ -62,7 +62,6 @@ const recordTime = async ( asyncCallback, timeCallback ) => {
 module.exports = async function( repo, minifyOptions, instrument, allHTML, brand, localesOption, buildLocal ) {
   assert( typeof repo === 'string' );
   assert( typeof minifyOptions === 'object' );
-  assert( _.includes( ChipperConstants.BRANDS, brand ), `Unknown brand in buildRunnable: ${brand}` );
 
   if ( brand === 'phet-io' ) {
     assert( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );

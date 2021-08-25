@@ -7,7 +7,6 @@
  */
 
 const SimVersion = require( '../../../perennial-alias/js/dual/SimVersion' );
-const ChipperConstants = require( '../common/ChipperConstants' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
@@ -257,7 +256,6 @@ module.exports = function( grunt ) {
         }
 
         // Ensure all listed brands are valid
-        brands.forEach( brand => assert( ChipperConstants.BRANDS.includes( brand ), `Unknown brand: ${brand}` ) );
         brands.forEach( brand => assert( supportedBrands.includes( brand ), `Unsupported brand: ${brand}` ) );
 
         grunt.log.writeln( `Building runnable repository (${repo}, brands: ${brands.join( ', ' )})` );

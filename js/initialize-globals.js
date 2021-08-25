@@ -115,8 +115,7 @@
      */
     brand: {
       type: 'string',
-      defaultValue: 'adapted-from-phet',
-      validValues: [ 'phet', 'phet-io', 'adapted-from-phet' ]
+      defaultValue: 'adapted-from-phet'
     },
 
     /**
@@ -647,6 +646,14 @@
      * By default, voicing is not enabled on startup. Add this flag to start the sim with voicing enabled.
      */
     voicingInitiallyEnabled: {
+      type: 'flag'
+    },
+
+    /**
+     * A debug query parameter that will save and load you preferences (from the Preferences Dialog) through multiple runtimes.
+     * See PreferencesStorage.register to see what Properties support this save/load feature.
+     */
+    preferencesStorage: {
       type: 'flag'
     },
 

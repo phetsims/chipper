@@ -11,7 +11,6 @@
 
 
 // modules
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -39,7 +38,6 @@ module.exports = function( config ) {
     isDebugBuild, // {boolean}
     packageObject
   } = config;
-  assert( _.includes( ChipperConstants.BRANDS, brand ), `Unknown brand: ${brand}` );
   assert( typeof repo === 'string', 'Requires repo' );
   assert( stringMap, 'Requires stringMap' );
   assert( typeof version === 'string', 'Requires version' );

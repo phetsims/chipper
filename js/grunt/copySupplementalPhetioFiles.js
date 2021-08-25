@@ -34,6 +34,7 @@ const COMMON_DIR = 'common/';
 const CLIENT_REQUESTS_FILENAME = 'client-requests';
 const PHET_IO_GUIDE_FILENAME = 'phet-io-guide';
 const PHET_IO_MIGRATION_GUIDE_FILENAME = 'migration-guide';
+const CONTRIB_DIR = 'contrib/';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
@@ -55,9 +56,14 @@ const LIB_COPYRIGHT_HEADER = '// Copyright 2002-2018, University of Colorado Bou
                              '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
                              '// For licensing, please contact phethelp@colorado.edu';
 
+const OFFLINE_CONTRIB_FILES = [
+  '../sherpa/lib/lodash-4.17.4.min.js',
+  '../sherpa/lib/pako-2.0.3/pako-2.0.3.min.js',
+  '../sherpa/lib/pako-2.0.3/pako_inflate-2.0.3.min.js'
+];
+
 // All libraries and third party files that are used by phet-io wrappers, and need to be copied over for a build
 const CONTRIB_FILES = [
-  '../sherpa/lib/lodash-4.17.4.min.js',
   '../sherpa/lib/ua-parser-0.7.21.min.js',
   '../sherpa/lib/bootstrap-2.2.2.js',
   '../sherpa/lib/font-awesome-4.5.0',
@@ -67,12 +73,10 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jsondiffpatch-v0.3.11.umd.js',
   '../sherpa/lib/jsondiffpatch-v0.3.11-annotated.css',
   '../sherpa/lib/jsondiffpatch-v0.3.11-html.css',
-  '../sherpa/lib/pako-2.0.3/pako-2.0.3.min.js',
-  '../sherpa/lib/pako-2.0.3/pako_inflate-2.0.3.min.js',
   '../sherpa/lib/prism-1.23.0.js',
   '../sherpa/lib/prism-okaidia-1.23.0.css',
   '../sherpa/lib/clarinet-0.12.4.js'
-];
+].concat( OFFLINE_CONTRIB_FILES );
 
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
 const JSDOC_FILES = [
@@ -383,6 +387,14 @@ const handleOfflineArtifact = async ( buildDir, repo, version ) => {
   // copy over the lib directory and its contents, and an index to test. Note that these use the files from the buildDir
   // because they have been post-processed and contain filled in template vars.
   archive.directory( `${buildDir}lib`, 'lib' );
+
+  OFFLINE_CONTRIB_FILES.forEach( contribFile => {
+    const contribFileParts = contribFile.split( '/' );
+    const contribFileName = contribFileParts[ contribFileParts.length - 1 ];
+
+    archive.file( contribFile, { name: `${CONTRIB_DIR}${contribFileName}` } );
+  } );
+
   archive.file( `${buildDir}${WRAPPERS_FOLDER}/common/html/offline-example.html`, { name: 'index.html' } );
 
   // get the all html and the debug version too, use `cwd` so that they are at the top level of the zip.
