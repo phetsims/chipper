@@ -21,7 +21,9 @@ const ChipperUtils = {
     const phet = packageObject.phet;
     const typescript = phet.typescript === true;
     return typescript;
-  }
+  },
+
+  apiVersion: '1.0'
 };
 
 module.exports = ChipperUtils;
