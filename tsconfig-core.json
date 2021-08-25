@@ -1,5 +1,5 @@
 /**
- * Shared defaults for all tsconfig files.
+ * Shared defaults for tsconfig files.
  * @author Sam Reid (PhET Interactive Simulations)
  */
 {

@@ -9,6 +9,7 @@
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+const ChipperUtils = require( '../common/ChipperUtils' );
 
 /**
  * @param {string} repo
@@ -16,6 +17,7 @@ const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
  * @returns {Promise.<undefined>}
  */
 module.exports = async ( repo, options ) => {
+  const isTypeScript = ChipperUtils.isRepoTypeScript( repo );
   await generateDevelopmentHTML( repo, _.merge( {
 
     // Include QUnit CSS
@@ -36,7 +38,7 @@ module.exports = async ( repo, options ) => {
     // Do not show the splash screen
     stripPreloads: [ '../joist/js/splash.js' ],
 
-    mainFile: `../chipper/dist/${repo}/js/${repo}-tests.js`,
+    mainFile: isTypeScript ? `../chipper/dist/${repo}/js/${repo}-tests.js` : `js/${repo}-tests.js`,
 
     // Specify to use test config
     qualifier: 'test-',

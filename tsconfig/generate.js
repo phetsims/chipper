@@ -1,4 +1,11 @@
 // Copyright 2021, University of Colorado Boulder
+
+/**
+ * Script used to generate the tsconfig files in chipper/tsconfig/
+ * TODO https://github.com/phetsims/chipper/issues/1075 clean up or delete
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
+ */
 const fs = require( 'fs' ); // eslint-disable-line
 const activeRunnables = fs.readFileSync( '../../perennial/data/active-runnables' ).toString().trim().split( '\n' );
 const allDependencies = [];
