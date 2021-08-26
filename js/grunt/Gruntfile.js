@@ -103,13 +103,13 @@ module.exports = function( grunt ) {
     };
   }
 
-  const isTypeScriptRepo = ChipperUtils.isRepoTypeScript( repo );
+  const isTypeScript = ChipperUtils.isRepoTypeScript( repo );
 
   grunt.registerTask( 'default', 'Builds the repository', [
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
     ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
     'clean',
-    ...( isTypeScriptRepo ? [ 'tsc-build' ] : [] ),
+    ...( isTypeScript ? [ 'tsc-build' ] : [] ),
     'build'
   ] );
 
