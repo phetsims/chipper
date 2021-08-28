@@ -62,6 +62,7 @@ const tsc = async function( repo, commandLineArgs ) {
   }
 };
 
+// so that hook-pre-commit.js knows if it loaded a compatible version
 tsc.apiVersion = '1.0';
 /**
  * @public

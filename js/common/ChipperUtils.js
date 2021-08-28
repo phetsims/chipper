@@ -23,6 +23,7 @@ const ChipperUtils = {
     return typescript;
   },
 
+  // so that hook-pre-commit.js knows if it loaded a compatible version
   apiVersion: '1.0'
 };
 
