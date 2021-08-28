@@ -187,6 +187,8 @@ module.exports = function( locales, phetLibs, usedModules ) {
     stringAccesses = _.uniq( stringAccesses ).map( str => str.slice( prefix.length ) );
 
     const isTypeScript = ChipperUtils.isRepoTypeScript( repo );
+
+    // The JS outputted by TS is minified and missing the whitespace
     const depth = isTypeScript ? 2 : 3;
 
     // Turn each string access into an array of parts, e.g. '.ResetAllButton.name' => [ 'ResetAllButton', 'name' ]
