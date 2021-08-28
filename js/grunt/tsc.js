@@ -10,6 +10,9 @@
 const execute = require( '../../../perennial-alias/js/dual/execute' );
 const assert = require( 'assert' );
 
+// constants
+const EXPECTED_VERSION = 'Version 4.4.2';
+
 const tsc = async function( repo, commandLineArgs ) {
   const startTime = Date.now();
 
@@ -20,7 +23,7 @@ const tsc = async function( repo, commandLineArgs ) {
 
     // make sure we are using the right version of the tsc compiler, so we guarantee reproducible output
     const version = ( await execute( 'node', [ '../chipper/node_modules/typescript/bin/tsc', '--version' ], `../${repo}` ) ).trim();
-    assert && assert( version === 'Version 4.3.4', `Incompatible tsc version: ${version}, expected Version 4.3.4` );
+    assert && assert( version === EXPECTED_VERSION, `Incompatible tsc version: ${version}, expected ${EXPECTED_VERSION}` );
     let stdout;
     try {
 
