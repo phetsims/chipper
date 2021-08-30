@@ -415,5 +415,8 @@
     {
       "path": "../tangible"
     }
+  ],
+  "include": [
+    "../../phet-types.d.ts"
   ]
 }

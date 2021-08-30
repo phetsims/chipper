@@ -10,7 +10,8 @@
     "../../../tandem/js/**/*",
     "../../../phet-core/js/EnumerationIO.js",
     "../../../dot/js/Range.js",
-    "../../../dot/js/dot.js"
+    "../../../dot/js/dot.js",
+    "../../phet-types.d.ts"
   ],
   "exclude": [
     "../../../**/*test*",
