@@ -18,7 +18,7 @@
 
 // modules
 const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-const ChipperUtils = require( '../../../chipper/js/common/ChipperUtils' );
+const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 const grunt = require( 'grunt' );
 
 /**
@@ -27,7 +27,7 @@ const grunt = require( 'grunt' );
  */
 module.exports = ( repo, usedModules ) => {
 
-  const isTypeScript = ChipperUtils.isRepoTypeScript( repo );
+  const isTypeScript = isRepoTypeScript( repo );
 
   // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
   const normalizedUsedModules = usedModules.map( module => module.split( '\\' ).join( '/' ) );

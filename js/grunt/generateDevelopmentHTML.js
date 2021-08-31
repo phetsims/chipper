@@ -13,7 +13,7 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const ChipperUtils = require( '../common/ChipperUtils' );
+const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 const fixEOL = require( './fixEOL' );
 const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
@@ -27,7 +27,7 @@ const grunt = require( 'grunt' );
  */
 module.exports = async function( repo, options ) {
 
-  const isTypeScript = ChipperUtils.isRepoTypeScript( repo );
+  const isTypeScript = isRepoTypeScript( repo );
   const {
     stylesheets = '',
     bodystyle = ' style="background-color:black;"', // note the preceding ' ' which is essential

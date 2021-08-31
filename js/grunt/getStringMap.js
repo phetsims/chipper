@@ -10,7 +10,7 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const ChipperUtils = require( '../common/ChipperUtils' );
+const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const localeInfo = require( '../data/localeInfo' ); // Locale information
@@ -186,7 +186,7 @@ module.exports = function( locales, phetLibs, usedModules ) {
     // Strip off our prefixes, so our stringAccesses will have things like `'ResetAllButton.name'` inside.
     stringAccesses = _.uniq( stringAccesses ).map( str => str.slice( prefix.length ) );
 
-    const isTypeScript = ChipperUtils.isRepoTypeScript( repo );
+    const isTypeScript = isRepoTypeScript( repo );
 
     // The JS outputted by TS is minified and missing the whitespace
     const depth = isTypeScript ? 2 : 3;

@@ -10,7 +10,7 @@ const SimVersion = require( '../../../perennial-alias/js/dual/SimVersion' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
-const ChipperUtils = require( '../common/ChipperUtils' );
+const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
@@ -103,7 +103,7 @@ module.exports = function( grunt ) {
     };
   }
 
-  const isTypeScript = ChipperUtils.isRepoTypeScript( repo );
+  const isTypeScript = isRepoTypeScript( repo );
 
   grunt.registerTask( 'default', 'Builds the repository', [
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
@@ -160,13 +160,13 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'tsc', 'Runs tsc with any command line options. Requires the chipper branch "typescript"',
 
     wrapTask( async () => {
-      assert && assert( ChipperUtils.isRepoTypeScript( repo ), 'command can only be used on repos with typescript:true' );
+      assert && assert( isRepoTypeScript( repo ), 'command can only be used on repos with typescript:true' );
       tsc( repo, process.argv.slice( 3 ) );
     } ) );
 
   grunt.registerTask( 'tsc-build', 'Runs tsc --build to transpile JS/TS before the webpack step. Requires the chipper branch "typescript"',
     wrapTask( async () => {
-      assert && assert( ChipperUtils.isRepoTypeScript( repo ), 'command can only be used on repos with typescript:true' );
+      assert && assert( isRepoTypeScript( repo ), 'command can only be used on repos with typescript:true' );
       const result = await tsc( repo, [ '--build' ] );
       if ( result.stderr && result.stderr.length > 0 ) {
         grunt.fail.fatal( result.stderr );
@@ -331,7 +331,7 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'generate-tsconfig', 'Generates tsconfig.js for typescript builds.',
     wrapTask( async () => {
-      assert && assert( ChipperUtils.isRepoTypeScript( repo ), 'command can only be used on repos with typescript:true' );
+      assert && assert( isRepoTypeScript( repo ), 'command can only be used on repos with typescript:true' );
       await generateTSConfig( repo );
     } ) );
 
@@ -368,7 +368,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       if ( packageObject.phet.runnable ) {
         grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
-        if ( ChipperUtils.isRepoTypeScript( repo ) ) {
+        if ( isRepoTypeScript( repo ) ) {
           grunt.task.run( 'generate-tsconfig' );
         }
 

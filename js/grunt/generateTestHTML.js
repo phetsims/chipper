@@ -9,7 +9,7 @@
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
-const ChipperUtils = require( '../common/ChipperUtils' );
+const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 
 /**
  * @param {string} repo
@@ -17,7 +17,7 @@ const ChipperUtils = require( '../common/ChipperUtils' );
  * @returns {Promise.<undefined>}
  */
 module.exports = async ( repo, options ) => {
-  const isTypeScript = ChipperUtils.isRepoTypeScript( repo );
+  const isTypeScript = isRepoTypeScript( repo );
   await generateDevelopmentHTML( repo, _.merge( {
 
     // Include QUnit CSS
