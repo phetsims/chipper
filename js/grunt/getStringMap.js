@@ -170,6 +170,8 @@ module.exports = function( locales, phetLibs, usedModules ) {
         // [a-zA-Z_$][a-zA-Z0-9_$]* ---- this grabs things that looks like valid JS identifiers
         // \\[ '[^']+' \\])+ ---- this grabs things like our second case above
         // [^\\.\\[] ---- matches something at the end that is NOT either of those other two cases
+        // It is also generalized to support arbitrary whitespace and requires that ' match ' or " match ", since
+        // this must support JS code and minified TypeScript code
         const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[\\s*['"][^'"]+['"]\\s*\\])+[^\\.\\[]`, 'g' ) );
         if ( matches ) {
           stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ) ).filter( m => m !== `${prefix}.get` ) );
