@@ -36,7 +36,8 @@ const tsc = async function( repo, commandLineArgs ) {
 
       return {
         stderr: e.stderr,
-        stdout: e.stdout
+        stdout: e.stdout,
+        code: e.code
       };
     }
     const endTime = Date.now();
@@ -45,13 +46,14 @@ const tsc = async function( repo, commandLineArgs ) {
       console.log( `tsc completed in ${elapsedTime} ms` );
       return {
         stderr: '',
-        stdout: ''
+        stdout: '',
+        code: 0
       };
     }
     else {
       console.log( `tsc completed with stdout: ${stdout}` );
 
-      return { stderr: '', stdout: stdout };
+      return { stderr: '', stdout: stdout, code: 0 };
     }
   }
   catch( e ) {
