@@ -109,7 +109,6 @@ module.exports = function( grunt ) {
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
     ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
     'clean',
-    ...( isTypeScript ? [ 'tsc-build' ] : [] ),
     'build'
   ] );
 
@@ -164,17 +163,19 @@ module.exports = function( grunt ) {
       tsc( repo, process.argv.slice( 3 ) );
     } ) );
 
+  const tscBuild = async () => {
+    assert && assert( isTypeScript, 'command can only be used on repos with typescript:true' );
+    const result = await tsc( repo, [ '--build' ] );
+    if ( result.stderr && result.stderr.length > 0 ) {
+      grunt.fail.fatal( result.stderr );
+    }
+    if ( result.stdout && result.stdout.length > 0 ) {
+      grunt.fail.fatal( result.stdout );
+    }
+  };
+
   grunt.registerTask( 'tsc-build', 'Runs tsc --build to transpile JS/TS before the webpack step. Requires the chipper branch "typescript"',
-    wrapTask( async () => {
-      assert && assert( isTypeScript, 'command can only be used on repos with typescript:true' );
-      const result = await tsc( repo, [ '--build' ] );
-      if ( result.stderr && result.stderr.length > 0 ) {
-        grunt.fail.fatal( result.stderr );
-      }
-      if ( result.stdout && result.stdout.length > 0 ) {
-        grunt.fail.fatal( result.stdout );
-      }
-    } )
+    wrapTask( tscBuild )
   );
 
   grunt.registerTask( 'build',
@@ -216,6 +217,13 @@ module.exports = function( grunt ) {
       }
 
       const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+
+      // If the entry-point repo is marked for typescript, enable the typescript build chain.
+      // This begins with compiling the typescript into javascript, then the rest of the build process
+      // continues on the compiled javascript
+      if ( isTypeScript ) {
+        await tscBuild();
+      }
 
       // standalone
       if ( repoPackageObject.phet.buildStandalone ) {
