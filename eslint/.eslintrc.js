@@ -13,6 +13,9 @@ module.exports = {
   // in a parent dir
   root: true,
 
+  // See https://www.npmjs.com/package/eslint-plugin-consistent-default-export-name
+  plugins: [ 'consistent-default-export-name' ],
+
   // The rules are organized like they are in the list at https://eslint.org/docs/rules/
   // First by type, then alphabetically within type
   // Explicitly list all rules so it is easy to see what's here and to keep organized
@@ -894,6 +897,13 @@ module.exports = {
 
     // require or disallow spacing around the `*` in `yield*` expressions
     'yield-star-spacing': 'error',
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Plugins
+    //
+
+    // TODO: comment back in when >1200 errors are fixed, see https://github.com/phetsims/chipper/issues/1079
+    // "consistent-default-export-name/default-import-match-filename": "error",
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Custom Rules
