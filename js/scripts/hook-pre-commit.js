@@ -126,10 +126,10 @@ catch( e ) {
 
 // Run typescript type checker if it exists in the checked-out shas
 try {
-  const ChipperUtils = require( '../../../chipper/js/common/ChipperUtils' );
+  const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
   const tsc = require( '../../../chipper/js/grunt/tsc' );
-  if ( ChipperUtils.apiVersion === '1.0' && tsc.apiVersion === '1.0' &&
-       ChipperUtils.isRepoTypeScript( repo ) ) {
+  if ( isRepoTypeScript.apiVersion === '1.0' && tsc.apiVersion === '1.0' &&
+       isRepoTypeScript( repo ) ) {
 
     ( async () => {
 
