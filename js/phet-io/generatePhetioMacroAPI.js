@@ -91,7 +91,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
       return new Promise( async ( resolve, reject ) => { // eslint-disable-line no-async-promise-executor
 
         // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-        setTimeout( () => reject( new Error( 'Timeout in generatePhetioMacroAPI' ) ), 30000 );
+        setTimeout( () => reject( new Error( `Timeout in generatePhetioMacroAPI for ${repo}` ) ), 30000 );
 
         let cleaned = false;
         const cleanup = async () => {
