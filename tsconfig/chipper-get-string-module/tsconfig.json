@@ -1,0 +1,6 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "include": [
+    "../../../chipper/js/getStringModule.js"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../number-line-common"},{"path":"../joist"}],
+  "include": [
+    "../../../number-line-distance/js/**/*",
+    "../../../number-line-distance/sounds/**/*",
+    "../../../number-line-distance/mipmaps/**/*",
+    "../../../number-line-distance/images/**/*"
+  ]
+}

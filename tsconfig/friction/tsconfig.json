@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../friction/js/**/*",
+    "../../../friction/sounds/**/*",
+    "../../../friction/mipmaps/**/*",
+    "../../../friction/images/**/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../optics-lab/js/**/*",
+    "../../../optics-lab/sounds/**/*",
+    "../../../optics-lab/mipmaps/**/*",
+    "../../../optics-lab/images/**/*"
+  ]
+}

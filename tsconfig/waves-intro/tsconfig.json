@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../wave-interference"},{"path":"../twixt"},{"path":"../griddle"},{"path":"../bamboo"},{"path":"../joist"}],
+  "include": [
+    "../../../waves-intro/js/**/*",
+    "../../../waves-intro/sounds/**/*",
+    "../../../waves-intro/mipmaps/**/*",
+    "../../../waves-intro/images/**/*"
+  ]
+}

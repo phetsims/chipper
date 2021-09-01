@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../griddle"},{"path":"../tangible"},{"path":"../joist"}],
+  "include": [
+    "../../../ratio-and-proportion/js/**/*",
+    "../../../ratio-and-proportion/sounds/**/*",
+    "../../../ratio-and-proportion/mipmaps/**/*",
+    "../../../ratio-and-proportion/images/**/*"
+  ]
+}

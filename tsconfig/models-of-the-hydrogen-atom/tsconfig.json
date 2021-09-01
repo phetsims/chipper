@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../models-of-the-hydrogen-atom/js/**/*",
+    "../../../models-of-the-hydrogen-atom/sounds/**/*",
+    "../../../models-of-the-hydrogen-atom/mipmaps/**/*",
+    "../../../models-of-the-hydrogen-atom/images/**/*"
+  ]
+}

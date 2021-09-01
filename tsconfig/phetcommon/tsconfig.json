@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      // Could potentially be relaxed somewhat. Doesn't depend on scenery directly, but uses
+      // some files scenery includes.
+      "path": "../scenery"
+    }
+  ],
+  "include": [
+    "../../../phetcommon/js/**/*"
+  ],
+  "exclude": [
+    "../../../phetcommon/js/**/*test*",
+    // Covered elsewhere
+    "../../../phetcommon/js/util/StringUtils.js",
+    "../../../phetcommon/js/view/ModelViewTransform2.js",
+    "../../../phetcommon/js/phetcommon.js"
+  ]
+}

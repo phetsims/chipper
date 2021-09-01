@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../area-model-common"},{"path":"../twixt"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../area-model-multiplication/js/**/*",
+    "../../../area-model-multiplication/sounds/**/*",
+    "../../../area-model-multiplication/mipmaps/**/*",
+    "../../../area-model-multiplication/images/**/*"
+  ]
+}

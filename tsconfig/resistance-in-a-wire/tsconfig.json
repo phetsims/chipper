@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../resistance-in-a-wire/js/**/*",
+    "../../../resistance-in-a-wire/sounds/**/*",
+    "../../../resistance-in-a-wire/mipmaps/**/*",
+    "../../../resistance-in-a-wire/images/**/*"
+  ]
+}

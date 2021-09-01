@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../function-builder"},{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../function-builder-basics/js/**/*",
+    "../../../function-builder-basics/sounds/**/*",
+    "../../../function-builder-basics/mipmaps/**/*",
+    "../../../function-builder-basics/images/**/*"
+  ]
+}

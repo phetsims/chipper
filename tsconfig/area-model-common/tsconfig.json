@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../joist"
+    },
+    {
+      "path": "../vegas"
+    }
+  ],
+  "include": [
+    "../../../area-model-common/js/**/*",
+    "../../../area-model-common/sounds/**/*",
+    "../../../area-model-common/mipmaps/**/*",
+    "../../../area-model-common/images/**/*"
+  ],
+  "exclude": [
+    "../../../area-model-common/js/**/*test*"
+  ]
+}

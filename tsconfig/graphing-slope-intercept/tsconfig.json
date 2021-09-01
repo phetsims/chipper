@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../graphing-lines"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../graphing-slope-intercept/js/**/*",
+    "../../../graphing-slope-intercept/sounds/**/*",
+    "../../../graphing-slope-intercept/mipmaps/**/*",
+    "../../../graphing-slope-intercept/images/**/*"
+  ]
+}

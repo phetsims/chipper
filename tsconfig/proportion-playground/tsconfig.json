@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../proportion-playground/js/**/*",
+    "../../../proportion-playground/sounds/**/*",
+    "../../../proportion-playground/mipmaps/**/*",
+    "../../../proportion-playground/images/**/*"
+  ]
+}

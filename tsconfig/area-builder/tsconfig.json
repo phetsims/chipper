@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../twixt"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../area-builder/js/**/*",
+    "../../../area-builder/sounds/**/*",
+    "../../../area-builder/mipmaps/**/*",
+    "../../../area-builder/images/**/*"
+  ]
+}

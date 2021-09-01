@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../vegas"},{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../balancing-act/js/**/*",
+    "../../../balancing-act/sounds/**/*",
+    "../../../balancing-act/mipmaps/**/*",
+    "../../../balancing-act/images/**/*"
+  ]
+}

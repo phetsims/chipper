@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../joist"
+    },
+    {
+      "path": "../vegas"
+    }
+  ],
+  "include": [
+    "../../../fractions-common/js/**/*",
+    "../../../fractions-common/sounds/**/*",
+    "../../../fractions-common/mipmaps/**/*",
+    "../../../fractions-common/images/**/*"
+  ]
+}

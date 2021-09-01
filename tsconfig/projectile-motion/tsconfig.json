@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../projectile-motion/js/**/*",
+    "../../../projectile-motion/sounds/**/*",
+    "../../../projectile-motion/mipmaps/**/*",
+    "../../../projectile-motion/images/**/*"
+  ]
+}

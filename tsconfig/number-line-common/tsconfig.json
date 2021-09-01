@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../number-line-common/js/**/*",
+    "../../../number-line-common/sounds/**/*",
+    "../../../number-line-common/mipmaps/**/*",
+    "../../../number-line-common/images/**/*"
+  ]
+}

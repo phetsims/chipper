@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../area-model-common"
+    }
+  ],
+  "include": [
+    "../../../area-model-algebra/js/**/*",
+    "../../../area-model-algebra/sounds/**/*",
+    "../../../area-model-algebra/mipmaps/**/*",
+    "../../../area-model-algebra/images/**/*"
+  ]
+}

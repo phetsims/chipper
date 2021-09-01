@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../curve-fitting/js/**/*",
+    "../../../curve-fitting/sounds/**/*",
+    "../../../curve-fitting/mipmaps/**/*",
+    "../../../curve-fitting/images/**/*"
+  ]
+}

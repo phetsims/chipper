@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../fraction-matcher"},{"path":"../fractions-common"},{"path":"../twixt"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../fractions-equality/js/**/*",
+    "../../../fractions-equality/sounds/**/*",
+    "../../../fractions-equality/mipmaps/**/*",
+    "../../../fractions-equality/images/**/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../fractions-common"},{"path":"../twixt"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../build-a-fraction/js/**/*",
+    "../../../build-a-fraction/sounds/**/*",
+    "../../../build-a-fraction/mipmaps/**/*",
+    "../../../build-a-fraction/images/**/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../griddle"},{"path":"../tappi"},{"path":"../joist"}],
+  "include": [
+    "../../../john-travoltage/js/**/*",
+    "../../../john-travoltage/sounds/**/*",
+    "../../../john-travoltage/mipmaps/**/*",
+    "../../../john-travoltage/images/**/*"
+  ]
+}

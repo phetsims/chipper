@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../graphing-lines/js/**/*",
+    "../../../graphing-lines/sounds/**/*",
+    "../../../graphing-lines/mipmaps/**/*",
+    "../../../graphing-lines/images/**/*"
+  ]
+}

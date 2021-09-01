@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../fluid-pressure-and-flow"},{"path":"../joist"}],
+  "include": [
+    "../../../under-pressure/js/**/*",
+    "../../../under-pressure/sounds/**/*",
+    "../../../under-pressure/mipmaps/**/*",
+    "../../../under-pressure/images/**/*"
+  ]
+}
