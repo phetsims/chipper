@@ -1,0 +1,422 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../acid-base-solutions"
+    },
+    {
+      "path": "../area-builder"
+    },
+    {
+      "path": "../area-model-algebra"
+    },
+    {
+      "path": "../area-model-decimals"
+    },
+    {
+      "path": "../area-model-introduction"
+    },
+    {
+      "path": "../area-model-multiplication"
+    },
+    {
+      "path": "../arithmetic"
+    },
+    {
+      "path": "../atomic-interactions"
+    },
+    {
+      "path": "../balancing-act"
+    },
+    {
+      "path": "../balancing-chemical-equations"
+    },
+    {
+      "path": "../balloons-and-static-electricity"
+    },
+    {
+      "path": "../bamboo"
+    },
+    {
+      "path": "../beers-law-lab"
+    },
+    {
+      "path": "../bending-light"
+    },
+    {
+      "path": "../blackbody-spectrum"
+    },
+    {
+      "path": "../blast"
+    },
+    {
+      "path": "../build-a-fraction"
+    },
+    {
+      "path": "../build-a-molecule"
+    },
+    {
+      "path": "../build-an-atom"
+    },
+    {
+      "path": "../bumper"
+    },
+    {
+      "path": "../buoyancy"
+    },
+    {
+      "path": "../calculus-grapher"
+    },
+    {
+      "path": "../capacitor-lab-basics"
+    },
+    {
+      "path": "../chains"
+    },
+    {
+      "path": "../charges-and-fields"
+    },
+    {
+      "path": "../circuit-construction-kit-ac"
+    },
+    {
+      "path": "../circuit-construction-kit-ac-virtual-lab"
+    },
+    {
+      "path": "../circuit-construction-kit-black-box-study"
+    },
+    {
+      "path": "../../../circuit-construction-kit-common"
+    },
+    {
+      "path": "../circuit-construction-kit-dc"
+    },
+    {
+      "path": "../circuit-construction-kit-dc-virtual-lab"
+    },
+    {
+      "path": "../collision-lab"
+    },
+    {
+      "path": "../color-vision"
+    },
+    {
+      "path": "../concentration"
+    },
+    {
+      "path": "../coulombs-law"
+    },
+    {
+      "path": "../curve-fitting"
+    },
+    {
+      "path": "../density"
+    },
+    {
+      "path": "../diffusion"
+    },
+    {
+      "path": "../eating-exercise-and-energy"
+    },
+    {
+      "path": "../energy-forms-and-changes"
+    },
+    {
+      "path": "../energy-skate-park"
+    },
+    {
+      "path": "../energy-skate-park-basics"
+    },
+    {
+      "path": "../equality-explorer"
+    },
+    {
+      "path": "../equality-explorer-basics"
+    },
+    {
+      "path": "../equality-explorer-two-variables"
+    },
+    {
+      "path": "../estimation"
+    },
+    {
+      "path": "../example-sim"
+    },
+    {
+      "path": "../expression-exchange"
+    },
+    {
+      "path": "../faradays-law"
+    },
+    {
+      "path": "../fluid-pressure-and-flow"
+    },
+    {
+      "path": "../forces-and-motion-basics"
+    },
+    {
+      "path": "../fourier-making-waves"
+    },
+    {
+      "path": "../fraction-comparison"
+    },
+    {
+      "path": "../fraction-matcher"
+    },
+    {
+      "path": "../fractions-equality"
+    },
+    {
+      "path": "../fractions-intro"
+    },
+    {
+      "path": "../fractions-mixed-numbers"
+    },
+    {
+      "path": "../friction"
+    },
+    {
+      "path": "../function-builder"
+    },
+    {
+      "path": "../function-builder-basics"
+    },
+    {
+      "path": "../gas-properties"
+    },
+    {
+      "path": "../gases-intro"
+    },
+    {
+      "path": "../geometric-optics"
+    },
+    {
+      "path": "../gene-expression-essentials"
+    },
+    {
+      "path": "../graphing-lines"
+    },
+    {
+      "path": "../graphing-quadratics"
+    },
+    {
+      "path": "../graphing-slope-intercept"
+    },
+    {
+      "path": "../../../gravity-and-orbits"
+    },
+    {
+      "path": "../gravity-force-lab"
+    },
+    {
+      "path": "../gravity-force-lab-basics"
+    },
+    {
+      "path": "../greenhouse-effect"
+    },
+    {
+      "path": "../griddle"
+    },
+    {
+      "path": "../hookes-law"
+    },
+    {
+      "path": "../interaction-dashboard"
+    },
+    {
+      "path": "../isotopes-and-atomic-mass"
+    },
+    {
+      "path": "../john-travoltage"
+    },
+    {
+      "path": "../joist"
+    },
+    {
+      "path": "../least-squares-regression"
+    },
+    {
+      "path": "../make-a-ten"
+    },
+    {
+      "path": "../masses-and-springs"
+    },
+    {
+      "path": "../masses-and-springs-basics"
+    },
+    {
+      "path": "../models-of-the-hydrogen-atom"
+    },
+    {
+      "path": "../molarity"
+    },
+    {
+      "path": "../molecule-polarity"
+    },
+    {
+      "path": "../molecule-shapes"
+    },
+    {
+      "path": "../molecule-shapes-basics"
+    },
+    {
+      "path": "../molecules-and-light"
+    },
+    {
+      "path": "../my-solar-system"
+    },
+    {
+      "path": "../natural-selection"
+    },
+    {
+      "path": "../neuron"
+    },
+    {
+      "path": "../normal-modes"
+    },
+    {
+      "path": "../number-line-distance"
+    },
+    {
+      "path": "../number-line-integers"
+    },
+    {
+      "path": "../number-line-operations"
+    },
+    {
+      "path": "../number-play"
+    },
+    {
+      "path": "../ohms-law"
+    },
+    {
+      "path": "../optics-lab"
+    },
+    {
+      "path": "../pendulum-lab"
+    },
+    {
+      "path": "../ph-scale"
+    },
+    {
+      "path": "../ph-scale-basics"
+    },
+    {
+      "path": "../phet-io-test-sim"
+    },
+    {
+      "path": "../plinko-probability"
+    },
+    {
+      "path": "../projectile-motion"
+    },
+    {
+      "path": "../proportion-playground"
+    },
+    {
+      "path": "../ratio-and-proportion"
+    },
+    {
+      "path": "../reactants-products-and-leftovers"
+    },
+    {
+      "path": "../resistance-in-a-wire"
+    },
+    {
+      "path": "../rutherford-scattering"
+    },
+    {
+      "path": "../scenery-phet"
+    },
+    {
+      "path": "../simula-rasa"
+    },
+    {
+      "path": "../states-of-matter"
+    },
+    {
+      "path": "../states-of-matter-basics"
+    },
+    {
+      "path": "../sun"
+    },
+    {
+      "path": "../tambo"
+    },
+    {
+      "path": "../tappi"
+    },
+    {
+      "path": "../trig-tour"
+    },
+    {
+      "path": "../twixt"
+    },
+    {
+      "path": "../under-pressure"
+    },
+    {
+      "path": "../unit-rates"
+    },
+    {
+      "path": "../vector-addition"
+    },
+    {
+      "path": "../vector-addition-equations"
+    },
+    {
+      "path": "../vegas"
+    },
+    {
+      "path": "../vibe"
+    },
+    {
+      "path": "../wave-interference"
+    },
+    {
+      "path": "../wave-on-a-string"
+    },
+    {
+      "path": "../waves-intro"
+    },
+    {
+      "path": "../wilder"
+    },
+    {
+      "path": "../xray-diffraction"
+    },
+    {
+      "path": "../area-model-common"
+    },
+    {
+      "path": "../nitroglycerin"
+    },
+    {
+      "path": "../fractions-common"
+    },
+    {
+      "path": "../mobius"
+    },
+    {
+      "path": "../shred"
+    },
+    {
+      "path": "../density-buoyancy-common"
+    },
+    {
+      "path": "../inverse-square-law-common"
+    },
+    {
+      "path": "../counting-common"
+    },
+    {
+      "path": "../number-line-common"
+    },
+    {
+      "path": "../tangible"
+    }
+  ],
+  "include": [
+    "../../phet-types.d.ts"
+  ]
+}

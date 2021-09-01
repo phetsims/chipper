@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../bamboo"},{"path":"../griddle"},{"path":"../joist"}],
+  "include": [
+    "../../../tappi/js/**/*",
+    "../../../tappi/sounds/**/*",
+    "../../../tappi/mipmaps/**/*",
+    "../../../tappi/images/**/*"
+  ]
+}

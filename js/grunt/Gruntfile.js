@@ -10,9 +10,11 @@ const SimVersion = require( '../../../perennial-alias/js/dual/SimVersion' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
+const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+const generateTSConfig = require( './generateTSConfig' );
 const generateREADME = require( './generateREADME' );
 const generateTestHTML = require( './generateTestHTML' );
 const generateThumbnails = require( './generateThumbnails' );
@@ -27,6 +29,7 @@ const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
 const reportMedia = require( './reportMedia' );
 const reportThirdParty = require( './reportThirdParty' );
 const sortImports = require( './sortImports' );
+const tsc = require( './tsc' );
 const updateCopyrightDates = require( './updateCopyrightDates' );
 const webpackDevServer = require( './webpackDevServer' );
 const assert = require( 'assert' );
@@ -100,6 +103,8 @@ module.exports = function( grunt ) {
     };
   }
 
+  const isTypeScript = isRepoTypeScript( repo );
+
   grunt.registerTask( 'default', 'Builds the repository', [
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
     ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
@@ -137,7 +142,6 @@ module.exports = function( grunt ) {
           grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, jimp.MIME_PNG ) );
         }
 
-
         const altScreenshots = grunt.file.expand( { filter: 'isFile', cwd: `../${repo}/assets` }, [ `./${repo}-screenshot-alt[0123456789].png` ] );
         for ( const altScreenshot of altScreenshots ) {
           const imageNumber = parseInt( altScreenshot.substr( `./${repo}-screenshot-alt`.length, 1 ), 10 );
@@ -151,6 +155,33 @@ module.exports = function( grunt ) {
         }
       }
     } ) );
+
+  grunt.registerTask( 'tsc', 'Runs tsc with any command line options. Requires the chipper branch "typescript"',
+
+    wrapTask( async () => {
+      assert && assert( isTypeScript, 'command can only be used on repos with typescript:true' );
+      tsc( repo, process.argv.slice( 3 ) );
+    } ) );
+
+  const tscBuild = async () => {
+    assert && assert( isTypeScript, 'command can only be used on repos with typescript:true' );
+    const tscResult = await tsc( repo, [ '--build' ] );
+    const execResult = tscResult.execResult;
+    if ( ( execResult.stderr && execResult.stderr.length > 0 ) || execResult.code !== 0 ) {
+      grunt.fail.fatal( `tsc failed with code: ${execResult.code}
+stdout:
+${execResult.stdout}
+stderr:
+${execResult.stderr}` );
+    }
+    else {
+      grunt.log.ok( `TypeScript compilation complete: ${tscResult.time}ms` );
+    }
+  };
+
+  grunt.registerTask( 'tsc-build', 'Runs tsc --build to transpile JS/TS before the webpack step. Requires the chipper branch "typescript"',
+    wrapTask( tscBuild )
+  );
 
   grunt.registerTask( 'build',
     `Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
@@ -191,6 +222,13 @@ module.exports = function( grunt ) {
       }
 
       const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+
+      // If the entry-point repo is marked for typescript, enable the typescript build chain.
+      // This begins with compiling the typescript into javascript, then the rest of the build process
+      // continues on the compiled javascript
+      if ( isTypeScript ) {
+        await tscBuild();
+      }
 
       // standalone
       if ( repoPackageObject.phet.buildStandalone ) {
@@ -304,6 +342,12 @@ module.exports = function( grunt ) {
       await generateDevelopmentHTML( repo );
     } ) );
 
+  grunt.registerTask( 'generate-tsconfig', 'Generates tsconfig.js for typescript builds.',
+    wrapTask( async () => {
+      assert && assert( isTypeScript, 'command can only be used on repos with typescript:true' );
+      await generateTSConfig( repo );
+    } ) );
+
   grunt.registerTask( 'generate-test-html',
     'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-unit-tests.md ' +
     'for more information on automated testing. Usually you should ' +
@@ -337,6 +381,9 @@ Updates the normal automatically-generated files for this repository. Includes:
       if ( packageObject.phet.runnable ) {
         grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
+        if ( isTypeScript ) {
+          grunt.task.run( 'generate-tsconfig' );
+        }
 
         if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
           grunt.task.run( 'generate-a11y-view-html' );
@@ -346,6 +393,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       if ( packageObject.phet.generatedUnitTests ) {
         grunt.task.run( 'generate-test-html' );
       }
+
 
       // update README.md only for simulations
       if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../griddle"},{"path":"../joist"}],
+  "include": [
+    "../../../collision-lab/js/**/*",
+    "../../../collision-lab/sounds/**/*",
+    "../../../collision-lab/mipmaps/**/*",
+    "../../../collision-lab/images/**/*"
+  ]
+}

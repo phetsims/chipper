@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      // Could potentially be relaxed somewhat. Doesn't depend on scenery directly, but uses
+      // some files scenery includes.
+      "path": "../scenery"
+    },{
+      "path": "../chipper-get-string-module"
+    }
+  ],
+  "include": [
+    "../../../twixt/js/**/*"
+  ],
+  "exclude": [
+    "../../../twixt/js/**/*test*",
+    "../../../twixt/js/twixt-main.js",
+    "../../../twixt/js/demo/**/*"
+  ]
+}

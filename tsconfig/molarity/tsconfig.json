@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../nitroglycerin"},{"path":"../joist"}],
+  "include": [
+    "../../../molarity/js/**/*",
+    "../../../molarity/sounds/**/*",
+    "../../../molarity/mipmaps/**/*",
+    "../../../molarity/images/**/*"
+  ]
+}

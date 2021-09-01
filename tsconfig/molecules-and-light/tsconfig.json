@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../nitroglycerin"},{"path":"../greenhouse-effect"},{"path":"../joist"}],
+  "include": [
+    "../../../molecules-and-light/js/**/*",
+    "../../../molecules-and-light/sounds/**/*",
+    "../../../molecules-and-light/mipmaps/**/*",
+    "../../../molecules-and-light/images/**/*"
+  ]
+}

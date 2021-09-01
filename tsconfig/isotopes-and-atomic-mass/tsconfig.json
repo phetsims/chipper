@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../shred"},{"path":"../joist"}],
+  "include": [
+    "../../../isotopes-and-atomic-mass/js/**/*",
+    "../../../isotopes-and-atomic-mass/sounds/**/*",
+    "../../../isotopes-and-atomic-mass/mipmaps/**/*",
+    "../../../isotopes-and-atomic-mass/images/**/*"
+  ]
+}

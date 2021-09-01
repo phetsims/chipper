@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../states-of-matter"},{"path":"../nitroglycerin"},{"path":"../joist"}],
+  "include": [
+    "../../../atomic-interactions/js/**/*",
+    "../../../atomic-interactions/sounds/**/*",
+    "../../../atomic-interactions/mipmaps/**/*",
+    "../../../atomic-interactions/images/**/*"
+  ]
+}

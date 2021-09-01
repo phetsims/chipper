@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../gas-properties/js/**/*",
+    "../../../gas-properties/sounds/**/*",
+    "../../../gas-properties/mipmaps/**/*",
+    "../../../gas-properties/images/**/*"
+  ]
+}

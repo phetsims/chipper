@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [
+    {
+      "path": "../scenery"
+    }
+  ],
+  "include": [
+    "../../../phet-io/js/**/*",
+    "../../../phet-io/sounds/**/*",
+    "../../../phet-io/mipmaps/**/*",
+    "../../../phet-io/images/**/*",
+
+    // Borrow from joist
+    "../../../joist/js/packageJSON.js",
+    "../../../joist/js/SimInfo.js",
+    "../../../joist/js/joist.js"
+  ],
+  "exclude": [
+    "../../../phet-io/js/**/*test*",
+    "../../../phet-io/js/phet-io-main.js",
+    "../../../phet-io/js/demo/**/*"
+  ]
+}

@@ -13,6 +13,7 @@
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 const fixEOL = require( './fixEOL' );
 const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
@@ -26,6 +27,7 @@ const grunt = require( 'grunt' );
  */
 module.exports = async function( repo, options ) {
 
+  const isTypeScript = isRepoTypeScript( repo );
   const {
     stylesheets = '',
     bodystyle = ' style="background-color:black;"', // note the preceding ' ' which is essential
@@ -33,7 +35,7 @@ module.exports = async function( repo, options ) {
     bodystart = '',
     addedPreloads = [], // none to add
     stripPreloads = [], // none to add
-    mainFile = `js/${repo}-main.js`,
+    mainFile = isTypeScript ? `../chipper/dist/${repo}/js/${repo}-main.js` : `js/${repo}-main.js`,
     forSim = true // is this html used for a sim, or something else like tests.
   } = options || {};
 

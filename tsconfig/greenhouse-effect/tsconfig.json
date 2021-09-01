@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../nitroglycerin"},{"path":"../bamboo"},{"path":"../joist"}],
+  "include": [
+    "../../../greenhouse-effect/js/**/*",
+    "../../../greenhouse-effect/sounds/**/*",
+    "../../../greenhouse-effect/mipmaps/**/*",
+    "../../../greenhouse-effect/images/**/*"
+  ]
+}

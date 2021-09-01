@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../chains"},{"path":"../joist"}],
+  "include": [
+    "../../../bumper/js/**/*",
+    "../../../bumper/sounds/**/*",
+    "../../../bumper/mipmaps/**/*",
+    "../../../bumper/images/**/*"
+  ]
+}

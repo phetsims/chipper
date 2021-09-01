@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../bending-light/js/**/*",
+    "../../../bending-light/sounds/**/*",
+    "../../../bending-light/mipmaps/**/*",
+    "../../../bending-light/images/**/*"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../griddle"},{"path":"../joist"}],
+  "include": [
+    "../../../calculus-grapher/js/**/*",
+    "../../../calculus-grapher/sounds/**/*",
+    "../../../calculus-grapher/mipmaps/**/*",
+    "../../../calculus-grapher/images/**/*"
+  ]
+}

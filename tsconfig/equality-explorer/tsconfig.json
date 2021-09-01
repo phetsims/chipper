@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../twixt"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../equality-explorer/js/**/*",
+    "../../../equality-explorer/sounds/**/*",
+    "../../../equality-explorer/mipmaps/**/*",
+    "../../../equality-explorer/images/**/*"
+  ]
+}

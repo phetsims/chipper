@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../faradays-law/js/**/*",
+    "../../../faradays-law/sounds/**/*",
+    "../../../faradays-law/mipmaps/**/*",
+    "../../../faradays-law/images/**/*"
+  ]
+}

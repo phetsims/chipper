@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../griddle"},{"path":"../twixt"},{"path":"../joist"}],
+  "include": [
+    "../../../gene-expression-essentials/js/**/*",
+    "../../../gene-expression-essentials/sounds/**/*",
+    "../../../gene-expression-essentials/mipmaps/**/*",
+    "../../../gene-expression-essentials/images/**/*"
+  ]
+}

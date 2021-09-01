@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../nitroglycerin"},{"path":"../joist"}],
+  "include": [
+    "../../../molecule-polarity/js/**/*",
+    "../../../molecule-polarity/sounds/**/*",
+    "../../../molecule-polarity/mipmaps/**/*",
+    "../../../molecule-polarity/images/**/*"
+  ]
+}

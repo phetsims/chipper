@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../joist"}],
+  "include": [
+    "../../../geometric-optics/js/**/*",
+    "../../../geometric-optics/sounds/**/*",
+    "../../../geometric-optics/mipmaps/**/*",
+    "../../../geometric-optics/images/**/*"
+  ]
+}

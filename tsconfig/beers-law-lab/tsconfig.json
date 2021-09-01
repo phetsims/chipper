@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../nitroglycerin"},{"path":"../joist"}],
+  "include": [
+    "../../../beers-law-lab/js/**/*",
+    "../../../beers-law-lab/sounds/**/*",
+    "../../../beers-law-lab/mipmaps/**/*",
+    "../../../beers-law-lab/images/**/*"
+  ]
+}

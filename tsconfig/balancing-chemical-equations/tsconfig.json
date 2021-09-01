@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../nitroglycerin"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../balancing-chemical-equations/js/**/*",
+    "../../../balancing-chemical-equations/sounds/**/*",
+    "../../../balancing-chemical-equations/mipmaps/**/*",
+    "../../../balancing-chemical-equations/images/**/*"
+  ]
+}

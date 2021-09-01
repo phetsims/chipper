@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../nitroglycerin"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../reactants-products-and-leftovers/js/**/*",
+    "../../../reactants-products-and-leftovers/sounds/**/*",
+    "../../../reactants-products-and-leftovers/mipmaps/**/*",
+    "../../../reactants-products-and-leftovers/images/**/*"
+  ]
+}

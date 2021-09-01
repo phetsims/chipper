@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../vibe"},{"path":"../joist"}],
+  "include": [
+    "../../../plinko-probability/js/**/*",
+    "../../../plinko-probability/sounds/**/*",
+    "../../../plinko-probability/mipmaps/**/*",
+    "../../../plinko-probability/images/**/*"
+  ]
+}

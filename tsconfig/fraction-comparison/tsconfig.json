@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig-core.json",
+  "references": [{"path":"../twixt"},{"path":"../vegas"},{"path":"../joist"}],
+  "include": [
+    "../../../fraction-comparison/js/**/*",
+    "../../../fraction-comparison/sounds/**/*",
+    "../../../fraction-comparison/mipmaps/**/*",
+    "../../../fraction-comparison/images/**/*"
+  ]
+}
