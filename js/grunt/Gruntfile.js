@@ -165,13 +165,17 @@ module.exports = function( grunt ) {
 
   const tscBuild = async () => {
     assert && assert( isTypeScript, 'command can only be used on repos with typescript:true' );
-    const result = await tsc( repo, [ '--build' ] );
-    if ( ( result.stderr && result.stderr.length > 0 ) || result.code !== 0 ) {
-      grunt.fail.fatal( `tsc failed with code: ${result.code}
+    const tscResult = await tsc( repo, [ '--build' ] );
+    const execResult = tscResult.execResult;
+    if ( ( execResult.stderr && execResult.stderr.length > 0 ) || execResult.code !== 0 ) {
+      grunt.fail.fatal( `tsc failed with code: ${execResult.code}
 stdout:
-${result.stdout}
+${execResult.stdout}
 stderr:
-${result.stderr}` );
+${execResult.stderr}` );
+    }
+    else {
+      grunt.log.ok( `TypeScript compilation complete: ${tscResult.time}ms` );
     }
   };
 
