@@ -14,7 +14,8 @@ module.exports = {
   root: true,
 
   // See https://www.npmjs.com/package/eslint-plugin-consistent-default-export-name
-  plugins: [ 'consistent-default-export-name' ],
+  // TODO: comment back in when we figure out webstorm integration, see https://github.com/phetsims/chipper/issues/1079
+  // plugins: [ 'consistent-default-export-name' ],
 
   // The rules are organized like they are in the list at https://eslint.org/docs/rules/
   // First by type, then alphabetically within type
