@@ -1,4 +1,4 @@
-// Copyright 2019, University of Colorado Boulder
+/* eslint-disable copyright*/
 
 /**
  * @fileoverview Rule to enforce disallowing of shorthand for object properties. Object method shorthand is allowed

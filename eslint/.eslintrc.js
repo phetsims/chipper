@@ -13,10 +13,6 @@ module.exports = {
   // in a parent dir
   root: true,
 
-  // See https://www.npmjs.com/package/eslint-plugin-consistent-default-export-name
-  // TODO: comment back in when we figure out webstorm integration, see https://github.com/phetsims/chipper/issues/1079
-  // plugins: [ 'consistent-default-export-name' ],
-
   // The rules are organized like they are in the list at https://eslint.org/docs/rules/
   // First by type, then alphabetically within type
   // Explicitly list all rules so it is easy to see what's here and to keep organized
@@ -900,13 +896,6 @@ module.exports = {
     'yield-star-spacing': 'error',
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Plugins
-    //
-
-    // TODO: comment back in when >1200 errors are fixed, see https://github.com/phetsims/chipper/issues/1079
-    // "consistent-default-export-name/default-import-match-filename": "error",
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Custom Rules
     //
 
@@ -955,6 +944,9 @@ module.exports = {
 
     // import variables for sounds and images must have the conventional suffix
     'import-resource-variable-suffix': 'error'
+
+    // TODO: comment back in when >1200 errors are fixed, see https://github.com/phetsims/chipper/issues/1079
+    // 'default-import-match-filename': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
