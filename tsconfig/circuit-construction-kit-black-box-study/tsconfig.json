@@ -1,6 +1,6 @@
 {
   "extends": "../../tsconfig-core.json",
-  "references": [{"path":"../circuit-construction-kit-common"},{"path":"../twixt"},{"path":"../griddle"},{"path":"../bamboo"},{"path":"../joist"}],
+  "references": [{"path":"../../../circuit-construction-kit-common"},{"path":"../twixt"},{"path":"../griddle"},{"path":"../bamboo"},{"path":"../joist"}],
   "include": [
     "../../../circuit-construction-kit-black-box-study/js/**/*",
     "../../../circuit-construction-kit-black-box-study/sounds/**/*",
