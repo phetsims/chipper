@@ -22,7 +22,6 @@
     "jsondiffpatch": "^0.4.1",
     "lodash": "^4.17.10",
     "marked": "^0.3.13",
-    "md5": "~2",
     "memfs": "^3.0.3",
     "node-html-encoder": "~0.0.2",
     "pngjs": "~0.4.0",
