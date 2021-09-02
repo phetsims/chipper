@@ -11,6 +11,6 @@
 const NODE_VERSION_STRING_PARTS = process.version.replace( 'v', '' ).split( '.' );
 const NODE_MAJOR_VERSION = parseInt( NODE_VERSION_STRING_PARTS[ 0 ], 10 );
 const NODE_MINOR_VERSION = parseInt( NODE_VERSION_STRING_PARTS[ 1 ], 10 );
-if ( NODE_MAJOR_VERSION < 8 || ( NODE_MAJOR_VERSION === 8 && NODE_MINOR_VERSION < 10 ) ) {
-  throw new Error( 'Node 8.10 or greater is needed to run PhET build tools' );
+if ( NODE_MAJOR_VERSION < 12 || ( NODE_MAJOR_VERSION === 12 && NODE_MINOR_VERSION < 13 ) ) {
+  throw new Error( 'Node 12.13 or greater is needed to run PhET build tools' );
 }

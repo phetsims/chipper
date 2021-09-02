@@ -110,15 +110,18 @@ module.exports = async ( repos, port, devtool, openChrome = false ) => {
     devtool: devtool
   } );
 
-  const server = new WebpackDevServer( compiler, {
-    contentBase: path.join( __dirname, '../../../' ),
+  const server = new WebpackDevServer( {
+    static: {
+      directory: path.join( __dirname, '../../../' )
+    },
     compress: true,
     port: port,
-    publicPath: '/dist/',
-    hot: true
-  } );
+    devMiddleware: {
+      publicPath: '/dist/'
+    }
+  }, compiler );
 
-  server.listen( port, '0.0.0.0', () => {
+  server.startCallback( () => {
     repos.forEach( repo => {
       const URL = `http://localhost:${port}/dist/${repo}_phet.html?brand=phet&ea`;
       console.log( URL );
