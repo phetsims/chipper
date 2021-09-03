@@ -6,6 +6,9 @@
     "type": "git",
     "url": "https://github.com/phetsims/chipper.git"
   },
+  "phet": {
+    "outputJS": true
+  },
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
