@@ -132,8 +132,6 @@ try {
        isRepoTypeScript( repo ) ) {
 
     ( async () => {
-
-      // lint() automatically filters out non-lintable repos
       const results = await tsc( `${repo}`, [] );
       if ( results.stderr.length > 0 ) {
         console.log( results.stderr );
