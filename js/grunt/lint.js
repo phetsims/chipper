@@ -12,7 +12,7 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const { ESLint } = require( 'eslint' ); // eslint-disable-line
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
-const md5 = require( 'md5' );
+const crypto = require( 'crypto' );
 
 // constants
 const EXCLUDE_PATTERNS = [ // patterns that have no code that should be linted
@@ -51,7 +51,11 @@ const lint = async ( patterns, options ) => {
   patterns = patterns.filter( pattern => !EXCLUDE_PATTERNS.includes( pattern ) &&
                                          fs.existsSync( pattern ) );
 
-  // 1. Create an instance with the `fix` option.
+  const hash = crypto.createHmac( 'sha256', 'secretKey' )
+    .update( patterns.join( ',' ) )
+    .digest( 'hex' )
+    .substr( 0, 32 );
+
   const eslintConfig = {
 
     // optional auto-fix
@@ -63,7 +67,7 @@ const lint = async ( patterns, options ) => {
     cache: options.cache,
 
     // Where to store the target-specific cache file
-    cacheLocation: `../chipper/eslint/cache/${md5( patterns.join( ',' ) )}.eslintcache`,
+    cacheLocation: `../chipper/eslint/cache/${hash}.eslintcache`,
 
     ignorePath: '../chipper/eslint/.eslintignore',
 
