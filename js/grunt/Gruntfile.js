@@ -156,31 +156,35 @@ module.exports = function( grunt ) {
       }
     } ) );
 
-  grunt.registerTask( 'tsc', 'Runs tsc with any command line options. Requires the chipper branch "typescript"',
-
-    wrapTask( async () => {
-      assert && assert( isTypeScript, 'command can only be used on repos with typescript:true' );
-      tsc( repo, process.argv.slice( 3 ) );
-    } ) );
-
-  const tscBuild = async () => {
-    assert && assert( isTypeScript, 'command can only be used on repos with typescript:true' );
-    const tscResult = await tsc( repo, [ '--build' ] );
-    const execResult = tscResult.execResult;
-    if ( ( execResult.stderr && execResult.stderr.length > 0 ) || execResult.code !== 0 ) {
-      grunt.fail.fatal( `tsc failed with code: ${execResult.code}
+  /**
+   * Runs tsc() with grunt fail/log etc.
+   */
+  const wrapTsc = ( path, args ) => {
+    return async () => {
+      const result = await tsc( path, args );
+      if ( ( result.stderr && result.stderr.length > 0 ) || result.code !== 0 ) {
+        grunt.fail.fatal( `tsc failed with code: ${result.code}
 stdout:
-${execResult.stdout}
+${result.stdout}
 stderr:
-${execResult.stderr}` );
-    }
-    else {
-      grunt.log.ok( `TypeScript compilation complete: ${tscResult.time}ms` );
-    }
+${result.stderr}` );
+      }
+      else {
+        grunt.log.ok( `TypeScript compilation complete: ${result.time}ms` );
+      }
+    };
   };
 
-  grunt.registerTask( 'tsc-build', 'Runs tsc --build to transpile JS/TS before the webpack step. Requires the chipper branch "typescript"',
-    wrapTask( tscBuild )
+  grunt.registerTask( 'tsc', 'Runs tsc with any command line options.',
+    wrapTask( wrapTsc( `../${repo}`, process.argv.slice( 3 ) ) )
+  );
+
+  grunt.registerTask( 'output-js', 'Runs tsc --build to transpile JS/TS before the webpack step.',
+    wrapTask( wrapTsc( `../${repo}`, [ '--build' ] ) )
+  );
+
+  grunt.registerTask( 'output-js-all', 'Runs tsc --build to transpile JS/TS before the webpack step.',
+    wrapTask( wrapTsc( '../chipper/tsconfig/all', [ '--build' ] ) )
   );
 
   grunt.registerTask( 'build',
@@ -227,7 +231,7 @@ ${execResult.stderr}` );
       // This begins with compiling the typescript into javascript, then the rest of the build process
       // continues on the compiled javascript
       if ( isTypeScript ) {
-        await tscBuild();
+        await wrapTsc( repo, [ '--build' ] );
       }
 
       // standalone
@@ -343,10 +347,7 @@ ${execResult.stderr}` );
     } ) );
 
   grunt.registerTask( 'generate-tsconfig', 'Generates tsconfig.js for typescript builds.',
-    wrapTask( async () => {
-      assert && assert( isTypeScript, 'command can only be used on repos with typescript:true' );
-      await generateTSConfig( repo );
-    } ) );
+    wrapTask( async () => generateTSConfig( repo ) ) );
 
   grunt.registerTask( 'generate-test-html',
     'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-unit-tests.md ' +
