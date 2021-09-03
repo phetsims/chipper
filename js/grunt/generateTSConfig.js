@@ -1,4 +1,4 @@
-// Copyright 2015-2021, University of Colorado Boulder
+// Copyright 2021, University of Colorado Boulder
 
 /**
  * Generates the tsconfig.json file for typescript compilation.
