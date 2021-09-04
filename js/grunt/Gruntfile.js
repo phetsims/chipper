@@ -375,9 +375,11 @@ Updates the normal automatically-generated files for this repository. Includes:
       if ( packageObject.phet.runnable ) {
         grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
-        if ( isTypeScript ) {
-          grunt.task.run( 'generate-tsconfig' );
-        }
+
+        // TODO: How to maintain tsconfig in harmony with the dependencies in package.json? see https://github.com/phetsims/chipper/issues/1087
+        // if ( isTypeScript ) {
+        //   grunt.task.run( 'generate-tsconfig' );
+        // }
 
         if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
           grunt.task.run( 'generate-a11y-view-html' );
