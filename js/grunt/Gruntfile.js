@@ -156,35 +156,27 @@ module.exports = function( grunt ) {
       }
     } ) );
 
-  /**
-   * Runs tsc() with grunt fail/log etc.
-   */
-  const wrapTsc = ( path, args ) => {
-    return async () => {
-      const result = await tsc( path, args );
-      if ( ( result.stderr && result.stderr.length > 0 ) || result.code !== 0 ) {
-        grunt.fail.fatal( `tsc failed with code: ${result.code}
+  const reportTscResults = results => {
+    if ( ( results.stderr && results.stderr.length > 0 ) || results.code !== 0 ) {
+      grunt.fail.fatal( `tsc failed with code: ${results.code}
 stdout:
-${result.stdout}
+${results.stdout}
 stderr:
-${result.stderr}` );
-      }
-      else {
-        grunt.log.ok( `TypeScript compilation complete: ${result.time}ms` );
-      }
-    };
+${results.stderr}` );
+    }
+    else {
+      grunt.log.ok( `TypeScript compilation complete: ${results.time}ms` );
+    }
   };
 
-  grunt.registerTask( 'tsc', 'Runs tsc with any command line options.',
-    wrapTask( wrapTsc( `../${repo}`, process.argv.slice( 3 ) ) )
+  grunt.registerTask( 'output-js', 'Outputs JS just for the specified repo',
+    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--project', `../${repo}` ] ) ) )
   );
-
-  grunt.registerTask( 'output-js', 'Runs tsc --build to transpile JS/TS before the webpack step.',
-    wrapTask( wrapTsc( `../${repo}`, [ '--build' ] ) )
+  grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
+    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--build', `../${repo}` ] ) ) )
   );
-
-  grunt.registerTask( 'output-js-all', 'Runs tsc --build to transpile JS/TS before the webpack step.',
-    wrapTask( wrapTsc( '../chipper/tsconfig/all', [ '--build' ] ) )
+  grunt.registerTask( 'output-js-all', 'Outputs JS for all repos',
+    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--build', '../chipper/tsconfig/all' ] ) ) )
   );
 
   grunt.registerTask( 'build',
@@ -231,7 +223,8 @@ ${result.stderr}` );
       // This begins with compiling the typescript into javascript, then the rest of the build process
       // continues on the compiled javascript
       if ( isTypeScript ) {
-        await wrapTsc( repo, [ '--build' ] );
+        const results = await tsc( `../${repo}`, [ '--build' ] );
+        reportTscResults( results );
       }
 
       // standalone

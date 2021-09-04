@@ -15,8 +15,8 @@ const execute = require( '../../../perennial-alias/js/dual/execute' );
  * @returns {Promise<{execResult: {stdout:string,stderr:string,code:number}, time: number}>} - the results from exec, and the elapsed time
  */
 const tsc = async function( path, commandLineArgs ) {
-  const args = [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs, path ];
-  return execute( 'node', args, '../chipper', {
+  const args = [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs ];
+  return execute( 'node', args, path, {
     errors: 'resolve'
   } );
 };
