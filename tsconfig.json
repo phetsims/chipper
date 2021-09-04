@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig-core.json",
+  "include": [
+    // Just the code used in sim modules
+    "js/getStringModule.js"
+  ]
+}
