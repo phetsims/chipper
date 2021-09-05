@@ -132,13 +132,15 @@ try {
        isRepoTypeScript( repo ) ) {
 
     ( async () => {
-      const results = await tsc( `${repo}`, [] );
-      if ( results.stderr.length > 0 ) {
-        console.log( results.stderr );
-        process.exit( 1 );
-      }
+      const results = await tsc( `../${repo}`, [] );
 
-      outputToConsole && console.log( 'tsc passed' );
+      if ( results.code === 0 ) {
+        outputToConsole && console.log( 'tsc passed' );
+      }
+      else {
+        console.log( results );
+        process.exit( results.code );
+      }
     } )();
   }
   else {
