@@ -45,6 +45,7 @@ module.exports = function( repos, cache ) {
     ignorePattern: [
       '**/.git',
       '**/build',
+      'chipper/dist',
       '**/node_modules',
       '**/snapshots',
       'sherpa/**',
