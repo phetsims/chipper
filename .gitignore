@@ -10,3 +10,4 @@ eslint/cache
 package-lock.json
 build
 build-phet-io-macro-api
+dist
