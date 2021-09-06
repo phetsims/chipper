@@ -9,3 +9,4 @@ eslint/cache
 *.sublime-workspace
 package-lock.json
 build
+dist
