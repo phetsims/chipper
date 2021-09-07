@@ -4,3 +4,5 @@ node_modules
 .DS_Store?
 .eslintcache
 java/src/edu/colorado/phet/buildtools/html/*.class
+dist
+eslint/cache
