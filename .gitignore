@@ -5,3 +5,4 @@ node_modules
 .eslintcache
 java/src/edu/colorado/phet/buildtools/html/*.class
 eslint/cache
+dist
