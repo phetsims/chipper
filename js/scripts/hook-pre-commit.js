@@ -127,24 +127,34 @@ catch( e ) {
 // Run typescript type checker if it exists in the checked-out shas
 try {
   const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
-  const tsc = require( '../../../chipper/js/grunt/tsc' );
-  if ( isRepoTypeScript.apiVersion === '1.0' && tsc.apiVersion === '1.0' &&
-       isRepoTypeScript( repo ) ) {
 
-    ( async () => {
-      const results = await tsc( `../${repo}`, [] );
+  if ( isRepoTypeScript.apiVersion === '1.0' ) {
+    if ( isRepoTypeScript( repo ) ) {
 
-      if ( results.code === 0 ) {
-        outputToConsole && console.log( 'tsc passed' );
+      const tsc = require( '../../../chipper/js/grunt/tsc' );
+      if ( tsc.apiVersion === '1.0' ) {
+        ( async () => {
+          const results = await tsc( `../${repo}`, [] );
+
+          if ( results.code === 0 ) {
+            outputToConsole && console.log( 'tsc passed' );
+          }
+          else {
+            console.log( results );
+            process.exit( results.code );
+          }
+        } )();
       }
       else {
-        console.log( results );
-        process.exit( results.code );
+        outputToConsole && console.log( 'chipper/js/grunt/tsc not compatible' );
       }
-    } )();
+    }
+    else {
+      outputToConsole && console.log( 'skipping tsc for non-typescript repo' );
+    }
   }
   else {
-    console.log( 'chipper/js/grunt/tsc not compatible' );
+    outputToConsole && console.log( 'isRepoTypeScript not compatible' );
   }
 }
 catch( e ) {
