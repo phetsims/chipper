@@ -10,8 +10,8 @@
 const execute = require( '../../../perennial-alias/js/dual/execute' );
 
 /**
- * @param path - path to tsconfig file or directory containing tsconfig file
- * @param commandLineArgs
+ * @param {string} path - path to tsconfig file or directory containing tsconfig file
+ * @param {Array.<string>} commandLineArgs
  * @returns {Promise<{execResult: {stdout:string,stderr:string,code:number}, time: number}>} - the results from exec, and the elapsed time
  */
 const tsc = async function( path, commandLineArgs ) {
