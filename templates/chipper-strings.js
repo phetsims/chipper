@@ -9,6 +9,13 @@
 
   window.phet.chipper.strings.get = function( key ) {
     // override strings via the 'strings' query parameter
-    return stringOverrides[ key ] || window.phet.chipper.mapString( window.phet.chipper.strings[ window.phet.chipper.locale ][ key ], stringTest );
+    var localeStrings = window.phet.chipper.strings[ window.phet.chipper.locale ];
+    if ( !localeStrings && window.phet.chipper.locale.indexOf( '_' ) === 2 ) { // e.g. 'zh' for 'zh_CN'
+      localeStrings = window.phet.chipper.strings[ window.phet.chipper.locale.slice( 0, 2 ) ];
+    }
+    if ( !localeStrings  ) {
+      localeStrings = window.phet.chipper.strings.en;
+    }
+    return stringOverrides[ key ] || window.phet.chipper.mapString( localeStrings[ key ], stringTest );
   };
 })();
