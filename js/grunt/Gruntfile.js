@@ -157,7 +157,10 @@ module.exports = function( grunt ) {
     } ) );
 
   const reportTscResults = results => {
-    if ( ( results.stderr && results.stderr.length > 0 ) || results.code !== 0 ) {
+    if ( results.ignored ) {
+      grunt.log.ok( 'TypeScript compilation ignored due to no support in repo.' );
+    }
+    else if ( ( results.stderr && results.stderr.length > 0 ) || results.code !== 0 ) {
       grunt.fail.fatal( `tsc failed with code: ${results.code}
 stdout:
 ${results.stdout}
@@ -170,10 +173,10 @@ ${results.stderr}` );
   };
 
   grunt.registerTask( 'output-js', 'Outputs JS just for the specified repo',
-    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--project', `../${repo}` ] ) ) )
+    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--project', `../${repo}` ], repo ) ) )
   );
   grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
-    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--build', `../${repo}` ] ) ) )
+    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--build', `../${repo}` ], repo ) ) )
   );
   grunt.registerTask( 'output-js-all', 'Outputs JS for all repos',
     wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--build', '../chipper/tsconfig/all' ] ) ) )
