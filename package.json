@@ -7,7 +7,7 @@
     "url": "https://github.com/phetsims/chipper.git"
   },
   "phet": {
-    "outputJS": true
+    "supportsOutputJS": true
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
