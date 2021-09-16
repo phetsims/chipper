@@ -161,6 +161,9 @@ module.exports = function( grunt ) {
       grunt.fail.fatal( `tsc failed with code: ${results.code}
 stdout:
 ${results.stdout}
+
+\t\t${results.stdout.split( '\n' ).length - 1} problems found.
+
 stderr:
 ${results.stderr}` );
     }
