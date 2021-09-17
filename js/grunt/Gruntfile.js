@@ -44,6 +44,12 @@ require( './checkNodeVersion' );
 // Relevant for https://github.com/phetsims/wave-interference/issues/491
 process.on( 'unhandledRejection', up => { throw up; } );
 
+// Exit on Ctrl + C case
+process.on( 'SIGINT', () => {
+  console.log( '\n\nCaught interrupt signal, exiting' );
+  process.exit();
+} );
+
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
 
