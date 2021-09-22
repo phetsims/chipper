@@ -47,6 +47,10 @@ module.exports = function( context ) {
     'HotKey',
     'HOT_KEY',
 
+    // embarrassingly enough, zepumph is so bad at typing this word that he needs these lint rules, see https://github.com/phetsims/friction/issues/234
+    'respones',
+    'Respones',
+
     // In ES6, extending object causes methods to be dropped
     { id: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
 
