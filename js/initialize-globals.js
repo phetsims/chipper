@@ -133,15 +133,18 @@
       defaultValue: ''
     },
 
+    // Private Doc:  For external use. The below jsdoc is public to the PhET-iO API documentation. Change wisely.
     /**
-     * The color profile used at startup, relevant only for sims that support multiple color profiles.
-     * Such sims are required to have a 'default' profile.  If a sim supports a 'projector mode' then
-     * it should also have a 'projector' profile.  Other profile names are not currently standardized.
+     * The color profile used at startup, relevant only for sims that support multiple color profiles. 'default' and
+     * 'projector' are implemented in several sims, other profile names are not currently standardized.
+     * @memberOf PhetQueryParameters
+     * @type {string}
      */
     colorProfile: {
       type: 'string',
       defaultValue: colorProfiles[ 0 ], // usually "default", but some sims like masses-and-springs-basics do not use default at all
-      validValues: colorProfiles
+      validValues: colorProfiles,
+      public: true
     },
 
     /**
