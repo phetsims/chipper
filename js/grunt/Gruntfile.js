@@ -6,7 +6,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const SimVersion = require( '../../../perennial-alias/js/dual/SimVersion' );
+const SimVersion = require( '../../../perennial-alias/js/common/SimVersion' );
 const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
