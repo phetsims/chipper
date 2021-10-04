@@ -15,7 +15,7 @@
  */
 
 
-const execute = require( '../../../perennial-alias/js/dual/execute' );
+const execute = require( '../../../perennial-alias/js/common/execute' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
 

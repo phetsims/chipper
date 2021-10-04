@@ -8,7 +8,7 @@
  */
 
 // modules
-const execute = require( '../../../perennial-alias/js/dual/execute' );
+const execute = require( '../../../perennial-alias/js/common/execute' );
 const grunt = require( 'grunt' );
 const updateCopyrightDate = require( './updateCopyrightDate' );
 

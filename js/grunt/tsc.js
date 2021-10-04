@@ -7,7 +7,7 @@
  */
 
 // modules
-const execute = require( '../../../perennial-alias/js/dual/execute' );
+const execute = require( '../../../perennial-alias/js/common/execute' );
 
 /**
  * @param {string} path - path to tsconfig file or directory containing tsconfig file
