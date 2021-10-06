@@ -145,7 +145,7 @@ const onDecodeError = decodeError => {
   unlock();
 };
 phetAudioContext.decodeAudioData( soundByteArray.buffer, onDecodeSuccess, onDecodeError )
-  .catch( e => { console.warn( 'promise rejection caught for audio decode, error = ' + e ) } );
+  .catch( e => { console.warn( 'promise rejection caught for audio decode, error = ' + e ); } );
 export default wrappedAudioBuffer;`;
 
   fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( contents ) );
