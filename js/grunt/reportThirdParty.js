@@ -25,7 +25,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const https = require( 'https' );
-const rp = require( 'request-promise-native' ); // eslint-disable-line require-statement-match
+const axios = require( 'axios' );
 
 /**
  * @returns {Promise} - Resolves when complete.
@@ -59,7 +59,7 @@ module.exports = async function() {
     const url = `https://${serverName}/sims/html/${sim}/latest/${sim}_en.html`;
     console.log( `downloading ${sim}` );
     try {
-      const html = ( await rp( url ) ).trim();
+      const html = ( await axios( url ) ).data.trim();
 
       const startIndex = html.indexOf( ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
       const endIndex = html.indexOf( ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES );
