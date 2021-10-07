@@ -358,11 +358,6 @@
     'phet-app': { type: 'flag' },
 
     /**
-     * plays event logging back from the server, provide an optional name for the session
-     */
-    playbackInputEventLog: { type: 'flag' },
-
-    /**
      * If true, puts the simulation in a special mode where it will wait for manual control of the sim playback.
      */
     playbackMode: {
@@ -416,11 +411,6 @@
       type: 'number',
       defaultValue: Math.random() // eslint-disable-line bad-sim-text
     },
-
-    /**
-     * enables input event logging, provide an optional name for the session, log is available via PhET menu
-     */
-    recordInputEventLog: { type: 'flag' },
 
     /**
      * Specify a renderer for the Sim's rootNode to use.
