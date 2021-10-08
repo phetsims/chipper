@@ -26,7 +26,6 @@
     "jimp": "^0.16.1",
     "jpeg-js": "^0.4.3",
     "jsdoc": "^3.6.7",
-    "jsondiffpatch": "^0.4.1",
     "lodash": "^4.17.21",
     "marked": "^3.0.2",
     "node-html-encoder": "^0.0.2",

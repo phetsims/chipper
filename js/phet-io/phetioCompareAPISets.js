@@ -2,7 +2,7 @@
 const fs = require( 'fs' );
 const phetioCompareAPIs = require( './phetioCompareAPIs' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
-const jsondiffpatch = require( 'jsondiffpatch' ).create( {} );
+const jsondiffpatch = require( '../../../sherpa/lib/jsondiffpatch-v0.3.11.umd' ).create( {} );
 const assert = require( 'assert' );
 
 const API_DIR = '../phet-io/api';
