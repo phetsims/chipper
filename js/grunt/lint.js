@@ -51,10 +51,9 @@ const lint = async ( patterns, options ) => {
   patterns = patterns.filter( pattern => !EXCLUDE_PATTERNS.includes( pattern ) &&
                                          fs.existsSync( pattern ) );
 
-  const hash = crypto.createHmac( 'sha256', 'secretKey' )
+  const hash = crypto.createHash( 'md5' )
     .update( patterns.join( ',' ) )
-    .digest( 'hex' )
-    .substr( 0, 32 );
+    .digest( 'hex' );
 
   const eslintConfig = {
 
