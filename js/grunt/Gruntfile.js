@@ -2,13 +2,17 @@
 
 /**
  * Grunt configuration file for PhET projects. In general when possible, modules are imported lazily in their task
- * declaration to save on overall load-time of this file.
+ * declaration to save on overall load time of this file.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+///////////////////////////
+// NOTE: to improve performance, the vast majority of modules are lazily imported in task registrations. Even duplicating
+// require statements improves the load time of this file noticeably. For details, see https://github.com/phetsims/chipper/issues/1107
 const assert = require( 'assert' );
 require( './checkNodeVersion' );
+///////////////////////////
 
 // See https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd for how
 // to get unhandled promise rejections to fail out the node process.
