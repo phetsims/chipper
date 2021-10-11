@@ -11,7 +11,6 @@ const buildRunnable = require( './buildRunnable' );
 const buildStandalone = require( './buildStandalone' );
 const commitsSince = require( './commitsSince' );
 const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
-const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
 const generateA11yViewHTML = require( './generateA11yViewHTML' );
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
 const generateTSConfig = require( './generateTSConfig' );
@@ -574,7 +573,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       if ( grunt.option( 'compareBreakingAPIChanges' ) ) {
         options.compareBreakingAPIChanges = grunt.option( 'compareBreakingAPIChanges' );
       }
-      await phetioCompareAPISets( sims, proposedAPIs, options );
+      await require( '../phet-io/phetioCompareAPISets' )( sims, proposedAPIs, options );
     } )
   );
 
