@@ -2,7 +2,9 @@
 
 /**
  * Grunt configuration file for PhET projects. In general when possible, modules are imported lazily in their task
- * declaration to save on overall load time of this file.
+ * declaration to save on overall load time of this file. The pattern is to require all modules needed at the top of the
+ * grunt task registration. If a module is used in multiple tasks, it is best to lazily require in each
+ * task.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
