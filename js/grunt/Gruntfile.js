@@ -1,40 +1,20 @@
 // Copyright 2013-2021, University of Colorado Boulder
 
 /**
- * Grunt configuration file for PhET projects.
+ * Grunt configuration file for PhET projects. In general when possible, modules are imported lazily in their task
+ * declaration to save on overall load-time of this file.
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const SimVersion = require( '../../../perennial-alias/js/common/SimVersion' );
-const buildRunnable = require( './buildRunnable' );
-const buildStandalone = require( './buildStandalone' );
-const commitsSince = require( './commitsSince' );
 const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
-const generateA11yViewHTML = require( './generateA11yViewHTML' );
-const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
-const generateTSConfig = require( './generateTSConfig' );
-const generateREADME = require( './generateREADME' );
-const generateTestHTML = require( './generateTestHTML' );
-const generateThumbnails = require( './generateThumbnails' );
-const generateTwitterCard = require( './generateTwitterCard' );
-const getPhetLibs = require( './getPhetLibs' );
+const generateREADME = require( './generateREADME' ); // used by multiple tasks
 const getSimList = require( '../common/getSimList' );
 const lint = require( './lint' );
-const minify = require( './minify' );
-const modulify = require( './modulify' );
 const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
-const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
-const reportMedia = require( './reportMedia' );
-const reportThirdParty = require( './reportThirdParty' );
-const sortImports = require( './sortImports' );
 const tsc = require( './tsc' );
-const updateCopyrightDates = require( './updateCopyrightDates' );
-const webpackDevServer = require( './webpackDevServer' );
 const assert = require( 'assert' );
-const child_process = require( 'child_process' );
 const fs = require( 'fs' );
-const jimp = require( 'jimp' );
 const path = require( 'path' );
 require( './checkNodeVersion' );
 
@@ -130,6 +110,10 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build-images',
     'Build images only',
     wrapTask( async () => {
+      const jimp = require( 'jimp' );
+      const generateThumbnails = require( './generateThumbnails' );
+      const generateTwitterCard = require( './generateTwitterCard' );
+
       const brand = 'phet';
       grunt.log.writeln( `Building images for brand: ${brand}` );
 
@@ -205,6 +189,9 @@ ${results.stderr}` );
            a separated-out JS file).
  --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales`,
     wrapTask( async () => {
+      const buildStandalone = require( './buildStandalone' );
+      const buildRunnable = require( './buildRunnable' );
+      const minify = require( './minify' );
 
       // Parse minification keys
       const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
@@ -334,6 +321,8 @@ ${results.stderr}` );
     const format = grunt.option( 'format' );
     assert && assert( !grunt.option( 'patterns' ), 'patterns not support for lint-all' );
 
+    const getPhetLibs = require( './getPhetLibs' );
+
     await lint( getPhetLibs( repo ).map( repo => `../${repo}` ), {
       cache: cache,
       fix: fix,
@@ -344,17 +333,25 @@ ${results.stderr}` );
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
     wrapTask( async () => {
+      const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+
       await generateDevelopmentHTML( repo );
     } ) );
 
   grunt.registerTask( 'generate-tsconfig', 'Generates tsconfig.js for typescript builds.',
-    wrapTask( async () => generateTSConfig( repo ) ) );
+    wrapTask( async () => {
+      const generateTSConfig = require( './generateTSConfig' );
+
+      await generateTSConfig( repo );
+    } ) );
 
   grunt.registerTask( 'generate-test-html',
     'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-unit-tests.md ' +
     'for more information on automated testing. Usually you should ' +
     'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
+      const generateTestHTML = require( './generateTestHTML' );
+
       await generateTestHTML( repo );
     } ) );
 
@@ -363,6 +360,9 @@ ${results.stderr}` );
     'set the "phet.simFeatures.supportsInteractiveDescription":true flag in the sim package.json and run `grunt update` ' +
     'instead of manually generating this.',
     wrapTask( async () => {
+
+      const generateA11yViewHTML = require( './generateA11yViewHTML' );
+
       generateA11yViewHTML( repo );
     } ) );
 
@@ -374,6 +374,7 @@ Updates the normal automatically-generated files for this repository. Includes:
   * simulations: generateREADME()
   * phet-io simulations: generate overrides file if needed`,
     wrapTask( async () => {
+      const SimVersion = require( '../../../perennial-alias/js/common/SimVersion' );
 
       // support repos that don't have a phet object
       if ( !packageObject.phet ) {
@@ -431,6 +432,8 @@ Updates the normal automatically-generated files for this repository. Includes:
     } ) );
 
   grunt.registerTask( 'sort-imports', 'Sort the import statements for a single file (if --file={{FILE}} is provided), or does so for all JS files if not specified', wrapTask( async () => {
+    const sortImports = require( './sortImports' );
+
     const file = grunt.option( 'file' );
 
     if ( file ) {
@@ -447,6 +450,8 @@ Updates the normal automatically-generated files for this repository. Includes:
       const dateString = grunt.option( 'date' );
       assert( dateString, 'missing required option: --date={{DATE}}' );
 
+      const commitsSince = require( './commitsSince' );
+
       await commitsSince( repo, dateString );
     } ) );
 
@@ -458,6 +463,8 @@ Updates the normal automatically-generated files for this repository. Includes:
     '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
     '(3) missing-file (entry in the license.json but not on the file system)',
     wrapTask( async () => {
+      const reportMedia = require( './reportMedia' );
+
       await reportMedia( repo );
     } ) );
 
@@ -467,10 +474,14 @@ Updates the normal automatically-generated files for this repository. Includes:
     'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
     'After running this task, you must push sherpa/third-party-licenses.md.',
     wrapTask( async () => {
+      const reportThirdParty = require( './reportThirdParty' );
+
       await reportThirdParty();
     } ) );
 
   grunt.registerTask( 'modulify', 'Creates *.js modules for all images/strings/audio/etc in a repo', wrapTask( async () => {
+    const modulify = require( './modulify' );
+
     await modulify( repo );
   } ) );
 
@@ -479,7 +490,11 @@ Updates the normal automatically-generated files for this repository. Includes:
   grunt.registerTask(
     'update-copyright-dates',
     'Update the copyright dates in JS source files based on Github dates',
-    wrapTask( async () => updateCopyrightDates( repo ) )
+    wrapTask( async () => {
+      const updateCopyrightDates = require( './updateCopyrightDates' );
+
+      await updateCopyrightDates( repo );
+    } )
   );
 
   grunt.registerTask(
@@ -500,6 +515,8 @@ Updates the normal automatically-generated files for this repository. Includes:
       }
       const openChrome = grunt.option( 'chrome' ) || false;
 
+      const webpackDevServer = require( './webpackDevServer' );
+
       // NOTE: We don't care about the promise that is returned here, because we are going to keep this task running
       // until the user manually kills it.
       webpackDevServer( repos, port, devtool, openChrome );
@@ -514,6 +531,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--temporary - outputs to the temporary directory',
     wrapTask( async () => {
+      const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
 
@@ -588,6 +606,9 @@ Updates the normal automatically-generated files for this repository. Includes:
   function forwardToPerennialGrunt( task ) {
     grunt.registerTask( task, 'Run grunt --help in perennial to see documentation', () => {
       grunt.log.writeln( '(Forwarding task to perennial)' );
+
+      const child_process = require( 'child_process' );
+
 
       const done = grunt.task.current.async();
 
