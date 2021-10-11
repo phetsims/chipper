@@ -7,15 +7,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
-const generateREADME = require( './generateREADME' ); // used by multiple tasks
-const getSimList = require( '../common/getSimList' );
-const lint = require( './lint' );
-const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
-const tsc = require( './tsc' );
 const assert = require( 'assert' );
-const fs = require( 'fs' );
-const path = require( 'path' );
 require( './checkNodeVersion' );
 
 // See https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd for how
@@ -88,7 +80,7 @@ module.exports = function( grunt ) {
     };
   }
 
-  const isTypeScript = isRepoTypeScript( repo );
+  grunt.registerTask( 'test', 'meant for use by build-server only', () => console.log( 'this is a test' ) );
 
   grunt.registerTask( 'default', 'Builds the repository', [
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
@@ -162,13 +154,22 @@ ${results.stderr}` );
   };
 
   grunt.registerTask( 'output-js', 'Outputs JS just for the specified repo',
-    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--project', `../${repo}` ] ) ) )
+    wrapTask( async () => {
+      const tsc = require( './tsc' );
+      reportTscResults( await tsc( '../chipper', [ '--project', `../${repo}` ] ) );
+    } )
   );
   grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
-    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--build', `../${repo}` ] ) ) )
+    wrapTask( async () => {
+      const tsc = require( './tsc' );
+      reportTscResults( await tsc( '../chipper', [ '--build', `../${repo}` ] ) );
+    } )
   );
   grunt.registerTask( 'output-js-all', 'Outputs JS for all repos',
-    wrapTask( async () => reportTscResults( await tsc( '../chipper', [ '--build', '../chipper/tsconfig/all' ] ) ) )
+    wrapTask( async () => {
+      const tsc = require( './tsc' );
+      reportTscResults( await tsc( '../chipper', [ '--build', '../chipper/tsconfig/all' ] ) );
+    } )
   );
 
   grunt.registerTask( 'build',
@@ -192,6 +193,11 @@ ${results.stderr}` );
       const buildStandalone = require( './buildStandalone' );
       const buildRunnable = require( './buildRunnable' );
       const minify = require( './minify' );
+      const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
+      const tsc = require( './tsc' );
+      const isTypeScript = isRepoTypeScript( repo );
+      const path = require( 'path' );
+      const fs = require( 'fs' );
 
       // Parse minification keys
       const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
@@ -296,6 +302,7 @@ ${results.stderr}` );
 --format: Append an additional set of rules for formatting
 --patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.`,
     wrapTask( async () => {
+      const lint = require( './lint' );
 
       // --disable-eslint-cache disables the cache, useful for developing rules
       const cache = !grunt.option( 'disable-eslint-cache' );
@@ -314,6 +321,7 @@ ${results.stderr}` );
     } ) );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
+    const lint = require( './lint' );
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
@@ -375,6 +383,8 @@ Updates the normal automatically-generated files for this repository. Includes:
   * phet-io simulations: generate overrides file if needed`,
     wrapTask( async () => {
       const SimVersion = require( '../../../perennial-alias/js/common/SimVersion' );
+      const generateREADME = require( './generateREADME' );
+      const fs = require( 'fs' );
 
       // support repos that don't have a phet object
       if ( !packageObject.phet ) {
@@ -422,12 +432,14 @@ Updates the normal automatically-generated files for this repository. Includes:
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
     wrapTask( async () => {
+      const generateREADME = require( './generateREADME' ); // used by multiple tasks
       generateREADME( repo, true /* published */ );
     } ) );
 
   grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
     wrapTask( async () => {
+      const generateREADME = require( './generateREADME' ); // used by multiple tasks
       generateREADME( repo, false /* published */ );
     } ) );
 
@@ -532,6 +544,9 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--temporary - outputs to the temporary directory',
     wrapTask( async () => {
       const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
+      const getSimList = require( '../common/getSimList' );
+      const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
+      const fs = require( 'fs' );
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
 
@@ -566,6 +581,9 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--temporary, compares API files in the temporary directory (otherwise compares to freshly generated APIs)\n' +
     '--compareBreakingAPIChanges - add this flag to compare breaking changes in addition to designed changes',
     wrapTask( async () => {
+      const getSimList = require( '../common/getSimList' );
+      const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
+      const fs = require( 'fs' );
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
       const temporary = grunt.option( 'temporary' );
