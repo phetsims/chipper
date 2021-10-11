@@ -80,8 +80,6 @@ module.exports = function( grunt ) {
     };
   }
 
-  grunt.registerTask( 'test', 'meant for use by build-server only', () => console.log( 'this is a test' ) );
-
   grunt.registerTask( 'default', 'Builds the repository', [
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
     ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
