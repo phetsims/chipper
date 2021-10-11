@@ -10,3 +10,19 @@ declare var phet: any;
 
 // Placeholder for scenery node options
 declare type NodeOptions = {};
+
+class ObservableArray<T> extends Array<T> {
+  count( predicate: ( t: T ) => boolean ):number {
+  }
+
+  addItemRemovedListener( listener: ( item: T ) => void ) {
+  }
+
+  addItemAddedListener( listener: ( item: T ) => void ) {}
+
+  add( t: T ) {}
+
+  remove( t: T ) {}
+
+  clear() {}
+}
