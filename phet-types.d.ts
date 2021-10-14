@@ -12,7 +12,10 @@ declare var phet: any;
 declare type NodeOptions = {};
 
 class ObservableArray<T> extends Array<T> {
-  count( predicate: ( t: T ) => boolean ):number {
+  removeAll( elements: T[] ) {
+  }
+
+  count( predicate: ( t: T ) => boolean ): number {
   }
 
   addItemRemovedListener( listener: ( item: T ) => void ) {
