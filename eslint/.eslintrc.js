@@ -1011,6 +1011,12 @@ module.exports = {
 
     handlePlaybackEvent: 'readonly',
 
-    pako: 'readonly'
+    pako: 'readonly',
+
+    //  FROM phet-types.d.ts
+    ObservableArray: 'readonly',
+    Assert: 'readonly',
+    PhetioObjectOptions: 'readonly',
+    NodeOptions: 'readonly'
   }
 };
