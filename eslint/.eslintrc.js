@@ -1031,6 +1031,7 @@ module.exports = {
     ObservableArray: 'readonly',
     Assert: 'readonly',
     PhetioObjectOptions: 'readonly',
-    NodeOptions: 'readonly'
+    NodeOptions: 'readonly',
+    AccordionBoxOptions: 'readonly'
   }
 };

@@ -39,3 +39,8 @@ type PhetioObjectOptions = {
   phetioDynamicElement: boolean,
   phetioType: IOType
 };
+
+type AccordionBoxOptions = {
+  titleAlignX: 'left' | 'right' | 'center',
+  titleXSpacing: number
+};
