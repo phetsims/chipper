@@ -12,6 +12,8 @@ declare var phet: any;
 declare type NodeOptions = {};
 
 class ObservableArray<T> extends Array<T> {
+  lengthProperty: Property<number>;
+
   removeAll( elements: T[] ) {
   }
 
