@@ -9,7 +9,9 @@ declare var assert: undefined | ( ( x: any, s?: string ) => void );
 declare var phet: any;
 
 // Placeholder for scenery node options
-declare type NodeOptions = {};
+declare type NodeOptions = {
+  pickable: boolean
+};
 
 class ObservableArray<T> extends Array<T> {
   lengthProperty: Property<number>;
