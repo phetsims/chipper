@@ -73,7 +73,9 @@ const lint = async ( patterns, options ) => {
     resolvePluginsRelativeTo: '../chipper/',
 
     // Our custom rules live here
-    rulePaths: [ '../chipper/eslint/rules' ]
+    rulePaths: [ '../chipper/eslint/rules' ],
+
+    extensions: [ '.js', '.ts' ]
   };
 
   if ( options.format ) {
