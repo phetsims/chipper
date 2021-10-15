@@ -570,7 +570,7 @@ module.exports = {
     'lines-around-comment': 'off', // SR Would like this rule enabled in his repos like so: 'lines-around-comment': [ 'error', { beforeLineComment: true } ]
 
     // require or disallow an empty line between class members
-    'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: false } ],
+    'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: true } ],
 
     // enforce a maximum depth that blocks can be nested
     'max-depth': 'off', // Go for it!
