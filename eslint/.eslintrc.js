@@ -1032,6 +1032,7 @@ module.exports = {
     Assert: 'readonly',
     PhetioObjectOptions: 'readonly',
     NodeOptions: 'readonly',
-    AccordionBoxOptions: 'readonly'
+    AccordionBoxOptions: 'readonly',
+    CheckboxOptions: 'readonly'
   }
 };

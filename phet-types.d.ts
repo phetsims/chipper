@@ -8,7 +8,14 @@
 declare var assert: undefined | ( ( x: any, s?: string ) => void );
 declare var phet: any;
 
-// Placeholder for scenery node options until we can use TypeScript in common code
+// Placeholder until we can use TypeScript in common code
+type PhetioObjectOptions = {
+  tandem: Tandem,
+  phetioDynamicElement: boolean,
+  phetioType: IOType
+};
+
+// Placeholder until we can use TypeScript in common code
 declare type NodeOptions = {
 
   children: Node[],
@@ -69,7 +76,7 @@ declare type NodeOptions = {
   touchArea: Bounds2 | Shape | null,
   clipArea: Shape | null,
   transformBounds: boolean,
-};
+} & PhetioObjectOptions;
 
 // Placeholder until we can use TypeScript in common code
 class ObservableArray<T> extends Array<T> {
@@ -94,14 +101,9 @@ class ObservableArray<T> extends Array<T> {
 }
 
 // Placeholder until we can use TypeScript in common code
-type PhetioObjectOptions = {
-  tandem: Tandem,
-  phetioDynamicElement: boolean,
-  phetioType: IOType
-};
-
-// Placeholder until we can use TypeScript in common code
 type AccordionBoxOptions = {
   titleAlignX: 'left' | 'right' | 'center',
   titleXSpacing: number
-};
+} & NodeOptions;
+
+type CheckboxOptions = {} & NodeOptions;
