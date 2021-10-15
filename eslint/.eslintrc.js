@@ -15,6 +15,10 @@ module.exports = {
 
   parser: '@typescript-eslint/parser',
 
+  plugins: [
+    '@typescript-eslint'
+  ],
+
   // The rules are organized like they are in the list at https://eslint.org/docs/rules/
   // First by type, then alphabetically within type
   // Explicitly list all rules so it is easy to see what's here and to keep organized
@@ -155,6 +159,16 @@ module.exports = {
 
     // enforce comparing `typeof` expressions against valid strings
     'valid-typeof': 'error',
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // TypeScript Errors
+    '@typescript-eslint/no-inferrable-types': 'error',
+    '@typescript-eslint/no-unnecessary-type-constraint': 'error',
+
+    // Not yet enabled because they require tsconfig.json files
+    // '@typescript-eslint/no-unnecessary-type-assertion':'error',
+    // '@typescript-eslint/no-unsafe-member-access':'error',
+    // '@typescript-eslint/restrict-plus-operands':'error',
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Best Practices
