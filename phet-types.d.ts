@@ -31,3 +31,9 @@ class ObservableArray<T> extends Array<T> {
 
   clear() {}
 }
+
+type PhetioObjectOptions = {
+  tandem: Tandem,
+  phetioDynamicElement: boolean,
+  phetioType: IOType
+};
