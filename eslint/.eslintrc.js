@@ -16,7 +16,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
 
   plugins: [
-    '@typescript-eslint'
+    // '@typescript-eslint'
   ],
 
   // The rules are organized like they are in the list at https://eslint.org/docs/rules/
@@ -162,8 +162,8 @@ module.exports = {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // TypeScript Errors
-    '@typescript-eslint/no-inferrable-types': 'error',
-    '@typescript-eslint/no-unnecessary-type-constraint': 'error',
+    // '@typescript-eslint/no-inferrable-types': 'error',
+    // '@typescript-eslint/no-unnecessary-type-constraint': 'error',
 
     // Not yet enabled because they require tsconfig.json files
     // '@typescript-eslint/no-unnecessary-type-assertion':'error',
