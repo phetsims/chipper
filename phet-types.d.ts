@@ -1,4 +1,5 @@
 /* eslint-disable */
+// Copyright 2021, University of Colorado Boulder
 
 /**
  * Ambient type declarations for PhET code
