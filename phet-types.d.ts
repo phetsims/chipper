@@ -111,3 +111,8 @@ type AccordionBoxOptions = {
 } & NodeOptions;
 
 type CheckboxOptions = {} & NodeOptions;
+
+type QSMType = {
+  getAll: ( a: any ) => any
+};
+declare var QueryStringMachine: QSMType;
