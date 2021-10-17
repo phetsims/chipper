@@ -19,7 +19,7 @@ type PhetioObjectOptions = {
 // Placeholder until we can use TypeScript in common code
 declare type NodeOptions = {
 
-  children: Node[],
+  children: any[], // TODO: importing Node in phet-types.d.ts creates a cycle.  We will need to separate files
   cursor: string | null,
 
   phetioVisiblePropertyInstrumented: boolean,
