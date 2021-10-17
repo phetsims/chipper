@@ -89,10 +89,13 @@ class ObservableArray<T> extends Array<T> {
   count( predicate: ( t: T ) => boolean ): number {
   }
 
-  addItemRemovedListener( listener: ( item: T ) => void ) {
-  }
+  addItemRemovedListener( listener: ( item: T ) => void ) {}
 
   addItemAddedListener( listener: ( item: T ) => void ) {}
+
+  removeItemRemovedListener( listener: ( item: T ) => void ) {}
+
+  removeItemAddedListener( listener: ( item: T ) => void ) {}
 
   add( t: T ) {}
 
