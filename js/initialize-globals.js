@@ -91,20 +91,6 @@
     },
 
     /**
-     * Master volume control for the simulation.  Range is from 0 to 1, which is typical for web audio gain nodes.
-     * 1.0 is unity volume, 0.5 is half volume, etc. This is primarily for Vibe sounds.
-     * TODO: This should be removed once all usages of Vibe have been converted to Tambo, see https://github.com/phetsims/vibe/issues/33.
-     * TODO: After https://github.com/phetsims/joist/issues/724, This should be called soundVolume, but not changing because it is deprecated.
-     * @deprecated see https://github.com/phetsims/vibe/issues/33
-     * @type {number}
-     */
-    audioVolume: {
-      type: 'number',
-      defaultValue: 1,
-      isValidValue: function( value ) { return value >= 0 && value <= 1; }
-    },
-
-    /**
      * Generates object reports that can be used by binder. For internal use.
      * See InstanceRegistry.js and binder repo (specifically getFromSimInMaster.js) sfor more details.
      */
@@ -506,21 +492,6 @@
      * Shuffles listeners each time they are notified, to help us test order dependence, see https://github.com/phetsims/axon/issues/215
      */
     shuffleListeners: { type: 'flag' },
-
-    // Private Doc:  For external use. The below jsdoc is public to the PhET-iO API documentation. Change wisely.
-    /**
-     * Allows setting of the sound state, possible values are 'enabled' (default), 'muted', and 'disabled'.  Sound
-     * must be supported by the sim for this to have any effect.
-     * @memberOf PhetQueryParameters
-     * @type {string}
-     * @deprecated see https://github.com/phetsims/joist/issues/734
-     */
-    sound: {
-      type: 'string',
-      defaultValue: 'enabled',
-      validValues: [ 'enabled', 'disabled', 'muted' ],
-      public: true
-    },
 
     /**
      * Speed multiplier for everything in the sim. This scales the value of dt for AXON/timer,
