@@ -1033,6 +1033,9 @@ module.exports = {
     PhetioObjectOptions: 'readonly',
     NodeOptions: 'readonly',
     AccordionBoxOptions: 'readonly',
-    CheckboxOptions: 'readonly'
+    CheckboxOptions: 'readonly',
+    PanelOptions: 'readonly',
+    RoundPushButtonOptions: 'readonly',
+    RoundButtonOptions: 'readonly'
   }
 };

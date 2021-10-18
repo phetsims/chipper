@@ -2,7 +2,8 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Ambient type declarations for PhET code
+ * Ambient type declarations for PhET code.  Many of these definitions can be moved/disable once we allow
+ * TypeScript in common code.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -17,7 +18,7 @@ type PhetioObjectOptions = {
 };
 
 // Placeholder until we can use TypeScript in common code
-declare type NodeOptions = {
+type NodeOptions = {
 
   children: any[], // TODO: importing Node in phet-types.d.ts creates a cycle.  We will need to separate files
   cursor: string | null,
@@ -78,6 +79,44 @@ declare type NodeOptions = {
   clipArea: Shape | null,
   transformBounds: boolean,
 } & PhetioObjectOptions;
+
+type PanelOptions = {
+  fill: string | Color,
+  stroke: string | Color,
+  lineWidth: number,
+  xMargin: number,
+  yMargin: number,
+  cornerRadius: number,
+  resize: boolean,
+  backgroundPickable: boolean,
+  excludeInvisibleChildrenFromBounds: boolean,
+  align: 'left' | 'right' | 'center',
+  minWidth: number,
+  tandem: Tandem
+} & NodeOptions;
+
+type RoundButtonOptions = {
+  content: any,
+  radius: number,
+  cursor: string,
+  xMargin: number,
+  yMargin: number,
+  fireOnDown: boolean,
+  touchAreaDilation: number,
+  mouseAreaDilation: number,
+  touchAreaXShift: number,
+  touchAreaYShift: number,
+  mouseAreaXShift: number,
+  mouseAreaYShift: number,
+  stroke: undefined | string | Color,
+  lineWidth: number,
+  buttonAppearanceStrategy: ThreeDAppearanceStrategy
+} & NodeOptions;
+
+type RoundPushButtonOptions = {
+  soundPlayer: SoundClipPlayer,
+  listener: () => void,
+} & RoundButtonOptions;
 
 // Placeholder until we can use TypeScript in common code
 class ObservableArray<T> extends Array<T> {
