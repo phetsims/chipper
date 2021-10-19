@@ -551,6 +551,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       const getSimList = require( '../common/getSimList' );
       const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
       const fs = require( 'fs' );
+      const tsc = require( './tsc' );
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
 
@@ -562,6 +563,10 @@ Updates the normal automatically-generated files for this repository. Includes:
         if ( !e.message.includes( 'file already exists' ) ) {
           throw e;
         }
+      }
+
+      for ( let i = 0; i < sims.length; i++ ) {
+        reportTscResults( await tsc( '../chipper', [ '--build', `../${sims[ i ]}` ] ) );
       }
 
       const results = await generatePhetioMacroAPI( sims, {
