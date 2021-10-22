@@ -2,8 +2,8 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Ambient type declarations for PhET code.  Many of these definitions can be moved/disable once we allow
- * TypeScript in common code.
+ * Ambient type declarations for PhET code.  Many of these definitions can be moved/disabled once the common code is
+ * converted to TypeScript.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -117,6 +117,14 @@ type RoundPushButtonOptions = {
   soundPlayer: SoundClipPlayer,
   listener: () => void,
 } & RoundButtonOptions;
+
+type SoundGeneratorOptions = {
+  initialOutputLevel?: number,
+  audioContext?: AudioContext,
+  connectImmediately?: boolean,
+  enableControlProperties?: Property<boolean>[],
+  additionalAudioNodes?: AudioNode[]
+};
 
 // Placeholder until we can use TypeScript in common code
 class ObservableArray<T> extends Array<T> {
