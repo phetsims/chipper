@@ -12,13 +12,16 @@ declare var phet: any;
 
 // Placeholder until we can use TypeScript in common code
 type PhetioObjectOptions = {
-  tandem: Tandem,
-  phetioDynamicElement: boolean,
-  phetioType: IOType
+  tandem?: Tandem,
+  phetioDynamicElement?: boolean,
+  phetioType?: IOType
 };
 
+type PaintDef = Paint | Color | string | Property<null | string | Color>;
+type ColorDef = Color | string | null | Property<null | string | Color>;
+
 // Placeholder until we can use TypeScript in common code
-type NodeOptions = {
+type NodeOptions = Partial<{
 
   children: any[], // TODO: importing Node in phet-types.d.ts creates a cycle.  We will need to separate files
   cursor: string | null,
@@ -78,7 +81,21 @@ type NodeOptions = {
   touchArea: Bounds2 | Shape | null,
   clipArea: Shape | null,
   transformBounds: boolean,
-} & PhetioObjectOptions;
+}> & PhetioObjectOptions;
+
+type PaintableOptions = {
+  fill?: PaintDef;
+  fillPickable?: boolean;
+  stroke?: PaintDef;
+  strokePickable?: boolean;
+  lineWidth?: number;
+  lineCap?: string;
+  lineJoin?: string;
+  miterLimit?: number;
+  lineDash?: Array<number>;
+  lineDashOffset?: number;
+  cachedPaints?: PaintDef;
+};
 
 type PanelOptions = {
   fill: string | Color,
@@ -95,12 +112,22 @@ type PanelOptions = {
   tandem: Tandem
 } & NodeOptions;
 
+type ButtonNodeOptions = {
+  content?: null,
+  xMargin?: number,
+  yMargin?: number,
+  xAlign?: 'left' | 'right' | 'center',
+  yAlign?: 'top' | 'bottom' | 'center',
+  xContentOffset?: number,
+  yContentOffset?: number,
+  baseColor?: ColorDef,
+  disabledColor?: ColorDef,
+} & NodeOptions & PaintableOptions;
+
 type RoundButtonOptions = {
   content: any,
   radius: number,
   cursor: string,
-  xMargin: number,
-  yMargin: number,
   fireOnDown: boolean,
   touchAreaDilation: number,
   mouseAreaDilation: number,
@@ -110,13 +137,34 @@ type RoundButtonOptions = {
   mouseAreaYShift: number,
   stroke: undefined | string | Color,
   lineWidth: number,
-  buttonAppearanceStrategy: ThreeDAppearanceStrategy
-} & NodeOptions;
+} & ButtonNodeOptions;
 
 type RoundPushButtonOptions = {
   soundPlayer: SoundClipPlayer,
   listener: () => void,
 } & RoundButtonOptions;
+
+type RectangularToggleButtonOptions = {
+  content?: null | Node;
+  size?: Dimension2;
+  minWidth?: number;
+  minHeight?: number;
+  touchAreaXDilation?: number;
+  touchAreaYDilation?: number;
+  mouseAreaXDilation?: number;
+  mouseAreaYDilation?: number;
+  touchAreaXShift?: number;
+  touchAreaYShift?: number;
+  mouseAreaXShift?: number;
+  mouseAreaYShift?: number;
+  cornerRadius?: number;
+  leftTopCornerRadius?: number | null;
+  rightTopCornerRadius?: number | null;
+  leftBottomCornerRadius?: number | null;
+  rightBottomCornerRadius?: number | null;
+} & ButtonNodeOptions;
+
+type ExpandCollapseButtonOptions = {} & RectangularToggleButtonOptions;
 
 type SoundGeneratorOptions = {
   initialOutputLevel: number,
@@ -153,8 +201,17 @@ class ObservableArray<T> extends Array<T> {
 
 // Placeholder until we can use TypeScript in common code
 type AccordionBoxOptions = {
-  titleAlignX: 'left' | 'right' | 'center',
-  titleXSpacing: number
+  titleAlignX?: 'left' | 'right' | 'center',
+  titleXSpacing?: number,
+
+  titleNode?: Node,
+  contentXMargin?: number,
+  contentYMargin?: number,
+  contentYSpacing?: number,
+  cornerRadius?: number,
+  buttonXMargin?: number,
+  buttonYMargin?: number,
+  expandCollapseButtonOptions?: ExpandCollapseButtonOptions,
 } & NodeOptions;
 
 type CheckboxOptions = {} & NodeOptions;
