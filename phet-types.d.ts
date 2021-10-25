@@ -20,6 +20,40 @@ type PhetioObjectOptions = {
 type PaintDef = Paint | Color | string | Property<null | string | Color>;
 type ColorDef = Color | string | null | Property<null | string | Color>;
 
+type ParallelDOMOptions = Partial<{
+  focusable: boolean | null;
+  tagName: string | null;
+  accessibleName: string | null;
+  helpText: string | null;
+  pdomHeading: string | null;
+  containerTagName: string | null;
+  containerAriaRole: string | null;
+  innerContent: string | null;
+  inputType: string | null;
+  inputValue: string | number | null;
+  pdomChecked: boolean | null;
+  pdomNamespace: string | null;
+  ariaLabel: string | null;
+  ariaRole: string | null;
+  ariaValueText: string | null;
+  labelTagName: string | null;
+  labelContent: string | null;
+  appendLabel: string | null;
+  descriptionTagName: string | null;
+  descriptionContent: string | null;
+  appendDescription: boolean | null;
+  // focusHighlight: FocusHighlightPath | null ;
+  focusHighlightLayerable: boolean | null;
+  // groupFocusHighlight: GroupFocusHighlight | null;
+  pdomVisible: boolean | null;
+  // pdomOrder: Node[] | null;
+  // ariaLabelledbyAssociations: string | null;
+  // ariaDescribedbyAssociations: string | null;
+  // activeDescendantAssociations: string | null;
+  positionInPDOM: boolean | null;
+  // pdomTransformSourceNode: Node | null;
+}>;
+
 // Placeholder until we can use TypeScript in common code
 type NodeOptions = Partial<{
 
@@ -81,7 +115,7 @@ type NodeOptions = Partial<{
   touchArea: Bounds2 | Shape | null,
   clipArea: Shape | null,
   transformBounds: boolean,
-}> & PhetioObjectOptions;
+}> & PhetioObjectOptions & ParallelDOMOptions;
 
 type PaintableOptions = {
   fill?: PaintDef;
