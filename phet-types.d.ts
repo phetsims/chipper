@@ -135,6 +135,8 @@ type PaintableOptions = {
   cachedPaints?: PaintDef;
 };
 
+type PathOptions = PaintableOptions & NodeOptions;
+
 type PanelOptions = {
   fill: string | Color,
   stroke: string | Color,
