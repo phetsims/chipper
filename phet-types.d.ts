@@ -24,7 +24,11 @@ type ParallelDOMOptions = Partial<{
   focusable: boolean | null;
   tagName: string | null;
   accessibleName: string | null;
+
+  // Cannot import Node from here. .. oh well
+  // accessibleNameBehavior: ( node:Node, options: T, helpText ) => T;
   helpText: string | null;
+  // helpTextBehavior: ( node:Node, options: T, helpText ) => T;
   pdomHeading: string | null;
   containerTagName: string | null;
   containerAriaRole: string | null;
@@ -157,6 +161,8 @@ type ButtonNodeOptions = {
   baseColor?: ColorDef,
   disabledColor?: ColorDef,
 } & NodeOptions & PaintableOptions;
+
+type RectangleOptions = NodeOptions & PaintableOptions;
 
 type RoundButtonOptions = {
   content: any,
