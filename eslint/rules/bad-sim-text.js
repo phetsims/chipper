@@ -47,6 +47,9 @@ module.exports = function( context ) {
     // https://github.com/phetsims/scenery/issues/1156 and feel free to discuss if there are usages you want to support.
     ' instanceof Touch ',
 
+    // Prevent accidental importing of files from the TypeScript build output directory
+    'chipper/dist',
+
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     {
       id: 'setTimeout(',
