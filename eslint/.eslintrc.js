@@ -1037,6 +1037,7 @@ module.exports = {
     PanelOptions: 'readonly',
     RoundPushButtonOptions: 'readonly',
     RoundButtonOptions: 'readonly',
-    SoundGeneratorOptions: 'readonly'
+    SoundGeneratorOptions: 'readonly',
+    PathOptions: 'readonly'
   }
 };
