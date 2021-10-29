@@ -256,6 +256,13 @@ type AccordionBoxOptions = {
   expandCollapseButtonOptions?: ExpandCollapseButtonOptions,
 } & NodeOptions;
 
+// Placeholder until we can use TypeScript in common code
+type ComboBoxItemOptions = Partial<{
+  soundPlayer: SoundPlayer,
+  tandemName: string | null,
+  a11yLabel: string | null
+}>;
+
 type CheckboxOptions = {} & NodeOptions;
 
 type QSMType = {
