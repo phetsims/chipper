@@ -14,7 +14,11 @@ declare var phet: any;
 type PhetioObjectOptions = {
   tandem?: Tandem,
   phetioDynamicElement?: boolean,
-  phetioType?: IOType
+  phetioType?: IOType,
+  phetioHighFrequency?: boolean,
+  phetioDocumentation?: string,
+  phetioReadOnly?: boolean,
+  phetioStudioControl?: boolean
 };
 
 type PaintDef = Paint | Color | string | Property<null | string | Color>;
@@ -137,7 +141,7 @@ type PaintableOptions = {
 
 type PathOptions = PaintableOptions & NodeOptions;
 
-type PanelOptions = {
+type PanelOptions = Partial<{
   fill: string | Color,
   stroke: string | Color,
   lineWidth: number,
@@ -150,7 +154,7 @@ type PanelOptions = {
   align: 'left' | 'right' | 'center',
   minWidth: number,
   tandem: Tandem
-} & NodeOptions;
+}> & NodeOptions;
 
 type ButtonNodeOptions = {
   content?: null,
@@ -166,7 +170,7 @@ type ButtonNodeOptions = {
 
 type RectangleOptions = NodeOptions & PaintableOptions;
 
-type RoundButtonOptions = {
+type RoundButtonOptions = Partial<{
   content: any,
   radius: number,
   cursor: string,
@@ -179,11 +183,11 @@ type RoundButtonOptions = {
   mouseAreaYShift: number,
   stroke: undefined | string | Color,
   lineWidth: number,
-} & ButtonNodeOptions;
+}> & ButtonNodeOptions;
 
 type RoundPushButtonOptions = {
-  soundPlayer: SoundClipPlayer,
-  listener: () => void,
+  soundPlayer?: SoundClipPlayer,
+  listener?: () => void,
 } & RoundButtonOptions;
 
 type RectangularToggleButtonOptions = {
