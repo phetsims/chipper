@@ -14,7 +14,11 @@ declare var phet: any;
 type PhetioObjectOptions = {
   tandem?: Tandem,
   phetioDynamicElement?: boolean,
-  phetioType?: IOType
+  phetioType?: IOType,
+  phetioHighFrequency?: boolean,
+  phetioDocumentation?: string,
+  phetioReadOnly?: boolean,
+  phetioStudioControl?: boolean
 };
 
 type PaintDef = Paint | Color | string | Property<null | string | Color>;
