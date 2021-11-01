@@ -209,11 +209,11 @@ type RectangularToggleButtonOptions = {
 type ExpandCollapseButtonOptions = {} & RectangularToggleButtonOptions;
 
 type SoundGeneratorOptions = {
-  initialOutputLevel: number,
-  audioContext: AudioContext,
-  connectImmediately: boolean,
-  enableControlProperties: Property<boolean>[],
-  additionalAudioNodes: AudioNode[]
+  initialOutputLevel?: number,
+  audioContext?: AudioContext,
+  connectImmediately?: boolean,
+  enableControlProperties?: Property<boolean>[],
+  additionalAudioNodes?: AudioNode[]
 };
 
 // Placeholder until we can use TypeScript in common code
