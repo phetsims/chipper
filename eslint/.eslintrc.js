@@ -1032,6 +1032,7 @@ module.exports = {
     Assert: 'readonly',
     PhetioObjectOptions: 'readonly',
     NodeOptions: 'readonly',
+    CanvasNodeOptions: 'readonly',
     AccordionBoxOptions: 'readonly',
     CheckboxOptions: 'readonly',
     PanelOptions: 'readonly',
