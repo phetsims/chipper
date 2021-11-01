@@ -1038,6 +1038,7 @@ module.exports = {
     RoundPushButtonOptions: 'readonly',
     RoundButtonOptions: 'readonly',
     SoundGeneratorOptions: 'readonly',
-    PathOptions: 'readonly'
+    PathOptions: 'readonly',
+    ColorDef: 'readonly'
   }
 };
