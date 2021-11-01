@@ -125,6 +125,10 @@ type NodeOptions = Partial<{
   transformBounds: boolean,
 }> & PhetioObjectOptions & ParallelDOMOptions;
 
+type CanvasNodeOptions = {
+  canvasBounds?: Bounds2;
+} & NodeOptions;
+
 type PaintableOptions = {
   fill?: PaintDef;
   fillPickable?: boolean;
