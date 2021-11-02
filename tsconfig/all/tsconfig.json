@@ -119,6 +119,12 @@
       "path": "../../../diffusion"
     },
     {
+      "path": "../../../dot"
+    },
+    {
+      "path": "../../../dot/tsconfig-tests.json"
+    },
+    {
       "path": "../../../eating-exercise-and-energy"
     },
     {
