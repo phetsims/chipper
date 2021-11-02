@@ -19,7 +19,8 @@ type PhetioObjectOptions = {
   phetioHighFrequency?: boolean,
   phetioDocumentation?: string,
   phetioReadOnly?: boolean,
-  phetioStudioControl?: boolean
+  phetioStudioControl?: boolean,
+  phetioState?: boolean
 };
 
 type PaintDef = Paint | Color | string | Property<null | string | Color>;
