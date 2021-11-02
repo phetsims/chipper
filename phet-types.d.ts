@@ -1,5 +1,6 @@
-/* eslint-disable */
 // Copyright 2021, University of Colorado Boulder
+/* eslint-disable */
+// @ts-nocheck
 
 /**
  * Ambient type declarations for PhET code.  Many of these definitions can be moved/disabled once the common code is
