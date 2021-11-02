@@ -22,19 +22,19 @@ const _ = require( 'lodash' ); // eslint-disable-line
 const puppeteer = require( 'puppeteer' );
 const withServer = require( '../common/withServer' );
 
+( async () => {
+
 // Identify the current repo
-const repo = process.cwd().split( path.sep ).pop();
+  const repo = process.cwd().split( path.sep ).pop();
 
 // Console logging via --console
-const commandLineArguments = process.argv.slice( 2 );
-const outputToConsole = commandLineArguments.indexOf( '--console' ) >= 0;
+  const commandLineArguments = process.argv.slice( 2 );
+  const outputToConsole = commandLineArguments.indexOf( '--console' ) >= 0;
 
 // Run lint tests if they exist in the checked-out SHAs.
-try {
-  const lint = require( '../../../chipper/js/grunt/lint' );
-  if ( lint.chipperAPIVersion === 'promises1' ) {
-
-    ( async () => {
+  try {
+    const lint = require( '../../../chipper/js/grunt/lint' );
+    if ( lint.chipperAPIVersion === 'promises1' ) {
 
       // lint() automatically filters out non-lintable repos
       const results = await lint( [ `../${repo}` ], {
@@ -50,54 +50,82 @@ try {
       }
 
       outputToConsole && console.log( `Linting passed with results.length: ${results.length}` );
-    } )();
+    }
+    else {
+      console.log( 'chipper/js/grunt/lint not compatible' );
+    }
   }
-  else {
-    console.log( 'chipper/js/grunt/lint not compatible' );
+  catch( e ) {
+    console.log( 'chipper/js/grunt/lint not found' );
   }
-}
-catch( e ) {
-  console.log( 'chipper/js/grunt/lint not found' );
-}
 
 // These sims don't have package.json or media that requires checking.
-const optOutOfReportMedia = [
-  'decaf',
-  'phet-android-app',
-  'babel',
-  'phet-info',
-  'phet-io-client-guides',
-  'phet-ios-app',
-  'sherpa',
-  'smithers',
-  'tasks',
-  'weddell'
-];
+  const optOutOfReportMedia = [
+    'decaf',
+    'phet-android-app',
+    'babel',
+    'phet-info',
+    'phet-io-client-guides',
+    'phet-ios-app',
+    'sherpa',
+    'smithers',
+    'tasks',
+    'weddell'
+  ];
 
 // Make sure license.json for images/audio is up-to-date
-if ( !optOutOfReportMedia.includes( repo ) ) {
-  try {
-    const reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
+  if ( !optOutOfReportMedia.includes( repo ) ) {
+    try {
+      const reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 
-    ( async () => {
       const success = await reportMedia( repo );
 
       // At the moment reportMedia uses grunt.fail, but we defensively use the return value here in case that changes.
       if ( !success ) {
         process.exit( 1 );
       }
-    } )();
+    }
+    catch( e ) {
+      console.log( 'chipper/js/grunt/reportMedia not found' );
+    }
+  }
+
+// Run typescript type checker if it exists in the checked-out shas
+  try {
+    const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
+    if ( isRepoTypeScript.apiVersion === '1.0' ) {
+      if ( isRepoTypeScript( repo ) ) {
+        const tsc = require( '../../../chipper/js/grunt/tsc' );
+        if ( tsc.apiVersion === '1.0' ) {
+          const results = await tsc( `../${repo}`, [] );
+          if ( results.code === 0 ) {
+            outputToConsole && console.log( 'tsc passed' );
+          }
+          else {
+            console.log( results );
+            process.exit( results.code );
+          }
+        }
+        else {
+          outputToConsole && console.log( 'chipper/js/grunt/tsc not compatible' );
+        }
+      }
+      else {
+        outputToConsole && console.log( 'skipping tsc for non-typescript repo' );
+      }
+    }
+    else {
+      outputToConsole && console.log( 'isRepoTypeScript not compatible' );
+    }
   }
   catch( e ) {
-    console.log( 'chipper/js/grunt/reportMedia not found' );
+    console.log( 'chipper/js/grunt/tsc not found' );
   }
-}
 
 // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
-try {
-  const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
-  if ( repo !== 'scenery' && repo !== 'phet-io-wrappers' ) { // scenery unit tests take too long, so skip those
-    ( async () => {
+  try {
+    const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
+    if ( repo !== 'scenery' && repo !== 'phet-io-wrappers' ) { // scenery unit tests take too long, so skip those
       const testFilePath = `${repo}/${repo}-tests.html`;
       const exists = fs.existsSync( `../${testFilePath}` );
       if ( exists ) {
@@ -117,46 +145,9 @@ try {
       }
 
       outputToConsole && console.log( 'no problems detected' );
-    } )();
-  }
-}
-catch( e ) {
-  console.log( e );
-}
-
-// Run typescript type checker if it exists in the checked-out shas
-try {
-  const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
-
-  if ( isRepoTypeScript.apiVersion === '1.0' ) {
-    if ( isRepoTypeScript( repo ) ) {
-
-      const tsc = require( '../../../chipper/js/grunt/tsc' );
-      if ( tsc.apiVersion === '1.0' ) {
-        ( async () => {
-          const results = await tsc( `../${repo}`, [] );
-
-          if ( results.code === 0 ) {
-            outputToConsole && console.log( 'tsc passed' );
-          }
-          else {
-            console.log( results );
-            process.exit( results.code );
-          }
-        } )();
-      }
-      else {
-        outputToConsole && console.log( 'chipper/js/grunt/tsc not compatible' );
-      }
-    }
-    else {
-      outputToConsole && console.log( 'skipping tsc for non-typescript repo' );
     }
   }
-  else {
-    outputToConsole && console.log( 'isRepoTypeScript not compatible' );
+  catch( e ) {
+    console.log( e );
   }
-}
-catch( e ) {
-  console.log( 'chipper/js/grunt/tsc not found' );
-}
+} )();
