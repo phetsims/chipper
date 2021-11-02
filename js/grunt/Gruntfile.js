@@ -141,38 +141,25 @@ module.exports = function( grunt ) {
       }
     } ) );
 
-  const reportTscResults = results => {
-    if ( ( results.stderr && results.stderr.length > 0 ) || results.code !== 0 ) {
-      grunt.fail.fatal( `tsc failed with code: ${results.code}
-stdout:
-${results.stdout}
-
-${results.stdout.split( '\n' ).length - 1} problems found.
-
-stderr:
-${results.stderr}` );
-    }
-    else {
-      grunt.log.ok( `TypeScript compilation complete: ${results.time}ms` );
-    }
-  };
-
   grunt.registerTask( 'output-js', 'Outputs JS just for the specified repo',
     wrapTask( async () => {
       const tsc = require( './tsc' );
-      reportTscResults( await tsc( '../chipper', [ '--project', `../${repo}` ] ) );
+      const reportTscResults = require( './reportTscResults' );
+      reportTscResults( await tsc( '../chipper', [ '--project', `../${repo}` ] ), grunt );
     } )
   );
   grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
     wrapTask( async () => {
       const tsc = require( './tsc' );
-      reportTscResults( await tsc( '../chipper', [ '--build', `../${repo}` ] ) );
+      const reportTscResults = require( './reportTscResults' );
+      reportTscResults( await tsc( '../chipper', [ '--build', `../${repo}` ] ), grunt );
     } )
   );
   grunt.registerTask( 'output-js-all', 'Outputs JS for all repos',
     wrapTask( async () => {
       const tsc = require( './tsc' );
-      reportTscResults( await tsc( '../chipper', [ '--build', '../chipper/tsconfig/all' ] ) );
+      const reportTscResults = require( './reportTscResults' );
+      reportTscResults( await tsc( '../chipper', [ '--build', '../chipper/tsconfig/all' ] ), grunt );
     } )
   );
 
@@ -199,6 +186,7 @@ ${results.stderr}` );
       const minify = require( './minify' );
       const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
       const tsc = require( './tsc' );
+      const reportTscResults = require( './reportTscResults' );
       const isTypeScript = isRepoTypeScript( repo );
       const path = require( 'path' );
       const fs = require( 'fs' );
@@ -229,7 +217,7 @@ ${results.stderr}` );
       // continues on the compiled javascript
       if ( isTypeScript ) {
         const results = await tsc( `../${repo}`, [ '--build' ] );
-        reportTscResults( results );
+        reportTscResults( results, grunt );
       }
 
       // standalone
@@ -552,6 +540,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
       const fs = require( 'fs' );
       const tsc = require( './tsc' );
+      const reportTscResults = require( './reportTscResults' );
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
 
@@ -566,7 +555,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       }
 
       for ( let i = 0; i < sims.length; i++ ) {
-        reportTscResults( await tsc( '../chipper', [ '--build', `../${sims[ i ]}` ] ) );
+        reportTscResults( await tsc( '../chipper', [ '--build', `../${sims[ i ]}` ] ), grunt );
       }
 
       const results = await generatePhetioMacroAPI( sims, {
