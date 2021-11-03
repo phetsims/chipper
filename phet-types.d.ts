@@ -127,6 +127,21 @@ type NodeOptions = Partial<{
   transformBounds: boolean,
 }> & PhetioObjectOptions & ParallelDOMOptions;
 
+type ScreenViewOptions = Partial<{
+  layoutBounds: Bounds2,
+  layerSplit: boolean,
+  excludeInvisible: boolean,
+  tandem: Tandem,
+  visiblePropertyOptions: {
+    phetioState: boolean,
+    phetioReadOnly: boolean
+  },
+  containerTagName: string,
+  tagName: string,
+  screenSummaryContent: Node|null,
+  includePDOMNodes: boolean
+}> & NodeOptions;
+
 type CanvasNodeOptions = {
   canvasBounds?: Bounds2;
 } & NodeOptions;
