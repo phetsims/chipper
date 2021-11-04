@@ -17,9 +17,12 @@ module.exports = function( context ) {
   // these are still MethodDefinition nodes, but don't require an annotation
   const exemptMethods = [ 'get', 'set', 'constructor' ];
 
+  // documentation-based annotations are not required in TypeScript files.
+  const isTypeScriptFile = context.getFilename().toLowerCase().endsWith( '.ts' );
+
   return {
     MethodDefinition: node => {
-      if ( !exemptMethods.includes( node.kind ) ) {
+      if ( !exemptMethods.includes( node.kind ) && !isTypeScriptFile ) {
         let includesAnnotation = false;
         const commentsBefore = context.getSourceCode().getCommentsBefore( node );
 
