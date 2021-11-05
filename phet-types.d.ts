@@ -146,6 +146,25 @@ type CanvasNodeOptions = {
   canvasBounds?: Bounds2;
 } & NodeOptions;
 
+type ThermometerNodeOptions = Partial<{
+  bulbDiameter: number,
+  tubeWidth: number,
+  tubeHeight: number,
+  lineWidth: number,
+  outlineStroke: ColorDef,
+  tickSpacing: number,
+  tickSpacingTemperature: number|null,
+  majorTickLength: number,
+  minorTickLength: number,
+  glassThickness: number,
+  zeroLevel: string,
+  backgroundFill: ColorDef,
+  fluidMainColor: ColorDef,
+  fluidHighlightColor: ColorDef,
+  fluidRightSideColor: ColorDef,
+  tandem: Tandem
+}> & NodeOptions;
+
 type PaintableOptions = {
   fill?: PaintDef;
   fillPickable?: boolean;

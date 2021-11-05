@@ -1033,6 +1033,7 @@ module.exports = {
     PhetioObjectOptions: 'readonly',
     NodeOptions: 'readonly',
     CanvasNodeOptions: 'readonly',
+    ThermometerNodeOptions: 'readonly',
     AccordionBoxOptions: 'readonly',
     CheckboxOptions: 'readonly',
     PanelOptions: 'readonly',
