@@ -307,11 +307,15 @@ const modulify = async repo => {
   // Create the namespace file, if it did not already exist
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
-    await createStringModule( repo );
+
+    const stringModuleFile = `../${repo}/js/${_.camelCase( repo )}Strings`;
+    if ( !( fs.existsSync( `${stringModuleFile}.js` ) || fs.existsSync( `${stringModuleFile}.ts` ) ) ) {
+      await createStringModule( repo );
+    }
 
     const namespace = _.camelCase( repo );
-    const namespaceFile = `../${repo}/js/${namespace}.js`;
-    if ( !fs.existsSync( namespaceFile ) ) {
+    const namespaceFilePrefix = `../${repo}/js/${namespace}`;
+    if ( !( fs.existsSync( `${namespaceFilePrefix}.js` ) || fs.existsSync( `${namespaceFilePrefix}.ts` ) ) ) {
       await createNamespaceModule( repo );
     }
   }
