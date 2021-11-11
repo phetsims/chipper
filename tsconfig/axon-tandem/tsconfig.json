@@ -1,3 +1,11 @@
+/**
+* Axon and Tandem reference each other and hence cannot be built separately.  Therefore we combine them and build them
+* together.  They also pull in files from another few repos, see the "include" for details.
+*
+* Please see https://github.com/phetsims/chipper/issues/1055 and https://github.com/phetsims/chipper/issues/1052
+*
+* @author Sam Reid (PhET Interactive Simulations)
+*/
 {
   "extends": "../../tsconfig-core.json",
   "references": [
