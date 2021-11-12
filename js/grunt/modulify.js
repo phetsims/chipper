@@ -16,6 +16,7 @@ const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const os = require( 'os' );
 const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedFile' );
 const getCopyrightLine = require( './getCopyrightLine' );
+const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 
 // disable lint in compiled files, because it increases the linting time
 const HEADER = '/* eslint-disable */';
@@ -242,9 +243,18 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
  * @param {string} repo
  */
 const createStringModule = async repo => {
+
+  const isTypeScript = isRepoTypeScript( repo );
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-  const stringModuleFile = `../${repo}/js/${_.camelCase( repo )}Strings.js`;
+  const stringModuleFileJS = `../${repo}/js/${_.camelCase( repo )}Strings.js`;
+  const stringModuleFileTS = `../${repo}/js/${_.camelCase( repo )}Strings.ts`;
   const namespace = _.camelCase( repo );
+
+  if ( isTypeScript && fs.existsSync( stringModuleFileJS ) ) {
+    console.log( 'Found JS string file in TS repo.  It should be deleted manually.  ' + stringModuleFileJS );
+  }
+
+  const stringModuleFile = isTypeScript ? stringModuleFileTS : stringModuleFileJS;
 
   const copyrightLine = await getCopyrightLine( repo, `js/${_.camelCase( repo )}Strings.js` );
   fs.writeFileSync( stringModuleFile, fixEOL(
@@ -253,16 +263,71 @@ const createStringModule = async repo => {
 /**
  * Auto-generated from modulify, DO NOT manually modify.
  */
-
+${isTypeScript ? '/* eslint-disable */' : ''}
 import getStringModule from '../../chipper/js/getStringModule.js';
-import ${namespace} from './${namespace}.js';
+import ${namespace} from './${namespace}.js';${
+      isTypeScript ? `
 
-const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' );
+type StringsType = ${getStringTypes( repo )};` : ''
+    }
+
+const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' )${isTypeScript ? ' as StringsType' : ''};
 
 ${namespace}.register( '${namespace}Strings', ${namespace}Strings );
 
 export default ${namespace}Strings;
 ` ) );
+};
+
+/**
+ * Creates a *.d.ts file that represents the types of the strings for the repo.
+ * @public
+ *
+ * @param {string} repo
+ */
+const getStringTypes = repo => {
+  const json = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
+
+  // Track paths to all the keys with values.
+  const all = [];
+
+  // Recursively collect all of the paths to keys with values.
+  const visit = ( level, path ) => {
+    Object.keys( level ).forEach( key => {
+      if ( level[ key ].value && typeof level[ key ].value === 'string' ) {
+        all.push( { path: [ ...path, key ], value: level[ key ].value } );
+      }
+      else {
+        visit( level[ key ], [ ...path, key ] );
+      }
+    } );
+  };
+  visit( json, [] );
+
+  // Transform to a new structure that matches the types we access at runtime.
+  const structure = {};
+  for ( let i = 0; i < all.length; i++ ) {
+    const allElement = all[ i ];
+    const path = allElement.path;
+    let level = structure;
+    for ( let k = 0; k < path.length; k++ ) {
+      const pathElement = path[ k ];
+      const tokens = pathElement.split( '.' );
+      for ( let m = 0; m < tokens.length; m++ ) {
+        const token = tokens[ m ];
+        if ( k === path.length - 1 && m === tokens.length - 1 ) {
+          level[ token ] = '{{STRING}}'; // instead of value = allElement.value
+        }
+        else {
+          level[ token ] = level[ token ] || {};
+          level = level[ token ];
+        }
+      }
+    }
+  }
+
+  const text = JSON.stringify( structure, null, 2 );
+  return replace( replace( text, '"', '\'' ), '\'{{STRING}}\'', 'string' );
 };
 
 /**
@@ -304,15 +369,14 @@ const modulify = async repo => {
     await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename );
   }
 
-  // Create the namespace file, if it did not already exist
+
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
 
-    const stringModuleFile = `../${repo}/js/${_.camelCase( repo )}Strings`;
-    if ( !( fs.existsSync( `${stringModuleFile}.js` ) || fs.existsSync( `${stringModuleFile}.ts` ) ) ) {
-      await createStringModule( repo );
-    }
+    // Update the strings module file
+    await createStringModule( repo );
 
+    // Create the namespace file, if it did not already exist
     const namespace = _.camelCase( repo );
     const namespaceFilePrefix = `../${repo}/js/${namespace}`;
     if ( !( fs.existsSync( `${namespaceFilePrefix}.js` ) || fs.existsSync( `${namespaceFilePrefix}.ts` ) ) ) {
