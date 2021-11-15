@@ -134,7 +134,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const thirdPartyEntries = getAllThirdPartyEntries( repo, brand, licenseEntries );
   const simTitleStringKey = getTitleStringKey( repo );
 
-  const stringMap = getStringMap( allLocales, phetLibs, webpackResult.usedModules );
+  const stringMap = getStringMap( repo, allLocales, phetLibs, webpackResult.usedModules );
 
   // After our string map is constructed, report which of the translatable strings are unused.
   reportUnusedStrings( repo, packageObject.phet.requirejsNamespace, stringMap[ ChipperConstants.FALLBACK_LOCALE ] );

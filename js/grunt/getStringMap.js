@@ -72,13 +72,14 @@ const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
 };
 
 /**
+ * @param {string} mainRepo
  * @param {Array.<string>} locales
  * @param {Array.<string>} phetLibs - Used to check for bad string dependencies
  * @param {Array.<string>} usedModules - relative file path of the module (filename) from the repos root
  *
  * @returns {Object} - map[locale][stringKey] => {string}
  */
-module.exports = function( locales, phetLibs, usedModules ) {
+module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
 
   assert( locales.indexOf( ChipperConstants.FALLBACK_LOCALE ) !== -1, 'fallback locale is required' );
 
@@ -147,6 +148,8 @@ module.exports = function( locales, phetLibs, usedModules ) {
     stringMap[ locale ] = {};
   } );
 
+  const isTypeScript = isRepoTypeScript( mainRepo );
+
   // combine our strings into [locale][stringKey] map, using the fallback locale where necessary. In regards to nested
   // strings, this data structure doesn't nest. Instead it gets nested string values, and then sets them with the
   // flat key string like `"FRICTION/a11y.some.string.here": { value: 'My Some String' }`
@@ -187,8 +190,6 @@ module.exports = function( locales, phetLibs, usedModules ) {
 
     // Strip off our prefixes, so our stringAccesses will have things like `'ResetAllButton.name'` inside.
     stringAccesses = _.uniq( stringAccesses ).map( str => str.slice( prefix.length ) );
-
-    const isTypeScript = isRepoTypeScript( repo );
 
     // The JS outputted by TS is minified and missing the whitespace
     const depth = isTypeScript ? 2 : 3;
