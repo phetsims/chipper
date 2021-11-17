@@ -50,7 +50,7 @@ module.exports = function( context ) {
     // Prevent accidental importing of files from the TypeScript build output directory
     'chipper/dist',
 
-    // Relying on these in sim code can break playback, see https://github.com/phetsims/joist/issues/768
+    // Relying on these in sim code can break PhET-iO playback, instead use Sim.dimensionProperty, see https://github.com/phetsims/joist/issues/768
     'window.innerWidth',
     'window.innerHeight',
 
