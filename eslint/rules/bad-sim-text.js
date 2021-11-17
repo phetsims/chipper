@@ -50,6 +50,10 @@ module.exports = function( context ) {
     // Prevent accidental importing of files from the TypeScript build output directory
     'chipper/dist',
 
+    // Relying on these in sim code can break playback, see https://github.com/phetsims/joist/issues/768
+    'window.innerWidth',
+    'window.innerHeight',
+
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     {
       id: 'setTimeout(',
