@@ -221,7 +221,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     // Special handling for studio paths since it is not nested under phet-io-wrappers
     if ( abspath.indexOf( 'studio/index.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '<script src="../contrib/', '<script src="../../contrib/' );
-      contents = ChipperStringUtils.replaceAll( contents, '<script type="module" src="js/studio-main.js"></script>',
+      contents = ChipperStringUtils.replaceAll( contents, '<script type="module" src="../chipper/dist/studio/js/studio-main.js"></script>',
         `<script src="./${STUDIO_BUILT_FILENAME}"></script>` );
     }
 
