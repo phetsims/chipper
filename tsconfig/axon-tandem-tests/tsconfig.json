@@ -10,19 +10,11 @@
   "extends": "../../tsconfig-core.json",
   "references": [
     {
-      "path": "../../../phet-core/tsconfig.json"
+      "path": "../../../joist"
     }
   ],
   "include": [
-    "../../../axon/js/**/*",
-    "../../../tandem/js/**/*",
-    "../../../phet-core/js/EnumerationIO.js",
-    "../../../dot/js/Range.js",
-    "../../../dot/js/dot.js",
-    "../../phet-types.d.ts"
-  ],
-  "exclude": [
-    "../../../**/*test*",
-    "../../../tandem/js/**/*test*"
+    "../../../tandem/js/**/*test*",
+    "../../../axon/js/**/*test*"
   ]
 }

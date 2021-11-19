@@ -26,6 +26,12 @@
       "path": "../../../atomic-interactions"
     },
     {
+      "path": "../axon-tandem"
+    },
+    {
+      "path": "../axon-tandem-tests"
+    },
+    {
       "path": "../../../balancing-act"
     },
     {
