@@ -347,6 +347,12 @@
       "path": "../../../scenery-phet"
     },
     {
+      "path": "../../../scenery-phet/tsconfig-demo.json"
+    },
+    {
+      "path": "../../../scenery-phet/tsconfig-tests.json"
+    },
+    {
       "path": "../../../simula-rasa"
     },
     {
