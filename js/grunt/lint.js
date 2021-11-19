@@ -4,6 +4,7 @@
  * Runs the lint rules on the specified files.
  *
  * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
 
