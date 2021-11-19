@@ -92,30 +92,19 @@ const withServer = require( '../common/withServer' );
 
 // Run typescript type checker if it exists in the checked-out shas
   try {
-    const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
-    if ( isRepoTypeScript.apiVersion === '1.0' ) {
-      if ( isRepoTypeScript( repo ) ) {
-        const tsc = require( '../../../chipper/js/grunt/tsc' );
-        if ( tsc.apiVersion === '1.0' ) {
-          const results = await tsc( `../${repo}`, [] );
-          if ( results.code === 0 ) {
-            outputToConsole && console.log( 'tsc passed' );
-          }
-          else {
-            console.log( results );
-            process.exit( results.code );
-          }
-        }
-        else {
-          outputToConsole && console.log( 'chipper/js/grunt/tsc not compatible' );
-        }
+    const tsc = require( '../../../chipper/js/grunt/tsc' );
+    if ( tsc.apiVersion === '1.0' ) {
+      const results = await tsc( `../${repo}`, [] );
+      if ( results.code === 0 ) {
+        outputToConsole && console.log( 'tsc passed' );
       }
       else {
-        outputToConsole && console.log( 'skipping tsc for non-typescript repo' );
+        console.log( results );
+        process.exit( results.code );
       }
     }
     else {
-      outputToConsole && console.log( 'isRepoTypeScript not compatible' );
+      outputToConsole && console.log( 'chipper/js/grunt/tsc not compatible' );
     }
   }
   catch( e ) {
