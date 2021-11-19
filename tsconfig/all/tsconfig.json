@@ -368,6 +368,12 @@
       "path": "../../../sun"
     },
     {
+      "path": "../../../sun/tsconfig-demo.json"
+    },
+    {
+      "path": "../../../sun/tsconfig-tests.json"
+    },
+    {
       "path": "../../../tambo"
     },
     {
