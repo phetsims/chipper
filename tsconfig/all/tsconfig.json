@@ -377,6 +377,9 @@
       "path": "../../../tambo"
     },
     {
+      "path": "../../../tambo/tsconfig-demo.json"
+    },
+    {
       "path": "../../../tappi"
     },
     {
