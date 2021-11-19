@@ -389,6 +389,9 @@
       "path": "../../../twixt"
     },
     {
+      "path": "../../../twixt/tsconfig-all.json"
+    },
+    {
       "path": "../../../under-pressure"
     },
     {
