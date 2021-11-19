@@ -10,7 +10,6 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const localeInfo = require( '../data/localeInfo' ); // Locale information
@@ -148,8 +147,6 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
     stringMap[ locale ] = {};
   } );
 
-  const isTypeScript = isRepoTypeScript( mainRepo );
-
   // combine our strings into [locale][stringKey] map, using the fallback locale where necessary. In regards to nested
   // strings, this data structure doesn't nest. Instead it gets nested string values, and then sets them with the
   // flat key string like `"FRICTION/a11y.some.string.here": { value: 'My Some String' }`
@@ -192,7 +189,7 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
     stringAccesses = _.uniq( stringAccesses ).map( str => str.slice( prefix.length ) );
 
     // The JS outputted by TS is minified and missing the whitespace
-    const depth = isTypeScript ? 2 : 3;
+    const depth = 2;
 
     // Turn each string access into an array of parts, e.g. '.ResetAllButton.name' => [ 'ResetAllButton', 'name' ]
     // or '[ \'A\' ].B[ \'C\' ]' => [ 'A', 'B', 'C' ]

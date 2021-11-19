@@ -15,10 +15,8 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
-
 // modules
 const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
-const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 const grunt = require( 'grunt' );
 
 /**
@@ -26,8 +24,6 @@ const grunt = require( 'grunt' );
  * @param {Array.<string>} usedModules - Used modules within the repo
  */
 module.exports = ( repo, usedModules ) => {
-
-  const isTypeScript = isRepoTypeScript( repo );
 
   // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
   const normalizedUsedModules = usedModules.map( module => module.split( '\\' ).join( '/' ) );
@@ -45,7 +41,7 @@ module.exports = ( repo, usedModules ) => {
                          `${repo}/${mediaType}/${filename}`;
 
           // If no licenseEntries were registered, or some were registered but not one corresponding to this file
-          if ( !normalizedUsedModules.includes( isTypeScript ? `chipper/dist/${module}` : module ) ) {
+          if ( !normalizedUsedModules.includes( `chipper/dist/${module}` ) ) {
             grunt.log.warn( `Unused ${mediaType} module: ${module}` );
           }
         }

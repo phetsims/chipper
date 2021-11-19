@@ -24,7 +24,6 @@ const minify = require( '../grunt/minify' );
 const marked = require( 'marked' );
 const tsc = require( './tsc' );
 const reportTscResults = require( './reportTscResults' );
-const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -544,10 +543,8 @@ const handleStudio = async wrappersLocation => {
 
   grunt.log.debug( 'building studio' );
 
-  if ( isRepoTypeScript( 'studio' ) ) {
-    const results = await tsc( '../studio', [ '--build' ] );
-    reportTscResults( results, grunt );
-  }
+  const results = await tsc( '../studio', [ '--build' ] );
+  reportTscResults( results, grunt );
 
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {} ) );
 };

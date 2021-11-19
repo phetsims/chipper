@@ -9,7 +9,6 @@
 
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );
-const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
@@ -58,7 +57,6 @@ const getRelativeModules = modules => {
  * @returns {Promise.<string>} - The combined JS output from the process
  */
 module.exports = function( repo, brand ) {
-  const isTypeScript = isRepoTypeScript( repo );
   return new Promise( ( resolve, reject ) => {
     // Create plugins to ignore brands that we are not building at this time. Here "resource" is the module getting
     // imported, and "context" is the directory that holds the module doing the importing. This is split up because
@@ -89,7 +87,7 @@ module.exports = function( repo, brand ) {
 
       // Simulations or runnables will have a single entry point
       entry: {
-        repo: isTypeScript ? `../chipper/dist/${repo}/js/${repo}-main.js` : `../${repo}/js/${repo}-main.js`
+        repo: `../chipper/dist/${repo}/js/${repo}-main.js`
       },
 
       // We output our builds to chipper/build/

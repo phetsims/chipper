@@ -16,7 +16,6 @@ const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const os = require( 'os' );
 const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedFile' );
 const getCopyrightLine = require( './getCopyrightLine' );
-const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 
 // disable lint in compiled files, because it increases the linting time
 const HEADER = '/* eslint-disable */';
@@ -244,17 +243,16 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
  */
 const createStringModule = async repo => {
 
-  const isTypeScript = isRepoTypeScript( repo );
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const stringModuleFileJS = `../${repo}/js/${_.camelCase( repo )}Strings.js`;
   const stringModuleFileTS = `../${repo}/js/${_.camelCase( repo )}Strings.ts`;
   const namespace = _.camelCase( repo );
 
-  if ( isTypeScript && fs.existsSync( stringModuleFileJS ) ) {
+  if ( fs.existsSync( stringModuleFileJS ) ) {
     console.log( 'Found JS string file in TS repo.  It should be deleted manually.  ' + stringModuleFileJS );
   }
 
-  const stringModuleFile = isTypeScript ? stringModuleFileTS : stringModuleFileJS;
+  const stringModuleFile = stringModuleFileTS;
 
   const copyrightLine = await getCopyrightLine( repo, `js/${_.camelCase( repo )}Strings.js` );
   fs.writeFileSync( stringModuleFile, fixEOL(
@@ -263,15 +261,13 @@ const createStringModule = async repo => {
 /**
  * Auto-generated from modulify, DO NOT manually modify.
  */
-${isTypeScript ? '/* eslint-disable */' : ''}
+/* eslint-disable */
 import getStringModule from '../../chipper/js/getStringModule.js';
-import ${namespace} from './${namespace}.js';${
-      isTypeScript ? `
+import ${namespace} from './${namespace}.js';
 
-type StringsType = ${getStringTypes( repo )};` : ''
-    }
+type StringsType = ${getStringTypes( repo )};
 
-const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' )${isTypeScript ? ' as StringsType' : ''};
+const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' ) as StringsType;
 
 ${namespace}.register( '${namespace}Strings', ${namespace}Strings );
 

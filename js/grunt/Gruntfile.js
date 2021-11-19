@@ -184,10 +184,8 @@ module.exports = function( grunt ) {
       const buildStandalone = require( './buildStandalone' );
       const buildRunnable = require( './buildRunnable' );
       const minify = require( './minify' );
-      const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
       const tsc = require( './tsc' );
       const reportTscResults = require( './reportTscResults' );
-      const isTypeScript = isRepoTypeScript( repo );
       const path = require( 'path' );
       const fs = require( 'fs' );
 
@@ -212,13 +210,10 @@ module.exports = function( grunt ) {
 
       const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-      // If the entry-point repo is marked for typescript, enable the typescript build chain.
       // This begins with compiling the typescript into javascript, then the rest of the build process
       // continues on the compiled javascript
-      if ( isTypeScript ) {
-        const results = await tsc( `../${repo}`, [ '--build' ] );
-        reportTscResults( results, grunt );
-      }
+      const results = await tsc( `../${repo}`, [ '--build' ] );
+      reportTscResults( results, grunt );
 
       // standalone
       if ( repoPackageObject.phet.buildStandalone ) {

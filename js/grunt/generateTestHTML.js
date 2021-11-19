@@ -9,7 +9,6 @@
 
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
-const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoTypeScript' );
 
 /**
  * @param {string} repo
@@ -17,7 +16,6 @@ const isRepoTypeScript = require( '../../../perennial-alias/js/common/isRepoType
  * @returns {Promise.<undefined>}
  */
 module.exports = async ( repo, options ) => {
-  const isTypeScript = isRepoTypeScript( repo );
   await generateDevelopmentHTML( repo, _.merge( {
 
     // Include QUnit CSS
@@ -38,7 +36,7 @@ module.exports = async ( repo, options ) => {
     // Do not show the splash screen
     stripPreloads: [ '../joist/js/splash.js' ],
 
-    mainFile: isTypeScript ? `../chipper/dist/${repo}/js/${repo}-tests.js` : `js/${repo}-tests.js`,
+    mainFile: `../chipper/dist/${repo}/js/${repo}-tests.js`,
 
     // Specify to use test config
     qualifier: 'test-',
