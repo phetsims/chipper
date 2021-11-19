@@ -248,6 +248,9 @@
       "path": "../../../joist"
     },
     {
+      "path": "../../../joist/tsconfig-all.json"
+    },
+    {
       "path": "../../../least-squares-regression"
     },
     {
