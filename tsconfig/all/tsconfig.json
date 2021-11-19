@@ -407,6 +407,9 @@
       "path": "../../../vegas"
     },
     {
+      "path": "../../../vegas/tsconfig-all.json"
+    },
+    {
       "path": "../../../vibe"
     },
     {
