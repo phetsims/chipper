@@ -11,18 +11,6 @@
 declare var assert: undefined | ( ( x: any, s?: string ) => void );
 declare var phet: any;
 
-// Placeholder until we can use TypeScript in common code
-type PhetioObjectOptions = {
-  tandem?: Tandem,
-  phetioDynamicElement?: boolean,
-  phetioType?: IOType,
-  phetioHighFrequency?: boolean,
-  phetioDocumentation?: string,
-  phetioReadOnly?: boolean,
-  phetioStudioControl?: boolean,
-  phetioState?: boolean
-};
-
 type PaintDef = Paint | Color | string | Property<null | string | Color>;
 type ColorDef = Color | string | null | Property<null | string | Color>;
 
@@ -125,7 +113,22 @@ type NodeOptions = Partial<{
   touchArea: Bounds2 | Shape | null,
   clipArea: Shape | null,
   transformBounds: boolean,
-}> & PhetioObjectOptions & ParallelDOMOptions;
+
+  // from PhetioObject.  Delete when this is moved to core code
+  tandem?: Tandem;
+  phetioType?: IOType;
+  phetioState?: boolean;
+  phetioReadOnly?: boolean;
+  phetioEventType?: any;
+  phetioDocumentation?: string;
+  phetioHighFrequency?: boolean;
+  phetioPlayback?: boolean;
+  phetioStudioControl?: boolean;
+  phetioFeatured?: boolean;
+  phetioEventMetadata?: any;
+  phetioDynamicElement?: boolean;
+  phetioDesigned?: boolean;
+}> & ParallelDOMOptions;
 
 type ScreenViewOptions = Partial<{
   layoutBounds: Bounds2,
@@ -138,7 +141,7 @@ type ScreenViewOptions = Partial<{
   },
   containerTagName: string,
   tagName: string,
-  screenSummaryContent: Node|null,
+  screenSummaryContent: Node | null,
   includePDOMNodes: boolean
 }> & NodeOptions;
 
@@ -153,7 +156,7 @@ type ThermometerNodeOptions = Partial<{
   lineWidth: number,
   outlineStroke: ColorDef,
   tickSpacing: number,
-  tickSpacingTemperature: number|null,
+  tickSpacingTemperature: number | null,
   majorTickLength: number,
   minorTickLength: number,
   glassThickness: number,
