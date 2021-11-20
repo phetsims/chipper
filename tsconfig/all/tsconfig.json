@@ -320,6 +320,9 @@
       "path": "../../../ph-scale-basics"
     },
     {
+      "path": "../../../phet-io/tsconfig.json"
+    },
+    {
       "path": "../../../phet-io-test-sim"
     },
     {
