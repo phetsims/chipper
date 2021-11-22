@@ -397,7 +397,7 @@
       "path": "../../../sun/tsconfig-module.json"
     },
     {
-      "path": "../../../tambo"
+      "path": "../../../tambo/tsconfig-module.json"
     },
     {
       "path": "../../../tambo/tsconfig-demo.json"
