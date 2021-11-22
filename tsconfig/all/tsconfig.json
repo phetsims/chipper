@@ -256,7 +256,7 @@
       "path": "../../../john-travoltage"
     },
     {
-      "path": "../../../joist"
+      "path": "../../../joist/tsconfig-module.json"
     },
     {
       "path": "../../../joist/tsconfig-all.json"
