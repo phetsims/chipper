@@ -346,6 +346,9 @@
       "path": "../../../phet-io/tsconfig.json"
     },
     {
+      "path": "../../../phetcommon/tsconfig.json"
+    },
+    {
       "path": "../../../plinko-probability"
     },
     {
