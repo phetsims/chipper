@@ -370,13 +370,10 @@
       "path": "../../../rutherford-scattering"
     },
     {
+      "path": "../../../scenery-phet/tsconfig.json"
+    },
+    {
       "path": "../../../scenery-phet/tsconfig-module.json"
-    },
-    {
-      "path": "../../../scenery-phet/tsconfig.json"
-    },
-    {
-      "path": "../../../scenery-phet/tsconfig.json"
     },
     {
       "path": "../../../shred"
@@ -394,13 +391,10 @@
       "path": "../../../studio"
     },
     {
+      "path": "../../../sun/tsconfig.json"
+    },
+    {
       "path": "../../../sun/tsconfig-module.json"
-    },
-    {
-      "path": "../../../sun/tsconfig-demo.json"
-    },
-    {
-      "path": "../../../sun/tsconfig-tests.json"
     },
     {
       "path": "../../../tambo"
