@@ -130,10 +130,10 @@
       "path": "../../../diffusion"
     },
     {
-      "path": "../../../dot/tsconfig-module.json"
+      "path": "../../../dot/tsconfig.json"
     },
     {
-      "path": "../../../dot/tsconfig-tests.json"
+      "path": "../../../dot/tsconfig-module.json"
     },
     {
       "path": "../../../eating-exercise-and-energy"
