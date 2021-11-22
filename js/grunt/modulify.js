@@ -14,7 +14,6 @@ const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const os = require( 'os' );
-const updateCopyrightForGeneratedFile = require( './updateCopyrightForGeneratedFile' );
 const getCopyrightLine = require( './getCopyrightLine' );
 
 // disable lint in compiled files, because it increases the linting time
@@ -252,10 +251,8 @@ const createStringModule = async repo => {
     console.log( 'Found JS string file in TS repo.  It should be deleted manually.  ' + stringModuleFileJS );
   }
 
-  const stringModuleFile = stringModuleFileTS;
-
-  const copyrightLine = await getCopyrightLine( repo, `js/${_.camelCase( repo )}Strings.js` );
-  fs.writeFileSync( stringModuleFile, fixEOL(
+  const copyrightLine = await getCopyrightLine( repo, `js/${_.camelCase( repo )}Strings.ts` );
+  fs.writeFileSync( stringModuleFileTS, fixEOL(
     `${copyrightLine}
 
 /**
@@ -327,29 +324,6 @@ const getStringTypes = repo => {
 };
 
 /**
- * Creates the namespace module at js/${_.camelCase( repo )}.js for repos that need it.
- * @public
- *
- * @param {string} repo
- */
-const createNamespaceModule = async repo => {
-  const namespace = _.camelCase( repo );
-  const namespaceFile = `../${repo}/js/${namespace}.js`;
-  fs.writeFileSync( namespaceFile, fixEOL( `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder
-
-/**
- * Creates the namespace for this simulation.
- */
-
-// modules
-import Namespace from '../../phet-core/js/Namespace.js';
-
-export default new Namespace( '${namespace}' );
-` ) );
-  await updateCopyrightForGeneratedFile( repo, namespaceFile );
-};
-
-/**
  * Entry point for modulify, which transforms all of the resources in a repo to *.js files.
  * @param {string} repo - the name of a repo, such as 'joist'
  */
@@ -371,13 +345,6 @@ const modulify = async repo => {
 
     // Update the strings module file
     await createStringModule( repo );
-
-    // Create the namespace file, if it did not already exist
-    const namespace = _.camelCase( repo );
-    const namespaceFilePrefix = `../${repo}/js/${namespace}`;
-    if ( !( fs.existsSync( `${namespaceFilePrefix}.js` ) || fs.existsSync( `${namespaceFilePrefix}.ts` ) ) ) {
-      await createNamespaceModule( repo );
-    }
   }
 };
 
