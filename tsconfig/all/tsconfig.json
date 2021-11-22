@@ -130,7 +130,7 @@
       "path": "../../../diffusion"
     },
     {
-      "path": "../../../dot"
+      "path": "../../../dot/tsconfig-module.json"
     },
     {
       "path": "../../../dot/tsconfig-tests.json"
