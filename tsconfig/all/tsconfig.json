@@ -412,10 +412,10 @@
       "path": "../../../trig-tour"
     },
     {
-      "path": "../../../twixt/tsconfig-module.json"
+      "path": "../../../twixt/tsconfig.json"
     },
     {
-      "path": "../../../twixt/tsconfig-all.json"
+      "path": "../../../twixt/tsconfig-module.json"
     },
     {
       "path": "../../../under-pressure"
