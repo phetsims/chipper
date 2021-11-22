@@ -370,7 +370,7 @@
       "path": "../../../rutherford-scattering"
     },
     {
-      "path": "../../../scenery-phet"
+      "path": "../../../scenery-phet/tsconfig-module.json"
     },
     {
       "path": "../../../scenery-phet/tsconfig-demo.json"
