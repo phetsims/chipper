@@ -262,6 +262,9 @@
       "path": "../../../joist/tsconfig.json"
     },
     {
+      "path": "../../../kite/tsconfig.json"
+    },
+    {
       "path": "../../../kite/tsconfig-module.json"
     },
     {
