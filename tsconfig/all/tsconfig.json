@@ -412,7 +412,7 @@
       "path": "../../../trig-tour"
     },
     {
-      "path": "../../../twixt"
+      "path": "../../../twixt/tsconfig-module.json"
     },
     {
       "path": "../../../twixt/tsconfig-all.json"
