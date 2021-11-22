@@ -397,10 +397,10 @@
       "path": "../../../sun/tsconfig-module.json"
     },
     {
-      "path": "../../../tambo/tsconfig-module.json"
+      "path": "../../../tambo/tsconfig.json"
     },
     {
-      "path": "../../../tambo/tsconfig-demo.json"
+      "path": "../../../tambo/tsconfig-module.json"
     },
     {
       "path": "../../../tangible"
