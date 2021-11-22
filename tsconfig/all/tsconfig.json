@@ -373,10 +373,10 @@
       "path": "../../../scenery-phet/tsconfig-module.json"
     },
     {
-      "path": "../../../scenery-phet/tsconfig-demo.json"
+      "path": "../../../scenery-phet/tsconfig.json"
     },
     {
-      "path": "../../../scenery-phet/tsconfig-tests.json"
+      "path": "../../../scenery-phet/tsconfig.json"
     },
     {
       "path": "../../../shred"
@@ -394,7 +394,7 @@
       "path": "../../../studio"
     },
     {
-      "path": "../../../sun"
+      "path": "../../../sun/tsconfig-module.json"
     },
     {
       "path": "../../../sun/tsconfig-demo.json"
