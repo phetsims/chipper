@@ -91,25 +91,33 @@ const withServer = require( '../common/withServer' );
   }
 
 // Run typescript type checker if it exists in the checked-out shas
-  try {
-    const tsc = require( '../../../chipper/js/grunt/tsc' );
-    if ( tsc.apiVersion === '1.0' ) {
-      const results = await tsc( `../${repo}`, [] );
-      if ( results.code === 0 ) {
-        outputToConsole && console.log( 'tsc passed' );
+  if ( fs.existsSync( `../${repo}/tsconfig.json` ) ) {
+    try {
+
+
+      const tsc = require( '../../../chipper/js/grunt/tsc' );
+      if ( tsc.apiVersion === '1.0' ) {
+        const results = await tsc( `../${repo}`, [] );
+        if ( results.code === 0 ) {
+          outputToConsole && console.log( 'tsc passed' );
+        }
+        else {
+          console.log( results );
+          process.exit( results.code );
+        }
       }
       else {
-        console.log( results );
-        process.exit( results.code );
+        outputToConsole && console.log( 'chipper/js/grunt/tsc not compatible' );
       }
     }
-    else {
-      outputToConsole && console.log( 'chipper/js/grunt/tsc not compatible' );
+    catch( e ) {
+      console.log( 'chipper/js/grunt/tsc not found' );
     }
   }
-  catch( e ) {
-    console.log( 'chipper/js/grunt/tsc not found' );
+  else {
+    outputToConsole && console.log( 'tsconfig.json not found, skipping tsc' );
   }
+
 
 // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
   try {
