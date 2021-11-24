@@ -31,6 +31,12 @@
       "path": "../../../atomic-interactions"
     },
     {
+      "path": "../../../axon/tsconfig.json"
+    },
+    {
+      "path": "../../../axon/tsconfig-module.json"
+    },
+    {
       "path": "../../../balancing-act"
     },
     {
@@ -415,6 +421,12 @@
       "path": "../../../tambo/tsconfig-module.json"
     },
     {
+      "path": "../../../tandem/tsconfig.json"
+    },
+    {
+      "path": "../../../tandem/tsconfig-module.json"
+    },
+    {
       "path": "../../../tangible"
     },
     {
@@ -464,12 +476,6 @@
     },
     {
       "path": "../../../xray-diffraction"
-    },
-    {
-      "path": "../axon-tandem"
-    },
-    {
-      "path": "../axon-tandem-tests"
     }
   ],
   "include": [
