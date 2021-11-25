@@ -9,6 +9,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 declare var assert: undefined | ( ( x: any, s?: string ) => void );
+declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
+declare var sceneryLog: undefined | any;
 declare var phet: any;
 
 type PaintDef = Paint | Color | string | Property<null | string | Color>;
@@ -53,7 +55,7 @@ type ParallelDOMOptions = Partial<{
 }>;
 
 // Placeholder until we can use TypeScript in common code
-type NodeOptions = Partial<{
+type _NodeOptions = Partial<{
 
   children: any[], // TODO: importing Node in phet-types.d.ts creates a cycle.  We will need to separate files
   cursor: string | null,
@@ -143,11 +145,11 @@ type ScreenViewOptions = Partial<{
   tagName: string,
   screenSummaryContent: Node | null,
   includePDOMNodes: boolean
-}> & NodeOptions;
+}> & _NodeOptions;
 
 type CanvasNodeOptions = {
   canvasBounds?: Bounds2;
-} & NodeOptions;
+} & _NodeOptions;
 
 type ThermometerNodeOptions = Partial<{
   bulbDiameter: number,
@@ -166,7 +168,7 @@ type ThermometerNodeOptions = Partial<{
   fluidHighlightColor: ColorDef,
   fluidRightSideColor: ColorDef,
   tandem: Tandem
-}> & NodeOptions;
+}> & _NodeOptions;
 
 type PaintableOptions = {
   fill?: PaintDef;
@@ -182,8 +184,6 @@ type PaintableOptions = {
   cachedPaints?: PaintDef;
 };
 
-type PathOptions = PaintableOptions & NodeOptions;
-
 type PanelOptions = Partial<{
   fill: string | Color,
   stroke: string | Color,
@@ -197,7 +197,7 @@ type PanelOptions = Partial<{
   align: 'left' | 'right' | 'center',
   minWidth: number,
   tandem: Tandem
-}> & NodeOptions;
+}> & _NodeOptions;
 
 type ButtonNodeOptions = {
   content?: null,
@@ -209,9 +209,9 @@ type ButtonNodeOptions = {
   yContentOffset?: number,
   baseColor?: ColorDef,
   disabledColor?: ColorDef,
-} & NodeOptions & PaintableOptions;
+} & _NodeOptions & PaintableOptions;
 
-type RectangleOptions = NodeOptions & PaintableOptions;
+type RectangleOptions = _NodeOptions & PaintableOptions;
 
 type RoundButtonOptions = Partial<{
   content: any,
@@ -301,7 +301,7 @@ type AccordionBoxOptions = {
   buttonXMargin?: number,
   buttonYMargin?: number,
   expandCollapseButtonOptions?: ExpandCollapseButtonOptions,
-} & NodeOptions;
+} & _NodeOptions;
 
 // Placeholder until we can use TypeScript in common code
 type ComboBoxItemOptions = Partial<{
@@ -310,7 +310,7 @@ type ComboBoxItemOptions = Partial<{
   a11yLabel: string | null
 }>;
 
-type CheckboxOptions = {} & NodeOptions;
+type CheckboxOptions = {} & _NodeOptions;
 
 type QSMType = {
   getAll: ( a: any ) => any
