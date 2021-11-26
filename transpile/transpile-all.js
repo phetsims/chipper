@@ -48,18 +48,12 @@ catch( e ) {
   fs.writeFileSync( statusPath, JSON.stringify( status, null, 2 ) );
 }
 
-const index = args.indexOf( '--ignoreInitial' );
 let ignoreInitial = false;
+const index = args.indexOf( '--ignoreInitial' );
 if ( index >= 0 ) {
-  if ( args[ index + 1 ] === 'true' ) {
-    ignoreInitial = true;
-  }
-  else if ( args[ index + 1 ] === 'false' ) {
-    ignoreInitial = false;
-  }
-  else {
-    throw new Error( 'illegal value for ignoreInitial' );
-  }
+  if ( args[ index + 1 ] === 'true' ) { ignoreInitial = true;}
+  else if ( args[ index + 1 ] === 'false' ) { ignoreInitial = false;}
+  else {throw new Error( 'illegal value for ignoreInitial' );}
 }
 
 const activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( '\n' );
@@ -83,8 +77,7 @@ chokidar.watch( paths, {
       status[ path ] = { md5: hash };
       transpileFunction( path, text );
       fs.writeFileSync( statusPath, JSON.stringify( status, null, 2 ) );
-      const t = Date.now();
-      const elapsed = t - changeDetectedTime;
+      const elapsed = Date.now() - changeDetectedTime;
       console.log( elapsed + 'ms: ' + path );
     }
   }
