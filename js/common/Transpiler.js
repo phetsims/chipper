@@ -17,8 +17,8 @@ const core = require( '@babel/core' );
 
 // constants
 
-// TODO: Should the status live with chipper/dist so if you wipe chipper/dist you also wipe the cache?
-const statusPath = '../chipper/transpile/cache/status.json';
+// Cache status lives with chipper/dist so if you wipe chipper/dist you also wipe the cache
+const statusPath = '../chipper/dist/transpiler-cache-status.json';
 const args = process.argv.slice( 2 );
 const root = '../';
 
