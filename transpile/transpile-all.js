@@ -9,24 +9,24 @@
  *
  * OPTIONS:
  * --watch                continue watching all directories and transpile on detected changes
- * --ignoreInitial false  (default) transpile all files on startup
- * --ignoreInitial true   skip initial transpile on startup
  * --clean                dispose of the cache that tracks file status on startup, can be combined with other commands
  *                        you would need to run --clean if the transpiled file status ever gets out of sync with the
  *                        cache file status, for example if you deleted/modified a transpiled file
+ * --skipInitial          skip the initial transpilation
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+// constants
 const start = Date.now();
-const chokidar = require( 'chokidar' );
-const transpileFunction = require( './transpileFunction' );
-const fs = require( 'fs' );
-const crypto = require( 'crypto' );
-const path = require( 'path' );
-
 const statusPath = '../chipper/transpile/cache/status.json';
 const args = process.argv.slice( 2 );
+
+// imports
+const transpileFunction = require( './transpileFunction' );
+const fs = require( 'fs' );
+const path = require( 'path' );
+const crypto = require( 'crypto' );
 
 // Track the status of each repo
 let status = {};
@@ -48,46 +48,91 @@ catch( e ) {
   fs.writeFileSync( statusPath, JSON.stringify( status, null, 2 ) );
 }
 
-let ignoreInitial = false;
-const index = args.indexOf( '--ignoreInitial' );
-if ( index >= 0 ) {
-  if ( args[ index + 1 ] === 'true' ) { ignoreInitial = true;}
-  else if ( args[ index + 1 ] === 'false' ) { ignoreInitial = false;}
-  else {throw new Error( 'illegal value for ignoreInitial' );}
-}
-
-const activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( '\n' );
-const paths = [];
-activeRepos.forEach( repo => {
-  paths.push( `../${repo}/js` );
-  paths.push( `../${repo}/images` );
-  paths.push( `../${repo}/sounds` );
-} );
-
-chokidar.watch( paths, {
-  ignoreInitial: ignoreInitial,
-  ignored: [ '**/chipper/dist/**/' ]
-} ).on( 'all', ( event, path ) => {
+/**
+ * For *.ts and *.js files, checks if they have changed file contents since last transpile.  If so, the
+ * file is transpiled.
+ * @param {string} path
+ */
+const visitFile = path => {
   if ( path.endsWith( '.js' ) || path.endsWith( '.ts' ) ) {
     const changeDetectedTime = Date.now();
     const text = fs.readFileSync( path, 'utf-8' );
     const hash = crypto.createHash( 'md5' ).update( text ).digest( 'hex' );
 
+    // If the file has changed, transpile and update the cache
     if ( !status[ path ] || status[ path ].md5 !== hash ) {
-      status[ path ] = { md5: hash };
       transpileFunction( path, text );
+      status[ path ] = { md5: hash };
       fs.writeFileSync( statusPath, JSON.stringify( status, null, 2 ) );
-      const elapsed = Date.now() - changeDetectedTime;
-      console.log( elapsed + 'ms: ' + path );
+      console.log( ( Date.now() - changeDetectedTime ) + 'ms: ' + path );
     }
   }
-} ).on( 'ready', () => {
-  if ( !args.includes( '--watch' ) ) {
-    console.log( 'Finished transpilation in ' + ( Date.now() - start ) + 'ms' );
-    process.exit( 0 );
-  }
-  else {
-    console.log( 'Finished initial scan in ' + ( Date.now() - start ) + 'ms' );
-    console.log( 'Watching...' );
+};
+
+let activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( '\n' );
+
+// Recursively visit a directory for files to transpile
+const visitDirectory = ( dir => {
+  if ( fs.existsSync( dir ) ) {
+    const files = fs.readdirSync( dir );
+    files.forEach( file => {
+      const child = dir + path.sep + file;
+      if ( fs.lstatSync( child ).isDirectory() ) {
+        visitDirectory( child );
+      }
+      else {
+        visitFile( child );
+      }
+    } );
   }
 } );
+
+// Directories in a sim repo that may contain things for transpilation
+// This is used for a top-down seach in the initial transpilation and for filtering relevant files in the watch process
+const subdirs = [ 'js', 'images', 'sounds' ];
+
+// Visit all the subdirectories in a repo that need transpilation
+const visitRepo = repo => subdirs.forEach( subdir => visitDirectory( `../${repo}/${subdir}` ) );
+
+// Initial pass
+if ( !args.includes( '--skipInitial' ) ) {
+  activeRepos.forEach( repo => visitRepo( repo ) );
+  console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
+}
+
+// Watch process
+if ( args.includes( '--watch' ) ) {
+  fs.watch( '../', { recursive: true }, ( eventType, filename ) => {
+
+    if ( filename.includes( '/node_modules/' ) ||
+         filename.includes( '.git/' ) ||
+         filename.includes( 'chipper/dist/' ) ||
+         filename.includes( 'transpile/cache/status.json' ) ||
+
+         // Temporary files sometimes saved by the IDE
+         filename.endsWith( '~' ) ) {
+
+      // ignore
+    }
+    else if ( filename === 'perennial/data/active-repos' ) {
+      const newActiveRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( '\n' );
+      console.log( 'reloaded active repos' );
+      const newRepos = newActiveRepos.filter( repo => !activeRepos.includes( repo ) );
+
+      //Scan anything that was added
+      newRepos.forEach( repo => {
+        console.log( 'New repo detected in active-repos, transpiling: ' + repo );
+        visitRepo( repo );
+      } );
+      activeRepos = newActiveRepos;
+    }
+    else {
+      args.includes( '--verbose' ) && console.log( eventType, filename );
+      const terms = filename.split( path.sep );
+      if ( activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) ) {
+        visitFile( '../' + filename );
+      }
+    }
+  } );
+  console.log( 'Watching...' );
+}
