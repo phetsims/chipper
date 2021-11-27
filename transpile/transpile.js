@@ -1,7 +1,8 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Transpiles all *.ts and copies all *.js files to chipper/dist. Does not do type checking.
+ * Transpiles *.ts and copies all *.js files to chipper/dist. Does not do type checking. Filters based on active-repos
+ * and subsets of directories within repos (such as js/, images/, and sounds/)
  *
  * Usage:
  * cd chipper
@@ -21,12 +22,17 @@
 const start = Date.now();
 const statusPath = '../chipper/transpile/cache/status.json';
 const args = process.argv.slice( 2 );
+const root = '../';
+
+// Directories in a sim repo that may contain things for transpilation
+// This is used for a top-down seach in the initial transpilation and for filtering relevant files in the watch process
+const subdirs = [ 'js', 'images', 'sounds' ];
 
 // imports
-const transpileFunction = require( './transpileFunction' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const crypto = require( 'crypto' );
+const core = require( '@babel/core' );
 
 // Track the status of each repo
 let status = {};
@@ -47,6 +53,23 @@ catch( e ) {
   status = {};
   fs.writeFileSync( statusPath, JSON.stringify( status, null, 2 ) );
 }
+
+/**
+ * Transpile the file using babel, and write it to the corresponding location in chipper/dist
+ * @param {string} filename
+ * @param {string} text - file text
+ */
+const transpileFunction = ( filename, text ) => {
+  const x = core.transformSync( text, {
+    filename: filename,
+    presets: [ '@babel/preset-typescript' ],
+    sourceMaps: 'inline'
+  } );
+  const relativePath = path.relative( root, filename );
+  const targetPath = path.join( root, 'chipper', 'dist', ...relativePath.split( path.sep ) ).split( '.ts' ).join( '.js' );
+  fs.mkdirSync( path.dirname( targetPath ), { recursive: true } );
+  fs.writeFileSync( targetPath, x.code );
+};
 
 /**
  * For *.ts and *.js files, checks if they have changed file contents since last transpile.  If so, the
@@ -86,10 +109,6 @@ const visitDirectory = ( dir => {
     } );
   }
 } );
-
-// Directories in a sim repo that may contain things for transpilation
-// This is used for a top-down seach in the initial transpilation and for filtering relevant files in the watch process
-const subdirs = [ 'js', 'images', 'sounds' ];
 
 // Visit all the subdirectories in a repo that need transpilation
 const visitRepo = repo => subdirs.forEach( subdir => visitDirectory( `../${repo}/${subdir}` ) );
