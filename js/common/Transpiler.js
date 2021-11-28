@@ -17,9 +17,8 @@ const core = require( '@babel/core' );
 
 // constants
 
-// Cache status lives with chipper/dist so if you wipe chipper/dist you also wipe the cache
+// Cache status is stored in chipper/dist so if you wipe chipper/dist you also wipe the cache
 const statusPath = '../chipper/dist/transpiler-cache-status.json';
-const args = process.argv.slice( 2 );
 const root = '../';
 
 // Directories in a sim repo that may contain things for transpilation
@@ -56,19 +55,31 @@ class Transpiler {
   }
 
   /**
+   * Returns the path in chipper/dist that corresponds to a source file.
+   * @param filename
+   * @returns {string}
+   * @public
+   */
+  static getTargetPath( filename ) {
+    const relativePath = path.relative( root, filename );
+    const targetPath = path.join( root, 'chipper', 'dist', ...relativePath.split( path.sep ) ).split( '.ts' ).join( '.js' );
+    return targetPath;
+  }
+
+  /**
    * Transpile the file using babel, and write it to the corresponding location in chipper/dist
-   * @param {string} filename
+   * @param {string} sourceFile
+   * @param {string} targetPath
    * @param {string} text - file text
    * @private
    */
-  static transpileFunction( filename, text ) {
+  static transpileFunction( sourceFile, targetPath, text ) {
     const x = core.transformSync( text, {
-      filename: filename,
+      filename: sourceFile,
       presets: [ '@babel/preset-typescript' ],
       sourceMaps: 'inline'
     } );
-    const relativePath = path.relative( root, filename );
-    const targetPath = path.join( root, 'chipper', 'dist', ...relativePath.split( path.sep ) ).split( '.ts' ).join( '.js' );
+
     fs.mkdirSync( path.dirname( targetPath ), { recursive: true } );
     fs.writeFileSync( targetPath, x.code );
   }
@@ -85,9 +96,15 @@ class Transpiler {
       const text = fs.readFileSync( path, 'utf-8' );
       const hash = crypto.createHash( 'md5' ).update( text ).digest( 'hex' );
 
-      // If the file has changed, transpile and update the cache
-      if ( !this.status[ path ] || this.status[ path ].md5 !== hash ) {
-        Transpiler.transpileFunction( path, text );
+      // If the file has changed, transpile and update the cache.  We have to choose on the spectrum between safety
+      // and performance.  In order to maintain high performance with a low error rate, we only write the transpiled file
+      // if (a) the cache is out of date or (b) there is no target file at all.  The assumption is that this is the only
+      // process that writes to the files.  If the files are manually edited, this process will think they are up-to-date
+      // and they will not be overwritten.  So be careful not to change those files without using --clean on your next run.
+      // If this bites us at all, then we can add other checks, such as timestamps or md5 of the target file.
+      const targetPath = Transpiler.getTargetPath( path );
+      if ( !this.status[ path ] || this.status[ path ].md5 !== hash || !fs.existsSync( targetPath ) ) {
+        Transpiler.transpileFunction( path, targetPath, text );
         this.status[ path ] = { md5: hash };
         fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
         console.log( ( Date.now() - changeDetectedTime ) + 'ms: ' + path );
@@ -140,7 +157,7 @@ class Transpiler {
         console.log( 'reloaded active repos' );
         const newRepos = newActiveRepos.filter( repo => !this.activeRepos.includes( repo ) );
 
-        //Scan anything that was added
+        // Run an initial scan on newly added repos
         newRepos.forEach( repo => {
           console.log( 'New repo detected in active-repos, transpiling: ' + repo );
           this.visitRepo( repo );
@@ -148,7 +165,6 @@ class Transpiler {
         this.activeRepos = newActiveRepos;
       }
       else {
-        args.includes( '--verbose' ) && console.log( eventType, filename );
         const terms = filename.split( path.sep );
         if ( this.activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) ) {
           this.visitFile( '../' + filename );
