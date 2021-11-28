@@ -23,7 +23,7 @@ const root = '../';
 
 // Directories in a sim repo that may contain things for transpilation
 // This is used for a top-down seach in the initial transpilation and for filtering relevant files in the watch process
-const subdirs = [ 'js', 'images', 'sounds' ];
+const subdirs = [ 'js', 'images', 'mipmaps', 'sounds' ];
 
 class Transpiler {
   constructor( options ) {
@@ -143,6 +143,9 @@ class Transpiler {
   // @private - Visit all the subdirectories in a repo that need transpilation
   visitRepo( repo ) {
     subdirs.forEach( subdir => this.visitDirectory( path.join( '..', repo, subdir ) ) );
+    if ( repo === 'sherpa' ) {
+      this.visitFile( path.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
+    }
   }
 
   // @public
