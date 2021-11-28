@@ -84,6 +84,11 @@ class Transpiler {
     fs.writeFileSync( targetPath, x.code );
   }
 
+  // @public
+  static modifiedTimeMilliseconds( file ) {
+    return fs.statSync( file ).mtime.getTime();
+  }
+
   /**
    * For *.ts and *.js files, checks if they have changed file contents since last transpile.  If so, the
    * file is transpiled.
@@ -98,14 +103,21 @@ class Transpiler {
 
       // If the file has changed, transpile and update the cache.  We have to choose on the spectrum between safety
       // and performance.  In order to maintain high performance with a low error rate, we only write the transpiled file
-      // if (a) the cache is out of date or (b) there is no target file at all.  The assumption is that this is the only
-      // process that writes to the files.  If the files are manually edited, this process will think they are up-to-date
-      // and they will not be overwritten.  So be careful not to change those files without using --clean on your next run.
-      // If this bites us at all, then we can add other checks, such as timestamps or md5 of the target file.
+      // if (a) the cache is out of date (b) there is no target file at all or (c) if the target file has been modified.
       const targetPath = Transpiler.getTargetPath( path );
-      if ( !this.status[ path ] || this.status[ path ].md5 !== hash || !fs.existsSync( targetPath ) ) {
+
+      if (
+        !this.status[ path ] ||
+        this.status[ path ].sourceMD5 !== hash ||
+        !fs.existsSync( targetPath ) ||
+        this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath )
+      ) {
         Transpiler.transpileFunction( path, targetPath, text );
-        this.status[ path ] = { md5: hash };
+
+        this.status[ path ] = {
+          sourceMD5: hash,
+          targetMilliseconds: Transpiler.modifiedTimeMilliseconds( targetPath )
+        };
         fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
         console.log( ( Date.now() - changeDetectedTime ) + 'ms: ' + path );
       }
