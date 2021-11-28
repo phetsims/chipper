@@ -97,7 +97,7 @@ const withServer = require( '../common/withServer' );
 
       const tsc = require( '../../../chipper/js/grunt/tsc' );
       if ( tsc.apiVersion === '1.0' ) {
-        const results = await tsc( `../${repo}`, [] );
+        const results = await tsc( `../${repo}`, [ '--build' ] );
         if ( results.code === 0 ) {
           outputToConsole && console.log( 'tsc passed' );
         }
