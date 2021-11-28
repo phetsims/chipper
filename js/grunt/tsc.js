@@ -9,7 +9,7 @@
 // modules
 const execute = require( '../../../perennial-alias/js/common/execute' );
 
-const Transpiler = require( '../../transpile/Transpiler' );
+const Transpiler = require( '../common/Transpiler' );
 
 /**
  * @param {string} path - path to tsconfig file or directory containing tsconfig file
