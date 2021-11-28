@@ -76,7 +76,10 @@ class Transpiler {
   static transpileFunction( sourceFile, targetPath, text ) {
     const x = core.transformSync( text, {
       filename: sourceFile,
-      presets: [ '@babel/preset-typescript' ],
+
+      // Load directly from node_modules so we do not have to npm install this dependency
+      // in every sim repo.  This strategy is also used in transpile.js
+      presets: [ '../chipper/node_modules/@babel/preset-typescript' ],
       sourceMaps: 'inline'
     } );
 
@@ -145,6 +148,11 @@ class Transpiler {
     subdirs.forEach( subdir => this.visitDirectory( path.join( '..', repo, subdir ) ) );
     if ( repo === 'sherpa' ) {
       this.visitFile( path.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
+    }
+    else if ( repo === 'brand' ) {
+      this.visitDirectory( path.join( '..', repo, 'phet' ) );
+      this.visitDirectory( path.join( '..', repo, 'phet-io' ) );
+      this.visitDirectory( path.join( '..', repo, 'adapted-from-phet' ) );
     }
   }
 
