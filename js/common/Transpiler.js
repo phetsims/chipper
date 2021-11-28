@@ -51,7 +51,7 @@ class Transpiler {
       fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
     }
 
-    this.activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( '\n' );
+    this.activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ );
   }
 
   /**
@@ -129,7 +129,7 @@ class Transpiler {
     if ( fs.existsSync( dir ) ) {
       const files = fs.readdirSync( dir );
       files.forEach( file => {
-        const child = dir + path.sep + file;
+        const child = path.join( dir, file );
         if ( fs.lstatSync( child ).isDirectory() ) {
           this.visitDirectory( child );
         }
@@ -142,7 +142,7 @@ class Transpiler {
 
   // @private - Visit all the subdirectories in a repo that need transpilation
   visitRepo( repo ) {
-    subdirs.forEach( subdir => this.visitDirectory( `../${repo}/${subdir}` ) );
+    subdirs.forEach( subdir => this.visitDirectory( path.join( '..', repo, subdir ) ) );
   }
 
   // @public
