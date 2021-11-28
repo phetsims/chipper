@@ -9,7 +9,7 @@
 // modules
 const execute = require( '../../../perennial-alias/js/common/execute' );
 
-// const Transpiler = require( '../common/Transpiler' );
+const Transpiler = require( '../common/Transpiler' );
 
 /**
  * @param {string} path - path to tsconfig file or directory containing tsconfig file
@@ -19,7 +19,7 @@ const execute = require( '../../../perennial-alias/js/common/execute' );
 const tsc = async function( path, commandLineArgs ) {
 
   // create a new one so it refreshes activeRepos right before transpilation
-  // new Transpiler().transpileAll();
+  new Transpiler().transpileAll();
 
   const args = [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs ];
   return execute( 'node', args, path, {
