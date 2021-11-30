@@ -6,7 +6,7 @@
  *
  * Usage:
  * cd chipper
- * node transpile/transpile-all.js --watch
+ * node js/scripts/transpile.js --watch
  *
  * OPTIONS:
  * --watch                continue watching all directories and transpile on detected changes
