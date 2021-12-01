@@ -171,6 +171,9 @@ class Transpiler {
   watch() {
     fs.watch( '../', { recursive: true }, ( eventType, filename ) => {
 
+      if ( !filename ) {
+        return;
+      }
       if ( filename.includes( '/node_modules/' ) ||
            filename.includes( '.git/' ) ||
            filename.includes( 'chipper/dist/' ) ||
