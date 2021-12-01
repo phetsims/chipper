@@ -24,5 +24,6 @@ const path = args[ 0 ];
 const text = fs.readFileSync( path, 'utf-8' );
 const targetPath = Transpiler.getTargetPath( args[ 0 ] );
 
+// Throws an error if there is a syntax error
 Transpiler.transpileFunction( path, targetPath, text );
 console.log( ( Date.now() - start ) + 'ms: ' + path );

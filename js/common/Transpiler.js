@@ -115,14 +115,20 @@ class Transpiler {
         !fs.existsSync( targetPath ) ||
         this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath )
       ) {
-        Transpiler.transpileFunction( path, targetPath, text );
+        try {
+          Transpiler.transpileFunction( path, targetPath, text );
 
-        this.status[ path ] = {
-          sourceMD5: hash,
-          targetMilliseconds: Transpiler.modifiedTimeMilliseconds( targetPath )
-        };
-        fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
-        console.log( ( Date.now() - changeDetectedTime ) + 'ms: ' + path );
+          this.status[ path ] = {
+            sourceMD5: hash,
+            targetMilliseconds: Transpiler.modifiedTimeMilliseconds( targetPath )
+          };
+          fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
+          console.log( ( Date.now() - changeDetectedTime ) + 'ms: ' + path );
+        }
+        catch( e ) {
+          console.log( e );
+          console.log( 'ERROR' );
+        }
       }
     }
   }
