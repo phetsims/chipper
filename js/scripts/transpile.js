@@ -26,7 +26,8 @@ const args = process.argv.slice( 2 );
 const Transpiler = require( '../common/Transpiler' );
 
 const transpiler = new Transpiler( {
-  clean: args.includes( '--clean' )
+  clean: args.includes( '--clean' ),
+  verbose: args.includes( '--verbose' )
 } );
 
 // Initial pass

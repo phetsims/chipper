@@ -31,8 +31,12 @@ class Transpiler {
   constructor( options ) {
 
     options = options || {
-      clean: false
+      clean: false,
+      verbose: false
     };
+
+    // @private
+    this.verbose = options.verbose;
 
     // Track the status of each repo. Key= repo, value=md5 hash of contents
     this.status = {};
@@ -120,6 +124,14 @@ class Transpiler {
         this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath )
       ) {
         try {
+          let reason = '';
+          if ( this.verbose ) {
+            reason = ( !this.status[ path ] ) ? ' (not cached)' :
+                     ( this.status[ path ].sourceMD5 !== hash ) ? ' (changed)' :
+                     ( !fs.existsSync( targetPath ) ) ? ' (no target)' :
+                     ( this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' :
+                     '???';
+          }
           Transpiler.transpileFunction( path, targetPath, text );
 
           this.status[ path ] = {
@@ -129,7 +141,8 @@ class Transpiler {
           fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
           const now = Date.now();
           const nowTimeString = new Date( now ).toLocaleTimeString();
-          console.log( `${nowTimeString}, ${( now - changeDetectedTime )} ms: ${path}` );
+
+          console.log( `${nowTimeString}, ${( now - changeDetectedTime )} ms: ${path}${reason}` );
         }
         catch( e ) {
           console.log( e );
