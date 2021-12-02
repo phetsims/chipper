@@ -24,6 +24,7 @@ const minify = require( '../grunt/minify' );
 const marked = require( 'marked' );
 const tsc = require( './tsc' );
 const reportTscResults = require( './reportTscResults' );
+const Transpiler = require( '../common/Transpiler' );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -221,7 +222,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     // Special handling for studio paths since it is not nested under phet-io-wrappers
     if ( abspath.indexOf( 'studio/index.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '<script src="../contrib/', '<script src="../../contrib/' );
-      contents = ChipperStringUtils.replaceAll( contents, '<script type="module" src="../chipper/dist/studio/js/studio-main.js"></script>',
+      contents = ChipperStringUtils.replaceAll( contents, '<script type="module" src="../chipper/dist/js/studio/js/studio-main.js"></script>',
         `<script src="./${STUDIO_BUILT_FILENAME}"></script>` );
     }
 
@@ -545,6 +546,8 @@ const handleStudio = async wrappersLocation => {
 
   const results = await tsc( '../studio', [ '--build' ] );
   reportTscResults( results, grunt );
+
+  new Transpiler().transpileAll();
 
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {} ) );
 };

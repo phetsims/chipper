@@ -18,7 +18,7 @@ const core = require( '@babel/core' );
 // constants
 
 // Cache status is stored in chipper/dist so if you wipe chipper/dist you also wipe the cache
-const statusPath = '../chipper/dist/transpiler-cache-status.json';
+const statusPath = '../chipper/dist/js-cache-status.json';
 const root = '../';
 
 // Directories in a sim repo that may contain things for transpilation
@@ -62,7 +62,7 @@ class Transpiler {
    */
   static getTargetPath( filename ) {
     const relativePath = path.relative( root, filename );
-    const targetPath = path.join( root, 'chipper', 'dist', ...relativePath.split( path.sep ) ).split( '.ts' ).join( '.js' );
+    const targetPath = path.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( '.ts' ).join( '.js' );
     return targetPath;
   }
 
@@ -171,7 +171,7 @@ class Transpiler {
   watch() {
     fs.watch( '../', { recursive: true }, ( eventType, filename ) => {
 
-      if ( !filename ) {
+      if ( !filename || !fs.existsSync( '../' + filename ) ) {
         return;
       }
       if ( filename.includes( '/node_modules/' ) ||

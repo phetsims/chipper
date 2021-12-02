@@ -87,10 +87,10 @@ module.exports = function( repo, brand ) {
 
       // Simulations or runnables will have a single entry point
       entry: {
-        repo: `../chipper/dist/${repo}/js/${repo}-main.js`
+        repo: `../chipper/dist/js/${repo}/js/${repo}-main.js`
       },
 
-      // We output our builds to chipper/build/
+      // We output our builds to the following dir
       output: {
         path: path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}` ),
         filename: `${repo}.js`

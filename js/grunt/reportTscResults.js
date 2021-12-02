@@ -1,7 +1,7 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Reports the results of tsc() in a grunt context, failing if appropriate.
+ * Reports the results of tsc() in a grunt context, failing if there are errors.
  * @author Sam Reid (PhET Interactive Simulations)
  */
 

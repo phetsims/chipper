@@ -41,7 +41,7 @@ module.exports = ( repo, usedModules ) => {
                          `${repo}/${mediaType}/${filename}`;
 
           // If no licenseEntries were registered, or some were registered but not one corresponding to this file
-          if ( !normalizedUsedModules.includes( `chipper/dist/${module}` ) ) {
+          if ( !normalizedUsedModules.includes( `chipper/dist/js/${module}` ) ) {
             grunt.log.warn( `Unused ${mediaType} module: ${module}` );
           }
         }

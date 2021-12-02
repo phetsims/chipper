@@ -141,25 +141,10 @@ module.exports = function( grunt ) {
       }
     } ) );
 
-  grunt.registerTask( 'output-js', 'Outputs JS just for the specified repo',
-    wrapTask( async () => {
-      const tsc = require( './tsc' );
-      const reportTscResults = require( './reportTscResults' );
-      reportTscResults( await tsc( '../chipper', [ '--project', `../${repo}` ] ), grunt );
-    } )
-  );
-  grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
-    wrapTask( async () => {
-      const tsc = require( './tsc' );
-      const reportTscResults = require( './reportTscResults' );
-      reportTscResults( await tsc( '../chipper', [ '--build', `../${repo}` ] ), grunt );
-    } )
-  );
   grunt.registerTask( 'output-js-all', 'Outputs JS for all repos',
     wrapTask( async () => {
-      const tsc = require( './tsc' );
-      const reportTscResults = require( './reportTscResults' );
-      reportTscResults( await tsc( '../chipper', [ '--build', '../chipper/tsconfig/all' ] ), grunt );
+      const Transpiler = require( '../common/Transpiler' );
+      new Transpiler().transpileAll();
     } )
   );
 
@@ -188,6 +173,7 @@ module.exports = function( grunt ) {
       const reportTscResults = require( './reportTscResults' );
       const path = require( 'path' );
       const fs = require( 'fs' );
+      const Transpiler = require( '../common/Transpiler' );
 
       // Parse minification keys
       const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
@@ -210,10 +196,12 @@ module.exports = function( grunt ) {
 
       const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-      // This begins with compiling the typescript into javascript, then the rest of the build process
-      // continues on the compiled javascript
+      // Run the type checker first
       const results = await tsc( `../${repo}`, [ '--build' ] );
       reportTscResults( results, grunt );
+
+      // If that succeeds, then convert the code to JS
+      new Transpiler().transpileAll();
 
       // standalone
       if ( repoPackageObject.phet.buildStandalone ) {
@@ -534,8 +522,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       const getSimList = require( '../common/getSimList' );
       const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
       const fs = require( 'fs' );
-      const tsc = require( './tsc' );
-      const reportTscResults = require( './reportTscResults' );
+      const Transpiler = require( '../common/Transpiler' );
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
 
@@ -549,9 +536,7 @@ Updates the normal automatically-generated files for this repository. Includes:
         }
       }
 
-      for ( let i = 0; i < sims.length; i++ ) {
-        reportTscResults( await tsc( '../chipper', [ '--build', `../${sims[ i ]}` ] ), grunt );
-      }
+      new Transpiler().transpileAll();
 
       const results = await generatePhetioMacroAPI( sims, {
         showProgressBar: sims.length > 1

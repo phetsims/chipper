@@ -9,17 +9,12 @@
 // modules
 const execute = require( '../../../perennial-alias/js/common/execute' );
 
-// const Transpiler = require( '../common/Transpiler' );
-
 /**
  * @param {string} path - path to tsconfig file or directory containing tsconfig file
  * @param {Array.<string>} commandLineArgs
  * @returns {Promise<{execResult: {stdout:string,stderr:string,code:number}, time: number}>} - the results from exec, and the elapsed time
  */
 const tsc = async function( path, commandLineArgs ) {
-
-  // create a new one so it refreshes activeRepos right before transpilation
-  // new Transpiler().transpileAll();
 
   const args = [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs ];
   return execute( 'node', args, path, {
