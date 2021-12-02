@@ -14,6 +14,7 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const crypto = require( 'crypto' );
 const core = require( '@babel/core' );
+const assert = require( 'assert' );
 
 // constants
 
@@ -39,6 +40,7 @@ class Transpiler {
     fs.mkdirSync( path.dirname( statusPath ), { recursive: true } );
 
     if ( options.clean ) {
+      console.log( 'cleaning...' );
       fs.writeFileSync( statusPath, JSON.stringify( {}, null, 2 ) );
     }
 
@@ -47,6 +49,7 @@ class Transpiler {
       this.status = JSON.parse( fs.readFileSync( statusPath, 'utf-8' ) );
     }
     catch( e ) {
+      console.log( 'couldnt parse status cache, making a clean one' );
       this.status = {};
       fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
     }
@@ -151,6 +154,16 @@ class Transpiler {
     }
   }
 
+  /**
+   * Transpile the specified repos
+   * @param {string[]} repos
+   * @public
+   */
+  transpileRepos( repos ) {
+    assert( Array.isArray( repos ), 'repos should be an array' );
+    repos.forEach( repo => this.transpileRepo( repo ) );
+  }
+
   // @public - Visit all the subdirectories in a repo that need transpilation
   transpileRepo( repo ) {
     subdirs.forEach( subdir => this.visitDirectory( path.join( '..', repo, subdir ) ) );
@@ -166,7 +179,7 @@ class Transpiler {
 
   // @public
   transpileAll() {
-    this.activeRepos.forEach( repo => this.transpileRepo( repo ) );
+    this.transpileRepos( this.activeRepos );
   }
 
   // @public

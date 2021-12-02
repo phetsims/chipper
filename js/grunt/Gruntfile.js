@@ -153,9 +153,7 @@ module.exports = function( grunt ) {
       const Transpiler = require( '../common/Transpiler' );
       const getPhetLibs = require( './getPhetLibs' );
 
-      const libs = getPhetLibs( repo );
-      const transpiler = new Transpiler();
-      libs.forEach( lib => transpiler.transpileRepo( lib ) );
+      new Transpiler().transpileRepos( getPhetLibs( repo ) );
     } )
   );
 
@@ -192,6 +190,7 @@ module.exports = function( grunt ) {
       const path = require( 'path' );
       const fs = require( 'fs' );
       const Transpiler = require( '../common/Transpiler' );
+      const getPhetLibs = require( './getPhetLibs' );
 
       // Parse minification keys
       const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
@@ -219,7 +218,7 @@ module.exports = function( grunt ) {
       reportTscResults( results, grunt );
 
       // If that succeeds, then convert the code to JS
-      new Transpiler().transpileAll();
+      new Transpiler().transpileRepos( getPhetLibs( repo ) );
 
       // standalone
       if ( repoPackageObject.phet.buildStandalone ) {

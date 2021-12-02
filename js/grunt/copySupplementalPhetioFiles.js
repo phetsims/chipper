@@ -25,6 +25,7 @@ const marked = require( 'marked' );
 const tsc = require( './tsc' );
 const reportTscResults = require( './reportTscResults' );
 const Transpiler = require( '../common/Transpiler' );
+const getPhetLibs = require( './getPhetLibs' );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -547,7 +548,7 @@ const handleStudio = async wrappersLocation => {
   const results = await tsc( '../studio', [ '--build' ] );
   reportTscResults( results, grunt );
 
-  new Transpiler().transpileAll();
+  new Transpiler().transpileRepos( getPhetLibs( 'studio' ) );
 
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {} ) );
 };
