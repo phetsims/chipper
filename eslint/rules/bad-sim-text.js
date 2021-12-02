@@ -64,6 +64,13 @@ module.exports = function( context ) {
       regex: /(window\.| )setInterval\(/
     },
 
+    // Decided on during developer meeting, in regards to https://github.com/phetsims/scenery/issues/1324, use `{ Type }`
+    // import syntax from SCENERY/imports.js
+    {
+      id: 'import from scenery not from imports.js',
+      regex: /import.*from.*\/scenery\/(?!js\/imports.js)/
+    },
+
     // DOT/Utils.toFixed or DOT/Utils.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
     // because the spec doesn't specify whether to round or floor.
