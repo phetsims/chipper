@@ -15,6 +15,7 @@ const path = require( 'path' );
 const crypto = require( 'crypto' );
 const core = require( '@babel/core' );
 const assert = require( 'assert' );
+const getActiveRepos = require( '../../../perennial-alias/js/common/getActiveRepos' );
 
 // constants
 
@@ -54,7 +55,7 @@ class Transpiler {
       fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
     }
 
-    this.activeRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( /\r?\n/ );
+    this.activeRepos = getActiveRepos();
   }
 
   /**
@@ -168,6 +169,8 @@ class Transpiler {
   transpileRepo( repo ) {
     subdirs.forEach( subdir => this.visitDirectory( path.join( '..', repo, subdir ) ) );
     if ( repo === 'sherpa' ) {
+
+      // Our sims load this as a module rather than a preload, so we must transpile it
       this.visitFile( path.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
     }
     else if ( repo === 'brand' ) {
