@@ -123,7 +123,9 @@ class Transpiler {
             targetMilliseconds: Transpiler.modifiedTimeMilliseconds( targetPath )
           };
           fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
-          console.log( ( Date.now() - changeDetectedTime ) + 'ms: ' + path );
+          const now = Date.now();
+          const nowTimeString = new Date( now ).toLocaleTimeString();
+          console.log( `${nowTimeString}, ${( now - changeDetectedTime )} ms: ${path}` );
         }
         catch( e ) {
           console.log( e );
