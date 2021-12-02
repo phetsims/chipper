@@ -22,7 +22,7 @@ const statusPath = '../chipper/dist/js-cache-status.json';
 const root = '../';
 
 // Directories in a sim repo that may contain things for transpilation
-// This is used for a top-down seach in the initial transpilation and for filtering relevant files in the watch process
+// This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
 const subdirs = [ 'js', 'images', 'mipmaps', 'sounds' ];
 
 class Transpiler {
