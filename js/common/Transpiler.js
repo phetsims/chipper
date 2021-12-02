@@ -151,8 +151,8 @@ class Transpiler {
     }
   }
 
-  // @private - Visit all the subdirectories in a repo that need transpilation
-  visitRepo( repo ) {
+  // @public - Visit all the subdirectories in a repo that need transpilation
+  transpileRepo( repo ) {
     subdirs.forEach( subdir => this.visitDirectory( path.join( '..', repo, subdir ) ) );
     if ( repo === 'sherpa' ) {
       this.visitFile( path.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
@@ -166,7 +166,7 @@ class Transpiler {
 
   // @public
   transpileAll() {
-    this.activeRepos.forEach( repo => this.visitRepo( repo ) );
+    this.activeRepos.forEach( repo => this.transpileRepo( repo ) );
   }
 
   // @public
@@ -194,7 +194,7 @@ class Transpiler {
         // Run an initial scan on newly added repos
         newRepos.forEach( repo => {
           console.log( 'New repo detected in active-repos, transpiling: ' + repo );
-          this.visitRepo( repo );
+          this.transpileRepo( repo );
         } );
         this.activeRepos = newActiveRepos;
       }

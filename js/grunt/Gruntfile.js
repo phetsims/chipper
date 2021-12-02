@@ -141,6 +141,24 @@ module.exports = function( grunt ) {
       }
     } ) );
 
+  grunt.registerTask( 'output-js', 'Outputs JS just for the specified repo',
+    wrapTask( async () => {
+      const Transpiler = require( '../common/Transpiler' );
+
+      new Transpiler().transpileRepo( repo );
+    } )
+  );
+  grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
+    wrapTask( async () => {
+      const Transpiler = require( '../common/Transpiler' );
+      const getPhetLibs = require( './getPhetLibs' );
+
+      const libs = getPhetLibs( repo );
+      const transpiler = new Transpiler();
+      libs.forEach( lib => transpiler.transpileRepo( lib ) );
+    } )
+  );
+
   grunt.registerTask( 'output-js-all', 'Outputs JS for all repos',
     wrapTask( async () => {
       const Transpiler = require( '../common/Transpiler' );
