@@ -229,7 +229,8 @@ class Transpiler {
       }
       else {
         const terms = filename.split( path.sep );
-        if ( this.activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) ) {
+        if ( this.activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) &&
+             fs.existsSync( '../' + filename ) ) {
           this.visitFile( '../' + filename );
         }
       }
