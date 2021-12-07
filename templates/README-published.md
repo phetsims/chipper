@@ -24,9 +24,19 @@ the sims, as well as other important information.
 {{CLONE_COMMANDS}}
 ```
 
-(2) Change directory to `chipper/`, and install dependencies by running `npm install`
+(2) Install dev dependencies:
+```
+cd chipper
+npm install
+cd ../perennial
+npm install
+cd ../perennial-alias
+npm install
+cd ../{{REPOSITORY}}
+npm install
+```
 
-(3) Still in directory `chipper/`, transpile the code to JavaScript by running `node js/scripts/transpile.js` (or add `--watch` to enable a file watching process)
+(3) Change directory to chipper `cd ../chipper/`, then transpile the code to JavaScript by running `node js/scripts/transpile.js --watch`
 
 (4) Start an http-server
 
@@ -34,7 +44,7 @@ the sims, as well as other important information.
 
 #### Optional: Build the simulation into a single file
 
-(1) Change directory to the simulation directory: `cd {{REPOSITORY}}`
+(1) Change directory to the simulation directory: `cd ../{{REPOSITORY}}`
 
 (2) Build the sim: `grunt --brands=adapted-from-phet`
 
