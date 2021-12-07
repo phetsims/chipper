@@ -213,9 +213,12 @@ module.exports = function( grunt ) {
 
       const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-      // Run the type checker first
-      const results = await tsc( `../${repo}`, [ '--build' ] );
-      reportTscResults( results, grunt );
+      // Run the type checker first.  But since the phet-io repos are listed in tsconfig, we can only run the type
+      // checker if phet-io repos are checked out.
+      if ( fs.existsSync( '../phet-io' ) ) {
+        const results = await tsc( `../${repo}`, [ '--build' ] );
+        reportTscResults( results, grunt );
+      }
 
       // If that succeeds, then convert the code to JS
       new Transpiler().transpileRepos( getPhetLibs( repo ) );
