@@ -1,8 +1,8 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Transpiles *.ts and copies all *.js files to chipper/dist. Does not do type checking. Filters based on active-repos
- * and subsets of directories within repos (such as js/, images/, and sounds/)
+ * Transpiles *.ts and copies all *.js files to chipper/dist. Does not do type checking. Filters based on
+ * perennial-alias/active-repos and subsets of directories within repos (such as js/, images/, and sounds/)
  *
  * See transpile.js for the CLI usage
  *
@@ -15,7 +15,6 @@ const path = require( 'path' );
 const crypto = require( 'crypto' );
 const core = require( '@babel/core' );
 const assert = require( 'assert' );
-const getActiveRepos = require( '../../../perennial-alias/js/common/getActiveRepos' );
 
 // constants
 
@@ -31,8 +30,7 @@ class Transpiler {
   constructor( options ) {
 
     options = options || {
-      clean: false,
-      verbose: false
+      clean: false, verbose: false
     };
 
     // @private
@@ -59,7 +57,9 @@ class Transpiler {
       fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
     }
 
-    this.activeRepos = getActiveRepos();
+    // Use the same implementation as getRepoList, but we need to read from perennial-alias since chipper should not
+    // depend on perennial.
+    this.activeRepos = fs.readFileSync( '../perennial-alias/data/active-repos', 'utf8' ).trim().split( '\n' ).map( sim => sim.trim() );
   }
 
   /**
@@ -87,8 +87,7 @@ class Transpiler {
 
       // Load directly from node_modules so we do not have to npm install this dependency
       // in every sim repo.  This strategy is also used in transpile.js
-      presets: [ '../chipper/node_modules/@babel/preset-typescript' ],
-      sourceMaps: 'inline'
+      presets: [ '../chipper/node_modules/@babel/preset-typescript' ], sourceMaps: 'inline'
     } );
 
     fs.mkdirSync( path.dirname( targetPath ), { recursive: true } );
@@ -117,26 +116,16 @@ class Transpiler {
       // if (a) the cache is out of date (b) there is no target file at all or (c) if the target file has been modified.
       const targetPath = Transpiler.getTargetPath( path );
 
-      if (
-        !this.status[ path ] ||
-        this.status[ path ].sourceMD5 !== hash ||
-        !fs.existsSync( targetPath ) ||
-        this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath )
-      ) {
+      if ( !this.status[ path ] || this.status[ path ].sourceMD5 !== hash || !fs.existsSync( targetPath ) || this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) {
         try {
           let reason = '';
           if ( this.verbose ) {
-            reason = ( !this.status[ path ] ) ? ' (not cached)' :
-                     ( this.status[ path ].sourceMD5 !== hash ) ? ' (changed)' :
-                     ( !fs.existsSync( targetPath ) ) ? ' (no target)' :
-                     ( this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' :
-                     '???';
+            reason = ( !this.status[ path ] ) ? ' (not cached)' : ( this.status[ path ].sourceMD5 !== hash ) ? ' (changed)' : ( !fs.existsSync( targetPath ) ) ? ' (no target)' : ( this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' : '???';
           }
           Transpiler.transpileFunction( path, targetPath, text );
 
           this.status[ path ] = {
-            sourceMD5: hash,
-            targetMilliseconds: Transpiler.modifiedTimeMilliseconds( targetPath )
+            sourceMD5: hash, targetMilliseconds: Transpiler.modifiedTimeMilliseconds( targetPath )
           };
           fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
           const now = Date.now();
@@ -205,10 +194,7 @@ class Transpiler {
       if ( !filename || !fs.existsSync( '../' + filename ) ) {
         return;
       }
-      if ( filename.includes( '/node_modules/' ) ||
-           filename.includes( '.git/' ) ||
-           filename.includes( 'chipper/dist/' ) ||
-           filename.includes( 'transpile/cache/status.json' ) ||
+      if ( filename.includes( '/node_modules/' ) || filename.includes( '.git/' ) || filename.includes( 'chipper/dist/' ) || filename.includes( 'transpile/cache/status.json' ) ||
 
            // Temporary files sometimes saved by the IDE
            filename.endsWith( '~' ) ) {
@@ -229,8 +215,7 @@ class Transpiler {
       }
       else {
         const terms = filename.split( path.sep );
-        if ( this.activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) &&
-             fs.existsSync( '../' + filename ) ) {
+        if ( this.activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) && fs.existsSync( '../' + filename ) ) {
           this.visitFile( '../' + filename );
         }
       }

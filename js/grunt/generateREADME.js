@@ -27,14 +27,6 @@ module.exports = function( repo, published ) {
   const title = strings[ titleKey ].value;
   const phetLibs = getPhetLibs( repo, 'phet' );
 
-  // Necessary for running transpile
-  if ( !phetLibs.includes( 'perennial' ) ) {
-    phetLibs.push( 'perennial' );
-  }
-  if ( !phetLibs.includes( 'perennial-alias' ) ) {
-    phetLibs.push( 'perennial-alias' );
-  }
-
   phetLibs.sort();
 
   // Commands for cloning all required repositories

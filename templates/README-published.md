@@ -28,17 +28,16 @@ the sims, as well as other important information.
 ```
 cd chipper
 npm install
-cd ../perennial
-npm install
 cd ../perennial-alias
 npm install
 cd ../{{REPOSITORY}}
 npm install
 ```
 
-(3) Change directory to chipper `cd ../chipper/`, then transpile the code to JavaScript by running `node js/scripts/transpile.js --watch`
+(3) Change directory to chipper `cd ../chipper/`, then transpile the code to JavaScript by running `node js/scripts/transpile.js --watch`. This starts file-watching process
+that will automatically transpile new or changed files.
 
-(4) Start an http-server
+(4) In a new terminal/command prompt, start an http-server
 
 (5) Open in the browser: `http://localhost/{{REPOSITORY}}/{{REPOSITORY}}_en.html` (You will probably need to modify this URL based on your HTTP port and relative path.)
 
