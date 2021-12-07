@@ -28,8 +28,12 @@ module.exports = function( repo, published ) {
   const phetLibs = getPhetLibs( repo, 'phet' );
 
   // Necessary for running transpile
-  phetLibs.push( 'perennial' );
-  phetLibs.push( 'perennial-alias' );
+  if ( !phetLibs.includes( 'perennial' ) ) {
+    phetLibs.push( 'perennial' );
+  }
+  if ( !phetLibs.includes( 'perennial-alias' ) ) {
+    phetLibs.push( 'perennial-alias' );
+  }
 
   phetLibs.sort();
 
