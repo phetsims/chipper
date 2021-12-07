@@ -34,7 +34,7 @@ cd ../{{REPOSITORY}}
 npm install
 ```
 
-(3) Change directory to chipper `cd ../chipper/`, then transpile the code to JavaScript by running `node js/scripts/transpile.js --watch`. This starts file-watching process
+(3) Change directory to chipper `cd ../chipper/`, then transpile the code to JavaScript by running `node js/scripts/transpile.js --watch`. This starts a file-watching process
 that will automatically transpile new or changed files.
 
 (4) In a new terminal/command prompt, start an http-server
