@@ -287,11 +287,13 @@ const getStringTypes = repo => {
   // Recursively collect all of the paths to keys with values.
   const visit = ( level, path ) => {
     Object.keys( level ).forEach( key => {
-      if ( level[ key ].value && typeof level[ key ].value === 'string' ) {
-        all.push( { path: [ ...path, key ], value: level[ key ].value } );
-      }
-      else {
-        visit( level[ key ], [ ...path, key ] );
+      if ( key !== '_comment' ) {
+        if ( level[ key ].value && typeof level[ key ].value === 'string' ) {
+          all.push( { path: [ ...path, key ], value: level[ key ].value } );
+        }
+        else {
+          visit( level[ key ], [ ...path, key ] );
+        }
       }
     } );
   };
