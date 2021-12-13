@@ -13,7 +13,9 @@
  * --watch                Continue watching all directories and transpile on detected changes.
  * --clean                Dispose of the cache that tracks file status on startup, can be combined with other commands.
  *                        You would need to run --clean if the files in chipper/dist/js or chipper/dist/js-cache-status.json
- *                        are modified externally, for example if you deleted/modified a transpiled file in chipper/dist.
+ *                        are modified externally.  For example if you edit a file in chipper/dist/js or if you edit
+ *                        chipper/dist/js-cache-status.json, they would be out of sync.  If you `rm -rf chipper/dist`
+ *                        that does not require --clean, because that erases the cache file and the js files together.
  * --skipInitial          Skip the initial transpilation.
  *
  * @author Sam Reid (PhET Interactive Simulations)
