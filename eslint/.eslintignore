@@ -1,5 +1,6 @@
 **/.git
 **/build
+**/node_modules/
 **/snapshots
 **/js/parser/svgPath.js
 **/templates/*.js
