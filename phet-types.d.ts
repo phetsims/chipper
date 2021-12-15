@@ -315,4 +315,10 @@ type CheckboxOptions = {} & _NodeOptions;
 type QSMType = {
   getAll: ( a: any ) => any
 };
+
+type AlerterOptions = {
+  alertToVoicing?: boolean;
+  descriptionAlertNode?: any;
+};
+
 declare var QueryStringMachine: QSMType;

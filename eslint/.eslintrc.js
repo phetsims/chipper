@@ -1040,6 +1040,7 @@ module.exports = {
     SoundGeneratorOptions: 'readonly',
     PathOptions: 'readonly',
     ColorDef: 'readonly',
-    ScreenViewOptions: 'readonly'
+    ScreenViewOptions: 'readonly',
+    AlerterOptions: 'readonly'
   }
 };
