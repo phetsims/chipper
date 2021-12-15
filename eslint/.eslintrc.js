@@ -956,10 +956,7 @@ module.exports = {
     'phet-object-shorthand': 'error',
 
     // disallow space between function identifier and application
-    'no-spaced-func': 'error',
-
-    // import variables for sounds and images must have the conventional suffix
-    'import-resource-variable-suffix': 'error'
+    'no-spaced-func': 'error'
 
     // TODO: comment back in when >1200 errors are fixed, see https://github.com/phetsims/chipper/issues/1079
     // 'default-import-match-filename': 'error'
