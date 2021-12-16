@@ -1,8 +1,6 @@
 /* eslint-disable copyright*/
 
 /**
- *
- *
  * Adapted/copied from rule in https://github.com/minseoksuh/eslint-plugin-consistent-default-export-name/blob/de812b2194ca9435920776119a7f732b596b4d8b/lib/rules/default-import-match-filename.js
  * Simplified and striped of some logic not needed for PhET's context.
  *
@@ -145,7 +143,6 @@ module.exports = function( context ) {
       if (
         !isCompatible( defaultImportName, filename )
       ) {
-        console.log( node.source.value );
         context.report( {
           node: defaultImportSpecifier,
           message: `Default import name does not match filename "${filename}".`
