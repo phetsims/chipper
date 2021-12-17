@@ -195,10 +195,24 @@ class Transpiler {
   watch() {
     fs.watch( '../', { recursive: true }, ( eventType, filename ) => {
 
+      const changeDetectedTime = Date.now();
+
       const path = '../' + filename;
       const pathExists = fs.existsSync( path );
 
-      if ( !filename || !pathExists ) {
+      if ( !pathExists ) {
+        const targetPath = Transpiler.getTargetPath( path );
+        if ( fs.existsSync( targetPath ) ) {
+          fs.unlinkSync( targetPath );
+
+          delete this.status[ path ];
+          fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
+          const now = Date.now();
+          const reason = ' (deleted)';
+
+          console.log( `${new Date( now ).toLocaleTimeString()}, ${( now - changeDetectedTime )} ms: ${path}${reason}` );
+        }
+
         return;
       }
       if ( filename.includes( '/node_modules/' ) || filename.includes( '.git/' ) || filename.includes( 'chipper/dist/' ) || filename.includes( 'transpile/cache/status.json' ) ||
