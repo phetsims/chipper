@@ -17,6 +17,10 @@ const core = require( '@babel/core' );
 const assert = require( 'assert' );
 
 // constants
+if ( path.sep === undefined ) {
+  throw new Error( 'path.sep is undefined' );
+}
+const PATH_SEP = path.sep;
 
 // Cache status is stored in chipper/dist so if you wipe chipper/dist you also wipe the cache
 const statusPath = '../chipper/dist/js-cache-status.json';
@@ -70,7 +74,7 @@ class Transpiler {
    */
   static getTargetPath( filename ) {
     const relativePath = path.relative( root, filename );
-    const targetPath = path.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( '.ts' ).join( '.js' );
+    const targetPath = path.join( root, 'chipper', 'dist', 'js', ...relativePath.split( PATH_SEP ) ).split( '.ts' ).join( '.js' );
     return targetPath;
   }
 
@@ -191,7 +195,10 @@ class Transpiler {
   watch() {
     fs.watch( '../', { recursive: true }, ( eventType, filename ) => {
 
-      if ( !filename || !fs.existsSync( '../' + filename ) ) {
+      const path = '../' + filename;
+      const pathExists = fs.existsSync( path );
+
+      if ( !filename || !pathExists ) {
         return;
       }
       if ( filename.includes( '/node_modules/' ) || filename.includes( '.git/' ) || filename.includes( 'chipper/dist/' ) || filename.includes( 'transpile/cache/status.json' ) ||
@@ -214,9 +221,9 @@ class Transpiler {
         this.activeRepos = newActiveRepos;
       }
       else {
-        const terms = filename.split( path.sep );
-        if ( this.activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) && fs.existsSync( '../' + filename ) ) {
-          this.visitFile( '../' + filename );
+        const terms = filename.split( PATH_SEP );
+        if ( this.activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) && pathExists ) {
+          this.visitFile( path );
         }
       }
     } );
