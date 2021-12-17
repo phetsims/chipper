@@ -449,7 +449,7 @@ const handleJSDOC = async buildDir => {
   if ( !fs.existsSync( imageDir ) ) {
     fs.mkdirSync( imageDir );
   }
-  fs.copyFileSync( '../brand/phet-io/images/logo-on-white.png', `${imageDir}/logo.png` );
+  fs.copyFileSync( '../brand/phet-io/images/logoOnWhite.png', `${imageDir}/logo.png` );
 
   const json = explanation.substring( explanation.indexOf( '[' ), explanation.lastIndexOf( ']' ) + 1 );
 
