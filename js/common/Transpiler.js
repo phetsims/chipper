@@ -16,12 +16,6 @@ const crypto = require( 'crypto' );
 const core = require( '@babel/core' );
 const assert = require( 'assert' );
 
-// constants
-if ( path.sep === undefined ) {
-  throw new Error( 'path.sep is undefined' );
-}
-const PATH_SEP = path.sep;
-
 // Cache status is stored in chipper/dist so if you wipe chipper/dist you also wipe the cache
 const statusPath = '../chipper/dist/js-cache-status.json';
 const root = '../';
@@ -74,7 +68,7 @@ class Transpiler {
    */
   static getTargetPath( filename ) {
     const relativePath = path.relative( root, filename );
-    const targetPath = path.join( root, 'chipper', 'dist', 'js', ...relativePath.split( PATH_SEP ) ).split( '.ts' ).join( '.js' );
+    const targetPath = path.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( '.ts' ).join( '.js' );
     return targetPath;
   }
 
@@ -106,36 +100,36 @@ class Transpiler {
   /**
    * For *.ts and *.js files, checks if they have changed file contents since last transpile.  If so, the
    * file is transpiled.
-   * @param {string} path
+   * @param {string} filePath
    * @private
    */
-  visitFile( path ) {
-    if ( path.endsWith( '.js' ) || path.endsWith( '.ts' ) ) {
+  visitFile( filePath ) {
+    if ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) ) {
       const changeDetectedTime = Date.now();
-      const text = fs.readFileSync( path, 'utf-8' );
+      const text = fs.readFileSync( filePath, 'utf-8' );
       const hash = crypto.createHash( 'md5' ).update( text ).digest( 'hex' );
 
       // If the file has changed, transpile and update the cache.  We have to choose on the spectrum between safety
       // and performance.  In order to maintain high performance with a low error rate, we only write the transpiled file
       // if (a) the cache is out of date (b) there is no target file at all or (c) if the target file has been modified.
-      const targetPath = Transpiler.getTargetPath( path );
+      const targetPath = Transpiler.getTargetPath( filePath );
 
-      if ( !this.status[ path ] || this.status[ path ].sourceMD5 !== hash || !fs.existsSync( targetPath ) || this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) {
+      if ( !this.status[ filePath ] || this.status[ filePath ].sourceMD5 !== hash || !fs.existsSync( targetPath ) || this.status[ filePath ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) {
         try {
           let reason = '';
           if ( this.verbose ) {
-            reason = ( !this.status[ path ] ) ? ' (not cached)' : ( this.status[ path ].sourceMD5 !== hash ) ? ' (changed)' : ( !fs.existsSync( targetPath ) ) ? ' (no target)' : ( this.status[ path ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' : '???';
+            reason = ( !this.status[ filePath ] ) ? ' (not cached)' : ( this.status[ filePath ].sourceMD5 !== hash ) ? ' (changed)' : ( !fs.existsSync( targetPath ) ) ? ' (no target)' : ( this.status[ filePath ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' : '???';
           }
-          Transpiler.transpileFunction( path, targetPath, text );
+          Transpiler.transpileFunction( filePath, targetPath, text );
 
-          this.status[ path ] = {
+          this.status[ filePath ] = {
             sourceMD5: hash, targetMilliseconds: Transpiler.modifiedTimeMilliseconds( targetPath )
           };
           fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
           const now = Date.now();
           const nowTimeString = new Date( now ).toLocaleTimeString();
 
-          console.log( `${nowTimeString}, ${( now - changeDetectedTime )} ms: ${path}${reason}` );
+          console.log( `${nowTimeString}, ${( now - changeDetectedTime )} ms: ${filePath}${reason}` );
         }
         catch( e ) {
           console.log( e );
@@ -197,20 +191,20 @@ class Transpiler {
 
       const changeDetectedTime = Date.now();
 
-      const path = '../' + filename;
-      const pathExists = fs.existsSync( path );
+      const filePath = '../' + filename;
+      const pathExists = fs.existsSync( filePath );
 
       if ( !pathExists ) {
-        const targetPath = Transpiler.getTargetPath( path );
+        const targetPath = Transpiler.getTargetPath( filePath );
         if ( fs.existsSync( targetPath ) ) {
           fs.unlinkSync( targetPath );
 
-          delete this.status[ path ];
+          delete this.status[ filePath ];
           fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
           const now = Date.now();
           const reason = ' (deleted)';
 
-          console.log( `${new Date( now ).toLocaleTimeString()}, ${( now - changeDetectedTime )} ms: ${path}${reason}` );
+          console.log( `${new Date( now ).toLocaleTimeString()}, ${( now - changeDetectedTime )} ms: ${filePath}${reason}` );
         }
 
         return;
@@ -235,9 +229,9 @@ class Transpiler {
         this.activeRepos = newActiveRepos;
       }
       else {
-        const terms = filename.split( PATH_SEP );
+        const terms = filename.split( path.sep );
         if ( this.activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) && pathExists ) {
-          this.visitFile( path );
+          this.visitFile( filePath );
         }
       }
     } );
