@@ -18,7 +18,7 @@ const assert = require( 'assert' );
 
 // Cache status is stored in chipper/dist so if you wipe chipper/dist you also wipe the cache
 const statusPath = '../chipper/dist/js-cache-status.json';
-const root = '../';
+const root = '..'+path.sep;
 
 // Directories in a sim repo that may contain things for transpilation
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
@@ -187,11 +187,12 @@ class Transpiler {
 
   // @public
   watch() {
-    fs.watch( '../', { recursive: true }, ( eventType, filename ) => {
+    fs.watch( '..'+path.sep, { recursive: true }, ( eventType, filename ) => {
 
       const changeDetectedTime = Date.now();
 
-      const filePath = '../' + filename;
+      const filePath = '..' + path.sep + filename;
+      const filePathWithForwardSlashes = filePath.split('\\').join('/');
       const pathExists = fs.existsSync( filePath );
 
       if ( !pathExists ) {
@@ -209,14 +210,17 @@ class Transpiler {
 
         return;
       }
-      if ( filename.includes( '/node_modules/' ) || filename.includes( '.git/' ) || filename.includes( 'chipper/dist/' ) || filename.includes( 'transpile/cache/status.json' ) ||
+      if ( filePathWithForwardSlashes.includes( '/node_modules/' ) ||
+           filePathWithForwardSlashes.includes( '.git/' ) ||
+           filePathWithForwardSlashes.includes( 'chipper/dist/' ) ||
+           filePathWithForwardSlashes.includes( 'transpile/cache/status.json' ) ||
 
            // Temporary files sometimes saved by the IDE
            filename.endsWith( '~' ) ) {
 
         // ignore
       }
-      else if ( filename === 'perennial/data/active-repos' ) {
+      else if ( filePathWithForwardSlashes.endsWith('perennial/data/active-repos' )) {
         const newActiveRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( '\n' );
         console.log( 'reloaded active repos' );
         const newRepos = newActiveRepos.filter( repo => !this.activeRepos.includes( repo ) );
