@@ -19,26 +19,13 @@ function removeExtension( filename ) {
 }
 
 /**
- * @param {string} filename
- * @returns {string}
- */
-function normalizeFilename( filename ) {
-  return filename.replace( /[-_.]/g, '' ).toLowerCase();
-}
-
-/**
  * Test if local name matches filename.
  * @param {string} localName
  * @param {string} filename
  * @returns {boolean}
  */
 function isCompatible( localName, filename ) {
-  const normalizedLocalName = localName.replace( /_/g, '' ).toLowerCase();
-
-  return (
-    normalizedLocalName === normalizeFilename( filename ) ||
-    normalizedLocalName === normalizeFilename( removeExtension( filename ) )
-  );
+  return localName === filename || localName === removeExtension( filename );
 }
 
 /**

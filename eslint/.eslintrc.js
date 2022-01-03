@@ -958,7 +958,7 @@ module.exports = {
     // disallow space between function identifier and application
     'no-spaced-func': 'error'
 
-    // TODO: comment back in when >1200 errors are fixed, see https://github.com/phetsims/chipper/issues/1079
+    // TODO: comment back in when >400 errors are fixed, see https://github.com/phetsims/chipper/issues/1079
     // 'default-import-match-filename': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
