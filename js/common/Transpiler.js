@@ -24,6 +24,8 @@ const root = '..' + path.sep;
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
 const subdirs = [ 'js', 'images', 'mipmaps', 'sounds' ];
 
+const getActiveRepos = () => fs.readFileSync( '../perennial-alias/data/active-repos', 'utf8' ).trim().split( '\n' ).map( sim => sim.trim() );
+
 class Transpiler {
   constructor( options ) {
 
@@ -57,7 +59,7 @@ class Transpiler {
 
     // Use the same implementation as getRepoList, but we need to read from perennial-alias since chipper should not
     // depend on perennial.
-    this.activeRepos = fs.readFileSync( '../perennial-alias/data/active-repos', 'utf8' ).trim().split( '\n' ).map( sim => sim.trim() );
+    this.activeRepos = getActiveRepos();
   }
 
   /**
@@ -221,7 +223,7 @@ class Transpiler {
         // ignore
       }
       else if ( filePathWithForwardSlashes.endsWith( 'perennial/data/active-repos' ) ) {
-        const newActiveRepos = fs.readFileSync( '../perennial/data/active-repos', 'utf-8' ).trim().split( '\n' );
+        const newActiveRepos = getActiveRepos();
         console.log( 'reloaded active repos' );
         const newRepos = newActiveRepos.filter( repo => !this.activeRepos.includes( repo ) );
 
