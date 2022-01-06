@@ -25,7 +25,7 @@ function removeExtension( filename ) {
  * @returns {boolean}
  */
 function isCompatible( localName, filename ) {
-  return localName === filename || localName === removeExtension( filename );
+  return localName === removeExtension( filename );
 }
 
 /**
