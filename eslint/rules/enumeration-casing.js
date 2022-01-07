@@ -32,8 +32,8 @@ module.exports = function( context ) {
   return {
 
     /**
-     * Detect when Enumeration is being declared as a variable, like
-     * const TemperatureUnits = Enumeration.byKeys( [ 'KELVIN', 'CELSIUS' ] );
+     * Detect when EnumerationDeprecated is being declared as a variable, like
+     * const TemperatureUnits = EnumerationDeprecated.byKeys( [ 'KELVIN', 'CELSIUS' ] );
      *
      * which will have an AST like
      * {
@@ -45,7 +45,7 @@ module.exports = function( context ) {
      *     "callee": {
      *       "object": {
      *         "type": "Identifier",
-     *         "name": "Enumeration",
+     *         "name": "EnumerationDeprecated",
      *       }
      *     }
      *   }
@@ -63,7 +63,7 @@ module.exports = function( context ) {
 
     /**
      * When the enumeration is being assigned as variable. May look something like
-     * PlayArea.Dimension = Enumeration.byKeys( [ 'ONE', 'TWO' ] );
+     * PlayArea.Dimension = EnumerationDeprecated.byKeys( [ 'ONE', 'TWO' ] );
      *
      * And the AST will look something like
      * {
@@ -82,7 +82,7 @@ module.exports = function( context ) {
      *       "callee": {
      *         "type": "MemberExpression",
      *         "object": {
-     *           "name": "Enumeration",
+     *           "name": "EnumerationDeprecated",
      *         },
      *       }
      *     }
@@ -94,12 +94,12 @@ module.exports = function( context ) {
     ExpressionStatement: node => {
       if ( node.expression && node.expression.right && node.expression.right.callee ) {
 
-        // right hand side, creating an Enumeration
+        // right hand side, creating an EnumerationDeprecated
         if ( node.expression.right.callee.object ) {
           if ( node.expression.right.callee.object.name ) {
             if ( node.expression.right.callee.object.name === 'Enumeration' ) {
 
-              // left hand side, assigning Enumeration to variable name
+              // left hand side, assigning EnumerationDeprecated to variable name
               if ( node.expression.left && node.expression.left.property ) {
                 if ( node.expression.left.property.name ) {
                   const enumerationName = node.expression.left.property.name;
