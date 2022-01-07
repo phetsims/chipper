@@ -1041,6 +1041,7 @@ module.exports = {
     PathOptions: 'readonly',
     ColorDef: 'readonly',
     ScreenViewOptions: 'readonly',
-    AlerterOptions: 'readonly'
+    AlerterOptions: 'readonly',
+    PaintDef: 'readonly'
   }
 };

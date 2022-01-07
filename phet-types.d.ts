@@ -264,7 +264,7 @@ type SoundGeneratorOptions = {
 };
 
 // Placeholder until we can use TypeScript in common code
-class ObservableArray<T> extends Array<T> {
+    class ObservableArray<T> extends Array<T> {
   lengthProperty: Property<number>;
 
   removeAll( elements: T[] ) {
