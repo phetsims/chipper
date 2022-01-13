@@ -55,7 +55,7 @@ module.exports = function( context ) {
      */
     VariableDeclarator: node => {
       if ( node.init && node.init.callee && node.init.callee.object ) {
-        if ( node.init.callee.object.name === 'Enumeration' ) {
+        if ( node.init.callee.object.name === 'EnumerationDeprecated' ) {
           verifyEnumerationName( node.id.name, node );
         }
       }
@@ -97,7 +97,7 @@ module.exports = function( context ) {
         // right hand side, creating an EnumerationDeprecated
         if ( node.expression.right.callee.object ) {
           if ( node.expression.right.callee.object.name ) {
-            if ( node.expression.right.callee.object.name === 'Enumeration' ) {
+            if ( node.expression.right.callee.object.name === 'EnumerationDeprecated' ) {
 
               // left hand side, assigning EnumerationDeprecated to variable name
               if ( node.expression.left && node.expression.left.property ) {
