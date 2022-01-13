@@ -106,7 +106,8 @@ class Transpiler {
    * @private
    */
   visitFile( filePath ) {
-    if ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) ) {
+    filePath = this.forwardSlashify( filePath );
+    if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) ) && !this.ignorePath( filePath ) ) {
       const changeDetectedTime = Date.now();
       const text = fs.readFileSync( filePath, 'utf-8' );
       const hash = crypto.createHash( 'md5' ).update( text ).digest( 'hex' );
@@ -157,6 +158,23 @@ class Transpiler {
     }
   }
 
+  // @private
+  ignorePath( filePath ) {
+    const withForwardSlashes = this.forwardSlashify( filePath );
+    return withForwardSlashes.includes( '/node_modules/' ) ||
+           withForwardSlashes.includes( '.git/' ) ||
+           withForwardSlashes.includes( 'chipper/dist/' ) ||
+           withForwardSlashes.includes( 'transpile/cache/status.json' ) ||
+
+           // Temporary files sometimes saved by the IDE
+           withForwardSlashes.endsWith( '~' );
+  }
+
+  // @private
+  forwardSlashify( filePath ) {
+    return filePath.split( '\\' ).join( '/' );
+  }
+
   /**
    * Transpile the specified repos
    * @param {string[]} repos
@@ -187,14 +205,26 @@ class Transpiler {
     this.transpileRepos( this.activeRepos );
   }
 
+  // @private
+  saveCache() {
+    fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
+  }
+
   // @public
   watch() {
+
+    // Exit on Ctrl + C case, but make sure to save the cache
+    process.on( 'SIGINT', () => {
+      this.saveCache();
+      process.exit();
+    } );
+
     fs.watch( '..' + path.sep, { recursive: true }, ( eventType, filename ) => {
 
       const changeDetectedTime = Date.now();
 
       const filePath = '..' + path.sep + filename;
-      const filePathWithForwardSlashes = filePath.split( '\\' ).join( '/' );
+      const filePathWithForwardSlashes = this.forwardSlashify( filePath );
       const pathExists = fs.existsSync( filePath );
 
       if ( !pathExists ) {
@@ -203,7 +233,7 @@ class Transpiler {
           fs.unlinkSync( targetPath );
 
           delete this.status[ filePath ];
-          fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
+          this.saveCache();
           const now = Date.now();
           const reason = ' (deleted)';
 
@@ -212,14 +242,7 @@ class Transpiler {
 
         return;
       }
-      if ( filePathWithForwardSlashes.includes( '/node_modules/' ) ||
-           filePathWithForwardSlashes.includes( '.git/' ) ||
-           filePathWithForwardSlashes.includes( 'chipper/dist/' ) ||
-           filePathWithForwardSlashes.includes( 'transpile/cache/status.json' ) ||
-
-           // Temporary files sometimes saved by the IDE
-           filename.endsWith( '~' ) ) {
-
+      if ( this.ignorePath( filePathWithForwardSlashes ) ) {
         // ignore
       }
       else if ( filePathWithForwardSlashes.endsWith( 'perennial/data/active-repos' ) ) {
