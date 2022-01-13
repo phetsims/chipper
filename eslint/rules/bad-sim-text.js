@@ -55,8 +55,8 @@ module.exports = function( context ) {
     'window.innerHeight',
 
     // These are types that can be inferred by the common code and provided arguments
-    'new RichEnumeration<',
-    'new RichEnumerationProperty<',
+    'new Enumeration<',
+    'new EnumerationProperty<',
 
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     {
