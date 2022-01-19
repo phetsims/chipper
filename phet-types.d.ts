@@ -310,7 +310,10 @@ type ComboBoxItemOptions = Partial<{
   a11yLabel: string | null
 }>;
 
-type CheckboxOptions = {} & _NodeOptions;
+type CheckboxOptions = {
+  checkedContextResponseUtterance?: Utterance | null,
+  uncheckedContextResponseUtterance?: Utterance | null
+} & _NodeOptions;
 
 type QSMType = {
   getAll: ( a: any ) => any
