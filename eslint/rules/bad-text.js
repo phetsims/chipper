@@ -86,6 +86,9 @@ module.exports = function( context ) {
     // had a sim about people that are from three different named locations.
     'locationProperty',
 
+    // optionize cannot infer its type arguments
+    'optionize(',
+
     {
       id: 'Import from statements require a *.js suffix',
       predicate: line => {
