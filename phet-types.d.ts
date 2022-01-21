@@ -8,6 +8,10 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+// See https://stackoverflow.com/a/51114250/3408502
+NodeOptions = import('../scenery/js/Node.ts').NodeOptions;
+
 declare var assert: undefined | ( ( x: any, s?: string ) => void );
 declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
 declare var sceneryLog: undefined | any;
@@ -15,122 +19,6 @@ declare var phet: any;
 
 type PaintDef = Paint | Color | string | Property<null | string | Color>;
 type ColorDef = Color | string | null | Property<null | string | Color>;
-
-type ParallelDOMOptions = Partial<{
-  focusable: boolean | null;
-  tagName: string | null;
-  accessibleName: string | null;
-
-  // Cannot import Node from here. .. oh well
-  // accessibleNameBehavior: ( node:Node, options: T, helpText ) => T;
-  helpText: string | null;
-  // helpTextBehavior: ( node:Node, options: T, helpText ) => T;
-  pdomHeading: string | null;
-  containerTagName: string | null;
-  containerAriaRole: string | null;
-  innerContent: string | null;
-  inputType: string | null;
-  inputValue: string | number | null;
-  pdomChecked: boolean | null;
-  pdomNamespace: string | null;
-  ariaLabel: string | null;
-  ariaRole: string | null;
-  ariaValueText: string | null;
-  labelTagName: string | null;
-  labelContent: string | null;
-  appendLabel: string | null;
-  descriptionTagName: string | null;
-  descriptionContent: string | null;
-  appendDescription: boolean | null;
-  // focusHighlight: FocusHighlightPath | null ;
-  focusHighlightLayerable: boolean | null;
-  // groupFocusHighlight: GroupFocusHighlight | null;
-  pdomVisible: boolean | null;
-  // pdomOrder: Node[] | null;
-  // ariaLabelledbyAssociations: string | null;
-  // ariaDescribedbyAssociations: string | null;
-  // activeDescendantAssociations: string | null;
-  positionInPDOM: boolean | null;
-  // pdomTransformSourceNode: Node | null;
-}>;
-
-// Placeholder until we can use TypeScript in common code
-type _NodeOptions = Partial<{
-
-  children: any[], // TODO: importing Node in phet-types.d.ts creates a cycle.  We will need to separate files
-  cursor: string | null,
-
-  phetioVisiblePropertyInstrumented: boolean,
-  visibleProperty: Property<boolean> | null,
-  visible: boolean,
-
-  pickableProperty: Property<boolean | null> | null,
-  pickable: boolean | null,
-
-  phetioEnabledPropertyInstrumented: boolean,
-  enabledProperty: Property<boolean> | null,
-  enabled: boolean,
-
-  phetioInputEnabledPropertyInstrumented: boolean,
-  inputEnabledProperty: Property<boolean> | null,
-  inputEnabled: boolean,
-  inputListeners: Array<Object>,
-  opacity: number,
-  disabledOpacity: number,
-  filters: Array<Filter>,
-  matrix: Matrix3,
-  translation: Vector2,
-  x: number,
-  y: number,
-  rotation: number,
-  scale: number,
-  excludeInvisibleChildrenFromBounds: boolean,
-  layoutOptions: Object | null,
-  localBounds: Bounds2 | null,
-  maxWidth: number | null,
-  maxHeight: number | null,
-  leftTop: Vector2,
-  centerTop: Vector2,
-  rightTop: Vector2,
-  leftCenter: Vector2,
-  center: Vector2,
-  rightCenter: Vector2,
-  leftBottom: Vector2,
-  centerBottom: Vector2,
-  rightBottom: Vector2,
-  left: number,
-  right: number,
-  top: number,
-  bottom: number,
-  centerX: number,
-  centerY: number,
-  renderer: string | null,
-  layerSplit: boolean,
-  usesOpacity: boolean,
-  cssTransform: boolean,
-  excludeInvisible: boolean,
-  webglScale: number | null,
-  preventFit: boolean,
-  mouseArea: Bounds2 | Shape | null,
-  touchArea: Bounds2 | Shape | null,
-  clipArea: Shape | null,
-  transformBounds: boolean,
-
-  // from PhetioObject.  Delete when this is moved to core code
-  tandem?: Tandem;
-  phetioType?: IOType;
-  phetioState?: boolean;
-  phetioReadOnly?: boolean;
-  phetioEventType?: any;
-  phetioDocumentation?: string;
-  phetioHighFrequency?: boolean;
-  phetioPlayback?: boolean;
-  phetioStudioControl?: boolean;
-  phetioFeatured?: boolean;
-  phetioEventMetadata?: any;
-  phetioDynamicElement?: boolean;
-  phetioDesigned?: boolean;
-}> & ParallelDOMOptions;
 
 type ScreenViewOptions = Partial<{
   layoutBounds: Bounds2,
@@ -145,11 +33,11 @@ type ScreenViewOptions = Partial<{
   tagName: string,
   screenSummaryContent: Node | null,
   includePDOMNodes: boolean
-}> & _NodeOptions;
+}> & NodeOptions;
 
 type CanvasNodeOptions = {
   canvasBounds?: Bounds2;
-} & _NodeOptions;
+} & NodeOptions;
 
 type ThermometerNodeOptions = Partial<{
   bulbDiameter: number,
@@ -168,7 +56,7 @@ type ThermometerNodeOptions = Partial<{
   fluidHighlightColor: ColorDef,
   fluidRightSideColor: ColorDef,
   tandem: Tandem
-}> & _NodeOptions;
+}> & NodeOptions;
 
 type PaintableOptions = {
   fill?: PaintDef;
@@ -197,7 +85,7 @@ type PanelOptions = Partial<{
   align: 'left' | 'right' | 'center',
   minWidth: number,
   tandem: Tandem
-}> & _NodeOptions;
+}> & NodeOptions;
 
 type ButtonNodeOptions = {
   content?: null,
@@ -209,9 +97,9 @@ type ButtonNodeOptions = {
   yContentOffset?: number,
   baseColor?: ColorDef,
   disabledColor?: ColorDef,
-} & _NodeOptions & PaintableOptions;
+} & NodeOptions & PaintableOptions;
 
-type RectangleOptions = _NodeOptions & PaintableOptions;
+type RectangleOptions = NodeOptions & PaintableOptions;
 
 type RoundButtonOptions = Partial<{
   content: any,
@@ -301,7 +189,7 @@ type AccordionBoxOptions = {
   buttonXMargin?: number,
   buttonYMargin?: number,
   expandCollapseButtonOptions?: ExpandCollapseButtonOptions,
-} & _NodeOptions;
+} & NodeOptions;
 
 // Placeholder until we can use TypeScript in common code
 type ComboBoxItemOptions = Partial<{
@@ -313,7 +201,7 @@ type ComboBoxItemOptions = Partial<{
 type CheckboxOptions = {
   checkedContextResponseUtterance?: Utterance | null,
   uncheckedContextResponseUtterance?: Utterance | null
-} & _NodeOptions;
+} & NodeOptions;
 
 type QSMType = {
   getAll: ( a: any ) => any
