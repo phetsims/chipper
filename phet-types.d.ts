@@ -201,8 +201,8 @@ type ComboBoxItemOptions = Partial<{
 }>;
 
 type CheckboxOptions = {
-  checkedContextResponseUtterance?: Utterance | null,
-  uncheckedContextResponseUtterance?: Utterance | null
+  checkedContextResponse?: Utterance | null,
+  uncheckedContextResponse?: Utterance | null
 } & NodeOptions;
 
 type QSMType = {
