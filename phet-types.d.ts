@@ -20,6 +20,8 @@ declare var phet: any;
 type PaintDef = Paint | Color | string | Property<null | string | Color>;
 type ColorDef = Color | string | null | Property<null | string | Color>;
 
+type AlertableDef = string | number | ResponsePacket | Utterance;
+
 type ScreenViewOptions = Partial<{
   layoutBounds: Bounds2,
   layerSplit: boolean,
