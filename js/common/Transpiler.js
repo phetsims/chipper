@@ -15,6 +15,7 @@ const path = require( 'path' );
 const crypto = require( 'crypto' );
 const core = require( '@babel/core' );
 const assert = require( 'assert' );
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 
 // Cache status is stored in chipper/dist so if you wipe chipper/dist you also wipe the cache
 const statusPath = '../chipper/dist/js-cache-status.json';
@@ -29,9 +30,10 @@ const getActiveRepos = () => fs.readFileSync( '../perennial-alias/data/active-re
 class Transpiler {
   constructor( options ) {
 
-    options = options || {
-      clean: false, verbose: false
-    };
+    options = _.extend( {
+      clean: false, // delete the previous state/cache file, and create a new one.
+      verbose: false // Add extra logging
+    }, options );
 
     // @private
     this.verbose = options.verbose;
