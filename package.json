@@ -17,7 +17,7 @@
     "grunt-jsbeautifier": "^0.2.13",
     "jimp": "^0.2.0",
     "jpeg-js": "~0.1.1",
-    "jsdoc": "~3.6.3",
+    "jsdoc": "3.6.7",
     "lodash": "^4.17.10",
     "marked": "^0.3.13",
     "md5": "~2",
