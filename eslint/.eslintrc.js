@@ -1031,6 +1031,7 @@ module.exports = {
     AccordionBoxOptions: 'readonly',
     CheckboxOptions: 'readonly',
     PanelOptions: 'readonly',
+    LayoutBoxOptions: 'readonly',
     RectangleOptions: 'readonly',
     RoundPushButtonOptions: 'readonly',
     RoundButtonOptions: 'readonly',

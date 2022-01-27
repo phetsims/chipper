@@ -200,6 +200,14 @@ type ComboBoxItemOptions = Partial<{
   a11yLabel: string | null
 }>;
 
+// Placeholder until we can use TypeScript in common code
+type LayoutBoxOptions = {
+  orientation: string,
+  spacing: number,
+  align: string,
+  resize: boolean
+} & NodeOptions;
+
 type CheckboxOptions = {
   checkedContextResponse?: AlertableDef | null,
   uncheckedContextResponse?: AlertableDef | null
