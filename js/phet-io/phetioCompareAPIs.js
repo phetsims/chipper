@@ -246,7 +246,6 @@
         // The following metadata keys are non-breaking:
         // 'phetioDocumentation'
         // 'phetioFeatured'
-        // 'phetioStudioControl'
         // 'phetioHighFrequency', non-breaking, assuming clients with data have the full data stream
 
         // Check for design changes

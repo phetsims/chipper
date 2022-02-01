@@ -42,7 +42,6 @@ const DEFAULT_API = {
         phetioPlayback: false,
         phetioReadOnly: false,
         phetioState: true,
-        phetioStudioControl: true,
         phetioTypeName: 'ObjectIO'
       },
       methodOrder: [],
