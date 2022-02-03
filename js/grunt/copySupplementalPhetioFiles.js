@@ -225,6 +225,9 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       contents = ChipperStringUtils.replaceAll( contents, '<script src="../contrib/', '<script src="../../contrib/' );
       contents = ChipperStringUtils.replaceAll( contents, '<script type="module" src="../chipper/dist/js/studio/js/studio-main.js"></script>',
         `<script src="./${STUDIO_BUILT_FILENAME}"></script>` );
+
+      contents = ChipperStringUtils.replaceAll( contents, '{{PHET_IO_GUIDE_LINK}}', `../../doc/guides/${PHET_IO_GUIDE_FILENAME}.html` );
+      contents = ChipperStringUtils.replaceAll( contents, '{{EXAMPLES_LINK}}', `../../doc/guides/${EXAMPLES_FILENAME}.html` );
     }
 
     if ( contents !== originalContents ) {
