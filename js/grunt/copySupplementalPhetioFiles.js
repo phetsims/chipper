@@ -35,7 +35,7 @@ const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant,
 // For Client Guides
 const CLIENT_GUIDES_DIR = '../phet-io-client-guides/';
 const COMMON_DIR = 'common/';
-const CLIENT_REQUESTS_FILENAME = 'client-requests';
+const EXAMPLES_FILENAME = 'examples';
 const PHET_IO_GUIDE_FILENAME = 'phet-io-guide';
 const PHET_IO_MIGRATION_GUIDE_FILENAME = 'migration-guide';
 const CONTRIB_DIR = 'contrib/';
@@ -212,9 +212,9 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       contents = ChipperStringUtils.replaceAll( contents, '{{PHET_IO_GUIDE_ROW}}',
         getGuideRowText( PHET_IO_GUIDE_FILENAME, 'PhET-iO Guide',
           'Documentation for instructional designers about best practices for simulation customization with PhET-iO Studio.' ) );
-      contents = ChipperStringUtils.replaceAll( contents, '{{CLIENT_REQUESTS_ROW}}',
-        getGuideRowText( CLIENT_REQUESTS_FILENAME, 'Client Requests',
-          'Provides instructions and the specific phetioIDs for client-requested customizations.' ) );
+      contents = ChipperStringUtils.replaceAll( contents, '{{EXAMPLES_ROW}}',
+        getGuideRowText( EXAMPLES_FILENAME, 'Examples',
+          'Provides instructions and the specific phetioIDs for customizating the simulation.' ) );
       contents = ChipperStringUtils.replaceAll( contents, '{{MIGRATION_GUIDE_ROW}}',
         getGuideRowText( PHET_IO_MIGRATION_GUIDE_FILENAME, 'Migration Guide',
           'Provides a list of changes that have occurred to the API since the previous version.' ) );
@@ -491,7 +491,7 @@ const handleClientGuides = ( repoName, buildDir ) => {
 
   // handle generating and writing the html file for each client guide
   generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html` );
-  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${CLIENT_REQUESTS_FILENAME}.md`, `${builtClientGuidesOutputDir}${CLIENT_REQUESTS_FILENAME}.html` );
+  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`, `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html` );
   generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${PHET_IO_MIGRATION_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_MIGRATION_GUIDE_FILENAME}.html` );
 };
 
