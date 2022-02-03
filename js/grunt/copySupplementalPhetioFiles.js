@@ -312,7 +312,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   await handleJSDOC( buildDir );
 
   // create the client guides
-  handleClientGuides( repo, buildDir );
+  handleClientGuides( repo, simulationDisplayName, buildDir );
 
   await handleStudio( wrappersLocation );
 
@@ -471,9 +471,10 @@ const handleJSDOC = async buildDir => {
 /**
  * Generates the phet-io client guides and puts them in `build/phet-io/doc/guides/`
  * @param {string} repoName
+ * @param {string} simulationDisplayName
  * @param {string} buildDir
  */
-const handleClientGuides = ( repoName, buildDir ) => {
+const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
   const clientGuidesSourceRoot = `${CLIENT_GUIDES_DIR}${repoName}/`;
 
@@ -493,18 +494,20 @@ const handleClientGuides = ( repoName, buildDir ) => {
   }
 
   // handle generating and writing the html file for each client guide
-  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html` );
-  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`, `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html` );
-  generateAndWriteClientGuide( repoName, `${clientGuidesSourceRoot}${PHET_IO_MIGRATION_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_MIGRATION_GUIDE_FILENAME}.html` );
+  generateAndWriteClientGuide( repoName, simulationDisplayName, PHET_IO_GUIDE_FILENAME, `${clientGuidesSourceRoot}${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html` );
+  generateAndWriteClientGuide( repoName, simulationDisplayName, EXAMPLES_FILENAME, `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`, `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html` );
+  generateAndWriteClientGuide( repoName, simulationDisplayName, PHET_IO_MIGRATION_GUIDE_FILENAME, `${clientGuidesSourceRoot}${PHET_IO_MIGRATION_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_MIGRATION_GUIDE_FILENAME}.html` );
 };
 
 /**
  * Takes a markdown client guides, fills in the links, and then generates and writes it as html
  * @param {string} repoName
+ * @param {string} simulationDisplayName
+ * @param {string} contentFileNameNoSuffix
  * @param {string} mdFilePath - to get the source md file
  * @param {string} destinationPath - to write to
  */
-const generateAndWriteClientGuide = ( repoName, mdFilePath, destinationPath ) => {
+const generateAndWriteClientGuide = ( repoName, simulationDisplayName, contentFileNameNoSuffix, mdFilePath, destinationPath ) => {
 
   // make sure the source markdown file exists
   if ( !fs.existsSync( mdFilePath ) ) {
@@ -527,6 +530,7 @@ const generateAndWriteClientGuide = ( repoName, mdFilePath, destinationPath ) =>
   // link a stylesheet
   const clientGuideHTML = `<head>
                    <link rel='stylesheet' href='common/css/github-markdown.css' type='text/css'>
+                   <title>${simulationDisplayName}: ${contentFileNameNoSuffix}</title>
                  </head>
                  <body>
                  <div class="markdown-body">
