@@ -214,7 +214,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
           'Documentation for instructional designers about best practices for simulation customization with PhET-iO Studio.' ) );
       contents = ChipperStringUtils.replaceAll( contents, '{{EXAMPLES_ROW}}',
         getGuideRowText( EXAMPLES_FILENAME, 'Examples',
-          'Provides instructions and the specific phetioIDs for customizating the simulation.' ) );
+          'Provides instructions and the specific phetioIDs for customizing the simulation.' ) );
       contents = ChipperStringUtils.replaceAll( contents, '{{MIGRATION_GUIDE_ROW}}',
         getGuideRowText( PHET_IO_MIGRATION_GUIDE_FILENAME, 'Migration Guide',
           'Provides a list of changes that have occurred to the API since the previous version.' ) );
