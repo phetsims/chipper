@@ -953,10 +953,10 @@ module.exports = {
     'phet-object-shorthand': 'error',
 
     // disallow space between function identifier and application
-    'no-spaced-func': 'error'
+    'no-spaced-func': 'error',
 
-    // TODO: comment back in when >160 errors are fixed, see https://github.com/phetsims/chipper/issues/1079
-    // 'default-import-match-filename': 'error'
+    // a default import variable name should be the same as the filename
+    'default-import-match-filename': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
