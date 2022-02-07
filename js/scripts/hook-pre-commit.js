@@ -141,7 +141,7 @@ const withServer = require( '../common/withServer' );
         }
       }
 
-      outputToConsole && console.log( 'no problems detected' );
+      outputToConsole && console.log( 'QUnit: no problems detected' );
     }
   }
   catch( e ) {
