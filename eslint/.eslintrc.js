@@ -994,6 +994,9 @@ module.exports = {
     // jQuery
     $: 'readonly',
 
+    // jQuery for type documentation
+    JQuery: 'readonly',
+
     document: 'readonly',
 
     // for linting Node.js code
