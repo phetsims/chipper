@@ -11,6 +11,7 @@
 
 // See https://stackoverflow.com/a/51114250/3408502
 NodeOptions = import('../scenery/js/Node.ts').NodeOptions;
+TAlertableDef = import('../utterance-queue/js/AlertableDef.ts').TAlertableDef;
 
 declare var assert: undefined | ( ( x: any, s?: string ) => void );
 declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
@@ -19,8 +20,6 @@ declare var phet: any;
 
 type PaintDef = Paint | Color | string | Property<null | string | Color>;
 type ColorDef = Color | string | null | Property<null | string | Color>;
-
-type AlertableDef = string | number | ResponsePacket | Utterance;
 
 type ScreenViewOptions = Partial<{
   layoutBounds: Bounds2,
@@ -209,8 +208,8 @@ type LayoutBoxOptions = {
 } & NodeOptions;
 
 type CheckboxOptions = {
-  checkedContextResponse?: AlertableDef | null,
-  uncheckedContextResponse?: AlertableDef | null
+  checkedContextResponse?: TAlertableDef | null,
+  uncheckedContextResponse?: TAlertableDef | null
 } & NodeOptions;
 
 type QSMType = {
