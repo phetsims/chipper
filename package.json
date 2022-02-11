@@ -16,6 +16,7 @@
     "@babel/preset-typescript": "7.16.0",
     "@types/jquery": "^3.5.13",
     "@types/lodash": "^4.14.172",
+    "@types/p2": "^0.7.39",
     "@types/qunit": "^2.11.2",
     "@typescript-eslint/parser": "5.4.0",
     "archiver": "^5.3.0",
