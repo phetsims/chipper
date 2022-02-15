@@ -1038,6 +1038,7 @@ module.exports = {
     RectangleOptions: 'readonly',
     RoundPushButtonOptions: 'readonly',
     RoundButtonOptions: 'readonly',
+    SoundClipOptions: 'readonly',
     SoundGeneratorOptions: 'readonly',
     PathOptions: 'readonly',
     ColorDef: 'readonly',
