@@ -152,6 +152,14 @@ type SoundGeneratorOptions = {
   additionalAudioNodes?: AudioNode[]
 };
 
+type SoundClipOptions = {
+  loop?: boolean,
+  trimSilence?: boolean,
+  initialPlaybackRate?: number,
+  initiateWhenDisabled?: boolean,
+  rateChangesAffectPlayingSounds?: boolean
+} & SoundGeneratorOptions;
+
 // Placeholder until we can use TypeScript in common code
 class ObservableArray<T> extends Array<T> {
   lengthProperty: Property<number>;
