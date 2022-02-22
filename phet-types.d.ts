@@ -221,7 +221,8 @@ type CheckboxOptions = {
 } & NodeOptions;
 
 type QSMType = {
-  getAll: ( a: any ) => any
+  getAll: ( a: any ) => any,
+  containsKey: ( key: string ) => boolean
 };
 
 type AlerterOptions = {
