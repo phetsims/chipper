@@ -494,6 +494,23 @@
     shuffleListeners: { type: 'flag' },
 
     /**
+     * When true, use SpeechSynthesisParentPolyfill to assign an implementation of SpeechSynthesis
+     * to the window so that it can be used in platforms where it otherwise would not be available.
+     * Assumes that an implementation of SpeechSynthesis is available from a parent iframe window.
+     * See SpeechSynthesisParentPolyfill in utterance-queue for more information.
+     *
+     * This cannot be a query parameter in utterance-queue because utterance-queue (a dependency of scenery)
+     * can not use QueryStringMachine. See https://github.com/phetsims/scenery/issues/1366.
+     *
+     * For more information about the motivation for this see https://github.com/phetsims/fenster/issues/3
+     *
+     * For internal use only.
+     */
+    speechSynthesisFromParent: {
+      type: 'flag'
+    },
+
+    /**
      * Speed multiplier for everything in the sim. This scales the value of dt for AXON/timer,
      * model.step, view.step, and anything else that is controlled from Sim.stepSimulation.
      * Normal speed is 1. Larger values make time go faster, smaller values make time go slower.
