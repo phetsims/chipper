@@ -1031,7 +1031,7 @@ module.exports = {
     NodeOptions: 'readonly',
     CanvasNodeOptions: 'readonly',
     ThermometerNodeOptions: 'readonly',
-    AccordionBoxOptions: 'readonly',
+    ExpandCollapseButtonOptions: 'readonly',
     CheckboxOptions: 'readonly',
     PanelOptions: 'readonly',
     LayoutBoxOptions: 'readonly',

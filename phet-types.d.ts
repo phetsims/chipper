@@ -142,7 +142,7 @@ type RectangularToggleButtonOptions = {
   rightBottomCornerRadius?: number | null;
 } & ButtonNodeOptions;
 
-type ExpandCollapseButtonOptions = {} & RectangularToggleButtonOptions;
+type ExpandCollapseButtonOptions = RectangularToggleButtonOptions;
 
 type SoundGeneratorOptions = {
   initialOutputLevel?: number,
@@ -184,21 +184,6 @@ class ObservableArray<T> extends Array<T> {
 
   clear() {}
 }
-
-// Placeholder until we can use TypeScript in common code
-type AccordionBoxOptions = {
-  titleAlignX?: 'left' | 'right' | 'center',
-  titleXSpacing?: number,
-
-  titleNode?: Node,
-  contentXMargin?: number,
-  contentYMargin?: number,
-  contentYSpacing?: number,
-  cornerRadius?: number,
-  buttonXMargin?: number,
-  buttonYMargin?: number,
-  expandCollapseButtonOptions?: ExpandCollapseButtonOptions,
-} & NodeOptions;
 
 // Placeholder until we can use TypeScript in common code
 type ComboBoxItemOptions = Partial<{
