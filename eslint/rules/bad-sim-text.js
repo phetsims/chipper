@@ -71,8 +71,15 @@ module.exports = function( context ) {
     // Decided on during developer meeting, in regards to https://github.com/phetsims/scenery/issues/1324, use `{ Type }`
     // import syntax from SCENERY/imports.js
     {
-      id: 'import from scenery not from imports.js',
+      id: 'should import from SCENERY/imports.js instead of directly',
       regex: /import.*from.*\/scenery\/(?!js\/imports.js)/
+    },
+
+    // Decided on during developer meeting, in regards to https://github.com/phetsims/scenery/issues/1324, use `{ Type }`
+    // import syntax from KITE/imports.js
+    {
+      id: 'should import from KITE/imports.js instead of directly',
+      regex: /import.*from.*\/kite\/(?!js\/imports.js)/
     },
 
     // DOT/Utils.toFixed or DOT/Utils.toFixedNumber should be used instead of toFixed.
