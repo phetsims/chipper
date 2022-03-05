@@ -144,14 +144,6 @@ type RectangularToggleButtonOptions = {
 
 type ExpandCollapseButtonOptions = RectangularToggleButtonOptions;
 
-type SoundGeneratorOptions = {
-  initialOutputLevel?: number,
-  audioContext?: AudioContext,
-  connectImmediately?: boolean,
-  enableControlProperties?: Property<boolean>[],
-  additionalAudioNodes?: AudioNode[]
-};
-
 type SoundClipOptions = {
   loop?: boolean,
   trimSilence?: boolean,
