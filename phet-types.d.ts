@@ -112,11 +112,6 @@ class ObservableArray<T> extends Array<T> {
   clear() {}
 }
 
-type CheckboxOptions = {
-  checkedContextResponse?: TAlertableDef | null,
-  uncheckedContextResponse?: TAlertableDef | null
-} & NodeOptions;
-
 type QSMType = {
   getAll: ( a: any ) => any,
   containsKey: ( key: string ) => boolean
