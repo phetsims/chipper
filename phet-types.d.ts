@@ -18,28 +18,6 @@ declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
 declare var sceneryLog: undefined | any;
 declare var phet: any;
 
-type PaintDef = Paint | Color | string | Property<null | string | Color>;
-type ColorDef = Color | string | null | Property<null | string | Color>;
-
-type ScreenViewOptions = Partial<{
-  layoutBounds: Bounds2,
-  layerSplit: boolean,
-  excludeInvisible: boolean,
-  tandem: Tandem,
-  visiblePropertyOptions: {
-    phetioState: boolean,
-    phetioReadOnly: boolean
-  },
-  containerTagName: string,
-  tagName: string,
-  screenSummaryContent: Node | null,
-  includePDOMNodes: boolean
-}> & NodeOptions;
-
-type CanvasNodeOptions = {
-  canvasBounds?: Bounds2;
-} & NodeOptions;
-
 type ThermometerNodeOptions = Partial<{
   bulbDiameter: number,
   tubeWidth: number,
@@ -58,49 +36,6 @@ type ThermometerNodeOptions = Partial<{
   fluidRightSideColor: ColorDef,
   tandem: Tandem
 }> & NodeOptions;
-
-type PaintableOptions = {
-  fill?: PaintDef;
-  fillPickable?: boolean;
-  stroke?: PaintDef;
-  strokePickable?: boolean;
-  lineWidth?: number;
-  lineCap?: string;
-  lineJoin?: string;
-  miterLimit?: number;
-  lineDash?: Array<number>;
-  lineDashOffset?: number;
-  cachedPaints?: PaintDef;
-};
-
-type PanelOptions = Partial<{
-  fill: string | Color,
-  stroke: string | Color,
-  lineWidth: number,
-  xMargin: number,
-  yMargin: number,
-  cornerRadius: number,
-  resize: boolean,
-  backgroundPickable: boolean,
-  excludeInvisibleChildrenFromBounds: boolean,
-  align: 'left' | 'right' | 'center',
-  minWidth: number,
-  tandem: Tandem
-}> & NodeOptions;
-
-type ButtonNodeOptions = {
-  content?: null,
-  xMargin?: number,
-  yMargin?: number,
-  xAlign?: 'left' | 'right' | 'center',
-  yAlign?: 'top' | 'bottom' | 'center',
-  xContentOffset?: number,
-  yContentOffset?: number,
-  baseColor?: ColorDef,
-  disabledColor?: ColorDef,
-} & NodeOptions & PaintableOptions;
-
-type RectangleOptions = NodeOptions & PaintableOptions;
 
 type RoundButtonOptions = Partial<{
   content: any,
@@ -176,21 +111,6 @@ class ObservableArray<T> extends Array<T> {
 
   clear() {}
 }
-
-// Placeholder until we can use TypeScript in common code
-type ComboBoxItemOptions = Partial<{
-  soundPlayer: SoundPlayer,
-  tandemName: string | null,
-  a11yLabel: string | null
-}>;
-
-// Placeholder until we can use TypeScript in common code
-type LayoutBoxOptions = {
-  orientation: string,
-  spacing: number,
-  align: string,
-  resize: boolean
-} & NodeOptions;
 
 type CheckboxOptions = {
   checkedContextResponse?: TAlertableDef | null,
