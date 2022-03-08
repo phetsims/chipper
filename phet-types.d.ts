@@ -11,6 +11,7 @@
 
 // See https://stackoverflow.com/a/51114250/3408502
 NodeOptions = import('../scenery/js/Node.ts').NodeOptions;
+RectangularToggleButtonOptions = import('../sun/buttons/RectangularToggleButton.ts').RectangularToggleButtonOptions;
 TAlertableDef = import('../utterance-queue/js/AlertableDef.ts').TAlertableDef;
 
 declare var assert: undefined | ( ( x: any, s?: string ) => void );
@@ -56,26 +57,6 @@ type RoundPushButtonOptions = {
   soundPlayer?: SoundClipPlayer,
   listener?: () => void,
 } & RoundButtonOptions;
-
-type RectangularToggleButtonOptions = {
-  content?: null | Node;
-  size?: Dimension2;
-  minWidth?: number;
-  minHeight?: number;
-  touchAreaXDilation?: number;
-  touchAreaYDilation?: number;
-  mouseAreaXDilation?: number;
-  mouseAreaYDilation?: number;
-  touchAreaXShift?: number;
-  touchAreaYShift?: number;
-  mouseAreaXShift?: number;
-  mouseAreaYShift?: number;
-  cornerRadius?: number;
-  leftTopCornerRadius?: number | null;
-  rightTopCornerRadius?: number | null;
-  leftBottomCornerRadius?: number | null;
-  rightBottomCornerRadius?: number | null;
-} & ButtonNodeOptions;
 
 type ExpandCollapseButtonOptions = RectangularToggleButtonOptions;
 
