@@ -1027,22 +1027,10 @@ module.exports = {
     //  FROM phet-types.d.ts
     ObservableArray: 'readonly',
     Assert: 'readonly',
-    PhetioObjectOptions: 'readonly',
-    NodeOptions: 'readonly',
-    CanvasNodeOptions: 'readonly',
     ThermometerNodeOptions: 'readonly',
     ExpandCollapseButtonOptions: 'readonly',
-    PanelOptions: 'readonly',
-    LayoutBoxOptions: 'readonly',
-    RectangleOptions: 'readonly',
     RoundPushButtonOptions: 'readonly',
-    RoundButtonOptions: 'readonly',
     SoundClipOptions: 'readonly',
-    SoundGeneratorOptions: 'readonly',
-    PathOptions: 'readonly',
-    ColorDef: 'readonly',
-    ScreenViewOptions: 'readonly',
-    AlerterOptions: 'readonly',
-    PaintDef: 'readonly'
+    AlerterOptions: 'readonly'
   }
 };
