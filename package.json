@@ -20,7 +20,6 @@
     "@types/qunit": "^2.11.2",
     "@types/three": "^0.137.0",
     "@typescript-eslint/parser": "5.4.0",
-    "@typescript-eslint/eslint-plugin": "5.13.0",
     "archiver": "^5.3.0",
     "axios": "^0.21.4",
     "babel-eslint": "^10.1.0",
@@ -58,14 +57,6 @@
     "parserOptions": {
       "sourceType": "module",
       "allowImportExportEverywhere": true
-    },
-    "overrides": [
-      {
-        "files": [
-          "**/*.ts"
-        ],
-        "parser": "@typescript-eslint/parser"
-      }
-    ]
+    }
   }
 }
