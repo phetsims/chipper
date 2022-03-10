@@ -13,10 +13,39 @@ module.exports = {
   // in a parent dir
   root: true,
 
+  // Without a parser, .js files are linted without es6 transpilation. Use the same parser that we use for TypeScript.
   parser: '@typescript-eslint/parser',
 
-  plugins: [
-    // '@typescript-eslint'
+  overrides: [
+    {
+
+      // For .ts files, the following configuration will be used
+      files: [
+        '**/*.ts'
+      ],
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        sourceType: 'module',
+
+        // Provide a tsconfig so that we can use rules that require type information. tsconfig.eslint.json
+        // gives eslint project information without needing to modify our actual tsconfig setup.
+        project: [ '../chipper/eslint/tsconfig.eslint.json' ]
+      },
+      plugins: [
+        '@typescript-eslint'
+      ],
+      rules: {
+
+        // Put TypeScript specific rules here
+        // '@typescript-eslint/no-inferrable-types': 'error',
+        // '@typescript-eslint/no-unnecessary-type-constraint': 'error',
+
+        // Typescript rules that require type information (may be slow)
+        // '@typescript-eslint/no-unnecessary-type-assertion':'error',
+        // '@typescript-eslint/no-unsafe-member-access':'error',
+        // '@typescript-eslint/restrict-plus-operands':'error',
+      }
+    }
   ],
 
   // The rules are organized like they are in the list at https://eslint.org/docs/rules/
@@ -159,16 +188,6 @@ module.exports = {
 
     // enforce comparing `typeof` expressions against valid strings
     'valid-typeof': 'error',
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // TypeScript Errors
-    // '@typescript-eslint/no-inferrable-types': 'error',
-    // '@typescript-eslint/no-unnecessary-type-constraint': 'error',
-
-    // Not yet enabled because they require tsconfig.json files
-    // '@typescript-eslint/no-unnecessary-type-assertion':'error',
-    // '@typescript-eslint/no-unsafe-member-access':'error',
-    // '@typescript-eslint/restrict-plus-operands':'error',
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Best Practices
