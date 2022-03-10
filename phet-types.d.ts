@@ -19,25 +19,6 @@ declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
 declare var sceneryLog: undefined | any;
 declare var phet: any;
 
-type ThermometerNodeOptions = Partial<{
-  bulbDiameter: number,
-  tubeWidth: number,
-  tubeHeight: number,
-  lineWidth: number,
-  outlineStroke: ColorDef,
-  tickSpacing: number,
-  tickSpacingTemperature: number | null,
-  majorTickLength: number,
-  minorTickLength: number,
-  glassThickness: number,
-  zeroLevel: string,
-  backgroundFill: ColorDef,
-  fluidMainColor: ColorDef,
-  fluidHighlightColor: ColorDef,
-  fluidRightSideColor: ColorDef,
-  tandem: Tandem
-}> & NodeOptions;
-
 type RoundButtonOptions = Partial<{
   content: any,
   radius: number,
