@@ -12,7 +12,6 @@
 // See https://stackoverflow.com/a/51114250/3408502
 NodeOptions = import('../scenery/js/Node.ts').NodeOptions;
 RoundButtonOptions = import('../sun/buttons/RoundButton.ts').RoundButtonOptions;
-RectangularToggleButtonOptions = import('../sun/buttons/RectangularToggleButton.ts').RectangularToggleButtonOptions;
 SoundGeneratorOptions = import('../tambo/js/sound-generators/SoundGenerator.ts').SoundGeneratorOptions;
 TAlertableDef = import('../utterance-queue/js/AlertableDef.ts').TAlertableDef;
 
@@ -25,8 +24,6 @@ type RoundPushButtonOptions = {
   soundPlayer?: SoundClipPlayer,
   listener?: () => void,
 } & RoundButtonOptions;
-
-type ExpandCollapseButtonOptions = RectangularToggleButtonOptions;
 
 type SoundClipOptions = {
   loop?: boolean,

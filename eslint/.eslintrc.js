@@ -1046,7 +1046,6 @@ module.exports = {
     //  FROM phet-types.d.ts
     ObservableArray: 'readonly',
     Assert: 'readonly',
-    ExpandCollapseButtonOptions: 'readonly',
     RoundPushButtonOptions: 'readonly',
     SoundClipOptions: 'readonly',
     AlerterOptions: 'readonly'
