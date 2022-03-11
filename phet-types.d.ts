@@ -11,6 +11,7 @@
 
 // See https://stackoverflow.com/a/51114250/3408502
 NodeOptions = import('../scenery/js/Node.ts').NodeOptions;
+RoundButtonOptions = import('../sun/buttons/RoundButton.ts').RoundButtonOptions;
 RectangularToggleButtonOptions = import('../sun/buttons/RectangularToggleButton.ts').RectangularToggleButtonOptions;
 TAlertableDef = import('../utterance-queue/js/AlertableDef.ts').TAlertableDef;
 
@@ -18,21 +19,6 @@ declare var assert: undefined | ( ( x: any, s?: string ) => void );
 declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
 declare var sceneryLog: undefined | any;
 declare var phet: any;
-
-type RoundButtonOptions = Partial<{
-  content: any,
-  radius: number,
-  cursor: string,
-  fireOnDown: boolean,
-  touchAreaDilation: number,
-  mouseAreaDilation: number,
-  touchAreaXShift: number,
-  touchAreaYShift: number,
-  mouseAreaXShift: number,
-  mouseAreaYShift: number,
-  stroke: undefined | string | Color,
-  lineWidth: number,
-}> & ButtonNodeOptions;
 
 type RoundPushButtonOptions = {
   soundPlayer?: SoundClipPlayer,
