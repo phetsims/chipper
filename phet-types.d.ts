@@ -13,6 +13,7 @@
 NodeOptions = import('../scenery/js/Node.ts').NodeOptions;
 RoundButtonOptions = import('../sun/buttons/RoundButton.ts').RoundButtonOptions;
 RectangularToggleButtonOptions = import('../sun/buttons/RectangularToggleButton.ts').RectangularToggleButtonOptions;
+SoundGeneratorOptions = import('../tambo/js/sound-generators/SoundGenerator.ts').SoundGeneratorOptions;
 TAlertableDef = import('../utterance-queue/js/AlertableDef.ts').TAlertableDef;
 
 declare var assert: undefined | ( ( x: any, s?: string ) => void );
