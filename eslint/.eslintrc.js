@@ -1027,7 +1027,6 @@ module.exports = {
     //  FROM phet-types.d.ts
     ObservableArray: 'readonly',
     Assert: 'readonly',
-    ThermometerNodeOptions: 'readonly',
     ExpandCollapseButtonOptions: 'readonly',
     RoundPushButtonOptions: 'readonly',
     SoundClipOptions: 'readonly',
