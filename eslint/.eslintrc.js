@@ -1047,7 +1047,6 @@ module.exports = {
     ObservableArray: 'readonly',
     Assert: 'readonly',
     RoundPushButtonOptions: 'readonly',
-    SoundClipOptions: 'readonly',
-    AlerterOptions: 'readonly'
+    SoundClipOptions: 'readonly'
   }
 };

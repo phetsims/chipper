@@ -13,7 +13,6 @@
 NodeOptions = import('../scenery/js/Node.ts').NodeOptions;
 RoundButtonOptions = import('../sun/buttons/RoundButton.ts').RoundButtonOptions;
 SoundGeneratorOptions = import('../tambo/js/sound-generators/SoundGenerator.ts').SoundGeneratorOptions;
-TAlertableDef = import('../utterance-queue/js/AlertableDef.ts').TAlertableDef;
 
 declare var assert: undefined | ( ( x: any, s?: string ) => void );
 declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
@@ -61,11 +60,6 @@ class ObservableArray<T> extends Array<T> {
 type QSMType = {
   getAll: ( a: any ) => any,
   containsKey: ( key: string ) => boolean
-};
-
-type AlerterOptions = {
-  alertToVoicing?: boolean;
-  descriptionAlertNode?: any;
 };
 
 declare var QueryStringMachine: QSMType;
