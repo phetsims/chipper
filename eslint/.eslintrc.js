@@ -25,11 +25,12 @@ module.exports = {
       ],
       parser: '@typescript-eslint/parser',
       parserOptions: {
-        sourceType: 'module',
+        sourceType: 'module'
 
         // Provide a tsconfig so that we can use rules that require type information. tsconfig.eslint.json
         // gives eslint project information without needing to modify our actual tsconfig setup.
-        project: [ '../chipper/eslint/tsconfig.eslint.json' ]
+        // NOTE: Providing this slows down eslint substantially, see https://github.com/phetsims/chipper/issues/1114#issuecomment-1065927717
+        // project: [ '../chipper/eslint/tsconfig.eslint.json' ]
       },
       plugins: [
         '@typescript-eslint'
@@ -41,6 +42,7 @@ module.exports = {
         // '@typescript-eslint/no-unnecessary-type-constraint': 'error',
 
         // Typescript rules that require type information (may be slow)
+        // These require parserOptions.project.
         // '@typescript-eslint/no-unnecessary-type-assertion':'error',
         // '@typescript-eslint/no-unsafe-member-access':'error',
         // '@typescript-eslint/restrict-plus-operands':'error',
