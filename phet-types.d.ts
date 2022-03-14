@@ -32,31 +32,6 @@ type SoundClipOptions = {
   rateChangesAffectPlayingSounds?: boolean
 } & SoundGeneratorOptions;
 
-// Placeholder until we can use TypeScript in common code
-class ObservableArray<T> extends Array<T> {
-  lengthProperty: Property<number>;
-
-  removeAll( elements: T[] ) {
-  }
-
-  count( predicate: ( t: T ) => boolean ): number {
-  }
-
-  addItemRemovedListener( listener: ( item: T ) => void ) {}
-
-  addItemAddedListener( listener: ( item: T ) => void ) {}
-
-  removeItemRemovedListener( listener: ( item: T ) => void ) {}
-
-  removeItemAddedListener( listener: ( item: T ) => void ) {}
-
-  add( t: T ) {}
-
-  remove( t: T ) {}
-
-  clear() {}
-}
-
 type QSMType = {
   getAll: ( a: any ) => any,
   containsKey: ( key: string ) => boolean
