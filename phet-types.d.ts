@@ -10,7 +10,6 @@
  */
 
 // See https://stackoverflow.com/a/51114250/3408502
-NodeOptions = import('../scenery/js/Node.ts').NodeOptions;
 RoundButtonOptions = import('../sun/buttons/RoundButton.ts').RoundButtonOptions;
 SoundGeneratorOptions = import('../tambo/js/sound-generators/SoundGenerator.ts').SoundGeneratorOptions;
 
