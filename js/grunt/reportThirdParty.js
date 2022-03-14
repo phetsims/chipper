@@ -1,4 +1,4 @@
-// Copyright 2015-2021, University of Colorado Boulder
+// Copyright 2015-2022, University of Colorado Boulder
 
 /**
  * Creates a composite report of all of the 3rd party images, code, sounds and other media used by all of the published
@@ -11,7 +11,7 @@
  * Third party entries are parsed from the HTML files for all simulations published on the PhET website.
  * See getLicenseEntry.js for documentation of the fields in the entries.
  *
- * Copy the local-auth-code key value from phet-server:/etc/tomcat/context.xml into the value for
+ * Copy the local-auth-code key value from phet-server2:/usr/local/tomcat8/conf/context.xml into the value for
  * websiteAuthorizationCode in ~/.phet/build-local.json
  *
  * @author Sam Reid (PhET Interactive Simulations)
