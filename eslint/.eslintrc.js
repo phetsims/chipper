@@ -40,6 +40,7 @@ module.exports = {
         // Put TypeScript specific rules here
         // '@typescript-eslint/no-inferrable-types': 'error',
         // '@typescript-eslint/no-unnecessary-type-constraint': 'error',
+        '@typescript-eslint/member-delimiter-style': 'error' // semi colons in type declarations.
 
         // Typescript rules that require type information (may be slow)
         // These require parserOptions.project.
