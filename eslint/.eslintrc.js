@@ -47,6 +47,7 @@ module.exports = {
         // '@typescript-eslint/no-unnecessary-type-assertion':'error',
         // '@typescript-eslint/no-unsafe-member-access':'error',
         // '@typescript-eslint/restrict-plus-operands':'error',
+        // '@typescript-eslint/prefer-readonly': 'error' // readonly when possible
       }
     }
   ],
