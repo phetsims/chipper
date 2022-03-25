@@ -11,7 +11,6 @@
 
 // See https://stackoverflow.com/a/51114250/3408502
 RoundButtonOptions = import('../sun/buttons/RoundButton.ts').RoundButtonOptions;
-SoundGeneratorOptions = import('../tambo/js/sound-generators/SoundGenerator.ts').SoundGeneratorOptions;
 
 declare var assert: undefined | ( ( x: any, s?: string ) => void );
 declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
@@ -22,14 +21,6 @@ type RoundPushButtonOptions = {
   soundPlayer?: SoundClipPlayer,
   listener?: () => void,
 } & RoundButtonOptions;
-
-type SoundClipOptions = {
-  loop?: boolean,
-  trimSilence?: boolean,
-  initialPlaybackRate?: number,
-  initiateWhenDisabled?: boolean,
-  rateChangesAffectPlayingSounds?: boolean
-} & SoundGeneratorOptions;
 
 type QSMType = {
   getAll: ( a: any ) => any,
