@@ -1047,6 +1047,9 @@ module.exports = {
 
     pako: 'readonly',
 
+    // define a global for a missing Web Audio type, see https://github.com/phetsims/chipper/issues/1214
+    OscillatorType: 'readonly',
+
     //  FROM phet-types.d.ts
     ObservableArray: 'readonly',
     Assert: 'readonly',
