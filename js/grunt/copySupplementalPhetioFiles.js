@@ -242,7 +242,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   let wrappers = fs.readFileSync( '../chipper/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
 
   // Files and directories from wrapper folders that we don't want to copy
-  const wrappersBlacklist = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
+  const wrappersUnallowed = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
 
   const libFileNames = LIB_FILES.map( filePath => {
     const parts = filePath.split( '/' );
@@ -250,7 +250,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   } );
 
   // Don't copy over the files that are in the lib file, this way we can catch wrapper bugs that are not pointing to the lib.
-  const fullBlacklist = wrappersBlacklist.concat( libFileNames );
+  const fullUnallowedList = wrappersUnallowed.concat( libFileNames );
 
   // wrapping function for copying the wrappers to the build dir
   const copyWrapper = ( src, dest, wrapper, wrapperName ) => {
@@ -268,7 +268,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       return result;
     };
     copyDirectory( src, dest, wrapperFilterWithNameFilter, {
-      blacklist: fullBlacklist,
+      exclude: fullUnallowedList,
       minifyJS: true,
       minifyOptions: {
         stripAssertions: false
@@ -292,11 +292,11 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     // either take the last path part, or take the first (repo name) and remove the wrapper prefix
     const wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
 
-    // Copy the wrapper into the build dir /wrappers/, exclude the blacklist
+    // Copy the wrapper into the build dir /wrappers/, exclude the excluded list
     copyWrapper( `../${wrapper}`, `${wrappersLocation}${wrapperName}`, wrapper, wrapperName );
   } );
 
-  // Copy the wrapper index into the top level of the build dir, exclude the blacklist
+  // Copy the wrapper index into the top level of the build dir, exclude the excluded list
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build

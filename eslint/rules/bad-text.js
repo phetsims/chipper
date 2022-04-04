@@ -70,6 +70,13 @@ module.exports = function( context ) {
 
     '@return ',
 
+    // see https://thenewstack.io/words-matter-finally-tech-looks-at-removing-exclusionary-language/ and https://github.com/phetsims/special-ops/issues/221
+    {
+      id: 'words matter',
+      regex: /(slave|Slave|blacklist|Blacklist|BlackList)/
+    },
+
+
     'Util = require( \'', // Utils should now be plural, see https://github.com/phetsims/tasks/issues/966
 
     // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790

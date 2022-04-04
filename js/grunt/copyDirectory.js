@@ -21,7 +21,7 @@ module.exports = function( src, dst, filter, options ) {
 
   options = _.assignIn( {
     failOnExistingFiles: false,
-    blacklist: [],
+    exclude: [], // list to exclude
     minifyJS: false,
     minifyOptions: {},
     licenseToPrepend: ''
@@ -31,17 +31,17 @@ module.exports = function( src, dst, filter, options ) {
   grunt.file.recurse( src, ( abspath, rootdir, subdir, filename ) => {
 
 
-    let isInBlacklistedDir = false;
+    let isExcludedDir = false;
     subdir && subdir.split( '/' ).forEach( pathPart => {
 
-      // Exclude all directories that are in the blacklist
-      if ( options.blacklist.indexOf( pathPart ) >= 0 ) {
-        isInBlacklistedDir = true;
+      // Exclude all directories that are in the excluded list
+      if ( options.exclude.indexOf( pathPart ) >= 0 ) {
+        isExcludedDir = true;
       }
     } );
 
-    // Exit out if the file is blacklisted or if it is in a blacklisted dir.
-    if ( isInBlacklistedDir || options.blacklist.indexOf( filename ) >= 0 ) {
+    // Exit out if the file is excluded or if it is in a excluded dir.
+    if ( isExcludedDir || options.exclude.indexOf( filename ) >= 0 ) {
       return;
     }
 
