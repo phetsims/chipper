@@ -38,17 +38,63 @@ module.exports = {
       rules: {
 
         // Put TypeScript specific rules here
-        // '@typescript-eslint/no-explicit-any': 'error',
-        // '@typescript-eslint/no-inferrable-types': 'error',
-        // '@typescript-eslint/no-unnecessary-type-constraint': 'error',
-        '@typescript-eslint/member-delimiter-style': 'error' // semi colons in type declarations.
+        '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
 
+        ////////////////////////////////////////////////////////////////
+        // Recommended without needing type info:
+        // '@typescript-eslint/adjacent-overload-signatures': 'error', // 258 errors
+        // '@typescript-eslint/ban-ts-comment': 'error', // 566 errors
+        // '@typescript-eslint/ban-types': 'error', // 251 errors
+        '@typescript-eslint/no-empty-interface': 'error',
+        // '@typescript-eslint/no-explicit-any': 'error', // 515
+        '@typescript-eslint/no-extra-non-null-assertion': 'error',
+        // '@typescript-eslint/no-inferrable-types': 'error', // 62 errors
+        '@typescript-eslint/no-misused-new': 'error',
+        '@typescript-eslint/no-namespace': 'error',
+        '@typescript-eslint/no-non-null-asserted-optional-chain': 'error',
+        // '@typescript-eslint/no-non-null-assertion': 'error', // 987 errors
+        // '@typescript-eslint/no-this-alias': 'error', // 12 errors
+        '@typescript-eslint/no-unnecessary-type-constraint': 'error',
+        '@typescript-eslint/no-var-requires': 'error',
+        '@typescript-eslint/prefer-as-const': 'error',
+        '@typescript-eslint/prefer-namespace-keyword': 'error',
+        '@typescript-eslint/triple-slash-reference': 'error',
+
+        /////////////////////////////////////////////////////
+        // Overriding rules that exist in javascript (no type info needed):
+        '@typescript-eslint/no-array-constructor': 'error',
+        // '@typescript-eslint/no-empty-function': 'error', // 41 errors
+        '@typescript-eslint/no-extra-semi': 'error',
+        '@typescript-eslint/no-loss-of-precision': 'error'
+        // '@typescript-eslint/no-unused-vars': 'error' // 250 errors
+
+        ///////////////////////////////////////////////////////////////////////
+        //
         // Typescript rules that require type information (may be slow)
         // These require parserOptions.project.
         // '@typescript-eslint/no-unnecessary-type-assertion':'error',
         // '@typescript-eslint/no-unsafe-member-access':'error',
         // '@typescript-eslint/restrict-plus-operands':'error',
         // '@typescript-eslint/prefer-readonly': 'error' // readonly when possible
+
+        // // Recommended needing type info:
+        // '@typescript-eslint/await-thenable': 'error',
+        // '@typescript-eslint/no-floating-promises': 'error',
+        // '@typescript-eslint/no-for-in-array': 'error',
+        // '@typescript-eslint/no-misused-promises': 'error',
+        // '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+        // '@typescript-eslint/no-unsafe-argument': 'error',
+        // '@typescript-eslint/no-unsafe-assignment': 'error',
+        // '@typescript-eslint/no-unsafe-call': 'error',
+        // '@typescript-eslint/no-unsafe-member-access': 'error',
+        // '@typescript-eslint/no-unsafe-return': 'error',
+        // '@typescript-eslint/restrict-plus-operands': 'error',
+        // '@typescript-eslint/restrict-template-expressions': 'error',
+        // '@typescript-eslint/unbound-method': 'error',
+
+        // // Overriding rules that exist in javascript:
+        // '@typescript-eslint/no-implied-eval': 'error',
+        // '@typescript-eslint/require-await': 'error',
       }
     }
   ],
