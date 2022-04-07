@@ -232,7 +232,7 @@ class Transpiler {
 
       if ( !pathExists ) {
         const targetPath = Transpiler.getTargetPath( filePath );
-        if ( fs.existsSync( targetPath ) ) {
+        if ( fs.existsSync( targetPath ) && fs.lstatSync( targetPath ).isFile() ) {
           fs.unlinkSync( targetPath );
 
           delete this.status[ filePath ];
