@@ -38,6 +38,7 @@ module.exports = {
       rules: {
 
         // Put TypeScript specific rules here
+        // '@typescript-eslint/no-explicit-any': 'error',
         // '@typescript-eslint/no-inferrable-types': 'error',
         // '@typescript-eslint/no-unnecessary-type-constraint': 'error',
         '@typescript-eslint/member-delimiter-style': 'error' // semi colons in type declarations.
