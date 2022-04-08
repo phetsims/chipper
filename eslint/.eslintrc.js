@@ -1099,7 +1099,6 @@ module.exports = {
 
     //  FROM phet-types.d.ts
     ObservableArray: 'readonly',
-    Assert: 'readonly',
-    RoundPushButtonOptions: 'readonly'
+    Assert: 'readonly'
   }
 };

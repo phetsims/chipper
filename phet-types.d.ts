@@ -17,11 +17,6 @@ declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
 declare var sceneryLog: undefined | any;
 declare var phet: any;
 
-type RoundPushButtonOptions = {
-  soundPlayer?: SoundClipPlayer,
-  listener?: () => void,
-} & RoundButtonOptions;
-
 type QSMType = {
   getAll: ( a: any ) => any,
   containsKey: ( key: string ) => boolean
