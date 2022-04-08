@@ -1094,8 +1094,9 @@ module.exports = {
 
     pako: 'readonly',
 
-    // define a global for a missing Web Audio type, see https://github.com/phetsims/chipper/issues/1214
+    // define globals for a missing Web Audio types, see https://github.com/phetsims/chipper/issues/1214
     OscillatorType: 'readonly',
+    AudioContextState: 'readonly',
 
     // type for QUnit assert
     Assert: 'readonly'
