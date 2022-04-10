@@ -15,6 +15,8 @@ const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const os = require( 'os' );
 const getCopyrightLine = require( './getCopyrightLine' );
+const execute = require( '../../../perennial-alias/js/common/execute' );
+const path = require( 'path' );
 
 // disable lint in compiled files, because it increases the linting time
 const HEADER = '/* eslint-disable */';
@@ -74,7 +76,14 @@ image.onload = unlock;
 image.src = '${dataURI}';
 export default image;`;
 
-  fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( contents ) );
+  const jsFilePath = convertSuffix( abspath, '.js' );
+  const tsFilePath = convertSuffix( abspath, '.ts' );
+  if ( fs.existsSync( jsFilePath ) && !fs.existsSync( tsFilePath ) ) {
+    execute( 'git', [ 'mv', path.basename( jsFilePath ), path.basename( tsFilePath ) ], path.dirname( jsFilePath ) );
+  }
+  else if ( fs.existsSync( tsFilePath ) ) {
+    fs.writeFileSync( tsFilePath, fixEOL( contents ) );
+  }
 };
 
 /**
