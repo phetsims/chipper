@@ -76,14 +76,8 @@ image.onload = unlock;
 image.src = '${dataURI}';
 export default image;`;
 
-  const jsFilePath = convertSuffix( abspath, '.js' );
   const tsFilePath = convertSuffix( abspath, '.ts' );
-  if ( fs.existsSync( jsFilePath ) && !fs.existsSync( tsFilePath ) ) {
-    await execute( 'git', [ 'mv', path.basename( jsFilePath ), path.basename( tsFilePath ) ], path.dirname( jsFilePath ) );
-  }
-  else if ( fs.existsSync( tsFilePath ) ) {
-    fs.writeFileSync( tsFilePath, fixEOL( contents ) );
-  }
+  fs.writeFileSync( tsFilePath, fixEOL( contents ) );
 };
 
 /**
