@@ -1,4 +1,4 @@
-// Copyright 2019-2022, University of Colorado Boulder
+// Copyright 2022, University of Colorado Boulder
 
 import phetCore from './phetCore.js';
 import asyncLoader from './asyncLoader.js';
