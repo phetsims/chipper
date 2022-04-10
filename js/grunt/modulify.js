@@ -15,8 +15,6 @@ const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const os = require( 'os' );
 const getCopyrightLine = require( './getCopyrightLine' );
-const execute = require( '../../../perennial-alias/js/common/execute' );
-const path = require( 'path' );
 
 // disable lint in compiled files, because it increases the linting time
 const HEADER = '/* eslint-disable */';
