@@ -68,7 +68,7 @@ module.exports = async repo => {
         // Iterate over all media directories, such as images and sounds recursively
         grunt.file.recurse( searchDir, ( abspath, rootdir, subdir, filename ) => {
 
-          if ( filename.endsWith( '.js' ) ) {
+          if ( filename.endsWith( '.js' ) || filename.endsWith( '.ts' ) ) {
             return; // modulified data doesn't need to be checked
           }
 
