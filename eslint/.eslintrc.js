@@ -1099,6 +1099,8 @@ module.exports = {
     AudioContextState: 'readonly',
 
     // type for QUnit assert
-    Assert: 'readonly'
+    Assert: 'readonly',
+
+    fetch: 'readonly'
   }
 };
