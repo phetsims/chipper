@@ -463,10 +463,10 @@
       "path": "../../../vector-addition-equations"
     },
     {
-      "path": "../../../vegas"
+      "path": "../../../vegas/tsconfig.json"
     },
     {
-      "path": "../../../vegas/tsconfig-all.json"
+      "path": "../../../vegas/tsconfig-module.json"
     },
     {
       "path": "../../../vibe"
