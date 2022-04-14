@@ -52,13 +52,18 @@ module.exports = {
         '@typescript-eslint/no-misused-new': 'error',
         '@typescript-eslint/no-namespace': 'error',
         '@typescript-eslint/no-non-null-asserted-optional-chain': 'error',
-        // '@typescript-eslint/no-non-null-assertion': 'error', // 987 errors
+
         // '@typescript-eslint/no-this-alias': 'error', // 12 errors
         '@typescript-eslint/no-unnecessary-type-constraint': 'error',
         '@typescript-eslint/no-var-requires': 'error',
         '@typescript-eslint/prefer-as-const': 'error',
         '@typescript-eslint/prefer-namespace-keyword': 'error',
         '@typescript-eslint/triple-slash-reference': 'error',
+
+        /////////////////////////////////////////////////////
+        // Rules that the project decided NOT to enable
+        // We do not support this rule, see https://github.com/phetsims/chipper/issues/1114#issuecomment-1099536133
+        // '@typescript-eslint/no-non-null-assertion': 'error',
 
         /////////////////////////////////////////////////////
         // Overriding rules that exist in javascript (no type info needed):
