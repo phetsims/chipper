@@ -37,6 +37,9 @@ module.exports = {
       ],
       rules: {
 
+        // Custom Rules for TypeScript only
+        // 'bad-typescript-text': 'error',  4/14/22: 1000 lint errors
+
         // Put TypeScript specific rules here
         '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
 
