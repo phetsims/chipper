@@ -1041,7 +1041,8 @@ module.exports = {
 
     // globals that should never be accessed ---------------------------------
 
-    // Using window.event is most likely a bug, instead the event should be passed through via a parameter, discovered in https://github.com/phetsims/scenery/issues/1053
+    // Using window.event is most likely a bug, instead the event should be passed through via a parameter,
+    // discovered in https://github.com/phetsims/scenery/issues/1053
     event: 'off',
 
     // read-only globals ---------------------------------
