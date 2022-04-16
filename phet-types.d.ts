@@ -1,5 +1,7 @@
 // Copyright 2021, University of Colorado Boulder
 
+/* eslint-disable no-unused-vars, no-var */
+
 /**
  * Ambient type declarations for PhET code.  Many of these definitions can be moved/disabled once the common code is
  * converted to TypeScript.
@@ -7,12 +9,12 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-declare var assert: undefined | ( ( x: any, s?: string ) => void ); // eslint-disable-line no-unused-vars, no-var
-declare var assertSlow: undefined | ( ( x: any, s?: string ) => void ); // eslint-disable-line no-unused-vars, no-var
-declare var sceneryLog: undefined | any; // eslint-disable-line no-unused-vars, no-var
-declare var phet: any; // eslint-disable-line no-unused-vars, no-var
+declare var assert: undefined | ( ( x: any, s?: string ) => void );
+declare var assertSlow: undefined | ( ( x: any, s?: string ) => void );
+declare var sceneryLog: undefined | any;
+declare var phet: any;
 
-declare var QueryStringMachine: { // eslint-disable-line no-unused-vars, no-var
+declare var QueryStringMachine: {
   getAll: ( a: any ) => any;
   containsKey: ( key: string ) => boolean;
   warnings: string[];
@@ -20,7 +22,7 @@ declare var QueryStringMachine: { // eslint-disable-line no-unused-vars, no-var
 };
 
 // globals used in Sim.ts
-declare var phetSplashScreenDownloadComplete: () => void; // eslint-disable-line no-unused-vars, no-var
-declare var TWEEN: { update: ( dt: number ) => void };  // eslint-disable-line no-unused-vars, no-var
-declare var phetSplashScreen: { dispose: () => void };  // eslint-disable-line no-unused-vars, no-var
-declare var phetio: any; // eslint-disable-line no-unused-vars, no-var
+declare var phetSplashScreenDownloadComplete: () => void;
+declare var TWEEN: { update: ( dt: number ) => void };
+declare var phetSplashScreen: { dispose: () => void };
+declare var phetio: any;
