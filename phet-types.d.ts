@@ -15,4 +15,12 @@ declare var phet: any; // eslint-disable-line no-unused-vars, no-var
 declare var QueryStringMachine: { // eslint-disable-line no-unused-vars, no-var
   getAll: ( a: any ) => any;
   containsKey: ( key: string ) => boolean;
+  warnings: string[];
+  addWarning: ( key: string, value: boolean | object | number, message: string ) => void;
 };
+
+// globals used in Sim.ts
+declare var phetSplashScreenDownloadComplete: () => void; // eslint-disable-line no-unused-vars, no-var
+declare var TWEEN: { update: ( dt: number ) => void };  // eslint-disable-line no-unused-vars, no-var
+declare var phetSplashScreen: { dispose: () => void };  // eslint-disable-line no-unused-vars, no-var
+declare var phetio: any; // eslint-disable-line no-unused-vars, no-var
