@@ -51,12 +51,12 @@ module.exports = {
         '@typescript-eslint/no-empty-interface': 'error',
         // '@typescript-eslint/no-explicit-any': 'error', // 515
         '@typescript-eslint/no-extra-non-null-assertion': 'error',
-        // '@typescript-eslint/no-inferrable-types': 'error', // 62 errors
+        // '@typescript-eslint/no-inferrable-types': 'error', //TODO https://github.com/phetsims/chipper/issues/1229
         '@typescript-eslint/no-misused-new': 'error',
         '@typescript-eslint/no-namespace': 'error',
         '@typescript-eslint/no-non-null-asserted-optional-chain': 'error',
 
-        // '@typescript-eslint/no-this-alias': 'error', // 12 errors
+        // '@typescript-eslint/no-this-alias': 'error', //TODO https://github.com/phetsims/chipper/issues/1223
         '@typescript-eslint/no-unnecessary-type-constraint': 'error',
         '@typescript-eslint/no-var-requires': 'error',
         '@typescript-eslint/prefer-as-const': 'error',
