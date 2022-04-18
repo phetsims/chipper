@@ -51,11 +51,7 @@ module.exports = {
         '@typescript-eslint/no-empty-interface': 'error',
         // '@typescript-eslint/no-explicit-any': 'error', // 515
         '@typescript-eslint/no-extra-non-null-assertion': 'error',
-        '@typescript-eslint/no-inferrable-types': [ 'error', {
-          // See https://github.com/phetsims/chipper/issues/1229
-          ignoreParameters: true,
-          ignoreProperties: true
-        } ],
+        '@typescript-eslint/no-inferrable-types': 'error',
         '@typescript-eslint/no-misused-new': 'error',
         '@typescript-eslint/no-namespace': 'error',
         '@typescript-eslint/no-non-null-asserted-optional-chain': 'error',
