@@ -17,9 +17,14 @@ module.exports = function( context ) {
 
     // Typescript handles this for us, please refrain from providing visibility annotations via jsdoc (unless you have
     // to, disabling this rule).
-    '@public',
-    '@private',
-    '@protected'
+    // '@public',
+    // '@private',
+    // '@protected',
+    //
+    // {
+    //   id: '@returns with type and/or without extra doc',
+    //   regex: /(@returns \{)|(@returns$)/
+    // }
   ];
 
   return {
