@@ -77,8 +77,8 @@ module.exports = {
         '@typescript-eslint/no-array-constructor': 'error',
         // '@typescript-eslint/no-empty-function': 'error', // 41 errors
         '@typescript-eslint/no-extra-semi': 'error',
+        // '@typescript-eslint/no-unused-vars': 'error', //TODO https://github.com/phetsims/chipper/issues/1230
         '@typescript-eslint/no-loss-of-precision': 'error'
-        // '@typescript-eslint/no-unused-vars': 'error' // 250 errors
 
         ///////////////////////////////////////////////////////////////////////
         //
