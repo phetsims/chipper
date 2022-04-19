@@ -221,7 +221,7 @@ module.exports = function( grunt ) {
       }
 
       // If that succeeds, then convert the code to JS
-      new Transpiler().transpileRepos( getPhetLibs( repo ) );
+      new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( repo ) );
 
       // standalone
       if ( repoPackageObject.phet.buildStandalone ) {
@@ -556,7 +556,7 @@ Updates the normal automatically-generated files for this repository. Includes:
         }
       }
 
-      new Transpiler().transpileAll();
+      new Transpiler( { silent: true } ).transpileAll();
 
       const results = await generatePhetioMacroAPI( sims, {
         showProgressBar: sims.length > 1

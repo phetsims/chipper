@@ -32,11 +32,13 @@ class Transpiler {
 
     options = _.extend( {
       clean: false, // delete the previous state/cache file, and create a new one.
-      verbose: false // Add extra logging
+      verbose: false, // Add extra logging
+      silent: false // hide all logging but error reportign, include any specified with verbose
     }, options );
 
     // @private
     this.verbose = options.verbose;
+    this.silent = options.silent;
 
     // Track the status of each repo. Key= repo, value=md5 hash of contents
     this.status = {};
@@ -52,7 +54,7 @@ class Transpiler {
     fs.mkdirSync( path.dirname( statusPath ), { recursive: true } );
 
     if ( options.clean ) {
-      console.log( 'cleaning...' );
+      !this.silent && console.log( 'cleaning...' );
       fs.writeFileSync( statusPath, JSON.stringify( {}, null, 2 ) );
     }
 
@@ -61,7 +63,7 @@ class Transpiler {
       this.status = JSON.parse( fs.readFileSync( statusPath, 'utf-8' ) );
     }
     catch( e ) {
-      console.log( 'couldnt parse status cache, making a clean one' );
+      !this.silent && console.log( 'couldn\'t parse status cache, making a clean one' );
       this.status = {};
       fs.writeFileSync( statusPath, JSON.stringify( this.status, null, 2 ) );
     }
@@ -141,7 +143,7 @@ class Transpiler {
           const now = Date.now();
           const nowTimeString = new Date( now ).toLocaleTimeString();
 
-          console.log( `${nowTimeString}, ${( now - changeDetectedTime )} ms: ${filePath}${reason}` );
+          !this.silent && console.log( `${nowTimeString}, ${( now - changeDetectedTime )} ms: ${filePath}${reason}` );
         }
         catch( e ) {
           console.log( e );
@@ -240,7 +242,7 @@ class Transpiler {
           const now = Date.now();
           const reason = ' (deleted)';
 
-          console.log( `${new Date( now ).toLocaleTimeString()}, ${( now - changeDetectedTime )} ms: ${filePath}${reason}` );
+          !this.silent && console.log( `${new Date( now ).toLocaleTimeString()}, ${( now - changeDetectedTime )} ms: ${filePath}${reason}` );
         }
 
         return;
@@ -250,12 +252,12 @@ class Transpiler {
       }
       else if ( filePathWithForwardSlashes.endsWith( 'perennial/data/active-repos' ) ) {
         const newActiveRepos = getActiveRepos();
-        console.log( 'reloaded active repos' );
+        !this.silent && console.log( 'reloaded active repos' );
         const newRepos = newActiveRepos.filter( repo => !this.activeRepos.includes( repo ) );
 
         // Run an initial scan on newly added repos
         newRepos.forEach( repo => {
-          console.log( 'New repo detected in active-repos, transpiling: ' + repo );
+          !this.silent && console.log( 'New repo detected in active-repos, transpiling: ' + repo );
           this.transpileRepo( repo );
         } );
         this.activeRepos = newActiveRepos;
