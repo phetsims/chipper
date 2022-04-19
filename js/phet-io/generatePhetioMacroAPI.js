@@ -61,7 +61,9 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
   server.listen( 0 );
 
   const port = server.address().port;
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch( {
+    timeout: 120000
+  } );
   const chunks = _.chunk( repos, options.chunkSize );
 
   const macroAPI = {};
@@ -83,8 +85,31 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
       return new Promise( async ( resolve, reject ) => { // eslint-disable-line no-async-promise-executor
 
+        let cleaned = false;
+
         // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-        const id = setTimeout( () => reject( new Error( 'Timeout in generatePhetioMacroAPI' ) ), 30000 );
+        const id = setTimeout( () => cleanupAndReject( new Error( `Timeout in generatePhetioMacroAPI for ${repo}` ) ), 120000 );
+
+        // Returns whether we closed the page
+        const cleanup = async () => {
+          if ( cleaned ) { return false; }
+          cleaned = true;
+
+          clearTimeout( id );
+          await page.close();
+
+          return true;
+        };
+        const cleanupAndResolve = async value => {
+          if ( await cleanup() ) {
+            resolve( value );
+          }
+        };
+        const cleanupAndReject = async e => {
+          if ( await cleanup() ) {
+            reject( e );
+          }
+        };
 
         page.on( 'console', async msg => {
           const messageText = msg.text();
@@ -92,10 +117,8 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
             const fullAPI = messageText;
-            clearTimeout( id );
-            await page.close();
-            resolve( {
 
+            cleanupAndResolve( {
               // to keep track of which repo this is for
               repo: repo,
 
@@ -121,10 +144,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
             }
           }
         } );
-        const cleanupAndReject = e => {
-          clearTimeout( id );
-          reject( e );
-        };
 
         page.on( 'error', cleanupAndReject );
         page.on( 'pageerror', cleanupAndReject );
@@ -134,10 +153,12 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
                              `${repo}_en.html`;
         const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI`;
         try {
-          await page.goto( url );
+          await page.goto( url, {
+            timeout: 120000
+          } );
         }
         catch( e ) {
-          cleanupAndReject( e );
+          await cleanupAndReject( new Error( `page.goto failure: ${e}` ) );
         }
       } );
     } );
