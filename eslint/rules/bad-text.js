@@ -51,6 +51,9 @@ module.exports = function( context ) {
     'respones',
     'Respones',
 
+    // Avoid string literal in assert predicate, see https://github.com/phetsims/assert/issues/7
+    'assert( \'',
+
     // In ES6, extending object causes methods to be dropped
     { id: 'extends Object ', codeTokens: [ 'extends', 'Object' ] },
 
