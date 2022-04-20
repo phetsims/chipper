@@ -145,7 +145,7 @@ module.exports = function( grunt ) {
     wrapTask( async () => {
       const Transpiler = require( '../common/Transpiler' );
 
-      new Transpiler().transpileRepo( repo );
+      new Transpiler( { silent: true } ).transpileRepo( repo );
     } )
   );
   grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
@@ -153,14 +153,14 @@ module.exports = function( grunt ) {
       const Transpiler = require( '../common/Transpiler' );
       const getPhetLibs = require( './getPhetLibs' );
 
-      new Transpiler().transpileRepos( getPhetLibs( repo ) );
+      new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( repo ) );
     } )
   );
 
   grunt.registerTask( 'output-js-all', 'Outputs JS for all repos',
     wrapTask( async () => {
       const Transpiler = require( '../common/Transpiler' );
-      new Transpiler().transpileAll();
+      new Transpiler( { silent: true } ).transpileAll();
     } )
   );
 

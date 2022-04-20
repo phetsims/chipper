@@ -553,7 +553,7 @@ const handleStudio = async wrappersLocation => {
   const results = await tsc( '../studio', [ '--build' ] );
   reportTscResults( results, grunt );
 
-  new Transpiler().transpileRepos( getPhetLibs( 'studio' ) );
+  new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( 'studio' ) );
 
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {} ) );
 };
