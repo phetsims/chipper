@@ -33,7 +33,7 @@ class Transpiler {
     options = _.extend( {
       clean: false, // delete the previous state/cache file, and create a new one.
       verbose: false, // Add extra logging
-      silent: false // hide all logging but error reportign, include any specified with verbose
+      silent: false // hide all logging but error reporting, include any specified with verbose
     }, options );
 
     // @private
@@ -42,7 +42,6 @@ class Transpiler {
 
     // Track the status of each repo. Key= repo, value=md5 hash of contents
     this.status = {};
-
 
     // Exit on Ctrl + C case, but make sure to save the cache
     process.on( 'SIGINT', () => {
@@ -129,6 +128,7 @@ class Transpiler {
       const targetPath = Transpiler.getTargetPath( filePath );
 
       if ( !this.status[ filePath ] || this.status[ filePath ].sourceMD5 !== hash || !fs.existsSync( targetPath ) || this.status[ filePath ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) {
+
         try {
           let reason = '';
           if ( this.verbose ) {
