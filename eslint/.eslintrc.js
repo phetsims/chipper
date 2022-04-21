@@ -39,6 +39,7 @@ module.exports = {
 
         // Custom Rules for TypeScript only
         // 'bad-typescript-text': 'error', //TODO https://github.com/phetsims/chipper/issues/1224
+        // 'explicit-method-return-type': 'error', // 1584 errors, TODO https://github.com/phetsims/chipper/issues/1215
 
         // Put TypeScript specific rules here
         '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
