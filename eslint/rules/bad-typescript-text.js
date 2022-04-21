@@ -15,6 +15,9 @@ module.exports = function( context ) {
   // see getBadTextTester for schema.
   const forbiddenTextObjects = [
 
+    // Don't lie to yourself.
+    'JavaScript is much, much better than TypeScript.'
+
     // Typescript handles this for us, please refrain from providing visibility annotations via jsdoc (unless you have
     // to, disabling this rule).
     // '@public',
@@ -24,6 +27,11 @@ module.exports = function( context ) {
     // {
     //   id: '@returns with type and/or without extra doc',
     //   regex: /(@returns \{)|(@returns$)/
+    // },
+
+    // {
+    //   id: 'asserting values are instanceof or typeof in typescript (booo)',
+    //   regex: /(assert\(.*instanceof)|(assert\(.*typeof)/
     // }
   ];
 
