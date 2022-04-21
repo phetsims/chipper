@@ -16,19 +16,19 @@ module.exports = function( context ) {
   const forbiddenTextObjects = [
 
     // Don't lie to yourself.
-    'JavaScript is much, much better than TypeScript.'
+    'JavaScript is much, much better than TypeScript.',
 
     // Typescript handles this for us, please refrain from providing visibility annotations via jsdoc (unless you have
     // to, disabling this rule).
-    // '@public',
+    '@public'
     // '@private',
     // '@protected',
-    //
+    // //
     // {
     //   id: '@returns with type and/or without extra doc',
     //   regex: /(@returns \{)|(@returns$)/
     // },
-
+    //
     // {
     //   id: 'asserting values are instanceof or typeof in typescript (booo)',
     //   regex: /(assert\(.*instanceof)|(assert\(.*typeof)/
