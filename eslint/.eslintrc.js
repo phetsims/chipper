@@ -39,6 +39,7 @@ module.exports = {
 
         // Custom Rules for TypeScript only
         'bad-typescript-text': 'error', //TODO https://github.com/phetsims/chipper/issues/1224
+        'no-protected-jsdoc': 'error',
         // 'explicit-method-return-type': 'error', // 1584 errors, TODO https://github.com/phetsims/chipper/issues/1215
 
         // Put TypeScript specific rules here

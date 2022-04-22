@@ -1,8 +1,8 @@
 // Copyright 2022, University of Colorado Boulder
-/* eslint-disable bad-sim-text */
+/* eslint-disable bad-typescript-text */
 
 /**
- * Lint detector for invalid text, excpected only to be checked against typescript files.
+ * Lint detector for invalid text, expected only to be checked against typescript files.
  * Lint is disabled for this file so the bad texts aren't themselves flagged.
  *
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -22,7 +22,6 @@ module.exports = function( context ) {
     // to, disabling this rule).
     '@public'
     // '@private',
-    // '@protected',
     // //
     // {
     //   id: '@returns with type and/or without extra doc',
