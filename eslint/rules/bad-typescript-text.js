@@ -20,7 +20,9 @@ module.exports = function( context ) {
 
     // Typescript handles this for us, please refrain from providing visibility annotations via jsdoc (unless you have
     // to, disabling this rule).
-    '@public'
+    '@public',
+
+    'const simOptions = {'
     // '@private',
     // //
     // {
