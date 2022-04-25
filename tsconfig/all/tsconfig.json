@@ -367,6 +367,9 @@
       "path": "../../../phet-io/tsconfig.json"
     },
     {
+      "path": "../../../phet-io-sim-specific/tsconfig.json"
+    },
+    {
       "path": "../../../phetcommon/tsconfig.json"
     },
     {
