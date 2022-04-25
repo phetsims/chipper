@@ -587,7 +587,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       if ( temporary ) {
         proposedAPIs = {};
         sims.forEach( sim => {
-          proposedAPIs[ sim ] = JSON.parse( fs.readFileSync( `../phet-io-sim-specific/${repo}/${repo}-phet-io-api-temporary.json`, 'utf8' ) );
+          proposedAPIs[ sim ] = JSON.parse( fs.readFileSync( `../phet-io-sim-specific/repos/${repo}/${repo}-phet-io-api-temporary.json`, 'utf8' ) );
         } );
       }
       else {

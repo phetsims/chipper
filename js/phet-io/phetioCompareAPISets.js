@@ -25,7 +25,7 @@ module.exports = async ( repos, proposedAPIs, options ) => {
     const phetioSection = packageObject.phet[ 'phet-io' ] || {};
 
     // Fails on missing file or parse error.
-    const referenceAPI = JSON.parse( fs.readFileSync( `../phet-io-sim-specific/${repo}/${repo}-phet-io-api.json`, 'utf8' ) );
+    const referenceAPI = JSON.parse( fs.readFileSync( `../phet-io-sim-specific/repos/${repo}/${repo}-phet-io-api.json`, 'utf8' ) );
     const proposedAPI = proposedAPIs[ repo ];
 
     const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, {

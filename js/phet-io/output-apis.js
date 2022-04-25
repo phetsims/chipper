@@ -38,7 +38,7 @@ const getSimList = require( '../common/getSimList' );
 
   repos.forEach( repo =>
     fs.writeFileSync(
-      `../phet-io-sim-specific/${repo}/${repo}-phet-io-api${args.includes( '--temporary' ) ? '-temporary' : ''}.json`,
+      `../phet-io-sim-specific/repos/${repo}/${repo}-phet-io-api${args.includes( '--temporary' ) ? '-temporary' : ''}.json`,
       formatPhetioAPI( results[ repo ] )
     ) );
 } )();
