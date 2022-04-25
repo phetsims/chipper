@@ -1,4 +1,4 @@
-// Copyright 2021, University of Colorado Boulder
+// Copyright 2021-2022, University of Colorado Boulder
 
 const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
