@@ -532,7 +532,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   grunt.registerTask(
     'generate-phet-io-api',
-    'Output the PhET-iO API as JSON to phet-io/api.\n' +
+    'Output the PhET-iO API as JSON to phet-io-sim-specific/api.\n' +
     'Options\n:' +
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
@@ -546,23 +546,20 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
 
-      const dir = grunt.option( 'temporary' ) ? '../phet-io/api-temporary' : '../phet-io/api';
-      try {
-        fs.mkdirSync( dir );
-      }
-      catch( e ) {
-        if ( !e.message.includes( 'file already exists' ) ) {
-          throw e;
-        }
-      }
-
       new Transpiler( { silent: true } ).transpileAll();
 
       const results = await generatePhetioMacroAPI( sims, {
         showProgressBar: sims.length > 1
       } );
       sims.forEach( sim => {
-        const filePath = `${dir}/${sim}.json`;
+        const dir = `../phet-io-sim-specific/repos/${sim}`;
+        try {
+          fs.mkdirSync( dir );
+        }
+        catch( e ) {
+          // Directory exists
+        }
+        const filePath = `${dir}/${sim}-phet-io-api${grunt.option( 'temporary' ) ? '-temporary' : ''}.json`;
         const api = results[ sim ];
         fs.writeFileSync( filePath, formatPhetioAPI( api ) );
       } );
@@ -590,7 +587,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       if ( temporary ) {
         proposedAPIs = {};
         sims.forEach( sim => {
-          proposedAPIs[ sim ] = JSON.parse( fs.readFileSync( `../phet-io/api-temporary/${repo}.json`, 'utf8' ) );
+          proposedAPIs[ sim ] = JSON.parse( fs.readFileSync( `../phet-io-sim-specific/${repo}/${repo}-phet-io-api-temporary.json`, 'utf8' ) );
         } );
       }
       else {

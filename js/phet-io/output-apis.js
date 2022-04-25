@@ -36,17 +36,9 @@ const getSimList = require( '../common/getSimList' );
     showMessagesFromSim: false // must be pure JSON
   } );
 
-  let dir = 'api';
-  if ( args.includes( '--temporary' ) ) {
-    dir = 'api-temporary';
-    try {
-      fs.mkdirSync( `../phet-io/${dir}/` );
-    }
-    catch( e ) {
-      if ( !e.message.includes( 'file already exists' ) ) {
-        throw e;
-      }
-    }
-  }
-  repos.forEach( repo => fs.writeFileSync( `../phet-io/${dir}/${repo}.json`, formatPhetioAPI( results[ repo ] ) ) );
+  repos.forEach( repo =>
+    fs.writeFileSync(
+      `../phet-io-sim-specific/${repo}/${repo}-phet-io-api${args.includes( '--temporary' ) ? '-temporary' : ''}.json`,
+      formatPhetioAPI( results[ repo ] )
+    ) );
 } )();

@@ -5,8 +5,6 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const jsondiffpatch = require( '../../../sherpa/lib/jsondiffpatch-v0.3.11.umd' ).create( {} );
 const assert = require( 'assert' );
 
-const API_DIR = '../phet-io/api';
-
 /**
  * Compare two sets of APIs using phetioCompareAPIs.
  *
@@ -27,7 +25,7 @@ module.exports = async ( repos, proposedAPIs, options ) => {
     const phetioSection = packageObject.phet[ 'phet-io' ] || {};
 
     // Fails on missing file or parse error.
-    const referenceAPI = JSON.parse( fs.readFileSync( `${API_DIR}/${repo}.json`, 'utf8' ) );
+    const referenceAPI = JSON.parse( fs.readFileSync( `../phet-io-sim-specific/${repo}/${repo}-phet-io-api.json`, 'utf8' ) );
     const proposedAPI = proposedAPIs[ repo ];
 
     const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, {
