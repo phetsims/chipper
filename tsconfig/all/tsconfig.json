@@ -23,6 +23,7 @@
     { "path": "../../../number-play" },
     { "path": "../../../phet-core" },
     { "path": "../../../phetcommon" },
+    { "path": "../../../quadrilateral" },
     { "path": "../../../ratio-and-proportion" },
     { "path": "../../../scenery" },
     { "path": "../../../scenery-phet" },
