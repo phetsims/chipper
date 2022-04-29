@@ -30,7 +30,7 @@ module.exports = {
         // Provide a tsconfig so that we can use rules that require type information. tsconfig.eslint.json
         // gives eslint project information without needing to modify our actual tsconfig setup.
         // NOTE: Providing this slows down eslint substantially, see https://github.com/phetsims/chipper/issues/1114#issuecomment-1065927717
-        // project: [ '../chipper/eslint/tsconfig.eslint.json' ]
+        // ,project: [ '../chipper/eslint/tsconfig.eslint.json' ]
       },
       plugins: [
         '@typescript-eslint'
@@ -41,8 +41,8 @@ module.exports = {
         'bad-typescript-text': 'error', //TODO https://github.com/phetsims/chipper/issues/1224
         'no-protected-jsdoc': 'error', // It's own file because @protected is used with the current mixin strategy.
 
-        // Custom rules for TypeScript that require type checking.
-        // 'explicit-method-return-type': 'error', // 1584 errors, TODO https://github.com/phetsims/chipper/issues/1215
+        // Custom return type rule that only requires for methods. The includes return type was too overarching.
+        'explicit-method-return-type': 'error',
 
         // Put TypeScript specific rules here
         '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
