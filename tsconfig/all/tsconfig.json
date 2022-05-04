@@ -4,6 +4,7 @@
   "references": [
     { "path": "../../../axon" },
     { "path": "../../../bamboo" },
+    { "path": "../../../bending-light" },
     { "path": "../../../build-a-nucleus" },
     { "path": "../../../buoyancy" },
     { "path": "../../../center-and-variability" },
