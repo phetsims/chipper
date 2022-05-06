@@ -9,8 +9,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-declare var assert: undefined | ( ( x: any, ...messages?: string[] ) => void ); // eslint-disable-line no-unused-vars, no-var
-declare var assertSlow: undefined | ( ( x: any, ...messages?: string[] ) => void ); // eslint-disable-line no-unused-vars, no-var
+declare var assert: undefined | ( ( x: any, ...messages?: string[] ) => void );
+declare var assertSlow: undefined | ( ( x: any, ...messages?: string[] ) => void );
 declare var sceneryLog: undefined | any;
 declare var phet: any;
 
