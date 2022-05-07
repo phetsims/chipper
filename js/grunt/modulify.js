@@ -322,8 +322,20 @@ const getStringTypes = repo => {
     }
   }
 
-  const text = JSON.stringify( structure, null, 2 );
-  return replace( replace( text, '"', '\'' ), '\'{{STRING}}\'', 'string' );
+  let text = JSON.stringify( structure, null, 2 );
+
+  // Use single quotes instead of the double quotes from JSON
+  text = replace( text, '"', '\'' );
+
+  text = replace( text, '\'{{STRING}}\'', 'string' );
+
+  // Add ; to the last in the list
+  text = replace( text, ': string\n', ': string;\n' );
+
+  // Use ; instead of ,
+  text = replace( text, ',', ';' );
+
+  return text;
 };
 
 /**
