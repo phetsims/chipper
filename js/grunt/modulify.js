@@ -15,6 +15,7 @@ const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const os = require( 'os' );
 const getCopyrightLine = require( './getCopyrightLine' );
+const assert = require( 'assert' );
 
 // disable lint in compiled files, because it increases the linting time
 const HEADER = '/* eslint-disable */';
@@ -311,6 +312,11 @@ const getStringTypes = repo => {
       const tokens = pathElement.split( '.' );
       for ( let m = 0; m < tokens.length; m++ ) {
         const token = tokens[ m ];
+
+        assert( !token.includes( ';' ), `Token ${token} cannot include forbidden characters` );
+        assert( !token.includes( ',' ), `Token ${token} cannot include forbidden characters` );
+        assert( !token.includes( ' ' ), `Token ${token} cannot include forbidden characters` );
+
         if ( k === path.length - 1 && m === tokens.length - 1 ) {
           level[ token ] = '{{STRING}}'; // instead of value = allElement.value
         }
