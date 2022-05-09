@@ -134,7 +134,7 @@ module.exports = function( context ) {
   ];
 
   return {
-    Program: getBadTextTester( forbiddenTextObjects, context )
+    Program: getBadTextTester( 'bad-text', forbiddenTextObjects, context )
   };
 };
 

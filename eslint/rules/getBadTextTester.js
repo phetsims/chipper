@@ -14,17 +14,20 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 
 /**
+ * @param {string} ruleName
  * @param {Array.<string|ForbiddenTextObject>} badTexts - if a string, will be converted into a ForbiddenTextObject
  * @param {Object} context - eslinting context given from the engine
  * @returns {function(node:Object)} - function that reports any bad text lint errors to the context
  */
-module.exports = ( badTexts, context ) => {
+module.exports = ( ruleName, badTexts, context ) => {
 
   return node => {
     const sourceCode = context.getSourceCode();
     const codeTokens = sourceCode.getTokens( node );
     const codeLines = sourceCode.lines;
     const text = sourceCode.text;
+
+    const lineDisabledDirectiveRegex = new RegExp( `eslint-disable-line *${ruleName}` );
 
     /**
      * @param {number} lineNumber
@@ -64,6 +67,11 @@ module.exports = ( badTexts, context ) => {
           // test each line for the presence of the bad text
           for ( let i = 0; i < codeLines.length; i++ ) {
             const lineString = codeLines[ i ];
+
+            // Opt out of lines that have something like "eslint-disable-line bad-text"
+            if ( lineDisabledDirectiveRegex.test( lineString ) ) {
+              continue;
+            }
 
             // lines are 1 based, codeLines array is 0 based
             const badLineNumber = i + 1;

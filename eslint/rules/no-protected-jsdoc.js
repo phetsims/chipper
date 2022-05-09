@@ -14,7 +14,7 @@ module.exports = function( context ) {
   const getBadTextTester = require( './getBadTextTester' );
 
   return {
-    Program: getBadTextTester( [ '@protected' ], context )
+    Program: getBadTextTester( 'no-protected-jsdoc', [ '@protected' ], context )
   };
 };
 
