@@ -9,8 +9,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-declare var assert: undefined | ( ( x: any, ...messages?: string[] ) => void );
-declare var assertSlow: undefined | ( ( x: any, ...messages?: string[] ) => void );
+declare var assert: undefined | ( ( x: any, ...messages?: any[] ) => void );
+declare var assertSlow: undefined | ( ( x: any, ...messages?: any[] ) => void );
 declare var sceneryLog: undefined | any;
 declare var phet: any;
 
