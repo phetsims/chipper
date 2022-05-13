@@ -1,7 +1,9 @@
 {
-  "extends": "./tsconfig-core.json",
+  "extends": "../chipper/tsconfig-core.json",
   "include": [
-    // Just the code used in sim modules
-    "js/getStringModule.js"
+    "js/**/*",
+    "images/**/*",
+    "mipmaps/**/*",
+    "sounds/**/*"
   ]
 }
