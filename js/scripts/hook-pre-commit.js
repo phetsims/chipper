@@ -21,6 +21,7 @@ const path = require( 'path' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const puppeteer = require( 'puppeteer' );
 const withServer = require( '../common/withServer' );
+const execute = require( '../common/execute' );
 
 ( async () => {
 
@@ -29,7 +30,7 @@ const withServer = require( '../common/withServer' );
 
 // Console logging via --console
   const commandLineArguments = process.argv.slice( 2 );
-  const outputToConsole = commandLineArguments.indexOf( '--console' ) >= 0;
+  const outputToConsole = commandLineArguments.includes( '--console' );
 
 // Run lint tests if they exist in the checked-out SHAs.
   try {
@@ -90,24 +91,20 @@ const withServer = require( '../common/withServer' );
     }
   }
 
-// Run typescript type checker if it exists in the checked-out shas
-  if ( fs.existsSync( `../${repo}/tsconfig.json` ) ) {
+  // Run typescript type checker if it exists in the checked-out shas
+  if ( fs.existsSync( '../chipper/tsconfig/all/tsconfig.json' ) ) {
     try {
 
+      const results = await execute( 'node', [ '../../../chipper/node_modules/typescript/bin/tsc' ], '../chipper/tsconfig/all', {
+        errors: 'resolve'
+      } );
 
-      const tsc = require( '../../../chipper/js/grunt/tsc' );
-      if ( tsc.apiVersion === '1.0' ) {
-        const results = await tsc( `../${repo}`, [ '--build' ] );
-        if ( results.code === 0 ) {
-          outputToConsole && console.log( 'tsc passed' );
-        }
-        else {
-          console.log( results );
-          process.exit( results.code );
-        }
+      if ( results.code === 0 ) {
+        outputToConsole && console.log( 'tsc passed' );
       }
       else {
-        outputToConsole && console.log( 'chipper/js/grunt/tsc not compatible' );
+        outputToConsole && console.log( results );
+        process.exit( results.code );
       }
     }
     catch( e ) {
