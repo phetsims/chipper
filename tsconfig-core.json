@@ -78,6 +78,8 @@
     "phet-types.d.ts",
     "node_modules/@types/jquery/index.d.ts",
     "node_modules/@types/lodash/index.d.ts",
-    "node_modules/@types/qunit/index.d.ts"
+    "node_modules/@types/p2/index.d.ts",
+    "node_modules/@types/qunit/index.d.ts",
+    "node_modules/@types/three/index.d.ts"
   ]
 }
