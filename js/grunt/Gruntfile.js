@@ -216,7 +216,7 @@ module.exports = function( grunt ) {
       // Run the type checker first.  But since the phet-io repos are listed in tsconfig, we can only run the type
       // checker if phet-io repos are checked out.
       if ( fs.existsSync( '../phet-io' ) ) {
-        const results = await tsc( `../${repo}`, [ '--build' ] );
+        const results = await tsc( `../${repo}` );
         reportTscResults( results, grunt );
       }
 

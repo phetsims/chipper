@@ -1,7 +1,7 @@
 // Copyright 2021, University of Colorado Boulder
 
 /**
- * Runs `tsc --build` before the webpack step, so webpack can use the transpiled outputs (in chipper/dist)
+ * Runs `tsc`
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -14,7 +14,7 @@ const execute = require( '../../../perennial-alias/js/common/execute' );
  * @param {Array.<string>} commandLineArgs
  * @returns {Promise<{execResult: {stdout:string,stderr:string,code:number}, time: number}>} - the results from exec, and the elapsed time
  */
-const tsc = async function( path, commandLineArgs ) {
+const tsc = async function( path, commandLineArgs = [] ) {
 
   const args = [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs ];
   return execute( 'node', args, path, {

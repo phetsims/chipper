@@ -550,7 +550,7 @@ const handleStudio = async wrappersLocation => {
 
   grunt.log.debug( 'building studio' );
 
-  const results = await tsc( '../studio', [ '--build' ] );
+  const results = await tsc( '../studio' );
   reportTscResults( results, grunt );
 
   new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( 'studio' ) );
