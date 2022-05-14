@@ -386,6 +386,9 @@ Updates the normal automatically-generated files for this repository. Includes:
         return;
       }
 
+      const generateTSConfig = require( './generateTSConfig' );
+      await generateTSConfig( repo );
+
       if ( packageObject.phet.runnable ) {
         grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
