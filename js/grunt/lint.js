@@ -22,7 +22,6 @@ const EXCLUDE_PATTERNS = [ // patterns that have no code that should be linted
   '../decaf',
   '../phet-android-app',
   '../phet-info',
-  '../phet-io-client-guides',
   '../phet-io-website',
   '../phet-io-wrapper-arithmetic',
   '../phet-io-wrapper-hookes-law-energy',

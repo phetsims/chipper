@@ -31,14 +31,15 @@ const getPhetLibs = require( './getPhetLibs' );
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant, please see phet-io-wrappers/index/index.js before changing
+const CONTRIB_DIR = 'contrib';
 
 // For Client Guides
-const CLIENT_GUIDES_DIR = '../phet-io-client-guides/';
-const COMMON_DIR = 'common/';
+const PHET_IO_SIM_SPECIFIC = '../phet-io-sim-specific';
+const COMMON_DIR = 'client-guide-common/client-guide';
+
 const EXAMPLES_FILENAME = 'examples';
 const PHET_IO_GUIDE_FILENAME = 'phet-io-guide';
 const PHET_IO_MIGRATION_GUIDE_FILENAME = 'migration-guide';
-const CONTRIB_DIR = 'contrib/';
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
@@ -202,7 +203,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
     if ( isWrapperIndex ) {
       const getGuideRowText = ( fileName, linkText, description ) => {
-        return fs.existsSync( `${CLIENT_GUIDES_DIR}${repo}/${fileName}.md` ) ? `<tr>
+        return fs.existsSync( `${PHET_IO_SIM_SPECIFIC}/repos/${repo}/client-guide/${fileName}.md` ) ? `<tr>
         <td><a href="doc/guides/${fileName}.html">${linkText}</a>
         </td>
         <td>${description}</td>
@@ -399,7 +400,7 @@ const handleOfflineArtifact = async ( buildDir, repo, version ) => {
     const contribFileParts = contribFile.split( '/' );
     const contribFileName = contribFileParts[ contribFileParts.length - 1 ];
 
-    archive.file( contribFile, { name: `${CONTRIB_DIR}${contribFileName}` } );
+    archive.file( contribFile, { name: `${CONTRIB_DIR}/${contribFileName}` } );
   } );
 
   archive.file( `${buildDir}${WRAPPERS_FOLDER}/common/html/offline-example.html`, { name: 'index.html' } );
@@ -476,7 +477,7 @@ const handleJSDOC = async buildDir => {
  */
 const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
-  const clientGuidesSourceRoot = `${CLIENT_GUIDES_DIR}${repoName}/`;
+  const clientGuidesSourceRoot = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/`;
 
   // gracefully support no client guides
   if ( !fs.existsSync( clientGuidesSourceRoot ) ) {
@@ -485,10 +486,10 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
   }
 
   // copy over common images and styles
-  copyDirectory( `${CLIENT_GUIDES_DIR}${COMMON_DIR}`, `${builtClientGuidesOutputDir}${COMMON_DIR}` );
+  copyDirectory( `${PHET_IO_SIM_SPECIFIC}/${COMMON_DIR}`, `${builtClientGuidesOutputDir}/common` );
 
   // copy over the sim-specific phet-io guide images
-  const simSpecificGuideImagesDir = `${CLIENT_GUIDES_DIR}${repoName}/images/`;
+  const simSpecificGuideImagesDir = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/images/`;
   if ( fs.existsSync( simSpecificGuideImagesDir ) ) {
     copyDirectory( simSpecificGuideImagesDir, `${builtClientGuidesOutputDir}images/` );
   }
@@ -502,6 +503,7 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
 /**
  * Takes a markdown client guides, fills in the links, and then generates and writes it as html
  * @param {string} repoName
+ * @param {string} title
  * @param {string} mdFilePath - to get the source md file
  * @param {string} destinationPath - to write to
  */
@@ -521,8 +523,8 @@ const generateAndWriteClientGuide = ( repoName, title, mdFilePath, destinationPa
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILENAME}.html` );
 
   // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../${COMMON_DIR}`, `${COMMON_DIR}` );
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${COMMON_DIR}`, `${COMMON_DIR}` );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../${COMMON_DIR}`, 'common' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${COMMON_DIR}`, 'common' );
   const renderedClientGuide = marked( clientGuideSource );
 
   // link a stylesheet

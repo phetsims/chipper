@@ -58,7 +58,6 @@
     ],
     "phetLibs": [
       "phet-io",
-      "phet-io-client-guides",
       "phet-io-sim-specific",
       "phet-io-wrappers",
       "studio"
