@@ -66,7 +66,6 @@ const execute = require( '../common/execute' );
     'phet-android-app',
     'babel',
     'phet-info',
-    'phet-io-client-guides',
     'phet-ios-app',
     'sherpa',
     'smithers',
