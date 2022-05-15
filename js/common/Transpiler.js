@@ -73,6 +73,9 @@ class Transpiler {
     // Use the same implementation as getRepoList, but we need to read from perennial-alias since chipper should not
     // depend on perennial.
     this.activeRepos = getActiveRepos();
+
+    // Track the number of callbacks from the watch process, to schedule intermittent work
+    this.watchCount = 0;
   }
 
   /**
@@ -112,6 +115,46 @@ class Transpiler {
     return fs.statSync( file ).mtime.getTime();
   }
 
+  // @public.  Delete any files in chipper/dist/js that don't have a corresponding file in the source tree
+  pruneStaleDistFiles() {
+    const startTime = Date.now();
+
+    const start = '../chipper/dist/js/';
+
+    const visitFile = path => {
+      path = Transpiler.forwardSlashify( path );
+      assert( path.startsWith( start ) );
+      const tail = path.substring( start.length );
+
+      const correspondingFile = `../${tail}`;
+      const tsFile = correspondingFile.split( '.js' ).join( '.ts' );
+      if ( !fs.existsSync( correspondingFile ) && !fs.existsSync( tsFile ) ) {
+        fs.unlinkSync( path );
+        console.log( 'No parent source file for: ' + path + ', deleted.' );
+      }
+    };
+
+    // @private - Recursively visit a directory for files to transpile
+    const visitDir = dir => {
+      const files = fs.readdirSync( dir );
+      files.forEach( file => {
+        const child = path.join( dir, file );
+        if ( fs.lstatSync( child ).isDirectory() && fs.existsSync( child ) ) {
+          visitDir( child );
+        }
+        else if ( fs.existsSync( child ) && fs.lstatSync( child ).isFile() ) {
+          visitFile( child );
+        }
+      } );
+    };
+
+    visitDir( start );
+
+    const endTime = Date.now();
+    const elapsed = endTime - startTime;
+    console.log( 'Clean stale chipper/dist/js files finished in ' + elapsed + 'ms' );
+  }
+
   /**
    * For *.ts and *.js files, checks if they have changed file contents since last transpile.  If so, the
    * file is transpiled.
@@ -119,7 +162,7 @@ class Transpiler {
    * @private
    */
   visitFile( filePath ) {
-    filePath = this.forwardSlashify( filePath );
+    filePath = Transpiler.forwardSlashify( filePath );
     if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) ) && !this.ignorePath( filePath ) ) {
       const changeDetectedTime = Date.now();
       const text = fs.readFileSync( filePath, 'utf-8' );
@@ -174,7 +217,7 @@ class Transpiler {
 
   // @private
   ignorePath( filePath ) {
-    const withForwardSlashes = this.forwardSlashify( filePath );
+    const withForwardSlashes = Transpiler.forwardSlashify( filePath );
     return withForwardSlashes.includes( '/node_modules/' ) ||
            withForwardSlashes.includes( '.git/' ) ||
            withForwardSlashes.includes( 'chipper/dist/' ) ||
@@ -185,7 +228,7 @@ class Transpiler {
   }
 
   // @private
-  forwardSlashify( filePath ) {
+  static forwardSlashify( filePath ) {
     return filePath.split( '\\' ).join( '/' );
   }
 
@@ -232,7 +275,7 @@ class Transpiler {
       const changeDetectedTime = Date.now();
 
       const filePath = '..' + path.sep + filename;
-      const filePathWithForwardSlashes = this.forwardSlashify( filePath );
+      const filePathWithForwardSlashes = Transpiler.forwardSlashify( filePath );
       const pathExists = fs.existsSync( filePath );
 
       if ( !pathExists ) {
@@ -271,6 +314,13 @@ class Transpiler {
           this.visitFile( filePath );
         }
       }
+
+      // Intermittently clean the stale dist files, just in case (also happens on startup)
+      if ( this.watchCount % 200 === 0 ) {
+        this.pruneStaleDistFiles();
+      }
+
+      this.watchCount++;
     } );
   }
 }
