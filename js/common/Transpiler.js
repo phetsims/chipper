@@ -73,9 +73,6 @@ class Transpiler {
     // Use the same implementation as getRepoList, but we need to read from perennial-alias since chipper should not
     // depend on perennial.
     this.activeRepos = getActiveRepos();
-
-    // Track the number of callbacks from the watch process, to schedule intermittent work
-    this.watchCount = 0;
   }
 
   /**
@@ -314,13 +311,6 @@ class Transpiler {
           this.visitFile( filePath );
         }
       }
-
-      // Intermittently clean the stale dist files, just in case (also happens on startup)
-      if ( this.watchCount % 200 === 0 ) {
-        this.pruneStaleDistFiles();
-      }
-
-      this.watchCount++;
     } );
   }
 }
