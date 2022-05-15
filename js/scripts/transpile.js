@@ -33,13 +33,13 @@ const transpiler = new Transpiler( {
   verbose: args.includes( '--verbose' )
 } );
 
+transpiler.pruneStaleDistFiles();
+
 // Initial pass
 if ( !args.includes( '--skipInitial' ) ) {
   transpiler.transpileAll();
   console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
 }
-
-transpiler.pruneStaleDistFiles();
 
 // Watch process
 if ( args.includes( '--watch' ) ) {

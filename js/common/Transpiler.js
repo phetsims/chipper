@@ -145,7 +145,9 @@ class Transpiler {
       } );
     };
 
-    visitDir( start );
+    if ( fs.existsSync( start ) && fs.lstatSync( start ).isDirectory() ) {
+      visitDir( start );
+    }
 
     const endTime = Date.now();
     const elapsed = endTime - startTime;
