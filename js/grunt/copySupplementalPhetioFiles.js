@@ -35,7 +35,7 @@ const CONTRIB_DIR = 'contrib';
 
 // For Client Guides
 const PHET_IO_SIM_SPECIFIC = '../phet-io-sim-specific';
-const COMMON_DIR = 'client-guide-common/client-guide';
+const GUIDES_COMMON_DIR = 'client-guide-common/client-guide';
 
 const EXAMPLES_FILENAME = 'examples';
 const PHET_IO_GUIDE_FILENAME = 'phet-io-guide';
@@ -486,7 +486,7 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
   }
 
   // copy over common images and styles
-  copyDirectory( `${PHET_IO_SIM_SPECIFIC}/${COMMON_DIR}`, `${builtClientGuidesOutputDir}/common` );
+  copyDirectory( `${PHET_IO_SIM_SPECIFIC}/${GUIDES_COMMON_DIR}`, `${builtClientGuidesOutputDir}/common` );
 
   // copy over the sim-specific phet-io guide images
   const simSpecificGuideImagesDir = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/images/`;
@@ -523,8 +523,8 @@ const generateAndWriteClientGuide = ( repoName, title, mdFilePath, destinationPa
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILENAME}.html` );
 
   // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../${COMMON_DIR}`, 'common' );
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${COMMON_DIR}`, 'common' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../${GUIDES_COMMON_DIR}`, 'common' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${GUIDES_COMMON_DIR}`, 'common' );
   const renderedClientGuide = marked( clientGuideSource );
 
   // link a stylesheet

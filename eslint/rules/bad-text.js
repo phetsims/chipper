@@ -99,6 +99,9 @@ module.exports = function( context ) {
     // optionize cannot infer its type arguments, pass them like `optionize<MyOptions. . .>()()
     'optionize(',
 
+    // In general, you should not duplicate QueryStringMachine getting phetioDebug, instead just use Client.prototype.getDebugModeEnabled(), see https://github.com/phetsims/phet-io/issues/1859
+    'phetioDebug:',
+
     {
       id: 'Import from statements require a *.js suffix',
       predicate: line => {
