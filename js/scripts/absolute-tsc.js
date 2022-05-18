@@ -27,7 +27,11 @@ if ( !args || args.length === 0 ) {
   const results = await execute( 'node', [ `${args[ 1 ]}/chipper/node_modules/typescript/bin/tsc` ], args[ 0 ], {
     errors: 'resolve'
   } );
-  console.log( results );
+
+  // If there was a problem running tsc, report it here.  The type errors are reported on stdout below.
+  if ( results.stderr.length > 0 ) {
+    console.log( results );
+  }
   const end = Date.now();
   const elapsed = end - start;
 
