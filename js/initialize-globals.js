@@ -379,6 +379,11 @@
     preserveDrawingBuffer: { type: 'flag' },
 
     /**
+     * If true, the full screen button won't be shown in the phet menu
+     */
+    preventFullScreen: { type: 'flag' },
+
+    /**
      * shows profiling information for the sim
      */
     profiler: { type: 'flag' },
