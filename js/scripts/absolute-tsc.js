@@ -35,12 +35,18 @@ if ( !args || args.length === 0 ) {
   const end = Date.now();
   const elapsed = end - start;
 
-  const lines = results.stdout.trim().split( '\n' );
-  const mapped = lines.map( line => {
+  if ( results.stdout.trim().length === 0 ) {
 
-    return line.trim().split( args[ 1 ] ).join( process.cwd() + '/' );
-  } );
+    console.log( `0 errors in ${elapsed}ms` );
+  }
+  else {
+    const lines = results.stdout.trim().split( '\n' );
+    const mapped = lines.map( line => {
 
-  console.log( mapped.join( '\n' ) );
-  console.log( `${mapped.length} ${mapped.length === 1 ? 'error' : 'errors'} in ${elapsed}ms` );
+      return line.trim().split( args[ 1 ] ).join( process.cwd() + '/' );
+    } );
+
+    console.log( mapped.join( '\n' ) );
+    console.log( `${mapped.length} ${mapped.length === 1 ? 'error' : 'errors'} in ${elapsed}ms` );
+  }
 } )();
