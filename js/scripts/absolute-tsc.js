@@ -1,7 +1,7 @@
 // Copyright 2022, University of Colorado Boulder
 
 /**
- * The tsc type checker outputs type error using relative paths only, which are not hyperlinked in WebStorm and IntelliJ.
+ * The tsc type checker outputs type errors using relative paths only, which are not hyperlinked in WebStorm and IntelliJ.
  * This thin wrapper uses a heuristic to convert the relative paths to absolute paths.  Combined with an "output filter",
  * this makes the type errors clickable in the tool output panel.
  *
