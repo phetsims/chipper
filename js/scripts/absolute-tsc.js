@@ -10,13 +10,14 @@
  * arguments: perennial/js/scripts/absolute-tsc.js ${dir with a tsconfig, like chipper/tsconfig/all} ${path to replace, like ../../../}
  * working dir: ${the root of the checkout, like /Users/samreid/apache-document-root/main/}
  *
- * This makes the files paths clickable
+ * IMPORTANT!!! This makes the files paths clickable in Webstorm:
  * output filters: $FILE_PATH$\($LINE$\,$COLUMN$\)
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const start = Date.now();
 const execute = require( '../common/execute' );
+const path = require( 'path' );
 
 const args = process.argv.slice( 2 );
 if ( !args || args.length === 0 ) {
@@ -43,7 +44,7 @@ if ( !args || args.length === 0 ) {
     const lines = results.stdout.trim().split( '\n' );
     const mapped = lines.map( line => {
 
-      return line.trim().split( args[ 1 ] ).join( process.cwd() + '/' );
+      return line.trim().split( args[ 1 ] ).join( process.cwd() + path.sep ).split( '/' ).join( path.sep );
     } );
 
     console.log( mapped.join( '\n' ) );
