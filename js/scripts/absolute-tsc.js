@@ -5,7 +5,7 @@
  * This thin wrapper uses a heuristic to convert the relative paths to absolute paths.  Combined with an "output filter",
  * this makes the type errors clickable in the tool output panel.
  *
- * Configure WebStrom with the following external tool:
+ * Configure WebStorm with the following external tool:
  * program: node
  * arguments: perennial/js/scripts/absolute-tsc.js ${dir with a tsconfig, like chipper/tsconfig/all} ${path to replace, like ../../../}
  * working dir: ${the root of the checkout, like /Users/samreid/apache-document-root/main/}
