@@ -30,6 +30,9 @@ module.exports = function( context ) {
     // before converting to preserve history, see https://github.com/phetsims/sun/issues/732#issuecomment-995330513
     '@ts-nocheck',
 
+    // combineOptions should always specify the type parameter like combineOptions<...>.
+    'combineOptions(',
+
     'const simOptions = {'
 
     // {
