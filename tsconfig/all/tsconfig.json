@@ -2,7 +2,7 @@
   "extends": "../../tsconfig-core.json",
 
   // Explicitly list all entry points that we want to type check.
-  // Images/mipmaps/sounds commented out since that increases the time unnecessarily.  Imported images/mipmaps/sounds are still type checked.
+  // Imported images/mipmaps/sounds are still type checked.
   // This structure was determined in https://github.com/phetsims/chipper/issues/1245
   "include": [
     "../../../axon/js/**/*",
