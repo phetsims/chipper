@@ -6,173 +6,38 @@
   // This structure was determined in https://github.com/phetsims/chipper/issues/1245
   "include": [
     "../../../axon/js/**/*",
-//    "../../../axon/images/**/*",
-//    "../../../axon/mipmaps/**/*",
-//    "../../../axon/sounds/**/*",
-
     "../../../bamboo/js/**/*",
-//    "../../../bamboo/images/**/*",
-//    "../../../bamboo/mipmaps/**/*",
-//    "../../../bamboo/sounds/**/*",
-
     "../../../bending-light/js/**/*",
-//    "../../../bending-light/images/**/*",
-//    "../../../bending-light/mipmaps/**/*",
-//    "../../../bending-light/sounds/**/*",
-
     "../../../build-a-nucleus/js/**/*",
-//    "../../../build-a-nucleus/images/**/*",
-//    "../../../build-a-nucleus/mipmaps/**/*",
-//    "../../../build-a-nucleus/sounds/**/*",
-
     "../../../buoyancy/js/**/*",
-//    "../../../buoyancy/images/**/*",
-//    "../../../buoyancy/mipmaps/**/*",
-//    "../../../buoyancy/sounds/**/*",
-
     "../../../center-and-variability/js/**/*",
-//    "../../../center-and-variability/images/**/*",
-//    "../../../center-and-variability/mipmaps/**/*",
-//    "../../../center-and-variability/sounds/**/*",
-
     "../../../circuit-construction-kit-ac/js/**/*",
-//    "../../../circuit-construction-kit-ac/images/**/*",
-//    "../../../circuit-construction-kit-ac/mipmaps/**/*",
-//    "../../../circuit-construction-kit-ac/sounds/**/*",
-
     "../../../density/js/**/*",
-//    "../../../density/images/**/*",
-//    "../../../density/mipmaps/**/*",
-//    "../../../density/sounds/**/*",
-
     "../../../dot/js/**/*",
-//    "../../../dot/images/**/*",
-//    "../../../dot/mipmaps/**/*",
-//    "../../../dot/sounds/**/*",
-
     "../../../geometric-optics/js/**/*",
-//    "../../../geometric-optics/images/**/*",
-//    "../../../geometric-optics/mipmaps/**/*",
-//    "../../../geometric-optics/sounds/**/*",
-
     "../../../geometric-optics-basics/js/**/*",
-//    "../../../geometric-optics-basics/images/**/*",
-//    "../../../geometric-optics-basics/mipmaps/**/*",
-//    "../../../geometric-optics-basics/sounds/**/*",
-
     "../../../gravity-and-orbits/js/**/*",
-//    "../../../gravity-and-orbits/images/**/*",
-//    "../../../gravity-and-orbits/mipmaps/**/*",
-//    "../../../gravity-and-orbits/sounds/**/*",
-
     "../../../greenhouse-effect/js/**/*",
-//    "../../../greenhouse-effect/images/**/*",
-//    "../../../greenhouse-effect/mipmaps/**/*",
-//    "../../../greenhouse-effect/sounds/**/*",
-
     "../../../joist/js/**/*",
-//    "../../../joist/images/**/*",
-//    "../../../joist/mipmaps/**/*",
-//    "../../../joist/sounds/**/*",
-
     "../../../kite/js/**/*",
-//    "../../../kite/images/**/*",
-//    "../../../kite/mipmaps/**/*",
-//    "../../../kite/sounds/**/*",
-
     "../../../mean-share-and-balance/js/**/*",
-//    "../../../mean-share-and-balance/images/**/*",
-//    "../../../mean-share-and-balance/mipmaps/**/*",
-//    "../../../mean-share-and-balance/sounds/**/*",
-
     "../../../mobius/js/**/*",
-//    "../../../mobius/images/**/*",
-//    "../../../mobius/mipmaps/**/*",
-//    "../../../mobius/sounds/**/*",
-
     "../../../models-of-the-hydrogen-atom/js/**/*",
-//    "../../../models-of-the-hydrogen-atom/images/**/*",
-//    "../../../models-of-the-hydrogen-atom/mipmaps/**/*",
-//    "../../../models-of-the-hydrogen-atom/sounds/**/*",
-
     "../../../my-solar-system/js/**/*",
-//    "../../../my-solar-system/images/**/*",
-//    "../../../my-solar-system/mipmaps/**/*",
-//    "../../../my-solar-system/sounds/**/*",
-
     "../../../number-play/js/**/*",
-//    "../../../number-play/images/**/*",
-//    "../../../number-play/mipmaps/**/*",
-//    "../../../number-play/sounds/**/*",
-
     "../../../phet-core/js/**/*",
-//    "../../../phet-core/images/**/*",
-//    "../../../phet-core/mipmaps/**/*",
-//    "../../../phet-core/sounds/**/*",
-
     "../../../phetcommon/js/**/*",
-//    "../../../phetcommon/images/**/*",
-//    "../../../phetcommon/mipmaps/**/*",
-//    "../../../phetcommon/sounds/**/*",
-
     "../../../quadrilateral/js/**/*",
-//    "../../../quadrilateral/images/**/*",
-//    "../../../quadrilateral/mipmaps/**/*",
-//    "../../../quadrilateral/sounds/**/*",
-
     "../../../ratio-and-proportion/js/**/*",
-//    "../../../ratio-and-proportion/images/**/*",
-//    "../../../ratio-and-proportion/mipmaps/**/*",
-//    "../../../ratio-and-proportion/sounds/**/*",
-
     "../../../scenery/js/**/*",
-//    "../../../scenery/images/**/*",
-//    "../../../scenery/mipmaps/**/*",
-//    "../../../scenery/sounds/**/*",
-
     "../../../scenery-phet/js/**/*",
-//    "../../../scenery-phet/images/**/*",
-//    "../../../scenery-phet/mipmaps/**/*",
-//    "../../../scenery-phet/sounds/**/*",
-
     "../../../simula-rasa/js/**/*",
-//    "../../../simula-rasa/images/**/*",
-//    "../../../simula-rasa/mipmaps/**/*",
-//    "../../../simula-rasa/sounds/**/*",
-
     "../../../sun/js/**/*",
-//    "../../../sun/images/**/*",
-//    "../../../sun/mipmaps/**/*",
-//    "../../../sun/sounds/**/*",
-
     "../../../tambo/js/**/*",
-//    "../../../tambo/images/**/*",
-//    "../../../tambo/mipmaps/**/*",
-//    "../../../tambo/sounds/**/*",
-
     "../../../tandem/js/**/*",
-//    "../../../tandem/images/**/*",
-//    "../../../tandem/mipmaps/**/*",
-//    "../../../tandem/sounds/**/*",
-
     "../../../twixt/js/**/*",
-//    "../../../twixt/images/**/*",
-//    "../../../twixt/mipmaps/**/*",
-//    "../../../twixt/sounds/**/*",
-
     "../../../utterance-queue/js/**/*",
-//    "../../../utterance-queue/images/**/*",
-//    "../../../utterance-queue/mipmaps/**/*",
-//    "../../../utterance-queue/sounds/**/*",
-
     "../../../vegas/js/**/*",
-//    "../../../vegas/images/**/*",
-//    "../../../vegas/mipmaps/**/*",
-//    "../../../vegas/sounds/**/*",
-
-    "../../../wilder/js/**/*",
-//    "../../../wilder/images/**/*",
-//    "../../../wilder/mipmaps/**/*",
-//    "../../../wilder/sounds/**/*",
+    "../../../wilder/js/**/*"
   ]
 }
