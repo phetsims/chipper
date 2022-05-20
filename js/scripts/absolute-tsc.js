@@ -7,7 +7,7 @@
  *
  * Configure WebStorm with the following external tool:
  * program: node
- * arguments: perennial/js/scripts/absolute-tsc.js ${dir with a tsconfig, like chipper/tsconfig/all} ${path to replace, like ../../../}
+ * arguments: perennial/js/scripts/absolute-tsc.js ${dir with a tsconfig, like chipper/tsconfig/all}
  * working dir: ${the root of the checkout, like /Users/samreid/apache-document-root/main/}
  *
  * IMPORTANT!!! This makes the files paths clickable in Webstorm:
@@ -18,6 +18,7 @@
 const start = Date.now();
 const execute = require( '../common/execute' );
 const path = require( 'path' );
+const { resolve } = require( 'path' ); // eslint-disable-line
 
 const args = process.argv.slice( 2 );
 if ( !args || args.length === 0 ) {
@@ -25,7 +26,7 @@ if ( !args || args.length === 0 ) {
 }
 
 ( async () => {
-  const results = await execute( 'node', [ `${args[ 1 ]}/chipper/node_modules/typescript/bin/tsc` ], args[ 0 ], {
+  const results = await execute( 'node', [ `${process.cwd()}${path.sep}chipper/node_modules/typescript/bin/tsc` ], args[ 0 ], {
     errors: 'resolve'
   } );
 
@@ -44,7 +45,16 @@ if ( !args || args.length === 0 ) {
     const lines = results.stdout.trim().split( '\n' );
     const mapped = lines.map( line => {
 
-      return line.trim().split( args[ 1 ] ).join( process.cwd() + path.sep ).split( '/' ).join( path.sep );
+      if ( line.includes( '): error TS' ) ) {
+        const parenthesesIndex = line.indexOf( '(' );
+
+        const linePath = line.substring( 0, parenthesesIndex );
+        const resolved = resolve( process.cwd() + path.sep + args[ 0 ] + path.sep + linePath );
+        return resolved + line.substring( parenthesesIndex );
+      }
+      else {
+        return line;
+      }
     } );
 
     console.log( mapped.join( '\n' ) );
