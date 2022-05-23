@@ -5,14 +5,19 @@
   // Imported images/mipmaps/sounds are still type checked.
   // This structure was determined in https://github.com/phetsims/chipper/issues/1245
   "include": [
+    "../../../aqua/js/**/*",
     "../../../axon/js/**/*",
     "../../../bamboo/js/**/*",
     "../../../bending-light/js/**/*",
     "../../../build-a-nucleus/js/**/*",
     "../../../buoyancy/js/**/*",
     "../../../center-and-variability/js/**/*",
+    "../../../chipper/phet-types.d.ts",
     "../../../circuit-construction-kit-ac/js/**/*",
+    "../../../circuit-construction-kit-common/js/**/*",
+    "../../../counting-common/js/**/*",
     "../../../density/js/**/*",
+    "../../../density-buoyancy-common/js/**/*",
     "../../../dot/js/**/*",
     "../../../geometric-optics/js/**/*",
     "../../../geometric-optics-basics/js/**/*",
@@ -35,6 +40,7 @@
     "../../../sun/js/**/*",
     "../../../tambo/js/**/*",
     "../../../tandem/js/**/*",
+    "../../../tangible/js/**/*",
     "../../../twixt/js/**/*",
     "../../../utterance-queue/js/**/*",
     "../../../vegas/js/**/*",
