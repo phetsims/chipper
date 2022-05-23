@@ -33,6 +33,11 @@ module.exports = function( context ) {
     // combineOptions should always specify the type parameter like combineOptions<...>.
     'combineOptions(',
 
+    // The type parameters should be inferred rather than specified
+    '.multilink<',
+    '.lazyMultilink<',
+    'new DerivedProperty<',
+
     'const simOptions = {'
 
     // {
