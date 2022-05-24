@@ -57,6 +57,7 @@ const recordTime = async ( asyncCallback, timeCallback ) => {
  * @param {boolean} allHTML - If the _all.html file should be generated
  * @param {string} brand
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
+ * @param {boolean} buildLocal
  * @returns {Promise} - Does not resolve a value
  */
 module.exports = async function( repo, minifyOptions, instrument, allHTML, brand, localesOption, buildLocal ) {

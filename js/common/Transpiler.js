@@ -23,7 +23,7 @@ const root = '..' + path.sep;
 
 // Directories in a sim repo that may contain things for transpilation
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
-const subdirs = [ 'js', 'images', 'mipmaps', 'sounds',
+const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'common',
 
   // phet-io-sim-specific has nonstandard directory structure
   'repos' ];

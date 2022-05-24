@@ -47,12 +47,7 @@ const LIB_FILES = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
   '../assert/js/assert.js',
   '../chipper/js/phet-io/phetioCompareAPIs.js',
-  `../${WRAPPER_COMMON_FOLDER}/js/WrapperTypes.js`,
-  '../tandem/js/PhetioIDUtils.js',
-  `../${WRAPPER_COMMON_FOLDER}/js/Client.js`,
-  `../${WRAPPER_COMMON_FOLDER}/js/readFile.js`,
-  `../${WRAPPER_COMMON_FOLDER}/js/loadWrapperTemplate.js`,
-  `../${WRAPPER_COMMON_FOLDER}/js/keyboardEventForwarding.js`
+  '../tandem/js/PhetioIDUtils.js'
 ];
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
@@ -93,6 +88,7 @@ const JSDOC_FILES = [
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
 const STUDIO_BUILT_FILENAME = 'studio.min.js';
+
 /**
  * @param {string} repo
  * @param {string} version
@@ -167,6 +163,12 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
         contents = contents.replace( regExp, '' );
       }
 
+      // Delete the imports the phet-io-wrappers-main, as it will be bundled with the phet-io.js lib file.
+      // MUST GO BEFORE BELOW REPLACE: 'phet-io-wrappers/' -> '/'
+      contents = contents.replace(
+        /<script type="module" src="(..\/)+chipper\/dist\/js\/phet-io-wrappers\/js\/phet-io-wrappers-main.js"><\/script>/g, // '.*' is to support `data-client-name` in wrappers like "multi"
+        '' );
+
       // Support wrappers that use code from phet-io-wrappers
       contents = ChipperStringUtils.replaceAll( contents, '/phet-io-wrappers/', '/' );
 
@@ -184,6 +186,13 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       contents = ChipperStringUtils.replaceAll( contents,
         '<!--{{FAVICON.ico}}-->',
         '<link rel="shortcut icon" href="/assets/favicon.ico"/>'
+      );
+
+      // There should not be any imports of Client directly except using the "multi-wrapper" functionality of
+      // providing a ?clientName, for unbuilt only, so we remove it here.
+      contents = contents.replace(
+        /^.*\/common\/js\/Client.js.*$/mg,
+        ''
       );
     }
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
@@ -301,7 +310,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build
-  handleLib( buildDir, filterWrapper );
+  await handleLib( buildDir, filterWrapper );
 
   // Create the zipped file that holds all needed items to run PhET-iO offline. NOTE: this must happen after copying wrapper
   await handleOfflineArtifact( buildDir, repo, version );
@@ -326,7 +335,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   }
 
   // The nested index wrapper will be broken on build, so get rid of it for clarity
-  fs.rmdirSync( `${wrappersLocation}index/`, { recursive: true } );
+  fs.rmSync( `${wrappersLocation}index/`, { recursive: true } );
 };
 
 /**
@@ -337,7 +346,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
  * @param {Function} filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(abspath, contents)"
  */
-const handleLib = ( buildDir, filter ) => {
+const handleLib = async ( buildDir, filter ) => {
   grunt.log.debug( 'Creating phet-io lib file from: ', LIB_FILES );
 
   grunt.file.mkdir( `${buildDir}lib` );
@@ -356,7 +365,9 @@ const handleLib = ( buildDir, filter ) => {
     stripAssertions: false
   } );
 
-  grunt.file.write( `${buildDir}lib/${LIB_OUTPUT_FILE}`, `${LIB_COPYRIGHT_HEADER}\n\n${minified}` );
+  const wrappersMain = await buildStandalone( 'phet-io-wrappers', {} );
+  const filteredMain = filter && filter( LIB_OUTPUT_FILE, wrappersMain );
+  grunt.file.write( `${buildDir}lib/${LIB_OUTPUT_FILE}`, `${LIB_COPYRIGHT_HEADER}\n\n${minified}\n${filteredMain}` );
 };
 
 /**
@@ -556,6 +567,5 @@ const handleStudio = async wrappersLocation => {
   reportTscResults( results, grunt );
 
   new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( 'studio' ) );
-
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {} ) );
 };
