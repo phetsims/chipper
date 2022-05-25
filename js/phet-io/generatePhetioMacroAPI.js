@@ -112,6 +112,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
             const fullAPI = messageText;
+            await cleanup();
 
             resolve( {
 
@@ -121,7 +122,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
               // For machine readability
               api: JSON.parse( fullAPI )
             } );
-            await cleanup();
           }
 
           else if ( msg.type() === 'error' ) {
