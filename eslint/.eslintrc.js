@@ -60,7 +60,7 @@ module.exports = {
         '@typescript-eslint/no-namespace': 'error',
         '@typescript-eslint/no-non-null-asserted-optional-chain': 'error',
 
-        // '@typescript-eslint/no-this-alias': 'error', //TODO https://github.com/phetsims/chipper/issues/1223
+        '@typescript-eslint/no-this-alias': 'error',
         '@typescript-eslint/no-unnecessary-type-constraint': 'error',
         '@typescript-eslint/no-var-requires': 'error',
         '@typescript-eslint/prefer-as-const': 'error',
