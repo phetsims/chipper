@@ -49,7 +49,7 @@ module.exports = {
 
         ////////////////////////////////////////////////////////////////
         // Recommended without needing type info:
-        // '@typescript-eslint/adjacent-overload-signatures': 'error', // 258 errors
+        '@typescript-eslint/adjacent-overload-signatures': 'error', // 258 errors
         // '@typescript-eslint/ban-ts-comment': 'error', // 566 errors
         // '@typescript-eslint/ban-types': 'error', // 251 errors
         '@typescript-eslint/no-empty-interface': 'error',
