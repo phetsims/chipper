@@ -77,6 +77,7 @@ module.exports = {
         '@typescript-eslint/no-array-constructor': 'error',
         // '@typescript-eslint/no-empty-function': 'error', // 41 errors
         '@typescript-eslint/no-extra-semi': 'error',
+        'no-unused-vars': 'off', // you must disable the base rule to avoid duplicate/incorrect errors
         '@typescript-eslint/no-unused-vars': [ 'error', {
           args: 'none' // TODO: we want to turn this for arguments in https://github.com/phetsims/chipper/issues/1230
         } ],
