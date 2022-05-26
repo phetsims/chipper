@@ -295,6 +295,7 @@ module.exports = function( grunt ) {
 --disable-eslint-cache: cache will not be read or written
 --fix: autofixable changes will be written to disk
 --format: Append an additional set of rules for formatting
+--type-info: Include rules for TypeScript that use type checking. Slows down eslint significantly.
 --patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.`,
     wrapTask( async () => {
       const lint = require( './lint' );
@@ -303,6 +304,7 @@ module.exports = function( grunt ) {
       const cache = !grunt.option( 'disable-eslint-cache' );
       const fix = grunt.option( 'fix' );
       const format = grunt.option( 'format' );
+      const typeInfo = grunt.option( 'type-info' );
 
       // If patterns are specified, lint them, otherwise lint the repo where the command was run from
       // Use '../repo' instead of '.' so that it can be filtered if necessary.
@@ -311,7 +313,8 @@ module.exports = function( grunt ) {
       await lint( patterns, {
         cache: cache,
         fix: fix,
-        format: format
+        format: format,
+        typeInfo: typeInfo
       } );
     } ) );
 

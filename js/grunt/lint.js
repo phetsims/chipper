@@ -44,7 +44,8 @@ const lint = async ( patterns, options ) => {
     cache: true,
     format: false, // append an extra set of rules for formatting code.
     fix: false, // whether fixes should be written to disk
-    warn: true // whether errors should reported with grunt.warn
+    warn: true, // whether errors should reported with grunt.warn
+    typeInfo: false // (for typescript) whether to include eslint rules that require project info, much slower
   }, options );
 
   // filter out all unlintable pattern. An unlintable repo is one that has no `js` in it, so it will fail when trying to
@@ -79,11 +80,33 @@ const lint = async ( patterns, options ) => {
     extensions: [ '.js', '.ts' ]
   };
 
+  const config = {};
+  const configExtends = [];
   if ( options.format ) {
-    eslintConfig.baseConfig = {
-      extends: [ '../chipper/eslint/format_eslintrc.js' ]
-    };
+    configExtends.push( '../chipper/eslint/format_eslintrc.js' );
   }
+  if ( options.typeInfo ) {
+    if ( patterns.length !== 1 ) {
+      grunt.fail.warn( 'typeInfo can only work for one repository at a time' );
+    }
+
+    // include the rules that use type information
+    configExtends.push( '../chipper/eslint/type_info_eslintrc.js' );
+
+    // signify where the project configuration lives for this repo - if we apply this to all files
+    // ESLint complains that .js files are not in project configurations
+    config.overrides = [ {
+      files: [
+        '**/*.ts'
+      ],
+      parserOptions: {
+        project: [ `${patterns[ 0 ]}/tsconfig.json` ]
+      }
+    } ];
+  }
+
+  config.extends = configExtends;
+  eslintConfig.baseConfig = config;
 
   const eslint = new ESLint( eslintConfig );
 
