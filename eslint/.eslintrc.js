@@ -51,7 +51,16 @@ module.exports = {
         // Recommended without needing type info:
         '@typescript-eslint/adjacent-overload-signatures': 'error', // 258 errors
         // '@typescript-eslint/ban-ts-comment': 'error', // 566 errors
-        // '@typescript-eslint/ban-types': 'error', // 251 errors
+        '@typescript-eslint/ban-types': [
+          'error',
+          {
+            types: {
+              // un-ban a type that's banned by default
+              '{}': false
+            },
+            extendDefaults: true
+          }
+        ],
         '@typescript-eslint/no-empty-interface': 'error',
         // '@typescript-eslint/no-explicit-any': 'error', // 515
         '@typescript-eslint/no-extra-non-null-assertion': 'error',
