@@ -55,6 +55,11 @@ module.exports = {
           'error',
           {
             types: {
+              Omit: {
+                message: 'Prefer OmitStrict for type safety',
+                fixWith: 'OmitStrict'
+              },
+
               // un-ban a type that's banned by default
               '{}': false
             },
