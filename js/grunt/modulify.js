@@ -26,6 +26,9 @@ const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur' ];
 // supported sound file types, not case-sensitive
 const SOUND_SUFFIXES = [ '.mp3', '.wav' ];
 
+// supported shader file types, not case-sensitive
+const SHADER_SUFFIXES = [ '.glsl', '.vert', '.shader' ];
+
 /**
  * String replacement
  * @param {string} string - the string which will be searched
@@ -117,6 +120,22 @@ mipmaps.forEach( mipmap => {
 } );
 export default mipmaps;`;
   fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( mipmapContents ) );
+};
+
+/**
+ * Transform a GLSL shader file to a JS file that is represented by a string.
+ * @param {string} abspath - the absolute path of the shader file
+ */
+const modulifyShader = async abspath => {
+
+  // load the sound file
+  const shaderString = fs.readFileSync( abspath, 'utf-8' );
+
+  // output the contents of the file that will define the sound in JS format
+  const contents = `${HEADER}
+export default ${JSON.stringify( shaderString )}`;
+
+  fs.writeFileSync( convertSuffix( abspath, '.js' ), fixEOL( contents ) );
 };
 
 /**
@@ -233,6 +252,10 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename ) => {
 
   if ( subdir && subdir.startsWith( 'sounds' ) && SOUND_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
     await modulifySound( abspath );
+  }
+
+  if ( subdir && subdir.startsWith( 'shaders' ) && SHADER_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
+    await modulifyShader( abspath );
   }
 };
 
