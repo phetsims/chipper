@@ -57,7 +57,10 @@ if ( !args || args.length === 0 ) {
       }
     } );
 
+    // If a line starts without whitespace, it begins a new error
+    const errorCount = mapped.filter( line => line === line.trim() ).length;
+
     console.log( mapped.join( '\n' ) );
-    console.log( `${mapped.length} ${mapped.length === 1 ? 'error' : 'errors'} in ${elapsed}ms` );
+    console.log( `${errorCount} ${errorCount === 1 ? 'error' : 'errors'} in ${elapsed}ms` );
   }
 } )();
