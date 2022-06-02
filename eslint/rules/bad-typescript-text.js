@@ -22,7 +22,7 @@ module.exports = function( context ) {
     // to, disabling this rule).
     // For @protected see "no-protected-jsdoc" rule, and https://github.com/phetsims/chipper/issues/1237#issuecomment-1105863226
     '@public',
-    // '@private',
+    '@private',
 
     // 'options = merge', // TODO: Currently 140 failures, https://github.com/phetsims/chipper/issues/1226
 
