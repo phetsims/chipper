@@ -38,12 +38,12 @@ module.exports = function( context ) {
     '.lazyMultilink<',
     'new DerivedProperty<',
 
-    'const simOptions = {'
+    'const simOptions = {',
 
-    // {
-    //   id: '@returns with type and/or without extra doc',
-    //   regex: /(@returns \{)|(@returns$)/
-    // },
+    {
+      id: '@returns with type and/or without extra doc',
+      regex: /(@returns \{)|(@returns *$)/
+    }
 
     // {
     //   id: 'asserting values are instanceof or typeof in typescript (booo)',
