@@ -40,6 +40,9 @@ module.exports = function( context ) {
 
     'const simOptions = {',
 
+    // Typescript files should not use jsdoc for parameters
+    '@param {',
+
     {
       id: '@returns with type and/or without extra doc',
       regex: /(@returns \{)|(@returns *$)/
