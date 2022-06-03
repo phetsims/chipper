@@ -12,6 +12,7 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const { ESLint } = require( 'eslint' ); // eslint-disable-line
 const fs = require( 'fs' );
+const path = require( 'path' );
 const grunt = require( 'grunt' );
 const crypto = require( 'crypto' );
 
@@ -45,7 +46,8 @@ const lint = async ( patterns, options ) => {
     format: false, // append an extra set of rules for formatting code.
     fix: false, // whether fixes should be written to disk
     warn: true, // whether errors should reported with grunt.warn
-    typeInfo: false // (for typescript) whether to include eslint rules that require project info, much slower
+    typeInfo: false, // (for typescript) whether to include eslint rules that require project info, much slower
+    chipAway: false // returns responsible dev info for easier chipping.
   }, options );
 
   // filter out all unlintable pattern. An unlintable repo is one that has no `js` in it, so it will fail when trying to
@@ -129,6 +131,29 @@ const lint = async ( patterns, options ) => {
     const formatter = await eslint.loadFormatter( 'stylish' );
     const resultText = formatter.format( results );
     console.log( resultText );
+    // TODO: Add documentation & refactor see: https://github.com/phetsims/chipper/issues/1253
+    if ( options.chipAway ) {
+      const repos = results.map( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] );
+      const uniqueRepos = _.uniq( repos ).filter( repo => repo !== 'perennial-alias' );
+      const responsibleDevs = JSON.parse( fs.readFileSync( '../phet-info/sim-info/responsible_dev.json' ) );
+      const reposWithErrors = uniqueRepos.filter( repo => {
+        const filteredResults = results.filter( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] === repo );
+        const errorCount = _.sum( filteredResults.map( file => file.errorCount + file.warningCount ) );
+
+        return errorCount > 0;
+      } );
+
+      const assignments = reposWithErrors.map( repo => {
+        const filteredResults = results.filter( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] === repo );
+        const fileCount = filteredResults.filter( result => result.errorCount + result.warningCount > 0 ).length;
+        const errorCount = _.sum( filteredResults.map( file => file.errorCount + file.warningCount ) );
+
+        return ` - [ ] ${repo}: ${responsibleDevs[ repo ].responsibleDevs.join( ', ' )} ${errorCount} errors in ${fileCount} files.`;
+      } );
+
+      console.log( assignments.join( '\n' ) );
+    }
+
     options.warn && grunt.fail.warn( `${totalErrors} errors and ${totalWarnings} warnings` );
   }
 
