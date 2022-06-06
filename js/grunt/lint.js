@@ -135,6 +135,10 @@ const lint = async ( patterns, options ) => {
     if ( options.chipAway ) {
       const repos = results.map( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] );
       const uniqueRepos = _.uniq( repos ).filter( repo => repo !== 'perennial-alias' );
+
+      // NOTE: This should never be run in a maintenance mode since this loads a file from phet-info which
+      // does not have its SHA tracked as a dependency.
+      // TODO: For the reviewer, is this OK? https://github.com/phetsims/chipper/issues/1253
       const responsibleDevs = JSON.parse( fs.readFileSync( '../phet-info/sim-info/responsible_dev.json' ) );
       const reposWithErrors = uniqueRepos.filter( repo => {
         const filteredResults = results.filter( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] === repo );

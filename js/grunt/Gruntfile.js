@@ -296,7 +296,8 @@ module.exports = function( grunt ) {
 --fix: autofixable changes will be written to disk
 --format: Append an additional set of rules for formatting
 --type-info: Include rules for TypeScript that use type checking. Slows down eslint significantly.
---patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.`,
+--patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.
+--chip-away: output a list of responsible devs for each repo with lint problems`,
     wrapTask( async () => {
       const lint = require( './lint' );
 
@@ -305,6 +306,7 @@ module.exports = function( grunt ) {
       const fix = grunt.option( 'fix' );
       const format = grunt.option( 'format' );
       const typeInfo = grunt.option( 'type-info' );
+      const chipAway = grunt.option( 'chip-away' );
 
       // If patterns are specified, lint them, otherwise lint the repo where the command was run from
       // Use '../repo' instead of '.' so that it can be filtered if necessary.
@@ -314,7 +316,8 @@ module.exports = function( grunt ) {
         cache: cache,
         fix: fix,
         format: format,
-        typeInfo: typeInfo
+        typeInfo: typeInfo,
+        chipAway: chipAway
       } );
     } ) );
 
@@ -325,6 +328,7 @@ module.exports = function( grunt ) {
     const cache = !grunt.option( 'disable-eslint-cache' );
     const fix = grunt.option( 'fix' );
     const format = grunt.option( 'format' );
+    const chipAway = grunt.option( 'chip-away' );
     assert && assert( !grunt.option( 'patterns' ), 'patterns not support for lint-all' );
 
     const getPhetLibs = require( './getPhetLibs' );
@@ -332,7 +336,8 @@ module.exports = function( grunt ) {
     await lint( getPhetLibs( repo ).map( repo => `../${repo}` ), {
       cache: cache,
       fix: fix,
-      format: format
+      format: format,
+      chipAway: chipAway
     } );
   } ) );
 
