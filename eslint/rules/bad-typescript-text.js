@@ -43,6 +43,9 @@ module.exports = function( context ) {
     // Typescript files should not use jsdoc for parameters
     '@param {',
 
+    // Don't export SelfOptions, https://github.com/phetsims/chipper/issues/1263
+    'export type SelfOptions',
+
     {
       id: '@returns with type and/or without extra doc',
       regex: /(@returns \{)|(@returns *$)/
