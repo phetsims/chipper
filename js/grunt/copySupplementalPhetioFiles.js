@@ -26,6 +26,8 @@ const tsc = require( './tsc' );
 const reportTscResults = require( './reportTscResults' );
 const Transpiler = require( '../common/Transpiler' );
 const getPhetLibs = require( './getPhetLibs' );
+const path = require( 'path' );
+const webpack = require( 'webpack' );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -310,7 +312,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build
-  await handleLib( buildDir, filterWrapper );
+  await handleLib( repo, buildDir, filterWrapper );
 
   // Create the zipped file that holds all needed items to run PhET-iO offline. NOTE: this must happen after copying wrapper
   await handleOfflineArtifact( buildDir, repo, version );
@@ -342,11 +344,12 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
  * Given the list of lib files, apply a filter function to them. Then minify them and consolidate into a single string.
  * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
 
+ * @param {string} repo
  * @param {string} buildDir
  * @param {Function} filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(abspath, contents)"
  */
-const handleLib = async ( buildDir, filter ) => {
+const handleLib = async ( repo, buildDir, filter ) => {
   grunt.log.debug( 'Creating phet-io lib file from: ', LIB_FILES );
 
   grunt.file.mkdir( `${buildDir}lib` );
@@ -361,7 +364,8 @@ const handleLib = async ( buildDir, filter ) => {
     consolidated += filteredContents ? filteredContents : contents;
   } );
 
-  const minified = minify( consolidated, {
+  const migrationRulesCode = await getCompiledMigrationRules( repo, buildDir );
+  const minified = minify( `${consolidated}\n${migrationRulesCode}`, {
     stripAssertions: false
   } );
 
@@ -492,7 +496,7 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
 
   // gracefully support no client guides
   if ( !fs.existsSync( clientGuidesSourceRoot ) ) {
-    grunt.log.warn( `No client guides found at ${clientGuidesSourceRoot}, no guides being built.` );
+    console.log( `No client guides found at ${clientGuidesSourceRoot}, no guides being built.` );
     return;
   }
 
@@ -568,4 +572,61 @@ const handleStudio = async wrappersLocation => {
 
   new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( 'studio' ) );
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {} ) );
+};
+
+/**
+ * Use webpack to bundle the migration rules into a compiled code string, for use in phet-io lib file.
+ * @param {string} repo
+ * @param {string} buildDir
+ * @returns {Promise.<string>}
+ */
+const getCompiledMigrationRules = async ( repo, buildDir ) => {
+  return new Promise( ( resolve, reject ) => {
+
+    const migrationRulesFilename = `${repo}-migration-rules.js`;
+    const entryPointFilename = `../chipper/dist/js/phet-io-sim-specific/repos/${repo}/js/${migrationRulesFilename}`;
+    if ( !fs.existsSync( entryPointFilename ) ) {
+      console.log( `No migration rules found at ${entryPointFilename}, no rules to be bundled with ${LIB_OUTPUT_FILE}.` );
+      resolve( '' ); // blank string because there are no rules to add.
+    }
+    else {
+
+      // output dir must be an absolute path
+      const outputDir = path.resolve( __dirname, `../../${repo}/${buildDir}` );
+
+      const compiler = webpack( {
+
+        // We uglify as a step after this, with many custom rules. So we do NOT optimize or uglify in this step.
+        optimization: {
+          minimize: false
+        },
+
+        // Simulations or runnables will have a single entry point
+        entry: {
+          repo: entryPointFilename
+        },
+
+        // We output our builds to the following dir
+        output: {
+          path: outputDir,
+          filename: migrationRulesFilename
+        }
+      } );
+
+      compiler.run( ( err, stats ) => {
+        if ( err || stats.hasErrors() ) {
+          console.error( 'Migration rules webpack build errors:', stats.compilation.errors );
+          reject( err || stats.compilation.errors[ 0 ] );
+        }
+        else {
+          const jsFile = `${outputDir}/${migrationRulesFilename}`;
+          const js = fs.readFileSync( jsFile, 'utf-8' );
+
+          fs.unlinkSync( jsFile );
+
+          resolve( js );
+        }
+      } );
+    }
+  } );
 };
