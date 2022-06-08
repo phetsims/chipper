@@ -17,6 +17,7 @@
  */
 const start = Date.now();
 const execute = require( '../common/execute' );
+const os = require( 'os' );
 const path = require( 'path' );
 const { resolve } = require( 'path' ); // eslint-disable-line
 
@@ -42,7 +43,7 @@ if ( !args || args.length === 0 ) {
     console.log( `0 errors in ${elapsed}ms` );
   }
   else {
-    const lines = results.stdout.trim().split( '\n' );
+    const lines = results.stdout.trim().split( os.EOL );
     const mapped = lines.map( line => {
 
       if ( line.includes( '): error TS' ) ) {
