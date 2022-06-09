@@ -58,6 +58,10 @@ module.exports = function( context ) {
     'new Enumeration<',
     'new EnumerationProperty<',
 
+    // Voicing utterances should be registered with a Node for "voicing visibility", using Voicing.alertUtterance asserts
+    // that. See https://github.com/phetsims/scenery/issues/1403
+    'voicingUtteranceQueue.addToBack',
+
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     {
       id: 'setTimeout(',
