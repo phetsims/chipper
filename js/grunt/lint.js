@@ -131,7 +131,13 @@ const lint = async ( patterns, options ) => {
     const formatter = await eslint.loadFormatter( 'stylish' );
     const resultText = formatter.format( results );
     console.log( resultText );
-    // TODO: Add documentation & refactor see: https://github.com/phetsims/chipper/issues/1253
+
+    // The Chip Away option provides a quick and easy method to assign devs to their respective repositories
+    // for ease in adopting and applying new typescript linting rules.
+    // Chip Away will return a markdown formatted checklist with the repository name, responsible dev,
+    // and number of errors.
+    // Response  format:
+    // - [ ] {{REPO}}: @{{GITHUB_USERNAME}} {{NUMBER}} errors in {{NUMBER}} files.
     if ( options.chipAway ) {
       const repos = results.map( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] );
       const uniqueRepos = _.uniq( repos ).filter( repo => repo !== 'perennial-alias' );
@@ -140,21 +146,19 @@ const lint = async ( patterns, options ) => {
       // does not have its SHA tracked as a dependency.
       // TODO: For the reviewer, is this OK? https://github.com/phetsims/chipper/issues/1253
       const responsibleDevs = JSON.parse( fs.readFileSync( '../phet-info/sim-info/responsible_dev.json' ) );
-      const reposWithErrors = uniqueRepos.filter( repo => {
-        const filteredResults = results.filter( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] === repo );
-        const errorCount = _.sum( filteredResults.map( file => file.errorCount + file.warningCount ) );
 
-        return errorCount > 0;
+      // We only want a list of repos that report lint errors
+      const reposWithErrors = uniqueRepos.filter( repo => {
+        return errorReport( results, repo ).errorCount > 0;
       } );
 
+      // Format chip away assignments. '{{REPO}} @github # errors in # files'
       const assignments = reposWithErrors.map( repo => {
-        const filteredResults = results.filter( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] === repo );
-        const fileCount = filteredResults.filter( result => result.errorCount + result.warningCount > 0 ).length;
-        const errorCount = _.sum( filteredResults.map( file => file.errorCount + file.warningCount ) );
+        const fileCount = errorReport( results, repo ).fileCount;
+        const errorCount = errorReport( results, repo ).errorCount;
 
         return ` - [ ] ${repo}: ${responsibleDevs[ repo ].responsibleDevs.join( ', ' )} ${errorCount} errors in ${fileCount} files.`;
       } );
-
       console.log( assignments.join( '\n' ) );
     }
 
@@ -163,6 +167,14 @@ const lint = async ( patterns, options ) => {
 
   return results;
 };
+
+function errorReport( results, repo ) {
+  const filteredResults = results.filter( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] === repo );
+  const fileCount = filteredResults.filter( result => result.errorCount + result.warningCount > 0 ).length;
+  const errorCount = _.sum( filteredResults.map( file => file.errorCount + file.warningCount ) );
+
+  return { errorCount: errorCount, fileCount: fileCount };
+}
 
 // Mark the version so that the pre-commit hook will only try to use the promise-based API, this means
 // it won't run lint precommit hook on SHAs before the promise-based API
