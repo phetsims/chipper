@@ -21,7 +21,8 @@ module.exports = {
 
       // For .ts files, the following configuration will be used
       files: [
-        '**/*.ts'
+        '**/*.ts',
+        '**/*.tsx'
       ],
       parser: '@typescript-eslint/parser',
       parserOptions: {

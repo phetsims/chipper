@@ -83,7 +83,8 @@ class Transpiler {
    */
   static getTargetPath( filename ) {
     const relativePath = path.relative( root, filename );
-    const targetPath = path.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( '.ts' ).join( '.js' );
+    const suffix = relativePath.substring( relativePath.lastIndexOf( '.' ) );
+    const targetPath = path.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( suffix ).join( '.js' );
     return targetPath;
   }
 
@@ -125,7 +126,8 @@ class Transpiler {
 
       const correspondingFile = `../${tail}`;
       const tsFile = correspondingFile.split( '.js' ).join( '.ts' );
-      if ( !fs.existsSync( correspondingFile ) && !fs.existsSync( tsFile ) ) {
+      const tsxFile = correspondingFile.split( '.js' ).join( '.tsx' );
+      if ( !fs.existsSync( correspondingFile ) && !fs.existsSync( tsFile ) && !fs.existsSync( tsxFile ) ) {
         fs.unlinkSync( path );
         console.log( 'No parent source file for: ' + path + ', deleted.' );
       }
@@ -162,7 +164,7 @@ class Transpiler {
    */
   visitFile( filePath ) {
     filePath = Transpiler.forwardSlashify( filePath );
-    if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) ) && !this.ignorePath( filePath ) ) {
+    if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) || filePath.endsWith( '.tsx' ) ) && !this.ignorePath( filePath ) ) {
       const changeDetectedTime = Date.now();
       const text = fs.readFileSync( filePath, 'utf-8' );
       const hash = crypto.createHash( 'md5' ).update( text ).digest( 'hex' );

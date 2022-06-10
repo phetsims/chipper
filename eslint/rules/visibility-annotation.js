@@ -18,7 +18,8 @@ module.exports = function( context ) {
   const exemptMethods = [ 'get', 'set', 'constructor' ];
 
   // documentation-based annotations are not required in TypeScript files.
-  const isTypeScriptFile = context.getFilename().toLowerCase().endsWith( '.ts' );
+  const filenameLowerCase = context.getFilename().toLowerCase();
+  const isTypeScriptFile = filenameLowerCase.endsWith( '.ts' ) || filenameLowerCase.endsWith( '.tsx' );
 
   return {
     MethodDefinition: node => {

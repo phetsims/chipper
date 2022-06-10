@@ -79,7 +79,7 @@ const lint = async ( patterns, options ) => {
     // Our custom rules live here
     rulePaths: [ '../chipper/eslint/rules' ],
 
-    extensions: [ '.js', '.ts' ]
+    extensions: [ '.js', '.ts', '.tsx' ]
   };
 
   const config = {};
