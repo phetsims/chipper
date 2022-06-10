@@ -101,7 +101,10 @@ class Transpiler {
 
       // Load directly from node_modules so we do not have to npm install this dependency
       // in every sim repo.  This strategy is also used in transpile.js
-      presets: [ '../chipper/node_modules/@babel/preset-typescript' ], sourceMaps: 'inline'
+      presets: [
+        '../chipper/node_modules/@babel/preset-typescript',
+        '../chipper/node_modules/@babel/preset-react'
+      ], sourceMaps: 'inline'
     } );
 
     fs.mkdirSync( path.dirname( targetPath ), { recursive: true } );
