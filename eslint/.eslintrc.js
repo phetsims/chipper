@@ -1137,6 +1137,10 @@ module.exports = {
     // type for QUnit assert
     Assert: 'readonly',
 
-    fetch: 'readonly'
+    fetch: 'readonly',
+
+    // React
+    React: 'readonly',
+    ReactDOM: 'readonly'
   }
 };
