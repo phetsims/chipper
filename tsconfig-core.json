@@ -13,7 +13,7 @@
     // "lib": [],                                   /* Specify library files to be included in the compilation. */
     "allowJs": true,                             /* Allow javascript files to be compiled. */
     "checkJs": false,                            /* Report errors in .js files. */
-    // "jsx": "preserve",                           /* Specify JSX code generation: 'preserve', 'react-native', 'react', 'react-jsx' or 'react-jsxdev'. */
+    "jsx": "react",                           /* Specify JSX code generation: 'preserve', 'react-native', 'react', 'react-jsx' or 'react-jsxdev'. */
     "declaration": false,                         /* Generates corresponding '.d.ts' file. */
     // "declarationMap": true,                      /* Generates a sourcemap for each corresponding '.d.ts' file. */
     "sourceMap": false,                           /* Generates corresponding '.map' file. */
@@ -80,6 +80,8 @@
     "node_modules/@types/lodash/index.d.ts",
     "node_modules/@types/p2/index.d.ts",
     "node_modules/@types/qunit/index.d.ts",
-    "node_modules/@types/three/index.d.ts"
+    "node_modules/@types/three/index.d.ts",
+    "node_modules/@types/react/index.d.ts",
+    "node_modules/@types/react-dom/index.d.ts"
   ]
 }
