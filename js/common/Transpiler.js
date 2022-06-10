@@ -277,6 +277,11 @@ class Transpiler {
 
       const filePath = '..' + path.sep + filename;
       const filePathWithForwardSlashes = Transpiler.forwardSlashify( filePath );
+
+      if ( this.ignorePath( filePathWithForwardSlashes ) ) {
+        return;
+      }
+
       const pathExists = fs.existsSync( filePath );
 
       if ( !pathExists ) {
@@ -294,10 +299,8 @@ class Transpiler {
 
         return;
       }
-      if ( this.ignorePath( filePathWithForwardSlashes ) ) {
-        // ignore
-      }
-      else if ( filePathWithForwardSlashes.endsWith( 'perennial/data/active-repos' ) ) {
+
+      if ( filePathWithForwardSlashes.endsWith( 'perennial/data/active-repos' ) ) {
         const newActiveRepos = getActiveRepos();
         !this.silent && console.log( 'reloaded active repos' );
         const newRepos = newActiveRepos.filter( repo => !this.activeRepos.includes( repo ) );
