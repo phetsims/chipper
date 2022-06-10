@@ -19,6 +19,8 @@
     "@types/p2": "^0.7.39",
     "@types/qunit": "^2.11.2",
     "@types/three": "^0.137.0",
+    "@types/react": "^18.0.12",
+    "@types/react-dom": "^18.0.5",
     "@typescript-eslint/parser": "5.19.0",
     "@typescript-eslint/eslint-plugin": "5.19.0",
     "@typescript-eslint/utils": "5.19.0",
