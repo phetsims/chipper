@@ -77,7 +77,9 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jsondiffpatch-v0.3.11-html.css',
   '../sherpa/lib/prism-1.23.0.js',
   '../sherpa/lib/prism-okaidia-1.23.0.css',
-  '../sherpa/lib/clarinet-0.12.4.js'
+  '../sherpa/lib/clarinet-0.12.4.js',
+  '../sherpa/lib/react-18.1.0.production.min.js',
+  '../sherpa/lib/react-dom-18.1.0.production.min.js'
 ].concat( OFFLINE_CONTRIB_FILES );
 
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
