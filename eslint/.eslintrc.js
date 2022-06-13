@@ -40,7 +40,6 @@ module.exports = {
 
         // Custom Rules for TypeScript only
         'bad-typescript-text': 'error', //TODO https://github.com/phetsims/chipper/issues/1224
-        'no-protected-jsdoc': 'error', // It's own file because @protected is used with the current mixin strategy.
 
         // Custom return type rule that only requires for methods. The includes return type was too overarching.
         'explicit-method-return-type': 'error',
