@@ -111,8 +111,8 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   if ( !matches ) {
     throw new Error( `could not parse version: ${version}` );
   }
-  const major = parseInt( matches[ 1 ], 10 );
-  const minor = parseInt( matches[ 2 ], 10 );
+  const major = Number( matches[ 1 ] );
+  const minor = Number( matches[ 2 ] );
   const latestVersion = `${major}.${minor}`;
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
