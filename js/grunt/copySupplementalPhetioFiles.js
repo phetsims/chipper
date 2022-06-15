@@ -43,20 +43,21 @@ const EXAMPLES_FILENAME = 'examples';
 const PHET_IO_GUIDE_FILENAME = 'phet-io-guide';
 const PHET_IO_MIGRATION_GUIDE_FILENAME = 'migration-guide';
 
+const LIB_OUTPUT_FILE = 'phet-io.js';
+
+const CONTRIB_LIB_FILES = [
+  '../sherpa/lib/react-18.1.0.production.min.js',
+  '../sherpa/lib/react-dom-18.1.0.production.min.js'
+];
+
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
-const LIB_FILES = [
+const PHET_IO_LIB_FILES = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
   '../assert/js/assert.js',
   '../chipper/js/phet-io/phetioCompareAPIs.js',
   '../tandem/js/PhetioIDUtils.js'
 ];
-
-const LIB_OUTPUT_FILE = 'phet-io.js';
-const LIB_COPYRIGHT_HEADER = '// Copyright 2002-2018, University of Colorado Boulder\n' +
-                             '// This PhET-iO file requires a license\n' +
-                             '// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.\n' +
-                             '// For licensing, please contact phethelp@colorado.edu';
 
 const OFFLINE_CONTRIB_FILES = [
   '../sherpa/lib/lodash-4.17.4.min.js',
@@ -77,9 +78,7 @@ const CONTRIB_FILES = [
   '../sherpa/lib/jsondiffpatch-v0.3.11-html.css',
   '../sherpa/lib/prism-1.23.0.js',
   '../sherpa/lib/prism-okaidia-1.23.0.css',
-  '../sherpa/lib/clarinet-0.12.4.js',
-  '../sherpa/lib/react-18.1.0.production.min.js',
-  '../sherpa/lib/react-dom-18.1.0.production.min.js'
+  '../sherpa/lib/clarinet-0.12.4.js'
 ].concat( OFFLINE_CONTRIB_FILES );
 
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
@@ -152,11 +151,16 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
         }
       } );
 
+      const includesElement = ( line, array ) => !!array.find( element => line.includes( element ) );
+
+      // Remove files listed in CONTRIB_LIB_FILES
+      contents = contents.split( /\r?\n/ ).filter( line => !includesElement( line, CONTRIB_LIB_FILES ) ).join( '\n' );
+
       // Remove individual common phet-io code imports because they are all in phet-io.js
       // NOTE: don't use Array.prototype.forEach here. After bashing my head against a wall I think it is because of
       // race conditions editing `contents`.
-      for ( let i = 0; i < LIB_FILES.length; i++ ) {
-        const filePath = LIB_FILES[ i ];
+      for ( let i = 0; i < PHET_IO_LIB_FILES.length; i++ ) {
+        const filePath = PHET_IO_LIB_FILES[ i ];
         const SOURCE_DIR = 'js/';
         const lastIndex = filePath.lastIndexOf( SOURCE_DIR );
         assert( lastIndex >= 0, 'paths should contain ' + SOURCE_DIR );
@@ -244,6 +248,24 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       contents = ChipperStringUtils.replaceAll( contents, '{{EXAMPLES_LINK}}', `../../doc/guides/${EXAMPLES_FILENAME}.html` );
     }
 
+    // Collapse >1 blank lines in html files.  This helps as a postprocessing step after removing lines with <script> tags
+    if ( abspath.endsWith( '.html' ) ) {
+      const lines = contents.split( /\r?\n/ );
+      const pruned = [];
+      for ( let i = 0; i < lines.length; i++ ) {
+        if ( i >= 1 &&
+             lines[ i - 1 ].trim().length === 0 &&
+             lines[ i ].trim().length === 0 ) {
+
+          // skip redundant blank line
+        }
+        else {
+          pruned.push( lines[ i ] );
+        }
+      }
+      contents = pruned.join( '\n' );
+    }
+
     if ( contents !== originalContents ) {
       return contents;
     }
@@ -258,7 +280,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // Files and directories from wrapper folders that we don't want to copy
   const wrappersUnallowed = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
 
-  const libFileNames = LIB_FILES.map( filePath => {
+  const libFileNames = PHET_IO_LIB_FILES.map( filePath => {
     const parts = filePath.split( '/' );
     return parts[ parts.length - 1 ];
   } );
@@ -352,28 +374,39 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
  *                            Has arguments like "function(abspath, contents)"
  */
 const handleLib = async ( repo, buildDir, filter ) => {
-  grunt.log.debug( 'Creating phet-io lib file from: ', LIB_FILES );
-
+  grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_FILES );
   grunt.file.mkdir( `${buildDir}lib` );
 
-  let consolidated = '';
-  LIB_FILES.forEach( libFile => {
+  const phetioLibCode = PHET_IO_LIB_FILES.map( libFile => {
     const contents = grunt.file.read( libFile );
+    const filteredContents = filter( libFile, contents );
 
-    const filteredContents = filter && filter( libFile, contents );
-
-    // The filter should return null if nothing changes
-    consolidated += filteredContents ? filteredContents : contents;
-  } );
+    // The filter returns null if nothing changes
+    return filteredContents || contents;
+  } ).join( '' );
 
   const migrationRulesCode = await getCompiledMigrationRules( repo, buildDir );
-  const minified = minify( `${consolidated}\n${migrationRulesCode}`, {
-    stripAssertions: false
-  } );
+  const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationRulesCode}`, { stripAssertions: false } );
 
   const wrappersMain = await buildStandalone( 'phet-io-wrappers', {} );
-  const filteredMain = filter && filter( LIB_OUTPUT_FILE, wrappersMain );
-  grunt.file.write( `${buildDir}lib/${LIB_OUTPUT_FILE}`, `${LIB_COPYRIGHT_HEADER}\n\n${minified}\n${filteredMain}` );
+
+  const filteredMain = filter( LIB_OUTPUT_FILE, wrappersMain );
+
+  const mainCopyright = `// Copyright 2002-2022, University of Colorado Boulder
+// This PhET-iO file requires a license
+// USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.
+// For licensing, please contact phethelp@colorado.edu`;
+
+  grunt.file.write( `${buildDir}lib/${LIB_OUTPUT_FILE}`,
+    `${mainCopyright}
+// 
+// Also contains code under the specified licenses:
+
+${CONTRIB_LIB_FILES.map( contribFile => grunt.file.read( contribFile ) ).join( '\n\n' )}
+
+${mainCopyright}
+
+${minifiedPhetioCode}\n${filteredMain}` );
 };
 
 /**
@@ -388,7 +421,6 @@ const handleContrib = buildDir => {
     const filename = filePathParts[ filePathParts.length - 1 ];
 
     grunt.file.copy( filePath, `${buildDir}contrib/${filename}` );
-
   } );
 };
 
