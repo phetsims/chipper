@@ -41,6 +41,9 @@ module.exports = async function( repo, minifyOptions ) {
     assert( Array.isArray( packageObject.phet.preload ), 'preload should be an array' );
     includedSources = includedSources.concat( packageObject.phet.preload );
   }
+  if ( minifyOptions.omitPreloads ) {
+    includedSources = includedSources.filter( source => !minifyOptions.omitPreloads.includes( source ) );
+  }
 
   const includedJS = includedSources.map( file => fs.readFileSync( file, 'utf8' ) ).join( '\n' );
 

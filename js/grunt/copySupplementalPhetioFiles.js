@@ -384,7 +384,11 @@ const handleLib = async ( repo, buildDir, filter ) => {
   const migrationRulesCode = await getCompiledMigrationRules( repo, buildDir );
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationRulesCode}`, { stripAssertions: false } );
 
-  const wrappersMain = await buildStandalone( 'phet-io-wrappers', {} );
+  const wrappersMain = await buildStandalone( 'phet-io-wrappers', {
+
+    // Avoid getting a 2nd copy of the files that are already bundled into the lib file
+    omitPreloads: CONTRIB_LIB_FILES
+  } );
 
   const filteredMain = filter( LIB_OUTPUT_FILE, wrappersMain );
 
@@ -396,7 +400,7 @@ const handleLib = async ( repo, buildDir, filter ) => {
   grunt.file.write( `${buildDir}lib/${LIB_OUTPUT_FILE}`,
     `${mainCopyright}
 // 
-// Also contains code under the specified licenses:
+// Contains additional code under the specified licenses:
 
 ${CONTRIB_LIB_FILES.map( contribFile => grunt.file.read( contribFile ) ).join( '\n\n' )}
 
