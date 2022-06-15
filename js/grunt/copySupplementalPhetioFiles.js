@@ -33,7 +33,6 @@ const webpack = require( 'webpack' );
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant, please see phet-io-wrappers/index/index.js before changing
-const CONTRIB_DIR = 'contrib';
 
 // For Client Guides
 const PHET_IO_SIM_SPECIFIC = '../phet-io-sim-specific';
@@ -45,9 +44,12 @@ const PHET_IO_MIGRATION_GUIDE_FILENAME = 'migration-guide';
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
 
+// These files are bundled into the lib/phet-io.js file before PhET's phet-io code, and can be used by any wrapper
 const CONTRIB_LIB_FILES = [
   '../sherpa/lib/react-18.1.0.production.min.js',
-  '../sherpa/lib/react-dom-18.1.0.production.min.js'
+  '../sherpa/lib/react-dom-18.1.0.production.min.js',
+  '../sherpa/lib/pako-2.0.3.min.js',
+  '../sherpa/lib/lodash-4.17.4.min.js'
 ];
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
@@ -59,13 +61,7 @@ const PHET_IO_LIB_FILES = [
   '../tandem/js/PhetioIDUtils.js'
 ];
 
-const OFFLINE_CONTRIB_FILES = [
-  '../sherpa/lib/lodash-4.17.4.min.js',
-  '../sherpa/lib/pako-2.0.3/pako-2.0.3.min.js',
-  '../sherpa/lib/pako-2.0.3/pako_inflate-2.0.3.min.js'
-];
-
-// All libraries and third party files that are used by phet-io wrappers, and need to be copied over for a build
+// Additional libraries and third party files that are used by some phet-io wrappers, copied to a contrib/ directory
 const CONTRIB_FILES = [
   '../sherpa/lib/ua-parser-0.7.21.min.js',
   '../sherpa/lib/bootstrap-2.2.2.js',
@@ -79,7 +75,7 @@ const CONTRIB_FILES = [
   '../sherpa/lib/prism-1.23.0.js',
   '../sherpa/lib/prism-okaidia-1.23.0.css',
   '../sherpa/lib/clarinet-0.12.4.js'
-].concat( OFFLINE_CONTRIB_FILES );
+];
 
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
 const JSDOC_FILES = [
@@ -444,13 +440,6 @@ const handleOfflineArtifact = async ( buildDir, repo, version ) => {
   // copy over the lib directory and its contents, and an index to test. Note that these use the files from the buildDir
   // because they have been post-processed and contain filled in template vars.
   archive.directory( `${buildDir}lib`, 'lib' );
-
-  OFFLINE_CONTRIB_FILES.forEach( contribFile => {
-    const contribFileParts = contribFile.split( '/' );
-    const contribFileName = contribFileParts[ contribFileParts.length - 1 ];
-
-    archive.file( contribFile, { name: `${CONTRIB_DIR}/${contribFileName}` } );
-  } );
 
   archive.file( `${buildDir}${WRAPPERS_FOLDER}/common/html/offline-example.html`, { name: 'index.html' } );
 
