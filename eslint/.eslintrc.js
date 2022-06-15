@@ -58,10 +58,7 @@ module.exports = {
               Omit: {
                 message: 'Prefer StrictOmit for type safety',
                 fixWith: 'StrictOmit'
-              },
-
-              // un-ban a type that's banned by default
-              '{}': false
+              }
             },
             extendDefaults: true
           }
