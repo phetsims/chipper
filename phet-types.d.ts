@@ -19,6 +19,9 @@ declare var QueryStringMachine: {
   containsKey: ( key: string ) => boolean;
   warnings: string[];
   addWarning: ( key: string, value: boolean | object | number, message: string ) => void;
+  removeKeyValuePair: ( key: string, value: boolean | object | number | string ) => string;
+  appendQueryString: ( url: string, tail: string ) => string;
+  getForString: ( s: string, schema: any, s: string ) => string;
 };
 
 // globals used in Sim.ts
