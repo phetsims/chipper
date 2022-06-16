@@ -80,8 +80,9 @@ const CONTRIB_FILES = [
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
 const JSDOC_FILES = [
 
-  // TODO: https://github.com/phetsims/phet-io-wrappers/issues/435 make sure transpiled first
+  // Transpilation happens before we get to this point
   `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/Client.js`,
+
   '../tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
   '../chipper/js/initialize-globals.js'
