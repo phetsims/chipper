@@ -16,6 +16,7 @@ declare var phet: any;
 
 declare var QueryStringMachine: {
   getAll: ( a: any ) => any;
+  get: ( a: string, schema: any ) => any;
   containsKey: ( key: string ) => boolean;
   warnings: string[];
   addWarning: ( key: string, value: boolean | object | number, message: string ) => void;
