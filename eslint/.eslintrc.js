@@ -87,7 +87,7 @@ module.exports = {
         /////////////////////////////////////////////////////
         // Overriding rules that exist in javascript (no type info needed):
         '@typescript-eslint/no-array-constructor': 'error',
-        // '@typescript-eslint/no-empty-function': 'error', // 41 errors
+        '@typescript-eslint/no-empty-function': 'error',
         '@typescript-eslint/no-extra-semi': 'error',
         'no-unused-vars': 'off', // you must disable the base rule to avoid duplicate/incorrect errors
         '@typescript-eslint/no-unused-vars': [ 'error', {
