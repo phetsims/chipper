@@ -30,3 +30,7 @@ declare var phetSplashScreenDownloadComplete: () => void;
 declare var TWEEN: { update: ( dt: number ) => void };
 declare var phetSplashScreen: { dispose: () => void };
 declare var phetio: any;
+
+declare var assertions: {
+  enableAssert: () => void;
+};
