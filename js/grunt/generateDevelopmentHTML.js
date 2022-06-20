@@ -16,6 +16,7 @@ const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fixEOL = require( './fixEOL' );
 const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
+const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 const grunt = require( 'grunt' );
 
 /**
@@ -29,7 +30,7 @@ module.exports = async function( repo, options ) {
   const {
     stylesheets = '',
     bodystyle = ' style="background-color:black;"', // note the preceding ' ' which is essential
-    outputFile = `../${repo}/${repo}_en.html`,
+    outputFile = `${repo}_en.html`,
     bodystart = '',
     addedPreloads = [], // none to add
     stripPreloads = [], // none to add
@@ -88,5 +89,5 @@ module.exports = async function( repo, options ) {
   html = ChipperStringUtils.replaceAll( html, '{{BROWSER_WINDOW_TITLE}}', repo );
 
   // Write to the repository's root directory.
-  grunt.file.write( outputFile, fixEOL( html ) );
+  await writeFileAndGitAdd( repo, outputFile, fixEOL( html ) );
 };

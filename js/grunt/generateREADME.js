@@ -12,13 +12,14 @@ const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fixEOL = require( './fixEOL' );
 const getPhetLibs = require( './getPhetLibs' );
 const getTitleStringKey = require( './getTitleStringKey' );
+const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 const grunt = require( 'grunt' );
 
 /**
  * @param {string} repo - name of the repository
  * @param {boolean} published - has the sim been published?
  */
-module.exports = function( repo, published ) {
+module.exports = async function( repo, published ) {
 
   // Read the title from the English strings file.
   const simTitleStringKey = getTitleStringKey( repo );
@@ -47,5 +48,5 @@ module.exports = function( repo, published ) {
   readme = ChipperStringUtils.replaceAll( readme, '{{CLONE_COMMANDS}}', cloneCommands );
 
   // Write to the repository's root directory.
-  grunt.file.write( `../${repo}/README.md`, fixEOL( readme ) );
+  await writeFileAndGitAdd( repo, 'README.md', fixEOL( readme ) );
 };

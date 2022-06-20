@@ -25,7 +25,7 @@ module.exports = async ( repo, options ) => {
     bodystyle: '',
 
     // Output to a test file
-    outputFile: `../${repo}/${repo}-tests.html`,
+    outputFile: `${repo}-tests.html`,
 
     // Add the QUnit divs (and Scenery display div if relevant)
     bodystart: `<div id="qunit"></div>\n<div id="qunit-fixture"></div>${repo === 'scenery' ? '<div id="display"></div>' : ''}`,

@@ -10,7 +10,7 @@
 
 // modules
 const fixEOL = require( './fixEOL' );
-const grunt = require( 'grunt' );
+const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 
 /**
  * @param {string} repo
@@ -33,8 +33,5 @@ module.exports = async function( repo ) {
   ]
 }`;
 
-  const outputFile = `../${repo}/tsconfig.json`;
-
-  // Write to the repository's root directory.
-  grunt.file.write( outputFile, fixEOL( string ) );
+  await writeFileAndGitAdd( repo, 'tsconfig.json', fixEOL( string ) );
 };

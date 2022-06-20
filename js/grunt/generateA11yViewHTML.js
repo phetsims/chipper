@@ -13,16 +13,16 @@
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
-const grunt = require( 'grunt' );
+const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 
 /**
  * @param {string} repo
  */
-module.exports = function( repo ) {
+module.exports = async function( repo ) {
 
   let html = getA11yViewHTMLFromTemplate( repo );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_REPOSITORY}}', repo );
 
   // Write to the repository's root directory.
-  grunt.file.write( `../${repo}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, html );
+  await writeFileAndGitAdd( repo, `${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, html );
 };

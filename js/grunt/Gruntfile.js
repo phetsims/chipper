@@ -373,8 +373,7 @@ module.exports = function( grunt ) {
     wrapTask( async () => {
 
       const generateA11yViewHTML = require( './generateA11yViewHTML' );
-
-      generateA11yViewHTML( repo );
+      await generateA11yViewHTML( repo );
     } ) );
 
   grunt.registerTask( 'update', `
@@ -419,18 +418,20 @@ Updates the normal automatically-generated files for this repository. Includes:
       // update README.md only for simulations
       if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {
         const simVersion = SimVersion.parse( packageObject.version );
-        generateREADME( repo, simVersion.isSimPublished );
+        await generateREADME( repo, simVersion.isSimPublished );
       }
 
       if ( packageObject.phet.supportedBrands && packageObject.phet.supportedBrands.includes( 'phet-io' ) ) {
 
         // Copied from build.json and used as a preload for phet-io brand
-        const overridesFile = `../${repo}/js/${repo}-phet-io-overrides.js`;
+        const overridesFile = `js/${repo}-phet-io-overrides.js`;
 
         // If there is already an overrides file, don't overwrite it with an empty one
-        if ( !fs.existsSync( overridesFile ) ) {
-          fs.writeFileSync( overridesFile,
-            '/* eslint-disable */\nwindow.phet.preloads.phetio.phetioElementsOverrides = {};' );
+        if ( !fs.existsSync( `../${repo}/${overridesFile}` ) ) {
+          const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
+
+          const overridesContent = '/* eslint-disable */\nwindow.phet.preloads.phetio.phetioElementsOverrides = {};';
+          await writeFileAndGitAdd( repo, overridesFile, overridesContent );
         }
       }
     } ) );
