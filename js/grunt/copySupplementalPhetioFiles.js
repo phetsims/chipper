@@ -80,7 +80,8 @@ const CONTRIB_FILES = [
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
 const JSDOC_FILES = [
 
-  // Transpilation happens before we get to this point
+  // Transpilation happens before we get to this point. SR and MK recognize that this feels a bit risky, even though
+  // comments are currently preserved in the babel transpile step. See https://stackoverflow.com/questions/51720894/is-there-any-way-to-use-jsdoc-with-ts-files-maybe-transpile-with-babel-the
   `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/Client.js`,
 
   '../tandem/js/PhetioIDUtils.js',
@@ -395,7 +396,7 @@ const handleLib = async ( repo, buildDir, filter ) => {
 
   const filteredMain = filter( LIB_OUTPUT_FILE, wrappersMain );
 
-  const mainCopyright = `// Copyright 2002-2022, University of Colorado Boulder
+  const mainCopyright = `// Copyright 2002-${new Date().getFullYear()}, University of Colorado Boulder
 // This PhET-iO file requires a license
 // USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.
 // For licensing, please contact phethelp@colorado.edu`;
@@ -448,6 +449,7 @@ const handleOfflineArtifact = async ( buildDir, repo, version ) => {
   // because they have been post-processed and contain filled in template vars.
   archive.directory( `${buildDir}lib`, 'lib' );
 
+  // Take from build directory so that it has been filtered/mapped to correct paths.
   archive.file( `${buildDir}${WRAPPERS_FOLDER}/common/html/offline-example.html`, { name: 'index.html' } );
 
   // get the all html and the debug version too, use `cwd` so that they are at the top level of the zip.

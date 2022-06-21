@@ -19,12 +19,12 @@ const webpackBuild = require( './webpackBuild' );
  * @public
  *
  * @param {string} repo
- * @param {Object} minifyOptions
+ * @param {Object} providedOptions - Passed directly to minify()
  * @returns {Promise}
  */
-module.exports = async function( repo, minifyOptions ) {
+module.exports = async function( repo, providedOptions ) {
   assert( typeof repo === 'string' );
-  assert( typeof minifyOptions === 'object' );
+  assert( typeof providedOptions === 'object' );
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   assert( packageObject.phet, '`phet` object expected in package.json' );
@@ -41,8 +41,8 @@ module.exports = async function( repo, minifyOptions ) {
     assert( Array.isArray( packageObject.phet.preload ), 'preload should be an array' );
     includedSources = includedSources.concat( packageObject.phet.preload );
   }
-  if ( minifyOptions.omitPreloads ) {
-    includedSources = includedSources.filter( source => !minifyOptions.omitPreloads.includes( source ) );
+  if ( providedOptions.omitPreloads ) {
+    includedSources = includedSources.filter( source => !providedOptions.omitPreloads.includes( source ) );
   }
 
   const includedJS = includedSources.map( file => fs.readFileSync( file, 'utf8' ) ).join( '\n' );
@@ -72,7 +72,7 @@ module.exports = async function( repo, minifyOptions ) {
   // Wrap with an IIFE
   fullSource = `(function() {\n${fullSource}\n}());`;
 
-  fullSource = minify( fullSource, minifyOptions );
+  fullSource = minify( fullSource, providedOptions );
 
   return fullSource;
 };
