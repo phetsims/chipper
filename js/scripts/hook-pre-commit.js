@@ -102,7 +102,7 @@ const execute = require( '../common/execute' );
         outputToConsole && console.log( 'tsc passed' );
       }
       else {
-        outputToConsole && console.log( results );
+        console.log( results );
         process.exit( results.code );
       }
     }
