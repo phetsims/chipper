@@ -159,6 +159,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       // Remove individual common phet-io code imports because they are all in phet-io.js
       // NOTE: don't use Array.prototype.forEach here. After bashing my head against a wall I think it is because of
       // race conditions editing `contents`.
+      // TODO: This no longer applies to all files in phet-io-wrappers-main, let's use webpack to get a list of those files. https://github.com/phetsims/phet-io-wrappers/issues/435
       for ( let i = 0; i < PHET_IO_LIB_FILES.length; i++ ) {
         const filePath = PHET_IO_LIB_FILES[ i ];
         const SOURCE_DIR = 'js/';
