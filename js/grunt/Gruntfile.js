@@ -129,7 +129,7 @@ module.exports = function( grunt ) {
 
         const altScreenshots = grunt.file.expand( { filter: 'isFile', cwd: `../${repo}/assets` }, [ `./${repo}-screenshot-alt[0123456789].png` ] );
         for ( const altScreenshot of altScreenshots ) {
-          const imageNumber = parseInt( altScreenshot.substr( `./${repo}-screenshot-alt`.length, 1 ), 10 );
+          const imageNumber = Number( altScreenshot.substr( `./${repo}-screenshot-alt`.length, 1 ) );
           grunt.file.write( `${buildDir}/${repo}-${600}-alt${imageNumber}.png`, await generateThumbnails( repo, 600, 394, 100, jimp.MIME_PNG, `-alt${imageNumber}` ) );
           grunt.file.write( `${buildDir}/${repo}-${900}-alt${imageNumber}.png`, await generateThumbnails( repo, 900, 591, 100, jimp.MIME_PNG, `-alt${imageNumber}` ) );
         }
