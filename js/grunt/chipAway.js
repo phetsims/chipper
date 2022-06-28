@@ -15,25 +15,24 @@
  */
 
 const fs = require( 'fs' );
-// eslint-disable-next-line require-statement-match
-const _ = require( 'lodash' );
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const path = require( 'path' );
 
 module.exports = function chipAway( results ) {
   const repos = results.map( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] );
   const uniqueRepos = _.uniq( repos ).filter( repo => repo !== 'perennial-alias' );
 
-// NOTE: This should never be run in a maintenance mode since this loads a file from phet-info which
-// does not have its SHA tracked as a dependency.
-// TODO: For the reviewer, is this OK? https://github.com/phetsims/chipper/issues/1253
+  // NOTE: This should never be run in a maintenance mode since this loads a file from phet-info which
+  // does not have its SHA tracked as a dependency.
+  // TODO: For the reviewer, is this OK? https://github.com/phetsims/chipper/issues/1253
   const responsibleDevs = JSON.parse( fs.readFileSync( '../phet-info/sim-info/responsible_dev.json' ) );
 
-// We only want a list of repos that report lint errors
+  // We only want a list of repos that report lint errors
   const reposWithErrors = uniqueRepos.filter( repo => {
     return errorReport( results, repo ).errorCount > 0;
   } );
 
-// Format chip away assignments. '{{REPO}} @github # errors in # files'
+  // Format chip away assignments. '{{REPO}} @github # errors in # files'
   const assignments = reposWithErrors.map( repo => {
     const fileCount = errorReport( results, repo ).fileCount;
     const errorCount = errorReport( results, repo ).errorCount;
