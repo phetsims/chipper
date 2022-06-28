@@ -45,7 +45,7 @@ const PHET_IO_MIGRATION_GUIDE_FILENAME = 'migration-guide';
 const LIB_OUTPUT_FILE = 'phet-io.js';
 
 // These files are bundled into the lib/phet-io.js file before PhET's phet-io code, and can be used by any wrapper
-const CONTRIB_LIB_FILES = [
+const THIRD_PARTY_LIB_PRELOADS = [
   '../sherpa/lib/react-18.1.0.production.min.js',
   '../sherpa/lib/react-dom-18.1.0.production.min.js',
   '../sherpa/lib/pako-2.0.3.min.js',
@@ -54,14 +54,15 @@ const CONTRIB_LIB_FILES = [
 
 // phet-io internal files to be consolidated into 1 file and publicly served as a minified phet-io library.
 // Make sure to add new files to the jsdoc generation list below also
-const PHET_IO_LIB_FILES = [
+const PHET_IO_LIB_PRELOADS = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
   '../assert/js/assert.js',
   '../chipper/js/phet-io/phetioCompareAPIs.js',
   '../tandem/js/PhetioIDUtils.js'
 ];
 
-// Additional libraries and third party files that are used by some phet-io wrappers, copied to a contrib/ directory
+// Additional libraries and third party files that are used by some phet-io wrappers, copied to a contrib/ directory.
+// These are not bundled with the lib file to reduce the size of the central dependency of PhET-iO wrappers.
 const CONTRIB_FILES = [
   '../sherpa/lib/ua-parser-0.7.21.min.js',
   '../sherpa/lib/bootstrap-2.2.2.js',
@@ -77,13 +78,14 @@ const CONTRIB_FILES = [
   '../sherpa/lib/clarinet-0.12.4.js'
 ];
 
+// This path is used for jsdoc. Transpilation happens before we get to this point. SR and MK recognize that this feels
+// a bit risky, even though comments are currently preserved in the babel transpile step. See https://stackoverflow.com/questions/51720894/is-there-any-way-to-use-jsdoc-with-ts-files-maybe-transpile-with-babel-the
+const transpiledClientPath = `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/Client.js`;
+assert( fs.readFileSync( transpiledClientPath ).toString().indexOf( '/**' ) >= 0, 'babel should not strip comments from transpiling' );
+
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
 const JSDOC_FILES = [
-
-  // Transpilation happens before we get to this point. SR and MK recognize that this feels a bit risky, even though
-  // comments are currently preserved in the babel transpile step. See https://stackoverflow.com/questions/51720894/is-there-any-way-to-use-jsdoc-with-ts-files-maybe-transpile-with-babel-the
-  `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/Client.js`,
-
+  transpiledClientPath,
   '../tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
   '../chipper/js/initialize-globals.js'
@@ -153,15 +155,15 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
       const includesElement = ( line, array ) => !!array.find( element => line.includes( element ) );
 
-      // Remove files listed in CONTRIB_LIB_FILES
-      contents = contents.split( /\r?\n/ ).filter( line => !includesElement( line, CONTRIB_LIB_FILES ) ).join( '\n' );
+      // Remove files listed in THIRD_PARTY_LIB_PRELOADS
+      contents = contents.split( /\r?\n/ ).filter( line => !includesElement( line, THIRD_PARTY_LIB_PRELOADS ) ).join( '\n' );
 
       // Remove individual common phet-io code imports because they are all in phet-io.js
       // NOTE: don't use Array.prototype.forEach here. After bashing my head against a wall I think it is because of
       // race conditions editing `contents`.
       // TODO: This no longer applies to all files in phet-io-wrappers-main, let's use webpack to get a list of those files. https://github.com/phetsims/phet-io-wrappers/issues/435
-      for ( let i = 0; i < PHET_IO_LIB_FILES.length; i++ ) {
-        const filePath = PHET_IO_LIB_FILES[ i ];
+      for ( let i = 0; i < PHET_IO_LIB_PRELOADS.length; i++ ) {
+        const filePath = PHET_IO_LIB_PRELOADS[ i ];
         const SOURCE_DIR = 'js/';
         const lastIndex = filePath.lastIndexOf( SOURCE_DIR );
         assert( lastIndex >= 0, 'paths should contain ' + SOURCE_DIR );
@@ -281,7 +283,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // Files and directories from wrapper folders that we don't want to copy
   const wrappersUnallowed = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
 
-  const libFileNames = PHET_IO_LIB_FILES.map( filePath => {
+  const libFileNames = PHET_IO_LIB_PRELOADS.map( filePath => {
     const parts = filePath.split( '/' );
     return parts[ parts.length - 1 ];
   } );
@@ -375,10 +377,11 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
  *                            Has arguments like "function(abspath, contents)"
  */
 const handleLib = async ( repo, buildDir, filter ) => {
-  grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_FILES );
+  grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_PRELOADS );
   grunt.file.mkdir( `${buildDir}lib` );
 
-  const phetioLibCode = PHET_IO_LIB_FILES.map( libFile => {
+  // phet-written preloads
+  const phetioLibCode = PHET_IO_LIB_PRELOADS.map( libFile => {
     const contents = grunt.file.read( libFile );
     const filteredContents = filter( libFile, contents );
 
@@ -392,7 +395,7 @@ const handleLib = async ( repo, buildDir, filter ) => {
   const wrappersMain = await buildStandalone( 'phet-io-wrappers', {
 
     // Avoid getting a 2nd copy of the files that are already bundled into the lib file
-    omitPreloads: CONTRIB_LIB_FILES
+    omitPreloads: THIRD_PARTY_LIB_PRELOADS
   } );
 
   const filteredMain = filter( LIB_OUTPUT_FILE, wrappersMain );
@@ -407,7 +410,7 @@ const handleLib = async ( repo, buildDir, filter ) => {
 // 
 // Contains additional code under the specified licenses:
 
-${CONTRIB_LIB_FILES.map( contribFile => grunt.file.read( contribFile ) ).join( '\n\n' )}
+${THIRD_PARTY_LIB_PRELOADS.map( contribFile => grunt.file.read( contribFile ) ).join( '\n\n' )}
 
 ${mainCopyright}
 
