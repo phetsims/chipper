@@ -13,6 +13,7 @@ const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const minify = require( './minify' );
 const webpackBuild = require( './webpackBuild' );
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 
 /**
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)
@@ -25,6 +26,12 @@ const webpackBuild = require( './webpackBuild' );
 module.exports = async function( repo, providedOptions ) {
   assert( typeof repo === 'string' );
   assert( typeof providedOptions === 'object' );
+
+  const options = _.merge( {
+
+    // {null|string[]} - if provided, exclude these preloads from the built standalone
+    omitPreloads: null
+  }, providedOptions );
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   assert( packageObject.phet, '`phet` object expected in package.json' );
@@ -41,8 +48,8 @@ module.exports = async function( repo, providedOptions ) {
     assert( Array.isArray( packageObject.phet.preload ), 'preload should be an array' );
     includedSources = includedSources.concat( packageObject.phet.preload );
   }
-  if ( providedOptions.omitPreloads ) {
-    includedSources = includedSources.filter( source => !providedOptions.omitPreloads.includes( source ) );
+  if ( options.omitPreloads ) {
+    includedSources = includedSources.filter( source => !options.omitPreloads.includes( source ) );
   }
 
   const includedJS = includedSources.map( file => fs.readFileSync( file, 'utf8' ) ).join( '\n' );
@@ -72,7 +79,7 @@ module.exports = async function( repo, providedOptions ) {
   // Wrap with an IIFE
   fullSource = `(function() {\n${fullSource}\n}());`;
 
-  fullSource = minify( fullSource, providedOptions );
+  fullSource = minify( fullSource, options );
 
   return fullSource;
 };
