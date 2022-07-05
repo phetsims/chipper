@@ -61,6 +61,8 @@ const PHET_IO_LIB_PRELOADS = [
   '../tandem/js/PhetioIDUtils.js'
 ];
 
+const LIB_PRELOADS = THIRD_PARTY_LIB_PRELOADS.concat( PHET_IO_LIB_PRELOADS );
+
 // Additional libraries and third party files that are used by some phet-io wrappers, copied to a contrib/ directory.
 // These are not bundled with the lib file to reduce the size of the central dependency of PhET-iO wrappers.
 const CONTRIB_FILES = [
@@ -155,24 +157,8 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
       const includesElement = ( line, array ) => !!array.find( element => line.includes( element ) );
 
-      // Remove files listed in THIRD_PARTY_LIB_PRELOADS
-      contents = contents.split( /\r?\n/ ).filter( line => !includesElement( line, THIRD_PARTY_LIB_PRELOADS ) ).join( '\n' );
-
-      // Remove individual common phet-io code imports because they are all in phet-io.js
-      // NOTE: don't use Array.prototype.forEach here. After bashing my head against a wall I think it is because of
-      // race conditions editing `contents`.
-      // TODO: This no longer applies to all files in phet-io-wrappers-main, let's use webpack to get a list of those files. https://github.com/phetsims/phet-io-wrappers/issues/435
-      for ( let i = 0; i < PHET_IO_LIB_PRELOADS.length; i++ ) {
-        const filePath = PHET_IO_LIB_PRELOADS[ i ];
-        const SOURCE_DIR = 'js/';
-        const lastIndex = filePath.lastIndexOf( SOURCE_DIR );
-        assert( lastIndex >= 0, 'paths should contain ' + SOURCE_DIR );
-        const fileName = filePath.slice( lastIndex + SOURCE_DIR.length ); // don't include the 'js/'
-
-        // a newline at the end of this regex breaks it. Likely because the "$" matches the newline. I tried `\n` and `\\n`
-        const regExp = new RegExp( `^.*/js/${fileName}".*$`, 'gm' );
-        contents = contents.replace( regExp, '' );
-      }
+      // Remove files listed as preloads to the phet-io lib file.
+      contents = contents.split( /\r?\n/ ).filter( line => !includesElement( line, LIB_PRELOADS ) ).join( '\n' );
 
       // Delete the imports the phet-io-wrappers-main, as it will be bundled with the phet-io.js lib file.
       // MUST GO BEFORE BELOW REPLACE: 'phet-io-wrappers/' -> '/'
