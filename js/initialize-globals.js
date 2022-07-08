@@ -158,11 +158,11 @@
     eall: { type: 'flag' },
 
     /**
-     * Controls whether enhanced sound is on or off at startup (user can change later).  This query parameter is public
+     * Controls whether extra sound is on or off at startup (user can change later).  This query parameter is public
      * facing.
      * @type {boolean}
      */
-    enhancedSoundInitiallyEnabled: {
+    extraSoundInitiallyEnabled: {
       type: 'boolean',
       defaultValue: false,
       public: true
@@ -665,15 +665,15 @@
     },
 
     /**
-     * Indicates whether enhanced sounds are used in addition to basic sounds as part of the sound design.  If true, the
-     * PhET menu will have an option for enabling enhanced sounds.  This will be ignored if sound is not generally
+     * Indicates whether extra sounds are used in addition to basic sounds as part of the sound design.  If true, the
+     * PhET menu will have an option for enabling extra sounds.  This will be ignored if sound is not generally
      * enabled (see ?supportsSound).
      *
      * Primarily for internal use, though we may share links with collaborates that use this parameter.
      */
-    supportsEnhancedSound: {
+    supportsExtraSound: {
       type: 'boolean',
-      defaultValue: !!packageSimFeatures.supportsEnhancedSound
+      defaultValue: !!packageSimFeatures.supportsExtraSound
     },
 
     /**
