@@ -17,7 +17,7 @@ stderr:
 ${results.stderr}` );
   }
   else {
-    grunt.log.ok( `TypeScript compilation complete: ${results.time}ms` );
+    grunt.log.ok( `tsc complete: ${results.time}ms` );
   }
 };
 
