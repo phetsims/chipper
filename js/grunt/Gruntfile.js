@@ -12,23 +12,29 @@
 ///////////////////////////
 // NOTE: to improve performance, the vast majority of modules are lazily imported in task registrations. Even duplicating
 // require statements improves the load time of this file noticeably. For details, see https://github.com/phetsims/chipper/issues/1107
-const assert = require( 'assert' );
-require( './checkNodeVersion' );
+// const assert = require( 'assert' );
+// require( './checkNodeVersion' );
 ///////////////////////////
 
 // See https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd for how
 // to get unhandled promise rejections to fail out the node process.
 // Relevant for https://github.com/phetsims/wave-interference/issues/491
-process.on( 'unhandledRejection', up => { throw up; } );
+// process.on( 'unhandledRejection', up => { throw up; } );
 
 // Exit on Ctrl + C case
-process.on( 'SIGINT', () => {
-  console.log( '\n\nCaught interrupt signal, exiting' );
-  process.exit();
-} );
+// process.on( 'SIGINT', () => {
+//   console.log( '\n\nCaught interrupt signal, exiting' );
+//   process.exit();
+// } );
+import { assert } from 'https://deno.land/std@0.147.0/testing/asserts.ts';
+import * as fs from 'https://deno.land/std/fs/mod.ts';
+// import SimVersion from '../../../perennial-alias/js/common/SimVersion.js';
+import generateREADME from './generateREADME.js';
+import generateTSConfig from './generateTSConfig.js';
+import writeFileAndGitAdd from './writeFileAndGitAdd.ts';
 
-module.exports = function( grunt ) {
-  const packageObject = grunt.file.readJSON( 'package.json' );
+export default async function( grunt ) {
+  const packageObject = await grunt.file.readJSON( 'package.json' );
 
   // Handle the lack of build.json
   let buildLocal;
@@ -50,7 +56,8 @@ module.exports = function( grunt ) {
    * @param {Promise} promise
    */
   async function wrap( promise ) {
-    const done = grunt.task.current.async();
+    // TODO: https://github.com/phetsims/chipper/issues/1272
+    // const done = grunt.task.current.async();
 
     try {
       await promise;
@@ -69,8 +76,8 @@ module.exports = function( grunt ) {
         grunt.fail.fatal( `Perennial task failed with unknown error: ${JSON.stringify( e, null, 2 )}` );
       }
     }
-
-    done();
+    // TODO: https://github.com/phetsims/chipper/issues/1272
+    // done();
   }
 
   /**
@@ -97,10 +104,13 @@ module.exports = function( grunt ) {
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
     wrapTask( async () => {
       const buildDirectory = `../${repo}/build`;
-      if ( grunt.file.exists( buildDirectory ) ) {
-        grunt.file.delete( buildDirectory );
+
+      try {
+        await Deno.mkdir( buildDirectory );
       }
-      grunt.file.mkdir( buildDirectory );
+      catch( e ) {}
+      await fs.emptyDir( buildDirectory );
+      console.log( 'empty dir' + buildDirectory );
     } ) );
 
   grunt.registerTask( 'build-images',
@@ -381,16 +391,12 @@ Updates the normal automatically-generated files for this repository. Includes:
   * simulations: generateREADME()
   * phet-io simulations: generate overrides file if needed`,
     wrapTask( async () => {
-      const SimVersion = require( '../../../perennial-alias/js/common/SimVersion' );
-      const generateREADME = require( './generateREADME' );
-      const fs = require( 'fs' );
 
       // support repos that don't have a phet object
       if ( !packageObject.phet ) {
         return;
       }
 
-      const generateTSConfig = require( './generateTSConfig' );
       await generateTSConfig( repo );
 
       if ( packageObject.phet.runnable ) {
@@ -414,7 +420,11 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       // update README.md only for simulations
       if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {
-        const simVersion = SimVersion.parse( packageObject.version );
+
+        // TODO: https://github.com/phetsims/chipper/issues/1272
+        // const simVersion = SimVersion.parse( packageObject.version );
+        const simVersion = { isSimPublished: true };
+
         await generateREADME( repo, simVersion.isSimPublished );
       }
 
@@ -425,7 +435,6 @@ Updates the normal automatically-generated files for this repository. Includes:
 
         // If there is already an overrides file, don't overwrite it with an empty one
         if ( !fs.existsSync( `../${repo}/${overridesFile}` ) ) {
-          const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 
           const overridesContent = '/* eslint-disable */\nwindow.phet.preloads.phetio.phetioElementsOverrides = {};';
           await writeFileAndGitAdd( repo, overridesFile, overridesContent );

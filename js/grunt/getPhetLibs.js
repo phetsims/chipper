@@ -8,10 +8,10 @@
  */
 
 
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
-const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants' );
-const grunt = require( 'grunt' );
+import 'https://deno.land/x/lodash@4.17.19/dist/lodash.min.js';
+import { assert } from 'https://deno.land/std@0.147.0/testing/asserts.ts';
+import ChipperConstants from '../common/ChipperConstants.js';
+import grunt from './grunt.ts';
 
 /**
  * Returns a list of all dependent repositories.
@@ -21,7 +21,7 @@ const grunt = require( 'grunt' );
  * @param {string} [brand] - If not specified, it will return the dependencies for all brands.
  * @returns {Array.<string>}
  */
-module.exports = function getPhetLibs( repo, brand ) {
+export default function getPhetLibs( repo, brand ) {
   assert( typeof repo === 'string', 'Repository required for getPhetLibs' );
 
   if ( brand === undefined ) {

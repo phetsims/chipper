@@ -9,9 +9,9 @@
 
 /* eslint-env node */
 
-
-const assert = require( 'assert' );
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+import { assert } from 'https://deno.land/std@0.147.0/testing/asserts.ts';
+// const assert = require( 'assert' );
+// const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 
 // What divides the repo prefix from the rest of the string key, like `FRICTION/friction.title`
 const NAMESPACE_PREFIX_DIVIDER = '/';
@@ -226,4 +226,5 @@ const ChipperStringUtils = {
  * Object with StringObjects throughout the object structure (as supported in English JSON string files).
  */
 
-module.exports = ChipperStringUtils;
+// module.exports = ChipperStringUtils;
+export default ChipperStringUtils;

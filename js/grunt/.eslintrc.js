@@ -4,5 +4,14 @@
 module.exports = {
 
   // Use all of the default rules from eslint file for node code.
-  extends: '../../../chipper/eslint/chipper_eslintrc.js'
+  extends: '../../../chipper/eslint/chipper_eslintrc.js',
+
+  overrides: [
+    {
+      files: [
+        '**/*.js', '**/*.ts'
+      ],
+      rules: {}
+    }
+  ]
 };

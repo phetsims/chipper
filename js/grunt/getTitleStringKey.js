@@ -6,8 +6,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-const grunt = require( 'grunt' );
+import grunt from './grunt.ts';
 
 /**
  * Returns the string key for the title of a runnable.
@@ -15,7 +14,7 @@ const grunt = require( 'grunt' );
  *
  * @param {string} repo
  */
-module.exports = function getPhetLibs( repo ) {
+export default function getPhetLibs( repo ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
   return `${packageObject.phet.requirejsNamespace}/${repo}.title`;

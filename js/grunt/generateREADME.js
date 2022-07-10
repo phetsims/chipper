@@ -6,20 +6,18 @@
  *
  * @author Chris Malley (PixelZoom, Inc.)
  */
-
-
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const fixEOL = require( './fixEOL' );
-const getPhetLibs = require( './getPhetLibs' );
-const getTitleStringKey = require( './getTitleStringKey' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
-const grunt = require( 'grunt' );
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import fixEOL from './fixEOL.js';
+import getPhetLibs from './getPhetLibs.js';
+import getTitleStringKey from './getTitleStringKey.js';
+import writeFileAndGitAdd from './writeFileAndGitAdd.ts';
+import grunt from './grunt.ts';
 
 /**
  * @param {string} repo - name of the repository
  * @param {boolean} published - has the sim been published?
  */
-module.exports = async function( repo, published ) {
+export default async function( repo, published ) {
 
   // Read the title from the English strings file.
   const simTitleStringKey = getTitleStringKey( repo );
@@ -49,4 +47,4 @@ module.exports = async function( repo, published ) {
 
   // Write to the repository's root directory.
   await writeFileAndGitAdd( repo, 'README.md', fixEOL( readme ) );
-};
+}

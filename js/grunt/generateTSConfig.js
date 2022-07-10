@@ -9,15 +9,16 @@
  */
 
 // modules
-const fixEOL = require( './fixEOL' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
+import fixEOL from './fixEOL.js';
+
+import writeFileAndGitAdd from './writeFileAndGitAdd.ts';
 
 /**
  * @param {string} repo
  *
  * @returns {Promise}
  */
-module.exports = async function( repo ) {
+export default async function( repo ) {
 
   const phetioWrappers = repo === 'phet-io-wrappers' ? `,
     "common/js/**/*"` : '';
@@ -34,4 +35,4 @@ module.exports = async function( repo ) {
 }`;
 
   await writeFileAndGitAdd( repo, 'tsconfig.json', fixEOL( string ) );
-};
+}

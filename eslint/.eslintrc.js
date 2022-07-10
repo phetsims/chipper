@@ -1138,6 +1138,8 @@ module.exports = {
 
     // React
     React: 'readonly',
-    ReactDOM: 'readonly'
+    ReactDOM: 'readonly',
+
+    Deno: 'readonly'
   }
 };

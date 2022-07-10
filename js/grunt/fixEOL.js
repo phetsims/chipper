@@ -8,11 +8,15 @@
 
 
 // modules
-const os = require( 'os' );
+// const os = require( 'os' );
+import { EOL } from 'https://deno.land/std/fs/eol.ts';
+
+// TODO: https://github.com/phetsims/chipper/issues/1272 test on 2 platforms
+const eol = Deno.build.os === 'windows' ? EOL.CRLF : EOL.LF;
 
 /**
  * @public
  *
  * @returns {string}
  */
-module.exports = string => string.split( '\r' ).join( '' ).split( '\n' ).join( os.EOL );
+export default string => string.split( '\r' ).join( '' ).split( '\n' ).join( eol );
