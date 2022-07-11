@@ -37,20 +37,32 @@ module.exports = {
       ],
       rules: {
 
-        // Custom Rules for TypeScript only
-        'bad-typescript-text': 'error', //TODO https://github.com/phetsims/chipper/issues/1224
-        'no-simple-type-checking-assertions': 'error',
+        // TypeScript ESLint Rules.  Legend
+        // ✅ - recommended
+        // 🔒 - strict
+        // 🔧 - fixable
+        // 🛠 - has-suggestions
+        // 💭 - requires type information
 
-        // Custom return type rule that only requires for methods. The includes return type was too overarching.
-        'explicit-method-return-type': 'error',
+        ////////////////////////////////////////////////////////////////////////
+        // Supported Rules
 
-        // Put TypeScript specific rules here
-        '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
-
-        ////////////////////////////////////////////////////////////////
-        // Recommended without needing type info:
+        // Require that member overloads be consecutive ✅
         '@typescript-eslint/adjacent-overload-signatures': 'error', // 258 errors
-        // '@typescript-eslint/ban-ts-comment': 'error', // 566 errors
+
+        // Require using either T[] or Array<T> for arrays 🔒 🔧
+        '@typescript-eslint/array-type': 'off', // TODO: Discuss this rule
+
+        // Disallow awaiting a value that is not a Thenable ✅  💭
+        '@typescript-eslint/await-thenable': 'off',
+
+        // Disallow @ts-<directive> comments or require descriptions after directive ✅
+        '@typescript-eslint/ban-ts-comment': 'off', // 566 errors
+
+        // Disallow // tslint:<rule-flag> comments 🔒 🔧
+        '@typescript-eslint/ban-tslint-comment': 'error',
+
+        // Disallow certain types ✅ 🔧
         '@typescript-eslint/ban-types': [
           'error',
           {
@@ -63,65 +75,437 @@ module.exports = {
             extendDefaults: true
           }
         ],
-        '@typescript-eslint/no-empty-interface': 'error',
-        // '@typescript-eslint/no-explicit-any': 'error', // 515
-        '@typescript-eslint/no-extra-non-null-assertion': 'error',
-        '@typescript-eslint/no-inferrable-types': 'error',
-        '@typescript-eslint/no-misused-new': 'error',
-        '@typescript-eslint/no-namespace': 'error',
-        '@typescript-eslint/no-non-null-asserted-optional-chain': 'error',
+
+        // Enforce that literals on classes are exposed in a consistent style 🔒 🔧
+        '@typescript-eslint/class-literal-property-style': 'off',
+
+        // Enforce specifying generic type arguments on type annotation or constructor name of a constructor call 🔒 🔧
+        '@typescript-eslint/consistent-generic-constructors': 'off',
+
+        // Require or disallow the Record type 🔒 🔧
+        '@typescript-eslint/consistent-indexed-object-style': 'off',
+
+        // Enforce consistent usage of type assertions 🔒
+        '@typescript-eslint/consistent-type-assertions': 'off',
+
+        // Enforce type definitions to consistently use either interface or type 🔒 🔧
+        '@typescript-eslint/consistent-type-definitions': 'off',
+
+        // Enforce consistent usage of type exports  🔧 💭
+        '@typescript-eslint/consistent-type-exports': 'off',
+
+        // Enforce consistent usage of type imports  🔧
+        '@typescript-eslint/consistent-type-imports': 'off',
+
+        // Require explicit return types on functions and class methods
+        '@typescript-eslint/explicit-function-return-type': 'off', // TODO: enable rule?
+
+        // Require explicit accessibility modifiers on class properties and methods  🔧
         '@typescript-eslint/explicit-member-accessibility': 'error',
 
+        // Require explicit return and argument types on exported functions' and classes' public class methods
+        '@typescript-eslint/explicit-module-boundary-types': 'off', // TODO: Enable this rule
+
+        // Require a specific member delimiter style for interfaces and type literals  🔧
+        '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
+
+        // Require a consistent member declaration order
+        '@typescript-eslint/member-ordering': 'off',
+
+        // Enforce using a particular method signature syntax  🔧
+        '@typescript-eslint/method-signature-style': 'off',
+
+        // Enforce naming conventions for everything across a codebase   💭
+        '@typescript-eslint/naming-convention': 'off',
+
+        // Require .toString() to only be called on objects which provide useful information when stringified 🔒  💭
+        '@typescript-eslint/no-base-to-string': 'off', // TODO: Enable rule
+
+        // Disallow non-null assertion in locations that may be confusing 🔒 🔧 🛠
+        '@typescript-eslint/no-confusing-non-null-assertion': 'error',
+
+        // Require expressions of type void to appear in statement position  🔧 🛠 💭
+        '@typescript-eslint/no-confusing-void-expression': 'off',
+
+        // Disallow duplicate enum member values 🔒 🛠
+        '@typescript-eslint/no-duplicate-enum-values': 'error',
+
+        // Disallow using the delete operator on computed key expressions 🔒 🔧
+        '@typescript-eslint/no-dynamic-delete': 'off',
+
+        // Disallow the declaration of empty interfaces ✅ 🔧 🛠
+        '@typescript-eslint/no-empty-interface': 'error',
+
+        // Disallow the any type ✅ 🔧 🛠
+        '@typescript-eslint/no-explicit-any': 'off', // 515
+
+        // Disallow extra non-null assertion ✅ 🔧
+        '@typescript-eslint/no-extra-non-null-assertion': 'error',
+
+        // Disallow classes used as namespaces 🔒
+        '@typescript-eslint/no-extraneous-class': 'off', // TODO: Enable this rule
+
+        // Require Promise-like statements to be handled appropriately ✅ 🛠 💭
+        '@typescript-eslint/no-floating-promises': 'off',
+
+        // Disallow iterating over an array with a for-in loop ✅  💭
+        '@typescript-eslint/no-for-in-array': 'off',
+
+        // Disallow usage of the implicit any type in catch clauses  🔧 🛠
+        '@typescript-eslint/no-implicit-any-catch': 'off',
+
+        // Disallow explicit type declarations for variables or parameters initialized to a number, string, or boolean ✅ 🔧
+        '@typescript-eslint/no-inferrable-types': 'error',
+
+        // Disallow void type outside of generic or return types 🔒
+        '@typescript-eslint/no-invalid-void-type': 'off', // TODO: Enable this rule
+
+        // Disallow the void operator except when used to discard a value 🔒 🔧 🛠 💭
+        '@typescript-eslint/no-meaningless-void-operator': 'off',
+
+        // Enforce valid definition of new and constructor ✅
+        '@typescript-eslint/no-misused-new': 'error',
+
+        // Disallow Promises in places not designed to handle them ✅  💭
+        '@typescript-eslint/no-misused-promises': 'off',
+
+        // Disallow custom TypeScript modules and namespaces ✅
+        '@typescript-eslint/no-namespace': 'error',
+
+        // Disallow non-null assertions in the left operand of a nullish coalescing operator 🔒 🛠
+        '@typescript-eslint/no-non-null-asserted-nullish-coalescing': 'error',
+
+        // Disallow non-null assertions after an optional chain expression ✅ 🛠
+        '@typescript-eslint/no-non-null-asserted-optional-chain': 'error',
+
+        // Disallow non-null assertions using the ! postfix operator ✅ 🛠
+        '@typescript-eslint/no-non-null-assertion': 'off', // We do not support this rule, see https://github.com/phetsims/chipper/issues/1114#issuecomment-1099536133
+
+        // Disallow the use of parameter properties in class constructors
+        '@typescript-eslint/no-parameter-properties': 'off', // TODO: Enable this rule
+
+        // Disallow members of unions and intersections that do nothing or override type information   💭
+        '@typescript-eslint/no-redundant-type-constituents': 'off',
+
+        // Disallow invocation of require()
+        '@typescript-eslint/no-require-imports': 'error',
+
+        // Disallow aliasing this ✅
         '@typescript-eslint/no-this-alias': 'error',
+
+        // Disallow type aliases
+        '@typescript-eslint/no-type-alias': 'off',
+
+        // Disallow unnecessary equality comparisons against boolean literals 🔒 🔧 💭
+        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off', // TODO: Enable rule
+
+        // Disallow conditionals where the type is always truthy or always falsy 🔒 🔧 💭
+        '@typescript-eslint/no-unnecessary-condition': 'off', // TODO: We should discuss and probably use this rule
+
+        // Disallow unnecessary namespace qualifiers  🔧 💭
+        '@typescript-eslint/no-unnecessary-qualifier': 'off', // TODO: Enable this rule
+
+        // Disallow type arguments that are equal to the default 🔒 🔧 💭
+        '@typescript-eslint/no-unnecessary-type-arguments': 'off', // TODO: Enable this rule
+
+        // Disallow type assertions that do not change the type of an expression ✅ 🔧 💭
+        '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+
+        // Disallow unnecessary constraints on generic types ✅ 🛠
         '@typescript-eslint/no-unnecessary-type-constraint': 'error',
+
+        // Disallow calling a function with a value with type any ✅  💭
+        '@typescript-eslint/no-unsafe-argument': 'off',
+
+        // Disallow assigning a value with type any to variables and properties ✅  💭
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+
+        // Disallow calling a value with type any ✅  💭
+        '@typescript-eslint/no-unsafe-call': 'off',
+
+        // Disallow member access on a value with type any ✅  💭
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+
+        // Disallow returning a value with type any from a function ✅  💭
+        '@typescript-eslint/no-unsafe-return': 'off',
+
+        // Disallow empty exports that don't change anything in a module file  🔧 🛠
+        '@typescript-eslint/no-useless-empty-export': 'error',
+
+        // Disallow require statements except in import statements ✅
         '@typescript-eslint/no-var-requires': 'error',
+
+        // Enforce non-null assertions over explicit type casts 🔒 🔧 💭
+        '@typescript-eslint/non-nullable-type-assertion-style': 'off', // TODO: Enable this rule
+
+        // Require or disallow parameter properties in class constructors
+        '@typescript-eslint/parameter-properties': 'off', // TODO: Let's discuss as a team
+
+        // Enforce the use of as const over literal type ✅ 🔧 🛠
         '@typescript-eslint/prefer-as-const': 'error',
+
+        // Require each enum member value to be explicitly initialized  🛠
+        '@typescript-eslint/prefer-enum-initializers': 'error',
+
+        // Enforce the use of for-of loop over the standard for loop where possible 🔒
+        '@typescript-eslint/prefer-for-of': 'off',
+
+        // Enforce using function types instead of interfaces with call signatures 🔒 🔧
+        '@typescript-eslint/prefer-function-type': 'off',
+
+        // Enforce includes method over indexOf method 🔒 🔧 💭
+        '@typescript-eslint/prefer-includes': 'off', // TODO: Enable rule
+
+        // Require all enum members to be literal values 🔒
+        '@typescript-eslint/prefer-literal-enum-member': 'error',
+
+        // Require using namespace keyword over module keyword to declare custom TypeScript modules ✅ 🔧
         '@typescript-eslint/prefer-namespace-keyword': 'error',
+
+        // Enforce using the nullish coalescing operator instead of logical chaining 🔒 🛠 💭
+        '@typescript-eslint/prefer-nullish-coalescing': 'off', // TODO: Enable rule
+
+        // Enforce using concise optional chain expressions instead of chained logical ands 🔒 🛠
+        '@typescript-eslint/prefer-optional-chain': 'off', // TODO: Enable rule
+
+        // Require private members to be marked as readonly if they're never modified outside of the constructor  🔧 💭
+        '@typescript-eslint/prefer-readonly': 'off',
+
+        // Require function parameters to be typed as readonly to prevent accidental mutation of inputs   💭
+        '@typescript-eslint/prefer-readonly-parameter-types': 'off',
+
+        // Enforce using type parameter when calling Array#reduce instead of casting 🔒 🔧 💭
+        '@typescript-eslint/prefer-reduce-type-parameter': 'off', // TODO: Enable this rule
+
+        // Enforce RegExp#exec over String#match if no global flag is provided  🔧 💭
+        '@typescript-eslint/prefer-regexp-exec': 'off',
+
+        // Enforce that this is used when only this type is returned 🔒 🔧 💭
+        '@typescript-eslint/prefer-return-this-type': 'off',
+
+        // Enforce using String#startsWith and String#endsWith over other equivalent methods of checking substrings 🔒 🔧 💭
+        '@typescript-eslint/prefer-string-starts-ends-with': 'off',
+
+        // Enforce using @ts-expect-error over @ts-ignore 🔒 🔧
+        '@typescript-eslint/prefer-ts-expect-error': 'off',
+
+        // Require any function or method that returns a Promise to be marked async  🔧 💭
+        '@typescript-eslint/promise-function-async': 'off',
+
+        // Require Array#sort calls to always provide a compareFunction   💭
+        '@typescript-eslint/require-array-sort-compare': 'off',
+
+        // Require both operands of addition to have type number or string ✅  💭
+        '@typescript-eslint/restrict-plus-operands': 'off',
+
+        // Enforce template literal expressions to be of string type ✅  💭
+        '@typescript-eslint/restrict-template-expressions': 'off',
+
+        // Enforce members of a type union/intersection to be sorted alphabetically  🔧 🛠
+        '@typescript-eslint/sort-type-union-intersection-members': 'off',
+
+        // Disallow certain types in boolean expressions  🔧 🛠 💭
+        '@typescript-eslint/strict-boolean-expressions': 'off', // TODO: Is this a good rule for our team?
+
+        // Require switch-case statements to be exhaustive with union type  🛠 💭
+        '@typescript-eslint/switch-exhaustiveness-check': 'off', // TODO: Enable rule
+
+        // Disallow certain triple slash directives in favor of ES6-style import declarations ✅
         '@typescript-eslint/triple-slash-reference': 'error',
 
-        /////////////////////////////////////////////////////
-        // Rules that the project decided NOT to enable
-        // We do not support this rule, see https://github.com/phetsims/chipper/issues/1114#issuecomment-1099536133
-        // '@typescript-eslint/no-non-null-assertion': 'error',
+        // Require consistent spacing around type annotations  🔧
+        '@typescript-eslint/type-annotation-spacing': 'off',
 
-        /////////////////////////////////////////////////////
-        // Overriding rules that exist in javascript (no type info needed):
+        // Require type annotations in certain places
+        '@typescript-eslint/typedef': 'error',
+
+        // Enforce unbound methods are called with their expected scope ✅  💭
+        '@typescript-eslint/unbound-method': 'off',
+
+        // Disallow two overloads that could be unified into one with a union or an optional/rest parameter 🔒
+        '@typescript-eslint/unified-signatures': 'off',
+
+        ////////////////////////////////////////////////////////////////////////
+        // Extension Rules
+        // In some cases, ESLint provides a rule itself, but it doesn't support TypeScript syntax; either it crashes, or
+        // it ignores the syntax, or it falsely reports against it. In these cases, we create what we call an extension
+        // rule; a rule within our plugin that has the same functionality, but also supports TypeScript.
+
+        // You must disable the base rule to avoid duplicate/incorrect errors. TODO: Is that still necessary?
+
+        // Enforce consistent brace style for blocks  🔧
+        'brace-style': 'off',
+        '@typescript-eslint/brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
+
+        // Require or disallow trailing commas  🔧
+        'comma-dangle': 'off',
+        '@typescript-eslint/comma-dangle': 'error',
+
+        // Enforce consistent spacing before and after commas  🔧
+        'comma-spacing': 'off',
+        '@typescript-eslint/comma-spacing': 'error',
+
+        // Enforce default parameters to be last
+        'default-param-last': 'off',
+        '@typescript-eslint/default-param-last': 'error',
+
+        // Enforce dot notation whenever possible 🔒 🔧 💭
+        'dot-notation': 'off',
+        '@typescript-eslint/dot-notation': 'off', // TODO: Enable rule
+
+        // Require or disallow spacing between function identifiers and their invocations  🔧
+        'func-call-spacing': 'off',
+        '@typescript-eslint/func-call-spacing': 'error',
+
+        // Enforce consistent indentation  🔧
+        indent: 'off',
+        '@typescript-eslint/indent': 'off',
+
+        // Require or disallow initialization in variable declarations
+        'init-declarations': 'off',
+        '@typescript-eslint/init-declarations': 'off',
+
+        // Enforce consistent spacing before and after keywords  🔧
+        'keyword-spacing': 'off',
+        '@typescript-eslint/keyword-spacing': [ 'error', { // TODO: Check this rule
+          before: true,
+          after: true,
+          overrides: {
+            case: { after: true }, // default
+            switch: { after: false },
+            catch: { after: false }
+          }
+        } ],
+
+        // Require or disallow an empty line between class members  🔧
+        'lines-between-class-members': 'off',
+        '@typescript-eslint/lines-between-class-members': 'off',
+
+        // Disallow generic Array constructors ✅ 🔧
+        'no-array-constructor': 'off',
         '@typescript-eslint/no-array-constructor': 'error',
+
+        // Disallow duplicate class members
+        'no-dupe-class-members': 'off',
+        '@typescript-eslint/no-dupe-class-members': 'error',
+
+        // Disallow duplicate imports
+        'no-duplicate-imports': 'off',
+        '@typescript-eslint/no-duplicate-imports': 'off',
+
+        // Disallow empty functions ✅
+        'no-empty-function': 'off',
         '@typescript-eslint/no-empty-function': 'error',
-        '@typescript-eslint/no-extra-semi': 'error',
-        'no-unused-vars': 'off', // you must disable the base rule to avoid duplicate/incorrect errors
+
+        // Disallow unnecessary parentheses  🔧
+        'no-extra-parens': 'off',
+        '@typescript-eslint/no-extra-parens': 'off',
+
+        // Disallow unnecessary semicolons ✅ 🔧
+        'no-extra-semi': 'off',
+        '@typescript-eslint/no-extra-semi': 'off', // TODO: Enable this rule
+
+        // Disallow the use of eval()-like methods ✅  💭
+        'no-implied-eval': 'off',
+        '@typescript-eslint/no-implied-eval': 'off',
+
+        // Disallow this keywords outside of classes or class-like objects
+        'no-invalid-this': 'off',
+        '@typescript-eslint/no-invalid-this': 'off',
+
+        // Disallow function declarations that contain unsafe references inside loop statements
+        'no-loop-func': 'off',
+        '@typescript-eslint/no-loop-func': 'off',
+
+        // Disallow literal numbers that lose precision ✅
+        'no-loss-of-precision': 'off',
+        '@typescript-eslint/no-loss-of-precision': 'error',
+
+        // Disallow magic numbers
+        'no-magic-numbers': 'off',
+        '@typescript-eslint/no-magic-numbers': 'off',
+
+        // Disallow variable redeclaration
+        'no-redeclare': 'off',
+        '@typescript-eslint/no-redeclare': 'error',
+
+        // Disallow specified modules when loaded by import
+        'no-restricted-imports': 'off',
+        '@typescript-eslint/no-restricted-imports': 'error',
+
+        // Disallow variable declarations from shadowing variables declared in the outer scope
+        'no-shadow': 'off',
+        '@typescript-eslint/no-shadow': 'off', // TODO: This may be a good rule for our team
+
+        // Disallow throwing literals as exceptions 🔒  💭
+        'no-throw-literal': 'off',
+        '@typescript-eslint/no-throw-literal': 'off', // TODO: Enable rule
+
+        // Disallow unused expressions
+        'no-unused-expressions': 'off',
+        '@typescript-eslint/no-unused-expressions': 'off',
+
+        // Disallow unused variables ✅
+        'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': [ 'error', {
           args: 'none' // TODO: we want to turn this for arguments in https://github.com/phetsims/chipper/issues/1230
         } ],
-        '@typescript-eslint/no-loss-of-precision': 'error'
 
-        ///////////////////////////////////////////////////////////////////////
-        //
-        // Typescript rules that require type information (may be slow)
-        // These require parserOptions.project.
-        // '@typescript-eslint/no-unnecessary-type-assertion':'error',
-        // '@typescript-eslint/no-unsafe-member-access':'error',
-        // '@typescript-eslint/restrict-plus-operands':'error',
-        // '@typescript-eslint/prefer-readonly': 'error' // readonly when possible
+        // Disallow the use of variables before they are defined
+        'no-use-before-define': 'off',
+        '@typescript-eslint/no-use-before-define': 'off',
 
-        // // Recommended needing type info:
-        // '@typescript-eslint/await-thenable': 'error',
-        // '@typescript-eslint/no-floating-promises': 'error',
-        // '@typescript-eslint/no-for-in-array': 'error',
-        // '@typescript-eslint/no-misused-promises': 'error',
-        // '@typescript-eslint/no-unnecessary-type-assertion': 'error',
-        // '@typescript-eslint/no-unsafe-argument': 'error',
-        // '@typescript-eslint/no-unsafe-assignment': 'error',
-        // '@typescript-eslint/no-unsafe-call': 'error',
-        // '@typescript-eslint/no-unsafe-member-access': 'error',
-        // '@typescript-eslint/no-unsafe-return': 'error',
-        // '@typescript-eslint/restrict-plus-operands': 'error',
-        // '@typescript-eslint/restrict-template-expressions': 'error',
-        // '@typescript-eslint/unbound-method': 'error',
+        // Disallow unnecessary constructors 🔒
+        'no-useless-constructor': 'off',
+        '@typescript-eslint/no-useless-constructor': 'off',
 
-        // // Overriding rules that exist in javascript:
-        // '@typescript-eslint/no-implied-eval': 'error',
-        // '@typescript-eslint/require-await': 'error',
+        // Enforce consistent spacing inside braces  🔧
+        'object-curly-spacing': 'off',
+        '@typescript-eslint/object-curly-spacing': [ 'error', 'always' ],
+
+        // Require or disallow padding lines between statements  🔧 🛠
+        'padding-line-between-statements': 'off',
+        '@typescript-eslint/padding-line-between-statements': 'error',
+
+        // Enforce the consistent use of either backticks, double, or single quotes  🔧
+        quotes: 'off',
+        '@typescript-eslint/quotes': [ 'error', 'single' ],
+
+        // Disallow async functions which have no await expression ✅  💭
+        'require-await': 'off',
+        '@typescript-eslint/require-await': 'off',
+
+        // Enforce consistent returning of awaited values  🔧 🛠 💭
+        'return-await': 'off',
+        '@typescript-eslint/return-await': 'off', // TODO: Enable rule
+
+        // Require or disallow semicolons instead of ASI  🔧
+        semi: 'off',
+        '@typescript-eslint/semi': 'off',
+
+        // Enforce consistent spacing before blocks  🔧
+        'space-before-blocks': 'off',
+        '@typescript-eslint/space-before-blocks': 'error',
+
+        // Enforce consistent spacing before function parenthesis  🔧
+        'space-before-function-paren': 'off',
+        '@typescript-eslint/space-before-function-paren': [ 'error', {
+          anonymous: 'never',
+          named: 'never',
+          asyncArrow: 'always'
+        } ],
+
+        // Require spacing around infix operators  🔧
+        'space-infix-ops': 'off',
+        '@typescript-eslint/space-infix-ops': 'error',
+
+        ////////////////////////////////////////////////////////////////////////
+        // Custom TypeScript Rules
+        'bad-typescript-text': 'error', //TODO https://github.com/phetsims/chipper/issues/1224
+        'no-simple-type-checking-assertions': 'error',
+
+        // Custom return type rule that only requires for methods. The includes return type was too overarching.
+        'explicit-method-return-type': 'error'
       }
     }
   ],
