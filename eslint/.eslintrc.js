@@ -1,6 +1,5 @@
 // Copyright 2015-2021, University of Colorado Boulder
 
-
 /**
  * The base eslint configuration for the PhET projects.
  *
@@ -132,425 +131,165 @@ module.exports = {
   // Explicitly list all rules so it is easy to see what's here and to keep organized
   rules: {
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Errors
-    //
+    ////////////////////////////////////////////////////////////////////
+    // Possible Problems
+    // These rules relate to possible logic errors in code:
 
-    // enforce "for" loop update clause moving the counter in the right direction.
-    'for-direction': 'error',
-
-    // enforce `return` statements in getters
-    'getter-return': 'error',
-
-    // disallow using an async function as a Promise executor
-    'no-async-promise-executor': 'error',
-
-    // disallow `await` inside of loops
-    'no-await-in-loop': 'off', // We use await in loops all the time in build tools
-
-    // disallow comparing against -0
-    'no-compare-neg-zero': 'error',
-
-    // disallow assignment operators in conditional expressions
-    'no-cond-assign': 'error',
-
-    // disallow the use of `console`
-    'no-console': 'off', // We like to be able to commit console.log
-
-    // disallow constant expressions in conditions
-    'no-constant-condition': 'error',
-
-    // disallow control characters in regular expressions
-    'no-control-regex': 'error',
-
-    // disallow the use of `debugger`
-    'no-debugger': 'error',
-
-    // disallow duplicate arguments in `function` definitions
-    'no-dupe-args': 'error',
-
-    // disallow duplicate conditions in if-else-if chains
-    'no-dupe-else-if': 'error',
-
-    // disallow duplicate keys in object literals
-    'no-dupe-keys': 'error',
-
-    // disallow duplicate case labels
-    'no-duplicate-case': 'error',
-
-    // disallow empty block statements
-    'no-empty': 'error',
-
-    // disallow empty character classes in regular expressions
-    'no-empty-character-class': 'error',
-
-    // disallow reassigning exceptions in `catch` clauses
-    'no-ex-assign': 'error',
-
-    // disallow unnecessary boolean casts
-    'no-extra-boolean-cast': 'error',
-
-    // disallow unnecessary parentheses
-    'no-extra-parens': 'off', // we find that extraneous parentheses sometimes improve readability
-
-    // disallow unnecessary semicolons
-    'no-extra-semi': 'error',
-
-    // disallow reassigning `function` declarations
-    'no-func-assign': 'error',
-
-    // disallow assigning to imported bindings
-    'no-import-assign': 'error',
-
-    // disallow variable or `function` declarations in nested blocks
-    'no-inner-declarations': 'error',
-
-    // disallow invalid regular expression strings in `RegExp` constructors
-    'no-invalid-regexp': 'error',
-
-    // disallow irregular whitespace
-    'no-irregular-whitespace': 'error',
-
-    // disallow literal numbers that lose precision
-    'no-loss-of-precision': 'error',
-
-    // disallow characters which are made with multiple code points in character class syntax
-    'no-misleading-character-class': 'error',
-
-    // disallow calling global object properties as functions
-    'no-obj-calls': 'error',
-
-    // disallow returning values from Promise executor functions
-    'no-promise-executor-return': 'off', // We turn this rule off so you can use an arrow function as an executor
-
-    // disallow calling some `Object.prototype` methods directly on objects
-    'no-prototype-builtins': 'off', // We prefer `foo.hasOwnProperty("bar");` to `Object.prototype.hasOwnProperty.call(foo, "bar");`
-
-    // disallow multiple spaces in regular expressions
-    'no-regex-spaces': 'error',
-
-    // disallow returning values from setters
-    'no-setter-return': 'error',
-
-    // disallow sparse arrays
-    'no-sparse-arrays': 'error',
-
-    // disallow template literal placeholder syntax in regular strings
-    'no-template-curly-in-string': 'error',
-
-    // disallow confusing multiline expressions
-    'no-unexpected-multiline': 'error', // Avoid code that looks like two expressions but is actually one
-
-    // disallow unreachable code after `return`, `throw`, `continue`, and `break` statements
-    'no-unreachable': 'error',
-
-    // disallow loops with a body that allows only one iteration
-    'no-unreachable-loop': 'error',
-
-    // disallow control flow statements in `finally` blocks
-    'no-unsafe-finally': 'error',
-
-    // disallow negating the left operand of relational operators
-    'no-unsafe-negation': 'error',
-
-    // disallow use of optional chaining in contexts where the `undefined` value is not allowed
-    'no-unsafe-optional-chaining': 'error',
-
-    // disallow useless backreferences in regular expressions
-    'no-useless-backreference': 'error',
-
-    // disallow assignments that can lead to race conditions due to usage of `await` or `yield`
-    'require-atomic-updates': 'off', // TODO: Enable: 6 fails, can we turn this on? see https://github.com/phetsims/rosetta/issues/265
-
-    // require calls to `isNaN()` when checking for `NaN`
-    'use-isnan': 'error',
-
-    // enforce comparing `typeof` expressions against valid strings
-    'valid-typeof': 'error',
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Best Practices
-    //
-
-    // enforce getter and setter pairs in objects and classes
-    'accessor-pairs': 'off', // Only 17 fails, but I'm not sure we need this.  Perhaps once it bites us we will change our mind?
-
-    // enforce `return` statements in callbacks of array methods
+    // Enforce return statements in callbacks of array methods
     'array-callback-return': 'error',
 
-    // enforce the use of variables within the scope they are defined
-    'block-scoped-var': 'off', // We have too much old code with var i being used across several loops.
+    // Require `super()` calls in constructors
+    'constructor-super': 'error',
 
-    // enforce that class methods utilize `this`
-    'class-methods-use-this': 'off', // We have many overrideable methods that just throw an error
+    // Enforce "for" loop update clause moving the counter in the right direction.
+    'for-direction': 'error',
 
-    // enforce a maximum cyclomatic complexity allowed in a program
-    complexity: 'off', // We have around 242 offenders as of March, 2021
+// Enforce `return` statements in getters
+    'getter-return': 'error',
 
-    // require `return` statements to either always or never specify values
-    'consistent-return': 'error',
+    // Disallow using an async function as a Promise executor
+    'no-async-promise-executor': 'error',
 
-    // enforce consistent brace style for all control statements
-    curly: 'error',
+    // Disallow `await` inside of loops
+    'no-await-in-loop': 'off', // We use await in loops all the time in build tools
 
-    // require `default` cases in `switch` statements
-    'default-case': 'error',
+    // Disallow reassigning class members
+    'no-class-assign': 'error',
 
-    // enforce default clauses in switch statements to be last
-    'default-case-last': 'error',
+    // Disallow comparing against -0
+    'no-compare-neg-zero': 'error',
 
-    // enforce default parameters to be last
-    'default-param-last': 'error',
+    // Disallow assignment operators in conditional expressions
+    'no-cond-assign': 'error',
 
-    // enforce consistent newlines before and after dots
-    'dot-location': 'off', // We use WebStorm formatting which moves lower dots to the left
+    // Disallow reassigning `const` variables
+    'no-const-assign': 'error',
 
-    // enforce dot notation whenever possible
-    'dot-notation': 'error',
+    // Disallow expressions where the operation doesn't affect the value
+    'no-constant-binary-expression': 'error',
 
-    // require the use of `===` and `!==`
-    eqeqeq: 'error',
+    // Disallow constant expressions in conditions
+    'no-constant-condition': 'error',
 
-    // require grouped accessor pairs in object literals and classes
-    'grouped-accessor-pairs': 'off', // In scenery, we group all the getters together, then the setters together
-
-    // require `for-in` loops to include an `if` statement
-    'guard-for-in': 'off', // This hasn't bit us yet
-
-    // enforce a maximum number of classes per file
-    'max-classes-per-file': 'off', // have as many as you need!
-
-    // disallow the use of `alert`, `confirm`, and `prompt`
-    'no-alert': 'off', // We sometimes use this when necessary
-
-    // disallow the use of `arguments.caller` or `arguments.callee`
-    'no-caller': 'error',
-
-    // disallow lexical declarations in case clauses
-    'no-case-declarations': 'error',
-
-    // disallow returning value from constructor
+    // Disallow returning value from constructor
     'no-constructor-return': 'error',
 
-    // disallow division operators explicitly at the beginning of regular expressions
-    'no-div-regex': 'error',
+    // Disallow control characters in regular expressions
+    'no-control-regex': 'error',
 
-    // disallow `else` blocks after `return` statements in `if` statements
-    'no-else-return': 'off', // Allow the extra else for symmetry
+    // Disallow the use of `debugger`
+    'no-debugger': 'error',
 
-    // disallow empty functions
-    'no-empty-function': 'off', // It is natural and convenient to specify empty functions instead of having to share a lodash _.noop
+    // Disallow duplicate arguments in `function` definitions
+    'no-dupe-args': 'error',
 
-    // disallow empty destructuring patterns
+    // Disallow duplicate class members
+    'no-dupe-class-members': 'error',
+
+    // Disallow duplicate conditions in if-else-if chains
+    'no-dupe-else-if': 'error',
+
+    // Disallow duplicate keys in object literals
+    'no-dupe-keys': 'error',
+
+    // Disallow duplicate case labels
+    'no-duplicate-case': 'error',
+
+    // Disallow duplicate module imports
+    'no-duplicate-imports': 'off', // TODO: 2 fails, enable this rule
+
+    // Disallow empty character classes in regular expressions
+    'no-empty-character-class': 'error',
+
+    // Disallow empty destructuring patterns
     'no-empty-pattern': 'error',
 
-    // disallow `null` comparisons without type-checking operators
-    'no-eq-null': 'error',
+    // Disallow reassigning exceptions in `catch` clauses
+    'no-ex-assign': 'error',
 
-    // disallow the use of `eval()`
-    'no-eval': 'error',
-
-    // disallow extending native types
-    'no-extend-native': 'error',
-
-    // disallow unnecessary calls to `.bind()`
-    'no-extra-bind': 'error',
-
-    // disallow unnecessary labels
-    'no-extra-label': 'error',
-
-    // disallow fallthrough of `case` statements
+    // Disallow fallthrough of `case` statements
     'no-fallthrough': 'error',
 
-    // disallow leading or trailing decimal points in numeric literals
-    'no-floating-decimal': 'error',
+    // Disallow reassigning `function` declarations
+    'no-func-assign': 'error',
 
-    // disallow assignments to native objects or read-only global variables
-    'no-global-assign': 'error',
+    // Disallow assigning to imported bindings
+    'no-import-assign': 'error',
 
-    // disallow shorthand type conversions
-    'no-implicit-coercion': 'off', // We like using !!value and number+''.  Maybe one day we will turn this rule on
+    // Disallow variable or `function` declarations in nested blocks
+    'no-inner-declarations': 'error',
 
-    // disallow declarations in the global scope
-    'no-implicit-globals': 'error',
+    // Disallow invalid regular expression strings in `RegExp` constructors
+    'no-invalid-regexp': 'error',
 
-    // disallow the use of `eval()`-like methods
-    'no-implied-eval': 'error',
+    // Disallow irregular whitespace
+    'no-irregular-whitespace': 'error',
 
-    // disallow `this` keywords outside of classes or class-like objects
-    'no-invalid-this': 'off', // We have too much old code that uses functions with this (outside of classes)
+    // Disallow literal numbers that lose precision
+    'no-loss-of-precision': 'error',
 
-    // disallow the use of the `__iterator__` property
-    'no-iterator': 'error',
+    // Disallow characters which are made with multiple code points in character
+    // class syntax
+    'no-misleading-character-class': 'error',
 
-    // disallow labeled statements
-    'no-labels': 'error',
+    // Disallow `new` operators with the `Symbol` object
+    'no-new-symbol': 'error',
 
-    // disallow unnecessary nested blocks
-    'no-lone-blocks': 'off', // Even though lone blocks are currently rare for our project, we agree they are appropriate in some situations.  Details are in https://github.com/phetsims/chipper/issues/1026
+    // Disallow calling global object properties as functions
+    'no-obj-calls': 'error',
 
-    // disallow function declarations that contain unsafe references inside loop statements
-    'no-loop-func': 'off', // It seems we are dealing with this safely, we have 38 occurrences on March 2021
+    // Disallow returning values from Promise executor functions
+    'no-promise-executor-return': 'off', // We turn this rule off so you can use an arrow function as an executor
 
-    // disallow magic numbers
-    'no-magic-numbers': 'off', // We have many magic numbers
+    // Disallow calling some `Object.prototype` methods directly on objects
+    'no-prototype-builtins': 'off', // We prefer `foo.hasOwnProperty("bar");` to `Object.prototype.hasOwnProperty.call(foo, "bar");`
 
-    // disallow multiple spaces
-    'no-multi-spaces': [ 'error', { ignoreEOLComments: true } ],
-
-    // disallow multiline strings
-    'no-multi-str': 'error',
-
-    // disallow `new` operators outside of assignments or comparisons
-    'no-new': 'error',
-
-    // disallow `new` operators with the `Function` object
-    'no-new-func': 'error',
-
-    // disallow `new` operators with the `String`, `Number`, and `Boolean` objects
-    'no-new-wrappers': 'error',
-
-    // disallow `\8` and `\9` escape sequences in string literals
-    'no-nonoctal-decimal-escape': 'error',
-
-    // disallow octal literals
-    'no-octal': 'error',
-
-    // disallow octal escape sequences in string literals
-    'no-octal-escape': 'error',
-
-    // disallow reassigning `function` parameters
-    'no-param-reassign': 'off', // We reassign options frequently
-
-    // disallow the use of the `__proto__` property
-    'no-proto': 'error',
-
-    // disallow variable redeclaration
-    'no-redeclare': 'error',
-
-    // disallow certain properties on certain objects
-    'no-restricted-properties': 'error',
-
-    // disallow assignment operators in `return` statements
-    'no-return-assign': 'error',
-
-    // disallow unnecessary `return await`
-    'no-return-await': 'error',
-
-    // disallow `javascript:` urls
-    'no-script-url': 'error',
-
-    // disallow assignments where both sides are exactly the same
+    // Disallow assignments where both sides are exactly the same
     'no-self-assign': 'error',
 
-    // disallow comparisons where both sides are exactly the same
+    // Disallow comparisons where both sides are exactly the same
     'no-self-compare': 'error',
 
-    // disallow comma operators
-    'no-sequences': 'error',
+    // Disallow returning values from setters
+    'no-setter-return': 'error',
 
-    // disallow throwing literals as exceptions
-    'no-throw-literal': 'error',
+    // Disallow sparse arrays
+    'no-sparse-arrays': 'error',
 
-    // disallow unmodified loop conditions
-    'no-unmodified-loop-condition': 'error',
+    // Disallow template literal placeholder syntax in regular strings
+    'no-template-curly-in-string': 'error',
 
-    // disallow unused expressions
-    'no-unused-expressions': 'off', // This blocks things like circuitLayerNode && circuitLayerNode.circuit.circuitChangedEmitter.removeListener( updateText );
+    // Disallow `this`/`super` before calling `super()` in constructors
+    'no-this-before-super': 'error',
 
-    // disallow unused labels
-    'no-unused-labels': 'error',
-
-    // disallow unnecessary calls to `.call()` and `.apply()`
-    'no-useless-call': 'error',
-
-    // disallow unnecessary `catch` clauses
-    'no-useless-catch': 'error',
-
-    // disallow unnecessary concatenation of literals or template literals
-    'no-useless-concat': 'error',
-
-    // disallow unnecessary escape characters
-    'no-useless-escape': 'error',
-
-    // disallow redundant return statements
-    'no-useless-return': 'error',
-
-    // disallow `void` operators
-    'no-void': 'error',
-
-    // disallow specified warning terms in comments
-    'no-warning-comments': 'off', // We don't want TODOs to be lint errors
-
-    // disallow `with` statements
-    'no-with': 'error',
-
-    // enforce using named capture group in regular expression
-    'prefer-named-capture-group': 'off', // We have many occurrences in yotta/js/apacheParsing.js
-
-    // require using Error objects as Promise rejection reasons
-    'prefer-promise-reject-errors': 'error',
-
-    // disallow use of the `RegExp` constructor in favor of regular expression literals
-    'prefer-regex-literals': 'off', // new RegExp() looks natural to me
-
-    // enforce the consistent use of the radix argument when using `parseInt()`
-    radix: 'error',
-
-    // disallow async functions which have no `await` expression
-    'require-await': 'off', // 59 errors as of 7/21, but we will keep off, see https://github.com/phetsims/chipper/issues/1028
-
-    // enforce the use of `u` flag on RegExp
-    'require-unicode-regexp': 'off', // TODO: Discuss: 272 fails or so, https://github.com/phetsims/chipper/issues/1029 is there a good reason for this rule?
-
-    // require `var` declarations be placed at the top of their containing scope
-    'vars-on-top': 'off',
-
-    // require parentheses around immediate `function` invocations
-    'wrap-iife': 'off', // Not our style
-
-    // require or disallow "Yoda" conditions
-    yoda: 'error',
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Strict Mode
-    //
-
-    // controls location of Use Strict Directives
-    strict: 'error',
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Variables
-    //
-
-    // require or disallow initialization in variable declarations
-    'init-declarations': 'off', // 1286 failures as of March 2021
-
-    // disallow deleting variables
-    'no-delete-var': 'error',
-
-    // disallow labels that share a name with a variable
-    'no-label-var': 'error',
-
-    // disallow specified global variables
-    'no-restricted-globals': 'error',
-
-    // disallow variable declarations from shadowing variables declared in the outer scope
-    'no-shadow': 'off', // We have 462 shadows as of March, 2021
-
-    // disallow identifiers from shadowing restricted names
-    'no-shadow-restricted-names': 'error',
-
-    // disallow the use of undeclared variables unless mentioned in `/*global */` comments
+    // Disallow the use of undeclared variables unless mentioned in `/*global */` comments
     'no-undef': 'error',
 
-    // disallow initializing variables to `undefined`
-    'no-undef-init': 'error',
+    // Disallow confusing multiline expressions
+    'no-unexpected-multiline': 'error', // Avoid code that looks like two expressions but is actually one
 
-    // disallow the use of `undefined` as an identifier
-    'no-undefined': 'off', // 608 fails as of March 2021
+    // Disallow unmodified loop conditions
+    'no-unmodified-loop-condition': 'error',
 
-    // disallow unused variables
+    // Disallow unreachable code after `return`, `throw`, `continue`, and `break` statements
+    'no-unreachable': 'error',
+
+    // Disallow loops with a body that allows only one iteration
+    'no-unreachable-loop': 'error',
+
+    // Disallow control flow statements in `finally` blocks
+    'no-unsafe-finally': 'error',
+
+    // Disallow negating the left operand of relational operators
+    'no-unsafe-negation': 'error',
+
+    // Disallow use of optional chaining in contexts where the `undefined` value is not allowed
+    'no-unsafe-optional-chaining': 'error',
+
+    // Disallow unused private class members
+    'no-unused-private-class-members': 'error',
+
+    // Disallow unused variables
     'no-unused-vars': [ // Overridden to allow unused args
       'error',
       {
@@ -559,162 +298,125 @@ module.exports = {
       }
     ],
 
-    // disallow the use of variables before they are defined
+    // Disallow the use of variables before they are defined
     'no-use-before-define': 'off', // We often declare auxiliary classes at the bottom of a file, which are used in the primary class
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Stylistic Issues
-    //
+    // Disallow useless backreferences in regular expressions
+    'no-useless-backreference': 'error',
 
-    // enforce linebreaks after opening and before closing array brackets
-    'array-bracket-newline': 'off',
+    // Disallow assignments that can lead to race conditions due to usage of `await` or `yield`
+    'require-atomic-updates': 'off', // TODO: Enable: 6 fails, can we turn this on? see https://github.com/phetsims/rosetta/issues/265
 
-    // enforce consistent spacing inside array brackets
-    'array-bracket-spacing': [ 'error', 'always' ],
+    // Require calls to `isNaN()` when checking for `NaN`
+    'use-isnan': 'error',
 
-    // enforce line breaks after each array element
-    'array-element-newline': 'off',
+    // Enforce comparing `typeof` expressions against valid strings
+    'valid-typeof': 'error',
 
-    // disallow or enforce spaces inside of blocks after opening block and before closing block
-    'block-spacing': 'off', // Our code style supports e.g.,: if ( !isFinite( newState.getTotalEnergy() ) ) { throw new Error( 'not finite' );}
+    ////////////////////////////////////////////////////////////////
+    // Suggestions
+    // These rules suggest alternate ways of doing things:
 
-    // enforce consistent brace style for blocks
-    'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
+    // Enforce getter and setter pairs in objects and classes
+    'accessor-pairs': 'off', // Only 17 fails, but I'm not sure we need this.  Perhaps once it bites us we will change our mind?
 
-    // enforce camelcase naming convention
+    // Require braces around arrow function bodies
+    'arrow-body-style': 'off', // OK to have braces or not braces
+
+    // Enforce the use of variables within the scope they are defined
+    'block-scoped-var': 'off', // We have too much old code with var i being used across several loops.
+
+    // Enforce camelcase naming convention
     camelcase: 'off', // 3512 occurrences March 2021
 
-    // enforce or disallow capitalization of the first letter of a comment
+    // Enforce or disallow capitalization of the first letter of a comment
     'capitalized-comments': 'off',
 
-    // require or disallow trailing commas
-    'comma-dangle': 'error', // see https://github.com/phetsims/tasks/issues/940
+    // Enforce that class methods utilize `this`
+    'class-methods-use-this': 'off', // We have many overrideable methods that just throw an error
 
-    // enforce consistent spacing before and after commas
-    'comma-spacing': [ 'error', { before: false, after: true } ],
+    // Enforce a maximum cyclomatic complexity allowed in a program
+    complexity: 'off', // We have around 242 offenders as of March, 2021
 
-    // enforce consistent comma style
-    'comma-style': [ 'error', 'last', { // good
-      exceptions: {
-        ArrayExpression: false,
-        ArrayPattern: false,
-        ArrowFunctionExpression: false,
-        CallExpression: false,
-        FunctionDeclaration: false,
-        FunctionExpression: false,
-        ImportDeclaration: false,
-        ObjectExpression: false,
-        ObjectPattern: false,
-        VariableDeclaration: false,
-        NewExpression: false
-      }
-    } ],
+    // Require `return` statements to either always or never specify values
+    'consistent-return': 'error',
 
-    // enforce consistent spacing inside computed property brackets
-    'computed-property-spacing': [ 'error', 'always' ],
-
-    // enforce consistent naming when capturing the current execution context
+    // Enforce consistent naming when capturing the current execution context
     'consistent-this': [ 'error', 'self' ],
 
-    // require or disallow newline at the end of files
-    'eol-last': 'off', // 5000 problems in March 2021.  SR would prefer 'eol-last': [ 'error', 'never' ], in his code
+    // Enforce consistent brace style for all control statements
+    curly: 'error',
 
-    // require or disallow spacing between function identifiers and their invocations
-    'func-call-spacing': [ 'error', 'never' ],
+    // Require `default` cases in `switch` statements
+    'default-case': 'error',
 
-    // require function names to match the name of the variable or property to which they are assigned
+    // Enforce default clauses in switch statements to be last
+    'default-case-last': 'error',
+
+    // Enforce default parameters to be last
+    'default-param-last': 'error',
+
+    // Enforce dot notation whenever possible
+    'dot-notation': 'error',
+
+    // Require the use of `===` and `!==`
+    eqeqeq: 'error',
+
+    // Require function names to match the name of the variable or property to which they are assigned
     'func-name-matching': [ 'error', 'always', {
       includeCommonJSModuleExports: false,
       considerPropertyDescriptor: true
     } ],
 
-    // require or disallow named `function` expressions
+    // Require or disallow named `function` expressions
     'func-names': 'off', // we sometimes name our functions for debugging
 
-    // enforce the consistent use of either `function` declarations or expressions
+    // Enforce the consistent use of either `function` declarations or expressions
     'func-style': 'off', // 1179 occurrences on March 2021
 
-    // enforce line breaks between arguments of a function call
-    'function-call-argument-newline': [ 'off', 'consistent' ], // Not PhET's style
+    // Require grouped accessor pairs in object literals and classes
+    'grouped-accessor-pairs': 'off', // In scenery, we group all the getters together, then the setters together
 
-    // enforce consistent line breaks inside function parentheses
-    'function-paren-newline': 'off', // we often prefer parameters on the same line
+    // Require `for-in` loops to include an `if` statement
+    'guard-for-in': 'off', // This hasn't bit us yet
 
-    // disallow specified identifiers
+    // Disallow specified identifiers
     'id-denylist': 'error',
 
-    // enforce minimum and maximum identifier lengths
+    // Enforce minimum and maximum identifier lengths
     'id-length': 'off',
 
-    // require identifiers to match a specified regular expression
+    // Require identifiers to match a specified regular expression
     'id-match': 'error',
 
-    // enforce the location of arrow function bodies
-    'implicit-arrow-linebreak': 'off', // OK to line break in arrow functions if it improves readability.
+    // Require or disallow initialization in variable declarations
+    'init-declarations': 'off', // 1286 failures as of March 2021
 
-    // enforce consistent indentation
-    indent: 'off',
+    // Enforce a maximum number of classes per file
+    'max-classes-per-file': 'off', // have as many as you need!
 
-    // enforce the consistent use of either double or single quotes in JSX attributes
-    'jsx-quotes': 'error',
-
-    // enforce consistent spacing between keys and values in object literal properties
-    'key-spacing': [ 'error', { beforeColon: false, afterColon: true } ],
-
-    // enforce consistent spacing before and after keywords
-    'keyword-spacing': [ 'error', {
-      before: true,
-      after: true,
-      overrides: {
-        case: { after: true }, // default
-        switch: { after: false },
-        catch: { after: false }
-      }
-    } ],
-
-    // enforce position of line comments
-    'line-comment-position': 'off',
-
-    // enforce consistent linebreak style
-    'linebreak-style': 'off', // Windows may check out a different line style than mac, so we cannot test this on local working copies cross-platform
-
-    // require empty lines around comments
-    'lines-around-comment': 'off', // SR Would like this rule enabled in his repos like so: 'lines-around-comment': [ 'error', { beforeLineComment: true } ]
-
-    // require or disallow an empty line between class members
-    'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: true } ],
-
-    // enforce a maximum depth that blocks can be nested
+    // Enforce a maximum depth that blocks can be nested
     'max-depth': 'off', // Go for it!
 
-    // enforce a maximum line length
-    'max-len': 'off', // Not a strict rule
-
-    // enforce a maximum number of lines per file
+    // Enforce a maximum number of lines per file
     'max-lines': 'off', // Go for it!
 
-    // enforce a maximum number of lines of code in a function
+    // Enforce a maximum number of lines of code in a function
     'max-lines-per-function': 'off', // Go for it!
 
-    // enforce a maximum depth that callbacks can be nested
+    // Enforce a maximum depth that callbacks can be nested
     'max-nested-callbacks': 'error',
 
-    // enforce a maximum number of parameters in function definitions
+    // Enforce a maximum number of parameters in function definitions
     'max-params': 'off',
 
-    // enforce a maximum number of statements allowed in function blocks
+    // Enforce a maximum number of statements allowed in function blocks
     'max-statements': 'off',
 
-    // enforce a maximum number of statements allowed per line
-    'max-statements-per-line': 'off', // 700+ occurrences in March 2021
-
-    // enforce a particular style for multiline comments
+    // Enforce a particular style for multiline comments
     'multiline-comment-style': 'off',
 
-    // enforce newlines between operands of ternary expressions
-    'multiline-ternary': 'off', // We use all styles of ternaries
-
-    // require constructor names to begin with a capital letter
+    // Require constructor names to begin with a capital letter
     'new-cap': [ 'error', {
       newIsCap: true,
       newIsCapExceptionPattern: '^(options|this|window)\\.\\w+', // Allow constructors to be passed through options.
@@ -723,52 +425,172 @@ module.exports = {
       capIsNewExceptions: [ 'Immutable.Map', 'Immutable.Set', 'Immutable.List' ]
     } ],
 
-    // enforce or disallow parentheses when invoking a constructor with no arguments
-    'new-parens': 'error',
+    // Disallow the use of `alert`, `confirm`, and `prompt`
+    'no-alert': 'off', // We sometimes use this when necessary
 
-    // require a newline after each call in a method chain
-    'newline-per-chained-call': 'off', // should be flexible
-
-    // disallow `Array` constructors
+    // Disallow `Array` constructors
     'no-array-constructor': 'error',
 
-    // disallow bitwise operators
+    // Disallow bitwise operators
     'no-bitwise': 'error',
 
-    // disallow `continue` statements
+    // Disallow the use of `arguments.caller` or `arguments.callee`
+    'no-caller': 'error',
+
+    // Disallow lexical declarations in case clauses
+    'no-case-declarations': 'error',
+
+    // Disallow arrow functions where they could be confused with comparisons
+    'no-confusing-arrow': 'off', // 31 occurrences, didn't seem too bad
+
+    // Disallow the use of `console`
+    'no-console': 'off', // We like to be able to commit console.log
+
+    // Disallow `continue` statements
     'no-continue': 'off', // 57 continues as of March 2021
 
-    // disallow inline comments after code
+    // Disallow deleting variables
+    'no-delete-var': 'error',
+
+    // Disallow division operators explicitly at the beginning of regular expressions
+    'no-div-regex': 'error',
+
+    // Disallow `else` blocks after `return` statements in `if` statements
+    'no-else-return': 'off', // Allow the extra else for symmetry
+
+    // Disallow empty block statements
+    'no-empty': 'error',
+
+    // Disallow empty functions
+    'no-empty-function': 'off', // It is natural and convenient to specify empty functions instead of having to share a lodash _.noop
+
+    // Disallow `null` comparisons without type-checking operators
+    'no-eq-null': 'error',
+
+    // Disallow the use of `eval()`
+    'no-eval': 'error',
+
+    // Disallow extending native types
+    'no-extend-native': 'error',
+
+    // Disallow unnecessary calls to `.bind()`
+    'no-extra-bind': 'error',
+
+    // Disallow unnecessary boolean casts
+    'no-extra-boolean-cast': 'error',
+
+    // Disallow unnecessary labels
+    'no-extra-label': 'error',
+
+    // Disallow unnecessary semicolons
+    'no-extra-semi': 'error',
+
+    // Disallow leading or trailing decimal points in numeric literals
+    'no-floating-decimal': 'error',
+
+    // Disallow assignments to native objects or read-only global variables
+    'no-global-assign': 'error',
+
+    // Disallow shorthand type conversions
+    'no-implicit-coercion': 'off', // We like using !!value and number+''.  Maybe one day we will turn this rule on
+
+    // Disallow declarations in the global scope
+    'no-implicit-globals': 'error',
+
+    // Disallow the use of `eval()`-like methods
+    'no-implied-eval': 'error',
+
+    // Disallow inline comments after code
     'no-inline-comments': 'off',
 
-    // disallow `if` statements as the only statement in `else` blocks
+    // Disallow use of `this` in contexts where the value of `this` is `undefined`
+    'no-invalid-this': 'off', // We have too much old code that uses functions with this (outside of classes)
+
+    // Disallow the use of the `__iterator__` property
+    'no-iterator': 'error',
+
+    // Disallow labels that share a name with a variable
+    'no-label-var': 'error',
+
+    // Disallow labeled statements
+    'no-labels': 'error',
+
+    // Disallow unnecessary nested blocks
+    'no-lone-blocks': 'off', // Even though lone blocks are currently rare for our project, we agree they are appropriate in some situations.  Details are in https://github.com/phetsims/chipper/issues/1026
+
+    // Disallow `if` statements as the only statement in `else` blocks
     'no-lonely-if': 'off', // Sometimes this seems more readable or symmetric
 
-    // disallow mixed binary operators
+    // Disallow function declarations that contain unsafe references inside loop statements
+    'no-loop-func': 'off', // It seems we are dealing with this safely, we have 38 occurrences on March 2021
+
+    // Disallow magic numbers
+    'no-magic-numbers': 'off', // We have many magic numbers
+
+    // Disallow mixed binary operators
     'no-mixed-operators': 'off',  // 3+2/4 should be allowed
 
-    // disallow mixed spaces and tabs for indentation
-    'no-mixed-spaces-and-tabs': 'error',
-
-    // disallow use of chained assignment expressions
+    // Disallow use of chained assignment expressions
     'no-multi-assign': 'off', // SR would like to disable this in his sims, see https://github.com/phetsims/chipper/issues/814
 
-    // disallow multiple empty lines
-    'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 0, maxEOF: 1 } ],
+    // Disallow multiline strings
+    'no-multi-str': 'error',
 
-    // disallow negated conditions
+    // Disallow negated conditions
     'no-negated-condition': 'off', // sometimes a negated condition is clearer
 
-    // disallow nested ternary expressions
+    // Disallow nested ternary expressions
     'no-nested-ternary': 'off', // Go for it!
 
-    // disallow `Object` constructors
+    // Disallow `new` operators outside of assignments or comparisons
+    'no-new': 'error',
+
+    // Disallow `new` operators with the `Function` object
+    'no-new-func': 'error',
+
+    // Disallow `Object` constructors
     'no-new-object': 'error',
 
-    // disallow the unary operators `++` and `--`
+    // Disallow `new` operators with the `String`, `Number`, and `Boolean` objects
+    'no-new-wrappers': 'error',
+
+    // Disallow `\8` and `\9` escape sequences in string literals
+    'no-nonoctal-decimal-escape': 'error',
+
+    // Disallow octal literals
+    'no-octal': 'error',
+
+    // Disallow octal escape sequences in string literals
+    'no-octal-escape': 'error',
+
+    // Disallow reassigning `function` parameters
+    'no-param-reassign': 'off', // We reassign options frequently TODO: Revisit this
+
+    // Disallow the unary operators `++` and `--`
     'no-plusplus': 'off',
 
-    // disallow specified syntax
+    // Disallow the use of the `__proto__` property
+    'no-proto': 'error',
+
+    // Disallow variable redeclaration
+    'no-redeclare': 'error',
+
+    // Disallow multiple spaces in regular expressions
+    'no-regex-spaces': 'error',
+
+    // Disallow specified names in exports
+    'no-restricted-exports': 'error',
+
+    // Disallow specified global variables
+    'no-restricted-globals': 'error',
+
+    // Disallow specified modules when loaded by `import`
+    'no-restricted-imports': 'error',
+
+    // Disallow certain properties on certain objects
+    'no-restricted-properties': 'error',
+
+    // Disallow specified syntax
     'no-restricted-syntax': [
       'off',
 
@@ -790,184 +612,100 @@ module.exports = {
       }
     ],
 
-    // disallow all tabs
-    'no-tabs': 'error',
+    // Disallow assignment operators in `return` statements
+    'no-return-assign': 'error',
 
-    // disallow ternary operators
+    // Disallow unnecessary `return await`
+    'no-return-await': 'error',
+
+    // Disallow `javascript:` urls
+    'no-script-url': 'error',
+
+    // Disallow comma operators
+    'no-sequences': 'error',
+
+    // Disallow variable declarations from shadowing variables declared in the outer scope
+    'no-shadow': 'off', // We have 462 shadows as of March, 2021
+
+    // Disallow identifiers from shadowing restricted names
+    'no-shadow-restricted-names': 'error',
+
+    // Disallow ternary operators
     'no-ternary': 'off', // PhET loves the ternary
 
-    // disallow trailing whitespace at the end of lines
-    'no-trailing-spaces': [ 'error', { skipBlankLines: true, ignoreComments: true } ],
+    // Disallow throwing literals as exceptions
+    'no-throw-literal': 'error',
 
-    // disallow dangling underscores in identifiers
+    // Disallow initializing variables to `undefined`
+    'no-undef-init': 'error',
+
+    // Disallow the use of `undefined` as an identifier
+    'no-undefined': 'off', // 608 fails as of March 2021
+
+    // Disallow dangling underscores in identifiers
     'no-underscore-dangle': 'off', // We often use this for private variables
 
-    // disallow ternary operators when simpler alternatives exist
+    // Disallow ternary operators when simpler alternatives exist
     'no-unneeded-ternary': 'error',
 
-    // disallow whitespace before properties
-    'no-whitespace-before-property': 'error',
+    // Disallow unused expressions
+    'no-unused-expressions': 'off', // This blocks things like circuitLayerNode && circuitLayerNode.circuit.circuitChangedEmitter.removeListener( updateText );
 
-    // enforce the location of single-line statements
-    'nonblock-statement-body-position': [ 'error', 'beside', { overrides: {} } ],
+    // Disallow unused labels
+    'no-unused-labels': 'error',
 
-    // enforce consistent line breaks inside braces
-    'object-curly-newline': 'error',
+    // Disallow unnecessary calls to `.call()` and `.apply()`
+    'no-useless-call': 'error',
 
-    // enforce consistent spacing inside braces
-    'object-curly-spacing': [ 'error', 'always' ],
+    // Disallow unnecessary `catch` clauses
+    'no-useless-catch': 'error',
 
-    // enforce placing object properties on separate lines
-    'object-property-newline': 'off',
-
-    // enforce variables to be declared either together or separately in functions
-    'one-var': [ 'error', 'never' ], // See #390
-
-    // require or disallow newlines around variable declarations
-    'one-var-declaration-per-line': [ 'error', 'always' ],
-
-    // require or disallow assignment operator shorthand where possible
-    'operator-assignment': 'off', // Operator assignment can often be harder to read
-
-    // enforce consistent linebreak style for operators
-    'operator-linebreak': 'off',
-
-    // require or disallow padding within blocks
-    'padded-blocks': 'off', // 109k fails
-
-    // require or disallow padding lines between statements
-    'padding-line-between-statements': 'error',
-
-    // disallow the use of `Math.pow` in favor of the `**` operator
-    'prefer-exponentiation-operator': 'off', // Math.pow() seems very clear.
-
-    // disallow using Object.assign with an object literal as the first argument and prefer the use of object spread instead.
-    'prefer-object-spread': 'off', // The fix for this says "unexpected token", so let's go without it.
-
-    // require quotes around object literal property names
-    'quote-props': [ 'error', 'as-needed', { keywords: false, unnecessary: true, numbers: false } ],
-
-    // enforce the consistent use of either backticks, double, or single quotes
-    quotes: [ 'error', 'single' ],
-
-    // require or disallow semicolons instead of ASI
-    semi: [ 'error', 'always' ],
-
-    // enforce consistent spacing before and after semicolons
-    'semi-spacing': [ 'error', { before: false, after: true } ],
-
-    // enforce location of semicolons
-    'semi-style': [ 'error', 'last' ],
-
-    // require object keys to be sorted
-    'sort-keys': 'off',
-
-    // require variables within the same declaration block to be sorted
-    'sort-vars': 'off',
-
-    // enforce consistent spacing before blocks
-    'space-before-blocks': 'error',
-
-    // enforce consistent spacing before `function` definition opening parenthesis
-    'space-before-function-paren': [ 'error', {
-      anonymous: 'never',
-      named: 'never',
-      asyncArrow: 'always'
-    } ],
-
-    // enforce consistent spacing inside parentheses
-    'space-in-parens': [ 'error', 'always' ],
-
-    // require spacing around infix operators
-    'space-infix-ops': 'error',
-
-    // enforce consistent spacing before or after unary operators
-    'space-unary-ops': [ 'error', {
-      words: true,
-      nonwords: false,
-      overrides: {}
-    } ],
-
-    // enforce consistent spacing after the `//` or `/*` in a comment
-    'spaced-comment': 'off',
-
-    // enforce spacing around colons of switch statements
-    'switch-colon-spacing': [ 'error', { after: true, before: false } ],
-
-    // require or disallow spacing between template tags and their literals
-    'template-tag-spacing': [ 'error', 'never' ],
-
-    // require or disallow Unicode byte order mark (BOM)
-    'unicode-bom': [ 'error', 'never' ],
-
-    // require parenthesis around regex literals
-    'wrap-regex': 'off', // It already seems pretty ambiguous to me, but then again we only have 17 occurrences at the moment.
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // ECMAScript 6
-    //
-
-    // require braces around arrow function bodies
-    'arrow-body-style': 'off', // OK to have braces or not braces
-
-    // require parentheses around arrow function arguments
-    'arrow-parens': [ 'error', 'as-needed' ],
-
-    // enforce consistent spacing before and after the arrow in arrow functions
-    'arrow-spacing': 'error',
-
-    // require `super()` calls in constructors
-    'constructor-super': 'error',
-
-    // enforce consistent spacing around `*` operators in generator functions
-    'generator-star-spacing': 'error',
-
-    // disallow reassigning class members
-    'no-class-assign': 'error',
-
-    // disallow arrow functions where they could be confused with comparisons
-    'no-confusing-arrow': 'off', // 31 occurrences, didn't seem too bad
-
-    // disallow reassigning `const` variables
-    'no-const-assign': 'error',
-
-    // disallow duplicate class members
-    'no-dupe-class-members': 'error',
-
-    // disallow duplicate module imports
-    'no-duplicate-imports': 'off', // https://github.com/phetsims/chipper/issues/814 2 fails, enable this rule
-
-    // disallow `new` operators with the `Symbol` object
-    'no-new-symbol': 'error',
-
-    // disallow specified names in exports
-    'no-restricted-exports': 'error',
-
-    // disallow specified modules when loaded by `import`
-    'no-restricted-imports': 'error',
-
-    // disallow `this`/`super` before calling `super()` in constructors
-    'no-this-before-super': 'error',
-
-    // disallow unnecessary computed property keys in objects and classes
+    // Disallow unnecessary computed property keys in objects and classes
     'no-useless-computed-key': 'error',
 
-    // disallow unnecessary constructors
+    // Disallow unnecessary concatenation of literals or template literals
+    'no-useless-concat': 'error',
+
+    // Disallow unnecessary constructors
     'no-useless-constructor': 'off', // We determined the useless constructors are good for documentation and clarity.
 
-    // disallow renaming import, export, and destructured assignments to the same name
+    // Disallow unnecessary escape characters
+    'no-useless-escape': 'error',
+
+    // Disallow renaming import, export, and destructured assignments to the same name
     'no-useless-rename': 'error',
 
-    // require `let` or `const` instead of `var`
+    // Disallow redundant return statements
+    'no-useless-return': 'error',
+
+    // Require `let` or `const` instead of `var`
     'no-var': 'error',
 
-    // require or disallow method and property shorthand syntax for object literals
+    // Disallow `void` operators
+    'no-void': 'error',
+
+    // Disallow specified warning terms in comments
+    'no-warning-comments': 'off', // We don't want TODOs to be lint errors
+
+    // Disallow `with` statements
+    'no-with': 'error',
+
+    // Require or disallow method and property shorthand syntax for object literals
     'object-shorthand': [ 'off', 'never' ], // PhET has a rule phet-object-shorthand that detects this in object literals
 
-    // require using arrow functions for callbacks
+    // Enforce variables to be declared either together or separately in functions
+    'one-var': [ 'error', 'never' ], // See #390
+
+    // Require or disallow newlines around variable declarations
+    'one-var-declaration-per-line': [ 'error', 'always' ],
+
+    // Require or disallow assignment operator shorthand where possible
+    'operator-assignment': 'off', // Operator assignment can often be harder to read
+
+    // Require using arrow functions for callbacks
     'prefer-arrow-callback': 'error',
 
-    // require `const` declarations for variables that are never reassigned after declared
+    // Require `const` declarations for variables that are never reassigned after declared
     'prefer-const': [ // error when let is used but the variable is never reassigned, see https://github.com/phetsims/tasks/issues/973
       'error',
       {
@@ -976,37 +714,296 @@ module.exports = {
       }
     ],
 
-    // require destructuring from arrays and/or objects
+    // Require destructuring from arrays and/or objects
     'prefer-destructuring': 'off', // const {CURVE_X_RANGE} = CalculusGrapherConstants; seems worse than const CURVE_X_RANGE = CalculusGrapherConstants.CURVE_X_RANGE;
 
-    // disallow `parseInt()` and `Number.parseInt()` in favor of binary, octal, and hexadecimal literals
+    // Disallow the use of `Math.pow` in favor of the `**` operator
+    'prefer-exponentiation-operator': 'off', // Math.pow() seems very clear.
+
+    // Enforce using named capture group in regular expression
+    'prefer-named-capture-group': 'off', // We have many occurrences in yotta/js/apacheParsing.js
+
+    // Disallow `parseInt()` and `Number.parseInt()` in favor of binary, octal, and hexadecimal literals
     'prefer-numeric-literals': 'error',
 
-    // require rest parameters instead of `arguments`
+    // Disallow use of `Object.prototype.hasOwnProperty.call()` and prefer use of `Object.hasOwn()`
+    'prefer-object-has-own': 'error',
+
+    // Disallow using Object.assign with an object literal as the first argument and prefer the use of object spread instead.
+    'prefer-object-spread': 'off', // The fix for this says "unexpected token", so let's go without it.
+
+    // Require using Error objects as Promise rejection reasons
+    'prefer-promise-reject-errors': 'error',
+
+    // Disallow use of the `RegExp` constructor in favor of regular expression literals
+    'prefer-regex-literals': 'off', // new RegExp() looks natural to me
+
+    // Require rest parameters instead of `arguments`
     'prefer-rest-params': 'error',
 
-    // require spread operators instead of `.apply()`
+    // Require spread operators instead of `.apply()`
     'prefer-spread': 'error',
 
-    // require template literals instead of string concatenation
+    // Require template literals instead of string concatenation
     'prefer-template': 'off', // We decided it is convenient to sometimes use string concatenation, see discussion in https://github.com/phetsims/chipper/issues/1027
 
-    // require generator functions to contain `yield`
+    // require quotes around object literal property names
+    'quote-props': [ 'error', 'as-needed', { keywords: false, unnecessary: true, numbers: false } ],
+
+    // Enforce the consistent use of the radix argument when using `parseInt()`
+    radix: 'error',
+
+    // Disallow async functions which have no `await` expression
+    'require-await': 'off', // 59 errors as of 7/21, but we will keep off, see https://github.com/phetsims/chipper/issues/1028
+
+    // Enforce the use of `u` flag on RegExp
+    'require-unicode-regexp': 'off', // TODO: Discuss: 272 fails or so, https://github.com/phetsims/chipper/issues/1029 is there a good reason for this rule?
+
+    // Require generator functions to contain `yield`
     'require-yield': 'error',
 
-    // enforce spacing between rest and spread operators and their expressions
-    'rest-spread-spacing': 'error',
-
-    // enforce sorted import declarations within modules
+    // Enforce sorted import declarations within modules
     'sort-imports': 'off', // Webstorm and ESLint sorting rules don't align
 
-    // require symbol descriptions
+    // Require object keys to be sorted
+    'sort-keys': 'off',
+
+    // Require variables within the same declaration block to be sorted
+    'sort-vars': 'off',
+
+    // Enforce consistent spacing after the `//` or `/*` in a comment
+    'spaced-comment': 'off',
+
+    // Require or disallow strict mode directives
+    strict: 'error',
+
+    // Require symbol descriptions
     'symbol-description': 'error',
 
-    // require or disallow spacing around embedded expressions of template strings
+    // Require `var` declarations be placed at the top of their containing scope
+    'vars-on-top': 'off',
+
+    // Require or disallow "Yoda" conditions
+    yoda: 'error',
+
+    ////////////////////////////////////////////////////////////
+    // These rules care about how the code looks rather than how it executes:
+    // Layout & Formatting
+
+    // Enforce linebreaks after opening and before closing array brackets
+    'array-bracket-newline': 'off',
+
+    // Enforce consistent spacing inside array brackets
+    'array-bracket-spacing': [ 'error', 'always' ],
+
+    // Enforce line breaks after each array element
+    'array-element-newline': 'off',
+
+    // Require parentheses around arrow function arguments
+    'arrow-parens': [ 'error', 'as-needed' ],
+
+    // Enforce consistent spacing before and after the arrow in arrow functions
+    'arrow-spacing': 'error',
+
+    // Disallow or enforce spaces inside of blocks after opening block and before closing block
+    'block-spacing': 'off', // Our code style supports e.g.,: if ( !isFinite( newState.getTotalEnergy() ) ) { throw new Error( 'not finite' );}
+
+    // Enforce consistent brace style for blocks
+    'brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
+
+    // Require or disallow trailing commas
+    'comma-dangle': 'error', // see https://github.com/phetsims/tasks/issues/940
+
+    // Enforce consistent spacing before and after commas
+    'comma-spacing': [ 'error', { before: false, after: true } ],
+
+    // Enforce consistent comma style
+    'comma-style': [ 'error', 'last', { // good
+      exceptions: {
+        ArrayExpression: false,
+        ArrayPattern: false,
+        ArrowFunctionExpression: false,
+        CallExpression: false,
+        FunctionDeclaration: false,
+        FunctionExpression: false,
+        ImportDeclaration: false,
+        ObjectExpression: false,
+        ObjectPattern: false,
+        VariableDeclaration: false,
+        NewExpression: false
+      }
+    } ],
+
+    // Enforce consistent spacing inside computed property brackets
+    'computed-property-spacing': [ 'error', 'always' ],
+
+    // Enforce consistent newlines before and after dots
+    'dot-location': 'off', // We use WebStorm formatting which moves lower dots to the left
+
+    // Require or disallow newline at the end of files
+    'eol-last': 'off', // 5000 problems in March 2021.  SR would prefer 'eol-last': [ 'error', 'never' ], in his code
+
+    // Require or disallow spacing between function identifiers and their invocations
+    'func-call-spacing': [ 'error', 'never' ],
+
+    // Enforce line breaks between arguments of a function call
+    'function-call-argument-newline': [ 'off', 'consistent' ], // Not PhET's style
+
+    // Enforce consistent line breaks inside function parentheses
+    'function-paren-newline': 'off', // we often prefer parameters on the same line
+
+    // Enforce consistent spacing around `*` operators in generator functions
+    'generator-star-spacing': 'error',
+
+    // Enforce the location of arrow function bodies
+    'implicit-arrow-linebreak': 'off', // OK to line break in arrow functions if it improves readability.
+
+    // Enforce consistent indentation
+    indent: 'off',
+
+    // Enforce the consistent use of either double or single quotes in JSX attributes
+    'jsx-quotes': 'error',
+
+    // Enforce consistent spacing between keys and values in object literal properties
+    'key-spacing': [ 'error', { beforeColon: false, afterColon: true } ],
+
+    // Enforce consistent spacing before and after keywords
+    'keyword-spacing': [ 'error', {
+      before: true,
+      after: true,
+      overrides: {
+        case: { after: true }, // default
+        switch: { after: false },
+        catch: { after: false }
+      }
+    } ],
+
+    // Enforce position of line comments
+    'line-comment-position': 'off',
+
+    // Enforce consistent linebreak style
+    'linebreak-style': 'off', // Windows may check out a different line style than mac, so we cannot test this on local working copies cross-platform
+
+    // Require empty lines around comments
+    'lines-around-comment': 'off', // SR Would like this rule enabled in his repos like so: 'lines-around-comment': [ 'error', { beforeLineComment: true } ]
+
+    // Require or disallow an empty line between class members
+    'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: true } ],
+
+    // Enforce a maximum line length
+    'max-len': 'off', // Not a strict rule
+
+    // Enforce a maximum number of statements allowed per line
+    'max-statements-per-line': 'off', // 700+ occurrences in March 2021
+
+    // Enforce newlines between operands of ternary expressions
+    'multiline-ternary': 'off', // We use all styles of ternaries
+
+    // Enforce or disallow parentheses when invoking a constructor with no arguments
+    'new-parens': 'error',
+
+    // Require a newline after each call in a method chain
+    'newline-per-chained-call': 'off', // should be flexible
+
+    // Disallow unnecessary parentheses
+    'no-extra-parens': 'off', // we find that extraneous parentheses sometimes improve readability
+
+    // Disallow mixed spaces and tabs for indentation
+    'no-mixed-spaces-and-tabs': 'error',
+
+    // Disallow multiple spaces
+    'no-multi-spaces': [ 'error', { ignoreEOLComments: true } ],
+
+    // Disallow multiple empty lines
+    'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 0, maxEOF: 1 } ],
+
+    // Disallow all tabs
+    'no-tabs': 'error',
+
+    // Disallow trailing whitespace at the end of lines
+    'no-trailing-spaces': [ 'error', { skipBlankLines: true, ignoreComments: true } ],
+
+    // Disallow whitespace before properties
+    'no-whitespace-before-property': 'error',
+
+    // Enforce the location of single-line statements
+    'nonblock-statement-body-position': [ 'error', 'beside', { overrides: {} } ],
+
+    // Enforce consistent line breaks after opening and before closing braces
+    'object-curly-newline': 'error',
+
+    // Enforce consistent spacing inside braces
+    'object-curly-spacing': [ 'error', 'always' ],
+
+    // Enforce placing object properties on separate lines
+    'object-property-newline': 'off',
+
+    // Enforce consistent linebreak style for operators
+    'operator-linebreak': 'off',
+
+    // Require or disallow padding within blocks
+    'padded-blocks': 'off', // 109k fails
+
+    // Require or disallow padding lines between statements
+    'padding-line-between-statements': 'error',
+
+    // Enforce the consistent use of either backticks, double, or single quotes
+    quotes: [ 'error', 'single' ],
+
+    // Enforce spacing between rest and spread operators and their expressions
+    'rest-spread-spacing': 'error',
+
+    // Require or disallow semicolons instead of ASI
+    semi: [ 'error', 'always' ],
+
+    // Enforce consistent spacing before and after semicolons
+    'semi-spacing': [ 'error', { before: false, after: true } ],
+
+    // Enforce location of semicolons
+    'semi-style': [ 'error', 'last' ],
+
+    // Enforce consistent spacing before blocks
+    'space-before-blocks': 'error',
+
+    // Enforce consistent spacing before `function` definition opening parenthesis
+    'space-before-function-paren': [ 'error', {
+      anonymous: 'never',
+      named: 'never',
+      asyncArrow: 'always'
+    } ],
+
+    // Enforce consistent spacing inside parentheses
+    'space-in-parens': [ 'error', 'always' ],
+
+    // Require spacing around infix operators
+    'space-infix-ops': 'error',
+
+    // Enforce consistent spacing before or after unary operators
+    'space-unary-ops': [ 'error', {
+      words: true,
+      nonwords: false,
+      overrides: {}
+    } ],
+
+    // Enforce spacing around colons of switch statements
+    'switch-colon-spacing': [ 'error', { after: true, before: false } ],
+
+    // Require or disallow spacing around embedded expressions of template strings
     'template-curly-spacing': 'error',
 
-    // require or disallow spacing around the `*` in `yield*` expressions
+    // Require or disallow spacing between template tags and their literals
+    'template-tag-spacing': [ 'error', 'never' ],
+
+    // Require or disallow Unicode byte order mark (BOM)
+    'unicode-bom': [ 'error', 'never' ],
+
+    // Require parentheses around immediate `function` invocations
+    'wrap-iife': 'off', // Not our style
+
+    // Require parenthesis around regex literals
+    'wrap-regex': 'off', // It already seems pretty ambiguous to me, but then again we only have 17 occurrences at the moment.
+
+    // Require or disallow spacing around the `*` in `yield*` expressions
     'yield-star-spacing': 'error',
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
