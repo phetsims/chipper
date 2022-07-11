@@ -48,16 +48,16 @@ module.exports = {
         // Supported Rules
 
         // Require that member overloads be consecutive ✅
-        '@typescript-eslint/adjacent-overload-signatures': 'error', // 258 errors
+        '@typescript-eslint/adjacent-overload-signatures': 'error',
 
         // Require using either T[] or Array<T> for arrays 🔒 🔧
-        '@typescript-eslint/array-type': 'off', // TODO: Discuss this rule
+        '@typescript-eslint/array-type': [ 'off', { default: 'array-simple' } ], // TODO: Discuss this rule.  Perhaps array-simple would be best?  But it forces IReadOnlyProperty<boolean>[] to Array<IReadOnlyProperty<boolean>>.  149 warnings all autofixable
 
         // Disallow awaiting a value that is not a Thenable ✅  💭
         '@typescript-eslint/await-thenable': 'off',
 
         // Disallow @ts-<directive> comments or require descriptions after directive ✅
-        '@typescript-eslint/ban-ts-comment': 'off', // 566 errors
+        '@typescript-eslint/ban-ts-comment': 'off', // 568 errors
 
         // Disallow // tslint:<rule-flag> comments 🔒 🔧
         '@typescript-eslint/ban-tslint-comment': 'error',
@@ -77,13 +77,13 @@ module.exports = {
         ],
 
         // Enforce that literals on classes are exposed in a consistent style 🔒 🔧
-        '@typescript-eslint/class-literal-property-style': 'off',
+        '@typescript-eslint/class-literal-property-style': 'off', // TODO: Enable this rule. 13 failures, seems good to fix
 
         // Enforce specifying generic type arguments on type annotation or constructor name of a constructor call 🔒 🔧
-        '@typescript-eslint/consistent-generic-constructors': 'off',
+        '@typescript-eslint/consistent-generic-constructors': 'off', // TODO: Enable this rule.  5 errors seem good to fix
 
         // Require or disallow the Record type 🔒 🔧
-        '@typescript-eslint/consistent-indexed-object-style': 'off',
+        '@typescript-eslint/consistent-indexed-object-style': 'off', // TODO: Discuss as a team
 
         // Enforce consistent usage of type assertions 🔒
         '@typescript-eslint/consistent-type-assertions': 'off',
