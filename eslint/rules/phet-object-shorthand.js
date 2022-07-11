@@ -13,32 +13,36 @@
 //------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
-module.exports = function( context ) {
+module.exports = {
+  meta: { fixable: 'code' },
+  create( context ) {
 
-  return {
-    'Property:exit'( node ) {
+    return {
+      fixable: 'code',
+      'Property:exit'( node ) {
 
-      // Ignore destructuring assignment
-      if ( node.parent.type === 'ObjectPattern' ) {
-        return;
+        // Ignore destructuring assignment
+        if ( node.parent.type === 'ObjectPattern' ) {
+          return;
+        }
+
+        // getters and setters are ignored
+        if ( node.kind === 'get' || node.kind === 'set' ) {
+          return;
+        }
+
+        // only computed methods can fail the following checks
+        if ( node.computed && node.value.type !== 'FunctionExpression' && node.value.type !== 'ArrowFunctionExpression' ) {
+          return;
+        }
+
+        // { x } should be written as { x: x }
+        node.shorthand && context.report( {
+          node: node,
+          message: 'Expected longform property syntax.',
+          fix: fixer => fixer.insertTextAfter( node.key, `: ${node.key.name}` )
+        } );
       }
-
-      // getters and setters are ignored
-      if ( node.kind === 'get' || node.kind === 'set' ) {
-        return;
-      }
-
-      // only computed methods can fail the following checks
-      if ( node.computed && node.value.type !== 'FunctionExpression' && node.value.type !== 'ArrowFunctionExpression' ) {
-        return;
-      }
-
-      // { x } should be written as { x: x }
-      node.shorthand && context.report( {
-        node: node,
-        message: 'Expected longform property syntax.',
-        fix: fixer => fixer.insertTextAfter( node.key, `: ${node.key.name}` )
-      } );
-    }
-  };
+    };
+  }
 };
