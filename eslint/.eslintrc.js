@@ -481,7 +481,7 @@ module.exports = {
 
         // Require or disallow semicolons instead of ASI  🔧
         semi: 'off',
-        '@typescript-eslint/semi': 'off', // TODO: Enable this rule
+        '@typescript-eslint/semi': [ 'error', 'always' ],
 
         // Enforce consistent spacing before blocks  🔧
         'space-before-blocks': 'off',
