@@ -86,10 +86,10 @@ module.exports = {
         '@typescript-eslint/consistent-indexed-object-style': 'off', // TODO: Discuss as a team
 
         // Enforce consistent usage of type assertions 🔒
-        '@typescript-eslint/consistent-type-assertions': 'off',
+        '@typescript-eslint/consistent-type-assertions': 'off', // TODO: 7 failures.  Probably enable
 
         // Enforce type definitions to consistently use either interface or type 🔒 🔧
-        '@typescript-eslint/consistent-type-definitions': 'off',
+        '@typescript-eslint/consistent-type-definitions': 'off', // TODO: 667 failures
 
         // Enforce consistent usage of type exports  🔧 💭
         '@typescript-eslint/consistent-type-exports': 'off',
@@ -98,22 +98,22 @@ module.exports = {
         '@typescript-eslint/consistent-type-imports': 'off',
 
         // Require explicit return types on functions and class methods
-        '@typescript-eslint/explicit-function-return-type': 'off', // TODO: enable rule?
+        '@typescript-eslint/explicit-function-return-type': 'off', // TODO: enable rule? 1665 failures
 
         // Require explicit accessibility modifiers on class properties and methods  🔧
         '@typescript-eslint/explicit-member-accessibility': 'error',
 
         // Require explicit return and argument types on exported functions' and classes' public class methods
-        '@typescript-eslint/explicit-module-boundary-types': 'off', // TODO: Enable this rule
+        '@typescript-eslint/explicit-module-boundary-types': 'off', // TODO: Enable this rule.  144 failures
 
         // Require a specific member delimiter style for interfaces and type literals  🔧
         '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
 
         // Require a consistent member declaration order
-        '@typescript-eslint/member-ordering': 'off',
+        '@typescript-eslint/member-ordering': 'off', // Leave this off, it has 4038 failures
 
         // Enforce using a particular method signature syntax  🔧
-        '@typescript-eslint/method-signature-style': 'off',
+        '@typescript-eslint/method-signature-style': 'off', // TODO: Investigate.  52 failures
 
         // Enforce naming conventions for everything across a codebase   💭
         '@typescript-eslint/naming-convention': 'off',
@@ -131,19 +131,19 @@ module.exports = {
         '@typescript-eslint/no-duplicate-enum-values': 'error',
 
         // Disallow using the delete operator on computed key expressions 🔒 🔧
-        '@typescript-eslint/no-dynamic-delete': 'off',
+        '@typescript-eslint/no-dynamic-delete': 'off', // TODO: Investigate, 22 failures
 
         // Disallow the declaration of empty interfaces ✅ 🔧 🛠
         '@typescript-eslint/no-empty-interface': 'error',
 
         // Disallow the any type ✅ 🔧 🛠
-        '@typescript-eslint/no-explicit-any': 'off', // 515
+        '@typescript-eslint/no-explicit-any': 'off', // TODO: This rule has been approved by the team and we want to enable it.  Currently at 271 failures.
 
         // Disallow extra non-null assertion ✅ 🔧
         '@typescript-eslint/no-extra-non-null-assertion': 'error',
 
         // Disallow classes used as namespaces 🔒
-        '@typescript-eslint/no-extraneous-class': 'off', // TODO: Enable this rule
+        '@typescript-eslint/no-extraneous-class': 'off', // TODO: Enable this rule. 14 failures
 
         // Require Promise-like statements to be handled appropriately ✅ 🛠 💭
         '@typescript-eslint/no-floating-promises': 'off',
@@ -152,13 +152,13 @@ module.exports = {
         '@typescript-eslint/no-for-in-array': 'off',
 
         // Disallow usage of the implicit any type in catch clauses  🔧 🛠
-        '@typescript-eslint/no-implicit-any-catch': 'off',
+        '@typescript-eslint/no-implicit-any-catch': 'off', // TODO: Discuss.  15 failures
 
         // Disallow explicit type declarations for variables or parameters initialized to a number, string, or boolean ✅ 🔧
         '@typescript-eslint/no-inferrable-types': 'error',
 
         // Disallow void type outside of generic or return types 🔒
-        '@typescript-eslint/no-invalid-void-type': 'off', // TODO: Enable this rule
+        '@typescript-eslint/no-invalid-void-type': 'off', // TODO: Enable this rule.  4 failures
 
         // Disallow the void operator except when used to discard a value 🔒 🔧 🛠 💭
         '@typescript-eslint/no-meaningless-void-operator': 'off',
@@ -182,7 +182,7 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': 'off', // We do not support this rule, see https://github.com/phetsims/chipper/issues/1114#issuecomment-1099536133
 
         // Disallow the use of parameter properties in class constructors
-        '@typescript-eslint/no-parameter-properties': 'off', // TODO: Enable this rule
+        '@typescript-eslint/no-parameter-properties': 'off', // TODO: Discuss as a team.  16 failures.  But we might want to use that feature more.
 
         // Disallow members of unions and intersections that do nothing or override type information   💭
         '@typescript-eslint/no-redundant-type-constituents': 'off',
@@ -194,7 +194,7 @@ module.exports = {
         '@typescript-eslint/no-this-alias': 'error',
 
         // Disallow type aliases
-        '@typescript-eslint/no-type-alias': 'off',
+        '@typescript-eslint/no-type-alias': 'off', // TODO: Investigate.  2988 failures
 
         // Disallow unnecessary equality comparisons against boolean literals 🔒 🔧 💭
         '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off', // TODO: Enable rule
@@ -239,7 +239,7 @@ module.exports = {
         '@typescript-eslint/non-nullable-type-assertion-style': 'off', // TODO: Enable this rule
 
         // Require or disallow parameter properties in class constructors
-        '@typescript-eslint/parameter-properties': 'off', // TODO: Let's discuss as a team
+        '@typescript-eslint/parameter-properties': 'off', // TODO: Let's discuss as a team.  16 failures
 
         // Enforce the use of as const over literal type ✅ 🔧 🛠
         '@typescript-eslint/prefer-as-const': 'error',
@@ -248,10 +248,10 @@ module.exports = {
         '@typescript-eslint/prefer-enum-initializers': 'error',
 
         // Enforce the use of for-of loop over the standard for loop where possible 🔒
-        '@typescript-eslint/prefer-for-of': 'off',
+        '@typescript-eslint/prefer-for-of': 'off', // TODO: Discuss. 289 failures
 
         // Enforce using function types instead of interfaces with call signatures 🔒 🔧
-        '@typescript-eslint/prefer-function-type': 'off',
+        '@typescript-eslint/prefer-function-type': 'off', // TODO: Investigate.  4 failures
 
         // Enforce includes method over indexOf method 🔒 🔧 💭
         '@typescript-eslint/prefer-includes': 'off', // TODO: Enable rule
@@ -266,7 +266,7 @@ module.exports = {
         '@typescript-eslint/prefer-nullish-coalescing': 'off', // TODO: Enable rule
 
         // Enforce using concise optional chain expressions instead of chained logical ands 🔒 🛠
-        '@typescript-eslint/prefer-optional-chain': 'off', // TODO: Enable rule
+        '@typescript-eslint/prefer-optional-chain': 'off', // TODO: Investigate and probably enable rule. 3227 failures
 
         // Require private members to be marked as readonly if they're never modified outside of the constructor  🔧 💭
         '@typescript-eslint/prefer-readonly': 'off',
@@ -287,7 +287,7 @@ module.exports = {
         '@typescript-eslint/prefer-string-starts-ends-with': 'off',
 
         // Enforce using @ts-expect-error over @ts-ignore 🔒 🔧
-        '@typescript-eslint/prefer-ts-expect-error': 'off',
+        '@typescript-eslint/prefer-ts-expect-error': 'off', // TODO: Investigate. 565 failures
 
         // Require any function or method that returns a Promise to be marked async  🔧 💭
         '@typescript-eslint/promise-function-async': 'off',
@@ -302,7 +302,7 @@ module.exports = {
         '@typescript-eslint/restrict-template-expressions': 'off',
 
         // Enforce members of a type union/intersection to be sorted alphabetically  🔧 🛠
-        '@typescript-eslint/sort-type-union-intersection-members': 'off',
+        '@typescript-eslint/sort-type-union-intersection-members': 'off', // TODO: Discuss.  Probably don't sort them alphabetically?  TODO: 961 failures.
 
         // Disallow certain types in boolean expressions  🔧 🛠 💭
         '@typescript-eslint/strict-boolean-expressions': 'off', // TODO: Is this a good rule for our team?
@@ -314,7 +314,7 @@ module.exports = {
         '@typescript-eslint/triple-slash-reference': 'error',
 
         // Require consistent spacing around type annotations  🔧
-        '@typescript-eslint/type-annotation-spacing': 'off',
+        '@typescript-eslint/type-annotation-spacing': 'off', // TODO: Investigate.  7 failures
 
         // Require type annotations in certain places
         '@typescript-eslint/typedef': 'error',
@@ -323,7 +323,7 @@ module.exports = {
         '@typescript-eslint/unbound-method': 'off',
 
         // Disallow two overloads that could be unified into one with a union or an optional/rest parameter 🔒
-        '@typescript-eslint/unified-signatures': 'off',
+        '@typescript-eslint/unified-signatures': 'off', // TODO: Investigate. Probably enable. 6 failures
 
         ////////////////////////////////////////////////////////////////////////
         // Extension Rules
@@ -359,11 +359,11 @@ module.exports = {
 
         // Enforce consistent indentation  🔧
         indent: 'off',
-        '@typescript-eslint/indent': 'off',
+        '@typescript-eslint/indent': 'off', // This rule has 151023 failures, perhaps it is incompatible with our formatting
 
         // Require or disallow initialization in variable declarations
         'init-declarations': 'off',
-        '@typescript-eslint/init-declarations': 'off',
+        '@typescript-eslint/init-declarations': 'off', // 237 Failures
 
         // Enforce consistent spacing before and after keywords  🔧
         'keyword-spacing': 'off',
@@ -379,7 +379,7 @@ module.exports = {
 
         // Require or disallow an empty line between class members  🔧
         'lines-between-class-members': 'off',
-        '@typescript-eslint/lines-between-class-members': 'off',
+        '@typescript-eslint/lines-between-class-members': 'off', // Probably leave this off, it has 2775 failures
 
         // Disallow generic Array constructors ✅ 🔧
         'no-array-constructor': 'off',
@@ -391,7 +391,7 @@ module.exports = {
 
         // Disallow duplicate imports
         'no-duplicate-imports': 'off',
-        '@typescript-eslint/no-duplicate-imports': 'off',
+        '@typescript-eslint/no-duplicate-imports': 'off', // TODO: Discuss.  198 failures.  Mostly from scenery imports
 
         // Disallow empty functions ✅
         'no-empty-function': 'off',
@@ -399,11 +399,11 @@ module.exports = {
 
         // Disallow unnecessary parentheses  🔧
         'no-extra-parens': 'off',
-        '@typescript-eslint/no-extra-parens': 'off',
+        '@typescript-eslint/no-extra-parens': 'off', // we find that extraneous parentheses sometimes improve readability
 
         // Disallow unnecessary semicolons ✅ 🔧
         'no-extra-semi': 'off',
-        '@typescript-eslint/no-extra-semi': 'off', // TODO: Enable this rule
+        '@typescript-eslint/no-extra-semi': 'off', // TODO: Enable this rule.  134 failures
 
         // Disallow the use of eval()-like methods ✅  💭
         'no-implied-eval': 'off',
@@ -411,11 +411,11 @@ module.exports = {
 
         // Disallow this keywords outside of classes or class-like objects
         'no-invalid-this': 'off',
-        '@typescript-eslint/no-invalid-this': 'off',
+        '@typescript-eslint/no-invalid-this': 'off', // TODO: Discuss.  We disabled the JS rule, but only have 3 fails in TS code.  Should this be enabled?
 
         // Disallow function declarations that contain unsafe references inside loop statements
         'no-loop-func': 'off',
-        '@typescript-eslint/no-loop-func': 'off',
+        '@typescript-eslint/no-loop-func': 'off', // TODO: Enable this rule.  2 failures.
 
         // Disallow literal numbers that lose precision ✅
         'no-loss-of-precision': 'off',
@@ -423,7 +423,7 @@ module.exports = {
 
         // Disallow magic numbers
         'no-magic-numbers': 'off',
-        '@typescript-eslint/no-magic-numbers': 'off',
+        '@typescript-eslint/no-magic-numbers': 'off', // We have many magic numbers
 
         // Disallow variable redeclaration
         'no-redeclare': 'off',
@@ -435,7 +435,7 @@ module.exports = {
 
         // Disallow variable declarations from shadowing variables declared in the outer scope
         'no-shadow': 'off',
-        '@typescript-eslint/no-shadow': 'off', // TODO: This may be a good rule for our team
+        '@typescript-eslint/no-shadow': 'off', // Disabled for the same reason as in the JS Code. 173 failures
 
         // Disallow throwing literals as exceptions 🔒  💭
         'no-throw-literal': 'off',
@@ -443,7 +443,7 @@ module.exports = {
 
         // Disallow unused expressions
         'no-unused-expressions': 'off',
-        '@typescript-eslint/no-unused-expressions': 'off',
+        '@typescript-eslint/no-unused-expressions': 'off', // See notes below
 
         // Disallow unused variables ✅
         'no-unused-vars': 'off',
@@ -453,11 +453,11 @@ module.exports = {
 
         // Disallow the use of variables before they are defined
         'no-use-before-define': 'off',
-        '@typescript-eslint/no-use-before-define': 'off',
+        '@typescript-eslint/no-use-before-define': 'off', // We often declare auxiliary classes at the bottom of a file, which are used in the primary class
 
         // Disallow unnecessary constructors 🔒
         'no-useless-constructor': 'off',
-        '@typescript-eslint/no-useless-constructor': 'off',
+        '@typescript-eslint/no-useless-constructor': 'off', // We determined the useless constructors are good for documentation and clarity.
 
         // Enforce consistent spacing inside braces  🔧
         'object-curly-spacing': 'off',
@@ -481,7 +481,7 @@ module.exports = {
 
         // Require or disallow semicolons instead of ASI  🔧
         semi: 'off',
-        '@typescript-eslint/semi': 'off',
+        '@typescript-eslint/semi': 'off', // TODO: Enable this rule
 
         // Enforce consistent spacing before blocks  🔧
         'space-before-blocks': 'off',
@@ -1519,6 +1519,9 @@ module.exports = {
 
     // React
     React: 'readonly',
-    ReactDOM: 'readonly'
+    ReactDOM: 'readonly',
+
+    // Deno
+    Deno: 'readonly'
   }
 };
