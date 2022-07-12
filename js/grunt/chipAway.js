@@ -19,13 +19,22 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const path = require( 'path' );
 
 module.exports = function chipAway( results ) {
-  const repos = results.map( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] );
-  const uniqueRepos = _.uniq( repos ).filter( repo => repo !== 'perennial-alias' );
 
   // NOTE: This should never be run in a maintenance mode since this loads a file from phet-info which
   // does not have its SHA tracked as a dependency.
-  // TODO: For the reviewer, is this OK? https://github.com/phetsims/chipper/issues/1253
-  const responsibleDevs = JSON.parse( fs.readFileSync( '../phet-info/sim-info/responsible_dev.json' ) );
+  let responsibleDevs = null;
+  try {
+    responsibleDevs = JSON.parse( fs.readFileSync( '../phet-info/sim-info/responsible_dev.json' ) );
+  }
+  catch( e ) {
+
+    // return gracefully if that file was not found or not parseable.
+    console.log( 'Could not output chip-away information, due to: ' + e.message );
+    return;
+  }
+
+  const repos = results.map( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] );
+  const uniqueRepos = _.uniq( repos ).filter( repo => repo !== 'perennial-alias' );
 
   // We only want a list of repos that report lint errors
   const reposWithErrors = uniqueRepos.filter( repo => {
