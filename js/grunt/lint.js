@@ -134,7 +134,8 @@ const lint = async ( patterns, options ) => {
     // The chip-away option provides a quick and easy method to assign devs to their respective repositories.
     // Check ./chipAway.js for more information.
     if ( options.chipAway ) {
-      chipAway( results );
+      const message = chipAway( results );
+      console.log( 'Results from chipAway: \n' + message );
     }
 
     options.warn && grunt.fail.warn( `${totalErrors} errors and ${totalWarnings} warnings` );

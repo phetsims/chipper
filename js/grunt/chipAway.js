@@ -18,7 +18,7 @@ const fs = require( 'fs' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const path = require( 'path' );
 
-module.exports = function chipAway( results ) {
+module.exports = results => {
 
   // NOTE: This should never be run in a maintenance mode since this loads a file from phet-info which
   // does not have its SHA tracked as a dependency.
@@ -29,8 +29,7 @@ module.exports = function chipAway( results ) {
   catch( e ) {
 
     // return gracefully if that file was not found or not parseable.
-    console.log( 'Could not output chip-away information, due to: ' + e.message );
-    return;
+    return 'Could not output chip-away information, due to: ' + e.message;
   }
 
   const repos = results.map( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] );
@@ -48,7 +47,8 @@ module.exports = function chipAway( results ) {
 
     return ` - [ ] ${repo}: ${responsibleDevs[ repo ].responsibleDevs.join( ', ' )} ${errorCount} errors in ${fileCount} files.`;
   } );
-  console.log( assignments.join( '\n' ) );
+
+  return assignments.join( '\n' );
 };
 
 function errorReport( results, repo ) {
