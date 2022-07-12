@@ -116,7 +116,7 @@ module.exports = {
         '@typescript-eslint/method-signature-style': 'off', // TODO: I recommend we turn on this rule, but it should probably be discussed.  52 failures
 
         // Enforce naming conventions for everything across a codebase   💭
-        '@typescript-eslint/naming-convention': 'off',
+        '@typescript-eslint/naming-convention': 'off', // TODO: We should decide on the conventions and enable this rule.
 
         // Require .toString() to only be called on objects which provide useful information when stringified 🔒  💭
         '@typescript-eslint/no-base-to-string': 'off', // TODO: Enable rule
