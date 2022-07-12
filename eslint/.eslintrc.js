@@ -89,13 +89,13 @@ module.exports = {
         '@typescript-eslint/consistent-type-assertions': 'off', // TODO: 7 failures.  Probably enable
 
         // Enforce type definitions to consistently use either interface or type 🔒 🔧
-        '@typescript-eslint/consistent-type-definitions': 'off', // TODO: 667 failures
+        '@typescript-eslint/consistent-type-definitions': 'off', // TODO: Discuss as a team. 667 failures.  There are subtle differences between type and interface and I'm not sure we want to limit ourselves, even though we mostly use type at the moment.
 
         // Enforce consistent usage of type exports  🔧 💭
         '@typescript-eslint/consistent-type-exports': 'off',
 
         // Enforce consistent usage of type imports  🔧
-        '@typescript-eslint/consistent-type-imports': 'off',
+        '@typescript-eslint/consistent-type-imports': 'off', // TODO: Discuss as a team and probably enable.  This purportedly enables some tsc optimizations
 
         // Require explicit return types on functions and class methods
         '@typescript-eslint/explicit-function-return-type': 'off', // TODO: enable rule? 1665 failures
@@ -113,7 +113,7 @@ module.exports = {
         '@typescript-eslint/member-ordering': 'off', // Leave this off, it has 4038 failures
 
         // Enforce using a particular method signature syntax  🔧
-        '@typescript-eslint/method-signature-style': 'off', // TODO: Investigate.  52 failures
+        '@typescript-eslint/method-signature-style': 'off', // TODO: I recommend we turn on this rule, but it should probably be discussed.  52 failures
 
         // Enforce naming conventions for everything across a codebase   💭
         '@typescript-eslint/naming-convention': 'off',
