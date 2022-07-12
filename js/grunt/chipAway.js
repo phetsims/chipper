@@ -18,6 +18,13 @@ const fs = require( 'fs' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const path = require( 'path' );
 
+/**
+ * @param {ESLint.LintResult[]} results - the results from eslint.lintFiles( patterns )
+ *                                      - { filePath: string, errorCount: number, warningCount: number }
+ *                                      - see https://eslint.org/docs/latest/developer-guide/nodejs-api#-lintresult-type
+ * @returns {string} - a message with the chip-away checkboxes in GitHub markdown format, or a message describing why it
+ *                   - could not be accomplished
+ */
 module.exports = results => {
 
   // NOTE: This should never be run in a maintenance mode since this loads a file from phet-info which
