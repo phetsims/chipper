@@ -40,28 +40,20 @@ module.exports = results => {
   }
 
   const repos = results.map( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] );
-  const uniqueRepos = _.uniq( repos ).filter( repo => repo !== 'perennial-alias' );
+  const assignments = _.uniq( repos ).map( repo => {
 
-  // We only want a list of repos that report lint errors
-  const reposWithErrors = uniqueRepos.filter( repo => {
-    return errorReport( results, repo ).errorCount > 0;
+    const filteredResults = results.filter( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] === repo );
+    const fileCount = filteredResults.filter( result => result.errorCount + result.warningCount > 0 ).length;
+    const errorCount = _.sum( filteredResults.map( file => file.errorCount + file.warningCount ) );
+
+    if ( errorCount === 0 || repo === 'perennial-alias' ) {
+      return null;
+    }
+    else {
+      const usernames = responsibleDevs[ repo ].responsibleDevs.join( ', ' );
+      return ` - [ ] ${repo}: ${usernames} ${errorCount} errors in ${fileCount} files.`;
+    }
   } );
 
-  // Format chip away assignments. '{{REPO}} @github # errors in # files'
-  const assignments = reposWithErrors.map( repo => {
-    const fileCount = errorReport( results, repo ).fileCount;
-    const errorCount = errorReport( results, repo ).errorCount;
-
-    return ` - [ ] ${repo}: ${responsibleDevs[ repo ].responsibleDevs.join( ', ' )} ${errorCount} errors in ${fileCount} files.`;
-  } );
-
-  return assignments.join( '\n' );
+  return assignments.filter( assignment => assignment !== null ).join( '\n' );
 };
-
-function errorReport( results, repo ) {
-  const filteredResults = results.filter( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] === repo );
-  const fileCount = filteredResults.filter( result => result.errorCount + result.warningCount > 0 ).length;
-  const errorCount = _.sum( filteredResults.map( file => file.errorCount + file.warningCount ) );
-
-  return { errorCount: errorCount, fileCount: fileCount };
-}
