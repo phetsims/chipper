@@ -77,10 +77,10 @@ module.exports = {
         ],
 
         // Enforce that literals on classes are exposed in a consistent style 🔒 🔧
-        '@typescript-eslint/class-literal-property-style': 'off', // TODO: Enable this rule. 13 failures, seems good to fix
+        '@typescript-eslint/class-literal-property-style': 'off', // TODO: Discuss as a team. 13 failures, seems good to fix
 
         // Enforce specifying generic type arguments on type annotation or constructor name of a constructor call 🔒 🔧
-        '@typescript-eslint/consistent-generic-constructors': 'off', // TODO: Enable this rule.  5 errors seem good to fix
+        '@typescript-eslint/consistent-generic-constructors': 'error', // It seems preferable to specify the type parameters at the `new` instantiation site
 
         // Require or disallow the Record type 🔒 🔧
         '@typescript-eslint/consistent-indexed-object-style': 'off', // TODO: Discuss as a team
