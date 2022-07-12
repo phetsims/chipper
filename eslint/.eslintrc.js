@@ -77,7 +77,7 @@ module.exports = {
         ],
 
         // Enforce that literals on classes are exposed in a consistent style 🔒 🔧
-        '@typescript-eslint/class-literal-property-style': 'off', // TODO: Discuss as a team. 13 failures, seems good to fix
+        '@typescript-eslint/class-literal-property-style': 'off', // TODO: Discuss as a team. It seems clearer to use a readonly field rather than a method that happens to return a constant.  But fails type checker--possibly due to mixins?????
 
         // Enforce specifying generic type arguments on type annotation or constructor name of a constructor call 🔒 🔧
         '@typescript-eslint/consistent-generic-constructors': 'error', // It seems preferable to specify the type parameters at the `new` instantiation site
