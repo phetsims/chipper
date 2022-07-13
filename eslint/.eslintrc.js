@@ -51,13 +51,16 @@ module.exports = {
         '@typescript-eslint/adjacent-overload-signatures': 'error',
 
         // Require using either T[] or Array<T> for arrays 🔒 🔧
-        '@typescript-eslint/array-type': [ 'off', { default: 'array-simple' } ], // TODO: Discuss this rule.  Perhaps array-simple would be best?  But it forces IReadOnlyProperty<boolean>[] to Array<IReadOnlyProperty<boolean>>.  149 warnings all autofixable
+        '@typescript-eslint/array-type': 'off', // We agreed this should be developer preference
 
         // Disallow awaiting a value that is not a Thenable ✅  💭
         '@typescript-eslint/await-thenable': 'off',
 
         // Disallow @ts-<directive> comments or require descriptions after directive ✅
-        '@typescript-eslint/ban-ts-comment': 'off', // 568 errors
+        '@typescript-eslint/ban-ts-comment': [ 'off', {
+          'ts-ignore': 'allow-with-description',
+          'ts-check': true
+        } ], // TODO: Chip way as dev team. 568 errors
 
         // Disallow // tslint:<rule-flag> comments 🔒 🔧
         '@typescript-eslint/ban-tslint-comment': 'error',
@@ -77,7 +80,7 @@ module.exports = {
         ],
 
         // Enforce that literals on classes are exposed in a consistent style 🔒 🔧
-        '@typescript-eslint/class-literal-property-style': 'off', // TODO: Discuss as a team. It seems clearer to use a readonly field rather than a method that happens to return a constant.  But fails type checker--possibly due to mixins?????
+        '@typescript-eslint/class-literal-property-style': 'off', // TODO: See https://github.com/phetsims/chipper/issues/1279
 
         // Enforce specifying generic type arguments on type annotation or constructor name of a constructor call 🔒 🔧
         '@typescript-eslint/consistent-generic-constructors': 'error', // It seems preferable to specify the type parameters at the `new` instantiation site
@@ -86,34 +89,34 @@ module.exports = {
         '@typescript-eslint/consistent-indexed-object-style': 'error',
 
         // Enforce consistent usage of type assertions 🔒
-        '@typescript-eslint/consistent-type-assertions': 'off', // TODO: 7 failures.  Probably enable
+        '@typescript-eslint/consistent-type-assertions': 'off', // TODO: We agreed to enable this rule. 7 failures.
 
         // Enforce type definitions to consistently use either interface or type 🔒 🔧
-        '@typescript-eslint/consistent-type-definitions': 'off', // TODO: Discuss as a team. 667 failures.  There are subtle differences between type and interface and I'm not sure we want to limit ourselves, even though we mostly use type at the moment.
+        '@typescript-eslint/consistent-type-definitions': 'off', // TODO: Discuss as a team. Assign a champion to investigate the differences and describe them to the team. 667 failures.  There are subtle differences between type and interface and I'm not sure we want to limit ourselves, even though we mostly use type at the moment.  Interfaces can be extended which may be important.... or is it confusing????
 
         // Enforce consistent usage of type exports  🔧 💭
         '@typescript-eslint/consistent-type-exports': 'off',
 
         // Enforce consistent usage of type imports  🔧
-        '@typescript-eslint/consistent-type-imports': 'off', // TODO: Discuss as a team and probably enable.  This purportedly enables some tsc optimizations
+        '@typescript-eslint/consistent-type-imports': 'off', // TODO: Discuss as a team and probably enable.  Can we get WebStorm to automatically `import type`?  If not, it may be too much hassle.  Also check if it gives a performance boost.  This purportedly enables some tsc optimizations
 
         // Require explicit return types on functions and class methods
-        '@typescript-eslint/explicit-function-return-type': 'off', // TODO: enable rule? 1665 failures
+        '@typescript-eslint/explicit-function-return-type': 'off', // We want to use inference on local arrow functions. We use explicit-method-return-type for the important cases.
 
         // Require explicit accessibility modifiers on class properties and methods  🔧
         '@typescript-eslint/explicit-member-accessibility': 'error',
 
         // Require explicit return and argument types on exported functions' and classes' public class methods
-        '@typescript-eslint/explicit-module-boundary-types': 'off', // TODO: Enable this rule.  144 failures
+        '@typescript-eslint/explicit-module-boundary-types': 'off', // TODO: Enable this rule. 144 failures
 
         // Require a specific member delimiter style for interfaces and type literals  🔧
         '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
 
         // Require a consistent member declaration order
-        '@typescript-eslint/member-ordering': 'off', // Leave this off, it has 4038 failures
+        '@typescript-eslint/member-ordering': 'off', // We agreed to leave this rule off because it is more important to sort semantically than alphabetically
 
         // Enforce using a particular method signature syntax  🔧
-        '@typescript-eslint/method-signature-style': 'off', // TODO: I recommend we turn on this rule, but it should probably be discussed.  52 failures
+        '@typescript-eslint/method-signature-style': 'off', // We agreed to leave this as developer preference.  Some developers prefer to use method style in interfaces and property style in types, but the rule doesn't support that option.
 
         // Enforce naming conventions for everything across a codebase   💭
         '@typescript-eslint/naming-convention': 'off', // TODO: We should decide on the conventions and enable this rule.
@@ -131,7 +134,7 @@ module.exports = {
         '@typescript-eslint/no-duplicate-enum-values': 'error',
 
         // Disallow using the delete operator on computed key expressions 🔒 🔧
-        '@typescript-eslint/no-dynamic-delete': 'off', // TODO: Investigate, 22 failures
+        '@typescript-eslint/no-dynamic-delete': 'off', // TODO: Code should use Map or Set instead.  22 failures at the moment.  We would like to enable this rule.
 
         // Disallow the declaration of empty interfaces ✅ 🔧 🛠
         '@typescript-eslint/no-empty-interface': 'error',
@@ -143,7 +146,7 @@ module.exports = {
         '@typescript-eslint/no-extra-non-null-assertion': 'error',
 
         // Disallow classes used as namespaces 🔒
-        '@typescript-eslint/no-extraneous-class': 'off', // TODO: Enable this rule. 14 failures
+        '@typescript-eslint/no-extraneous-class': 'off', // It is sometimes useful to have a class with static methods that can call each other
 
         // Require Promise-like statements to be handled appropriately ✅ 🛠 💭
         '@typescript-eslint/no-floating-promises': 'off',
@@ -152,13 +155,13 @@ module.exports = {
         '@typescript-eslint/no-for-in-array': 'off',
 
         // Disallow usage of the implicit any type in catch clauses  🔧 🛠
-        '@typescript-eslint/no-implicit-any-catch': 'off', // TODO: Discuss.  15 failures
+        '@typescript-eslint/no-implicit-any-catch': 'off', // Deprecated rule
 
         // Disallow explicit type declarations for variables or parameters initialized to a number, string, or boolean ✅ 🔧
         '@typescript-eslint/no-inferrable-types': 'error',
 
         // Disallow void type outside of generic or return types 🔒
-        '@typescript-eslint/no-invalid-void-type': 'off', // TODO: Enable this rule.  4 failures
+        '@typescript-eslint/no-invalid-void-type': 'off', // TODO: We agreed to enable this rule.  4 failures in Trail and TrailPointer
 
         // Disallow the void operator except when used to discard a value 🔒 🔧 🛠 💭
         '@typescript-eslint/no-meaningless-void-operator': 'off',
@@ -182,7 +185,7 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': 'off', // We do not support this rule, see https://github.com/phetsims/chipper/issues/1114#issuecomment-1099536133
 
         // Disallow the use of parameter properties in class constructors
-        '@typescript-eslint/no-parameter-properties': 'off', // TODO: Discuss as a team.  16 failures.  But we might want to use that feature more.
+        '@typescript-eslint/no-parameter-properties': 'off', // This rule is deprecated.
 
         // Disallow members of unions and intersections that do nothing or override type information   💭
         '@typescript-eslint/no-redundant-type-constituents': 'off',
@@ -194,7 +197,7 @@ module.exports = {
         '@typescript-eslint/no-this-alias': 'error',
 
         // Disallow type aliases
-        '@typescript-eslint/no-type-alias': 'off', // TODO: Investigate.  2988 failures
+        '@typescript-eslint/no-type-alias': 'off', // TODO: Choose a champion to investigate this rule and understand what it is for. Investigate.  2988 failures.  Perhaps the same champion as the types vs interface person.
 
         // Disallow unnecessary equality comparisons against boolean literals 🔒 🔧 💭
         '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off', // TODO: Enable rule
@@ -239,7 +242,7 @@ module.exports = {
         '@typescript-eslint/non-nullable-type-assertion-style': 'off', // TODO: Enable this rule
 
         // Require or disallow parameter properties in class constructors
-        '@typescript-eslint/parameter-properties': 'off', // TODO: Let's discuss as a team.  16 failures
+        '@typescript-eslint/parameter-properties': 'off', // TODO: Let's discuss as a team. 16 failures.  Discuss parameter properties to discuss with the team.  Write up results in the typescript-conventions doc
 
         // Enforce the use of as const over literal type ✅ 🔧 🛠
         '@typescript-eslint/prefer-as-const': 'error',
@@ -248,10 +251,10 @@ module.exports = {
         '@typescript-eslint/prefer-enum-initializers': 'error',
 
         // Enforce the use of for-of loop over the standard for loop where possible 🔒
-        '@typescript-eslint/prefer-for-of': 'off', // TODO: Discuss. 289 failures
+        '@typescript-eslint/prefer-for-of': 'off', // TODO: We agreed to enable this rule.  It will require chip-away since it has no autofix.  289 failures.
 
         // Enforce using function types instead of interfaces with call signatures 🔒 🔧
-        '@typescript-eslint/prefer-function-type': 'off', // TODO: Investigate.  4 failures
+        '@typescript-eslint/prefer-function-type': 'off', // TODO: We agreed to enable this rule.  4 failures can be autofixed.
 
         // Enforce includes method over indexOf method 🔒 🔧 💭
         '@typescript-eslint/prefer-includes': 'off', // TODO: Enable rule
@@ -266,7 +269,7 @@ module.exports = {
         '@typescript-eslint/prefer-nullish-coalescing': 'off', // TODO: Enable rule
 
         // Enforce using concise optional chain expressions instead of chained logical ands 🔒 🛠
-        '@typescript-eslint/prefer-optional-chain': 'off', // TODO: Investigate and probably enable rule. 3227 failures
+        '@typescript-eslint/prefer-optional-chain': 'off', // TODO: We would like to discuss as a team.  It seems easier to read and write, so we would like to pursue it. 3227 failures.  Many cases may be assertions.  But some developers may want to use && in some cases.
 
         // Require private members to be marked as readonly if they're never modified outside of the constructor  🔧 💭
         '@typescript-eslint/prefer-readonly': 'off',
@@ -302,7 +305,7 @@ module.exports = {
         '@typescript-eslint/restrict-template-expressions': 'off',
 
         // Enforce members of a type union/intersection to be sorted alphabetically  🔧 🛠
-        '@typescript-eslint/sort-type-union-intersection-members': 'off', // TODO: Discuss.  Probably don't sort them alphabetically?  TODO: 961 failures.
+        '@typescript-eslint/sort-type-union-intersection-members': 'off', // We agreed to sort things semantically rather than alphabetically
 
         // Disallow certain types in boolean expressions  🔧 🛠 💭
         '@typescript-eslint/strict-boolean-expressions': 'off', // TODO: Is this a good rule for our team?
@@ -391,7 +394,7 @@ module.exports = {
 
         // Disallow duplicate imports
         'no-duplicate-imports': 'off',
-        '@typescript-eslint/no-duplicate-imports': 'off', // TODO: Discuss.  198 failures.  Mostly from scenery imports
+        '@typescript-eslint/no-duplicate-imports': 'off', // TODO: Deprecated. Investigate this instead https://github.com/import-js/eslint-plugin-import/blob/HEAD/docs/rules/no-duplicates.md
 
         // Disallow empty functions ✅
         'no-empty-function': 'off',
