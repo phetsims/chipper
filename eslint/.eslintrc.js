@@ -83,7 +83,7 @@ module.exports = {
         '@typescript-eslint/consistent-generic-constructors': 'error', // It seems preferable to specify the type parameters at the `new` instantiation site
 
         // Require or disallow the Record type 🔒 🔧
-        '@typescript-eslint/consistent-indexed-object-style': 'off', // TODO: Discuss as a team
+        '@typescript-eslint/consistent-indexed-object-style': 'error',
 
         // Enforce consistent usage of type assertions 🔒
         '@typescript-eslint/consistent-type-assertions': 'off', // TODO: 7 failures.  Probably enable
