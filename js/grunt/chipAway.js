@@ -35,8 +35,9 @@ module.exports = results => {
   }
   catch( e ) {
 
-    // return gracefully if that file was not found or not parseable.
-    return 'Could not output chip-away information, due to: ' + e.message;
+    // set responsibleDevs to an empty object if the file cannot be found or is not parseable.
+    // In this scenario, responsibleDev info would not be logged with other repo error info.
+    responsibleDevs = {};
   }
 
   const repos = results.map( result => path.relative( '../', result.filePath ).split( path.sep )[ 0 ] );
@@ -50,7 +51,7 @@ module.exports = results => {
       return null;
     }
     else {
-      const usernames = responsibleDevs[ repo ].responsibleDevs.join( ', ' );
+      const usernames = responsibleDevs[ repo ] ? responsibleDevs[ repo ].responsibleDevs.join( ', ' ) : '';
       return ` - [ ] ${repo}: ${usernames} ${errorCount} errors in ${fileCount} files.`;
     }
   } );
