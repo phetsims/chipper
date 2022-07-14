@@ -89,7 +89,7 @@ module.exports = {
         '@typescript-eslint/consistent-indexed-object-style': 'error',
 
         // Enforce consistent usage of type assertions 🔒
-        '@typescript-eslint/consistent-type-assertions': 'off', // TODO: We agreed to enable this rule. 7 failures.
+        '@typescript-eslint/consistent-type-assertions': 'error',
 
         // Enforce type definitions to consistently use either interface or type 🔒 🔧
         '@typescript-eslint/consistent-type-definitions': 'off', // TODO: Discuss as a team. Assign a champion to investigate the differences and describe them to the team. 667 failures.  There are subtle differences between type and interface and I'm not sure we want to limit ourselves, even though we mostly use type at the moment.  Interfaces can be extended which may be important.... or is it confusing????
@@ -161,7 +161,7 @@ module.exports = {
         '@typescript-eslint/no-inferrable-types': 'error',
 
         // Disallow void type outside of generic or return types 🔒
-        '@typescript-eslint/no-invalid-void-type': 'off', // TODO: We agreed to enable this rule.  4 failures in Trail and TrailPointer
+        '@typescript-eslint/no-invalid-void-type': 'error',
 
         // Disallow the void operator except when used to discard a value 🔒 🔧 🛠 💭
         '@typescript-eslint/no-meaningless-void-operator': 'off',
