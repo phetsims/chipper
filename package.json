@@ -38,7 +38,7 @@
     "jpeg-js": "^0.4.3",
     "jsdoc": "3.6.7",
     "lodash": "^4.17.21",
-    "marked": "^3.0.2",
+    "marked": "^4.0.1",
     "node-html-encoder": "^0.0.2",
     "pngjs": "^6.0.0",
     "puppeteer": "~13.5.2",
