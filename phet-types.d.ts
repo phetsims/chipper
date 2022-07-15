@@ -14,11 +14,17 @@ declare var assertSlow: undefined | ( ( x: any, ...messages?: any[] ) => void );
 declare var sceneryLog: undefined | any;
 declare var phet: any;
 
+// TODO: This can be moved to QueryStringMachine when it is moved to TypeScript, see https://github.com/phetsims/query-string-machine/issues/49
+declare type Warning = {
+  key: string;
+  value: string;
+};
+
 declare var QueryStringMachine: {
   getAll: ( a: any ) => any;
   get: ( a: string, schema: any ) => any;
   containsKey: ( key: string ) => boolean;
-  warnings: string[];
+  warnings: Warning[];
   addWarning: ( key: string, value: boolean | object | number, message: string ) => void;
   removeKeyValuePair: ( key: string, value: boolean | object | number | string ) => string;
   removeKeyValuePairs: ( key: string, value: ( boolean | object | number | string )[] ) => string;
