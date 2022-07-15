@@ -170,7 +170,7 @@ module.exports = {
         '@typescript-eslint/no-misused-new': 'error',
 
         // Disallow Promises in places not designed to handle them ✅  💭
-        '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-misused-promises': 'off', // TODO: Discuss this rule.  6 failures
 
         // Disallow custom TypeScript modules and namespaces ✅
         '@typescript-eslint/no-namespace': 'error',
