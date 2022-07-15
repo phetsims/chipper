@@ -200,10 +200,10 @@ module.exports = {
         '@typescript-eslint/no-type-alias': 'off', // TODO: Choose a champion to investigate this rule and understand what it is for. Investigate.  2988 failures.  Perhaps the same champion as the types vs interface person.
 
         // Disallow unnecessary equality comparisons against boolean literals 🔒 🔧 💭
-        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off', // TODO: Enable rule
+        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off', // TODO: Discuss as a team. SR recommends this rule, but it should be reviewed and discussed.
 
         // Disallow conditionals where the type is always truthy or always falsy 🔒 🔧 💭
-        '@typescript-eslint/no-unnecessary-condition': 'off', // TODO: We should discuss and probably use this rule
+        '@typescript-eslint/no-unnecessary-condition': 'off', // TODO: Would be nice to enable but 500 problems may prevent us
 
         // Disallow unnecessary namespace qualifiers  🔧 💭
         '@typescript-eslint/no-unnecessary-qualifier': 'off', // TODO: Enable this rule
