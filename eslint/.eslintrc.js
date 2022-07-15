@@ -149,7 +149,7 @@ module.exports = {
         '@typescript-eslint/no-extraneous-class': 'off', // It is sometimes useful to have a class with static methods that can call each other
 
         // Require Promise-like statements to be handled appropriately ✅ 🛠 💭
-        '@typescript-eslint/no-floating-promises': 'off',
+        '@typescript-eslint/no-floating-promises': 'error',
 
         // Disallow iterating over an array with a for-in loop ✅  💭
         '@typescript-eslint/no-for-in-array': 'off',
