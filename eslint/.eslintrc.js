@@ -25,12 +25,12 @@ module.exports = {
       ],
       parser: '@typescript-eslint/parser',
       parserOptions: {
-        sourceType: 'module'
+        sourceType: 'module',
 
         // Provide a tsconfig so that we can use rules that require type information. tsconfig.eslint.json
         // gives eslint project information without needing to modify our actual tsconfig setup.
         // NOTE: Providing this slows down eslint substantially, see https://github.com/phetsims/chipper/issues/1114#issuecomment-1065927717
-        // ,project: [ '../chipper/eslint/tsconfig.eslint.json' ]
+        project: [ '../chipper/eslint/tsconfig.eslint.json' ]
       },
       plugins: [
         '@typescript-eslint'
@@ -54,7 +54,7 @@ module.exports = {
         '@typescript-eslint/array-type': 'off', // We agreed this should be developer preference
 
         // Disallow awaiting a value that is not a Thenable ✅  💭
-        '@typescript-eslint/await-thenable': 'off',
+        '@typescript-eslint/await-thenable': 'error',
 
         // Disallow @ts-<directive> comments or require descriptions after directive ✅
         '@typescript-eslint/ban-ts-comment': [ 'off', {
