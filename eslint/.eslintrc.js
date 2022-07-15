@@ -257,7 +257,7 @@ module.exports = {
         '@typescript-eslint/prefer-function-type': 'off', // TODO: We agreed to enable this rule.  4 failures can be autofixed.
 
         // Enforce includes method over indexOf method 🔒 🔧 💭
-        '@typescript-eslint/prefer-includes': 'off', // TODO: Enable rule
+        '@typescript-eslint/prefer-includes': 'error',
 
         // Require all enum members to be literal values 🔒
         '@typescript-eslint/prefer-literal-enum-member': 'error',
