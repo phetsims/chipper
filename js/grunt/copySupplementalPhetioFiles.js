@@ -562,7 +562,7 @@ const generateAndWriteClientGuide = ( repoName, title, mdFilePath, destinationPa
   // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../${GUIDES_COMMON_DIR}`, 'common' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${GUIDES_COMMON_DIR}`, 'common' );
-  const renderedClientGuide = marked( clientGuideSource );
+  const renderedClientGuide = marked.parse( clientGuideSource );
 
   // link a stylesheet
   const clientGuideHTML = `<head>
