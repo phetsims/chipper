@@ -221,16 +221,16 @@ module.exports = {
         '@typescript-eslint/no-unsafe-argument': 'off', // TODO: We should enable this rule, but it may be tricky since some of the any come from JS files. 412 failures
 
         // Disallow assigning a value with type any to variables and properties ✅  💭
-        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',  // TODO: Enable this rule since it will help us avoid any
 
         // Disallow calling a value with type any ✅  💭
-        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off', // TODO: Enable this rule since it will help us avoid any
 
         // Disallow member access on a value with type any ✅  💭
-        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off', // TODO: Enable this rule since it will help us avoid any
 
         // Disallow returning a value with type any from a function ✅  💭
-        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off', // TODO: Enable this rule since it will help us avoid any
 
         // Disallow empty exports that don't change anything in a module file  🔧 🛠
         '@typescript-eslint/no-useless-empty-export': 'error',
@@ -239,7 +239,7 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 'error',
 
         // Enforce non-null assertions over explicit type casts 🔒 🔧 💭
-        '@typescript-eslint/non-nullable-type-assertion-style': 'off', // TODO: Enable this rule
+        '@typescript-eslint/non-nullable-type-assertion-style': 'error',
 
         // Require or disallow parameter properties in class constructors
         '@typescript-eslint/parameter-properties': 'off', // TODO: Let's discuss as a team. 16 failures.  Discuss parameter properties to discuss with the team.  Write up results in the typescript-conventions doc
