@@ -287,7 +287,7 @@ module.exports = {
         '@typescript-eslint/prefer-return-this-type': 'off',
 
         // Enforce using String#startsWith and String#endsWith over other equivalent methods of checking substrings 🔒 🔧 💭
-        '@typescript-eslint/prefer-string-starts-ends-with': 'off',
+        '@typescript-eslint/prefer-string-starts-ends-with': 'error',
 
         // Enforce using @ts-expect-error over @ts-ignore 🔒 🔧
         '@typescript-eslint/prefer-ts-expect-error': 'off', // TODO: Investigate. 565 failures
