@@ -164,7 +164,7 @@ module.exports = {
         '@typescript-eslint/no-invalid-void-type': 'error',
 
         // Disallow the void operator except when used to discard a value 🔒 🔧 🛠 💭
-        '@typescript-eslint/no-meaningless-void-operator': 'off',
+        '@typescript-eslint/no-meaningless-void-operator': 'error',
 
         // Enforce valid definition of new and constructor ✅
         '@typescript-eslint/no-misused-new': 'error',
