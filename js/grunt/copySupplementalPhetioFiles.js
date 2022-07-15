@@ -559,10 +559,12 @@ const generateAndWriteClientGuide = ( repoName, title, mdFilePath, destinationPa
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILENAME}.html` );
 
-  // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path
+  // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path. Order matters!
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../../${GUIDES_COMMON_DIR}`, 'common' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../${GUIDES_COMMON_DIR}`, 'common' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../${GUIDES_COMMON_DIR}`, 'common' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${GUIDES_COMMON_DIR}`, 'common' );
-  const renderedClientGuide = marked( clientGuideSource );
+  const renderedClientGuide = marked.parse( clientGuideSource );
 
   // link a stylesheet
   const clientGuideHTML = `<head>
