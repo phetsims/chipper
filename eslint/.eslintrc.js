@@ -406,7 +406,7 @@ module.exports = {
 
         // Disallow unnecessary semicolons ✅ 🔧
         'no-extra-semi': 'off',
-        '@typescript-eslint/no-extra-semi': 'off', // TODO: Enable this rule.  134 failures
+        '@typescript-eslint/no-extra-semi': 'error',
 
         // Disallow the use of eval()-like methods ✅  💭
         'no-implied-eval': 'off',
