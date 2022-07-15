@@ -10,14 +10,14 @@ import asyncLoader from './asyncLoader.js';
  * @author Sam Reid (PhET Interactive Simulations)
  */
 export default class MipmapElement {
-  readonly width: number;
-  readonly height: number;
-  readonly url: string;
-  readonly img: HTMLImageElement;
-  readonly canvas: HTMLCanvasElement;
-  updateCanvas?: () => void;
+  public readonly width: number;
+  public readonly height: number;
+  public readonly url: string;
+  public readonly img: HTMLImageElement;
+  public readonly canvas: HTMLCanvasElement;
+  public updateCanvas?: () => void;
 
-  constructor( width: number, height: number, url: string ) {
+  public constructor( width: number, height: number, url: string ) {
     this.width = width;
     this.height = height;
     this.url = url;
