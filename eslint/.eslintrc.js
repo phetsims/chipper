@@ -218,7 +218,7 @@ module.exports = {
         '@typescript-eslint/no-unnecessary-type-constraint': 'error',
 
         // Disallow calling a function with a value with type any ✅  💭
-        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off', // TODO: We should enable this rule, but it may be tricky since some of the any come from JS files. 412 failures
 
         // Disallow assigning a value with type any to variables and properties ✅  💭
         '@typescript-eslint/no-unsafe-assignment': 'off',
