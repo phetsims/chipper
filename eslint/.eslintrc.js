@@ -152,7 +152,7 @@ module.exports = {
         '@typescript-eslint/no-floating-promises': 'error',
 
         // Disallow iterating over an array with a for-in loop ✅  💭
-        '@typescript-eslint/no-for-in-array': 'off',
+        '@typescript-eslint/no-for-in-array': 'error',
 
         // Disallow usage of the implicit any type in catch clauses  🔧 🛠
         '@typescript-eslint/no-implicit-any-catch': 'off', // Deprecated rule
