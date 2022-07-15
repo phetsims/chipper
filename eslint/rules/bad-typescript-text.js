@@ -24,7 +24,7 @@ module.exports = function( context ) {
     '@protected',
     '@private',
 
-    // 'options = merge', // TODO: 54 failures, https://github.com/phetsims/chipper/issues/1226
+    'options = merge',
 
     // To convert javascript files to typescript, you do not need to include a nocheck directive, just commit locally
     // before converting to preserve history, see https://github.com/phetsims/sun/issues/732#issuecomment-995330513
