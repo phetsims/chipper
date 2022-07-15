@@ -414,11 +414,11 @@ module.exports = {
 
         // Disallow this keywords outside of classes or class-like objects
         'no-invalid-this': 'off',
-        '@typescript-eslint/no-invalid-this': 'off', // TODO: Discuss.  We disabled the JS rule, but only have 3 fails in TS code.  Should this be enabled?
+        '@typescript-eslint/no-invalid-this': 'error',
 
         // Disallow function declarations that contain unsafe references inside loop statements
         'no-loop-func': 'off',
-        '@typescript-eslint/no-loop-func': 'off', // TODO: Enable this rule.  2 failures.
+        '@typescript-eslint/no-loop-func': 'error',
 
         // Disallow literal numbers that lose precision ✅
         'no-loss-of-precision': 'off',
@@ -451,7 +451,9 @@ module.exports = {
         // Disallow unused variables ✅
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': [ 'error', {
-          args: 'none' // TODO: we want to turn this for arguments in https://github.com/phetsims/chipper/issues/1230
+
+          // We don't want to turn this on because of the example in https://github.com/phetsims/chipper/issues/1230#issuecomment-1185843199
+          args: 'none'
         } ],
 
         // Disallow the use of variables before they are defined
