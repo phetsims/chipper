@@ -504,7 +504,8 @@ module.exports = {
 
         ////////////////////////////////////////////////////////////////////////
         // Custom TypeScript Rules
-        'bad-typescript-text': 'error', //TODO https://github.com/phetsims/chipper/issues/1224
+        'bad-typescript-text': 'error',
+
         'no-simple-type-checking-assertions': 'error',
 
         // Custom return type rule that only requires for methods. The includes return type was too overarching.
