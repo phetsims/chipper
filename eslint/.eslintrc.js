@@ -128,7 +128,7 @@ module.exports = {
         '@typescript-eslint/no-confusing-non-null-assertion': 'error',
 
         // Require expressions of type void to appear in statement position  🔧 🛠 💭
-        '@typescript-eslint/no-confusing-void-expression': 'off',
+        '@typescript-eslint/no-confusing-void-expression': 'off', // TODO: Discuss as a team.  But it transforms `() => this.update()` to `() => { this.update(); }`, so is it really desirable?  Errors in 200 files
 
         // Disallow duplicate enum member values 🔒 🛠
         '@typescript-eslint/no-duplicate-enum-values': 'error',
