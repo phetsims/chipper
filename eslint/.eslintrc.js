@@ -95,10 +95,10 @@ module.exports = {
         '@typescript-eslint/consistent-type-definitions': 'off', // TODO: Discuss as a team. Assign a champion to investigate the differences and describe them to the team. 667 failures.  There are subtle differences between type and interface and I'm not sure we want to limit ourselves, even though we mostly use type at the moment.  Interfaces can be extended which may be important.... or is it confusing????
 
         // Enforce consistent usage of type exports  🔧 💭
-        '@typescript-eslint/consistent-type-exports': 'off', // TODO: Discuss as a team and probably enable.  Can we get WebStorm to automatically `import type`?  If not, it may be too much hassle.  Also check if it gives a performance boost.  This purportedly enables some tsc optimizations.  But is it a hassle if WebStorm or other IDEs don't follow this pattern by default?
+        '@typescript-eslint/consistent-type-exports': 'off', // We did not observe a performance boost, nor do we see a significant benefit from this rule. See https://github.com/phetsims/chipper/issues/1283
 
         // Enforce consistent usage of type imports  🔧
-        '@typescript-eslint/consistent-type-imports': 'off', // TODO: Discuss as a team and probably enable.  Can we get WebStorm to automatically `import type`?  If not, it may be too much hassle.  Also check if it gives a performance boost.  This purportedly enables some tsc optimizations.  But is it a hassle if WebStorm or other IDEs don't follow this pattern by default?
+        '@typescript-eslint/consistent-type-imports': 'off', // We did not observe a performance boost, nor do we see a significant benefit from this rule. See https://github.com/phetsims/chipper/issues/1283
 
         // Require explicit return types on functions and class methods
         '@typescript-eslint/explicit-function-return-type': 'off', // We want to use inference on local arrow functions. We use explicit-method-return-type for the important cases.
