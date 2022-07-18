@@ -28,6 +28,7 @@
     "../../../mobius/js/**/*",
     "../../../models-of-the-hydrogen-atom/js/**/*",
     "../../../my-solar-system/js/**/*",
+    "../../../nitroglycerin/js/**/*",
     "../../../number-play/js/**/*",
     "../../../phet-core/js/**/*",
     "../../../phet-io-wrappers/js/**/*",
