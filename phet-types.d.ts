@@ -45,7 +45,7 @@ declare var assertions: {
 
 // Experiment to allow accessing these off window. See https://stackoverflow.com/questions/12709074/how-do-you-explicitly-set-a-new-property-on-window-in-typescript
 declare global {
-  interface Window {
+  interface Window { // eslint-disable-line @typescript-eslint/consistent-type-definitions
     phet: any;
     phetio: any;
   }
