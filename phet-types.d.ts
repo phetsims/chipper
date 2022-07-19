@@ -9,6 +9,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+type IntentionalAny = any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
 declare var assert: undefined | ( ( x: any, ...messages?: any[] ) => void );
 declare var assertSlow: undefined | ( ( x: any, ...messages?: any[] ) => void );
 declare var sceneryLog: undefined | any;
@@ -20,16 +22,63 @@ declare type Warning = {
   value: string;
 };
 
+// Matches TYPE documentation in QueryStringMachine
+declare type QueryStringMachineSchema = {
+  private?: boolean;
+  public?: boolean;
+} & (
+  {
+    type: 'flag';
+  } |
+  {
+    type: 'boolean';
+    defalutValue?: boolean;
+  } |
+  {
+    type: 'number';
+    defaultValue?: number;
+    validValues?: readonly number[];
+    isValidValue?: ( n: number ) => boolean;
+  } |
+  {
+    type: 'string';
+    defaultValue?: string | null;
+    validValues?: readonly ( string | null )[];
+    isValidValue?: ( n: string | null ) => boolean;
+  } |
+  {
+    type: 'array';
+    elementSchema: QueryStringMachineSchema;
+    separator?: string;
+    defaultValue?: IntentionalAny[];
+    validValues?: readonly IntentionalAny[][];
+    isValidValue?: ( n: IntentionalAny[] ) => boolean;
+  } |
+  {
+    type: 'custom';
+    parse: ( str: string ) => IntentionalAny;
+    defaultValue?: IntentionalAny;
+    validValues?: readonly IntentionalAny[];
+    isValidValue?: ( n: IntentionalAny ) => boolean;
+  } );
+
+// Converts a Schema's type to the actual Typescript type it represents
+declare type QueryMachineTypeToType<T> = T extends ( 'flag' | 'boolean' ) ? boolean : ( T extends 'number' ? number : ( T extends 'string' ? ( string | null ) : ( T extends 'array' ? IntentionalAny[] : IntentionalAny ) ) );
+
 declare var QueryStringMachine: {
-  getAll: ( a: any ) => any;
-  get: ( a: string, schema: any ) => any;
+  getAll: <SchemaMap extends Record<string, QueryStringMachineSchema>>( a: SchemaMap ) => {
+    // Will return a map of the "result" types
+    [ Property in keyof SchemaMap ]: QueryMachineTypeToType<SchemaMap[ Property ][ 'type' ]>
+    // SCHEMA_MAP allowed to be set in types
+  } & { SCHEMA_MAP?: Record<string, QueryStringMachineSchema> };
+  get: <Schema extends QueryStringMachineSchema>( a: string, schema: Schema ) => QueryMachineTypeToType<Schema[ 'type' ]>;
   containsKey: ( key: string ) => boolean;
   warnings: Warning[];
-  addWarning: ( key: string, value: boolean | object | number, message: string ) => void;
+  addWarning: ( key: string, value: IntentionalAny, message: string ) => void;
   removeKeyValuePair: ( key: string, value: boolean | object | number | string ) => string;
   removeKeyValuePairs: ( key: string, value: ( boolean | object | number | string )[] ) => string;
   appendQueryString: ( url: string, tail: string ) => string;
-  getForString: ( s: string, schema: any, s: string ) => string;
+  getForString: ( s: string, schema: QueryStringMachineSchema, s: string ) => string;
   getQueryString: ( url: string ) => string;
 };
 
