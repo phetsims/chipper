@@ -101,7 +101,7 @@ const lint = async ( patterns, options ) => {
         '**/*.ts'
       ],
       parserOptions: {
-        project: [ `${patterns[ 0 ]}/tsconfig.json` ]
+        project: [ '../chipper/eslint/tsconfig.eslint.json' ]
       }
     } ];
   }
