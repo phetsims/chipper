@@ -9,12 +9,17 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+// Can't externally reference
 type IntentionalAny = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-declare var assert: undefined | ( ( x: any, ...messages?: any[] ) => void );
-declare var assertSlow: undefined | ( ( x: any, ...messages?: any[] ) => void );
-declare var sceneryLog: undefined | any;
-declare var phet: any;
+declare var assert: undefined | ( ( x: IntentionalAny, ...messages?: IntentionalAny[] ) => void );
+declare var assertSlow: undefined | ( ( x: IntentionalAny, ...messages?: IntentionalAny[] ) => void );
+declare var sceneryLog: null | false | ( Record<string, ( ob: IntentionalAny, style?: string ) => void> & {
+  push(): void;
+  pop(): void;
+  getDepth(): number;
+} );
+declare var phet: Record<string, IntentionalAny>;
 
 // TODO: This can be moved to QueryStringMachine when it is moved to TypeScript, see https://github.com/phetsims/query-string-machine/issues/49
 declare type Warning = {
@@ -86,7 +91,7 @@ declare var QueryStringMachine: {
 declare var phetSplashScreenDownloadComplete: () => void;
 declare var TWEEN: { update: ( dt: number ) => void };
 declare var phetSplashScreen: { dispose: () => void };
-declare var phetio: any;
+declare var phetio: Record<string, IntentionalAny>;
 
 declare var assertions: {
   enableAssert: () => void;
@@ -95,7 +100,7 @@ declare var assertions: {
 // Experiment to allow accessing these off window. See https://stackoverflow.com/questions/12709074/how-do-you-explicitly-set-a-new-property-on-window-in-typescript
 declare global {
   interface Window { // eslint-disable-line @typescript-eslint/consistent-type-definitions
-    phet: any;
-    phetio: any;
+    phet: typeof phet;
+    phetio: typeof phetio;
   }
 }
