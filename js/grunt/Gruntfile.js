@@ -319,7 +319,7 @@ module.exports = function( grunt ) {
     } ) );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
-    const lint = require( './lint' );
+    const lintRepos = require( './lintRepos' );
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
@@ -330,7 +330,7 @@ module.exports = function( grunt ) {
 
     const getPhetLibs = require( './getPhetLibs' );
 
-    await lint( getPhetLibs( repo ).map( repo => `../${repo}` ), {
+    await lintRepos( getPhetLibs( repo ), {
       cache: cache,
       fix: fix,
       format: format,
