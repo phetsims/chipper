@@ -209,7 +209,7 @@ module.exports = {
         '@typescript-eslint/no-unnecessary-qualifier': 'off', // TODO: Enable this rule
 
         // Disallow type arguments that are equal to the default 🔒 🔧 💭
-        '@typescript-eslint/no-unnecessary-type-arguments': 'off', // TODO: Enable this rule
+        '@typescript-eslint/no-unnecessary-type-arguments': 'error',
 
         // Disallow type assertions that do not change the type of an expression ✅ 🔧 💭
         '@typescript-eslint/no-unnecessary-type-assertion': 'off', // TODO: This rule catches some good problems which I committed, but it also breaks in Screen.ts (rule doesn't work as it should)
