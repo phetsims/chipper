@@ -95,7 +95,7 @@ const lintOneRepo = async ( repo, options ) => {
  */
 const lint = async ( repos, options ) => {
 
-  options = _.extend( {
+  options = _.merge( {
     cache: true,
     format: false, // append an extra set of rules for formatting code.
     fix: false, // whether fixes should be written to disk
@@ -155,6 +155,6 @@ const lint = async ( repos, options ) => {
 
 // Mark the version so that the pre-commit hook will only try to use the promise-based API, this means
 // it won't run lint precommit hook on SHAs before the promise-based API
-lint.chipperAPIVersion = 'promises1';
+lint.chipperAPIVersion = 'promisesPerRepo1';
 
 module.exports = lint;
