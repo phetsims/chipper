@@ -85,7 +85,7 @@ class Transpiler {
     const relativePath = path.relative( root, filename );
     const suffix = relativePath.substring( relativePath.lastIndexOf( '.' ) );
     const targetPath = path.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( suffix ).join( '.js' );
-    return targetPath;
+    return Transpiler.forwardSlashify( targetPath );
   }
 
   /**
@@ -140,7 +140,7 @@ class Transpiler {
     const visitDir = dir => {
       const files = fs.readdirSync( dir );
       files.forEach( file => {
-        const child = path.join( dir, file );
+        const child = Transpiler.forwardSlashify( path.join( dir, file ) );
         if ( fs.lstatSync( child ).isDirectory() && fs.existsSync( child ) ) {
           visitDir( child );
         }
@@ -166,7 +166,6 @@ class Transpiler {
    * @private
    */
   visitFile( filePath ) {
-    filePath = Transpiler.forwardSlashify( filePath );
     if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) || filePath.endsWith( '.tsx' ) ) && !this.ignorePath( filePath ) ) {
       const changeDetectedTime = Date.now();
       const text = fs.readFileSync( filePath, 'utf-8' );
@@ -208,7 +207,7 @@ class Transpiler {
     if ( fs.existsSync( dir ) ) {
       const files = fs.readdirSync( dir );
       files.forEach( file => {
-        const child = path.join( dir, file );
+        const child = Transpiler.forwardSlashify( path.join( dir, file ) );
         if ( fs.lstatSync( child ).isDirectory() ) {
           this.visitDirectory( child );
         }
@@ -248,16 +247,16 @@ class Transpiler {
 
   // @public - Visit all the subdirectories in a repo that need transpilation
   transpileRepo( repo ) {
-    subdirs.forEach( subdir => this.visitDirectory( path.join( '..', repo, subdir ) ) );
+    subdirs.forEach( subdir => this.visitDirectory( Transpiler.forwardSlashify( path.join( '..', repo, subdir ) ) ) );
     if ( repo === 'sherpa' ) {
 
       // Our sims load this as a module rather than a preload, so we must transpile it
-      this.visitFile( path.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
+      this.visitFile( Transpiler.forwardSlashify( path.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) ) );
     }
     else if ( repo === 'brand' ) {
-      this.visitDirectory( path.join( '..', repo, 'phet' ) );
-      this.visitDirectory( path.join( '..', repo, 'phet-io' ) );
-      this.visitDirectory( path.join( '..', repo, 'adapted-from-phet' ) );
+      this.visitDirectory( Transpiler.forwardSlashify( path.join( '..', repo, 'phet' ) ) );
+      this.visitDirectory( Transpiler.forwardSlashify( path.join( '..', repo, 'phet-io' ) ) );
+      this.visitDirectory( Transpiler.forwardSlashify( path.join( '..', repo, 'adapted-from-phet' ) ) );
     }
   }
 
@@ -277,11 +276,9 @@ class Transpiler {
     fs.watch( '..' + path.sep, { recursive: true }, ( eventType, filename ) => {
 
       const changeDetectedTime = Date.now();
+      const filePath = Transpiler.forwardSlashify( '..' + path.sep + filename );
 
-      const filePath = '..' + path.sep + filename;
-      const filePathWithForwardSlashes = Transpiler.forwardSlashify( filePath );
-
-      if ( this.ignorePath( filePathWithForwardSlashes ) ) {
+      if ( this.ignorePath( filePath ) ) {
         return;
       }
 
@@ -303,7 +300,7 @@ class Transpiler {
         return;
       }
 
-      if ( filePathWithForwardSlashes.endsWith( 'perennial/data/active-repos' ) ) {
+      if ( filePath.endsWith( 'perennial/data/active-repos' ) ) {
         const newActiveRepos = getActiveRepos();
         !this.silent && console.log( 'reloaded active repos' );
         const newRepos = newActiveRepos.filter( repo => !this.activeRepos.includes( repo ) );
