@@ -302,24 +302,18 @@ module.exports = function( grunt ) {
       const cache = !grunt.option( 'disable-eslint-cache' );
       const fix = grunt.option( 'fix' );
       const format = grunt.option( 'format' );
-      const typeInfo = grunt.option( 'type-info' );
       const chipAway = grunt.option( 'chip-away' );
 
-      // If patterns are specified, lint them, otherwise lint the repo where the command was run from
-      // Use '../repo' instead of '.' so that it can be filtered if necessary.
-      const patterns = grunt.option( 'patterns' ) ? grunt.option( 'patterns' ).split( ',' ) : [ `../${repo}` ];
-
-      await lint( patterns, {
+      await lint( [ repo ], {
         cache: cache,
         fix: fix,
         format: format,
-        typeInfo: typeInfo,
         chipAway: chipAway
       } );
     } ) );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
-    const lintRepos = require( './lintRepos' );
+    const lint = require( './lint' );
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
@@ -330,7 +324,7 @@ module.exports = function( grunt ) {
 
     const getPhetLibs = require( './getPhetLibs' );
 
-    await lintRepos( getPhetLibs( repo ), {
+    await lint( getPhetLibs( repo ), {
       cache: cache,
       fix: fix,
       format: format,

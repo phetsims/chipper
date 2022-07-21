@@ -12,86 +12,41 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
-const grunt = require( 'grunt' );
-const crypto = require( 'crypto' );
 const chipAway = require( './chipAway' );
-// constants
-const EXCLUDE_PATTERNS = [ // patterns that have no code that should be linted
+const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 
-  '../babel',
-  '../decaf',
-  '../phet-android-app',
-  '../phet-info',
-  '../phet-io-client-guides',
-  '../phet-io-website',
-  '../phet-io-wrapper-arithmetic',
-  '../phet-io-wrapper-hookes-law-energy',
-  '../phet-ios-app',
-  '../qa',
-  '../smithers',
-  '../tasks'
+// constants
+const EXCLUDE_REPOS = [
+  'babel',
+  'decaf',
+  'phet-android-app',
+  'phet-info',
+  'phet-io-client-guides',
+  'phet-io-website',
+  'phet-io-wrapper-arithmetic',
+  'phet-io-wrapper-hookes-law-energy',
+  'phet-ios-app',
+  'qa',
+  'smithers',
+  'tasks'
 ];
 
-const defaultLintOptions = {
-  cache: true,
-  format: false, // append an extra set of rules for formatting code.
-  fix: false, // whether fixes should be written to disk
-  warn: true, // whether errors should reported with grunt.warn
-  chipAway: false, // returns responsible dev info for easier chipping.
-  silent: false // don't log anything, just return the results.
-};
+// "Pattern" is really a path, we assume here that gruntfiles help keep the right directory stucture and can just pop
+// out of the repo running the command
+const repoToPattern = repo => `../${repo}`;
 
 /**
- * Use the lint results to output the desired content.
- * @param results - see ESLint.lintFiles
- * @param options - see defaultLintOptions
- * @returns {Promise<void>}
+ * Create an ESLint client and lint a single repo
+ * @param {string} repo
+ * @param {Object} [options]
+ * @returns {Promise<Object>} - results from linting files, see ESLint.lintFiles
  */
-const processResults = async ( results, options ) => {
+const lintOneRepo = async ( repo, options ) => {
 
-  // Not all of these options are used in this function, but it seemed easier and more maintainable to just have one
-  // place to state defaults.
-  options = _.extend( defaultLintOptions, options );
-
-  // Parse the results.
-  const totalWarnings = _.sum( results.map( result => result.warningCount ) );
-  const totalErrors = _.sum( results.map( result => result.errorCount ) );
-
-  // Output results on errors.
-  if ( totalWarnings + totalErrors > 0 ) {
-    const formatter = await new ESLint().loadFormatter( 'stylish' );
-    const resultText = formatter.format( results );
-    !options.silent && console.log( resultText );
-
-    // The chip-away option provides a quick and easy method to assign devs to their respective repositories.
-    // Check ./chipAway.js for more information.
-    if ( options.chipAway ) {
-      const message = chipAway( results );
-      !options.silent && console.log( 'Results from chipAway: \n' + message );
-    }
-
-    options.warn && grunt.fail.warn( `${totalErrors} errors and ${totalWarnings} warnings` );
-  }
-};
-
-/**
- * Lints the specified repositories.
- * @public
- *
- * @returns {Promise} - results from linting files, see ESLint.lintFiles
- */
-const lint = async ( patterns, options ) => {
-
-  options = _.assignIn( defaultLintOptions, options );
-
-  // filter out all unlintable pattern. An unlintable repo is one that has no `js` in it, so it will fail when trying to
-  // lint it.  Also, if the user doesn't have some repos checked out, those should be skipped
-  patterns = patterns.filter( pattern => !EXCLUDE_PATTERNS.includes( pattern ) &&
-                                         fs.existsSync( pattern ) );
-
-  const hash = crypto.createHash( 'md5' )
-    .update( patterns.join( ',' ) )
-    .digest( 'hex' );
+  options = _.extend( {
+    cache: true,
+    fix: false
+  }, options );
 
   const eslintConfig = {
 
@@ -100,11 +55,11 @@ const lint = async ( patterns, options ) => {
 
     // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a
     // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where
-    // grunt was run from.
+    // the process was run from.
     cache: options.cache,
 
     // Where to store the target-specific cache file
-    cacheLocation: `../chipper/eslint/cache/${hash}.eslintcache`,
+    cacheLocation: `../chipper/eslint/cache/${repo}.eslintcache`,
 
     ignorePath: '../chipper/eslint/.eslintignore',
 
@@ -127,23 +82,76 @@ const lint = async ( patterns, options ) => {
 
   const eslint = new ESLint( eslintConfig );
 
-  grunt.verbose.writeln( `linting: ${patterns.join( ', ' )}` );
+  return eslint.lintFiles( repoToPattern( repo ) );
+};
 
-  // 2. Lint files. This doesn't modify target files.
-  const results = await eslint.lintFiles( patterns );
+/**
+ * Lints the specified repositories.
+ * @public
+ *
+ * @param {string[]} repos - list of repos to lint
+ * @param {Object} [options]
+ * @returns {Promise<Object>} - results from linting files, see ESLint.lintFiles
+ */
+const lint = async ( repos, options ) => {
+
+  options = _.extend( {
+    cache: true,
+    format: false, // append an extra set of rules for formatting code.
+    fix: false, // whether fixes should be written to disk
+    chipAway: false, // returns responsible dev info for easier chipping.
+    showProgressBar: true
+  }, options );
+
+  // filter out all unlintable repos. An unlintable repo is one that has no `js` in it, so it will fail when trying to
+  // lint it.  Also, if the user doesn't have some repos checked out, those should be skipped
+  repos = repos.filter( repo => !EXCLUDE_REPOS.includes( repo ) &&
+                                fs.existsSync( repoToPattern( repo ) ) );
+
+  const allResults = [];
+  for ( let i = 0; i < repos.length; i++ ) {
+    options.showProgressBar && showCommandLineProgress( i / repos.length, false );
+
+    const results = await lintOneRepo( repos[ i ], {
+      cache: options.cache,
+      format: options.format,
+      chipAway: false, // silence individual repo reporting
+      silent: true // silence individual repo reporting
+    } );
+
+    // MK found that results are unique to a file, so this seemed safe and was working well.
+    allResults.push( ...results );
+  }
+
+  options.showProgressBar && showCommandLineProgress( 1, true );
 
   // 3. Modify the files with the fixed code.
   if ( options.fix ) {
-    await ESLint.outputFixes( results );
+    await ESLint.outputFixes( allResults );
   }
 
-  await processResults( results, options );
+  // Parse the results.
+  const totalWarnings = _.sum( allResults.map( result => result.warningCount ) );
+  const totalErrors = _.sum( allResults.map( result => result.errorCount ) );
 
-  return results;
+  // Output results on errors.
+  if ( totalWarnings + totalErrors > 0 ) {
+
+    // No need to have the same ESLint just to format
+    const formatter = await new ESLint().loadFormatter( 'stylish' );
+    const resultText = formatter.format( allResults );
+    console.log( resultText );
+
+    // The chip-away option provides a quick and easy method to assign devs to their respective repositories.
+    // Check ./chipAway.js for more information.
+    if ( options.chipAway ) {
+      const message = chipAway( allResults );
+      console.log( 'Results from chipAway: \n' + message );
+    }
+  }
+
+  return allResults;
 };
-
-// @public
-lint.processResults = processResults;
 
 // Mark the version so that the pre-commit hook will only try to use the promise-based API, this means
 // it won't run lint precommit hook on SHAs before the promise-based API
