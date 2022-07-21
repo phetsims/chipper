@@ -39,9 +39,7 @@ const execute = require( '../common/execute' );
 
       // lint() automatically filters out non-lintable repos
       const results = await lint( [ `../${repo}` ], {
-        cache: true,
-        fix: false,
-        warn: false
+        cache: true
       } );
 
       const problems = results.filter( result => result.errorCount > 0 || result.warningCount > 0 );
