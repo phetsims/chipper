@@ -14,6 +14,7 @@ const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const assert = require( 'assert' );
+const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 
 /**
  * Load each sim provided and get the
@@ -74,18 +75,9 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
   const macroAPI = {};
 
-  // See https://jagascript.com/how-to-build-a-textual-progress-bar-for-cli-and-terminal-apps/
-  const showProgress = ( progress, newline = false ) => {
-    const progressBarLength = 40;
-    const dots = '.'.repeat( Math.round( progress * progressBarLength ) ); // eslint-disable-line
-    const empty = ' '.repeat( Math.round( ( 1 - progress ) * progressBarLength ) ); // eslint-disable-line
-    const newlineString = newline ? '\n' : '';
-    process.stdout.write( `\r[${dots}${empty}] ${( progress * 100 ).toFixed( 2 )}%${newlineString}` );
-  };
-
   for ( let i = 0; i < chunks.length; i++ ) {
     const chunk = chunks[ i ];
-    options.showProgressBar && showProgress( i / chunks.length );
+    options.showProgressBar && showCommandLineProgress( i / chunks.length, false );
 
     const promises = chunk.map( async repo => {
       const page = await browser.newPage();
@@ -184,7 +176,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     } );
   }
 
-  options.showProgressBar && showProgress( 1, true );
+  options.showProgressBar && showCommandLineProgress( 1, true );
 
   await browser.close();
   server.close();

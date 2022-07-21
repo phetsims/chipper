@@ -13,6 +13,7 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const { ESLint } = require( 'eslint' ); // eslint-disable-line
 const grunt = require( 'grunt' );
+const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 const lint = require( './lint' );
 
 module.exports = async ( repos, options ) => {
@@ -21,11 +22,15 @@ module.exports = async ( repos, options ) => {
     cache: true,
     fix: false,
     format: false,
-    chipAway: false
+    chipAway: false,
+    showProgressBar: true
   }, options );
 
   const allResults = [];
   for ( let i = 0; i < repos.length; i++ ) {
+
+    options.showProgressBar && showCommandLineProgress( i / repos.length, false );
+
     const results = await lint( [ `../${repos[ i ]}` ], {
       cache: options.cache,
       fix: options.fix,
@@ -35,6 +40,8 @@ module.exports = async ( repos, options ) => {
     } );
     allResults.push( results );
   }
+
+  options.showProgressBar && showCommandLineProgress( 1, true );
 
   let totalProblems = 0;
   for ( let i = 0; i < allResults.length; i++ ) {
