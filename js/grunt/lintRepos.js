@@ -11,8 +11,6 @@
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
-const { ESLint } = require( 'eslint' ); // eslint-disable-line
-const grunt = require( 'grunt' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 const lint = require( './lint' );
 
@@ -23,7 +21,8 @@ module.exports = async ( repos, options ) => {
     fix: false,
     format: false,
     chipAway: false,
-    showProgressBar: true
+    showProgressBar: true,
+    warn: false
   }, options );
 
   const allResults = [];
@@ -35,23 +34,20 @@ module.exports = async ( repos, options ) => {
       cache: options.cache,
       fix: options.fix,
       format: options.format,
-      chipAway: options.chipAway,
-      warn: false
+      chipAway: false, // silence individual repo reporting
+      silent: true, // silence individual repo reporting
+      warn: false // silence individual repo reporting
     } );
-    allResults.push( results );
+
+    // MK found that results are unique to a file, so this seemed safe and was working well.
+    allResults.push( ...results );
   }
 
   options.showProgressBar && showCommandLineProgress( 1, true );
 
-  let totalProblems = 0;
-  for ( let i = 0; i < allResults.length; i++ ) {
-    const results = allResults[ i ];
-    const totalWarnings = _.sum( results.map( result => result.warningCount ) );
-    const totalErrors = _.sum( results.map( result => result.errorCount ) );
-
-    totalProblems += totalWarnings + totalErrors;
-  }
-  if ( totalProblems > 0 ) {
-    grunt.warn( 'Lint problems: ' + totalProblems + '.' );
-  }
+  await lint.processResults( allResults, {
+    chipAway: options.chipAway,
+    warn: options.warn,
+    silent: false // we want to hear the results
+  } );
 };

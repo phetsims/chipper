@@ -10,7 +10,7 @@
 
 // modules
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
-const { ESLint } = require( 'eslint' ); // eslint-disable-line
+const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const crypto = require( 'crypto' );
@@ -32,6 +32,48 @@ const EXCLUDE_PATTERNS = [ // patterns that have no code that should be linted
   '../tasks'
 ];
 
+const defaultLintOptions = {
+  cache: true,
+  format: false, // append an extra set of rules for formatting code.
+  fix: false, // whether fixes should be written to disk
+  warn: true, // whether errors should reported with grunt.warn
+  chipAway: false, // returns responsible dev info for easier chipping.
+  silent: false // don't log anything, just return the results.
+};
+
+/**
+ * Use the lint results to output the desired content.
+ * @param results - see ESLint.lintFiles
+ * @param options - see defaultLintOptions
+ * @returns {Promise<void>}
+ */
+const processResults = async ( results, options ) => {
+
+  // Not all of these options are used in this function, but it seemed easier and more maintainable to just have one
+  // place to state defaults.
+  options = _.extend( defaultLintOptions, options );
+
+  // Parse the results.
+  const totalWarnings = _.sum( results.map( result => result.warningCount ) );
+  const totalErrors = _.sum( results.map( result => result.errorCount ) );
+
+  // Output results on errors.
+  if ( totalWarnings + totalErrors > 0 ) {
+    const formatter = await new ESLint().loadFormatter( 'stylish' );
+    const resultText = formatter.format( results );
+    !options.silent && console.log( resultText );
+
+    // The chip-away option provides a quick and easy method to assign devs to their respective repositories.
+    // Check ./chipAway.js for more information.
+    if ( options.chipAway ) {
+      const message = chipAway( results );
+      !options.silent && console.log( 'Results from chipAway: \n' + message );
+    }
+
+    options.warn && grunt.fail.warn( `${totalErrors} errors and ${totalWarnings} warnings` );
+  }
+};
+
 /**
  * Lints the specified repositories.
  * @public
@@ -40,13 +82,7 @@ const EXCLUDE_PATTERNS = [ // patterns that have no code that should be linted
  */
 const lint = async ( patterns, options ) => {
 
-  options = _.assignIn( {
-    cache: true,
-    format: false, // append an extra set of rules for formatting code.
-    fix: false, // whether fixes should be written to disk
-    warn: true, // whether errors should reported with grunt.warn
-    chipAway: false // returns responsible dev info for easier chipping.
-  }, options );
+  options = _.assignIn( defaultLintOptions, options );
 
   // filter out all unlintable pattern. An unlintable repo is one that has no `js` in it, so it will fail when trying to
   // lint it.  Also, if the user doesn't have some repos checked out, those should be skipped
@@ -101,28 +137,13 @@ const lint = async ( patterns, options ) => {
     await ESLint.outputFixes( results );
   }
 
-  // 4. Parse the results.
-  const totalWarnings = _.sum( results.map( result => result.warningCount ) );
-  const totalErrors = _.sum( results.map( result => result.errorCount ) );
-
-  // 5. Output results on errors.
-  if ( totalWarnings + totalErrors > 0 ) {
-    const formatter = await eslint.loadFormatter( 'stylish' );
-    const resultText = formatter.format( results );
-    console.log( resultText );
-
-    // The chip-away option provides a quick and easy method to assign devs to their respective repositories.
-    // Check ./chipAway.js for more information.
-    if ( options.chipAway ) {
-      const message = chipAway( results );
-      console.log( 'Results from chipAway: \n' + message );
-    }
-
-    options.warn && grunt.fail.warn( `${totalErrors} errors and ${totalWarnings} warnings` );
-  }
+  await processResults( results, options );
 
   return results;
 };
+
+// @public
+lint.processResults = processResults;
 
 // Mark the version so that the pre-commit hook will only try to use the promise-based API, this means
 // it won't run lint precommit hook on SHAs before the promise-based API
