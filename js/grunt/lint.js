@@ -45,7 +45,6 @@ const lint = async ( patterns, options ) => {
     format: false, // append an extra set of rules for formatting code.
     fix: false, // whether fixes should be written to disk
     warn: true, // whether errors should reported with grunt.warn
-    typeInfo: false, // (for typescript) whether to include eslint rules that require project info, much slower
     chipAway: false // returns responsible dev info for easier chipping.
   }, options );
 
@@ -85,25 +84,6 @@ const lint = async ( patterns, options ) => {
   const configExtends = [];
   if ( options.format ) {
     configExtends.push( '../chipper/eslint/format_eslintrc.js' );
-  }
-  if ( options.typeInfo ) {
-    if ( patterns.length !== 1 ) {
-      grunt.fail.warn( 'typeInfo can only work for one repository at a time' );
-    }
-
-    // include the rules that use type information
-    configExtends.push( '../chipper/eslint/type_info_eslintrc.js' );
-
-    // signify where the project configuration lives for this repo - if we apply this to all files
-    // ESLint complains that .js files are not in project configurations
-    config.overrides = [ {
-      files: [
-        '**/*.ts'
-      ],
-      parserOptions: {
-        project: [ '../chipper/eslint/tsconfig.eslint.json' ]
-      }
-    } ];
   }
 
   config.extends = configExtends;
