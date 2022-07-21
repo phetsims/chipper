@@ -14,7 +14,7 @@ const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const assert = require( 'assert' );
-const showCommandLineProgress = require( '../common/showCommandLineProgress' );
+const showCommandLineProgress = require( '../../../perennial-alias/js/common/showCommandLineProgress' );
 
 /**
  * Load each sim provided and get the
