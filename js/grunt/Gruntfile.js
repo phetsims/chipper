@@ -13,6 +13,7 @@
 // NOTE: to improve performance, the vast majority of modules are lazily imported in task registrations. Even duplicating
 // require statements improves the load time of this file noticeably. For details, see https://github.com/phetsims/chipper/issues/1107
 const assert = require( 'assert' );
+const getPhetLibs = require( './getPhetLibs' );
 require( './checkNodeVersion' );
 ///////////////////////////
 
@@ -151,7 +152,6 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
     wrapTask( async () => {
       const Transpiler = require( '../common/Transpiler' );
-      const getPhetLibs = require( './getPhetLibs' );
 
       new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( repo ) );
     } )
@@ -190,7 +190,6 @@ module.exports = function( grunt ) {
       const path = require( 'path' );
       const fs = require( 'fs' );
       const Transpiler = require( '../common/Transpiler' );
-      const getPhetLibs = require( './getPhetLibs' );
 
       // Parse minification keys
       const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
@@ -286,51 +285,6 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
     [ 'build' ]
   );
-
-  grunt.registerTask( 'lint',
-    `lint js files. Options:
---disable-eslint-cache: cache will not be read or written
---fix: autofixable changes will be written to disk
---format: Append an additional set of rules for formatting
---type-info: Include rules for TypeScript that use type checking. Slows down eslint significantly.
---patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.
---chip-away: output a list of responsible devs for each repo with lint problems`,
-    wrapTask( async () => {
-      const lint = require( '../../../perennial-alias/js/grunt/lint' );
-
-      // --disable-eslint-cache disables the cache, useful for developing rules
-      const cache = !grunt.option( 'disable-eslint-cache' );
-      const fix = grunt.option( 'fix' );
-      const format = grunt.option( 'format' );
-      const chipAway = grunt.option( 'chip-away' );
-
-      await lint( [ repo ], {
-        cache: cache,
-        fix: fix,
-        format: format,
-        chipAway: chipAway
-      } );
-    } ) );
-
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
-    const lint = require( '../../../perennial-alias/js/grunt/lint' );
-
-    // --disable-eslint-cache disables the cache, useful for developing rules
-    const cache = !grunt.option( 'disable-eslint-cache' );
-    const fix = grunt.option( 'fix' );
-    const format = grunt.option( 'format' );
-    const chipAway = grunt.option( 'chip-away' );
-    assert && assert( !grunt.option( 'patterns' ), 'patterns not support for lint-all' );
-
-    const getPhetLibs = require( './getPhetLibs' );
-
-    await lint( getPhetLibs( repo ), {
-      cache: cache,
-      fix: fix,
-      format: format,
-      chipAway: chipAway
-    } );
-  } ) );
 
   grunt.registerTask( 'generate-development-html',
     'Generates top-level SIM_en.html file based on the preloads in package.json.',
@@ -619,21 +573,22 @@ Updates the normal automatically-generated files for this repository. Includes:
    * @public
    *
    * @param {string} task - The name of the task
+   * @param {boolean} perennialAlias=false
+   * @param {string[]} extraArgs=[]
    */
-  function forwardToPerennialGrunt( task ) {
-    grunt.registerTask( task, 'Run grunt --help in perennial to see documentation', () => {
-      grunt.log.writeln( '(Forwarding task to perennial)' );
+  function forwardToPerennialGrunt( task, perennialAlias = false, extraArgs = [] ) {
+    grunt.registerTask( task, `Run grunt --help in perennial${perennialAlias ? '-alias' : ''} to see documentation`, () => {
+      grunt.log.writeln( `(Forwarding task to perennial${perennialAlias ? '-alias' : ''})` );
 
       const child_process = require( 'child_process' );
-
 
       const done = grunt.task.current.async();
 
       // Include the --repo flag
-      const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
+      const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ), ...extraArgs ];
       const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
       const spawned = child_process.spawn( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', args, {
-        cwd: '../perennial'
+        cwd: `../perennial${perennialAlias ? '-alias' : ''}`
       } );
       grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
 
@@ -643,7 +598,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       spawned.on( 'close', code => {
         if ( code !== 0 ) {
-          throw new Error( `perennial grunt ${argsString} failed with code ${code}` );
+          throw new Error( `perennial${perennialAlias ? '-alias' : ''} grunt ${argsString} failed with code ${code}` );
         }
         else {
           done();
@@ -675,5 +630,9 @@ Updates the normal automatically-generated files for this repository. Includes:
     'generate-data',
     'pdom-comparison',
     'release-branch-list'
-  ].forEach( forwardToPerennialGrunt );
+  ].forEach( task => forwardToPerennialGrunt( task ) );
+
+  // Forward to perennial-alias to support older check versions linting.
+  forwardToPerennialGrunt( 'lint', true );
+  forwardToPerennialGrunt( 'lint-all', true, [ `--repos=${getPhetLibs( repo ).join( ',' )}` ] );
 };
