@@ -304,12 +304,15 @@ module.exports = function( grunt ) {
       const format = grunt.option( 'format' );
       const chipAway = grunt.option( 'chip-away' );
 
-      await lint( [ repo ], {
+      const results = await lint( [ repo ], {
         cache: cache,
         fix: fix,
         format: format,
         chipAway: chipAway
       } );
+      if ( results.length > 0 ) {
+        grunt.fail.fatal( 'Lint failed' );
+      }
     } ) );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
@@ -324,12 +327,16 @@ module.exports = function( grunt ) {
 
     const getPhetLibs = require( './getPhetLibs' );
 
-    await lint( getPhetLibs( repo ), {
+    const results = await lint( getPhetLibs( repo ), {
       cache: cache,
       fix: fix,
       format: format,
       chipAway: chipAway
     } );
+
+    if ( results.length > 0 ) {
+      grunt.fail.fatal( 'Lint failed' );
+    }
   } ) );
 
   grunt.registerTask( 'generate-development-html',
