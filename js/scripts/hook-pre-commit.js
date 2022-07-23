@@ -89,29 +89,20 @@ const execute = require( '../common/execute' );
   }
 
   // Run typescript type checker if it exists in the checked-out shas
-  if ( fs.existsSync( '../chipper/tsconfig/all/tsconfig.json' ) ) {
-    try {
+  const results = await execute( 'node', [ '../perennial/js/scripts/absolute-tsc.js', '../chipper/tsconfig/all' ], '../perennial', {
+    errors: 'resolve'
+  } );
 
-      const results = await execute( 'node', [ '../../../chipper/node_modules/typescript/bin/tsc' ], '../chipper/tsconfig/all', {
-        errors: 'resolve'
-      } );
+  results.stderr.trim().length > 0 && console.log( results.stderr );
+  results.stdout.trim().length > 0 && console.log( results.stdout );
 
-      if ( results.code === 0 ) {
-        outputToConsole && console.log( 'tsc passed' );
-      }
-      else {
-        console.log( results );
-        process.exit( results.code );
-      }
-    }
-    catch( e ) {
-      console.log( 'chipper/js/grunt/tsc not found' );
-    }
+  if ( results.code === 0 ) {
+    outputToConsole && console.log( 'tsc passed' );
   }
   else {
-    outputToConsole && console.log( 'tsconfig.json not found, skipping tsc' );
+    console.log( results );
+    process.exit( results.code );
   }
-
 
 // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
   try {
