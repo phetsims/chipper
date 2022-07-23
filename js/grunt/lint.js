@@ -14,6 +14,7 @@ const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement
 const fs = require( 'fs' );
 const chipAway = require( './chipAway' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
+const CacheLayer = require( '../common/CacheLayer' );
 
 // constants
 const EXCLUDE_REPOS = [
@@ -71,6 +72,16 @@ const lintOneRepo = async ( repo, options ) => {
     extensions: [ '.js', '.jsx', '.ts', '.tsx' ]
   };
 
+  const cacheKey = `lintRepo#${repo}`;
+
+  if ( options.cache && CacheLayer.isCacheSafe( cacheKey ) ) {
+    // console.log( 'lint cache hit: ' + cacheKey );
+    return [];
+  }
+  else {
+    // console.log( 'lint cache fail: ' + cacheKey );
+  }
+
   const config = {};
   const configExtends = [];
   if ( options.format ) {
@@ -82,7 +93,15 @@ const lintOneRepo = async ( repo, options ) => {
 
   const eslint = new ESLint( eslintConfig );
 
-  return eslint.lintFiles( repoToPattern( repo ) );
+  const results = await eslint.lintFiles( repoToPattern( repo ) );
+
+  const totalWarnings = _.sum( results.map( result => result.warningCount ) );
+  const totalErrors = _.sum( results.map( result => result.errorCount ) );
+  if ( options.cache && totalWarnings === 0 && totalErrors === 0 ) {
+    CacheLayer.onSuccess( cacheKey );
+  }
+
+  return results;
 };
 
 /**
@@ -156,9 +175,11 @@ const lint = async ( repos, options ) => {
 
   process.chdir( cwd );
 
+  const ok = totalWarnings + totalErrors === 0;
+
   return {
     results: allResults,
-    ok: ( totalWarnings + totalErrors ) === 0
+    ok: ok
   };
 };
 
