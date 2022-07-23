@@ -17,6 +17,7 @@
  */
 const start = Date.now();
 const execute = require( '../common/execute' );
+const CacheLayer = require( '../../../chipper/js/common/CacheLayer' );
 const os = require( 'os' );
 const path = require( 'path' );
 const { resolve } = require( 'path' ); // eslint-disable-line
@@ -27,7 +28,16 @@ if ( !args || args.length === 0 ) {
 }
 
 ( async () => {
-  const results = await execute( 'node', [ `${process.cwd()}${path.sep}chipper/node_modules/typescript/bin/tsc` ], args[ 0 ], {
+
+  const cacheKey = 'absolute-tsc#' + args[ 0 ];
+  if ( CacheLayer.isCacheSafe( cacheKey ) ) {
+    console.log( 'no changes' );
+    return;
+  }
+
+  console.log( 'changes detected...' );
+
+  const results = await execute( 'node', [ `${__dirname}/../../../chipper/node_modules/typescript/bin/tsc` ], args[ 0 ], {
     errors: 'resolve'
   } );
 
@@ -41,6 +51,7 @@ if ( !args || args.length === 0 ) {
   if ( results.stdout.trim().length === 0 ) {
 
     console.log( `0 errors in ${elapsed}ms` );
+    CacheLayer.onSuccess( cacheKey );
   }
   else {
     const lines = results.stdout.trim().split( os.EOL );
