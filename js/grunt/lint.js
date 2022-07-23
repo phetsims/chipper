@@ -95,6 +95,10 @@ const lintOneRepo = async ( repo, options ) => {
  */
 const lint = async ( repos, options ) => {
 
+  // Run all linting from chipper so the ESLint cache will be shared, see https://github.com/phetsims/chipper/issues/1286
+  const cwd = process.cwd();
+  process.chdir( '../chipper' );
+
   options = _.merge( {
     cache: true,
     format: false, // append an extra set of rules for formatting code.
@@ -149,6 +153,8 @@ const lint = async ( repos, options ) => {
       console.log( 'Results from chipAway: \n' + message );
     }
   }
+
+  process.chdir( cwd );
 
   return allResults;
 };
