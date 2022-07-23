@@ -22,7 +22,6 @@ const _ = require( 'lodash' ); // eslint-disable-line
 const puppeteer = require( 'puppeteer' );
 const withServer = require( '../common/withServer' );
 const execute = require( '../common/execute' );
-const child_process = require( 'child_process' );
 
 ( async () => {
 
@@ -35,20 +34,17 @@ const child_process = require( 'child_process' );
 
 // Run lint tests if they exist in the checked-out SHAs.
   try {
-    const lint = require( '../../../perennial-alias/js/grunt/lint' );
+    const lint = require( '../../../chipper/js/grunt/lint' );
+    if ( lint.chipperAPIVersion === 'promises1' ) {
 
-    // Run lint tests if they exist in the checked-out SHAs.
-    if ( lint.APIVersion === 'promisesPerRepo1' ) {
+      // lint() automatically filters out non-lintable repos
+      const results = await lint( [ `../${repo}` ], {
+        cache: true
+      } );
 
-      // Run from perennial-alias to preserve the cache
-      const resultsText = child_process.execSync( `node js/grunt/lint.js --lintFromCommandLine --repos=${repo}`, {
-        cwd: '../perennial-alias'
-      } ).toString();
-
-      const results = JSON.parse( resultsText );
       const problems = results.filter( result => result.errorCount > 0 || result.warningCount > 0 );
+      problems.forEach( result => console.error( `lint failed in ${repo}`, result.filePath, result.messages.map( m => JSON.stringify( m, null, 2 ) ).join( '\n' ) ) );
       if ( problems.length > 0 ) {
-        console.log( `lint failed in ${repo}`, '\n', await lint.formatResults( results ) );
         process.exit( 1 );
       }
 
@@ -59,7 +55,7 @@ const child_process = require( 'child_process' );
     }
   }
   catch( e ) {
-    console.log( 'chipper/js/grunt/lint not found', e );
+    console.log( 'chipper/js/grunt/lint not found' );
   }
 
 // These sims don't have package.json or media that requires checking.
