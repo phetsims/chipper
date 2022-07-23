@@ -14,7 +14,6 @@
 // require statements improves the load time of this file noticeably. For details, see https://github.com/phetsims/chipper/issues/1107
 const assert = require( 'assert' );
 require( './checkNodeVersion' );
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 ///////////////////////////
 
 // See https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd for how
@@ -305,18 +304,14 @@ module.exports = function( grunt ) {
       const format = grunt.option( 'format' );
       const chipAway = grunt.option( 'chip-away' );
 
-      const results = await lint( [ repo ], {
+      const lintReturnValue = await lint( [ repo ], {
         cache: cache,
         fix: fix,
         format: format,
         chipAway: chipAway
       } );
-      // TODO: https://github.com/phetsims/chipper/issues/1286 this is duplicated in a few places
-      const totalWarnings = _.sum( results.map( result => result.warningCount ) );
-      const totalErrors = _.sum( results.map( result => result.errorCount ) );
 
-      // Output results on errors.
-      if ( totalWarnings + totalErrors > 0 ) {
+      if ( !lintReturnValue.ok ) {
         grunt.fail.fatal( 'Lint failed' );
       }
     } ) );
@@ -333,19 +328,15 @@ module.exports = function( grunt ) {
 
     const getPhetLibs = require( './getPhetLibs' );
 
-    const results = await lint( getPhetLibs( repo ), {
+    const lintReturnValue = await lint( getPhetLibs( repo ), {
       cache: cache,
       fix: fix,
       format: format,
       chipAway: chipAway
     } );
 
-    // TODO: https://github.com/phetsims/chipper/issues/1286 this is duplicated in a few places
-    const totalWarnings = _.sum( results.map( result => result.warningCount ) );
-    const totalErrors = _.sum( results.map( result => result.errorCount ) );
-
     // Output results on errors.
-    if ( totalWarnings + totalErrors > 0 ) {
+    if ( !lintReturnValue.ok ) {
       grunt.fail.fatal( 'Lint failed' );
     }
   } ) );

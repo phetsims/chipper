@@ -156,7 +156,10 @@ const lint = async ( repos, options ) => {
 
   process.chdir( cwd );
 
-  return allResults;
+  return {
+    results: allResults,
+    ok: ( totalWarnings + totalErrors ) === 0
+  };
 };
 
 // Mark the version so that the pre-commit hook will only try to use the promise-based API, this means
