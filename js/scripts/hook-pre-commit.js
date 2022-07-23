@@ -103,22 +103,34 @@ const execute = require( '../common/execute' );
 // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
   try {
     const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
+    const CacheLayer = require( '../../../chipper/js/common/CacheLayer' );
+    const cacheKey = `puppeteerQUnit#${repo}`;
+
     if ( repo !== 'scenery' && repo !== 'phet-io-wrappers' ) { // scenery unit tests take too long, so skip those
       const testFilePath = `${repo}/${repo}-tests.html`;
       const exists = fs.existsSync( `../${testFilePath}` );
       if ( exists ) {
-        const browser = await puppeteer.launch();
 
-        const result = await withServer( async port => {
-          return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
-        } );
+        if ( CacheLayer.isCacheSafe( cacheKey ) ) {
+          console.log( 'unit tests success cached' );
+        }
+        else {
+          const browser = await puppeteer.launch();
 
-        await browser.close();
+          const result = await withServer( async port => {
+            return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
+          } );
 
-        outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
-        if ( !result.ok ) {
-          console.error( `unit tests failed in ${repo}`, result );
-          process.exit( 1 ); // fail as soon as there is one problem
+          await browser.close();
+
+          outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
+          if ( !result.ok ) {
+            console.error( `unit tests failed in ${repo}`, result );
+            process.exit( 1 ); // fail as soon as there is one problem
+          }
+          else {
+            CacheLayer.onSuccess( cacheKey );
+          }
         }
       }
 
