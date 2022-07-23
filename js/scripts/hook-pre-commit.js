@@ -38,17 +38,15 @@ const execute = require( '../common/execute' );
     if ( lint.chipperAPIVersion === 'promisesPerRepo1' ) {
 
       // lint() automatically filters out non-lintable repos
-      const results = await lint( [ repo ], {
+      const lintReturnValue = await lint( [ repo ], {
         cache: true
       } );
 
-      const problems = results.filter( result => result.errorCount > 0 || result.warningCount > 0 );
-      problems.forEach( result => console.error( `lint failed in ${repo}`, result.filePath, result.messages.map( m => JSON.stringify( m, null, 2 ) ).join( '\n' ) ) );
-      if ( problems.length > 0 ) {
+      if ( !lintReturnValue.ok ) {
         process.exit( 1 );
       }
 
-      outputToConsole && console.log( `Linting passed with results.length: ${results.length}` );
+      outputToConsole && console.log( `Linting passed with results.length: ${lintReturnValue.results.length}` );
     }
     else {
       console.log( 'chipper/js/grunt/lint not compatible' );
