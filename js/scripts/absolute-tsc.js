@@ -74,5 +74,6 @@ if ( !args || args.length === 0 ) {
 
     console.log( mapped.join( '\n' ) );
     console.log( `${errorCount} ${errorCount === 1 ? 'error' : 'errors'} in ${elapsed}ms` );
+    process.exit( 1 );
   }
 } )();
