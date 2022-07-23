@@ -585,7 +585,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       const done = grunt.task.current.async();
 
       // Include the --repo flag
-      const args = [ task, `--repo=${repo}`, ...process.argv.slice( 3 ), ...extraArgs ];
+      const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ), ...extraArgs ];
       const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
       const spawned = child_process.spawn( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', args, {
         cwd: `../perennial${perennialAlias ? '-alias' : ''}`
