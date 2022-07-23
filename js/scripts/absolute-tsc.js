@@ -31,11 +31,11 @@ if ( !args || args.length === 0 ) {
 
   const cacheKey = 'absolute-tsc#' + args[ 0 ];
   if ( CacheLayer.isCacheSafe( cacheKey ) ) {
-    console.log( 'no changes' );
+    // console.log( 'cache safe for: ' + cacheKey );
     return;
   }
 
-  console.log( 'changes detected...' );
+  // console.log( 'changes detected...' );
 
   const results = await execute( 'node', [ `${__dirname}/../../../chipper/node_modules/typescript/bin/tsc` ], args[ 0 ], {
     errors: 'resolve'
