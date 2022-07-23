@@ -333,4 +333,31 @@ class Transpiler {
   }
 }
 
+// For coordination with CacheLayer, clear the cache while we are not watching for file changes
+// https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
+process.stdin.resume();//so the program will not close instantly
+
+function exitHandler( options, exitCode ) {
+
+  // TODO https://github.com/phetsims/chipper/issues/1289 this is happening 2x on ctrl-c
+  CacheLayer.clearLastChangedTimestamp();
+
+  if ( options.exit ) {
+    process.exit();
+  }
+}
+
+//do something when app is closing
+process.on( 'exit', exitHandler.bind( null ) );
+
+//catches ctrl+c event
+process.on( 'SIGINT', exitHandler.bind( null, { exit: true } ) );
+
+// catches "kill pid" (for example: nodemon restart)
+process.on( 'SIGUSR1', exitHandler.bind( null, { exit: true } ) );
+process.on( 'SIGUSR2', exitHandler.bind( null, { exit: true } ) );
+
+//catches uncaught exceptions
+process.on( 'uncaughtException', exitHandler.bind( null, { exit: true } ) );
+
 module.exports = Transpiler;
