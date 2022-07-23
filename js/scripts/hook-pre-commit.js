@@ -38,7 +38,7 @@ const execute = require( '../common/execute' );
     if ( lint.chipperAPIVersion === 'promisesPerRepo1' ) {
 
       // lint() automatically filters out non-lintable repos
-      const results = await lint( [ `../${repo}` ], {
+      const results = await lint( [ repo ], {
         cache: true
       } );
 
