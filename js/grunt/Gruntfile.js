@@ -296,7 +296,7 @@ module.exports = function( grunt ) {
 --patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.
 --chip-away: output a list of responsible devs for each repo with lint problems`,
     wrapTask( async () => {
-      const lint = require( '../../../perennial-alias/js/grunt/lint' );
+      const lint = require( './lint' );
 
       // --disable-eslint-cache disables the cache, useful for developing rules
       const cache = !grunt.option( 'disable-eslint-cache' );
@@ -313,7 +313,7 @@ module.exports = function( grunt ) {
     } ) );
 
   grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
-    const lint = require( '../../../perennial-alias/js/grunt/lint' );
+    const lint = require( './lint' );
 
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
