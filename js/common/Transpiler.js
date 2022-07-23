@@ -13,6 +13,7 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 const crypto = require( 'crypto' );
+const CacheLayer = require( './CacheLayer' );
 const core = require( '@babel/core' );
 const assert = require( 'assert' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
@@ -166,7 +167,7 @@ class Transpiler {
    * @private
    */
   visitFile( filePath ) {
-    if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) || filePath.endsWith( '.tsx' ) ) && !this.ignorePath( filePath ) ) {
+    if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) || filePath.endsWith( '.tsx' ) ) && !this.isPathIgnored( filePath ) ) {
       const changeDetectedTime = Date.now();
       const text = fs.readFileSync( filePath, 'utf-8' );
       const hash = crypto.createHash( 'md5' ).update( text ).digest( 'hex' );
@@ -219,7 +220,7 @@ class Transpiler {
   }
 
   // @private
-  ignorePath( filePath ) {
+  isPathIgnored( filePath ) {
     const withForwardSlashes = Transpiler.forwardSlashify( filePath );
     return withForwardSlashes.includes( '/node_modules/' ) ||
            withForwardSlashes.includes( '.git/' ) ||
@@ -227,7 +228,11 @@ class Transpiler {
            withForwardSlashes.includes( 'transpile/cache/status.json' ) ||
 
            // Temporary files sometimes saved by the IDE
-           withForwardSlashes.endsWith( '~' );
+           withForwardSlashes.endsWith( '~' ) ||
+
+           // eslint cache files
+           withForwardSlashes.includes( '/chipper/eslint/cache/' ) ||
+           withForwardSlashes.endsWith( '.eslintcache' );
   }
 
   // @private
@@ -273,14 +278,20 @@ class Transpiler {
   // @public
   watch() {
 
+    // Invalidate caches when we start watching
+    CacheLayer.updateLastChangedTimestamp();
+
     fs.watch( '..' + path.sep, { recursive: true }, ( eventType, filename ) => {
 
       const changeDetectedTime = Date.now();
       const filePath = Transpiler.forwardSlashify( '..' + path.sep + filename );
 
-      if ( this.ignorePath( filePath ) ) {
+      if ( this.isPathIgnored( filePath ) ) {
         return;
       }
+
+      // Invalidate cache when any relevant file has changed.
+      CacheLayer.updateLastChangedTimestamp();
 
       const pathExists = fs.existsSync( filePath );
 
