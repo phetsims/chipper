@@ -35,7 +35,7 @@ const execute = require( '../common/execute' );
 // Run lint tests if they exist in the checked-out SHAs.
   try {
     const lint = require( '../../../chipper/js/grunt/lint' );
-    if ( lint.chipperAPIVersion === 'promises1' ) {
+    if ( lint.chipperAPIVersion === 'promisesPerRepo1' ) {
 
       // lint() automatically filters out non-lintable repos
       const results = await lint( [ `../${repo}` ], {
