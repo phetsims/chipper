@@ -110,7 +110,7 @@ const lint = async ( repos, options ) => {
 
   const allResults = [];
   for ( let i = 0; i < repos.length; i++ ) {
-    options.showProgressBar && showCommandLineProgress( i / repos.length, false );
+    options.showProgressBar && repos.length > 1 && showCommandLineProgress( i / repos.length, false );
 
     const results = await lintOneRepo( repos[ i ], {
       cache: options.cache,
@@ -123,7 +123,7 @@ const lint = async ( repos, options ) => {
     allResults.push( ...results );
   }
 
-  options.showProgressBar && showCommandLineProgress( 1, true );
+  options.showProgressBar && repos.length > 1 && showCommandLineProgress( 1, true );
 
   // 3. Modify the files with the fixed code.
   if ( options.fix ) {
