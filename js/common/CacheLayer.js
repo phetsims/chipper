@@ -46,7 +46,8 @@ module.exports = {
   // When a process succeeds, save the timestamp
   onSuccess( keyName ) {
     const json = readCacheLayerJSON();
-    json[ keyName ] = Date.now();
+    json.cache = json.cache || {};
+    json.cache[ keyName ] = Date.now();
     writeFileAsJSON( json );
   },
 
@@ -57,7 +58,7 @@ module.exports = {
 
   isCacheSafe( keyName ) {
     const json = readCacheLayerJSON();
-    const time = json[ keyName ];
+    const time = json.cache && json.cache[ keyName ];
     const lastChanged = json[ LATEST_CHANGE_TIMESTAMP_KEY ];
     if ( typeof time === 'number' && typeof lastChanged === 'number' && lastChanged < time ) {
       return true;
