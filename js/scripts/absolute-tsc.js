@@ -7,8 +7,10 @@
  *
  * Configure WebStorm with the following external tool:
  * program: node
- * arguments: perennial/js/scripts/absolute-tsc.js ${dir with a tsconfig, like chipper/tsconfig/all}
- * working dir: ${the root of the checkout, like /Users/samreid/apache-document-root/main/}
+ * arguments: js/scripts/absolute-tsc.js ${dir with a tsconfig, like ../chipper/tsconfig/all}
+ * working dir: ${perennial/, like /Users/samreid/apache-document-root/main/perennial}
+ *
+ * To support CacheLayer, this must be run from perennial/
  *
  * IMPORTANT!!! This makes the files paths clickable in Webstorm:
  * output filters: $FILE_PATH$\($LINE$\,$COLUMN$\)
