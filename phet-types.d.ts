@@ -37,7 +37,7 @@ declare type QueryStringMachineSchema = {
   } |
   {
     type: 'boolean';
-    defalutValue?: boolean;
+    defaultValue?: boolean;
   } |
   {
     type: 'number';
@@ -73,7 +73,12 @@ declare type QueryMachineTypeToType<T> = T extends ( 'flag' | 'boolean' ) ? bool
 declare var QueryStringMachine: {
   getAll: <SchemaMap extends Record<string, QueryStringMachineSchema>>( a: SchemaMap ) => {
     // Will return a map of the "result" types
-    [ Property in keyof SchemaMap ]: QueryMachineTypeToType<SchemaMap[ Property ][ 'type' ]>
+    [Property in keyof SchemaMap]: QueryMachineTypeToType<SchemaMap[ Property ][ 'type' ]>
+    // SCHEMA_MAP allowed to be set in types
+  } & { SCHEMA_MAP?: Record<string, QueryStringMachineSchema> };
+  getAllForString: <SchemaMap extends Record<string, QueryStringMachineSchema>>( a: SchemaMap, b: string ) => {
+    // Will return a map of the "result" types
+    [Property in keyof SchemaMap]: QueryMachineTypeToType<SchemaMap[ Property ][ 'type' ]>
     // SCHEMA_MAP allowed to be set in types
   } & { SCHEMA_MAP?: Record<string, QueryStringMachineSchema> };
   get: <Schema extends QueryStringMachineSchema>( a: string, schema: Schema ) => QueryMachineTypeToType<Schema[ 'type' ]>;
@@ -85,6 +90,7 @@ declare var QueryStringMachine: {
   appendQueryString: ( url: string, tail: string ) => string;
   getForString: ( s: string, schema: QueryStringMachineSchema, s: string ) => string;
   getQueryString: ( url: string ) => string;
+  containsKeyForString: ( key: string, s: string ) => boolean;
 };
 
 // globals used in Sim.ts
