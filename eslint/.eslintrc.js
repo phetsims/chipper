@@ -140,7 +140,7 @@ module.exports = {
         '@typescript-eslint/no-empty-interface': 'error',
 
         // Disallow the any type ✅ 🔧 🛠
-        '@typescript-eslint/no-explicit-any': 'off', // TODO: This rule has been approved by the team and we want to enable it.  Currently at 271 failures.
+        '@typescript-eslint/no-explicit-any': 'error',
 
         // Disallow extra non-null assertion ✅ 🔧
         '@typescript-eslint/no-extra-non-null-assertion': 'error',
