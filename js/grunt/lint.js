@@ -110,7 +110,7 @@ const lintOneRepo = async ( repo, options ) => {
  *
  * @param {string[]} repos - list of repos to lint
  * @param {Object} [options]
- * @returns {Promise<Object>} - results from linting files, see ESLint.lintFiles
+ * @returns {Promise<{results:Object,ok:boolean}>} - results from linting files, see ESLint.lintFiles (all results, not just errors).
  */
 const lint = async ( repos, options ) => {
 
