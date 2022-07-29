@@ -279,6 +279,16 @@
     legendsOfLearning: { type: 'flag' },
 
     /**
+     * If this is a finite number AND assertions are enabled, it will track maximum (TinyEmitter) listener counts, and
+     * will assert that the count is not greater than the limit.
+     */
+    listenerLimit: {
+      type: 'number',
+      defaultValue: Number.POSITIVE_INFINITY,
+      public: false
+    },
+
+    /**
      * test with a specific locale
      */
     locale: {
