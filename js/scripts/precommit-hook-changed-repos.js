@@ -64,7 +64,7 @@ const repos = contents.split( '\n' ).map( sim => sim.trim() );
 
     process.stdout.write( changedRepos[ i ] + ': ' );
 
-    const result = await execute( 'node', [ '../perennial/js/scripts/hook-pre-commit.js' ], `${changedRepos[ i ]}`, {
+    const result = await execute( 'node', [ '../chipper/js/scripts/hook-pre-commit.js' ], `${changedRepos[ i ]}`, {
 
       // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
       errors: 'resolve'
