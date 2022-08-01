@@ -18,7 +18,12 @@ const all = args.includes( '--all' );
  *
  * USAGE:
  * cd ${root containing all repos}
- * node perennial/js/scripts/precommit-hook-changed-repos.js
+ * node chipper/js/scripts/precommit-hook-multi.js
+ *
+ * OPTIONS:
+ *
+ * --all
+ * Runs the precommit hooks on all repos.  Default behavior is to only check the repos with uncommitted changes.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
