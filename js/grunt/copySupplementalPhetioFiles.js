@@ -40,7 +40,6 @@ const GUIDES_COMMON_DIR = 'client-guide-common/client-guide';
 
 const EXAMPLES_FILENAME = 'examples';
 const PHET_IO_GUIDE_FILENAME = 'phet-io-guide';
-const PHET_IO_MIGRATION_GUIDE_FILENAME = 'migration-guide';
 
 const LIB_OUTPUT_FILE = 'phet-io.js';
 
@@ -222,9 +221,6 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       contents = ChipperStringUtils.replaceAll( contents, '{{EXAMPLES_ROW}}',
         getGuideRowText( EXAMPLES_FILENAME, 'Examples',
           'Provides instructions and the specific phetioIDs for customizing the simulation.' ) );
-      contents = ChipperStringUtils.replaceAll( contents, '{{MIGRATION_GUIDE_ROW}}',
-        getGuideRowText( PHET_IO_MIGRATION_GUIDE_FILENAME, 'Migration Guide',
-          'Provides a list of changes that have occurred to the API since the previous version.' ) );
     }
 
     // Special handling for studio paths since it is not nested under phet-io-wrappers
@@ -534,7 +530,6 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
   // handle generating and writing the html file for each client guide
   generateAndWriteClientGuide( repoName, `${simulationDisplayName} PhET-iO Guide`, `${clientGuidesSourceRoot}${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html` );
   generateAndWriteClientGuide( repoName, `${simulationDisplayName} Examples`, `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`, `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html` );
-  generateAndWriteClientGuide( repoName, `${simulationDisplayName} Migration Guide`, `${clientGuidesSourceRoot}${PHET_IO_MIGRATION_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_MIGRATION_GUIDE_FILENAME}.html` );
 };
 
 /**
