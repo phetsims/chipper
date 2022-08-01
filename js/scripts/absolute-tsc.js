@@ -8,9 +8,11 @@
  * Configure WebStorm with the following external tool:
  * program: node
  * arguments: js/scripts/absolute-tsc.js ${dir with a tsconfig, like ../chipper/tsconfig/all}
- * working dir: ${perennial/, like /Users/samreid/apache-document-root/main/perennial}
+ * working dir: ${chipper/, like /Users/samreid/apache-document-root/main/chipper}
  *
- * To support CacheLayer, this must be run from perennial/
+ * To support CacheLayer, this must be run from chipper/
+ *
+ * To share a cache with pre-commit-hooks use: ../chipper/tsconfig/all
  *
  * IMPORTANT!!! This makes the files paths clickable in Webstorm:
  * output filters: $FILE_PATH$\($LINE$\,$COLUMN$\)
