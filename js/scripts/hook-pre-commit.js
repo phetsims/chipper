@@ -5,7 +5,7 @@
  *
  * USAGE:
  * cd ${repo}
- * node ../perennial/js/scripts/hook-pre-commit.js
+ * node ../chipper/js/scripts/hook-pre-commit.js
  *
  * OPTIONS:
  * --console: outputs information to the console for debugging
@@ -20,8 +20,8 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const puppeteer = require( 'puppeteer' );
-const withServer = require( '../common/withServer' );
-const execute = require( '../common/execute' );
+const withServer = require( '../../../perennial-alias/js/common/withServer' );
+const execute = require( '../../../perennial-alias/js/common/execute' );
 
 ( async () => {
 
