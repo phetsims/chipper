@@ -18,8 +18,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const start = Date.now();
-const execute = require( '../common/execute' );
-const CacheLayer = require( '../../../chipper/js/common/CacheLayer' );
+const execute = require( '../../../perennial-alias/js/common/execute' );
+const CacheLayer = require( '../common/CacheLayer' );
 const os = require( 'os' );
 const path = require( 'path' );
 const { resolve } = require( 'path' ); // eslint-disable-line
