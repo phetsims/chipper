@@ -91,6 +91,7 @@ declare var QueryStringMachine: {
   getForString: ( s: string, schema: QueryStringMachineSchema, s: string ) => string;
   getQueryString: ( url: string ) => string;
   containsKeyForString: ( key: string, s: string ) => boolean;
+  getSingleQueryParameterString: ( key: string, url: string ) => string | null;
 };
 
 // globals used in Sim.ts
