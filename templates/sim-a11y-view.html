@@ -248,6 +248,9 @@
 
 <script>
 
+  // Number of alerts that remain in the Activity log before fading out.
+  const ACTIVITY_LOG_LENGTH = 10;
+
   /*******************************************************************************
    * Helper Functions
    */
@@ -443,12 +446,12 @@
 
             // items fade out as they get older
             for ( let j = 0; j < listElement.children.length; j++ ) {
-              listElement.children[ j ].style.opacity = 1.0 / ( j + 1 ) + 0.25;
+              listElement.children[ j ].style.opacity = 1.0 / ( j + 1 ) + 0.50;
             }
 
             // if the list is too large, remove the last items from the list
             const childrenArray = Array.prototype.slice.call( listElement.children );
-            const fadeArray = childrenArray.slice( 5, childrenArray.length );
+            const fadeArray = childrenArray.slice( ACTIVITY_LOG_LENGTH, childrenArray.length );
 
             for ( let i = 0; i < fadeArray.length; i++ ) {
               const fadeChild = fadeArray[ i ];
