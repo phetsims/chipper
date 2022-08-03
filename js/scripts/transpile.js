@@ -35,14 +35,17 @@ const transpiler = new Transpiler( {
 
 transpiler.pruneStaleDistFiles();
 
+// Watch process
+if ( args.includes( '--watch' ) ) {
+  transpiler.watch();
+}
+
 // Initial pass
 if ( !args.includes( '--skipInitial' ) ) {
   transpiler.transpileAll();
   console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
-}
 
-// Watch process
-if ( args.includes( '--watch' ) ) {
-  transpiler.watch();
-  console.log( 'Watching...' );
+  if ( args.includes( '--watch' ) ) {
+    console.log( 'Watching...' );
+  }
 }
