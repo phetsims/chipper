@@ -5,12 +5,17 @@
  * This thin wrapper uses a heuristic to convert the relative paths to absolute paths.  Combined with an "output filter",
  * this makes the type errors clickable in the tool output panel.
  *
+ * To support CacheLayer, this must be run from chipper/
+ *
+ * Usage from command line:
+ * cd chipper/
+ * node js/scripts/absolute-tsc.js {{TS_CONFIG_DIRECTORY}}
+ * node js/scripts/absolute-tsc.js ../chipper/tsconfig/all
+ *
  * Configure WebStorm with the following external tool:
  * program: node
  * arguments: js/scripts/absolute-tsc.js ${dir with a tsconfig, like ../chipper/tsconfig/all}
  * working dir: ${chipper/, like /Users/samreid/apache-document-root/main/chipper}
- *
- * To support CacheLayer, this must be run from chipper/
  *
  * To share a cache with pre-commit-hooks use: ../chipper/tsconfig/all
  *
