@@ -138,6 +138,7 @@ const lint = async ( repos, options ) => {
     const results = await lintOneRepo( repos[ i ], {
       cache: options.cache,
       format: options.format,
+      fix: options.fix,
       chipAway: false, // silence individual repo reporting
       silent: true // silence individual repo reporting
     } );
