@@ -197,7 +197,7 @@ module.exports = {
         '@typescript-eslint/no-this-alias': 'error',
 
         // Disallow type aliases
-        '@typescript-eslint/no-type-alias': 'off', // TODO: Choose a champion to investigate this rule and understand what it is for. Investigate.  2988 failures.  Perhaps the same champion as the types vs interface person.
+        '@typescript-eslint/no-type-alias': 'off', // We use type-alias frequently and prefer them over interfaces
 
         // Disallow unnecessary equality comparisons against boolean literals 🔒 🔧 💭
         '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off', // TODO: Discuss as a team. SR recommends this rule, but it should be reviewed and discussed.
