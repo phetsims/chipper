@@ -92,7 +92,7 @@ module.exports = {
         '@typescript-eslint/consistent-type-assertions': 'error',
 
         // Enforce type definitions to consistently use either interface or type 🔒 🔧
-        '@typescript-eslint/consistent-type-definitions': 'off', // TODO: Discuss as a team. Assign a champion to investigate the differences and describe them to the team. 667 failures.  There are subtle differences between type and interface and I'm not sure we want to limit ourselves, even though we mostly use type at the moment.  Interfaces can be extended which may be important.... or is it confusing????
+        '@typescript-eslint/consistent-type-definitions': [ 'error', 'type' ], // We prefer using Type-Alias
 
         // Enforce consistent usage of type exports  🔧 💭
         '@typescript-eslint/consistent-type-exports': 'off', // We did not observe a performance boost, nor do we see a significant benefit from this rule. See https://github.com/phetsims/chipper/issues/1283
@@ -197,7 +197,7 @@ module.exports = {
         '@typescript-eslint/no-this-alias': 'error',
 
         // Disallow type aliases
-        '@typescript-eslint/no-type-alias': 'off', // TODO: Choose a champion to investigate this rule and understand what it is for. Investigate.  2988 failures.  Perhaps the same champion as the types vs interface person.
+        '@typescript-eslint/no-type-alias': 'off', // We use type-alias frequently and prefer them over interfaces
 
         // Disallow unnecessary equality comparisons against boolean literals 🔒 🔧 💭
         '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off', // TODO: Discuss as a team. SR recommends this rule, but it should be reviewed and discussed.
