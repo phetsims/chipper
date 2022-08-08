@@ -200,7 +200,7 @@ module.exports = {
         '@typescript-eslint/no-type-alias': 'off', // We use type-alias frequently and prefer them over interfaces
 
         // Disallow unnecessary equality comparisons against boolean literals 🔒 🔧 💭
-        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off', // TODO: Discuss as a team. SR recommends this rule, but it should be reviewed and discussed.
+        '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'error',
 
         // Disallow conditionals where the type is always truthy or always falsy 🔒 🔧 💭
         '@typescript-eslint/no-unnecessary-condition': 'off', // TODO: Would be nice to enable but 500 problems may prevent us
