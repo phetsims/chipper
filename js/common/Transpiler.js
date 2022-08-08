@@ -85,8 +85,7 @@ class Transpiler {
   static getTargetPath( filename ) {
     const relativePath = path.relative( root, filename );
     const suffix = relativePath.substring( relativePath.lastIndexOf( '.' ) );
-    const targetPath = path.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( suffix ).join( '.js' );
-    return Transpiler.forwardSlashify( targetPath );
+    return Transpiler.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( suffix ).join( '.js' );
   }
 
   /**
@@ -141,7 +140,7 @@ class Transpiler {
     const visitDir = dir => {
       const files = fs.readdirSync( dir );
       files.forEach( file => {
-        const child = Transpiler.forwardSlashify( path.join( dir, file ) );
+        const child = Transpiler.join( dir, file );
         if ( fs.lstatSync( child ).isDirectory() && fs.existsSync( child ) ) {
           visitDir( child );
         }
@@ -158,6 +157,11 @@ class Transpiler {
     const endTime = Date.now();
     const elapsed = endTime - startTime;
     console.log( 'Clean stale chipper/dist/js files finished in ' + elapsed + 'ms' );
+  }
+
+  // @public join and normalize the paths (forward slashes for ease of search and readability)
+  static join( ...paths ) {
+    return Transpiler.forwardSlashify( path.join( ...paths ) );
   }
 
   /**
@@ -208,7 +212,7 @@ class Transpiler {
     if ( fs.existsSync( dir ) ) {
       const files = fs.readdirSync( dir );
       files.forEach( file => {
-        const child = Transpiler.forwardSlashify( path.join( dir, file ) );
+        const child = Transpiler.join( dir, file );
         if ( fs.lstatSync( child ).isDirectory() ) {
           this.visitDirectory( child );
         }
@@ -252,16 +256,16 @@ class Transpiler {
 
   // @public - Visit all the subdirectories in a repo that need transpilation
   transpileRepo( repo ) {
-    subdirs.forEach( subdir => this.visitDirectory( Transpiler.forwardSlashify( path.join( '..', repo, subdir ) ) ) );
+    subdirs.forEach( subdir => this.visitDirectory( Transpiler.join( '..', repo, subdir ) ) );
     if ( repo === 'sherpa' ) {
 
       // Our sims load this as a module rather than a preload, so we must transpile it
-      this.visitFile( Transpiler.forwardSlashify( path.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) ) );
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
     }
     else if ( repo === 'brand' ) {
-      this.visitDirectory( Transpiler.forwardSlashify( path.join( '..', repo, 'phet' ) ) );
-      this.visitDirectory( Transpiler.forwardSlashify( path.join( '..', repo, 'phet-io' ) ) );
-      this.visitDirectory( Transpiler.forwardSlashify( path.join( '..', repo, 'adapted-from-phet' ) ) );
+      this.visitDirectory( Transpiler.join( '..', repo, 'phet' ) );
+      this.visitDirectory( Transpiler.join( '..', repo, 'phet-io' ) );
+      this.visitDirectory( Transpiler.join( '..', repo, 'adapted-from-phet' ) );
     }
   }
 
