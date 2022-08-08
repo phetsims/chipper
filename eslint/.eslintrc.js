@@ -107,7 +107,7 @@ module.exports = {
         '@typescript-eslint/explicit-member-accessibility': 'error',
 
         // Require explicit return and argument types on exported functions' and classes' public class methods
-        '@typescript-eslint/explicit-module-boundary-types': 'off', // TODO: Enable this rule. 144 failures
+        '@typescript-eslint/explicit-module-boundary-types': 'error',
 
         // Require a specific member delimiter style for interfaces and type literals  🔧
         '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
