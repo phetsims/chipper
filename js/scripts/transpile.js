@@ -17,6 +17,8 @@
  *                        chipper/dist/js-cache-status.json, they would be out of sync.  If you `rm -rf chipper/dist`
  *                        that does not require --clean, because that erases the cache file and the js files together.
  * --skipInitial          Skip the initial transpilation.
+ * --repos                Additional repos to compile (not listed in perennial/data/active-repos). The names of the repos,
+ *                        separated by commas, like --repos=myrepo1,myrepo2. Directory names only, not paths
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -28,9 +30,17 @@ const args = process.argv.slice( 2 );
 // imports
 const Transpiler = require( '../common/Transpiler' );
 
+const repos = [];
+
+const reposKey = '--repos=';
+args.filter( arg => arg.startsWith( reposKey ) ).forEach( arg => {
+  repos.push( ...arg.substring( reposKey.length ).split( ',' ) );
+} );
+
 const transpiler = new Transpiler( {
   clean: args.includes( '--clean' ),
-  verbose: args.includes( '--verbose' )
+  verbose: args.includes( '--verbose' ),
+  repos: repos
 } );
 
 transpiler.pruneStaleDistFiles();

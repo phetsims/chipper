@@ -32,17 +32,20 @@ const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'shaders', 'common',
 const getActiveRepos = () => fs.readFileSync( '../perennial-alias/data/active-repos', 'utf8' ).trim().split( '\n' ).map( sim => sim.trim() );
 
 class Transpiler {
+
   constructor( options ) {
 
     options = _.extend( {
       clean: false, // delete the previous state/cache file, and create a new one.
       verbose: false, // Add extra logging
-      silent: false // hide all logging but error reporting, include any specified with verbose
+      silent: false, // hide all logging but error reporting, include any specified with verbose
+      repos: []// {string[]} additional repos to be transpiled (beyond those listed in perennial/data/active-repos)
     }, options );
 
     // @private
     this.verbose = options.verbose;
     this.silent = options.silent;
+    this.repos = options.repos;
 
     // Track the status of each repo. Key= repo, value=md5 hash of contents
     this.status = {};
@@ -271,7 +274,7 @@ class Transpiler {
 
   // @public
   transpileAll() {
-    this.transpileRepos( this.activeRepos );
+    this.transpileRepos( [ ...this.activeRepos, ...this.repos ] );
   }
 
   // @private
@@ -356,7 +359,8 @@ class Transpiler {
       }
       else {
         const terms = filename.split( path.sep );
-        if ( this.activeRepos.includes( terms[ 0 ] ) && subdirs.includes( terms[ 1 ] ) && pathExists ) {
+        if ( ( this.activeRepos.includes( terms[ 0 ] ) || this.repos.includes( terms[ 0 ] ) )
+             && subdirs.includes( terms[ 1 ] ) && pathExists ) {
           this.visitFile( filePath );
         }
       }
