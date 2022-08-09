@@ -212,7 +212,7 @@ module.exports = {
         '@typescript-eslint/no-unnecessary-type-arguments': 'error',
 
         // Disallow type assertions that do not change the type of an expression ✅ 🔧 💭
-        '@typescript-eslint/no-unnecessary-type-assertion': 'off', // TODO: This rule catches some good problems which I committed, but it also breaks in Screen.ts (rule doesn't work as it should)
+        '@typescript-eslint/no-unnecessary-type-assertion': 'error',
 
         // Disallow unnecessary constraints on generic types ✅ 🛠
         '@typescript-eslint/no-unnecessary-type-constraint': 'error',
