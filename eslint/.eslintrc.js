@@ -586,7 +586,7 @@ module.exports = {
     'no-duplicate-case': 'error',
 
     // Disallow duplicate module imports
-    'no-duplicate-imports': 'off', // TODO: 2 fails, enable this rule
+    'no-duplicate-imports': 'off', // WebStorm typically tells us if we have duplicate imports, and we sometimes add 2 imports from scenery due to its export pattern
 
     // Disallow empty character classes in regular expressions
     'no-empty-character-class': 'error',
