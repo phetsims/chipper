@@ -128,7 +128,7 @@ module.exports = {
         '@typescript-eslint/no-confusing-non-null-assertion': 'error',
 
         // Require expressions of type void to appear in statement position  🔧 🛠 💭
-        '@typescript-eslint/no-confusing-void-expression': 'off', // TODO: Discuss as a team.  But it transforms `() => this.update()` to `() => { this.update(); }`, so is it really desirable?  Errors in 200 files
+        '@typescript-eslint/no-confusing-void-expression': 'off', // It transforms `() => this.update()` to `() => { this.update(); }`, so is it really desirable?  Errors in 200 files
 
         // Disallow duplicate enum member values 🔒 🛠
         '@typescript-eslint/no-duplicate-enum-values': 'error',
@@ -221,7 +221,7 @@ module.exports = {
         '@typescript-eslint/no-unsafe-argument': 'off', // TODO: We should enable this rule, but it may be tricky since some of the any come from JS files. 412 failures
 
         // Disallow assigning a value with type any to variables and properties ✅  💭
-        '@typescript-eslint/no-unsafe-assignment': 'off',  // TODO: Enable this rule since it will help us avoid any
+        '@typescript-eslint/no-unsafe-assignment': 'off', // TODO: Enable this rule since it will help us avoid any.  547 problems, will need to chip-away
 
         // Disallow calling a value with type any ✅  💭
         '@typescript-eslint/no-unsafe-call': 'off', // TODO: Enable this rule since it will help us avoid any
