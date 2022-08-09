@@ -85,13 +85,14 @@ declare var QueryStringMachine: {
   containsKey: ( key: string ) => boolean;
   warnings: Warning[];
   addWarning: ( key: string, value: IntentionalAny, message: string ) => void;
-  removeKeyValuePair: ( key: string, value: boolean | object | number | string ) => string;
-  removeKeyValuePairs: ( key: string, value: ( boolean | object | number | string )[] ) => string;
+  removeKeyValuePair: ( queryString: string, key: string ) => string;
+  removeKeyValuePairs: ( queryString: string, keys: string[] ) => string;
   appendQueryString: ( url: string, tail: string ) => string;
   getForString: ( s: string, schema: QueryStringMachineSchema, s: string ) => string;
   getQueryString: ( url: string ) => string;
   containsKeyForString: ( key: string, s: string ) => boolean;
   getSingleQueryParameterString: ( key: string, url: string ) => string | null;
+  getQueryParametersFromString: ( string: string ) => string[];
 };
 
 // globals used in Sim.ts
