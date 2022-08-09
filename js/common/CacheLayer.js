@@ -56,6 +56,10 @@ module.exports = {
     return !this.isCacheSafe( keyName );
   },
 
+  /**
+   * @param {string} keyName
+   * @returns {boolean} - true if a cache hit
+   */
   isCacheSafe( keyName ) {
     const json = readCacheLayerJSON();
     const time = json.cache && json.cache[ keyName ];

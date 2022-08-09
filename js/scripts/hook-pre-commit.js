@@ -85,7 +85,7 @@ const execute = require( '../../../perennial-alias/js/common/execute' );
   }
 
   // Run typescript type checker if it exists in the checked-out shas
-  const results = await execute( 'node', [ '../chipper/js/scripts/absolute-tsc.js', '../chipper/tsconfig/all' ], '../perennial', {
+  const results = await execute( 'node', [ '../chipper/js/scripts/absolute-tsc.js', '../chipper/tsconfig/all' ], '../chipper', {
     errors: 'resolve'
   } );
 

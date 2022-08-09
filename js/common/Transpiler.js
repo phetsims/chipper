@@ -229,8 +229,21 @@ class Transpiler {
   // @private
   isPathIgnored( filePath ) {
     const withForwardSlashes = Transpiler.forwardSlashify( filePath );
-    return withForwardSlashes.includes( '/node_modules/' ) ||
+
+    try {
+
+      // ignore directories, just care about individual files
+      // Try catch because there can still be a race condition between checking and lstatting. This covers enough cases
+      // though to still keep it in.
+      if ( fs.existsSync( filePath ) && fs.lstatSync( filePath ).isDirectory() ) {
+        return true;
+      }
+    }
+    catch( e ) { /* ignore please */ }
+
+    return withForwardSlashes.includes( '/node_modules' ) ||
            withForwardSlashes.includes( '.git/' ) ||
+           withForwardSlashes.includes( '/build/' ) ||
            withForwardSlashes.includes( 'chipper/dist/' ) ||
            withForwardSlashes.includes( 'transpile/cache/status.json' ) ||
 
@@ -292,35 +305,39 @@ class Transpiler {
     // https://stackoverflow.com/questions/14031763/doing-a-cleanup-action-just-before-node-js-exits
     process.stdin.resume();//so the program will not close instantly
 
-    function exitHandler( options, exitCode ) {
+    function exitHandler( options ) {
 
       // TODO https://github.com/phetsims/chipper/issues/1289 this is happening 2x on ctrl-c
       CacheLayer.clearLastChangedTimestamp();
 
-      if ( options.exit ) {
+      if ( options && options.exit ) {
+        if ( options.arg ) {
+          throw options.arg;
+        }
         process.exit();
       }
     }
 
     // do something when app is closing
-    process.on( 'exit', exitHandler.bind( null ) );
+    process.on( 'exit', () => exitHandler() );
 
     // catches ctrl+c event
-    process.on( 'SIGINT', exitHandler.bind( null, { exit: true } ) );
+    process.on( 'SIGINT', () => exitHandler( { exit: true } ) );
 
     // catches "kill pid" (for example: nodemon restart)
-    process.on( 'SIGUSR1', exitHandler.bind( null, { exit: true } ) );
-    process.on( 'SIGUSR2', exitHandler.bind( null, { exit: true } ) );
+    process.on( 'SIGUSR1', () => exitHandler( { exit: true } ) );
+    process.on( 'SIGUSR2', () => exitHandler( { exit: true } ) );
 
-    //catches uncaught exceptions
-    process.on( 'uncaughtException', exitHandler.bind( null, { exit: true } ) );
+    // catches uncaught exceptions
+    process.on( 'uncaughtException', e => exitHandler( { arg: e, exit: true } ) );
 
     fs.watch( '..' + path.sep, { recursive: true }, ( eventType, filename ) => {
 
       const changeDetectedTime = Date.now();
       const filePath = Transpiler.forwardSlashify( '..' + path.sep + filename );
 
-      if ( this.isPathIgnored( filePath ) ) {
+      // We observed a null filename on Windows for an unknown reason.
+      if ( filename === null || this.isPathIgnored( filePath ) ) {
         return;
       }
 
