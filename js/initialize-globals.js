@@ -69,7 +69,7 @@
      * In environments where users should not be able to navigate hyperlinks away from the simulation, clients can use
      * ?allowLinks=false.  In this case, links are displayed and not clickable. This query parameter is public facing.
      * @memberOf PhetQueryParameters
-     * @type {string}
+     * @type {boolean}
      */
     allowLinks: {
       type: 'boolean',
@@ -289,7 +289,9 @@
     },
 
     /**
-     * test with a specific locale
+     * Select the language of the sim to the specific locale. Default to "en".
+     * @memberOf PhetQueryParameters
+     * @type {string}
      */
     locale: {
       type: 'string',
