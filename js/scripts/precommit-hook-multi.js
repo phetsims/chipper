@@ -39,10 +39,10 @@ const all = args.includes( '--all' );
 
         // Detect uncommitted changes in each repo:
         // https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
-        // git update-index --refresh
         // git diff-index --quiet HEAD --
         // This will error if the diff-index shows any changes in the repo, otherwise error is null.
-        child_process.exec( 'git update-index --refresh && git diff-index --quiet HEAD --', { cwd: repo },
+        // If unexpected changes are showing for a repo, then the index may need to be updated with git update-index --refresh
+        child_process.exec( 'git diff-index --quiet HEAD --', { cwd: repo },
           error => resolve( error ) );
       } );
     };
