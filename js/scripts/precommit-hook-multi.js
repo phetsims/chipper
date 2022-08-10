@@ -4,6 +4,7 @@ const startTime = Date.now();
 const execute = require( '../../../perennial-alias/js/common/execute' );
 const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
+const child_process = require( 'child_process' );
 
 // constants
 // Don't use getActiveRepos() since it cannot be run from the root
@@ -33,24 +34,20 @@ const all = args.includes( '--all' );
 
   if ( !all ) {
 
-    // Detect uncommitted changes in each repo:
-    // https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
-    // git update-index --refresh
-    // git diff-index --quiet HEAD --
+    const execOnRepo = repo => {
+      return new Promise( resolve => {
 
-    const updateIndexPromises = repos.map( repo => execute( 'git', 'update-index --refresh'.split( ' ' ), `${repo}`, {
+        // Detect uncommitted changes in each repo:
+        // https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
+        // git update-index --refresh
+        // git diff-index --quiet HEAD --
+        // This will error if the diff-index shows any changes in the repo, otherwise error is null.
+        child_process.exec( 'git update-index --refresh && git diff-index --quiet HEAD --', { cwd: repo },
+          error => resolve( error ) );
+      } );
+    };
 
-      // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
-      errors: 'resolve'
-    } ) );
-    await Promise.all( updateIndexPromises );
-
-    const diffIndexPromises = repos.map( repo => execute( 'git', 'diff-index --quiet HEAD --'.split( ' ' ), `${repo}`, {
-
-      // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
-      errors: 'resolve'
-    } ) );
-    const results = await Promise.all( diffIndexPromises );
+    const results = await Promise.all( repos.map( execOnRepo ) );
 
     // Find out which repos have uncommitted changes
     const changedRepos = [];
@@ -58,7 +55,7 @@ const all = args.includes( '--all' );
       const repo = repos[ i ];
       const result = results[ i ];
 
-      if ( result.code === 0 ) {
+      if ( result === null ) {
 
         // was up-to-date
       }
