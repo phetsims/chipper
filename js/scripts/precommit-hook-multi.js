@@ -92,6 +92,5 @@ const all = args.includes( '--all' );
     }
   }
 
-  const endTime = Date.now();
-  console.log( 'Done in ' + ( endTime - startTime ) + 'ms' );
+  console.log( 'Done in ' + ( Date.now() - startTime ) + 'ms' );
 } )();
