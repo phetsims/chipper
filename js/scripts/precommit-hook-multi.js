@@ -35,8 +35,16 @@ const all = args.includes( '--all' );
 
     // Detect uncommitted changes in each repo:
     // https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
+    // git update-index --refresh
     // git diff-index --quiet HEAD --
-    // If we find false negatives, we may need up update the indexing before running this with `git update-index --refresh`
+
+    const updateIndexPromises = repos.map( repo => execute( 'git', 'update-index --refresh'.split( ' ' ), `${repo}`, {
+
+      // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
+      errors: 'resolve'
+    } ) );
+    await Promise.all( updateIndexPromises );
+
     const diffIndexPromises = repos.map( repo => execute( 'git', 'diff-index --quiet HEAD --'.split( ' ' ), `${repo}`, {
 
       // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
