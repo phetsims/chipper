@@ -354,7 +354,7 @@ module.exports = {
 
         // Enforce dot notation whenever possible 🔒 🔧 💭
         'dot-notation': 'off',
-        '@typescript-eslint/dot-notation': 'off', // TODO: Enable rule
+        '@typescript-eslint/dot-notation': 'error',
 
         // Require or disallow spacing between function identifiers and their invocations  🔧
         'func-call-spacing': 'off',
@@ -512,6 +512,26 @@ module.exports = {
 
         // Custom return type rule that only requires for methods. The includes return type was too overarching.
         'explicit-method-return-type': 'error'
+      }
+    }, {
+      files: [
+        '**/*Tests.js',
+        '**/*tests.js'
+      ],
+      rules: {
+
+        // Test files are allowed to use dot-notation to circumnavigate private member access
+        'dot-notation': 'off'
+      }
+    }, {
+      files: [
+        '**/*Tests.ts',
+        '**/*tests.ts'
+      ],
+      rules: {
+
+        // Test files are allowed to use dot-notation to circumnavigate private member access
+        '@typescript-eslint/dot-notation': 'off'
       }
     }
   ],
