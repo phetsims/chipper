@@ -65,23 +65,23 @@ module.exports = {
   },
   create: context => {
     return {
-      // FunctionDeclaration: node => {
-      //   if ( !node.returnType ) {
-      //
-      //     context.report( {
-      //       message: 'Missing return type.',
-      //       node: node,
-      //
-      //       // Comment out for next time we need this fixer, but it requires type info, where the rule doesn't, so don't always include it.
-      //       fix: fixer => { // eslint-disable-line
-      //
-      //         const returnTypeString = getReturnTypeString( context, node );
-      //         const bodyStart = node.body.range[ 0 ];
-      //         return insertReturnType( bodyStart, returnTypeString, fixer );
-      //       }
-      //     } );
-      //   }
-      // },
+      FunctionDeclaration: node => {
+        if ( !node.returnType ) {
+
+          context.report( {
+            message: 'Missing return type.',
+            node: node,
+
+            // Comment out for next time we need this fixer, but it requires type info, where the rule doesn't, so don't always include it.
+            fix: fixer => {
+
+              const returnTypeString = getReturnTypeString( context, node );
+              const bodyStart = node.body.range[ 0 ];
+              return insertReturnType( bodyStart, returnTypeString, fixer );
+            }
+          } );
+        }
+      },
       MethodDefinition: node => {
         if ( !exemptMethods.includes( node.kind ) && node.value && !node.value.returnType ) {
 
