@@ -349,13 +349,6 @@ module.exports = function( grunt ) {
       await generateDevelopmentHTML( repo );
     } ) );
 
-  grunt.registerTask( 'generate-tsconfig', 'Generates tsconfig.js for typescript builds.',
-    wrapTask( async () => {
-      const generateTSConfig = require( './generateTSConfig' );
-
-      await generateTSConfig( repo );
-    } ) );
-
   grunt.registerTask( 'generate-test-html',
     'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-unit-tests.md ' +
     'for more information on automated testing. Usually you should ' +
@@ -393,17 +386,9 @@ Updates the normal automatically-generated files for this repository. Includes:
         return;
       }
 
-      const generateTSConfig = require( './generateTSConfig' );
-      await generateTSConfig( repo );
-
       if ( packageObject.phet.runnable ) {
         grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
-
-        // TODO: How to maintain tsconfig in harmony with the dependencies in package.json? see https://github.com/phetsims/chipper/issues/1087
-        // if ( isTypeScript ) {
-        //   grunt.task.run( 'generate-tsconfig' );
-        // }
 
         if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
           grunt.task.run( 'generate-a11y-view-html' );
