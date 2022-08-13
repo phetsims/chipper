@@ -109,14 +109,29 @@
     window.phet.chipper.loadModules();
   };
 
+  const locales = [ FALLBACK_LOCALE ];
+
   // We don't use QueryStringMachine, because we are loaded first.
-  const customLocale = new window.URLSearchParams( window.location.search ).get( 'locale' );
-  const loadCustomLocale = customLocale && customLocale !== FALLBACK_LOCALE;
-  const locales = [
-    FALLBACK_LOCALE,
-    ...( loadCustomLocale ? [ customLocale ] : [] ), // e.g. 'zh_CN'
-    ...( ( loadCustomLocale && customLocale.length > 2 && customLocale.slice( 0, 2 ) !== FALLBACK_LOCALE ) ? [ customLocale.slice( 0, 2 ) ] : [] ) // e.g. 'zh'
-  ];
+  const localeQueryParam = new window.URLSearchParams( window.location.search ).get( 'locale' );
+  const loadExtraLocalesQueryParam = new window.URLSearchParams( window.location.search ).get( 'loadExtraLocales' );
+
+  // Load other locales we might potentially need (keeping out duplicates)
+  [
+    localeQueryParam,
+    ...( loadExtraLocalesQueryParam ? loadExtraLocalesQueryParam.split( ',' ) : [] )
+  ].forEach( locale => {
+    if ( locale ) {
+      // e.g. 'zh_CN'
+      if ( !locales.includes( locale ) ) {
+        locales.push( locale );
+      }
+      // e.g. 'zh'
+      const shortLocale = locale.slice( 0, 2 );
+      if ( locale.length > 2 && !locales.includes( shortLocale ) ) {
+        locales.push( shortLocale );
+      }
+    }
+  } );
 
   phet.chipper.stringRepos.forEach( stringRepoData => {
     const repo = stringRepoData.repo;

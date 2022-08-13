@@ -289,6 +289,17 @@
     },
 
     /**
+     * Provides the (extra) locales to load during startup for an un-built simulation
+     */
+    loadExtraLocales: {
+      type: 'array',
+      elementSchema: {
+        type: 'string'
+      },
+      defaultValue: []
+    },
+
+    /**
      * Select the language of the sim to the specific locale. Default to "en".
      * @memberOf PhetQueryParameters
      * @type {string}

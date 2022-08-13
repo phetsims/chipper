@@ -215,9 +215,10 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
             }
           }
         }
-        assert( stringValue !== null, `Missing string information for ${repo} ${partialStringKey}` );
-
-        stringMap[ locale ][ `${requirejsNamespaceMap[ repo ]}/${partialStringKey}` ] = stringValue;
+        if ( !partialStringKey.endsWith( 'Property' ) ) {
+          assert( stringValue !== null, `Missing string information for ${repo} ${partialStringKey}` );
+          stringMap[ locale ][ `${requirejsNamespaceMap[ repo ]}/${partialStringKey}` ] = stringValue;
+        }
       } );
     } );
   } );
