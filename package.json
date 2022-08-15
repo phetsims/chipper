@@ -64,6 +64,15 @@
       "sourceType": "module",
       "allowImportExportEverywhere": true,
       "requireConfigFile": false
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/*.ts",
+          "**/*.tsx"
+        ],
+        "parser": "@typescript-eslint/parser"
+      }
+    ]
   }
 }
