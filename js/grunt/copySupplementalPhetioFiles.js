@@ -260,7 +260,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   };
 
   // a list of the phet-io wrappers that are built with the phet-io sim
-  let wrappers = fs.readFileSync( '../chipper/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
+  const wrappers = fs.readFileSync( '../chipper/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
 
   // Files and directories from wrapper folders that we don't want to copy
   const wrappersUnallowed = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
@@ -301,10 +301,19 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   wrappers.push( WRAPPER_COMMON_FOLDER );
 
   // Add sim-specific wrappers
-  wrappers = packageObject.phet &&
-             packageObject.phet[ 'phet-io' ] &&
-             packageObject.phet[ 'phet-io' ].wrappers ?
-             wrappers.concat( packageObject.phet[ 'phet-io' ].wrappers ) : wrappers;
+  let simSpecificWrappers;
+  try {
+    const m = fs.readdirSync( `../phet-io-sim-specific/repos/${repo}/wrappers/`, { withFileTypes: true } )
+      .filter( dirent => dirent.isDirectory() )
+      .map( dirent => `phet-io-sim-specific/repos/${repo}/wrappers/${dirent.name}` );
+
+    simSpecificWrappers = m;
+  }
+  catch( e ) {
+    simSpecificWrappers = [];
+  }
+
+  wrappers.push( ...simSpecificWrappers );
 
   wrappers.forEach( wrapper => {
 

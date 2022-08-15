@@ -24,7 +24,6 @@ const EXCLUDE_REPOS = [
   'phet-info',
   'phet-io-client-guides',
   'phet-io-website',
-  'phet-io-wrapper-arithmetic',
   'phet-io-wrapper-hookes-law-energy',
   'phet-ios-app',
   'qa',
