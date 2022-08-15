@@ -11,13 +11,86 @@
  * @author Jonathan Olson <jonathan.olson>
  */
 
-import StringProperty from '../../axon/js/StringProperty.js';
 import DynamicProperty from '../../axon/js/DynamicProperty.js';
+import TinyProperty from '../../axon/js/TinyProperty.js';
 import localeProperty from '../../joist/js/localeProperty.js';
+import PhetioObject from '../../tandem/js/PhetioObject.js';
 import Tandem from '../../tandem/js/Tandem.js';
+import IOType from '../../tandem/js/types/IOType.js';
+import ObjectLiteralIO from '../../tandem/js/types/ObjectLiteralIO.js';
+import StringIO from '../../tandem/js/types/StringIO.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
+
+// initialRepoStringMap[ requirejsNamespace ][ locale ][ stringKey ] = string
+// Needed for state saving (this is what we compute deltas against)
+const initialRepoStringMap = {};
+
+// localePropertiesRepoMap[ requirejsNamespace ][ locale ][ stringKey ] = TinyProperty<string>
+// Needed for state saving (this contains all of our source string Properties)
+const localePropertiesRepoMap = {};
+
+// Create a non-delta state of our current strings, in a form like initialRepoStringMap
+const createCurrentStringState = () => {
+  const result = {};
+  Object.keys( localePropertiesRepoMap ).forEach( requirejsNamespace => {
+    const repoResult = {};
+    result[ requirejsNamespace ] = repoResult;
+    Object.keys( localePropertiesRepoMap[ requirejsNamespace ] ).forEach( locale => {
+      const localeResult = {};
+      repoResult[ locale ] = localeResult;
+      Object.keys( localePropertiesRepoMap[ requirejsNamespace ][ locale ] ).forEach( stringKey => {
+        localeResult[ stringKey ] = localePropertiesRepoMap[ requirejsNamespace ][ locale ][ stringKey ].value;
+      } );
+    } );
+  } );
+  return result;
+};
+
+// Create a state delta
+const createStringStateDiff = () => {
+  return jsondiffpatch.diff( initialRepoStringMap, createCurrentStringState() ) || {};
+};
+
+const StringStateIOType = new IOType( 'StringStateIO', {
+  isValidValue: () => true,
+  toStateObject: () => {
+    return {
+      // Data nested for a valid schema
+      data: createStringStateDiff()
+    };
+  },
+  stateSchema: {
+    data: ObjectLiteralIO
+  },
+  applyState: ( ( ignored, diff ) => {
+    const repoStringMap = _.cloneDeep( initialRepoStringMap );
+    if ( diff.data && Object.keys( diff.data ).length > 0 ) {
+      jsondiffpatch.patch( repoStringMap, diff.data );
+    }
+
+    Object.keys( repoStringMap ).forEach( requirejsNamespace => {
+      Object.keys( repoStringMap[ requirejsNamespace ] ).forEach( locale => {
+        Object.keys( repoStringMap[ requirejsNamespace ][ locale ] ).forEach( stringKey => {
+          const tinyProperty = localePropertiesRepoMap[ requirejsNamespace ][ locale ][ stringKey ];
+          const stringValue = repoStringMap[ requirejsNamespace ][ locale ][ stringKey ];
+          if ( tinyProperty.value !== stringValue ) {
+            tinyProperty.value = stringValue;
+          }
+        } );
+      } );
+    } );
+
+    return null;
+  } )
+} );
+
+new PhetioObject( { // eslint-disable-line
+  phetioType: StringStateIOType,
+  tandem: Tandem.GENERAL_MODEL.createTandem( 'stringsState' ),
+  phetioState: true
+} );
 
 /**
  * @param {string} requirejsNamespace - E.g. 'JOIST', to pull string keys out from that namespace
@@ -46,10 +119,16 @@ const getStringModule = requirejsNamespace => {
   // string keys.
   const allStringKeysInRepo = Object.keys( phet.chipper.strings[ FALLBACK_LOCALE ] ).filter( stringKey => stringKey.indexOf( stringKeyPrefix ) === 0 );
 
+  // initialStringMap[ locale ][ stringKey ]
+  const initialStringMap = {};
+  initialRepoStringMap[ requirejsNamespace ] = initialStringMap;
+
   // localePropertiesMap[ locale ][ stringKey ]
   const localePropertiesMap = {};
+  localePropertiesRepoMap[ requirejsNamespace ] = localePropertiesMap;
   locales.forEach( locale => {
     localePropertiesMap[ locale ] = {};
+    initialStringMap[ locale ] = {};
 
     const fallbackLocales = getFallbackLocales( locale );
 
@@ -60,14 +139,8 @@ const getStringModule = requirejsNamespace => {
           string = phet.chipper.strings[ fallbackLocale ][ stringKey ];
         }
       } );
-      const sanitizedStringKey = stringKey
-        .replace( /_/g, ',' )
-        .replace( /\./g, ',' )
-        .replace( /-/g, ',' )
-        .replace( /\//g, ',' );
-      localePropertiesMap[ locale ][ stringKey ] = new StringProperty( string, {
-        tandem: Tandem.GENERAL_VIEW.createTandem( 'strings' ).createTandem( locale.replace( '_', ',' ) ).createTandem( `${sanitizedStringKey}Property` )
-      } );
+      localePropertiesMap[ locale ][ stringKey ] = new TinyProperty( string );
+      initialStringMap[ locale ][ stringKey ] = string;
     } );
   } );
 
@@ -117,9 +190,18 @@ const getStringModule = requirejsNamespace => {
     // In case our assertions are not enabled, we'll need to proceed without failing out (so we allow for the
     // extended string keys in our actual code, even though assertions should prevent that).
     if ( typeof reference !== 'string' ) {
+      const sanitizedStringKey = stringKey
+        .replace( /_/g, ',' )
+        .replace( /\./g, ',' )
+        .replace( /-/g, ',' )
+        .replace( /\//g, ',' );
       const dynamicProperty = new DynamicProperty( localeProperty, {
         derive: locale => localePropertiesMap[ locale ][ stringKey ],
-        bidirectional: true
+        bidirectional: true,
+        phetioReadOnly: false,
+        phetioValueType: StringIO,
+        phetioState: false,
+        tandem: Tandem.GENERAL_MODEL.createTandem( 'strings' ).createTandem( `${sanitizedStringKey}Property` )
       } );
 
       reference[ `${lastKeyPart}Property` ] = dynamicProperty;

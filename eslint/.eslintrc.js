@@ -1508,6 +1508,9 @@ module.exports = {
     // jQuery for type documentation
     JQuery: 'readonly',
 
+    // JSON diffs
+    jsondiffpatch: 'readonly',
+
     document: 'readonly',
 
     // for linting Node.js code
