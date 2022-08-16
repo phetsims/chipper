@@ -80,7 +80,7 @@ module.exports = {
         ],
 
         // Enforce that literals on classes are exposed in a consistent style 🔒 🔧
-        '@typescript-eslint/class-literal-property-style': 'error',
+        '@typescript-eslint/class-literal-property-style': 'off', // TODO: See https://github.com/phetsims/chipper/issues/1279
 
         // Enforce specifying generic type arguments on type annotation or constructor name of a constructor call 🔒 🔧
         '@typescript-eslint/consistent-generic-constructors': 'error', // It seems preferable to specify the type parameters at the `new` instantiation site
