@@ -174,7 +174,7 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
         // this must support JS code and minified TypeScript code
         const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[\\s*['"][^'"]+['"]\\s*\\])+[^\\.\\[]`, 'g' ) );
         if ( matches ) {
-          stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ) ).filter( m => m !== `${prefix}.get` ) );
+          stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ).replace( /Property$/, '' ).replace( /Property'/, '\'' ) ).filter( m => m !== `${prefix}.get` ) );
         }
 
         // Look for backup matches, e.g. `joistStrings.get( 'fullString' )`
@@ -215,9 +215,10 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
             }
           }
         }
-        assert( stringValue !== null, `Missing string information for ${repo} ${partialStringKey}` );
-
-        stringMap[ locale ][ `${requirejsNamespaceMap[ repo ]}/${partialStringKey}` ] = stringValue;
+        if ( !partialStringKey.endsWith( 'Property' ) ) {
+          assert( stringValue !== null, `Missing string information for ${repo} ${partialStringKey}` );
+          stringMap[ locale ][ `${requirejsNamespaceMap[ repo ]}/${partialStringKey}` ] = stringValue;
+        }
       } );
     } );
   } );

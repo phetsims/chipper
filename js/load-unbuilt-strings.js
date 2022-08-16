@@ -29,6 +29,9 @@
   // Constructing the string map
   window.phet.chipper.strings = {};
 
+  const localeQueryParam = new window.URLSearchParams( window.location.search ).get( 'locale' );
+  const localesQueryParam = new window.URLSearchParams( window.location.search ).get( 'locales' );
+
   let remainingFilesToProcess = 0;
 
   const FALLBACK_LOCALE = 'en';
@@ -71,8 +74,9 @@
    * @param {string} repo - The repository name
    * @param {string} requirejsNamespace - e.g. 'JOIST'
    * @param {string} locale
+   * @param {Function|null} successCallback
    */
-  const requestStringFile = ( repo, requirejsNamespace, locale ) => {
+  const requestStringFile = ( repo, requirejsNamespace, locale, successCallback ) => {
     remainingFilesToProcess++;
 
     const request = new XMLHttpRequest();
@@ -82,18 +86,23 @@
         json = JSON.parse( request.responseText );
       }
       catch( e ) {
-        console.log( `Could not parse string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
+        if ( !( localesQueryParam === '*' ) ) {
+          console.log( `Could not parse string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
+        }
       }
       if ( json ) {
         processStringFile( json, requirejsNamespace, locale );
       }
+      successCallback && successCallback();
       if ( --remainingFilesToProcess === 0 ) {
         finishProcessing();
       }
     } );
 
     request.addEventListener( 'error', () => {
-      console.log( `Could not load string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
+      if ( !( localesQueryParam === '*' ) ) {
+        console.log( `Could not load string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
+      }
       if ( --remainingFilesToProcess === 0 ) {
         finishProcessing();
       }
@@ -109,21 +118,49 @@
     window.phet.chipper.loadModules();
   };
 
-  // We don't use QueryStringMachine, because we are loaded first.
-  const customLocale = new window.URLSearchParams( window.location.search ).get( 'locale' );
-  const loadCustomLocale = customLocale && customLocale !== FALLBACK_LOCALE;
-  const locales = [
-    FALLBACK_LOCALE,
-    ...( loadCustomLocale ? [ customLocale ] : [] ), // e.g. 'zh_CN'
-    ...( ( loadCustomLocale && customLocale.length > 2 && customLocale.slice( 0, 2 ) !== FALLBACK_LOCALE ) ? [ customLocale.slice( 0, 2 ) ] : [] ) // e.g. 'zh'
-  ];
+  let locales = [ FALLBACK_LOCALE ];
+  
+  if ( localesQueryParam === '*' ) {
+    locales = 'aa,ab,ae,af,ak,am,an,ar,ar_MA,ar_SA,as,av,ay,az,ba,be,bg,bh,bi,bm,bn,bo,br,bs,ca,ce,ch,co,cr,cs,cu,cv,cy,da,de,dv,dz,ee,el,en,en_CA,en_GB,eo,es,es_CO,es_CR,es_ES,es_MX,es_PE,et,eu,fa,ff,fi,fj,fo,fr,fu,fy,ga,gd,gl,gn,gu,gv,ha,hi,ho,hr,ht,hu,hy,hz,ia,ie,ig,ii,ik,in,io,is,it,iu,iw,ja,ji,jv,ka,kg,ki,kj,kk,kl,km,kn,ko,kr,ks,ku,ku_TR,kv,kw,ky,la,lb,lg,li,lk,ln,lo,lt,lu,lv,mg,mh,mi,mk,ml,mn,mo,mr,ms,mt,my,na,nb,nd,ne,ng,nl,nn,nr,nv,ny,oc,oj,om,or,os,pa,pi,pl,ps,pt,pt_BR,qu,rm,rn,ro,ru,rw,ry,sa,sc,sd,se,sg,sh,si,sk,sl,sm,sn,so,sq,sr,ss,st,su,sv,sw,ta,te,tg,th,ti,tk,tl,tn,to,tr,ts,tt,tw,ty,ug,uk,ur,uz,ve,vi,vo,wa,wo,xh,yo,za,zh_CN,zh_HK,zh_TW,zu'.split( ',' );
+  }
+  else {
+    // Load other locales we might potentially need (keeping out duplicates)
+    [
+      localeQueryParam,
+      ...( localesQueryParam ? localesQueryParam.split( ',' ) : [] )
+    ].forEach( locale => {
+      if ( locale ) {
+        // e.g. 'zh_CN'
+        if ( !locales.includes( locale ) ) {
+          locales.push( locale );
+        }
+        // e.g. 'zh'
+        const shortLocale = locale.slice( 0, 2 );
+        if ( locale.length > 2 && !locales.includes( shortLocale ) ) {
+          locales.push( shortLocale );
+        }
+      }
+    } );
+  }
 
-  phet.chipper.stringRepos.forEach( stringRepoData => {
-    const repo = stringRepoData.repo;
-    const requirejsNamespace = stringRepoData.requirejsNamespace;
+  // See if our request for the sim-specific strings file works. If so, only then will we load the common repos files
+  // for that locale.
+  const ourRepo = phet.chipper.packageObject.name;
+  let ourRequirejsNamespace;
+  phet.chipper.stringRepos.forEach( data => {
+    if ( data.repo === ourRepo ) {
+      ourRequirejsNamespace = data.requirejsNamespace;
+    }
+  } );
 
-    locales.forEach( locale => {
-      requestStringFile( repo, requirejsNamespace, locale );
+  locales.forEach( locale => {
+    requestStringFile( ourRepo, ourRequirejsNamespace, locale, () => {
+      phet.chipper.stringRepos.forEach( stringRepoData => {
+        const repo = stringRepoData.repo;
+        if ( repo !== ourRepo ) {
+          requestStringFile( repo, stringRepoData.requirejsNamespace, locale, null );
+        }
+      } );
     } );
   } );
 } )();

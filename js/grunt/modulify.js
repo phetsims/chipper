@@ -313,6 +313,7 @@ const createStringModule = async repo => {
  */
 /* eslint-disable */
 import getStringModule from '../../chipper/js/getStringModule.js';
+import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import ${namespace} from './${namespace}.js';
 
 type StringsType = ${getStringTypes( repo )};
@@ -370,6 +371,7 @@ const getStringTypes = repo => {
 
         if ( k === path.length - 1 && m === tokens.length - 1 ) {
           level[ token ] = '{{STRING}}'; // instead of value = allElement.value
+          level[ `${token}Property` ] = '{{STRING_PROPERTY}}';
         }
         else {
           level[ token ] = level[ token ] || {};
@@ -385,9 +387,11 @@ const getStringTypes = repo => {
   text = replace( text, '"', '\'' );
 
   text = replace( text, '\'{{STRING}}\'', 'string' );
+  text = replace( text, '\'{{STRING_PROPERTY}}\'', 'TReadOnlyProperty<string>' );
 
   // Add ; to the last in the list
   text = replace( text, ': string\n', ': string;\n' );
+  text = replace( text, ': TReadOnlyProperty<string>\n', ': TReadOnlyProperty<string>;\n' );
 
   // Use ; instead of ,
   text = replace( text, ',', ';' );
