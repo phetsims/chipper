@@ -313,7 +313,7 @@ const createStringModule = async repo => {
  */
 /* eslint-disable */
 import getStringModule from '../../chipper/js/getStringModule.js';
-import Property from '../../axon/js/Property.js';
+import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import ${namespace} from './${namespace}.js';
 
 type StringsType = ${getStringTypes( repo )};
@@ -387,11 +387,11 @@ const getStringTypes = repo => {
   text = replace( text, '"', '\'' );
 
   text = replace( text, '\'{{STRING}}\'', 'string' );
-  text = replace( text, '\'{{STRING_PROPERTY}}\'', 'Property<string>' );
+  text = replace( text, '\'{{STRING_PROPERTY}}\'', 'TReadOnlyProperty<string>' );
 
   // Add ; to the last in the list
   text = replace( text, ': string\n', ': string;\n' );
-  text = replace( text, ': Property<string>\n', ': Property<string>;\n' );
+  text = replace( text, ': TReadOnlyProperty<string>\n', ': TReadOnlyProperty<string>;\n' );
 
   // Use ; instead of ,
   text = replace( text, ',', ';' );

@@ -190,6 +190,7 @@ const getStringModule = requirejsNamespace => {
     // In case our assertions are not enabled, we'll need to proceed without failing out (so we allow for the
     // extended string keys in our actual code, even though assertions should prevent that).
     if ( typeof reference !== 'string' ) {
+      // TODO: Improve tandem names, see https://github.com/phetsims/chipper/issues/1302
       const sanitizedStringKey = stringKey
         .replace( /_/g, ',' )
         .replace( /\./g, ',' )
