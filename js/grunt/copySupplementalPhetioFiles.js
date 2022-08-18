@@ -208,19 +208,23 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
     if ( isWrapperIndex ) {
       const getGuideRowText = ( fileName, linkText, description ) => {
-        return fs.existsSync( `${PHET_IO_SIM_SPECIFIC}/repos/${repo}/client-guide/${fileName}.md` ) ? `<tr>
+        return `<tr>
         <td><a href="doc/guides/${fileName}.html">${linkText}</a>
         </td>
         <td>${description}</td>
-      </tr>` : '';
+      </tr>`;
       };
 
+      // The phet-io-guide is not sim-specific, so always create it.
       contents = ChipperStringUtils.replaceAll( contents, '{{PHET_IO_GUIDE_ROW}}',
         getGuideRowText( PHET_IO_GUIDE_FILENAME, 'PhET-iO Guide',
           'Documentation for instructional designers about best practices for simulation customization with PhET-iO Studio.' ) );
-      contents = ChipperStringUtils.replaceAll( contents, '{{EXAMPLES_ROW}}',
-        getGuideRowText( EXAMPLES_FILENAME, 'Examples',
-          'Provides instructions and the specific phetioIDs for customizing the simulation.' ) );
+
+
+      const exampleRowContents = fs.existsSync( `${PHET_IO_SIM_SPECIFIC}/repos/${repo}/client-guide/${EXAMPLES_FILENAME}.md` ) ?
+                                 getGuideRowText( EXAMPLES_FILENAME, 'Examples',
+                                   'Provides instructions and the specific phetioIDs for customizing the simulation.' ) : '';
+      contents = ChipperStringUtils.replaceAll( contents, '{{EXAMPLES_ROW}}', exampleRowContents );
     }
 
     // Special handling for studio paths since it is not nested under phet-io-wrappers
@@ -520,6 +524,7 @@ const handleJSDOC = async buildDir => {
 const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
   const clientGuidesSourceRoot = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/`;
+  const commonDir = `${PHET_IO_SIM_SPECIFIC}/${GUIDES_COMMON_DIR}`;
 
   // gracefully support no client guides
   if ( !fs.existsSync( clientGuidesSourceRoot ) ) {
@@ -528,7 +533,7 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
   }
 
   // copy over common images and styles
-  copyDirectory( `${PHET_IO_SIM_SPECIFIC}/${GUIDES_COMMON_DIR}`, `${builtClientGuidesOutputDir}/common` );
+  copyDirectory( commonDir, `${builtClientGuidesOutputDir}` );
 
   // copy over the sim-specific phet-io guide images
   const simSpecificGuideImagesDir = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/images/`;
@@ -537,18 +542,19 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
   }
 
   // handle generating and writing the html file for each client guide
-  generateAndWriteClientGuide( repoName, `${simulationDisplayName} PhET-iO Guide`, `${clientGuidesSourceRoot}${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html` );
-  generateAndWriteClientGuide( repoName, `${simulationDisplayName} Examples`, `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`, `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html` );
+  generateAndWriteClientGuide( repoName, `${simulationDisplayName} PhET-iO Guide`, simulationDisplayName, `${commonDir}/${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html` );
+  generateAndWriteClientGuide( repoName, `${simulationDisplayName} Examples`, simulationDisplayName, `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`, `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html` );
 };
 
 /**
  * Takes a markdown client guides, fills in the links, and then generates and writes it as html
  * @param {string} repoName
  * @param {string} title
+ * @param {string} simulationDisplayName
  * @param {string} mdFilePath - to get the source md file
  * @param {string} destinationPath - to write to
  */
-const generateAndWriteClientGuide = ( repoName, title, mdFilePath, destinationPath ) => {
+const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, mdFilePath, destinationPath ) => {
 
   // make sure the source markdown file exists
   if ( !fs.existsSync( mdFilePath ) ) {
@@ -559,20 +565,21 @@ const generateAndWriteClientGuide = ( repoName, title, mdFilePath, destinationPa
   // fill in links
   let clientGuideSource = grunt.file.read( mdFilePath );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{WRAPPER_INDEX_PATH}}', '../../' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIMULATION_DISPLAY_NAME}}', simulationDisplayName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILENAME}.html` );
 
   // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path. Order matters!
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../../${GUIDES_COMMON_DIR}`, 'common' );
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../${GUIDES_COMMON_DIR}`, 'common' );
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../${GUIDES_COMMON_DIR}`, 'common' );
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${GUIDES_COMMON_DIR}`, 'common' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../../${GUIDES_COMMON_DIR}`, '' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../${GUIDES_COMMON_DIR}`, '' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../${GUIDES_COMMON_DIR}`, '' );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${GUIDES_COMMON_DIR}`, '' );
   const renderedClientGuide = marked.parse( clientGuideSource );
 
   // link a stylesheet
   const clientGuideHTML = `<head>
-                   <link rel='stylesheet' href='common/css/github-markdown.css' type='text/css'>
+                   <link rel='stylesheet' href='css/github-markdown.css' type='text/css'>
                    <title>${title}</title>
                  </head>
                  <body>
