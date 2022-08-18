@@ -190,19 +190,41 @@ const getStringModule = requirejsNamespace => {
     // In case our assertions are not enabled, we'll need to proceed without failing out (so we allow for the
     // extended string keys in our actual code, even though assertions should prevent that).
     if ( typeof reference !== 'string' ) {
-      // TODO: Improve tandem names, see https://github.com/phetsims/chipper/issues/1302
-      const sanitizedStringKey = stringKey
-        .replace( /_/g, ',' )
-        .replace( /\./g, ',' )
-        .replace( /-/g, ',' )
-        .replace( /\//g, ',' );
+      let tandem = Tandem.GENERAL_MODEL.createTandem( 'strings' ).createTandem( _.camelCase( requirejsNamespace ) );
+      for ( let i = 0; i < keyParts.length; i++ ) {
+
+        // TODO: a11y comes out as a11Y which is awkward, https://github.com/phetsims/chipper/issues/1302
+        let tandemName = _.camelCase( keyParts[ i ] );
+
+        // If it is the tail of the string key, then make the tandem be a "*StringProperty"
+        if ( i === keyParts.length - 1 ) {
+
+          let currentTandemName = tandemName;
+          let j = 0;
+          let tandemNameTaken = true;
+
+          // Handle the case where two unique string keys map to the same camel case value, i.e. "Solid" and "solid".
+          // Here we will be solidStringProperty and solid2StringProperty
+          while ( tandemNameTaken ) {
+            j++;
+
+            currentTandemName = `${tandemName}${j === 1 ? '' : j}StringProperty`;
+
+            tandemNameTaken = tandem.hasChild( currentTandemName );
+          }
+          tandemName = currentTandemName;
+        }
+
+        tandem = tandem.createTandem( tandemName );
+      }
+
       const dynamicProperty = new DynamicProperty( localeProperty, {
         derive: locale => localePropertiesMap[ locale ][ stringKey ],
         bidirectional: true,
         phetioReadOnly: false,
         phetioValueType: StringIO,
         phetioState: false,
-        tandem: Tandem.GENERAL_MODEL.createTandem( 'strings' ).createTandem( `${sanitizedStringKey}Property` )
+        tandem: tandem
       } );
 
       reference[ `${lastKeyPart}Property` ] = dynamicProperty;
