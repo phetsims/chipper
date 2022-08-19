@@ -27,6 +27,15 @@ process.on( 'SIGINT', () => {
   process.exit();
 } );
 
+const Transpiler = require( '../common/Transpiler' );
+const transpiler = new Transpiler( { silent: true } );
+
+// On the build server, or if a developer wants to run a build without running a transpile watch process,
+// we have to transpile any dependencies run through wrapPhetBuildScript
+// TODO: What if TypeScript code imports other repos? See https://github.com/phetsims/chipper/issues/1272
+transpiler.transpileRepo( 'chipper' );
+transpiler.transpileRepo( 'phet-core' );
+
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
 
@@ -165,24 +174,20 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'output-js', 'Outputs JS just for the specified repo',
     wrapTask( async () => {
-      const Transpiler = require( '../common/Transpiler' );
-
-      new Transpiler( { silent: true } ).transpileRepo( repo );
+      transpiler.transpileRepo( repo );
     } )
   );
   grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
     wrapTask( async () => {
-      const Transpiler = require( '../common/Transpiler' );
       const getPhetLibs = require( './getPhetLibs' );
 
-      new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( repo ) );
+      transpiler.transpileRepos( getPhetLibs( repo ) );
     } )
   );
 
   grunt.registerTask( 'output-js-all', 'Outputs JS for all repos',
     wrapTask( async () => {
-      const Transpiler = require( '../common/Transpiler' );
-      new Transpiler( { silent: true } ).transpileAll();
+      transpiler.transpileAll();
     } )
   );
 
@@ -211,7 +216,6 @@ module.exports = function( grunt ) {
       const reportTscResults = require( './reportTscResults' );
       const path = require( 'path' );
       const fs = require( 'fs' );
-      const Transpiler = require( '../common/Transpiler' );
       const getPhetLibs = require( './getPhetLibs' );
 
       // Parse minification keys
@@ -240,7 +244,7 @@ module.exports = function( grunt ) {
       reportTscResults( results, grunt );
 
       // If that succeeds, then convert the code to JS
-      new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( repo ) );
+      transpiler.transpileRepos( getPhetLibs( repo ) );
 
       // standalone
       if ( repoPackageObject.phet.buildStandalone ) {
@@ -561,11 +565,10 @@ Updates the normal automatically-generated files for this repository. Includes:
       const getSimList = require( '../common/getSimList' );
       const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
       const fs = require( 'fs' );
-      const Transpiler = require( '../common/Transpiler' );
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
 
-      new Transpiler( { silent: true } ).transpileAll();
+      transpiler.transpileAll();
 
       const results = await generatePhetioMacroAPI( sims, {
         showProgressBar: sims.length > 1
