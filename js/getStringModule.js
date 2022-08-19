@@ -11,78 +11,43 @@
  * @author Jonathan Olson <jonathan.olson>
  */
 
-import DynamicProperty from '../../axon/js/DynamicProperty.js';
-import TinyProperty from '../../axon/js/TinyProperty.js';
-import localeProperty from '../../joist/js/localeProperty.js';
 import PhetioObject from '../../tandem/js/PhetioObject.js';
 import Tandem from '../../tandem/js/Tandem.js';
 import IOType from '../../tandem/js/types/IOType.js';
 import ObjectLiteralIO from '../../tandem/js/types/ObjectLiteralIO.js';
-import StringIO from '../../tandem/js/types/StringIO.js';
+import LocalizedString from './LocalizedString.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
 
-// initialRepoStringMap[ requirejsNamespace ][ locale ][ stringKey ] = string
-// Needed for state saving (this is what we compute deltas against)
-const initialRepoStringMap = {};
-
-// localePropertiesRepoMap[ requirejsNamespace ][ locale ][ stringKey ] = TinyProperty<string>
-// Needed for state saving (this contains all of our source string Properties)
-const localePropertiesRepoMap = {};
-
-// Create a non-delta state of our current strings, in a form like initialRepoStringMap
-const createCurrentStringState = () => {
-  const result = {};
-  Object.keys( localePropertiesRepoMap ).forEach( requirejsNamespace => {
-    const repoResult = {};
-    result[ requirejsNamespace ] = repoResult;
-    Object.keys( localePropertiesRepoMap[ requirejsNamespace ] ).forEach( locale => {
-      const localeResult = {};
-      repoResult[ locale ] = localeResult;
-      Object.keys( localePropertiesRepoMap[ requirejsNamespace ][ locale ] ).forEach( stringKey => {
-        localeResult[ stringKey ] = localePropertiesRepoMap[ requirejsNamespace ][ locale ][ stringKey ].value;
-      } );
-    } );
-  } );
-  return result;
-};
-
-// Create a state delta
-const createStringStateDiff = () => {
-  return jsondiffpatch.diff( initialRepoStringMap, createCurrentStringState() ) || {};
-};
+// Holds all of our localizedStrings, so that we can save our phet-io string change state
+const localizedStrings = [];
 
 const StringStateIOType = new IOType( 'StringStateIO', {
   isValidValue: () => true,
   toStateObject: () => {
+    const data = {};
+    localizedStrings.forEach( localizedString => {
+      const state = localizedString.getStateDelta();
+
+      // Only create an entry if there is anything (we can save bytes by not including the tandem here)
+      if ( Object.keys( state ).length > 0 ) {
+        data[ localizedString.property.tandem.phetioID ] = state;
+      }
+    } );
     return {
       // Data nested for a valid schema
-      data: createStringStateDiff()
+      data: data
     };
   },
   stateSchema: {
     data: ObjectLiteralIO
   },
-  applyState: ( ( ignored, diff ) => {
-    const repoStringMap = _.cloneDeep( initialRepoStringMap );
-    if ( diff.data && Object.keys( diff.data ).length > 0 ) {
-      jsondiffpatch.patch( repoStringMap, diff.data );
-    }
-
-    Object.keys( repoStringMap ).forEach( requirejsNamespace => {
-      Object.keys( repoStringMap[ requirejsNamespace ] ).forEach( locale => {
-        Object.keys( repoStringMap[ requirejsNamespace ][ locale ] ).forEach( stringKey => {
-          const tinyProperty = localePropertiesRepoMap[ requirejsNamespace ][ locale ][ stringKey ];
-          const stringValue = repoStringMap[ requirejsNamespace ][ locale ][ stringKey ];
-          if ( tinyProperty.value !== stringValue ) {
-            tinyProperty.value = stringValue;
-          }
-        } );
-      } );
+  applyState: ( ( ignored, state ) => {
+    // We need to iterate through every string, since it might need to revert back to "initial" state
+    localizedStrings.forEach( localizedString => {
+      localizedString.setStateDelta( state.data[ localizedString.property.tandem.phetioID ] || {} );
     } );
-
-    return null;
   } )
 } );
 
@@ -103,14 +68,6 @@ const getStringModule = requirejsNamespace => {
   assert && assert( typeof phet.chipper.locale === 'string', 'phet.chipper.locale should have been loaded by now' );
   assert && assert( phet.chipper.strings, 'phet.chipper.strings should have been loaded by now' );
 
-  const locales = Object.keys( phet.chipper.strings );
-
-  const getFallbackLocales = locale => [
-    locale,
-    ...( locale.includes( '_' ) && !locale.startsWith( FALLBACK_LOCALE ) ? [ locale.slice( 0, 2 ) ] : [] ),
-    ...( locale !== FALLBACK_LOCALE ? [ FALLBACK_LOCALE ] : [] )
-  ].filter( locale => locales.includes( locale ) );
-
   // Construct locales in increasing specificity, e.g. [ 'en', 'zh', 'zh_CN' ], so we get fallbacks in order
   // const locales = [ FALLBACK_LOCALE ];
   const stringKeyPrefix = `${requirejsNamespace}/`;
@@ -119,32 +76,10 @@ const getStringModule = requirejsNamespace => {
   // string keys.
   const allStringKeysInRepo = Object.keys( phet.chipper.strings[ FALLBACK_LOCALE ] ).filter( stringKey => stringKey.indexOf( stringKeyPrefix ) === 0 );
 
-  // initialStringMap[ locale ][ stringKey ]
-  const initialStringMap = {};
-  initialRepoStringMap[ requirejsNamespace ] = initialStringMap;
-
-  // localePropertiesMap[ locale ][ stringKey ]
-  const localePropertiesMap = {};
-  localePropertiesRepoMap[ requirejsNamespace ] = localePropertiesMap;
-  locales.forEach( locale => {
-    localePropertiesMap[ locale ] = {};
-    initialStringMap[ locale ] = {};
-
-    const fallbackLocales = getFallbackLocales( locale );
-
-    allStringKeysInRepo.forEach( stringKey => {
-      let string = null;
-      fallbackLocales.forEach( fallbackLocale => {
-        if ( string === null && typeof phet.chipper.strings[ fallbackLocale ][ stringKey ] === 'string' ) {
-          string = phet.chipper.strings[ fallbackLocale ][ stringKey ];
-        }
-      } );
-      localePropertiesMap[ locale ][ stringKey ] = new TinyProperty( string );
-      initialStringMap[ locale ][ stringKey ] = string;
-    } );
-  } );
-
   const stringModule = {};
+
+  // localizedStringMap[ stringKey ]
+  const localizedStringMap = {};
 
   allStringKeysInRepo.forEach( stringKey => {
     // strip off the requirejsNamespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'
@@ -218,17 +153,23 @@ const getStringModule = requirejsNamespace => {
         tandem = tandem.createTandem( tandemName );
       }
 
-      const dynamicProperty = new DynamicProperty( localeProperty, {
-        derive: locale => localePropertiesMap[ locale ][ stringKey ],
-        bidirectional: true,
-        phetioReadOnly: false,
-        phetioValueType: StringIO,
-        phetioState: false,
-        tandem: tandem
+      const localizedString = new LocalizedString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ], stringKey, tandem );
+      localizedStringMap[ stringKey ] = localizedString;
+      localizedStrings.push( localizedString );
+
+      // Push up the translated values
+      Object.keys( phet.chipper.strings ).forEach( locale => {
+        const string = phet.chipper.strings[ locale ][ stringKey ];
+        if ( typeof string === 'string' ) {
+          localizedString.setInitialValue( locale, string );
+        }
       } );
 
-      reference[ `${lastKeyPart}Property` ] = dynamicProperty;
-      dynamicProperty.link( string => {
+      // Put our Property in the stringModule
+      reference[ `${lastKeyPart}Property` ] = localizedString.property;
+
+      // Change our stringModule based on the Property value
+      localizedString.property.link( string => {
         reference[ lastKeyPart ] = string;
       } );
     }
@@ -243,16 +184,7 @@ const getStringModule = requirejsNamespace => {
    * @returns {string}
    */
   stringModule.get = partialKey => {
-    const fullKey = `${requirejsNamespace}/${partialKey}`;
-
-    const property = localePropertiesMap[ localeProperty.value ][ fullKey ];
-
-    if ( property ) {
-      return property.value;
-    }
-    else {
-      throw new Error( `Unable to find string ${fullKey} in get( '${partialKey}' )` );
-    }
+    return localizedStringMap[ `${requirejsNamespace}/${partialKey}` ].property.value;
   };
 
   return stringModule;
