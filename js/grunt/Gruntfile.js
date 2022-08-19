@@ -93,15 +93,37 @@ module.exports = function( grunt ) {
     'build'
   ] );
 
+  const wrapPhetBuildScript = string => {
+    const args = string.split( ' ' );
+
+    const child_process = require( 'child_process' );
+
+    return () => {
+      const done = grunt.task.current.async();
+
+      const p = child_process.spawn( 'node', [ '../chipper/dist/js/chipper/js/phet-build-script/phet-build-script.js', ...args ], {
+        cwd: process.cwd()
+      } );
+
+      p.on( 'error', error => {
+        grunt.fail.fatal( `Perennial task failed: ${error}` );
+        done();
+      } );
+      p.stderr.on( 'data', data => console.log( String( data ) ) );
+      p.stdout.on( 'data', data => console.log( String( data ) ) );
+      p.on( 'close', code => {
+        if ( code !== 0 ) {
+          grunt.fail.fatal( `Perennial task failed with code: ${code}` );
+        }
+        done();
+      } );
+    };
+  };
+
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
-    wrapTask( async () => {
-      const buildDirectory = `../${repo}/build`;
-      if ( grunt.file.exists( buildDirectory ) ) {
-        grunt.file.delete( buildDirectory );
-      }
-      grunt.file.mkdir( buildDirectory );
-    } ) );
+    wrapPhetBuildScript( `clean --repo=${repo}` )
+  );
 
   grunt.registerTask( 'build-images',
     'Build images only',
