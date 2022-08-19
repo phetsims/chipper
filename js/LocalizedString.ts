@@ -198,6 +198,8 @@ class LocalizedString {
 
   public dispose(): void {
     localeOrderProperty.unlink( this.localeOrderListener );
+
+    this.property.dispose();
   }
 }
 
