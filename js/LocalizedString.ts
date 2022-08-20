@@ -29,8 +29,6 @@ class LocalizedString {
   // Public-facing IProperty<string>, used by string modules
   public readonly property: DynamicProperty<string, string, string>;
 
-  public readonly stringKey: string;
-
   // Holds our non-Override Property at the root of everything
   private readonly englishProperty: TinyProperty<TranslationString>;
 
@@ -42,11 +40,10 @@ class LocalizedString {
   // Store initial values, so we can handle state deltas
   private readonly initialValues: Record<LocaleString, TranslationString> = {};
 
-  public constructor( englishValue: TranslationString, stringKey: string, tandem: Tandem ) {
+  public constructor( englishValue: TranslationString, tandem: Tandem ) {
 
     this.englishProperty = new TinyProperty( englishValue );
     this.initialValues[ FALLBACK_LOCALE ] = englishValue;
-    this.stringKey = stringKey;
 
     this.localeOrderListener = this.onLocaleOrderChange.bind( this );
     localeOrderProperty.lazyLink( this.localeOrderListener );

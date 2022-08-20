@@ -13,6 +13,7 @@
 
 import PhetioObject from '../../tandem/js/PhetioObject.js';
 import Tandem from '../../tandem/js/Tandem.js';
+import CouldNotYetDeserializeError from '../../tandem/js/CouldNotYetDeserializeError.js';
 import IOType from '../../tandem/js/types/IOType.js';
 import ObjectLiteralIO from '../../tandem/js/types/ObjectLiteralIO.js';
 import LocalizedString from './LocalizedString.js';
@@ -21,12 +22,13 @@ import LocalizedString from './LocalizedString.js';
 const FALLBACK_LOCALE = 'en';
 
 // Holds all of our localizedStrings, so that we can save our phet-io string change state
-const localizedStrings = [];
+export const localizedStrings = [];
 
 const StringStateIOType = new IOType( 'StringStateIO', {
   isValidValue: () => true,
   toStateObject: () => {
     const data = {};
+
     localizedStrings.forEach( localizedString => {
       const state = localizedString.getStateDelta();
 
@@ -44,6 +46,17 @@ const StringStateIOType = new IOType( 'StringStateIO', {
     data: ObjectLiteralIO
   },
   applyState: ( ( ignored, state ) => {
+
+    // When PhetioDynamicElementContainer elements such as PhetioGroup memers add localizedStrings, we wait until
+    // all of the members have been created before trying to set any of the strings.
+    const keys = Object.keys( state.data );
+    keys.forEach( key => {
+      const match = localizedStrings.find( localizedString => localizedString.property.tandem.phetioID === key );
+      if ( !match ) {
+        throw new CouldNotYetDeserializeError( 'too bad' );
+      }
+    } );
+
     // We need to iterate through every string, since it might need to revert back to "initial" state
     localizedStrings.forEach( localizedString => {
       localizedString.setStateDelta( state.data[ localizedString.property.tandem.phetioID ] || {} );
@@ -153,7 +166,7 @@ const getStringModule = requirejsNamespace => {
         tandem = tandem.createTandem( tandemName );
       }
 
-      const localizedString = new LocalizedString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ], stringKey, tandem );
+      const localizedString = new LocalizedString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ], tandem );
       localizedStringMap[ stringKey ] = localizedString;
       localizedStrings.push( localizedString );
 
