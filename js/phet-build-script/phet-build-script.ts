@@ -1,4 +1,4 @@
-// Copyright 2020-2021, University of Colorado Boulder
+// Copyright 2022, University of Colorado Boulder
 // Entry point for phet build commands forwarded from grunt
 
 import * as fs from 'fs'; // eslint-disable-line bad-sim-text
