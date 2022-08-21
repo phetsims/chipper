@@ -22,7 +22,7 @@ const FALLBACK_LOCALE = 'en';
 // for readability/docs
 type LocaleString = string; // COULD type based on `keyof typeof localeInfoModule`
 type TranslationString = string;
-type LocalizedStringStateDelta = Record<LocaleString, TranslationString>;
+export type LocalizedStringStateDelta = Record<LocaleString, TranslationString>;
 
 class LocalizedString {
 

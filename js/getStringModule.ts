@@ -16,18 +16,18 @@ import Tandem from '../../tandem/js/Tandem.js';
 import CouldNotYetDeserializeError from '../../tandem/js/CouldNotYetDeserializeError.js';
 import IOType from '../../tandem/js/types/IOType.js';
 import ObjectLiteralIO from '../../tandem/js/types/ObjectLiteralIO.js';
-import LocalizedString from './LocalizedString.js';
+import LocalizedString, { LocalizedStringStateDelta } from './LocalizedString.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
 
 // Holds all of our localizedStrings, so that we can save our phet-io string change state
-export const localizedStrings = [];
+export const localizedStrings: LocalizedString[] = [];
 
 const StringStateIOType = new IOType( 'StringStateIO', {
   isValidValue: () => true,
   toStateObject: () => {
-    const data = {};
+    const data: Record<string, LocalizedStringStateDelta> = {};
 
     localizedStrings.forEach( localizedString => {
       const state = localizedString.getStateDelta();
@@ -53,7 +53,7 @@ const StringStateIOType = new IOType( 'StringStateIO', {
     keys.forEach( key => {
       const match = localizedStrings.find( localizedString => localizedString.property.tandem.phetioID === key );
       if ( !match ) {
-        throw new CouldNotYetDeserializeError( 'too bad' );
+        throw new CouldNotYetDeserializeError();
       }
     } );
 
@@ -70,11 +70,14 @@ new PhetioObject( { // eslint-disable-line
   phetioState: true
 } );
 
+// TODO: https://github.com/phetsims/chipper/issues/1302 better type?
+type TStringModule = Record<string, any>; // eslint-disable-line
+
 /**
- * @param {string} requirejsNamespace - E.g. 'JOIST', to pull string keys out from that namespace
- * @returns {Object} - Nested object to be accessed like joistStrings.ResetAllButton.name
+ * @param requirejsNamespace - E.g. 'JOIST', to pull string keys out from that namespace
+ * @returns Nested object to be accessed like joistStrings.ResetAllButton.name
  */
-const getStringModule = requirejsNamespace => {
+const getStringModule = ( requirejsNamespace: string ): object => {
   // Our string information is pulled globally, e.g. phet.chipper.strings[ locale ][ stringKey ] = stringValue;
   // Our locale information is from phet.chipper.locale
 
@@ -87,12 +90,23 @@ const getStringModule = requirejsNamespace => {
 
   // We may have other older (unused) keys in babel, and we are only doing the search that matters with the English
   // string keys.
-  const allStringKeysInRepo = Object.keys( phet.chipper.strings[ FALLBACK_LOCALE ] ).filter( stringKey => stringKey.indexOf( stringKeyPrefix ) === 0 );
-
-  const stringModule = {};
+  const allStringKeysInRepo = Object.keys( phet.chipper.strings[ FALLBACK_LOCALE ] ).filter( stringKey => stringKey.startsWith( stringKeyPrefix ) );
 
   // localizedStringMap[ stringKey ]
-  const localizedStringMap = {};
+  const localizedStringMap: Record<string, LocalizedString> = {};
+
+  const stringModule: TStringModule = {
+
+    /**
+     * Allow a semi-manual getter for a string, using the partial key (every part of it not including the
+     * requireNamespace).
+     *
+     * @param partialKey - e.g 'ResetAllButton.name' for the string key 'SCENERY_PHET/ResetAllButton.name'
+     */
+    get( partialKey: string ): string {
+      return localizedStringMap[ `${requirejsNamespace}/${partialKey}` ].property.value;
+    }
+  };
 
   allStringKeysInRepo.forEach( stringKey => {
     // strip off the requirejsNamespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'
@@ -187,18 +201,6 @@ const getStringModule = requirejsNamespace => {
       } );
     }
   } );
-
-  /**
-   * Allow a semi-manual getter for a string, using the partial key (every part of it not including the
-   * requireNamespace).
-   * @public
-   *
-   * @param {string} partialKey - e.g 'ResetAllButton.name' for the string key 'SCENERY_PHET/ResetAllButton.name'
-   * @returns {string}
-   */
-  stringModule.get = partialKey => {
-    return localizedStringMap[ `${requirejsNamespace}/${partialKey}` ].property.value;
-  };
 
   return stringModule;
 };
