@@ -15,6 +15,8 @@ import Tandem from '../../tandem/js/Tandem.js';
 import StringIO from '../../tandem/js/types/StringIO.js';
 import chipper from './chipper.js';
 import TProperty from '../../axon/js/TProperty.js';
+import { localizedStrings } from './getStringModule.js';
+import arrayRemove from '../../phet-core/js/arrayRemove.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
@@ -56,6 +58,8 @@ class LocalizedString {
       phetioState: false,
       tandem: tandem
     } );
+
+    localizedStrings.push( this );
   }
 
   /**
@@ -197,6 +201,7 @@ class LocalizedString {
     localeOrderProperty.unlink( this.localeOrderListener );
 
     this.property.dispose();
+    arrayRemove( localizedStrings, this );
   }
 }
 

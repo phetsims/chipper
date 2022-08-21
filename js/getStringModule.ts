@@ -182,7 +182,6 @@ const getStringModule = ( requirejsNamespace: string ): object => {
 
       const localizedString = new LocalizedString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ], tandem );
       localizedStringMap[ stringKey ] = localizedString;
-      localizedStrings.push( localizedString );
 
       // Push up the translated values
       Object.keys( phet.chipper.strings ).forEach( locale => {
