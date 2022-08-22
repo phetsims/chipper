@@ -88,7 +88,10 @@ class Transpiler {
   static getTargetPath( filename ) {
     const relativePath = path.relative( root, filename );
     const suffix = relativePath.substring( relativePath.lastIndexOf( '.' ) );
-    return Transpiler.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( suffix ).join( '.js' );
+
+    // Note: When we upgrade to Node 16, this may no longer be necessary, see https://github.com/phetsims/chipper/issues/1272#issuecomment-1222574593
+    const extension = relativePath.includes( 'phet-build-script' ) ? '.mjs' : '.js';
+    return Transpiler.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( suffix ).join( extension );
   }
 
   /**
@@ -131,9 +134,14 @@ class Transpiler {
       const tail = path.substring( start.length );
 
       const correspondingFile = `../${tail}`;
-      const tsFile = correspondingFile.split( '.js' ).join( '.ts' );
-      const tsxFile = correspondingFile.split( '.js' ).join( '.tsx' );
-      if ( !fs.existsSync( correspondingFile ) && !fs.existsSync( tsFile ) && !fs.existsSync( tsxFile ) ) {
+      const jsTsFile = correspondingFile.split( '.js' ).join( '.ts' );
+      const jsTsxFile = correspondingFile.split( '.js' ).join( '.tsx' );
+      const mjsTsFile = correspondingFile.split( '.mjs' ).join( '.ts' );
+      const mjsTsxFile = correspondingFile.split( '.mjs' ).join( '.tsx' );
+      if ( !fs.existsSync( correspondingFile ) &&
+           !fs.existsSync( jsTsFile ) && !fs.existsSync( jsTsxFile ) &&
+           !fs.existsSync( mjsTsFile ) && !fs.existsSync( mjsTsxFile )
+      ) {
         fs.unlinkSync( path );
         console.log( 'No parent source file for: ' + path + ', deleted.' );
       }

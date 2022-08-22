@@ -110,7 +110,7 @@ module.exports = function( grunt ) {
     return () => {
       const done = grunt.task.current.async();
 
-      const p = child_process.spawn( 'node', [ '../chipper/dist/js/chipper/js/phet-build-script/phet-build-script.js', ...args ], {
+      const p = child_process.spawn( 'node', [ '../chipper/dist/js/chipper/js/phet-build-script/phet-build-script.mjs', ...args ], {
         cwd: process.cwd()
       } );
 
