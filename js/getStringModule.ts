@@ -180,14 +180,14 @@ const getStringModule = ( requirejsNamespace: string ): object => {
         tandem = tandem.createTandem( tandemName );
       }
 
-      const localizedString = new LocalizedString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ], tandem );
+      const localizedString = new LocalizedString( phet.chipper.mapString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ] ), tandem );
       localizedStringMap[ stringKey ] = localizedString;
 
       // Push up the translated values
       Object.keys( phet.chipper.strings ).forEach( locale => {
         const string = phet.chipper.strings[ locale ][ stringKey ];
         if ( typeof string === 'string' ) {
-          localizedString.setInitialValue( locale, string );
+          localizedString.setInitialValue( locale, phet.chipper.mapString( string ) );
         }
       } );
 
