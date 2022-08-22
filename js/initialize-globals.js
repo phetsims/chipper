@@ -635,7 +635,7 @@
      * one locale can be used. The default is true so that whenever more than one locale is available the ability
      * to change locale is available. But this query parameter supports disabling the feature for that case as well.
      * Can be permanently disabled for a sim if `supportsMultipleLocales: false` is added to a Sim
-     * PreferencesConfiguration. But the query parameter will always override.
+     * PreferencesModel. But the query parameter will always override.
      *
      * TODO: Make public? See https://github.com/phetsims/joist/issues/814
      * TODO: Better name for this? See https://github.com/phetsims/joist/issues/814
