@@ -17,6 +17,7 @@ import CouldNotYetDeserializeError from '../../tandem/js/CouldNotYetDeserializeE
 import IOType from '../../tandem/js/types/IOType.js';
 import ObjectLiteralIO from '../../tandem/js/types/ObjectLiteralIO.js';
 import LocalizedString, { LocalizedStringStateDelta } from './LocalizedString.js';
+import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
@@ -77,8 +78,9 @@ new PhetioObject( { // eslint-disable-line
   phetioState: true
 } );
 
-// TODO: https://github.com/phetsims/chipper/issues/1302 better type?
-type TStringModule = Record<string, any>; // eslint-disable-line
+type TStringModule = {
+  [ key: string ]: TStringModule | string | TReadOnlyProperty<string>;
+};
 
 /**
  * @param requirejsNamespace - E.g. 'JOIST', to pull string keys out from that namespace
@@ -114,7 +116,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
 
     // During traversal into the string object, this will hold the object where the next level needs to be defined,
     // whether that's another child object, or the string value itself.
-    let reference = stringModule;
+    let reference: TStringModule = stringModule;
 
     // We'll traverse down through the parts of a string key (separated by '.'), creating a new level in the
     // string object for each one. This is done for all BUT the last part, since we'll want to assign the result
@@ -136,7 +138,8 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       if ( !reference[ keyPart ] ) {
         reference[ keyPart ] = {};
       }
-      reference = reference[ keyPart ];
+
+      reference = reference[ keyPart ] as TStringModule; // since we are on all but the last key part, it cannot be stringlike
     } );
 
     assert && assert( typeof reference[ lastKeyPart ] !== 'object',
@@ -151,7 +154,6 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       let tandem = Tandem.GENERAL_MODEL.createTandem( 'strings' ).createTandem( _.camelCase( requirejsNamespace ) );
       for ( let i = 0; i < keyParts.length; i++ ) {
 
-        // TODO: a11y comes out as a11Y which is awkward, https://github.com/phetsims/chipper/issues/1302
         let tandemName = _.camelCase( keyParts[ i ] );
 
         // If it is the tail of the string key, then make the tandem be a "*StringProperty"
