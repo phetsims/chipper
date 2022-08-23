@@ -95,18 +95,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
   // localizedStringMap[ stringKey ]
   const localizedStringMap: Record<string, LocalizedString> = {};
 
-  const stringModule: TStringModule = {
-
-    /**
-     * Allow a semi-manual getter for a string, using the partial key (every part of it not including the
-     * requireNamespace).
-     *
-     * @param partialKey - e.g 'ResetAllButton.name' for the string key 'SCENERY_PHET/ResetAllButton.name'
-     */
-    get( partialKey: string ): string {
-      return localizedStringMap[ `${requirejsNamespace}/${partialKey}` ].property.value;
-    }
-  };
+  const stringModule: TStringModule = {};
 
   allStringKeysInRepo.forEach( stringKey => {
     // strip off the requirejsNamespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'

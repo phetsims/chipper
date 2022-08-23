@@ -176,12 +176,6 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
         if ( matches ) {
           stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ).replace( /Property$/, '' ).replace( /Property'/, '\'' ) ).filter( m => m !== `${prefix}.get` ) );
         }
-
-        // Look for backup matches, e.g. `joistStrings.get( 'fullString' )`
-        const workaroundMatches = fileContent.match( new RegExp( `${prefix}\\.get\\( '([^']+)' \\)`, 'g' ) );
-        if ( workaroundMatches ) {
-          stringAccesses.push( ...workaroundMatches.map( match => `${prefix}.${match.slice( match.indexOf( '\'' ) + 1, match.lastIndexOf( '\'' ) )}` ) );
-        }
       }
     } );
 
