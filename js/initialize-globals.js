@@ -631,21 +631,6 @@
     },
 
     /**
-     * Indicates whether locale can be changed for the simulation. localeProperty must also indicate that more than
-     * one locale can be used. The default is true so that whenever more than one locale is available the ability
-     * to change locale is available. But this query parameter supports disabling the feature for that case as well.
-     * Can be permanently disabled for a sim if `supportsMultipleLocales: false` is added to a Sim
-     * PreferencesModel. But the query parameter will always override.
-     *
-     * TODO: Make public? See https://github.com/phetsims/joist/issues/814
-     * TODO: Better name for this? See https://github.com/phetsims/joist/issues/814
-     */
-    supportsMultipleLocales: {
-      type: 'boolean',
-      defaultValue: true
-    },
-
-    /**
      * Indicates whether or not the "Voicing" feature is enabled. This is a prototype
      * feature that uses the web-speech API to provide speech output to the user about
      * what is happening in the simulation.
