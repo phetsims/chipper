@@ -4,8 +4,8 @@
  * TypeScript files.
  *
  * We could not use the built-in rule explicit-function-return-type because it does not support a way to skip functions
- * defined in a variable declaration. Functions defined like this typically have a local usage scope, and we decided
- * that we don't need them to have a return type.
+ * defined in a variable declaration. Functions defined like this typically have a local usage scope, and the team
+ * decided that we don't need them to have a return type.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  * @copyright 2022 University of Colorado Boulder
