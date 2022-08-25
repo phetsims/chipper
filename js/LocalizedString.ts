@@ -56,7 +56,8 @@ class LocalizedString {
       phetioReadOnly: false,
       phetioValueType: StringIO,
       phetioState: false,
-      tandem: tandem
+      tandem: tandem,
+      phetioFeatured: true
     } );
 
     localizedStrings.push( this );
