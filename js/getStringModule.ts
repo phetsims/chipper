@@ -154,7 +154,9 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       let tandem = Tandem.GENERAL_MODEL.createTandem( 'strings' ).createTandem( _.camelCase( requirejsNamespace ) );
       for ( let i = 0; i < keyParts.length; i++ ) {
 
-        let tandemName = _.camelCase( keyParts[ i ] );
+        // a11y maps to a11Y in camel case, so let's sit this one out. Worth a hard coding here since most string files
+        // have this key.
+        let tandemName = keyParts[ i ] === 'a11y' ? keyParts[ i ] : _.camelCase( keyParts[ i ] );
 
         // If it is the tail of the string key, then make the tandem be a "*StringProperty"
         if ( i === keyParts.length - 1 ) {
