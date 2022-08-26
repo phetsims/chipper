@@ -39,6 +39,7 @@
     "../../../scenery/js/**/*",
     "../../../scenery-phet/js/**/*",
     "../../../simula-rasa/js/**/*",
+    "../../../studio/js/**/*",
     "../../../sun/js/**/*",
     "../../../tambo/js/**/*",
     "../../../tandem/js/**/*",
