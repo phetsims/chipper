@@ -583,9 +583,6 @@
      *
      * none|null: the normal translated string will be shown
      *
-     * keyboardShortcutLocaleSwitcher: adds keyboard shortcuts. ctrl+i (forward) or ctrl+u (backward). Also,
-     *   same physical keys on the dvorak keyboard (c=forward and g=backwards)
-     *
      * {string}: if any other string provided, that string will be substituted everywhere. This facilitates testing
      *   specific cases, like whether the word 'vitesse' would substitute for 'speed' well.  Also, using "/u20" it
      *   will show whitespace for all of the strings, making it easy to identify non-translated strings.
@@ -593,6 +590,14 @@
     stringTest: {
       type: 'string',
       defaultValue: null
+    },
+
+    /**
+     * adds keyboard shortcuts. ctrl+i (forward) or ctrl+u (backward). Also, the same physical keys on the
+     * dvorak keyboard (c=forward and g=backwards)
+     */
+    localeKeyboardSwitcher: {
+      type: 'flag'
     },
 
     /**
@@ -794,7 +799,6 @@
              stringTest === 'rtl' ? '\u202b\u062a\u0633\u062a (\u0632\u0628\u0627\u0646)\u202c' :
              stringTest === 'xss' ? `${string}<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABCQEBtxmN7wAAAABJRU5ErkJggg==" onload="window.location.href=atob('aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==')" />` :
              stringTest === 'none' ? string :
-             stringTest === 'keyboardShortcutLocaleSwitcher' ? string :
 
                // In the fallback case, supply whatever string was given in the query parameter value
              stringTest;
