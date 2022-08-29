@@ -47,6 +47,7 @@
     "../../../twixt/js/**/*",
     "../../../utterance-queue/js/**/*",
     "../../../vegas/js/**/*",
+    "../../../wave-interference/js/**/*",
     "../../../wilder/js/**/*"
   ]
 }
