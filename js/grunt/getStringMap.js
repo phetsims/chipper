@@ -174,7 +174,7 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
         // this must support JS code and minified TypeScript code
         const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[\\s*['"][^'"]+['"]\\s*\\])+[^\\.\\[]`, 'g' ) );
         if ( matches ) {
-          stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ).replace( /Property$/, '' ).replace( /Property'/, '\'' ) ).filter( m => m !== `${prefix}.get` ) );
+          stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ).replace( /StringProperty$/, '' ).replace( /StringProperty'/, '\'' ) ).filter( m => m !== `${prefix}.get` ) );
         }
       }
     } );
@@ -209,7 +209,7 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
             }
           }
         }
-        if ( !partialStringKey.endsWith( 'Property' ) ) {
+        if ( !partialStringKey.endsWith( 'StringProperty' ) ) {
           assert( stringValue !== null, `Missing string information for ${repo} ${partialStringKey}` );
           stringMap[ locale ][ `${requirejsNamespaceMap[ repo ]}/${partialStringKey}` ] = stringValue;
         }

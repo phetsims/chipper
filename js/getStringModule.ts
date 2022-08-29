@@ -192,7 +192,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       } );
 
       // Put our Property in the stringModule
-      reference[ `${lastKeyPart}Property` ] = localizedString.property;
+      reference[ `${lastKeyPart}StringProperty` ] = localizedString.property;
 
       // Change our stringModule based on the Property value
       localizedString.property.link( string => {

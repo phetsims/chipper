@@ -371,7 +371,7 @@ const getStringTypes = repo => {
 
         if ( k === path.length - 1 && m === tokens.length - 1 ) {
           level[ token ] = '{{STRING}}'; // instead of value = allElement.value
-          level[ `${token}Property` ] = '{{STRING_PROPERTY}}';
+          level[ `${token}StringProperty` ] = '{{STRING_PROPERTY}}';
         }
         else {
           level[ token ] = level[ token ] || {};
