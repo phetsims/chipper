@@ -81,19 +81,17 @@
 
     const request = new XMLHttpRequest();
     request.addEventListener( 'load', () => {
-      let json;
-      try {
-        json = JSON.parse( request.responseText );
-      }
-      catch( e ) {
-        if ( !( localesQueryParam === '*' ) ) {
-          console.log( `Could not parse string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
+      if ( request.status === 200 ) {
+        let json;
+        try {
+          json = JSON.parse( request.responseText );
         }
-      }
-      if ( json ) {
+        catch( e ) {
+          throw new Error( `Could not parse string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
+        }
         processStringFile( json, requirejsNamespace, locale );
+        successCallback && successCallback();
       }
-      successCallback && successCallback();
       if ( --remainingFilesToProcess === 0 ) {
         finishProcessing();
       }
@@ -119,7 +117,7 @@
   };
 
   let locales = [ FALLBACK_LOCALE ];
-  
+
   if ( localesQueryParam === '*' ) {
     locales = 'aa,ab,ae,af,ak,am,an,ar,ar_MA,ar_SA,as,av,ay,az,ba,be,bg,bh,bi,bm,bn,bo,br,bs,ca,ce,ch,co,cr,cs,cu,cv,cy,da,de,dv,dz,ee,el,en,en_CA,en_GB,eo,es,es_CO,es_CR,es_ES,es_MX,es_PE,et,eu,fa,ff,fi,fj,fo,fr,fu,fy,ga,gd,gl,gn,gu,gv,ha,hi,ho,hr,ht,hu,hy,hz,ia,ie,ig,ii,ik,in,io,is,it,iu,iw,ja,ji,jv,ka,kg,ki,kj,kk,kl,km,kn,ko,kr,ks,ku,ku_TR,kv,kw,ky,la,lb,lg,li,lk,ln,lo,lt,lu,lv,mg,mh,mi,mk,ml,mn,mo,mr,ms,mt,my,na,nb,nd,ne,ng,nl,nn,nr,nv,ny,oc,oj,om,or,os,pa,pi,pl,ps,pt,pt_BR,qu,rm,rn,ro,ru,rw,ry,sa,sc,sd,se,sg,sh,si,sk,sl,sm,sn,so,sq,sr,ss,st,su,sv,sw,ta,te,tg,th,ti,tk,tl,tn,to,tr,ts,tt,tw,ty,ug,uk,ur,uz,ve,vi,vo,wa,wo,xh,yo,za,zh_CN,zh_HK,zh_TW,zu'.split( ',' );
   }
