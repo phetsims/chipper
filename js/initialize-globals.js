@@ -596,7 +596,7 @@
      * adds keyboard shortcuts. ctrl+i (forward) or ctrl+u (backward). Also, the same physical keys on the
      * dvorak keyboard (c=forward and g=backwards)
      */
-    localeKeyboardSwitcher: {
+    keyboardLocaleSwitcher: {
       type: 'flag'
     },
 
