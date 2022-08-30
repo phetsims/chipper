@@ -35,7 +35,7 @@ class LocalizedString {
   private readonly englishProperty: TinyProperty<TranslationString>;
 
   // Uses lazy creation of locales
-  private readonly localePropertyMap: Map<string, TinyOverrideProperty<TranslationString>> = new Map();
+  private readonly localePropertyMap = new Map<string, TinyOverrideProperty<TranslationString>>();
 
   private readonly localeOrderListener: ( locales: LocaleString[] ) => void;
 
