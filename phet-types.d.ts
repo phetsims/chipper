@@ -101,6 +101,21 @@ declare var TWEEN: { update: ( dt: number ) => void };
 declare var phetSplashScreen: { dispose: () => void };
 declare var phetio: Record<string, IntentionalAny>;
 
+// Typing for linebreaker-1.1.0.js preload
+declare type LineBreakerBreak = {
+  position: number;
+  required: boolean;
+};
+declare type LineBreakerType = {
+  nextBreak(): LineBreakerBreak | null;
+
+  // We make it iterable
+  [ Symbol.iterator ](): Iterator<LineBreakerBreak, undefined>;
+};
+declare var LineBreaker: {
+  new ( str: string ): LineBreakerType;
+};
+
 declare var assertions: {
   enableAssert: () => void;
 };

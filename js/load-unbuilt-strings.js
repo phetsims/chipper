@@ -29,6 +29,10 @@
   // Constructing the string map
   window.phet.chipper.strings = {};
 
+  // Prefixes, ideally a better way of accessing localeInfo on startup would exist. We have localeInfo, however it's
+  // in the form of a module, and we can't use that at this point.
+  const rtlLocales = [ 'ae', 'ar', 'fa', 'iw', 'ur' ];
+
   const localeQueryParam = new window.URLSearchParams( window.location.search ).get( 'locale' );
   const localesQueryParam = new window.URLSearchParams( window.location.search ).get( 'locales' );
 
@@ -46,6 +50,13 @@
    * @param {string} locale
    */
   const processStringFile = ( stringObject, requirejsNamespace, locale ) => {
+    // See if we are in an RTL locale (lodash is unavailable at this point)
+    let isRTL = false;
+    rtlLocales.forEach( rtlLocale => {
+      if ( locale.startsWith( rtlLocale ) ) {
+        isRTL = true;
+      }
+    } );
 
     const stringKeyPrefix = `${requirejsNamespace}/`;
 
@@ -56,7 +67,14 @@
     const recurse = ( path, object ) => {
       Object.keys( object ).forEach( key => {
         if ( key === 'value' ) {
-          localeStringMap[ `${stringKeyPrefix}${path}` ] = object.value;
+          let value = object.value;
+
+          // Add directional marks
+          if ( value.length > 0 ) {
+            value = `${( isRTL ? '\u202b' : '\u202a' )}${value}\u202c`;
+          }
+
+          localeStringMap[ `${stringKeyPrefix}${path}` ] = value;
         }
         else if ( object[ key ] && typeof object[ key ] === 'object' ) {
           recurse( `${path}${path.length ? '.' : ''}${key}`, object[ key ] );
