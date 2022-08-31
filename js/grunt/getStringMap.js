@@ -172,9 +172,24 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
         // [^\\.\\[] ---- matches something at the end that is NOT either of those other two cases
         // It is also generalized to support arbitrary whitespace and requires that ' match ' or " match ", since
         // this must support JS code and minified TypeScript code
+        // Matches one final character that is not '.' or '[', since any valid string accesses should NOT have that
+        // after. NOTE: there are some degenerate cases that will break this, e.g.:
+        // - joistStrings.someStringProperty[ 0 ]
+        // - joistStrings.something[ 0 ]
+        // - joistStrings.something[ 'length' ]
         const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[\\s*['"][^'"]+['"]\\s*\\])+[^\\.\\[]`, 'g' ) );
         if ( matches ) {
-          stringAccesses.push( ...matches.map( match => match.slice( 0, match.length - 1 ).replace( /StringProperty$/, '' ).replace( /StringProperty'/, '\'' ) ).filter( m => m !== `${prefix}.get` ) );
+          stringAccesses.push( ...matches.map( match => {
+            return match
+              // We always have to strip off the last character - it's a character that shouldn't be in a string access
+              .slice( 0, match.length - 1 )
+              // Handle joistStrings[ 'some-thingStringProperty' ].value => joistStrings[ 'some-thing' ]
+              // -- Anything after StringProperty should go
+              // away, but we need to add the final '] to maintain the format
+              .replace( /StringProperty'].*/, '\']' )
+              // Handle joistStrings.somethingStringProperty.value => joistStrings.something
+              .replace( /StringProperty.*/, '' );
+          } ) );
         }
       }
     } );
