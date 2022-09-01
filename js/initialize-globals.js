@@ -595,6 +595,8 @@
     /**
      * adds keyboard shortcuts. ctrl+i (forward) or ctrl+u (backward). Also, the same physical keys on the
      * dvorak keyboard (c=forward and g=backwards)
+     *
+     * NOTE: DUPLICATION ALERT. Don't change this without looking at parameter in PHET_IO_WRAPPERS/Client.ts
      */
     keyboardLocaleSwitcher: {
       type: 'flag'
