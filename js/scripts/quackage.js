@@ -12,19 +12,19 @@ const args = process.argv.slice( 2 );
 function visit( file ) {
 
   const parentDir = path.dirname( file );
-  const package = parentDir + path.sep + 'package.json';
-  const quackage = parentDir + path.sep + 'quackage.json';
+  const packageFile = parentDir + path.sep + 'package.json';
+  const quackageFile = parentDir + path.sep + 'quackage.json';
 
-  if ( fs.existsSync( package ) && fs.existsSync( quackage ) ) {
+  if ( fs.existsSync( packageFile ) && fs.existsSync( quackageFile ) ) {
     throw new Error( 'too many ackages' );
   }
-  else if ( fs.existsSync( package ) ) {
-    console.log( `renaming ${package} => ${quackage}` );
-    fs.renameSync( package, quackage );
+  else if ( fs.existsSync( packageFile ) ) {
+    console.log( `renaming ${packageFile} => ${quackageFile}` );
+    fs.renameSync( packageFile, quackageFile );
   }
-  else if ( fs.existsSync( quackage ) ) {
-    console.log( `renaming ${quackage} => ${package}` );
-    fs.renameSync( quackage, package );
+  else if ( fs.existsSync( quackageFile ) ) {
+    console.log( `renaming ${quackageFile} => ${packageFile}` );
+    fs.renameSync( quackageFile, packageFile );
   }
   else {
     visit( parentDir );
