@@ -333,6 +333,7 @@ export default ${namespace}Strings;
  * @param {string} repo
  */
 const getStringTypes = repo => {
+  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const json = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
 
   // Track paths to all the keys with values.
@@ -370,7 +371,9 @@ const getStringTypes = repo => {
         assert( !token.includes( ' ' ), `Token ${token} cannot include forbidden characters` );
 
         if ( k === path.length - 1 && m === tokens.length - 1 ) {
-          level[ token ] = '{{STRING}}'; // instead of value = allElement.value
+          if ( !packageObject.phet.supportsDynamicLocale ) {
+            level[ token ] = '{{STRING}}'; // instead of value = allElement.value
+          }
           level[ `${token}StringProperty` ] = '{{STRING_PROPERTY}}';
         }
         else {
