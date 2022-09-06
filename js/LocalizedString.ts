@@ -92,7 +92,8 @@ class LocalizedString {
    * Take a state from getStateDelta, and apply it.
    */
   public setStateDelta( state: LocalizedStringStateDelta ): void {
-    // Create potential new locales
+
+    // Create potential new locales (since locale-specific Properties are lazily created as needed
     Object.keys( state ).forEach( locale => this.getLocaleSpecificProperty( locale ) );
 
     this.usedLocales.forEach( locale => {
@@ -137,7 +138,8 @@ class LocalizedString {
   }
 
   private onLocaleOrderChange( localeOrder: string[] ): void {
-    // Do this in reverse order to AVOID infinite loops, e.g. if localeOrder1=ar,es localeOrder2=es,ar, then we
+
+    // Do this in reverse order to AVOID infinite loops (e.g. if localeOrder1=ar,es localeOrder2=es,ar) then we
     // could have both TinyOverrideProperties pointing to each other, and they wouldn't be able to get a value
     const locales = [
       ...this.usedLocales,
@@ -155,7 +157,7 @@ class LocalizedString {
   }
 
   /**
-   * Returns the locale-specific TProperty<string> for any locale (lazily creating it if necessary)
+   * Returns the locale-specific Property for any locale (lazily creating it if necessary)
    */
   public getLocaleSpecificProperty( locale: string ): TProperty<string> {
     if ( locale === 'en' ) {
