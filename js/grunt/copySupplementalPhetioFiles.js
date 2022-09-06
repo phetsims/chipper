@@ -82,7 +82,6 @@ const CONTRIB_FILES = [
 // This path is used for jsdoc. Transpilation happens before we get to this point. SR and MK recognize that this feels
 // a bit risky, even though comments are currently preserved in the babel transpile step. See https://stackoverflow.com/questions/51720894/is-there-any-way-to-use-jsdoc-with-ts-files-maybe-transpile-with-babel-the
 const transpiledClientPath = `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/Client.js`;
-assert( fs.readFileSync( transpiledClientPath ).toString().indexOf( '/**' ) >= 0, 'babel should not strip comments from transpiling' );
 
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
 const JSDOC_FILES = [
@@ -104,6 +103,10 @@ const STUDIO_BUILT_FILENAME = 'studio.min.js';
  * @param {boolean} [generateMacroAPIFile]
  */
 module.exports = async ( repo, version, simulationDisplayName, packageObject, buildLocal, generateMacroAPIFile = false ) => {
+
+  // This must be checked after copySupplementalPhetioFiles is called, since all the imports and outer code is run in
+  // every brand. Developers without phet-io checked out still need to be able to build.
+  assert( fs.readFileSync( transpiledClientPath ).toString().indexOf( '/**' ) >= 0, 'babel should not strip comments from transpiling' );
 
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
