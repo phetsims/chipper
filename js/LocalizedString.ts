@@ -53,11 +53,10 @@ class LocalizedString {
     this.property = new DynamicProperty( localeProperty, {
       derive: ( locale: string ) => this.getLocaleSpecificProperty( locale ),
       bidirectional: true,
-      phetioReadOnly: false,
       phetioValueType: StringIO,
       phetioState: false,
       tandem: tandem,
-      phetioFeatured: true
+      phetioFeatured: true // All i18n model strings are phetioFeatured by default
     } );
 
     // Add to a global list to support PhET-iO serialization and internal testing
