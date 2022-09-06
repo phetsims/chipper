@@ -60,6 +60,7 @@ class LocalizedString {
       phetioFeatured: true
     } );
 
+    // Add to a global list to support PhET-iO serialization and internal testing
     localizedStrings.push( this );
   }
 
