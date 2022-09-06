@@ -72,7 +72,7 @@ const StringStateIOType = new IOType( 'StringStateIO', {
   } )
 } );
 
-new PhetioObject( { // eslint-disable-line
+PhetioObject.create( {
   phetioType: StringStateIOType,
   tandem: Tandem.GENERAL_MODEL.createTandem( 'stringsState' ),
   phetioState: true
