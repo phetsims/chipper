@@ -21,6 +21,7 @@ import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
+type PhetioID = string;
 
 // Holds all of our localizedStrings, so that we can save our phet-io string change state
 export const localizedStrings: LocalizedString[] = [];
@@ -35,7 +36,7 @@ window.phet.chipper.setAllStrings = ( str: string ) => {
 const StringStateIOType = new IOType( 'StringStateIO', {
   isValidValue: () => true,
   toStateObject: () => {
-    const data: Record<string, LocalizedStringStateDelta> = {};
+    const data: Record<PhetioID, LocalizedStringStateDelta> = {};
 
     localizedStrings.forEach( localizedString => {
       const state = localizedString.getStateDelta();
@@ -46,33 +47,33 @@ const StringStateIOType = new IOType( 'StringStateIO', {
       }
     } );
     return {
-      // Data nested for a valid schema
-      data: data
+      data: data // Data nested for a valid schema
     };
   },
   stateSchema: {
     data: ObjectLiteralIO
   },
-  applyState: ( ( ignored, state ) => {
+  applyState: ( ignored, state ) => {
 
-    // When PhetioDynamicElementContainer elements such as PhetioGroup memers add localizedStrings, we wait until
-    // all of the members have been created before trying to set any of the strings.
-    const keys = Object.keys( state.data );
-    keys.forEach( key => {
-      const match = localizedStrings.find( localizedString => localizedString.property.tandem.phetioID === key );
+    // Every string in state has to be in localizedStrings to continue
+    Object.keys( state.data ).forEach( phetioID => {
+      const match = localizedStrings.find( localizedString => localizedString.property.tandem.phetioID === phetioID );
+
+      // When PhetioDynamicElementContainer elements such as PhetioGroup members add localizedStrings, we wait until
+      // all of the members have been created (populating localizedStrings) before trying to set any of the strings.
       if ( !match ) {
         throw new CouldNotYetDeserializeError();
       }
     } );
 
-    // We need to iterate through every string, since it might need to revert back to "initial" state
+    // We need to iterate through every string in this runtime, since it might need to revert back to "initial" state.
     localizedStrings.forEach( localizedString => {
       localizedString.setStateDelta( state.data[ localizedString.property.tandem.phetioID ] || {} );
     } );
-  } )
+  }
 } );
 
-new PhetioObject( { // eslint-disable-line
+PhetioObject.create( {
   phetioType: StringStateIOType,
   tandem: Tandem.GENERAL_MODEL.createTandem( 'stringsState' ),
   phetioState: true
