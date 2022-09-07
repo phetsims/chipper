@@ -114,14 +114,8 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
         // Grabs out the prefix before `Strings.js` (without the leading slash too)
         const importName = importStatement.match( /\/([\w-]+)Strings\.js/ )[ 1 ];
 
-        // un-camel-case
-        let repo = importName;
-        for ( let i = 0; i < repo.length; i++ ) {
-          if ( repo[ i ] >= 'A' && repo[ i ] <= 'Z' ) {
-            repo = `${repo.slice( 0, i )}-${repo[ i ].toLowerCase()}${repo.slice( i + 1 )}`;
-          }
-        }
-        return repo;
+        // kebab case the repo
+        return _.kebabCase( importName );
       } ) );
     }
   } );
@@ -157,7 +151,9 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
     // include slightly more (since we're string parsing), e.g. `JoistStrings.ResetAllButton.name.length` would be
     // included, even though only part of that is a string access.
     let stringAccesses = [];
-    const prefix = `${_.camelCase( repo )}Strings`; // e.g. JoistStrings
+
+    // duplication alert. This should be maintained in modulify.js
+    const prefix = `${_.startCase( _.camelCase( repo ) ).split( ' ' ).join( '' )}Strings`; // e.g. JoistStrings
     usedFileContents.forEach( ( fileContent, i ) => {
       // Only scan files where we can identify an import for it
       if ( fileContent.includes( `import ${prefix} from` ) ) {

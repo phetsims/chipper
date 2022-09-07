@@ -296,15 +296,17 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename, repo ) => {
 const createStringModule = async repo => {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-  const stringModuleFileJS = `../${repo}/js/${_.camelCase( repo )}Strings.js`;
-  const relativeStringModuleFile = `js/${_.camelCase( repo )}Strings.ts`;
+  // duplication alert. This should be maintained in getStringMap.js
+  const stringModuleName = `${_.startCase( _.camelCase( repo ) ).split( ' ' ).join( '' )}Strings`;
+  const relativeStringModuleFile = `js/${stringModuleName}.ts`;
+  const stringModuleFileJS = `../${repo}/${relativeStringModuleFile}`;
   const namespace = _.camelCase( repo );
 
   if ( fs.existsSync( stringModuleFileJS ) ) {
     console.log( 'Found JS string file in TS repo.  It should be deleted manually.  ' + stringModuleFileJS );
   }
 
-  const copyrightLine = await getCopyrightLine( repo, `js/${_.camelCase( repo )}Strings.ts` );
+  const copyrightLine = await getCopyrightLine( repo, relativeStringModuleFile );
   await writeFileAndGitAdd( repo, relativeStringModuleFile, fixEOL(
     `${copyrightLine}
 
@@ -318,11 +320,11 @@ import ${namespace} from './${namespace}.js';
 
 type StringsType = ${getStringTypes( repo )};
 
-const ${namespace}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' ) as StringsType;
+const ${stringModuleName} = getStringModule( '${packageObject.phet.requirejsNamespace}' ) as StringsType;
 
-${namespace}.register( '${namespace}Strings', ${namespace}Strings );
+${namespace}.register( '${stringModuleName}', ${stringModuleName} );
 
-export default ${namespace}Strings;
+export default ${stringModuleName};
 ` ) );
 };
 
