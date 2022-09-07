@@ -240,8 +240,16 @@ module.exports = function( grunt ) {
       const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
       // Run the type checker first.
-      const results = await tsc( `../${repo}` );
-      reportTscResults( results, grunt );
+      const brands = getBrands( grunt, repo, buildLocal );
+
+      // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
+      if ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ) {
+        const results = await tsc( `../${repo}` );
+        reportTscResults( results, grunt );
+      }
+      else {
+        grunt.log.writeln( 'skipping type checking' );
+      }
 
       // If that succeeds, then convert the code to JS
       transpiler.transpileRepos( getPhetLibs( repo ) );
