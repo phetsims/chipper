@@ -130,7 +130,7 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
   } );
 
   // Compute a map of {repo:string} => {requirejsNamepsace:string}, so we can construct full string keys from strings
-  // that would be accessing them, e.g. `joistStrings.ResetAllButton.name` => `JOIST/ResetAllButton.name`.
+  // that would be accessing them, e.g. `JoistStrings.ResetAllButton.name` => `JOIST/ResetAllButton.name`.
   const requirejsNamespaceMap = {};
   reposWithUsedStrings.forEach( repo => {
     const packageObject = JSON.parse( fs.readFileSync( `../${repo}/package.json`, 'utf-8' ) );
@@ -153,16 +153,16 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
   reposWithUsedStrings.forEach( repo => {
 
     // Scan all of the files with string module references, scanning for anything that looks like a string access for
-    // our repo. This will include the string module reference, e.g. `joistStrings.ResetAllButton.name`, but could also
-    // include slightly more (since we're string parsing), e.g. `joistStrings.ResetAllButton.name.length` would be
+    // our repo. This will include the string module reference, e.g. `JoistStrings.ResetAllButton.name`, but could also
+    // include slightly more (since we're string parsing), e.g. `JoistStrings.ResetAllButton.name.length` would be
     // included, even though only part of that is a string access.
     let stringAccesses = [];
-    const prefix = `${_.camelCase( repo )}Strings`; // e.g. joistStrings
+    const prefix = `${_.camelCase( repo )}Strings`; // e.g. JoistStrings
     usedFileContents.forEach( ( fileContent, i ) => {
       // Only scan files where we can identify an import for it
       if ( fileContent.includes( `import ${prefix} from` ) ) {
 
-        // Look for normal matches, e.g. `joistStrings.` followed by one or more chunks like:
+        // Look for normal matches, e.g. `JoistStrings.` followed by one or more chunks like:
         // .somethingVaguely_alphaNum3r1c
         // [ 'aStringInBracketsBecauseOfSpecialCharacters' ]
         //
@@ -174,20 +174,20 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
         // this must support JS code and minified TypeScript code
         // Matches one final character that is not '.' or '[', since any valid string accesses should NOT have that
         // after. NOTE: there are some degenerate cases that will break this, e.g.:
-        // - joistStrings.someStringProperty[ 0 ]
-        // - joistStrings.something[ 0 ]
-        // - joistStrings.something[ 'length' ]
+        // - JoistStrings.someStringProperty[ 0 ]
+        // - JoistStrings.something[ 0 ]
+        // - JoistStrings.something[ 'length' ]
         const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[\\s*['"][^'"]+['"]\\s*\\])+[^\\.\\[]`, 'g' ) );
         if ( matches ) {
           stringAccesses.push( ...matches.map( match => {
             return match
               // We always have to strip off the last character - it's a character that shouldn't be in a string access
               .slice( 0, match.length - 1 )
-              // Handle joistStrings[ 'some-thingStringProperty' ].value => joistStrings[ 'some-thing' ]
+              // Handle JoistStrings[ 'some-thingStringProperty' ].value => JoistStrings[ 'some-thing' ]
               // -- Anything after StringProperty should go
               // away, but we need to add the final '] to maintain the format
               .replace( /StringProperty'].*/, '\']' )
-              // Handle joistStrings.somethingStringProperty.value => joistStrings.something
+              // Handle JoistStrings.somethingStringProperty.value => JoistStrings.something
               .replace( /StringProperty.*/, '' );
           } ) );
         }

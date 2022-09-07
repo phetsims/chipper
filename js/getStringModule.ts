@@ -85,7 +85,7 @@ type TStringModule = {
 
 /**
  * @param requirejsNamespace - E.g. 'JOIST', to pull string keys out from that namespace
- * @returns Nested object to be accessed like joistStrings.ResetAllButton.name
+ * @returns Nested object to be accessed like JoistStrings.ResetAllButton.name
  */
 const getStringModule = ( requirejsNamespace: string ): object => {
   // Our string information is pulled globally, e.g. phet.chipper.strings[ locale ][ stringKey ] = stringValue;
