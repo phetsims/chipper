@@ -336,7 +336,6 @@ module.exports = function( grunt ) {
     const getPhetLibs = require( './getPhetLibs' );
 
     const brands = getBrands( grunt, repo, buildLocal );
-    console.log( brands );
 
     const lintReturnValue = await lint( getPhetLibs( repo, brands ), {
       cache: cache,
