@@ -25,7 +25,10 @@ module.exports = function getPhetLibs( repo, brand ) {
   assert( typeof repo === 'string', 'Repository required for getPhetLibs' );
 
   if ( brand === undefined ) {
-    return _.reduce( ChipperConstants.BRANDS, ( dependencies, brand ) => {
+    return getPhetLibs( repo, ChipperConstants.BRANDS );
+  }
+  else if ( Array.isArray( brand ) ) {
+    return _.reduce( brand, ( dependencies, brand ) => {
       return _.uniq( dependencies.concat( getPhetLibs( repo, brand ) ).sort() );
     }, [] );
   }

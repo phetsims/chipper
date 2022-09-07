@@ -265,34 +265,7 @@ module.exports = function( grunt ) {
       }
       else {
 
-        // Determine what brands we want to build
-        assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
-
-        const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
-        const supportedBrands = localPackageObject.phet.supportedBrands;
-
-        assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
-
-        let brands;
-        if ( grunt.option( 'brands' ) ) {
-          if ( grunt.option( 'brands' ) === '*' ) {
-            brands = supportedBrands;
-          }
-          else {
-            brands = grunt.option( 'brands' ).split( ',' );
-          }
-        }
-        else if ( buildLocal.brands ) {
-          // Extra check, see https://github.com/phetsims/chipper/issues/640
-          assert( Array.isArray( buildLocal.brands ), 'If brands exists in build-local.json, it should be an array' );
-          brands = buildLocal.brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
-        }
-        else {
-          brands = [ 'adapted-from-phet' ];
-        }
-
-        // Ensure all listed brands are valid
-        brands.forEach( brand => assert( supportedBrands.includes( brand ), `Unsupported brand: ${brand}` ) );
+        const brands = getBrands( grunt, repo, buildLocal );
 
         grunt.log.writeln( `Building runnable repository (${repo}, brands: ${brands.join( ', ' )})` );
 
@@ -342,7 +315,7 @@ module.exports = function( grunt ) {
       }
     } ) );
 
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for all supported brands)', wrapTask( async () => {
+  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for the specified brands)', wrapTask( async () => {
     const lint = require( './lint' );
 
     // --disable-eslint-cache disables the cache, useful for developing rules
@@ -354,7 +327,10 @@ module.exports = function( grunt ) {
 
     const getPhetLibs = require( './getPhetLibs' );
 
-    const lintReturnValue = await lint( getPhetLibs( repo ), {
+    const brands = getBrands( grunt, repo, buildLocal );
+    console.log( brands );
+
+    const lintReturnValue = await lint( getPhetLibs( repo, brands ), {
       cache: cache,
       fix: fix,
       format: format,
@@ -695,4 +671,37 @@ Updates the normal automatically-generated files for this repository. Includes:
     'pdom-comparison',
     'release-branch-list'
   ].forEach( forwardToPerennialGrunt );
+};
+
+const getBrands = ( grunt, repo, buildLocal ) => {
+  // Determine what brands we want to build
+  assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
+
+  const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const supportedBrands = localPackageObject.phet.supportedBrands;
+
+  assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
+
+  let brands;
+  if ( grunt.option( 'brands' ) ) {
+    if ( grunt.option( 'brands' ) === '*' ) {
+      brands = supportedBrands;
+    }
+    else {
+      brands = grunt.option( 'brands' ).split( ',' );
+    }
+  }
+  else if ( buildLocal.brands ) {
+    // Extra check, see https://github.com/phetsims/chipper/issues/640
+    assert( Array.isArray( buildLocal.brands ), 'If brands exists in build-local.json, it should be an array' );
+    brands = buildLocal.brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
+  }
+  else {
+    brands = [ 'adapted-from-phet' ];
+  }
+
+  // Ensure all listed brands are valid
+  brands.forEach( brand => assert( supportedBrands.includes( brand ), `Unsupported brand: ${brand}` ) );
+
+  return brands;
 };
