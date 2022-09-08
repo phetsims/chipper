@@ -5,6 +5,11 @@
 **/snapshots
 **/js/parser/svgPath.js
 **/templates/*.js
+**/js/**/*Strings.ts
+**/images/**/*_cur.ts
+**/images/**/*_jpg.ts
+**/images/**/*_png.ts
+**/sounds/**/*_mp3.ts
 ../phet-io-website/root/assets/js/jquery-1.12.3.min.js
 ../phet-io-website/root/assets/highlight.js-9.1.0/highlight.pack.js
 ../phet-io-website/root/assets/highlight.js-9.1.0/highlight.js

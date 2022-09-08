@@ -113,7 +113,7 @@ declare type LineBreakerType = {
   [ Symbol.iterator ](): Iterator<LineBreakerBreak, undefined>;
 };
 declare var LineBreaker: {
-  new ( str: string ): LineBreakerType;
+  new( str: string ): LineBreakerType;
 };
 
 declare var assertions: {
@@ -127,3 +127,7 @@ declare global {
     phetio: typeof phetio;
   }
 }
+
+declare var Deno: {
+  readTextFileSync: ( file: string ) => string;
+};

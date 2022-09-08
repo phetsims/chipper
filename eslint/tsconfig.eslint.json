@@ -1,6 +1,3 @@
 {
-  "extends": "../../chipper/tsconfig/all/tsconfig.json",
-  "include": [
-    "../../*/**/*.ts"
-  ]
+  "extends": "../../chipper/tsconfig/all/tsconfig.json"
 }
