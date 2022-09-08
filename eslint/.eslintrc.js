@@ -27,10 +27,9 @@ module.exports = {
       parserOptions: {
         sourceType: 'module',
 
-        // Provide a tsconfig so that we can use rules that require type information. tsconfig.eslint.json
-        // gives eslint project information without needing to modify our actual tsconfig setup.
+        // Provide a tsconfig so that we can use rules that require type information.
         // NOTE: Providing this slows down eslint substantially, see https://github.com/phetsims/chipper/issues/1114#issuecomment-1065927717
-        project: [ '../chipper/eslint/tsconfig.eslint.json' ]
+        project: [ '../chipper/tsconfig/all/tsconfig.json' ]
       },
       plugins: [
         '@typescript-eslint'
