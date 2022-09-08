@@ -7,6 +7,7 @@
     "../../../aqua/js/**/*",
     "../../../axon/js/**/*",
     "../../../bamboo/js/**/*",
+    "../../../beers-law-lab/js/**/*",
     "../../../bending-light/js/**/*",
 
     "../../../brand/adapted-from-phet/js/Brand.ts",
@@ -23,6 +24,7 @@
     "../../../circuit-construction-kit-ac/js/**/*",
     "../../../circuit-construction-kit-common/js/**/*",
     "../../../circuit-construction-kit-dc/js/**/*",
+    "../../../concentration/js/**/*",
     "../../../counting-common/js/**/*",
     "../../../density/js/**/*",
     "../../../density-buoyancy-common/js/**/*",
