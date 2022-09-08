@@ -273,8 +273,8 @@ module.exports = function( grunt ) {
       }
       else {
 
-        const brands = getBrands( grunt, repo, buildLocal );
-
+        const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+        assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
         grunt.log.writeln( `Building runnable repository (${repo}, brands: ${brands.join( ', ' )})` );
 
         // Other options
@@ -681,13 +681,12 @@ Updates the normal automatically-generated files for this repository. Includes:
 };
 
 const getBrands = ( grunt, repo, buildLocal ) => {
+
   // Determine what brands we want to build
   assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
 
   const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const supportedBrands = localPackageObject.phet.supportedBrands;
-
-  assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
 
   let brands;
   if ( grunt.option( 'brands' ) ) {
