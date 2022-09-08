@@ -88,7 +88,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     stripAssertions: false,
     stripLogging: false
   } : {
-    minify: false
+    minify: false // will still babelTranspile
   };
 
   // If turning off minification for the main build, don't minify the debug version also
