@@ -13,10 +13,11 @@ const transpile = require( './transpile' );
 const terser = require( 'terser' );
 
 const MINIFY_DEFAULTS = {
+  babelTranspile: true, // transpile will occur even if minify:false
+
   minify: true,
 
   // Only enabled if minify is true
-  babelTranspile: true,
   uglify: true,
 
   // Only enabled if uglify is true
@@ -30,15 +31,16 @@ const minify = function( js, options ) {
   options = _.assignIn( {}, MINIFY_DEFAULTS, options );
 
   // Promote to top level variables
-  const { minify, babelTranspile, uglify, mangle, stripAssertions, stripLogging, beautify } = options;
+  const { babelTranspile, minify, uglify, mangle, stripAssertions, stripLogging, beautify } = options;
+
+  // Transpile even when minify is false to support webpack building into a version that doesn't work in safari.
+  // Do transpiling before uglifying.
+  if ( babelTranspile ) {
+    js = transpile( js );
+  }
 
   if ( !minify ) {
     return js;
-  }
-
-  // Do transpilation before uglifying.
-  if ( babelTranspile ) {
-    js = transpile( js );
   }
 
   const uglifyOptions = {
