@@ -67,7 +67,7 @@ const lintOneRepo = async ( repo, options ) => {
 
     // Caching only checks changed files or when the list of rules is changed.  Changing the implementation of a
     // custom rule does not invalidate the cache.  Caches are declared in .eslintcache files in the directory where
-    // the process was run from.
+    // the process was run from. If false, this will delete the `cacheLocation` file.
     cache: options.cache,
 
     // Where to store the target-specific cache file.  Use only first 4 digits of hash to improve readability
