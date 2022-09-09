@@ -15,6 +15,7 @@ const fs = require( 'fs' );
 const chipAway = require( './chipAway' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 const CacheLayer = require( '../common/CacheLayer' );
+const crypto = require( 'crypto' );
 
 // constants
 const EXCLUDE_REPOS = [
@@ -48,6 +49,17 @@ const lintOneRepo = async ( repo, options ) => {
     fix: false
   }, options );
 
+  // Hash on tsconfig file so when tsconfig changes it invalidates the cache.  NOTE this is a known memory leak.  May
+  // need to clear the cache directory in a few years?
+  const tsconfigFile = fs.readFileSync( '../chipper/tsconfig/all/tsconfig.json', 'utf-8' );
+
+  // Also cache on package.json so that when eslint plugins change, it will invalidate the caches. Note this will
+  // have false positives because it is possible to change package.json without changing
+  // the eslint plugins
+  const packageJSON = fs.readFileSync( '../chipper/package.json', 'utf-8' );
+
+  const hash = crypto.createHash( 'md5' ).update( tsconfigFile + packageJSON ).digest( 'hex' );
+
   const eslintConfig = {
 
     // optional auto-fix
@@ -58,8 +70,9 @@ const lintOneRepo = async ( repo, options ) => {
     // the process was run from.
     cache: options.cache,
 
-    // Where to store the target-specific cache file
-    cacheLocation: `../chipper/eslint/cache/${repo}.eslintcache`,
+    // Where to store the target-specific cache file.  Use only first 4 digits of hash to improve readability
+    // at the risk of having more key collisions
+    cacheLocation: `../chipper/eslint/cache/${repo}-${hash.substring( 0, 8 )}.eslintcache`,
 
     ignorePath: '../chipper/eslint/.eslintignore',
 
