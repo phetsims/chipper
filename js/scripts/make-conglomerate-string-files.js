@@ -72,7 +72,12 @@ const path = require( 'path' );
       if ( conglomerateStringFileName === 'acid-base-solutions_all_locales_strings.json' ) {
 
         const outputDir = path.join( __dirname, '..', '..', 'dist', 'strings' );
-        fs.mkdirSync( outputDir );
+        try {
+          fs.mkdirSync( outputDir );
+        }
+        catch( e ) {
+          // already exists
+        }
 
         const outputPath = path.join( outputDir, conglomerateStringFileName );
 
