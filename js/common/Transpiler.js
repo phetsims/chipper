@@ -315,7 +315,7 @@ class Transpiler {
 
     function exitHandler( options ) {
 
-      // TODO https://github.com/phetsims/chipper/issues/1289 this is happening 2x on ctrl-c
+      // NOTE: this gets called 2x on ctrl-c for unknown reasons
       CacheLayer.clearLastChangedTimestamp();
 
       if ( options && options.exit ) {
