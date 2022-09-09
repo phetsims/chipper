@@ -1,7 +1,9 @@
 // Copyright 2022, University of Colorado Boulder
 
 /**
- * This script makes JSON files that contain all translated values of every string key for a given repo.
+ * This script makes a JSON file for each repo subdirectory in phetsims/babel. These files contain a locale object for
+ * each locale that has a string file in phetsims/babel. Each locale object has every string key / translated value
+ * pair we have for that locale.
  *
  * @author Liam Mulhall
  */
