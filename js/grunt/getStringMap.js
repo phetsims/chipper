@@ -9,6 +9,7 @@
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
+const pascalCase = require( '../common/pascalCase' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
@@ -153,7 +154,7 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
     let stringAccesses = [];
 
     // duplication alert. This should be maintained in modulify.js
-    const prefix = `${_.startCase( _.camelCase( repo ) ).split( ' ' ).join( '' )}Strings`; // e.g. JoistStrings
+    const prefix = `${pascalCase( repo )}Strings`; // e.g. JoistStrings
     usedFileContents.forEach( ( fileContent, i ) => {
       // Only scan files where we can identify an import for it
       if ( fileContent.includes( `import ${prefix} from` ) ) {
