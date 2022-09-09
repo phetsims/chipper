@@ -13,6 +13,7 @@ const createMipmap = require( './createMipmap' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
+const pascalCase = require( '../common/pascalCase' );
 const os = require( 'os' );
 const getCopyrightLine = require( './getCopyrightLine' );
 const assert = require( 'assert' );
@@ -296,8 +297,7 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename, repo ) => {
 const createStringModule = async repo => {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-  // duplication alert. This should be maintained in getStringMap.js
-  const stringModuleName = `${_.startCase( _.camelCase( repo ) ).split( ' ' ).join( '' )}Strings`;
+  const stringModuleName = `${pascalCase( repo )}Strings`;
   const relativeStringModuleFile = `js/${stringModuleName}.ts`;
   const stringModuleFileJS = `../${repo}/${relativeStringModuleFile}`;
   const namespace = _.camelCase( repo );
