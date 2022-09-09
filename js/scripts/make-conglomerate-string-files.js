@@ -70,7 +70,12 @@ const path = require( 'path' );
 
       // TODO: Remove when done. See https://github.com/phetsims/chipper/issues/1308.
       if ( conglomerateStringFileName === 'acid-base-solutions_all_locales_strings.json' ) {
-        const outputPath = path.join( __dirname, '..', '..', 'dist', 'strings', conglomerateStringFileName );
+
+        const outputDir = path.join( __dirname, '..', '..', 'dist', 'strings' );
+        fs.mkdirSync( outputDir );
+
+        const outputPath = path.join( outputDir, conglomerateStringFileName );
+
         fs.writeFileSync( outputPath, JSON.stringify( conglomerateStringObject, null, 2 ) );
         return;
       }
