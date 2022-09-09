@@ -56,7 +56,7 @@ const path = require( 'path' );
         const parsedStringFileContents = JSON.parse( stringFileContents );
 
         // Add only the values of the string file to the new conglomerate string file.
-        // That is, we ignore the history of the string file.
+        // That is, we ignore the string key's history.
         const objectToAddToLocale = {};
         for ( const stringKey of Object.keys( parsedStringFileContents ) ) {
           objectToAddToLocale[ stringKey ] = {
