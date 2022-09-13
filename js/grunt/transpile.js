@@ -21,12 +21,10 @@ const babel = require( '@babel/core' ); // eslint-disable-line require-statement
 module.exports = function( jsInput, forIE = false ) {
   // See options available at https://babeljs.io/docs/usage/api/
 
+  // see https://browsersl.ist/#q=%3E+0.25%25%2C+not+dead
   const browsers = [
-    // See http://browserl.ist/?q=%3E+0.5%25%2C+safari+10-11%2C+Firefox+ESR%2C+not+IE+11%2C+ios_saf+11
-    '> 0.5%',
-    'safari 10-11',
-    'Firefox ESR',
-    'ios_saf 11'
+    '> 0.25%',
+    'not dead'
   ];
   browsers.push( forIE ? 'IE 11' : 'not IE 11' );
 
