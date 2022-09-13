@@ -134,13 +134,18 @@ class LocalizedString {
   }
 
   private get usedLocales(): LocaleString[] {
+    // NOTE: order matters, we want the fallback to be first so that in onLocaleOrderChange we don't run into infinite
+    // loops.
     return [ FALLBACK_LOCALE, ...this.localePropertyMap.keys() ];
   }
 
   private onLocaleOrderChange( localeOrder: string[] ): void {
 
-    // Do this in reverse order to AVOID infinite loops (e.g. if localeOrder1=ar,es localeOrder2=es,ar) then we
-    // could have both TinyOverrideProperties pointing to each other, and they wouldn't be able to get a value
+    // Do this in reverse order to AVOID infinite loops.
+    // For example, if localeOrder1=ar,es localeOrder2=es,ar) then we could run into the case temporarily where the
+    // TinyOverrideProperty for ar has its target as es, and the TinyOverrideProperty for es has its target as ar.
+    // This would then trigger an infinite loop if you try to read the value of either of them, as it would ping
+    // back-and-forth.
     const locales = [
       ...this.usedLocales,
 
