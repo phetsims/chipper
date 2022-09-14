@@ -163,8 +163,7 @@
      * @type {boolean}
      */
     extraSoundInitiallyEnabled: {
-      type: 'boolean',
-      defaultValue: false,
+      type: 'flag',
       public: true
     },
 
@@ -630,11 +629,10 @@
     /**
      * By default, Interactive Highlights are disabled on startup. Provide this flag to have the feature enabled on
      * startup. Has no effect if supportsInteractiveHighlights is false.
-     *
-     * For internal use, though may be used in shared links with collaborators.
      */
     interactiveHighlightsInitiallyEnabled: {
-      type: 'flag'
+      type: 'flag',
+      public: true
     },
 
     /**
