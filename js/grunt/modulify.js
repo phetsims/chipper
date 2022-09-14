@@ -299,7 +299,7 @@ const createStringModule = async repo => {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const stringModuleName = `${pascalCase( repo )}Strings`;
   const relativeStringModuleFile = `js/${stringModuleName}.ts`;
-  const stringModuleFileJS = `../${repo}/${relativeStringModuleFile}`;
+  const stringModuleFileJS = `../${repo}/js/${stringModuleName}.js`;
   const namespace = _.camelCase( repo );
 
   if ( fs.existsSync( stringModuleFileJS ) ) {
