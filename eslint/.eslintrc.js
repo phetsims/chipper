@@ -1523,6 +1523,7 @@ module.exports = {
 
     // Misc
     QueryStringMachine: 'readonly',
+    QueryStringMachineSchema: 'readonly',
 
     // Prism is a syntax highlighter that renders code in the browser. It is used for PhET-iO wrappers and for a11y.
     Prism: 'readonly',
