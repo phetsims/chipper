@@ -628,6 +628,16 @@
     },
 
     /**
+     * By default, Interactive Highlights are disabled on startup. Provide this flag to have the feature enabled on
+     * startup. Has no effect if supportsInteractiveHighlights is false.
+     *
+     * For internal use, though may be used in shared links with collaborators.
+     */
+    interactiveHighlightsInitiallyEnabled: {
+      type: 'flag'
+    },
+
+    /**
      * Indicates whether custom gesture control is enabled by default in the simulation.
      * This input method is still in development, mostly to be used in combination with the voicing
      * feature. It allows you to swipe the screen to move focus, double tap the screen to activate
