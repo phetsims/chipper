@@ -16,6 +16,7 @@
 
     "../../../build-a-nucleus/js/**/*",
     "../../../buoyancy/js/**/*",
+    "../../../calculus-grapher/js/**/*",
     "../../../center-and-variability/js/**/*",
 
     "../../../chipper/js/phet-build-script/phet-build-script.ts",

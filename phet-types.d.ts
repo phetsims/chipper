@@ -55,7 +55,7 @@ declare type QueryStringMachineSchema = {
     type: 'array';
     elementSchema: QueryStringMachineSchema;
     separator?: string;
-    defaultValue?: readonly IntentionalAny[];
+    defaultValue?: null | readonly IntentionalAny[];
     validValues?: readonly IntentionalAny[][];
     isValidValue?: ( n: IntentionalAny[] ) => boolean;
   } |

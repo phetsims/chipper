@@ -287,6 +287,7 @@
       public: false
     },
 
+    // Private Doc: DON'T add the `public` key here, because we want it to graceful bad values in production (falling back to en)
     /**
      * Select the language of the sim to the specific locale. Default to "en".
      * @memberOf PhetQueryParameters
