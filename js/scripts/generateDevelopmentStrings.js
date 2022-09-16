@@ -40,7 +40,7 @@ module.exports = repo => {
   }
   catch( e ) {
 
-    console.log( 'no translations found' );
+    // no translations found
   }
 
   // Do not generate a file if no translations were found
@@ -87,5 +87,9 @@ module.exports = repo => {
 
     const end = Date.now();
     console.log( 'Wrote ' + outputPath + ' in ' + ( end - start ) + 'ms' );
+  }
+  else {
+
+    console.log( 'no translations found' );
   }
 };
