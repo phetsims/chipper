@@ -19,8 +19,10 @@ module.exports = repo => {
 
   const start = Date.now();
 
+  const rootPath = path.join( __dirname, '..', '..', '..' );
+
   // OS-independent path to babel repo.
-  const babelPath = path.join( __dirname, '..', '..', '..', 'babel' );
+  const babelPath = path.join( rootPath, 'babel' );
 
   // Create a file name for the conglomerate string file.
   const conglomerateStringFileName = `${repo}_all.json`;
@@ -29,22 +31,29 @@ module.exports = repo => {
   const conglomerateStringObject = {};
 
   // Get an array of files (string files) in the repo subdirectory.
-  const filePath = path.join( babelPath, repo );
+  const babelRepoPath = path.join( babelPath, repo );
 
   // Regex for extracting locale from file name.
   const localeRegex = /(?<=_)(.*)(?=.json)/;
 
-  let stringFiles;
+  const stringFiles = [];
   try {
-    stringFiles = fs.readdirSync( filePath );
+
+    const paths = fs.readdirSync( babelRepoPath );
+    stringFiles.push( ...paths.map( p => path.join( babelRepoPath, p ) ) );
   }
   catch( e ) {
 
-    // no translations found
+    // no translations found in babel
+  }
+
+  const englishStringPath = path.join( rootPath, repo, `${repo}-strings_en.json` );
+  if ( fs.existsSync( englishStringPath ) ) {
+    stringFiles.push( englishStringPath );
   }
 
   // Do not generate a file if no translations were found
-  if ( stringFiles ) {
+  if ( stringFiles.length > 0 ) {
 
     // For each string file in the repo subdirectory...
     for ( const stringFile of stringFiles ) {
@@ -54,8 +63,7 @@ module.exports = repo => {
       const locale = localeMatches[ 0 ];
 
       // Get the contents of the string file.
-      const stringFilePath = path.join( filePath, stringFile );
-      const stringFileContents = fs.readFileSync( stringFilePath, 'utf8' );
+      const stringFileContents = fs.readFileSync( stringFile, 'utf8' );
 
       // Parse the string file contents.
       const parsedStringFileContents = JSON.parse( stringFileContents );
