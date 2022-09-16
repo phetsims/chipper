@@ -384,7 +384,8 @@ Updates the normal automatically-generated files for this repository. Includes:
   * accessible runnables: generate-a11y-view-html
   * unit tests: generate-test-html
   * simulations: generateREADME()
-  * phet-io simulations: generate overrides file if needed`,
+  * phet-io simulations: generate overrides file if needed
+  * create the conglomerate string files for unbuilt mode, for this repo and its dependencies`,
     wrapTask( async () => {
       const SimVersion = require( '../../../perennial-alias/js/common/SimVersion' );
       const generateREADME = require( './generateREADME' );
@@ -408,7 +409,6 @@ Updates the normal automatically-generated files for this repository. Includes:
         grunt.task.run( 'generate-test-html' );
       }
 
-
       // update README.md only for simulations
       if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {
         const simVersion = SimVersion.parse( packageObject.version );
@@ -429,6 +429,22 @@ Updates the normal automatically-generated files for this repository. Includes:
         }
       }
     } ) );
+
+  // This is not run in grunt update because it affects dependencies and outputs files outside of the repo.
+  // Run on all repos via:
+  // for-each.sh perennial/data/active-repos grunt generate-development-strings
+  // TODO: https://github.com/phetsims/chipper/issues/1308 rename make-conglomerate-string-files.js => generate-development-strings.js
+  // TODO: https://github.com/phetsims/chipper/issues/1308 include english in the conglomerate file
+  grunt.registerTask( 'generate-development-strings',
+    wrapTask( async () => {
+      const makeConglomerateStringFiles = require( '../scripts/make-conglomerate-string-files.js' ); // eslint-disable-line require-statement-match
+      const fs = require( 'fs' );
+
+      if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) ) {
+        makeConglomerateStringFiles( repo );
+      }
+    } )
+  );
 
   grunt.registerTask( 'published-README',
     'Generates README.md file for a published simulation.',
