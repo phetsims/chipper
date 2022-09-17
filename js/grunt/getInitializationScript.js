@@ -29,6 +29,7 @@ module.exports = function( config ) {
     brand, // {string}, e.g. 'phet', 'phet-io'
     repo, // {string}
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
+    stringMetadata, // {Object}, map[ stringKey ] => {Object}
     version, // {string}
     dependencies, // {Object} - From getDependencies
     timestamp, // {string}
@@ -72,6 +73,7 @@ module.exports = function( config ) {
     PHET_END_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES,
     PHET_DEPENDENCIES: JSON.stringify( dependencies, null, 2 ),
     PHET_STRINGS: JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ),
+    PHET_STRING_METADATA: JSON.stringify( stringMetadata, null, isDebugBuild ? 2 : '' ),
     PHET_IS_DEBUG_BUILD: !!isDebugBuild,
     PHET_PACKAGE_OBJECT: JSON.stringify( packageObject ),
     IE_DETECTION_SCRIPT: transpile( grunt.file.read( '../chipper/js/ie-detection.js' ), true )

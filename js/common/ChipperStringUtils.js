@@ -131,14 +131,14 @@ const ChipperStringUtils = {
    * nested string keys in https://github.com/phetsims/rosetta/issues/193
    * @param {StringMap} map - where an "intermediate" Object should hold nested strings
    * @param {string} key - like `FRICTION/friction.title` or using nesting like `a11y.nested.string.here`
-   * @returns {string|null} - the string value of the key, or null if the key does not appear in the map
+   * @returns {Object|null} - the string entry of the key, or null if the key does not appear in the map
    * @throws  {Error} - if the key doesn't hold a string value in the map
    * @public
    */
-  getStringFromMap( map, key ) {
+  getStringEntryFromMap( map, key ) {
 
     if ( key.indexOf( NAMESPACE_PREFIX_DIVIDER ) >= 0 ) {
-      throw new Error( 'getStringFromMap key should not have REPO/' );
+      throw new Error( 'getStringEntryFromMap key should not have REPO/' );
     }
 
     // Lodash gives precedence to  "key1.key2" over "key1:{key2}", so we do too.
@@ -156,7 +156,7 @@ const ChipperStringUtils = {
       assert && !ChipperStringUtils.isA11yStringKey( key ) && assert( map[ key ],
         `nested strings are not allowed outside of a11y string object for key: ${key}` );
 
-      return result.value;
+      return result;
     }
 
     // They key does not appear in the map

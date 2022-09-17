@@ -138,6 +138,7 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
 
   // Initialize our full stringMap object (which will be filled with results and then returned as our string map).
   const stringMap = {};
+  const stringMetadata = {};
   locales.forEach( locale => {
     stringMap[ locale ] = {};
   } );
@@ -210,23 +211,28 @@ module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
     // For each string key and locale, we'll look up the string entry and fill it into the stringMap
     partialStringKeys.forEach( partialStringKey => {
       locales.forEach( locale => {
-        let stringValue = null;
+        let stringEntry = null;
         for ( const fallbackLocale of localeFallbacks( locale ) ) {
           const stringFileContents = stringFilesContents[ repo ][ fallbackLocale ];
           if ( stringFileContents ) {
-            stringValue = ChipperStringUtils.getStringFromMap( stringFileContents, partialStringKey );
-            if ( stringValue ) {
+            stringEntry = ChipperStringUtils.getStringEntryFromMap( stringFileContents, partialStringKey );
+            if ( stringEntry ) {
               break;
             }
           }
         }
         if ( !partialStringKey.endsWith( 'StringProperty' ) ) {
-          assert( stringValue !== null, `Missing string information for ${repo} ${partialStringKey}` );
-          stringMap[ locale ][ `${requirejsNamespaceMap[ repo ]}/${partialStringKey}` ] = stringValue;
+          assert( stringEntry !== null, `Missing string information for ${repo} ${partialStringKey}` );
+
+          const stringKey = `${requirejsNamespaceMap[ repo ]}/${partialStringKey}`;
+          stringMap[ locale ][ stringKey ] = stringEntry.value;
+          if ( stringEntry.metadata && locale === ChipperConstants.FALLBACK_LOCALE ) {
+            stringMetadata[ stringKey ] = stringEntry.metadata;
+          }
         }
       } );
     } );
   } );
 
-  return stringMap;
+  return { stringMap: stringMap, stringMetadata: stringMetadata };
 };

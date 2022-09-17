@@ -28,6 +28,7 @@
 
   // Constructing the string map
   window.phet.chipper.strings = {};
+  window.phet.chipper.stringMetadata = {};
 
   // Prefixes, ideally a better way of accessing localeInfo on startup would exist. We have localeInfo, however it's
   // in the form of a module, and we can't use that at this point.
@@ -74,7 +75,13 @@
             value = `${( isRTL ? '\u202b' : '\u202a' )}${value}\u202c`;
           }
 
-          localeStringMap[ `${stringKeyPrefix}${path}` ] = value;
+          const stringKey = `${stringKeyPrefix}${path}`;
+
+          localeStringMap[ stringKey ] = value;
+
+          if ( locale === FALLBACK_LOCALE && object.metadata ) {
+            phet.chipper.stringMetadata[ stringKey ] = object.metadata;
+          }
         }
         else if ( object[ key ] && typeof object[ key ] === 'object' ) {
           recurse( `${path}${path.length ? '.' : ''}${key}`, object[ key ] );

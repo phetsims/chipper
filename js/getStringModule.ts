@@ -181,7 +181,11 @@ const getStringModule = ( requirejsNamespace: string ): object => {
         tandem = tandem.createTandem( tandemName );
       }
 
-      const localizedString = new LocalizedString( phet.chipper.mapString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ] ), tandem );
+      const localizedString = new LocalizedString(
+        phet.chipper.mapString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ] ),
+        tandem,
+        phet.chipper.stringMetadata[ stringKey ]
+      );
       localizedStringMap[ stringKey ] = localizedString;
 
       // Push up the translated values

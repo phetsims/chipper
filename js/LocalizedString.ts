@@ -42,7 +42,13 @@ class LocalizedString {
   // Store initial values, so we can handle state deltas
   private readonly initialValues: Record<LocaleString, TranslationString> = {};
 
-  public constructor( englishValue: TranslationString, tandem: Tandem ) {
+  public constructor( englishValue: TranslationString, tandem: Tandem, metadata?: Record<string, unknown> ) {
+
+    // Default to false for phet-io, but allow it to be overridden
+    const phetioReadOnly = ( metadata && typeof metadata.phetioReadOnly === 'boolean' ) ? metadata.phetioReadOnly : false;
+
+    // All i18n model strings are phetioFeatured by default
+    const phetioFeatured = ( metadata && typeof metadata.phetioFeatured === 'boolean' ) ? metadata.phetioFeatured : true;
 
     this.englishProperty = new TinyProperty( englishValue );
     this.initialValues[ FALLBACK_LOCALE ] = englishValue;
@@ -56,7 +62,8 @@ class LocalizedString {
       phetioValueType: StringIO,
       phetioState: false,
       tandem: tandem,
-      phetioFeatured: true // All i18n model strings are phetioFeatured by default
+      phetioFeatured: phetioFeatured,
+      phetioReadOnly: phetioReadOnly
     } );
 
     // Add to a global list to support PhET-iO serialization and internal testing
