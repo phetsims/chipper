@@ -27,7 +27,7 @@ module.exports = function( repo ) {
 
     // The following creates an 800x400 image that is a letter-boxed version of the original size image and
     // has transparent padding, potentially on all sides.
-    new Jimp( fullResImageName, function() { // eslint-disable-line
+    new Jimp( fullResImageName, function() { // eslint-disable-line no-new
       this.resize( 600, 394 ) // Preserve original dimensions
         .contain( 585, 400 )  // Resize to allow padding on top/bottom
         .contain( 800, 400 )  // Add padding on right/left

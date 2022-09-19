@@ -12,7 +12,7 @@
 const http = require( 'http' );
 const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
-const _ = require( 'lodash' ); // eslint-disable-line
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 
@@ -26,7 +26,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
   assert( repos.length === _.uniq( repos ).length, 'repos should be unique' );
 
-  options = _.extend( { // eslint-disable-line
+  options = _.extend( {
     fromBuiltVersion: false, // if the built file should be used to generate the API (otherwise uses unbuilt)
     chunkSize: 4, // split into chunks with (at most) this many elements per chunk
     showProgressBar: false,

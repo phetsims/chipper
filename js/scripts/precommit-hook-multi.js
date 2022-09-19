@@ -2,7 +2,6 @@
 const startTime = Date.now();
 
 const execute = require( '../../../perennial-alias/js/common/execute' );
-const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
 const child_process = require( 'child_process' );
 

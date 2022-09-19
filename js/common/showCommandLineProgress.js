@@ -7,7 +7,7 @@
  */
 
 /* eslint-env node */
-const _ = require( 'lodash' ); // eslint-disable-line
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 
 /**
  * See https://jagascript.com/how-to-build-a-textual-progress-bar-for-cli-and-terminal-apps/

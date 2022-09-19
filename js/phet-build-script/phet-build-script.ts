@@ -3,7 +3,7 @@
 
 import * as fs from 'fs'; // eslint-disable-line bad-sim-text
 
-const args: string[] = process.argv.slice( 2 ); // eslint-disable-line
+const args: string[] = process.argv.slice( 2 ); // eslint-disable-line no-undef
 
 const assert = ( predicate: unknown, message: string ) => {
   if ( !predicate ) {

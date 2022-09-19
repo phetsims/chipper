@@ -50,7 +50,7 @@ const visit = path => {
         if ( text.includes( 'scenery/js/imports.js' ) ) {
           // console.log( child );
           const lines = text.split( '\n' );
-          const mapped = lines.map( line => { // eslint-disable-line
+          const mapped = lines.map( line => { // eslint-disable-line no-unused-vars
             line = line.trim();
             if ( line.includes( 'scenery/js/imports.js' ) && line.endsWith( ';' ) ) {
               return mapLine( line );

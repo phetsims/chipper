@@ -172,7 +172,7 @@
       }
     } );
 
-    request.open( 'GET', `../babel/_generated/${repo}_all.json`, true ); // eslint-disable-line
+    request.open( 'GET', `../babel/_generated/${repo}_all.json`, true );
     request.send();
   };
 

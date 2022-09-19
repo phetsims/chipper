@@ -18,7 +18,6 @@
 // Require statements which should be generally available via node or perennial
 const fs = require( 'fs' );
 const path = require( 'path' );
-const _ = require( 'lodash' ); // eslint-disable-line
 const puppeteer = require( 'puppeteer' );
 const withServer = require( '../../../perennial-alias/js/common/withServer' );
 const execute = require( '../../../perennial-alias/js/common/execute' );

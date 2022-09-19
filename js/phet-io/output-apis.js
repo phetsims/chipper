@@ -1,6 +1,5 @@
 // Copyright 2021-2022, University of Colorado Boulder
 
-const _ = require( 'lodash' ); // eslint-disable-line
 const fs = require( 'fs' );
 const generatePhetioMacroAPI = require( './generatePhetioMacroAPI' );
 const formatPhetioAPI = require( './formatPhetioAPI' );
