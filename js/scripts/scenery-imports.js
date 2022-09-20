@@ -1,4 +1,4 @@
-// Copyright 2021, University of Colorado Boulder
+// Copyright 2021-2022, University of Colorado Boulder
 const fs = require( 'fs' );
 
 const keyLines = fs.readFileSync( '../scenery/js/imports.ts', 'utf-8' ).split( '\n' );
