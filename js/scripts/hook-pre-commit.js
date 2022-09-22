@@ -21,6 +21,11 @@ const path = require( 'path' );
 const puppeteer = require( 'puppeteer' );
 const withServer = require( '../../../perennial-alias/js/common/withServer' );
 const execute = require( '../../../perennial-alias/js/common/execute' );
+const getPhetLibs = require( '../grunt/getPhetLibs' );
+const getRepoList = require( '../../../perennial-alias/js/common/getRepoList' );
+const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
+const CacheLayer = require( '../../../chipper/js/common/CacheLayer' );
+const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
 
 ( async () => {
 
@@ -102,7 +107,6 @@ const execute = require( '../../../perennial-alias/js/common/execute' );
 // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
   try {
     const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
-    const CacheLayer = require( '../../../chipper/js/common/CacheLayer' );
     const cacheKey = `puppeteerQUnit#${repo}`;
 
     if ( repo !== 'scenery' && repo !== 'phet-io-wrappers' ) { // scenery unit tests take too long, so skip those
@@ -139,4 +143,50 @@ const execute = require( '../../../perennial-alias/js/common/execute' );
   catch( e ) {
     console.log( e );
   }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Compare PhET-iO APIs for this repo and anything that has it as a dependency
+  //
+  ( async () => {
+
+    // Test this repo and all phet-io sims that have it as a dependency.  For instance, changing sun would test
+    // every phet-io stable sim.
+    const phetioAPIStable = getRepoList( 'phet-io-api-stable' );
+
+    const reposToTest = phetioAPIStable.filter( phetioSimRepo => getPhetLibs( phetioSimRepo ).includes( repo ) );
+
+    if ( reposToTest.length > 0 ) {
+      console.log( 'PhET-iO API testing: ' + reposToTest );
+
+      const cacheKey = 'phet-io-api-testing_' + reposToTest.join( '_' );
+
+      if ( !CacheLayer.isCacheSafe( cacheKey ) ) {
+
+        const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {
+          showProgressBar: reposToTest.length > 1,
+          showMessagesFromSim: false
+        } );
+
+        const compareSuccess = await phetioCompareAPISets( reposToTest, proposedAPIs, {} );
+
+        if ( compareSuccess ) {
+
+          CacheLayer.onSuccess( cacheKey );
+
+          // generatePhetioMacroAPI is preventing exit for unknown reasons, so manually exit here
+          process.exit( 0 );
+        }
+        else {
+          process.exit( 1 );
+        }
+      }
+    }
+    else {
+      console.log( 'PhET-iO API testing: no repos detected' );
+    }
+
+  } )();
+
+  // NOTE: if adding or rearranging rules, be careful about the early exit above
+
 } )();

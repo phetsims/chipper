@@ -11,9 +11,10 @@ const assert = require( 'assert' );
  * @param {string[]} repos
  * @param {Object} proposedAPIs - map where key=repo, value=proposed API for that repo
  * @param {Object} [options]
- * @returns {Promise.<void>}
+ * @returns {boolean} ok
  */
 module.exports = async ( repos, proposedAPIs, options ) => {
+  let ok = true;
   options = _.extend( {
     delta: false,
     compareBreakingAPIChanges: false
@@ -34,12 +35,14 @@ module.exports = async ( repos, proposedAPIs, options ) => {
     } );
 
     if ( comparisonData.breakingProblems.length ) {
+      ok = false;
       console.log( `${repo} BREAKING PROBLEMS` );
       console.log( comparisonData.breakingProblems.join( '\n' ) );
       console.log( '\n' );
     }
 
     if ( comparisonData.designedProblems.length ) {
+      ok = false;
       console.log( `${repo} DESIGN PROBLEMS` );
       console.log( comparisonData.designedProblems.join( '\n' ) );
       console.log( '\n' );
@@ -52,4 +55,6 @@ module.exports = async ( repos, proposedAPIs, options ) => {
       }
     }
   } );
+
+  return ok;
 };
