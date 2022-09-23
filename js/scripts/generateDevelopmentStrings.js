@@ -1,8 +1,9 @@
 // Copyright 2022, University of Colorado Boulder
 
 /**
- * This script makes a JSON file that combines translations for all locales in a repo. Each locale object has every string
- * key / translated value pair we have for that locale. Used in running the unbuilt mode simulation with locales=*
+ * This script makes a JSON file that combines translations for all locales in a repo. Each locale object has every
+ * string key/translated-value pair we have for that locale. This is used when running the unbuilt mode simulation with
+ * locales=*
  *
  * @author Liam Mulhall (PhET Interactive Simulations)
  * @author Sam Reid (PhET Interactive Simulations)
@@ -38,7 +39,6 @@ module.exports = repo => {
 
   const stringFiles = [];
   try {
-
     const paths = fs.readdirSync( babelRepoPath );
     stringFiles.push( ...paths.map( p => path.join( babelRepoPath, p ) ) );
   }
@@ -52,7 +52,7 @@ module.exports = repo => {
     stringFiles.push( englishStringPath );
   }
 
-  // Do not generate a file if no translations were found
+  // Do not generate a file if no translations were found.
   if ( stringFiles.length > 0 ) {
 
     // For each string file in the repo subdirectory...
@@ -68,8 +68,8 @@ module.exports = repo => {
       // Parse the string file contents.
       const parsedStringFileContents = JSON.parse( stringFileContents );
 
-      // Add only the values of the string file to the new conglomerate string file.
-      // That is, we ignore the string key's history.
+      // Add only the values of the string file to the new conglomerate string file, and ignore other fields, such as
+      // the history.
       const objectToAddToLocale = {};
       for ( const stringKey of Object.keys( parsedStringFileContents ) ) {
         objectToAddToLocale[ stringKey ] = {
@@ -77,11 +77,12 @@ module.exports = repo => {
         };
       }
 
-      // Add the string file contents minus the history to the locale object of the conglomerate string object.
+      // Add the string values to the locale object of the conglomerate string object.
       conglomerateStringObject[ locale ] = objectToAddToLocale;
     }
 
-    // Underscore so it appears alphabetically first and looks different than the repo names
+    // Make sure the output directory exists.  The name starts with an underscore so that it appears alphabetically
+    // first and looks different from the repo names.
     const outputDir = path.join( babelPath, '_generated' );
     try {
       fs.mkdirSync( outputDir );
@@ -97,7 +98,6 @@ module.exports = repo => {
     console.log( 'Wrote ' + outputPath + ' in ' + ( end - start ) + 'ms' );
   }
   else {
-
     console.log( 'no translations found' );
   }
 };
