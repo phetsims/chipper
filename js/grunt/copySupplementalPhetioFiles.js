@@ -10,6 +10,7 @@
 
 
 // modules
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const archiver = require( 'archiver' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -565,6 +566,8 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, md
     return;
   }
 
+  const simCamelCaseName = _.camelCase( repoName );
+
   // fill in links
   let clientGuideSource = grunt.file.read( mdFilePath );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{WRAPPER_INDEX_PATH}}', '../../' );
@@ -572,6 +575,8 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, md
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{STUDIO_PATH}}', '../../wrappers/studio/' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILENAME}.html` );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{DATE}}', new Date().toString() );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simCamelCaseName}}', simCamelCaseName );
 
   // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path. Order matters!
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../../${GUIDES_COMMON_DIR}`, '' );
