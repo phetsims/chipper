@@ -432,6 +432,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   // This is not run in grunt update because it affects dependencies and outputs files outside of the repo.
   // Run on all repos via:
+  // for-each.sh perennial/data/active-repos npm install
   // for-each.sh perennial/data/active-repos grunt generate-development-strings
   grunt.registerTask( 'generate-development-strings',
     wrapTask( async () => {
