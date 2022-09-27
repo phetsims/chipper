@@ -185,8 +185,8 @@ module.exports = function( grunt ) {
       const buildStandalone = require( './buildStandalone' );
       const buildRunnable = require( './buildRunnable' );
       const minify = require( './minify' );
-      const tsc = require( './tsc' );
-      const reportTscResults = require( './reportTscResults' );
+      // const tsc = require( './tsc' );
+      // const reportTscResults = require( './reportTscResults' );
       const path = require( 'path' );
       const fs = require( 'fs' );
       const Transpiler = require( '../common/Transpiler' );
@@ -215,10 +215,14 @@ module.exports = function( grunt ) {
 
       // Run the type checker first.  But since the phet-io repos are listed in tsconfig, we can only run the type
       // checker if phet-io repos are checked out.
-      if ( fs.existsSync( '../phet-io' ) ) {
-        const results = await tsc( `../${repo}`, [ '--build' ] );
-        reportTscResults( results, grunt );
-      }
+      //
+      // For https://github.com/phetsims/chipper/issues/1243, we have problems in number-play 1.0 type checking.
+      // So avoid it in this branch.
+      //
+      // if ( fs.existsSync( '../phet-io' )  ) {
+      //   const results = await tsc( `../${repo}`, [ '--build' ] );
+      //   reportTscResults( results, grunt );
+      // }
 
       // If that succeeds, then convert the code to JS
       new Transpiler().transpileRepos( getPhetLibs( repo ) );
