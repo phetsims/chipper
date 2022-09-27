@@ -83,7 +83,7 @@ module.exports = repo => {
 
     // Make sure the output directory exists.  The name starts with an underscore so that it appears alphabetically
     // first and looks different from the repo names.
-    const outputDir = path.join( babelPath, '_generated' );
+    const outputDir = path.join( babelPath, '_generated_development_strings' );
     try {
       fs.mkdirSync( outputDir );
     }

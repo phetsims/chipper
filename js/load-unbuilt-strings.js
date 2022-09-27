@@ -172,7 +172,7 @@
       }
     } );
 
-    request.open( 'GET', `../babel/_generated/${repo}_all.json`, true );
+    request.open( 'GET', `../babel/_generated_development_strings/${repo}_all.json`, true );
     request.send();
   };
 
