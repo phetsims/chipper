@@ -431,10 +431,10 @@ Updates the normal automatically-generated files for this repository. Includes:
     } ) );
 
   // This is not run in grunt update because it affects dependencies and outputs files outside of the repo.
-  // Run on all repos via:
-  // for-each.sh perennial/data/active-repos npm install
-  // for-each.sh perennial/data/active-repos grunt generate-development-strings
   grunt.registerTask( 'generate-development-strings',
+    'To support locales=* in unbuilt mode, generate a conglomerate JSON file for each repo with translations in babel. Run on all repos via:\n' +
+    '* for-each.sh perennial/data/active-repos npm install\n' +
+    '* for-each.sh perennial/data/active-repos grunt generate-development-strings',
     wrapTask( async () => {
       const generateDevelopmentStrings = require( '../scripts/generateDevelopmentStrings' );
       const fs = require( 'fs' );
