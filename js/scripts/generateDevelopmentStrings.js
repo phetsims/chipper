@@ -44,7 +44,7 @@ module.exports = repo => {
   }
   catch( e ) {
 
-    // no translations found in babel
+    // no translations found in babel. But we still must continue in order to generate an (albeit empty) string file.
   }
 
   const englishStringPath = path.join( rootPath, repo, `${repo}-strings_en.json` );
