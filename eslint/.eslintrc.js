@@ -59,7 +59,7 @@ module.exports = {
         '@typescript-eslint/ban-ts-comment': [ 'off', {
           'ts-ignore': 'allow-with-description',
           'ts-check': true
-        } ], // TODO: Chip way as dev team. 568 errors
+        } ], // TODO: Chip way as dev team. 415 errors
 
         // Disallow // tslint:<rule-flag> comments 🔒 🔧
         '@typescript-eslint/ban-tslint-comment': 'error',
