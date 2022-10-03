@@ -121,7 +121,7 @@ module.exports = {
         '@typescript-eslint/naming-convention': 'off', // TODO: We should decide on the conventions and enable this rule.
 
         // Require .toString() to only be called on objects which provide useful information when stringified 🔒  💭
-        '@typescript-eslint/no-base-to-string': 'off', // TODO: Enable rule.  16 failures that say something like: 'valueType' will evaluate to '[object Object]' when stringified.  See https://github.com/phetsims/chipper/issues/1338
+        '@typescript-eslint/no-base-to-string': 'error',
 
         // Disallow non-null assertion in locations that may be confusing 🔒 🔧 🛠
         '@typescript-eslint/no-confusing-non-null-assertion': 'error',
