@@ -17,6 +17,7 @@ import chipper from './chipper.js';
 import TProperty from '../../axon/js/TProperty.js';
 import { localizedStrings } from './getStringModule.js';
 import arrayRemove from '../../phet-core/js/arrayRemove.js';
+import TandemConstants from '../../tandem/js/TandemConstants.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
@@ -44,8 +45,9 @@ class LocalizedString {
 
   public constructor( englishValue: TranslationString, tandem: Tandem, metadata?: Record<string, unknown> ) {
 
-    // Default to false for phet-io, but allow it to be overridden
-    const phetioReadOnly = ( metadata && typeof metadata.phetioReadOnly === 'boolean' ) ? metadata.phetioReadOnly : false;
+    // Allow phetioReadOnly to be overridden
+    const phetioReadOnly = ( metadata && typeof metadata.phetioReadOnly === 'boolean' ) ? metadata.phetioReadOnly :
+                           TandemConstants.PHET_IO_OBJECT_METADATA_DEFAULTS.phetioReadOnly;
 
     // All i18n model strings are phetioFeatured by default
     const phetioFeatured = ( metadata && typeof metadata.phetioFeatured === 'boolean' ) ? metadata.phetioFeatured : true;
