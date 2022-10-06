@@ -45,6 +45,7 @@
     "../../../molecule-polarity/js/**/*",
     "../../../my-solar-system/js/**/*",
     "../../../nitroglycerin/js/**/*",
+    "../../../number-compare/js/**/*",
     "../../../number-play/js/**/*",
 
     "../../../perennial/js/scripts/collate-lint.ts",
