@@ -62,6 +62,10 @@ module.exports = function( context ) {
     // that. See https://github.com/phetsims/scenery/issues/1403
     'voicingUtteranceQueue.addToBack',
 
+    // Please use Text/RichText.STRING_PROPERTY_TANDEM_NAME when appropriate (though not all usages apply here, and
+    // you can ignore this rule), https://github.com/phetsims/scenery/issues/1451#issuecomment-1270576831
+    '\'stringProperty\'',
+
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     {
       id: 'setTimeout(',
