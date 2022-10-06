@@ -940,7 +940,7 @@ module.exports = {
     'no-mixed-operators': 'off',  // 3+2/4 should be allowed
 
     // Disallow use of chained assignment expressions
-    'no-multi-assign': 'off', // SR would like to disable this in his sims, see https://github.com/phetsims/chipper/issues/814
+    'no-multi-assign': [ 'error', { ignoreNonDeclaration: true } ],
 
     // Disallow multiline strings
     'no-multi-str': 'error',
@@ -1449,9 +1449,6 @@ module.exports = {
     // Require @public/@private for this.something = result;
     'property-visibility-annotation': 'off',
     'no-property-in-require-statement': 'error',
-
-    // disallow assignment within variable declaration, see https://github.com/phetsims/chipper/issues/794
-    'no-multi-assign-on-declaration': 'error',
 
     // never allow object shorthand for properties, functions are ok.
     'phet-object-shorthand': 'error',
