@@ -100,7 +100,15 @@ const getStringModule = ( requirejsNamespace: string ): object => {
 
   // We may have other older (unused) keys in babel, and we are only doing the search that matters with the English
   // string keys.
-  const allStringKeysInRepo = Object.keys( phet.chipper.strings[ FALLBACK_LOCALE ] ).filter( stringKey => stringKey.startsWith( stringKeyPrefix ) );
+  let allStringKeysInRepo = Object.keys( phet.chipper.strings[ FALLBACK_LOCALE ] ).filter( stringKey => stringKey.startsWith( stringKeyPrefix ) );
+
+  // TODO: https://github.com/phetsims/phet-io/issues/1877 What if this list doesn't exist?  Should that be an error?
+  // Or an error if running an api-stable phet-io sim?
+  // TODO: https://github.com/phetsims/phet-io/issues/1877 What will happen if this is stale? How will a developer know
+  // to update it? Should it run in daily-grunt-work?
+  if ( phet.chipper.usedStringsEN ) {
+    allStringKeysInRepo = allStringKeysInRepo.filter( stringKey => phet.chipper.usedStringsEN.hasOwnProperty( stringKey ) );
+  }
 
   // localizedStringMap[ stringKey ]
   const localizedStringMap: Record<string, LocalizedString> = {};

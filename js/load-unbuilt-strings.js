@@ -136,13 +136,14 @@
   };
 
   /**
-   * Fires off a request for a conglomerate string object file.  Only used in locales=*
+   * Fires off a request for a JSON file, either in babel (for non-English) strings, or in the actual repo
+   * (for English) strings, or for the unbuilt_en strings file. When it is loaded, it will try to parse the response
+   * and then pass the object for processing.
    *
-   * @param {string} repo - The repository name
-   * @param {string} requirejsNamespace - e.g. 'JOIST'
-   * @param {Function|null} successCallback
+   * @param {string} path - Relative path to load JSON file from
+   * @param {Function|null} callback
    */
-  const requestConglomerateFile = ( repo, requirejsNamespace, successCallback ) => {
+  const requestJSONFile = ( path, callback ) => {
     remainingFilesToProcess++;
 
     const request = new XMLHttpRequest();
@@ -153,10 +154,9 @@
           json = JSON.parse( request.responseText );
         }
         catch( e ) {
-          throw new Error( `Could not parse conglomerate string file for ${repo}, perhaps that translation does not exist yet?` );
+          throw new Error( `Could load file ${path}, perhaps that translation does not exist yet?` );
         }
-        processConglomerateStringFile( json, requirejsNamespace );
-        successCallback && successCallback();
+        callback && callback( json );
       }
       if ( --remainingFilesToProcess === 0 ) {
         finishProcessing();
@@ -165,63 +165,20 @@
 
     request.addEventListener( 'error', () => {
       if ( !( localesQueryParam === '*' ) ) {
-        console.log( `Could not load conglomerate string file for ${repo}, perhaps that translation does not exist yet?` );
+        console.log( `Could not load ${path}` );
       }
       if ( --remainingFilesToProcess === 0 ) {
         finishProcessing();
       }
     } );
 
-    request.open( 'GET', `../babel/_generated_development_strings/${repo}_all.json`, true );
-    request.send();
-  };
-
-  /**
-   * Fires off a request for a string object file, either in babel (for non-English) strings, or in the actual repo
-   * (for English) strings. When it is loaded, it will try to parse the response and then pass the object for
-   * processing.
-   *
-   * @param {string} repo - The repository name
-   * @param {string} requirejsNamespace - e.g. 'JOIST'
-   * @param {string} locale
-   * @param {Function|null} successCallback
-   */
-  const requestStringFile = ( repo, requirejsNamespace, locale, successCallback ) => {
-    remainingFilesToProcess++;
-
-    const request = new XMLHttpRequest();
-    request.addEventListener( 'load', () => {
-      if ( request.status === 200 ) {
-        let json;
-        try {
-          json = JSON.parse( request.responseText );
-        }
-        catch( e ) {
-          throw new Error( `Could not parse string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
-        }
-        processStringFile( json, requirejsNamespace, locale );
-        successCallback && successCallback();
-      }
-      if ( --remainingFilesToProcess === 0 ) {
-        finishProcessing();
-      }
-    } );
-
-    request.addEventListener( 'error', () => {
-      if ( !( localesQueryParam === '*' ) ) {
-        console.log( `Could not load string file for ${repo} with locale ${locale}, perhaps that translation does not exist yet?` );
-      }
-      if ( --remainingFilesToProcess === 0 ) {
-        finishProcessing();
-      }
-    } );
-
-    request.open( 'GET', `../${locale === FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json`, true );
+    request.open( 'GET', path, true );
     request.send();
   };
 
   // The callback to execute when all string files are processed.
   const finishProcessing = () => {
+
     // Progress with loading modules
     window.phet.chipper.loadModules();
   };
@@ -251,6 +208,8 @@
     } );
   }
 
+  const getStringPath = ( repo, locale ) => `../${locale === FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json`;
+
   // See if our request for the sim-specific strings file works. If so, only then will we load the common repos files
   // for that locale.
   const ourRepo = phet.chipper.packageObject.name;
@@ -261,25 +220,38 @@
     }
   } );
 
+  // TODO https://github.com/phetsims/phet-io/issues/1877 Uncomment this to load the used string list
+  // requestJSONFile( `../phet-io-sim-specific/repos/${ourRepo}/used-strings_en.json`, json => {
+  //
+  //   // Store for runtime usage
+  //   phet.chipper.usedStringsEN = json;
+  // } );
+
   if ( localesQueryParam === '*' ) {
 
     // Load the conglomerate files
-    requestConglomerateFile( ourRepo, ourRequirejsNamespace, () => {
+    requestJSONFile( `../babel/_generated_development_strings/${ourRepo}_all.json`, json => {
+      processConglomerateStringFile( json, ourRequirejsNamespace );
       phet.chipper.stringRepos.forEach( stringRepoData => {
         const repo = stringRepoData.repo;
         if ( repo !== ourRepo ) {
-          requestConglomerateFile( repo, stringRepoData.requirejsNamespace, null );
+          requestJSONFile( `../babel/_generated_development_strings/${repo}_all.json`, json => {
+            processConglomerateStringFile( json, stringRepoData.requirejsNamespace );
+          } );
         }
       } );
     } );
 
     // Even though the English strings are included in the conglomerate file, load the english file directly so that
     // you can change _en strings without having to run 'grunt generate-unbuilt-strings' before seeing changes.
-    requestStringFile( ourRepo, ourRequirejsNamespace, 'en', () => {
+    requestJSONFile( getStringPath( ourRepo, 'en' ), json => {
+      processStringFile( json, ourRequirejsNamespace, 'en' );
       phet.chipper.stringRepos.forEach( stringRepoData => {
         const repo = stringRepoData.repo;
         if ( repo !== ourRepo ) {
-          requestStringFile( repo, stringRepoData.requirejsNamespace, 'en', null );
+          requestJSONFile( getStringPath( repo, 'en' ), json => {
+            processStringFile( json, stringRepoData.requirejsNamespace, 'en' );
+          } );
         }
       } );
     } );
@@ -288,11 +260,14 @@
 
     // Load just the specified locales
     locales.forEach( locale => {
-      requestStringFile( ourRepo, ourRequirejsNamespace, locale, () => {
+      requestJSONFile( getStringPath( ourRepo, locale ), json => {
+        processStringFile( json, ourRequirejsNamespace, locale );
         phet.chipper.stringRepos.forEach( stringRepoData => {
           const repo = stringRepoData.repo;
           if ( repo !== ourRepo ) {
-            requestStringFile( repo, stringRepoData.requirejsNamespace, locale, null );
+            requestJSONFile( getStringPath( repo, locale ), json => {
+              processStringFile( json, stringRepoData.requirejsNamespace, locale );
+            } );
           }
         } );
       } );
