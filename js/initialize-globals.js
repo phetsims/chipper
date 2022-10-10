@@ -616,15 +616,24 @@
 
     /**
      * Enables support for the "Interactive Highlights" feature, where highlights appear around interactive
-     * UI components as an accessibility tool to make it clear what components are available on screen for
-     * interaction. Though enabled here, the feature will be turned off until explicitly enabled by the
-     * user from the Preferences dialog. Can be permanently enabled if `supportsInteractiveHighlights` is true
-     * under `phet.simFeatures` in package.json. Query parameter will always override the package.json entry.
-     * The query parameter is meant for internal project use only.
+     * UI components. This is most useful for users with low vision and makes it easier to identify interactive
+     * components. Though enabled here, the feature will be turned off until enabled by the user from the Preferences
+     * dialog.
+     *
+     * This feature is enabled by default whenever supportsInteractiveDescription is true in package.json, since PhET
+     * wants to scale out this feature with all sims that support alternative input. The feature can be DISABLED when
+     * supportsInteractiveDescription is true by setting `supportsInteractiveHighlights: false` under
+     * `phet.simFeatures` in package.json.
+     *
+     * The query parameter will always override the package.json entry.
      */
     supportsInteractiveHighlights: {
       type: 'boolean',
-      defaultValue: !!packageSimFeatures.supportsInteractiveHighlights
+
+      // If supportsInteractiveHighlights is explicitly provided in package.json, use that value. Otherwise, enable
+      // Interactive Highlights when Interactive Description is supported.
+      defaultValue: packageSimFeatures.hasOwnProperty( 'supportsInteractiveHighlights' ) ?
+                    !!packageSimFeatures.supportsInteractiveHighlights : !!packageSimFeatures.supportsInteractiveDescription
     },
 
     /**
