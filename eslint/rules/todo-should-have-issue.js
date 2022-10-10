@@ -17,15 +17,15 @@ catch( e ) {
   buildJSON = {};
 }
 
-// Whitelist of directories to check that TODOs have GitHub issues
-let directoriesToRequireIssues = [];
+// List of directories to check that TODOs have GitHub issues
+const directoriesToRequireIssues = [];
 if ( buildJSON && buildJSON.common && buildJSON.common.phetLibs ) {
 
   // Don't require issues in these repos:
-  directoriesToRequireIssues = buildJSON.common.phetLibs.filter( x => x !== 'scenery' && x !== 'dot' && x !== 'kite' && x !== 'perennial-alias' );
+  directoriesToRequireIssues.push( ...buildJSON.common.phetLibs.filter( x => x !== 'scenery' && x !== 'dot' && x !== 'kite' && x !== 'perennial-alias' ) );
 
   if ( buildJSON && buildJSON[ 'phet-io' ] && buildJSON[ 'phet-io' ].phetLibs ) {
-    directoriesToRequireIssues = directoriesToRequireIssues.concat( buildJSON[ 'phet-io' ].phetLibs );
+    directoriesToRequireIssues.push( ...buildJSON[ 'phet-io' ].phetLibs );
   }
 }
 
