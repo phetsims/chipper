@@ -208,7 +208,9 @@
     } );
   }
 
-  const getStringPath = ( repo, locale ) => `../${locale === FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json`;
+  // Check for phet.chipper.stringPath. This should be set to ADJUST the path to the strings directory, in cases
+  // where we're running this case NOT from a repo's top level (e.g. sandbox.html)
+  const getStringPath = ( repo, locale ) => `${phet.chipper.stringPath ? phet.chipper.stringPath : ''}../${locale === FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json`;
 
   // See if our request for the sim-specific strings file works. If so, only then will we load the common repos files
   // for that locale.
