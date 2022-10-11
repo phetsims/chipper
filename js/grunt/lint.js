@@ -36,6 +36,14 @@ const EXCLUDE_REPOS = [
 // out of the repo running the command
 const repoToPattern = repo => `../${repo}`;
 
+async function consoleLogResults( results ) {
+
+  // No need to have the same ESLint just to format
+  const formatter = await new ESLint().loadFormatter( 'stylish' );
+  const resultText = formatter.format( results );
+  console.log( `\n${resultText}\n` );
+}
+
 /**
  * Create an ESLint client and lint a single repo
  * @param {string} repo
@@ -46,7 +54,9 @@ const lintOneRepo = async ( repo, options ) => {
 
   options = _.extend( {
     cache: true,
-    fix: false
+    fix: false,
+    format: false,
+    inProgressErrorLogging: false // print out the
   }, options );
 
   // Hash on tsconfig file so when tsconfig changes it invalidates the cache.  NOTE this is a known memory leak.  May
@@ -113,6 +123,11 @@ const lintOneRepo = async ( repo, options ) => {
     CacheLayer.onSuccess( cacheKey );
   }
 
+  if ( options.inProgressErrorLogging && totalWarnings + totalErrors > 0 ) {
+    console.log( `\n\n${repo}:` );
+    await consoleLogResults( results );
+  }
+
   return results;
 };
 
@@ -143,6 +158,8 @@ const lint = async ( repos, options ) => {
   repos = repos.filter( repo => !EXCLUDE_REPOS.includes( repo ) &&
                                 fs.existsSync( repoToPattern( repo ) ) );
 
+  const inProgressErrorLogging = repos.length > 1;
+
   const allResults = [];
   for ( let i = 0; i < repos.length; i++ ) {
     options.showProgressBar && repos.length > 1 && showCommandLineProgress( i / repos.length, false );
@@ -151,11 +168,9 @@ const lint = async ( repos, options ) => {
       cache: options.cache,
       format: options.format,
       fix: options.fix,
-      chipAway: false, // silence individual repo reporting
-      silent: true // silence individual repo reporting
+      inProgressErrorLogging: inProgressErrorLogging
     } );
 
-    // MK found that results are unique to a file, so this seemed safe and was working well.
     allResults.push( ...results );
   }
 
@@ -173,10 +188,9 @@ const lint = async ( repos, options ) => {
   // Output results on errors.
   if ( totalWarnings + totalErrors > 0 ) {
 
-    // No need to have the same ESLint just to format
-    const formatter = await new ESLint().loadFormatter( 'stylish' );
-    const resultText = formatter.format( allResults );
-    console.log( resultText );
+    inProgressErrorLogging && console.log( '\n\nAll results (repeated from above)\n' );
+
+    await consoleLogResults( allResults );
 
     // The chip-away option provides a quick and easy method to assign devs to their respective repositories.
     // Check ./chipAway.js for more information.
