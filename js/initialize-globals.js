@@ -46,7 +46,7 @@
   const DEFAULT_COLOR_PROFILE = 'default';
 
   // The possible color profiles for the current simulation.
-  const colorProfiles = packagePhet.colorProfiles || [ DEFAULT_COLOR_PROFILE ];
+  const colorProfiles = packageSimFeatures.colorProfiles || [ DEFAULT_COLOR_PROFILE ];
 
   // Private Doc: Note: the following jsdoc is for the public facing PhET-iO API. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)

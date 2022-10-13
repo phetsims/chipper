@@ -373,7 +373,7 @@ const getStringTypes = repo => {
         assert( !token.includes( ' ' ), `Token ${token} cannot include forbidden characters` );
 
         if ( k === path.length - 1 && m === tokens.length - 1 ) {
-          if ( !packageObject.phet.supportsDynamicLocale ) {
+          if ( !( packageObject.phet && packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsDynamicLocale ) ) {
             level[ token ] = '{{STRING}}'; // instead of value = allElement.value
           }
           level[ `${token}StringProperty` ] = '{{STRING_PROPERTY}}';
