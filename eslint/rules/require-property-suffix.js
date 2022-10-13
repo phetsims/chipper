@@ -74,20 +74,20 @@ module.exports = {
         if ( node.key ) {
           visit( context, node.key );
         }
-      },
-
-      /**
-       * Members of a TypeScript type alias.
-       */
-      TSTypeAliasDeclaration: node => {
-        if ( node.typeAnnotation && node.typeAnnotation.members ) {
-          node.typeAnnotation.members.forEach( member => {
-            if ( member.key ) {
-              visit( context, member.key );
-            }
-          } );
-        }
       }
+
+      // /**
+      //  * Members of a TypeScript type alias.
+      //  */
+      // TSTypeAliasDeclaration: node => {
+      //   if ( node.typeAnnotation && node.typeAnnotation.members ) {
+      //     node.typeAnnotation.members.forEach( member => {
+      //       if ( member.key ) {
+      //         visit( context, member.key );
+      //       }
+      //     } );
+      //   }
+      // }
     };
   }
 };
