@@ -23,7 +23,9 @@ const visit = ( context, propertyNode ) => {
   const tsNode = parserServices.esTreeNodeToTSNodeMap.get( propertyNode );
   const variableType = checker.getTypeAtLocation( tsNode );
 
-  const typeString = checker.typeToString( variableType );
+  // For optional fields, ' | undefined' will be appended to the type name. Those still need
+  // a 'Property' suffix, but remove this part of the type string for the checks that follow.
+  const typeString = checker.typeToString( variableType ).replace( ' | undefined', '' );
 
   // Matches things like "BooleanProperty" and "Property<boolean|null>"
   // If in the future this is not correct or complete, please note that complexity of the following
@@ -56,6 +58,7 @@ module.exports = {
   create: context => {
     return {
 
+      // Local variables that are instances of a Property
       'VariableDeclarator > Identifier': node => {
         if ( node ) {
           visit( context, node );
@@ -70,6 +73,19 @@ module.exports = {
         // node.key is the AST node for the variable (child of the PropertyDefinition)
         if ( node.key ) {
           visit( context, node.key );
+        }
+      },
+
+      /**
+       * Members of a TypeScript type alias.
+       */
+      TSTypeAliasDeclaration: node => {
+        if ( node.typeAnnotation && node.typeAnnotation.members ) {
+          node.typeAnnotation.members.forEach( member => {
+            if ( member.key ) {
+              visit( context, member.key );
+            }
+          } );
         }
       }
     };
