@@ -510,10 +510,10 @@ module.exports = {
         'no-simple-type-checking-assertions': 'error',
 
         // Custom return type rule that only requires for methods. The includes return type was too overarching.
-        'explicit-method-return-type': 'error'
+        'explicit-method-return-type': 'error',
 
         // Variables that are Properties should end in "Property", like const myProperty = new Property();
-        // 'require-property-suffix': 'error'
+        'require-property-suffix': 'error'
       }
     }, {
       files: [
