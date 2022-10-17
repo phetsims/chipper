@@ -1,7 +1,13 @@
 // Copyright 2020-2022, University of Colorado Boulder
 
 /**
- * Runs tasks for pre-commit, including lint and qunit testing.  Avoids the overhead of grunt and Gruntfile.js for speed
+ * Runs tasks for pre-commit, including lint and qunit testing.  Avoids the overhead of grunt and Gruntfile.js for speed.
+ *
+ * Should only be run when developing in master, because when dependency shas are checked out for one sim,
+ * they will likely be inconsistent for other repos which would cause failures for processes like type checking.
+ * This means when running maintenance release steps, you may need to run git commands with --no-verify.
+ *
+ * Timing data is streamed through phetTimingLog, please see that file for how to see the results live and/or afterwards.
  *
  * USAGE:
  * cd ${repo}
@@ -15,7 +21,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-// Require statements which should be generally available via node or perennial
 const fs = require( 'fs' );
 const path = require( 'path' );
 const puppeteer = require( 'puppeteer' );
@@ -26,167 +31,189 @@ const getRepoList = require( '../../../perennial-alias/js/common/getRepoList' );
 const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
 const CacheLayer = require( '../../../chipper/js/common/CacheLayer' );
 const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
+const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog' );
+const lint = require( '../../../chipper/js/grunt/lint' );
+const reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
+const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
 
 ( async () => {
 
-// Identify the current repo
+  // Identify the current repo
   const repo = process.cwd().split( path.sep ).pop();
 
-// Console logging via --console
-  const commandLineArguments = process.argv.slice( 2 );
-  const outputToConsole = commandLineArguments.includes( '--console' );
+  const precommitSuccess = await phetTimingLog.startAsync( `hook-pre-commit repo="${repo}"`, async () => {
 
-// Run lint tests if they exist in the checked-out SHAs.
-  try {
-    const lint = require( '../../../chipper/js/grunt/lint' );
-    if ( lint.chipperAPIVersion === 'promisesPerRepo1' ) {
+    // Console logging via --console
+    const commandLineArguments = process.argv.slice( 2 );
+    const outputToConsole = commandLineArguments.includes( '--console' );
+
+    // Run lint tests if they exist in the checked-out SHAs.
+    const lintOK = await phetTimingLog.startAsync( 'lint', async () => {
 
       // lint() automatically filters out non-lintable repos
       const lintReturnValue = await lint( [ repo ] );
-
-      if ( !lintReturnValue.ok ) {
-        process.exit( 1 );
-      }
-
       outputToConsole && console.log( `Linting passed with results.length: ${lintReturnValue.results.length}` );
+      return lintReturnValue.ok;
+    } );
+
+    if ( !lintOK ) {
+      return false;
     }
-    else {
-      console.log( 'chipper/js/grunt/lint not compatible' );
-    }
-  }
-  catch( e ) {
-    console.log( 'chipper/js/grunt/lint not found' );
-  }
 
-// These sims don't have package.json or media that requires checking.
-  const optOutOfReportMedia = [
-    'decaf',
-    'phet-android-app',
-    'babel',
-    'phet-info',
-    'phet-ios-app',
-    'sherpa',
-    'smithers',
-    'tasks',
-    'weddell'
-  ];
+    const reportMediaOK = await phetTimingLog.startAsync( 'report-media', async () => {
 
-// Make sure license.json for images/audio is up-to-date
-  if ( !optOutOfReportMedia.includes( repo ) ) {
-    try {
-      const reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
+      // These sims don't have package.json or media that requires checking.
+      const optOutOfReportMedia = [
+        'decaf',
+        'phet-android-app',
+        'babel',
+        'phet-info',
+        'phet-ios-app',
+        'sherpa',
+        'smithers',
+        'tasks',
+        'weddell'
+      ];
 
-      const success = await reportMedia( repo );
+      // Make sure license.json for images/audio is up-to-date
+      if ( !optOutOfReportMedia.includes( repo ) ) {
 
-      // At the moment reportMedia uses grunt.fail, but we defensively use the return value here in case that changes.
-      if ( !success ) {
-        process.exit( 1 );
+        const success = await reportMedia( repo );
+        return success;
       }
+      else {
+
+        // no need to check
+        return true;
+      }
+    } );
+
+    if ( !reportMediaOK ) {
+      return false;
     }
-    catch( e ) {
-      console.log( 'chipper/js/grunt/reportMedia not found' );
+
+    const tscOK = await phetTimingLog.startAsync( 'tsc', async () => {
+
+      // Run typescript type checker if it exists in the checked-out shas
+      const results = await execute( 'node', [ '../chipper/js/scripts/absolute-tsc.js', '../chipper/tsconfig/all' ], '../chipper', {
+        errors: 'resolve'
+      } );
+
+      results.stderr.trim().length > 0 && console.log( results.stderr );
+      results.stdout.trim().length > 0 && console.log( results.stdout );
+
+      if ( results.code === 0 ) {
+        outputToConsole && console.log( 'tsc passed' );
+        return true;
+      }
+      else {
+        console.log( results );
+        return false;
+      }
+    } );
+
+    if ( !tscOK ) {
+      return false;
     }
-  }
 
-  // Run typescript type checker if it exists in the checked-out shas
-  const results = await execute( 'node', [ '../chipper/js/scripts/absolute-tsc.js', '../chipper/tsconfig/all' ], '../chipper', {
-    errors: 'resolve'
-  } );
-
-  results.stderr.trim().length > 0 && console.log( results.stderr );
-  results.stdout.trim().length > 0 && console.log( results.stdout );
-
-  if ( results.code === 0 ) {
-    outputToConsole && console.log( 'tsc passed' );
-  }
-  else {
-    console.log( results );
-    process.exit( results.code );
-  }
-
+    const qunitOK = await phetTimingLog.startAsync( 'qunit', async () => {
 // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
-  try {
-    const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
-    const cacheKey = `puppeteerQUnit#${repo}`;
 
-    if ( repo !== 'scenery' && repo !== 'phet-io-wrappers' ) { // scenery unit tests take too long, so skip those
-      const testFilePath = `${repo}/${repo}-tests.html`;
-      const exists = fs.existsSync( `../${testFilePath}` );
-      if ( exists ) {
+      const cacheKey = `puppeteerQUnit#${repo}`;
 
-        if ( CacheLayer.isCacheSafe( cacheKey ) ) {
-          console.log( 'unit tests success cached' );
-        }
-        else {
-          const browser = await puppeteer.launch();
+      if ( repo !== 'scenery' && repo !== 'phet-io-wrappers' ) { // scenery unit tests take too long, so skip those
+        const testFilePath = `${repo}/${repo}-tests.html`;
+        const exists = fs.existsSync( `../${testFilePath}` );
+        if ( exists ) {
 
-          const result = await withServer( async port => {
-            return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
-          } );
-
-          await browser.close();
-
-          outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
-          if ( !result.ok ) {
-            console.error( `unit tests failed in ${repo}`, result );
-            process.exit( 1 ); // fail as soon as there is one problem
+          if ( CacheLayer.isCacheSafe( cacheKey ) ) {
+            console.log( 'unit tests success cached' );
+            return true;
           }
           else {
-            CacheLayer.onSuccess( cacheKey );
+            const browser = await puppeteer.launch();
+
+            const result = await withServer( async port => {
+              return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
+            } );
+
+            await browser.close();
+
+            outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
+            if ( !result.ok ) {
+              console.error( `unit tests failed in ${repo}`, result );
+              return false;
+            }
+            else {
+              CacheLayer.onSuccess( cacheKey );
+              return true;
+            }
           }
         }
+
+        outputToConsole && console.log( 'QUnit: no problems detected' );
+        return true;
       }
+      return true;
+    } );
 
-      outputToConsole && console.log( 'QUnit: no problems detected' );
+    if ( !qunitOK ) {
+      return false;
     }
-  }
-  catch( e ) {
-    console.log( e );
-  }
 
-  ////////////////////////////////////////////////////////////////////////////////
-  // Compare PhET-iO APIs for this repo and anything that has it as a dependency
-  //
-  ( async () => {
+    ////////////////////////////////////////////////////////////////////////////////
+    // Compare PhET-iO APIs for this repo and anything that has it as a dependency
+    //
+    const phetioAPIOK = await phetTimingLog.startAsync( 'phet-io-api-compare', async () => {
 
-    // Test this repo and all phet-io sims that have it as a dependency.  For instance, changing sun would test
-    // every phet-io stable sim.
-    const phetioAPIStable = getRepoList( 'phet-io-api-stable' );
+      // Test this repo and all phet-io sims that have it as a dependency.  For instance, changing sun would test
+      // every phet-io stable sim.
+      const phetioAPIStable = getRepoList( 'phet-io-api-stable' );
+      const reposToTest = phetioAPIStable.filter( phetioSimRepo => getPhetLibs( phetioSimRepo ).includes( repo ) );
 
-    const reposToTest = phetioAPIStable.filter( phetioSimRepo => getPhetLibs( phetioSimRepo ).includes( repo ) );
+      if ( reposToTest.length > 0 ) {
+        console.log( 'PhET-iO API testing: ' + reposToTest );
 
-    if ( reposToTest.length > 0 ) {
-      console.log( 'PhET-iO API testing: ' + reposToTest );
+        const cacheKey = 'phet-io-api-testing_' + reposToTest.join( '_' );
 
-      const cacheKey = 'phet-io-api-testing_' + reposToTest.join( '_' );
+        if ( !CacheLayer.isCacheSafe( cacheKey ) ) {
 
-      if ( !CacheLayer.isCacheSafe( cacheKey ) ) {
+          const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {
+            showProgressBar: reposToTest.length > 1,
+            showMessagesFromSim: false
+          } );
 
-        const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {
-          showProgressBar: reposToTest.length > 1,
-          showMessagesFromSim: false
-        } );
+          const phetioAPIComparisonSuccessful = await phetioCompareAPISets( reposToTest, proposedAPIs, {} );
 
-        const compareSuccess = await phetioCompareAPISets( reposToTest, proposedAPIs, {} );
+          if ( phetioAPIComparisonSuccessful ) {
+            CacheLayer.onSuccess( cacheKey );
+          }
 
-        if ( compareSuccess ) {
-
-          CacheLayer.onSuccess( cacheKey );
-
-          // generatePhetioMacroAPI is preventing exit for unknown reasons, so manually exit here
-          process.exit( 0 );
+          return phetioAPIComparisonSuccessful;
         }
         else {
-          process.exit( 1 );
+
+          // Cached and cache is good
+          return true;
         }
       }
+      else {
+        console.log( 'PhET-iO API testing: no repos detected' );
+        return true;
+      }
+    } );
+
+    if ( !phetioAPIOK ) {
+      return false;
     }
-    else {
-      console.log( 'PhET-iO API testing: no repos detected' );
-    }
 
-  } )();
+    // OTHER TESTS GO HERE
 
-  // NOTE: if adding or rearranging rules, be careful about the early exit above
+    // NOTE: if adding or rearranging rules, be careful about the early exit above
+    // If everything passed, return true for success
+    return true;
+  } );
 
+  // generatePhetioMacroAPI is preventing exit for unknown reasons, so manually exit here
+  phetTimingLog.close( () => process.exit( precommitSuccess ? 0 : 1 ) );
 } )();
