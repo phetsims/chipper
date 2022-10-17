@@ -166,39 +166,35 @@ const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
     //
     const phetioAPIOK = await phetTimingLog.startAsync( 'phet-io-api-compare', async () => {
 
+      const getCacheKey = repo => `phet-io-api-compare#${repo}`;
+
       // Test this repo and all phet-io sims that have it as a dependency.  For instance, changing sun would test
       // every phet-io stable sim.
       const phetioAPIStable = getRepoList( 'phet-io-api-stable' );
-      const reposToTest = phetioAPIStable.filter( phetioSimRepo => getPhetLibs( phetioSimRepo ).includes( repo ) );
+      const reposToTest = phetioAPIStable
+        .filter( phetioSimRepo => getPhetLibs( phetioSimRepo ).includes( repo ) )
+
+        // Only worry about the ones that are not cached
+        .filter( repo => !CacheLayer.isCacheSafe( getCacheKey( repo ) ) );
 
       if ( reposToTest.length > 0 ) {
         console.log( 'PhET-iO API testing: ' + reposToTest );
 
-        const cacheKey = 'phet-io-api-testing_' + reposToTest.join( '_' );
+        const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {
+          showProgressBar: reposToTest.length > 1,
+          showMessagesFromSim: false
+        } );
 
-        if ( !CacheLayer.isCacheSafe( cacheKey ) ) {
+        const phetioAPIComparisonSuccessful = await phetioCompareAPISets( reposToTest, proposedAPIs, {} );
 
-          const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {
-            showProgressBar: reposToTest.length > 1,
-            showMessagesFromSim: false
-          } );
-
-          const phetioAPIComparisonSuccessful = await phetioCompareAPISets( reposToTest, proposedAPIs, {} );
-
-          if ( phetioAPIComparisonSuccessful ) {
-            CacheLayer.onSuccess( cacheKey );
-          }
-
-          return phetioAPIComparisonSuccessful;
+        if ( phetioAPIComparisonSuccessful ) {
+          reposToTest.forEach( repo => CacheLayer.onSuccess( getCacheKey( repo ) ) );
         }
-        else {
 
-          // Cached and cache is good
-          return true;
-        }
+        return phetioAPIComparisonSuccessful;
       }
       else {
-        console.log( 'PhET-iO API testing: no repos detected' );
+        console.log( 'PhET-iO API testing: no repos to test' );
         return true;
       }
     } );
