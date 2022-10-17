@@ -260,6 +260,7 @@ class Transpiler {
 
            // eslint cache files
            withForwardSlashes.includes( '/chipper/eslint/cache/' ) ||
+           withForwardSlashes.includes( '/perennial-alias/logs/' ) ||
            withForwardSlashes.endsWith( '.eslintcache' );
   }
 
