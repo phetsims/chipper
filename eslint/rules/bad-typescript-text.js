@@ -1,5 +1,5 @@
 // Copyright 2022, University of Colorado Boulder
-/* eslint-disable bad-typescript-text */
+ 
 
 /**
  * Lint detector for invalid text, expected only to be checked against typescript files.

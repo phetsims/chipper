@@ -538,6 +538,8 @@ module.exports = {
     }
   ],
 
+  reportUnusedDisableDirectives: true,
+
   // The rules are organized like they are in the list at https://eslint.org/docs/rules/
   // First by type, then alphabetically within type
   // Explicitly list all rules so it is easy to see what's here and to keep organized

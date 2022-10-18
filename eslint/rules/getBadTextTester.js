@@ -27,25 +27,24 @@ module.exports = ( ruleName, badTexts, context ) => {
     const codeLines = sourceCode.lines;
     const text = sourceCode.text;
 
-    const lineDisabledDirectiveRegex = new RegExp( `eslint-disable-line *${ruleName}` );
-
     /**
      * @param {number} lineNumber
      * @param {number} columnIndex
-     * @param {string} text
+     * @param {number} lineLength
+     * @param {string} message
      */
-    const reportBadText = ( lineNumber, columnIndex, text ) => {
+    const reportBadText = ( lineNumber, columnIndex, lineLength, message ) => {
 
       // esprima Token loc object, see https://esprima.readthedocs.io/en/latest/lexical-analysis.html
       const loc = {
         start: { line: lineNumber, column: columnIndex },
-        end: { line: lineNumber, column: columnIndex + text.length }
+        end: { line: lineNumber, column: lineLength }
       };
 
       context.report( {
         node: node,
         loc: loc,
-        message: `Line contains bad text: '${text}'`
+        message: `Line contains bad text: '${message}'`
       } );
     };
 
@@ -68,30 +67,27 @@ module.exports = ( ruleName, badTexts, context ) => {
           for ( let i = 0; i < codeLines.length; i++ ) {
             const lineString = codeLines[ i ];
 
-            // Opt out of lines that have something like "eslint-disable-line bad-text"
-            if ( lineDisabledDirectiveRegex.test( lineString ) ) {
-              continue;
-            }
-
             // lines are 1 based, codeLines array is 0 based
             const badLineNumber = i + 1;
 
             // only test regex if provided
             if ( forbiddenText.regex ) {
-              if ( forbiddenText.regex.test( lineString ) ) {
-                reportBadText( badLineNumber, 0, forbiddenText.id );
+              const match = lineString.match( forbiddenText.regex );
+
+              if ( match ) {
+                reportBadText( badLineNumber, match.index, lineString.length, forbiddenText.id );
               }
             }
             else if ( forbiddenText.predicate ) {
               const ok = forbiddenText.predicate( lineString );
               if ( !ok ) {
-                reportBadText( badLineNumber, 0, forbiddenText.id );
+                reportBadText( badLineNumber, 0, lineString.length, forbiddenText.id );
               }
             }
             else {
               const columnIndex = lineString.indexOf( forbiddenText.id );
               if ( columnIndex >= 0 ) {
-                reportBadText( badLineNumber, columnIndex, forbiddenText.id );
+                reportBadText( badLineNumber, columnIndex, columnIndex + forbiddenText.id.length, forbiddenText.id );
               }
             }
           }
@@ -175,7 +171,7 @@ const testCodeTokens = ( context, codeTokens, forbiddenTextObject ) => {
 
     failures.forEach( failedTextObject => {
       context.report( {
-        loc: token.loc.start,
+        loc: token.loc,
         message: `bad code text: "${failedTextObject.id}"`
       } );
     } );

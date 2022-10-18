@@ -1,5 +1,5 @@
 // Copyright 2022, University of Colorado Boulder
-/* eslint-disable no-simple-type-checking-assertions */
+ 
 
 /**
  * Do not allow basic assertions in typescript files where typescript typesc make that redundant. This rule applies in

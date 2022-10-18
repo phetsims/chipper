@@ -1,6 +1,6 @@
 // Copyright 2021, University of Colorado Boulder
 
-/* eslint-disable no-unused-vars, no-var */
+/* eslint-disable no-var */
 
 /**
  * Ambient type declarations for PhET code.  Many of these definitions can be moved/disabled once the common code is
