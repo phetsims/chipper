@@ -21,7 +21,7 @@ module.exports = function( context ) {
   const forbiddenTextObject = [
     {
       id: 'asserting values are instanceof or typeof in typescript is redundant',
-      regex: /assert && assert\((( \w+ instanceof \w+)|( typeof \w+ === '\w+'))( \)|,)/
+      regex: /assert && assert\((( \w+ instanceof \w+)|( typeof \w+ === '\w+'))/
     }
   ];
 
