@@ -350,7 +350,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   await handleJSDOC( buildDir );
 
   // create the client guides
-  handleClientGuides( repo, simulationDisplayName, buildDir );
+  handleClientGuides( repo, simulationDisplayName, buildDir, version );
 
   await handleStudio( wrappersLocation );
 
@@ -525,7 +525,7 @@ const handleJSDOC = async buildDir => {
  * @param {string} simulationDisplayName
  * @param {string} buildDir
  */
-const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
+const handleClientGuides = ( repoName, simulationDisplayName, buildDir, version ) => {
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
   const clientGuidesSourceRoot = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/`;
   const commonDir = `${PHET_IO_SIM_SPECIFIC}/${GUIDES_COMMON_DIR}`;
@@ -546,8 +546,8 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
   }
 
   // handle generating and writing the html file for each client guide
-  generateAndWriteClientGuide( repoName, `${simulationDisplayName} PhET-iO Guide`, simulationDisplayName, `${commonDir}/${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html` );
-  generateAndWriteClientGuide( repoName, `${simulationDisplayName} Examples`, simulationDisplayName, `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`, `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html` );
+  generateAndWriteClientGuide( repoName, `${simulationDisplayName} PhET-iO Guide`, simulationDisplayName, `${commonDir}/${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html`, version );
+  generateAndWriteClientGuide( repoName, `${simulationDisplayName} Examples`, simulationDisplayName, `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`, `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html`, version );
 };
 
 /**
@@ -558,7 +558,7 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir ) => {
  * @param {string} mdFilePath - to get the source md file
  * @param {string} destinationPath - to write to
  */
-const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, mdFilePath, destinationPath ) => {
+const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, mdFilePath, destinationPath, version ) => {
 
   // make sure the source markdown file exists
   if ( !fs.existsSync( mdFilePath ) ) {
@@ -577,6 +577,8 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, md
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{PHET_IO_GUIDE_PATH}}', `./${PHET_IO_GUIDE_FILENAME}.html` );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{DATE}}', new Date().toString() );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simCamelCaseName}}', simCamelCaseName );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simKebabName}}', repoName );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIMULATION_VERSION}}', version );
 
   // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path. Order matters!
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../../${GUIDES_COMMON_DIR}`, '' );
