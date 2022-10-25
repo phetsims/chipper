@@ -62,6 +62,7 @@
     "../../../phet-io-sim-specific/repos/**/*",
     "../../../phet-io-wrappers/js/**/*",
     "../../../phet-io-wrappers/common/**/*",
+    "../../../phet-lib/common/**/*",
     "../../../phetcommon/js/**/*",
     "../../../quadrilateral/js/**/*",
     "../../../quake/cordova-plugin-native-vibration/types/index.d.ts",
