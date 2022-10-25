@@ -69,6 +69,7 @@ const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
         'babel',
         'phet-info',
         'phet-ios-app',
+        'qa',
         'sherpa',
         'smithers',
         'tasks',
