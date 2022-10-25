@@ -1,5 +1,5 @@
-// Copyright 2019, University of Colorado Boulder
- 
+// Copyright 2019-2022, University of Colorado Boulder
+
 
 /**
  * Lint detector for invalid text.
@@ -65,6 +65,14 @@ module.exports = function( context ) {
     // Please use Text/RichText.STRING_PROPERTY_TANDEM_NAME when appropriate (though not all usages apply here, and
     // you can ignore this rule), https://github.com/phetsims/scenery/issues/1451#issuecomment-1270576831
     '\'stringProperty\'',
+
+    // Just pass these through, they work with structured cloning as is! See https://github.com/phetsims/tandem/issues/280
+    ' NumberIO.toStateObject',
+    ' NumberIO.fromStateObject',
+    ' BooleanIO.toStateObject',
+    ' BooleanIO.fromStateObject',
+    ' StringIO.toStateObject',
+    ' StringIO.fromStateObject',
 
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     {
