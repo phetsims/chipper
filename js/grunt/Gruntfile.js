@@ -274,6 +274,13 @@ module.exports = function( grunt ) {
 
           fs.writeFileSync( `${parentDir}/${repo}.min.js`, await buildStandalone( repo, minifyOptions ) );
 
+          // Build a debug version
+          minifyOptions.minify = false;
+          minifyOptions.babelTranspile = false;
+          minifyOptions.uglify = false;
+          minifyOptions.isDebug = true;
+          fs.writeFileSync( `${parentDir}/${repo}.debug.js`, await buildStandalone( repo, minifyOptions, true ) );
+
           if ( repoPackageObject.phet.standaloneTranspiles ) {
             for ( const file of repoPackageObject.phet.standaloneTranspiles ) {
               fs.writeFileSync( `../${repo}/build/${path.basename( file )}`, minify( grunt.file.read( file ) ) );

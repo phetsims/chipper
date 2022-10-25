@@ -14,6 +14,10 @@ const grunt = require( 'grunt' );
 const minify = require( './minify' );
 const webpackBuild = require( './webpackBuild' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const getStringMap = require( './getStringMap' );
+const ChipperConstants = require( '../common/ChipperConstants' );
+const getLocalesFromRepository = require( './getLocalesFromRepository' );
+const getPhetLibs = require( './getPhetLibs' );
 
 /**
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)
@@ -28,6 +32,7 @@ module.exports = async function( repo, providedOptions ) {
   assert( typeof providedOptions === 'object' );
 
   const options = _.merge( {
+    isDebug: false,
 
     // {null|string[]} - if provided, exclude these preloads from the built standalone
     omitPreloads: null
@@ -36,7 +41,9 @@ module.exports = async function( repo, providedOptions ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   assert( packageObject.phet, '`phet` object expected in package.json' );
 
-  const webpackJS = ( await webpackBuild( repo, 'phet' ) ).js;
+  const webpackResult = ( await webpackBuild( repo, 'phet' ) );
+
+  const webpackJS = webpackResult.js;
 
   let includedSources = [
     '../assert/js/assert.js',
@@ -47,12 +54,26 @@ module.exports = async function( repo, providedOptions ) {
   if ( packageObject.phet.preload ) {
     assert( Array.isArray( packageObject.phet.preload ), 'preload should be an array' );
     includedSources = includedSources.concat( packageObject.phet.preload );
+
+    // NOTE: Should find a better way of handling putting these first
+    includedSources.forEach( ( source, index ) => {
+      if ( source.includes( 'sherpa/lib/lodash-' ) ) {
+        includedSources.splice( index, 1 );
+        includedSources.unshift( source );
+      }
+    } );
+    includedSources.forEach( ( source, index ) => {
+      if ( source.includes( 'sherpa/lib/jquery-' ) ) {
+        includedSources.splice( index, 1 );
+        includedSources.unshift( source );
+      }
+    } );
   }
   if ( options.omitPreloads ) {
     includedSources = includedSources.filter( source => !options.omitPreloads.includes( source ) );
   }
 
-  const includedJS = includedSources.map( file => fs.readFileSync( file, 'utf8' ) ).join( '\n' );
+  let includedJS = includedSources.map( file => fs.readFileSync( file, 'utf8' ) ).join( '\n' );
 
   // Checks if lodash exists
   const testLodash = '  if ( !window.hasOwnProperty( \'_\' ) ) {\n' +
@@ -62,6 +83,11 @@ module.exports = async function( repo, providedOptions ) {
   const testJQuery = '  if ( !window.hasOwnProperty( \'$\' ) ) {\n' +
                      '    throw new Error( \'jQuery not found: $\' );\n' +
                      '  }\n';
+
+  const debugJS = '\nwindow.assertions.enableAssert();\n';
+  if ( options.isDebug ) {
+    includedJS += debugJS;
+  }
 
   let fullSource = `${includedJS}\n${webpackJS}`;
   if ( packageObject.phet.requiresJQuery ) {
@@ -73,7 +99,27 @@ module.exports = async function( repo, providedOptions ) {
 
   // include globals assignment
   if ( packageObject.phet.assignGlobals ) {
-    fullSource = `\nwindow.phet=window.phet||{};phet.chipper=phet.chipper||{};phet.chipper.packageObject=${JSON.stringify( packageObject )}\n${fullSource}`;
+    let globals = `window.phet=window.phet||{}\n;phet.chipper=phet.chipper||{};\nphet.chipper.packageObject=${JSON.stringify( packageObject )};\n`;
+    if ( packageObject.name === 'phet-lib' ) {
+
+      const subRepos = [ 'scenery', 'sun', 'scenery-phet', 'twixt', 'mobius' ];
+
+      const phetLibs = _.uniq( _.flatten( subRepos.map( subRepo => {
+        return getPhetLibs( subRepo );
+      } ) ).sort() );
+      const locales = [
+        ChipperConstants.FALLBACK_LOCALE,
+        ..._.flatten( subRepos.map( subRepo => getLocalesFromRepository( subRepo ) ) )
+      ];
+      const { stringMap, stringMetadata } = getStringMap( repo, locales, phetLibs, webpackResult.usedModules );
+
+      globals += `phet.chipper.stringPath = '../';\n`; // eslint-disable-line quotes
+      globals += `phet.chipper.locale = 'en';\n`; // eslint-disable-line quotes
+      globals += `phet.chipper.loadModules = () => {};\n`; // eslint-disable-line quotes
+      globals += `phet.chipper.strings = ${JSON.stringify( stringMap, null, options.isDebug ? 2 : '' )};\n`;
+      globals += `phet.chipper.stringMetadata = ${JSON.stringify( stringMetadata, null, options.isDebug ? 2 : '' )};\n`;
+    }
+    fullSource = `\n${globals}\n${fullSource}`;
   }
 
   // Wrap with an IIFE
