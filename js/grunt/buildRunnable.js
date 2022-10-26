@@ -38,10 +38,16 @@ const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
 const webpackBuild = require( './webpackBuild' );
 const zlib = require( 'zlib' );
+const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog' );
 
-const recordTime = async ( asyncCallback, timeCallback ) => {
+const recordTime = async ( name, asyncCallback, timeCallback ) => {
   const beforeTime = Date.now();
-  const result = await asyncCallback();
+
+  const result = await phetTimingLog.startAsync( name, async () => {
+    const result = await asyncCallback();
+    return result;
+  } );
+
   const afterTime = Date.now();
   timeCallback( afterTime - beforeTime, result );
   return result;
@@ -76,7 +82,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   timestamp = `${timestamp.substring( 0, timestamp.indexOf( '.' ) )} UTC`;
 
   // Start running webpack
-  const webpackResult = await recordTime( async () => webpackBuild( repo, brand ), time => {
+  const webpackResult = await recordTime( 'webpack', async () => webpackBuild( repo, brand ), time => {
     grunt.log.ok( `Webpack build complete: ${time}ms` );
   } );
 
@@ -199,7 +205,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     grunt.file.read( '../chipper/templates/chipper-startup.js' )
   ];
 
-  const productionScripts = await recordTime( async () => {
+  const productionScripts = await recordTime( 'minify-production', async () => {
     return [
       ...startupScripts,
       ...minifiableScripts.map( js => minify( js, minifyOptions ) )
@@ -207,7 +213,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   }, ( time, scripts ) => {
     grunt.log.ok( `Production minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
   } );
-  const debugScripts = await recordTime( async () => {
+  const debugScripts = await recordTime( 'minify-debug', async () => {
     return [
       ...startupScripts,
       ...minifiableScripts.map( js => minify( js, debugMinifyOptions ) )
