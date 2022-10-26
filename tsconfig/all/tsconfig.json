@@ -83,6 +83,7 @@
     "../../../tangible/js/**/*",
     "../../../twixt/js/**/*",
     "../../../utterance-queue/js/**/*",
+    "../../../vector-addition-equations/js/**/*",
     "../../../vegas/js/**/*",
     "../../../wave-interference/js/**/*",
     "../../../wilder/js/**/*"
