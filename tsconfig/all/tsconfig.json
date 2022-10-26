@@ -29,6 +29,7 @@
     "../../../counting-common/js/**/*",
     "../../../density/js/**/*",
     "../../../density-buoyancy-common/js/**/*",
+    "../../../diffusion/js/**/*",
     "../../../dot/js/**/*",
     "../../../equality-explorer/js/**/*",
     "../../../equality-explorer-basics/js/**/*",
