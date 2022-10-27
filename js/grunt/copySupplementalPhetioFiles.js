@@ -121,6 +121,12 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   const minor = Number( matches[ 2 ] );
   const latestVersion = `${major}.${minor}`;
 
+  const standardWrapperSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/standardPhetioWrapperTemplateSkeleton.html', 'utf8' );
+  const customWrapperSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/customWrapperTemplateSkeleton.html', 'utf8' );
+
+  assert( !standardWrapperSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
+  assert( !customWrapperSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
+
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
   const filterWrapper = ( abspath, contents ) => {
@@ -196,6 +202,12 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       );
     }
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
+
+      // Fill these in first so the following lines will also hit the content in these template
+      contents = ChipperStringUtils.replaceAll( contents, '{{CUSTOM_WRAPPER_SKELETON}}', customWrapperSkeleton );
+      contents = ChipperStringUtils.replaceAll( contents, '{{STANDARD_WRAPPER_SKELETON}}', standardWrapperSkeleton );
+
+      // The rest
       contents = ChipperStringUtils.replaceAll( contents, '{{PATH_TO_LIB_FILE}}', pathToLib ); // This must be after the script replacement that uses this variable above.
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_DISPLAY_NAME}}', simulationDisplayName );
@@ -391,11 +403,24 @@ const handleLib = async ( repo, buildDir, filter ) => {
   const migrationRulesCode = await getCompiledMigrationRules( repo, buildDir );
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationRulesCode}`, { stripAssertions: false } );
 
-  const wrappersMain = await buildStandalone( 'phet-io-wrappers', {
+  let wrappersMain = await buildStandalone( 'phet-io-wrappers', {
 
     // Avoid getting a 2nd copy of the files that are already bundled into the lib file
     omitPreloads: THIRD_PARTY_LIB_PRELOADS
   } );
+
+  // In loadWrapperTemplate in unbuilt mode, it uses readFile to dynamically load the templates at runtime.
+  // In built mode, we must inline the templates into the build artifact. See loadWrapperTemplate.js
+  assert( wrappersMain.includes( '"{{STANDARD_WRAPPER_SKELETON}}"' ) || wrappersMain.includes( '\'{{STANDARD_WRAPPER_SKELETON}}\'' ), 'Template variable is missing: STANDARD_WRAPPER_SKELETON' );
+  assert( wrappersMain.includes( '"{{CUSTOM_WRAPPER_SKELETON}}"' ) || wrappersMain.includes( '\'{{CUSTOM_WRAPPER_SKELETON}}\'' ), 'Template variable is missing: CUSTOM_WRAPPER_SKELETON' );
+
+  // Robustly handle double or single quotes.  At the moment it is double quotes.
+  // buildStandalone will mangle a template string into "" because it hasn't been filled in yet, bring it back here (with
+  // support for it changing in the future from double to single quotes).
+  wrappersMain = wrappersMain.replace( '"{{STANDARD_WRAPPER_SKELETON}}"', '`{{STANDARD_WRAPPER_SKELETON}}`' );
+  wrappersMain = wrappersMain.replace( '\'{{STANDARD_WRAPPER_SKELETON}}\'', '`{{STANDARD_WRAPPER_SKELETON}}`' );
+  wrappersMain = wrappersMain.replace( '"{{CUSTOM_WRAPPER_SKELETON}}"', '`{{CUSTOM_WRAPPER_SKELETON}}`' );
+  wrappersMain = wrappersMain.replace( '\'{{CUSTOM_WRAPPER_SKELETON}}\'', '`{{CUSTOM_WRAPPER_SKELETON}}`' );
 
   const filteredMain = filter( LIB_OUTPUT_FILE, wrappersMain );
 
