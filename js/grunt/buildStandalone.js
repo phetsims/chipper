@@ -25,7 +25,7 @@ const getPhetLibs = require( './getPhetLibs' );
  *
  * @param {string} repo
  * @param {Object} providedOptions - Passed directly to minify()
- * @returns {Promise}
+ * @returns {Promise<string>}
  */
 module.exports = async function( repo, providedOptions ) {
   assert( typeof repo === 'string' );
