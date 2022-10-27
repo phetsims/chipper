@@ -25,7 +25,6 @@ const minify = require( '../grunt/minify' );
 const marked = require( 'marked' );
 const tsc = require( './tsc' );
 const reportTscResults = require( './reportTscResults' );
-const Transpiler = require( '../common/Transpiler' );
 const getPhetLibs = require( './getPhetLibs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
@@ -104,6 +103,12 @@ const STUDIO_BUILT_FILENAME = 'studio.min.js';
  * @param {boolean} [generateMacroAPIFile]
  */
 module.exports = async ( repo, version, simulationDisplayName, packageObject, buildLocal, generateMacroAPIFile = false ) => {
+
+  const repoPhetLibs = getPhetLibs( repo, 'phet-io' );
+  assert( _.every( getPhetLibs( 'phet-io-wrappers' ), repo => repoPhetLibs.includes( repo ) ),
+    'every dependency of phet-io-wrappers is not included in phetLibs of ' + repo + ' ' + repoPhetLibs + ' ' + getPhetLibs( 'phet-io-wrappers' ) );
+  assert( _.every( getPhetLibs( 'studio' ), repo => repoPhetLibs.includes( repo ) ),
+    'every dependency of studio is not included in phetLibs of ' + repo + ' ' + repoPhetLibs + ' ' + getPhetLibs( 'studio' ) );
 
   // This must be checked after copySupplementalPhetioFiles is called, since all the imports and outer code is run in
   // every brand. Developers without phet-io checked out still need to be able to build.
@@ -640,7 +645,6 @@ const handleStudio = async wrappersLocation => {
   const results = await tsc( '../studio' );
   reportTscResults( results, grunt );
 
-  new Transpiler( { silent: true } ).transpileRepos( getPhetLibs( 'studio' ) );
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {} ) );
 };
 
