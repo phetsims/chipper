@@ -409,6 +409,8 @@ const handleLib = async ( repo, buildDir, filter ) => {
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationRulesCode}`, { stripAssertions: false } );
 
   let wrappersMain = await buildStandalone( 'phet-io-wrappers', {
+    stripAssertions: false,
+    stripLogging: false,
 
     // Avoid getting a 2nd copy of the files that are already bundled into the lib file
     omitPreloads: THIRD_PARTY_LIB_PRELOADS
@@ -645,7 +647,10 @@ const handleStudio = async wrappersLocation => {
   const results = await tsc( '../studio' );
   reportTscResults( results, grunt );
 
-  fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {} ) );
+  fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {
+    stripAssertions: false,
+    stripLogging: false
+  } ) );
 };
 
 /**
