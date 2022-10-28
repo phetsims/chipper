@@ -19,14 +19,16 @@ const babel = require( '@babel/core' ); // eslint-disable-line require-statement
  * @returns {string} - The transpiled code
  */
 module.exports = function( jsInput, forIE = false ) {
+
   // See options available at https://babeljs.io/docs/usage/api/
 
   // see https://browsersl.ist/#q=%3E+0.25%25%2C+not+dead
   const browsers = [
-    '> 0.25%',
-    'not dead'
+    'defaults'
   ];
-  browsers.push( forIE ? 'IE 11' : 'not IE 11' );
+  if ( forIE ) {
+    browsers.push( 'IE 11' );
+  }
 
   return babel.transform( jsInput, {
     // Avoids a warning that this gets disabled for >500kb of source. true/false doesn't affect the later minified size, and
