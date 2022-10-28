@@ -73,7 +73,7 @@
     "../../../scenery/js/**/*",
     "../../../scenery-phet/js/**/*",
     "../../../simula-rasa/js/**/*",
-    "../../../sound/js/SoundStrings.ts",
+    "../../../sound/js/**/*",
     "../../../studio/js/**/*",
     "../../../sun/js/**/*",
     "../../../tambo/js/**/*",
