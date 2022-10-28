@@ -441,8 +441,10 @@ Updates the normal automatically-generated files for this repository. Includes:
         return;
       }
 
+      // modulify is graceful if there are no files that need modulifying.
+      grunt.task.run( 'modulify' );
+
       if ( packageObject.phet.runnable ) {
-        grunt.task.run( 'modulify' );
         grunt.task.run( 'generate-development-html' );
 
         if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
