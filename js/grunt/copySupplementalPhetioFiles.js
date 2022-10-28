@@ -121,11 +121,11 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   const minor = Number( matches[ 2 ] );
   const latestVersion = `${major}.${minor}`;
 
-  const standardWrapperSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/standardPhetioWrapperTemplateSkeleton.html', 'utf8' );
-  const customWrapperSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/customWrapperTemplateSkeleton.html', 'utf8' );
+  const standardPhetioWrapperTemplateSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/standardPhetioWrapperTemplateSkeleton.html', 'utf8' );
+  const customPhetioWrapperTemplateSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/customPhetioWrapperTemplateSkeleton.html', 'utf8' );
 
-  assert( !standardWrapperSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
-  assert( !customWrapperSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
+  assert( !standardPhetioWrapperTemplateSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
+  assert( !customPhetioWrapperTemplateSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
@@ -204,8 +204,8 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
 
       // Fill these in first so the following lines will also hit the content in these template
-      contents = ChipperStringUtils.replaceAll( contents, '{{CUSTOM_WRAPPER_SKELETON}}', customWrapperSkeleton );
-      contents = ChipperStringUtils.replaceAll( contents, '{{STANDARD_WRAPPER_SKELETON}}', standardWrapperSkeleton );
+      contents = ChipperStringUtils.replaceAll( contents, '{{CUSTOM_WRAPPER_SKELETON}}', customPhetioWrapperTemplateSkeleton );
+      contents = ChipperStringUtils.replaceAll( contents, '{{STANDARD_WRAPPER_SKELETON}}', standardPhetioWrapperTemplateSkeleton );
 
       // The rest
       contents = ChipperStringUtils.replaceAll( contents, '{{PATH_TO_LIB_FILE}}', pathToLib ); // This must be after the script replacement that uses this variable above.
