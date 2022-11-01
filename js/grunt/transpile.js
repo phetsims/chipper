@@ -24,7 +24,9 @@ module.exports = function( jsInput, forIE = false ) {
 
   // see https://browsersl.ist/#q=%3E+0.25%25%2C+not+dead
   const browsers = [
-    'defaults'
+    'defaults',
+    'safari >= 13',
+    'iOS >= 13'
   ];
   if ( forIE ) {
     browsers.push( 'IE 11' );
