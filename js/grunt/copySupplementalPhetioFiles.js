@@ -408,6 +408,9 @@ const handleLib = async ( repo, buildDir, filter ) => {
   const migrationRulesCode = await getCompiledMigrationRules( repo, buildDir );
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationRulesCode}`, { stripAssertions: false } );
 
+  const results = await tsc( '../phet-io-wrappers' );
+  reportTscResults( results, grunt );
+
   let wrappersMain = await buildStandalone( 'phet-io-wrappers', {
     stripAssertions: false,
     stripLogging: false,
