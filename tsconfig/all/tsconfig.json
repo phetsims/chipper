@@ -4,6 +4,7 @@
   // Imported images/mipmaps/sounds are still type checked.
   // This structure was determined in https://github.com/phetsims/chipper/issues/1245
   "include": [
+    "../../../acid-base-solutions/js/**/*",
     "../../../aqua/js/**/*",
     "../../../axon/js/**/*",
     "../../../bamboo/js/**/*",
