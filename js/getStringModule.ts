@@ -199,7 +199,8 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       // Push up the translated values
       Object.keys( phet.chipper.strings ).forEach( locale => {
         const string = phet.chipper.strings[ locale ][ stringKey ];
-        if ( typeof string === 'string' ) {
+        // Ignore zero-length strings, see https://github.com/phetsims/chipper/issues/1343
+        if ( typeof string === 'string' && string !== '' ) {
           localizedString.setInitialValue( locale, phet.chipper.mapString( string ) );
         }
       } );
