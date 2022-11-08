@@ -47,6 +47,7 @@
     "../../../models-of-the-hydrogen-atom/js/**/*",
     "../../../molecule-polarity/js/**/*",
     "../../../my-solar-system/js/**/*",
+    "../../../natural-selection/js/**/*",
     "../../../nitroglycerin/js/**/*",
     "../../../number-compare/js/**/*",
     "../../../number-play/js/**/*",
