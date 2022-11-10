@@ -61,6 +61,8 @@ const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog
           }
           throw new Error( message );
         }
+      }, {
+        depth: 1
       } );
     } );
 
