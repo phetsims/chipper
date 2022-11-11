@@ -220,6 +220,13 @@ class LocalizedString {
     this.property.dispose();
     arrayRemove( localizedStrings, this );
   }
+
+  /**
+   * Reset to the initial value for the specified locale, used for testing.
+   */
+  public restoreInitialValue( locale: LocaleString ): void {
+    this.property.value = this.initialValues[ locale ];
+  }
 }
 
 chipper.register( 'LocalizedString', LocalizedString );
