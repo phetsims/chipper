@@ -22,7 +22,11 @@ module.exports = function( jsInput, forIE = false ) {
 
   // See options available at https://babeljs.io/docs/usage/api/
 
-  // see https://browsersl.ist/#q=%3E+0.25%25%2C+not+dead
+  // This list specifies the target browsers for Babel. Its format is described at https://browsersl.ist.
+  // Note that this is related to System Requirements advertised on the PhET website, so should be modified with care.
+  // Never remove advertised platforms from this list without a broader discussion. And note that PhET will sometimes
+  // provide unofficial support for older platforms, so version numbers may be lower than what is advertised on the
+  // PhET website. For more history, see https://github.com/phetsims/chipper/issues/1323.
   const browsers = [
     'defaults',
     'safari >= 13',
