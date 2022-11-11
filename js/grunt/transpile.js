@@ -20,8 +20,6 @@ const babel = require( '@babel/core' ); // eslint-disable-line require-statement
  */
 module.exports = function( jsInput, forIE = false ) {
 
-  // See options available at https://babeljs.io/docs/usage/api/
-
   // This list specifies the target browsers for Babel. Its format is described at https://browsersl.ist.
   // Note that this is related to System Requirements advertised on the PhET website, so should be modified with care.
   // Never remove advertised platforms from this list without a broader discussion. And note that PhET will sometimes
@@ -36,7 +34,9 @@ module.exports = function( jsInput, forIE = false ) {
     browsers.push( 'IE 11' );
   }
 
+  // See options available at https://babeljs.io/docs/usage/api/
   return babel.transform( jsInput, {
+
     // Avoids a warning that this gets disabled for >500kb of source. true/false doesn't affect the later minified size, and
     // the 'true' option was faster by a hair.
     compact: true,
