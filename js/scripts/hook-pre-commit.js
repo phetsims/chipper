@@ -74,7 +74,8 @@ const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog
     catch( e ) {
 
       // Exit as soon as any one promise fails
-      console.log( e.message );
+      // Each task is responsible for outputting its error to the console, so the console should already
+      // be showing the error by now
       return false;
     }
   } );
