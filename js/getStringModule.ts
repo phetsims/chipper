@@ -8,6 +8,8 @@
  *
  * A string "key" is in the form of "NAMESPACE/key.from.strings.json"
  *
+ * NOTE: This file likely belongs in joist/js/i18n/, but should stay here to make maintenance-release maintainability easier.
+ *
  * @author Jonathan Olson <jonathan.olson>
  */
 
