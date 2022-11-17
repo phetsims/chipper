@@ -37,10 +37,18 @@ args.filter( arg => arg.startsWith( reposKey ) ).forEach( arg => {
   repos.push( ...arg.substring( reposKey.length ).split( ',' ) );
 } );
 
+const brands = [];
+
+const brandsKey = '--brands=';
+args.filter( arg => arg.startsWith( brandsKey ) ).forEach( arg => {
+  brands.push( ...arg.substring( brandsKey.length ).split( ',' ) );
+} );
+
 const transpiler = new Transpiler( {
   clean: args.includes( '--clean' ),
   verbose: args.includes( '--verbose' ),
-  repos: repos
+  repos: repos,
+  brands: brands
 } );
 
 transpiler.pruneStaleDistFiles();

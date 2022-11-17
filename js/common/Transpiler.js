@@ -39,13 +39,15 @@ class Transpiler {
       clean: false, // delete the previous state/cache file, and create a new one.
       verbose: false, // Add extra logging
       silent: false, // hide all logging but error reporting, include any specified with verbose
-      repos: []// {string[]} additional repos to be transpiled (beyond those listed in perennial/data/active-repos)
+      repos: [], // {string[]} additional repos to be transpiled (beyond those listed in perennial/data/active-repos)
+      brands: [] // {sting[]} additional brands to visit in the brand repo
     }, options );
 
     // @private
     this.verbose = options.verbose;
     this.silent = options.silent;
     this.repos = options.repos;
+    this.brands = options.brands;
 
     // Track the status of each repo. Key= repo, value=md5 hash of contents
     this.status = {};
@@ -291,6 +293,8 @@ class Transpiler {
       this.visitDirectory( Transpiler.join( '..', repo, 'phet' ) );
       this.visitDirectory( Transpiler.join( '..', repo, 'phet-io' ) );
       this.visitDirectory( Transpiler.join( '..', repo, 'adapted-from-phet' ) );
+
+      this.brands.forEach( brand => this.visitDirectory( Transpiler.join( '..', repo, brand ) ) );
     }
   }
 
