@@ -31,6 +31,8 @@ const all = args.includes( '--all' );
 
   let reposToTest = repos;
 
+  const UPDATE_INDEX = false;
+
   if ( !all ) {
 
     const execOnRepo = repo => {
@@ -41,7 +43,11 @@ const all = args.includes( '--all' );
         // git diff-index --quiet HEAD --
         // This will error if the diff-index shows any changes in the repo, otherwise error is null.
         // If unexpected changes are showing for a repo, then the index may need to be updated with git update-index --refresh
-        child_process.exec( 'git diff-index --quiet HEAD --', { cwd: repo },
+
+        const cmd = UPDATE_INDEX ?
+                    'git update-index --refresh && git diff-index --quiet HEAD --' :
+                    'git diff-index --quiet HEAD --';
+        child_process.exec( cmd, { cwd: repo },
           error => resolve( error ) );
       } );
     };
