@@ -191,6 +191,11 @@ const getStringModule = ( requirejsNamespace: string ): object => {
         tandem = tandem.createTandem( tandemName );
       }
 
+      // strings nested under the a11y section are not currently PhET-iO instrumented, see https://github.com/phetsims/chipper/issues/1352
+      if ( tandem.phetioID.startsWith( `${Tandem.ROOT.name}.general.model.strings.${Tandem.ROOT.name}.a11y.` ) ) {
+        tandem = Tandem.OPT_OUT;
+      }
+
       const localizedString = new LocalizedString(
         phet.chipper.mapString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ] ),
         tandem,
