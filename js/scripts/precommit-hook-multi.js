@@ -59,10 +59,8 @@ const all = args.includes( '--all' );
     // If unexpected changes are showing for a repo, then the index may need to be updated with git update-index --refresh
     const reposThatindicateChanges = await execOnRepos( repos, 'git diff-index --quiet HEAD --' );
     const changedRepos = await execOnRepos( reposThatindicateChanges, 'git update-index --refresh && git diff-index --quiet HEAD --' );
-    console.log( 'detected changed repos: ' + reposThatindicateChanges.join( ', ' ) );
-    if ( changedRepos.length !== reposThatindicateChanges.length ) {
-      console.log( 'after refresh, testing: ' + changedRepos.join( ', ' ) );
-    }
+
+    console.log( 'detected changed repos: ' + changedRepos.join( ', ' ) );
 
     reposToTest = changedRepos;
   }
