@@ -27,50 +27,42 @@ const all = args.includes( '--all' );
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
 ( async () => {
 
   let reposToTest = repos;
 
-  const UPDATE_INDEX = true;
-
   if ( !all ) {
 
-    const execOnRepo = repo => {
-      return new Promise( resolve => {
+    const execOnRepos = async ( repoSubset, command ) => {
 
-        // Detect uncommitted changes in each repo:
-        // https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
-        // git diff-index --quiet HEAD --
-        // This will error if the diff-index shows any changes in the repo, otherwise error is null.
-        // If unexpected changes are showing for a repo, then the index may need to be updated with git update-index --refresh
-
-        const cmd = UPDATE_INDEX ?
-                    'git update-index --refresh && git diff-index --quiet HEAD --' :
-                    'git diff-index --quiet HEAD --';
-        child_process.exec( cmd, { cwd: repo },
-          error => resolve( error ) );
+      const promises = repoSubset.map( repo => {
+        return new Promise( resolve => child_process.exec( command, { cwd: repo }, error => resolve( error ) ) );
       } );
+      const results = await Promise.all( promises );
+
+      // Find out which repos have uncommitted changes
+      const changedRepos = [];
+      for ( let i = 0; i < results.length; i++ ) {
+        if ( results[ i ] !== null ) {
+          changedRepos.push( repoSubset[ i ] );
+        }
+      }
+
+      return changedRepos;
     };
 
-    const results = await Promise.all( repos.map( execOnRepo ) );
-
-    // Find out which repos have uncommitted changes
-    const changedRepos = [];
-    for ( let i = 0; i < results.length; i++ ) {
-      const repo = repos[ i ];
-      const result = results[ i ];
-
-      if ( result === null ) {
-
-        // was up-to-date
-      }
-      else {
-
-        // needs to push
-        changedRepos.push( repo );
-      }
+    // Detect uncommitted changes in each repo:
+    // https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
+    // git diff-index --quiet HEAD --
+    // This will error if the diff-index shows any changes in the repo, otherwise error is null.
+    // If unexpected changes are showing for a repo, then the index may need to be updated with git update-index --refresh
+    const reposThatindicateChanges = await execOnRepos( repos, 'git diff-index --quiet HEAD --' );
+    const changedRepos = await execOnRepos( reposThatindicateChanges, 'git update-index --refresh && git diff-index --quiet HEAD --' );
+    console.log( 'detected changed repos: ' + reposThatindicateChanges.join( ', ' ) );
+    if ( changedRepos.length !== reposThatindicateChanges.length ) {
+      console.log( 'after refresh, testing: ' + changedRepos.join( ', ' ) );
     }
-    console.log( 'detected changed repos: ' + changedRepos.join( ', ' ) );
 
     reposToTest = changedRepos;
   }
