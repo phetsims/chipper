@@ -31,7 +31,7 @@ const all = args.includes( '--all' );
 
   let reposToTest = repos;
 
-  const UPDATE_INDEX = false;
+  const UPDATE_INDEX = true;
 
   if ( !all ) {
 
