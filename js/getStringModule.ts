@@ -192,7 +192,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       }
 
       // strings nested under the a11y section are not currently PhET-iO instrumented, see https://github.com/phetsims/chipper/issues/1352
-      if ( tandem.phetioID.startsWith( `${Tandem.ROOT.name}.general.model.strings.${Tandem.ROOT.name}.a11y.` ) ) {
+      if ( tandem.phetioID.includes( '.a11y.' ) ) {
         tandem = Tandem.OPT_OUT;
       }
 
