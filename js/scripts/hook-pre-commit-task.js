@@ -90,7 +90,7 @@ const repo = getArg( 'repo' );
       process.exit( 0 );
     }
     else {
-      console.log( results );
+      outputToConsole && console.log( 'tsc failed' );
       process.exit( 1 );
     }
   }
