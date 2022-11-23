@@ -93,7 +93,8 @@ module.exports = function( repo, brand ) {
       // We output our builds to the following dir
       output: {
         path: path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}` ),
-        filename: `${repo}.js`
+        filename: `${repo}.js`,
+        hashFunction: 'xxhash64' // for Node 17+, see https://github.com/webpack/webpack/issues/14532
       },
 
       // {Array.<Plugin>}
