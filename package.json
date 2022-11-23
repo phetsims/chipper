@@ -36,7 +36,7 @@
     "marked": "^3.0.2",
     "node-html-encoder": "^0.0.2",
     "pngjs": "^6.0.0",
-    "puppeteer": "^10.2.0",
+    "puppeteer": "^19.2.2",
     "qunit": "^2.16.0",
     "taffydb": "^2.7.3",
     "terser": "^4.6.4",
