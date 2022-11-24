@@ -114,6 +114,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
             const fullAPI = messageText;
             await cleanup();
 
+            await cleanup();
             resolve( {
 
               // to keep track of which repo this is for
