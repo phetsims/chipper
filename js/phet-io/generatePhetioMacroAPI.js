@@ -112,6 +112,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
             // page.close() (in cleanup) will potentially trigger a pageerror race condition, so guard on that with a flag.
             resolved = true;
+            await cleanup();
             resolve( {
 
               // to keep track of which repo this is for
@@ -120,7 +121,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
               // For machine readability
               api: JSON.parse( fullAPI )
             } );
-            await cleanup();
           }
 
           else if ( msg.type() === 'error' ) {
