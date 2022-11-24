@@ -86,17 +86,8 @@ module.exports = function( repo, cache ) {
       allFilesToLint.push( '../phetmarks/js/*.js' );
       allFilesToLint = _.uniq( allFilesToLint );
 
-      // constants
-      // TODO: Don't use this from chipper!
-      const ACTIVE_REPOS_FILENAME = 'perennial/data/active-repos';  // The relative path to the list of active repos
-
-      // Start in the github checkout dir (above one of the sibling directories)
-      const directory = process.cwd();
-      const rootdir = directory + '/../';
-
-      // Iterate over all active-repos
-      const repos = grunt.file.read( rootdir + '/' + ACTIVE_REPOS_FILENAME ).trim();
-      const reposByLine = repos.split( /\r?\n/ );
+      // Patched to be empty to avoid perennial reference, not needed for maintenance releases.
+      const reposByLine = [];
 
       const everythingToLint = [];
       const visit = function( repo, path ) {
