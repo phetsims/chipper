@@ -181,10 +181,7 @@ module.exports = async function( repo, version ) {
     'phet-io-wrappers/playback',
     'phet-io-wrappers/screenshot',
     'phet-io-wrappers/state',
-    'phet-io-wrappers/wrapper-template',
-    'phet-io-wrapper-classroom-activity',
-    'phet-io-wrapper-lab-book',
-    'phet-io-wrapper-hookes-law-energy'
+    'phet-io-wrappers/wrapper-template'
   ];
 
   // Files and directories from wrapper folders that we don't want to copy
