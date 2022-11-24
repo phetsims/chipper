@@ -93,6 +93,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
             const fullAPI = messageText;
             clearTimeout( id );
+            await page.close();
             resolve( {
 
               // to keep track of which repo this is for
@@ -101,7 +102,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
               // For machine readability
               api: JSON.parse( fullAPI )
             } );
-            await page.close();
           }
 
           else if ( msg.type() === 'error' ) {
