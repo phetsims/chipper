@@ -68,6 +68,8 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
       if ( msg.text().indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
         const fullAPI = msg.text();
+        await page.close();
+        await browser.close();
         resolve( fullAPI );
       }
 
@@ -87,6 +89,5 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
     const url = `http://localhost:${port}/${repo}/${relativePath}?brand=phet-io&phetioStandalone&phetioPrintAPI`;
     page.goto( url ).catch( reject );
   } );
-  await browser.close();
   return result;
 };
