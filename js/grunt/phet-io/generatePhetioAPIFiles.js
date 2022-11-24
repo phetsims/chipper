@@ -60,8 +60,9 @@ module.exports = async ( repo, localTestingURL ) => {
 
     const resolved = async () => {
       if ( receivedBaseline && receivedTypes ) {
-        resolve();
+        await page.close();
         await browser.close();
+        resolve();
       }
     };
 
