@@ -96,6 +96,7 @@ module.exports = async ( repos, options ) => {
 
             const fullAPI = msg.text();
             clearTimeout( id );
+            await page.close();
             resolve( {
 
               // to keep track of which repo this is for
@@ -107,7 +108,6 @@ module.exports = async ( repos, options ) => {
               // in case there is important formatting
               text: fullAPI
             } );
-            await page.close();
           }
 
           else if ( msg.type() === 'error' ) {
