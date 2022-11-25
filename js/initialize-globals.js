@@ -36,6 +36,17 @@
     // Whether accessibility features are enabled or not.  Use this option to render the Parallel DOM for
     // keyboard navigation and screen reader based auditory descriptions.
     accessibility: { type: 'flag' },
+    
+    /**
+     * In environments where users should not be able to navigate hyperlinks away from the simulation, clients can use
+     * ?allowLinks=false.  In this case, links are displayed and not clickable.
+     * @memberOf PhetQueryParameters
+     * @type {string}
+     */
+    allowLinks: {
+      type: 'boolean',
+      defaultValue: true
+    },
 
     /**
      * Master volume control for the simulation (for Vibe sounds).
