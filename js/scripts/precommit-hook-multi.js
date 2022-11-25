@@ -57,8 +57,8 @@ const all = args.includes( '--all' );
     // git diff-index --quiet HEAD --
     // This will error if the diff-index shows any changes in the repo, otherwise error is null.
     // If unexpected changes are showing for a repo, then the index may need to be updated with git update-index --refresh
-    const reposThatindicateChanges = await execOnRepos( repos, 'git diff-index --quiet HEAD --' );
-    const changedRepos = await execOnRepos( reposThatindicateChanges, 'git update-index --refresh && git diff-index --quiet HEAD --' );
+    const reposThatIndicateChanges = await execOnRepos( repos, 'git diff-index --quiet HEAD --' );
+    const changedRepos = await execOnRepos( reposThatIndicateChanges, 'git update-index --refresh && git diff-index --quiet HEAD --' );
 
     console.log( 'detected changed repos: ' + changedRepos.join( ', ' ) );
 
