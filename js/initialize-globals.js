@@ -48,6 +48,17 @@
      * keyboard navigation and screen reader based auditory descriptions.
      */
     accessibility: { type: 'flag' },
+    
+    /**
+     * In environments where users should not be able to navigate hyperlinks away from the simulation, clients can use
+     * ?allowLinks=false.  In this case, links are displayed and not clickable.
+     * @memberOf PhetQueryParameters
+     * @type {string}
+     */
+    allowLinks: {
+      type: 'boolean',
+      defaultValue: true
+    },
 
     // Private doc: This is primarily for Vibe sounds. For external use. The below jsdoc is public to the
     // phet-io api documentation. Change wisely.
