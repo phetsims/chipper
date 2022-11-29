@@ -151,10 +151,10 @@ export default mipmaps;`;
  */
 const modulifyShader = async ( abspath, repo, subdir, filename ) => {
 
-  // load the sound file
-  const shaderString = fs.readFileSync( abspath, 'utf-8' );
+  // load the shader file
+  const shaderString = fs.readFileSync( abspath, 'utf-8' ).replace( /\r/g, '' );
 
-  // output the contents of the file that will define the sound in JS format
+  // output the contents of the file that will define the shader in JS format
   const contents = `${HEADER}
 export default ${JSON.stringify( shaderString )}`;
 
