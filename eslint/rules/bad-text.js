@@ -79,6 +79,13 @@ module.exports = function( context ) {
       regex: /(slave|Slave|blacklist|Blacklist|BlackList)/
     },
 
+    // Any instances of youtube.com should enforce that we use youtube-nocookie.com
+    // https://github.com/phetsims/website/issues/1376
+    // https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode
+    {
+      id: 'require youtube privacy enhanced mode',
+      regex: /youtube(?:(?!-nocookie).)*\.com/
+    },
 
     'Util = require( \'', // Utils should now be plural, see https://github.com/phetsims/tasks/issues/966
 
