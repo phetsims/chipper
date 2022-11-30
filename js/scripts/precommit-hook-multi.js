@@ -56,9 +56,7 @@ const all = args.includes( '--all' );
     // https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommitted-changes
     // git diff-index --quiet HEAD --
     // This will error if the diff-index shows any changes in the repo, otherwise error is null.
-    // If unexpected changes are showing for a repo, then the index may need to be updated with git update-index --refresh
-    const reposThatIndicateChanges = await execOnRepos( repos, 'git diff-index --quiet HEAD --' );
-    const changedRepos = await execOnRepos( reposThatIndicateChanges, 'git update-index --refresh && git diff-index --quiet HEAD --' );
+    const changedRepos = await execOnRepos( repos, 'git update-index --refresh && git diff-index --quiet HEAD --' );
 
     console.log( 'detected changed repos: ' + changedRepos.join( ', ' ) );
 
