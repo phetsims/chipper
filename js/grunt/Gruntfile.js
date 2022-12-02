@@ -432,7 +432,6 @@ Updates the normal automatically-generated files for this repository. Includes:
   * phet-io simulations: generate overrides file if needed
   * create the conglomerate string files for unbuilt mode, for this repo and its dependencies`,
     wrapTask( async () => {
-      const SimVersion = require( '../../../perennial-alias/js/common/SimVersion' );
       const generateREADME = require( './generateREADME' );
       const fs = require( 'fs' );
 
@@ -458,8 +457,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       // update README.md only for simulations
       if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {
-        const simVersion = SimVersion.parse( packageObject.version );
-        await generateREADME( repo, simVersion.isSimPublished );
+        await generateREADME( repo, !!packageObject.phet.published );
       }
 
       if ( packageObject.phet.supportedBrands && packageObject.phet.supportedBrands.includes( 'phet-io' ) ) {
