@@ -731,6 +731,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     'one-off',
     'rc',
     'production',
+    'prototype',
     'create-sim',
     'insert-require-statement',
     'lint-everything',
