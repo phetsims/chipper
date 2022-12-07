@@ -39,7 +39,7 @@ class Transpiler {
       clean: false, // delete the previous state/cache file, and create a new one.
       verbose: false, // Add extra logging
       silent: false, // hide all logging but error reporting, include any specified with verbose
-      repos: [], // {string[]} additional repos to be transpiled (beyond those listed in perennial/data/active-repos)
+      repos: [], // {string[]} additional repos to be transpiled (beyond those listed in perennial-alias/data/active-repos)
       brands: [] // {sting[]} additional brands to visit in the brand repo
     }, options );
 
@@ -375,7 +375,7 @@ class Transpiler {
         return;
       }
 
-      if ( filePath.endsWith( 'perennial/data/active-repos' ) ) {
+      if ( filePath.endsWith( 'perennial-alias/data/active-repos' ) ) {
         const newActiveRepos = getActiveRepos();
         !this.silent && console.log( 'reloaded active repos' );
         const newRepos = newActiveRepos.filter( repo => !this.activeRepos.includes( repo ) );

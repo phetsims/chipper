@@ -7,7 +7,7 @@ const child_process = require( 'child_process' );
 
 // constants
 // Don't use getActiveRepos() since it cannot be run from the root
-const contents = fs.readFileSync( 'perennial/data/active-repos', 'utf8' ).trim();
+const contents = fs.readFileSync( 'perennial-alias/data/active-repos', 'utf8' ).trim();
 const repos = contents.split( '\n' ).map( sim => sim.trim() );
 
 const args = process.argv.slice( 2 );

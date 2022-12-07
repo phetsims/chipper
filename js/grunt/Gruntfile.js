@@ -483,8 +483,8 @@ Updates the normal automatically-generated files for this repository. Includes:
   // This is not run in grunt update because it affects dependencies and outputs files outside of the repo.
   grunt.registerTask( 'generate-development-strings',
     'To support locales=* in unbuilt mode, generate a conglomerate JSON file for each repo with translations in babel. Run on all repos via:\n' +
-    '* for-each.sh perennial/data/active-repos npm install\n' +
-    '* for-each.sh perennial/data/active-repos grunt generate-development-strings',
+    '* for-each.sh perennial-alias/data/active-repos npm install\n' +
+    '* for-each.sh perennial-alias/data/active-repos grunt generate-development-strings',
     wrapTask( async () => {
       const generateDevelopmentStrings = require( '../scripts/generateDevelopmentStrings' );
       const fs = require( 'fs' );
@@ -642,7 +642,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     'This will by default compare designed changes only. Options:\n' +
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
-    '--stable, generate the phet-io-apis for each phet-io sim considered to have a stable api (see perennial/data/phet-io-api-stable)\n' +
+    '--stable, generate the phet-io-apis for each phet-io sim considered to have a stable api (see perennial-alias/data/phet-io-api-stable)\n' +
     '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes\n' +
     '--temporary, compares API files in the temporary directory (otherwise compares to freshly generated APIs)\n' +
     '--compareBreakingAPIChanges - add this flag to compare breaking changes in addition to designed changes',
