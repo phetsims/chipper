@@ -346,7 +346,8 @@ module.exports = function( grunt ) {
 --format: Append an additional set of rules for formatting
 --type-info: Include rules for TypeScript that use type checking. Slows down eslint significantly.
 --patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.
---chip-away: output a list of responsible devs for each repo with lint problems`,
+--chip-away: output a list of responsible devs for each repo with lint problems
+--disable-with-comment: add an es-lint disable with comment to lint errors`,
     wrapTask( async () => {
       const lint = require( './lint' );
 
@@ -355,12 +356,14 @@ module.exports = function( grunt ) {
       const fix = grunt.option( 'fix' );
       const format = grunt.option( 'format' );
       const chipAway = grunt.option( 'chip-away' );
+      const disableWithComment = grunt.option( 'disable-with-comment' );
 
       const lintReturnValue = await lint( [ repo ], {
         cache: cache,
         fix: fix,
         format: format,
-        chipAway: chipAway
+        chipAway: chipAway,
+        disableWithComment: disableWithComment
       } );
 
       if ( !lintReturnValue.ok ) {
@@ -376,6 +379,7 @@ module.exports = function( grunt ) {
     const fix = grunt.option( 'fix' );
     const format = grunt.option( 'format' );
     const chipAway = grunt.option( 'chip-away' );
+    const disableWithComment = grunt.option( 'disable-with-comment' );
     assert && assert( !grunt.option( 'patterns' ), 'patterns not support for lint-all' );
 
     const getPhetLibs = require( './getPhetLibs' );
@@ -386,7 +390,8 @@ module.exports = function( grunt ) {
       cache: cache,
       fix: fix,
       format: format,
-      chipAway: chipAway
+      chipAway: chipAway,
+      disableWithComment: disableWithComment
     } );
 
     // Output results on errors.

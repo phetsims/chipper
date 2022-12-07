@@ -13,6 +13,7 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
 const chipAway = require( './chipAway' );
+const disableWithComment = require( './disableWithComment' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 const CacheLayer = require( '../common/CacheLayer' );
 const crypto = require( 'crypto' );
@@ -150,6 +151,7 @@ const lint = async ( repos, options ) => {
     format: false, // append an extra set of rules for formatting code.
     fix: false, // whether fixes should be written to disk
     chipAway: false, // returns responsible dev info for easier chipping.
+    disableWithComment: false, // replaces failing typescript lines with eslint disable and related comment
     showProgressBar: true
   }, options );
 
@@ -197,6 +199,10 @@ const lint = async ( repos, options ) => {
     if ( options.chipAway ) {
       const message = chipAway( allResults );
       console.log( 'Results from chipAway: \n' + message );
+    }
+
+    if ( options.disableWithComment ) {
+      disableWithComment( allResults );
     }
   }
 
