@@ -14,7 +14,7 @@ const getSimList = require( '../common/getSimList' );
  * node js/phet-io/output-apis.js [--simList=path] [--sims=sim1,sim2,...] [--temporary]
  *
  * e.g.,
- * node js/phet-io/output-apis.js --simList=../perennial/data/phet-io
+ * node js/phet-io/output-apis.js --simList=../perennial-alias/data/phet-io
  *
  * OPTIONS:
  * It will default to include all phet-io sims unless you specify a subset

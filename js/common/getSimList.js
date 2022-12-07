@@ -37,7 +37,7 @@ module.exports = () => {
     repos = contents.split( '\n' ).map( sim => sim.trim() );
   } );
   processKey( 'stable', () => {
-    const contents = fs.readFileSync( '../perennial/data/phet-io-api-stable', 'utf8' ).trim();
+    const contents = fs.readFileSync( '../perennial-alias/data/phet-io-api-stable', 'utf8' ).trim();
     repos = contents.split( '\n' ).map( sim => sim.trim() );
   } );
   processKey( 'sims', value => {
