@@ -56,10 +56,12 @@ module.exports = {
         '@typescript-eslint/await-thenable': 'error',
 
         // Disallow @ts-<directive> comments or require descriptions after directive ✅
-        '@typescript-eslint/ban-ts-comment': [ 'off', {
-          'ts-ignore': 'allow-with-description',
-          'ts-check': true
-        } ], // TODO: Chip way as dev team. 415 errors
+        '@typescript-eslint/ban-ts-comment': [ 'error', {
+          'ts-ignore': false, // Covered by '@typescript-eslint/prefer-ts-expect-error'
+          'ts-check': true,
+          'ts-expect-error': false, // TODO: Chip way as dev team
+          'ts-nocheck': false // TODO: Chip way as dev team
+        } ],
 
         // Disallow // tslint:<rule-flag> comments 🔒 🔧
         '@typescript-eslint/ban-tslint-comment': 'error',
@@ -289,7 +291,7 @@ module.exports = {
         '@typescript-eslint/prefer-string-starts-ends-with': 'error',
 
         // Enforce using @ts-expect-error over @ts-ignore 🔒 🔧
-        '@typescript-eslint/prefer-ts-expect-error': 'off', // TODO: Investigate. 565 failures
+        '@typescript-eslint/prefer-ts-expect-error': 'error',
 
         // Require any function or method that returns a Promise to be marked async  🔧 💭
         '@typescript-eslint/promise-function-async': 'off',
