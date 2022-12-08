@@ -1464,7 +1464,10 @@ module.exports = {
     'no-spaced-func': 'error',
 
     // a default import variable name should be the same as the filename
-    'default-import-match-filename': 'error'
+    'default-import-match-filename': 'error',
+
+    // When the default export of a file is a class, it should have a namespace register call
+    'default-export-class-should-register-namespace': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
