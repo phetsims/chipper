@@ -1,4 +1,4 @@
-// Copyright 2021, University of Colorado Boulder
+// Copyright 2021-2022, University of Colorado Boulder
 
 /**
  * Parses command line arguments--sims=sim1,sim2,... or --simList=path/to/filename to get a list of sims.
