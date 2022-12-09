@@ -285,7 +285,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   };
 
   // a list of the phet-io wrappers that are built with the phet-io sim
-  const wrappers = fs.readFileSync( '../chipper/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
+  const wrappers = fs.readFileSync( '../perennial-alias/data/wrappers', 'utf-8' ).trim().split( '\n' ).map( wrappers => wrappers.trim() );
 
   // Files and directories from wrapper folders that we don't want to copy
   const wrappersUnallowed = [ '.git', 'README.md', '.gitignore', 'node_modules', 'package.json', 'build' ];
