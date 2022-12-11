@@ -38,7 +38,7 @@ module.exports = function( context ) {
       //          {
       //            'type': 'Literal',
       //            'value': 'FUNCTION_BUILDER/equations/EquationsScreen',
-      //            'raw': "'FUNCTION_BUILDER/equations/EquationsScreen'"//eslint-disable-line
+      //            'raw': "'FUNCTION_BUILDER/equations/EquationsScreen'"//eslint-disable-line ???
       //          }
       //        ]
       //      }

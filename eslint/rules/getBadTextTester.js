@@ -67,8 +67,9 @@ module.exports = ( ruleName, badTexts, context ) => {
           for ( let i = 0; i < codeLines.length; i++ ) {
             const lineString = codeLines[ i ];
 
-            // lines are 1 based, codeLines array is 0 based
-            const badLineNumber = i + 1;
+            // lines are 1 based, codeLines array is 0 based. Can also add a delta so that rules about
+            // disable-line can report on an adjacent line. Seems to work correctly if badLineNumber === 0
+            const badLineNumber = i + 1 + ( forbiddenText.lineNumberDelta || 0 );
 
             // only test regex if provided
             if ( forbiddenText.regex ) {
@@ -126,6 +127,8 @@ module.exports = ( ruleName, badTexts, context ) => {
    *                                           then the bad text will only be checked in code, and not via each line.
    * @property {RegExp} [regex] - if provided, instead of checking the id as a string, test each line with this regex.
    * @property {function} [predicate] - if provided, instead of checking the id as a string, test each line with this function
+   * @property {number} [lineNumberDelta] - if provided, instead report the error on a different line, to avoid lines
+   *                                           that have eslint-disable directives
    */
 };
 

@@ -131,7 +131,18 @@ module.exports = function( context ) {
     },
 
     // Should have a period before "<", see https://github.com/phetsims/chipper/issues/1005 and https://github.com/phetsims/chipper/issues/1003
-    { id: 'Type<Parameter> (add a dot)', regex: /{[^\n:]*[A-z]<[A-z][|'<>A-z]+>[^\n:{}]*}}/ }
+    { id: 'Type<Parameter> (add a dot)', regex: /{[^\n:]*[A-z]<[A-z][|'<>A-z]+>[^\n:{}]*}}/ },
+
+    // eslint disable line directives must have an explanation
+    {
+      id: 'eslint-disable-line-directives-must-have-explanation',
+      predicate: line => {
+        return !line.trim().endsWith( 'eslint-disable-line' );
+      },
+
+      // Report the error on the previous line so it doesn't get disabled
+      lineNumberDelta: -1
+    }
   ];
 
   return {
