@@ -35,6 +35,7 @@
     "../../../equality-explorer/js/**/*",
     "../../../equality-explorer-basics/js/**/*",
     "../../../equality-explorer-two-variables/js/**/*",
+    "../../../function-builder-basics/js/**/*",
     "../../../gases-intro/js/**/*",
     "../../../gas-properties/js/**/*",
     "../../../geometric-optics/js/**/*",
