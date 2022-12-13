@@ -32,7 +32,7 @@ module.exports = function( repo, width, height, quality, mime, altSuffix ) {
       return;
     }
 
-    new jimp( fullResImageName, function() { //eslint-disable-line no-new
+    new jimp( fullResImageName, function() { // eslint-disable-line no-new
       if ( mime === jimp.MIME_JPEG ) {
         this.quality( quality );
       }
