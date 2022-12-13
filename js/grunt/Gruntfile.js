@@ -451,14 +451,14 @@ Updates the normal automatically-generated files for this repository. Includes:
     'Generates README.md file for a published simulation.',
     wrapTask( async () => {
       const generateREADME = require( './generateREADME' ); // used by multiple tasks
-      generateREADME( repo, true /* published */ );
+      await generateREADME( repo, true /* published */ );
     } ) );
 
   grunt.registerTask( 'unpublished-README',
     'Generates README.md file for an unpublished simulation.',
     wrapTask( async () => {
       const generateREADME = require( './generateREADME' ); // used by multiple tasks
-      generateREADME( repo, false /* published */ );
+      await generateREADME( repo, false /* published */ );
     } ) );
 
   grunt.registerTask( 'sort-imports', 'Sort the import statements for a single file (if --file={{FILE}} is provided), or does so for all JS files if not specified', wrapTask( async () => {
