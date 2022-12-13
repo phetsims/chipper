@@ -20,6 +20,8 @@ import IOType from '../../tandem/js/types/IOType.js';
 import ObjectLiteralIO from '../../tandem/js/types/ObjectLiteralIO.js';
 import LocalizedString, { LocalizedStringStateDelta } from './LocalizedString.js';
 import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
+import { Locale } from '../../joist/js/i18n/localeProperty.js';
+import localeInfoModule from '../../chipper/js/data/localeInfoModule.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
@@ -94,6 +96,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
   // Our locale information is from phet.chipper.locale
 
   assert && assert( typeof phet.chipper.locale === 'string', 'phet.chipper.locale should have been loaded by now' );
+  assert && assert( Object.keys( localeInfoModule ).includes( phet.chipper.locale ), 'phet.chipper.locale should have been loaded by now' );
   assert && assert( phet.chipper.strings, 'phet.chipper.strings should have been loaded by now' );
 
   // Construct locales in increasing specificity, e.g. [ 'en', 'zh', 'zh_CN' ], so we get fallbacks in order
@@ -204,8 +207,8 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       localizedStringMap[ stringKey ] = localizedString;
 
       // Push up the translated values
-      Object.keys( phet.chipper.strings ).forEach( locale => {
-        const string = phet.chipper.strings[ locale ][ stringKey ];
+      ( Object.keys( phet.chipper.strings ) as Locale[] ).forEach( ( locale: Locale ) => {
+        const string: string = phet.chipper.strings[ locale ][ stringKey ];
         // Ignore zero-length strings, see https://github.com/phetsims/chipper/issues/1343
         if ( typeof string === 'string' && string !== '' ) {
           localizedString.setInitialValue( locale, phet.chipper.mapString( string ) );
