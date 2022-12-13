@@ -518,7 +518,7 @@ module.exports = {
         'require-property-suffix': 'error',
 
         // Static fields should have the 'readonly' modifier
-        'statics-should-be-readonly': 'off' // TODO: Fix all instances and enable rule, see https://github.com/phetsims/chipper/issues/1366
+        'statics-should-be-readonly': 'error'
       }
     }, {
       files: [
