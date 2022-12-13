@@ -43,6 +43,7 @@
     "../../../gravity-and-orbits/js/**/*",
     "../../../greenhouse-effect/js/**/*",
     "../../../griddle/js/**/*",
+    "../../../hookes-law/js/**/*",
     "../../../joist/js/**/*",
     "../../../kite/js/**/*",
     "../../../mean-share-and-balance/js/**/*",
