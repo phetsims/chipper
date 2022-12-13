@@ -515,7 +515,10 @@ module.exports = {
         'explicit-method-return-type': 'error',
 
         // Variables that are Properties should end in "Property", like const myProperty = new Property();
-        'require-property-suffix': 'error'
+        'require-property-suffix': 'error',
+
+        // Static fields should have the 'readonly' modifier
+        'statics-should-be-readonly': 'off' // TODO: Fix all instances and enable rule, see https://github.com/phetsims/chipper/issues/1366
       }
     }, {
       files: [
@@ -560,7 +563,7 @@ module.exports = {
     // Enforce "for" loop update clause moving the counter in the right direction.
     'for-direction': 'error',
 
-// Enforce `return` statements in getters
+    // Enforce `return` statements in getters
     'getter-return': 'error',
 
     // Disallow using an async function as a Promise executor
