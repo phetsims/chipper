@@ -13,9 +13,9 @@
     "requirejs": "~2.3.2",
     "jpeg-js": "~0.1.1",
     "pngjs": "~0.4.0",
-    "jimp": "^0.2.0",
-    "request": "^2.55.0",
-    "underscore": "^1.8.2",
+    "jimp": "~0.2.0",
+    "request": "~2.55.0",
+    "underscore": "~1.8.2",
     "node-html-encoder": "~0.0.2",
     "istanbul": "~0.4.5",
     "jscpd": "~0.6.5"
