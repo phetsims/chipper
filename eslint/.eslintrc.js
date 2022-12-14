@@ -518,7 +518,7 @@ module.exports = {
         'require-property-suffix': 'error',
 
         // Static fields should have the 'readonly' modifier
-        'statics-should-be-readonly': 'error'
+        'uppercase-statics-should-be-readonly': 'error'
       }
     }, {
       files: [
