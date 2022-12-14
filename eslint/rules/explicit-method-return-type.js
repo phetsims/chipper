@@ -38,21 +38,24 @@ const getReturnTypeString = ( context, node ) => {
 
 /**
  * Inserts the returnTypeString at the provided location.
- * @param bodyStartLocation
+ * @param {ASTNode|undefined} functionBody - node.body from the AST (may momentarily be undefined while editing)
  * @param returnTypeString
  * @param fixer
  * @returns {boolean|*}
  */
-const insertReturnType = ( bodyStartLocation, returnTypeString, fixer ) => {
+const insertReturnType = ( functionBody, returnTypeString, fixer ) => {
+  if ( functionBody ) {
+    const bodyStartLocation = functionBody.range[ 0 ];
 
-  // TODO: do Range/Node etc as a second fix to easily find spots where we are using the DOM type.
-  // TODO: any should be filled in themselves.
-  // TODO: look into some derivedProperty or other Property returns. Perhaps do those manually.
-  if ( returnTypeString !== 'any' && ![ 'Image', 'Range', 'Text', 'Node', 'Event' ].includes( returnTypeString ) &&
-       !returnTypeString.includes( 'Property' ) ) {
+    // TODO: do Range/Node etc as a second fix to easily find spots where we are using the DOM type.
+    // TODO: any should be filled in themselves.
+    // TODO: look into some derivedProperty or other Property returns. Perhaps do those manually.
+    if ( returnTypeString !== 'any' && ![ 'Image', 'Range', 'Text', 'Node', 'Event' ].includes( returnTypeString ) &&
+         !returnTypeString.includes( 'Property' ) ) {
 
-    // location - 1 adds an extra space after the return type name
-    return fixer.insertTextBeforeRange( [ bodyStartLocation - 1, bodyStartLocation ], `: ${returnTypeString} ` );
+      // location - 1 adds an extra space after the return type name
+      return fixer.insertTextBeforeRange( [ bodyStartLocation - 1, bodyStartLocation ], `: ${returnTypeString} ` );
+    }
   }
 
   return false;
@@ -76,8 +79,7 @@ module.exports = {
             fix: fixer => {
 
               const returnTypeString = getReturnTypeString( context, node );
-              const bodyStart = node.body.range[ 0 ];
-              return insertReturnType( bodyStart, returnTypeString, fixer );
+              return insertReturnType( node.body, returnTypeString, fixer );
             }
           } );
         }
@@ -93,8 +95,7 @@ module.exports = {
             fix: fixer => {
 
               const returnTypeString = getReturnTypeString( context, node );
-              const bodyStart = node.value.body.range[ 0 ];
-              return insertReturnType( bodyStart, returnTypeString, fixer );
+              return insertReturnType( node.value.body, returnTypeString, fixer );
             }
           } );
         }
