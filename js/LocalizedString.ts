@@ -224,7 +224,7 @@ class LocalizedString {
    * Reset to the initial value for the specified locale, used for testing.
    */
   public restoreInitialValue( locale: Locale ): void {
-    assert && assert( this.initialValues[ locale ], 'initial value expected for', locale );
+    assert && assert( typeof this.initialValues[ locale ] === 'string', 'initial value expected for', locale );
     this.property.value = this.initialValues[ locale ]!;
   }
 }
