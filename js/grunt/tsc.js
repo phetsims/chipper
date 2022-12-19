@@ -1,7 +1,8 @@
 // Copyright 2021-2022, University of Colorado Boulder
 
 /**
- * Runs `tsc`
+ * Runs `tsc`. If you run into a memory error, consider setting the environment variable like so:
+ * export NODE_OPTIONS=--max_old_space_size=4096
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
