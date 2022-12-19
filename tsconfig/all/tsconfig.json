@@ -24,8 +24,10 @@
     "../../../chipper/phet-types.d.ts",
 
     "../../../circuit-construction-kit-ac/js/**/*",
+    "../../../circuit-construction-kit-ac-virtual-lab/js/**/*",
     "../../../circuit-construction-kit-common/js/**/*",
     "../../../circuit-construction-kit-dc/js/**/*",
+    "../../../circuit-construction-kit-dc-virtual-lab/js/**/*",
     "../../../concentration/js/**/*",
     "../../../counting-common/js/**/*",
     "../../../density/js/**/*",
