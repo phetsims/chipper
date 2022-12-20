@@ -142,6 +142,18 @@ module.exports = function( context ) {
 
       // Report the error on the previous line so it doesn't get disabled
       lineNumberDelta: -1
+    },
+
+    // eslint disable next line directives must have an explanation
+    {
+      id: 'eslint-disable-next-line-directives-must-have-explanation',
+      predicate: line => {
+        if ( line.trim().endsWith( 'eslint-disable-next-line' ) ) {
+          console.log( 'gotcha' );
+        }
+
+        return !line.trim().endsWith( 'eslint-disable-next-line' );
+      }
     }
   ];
 
