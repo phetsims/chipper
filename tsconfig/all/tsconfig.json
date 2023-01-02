@@ -45,6 +45,7 @@
     "../../../geometric-optics/js/**/*",
     "../../../geometric-optics-basics/js/**/*",
     "../../../graphing-lines/js/**/*",
+    "../../../graphing-slope-intercept/js/**/*",
     "../../../gravity-and-orbits/js/**/*",
     "../../../greenhouse-effect/js/**/*",
     "../../../griddle/js/**/*",
