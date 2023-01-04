@@ -594,6 +594,9 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, md
 
   // fill in links
   let clientGuideSource = grunt.file.read( mdFilePath );
+
+  ///////////////////////////////////////////
+  // DO NOT UPDATE OR ADD TO THESE WITHOUT ALSO UPDATING THE LIST IN phet-io-sim-specific/client-guide-common/README.md
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{WRAPPER_INDEX_PATH}}', '../../' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIMULATION_DISPLAY_NAME}}', simulationDisplayName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
@@ -603,6 +606,7 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, md
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simCamelCaseName}}', simCamelCaseName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simKebabName}}', repoName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIMULATION_VERSION}}', version );
+  ///////////////////////////////////////////
 
   // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path. Order matters!
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../../${GUIDES_COMMON_DIR}`, '' );
