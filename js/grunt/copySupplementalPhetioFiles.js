@@ -243,7 +243,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
           'Documentation for instructional designers about best practices for simulation customization with PhET-iO Studio.' ) );
 
 
-      const exampleRowContents = fs.existsSync( `${PHET_IO_SIM_SPECIFIC}/repos/${repo}/client-guide/${EXAMPLES_FILENAME}.md` ) ?
+      const exampleRowContents = fs.existsSync( `${PHET_IO_SIM_SPECIFIC}/repos/${repo}/${EXAMPLES_FILENAME}.md` ) ?
                                  getGuideRowText( EXAMPLES_FILENAME, 'Examples',
                                    'Provides instructions and the specific phetioIDs for customizing the simulation.' ) : '';
       contents = ChipperStringUtils.replaceAll( contents, '{{EXAMPLES_ROW}}', exampleRowContents );
@@ -562,23 +562,11 @@ const handleJSDOC = async buildDir => {
  */
 const handleClientGuides = ( repoName, simulationDisplayName, buildDir, version ) => {
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
-  const clientGuidesSourceRoot = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/`;
+  const clientGuidesSourceRoot = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/`;
   const commonDir = `${PHET_IO_SIM_SPECIFIC}/${GUIDES_COMMON_DIR}`;
-
-  // gracefully support no client guides
-  if ( !fs.existsSync( clientGuidesSourceRoot ) ) {
-    console.log( `No client guides found at ${clientGuidesSourceRoot}, no guides being built.` );
-    return;
-  }
 
   // copy over common images and styles
   copyDirectory( commonDir, `${builtClientGuidesOutputDir}` );
-
-  // copy over the sim-specific phet-io guide images
-  const simSpecificGuideImagesDir = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/images/`;
-  if ( fs.existsSync( simSpecificGuideImagesDir ) ) {
-    copyDirectory( simSpecificGuideImagesDir, `${builtClientGuidesOutputDir}images/` );
-  }
 
   // handle generating and writing the html file for each client guide
   generateAndWriteClientGuide( repoName, `${simulationDisplayName} PhET-iO Guide`, simulationDisplayName, `${commonDir}/${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html`, version );
