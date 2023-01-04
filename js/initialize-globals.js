@@ -346,6 +346,16 @@
     mobileA11yTest: { type: 'flag' },
 
     /**
+     * If this is a finite number AND assertions are enabled, it will track maximum Node parent counts, and
+     * will assert that the count is not greater than the limit.
+     */
+    parentLimit: {
+      type: 'number',
+      defaultValue: Number.POSITIVE_INFINITY,
+      public: false
+    },
+
+    /**
      * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
      * to Google Analytics and potentially other sources in the future.
      *
