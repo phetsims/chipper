@@ -9,12 +9,11 @@
  */
 
 
-const http = require( 'http' );
-const fs = require( 'fs' );
 const puppeteer = require( 'puppeteer' );
 const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
+const withServer = require( '../../../perennial-alias/js/common/withServer' );
 
 /**
  * Load each sim provided and get the
@@ -33,158 +32,123 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     showMessagesFromSim: true
   }, options );
 
-  // Consider using https://github.com/cloudhead/node-static or reading https://nodejs.org/en/knowledge/HTTP/servers/how-to-serve-static-files/
-  const server = http.createServer( ( req, res ) => {
-
-    // Trim query string
-    const tail = req.url.indexOf( '?' ) >= 0 ? req.url.substring( 0, req.url.indexOf( '?' ) ) : req.url;
-    const path = `${process.cwd()}/..${tail}`;
-
-    // See https://gist.github.com/aolde/8104861
-    const mimeTypes = {
-      html: 'text/html',
-      jpeg: 'image/jpeg',
-      jpg: 'image/jpeg',
-      png: 'image/png',
-      js: 'text/javascript',
-      css: 'text/css',
-      gif: 'image/gif',
-      mp3: 'audio/mpeg',
-      wav: 'audio/wav'
-    };
-    const mimeType = mimeTypes[ path.split( '.' ).pop() ] || 'text/plain';
-
-    fs.readFile( path, ( err, data ) => {
-      if ( err ) {
-        res.writeHead( 404 );
-        res.end( JSON.stringify( err ) );
-      }
-      else {
-        res.writeHead( 200, { 'Content-Type': mimeType } );
-        res.end( data );
-      }
+  return withServer( async port => {
+    const browser = await puppeteer.launch( {
+      timeout: 120000
     } );
-  } );
-  server.listen( 0 );
+    const chunks = _.chunk( repos, options.chunkSize );
 
-  const port = server.address().port;
-  const browser = await puppeteer.launch( {
-    timeout: 120000
-  } );
-  const chunks = _.chunk( repos, options.chunkSize );
+    const macroAPI = {};
 
-  const macroAPI = {};
+    for ( let i = 0; i < chunks.length; i++ ) {
+      const chunk = chunks[ i ];
+      options.showProgressBar && showCommandLineProgress( i / chunks.length, false );
 
-  for ( let i = 0; i < chunks.length; i++ ) {
-    const chunk = chunks[ i ];
-    options.showProgressBar && showCommandLineProgress( i / chunks.length, false );
+      const promises = chunk.map( async repo => {
+        const page = await browser.newPage();
 
-    const promises = chunk.map( async repo => {
-      const page = await browser.newPage();
+        return new Promise( async ( resolve, reject ) => { // eslint-disable-line no-async-promise-executor
 
-      return new Promise( async ( resolve, reject ) => { // eslint-disable-line no-async-promise-executor
+          let cleaned = false;
+          // Returns whether we closed the page
+          const cleanup = async () => {
+            if ( cleaned ) { return false; }
+            cleaned = true;
 
-        let cleaned = false;
-        // Returns whether we closed the page
-        const cleanup = async () => {
-          if ( cleaned ) { return false; }
-          cleaned = true;
+            await page.close();
 
-          await page.close();
+            return true;
+          };
 
-          return true;
-        };
+          // This is likely to occur in the middle of page.goto, so we need to be graceful to the fact that resolving
+          // and closing the page will then cause an error in the page.goto call, see https://github.com/phetsims/perennial/issues/268#issuecomment-1382374092
+          const cleanupAndResolve = async value => {
+            if ( await cleanup() ) {
+              resolve( value );
+            }
+          };
+          const cleanupAndReject = async e => {
+            if ( await cleanup() ) {
+              reject( e );
+            }
+          };
 
-        // This is likely to occur in the middle of page.goto, so we need to be graceful to the fact that resolving
-        // and closing the page will then cause an error in the page.goto call, see https://github.com/phetsims/perennial/issues/268#issuecomment-1382374092
-        const cleanupAndResolve = async value => {
-          if ( await cleanup() ) {
-            resolve( value );
-          }
-        };
-        const cleanupAndReject = async e => {
-          if ( await cleanup() ) {
-            reject( e );
-          }
-        };
+          // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
+          setTimeout( () => cleanupAndReject( new Error( `Timeout in generatePhetioMacroAPI for ${repo}` ) ), 120000 );
 
-        // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-        setTimeout( () => cleanupAndReject( new Error( `Timeout in generatePhetioMacroAPI for ${repo}` ) ), 120000 );
+          page.on( 'console', async msg => {
+            const messageText = msg.text();
 
-        page.on( 'console', async msg => {
-          const messageText = msg.text();
+            if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
-          if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
+              const fullAPI = messageText;
 
-            const fullAPI = messageText;
+              cleanupAndResolve( {
+                // to keep track of which repo this is for
+                repo: repo,
 
-            cleanupAndResolve( {
-              // to keep track of which repo this is for
-              repo: repo,
+                // For machine readability
+                api: JSON.parse( fullAPI )
+              } );
+            }
 
-              // For machine readability
-              api: JSON.parse( fullAPI )
+            else if ( msg.type() === 'error' ) {
+              const location = msg.location ? `:\n  ${msg.location().url}` : '';
+              const message = messageText + location;
+              console.error( 'Error from sim:', message );
+            }
+
+            else {
+              const text = messageText;
+              const list = [
+                'The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu',
+                'enabling assert'
+              ];
+              if ( !list.includes( text.trim() ) ) {
+                options.showMessagesFromSim && console.log( 'Message from sim:', text );
+              }
+            }
+          } );
+
+          page.on( 'error', cleanupAndReject );
+          page.on( 'pageerror', cleanupAndReject );
+
+          const relativePath = options.fromBuiltVersion ?
+                               `build/phet-io/${repo}_all_phet-io.html` :
+                               `${repo}_en.html`;
+
+          // NOTE: DUPLICATION ALERT: This random seed is copied wherever API comparison is done against the generated API. Don't change this
+          // without looking for other usages of this random seed value.
+          const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI&randomSeed=332211`;
+          try {
+            await page.goto( url, {
+              timeout: 120000
             } );
           }
-
-          else if ( msg.type() === 'error' ) {
-            const location = msg.location ? `:\n  ${msg.location().url}` : '';
-            const message = messageText + location;
-            console.error( 'Error from sim:', message );
-          }
-
-          else {
-            const text = messageText;
-            const list = [
-              'The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu',
-              'enabling assert'
-            ];
-            if ( !list.includes( text.trim() ) ) {
-              options.showMessagesFromSim && console.log( 'Message from sim:', text );
-            }
+          catch( e ) {
+            await cleanupAndReject( new Error( `page.goto failure: ${e}` ) );
           }
         } );
+      } );
 
-        page.on( 'error', cleanupAndReject );
-        page.on( 'pageerror', cleanupAndReject );
+      const chunkResults = await Promise.allSettled( promises );
 
-        const relativePath = options.fromBuiltVersion ?
-                             `build/phet-io/${repo}_all_phet-io.html` :
-                             `${repo}_en.html`;
-
-        // NOTE: DUPLICATION ALERT: This random seed is copied wherever API comparison is done against the generated API. Don't change this
-        // without looking for other usages of this random seed value.
-        const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI&randomSeed=332211`;
-        try {
-          await page.goto( url, {
-            timeout: 120000
-          } );
+      chunkResults.forEach( chunkResult => {
+        if ( chunkResult.status === 'fulfilled' ) {
+          assert( chunkResult.value.api instanceof Object, 'api expected from Promise results' );
+          macroAPI[ chunkResult.value.repo ] = chunkResult.value.api;
         }
-        catch( e ) {
-          await cleanupAndReject( new Error( `page.goto failure: ${e}` ) );
+        else {
+          console.error( 'Error in fulfilling chunk Promise:', chunkResult.reason );
         }
       } );
-    } );
+    }
 
-    const chunkResults = await Promise.allSettled( promises );
+    options.showProgressBar && showCommandLineProgress( 1, true );
 
-    chunkResults.forEach( chunkResult => {
-      if ( chunkResult.status === 'fulfilled' ) {
-        assert( chunkResult.value.api instanceof Object, 'api expected from Promise results' );
-        macroAPI[ chunkResult.value.repo ] = chunkResult.value.api;
-      }
-      else {
-        console.error( 'Error in fulfilling chunk Promise:', chunkResult.reason );
-      }
-    } );
-  }
-
-  options.showProgressBar && showCommandLineProgress( 1, true );
-
-  await browser.close();
-  server.close();
-  server.unref();
-  return macroAPI;
+    await browser.close();
+    return macroAPI;
+  } );
 };
 
 // @public (read-only)
