@@ -18,7 +18,12 @@ catch( e ) {
 }
 
 // List of directories to check that TODOs have GitHub issues
-const directoriesToRequireIssues = [ 'projectile-motion' ];
+const directoriesToRequireIssues = [
+  'projectile-motion',
+  'number-play',
+  'number-suite-common',
+  'number-compare'
+];
 if ( buildJSON && buildJSON.common && buildJSON.common.phetLibs ) {
 
   // Don't require issues in these repos:
