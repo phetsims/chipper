@@ -94,6 +94,9 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
           return true;
         };
+
+        // This is likely to occur in the middle of page.goto, so we need to be graceful to the fact that resolving
+        // and closing the page will then cause an error in the page.goto call, see https://github.com/phetsims/perennial/issues/268#issuecomment-1382374092
         const cleanupAndResolve = async value => {
           if ( await cleanup() ) {
             resolve( value );
