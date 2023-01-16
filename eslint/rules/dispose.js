@@ -13,7 +13,7 @@
 module.exports = function( context ) {
 
   // the following holds the possible ways to register various PhET listeners and observers
-  // TODO: derivedProperty
+  // TODO: derivedProperty, https://github.com/phetsims/chipper/issues/418
   const OBSERVER_REGISTRATIONS = {
     LINK: 'link',
     LAZY_LINK: 'lazyLink',

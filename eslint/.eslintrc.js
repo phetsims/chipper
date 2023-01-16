@@ -1,5 +1,6 @@
 // Copyright 2015-2021, University of Colorado Boulder
 
+/* eslint-disable todo-should-have-issue */
 /**
  * The base eslint configuration for the PhET projects.
  *

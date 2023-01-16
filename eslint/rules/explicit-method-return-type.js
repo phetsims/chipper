@@ -47,9 +47,9 @@ const insertReturnType = ( functionBody, returnTypeString, fixer ) => {
   if ( functionBody ) {
     const bodyStartLocation = functionBody.range[ 0 ];
 
-    // TODO: do Range/Node etc as a second fix to easily find spots where we are using the DOM type.
-    // TODO: any should be filled in themselves.
-    // TODO: look into some derivedProperty or other Property returns. Perhaps do those manually.
+    // TODO: do Range/Node etc as a second fix to easily find spots where we are using the DOM type. https://github.com/phetsims/chipper/issues/1215
+    // TODO: any should be filled in themselves. https://github.com/phetsims/chipper/issues/1215
+    // TODO: look into some derivedProperty or other Property returns. Perhaps do those manually. https://github.com/phetsims/chipper/issues/1215
     if ( returnTypeString !== 'any' && ![ 'Image', 'Range', 'Text', 'Node', 'Event' ].includes( returnTypeString ) &&
          !returnTypeString.includes( 'Property' ) ) {
 
