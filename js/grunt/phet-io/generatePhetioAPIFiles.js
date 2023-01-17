@@ -44,6 +44,8 @@ module.exports = async ( repo, localTestingURL ) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
+    let cleaned = false;
+
     page.on( 'console', async msg => {
       if ( msg.text().indexOf( 'window.phet.phetio.phetioElementsBaseline' ) >= 0 ) {
         fs.writeFileSync( baselineFileName, msg.text() );
@@ -62,7 +64,9 @@ module.exports = async ( repo, localTestingURL ) => {
     } );
 
     const resolved = async () => {
-      if ( receivedBaseline && receivedTypes ) {
+      if ( receivedBaseline && receivedTypes && !cleaned ) {
+        cleaned = true;
+
         await page.close();
         await browser.close();
         resolve();
@@ -76,7 +80,9 @@ module.exports = async ( repo, localTestingURL ) => {
       await page.goto( `${localTestingURL}${repo}/${repo}_en.html?brand=phet-io&phetioStandalone&phetioPrintPhetioFiles` );
     }
     catch( e ) {
-      reject( e );
+      if ( !cleaned ) {
+        reject( e );
+      }
     }
   } );
 };
