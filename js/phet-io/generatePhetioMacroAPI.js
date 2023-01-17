@@ -53,7 +53,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           // Returns whether we closed the page
           const cleanup = async () => {
             if ( cleaned ) { return false; }
-            cleaned = true;
+            cleaned = true; // must be before the close to prevent cleaning from being done twice if errors occur from page close.
 
             await page.close();
 
