@@ -13,8 +13,10 @@ module.exports = function( context ) {
 
     Program: function() {
 
-      // These TODOs are to be copied over for the creator of a sim, so we will never want to link issues here. We
-      // don't want to opt out in the repo package.json because we don't want that propagating to newly created sims also.
+      // Explicitly ignore files from the simula-rasa repo. simula-rasa is the template for new simulations that are
+      // created using 'grunt create-sim'. simula-rasa's code contains TODOs that should be addressed by the creator
+      // of the new simulation. So we do not want those TODOs to have an associated GitHub issue. And we do not want
+      // to opt-out of this rule in simula-rasa/package.json, because it will be propagated to the new sim.
       if ( context.getFilename().match( new RegExp( `${'simula-rasa'}[/\\\\]js` ) ) ) {
         return;
       }
