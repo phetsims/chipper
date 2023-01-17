@@ -65,7 +65,9 @@ module.exports = async ( repos, options ) => {
   server.listen( 0 );
 
   const port = server.address().port;
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch( {
+    timeout: 120000
+  } );
   const chunks = _.chunk( repos, options.chunkSize );
 
   const macroAPI = {};
@@ -87,17 +89,40 @@ module.exports = async ( repos, options ) => {
 
       return new Promise( ( resolve, reject ) => {
 
+        let cleaned = false;
+
         // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-        const id = setTimeout( () => reject( new Error( 'Timeout in generateMacroAPI' ) ), 30000 );
+        const id = setTimeout( () => cleanupAndReject( new Error( 'Timeout in generateMacroAPI' ) ), 120000 );
+
+        const cleanup = async () => {
+          if ( cleaned ) { return false; }
+          cleaned = true;
+
+          clearTimeout( id );
+          await page.close();
+
+          return true;
+        };
+
+        const cleanupAndResolve = async value => {
+          if ( await cleanup() ) {
+            resolve( value );
+          }
+        };
+
+        const cleanupAndReject = async e => {
+          if ( await cleanup() ) {
+            reject( e );
+          }
+        };
 
         page.on( 'console', async msg => {
 
           if ( msg.text().indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
             const fullAPI = msg.text();
-            clearTimeout( id );
-            await page.close();
-            resolve( {
+
+            cleanupAndResolve( {
 
               // to keep track of which repo this is for
               repo: repo,
@@ -127,10 +152,6 @@ module.exports = async ( repos, options ) => {
             }
           }
         } );
-        const cleanupAndReject = e => {
-          clearTimeout( id );
-          reject( e );
-        };
 
         page.on( 'error', cleanupAndReject );
         page.on( 'pageerror', cleanupAndReject );
@@ -139,7 +160,9 @@ module.exports = async ( repos, options ) => {
                              `build/phet-io/${repo}_all_phet-io.html` :
                              `${repo}_en.html`;
         const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI`;
-        page.goto( url ).catch( cleanupAndReject );
+        page.goto( url, {
+          timeout: 120000
+        } ).catch( cleanupAndReject );
       } );
     } );
 
