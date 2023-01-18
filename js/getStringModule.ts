@@ -80,6 +80,7 @@ const StringStateIOType = new IOType( 'StringStateIO', {
 PhetioObject.create( {
   phetioType: StringStateIOType,
   tandem: Tandem.GENERAL_MODEL.createTandem( 'stringsState' ),
+  phetioDocumentation: 'Strings that have changed from their initial values',
   phetioState: true
 } );
 
