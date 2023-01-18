@@ -55,6 +55,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
             if ( cleaned ) { return false; }
             cleaned = true; // must be before the close to prevent cleaning from being done twice if errors occur from page close.
 
+            clearTimeout( id );
             await page.close();
 
             return true;
@@ -74,7 +75,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           };
 
           // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-          setTimeout( () => cleanupAndReject( new Error( `Timeout in generatePhetioMacroAPI for ${repo}` ) ), 120000 );
+          const id = setTimeout( () => cleanupAndReject( new Error( `Timeout in generatePhetioMacroAPI for ${repo}` ) ), 120000 );
 
           page.on( 'console', async msg => {
             const messageText = msg.text();
