@@ -55,22 +55,45 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
 
   const port = server.address().port;
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch( {
+    timeout: 120000
+  } );
   const page = await browser.newPage();
 
   const result = await new Promise( ( resolve, reject ) => {
 
+    let cleaned = false;
+
+    const cleanup = async () => {
+      if ( cleaned ) { return false; }
+      cleaned = true;
+
+      await page.close();
+      await browser.close();
+
+      return true;
+    };
+    const cleanupAndResolve = async value => {
+      if ( await cleanup() ) {
+        resolve( value );
+      }
+    };
+    const cleanupAndReject = async e => {
+      if ( await cleanup() ) {
+        reject( e );
+      }
+    };
+
     // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-    setTimeout( () => reject( 'Timeout in generatePhetioAPI' ), 30000 );
+    setTimeout( () => cleanupAndReject( new Error( `Timeout in generatePhetioMacroAPI for ${repo}` ) ), 120000 );
 
     page.on( 'console', async msg => {
 
       if ( msg.text().indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
         const fullAPI = msg.text();
-        await page.close();
-        await browser.close();
-        resolve( fullAPI );
+
+        cleanupAndResolve( fullAPI );
       }
 
       else if ( msg.type() === 'error' ) {
@@ -84,14 +107,16 @@ module.exports = async ( repo, fromBuiltVersion = false ) => {
       }
     } );
 
-    page.on( 'error', reject );
-    page.on( 'pageerror', reject );
+    page.on( 'error', cleanupAndReject );
+    page.on( 'pageerror', cleanupAndReject );
 
     const relativePath = fromBuiltVersion ?
                          `build/phet-io/${repo}_all_phet-io.html` :
                          `${repo}_en.html`;
     const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI`;
-    page.goto( url ).catch( reject );
+    page.goto( url, {
+      timeout: 120000
+    } ).catch( cleanupAndReject );
   } );
   return result;
 };
