@@ -609,12 +609,12 @@
      *
      * none|null: the normal translated string will be shown
      *
-     * dynamic: adds global hotkey listeners to change the strings.
+     * dynamic: adds global hotkey listeners to change the strings, see https://github.com/phetsims/chipper/issues/1319
      *   right arrow - doubles a string, like string = string+string
      *   left arrow - halves a string
      *   up arrow - cycles to next stride in random word list
      *   down arrow - cycles to previous stride in random word list
-     *   spacebar - reset to initial English strings, and resets the stride
+     *   spacebar - resets to initial English strings, and resets the stride
      *
      * {string}: if any other string provided, that string will be substituted everywhere. This facilitates testing
      *   specific cases, like whether the word 'vitesse' would substitute for 'speed' well.  Also, using "/u20" it
