@@ -123,7 +123,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
 
             const fullAPI = messageText;
-            await cleanup();
 
             cleanupAndResolve( {
               // to keep track of which repo this is for
