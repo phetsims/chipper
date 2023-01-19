@@ -17,7 +17,7 @@ import chipper from './chipper.js';
 import TProperty from '../../axon/js/TProperty.js';
 import { localizedStrings } from './getStringModule.js';
 import arrayRemove from '../../phet-core/js/arrayRemove.js';
-import TandemConstants from '../../tandem/js/TandemConstants.js';
+import TandemConstants, { PhetioID } from '../../tandem/js/TandemConstants.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
@@ -25,6 +25,9 @@ const FALLBACK_LOCALE = 'en';
 // for readability/docs
 type TranslationString = string;
 export type LocalizedStringStateDelta = Partial<Record<Locale, TranslationString>>;
+
+// Where "string" is a phetioID
+export type StringsStateStateObject = { data: Record<PhetioID, LocalizedStringStateDelta> };
 
 class LocalizedString {
 

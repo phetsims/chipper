@@ -18,14 +18,14 @@ import Tandem from '../../tandem/js/Tandem.js';
 import CouldNotYetDeserializeError from '../../tandem/js/CouldNotYetDeserializeError.js';
 import IOType from '../../tandem/js/types/IOType.js';
 import ObjectLiteralIO from '../../tandem/js/types/ObjectLiteralIO.js';
-import LocalizedString, { LocalizedStringStateDelta } from './LocalizedString.js';
+import LocalizedString, { LocalizedStringStateDelta, StringsStateStateObject } from './LocalizedString.js';
 import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import { Locale } from '../../joist/js/i18n/localeProperty.js';
 import localeInfoModule from '../../chipper/js/data/localeInfoModule.js';
+import { PhetioID } from '../../tandem/js/TandemConstants.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
-type PhetioID = string;
 
 // Holds all of our localizedStrings, so that we can save our phet-io string change state
 export const localizedStrings: LocalizedString[] = [];
@@ -37,9 +37,9 @@ window.phet.chipper.setAllStrings = ( str: string ) => {
   } );
 };
 
-const StringStateIOType = new IOType( 'StringStateIO', {
+const StringStateIOType = new IOType<object, StringsStateStateObject>( 'StringStateIO', {
   isValidValue: () => true,
-  toStateObject: () => {
+  toStateObject: (): StringsStateStateObject => {
     const data: Record<PhetioID, LocalizedStringStateDelta> = {};
 
     localizedStrings.forEach( localizedString => {
