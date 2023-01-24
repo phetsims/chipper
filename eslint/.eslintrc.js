@@ -1069,7 +1069,7 @@ module.exports = {
     'no-unneeded-ternary': 'error',
 
     // Disallow unused expressions
-    'no-unused-expressions': 'off', // This blocks things like circuitLayerNode && circuitLayerNode.circuit.circuitChangedEmitter.removeListener( updateText );
+    'no-unused-expressions': 'off', // This blocks things like circuitNode && circuitNode.circuit.circuitChangedEmitter.removeListener( updateText );
 
     // Disallow unused labels
     'no-unused-labels': 'error',
