@@ -37,8 +37,8 @@ window.phet.chipper.setAllStrings = ( str: string ) => {
   } );
 };
 
-const StringStateIOType = new IOType<object, StringsStateStateObject>( 'StringStateIO', {
-  isValidValue: () => true,
+const StringStateIOType = new IOType<PhetioObject, StringsStateStateObject>( 'StringStateIO', {
+  valueType: PhetioObject,
   toStateObject: (): StringsStateStateObject => {
     const data: Record<PhetioID, LocalizedStringStateDelta> = {};
 
