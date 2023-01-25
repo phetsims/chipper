@@ -76,6 +76,7 @@
     "../../../phet-io/js/phet-io-tests.ts",
 
     "../../../phet-io-sim-specific/repos/**/*",
+    "../../../phet-io-test-sim/js/**/*",
     "../../../phet-io-wrappers/js/**/*",
     "../../../phet-io-wrappers/common/**/*",
     "../../../phet-lib/common/**/*",
