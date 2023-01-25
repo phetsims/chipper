@@ -607,6 +607,12 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName,
 
   const simCamelCaseName = _.camelCase( repoName );
 
+  let modelDocumentationLine = '';
+
+  if ( fs.existsSync( `../${repoName}/doc/model.md` ) ) {
+    modelDocumentationLine = `* [Model Documentation](https://github.com/phetsims/${repoName}/blob/${simRepoSHA}/doc/model.md)`;
+  }
+
   // fill in links
   let clientGuideSource = grunt.file.read( mdFilePath );
 
@@ -621,7 +627,7 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName,
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simCamelCaseName}}', simCamelCaseName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simKebabName}}', repoName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIMULATION_VERSION}}', version );
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simRepoSHA}}', simRepoSHA );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{MODEL_DOCUMENTATION_LINE}}', modelDocumentationLine );
   ///////////////////////////////////////////
 
   // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path. Order matters!
