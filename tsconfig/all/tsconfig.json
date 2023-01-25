@@ -62,6 +62,7 @@
     "../../../normal-modes/js/**/*",
     "../../../number-compare/js/**/*",
     "../../../number-play/js/**/*",
+    "../../../number-suite-common/js/**/*",
 
     "../../../perennial/js/scripts/collate-lint.ts",
     "../../../perennial-alias/js/scripts/collate-lint.ts",
