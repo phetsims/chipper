@@ -115,6 +115,8 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // every brand. Developers without phet-io checked out still need to be able to build.
   assert( fs.readFileSync( transpiledClientPath ).toString().indexOf( '/**' ) >= 0, 'babel should not strip comments from transpiling' );
 
+  const simRepoSHA = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${repo}` ) ).trim();
+
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
 
@@ -368,7 +370,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   await handleJSDOC( buildDir );
 
   // create the client guides
-  handleClientGuides( repo, simulationDisplayName, buildDir, version );
+  handleClientGuides( repo, simulationDisplayName, buildDir, version, simRepoSHA );
 
   await handleStudio( wrappersLocation );
 
@@ -560,8 +562,10 @@ const handleJSDOC = async buildDir => {
  * @param {string} repoName
  * @param {string} simulationDisplayName
  * @param {string} buildDir
+ * @param {string} version
+ * @param {string} simRepoSHA
  */
-const handleClientGuides = ( repoName, simulationDisplayName, buildDir, version ) => {
+const handleClientGuides = ( repoName, simulationDisplayName, buildDir, version, simRepoSHA ) => {
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
   const clientGuidesSourceRoot = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/`;
   const commonDir = `${PHET_IO_SIM_SPECIFIC}/${GUIDES_COMMON_DIR}`;
@@ -582,8 +586,18 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir, version 
   }
 
   // handle generating and writing the html file for each client guide
-  generateAndWriteClientGuide( repoName, `${simulationDisplayName} PhET-iO Guide`, simulationDisplayName, `${commonDir}/${PHET_IO_GUIDE_FILENAME}.md`, `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html`, version );
-  generateAndWriteClientGuide( repoName, `${simulationDisplayName} Examples`, simulationDisplayName, `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`, `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html`, version );
+  generateAndWriteClientGuide( repoName,
+    `${simulationDisplayName} PhET-iO Guide`,
+    simulationDisplayName,
+    `${commonDir}/${PHET_IO_GUIDE_FILENAME}.md`,
+    `${builtClientGuidesOutputDir}${PHET_IO_GUIDE_FILENAME}.html`,
+    version, simRepoSHA );
+  generateAndWriteClientGuide( repoName,
+    `${simulationDisplayName} Examples`,
+    simulationDisplayName,
+    `${clientGuidesSourceRoot}${EXAMPLES_FILENAME}.md`,
+    `${builtClientGuidesOutputDir}${EXAMPLES_FILENAME}.html`,
+    version, simRepoSHA );
 };
 
 /**
@@ -593,8 +607,11 @@ const handleClientGuides = ( repoName, simulationDisplayName, buildDir, version 
  * @param {string} simulationDisplayName
  * @param {string} mdFilePath - to get the source md file
  * @param {string} destinationPath - to write to
+ * @param {string} version
+ * @param {string} simRepoSHA
  */
-const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, mdFilePath, destinationPath, version ) => {
+const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName,
+                                      mdFilePath, destinationPath, version, simRepoSHA ) => {
 
   // make sure the source markdown file exists
   if ( !fs.existsSync( mdFilePath ) ) {
@@ -615,6 +632,8 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName, md
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simCamelCaseName}}', simCamelCaseName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simKebabName}}', repoName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIMULATION_VERSION}}', version );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simRepoSHA}}', simRepoSHA );
+  ///////////////////////////////////////////
 
   // support relative and absolute paths for unbuilt common image previews by replacing them with the correct relative path. Order matters!
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `../../../${GUIDES_COMMON_DIR}`, '' );
