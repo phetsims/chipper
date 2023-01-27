@@ -1,4 +1,4 @@
-// Copyright 2016-2022, University of Colorado Boulder
+// Copyright 2016-2023, University of Colorado Boulder
 
 /**
  * Copies all supporting PhET-iO files, including wrappers, indices, lib files, etc.
@@ -137,15 +137,15 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
-  const filterWrapper = ( abspath, contents ) => {
+  const filterWrapper = ( absPath, contents ) => {
     const originalContents = `${contents}`;
 
-    const isWrapperIndex = abspath.indexOf( 'index/index.html' ) >= 0;
+    const isWrapperIndex = absPath.indexOf( 'index/index.html' ) >= 0;
 
     // For info about LIB_OUTPUT_FILE, see handleLib()
     const pathToLib = `lib/${LIB_OUTPUT_FILE}`;
 
-    if ( abspath.indexOf( '.html' ) >= 0 ) {
+    if ( absPath.indexOf( '.html' ) >= 0 ) {
 
       // change the paths of sherpa files to point to the contrib/ folder
       CONTRIB_FILES.forEach( filePath => {
@@ -157,7 +157,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
           // If the file is in a dedicated wrapper repo, then it is one level higher in the dir tree, and needs 1 less set of dots.
           // see https://github.com/phetsims/phet-io-wrappers/issues/17 for more info. This is hopefully a temporary workaround
-          const needsExtraDots = abspath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
+          const needsExtraDots = absPath.indexOf( DEDICATED_REPO_WRAPPER_PREFIX ) >= 0;
           const fileName = filePathParts[ filePathParts.length - 1 ];
           const contribFileName = `contrib/${fileName}`;
           let pathToContrib = needsExtraDots ? `../../${contribFileName}` : `../${contribFileName}`;
@@ -190,7 +190,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       // This is to support providing the relative path through the build instead of just hard coding it.
       contents = contents.replace(
         /<!--(<script src="[./]*\{\{PATH_TO_LIB_FILE}}".*><\/script>)-->/g, // '.*' is to support `data-client-name` in wrappers like "multi"
-        '$1' // just uncomment, dont fill it in yet
+        '$1' // just uncomment, don't fill it in yet
       );
 
       contents = ChipperStringUtils.replaceAll( contents,
@@ -209,9 +209,9 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
         ''
       );
     }
-    if ( abspath.indexOf( '.js' ) >= 0 || abspath.indexOf( '.html' ) >= 0 ) {
+    if ( absPath.indexOf( '.js' ) >= 0 || absPath.indexOf( '.html' ) >= 0 ) {
 
-      // Fill these in first so the following lines will also hit the content in these template
+      // Fill these in first so the following lines will also hit the content in these template vars
       contents = ChipperStringUtils.replaceAll( contents, '{{CUSTOM_WRAPPER_SKELETON}}', customPhetioWrapperTemplateSkeleton );
       contents = ChipperStringUtils.replaceAll( contents, '{{STANDARD_WRAPPER_SKELETON}}', standardPhetioWrapperTemplateSkeleton );
 
@@ -245,14 +245,14 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
           'Documentation for instructional designers about best practices for simulation customization with PhET-iO Studio.' ) );
 
 
-      const exampleRowContents = fs.existsSync( `${PHET_IO_SIM_SPECIFIC}/repos/${repo}/client-guide/${EXAMPLES_FILENAME}.md` ) ?
+      const exampleRowContents = fs.existsSync( `${PHET_IO_SIM_SPECIFIC}/repos/${repo}/${EXAMPLES_FILENAME}.md` ) ?
                                  getGuideRowText( EXAMPLES_FILENAME, 'Examples',
                                    'Provides instructions and the specific phetioIDs for customizing the simulation.' ) : '';
       contents = ChipperStringUtils.replaceAll( contents, '{{EXAMPLES_ROW}}', exampleRowContents );
     }
 
     // Special handling for studio paths since it is not nested under phet-io-wrappers
-    if ( abspath.indexOf( 'studio/index.html' ) >= 0 ) {
+    if ( absPath.indexOf( 'studio/index.html' ) >= 0 ) {
       contents = ChipperStringUtils.replaceAll( contents, '<script src="../contrib/', '<script src="../../contrib/' );
       contents = ChipperStringUtils.replaceAll( contents, '<script type="module" src="../chipper/dist/js/studio/js/studio-main.js"></script>',
         `<script src="./${STUDIO_BUILT_FILENAME}"></script>` );
@@ -262,7 +262,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     }
 
     // Collapse >1 blank lines in html files.  This helps as a postprocessing step after removing lines with <script> tags
-    if ( abspath.endsWith( '.html' ) ) {
+    if ( absPath.endsWith( '.html' ) ) {
       const lines = contents.split( /\r?\n/ );
       const pruned = [];
       for ( let i = 0; i < lines.length; i++ ) {
@@ -304,8 +304,8 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // wrapping function for copying the wrappers to the build dir
   const copyWrapper = ( src, dest, wrapper, wrapperName ) => {
 
-    const wrapperFilterWithNameFilter = ( abspath, contents ) => {
-      const result = filterWrapper( abspath, contents );
+    const wrapperFilterWithNameFilter = ( absPath, contents ) => {
+      const result = filterWrapper( absPath, contents );
 
       // Support loading relative-path resources, like
       //{ url: '../phet-io-wrapper-hookes-law-energy/sounds/precipitate-chimes-v1-shorter.mp3' }
@@ -331,11 +331,9 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // Add sim-specific wrappers
   let simSpecificWrappers;
   try {
-    const m = fs.readdirSync( `../phet-io-sim-specific/repos/${repo}/wrappers/`, { withFileTypes: true } )
+    simSpecificWrappers = fs.readdirSync( `../phet-io-sim-specific/repos/${repo}/wrappers/`, { withFileTypes: true } )
       .filter( dirent => dirent.isDirectory() )
       .map( dirent => `phet-io-sim-specific/repos/${repo}/wrappers/${dirent.name}` );
-
-    simSpecificWrappers = m;
   }
   catch( e ) {
     simSpecificWrappers = [];
@@ -388,12 +386,12 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
 /**
  * Given the list of lib files, apply a filter function to them. Then minify them and consolidate into a single string.
- * Finally write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
+ * Finally, write them to the build dir with a license prepended. See https://github.com/phetsims/phet-io/issues/353
 
  * @param {string} repo
  * @param {string} buildDir
  * @param {Function} filter - the filter function used when copying over wrapper files to fix relative paths and such.
- *                            Has arguments like "function(abspath, contents)"
+ *                            Has arguments like "function(absPath, contents)"
  */
 const handleLib = async ( repo, buildDir, filter ) => {
   grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_PRELOADS );
@@ -455,7 +453,7 @@ ${minifiedPhetioCode}\n${filteredMain}` );
 };
 
 /**
- * Copy all of the third party libraries from sherpa to the build directory under the 'contrib' folder.
+ * Copy all the third party libraries from sherpa to the build directory under the 'contrib' folder.
  * @param {string} buildDir
  */
 const handleContrib = buildDir => {
@@ -567,23 +565,11 @@ const handleJSDOC = async buildDir => {
  */
 const handleClientGuides = ( repoName, simulationDisplayName, buildDir, version, simRepoSHA ) => {
   const builtClientGuidesOutputDir = `${buildDir}doc/guides/`;
-  const clientGuidesSourceRoot = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/`;
+  const clientGuidesSourceRoot = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/`;
   const commonDir = `${PHET_IO_SIM_SPECIFIC}/${GUIDES_COMMON_DIR}`;
-
-  // gracefully support no client guides
-  if ( !fs.existsSync( clientGuidesSourceRoot ) ) {
-    console.log( `No client guides found at ${clientGuidesSourceRoot}, no guides being built.` );
-    return;
-  }
 
   // copy over common images and styles
   copyDirectory( commonDir, `${builtClientGuidesOutputDir}` );
-
-  // copy over the sim-specific phet-io guide images
-  const simSpecificGuideImagesDir = `${PHET_IO_SIM_SPECIFIC}/repos/${repoName}/client-guide/images/`;
-  if ( fs.existsSync( simSpecificGuideImagesDir ) ) {
-    copyDirectory( simSpecificGuideImagesDir, `${builtClientGuidesOutputDir}images/` );
-  }
 
   // handle generating and writing the html file for each client guide
   generateAndWriteClientGuide( repoName,
@@ -629,6 +615,9 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName,
 
   // fill in links
   let clientGuideSource = grunt.file.read( mdFilePath );
+
+  ///////////////////////////////////////////
+  // DO NOT UPDATE OR ADD TO THESE WITHOUT ALSO UPDATING THE LIST IN phet-io-sim-specific/client-guide-common/README.md
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{WRAPPER_INDEX_PATH}}', '../../' );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIMULATION_DISPLAY_NAME}}', simulationDisplayName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIM_PATH}}', `../../${repoName}_all_phet-io.html?postMessageOnError&phetioStandalone` );
