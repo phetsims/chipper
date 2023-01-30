@@ -30,7 +30,8 @@ const EXCLUDE_REPOS = [
   'phet-ios-app',
   'qa',
   'smithers',
-  'tasks'
+  'tasks',
+  'scenery-lab-demo'
 ];
 
 // "Pattern" is really a path, we assume here that gruntfiles help keep the right directory stucture and can just pop
