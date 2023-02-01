@@ -812,7 +812,7 @@ export default {
   },
   sh: {
     name: 'Serbo-Croatian',
-    localizedName: 'sh',
+    localizedName: 'Serbo-Croatian',
     direction: 'ltr'
   },
   si: {
