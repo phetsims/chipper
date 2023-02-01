@@ -310,11 +310,6 @@ const locales = {
     localizedName: 'français',
     direction: 'ltr'
   },
-  fu: {
-    name: 'Friulian',
-    localizedName: 'fu',
-    direction: 'ltr'
-  },
   fy: {
     name: 'Western Frisian',
     localizedName: 'Frisian',
@@ -778,11 +773,6 @@ const locales = {
   rw: {
     name: 'Kinyarwanda',
     localizedName: 'Kinyarwanda',
-    direction: 'ltr'
-  },
-  ry: {
-    name: 'Rusyn',
-    localizedName: 'ry',
     direction: 'ltr'
   },
   sa: {
