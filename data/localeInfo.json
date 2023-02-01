@@ -284,11 +284,6 @@
     "localizedName": "français",
     "direction": "ltr"
   },
-  "fu": {
-    "name": "Friulian",
-    "localizedName": "fu",
-    "direction": "ltr"
-  },
   "fy": {
     "name": "Western Frisian",
     "localizedName": "Frisian",
@@ -754,11 +749,6 @@
     "localizedName": "Kinyarwanda",
     "direction": "ltr"
   },
-  "ry": {
-    "name": "Rusyn",
-    "localizedName": "ry",
-    "direction": "ltr"
-  },
   "sa": {
     "name": "Sanskrit",
     "localizedName": "Sanskrit",
@@ -786,7 +776,7 @@
   },
   "sh": {
     "name": "Serbo-Croatian",
-    "localizedName": "sh",
+    "localizedName": "Serbo-Croatian",
     "direction": "ltr"
   },
   "si": {
