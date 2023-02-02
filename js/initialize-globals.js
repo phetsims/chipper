@@ -311,7 +311,7 @@
     locale: {
       type: 'string',
       defaultValue: 'en'
-      // Private Doc: DON'T add the `public` key here, because we want it to graceful bad values in production (falling back to en)
+      // Do NOT add the `public` key here. We want this to fall back to en.
     },
 
     /**
