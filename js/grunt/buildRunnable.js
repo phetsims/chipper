@@ -306,7 +306,9 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     locale: ChipperConstants.FALLBACK_LOCALE,
     includeAllLocales: true,
     isDebugBuild: false
-  }, commonInitializationOptions ) );
+  }, commonInitializationOptions, {
+    allowLocaleSwitching: true
+  } ) );
 
   packageXHTML( xhtmlDir, {
     repo: repo,
