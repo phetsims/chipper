@@ -278,8 +278,9 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     } );
 
     grunt.file.write( allHTMLFilename, allHTMLContents );
-    grunt.file.write( `${allHTMLFilename}.gz`, zlib.gzipSync( allHTMLContents ) );
 
+    // Add a compressed file to improve performance in the iOS app, see https://github.com/phetsims/chipper/issues/746
+    grunt.file.write( `${allHTMLFilename}.gz`, zlib.gzipSync( allHTMLContents ) );
   }
 
   // Debug build (always included)
