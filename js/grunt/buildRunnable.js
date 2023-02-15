@@ -287,7 +287,9 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     locale: ChipperConstants.FALLBACK_LOCALE,
     includeAllLocales: true,
     isDebugBuild: true
-  }, commonInitializationOptions ) );
+  }, commonInitializationOptions, {
+    allowLocaleSwitching: true
+  } ) );
 
   grunt.file.write( `${buildDir}/${repo}_all_${brand}_debug.html`, packageRunnable( {
     repo: repo,
