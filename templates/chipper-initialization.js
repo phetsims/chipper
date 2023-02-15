@@ -16,5 +16,6 @@ window.phet.chipper.dependencies = {{PHET_DEPENDENCIES}};
 window.phet.chipper.strings = {{PHET_STRINGS}};
 window.phet.chipper.stringMetadata = {{PHET_STRING_METADATA}};
 window.phet.chipper.isDebugBuild = {{PHET_IS_DEBUG_BUILD}};
+window.phet.chipper.allowLocaleSwitching = {{PHET_ALLOW_LOCALE_SWITCHING}};
 window.phet.chipper.packageObject = {{PHET_PACKAGE_OBJECT}};
 {{IE_DETECTION_SCRIPT}}
