@@ -69,7 +69,6 @@ module.exports = function( context ) {
     ' Phet ',
     'phetio element', // use "phet-io element" or "PhET-iO element"
     'Phet-iO',
-    'Property.PropertyIO', // Use PropertyIO directly
     { id: 'IO type', regex: /\bIO type/ }, // https://github.com/phetsims/chipper/issues/977
 
     '@return ',
