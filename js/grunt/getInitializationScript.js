@@ -37,6 +37,7 @@ module.exports = function( config ) {
     locale, // {string}
     includeAllLocales, // {boolean}
     isDebugBuild, // {boolean}
+    allowLocaleSwitching, // {boolean}
     packageObject
   } = config;
   assert( typeof repo === 'string', 'Requires repo' );
@@ -75,6 +76,7 @@ module.exports = function( config ) {
     PHET_STRINGS: JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ),
     PHET_STRING_METADATA: JSON.stringify( stringMetadata, null, isDebugBuild ? 2 : '' ),
     PHET_IS_DEBUG_BUILD: !!isDebugBuild,
+    PHET_ALLOW_LOCALE_SWITCHING: !!allowLocaleSwitching,
     PHET_PACKAGE_OBJECT: JSON.stringify( packageObject ),
     IE_DETECTION_SCRIPT: transpile( grunt.file.read( '../chipper/js/ie-detection.js' ), true )
   } );
