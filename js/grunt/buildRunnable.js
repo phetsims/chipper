@@ -231,7 +231,8 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
     timestamp: timestamp,
     version: version,
     thirdPartyEntries: thirdPartyEntries,
-    packageObject: packageObject
+    packageObject: packageObject,
+    allowLocaleSwitching: false
   };
 
   // Create the build-specific directory
@@ -263,7 +264,9 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
       locale: ChipperConstants.FALLBACK_LOCALE,
       includeAllLocales: true,
       isDebugBuild: false
-    }, commonInitializationOptions ) );
+    }, commonInitializationOptions, {
+      allowLocaleSwitching: true
+    } ) );
 
     const allHTMLFilename = `${buildDir}/${repo}_all_${brand}.html`;
     const allHTMLContents = packageRunnable( {
