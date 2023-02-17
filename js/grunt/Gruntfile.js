@@ -559,8 +559,14 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   grunt.registerTask( 'modulify', 'Creates *.js modules for all images/strings/audio/etc in a repo', wrapTask( async () => {
     const modulify = require( './modulify' );
+    const generateDevelopmentStrings = require( '../scripts/generateDevelopmentStrings' );
+    const fs = require( 'fs' );
 
     await modulify( repo );
+
+    if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) ) {
+      generateDevelopmentStrings( repo );
+    }
   } ) );
 
   // Grunt task that determines created and last modified dates from git, and
