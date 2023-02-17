@@ -430,7 +430,7 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'update', `
 Updates the normal automatically-generated files for this repository. Includes:
-  * runnables: generate-development-html and modulfy
+  * runnables: generate-development-html and modulify
   * accessible runnables: generate-a11y-view-html
   * unit tests: generate-test-html
   * simulations: generateREADME()
