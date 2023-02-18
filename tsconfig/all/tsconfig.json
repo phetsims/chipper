@@ -44,6 +44,7 @@
     "../../../gas-properties/js/**/*",
     "../../../geometric-optics/js/**/*",
     "../../../geometric-optics-basics/js/**/*",
+    "../../../graphing-quadratics/js/**/*",
     "../../../graphing-lines/js/**/*",
     "../../../graphing-slope-intercept/js/**/*",
     "../../../gravity-and-orbits/js/**/*",
