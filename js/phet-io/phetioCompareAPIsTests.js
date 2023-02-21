@@ -171,8 +171,7 @@ qunit.test( 'breaking element API changes', assert => {
     proposedAPI.phetioElements.breakingElement._metadata[ metadataKey ] = valueThatBreaksAPI;
 
     report = phetioCompareAPIs( referenceAPI, proposedAPI, {
-      compareDesignedAPIChanges: false,
-      compareBreakingAPIChanges: true
+      compareDesignedAPIChanges: false
     } );
     assert.ok( report.breakingProblems.length === 1, `it is a breaking change for ${metadataKey} to become ${valueThatBreaksAPI}` );
   };

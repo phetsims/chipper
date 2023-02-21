@@ -17,7 +17,7 @@ module.exports = async ( repos, proposedAPIs, options ) => {
   let ok = true;
   options = _.extend( {
     delta: false,
-    compareBreakingAPIChanges: false
+    compareBreakingAPIChanges: true
   }, options );
 
   repos.forEach( repo => {

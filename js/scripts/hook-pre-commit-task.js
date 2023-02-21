@@ -165,9 +165,7 @@ const repo = getArg( 'repo' );
           showMessagesFromSim: false
         } );
 
-        const phetioAPIComparisonSuccessful = await phetioCompareAPISets( reposToTest, proposedAPIs, {
-          compareBreakingAPIChanges: true
-        } );
+        const phetioAPIComparisonSuccessful = await phetioCompareAPISets( reposToTest, proposedAPIs );
 
         if ( phetioAPIComparisonSuccessful ) {
           reposToTest.forEach( repo => CacheLayer.onSuccess( getCacheKey( repo ) ) );
