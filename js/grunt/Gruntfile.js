@@ -344,10 +344,9 @@ module.exports = function( grunt ) {
 --disable-eslint-cache: cache will not be read or written
 --fix: autofixable changes will be written to disk
 --format: Append an additional set of rules for formatting
---type-info: Include rules for TypeScript that use type checking. Slows down eslint significantly.
---patterns: comma-separated list of directory/file patterns. Default: repo where the command was run.
 --chip-away: output a list of responsible devs for each repo with lint problems
---disable-with-comment: add an es-lint disable with comment to lint errors`,
+--disable-with-comment: add an es-lint disable with comment to lint errors
+--repos: comma separated list of repos to lint in addition to the repo from running`,
     wrapTask( async () => {
       const lint = require( './lint' );
 
@@ -358,7 +357,9 @@ module.exports = function( grunt ) {
       const chipAway = grunt.option( 'chip-away' );
       const disableWithComment = grunt.option( 'disable-with-comment' );
 
-      const lintReturnValue = await lint( [ repo ], {
+      const extraRepos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [ ];
+
+      const lintReturnValue = await lint( [ repo, ...extraRepos ], {
         cache: cache,
         fix: fix,
         format: format,
