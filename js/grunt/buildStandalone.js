@@ -98,29 +98,28 @@ module.exports = async function( repo, providedOptions ) {
   }
 
   // include globals assignment
-  if ( packageObject.phet.assignGlobals ) {
-    let globals = `window.phet=window.phet||{}\n;phet.chipper=phet.chipper||{};\nphet.chipper.packageObject=${JSON.stringify( packageObject )};\n`;
-    if ( packageObject.name === 'phet-lib' ) {
+  let globals = 'window.phet=window.phet||{}\n;';
+  if ( packageObject.name === 'phet-lib' ) {
+    globals += `phet.chipper=phet.chipper||{};\nphet.chipper.packageObject=${JSON.stringify( packageObject )};\n`;
 
-      const subRepos = [ 'scenery', 'sun', 'scenery-phet', 'twixt', 'mobius' ];
+    const subRepos = [ 'scenery', 'sun', 'scenery-phet', 'twixt', 'mobius' ];
 
-      const phetLibs = _.uniq( _.flatten( subRepos.map( subRepo => {
-        return getPhetLibs( subRepo );
-      } ) ).sort() );
-      const locales = [
-        ChipperConstants.FALLBACK_LOCALE,
-        ..._.flatten( subRepos.map( subRepo => getLocalesFromRepository( subRepo ) ) )
-      ];
-      const { stringMap, stringMetadata } = getStringMap( repo, locales, phetLibs, webpackResult.usedModules );
+    const phetLibs = _.uniq( _.flatten( subRepos.map( subRepo => {
+      return getPhetLibs( subRepo );
+    } ) ).sort() );
+    const locales = [
+      ChipperConstants.FALLBACK_LOCALE,
+      ..._.flatten( subRepos.map( subRepo => getLocalesFromRepository( subRepo ) ) )
+    ];
+    const { stringMap, stringMetadata } = getStringMap( repo, locales, phetLibs, webpackResult.usedModules );
 
-      globals += `phet.chipper.stringPath = '../';\n`; // eslint-disable-line quotes
-      globals += `phet.chipper.locale = 'en';\n`; // eslint-disable-line quotes
-      globals += `phet.chipper.loadModules = () => {};\n`; // eslint-disable-line quotes
-      globals += `phet.chipper.strings = ${JSON.stringify( stringMap, null, options.isDebug ? 2 : '' )};\n`;
-      globals += `phet.chipper.stringMetadata = ${JSON.stringify( stringMetadata, null, options.isDebug ? 2 : '' )};\n`;
-    }
-    fullSource = `\n${globals}\n${fullSource}`;
+    globals += 'phet.chipper.stringPath = \'../\';\n';
+    globals += 'phet.chipper.locale = \'en\';\n';
+    globals += 'phet.chipper.loadModules = () => {};\n';
+    globals += `phet.chipper.strings = ${JSON.stringify( stringMap, null, options.isDebug ? 2 : '' )};\n`;
+    globals += `phet.chipper.stringMetadata = ${JSON.stringify( stringMetadata, null, options.isDebug ? 2 : '' )};\n`;
   }
+  fullSource = `\n${globals}\n${fullSource}`;
 
   // Wrap with an IIFE
   fullSource = `(function() {\n${fullSource}\n}());`;
