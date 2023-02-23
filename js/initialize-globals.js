@@ -519,7 +519,7 @@
     showCanvasNodeBounds: { type: 'flag' },
 
     /**
-     * Displays an overlay of the current bounds of each scenery.FittedBlock
+     * Displays an overlay of the current bounds of each phet.scenery.FittedBlock
      */
     showFittedBlockBounds: { type: 'flag' },
 
