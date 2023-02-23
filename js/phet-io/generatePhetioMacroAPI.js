@@ -120,7 +120,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
           // NOTE: DUPLICATION ALERT: This random seed is copied wherever API comparison is done against the generated API. Don't change this
           // without looking for other usages of this random seed value.
-          const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI&randomSeed=332211`;
+          const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI&randomSeed=332211&locales=*`;
           try {
             await page.goto( url, {
               timeout: 120000
