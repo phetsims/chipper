@@ -54,6 +54,10 @@ class LocalizedString {
     // All i18n model strings are phetioFeatured by default
     const phetioFeatured = ( metadata && typeof metadata.phetioFeatured === 'boolean' ) ? metadata.phetioFeatured : true;
 
+    // Allow phetioDocumentation to be overridden
+    const phetioDocumentation = ( metadata && typeof metadata.phetioDocumentation === 'string' ) ? metadata.phetioDocumentation :
+                                TandemConstants.PHET_IO_OBJECT_METADATA_DEFAULTS.phetioDocumentation;
+
     this.englishProperty = new TinyProperty( englishValue );
     this.initialValues[ FALLBACK_LOCALE ] = englishValue;
 
@@ -67,7 +71,8 @@ class LocalizedString {
       phetioState: false,
       tandem: tandem,
       phetioFeatured: phetioFeatured,
-      phetioReadOnly: phetioReadOnly
+      phetioReadOnly: phetioReadOnly,
+      phetioDocumentation: phetioDocumentation
     } );
 
     // Add to a global list to support PhET-iO serialization and internal testing
