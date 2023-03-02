@@ -93,7 +93,7 @@ const lintOneRepo = async ( repo, options ) => {
     // Our custom rules live here
     rulePaths: [ '../chipper/eslint/rules' ],
 
-    extensions: [ '.js', '.jsx', '.ts', '.tsx' ]
+    extensions: [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ]
   };
 
   const cacheKey = `lintRepo#${repo}`;
