@@ -21,6 +21,7 @@ const crypto = require( 'crypto' );
 // constants
 const EXCLUDE_REPOS = [
   'babel',
+  'community',
   'decaf',
   'phet-android-app',
   'phet-info',
