@@ -20,19 +20,6 @@ const crypto = require( 'crypto' );
 
 // constants
 const EXCLUDE_REPOS = [
-  'babel',
-  'community',
-  'decaf',
-  'phet-android-app',
-  'phet-info',
-  'phet-io-client-guides',
-  'phet-io-website',
-  'phet-io-wrapper-hookes-law-energy',
-  'phet-ios-app',
-  'qa',
-  'smithers',
-  'tasks',
-  'scenery-lab-demo'
 ];
 
 // "Pattern" is really a path, we assume here that gruntfiles help keep the right directory stucture and can just pop
@@ -94,7 +81,10 @@ const lintOneRepo = async ( repo, options ) => {
     // Our custom rules live here
     rulePaths: [ '../chipper/eslint/rules' ],
 
-    extensions: [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ]
+    extensions: [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ],
+
+    // If no lintable files are found, it is not an error
+    errorOnUnmatchedPattern: false
   };
 
   const cacheKey = `lintRepo#${repo}`;
