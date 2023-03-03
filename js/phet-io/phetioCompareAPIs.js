@@ -270,8 +270,24 @@
           }
           else {
 
-            const equals = _.isEqual( reference._data.initialState, proposed._data.initialState );
-            if ( !equals ) {
+            const matches = _.isEqualWith( reference._data.initialState, proposed._data.initialState,
+              ( referenceState, proposedState ) => {
+
+                // The validValues of the localeProperty changes each time a new translation is submitted for a sim.
+                if ( phetioID === trail[ 0 ] + '.general.model.localeProperty' ) {
+
+                  // The sim must have all expected locales, but it is acceptable to add new ones without API error.
+                  return referenceState.validValues.every( validValue => proposedState.validValues.includes( validValue ) );
+                }
+
+                // Ignore any pointers, because they won't occur when generating the actual api, but may if a mouse is over a testing browser.
+                if ( phetioID === ( trail[ 0 ] + '.general.controller.input' ) ) {
+                  return _.isEqual( { ...referenceState, pointers: null }, { ...proposedState, pointers: null } );
+                }
+
+                return undefined; // Meaning use the default lodash algorithm for comparison.
+              } );
+            if ( !matches ) {
               const problemString = `${phetioID}._data.initialState differs. \nExpected:\n${JSON.stringify( reference._data.initialState )}\n actual:\n${JSON.stringify( proposed._data.initialState )}\n`;
 
               // A changed state value could break a client wrapper, so identify it with breaking changes.
