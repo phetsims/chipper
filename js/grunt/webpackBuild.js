@@ -11,6 +11,7 @@
 const ChipperConstants = require( '../common/ChipperConstants' );
 const fs = require( 'fs' );
 const path = require( 'path' );
+const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const webpack = require( 'webpack' );
 
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial-alias/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
@@ -54,10 +55,20 @@ const getRelativeModules = modules => {
  *
  * @param {string} repo
  * @param {string} brand
+ * @param {Object} [options]
  * @returns {Promise.<string>} - The combined JS output from the process
  */
-module.exports = function( repo, brand ) {
+module.exports = function( repo, brand, options ) {
   return new Promise( ( resolve, reject ) => {
+
+    options = _.merge( {
+      outputDir: repo
+    }, options );
+
+    const outputDir = path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}`, options.outputDir );
+    const outputFileName = `${repo}.js`;
+    const outputPath = path.resolve( outputDir, outputFileName );
+
     // Create plugins to ignore brands that we are not building at this time. Here "resource" is the module getting
     // imported, and "context" is the directory that holds the module doing the importing. This is split up because
     // of how brands are loaded in simLauncher.js. They are a dynamic import who's import path resolves to the current
@@ -92,8 +103,8 @@ module.exports = function( repo, brand ) {
 
       // We output our builds to the following dir
       output: {
-        path: path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}` ),
-        filename: `${repo}.js`,
+        path: outputDir,
+        filename: outputFileName,
         hashFunction: 'xxhash64' // for Node 17+, see https://github.com/webpack/webpack/issues/14532
       },
 
@@ -114,7 +125,7 @@ module.exports = function( repo, brand ) {
         reject( err || stats.compilation.errors[ 0 ] );
       }
       else {
-        const jsFile = path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}/${repo}.js` );
+        const jsFile = outputPath;
         const js = fs.readFileSync( jsFile, 'utf-8' );
 
         fs.unlinkSync( jsFile );

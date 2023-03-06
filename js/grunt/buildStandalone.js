@@ -35,13 +35,16 @@ module.exports = async function( repo, providedOptions ) {
     isDebug: false,
 
     // {null|string[]} - if provided, exclude these preloads from the built standalone
-    omitPreloads: null
+    omitPreloads: null,
+
+    // For concurrent builds, provide a unique output dir for the webpack process, default to the repo building
+    tempOutputDir: repo
   }, providedOptions );
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   assert( packageObject.phet, '`phet` object expected in package.json' );
 
-  const webpackResult = ( await webpackBuild( repo, 'phet' ) );
+  const webpackResult = ( await webpackBuild( repo, 'phet', { outputDir: options.tempOutputDir } ) );
 
   const webpackJS = webpackResult.js;
 

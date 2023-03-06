@@ -370,7 +370,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   // create the client guides
   handleClientGuides( repo, simulationDisplayName, buildDir, version, simRepoSHA );
 
-  await handleStudio( wrappersLocation );
+  await handleStudio( repo, wrappersLocation );
 
   if ( generateMacroAPIFile ) {
     const fullAPI = ( await generatePhetioMacroAPI( [ repo ], {
@@ -415,6 +415,7 @@ const handleLib = async ( repo, buildDir, filter ) => {
   let wrappersMain = await buildStandalone( 'phet-io-wrappers', {
     stripAssertions: false,
     stripLogging: false,
+    tempOutputDir: repo,
 
     // Avoid getting a 2nd copy of the files that are already bundled into the lib file
     omitPreloads: THIRD_PARTY_LIB_PRELOADS
@@ -655,10 +656,11 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName,
 /**
  * Support building studio. This compiles the studio modules into a runnable, and copies that over to the expected spot
  * on build.
+ * @param {string} repo
  * @param {string} wrappersLocation
  * @returns {Promise.<void>}
  */
-const handleStudio = async wrappersLocation => {
+const handleStudio = async ( repo, wrappersLocation ) => {
 
   grunt.log.debug( 'building studio' );
 
@@ -667,7 +669,8 @@ const handleStudio = async wrappersLocation => {
 
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {
     stripAssertions: false,
-    stripLogging: false
+    stripLogging: false,
+    tempOutputDir: repo
   } ) );
 };
 
