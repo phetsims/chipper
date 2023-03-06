@@ -114,6 +114,10 @@ module.exports = function( context ) {
         }
         return true;
       }
+    },
+    {
+      id: 'Prefer "Standard PhET-iO Wrapper to "standard wrapper"',
+      regex: /[Ss][Tt][Aa][Nn][Dd][Aa][Rr][Dd][- _][Ww][Rr][Aa][Pp][Pp][Ee][Rr]/
     }
   ];
 
