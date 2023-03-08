@@ -341,6 +341,12 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
 
   wrappers.push( ...simSpecificWrappers );
 
+
+  const additionalWrappers = packageObject.phet && packageObject.phet[ 'phet-io' ] && packageObject.phet[ 'phet-io' ].wrappers ?
+                              packageObject.phet[ 'phet-io' ].wrappers : [];
+
+  wrappers.push( ...additionalWrappers );
+
   wrappers.forEach( wrapper => {
 
     const wrapperParts = wrapper.split( '/' );
