@@ -30,7 +30,9 @@ const FALLBACK_LOCALE = 'en';
 // Holds all of our localizedStrings, so that we can save our phet-io string change state
 export const localizedStrings: LocalizedString[] = [];
 
-// For developer internal use
+// For developer internal use, particularly for memory leak detection
+// e.g. _.max( phet.chipper.localizedStrings.map( ls => ls.property.tinyProperty.listeners.size ) ) to see if there is
+// likely a leak
 window.phet.chipper.localizedStrings = localizedStrings;
 
 // For developer internal use, similar to the stringTest query parameter
