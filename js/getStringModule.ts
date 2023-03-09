@@ -30,6 +30,9 @@ const FALLBACK_LOCALE = 'en';
 // Holds all of our localizedStrings, so that we can save our phet-io string change state
 export const localizedStrings: LocalizedString[] = [];
 
+// For developer internal use
+window.phet.chipper.localizedStrings = localizedStrings;
+
 // For developer internal use, similar to the stringTest query parameter
 window.phet.chipper.setAllStrings = ( str: string ) => {
   localizedStrings.forEach( localizedString => {
