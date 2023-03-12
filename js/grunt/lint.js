@@ -20,6 +20,9 @@ const crypto = require( 'crypto' );
 
 // constants
 const EXCLUDE_REPOS = [
+
+  //TODO workaround for https://github.com/phetsims/community/issues/19, remove this when resolved
+  'community'
 ];
 
 // "Pattern" is really a path, we assume here that gruntfiles help keep the right directory stucture and can just pop
