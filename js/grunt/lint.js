@@ -21,7 +21,7 @@ const crypto = require( 'crypto' );
 // constants
 const EXCLUDE_REPOS = [
 
-  //TODO workaround for https://github.com/phetsims/community/issues/19, remove this when resolved
+  //TODO https://github.com/phetsims/community/issues/19, workaround, remove this when resolved
   'community'
 ];
 
