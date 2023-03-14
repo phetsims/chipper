@@ -19,11 +19,7 @@ const CacheLayer = require( '../common/CacheLayer' );
 const crypto = require( 'crypto' );
 
 // constants
-const EXCLUDE_REPOS = [
-
-  //TODO https://github.com/phetsims/community/issues/19, workaround, remove this when resolved
-  'community'
-];
+const EXCLUDE_REPOS = [];
 
 // "Pattern" is really a path, we assume here that gruntfiles help keep the right directory stucture and can just pop
 // out of the repo running the command
