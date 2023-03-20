@@ -13,9 +13,13 @@
 
 const isModelFileRegex = /[\\/]model[\\/]/;
 const isViewFileRegex = /[\\/]view[\\/]/;
+const isModelScreenViewFolder = /[\\/]model[\\/]view[\\/]/; // for the rare case where a `model` screen has a `view` folder.
 
 module.exports = context => {
-  if ( isModelFileRegex.test( context.getFilename() ) ) {
+  const filename = context.getFilename();
+
+  // select paths like "/model/" without the false positive of "/model/view/" which could happen if the screen was model
+  if ( isModelFileRegex.test( filename ) && !isModelScreenViewFolder.test( filename ) ) {
     return {
       ImportDeclaration: node => {
         const importValue = node.source.value;
