@@ -18,12 +18,19 @@ module.exports = context => {
   if ( isModelFileRegex.test( context.getFilename() ) ) {
     return {
       ImportDeclaration: node => {
-        if ( isViewFileRegex.test( node.source.value ) ) {
-          context.report( {
-            node: node,
-            loc: node.loc,
-            message: 'model import statement should not import the view.'
-          } );
+        const importValue = node.source.value;
+
+        // If the import has /view/ in it.
+        if ( isViewFileRegex.test( importValue ) ) {
+
+          // Some special cases that are too common for PhET to care about this failure for.
+          if ( !importValue.endsWith( 'Colors.js' ) && !importValue.endsWith( 'ModelViewTransform2.js' ) ) {
+            context.report( {
+              node: node,
+              loc: node.loc,
+              message: `model import statement should not import the view: ${importValue.replace( '/..', '' )}`
+            } );
+          }
         }
       }
     };
