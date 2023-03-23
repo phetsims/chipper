@@ -544,9 +544,14 @@
     showVisibleBounds: { type: 'flag' },
 
     /**
-     * Shuffles listeners each time they are notified, to help us test order dependence, see https://github.com/phetsims/axon/issues/215
+     * Shuffles listeners each time they are notified, to help us test order dependency, see https://github.com/phetsims/axon/issues/215
      */
     shuffleListeners: { type: 'flag' },
+
+    /**
+     * Reverses the order of listeners each time they are notified, to help us test order dependency, see https://github.com/phetsims/axon/issues/215
+     */
+    reverseListeners: { type: 'flag' },
 
     /**
      * When true, use SpeechSynthesisParentPolyfill to assign an implementation of SpeechSynthesis
