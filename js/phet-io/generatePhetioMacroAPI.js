@@ -32,6 +32,8 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     showMessagesFromSim: true
   }, options );
 
+  console.log( 'Generating PhET-iO API for repos:', repos.join( ', ' ) );
+
   return withServer( async port => {
     const browser = await puppeteer.launch( {
       timeout: 120000
@@ -97,17 +99,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
               const location = msg.location ? `:\n  ${msg.location().url}` : '';
               const message = messageText + location;
               console.error( 'Error from sim:', message );
-            }
-
-            else {
-              const text = messageText;
-              const list = [
-                'The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://goo.gl/7K7WLu',
-                'enabling assert'
-              ];
-              if ( !list.includes( text.trim() ) ) {
-                options.showMessagesFromSim && console.log( 'Message from sim:', text );
-              }
             }
           } );
 
