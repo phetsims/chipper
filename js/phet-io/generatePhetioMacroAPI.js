@@ -32,7 +32,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     showMessagesFromSim: true
   }, options );
 
-  console.log( 'Generating PhET-iO API for repos:', repos.join( ', ' ) );
+  repos.length > 1 && console.log( 'Generating PhET-iO API for repos:', repos.join( ', ' ) );
 
   return withServer( async port => {
     const browser = await puppeteer.launch( {
