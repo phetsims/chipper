@@ -614,6 +614,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     'Options\n:' +
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
+    '--stable - regenerate for all "stable sims" (see perennial/data/phet-io-api-stable/)\n' +
     '--temporary - outputs to the temporary directory',
     wrapTask( async () => {
       const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
