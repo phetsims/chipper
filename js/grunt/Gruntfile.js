@@ -357,7 +357,7 @@ module.exports = function( grunt ) {
       const chipAway = grunt.option( 'chip-away' );
       const disableWithComment = grunt.option( 'disable-with-comment' );
 
-      const extraRepos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [ ];
+      const extraRepos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [];
 
       const lintReturnValue = await lint( [ repo, ...extraRepos ], {
         cache: cache,
@@ -614,6 +614,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     'Options\n:' +
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
+    '--stable - regenerate for all "stable sims" (see perennial/data/phet-io-api-stable/)\n' +
     '--temporary - outputs to the temporary directory',
     wrapTask( async () => {
       const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
@@ -759,7 +760,7 @@ const getBrands = ( grunt, repo, buildLocal ) => {
   assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
 
   const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
-  const supportedBrands = localPackageObject.phet.supportedBrands;
+  const supportedBrands = localPackageObject.phet.supportedBrands || [];
 
   let brands;
   if ( grunt.option( 'brands' ) ) {
@@ -773,7 +774,7 @@ const getBrands = ( grunt, repo, buildLocal ) => {
   else if ( buildLocal.brands ) {
     // Extra check, see https://github.com/phetsims/chipper/issues/640
     assert( Array.isArray( buildLocal.brands ), 'If brands exists in build-local.json, it should be an array' );
-    brands = buildLocal.brands.filter( brand => localPackageObject.phet.supportedBrands.includes( brand ) );
+    brands = buildLocal.brands.filter( brand => supportedBrands.includes( brand ) );
   }
   else {
     brands = [ 'adapted-from-phet' ];
