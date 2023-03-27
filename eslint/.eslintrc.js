@@ -528,7 +528,7 @@ module.exports = {
       ],
       rules: {
 
-        // Test files are allowed to use dot-notation to circumnavigate private member access
+        // Test files are allowed to use bracket notation to circumnavigate private member access
         'dot-notation': 'off'
       }
     }, {
@@ -538,7 +538,9 @@ module.exports = {
       ],
       rules: {
 
-        // Test files are allowed to use dot-notation to circumnavigate private member access
+        // Test files are allowed to use bracket notation to circumnavigate private member access. Typescript
+        // doesn't complain when accessing a private member this way as an intentional "escape hatch".
+        // Decision in https://github.com/phetsims/chipper/issues/1295, and see https://github.com/microsoft/TypeScript/issues/19335
         '@typescript-eslint/dot-notation': 'off'
       }
     }
