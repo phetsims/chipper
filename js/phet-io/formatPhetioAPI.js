@@ -3,7 +3,7 @@
 /**
  * Format a PhET-iO API file for printing.
  *
- * NOTE: Please be mindful of the copy in copyWithSortedKeys, TODO see https://github.com/phetsims/phet-io/issues/1733
+ * NOTE: Please be mindful of the copy in copyWithSortedKeys, see https://github.com/phetsims/phet-io/issues/1733
  *
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Chris Klusendorf (PhET Interactive Simulations)
