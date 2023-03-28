@@ -29,7 +29,7 @@ const writeFileAsJSON = json => {
 
 module.exports = {
 
-  // When the watch process exits, invalidate the caches until the watch process resumes.
+  // When the watch process exits, invalidate the caches until the watch process resumes
   clearLastChangedTimestamp() {
     const json = readCacheLayerJSON();
     delete json[ LATEST_CHANGE_TIMESTAMP_KEY ];
