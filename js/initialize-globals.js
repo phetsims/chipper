@@ -65,22 +65,6 @@
     // Schema that describes query parameters for PhET common code.
     // These query parameters are available via global phet.chipper.queryParameters.
 
-    // Temporary: icon for the Preferences button, see https://github.com/phetsims/calculus-grapher/issues/324
-    icon: {
-      type: 'string',
-      defaultValue: 'userCog',
-      validValues: [ 'userCog', 'cog', 'wrench' ],
-      public: true
-    },
-
-    // Temporary: initial tab in the Preferences dialog, see https://github.com/phetsims/calculus-grapher/issues/324
-    tab: {
-      type: 'string',
-      defaultValue: 'overview',
-      validValues: [ 'overview', 'sim' ],
-      public: true
-    },
-
     /**
      * In environments where users should not be able to navigate hyperlinks away from the simulation, clients can use
      * ?allowLinks=false.  In this case, links are displayed and not clickable. This query parameter is public facing.
