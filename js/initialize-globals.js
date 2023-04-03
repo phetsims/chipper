@@ -546,12 +546,17 @@
     /**
      * Shuffles listeners each time they are notified, to help us test order dependency, see https://github.com/phetsims/axon/issues/215
      */
-    shuffleListeners: { type: 'flag' },
+    listenerOrder: {
+      type: 'string',
+      defaultValue: 'default',
+      isValidValue: function( value ) {
 
-    /**
-     * Reverses the order of listeners each time they are notified, to help us test order dependency, see https://github.com/phetsims/axon/issues/215
-     */
-    reverseListeners: { type: 'flag' },
+        // NOTE: this regular expression must be maintained in TinyEmitter.ts as well.
+        const regex = /random(?:%28|\()(\d+)(?:%29|\))/;
+
+        return value === 'default' || value === 'random' || value === 'reverse' || value.match( regex );
+      }
+    },
 
     /**
      * When true, use SpeechSynthesisParentPolyfill to assign an implementation of SpeechSynthesis
