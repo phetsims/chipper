@@ -51,7 +51,7 @@
     "webpack-dev-server": "~4.11.1"
   },
   "eslintConfig": {
-    "extends": "../chipper/eslint/sim_eslintrc.js",
+    "extends": "../chipper/eslint/phet-library_eslintrc.js",
     "parser": "../chipper/node_modules/@babel/eslint-parser",
     "ignorePatterns": [
       "dist/",
