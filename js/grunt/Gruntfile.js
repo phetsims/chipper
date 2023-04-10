@@ -257,7 +257,7 @@ module.exports = function( grunt ) {
           }
         } );
 
-        phetTimingLog.start( 'transpile', () => {
+        await phetTimingLog.startAsync( 'transpile', () => {
 
           // If that succeeds, then convert the code to JS
           transpiler.transpileRepos( getPhetLibs( repo ) );
