@@ -59,14 +59,13 @@ const recordTime = async ( name, asyncCallback, timeCallback ) => {
  *
  * @param {string} repo
  * @param {Object} minifyOptions - see minify.js
- * @param {boolean} instrument - If the sim should be instrumented
  * @param {boolean} allHTML - If the _all.html file should be generated
  * @param {string} brand
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @param {boolean} buildLocal
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, minifyOptions, instrument, allHTML, brand, localesOption, buildLocal ) {
+module.exports = async function( repo, minifyOptions, allHTML, brand, localesOption, buildLocal ) {
   assert( typeof repo === 'string' );
   assert( typeof minifyOptions === 'object' );
 

@@ -201,7 +201,6 @@ module.exports = function( grunt ) {
  --minify.stripLogging=false - During uglification, it will not strip logging statements.
  Runnable build options:
  --report-media - Will iterate over all of the license.json files and reports any media files
- --instrument - Builds a runnable with code coverage tooling inside. See phet-info/doc/code-coverage.md for more information
  --brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using
                       build-local.json's brands (or adapted-from-phet if that does not exist)
  --allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)
@@ -230,15 +229,6 @@ module.exports = function( grunt ) {
             minifyOptions[ minifyKey ] = option;
           }
         } );
-
-        // grunt options that apply to multiple build tasks
-        const instrument = !!grunt.option( 'instrument' );
-
-        // Do not uglify or transpile if it is being instrumented, so it will match development code as closely as possible
-        if ( instrument ) {
-          minifyOptions.babelTranspile = false;
-          minifyOptions.uglify = false;
-        }
 
         const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
@@ -301,7 +291,7 @@ module.exports = function( grunt ) {
             grunt.log.writeln( `Building brand: ${brand}` );
 
             await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
-              await buildRunnable( repo, minifyOptions, instrument, allHTML, brand, localesOption, buildLocal );
+              await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, buildLocal );
             } );
           }
         }
