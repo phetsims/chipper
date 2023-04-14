@@ -181,7 +181,9 @@ const lint = async ( repos, options ) => {
   // Output results on errors.
   if ( totalWarnings + totalErrors > 0 ) {
 
-    inProgressErrorLogging && console.log( '\n\nAll results (repeated from above)\n' );
+    // This exact string is used in aqua QuickServer to parse messaging for slack reporting
+    const IMPORTANT_MESSAGE_DO_NOT_EDIT = 'All results (repeated from above)';
+    inProgressErrorLogging && console.log( `\n\n${IMPORTANT_MESSAGE_DO_NOT_EDIT}\n` );
 
     await consoleLogResults( allResults );
 
