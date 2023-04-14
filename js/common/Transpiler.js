@@ -112,7 +112,12 @@ class Transpiler {
       presets: [
         '../chipper/node_modules/@babel/preset-typescript',
         '../chipper/node_modules/@babel/preset-react'
-      ], sourceMaps: 'inline'
+      ],
+      sourceMaps: 'inline',
+
+      plugins: [
+        [ '@babel/plugin-proposal-decorators', { version: '2022-03' } ]
+      ]
     } );
 
     fs.mkdirSync( path.dirname( targetPath ), { recursive: true } );
