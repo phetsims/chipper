@@ -1,4 +1,4 @@
-// Copyright 2021-2022, University of Colorado Boulder
+// Copyright 2021-2023, University of Colorado Boulder
 
 /**
  * Transpiles *.ts and copies all *.js files to chipper/dist. Does not do type checking. Filters based on
