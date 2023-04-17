@@ -116,7 +116,7 @@ class Transpiler {
       sourceMaps: 'inline',
 
       plugins: [
-        [ '@babel/plugin-proposal-decorators', { version: '2022-03' } ]
+        [ '../chipper/node_modules/@babel/plugin-proposal-decorators', { version: '2022-03' } ]
       ]
     } );
 
