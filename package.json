@@ -6,6 +6,9 @@
     "type": "git",
     "url": "https://github.com/phetsims/chipper.git"
   },
+  "scripts": {
+    "test": "qunit"
+  },
   "phet": {
     "chipperSupportsOutputJSGruntTasks": true,
     "supportsOutputJS": true
