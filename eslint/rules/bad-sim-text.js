@@ -28,7 +28,7 @@ module.exports = function( context ) {
     { id: '_.random(', codeTokens: [ '_', '.', 'random', '(' ] },
     { id: 'new Random()', codeTokens: [ 'new', 'Random', '(', ')' ] },
 
-    // IE doesn't support:
+    // You can use parseInt if you need a non base 10 radix
     { id: 'Number.parseInt(', codeTokens: [ 'Number', '.', 'parseInt', '(' ] },
     { id: 'Array.prototype.find', codeTokens: [ 'Array', '.', 'prototype', '.', 'find' ] },
 
