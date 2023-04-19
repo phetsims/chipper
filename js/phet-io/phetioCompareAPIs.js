@@ -285,6 +285,12 @@
                   return _.isEqual( { ...referenceState, pointers: null }, { ...proposedState, pointers: null } );
                 }
 
+                // Ignore the scale's state, because it will be different at startup, depending on the user's window's
+                // aspect ratio.
+                if ( phetioID === 'density.mysteryScreen.model.scale' ) {
+                  return true;
+                }
+
                 return undefined; // Meaning use the default lodash algorithm for comparison.
               } );
             if ( !matches ) {
