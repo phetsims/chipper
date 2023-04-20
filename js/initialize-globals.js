@@ -545,6 +545,11 @@
 
     /**
      * Shuffles listeners each time they are notified, to help us test order dependency, see https://github.com/phetsims/axon/issues/215
+     *
+     * 'default' - no shuffling
+     * 'random' - chooses a seed for you
+     * 'random(123)' - specify a seed
+     * 'reverse' - reverse the order of listeners
      */
     listenerOrder: {
       type: 'string',
