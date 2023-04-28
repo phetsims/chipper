@@ -157,14 +157,20 @@ const lint = async ( repos, options ) => {
   for ( let i = 0; i < repos.length; i++ ) {
     options.showProgressBar && repos.length > 1 && showCommandLineProgress( i / repos.length, false );
 
-    const results = await lintOneRepo( repos[ i ], {
-      cache: options.cache,
-      format: options.format,
-      fix: options.fix,
-      inProgressErrorLogging: inProgressErrorLogging
-    } );
+    try {
+      const results = await lintOneRepo( repos[ i ], {
+        cache: options.cache,
+        format: options.format,
+        fix: options.fix,
+        inProgressErrorLogging: inProgressErrorLogging
+      } );
 
-    allResults.push( ...results );
+      allResults.push( ...results );
+    }
+    catch( e ) {
+      console.error( e ); // make sure that the error ends up on stderr
+      throw e;
+    }
   }
 
   options.showProgressBar && repos.length > 1 && showCommandLineProgress( 1, true );
