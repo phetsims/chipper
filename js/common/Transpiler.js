@@ -16,7 +16,7 @@ const crypto = require( 'crypto' );
 const CacheLayer = require( './CacheLayer' );
 const core = require( '@babel/core' );
 const assert = require( 'assert' );
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 
 // Cache status is stored in chipper/dist so if you wipe chipper/dist you also wipe the cache
 const statusPath = '../chipper/dist/js-cache-status.json';

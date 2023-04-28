@@ -59,7 +59,8 @@ module.exports = function( context ) {
             const lastSlash = rhs.lastIndexOf( '/' );
             const tail = rhs.substring( lastSlash + 1 );
 
-            if ( tail !== lhs ) {
+            const isLodash = lhs === '_';
+            if ( tail !== lhs && !isLodash ) {
               context.report( {
                 node: node,
                 loc: node.loc.start,

@@ -8,7 +8,7 @@
  */
 
 
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const grunt = require( 'grunt' );

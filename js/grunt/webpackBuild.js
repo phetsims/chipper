@@ -11,7 +11,7 @@
 const ChipperConstants = require( '../common/ChipperConstants' );
 const fs = require( 'fs' );
 const path = require( 'path' );
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const webpack = require( 'webpack' );
 
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial-alias/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );

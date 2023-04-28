@@ -2,7 +2,7 @@
 
 /* eslint-env node */
 
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 
 /**
  * Convert a string to PascalCase

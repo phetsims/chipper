@@ -11,7 +11,7 @@
 
 
 const assert = require( 'assert' );
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 
 // What divides the repo prefix from the rest of the string key, like `FRICTION/friction.title`
 const NAMESPACE_PREFIX_DIVIDER = '/';

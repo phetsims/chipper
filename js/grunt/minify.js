@@ -8,7 +8,7 @@
 
 
 // modules
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const transpile = require( './transpile' );
 const terser = require( 'terser' );
 

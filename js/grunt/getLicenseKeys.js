@@ -8,7 +8,7 @@
  */
 
 
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const getPreloads = require( './getPreloads' );
 const grunt = require( 'grunt' );
 

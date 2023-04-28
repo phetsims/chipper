@@ -1,7 +1,7 @@
 // Copyright 2021-2023, University of Colorado Boulder
 const fs = require( 'fs' );
 const phetioCompareAPIs = require( './phetioCompareAPIs' );
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const jsondiffpatch = require( '../../../sherpa/lib/jsondiffpatch-v0.3.11.umd' ).create( {} );
 const assert = require( 'assert' );
 

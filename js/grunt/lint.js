@@ -9,7 +9,7 @@
 
 
 // modules
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
 const chipAway = require( './chipAway' );

@@ -11,7 +11,7 @@
 
 
 // modules
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fixEOL = require( './fixEOL' );
 const getPreloads = require( './getPreloads' );

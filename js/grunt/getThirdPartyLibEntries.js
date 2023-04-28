@@ -12,7 +12,7 @@
 
 
 // modules
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const getLicenseKeys = require( './getLicenseKeys' );
 const grunt = require( 'grunt' );

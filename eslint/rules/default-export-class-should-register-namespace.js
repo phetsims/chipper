@@ -8,7 +8,7 @@
  * @copyright 2022 University of Colorado Boulder
  */
 
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 
 //------------------------------------------------------------------------------
 // Rule Definition

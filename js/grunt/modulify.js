@@ -8,7 +8,7 @@
  */
 
 
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const createMipmap = require( './createMipmap' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );

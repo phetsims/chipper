@@ -6,7 +6,7 @@
  */
 
 
-const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getPhetLibs = require( './getPhetLibs' );
