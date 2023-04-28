@@ -36,7 +36,10 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
   return withServer( async port => {
     const browser = await puppeteer.launch( {
-      timeout: 120000
+      timeout: 120000,
+      args: [
+        '--disable-gpu'
+      ]
     } );
     const chunks = _.chunk( repos, options.chunkSize );
 

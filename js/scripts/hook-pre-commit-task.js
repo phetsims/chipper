@@ -111,7 +111,11 @@ const repo = getArg( 'repo' );
             return true;
           }
           else {
-            const browser = await puppeteer.launch();
+            const browser = await puppeteer.launch( {
+              args: [
+                '--disable-gpu'
+              ]
+            } );
 
             const result = await withServer( async port => {
               return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
