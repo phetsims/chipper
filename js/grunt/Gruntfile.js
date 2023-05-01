@@ -16,16 +16,20 @@ const assert = require( 'assert' );
 require( './checkNodeVersion' );
 ///////////////////////////
 
+// Allow other Gruntfiles to potentially handle exiting and errors differently`
+if ( !global.processEventOptOut ) {
+
 // See https://medium.com/@dtinth/making-unhandled-promise-rejections-crash-the-node-js-process-ffc27cfcc9dd for how
 // to get unhandled promise rejections to fail out the node process.
 // Relevant for https://github.com/phetsims/wave-interference/issues/491
-process.on( 'unhandledRejection', up => { throw up; } );
+  process.on( 'unhandledRejection', up => { throw up; } );
 
 // Exit on Ctrl + C case
-process.on( 'SIGINT', () => {
-  console.log( '\n\nCaught interrupt signal, exiting' );
-  process.exit();
-} );
+  process.on( 'SIGINT', () => {
+    console.log( '\n\nCaught interrupt signal, exiting' );
+    process.exit();
+  } );
+}
 
 const Transpiler = require( '../common/Transpiler' );
 const transpiler = new Transpiler( { silent: true } );

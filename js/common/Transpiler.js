@@ -52,11 +52,15 @@ class Transpiler {
     // Track the status of each repo. Key= repo, value=md5 hash of contents
     this.status = {};
 
-    // Exit on Ctrl + C case, but make sure to save the cache
-    process.on( 'SIGINT', () => {
-      this.saveCache();
-      process.exit();
-    } );
+    // Handle the case where programs want to handle this itself and do something before exiting.
+    if ( !global.processEventOptOut ) {
+
+      // Exit on Ctrl + C case, but make sure to save the cache
+      process.on( 'SIGINT', () => {
+        this.saveCache();
+        process.exit();
+      } );
+    }
 
     // Make sure a directory exists for the cached status file
     fs.mkdirSync( path.dirname( statusPath ), { recursive: true } );
