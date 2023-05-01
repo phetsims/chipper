@@ -38,7 +38,11 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     const browser = await puppeteer.launch( {
       timeout: 120000,
       args: [
-        '--disable-gpu'
+        '--disable-gpu',
+
+        // Fork child processes directly to prevent orphaned chrome instances from lingering on sparky, https://github.com/phetsims/aqua/issues/150#issuecomment-1170140994
+        '--no-zygote',
+        '--no-sandbox'
       ]
     } );
     const chunks = _.chunk( repos, options.chunkSize );
