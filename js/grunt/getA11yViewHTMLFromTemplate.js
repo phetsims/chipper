@@ -31,5 +31,8 @@ module.exports = function( repo ) {
   html = ChipperStringUtils.replaceAll( html, '{{PHET_SIM_URL}}', `${repo}_${ChipperConstants.FALLBACK_LOCALE}.html` );
   html = ChipperStringUtils.replaceAll( html, '{{PHET_REPOSITORY}}', repo );
 
+  // Remove to-dos so they don't propagate to all repo copies
+  html = html.replace( /^.*\/\/[\s]?TODO.*\r?\n/mg, '' );
+
   return fixEOL( html );
 };
