@@ -17,7 +17,7 @@ module.exports = function( context ) {
       // created using 'grunt create-sim'. simula-rasa's code contains TODOs that should be addressed by the creator
       // of the new simulation. So we do not want those TODOs to have an associated GitHub issue. And we do not want
       // to opt-out of this rule in simula-rasa/package.json, because it will be propagated to the new sim.
-      if ( context.getFilename().match( new RegExp( `${'simula-rasa'}[/\\\\]js` ) ) ) {
+      if ( context.getFilename().includes( 'simula-rasa' ) ) {
         return;
       }
 
