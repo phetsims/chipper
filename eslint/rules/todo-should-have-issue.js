@@ -8,10 +8,20 @@
  * @copyright 2015 University of Colorado Boulder
  */
 
+const process = require( 'process' );
+const path = require( 'path' );
+const fs = require( 'fs' );
+
+const issueShorthandRegex = /#(\d+)/;
+const urlRegex = /https:\/\/github.com\/phetsims\/[^\s]*/;
+const filename = 'issuesFromTODOs.txt';
+const todoIssuesFilepath = path.resolve( __dirname, `../../dist/${filename}` );
+
 module.exports = function( context ) {
   return {
 
     Program: function() {
+      const filename = context.getFilename();
 
       // Explicitly ignore files from the simula-rasa repo. simula-rasa is the template for new simulations that are
       // created using 'grunt create-sim'. simula-rasa's code contains TODOs that should be addressed by the creator
@@ -30,8 +40,8 @@ module.exports = function( context ) {
           if ( comment.value.indexOf( 'TODO' ) >= 0 ) {
 
             // '#' followed by any number of digits
-            const missingIssueNumber = comment.value.search( /#\d+/ ) === -1;
-            const missingLink = comment.value.indexOf( 'https://github.com/phetsims/' ) === -1;
+            const missingIssueNumber = comment.value.search( issueShorthandRegex ) === -1;
+            const missingLink = comment.value.search( urlRegex ) === -1;
 
             if ( missingLink && missingIssueNumber ) {
               context.report( {
@@ -39,6 +49,24 @@ module.exports = function( context ) {
                 loc: comment.loc.start,
                 message: `TODO should have an issue: ${comment.value}`
               } );
+            }
+            else if ( process.env.saveTODOIssues ) {
+              let url = null;
+              const urlMatch = comment.value.match( urlRegex );
+              if ( urlMatch ) {
+                url = urlMatch[ 0 ];
+              }
+
+              const issueShorthandRegex = /#(\d+)/;
+              const issueShorthandMatch = comment.value.match( issueShorthandRegex );
+              const repoNameMatch = filename.match( /[\\/]([\w-]+)[\\/]js[\\/]/ );
+              if ( issueShorthandMatch && repoNameMatch ) {
+                url = `https://github.com/phetsims/${repoNameMatch[ 1 ]}/issues/${issueShorthandMatch[ 1 ]}`;
+              }
+
+              if ( url ) {
+                fs.writeFileSync( todoIssuesFilepath, fs.readFileSync( todoIssuesFilepath ).toString() + `${url}\n` );
+              }
             }
           }
         }
