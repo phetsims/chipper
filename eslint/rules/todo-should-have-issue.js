@@ -13,7 +13,7 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 
 const issueShorthandRegex = /#(\d+)/;
-const urlRegex = /https:\/\/github.com\/phetsims\/[^\s]*/;
+const urlRegex = /https:\/\/github.com\/phetsims\/[-\w]+\/issues\/\d+/;
 const filename = 'issuesFromTODOs.txt';
 const todoIssuesFilepath = path.resolve( __dirname, `../../dist/${filename}` );
 
