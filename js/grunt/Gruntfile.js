@@ -664,7 +664,7 @@ Updates the normal automatically-generated files for this repository. Includes:
       }
       else {
         proposedAPIs = await generatePhetioMacroAPI( sims, {
-          showProgressBar: true,
+          showProgressBar: sims.length > 1,
           showMessagesFromSim: false
         } );
       }
