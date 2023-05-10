@@ -677,7 +677,8 @@ Updates the normal automatically-generated files for this repository. Includes:
       if ( grunt.option( 'compareBreakingAPIChanges' ) ) {
         options.compareBreakingAPIChanges = grunt.option( 'compareBreakingAPIChanges' );
       }
-      await require( '../phet-io/phetioCompareAPISets' )( sims, proposedAPIs, options );
+      const ok = await require( '../phet-io/phetioCompareAPISets' )( sims, proposedAPIs, options );
+      !ok && grunt.fail.fatal( 'PhET-iO API comparison failed' );
     } )
   );
 
