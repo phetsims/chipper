@@ -6,18 +6,17 @@
  * @author Jonathan Olson <jonathan.olson>
  */
 
-import DynamicProperty from '../../axon/js/DynamicProperty.js';
 import TinyProperty from '../../axon/js/TinyProperty.js';
 import TinyOverrideProperty from '../../axon/js/TinyOverrideProperty.js';
-import localeProperty, { Locale } from '../../joist/js/i18n/localeProperty.js';
+import { Locale } from '../../joist/js/i18n/localeProperty.js';
 import localeOrderProperty from '../../joist/js/i18n/localeOrderProperty.js';
 import Tandem from '../../tandem/js/Tandem.js';
-import StringIO from '../../tandem/js/types/StringIO.js';
 import chipper from './chipper.js';
 import TProperty from '../../axon/js/TProperty.js';
 import { localizedStrings } from './getStringModule.js';
 import arrayRemove from '../../phet-core/js/arrayRemove.js';
-import TandemConstants, { PhetioID } from '../../tandem/js/TandemConstants.js';
+import { PhetioID } from '../../tandem/js/TandemConstants.js';
+import LocalizedStringProperty from './LocalizedStringProperty.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
@@ -32,7 +31,7 @@ export type StringsStateStateObject = { data: Record<PhetioID, LocalizedStringSt
 class LocalizedString {
 
   // Public-facing IProperty<string>, used by string modules
-  public readonly property: DynamicProperty<string, string, Locale>;
+  public readonly property: LocalizedStringProperty;
 
   // Holds our non-Override Property at the root of everything
   private readonly englishProperty: TinyProperty<TranslationString>;
@@ -45,18 +44,7 @@ class LocalizedString {
   // Store initial values, so we can handle state deltas
   private readonly initialValues: LocalizedStringStateDelta = {};
 
-  public constructor( englishValue: TranslationString, tandem: Tandem, metadata?: Record<string, unknown> ) {
-
-    // Allow phetioReadOnly to be overridden
-    const phetioReadOnly = ( metadata && typeof metadata.phetioReadOnly === 'boolean' ) ? metadata.phetioReadOnly :
-                           TandemConstants.PHET_IO_OBJECT_METADATA_DEFAULTS.phetioReadOnly;
-
-    // All i18n model strings are phetioFeatured by default
-    const phetioFeatured = ( metadata && typeof metadata.phetioFeatured === 'boolean' ) ? metadata.phetioFeatured : true;
-
-    // Allow phetioDocumentation to be overridden
-    const phetioDocumentation = ( metadata && typeof metadata.phetioDocumentation === 'string' ) ? metadata.phetioDocumentation :
-                                TandemConstants.PHET_IO_OBJECT_METADATA_DEFAULTS.phetioDocumentation;
+  public constructor( public readonly stringKey: string, englishValue: TranslationString, tandem: Tandem, metadata?: Record<string, unknown> ) {
 
     this.englishProperty = new TinyProperty( englishValue );
     this.initialValues[ FALLBACK_LOCALE ] = englishValue;
@@ -64,16 +52,7 @@ class LocalizedString {
     this.localeOrderListener = this.onLocaleOrderChange.bind( this );
     localeOrderProperty.lazyLink( this.localeOrderListener );
 
-    this.property = new DynamicProperty( localeProperty, {
-      derive: ( locale: Locale ) => this.getLocaleSpecificProperty( locale ),
-      bidirectional: true,
-      phetioValueType: StringIO,
-      phetioState: false,
-      tandem: tandem,
-      phetioFeatured: phetioFeatured,
-      phetioReadOnly: phetioReadOnly,
-      phetioDocumentation: phetioDocumentation
-    } );
+    this.property = new LocalizedStringProperty( this, tandem, metadata );
 
     // Add to a global list to support PhET-iO serialization and internal testing
     localizedStrings.push( this );

@@ -206,6 +206,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       }
 
       const localizedString = new LocalizedString(
+        stringKey,
         phet.chipper.mapString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ] ),
         tandem,
         phet.chipper.stringMetadata[ stringKey ]
