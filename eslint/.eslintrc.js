@@ -519,7 +519,10 @@ module.exports = {
         'require-property-suffix': 'error',
 
         // Static fields should have the 'readonly' modifier
-        'uppercase-statics-should-be-readonly': 'error'
+        'uppercase-statics-should-be-readonly': 'error',
+
+        // Prevent spread operator on non-literals because it does not do excess property detection
+        'no-object-spread-on-non-literals': 'off'
       }
     }, {
       files: [
