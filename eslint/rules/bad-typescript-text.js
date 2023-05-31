@@ -46,6 +46,9 @@ module.exports = function( context ) {
     // Don't export SelfOptions, https://github.com/phetsims/chipper/issues/1263
     'export type SelfOptions',
 
+    // Use the PhetioID type alias please, https://github.com/phetsims/tandem/issues/296
+    'phetioID: string',
+
     {
       id: '@returns with type and/or without extra doc',
       regex: /(@returns \{)|(@returns *$)/
