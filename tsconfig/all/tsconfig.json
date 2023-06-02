@@ -68,6 +68,7 @@
     "../../../number-suite-common/js/**/*",
 
     "../../../perennial/js/scripts/collate-lint.ts",
+    "../../../perennial-alias/js/scripts/collate-lint.ts",
 
     "../../../ph-scale/js/**/*",
     "../../../ph-scale-basics/js/**/*",
