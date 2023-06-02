@@ -68,16 +68,11 @@
     "../../../number-suite-common/js/**/*",
 
     "../../../perennial/js/scripts/collate-lint.ts",
-    "../../../perennial-alias/js/scripts/collate-lint.ts",
 
     "../../../ph-scale/js/**/*",
     "../../../ph-scale-basics/js/**/*",
     "../../../phet-core/js/**/*",
-
-    "../../../phet-io/js/TestEventIO.ts",
-    "../../../phet-io/js/dataStreamTests.ts",
-    "../../../phet-io/js/phet-io-tests.ts",
-
+    "../../../phet-io/js/**/*",
     "../../../phet-io-sim-specific/repos/**/*",
     "../../../phet-io-test-sim/js/**/*",
     "../../../phet-io-wrappers/js/**/*",
