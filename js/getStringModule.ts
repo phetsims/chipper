@@ -42,27 +42,8 @@ window.phet.chipper.setAllStrings = ( str: string ) => {
   } );
 };
 
-const stringKeyToTandemName = ( stringKey: string ): string => {
-
-  // a11y maps to a11Y in camel case, so let's sit this one out. Worth a hard coding here since most string files
-  // have this key.
-  if ( stringKey === 'a11y' ) {
-    return stringKey;
-  }
-
-  // The lodash camelCase function behaves pretty well. There are a couple cases (ha) that are a bit strange though:
-  // cobaltIINitrateStringProperty -> cobaltIiNitrateStringProperty
-  // 0soluteAmountStringProperty -> 0SoluteAmountStringProperty
-  // If we ever want to change these, it may result in many migration rules, see https://github.com/phetsims/chipper/issues/1394#issuecomment-1577145158
-  let camelCased = _.camelCase( stringKey );
-
-  // If the original key started with an upper case, preserve that, see https://github.com/phetsims/chipper/issues/1394
-  if ( stringKey[ 0 ].toUpperCase() === stringKey[ 0 ] ) {
-    camelCased = `${camelCased[ 0 ].toUpperCase()}${camelCased.slice( 1 )}`;
-  }
-
-  return camelCased;
-
+const stringKeyToTandemName = ( key: string ) => {
+  return key.replace( /(?:[-_\s]\w)/g, word => word[ 1 ].toUpperCase() );
 };
 
 const StringStateIOType = new IOType<PhetioObject, StringsStateStateObject>( 'StringStateIO', {
