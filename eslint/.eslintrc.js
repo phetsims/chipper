@@ -1482,7 +1482,7 @@ module.exports = {
     'no-view-imported-from-model': 'error',
 
     // Class names should match filename when exported.
-    'default-class-match-filename': 'error'
+    'default-export-match-filename': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {

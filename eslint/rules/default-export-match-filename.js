@@ -14,16 +14,16 @@ module.exports =
 
         if ( node.declaration && node.declaration.id && node.declaration.id.name ) {
           // Get the class name from the export default declaration
-          const className = node.declaration.id.name;
+          const exportName = node.declaration.id.name;
 
           // Get the filename without extension
           const filename = context.getFilename().replace( /^.*[\\/]/, '' ).replace( /\.[^/.]+$/, '' );
 
-          // Check if the class name and filename match
-          if ( className !== filename ) {
+          // Check if the exported class or function name and filename match
+          if ( exportName !== filename ) {
             context.report( {
               node: node,
-              message: `The default exported class "${className}" does not match the filename "${filename}". They should be identical.`
+              message: `The default exported member "${exportName}" does not match the filename "${filename}". They should be identical.`
             } );
           }
         }
