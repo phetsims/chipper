@@ -1478,8 +1478,11 @@ module.exports = {
     // When the default export of a file is a class, it should have a namespace register call
     'default-export-class-should-register-namespace': 'error',
 
-    // Importing the view from the model, uh oh. TODO: 51 errors before turning on, https://github.com/phetsims/chipper/issues/1385
-    'no-view-imported-from-model': 'error'
+    // Importing the view from the model, uh oh. TODO: This is still in discussion, numerous repos opt out, see: https://github.com/phetsims/chipper/issues/1385
+    'no-view-imported-from-model': 'error',
+
+    // Class names should match filename when exported.
+    'default-class-match-filename': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
