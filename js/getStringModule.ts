@@ -42,6 +42,29 @@ window.phet.chipper.setAllStrings = ( str: string ) => {
   } );
 };
 
+const stringKeyToTandemName = ( stringKey: string ): string => {
+
+  // a11y maps to a11Y in camel case, so let's sit this one out. Worth a hard coding here since most string files
+  // have this key.
+  if ( stringKey === 'a11y' ) {
+    return stringKey;
+  }
+
+  // The lodash camelCase function behaves pretty well. There are a couple cases (ha) that are a bit strange though:
+  // cobaltIINitrateStringProperty -> cobaltIiNitrateStringProperty
+  // 0soluteAmountStringProperty -> 0SoluteAmountStringProperty
+  // If we ever want to change these, it may result in many migration rules, see https://github.com/phetsims/chipper/issues/1394#issuecomment-1577145158
+  let camelCased = _.camelCase( stringKey );
+
+  // If the original key started with an upper case, preserve that, see https://github.com/phetsims/chipper/issues/1394
+  if ( stringKey[ 0 ].toUpperCase() === stringKey[ 0 ] ) {
+    camelCased = `${camelCased[ 0 ].toUpperCase()}${camelCased.slice( 1 )}`;
+  }
+
+  return camelCased;
+
+};
+
 const StringStateIOType = new IOType<PhetioObject, StringsStateStateObject>( 'StringStateIO', {
   valueType: PhetioObject,
   toStateObject: (): StringsStateStateObject => {
@@ -174,9 +197,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       let tandem = Tandem.GENERAL_MODEL.createTandem( 'strings' ).createTandem( _.camelCase( requirejsNamespace ) );
       for ( let i = 0; i < keyParts.length; i++ ) {
 
-        // a11y maps to a11Y in camel case, so let's sit this one out. Worth a hard coding here since most string files
-        // have this key.
-        let tandemName = keyParts[ i ] === 'a11y' ? keyParts[ i ] : _.camelCase( keyParts[ i ] );
+        let tandemName = stringKeyToTandemName( keyParts[ i ] );
 
         // If it is the tail of the string key, then make the tandem be a "*StringProperty"
         if ( i === keyParts.length - 1 ) {
