@@ -19,6 +19,9 @@ const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
 const lint = require( '../../../chipper/js/grunt/lint' );
 const reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
 const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
+const Transpiler = require( '../../../chipper/js/common/Transpiler' );
+
+const transpiler = new Transpiler( { silent: true } );
 
 const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.includes( '--console' );
@@ -163,6 +166,7 @@ const repo = getArg( 'repo' );
         .filter( repo => !CacheLayer.isCacheSafe( getCacheKey( repo ) ) );
 
       if ( reposToTest.length > 0 ) {
+        transpiler.transpileAll();
 
         const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {
           showProgressBar: reposToTest.length > 1,

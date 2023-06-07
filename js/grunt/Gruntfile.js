@@ -663,6 +663,8 @@ Updates the normal automatically-generated files for this repository. Includes:
         } );
       }
       else {
+
+        transpiler.transpileAll();
         proposedAPIs = await generatePhetioMacroAPI( sims, {
           showProgressBar: sims.length > 1,
           showMessagesFromSim: false
