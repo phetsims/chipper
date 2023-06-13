@@ -521,8 +521,10 @@ module.exports = {
         // Static fields should have the 'readonly' modifier
         'uppercase-statics-should-be-readonly': 'error',
 
-        // Prevent spread operator on non-literals because it does not do excess property detection
-        'no-object-spread-on-non-literals': 'off'
+        // Prevent spread operator on non-literals because it does not do excess property detection. In general, this rule
+        // helps catch potential errors, and mistakes with PhET's option pattern, but please feel free to disable this rule
+        // in cases where you feel confident, and strongly don't want the type safety of excess property checking.
+        'no-object-spread-on-non-literals': 'error'
       }
     }, {
       files: [
