@@ -20,7 +20,6 @@ module.exports = {
       return {
         ImportDeclaration( node ) {
           const importPath = node.source.value;
-          console.log( importPath );
           if ( forbiddenImports.some( forbiddenPath => importPath.includes( forbiddenPath ) ) ) {
             context.report( {
               node: node,
