@@ -3,6 +3,8 @@
  * @name prefer-derived-string-property
  * @fileoverview Rule to check that you use DerivedStringProperty if providing a phetioValueType of StringIO to
  * DerivedProperty.
+ *
+ * MK used https://eslint.org/docs/latest/extend/custom-rules to assist in development of this rule.
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @copyright 2016 University of Colorado Boulder
  */
