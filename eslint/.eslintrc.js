@@ -1487,7 +1487,10 @@ module.exports = {
     'no-view-imported-from-model': 'error',
 
     // Class names should match filename when exported.
-    'default-export-match-filename': 'error'
+    'default-export-match-filename': 'error',
+
+    // Use DerivedStringProperty for its PhET-iO benefits and consistency, see https://github.com/phetsims/phet-io/issues/1943
+    'prefer-derived-string-property': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
