@@ -524,7 +524,10 @@ module.exports = {
         // Prevent spread operator on non-literals because it does not do excess property detection. In general, this rule
         // helps catch potential errors, and mistakes with PhET's option pattern, but please feel free to disable this rule
         // in cases where you feel confident, and strongly don't want the type safety of excess property checking.
-        'no-object-spread-on-non-literals': 'error'
+        'no-object-spread-on-non-literals': 'error',
+
+        // Often we mistakenly Pick<PhetioObject,'tandem'> but it should be picked from PhetioObjectOptions
+        'phet-io-object-options-should-not-pick-from-phet-io-object': 'error'
       }
     }, {
       files: [
