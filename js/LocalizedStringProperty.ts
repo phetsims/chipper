@@ -16,8 +16,6 @@ import LocalizedString from './LocalizedString.js';
 
 class LocalizedStringProperty extends DynamicProperty<string, string, Locale> {
 
-  public readonly isLocalizedStringProperty = true;
-
   public constructor( public readonly localizedString: LocalizedString, tandem: Tandem, metadata?: Record<string, unknown> ) {
 
     // Allow phetioReadOnly to be overridden
