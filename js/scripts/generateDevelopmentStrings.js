@@ -59,7 +59,8 @@ module.exports = repo => {
     for ( const stringFile of stringFiles ) {
 
       // Extract the locale.
-      const localeMatches = stringFile.match( localeRegex );
+      const join = stringFile.split( '\\' ).join( '/' );
+      const localeMatches = join.substring( join.lastIndexOf( '/' ) ).match( localeRegex );
       const locale = localeMatches[ 0 ];
 
       // Get the contents of the string file.
