@@ -74,6 +74,8 @@ module.exports = function( context ) {
     ' StringIO.toStateObject',
     ' StringIO.fromStateObject',
 
+    'new Tandem(', // use createTandem(), never instantiate your own Tandem please
+
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     {
       id: 'setTimeout(',
