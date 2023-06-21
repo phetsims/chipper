@@ -114,7 +114,7 @@
     buildCompatible: { type: 'flag' },
 
     /**
-     * When provided a non-zero-length value, the sim will send out assorted events meant for continus testing
+     * When provided a non-zero-length value, the sim will send out assorted events meant for continuous testing
      * integration (see sim-test.js).
      */
     continuousTest: {
