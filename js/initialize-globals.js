@@ -38,6 +38,9 @@
   const packageObject = _.hasIn( window, 'phet.chipper.packageObject' ) ? phet.chipper.packageObject : {};
   const packagePhet = packageObject.phet || {};
 
+  // Not all runtimes will have this flag, so be graceful
+  const allowLocaleSwitching = _.hasIn( window, 'phet.chipper' ) ? phet.chipper.allowLocaleSwitching : true;
+
   // duck type defaults so that not all package.json files need to have a phet.simFeatures section.
   const packageSimFeatures = packagePhet.simFeatures || {};
 
@@ -326,6 +329,24 @@
         type: 'string'
       },
       defaultValue: []
+    },
+
+    /**
+     * Specify supports for dynamic locale switching in the runtime of the sim. By default, the value will be the support
+     * in the runnable's package.json. Use this to turn off things like the locale switcher preference.
+     * The package flag for this means very specific things depending on its presence and value.
+     * - By default, with no entry in the package.json, we will still try to support locale switching if multiple locales
+     * are available.
+     * - If you add the truthy flag (supportsDynamicLocale:true), then it will ensure that strings use StringProperties
+     * in your sim.
+     * - If you do not want to support this, then you can opt out in the package.json with supportsDynamicLocale:false
+     *
+     * For more information about supporting dynamic locale, see the "Dynamic Strings Layout Quickstart Guide": https://github.com/phetsims/phet-info/blob/master/doc/dynamic-string-layout-quickstart.md
+     */
+    supportsDynamicLocale: {
+      type: 'boolean',
+      defaultValue: allowLocaleSwitching &&
+                    ( !packageSimFeatures.hasOwnProperty( 'supportsDynamicLocale' ) || packageSimFeatures.supportsDynamicLocale )
     },
 
     /**
