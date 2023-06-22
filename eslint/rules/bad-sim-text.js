@@ -76,6 +76,9 @@ module.exports = function( context ) {
 
     'new Tandem(', // use createTandem(), never instantiate your own Tandem please
 
+    // Instead of using your own assertion, see and use Disposable.assertNotDisposable(), https://github.com/phetsims/axon/issues/436
+    'dispose is not supported, exists for the lifetime of the sim',
+
     // In sims, don't allow setTimout and setInterval calls coming from window, see https://github.com/phetsims/phet-info/issues/59
     {
       id: 'setTimeout(',
