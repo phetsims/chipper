@@ -39,7 +39,7 @@
   const packagePhet = packageObject.phet || {};
 
   // Not all runtimes will have this flag, so be graceful
-  const allowLocaleSwitching = _.hasIn( window, 'phet.chipper' ) ? phet.chipper.allowLocaleSwitching : true;
+  const allowLocaleSwitching = _.hasIn( window, 'phet.chipper.allowLocaleSwitching' ) ? phet.chipper.allowLocaleSwitching : true;
 
   // duck type defaults so that not all package.json files need to have a phet.simFeatures section.
   const packageSimFeatures = packagePhet.simFeatures || {};
