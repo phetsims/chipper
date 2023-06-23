@@ -27,6 +27,7 @@
     "@types/three": "~0.137.0",
     "@types/react": "~18.0.12",
     "@types/react-dom": "~18.0.5",
+    "@webgpu/types": "~0.1.34",
     "@typescript-eslint/parser": "~5.58.0",
     "@typescript-eslint/eslint-plugin": "~5.58.0",
     "@typescript-eslint/utils": "~5.58.0",
