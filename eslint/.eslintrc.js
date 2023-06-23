@@ -1586,6 +1586,23 @@ module.exports = {
     ReactDOM: 'readonly',
 
     // Deno
-    Deno: 'readonly'
+    Deno: 'readonly',
+
+    // WebGPU
+    GPUShaderModule: 'readonly',
+    GPUBindGroupLayout: 'readonly',
+    GPUDevice: 'readonly',
+    GPUShaderStage: 'readonly',
+    GPUBindGroupLayoutEntry: 'readonly',
+    GPUComputePipeline: 'readonly',
+    GPUBuffer: 'readonly',
+    GPUTextureView: 'readonly',
+    GPUCommandEncoder: 'readonly',
+    GPUBindGroupEntry: 'readonly',
+    GPUBufferUsage: 'readonly',
+    GPUTextureUsage: 'readonly',
+    GPUTexture: 'readonly',
+    GPUCanvasContext: 'readonly',
+    GPUTextureFormat: 'readonly'
   }
 };

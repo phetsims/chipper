@@ -84,6 +84,7 @@
     "node_modules/@types/qunit/index.d.ts",
     "node_modules/@types/react/index.d.ts",
     "node_modules/@types/react-dom/index.d.ts",
-    "node_modules/@types/three/index.d.ts"
+    "node_modules/@types/three/index.d.ts",
+    "node_modules/@webgpu/types/dist/index.d.ts"
   ]
 }
