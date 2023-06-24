@@ -482,7 +482,7 @@
     rootRenderer: {
       type: 'string',
       defaultValue: null,
-      validValues: [ null, 'canvas', 'svg', 'dom', 'webgl' ] // see Node.setRenderer
+      validValues: [ null, 'canvas', 'svg', 'dom', 'webgl', 'vello' ] // see Node.setRenderer
     },
 
     /**
