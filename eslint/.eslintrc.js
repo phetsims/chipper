@@ -1603,6 +1603,7 @@ module.exports = {
     GPUTextureUsage: 'readonly',
     GPUTexture: 'readonly',
     GPUCanvasContext: 'readonly',
-    GPUTextureFormat: 'readonly'
+    GPUTextureFormat: 'readonly',
+    GPUImageCopyExternalImageSource: 'readonly'
   }
 };
