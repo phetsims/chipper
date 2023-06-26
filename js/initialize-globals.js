@@ -748,6 +748,16 @@
     },
 
     /**
+     * Switches the Vello rendering of Text to use Swash (with embedded fonts), instead of Canvas.
+     *
+     * For internal use only. This is currently only used in prototypes.
+     */
+    swashText: {
+      type: 'boolean',
+      defaultValue: true
+    },
+
+    /**
      * By default, voicing is not enabled on startup. Add this flag to start the sim with voicing enabled.
      */
     voicingInitiallyEnabled: {
