@@ -103,6 +103,13 @@ module.exports = function( context ) {
       regex: /import.*from.*\/kite\/(?!js\/imports.js)/
     },
 
+    // See https://github.com/phetsims/tandem/issues/302. We don't want to duplicate this type everywhere. Also use 2
+    // spaces to prevent false positive for class fields like `public tandem: Tandem;` (which is fine).
+    {
+      id: 'Do not duplicate the definition of Tandem, instead use PickRequired<PhetioObjectOptions, \'tandem\'>',
+      regex: / {2}tandem\??: Tandem;/
+    },
+
     // DOT/Utils.toFixed or DOT/Utils.toFixedNumber should be used instead of toFixed.
     // JavaScript's toFixed is notoriously buggy. Behavior differs depending on browser,
     // because the spec doesn't specify whether to round or floor.
