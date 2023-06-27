@@ -16,7 +16,8 @@ module.exports = {
       '../CenterAndVariabilityStrings.js'
     ];
 
-    if ( filename.includes( '/soccer-common/' ) ) {
+    // Mac or windows
+    if ( filename.includes( '/soccer-common/' ) || filename.includes( '\\soccer-common\\' ) ) {
       return {
         ImportDeclaration( node ) {
           const importPath = node.source.value;
