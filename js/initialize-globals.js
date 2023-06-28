@@ -750,6 +750,16 @@
     },
 
     /**
+     * If non-empty, Swash-rendered text will show up in the given color (useful for debugging)
+     *
+     * For internal use only. This is currently only used in prototypes.
+     */
+    swashTextColor: {
+      type: 'string',
+      defaultValue: ''
+    },
+
+    /**
      * By default, voicing is not enabled on startup. Add this flag to start the sim with voicing enabled.
      */
     voicingInitiallyEnabled: {
