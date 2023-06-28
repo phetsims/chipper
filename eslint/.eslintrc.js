@@ -1604,6 +1604,8 @@ module.exports = {
     GPUTexture: 'readonly',
     GPUCanvasContext: 'readonly',
     GPUTextureFormat: 'readonly',
-    GPUImageCopyExternalImageSource: 'readonly'
+    GPUImageCopyExternalImageSource: 'readonly',
+    GPUPipelineLayout: 'readonly',
+    GPURenderPipeline: 'readonly'
   }
 };
