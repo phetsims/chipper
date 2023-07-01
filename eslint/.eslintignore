@@ -21,3 +21,4 @@
 ../phet-io-website/root/assets/js/phet-io-ga.js
 ../chipper/dist
 ../scenery/js/display/swash/pkg
+../scenery/js/display/guillotiere/pkg
