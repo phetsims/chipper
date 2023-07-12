@@ -1568,6 +1568,8 @@ module.exports = {
 
     handlePlaybackEvent: 'readonly',
 
+    paper: 'readonly',
+
     pako: 'readonly',
 
     // define globals for missing Web Audio types, see https://github.com/phetsims/chipper/issues/1214
