@@ -11,19 +11,15 @@
     "../../../bamboo/js/**/*",
     "../../../beers-law-lab/js/**/*",
     "../../../bending-light/js/**/*",
-
     "../../../brand/adapted-from-phet/js/Brand.ts",
     "../../../brand/phet-io/js/Brand.ts",
     "../../../brand/phet/js/Brand.ts",
-
     "../../../build-a-nucleus/js/**/*",
     "../../../buoyancy/js/**/*",
     "../../../calculus-grapher/js/**/*",
     "../../../center-and-variability/js/**/*",
-
     "../../../chipper/js/phet-build-script/phet-build-script.ts",
     "../../../chipper/phet-types.d.ts",
-
     "../../../circuit-construction-kit-ac/js/**/*",
     "../../../circuit-construction-kit-ac-virtual-lab/js/**/*",
     "../../../circuit-construction-kit-common/js/**/*",
@@ -66,10 +62,8 @@
     "../../../number-compare/js/**/*",
     "../../../number-play/js/**/*",
     "../../../number-suite-common/js/**/*",
-
     "../../../perennial/js/scripts/collate-lint.ts",
     "../../../perennial-alias/js/scripts/collate-lint.ts",
-
     "../../../ph-scale/js/**/*",
     "../../../ph-scale-basics/js/**/*",
     "../../../phet-core/js/**/*",
@@ -86,6 +80,7 @@
     "../../../ratio-and-proportion/js/**/*",
     "../../../reactants-products-and-leftovers/js/**/*",
     "../../../scenery/js/**/*",
+    "../../../shred/js/**/*",
     "../../../scenery-phet/js/**/*",
     "../../../simula-rasa/js/**/*",
     "../../../solar-system-common/js/**/*",
