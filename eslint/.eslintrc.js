@@ -1588,6 +1588,8 @@ module.exports = {
     // Deno
     Deno: 'readonly',
 
+    BigInt: 'readonly',
+
     // WebGPU
     GPUShaderModule: 'readonly',
     GPUBindGroupLayout: 'readonly',
@@ -1606,6 +1608,7 @@ module.exports = {
     GPUTextureFormat: 'readonly',
     GPUImageCopyExternalImageSource: 'readonly',
     GPUPipelineLayout: 'readonly',
-    GPURenderPipeline: 'readonly'
+    GPURenderPipeline: 'readonly',
+    GPUMapMode: 'readonly'
   }
 };
