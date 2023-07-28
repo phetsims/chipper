@@ -218,11 +218,11 @@
             if ( !ignore ) {
 
               if ( invalidProposedValue === undefined || isDesignedChange ) {
-                appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}`, isDesignedChange );
+                appendProblem( `${phetioID}.${metadataKey} changed from "${referenceValue}" to "${proposedValue}"`, isDesignedChange );
               }
               else if ( !isDesignedChange ) {
                 if ( proposedValue === invalidProposedValue ) {
-                  appendProblem( `${phetioID}.${metadataKey} changed from ${referenceValue} to ${proposedValue}` );
+                  appendProblem( `${phetioID}.${metadataKey} changed from "${referenceValue}" to "${proposedValue}"` );
                 }
                 else {
 
@@ -390,7 +390,7 @@
           const referenceSupertypeName = referenceType.supertype;
           const proposedSupertypeName = proposedType.supertype;
           if ( referenceSupertypeName !== proposedSupertypeName ) {
-            appendProblem( `${typeName} supertype changed from ${referenceSupertypeName} to ${proposedSupertypeName}. This may or may not 
+            appendProblem( `${typeName} supertype changed from "${referenceSupertypeName}" to "${proposedSupertypeName}". This may or may not 
           be a breaking change, but we are reporting it just in case.` );
           }
 
@@ -411,7 +411,7 @@
 
             Object.keys( referenceDefaults ).forEach( key => {
               if ( referenceDefaults[ key ] !== proposedDefaults[ key ] ) {
-                appendProblem( `${typeName} metadata value ${key} changed from ${referenceDefaults[ key ]} to ${proposedDefaults[ key ]}. This may or may not be a breaking change, but we are reporting it just in case.` );
+                appendProblem( `${typeName} metadata value ${key} changed from "${referenceDefaults[ key ]}" to "${proposedDefaults[ key ]}". This may or may not be a breaking change, but we are reporting it just in case.` );
               }
             } );
           }
