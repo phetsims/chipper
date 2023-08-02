@@ -83,6 +83,7 @@
     "../../../shred/js/**/*",
     "../../../scenery-phet/js/**/*",
     "../../../simula-rasa/js/**/*",
+    "../../../soccer-common/js/**/*",
     "../../../solar-system-common/js/**/*",
     "../../../sound/js/**/*",
     "../../../studio/js/**/*",
