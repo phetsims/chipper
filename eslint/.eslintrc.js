@@ -1590,6 +1590,8 @@ module.exports = {
 
     BigInt: 'readonly',
 
+    FlatQueue: 'readonly',
+
     // WebGPU
     GPUShaderModule: 'readonly',
     GPUBindGroupLayout: 'readonly',
