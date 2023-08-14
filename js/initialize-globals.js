@@ -341,7 +341,7 @@
      * in your sim.
      * - If you do not want to support this, then you can opt out in the package.json with supportsDynamicLocale:false
      *
-     * For more information about supporting dynamic locale, see the "Dynamic Strings Layout Quickstart Guide": https://github.com/phetsims/phet-info/blob/master/doc/dynamic-string-layout-quickstart.md
+     * For more information about supporting dynamic locale, see the "Dynamic Strings Layout Quickstart Guide": https://github.com/phetsims/phet-info/blob/main/doc/dynamic-string-layout-quickstart.md
      */
     supportsDynamicLocale: {
       type: 'boolean',

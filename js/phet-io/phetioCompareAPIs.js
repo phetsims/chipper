@@ -26,7 +26,7 @@
  */
 
 /**
- * See phetioEngine.js for where this is generated in master. Keep in mind that we support different versions, including
+ * See phetioEngine.js for where this is generated in main. Keep in mind that we support different versions, including
  * APIs that don't have a version attribute.
  * @typedef API_1_0
  * @extends API
@@ -56,7 +56,7 @@
     Object.keys( api.phetioElements ).forEach( phetioID => {
       const entry = api.phetioElements[ phetioID ];
 
-      // API versions < 1.0, use a tandem separator of '.'  If we ever change this separator in master (hopefully not!)
+      // API versions < 1.0, use a tandem separator of '.'  If we ever change this separator in main (hopefully not!)
       // this value wouldn't change since it reflects the prior committed versions which do use '.'
       const chain = phetioID.split( '.' );
 

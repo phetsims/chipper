@@ -2,7 +2,7 @@
 
 /**
  * Creates a composite report of all of the 3rd party images, code, sounds and other media used by all of the published
- * PhET Simulations. The reports is published at: https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
+ * PhET Simulations. The reports is published at: https://github.com/phetsims/sherpa/blob/main/third-party-licenses.md
  *
  * Usage:
  * grunt report-third-party
@@ -185,7 +185,7 @@ module.exports = async function() {
     }
 
     // \n worked well when viewing GitHub markdown as an issue comment, but for unknown reasons <br> is necessary when
-    // viewing from https://github.com/phetsims/sherpa/blob/master/third-party-licenses.md
+    // viewing from https://github.com/phetsims/sherpa/blob/main/third-party-licenses.md
     codeOutput.push( lineElementsForLibrary.join( '<br>' ) );
 
     if ( codeLicensesUsed.indexOf( licenseJSON[ library ].license ) < 0 ) {
