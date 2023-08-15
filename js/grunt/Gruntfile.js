@@ -404,7 +404,7 @@ module.exports = function( grunt ) {
     } ) );
 
   grunt.registerTask( 'generate-test-html',
-    'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/master/doc/adding-unit-tests.md ' +
+    'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/main/doc/adding-unit-tests.md ' +
     'for more information on automated testing. Usually you should ' +
     'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
     wrapTask( async () => {
@@ -544,7 +544,7 @@ Updates the normal automatically-generated files for this repository. Includes:
   // see reportThirdParty.js
   grunt.registerTask( 'report-third-party',
     'Creates a report of third-party resources (code, images, sound, etc) used in the published PhET simulations by ' +
-    'reading the license information in published HTML files on the PhET website. This task must be run from master.  ' +
+    'reading the license information in published HTML files on the PhET website. This task must be run from main.  ' +
     'After running this task, you must push sherpa/third-party-licenses.md.',
     wrapTask( async () => {
       const reportThirdParty = require( './reportThirdParty' );
@@ -728,8 +728,8 @@ Updates the normal automatically-generated files for this repository. Includes:
     'checkout-shas',
     'checkout-target',
     'checkout-release',
-    'checkout-master',
-    'checkout-master-all',
+    'checkout-main',
+    'checkout-main-all',
     'create-one-off',
     'sha-check',
     'sim-list',

@@ -3,7 +3,7 @@
 /**
  * Runs tasks for pre-commit, including lint and qunit testing.  Avoids the overhead of grunt and Gruntfile.js for speed.
  *
- * Should only be run when developing in master, because when dependency shas are checked out for one sim,
+ * Should only be run when developing in main, because when dependency shas are checked out for one sim,
  * they will likely be inconsistent for other repos which would cause failures for processes like type checking.
  * This means when running maintenance release steps, you may need to run git commands with --no-verify.
  *

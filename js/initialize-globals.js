@@ -95,7 +95,7 @@
 
     /**
      * Generates object reports that can be used by binder. For internal use.
-     * See InstanceRegistry.js and binder repo (specifically getFromSimInMaster.js) sfor more details.
+     * See InstanceRegistry.js and binder repo (specifically getFromSimInMain.js) for more details.
      */
     binder: { type: 'flag' },
 
@@ -341,7 +341,7 @@
      * in your sim.
      * - If you do not want to support this, then you can opt out in the package.json with supportsDynamicLocale:false
      *
-     * For more information about supporting dynamic locale, see the "Dynamic Strings Layout Quickstart Guide": https://github.com/phetsims/phet-info/blob/master/doc/dynamic-string-layout-quickstart.md
+     * For more information about supporting dynamic locale, see the "Dynamic Strings Layout Quickstart Guide": https://github.com/phetsims/phet-info/blob/main/doc/dynamic-string-layout-quickstart.md
      */
     supportsDynamicLocale: {
       type: 'boolean',
@@ -902,11 +902,13 @@
      * @returns {string}
      */
     window.phet.chipper.mapString = function( string ) {
+      const script = 'script';
       return stringTest === null ? string :
              stringTest === 'double' ? `${string}:${string}` :
              stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
              stringTest === 'rtl' ? '\u202b\u062a\u0633\u062a (\u0632\u0628\u0627\u0646)\u202c' :
              stringTest === 'xss' ? `${string}<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABCQEBtxmN7wAAAABJRU5ErkJggg==" onload="window.location.href=atob('aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==')" />` :
+             stringTest === 'xss2' ? `${string}<${script}>alert('XSS')</${script}>` :
              stringTest === 'none' ? string :
              stringTest === 'dynamic' ? string :
 

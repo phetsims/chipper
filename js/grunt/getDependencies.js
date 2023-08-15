@@ -27,7 +27,7 @@ module.exports = async function( repo ) {
   const version = packageObject.version;
 
   // Accumulate dependencies for all brands
-  const dependencies = getPhetLibs( repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at master
+  const dependencies = getPhetLibs( repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at main
 
   // We need to check dependencies for the main brand, so we can know what is guaranteed to be public
   const mainDependencies = getPhetLibs( repo, 'phet' ).filter( dependency => dependency !== 'babel' );
