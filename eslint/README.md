@@ -21,8 +21,8 @@ We use these tools at several stages of development:
 
 For developers looking to ensure their changes pass ESLint, the typical entry point
 is to run `grunt lint`. See `grunt lint --help` for options. If your code passes
-`grunt lint`, then it is good to merge. You can add the `--format` option to achieve 
-formatting that comes close to PhET's code standards defined by the Webstorm code style 
+`grunt lint`, then it is good to merge. You can add the `--format` option to achieve
+formatting that comes close to PhET's code standards defined by the Webstorm code style
 [here](https://github.com/phetsims/phet-info/blob/main/ide/idea/phet-idea-codestyle.xml).
 That is considered the ground truth for formatting currently, and `--format` attempts to
 get as close as we can to those rules.
@@ -39,9 +39,12 @@ Here is a list of all the available configuration files and why to use them for 
 - `.eslintrc.js` is the base set of rules. You probably shouldn't use this directly, instead you should use one
   of the derived configurations below.
 - `node_eslintrc.js` expands on the base rules and adds configuration only intended for Node.js code (i.e. `perennial`).
-- `sim_eslintrc.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5 sim rules)
-- `sim_eslintrc.js'` expands on the sim rules and adds configuration for sims that have no es5 in them (i.e. `wave-interference`)
-- `format_eslintrc.js` contains additional rules used for enforcing code formatting. These are not required, they are just
+- `sim_eslintrc.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5
+  sim rules)
+- `sim_eslintrc.js'` expands on the sim rules and adds configuration for sims that have no es5 in them (
+  i.e. `wave-interference`)
+- `format_eslintrc.js` contains additional rules used for enforcing code formatting. These are not required, they are
+  just
   recommended.
 
 So here is the hierarchy of chipper's config files. Indentation symbolized the "extends" relationship.
@@ -83,5 +86,5 @@ answer these questions:
   https://github.com/phetsims/phet-info/issues/150
 
 - While ESLint can be plugged into many IDEs to perform code formatting automatically, many
-  PhET developers use other plugins 
+  PhET developers use other plugins
   their IDEs. See https://github.com/phetsims/phet-info/tree/main/ide
