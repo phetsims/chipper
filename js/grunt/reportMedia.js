@@ -80,12 +80,12 @@ module.exports = async repo => {
             const result = getLicenseEntry( abspath );
 
             if ( !result ) {
-              grunt.log.error( `not-annotated: ${repo}/${directory}/${filename}` );
+              grunt.log.error( `not-annotated: ${abspath}` );
               success = false;
             }
             // Report if it is a problem
             else if ( result.isProblematic === true ) {
-              grunt.log.error( `incompatible-license: ${repo}/${directory}/${filename}` );
+              grunt.log.error( `incompatible-license: ${abspath}` );
               success = false;
             }
           }
