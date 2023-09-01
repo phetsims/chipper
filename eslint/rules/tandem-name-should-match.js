@@ -7,7 +7,23 @@
  * The rule analyzes VariableDeclaration and AssignmentExpression nodes in the AST,
  * checking the value passed to the createTandem method and comparing it with the name of the variable or property.
  * If the names do not match, it reports an error.
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
  */
+
+const upperSnakeToCamel = str => {
+  return str.toLowerCase().replace( /(_\w)/g, m => m[ 1 ].toUpperCase() );
+};
+
+/**
+ * Allow cases like MY_TANDEM matching myTandem.
+ */
+const matchesNamingConvention = ( tandemName, variableName ) => {
+  const variableNameCamel = upperSnakeToCamel( variableName );
+
+  return ( tandemName === variableNameCamel ) || ( tandemName === variableName );
+};
+
 module.exports = {
   create( context ) {
     return {
@@ -16,12 +32,12 @@ module.exports = {
 
         declarations.forEach( declaration => {
           const variableName = declaration.id.name;
-          const createTandemCallArgument = getCreateTandemCallArgument( declaration.init );
+          const tandemName = getCreateTandemCallArgument( declaration.init );
 
-          if ( createTandemCallArgument && createTandemCallArgument !== variableName ) {
+          if ( tandemName && !matchesNamingConvention( tandemName, variableName ) ) {
             context.report( {
               node: node,
-              message: `The variable name "${variableName}" does not match the argument passed to createTandem "${createTandemCallArgument}"`
+              message: `The variable name "${variableName}" does not match the argument passed to createTandem "${tandemName}"`
             } );
           }
         } );
@@ -35,13 +51,13 @@ module.exports = {
           if ( propertyName ) {
 
             // If the property is a part of 'this', we remove 'this.' from the property name
-            const cleanedPropertyName = isThisExpression ? propertyName : propertyName.replace( 'this.', '' );
-            const createTandemCallArgument = getCreateTandemCallArgument( node.right );
+            const variableName = isThisExpression ? propertyName : propertyName.replace( 'this.', '' );
+            const tandemName = getCreateTandemCallArgument( node.right );
 
-            if ( createTandemCallArgument && createTandemCallArgument !== cleanedPropertyName ) {
+            if ( tandemName && !matchesNamingConvention( tandemName, variableName ) ) {
               context.report( {
                 node: node,
-                message: `The property name "${cleanedPropertyName}" does not match the argument passed to createTandem "${createTandemCallArgument}"`
+                message: `The property name "${variableName}" does not match the argument passed to createTandem "${tandemName}"`
               } );
             }
           }
