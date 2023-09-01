@@ -4,7 +4,10 @@
 
 /**
  * Ambient type declarations for PhET code.  Many of these definitions can be moved/disabled once the common code is
- * converted to TypeScript.
+ * converted to TypeScript. Note that this file is in globals mode, so the `declare var` statements will be available
+ * as globals like `phetio` and also as properties on the `window` object like `window.phetio`.
+ *
+ * See also phet-types-module.d.ts which is in module mode.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */

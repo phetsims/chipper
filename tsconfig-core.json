@@ -76,6 +76,7 @@
   },
   "files": [
     "phet-types.d.ts",
+    "phet-types-module.d.ts",
     "node_modules/@types/jquery/index.d.ts",
     "node_modules/@types/lodash/index.d.ts",
     "node_modules/@types/p2/index.d.ts",

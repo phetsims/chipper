@@ -20,6 +20,7 @@
     "../../../center-and-variability/js/**/*",
     "../../../chipper/js/phet-build-script/phet-build-script.ts",
     "../../../chipper/phet-types.d.ts",
+    "../../../chipper/phet-types-module.d.ts",
     "../../../circuit-construction-kit-ac/js/**/*",
     "../../../circuit-construction-kit-ac-virtual-lab/js/**/*",
     "../../../circuit-construction-kit-common/js/**/*",
