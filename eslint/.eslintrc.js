@@ -1492,8 +1492,8 @@ module.exports = {
     // Use DerivedStringProperty for its PhET-iO benefits and consistency, see https://github.com/phetsims/phet-io/issues/1943
     'prefer-derived-string-property': 'error',
 
-    //TODO https://github.com/phetsims/phet-io/issues/1947 Sam Reid added this rule, about which he is currently 'skeptical'.
-    'tandem-name-should-match': 'off'
+    // A variable or attribute name should generally match the tandem name.
+    'tandem-name-should-match': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
