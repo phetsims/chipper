@@ -105,8 +105,6 @@ module.exports = {
                 switch( argument.type ) {
                   case 'Literal':
                     return argument.value;
-                  case 'Identifier':
-                    return argument.name;
                   default:
                     return null;
                 }
