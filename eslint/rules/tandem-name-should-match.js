@@ -92,15 +92,24 @@ module.exports = {
               createTandemCall.arguments && // Check if arguments array exists
               createTandemCall.arguments.length > 0 // Check if the array is not empty
             ) {
-              const argument = createTandemCall.arguments[ 0 ];
 
-              switch( argument.type ) {
-                case 'Literal':
-                  return argument.value;
-                case 'Identifier':
-                  return argument.name;
-                default:
-                  return null;
+              const callee = createTandemCall.callee.object.type === 'Identifier' ? createTandemCall.callee.object.name :
+                             null;
+
+              // If the tandem is something like: myAccordionBoxTandem.createTandem('theChild') then the const variable may have
+              // a name like myAccordionBoxChild, so we need to remove the 'Tandem' part from the name before checking.
+              if ( callee === 'tandem' ) {
+
+                const argument = createTandemCall.arguments[ 0 ];
+
+                switch( argument.type ) {
+                  case 'Literal':
+                    return argument.value;
+                  case 'Identifier':
+                    return argument.name;
+                  default:
+                    return null;
+                }
               }
             }
           }
