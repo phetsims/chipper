@@ -292,7 +292,7 @@
                 }
 
                 // Ignore the wireMeterAttachmentPositionProperty because on it's starting position can change based on
-                // the browser running the sim. TODO: Workaround for https://github.com/phetsims/greenhouse-effect/issues/342
+                // the browser running the sim. TODO: Root cause is https://github.com/phetsims/phet-io/issues/1951.
                 if ( phetioID === 'greenhouseEffect.layerModelScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ||
                      phetioID === 'greenhouseEffect.photonsScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ) {
                   return true;
