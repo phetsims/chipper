@@ -1493,7 +1493,7 @@ module.exports = {
     'prefer-derived-string-property': 'error',
 
     // A variable or attribute name should generally match the tandem name.
-    'tandem-name-should-match': 'off'
+    'tandem-name-should-match': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
