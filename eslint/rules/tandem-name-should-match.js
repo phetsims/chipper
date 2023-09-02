@@ -21,7 +21,10 @@ const upperSnakeToCamel = str => {
 const matchesNamingConvention = ( tandemName, variableName ) => {
   const variableNameCamel = upperSnakeToCamel( variableName );
 
-  return ( tandemName === variableNameCamel ) || ( tandemName === variableName );
+  return ( tandemName === variableNameCamel ) ||
+         ( tandemName === variableName ) ||
+         ( tandemName === 'tandemName' ) ||
+         ( variableName === '_' + tandemName );
 };
 
 module.exports = {
@@ -65,6 +68,16 @@ module.exports = {
       }
     };
 
+    function getFullCallerName( memberExpressionNode ) {
+      if ( memberExpressionNode.type === 'Identifier' ) {
+        return memberExpressionNode.name;
+      }
+      else if ( memberExpressionNode.type === 'MemberExpression' ) {
+        return getFullCallerName( memberExpressionNode.object ) + '.' + memberExpressionNode.property.name;
+      }
+      return '';
+    }
+
     /**
      * This function analyzes the given node and retrieves the argument passed to the createTandem method.
      * It expects the node to be either a NewExpression or a CallExpression.
@@ -93,18 +106,19 @@ module.exports = {
               createTandemCall.arguments.length > 0 // Check if the array is not empty
             ) {
 
-              const callee = createTandemCall.callee.object.type === 'Identifier' ? createTandemCall.callee.object.name :
-                             null;
+              const callee = getFullCallerName( createTandemCall.callee.object );
 
               // If the tandem is something like: myAccordionBoxTandem.createTandem('theChild') then the const variable may have
               // a name like myAccordionBoxChild, so we need to remove the 'Tandem' part from the name before checking.
-              if ( callee === 'tandem' ) {
+              if ( callee === 'tandem' || callee === 'options.tandem' || callee === 'providedOptions.tandem' ) {
 
                 const argument = createTandemCall.arguments[ 0 ];
 
                 switch( argument.type ) {
                   case 'Literal':
                     return argument.value;
+                  case 'Identifier':
+                    return argument.name;
                   default:
                     return null;
                 }
