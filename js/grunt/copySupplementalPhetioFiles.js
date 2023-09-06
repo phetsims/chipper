@@ -692,7 +692,7 @@ const getCompiledMigrationRules = async ( repo, buildDir ) => {
     const migrationRulesFilename = `${repo}-migration-rules.js`;
     const entryPointFilename = `../chipper/dist/js/phet-io-sim-specific/repos/${repo}/js/${migrationRulesFilename}`;
     if ( !fs.existsSync( entryPointFilename ) ) {
-      console.log( `No migration rules found at ${entryPointFilename}, no rules to be bundled with ${LIB_OUTPUT_FILE}.` );
+      grunt.log.debug( `No migration rules found at ${entryPointFilename}, no rules to be bundled with ${LIB_OUTPUT_FILE}.` );
       resolve( '' ); // blank string because there are no rules to add.
     }
     else {
