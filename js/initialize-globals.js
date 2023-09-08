@@ -438,12 +438,12 @@
     postMessageOnBeforeUnload: { type: 'flag' },
 
     /**
-     * passes errors to test-sims
+     * passes errors to parent frame (like fuzz-lightyear)
      */
     postMessageOnError: { type: 'flag' },
 
     /**
-     * triggers a post-message that fires when the sim finishes loading, currently used by aqua test-sims
+     * triggers a post-message that fires when the sim finishes loading, currently used by aqua fuzz-lightyear
      */
     postMessageOnLoad: { type: 'flag' },
 
@@ -1042,7 +1042,7 @@
       };
     }
 
-    // Communicate sim errors to joist/tests/test-sims.html
+    // Communicate sim errors to CT or other listening parent frames
     if ( phet.chipper.queryParameters.postMessageOnError ) {
       window.addEventListener( 'error', a => {
         let message = '';
