@@ -257,6 +257,7 @@ module.exports = async function() {
   const fileList = simTitles.join( '\n* ' );
 
   const outputString =
+    '<!--@formatter:off-->\n' +
     `${'This report enumerates the third-party resources (code, images, sounds, etc) used in a set of simulations.\n' +
     '* [Third-party Code](#third-party-code)\n' +
     '* [Third-party Code License Summary](#third-party-code-license-summary)\n' +
@@ -282,7 +283,8 @@ module.exports = async function() {
     '---\n' +
 
     `# <a name="third-party-media-license-summary"></a>Third-party Media License Summary:<br>\n${
-      mediaLicensesUsed.join( '<br>' )}\n\n`;
+      mediaLicensesUsed.join( '<br>' )}\n\n` +
+    '<!--@formatter:on-->\\n';
 
   // Compare the file output to the existing file, and write & git commit only if different
   if ( !grunt.file.exists( outputFilename ) || grunt.file.read( outputFilename ) !== outputString ) {
