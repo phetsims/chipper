@@ -175,7 +175,7 @@ const lint = async ( repos, options ) => {
 
   options.showProgressBar && repos.length > 1 && showCommandLineProgress( 1, true );
 
-  // 3. Modify the files with the fixed code.
+  // Modify the files with the fixed code.
   if ( options.fix ) {
     await ESLint.outputFixes( allResults );
   }
