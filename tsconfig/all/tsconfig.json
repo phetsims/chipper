@@ -5,6 +5,7 @@
   // This structure was determined in https://github.com/phetsims/chipper/issues/1245
   "include": [
     "../../../acid-base-solutions/js/**/*",
+    "../../../alpenglow/js/**/*",
     "../../../aqua/js/**/*",
     "../../../axon/js/**/*",
     "../../../balancing-chemical-equations/js/**/*",
