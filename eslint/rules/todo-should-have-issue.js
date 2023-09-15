@@ -58,30 +58,7 @@ module.exports = {
                 context.report( {
                   node: comment,
                   loc: comment.loc.start,
-                  message: `TODO should have an issue: ${comment.value}`,
-                  fix: fixer => {
-
-                    const range = comment.range;
-                    let insertionSpot = range[ 1 ];
-                    if ( comment.type === 'Block' ) {
-                      const match = comment.value.match( /TODO(.*\r)*\n/ );
-
-                      // no match would be something like function( /* is this thing on */ ), so at the end is fine
-                      if ( match ) {
-                        const lengthToEndOfTODOLine = match.index + match[ 0 ].length;
-
-                        // Set the end range to just after the line with a to-do
-                        insertionSpot = range[ 0 ] + lengthToEndOfTODOLine;
-                      }
-                      else {
-                        // no match would be something like function( /* is this thing on */ ), so at the end minus closing comment
-                        insertionSpot -= 3;
-                      }
-                    }
-
-                    // a central issue to hold all TODOs
-                    return fixer.replaceTextRange( [ insertionSpot, insertionSpot + 1 ], ' https://github.com/phetsims/tasks/issues/1129' );
-                  }
+                  message: `TODO should have an issue: ${comment.value}`
                 } );
               }
               else if ( process.env.saveTODOIssues ) {
