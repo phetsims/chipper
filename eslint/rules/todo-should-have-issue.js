@@ -20,6 +20,60 @@ const todoIssuesFilepath = path.resolve( __dirname, `../../dist/${filename}` );
 // For some reason
 // const todoMatcherFixerRegex = /TODO(.*\r*)*\n/;
 
+// Match a comment line containing a TODO
+const containsTODO = string => string.includes( 'TODO' );
+
+// Match a comment tagging a github issue
+const hasIssueLink = string => {
+
+  // '#' followed by any number of digits
+  const missingIssueNumber = !issueShorthandRegex.test( string );
+  const missingLink = !urlRegex.test( string );
+  return !( missingLink && missingIssueNumber );
+};
+
+/**
+ * Match if a comment is a line comment, and an immediately proceeding line comment contains the github issue, like:
+ *
+ * // TO DO (purposefully misspelled) - Do something helpful
+ * // See https://github.com/phetsims/chipper/issues/X
+ *
+ * @param {Comment[]} comments
+ * @param {number} index
+ * @returns {boolean}
+ */
+const nextCommentsHaveIssue = ( comments, index ) => {
+  const todoComment = comments[ index ];
+
+  let hasIssueInNextComments = false;
+  if ( todoComment.type === 'Line' ) {
+
+    let previousLine = todoComment.loc.start.line;
+
+    for ( let i = index + 1; i < comments.length; i++ ) {
+      const currentComment = comments[ i ];
+
+      // No next comment
+      if ( !currentComment ||
+
+           // next comment is a block
+           currentComment.type !== 'Line' ||
+
+           // If nextComment is not on the next line
+           currentComment.loc.start.line - 1 !== previousLine ) {
+        break;
+      }
+
+      if ( hasIssueLink( currentComment.value ) ) {
+        hasIssueInNextComments = true;
+        break;
+      }
+      previousLine = currentComment.loc.start.line;
+    }
+  }
+  return hasIssueInNextComments;
+};
+
 module.exports = {
   meta: {
     type: 'problem',
@@ -48,13 +102,8 @@ module.exports = {
           for ( let i = 0; i < comments.length; i++ ) {
             const comment = comments[ i ];
 
-            if ( comment.value.indexOf( 'TODO' ) >= 0 ) {
-
-              // '#' followed by any number of digits
-              const missingIssueNumber = comment.value.search( issueShorthandRegex ) === -1;
-              const missingLink = comment.value.search( urlRegex ) === -1;
-
-              if ( missingLink && missingIssueNumber ) {
+            if ( containsTODO( comment.value ) ) {
+              if ( !hasIssueLink( comment.value ) && !nextCommentsHaveIssue( comments, i ) ) {
                 context.report( {
                   node: comment,
                   loc: comment.loc.start,
