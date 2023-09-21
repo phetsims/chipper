@@ -75,7 +75,7 @@ class Code {
       } );
 
       result += '\n';
-      result += `export default = ${this.hasConditionals() ? 'includesMap' : '()'} => `;
+      result += `export default ${this.hasConditionals() ? 'includesMap' : '()'} => `;
     }
 
     const run = ( item, before ) => {

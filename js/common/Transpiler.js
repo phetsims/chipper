@@ -4,6 +4,8 @@
  * Transpiles *.ts and copies all *.js files to chipper/dist. Does not do type checking. Filters based on
  * perennial-alias/active-repos and subsets of directories within repos (such as js/, images/, and sounds/)
  *
+ * Additionally, will transpile *.wgsl files to *.js files.
+ *
  * See transpile.js for the CLI usage
  *
  *  @author Sam Reid (PhET Interactive Simulations)
@@ -14,6 +16,9 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const crypto = require( 'crypto' );
 const CacheLayer = require( './CacheLayer' );
+const wgslMinify = require( './wgslMinify' );
+const wgslPreprocess = require( './wgslPreprocess' );
+const wgslStripComments = require( './wgslStripComments' );
 const core = require( '@babel/core' );
 const assert = require( 'assert' );
 const _ = require( 'lodash' );
@@ -24,7 +29,7 @@ const root = '..' + path.sep;
 
 // Directories in a sim repo that may contain things for transpilation
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
-const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'shaders', 'common',
+const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'shaders', 'common', 'wgsl',
 
   // phet-io-sim-specific has nonstandard directory structure
   'repos' ];
@@ -101,31 +106,39 @@ class Transpiler {
   }
 
   /**
-   * Transpile the file using babel, and write it to the corresponding location in chipper/dist
+   * Transpile the file (using babel for JS/TS), and write it to the corresponding location in chipper/dist
    * @param {string} sourceFile
    * @param {string} targetPath
    * @param {string} text - file text
    * @private
    */
   static transpileFunction( sourceFile, targetPath, text ) {
-    const x = core.transformSync( text, {
-      filename: sourceFile,
+    let js;
+    if ( sourceFile.endsWith( '.wgsl' ) ) {
+      // NOTE: Will be able to use wgslMangle in the future?
+      // NOTE: We could also potentially feed this through the transform (source-maps wouldn't really be useful)
+      js = wgslPreprocess( wgslStripComments( text ), wgslMinify );
+    }
+    else {
+      js = core.transformSync( text, {
+        filename: sourceFile,
 
-      // Load directly from node_modules so we do not have to npm install this dependency
-      // in every sim repo.  This strategy is also used in transpile.js
-      presets: [
-        '../chipper/node_modules/@babel/preset-typescript',
-        '../chipper/node_modules/@babel/preset-react'
-      ],
-      sourceMaps: 'inline',
+        // Load directly from node_modules so we do not have to npm install this dependency
+        // in every sim repo.  This strategy is also used in transpile.js
+        presets: [
+          '../chipper/node_modules/@babel/preset-typescript',
+          '../chipper/node_modules/@babel/preset-react'
+        ],
+        sourceMaps: 'inline',
 
-      plugins: [
-        [ '../chipper/node_modules/@babel/plugin-proposal-decorators', { version: '2022-03' } ]
-      ]
-    } );
+        plugins: [
+          [ '../chipper/node_modules/@babel/plugin-proposal-decorators', { version: '2022-03' } ]
+        ]
+      } ).code;
+    }
 
     fs.mkdirSync( path.dirname( targetPath ), { recursive: true } );
-    fs.writeFileSync( targetPath, x.code );
+    fs.writeFileSync( targetPath, js );
   }
 
   // @public
@@ -147,10 +160,11 @@ class Transpiler {
       const correspondingFile = `../${tail}`;
       const jsTsFile = correspondingFile.split( '.js' ).join( '.ts' );
       const jsTsxFile = correspondingFile.split( '.js' ).join( '.tsx' );
+      const jsWgslFile = correspondingFile.split( '.js' ).join( '.wgsl' );
       const mjsTsFile = correspondingFile.split( '.mjs' ).join( '.ts' );
       const mjsTsxFile = correspondingFile.split( '.mjs' ).join( '.tsx' );
       if ( !fs.existsSync( correspondingFile ) &&
-           !fs.existsSync( jsTsFile ) && !fs.existsSync( jsTsxFile ) &&
+           !fs.existsSync( jsTsFile ) && !fs.existsSync( jsTsxFile ) && !fs.existsSync( jsWgslFile ) &&
            !fs.existsSync( mjsTsFile ) && !fs.existsSync( mjsTsxFile )
       ) {
         fs.unlinkSync( path );
@@ -193,7 +207,7 @@ class Transpiler {
    * @private
    */
   visitFile( filePath ) {
-    if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) || filePath.endsWith( '.tsx' ) ) && !this.isPathIgnored( filePath ) ) {
+    if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) || filePath.endsWith( '.tsx' ) || filePath.endsWith( '.wgsl' ) ) && !this.isPathIgnored( filePath ) ) {
       const changeDetectedTime = Date.now();
       const text = fs.readFileSync( filePath, 'utf-8' );
       const hash = crypto.createHash( 'md5' ).update( text ).digest( 'hex' );
