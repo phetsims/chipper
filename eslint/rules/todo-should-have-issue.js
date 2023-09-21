@@ -17,10 +17,7 @@ const urlRegex = /https:\/\/github.com\/phetsims\/[-\w]+\/issues\/\d+/;
 const filename = 'issuesFromTODOs.txt';
 const todoIssuesFilepath = path.resolve( __dirname, `../../dist/${filename}` );
 
-// For some reason
-// const todoMatcherFixerRegex = /TODO(.*\r*)*\n/;
-
-// Match a comment line containing a TODO
+// Match a comment line containing a TO-DO
 const containsTODO = string => string.includes( 'TODO' );
 
 // Match a comment tagging a github issue
