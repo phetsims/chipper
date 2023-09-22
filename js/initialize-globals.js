@@ -23,7 +23,7 @@
  * For sim-specific query parameters (if there are any), see *QueryParameters.js in the simulation's repository.
  *
  * Many of these query parameters' jsdoc is rendered and visible publicly to PhET-iO client. Those sections should be
- * marked, see top level comment in PhetioClient.js about private vs public documentation
+ * marked, see top level comment in Client.js about private vs public documentation
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
@@ -659,7 +659,7 @@
      * adds keyboard shortcuts. ctrl+i (forward) or ctrl+u (backward). Also, the same physical keys on the
      * dvorak keyboard (c=forward and g=backwards)
      *
-     * NOTE: DUPLICATION ALERT. Don't change this without looking at parameter in PHET_IO_WRAPPERS/PhetioClient.ts
+     * NOTE: DUPLICATION ALERT. Don't change this without looking at parameter in PHET_IO_WRAPPERS/Client.ts
      */
     keyboardLocaleSwitcher: {
       type: 'flag'

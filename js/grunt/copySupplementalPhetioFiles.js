@@ -82,7 +82,7 @@ const CONTRIB_FILES = [
 
 // This path is used for jsdoc. Transpilation happens before we get to this point. SR and MK recognize that this feels
 // a bit risky, even though comments are currently preserved in the babel transpile step. See https://stackoverflow.com/questions/51720894/is-there-any-way-to-use-jsdoc-with-ts-files-maybe-transpile-with-babel-the
-const transpiledClientPath = `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/PhetioClient.js`;
+const transpiledClientPath = `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/Client.js`;
 
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
 const JSDOC_FILES = [
@@ -202,10 +202,10 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
         '<link rel="shortcut icon" href="/assets/favicon.ico"/>'
       );
 
-      // There should not be any imports of PhetioClient directly except using the "multi-wrapper" functionality of
+      // There should not be any imports of Client directly except using the "multi-wrapper" functionality of
       // providing a ?clientName, for unbuilt only, so we remove it here.
       contents = contents.replace(
-        /^.*\/common\/js\/PhetioClient.js.*$/mg,
+        /^.*\/common\/js\/Client.js.*$/mg,
         ''
       );
     }
