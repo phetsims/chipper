@@ -45,7 +45,8 @@ class Transpiler {
       verbose: false, // Add extra logging
       silent: false, // hide all logging but error reporting, include any specified with verbose
       repos: [], // {string[]} additional repos to be transpiled (beyond those listed in perennial-alias/data/active-repos)
-      brands: [] // {sting[]} additional brands to visit in the brand repo
+      brands: [], // {sting[]} additional brands to visit in the brand repo
+      minifyWGSL: false
     }, options );
 
     // @private
@@ -53,6 +54,7 @@ class Transpiler {
     this.silent = options.silent;
     this.repos = options.repos;
     this.brands = options.brands;
+    this.minifyWGSL = options.minifyWGSL;
 
     // Track the status of each repo. Key= repo, value=md5 hash of contents
     this.status = {};
@@ -112,12 +114,12 @@ class Transpiler {
    * @param {string} text - file text
    * @private
    */
-  static transpileFunction( sourceFile, targetPath, text ) {
+  transpileFunction( sourceFile, targetPath, text ) {
     let js;
     if ( sourceFile.endsWith( '.wgsl' ) ) {
       // NOTE: Will be able to use wgslMangle in the future?
       // NOTE: We could also potentially feed this through the transform (source-maps wouldn't really be useful)
-      js = wgslPreprocess( wgslStripComments( text ), wgslMinify );
+      js = wgslPreprocess( wgslStripComments( text ), this.minifyWGSL ? wgslMinify : str => str );
     }
     else {
       js = core.transformSync( text, {
@@ -224,7 +226,7 @@ class Transpiler {
           if ( this.verbose ) {
             reason = ( !this.status[ filePath ] ) ? ' (not cached)' : ( this.status[ filePath ].sourceMD5 !== hash ) ? ' (changed)' : ( !fs.existsSync( targetPath ) ) ? ' (no target)' : ( this.status[ filePath ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' : '???';
           }
-          Transpiler.transpileFunction( filePath, targetPath, text );
+          this.transpileFunction( filePath, targetPath, text );
 
           this.status[ filePath ] = {
             sourceMD5: hash, targetMilliseconds: Transpiler.modifiedTimeMilliseconds( targetPath )

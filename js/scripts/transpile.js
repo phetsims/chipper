@@ -19,6 +19,7 @@
  * --skipInitial          Skip the initial transpilation.
  * --repos                Additional repos to compile (not listed in perennial-alias/data/active-repos). The names of the repos,
  *                        separated by commas, like --repos=myrepo1,myrepo2. Directory names only, not paths
+ * --skipMinifyWGSL       Do not minify WGSL files
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -48,7 +49,8 @@ const transpiler = new Transpiler( {
   clean: args.includes( '--clean' ),
   verbose: args.includes( '--verbose' ),
   repos: repos,
-  brands: brands
+  brands: brands,
+  minifyWGSL: !args.includes( '--skipMinifyWGSL' )
 } );
 
 transpiler.pruneStaleDistFiles();
