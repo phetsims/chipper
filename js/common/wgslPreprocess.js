@@ -98,8 +98,8 @@ class Code {
       }
       else {
         result += '{\n';
-        result += '  const b = \'\';\n';
-        result += '  const a = \'\';\n';
+        result += '  let b = \'\';\n';
+        result += '  let a = \'\';\n';
         result += `  const i = [ ${this.imports.map( importStringToName ).join( ', ' )} ];\n`;
 
         this.beforeBindings.forEach( item => run( item, true ) );
