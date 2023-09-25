@@ -117,9 +117,11 @@ class Transpiler {
   transpileFunction( sourceFile, targetPath, text ) {
     let js;
     if ( sourceFile.endsWith( '.wgsl' ) ) {
+      const pathToRoot = '../'.repeat( sourceFile.match( /\//g ).length - 1 );
+
       // NOTE: Will be able to use wgslMangle in the future?
       // NOTE: We could also potentially feed this through the transform (source-maps wouldn't really be useful)
-      js = wgslPreprocess( wgslStripComments( text ), this.minifyWGSL ? wgslMinify : str => str );
+      js = wgslPreprocess( wgslStripComments( text ), this.minifyWGSL ? wgslMinify : str => str, pathToRoot );
     }
     else {
       js = core.transformSync( text, {

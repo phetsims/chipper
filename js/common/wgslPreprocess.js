@@ -63,12 +63,13 @@ class Code {
   }
 
   // @public
-  toString( indent = '  ' ) {
+  toString( indent, pathToRoot ) {
     let result = '';
 
     if ( this.isRoot ) {
       result += `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder\n\n`;
 
+      result += `import { u32, i32, f32 } from '${pathToRoot}alpenglow/js/imports.js'\n`;
       const imports = _.uniq( this.allImports ).sort();
       imports.forEach( importString => {
         result += `import ${importStringToName( importString )} from '${importString}.js';\n`;
@@ -84,7 +85,7 @@ class Code {
       }
       else {
         // a Conditional
-        result += item.toString( indent );
+        result += item.toString( indent, pathToRoot );
       }
     };
 
@@ -134,7 +135,7 @@ class Conditional {
   }
 
   // @public
-  toString( indent ) {
+  toString( indent, pathToRoot ) {
     let result = '';
 
     if ( this.included.isEmpty() && this.excluded.isEmpty() ) {
@@ -143,16 +144,16 @@ class Conditional {
 
     if ( this.included.isEmpty() ) {
       result += `${indent}if ( !includesMap[ ${JSON.stringify( this.name )} ] ) {\n`;
-      result += this.excluded.toString( indent + '  ' );
+      result += this.excluded.toString( indent + '  ', pathToRoot );
       result += `${indent}}\n`;
     }
     else {
       result += `${indent}if ( includesMap[ ${JSON.stringify( this.name )} ] ) {\n`;
-      result += this.included.toString( indent + '  ' );
+      result += this.included.toString( indent + '  ', pathToRoot );
       result += `${indent}}\n`;
       if ( !this.excluded.isEmpty() ) {
         result += `${indent}else {\n`;
-        result += this.excluded.toString( indent + '  ' );
+        result += this.excluded.toString( indent + '  ', pathToRoot );
         result += `${indent}}\n`;
       }
     }
@@ -161,7 +162,7 @@ class Conditional {
   }
 }
 
-const wgslPreprocess = ( str, minify ) => {
+const wgslPreprocess = ( str, minify, pathToRoot ) => {
 
   // sanity check
   str = str.replace( /\r\n/g, '\n' );
@@ -230,7 +231,7 @@ const wgslPreprocess = ( str, minify ) => {
     throw new Error( 'unterminated conditional' );
   }
 
-  return rootCode.toString();
+  return rootCode.toString( '  ', pathToRoot );
 };
 
 module.exports = wgslPreprocess;
