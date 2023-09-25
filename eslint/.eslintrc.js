@@ -1611,6 +1611,7 @@ module.exports = {
     GPUImageCopyExternalImageSource: 'readonly',
     GPUPipelineLayout: 'readonly',
     GPURenderPipeline: 'readonly',
+    GPUBindGroup: 'readonly',
     GPUMapMode: 'readonly'
   }
 };
