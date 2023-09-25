@@ -16,6 +16,7 @@ const ifdefString = '#ifdef ';
 const ifndefString = '#ifndef ';
 const elseString = '#else';
 const endifString = '#endif';
+const optionString = '#option ';
 
 const importStringToName = str => {
   const bits = str.split( '/' );
@@ -31,14 +32,15 @@ class Code {
     if ( isRoot ) {
       this.isRoot = true;
       this.allImports = [];
+      this.options = [];
     }
   }
 
   // @public
-  hasConditionals() {
+  hasConditionalsOrOptions() {
     return this.beforeBindings.length > 1 || this.afterBindings.length > 1 ||
-      ( this.beforeBindings.length === 1 && typeof this.beforeBindings[ 0 ] !== 'string' ) ||
-      ( this.afterBindings.length === 1 && typeof this.afterBindings[ 0 ] !== 'string' );
+      ( this.beforeBindings.length === 1 && ( typeof this.beforeBindings[ 0 ] !== 'string' || this.beforeBindings[ 0 ].includes( '${' ) ) ) ||
+      ( this.afterBindings.length === 1 && ( typeof this.afterBindings[ 0 ] !== 'string' || this.afterBindings[ 0 ].includes( '${' ) ) );
   }
 
   // @public
@@ -76,12 +78,12 @@ class Code {
       } );
 
       result += '\n';
-      result += `export default ${this.hasConditionals() ? 'includesMap' : '()'} => `;
+      result += `export default ${this.hasConditionalsOrOptions() ? 'options' : '()'} => `;
     }
 
     const run = ( item, before ) => {
       if ( typeof item === 'string' ) {
-        result += `${indent}${before ? 'b' : 'a'} += ${JSON.stringify( item )};\n`;
+        result += `${indent}${before ? 'b' : 'a'} += \`${item}\`;\n`;
       }
       else {
         // a Conditional
@@ -90,15 +92,22 @@ class Code {
     };
 
     if ( this.isRoot ) {
-      if ( !this.hasConditionals() ) {
+      if ( !this.hasConditionalsOrOptions() ) {
         result += '( {\n';
-        result += `${indent}before: ${JSON.stringify( this.beforeBindings.join( '\n' ) )},\n`;
-        result += `${indent}after: ${JSON.stringify( this.afterBindings.join( '\n' ) )},\n`;
+        result += `${indent}before: \`${this.beforeBindings.join( '\n' )}\`,\n`;
+        result += `${indent}after: \`${this.afterBindings.join( '\n' )}\`,\n`;
         result += `${indent}imports: [ ${this.imports.map( importStringToName ).join( ', ' )} ]\n`;
         result += '} )';
       }
       else {
         result += '{\n';
+
+        const options = _.uniq( this.options ).sort();
+        options.forEach( option => {
+          result += `  assert && assert( options.${option} !== undefined );\n`;
+          result += `  const ${option} = options.${option};\n`;
+        } );
+
         result += '  let b = \'\';\n';
         result += '  let a = \'\';\n';
         result += `  const i = [ ${this.imports.map( importStringToName ).join( ', ' )} ];\n`;
@@ -143,12 +152,12 @@ class Conditional {
     }
 
     if ( this.included.isEmpty() ) {
-      result += `${indent}if ( !includesMap[ ${JSON.stringify( this.name )} ] ) {\n`;
+      result += `${indent}if ( !options[ ${JSON.stringify( this.name )} ] ) {\n`;
       result += this.excluded.toString( indent + '  ', pathToRoot );
       result += `${indent}}\n`;
     }
     else {
-      result += `${indent}if ( includesMap[ ${JSON.stringify( this.name )} ] ) {\n`;
+      result += `${indent}if ( options[ ${JSON.stringify( this.name )} ] ) {\n`;
       result += this.included.toString( indent + '  ', pathToRoot );
       result += `${indent}}\n`;
       if ( !this.excluded.isEmpty() ) {
@@ -183,6 +192,10 @@ const wgslPreprocess = ( str, minify, pathToRoot ) => {
       const importName = line.substring( importString.length );
       topNode.imports.push( importName );
       rootCode.allImports.push( importName );
+    }
+    else if ( line.startsWith( optionString ) ) {
+      const optionName = line.substring( optionString.length );
+      rootCode.options.push( optionName );
     }
     else if ( line.startsWith( bindingsString ) ) {
       afterBindings = true;
