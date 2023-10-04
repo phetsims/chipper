@@ -315,6 +315,7 @@ class Transpiler {
 
       // Our sims load this as a module rather than a preload, so we must transpile it
       this.visitFile( Transpiler.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'peggy-3.0.2.js' ) );
     }
     else if ( repo === 'brand' ) {
       this.visitDirectory( Transpiler.join( '..', repo, 'phet' ) );

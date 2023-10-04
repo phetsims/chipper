@@ -29,6 +29,11 @@ for ( const repo of activeRepos ) {
   }
 }
 
+// TODO: regex is less than ideal here, but Rule.test is a bit finicky, see https://github.com/phetsims/chipper/issues/1409
+const exposedGlobals = {
+  peggy: /sherpa[\\/]lib[\\/]peggy-3\.0\.2\.js$/ // `sherpa/lib/peggy-3.0.2.js` with windows path support
+};
+
 /**
  * Convert absolute paths of modules to relative ones
  * @param {Array.<string>} modules
@@ -90,6 +95,18 @@ module.exports = function( repo, brand, options ) {
     } );
 
     const compiler = webpack( {
+
+      module: {
+        rules: Object.keys( exposedGlobals ).map( globalKey => {
+          return {
+            test: exposedGlobals[ globalKey ],
+            loader: '../chipper/node_modules/expose-loader',
+            options: {
+              exposes: globalKey
+            }
+          };
+        } )
+      },
 
       // We uglify as a step after this, with many custom rules. So we do NOT optimize or uglify in this step.
       optimization: {
