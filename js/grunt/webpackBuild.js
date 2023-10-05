@@ -31,7 +31,8 @@ for ( const repo of activeRepos ) {
 
 // TODO: regex is less than ideal here, but Rule.test is a bit finicky, see https://github.com/phetsims/chipper/issues/1409
 const exposedGlobals = {
-  peggy: /sherpa[\\/]lib[\\/]peggy-3\.0\.2\.js$/ // `sherpa/lib/peggy-3.0.2.js` with windows path support
+  peggy: /sherpa[\\/]lib[\\/]peggy-3\.0\.2\.js$/, // `sherpa/lib/peggy-3.0.2.js` with windows path support
+  himalaya: /sherpa[\\/]lib[\\/]himalaya-1\.1\.0\.js$/ // `sherpa/lib/himalaya-1.1.0.js` with windows path support
 };
 
 const getModuleRules = function getModuleRules() {
