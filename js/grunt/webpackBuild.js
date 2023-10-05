@@ -9,7 +9,7 @@
 
 // modules
 const ChipperConstants = require( '../common/ChipperConstants' );
-const webpackGlobalLibraries = require( './webpackGlobalLibraries' );
+const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const _ = require( 'lodash' );
