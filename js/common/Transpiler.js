@@ -19,6 +19,7 @@ const CacheLayer = require( './CacheLayer' );
 const wgslMinify = require( './wgslMinify' );
 const wgslPreprocess = require( './wgslPreprocess' );
 const wgslStripComments = require( './wgslStripComments' );
+const webpackGlobalLibraries = require( './webpackGlobalLibraries' );
 const core = require( '@babel/core' );
 const assert = require( 'assert' );
 const _ = require( 'lodash' );
@@ -315,8 +316,10 @@ class Transpiler {
 
       // Our sims load this as a module rather than a preload, so we must transpile it
       this.visitFile( Transpiler.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
-      this.visitFile( Transpiler.join( '..', repo, 'lib', 'peggy-3.0.2.js' ) );
-      this.visitFile( Transpiler.join( '..', repo, 'lib', 'himalaya-1.1.0.js' ) );
+      Object.keys( webpackGlobalLibraries ).forEach( key => {
+        const libraryFilePath = webpackGlobalLibraries[ key ];
+        this.visitFile( Transpiler.join( '..', ...libraryFilePath.split( '/' ) ) );
+      } );
     }
     else if ( repo === 'brand' ) {
       this.visitDirectory( Transpiler.join( '..', repo, 'phet' ) );

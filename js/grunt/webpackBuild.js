@@ -33,7 +33,9 @@ for ( const repo of activeRepos ) {
 const getModuleRules = function getModuleRules() {
   return Object.keys( webpackGlobalLibraries ).map( globalKey => {
     return {
-      test: webpackGlobalLibraries[ globalKey ],
+
+      // path.join to normalize on the right path separator, perhaps there is another way?!
+      test: fileName => fileName.includes( path.join( webpackGlobalLibraries[ globalKey ] ) ),
       loader: '../chipper/node_modules/expose-loader',
       options: {
         exposes: globalKey
