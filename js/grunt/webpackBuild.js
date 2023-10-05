@@ -34,6 +34,18 @@ const exposedGlobals = {
   peggy: /sherpa[\\/]lib[\\/]peggy-3\.0\.2\.js$/ // `sherpa/lib/peggy-3.0.2.js` with windows path support
 };
 
+const getModuleRules = function getModuleRules() {
+  return Object.keys( exposedGlobals ).map( globalKey => {
+    return {
+      test: exposedGlobals[ globalKey ],
+      loader: '../chipper/node_modules/expose-loader',
+      options: {
+        exposes: globalKey
+      }
+    };
+  } );
+};
+
 /**
  * Convert absolute paths of modules to relative ones
  * @param {Array.<string>} modules
@@ -63,7 +75,7 @@ const getRelativeModules = modules => {
  * @param {Object} [options]
  * @returns {Promise.<string>} - The combined JS output from the process
  */
-module.exports = function( repo, brand, options ) {
+const webpackBuild = function webpackBuild( repo, brand, options ) {
   return new Promise( ( resolve, reject ) => {
 
     options = _.merge( {
@@ -97,15 +109,7 @@ module.exports = function( repo, brand, options ) {
     const compiler = webpack( {
 
       module: {
-        rules: Object.keys( exposedGlobals ).map( globalKey => {
-          return {
-            test: exposedGlobals[ globalKey ],
-            loader: '../chipper/node_modules/expose-loader',
-            options: {
-              exposes: globalKey
-            }
-          };
-        } )
+        rules: getModuleRules()
       },
 
       // We uglify as a step after this, with many custom rules. So we do NOT optimize or uglify in this step.
@@ -155,3 +159,7 @@ module.exports = function( repo, brand, options ) {
     } );
   } );
 };
+
+module.exports = webpackBuild;
+webpackBuild.getModuleRules = getModuleRules;
+

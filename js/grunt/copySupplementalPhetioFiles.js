@@ -28,6 +28,7 @@ const reportTscResults = require( './reportTscResults' );
 const getPhetLibs = require( './getPhetLibs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
+const webpackBuild = require( '../grunt/webpackBuild' );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -707,7 +708,9 @@ const getCompiledMigrationRules = async ( repo, buildDir ) => {
       const outputDir = path.resolve( __dirname, `../../${repo}/${buildDir}` );
 
       const compiler = webpack( {
-
+        module: {
+          rules: webpackBuild.getModuleRules() // Support preload-like library globals used via `import`
+        },
         // We uglify as a step after this, with many custom rules. So we do NOT optimize or uglify in this step.
         optimization: {
           minimize: false
