@@ -16,7 +16,18 @@ module.exports = {
   // Without a parser, .js files are linted without es6 transpilation. Use the same parser that we use for TypeScript.
   parser: '@typescript-eslint/parser',
 
+  // Lint javascript in HTML files too
+  plugins: [ 'html' ],
+
   overrides: [
+    {
+      files: [ '*.html' ],
+      rules: {
+        // DUPLICATION ALERT, this overrides the base rule, just for HTML.
+        'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 2, maxEOF: 1 } ],
+        'bad-sim-text': 'off'
+      }
+    },
     {
 
       // For .ts files, the following configuration will be used
@@ -1345,6 +1356,7 @@ module.exports = {
     'no-multi-spaces': [ 'error', { ignoreEOLComments: true } ],
 
     // Disallow multiple empty lines
+    // DUPLICATION ALERT, this is overridden for html files, see above "overrides"
     'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 0, maxEOF: 1 } ],
 
     // Disallow all tabs

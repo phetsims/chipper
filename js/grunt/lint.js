@@ -19,7 +19,7 @@ const CacheLayer = require( '../common/CacheLayer' );
 const crypto = require( 'crypto' );
 
 // constants
-const EXCLUDE_REPOS = [];
+const EXCLUDE_REPOS = [ 'fenster', 'decaf', 'scenery-lab-demo' ];
 
 // "Pattern" is really a path, we assume here that gruntfiles help keep the right directory stucture and can just pop
 // out of the repo running the command
@@ -80,7 +80,7 @@ const lintOneRepo = async ( repo, options ) => {
     // Our custom rules live here
     rulePaths: [ '../chipper/eslint/rules' ],
 
-    extensions: [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs' ],
+    extensions: [ '.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.html' ],
 
     // If no lintable files are found, it is not an error
     errorOnUnmatchedPattern: false

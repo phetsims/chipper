@@ -5,6 +5,7 @@
 **/snapshots
 **/js/parser/svgPath.js
 **/templates/*.js
+**/templates/*.html
 **/js/**/*Strings.ts
 **/images/**/*_cur.ts
 **/images/**/*_jpg.ts
@@ -19,6 +20,9 @@
 ../phet-io-website/root/assets/js/QueryStringMachine_1.0.js
 ../phet-io-website/root/assets/js/QueryStringMachine_2.0.js
 ../phet-io-website/root/assets/js/phet-io-ga.js
+../phet-io-wrappers/common/html/customPhetioWrapperTemplateSkeleton.html
+../phet-io-wrappers/common/html/standardPhetioWrapperTemplateSkeleton.html
 ../chipper/dist
 ../scenery/js/display/swash/pkg
 ../scenery/js/display/guillotiere/pkg
+../yotta/js/reports/by-simulation.html

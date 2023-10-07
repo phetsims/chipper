@@ -9,5 +9,14 @@ module.exports = {
   extends: './.eslintrc.js',
   rules: {
     'bad-sim-text': 'error'
-  }
+  },
+  overrides: [
+    {
+      // Most html files don't need to behave like sims
+      files: [ '*.html' ],
+      rules: {
+        'bad-sim-text': 'off'
+      }
+    }
+  ]
 };

@@ -18,6 +18,12 @@ module.exports = function( context ) {
       // Get the whole source code, not for node only.
       const comments = context.getSourceCode().getAllComments();
 
+      const isHTML = context.getFilename().endsWith( '.html' );
+
+      if ( isHTML ) {
+        return;
+      }
+
       if ( !comments || comments.length === 0 ) {
         context.report( {
           node: node,
