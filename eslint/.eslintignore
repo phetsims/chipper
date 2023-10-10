@@ -22,6 +22,7 @@
 ../phet-io-website/root/assets/js/phet-io-ga.js
 ../phet-io-wrappers/common/html/customPhetioWrapperTemplateSkeleton.html
 ../phet-io-wrappers/common/html/standardPhetioWrapperTemplateSkeleton.html
+../binder/docs/
 ../chipper/dist
 ../scenery/js/display/swash/pkg
 ../scenery/js/display/guillotiere/pkg
