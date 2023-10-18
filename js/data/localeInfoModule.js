@@ -310,6 +310,11 @@ export default {
     localizedName: 'français',
     direction: 'ltr'
   },
+  fu: {
+    name: 'Friulian',
+    localizedName: 'fu',
+    direction: 'ltr'
+  },
   fy: {
     name: 'Western Frisian',
     localizedName: 'Frisian',
