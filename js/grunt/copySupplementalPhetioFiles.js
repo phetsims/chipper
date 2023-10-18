@@ -413,8 +413,8 @@ const handleLib = async ( repo, buildDir, filter ) => {
     return filteredContents || contents;
   } ).join( '' );
 
-  const migrationRulesCode = await getCompiledMigrationRules( repo, buildDir );
-  const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationRulesCode}`, { stripAssertions: false } );
+  const migrationProcessorsCode = await getCompiledMigrationProcessors( repo, buildDir );
+  const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationProcessorsCode}`, { stripAssertions: false } );
 
   const results = await tsc( '../phet-io-wrappers' );
   reportTscResults( results, grunt );
@@ -688,19 +688,19 @@ const handleStudio = async ( repo, wrappersLocation ) => {
 };
 
 /**
- * Use webpack to bundle the migration rules into a compiled code string, for use in phet-io lib file.
+ * Use webpack to bundle the migration processors into a compiled code string, for use in phet-io lib file.
  * @param {string} repo
  * @param {string} buildDir
  * @returns {Promise.<string>}
  */
-const getCompiledMigrationRules = async ( repo, buildDir ) => {
+const getCompiledMigrationProcessors = async ( repo, buildDir ) => {
   return new Promise( ( resolve, reject ) => {
 
-    const migrationRulesFilename = `${repo}-migration-rules.js`;
-    const entryPointFilename = `../chipper/dist/js/phet-io-sim-specific/repos/${repo}/js/${migrationRulesFilename}`;
+    const migrationProcessorsFilename = `${repo}-migration-rules.js`;
+    const entryPointFilename = `../chipper/dist/js/phet-io-sim-specific/repos/${repo}/js/${migrationProcessorsFilename}`;
     if ( !fs.existsSync( entryPointFilename ) ) {
-      grunt.log.debug( `No migration rules found at ${entryPointFilename}, no rules to be bundled with ${LIB_OUTPUT_FILE}.` );
-      resolve( '' ); // blank string because there are no rules to add.
+      grunt.log.debug( `No migration processors found at ${entryPointFilename}, no processors to be bundled with ${LIB_OUTPUT_FILE}.` );
+      resolve( '' ); // blank string because there are no processors to add.
     }
     else {
 
@@ -724,17 +724,17 @@ const getCompiledMigrationRules = async ( repo, buildDir ) => {
         // We output our builds to the following dir
         output: {
           path: outputDir,
-          filename: migrationRulesFilename
+          filename: migrationProcessorsFilename
         }
       } );
 
       compiler.run( ( err, stats ) => {
         if ( err || stats.hasErrors() ) {
-          console.error( 'Migration rules webpack build errors:', stats.compilation.errors );
+          console.error( 'Migration processors webpack build errors:', stats.compilation.errors );
           reject( err || stats.compilation.errors[ 0 ] );
         }
         else {
-          const jsFile = `${outputDir}/${migrationRulesFilename}`;
+          const jsFile = `${outputDir}/${migrationProcessorsFilename}`;
           const js = fs.readFileSync( jsFile, 'utf-8' );
 
           fs.unlinkSync( jsFile );
