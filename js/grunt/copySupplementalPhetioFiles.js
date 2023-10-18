@@ -696,7 +696,7 @@ const handleStudio = async ( repo, wrappersLocation ) => {
 const getCompiledMigrationProcessors = async ( repo, buildDir ) => {
   return new Promise( ( resolve, reject ) => {
 
-    const migrationProcessorsFilename = `${repo}-migration-rules.js`;
+    const migrationProcessorsFilename = `${repo}-migration-processors.js`;
     const entryPointFilename = `../chipper/dist/js/phet-io-sim-specific/repos/${repo}/js/${migrationProcessorsFilename}`;
     if ( !fs.existsSync( entryPointFilename ) ) {
       grunt.log.debug( `No migration processors found at ${entryPointFilename}, no processors to be bundled with ${LIB_OUTPUT_FILE}.` );
