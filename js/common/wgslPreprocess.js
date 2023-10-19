@@ -23,6 +23,11 @@ const importStringToName = str => {
   return bits[ bits.length - 1 ];
 };
 
+const importStringToImportName = str => {
+  const bits = str.split( '/' );
+  return `i_${bits[ bits.length - 1 ]}`;
+};
+
 class Code {
   constructor( isRoot = false ) {
     this.beforeBindings = [];
@@ -37,7 +42,7 @@ class Code {
   }
 
   // @public
-  hasConditionalsOrOptions() {
+  hasConditionalsOrTemplates() {
     return this.beforeBindings.length > 1 || this.afterBindings.length > 1 ||
       ( this.beforeBindings.length === 1 && ( typeof this.beforeBindings[ 0 ] !== 'string' || this.beforeBindings[ 0 ].includes( '${' ) ) ) ||
       ( this.afterBindings.length === 1 && ( typeof this.afterBindings[ 0 ] !== 'string' || this.afterBindings[ 0 ].includes( '${' ) ) );
@@ -74,11 +79,11 @@ class Code {
       result += `import { u32, i32, f32 } from '${pathToRoot}alpenglow/js/imports.js'\n`;
       const imports = _.uniq( this.allImports ).sort();
       imports.forEach( importString => {
-        result += `import ${importStringToName( importString )} from '${importString}.js';\n`;
+        result += `import ${importStringToImportName( importString )} from '${importString}.js';\n`;
       } );
 
       result += '\n';
-      result += `export default ${this.hasConditionalsOrOptions() ? 'options' : '()'} => `;
+      result += `export default ${this.hasConditionalsOrTemplates() ? 'options' : '()'} => `;
     }
 
     const run = ( item, before ) => {
@@ -92,15 +97,21 @@ class Code {
     };
 
     if ( this.isRoot ) {
-      if ( !this.hasConditionalsOrOptions() ) {
+      if ( !this.hasConditionalsOrTemplates() ) {
         result += '( {\n';
         result += `${indent}before: \`${this.beforeBindings.join( '\n' )}\`,\n`;
         result += `${indent}after: \`${this.afterBindings.join( '\n' )}\`,\n`;
-        result += `${indent}imports: [ ${this.imports.map( importStringToName ).join( ', ' )} ]\n`;
+        result += `${indent}imports: [ ${this.imports.map( importStringToImportName ).join( ', ' )} ]\n`;
         result += '} )';
       }
       else {
         result += '{\n';
+        result += '  let result = {};\n'; // Might be replaced with a template function!!!
+        result += '  const template = f => { result = f; return \'\'; };\n';
+
+        _.uniq( this.allImports ).sort().forEach( importString => {
+          result += `  const ${importStringToName( importString )} = ${importStringToImportName( importString )}( options );\n`;
+        } );
 
         const options = _.uniq( this.options ).sort();
         options.forEach( option => {
@@ -110,19 +121,22 @@ class Code {
 
         result += '  let b = \'\';\n';
         result += '  let a = \'\';\n';
-        result += `  const i = [ ${this.imports.map( importStringToName ).join( ', ' )} ];\n`;
+        result += `  const i = [ ${this.imports.map( importStringToImportName ).join( ', ' )} ];\n`;
 
         this.beforeBindings.forEach( item => run( item, true ) );
         this.afterBindings.forEach( item => run( item, false ) );
 
-        result += '  return { before: b, after: a, imports: _.uniq( i ).sort() };\n';
+        result += '  result.before = b;\n';
+        result += '  result.after = a;\n';
+        result += '  result.imports = _.uniq( i ).sort();\n';
+        result += '  return result;\n';
         result += '}';
       }
       result += ';\n';
     }
     else {
       if ( this.imports.length ) {
-        result += `${indent}i.push( ${this.imports.map( importStringToName ).join( ', ' )} );\n`;
+        result += `${indent}i.push( ${this.imports.map( importStringToImportName ).join( ', ' )} );\n`;
       }
       this.beforeBindings.forEach( item => run( item, true ) );
       this.afterBindings.forEach( item => run( item, false ) );
