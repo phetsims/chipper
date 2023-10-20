@@ -1627,6 +1627,7 @@ module.exports = {
     GPUMapMode: 'readonly',
     GPUFeatureName: 'readonly',
     GPUQuerySet: 'readonly',
-    GPUComputePassDescriptor: 'readonly'
+    GPUComputePassDescriptor: 'readonly',
+    GPUComputePassTimestampWrites: 'readonly'
   }
 };
