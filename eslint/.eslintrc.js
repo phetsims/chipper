@@ -1624,6 +1624,9 @@ module.exports = {
     GPUPipelineLayout: 'readonly',
     GPURenderPipeline: 'readonly',
     GPUBindGroup: 'readonly',
-    GPUMapMode: 'readonly'
+    GPUMapMode: 'readonly',
+    GPUFeatureName: 'readonly',
+    GPUQuerySet: 'readonly',
+    GPUComputePassDescriptor: 'readonly'
   }
 };
