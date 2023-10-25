@@ -644,7 +644,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     'This will by default compare designed changes only. Options:\n' +
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
-    '--stable, generate the phet-io-apis for each phet-io sim considered to have a stable api (see perennial-alias/data/phet-io-api-stable)\n' +
+    '--stable, generate the phet-io-apis for each phet-io sim considered to have a stable API (see perennial-alias/data/phet-io-api-stable)\n' +
     '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes\n' +
     '--temporary, compares API files in the temporary directory (otherwise compares to freshly generated APIs)\n' +
     '--compareBreakingAPIChanges - add this flag to compare breaking changes in addition to designed changes',
