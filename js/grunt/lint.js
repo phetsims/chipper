@@ -19,7 +19,7 @@ const CacheLayer = require( '../common/CacheLayer' );
 const crypto = require( 'crypto' );
 
 // constants
-const EXCLUDE_REPOS = [ 'fenster', 'decaf', 'scenery-lab-demo' ];
+const EXCLUDE_REPOS = [ 'binder', 'fenster', 'decaf', 'scenery-lab-demo' ];
 
 // "Pattern" is really a path, we assume here that gruntfiles help keep the right directory stucture and can just pop
 // out of the repo running the command
