@@ -18,16 +18,6 @@ module.exports = {
 
   // Lint javascript in HTML files too
   plugins: [ 'html' ],
-  env: {
-    browser: true,
-    es6: true
-  },
-  parserOptions: {
-    ecmaVersion: 8,
-    sourceType: 'module'
-  },
-
-  reportUnusedDisableDirectives: true,
 
   overrides: [
     {
@@ -574,6 +564,8 @@ module.exports = {
       }
     }
   ],
+
+  reportUnusedDisableDirectives: true,
 
   // The rules are organized like they are in the list at https://eslint.org/docs/rules/
   // First by type, then alphabetically within type
@@ -1515,6 +1507,14 @@ module.exports = {
     // A variable or attribute name should generally match the tandem name.
     'tandem-name-should-match': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  },
+  env: {
+    browser: true,
+    es6: true
+  },
+  parserOptions: {
+    ecmaVersion: 8,
+    sourceType: 'module'
   },
   globals: {
 
