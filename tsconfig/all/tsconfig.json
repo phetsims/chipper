@@ -36,6 +36,7 @@
     "../../../equality-explorer/js/**/*",
     "../../../equality-explorer-basics/js/**/*",
     "../../../equality-explorer-two-variables/js/**/*",
+    "../../../faradays-electromagnetic-lab/js/**/*",
     "../../../fourier-making-waves/js/**/*",
     "../../../function-builder/js/**/*",
     "../../../function-builder-basics/js/**/*",
