@@ -9,6 +9,7 @@
  */
 
 const _ = require( 'lodash' );
+const path = require( 'path' );
 
 const importString = '#import ';
 const bindingsString = '#bindings';
@@ -70,20 +71,21 @@ class Code {
   }
 
   // @public
-  toString( indent, pathToRoot ) {
+  toString( indent, pathToRoot, moduleName, repoName ) {
     let result = '';
 
     if ( this.isRoot ) {
       result += `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder\n\n`;
 
       result += `import { u32, i32, f32 } from '${pathToRoot}alpenglow/js/imports.js'\n`;
+      result += `import { ${repoName} } from '${pathToRoot}${repoName}/js/imports.js'\n`;
       const imports = _.uniq( this.allImports ).sort();
       imports.forEach( importString => {
         result += `import ${importStringToImportName( importString )} from '${importString}.js';\n`;
       } );
 
       result += '\n';
-      result += `export default ${this.hasConditionalsOrTemplates() ? 'options' : '()'} => `;
+      result += `const ${moduleName} = ${this.hasConditionalsOrTemplates() ? 'options' : '()'} => `;
     }
 
     const run = ( item, before ) => {
@@ -92,7 +94,7 @@ class Code {
       }
       else {
         // a Conditional
-        result += item.toString( indent, pathToRoot );
+        result += item.toString( indent, pathToRoot, moduleName, repoName );
       }
     };
 
@@ -133,6 +135,9 @@ class Code {
         result += '}';
       }
       result += ';\n';
+
+      result += `export default ${moduleName};\n`;
+      result += `${repoName}.register( '${moduleName}', ${moduleName} );\n`;
     }
     else {
       if ( this.imports.length ) {
@@ -158,7 +163,7 @@ class Conditional {
   }
 
   // @public
-  toString( indent, pathToRoot ) {
+  toString( indent, pathToRoot, moduleName, repoName ) {
     let result = '';
 
     if ( this.included.isEmpty() && this.excluded.isEmpty() ) {
@@ -167,16 +172,16 @@ class Conditional {
 
     if ( this.included.isEmpty() ) {
       result += `${indent}if ( !options[ ${JSON.stringify( this.name )} ] ) {\n`;
-      result += this.excluded.toString( indent + '  ', pathToRoot );
+      result += this.excluded.toString( indent + '  ', pathToRoot, moduleName, repoName );
       result += `${indent}}\n`;
     }
     else {
       result += `${indent}if ( options[ ${JSON.stringify( this.name )} ] ) {\n`;
-      result += this.included.toString( indent + '  ', pathToRoot );
+      result += this.included.toString( indent + '  ', pathToRoot, moduleName, repoName );
       result += `${indent}}\n`;
       if ( !this.excluded.isEmpty() ) {
         result += `${indent}else {\n`;
-        result += this.excluded.toString( indent + '  ', pathToRoot );
+        result += this.excluded.toString( indent + '  ', pathToRoot, moduleName, repoName );
         result += `${indent}}\n`;
       }
     }
@@ -185,10 +190,13 @@ class Conditional {
   }
 }
 
-const wgslPreprocess = ( str, minify, pathToRoot ) => {
+const wgslPreprocess = ( str, minify, pathToRoot, targetPath ) => {
 
   // sanity check
   str = str.replace( /\r\n/g, '\n' );
+
+  const repoName = path.basename( path.resolve( targetPath, pathToRoot ) );
+  const moduleName = `wgsl_${path.basename( targetPath ).split( '.' )[ 0 ]}`;
 
   const lines = str.split( '\n' );
 
@@ -258,7 +266,7 @@ const wgslPreprocess = ( str, minify, pathToRoot ) => {
     throw new Error( 'unterminated conditional' );
   }
 
-  return rootCode.toString( '  ', pathToRoot );
+  return rootCode.toString( '  ', pathToRoot, moduleName, repoName );
 };
 
 module.exports = wgslPreprocess;

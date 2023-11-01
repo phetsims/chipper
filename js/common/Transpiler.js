@@ -122,7 +122,7 @@ class Transpiler {
 
       // NOTE: Will be able to use wgslMangle in the future?
       // NOTE: We could also potentially feed this through the transform (source-maps wouldn't really be useful)
-      js = wgslPreprocess( wgslStripComments( text ), this.minifyWGSL ? wgslMinify : str => str, pathToRoot );
+      js = wgslPreprocess( wgslStripComments( text ), this.minifyWGSL ? wgslMinify : str => str, pathToRoot, targetPath );
     }
     else {
       js = core.transformSync( text, {
