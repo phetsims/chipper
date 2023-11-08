@@ -1628,6 +1628,7 @@ module.exports = {
     GPUFeatureName: 'readonly',
     GPUQuerySet: 'readonly',
     GPUComputePassDescriptor: 'readonly',
-    GPUComputePassTimestampWrites: 'readonly'
+    GPUComputePassTimestampWrites: 'readonly',
+    GPUComputePipelineDescriptor: 'readonly'
   }
 };
