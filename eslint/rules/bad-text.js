@@ -76,7 +76,7 @@ module.exports = function( context ) {
     // see https://thenewstack.io/words-matter-finally-tech-looks-at-removing-exclusionary-language/ and https://github.com/phetsims/special-ops/issues/221
     {
       id: 'words matter',
-      regex: /(slave|Slave|blacklist|Blacklist|BlackList)/
+      regex: /\b(slave|blacklist|whitelist)\b|\bmaster\b(?!( gain node\b|\/|\.)|(?<!\/)master\b)/i
     },
 
     // Any instances of youtube.com should enforce that we use youtube-nocookie.com
