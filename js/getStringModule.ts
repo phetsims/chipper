@@ -175,7 +175,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
     // In case our assertions are not enabled, we'll need to proceed without failing out (so we allow for the
     // extended string keys in our actual code, even though assertions should prevent that).
     if ( typeof reference !== 'string' ) {
-      let tandem = Tandem.GENERAL_MODEL.createTandem( 'strings' ).createTandem( _.camelCase( requirejsNamespace ) );
+      let tandem = Tandem.STRINGS.createTandem( _.camelCase( requirejsNamespace ) );
       for ( let i = 0; i < keyParts.length; i++ ) {
 
         let tandemName = stringKeyToTandemName( keyParts[ i ] );
