@@ -73,10 +73,13 @@ module.exports = function( context ) {
 
     '@return ',
 
-    // see https://thenewstack.io/words-matter-finally-tech-looks-at-removing-exclusionary-language/ and https://github.com/phetsims/special-ops/issues/221
+    // see https://thenewstack.io/words-matter-finally-tech-looks-at-removing-exclusionary-language/ and
+    // https://github.com/phetsims/special-ops/issues/221
+    // The regex works around github links that include a `master` branch with a slash, as well as `Ron LeMaster`, a
+    // PhET team member
     {
       id: 'words matter',
-      regex: /\b(slave|blacklist|whitelist)\b|\bmaster\b(?!([/.])|(?<!\/)master\b)/i
+      regex: /(slave|black-?list|white-?list|(?<!\/)\bmaster)/i
     },
 
     // Any instances of youtube.com should enforce that we use youtube-nocookie.com
