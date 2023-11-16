@@ -68,7 +68,7 @@ module.exports = function( context ) {
     'Phet-iO',
     ' Phet ',
     'phetio element', // use "phet-io element" or "PhET-iO Element"
-    'PhET-iO Element', // use "phet-io element" or "PhET-iO Element" https://github.com/phetsims/phet-io/issues/1968
+    'PhET-iO element', // use "phet-io element" or "PhET-iO Element" https://github.com/phetsims/phet-io/issues/1968
     'Phet-iO',
     { id: 'IO type', regex: /\bIO type/ }, // https://github.com/phetsims/chipper/issues/977
     // prefer IO Type name , https://github.com/phetsims/phet-io/issues/1972
