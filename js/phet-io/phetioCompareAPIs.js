@@ -89,10 +89,10 @@
    * @returns {Object}
    */
   const getMetadataValues = ( phetioElement, api, _, assert ) => {
-    const typeName = phetioElement[ METADATA_KEY_NAME ] ? ( phetioElement[ METADATA_KEY_NAME ].phetioTypeName || 'ObjectIO' ) : 'ObjectIO';
+    const ioTypeName = phetioElement[ METADATA_KEY_NAME ] ? ( phetioElement[ METADATA_KEY_NAME ].phetioTypeName || 'ObjectIO' ) : 'ObjectIO';
 
     if ( api.version ) {
-      const defaults = getMetadataDefaults( typeName, api, _, assert );
+      const defaults = getMetadataDefaults( ioTypeName, api, _, assert );
       return _.merge( defaults, phetioElement[ METADATA_KEY_NAME ] );
     }
     else {
