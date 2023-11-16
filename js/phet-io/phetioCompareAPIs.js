@@ -38,7 +38,7 @@
   const METADATA_KEY_NAME = '_metadata';
   const DATA_KEY_NAME = '_data';
 
-  // Is not the reserved keys to store data/metadata on PhET-iO elements.
+  // Is not the reserved keys to store data/metadata on PhET-iO Elements.
   const isChildKey = key => key !== METADATA_KEY_NAME && key !== DATA_KEY_NAME;
 
   /**
