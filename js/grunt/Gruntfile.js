@@ -197,20 +197,25 @@ module.exports = function( grunt ) {
 
   grunt.registerTask( 'build',
     `Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
- --minify.babelTranspile=false - Disables babel transpilation phase.
- --minify.uglify=false - Disables uglification, so the built file will include (essentially) concatenated source files.
- --minify.mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.)
- --minify.beautify=true - After uglification, the source code will be syntax formatted nicely
- --minify.stripAssertions=false - During uglification, it will strip assertions.
- --minify.stripLogging=false - During uglification, it will not strip logging statements.
- Runnable build options:
+Runnable build options:
  --report-media - Will iterate over all of the license.json files and reports any media files
  --brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using
                       build-local.json's brands (or adapted-from-phet if that does not exist)
  --allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)
  --XHTML - Includes an xhtml/ directory in the build output that contains a runnable XHTML form of the sim (with
            a separated-out JS file).
- --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales`,
+ --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales
+ --noTranspile - Flag to opt out of transpiling repos before build. This should only be used if you are confident that chipper/dist is already correct (to save time).
+ --noTSC - Flag to opt out of type checking before build. This should only be used if you are confident that TypeScript is already errorless (to save time).
+ 
+Minify-specific options: 
+ --minify.babelTranspile=false - Disables babel transpilation phase.
+ --minify.uglify=false - Disables uglification, so the built file will include (essentially) concatenated source files.
+ --minify.mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.)
+ --minify.beautify=true - After uglification, the source code will be syntax formatted nicely
+ --minify.stripAssertions=false - During uglification, it will strip assertions.
+ --minify.stripLogging=false - During uglification, it will not strip logging statements.
+ `,
     wrapTask( async () => {
       const buildStandalone = require( './buildStandalone' );
       const buildRunnable = require( './buildRunnable' );
@@ -239,7 +244,7 @@ module.exports = function( grunt ) {
         // Run the type checker first.
         const brands = getBrands( grunt, repo, buildLocal );
 
-        await phetTimingLog.startAsync( 'tsc', async () => {
+        !grunt.option( 'noTSC' ) && await phetTimingLog.startAsync( 'tsc', async () => {
 
           // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
           if ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ) {
@@ -251,8 +256,7 @@ module.exports = function( grunt ) {
           }
         } );
 
-        await phetTimingLog.startAsync( 'transpile', () => {
-
+        !grunt.option( 'noTranspile' ) && await phetTimingLog.startAsync( 'transpile', () => {
           // If that succeeds, then convert the code to JS
           transpiler.transpileRepos( getPhetLibs( repo ) );
         } );
