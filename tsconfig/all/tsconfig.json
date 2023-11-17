@@ -77,6 +77,7 @@
     "../../../phet-io-wrappers/common/**/*",
     "../../../phet-lib/common/**/*",
     "../../../phetcommon/js/**/*",
+    "../../../projectile-data-lab/js/**/*",
     "../../../projectile-motion/js/**/*",
     "../../../quadrilateral/js/**/*",
     "../../../quake/cordova-plugin-native-vibration/types/index.d.ts",
