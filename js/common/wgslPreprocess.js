@@ -77,7 +77,7 @@ class Code {
     if ( this.isRoot ) {
       result += `// Copyright ${new Date().getFullYear()}, University of Colorado Boulder\n\n`;
 
-      result += `import { u32, i32, f32, u32Hex, i32Hex } from '${pathToRoot}alpenglow/js/imports.js'\n`;
+      result += `import { u32, i32, f32, u32Hex, i32Hex, ConsoleLogger } from '${pathToRoot}alpenglow/js/imports.js'\n`;
       result += `import { ${repoName} } from '${pathToRoot}${repoName}/js/imports.js'\n`;
       const imports = _.uniq( this.allImports ).sort();
       imports.forEach( importString => {
