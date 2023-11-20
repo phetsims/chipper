@@ -35,6 +35,7 @@ const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog
     // Console logging via --console
     const commandLineArguments = process.argv.slice( 2 );
     const outputToConsole = commandLineArguments.includes( '--console' );
+    outputToConsole && console.log( 'repo:', repo );
 
     const promises = [ 'lint', 'report-media', 'tsc', 'qunit', 'phet-io-api-compare' ].map( task => {
       return phetTimingLog.startAsync( task, async () => {
