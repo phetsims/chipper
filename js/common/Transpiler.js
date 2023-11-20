@@ -316,6 +316,7 @@ class Transpiler {
 
       // Our sims load this as a module rather than a preload, so we must transpile it
       this.visitFile( Transpiler.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'pako-2.0.3.min.js' ) ); // used for phet-io-wrappers tests
       Object.keys( webpackGlobalLibraries ).forEach( key => {
         const libraryFilePath = webpackGlobalLibraries[ key ];
         this.visitFile( Transpiler.join( '..', ...libraryFilePath.split( '/' ) ) );
