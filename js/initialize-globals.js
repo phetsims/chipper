@@ -477,8 +477,9 @@
     regionAndCulture: {
       type: 'string',
       validValues: packageSimFeatures.supportedRegionsAndCultures || [ null ],
-      defaultValue: packageSimFeatures.supportedRegionsAndCultures && packageSimFeatures.supportedRegionsAndCultures[ 0 ] ?
-          packageSimFeatures.supportedRegionsAndCultures[ 0 ] : null
+      defaultValue: packageSimFeatures.supportedRegionsAndCultures &&
+                    packageSimFeatures.supportedRegionsAndCultures[ 0 ] ?
+                    packageSimFeatures.supportedRegionsAndCultures[ 0 ] : null
     },
 
     /**
@@ -994,6 +995,8 @@
   window.phet.chipper.isApp = phet.chipper.queryParameters[ 'phet-app' ] || phet.chipper.queryParameters[ 'phet-android-app' ];
 
   /**
+   * An IIFE here helps capture variables in final logic needed in the global, preload scope for the phetsim environment.
+   *
    * Enables or disables assertions in common libraries using query parameters.
    * There are two types of assertions: basic and slow. Enabling slow assertions will adversely impact performance.
    * 'ea' enables basic assertions, 'eall' enables basic and slow assertions.
@@ -1087,4 +1090,45 @@
       } );
     }
   }() );
+
+  ( () => {
+    // Validation logic on the simFeatures section of the packageJSON, many of which are used in sims, and should be
+    // defined correctly for the sim to run.
+
+    const simFeaturesSchema = {
+      supportsInteractiveDescription: { type: 'boolean' },
+      supportsVoicing: { type: 'boolean' },
+      supportsInteractiveHighlights: { type: 'boolean' },
+      supportsSound: { type: 'boolean' },
+      supportsExtraSound: { type: 'boolean' },
+      supportsDynamicLocale: { type: 'boolean' },
+      colorProfiles: { type: 'array' },
+      supportedRegionsAndCultures: { type: 'array' }
+    };
+
+    Object.keys( simFeaturesSchema ).forEach( schemaKey => {
+      assert && assert( !packagePhet.hasOwnProperty( schemaKey ),
+        `${schemaKey} is a sim feature and should be in "simFeatures" in the package.json` );
+    } );
+
+    if ( packagePhet.hasOwnProperty( 'simFeatures' ) ) {
+      const simFeatures = packagePhet.simFeatures;
+      Object.keys( simFeatures ).forEach( simFeatureName => {
+        const simFeatureValue = simFeatures[ simFeatureName ];
+        assert && assert( simFeaturesSchema.hasOwnProperty( simFeatureName ), `unsupported sim feature: ${simFeatureName}` );
+        if ( simFeaturesSchema[ simFeatureName ] ) {
+
+          if ( simFeaturesSchema[ simFeatureName.type ] === 'boolean' ) {
+            assert && assert( typeof simFeatureValue === 'boolean', `boolean value expected for ${simFeatureName}` );
+          }
+          else if ( simFeaturesSchema[ simFeatureName.type ] === 'array' ) {
+            assert && assert( Array.isArray( simFeatureValue ), `array value expected for ${simFeatureName}` );
+
+            // At this time, all arrays are assumed to only support strings
+            assert && assert( _.every( simFeatureValue, value => typeof value === 'string' ), `string entry expected for ${simFeatureName}` );
+          }
+        }
+      } );
+    }
+  } )();
 }() );
