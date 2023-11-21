@@ -181,7 +181,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       // Delete the imports the phet-io-wrappers-main, as it will be bundled with the phet-io.js lib file.
       // MUST GO BEFORE BELOW REPLACE: 'phet-io-wrappers/' -> '/'
       contents = contents.replace(
-        /<script type="module" src="(..\/)+chipper\/dist\/js\/phet-io-wrappers\/js\/phet-io-wrappers-main.js"><\/script>/g, // '.*' is to support `data-client-name` in wrappers like "multi"
+        /<script type="module" src="(..\/)+chipper\/dist\/js\/phet-io-wrappers\/js\/phet-io-wrappers-main.js"><\/script>/g, // '.*' is to support `data-phet-io-client-name` in wrappers like "multi"
         '' );
 
       // Support wrappers that use code from phet-io-wrappers
@@ -190,7 +190,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       // Don't use ChipperStringUtils because we want to capture the relative path and transfer it to the new script.
       // This is to support providing the relative path through the build instead of just hard coding it.
       contents = contents.replace(
-        /<!--(<script src="[./]*\{\{PATH_TO_LIB_FILE}}".*><\/script>)-->/g, // '.*' is to support `data-client-name` in wrappers like "multi"
+        /<!--(<script src="[./]*\{\{PATH_TO_LIB_FILE}}".*><\/script>)-->/g, // '.*' is to support `data-phet-io-client-name` in wrappers like "multi"
         '$1' // just uncomment, don't fill it in yet
       );
 
