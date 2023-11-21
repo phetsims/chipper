@@ -1111,6 +1111,7 @@
         `${schemaKey} is a sim feature and should be in "simFeatures" in the package.json` );
     } );
 
+    assert && assert( !packageObject.hasOwnProperty( 'simFeatures' ), 'simFeatures must be nested under \'phet\'' );
     if ( packagePhet.hasOwnProperty( 'simFeatures' ) ) {
       const simFeatures = packagePhet.simFeatures;
       Object.keys( simFeatures ).forEach( simFeatureName => {
