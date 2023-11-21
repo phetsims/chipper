@@ -473,8 +473,8 @@
     // This query parameter sets the default region and culture portrayal for the sim. This changes the artwork for
     // the character sets that appear throughout the sim. It most often works in correlation to a sim Preference where
     // You can change from the default after the sim has launched. See RegionAndCulturePortrayal
-    // TODO: Make public:true? https://github.com/phetsims/joist/issues/943
     regionAndCulture: {
+      public: true,
       type: 'string',
       validValues: packageSimFeatures.supportedRegionsAndCultures || [ null ],
       defaultValue: packageSimFeatures.supportedRegionsAndCultures &&
