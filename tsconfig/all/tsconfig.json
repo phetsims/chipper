@@ -63,6 +63,7 @@
     "../../../nitroglycerin/js/**/*",
     "../../../normal-modes/js/**/*",
     "../../../number-compare/js/**/*",
+    "../../../number-line-operations/js/**/*",
     "../../../number-play/js/**/*",
     "../../../number-suite-common/js/**/*",
     "../../../perennial/js/scripts/collate-lint.ts",
