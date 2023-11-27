@@ -1629,6 +1629,7 @@ module.exports = {
     GPUQuerySet: 'readonly',
     GPUComputePassDescriptor: 'readonly',
     GPUComputePassTimestampWrites: 'readonly',
-    GPUComputePipelineDescriptor: 'readonly'
+    GPUComputePipelineDescriptor: 'readonly',
+    GPUComputePassEncoder: 'readonly'
   }
 };
