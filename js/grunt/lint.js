@@ -21,7 +21,7 @@ const crypto = require( 'crypto' );
 // constants
 const EXCLUDE_REPOS = [ 'binder', 'fenster', 'decaf', 'scenery-lab-demo' ];
 
-// "Pattern" is really a path, we assume here that gruntfiles help keep the right directory stucture and can just pop
+// "Pattern" is really a path, we assume here that gruntfiles help keep the right directory structure and can just pop
 // out of the repo running the command
 const repoToPattern = repo => `../${repo}`;
 
