@@ -40,16 +40,16 @@ const nonPhetioLicensedFiles = [
 
 // Repos that get the extra check for PhET-iO licensing too.
 const phetioLicenseRepos = [
-  'phet-io' + path.sep,
-  'phet-io-sim-specific' + path.sep,
-  'phet-io-website' + path.sep,
-  'phet-io-wrapper-classroom-activity' + path.sep,
-  'phet-io-wrapper-haptics' + path.sep,
-  'phet-io-wrapper-hookes-law-energy' + path.sep,
-  'phet-io-wrapper-lab-book' + path.sep,
-  'phet-io-wrappers' + path.sep,
-  'studio' + path.sep
-];
+  'phet-io',
+  'phet-io-sim-specific',
+  'phet-io-website',
+  'phet-io-wrapper-classroom-activity',
+  'phet-io-wrapper-haptics',
+  'phet-io-wrapper-hookes-law-energy',
+  'phet-io-wrapper-lab-book',
+  'phet-io-wrappers',
+  'studio'
+].map( repo => repo + path.sep );
 
 const gitRootPath = path.resolve( __dirname, '../../../' ) + path.sep;
 
