@@ -63,9 +63,10 @@ const recordTime = async ( name, asyncCallback, timeCallback ) => {
  * @param {string} brand
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @param {boolean} buildLocal
+ * @param {boolean} encodeStringMap
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, minifyOptions, allHTML, brand, localesOption, buildLocal ) {
+module.exports = async function( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap ) {
   assert( typeof repo === 'string' );
   assert( typeof minifyOptions === 'object' );
 
@@ -231,8 +232,10 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
     version: version,
     thirdPartyEntries: thirdPartyEntries,
     packageObject: packageObject,
-    allowLocaleSwitching: false
+    allowLocaleSwitching: false,
+    encodeStringMap: encodeStringMap
   };
+  console.log( encodeStringMap );
 
   // Create the build-specific directory
   const buildDir = `../${repo}/build/${brand}`;

@@ -33,6 +33,7 @@
 /* eslint-env node */
 
 const _ = require( 'lodash' );
+const toLessEscapedString = require( './toLessEscapedString' );
 
 const PUSH_TOKEN = '\u0001'; // push string on the stack
 const PUSH_TOKEN_SLASH = '\u0002'; // push `${string}/` on the stack
@@ -461,31 +462,6 @@ const decodeStringMap = encodedString => {
 /* eslint-disable */
 const smallDecodeStringMapString = "y=>{let m={};let x=[];let s=[];let X=null;let S=null;let e=null;let t=new Set();let k=null;let f=String.fromCharCode;let A=f(1);let B=f(2);let C=f(3);let D=f(4);let E=f(5);let F=f(6);let G=f(7);let H=f(8);let I=f(9);let J=f(0xA);let K=f(0xB);let L=f(0xC);let M=f(0xD);let N=f(0xE);let O=f(0xF);let a=q=>{S=q;m[X][k]=q;if(X=='en'){e=q;}t.add(X);};let j=0;let b=y.split(/(?:)/u);let r=()=>{let q='';while(j<b.length){let d=b[j];let p=d.codePointAt(0);if(p>0x10){q+=d;j++;}else if(p==0x10){q+=b[j+1];j+=2;}else{break;}}return q;};while(j<b.length){let c=b[j++];if(c==A){s.push(r());}else if(c==B){s.push(r()+'/');}else if(c==C){s.push(r()+'.');}else if(c==D){s.pop();}else if(c==E){s.pop();s.push(r());}else if(c==F){s.pop();s.push(r()+'/');}else if(c==G){s.pop();s.push(r()+'.');}else if(c==H){X=r();}else if(c==I){t.clear();e=null;k=s.join('');}else if(c==J){for(let i=0;i<x.length;i++){let l=x[i];if(!t.has(l)){m[l][k]=e;}}}else if(c==K){a(r());}else if(c==L){a(`\u202a${r()}\u202c`);}else if(c==M){a(`\u202b${r()}\u202c`);}else if(c==N){a(S);}else if(c==O){let l=r();m[l]={};x.push(l);}}return m;}";
 /* eslint-enable */
-
-// We don't actually need to escape the control characters for valid JS.
-const toLessEscapedString = string => {
-  let result = '';
-
-  string.split( /(?:)/u ).forEach( char => {
-    if ( char === '\r' ) {
-      result += '\\r';
-    }
-    else if ( char === '\n' ) {
-      result += '\\n';
-    }
-    else if ( char === '\\' ) {
-      result += '\\\\';
-    }
-    else if ( char === '\'' ) {
-      result += '\\\'';
-    }
-    else {
-      result += char;
-    }
-  } );
-
-  return `'${result}'`;
-};
 
 // Given a stringMap (map[ locale ][ stringKey ] => string), returns a JS expression string that will decode to it.
 const encodeStringMapToJS = stringMap => `(${smallDecodeStringMapString})(${toLessEscapedString( encodeStringMap( stringMap ) )})`;

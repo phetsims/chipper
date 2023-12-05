@@ -293,13 +293,14 @@ Minify-specific options:
 
           // Other options
           const allHTML = !!grunt.option( 'allHTML' );
+          const encodeStringMap = !!grunt.option( 'encodeStringMap' );
           const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
 
           for ( const brand of brands ) {
             grunt.log.writeln( `Building brand: ${brand}` );
 
             await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
-              await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, buildLocal );
+              await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap );
             } );
           }
         }
