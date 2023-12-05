@@ -1,36 +1,60 @@
-// Copyright 2022-2023, University of Colorado Boulder
+// Copyright 2023, University of Colorado Boulder
+
+/**
+ * Handles encoding and decoding of strings to/from a compact format, to lower the file size and download size of
+ * simulations.
+ *
+ * The encoding is stateful, and takes the approximate form of:
+ *
+ * for each locale:
+ *   ( ADD_LOCALE locale )+
+ * for each string key:
+ *   ( PUSH_TOKEN token )*
+ *   START_STRING
+ *   for each locale (en, or has a non-en translation):
+ *     (SWITCH_LOCALE locale)?
+ *     (ADD_STRING string | ADD_STRING_COPY_LAST)
+ *   END_STRING
+ *   ( POP_TOKEN token )*
+ *
+ * We add some combinations of "pop + push", and forms that automatically add on the slash/dot/LTR/RTL substrings.
+ *
+ * String keys are constructed from stack.join( '' ), we'll push/pop substrings of the string key as we go.
+ *
+ * If a translation is the same as the English translation, it will be omitted (and the END_STRING without having set
+ * a translation will indicate it should be filled with this value). If multiple translations share a non-English value,
+ * we can note the value is the same as the last-given string.
+ *
+ * We also record the last-used locale, so that if we only have one translation, we can omit the SWITCH_LOCALE.
+ *
+ * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ */
 
 /* eslint-env node */
 
 const _ = require( 'lodash' );
 
-/**
- * Convert a string to PascalCase
- * @author Chris Klusendorf (PhET Interactive Simulations)
- * @author Michael Kauzmann (PhET Interactive Simulations)
- */
-module.exports = function pascalCase( string ) {
-  return `${_.startCase( _.camelCase( string ) ).split( ' ' ).join( '' )}`;
-};
+const PUSH_TOKEN = '\u0001'; // push string on the stack
+const PUSH_TOKEN_SLASH = '\u0002'; // push `${string}/` on the stack
+const PUSH_TOKEN_DOT = '\u0003'; // push `${string}.` on the stack
+const POP = '\u0004'; // pop from the stack
+const POP_PUSH_TOKEN = '\u0005'; // pop from the stack, then push string on the stack
+const POP_PUSH_TOKEN_SLASH = '\u0006'; // pop from the stack, then push `${string}/` on the stack
+const POP_PUSH_TOKEN_DOT = '\u0007'; // pop from the stack, then push `${string}.` on the stack
+const SWITCH_LOCALE = '\u0008'; // switch to the given locale
+const START_STRING = '\u0009'; // start a string
+const END_STRING = '\u000A'; // end a string (and fill in missing translations)
+const ADD_STRING = '\u000B'; // add a translation string to the current locale and stringKey
+const ADD_STRING_LTR_POP = '\u000C'; // add `${LTR}${string}${POP}` to the current locale and stringKey
+const ADD_STRING_RTL_POP = '\u000D'; // add `${RTL}${string}${POP}` to the current locale and stringKey
+const ADD_STRING_COPY_LAST = '\u000E'; // add the last-used translation to the current locale and stringKey
+const ADD_LOCALE = '\u000F'; // add a locale (at the start)
+const ESCAPE_CHARACTER = '\u0010'; // we'll need to escape any of these characters if they appear in a string
 
-const PUSH_TOKEN = '\u0001';
-const PUSH_TOKEN_SLASH = '\u0002';
-const PUSH_TOKEN_DOT = '\u0003';
-const POP = '\u0004';
-const POP_PUSH_TOKEN = '\u0005';
-const POP_PUSH_TOKEN_SLASH = '\u0006';
-const POP_PUSH_TOKEN_DOT = '\u0007';
-const SWITCH_LOCALE = '\u0008';
-const START_STRING = '\u0009';
-const END_STRING = '\u000A';
-const ADD_STRING = '\u000B';
-const ADD_STRING_LTR_POP = '\u000C';
-const ADD_STRING_RTL_POP = '\u000D';
-const ADD_STRING_COPY_LAST = '\u000E';
-const ADD_LOCALE = '\u000F';
-const ESCAPE_CHARACTER = '\u0010';
+const MAX_CONTROL_CHARACTER_CODE_POINT = 0x10;
+const ESCAPE_CHARACTER_CODE_POINT = 0x10;
 
-const ESCAPE_CHARACTERS = [
+const CONTROL_CHARACTERS = [
   PUSH_TOKEN,
   PUSH_TOKEN_SLASH,
   PUSH_TOKEN_DOT,
@@ -49,21 +73,23 @@ const ESCAPE_CHARACTERS = [
   ESCAPE_CHARACTER
 ];
 
+// Our LTR/RTL embedding characters
 const CHAR_LTR = '\u202A';
 const CHAR_RTL = '\u202B';
 const CHAR_POP = '\u202C';
 
+// Converts a map[ locale ][ stringKey ] => string (with a compact encoding)
 const encodeStringMap = stringMap => {
   const locales = Object.keys( stringMap ).filter( locale => !!stringMap[ locale ] ).sort();
+
+  // Get all string keys
   const stringKeysSet = new Set();
   locales.forEach( locale => {
-    console.log( 'locale', JSON.stringify( locale ) );
-    console.log( 'stringMap[ locale ]', JSON.stringify( stringMap[ locale ] ) );
     Object.keys( stringMap[ locale ] ).forEach( stringKey => {
-      console.log( 'string key', stringKey );
       stringKeysSet.add( stringKey );
     } );
   } );
+  // For our stack encoding, we'll want them sorted so we can push/pop deltas between each one
   const stringKeys = [ ...stringKeysSet ].sort();
 
 
@@ -72,6 +98,7 @@ const encodeStringMap = stringMap => {
   let currentStringValue = null;
   let output = '';
 
+  // Returns the index of the first character that differs between a and b
   const getMatchIndex = ( a, b ) => {
     let i = 0;
     while ( i < Math.min( a.length, b.length ) && a[ i ] === b[ i ] ) {
@@ -80,11 +107,12 @@ const encodeStringMap = stringMap => {
     return i;
   };
 
+  // Encodes a string, escaping any control characters
   const encode = string => {
     let result = '';
 
     string.split( /(?:)/u ).forEach( char => {
-      if ( ESCAPE_CHARACTERS.includes( char ) ) {
+      if ( CONTROL_CHARACTERS.includes( char ) ) {
         result += ESCAPE_CHARACTER + char;
       }
       else {
@@ -95,15 +123,13 @@ const encodeStringMap = stringMap => {
     return result;
   };
 
+  // Adds a locale to the output
   const addLocale = locale => {
-    console.log( 'addLocale', locale );
-
     output += ADD_LOCALE + encode( locale );
   };
 
+  // Pushes a token onto the stack (combining with the previous token if possible)
   const push = token => {
-    console.log( 'push', token );
-
     stack.push( token );
     const hasPop = output.length > 0 && output[ output.length - 1 ] === POP;
 
@@ -127,42 +153,32 @@ const encodeStringMap = stringMap => {
     output += code + encode( token );
   };
 
+  // Pops a token from the stack
   const pop = () => {
-    console.log( 'pop' );
-
     stack.pop();
     output += POP;
   };
 
   const startString = () => {
-    console.log( 'startString' );
-
     output += START_STRING;
   };
 
   const endString = () => {
-    console.log( 'endString' );
-
     output += END_STRING;
   };
 
   const switchLocale = locale => {
-    console.log( 'switchLocale', locale );
-
     currentLocale = locale;
 
     output += SWITCH_LOCALE + encode( locale );
   };
 
   const addStringCopyLast = () => {
-    console.log( 'addStringCopyLast' );
-
     output += ADD_STRING_COPY_LAST;
   };
 
+  // Adds a string to the output, encoding LTR/RTL wrapped forms in a more compact way
   const addString = string => {
-    console.log( 'addString', string );
-
     currentStringValue = string;
 
     let code;
@@ -181,11 +197,13 @@ const encodeStringMap = stringMap => {
     output += code + encode( string );
   };
 
+  ////////////////////////////////////////////////////////////
+  // Start of encoding
+  ////////////////////////////////////////////////////////////
 
   locales.forEach( locale => {
     addLocale( locale );
   } );
-
 
   for ( let i = 0; i < stringKeys.length; i++ ) {
     const stringKey = stringKeys[ i ];
@@ -196,8 +214,10 @@ const encodeStringMap = stringMap => {
         pop();
       }
 
+      // We will whittle down the remainder of the string key as we go. We start here from the delta from the last key
       let remainder = stringKey.slice( stack.join( '' ).length );
 
+      // Separate out the requirejsNamespace, if it exists
       if ( remainder.includes( '/' ) ) {
         const bits = remainder.split( '/' );
         const token = bits[ 0 ] + '/';
@@ -205,6 +225,7 @@ const encodeStringMap = stringMap => {
         remainder = remainder.slice( token.length );
       }
 
+      // Separate out dot-separated tokens to push independently.
       while ( remainder.includes( '.' ) ) {
         const bits = remainder.split( '.' );
         const token = bits[ 0 ] + '.';
@@ -212,6 +233,7 @@ const encodeStringMap = stringMap => {
         remainder = remainder.slice( token.length );
       }
 
+      // See if we share a non-trivial prefix with the next string key, and if so, push it
       if ( i + 1 < stringKeys.length ) {
         const nextStringKey = stringKeys[ i + 1 ];
         const matchIndex = getMatchIndex( remainder, nextStringKey.slice( stack.join( '' ).length ) );
@@ -222,6 +244,7 @@ const encodeStringMap = stringMap => {
         }
       }
 
+      // The rest!
       if ( remainder.length ) {
         push( remainder );
       }
@@ -230,6 +253,8 @@ const encodeStringMap = stringMap => {
     // Encode the string
     {
       const defaultValue = stringMap.en[ stringKey ];
+
+      // Find ONLY the locales that we'll include
       const stringLocales = locales.filter( locale => {
         if ( locale === 'en' ) {
           return true;
@@ -266,30 +291,18 @@ const encodeStringMap = stringMap => {
     }
   }
 
-  // console.log( locales );
-  // console.log( stringKeys );
-  //
-  // const hex = [ ...new TextEncoder( 'utf-8' ).encode( output ) ].map( charCode => {
-  //   let str = charCode.toString( 16 );
-  //   if ( str.length < 2 ) {
-  //     str = '0' + str;
-  //   }
-  //   return str;
-  // } ).join( '' );
-  //
-  // console.log( hex );
-
   return output;
 };
 
+// Converts a compact encoding to map[ locale ][ stringKey ]: string
 const decodeStringMap = encodedString => {
-  const stringMap = {};
+  const stringMap = {}; // map[ locale ][ stringKey ] => string
   const locales = [];
-  const stack = [];
+  const stack = []; // string[], stack.join( '' ) will be the current stringKey
   let currentLocale = null;
-  let currentStringValue = null;
-  let enStringValue = null;
-  const localeSet = new Set();
+  let currentStringValue = null; // the last string value we've seen, for ADD_STRING_COPY_LAST
+  let enStringValue = null; // the English string value, for omitted translations
+  const localeSet = new Set(); // so we can track the omitted translations
   let stringKey = null;
 
   const addLocale = locale => {
@@ -338,19 +351,22 @@ const decodeStringMap = encodedString => {
   };
 
   let index = 0;
-  const bits = encodedString.split( /(?:)/u );
+  const bits = encodedString.split( /(?:)/u ); // split by code point, so we don't have to worry about surrogate pairs
 
+  // Reads a string from the bits (at our current index), until we hit a non-escaped control character
   const readString = () => {
     let result = '';
 
     while ( index < bits.length ) {
       const char = bits[ index ];
       const codePoint = char.codePointAt( 0 );
-      if ( codePoint > 0x10 ) {
+
+      // Pass through any non-control characters
+      if ( codePoint > MAX_CONTROL_CHARACTER_CODE_POINT ) {
         result += char;
         index++;
       }
-      else if ( codePoint === 0x10 ) {
+      else if ( codePoint === ESCAPE_CHARACTER_CODE_POINT ) {
         const nextChar = bits[ index + 1 ];
         result += nextChar;
         index += 2;
@@ -422,6 +438,7 @@ const decodeStringMap = encodedString => {
   return stringMap;
 };
 
+// A minified version of the above, for inclusion in the JS bundle. Approximately 1 kB.
 // a = addString
 // r = readString
 // f = String.fromCharCode
@@ -445,6 +462,7 @@ const decodeStringMap = encodedString => {
 const smallDecodeStringMapString = "y=>{let m={};let x=[];let s=[];let X=null;let S=null;let e=null;let t=new Set();let k=null;let f=String.fromCharCode;let A=f(1);let B=f(2);let C=f(3);let D=f(4);let E=f(5);let F=f(6);let G=f(7);let H=f(8);let I=f(9);let J=f(0xA);let K=f(0xB);let L=f(0xC);let M=f(0xD);let N=f(0xE);let O=f(0xF);let a=q=>{S=q;m[X][k]=q;if(X=='en'){e=q;}t.add(X);};let j=0;let b=y.split(/(?:)/u);let r=()=>{let q='';while(j<b.length){let d=b[j];let p=d.codePointAt(0);if(p>0x10){q+=d;j++;}else if(p==0x10){q+=b[j+1];j+=2;}else{break;}}return q;};while(j<b.length){let c=b[j++];if(c==A){s.push(r());}else if(c==B){s.push(r()+'/');}else if(c==C){s.push(r()+'.');}else if(c==D){s.pop();}else if(c==E){s.pop();s.push(r());}else if(c==F){s.pop();s.push(r()+'/');}else if(c==G){s.pop();s.push(r()+'.');}else if(c==H){X=r();}else if(c==I){t.clear();e=null;k=s.join('');}else if(c==J){for(let i=0;i<x.length;i++){let l=x[i];if(!t.has(l)){m[l][k]=e;}}}else if(c==K){a(r());}else if(c==L){a(`\u202a${r()}\u202c`);}else if(c==M){a(`\u202b${r()}\u202c`);}else if(c==N){a(S);}else if(c==O){let l=r();m[l]={};x.push(l);}}return m;}";
 /* eslint-enable */
 
+// Given a stringMap (map[ locale ][ stringKey ] => string), returns a JS expression string that will decode to it.
 const encodeStringMapToJS = stringMap => `(${smallDecodeStringMapString})(${JSON.stringify( encodeStringMap( stringMap ) )})`;
 
 module.exports = {
@@ -452,32 +470,3 @@ module.exports = {
   decodeStringMap: decodeStringMap,
   encodeStringMapToJS: encodeStringMapToJS
 };
-
-// const encodedMapEscapedContents = encodeStringMap( fullStringMap );
-// const decodedMap = decodeStringMap( encodedMapEscapedContents );
-// const startTime = Date.now();
-// const minifiedDecodedMap = smallDecodeStringMap( encodedMapEscapedContents );
-// const endTime = Date.now();
-//
-// console.log( 'time elapsed', endTime - startTime );
-// console.log( 'bytes before', JSON.stringify( fullStringMap ).length );
-// console.log( 'bytes after', encodedMapEscapedContents.length );
-// console.log( 'equal', _.isEqual( fullStringMap, decodedMap ) );
-// console.log( 'equal minified', _.isEqual( fullStringMap, minifiedDecodedMap ) );
-//
-// {
-//   Object.keys( fullStringMap ).forEach( locale => {
-//     Object.keys( fullStringMap[ locale ] ).forEach( stringKey => {
-//       const string = fullStringMap[ locale ][ stringKey ];
-//       const decodedString = decodedMap[ locale ][ stringKey ];
-//       if ( string !== decodedString ) {
-//         console.log( 'mismatch', locale, stringKey, string, decodedString );
-//       }
-//     } );
-//   } );
-// }
-//
-// console.log( fullStringMap );
-// console.log( decodedMap );
-//
-// debugger;

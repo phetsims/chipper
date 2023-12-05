@@ -74,6 +74,7 @@ module.exports = function( config ) {
     PHET_THIRD_PARTY_LICENSE_ENTRIES: JSON.stringify( thirdPartyEntries, null, 2 ),
     PHET_END_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES,
     PHET_DEPENDENCIES: JSON.stringify( dependencies, null, 2 ),
+    // If it's a debug build, don't encode the strings, so that they are easier to inspect
     PHET_STRINGS: isDebugBuild ? JSON.stringify( phetStrings, null, 2 ) : stringEncoding.encodeStringMapToJS( phetStrings ),
     PHET_STRING_METADATA: JSON.stringify( stringMetadata, null, isDebugBuild ? 2 : '' ),
     PHET_IS_DEBUG_BUILD: !!isDebugBuild,
