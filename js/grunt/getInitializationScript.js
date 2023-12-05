@@ -16,6 +16,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const grunt = require( 'grunt' );
 const transpile = require( './transpile' );
+const stringEncoding = require( '../common/stringEncoding' );
 
 /**
  * Returns a string for the JS of the initialization script.
@@ -73,7 +74,7 @@ module.exports = function( config ) {
     PHET_THIRD_PARTY_LICENSE_ENTRIES: JSON.stringify( thirdPartyEntries, null, 2 ),
     PHET_END_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES,
     PHET_DEPENDENCIES: JSON.stringify( dependencies, null, 2 ),
-    PHET_STRINGS: JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ),
+    PHET_STRINGS: isDebugBuild ? JSON.stringify( phetStrings, null, 2 ) : stringEncoding.encodeStringMapToJS( phetStrings ),
     PHET_STRING_METADATA: JSON.stringify( stringMetadata, null, isDebugBuild ? 2 : '' ),
     PHET_IS_DEBUG_BUILD: !!isDebugBuild,
     PHET_ALLOW_LOCALE_SWITCHING: !!allowLocaleSwitching,
