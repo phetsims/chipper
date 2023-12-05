@@ -78,6 +78,7 @@
     "../../../phet-io-wrappers/common/**/*",
     "../../../phet-lib/common/**/*",
     "../../../phetcommon/js/**/*",
+    "../../../phetmarks/js/**/*",
     "../../../projectile-data-lab/js/**/*",
     "../../../projectile-motion/js/**/*",
     "../../../quadrilateral/js/**/*",
