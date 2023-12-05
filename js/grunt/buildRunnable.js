@@ -235,7 +235,6 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
     allowLocaleSwitching: false,
     encodeStringMap: encodeStringMap
   };
-  console.log( encodeStringMap );
 
   // Create the build-specific directory
   const buildDir = `../${repo}/build/${brand}`;
