@@ -23,7 +23,7 @@ const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFil
 const HEADER = '/* eslint-disable */';
 
 // supported image types, not case-sensitive
-const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur' ];
+const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur', '.svg' ];
 
 // supported sound file types, not case-sensitive
 const SOUND_SUFFIXES = [ '.mp3', '.wav' ];
