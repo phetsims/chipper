@@ -16,6 +16,7 @@ const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const pascalCase = require( '../common/pascalCase' );
 const os = require( 'os' );
 const getCopyrightLine = require( './getCopyrightLine' );
+const toLessEscapedString = require( './toLessEscapedString' );
 const assert = require( 'assert' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 
@@ -92,6 +93,30 @@ const image = new Image();
 const unlock = asyncLoader.createLock( image );
 image.onload = unlock;
 image.src = '${dataURI}';
+export default image;`;
+
+  const tsFilename = convertSuffix( filename, '.ts' );
+  await writeFileAndGitAdd( repo, getRelativePath( subdir, tsFilename ), fixEOL( contents ) );
+};
+
+/**
+ * Transform an SVG image file to a JS file that loads the image.
+ * @param {string} abspath - the absolute path of the image
+ * @param {string} repo - repository name for the modulify command
+ * @param {string} subdir - subdirectory location for modulified assets
+ * @param {string} filename - name of file being modulified
+ */
+const modulifySVG = async ( abspath, repo, subdir, filename ) => {
+
+  const fileContents = fs.readFileSync( abspath, 'utf-8' );
+
+  const contents = `${HEADER}
+import asyncLoader from '${expandDots( abspath )}phet-core/js/asyncLoader.js';
+
+const image = new Image();
+const unlock = asyncLoader.createLock( image );
+image.onload = unlock;
+image.src = \`data:image/svg+xml;base64,\${btoa(${toLessEscapedString( fileContents )})}\`;
 export default image;`;
 
   const tsFilename = convertSuffix( filename, '.ts' );
@@ -266,7 +291,12 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename, repo ) => {
                    subdir.startsWith( 'phet-io/images' ) ||
                    subdir.startsWith( 'adapted-from-phet/images' ) )
        && IMAGE_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
-    await modulifyImage( abspath, repo, subdir, filename );
+    if ( getSuffix( filename ) === '.svg' ) {
+      await modulifySVG( abspath, repo, subdir, filename );
+    }
+    else {
+      await modulifyImage( abspath, repo, subdir, filename );
+    }
   }
 
   if ( subdir && ( subdir.startsWith( 'mipmaps' ) ||
