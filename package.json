@@ -47,6 +47,7 @@
     "lodash": "~4.17.21",
     "marked": "~4.0.1",
     "node-html-encoder": "~0.0.2",
+    "pako": "~2.0.4",
     "pngjs": "~6.0.0",
     "puppeteer": "~19.2.2",
     "qunit": "~2.20.0",

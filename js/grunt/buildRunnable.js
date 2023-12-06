@@ -64,9 +64,10 @@ const recordTime = async ( name, asyncCallback, timeCallback ) => {
  * @param {string} localesOption - e.g,. '*', 'en,es', etc.
  * @param {boolean} buildLocal
  * @param {boolean} encodeStringMap
+ * @param {boolean} compressScripts
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap ) {
+module.exports = async function( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts ) {
   assert( typeof repo === 'string' );
   assert( typeof minifyOptions === 'object' );
 
@@ -222,6 +223,12 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
     grunt.log.ok( `Debug minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
   } );
 
+  const licenseScript = ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/license-initialization.js' ), {
+    PHET_START_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES,
+    PHET_THIRD_PARTY_LICENSE_ENTRIES: JSON.stringify( thirdPartyEntries, null, 2 ),
+    PHET_END_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES
+  } );
+
   const commonInitializationOptions = {
     brand: brand,
     repo: repo,
@@ -230,7 +237,6 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
     dependencies: dependencies,
     timestamp: timestamp,
     version: version,
-    thirdPartyEntries: thirdPartyEntries,
     packageObject: packageObject,
     allowLocaleSwitching: false,
     encodeStringMap: encodeStringMap
@@ -254,6 +260,8 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
         stringMap: stringMap,
         htmlHeader: htmlHeader,
         locale: locale,
+        compressScripts: compressScripts,
+        licenseScript: licenseScript,
         scripts: [ initializationScript, ...productionScripts ]
       } ) );
     }
@@ -275,6 +283,8 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
       stringMap: stringMap,
       htmlHeader: htmlHeader,
       locale: ChipperConstants.FALLBACK_LOCALE,
+      compressScripts: compressScripts,
+      licenseScript: licenseScript,
       scripts: [ initializationScript, ...productionScripts ]
     } );
 
@@ -298,6 +308,8 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
     stringMap: stringMap,
     htmlHeader: htmlHeader,
     locale: ChipperConstants.FALLBACK_LOCALE,
+    compressScripts: compressScripts,
+    licenseScript: licenseScript,
     scripts: [ debugInitializationScript, ...debugScripts ]
   } ) );
 

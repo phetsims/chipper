@@ -292,6 +292,16 @@ const encodeStringMap = stringMap => {
     }
   }
 
+  // Double-check our output results in the correct structure
+  const testStringMap = decodeStringMap( output );
+  for ( const locale in stringMap ) {
+    for ( const stringKey in stringMap[ locale ] ) {
+      if ( stringMap[ locale ][ stringKey ] !== testStringMap[ locale ][ stringKey ] ) {
+        throw new Error( `String map encoding failed, mismatch at ${locale} ${stringKey}` );
+      }
+    }
+  }
+
   return output;
 };
 

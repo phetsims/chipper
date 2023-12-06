@@ -34,7 +34,6 @@ module.exports = function( config ) {
     version, // {string}
     dependencies, // {Object} - From getDependencies
     timestamp, // {string}
-    thirdPartyEntries, // {Object}
     locale, // {string}
     includeAllLocales, // {boolean}
     isDebugBuild, // {boolean}
@@ -47,7 +46,6 @@ module.exports = function( config ) {
   assert( typeof version === 'string', 'Requires version' );
   assert( dependencies, 'Requires dependencies' );
   assert( typeof timestamp === 'string', 'Requires timestamp' );
-  assert( thirdPartyEntries, 'Requires thirdPartyEntries' );
   assert( typeof locale === 'string', 'Requires locale' );
   assert( typeof includeAllLocales === 'boolean', 'Requires includeAllLocales' );
   assert( typeof isDebugBuild === 'boolean', 'Requires isDebugBuild' );
@@ -71,9 +69,6 @@ module.exports = function( config ) {
     PHET_BUILD_TIMESTAMP: timestamp,
     PHET_BRAND: brand,
     PHET_LOCALE: locale,
-    PHET_START_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES,
-    PHET_THIRD_PARTY_LICENSE_ENTRIES: JSON.stringify( thirdPartyEntries, null, 2 ),
-    PHET_END_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES,
     PHET_DEPENDENCIES: JSON.stringify( dependencies, null, 2 ),
     // If it's a debug build, don't encode the strings, so that they are easier to inspect
     PHET_STRINGS: ( isDebugBuild || !encodeStringMap ) ? JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ) : stringEncoding.encodeStringMapToJS( phetStrings ),
