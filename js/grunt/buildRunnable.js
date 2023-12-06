@@ -233,6 +233,10 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   // dependencies.json
   grunt.file.write( `${buildDir}/dependencies.json`, JSON.stringify( dependencies, null, 2 ) );
 
+  // string-map.json and english-string-map.json, for things like Rosetta that need to know what strings are used
+  grunt.file.write( `${buildDir}/string-map.json`, JSON.stringify( stringMap, null, 2 ) );
+  grunt.file.write( `${buildDir}/english-string-map.json`, JSON.stringify( stringMap.en, null, 2 ) );
+
   // -iframe.html (English is assumed as the locale).
   if ( _.includes( locales, ChipperConstants.FALLBACK_LOCALE ) && brand === 'phet' ) {
     const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
