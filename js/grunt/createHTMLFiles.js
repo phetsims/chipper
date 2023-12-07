@@ -230,6 +230,10 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, 'PHET_SIM_URL', buildConfig.name + '_en.html' );
   grunt.file.write( 'build/' + buildConfig.name + '_en-iframe' + '.html', iframeTestHtml );
 
+  // string-map.json and english-string-map.json, for things like Rosetta that need to know what strings are used
+  grunt.file.write( 'build/string-map.json', JSON.stringify( stringMap, null, 2 ) );
+  grunt.file.write( 'build/english-string-map.json', JSON.stringify( stringMap.en, null, 2 ) );
+
   grunt.log.debug( 'Cleaning temporary files' );
   grunt.file.delete( 'build/' + buildConfig.name + '.min.js' );
 
