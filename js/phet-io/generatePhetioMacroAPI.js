@@ -105,7 +105,9 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
             else if ( msg.type() === 'error' ) {
               const location = msg.location ? `:\n  ${msg.location().url}` : '';
               const message = messageText + location;
-              console.error( 'Error from sim:', message );
+
+              // 404 errors aren't really errors, and can't be suppressed eagerly.
+              !messageText.includes( '404' ) && console.error( 'Error from sim:', message );
             }
           } );
 
