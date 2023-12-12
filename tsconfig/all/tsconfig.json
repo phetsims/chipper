@@ -8,6 +8,7 @@
     "../../../alpenglow/js/**/*",
     "../../../aqua/js/**/*",
     "../../../area-model-algebra/js/**/*",
+    "../../../area-model-multiplication/js/**/*",
     "../../../arithmetic/js/**/*",
     "../../../axon/js/**/*",
     "../../../balancing-chemical-equations/js/**/*",
