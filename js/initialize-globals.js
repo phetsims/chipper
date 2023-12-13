@@ -471,7 +471,7 @@
     },
 
     // This query parameter sets the default region and culture portrayal for the sim. This changes the artwork for
-    // the character sets that appear throughout the sim. It most often works in correlation to a sim Preference where
+    // the portrayals that appear throughout the sim. It most often works in correlation to a sim Preference where
     // You can change from the default after the sim has launched. See RegionAndCulturePortrayal
     regionAndCulture: {
       public: true,
