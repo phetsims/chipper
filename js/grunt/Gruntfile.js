@@ -198,7 +198,7 @@ module.exports = function( grunt ) {
   grunt.registerTask( 'build',
     `Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
 Runnable build options:
- --report-media - Will iterate over all of the license.json files and reports any media files
+ --report-media - Will iterate over all of the license.json files and reports any media files, set to false to opt out.
  --brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using
                       build-local.json's brands (or adapted-from-phet if that does not exist)
  --allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)
@@ -560,6 +560,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   grunt.registerTask( 'modulify', 'Creates *.js modules for all images/strings/audio/etc in a repo', wrapTask( async () => {
     const modulify = require( './modulify' );
+    const reportMedia = require( './reportMedia' );
     const generateDevelopmentStrings = require( '../scripts/generateDevelopmentStrings' );
     const fs = require( 'fs' );
 
@@ -568,6 +569,10 @@ Updates the normal automatically-generated files for this repository. Includes:
     if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) ) {
       generateDevelopmentStrings( repo );
     }
+
+    // Do this last to help with prototyping before commit (it would be frustrating if this errored out before giving
+    // you the asset you could use in the sim).
+    await reportMedia( repo );
   } ) );
 
   // Grunt task that determines created and last modified dates from git, and
