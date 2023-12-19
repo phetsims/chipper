@@ -86,6 +86,7 @@ const transpiledClientPath = `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/Cli
 
 // List of files to run jsdoc generation with. This list is manual to keep files from sneaking into the public documentation.
 const JSDOC_FILES = [
+  `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/PhetioClient.js`,
   transpiledClientPath,
   '../tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
