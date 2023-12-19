@@ -330,6 +330,7 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
     stringMap: stringMap,
     htmlHeader: htmlHeader,
     initializationScript: xhtmlInitializationScript,
+    licenseScript: licenseScript,
     scripts: productionScripts
   } );
 
