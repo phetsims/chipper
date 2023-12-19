@@ -1,6 +1,3 @@
-window.phet = window.phet|| {};
-window.phet.chipper = window.phet.chipper || {};
-
 window.phet.chipper.project = '{{PHET_PROJECT}}';
 window.phet.chipper.version = '{{PHET_VERSION}}';
 window.phet.chipper.buildTimestamp = '{{PHET_BUILD_TIMESTAMP}}';
