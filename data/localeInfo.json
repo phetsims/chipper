@@ -707,7 +707,7 @@
   "ps": {
     "name": "Pashto",
     "localizedName": "Pushto",
-    "direction": "ltr"
+    "direction": "rtl"
   },
   "pt": {
     "name": "Portuguese",
