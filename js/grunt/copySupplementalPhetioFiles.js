@@ -207,7 +207,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       // There should not be any imports of Client directly except using the "multi-wrapper" functionality of
       // providing a ?clientName, for unbuilt only, so we remove it here.
       contents = contents.replace(
-        /^.*\/common\/js\/Client.js.*$/mg,
+        /^.*\/common\/js\/PhetioClient.js.*$/mg,
         ''
       );
     }
