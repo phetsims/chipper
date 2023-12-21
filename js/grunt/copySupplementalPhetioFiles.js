@@ -91,7 +91,8 @@ const JSDOC_FILES = [
   transpiledClientPath,
   '../tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
-  '../chipper/js/initialize-globals.js'
+  '../chipper/js/initialize-globals.js',
+  '../perennial-alias/js/common/SimVersion.js'
 ];
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
@@ -536,6 +537,10 @@ const handleJSDOC = async buildDir => {
     '-t', '../chipper/node_modules/docdash',
     '--readme', JSDOC_README_FILE
   ];
+
+  // FOR DEBUGGING JSDOC:
+  // uncomment this line, and run it from the top level of a sim directory
+  // console.log( 'node', getArgs( false ).join( ' ' ) );
 
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
   // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method
