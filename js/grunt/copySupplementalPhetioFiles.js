@@ -35,7 +35,7 @@ const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
 const WRAPPER_COMMON_FOLDER = 'phet-io-wrappers/common';
 const WRAPPERS_FOLDER = 'wrappers/'; // The wrapper index assumes this constant, please see phet-io-wrappers/index/index.js before changing
 
-// For Client Guides
+// For PhET-iO Client Guides
 const PHET_IO_SIM_SPECIFIC = '../phet-io-sim-specific';
 const GUIDES_COMMON_DIR = 'client-guide-common/client-guide';
 
