@@ -222,7 +222,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_NAME}}', repo );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_DISPLAY_NAME}}', simulationDisplayName );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_DISPLAY_NAME_ESCAPED}}', simulationDisplayName.replace( /'/g, '\\\'' ) );
-      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION}}', version );
+      contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_VERSION_STRING}}', version );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_LATEST_VERSION}}', latestVersion );
       contents = ChipperStringUtils.replaceAll( contents, '{{SIMULATION_IS_BUILT}}', 'true' );
       contents = ChipperStringUtils.replaceAll( contents, '{{PHET_IO_LIB_RELATIVE_PATH}}', pathToLib );
@@ -642,7 +642,7 @@ const generateAndWriteClientGuide = ( repoName, title, simulationDisplayName,
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{DATE}}', new Date().toString() );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simCamelCaseName}}', simCamelCaseName );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{simKebabName}}', repoName );
-  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIMULATION_VERSION}}', version );
+  clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{SIMULATION_VERSION_STRING}}', version );
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, '{{MODEL_DOCUMENTATION_LINE}}', modelDocumentationLine );
   ///////////////////////////////////////////
 
