@@ -204,7 +204,7 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
         '<link rel="shortcut icon" href="/assets/favicon.ico"/>'
       );
 
-      // There should not be any imports of Client directly except using the "multi-wrapper" functionality of
+      // There should not be any imports of PhetioClient directly except using the "multi-wrapper" functionality of
       // providing a ?clientName, for unbuilt only, so we remove it here.
       contents = contents.replace(
         /^.*\/common\/js\/PhetioClient.js.*$/mg,
