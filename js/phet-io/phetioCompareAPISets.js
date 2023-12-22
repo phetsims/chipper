@@ -15,7 +15,7 @@ const assert = require( 'assert' );
  */
 module.exports = async ( repos, proposedAPIs, options ) => {
   let ok = true;
-  options = _.extend( {
+  options = _.assignIn( {
     delta: false,
     compareBreakingAPIChanges: true
   }, options );

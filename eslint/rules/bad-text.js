@@ -153,7 +153,10 @@ module.exports = function( context ) {
     {
       id: 'eslint-disable-next-line directives must have explanation',
       predicate: line => !line.trim().endsWith( 'eslint-disable-next-line' )
-    }
+    },
+
+    // Prefer _.assignIn() which returns the object in its type doc, https://github.com/phetsims/tasks/issues/1130
+    ' = _.extend('
   ];
 
   return {

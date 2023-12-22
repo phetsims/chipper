@@ -41,7 +41,7 @@ async function consoleLogResults( results ) {
  */
 const lintOneRepo = async ( repo, options ) => {
 
-  options = _.extend( {
+  options = _.assignIn( {
     cache: true,
     fix: false,
     format: false,

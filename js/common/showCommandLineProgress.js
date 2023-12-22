@@ -16,7 +16,7 @@ const _ = require( 'lodash' );
  * @param {Object} [options]
  */
 module.exports = function showCommandLineProgress( progress, newline, options ) {
-  options = _.extend( {
+  options = _.assignIn( {
     progressBarLength: 40 // in characters
   }, options );
 

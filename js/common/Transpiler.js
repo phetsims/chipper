@@ -41,7 +41,7 @@ class Transpiler {
 
   constructor( options ) {
 
-    options = _.extend( {
+    options = _.assignIn( {
       clean: false, // delete the previous state/cache file, and create a new one.
       verbose: false, // Add extra logging
       silent: false, // hide all logging but error reporting, include any specified with verbose

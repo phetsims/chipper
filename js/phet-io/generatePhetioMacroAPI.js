@@ -25,7 +25,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
   assert( repos.length === _.uniq( repos ).length, 'repos should be unique' );
 
-  options = _.extend( {
+  options = _.assignIn( {
     fromBuiltVersion: false, // if the built file should be used to generate the API (otherwise uses unbuilt)
     chunkSize: 4, // split into chunks with (at most) this many elements per chunk
     showProgressBar: false,
