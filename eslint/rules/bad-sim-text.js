@@ -32,11 +32,6 @@ module.exports = function( context ) {
     { id: 'Number.parseInt(', codeTokens: [ 'Number', '.', 'parseInt', '(' ] },
     { id: 'Array.prototype.find', codeTokens: [ 'Array', '.', 'prototype', '.', 'find' ] },
 
-    // Use merge instead of _.extend for combining options/config. Leave out first letter to allow for `options = `
-    // and `sliderOptions = _.extend` to both be caught.
-    'ptions = _.extend(',
-    'onfig = _.extend(',
-
     // ParallelDOM.pdomOrder should not be mutated, instead only set with `setPDOMOrder`
     '.pdomOrder.push(',
 
