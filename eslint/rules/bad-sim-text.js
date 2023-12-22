@@ -121,7 +121,7 @@ module.exports = function( context ) {
     {
       id: 'Import from statements require a *.js suffix',
       predicate: line => {
-        if ( line.trim().indexOf( 'import ' ) === 0 && line.indexOf( ' from ' ) > 0 && line.indexOf( '.js' ) === -1 ) {
+        if ( line.trim().indexOf( 'import ' ) === 0 && line.includes( ' from ' ) && ( !line.includes( '.js' ) && !line.includes( '.mjs' ) ) ) {
           return false;
         }
         return true;

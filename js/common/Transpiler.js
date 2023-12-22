@@ -104,7 +104,10 @@ class Transpiler {
     const suffix = relativePath.substring( relativePath.lastIndexOf( '.' ) );
 
     // Note: When we upgrade to Node 16, this may no longer be necessary, see https://github.com/phetsims/chipper/issues/1272#issuecomment-1222574593
-    const extension = relativePath.includes( 'phet-build-script' ) ? '.mjs' : '.js';
+    const isMJS = relativePath.includes( 'phet-build-script' ) ||
+                  relativePath.endsWith( '.mjs' );
+
+    const extension = isMJS ? '.mjs' : '.js';
     return Transpiler.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( suffix ).join( extension );
   }
 
@@ -212,7 +215,9 @@ class Transpiler {
    * @private
    */
   visitFile( filePath ) {
-    if ( ( filePath.endsWith( '.js' ) || filePath.endsWith( '.ts' ) || filePath.endsWith( '.tsx' ) || filePath.endsWith( '.wgsl' ) ) && !this.isPathIgnored( filePath ) ) {
+    if ( _.some( [ '.js', '.ts', '.tsx', '.wgsl', '.mjs' ], extension => filePath.endsWith( extension ) ) &&
+         !this.isPathIgnored( filePath ) ) {
+
       const changeDetectedTime = Date.now();
       const text = fs.readFileSync( filePath, 'utf-8' );
       const hash = crypto.createHash( 'md5' ).update( text ).digest( 'hex' );
@@ -317,6 +322,7 @@ class Transpiler {
       // Our sims load this as a module rather than a preload, so we must transpile it
       this.visitFile( Transpiler.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
       this.visitFile( Transpiler.join( '..', repo, 'lib', 'pako-2.0.3.min.js' ) ); // used for phet-io-wrappers tests
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'big-6.2.1.mjs' ) ); // for consistent, cross-browser number operations (thanks javascript)
       Object.keys( webpackGlobalLibraries ).forEach( key => {
         const libraryFilePath = webpackGlobalLibraries[ key ];
         this.visitFile( Transpiler.join( '..', ...libraryFilePath.split( '/' ) ) );
