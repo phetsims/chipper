@@ -150,14 +150,6 @@
      */
     dev: { type: 'flag' },
 
-
-    /**
-     * sets all modal features of the sim as disabled. This is a development-only parameter that can be useful in
-     * combination with fuzz testing. This was created to limit the amount of time fuzz testing spends on unimportant
-     * features of the sim like the PhET Menu, Keyboard Help, and Preferences popups.
-     */
-    disableModals: { type: 'flag' },
-
     /**
      * enables assertions
      */
