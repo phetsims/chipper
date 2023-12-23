@@ -1630,6 +1630,10 @@ module.exports = {
     GPUComputePassDescriptor: 'readonly',
     GPUComputePassTimestampWrites: 'readonly',
     GPUComputePipelineDescriptor: 'readonly',
-    GPUComputePassEncoder: 'readonly'
+    GPUComputePassEncoder: 'readonly',
+    GPUTextureViewDimension: 'readonly',
+    GPUStorageTextureAccess: 'readonly',
+    GPUBufferBindingType: 'readonly',
+    GPUTextureSampleType: 'readonly'
   }
 };
