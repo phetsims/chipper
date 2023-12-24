@@ -1634,6 +1634,7 @@ module.exports = {
     GPUTextureViewDimension: 'readonly',
     GPUStorageTextureAccess: 'readonly',
     GPUBufferBindingType: 'readonly',
-    GPUTextureSampleType: 'readonly'
+    GPUTextureSampleType: 'readonly',
+    GPUBufferBinding: 'readonly'
   }
 };
