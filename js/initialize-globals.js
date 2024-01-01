@@ -563,6 +563,15 @@
     showVisibleBounds: { type: 'flag' },
 
     /**
+     * Adds a runtime check while computing the derivation of a DerivedProperty, that asserts that all queried Property
+     * instances are listed in the dependencies. See https://github.com/phetsims/axon/issues/441
+     */
+    strictAxonDependencies: {
+      type: 'boolean',
+      defaultValue: !!packageSimFeatures.strictAxonDependencies
+    },
+
+    /**
      * Shuffles listeners each time they are notified, to help us test order dependency, see https://github.com/phetsims/axon/issues/215
      *
      * 'default' - no shuffling
@@ -1095,7 +1104,8 @@
       supportsExtraSound: { type: 'boolean' },
       supportsDynamicLocale: { type: 'boolean' },
       colorProfiles: { type: 'array' },
-      supportedRegionsAndCultures: { type: 'array' }
+      supportedRegionsAndCultures: { type: 'array' },
+      strictAxonDependencies: { type: 'boolean' }
     };
 
     Object.keys( simFeaturesSchema ).forEach( schemaKey => {
