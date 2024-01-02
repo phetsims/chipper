@@ -12,6 +12,7 @@
     "../../../arithmetic/js/**/*",
     "../../../axon/js/**/*",
     "../../../balancing-act/js/**/*",
+    "../../../balancing-act/images/**/*",
     "../../../balancing-chemical-equations/js/**/*",
     "../../../bamboo/js/**/*",
     "../../../beers-law-lab/js/**/*",
