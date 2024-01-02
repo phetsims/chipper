@@ -11,6 +11,7 @@
     "../../../area-model-multiplication/js/**/*",
     "../../../arithmetic/js/**/*",
     "../../../axon/js/**/*",
+    "../../../balancing-act/js/**/*",
     "../../../balancing-chemical-equations/js/**/*",
     "../../../bamboo/js/**/*",
     "../../../beers-law-lab/js/**/*",
