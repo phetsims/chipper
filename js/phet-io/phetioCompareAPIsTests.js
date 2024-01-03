@@ -28,7 +28,7 @@ const DEFAULT_API = {
   phetioFullAPI: true,
   phetioTypes: {
     ObjectIO: {
-      documentation: 'The root of the IO Type hierarchy',
+      documentation: 'The root of the PhET-iO Type hierarchy',
       events: [],
       metadataDefaults: {
         phetioArchetypePhetioID: null,
@@ -65,7 +65,7 @@ qunit.test( 'basics', assert => {
     phetioElements: {
       phetioEngine: {
         _metadata: {
-          phetioDocumentation: 'Central point for PhET-iO interoperability. Please see the IO Type Documentation for API details.',
+          phetioDocumentation: 'Central point for PhET-iO interoperability. Please see the PhET-iO Type Documentation for API details.',
           phetioEventType: 'MODEL',
           phetioState: false,
           phetioTypeName: 'ObjectIO'

@@ -345,7 +345,7 @@
 
     visit( [], referenceAPI.phetioElements, proposedAPI.phetioElements, false );
 
-    // Check for: missing IO Types, missing methods, or differing parameter types or return types
+    // Check for: missing IOTypes, missing methods, or differing parameter types or return types
     for ( const typeName in referenceAPI.phetioTypes ) {
       if ( referenceAPI.phetioTypes.hasOwnProperty( typeName ) ) {
 
