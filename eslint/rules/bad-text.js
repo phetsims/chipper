@@ -88,7 +88,7 @@ module.exports = function( context ) {
     // PhET team member
     {
       id: 'words matter',
-      regex: /(slave|black-?list|white-?list|(?<!\/)\bmaster)/i
+      regex: /(slave|black-?list|white-?list|(?<!\/)\bmaster\b)/i
     },
 
     // Any instances of youtube.com should enforce that we use youtube-nocookie.com
