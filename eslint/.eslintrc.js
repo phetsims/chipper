@@ -1505,7 +1505,10 @@ module.exports = {
     'prefer-derived-string-property': 'error',
 
     // A variable or attribute name should generally match the tandem name.
-    'tandem-name-should-match': 'error'
+    'tandem-name-should-match': 'error',
+
+    // Each source file should list at least one author
+    'author-annotation': 'off'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
