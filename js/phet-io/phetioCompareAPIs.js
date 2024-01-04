@@ -1,4 +1,4 @@
-// Copyright 2021-2023, University of Colorado Boulder
+// Copyright 2021-2024, University of Colorado Boulder
 
 /**
  * Compare PhET-iO APIs for two versions of the same sim. This function treats the first API as the "ground truth"
