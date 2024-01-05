@@ -30,7 +30,8 @@ module.exports = {
           return;
         }
 
-        if ( path.toString().endsWith( 'Gruntfile.js' ) ) {
+        // get the filename for the path
+        if ( filename.endsWith( 'Gruntfile.js' ) ) {
           // Skip linting for Gruntfile.js
           return;
         }
