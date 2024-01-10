@@ -39,6 +39,7 @@ module.exports = function( config ) {
     isDebugBuild, // {boolean}
     allowLocaleSwitching, // {boolean}
     encodeStringMap, // {boolean}
+    profileFileSize, // {boolean}
     packageObject
   } = config;
   assert( typeof repo === 'string', 'Requires repo' );
@@ -72,6 +73,8 @@ module.exports = function( config ) {
     PHET_DEPENDENCIES: JSON.stringify( dependencies, null, 2 ),
     // If it's a debug build, don't encode the strings, so that they are easier to inspect
     PHET_STRINGS: ( isDebugBuild || !encodeStringMap ) ? JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ) : stringEncoding.encodeStringMapToJS( phetStrings ),
+    PHET_BEFORE_STRINGS: profileFileSize ? 'console.log("START_STRINGS");' : '',
+    PHET_AFTER_STRINGS: profileFileSize ? 'console.log("END_STRINGS");' : '',
     PHET_STRING_METADATA: JSON.stringify( stringMetadata, null, isDebugBuild ? 2 : '' ),
     PHET_IS_DEBUG_BUILD: !!isDebugBuild,
     PHET_ALLOW_LOCALE_SWITCHING: !!allowLocaleSwitching,

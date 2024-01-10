@@ -65,9 +65,10 @@ const recordTime = async ( name, asyncCallback, timeCallback ) => {
  * @param {boolean} buildLocal
  * @param {boolean} encodeStringMap
  * @param {boolean} compressScripts
+ * @param {boolean} profileFileSize
  * @returns {Promise} - Does not resolve a value
  */
-module.exports = async function( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts ) {
+module.exports = async function( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts, profileFileSize ) {
   assert( typeof repo === 'string' );
   assert( typeof minifyOptions === 'object' );
 
@@ -83,12 +84,14 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
   timestamp = `${timestamp.substring( 0, timestamp.indexOf( '.' ) )} UTC`;
 
   // Start running webpack
-  const webpackResult = await recordTime( 'webpack', async () => webpackBuild( repo, brand ), time => {
+  const webpackResult = await recordTime( 'webpack', async () => webpackBuild( repo, brand, {
+    profileFileSize: profileFileSize
+  } ), time => {
     grunt.log.ok( `Webpack build complete: ${time}ms` );
   } );
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
-  const webpackJS = `phet.chipper.runWebpack = function() {${webpackResult.js}};`;
+  const webpackJS = wrapProfileFileSize( `phet.chipper.runWebpack = function() {${webpackResult.js}};`, profileFileSize, 'WEBPACK' );
 
   // Debug version is independent of passed in minifyOptions.  PhET-iO brand is minified, but leaves assertions & logging.
   const debugMinifyOptions = brand === 'phet-io' ? {
@@ -192,18 +195,18 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
   // Scripts that are run before our main minifiable content
   const startupScripts = [
     // Splash image
-    `window.PHET_SPLASH_DATA_URI="${loadFileAsDataURI( `../brand/${brand}/images/splash.svg` )}";`
+    wrapProfileFileSize( `window.PHET_SPLASH_DATA_URI="${loadFileAsDataURI( `../brand/${brand}/images/splash.svg` )}";`, profileFileSize, 'SPLASH' )
   ];
 
   const minifiableScripts = [
     // Preloads
-    ...getPreloads( repo, brand, true ).map( filename => grunt.file.read( filename ) ),
+    ...getPreloads( repo, brand, true ).map( filename => wrapProfileFileSize( grunt.file.read( filename ), profileFileSize, 'PRELOAD', filename ) ),
 
     // Our main module content, wrapped in a function called in the startup below
     webpackJS,
 
     // Main startup
-    grunt.file.read( '../chipper/templates/chipper-startup.js' )
+    wrapProfileFileSize( grunt.file.read( '../chipper/templates/chipper-startup.js' ), profileFileSize, 'STARTUP' )
   ];
 
   const productionScripts = await recordTime( 'minify-production', async () => {
@@ -223,11 +226,11 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
     grunt.log.ok( `Debug minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
   } );
 
-  const licenseScript = ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/license-initialization.js' ), {
+  const licenseScript = wrapProfileFileSize( ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/license-initialization.js' ), {
     PHET_START_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES,
     PHET_THIRD_PARTY_LICENSE_ENTRIES: JSON.stringify( thirdPartyEntries, null, 2 ),
     PHET_END_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES
-  } );
+  } ), profileFileSize, 'LICENSE' );
 
   const commonInitializationOptions = {
     brand: brand,
@@ -239,7 +242,9 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
     version: version,
     packageObject: packageObject,
     allowLocaleSwitching: false,
-    encodeStringMap: encodeStringMap
+    encodeStringMap: encodeStringMap,
+    profileFileSize: profileFileSize,
+    wrapStringsJS: stringsJS => wrapProfileFileSize( stringsJS, profileFileSize, 'STRINGS' )
   };
 
   // Create the build-specific directory
@@ -403,5 +408,16 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
       grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, jimp.MIME_JPEG ) );
       grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
     }
+  }
+};
+
+// For profiling file size. Name is optional
+const wrapProfileFileSize = ( string, profileFileSize, type, name ) => {
+  if ( profileFileSize ) {
+    const conditionalName = name ? `,"${name}"` : '';
+    return `console.log("START_${type.toUpperCase()}"${conditionalName});\n${string}\nconsole.log("END_${type.toUpperCase()}"${conditionalName});\n\n`;
+  }
+  else {
+    return string;
   }
 };

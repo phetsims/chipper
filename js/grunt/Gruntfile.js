@@ -295,13 +295,14 @@ Minify-specific options:
           const allHTML = !!grunt.option( 'allHTML' );
           const encodeStringMap = !!grunt.option( 'encodeStringMap' );
           const compressScripts = !!grunt.option( 'compressScripts' );
+          const profileFileSize = !!grunt.option( 'profileFileSize' );
           const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
 
           for ( const brand of brands ) {
             grunt.log.writeln( `Building brand: ${brand}` );
 
             await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
-              await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts );
+              await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts, profileFileSize );
             } );
           }
         }
@@ -692,6 +693,16 @@ Updates the normal automatically-generated files for this repository. Includes:
       }
       const ok = await require( '../phet-io/phetioCompareAPISets' )( sims, proposedAPIs, options );
       !ok && grunt.fail.fatal( 'PhET-iO API comparison failed' );
+    } )
+  );
+
+  grunt.registerTask(
+    'profile-file-size',
+    'Profiles the file size of the built JS file for a given repo',
+    wrapTask( async () => {
+      const profileFileSize = require( '../grunt/profileFileSize' );
+
+      await profileFileSize( repo );
     } )
   );
 

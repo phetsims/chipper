@@ -14,6 +14,8 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const _ = require( 'lodash' );
 const webpack = require( 'webpack' );
+// eslint-disable-next-line require-statement-match
+const { ModifySourcePlugin, ConcatOperation } = require( 'modify-source-webpack-plugin' );
 
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial-alias/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
 const reposByNamespace = {};
@@ -128,14 +130,34 @@ const webpackBuild = function webpackBuild( repo, brand, options ) {
       },
 
       // {Array.<Plugin>}
-      plugins:
+      plugins: [
 
-      // Exclude brand specific code. This includes all of the `phet-io` repo for non phet-io builds.
-        ( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
+        // Exclude brand specific code. This includes all of the `phet-io` repo for non phet-io builds.
+        ...( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
           brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
 
             // adapted-from-phet and all other brands
-            [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] )
+            [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] ),
+        ...( options.profileFileSize ? [
+          new ModifySourcePlugin( {
+            rules: [
+              {
+                test: /.*/,
+                operations: [
+                  new ConcatOperation(
+                    'start',
+                    'console.log(\'START_MODULE\',\'$FILE_PATH\');\n\n'
+                  ),
+                  new ConcatOperation(
+                    'end',
+                    '\n\nconsole.log(\'END_MODULE\',\'$FILE_PATH\');\n\n'
+                  )
+                ]
+              }
+            ]
+          } )
+        ] : [] )
+      ]
     } );
 
     compiler.run( ( err, stats ) => {

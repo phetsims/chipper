@@ -44,7 +44,10 @@ module.exports = async function( repo, providedOptions ) {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   assert( packageObject.phet, '`phet` object expected in package.json' );
 
-  const webpackResult = ( await webpackBuild( repo, 'phet', { outputDir: options.tempOutputDir } ) );
+  const webpackResult = ( await webpackBuild( repo, 'phet', {
+    outputDir: options.tempOutputDir,
+    profileFileSize: options.profileFileSize
+  } ) );
 
   const webpackJS = webpackResult.js;
 
