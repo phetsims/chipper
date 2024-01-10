@@ -1,4 +1,4 @@
-// Copyright 2023, University of Colorado Boulder
+// Copyright 2024, University of Colorado Boulder
 
 /**
  * Analyzes the file size of a built file (that has been built with --profileFileSize), and prints out the results.
