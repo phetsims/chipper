@@ -47,6 +47,7 @@
     "../../../function-builder-basics/js/**/*",
     "../../../gases-intro/js/**/*",
     "../../../gas-properties/js/**/*",
+    "../../../generator/js/**/*",
     "../../../geometric-optics/js/**/*",
     "../../../geometric-optics-basics/js/**/*",
     "../../../graphing-quadratics/js/**/*",
