@@ -59,6 +59,7 @@
     "../../../joist/js/**/*",
     "../../../keplers-laws/js/**/*",
     "../../../kite/js/**/*",
+    "../../../magnet-and-compass/js/**/*",
     "../../../mean-share-and-balance/js/**/*",
     "../../../mobius/js/**/*",
     "../../../models-of-the-hydrogen-atom/js/**/*",
