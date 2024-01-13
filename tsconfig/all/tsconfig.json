@@ -60,6 +60,7 @@
     "../../../keplers-laws/js/**/*",
     "../../../kite/js/**/*",
     "../../../magnet-and-compass/js/**/*",
+    "../../../magnets-and-electromagnets/js/**/*",
     "../../../mean-share-and-balance/js/**/*",
     "../../../mobius/js/**/*",
     "../../../models-of-the-hydrogen-atom/js/**/*",
