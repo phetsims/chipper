@@ -568,7 +568,7 @@
      */
     strictAxonDependencies: {
       type: 'boolean',
-      defaultValue: !!packageSimFeatures.strictAxonDependencies
+      defaultValue: packageSimFeatures.hasOwnProperty( 'strictAxonDependencies' ) ? !!packageSimFeatures.strictAxonDependencies : true
     },
 
     /**
