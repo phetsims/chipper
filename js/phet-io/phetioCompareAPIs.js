@@ -304,6 +304,11 @@
                   }
                 }
 
+                // When comparing numbers, don't trigger an error based on floating point inaccuracies. https://github.com/phetsims/aqua/issues/200
+                else if ( typeof referenceState === 'number' && typeof proposedState === 'number' ) {
+                  return referenceState.toFixed( 10 ) === proposedState.toFixed( 10 );
+                }
+
                 return undefined; // Meaning use the default lodash algorithm for comparison.
               } );
             if ( !matches ) {
