@@ -1,4 +1,9 @@
 // Copyright 2021-2023, University of Colorado Boulder
+
+/**
+ * @author Same Reid (PhET Interactive Simulations)
+ */
+
 const fs = require( 'fs' );
 const phetioCompareAPIs = require( './phetioCompareAPIs' );
 const _ = require( 'lodash' );

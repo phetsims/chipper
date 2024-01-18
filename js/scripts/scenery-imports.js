@@ -1,4 +1,9 @@
 // Copyright 2021-2022, University of Colorado Boulder
+
+/**
+ * @author Same Reid (PhET Interactive Simulations)
+ */
+
 const fs = require( 'fs' );
 
 const keyLines = fs.readFileSync( '../scenery/js/imports.ts', 'utf-8' ).split( '\n' );

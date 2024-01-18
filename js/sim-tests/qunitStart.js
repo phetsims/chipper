@@ -1,10 +1,13 @@
 // Copyright 2020-2021, University of Colorado Boulder
 
-import Tandem from '../../../tandem/js/Tandem.js';
-
 /**
  * Start Qunit while supporting PhET-iO brand
+ *
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
+
+import Tandem from '../../../tandem/js/Tandem.js';
+
 const qunitStart = () => {
 
   const start = () => {

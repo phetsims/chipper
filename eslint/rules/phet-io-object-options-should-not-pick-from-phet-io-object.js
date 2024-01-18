@@ -1,5 +1,9 @@
 // Copyright 2023, University of Colorado Boulder
 
+/**
+ * @author Same Reid (PhET Interactive Simulations)
+ */
+
 module.exports = {
   create( context ) {
     return {

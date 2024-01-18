@@ -1,5 +1,9 @@
 // Copyright 2022, University of Colorado Boulder
 
+/**
+ * @author Same Reid (PhET Interactive Simulations)
+ */
+
 const fs = require( 'fs' );
 const path = require( 'path' );
 

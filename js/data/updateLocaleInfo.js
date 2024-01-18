@@ -1,5 +1,8 @@
 // Copyright 2024, University of Colorado Boulder
 
+/**
+ * @author Matt Pennington (PhET Interactive Simulations)
+ */
 
 const child_process = require( 'child_process' );
 const fs = require( 'fs' );
