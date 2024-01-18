@@ -270,32 +270,38 @@
           }
           else {
 
-            const matches = _.isEqualWith( reference._data.initialState, proposed._data.initialState,
+            const referencesInitialState = reference._data.initialState;
+            const proposedInitialState = proposed._data.initialState;
+            const matches = _.isEqualWith( referencesInitialState, proposedInitialState,
               ( referenceState, proposedState ) => {
 
-                // The validValues of the localeProperty changes each time a new translation is submitted for a sim.
-                if ( phetioID === trail[ 0 ] + '.general.model.localeProperty' ) {
+                // Top level object comparison of the entire state (not a component piece)
+                if ( referencesInitialState === referenceState && proposedInitialState === proposedState ) {
 
-                  // The sim must have all expected locales, but it is acceptable to add new ones without API error.
-                  return referenceState.validValues.every( validValue => proposedState.validValues.includes( validValue ) );
-                }
+                  // The validValues of the localeProperty changes each time a new translation is submitted for a sim.
+                  if ( phetioID === trail[ 0 ] + '.general.model.localeProperty' ) {
 
-                // Ignore any pointers, because they won't occur when generating the actual api, but may if a mouse is over a testing browser.
-                if ( phetioID === ( trail[ 0 ] + '.general.controller.input' ) ) {
-                  return _.isEqual( { ...referenceState, pointers: null }, { ...proposedState, pointers: null } );
-                }
+                    // The sim must have all expected locales, but it is acceptable to add new ones without API error.
+                    return referenceState.validValues.every( validValue => proposedState.validValues.includes( validValue ) );
+                  }
 
-                // Ignore the scale's state, because it will be different at startup, depending on the user's window's
-                // aspect ratio. TODO: Workaround for https://github.com/phetsims/density/issues/161
-                if ( phetioID === 'density.mysteryScreen.model.scale' ) {
-                  return true;
-                }
+                  // Ignore any pointers, because they won't occur when generating the actual api, but may if a mouse is over a testing browser.
+                  if ( phetioID === ( trail[ 0 ] + '.general.controller.input' ) ) {
+                    return _.isEqual( { ...referenceState, pointers: null }, { ...proposedState, pointers: null } );
+                  }
 
-                // Ignore the wireMeterAttachmentPositionProperty because on it's starting position can change based on
-                // the browser running the sim. TODO: Root cause is https://github.com/phetsims/phet-io/issues/1951.
-                if ( phetioID === 'greenhouseEffect.layerModelScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ||
-                     phetioID === 'greenhouseEffect.photonsScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ) {
-                  return true;
+                  // Ignore the scale's state, because it will be different at startup, depending on the user's window's
+                  // aspect ratio. TODO: Workaround for https://github.com/phetsims/density/issues/161
+                  if ( phetioID === 'density.mysteryScreen.model.scale' ) {
+                    return true;
+                  }
+
+                  // Ignore the wireMeterAttachmentPositionProperty because on it's starting position can change based on
+                  // the browser running the sim. TODO: Root cause is https://github.com/phetsims/phet-io/issues/1951.
+                  if ( phetioID === 'greenhouseEffect.layerModelScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ||
+                       phetioID === 'greenhouseEffect.photonsScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ) {
+                    return true;
+                  }
                 }
 
                 return undefined; // Meaning use the default lodash algorithm for comparison.
