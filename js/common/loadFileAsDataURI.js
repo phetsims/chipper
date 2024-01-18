@@ -2,6 +2,8 @@
 
 /**
  * Converts a resource (like an image or sound file) to base64.
+ *
+ * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
 /* eslint-env node */

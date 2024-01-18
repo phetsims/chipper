@@ -34,6 +34,8 @@ const pngjs = require( 'pngjs' );
  * @param {number} quality - An integer from 1-100 determining the quality of the image. Currently only used for the
  *                           JPEG encoding quality.
  * @returns {Promise} - Will be resolved with mipmaps: {Array} (consisting of the mipmap objects, mipmaps[0] will be level 0)
+ *
+ * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 module.exports = function createMipmap( filename, maxLevel, quality ) {
   return new Promise( ( resolve, reject ) => {

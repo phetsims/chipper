@@ -1,6 +1,8 @@
 // Copyright 2022, University of Colorado Boulder
 // Entry point for phet build commands forwarded from grunt
 
+// @author Jonathan Olson <jonathan.olson@colorado.edu>
+
 import * as fs from 'fs'; // eslint-disable-line bad-sim-text
 
 const args: string[] = process.argv.slice( 2 ); // eslint-disable-line no-undef

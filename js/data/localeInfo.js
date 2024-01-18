@@ -24,6 +24,8 @@
  * ALSO NOTE: We had a request to support Lakota, which is not included in ISO 639-1, and is only defined as a three-
  * letter code in ISO 639-3.  The locale combination 'lk' was not taken in ISO 639-1, so we added it.  Strictly
  * speaking, this is a deviation from the spec.
+ *
+ * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
 /* eslint-env browser, node */
