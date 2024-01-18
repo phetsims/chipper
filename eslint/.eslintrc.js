@@ -1508,7 +1508,7 @@ module.exports = {
     'tandem-name-should-match': 'error',
 
     // Each source file should list at least one author
-    'author-annotation': 'off'
+    'author-annotation': 'error'
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   },
   env: {
