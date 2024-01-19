@@ -1,4 +1,4 @@
-// Copyright 2022, University of Colorado Boulder
+// Copyright 2022-2024, University of Colorado Boulder
 // Entry point for phet build commands forwarded from grunt
 
 // @author Jonathan Olson <jonathan.olson@colorado.edu>
