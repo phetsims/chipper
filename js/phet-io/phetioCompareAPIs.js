@@ -306,8 +306,15 @@
 
                 // When comparing numbers, don't trigger an error based on floating point inaccuracies. https://github.com/phetsims/aqua/issues/200
                 else if ( typeof referenceState === 'number' && typeof proposedState === 'number' ) {
-                  const decimalPlaces = 5;
-                  return referenceState.toFixed( decimalPlaces ) === proposedState.toFixed( decimalPlaces );
+                  const numberPlaces = 10;
+
+                  // toPrecision is better for larger numbers, since toFixed will result in adjusting many more sig figs than needed.
+                  if ( referenceState > 10000 ) {
+                    return referenceState.toPrecision( numberPlaces ) === proposedState.toPrecision( numberPlaces );
+                  }
+                  else {
+                    return referenceState.toFixed( numberPlaces ) === proposedState.toFixed( numberPlaces );
+                  }
                 }
 
                 return undefined; // Meaning use the default lodash algorithm for comparison.
