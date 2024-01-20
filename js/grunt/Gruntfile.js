@@ -293,7 +293,7 @@ Minify-specific options:
 
           // Other options
           const allHTML = !!grunt.option( 'allHTML' );
-          const encodeStringMap = !!grunt.option( 'encodeStringMap' );
+          const encodeStringMap = grunt.option( 'encodeStringMap' ) !== false;
           const compressScripts = !!grunt.option( 'compressScripts' );
           const profileFileSize = !!grunt.option( 'profileFileSize' );
           const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
