@@ -19,7 +19,7 @@ const withServer = require( '../../../perennial-alias/js/common/withServer' );
  * Load each sim provided and get the
  * @param {string[]} repos
  * @param {Object} [options]
- * @returns {Promise.<Object.<string, Object>>} - keys are the repos, values are the APIs for each repo.
+ * @returns {Promise.<Object.<string, Object>>} - keys are the repos, values are the APIs for each repo. If there was a problem with getting the API with throwAPIGenerationErrors:false, then it will return null for that repo.
  */
 const generatePhetioMacroAPI = async ( repos, options ) => {
 
@@ -29,7 +29,10 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     fromBuiltVersion: false, // if the built file should be used to generate the API (otherwise uses unbuilt)
     chunkSize: 4, // split into chunks with (at most) this many elements per chunk
     showProgressBar: false,
-    showMessagesFromSim: true
+    showMessagesFromSim: true,
+
+    // If false, allow individual repos return null if they encountered problems
+    throwAPIGenerationErrors: true
   }, options );
 
   repos.length > 1 && console.log( 'Generating PhET-iO API for repos:', repos.join( ', ' ) );
@@ -47,7 +50,8 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     } );
     const chunks = _.chunk( repos, options.chunkSize );
 
-    const macroAPI = {};
+    const macroAPI = {}; // if throwAPIGenerationErrors:false, a repo will be null if it encountered errors.
+    const errors = {};
 
     for ( let i = 0; i < chunks.length; i++ ) {
       const chunk = chunks[ i ];
@@ -79,7 +83,10 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           };
           const cleanupAndReject = async e => {
             if ( await cleanup() ) {
-              reject( e );
+              resolve( {
+                repo: repo,
+                error: e
+              } );
             }
           };
 
@@ -100,14 +107,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
                 // For machine readability
                 api: JSON.parse( fullAPI )
               } );
-            }
-
-            else if ( msg.type() === 'error' ) {
-              const location = msg.location ? `:\n  ${msg.location().url}` : '';
-              const message = messageText + location;
-
-              // 404 errors aren't really errors, and can't be suppressed eagerly.
-              !messageText.includes( '404' ) && console.error( 'Error from sim:', message );
             }
           } );
 
@@ -135,12 +134,17 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
       const chunkResults = await Promise.allSettled( promises );
 
       chunkResults.forEach( chunkResult => {
-        if ( chunkResult.status === 'fulfilled' ) {
-          assert( chunkResult.value.api instanceof Object, 'api expected from Promise results' );
-          macroAPI[ chunkResult.value.repo ] = chunkResult.value.api;
-        }
-        else {
-          console.error( 'Error in fulfilling chunk Promise:', chunkResult.reason );
+        const repo = chunkResult.value.repo;
+        macroAPI[ repo ] = chunkResult.value.api || null;
+        const error = chunkResult.value.error;
+        if ( error ) {
+          if ( options.throwAPIGenerationErrors ) {
+            console.error( `Error in ${repo}:` );
+            throw error;
+          }
+          else {
+            errors[ repo ] = error;
+          }
         }
       } );
     }
@@ -148,6 +152,9 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     options.showProgressBar && showCommandLineProgress( 1, true );
 
     await browser.close();
+    if ( Object.keys( errors ).length > 0 ) {
+      console.error( 'Errors while generating PhET-iO APIs:', errors );
+    }
     return macroAPI;
   } );
 };

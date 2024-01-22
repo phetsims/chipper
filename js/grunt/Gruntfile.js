@@ -633,7 +633,8 @@ Updates the normal automatically-generated files for this repository. Includes:
       transpiler.transpileAll();
 
       const results = await generatePhetioMacroAPI( sims, {
-        showProgressBar: sims.length > 1
+        showProgressBar: sims.length > 1,
+        throwAPIGenerationErrors: false // Write as many as we can, and print what we didn't write
       } );
       sims.forEach( sim => {
         const dir = `../phet-io-sim-specific/repos/${sim}`;
@@ -645,7 +646,7 @@ Updates the normal automatically-generated files for this repository. Includes:
         }
         const filePath = `${dir}/${sim}-phet-io-api${grunt.option( 'temporary' ) ? '-temporary' : ''}.json`;
         const api = results[ sim ];
-        fs.writeFileSync( filePath, formatPhetioAPI( api ) );
+        api && fs.writeFileSync( filePath, formatPhetioAPI( api ) );
       } );
     } )
   );

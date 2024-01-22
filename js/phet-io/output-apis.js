@@ -32,12 +32,15 @@ const getSimList = require( '../common/getSimList' );
   const results = await generatePhetioMacroAPI( repos, {
     showProgressBar: true, // Interferes with file output
     chunkSize: chunkSize,
-    showMessagesFromSim: false // must be pure JSON
+    showMessagesFromSim: false, // must be pure JSON
+    throwAPIGenerationErrors: false // do the best we can
   } );
 
-  repos.forEach( repo =>
-    fs.writeFileSync(
+  repos.forEach( repo => {
+    const api = results[ repo ];
+    api && fs.writeFileSync(
       `../phet-io-sim-specific/repos/${repo}/${repo}-phet-io-api${args.includes( '--temporary' ) ? '-temporary' : ''}.json`,
       formatPhetioAPI( results[ repo ] )
-    ) );
+    );
+  } );
 } )();

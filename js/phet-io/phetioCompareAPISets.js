@@ -14,7 +14,7 @@ const assert = require( 'assert' );
  * Compare two sets of APIs using phetioCompareAPIs.
  *
  * @param {string[]} repos
- * @param {Object} proposedAPIs - map where key=repo, value=proposed API for that repo
+ * @param {Object} proposedAPIs - map where key=repo, value=proposed API for that repo, from generatePhetioMacroAPI()
  * @param {Object} [options]
  * @returns {boolean} ok
  */
@@ -33,6 +33,10 @@ module.exports = async ( repos, proposedAPIs, options ) => {
     // Fails on missing file or parse error.
     const referenceAPI = JSON.parse( fs.readFileSync( `../phet-io-sim-specific/repos/${repo}/${repo}-phet-io-api.json`, 'utf8' ) );
     const proposedAPI = proposedAPIs[ repo ];
+
+    if ( !proposedAPI ) {
+      throw new Error( `No proposedAPI for repo: ${repo}` );
+    }
 
     const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, {
       compareBreakingAPIChanges: options.compareBreakingAPIChanges,
