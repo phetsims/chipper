@@ -20,8 +20,8 @@ module.exports = function( context ) {
   // see getBadTextTester for schema.
   const forbiddenTextObject = [
     {
-      id: 'asserting values are instanceof or typeof in typescript is redundant',
-      regex: /assert && assert\((( \w+ instanceof \w+)|( typeof \w+ === '\w+'))/
+      id: 'asserting values are instanceof or typeof in TypeScript is redundant',
+      regex: /assert && assert\( ((\w+ instanceof \w+)|(typeof \w+ === '\w+'))(,| \))/
     }
   ];
 
