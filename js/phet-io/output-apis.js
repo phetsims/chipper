@@ -1,4 +1,4 @@
-// Copyright 2021-2022, University of Colorado Boulder
+// Copyright 2021-2024, University of Colorado Boulder
 
 const fs = require( 'fs' );
 const generatePhetioMacroAPI = require( './generatePhetioMacroAPI' );
