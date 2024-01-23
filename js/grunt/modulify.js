@@ -19,6 +19,7 @@ const getCopyrightLine = require( './getCopyrightLine' );
 const toLessEscapedString = require( '../common/toLessEscapedString' );
 const assert = require( 'assert' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
+const svgo = require( 'svgo' );
 
 // disable lint in compiled files, because it increases the linting time
 const HEADER = '/* eslint-disable */';
@@ -110,13 +111,29 @@ const modulifySVG = async ( abspath, repo, subdir, filename ) => {
 
   const fileContents = fs.readFileSync( abspath, 'utf-8' );
 
+  // Use SVGO to optimize the SVG contents, see https://github.com/phetsims/arithmetic/issues/201
+  const optimizedContents = svgo.optimize( fileContents, {
+    multipass: true,
+    plugins: [
+      {
+        name: 'preset-default',
+        params: {
+          overrides: {
+            // We can't scale things and get the right bounds if the view box is removed.
+            removeViewBox: false
+          }
+        }
+      }
+    ]
+  } ).data;
+
   const contents = `${HEADER}
 import asyncLoader from '${expandDots( abspath )}phet-core/js/asyncLoader.js';
 
 const image = new Image();
 const unlock = asyncLoader.createLock( image );
 image.onload = unlock;
-image.src = \`data:image/svg+xml;base64,\${btoa(${toLessEscapedString( fileContents )})}\`;
+image.src = \`data:image/svg+xml;base64,\${btoa(${toLessEscapedString( optimizedContents )})}\`;
 export default image;`;
 
   const tsFilename = convertSuffix( filename, '.ts' );
