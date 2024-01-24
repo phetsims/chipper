@@ -441,6 +441,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     wrapTask( async () => {
       const generateREADME = require( './generateREADME' );
       const fs = require( 'fs' );
+      const _ = require( 'lodash' );
 
       // support repos that don't have a phet object
       if ( !packageObject.phet ) {
@@ -449,18 +450,6 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       // modulify is graceful if there are no files that need modulifying.
       grunt.task.run( 'modulify' );
-
-      if ( packageObject.phet.runnable ) {
-        grunt.task.run( 'generate-development-html' );
-
-        if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
-          grunt.task.run( 'generate-a11y-view-html' );
-        }
-      }
-
-      if ( packageObject.phet.generatedUnitTests ) {
-        grunt.task.run( 'generate-test-html' );
-      }
 
       // update README.md only for simulations
       if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {
@@ -479,6 +468,37 @@ Updates the normal automatically-generated files for this repository. Includes:
           const overridesContent = '/* eslint-disable */\nwindow.phet.preloads.phetio.phetioElementsOverrides = {};';
           await writeFileAndGitAdd( repo, overridesFile, overridesContent );
         }
+
+        let simSpecificWrappers;
+        try {
+          // Populate sim-specific wrappers into the package.json
+          simSpecificWrappers = fs.readdirSync( `../phet-io-sim-specific/repos/${repo}/wrappers/`, { withFileTypes: true } )
+            .filter( dirent => dirent.isDirectory() )
+            .map( dirent => `phet-io-sim-specific/repos/${repo}/wrappers/${dirent.name}` );
+          if ( simSpecificWrappers.length > 0 ) {
+
+            packageObject.phet[ 'phet-io' ] = packageObject.phet[ 'phet-io' ] || {};
+            packageObject.phet[ 'phet-io' ].wrappers = _.uniq( simSpecificWrappers.concat( packageObject.phet[ 'phet-io' ].wrappers || [] ) );
+            grunt.file.write( 'package.json', JSON.stringify( packageObject, null, 2 ) );
+          }
+        }
+        catch( e ) {
+          if ( !e.message.includes( 'no such file or directory' ) ) {
+            throw e;
+          }
+        }
+      }
+
+      // The above code can mutate the package.json, so do these after
+      if ( packageObject.phet.runnable ) {
+        grunt.task.run( 'generate-development-html' );
+
+        if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
+          grunt.task.run( 'generate-a11y-view-html' );
+        }
+      }
+      if ( packageObject.phet.generatedUnitTests ) {
+        grunt.task.run( 'generate-test-html' );
       }
     } ) );
 

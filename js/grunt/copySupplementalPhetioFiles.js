@@ -354,7 +354,8 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
   const additionalWrappers = packageObject.phet && packageObject.phet[ 'phet-io' ] && packageObject.phet[ 'phet-io' ].wrappers ?
                              packageObject.phet[ 'phet-io' ].wrappers : [];
 
-  wrappers.push( ...additionalWrappers );
+  // phet-io-sim-specific wrappers are automatically added above
+  wrappers.push( ...additionalWrappers.filter( x => !x.includes( 'phet-io-sim-specific' ) ) );
 
   wrappers.forEach( wrapper => {
 
