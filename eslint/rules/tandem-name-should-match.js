@@ -20,9 +20,8 @@
  * 2. Templated variables:
  * tandem.createTandem( 'myArray${index}` )
  *
- * // TODO: support this case, https://github.com/phetsims/phet-io/issues/1947
- * 3. createTandem as an argument instead of in options:
- * const x = new Something( tandem.createTandem( 'notX' ) )
+ * // NOT SUPPORTED
+ * createTandem as an argument instead of in options: const x = new Something( tandem.createTandem( 'notX' ) )
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -90,10 +89,8 @@ const matchesNamingConvention = ( tandemName, variableName ) => {
 
   return ( tandemName === variableNameCamel ) ||
          ( tandemName === variableName ) ||
-         ( tandemName === 'tandemName' ) || // TODO: this is very strange, https://github.com/phetsims/phet-io/issues/1947
          ( '_' + tandemName === variableName );
 };
-
 
 /**
  *
@@ -157,7 +154,9 @@ function getCreateTandemCallArgument( node ) {
               case 'Literal':
                 return argument.value;
               case 'Identifier':
-                return argument.name;
+
+                // Variable names cannot be tested against. For instance, const myProperty = new Property({tandem:myTandemVariable}) should never match.
+                return null;
               default:
                 return null;
             }
