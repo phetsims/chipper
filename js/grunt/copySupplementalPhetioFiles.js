@@ -337,12 +337,6 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
     simSpecificWrappers = fs.readdirSync( `../phet-io-sim-specific/repos/${repo}/wrappers/`, { withFileTypes: true } )
       .filter( dirent => dirent.isDirectory() )
       .map( dirent => `phet-io-sim-specific/repos/${repo}/wrappers/${dirent.name}` );
-
-    if ( simSpecificWrappers.length > 0 ) {
-
-      const results = await tsc( '../phet-io-sim-specific' );
-      reportTscResults( results, grunt );
-    }
   }
   catch( e ) {
     simSpecificWrappers = [];
