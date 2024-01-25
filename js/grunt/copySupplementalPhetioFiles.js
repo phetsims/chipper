@@ -1,4 +1,4 @@
-// Copyright 2016-2023, University of Colorado Boulder
+// Copyright 2016-2024, University of Colorado Boulder
 
 /**
  * Copies all supporting PhET-iO files, including wrappers, indices, lib files, etc.
