@@ -207,6 +207,7 @@ Runnable build options:
  --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales
  --noTranspile - Flag to opt out of transpiling repos before build. This should only be used if you are confident that chipper/dist is already correct (to save time).
  --noTSC - Flag to opt out of type checking before build. This should only be used if you are confident that TypeScript is already errorless (to save time).
+ --encodeStringMap=false - Disables the encoding of the string map in the built file. This is useful for debugging.
  
 Minify-specific options: 
  --minify.babelTranspile=false - Disables babel transpilation phase.
@@ -293,7 +294,7 @@ Minify-specific options:
 
           // Other options
           const allHTML = !!grunt.option( 'allHTML' );
-          const encodeStringMap = !!grunt.option( 'encodeStringMap' );
+          const encodeStringMap = grunt.option( 'encodeStringMap' ) !== false;
           const compressScripts = !!grunt.option( 'compressScripts' );
           const profileFileSize = !!grunt.option( 'profileFileSize' );
           const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
