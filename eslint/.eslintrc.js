@@ -1638,6 +1638,25 @@ module.exports = {
     GPUStorageTextureAccess: 'readonly',
     GPUBufferBindingType: 'readonly',
     GPUTextureSampleType: 'readonly',
-    GPUBufferBinding: 'readonly'
+    GPUBufferBinding: 'readonly',
+    GPURequestAdapterOptions: 'readonly',
+    GPUDeviceDescriptor: 'readonly',
+    GPUBufferDescriptor: 'readonly',
+    GPUQueue: 'readonly',
+    GPUQuerySetDescriptor: 'readonly',
+    GPUAdapter: 'readonly',
+    GPUMapModeFlags: 'readonly',
+    GPUPipelineLayoutDescriptor: 'readonly',
+    GPUCommandEncoderDescriptor: 'readonly',
+    GPUCommandBuffer: 'readonly',
+    GPUBindGroupDescriptor: 'readonly',
+    GPUBindGroupLayoutDescriptor: 'readonly',
+    GPUShaderModuleDescriptor: 'readonly',
+    GPURenderPassDescriptor: 'readonly',
+    GPURenderPassEncoder: 'readonly',
+    GPUCommandBufferDescriptor: 'readonly',
+    GPUImageCopyBuffer: 'readonly',
+    GPUImageCopyTexture: 'readonly',
+    GPUExtent3DStrict: 'readonly'
   }
 };
