@@ -1657,6 +1657,8 @@ module.exports = {
     GPUCommandBufferDescriptor: 'readonly',
     GPUImageCopyBuffer: 'readonly',
     GPUImageCopyTexture: 'readonly',
-    GPUExtent3DStrict: 'readonly'
+    GPUExtent3DStrict: 'readonly',
+    GPUSampler: 'readonly',
+    GPUExternalTexture: 'readonly'
   }
 };
