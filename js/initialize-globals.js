@@ -477,8 +477,7 @@
       public: true,
       type: 'string',
       validValues: packageSimFeatures.supportedRegionsAndCultures || [ null ],
-      defaultValue: packageSimFeatures.supportedRegionsAndCultures &&
-                    packageSimFeatures.supportedRegionsAndCultures[ 0 ] ?
+      defaultValue: packageSimFeatures.supportedRegionsAndCultures?.[ 0 ] ?
                     packageSimFeatures.supportedRegionsAndCultures[ 0 ] : null
     },
 
