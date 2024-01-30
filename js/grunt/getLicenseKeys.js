@@ -10,6 +10,7 @@
 
 const _ = require( 'lodash' );
 const getPreloads = require( './getPreloads' );
+const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries' );
 const grunt = require( 'grunt' );
 
 /**
@@ -40,9 +41,12 @@ module.exports = function( repo, brand ) {
     }
   } );
 
-  // Extract keys from preload for sherpa (third-party) dependencies
-  preload.forEach( path => {
-    if ( path.indexOf( '/sherpa/' ) !== -1 ) {
+  // Extract keys from preloads and webpack-supported imports for
+  // sherpa (third-party) dependencies.
+  const allPaths = preload.concat( Object.values( webpackGlobalLibraries ).map( path => `../${path}` ) );
+
+  allPaths.forEach( path => {
+    if ( path.includes( '/sherpa/' ) ) {
       const lastSlash = path.lastIndexOf( '/' );
       const key = path.substring( lastSlash + 1 );
       licenseKeys.push( key );
