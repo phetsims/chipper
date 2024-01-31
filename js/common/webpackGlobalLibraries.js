@@ -1,4 +1,4 @@
-// Copyright 2023, University of Colorado Boulder
+// Copyright 2023-2024, University of Colorado Boulder
 
 /**
  * webpackGlobalLibraries define the third party library files that load with a global. These must be here to support
