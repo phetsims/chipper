@@ -24,6 +24,7 @@
 ../phet-io-wrappers/common/html/standardPhetioWrapperTemplateSkeleton.html
 ../binder/docs/
 ../chipper/dist
+../phet-lib/
 ../scenery/js/display/swash/pkg
 ../scenery/js/display/guillotiere/pkg
 ../alpenglow/doc/lib/
