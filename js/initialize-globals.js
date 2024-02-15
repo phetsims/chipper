@@ -1125,6 +1125,7 @@
       supportsInteractiveDescription: { type: 'boolean' },
       supportsVoicing: { type: 'boolean' },
       supportsInteractiveHighlights: { type: 'boolean' },
+      supportsDescriptionPlugin: { type: 'boolean' },
       supportsSound: { type: 'boolean' },
       supportsExtraSound: { type: 'boolean' },
       supportsDynamicLocale: { type: 'boolean' },
