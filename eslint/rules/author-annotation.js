@@ -1,6 +1,10 @@
 // Copyright 2024, University of Colorado Boulder
 
 const path = require( 'path' );
+const _ = require( 'lodash' );
+
+// Files (or any "endsWith"-testable path) that don't need author annotations
+const NO_AUTHOR_NEEDED = [ 'Gruntfile.js', 'Gruntfile.cjs' ];
 
 /**
  * Lint detector that requires each file to list at least one @author annotation.
@@ -30,9 +34,8 @@ module.exports = {
           return;
         }
 
-        // get the filename for the path
-        if ( filename.endsWith( 'Gruntfile.js' ) ) {
-          // Skip linting for Gruntfile.js
+        if ( _.some( NO_AUTHOR_NEEDED, noAuthorNeeded => filename.endsWith( noAuthorNeeded ) ) ) {
+          // Skip linting if author isn't needed
           return;
         }
 
