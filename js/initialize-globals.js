@@ -269,7 +269,7 @@
     // Private Doc:  For external use. The below jsdoc is public to the PhET-iO API documentation. Change wisely.
     /**
      * Indicates whether to display the home screen.
-     * For multi-screen sims only, throws an assertion error if supplied for a single-screen sim.
+     * For multiscreen sims only, throws an assertion error if supplied for a single-screen sim.
      * @memberOf PhetQueryParameters
      * @type {boolean}
      */
@@ -284,7 +284,7 @@
     /**
      * Specifies the initial screen that will be visible when the sim starts.
      * See `?screens` query parameter for screen numbering.
-     * For multi-screen sims only, throws an assertion error if applied in a single-screen sims.
+     * For multiscreen sims only, throws an assertion error if applied in a single-screen sims.
      * The default value of 0 is the home screen.
      * @memberOf PhetQueryParameters
      * @type {number}
@@ -376,7 +376,7 @@
     /**
      * Enables transforming the PDOM for accessibility on mobile devices. This work is experimental, and still hidden
      * in a scenery branch pdom-transform. Must be used in combination with the accessibility query parameter, or
-     * on a sim that has accessibility enabled by default. This query parameter is not intended to be long lived,
+     * on a sim that has accessibility enabled by default. This query parameter is not intended to be long-lived,
      * in the future these features should be always enabled in the scenery a11y framework.
      * See https://github.com/phetsims/scenery/issues/852
      *
@@ -575,7 +575,7 @@
     showPointers: { type: 'flag' },
 
     /**
-     * Shows the visible bounds in ScreenView.js, for debugging the layout outside of the "dev" bounds
+     * Shows the visible bounds in ScreenView.js, for debugging the layout outside the "dev" bounds
      */
     showVisibleBounds: { type: 'flag' },
 
@@ -630,7 +630,7 @@
      * model.step, view.step, and anything else that is controlled from Sim.stepSimulation.
      * Normal speed is 1. Larger values make time go faster, smaller values make time go slower.
      * For example, ?speed=0.5 is half the normal speed.
-     * Useful for testing multi-touch, so that objects are easier to grab while they're moving.
+     * Useful for testing multitouch, so that objects are easier to grab while they're moving.
      * For internal use only, not public facing.
      */
     speed: {
