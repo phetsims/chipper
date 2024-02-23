@@ -361,7 +361,7 @@
 
     /**
      * Sets a maximum "memory" limit (in MB). If the simulation's running average of memory usage goes over this amount
-     * in operation (as determined currently by using Chome's window.performance), then an error will be thrown.
+     * in operation (as determined currently by using Chrome's window.performance), then an error will be thrown.
      *
      * This is useful for continuous testing, to ensure we aren't leaking huge amounts of memory, and can also be used
      * with the Chrome command-line flag --enable-precise-memory-info to make the determination more accurate.
@@ -386,7 +386,7 @@
      */
     mobileA11yTest: { type: 'flag' },
 
-    /**
+    /**p
      * If this is a finite number AND assertions are enabled, it will track maximum Node parent counts, and
      * will assert that the count is not greater than the limit.
      */
