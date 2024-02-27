@@ -68,6 +68,7 @@
     "../../../magnet-and-compass/js/**/*",
     "../../../magnets-and-electromagnets/js/**/*",
     "../../../mean-share-and-balance/js/**/*",
+    "../../../mean-share-and-balance/images/**/*",
     "../../../mobius/js/**/*",
     "../../../models-of-the-hydrogen-atom/js/**/*",
     "../../../molecule-polarity/js/**/*",
