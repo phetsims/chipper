@@ -11,6 +11,7 @@
 const _ = require( 'lodash' );
 const createMipmap = require( './createMipmap' );
 const fs = require( 'fs' );
+const path = require( 'path' );
 const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const pascalCase = require( '../common/pascalCase' );
@@ -336,6 +337,100 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename, repo ) => {
 };
 
 /**
+ * Creates the image module at js/${_.camelCase( repo )}Images.js for repos that need it.
+ *
+ * @param {string} repo
+ * @param {string[]} supportedRegionsAndCultures
+ * @returns {Promise<void>}
+ */
+const createImageModule = async ( repo, supportedRegionsAndCultures ) => {
+  const spec = grunt.file.readJSON( `../${repo}/${repo}-images.json` );
+  const namespace = _.camelCase( repo );
+  const imageModuleName = `${pascalCase( repo )}Images`;
+  const relativeImageModuleFile = `js/${namespace}Images.ts`;
+
+  const providedRegionsAndCultures = Object.keys( spec );
+
+  // Ensure our regionAndCultures in the -images.json file match with the supportedRegionsAndCultures in the package.json
+  supportedRegionsAndCultures.forEach( regionAndCulture => {
+    if ( !providedRegionsAndCultures.includes( regionAndCulture ) ) {
+      throw new Error( `regionAndCulture '${regionAndCulture}' is required, but not found in ${repo}-images.json` );
+    }
+  } );
+  providedRegionsAndCultures.forEach( regionAndCulture => {
+    if ( !supportedRegionsAndCultures.includes( regionAndCulture ) ) {
+      throw new Error( `regionAndCulture '${regionAndCulture}' is not supported, but found in ${repo}-images.json` );
+    }
+  } );
+
+  const imageNames = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
+    return Object.keys( spec[ regionAndCulture ] );
+  } ) ).sort();
+
+  const imageFiles = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
+    return Object.values( spec[ regionAndCulture ] );
+  } ) ).sort();
+
+  // Do images exist?
+  imageFiles.forEach( imageFile => {
+    if ( !fs.existsSync( `../${repo}/${imageFile}` ) ) {
+      throw new Error( `Image file ${imageFile} is referenced in ${repo}-images.json, but does not exist` );
+    }
+  } );
+
+  // Ensure that all image names are provided for all regionAndCultures
+  providedRegionsAndCultures.forEach( regionAndCulture => {
+    imageNames.forEach( imageName => {
+      if ( !spec[ regionAndCulture ].hasOwnProperty( imageName ) ) {
+        throw new Error( `Image name ${imageName} is not provided for regionAndCulture ${regionAndCulture} (but provided for others)` );
+      }
+    } );
+  } );
+
+  const getImportName = imageFile => path.basename( imageFile, path.extname( imageFile ) );
+
+  // Check that import names are unique
+  // NOTE: we could disambiguate in the future in an automated way fairly easily, but should it be done?
+  if ( _.uniq( imageFiles.map( getImportName ) ).length !== imageFiles.length ) {
+    // Find and report the name collision
+    const importNames = imageFiles.map( getImportName );
+    const duplicates = importNames.filter( ( name, index ) => importNames.indexOf( name ) !== index );
+    if ( duplicates.length ) { // sanity check!
+      const firstDuplicate = duplicates[ 0 ];
+      const originalNames = imageFiles.filter( imageFile => getImportName( imageFile ) === firstDuplicate );
+      throw new Error( `Multiple images result in the same import name ${firstDuplicate}: ${originalNames.join( ', ' )}` );
+    }
+  }
+
+  console.log( imageNames );
+  console.log( imageFiles );
+
+  const copyrightLine = await getCopyrightLine( repo, relativeImageModuleFile );
+  await writeFileAndGitAdd( repo, relativeImageModuleFile, fixEOL(
+    `${copyrightLine}
+
+/**
+ * Auto-generated from modulify, DO NOT manually modify.
+ */
+/* eslint-disable */
+import LocalizedImageProperty from '../../joist/js/i18n/LocalizedImageProperty.js';
+import ${namespace} from './${namespace}.js';
+${imageFiles.map( imageFile => `import ${getImportName( imageFile )} from '../${imageFile.replace( '.ts', '.js' )}';` ).join( '\n' )}
+
+const ${imageModuleName} = {
+  ${imageNames.map( imageName =>
+  `${imageName}: new LocalizedImageProperty( '${imageName}', {
+    ${supportedRegionsAndCultures.map( regionAndCulture => `${regionAndCulture}: ${getImportName( spec[ regionAndCulture ][ imageName ] )}` ).join( ',\n    ' )}
+  } )` ).join( ',\n  ' )}
+};
+
+${namespace}.register( '${imageModuleName}', ${imageModuleName} );
+
+export default ${imageModuleName};
+` ) );
+};
+
+/**
  * Creates the string module at js/${_.camelCase( repo )}Strings.js for repos that need it.
  * @public
  *
@@ -467,12 +562,27 @@ const modulify = async repo => {
     await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename, repo );
   }
 
-
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-  if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
 
-    // Update the strings module file
+  // Strings module file
+  if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
     await createStringModule( repo );
+  }
+
+  // Images module file (localized images)
+  if ( fs.existsSync( `../${repo}/${repo}-images.json` ) ) {
+    const supportedRegionsAndCultures = packageObject?.phet?.simFeatures?.supportedRegionsAndCultures;
+
+    if ( !supportedRegionsAndCultures ) {
+      throw new Error( `supportedRegionsAndCultures is not defined in package.json, but ${repo}-images.json exists` );
+    }
+
+    if ( !supportedRegionsAndCultures.includes( 'usa' ) ) {
+      throw new Error( 'regionAndCulture \'usa\' is required, but not found in supportedRegionsAndCultures' );
+    }
+
+    // Update the images module file
+    await createImageModule( repo, supportedRegionsAndCultures );
   }
 };
 
