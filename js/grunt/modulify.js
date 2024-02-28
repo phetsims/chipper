@@ -578,8 +578,14 @@ const modulify = async repo => {
       throw new Error( 'regionAndCulture \'usa\' is required, but not found in supportedRegionsAndCultures' );
     }
 
+    if ( supportedRegionsAndCultures.includes( 'multi' ) && supportedRegionsAndCultures.length < 3 ) {
+      throw new Error( 'regionAndCulture \'multi\' is supported, but there are not enough regionAndCultures to support it' );
+    }
+
+    const concreteRegionsAndCultures = supportedRegionsAndCultures.filter( regionAndCulture => regionAndCulture !== 'multi' );
+    
     // Update the images module file
-    await createImageModule( repo, supportedRegionsAndCultures );
+    await createImageModule( repo, concreteRegionsAndCultures );
   }
 };
 
