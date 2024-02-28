@@ -402,9 +402,6 @@ const createImageModule = async ( repo, supportedRegionsAndCultures ) => {
     }
   }
 
-  console.log( imageNames );
-  console.log( imageFiles );
-
   const copyrightLine = await getCopyrightLine( repo, relativeImageModuleFile );
   await writeFileAndGitAdd( repo, relativeImageModuleFile, fixEOL(
     `${copyrightLine}
