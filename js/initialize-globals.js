@@ -486,7 +486,7 @@
     regionAndCulture: {
       public: true,
       type: 'string',
-      defaultValue: 'usa'
+      defaultValue: packagePhet?.simFeatures?.defaultRegionAndCulture ?? 'usa'
     },
 
     /**
@@ -1129,6 +1129,7 @@
       supportsDynamicLocale: { type: 'boolean' },
       colorProfiles: { type: 'array' },
       supportedRegionsAndCultures: { type: 'array' },
+      defaultRegionAndCulture: { type: 'string' },
       strictAxonDependencies: { type: 'boolean' }
     };
 
