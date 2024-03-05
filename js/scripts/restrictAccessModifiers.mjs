@@ -47,8 +47,6 @@ async function restrictAccessModifiers( repoPath ) {
   } );
 
   const sourceFiles = project.getSourceFiles( `${repoPath}/js/**/*.ts` ); // Adjust the glob pattern as necessary
-  // console.log( sourceFiles.join( '\n' ) );
-
 
   for ( const sourceFile of sourceFiles ) {
     const classes = sourceFile.getClasses();
@@ -68,22 +66,19 @@ async function restrictAccessModifiers( repoPath ) {
 
         console.log( member.getScope() + ' ' + member.getName() );
 
-        if ( member.getScope() === 'public' || member.getScope() === 'protected' ) { // Correct way to check for public modifier using ts-morph
-          // console.log( `  Found public member: ${member.getName()}, attempting to set to private.` );
+        if ( member.getScope() === 'public' || member.getScope() === 'protected' ) {
 
           // Try setting to private
           member.setScope( 'private' );
           await sourceFile.save();
 
           if ( !isBuildSuccessful() ) {
-            // console.log( `    Setting ${member.getName()} to private failed, attempting to set to protected.` );
 
             // If not successful, try protected
             member.setScope( 'protected' );
             await sourceFile.save();
 
             if ( !isBuildSuccessful() ) {
-              // console.log( `    Setting ${member.getName()} to protected failed, reverting to public.` );
 
               // If still not successful, revert to public
               member.setScope( 'public' );
@@ -99,9 +94,6 @@ async function restrictAccessModifiers( repoPath ) {
         }
       }
     }
-
-    // Optionally save the changes here if needed
-    await sourceFile.save();
   }
 }
 
@@ -160,12 +152,11 @@ function isBuildSuccessful() {
     } );
 
     // If tsc exits without error, the build is successful
-    // console.log( 'Build successful' );
     return true;
   }
   catch( error ) {
+
     // If tsc exits with an error (non-zero exit code), the build failed
-    // console.error( 'TypeScript compilation failed' );
     return false;
   }
 }
