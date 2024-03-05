@@ -347,7 +347,7 @@ const createImageModule = async ( repo, supportedRegionsAndCultures ) => {
   const spec = grunt.file.readJSON( `../${repo}/${repo}-images.json` );
   const namespace = _.camelCase( repo );
   const imageModuleName = `${pascalCase( repo )}Images`;
-  const relativeImageModuleFile = `js/${namespace}Images.ts`;
+  const relativeImageModuleFile = `js/${imageModuleName}.ts`;
 
   const providedRegionsAndCultures = Object.keys( spec );
 
@@ -416,7 +416,7 @@ ${imageFiles.map( imageFile => `import ${getImportName( imageFile )} from '../${
 
 const ${imageModuleName} = {
   ${imageNames.map( imageName =>
-  `${imageName}: new LocalizedImageProperty( '${imageName}', {
+  `${imageName}ImageProperty: new LocalizedImageProperty( '${imageName}', {
     ${supportedRegionsAndCultures.map( regionAndCulture => `${regionAndCulture}: ${getImportName( spec[ regionAndCulture ][ imageName ] )}` ).join( ',\n    ' )}
   } )` ).join( ',\n  ' )}
 };
