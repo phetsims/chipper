@@ -55,6 +55,7 @@
     "svgo": "~3.2.0",
     "taffydb": "~2.7.3",
     "terser": "~4.6.4",
+    "ts-morph": "^21.0.1",
     "typescript": "~5.3.3",
     "webpack": "~5.76.3",
     "webpack-cli": "~5.0.0",
