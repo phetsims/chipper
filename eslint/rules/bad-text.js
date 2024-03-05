@@ -99,6 +99,8 @@ module.exports = function( context ) {
       regex: /youtube(?:(?!-nocookie).)*\.com/
     },
 
+    '../phet-lib/js/phet-lib-only-imports', // use direct imports
+
     'Util = require( \'', // Utils should now be plural, see https://github.com/phetsims/tasks/issues/966
 
     // if on a one line arrow function returning something, prefer instead `() => theReturn`, see https://github.com/phetsims/chipper/issues/790
