@@ -480,9 +480,11 @@
       defaultValue: Math.random() // eslint-disable-line bad-sim-text
     },
 
-    // This query parameter sets the default region and culture portrayal for the sim. This changes the artwork for
-    // the portrayals that appear throughout the sim. It most often works in correlation to a sim Preference where
-    // You can change from the default after the sim has launched. See RegionAndCulturePortrayal
+    /*
+     * Sets the default for the Region and Culture feature. The set of valid values is determined by
+     * "supportedRegionsAndCulturesValues" in package.json. If not provided in the URL, the default can
+     * be set via "defaultRegionAndCulture" in package.json, which defaults to 'usa'.
+     */
     regionAndCulture: {
       public: true,
       type: 'string',
