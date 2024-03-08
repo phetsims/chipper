@@ -582,7 +582,7 @@ const modulify = async repo => {
       throw new Error( 'regionAndCulture \'multi\' is supported, but there are not enough regionAndCultures to support it' );
     }
 
-    const concreteRegionsAndCultures = supportedRegionsAndCultures.filter( regionAndCulture => regionAndCulture !== 'multi' );
+    const concreteRegionsAndCultures = supportedRegionsAndCultures.filter( regionAndCulture => regionAndCulture !== 'random' );
     
     // Update the images module file
     await createImageModule( repo, concreteRegionsAndCultures );
