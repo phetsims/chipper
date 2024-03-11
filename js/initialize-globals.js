@@ -189,6 +189,11 @@
     },
 
     /**
+     * Force Scenery to refresh SVG contents every frame (to help detect rendering/browser-repaint issues with SVG).
+     */
+    forceSVGRefresh: { type: 'flag' },
+
+    /**
      * Randomly sends mouse events and touch events to sim.
      */
     fuzz: { type: 'flag' },
