@@ -64,8 +64,9 @@ module.exports = function getPhetLibs( repo, brand ) {
     }
 
     // wrappers are also marked as phetLibs, so we can get their shas without listing them twice
-    if ( brand === 'phet-io' && packageObject.phet && packageObject.phet[ brand ] ) {
-      phetLibs = phetLibs.concat( packageObject.phet[ brand ].wrappers || [] );
+    if ( brand === 'phet-io' && packageObject.phet && packageObject.phet[ brand ] && packageObject.phet[ brand ].wrappers ) {
+      const wrapperRepos = ( packageObject.phet[ brand ].wrappers ).filter( wrapper => !wrapper.startsWith( 'phet-io-sim-specific' ) );
+      phetLibs = phetLibs.concat( wrapperRepos );
     }
 
     // sort and remove duplicates
