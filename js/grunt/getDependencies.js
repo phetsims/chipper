@@ -14,6 +14,11 @@ const execute = require( '../../../perennial-alias/js/common/execute' );
 const getPhetLibs = require( './getPhetLibs' );
 const grunt = require( 'grunt' );
 
+// Our definition of an allowed simName is defined in the buildServer: https://github.com/phetsims/perennial/blob/78025b7ae6064e9ab5260cea5e532f3bf24c3ec8/js/build-server/taskWorker.js#L99-L98
+// We don't want to be this strict though, because 3rd parties are allowed to name sims to be whatever they want. So
+// for the purposes of dependencies, we just need to make sure it is a name, and not a path.
+const simNameRegex = /^[^/]+$/;
+
 /**
  * Returns an object in the dependencies.json format. Keys are repo names (or 'comment'). Repo keys have 'sha' and 'branch' fields.
  * @public
@@ -21,7 +26,7 @@ const grunt = require( 'grunt' );
  * @param {string} repo
  * @returns {Promise.<Object>} - In the dependencies.json format. JSON.stringify if you want to output to a file
  */
-module.exports = async function( repo ) {
+module.exports = async function getDependencies( repo ) {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const version = packageObject.version;
@@ -41,7 +46,10 @@ module.exports = async function( repo ) {
   for ( const dependency of dependencies ) {
     assert( !dependenciesInfo.dependency, `there was already a dependency named ${dependency}` );
 
-    if ( !grunt.file.exists( `../${dependency}` ) ) {
+    if ( !simNameRegex.test( dependency ) ) {
+      throw new Error( `Dependency name is not valid: ${dependency}` );
+    }
+    else if ( !grunt.file.exists( `../${dependency}` ) ) {
       if ( mainDependencies.includes( dependency ) ) {
         throw new Error( `Dependency not found: ${dependency}` );
       }
