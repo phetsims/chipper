@@ -112,6 +112,10 @@ const modulifySVG = async ( abspath, repo, subdir, filename ) => {
 
   const fileContents = fs.readFileSync( abspath, 'utf-8' );
 
+  if ( !fileContents.includes( 'width="' ) || !fileContents.includes( 'height="' ) ) {
+    throw new Error( `SVG file ${abspath} does not contain width and height attributes` );
+  }
+
   // Use SVGO to optimize the SVG contents, see https://github.com/phetsims/arithmetic/issues/201
   const optimizedContents = svgo.optimize( fileContents, {
     multipass: true,
