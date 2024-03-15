@@ -493,7 +493,8 @@
     regionAndCulture: {
       public: true,
       type: 'string',
-      defaultValue: packagePhet?.simFeatures?.defaultRegionAndCulture ?? 'usa'
+      defaultValue: packagePhet?.simFeatures?.defaultRegionAndCulture ?? 'usa',
+      validValues: packagePhet?.simFeatures?.supportedRegionsAndCultures ?? [ 'usa' ] // default value must be in validValues
     },
 
     /**
