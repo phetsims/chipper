@@ -155,7 +155,8 @@
      */
     ga4: {
       type: 'string',
-      defaultValue: null
+      defaultValue: null,
+      public: true
     },
 
     /**
@@ -371,6 +372,15 @@
     webgl: {
       type: 'boolean',
       defaultValue: true
+    },
+
+    /**
+     * Indicates whether yotta analytics are enabled.
+     */
+    yotta: {
+      type: 'boolean',
+      defaultValue: true,
+      public: true
     }
   };
 
