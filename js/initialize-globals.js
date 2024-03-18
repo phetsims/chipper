@@ -206,7 +206,8 @@
      */
     ga4: {
       type: 'string',
-      defaultValue: null
+      defaultValue: null,
+      public: true
     },
 
     /**
@@ -620,6 +621,15 @@
       type: 'string',
       validValues: [ null, 'true', 'false' ],
       defaultValue: null
+    },
+
+    /**
+     * Indicates whether yotta analytics are enabled.
+     */
+    yotta: {
+      type: 'boolean',
+      defaultValue: true,
+      public: true
     }
   };
 
