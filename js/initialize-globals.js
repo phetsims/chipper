@@ -136,8 +136,7 @@
      */
     ga4: {
       type: 'string',
-      defaultValue: null,
-      public: true
+      defaultValue: null
     },
 
     // Launches the game-up-camera code which delivers images to requests in BrainPOP/Game Up/SnapThought
@@ -354,8 +353,7 @@
      */
     yotta: {
       type: 'boolean',
-      defaultValue: true,
-      public: true
+      defaultValue: true
     }
   };
 
