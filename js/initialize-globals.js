@@ -155,8 +155,7 @@
      */
     ga4: {
       type: 'string',
-      defaultValue: null,
-      public: true
+      defaultValue: null
     },
 
     /**
@@ -407,8 +406,7 @@
      */
     yotta: {
       type: 'boolean',
-      defaultValue: true,
-      public: true
+      defaultValue: true
     }
   };
 
