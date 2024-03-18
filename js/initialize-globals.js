@@ -271,6 +271,14 @@
     webgl: {
       type: 'flag',
       defaultValue: true
+    },
+
+    /**
+     * Indicates whether yotta analytics are enabled.
+     */
+    yotta: {
+      type: 'boolean',
+      defaultValue: true
     }
   };
 
