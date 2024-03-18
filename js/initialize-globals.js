@@ -209,7 +209,8 @@
      */
     ga4: {
       type: 'string',
-      defaultValue: null
+      defaultValue: null,
+      public: true
     },
 
     /**
@@ -633,6 +634,15 @@
     supportsPanAndZoom: {
       type: 'boolean',
       defaultValue: packageObject.phet.supportsPanAndZoom === undefined || packageObject.phet.supportsPanAndZoom,
+      public: true
+    },
+
+    /**
+     * Indicates whether yotta analytics are enabled.
+     */
+    yotta: {
+      type: 'boolean',
+      defaultValue: true,
       public: true
     }
   };
