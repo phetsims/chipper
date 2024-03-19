@@ -232,6 +232,9 @@
     "window": false,
     // allow ajax requests directly
     "XMLHttpRequest": false,
-    "toast": false
+    "toast": false,
+
+    // Missing from globals 8.x, see https://github.com/phetsims/phetcommon/issues/65
+    "URLSearchParams": false
   }
 }
