@@ -132,6 +132,8 @@
 
     // read-only globals ---------------------------------
 
+    // Missing from globals 8.x, see https://github.com/phetsims/phetcommon/issues/65
+    "URLSearchParams": false,
     // require.js
     "define": false,
     // require.js
