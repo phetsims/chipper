@@ -1,12 +1,13 @@
-// Copyright 2022-2023, University of Colorado Boulder
+// Copyright 2022-2024, University of Colorado Boulder
 
 /**
- * Runs the lint rules on the specified files.
+ * Runs the eslint process specified repos. There is a fair amount of complexity below, see lint() function for
+ * supported options.
+ *
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-
 
 // modules
 const _ = require( 'lodash' );
@@ -17,6 +18,8 @@ const disableWithComment = require( './disableWithComment' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 const CacheLayer = require( '../common/CacheLayer' );
 const crypto = require( 'crypto' );
+const path = require( 'path' );
+const { Worker } = require( 'worker_threads' ); // eslint-disable-line require-statement-match
 
 // constants
 const EXCLUDE_REPOS = [ 'binder', 'fenster', 'decaf', 'scenery-lab-demo' ];
@@ -86,14 +89,15 @@ const lintOneRepo = async ( repo, options ) => {
     errorOnUnmatchedPattern: false
   };
 
-  const cacheKey = `lintRepo#${repo}`;
+  // For PhET's custom cache, see CacheLayer
+  const cacheLayerKey = `lintRepo#${repo}`;
 
-  if ( options.cache && CacheLayer.isCacheSafe( cacheKey ) ) {
-    // console.log( 'lint cache hit: ' + cacheKey );
+  if ( options.cache && CacheLayer.isCacheSafe( cacheLayerKey ) ) {
+    // console.log( 'lint cache hit: ' + cacheLayerKey );
     return [];
   }
   else {
-    // console.log( 'lint cache fail: ' + cacheKey );
+    // console.log( 'lint cache fail: ' + cacheLayerKey );
   }
 
   const config = {};
@@ -112,7 +116,7 @@ const lintOneRepo = async ( repo, options ) => {
   const totalWarnings = _.sum( results.map( result => result.warningCount ) );
   const totalErrors = _.sum( results.map( result => result.errorCount ) );
   if ( options.cache && totalWarnings === 0 && totalErrors === 0 ) {
-    CacheLayer.onSuccess( cacheKey );
+    CacheLayer.onSuccess( cacheLayerKey );
   }
 
   if ( options.inProgressErrorLogging && totalWarnings + totalErrors > 0 ) {
@@ -139,7 +143,7 @@ const lint = async ( repos, options ) => {
 
   options = _.merge( {
     cache: true,
-    format: false, // append an extra set of rules for formatting code.
+    format: false, // append an extra set of rules for formatting code. TODO: remove this option, these are inside the main rules now, https://github.com/phetsims/chipper/issues/1415
     fix: false, // whether fixes should be written to disk
     chipAway: false, // returns responsible dev info for easier chipping.
     disableWithComment: false, // replaces failing typescript lines with eslint disable and related comment
@@ -158,14 +162,31 @@ const lint = async ( repos, options ) => {
     options.showProgressBar && repos.length > 1 && showCommandLineProgress( i / repos.length, false );
 
     try {
-      const results = await lintOneRepo( repos[ i ], {
-        cache: options.cache,
-        format: options.format,
-        fix: options.fix,
-        inProgressErrorLogging: inProgressErrorLogging
+
+      const myPromise = new Promise( ( resolve, reject ) => {
+        const worker = new Worker( path.join( __dirname, '/lintWorker.js' ) );
+        worker.on( 'message', resolve );
+        worker.on( 'error', reject );
+        worker.on( 'exit', code => {
+          if ( code !== 0 ) {
+            reject( new Error( `Lint Worker stopped with exit code ${code}` ) );
+          }
+        } );
+
+        worker.postMessage( {
+          repo: repos[ i ],
+          options: {
+            cache: options.cache,
+            format: options.format,
+            fix: options.fix,
+            inProgressErrorLogging: inProgressErrorLogging
+          }
+        } );
       } );
 
-      allResults.push( ...results );
+      const result = await myPromise;
+
+      allResults.push( ...result );
     }
     catch( e ) {
       console.error( e ); // make sure that the error ends up on stderr
@@ -218,5 +239,9 @@ const lint = async ( repos, options ) => {
 // Mark the version so that the pre-commit hook will only try to use the promise-based API, this means
 // it won't run lint precommit hook on SHAs before the promise-based API
 lint.chipperAPIVersion = 'promisesPerRepo1';
+
+// only used by the lintWorker.js, please don't use this.
+// TODO: Is there a better way to expose this? https://github.com/phetsims/chipper/issues/1415
+lint.lintOneRepo = lintOneRepo;
 
 module.exports = lint;
