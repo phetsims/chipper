@@ -10,8 +10,8 @@
 const lint = require( './lint' );
 const { parentPort } = require( 'worker_threads' ); // eslint-disable-line require-statement-match
 
-parentPort.on( 'message', async ( { repo, options } ) => {
-  const result = await lint.lintOneRepo( repo, options );
+parentPort.on( 'message', async messageData => {
+  const result = await lint.lintReposFromWorker( messageData.repos, messageData.options );
   parentPort.postMessage( result );
 
   // We have completed our task. Very important to exit fully here to prevent memory leaks caused by our linting library. See https://github.com/phetsims/chipper/issues/1415

@@ -43,7 +43,6 @@ async function consoleLogResults( results ) {
  * @returns {Promise<Object>} - results from linting files, see ESLint.lintFiles
  */
 const lintOneRepo = async ( repo, options ) => {
-
   options = _.assignIn( {
     cache: true,
     fix: false,
@@ -120,11 +119,30 @@ const lintOneRepo = async ( repo, options ) => {
   }
 
   if ( options.inProgressErrorLogging && totalWarnings + totalErrors > 0 ) {
+
+    // TODO: why did aqua have this? https://github.com/phetsims/chipper/issues/1415
     console.log( `\n\n${repo}:` );
     await consoleLogResults( results );
   }
 
   return results;
+};
+
+/**
+ * Lint a batch of repos and only return the restults. This does no result handling.
+ */
+const lintReposFromWorker = async ( repos, options ) => {
+  const allResults = [];
+  for ( let i = 0; i < repos.length; i++ ) {
+    const results = await lintOneRepo( repos[ i ], {
+      cache: options.cache,
+      format: options.format,
+      fix: options.fix,
+      inProgressErrorLogging: options.inProgressErrorLogging
+    } );
+    allResults.push( ...results );
+  }
+  return allResults;
 };
 
 /**
@@ -158,11 +176,14 @@ const lint = async ( repos, options ) => {
   const inProgressErrorLogging = repos.length > 1;
 
   const allResults = [];
-  for ( let i = 0; i < repos.length; i++ ) {
-    options.showProgressBar && repos.length > 1 && showCommandLineProgress( i / repos.length, false );
+
+  // chunk time
+  const repoChunks = _.chunk( repos, 10 );
+
+  for ( const chunkOfRepos of repoChunks ) {
+    options.showProgressBar && repoChunks.length > 1 && showCommandLineProgress( repoChunks.indexOf( chunkOfRepos ) / repoChunks.length, false );
 
     try {
-
       const myPromise = new Promise( ( resolve, reject ) => {
         const worker = new Worker( path.join( __dirname, '/lintWorker.js' ) );
         worker.on( 'message', resolve );
@@ -174,7 +195,7 @@ const lint = async ( repos, options ) => {
         } );
 
         worker.postMessage( {
-          repo: repos[ i ],
+          repos: chunkOfRepos,
           options: {
             cache: options.cache,
             format: options.format,
@@ -183,10 +204,8 @@ const lint = async ( repos, options ) => {
           }
         } );
       } );
-
-      const result = await myPromise;
-
-      allResults.push( ...result );
+      const results = await myPromise;
+      allResults.push( ...results );
     }
     catch( e ) {
       console.error( e ); // make sure that the error ends up on stderr
@@ -242,6 +261,6 @@ lint.chipperAPIVersion = 'promisesPerRepo1';
 
 // only used by the lintWorker.js, please don't use this.
 // TODO: Is there a better way to expose this? https://github.com/phetsims/chipper/issues/1415
-lint.lintOneRepo = lintOneRepo;
+lint.lintReposFromWorker = lintReposFromWorker;
 
 module.exports = lint;
