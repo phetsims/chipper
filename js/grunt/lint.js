@@ -19,6 +19,7 @@ const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 const CacheLayer = require( '../common/CacheLayer' );
 const crypto = require( 'crypto' );
 const path = require( 'path' );
+const assert = require( 'assert' );
 const { Worker } = require( 'worker_threads' ); // eslint-disable-line require-statement-match
 
 // constants
@@ -135,11 +136,11 @@ const lintReposFromWorker = async ( repos, options ) => {
  * Lints the specified repositories.
  * @public
  *
- * @param {string[]} repos - list of repos to lint
+ * @param {string[]} originalRepos - list of repos to lint
  * @param {Object} [options]
  * @returns {Promise<{results:Object,ok:boolean}>} - results from linting files, see ESLint.lintFiles (all results, not just errors).
  */
-const lint = async ( repos, options ) => {
+const lint = async ( originalRepos, options ) => {
 
   // Run all linting from chipper so the ESLint cache will be shared, see https://github.com/phetsims/chipper/issues/1286
   const cwd = process.cwd();
@@ -154,58 +155,76 @@ const lint = async ( repos, options ) => {
     showProgressBar: true
   }, options );
 
-  // filter out all unlintable repos. An unlintable repo is one that has no `js` in it, so it will fail when trying to
+  // Filter out all unlintable repos. An unlintable repo is one that has no `js` in it, so it will fail when trying to
   // lint it.  Also, if the user doesn't have some repos checked out, those should be skipped
-  repos = repos.filter( repo => !EXCLUDE_REPOS.includes( repo ) &&
-                                fs.existsSync( repoToPattern( repo ) ) );
+  const repos = originalRepos.filter( repo => !EXCLUDE_REPOS.includes( repo ) && fs.existsSync( repoToPattern( repo ) ) );
 
   const inProgressErrorLogging = repos.length > 1;
 
+  // TODO: always use MAX_THREADS and calculate batch size to be optimal, https://github.com/phetsims/chipper/issues/1356
+  const MAX_THREADS = 4; // Max number of concurrent workers
+  const MAX_BATCH_SIZE = 60; // Number of repos processed by each worker (could be less if total is not divisible)
   const allResults = [];
   const completedRepos = [];
 
-  // chunk time
-  const repoChunks = _.chunk( repos, 120 );
+  // Splitting repos into batches
+  const batches = _.chunk( repos, MAX_BATCH_SIZE );
 
-  const promises = repoChunks.map( chunkOfRepos => {
-
+  const createBatchPromise = async batchOfRepos => {
     return new Promise( ( resolve, reject ) => {
+
       const worker = new Worker( path.join( __dirname, '/lintWorker.js' ) );
-      worker.on( 'message', resolve );
+      worker.on( 'message', async results => {
+        allResults.push( ...results );
+        completedRepos.push( ...batchOfRepos );
+        if ( options.showProgressBar && batches.length > 1 ) {
+          showCommandLineProgress( completedRepos.length / repos.length, false );
+        }
+
+        const problemCount = _.sum( allResults.map( result => result.warningCount + result.errorCount ) );
+
+        if ( inProgressErrorLogging && problemCount > 0 ) {
+          await consoleLogResults( results );
+        }
+
+        resolve( results );
+      } );
       worker.on( 'error', reject );
       worker.on( 'exit', code => {
         if ( code !== 0 ) {
-          reject( new Error( `Lint Worker stopped with exit code ${code}` ) );
+          reject( new Error( `Worker stopped with exit code ${code}` ) );
         }
       } );
-
       worker.postMessage( {
-        repos: chunkOfRepos,
-        options: {
-          cache: options.cache,
-          format: options.format,
-          fix: options.fix
-        }
+        repos: batchOfRepos,
+        options: _.pick( options, [ 'cache', 'format', 'fix' ] )
       } );
-    } ).then( async results => {
-      allResults.push( ...results );
-      completedRepos.push( ...chunkOfRepos );
-
-      const problemCount = _.sum( allResults.map( result => result.warningCount + result.errorCount ) );
-
-      if ( inProgressErrorLogging && problemCount > 0 ) {
-        await consoleLogResults( results );
-      }
-
-      options.showProgressBar && repoChunks.length > 1 && showCommandLineProgress( completedRepos.length / repos.length, false );
     } );
-  } );
+  };
 
-  await Promise.all( promises );
+  // The current promises that we are waiting to complete. The length of this array should never be larger that MAX_THREADS
+  const activePromises = [];
+  for ( const batch of batches ) {
+    if ( activePromises.length >= MAX_THREADS ) {
 
-  options.showProgressBar && repos.length > 1 && showCommandLineProgress( 1, true );
+      // Defensive slice so that we don't mutate the provided array in the finally() call
+      await Promise.race( activePromises.slice() );
+    }
+    const batchPromise = createBatchPromise( batch );
+    activePromises.push( batchPromise );
+    batchPromise.finally( () => _.remove( activePromises, batchPromise ) );
+  }
 
-  // Modify the files with the fixed code.
+  // Wait for the last final promises once all batches have kicked off a lint worker.
+  // Defensive slice so that we don't mutate the provided array in the finally() call
+  await Promise.all( activePromises.slice() );
+
+  assert( activePromises.length === 0, 'all promises completed' );
+
+  if ( options.showProgressBar && originalRepos.length > 1 ) {
+    showCommandLineProgress( 1, true );
+  }
+
   if ( options.fix ) {
     await ESLint.outputFixes( allResults );
   }
@@ -225,8 +244,7 @@ const lint = async ( repos, options ) => {
     // The chip-away option provides a quick and easy method to assign devs to their respective repositories.
     // Check ./chipAway.js for more information.
     if ( options.chipAway ) {
-      const message = chipAway( allResults );
-      console.log( 'Results from chipAway: \n' + message );
+      console.log( 'Results from chipAway: \n', chipAway( allResults ) );
     }
 
     if ( options.disableWithComment ) {
@@ -236,11 +254,9 @@ const lint = async ( repos, options ) => {
 
   process.chdir( cwd );
 
-  const ok = totalProblems === 0;
-
   return {
     results: allResults,
-    ok: ok
+    ok: totalProblems === 0
   };
 };
 
