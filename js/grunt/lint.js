@@ -161,7 +161,7 @@ const lint = async ( originalRepos, options ) => {
 
   const inProgressErrorLogging = repos.length > 1;
 
-  // TODO: always use MAX_THREADS and calculate batch size to be optimal, https://github.com/phetsims/chipper/issues/1356
+  // TODO: always use MAX_THREADS and calculate batch size to be optimal, https://github.com/phetsims/chipper/issues/1415
   const MAX_THREADS = 4; // Max number of concurrent workers
   const MAX_BATCH_SIZE = 60; // Number of repos processed by each worker (could be less if total is not divisible)
   const allResults = [];
@@ -264,7 +264,6 @@ const lint = async ( originalRepos, options ) => {
 lint.chipperAPIVersion = 'promisesPerRepo1';
 
 // only used by the lintWorker.js, please don't use this.
-// TODO: Is there a better way to expose this? https://github.com/phetsims/chipper/issues/1415
 lint.lintReposFromWorker = lintReposFromWorker;
 
 module.exports = lint;
