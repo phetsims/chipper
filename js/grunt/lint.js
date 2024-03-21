@@ -176,42 +176,41 @@ const lint = async ( repos, options ) => {
   const inProgressErrorLogging = repos.length > 1;
 
   const allResults = [];
+  const completedRepos = [];
 
   // chunk time
-  const repoChunks = _.chunk( repos, 10 );
+  const repoChunks = _.chunk( repos, 120 );
 
-  for ( const chunkOfRepos of repoChunks ) {
-    options.showProgressBar && repoChunks.length > 1 && showCommandLineProgress( repoChunks.indexOf( chunkOfRepos ) / repoChunks.length, false );
+  const promises = repoChunks.map( chunkOfRepos => {
 
-    try {
-      const myPromise = new Promise( ( resolve, reject ) => {
-        const worker = new Worker( path.join( __dirname, '/lintWorker.js' ) );
-        worker.on( 'message', resolve );
-        worker.on( 'error', reject );
-        worker.on( 'exit', code => {
-          if ( code !== 0 ) {
-            reject( new Error( `Lint Worker stopped with exit code ${code}` ) );
-          }
-        } );
-
-        worker.postMessage( {
-          repos: chunkOfRepos,
-          options: {
-            cache: options.cache,
-            format: options.format,
-            fix: options.fix,
-            inProgressErrorLogging: inProgressErrorLogging
-          }
-        } );
+    return new Promise( ( resolve, reject ) => {
+      const worker = new Worker( path.join( __dirname, '/lintWorker.js' ) );
+      worker.on( 'message', resolve );
+      worker.on( 'error', reject );
+      worker.on( 'exit', code => {
+        if ( code !== 0 ) {
+          reject( new Error( `Lint Worker stopped with exit code ${code}` ) );
+        }
       } );
-      const results = await myPromise;
+
+      worker.postMessage( {
+        repos: chunkOfRepos,
+        options: {
+          cache: options.cache,
+          format: options.format,
+          fix: options.fix,
+          inProgressErrorLogging: inProgressErrorLogging
+        }
+      } );
+    } ).then( results => {
       allResults.push( ...results );
-    }
-    catch( e ) {
-      console.error( e ); // make sure that the error ends up on stderr
-      throw e;
-    }
-  }
+      completedRepos.push( ...chunkOfRepos );
+
+      options.showProgressBar && repoChunks.length > 1 && showCommandLineProgress( completedRepos.length / repos.length, false );
+    } );
+  } );
+
+  await Promise.all( promises );
 
   options.showProgressBar && repos.length > 1 && showCommandLineProgress( 1, true );
 
