@@ -37,18 +37,27 @@ async function consoleLogResults( results ) {
 }
 
 /**
- * Create an ESLint client and lint a single repo
+ * Create an ESLint client and lint a single repo,
+ *
+ * NOTE: console.log doesn't output synchronously when running in a worker thread, so we can't rely on it here.
+ *
  * @param {string} repo
  * @param {Object} [options]
  * @returns {Promise<Object>} - results from linting files, see ESLint.lintFiles
  */
 const lintOneRepo = async ( repo, options ) => {
+
   options = _.assignIn( {
     cache: true,
     fix: false,
-    format: false,
-    inProgressErrorLogging: false // print out the
+    format: false
   }, options );
+
+  // For PhET's custom cache, see CacheLayer
+  const cacheLayerKey = `lintRepo#${repo}`;
+  if ( options.cache && CacheLayer.isCacheSafe( cacheLayerKey ) ) {
+    return [];
+  }
 
   // Hash on tsconfig file so when tsconfig changes it invalidates the cache.  NOTE this is a known memory leak.  May
   // need to clear the cache directory in a few years?
@@ -88,17 +97,6 @@ const lintOneRepo = async ( repo, options ) => {
     errorOnUnmatchedPattern: false
   };
 
-  // For PhET's custom cache, see CacheLayer
-  const cacheLayerKey = `lintRepo#${repo}`;
-
-  if ( options.cache && CacheLayer.isCacheSafe( cacheLayerKey ) ) {
-    // console.log( 'lint cache hit: ' + cacheLayerKey );
-    return [];
-  }
-  else {
-    // console.log( 'lint cache fail: ' + cacheLayerKey );
-  }
-
   const config = {};
   const configExtends = [];
   if ( options.format ) {
@@ -118,13 +116,6 @@ const lintOneRepo = async ( repo, options ) => {
     CacheLayer.onSuccess( cacheLayerKey );
   }
 
-  if ( options.inProgressErrorLogging && totalWarnings + totalErrors > 0 ) {
-
-    // TODO: why did aqua have this? https://github.com/phetsims/chipper/issues/1415
-    console.log( `\n\n${repo}:` );
-    await consoleLogResults( results );
-  }
-
   return results;
 };
 
@@ -134,12 +125,7 @@ const lintOneRepo = async ( repo, options ) => {
 const lintReposFromWorker = async ( repos, options ) => {
   const allResults = [];
   for ( let i = 0; i < repos.length; i++ ) {
-    const results = await lintOneRepo( repos[ i ], {
-      cache: options.cache,
-      format: options.format,
-      fix: options.fix,
-      inProgressErrorLogging: options.inProgressErrorLogging
-    } );
+    const results = await lintOneRepo( repos[ i ], options );
     allResults.push( ...results );
   }
   return allResults;
@@ -198,13 +184,18 @@ const lint = async ( repos, options ) => {
         options: {
           cache: options.cache,
           format: options.format,
-          fix: options.fix,
-          inProgressErrorLogging: inProgressErrorLogging
+          fix: options.fix
         }
       } );
-    } ).then( results => {
+    } ).then( async results => {
       allResults.push( ...results );
       completedRepos.push( ...chunkOfRepos );
+
+      const problemCount = _.sum( allResults.map( result => result.warningCount + result.errorCount ) );
+
+      if ( inProgressErrorLogging && problemCount > 0 ) {
+        await consoleLogResults( results );
+      }
 
       options.showProgressBar && repoChunks.length > 1 && showCommandLineProgress( completedRepos.length / repos.length, false );
     } );
@@ -220,11 +211,10 @@ const lint = async ( repos, options ) => {
   }
 
   // Parse the results.
-  const totalWarnings = _.sum( allResults.map( result => result.warningCount ) );
-  const totalErrors = _.sum( allResults.map( result => result.errorCount ) );
+  const totalProblems = _.sum( allResults.map( result => result.warningCount + result.errorCount ) );
 
   // Output results on errors.
-  if ( totalWarnings + totalErrors > 0 ) {
+  if ( totalProblems > 0 ) {
 
     // This exact string is used in AQUA/QuickServer to parse messaging for slack reporting
     const IMPORTANT_MESSAGE_DO_NOT_EDIT = 'All results (repeated from above)';
@@ -246,7 +236,7 @@ const lint = async ( repos, options ) => {
 
   process.chdir( cwd );
 
-  const ok = totalWarnings + totalErrors === 0;
+  const ok = totalProblems === 0;
 
   return {
     results: allResults,
