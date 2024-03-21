@@ -170,6 +170,9 @@ const lint = async ( originalRepos, options ) => {
   // Splitting repos into batches
   const batches = _.chunk( repos, MAX_BATCH_SIZE );
 
+  const shouldShowProgressBar = options.showProgressBar && batches.length > 1;
+  shouldShowProgressBar && showCommandLineProgress( 0, false );
+
   const createBatchPromise = async batchOfRepos => {
     return new Promise( ( resolve, reject ) => {
 
@@ -177,9 +180,7 @@ const lint = async ( originalRepos, options ) => {
       worker.on( 'message', async results => {
         allResults.push( ...results );
         completedRepos.push( ...batchOfRepos );
-        if ( options.showProgressBar && batches.length > 1 ) {
-          showCommandLineProgress( completedRepos.length / repos.length, false );
-        }
+        shouldShowProgressBar && showCommandLineProgress( completedRepos.length / repos.length, false );
 
         const problemCount = _.sum( allResults.map( result => result.warningCount + result.errorCount ) );
 
@@ -221,9 +222,7 @@ const lint = async ( originalRepos, options ) => {
 
   assert( activePromises.length === 0, 'all promises completed' );
 
-  if ( options.showProgressBar && originalRepos.length > 1 ) {
-    showCommandLineProgress( 1, true );
-  }
+  shouldShowProgressBar && showCommandLineProgress( 1, true );
 
   if ( options.fix ) {
     await ESLint.outputFixes( allResults );
