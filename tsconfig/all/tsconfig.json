@@ -47,6 +47,7 @@
     "../../../equality-explorer-two-variables/js/**/*",
     "../../../faradays-electromagnetic-lab/js/**/*",
     "../../../fourier-making-waves/js/**/*",
+    "../../../forces-and-motion-basics/js/**/*",
     "../../../function-builder/js/**/*",
     "../../../function-builder-basics/js/**/*",
     "../../../gases-intro/js/**/*",
