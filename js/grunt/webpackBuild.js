@@ -182,4 +182,3 @@ const webpackBuild = function webpackBuild( repo, brand, options ) {
 
 module.exports = webpackBuild;
 webpackBuild.getModuleRules = getModuleRules;
-

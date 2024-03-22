@@ -21,6 +21,8 @@ module.exports = {
 
   overrides: [
     {
+
+      // Only HTML Files
       files: [ '*.html' ],
       rules: {
         // DUPLICATION ALERT, this overrides the base rule, just for HTML.
@@ -30,7 +32,19 @@ module.exports = {
     },
     {
 
-      // For .ts files, the following configuration will be used
+      // Not HTML files
+      files: [ '**/*' ],
+      excludedFiles: [ '*.html' ],
+      rules: {
+
+        // Require or disallow newline at the end of files. Not a good fit for HTML, since that just moves the
+        // `<script>` tag up to the same line as the last javscript code
+        'eol-last': [ 'error', 'never' ]
+      }
+    },
+    {
+
+      // TypeScript files
       files: [
         '**/*.ts',
         '**/*.tsx'
@@ -1282,7 +1296,8 @@ module.exports = {
     'dot-location': 'off', // We use WebStorm formatting which moves lower dots to the left
 
     // Require or disallow newline at the end of files
-    'eol-last': 'off', // 5000 problems in March 2021.  SR would prefer 'eol-last': [ 'error', 'never' ], in his code
+    // NOTE: This is off in the main config because it doesn't behave well with HTML files, see overrides for usage.
+    'eol-last': 'off',
 
     // Require or disallow spacing between function identifiers and their invocations
     'func-call-spacing': [ 'error', 'never' ],
@@ -1326,7 +1341,11 @@ module.exports = {
     'linebreak-style': 'off', // Windows may check out a different line style than mac, so we cannot test this on local working copies cross-platform
 
     // Require empty lines around comments
-    'lines-around-comment': 'off', // SR Would like this rule enabled in his repos like so: 'lines-around-comment': [ 'error', { beforeLineComment: true } ]
+    // SR Would like this rule enabled in his repos like so: 'lines-around-comment': [ 'error', { beforeLineComment: true } ]
+    // JO really likes having the ability to have comments right under code.
+    // MK understands both thoughts.
+    // We will likely never turn this on fully, but feel free to add to your project!
+    'lines-around-comment': 'off',
 
     // Require or disallow an empty line between class members
     'lines-between-class-members': [ 'error', 'always', { exceptAfterSingleLine: true } ],

@@ -20,4 +20,3 @@ ${results.stderr}` );
     grunt.log.ok( `tsc complete: ${results.time}ms` );
   }
 };
-
