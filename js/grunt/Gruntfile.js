@@ -345,7 +345,6 @@ Minify-specific options:
     `lint js files. Options:
 --disable-eslint-cache: cache will not be read or written
 --fix: autofixable changes will be written to disk
---format: Append an additional set of rules for formatting
 --chip-away: output a list of responsible devs for each repo with lint problems
 --disable-with-comment: add an es-lint disable with comment to lint errors
 --repos: comma separated list of repos to lint in addition to the repo from running`,
@@ -355,7 +354,6 @@ Minify-specific options:
       // --disable-eslint-cache disables the cache, useful for developing rules
       const cache = !grunt.option( 'disable-eslint-cache' );
       const fix = grunt.option( 'fix' );
-      const format = grunt.option( 'format' );
       const chipAway = grunt.option( 'chip-away' );
       const disableWithComment = grunt.option( 'disable-with-comment' );
 
@@ -364,7 +362,6 @@ Minify-specific options:
       const lintReturnValue = await lint( [ repo, ...extraRepos ], {
         cache: cache,
         fix: fix,
-        format: format,
         chipAway: chipAway,
         disableWithComment: disableWithComment
       } );
@@ -380,7 +377,6 @@ Minify-specific options:
     // --disable-eslint-cache disables the cache, useful for developing rules
     const cache = !grunt.option( 'disable-eslint-cache' );
     const fix = grunt.option( 'fix' );
-    const format = grunt.option( 'format' );
     const chipAway = grunt.option( 'chip-away' );
     const disableWithComment = grunt.option( 'disable-with-comment' );
     assert && assert( !grunt.option( 'patterns' ), 'patterns not support for lint-all' );
@@ -392,7 +388,6 @@ Minify-specific options:
     const lintReturnValue = await lint( getPhetLibs( repo, brands ), {
       cache: cache,
       fix: fix,
-      format: format,
       chipAway: chipAway,
       disableWithComment: disableWithComment
     } );

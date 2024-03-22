@@ -20,11 +20,8 @@ We use these tools at several stages of development:
 ## Usage
 
 For developers looking to ensure their changes pass ESLint, the typical entry point is to run `grunt lint`.
-See `grunt lint --help` for options. If your code passes
-`grunt lint`, then it is good to merge. You can add the `--format` option to achieve formatting that comes close to
-PhET's code standards defined by the Webstorm code style
-[here](https://github.com/phetsims/phet-info/blob/main/ide/idea/phet-idea-codestyle.xml). That is considered the ground
-truth for formatting currently, and `--format` attempts to get as close as we can to those rules.
+See `grunt lint --help` for options. If your code passes `grunt lint` (and other git hooks), then it is good to
+merge.
 
 ## Shared Configuration Files
 
@@ -39,15 +36,10 @@ Here is a list of all the available configuration files and why to use them for 
 - `node_eslintrc.js` expands on the base rules and adds configuration only intended for Node.js code (i.e. `perennial`).
 - `sim_eslintrc.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5
   sim rules)
-- `sim_eslintrc.js'` expands on the sim rules and adds configuration for sims that have no es5 in them (
-  i.e. `wave-interference`)
-- `format_eslintrc.js` contains additional rules used for enforcing code formatting. These are not required, they are
-  just recommended.
 
 So here is the hierarchy of chipper's config files. Indentation symbolized the "extends" relationship.
 
 ```
-format_eslintrc.js
 .eslintrc.js
   node_eslintrc.js
   sim_eslintrc.js

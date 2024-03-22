@@ -50,8 +50,7 @@ const lintOneRepo = async ( repo, options ) => {
 
   options = _.assignIn( {
     cache: true,
-    fix: false,
-    format: false
+    fix: false
   }, options );
 
   // For PhET's custom cache, see CacheLayer
@@ -71,7 +70,7 @@ const lintOneRepo = async ( repo, options ) => {
 
   const hash = crypto.createHash( 'md5' ).update( tsconfigFile + packageJSON ).digest( 'hex' );
 
-  const eslintConfig = {
+  const eslint = new ESLint( {
 
     // optional auto-fix
     fix: options.fix,
@@ -96,18 +95,7 @@ const lintOneRepo = async ( repo, options ) => {
 
     // If no lintable files are found, it is not an error
     errorOnUnmatchedPattern: false
-  };
-
-  const config = {};
-  const configExtends = [];
-  if ( options.format ) {
-    configExtends.push( '../chipper/eslint/format_eslintrc.js' );
-  }
-
-  config.extends = configExtends;
-  eslintConfig.baseConfig = config;
-
-  const eslint = new ESLint( eslintConfig );
+  } );
 
   const results = await eslint.lintFiles( repoToPattern( repo ) );
 
@@ -148,7 +136,6 @@ const lint = async ( originalRepos, options ) => {
 
   options = _.merge( {
     cache: true,
-    format: false, // append an extra set of rules for formatting code. TODO: remove this option, these are inside the main rules now, https://github.com/phetsims/chipper/issues/1415
     fix: false, // whether fixes should be written to disk
     chipAway: false, // returns responsible dev info for easier chipping.
     disableWithComment: false, // replaces failing typescript lines with eslint disable and related comment
@@ -198,7 +185,7 @@ const lint = async ( originalRepos, options ) => {
       } );
       worker.postMessage( {
         repos: batchOfRepos,
-        options: _.pick( options, [ 'cache', 'format', 'fix' ] )
+        options: _.pick( options, [ 'cache', 'fix' ] )
       } );
     } );
   };
