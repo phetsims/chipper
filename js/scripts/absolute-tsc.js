@@ -1,4 +1,4 @@
-// Copyright 2022, University of Colorado Boulder
+// Copyright 2022-2024, University of Colorado Boulder
 
 /**
  * The tsc type checker outputs type errors using relative paths only, which are not hyperlinked in WebStorm and IntelliJ.

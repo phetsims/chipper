@@ -1,4 +1,4 @@
-// Copyright 2017-2022, University of Colorado Boulder
+// Copyright 2017-2024, University of Colorado Boulder
 
 /**
  * This grunt task generates the 800x400 letter-boxed version of the sim screenshot for use in
