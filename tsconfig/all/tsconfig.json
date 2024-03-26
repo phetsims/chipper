@@ -111,6 +111,7 @@
     "../../../scenery-phet/js/**/*",
     "../../../simula-rasa/js/**/*",
     "../../../soccer-common/js/**/*",
+    "../../../soccer-common/images/**/*",
     "../../../solar-system-common/js/**/*",
     "../../../sound-waves/js/**/*",
     "../../../studio/js/**/*",
