@@ -42,6 +42,8 @@
     "../../../density-buoyancy-common/js/**/*",
     "../../../diffusion/js/**/*",
     "../../../dot/js/**/*",
+    "../../../energy-skate-park/js/**/*",
+    "../../../energy-skate-park-basics/js/**/*",
     "../../../equality-explorer/js/**/*",
     "../../../equality-explorer-basics/js/**/*",
     "../../../equality-explorer-two-variables/js/**/*",
