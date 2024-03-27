@@ -1,7 +1,7 @@
 // Copyright 2002-2015, University of Colorado Boulder
 /**
  * @fileoverview Rule to check that a require statement that contains PHET_IO also has the preface: ifphetio!
- * @author Michael Kauzmann(PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  * @copyright 2016 University of Colorado Boulder
  */
 
