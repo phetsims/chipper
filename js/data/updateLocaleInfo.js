@@ -49,16 +49,36 @@ newModuleSourceCode += '\n};';
 fs.writeFileSync( './localeInfoModule.js', newModuleSourceCode );
 console.log( 'locale info files updated' );
 
+let needsCommit = true;
 try {
-  console.log( 'pulling' );
-  child_process.execSync( 'git pull' );
-  child_process.execSync( 'git add ../../data/localeInfo.json' );
-  child_process.execSync( 'git add ./localeInfoModule.js' );
-  console.log( 'committing' );
-  child_process.execSync( 'git commit --no-verify ../../data/localeInfo.json ./localeInfoModule.js -m "Automatically updated generated localeInfo files"' );
-  console.log( 'pushing' );
-  child_process.execSync( 'git push' );
+
+  // 0 exit code if there are no working copy changes from HEAD.
+  child_process.execSync( 'git diff-index --quiet HEAD --' );
 }
 catch( e ) {
-  console.error( 'Unable to update files in git.', e );
+  needsCommit = false;
+  console.log( 'No locale info changes, no commit needed.' );
+}
+
+if ( needsCommit ) {
+  try {
+
+    console.log( 'pulling' );
+
+    // Some devs have rebase set by default, and you cannot rebase-pull with working copy changes.
+    child_process.execSync( 'git pull --no-rebase' );
+
+    child_process.execSync( 'git add ../../data/localeInfo.json' );
+    child_process.execSync( 'git add ./localeInfoModule.js' );
+
+    if ( needsCommit ) {
+      console.log( 'committing' );
+      child_process.execSync( 'git commit --no-verify ../../data/localeInfo.json ./localeInfoModule.js -m "Automatically updated generated localeInfo files"' );
+      console.log( 'pushing' );
+      child_process.execSync( 'git push' );
+    }
+  }
+  catch( e ) {
+    console.error( 'Unable to update files in git.', e );
+  }
 }
