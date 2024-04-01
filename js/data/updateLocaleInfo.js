@@ -43,7 +43,7 @@ for ( const locale in localeInfo ) {
 // Remove the trailing comma
 newModuleSourceCode = newModuleSourceCode.slice( 0, -1 );
 // Close the object
-newModuleSourceCode += '\n};\n';
+newModuleSourceCode += '\n};';
 
 
 fs.writeFileSync( './localeInfoModule.js', newModuleSourceCode );
