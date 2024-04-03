@@ -23,7 +23,7 @@ const assert = require( 'assert' );
 const { Worker } = require( 'worker_threads' ); // eslint-disable-line require-statement-match
 
 // constants
-const EXCLUDE_REPOS = [ 'binder', 'fenster', 'decaf', 'scenery-lab-demo' ];
+const EXCLUDE_REPOS = [ 'fenster', 'decaf', 'scenery-lab-demo' ];
 
 // "Pattern" is really a path, we assume here that gruntfiles help keep the right directory structure and can just pop
 // out of the repo running the command
