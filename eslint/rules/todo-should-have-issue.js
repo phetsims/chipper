@@ -1,9 +1,7 @@
 // Copyright 2002-2015, University of Colorado Boulder
 
-/* eslint-disable todo-should-have-issue */
-
 /**
- * @fileoverview Rule to check that certain TODOs have GitHub issues associated with them
+ * @fileoverview Rule to check that certain TO-DOs have GitHub issues associated with them
  * @author Sam Reid (PhET Interactive Simulations)
  * @copyright 2015 University of Colorado Boulder
  */
@@ -86,8 +84,8 @@ module.exports = {
         const filename = context.getFilename();
 
         // Explicitly ignore files from the simula-rasa repo. simula-rasa is the template for new simulations that are
-        // created using 'grunt create-sim'. simula-rasa's code contains TODOs that should be addressed by the creator
-        // of the new simulation. So we do not want those TODOs to have an associated GitHub issue. And we do not want
+        // created using 'grunt create-sim'. simula-rasa's code contains TO-DOs that should be addressed by the creator
+        // of the new simulation. So we do not want those TO-DOs to have an associated GitHub issue. And we do not want
         // to opt-out of this rule in simula-rasa/package.json, because it will be propagated to the new sim.
         if ( context.getFilename().includes( 'simula-rasa' ) ) {
           return;
@@ -114,7 +112,6 @@ module.exports = {
                   url = urlMatch[ 0 ];
                 }
 
-                const issueShorthandRegex = /#(\d+)/;
                 const issueShorthandMatch = comment.value.match( issueShorthandRegex );
                 const repoNameMatch = filename.match( /[\\/]([\w-]+)[\\/]js[\\/]/ );
                 if ( issueShorthandMatch && repoNameMatch ) {
@@ -122,6 +119,7 @@ module.exports = {
                 }
 
                 if ( url ) {
+                  // TODO: I believe there is a race condition on writing to this file. https://github.com/phetsims/perennial/issues/353
                   fs.writeFileSync( todoIssuesFilepath, fs.readFileSync( todoIssuesFilepath ).toString() + `${url}\n` );
                 }
               }
