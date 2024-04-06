@@ -11,7 +11,8 @@
   },
   "phet": {
     "chipperSupportsOutputJSGruntTasks": true,
-    "supportsOutputJS": true
+    "supportsOutputJS": true,
+    "published": true
   },
   "devDependencies": {
     "@babel/core": "~7.21.4",
