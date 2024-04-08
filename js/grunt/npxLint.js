@@ -78,8 +78,7 @@ function runEslint( repos, options ) {
       '--ignore-path', '../chipper/eslint/.eslintignore',
       '--format=json', // JSON output, instead of printing errors as we go
       '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
-      // TODO: this is to get rid of warnings, but should be fixed soon, right? https://github.com/phetsims/chipper/issues/1429
-      // TODO: Wait! Can we just manually filter these messages out of the main log? https://github.com/phetsims/chipper/issues/1429
+      // TODO: Can we just manually filter these "ignore" messages out of the main log below? https://github.com/phetsims/chipper/issues/1429
       // TODO: MK ran without this on windows and nothing logged. . . . https://github.com/phetsims/chipper/issues/1429
       // TODO: Otherwise remove in https://github.com/phetsims/chipper/issues/1433
       '--quiet',
@@ -143,10 +142,11 @@ function runEslint( repos, options ) {
     eslint.on( 'close', () => {
       resolve( jsonString );
     } );
-  } ).then( jsonString => {
+  } ).then( async jsonString => {
     showProgressBar && showCommandLineProgress( 1, true );
     const results = JSON.parse( jsonString );
     options.chipAway && chipAway( results );
+    await consoleLogResults( results );
     return results;
   } );
 }
@@ -162,7 +162,6 @@ function runEslint( repos, options ) {
 const npxLint = async ( originalRepos, options ) => {
   try {
     const results = await runEslint( originalRepos, options );
-    await consoleLogResults( results );
     if ( results.length === 0 ) {
       return { results: [], ok: true };
     }
