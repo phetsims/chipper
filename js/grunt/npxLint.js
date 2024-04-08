@@ -17,10 +17,26 @@ const _ = require( 'lodash' );
 const path = require( 'path' );
 const assert = require( 'assert' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
+const chipAway = require( './chipAway' );
+const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement-match
 
 const DEBUG_MARKER = 'eslint:cli-engine';
 const nxpCommand = /^win/.test( process.platform ) ? 'npx.cmd' : 'npx';
 
+async function consoleLogResults( results ) {
+
+  // No need to have the same ESLint just to format
+  const formatter = await new ESLint().loadFormatter( 'stylish' );
+  const resultText = formatter.format( results );
+  console.log( `\n${resultText}\n` );
+}
+
+/**
+ *
+ * @param repos
+ * @param options
+ * @returns {Promise<ESLint.LintResult[]>}
+ */
 function runEslint( repos, options ) {
 
   options = _.assignIn( {
@@ -30,6 +46,9 @@ function runEslint( repos, options ) {
 
     // Fix things that can be auto-fixed (written to disk)
     fix: false,
+
+    // returns responsible dev info for easier GitHub issue creation.
+    chipAway: false,
 
     // Show a progress bar while running, based on the current repo out of the list
     showProgressBar: true
@@ -57,6 +76,7 @@ function runEslint( repos, options ) {
       '--resolve-plugins-relative-to', '../chipper',
       '--no-error-on-unmatched-pattern',
       '--ignore-path', '../chipper/eslint/.eslintignore',
+      '--format=json', // JSON output, instead of printing errors as we go
       '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
       // TODO: this is to get rid of warnings, but should be fixed soon, right? https://github.com/phetsims/chipper/issues/1429
       // TODO: Wait! Can we just manually filter these messages out of the main log? https://github.com/phetsims/chipper/issues/1429
@@ -88,22 +108,26 @@ function runEslint( repos, options ) {
       env: env // Use the prepared environment
     } );
 
-    let allOutput = '';
+    let jsonString = '';
 
     // Log with support for debug messaging (for progress bar)
     const handleLogging = ( data, isError ) => {
       const message = data.toString();
 
-      if ( showProgressBar && message.includes( DEBUG_MARKER ) ) {
+      if ( message.includes( DEBUG_MARKER ) ) {
+        assert( showProgressBar, 'should only have the debug marker for progress bar support' );
         const repo = tryRepoFromDebugMessage( message );
         if ( repo ) {
           assert( repos.indexOf( repo ) >= 0, `repo not in repos, ${repo}, ${message}` );
           showProgressBar && showCommandLineProgress( repos.indexOf( repo ) / repos.length, false );
         }
       }
+      else if ( isError ) {
+        console.error( message );
+      }
       else {
-        allOutput += message;
-        isError ? console.error( message ) : console.log( message );
+        assert( !jsonString, 'jsonString should only be set once' );
+        jsonString += message;
       }
     };
 
@@ -116,11 +140,13 @@ function runEslint( repos, options ) {
     } );
 
     eslint.on( 'close', () => {
-      resolve( allOutput );
+      resolve( jsonString );
     } );
-  } ).then( result => {
+  } ).then( jsonString => {
     showProgressBar && showCommandLineProgress( 1, true );
-    return result;
+    const results = JSON.parse( jsonString );
+    options.chipAway && chipAway( results );
+    return results;
   } );
 }
 
@@ -130,17 +156,17 @@ function runEslint( repos, options ) {
  *
  * @param {string[]} originalRepos - list of repos to lint
  * @param {Object} [options]
- * @returns {Promise<{results:Object,ok:boolean}>} - results from linting files, see ESLint.lintFiles (all results, not just errors).
+ * @returns {Promise<{results:Array<Object>,ok:boolean}>} - results from linting files, see ESLint.lintFiles (all results, not just errors).
  */
 const npxLint = async ( originalRepos, options ) => {
   try {
-    const result = await runEslint( originalRepos, options );
-    console.log( 'ESLint output:', result );
-    if ( result.trim().length === 0 ) {
+    const results = await runEslint( originalRepos, options );
+    await consoleLogResults( results );
+    if ( results.length === 0 ) {
       return { results: [], ok: true };
     }
     else {
-      return { results: [ result ], ok: false };
+      return { results: results, ok: false };
     }
   }
   catch( error ) {
