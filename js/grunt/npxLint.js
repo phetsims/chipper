@@ -53,7 +53,10 @@ function runEslint( repos, options ) {
       '--no-error-on-unmatched-pattern',
       '--ignore-path', '../chipper/eslint/.eslintignore',
       '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
-      '--quiet', // TODO: this is to get rid of warnings, but should be fixed soon, right? Wait! Can we just manually filter these messages out of the main log? https://github.com/phetsims/chipper/issues/1429
+      // TODO: this is to get rid of warnings, but should be fixed soon, right? https://github.com/phetsims/chipper/issues/1429
+      // TODO: Wait! Can we just manually filter these messages out of the main log? https://github.com/phetsims/chipper/issues/1429
+      // TODO: MK ran without this on windows and nothing logged. . . . https://github.com/phetsims/chipper/issues/1429
+      '--quiet',
       ...patterns
     ] );
 
