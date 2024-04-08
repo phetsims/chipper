@@ -1,7 +1,11 @@
 // Copyright 2024, University of Colorado Boulder
 
 /**
- * Runs the eslint process on the specified repos using npx lint
+ * Runs the eslint process on the specified repos using the `npx` command line iterface. This is the idiomatic and
+ * recommended approach for this.
+ *
+ * TODO: review with CK,  https://github.com/phetsims/chipper/issues/1429
+ * TODO: Review ignore file for optimization, https://github.com/phetsims/chipper/issues/1429
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -15,6 +19,7 @@ const assert = require( 'assert' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 
 const DEBUG_MARKER = 'eslint:cli-engine';
+const nxpCommand = /^win/.test( process.platform ) ? 'npx.cmd' : 'npx';
 
 function runEslint( repos, options ) {
 
@@ -23,7 +28,7 @@ function runEslint( repos, options ) {
     // Cache results for a speed boost
     cache: true,
 
-    // Fix things that can be autofixed (written to disk)
+    // Fix things that can be auto-fixed (written to disk)
     fix: false,
 
     // Show a progress bar while running, based on the current repo out of the list
@@ -56,12 +61,13 @@ function runEslint( repos, options ) {
       // TODO: this is to get rid of warnings, but should be fixed soon, right? https://github.com/phetsims/chipper/issues/1429
       // TODO: Wait! Can we just manually filter these messages out of the main log? https://github.com/phetsims/chipper/issues/1429
       // TODO: MK ran without this on windows and nothing logged. . . . https://github.com/phetsims/chipper/issues/1429
+      // TODO: Otherwise remove in https://github.com/phetsims/chipper/issues/1433
       '--quiet',
       ...patterns
     ] );
 
     // TODO: DELETE ME, https://github.com/phetsims/chipper/issues/1429
-    console.log( `running in cwd ../chipper: npx ${args.join( ' ' )}` );
+    // console.log( `running in cwd ../chipper: npx ${args.join( ' ' )}` );
 
     showProgressBar && showCommandLineProgress( 0, false );
 
@@ -69,21 +75,22 @@ function runEslint( repos, options ) {
     // Prepare environment for spawn process
     const env = Object.create( process.env );
     if ( showProgressBar ) {
-      env.DEBUG = DEBUG_MARKER; // TODO: Test to see if this makes things slower (probably just a windows question), https://github.com/phetsims/chipper/issues/1429
+      env.DEBUG = DEBUG_MARKER;
     }
 
     // Increase available memory for NodeJS heap, to future-proof for, https://github.com/phetsims/chipper/issues/1415
     env.NODE_OPTIONS = env.NODE_OPTIONS || '';
-    env.NODE_OPTIONS += ' --max-old-space-size=8192';
+    env.NODE_OPTIONS += ' --max-old-space-size=8192'; // TODO: Note that this duplicates this option for MK, but it still works well, https://github.com/phetsims/chipper/issues/1429
 
-    // TODO: error handling, https://github.com/phetsims/chipper/issues/1429
-    const eslint = spawn( /^win/.test( process.platform ) ? 'npx.cmd' : 'npx', args, {
+    // TODO: error handling, can we do better than a try catch where called?, https://github.com/phetsims/chipper/issues/1429
+    const eslint = spawn( nxpCommand, args, {
       cwd: '../chipper',
       env: env // Use the prepared environment
     } );
 
     let allOutput = '';
 
+    // Log with support for debug messaging (for progress bar)
     const handleLogging = ( data, isError ) => {
       const message = data.toString();
 
