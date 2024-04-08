@@ -9,15 +9,45 @@
 
 // modules
 const { spawn } = require( 'child_process' ); // eslint-disable-line require-statement-match
+const _ = require( 'lodash' );
+const path = require( 'path' );
+const assert = require( 'assert' );
+const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 
-function runEslint( repos ) {
+const DEBUG_MARKER = 'eslint:cli-engine';
+
+function runEslint( repos, options ) {
+
+  options = _.assignIn( {
+
+    // Cache results for a speed boost
+    cache: true,
+
+    // Fix things that can be autofixed (written to disk)
+    fix: false,
+
+    // Show a progress bar while running, based on the current repo out of the list
+    showProgressBar: true
+  }, options );
+
+  const showProgressBar = options.showProgressBar && repos.length > 1;
 
   const patterns = repos.map( repo => `../${repo}/` );
   return new Promise( ( resolve, reject ) => {
-    const args = [
-      'eslint',
-      '--cache',
-      '--cache-location', '../chipper/eslint/cache/.eslintcache',
+    const args = [ 'eslint' ];
+
+    // Conditionally add cache options based on the cache flag in options
+    if ( options.cache ) {
+      args.push( '--cache', '--cache-location', '../chipper/eslint/cache/.eslintcache' );
+    }
+
+    // Add the '--fix' option if fix is true
+    if ( options.fix ) {
+      args.push( '--fix' );
+    }
+
+    // Continue building the args array
+    args.push( ...[
       '--rulesdir', '../chipper/eslint/rules/',
       '--resolve-plugins-relative-to', '../chipper',
       '--no-error-on-unmatched-pattern',
@@ -25,29 +55,60 @@ function runEslint( repos ) {
       '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
       '--quiet',
       ...patterns
-    ];
+    ] );
 
+    // TODO: DELETE ME, https://github.com/phetsims/chipper/issues/1429
     console.log( `running in cwd ../chipper: npx ${args.join( ' ' )}` );
 
-    const eslint = spawn( 'npx', args, {
-      cwd: '../chipper'
+    showProgressBar && showCommandLineProgress( 0, false );
+
+    // TODO: do we want to support the entire env passed in? https://github.com/phetsims/chipper/issues/1429
+    // Prepare environment for spawn process
+    const env = Object.create( process.env );
+    if ( showProgressBar ) {
+      env.DEBUG = DEBUG_MARKER;
+    }
+
+    // TODO: error handling, https://github.com/phetsims/chipper/issues/1429
+    const eslint = spawn( /^win/.test( process.platform ) ? 'npx.cmd' : 'npx', args, {
+      cwd: '../chipper',
+      env: env // Use the prepared environment
     } );
 
     let allOutput = '';
 
+    const handleLogging = ( data, isError ) => {
+      const message = data.toString();
+
+      // TODO: Too hacky? https://github.com/phetsims/chipper/issues/1429
+      // TODO: Too slow? https://github.com/phetsims/chipper/issues/1429
+      if ( message.includes( DEBUG_MARKER ) ) {
+        const repo = tryRepoFromDebugMessage( message );
+        if ( repo ) {
+          assert( repos.indexOf( repo ) >= 0, `repo not in repos, ${repo}, ${message}` );
+          showProgressBar && showCommandLineProgress( repos.indexOf( repo ) / repos.length, false );
+        }
+      }
+      else {
+        allOutput += message;
+        isError ? console.error( message ) : console.log( message );
+      }
+    };
+
     eslint.stdout.on( 'data', data => {
-      allOutput += data.toString();
-      console.log( data.toString() );
+      handleLogging( data, false );
     } );
 
     eslint.stderr.on( 'data', data => {
-      allOutput += data.toString();
-      console.error( data.toString() );
+      handleLogging( data, true );
     } );
 
-    eslint.on( 'close', code => {
+    eslint.on( 'close', () => {
       resolve( allOutput );
     } );
+  } ).then( result => {
+    showProgressBar && showCommandLineProgress( 1, true );
+    return result;
   } );
 }
 
@@ -61,7 +122,7 @@ function runEslint( repos ) {
  */
 const npxLint = async ( originalRepos, options ) => {
   try {
-    const result = await runEslint( originalRepos );
+    const result = await runEslint( originalRepos, options );
     console.log( 'ESLint output:', result );
     if ( result.trim().length === 0 ) {
       return { results: [], ok: true };
@@ -75,5 +136,18 @@ const npxLint = async ( originalRepos, options ) => {
     throw error;
   }
 };
+
+const repoRootPath = path.join( __dirname, '../../../' ); // Will end in a slash
+const escaped = repoRootPath.replace( /\\/g, '\\\\' ); // Handle any backslashes in the path
+
+// Regex that captures the repo via the path
+const regExp = new RegExp( `${escaped}([\\w-]+)[\\\\\\/]` );
+
+// A DEBUG message looks like this:  2024-04-08T17:37:52.723Z eslint:cli-engine Lint C:\Users\user\path\git\fractions-common\js\intro\view\circular\CircularPieceNode.js
+function tryRepoFromDebugMessage( message ) {
+  assert( message.includes( DEBUG_MARKER ) );
+  const match = message.match( regExp );
+  return match ? match[ 1 ] : null;
+}
 
 module.exports = npxLint;
