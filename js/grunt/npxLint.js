@@ -69,7 +69,7 @@ function runEslint( repos, options ) {
     // Prepare environment for spawn process
     const env = Object.create( process.env );
     if ( showProgressBar ) {
-      env.DEBUG = DEBUG_MARKER;
+      env.DEBUG = DEBUG_MARKER; // TODO: Test to see if this makes things slower (probably just a windows question), https://github.com/phetsims/chipper/issues/1429
     }
 
     // Increase available memory for NodeJS heap, to future-proof for, https://github.com/phetsims/chipper/issues/1415
@@ -87,9 +87,7 @@ function runEslint( repos, options ) {
     const handleLogging = ( data, isError ) => {
       const message = data.toString();
 
-      // TODO: Too hacky? https://github.com/phetsims/chipper/issues/1429
-      // TODO: Too slow? https://github.com/phetsims/chipper/issues/1429
-      if ( message.includes( DEBUG_MARKER ) ) {
+      if ( showProgressBar && message.includes( DEBUG_MARKER ) ) {
         const repo = tryRepoFromDebugMessage( message );
         if ( repo ) {
           assert( repos.indexOf( repo ) >= 0, `repo not in repos, ${repo}, ${message}` );
