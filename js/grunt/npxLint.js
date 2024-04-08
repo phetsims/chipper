@@ -53,7 +53,7 @@ function runEslint( repos, options ) {
       '--no-error-on-unmatched-pattern',
       '--ignore-path', '../chipper/eslint/.eslintignore',
       '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
-      '--quiet',
+      '--quiet', // TODO: this is to get rid of warnings, but should be fixed soon, right? Wait! Can we just manually filter these messages out of the main log? https://github.com/phetsims/chipper/issues/1429
       ...patterns
     ] );
 
@@ -68,6 +68,10 @@ function runEslint( repos, options ) {
     if ( showProgressBar ) {
       env.DEBUG = DEBUG_MARKER;
     }
+
+    // Increase available memory for NodeJS heap, to future-proof for, https://github.com/phetsims/chipper/issues/1415
+    env.NODE_OPTIONS = env.NODE_OPTIONS || '';
+    env.NODE_OPTIONS += ' --max-old-space-size=8192';
 
     // TODO: error handling, https://github.com/phetsims/chipper/issues/1429
     const eslint = spawn( /^win/.test( process.platform ) ? 'npx.cmd' : 'npx', args, {
