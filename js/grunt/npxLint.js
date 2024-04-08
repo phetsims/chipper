@@ -114,8 +114,9 @@ function runEslint( repos, options ) {
     const handleLogging = ( data, isError ) => {
       const message = data.toString();
 
-      if ( message.includes( DEBUG_MARKER ) ) {
-        assert( showProgressBar, 'should only have the debug marker for progress bar support' );
+      // Handle case where the source code of this file is printed (when there are lint rules in this file)
+      if ( message.includes( DEBUG_MARKER ) && !message.includes( DEBUG_MARKER + '\'' ) ) {
+        assert( showProgressBar, `should only have the debug marker for progress bar support for message:, ${message}` );
         const repo = tryRepoFromDebugMessage( message );
         if ( repo ) {
           assert( repos.indexOf( repo ) >= 0, `repo not in repos, ${repo}, ${message}` );
@@ -181,7 +182,6 @@ const escaped = repoRootPath.replace( /\\/g, '\\\\' ); // Handle any backslashes
 // Regex that captures the repo via the path
 const regExp = new RegExp( `${escaped}([\\w-]+)[\\\\\\/]` );
 
-// A DEBUG message looks like this:  2024-04-08T17:37:52.723Z eslint:cli-engine Lint C:\Users\user\path\git\fractions-common\js\intro\view\circular\CircularPieceNode.js
 function tryRepoFromDebugMessage( message ) {
   assert( message.includes( DEBUG_MARKER ) );
   const match = message.match( regExp );
