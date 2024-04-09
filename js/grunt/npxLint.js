@@ -1,11 +1,12 @@
 // Copyright 2024, University of Colorado Boulder
 
 /**
- * Runs the eslint process on the specified repos using the `npx` command line iterface. This is the idiomatic and
+ * Runs the eslint process on the specified repos using the `npx` command line interface. This is the idiomatic and
  * recommended approach for this.
  *
  * TODO: review with CK,  https://github.com/phetsims/chipper/issues/1429
  * TODO: Review ignore file for optimization, https://github.com/phetsims/chipper/issues/1429
+ * TODO: https://github.com/phetsims/chipper/issues/1429 so many blank lines
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -76,12 +77,12 @@ function runEslint( repos, options ) {
       '--resolve-plugins-relative-to', '../chipper',
       '--no-error-on-unmatched-pattern',
       '--ignore-path', '../chipper/eslint/.eslintignore',
+      // TODO: Only enable json when running in chip-away or when otherwise requested....? https://github.com/phetsims/chipper/issues/1429
+      // Note the overlap with streaming output.
       '--format=json', // JSON output, instead of printing errors as we go
       '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
-      // TODO: Can we just manually filter these "ignore" messages out of the main log below? https://github.com/phetsims/chipper/issues/1429
-      // TODO: MK ran without this on windows and nothing logged. . . . https://github.com/phetsims/chipper/issues/1429
-      // TODO: Otherwise remove in https://github.com/phetsims/chipper/issues/1433
-      '--quiet',
+      // TODO: But without --quiet we seem to get unexpected messages from the process, https://github.com/phetsims/chipper/issues/1429
+      // '--quiet',
       ...patterns
     ] );
 
@@ -90,8 +91,7 @@ function runEslint( repos, options ) {
 
     showProgressBar && showCommandLineProgress( 0, false );
 
-    // TODO: do we want to support the entire env passed in? https://github.com/phetsims/chipper/issues/1429
-    // Prepare environment for spawn process
+    // Prepare environment for spawn process, defaulting to the existing env
     const env = Object.create( process.env );
     if ( showProgressBar ) {
       env.DEBUG = DEBUG_MARKER;
@@ -99,9 +99,12 @@ function runEslint( repos, options ) {
 
     // Increase available memory for NodeJS heap, to future-proof for, https://github.com/phetsims/chipper/issues/1415
     env.NODE_OPTIONS = env.NODE_OPTIONS || '';
-    env.NODE_OPTIONS += ' --max-old-space-size=8192'; // TODO: Note that this duplicates this option for MK, but it still works well, https://github.com/phetsims/chipper/issues/1429
 
-    // TODO: error handling, can we do better than a try catch where called?, https://github.com/phetsims/chipper/issues/1429
+    if ( !env.NODE_OPTIONS.includes( '--max-old-space-size' ) ) {
+      env.NODE_OPTIONS += ' --max-old-space-size=8192';
+    }
+
+    // TODO: Use execute https://github.com/phetsims/chipper/issues/1429
     const eslint = spawn( nxpCommand, args, {
       cwd: '../chipper',
       env: env // Use the prepared environment
