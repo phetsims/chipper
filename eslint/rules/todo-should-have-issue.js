@@ -122,8 +122,6 @@ module.exports = {
                   if ( !url.startsWith( 'https://' ) ) {
                     console.error( `Unexpected URL being written: \n\t${url}\n\t${filename}\n\t${comment}` );
                   }
-
-                  // TODO: I believe there is a race condition on writing to this file. https://github.com/phetsims/perennial/issues/353
                   fs.writeFileSync( todoIssuesFilepath, fs.readFileSync( todoIssuesFilepath ).toString() + `${url}\n` );
                 }
               }
