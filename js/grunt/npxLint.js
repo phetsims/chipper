@@ -110,8 +110,6 @@ function runEslint( repos, options ) {
       env: env // Use the prepared environment
     } );
 
-    let jsonString = '';
-
     // Log with support for debug messaging (for progress bar)
     const handleLogging = ( data, isError ) => {
       const message = data.toString();
@@ -129,8 +127,18 @@ function runEslint( repos, options ) {
         console.error( message );
       }
       else {
-        assert( !jsonString, 'jsonString should only be set once' );
-        jsonString += message;
+        try {
+          const parsed = JSON.parse( message );
+          resolve( parsed );
+        }
+        catch( e ) {
+          if ( e.message.includes( 'Unexpected end of JSON input' ) ) {
+            console.log( message );
+          }
+          else {
+            reject( e );
+          }
+        }
       }
     };
 
@@ -142,12 +150,9 @@ function runEslint( repos, options ) {
       handleLogging( data, true );
     } );
 
-    eslint.on( 'close', () => {
-      resolve( jsonString );
-    } );
-  } ).then( async jsonString => {
+  } ).then( async parsed => {
     showProgressBar && showCommandLineProgress( 1, true );
-    const results = JSON.parse( jsonString );
+    const results = parsed.filter( x => x.errorCount !== 0 || x.warningCount !== 0 );
     options.chipAway && chipAway( results );
     await consoleLogResults( results );
     return results;
