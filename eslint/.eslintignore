@@ -2,8 +2,6 @@
 **/build
 **/dist
 **/node_modules/
-**/snapshots
-**/js/parser/svgPath.js
 **/templates/*.js
 **/templates/*.html
 **/js/**/*Strings.ts

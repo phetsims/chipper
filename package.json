@@ -65,9 +65,6 @@
   "eslintConfig": {
     "extends": "../chipper/eslint/phet-library_eslintrc.js",
     "parser": "../chipper/node_modules/@babel/eslint-parser",
-    "ignorePatterns": [
-      "dist/"
-    ],
     "rules": {
       "bad-chipper-text": "error"
     },
