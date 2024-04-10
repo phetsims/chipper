@@ -4,7 +4,7 @@
  * Runs the eslint process on the specified repos using the `npx` command line interface. This is the idiomatic and
  * recommended approach for this.
  *
- * TODO: review with CK,  https://github.com/phetsims/chipper/issues/1429
+ * TODO: Refactor eslint ignore file into ignore paths?,  https://github.com/phetsims/chipper/issues/1429 https://eslint.org/docs/latest/use/configure/ignore
  * TODO: Review ignore file for optimization, https://github.com/phetsims/chipper/issues/1429
  * TODO: https://github.com/phetsims/chipper/issues/1429 so many blank lines
  *
