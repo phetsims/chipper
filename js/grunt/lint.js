@@ -104,13 +104,18 @@ function runEslint( repos, options ) {
       env: env // Use the prepared environment
     } );
 
+    // It is possible the json is bigger than one chunk of data, so append to it.
     let jsonString = '';
+    eslint.stdout.on( 'data', data => {
+      jsonString += data.toString();
+    } );
 
-    // Log with support for debug messaging (for progress bar)
-    const handleLogging = ( data, isError ) => {
+    eslint.stderr.on( 'data', data => {
       const message = data.toString();
 
+      // Log with support for debug messaging (for progress bar)
       // Handle case where the source code of this file is printed (when there are lint rules in this file)
+      // It was found that debug messages only come to the stderr channel, not stdout.
       if ( message.includes( DEBUG_MARKER ) && !message.includes( DEBUG_MARKER + '\'' ) ) {
         assert( showProgressBar, `should only have the debug marker for progress bar support for message:, ${message}` );
         const repo = tryRepoFromDebugMessage( message );
@@ -119,16 +124,10 @@ function runEslint( repos, options ) {
           showProgressBar && showCommandLineProgress( repos.indexOf( repo ) / repos.length, false );
         }
       }
-      else if ( isError ) {
+      else {
         console.error( message );
       }
-      else {
-        jsonString += message;
-      }
-    };
-
-    eslint.stdout.on( 'data', data => handleLogging( data, false ) );
-    eslint.stderr.on( 'data', data => handleLogging( data, true ) );
+    } );
     eslint.on( 'close', () => {
       try {
         const parsed = JSON.parse( jsonString );
