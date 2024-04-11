@@ -73,15 +73,10 @@ function runEslint( repos, options ) {
       '--resolve-plugins-relative-to', '../chipper',
       '--no-error-on-unmatched-pattern',
       '--ignore-path', '../chipper/eslint/.eslintignore',
-      // TODO: Only enable json when running in chip-away or when otherwise requested....? https://github.com/phetsims/chipper/issues/1429
-      // Note the overlap with streaming output.
-      '--format=json', // JSON output, instead of printing errors as we go
+      '--format=json', // JSON output, for easier parsing later
       '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
       ...patterns
     ] );
-
-    // TODO: DELETE ME, https://github.com/phetsims/chipper/issues/1429
-    // console.log( `running in cwd ../chipper: npx ${args.join( ' ' )}` );
 
     showProgressBar && showCommandLineProgress( 0, false );
 
@@ -127,7 +122,7 @@ function runEslint( repos, options ) {
         }
         catch( e ) {
           if ( e.message.includes( 'Unexpected end of JSON input' ) ) {
-            console.log( message );
+            console.log( message ); // Not JSON output, so print it instead
           }
           else {
             reject( e );
@@ -136,13 +131,8 @@ function runEslint( repos, options ) {
       }
     };
 
-    eslint.stdout.on( 'data', data => {
-      handleLogging( data, false );
-    } );
-
-    eslint.stderr.on( 'data', data => {
-      handleLogging( data, true );
-    } );
+    eslint.stdout.on( 'data', data => handleLogging( data, false ) );
+    eslint.stderr.on( 'data', data => handleLogging( data, true ) );
 
   } ).then( async parsed => {
 
@@ -163,7 +153,7 @@ function runEslint( repos, options ) {
  *
  * @param {string[]} originalRepos - list of repos to lint
  * @param {Object} [options]
- * @returns {Promise<{results:Array<Object>,ok:boolean}>} - results from linting files, see ESLint.lintFiles (all results, not just errors).
+ * @returns {Promise<{results:Array<Object>,ok:boolean}>} - results from linting files, see ESLint.lintFiles.
  */
 const npxLint = async ( originalRepos, options ) => {
   try {
