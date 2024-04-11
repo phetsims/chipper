@@ -40,8 +40,8 @@ const visit = ( context, propertyNode ) => {
   if ( isPropertyType ) {
 
     // Not all types will have a node name, so nest this inside the Property type check.
-    const isPropertyNamed = propertyNode.name.endsWith( 'Property' ) ||
-                            propertyNode.name.endsWith( 'PROPERTY' ) ||
+    const isPropertyNamed = propertyNode.name?.endsWith( 'Property' ) ||
+                            propertyNode.name?.endsWith( 'PROPERTY' ) ||
                             propertyNode.name === 'property' ||
                             propertyNode.name === '_property';
 
