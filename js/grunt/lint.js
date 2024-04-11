@@ -155,7 +155,7 @@ function runEslint( repos, options ) {
  * @param {Object} [options]
  * @returns {Promise<{results:Array<Object>,ok:boolean}>} - results from linting files, see ESLint.lintFiles.
  */
-const npxLint = async ( originalRepos, options ) => {
+const lint = async ( originalRepos, options ) => {
   try {
     const results = await runEslint( originalRepos, options );
     if ( results.length === 0 ) {
@@ -184,6 +184,6 @@ function tryRepoFromDebugMessage( message ) {
 }
 
 // Mark the version so that we don't try to lint old shas if on an older version of chipper.
-npxLint.chipperAPIVersion = 'npx';
+lint.chipperAPIVersion = 'npx';
 
-module.exports = npxLint;
+module.exports = lint;
