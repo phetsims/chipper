@@ -2,7 +2,11 @@
 
 /**
  * Runs the eslint process on the specified repos using the `npx` command line interface. This is the idiomatic and
- * recommended approach for this.
+ * recommended approach for this. We also add support for various options. This linting strategy was adopted over
+ * using the ESLint NodeJS client in https://github.com/phetsims/chipper/issues/1429
+ *
+ * It is assumed that linting occurs from one level deep in any given repo. This has ramifications for how we write
+ * eslint config files across the codebase.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -20,6 +24,7 @@ const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement
 const DEBUG_MARKER = 'eslint:cli-engine';
 const nxpCommand = /^win/.test( process.platform ) ? 'npx.cmd' : 'npx';
 
+// Print formatted errors and warning to the console.
 async function consoleLogResults( results ) {
 
   // No need to have the same ESLint just to format
@@ -29,7 +34,6 @@ async function consoleLogResults( results ) {
 }
 
 /**
- *
  * @param repos
  * @param options
  * @returns {Promise<ESLint.LintResult[]>}
@@ -38,47 +42,48 @@ function runEslint( repos, options ) {
 
   options = _.assignIn( {
 
-    // Cache results for a speed boost
+    // Cache results for a speed boost.
     cache: true,
 
     // Fix things that can be auto-fixed (written to disk)
     fix: false,
 
-    // returns responsible dev info for easier GitHub issue creation.
+    // prints responsible dev info for any lint errors for easier GitHub issue creation.
     chipAway: false,
 
-    // Show a progress bar while running, based on the current repo out of the list
+    // Show a progress bar while running, based on the current repo index in the provided list parameter
     showProgressBar: true
   }, options );
 
   const showProgressBar = options.showProgressBar && repos.length > 1;
+  showProgressBar && showCommandLineProgress( 0, false );
 
   const patterns = repos.map( repo => `../${repo}/` );
+
+  const args = [ 'eslint' ];
+
+  // Conditionally add cache options based on the cache flag in options
+  if ( options.cache ) {
+    args.push( '--cache', '--cache-location', '../chipper/eslint/cache/.eslintcache' );
+  }
+
+  // Add the '--fix' option if fix is true
+  if ( options.fix ) {
+    args.push( '--fix' );
+  }
+
+  // Continue building the args array
+  args.push( ...[
+    '--rulesdir', '../chipper/eslint/rules/',
+    '--resolve-plugins-relative-to', '../chipper',
+    '--no-error-on-unmatched-pattern',
+    '--ignore-path', '../chipper/eslint/.eslintignore',
+    '--format=json', // JSON output, for easier parsing later
+    '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
+    ...patterns
+  ] );
+
   return new Promise( ( resolve, reject ) => {
-    const args = [ 'eslint' ];
-
-    // Conditionally add cache options based on the cache flag in options
-    if ( options.cache ) {
-      args.push( '--cache', '--cache-location', '../chipper/eslint/cache/.eslintcache' );
-    }
-
-    // Add the '--fix' option if fix is true
-    if ( options.fix ) {
-      args.push( '--fix' );
-    }
-
-    // Continue building the args array
-    args.push( ...[
-      '--rulesdir', '../chipper/eslint/rules/',
-      '--resolve-plugins-relative-to', '../chipper',
-      '--no-error-on-unmatched-pattern',
-      '--ignore-path', '../chipper/eslint/.eslintignore',
-      '--format=json', // JSON output, for easier parsing later
-      '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
-      ...patterns
-    ] );
-
-    showProgressBar && showCommandLineProgress( 0, false );
 
     // Prepare environment for spawn process, defaulting to the existing env
     const env = Object.create( process.env );
@@ -137,12 +142,15 @@ function runEslint( repos, options ) {
   } ).then( async parsed => {
 
     showProgressBar && showCommandLineProgress( 1, true );
+
+    // Ignore non-errors/warnings
     const results = parsed.filter( x => x.errorCount !== 0 || x.warningCount !== 0 );
 
     if ( results.length > 0 ) {
       await consoleLogResults( results );
       options.chipAway && console.log( chipAway( results ), '\n' );
     }
+
     return results;
   } );
 }
