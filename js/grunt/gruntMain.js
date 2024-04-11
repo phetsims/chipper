@@ -26,6 +26,11 @@ if ( LAUNCH_FROM_CHIPPER_DIST ) {
   // If we forgot to transpile something, we will get a module not found runtime error, and
   // can add more entry points to this list.
   // TODO: Visit these during a watch process, so this can remain just a "safety net" https://github.com/phetsims/chipper/issues/1272
+  // On the build servers (or if the developer doesn't have a watch process running), this will transpile the build
+  // synchronously during startup.
+  // If there are no changes or a watch process already transpiled the files, this will be a no-op.
+  // Note that 2 Transpile processes trying to write the same file at the same time may corrupt the file, since
+  // we do not have atomic writes.
   commonJSTranspiler.transpileRepo( 'chipper' );
   commonJSTranspiler.transpileRepo( 'phet-core' );
   commonJSTranspiler.transpileRepo( 'perennial-alias' );
