@@ -355,15 +355,13 @@ Minify-specific options:
       const cache = !grunt.option( 'disable-eslint-cache' );
       const fix = grunt.option( 'fix' );
       const chipAway = grunt.option( 'chip-away' );
-      const disableWithComment = grunt.option( 'disable-with-comment' );
 
       const extraRepos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [];
 
       const lintReturnValue = await lint( [ repo, ...extraRepos ], {
         cache: cache,
         fix: fix,
-        chipAway: chipAway,
-        disableWithComment: disableWithComment
+        chipAway: chipAway
       } );
 
       if ( !lintReturnValue.ok ) {
@@ -378,7 +376,6 @@ Minify-specific options:
     const cache = !grunt.option( 'disable-eslint-cache' );
     const fix = grunt.option( 'fix' );
     const chipAway = grunt.option( 'chip-away' );
-    const disableWithComment = grunt.option( 'disable-with-comment' );
     assert && assert( !grunt.option( 'patterns' ), 'patterns not support for lint-all' );
 
     const getPhetLibs = require( './getPhetLibs' );
@@ -388,8 +385,7 @@ Minify-specific options:
     const lintReturnValue = await lint( getPhetLibs( repo, brands ), {
       cache: cache,
       fix: fix,
-      chipAway: chipAway,
-      disableWithComment: disableWithComment
+      chipAway: chipAway
     } );
 
     // Output results on errors.
