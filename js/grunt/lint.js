@@ -104,6 +104,8 @@ function runEslint( repos, options ) {
       env: env // Use the prepared environment
     } );
 
+    let jsonString = '';
+
     // Log with support for debug messaging (for progress bar)
     const handleLogging = ( data, isError ) => {
       const message = data.toString();
@@ -121,23 +123,21 @@ function runEslint( repos, options ) {
         console.error( message );
       }
       else {
-        try {
-          const parsed = JSON.parse( message );
-          resolve( parsed );
-        }
-        catch( e ) {
-          if ( e.message.includes( 'Unexpected' ) && e.message.includes( 'end' ) && e.message.includes( 'JSON' ) ) {
-            console.log( message ); // Not JSON output, so print it instead
-          }
-          else {
-            reject( e );
-          }
-        }
+        jsonString += message;
       }
     };
 
     eslint.stdout.on( 'data', data => handleLogging( data, false ) );
     eslint.stderr.on( 'data', data => handleLogging( data, true ) );
+    eslint.on( 'close', () => {
+      try {
+        const parsed = JSON.parse( jsonString );
+        resolve( parsed );
+      }
+      catch( e ) {
+        reject( e );
+      }
+    } );
 
   } ).then( async parsed => {
 
