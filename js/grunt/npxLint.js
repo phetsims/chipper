@@ -4,9 +4,7 @@
  * Runs the eslint process on the specified repos using the `npx` command line interface. This is the idiomatic and
  * recommended approach for this.
  *
- * TODO: Refactor eslint ignore file into ignore paths?,  https://github.com/phetsims/chipper/issues/1429 https://eslint.org/docs/latest/use/configure/ignore
- * TODO: Review ignore file for optimization, https://github.com/phetsims/chipper/issues/1429
- * TODO: https://github.com/phetsims/chipper/issues/1429 so many blank lines
+ * // TODO: ignore perennial-alias, https://github.com/phetsims/chipper/issues/1429
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -151,10 +149,14 @@ function runEslint( repos, options ) {
     } );
 
   } ).then( async parsed => {
+
     showProgressBar && showCommandLineProgress( 1, true );
     const results = parsed.filter( x => x.errorCount !== 0 || x.warningCount !== 0 );
-    options.chipAway && chipAway( results );
-    await consoleLogResults( results );
+
+    if ( results.length > 0 ) {
+      await consoleLogResults( results );
+      options.chipAway && console.log( chipAway( results ), '\n' );
+    }
     return results;
   } );
 }
@@ -194,5 +196,8 @@ function tryRepoFromDebugMessage( message ) {
   const match = message.match( regExp );
   return match ? match[ 1 ] : null;
 }
+
+// Mark the version so that we don't try to lint old shas if on an older version of chipper.
+npxLint.chipperAPIVersion = 'npx';
 
 module.exports = npxLint;
