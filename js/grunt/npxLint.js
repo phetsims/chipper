@@ -4,8 +4,6 @@
  * Runs the eslint process on the specified repos using the `npx` command line interface. This is the idiomatic and
  * recommended approach for this.
  *
- * // TODO: ignore perennial-alias, https://github.com/phetsims/chipper/issues/1429
- *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
@@ -79,8 +77,6 @@ function runEslint( repos, options ) {
       // Note the overlap with streaming output.
       '--format=json', // JSON output, instead of printing errors as we go
       '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
-      // TODO: But without --quiet we seem to get unexpected messages from the process, https://github.com/phetsims/chipper/issues/1429
-      // '--quiet',
       ...patterns
     ] );
 
@@ -102,7 +98,7 @@ function runEslint( repos, options ) {
       env.NODE_OPTIONS += ' --max-old-space-size=8192';
     }
 
-    // TODO: Use execute https://github.com/phetsims/chipper/issues/1429
+    // It is nice to use our own spawn here instead of execute() so we can stream progress updates as it runs.
     const eslint = spawn( nxpCommand, args, {
       cwd: '../chipper',
       env: env // Use the prepared environment
