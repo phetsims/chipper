@@ -121,7 +121,7 @@ function runEslint( repos, options ) {
           resolve( parsed );
         }
         catch( e ) {
-          if ( e.message.includes( 'Unexpected end of JSON input' ) ) {
+          if ( e.message.includes( 'Unexpected' ) && e.message.includes( 'end' ) && e.message.includes( 'JSON' ) ) {
             console.log( message ); // Not JSON output, so print it instead
           }
           else {
