@@ -17,7 +17,7 @@
  *  @author Sam Reid (PhET Interactive Simulations)
  */
 
-// TODO: Move this to perennial, see https://github.com/phetsims/chipper/issues/1272
+// TODO: Move to perennial-alias, see https://github.com/phetsims/chipper/issues/1272. Does this mean we will have perennial-alias/dist? Be careful not to create perennial/dist too.
 
 // imports
 const fs = require( 'fs' );
@@ -179,8 +179,11 @@ class Transpiler {
         ]
       } ).code;
 
-      // TODO: Generalize this so it can look up the appropriate path for any dependency, see https://github.com/phetsims/chipper/issues/1272
-      // TODO: Note aqua, perennial, perennial-alias, rosetta and skiffle each require winston, see https://github.com/phetsims/chipper/issues/1272
+      /**
+       * TODO: Generalize this so it can look up the appropriate path for any dependency, see https://github.com/phetsims/chipper/issues/1272
+       * This can be accomplished with a babel plugin.
+       * Note aqua, perennial, perennial-alias, rosetta and skiffle each require (a possibly different version of) winston
+       */
       js = js.split( 'require(\'winston\')' ).join( 'require(\'../../../../../../perennial-alias/node_modules/winston\')' );
     }
 
