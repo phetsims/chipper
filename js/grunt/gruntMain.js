@@ -39,7 +39,7 @@ if ( LAUNCH_FROM_CHIPPER_DIST ) {
   commonJSTranspiler.transpileRepoWithModes( 'perennial-alias', [ 'commonjs' ] );
   commonJSTranspiler.saveCache();
 
-  // TODO: Make sure the above repos are covered by tsconfig/all, see https://github.com/phetsims/chipper/issues/1272
+  // TODO: Make sure the above repos are covered by tsconfig/all, see https://github.com/phetsims/chipper/issues/1437
 
   // use chipper's gruntfile
   module.exports = require( '../../dist/commonjs/chipper/js/grunt/Gruntfile.js' );

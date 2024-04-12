@@ -17,7 +17,7 @@
  *  @author Sam Reid (PhET Interactive Simulations)
  */
 
-// TODO: Move to perennial-alias, see https://github.com/phetsims/chipper/issues/1272. Does this mean we will have perennial-alias/dist? Be careful not to create perennial/dist too.
+// TODO: Move to perennial-alias, see https://github.com/phetsims/chipper/issues/1437. Does this mean we will have perennial-alias/dist? Be careful not to create perennial/dist too.
 
 // imports
 const fs = require( 'fs' );
@@ -38,8 +38,8 @@ const root = '..' + path.sep;
 
 // Directories in a sim repo that may contain things for transpilation
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
-// TODO: Subdirs may be different for commonjs/perennial/chipper, see https://github.com/phetsims/chipper/issues/1272
-// TODO: Add chipper/test chipper/eslint chipper/templates and perennial/test at a minimum, see https://github.com/phetsims/chipper/issues/1272
+// TODO: Subdirs may be different for commonjs/perennial/chipper, see https://github.com/phetsims/chipper/issues/1437
+// TODO: Add chipper/test chipper/eslint chipper/templates and perennial/test at a minimum, see https://github.com/phetsims/chipper/issues/1437
 const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'shaders', 'common', 'wgsl',
 
   // phet-io-sim-specific has nonstandard directory structure
@@ -135,8 +135,8 @@ class Transpiler {
     const relativePath = path.relative( root, filename );
     const suffix = relativePath.substring( relativePath.lastIndexOf( '.' ) );
 
-    // Note: When we upgrade to Node 16, this may no longer be necessary, see https://github.com/phetsims/chipper/issues/1272#issuecomment-1222574593
-    // TODO: Get rid of mjs?: https://github.com/phetsims/chipper/issues/1272
+    // Note: When we upgrade to Node 16, this may no longer be necessary, see https://github.com/phetsims/chipper/issues/1437#issuecomment-1222574593
+    // TODO: Get rid of mjs?: https://github.com/phetsims/chipper/issues/1437
     const isMJS = relativePath.endsWith( '.mjs' );
 
     const extension = isMJS ? '.mjs' : '.js';
@@ -180,7 +180,7 @@ class Transpiler {
       } ).code;
 
       /**
-       * TODO: Generalize this so it can look up the appropriate path for any dependency, see https://github.com/phetsims/chipper/issues/1272
+       * TODO: Generalize this so it can look up the appropriate path for any dependency, see https://github.com/phetsims/chipper/issues/1437
        * This can be accomplished with a babel plugin.
        * Note aqua, perennial, perennial-alias, rosetta and skiffle each require (a possibly different version of) winston
        */
