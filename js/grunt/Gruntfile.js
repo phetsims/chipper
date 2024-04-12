@@ -34,12 +34,6 @@ if ( !global.processEventOptOut ) {
 const Transpiler = require( '../common/Transpiler' );
 const transpiler = new Transpiler( { silent: true } );
 
-// On the build server, or if a developer wants to run a build without running a transpile watch process,
-// we have to transpile any dependencies run through wrapPhetBuildScript
-// TODO: What if TypeScript code imports other repos? See https://github.com/phetsims/chipper/issues/1272
-transpiler.transpileRepo( 'chipper' );
-transpiler.transpileRepo( 'phet-core' );
-
 module.exports = function( grunt ) {
   const packageObject = grunt.file.readJSON( 'package.json' );
 
@@ -106,37 +100,15 @@ module.exports = function( grunt ) {
     'build'
   ] );
 
-  const wrapPhetBuildScript = string => {
-    const args = string.split( ' ' );
-
-    const child_process = require( 'child_process' );
-
-    return () => {
-      const done = grunt.task.current.async();
-
-      const p = child_process.spawn( 'node', [ '../chipper/dist/js/chipper/js/phet-build-script/phet-build-script.mjs', ...args ], {
-        cwd: process.cwd()
-      } );
-
-      p.on( 'error', error => {
-        grunt.fail.fatal( `Perennial task failed: ${error}` );
-        done();
-      } );
-      p.stderr.on( 'data', data => console.log( String( data ) ) );
-      p.stdout.on( 'data', data => console.log( String( data ) ) );
-      p.on( 'close', code => {
-        if ( code !== 0 ) {
-          grunt.fail.fatal( `Perennial task failed with code: ${code}` );
-        }
-        done();
-      } );
-    };
-  };
-
   grunt.registerTask( 'clean',
     'Erases the build/ directory and all its contents, and recreates the build/ directory',
-    wrapPhetBuildScript( `clean --repo=${repo}` )
-  );
+    wrapTask( async () => {
+      const buildDirectory = `../${repo}/build`;
+      if ( grunt.file.exists( buildDirectory ) ) {
+        grunt.file.delete( buildDirectory );
+      }
+      grunt.file.mkdir( buildDirectory );
+    } ) );
 
   grunt.registerTask( 'build-images',
     'Build images only',

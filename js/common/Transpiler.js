@@ -189,14 +189,14 @@ class Transpiler {
     fs.writeFileSync( targetPath, js );
   }
 
-  // @public
+  // @private
   static modifiedTimeMilliseconds( file ) {
     try {
       return fs.statSync( file ).mtime.getTime();
     }
     catch( e ) {
 
-      // TODO: Why is this file not found? https://github.com/phetsims/chipper/issues/1272
+      // If one process is reading the file while another is deleting it, we may get an error here.
       console.log( 'file not found: ' + file );
       return -1;
     }
@@ -258,8 +258,8 @@ class Transpiler {
   }
 
   /**
-   * @param filePath
-   * @param mode
+   * @param {string} filePath
+   * @param {string} mode - 'js' or 'commonjs'
    * @private
    */
   visitFileWithMode( filePath, mode ) {
@@ -323,9 +323,7 @@ class Transpiler {
    */
   visitFile( filePath, modes ) {
     assert( Array.isArray( modes ), 'invalid modes: ' + modes );
-    modes.forEach( mode => {
-      this.visitFileWithMode( filePath, mode );
-    } );
+    modes.forEach( mode => this.visitFileWithMode( filePath, mode ) );
   }
 
   // @private - Recursively visit a directory for files to transpile
@@ -393,27 +391,33 @@ class Transpiler {
     repos.forEach( repo => this.transpileRepo( repo ) );
   }
 
-  // @public - Visit all the subdirectories in a repo that need transpilation
-  transpileRepo( repo ) {
-    subdirs.forEach( subdir => this.visitDirectory( Transpiler.join( '..', repo, subdir ), getModesForRepo( repo ) ) );
+  // @public - Visit all the subdirectories in a repo that need transpilation for the specified modes
+  transpileRepoWithModes( repo, modes ) {
+    assert( Array.isArray( modes ), 'modes should be an array' );
+    subdirs.forEach( subdir => this.visitDirectory( Transpiler.join( '..', repo, subdir ), modes ) );
     if ( repo === 'sherpa' ) {
 
       // Our sims load this as a module rather than a preload, so we must transpile it
-      this.visitFile( Transpiler.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ), getModesForRepo( repo ) );
-      this.visitFile( Transpiler.join( '..', repo, 'lib', 'pako-2.0.3.min.js' ), getModesForRepo( repo ) ); // used for phet-io-wrappers tests
-      this.visitFile( Transpiler.join( '..', repo, 'lib', 'big-6.2.1.mjs' ), getModesForRepo( repo ) ); // for consistent, cross-browser number operations (thanks javascript)
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ), modes );
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'pako-2.0.3.min.js' ), modes ); // used for phet-io-wrappers tests
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'big-6.2.1.mjs' ), modes ); // for consistent, cross-browser number operations (thanks javascript)
       Object.keys( webpackGlobalLibraries ).forEach( key => {
         const libraryFilePath = webpackGlobalLibraries[ key ];
-        this.visitFile( Transpiler.join( '..', ...libraryFilePath.split( '/' ) ), getModesForRepo( repo ) );
+        this.visitFile( Transpiler.join( '..', ...libraryFilePath.split( '/' ) ), modes );
       } );
     }
     else if ( repo === 'brand' ) {
-      this.visitDirectory( Transpiler.join( '..', repo, 'phet' ), getModesForRepo( repo ) );
-      this.visitDirectory( Transpiler.join( '..', repo, 'phet-io' ), getModesForRepo( repo ) );
-      this.visitDirectory( Transpiler.join( '..', repo, 'adapted-from-phet' ), getModesForRepo( repo ) );
+      this.visitDirectory( Transpiler.join( '..', repo, 'phet' ), modes );
+      this.visitDirectory( Transpiler.join( '..', repo, 'phet-io' ), modes );
+      this.visitDirectory( Transpiler.join( '..', repo, 'adapted-from-phet' ), modes );
 
-      this.brands.forEach( brand => this.visitDirectory( Transpiler.join( '..', repo, brand ), getModesForRepo( repo ) ) );
+      this.brands.forEach( brand => this.visitDirectory( Transpiler.join( '..', repo, brand ), modes ) );
     }
+  }
+
+  // @public - Visit all the subdirectories in a repo that need transpilation
+  transpileRepo( repo ) {
+    this.transpileRepoWithModes( repo, getModesForRepo( repo ) );
   }
 
   // @public
