@@ -32,7 +32,8 @@ similar to CSS, so we can provide an inheritance tree of configuration settings.
 Here is a list of all the available configuration files and why to use them for a repo:
 
 - `.eslintrc.js` is the base set of rules. You probably shouldn't use this directly, instead you should use one of the
-  derived configurations below.
+  derived configurations below. Please note! Changing this file can also effect phet website repos. Please let that team
+  know when changing.
 - `node_eslintrc.js` expands on the base rules and adds configuration only intended for Node.js code (i.e. `perennial`).
 - `sim_eslintrc.js` expands on the base rules and adds configuration intended for code run in sims (think of this as es5
   sim rules)

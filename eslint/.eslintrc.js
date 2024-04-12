@@ -4,6 +4,8 @@
 /**
  * The base eslint configuration for the PhET projects.
  *
+ * Please note! Changing this file can also effect phet website repos. Please let that team know when changing.
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
