@@ -29,7 +29,6 @@
     "../../../calculus-grapher/js/**/*",
     "../../../center-and-variability/js/**/*",
     "../../../center-and-variability/images/**/*",
-    "../../../chipper/js/phet-build-script/phet-build-script.ts",
     "../../../chipper/phet-types.d.ts",
     "../../../chipper/phet-types-module.d.ts",
     "../../../circuit-construction-kit-ac/js/**/*",

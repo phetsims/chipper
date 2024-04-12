@@ -137,8 +137,7 @@ class Transpiler {
 
     // Note: When we upgrade to Node 16, this may no longer be necessary, see https://github.com/phetsims/chipper/issues/1272#issuecomment-1222574593
     // TODO: Get rid of mjs?: https://github.com/phetsims/chipper/issues/1272
-    const isMJS = relativePath.includes( 'phet-build-script' ) ||
-                  relativePath.endsWith( '.mjs' );
+    const isMJS = relativePath.endsWith( '.mjs' );
 
     const extension = isMJS ? '.mjs' : '.js';
     return Transpiler.join( root, 'chipper', 'dist', mode, ...relativePath.split( path.sep ) ).split( suffix ).join( extension );
