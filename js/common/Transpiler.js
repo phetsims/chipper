@@ -283,7 +283,11 @@ class Transpiler {
         try {
           let reason = '';
           if ( this.verbose ) {
-            reason = ( !this.status[ statusKey ] ) ? ' (not cached)' : ( this.status[ statusKey ].sourceMD5 !== hash ) ? ' (changed)' : ( !fs.existsSync( targetPath ) ) ? ' (no target)' : ( this.status[ statusKey ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' : '???';
+            reason = ( !this.status[ statusKey ] ) ? ' (not cached)' :
+                     ( this.status[ statusKey ].sourceMD5 !== hash ) ? ' (changed)' :
+                     ( !fs.existsSync( targetPath ) ) ? ' (no target)' :
+                     ( this.status[ statusKey ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' :
+                     '???';
           }
           this.transpileFunction( filePath, targetPath, text, mode );
 
