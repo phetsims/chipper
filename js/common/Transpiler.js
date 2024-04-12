@@ -278,7 +278,12 @@ class Transpiler {
 
       const statusKey = getStatusKey( filePath, mode );
 
-      if ( !this.status[ statusKey ] || this.status[ statusKey ].sourceMD5 !== hash || !fs.existsSync( targetPath ) || this.status[ statusKey ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) {
+      if (
+        !this.status[ statusKey ] ||
+        this.status[ statusKey ].sourceMD5 !== hash ||
+        !fs.existsSync( targetPath ) ||
+        this.status[ statusKey ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath )
+      ) {
 
         try {
           let reason = '';
