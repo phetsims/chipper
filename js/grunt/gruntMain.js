@@ -1,4 +1,4 @@
-// Copyright 2022-2024, University of Colorado Boulder
+// Copyright 2024, University of Colorado Boulder
 
 /**
  * gruntMain.js is the entry point for launching the grunt tasks for the PhET build system.
