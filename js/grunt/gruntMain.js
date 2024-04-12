@@ -34,6 +34,7 @@ if ( LAUNCH_FROM_CHIPPER_DIST ) {
    Note that 2 Transpile processes trying to write the same file at the same time may corrupt the file, since
    we do not have atomic writes.
    */
+  // TODO: should this be silent?  https://github.com/phetsims/chipper/issues/1437
   commonJSTranspiler.transpileRepoWithModes( 'chipper', [ 'commonjs' ] );
   commonJSTranspiler.transpileRepoWithModes( 'phet-core', [ 'commonjs' ] );
   commonJSTranspiler.transpileRepoWithModes( 'perennial-alias', [ 'commonjs' ] );
