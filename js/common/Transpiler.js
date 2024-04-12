@@ -11,6 +11,8 @@
  *  @author Sam Reid (PhET Interactive Simulations)
  */
 
+// TODO: Move this to perennial, see https://github.com/phetsims/chipper/issues/1272
+
 // imports
 const fs = require( 'fs' );
 const path = require( 'path' );
@@ -30,12 +32,24 @@ const root = '..' + path.sep;
 
 // Directories in a sim repo that may contain things for transpilation
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
+// TODO: Subdirs may be different for commonjs/perennial/chipper, see https://github.com/phetsims/chipper/issues/1272
+// TODO: Add chipper/test chipper/eslint chipper/templates and perennial/test at a minimum, see https://github.com/phetsims/chipper/issues/1272
 const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'shaders', 'common', 'wgsl',
 
   // phet-io-sim-specific has nonstandard directory structure
   'repos' ];
 
 const getActiveRepos = () => fs.readFileSync( '../perennial-alias/data/active-repos', 'utf8' ).trim().split( '\n' ).map( sim => sim.trim() );
+
+const getModesForRepo = repo => {
+  const dualRepos = [ 'chipper', 'perennial-alias', 'perennial', 'phet-core' ];
+  if ( dualRepos.includes( repo ) ) {
+    return [ 'js', 'commonjs' ];
+  }
+  else {
+    return [ 'js' ];
+  }
+};
 
 class Transpiler {
 
@@ -97,13 +111,14 @@ class Transpiler {
    * Returns the path in chipper/dist that corresponds to a source file.
    * @param filename
    * @returns {string}
-   * @public
+   * @private
    */
   static getTargetPath( filename ) {
     const relativePath = path.relative( root, filename );
     const suffix = relativePath.substring( relativePath.lastIndexOf( '.' ) );
 
     // Note: When we upgrade to Node 16, this may no longer be necessary, see https://github.com/phetsims/chipper/issues/1272#issuecomment-1222574593
+    // TODO: Get rid of mjs: https://github.com/phetsims/chipper/issues/1272
     const isMJS = relativePath.includes( 'phet-build-script' ) ||
                   relativePath.endsWith( '.mjs' );
 
