@@ -16,6 +16,8 @@
  *                        are modified externally.  For example if you edit a file in chipper/dist/js or if you edit
  *                        chipper/dist/js-cache-status.json, they would be out of sync.  If you `rm -rf chipper/dist`
  *                        that does not require --clean, because that erases the cache file and the js files together.
+ *
+ * TODO: Remove skipInitial
  * --skipInitial          Skip the initial transpilation.
  * --repos                Additional repos to compile (not listed in perennial-alias/data/active-repos). The names of the repos,
  *                        separated by commas, like --repos=myrepo1,myrepo2. Directory names only, not paths
@@ -53,7 +55,8 @@ const transpiler = new Transpiler( {
   minifyWGSL: !args.includes( '--skipMinifyWGSL' )
 } );
 
-transpiler.pruneStaleDistFiles();
+transpiler.pruneStaleDistFiles( 'js' );
+transpiler.pruneStaleDistFiles( 'commonjs' );
 
 // Watch process
 if ( args.includes( '--watch' ) ) {
