@@ -17,7 +17,7 @@
  *                        chipper/dist/js-cache-status.json, they would be out of sync.  If you `rm -rf chipper/dist`
  *                        that does not require --clean, because that erases the cache file and the js files together.
  *
- * TODO: Remove skipInitial
+ * TODO: Remove skipInitial, see https://github.com/phetsims/chipper/issues/1272
  * --skipInitial          Skip the initial transpilation.
  * --repos                Additional repos to compile (not listed in perennial-alias/data/active-repos). The names of the repos,
  *                        separated by commas, like --repos=myrepo1,myrepo2. Directory names only, not paths
