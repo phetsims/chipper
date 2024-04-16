@@ -336,7 +336,7 @@ class Transpiler {
       files.forEach( file => {
         const child = Transpiler.join( dir, file );
 
-        assert( !child.includes( '/dist' ), 'Invalid path: ' + child + ' should not be in dist directory.' );
+        assert( !child.endsWith( '/dist' ), 'Invalid path: ' + child + ' should not be in dist directory.' );
 
         if ( fs.lstatSync( child ).isDirectory() ) {
           this.visitDirectory( child, modes );
