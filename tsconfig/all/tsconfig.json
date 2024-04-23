@@ -102,6 +102,7 @@
     "../../../phetmarks/js/**/*",
     "../../../projectile-data-lab/js/**/*",
     "../../../projectile-motion/js/**/*",
+    "../../../projectile-sampling-distributions/js/**/*",
     "../../../quadrilateral/js/**/*",
     "../../../quake/cordova-plugin-native-vibration/types/index.d.ts",
     "../../../ratio-and-proportion/js/**/*",
