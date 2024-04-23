@@ -315,10 +315,9 @@ Minify-specific options:
 
   grunt.registerTask( 'lint',
     `lint js files. Options:
---disable-eslint-cache: cache will not be read or written
+--disable-eslint-cache: cache will not be read from, and cache will be cleared for next run.
 --fix: autofixable changes will be written to disk
 --chip-away: output a list of responsible devs for each repo with lint problems
---disable-with-comment: add an es-lint disable with comment to lint errors
 --repos: comma separated list of repos to lint in addition to the repo from running`,
     wrapTask( async () => {
       const lint = require( './lint' );
