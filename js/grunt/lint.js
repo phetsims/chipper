@@ -83,10 +83,8 @@ function runEslint( repos, options ) {
     }
   }
 
-  // Conditionally add cache options based on the cache flag in options
-  if ( options.cache ) {
-    args.push( '--cache', '--cache-location', '../chipper/eslint/cache/.eslintcache' );
-  }
+  // Always write to the cache, even if it was cleared above.
+  args.push( '--cache', '--cache-location', '../chipper/eslint/cache/.eslintcache' );
 
   // Add the '--fix' option if fix is true
   if ( options.fix ) {
