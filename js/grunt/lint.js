@@ -20,6 +20,7 @@ const assert = require( 'assert' );
 const showCommandLineProgress = require( '../common/showCommandLineProgress' );
 const chipAway = require( './chipAway' );
 const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement-match
+const fs = require( 'fs' );
 
 const DEBUG_MARKER = 'eslint:cli-engine';
 const nxpCommand = /^win/.test( process.platform ) ? 'npx.cmd' : 'npx';
@@ -61,6 +62,26 @@ function runEslint( repos, options ) {
   const patterns = repos.map( repo => `../${repo}/` );
 
   const args = [ 'eslint' ];
+
+  // If options.cache is not set, clear the cache file (if it exists)
+  if ( !options.cache ) {
+
+    try {
+      fs.unlinkSync( '../chipper/eslint/cache/.eslintcache' );
+      console.log( 'Cache file \'../chipper/eslint/cache/.eslintcache\' deleted successfully' );
+    }
+    catch( err ) {
+      if ( err.code === 'ENOENT' ) {
+
+        console.log( 'Cache file does not exist, no need to delete' );
+      }
+      else {
+
+        // Re-throw the error if it's something else
+        throw err;
+      }
+    }
+  }
 
   // Conditionally add cache options based on the cache flag in options
   if ( options.cache ) {
