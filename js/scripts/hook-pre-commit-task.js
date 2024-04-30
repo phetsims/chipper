@@ -154,6 +154,12 @@ const repo = getArg( 'repo' );
     //
     const phetioAPIOK = await ( async () => {
 
+      // If running git hooks in phet-io-sim-specific, it isn't worth regenerating the API for every single stable sim.
+      // Instead, rely on the hooks from the repos where the api changes come from.
+      if ( repo === 'phet-io-sim-specific' ) {
+        return true;
+      }
+
       const getCacheKey = repo => `phet-io-api-compare#${repo}`;
 
       // Test this repo and all phet-io sims that have it as a dependency.  For instance, changing sun would test
