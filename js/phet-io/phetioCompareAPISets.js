@@ -45,16 +45,16 @@ module.exports = async ( repos, proposedAPIs, options ) => {
 
     if ( comparisonData.breakingProblems.length ) {
       ok = false;
-      console.log( `${repo} BREAKING PROBLEMS` );
-      console.log( comparisonData.breakingProblems.join( '\n' ) );
-      console.log( '\n' );
+      console.error( `${repo} BREAKING PROBLEMS` );
+      console.error( comparisonData.breakingProblems.join( '\n' ) );
+      console.error( '\n' );
     }
 
     if ( comparisonData.designedProblems.length ) {
       ok = false;
-      console.log( `${repo} DESIGN PROBLEMS` );
-      console.log( comparisonData.designedProblems.join( '\n' ) );
-      console.log( '\n' );
+      console.error( `${repo} DESIGN PROBLEMS` );
+      console.error( comparisonData.designedProblems.join( '\n' ) );
+      console.error( '\n' );
     }
 
     if ( options.delta ) {
