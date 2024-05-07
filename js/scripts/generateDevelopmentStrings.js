@@ -52,6 +52,8 @@ module.exports = repo => {
     stringFiles.push( englishStringPath );
   }
 
+  const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+
   // Do not generate a file if no translations were found.
   if ( stringFiles.length > 0 ) {
 
@@ -62,6 +64,11 @@ module.exports = repo => {
       const join = stringFile.split( '\\' ).join( '/' );
       const localeMatches = join.substring( join.lastIndexOf( '/' ) ).match( localeRegex );
       const locale = localeMatches[ 0 ];
+
+      if ( !localeData[ locale ] ) {
+        console.log( '[WARNING] Locale not found in localeData.json: ' + locale );
+        continue;
+      }
 
       // Get the contents of the string file.
       const stringFileContents = fs.readFileSync( stringFile, 'utf8' );

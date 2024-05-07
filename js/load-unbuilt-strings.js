@@ -30,9 +30,13 @@
   window.phet.chipper.strings = {};
   window.phet.chipper.stringMetadata = {};
 
-  // Prefixes, ideally a better way of accessing localeInfo on startup would exist. We have localeInfo, however it's
+  // Prefixes, ideally a better way of accessing localeData on startup would exist. We have localeData, however it's
   // in the form of a module, and we can't use that at this point.
-  const rtlLocales = [ 'ae', 'ar', 'fa', 'iw', 'ur' ];
+  // NOTE: For built forms, we will always have this data. For unbuilt forms, we may conditionally have this data,
+  // depending on the load order
+  const rtlLocales = phet.chipper.localeData ? Object.keys( phet.chipper.localeData ).filter( locale => {
+    return phet.chipper.localeData[ locale ].direction === 'rtl';
+  } ) : [ 'ac', 'ar', 'ar_AE', 'ar_BH', 'ar_DJ', 'ar_DZ', 'ar_EG', 'ar_EH', 'ar_ER', 'ar_IQ', 'ar_JO', 'ar_KM', 'ar_KW', 'ar_LB', 'ar_LY', 'ar_MA', 'ar_MR', 'ar_OM', 'ar_QA', 'ar_SA', 'ar_SD', 'ar_SO', 'ar_SY', 'ar_TD', 'ar_TN', 'ar_YE', 'bc', 'bx', 'de_AT', 'de_CH', 'de_LI', 'de_LU', 'di', 'es_AR', 'es_BO', 'es_CL', 'es_DO', 'es_EC', 'es_GQ', 'es_GT', 'es_HN', 'es_NI', 'es_PA', 'es_PR', 'es_PY', 'es_SV', 'es_US', 'es_UY', 'es_VE', 'fa', 'fa_DA', 'fr_BE', 'fr_BF', 'fr_BI', 'fr_BJ', 'fr_CA', 'fr_CD', 'fr_CF', 'fr_CG', 'fr_CH', 'fr_CI', 'fr_CM', 'fr_DJ', 'fr_EH', 'fr_GA', 'fr_GN', 'fr_GQ', 'fr_KM', 'fr_LU', 'fr_MC', 'fr_MG', 'fr_ML', 'fr_NE', 'fr_RW', 'fr_SC', 'fr_SN', 'fr_TD', 'fr_TG', 'it_CH', 'iw', 'jr', 'kq', 'lh', 'ly', 'ms_MY', 'nl_BE', 'nq', 'sr_BA', 'sv_FI', 'sy', 'ur', 'zh_MO', 'zh_SG' ];
 
   const localeQueryParam = new window.URLSearchParams( window.location.search ).get( 'locale' );
   const localesQueryParam = new window.URLSearchParams( window.location.search ).get( 'locales' );
@@ -195,6 +199,9 @@
       ...( localesQueryParam ? localesQueryParam.split( ',' ) : [] )
     ].forEach( locale => {
       if ( locale ) {
+        // NOTE: this is UNABLE to follow the normal fallback mechanisms from https://github.com/phetsims/joist/issues/963,
+        // as we don't have that data loaded yet.
+
         // e.g. 'zh_CN'
         if ( !locales.includes( locale ) ) {
           locales.push( locale );
@@ -228,6 +235,15 @@
   //   // Store for runtime usage
   //   phet.chipper.usedStringsEN = json;
   // } );
+
+  // Load locale data
+  requestJSONFile( '../babel/localeData.json', json => {
+    phet.chipper.localeData = json;
+
+    // Because load-unbuilt-strings' "loading" of the locale data might not have happened BEFORE initialize-globals
+    // runs (and sets phet.chipper.locale), we'll attempt to handle the case where it hasn't been set yet.
+    phet.chipper.checkAndRemapLocale && phet.chipper.checkAndRemapLocale();
+  } );
 
   if ( localesQueryParam === '*' ) {
 

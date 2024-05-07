@@ -190,12 +190,18 @@ class LocalizedString {
       return localeOrder[ index + 1 ];
     }
     else {
-      // doesn't exist in those
-      if ( locale.includes( '_' ) ) {
-        return locale.slice( 0, 2 ) as Locale; // zh_CN => zh
+      if ( phet.chipper.localeData[ locale ] ) {
+        // Pick either the first fallback locale from our localeData, or English
+        return ( phet.chipper.localeData[ locale ].fallbackLocales || [ 'en' ] )[ 0 ];
       }
       else {
-        return 'en';
+        // doesn't exist in those
+        if ( locale.includes( '_' ) ) {
+          return locale.slice( 0, 2 ) as Locale; // zh_CN => zh
+        }
+        else {
+          return 'en';
+        }
       }
     }
   }
