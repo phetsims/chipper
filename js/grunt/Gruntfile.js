@@ -604,7 +604,8 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--sims=... a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--stable - regenerate for all "stable sims" (see perennial/data/phet-io-api-stable/)\n' +
-    '--temporary - outputs to the temporary directory',
+    '--temporary - outputs to the temporary directory\n' +
+    '--transpile=false - skips the transpilation step. You can skip transpilation if a watch process is handling it.',
     wrapTask( async () => {
       const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
       const getSimList = require( '../common/getSimList' );
@@ -613,7 +614,23 @@ Updates the normal automatically-generated files for this repository. Includes:
 
       const sims = getSimList().length === 0 ? [ repo ] : getSimList();
 
-      transpiler.transpileAll();
+      // Ideally transpilation would be a no-op if the watch process is running. However, it can take 2+ seconds on
+      // macOS to check all files, and sometimes much longer (50+ seconds) if the cache mechanism is failing.
+      // So this "skip" is a band-aid until we reduce those other problems.
+      const skipTranspile = grunt.option( 'transpile' ) === false;
+      if ( !skipTranspile ) {
+        const startTime = Date.now();
+        transpiler.transpileAll();
+        const transpileTimeMS = Date.now() - startTime;
+
+        // Notify about long transpile times, in case more people need to skip
+        if ( transpileTimeMS >= 5000 ) {
+          grunt.log.writeln( `generate-phet-io-api transpilation took ${transpileTimeMS} ms` );
+        }
+      }
+      else {
+        grunt.log.writeln( 'Skipping transpilation' );
+      }
 
       const results = await generatePhetioMacroAPI( sims, {
         showProgressBar: sims.length > 1,
