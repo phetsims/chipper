@@ -15,12 +15,9 @@ import { localizedStrings } from './getStringModule.js';
 import arrayRemove from '../../phet-core/js/arrayRemove.js';
 import { PhetioID } from '../../tandem/js/TandemConstants.js';
 import LocalizedStringProperty from './LocalizedStringProperty.js';
-import fallbackLocalesProperty from '../../joist/js/i18n/fallbackLocalesProperty.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
-
-fallbackLocalesProperty.value; // TODO: waiting until we see if fallbackLocalesProperty can be removed, see https://github.com/phetsims/joist/issues/963
 
 // for readability/docs
 type TranslationString = string;
