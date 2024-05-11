@@ -767,11 +767,10 @@
     },
 
     /**
-     * Indicates whether or not the "Voicing" feature is enabled. This is a prototype
-     * feature that uses the web-speech API to provide speech output to the user about
-     * what is happening in the simulation.
+     * Controls whether the "Voicing" feature is enabled.
      *
-     * For internal use only. This is currently only used in prototypes.
+     * This feature is enabled by default when supportsVoicing is true in package.json. The query parameter will always
+     * override the package.json entry.
      */
     supportsVoicing: {
       type: 'boolean',
