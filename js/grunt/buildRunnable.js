@@ -150,6 +150,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, bran
   const commonInitializationOptions = {
     brand,
     repo,
+    allLocales: allLocales,
     stringMap,
     dependencies,
     timestamp,
