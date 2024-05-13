@@ -12,8 +12,26 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
-const localeInfo = require( '../data/localeInfo' ); // Locale information
 const path = require( 'path' );
+
+const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+
+/**
+ * For a given locale, return an array of specific locales that we'll use as fallbacks, e.g.
+ * 'ar_AE' => [ 'ar_AE', 'ar', 'ar_MA', 'en' ]   (note, changed from zh_CN example, which does NOT use 'zh' as a fallback anymore)
+ * 'es' => [ 'es', 'en' ]
+ * 'en' => [ 'en' ]
+ *
+ * @param {string} locale
+ * @returns {Array.<string>}
+ */
+const localeFallbacks = locale => {
+  return [
+    ...( locale !== ChipperConstants.FALLBACK_LOCALE ? [ locale ] : [] ),
+    ...( localeData[ locale ].fallbackLocales || [] ),
+    ChipperConstants.FALLBACK_LOCALE // e.g. 'en'
+  ];
+};
 
 /**
  * Load all the required string files into memory, so we don't load them multiple times (for each usage).
@@ -52,19 +70,14 @@ const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
       stringFilesContents[ repo ][ locale ] = fileContents;
     };
 
-    locales.forEach( locale => {
-      assert( localeInfo[ locale ], `unsupported locale: ${locale}` );
-      const isRTL = localeInfo[ locale ].direction === 'rtl';
+    // Include fallback locales (they may have duplicates)
+    const includedLocales = _.sortBy( _.uniq( locales.flatMap( locale => {
+      assert( localeData[ locale ], `unsupported locale: ${locale}` );
 
-      // Handle fallback locales
-      addLocale( locale, isRTL );
-      if ( locale.length > 2 ) {
-        const middleLocale = locale.slice( 0, 2 );
-        if ( !locales.includes( middleLocale ) ) {
-          addLocale( middleLocale, isRTL );
-        }
-      }
-    } );
+      return localeFallbacks( locale );
+    } ) ) );
+
+    includedLocales.forEach( locale => addLocale( locale, localeData[ locale ].direction === 'rtl' ) );
   } );
 
   return stringFilesContents;
@@ -81,23 +94,6 @@ const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
 module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
 
   assert( locales.indexOf( ChipperConstants.FALLBACK_LOCALE ) !== -1, 'fallback locale is required' );
-
-  /**
-   * For a given locale, return an array of specific locales that we'll use as fallbacks, e.g.
-   * 'zh_CN' => [ 'zh_CN', 'zh', 'en' ]
-   * 'es' => [ 'es', 'en' ]
-   * 'en' => [ 'en' ]
-   *
-   * @param {string} locale
-   * @returns {Array.<string>}
-   */
-  const localeFallbacks = locale => {
-    return [
-      ...( locale !== ChipperConstants.FALLBACK_LOCALE ? [ locale ] : [] ), // e.g. 'zh_CN'
-      ...( ( locale.length > 2 && locale.slice( 0, 2 ) !== ChipperConstants.FALLBACK_LOCALE ) ? [ locale.slice( 0, 2 ) ] : [] ), // e.g. 'zh'
-      ChipperConstants.FALLBACK_LOCALE // e.g. 'en'
-    ];
-  };
 
   // Load the file contents of every single JS module that used any strings
   const usedFileContents = usedModules.map( usedModule => fs.readFileSync( `../${usedModule}`, 'utf-8' ) );
