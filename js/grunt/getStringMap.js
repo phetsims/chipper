@@ -11,11 +11,46 @@
 // built-in node APIs
 var assert = require( 'assert' );
 var path = require( 'path' );
+var fs = require( 'fs' );
 
 // modules
 var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
+
+var localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+
+/**
+ * For a given locale, return an array of specific locales that we'll use as fallbacks, e.g.
+ * 'ar_AE' => [ 'ar_AE', 'ar', 'ar_MA', 'en' ]   (note, changed from zh_CN example, which does NOT use 'zh' as a fallback anymore)
+ * 'es' => [ 'es', 'en' ]
+ * 'en' => [ 'en' ]
+ *
+ * @param {string} locale
+ * @returns {Array.<string>}
+ */
+var localeFallbacks = function ( locale ) {
+  var fallbackLocales = [];
+
+  // Add the locale itself
+  if ( locale !== ChipperConstants.FALLBACK_LOCALE ) {
+    fallbackLocales.push( locale );
+  }
+
+  // Add the fallback locales
+  if ( localeData[ locale ].fallbackLocales ) {
+    localeData[ locale ].fallbackLocales.forEach( function ( fallbackLocale ) {
+      if ( fallbackLocales.indexOf( fallbackLocale ) < 0 ) {
+        fallbackLocales.push( fallbackLocale );
+      }
+    } );
+  }
+
+  // Add the fallback locale
+  fallbackLocales.push( ChipperConstants.FALLBACK_LOCALE );
+
+  return fallbackLocales;
+};
 
 /**
  * @param grunt - the grunt instance
@@ -57,8 +92,8 @@ module.exports = function( grunt, buildConfig ) {
 
     locales.forEach( function( locale ) {
 
-      assert( localeInfo[ locale ], 'unsupported locale: ' + locale );
-      var isRTL = localeInfo[ locale ].direction === 'rtl';
+      assert( localeData[ locale ], 'unsupported locale: ' + locale );
+      var isRTL = localeData[ locale ].direction === 'rtl';
 
       var basePath;
       // pick a location that is in the repo, or babel
@@ -101,20 +136,23 @@ module.exports = function( grunt, buildConfig ) {
 
       // English fallback
       assert( repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ] !== undefined,
-        'Missing string: ' + stringKey + ' in ' + repositoryName + ' for fallback locale: ' + fallbackLocale );
-      var fallbackString = repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ].value;
-      stringMap[ locale ][ stringKey ] = fallbackString;
+        `Missing string: ${stringKey} in ${repositoryName} for fallback locale: ${fallbackLocale}` );
 
       // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.
-      if ( locale !== fallbackLocale &&
-           repoStringMap[ repositoryName ] &&
-           repoStringMap[ repositoryName ][ locale ] &&
-           repoStringMap[ repositoryName ][ locale ][ stringKey ] &&
-
-           // if the string in rosetta is empty we want to use the fallback english string
-           repoStringMap[ repositoryName ][ locale ][ stringKey ].value.length > 0 ) {
-        stringMap[ locale ][ stringKey ] = repoStringMap[ repositoryName ][ locale ][ stringKey ].value;
-      }
+      // NOTE: fallback locales INCLUDES 'en', so we don't need a special case for it.
+      var value = null;
+      localeFallbacks( locale ).forEach( function( candidateLocale ) {
+        if (
+          value === null &&
+          repoStringMap[ repositoryName ] &&
+          repoStringMap[ repositoryName ][ candidateLocale ] &&
+          repoStringMap[ repositoryName ][ candidateLocale ][ stringKey ] &&
+          repoStringMap[ repositoryName ][ candidateLocale ][ stringKey ].value.length > 0
+        ) {
+          value = repoStringMap[ repositoryName ][ candidateLocale ][ stringKey ].value;
+        }
+      } );
+      stringMap[ locale ][ stringKey ] = value;
     }
   } );
 
