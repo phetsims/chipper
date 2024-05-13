@@ -3,6 +3,7 @@ window.phet.chipper.version = '{{PHET_VERSION}}';
 window.phet.chipper.buildTimestamp = '{{PHET_BUILD_TIMESTAMP}}';
 window.phet.chipper.brand = '{{PHET_BRAND}}';
 window.phet.chipper.locale = '{{PHET_LOCALE}}';
+window.phet.chipper.localeData = {{PHET_LOCALE_DATA}};
 window.phet.chipper.dependencies = {{PHET_DEPENDENCIES}};
 window.phet.chipper.strings = {{PHET_STRINGS}};
 window.phet.chipper.stringMetadata = {{PHET_STRING_METADATA}};
