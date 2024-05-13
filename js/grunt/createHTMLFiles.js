@@ -9,6 +9,7 @@
 
 // built-in node APIs
 var assert = require( 'assert' );
+var fs = require( 'fs' );
 
 // third-party node APIs
 var nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
@@ -33,6 +34,9 @@ var zlib = require( 'zlib' );
  */
 module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, callback ) {
   'use strict';
+
+  // Load localeData
+  var fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
@@ -209,14 +213,50 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     var stringObject = stringMap;
     if ( !includeAllLocales ) {
       stringObject = {};
-      stringObject[ locale ] = stringMap[ locale ];
+
+      // Go through all of the potential fallback locales, and include the strings for each of them
+      var requiredLocales = [ locale ];
+
+      if ( fullLocaleData[ locale ].fallbackLocales ) {
+        fullLocaleData[ locale ].fallbackLocales.forEach( function( fallbackLocale ) {
+          requiredLocales.push( fallbackLocale );
+        } );
+      }
+
+      requiredLocales.push( ChipperConstants.FALLBACK_LOCALE );
+
+      requiredLocales.forEach( function( locale ) {
+        stringObject[ locale ] = stringMap[ locale ];
+      } );
     }
+
+    // Include a (larger) subset of locales' localeData.
+    // Always include the fallback (en)
+    var includedDataLocales = [ ChipperConstants.FALLBACK_LOCALE ];
+    // Include directly-used locales
+    buildConfig.locales.forEach( function( locale ) {
+      includedDataLocales.push( locale );
+    } );
+    // Include locales that will fall back to directly-used locales
+    Object.keys( fullLocaleData ).forEach( function( locale ) {
+      if ( fullLocaleData[ locale ].fallbackLocales && fullLocaleData[ locale ].fallbackLocales.some( function( fallbackLocale ) {
+        return buildConfig.locales.includes( fallbackLocale );
+      } ) ) {
+        includedDataLocales.push( locale );
+      }
+    } );
+    includedDataLocales = _.sortBy( _.uniq( includedDataLocales ) );
+    var localeData = {};
+    includedDataLocales.forEach( function( locale ) {
+      localeData[ locale ] = fullLocaleData[ locale ];
+    } );
 
     string = ChipperStringUtils.replaceFirst( string, 'PHET_STRINGS', JSON.stringify( stringObject, null, '' ) );
 
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
     string = ChipperStringUtils.replaceFirst( string, 'PHET_LOCALE', locale );
+    string = ChipperStringUtils.replaceFirst( string, 'PHET_LOCALE_DATA', JSON.stringify( localeData ) );
     string = ChipperStringUtils.replaceFirst( string, 'PHET_SIM_TITLE', encoder.htmlEncode( localeTitleAndVersion ) );
 
     // metadata for Open Graph protocol, see phet-edmodo#2
