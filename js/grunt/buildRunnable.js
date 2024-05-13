@@ -213,6 +213,7 @@ module.exports = async function( repo, minifyOptions, instrument, allHTML, brand
   const commonInitializationOptions = {
     brand: brand,
     repo: repo,
+    allLocales: allLocales,
     stringMap: stringMap,
     dependencies: dependencies,
     timestamp: timestamp,
