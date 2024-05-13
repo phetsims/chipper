@@ -13,6 +13,7 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const fs = require( 'fs' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
@@ -33,6 +34,7 @@ module.exports = function( options ) {
   const {
     brand, // {string}, e.g. 'phet', 'phet-io'
     repo, // {string}
+    allLocales, // {string[]}
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
     version, // {string}
     mipmapsJavaScript, // {string}
@@ -48,6 +50,9 @@ module.exports = function( options ) {
   assert( _.includes( ChipperConstants.BRANDS, brand ), `Unknown brand: ${brand}` );
   assert( stringMap, `Invalid stringMap: ${stringMap}` );
 
+  // Load localeData
+  var fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+
   const simTitleStringKey = getTitleStringKey( repo );
 
   // Get the title and version to display in the HTML header.
@@ -59,8 +64,43 @@ module.exports = function( options ) {
   var phetStrings = stringMap;
   if ( !includeAllLocales ) {
     phetStrings = {};
-    phetStrings[ locale ] = stringMap[ locale ];
+
+    // Go through all of the potential fallback locales, and include the strings for each of them
+    var requiredLocales = [ locale ];
+
+    if ( fullLocaleData[ locale ].fallbackLocales ) {
+      fullLocaleData[ locale ].fallbackLocales.forEach( function( fallbackLocale ) {
+        requiredLocales.push( fallbackLocale );
+      } );
+    }
+
+    requiredLocales.push( ChipperConstants.FALLBACK_LOCALE );
+
+    requiredLocales.forEach( function( locale ) {
+      phetStrings[ locale ] = stringMap[ locale ];
+    } );
   }
+
+  // Include a (larger) subset of locales' localeData.
+  // Always include the fallback (en)
+  var includedDataLocales = [ ChipperConstants.FALLBACK_LOCALE ];
+  // Include directly-used locales
+  allLocales.forEach( function( locale ) {
+    includedDataLocales.push( locale );
+  } );
+  // Include locales that will fall back to directly-used locales
+  Object.keys( fullLocaleData ).forEach( function( locale ) {
+    if ( fullLocaleData[ locale ].fallbackLocales && fullLocaleData[ locale ].fallbackLocales.some( function( fallbackLocale ) {
+      return allLocales.includes( fallbackLocale );
+    } ) ) {
+      includedDataLocales.push( locale );
+    }
+  } )
+  includedDataLocales = _.sortBy( _.uniq( includedDataLocales ) );
+  var localeData = {};
+  includedDataLocales.forEach( function( locale ) {
+    localeData[ locale ] = fullLocaleData[ locale ];
+  } );
 
   // Directory on the PhET website where the latest version of the sim lives
   var latestDir = `https://phet.colorado.edu/sims/html/${repo}/latest/`;
@@ -118,6 +158,7 @@ module.exports = function( options ) {
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_THIRD_PARTY_LICENSE_ENTRIES}}', JSON.stringify( thirdPartyEntries, null, 2 ) );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_STRINGS}}', JSON.stringify( phetStrings, null, isDebugBuild ? 2 : '' ) );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_LOCALE}}', locale );
+  html = ChipperStringUtils.replaceFirst( html, '{{PHET_LOCALE_DATA}}', JSON.stringify( localeData ) );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( localizedTitle ) );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_IS_DEBUG_BUILD}}', !!isDebugBuild );
 

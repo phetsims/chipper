@@ -98,6 +98,7 @@ module.exports = async function( repo, uglify, mangle, instrument, allHTML, debu
   const commonOptions = {
     brand,
     repo,
+    allLocales,
     stringMap,
     mipmapsJavaScript,
     dependencies,
