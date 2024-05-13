@@ -9,6 +9,7 @@
 
 // built-in node APIs
 var assert = require( 'assert' );
+var fs = require( 'fs' );
 
 // third-party node APIs
 var Encoder = require( 'node-html-encoder' ).Encoder;
@@ -30,6 +31,9 @@ var zlib = require( 'zlib' );
  */
 module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, callback ) {
   'use strict';
+
+  // Load localeData
+  var fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
   // TODO: chipper#101 eek, this is scary! we are importing from the repository dir. ideally we should just have uglify-js installed once in chipper?
   var uglify = require( '../../../' + buildConfig.name + '/node_modules/uglify-js' );
@@ -147,6 +151,27 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
     }
   }
 
+  // Include a (larger) subset of locales' localeData.
+  // Always include the fallback (en)
+  var includedDataLocales = [ ChipperConstants.FALLBACK_LOCALE ];
+  // Include directly-used locales
+  buildConfig.locales.forEach( function( locale ) {
+    includedDataLocales.push( locale );
+  } );
+  // Include locales that will fall back to directly-used locales
+  Object.keys( fullLocaleData ).forEach( function( locale ) {
+    if ( fullLocaleData[ locale ].fallbackLocales && fullLocaleData[ locale ].fallbackLocales.some( function( fallbackLocale ) {
+      return buildConfig.locales.includes( fallbackLocale );
+    } ) ) {
+      includedDataLocales.push( locale );
+    }
+  } );
+  includedDataLocales = _.sortBy( _.uniq( includedDataLocales ) );
+  var localeData = {};
+  includedDataLocales.forEach( function( locale ) {
+    localeData[ locale ] = fullLocaleData[ locale ];
+  } );
+
   grunt.log.debug( 'Constructing HTML from template' );
   var html = grunt.file.read( '../chipper/templates/sim.html' );
 
@@ -169,6 +194,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
   html = ChipperStringUtils.replaceFirst( html, 'PHET_VERSION', buildConfig.version );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_BUILD_TIMESTAMP', timestamp );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_BRAND', buildConfig.brand );
+  html = ChipperStringUtils.replaceFirst( html, 'PHET_LOCALE_DATA', JSON.stringify( localeData ) );
   html = ChipperStringUtils.replaceFirst( html, 'PHET_THIRD_PARTY_LICENSE_ENTRIES', JSON.stringify( thirdPartyEntries, null, 2 ) );
 
   // Create locale-specific HTML files
@@ -194,6 +220,30 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
       var devVersion = buildConfig.version.replace( '-phet-io', '-dev' );
       localeHTML = localeHTML.replace( devVersion, buildConfig.version );
     }
+
+    /*
+    NOTE: excluded code here, since we don't seem to be putting anything BUT the locale in for this code.
+
+    var stringObject = stringMap;
+    if ( !includeAllLocales ) {
+      stringObject = {};
+
+      // Go through all of the potential fallback locales, and include the strings for each of them
+      var requiredLocales = [ locale ];
+
+      if ( fullLocaleData[ locale ].fallbackLocales ) {
+        fullLocaleData[ locale ].fallbackLocales.forEach( function( fallbackLocale ) {
+          requiredLocales.push( fallbackLocale );
+        } );
+      }
+
+      requiredLocales.push( ChipperConstants.FALLBACK_LOCALE );
+
+      requiredLocales.forEach( function( locale ) {
+        stringObject[ locale ] = stringMap[ locale ];
+      } );
+    }
+     */
 
     var specificStringMap = {};
     specificStringMap[ locale ] = stringMap[ locale ];
