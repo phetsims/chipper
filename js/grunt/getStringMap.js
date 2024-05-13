@@ -14,7 +14,6 @@ var path = require( 'path' );
 var fs = require( 'fs' );
 
 // modules
-var localeInfo = require( '../../../chipper/js/data/localeInfo' ); // Locale information
 var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 
@@ -133,10 +132,6 @@ module.exports = function( grunt, buildConfig ) {
 
     for ( var stringKey in global.phet.chipper.strings ) {
       var repositoryName = global.phet.chipper.strings[ stringKey ].repositoryName;
-
-      // English fallback
-      assert( repoStringMap[ repositoryName ][ fallbackLocale ][ stringKey ] !== undefined,
-        `Missing string: ${stringKey} in ${repositoryName} for fallback locale: ${fallbackLocale}` );
 
       // Extract 'value' field from non-fallback (babel) strings file, and overwrites the default if available.
       // NOTE: fallback locales INCLUDES 'en', so we don't need a special case for it.

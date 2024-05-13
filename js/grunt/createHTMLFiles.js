@@ -239,7 +239,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
       } ) ) {
         includedDataLocales.push( locale );
       }
-    } )
+    } );
     includedDataLocales = _.sortBy( _.uniq( includedDataLocales ) );
     var localeData = {};
     includedDataLocales.forEach( function( locale ) {
