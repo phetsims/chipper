@@ -16,6 +16,7 @@ const _ = require( 'lodash' ); // eslint-disable-line require-statement-match
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const transpile = require( './transpile' );
 
@@ -30,6 +31,7 @@ module.exports = function( config ) {
   const {
     brand, // {string}, e.g. 'phet', 'phet-io'
     repo, // {string}
+    allLocales, // {string[]}
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
     version, // {string}
     dependencies, // {Object} - From getDependencies
@@ -51,17 +53,45 @@ module.exports = function( config ) {
   assert( typeof includeAllLocales === 'boolean', 'Requires includeAllLocales' );
   assert( typeof isDebugBuild === 'boolean', 'Requires isDebugBuild' );
 
+  // Load localeData
+  const fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+
+  // Include a subset of locales' translated strings
   let phetStrings = stringMap;
   if ( !includeAllLocales ) {
     phetStrings = {};
-    phetStrings[ ChipperConstants.FALLBACK_LOCALE ] = stringMap[ ChipperConstants.FALLBACK_LOCALE ];
-    if ( locale !== ChipperConstants.FALLBACK_LOCALE ) {
+
+    // Go through all of the potential fallback locales, and include the strings for each of them
+    const requiredLocales = [
+      // duplicates OK
+      locale,
+      ...( fullLocaleData[ locale ].fallbackLocales || [] ),
+      ChipperConstants.FALLBACK_LOCALE
+    ];
+
+    for ( const locale of requiredLocales ) {
       phetStrings[ locale ] = stringMap[ locale ];
     }
-    const splitLocale = locale.slice( 0, 2 );
-    if ( locale.length > 2 && splitLocale !== ChipperConstants.FALLBACK_LOCALE ) {
-      phetStrings[ splitLocale ] = stringMap[ splitLocale ];
-    }
+  }
+
+  // Include a (larger) subset of locales' localeData.
+  const includedDataLocales = _.sortBy( _.uniq( [
+    // Always include the fallback (en)
+    ChipperConstants.FALLBACK_LOCALE,
+
+    // Include directly-used locales
+    ...allLocales,
+
+    // Include locales that will fall back to directly-used locales
+    Object.keys( fullLocaleData ).filter( locale => {
+      return fullLocaleData[ locale ].fallbackLocales && fullLocaleData[ locale ].fallbackLocales.some( fallbackLocale => {
+        return allLocales.includes( fallbackLocale );
+      } );
+    } )
+  ] ) );
+  const localeData = {};
+  for ( const locale of includedDataLocales ) {
+    localeData[ locale ] = fullLocaleData[ locale ];
   }
 
   return ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/chipper-initialization.js' ), {
@@ -70,6 +100,7 @@ module.exports = function( config ) {
     PHET_BUILD_TIMESTAMP: timestamp,
     PHET_BRAND: brand,
     PHET_LOCALE: locale,
+    PHET_LOCALE_DATA: JSON.stringify( localeData ),
     PHET_START_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES,
     PHET_THIRD_PARTY_LICENSE_ENTRIES: JSON.stringify( thirdPartyEntries, null, 2 ),
     PHET_END_THIRD_PARTY_LICENSE_ENTRIES: ChipperConstants.END_THIRD_PARTY_LICENSE_ENTRIES,
