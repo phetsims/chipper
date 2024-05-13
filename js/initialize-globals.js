@@ -974,11 +974,25 @@
 
       let locale = phet.chipper.locale;
 
-      if ( locale && locale.length === 3 ) {
-        for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
-          if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
-            locale = candidateLocale;
-            break;
+      if ( locale ) {
+        if ( locale.length < 5 ) {
+          locale = locale.toLowerCase();
+        }
+        else {
+          locale = locale.replace( /-/, '_' );
+
+          const parts = locale.split( '_' );
+          if ( parts.length === 2 ) {
+            locale = parts[ 0 ].toLowerCase() + '_' + parts[ 1 ].toUpperCase();
+          }
+        }
+
+        if ( locale.length === 3 ) {
+          for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
+            if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
+              locale = candidateLocale;
+              break;
+            }
           }
         }
       }
