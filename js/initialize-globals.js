@@ -833,9 +833,10 @@
       if ( !phet.chipper.localeData[ locale ] ) {
         const badLocale = phet.chipper.queryParameters.locale;
 
-        const isPair = /^[a-z]{2}$/.test( badLocale );
-        const isTriple = /^[a-z]{3}$/.test( badLocale );
-        const isPair_PAIR = /^[a-z]{2}_[A-Z]{2}$/.test( badLocale );
+        // Be permissive with case for the query parameter warning, see https://github.com/phetsims/qa/issues/1085#issuecomment-2111105235
+        const isPair = /^[a-zA-Z]{2}$/.test( badLocale );
+        const isTriple = /^[a-zA-Z]{3}$/.test( badLocale );
+        const isPair_PAIR = /^[a-zA-Z]{2}[_-][a-zA-Z]{2}$/.test( badLocale );
 
         if ( !isPair && !isTriple && !isPair_PAIR ) {
           QueryStringMachine.addWarning( 'locale', phet.chipper.queryParameters.locale, `Invalid locale format received: ${badLocale}. ?locale query parameter accepts the following formats: "xx" for ISO-639-1, "xx_XX" for ISO-639-1 and a 2-letter country code, "xxx" for ISO-639-2` );
