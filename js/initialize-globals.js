@@ -762,7 +762,7 @@
 
           const parts = locale.split( '_' );
           if ( parts.length === 2 ) {
-            locale = parts[ 0 ].toLowerCase() + '_' + parts[ 1 ].toUpperCase();
+            locale = `${parts[ 0 ].toLowerCase()} ${parts[ 1 ].toUpperCase()}`;
           }
         }
 
@@ -829,7 +829,7 @@
       const fallbackLocales = [ phet.chipper.locale ];
       const specificLocaleData = phet.chipper.localeData[ phet.chipper.locale ];
       if ( specificLocaleData && specificLocaleData.fallbackLocales ) {
-        specificLocaleData.fallbackLocales.forEach( function( locale ) {
+        specificLocaleData.fallbackLocales.forEach( locale => {
           fallbackLocales.push( locale );
         } );
       }
