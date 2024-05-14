@@ -989,9 +989,10 @@
         }
 
         if ( locale.length === 3 ) {
-          for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
-            if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
-              locale = candidateLocale;
+          const potentialLocales = Object.keys( phet.chipper.localeData );
+          for ( let i = 0; i < potentialLocales.length; i++ ) {
+            if ( phet.chipper.localeData[ potentialLocales[ i ] ].locale3 === locale ) {
+              locale = potentialLocales[ i ];
               break;
             }
           }
@@ -1047,16 +1048,19 @@
       }
 
       // Get a list of locales in the order they should be searched
-      const fallbackLocales = [
-        phet.chipper.locale,
-        ...( phet.chipper.localeData[ phet.chipper.locale ]?.fallbackLocales || [] ),
-        ( phet.chipper.locale !== 'en' ? [ 'en' ] : [] )
-      ];
+      const fallbackLocales = [ phet.chipper.locale ];
+      const specificLocaleData = phet.chipper.localeData[ phet.chipper.locale ];
+      if ( specificLocaleData && specificLocaleData.fallbackLocales ) {
+        specificLocaleData.fallbackLocales.forEach( function( locale ) {
+          fallbackLocales.push( locale );
+        } );
+      }
+      fallbackLocales.push( 'en' );
 
       let stringMap = null;
 
-      for ( const locale of fallbackLocales ) {
-        stringMap = phet.chipper.strings[ locale ];
+      for ( let i = 0; i < fallbackLocales.length; i++ ) {
+        stringMap = phet.chipper.strings[ fallbackLocales[ i ] ];
         if ( stringMap ) {
           break;
         }
