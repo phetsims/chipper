@@ -165,10 +165,57 @@
              stringTest;
     };
 
+    // We will need to check for locale validity (once we have localeData loaded, if running unbuilt), and potentially
+    // either fall back to `en`, or remap from 3-character locales to our locale keys.
+    phet.chipper.checkAndRemapLocale = function() {
+      // We need both to proceed. Provided as a global, so we can call it from load-unbuilt-strings
+      // (IF initialize-globals loads first)
+      if ( !phet.chipper.localeData || !phet.chipper.locale ) {
+        return;
+      }
+
+      var locale = phet.chipper.locale;
+
+      if ( locale ) {
+        if ( locale.length < 5 ) {
+          locale = locale.toLowerCase();
+        }
+        else {
+          locale = locale.replace( /-/, '_' );
+
+          var parts = locale.split( '_' );
+          if ( parts.length === 2 ) {
+            locale = parts[ 0 ].toLowerCase() + '_' + parts[ 1 ].toUpperCase();
+          }
+        }
+
+        if ( locale.length === 3 ) {
+          var potentialLocales = Object.keys( phet.chipper.localeData );
+          for ( var i = 0; i < potentialLocales.length; i++ ) {
+            var candidateLocale = potentialLocales[ i ];
+            if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
+              locale = candidateLocale;
+              break;
+            }
+          }
+        }
+      }
+
+      if ( !phet.chipper.localeData[ locale ] ) {
+        locale = 'en';
+      }
+
+      phet.chipper.locale = locale;
+    };
+
     // Need to initialize our locale before we send off Google Analytics queries (it was being done afterwards in
     // Sim.js before).
     if ( phet.chipper.getQueryParameter( 'locale' ) ) {
       window.phet.chipper.locale = phet.chipper.getQueryParameter( 'locale' );
+
+      // NOTE: If we are loading in unbuilt mode, this may execute BEFORE we have loaded localeData. We have a similar
+      // remapping in load-unbuilt-strings when this happens.
+      phet.chipper.checkAndRemapLocale();
     }
 
     window.phet.chipper.queryParameters = window.phet.chipper.queryParameter || {};
