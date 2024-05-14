@@ -15,18 +15,24 @@
     if ( stringOverrides[ key ] ) {
       return stringOverrides[ key ];
     }
-    var stringMap = window.phet.chipper.strings[ window.phet.chipper.locale ];
 
-    // Don't fail out on unsupported locales, see https://github.com/phetsims/chipper/issues/694
-    if ( !stringMap ) {
+    // Get a list of locales in the order they should be searched
+    var fallbackLocales = [ phet.chipper.locale ];
+    var specificLocaleData = phet.chipper.localeData[ phet.chipper.locale ];
+    if ( specificLocaleData && specificLocaleData.fallbackLocales ) {
+      specificLocaleData.fallbackLocales.forEach( function( fallbackLocale ) { fallbackLocales.push( fallbackLocale ) } );
+    }
+    fallbackLocales.push( 'en' );
 
-      // See if there's a translation for just the language code
-      stringMap = window.phet.chipper.strings[ window.phet.chipper.locale.slice( 0, 2 ) ];
+    var stringMap = null;
 
-      if ( !stringMap ) {
-        stringMap = window.phet.chipper.strings.en;
+    for ( var locale of fallbackLocales ) {
+      stringMap = phet.chipper.strings[ locale ];
+      if ( stringMap ) {
+        break;
       }
     }
-    return window.phet.chipper.mapString( stringMap[ key ], stringTest );
+
+    return phet.chipper.mapString( stringMap[ key ], stringTest );
   };
 })();
