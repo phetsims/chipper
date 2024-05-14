@@ -65,14 +65,23 @@ Populate the splash image data for use in the splash screen.
                      null;
 
     window.phet.chipper.strings.get = function( key ) {
-      // override strings via the 'strings' query parameter
-      var localeStrings = window.phet.chipper.strings[ window.phet.chipper.locale ];
-      if ( !localeStrings && window.phet.chipper.locale.indexOf( '_' ) === 2 ) { // e.g. 'zh' for 'zh_CN'
-        localeStrings = window.phet.chipper.strings[ window.phet.chipper.locale.slice( 0, 2 ) ];
+      // Get a list of locales in the order they should be searched
+      var fallbackLocales = [ phet.chipper.locale ];
+      var specificLocaleData = phet.chipper.localeData[ phet.chipper.locale ];
+      if ( specificLocaleData && specificLocaleData.fallbackLocales ) {
+        specificLocaleData.fallbackLocales.forEach( function( fallbackLocale ) { fallbackLocales.push( fallbackLocale ) } );
+       }
+      fallbackLocales.push( 'en' );
+
+      var localeStrings = null;
+
+      for ( var locale of fallbackLocales ) {
+        localeStrings = phet.chipper.strings[ locale ];
+        if ( localeStrings ) {
+          break;
+        }
       }
-      if ( !localeStrings  ) {
-        localeStrings = window.phet.chipper.strings.en;
-      }
+
       return stringOverrides[ key ] || window.phet.chipper.mapString( localeStrings[ key ], stringTest );
     };
   })();
