@@ -81,7 +81,7 @@ module.exports = function( config ) {
     ...allLocales,
 
     // Include locales that will fall back to directly-used locales
-    Object.keys( fullLocaleData ).filter( locale => {
+    ...Object.keys( fullLocaleData ).filter( locale => {
       return fullLocaleData[ locale ].fallbackLocales && fullLocaleData[ locale ].fallbackLocales.some( fallbackLocale => {
         return allLocales.includes( fallbackLocale );
       } );
