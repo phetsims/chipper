@@ -774,9 +774,64 @@
              stringTest;
     };
 
+    // We will need to check for locale validity (once we have localeData loaded, if running unbuilt), and potentially
+    // either fall back to `en`, or remap from 3-character locales to our locale keys.
+    phet.chipper.checkAndRemapLocale = () => {
+      // We need both to proceed. Provided as a global, so we can call it from load-unbuilt-strings
+      // (IF initialize-globals loads first)
+      if ( !phet.chipper.localeData || !phet.chipper.locale ) {
+        return;
+      }
+
+      let locale = phet.chipper.locale;
+
+      if ( locale ) {
+        if ( locale.length < 5 ) {
+          locale = locale.toLowerCase();
+        }
+        else {
+          locale = locale.replace( /-/, '_' );
+
+          const parts = locale.split( '_' );
+          if ( parts.length === 2 ) {
+            locale = parts[ 0 ].toLowerCase() + '_' + parts[ 1 ].toUpperCase();
+          }
+        }
+
+        if ( locale.length === 3 ) {
+          for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
+            if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
+              locale = candidateLocale;
+              break;
+            }
+          }
+        }
+      }
+
+      if ( !phet.chipper.localeData[ locale ] ) {
+        const badLocale = phet.chipper.queryParameters.locale;
+
+        const isPair = /^[a-z]{2}$/.test( badLocale );
+        const isTriple = /^[a-z]{3}$/.test( badLocale );
+        const isPair_PAIR = /^[a-z]{2}_[A-Z]{2}$/.test( badLocale );
+
+        if ( !isPair && !isTriple && !isPair_PAIR ) {
+          QueryStringMachine.addWarning( 'locale', phet.chipper.queryParameters.locale, `Invalid locale format received: ${badLocale}. ?locale query parameter accepts the following formats: "xx" for ISO-639-1, "xx_XX" for ISO-639-1 and a 2-letter country code, "xxx" for ISO-639-2` );
+        }
+
+        locale = 'en';
+      }
+
+      phet.chipper.locale = locale;
+    };
+
     // If locale was provided as a query parameter, then change the locale used by Google Analytics.
     if ( QueryStringMachine.containsKey( 'locale' ) ) {
-      window.phet.chipper.locale = phet.chipper.queryParameters.locale;
+      phet.chipper.locale = phet.chipper.queryParameters.locale;
+
+      // NOTE: If we are loading in unbuilt mode, this may execute BEFORE we have loaded localeData. We have a similar
+      // remapping in load-unbuilt-strings when this happens.
+      phet.chipper.checkAndRemapLocale();
     }
     else if ( !window.phet.chipper.locale ) {
       // Fill in a default
@@ -800,18 +855,23 @@
       if ( stringOverrides[ key ] ) {
         return stringOverrides[ key ];
       }
-      let stringMap = phet.chipper.strings[ phet.chipper.locale ];
 
-      // Don't fail out on unsupported locales, see https://github.com/phetsims/chipper/issues/694
-      if ( !stringMap ) {
+      // Get a list of locales in the order they should be searched
+      const fallbackLocales = [
+        phet.chipper.locale,
+        ...( phet.chipper.localeData[ phet.chipper.locale ]?.fallbackLocales || [] ),
+        ( phet.chipper.locale !== 'en' ? [ 'en' ] : [] )
+      ];
 
-        // See if there's a translation for just the language code
-        stringMap = phet.chipper.strings[ phet.chipper.locale.slice( 0, 2 ) ];
+      let stringMap = null;
 
-        if ( !stringMap ) {
-          stringMap = phet.chipper.strings.en;
+      for ( const locale of fallbackLocales ) {
+        stringMap = phet.chipper.strings[ locale ];
+        if ( stringMap ) {
+          break;
         }
       }
+
       return phet.chipper.mapString( stringMap[ key ] );
     };
   }() );
