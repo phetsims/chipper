@@ -109,21 +109,77 @@
     window.phet.chipper.loadModules();
   };
 
-  // We don't use QueryStringMachine, because we are loaded first.
-  const customLocale = new window.URLSearchParams( window.location.search ).get( 'locale' );
-  const loadCustomLocale = customLocale && customLocale !== FALLBACK_LOCALE;
-  const locales = [
-    FALLBACK_LOCALE,
-    ...( loadCustomLocale ? [ customLocale ] : [] ), // e.g. 'zh_CN'
-    ...( ( loadCustomLocale && customLocale.length > 2 && customLocale.slice( 0, 2 ) !== FALLBACK_LOCALE ) ? [ customLocale.slice( 0, 2 ) ] : [] ) // e.g. 'zh'
-  ];
+  const requestLocaleDataFile = callback => {
+    const request = new XMLHttpRequest();
+    request.addEventListener( 'load', () => {
+      phet.chipper.localeData = JSON.parse( request.responseText );
 
-  phet.chipper.stringRepos.forEach( stringRepoData => {
-    const repo = stringRepoData.repo;
-    const requirejsNamespace = stringRepoData.requirejsNamespace;
+      callback();
+    } );
 
-    locales.forEach( locale => {
-      requestStringFile( repo, requirejsNamespace, locale );
+    request.addEventListener( 'error', () => {
+      throw new Error( 'could not load localeData' );
+    } );
+
+    request.open( 'GET', '../babel/localeData.json', true );
+    request.send();
+  };
+
+  requestLocaleDataFile( () => {
+    phet.chipper.checkAndRemapLocale && phet.chipper.checkAndRemapLocale();
+
+    // If we haven't loaded initialize-globals yet, this is somewhat duplicated (for MR)
+    if ( !phet.chipper.locale ) {
+      let locale = new window.URLSearchParams( window.location.search ).get( 'locale' );
+
+      if ( locale ) {
+        if ( locale.length < 5 ) {
+          locale = locale.toLowerCase();
+        }
+        else {
+          locale = locale.replace( /-/, '_' );
+
+          const parts = locale.split( '_' );
+          if ( parts.length === 2 ) {
+            locale = parts[ 0 ].toLowerCase() + '_' + parts[ 1 ].toUpperCase();
+          }
+        }
+
+        if ( locale.length === 3 ) {
+          for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
+            if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
+              locale = candidateLocale;
+              break;
+            }
+          }
+        }
+      }
+
+      if ( !phet.chipper.localeData[ locale ] ) {
+        locale = 'en';
+      }
+
+      phet.chipper.locale = locale;
+    }
+
+    const locales = [ FALLBACK_LOCALE ];
+    if ( phet.chipper.locale !== FALLBACK_LOCALE ) {
+      locales.push( phet.chipper.locale );
+    }
+    const specificLocaleData = phet.chipper.localeData[ phet.chipper.locale ];
+    if ( specificLocaleData && specificLocaleData.fallbackLocales ) {
+      specificLocaleData.fallbackLocales.forEach( locale => {
+        locales.push( locale );
+      } );
+    }
+
+    phet.chipper.stringRepos.forEach( stringRepoData => {
+      const repo = stringRepoData.repo;
+      const requirejsNamespace = stringRepoData.requirejsNamespace;
+
+      locales.forEach( locale => {
+        requestStringFile( repo, requirejsNamespace, locale );
+      } );
     } );
   } );
 } )();
