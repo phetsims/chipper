@@ -168,7 +168,7 @@ module.exports = function( grunt ) {
   );
 
   grunt.registerTask( 'typescript-test', 'For testing typescript in our build tools', wrapTask( async () => {
-    require( './typescript-test' );
+    require( './typescript-test' )();
   } ) );
 
   grunt.registerTask( 'build',

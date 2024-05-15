@@ -6,6 +6,13 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-const myTestNumber: number = 9;
+module.exports = function typescriptTest() {
 
-console.log( myTestNumber );
+  const myTestNumber = 9;
+
+  function myPrintFunc( x: number ): void {
+    console.log( x );
+  }
+
+  myPrintFunc( myTestNumber );
+};
