@@ -23,8 +23,31 @@ define( require => {
   const _ = require( '../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
   const ChipperConstants = require( '../../chipper/js/common/ChipperConstants' );
   const ChipperStringUtils = require( '../../chipper/js/common/ChipperStringUtils' );
-  const localeInfo = require( '../../chipper/js/data/localeInfo' ); // for running in browsers
   const text = require( 'text' );
+
+  let hasStartedLocaleDataLoad = false;
+  let hasCompletedLocaleDataLoad = false;
+  const onLocaleDataLoadCallbacks = [];
+  const loadLocaleData = () => {
+    const request = new XMLHttpRequest();
+    request.addEventListener( 'load', () => {
+      phet.chipper.localeData = JSON.parse( request.responseText );
+
+      phet.chipper.checkAndRemapLocale && phet.chipper.checkAndRemapLocale();
+
+      hasCompletedLocaleDataLoad = true;
+      onLocaleDataLoadCallbacks.forEach( callback => callback() );
+    } );
+
+    request.addEventListener( 'error', () => {
+      throw new Error( 'could not load localeData' );
+    } );
+
+    request.open( 'GET', '../babel/localeData.json', true );
+    request.send();
+  };
+
+  let globalLocale = null;
 
   // constants
   // Cache the loaded strings so they only have to be read once through file.read (for performance)
@@ -35,6 +58,7 @@ define( require => {
   // {Object.<url:string, Array.<callback:function>>} - keep track of the callbacks to trigger once the first load comes
   // back for that url. This way there aren't many `text.get` calls kicked off before the first can come back with text.
   const callbacksFromUnloadedURLs = {};
+  const errorCallbacksFromUnloadedURLs = {};
 
   /**
    * When running in requirejs mode, check to see if we have already loaded the specified file
@@ -54,26 +78,35 @@ define( require => {
 
       // this url is currently being loaded, so don't kick off another `text.get()`.
       callbacksFromUnloadedURLs[ url ].push( callback );
+      errorCallbacksFromUnloadedURLs[ url ].push( errorBack );
     }
     else {
 
       callbacksFromUnloadedURLs[ url ] = [];
+      errorCallbacksFromUnloadedURLs[ url ] = [];
 
       // Cache miss: load the file parse, enter into cache and return it
       text.get( url, loadedText => {
 
         const parsed = JSON.parse( loadedText );
 
-        const isRTL = localeInfo[ phet.chipper.queryParameters.locale ].direction === 'rtl';
+        const isRTL = phet.chipper.localeData[ globalLocale ].direction === 'rtl';
         ChipperStringUtils.formatStringValues( parsed, isRTL, assertNoWhitespace );
         cache[ url ] = parsed;
 
         // clear the entries added during the async loading process
         callbacksFromUnloadedURLs[ url ] && callbacksFromUnloadedURLs[ url ].forEach( callback => callback( parsed ) );
         delete callbacksFromUnloadedURLs[ url ];
+        delete errorCallbacksFromUnloadedURLs[ url ];
 
         callback( cache[ url ] );
-      }, errorBack, { accept: 'application/json' } );
+      }, () => {
+        errorCallbacksFromUnloadedURLs[ url ] && errorCallbacksFromUnloadedURLs[ url ].forEach( errorBack => errorBack() );
+        delete callbacksFromUnloadedURLs[ url ];
+        delete errorCallbacksFromUnloadedURLs[ url ];
+
+        errorBack();
+      }, { accept: 'application/json' } );
     }
   };
 
@@ -171,47 +204,121 @@ define( require => {
         repositoryPath = `${requirePath}/..`;
         repositoryName = requirejsNamespace.toLowerCase().split( '_' ).join( '-' );
 
-        // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
-        const queryParameterStrings = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
-        const locale = phet.chipper.queryParameters.locale;
-        const fallbackSpecificPath = `${repositoryPath}/${getFilenameForLocale( ChipperConstants.FALLBACK_LOCALE )}`;
-        const isFallbackLocale = locale === ChipperConstants.FALLBACK_LOCALE;
-        const localeSpecificPath = isFallbackLocale ?
-                                   fallbackSpecificPath :
-                                   `${repositoryPath}/../babel/${repositoryName}/${getFilenameForLocale( locale )}`;
+        const runLoad = () => {
+          // strings may be specified via the 'strings' query parameter, value is expected to be encoded to avoid URI-reserved characters
+          const queryParameterStrings = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
 
-        // In the browser, a string specified via the '?strings' query parameter overrides anything,
-        // to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
-        const queryParameterStringValue = queryParameterStrings[ name ];
-        if ( queryParameterStringValue ) {
-          onload( queryParameterStringValue );
-        }
-        else {
+          // Duplicated locale loading
+          if ( globalLocale === null ) {
+            let locale = phet.chipper.queryParameters.locale;
 
-          // Read the locale from a query parameter, if it is there, or use the fallback locale
-          if ( !localeInfo[ locale ] ) {
-            onload.error( new Error( `unsupported locale: ${locale}` ) );
+            if ( locale ) {
+              if ( locale.length < 5 ) {
+                locale = locale.toLowerCase();
+              }
+              else {
+                locale = locale.replace( /-/, '_' );
+
+                const parts = locale.split( '_' );
+                if ( parts.length === 2 ) {
+                  locale = parts[ 0 ].toLowerCase() + '_' + parts[ 1 ].toUpperCase();
+                }
+              }
+
+              if ( locale.length === 3 ) {
+                for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
+                  if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
+                    locale = candidateLocale;
+                    break;
+                  }
+                }
+              }
+            }
+
+            if ( !phet.chipper.localeData[ locale ] ) {
+              locale = 'en';
+            }
+
+            globalLocale = locale;
           }
 
-          // Load & parse just once per file, getting the fallback strings first.
-          getWithCache( fallbackSpecificPath, parsedFallbackStrings => {
+          const locale = globalLocale;
 
-            // Now get the primary strings.
-            getWithCache( localeSpecificPath, parsed => {
+          const fallbackSpecificPath = `${repositoryPath}/${getFilenameForLocale( ChipperConstants.FALLBACK_LOCALE )}`;
+          const isFallbackLocale = locale === ChipperConstants.FALLBACK_LOCALE;
+          const localeSpecificPath = isFallbackLocale ?
+                                     fallbackSpecificPath :
+                                     `${repositoryPath}/../babel/${repositoryName}/${getFilenameForLocale( locale )}`;
 
-                // Combine the primary and fallback strings into one object hash.
-                const parsedStrings = _.extend( {}, parsedFallbackStrings, parsed ); // extend to avoid the phet-core dependency
-                onload( getStringFromFileContents( parsedStrings, key ) );
-              },
+          // In the browser, a string specified via the '?strings' query parameter overrides anything,
+          // to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
+          const queryParameterStringValue = queryParameterStrings[ name ];
+          if ( queryParameterStringValue ) {
+            onload( queryParameterStringValue );
+          }
+          else {
 
-              // Error callback in the text! plugin.  Couldn't load the strings for the specified language, so use a fallback
-              () => {
+            // Read the locale from a query parameter, if it is there, or use the fallback locale
+            if ( !phet.chipper.localeData[ locale ] ) {
+              onload.error( new Error( `unsupported locale: ${locale}` ) );
+            }
 
-                // Running in the browser (dynamic requirejs mode) and couldn't find the string file.  Use the fallbacks.
-                console.log( `no string file for ${localeSpecificPath}` );
-                onload( getStringFromFileContents( parsedFallbackStrings, key ) );
-              }, isFallbackLocale ); // if the main strings file is the fallback, then assert no surrounding whitespace
-          }, onload.error, true );
+            const fallbackLocales = [ locale ];
+            const specificLocaleData = phet.chipper.localeData[ locale ];
+            if ( specificLocaleData && specificLocaleData.fallbackLocales ) {
+              specificLocaleData.fallbackLocales.forEach( function( locale ) {
+                fallbackLocales.push( locale );
+              } );
+            }
+            fallbackLocales.push( 'en' );
+
+            let stringMap = {};
+
+            // We will iteratively "wrap" this function with layers to load into stringMap
+            let call = () => {
+              name.includes( 'toggleCheckboxes' ) && console.log( 'finalize' );
+              onload( getStringFromFileContents( stringMap, key ) );
+            };
+
+            // In order, so the "last" (outer) will be 'en', and it will be the first to be processed
+            fallbackLocales.forEach( fallbackLocale => {
+              const oldCall = call;
+
+              const filename = getFilenameForLocale( fallbackLocale );
+              const url = fallbackLocale === 'en' ? `${repositoryPath}/${filename}` : `${repositoryPath}/../babel/${repositoryName}/${filename}`;
+
+              name.includes( 'toggleCheckboxes' ) && console.log( url );
+
+              call = () => {
+                name.includes( 'toggleCheckboxes' ) && console.log( 'ACTUAL GO', url );
+                getWithCache( url, fallbackStringMap => {
+                  name.includes( 'toggleCheckboxes' ) && console.log( 'completed', url );
+                  stringMap = _.extend( {}, stringMap, fallbackStringMap );
+                  oldCall();
+                }, () => {
+                  name.includes( 'toggleCheckboxes' ) && console.log( 'errored', url );
+                  // could not load the strings
+                  console.log( `no string file for ${url}` );
+                  oldCall();
+                } );
+              };
+            } );
+
+            call();
+          }
+        };
+
+        // Take over the first load, and include the localeData load WITH it.
+        if ( !hasCompletedLocaleDataLoad ) {
+          onLocaleDataLoadCallbacks.push( runLoad );
+
+          if ( !hasStartedLocaleDataLoad ) {
+            hasStartedLocaleDataLoad = true;
+            loadLocaleData();
+          }
+        }
+        else {
+          runLoad();
         }
       }
     },
