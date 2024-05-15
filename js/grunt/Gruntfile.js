@@ -167,6 +167,10 @@ module.exports = function( grunt ) {
     } )
   );
 
+  grunt.registerTask( 'typescript-test', 'For testing typescript in our build tools', wrapTask( async () => {
+    require( './typescript-test' );
+  } ) );
+
   grunt.registerTask( 'build',
     `Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
 Runnable build options:

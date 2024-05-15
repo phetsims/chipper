@@ -13,7 +13,7 @@
 
 /* eslint-env node */
 
-// Switch between TypeScript and JavaScript
+// Switch between TypeScript and JavaScript (feature flag)
 const LAUNCH_FROM_CHIPPER_DIST = false;
 
 if ( LAUNCH_FROM_CHIPPER_DIST ) {
@@ -38,6 +38,7 @@ if ( LAUNCH_FROM_CHIPPER_DIST ) {
   commonJSTranspiler.transpileRepoWithModes( 'chipper', [ 'commonjs' ] );
   commonJSTranspiler.transpileRepoWithModes( 'phet-core', [ 'commonjs' ] );
   commonJSTranspiler.transpileRepoWithModes( 'perennial-alias', [ 'commonjs' ] );
+  commonJSTranspiler.transpileRepoWithModes( 'perennial', [ 'commonjs' ] ); // TODO: needed by aqua/ https://github.com/phetsims/chipper/issues/1437
   commonJSTranspiler.saveCache();
 
   // TODO: Make sure the above repos are covered by tsconfig/all, see https://github.com/phetsims/chipper/issues/1437

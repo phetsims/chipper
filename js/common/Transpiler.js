@@ -48,6 +48,7 @@ const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'shaders', 'common', 'wgs
 const getActiveRepos = () => fs.readFileSync( '../perennial-alias/data/active-repos', 'utf8' ).trim().split( '\n' ).map( sim => sim.trim() );
 
 const getModesForRepo = repo => {
+  // TODO: Duplicated repos in grunMain.js  https://github.com/phetsims/chipper/issues/1437
   const dualRepos = [ 'chipper', 'perennial-alias', 'perennial', 'phet-core' ];
   if ( dualRepos.includes( repo ) ) {
     return [ 'js', 'commonjs' ];
@@ -485,6 +486,7 @@ class Transpiler {
 
       if ( !pathExists ) {
 
+        // TODO: This should be a constant for "all supported modes" https://github.com/phetsims/chipper/issues/1437
         const modes = [ 'js', 'commonjs' ];
 
         modes.forEach( mode => {
@@ -520,10 +522,10 @@ class Transpiler {
       }
       else {
         const terms = filename.split( path.sep );
-        const myRepo = terms[ 0 ];
-        if ( ( this.activeRepos.includes( myRepo ) || this.repos.includes( myRepo ) )
+        const repo = terms[ 0 ];
+        if ( ( this.activeRepos.includes( repo ) || this.repos.includes( repo ) )
              && subdirs.includes( terms[ 1 ] ) && pathExists ) {
-          this.visitFile( filePath, getModesForRepo( myRepo ) );
+          this.visitFile( filePath, getModesForRepo( repo ) );
         }
       }
     } );
