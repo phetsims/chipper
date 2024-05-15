@@ -14,7 +14,7 @@
 /* eslint-env node */
 
 // Switch between TypeScript and JavaScript (feature flag)
-const LAUNCH_FROM_CHIPPER_DIST = false;
+const LAUNCH_FROM_CHIPPER_DIST = true;
 
 if ( LAUNCH_FROM_CHIPPER_DIST ) {
 
