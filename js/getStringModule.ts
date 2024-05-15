@@ -204,22 +204,22 @@ const getStringModule = ( requirejsNamespace: string ): object => {
         tandem = Tandem.OPT_OUT;
       }
 
+      const localeToTranslationMap: LocalizedStringStateDelta = {};
+      ( Object.keys( phet.chipper.strings ) ).forEach( ( locale: Locale ) => {
+        const string: string = phet.chipper.strings[ locale ][ stringKey ];
+        // Ignore zero-length strings, see https://github.com/phetsims/chipper/issues/1343
+        if ( locale === FALLBACK_LOCALE || ( typeof string === 'string' && string !== '' ) ) {
+          localeToTranslationMap[ locale ] = phet.chipper.mapString( string );
+        }
+      } );
+
       const localizedString = new LocalizedString(
         stringKey,
-        phet.chipper.mapString( phet.chipper.strings[ FALLBACK_LOCALE ][ stringKey ] ),
+        localeToTranslationMap,
         tandem,
         phet.chipper.stringMetadata[ stringKey ]
       );
       localizedStringMap[ stringKey ] = localizedString;
-
-      // Push up the translated values
-      ( Object.keys( phet.chipper.strings ) as Locale[] ).forEach( ( locale: Locale ) => {
-        const string: string = phet.chipper.strings[ locale ][ stringKey ];
-        // Ignore zero-length strings, see https://github.com/phetsims/chipper/issues/1343
-        if ( typeof string === 'string' && string !== '' ) {
-          localizedString.setInitialValue( locale, phet.chipper.mapString( string ) );
-        }
-      } );
 
       // Put our Property in the stringModule
       reference[ `${lastKeyPart}StringProperty` ] = localizedString.property;
