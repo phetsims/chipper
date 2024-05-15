@@ -30,9 +30,8 @@
   window.phet.chipper.strings = {};
   window.phet.chipper.stringMetadata = {};
 
-  // Prefixes, ideally a better way of accessing localeInfo on startup would exist. We have localeInfo, however it's
-  // in the form of a module, and we can't use that at this point.
-  const rtlLocales = [ 'ae', 'ar', 'fa', 'iw', 'ur' ];
+  // Will be initialized after we have loaded localeData (below)
+  let rtlLocales;
 
   const localeQueryParam = new window.URLSearchParams( window.location.search ).get( 'locale' );
   const localesQueryParam = new window.URLSearchParams( window.location.search ).get( 'locales' );
@@ -229,7 +228,18 @@
   //   phet.chipper.usedStringsEN = json;
   // } );
 
-  if ( localesQueryParam === '*' ) {
+  // Load locale data
+  remainingFilesToProcess++;
+  requestJSONFile( '../babel/localeData.json', json => {
+    phet.chipper.localeData = json;
+
+    // Because load-unbuilt-strings' "loading" of the locale data might not have happened BEFORE initialize-globals
+    // runs (and sets phet.chipper.locale), we'll attempt to handle the case where it hasn't been set yet.
+    phet.chipper.checkAndRemapLocale && phet.chipper.checkAndRemapLocale();
+
+    rtlLocales = Object.keys( phet.chipper.localeData ).filter( locale => {
+      return phet.chipper.localeData[ locale ].direction === 'rtl';
+    } );
 
     // Load the conglomerate files
     requestJSONFile( `../babel/_generated_development_strings/${ourRepo}_all.json`, json => {
@@ -257,22 +267,7 @@
         }
       } );
     } );
-  }
-  else {
 
-    // Load just the specified locales
-    locales.forEach( locale => {
-      requestJSONFile( getStringPath( ourRepo, locale ), json => {
-        processStringFile( json, ourRequirejsNamespace, locale );
-        phet.chipper.stringRepos.forEach( stringRepoData => {
-          const repo = stringRepoData.repo;
-          if ( repo !== ourRepo ) {
-            requestJSONFile( getStringPath( repo, locale ), json => {
-              processStringFile( json, stringRepoData.requirejsNamespace, locale );
-            } );
-          }
-        } );
-      } );
-    } );
-  }
+    remainingFilesToProcess--;
+  } );
 } )();
