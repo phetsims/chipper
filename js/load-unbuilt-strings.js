@@ -146,9 +146,10 @@
         }
 
         if ( locale.length === 3 ) {
-          for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
-            if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
-              locale = candidateLocale;
+          const possibleLocales = Object.keys( phet.chipper.localeData );
+          for ( let i = 0; i < possibleLocales.length; i++ ) {
+            if ( phet.chipper.localeData[ possibleLocales[ i ] ].locale3 === locale ) {
+              locale = possibleLocales[ i ];
               break;
             }
           }
