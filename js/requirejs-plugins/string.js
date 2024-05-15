@@ -217,7 +217,7 @@ define( function( require ) {
           else {
             // Read the locale from a query parameter, if it is there, or use the fallback locale
             if ( !phet.chipper.localeData[ locale ] ) {
-              onload.error( new Error( `unsupported locale: ${locale}` ) );
+              onload.error( new Error( 'unsupported locale: ' + locale ) );
             }
 
             var fallbackLocales = [ locale ];
