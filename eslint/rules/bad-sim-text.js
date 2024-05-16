@@ -125,7 +125,12 @@ module.exports = function( context ) {
     {
       id: 'Prefer "Standard PhET-iO Wrapper to "standard wrapper"',
       regex: /[Ss][Tt][Aa][Nn][Dd][Aa][Rr][Dd][- _][Ww][Rr][Aa][Pp][Pp][Ee][Rr]/
-    }
+    },
+
+    // combo box is two words, moved to sim-specific bad text from the general one because of https://github.com/phetsims/website-meteor/issues/690
+    'combobox', // prefer combo box
+    'Combobox', // prefer Combo Box
+    'COMBOBOX' // prefer COMBO_BOX
   ];
 
   return {

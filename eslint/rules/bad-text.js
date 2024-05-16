@@ -28,11 +28,6 @@ module.exports = function( context ) {
     'CheckBox', // prefer Checkbox
     'CHECK_BOX', // prefer CHECKBOX
 
-    // combo box is two words
-    'combobox', // prefer combo box
-    'Combobox', // prefer Combo Box
-    'COMBOBOX', // prefer COMBO_BOX
-
     'Overriden', // should have 2 "d"s
     'overriden', // should have 2 "d"s
 
