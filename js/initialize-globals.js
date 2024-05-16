@@ -762,7 +762,7 @@
 
           const parts = locale.split( '_' );
           if ( parts.length === 2 ) {
-            locale = `${parts[ 0 ].toLowerCase()} ${parts[ 1 ].toUpperCase()}`;
+            locale = `${parts[ 0 ].toLowerCase()}_${parts[ 1 ].toUpperCase()}`;
           }
         }
 
