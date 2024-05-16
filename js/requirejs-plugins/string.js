@@ -21,7 +21,6 @@ define( require => {
 
   // modules
   const _ = require( '../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-  const ChipperConstants = require( '../../chipper/js/common/ChipperConstants' );
   const ChipperStringUtils = require( '../../chipper/js/common/ChipperStringUtils' );
   const text = require( 'text' );
 
@@ -226,9 +225,10 @@ define( require => {
               }
 
               if ( locale.length === 3 ) {
-                for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
-                  if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
-                    locale = candidateLocale;
+                const possibleLocales = Object.keys( phet.chipper.localeData );
+                for ( let i = 0; i < possibleLocales.length; i++ ) {
+                  if ( phet.chipper.localeData[ possibleLocales[ i ] ].locale3 === locale ) {
+                    locale = possibleLocales[ i ];
                     break;
                   }
                 }
@@ -243,12 +243,6 @@ define( require => {
           }
 
           const locale = globalLocale;
-
-          const fallbackSpecificPath = `${repositoryPath}/${getFilenameForLocale( ChipperConstants.FALLBACK_LOCALE )}`;
-          const isFallbackLocale = locale === ChipperConstants.FALLBACK_LOCALE;
-          const localeSpecificPath = isFallbackLocale ?
-                                     fallbackSpecificPath :
-                                     `${repositoryPath}/../babel/${repositoryName}/${getFilenameForLocale( locale )}`;
 
           // In the browser, a string specified via the '?strings' query parameter overrides anything,
           // to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
