@@ -8,9 +8,7 @@
 
 import DynamicProperty from '../../axon/js/DynamicProperty.js';
 import TinyProperty from '../../axon/js/TinyProperty.js';
-import TinyOverrideProperty from '../../axon/js/TinyOverrideProperty.js';
 import localeProperty, { Locale } from '../../joist/js/i18n/localeProperty.js';
-import localeOrderProperty from '../../joist/js/i18n/localeOrderProperty.js';
 import Tandem from '../../tandem/js/Tandem.js';
 import StringIO from '../../tandem/js/types/StringIO.js';
 import chipper from './chipper.js';
