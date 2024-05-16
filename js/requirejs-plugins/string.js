@@ -235,7 +235,7 @@ define( function( require ) {
             var call = function() {
               var stringFromMap = _.at( stringMap, key )[ 0 ].value;
               if ( stringFromMap === null || stringFromMap === undefined ) {
-                throw new Error( `String not found: ${key}` );
+                throw new Error( 'String not found: ' + key );
               }
 
               stringFromMap = ChipperStringUtils.addDirectionalFormatting( stringFromMap, isRTL );
@@ -248,7 +248,7 @@ define( function( require ) {
               var oldCall = call;
 
               var filename = getFilenameForLocale( fallbackLocale );
-              var url = fallbackLocale === 'en' ? `${repositoryPath}/${filename}` : `${repositoryPath}/../babel/${repositoryName}/${filename}`;
+              var url = fallbackLocale === 'en' ? repositoryPath + '/' + filename : repositoryPath + '/../babel/' + repositoryName + '/' + filename;
 
 
               call = function() {
@@ -257,7 +257,7 @@ define( function( require ) {
                   oldCall();
                 }, function() {
                   // could not load the strings
-                  console.log( `no string file for ${url}` );
+                  console.log( 'no string file for ' + url );
                   oldCall();
                 } );
               };
