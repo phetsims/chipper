@@ -20,7 +20,6 @@ define( function( require ) {
 
   // modules
   var _ = require( '../../sherpa/lib/lodash-4.17.4.min' ); // eslint-disable-line require-statement-match
-  var ChipperConstants = require( '../../chipper/js/common/ChipperConstants' );
   var ChipperStringUtils = require( '../../chipper/js/common/ChipperStringUtils' );
   var text = require( 'text' );
 
@@ -133,7 +132,6 @@ define( function( require ) {
       var requirePath;
       var repositoryPath;
       var repositoryName;
-      var locale;
 
       function getFilenameForLocale( locale ) {
         return repositoryName + '-strings_' + locale + '.json' + suffix;
@@ -183,8 +181,9 @@ define( function( require ) {
           var queryParameterStrings = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
 
           // Duplicated locale loading
+          var locale;
           if ( globalLocale === null ) {
-            var locale = phet.chipper.queryParameters.locale;
+            locale = phet.chipper.queryParameters.locale;
 
             if ( locale ) {
               if ( locale.length < 5 ) {
@@ -217,7 +216,7 @@ define( function( require ) {
             globalLocale = locale;
           }
 
-          var locale = globalLocale;
+          locale = globalLocale;
 
           // In the browser, a string specified via the '?strings' query parameter overrides anything,
           // to match the behavior of the chipper version (for dynamically substituting new strings like in the translation utility)
