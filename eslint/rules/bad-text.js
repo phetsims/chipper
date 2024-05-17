@@ -119,16 +119,6 @@ module.exports = function( context ) {
     'phetioDebug:',
 
     {
-      id: 'Import statements require a *.js suffix',
-      predicate: line => {
-        if ( line.trim().indexOf( 'import \'' ) === 0 && line.indexOf( ';' ) >= 0 && line.indexOf( '.js' ) === -1 ) {
-          return false;
-        }
-        return true;
-      }
-    },
-
-    {
       id: 'Export statements should not have a register call',
       predicate: line => {
         if ( line.trim().indexOf( 'export default' ) === 0 && line.indexOf( '.register(' ) >= 0 ) {

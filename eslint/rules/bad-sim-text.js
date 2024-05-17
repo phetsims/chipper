@@ -123,6 +123,16 @@ module.exports = function( context ) {
       }
     },
     {
+      id: 'Import statements require a *.js suffix',
+      predicate: line => {
+        if ( line.trim().indexOf( 'import \'' ) === 0 && line.indexOf( ';' ) >= 0 && line.indexOf( '.js' ) === -1 ) {
+          return false;
+        }
+        return true;
+      }
+    },
+
+    {
       id: 'Prefer "Standard PhET-iO Wrapper to "standard wrapper"',
       regex: /[Ss][Tt][Aa][Nn][Dd][Aa][Rr][Dd][- _][Ww][Rr][Aa][Pp][Pp][Ee][Rr]/
     },
