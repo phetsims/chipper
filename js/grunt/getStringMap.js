@@ -94,7 +94,7 @@ const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
  *
  * @returns {Object} - map[locale][stringKey] => {string}
  */
-module.exports = function( mainRepo, locales, phetLibs, usedModules ) {
+module.exports = function getStringMap( mainRepo, locales, phetLibs, usedModules ) {
 
   assert( locales.indexOf( ChipperConstants.FALLBACK_LOCALE ) !== -1, 'fallback locale is required' );
 

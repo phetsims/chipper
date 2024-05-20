@@ -31,7 +31,7 @@ module.exports = function( config ) {
   const {
     brand, // {string}, e.g. 'phet', 'phet-io'
     repo, // {string}
-    allLocales, // {string[]}
+    allLocales, // {string[]} // All locales for which this repo has a translation.
     stringMap, // {Object}, map[ locale ][ stringKey ] => {string}
     stringMetadata, // {Object}, map[ stringKey ] => {Object}
     version, // {string}
@@ -54,7 +54,7 @@ module.exports = function( config ) {
   assert( typeof includeAllLocales === 'boolean', 'Requires includeAllLocales' );
   assert( typeof isDebugBuild === 'boolean', 'Requires isDebugBuild' );
 
-  // Load localeData
+  // Load localeData - REVIEW: full vs all is confusing, https://github.com/phetsims/chipper/issues/1441
   const fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
   // Include a subset of locales' translated strings
@@ -75,6 +75,9 @@ module.exports = function( config ) {
     }
   }
 
+  // REVIEW: I don't understand why we need to do fallback calculation/inclusion again here, since we already did it
+  // REVIEW:   in getStringMap (localeFallbacks). Seems like duplication to me. Shouldn't getStringMap be the superset
+  // REVIEW:   of all possible locales that you could even need? Including fallbacks?  https://github.com/phetsims/chipper/issues/1441
   // Include a (larger) subset of locales' localeData.
   const includedDataLocales = _.sortBy( _.uniq( [
     // Always include the fallback (en)
