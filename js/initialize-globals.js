@@ -799,9 +799,14 @@
 
     /**
      * By default, voicing is not enabled on startup. Add this flag to start the sim with voicing enabled.
+     * Only relevant if the sim supports Voicing.
+     *
+     * Some browsers may not support this because user input is required to start SpeechSynthesis. But it allows
+     * teachers to start the sim with Voicing enabled, so it is still public and usable where possible.
      */
     voicingInitiallyEnabled: {
-      type: 'flag'
+      type: 'flag',
+      public: true
     },
 
     /**
@@ -868,6 +873,66 @@
     vibrationParadigm: {
       type: 'string',
       defaultValue: null
+    },
+
+    /**
+     * Only relevant when the sim supports the Voicing feature. If true, Voicing object responses
+     * are enabled by default.
+     *
+     * These parameters allow fine-=tuned control over the initial state and behavior of the Voicing feature,
+     * allowing better customization and accessibility for various users.
+     */
+    voicingAddObjectResponses: {
+      type: 'flag',
+      public: true
+    },
+
+    /**
+     * Only relevant when the sim supports the Voicing feature. If true, Voicing context responses
+     * are enabled by default.
+     *
+     * These parameters allow fine-=tuned control over the initial state and behavior of the Voicing feature,
+     * allowing better customization and accessibility for various users.
+     */
+    voicingAddContextResponses: {
+      type: 'flag',
+      public: true
+    },
+
+    /**
+     * Only relevant when the sim supports the Voicing feature. If true, Voicing hint responses
+     * are enabled by default.
+     *
+     * These parameters allow fine-=tuned control over the initial state and behavior of the Voicing feature,
+     * allowing better customization and accessibility for various users.
+     */
+    voicingAddHintResponses: {
+      type: 'flag',
+      public: true
+    },
+
+    /**
+     * Only relevant when the sim supports the Voicing feature. If true, the Voicing toolbar will be collapsed
+     * by default when Voicing is enabled.
+     *
+     * These parameters allow fine-=tuned control over the initial state and behavior of the Voicing feature,
+     * allowing better customization and accessibility for various users.
+     */
+    voicingCollapseVoicingToolbar: {
+      type: 'flag',
+      public: true
+    },
+
+    /**
+     * Only relevant when the sim supports the Voicing feature. If true, the Voicing toolbar will be fully hidden
+     * by default when Voicing is enabled.
+     *
+     * These parameters allow fine-=tuned control over the initial state and behavior of the Voicing feature,
+     * allowing better customization and accessibility for various users.
+     */
+    voicingRemoveVoicingToolbar: {
+      type: 'flag',
+      public: true
     },
 
     /**
