@@ -105,7 +105,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
   // Our locale information is from phet.chipper.locale
 
   assert && assert( typeof phet.chipper.locale === 'string', 'phet.chipper.locale should have been loaded by now' );
-  assert && assert( Object.keys( phet.chipper.localeData ).includes( phet.chipper.locale ), 'phet.chipper.locale should have been loaded by now' );
+  assert && assert( Object.keys( phet.chipper.localeData ).includes( phet.chipper.locale ), `phet.chipper.locale:${phet.chipper.locale} is not in localeData` );
   assert && assert( phet.chipper.strings, 'phet.chipper.strings should have been loaded by now' );
 
   // Construct locales in increasing specificity, e.g. [ 'en', 'zh', 'zh_CN' ], so we get fallbacks in order

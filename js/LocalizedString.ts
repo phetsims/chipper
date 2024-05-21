@@ -27,7 +27,7 @@ export type LocalizedStringStateDelta = Partial<Record<Locale, TranslationString
 export type StringsStateStateObject = { data: Record<PhetioID, LocalizedStringStateDelta> };
 
 const localeData = phet.chipper.localeData;
-assert && assert( localeData );
+assert && assert( localeData, 'localeData expected but global has not been set' );
 
 class LocalizedString {
 
