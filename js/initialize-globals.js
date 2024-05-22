@@ -918,7 +918,7 @@
      * These parameters allow fine-=tuned control over the initial state and behavior of the Voicing feature,
      * allowing better customization and accessibility for various users.
      */
-    voicingCollapseVoicingToolbar: {
+    voicingCollapseToolbar: {
       type: 'flag',
       public: true
     },
@@ -930,7 +930,7 @@
      * These parameters allow fine-=tuned control over the initial state and behavior of the Voicing feature,
      * allowing better customization and accessibility for various users.
      */
-    voicingRemoveVoicingToolbar: {
+    voicingRemoveToolbar: {
       type: 'flag',
       public: true
     },
