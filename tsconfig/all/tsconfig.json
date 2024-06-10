@@ -106,7 +106,6 @@
     "../../../projectile-motion/js/**/*",
     "../../../projectile-sampling-distributions/js/**/*",
     "../../../quadrilateral/js/**/*",
-    "../../../quantum-measurement/js/**/*",
     "../../../quake/cordova-plugin-native-vibration/types/index.d.ts",
     "../../../quantum-measurement/js/**/*",
     "../../../ratio-and-proportion/js/**/*",
