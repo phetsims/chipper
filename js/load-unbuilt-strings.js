@@ -177,6 +177,10 @@
   // The callback to execute when all string files are processed.
   const finishProcessing = () => {
 
+    // Because load-unbuilt-strings' "loading" of the locale data and strings might not have happened BEFORE initialize-globals
+    // runs (and sets phet.chipper.locale), we'll attempt to handle the case where it hasn't been set yet. You'll see the same call over in initialize-globals
+    phet.chipper.checkAndRemapLocale && phet.chipper.checkAndRemapLocale();
+
     // Progress with loading modules
     window.phet.chipper.loadModules();
   };
@@ -206,10 +210,6 @@
   remainingFilesToProcess++;
   requestJSONFile( '../babel/localeData.json', json => {
     phet.chipper.localeData = json;
-
-    // Because load-unbuilt-strings' "loading" of the locale data might not have happened BEFORE initialize-globals
-    // runs (and sets phet.chipper.locale), we'll attempt to handle the case where it hasn't been set yet.
-    phet.chipper.checkAndRemapLocale && phet.chipper.checkAndRemapLocale();
 
     rtlLocales = Object.keys( phet.chipper.localeData ).filter( locale => {
       return phet.chipper.localeData[ locale ].direction === 'rtl';

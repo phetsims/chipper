@@ -31,25 +31,30 @@
  */
 ( function() {
 
-
   assert && assert( window.QueryStringMachine, 'QueryStringMachine is used, and should be loaded before this code runs' );
 
+  // Create the attachment point for all PhET globals
+  window.phet = window.phet ?? {};
+  window.phet.chipper = window.phet.chipper ?? {};
+
   // packageObject may not always be available if initialize-globals used without chipper-initialization.js
-  const packageObject = _.hasIn( window, 'phet.chipper.packageObject' ) ? phet.chipper.packageObject : {};
-  const packagePhet = packageObject.phet || {};
+  const packageObject = phet.chipper.packageObject ?? {};
+  const packagePhet = packageObject.phet ?? {};
 
   // Not all runtimes will have this flag, so be graceful
-  const allowLocaleSwitching = _.hasIn( window, 'phet.chipper.allowLocaleSwitching' ) ? phet.chipper.allowLocaleSwitching : true;
+  const allowLocaleSwitching = phet.chipper.allowLocaleSwitching ?? true;
 
   // duck type defaults so that not all package.json files need to have a phet.simFeatures section.
-  const packageSimFeatures = packagePhet.simFeatures || {};
+  const packageSimFeatures = packagePhet.simFeatures ?? {};
 
   // The color profile used by default, if no colorProfiles are specified in package.json.
   // NOTE: Duplicated in SceneryConstants.js since scenery does not include initialize-globals.js
   const DEFAULT_COLOR_PROFILE = 'default';
 
+  const FALLBACK_LOCALE = 'en';
+
   // The possible color profiles for the current simulation.
-  const colorProfiles = packageSimFeatures.colorProfiles || [ DEFAULT_COLOR_PROFILE ];
+  const colorProfiles = packageSimFeatures.colorProfiles ?? [ DEFAULT_COLOR_PROFILE ];
 
   // Private Doc: Note: the following jsdoc is for the public facing PhET-iO API. In addition, all query parameters in the schema
   // that are a "memberOf" the "PhetQueryParameters" namespace are used in the jsdoc that is public (client facing)
@@ -323,7 +328,7 @@
      */
     locale: {
       type: 'string',
-      defaultValue: 'en'
+      defaultValue: window.phet.chipper.locale ?? FALLBACK_LOCALE
       // Do NOT add the `public` key here. We want invalid values to fall back to en.
     },
 
@@ -956,15 +961,46 @@
     }
   };
 
-  // Initialize query parameters, see docs above
-  ( function() {
-
-    // Create the attachment point for all PhET globals
-    window.phet = window.phet || {};
-    window.phet.chipper = window.phet.chipper || {};
-
+  {
     // Read query parameters
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
+
+    // Are we running a built html file?
+    window.phet.chipper.isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
+
+    // Are we running in an app?
+    window.phet.chipper.isApp = phet.chipper.queryParameters[ 'phet-app' ] || phet.chipper.queryParameters[ 'phet-android-app' ];
+
+    /**
+     * An IIFE here helps capture variables in final logic needed in the global, preload scope for the phetsim environment.
+     *
+     * Enables or disables assertions in common libraries using query parameters.
+     * There are two types of assertions: basic and slow. Enabling slow assertions will adversely impact performance.
+     * 'ea' enables basic assertions, 'eall' enables basic and slow assertions.
+     * Must be run before the main modules, and assumes that assert.js and query-parameters.js has been run.
+     */
+    ( function() {
+
+      // enables all assertions (basic and slow)
+      const enableAllAssertions = !phet.chipper.isProduction && phet.chipper.queryParameters.eall;
+
+      // enables basic assertions
+      const enableBasicAssertions = enableAllAssertions ||
+                                    ( !phet.chipper.isProduction && phet.chipper.queryParameters.ea ) ||
+                                    phet.chipper.isDebugBuild;
+
+      if ( enableBasicAssertions ) {
+        window.assertions.enableAssert();
+      }
+      if ( enableAllAssertions ) {
+        window.assertions.enableAssertSlow();
+      }
+    } )();
+  }
+
+  // Initialize query parameters in a new scope, see docs above
+  {
+
     window.phet.chipper.colorProfiles = colorProfiles;
 
     /**
@@ -1028,70 +1064,139 @@
              stringTest;
     };
 
-    // We will need to check for locale validity (once we have localeData loaded, if running unbuilt), and potentially
-    // either fall back to `en`, or remap from 3-character locales to our locale keys.
-    phet.chipper.checkAndRemapLocale = () => {
-      // We need both to proceed. Provided as a global, so we can call it from load-unbuilt-strings
-      // (IF initialize-globals loads first)
-      if ( !phet.chipper.localeData || !phet.chipper.locale ) {
-        return;
+    /**
+     * Given a locale based on the supported query parameter schema, map it to the 2 or 5 char locale code (key in localeData).
+     * @param {string} locale
+     * @param {boolean} assertInsteadOfWarn - assert incorrect locale format, vs QSM warn by default
+     * @returns {string}
+     */
+    phet.chipper.remapLocale = ( locale, assertInsteadOfWarn = false ) => {
+      assert && assert( locale );
+      assert && assert( phet.chipper.localeData );
+
+      const inputValueLocale = locale;
+
+      if ( locale.length < 5 ) {
+        locale = locale.toLowerCase();
+      }
+      else {
+        locale = locale.replace( /-/, '_' );
+
+        const parts = locale.split( '_' );
+        if ( parts.length === 2 ) {
+          locale = parts[ 0 ].toLowerCase() + '_' + parts[ 1 ].toUpperCase();
+        }
       }
 
-      let locale = phet.chipper.locale;
-
-      if ( locale ) {
-        if ( locale.length < 5 ) {
-          locale = locale.toLowerCase();
-        }
-        else {
-          locale = locale.replace( /-/, '_' );
-
-          const parts = locale.split( '_' );
-          if ( parts.length === 2 ) {
-            locale = parts[ 0 ].toLowerCase() + '_' + parts[ 1 ].toUpperCase();
+      if ( locale.length === 3 ) {
+        for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
+          if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
+            locale = candidateLocale;
+            break;
           }
         }
+      }
 
-        if ( locale.length === 3 ) {
-          for ( const candidateLocale of Object.keys( phet.chipper.localeData ) ) {
-            if ( phet.chipper.localeData[ candidateLocale ].locale3 === locale ) {
-              locale = candidateLocale;
-              break;
+      // Permissive patterns for locale query parameter patterns.
+      // We don't want to show a query parameter warning if it matches these patterns, EVEN if it is not a valid locale
+      // in localeData, see https://github.com/phetsims/qa/issues/1085#issuecomment-2111105235.
+      const pairRegex = /^[a-zA-Z]{2}$/;
+      const tripleRegex = /^[a-zA-Z]{3}$/;
+      const doublePairRegex = /^[a-zA-Z]{2}[_-][a-zA-Z]{2}$/;
+
+      // Sanity checks for verifying localeData (so hopefully we don't commit bad data to localeData).
+      if ( assert ) {
+        for ( const locale of Object.keys( phet.chipper.localeData ) ) {
+          // Check the locale itself
+          assert( pairRegex.test( locale ) || doublePairRegex.test( locale ), `Invalid locale format: ${locale}` );
+
+          // Check locale3 (if it exists)
+          if ( phet.chipper.localeData[ locale ].locale3 ) {
+            assert( tripleRegex.test( phet.chipper.localeData[ locale ].locale3 ), `Invalid locale3 format: ${phet.chipper.localeData[ locale ].locale3}` );
+          }
+
+          // Check fallbackLocales (if it exists)
+          if ( phet.chipper.localeData[ locale ].fallbackLocales ) {
+            for ( const fallbackLocale of phet.chipper.localeData[ locale ].fallbackLocales ) {
+              assert( phet.chipper.localeData[ fallbackLocale ] );
             }
           }
         }
       }
 
       if ( !phet.chipper.localeData[ locale ] ) {
-        const badLocale = phet.chipper.queryParameters.locale;
+        const badLocale = inputValueLocale;
 
-        // Be permissive with case for the query parameter warning, see https://github.com/phetsims/qa/issues/1085#issuecomment-2111105235
-        const isPair = /^[a-zA-Z]{2}$/.test( badLocale );
-        const isTriple = /^[a-zA-Z]{3}$/.test( badLocale );
-        const isPair_PAIR = /^[a-zA-Z]{2}[_-][a-zA-Z]{2}$/.test( badLocale );
-
-        if ( !isPair && !isTriple && !isPair_PAIR ) {
-          QueryStringMachine.addWarning( 'locale', phet.chipper.queryParameters.locale, `Invalid locale format received: ${badLocale}. ?locale query parameter accepts the following formats: "xx" for ISO-639-1, "xx_XX" for ISO-639-1 and a 2-letter country code, "xxx" for ISO-639-2` );
+        if ( !pairRegex.test( badLocale ) && !tripleRegex.test( badLocale ) && !doublePairRegex.test( badLocale ) ) {
+          if ( assertInsteadOfWarn ) {
+            assert && assert( false, 'invalid locale:', inputValueLocale );
+          }
+          else {
+            QueryStringMachine.addWarning( 'locale', inputValueLocale, `Invalid locale format received: ${badLocale}. ?locale query parameter accepts the following formats: "xx" for ISO-639-1, "xx_XX" for ISO-639-1 and a 2-letter country code, "xxx" for ISO-639-2` );
+          }
         }
 
-        locale = 'en';
+        locale = FALLBACK_LOCALE;
       }
 
-      phet.chipper.locale = locale;
+      return locale;
     };
 
-    // If locale was provided as a query parameter, then change the locale used by Google Analytics.
-    if ( QueryStringMachine.containsKey( 'locale' ) ) {
-      phet.chipper.locale = phet.chipper.queryParameters.locale;
+    /**
+     * Get the "most" valid locale, see https://github.com/phetsims/phet-io/issues/1882
+     *  As part of https://github.com/phetsims/joist/issues/963, this as changed. We check a specific fallback order based
+     *  on the locale. In general, it will usually try a prefix for xx_XX style locales, e.g. 'ar_SA' would try 'ar_SA', 'ar', 'en'
+     *  NOTE: If the locale doesn't actually have any strings: THAT IS OK! Our string system will use the appropriate
+     *  fallback strings.
+     * @param locale
+     * @returns {*}
+     */
+    phet.chipper.getValidRuntimeLocale = locale => {
+      assert && assert( locale );
+      assert && assert( phet.chipper.localeData );
+      assert && assert( phet.chipper.strings );
 
-      // NOTE: If we are loading in unbuilt mode, this may execute BEFORE we have loaded localeData. We have a similar
-      // remapping in load-unbuilt-strings when this happens.
-      phet.chipper.checkAndRemapLocale();
-    }
-    else if ( !window.phet.chipper.locale ) {
-      // Fill in a default
-      window.phet.chipper.locale = 'en';
-    }
+      const possibleLocales = [
+        locale,
+        ...( phet.chipper.localeData[ locale ]?.fallbackLocales ?? [] ),
+        FALLBACK_LOCALE
+      ];
+
+      const availableLocale = possibleLocales.find( possibleLocale => !!phet.chipper.strings[ possibleLocale ] );
+      assert && assert( availableLocale, 'no fallback found for ', locale );
+      return availableLocale;
+    };
+
+    // We will need to check for locale validity (once we have localeData loaded, if running unbuilt), and potentially
+    // either fall back to `en`, or remap from 3-character locales to our locale keys. This overwrites phet.chipper.locale.
+    // Used when setting locale through JOIST/localeProperty also. Default to the query parameter instead of
+    // chipper.locale because we overwrite that value, and may run this function multiple times during the startup
+    // sequence (in unbuilt mode).
+    phet.chipper.checkAndRemapLocale = ( locale = phet.chipper.queryParameters.locale, assertInsteadOfWarn = false ) => {
+
+      // We need both to proceed. Provided as a global, so we can call it from load-unbuilt-strings
+      // (IF initialize-globals loads first). Also handle the unbuilt mode case where we have phet.chipper.strings
+      // exists but no translations have loaded yet.
+      if ( !phet.chipper.localeData || !phet.chipper.strings?.hasOwnProperty( FALLBACK_LOCALE ) || !locale ) {
+        return locale;
+      }
+
+      const remappedLocale = phet.chipper.remapLocale( locale, assertInsteadOfWarn );
+      const finalLocale = phet.chipper.getValidRuntimeLocale( remappedLocale );
+
+      // Export this for analytics, see gogole-analytics.js
+      // (Yotta and GA will want the non-fallback locale for now, for consistency)
+      phet.chipper.remappedLocale = remappedLocale;
+      phet.chipper.locale = finalLocale; // NOTE: this will change with every setting of JOIST/localeProperty
+      return finalLocale;
+    };
+
+    // Query parameter default will pick up the phet.chipper.locale default from the built sim, if it exists.
+    assert && assert( phet.chipper.queryParameters.locale, 'should exist with a default' );
+
+    // NOTE: If we are loading in unbuilt mode, this may execute BEFORE we have loaded localeData. We have a similar
+    // remapping in load-unbuilt-strings when this happens.
+    phet.chipper.checkAndRemapLocale();
 
     const stringOverrides = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
 
@@ -1115,7 +1220,7 @@
       const fallbackLocales = [
         phet.chipper.locale,
         ...( phet.chipper.localeData[ phet.chipper.locale ]?.fallbackLocales || [] ),
-        ( phet.chipper.locale !== 'en' ? [ 'en' ] : [] )
+        ( phet.chipper.locale !== FALLBACK_LOCALE ? [ FALLBACK_LOCALE ] : [] )
       ];
 
       let stringMap = null;
@@ -1129,7 +1234,7 @@
 
       return phet.chipper.mapString( stringMap[ key ] );
     };
-  }() );
+  }
 
   /**
    * Utility function to pause synchronously for the given number of milliseconds.
@@ -1155,36 +1260,7 @@
     window.setInterval( () => { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) ); // eslint-disable-line bad-sim-text
   };
 
-  // Are we running a built html file?
-  window.phet.chipper.isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
-
-  // Are we running in an app?
-  window.phet.chipper.isApp = phet.chipper.queryParameters[ 'phet-app' ] || phet.chipper.queryParameters[ 'phet-android-app' ];
-
-  /**
-   * An IIFE here helps capture variables in final logic needed in the global, preload scope for the phetsim environment.
-   *
-   * Enables or disables assertions in common libraries using query parameters.
-   * There are two types of assertions: basic and slow. Enabling slow assertions will adversely impact performance.
-   * 'ea' enables basic assertions, 'eall' enables basic and slow assertions.
-   * Must be run before the main modules, and assumes that assert.js and query-parameters.js has been run.
-   */
   ( function() {
-
-    // enables all assertions (basic and slow)
-    const enableAllAssertions = !phet.chipper.isProduction && phet.chipper.queryParameters.eall;
-
-    // enables basic assertions
-    const enableBasicAssertions = enableAllAssertions ||
-                                  ( !phet.chipper.isProduction && phet.chipper.queryParameters.ea ) ||
-                                  phet.chipper.isDebugBuild;
-
-    if ( enableBasicAssertions ) {
-      window.assertions.enableAssert();
-    }
-    if ( enableAllAssertions ) {
-      window.assertions.enableAssertSlow();
-    }
 
     /**
      * Sends a message to a continuous testing container.

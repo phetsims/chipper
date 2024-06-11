@@ -30,8 +30,14 @@ class LocalizedStringProperty extends DynamicProperty<string, string, Locale> {
                                 TandemConstants.PHET_IO_OBJECT_METADATA_DEFAULTS.phetioDocumentation;
 
     super( localeProperty, {
+
+      // localeProperty isn't a Property<Property<X>>, so derive() maps the localeProperty to a Property we can use.
       derive: ( locale: Locale ) => localizedString.getLocaleSpecificProperty( locale ),
+
+      // This property should update the localizedString's TinyProperty too.
       bidirectional: true,
+
+      // phet-io issues
       phetioValueType: StringIO,
       phetioState: false,
       tandem: tandem,
