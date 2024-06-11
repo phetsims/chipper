@@ -121,6 +121,7 @@ declare var LineBreaker: {
 
 declare var assertions: {
   enableAssert: () => void;
+  assertionHooks: Array<() => void>;
 };
 
 // Experiment to allow accessing these off window. See https://stackoverflow.com/questions/12709074/how-do-you-explicitly-set-a-new-property-on-window-in-typescript
