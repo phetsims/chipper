@@ -37,48 +37,63 @@ const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog
     const outputToConsole = commandLineArguments.includes( '--console' );
     outputToConsole && console.log( 'repo:', repo );
 
-    const promises = [ 'lint', 'report-media', 'tsc', 'qunit', 'phet-io-api-compare' ].map( task => {
-      return phetTimingLog.startAsync( task, async () => {
-        const results = await execute( 'node', [
-          '../chipper/js/scripts/hook-pre-commit-task.js',
-          `--command=${task}`,
-          `--repo=${repo}`,
-          outputToConsole ? '--console' : '' ], '../chipper', {
-          errors: 'resolve'
-        } );
-        results.stdout && results.stdout.trim().length > 0 && console.log( results.stdout );
-        results.stderr && results.stderr.trim().length > 0 && console.log( results.stderr );
+    const taskResults = await Promise.allSettled(
+      [ 'lint', 'report-media', 'tsc', 'qunit', 'phet-io-api-compare' ].map( task => {
+        return phetTimingLog.startAsync(
+          task,
+          async () => {
+            const results = await execute(
+              'node',
+              [
+                '../chipper/js/scripts/hook-pre-commit-task.js',
+                `--command=${task}`,
+                `--repo=${repo}`,
+                outputToConsole ? '--console' : ''
+              ],
+              '../chipper',
+              {
+                errors: 'resolve'
+              }
+            );
+            results.stdout && results.stdout.trim().length > 0 && console.log( results.stdout );
+            results.stderr && results.stderr.trim().length > 0 && console.log( results.stderr );
 
-        if ( results.code === 0 ) {
-          return 0;
+            if ( results.code === 0 ) {
+              return { task: task, success: true };
+            }
+            else {
+              let message = 'Task failed: ' + task;
+              if ( results.stdout && results.stdout.trim().length > 0 ) {
+                message = message + ': ' + results.stdout;
+              }
+              if ( results.stderr && results.stderr.trim().length > 0 ) {
+                message = message + ': ' + results.stderr;
+              }
+              return { task: task, success: false, message: message };
+            }
+          },
+          {
+            depth: 1
+          }
+        );
+      } )
+    );
+
+    taskResults.forEach( result => {
+      if ( result.status === 'fulfilled' ) {
+        if ( result.value.success ) {
+          console.log( `Task ${result.value.task} succeeded` );
         }
         else {
-          let message = 'Task failed: ' + task;
-          if ( results.stdout && results.stdout.trim().length > 0 ) {
-            message = message + ', ' + results.stdout;
-          }
-          if ( results.stderr && results.stderr.trim().length > 0 ) {
-            message = message + ', ' + results.stderr;
-          }
-          throw new Error( message );
+          console.error( result.value.message );
         }
-      }, {
-        depth: 1
-      } );
+      }
+      else {
+        console.error( `Task ${result.reason.task} encountered an error: ${result.reason.message}` );
+      }
     } );
 
-    try {
-      await Promise.all( promises );
-      console.log( 'All tasks succeeded' );
-      return true;
-    }
-    catch( e ) {
-
-      // Exit as soon as any one promise fails
-      // Each task is responsible for outputting its error to the console, so the console should already
-      // be showing the error by now
-      return false;
-    }
+    return taskResults.every( result => result.status === 'fulfilled' && result.value.success );
   } );
 
   // generatePhetioMacroAPI is preventing exit for unknown reasons, so manually exit here
