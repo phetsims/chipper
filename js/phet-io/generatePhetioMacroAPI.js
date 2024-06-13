@@ -69,7 +69,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
   const port = server.address().port;
   const browser = await puppeteer.launch( {
-    timeout: 120000
+    timeout: 10000000 // Don't timeout when generating PhET-iO API.
   } );
   const chunks = _.chunk( repos, options.chunkSize );
 
