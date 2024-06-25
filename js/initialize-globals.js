@@ -1182,6 +1182,11 @@
       return finalLocale;
     };
 
+    // When providing `?locale=`, the value is null, rude.
+    if ( phet.chipper.queryParameters.locale === null ) {
+      phet.chipper.queryParameters.locale = FALLBACK_LOCALE;
+    }
+
     // Query parameter default will pick up the phet.chipper.locale default from the built sim, if it exists.
     assert && assert( phet.chipper.queryParameters.locale, 'should exist with a default' );
 
