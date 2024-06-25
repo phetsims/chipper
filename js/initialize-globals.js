@@ -910,7 +910,7 @@
     };
 
     // If locale was provided as a query parameter, then change the locale used by Google Analytics.
-    if ( QueryStringMachine.containsKey( 'locale' ) ) {
+    if ( QueryStringMachine.containsKey( 'locale' ) && window.phet.chipper.locale !== null ) {
       phet.chipper.locale = phet.chipper.queryParameters.locale;
 
       // NOTE: If we are loading in unbuilt mode, this may execute BEFORE we have loaded localeData. We have a similar
