@@ -921,12 +921,18 @@
     };
 
     // If locale was provided as a query parameter, then change the locale used by Google Analytics.
-    if ( QueryStringMachine.containsKey( 'locale' ) && window.phet.chipper.locale !== null ) {
-      phet.chipper.locale = phet.chipper.queryParameters.locale;
+    if ( QueryStringMachine.containsKey( 'locale' ) ) {
+      if ( typeof phet.chipper.queryParameters.locale === 'string' ) {
 
-      // NOTE: If we are loading in unbuilt mode, this may execute BEFORE we have loaded localeData. We have a similar
-      // remapping in load-unbuilt-strings when this happens.
-      phet.chipper.checkAndRemapLocale();
+        phet.chipper.locale = phet.chipper.queryParameters.locale;
+
+        // NOTE: If we are loading in unbuilt mode, this may execute BEFORE we have loaded localeData. We have a similar
+        // remapping in load-unbuilt-strings when this happens.
+        phet.chipper.checkAndRemapLocale();
+      }
+      else {
+        window.phet.chipper.locale = 'en';
+      }
     }
     else if ( !window.phet.chipper.locale ) {
       // Fill in a default
