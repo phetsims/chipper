@@ -1004,6 +1004,7 @@
       else {
         // Fill in a default
         window.phet.chipper.locale = 'en';
+        phet.chipper.queryParameters.locale = 'en';
       }
     }
     else if ( !window.phet.chipper.locale ) {
