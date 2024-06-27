@@ -932,6 +932,7 @@
       }
       else {
         window.phet.chipper.locale = 'en';
+        phet.chipper.queryParameters.locale = 'en';
       }
     }
     else if ( !window.phet.chipper.locale ) {
