@@ -26,7 +26,7 @@ const fs = require( 'fs' );
  * You may modify babel/localeData.json file with new locale information. After modifying the file you must take the following steps:
  * 1. Run ./updateLocaleInfo.js, so that the automatically generated files are also update
  * 2. Notify the responsible developers for rosetta, weddell, yotta, and the website that localeInfo was updated.
- * 3. TODO figure out next steps, see https://github.com/phetsims/joist/issues/963
+ * 3. TODO figure out next steps, see https://github.com/phetsims/chipper/issues/1441
  *
  * Locale data was originally based on Java's Locale object, but has been modified. Essentially each locale has the
  * following data:
@@ -113,7 +113,7 @@ fs.writeFileSync( './localeInfoModule.js', newModuleSourceCode );
 
 console.log( 'locale info files updated' );
 
-throw new Error( 'NO COMMIT YET, safeguard so we do not commit changes to main yet' ); // TODO: remove for https://github.com/phetsims/joist/issues/963
+throw new Error( 'NO COMMIT YET, safeguard so we do not commit changes to main yet' ); // TODO: remove for https://github.com/phetsims/chipper/issues/1441
 
 // eslint-disable-next-line no-unreachable
 let needsCommit = false;
