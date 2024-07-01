@@ -45,7 +45,6 @@ const phetioLicenseRepos = [
   'phet-io-website',
   'phet-io-wrapper-classroom-activity',
   'phet-io-wrapper-haptics',
-  'phet-io-wrapper-hookes-law-energy',
   'phet-io-wrapper-lab-book',
   'phet-io-wrappers',
   'studio'

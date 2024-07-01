@@ -311,9 +311,9 @@ module.exports = async ( repo, version, simulationDisplayName, packageObject, bu
       const result = filterWrapper( absPath, contents );
 
       // Support loading relative-path resources, like
-      //{ url: '../phet-io-wrapper-hookes-law-energy/sounds/precipitate-chimes-v1-shorter.mp3' }
+      //{ url: '../phet-io-wrapper-my-wrapper/sounds/precipitate-chimes-v1-shorter.mp3' }
       // -->
-      //{ url: 'wrappers/hookes-law-energy/sounds/precipitate-chimes-v1-shorter.mp3' }
+      //{ url: 'wrappers/my-wrapper/sounds/precipitate-chimes-v1-shorter.mp3' }
       if ( wrapper && wrapperName && result ) {
         return ChipperStringUtils.replaceAll( result, `../${wrapper}/`, `wrappers/${wrapperName}/` );
       }
