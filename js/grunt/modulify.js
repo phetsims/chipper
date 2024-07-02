@@ -420,7 +420,7 @@ ${imageFiles.map( imageFile => `import ${getImportName( imageFile )} from '../${
 
 const ${imageModuleName} = {
   ${imageNames.map( imageName =>
-  `${imageName}ImageProperty: new LocalizedImageProperty( '${imageName}', {
+      `${imageName}ImageProperty: new LocalizedImageProperty( '${imageName}', {
     ${supportedRegionsAndCultures.map( regionAndCulture => `${regionAndCulture}: ${getImportName( spec[ regionAndCulture ][ imageName ] )}` ).join( ',\n    ' )}
   } )` ).join( ',\n  ' )}
 };
@@ -489,7 +489,11 @@ const getStringTypes = repo => {
     Object.keys( level ).forEach( key => {
       if ( key !== '_comment' ) {
         if ( level[ key ].value && typeof level[ key ].value === 'string' ) {
-          all.push( { path: [ ...path, key ], value: level[ key ].value } );
+
+          // Deprecated means that it is used by release branches, but shouldn't be used in new code, so keep it out of the type.
+          if ( !level[ key ].deprecated ) {
+            all.push( { path: [ ...path, key ], value: level[ key ].value } );
+          }
         }
         else {
           visit( level[ key ], [ ...path, key ] );
@@ -587,7 +591,7 @@ const modulify = async repo => {
     }
 
     const concreteRegionsAndCultures = supportedRegionsAndCultures.filter( regionAndCulture => regionAndCulture !== 'random' );
-    
+
     // Update the images module file
     await createImageModule( repo, concreteRegionsAndCultures );
   }
