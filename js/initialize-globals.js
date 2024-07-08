@@ -333,20 +333,6 @@
     },
 
     /**
-     * Provides the locales to load during startup for an un-built simulation (will automatically load the ?locale, or
-     * English if provided).
-     *
-     * If the only provided value is '*', then it will load all the locales.
-     */
-    locales: {
-      type: 'array',
-      elementSchema: {
-        type: 'string'
-      },
-      defaultValue: []
-    },
-
-    /**
      * Specify supports for dynamic locale switching in the runtime of the sim. By default, the value will be the support
      * in the runnable's package.json. Use this to turn off things like the locale switcher preference.
      * The package flag for this means very specific things depending on its presence and value.
@@ -642,17 +628,6 @@
       isValidValue: function( value ) {
         return value > 0;
       }
-    },
-
-    /**
-     * Override translated strings.
-     * The value is encoded JSON of the form { "namespace.key":"value", "namespace.key":"value", ... }
-     * Example: { "PH_SCALE/logarithmic":"foo", "PH_SCALE/linear":"bar" }
-     * Encode the JSON in a browser console using: encodeURIComponent( JSON.stringify( value ) )
-     */
-    strings: {
-      type: 'string',
-      defaultValue: null
     },
 
     /**
@@ -1193,43 +1168,6 @@
     // NOTE: If we are loading in unbuilt mode, this may execute BEFORE we have loaded localeData. We have a similar
     // remapping in load-unbuilt-strings when this happens.
     phet.chipper.checkAndRemapLocale();
-
-    const stringOverrides = JSON.parse( phet.chipper.queryParameters.strings || '{}' );
-
-    /**
-     * Get a string given the key. This implementation is meant for use only in the build sim. For more info see the
-     * string plugin.
-     * @param {string} key - like "REPO/string.key.here" which includes the requirejsNamespace, which is specified in package.json
-     * @returns {string}
-     */
-    phet.chipper.getStringForBuiltSim = key => {
-      assert && assert( !!phet.chipper.isProduction, 'expected to be running a built sim' );
-      assert && assert( !!phet.chipper.strings, 'phet.chipper.strings should be filled out by initialization script' );
-      assert && assert( !!phet.chipper.locale, 'locale is required to look up the correct strings' );
-
-      // override strings via the 'strings' query parameter
-      if ( stringOverrides[ key ] ) {
-        return stringOverrides[ key ];
-      }
-
-      // Get a list of locales in the order they should be searched
-      const fallbackLocales = [
-        phet.chipper.locale,
-        ...( phet.chipper.localeData[ phet.chipper.locale ]?.fallbackLocales || [] ),
-        ( phet.chipper.locale !== FALLBACK_LOCALE ? [ FALLBACK_LOCALE ] : [] )
-      ];
-
-      let stringMap = null;
-
-      for ( const locale of fallbackLocales ) {
-        stringMap = phet.chipper.strings[ locale ];
-        if ( stringMap ) {
-          break;
-        }
-      }
-
-      return phet.chipper.mapString( stringMap[ key ] );
-    };
   }
 
   /**
