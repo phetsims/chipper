@@ -1098,6 +1098,7 @@
             assert && assert( false, 'invalid locale:', inputValueLocale );
           }
           else {
+            // This may occur twice in unbuilt mode when done loading unbuilt strings and when running this file.
             QueryStringMachine.addWarning( 'locale', inputValueLocale, `Invalid locale format received: ${badLocale}. ?locale query parameter accepts the following formats: "xx" for ISO-639-1, "xx_XX" for ISO-639-1 and a 2-letter country code, "xxx" for ISO-639-2` );
           }
         }
