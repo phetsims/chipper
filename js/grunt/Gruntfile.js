@@ -731,8 +731,10 @@ Updates the normal automatically-generated files for this repository. Includes:
       // Include the --repo flag
       const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
       const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
-      const spawned = child_process.spawn( /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt', args, {
-        cwd: '../perennial'
+      const isWindows = /^win/.test( process.platform );
+      const spawned = child_process.spawn( isWindows ? 'grunt.cmd' : 'grunt', args, {
+        cwd: '../perennial',
+        shell: isWindows // shell is required for a NodeJS security update, see https://github.com/phetsims/perennial/issues/359
       } );
       grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
 
