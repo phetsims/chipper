@@ -523,7 +523,7 @@ const handleJSDOC = async buildDir => {
     }
   }
 
-  const getArgs = explain => [
+  const getJSDocArgs = explain => [
     '../chipper/node_modules/jsdoc/jsdoc.js',
     ...( explain ? [ '-X' ] : [] ),
     ...JSDOC_FILES,
@@ -533,21 +533,18 @@ const handleJSDOC = async buildDir => {
     '--readme', JSDOC_README_FILE
   ];
 
+
   // FOR DEBUGGING JSDOC:
   // uncomment this line, and run it from the top level of a sim directory
-  // console.log( 'node', getArgs( false ).join( ' ' ) );
+  // console.log( 'node', getJSDocArgs( false ).join( ' ' ) );
 
   // First we tried to run the jsdoc binary as the cmd, but that wasn't working, and was quite finicky. Then @samreid
   // found https://stackoverflow.com/questions/33664843/how-to-use-jsdoc-with-gulp which recommends the following method
   // (node executable with jsdoc js file)
-  await execute( 'node', getArgs( false ), process.cwd(), {
-    shell: true
-  } );
+  await execute( 'node', getJSDocArgs( false ), process.cwd() );
 
   // Running with explanation -X appears to not output the files, so we have to run it twice.
-  const explanation = ( await execute( 'node', getArgs( true ), process.cwd(), {
-    shell: true
-  } ) ).trim();
+  const explanation = ( await execute( 'node', getJSDocArgs( true ), process.cwd() ) ).trim();
 
   // Copy the logo file
   const imageDir = `${buildDir}doc/images`;
