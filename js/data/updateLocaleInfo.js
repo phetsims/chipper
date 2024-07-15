@@ -21,35 +21,6 @@ const fs = require( 'fs' );
  * - chipper/js/data/localeInfo.js - CommonJS legacy module
  * - chipper/js/data/localeInfo.json - JSON legacy
  *
- * IMPORTANT - MUST READ!!!
- * You may modify babel/localeData.json file with new locale information. After modifying the file you must take the following steps:
- * 1. Run ./updateLocaleInfo.js, so that the automatically generated files are also update
- * 2. Notify the responsible developers for rosetta, weddell, yotta, and the website that localeInfo was updated.
- *
- * Locale data was originally based on Java's Locale object, but has been modified. Essentially each locale has the
- * following data:
- *
- * - locale: Either in the format `xx` or `xx_XX` (ISO-639-1 with 2-letter country code optional). Sometimes these
- *           do not match with ISO-639-1, we have had to add some for our needs.
- *           - language codes are ISO 639-1, see http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
- *           - country codes are ISO 3166-1 alpha2, see http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
- *
- *           NOTE: We are using an older version of ISO 639-1 because java.util.Locale maps some of the newer language codes to
- *           older codes. See Locale.convertOldISOCodes.
- *           The affected country codes are:
- *           he -> iw (Hebrew)
- *           yi -> ji (Yiddish)
- *           id -> in (Indonesian)
- * - locale3: Format of `xxx`. The ISO-639-2 code for the language (3-letter code), if available. Some locales do not
- *            have this information (most do).
- * - direction: either `ltr` or `rtl` for left-to-right or right-to-left
- * - englishName: The name of the locale in English
- * - localizedName: The name of the locale in the locale itself
- *
- * ALSO NOTE: We had a request to support Lakota, which is not included in ISO 639-1, and is only defined as a three-
- * letter code in ISO 639-3.  The locale combination 'lk' was not taken in ISO 639-1, so we added it.  Strictly
- * speaking, this is a deviation from the spec.
- *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
