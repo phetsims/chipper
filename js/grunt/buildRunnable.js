@@ -24,6 +24,7 @@ const getInitializationScript = require( './getInitializationScript' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
 const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );
+const getPrunedLocaleData = require( './getPrunedLocaleData' );
 const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
@@ -235,7 +236,7 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
   const commonInitializationOptions = {
     brand: brand,
     repo: repo,
-    allLocales: allLocales,
+    localeData: getPrunedLocaleData( allLocales ),
     stringMap: stringMap,
     stringMetadata: stringMetadata,
     dependencies: dependencies,
