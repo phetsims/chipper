@@ -79,7 +79,6 @@ fs.writeFileSync( './localeInfo.js', newCommonJSSouceCode );
 
 console.log( 'locale info files updated' );
 
-// eslint-disable-next-line no-unreachable
 let needsCommit = false;
 try {
 
