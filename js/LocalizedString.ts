@@ -7,7 +7,7 @@
  */
 
 import TinyProperty from '../../axon/js/TinyProperty.js';
-import { Locale } from '../../joist/js/i18n/localeProperty.js';
+import localeProperty, { Locale } from '../../joist/js/i18n/localeProperty.js';
 import Tandem from '../../tandem/js/Tandem.js';
 import chipper from './chipper.js';
 import TProperty from '../../axon/js/TProperty.js';
@@ -102,11 +102,7 @@ class LocalizedString {
     // Lazy creation
     if ( !this.localePropertyMap.has( locale ) ) {
       // Locales in order of fallback
-      const orderedLocales: Locale[] = [
-        locale,
-        ...( localeData[ locale ].fallbackLocales || [] ),
-        FALLBACK_LOCALE
-      ];
+      const orderedLocales = LocalizedString.getLocaleFallbacks( locale );
 
       // Find the first-defined value
       let initialValue: string | null = null;
@@ -137,6 +133,14 @@ class LocalizedString {
   public restoreInitialValue( locale: Locale ): void {
     assert && assert( typeof this.initialValues[ locale ] === 'string', 'initial value expected for', locale );
     this.property.value = this.initialValues[ locale ]!;
+  }
+
+  public static getLocaleFallbacks( locale: Locale = localeProperty.value ): Locale[] {
+    return _.uniq( [
+      locale,
+      ...( localeData[ locale ].fallbackLocales || [] ),
+      FALLBACK_LOCALE
+    ] );
   }
 }
 
