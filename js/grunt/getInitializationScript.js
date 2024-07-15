@@ -56,7 +56,7 @@ module.exports = function( config ) {
 
   const localesWithTranslations = allLocales;
 
-  // Load localeData - REVIEW: full vs all is confusing, https://github.com/phetsims/chipper/issues/1441
+  // Load localeData
   const fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
   // Include a subset of locales' translated strings
