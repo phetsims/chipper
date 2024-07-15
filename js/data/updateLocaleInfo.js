@@ -79,8 +79,6 @@ fs.writeFileSync( './localeInfo.js', newCommonJSSouceCode );
 
 console.log( 'locale info files updated' );
 
-throw new Error( 'NO COMMIT YET, safeguard so we do not commit changes to main yet' ); // TODO: remove for https://github.com/phetsims/chipper/issues/1441
-
 // eslint-disable-next-line no-unreachable
 let needsCommit = false;
 try {
