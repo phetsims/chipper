@@ -23,7 +23,7 @@ const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement
 const fs = require( 'fs' );
 
 const DEBUG_MARKER = 'eslint:cli-engine';
-const nxpCommand = /^win/.test( process.platform ) ? 'npx.cmd' : 'npx';
+const npxCommand = /^win/.test( process.platform ) ? 'npx.cmd' : 'npx';
 
 // Print formatted errors and warning to the console.
 async function consoleLogResults( results ) {
@@ -118,8 +118,11 @@ function runEslint( repos, options ) {
     }
 
     // It is nice to use our own spawn here instead of execute() so we can stream progress updates as it runs.
-    const eslint = spawn( nxpCommand, args, {
+    const eslint = spawn( npxCommand, args, {
       cwd: '../chipper',
+
+      // A shell is required for npx because the runnable is a shell script. see https://github.com/phetsims/perennial/issues/359
+      shell: /^win/.test( process.platform ),
       env: env // Use the prepared environment
     } );
 
