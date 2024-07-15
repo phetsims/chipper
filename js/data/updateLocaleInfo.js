@@ -19,14 +19,12 @@ const fs = require( 'fs' );
  *
  * - babel/localeData.json - Ground truth, includes the "new" format with locale3 and englishName instead of name
  * - chipper/js/data/localeInfo.js - CommonJS legacy module
- * - chipper/js/data/localeInfoModule.js - ES6 legacy module
  * - chipper/js/data/localeInfo.json - JSON legacy
  *
  * IMPORTANT - MUST READ!!!
  * You may modify babel/localeData.json file with new locale information. After modifying the file you must take the following steps:
  * 1. Run ./updateLocaleInfo.js, so that the automatically generated files are also update
  * 2. Notify the responsible developers for rosetta, weddell, yotta, and the website that localeInfo was updated.
- * 3. TODO figure out next steps, see https://github.com/phetsims/chipper/issues/1441
  *
  * Locale data was originally based on Java's Locale object, but has been modified. Essentially each locale has the
  * following data:
@@ -108,9 +106,6 @@ const commonDocumentation = `// Copyright 2015-${new Date().getFullYear()}, Univ
 const newCommonJSSouceCode = `${commonDocumentation}module.exports = ${localeInfoSnippet};`;
 fs.writeFileSync( './localeInfo.js', newCommonJSSouceCode );
 
-const newModuleSourceCode = `${commonDocumentation}export default ${localeInfoSnippet};`;
-fs.writeFileSync( './localeInfoModule.js', newModuleSourceCode );
-
 console.log( 'locale info files updated' );
 
 throw new Error( 'NO COMMIT YET, safeguard so we do not commit changes to main yet' ); // TODO: remove for https://github.com/phetsims/chipper/issues/1441
@@ -137,11 +132,10 @@ if ( needsCommit ) {
 
     child_process.execSync( 'git add ../../data/localeInfo.json' );
     child_process.execSync( 'git add ./localeInfo.js' );
-    child_process.execSync( 'git add ./localeInfoModule.js' );
 
     if ( needsCommit ) {
       console.log( 'committing' );
-      child_process.execSync( 'git commit --no-verify ../../data/localeInfo.json ./localeInfo.js ./localeInfoModule.js -m "Automatically updated generated localeInfo files"' );
+      child_process.execSync( 'git commit --no-verify ../../data/localeInfo.json ./localeInfo.js -m "Automatically updated generated localeInfo files"' );
       console.log( 'pushing' );
       child_process.execSync( 'git push' );
     }
