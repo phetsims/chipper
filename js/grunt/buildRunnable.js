@@ -28,7 +28,6 @@ const getPrunedLocaleData = require( './getPrunedLocaleData' );
 const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
-const path = require( 'path' );
 const jimp = require( 'jimp' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const minify = require( './minify' );
@@ -132,14 +131,22 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
   const allLocales = [ ChipperConstants.FALLBACK_LOCALE, ...getLocalesFromRepository( repo ) ];
   const locales = localesOption === '*' ? allLocales : localesOption.split( ',' );
   const dependencies = await getDependencies( repo );
+  const dependencyReps = Object.keys( dependencies );
 
-  webpackResult.usedModules.forEach( moduleDependency => {
+  // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
+  usedModules.map( module => module.split( '\\' ).join( '/' ) ).forEach( moduleDependency => {
 
     // The first part of the path is the repo.  Or if no directory is specified, the file is in the sim repo.
-    const pathSeparatorIndex = moduleDependency.indexOf( path.sep );
+    const pathSeparatorIndex = moduleDependency.indexOf( '/' );
     const moduleRepo = pathSeparatorIndex >= 0 ? moduleDependency.slice( 0, pathSeparatorIndex ) :
                        repo;
-    assert( Object.keys( dependencies ).includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
+    assert( dependencyReps.includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
+
+    // Also check if the module was coming from chipper dist
+    if ( moduleDependency.includes( 'chipper/dist/js/' ) ) {
+      const distRepo = moduleDependency.split( 'chipper/dist/js/' )[ 1 ]?.split( '/' )[ 0 ];
+      distRepo && assert( dependencyReps.includes( distRepo ), `repo ${distRepo} missing from package.json's phetLibs for ${moduleDependency}` );
+    }
   } );
 
   const version = packageObject.version; // Include the one-off name in the version
