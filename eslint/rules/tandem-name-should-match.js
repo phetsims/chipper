@@ -124,7 +124,7 @@ function getCreateTandemCallArgument( node ) {
 
       // Find if "tandem" is the name of a key in the object
       const tandemProperty = lastArgument.properties.find(
-        prop => prop.key.name === 'tandem'
+        prop => prop.key?.name === 'tandem'
       );
 
       if ( tandemProperty ) {
