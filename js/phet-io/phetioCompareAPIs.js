@@ -289,13 +289,6 @@
                   if ( phetioID === ( trail[ 0 ] + '.general.controller.input' ) ) {
                     return _.isEqual( { ...referenceState, pointers: null }, { ...proposedState, pointers: null } );
                   }
-
-                  // Ignore the wireMeterAttachmentPositionProperty because on it's starting position can change based on
-                  // the browser running the sim. TODO: Root cause is https://github.com/phetsims/phet-io/issues/1951.
-                  if ( phetioID === 'greenhouseEffect.layerModelScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ||
-                       phetioID === 'greenhouseEffect.photonsScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ) {
-                    return true;
-                  }
                 }
 
                 // When comparing numbers, don't trigger an error based on floating point inaccuracies. https://github.com/phetsims/aqua/issues/200
