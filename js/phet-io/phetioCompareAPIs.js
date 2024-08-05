@@ -290,6 +290,12 @@
                     return _.isEqual( { ...referenceState, pointers: null }, { ...proposedState, pointers: null } );
                   }
 
+                  // Ignore the scale's state, because it will be different at startup, depending on the user's window's
+                  // aspect ratio. TODO: Workaround for https://github.com/phetsims/density/issues/161
+                  if ( phetioID === 'density.mysteryScreen.model.scale' ) {
+                    return true;
+                  }
+
                   // Ignore the wireMeterAttachmentPositionProperty because on it's starting position can change based on
                   // the browser running the sim. TODO: Root cause is https://github.com/phetsims/phet-io/issues/1951.
                   if ( phetioID === 'greenhouseEffect.layerModelScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ||
