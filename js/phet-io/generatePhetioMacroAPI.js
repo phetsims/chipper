@@ -30,8 +30,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     chunkSize: 4, // split into chunks with (at most) this many elements per chunk
     showProgressBar: false,
     showMessagesFromSim: true,
-    width: 1024, // default width
-    height: 768, // default height
 
     // If false, allow individual repos return null if they encountered problems
     throwAPIGenerationErrors: true
@@ -61,7 +59,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
       const promises = chunk.map( async repo => {
         const page = await browser.newPage();
-        await page.setViewport( { width: options.width, height: options.height } );
 
         return new Promise( async ( resolve, reject ) => { // eslint-disable-line no-async-promise-executor
 
@@ -100,6 +97,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
             const messageText = msg.text();
 
             if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
+
               const fullAPI = messageText;
 
               cleanupAndResolve( {
