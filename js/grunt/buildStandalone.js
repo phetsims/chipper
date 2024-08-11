@@ -119,10 +119,13 @@ module.exports = async function( repo, providedOptions ) {
     ];
     const { stringMap, stringMetadata } = getStringMap( repo, locales, phetLibs, webpackResult.usedModules );
 
+    const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+
     globals += 'phet.chipper.stringPath = \'../\';\n';
     globals += 'phet.chipper.locale = \'en\';\n';
     globals += 'phet.chipper.loadModules = () => {};\n';
     globals += `phet.chipper.strings = ${JSON.stringify( stringMap, null, options.isDebug ? 2 : '' )};\n`;
+    globals += `phet.chipper.localeData = ${JSON.stringify( localeData, null, options.isDebug ? 2 : '' )};\n`;
     globals += `phet.chipper.stringMetadata = ${JSON.stringify( stringMetadata, null, options.isDebug ? 2 : '' )};\n`;
   }
   fullSource = `\n${globals}\n${fullSource}`;

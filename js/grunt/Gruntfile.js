@@ -224,7 +224,8 @@ Minify-specific options:
         !grunt.option( 'noTSC' ) && await phetTimingLog.startAsync( 'tsc', async () => {
 
           // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
-          if ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ) {
+          // do NOT run this for phet-lib, since it is type-checking things under src/, which is not desirable.
+          if ( ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ) && repo !== 'phet-lib' ) {
             const results = await tsc( `../${repo}` );
             reportTscResults( results, grunt );
           }
