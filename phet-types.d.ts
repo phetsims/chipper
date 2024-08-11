@@ -135,3 +135,16 @@ declare global {
 declare var Deno: {
   readTextFileSync: ( file: string ) => string;
 };
+
+// Adapted from https://github.com/mourner/flatqueue/blob/main/index.d.ts
+declare class FlatQueue<T> {
+  public readonly length: number;
+
+  public constructor();
+  public clear(): void;
+  public push( item: T, priority: number ): void;
+  public pop(): T | undefined;
+  public peek(): T | undefined;
+  public peekValue(): number | undefined;
+  public shrink(): void;
+}
