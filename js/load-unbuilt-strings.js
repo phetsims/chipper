@@ -185,9 +185,11 @@
     window.phet.chipper.loadModules();
   };
 
+  const withStringPath = path => `${phet.chipper.stringPath ? phet.chipper.stringPath : ''}${path}`;
+
   // Check for phet.chipper.stringPath. This should be set to ADJUST the path to the strings directory, in cases
   // where we're running this case NOT from a repo's top level (e.g. sandbox.html)
-  const getStringPath = ( repo, locale ) => `${phet.chipper.stringPath ? phet.chipper.stringPath : ''}../${locale === FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json`;
+  const getStringPath = ( repo, locale ) => withStringPath( `../${locale === FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json` );
 
   // See if our request for the sim-specific strings file works. If so, only then will we load the common repos files
   // for that locale.
@@ -208,7 +210,7 @@
 
   // Load locale data
   remainingFilesToProcess++;
-  requestJSONFile( '../babel/localeData.json', json => {
+  requestJSONFile( withStringPath( '../babel/localeData.json' ), json => {
     phet.chipper.localeData = json;
 
     rtlLocales = Object.keys( phet.chipper.localeData ).filter( locale => {
@@ -216,12 +218,12 @@
     } );
 
     // Load the conglomerate files
-    requestJSONFile( `../babel/_generated_development_strings/${ourRepo}_all.json`, json => {
+    requestJSONFile( withStringPath( `../babel/_generated_development_strings/${ourRepo}_all.json` ), json => {
       processConglomerateStringFile( json, ourRequirejsNamespace );
       phet.chipper.stringRepos.forEach( stringRepoData => {
         const repo = stringRepoData.repo;
         if ( repo !== ourRepo ) {
-          requestJSONFile( `../babel/_generated_development_strings/${repo}_all.json`, json => {
+          requestJSONFile( withStringPath( `../babel/_generated_development_strings/${repo}_all.json` ), json => {
             processConglomerateStringFile( json, stringRepoData.requirejsNamespace );
           } );
         }
