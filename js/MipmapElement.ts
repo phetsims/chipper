@@ -15,29 +15,25 @@ export default class MipmapElement {
   public readonly url: string;
   public readonly img: HTMLImageElement;
   public readonly canvas: HTMLCanvasElement;
-  public updateCanvas?: () => void;
 
-  public constructor( width: number, height: number, url: string ) {
+  public constructor( width: number, height: number, url: string, lock = true ) {
+
     this.width = width;
     this.height = height;
     this.url = url;
 
     this.img = new Image(); // eslint-disable-line no-html-constructors
-    const unlock = asyncLoader.createLock( this.img );
-    this.img.onload = unlock;
     this.img.src = this.url; // trigger the loading of the image for its level
+
     this.canvas = document.createElement( 'canvas' );
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    const context = this.canvas.getContext( '2d' )!;
 
-    // TODO: https://github.com/phetsims/chipper/issues/1218 Could likely be moved to prototype, but would also need a
-    // rendered: boolean flag, and there are other usages in scenery that would require adjustment
-    this.updateCanvas = () => {
-      if ( this.img.complete && ( typeof this.img.naturalWidth === 'undefined' || this.img.naturalWidth > 0 ) ) {
-        context.drawImage( this.img, 0, 0 );
-        delete this.updateCanvas;
-      }
+    const context = this.canvas.getContext( '2d' )!;
+    const unlock = lock ? asyncLoader.createLock( this.img ) : null;
+    this.img.onload = () => {
+      context.drawImage( this.img, 0, 0 );
+      unlock && unlock();
     };
   }
 }
