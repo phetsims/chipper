@@ -161,29 +161,17 @@ const modulifyMipmap = async ( abspath, repo, subdir, filename ) => {
     quality: 98
   };
 
-  const mipmaps = await createMipmap( abspath, config.level, config.quality );
-  const entry = mipmaps.map( ( { width, height, url } ) => ( { width: width, height: height, url: url } ) );
+  const mipmapLevels = await createMipmap( abspath, config.level, config.quality );
+  const entries = mipmapLevels.map( ( { width, height, url } ) => `  new MipmapElement( ${width}, ${height}, '${url}' )` );
 
   const mipmapContents = `${HEADER}
-import asyncLoader from '${expandDots( abspath )}phet-core/js/asyncLoader.js';
+import MipmapElement from '${expandDots( abspath )}phet-core/js/MipmapElement.js';
 
-const mipmaps = ${JSON.stringify( entry, null, 2 )};
-mipmaps.forEach( mipmap => {
-  mipmap.img = new Image();
-  const unlock = asyncLoader.createLock( mipmap.img );
-  mipmap.img.onload = unlock;
-  mipmap.img.src = mipmap.url; // trigger the loading of the image for its level
-  mipmap.canvas = document.createElement( 'canvas' );
-  mipmap.canvas.width = mipmap.width;
-  mipmap.canvas.height = mipmap.height;
-  const context = mipmap.canvas.getContext( '2d' );
-  mipmap.updateCanvas = () => {
-    if ( mipmap.img.complete && ( typeof mipmap.img.naturalWidth === 'undefined' || mipmap.img.naturalWidth > 0 ) ) {
-      context.drawImage( mipmap.img, 0, 0 );
-      delete mipmap.updateCanvas;
-    }
-  };
-} );
+// The levels in the mipmap. Specify explicit types rather than inferring to assist the type checker, for this boilerplate case.
+const mipmaps = [
+${entries.join( ',\n' )}
+];
+
 export default mipmaps;`;
   const jsFilename = convertSuffix( filename, '.js' );
   await writeFileAndGitAdd( repo, getRelativePath( subdir, jsFilename ), fixEOL( mipmapContents ) );
