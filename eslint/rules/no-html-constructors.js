@@ -123,11 +123,14 @@ module.exports = function( context ) {
       // }
 
       if ( node.callee && node.callee.name && nativeConstructors.indexOf( node.callee.name ) !== -1 ) {
-        if ( declaredTypes.indexOf( node.callee.name ) === -1 ) {
+        const constructorName = node.callee.name;
+        const filename = context.getFilename();
+        const constructorUsedInOwnFile = filename.endsWith( `${constructorName}.ts` );
+        if ( !constructorUsedInOwnFile && declaredTypes.indexOf( constructorName ) === -1 ) {
           context.report( {
             node: node,
             loc: node.callee.loc,
-            message: `${node.callee.name}: using native constructor instead of project module, did you forget an import statement?`
+            message: `${constructorName}: using native constructor instead of project module, did you forget an import statement?`
           } );
         }
       }
