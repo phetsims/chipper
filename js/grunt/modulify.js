@@ -173,7 +173,7 @@ ${entries.join( ',\n' )}
 ];
 
 export default mipmaps;`;
-  const jsFilename = convertSuffix( filename, '.js' );
+  const jsFilename = convertSuffix( filename, '.ts' );
   await writeFileAndGitAdd( repo, getRelativePath( subdir, jsFilename ), fixEOL( mipmapContents ) );
 };
 
