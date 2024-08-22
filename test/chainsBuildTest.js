@@ -65,7 +65,7 @@ qunit.test( 'Build (no args)', async assert => {
 
 qunit.test( 'Build (with added HTMLs)', async assert => {
   assert.timeout( 120000 );
-  await execute( gruntCommand, [ '--brands=phet,phet-io', '--allHTML', '--debugHTML' ], { cwd: '../chains' } );
+  await execute( gruntCommand, [ '--brands=phet,phet-io', '--debugHTML' ], { cwd: '../chains' } );
   assertChainsExistence( assert, 'phet', { allHTML: true, debugHTML: true } );
   assertChainsExistence( assert, 'phet-io', { allHTML: true, debugHTML: true } );
 } );

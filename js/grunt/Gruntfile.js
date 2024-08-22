@@ -177,7 +177,6 @@ Runnable build options:
  --report-media - Will iterate over all of the license.json files and reports any media files, set to false to opt out.
  --brands={{BRANDS} - Can be * (build all supported brands), or a comma-separated list of brand names. Will fall back to using
                       build-local.json's brands (or adapted-from-phet if that does not exist)
- --allHTML - If provided, will include the _all.html file (if it would not otherwise be built, e.g. phet brand)
  --XHTML - Includes an xhtml/ directory in the build output that contains a runnable XHTML form of the sim (with
            a separated-out JS file).
  --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales
@@ -270,7 +269,7 @@ Minify-specific options:
           grunt.log.writeln( `Building runnable repository (${repo}, brands: ${brands.join( ', ' )})` );
 
           // Other options
-          const allHTML = !!grunt.option( 'allHTML' );
+          const allHTML = true; // Always build this artifact
           const encodeStringMap = grunt.option( 'encodeStringMap' ) !== false;
           const compressScripts = !!grunt.option( 'compressScripts' );
           const profileFileSize = !!grunt.option( 'profileFileSize' );

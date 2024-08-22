@@ -5,7 +5,7 @@
  *
  * To profile a sim, go to the sim directory and run:
  *
- * grunt --allHTML --locales=* --brands=phet --profileFileSize
+ * grunt --locales=* --brands=phet --profileFileSize
  * grunt profile-file-size
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
