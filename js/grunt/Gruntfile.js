@@ -549,7 +549,6 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   grunt.registerTask( 'modulify', 'Creates *.js modules for all images/strings/audio/etc in a repo', wrapTask( async () => {
     const modulify = require( './modulify' );
-    const reportMedia = require( './reportMedia' );
     const generateDevelopmentStrings = require( '../scripts/generateDevelopmentStrings' );
     const fs = require( 'fs' );
 
@@ -558,10 +557,6 @@ Updates the normal automatically-generated files for this repository. Includes:
     if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) ) {
       generateDevelopmentStrings( repo );
     }
-
-    // Do this last to help with prototyping before commit (it would be frustrating if this errored out before giving
-    // you the asset you could use in the sim).
-    await reportMedia( repo );
   } ) );
 
   // Grunt task that determines created and last modified dates from git, and
