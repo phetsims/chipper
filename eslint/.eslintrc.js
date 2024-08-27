@@ -60,7 +60,8 @@ module.exports = {
         project: [ '../chipper/tsconfig/all/tsconfig.json' ]
       },
       plugins: [
-        '@typescript-eslint'
+        '@typescript-eslint',
+        '@stylistic'
       ],
       rules: {
 
@@ -95,16 +96,70 @@ module.exports = {
         '@typescript-eslint/ban-tslint-comment': 'error',
 
         // Disallow certain types ✅ 🔧
-        '@typescript-eslint/ban-types': [
+        '@typescript-eslint/no-restricted-types': [
           'error',
           {
             types: {
               Omit: {
                 message: 'Prefer StrictOmit for type safety',
                 fixWith: 'StrictOmit'
+              },
+
+              // Defaults copied from http://condensed.physics.usyd.edu.au/frontend/node_modules/@typescript-eslint/eslint-plugin/docs/rules/ban-types.md
+              String: {
+                message: 'Use string instead',
+                fixWith: 'string'
+              },
+              Boolean: {
+                message: 'Use boolean instead',
+                fixWith: 'boolean'
+              },
+              Number: {
+                message: 'Use number instead',
+                fixWith: 'number'
+              },
+              Symbol: {
+                message: 'Use symbol instead',
+                fixWith: 'symbol'
+              },
+              BigInt: {
+                message: 'Use bigint instead',
+                fixWith: 'bigint'
+              },
+              Function: {
+                message: [
+                  'The `Function` type accepts any function-like value.',
+                  'It provides no type safety when calling the function, which can be a common source of bugs.',
+                  'It also accepts things like class declarations, which will throw at runtime as they will not be called with `new`.',
+                  'If you are expecting the function to accept certain arguments, you should explicitly define the function shape.'
+                ].join( '\n' )
+              },
+              // object typing
+              Object: {
+                message: [
+                  'The `Object` type actually means "any non-nullish value", so it is marginally better than `unknown`.',
+                  '- If you want a type meaning "any object", you probably want `object` instead.',
+                  '- If you want a type meaning "any value", you probably want `unknown` instead.',
+                  '- If you really want a type meaning "any non-nullish value", you probably want `NonNullable<unknown>` instead.'
+                ].join( '\n' ),
+                suggest: [ 'object', 'unknown', 'NonNullable<unknown>' ]
+              },
+              '{}': {
+                message: [
+                  '`{}` actually means "any non-nullish value".',
+                  '- If you want a type meaning "any object", you probably want `object` instead.',
+                  '- If you want a type meaning "any value", you probably want `unknown` instead.',
+                  '- If you want a type meaning "empty object", you probably want `Record<string, never>` instead.',
+                  '- If you really want a type meaning "any non-nullish value", you probably want `NonNullable<unknown>` instead.'
+                ].join( '\n' ),
+                suggest: [
+                  'object',
+                  'unknown',
+                  'Record<string, never>',
+                  'NonNullable<unknown>'
+                ]
               }
-            },
-            extendDefaults: true
+            }
           }
         ],
 
@@ -139,7 +194,7 @@ module.exports = {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
 
         // Require a specific member delimiter style for interfaces and type literals  🔧
-        '@typescript-eslint/member-delimiter-style': 'error', // semi colons in type declarations.
+        '@stylistic/member-delimiter-style': 'error', // semi colons in type declarations.
 
         // Require a consistent member declaration order
         '@typescript-eslint/member-ordering': 'off', // We agreed to leave this rule off because it is more important to sort semantically than alphabetically
@@ -366,16 +421,13 @@ module.exports = {
         // You must disable the base rule to avoid duplicate/incorrect errors. TODO: Is that still necessary?
 
         // Enforce consistent brace style for blocks  🔧
-        'brace-style': 'off',
-        '@typescript-eslint/brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
+        '@stylistic/brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
 
         // Require or disallow trailing commas  🔧
-        'comma-dangle': 'off',
-        '@typescript-eslint/comma-dangle': 'error',
+        '@stylistic/comma-dangle': 'error',
 
         // Enforce consistent spacing before and after commas  🔧
-        'comma-spacing': 'off',
-        '@typescript-eslint/comma-spacing': 'error',
+        '@stylistic/comma-spacing': 'error',
 
         // Enforce default parameters to be last
         'default-param-last': 'off',
@@ -386,8 +438,7 @@ module.exports = {
         '@typescript-eslint/dot-notation': 'error',
 
         // Require or disallow spacing between function identifiers and their invocations  🔧
-        'func-call-spacing': 'off',
-        '@typescript-eslint/func-call-spacing': 'error',
+        '@stylistic/func-call-spacing': 'error',
 
         // Enforce consistent indentation  🔧
         indent: 'off',
@@ -398,8 +449,7 @@ module.exports = {
         '@typescript-eslint/init-declarations': 'off', // 237 Failures
 
         // Enforce consistent spacing before and after keywords  🔧
-        'keyword-spacing': 'off',
-        '@typescript-eslint/keyword-spacing': [ 'error', { // TODO: Check this rule
+        '@stylistic/keyword-spacing': [ 'error', { // TODO: Check this rule
           before: true,
           after: true,
           overrides: {
@@ -434,8 +484,7 @@ module.exports = {
         '@typescript-eslint/no-extra-parens': 'off', // we find that extraneous parentheses sometimes improve readability
 
         // Disallow unnecessary semicolons ✅ 🔧
-        'no-extra-semi': 'off',
-        '@typescript-eslint/no-extra-semi': 'error',
+        '@stylistic/no-extra-semi': 'error',
 
         // Disallow the use of eval()-like methods ✅  💭
         'no-implied-eval': 'off',
@@ -482,7 +531,9 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': [ 'error', {
 
           // We don't want to turn this on because of the example in https://github.com/phetsims/chipper/issues/1230#issuecomment-1185843199
-          args: 'none'
+          vars: 'all',
+          args: 'none',
+          caughtErrors: 'none'
         } ],
 
         // Disallow the use of variables before they are defined
@@ -494,16 +545,13 @@ module.exports = {
         '@typescript-eslint/no-useless-constructor': 'off', // We determined the useless constructors are good for documentation and clarity.
 
         // Enforce consistent spacing inside braces  🔧
-        'object-curly-spacing': 'off',
-        '@typescript-eslint/object-curly-spacing': [ 'error', 'always' ],
+        '@stylistic/object-curly-spacing': [ 'error', 'always' ],
 
         // Require or disallow padding lines between statements  🔧 🛠
-        'padding-line-between-statements': 'off',
-        '@typescript-eslint/padding-line-between-statements': 'error',
+        '@stylistic/padding-line-between-statements': 'error',
 
         // Enforce the consistent use of either backticks, double, or single quotes  🔧
-        quotes: 'off',
-        '@typescript-eslint/quotes': [ 'error', 'single' ],
+        '@stylistic/quotes': [ 'error', 'single' ],
 
         // Disallow async functions which have no await expression ✅  💭
         'require-await': 'off',
@@ -514,24 +562,20 @@ module.exports = {
         '@typescript-eslint/return-await': 'off', // TODO: Enable rule
 
         // Require or disallow semicolons instead of ASI  🔧
-        semi: 'off',
-        '@typescript-eslint/semi': [ 'error', 'always' ],
+        '@stylistic/semi': [ 'error', 'always' ],
 
         // Enforce consistent spacing before blocks  🔧
-        'space-before-blocks': 'off',
-        '@typescript-eslint/space-before-blocks': 'error',
+        '@stylistic/space-before-blocks': 'error',
 
         // Enforce consistent spacing before function parenthesis  🔧
-        'space-before-function-paren': 'off',
-        '@typescript-eslint/space-before-function-paren': [ 'error', {
+        '@stylistic/space-before-function-paren': [ 'error', {
           anonymous: 'never',
           named: 'never',
           asyncArrow: 'always'
         } ],
 
         // Require spacing around infix operators  🔧
-        'space-infix-ops': 'off',
-        '@typescript-eslint/space-infix-ops': 'error',
+        '@stylistic/space-infix-ops': 'error',
 
         ////////////////////////////////////////////////////////////////////////
         // Custom TypeScript Rules
@@ -751,7 +795,8 @@ module.exports = {
       'error',
       {
         vars: 'all',
-        args: 'none'
+        args: 'none',
+        caughtErrors: 'none'
       }
     ],
 

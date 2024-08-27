@@ -17,7 +17,7 @@ module.exports = {
           'Pick', 'Optional', 'Partial', 'Omit', 'Exclude', 'Extract'
         ];
         if ( node.typeName && higherOrderTypes.includes( node.typeName.name ) ) {
-          const args = node.typeParameters.params;
+          const args = node.typeArguments.params;
           if ( args.some( arg => arg.type === 'TSTypeReference' && arg.typeName.name === 'PhetioObject' ) ) {
             context.report( {
               node: node,

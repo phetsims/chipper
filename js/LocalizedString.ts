@@ -85,7 +85,7 @@ class LocalizedString {
       const initialValue: string = this.initialValues[ locale ]!;
       assert && assert( initialValue !== undefined );
 
-      const stateValue: string | null = state[ locale ] !== undefined ? state[ locale ]! : null;
+      const stateValue: string | null = state[ locale ] !== undefined ? state[ locale ] : null;
 
       localeSpecificProperty.value = stateValue ?? initialValue;
     } );
