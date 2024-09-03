@@ -42,6 +42,7 @@
     "../../../counting-common/js/**/*",
     "../../../density/js/**/*",
     "../../../density-buoyancy-common/js/**/*",
+    "../../../description-demo/js/**/*",
     "../../../diffusion/js/**/*",
     "../../../dot/js/**/*",
     "../../../energy-skate-park/js/**/*",
