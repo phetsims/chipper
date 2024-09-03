@@ -152,6 +152,17 @@
     },
 
     /**
+     * For memory profiling, it can sometimes be difficult to know when the app crashed and automatically restarted itself.
+     * This flag will show the launch counter so you can tell how many times it has been launched.
+     *
+     * NOTE: There is no easy way to clear the local storage for this value, so correct usage would focus on the differences
+     * in values rather than the absolute values.
+     */
+    launchCounter: {
+      type: 'flag'
+    },
+
+    /**
      * enables debugger commands in certain cases like thrown errors and failed tests.
      */
     debugger: { type: 'flag' },
