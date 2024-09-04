@@ -119,16 +119,6 @@
     buildCompatible: { type: 'flag' },
 
     /**
-     * If this is a finite number AND assertions are enabled, it will track maximum Node child counts, and
-     * will assert that the number of children on a single Node is not greater than the limit.
-     */
-    childLimit: {
-      type: 'number',
-      defaultValue: Number.POSITIVE_INFINITY,
-      public: false
-    },
-
-    /**
      * When provided a non-zero-length value, the sim will send out assorted events meant for continuous testing
      * integration (see sim-test.js).
      */
@@ -393,16 +383,6 @@
      * @a11y
      */
     mobileA11yTest: { type: 'flag' },
-
-    /**p
-     * If this is a finite number AND assertions are enabled, it will track maximum Node parent counts, and
-     * will assert that the count is not greater than the limit.
-     */
-    parentLimit: {
-      type: 'number',
-      defaultValue: Number.POSITIVE_INFINITY,
-      public: false
-    },
 
     /**
      * When a simulation is run from the PhET Android app, it should set this flag. It alters statistics that the sim sends
