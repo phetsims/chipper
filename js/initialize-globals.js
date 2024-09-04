@@ -457,13 +457,6 @@
     postMessageOnReady: { type: 'flag' },
 
     /**
-     * Controls whether the preserveDrawingBuffer:true is set on WebGL Canvases. This allows canvas.toDataURL() to work
-     * (used for certain methods that require screenshot generation using foreign object rasterization, etc.).
-     * Generally reduces WebGL performance, so it should not always be on (thus the query parameter).
-     */
-    preserveDrawingBuffer: { type: 'flag' },
-
-    /**
      * If true, the full screen button won't be shown in the phet menu
      */
     preventFullScreen: { type: 'flag' },
