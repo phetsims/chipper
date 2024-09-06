@@ -10,72 +10,74 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-module.exports = function( context ) {
+module.exports = {
+  create: function( context ) {
 
-  return {
+    return {
 
-    VariableDeclaration: function( node ) {
+      VariableDeclaration: function( node ) {
 
-      // Here is the AST of a typical require statement node, for reference
-      // ( should be the same comment as in require-statement-match.js)
-      //
-      //var exemplar = {
-      //  'type': 'VariableDeclaration',
-      //  'declarations': [
-      //    {
-      //      'type': 'VariableDeclarator',
-      //      'id': {
-      //        'type': 'Identifier',
-      //        'name': 'EquationsScreen'
-      //      },
-      //      'init': {
-      //        'type': 'CallExpression',
-      //        'callee': {
-      //          'type': 'Identifier',
-      //          'name': 'require'
-      //        },
-      //        'arguments': [
-      //          {
-      //            'type': 'Literal',
-      //            'value': 'FUNCTION_BUILDER/equations/EquationsScreen',
-      //            'raw': "'FUNCTION_BUILDER/equations/EquationsScreen'"// eslint-disable-line ???
-      //          }
-      //        ]
-      //      }
-      //    }
-      //  ],
-      //  'kind': 'var'
-      //};
+        // Here is the AST of a typical require statement node, for reference
+        // ( should be the same comment as in require-statement-match.js)
+        //
+        //var exemplar = {
+        //  'type': 'VariableDeclaration',
+        //  'declarations': [
+        //    {
+        //      'type': 'VariableDeclarator',
+        //      'id': {
+        //        'type': 'Identifier',
+        //        'name': 'EquationsScreen'
+        //      },
+        //      'init': {
+        //        'type': 'CallExpression',
+        //        'callee': {
+        //          'type': 'Identifier',
+        //          'name': 'require'
+        //        },
+        //        'arguments': [
+        //          {
+        //            'type': 'Literal',
+        //            'value': 'FUNCTION_BUILDER/equations/EquationsScreen',
+        //            'raw': "'FUNCTION_BUILDER/equations/EquationsScreen'"// eslint-disable-line ???
+        //          }
+        //        ]
+        //      }
+        //    }
+        //  ],
+        //  'kind': 'var'
+        //};
 
-      if ( node.declarations &&
-           node.declarations.length > 0 &&
-           node.declarations[ 0 ].init &&
-           node.declarations[ 0 ].init.arguments &&
-           node.declarations[ 0 ].init.arguments.length > 0 &&
-           node.declarations[ 0 ].init.callee.name === 'require' ) {
+        if ( node.declarations &&
+             node.declarations.length > 0 &&
+             node.declarations[ 0 ].init &&
+             node.declarations[ 0 ].init.arguments &&
+             node.declarations[ 0 ].init.arguments.length > 0 &&
+             node.declarations[ 0 ].init.callee.name === 'require' ) {
 
-        const rhs = node.declarations[ 0 ].init.arguments[ 0 ].value;
+          const rhs = node.declarations[ 0 ].init.arguments[ 0 ].value;
 
-        // If there is a PHET_IO import, but ifphetio! isn't the first part of the require
-        if ( rhs && rhs.indexOf( 'PHET_IO/' ) >= 0 && rhs.indexOf( 'ifphetio!' ) !== 0 ) {
+          // If there is a PHET_IO import, but ifphetio! isn't the first part of the require
+          if ( rhs && rhs.indexOf( 'PHET_IO/' ) >= 0 && rhs.indexOf( 'ifphetio!' ) !== 0 ) {
 
 
-          // This regex will match 'phet-io' plus either a '/' or a '\' afterwards.
-          const regex = /phet-io[/\\]/;
+            // This regex will match 'phet-io' plus either a '/' or a '\' afterwards.
+            const regex = /phet-io[/\\]/;
 
-          // Don't check this rule in the phet-io repo
-          // Match returns null if it doesn't find anything
-          if ( !context.getFilename().match( regex ) ) {
-            context.report( {
-              node: node,
-              loc: node.loc.start,
-              message: 'PHET_IO require must start with an ifphetio! check. '
-            } );
+            // Don't check this rule in the phet-io repo
+            // Match returns null if it doesn't find anything
+            if ( !context.getFilename().match( regex ) ) {
+              context.report( {
+                node: node,
+                loc: node.loc.start,
+                message: 'PHET_IO require must start with an ifphetio! check. '
+              } );
+            }
           }
         }
       }
-    }
-  };
+    };
+  }
 };
 
 module.exports.schema = [

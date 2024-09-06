@@ -18,39 +18,41 @@ const _ = require( 'lodash' );
 // Repos without a namespace that don't require these register calls.
 const optOutRepos = [ 'aqua', 'phet-io-wrappers', 'quake', 'studio' ];
 
-module.exports = function( context ) {
+module.exports = {
+  create: function( context ) {
 
-  const filename = context.getFilename();
+    const filename = context.getFilename();
 
-  // Javascript string escape the regex escape backslash too (4 backslashes!!)
-  if ( _.some( optOutRepos, repo => new RegExp( `[\\\\/]${repo}[\\\\/]` ).test( filename ) ) ) {
-    return {}; // No-op rule
-  }
+    // Javascript string escape the regex escape backslash too (4 backslashes!!)
+    if ( _.some( optOutRepos, repo => new RegExp( `[\\\\/]${repo}[\\\\/]` ).test( filename ) ) ) {
+      return {}; // No-op rule
+    }
 
-  const classNames = [];
-  return {
+    const classNames = [];
+    return {
 
-    ClassDeclaration: node => {
-      classNames.push( node.id.name );
-    },
+      ClassDeclaration: node => {
+        classNames.push( node.id.name );
+      },
 
-    ExportDefaultDeclaration: node => {
+      ExportDefaultDeclaration: node => {
 
-      // Has a class default export
-      if ( node.declaration.type === 'ClassDeclaration' ||
-           ( node.declaration && node.declaration.name && classNames.includes( node.declaration.name ) ) ) {
+        // Has a class default export
+        if ( node.declaration.type === 'ClassDeclaration' ||
+             ( node.declaration && node.declaration.name && classNames.includes( node.declaration.name ) ) ) {
 
-        // No register call
-        if ( !context.getSourceCode().text.includes( '.register( \'' ) ) {
-          context.report( {
-            node: node,
-            loc: node.loc,
-            message: 'File default exports a class but has no namespace registration'
-          } );
+          // No register call
+          if ( !context.getSourceCode().text.includes( '.register( \'' ) ) {
+            context.report( {
+              node: node,
+              loc: node.loc,
+              message: 'File default exports a class but has no namespace registration'
+            } );
+          }
         }
       }
-    }
-  };
+    };
+  }
 };
 
 module.exports.schema = [

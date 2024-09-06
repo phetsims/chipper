@@ -12,36 +12,38 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-module.exports = context => {
+module.exports = {
+  create: context => {
 
-  return {
+    return {
 
-    ImportDeclaration: node => {
-      if ( node.loc.start.line !== node.loc.end.line ) {
+      ImportDeclaration: node => {
+        if ( node.loc.start.line !== node.loc.end.line ) {
 
-        // AST JSON might look something like:
-        // {
-        //   "type": "ImportDeclaration",
-        //   "specifiers": [
-        //     {
-        //       "type": "ImportDefaultSpecifier",
-        //       "local": {
-        //         "type": "Identifier",
-        //         "name": "EnergySkateParkColorScheme",
-        //       }
-        //     }
-        //   ]
-        // }
-        node.specifiers.forEach( specifier => {
-          context.report( {
-            node: node,
-            loc: node.loc,
-            message: `${specifier.local.name}: import statement should be on a single line.`
+          // AST JSON might look something like:
+          // {
+          //   "type": "ImportDeclaration",
+          //   "specifiers": [
+          //     {
+          //       "type": "ImportDefaultSpecifier",
+          //       "local": {
+          //         "type": "Identifier",
+          //         "name": "EnergySkateParkColorScheme",
+          //       }
+          //     }
+          //   ]
+          // }
+          node.specifiers.forEach( specifier => {
+            context.report( {
+              node: node,
+              loc: node.loc,
+              message: `${specifier.local.name}: import statement should be on a single line.`
+            } );
           } );
-        } );
+        }
       }
-    }
-  };
+    };
+  }
 };
 
 module.exports.schema = [

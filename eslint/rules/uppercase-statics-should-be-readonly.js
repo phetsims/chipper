@@ -11,18 +11,20 @@
  * @copyright 2022 University of Colorado Boulder
  */
 
-module.exports = function( context ) {
+module.exports = {
+  create: function( context ) {
 
-  return {
+    return {
 
-    PropertyDefinition: node => {
-      if ( node.key.name && node.key.name === node.key.name.toUpperCase() && node.static && !node.readonly ) {
-        context.report( {
-          node: node,
-          loc: node.loc,
-          message: `Uppercase static field ${node.key.name} should be readonly`
-        } );
+      PropertyDefinition: node => {
+        if ( node.key.name && node.key.name === node.key.name.toUpperCase() && node.static && !node.readonly ) {
+          context.report( {
+            node: node,
+            loc: node.loc,
+            message: `Uppercase static field ${node.key.name} should be readonly`
+          } );
+        }
       }
-    }
-  };
+    };
+  }
 };

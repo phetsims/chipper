@@ -13,21 +13,23 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-module.exports = function( context ) {
+const getBadTextTester = require( './getBadTextTester' );
 
-  const getBadTextTester = require( './getBadTextTester' );
+module.exports = {
+  create: function( context ) {
 
-  // see getBadTextTester for schema.
-  const forbiddenTextObject = [
-    {
-      id: 'asserting values are instanceof or typeof in TypeScript is redundant',
-      regex: /assert && assert\( ((\w+ instanceof \w+)|(typeof \w+ === '\w+'))(,| \))/
-    }
-  ];
+    // see getBadTextTester for schema.
+    const forbiddenTextObject = [
+      {
+        id: 'asserting values are instanceof or typeof in TypeScript is redundant',
+        regex: /assert && assert\( ((\w+ instanceof \w+)|(typeof \w+ === '\w+'))(,| \))/
+      }
+    ];
 
-  return {
-    Program: getBadTextTester( 'bad-typescript-text', forbiddenTextObject, context )
-  };
+    return {
+      Program: getBadTextTester( 'bad-typescript-text', forbiddenTextObject, context )
+    };
+  }
 };
 
 module.exports.schema = [

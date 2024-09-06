@@ -11,39 +11,41 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-module.exports = function( context ) {
-  const annotations = [ '@private', '@public', '@protected' ];
+module.exports = {
+  create: function( context ) {
+    const annotations = [ '@private', '@public', '@protected' ];
 
-  // these are still MethodDefinition nodes, but don't require an annotation
-  const exemptMethods = [ 'get', 'set', 'constructor' ];
+    // these are still MethodDefinition nodes, but don't require an annotation
+    const exemptMethods = [ 'get', 'set', 'constructor' ];
 
-  // documentation-based annotations are not required in TypeScript files.
-  const filenameLowerCase = context.getFilename().toLowerCase();
-  const isTypeScriptFile = filenameLowerCase.endsWith( '.ts' ) || filenameLowerCase.endsWith( '.tsx' );
+    // documentation-based annotations are not required in TypeScript files.
+    const filenameLowerCase = context.getFilename().toLowerCase();
+    const isTypeScriptFile = filenameLowerCase.endsWith( '.ts' ) || filenameLowerCase.endsWith( '.tsx' );
 
-  return {
-    MethodDefinition: node => {
-      if ( !exemptMethods.includes( node.kind ) && !isTypeScriptFile ) {
-        let includesAnnotation = false;
-        const commentsBefore = context.getSourceCode().getCommentsBefore( node );
+    return {
+      MethodDefinition: node => {
+        if ( !exemptMethods.includes( node.kind ) && !isTypeScriptFile ) {
+          let includesAnnotation = false;
+          const commentsBefore = context.getSourceCode().getCommentsBefore( node );
 
-        // OK as long as any comment above the method (block or line) has an annotation
-        for ( let i = 0; i < commentsBefore.length; i++ ) {
-          if ( annotations.some( annotation => commentsBefore[ i ].value.includes( annotation ) ) ) {
-            includesAnnotation = true;
-            break;
+          // OK as long as any comment above the method (block or line) has an annotation
+          for ( let i = 0; i < commentsBefore.length; i++ ) {
+            if ( annotations.some( annotation => commentsBefore[ i ].value.includes( annotation ) ) ) {
+              includesAnnotation = true;
+              break;
+            }
+          }
+          if ( !includesAnnotation ) {
+            context.report( {
+              node: node,
+              loc: node.loc,
+              message: `${node.key.name}: Missing visibility annotation.`
+            } );
           }
         }
-        if ( !includesAnnotation ) {
-          context.report( {
-            node: node,
-            loc: node.loc,
-            message: `${node.key.name}: Missing visibility annotation.`
-          } );
-        }
       }
-    }
-  };
+    };
+  }
 };
 
 module.exports.schema = [

@@ -1,5 +1,5 @@
 // Copyright 2019, University of Colorado Boulder
- 
+
 
 /**
  * Lint detector for invalid text in chipper
@@ -9,20 +9,22 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-module.exports = function( context ) {
+const getBadTextTester = require( './getBadTextTester' );
 
-  const getBadTextTester = require( './getBadTextTester' );
+module.exports = {
+  create: function( context ) {
 
-  // see getBadTextTester for schema.
-  const forbiddenTextObjects = [
+    // see getBadTextTester for schema.
+    const forbiddenTextObjects = [
 
-    // chipper should use perennial-alias instead of perennial, so that it can check out specific versions
-    '../perennial/js/'
-  ];
+      // chipper should use perennial-alias instead of perennial, so that it can check out specific versions
+      '../perennial/js/'
+    ];
 
-  return {
-    Program: getBadTextTester( 'bad-chipper-text', forbiddenTextObjects, context )
-  };
+    return {
+      Program: getBadTextTester( 'bad-chipper-text', forbiddenTextObjects, context )
+    };
+  }
 };
 
 module.exports.schema = [

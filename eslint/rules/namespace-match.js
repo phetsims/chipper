@@ -45,34 +45,36 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-module.exports = function( context ) {
-  return {
-    CallExpression: node => {
-      if ( node.callee && node.callee.type === 'MemberExpression' ) {
-        if ( node.callee.property.name === 'register' ) {
-          const registerArgs = node.arguments;
-          if ( registerArgs.length === 2 ) {
-            const firstArg = registerArgs[ 0 ];
-            const secondArg = registerArgs[ 1 ];
+module.exports = {
+  create: function( context ) {
+    return {
+      CallExpression: node => {
+        if ( node.callee && node.callee.type === 'MemberExpression' ) {
+          if ( node.callee.property.name === 'register' ) {
+            const registerArgs = node.arguments;
+            if ( registerArgs.length === 2 ) {
+              const firstArg = registerArgs[ 0 ];
+              const secondArg = registerArgs[ 1 ];
 
-            // we allow adding functions directly to the namespace
-            if ( firstArg.type === 'Literal' && secondArg.type === 'Identifier' ) {
-              const firstArgValue = firstArg.value; // string from the Literal node value
-              const secondArgName = secondArg.name; // string from the Identifier node name
+              // we allow adding functions directly to the namespace
+              if ( firstArg.type === 'Literal' && secondArg.type === 'Identifier' ) {
+                const firstArgValue = firstArg.value; // string from the Literal node value
+                const secondArgName = secondArg.name; // string from the Identifier node name
 
-              if ( firstArgValue !== secondArgName ) {
-                context.report( {
-                  node: node,
-                  loc: node.loc,
-                  message: `namespace key must match value - key: ${firstArgValue}, value: ${secondArgName}`
-                } );
+                if ( firstArgValue !== secondArgName ) {
+                  context.report( {
+                    node: node,
+                    loc: node.loc,
+                    message: `namespace key must match value - key: ${firstArgValue}, value: ${secondArgName}`
+                  } );
+                }
               }
             }
           }
         }
       }
-    }
-  };
+    };
+  }
 };
 
 module.exports.schema = [

@@ -61,60 +61,62 @@ const needsPhetioLicense = filePath => {
          _.some( phetioLicenseRepos, repo => localFilePath.startsWith( repo ) );
 };
 
-module.exports = function( context ) {
+module.exports = {
+  create: function( context ) {
 
-  return {
-    Program: function( node ) {
-      // Get the whole source code, not for node only.
-      const comments = context.getSourceCode().getAllComments();
+    return {
+      Program: function( node ) {
+        // Get the whole source code, not for node only.
+        const comments = context.getSourceCode().getAllComments();
 
-      const filename = context.getFilename();
-      const isHTML = filename.endsWith( '.html' );
+        const filename = context.getFilename();
+        const isHTML = filename.endsWith( '.html' );
 
-      if ( isHTML ) {
-        return;
-      }
-
-      const report = ( loc, isPhetio ) => {
-        context.report( {
-          node: node,
-          loc: loc,
-          message: `Incorrect copyright statement in first comment${isPhetio ? ', phet-io repos require phet-io licensing' : ''}`
-        } );
-      };
-
-      if ( !comments || comments.length === 0 ) {
-        report( 1 );
-      }
-      else {
-        // years must be between 2000 and 2099, inclusive.  A script can be used to check that the dates
-        // match the GitHub creation and last-modified dates
-        const isDateRangeOK = /^ Copyright 20\d\d-20\d\d, University of Colorado Boulder$/.test( comments[ 0 ].value );
-        const isSingleDateOK = /^ Copyright 20\d\d, University of Colorado Boulder$/.test( comments[ 0 ].value );
-        if ( !isDateRangeOK && !isSingleDateOK ) {
-          report( comments[ 0 ].loc.start );
+        if ( isHTML ) {
+          return;
         }
 
-        else if ( needsPhetioLicense( filename ) ) {
-          // Handle the case where PhET-iO files need more comments for licensing.
+        const report = ( loc, isPhetio ) => {
+          context.report( {
+            node: node,
+            loc: loc,
+            message: `Incorrect copyright statement in first comment${isPhetio ? ', phet-io repos require phet-io licensing' : ''}`
+          } );
+        };
 
-          // phet-io needs 4 line comments at the start of the file.
-          if ( comments.length < 4 ) {
-            report( 1, true );
+        if ( !comments || comments.length === 0 ) {
+          report( 1 );
+        }
+        else {
+          // years must be between 2000 and 2099, inclusive.  A script can be used to check that the dates
+          // match the GitHub creation and last-modified dates
+          const isDateRangeOK = /^ Copyright 20\d\d-20\d\d, University of Colorado Boulder$/.test( comments[ 0 ].value );
+          const isSingleDateOK = /^ Copyright 20\d\d, University of Colorado Boulder$/.test( comments[ 0 ].value );
+          if ( !isDateRangeOK && !isSingleDateOK ) {
+            report( comments[ 0 ].loc.start );
           }
 
-          const hopefulPhetioComments = comments.slice( 1, 4 );
-          for ( let i = 0; i < hopefulPhetioComments.length; i++ ) {
-            const comment = hopefulPhetioComments[ i ].value;
-            if ( comment !== phetioComments[ i ] ) {
-              report( hopefulPhetioComments[ i ].loc.start, true );
-              break;
+          else if ( needsPhetioLicense( filename ) ) {
+            // Handle the case where PhET-iO files need more comments for licensing.
+
+            // phet-io needs 4 line comments at the start of the file.
+            if ( comments.length < 4 ) {
+              report( 1, true );
+            }
+
+            const hopefulPhetioComments = comments.slice( 1, 4 );
+            for ( let i = 0; i < hopefulPhetioComments.length; i++ ) {
+              const comment = hopefulPhetioComments[ i ].value;
+              if ( comment !== phetioComments[ i ] ) {
+                report( hopefulPhetioComments[ i ].loc.start, true );
+                break;
+              }
             }
           }
         }
       }
-    }
-  };
+    };
+  }
 };
 
 module.exports.schema = [

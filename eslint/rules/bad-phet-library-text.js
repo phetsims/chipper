@@ -11,23 +11,25 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-module.exports = function( context ) {
+const getBadTextTester = require( './getBadTextTester' );
 
-  const getBadTextTester = require( './getBadTextTester' );
+module.exports = {
+  create: function( context ) {
 
-  // see getBadTextTester for schema.
-  const forbiddenTextObjects = [
+    // see getBadTextTester for schema.
+    const forbiddenTextObjects = [
 
-    // accessing the sim as a global, like `phet.joist.sim` is a classic example of a hard dependency that can be a
-    // ticking time bomb for common code that isn't normally run outside phetsims (but could and may want to in the
-    // future). See https://github.com/phetsims/chipper/issues/1004
-    { id: 'phet.joist', codeTokens: [ 'phet', '.', 'joist' ] },
-    'nopedy'
-  ];
+      // accessing the sim as a global, like `phet.joist.sim` is a classic example of a hard dependency that can be a
+      // ticking time bomb for common code that isn't normally run outside phetsims (but could and may want to in the
+      // future). See https://github.com/phetsims/chipper/issues/1004
+      { id: 'phet.joist', codeTokens: [ 'phet', '.', 'joist' ] },
+      'nopedy'
+    ];
 
-  return {
-    Program: getBadTextTester( 'bad-phet-library-text', forbiddenTextObjects, context )
-  };
+    return {
+      Program: getBadTextTester( 'bad-phet-library-text', forbiddenTextObjects, context )
+    };
+  }
 };
 
 module.exports.schema = [

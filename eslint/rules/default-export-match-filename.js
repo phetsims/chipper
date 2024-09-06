@@ -7,8 +7,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-module.exports =
-  context => {
+module.exports = {
+  create: context => {
     return {
       ExportDefaultDeclaration: node => {
 
@@ -29,4 +29,5 @@ module.exports =
         }
       }
     };
-  };
+  }
+};

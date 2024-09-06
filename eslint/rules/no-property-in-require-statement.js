@@ -10,31 +10,33 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-module.exports = function( context ) {
+module.exports = {
+  create: function( context ) {
 
-  return {
+    return {
 
-    VariableDeclaration: function( node ) {
+      VariableDeclaration: function( node ) {
 
-      if ( node.declarations &&
-           node.declarations.length > 0 &&
-           node.declarations[ 0 ] &&
-           node.declarations[ 0 ].init &&
-           node.declarations[ 0 ].init.type &&
-           node.declarations[ 0 ].init.type === 'MemberExpression' &&
-           node.declarations[ 0 ].init.object &&
-           node.declarations[ 0 ].init.object.callee &&
-           node.declarations[ 0 ].init.object.callee.name &&
-           node.declarations[ 0 ].init.object.callee.name === 'require' ) {
+        if ( node.declarations &&
+             node.declarations.length > 0 &&
+             node.declarations[ 0 ] &&
+             node.declarations[ 0 ].init &&
+             node.declarations[ 0 ].init.type &&
+             node.declarations[ 0 ].init.type === 'MemberExpression' &&
+             node.declarations[ 0 ].init.object &&
+             node.declarations[ 0 ].init.object.callee &&
+             node.declarations[ 0 ].init.object.callee.name &&
+             node.declarations[ 0 ].init.object.callee.name === 'require' ) {
 
-        context.report( {
-          node: node,
-          loc: node.loc.start,
-          message: 'property access in require statement'
-        } );
+          context.report( {
+            node: node,
+            loc: node.loc.start,
+            message: 'property access in require statement'
+          } );
+        }
       }
-    }
-  };
+    };
+  }
 };
 
 module.exports.schema = [

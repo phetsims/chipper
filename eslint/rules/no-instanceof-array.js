@@ -10,21 +10,23 @@
 // Rule Definition
 //------------------------------------------------------------------------------
 
-module.exports = function( context ) {
+module.exports = {
+  create: function( context ) {
 
-  return {
-    BinaryExpression: function( node ) {
-      if ( node.operator === 'instanceof' && node.right.type === 'Identifier' && node.right.name === 'Array' ) {
-        context.report( {
-          node: node,
-          message: 'Use Array.isArray() instead of instanceof Array',
-          data: {
-            identifier: node.name
-          }
-        } );
+    return {
+      BinaryExpression: function( node ) {
+        if ( node.operator === 'instanceof' && node.right.type === 'Identifier' && node.right.name === 'Array' ) {
+          context.report( {
+            node: node,
+            message: 'Use Array.isArray() instead of instanceof Array',
+            data: {
+              identifier: node.name
+            }
+          } );
+        }
       }
-    }
-  };
+    };
+  }
 };
 
 module.exports.schema = [

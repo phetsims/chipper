@@ -106,35 +106,37 @@ function getFilename( filePath, context ) {
   return path.basename( processedPath ) + ( isDir ? '/' : '' );
 }
 
-module.exports = function( context ) {
+module.exports = {
+  create: function( context ) {
 
-  return {
-    ImportDeclaration( node ) {
-      const defaultImportSpecifier = node.specifiers.find(
-        ( { type } ) => type === 'ImportDefaultSpecifier'
-      );
+    return {
+      ImportDeclaration( node ) {
+        const defaultImportSpecifier = node.specifiers.find(
+          ( { type } ) => type === 'ImportDefaultSpecifier'
+        );
 
-      const defaultImportName =
-        defaultImportSpecifier && defaultImportSpecifier.local.name;
+        const defaultImportName =
+          defaultImportSpecifier && defaultImportSpecifier.local.name;
 
-      if ( !defaultImportName ) {
-        return;
+        if ( !defaultImportName ) {
+          return;
+        }
+
+        const filename = getFilename( node.source.value, context );
+
+        if ( !filename ) {
+          return;
+        }
+
+        if (
+          !isCompatible( defaultImportName, filename )
+        ) {
+          context.report( {
+            node: defaultImportSpecifier,
+            message: `Default import name does not match filename "${filename}".`
+          } );
+        }
       }
-
-      const filename = getFilename( node.source.value, context );
-
-      if ( !filename ) {
-        return;
-      }
-
-      if (
-        !isCompatible( defaultImportName, filename )
-      ) {
-        context.report( {
-          node: defaultImportSpecifier,
-          message: `Default import name does not match filename "${filename}".`
-        } );
-      }
-    }
-  };
+    };
+  }
 };
