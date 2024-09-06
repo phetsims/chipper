@@ -20,7 +20,7 @@ module.exports = repo => {
 
   const start = Date.now();
 
-  const rootPath = path.join( __dirname, '..', '..', '..' );
+  const rootPath = path.join( process.cwd(), '..' );
 
   // OS-independent path to babel repo.
   const babelPath = path.join( rootPath, 'babel' );

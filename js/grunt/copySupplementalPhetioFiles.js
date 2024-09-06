@@ -709,7 +709,7 @@ const getCompiledMigrationProcessors = async ( repo, buildDir ) => {
     else {
 
       // output dir must be an absolute path
-      const outputDir = path.resolve( __dirname, `../../../${repo}/${buildDir}` );
+      const outputDir = path.resolve( process.cwd(), `../${repo}/${buildDir}` );
 
       const compiler = webpack( {
         module: {

@@ -17,17 +17,17 @@ const webpack = require( 'webpack' );
 // eslint-disable-next-line require-statement-match
 const { ModifySourcePlugin, ConcatOperation } = require( 'modify-source-webpack-plugin' );
 
-const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial-alias/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
+const activeRepos = fs.readFileSync( path.resolve( process.cwd(), '../perennial-alias/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
 const reposByNamespace = {};
 const aliases = {};
 
 for ( const repo of activeRepos ) {
-  const packageFile = path.resolve( __dirname, `../../../${repo}/package.json` );
+  const packageFile = path.resolve( process.cwd(), `../${repo}/package.json` );
   if ( fs.existsSync( packageFile ) ) {
     const packageObject = JSON.parse( fs.readFileSync( packageFile, 'utf-8' ) );
     if ( packageObject.phet && packageObject.phet.requirejsNamespace ) {
       reposByNamespace[ packageObject.phet.requirejsNamespace ] = repo;
-      aliases[ packageObject.phet.requirejsNamespace ] = path.resolve( __dirname, `../../../${repo}${repo === 'brand' ? '/phet' : ''}/js` );
+      aliases[ packageObject.phet.requirejsNamespace ] = path.resolve( process.cwd(), `../${repo}${repo === 'brand' ? '/phet' : ''}/js` );
     }
   }
 }
@@ -52,7 +52,7 @@ const getModuleRules = function getModuleRules() {
  * @returns {Array.<string>}
  */
 const getRelativeModules = modules => {
-  const root = path.resolve( __dirname, '../../../' );
+  const root = path.resolve( process.cwd(), '../' );
   return modules
 
     // Webpack 5 reports intermediate paths which need to be filtered out
@@ -82,7 +82,7 @@ const webpackBuild = function webpackBuild( repo, brand, options ) {
       outputDir: repo
     }, options );
 
-    const outputDir = path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}`, options.outputDir );
+    const outputDir = path.resolve( process.cwd(), `../chipper/${ChipperConstants.BUILD_DIR}`, options.outputDir );
     const outputFileName = `${repo}.js`;
     const outputPath = path.resolve( outputDir, outputFileName );
 
