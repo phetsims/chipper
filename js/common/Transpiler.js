@@ -48,7 +48,8 @@ const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'shaders', 'common', 'wgs
 const getActiveRepos = () => fs.readFileSync( '../perennial-alias/data/active-repos', 'utf8' ).trim().split( '\n' ).map( sim => sim.trim() );
 
 const getModesForRepo = repo => {
-  // TODO: Duplicated repos in grunMain.js  https://github.com/phetsims/chipper/issues/1437
+
+  // TODO: Duplicated repos in gruntMain.js  https://github.com/phetsims/chipper/issues/1437
   const dualRepos = [ 'chipper', 'perennial-alias', 'perennial', 'phet-core' ];
   if ( dualRepos.includes( repo ) ) {
     return [ 'js', 'commonjs' ];
