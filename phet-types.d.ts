@@ -73,17 +73,16 @@ declare type QueryStringMachineSchema = {
 // Converts a Schema's type to the actual Typescript type it represents
 declare type QueryMachineTypeToType<T> = T extends ( 'flag' | 'boolean' ) ? boolean : ( T extends 'number' ? number : ( T extends 'string' ? ( string | null ) : ( T extends 'array' ? IntentionalAny[] : IntentionalAny ) ) );
 
+declare type QSMParsedParameters<SchemaMap extends Record<string, QueryStringMachineSchema>> = {
+  // Will return a map of the "result" types
+  [Property in keyof SchemaMap]: QueryMachineTypeToType<SchemaMap[ Property ][ 'type' ]>
+  // SCHEMA_MAP allowed to be set in types
+} & { SCHEMA_MAP?: Record<string, QueryStringMachineSchema> };
+
 declare var QueryStringMachine: {
-  getAll: <SchemaMap extends Record<string, QueryStringMachineSchema>>( a: SchemaMap ) => {
-    // Will return a map of the "result" types
-    [Property in keyof SchemaMap]: QueryMachineTypeToType<SchemaMap[ Property ][ 'type' ]>
-    // SCHEMA_MAP allowed to be set in types
-  } & { SCHEMA_MAP?: Record<string, QueryStringMachineSchema> };
-  getAllForString: <SchemaMap extends Record<string, QueryStringMachineSchema>>( a: SchemaMap, b: string ) => {
-    // Will return a map of the "result" types
-    [Property in keyof SchemaMap]: QueryMachineTypeToType<SchemaMap[ Property ][ 'type' ]>
-    // SCHEMA_MAP allowed to be set in types
-  } & { SCHEMA_MAP?: Record<string, QueryStringMachineSchema> };
+  getAll: <SchemaMap extends Record<string, QueryStringMachineSchema>>( a: SchemaMap ) => QSMParsedParameters<SchemaMap>;
+  getAllForString: <SchemaMap extends Record<string, QueryStringMachineSchema>>( a: SchemaMap, b: string ) => QSMParsedParameters<SchemaMap>;
+
   get: <Schema extends QueryStringMachineSchema>( a: string, schema: Schema ) => QueryMachineTypeToType<Schema[ 'type' ]>;
   containsKey: ( key: string ) => boolean;
   warnings: Warning[];
@@ -141,10 +140,16 @@ declare class FlatQueue<T> {
   public readonly length: number;
 
   public constructor();
+
   public clear(): void;
+
   public push( item: T, priority: number ): void;
+
   public pop(): T | undefined;
+
   public peek(): T | undefined;
+
   public peekValue(): number | undefined;
+
   public shrink(): void;
 }
