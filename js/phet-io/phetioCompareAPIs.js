@@ -291,7 +291,7 @@
                   }
 
                   // Ignore the scale's state, because it will be different at startup, depending on the user's window's
-                  // aspect ratio. TODO: Workaround for https://github.com/phetsims/density/issues/161
+                  // aspect ratio. TODO: Workaround for https://github.com/phetsims/phet-io/issues/1951
                   if ( phetioID === 'density.mysteryScreen.model.scale' ) {
                     return true;
                   }
