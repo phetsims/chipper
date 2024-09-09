@@ -357,7 +357,7 @@
 
       for ( const componentName in proposed ) {
         if ( isDesigned && proposed.hasOwnProperty( componentName ) && isChildKey( componentName ) && !reference.hasOwnProperty( componentName ) ) {
-          appendProblem( `New PhET-iO Element not in reference: ${phetioID}.${componentName}`, true );
+          appendProblem( `New PhET-iO Element (or uninstrumented intermediate container) not in reference: ${phetioID}.${componentName}`, true );
         }
       }
     };
