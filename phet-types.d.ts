@@ -73,15 +73,17 @@ declare type QueryStringMachineSchema = {
 // Converts a Schema's type to the actual Typescript type it represents
 declare type QueryMachineTypeToType<T> = T extends ( 'flag' | 'boolean' ) ? boolean : ( T extends 'number' ? number : ( T extends 'string' ? ( string | null ) : ( T extends 'array' ? IntentionalAny[] : IntentionalAny ) ) );
 
-declare type QSMParsedParameters<SchemaMap extends Record<string, QueryStringMachineSchema>> = {
+type QSMSchemaObject = Record<string, QueryStringMachineSchema>;
+
+declare type QSMParsedParameters<SchemaMap extends QSMSchemaObject> = {
   // Will return a map of the "result" types
   [Property in keyof SchemaMap]: QueryMachineTypeToType<SchemaMap[ Property ][ 'type' ]>
   // SCHEMA_MAP allowed to be set in types
-} & { SCHEMA_MAP?: Record<string, QueryStringMachineSchema> };
+} & { SCHEMA_MAP?: QSMSchemaObject };
 
 declare var QueryStringMachine: {
-  getAll: <SchemaMap extends Record<string, QueryStringMachineSchema>>( a: SchemaMap ) => QSMParsedParameters<SchemaMap>;
-  getAllForString: <SchemaMap extends Record<string, QueryStringMachineSchema>>( a: SchemaMap, b: string ) => QSMParsedParameters<SchemaMap>;
+  getAll: <SchemaMap extends QSMSchemaObject>( a: SchemaMap ) => QSMParsedParameters<SchemaMap>;
+  getAllForString: <SchemaMap extends QSMSchemaObject>( a: SchemaMap, b: string ) => QSMParsedParameters<SchemaMap>;
 
   get: <Schema extends QueryStringMachineSchema>( a: string, schema: Schema ) => QueryMachineTypeToType<Schema[ 'type' ]>;
   containsKey: ( key: string ) => boolean;
