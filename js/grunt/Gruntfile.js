@@ -208,29 +208,11 @@ Updates the normal automatically-generated files for this repository. Includes:
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt, or maybe just delete?
   grunt.registerTask(
     'webpack-dev-server', `Runs a webpack server for a given list of simulations.
---repos=REPOS for a comma-separated list of repos (defaults to current repo)
---port=9000 to adjust the running port
---devtool=string value for sourcemap generation specified at https://webpack.js.org/configuration/devtool or undefined for (none)
---chrome: open the sims in Chrome tabs (Mac)`,
-    () => {
-      // We don't finish! Don't tell grunt this...
-      // TODO: https://github.com/phetsims/chipper/issues/1459 move into another file, make sure it lives forever. Can test ctrl-c
-      grunt.task.current.async();
-
-      const repos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [ repo ];
-      const port = grunt.option( 'port' ) || 9000;
-      let devtool = grunt.option( 'devtool' ) || 'inline-source-map';
-      if ( devtool === 'none' || devtool === 'undefined' ) {
-        devtool = undefined;
-      }
-      const openChrome = grunt.option( 'chrome' ) || false;
-
-      const webpackDevServer = require( './webpackDevServer' );
-
-      // NOTE: We don't care about the promise that is returned here, because we are going to keep this task running
-      // until the user manually kills it.
-      webpackDevServer( repos, port, devtool, openChrome );
-    }
+    --repos=REPOS for a comma-separated list of repos (defaults to current repo)
+    --port=9000 to adjust the running port
+    --devtool=string value for sourcemap generation specified at https://webpack.js.org/configuration/devtool or undefined for (none)
+    --chrome: open the sims in Chrome tabs (Mac)`,
+    execTask( 'webpack-dev-server.js' )
   );
 
   grunt.registerTask(
