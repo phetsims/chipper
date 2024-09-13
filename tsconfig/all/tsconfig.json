@@ -32,7 +32,6 @@
     "../../../center-and-variability/images/**/*",
     "../../../chipper/phet-types.d.ts",
     "../../../chipper/phet-types-module.d.ts",
-    "../../../chipper/js/grunt/typescript-test.ts",
     "../../../circuit-construction-kit-ac/js/**/*",
     "../../../circuit-construction-kit-ac-virtual-lab/js/**/*",
     "../../../circuit-construction-kit-common/js/**/*",

@@ -52,8 +52,7 @@ const transpiler = new Transpiler( {
   minifyWGSL: !args.includes( '--skipMinifyWGSL' )
 } );
 
-transpiler.pruneStaleDistFiles( 'js' );
-transpiler.pruneStaleDistFiles( 'commonjs' );
+transpiler.pruneStaleDistFiles();
 
 // Watch process
 if ( args.includes( '--watch' ) ) {

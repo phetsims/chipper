@@ -6,18 +6,10 @@
  *
  * Additionally, will transpile *.wgsl files to *.js files.
  *
- * To support the browser and node.js, we output two modes:
- * 1. 'js' outputs to chipper/dist/js - import statements, can be launched in the browser
- * 2. 'commonjs' outputs to chipper/dist/commonjs - require/module.exports, can be used in node.js
- *
- * grunt is constrained to use require statements, so that is why we must support the commonjs mode.
- *
  * See transpile.js for the CLI usage
  *
  *  @author Sam Reid (PhET Interactive Simulations)
  */
-
-// TODO: Move to perennial-alias, see https://github.com/phetsims/chipper/issues/1437. Does this mean we will have perennial-alias/dist? Be careful not to create perennial/dist too.
 
 // imports
 const fs = require( 'fs' );
@@ -38,36 +30,12 @@ const root = '..' + path.sep;
 
 // Directories in a sim repo that may contain things for transpilation
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
-// TODO: Subdirs may be different for commonjs/perennial/chipper, see https://github.com/phetsims/chipper/issues/1437
-// TODO: Add chipper/test chipper/eslint chipper/templates and perennial/test at a minimum, see https://github.com/phetsims/chipper/issues/1437
 const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'shaders', 'common', 'wgsl',
 
   // phet-io-sim-specific has nonstandard directory structure
   'repos' ];
 
 const getActiveRepos = () => fs.readFileSync( '../perennial-alias/data/active-repos', 'utf8' ).trim().split( '\n' ).map( sim => sim.trim() );
-
-const getModesForRepo = repo => {
-
-  // TODO: Duplicated repos in gruntMain.js  https://github.com/phetsims/chipper/issues/1437
-  const dualRepos = [ 'chipper', 'perennial-alias', 'perennial', 'phet-core' ];
-  if ( dualRepos.includes( repo ) ) {
-    return [ 'js', 'commonjs' ];
-  }
-  else {
-    return [ 'js' ];
-  }
-};
-
-/**
- * Get a cache status key for the file path and mode
- * @param filePath
- * @param mode 'js' or 'commonjs'
- * @returns {string}
- */
-const getStatusKey = ( filePath, mode ) => {
-  return filePath + ( mode === 'js' ? '@js' : '@commonjs' );
-};
 
 class Transpiler {
 
@@ -128,12 +96,10 @@ class Transpiler {
   /**
    * Returns the path in chipper/dist that corresponds to a source file.
    * @param filename
-   * @param mode - 'js' or 'commonjs'
    * @returns {string}
    * @private
    */
-  static getTargetPath( filename, mode ) {
-    assert( mode === 'js' || mode === 'commonjs', 'invalid mode: ' + mode );
+  static getTargetPath( filename ) {
     const relativePath = path.relative( root, filename );
     const suffix = relativePath.substring( relativePath.lastIndexOf( '.' ) );
 
@@ -142,7 +108,7 @@ class Transpiler {
     const isMJS = relativePath.endsWith( '.mjs' );
 
     const extension = isMJS ? '.mjs' : '.js';
-    return Transpiler.join( root, 'chipper', 'dist', mode, ...relativePath.split( path.sep ) ).split( suffix ).join( extension );
+    return Transpiler.join( root, 'chipper', 'dist', 'js', ...relativePath.split( path.sep ) ).split( suffix ).join( extension );
   }
 
   /**
@@ -150,11 +116,9 @@ class Transpiler {
    * @param {string} sourceFile
    * @param {string} targetPath
    * @param {string} text - file text
-   * @param {string} mode - 'js' or 'commonjs'
    * @private
    */
-  transpileFunction( sourceFile, targetPath, text, mode ) {
-    assert( mode === 'js' || mode === 'commonjs', 'invalid mode: ' + mode );
+  transpileFunction( sourceFile, targetPath, text ) {
     let js;
     if ( sourceFile.endsWith( '.wgsl' ) ) {
       const pathToRoot = '../'.repeat( sourceFile.match( /\//g ).length - 1 );
@@ -171,8 +135,7 @@ class Transpiler {
         // in every sim repo.  This strategy is also used in transpile.js
         presets: [
           '../chipper/node_modules/@babel/preset-typescript',
-          '../chipper/node_modules/@babel/preset-react',
-          ...( mode === 'js' ? [] : [ [ '../chipper/node_modules/@babel/preset-env', { modules: 'commonjs' } ] ] )
+          '../chipper/node_modules/@babel/preset-react'
         ],
         sourceMaps: 'inline',
 
@@ -180,13 +143,6 @@ class Transpiler {
           [ '../chipper/node_modules/@babel/plugin-proposal-decorators', { version: '2022-03' } ]
         ]
       } ).code;
-
-      /**
-       * TODO: Generalize this so it can look up the appropriate path for any dependency, see https://github.com/phetsims/chipper/issues/1437
-       * This can be accomplished with a babel plugin.
-       * Note aqua, perennial, perennial-alias, rosetta and skiffle each require (a possibly different version of) winston
-       */
-      js = js.split( 'require(\'winston\')' ).join( 'require(\'../../../../../../perennial-alias/node_modules/winston\')' );
     }
 
     fs.mkdirSync( path.dirname( targetPath ), { recursive: true } );
@@ -207,11 +163,10 @@ class Transpiler {
   }
 
   // @public.  Delete any files in chipper/dist/js that don't have a corresponding file in the source tree
-  pruneStaleDistFiles( mode ) {
-    assert( mode === 'js' || mode === 'commonjs', 'invalid mode: ' + mode );
+  pruneStaleDistFiles() {
     const startTime = Date.now();
 
-    const start = `../chipper/dist/${mode}/`;
+    const start = '../chipper/dist/js/';
 
     const visitFile = path => {
       path = Transpiler.forwardSlashify( path );
@@ -253,7 +208,7 @@ class Transpiler {
 
     const endTime = Date.now();
     const elapsed = endTime - startTime;
-    console.log( `Clean stale chipper/dist/${mode} files finished in ` + elapsed + 'ms' );
+    console.log( 'Clean stale chipper/dist/js files finished in ' + elapsed + 'ms' );
   }
 
   // @public join and normalize the paths (forward slashes for ease of search and readability)
@@ -262,12 +217,12 @@ class Transpiler {
   }
 
   /**
+   * For *.ts and *.js files, checks if they have changed file contents since last transpile.  If so, the
+   * file is transpiled.
    * @param {string} filePath
-   * @param {string} mode - 'js' or 'commonjs'
    * @private
    */
-  visitFileWithMode( filePath, mode ) {
-    assert( mode === 'js' || mode === 'commonjs', 'invalid mode: ' + mode );
+  visitFile( filePath ) {
     if ( _.some( [ '.js', '.ts', '.tsx', '.wgsl', '.mjs' ], extension => filePath.endsWith( extension ) ) &&
          !this.isPathIgnored( filePath ) ) {
 
@@ -278,29 +233,18 @@ class Transpiler {
       // If the file has changed, transpile and update the cache.  We have to choose on the spectrum between safety
       // and performance.  In order to maintain high performance with a low error rate, we only write the transpiled file
       // if (a) the cache is out of date (b) there is no target file at all or (c) if the target file has been modified.
-      const targetPath = Transpiler.getTargetPath( filePath, mode );
+      const targetPath = Transpiler.getTargetPath( filePath );
 
-      const statusKey = getStatusKey( filePath, mode );
-
-      if (
-        !this.status[ statusKey ] ||
-        this.status[ statusKey ].sourceMD5 !== hash ||
-        !fs.existsSync( targetPath ) ||
-        this.status[ statusKey ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath )
-      ) {
+      if ( !this.status[ filePath ] || this.status[ filePath ].sourceMD5 !== hash || !fs.existsSync( targetPath ) || this.status[ filePath ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) {
 
         try {
           let reason = '';
           if ( this.verbose ) {
-            reason = ( !this.status[ statusKey ] ) ? ' (not cached)' :
-                     ( this.status[ statusKey ].sourceMD5 !== hash ) ? ' (changed)' :
-                     ( !fs.existsSync( targetPath ) ) ? ' (no target)' :
-                     ( this.status[ statusKey ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' :
-                     '???';
+            reason = ( !this.status[ filePath ] ) ? ' (not cached)' : ( this.status[ filePath ].sourceMD5 !== hash ) ? ' (changed)' : ( !fs.existsSync( targetPath ) ) ? ' (no target)' : ( this.status[ filePath ].targetMilliseconds !== Transpiler.modifiedTimeMilliseconds( targetPath ) ) ? ' (target modified)' : '???';
           }
-          this.transpileFunction( filePath, targetPath, text, mode );
+          this.transpileFunction( filePath, targetPath, text );
 
-          this.status[ statusKey ] = {
+          this.status[ filePath ] = {
             sourceMD5: hash,
             targetMilliseconds: Transpiler.modifiedTimeMilliseconds( targetPath )
           };
@@ -308,7 +252,7 @@ class Transpiler {
           const now = Date.now();
           const nowTimeString = new Date( now ).toLocaleTimeString();
 
-          !this.silent && console.log( `${nowTimeString}, ${( now - changeDetectedTime )} ms: ${filePath} ${mode}${reason}` );
+          !this.silent && console.log( `${nowTimeString}, ${( now - changeDetectedTime )} ms: ${filePath}${reason}` );
         }
         catch( e ) {
           console.log( e );
@@ -318,21 +262,8 @@ class Transpiler {
     }
   }
 
-  /**
-   * For *.ts and *.js files, checks if they have changed file contents since last transpile.  If so, the
-   * file is transpiled.
-   * @param {string} filePath
-   * @param {string[]} modes - some of 'js','commonjs'
-   * @private
-   */
-  visitFile( filePath, modes ) {
-    assert( Array.isArray( modes ), 'invalid modes: ' + modes );
-    modes.forEach( mode => this.visitFileWithMode( filePath, mode ) );
-  }
-
   // @private - Recursively visit a directory for files to transpile
-  visitDirectory( dir, modes ) {
-    assert( Array.isArray( modes ), 'invalid modes: ' + modes );
+  visitDirectory( dir ) {
     if ( fs.existsSync( dir ) ) {
       const files = fs.readdirSync( dir );
       files.forEach( file => {
@@ -341,10 +272,10 @@ class Transpiler {
         assert( !child.endsWith( '/dist' ), 'Invalid path: ' + child + ' should not be in dist directory.' );
 
         if ( fs.lstatSync( child ).isDirectory() ) {
-          this.visitDirectory( child, modes );
+          this.visitDirectory( child );
         }
         else {
-          this.visitFile( child, modes );
+          this.visitFile( child );
         }
       } );
     }
@@ -395,33 +326,27 @@ class Transpiler {
     repos.forEach( repo => this.transpileRepo( repo ) );
   }
 
-  // @public - Visit all the subdirectories in a repo that need transpilation for the specified modes
-  transpileRepoWithModes( repo, modes ) {
-    assert( Array.isArray( modes ), 'modes should be an array' );
-    subdirs.forEach( subdir => this.visitDirectory( Transpiler.join( '..', repo, subdir ), modes ) );
+  // @public - Visit all the subdirectories in a repo that need transpilation
+  transpileRepo( repo ) {
+    subdirs.forEach( subdir => this.visitDirectory( Transpiler.join( '..', repo, subdir ) ) );
     if ( repo === 'sherpa' ) {
 
       // Our sims load this as a module rather than a preload, so we must transpile it
-      this.visitFile( Transpiler.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ), modes );
-      this.visitFile( Transpiler.join( '..', repo, 'lib', 'pako-2.0.3.min.js' ), modes ); // used for phet-io-wrappers tests
-      this.visitFile( Transpiler.join( '..', repo, 'lib', 'big-6.2.1.mjs' ), modes ); // for consistent, cross-browser number operations (thanks javascript)
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'game-up-camera-1.0.0.js' ) );
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'pako-2.0.3.min.js' ) ); // used for phet-io-wrappers tests
+      this.visitFile( Transpiler.join( '..', repo, 'lib', 'big-6.2.1.mjs' ) ); // for consistent, cross-browser number operations (thanks javascript)
       Object.keys( webpackGlobalLibraries ).forEach( key => {
         const libraryFilePath = webpackGlobalLibraries[ key ];
-        this.visitFile( Transpiler.join( '..', ...libraryFilePath.split( '/' ) ), modes );
+        this.visitFile( Transpiler.join( '..', ...libraryFilePath.split( '/' ) ) );
       } );
     }
     else if ( repo === 'brand' ) {
-      this.visitDirectory( Transpiler.join( '..', repo, 'phet' ), modes );
-      this.visitDirectory( Transpiler.join( '..', repo, 'phet-io' ), modes );
-      this.visitDirectory( Transpiler.join( '..', repo, 'adapted-from-phet' ), modes );
+      this.visitDirectory( Transpiler.join( '..', repo, 'phet' ) );
+      this.visitDirectory( Transpiler.join( '..', repo, 'phet-io' ) );
+      this.visitDirectory( Transpiler.join( '..', repo, 'adapted-from-phet' ) );
 
-      this.brands.forEach( brand => this.visitDirectory( Transpiler.join( '..', repo, brand ), modes ) );
+      this.brands.forEach( brand => this.visitDirectory( Transpiler.join( '..', repo, brand ) ) );
     }
-  }
-
-  // @public - Visit all the subdirectories in a repo that need transpilation
-  transpileRepo( repo ) {
-    this.transpileRepoWithModes( repo, getModesForRepo( repo ) );
   }
 
   // @public
@@ -486,25 +411,17 @@ class Transpiler {
       const pathExists = fs.existsSync( filePath );
 
       if ( !pathExists ) {
-
-        // TODO: This should be a constant for "all supported modes" https://github.com/phetsims/chipper/issues/1437
-        const modes = [ 'js', 'commonjs' ];
-
-        modes.forEach( mode => {
-          const targetPath = Transpiler.getTargetPath( filePath, mode );
+        const targetPath = Transpiler.getTargetPath( filePath );
           if ( fs.existsSync( targetPath ) && fs.lstatSync( targetPath ).isFile() ) {
             fs.unlinkSync( targetPath );
 
-            const statusKey = getStatusKey( filePath, mode );
-
-            delete this.status[ statusKey ];
+          delete this.status[ filePath ];
             this.saveCache();
             const now = Date.now();
             const reason = ' (deleted)';
 
-            !this.silent && console.log( `${new Date( now ).toLocaleTimeString()}, ${( now - changeDetectedTime )} ms: ${filePath}${mode}${reason}` );
+          !this.silent && console.log( `${new Date( now ).toLocaleTimeString()}, ${( now - changeDetectedTime )} ms: ${filePath}${reason}` );
           }
-        } );
 
         return;
       }
@@ -523,10 +440,9 @@ class Transpiler {
       }
       else {
         const terms = filename.split( path.sep );
-        const repo = terms[ 0 ];
-        if ( ( this.activeRepos.includes( repo ) || this.repos.includes( repo ) )
+        if ( ( this.activeRepos.includes( terms[ 0 ] ) || this.repos.includes( terms[ 0 ] ) )
              && subdirs.includes( terms[ 1 ] ) && pathExists ) {
-          this.visitFile( filePath, getModesForRepo( repo ) );
+          this.visitFile( filePath );
         }
       }
     } );
