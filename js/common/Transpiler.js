@@ -103,8 +103,7 @@ class Transpiler {
     const relativePath = path.relative( root, filename );
     const suffix = relativePath.substring( relativePath.lastIndexOf( '.' ) );
 
-    // Note: When we upgrade to Node 16, this may no longer be necessary, see https://github.com/phetsims/chipper/issues/1437#issuecomment-1222574593
-    // TODO: Get rid of mjs?: https://github.com/phetsims/chipper/issues/1437
+    // Some files such as sherpa's big.mjs have a *.mjs suffix, so we must transpile them.
     const isMJS = relativePath.endsWith( '.mjs' );
 
     const extension = isMJS ? '.mjs' : '.js';
@@ -412,16 +411,16 @@ class Transpiler {
 
       if ( !pathExists ) {
         const targetPath = Transpiler.getTargetPath( filePath );
-          if ( fs.existsSync( targetPath ) && fs.lstatSync( targetPath ).isFile() ) {
-            fs.unlinkSync( targetPath );
+        if ( fs.existsSync( targetPath ) && fs.lstatSync( targetPath ).isFile() ) {
+          fs.unlinkSync( targetPath );
 
           delete this.status[ filePath ];
-            this.saveCache();
-            const now = Date.now();
-            const reason = ' (deleted)';
+          this.saveCache();
+          const now = Date.now();
+          const reason = ' (deleted)';
 
           !this.silent && console.log( `${new Date( now ).toLocaleTimeString()}, ${( now - changeDetectedTime )} ms: ${filePath}${reason}` );
-          }
+        }
 
         return;
       }
