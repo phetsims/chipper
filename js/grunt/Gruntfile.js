@@ -36,10 +36,9 @@ module.exports = function( grunt ) {
   const repo = grunt.option( 'repo' ) || packageObject.name;
   assert( typeof repo === 'string' && /^[a-z]+(-[a-z]+)*$/u.test( repo ), 'repo name should be composed of lower-case characters, optionally with dashes used as separators' );
 
-  // TODO: Compare with the perennial forwarding below: https://github.com/phetsims/chipper/issues/1459
   function execTask( taskFilename ) {
 
-    // TODO switch to npx tsx, see https://github.com/phetsims/chipper/issues/1459 via npx ../chipper/node_modules/tsx
+    // TODO: switch to npx tsx, see https://github.com/phetsims/chipper/issues/1459 via npx ../chipper/node_modules/.bin/tsx
     // TODO: test on windows, see https://github.com/phetsims/chipper/issues/1459, maybe like gruntCommand.js
     const command = 'node';
 
