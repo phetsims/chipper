@@ -13,8 +13,6 @@ const assert = require( 'assert' );
 require( './checkNodeVersion' );
 const { spawn } = require( 'child_process' ); // eslint-disable-line require-statement-match
 
-// TODO: Will ctrl-c correctly kill spawned tasks? https://github.com/phetsims/chipper/issues/1459
-
 // Allow other Gruntfiles to potentially handle exiting and errors differently
 if ( !global.processEventOptOut ) {
 
@@ -36,7 +34,7 @@ module.exports = function( grunt ) {
   const repo = grunt.option( 'repo' ) || packageObject.name;
   assert( typeof repo === 'string' && /^[a-z]+(-[a-z]+)*$/u.test( repo ), 'repo name should be composed of lower-case characters, optionally with dashes used as separators' );
 
-  // TODO: This is working well but should we use execute? Let's chat: https://github.com/phetsims/chipper/issues/1459
+  // TODO: Compare with the perennial forwarding below: https://github.com/phetsims/chipper/issues/1459
   function execTask( taskFilename ) {
 
     // TODO switch to npx tsx, see https://github.com/phetsims/chipper/issues/1459 via npx ../chipper/node_modules/tsx
@@ -186,18 +184,17 @@ Updates the normal automatically-generated files for this repository. Includes:
     execTask( 'unpublished-README.js' )
   );
 
-  // TODO: https://github.com/phetsims/chipper/issues/1459 probably does not need to be here in grunt. Separate issue for list to prune. Bring to dev meeting. chipper + perennial
+  // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt. Does anyone use it?
   grunt.registerTask( 'sort-imports', 'Sort the import statements for a single file (if --file={{FILE}} is provided), or does so for all JS files if not specified',
     execTask( 'sort-imports.js' )
   );
 
-  // TODO: https://github.com/phetsims/chipper/issues/1459 probably does not need to be here in grunt
+  // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt
   grunt.registerTask( 'commits-since', 'Shows commits since a specified date. Use --date=<date> to specify the date.',
     execTask( 'commits-since.js' )
   );
 
   // See reportMedia.js
-  // TODO: https://github.com/phetsims/chipper/issues/1459 probably does not need to be here in grunt
   grunt.registerTask( 'report-media',
     '(project-wide) Report on license.json files throughout all working copies. ' +
     'Reports any media (such as images or sound) files that have any of the following problems:\n' +
@@ -208,7 +205,7 @@ Updates the normal automatically-generated files for this repository. Includes:
   );
 
   // see reportThirdParty.js
-  // TODO: https://github.com/phetsims/chipper/issues/1459 probably does not need to be here in grunt
+  // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt
   grunt.registerTask( 'report-third-party',
     'Creates a report of third-party resources (code, images, sound, etc) used in the published PhET simulations by ' +
     'reading the license information in published HTML files on the PhET website. This task must be run from main.  ' +
@@ -226,7 +223,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     execTask( 'update-copyright-dates.js' )
   );
 
-  // TODO: https://github.com/phetsims/chipper/issues/1459 probably does not need to be here in grunt
+  // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt, or maybe just delete?
   grunt.registerTask(
     'webpack-dev-server', `Runs a webpack server for a given list of simulations.
 --repos=REPOS for a comma-separated list of repos (defaults to current repo)
@@ -279,7 +276,7 @@ Updates the normal automatically-generated files for this repository. Includes:
     execTask( 'compare-phet-io-api.js' )
   );
 
-  // TODO: https://github.com/phetsims/chipper/issues/1459 probably does not need to be here in grunt
+  // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt. Does anyone use it? Search for docs in the code review checklist
   grunt.registerTask( 'profile-file-size', 'Profiles the file size of the built JS file for a given repo',
     execTask( 'profile-file-size.js' )
   );
