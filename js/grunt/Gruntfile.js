@@ -11,7 +11,9 @@
 
 const assert = require( 'assert' );
 require( './checkNodeVersion' );
-const { spawn } = require( 'child_process' ); // eslint-disable-line require-statement-match
+const child_process = require( 'child_process' );
+
+const isWindows = /^win/.test( process.platform );
 
 // Allow other Gruntfiles to potentially handle exiting and errors differently
 if ( !global.processEventOptOut ) {
@@ -42,26 +44,7 @@ module.exports = function( grunt ) {
     const command = 'node';
 
     return () => {
-
-      const done = grunt.task.current.async();
-      try {
-        const child = spawn( command, [ `../chipper/js/grunt/tasks/${taskFilename}`, ...process.argv.slice( 2 ) ], { stdio: [ 'inherit', 'pipe', 'pipe' ] } );
-
-        child.stdout.on( 'data', data => process.stdout.write( data.toString() ) );
-        child.stderr.on( 'data', data => process.stderr.write( data.toString() ) );
-
-        // Listen for the close event when the command finishes
-        child.on( 'close', code => {
-          done();
-          if ( code !== 0 ) {
-            grunt.fail.fatal( `Command failed with exit code ${code}` );
-          }
-        } );
-      }
-      catch( e ) {
-        grunt.fail.fatal( e );
-        done();
-      }
+      spawn( command, [ `../chipper/js/grunt/tasks/${taskFilename}`, ...process.argv.slice( 2 ) ], process.cwd(), false );
     };
   }
 
@@ -292,31 +275,39 @@ Updates the normal automatically-generated files for this repository. Includes:
   function forwardToPerennialGrunt( task ) {
     grunt.registerTask( task, 'Run grunt --help in perennial to see documentation', () => {
       grunt.log.writeln( '(Forwarding task to perennial)' );
-      const child_process = require( 'child_process' );
-      const done = grunt.task.current.async();
-
-      // Include the --repo flag
       const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
-      const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
-      const isWindows = /^win/.test( process.platform );
-      const spawned = child_process.spawn( isWindows ? 'grunt.cmd' : 'grunt', args, {
-        cwd: '../perennial',
-        shell: isWindows // shell is required for a NodeJS security update, see https://github.com/phetsims/perennial/issues/359
-      } );
-      grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
+      spawn( isWindows ? 'grunt.cmd' : 'grunt', args, '../perennial', true );
+    } );
+  }
 
-      spawned.stderr.on( 'data', data => grunt.log.error( data.toString() ) );
-      spawned.stdout.on( 'data', data => grunt.log.write( data.toString() ) );
-      process.stdin.pipe( spawned.stdin );
+  /**
+   * Spawns a child process to run a command with the specified arguments.
+   *
+   * @param {string} command - The command to run.
+   * @param {string[]} args - The arguments to pass to the command.
+   * @param {string} cwd - The current working directory for the child process.
+   * @param {boolean} [log=false] - Whether to log the command and arguments.
+   */
+  function spawn( command, args, cwd, log = false ) {
+    const done = grunt.task.current.async();
+    const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
+    const spawned = child_process.spawn( command, args, {
+      cwd: cwd,
+      shell: isWindows // shell is required for a NodeJS security update, see https://github.com/phetsims/perennial/issues/359
+    } );
+    log && grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
 
-      spawned.on( 'close', code => {
-        if ( code !== 0 ) {
-          throw new Error( `perennial grunt ${argsString} failed with code ${code}` );
-        }
-        else {
-          done();
-        }
-      } );
+    spawned.stderr.on( 'data', data => grunt.log.error( data.toString() ) );
+    spawned.stdout.on( 'data', data => grunt.log.write( data.toString() ) );
+    process.stdin.pipe( spawned.stdin );
+
+    spawned.on( 'close', code => {
+      if ( code !== 0 ) {
+        throw new Error( `perennial grunt ${argsString} failed with code ${code}` );
+      }
+      else {
+        done();
+      }
     } );
   }
 
