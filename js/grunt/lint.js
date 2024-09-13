@@ -200,7 +200,7 @@ const lint = async ( originalRepos, options ) => {
   }
 };
 
-const repoRootPath = path.join( process.cwd(), '../' ); // Will end in a slash
+const repoRootPath = path.join( __dirname, '../../../' ); // Will end in a slash
 const escaped = repoRootPath.replace( /\\/g, '\\\\' ); // Handle any backslashes in the path
 
 // Regex that captures the repo via the path

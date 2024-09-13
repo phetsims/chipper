@@ -37,7 +37,7 @@ module.exports = async ( repos, port, devtool, openChrome = false ) => {
       const packageObject = JSON.parse( fs.readFileSync( packageFile, 'utf-8' ) );
       if ( packageObject.phet && packageObject.phet.requirejsNamespace ) {
         reposByNamespace[ packageObject.phet.requirejsNamespace ] = repo;
-        aliases[ packageObject.phet.requirejsNamespace ] = path.resolve( process.cwd(), `../${repo}${repo === 'brand' ? '/phet' : ''}/js` );
+        aliases[ packageObject.phet.requirejsNamespace ] = path.resolve( __dirname, `../../../${repo}${repo === 'brand' ? '/phet' : ''}/js` );
       }
     }
   }
@@ -65,7 +65,7 @@ module.exports = async ( repos, port, devtool, openChrome = false ) => {
     entry: entries,
 
     output: {
-      path: path.resolve( process.cwd(), `../chipper/${ChipperConstants.BUILD_DIR}` ),
+      path: path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}` ),
       filename: '[name].js',
       publicPath: '/dist/'
     },
@@ -112,7 +112,7 @@ module.exports = async ( repos, port, devtool, openChrome = false ) => {
 
   const server = new WebpackDevServer( {
     static: {
-      directory: path.join( process.cwd(), '../' )
+      directory: path.join( __dirname, '../../../' )
     },
     compress: true,
     port: port,
