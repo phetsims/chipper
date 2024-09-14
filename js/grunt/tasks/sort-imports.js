@@ -1,21 +1,16 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './util/getRepo' );
-
 /**
  * @author Sam Reid (PhET Interactive Simulations)
  */
-const grunt = require( 'grunt' );
-const repo = getRepo();
 
+const getRepo = require( './util/getRepo' );
+const grunt = require( 'grunt' );
+const getOption = require( './util/getOption' );
 const sortImports = require( '../sortImports' );
 
-const parseGruntOptions = require( './util/parseGruntOptions' );
-
-// Initialize Grunt options with parsed arguments
-grunt.option.init( parseGruntOptions() );
-
-const file = grunt.option( 'file' );
+const repo = getRepo();
+const file = getOption( 'file' );
 
 if ( file ) {
   sortImports( file );

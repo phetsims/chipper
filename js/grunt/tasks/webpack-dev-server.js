@@ -5,18 +5,18 @@
  */
 
 const getRepo = require( './util/getRepo' );
-const grunt = require( 'grunt' );
 const webpackDevServer = require( '../webpackDevServer' );
+const getOption = require( './util/getOption' );
 
 const repo = getRepo();
 
-const repos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [ repo ];
-const port = grunt.option( 'port' ) || 9000;
-let devtool = grunt.option( 'devtool' ) || 'inline-source-map';
+const repos = getOption( 'repos' ) ? getOption( 'repos' ).split( ',' ) : [ repo ];
+const port = getOption( 'port' ) || 9000;
+let devtool = getOption( 'devtool' ) || 'inline-source-map';
 if ( devtool === 'none' || devtool === 'undefined' ) {
   devtool = undefined;
 }
-const openChrome = grunt.option( 'chrome' ) || false;
+const openChrome = getOption( 'chrome' ) || false;
 
 // NOTE: We don't care about the promise that is returned here, because we are going to keep this task running
 // until the user manually kills it.

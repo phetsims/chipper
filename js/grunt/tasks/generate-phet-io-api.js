@@ -12,17 +12,14 @@ const formatPhetioAPI = require( '../../phet-io/formatPhetioAPI' );
 const getSimList = require( '../../common/getSimList' );
 const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI' );
 const fs = require( 'fs' );
-const parseGruntOptions = require( './util/parseGruntOptions' );
-
-// Initialize Grunt options with parsed arguments
-grunt.option.init( parseGruntOptions() );
+const getOption = require( './util/getOption' );
 
 const sims = getSimList().length === 0 ? [ repo ] : getSimList();
 
 // Ideally transpilation would be a no-op if the watch process is running. However, it can take 2+ seconds on
 // macOS to check all files, and sometimes much longer (50+ seconds) if the cache mechanism is failing.
 // So this "skip" is a band-aid until we reduce those other problems.
-const skipTranspile = grunt.option( 'transpile' ) === false;
+const skipTranspile = getOption( 'transpile' ) === false;
 if ( !skipTranspile ) {
   const startTime = Date.now();
 
@@ -56,7 +53,7 @@ else {
     catch( e ) {
       // Directory exists
     }
-    const filePath = `${dir}/${sim}-phet-io-api${grunt.option( 'temporary' ) ? '-temporary' : ''}.json`;
+    const filePath = `${dir}/${sim}-phet-io-api${getOption( 'temporary' ) ? '-temporary' : ''}.json`;
     const api = results[ sim ];
     api && fs.writeFileSync( filePath, formatPhetioAPI( api ) );
   } );

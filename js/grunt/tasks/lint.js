@@ -6,19 +6,16 @@
 const grunt = require( 'grunt' );
 const getRepo = require( './util/getRepo' );
 const lint = require( '../lint' );
-const parseGruntOptions = require( './util/parseGruntOptions' );
+const getOption = require( './util/getOption' );
 
 const repo = getRepo();
 
-// Initialize Grunt options with parsed arguments
-grunt.option.init( parseGruntOptions() );
-
 ( async () => {
-  const cache = !grunt.option( 'disable-eslint-cache' );
-  const fix = grunt.option( 'fix' );
-  const chipAway = grunt.option( 'chip-away' );
+  const cache = !getOption( 'disable-eslint-cache' );
+  const fix = getOption( 'fix' );
+  const chipAway = getOption( 'chip-away' );
 
-  const extraRepos = grunt.option( 'repos' ) ? grunt.option( 'repos' ).split( ',' ) : [];
+  const extraRepos = getOption( 'repos' ) ? getOption( 'repos' ).split( ',' ) : [];
 
   const lintReturnValue = await lint( [ repo, ...extraRepos ], {
     cache: cache,

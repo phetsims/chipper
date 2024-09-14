@@ -4,28 +4,23 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const assert = require( 'assert' );
-const grunt = require( 'grunt' );
-
-const parseGruntOptions = require( './parseGruntOptions' );
-
-// Initialize Grunt options with parsed arguments
-grunt.option.init( parseGruntOptions() );
+const getOption = require( './getOption' );
 
 const getBrands = ( grunt, repo, buildLocal ) => {
 
   // Determine what brands we want to build
-  assert( !grunt.option( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
+  assert( !getOption( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
 
   const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const supportedBrands = localPackageObject.phet.supportedBrands || [];
 
   let brands;
-  if ( grunt.option( 'brands' ) ) {
-    if ( grunt.option( 'brands' ) === '*' ) {
+  if ( getOption( 'brands' ) ) {
+    if ( getOption( 'brands' ) === '*' ) {
       brands = supportedBrands;
     }
     else {
-      brands = grunt.option( 'brands' ).split( ',' );
+      brands = getOption( 'brands' ).split( ',' );
     }
   }
   else if ( buildLocal.brands ) {

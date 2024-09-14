@@ -5,14 +5,10 @@ const getRepo = require( './util/getRepo' );
 /**
  * @author Sam Reid (PhET Interactive Simulations)
  */
-const grunt = require( 'grunt' );
 const repo = getRepo();
-const parseGruntOptions = require( './util/parseGruntOptions' );
+const getOption = require( './util/getOption' );
 
-// Initialize Grunt options with parsed arguments
-grunt.option.init( parseGruntOptions() );
-
-const dateString = grunt.option( 'date' );
+const dateString = getOption( 'date' );
 assert( dateString, 'missing required option: --date={{DATE}}' );
 
 const commitsSince = require( '../commitsSince' );

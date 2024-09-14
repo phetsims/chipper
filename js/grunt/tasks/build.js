@@ -19,13 +19,9 @@ const getRepo = require( './util/getRepo' );
 const assert = require( 'assert' );
 const Transpiler = require( '../../common/Transpiler' );
 const getBrands = require( './util/getBrands' );
-const parseGruntOptions = require( './util/parseGruntOptions' );
+const getOption = require( './util/getOption' );
 
 const repo = getRepo();
-
-// Initialize Grunt options with parsed arguments
-// Call this before getBrands
-grunt.option.init( parseGruntOptions() );
 
 const transpiler = new Transpiler( { silent: true } );
 
@@ -45,7 +41,7 @@ catch( e ) {
     const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
     const minifyOptions = {};
     minifyKeys.forEach( minifyKey => {
-      const option = grunt.option( `minify.${minifyKey}` );
+      const option = getOption( `minify.${minifyKey}` );
       if ( option === true || option === false ) {
         minifyOptions[ minifyKey ] = option;
       }
@@ -56,7 +52,7 @@ catch( e ) {
     // Run the type checker first.
     const brands = getBrands( grunt, repo, buildLocal );
 
-    !grunt.option( 'noTSC' ) && await phetTimingLog.startAsync( 'tsc', async () => {
+    !getOption( 'noTSC' ) && await phetTimingLog.startAsync( 'tsc', async () => {
 
       // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
       // do NOT run this for phet-lib, since it is type-checking things under src/, which is not desirable.
@@ -69,7 +65,7 @@ catch( e ) {
       }
     } );
 
-    !grunt.option( 'noTranspile' ) && await phetTimingLog.startAsync( 'transpile', () => {
+    !getOption( 'noTranspile' ) && await phetTimingLog.startAsync( 'transpile', () => {
       // If that succeeds, then convert the code to JS
       transpiler.transpileRepos( getPhetLibs( repo ) );
     } );
@@ -106,10 +102,10 @@ catch( e ) {
 
       // Other options
       const allHTML = true; // Always build this artifact
-      const encodeStringMap = grunt.option( 'encodeStringMap' ) !== false;
-      const compressScripts = !!grunt.option( 'compressScripts' );
-      const profileFileSize = !!grunt.option( 'profileFileSize' );
-      const localesOption = grunt.option( 'locales' ) || 'en'; // Default back to English for now
+      const encodeStringMap = getOption( 'encodeStringMap' ) !== false;
+      const compressScripts = !!getOption( 'compressScripts' );
+      const profileFileSize = !!getOption( 'profileFileSize' );
+      const localesOption = getOption( 'locales' ) || 'en'; // Default back to English for now
 
       for ( const brand of brands ) {
         grunt.log.writeln( `Building brand: ${brand}` );

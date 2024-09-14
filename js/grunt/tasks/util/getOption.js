@@ -8,8 +8,10 @@
 // See usage in chipper/node_modules/grunt-cli/bin/grunt
 const nopt = require( 'nopt' );
 
-module.exports = function( grunt ) {
+const options = nopt( {}, {}, process.argv, 2 );
 
-  const options = nopt( {}, {}, process.argv, 2 );
-  return options;
+module.exports = function( keyName ) {
+  return options[ keyName ];
 };
+
+// TODO: Unit tests to make sure options are parsed correctly from Gruntfile.js to here https://github.com/phetsims/chipper/issues/1459

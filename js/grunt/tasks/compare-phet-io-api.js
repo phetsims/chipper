@@ -6,19 +6,14 @@ const getRepo = require( './util/getRepo' );
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const grunt = require( 'grunt' );
-const repo = getRepo();
-
-const parseGruntOptions = require( './util/parseGruntOptions' );
-
-// Initialize Grunt options with parsed arguments
-grunt.option.init( parseGruntOptions() );
-
 const getSimList = require( '../../common/getSimList' );
 const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI' );
 const fs = require( 'fs' );
+const getOption = require( './util/getOption' );
 
+const repo = getRepo();
 const sims = getSimList().length === 0 ? [ repo ] : getSimList();
-const temporary = grunt.option( 'temporary' );
+const temporary = getOption( 'temporary' );
 let proposedAPIs = null;
 
 ( async () => {
@@ -42,11 +37,11 @@ let proposedAPIs = null;
 
 // Don't add to options object if values are `undefined` (as _.extend will keep those entries and not mix in defaults
   const options = {};
-  if ( grunt.option( 'delta' ) ) {
-    options.delta = grunt.option( 'delta' );
+  if ( getOption( 'delta' ) ) {
+    options.delta = getOption( 'delta' );
   }
-  if ( grunt.option( 'compareBreakingAPIChanges' ) ) {
-    options.compareBreakingAPIChanges = grunt.option( 'compareBreakingAPIChanges' );
+  if ( getOption( 'compareBreakingAPIChanges' ) ) {
+    options.compareBreakingAPIChanges = getOption( 'compareBreakingAPIChanges' );
   }
   const ok = await require( '../phet-io/phetioCompareAPISets' )( sims, proposedAPIs, options );
   !ok && grunt.fail.fatal( 'PhET-iO API comparison failed' );

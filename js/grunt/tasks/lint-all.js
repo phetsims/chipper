@@ -12,12 +12,7 @@ const lint = require( '../lint' );
 
 const repo = getRepo();
 
-const parseGruntOptions = require( './util/parseGruntOptions' );
-
-// Initialize Grunt options with parsed arguments
-// Call this before getBrands.
-// TODO: Should getBrands just call this again to be safe? https://github.com/phetsims/chipper/issues/1459
-grunt.option.init( parseGruntOptions() );
+const getOption = require( './util/getOption' );
 
 // Handle the lack of build.json
 let buildLocal;
@@ -29,10 +24,10 @@ catch( e ) {
 }
 
 // --disable-eslint-cache disables the cache, useful for developing rules
-const cache = !grunt.option( 'disable-eslint-cache' );
-const fix = grunt.option( 'fix' );
-const chipAway = grunt.option( 'chip-away' );
-assert && assert( !grunt.option( 'patterns' ), 'patterns not support for lint-all' );
+const cache = !getOption( 'disable-eslint-cache' );
+const fix = getOption( 'fix' );
+const chipAway = getOption( 'chip-away' );
+assert && assert( !getOption( 'patterns' ), 'patterns not support for lint-all' );
 
 const getPhetLibs = require( '../getPhetLibs' );
 
