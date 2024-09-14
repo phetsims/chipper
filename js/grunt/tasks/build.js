@@ -15,11 +15,11 @@ const getPhetLibs = require( '../getPhetLibs' );
 const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog' );
 
 const grunt = require( 'grunt' );
-const getRepo = require( './getRepo' );
+const getRepo = require( './util/getRepo' );
 const assert = require( 'assert' );
 const Transpiler = require( '../../common/Transpiler' );
-const getBrands = require( './getBrands' );
-const parseGruntOptions = require( './parseGruntOptions' );
+const getBrands = require( './util/getBrands' );
+const parseGruntOptions = require( './util/parseGruntOptions' );
 
 const repo = getRepo();
 

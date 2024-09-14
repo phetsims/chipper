@@ -4,9 +4,9 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const grunt = require( 'grunt' );
-const getRepo = require( './getRepo' );
+const getRepo = require( './util/getRepo' );
 const lint = require( '../lint' );
-const parseGruntOptions = require( './parseGruntOptions' );
+const parseGruntOptions = require( './util/parseGruntOptions' );
 
 const repo = getRepo();
 

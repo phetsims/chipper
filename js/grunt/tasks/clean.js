@@ -4,7 +4,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-const getRepo = require( './getRepo' );
+const getRepo = require( './util/getRepo' );
 const grunt = require( 'grunt' );
 
 const repo = getRepo();

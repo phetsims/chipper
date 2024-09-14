@@ -1,6 +1,6 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './getRepo' );
+const getRepo = require( './util/getRepo' );
 
 /**
  * @author Sam Reid (PhET Interactive Simulations)

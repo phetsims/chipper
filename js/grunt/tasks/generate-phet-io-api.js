@@ -1,6 +1,6 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './getRepo' );
+const getRepo = require( './util/getRepo' );
 
 /**
  * @author Sam Reid (PhET Interactive Simulations)
@@ -12,7 +12,7 @@ const formatPhetioAPI = require( '../../phet-io/formatPhetioAPI' );
 const getSimList = require( '../../common/getSimList' );
 const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI' );
 const fs = require( 'fs' );
-const parseGruntOptions = require( './parseGruntOptions' );
+const parseGruntOptions = require( './util/parseGruntOptions' );
 
 // Initialize Grunt options with parsed arguments
 grunt.option.init( parseGruntOptions() );

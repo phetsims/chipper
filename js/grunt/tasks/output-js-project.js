@@ -6,7 +6,7 @@ const grunt = require( 'grunt' );
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const Transpiler = require( '../../common/Transpiler' );
-const parseGruntOptions = require( './parseGruntOptions' );
+const parseGruntOptions = require( './util/parseGruntOptions' );
 const transpiler = new Transpiler( { silent: true } );
 
 grunt.option.init( parseGruntOptions() );

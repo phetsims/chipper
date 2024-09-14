@@ -1,7 +1,7 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './getRepo' );
-const getBrands = require( './getBrands' );
+const getRepo = require( './util/getRepo' );
+const getBrands = require( './util/getBrands' );
 const assert = require( 'assert' );
 const grunt = require( 'grunt' );
 const lint = require( '../lint' );
@@ -12,7 +12,7 @@ const lint = require( '../lint' );
 
 const repo = getRepo();
 
-const parseGruntOptions = require( './parseGruntOptions' );
+const parseGruntOptions = require( './util/parseGruntOptions' );
 
 // Initialize Grunt options with parsed arguments
 // Call this before getBrands.
