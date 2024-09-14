@@ -50,6 +50,7 @@
     "marked": "~4.0.1",
     "modify-source-webpack-plugin": "~4.1.0",
     "node-html-encoder": "~0.0.2",
+    "nopt": "~4.0.1",
     "pako": "~2.0.4",
     "pngjs": "~6.0.0",
     "puppeteer": "~19.2.2",
