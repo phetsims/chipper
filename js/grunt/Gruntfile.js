@@ -37,9 +37,6 @@ module.exports = function( grunt ) {
   assert( typeof repo === 'string' && /^[a-z]+(-[a-z]+)*$/u.test( repo ), 'repo name should be composed of lower-case characters, optionally with dashes used as separators' );
 
   function execTask( taskFilename ) {
-
-    // TODO: switch to npx tsx, see https://github.com/phetsims/chipper/issues/1459 via npx ../chipper/node_modules/.bin/tsx
-    // TODO: test on windows, see https://github.com/phetsims/chipper/issues/1459, maybe like gruntCommand.js
     const command = 'node';
 
     return () => {

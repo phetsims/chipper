@@ -13,5 +13,3 @@ const options = nopt( {}, {}, process.argv, 2 );
 module.exports = function( keyName ) {
   return options[ keyName ];
 };
-
-// TODO: Unit tests to make sure options are parsed correctly from Gruntfile.js to here https://github.com/phetsims/chipper/issues/1459

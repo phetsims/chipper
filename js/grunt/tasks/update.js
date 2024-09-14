@@ -24,7 +24,6 @@ else {
   ( async () => {
 
     // modulify is graceful if there are no files that need modulifying.
-    // TODO: make sure options go through? See https://github.com/phetsims/chipper/issues/1459
     require( './modulify' );
 
     // update README.md only for simulations
