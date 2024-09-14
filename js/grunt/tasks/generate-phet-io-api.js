@@ -5,7 +5,6 @@ const getRepo = require( './util/getRepo' );
 /**
  * @author Sam Reid (PhET Interactive Simulations)
  */
-const grunt = require( 'grunt' );
 const repo = getRepo();
 
 const formatPhetioAPI = require( '../../phet-io/formatPhetioAPI' );
@@ -31,13 +30,11 @@ if ( !skipTranspile ) {
 
   // Notify about long transpile times, in case more people need to skip
   if ( transpileTimeMS >= 5000 ) {
-    grunt.log.writeln(
-      `generate-phet-io-api transpilation took ${transpileTimeMS} ms`
-    );
+    console.log( `generate-phet-io-api transpilation took ${transpileTimeMS} ms` );
   }
 }
 else {
-  grunt.log.writeln( 'Skipping transpilation' );
+  console.log( 'Skipping transpilation' );
 }
 
 ( async () => {

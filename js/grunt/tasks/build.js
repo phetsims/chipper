@@ -61,7 +61,7 @@ catch( e ) {
         reportTscResults( results, grunt );
       }
       else {
-        grunt.log.writeln( 'skipping type checking' );
+        console.log( 'skipping type checking' );
       }
     } );
 
@@ -72,7 +72,7 @@ catch( e ) {
 
     // standalone
     if ( repoPackageObject.phet.buildStandalone ) {
-      grunt.log.writeln( 'Building standalone repository' );
+      console.log( 'Building standalone repository' );
 
       const parentDir = `../${repo}/build/`;
       if ( !fs.existsSync( parentDir ) ) {
@@ -98,7 +98,7 @@ catch( e ) {
 
       const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
       assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
-      grunt.log.writeln( `Building runnable repository (${repo}, brands: ${brands.join( ', ' )})` );
+      console.log( `Building runnable repository (${repo}, brands: ${brands.join( ', ' )})` );
 
       // Other options
       const allHTML = true; // Always build this artifact
@@ -108,7 +108,7 @@ catch( e ) {
       const localesOption = getOption( 'locales' ) || 'en'; // Default back to English for now
 
       for ( const brand of brands ) {
-        grunt.log.writeln( `Building brand: ${brand}` );
+        console.log( `Building brand: ${brand}` );
 
         await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
           await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts, profileFileSize );
