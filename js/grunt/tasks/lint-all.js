@@ -13,15 +13,7 @@ const lint = require( '../lint' );
 const repo = getRepo();
 
 const getOption = require( './util/getOption' );
-
-// Handle the lack of build.json
-let buildLocal;
-try {
-  buildLocal = grunt.file.readJSON( `${process.env.HOME}/.phet/build-local.json` );
-}
-catch( e ) {
-  buildLocal = {};
-}
+const buildLocal = require( './util/buildLocal' );
 
 // --disable-eslint-cache disables the cache, useful for developing rules
 const cache = !getOption( 'disable-eslint-cache' );

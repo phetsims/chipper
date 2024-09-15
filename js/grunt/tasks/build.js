@@ -20,19 +20,11 @@ const assert = require( 'assert' );
 const Transpiler = require( '../../common/Transpiler' );
 const getBrands = require( './util/getBrands' );
 const getOption = require( './util/getOption' );
+const buildLocal = require( './util/buildLocal' );
 
 const repo = getRepo();
 
 const transpiler = new Transpiler( { silent: true } );
-
-// Handle the lack of build.json
-let buildLocal;
-try {
-  buildLocal = grunt.file.readJSON( `${process.env.HOME}/.phet/build-local.json` );
-}
-catch( e ) {
-  buildLocal = {};
-}
 
 ( async () => {
   await phetTimingLog.startAsync( 'grunt-build', async () => {
