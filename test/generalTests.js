@@ -16,3 +16,4 @@
 
 require( '../js/common/ChipperStringUtilTests' );
 require( '../js/phet-io/phetioCompareAPIsTests' );
+require( '../js/grunt/GruntfileTests' );
