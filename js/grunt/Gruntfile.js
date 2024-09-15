@@ -244,7 +244,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
   grunt.registerTask( 'test-grunt', 'Run tests for the Gruntfile',
     execTask( 'test-grunt.js' )
-   );
+  );
 
   /**
    * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from
@@ -271,7 +271,7 @@ Updates the normal automatically-generated files for this repository. Includes:
    * @param {boolean} [log=false] - Whether to log the command and arguments.
    */
   function spawn( command, args, cwd, log = false ) {
-    console.log('starting spawn');
+    console.log( 'starting spawn' );
     grunt.log.writeln( `Running ${command} ${args.join( ' ' )} in ../${repo}` );
     const done = grunt.task.current.async();
     const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
