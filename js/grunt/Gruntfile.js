@@ -271,8 +271,6 @@ Updates the normal automatically-generated files for this repository. Includes:
    * @param {boolean} [log=false] - Whether to log the command and arguments.
    */
   function spawn( command, args, cwd, log = false ) {
-    console.log( 'starting spawn' );
-    grunt.log.writeln( `Running ${command} ${args.join( ' ' )} in ../${repo}` );
     const done = grunt.task.current.async();
     const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
     const spawned = child_process.spawn( command, args, {
