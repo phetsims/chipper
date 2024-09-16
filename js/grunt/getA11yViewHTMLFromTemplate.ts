@@ -6,19 +6,17 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-
-// modules
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fixEOL = require( './fixEOL' );
 const getTitleStringKey = require( './getTitleStringKey' );
-const grunt = require( 'grunt' );
+import TGrunt from './TGrunt.js';
+const grunt = require( 'grunt' ) as TGrunt;
 
 /**
- * @param {string} repo
- * @returns {string} - the html string, filled in from the template.
+ * @returns - the html string, filled in from the template.
  */
-module.exports = function( repo ) {
+module.exports = function( repo: string ): string {
 
   let html = grunt.file.read( '../chipper/templates/sim-a11y-view.html' ); // the template file
 

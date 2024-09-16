@@ -1,5 +1,7 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
+import TGrunt from './TGrunt';
+
 /**
  * Prints commits since a specified date, for all dependencies of the build target.
  * The output is grouped by repository, and condensed to one line per commit.
@@ -14,17 +16,11 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
-
 const execute = require( '../../../perennial-alias/js/common/execute' );
 const getPhetLibs = require( './getPhetLibs' );
-const grunt = require( 'grunt' );
+const grunt = require( 'grunt' ) as TGrunt;
 
-/**
- * @param {string} repo
- * @param {string} dateString
- * @returns {Promise}
- */
-module.exports = async function( repo, dateString ) {
+module.exports = async function( repo: string, dateString: string ): Promise<void> {
 
   let output = '';
   for ( const dependency of getPhetLibs( repo ) ) {

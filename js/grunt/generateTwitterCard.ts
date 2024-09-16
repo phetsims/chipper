@@ -9,14 +9,16 @@
 
 
 // modules
-const grunt = require( 'grunt' );
+import TGrunt from './TGrunt';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+const grunt = require( 'grunt' ) as TGrunt;
 const Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
 
 /**
- * @param {string} repo - name of the repository
- * @returns {Promise.<Buffer>} - Resolves with a PNG {Buffer}
+ * @param repo - name of the repository
+ * @returns - Resolves with a PNG {Buffer}
  */
-module.exports = function( repo ) {
+module.exports = function( repo: string ): Promise<Buffer> {
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot.png`;
 
@@ -27,11 +29,11 @@ module.exports = function( repo ) {
 
     // The following creates an 800x400 image that is a letter-boxed version of the original size image and
     // has transparent padding, potentially on all sides.
-    new Jimp( fullResImageName, function() { // eslint-disable-line no-new
+    new Jimp( fullResImageName, function( this: IntentionalAny ) { // eslint-disable-line no-new
       this.resize( 600, 394 ) // Preserve original dimensions
         .contain( 585, 400 )  // Resize to allow padding on top/bottom
         .contain( 800, 400 )  // Add padding on right/left
-        .getBuffer( Jimp.MIME_PNG, ( error, pngBuffer ) => {
+        .getBuffer( Jimp.MIME_PNG, ( error: string, pngBuffer: Buffer ) => {
           if ( error ) {
             reject( new Error( error ) );
           }

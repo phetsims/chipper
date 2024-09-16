@@ -6,20 +6,21 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+import * as ChipperConstants from '../common/ChipperConstants.js';
+import * as fs from 'fs';
 
-// modules
-const ChipperConstants = require( '../common/ChipperConstants' );
+import * as path from 'path';
+import * as _ from 'lodash';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+
 const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries' );
-const fs = require( 'fs' );
-const path = require( 'path' );
-const _ = require( 'lodash' );
 const webpack = require( 'webpack' );
 // eslint-disable-next-line require-statement-match
 const { ModifySourcePlugin, ConcatOperation } = require( 'modify-source-webpack-plugin' );
 
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial-alias/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
-const reposByNamespace = {};
-const aliases = {};
+const reposByNamespace: Record<string, string> = {};
+const aliases: Record<string, string> = {};
 
 for ( const repo of activeRepos ) {
   const packageFile = path.resolve( __dirname, `../../../${repo}/package.json` );
@@ -37,7 +38,7 @@ const getModuleRules = function getModuleRules() {
     return {
 
       // path.join to normalize on the right path separator, perhaps there is another way?!
-      test: fileName => fileName.includes( path.join( webpackGlobalLibraries[ globalKey ] ) ),
+      test: ( fileName: string ) => fileName.includes( path.join( webpackGlobalLibraries[ globalKey ] ) ),
       loader: '../chipper/node_modules/expose-loader',
       options: {
         exposes: globalKey
@@ -48,10 +49,8 @@ const getModuleRules = function getModuleRules() {
 
 /**
  * Convert absolute paths of modules to relative ones
- * @param {Array.<string>} modules
- * @returns {Array.<string>}
  */
-const getRelativeModules = modules => {
+const getRelativeModules = ( modules: string[] ) => {
   const root = path.resolve( __dirname, '../../../' );
   return modules
 
@@ -66,16 +65,18 @@ const getRelativeModules = modules => {
     .filter( m => m !== '../package.json' && m !== '..\\package.json' );
 };
 
+type WebpackBuildOptions = {
+  outputDir: string;
+  profileFileSize: boolean;
+};
+
 /**
  * Runs webpack - DO NOT RUN MULTIPLE CONCURRENTLY
- * @public
  *
- * @param {string} repo
- * @param {string} brand
- * @param {Object} [options]
- * @returns {Promise.<string>} - The combined JS output from the process
+ * @returns The combined JS output from the process
  */
-const webpackBuild = function webpackBuild( repo, brand, options ) {
+const webpackBuild = function webpackBuild( repo: string, brand: string, options: WebpackBuildOptions ): Promise<{ js: string; usedModules: string[] }> {
+
   return new Promise( ( resolve, reject ) => {
 
     options = _.merge( {
@@ -134,10 +135,10 @@ const webpackBuild = function webpackBuild( repo, brand, options ) {
 
         // Exclude brand specific code. This includes all of the `phet-io` repo for non phet-io builds.
         ...( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
-          brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
+             brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
 
-            // adapted-from-phet and all other brands
-            [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] ),
+               // adapted-from-phet and all other brands
+               [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] ),
         ...( options.profileFileSize ? [
           new ModifySourcePlugin( {
             rules: [
@@ -160,7 +161,7 @@ const webpackBuild = function webpackBuild( repo, brand, options ) {
       ]
     } );
 
-    compiler.run( ( err, stats ) => {
+    compiler.run( ( err: Error, stats: IntentionalAny ) => {
       if ( err || stats.hasErrors() ) {
         console.error( 'Webpack build errors:', stats.compilation.errors );
         reject( err || stats.compilation.errors[ 0 ] );

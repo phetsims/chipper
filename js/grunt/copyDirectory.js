@@ -2,6 +2,8 @@
 
 /**
  * Copy a directory and all of its contents recursively
+ * TODO: This is used in weddell, so be careful in changing to TypeScript, see https://github.com/phetsims/chipper/issues/1459
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 

@@ -9,21 +9,22 @@
  * @author Aaron Davis
  */
 
-
 // modules
-const grunt = require( 'grunt' );
+const grunt = require( 'grunt' ) as TGrunt;
 const jimp = require( 'jimp' );
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import TGrunt from './TGrunt.js';
 
 /**
- * @param {string} repo - name of the repository
- * @param {number} width of the resized image
- * @param {number} height of the resized image
- * @param {number} quality - percent quality, in the range [0..100]
- * @param {string} mime - Mime type - one of jimp.MIME_PNG, jimp.MIME_JPEG, jimp.MIME_BMP
- * @param {string} altSuffix - ending for the filename e.g. -alt1
- * @returns {Promise} - Resolves to a {Buffer} with the image data
+ * @param repo - name of the repository
+ * @param width of the resized image
+ * @param height of the resized image
+ * @param quality - percent quality, in the range [0..100]
+ * @param mime - Mime type - one of jimp.MIME_PNG, jimp.MIME_JPEG, jimp.MIME_BMP
+ * @param altSuffix - ending for the filename e.g. -alt1
+ * @returns Resolves to a {Buffer} with the image data
  */
-module.exports = function( repo, width, height, quality, mime, altSuffix ) {
+module.exports = function( repo: string, width: number, height: number, quality: number, mime: string, altSuffix: string ): Promise<Buffer> {
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot${altSuffix || ''}.png`;
 
@@ -32,11 +33,11 @@ module.exports = function( repo, width, height, quality, mime, altSuffix ) {
       return;
     }
 
-    new jimp( fullResImageName, function() { // eslint-disable-line no-new
+    new jimp( fullResImageName, function( this: IntentionalAny ) { // eslint-disable-line no-new
       if ( mime === jimp.MIME_JPEG ) {
         this.quality( quality );
       }
-      this.resize( width, height ).getBuffer( mime, ( error, buffer ) => {
+      this.resize( width, height ).getBuffer( mime, ( error: string, buffer: Buffer ) => {
         if ( error ) {
           reject( new Error( error ) );
         }

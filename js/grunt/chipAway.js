@@ -2,6 +2,8 @@
 
 /**
  * Produces an assignment list of responsible devs. Run from lint.js
+ * TODO: Do not write in *.ts yet since this is used by lint.js which is called by precommit-hook-multi.js, see https://github.com/phetsims/chipper/issues/1459
+ * // TODO: Launch precommit-hook-multi from tsx probably, see https://github.com/phetsims/chipper/issues/1459
  *
  * The Chip Away option provides a quick and easy method to assign devs to their respective repositories
  * for ease in adopting and applying new typescript linting rules.

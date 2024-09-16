@@ -8,17 +8,16 @@
  * @author Jesse Greenberg
  */
 
-
 // modules
-const ChipperConstants = require( '../common/ChipperConstants' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 
-/**
- * @param {string} repo
- */
-module.exports = async function( repo ) {
+// TODO: Do we really want to use import *? What is a better way, see https://github.com/phetsims/chipper/issues/1451
+// TODO: This will be fixed when we export default, see https://github.com/phetsims/chipper/issues/1451
+import * as ChipperConstants from '../common/ChipperConstants.js';
+import * as ChipperStringUtils from '../common/ChipperStringUtils.js';
+
+module.exports = async function( repo: string ) {
 
   let html = getA11yViewHTMLFromTemplate( repo );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_REPOSITORY}}', repo );

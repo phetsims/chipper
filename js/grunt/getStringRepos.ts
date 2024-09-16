@@ -7,15 +7,11 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-// modules
 const fs = require( 'fs' );
 const getDependencies = require( './getDependencies' );
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
-/**
- * @returns {Promise.<Object>}
- */
-module.exports = async repo => {
+module.exports = async ( repo: string ): Promise<IntentionalAny> => {
   return Object.keys( await getDependencies( repo ) ).filter( stringRepo => stringRepo !== 'comment' ).filter( stringRepo => {
     return fs.existsSync( `../${stringRepo}/${stringRepo}-strings_en.json` );
   } ).map( stringRepo => {

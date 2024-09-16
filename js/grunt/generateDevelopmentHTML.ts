@@ -9,9 +9,10 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
 // modules
-const _ = require( 'lodash' );
+import * as _ from 'lodash';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fixEOL = require( './fixEOL' );
 const getPreloads = require( './getPreloads' );
@@ -19,13 +20,9 @@ const getStringRepos = require( './getStringRepos' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 const grunt = require( 'grunt' );
 
-/**
- * @param {string} repo
- * @param {Object} [options]
- *
- * @returns {Promise}
- */
-module.exports = async function( repo, options ) {
+// TODO: Get rid of all IntentionalAny, see https://github.com/phetsims/chipper/issues/1437
+
+module.exports = async function( repo: string, options: IntentionalAny ): Promise<void> {
 
   const {
     stylesheets = '',
@@ -47,23 +44,26 @@ module.exports = async function( repo, options ) {
 
   // Formatting is very specific to the template file. Each preload is placed on separate line,
   // with an indentation that is specific indentation to the template. See chipper#462
-  function stringifyArray( arr, indentation ) {
+  function stringifyArray( arr: string[], indentation: string ): string {
     return `[\n${
       arr.map( string => `${indentation}    '${string.replace( /'/g, '\\\'' )}'` ).join( ',\n' )
     }\n${indentation}  ]`;
   }
 
-  function isPreloadExcluded( preload ) {
+  function isPreloadExcluded( preload: string ): boolean {
     return preload.includes( 'google-analytics' ) || stripPreloads.includes( preload );
   }
 
-  const indentLines = string => {
+  const indentLines = ( string: string ) => {
     return string.split( '\n' ).join( '\n    ' );
   };
 
+  // @ts-expect-error
   const preloads = getPreloads( repo, brand, forSim ).filter( preload => {
     return !isPreloadExcluded( preload );
   } ).concat( addedPreloads );
+
+  // @ts-expect-error
   const phetioPreloads = getPreloads( repo, 'phet-io', forSim ).filter( preload => {
     return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
   } );

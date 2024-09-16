@@ -6,16 +6,11 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-const _ = require( 'lodash' );
+import * as _ from 'lodash';
 const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
-/**
- * @param {string} repo
- * @param {Object} [options]
- * @returns {Promise.<undefined>}
- */
-module.exports = async ( repo, options ) => {
+module.exports = async ( repo: string, options: IntentionalAny ): Promise<void> => {
   await generateDevelopmentHTML( repo, _.merge( {
 
     // Include QUnit CSS

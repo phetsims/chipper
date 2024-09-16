@@ -8,9 +8,9 @@
 
 
 // modules
+import * as ChipperConstants from '../common/ChipperConstants';
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );
 const copyDirectory = require( './copyDirectory' );
@@ -40,7 +40,7 @@ const webpackBuild = require( './webpackBuild' );
 const zlib = require( 'zlib' );
 const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog' );
 
-const recordTime = async ( name, asyncCallback, timeCallback ) => {
+const recordTime = async ( name: string, asyncCallback: () => Promise<unknown>, timeCallback: ( time: number, result: unknown ) => void ) => {
   const beforeTime = Date.now();
 
   const result = await phetTimingLog.startAsync( name, async () => {
@@ -53,27 +53,34 @@ const recordTime = async ( name, asyncCallback, timeCallback ) => {
   return result;
 };
 
+// TODO: Relocate, see https://github.com/phetsims/chipper/issues/1459
+export type MinifyOptions = {
+  minify?: boolean;
+  babelTranspile?: boolean;
+  uglify?: boolean;
+  isDebug?: boolean;
+};
 /**
  * Builds a runnable (e.g. a simulation).
- * @public
  *
- * @param {string} repo
- * @param {Object} minifyOptions - see minify.js
- * @param {boolean} allHTML - If the _all.html file should be generated
- * @param {string} brand
- * @param {string} localesOption - e.g,. '*', 'en,es', etc.
- * @param {boolean} buildLocal
- * @param {boolean} encodeStringMap
- * @param {boolean} compressScripts
- * @param {boolean} profileFileSize
- * @returns {Promise} - Does not resolve a value
+ * @param repo
+ * @param minifyOptions - see minify.js
+ * @param allHTML - If the _all.html file should be generated
+ * @param brand
+ * @param localesOption - e.g,. '*', 'en,es', etc.
+ * @param buildLocal
+ * @param encodeStringMap
+ * @param compressScripts
+ * @param profileFileSize
+ * @returns - Does not resolve a value
  */
-module.exports = async function( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts, profileFileSize ) {
-  assert( typeof repo === 'string' );
-  assert( typeof minifyOptions === 'object' );
+module.exports = async function( repo: string, minifyOptions: MinifyOptions, allHTML: boolean, brand: string, localesOption: string,
+                                 buildLocal: boolean, encodeStringMap: boolean, compressScripts: boolean, profileFileSize: boolean ): Promise<void> {
 
   if ( brand === 'phet-io' ) {
-    assert( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
+
+    // TODO: Do not assert && assert, see https://github.com/phetsims/chipper/issues/1459
+    assert && assert( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
   }
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
@@ -102,18 +109,20 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
   };
 
   // If turning off minification for the main build, don't minify the debug version also
-  if ( minifyOptions.minify === false ) {
+  if ( !minifyOptions.minify ) {
     debugMinifyOptions.minify = false;
   }
 
   const usedModules = webpackResult.usedModules;
   reportUnusedMedia( repo, usedModules );
 
-  const licenseEntries = {};
+  // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1459
+  const licenseEntries: Record<string, object> = {};
   ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
     licenseEntries[ mediaType ] = {};
   } );
 
+  // @ts-expect-error
   usedModules.forEach( module => {
     ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
       if ( module.split( '/' )[ 1 ] === mediaType ) {
@@ -122,6 +131,8 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
         // handle modulified media files.
         const index = module.lastIndexOf( '_' );
         const path = `${module.slice( 0, index )}.${module.slice( index + 1, -3 )}`;
+
+        // @ts-expect-error
         licenseEntries[ mediaType ][ module ] = getLicenseEntry( `../${path}` );
       }
     } );
@@ -134,18 +145,20 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
   const dependencyReps = Object.keys( dependencies );
 
   // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
+
+  // @ts-expect-error
   usedModules.map( module => module.split( '\\' ).join( '/' ) ).forEach( moduleDependency => {
 
     // The first part of the path is the repo.  Or if no directory is specified, the file is in the sim repo.
     const pathSeparatorIndex = moduleDependency.indexOf( '/' );
     const moduleRepo = pathSeparatorIndex >= 0 ? moduleDependency.slice( 0, pathSeparatorIndex ) :
                        repo;
-    assert( dependencyReps.includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
+    assert && assert( dependencyReps.includes( moduleRepo ), `repo ${moduleRepo} missing from package.json's phetLibs for ${moduleDependency}` );
 
     // Also check if the module was coming from chipper dist
     if ( moduleDependency.includes( 'chipper/dist/js/' ) ) {
       const distRepo = moduleDependency.split( 'chipper/dist/js/' )[ 1 ]?.split( '/' )[ 0 ];
-      distRepo && assert( dependencyReps.includes( distRepo ), `repo ${distRepo} missing from package.json's phetLibs for ${moduleDependency}` );
+      distRepo && assert && assert( dependencyReps.includes( distRepo ), `repo ${distRepo} missing from package.json's phetLibs for ${moduleDependency}` );
     }
   } );
 
@@ -167,7 +180,7 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
   }
 
   const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ simTitleStringKey ];
-  assert( englishTitle, `missing entry for sim title, key = ${simTitleStringKey}` );
+  assert && assert( englishTitle, `missing entry for sim title, key = ${simTitleStringKey}` );
 
   // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
   let htmlHeader;
@@ -208,6 +221,8 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
 
   const minifiableScripts = [
     // Preloads
+
+    // @ts-expect-error
     ...getPreloads( repo, brand, true ).map( filename => wrapProfileFileSize( grunt.file.read( filename ), profileFileSize, 'PRELOAD', filename ) ),
 
     // Our main module content, wrapped in a function called in the startup below
@@ -223,6 +238,8 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
       ...minifiableScripts.map( js => minify( js, minifyOptions ) )
     ];
   }, ( time, scripts ) => {
+
+    // @ts-expect-error
     grunt.log.ok( `Production minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
   } );
   const debugScripts = await recordTime( 'minify-debug', async () => {
@@ -231,6 +248,8 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
       ...minifiableScripts.map( js => minify( js, debugMinifyOptions ) )
     ];
   }, ( time, scripts ) => {
+
+    // @ts-expect-error
     grunt.log.ok( `Debug minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
   } );
 
@@ -253,7 +272,7 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
     allowLocaleSwitching: false,
     encodeStringMap: encodeStringMap,
     profileFileSize: profileFileSize,
-    wrapStringsJS: stringsJS => wrapProfileFileSize( stringsJS, profileFileSize, 'STRINGS' )
+    wrapStringsJS: ( stringsJS: string ) => wrapProfileFileSize( stringsJS, profileFileSize, 'STRINGS' )
   };
 
   // Create the build-specific directory
@@ -385,11 +404,14 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
   // copy over supplemental files or dirs to package with the build. Only supported in phet brand
   if ( packageObject.phet && packageObject.phet.packageWithBuild ) {
 
-    assert( Array.isArray( packageObject.phet.packageWithBuild ) );
+    assert && assert( Array.isArray( packageObject.phet.packageWithBuild ) );
+
+    // @ts-expect-error
     packageObject.phet.packageWithBuild.forEach( path => {
 
-      assert( typeof path === 'string', 'path should be a string' );
-      assert( grunt.file.exists( path ), `path does not exist: ${path}` );
+      // eslint-disable-next-line no-simple-type-checking-assertions
+      assert && assert( typeof path === 'string', 'path should be a string' );
+      assert && assert( grunt.file.exists( path ), `path does not exist: ${path}` );
       if ( grunt.file.isDir( path ) ) {
         copyDirectory( path, `${buildDir}/${path}` );
       }
@@ -421,7 +443,7 @@ module.exports = async function( repo, minifyOptions, allHTML, brand, localesOpt
 };
 
 // For profiling file size. Name is optional
-const wrapProfileFileSize = ( string, profileFileSize, type, name ) => {
+const wrapProfileFileSize = ( string: string, profileFileSize: boolean, type: string, name?: string ) => {
   if ( profileFileSize ) {
     const conditionalName = name ? `,"${name}"` : '';
     return `console.log("START_${type.toUpperCase()}"${conditionalName});\n${string}\nconsole.log("END_${type.toUpperCase()}"${conditionalName});\n\n`;

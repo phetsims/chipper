@@ -1,11 +1,24 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
+import * as fs from 'fs';
+import TGrunt from './TGrunt';
 
-const fs = require( 'fs' );
-const grunt = require( 'grunt' );
+const grunt = require( 'grunt' ) as TGrunt;
 const jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
 const mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
 const pngjs = require( 'pngjs' );
+
+type TMipmap = {
+  width: number;
+  height: number;
+  data: Buffer;
+  url?: string;
+  buffer?: Buffer;
+  pngURL?: string;
+  pngBuffer?: Buffer;
+  jpgURL?: string;
+  jpgBuffer?: Buffer;
+};
 
 /**
  * Responsible for converting a single PNG/JPEG file to a structured list of mipmapped versions of it, each
@@ -28,18 +41,18 @@ const pngjs = require( 'pngjs' );
  *   <pngURL, pngBuffer, jpgURL, jpgBuffer may also be available, but is not meant for general use>
  * }
  *
- * @param {string} filename
- * @param {number} maxLevel - An integer denoting the maximum level of detail that should be included, or -1 to include
+ * @param filename
+ * @param maxLevel - An integer denoting the maximum level of detail that should be included, or -1 to include
  *                            all levels up to and including a 1x1 image.
- * @param {number} quality - An integer from 1-100 determining the quality of the image. Currently only used for the
+ * @param quality - An integer from 1-100 determining the quality of the image. Currently only used for the
  *                           JPEG encoding quality.
- * @returns {Promise} - Will be resolved with mipmaps: {Array} (consisting of the mipmap objects, mipmaps[0] will be level 0)
+ * @returns - Will be resolved with mipmaps: {Array} (consisting of the mipmap objects, mipmaps[0] will be level 0)
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-module.exports = function createMipmap( filename, maxLevel, quality ) {
+module.exports = function createMipmap( filename: string, maxLevel: number, quality: number ): Promise<TMipmap[]> {
   return new Promise( ( resolve, reject ) => {
-    const mipmaps = [];
+    const mipmaps: TMipmap[] = [];
 
     // kick everything off
     const suffix = filename.slice( -4 );
@@ -54,7 +67,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
     }
 
     // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
-    function loadJPEG() {
+    function loadJPEG(): void {
       const imageData = jpeg.decode( fs.readFileSync( filename ) );
 
       mipmaps.push( {
@@ -67,14 +80,14 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
     }
 
     // Loads / decodes the initial PNG image, and when done proceeds to the mipmapping
-    function loadPNG() {
+    function loadPNG(): void {
       const src = fs.createReadStream( filename );
 
       const basePNG = new pngjs.PNG( {
         // if we need a specific filter type, put it here
       } );
 
-      basePNG.on( 'error', err => {
+      basePNG.on( 'error', ( err: Error ) => {
         reject( err );
       } );
 
@@ -93,13 +106,13 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
     }
 
     /**
-     * @param {Buffer} data - Should have 4*width*height elements
-     * @param {number} width
-     * @param {number} height
-     * @param {number} quality - Out of 100
-     * @param {function} callback - function( buffer )
+     * @param data - Should have 4*width*height elements
+     * @param width
+     * @param height
+     * @param quality - Out of 100
+     * @param callback - function( buffer )
      */
-    function outputJPEG( data, width, height, quality, callback ) {
+    function outputJPEG( data: Buffer, width: number, height: number, quality: number, callback: ( buffer: Buffer ) => void ): void {
       const encodedOuput = jpeg.encode( {
         data: data,
         width: width,
@@ -109,12 +122,12 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
     }
 
     /**
-     * @param {Buffer} data - Should have 4*width*height elements
-     * @param {number} width
-     * @param {number} height
-     * @param {function} callback - function( buffer )
+     * @param data - Should have 4*width*height elements
+     * @param width
+     * @param height
+     * @param callback - function( buffer )
      */
-    function outputPNG( data, width, height, callback ) {
+    function outputPNG( data: Buffer, width: number, height: number, callback: ( buffer: Buffer ) => void ): void {
       // provides width/height so it is initialized with the correct-size buffer
       const png = new pngjs.PNG( {
         width: width,
@@ -125,8 +138,8 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       data.copy( png.data, 0, 0, data.length );
 
       // will concatenate the buffers from the stream into one once it is finished
-      const buffers = [];
-      png.on( 'data', buffer => {
+      const buffers: Buffer[] = [];
+      png.on( 'data', ( buffer: Buffer ) => {
         buffers.push( buffer );
       } );
       png.on( 'end', () => {
@@ -134,7 +147,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
 
         callback( buffer );
       } );
-      png.on( 'error', err => {
+      png.on( 'error', ( err: Error ) => {
         reject( err );
       } );
 
@@ -143,7 +156,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
     }
 
     // called when our mipmap[0] level is loaded by decoding the main image (creates the mipmap levels)
-    function startMipmapCreation() {
+    function startMipmapCreation(): void {
       // When reduced to 0, we'll be done with encoding (and can call our callback). Needed because they are asynchronous.
       let encodeCounter = 1;
 
@@ -157,25 +170,27 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       }
 
       // called when all of encoding is complete
-      function encodingComplete() {
+      function encodingComplete(): void {
         grunt.log.debug( `mipmapped ${filename}${maxLevel >= 0 ? ` to level ${maxLevel}` : ''} with quality: ${quality}` );
 
         for ( let level = 0; level < mipmaps.length; level++ ) {
           // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
+          // @ts-expect-error
           const usePNG = hasAlpha || mipmaps[ level ].jpgURL.length > mipmaps[ level ].pngURL.length;
           mipmaps[ level ].url = usePNG ? mipmaps[ level ].pngURL : mipmaps[ level ].jpgURL;
           mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
 
+
           grunt.log.debug( `level ${level} (${usePNG ? 'PNG' : 'JPG'} ${
             mipmaps[ level ].width}x${mipmaps[ level ].height}) base64: ${
-            mipmaps[ level ].url.length} bytes ` );
+            mipmaps[ level ].url!.length} bytes ` );
         }
 
         resolve( mipmaps );
       }
 
       // kicks off asynchronous encoding for a specific level
-      function encodeLevel( level ) {
+      function encodeLevel( level: number ): void {
         encodeCounter++;
         outputPNG( mipmaps[ level ].data, mipmaps[ level ].width, mipmaps[ level ].height, buffer => {
           mipmaps[ level ].pngBuffer = buffer;
@@ -201,7 +216,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       // encode all levels, and compute rasters for levels 1-N
       encodeLevel( 0 );
 
-      function finestMipmap() {
+      function finestMipmap(): TMipmap {
         return mipmaps[ mipmaps.length - 1 ];
       }
 
@@ -209,7 +224,7 @@ module.exports = function createMipmap( filename, maxLevel, quality ) {
       // eslint-disable-next-line no-unmodified-loop-condition
       while ( ( mipmaps.length - 1 < maxLevel || maxLevel < 0 ) && ( finestMipmap().width > 1 || finestMipmap().height > 1 ) ) {
         const level = mipmaps.length;
-        mipmaps.push( mipmapDownscale( finestMipmap(), ( width, height ) => {
+        mipmaps.push( mipmapDownscale( finestMipmap(), ( width: number, height: number ) => {
           return Buffer.alloc( 4 * width * height );
         } ) );
         encodeLevel( level );
