@@ -164,11 +164,20 @@ Updates the normal automatically-generated files for this repository. Includes:
   );
 
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt. Does anyone use it?
+  // AV would like a way to sort the imports, OK if it is a grunt script or node script. As long as there way to do it.
+  // Consensus: Get rid of this grunt task. OK to leave as a node script. But team members can use WebStorm to do the same thing.
+  // MK: Let's just delete it. We have enough people using webstorm.
+  // Consensus: ok, we will delete it
+  // MK: Make an issue to make the sort by module part of the code style. Reformat the codebase by that style.
+  // MK: All opposed?
+  // MK: is working on it.
   grunt.registerTask( 'sort-imports', 'Sort the import statements for a single file (if --file={{FILE}} is provided), or does so for all JS files if not specified',
     execTask( 'sort-imports.js' )
   );
 
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt
+  // SR, AV, JB, MK, JG do not use it. We will check with @pixelzoom to see if it is OK to move to node.
+  // MK: But it is nice having a central registry + pattern for "things we run in sim/common repos"
   grunt.registerTask( 'commits-since', 'Shows commits since a specified date. Use --date=<date> to specify the date.',
     execTask( 'commits-since.js' )
   );
@@ -203,6 +212,7 @@ Updates the normal automatically-generated files for this repository. Includes:
   );
 
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt, or maybe just delete?
+  // Dev meeting consensus: DELETE
   grunt.registerTask(
     'webpack-dev-server', `Runs a webpack server for a given list of simulations.
     --repos=REPOS for a comma-separated list of repos (defaults to current repo)
@@ -238,6 +248,8 @@ Updates the normal automatically-generated files for this repository. Includes:
   );
 
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt. Does anyone use it? Search for docs in the code review checklist
+  // Dev team consensus: move to node. Run like this: `node ../chipper/js/scripts/profile-file-size.js`
+  // TODO: Add to code review checklist, see https://github.com/phetsims/chipper/issues/1461
   grunt.registerTask( 'profile-file-size', 'Profiles the file size of the built JS file for a given repo',
     execTask( 'profile-file-size.js' )
   );
