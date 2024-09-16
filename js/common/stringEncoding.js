@@ -30,8 +30,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-/* eslint-env node */
-
 const _ = require( 'lodash' );
 const toLessEscapedString = require( './toLessEscapedString' );
 

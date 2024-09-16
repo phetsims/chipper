@@ -1,8 +1,5 @@
 // Copyright 2015-2024, University of Colorado Boulder
 
-/* eslint-env node */
-
-
 /**
  * Takes in a mipmap object with data/width/height and returns another mipmap object with data/width/height that is
  * downscaled by a factor of 2. Needs to round the width/height up to include all of the image (if it's not a

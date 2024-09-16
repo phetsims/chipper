@@ -1,7 +1,5 @@
 // Copyright 2023-2024, University of Colorado Boulder
 
-/* eslint-env node */
-
 /**
  * Preprocesses a WGSL string into a conditional form, with minification
  *

@@ -6,9 +6,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-/* eslint-env node */
-
-
 const fs = require( 'fs' );
 
 /**

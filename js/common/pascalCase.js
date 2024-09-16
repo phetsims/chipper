@@ -1,7 +1,5 @@
 // Copyright 2022-2024, University of Colorado Boulder
 
-/* eslint-env node */
-
 const _ = require( 'lodash' );
 
 /**

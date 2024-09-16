@@ -12,5 +12,9 @@ module.exports = {
     // specify appropriate environment vars for node code
     browser: false,
     node: true
+  },
+
+  rules: {
+    'bad-sim-text': 'off'
   }
 };

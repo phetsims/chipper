@@ -1,7 +1,5 @@
 // Copyright 2023-2024, University of Colorado Boulder
 
-/* eslint-env node */
-
 /**
  * Scans WGSL files to determine symbol frequency, and replacement symbols for minification/mangling.
  *

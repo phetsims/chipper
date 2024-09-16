@@ -18,9 +18,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-/* eslint-env node */
-
-
 const fs = require( 'fs' );
 
 /**

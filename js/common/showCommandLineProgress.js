@@ -6,7 +6,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-/* eslint-env node */
 const _ = require( 'lodash' );
 
 /**

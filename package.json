@@ -83,6 +83,27 @@
           "**/*.tsx"
         ],
         "parser": "@typescript-eslint/parser"
+      },
+      {
+        "files": [
+          "./js/grunt/**/*",
+          "./js/common/**/*",
+          "./js/phet-io/**/*",
+          "./js/scripts/**/*",
+          "./test/**/*"
+        ],
+        "extends": "./eslint/chipper_eslintrc.js",
+        "rules": {
+          "@typescript-eslint/no-require-imports": "off",
+          "@typescript-eslint/no-var-requires": "off",
+          "@typescript-eslint/no-floating-promises": "off"
+        }
+      },
+      {
+        "files": [
+          "./js/sim-tests/**/*"
+        ],
+        "extends": "./eslint/sim_eslintrc.js"
       }
     ]
   }

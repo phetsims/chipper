@@ -7,9 +7,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-/* eslint-env node */
-
-
 const assert = require( 'assert' );
 const _ = require( 'lodash' );
 
