@@ -12,6 +12,8 @@
 const assert = require( 'assert' );
 require( './checkNodeVersion' );
 const child_process = require( 'child_process' );
+const fs = require( 'fs' );
+const path = require( 'path' );
 
 const isWindows = /^win/.test( process.platform );
 
@@ -37,12 +39,28 @@ module.exports = function( grunt ) {
   assert( typeof repo === 'string' && /^[a-z]+(-[a-z]+)*$/u.test( repo ), 'repo name should be composed of lower-case characters, optionally with dashes used as separators' );
 
   function execTask( taskFilename ) {
-    const command = 'node';
+    const command = `${path.join( '..', 'chipper', 'node_modules', '.bin', 'tsx' )}${isWindows ? '.cmd' : ''}`;
 
     return () => {
       spawn( command, [ `../chipper/js/grunt/tasks/${taskFilename}`, ...process.argv.slice( 2 ) ], process.cwd(), false );
     };
   }
+
+  /**
+   * Check for *.js and *.ts tasks and register them with Grunt.
+   */
+  const registerForwardedTask = ( taskName, description ) => {
+    const tsExists = fs.existsSync( `../chipper/js/grunt/tasks/${taskName}.ts` );
+    const jsExists = fs.existsSync( `../chipper/js/grunt/tasks/${taskName}.js` );
+
+    if ( tsExists && jsExists ) {
+      throw new Error( `Both TypeScript and JavaScript versions of the task ${taskName} exist. Please remove one of them.` );
+    }
+    else {
+      const taskFilename = tsExists ? `${taskName}.ts` : `${taskName}.js`;
+      grunt.registerTask( taskName, description, execTask( taskFilename ) );
+    }
+  };
 
   grunt.registerTask( 'default', 'Builds the repository', [
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
@@ -51,26 +69,16 @@ module.exports = function( grunt ) {
     'build'
   ] );
 
-  grunt.registerTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory',
-    execTask( 'clean.js' )
-  );
+  registerForwardedTask( 'clean', 'Erases the build/ directory and all its contents, and recreates the build/ directory' );
 
-  grunt.registerTask( 'build-images', 'Build images only',
-    execTask( 'build-images.js' )
-  );
+  registerForwardedTask( 'build-images', 'Build images only' );
 
-  grunt.registerTask( 'output-js', 'Outputs JS just for the specified repo',
-    execTask( 'output-js.js' )
-  );
-  grunt.registerTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies',
-    execTask( 'output-js-project.js' )
-  );
+  registerForwardedTask( 'output-js', 'Outputs JS just for the specified repo' );
+  registerForwardedTask( 'output-js-project', 'Outputs JS for the specified repo and its dependencies' );
 
-  grunt.registerTask( 'output-js-all', 'Outputs JS for all repos',
-    execTask( 'output-js-all.js' )
-  );
+  registerForwardedTask( 'output-js-all', 'Outputs JS for all repos' );
 
-  grunt.registerTask( 'build',
+  registerForwardedTask( 'build',
     `Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
 Runnable build options:
  --report-media - Will iterate over all of the license.json files and reports any media files, set to false to opt out.
@@ -89,79 +97,57 @@ Minify-specific options:
  --minify.mangle=false - During uglification, it will not "mangle" variable names (where they get renamed to short constants to reduce file size.)
  --minify.beautify=true - After uglification, the source code will be syntax formatted nicely
  --minify.stripAssertions=false - During uglification, it will strip assertions.
- --minify.stripLogging=false - During uglification, it will not strip logging statements.`,
-    execTask( 'build.js' )
-  );
+ --minify.stripLogging=false - During uglification, it will not strip logging statements.` );
 
-  grunt.registerTask( 'generate-used-strings-file',
-    'Writes used strings to phet-io-sim-specific/ so that PhET-iO sims only output relevant strings to the API in unbuilt mode',
-    execTask( 'generate-used-strings-file.js' )
-  );
+  registerForwardedTask( 'generate-used-strings-file',
+    'Writes used strings to phet-io-sim-specific/ so that PhET-iO sims only output relevant strings to the API in unbuilt mode' );
 
   grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
     [ 'build' ]
   );
 
-  grunt.registerTask( 'lint',
+  registerForwardedTask( 'lint',
     `lint js files. Options:
 --disable-eslint-cache: cache will not be read from, and cache will be cleared for next run.
 --fix: autofixable changes will be written to disk
 --chip-away: output a list of responsible devs for each repo with lint problems
---repos: comma separated list of repos to lint in addition to the repo from running`,
-    execTask( 'lint.js' )
-  );
+--repos: comma separated list of repos to lint in addition to the repo from running` );
 
-  grunt.registerTask( 'lint-all', 'lint all js files that are required to build this repository (for the specified brands)',
-    execTask( 'lint-all.js' )
-  );
+  registerForwardedTask( 'lint-all', 'lint all js files that are required to build this repository (for the specified brands)' );
 
-  grunt.registerTask( 'generate-development-html',
-    'Generates top-level SIM_en.html file based on the preloads in package.json.',
-    execTask( 'generate-development-html.js' )
-  );
+  registerForwardedTask( 'generate-development-html',
+    'Generates top-level SIM_en.html file based on the preloads in package.json.' );
 
-  grunt.registerTask( 'generate-test-html',
+  registerForwardedTask( 'generate-test-html',
     'Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/main/doc/adding-unit-tests.md ' +
     'for more information on automated testing. Usually you should ' +
-    'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.',
-    execTask( 'generate-test-html.js' )
-  );
+    'set the "generatedUnitTests":true flag in the sim package.json and run `grunt update` instead of manually generating this.' );
 
-  grunt.registerTask( 'generate-a11y-view-html',
+  registerForwardedTask( 'generate-a11y-view-html',
     'Generates top-level SIM-a11y-view.html file used for visualizing accessible content. Usually you should ' +
     'set the "phet.simFeatures.supportsInteractiveDescription":true flag in the sim package.json and run `grunt update` ' +
-    'instead of manually generating this.',
-    execTask( 'generate-a11y-view.js' )
-  );
+    'instead of manually generating this.' );
 
-  grunt.registerTask( 'update', `
+  registerForwardedTask( 'update', `
 Updates the normal automatically-generated files for this repository. Includes:
   * runnables: generate-development-html and modulify
   * accessible runnables: generate-a11y-view-html
   * unit tests: generate-test-html
   * simulations: generateREADME()
   * phet-io simulations: generate overrides file if needed
-  * create the conglomerate string files for unbuilt mode, for this repo and its dependencies`,
-    execTask( 'update.js' )
-  );
+  * create the conglomerate string files for unbuilt mode, for this repo and its dependencies` );
 
   // This is not run in grunt update because it affects dependencies and outputs files outside of the repo.
-  grunt.registerTask( 'generate-development-strings',
+  registerForwardedTask( 'generate-development-strings',
     'To support locales=* in unbuilt mode, generate a conglomerate JSON file for each repo with translations in babel. Run on all repos via:\n' +
     '* for-each.sh perennial-alias/data/active-repos npm install\n' +
-    '* for-each.sh perennial-alias/data/active-repos grunt generate-development-strings',
-    execTask( 'generate-development-strings.js' )
-  );
+    '* for-each.sh perennial-alias/data/active-repos grunt generate-development-strings' );
 
-  grunt.registerTask( 'published-README',
-    'Generates README.md file for a published simulation.',
-    execTask( 'published-README.js' )
-  );
+  registerForwardedTask( 'published-README',
+    'Generates README.md file for a published simulation.' );
 
-  grunt.registerTask( 'unpublished-README',
-    'Generates README.md file for an unpublished simulation.',
-    execTask( 'unpublished-README.js' )
-  );
+  registerForwardedTask( 'unpublished-README',
+    'Generates README.md file for an unpublished simulation.' );
 
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt. Does anyone use it?
   // AV would like a way to sort the imports, OK if it is a grunt script or node script. As long as there way to do it.
@@ -171,58 +157,44 @@ Updates the normal automatically-generated files for this repository. Includes:
   // MK: Make an issue to make the sort by module part of the code style. Reformat the codebase by that style.
   // MK: All opposed?
   // MK: is working on it.
-  grunt.registerTask( 'sort-imports', 'Sort the import statements for a single file (if --file={{FILE}} is provided), or does so for all JS files if not specified',
-    execTask( 'sort-imports.js' )
-  );
+  registerForwardedTask( 'sort-imports', 'Sort the import statements for a single file (if --file={{FILE}} is provided), or does so for all JS files if not specified' );
 
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt
   // SR, AV, JB, MK, JG do not use it. We will check with @pixelzoom to see if it is OK to move to node.
   // MK: But it is nice having a central registry + pattern for "things we run in sim/common repos"
-  grunt.registerTask( 'commits-since', 'Shows commits since a specified date. Use --date=<date> to specify the date.',
-    execTask( 'commits-since.js' )
-  );
+  registerForwardedTask( 'commits-since', 'Shows commits since a specified date. Use --date=<date> to specify the date.' );
 
   // See reportMedia.js
-  grunt.registerTask( 'report-media',
+  registerForwardedTask( 'report-media',
     '(project-wide) Report on license.json files throughout all working copies. ' +
     'Reports any media (such as images or sound) files that have any of the following problems:\n' +
     '(1) incompatible-license (resource license not approved)\n' +
     '(2) not-annotated (license.json missing or entry missing from license.json)\n' +
-    '(3) missing-file (entry in the license.json but not on the file system)',
-    execTask( 'report-media.js' )
-  );
+    '(3) missing-file (entry in the license.json but not on the file system)' );
 
   // see reportThirdParty.js
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt
-  grunt.registerTask( 'report-third-party',
+  registerForwardedTask( 'report-third-party',
     'Creates a report of third-party resources (code, images, sound, etc) used in the published PhET simulations by ' +
     'reading the license information in published HTML files on the PhET website. This task must be run from main.  ' +
-    'After running this task, you must push sherpa/third-party-licenses.md.',
-    execTask( 'report-third-party.js' )
-  );
+    'After running this task, you must push sherpa/third-party-licenses.md.' );
 
-  grunt.registerTask( 'modulify', 'Creates *.js modules for all images/strings/audio/etc in a repo',
-    execTask( 'modulify.js' )
-  );
+  registerForwardedTask( 'modulify', 'Creates *.js modules for all images/strings/audio/etc in a repo' );
 
   // Grunt task that determines created and last modified dates from git, and
   // updates copyright statements accordingly, see #403
-  grunt.registerTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates',
-    execTask( 'update-copyright-dates.js' )
-  );
+  registerForwardedTask( 'update-copyright-dates', 'Update the copyright dates in JS source files based on Github dates' );
 
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt, or maybe just delete?
   // Dev meeting consensus: DELETE
-  grunt.registerTask(
+  registerForwardedTask(
     'webpack-dev-server', `Runs a webpack server for a given list of simulations.
     --repos=REPOS for a comma-separated list of repos (defaults to current repo)
     --port=9000 to adjust the running port
     --devtool=string value for sourcemap generation specified at https://webpack.js.org/configuration/devtool or undefined for (none)
-    --chrome: open the sims in Chrome tabs (Mac)`,
-    execTask( 'webpack-dev-server.js' )
-  );
+    --chrome: open the sims in Chrome tabs (Mac)` );
 
-  grunt.registerTask(
+  registerForwardedTask(
     'generate-phet-io-api',
     'Output the PhET-iO API as JSON to phet-io-sim-specific/api.\n' +
     'Options\n:' +
@@ -230,11 +202,9 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--simList=... a file with a list of sims to compare (defaults to the sim in the current dir)\n' +
     '--stable - regenerate for all "stable sims" (see perennial/data/phet-io-api-stable/)\n' +
     '--temporary - outputs to the temporary directory\n' +
-    '--transpile=false - skips the transpilation step. You can skip transpilation if a watch process is handling it.',
-    execTask( 'generate-phet-io-api.js' )
-  );
+    '--transpile=false - skips the transpilation step. You can skip transpilation if a watch process is handling it.' );
 
-  grunt.registerTask(
+  registerForwardedTask(
     'compare-phet-io-api',
     'Compares the phet-io-api against the reference version(s) if this sim\'s package.json marks compareDesignedAPIChanges.  ' +
     'This will by default compare designed changes only. Options:\n' +
@@ -243,20 +213,14 @@ Updates the normal automatically-generated files for this repository. Includes:
     '--stable, generate the phet-io-apis for each phet-io sim considered to have a stable API (see perennial-alias/data/phet-io-api-stable)\n' +
     '--delta, by default a breaking-compatibility comparison is done, but --delta shows all changes\n' +
     '--temporary, compares API files in the temporary directory (otherwise compares to freshly generated APIs)\n' +
-    '--compareBreakingAPIChanges - add this flag to compare breaking changes in addition to designed changes',
-    execTask( 'compare-phet-io-api.js' )
-  );
+    '--compareBreakingAPIChanges - add this flag to compare breaking changes in addition to designed changes' );
 
   // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt. Does anyone use it? Search for docs in the code review checklist
   // Dev team consensus: move to node. Run like this: `node ../chipper/js/scripts/profile-file-size.js`
   // TODO: Add to code review checklist, see https://github.com/phetsims/chipper/issues/1461
-  grunt.registerTask( 'profile-file-size', 'Profiles the file size of the built JS file for a given repo',
-    execTask( 'profile-file-size.js' )
-  );
+  registerForwardedTask( 'profile-file-size', 'Profiles the file size of the built JS file for a given repo' );
 
-  grunt.registerTask( 'test-grunt', 'Run tests for the Gruntfile',
-    execTask( 'test-grunt.js' )
-  );
+  registerForwardedTask( 'test-grunt', 'Run tests for the Gruntfile' );
 
   /**
    * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from
@@ -297,7 +261,7 @@ Updates the normal automatically-generated files for this repository. Includes:
 
     spawned.on( 'close', code => {
       if ( code !== 0 ) {
-        throw new Error( `perennial grunt ${argsString} failed with code ${code}` );
+        throw new Error( `spawn: ${command} ${argsString} failed with code ${code}` );
       }
       else {
         done();
