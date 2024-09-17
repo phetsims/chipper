@@ -6,6 +6,7 @@
 
 // Use nopt to guarantee compatibility with grunt. See usage site: https://github.com/phetsims/chipper/issues/1459
 // See usage in chipper/node_modules/grunt-cli/bin/grunt
+// @ts-expect-error
 import nopt from 'nopt';
 import IntentionalAny from '../../../../../phet-core/js/types/IntentionalAny.js';
 

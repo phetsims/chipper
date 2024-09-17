@@ -6,6 +6,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+// @ts-expect-error
 import assert from 'assert';
 import * as grunt from 'grunt';
 import buildLocal from './util/buildLocal';

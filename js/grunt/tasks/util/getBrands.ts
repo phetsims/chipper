@@ -3,6 +3,7 @@
 /**
  * @author Sam Reid (PhET Interactive Simulations)
  */
+// @ts-expect-error
 import assert from 'assert';
 import IntentionalAny from '../../../../../phet-core/js/types/IntentionalAny.js';
 import getOption from './getOption';

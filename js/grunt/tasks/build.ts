@@ -25,6 +25,8 @@
  */
 
 const buildStandalone = require( '../buildStandalone' );
+
+// @ts-expect-error
 import assert from 'assert';
 import * as grunt from 'grunt';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
