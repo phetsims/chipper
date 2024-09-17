@@ -9,6 +9,7 @@
 
 // modules
 import * as ChipperConstants from '../common/ChipperConstants';
+
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -74,8 +75,8 @@ export type MinifyOptions = {
  * @param profileFileSize
  * @returns - Does not resolve a value
  */
-module.exports = async function( repo: string, minifyOptions: MinifyOptions, allHTML: boolean, brand: string, localesOption: string,
-                                 buildLocal: boolean, encodeStringMap: boolean, compressScripts: boolean, profileFileSize: boolean ): Promise<void> {
+export default async function( repo: string, minifyOptions: MinifyOptions, allHTML: boolean, brand: string, localesOption: string,
+                               buildLocal: boolean, encodeStringMap: boolean, compressScripts: boolean, profileFileSize: boolean ): Promise<void> {
 
   if ( brand === 'phet-io' ) {
 
@@ -440,7 +441,7 @@ module.exports = async function( repo: string, minifyOptions: MinifyOptions, all
       grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
     }
   }
-};
+}
 
 // For profiling file size. Name is optional
 const wrapProfileFileSize = ( string: string, profileFileSize: boolean, type: string, name?: string ) => {

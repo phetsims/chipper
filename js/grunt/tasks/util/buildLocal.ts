@@ -5,8 +5,9 @@
  */
 
 import * as grunt from 'grunt';
+import IntentionalAny from '../../../../../phet-core/js/types/IntentionalAny.js';
 
-let buildLocal;
+let buildLocal: IntentionalAny;
 try {
   buildLocal = grunt.file.readJSON( `${process.env.HOME}/.phet/build-local.json` );
 }
@@ -15,4 +16,4 @@ catch( e ) {
   buildLocal = {};
 }
 
-module.exports = buildLocal;
+export default buildLocal;

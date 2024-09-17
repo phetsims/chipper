@@ -25,7 +25,14 @@
  */
 
 const buildStandalone = require( '../buildStandalone' );
-const buildRunnable = require( '../buildRunnable' );
+import assert from 'assert';
+import * as grunt from 'grunt';
+import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import buildRunnable from '../buildRunnable';
+import buildLocal from './util/buildLocal';
+import getOption from './util/getOption';
+import getRepo from './util/getRepo';
+
 const minify = require( '../minify' );
 const tsc = require( '../tsc' );
 const reportTscResults = require( '../reportTscResults' );
@@ -33,14 +40,8 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const getPhetLibs = require( '../getPhetLibs' );
 const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog' );
-import * as grunt from 'grunt';
-import getRepo from './util/getRepo';
-const assert = require( 'assert' );
 const Transpiler = require( '../../common/Transpiler' );
 const getBrands = require( './util/getBrands' );
-import getOption from './util/getOption';
-const buildLocal = require( './util/buildLocal' );
-import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
 const repo = getRepo();
 

@@ -5,7 +5,7 @@
  */
 import * as grunt from 'grunt';
 
-const assert = require( 'assert' );
+import assert from 'assert';
 import getOption from './getOption';
 
 const getRepo = (): string => {

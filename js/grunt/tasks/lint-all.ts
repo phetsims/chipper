@@ -1,21 +1,21 @@
 // Copyright 2024, University of Colorado Boulder
 
-import getRepo from './util/getRepo';
-const getBrands = require( './util/getBrands' );
-const assert = require( 'assert' );
-import * as grunt from 'grunt';
-const lint = require( '../lint' );
-
 /**
  * lint all js files that are required to build this repository (for the specified brands)
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-const repo = getRepo();
-
+import assert from 'assert';
+import * as grunt from 'grunt';
+import buildLocal from './util/buildLocal';
 import getOption from './util/getOption';
-const buildLocal = require( './util/buildLocal' );
+import getRepo from './util/getRepo';
+
+const getBrands = require( './util/getBrands' );
+const lint = require( '../lint' );
+
+const repo = getRepo();
 
 // --disable-eslint-cache disables the cache, useful for developing rules
 const cache = !getOption( 'disable-eslint-cache' );

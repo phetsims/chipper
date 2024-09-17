@@ -13,7 +13,7 @@
 import getRepo from './util/getRepo';
 
 const commitsSince = require( '../commitsSince' );
-const assert = require( 'assert' );
+import assert from 'assert';
 import getOption from './util/getOption';
 
 const repo = getRepo();
