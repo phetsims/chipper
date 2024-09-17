@@ -36,7 +36,7 @@ let proposedAPIs: Record<string, string> | null = null;
   }
   else {
 
-    const Transpiler = require( '../common/Transpiler' );
+    const Transpiler = require( '../../common/Transpiler' );
     const transpiler = new Transpiler( { silent: true } );
 
     transpiler.transpileAll();
@@ -54,7 +54,7 @@ let proposedAPIs: Record<string, string> | null = null;
   if ( getOption( 'compareBreakingAPIChanges' ) ) {
     options.compareBreakingAPIChanges = getOption( 'compareBreakingAPIChanges' );
   }
-  const ok = await require( '../phet-io/phetioCompareAPISets' )( sims, proposedAPIs, options );
+  const ok = await require( '../../phet-io/phetioCompareAPISets' )( sims, proposedAPIs, options );
   !ok && grunt.fail.fatal( 'PhET-iO API comparison failed' );
 
 } )();
