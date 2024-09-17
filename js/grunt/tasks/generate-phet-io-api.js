@@ -3,6 +3,14 @@
 const getRepo = require( './util/getRepo' );
 
 /**
+ * Output the PhET-iO API as JSON to phet-io-sim-specific/api.
+ * Options
+ * --sims=... a list of sims to compare (defaults to the sim in the current dir)
+ * --simList=... a file with a list of sims to compare (defaults to the sim in the current dir)
+ * --stable - regenerate for all "stable sims" (see perennial/data/phet-io-api-stable/)
+ * --temporary - outputs to the temporary directory
+ * --transpile=false - skips the transpilation step. You can skip transpilation if a watch process is handling it.
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const repo = getRepo();

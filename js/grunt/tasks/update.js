@@ -3,6 +3,14 @@
 const getRepo = require( './util/getRepo' );
 
 /**
+ * Updates the normal automatically-generated files for this repository. Includes:
+ * * runnables: generate-development-html and modulify
+ * * accessible runnables: generate-a11y-view-html
+ * * unit tests: generate-test-html
+ * * simulations: generateREADME()
+ * * phet-io simulations: generate overrides file if needed
+ * * create the conglomerate string files for unbuilt mode, for this repo and its dependencies
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const grunt = require( 'grunt' );

@@ -3,6 +3,16 @@
 const getRepo = require( './util/getRepo' );
 
 /**
+ *
+ * Compares the phet-io-api against the reference version(s) if this sim's package.json marks compareDesignedAPIChanges.
+ * This will by default compare designed changes only. Options:
+ * --sims=... a list of sims to compare (defaults to the sim in the current dir)
+ * --simList=... a file with a list of sims to compare (defaults to the sim in the current dir)
+ * --stable, generate the phet-io-apis for each phet-io sim considered to have a stable API (see perennial-alias/data/phet-io-api-stable)
+ * --delta, by default a breaking-compatibility comparison is done, but --delta shows all changes
+ * --temporary, compares API files in the temporary directory (otherwise compares to freshly generated APIs)
+ * --compareBreakingAPIChanges - add this flag to compare breaking changes in addition to designed changes
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const grunt = require( 'grunt' );

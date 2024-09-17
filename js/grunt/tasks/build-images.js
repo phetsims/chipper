@@ -1,6 +1,8 @@
 // Copyright 2024, University of Colorado Boulder
 
 /**
+ * Build images only
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const grunt = require( 'grunt' );

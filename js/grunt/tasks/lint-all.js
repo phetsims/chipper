@@ -7,6 +7,8 @@ const grunt = require( 'grunt' );
 const lint = require( '../lint' );
 
 /**
+ * lint all js files that are required to build this repository (for the specified brands)
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 

@@ -3,6 +3,8 @@
 const getRepo = require( './util/getRepo' );
 
 /**
+ * Outputs JS just for the specified repo
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const Transpiler = require( '../../common/Transpiler' );

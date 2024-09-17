@@ -3,6 +3,8 @@
 const getRepo = require( './util/getRepo' );
 
 /**
+ * Generates README.md file for a published simulation.
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const repo = getRepo();

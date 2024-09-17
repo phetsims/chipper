@@ -1,8 +1,17 @@
 // Copyright 2024, University of Colorado Boulder
 
 /**
+ * Runs a webpack server for a given list of simulations.
+ * --repos=REPOS for a comma-separated list of repos (defaults to current repo)
+ * --port=9000 to adjust the running port
+ * --devtool=string value for sourcemap generation specified at https://webpack.js.org/configuration/devtool or undefined for (none)
+ * --chrome: open the sims in Chrome tabs (Mac)
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+// TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt, or maybe just delete?
+  // Dev meeting consensus: DELETE
 
 const getRepo = require( './util/getRepo' );
 const webpackDevServer = require( '../webpackDevServer' );

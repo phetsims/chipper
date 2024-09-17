@@ -5,6 +5,8 @@ const generateDevelopmentStrings = require( '../../scripts/generateDevelopmentSt
 const fs = require( 'fs' );
 
 /**
+ * Creates *.js modules for all images/strings/audio/etc in a repo
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const repo = getRepo();

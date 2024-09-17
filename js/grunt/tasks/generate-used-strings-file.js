@@ -9,6 +9,7 @@ const getLocalesFromRepository = require( '../getLocalesFromRepository' );
 const getStringMap = require( '../getStringMap' );
 
 /**
+ * Writes used strings to phet-io-sim-specific/ so that PhET-iO sims only output relevant strings to the API in unbuilt mode
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const repo = getRepo();

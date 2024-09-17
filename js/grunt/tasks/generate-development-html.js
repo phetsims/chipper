@@ -4,6 +4,8 @@ const getRepo = require( './util/getRepo' );
 const generateDevelopmentHTML = require( '../generateDevelopmentHTML' );
 
 /**
+ * Generates top-level SIM_en.html file based on the preloads in package.json.
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const repo = getRepo();
