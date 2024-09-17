@@ -25,7 +25,8 @@ function areCompatible( testValue: IntentionalAny, groundTruthValue: Intentional
     }
 
     // The old array must have at least as many items as the new array
-    if ( testValue.length < groundTruthValue.length ) {
+    // TODO: hard code something for validValues for widening, https://github.com/phetsims/phet-io/issues/1951
+    if ( testValue.length !== groundTruthValue.length ) {
       return false;
     }
 
@@ -82,12 +83,12 @@ function areCompatible( testValue: IntentionalAny, groundTruthValue: Intentional
  * is in the groundTruthState is incompatible.
  *
  * Compatibility cheat sheet:
- * Extra key in the testState that isn't in the groundTruthState: compatible
- * Extra element in an array in testState: compatible
- * One less element in an array in testState: NOT compatible
- * Both have the same key and the same numeric value: compatible
- * Both have the same key but different numeric value: NOT Compatible
- *
+ *   Extra key in the testState that isn't in the groundTruthState: ---- compatible
+ *   Extra element in an array in testState: --------------------------- compatible
+ *   One less element in an array in testState: ------------------------ NOT compatible
+ *   Both have the same key and the same numeric value: ---------------- compatible
+ *   Both have the same key but different numeric value: --------------- NOT Compatible
+ * TODO: Swap arg order, https://github.com/phetsims/phet-io/issues/1951
  */
 const isInitialStateCompatible = ( testState: PhetioElementState, groundTruthState: PhetioElementState ): boolean => {
   return areCompatible( testState, groundTruthState );
