@@ -3,37 +3,36 @@
 // USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.
 // For licensing, please contact phethelp@colorado.edu
 
-/**
- * TODO: Doc, https://github.com/phetsims/phet-io/issues/1951
- * @author Michael Kauzmann (PhET Interactive Simulations)
- */
-
-import { PhetioElementState } from '../../../../tandem/js/TandemConstants.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import { PhetioElementState } from '../../../../tandem/js/TandemConstants.js';
 
 /**
- * Checks if the old value is compatible with the new value.
- * @param oldValue - The original value to check against.
- * @param newValue - The new value/schema to validate compatibility.
+ * Checks if the test value is compatible with the groundTruth value. This does so recursively on component values of state.
+ * Compatability relies on treating one as the correct value, and determining if the other is compatible with it.
+ *
+ * @author Michael Kauzmann (PhET Interactive Simulations)
+ *
+ * @param testValue - The original value to check against.
+ * @param groundTruthValue - The new value/schema to validate compatibility.
  * @returns `true` if compatible, `false` otherwise.
  */
-function areCompatible( oldValue: IntentionalAny, newValue: IntentionalAny ): boolean {
-  // If newValue is an array, handle array compatibility with ordered elements
-  if ( Array.isArray( newValue ) ) {
-    if ( !Array.isArray( oldValue ) ) {
+function areCompatible( testValue: IntentionalAny, groundTruthValue: IntentionalAny ): boolean {
+  // If groundTruthValue is an array, handle array compatibility with ordered elements
+  if ( Array.isArray( groundTruthValue ) ) {
+    if ( !Array.isArray( testValue ) ) {
       // Type mismatch: new expects an array, but old is not
       return false;
     }
 
     // The old array must have at least as many items as the new array
-    if ( oldValue.length < newValue.length ) {
+    if ( testValue.length < groundTruthValue.length ) {
       return false;
     }
 
     // Iterate through each item in the new array by index
-    for ( let i = 0; i < newValue.length; i++ ) {
-      const newItem = newValue[ i ];
-      const oldItem = oldValue[ i ];
+    for ( let i = 0; i < groundTruthValue.length; i++ ) {
+      const newItem = groundTruthValue[ i ];
+      const oldItem = testValue[ i ];
 
       // Check compatibility of the current indexed items
       if ( !areCompatible( oldItem, newItem ) ) {
@@ -45,23 +44,23 @@ function areCompatible( oldValue: IntentionalAny, newValue: IntentionalAny ): bo
     return true;
   }
 
-  // If newValue is an object (but not an array), handle object compatibility
-  if ( typeof newValue === 'object' && newValue !== null ) {
-    if ( typeof oldValue !== 'object' || oldValue === null || Array.isArray( oldValue ) ) {
+  // If groundTruthValue is an object (but not an array), handle object compatibility
+  if ( typeof groundTruthValue === 'object' && groundTruthValue !== null ) {
+    if ( typeof testValue !== 'object' || testValue === null || Array.isArray( testValue ) ) {
       // Type mismatch: new expects an object, but old is not an object or is an array
       return false;
     }
 
     // Iterate through each key in the new object
-    for ( const key in newValue ) {
-      if ( newValue.hasOwnProperty( key ) ) {
-        if ( !oldValue.hasOwnProperty( key ) ) {
+    for ( const key in groundTruthValue ) {
+      if ( groundTruthValue.hasOwnProperty( key ) ) {
+        if ( !testValue.hasOwnProperty( key ) ) {
           // Key missing in old object
           return false;
         }
 
         // Recursively check compatibility for the nested key
-        if ( !areCompatible( oldValue[ key ], newValue[ key ] ) ) {
+        if ( !areCompatible( testValue[ key ], groundTruthValue[ key ] ) ) {
           return false;
         }
       }
@@ -72,10 +71,25 @@ function areCompatible( oldValue: IntentionalAny, newValue: IntentionalAny ): bo
   }
 
   // For primitive values, perform a strict equality check
-  return oldValue === newValue;
+  return testValue === groundTruthValue;
 }
 
-const phetioStateOneWayEqualityTests = ( oldState: PhetioElementState, newState: PhetioElementState ): boolean => {
-  return areCompatible( oldState, newState );
+/**
+ * Tests if the initialState as found in the PhET-iO API file is compatible with another. This implementation treats
+ * the groundTruthState as the correct definition, and compares it to the test state to see if the testState is
+ * "compatible". Compatible means that for every entry/value in the ground truth (recursively), there is that same
+ * structure and value in the test state. Extra data in the testState is acceptable, but data missing from testState that
+ * is in the groundTruthState is incompatible.
+ *
+ * Compatibility cheat sheet:
+ * Extra key in the testState that isn't in the groundTruthState: compatible
+ * Extra element in an array in testState: compatible
+ * One less element in an array in testState: NOT compatible
+ * Both have the same key and the same numeric value: compatible
+ * Both have the same key but different numeric value: NOT Compatible
+ *
+ */
+const isInitialStateCompatible = ( testState: PhetioElementState, groundTruthState: PhetioElementState ): boolean => {
+  return areCompatible( testState, groundTruthState );
 };
-export default phetioStateOneWayEqualityTests;
+export default isInitialStateCompatible;
