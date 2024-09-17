@@ -3,8 +3,8 @@
 // USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.
 // For licensing, please contact phethelp@colorado.edu
 
-import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
-import { PhetioElementState } from '../../../../tandem/js/TandemConstants.js';
+import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
+import { PhetioElementState } from './TandemConstants.js';
 
 /**
  * Checks if the test value is compatible with the groundTruth value. This does so recursively on component values of state.
