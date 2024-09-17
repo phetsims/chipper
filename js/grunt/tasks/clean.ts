@@ -6,8 +6,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-const getRepo = require( './util/getRepo' );
-const grunt = require( 'grunt' );
+import getRepo from './util/getRepo';
+import * as grunt from 'grunt';
 
 const repo = getRepo();
 const buildDirectory = `../${repo}/build`;

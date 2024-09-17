@@ -9,10 +9,10 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-const grunt = require( 'grunt' );
-const getRepo = require( './util/getRepo' );
+import * as grunt from 'grunt';
+import getRepo from './util/getRepo';
 const lint = require( '../lint' );
-const getOption = require( './util/getOption' );
+import getOption from './util/getOption';
 
 const repo = getRepo();
 

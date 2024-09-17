@@ -15,9 +15,9 @@
   // MK: All opposed?
   // MK: is working on it.
 
-const getRepo = require( './util/getRepo' );
-const grunt = require( 'grunt' );
-const getOption = require( './util/getOption' );
+import getRepo from './util/getRepo';
+import * as grunt from 'grunt';
+import getOption from './util/getOption';
 const sortImports = require( '../sortImports' );
 
 const repo = getRepo();

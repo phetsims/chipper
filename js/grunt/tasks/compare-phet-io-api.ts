@@ -1,7 +1,5 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './util/getRepo' );
-
 /**
  *
  * Compares the phet-io-api against the reference version(s) if this sim's package.json marks compareDesignedAPIChanges.
@@ -15,22 +13,25 @@ const getRepo = require( './util/getRepo' );
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-const grunt = require( 'grunt' );
+import * as grunt from 'grunt';
+import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import getRepo from './util/getRepo';
+
 const getSimList = require( '../../common/getSimList' );
 const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI' );
 const fs = require( 'fs' );
-const getOption = require( './util/getOption' );
+import getOption from './util/getOption';
 
 const repo = getRepo();
-const sims = getSimList().length === 0 ? [ repo ] : getSimList();
+const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
 const temporary = getOption( 'temporary' );
-let proposedAPIs = null;
+let proposedAPIs: Record<string, string> | null = null;
 
 ( async () => {
   if ( temporary ) {
     proposedAPIs = {};
     sims.forEach( sim => {
-      proposedAPIs[ sim ] = JSON.parse( fs.readFileSync( `../phet-io-sim-specific/repos/${repo}/${repo}-phet-io-api-temporary.json`, 'utf8' ) );
+      proposedAPIs![ sim ] = JSON.parse( fs.readFileSync( `../phet-io-sim-specific/repos/${repo}/${repo}-phet-io-api-temporary.json`, 'utf8' ) );
     } );
   }
   else {
@@ -46,7 +47,7 @@ let proposedAPIs = null;
   }
 
 // Don't add to options object if values are `undefined` (as _.extend will keep those entries and not mix in defaults
-  const options = {};
+  const options: IntentionalAny = {};
   if ( getOption( 'delta' ) ) {
     options.delta = getOption( 'delta' );
   }

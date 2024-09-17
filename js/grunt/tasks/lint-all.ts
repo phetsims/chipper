@@ -1,9 +1,9 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './util/getRepo' );
+import getRepo from './util/getRepo';
 const getBrands = require( './util/getBrands' );
 const assert = require( 'assert' );
-const grunt = require( 'grunt' );
+import * as grunt from 'grunt';
 const lint = require( '../lint' );
 
 /**
@@ -14,7 +14,7 @@ const lint = require( '../lint' );
 
 const repo = getRepo();
 
-const getOption = require( './util/getOption' );
+import getOption from './util/getOption';
 const buildLocal = require( './util/buildLocal' );
 
 // --disable-eslint-cache disables the cache, useful for developing rules

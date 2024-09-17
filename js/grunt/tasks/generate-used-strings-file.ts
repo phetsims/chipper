@@ -1,6 +1,6 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './util/getRepo' );
+import getRepo from './util/getRepo';
 const getPhetLibs = require( '../getPhetLibs' );
 const fs = require( 'fs' );
 const webpackBuild = require( '../webpackBuild' );

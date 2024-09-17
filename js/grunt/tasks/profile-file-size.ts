@@ -1,6 +1,6 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './util/getRepo' );
+import getRepo from './util/getRepo';
 
 /**
  * Profiles the file size of the built JS file for a given repo

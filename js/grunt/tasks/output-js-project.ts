@@ -6,7 +6,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const Transpiler = require( '../../common/Transpiler' );
-const getOption = require( './util/getOption' );
+import getOption from './util/getOption';
+
 const transpiler = new Transpiler( { silent: true } );
 
 const repos = getOption( 'repos' );

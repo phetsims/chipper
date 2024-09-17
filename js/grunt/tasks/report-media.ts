@@ -1,6 +1,6 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './util/getRepo' );
+import getRepo from './util/getRepo';
 
 /**
  * (project-wide) Report on license.json files throughout all working copies.

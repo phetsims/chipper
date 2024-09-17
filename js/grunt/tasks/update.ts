@@ -1,7 +1,5 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './util/getRepo' );
-
 /**
  * Updates the normal automatically-generated files for this repository. Includes:
  * * runnables: generate-development-html and modulify
@@ -13,13 +11,15 @@ const getRepo = require( './util/getRepo' );
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-const grunt = require( 'grunt' );
+import * as grunt from 'grunt';
+import getRepo from './util/getRepo';
+import * as fs from 'fs';
+
 const repo = getRepo();
 
 const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
 const generateREADME = require( '../generateREADME' );
-const fs = require( 'fs' );
 const _ = require( 'lodash' );
 
 // support repos that don't have a phet object
@@ -65,7 +65,7 @@ else {
           grunt.file.write( 'package.json', JSON.stringify( packageObject, null, 2 ) );
         }
       }
-      catch( e ) {
+      catch( e: IntentionalAny ) {
         if ( !e.message.includes( 'no such file or directory' ) ) {
           throw e;
         }

@@ -7,7 +7,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-const getOption = require( './util/getOption' );
+import getOption from './util/getOption';
 
 // grunt test-grunt --brands=a,b,c --lint=false --noTSC
 const brands = getOption( 'brands' );

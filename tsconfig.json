@@ -5,5 +5,9 @@
     "images/**/*",
     "mipmaps/**/*",
     "sounds/**/*"
-  ]
+  ],
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  }
 }

@@ -33,14 +33,14 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const getPhetLibs = require( '../getPhetLibs' );
 const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog' );
-
-const grunt = require( 'grunt' );
-const getRepo = require( './util/getRepo' );
+import * as grunt from 'grunt';
+import getRepo from './util/getRepo';
 const assert = require( 'assert' );
 const Transpiler = require( '../../common/Transpiler' );
 const getBrands = require( './util/getBrands' );
-const getOption = require( './util/getOption' );
+import getOption from './util/getOption';
 const buildLocal = require( './util/buildLocal' );
+import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
 const repo = getRepo();
 
@@ -51,7 +51,7 @@ const transpiler = new Transpiler( { silent: true } );
 
     // Parse minification keys
     const minifyKeys = Object.keys( minify.MINIFY_DEFAULTS );
-    const minifyOptions = {};
+    const minifyOptions: IntentionalAny = {};
     minifyKeys.forEach( minifyKey => {
       const option = getOption( `minify.${minifyKey}` );
       if ( option === true || option === false ) {

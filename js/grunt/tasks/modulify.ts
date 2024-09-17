@@ -1,8 +1,8 @@
 // Copyright 2024, University of Colorado Boulder
-const getRepo = require( './util/getRepo' );
+import getRepo from './util/getRepo';
 const modulify = require( '../modulify' );
 const generateDevelopmentStrings = require( '../generateDevelopmentStrings' );
-const fs = require( 'fs' );
+import * as fs from 'fs';
 
 /**
  * Creates *.js modules for all images/strings/audio/etc in a repo

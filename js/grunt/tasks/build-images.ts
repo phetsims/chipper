@@ -5,8 +5,8 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-const grunt = require( 'grunt' );
-const getRepo = require( './util/getRepo' );
+import * as grunt from 'grunt';
+import getRepo from './util/getRepo';
 
 const jimp = require( 'jimp' );
 const generateThumbnails = require( '../generateThumbnails' );

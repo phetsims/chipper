@@ -4,9 +4,10 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const assert = require( 'assert' );
-const getOption = require( './getOption' );
+import IntentionalAny from '../../../../../phet-core/js/types/IntentionalAny.js';
+import getOption from './getOption';
 
-const getBrands = ( grunt, repo, buildLocal ) => {
+const getBrands = ( grunt: IntentionalAny, repo: string, buildLocal: IntentionalAny ) => {
 
   // Determine what brands we want to build
   assert( !getOption( 'brand' ), 'Use --brands={{BRANDS}} instead of brand' );
@@ -14,7 +15,7 @@ const getBrands = ( grunt, repo, buildLocal ) => {
   const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const supportedBrands = localPackageObject.phet.supportedBrands || [];
 
-  let brands;
+  let brands: string[];
   if ( getOption( 'brands' ) ) {
     if ( getOption( 'brands' ) === '*' ) {
       brands = supportedBrands;
@@ -26,7 +27,7 @@ const getBrands = ( grunt, repo, buildLocal ) => {
   else if ( buildLocal.brands ) {
     // Extra check, see https://github.com/phetsims/chipper/issues/640
     assert( Array.isArray( buildLocal.brands ), 'If brands exists in build-local.json, it should be an array' );
-    brands = buildLocal.brands.filter( brand => supportedBrands.includes( brand ) );
+    brands = buildLocal.brands.filter( ( brand: string ) => supportedBrands.includes( brand ) );
   }
   else {
     brands = [ 'adapted-from-phet' ];

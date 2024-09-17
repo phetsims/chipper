@@ -1,6 +1,6 @@
 // Copyright 2024, University of Colorado Boulder
 
-const getRepo = require( './util/getRepo' );
+import getRepo from './util/getRepo';
 
 /**
  * Output the PhET-iO API as JSON to phet-io-sim-specific/api.
@@ -19,9 +19,9 @@ const formatPhetioAPI = require( '../../phet-io/formatPhetioAPI' );
 const getSimList = require( '../../common/getSimList' );
 const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI' );
 const fs = require( 'fs' );
-const getOption = require( './util/getOption' );
+import getOption from './util/getOption';
 
-const sims = getSimList().length === 0 ? [ repo ] : getSimList();
+const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
 
 // Ideally transpilation would be a no-op if the watch process is running. However, it can take 2+ seconds on
 // macOS to check all files, and sometimes much longer (50+ seconds) if the cache mechanism is failing.

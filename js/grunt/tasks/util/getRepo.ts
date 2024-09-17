@@ -3,11 +3,12 @@
 /**
  * @author Sam Reid (PhET Interactive Simulations)
  */
-const grunt = require( 'grunt' );
-const assert = require( 'assert' );
-const getOption = require( './getOption' );
+import * as grunt from 'grunt';
 
-module.exports = () => {
+const assert = require( 'assert' );
+import getOption from './getOption';
+
+const getRepo = (): string => {
 
   const packageObject = grunt.file.readJSON( 'package.json' );
 
@@ -16,3 +17,5 @@ module.exports = () => {
 
   return repo;
 };
+
+export default getRepo;
