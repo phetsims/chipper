@@ -1,7 +1,7 @@
 // Copyright 2024, University of Colorado Boulder
 const getRepo = require( './util/getRepo' );
 const modulify = require( '../modulify' );
-const generateDevelopmentStrings = require( '../../scripts/generateDevelopmentStrings' );
+const generateDevelopmentStrings = require( '../generateDevelopmentStrings' );
 const fs = require( 'fs' );
 
 /**
