@@ -17,29 +17,28 @@ QUnit.module( 'isInitialStateCompatible' );
 
 QUnit.test( 'isInitialStateCompatible', assert => {
 
-
-  // Example 1: Compatible with extra items in old array
-  const oldObj1 = {
+  // Example 1: Compatible with extra items in test array
+  const testObj1 = {
     a: 1,
     b: [
       { min: 0, max: 5 },
       { min: 6, max: 10 },
-      { min: 11, max: 15 } // Extra item in old array
+      { min: 11, max: 15 } // Extra item in test array
     ],
     g: 5
   };
 
-  const newObj1 = {
+  const groundTruthObj1 = {
     a: 1,
     b: [
       { min: 0, max: 5 },
       { min: 6, max: 10 }
     ]
   };
-  assert.equal( isInitialStateCompatible( oldObj1, newObj1 ), true );
+  assert.equal( isInitialStateCompatible( testObj1, groundTruthObj1 ), false );
 
   // Example 2: Incompatible due to mismatched value
-  const newObj2 = {
+  const groundTruthObj2 = {
     a: 1,
     b: [
       { min: 0, max: 5 },
@@ -47,10 +46,10 @@ QUnit.test( 'isInitialStateCompatible', assert => {
     ]
   };
 
-  assert.equal( isInitialStateCompatible( oldObj1, newObj2 ), false );
+  assert.equal( isInitialStateCompatible( testObj1, groundTruthObj2 ), false );
 
   // Example 3: Compatible with nested objects and extra array items
-  const oldObj2 = {
+  const testObj2 = {
     a: 1,
     b: [
       { min: 0, max: 5, extra: 'ignore' },
@@ -60,16 +59,16 @@ QUnit.test( 'isInitialStateCompatible', assert => {
     g: 5
   };
 
-  const newObj3 = {
+  const groundTruthObj3 = {
     b: [
       { min: 0, max: 5 }
     ]
   };
 
-  assert.equal( isInitialStateCompatible( oldObj2, newObj3 ), true );
+  assert.equal( isInitialStateCompatible( testObj2, groundTruthObj3 ), false );
 
-  // Example 4: Compatible when new array has same number of elements
-  const newObj4 = {
+  // Example 4: Compatible when groundTruth array has same number of elements
+  const groundTruthObj4 = {
     b: [
       { min: 0, max: 5 },
       { min: 6, max: 10 },
@@ -77,21 +76,46 @@ QUnit.test( 'isInitialStateCompatible', assert => {
     ]
   };
 
-  assert.equal( isInitialStateCompatible( oldObj2, newObj4 ), true );
+  assert.equal( isInitialStateCompatible( testObj2, groundTruthObj4 ), true );
 
-  // Example 5: Incompatible due to no corresponding old array item
-  const newObj5 = {
+  // Example 5: Incompatible due to no corresponding test array item
+  const groundTruthObj5 = {
     b: [
       { min: 0, max: 5 },
       { min: 6, max: 10 },
-      { min: 16, max: 20 } // No compatible item in old array at index 2
+      { min: 16, max: 20 } // No compatible item in test array at index 2
     ]
   };
 
-  assert.equal( isInitialStateCompatible( oldObj2, newObj5 ), false );
+  assert.equal( isInitialStateCompatible( testObj2, groundTruthObj5 ), false );
+
+
+  const groundTruthObj6 = {
+    a: 1,
+    b: [
+      { min: 0, max: 5 },
+      { min: 6, max: 10 },
+      { min: 11, max: 15 },
+      { min: 0, max: 10 }
+    ],
+    g: 5
+  };
+
+  assert.equal( isInitialStateCompatible( testObj2, groundTruthObj6 ), false );
+
+  const groundTruthObj7 = {
+    a: 1,
+    b: [
+      { min: 0, max: 5 },
+      { min: 6, max: 10 }
+    ],
+    g: 5
+  };
+
+  assert.equal( isInitialStateCompatible( testObj2, groundTruthObj7 ), false );
 
   // Example 6: Compatible with deeply nested structures
-  const oldObjA = {
+  const testObjA = {
     user: {
       id: 123,
       name: 'Alice',
@@ -107,7 +131,7 @@ QUnit.test( 'isInitialStateCompatible', assert => {
     }
   };
 
-  const newObjA = {
+  const groundTruthObjA = {
     user: {
       id: 123,
       roles: [ 'admin', 'editor' ],
@@ -117,20 +141,20 @@ QUnit.test( 'isInitialStateCompatible', assert => {
     }
   };
 
-  assert.equal( isInitialStateCompatible( oldObjA, newObjA ), true );
+  assert.equal( isInitialStateCompatible( testObjA, groundTruthObjA ), false );
 
   // Example 7: Incompatible due to missing role at specific index
-  const newObjB = {
+  const groundTruthObjB = {
     user: {
       id: 123,
       roles: [ 'admin', 'viewer' ] // 'manager' role not present at index 1
     }
   };
 
-  assert.equal( isInitialStateCompatible( oldObjA, newObjB ), false );
+  assert.equal( isInitialStateCompatible( testObjA, groundTruthObjB ), false );
 
-  // Example 8: Compatible with multiple schema items in new array
-  const oldObjC = {
+  // Example 8: Compatible with multiple schema items in groundTruth array
+  const testObjC = {
     products: [
       { id: 1, name: 'Laptop', specs: { ram: '16GB', storage: '512GB' } },
       { id: 2, name: 'Phone', specs: { ram: '8GB', storage: '256GB' } },
@@ -138,21 +162,23 @@ QUnit.test( 'isInitialStateCompatible', assert => {
     ]
   };
 
-  const newObjC = {
+  const groundTruthObjC = {
     products: [
       { name: 'Laptop', specs: { ram: '16GB' } },
-      { name: 'Phone', specs: { storage: '256GB' } }
+      { name: 'Phone', specs: { storage: '256GB' } },
+      { name: 'Tablet' }
+
     ]
   };
 
-  assert.equal( isInitialStateCompatible( oldObjC, newObjC ), true );
+  assert.equal( isInitialStateCompatible( testObjC, groundTruthObjC ), true );
 
   // Example 9: Incompatible due to mismatched nested value
-  const newObjD = {
+  const groundTruthObjD = {
     products: [
       { name: 'Laptop', specs: { ram: '32GB' } } // ram value differs
     ]
   };
 
-  assert.equal( isInitialStateCompatible( oldObjC, newObjD ), false );
+  assert.equal( isInitialStateCompatible( testObjC, groundTruthObjD ), false );
 } );
