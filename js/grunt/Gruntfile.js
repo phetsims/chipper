@@ -11,10 +11,8 @@
 
 const assert = require( 'assert' );
 require( './checkNodeVersion' );
-const child_process = require( 'child_process' );
-const fs = require( 'fs' );
-const path = require( 'path' );
-const getDocumentationForTask = require( './getDocumentationForTask' );
+const registerTasks = require( './registerTasks' );
+const gruntSpawn = require( './gruntSpawn' );
 
 const isWindows = /^win/.test( process.platform );
 
@@ -39,14 +37,6 @@ module.exports = function( grunt ) {
   const repo = grunt.option( 'repo' ) || packageObject.name;
   assert( typeof repo === 'string' && /^[a-z]+(-[a-z]+)*$/u.test( repo ), 'repo name should be composed of lower-case characters, optionally with dashes used as separators' );
 
-  function execTask( taskFilename ) {
-    const command = `${path.join( '..', 'chipper', 'node_modules', '.bin', 'tsx' )}${isWindows ? '.cmd' : ''}`;
-
-    return () => {
-      spawn( command, [ `../chipper/js/grunt/tasks/${taskFilename}`, ...process.argv.slice( 2 ) ], process.cwd(), false );
-    };
-  }
-
   grunt.registerTask( 'default', 'Builds the repository', [
     ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
     ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
@@ -58,22 +48,7 @@ module.exports = function( grunt ) {
     [ 'build' ]
   );
 
-  // Load each file from tasks/ and register it as a task
-  fs.readdirSync( __dirname + '/tasks' ).forEach( file => {
-    if ( file.endsWith( '.js' ) || file.endsWith( '.ts' ) ) {
-      const taskName = file.substring( 0, file.lastIndexOf( '.' ) );
-
-      const tsExists = fs.existsSync( `../chipper/js/grunt/tasks/${taskName}.ts` );
-      const jsExists = fs.existsSync( `../chipper/js/grunt/tasks/${taskName}.js` );
-
-      if ( tsExists && jsExists ) {
-        throw new Error( `Both TypeScript and JavaScript versions of the task ${taskName} exist. Please remove one of them.` );
-      }
-      else {
-        grunt.registerTask( taskName, getDocumentationForTask( file ), execTask( file ) );
-      }
-    }
-  } );
+  registerTasks( grunt, __dirname + '/tasks' );
 
   /**
    * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from
@@ -82,42 +57,13 @@ module.exports = function( grunt ) {
    *
    * @param {string} task - The name of the task
    */
-  function forwardToPerennialGrunt( task ) {
+  function registerPerennialTask( task ) {
     grunt.registerTask( task, 'Run grunt --help in perennial to see documentation', () => {
       grunt.log.writeln( '(Forwarding task to perennial)' );
       const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
-      spawn( isWindows ? 'grunt.cmd' : 'grunt', args, '../perennial', true );
-    } );
-  }
-
-  /**
-   * Spawns a child process to run a command with the specified arguments.
-   *
-   * @param {string} command - The command to run.
-   * @param {string[]} args - The arguments to pass to the command.
-   * @param {string} cwd - The current working directory for the child process.
-   * @param {boolean} [log=false] - Whether to log the command and arguments.
-   */
-  function spawn( command, args, cwd, log = false ) {
-    const done = grunt.task.current.async();
-    const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
-    const spawned = child_process.spawn( command, args, {
-      cwd: cwd,
-      shell: isWindows // shell is required for a NodeJS security update, see https://github.com/phetsims/perennial/issues/359
-    } );
-    log && grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
-
-    spawned.stderr.on( 'data', data => grunt.log.error( data.toString() ) );
-    spawned.stdout.on( 'data', data => grunt.log.write( data.toString() ) );
-    process.stdin.pipe( spawned.stdin );
-
-    spawned.on( 'close', code => {
-      if ( code !== 0 ) {
-        throw new Error( `spawn: ${command} ${argsString} failed with code ${code}` );
-      }
-      else {
-        done();
-      }
+      gruntSpawn( grunt, isWindows ? 'grunt.cmd' : 'grunt', args, '../perennial', argsString => {
+        grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
+      } );
     } );
   }
 
@@ -145,5 +91,5 @@ module.exports = function( grunt ) {
     'generate-data',
     'pdom-comparison',
     'release-branch-list'
-  ].forEach( forwardToPerennialGrunt );
+  ].forEach( registerPerennialTask );
 };
