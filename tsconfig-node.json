@@ -1,0 +1,16 @@
+{
+  "extends": "../chipper/tsconfig-core.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "NodeNext",
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "ES2020"
+      // no DOM
+    ]
+  }
+}
