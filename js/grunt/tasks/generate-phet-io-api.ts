@@ -30,7 +30,7 @@ const skipTranspile = getOption( 'transpile' ) === false;
 if ( !skipTranspile ) {
   const startTime = Date.now();
 
-  const Transpiler = require( '../common/Transpiler' );
+  const Transpiler = require( '../../common/Transpiler' );
   const transpiler = new Transpiler( { silent: true } );
 
   transpiler.transpileAll();
