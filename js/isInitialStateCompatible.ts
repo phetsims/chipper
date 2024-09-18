@@ -12,11 +12,11 @@ import { PhetioElementState } from './TandemConstants.js';
  *
  * @author Michael Kauzmann (PhET Interactive Simulations)
  *
- * @param testValue - The original value to check against.
  * @param groundTruthValue - The new value/schema to validate compatibility.
+ * @param testValue - The original value to check against.
  * @returns `true` if compatible, `false` otherwise.
  */
-function areCompatible( testValue: IntentionalAny, groundTruthValue: IntentionalAny ): boolean {
+function areCompatible( groundTruthValue: IntentionalAny, testValue: IntentionalAny ): boolean {
   // If groundTruthValue is an array, handle array compatibility with ordered elements
   if ( Array.isArray( groundTruthValue ) ) {
     if ( !Array.isArray( testValue ) ) {
@@ -89,9 +89,8 @@ function areCompatible( testValue: IntentionalAny, groundTruthValue: Intentional
  *   One less element in an array in testState: ------------------------ NOT compatible
  *   Both have the same key and the same numeric value: ---------------- compatible
  *   Both have the same key but different numeric value: --------------- NOT Compatible
- * TODO: AFTER_COMMIT Swap arg order, https://github.com/phetsims/phet-io/issues/1951
  */
-const isInitialStateCompatible = ( testState: PhetioElementState, groundTruthState: PhetioElementState ): boolean => {
-  return areCompatible( testState, groundTruthState );
+const isInitialStateCompatible = ( groundTruthState: PhetioElementState, testState: PhetioElementState ): boolean => {
+  return areCompatible( groundTruthState, testState );
 };
 export default isInitialStateCompatible;
