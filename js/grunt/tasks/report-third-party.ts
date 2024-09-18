@@ -1,4 +1,4 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2013-2024, University of Colorado Boulder
 
 /**
  * Creates a report of third-party resources (code, images, sound, etc) used in the published PhET simulations by

@@ -1,4 +1,4 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2013-2024, University of Colorado Boulder
 
 /**
  * Lints all JS files required to build this repository (for the specified brands)

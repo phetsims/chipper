@@ -11,10 +11,11 @@
  * Note that even though it is a preload, it uses a different global/namespacing pattern than phet-io-initialize-globals.js
  * in order to simplify usage in all these sites.
  *
+ * TODO: AFTER_COMMIT Turn this into a typescript module used in sim and Node code, https://github.com/phetsims/phet-io/issues/1951
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-
 
 /**
  * @typedef API
@@ -40,6 +41,13 @@
 
   // Is not the reserved keys to store data/metadata on PhET-iO Elements.
   const isChildKey = key => key !== METADATA_KEY_NAME && key !== DATA_KEY_NAME;
+
+  // TODO: Remove this duplication once phetioCompareAPIs can import isInitialStateCompatible, https://github.com/phetsims/phet-io/issues/1951
+  // DUPLICATION ALERT!
+  /* @formatter:off */
+  function areCompatible( testValue, groundTruthValue ) { if ( Array.isArray( groundTruthValue ) ) { if ( !Array.isArray( testValue ) ) { return false; } if ( testValue.length !== groundTruthValue.length ) { return false; } for ( let i = 0; i < groundTruthValue.length; i++ ) { const newItem = groundTruthValue[ i ]; const oldItem = testValue[ i ]; if ( !areCompatible( oldItem, newItem ) ) { return false; } } return true; } if ( typeof groundTruthValue === 'object' && groundTruthValue !== null ) { if ( typeof testValue !== 'object' || testValue === null || Array.isArray( testValue ) ) { return false; } for ( const key in groundTruthValue ) { if ( groundTruthValue.hasOwnProperty( key ) ) { if ( !testValue.hasOwnProperty( key ) ) { return false; } if ( !areCompatible( testValue[ key ], groundTruthValue[ key ] ) ) { return false; } } } return true; } return testValue === groundTruthValue;}
+  const isInitialStateCompatible = ( testState, groundTruthState ) => areCompatible( testState, groundTruthState );
+  /* @formatter:on */
 
   /**
    * "up-convert" an API to be in the format of API version >=1.0. This generally is thought of as a "sparse, tree-like" API.
@@ -168,21 +176,26 @@
       }
     };
 
+    const appendBothProblems = ( problemString, isDesignedElement ) => {
+      appendProblem( problemString, false );
+      isDesignedElement && appendProblem( problemString, true );
+    };
+
     /**
      * Visit one element along the APIs.
      * @param {string[]} trail - the path of tandem componentNames
      * @param {Object} reference - current value in the referenceAPI
      * @param {Object} proposed - current value in the proposedAPI
-     * @param {boolean} isDesigned
+     * @param {boolean} isDesignedElement - are we testing for designed changes, or for breaking changes.
      */
-    const visit = ( trail, reference, proposed, isDesigned ) => {
+    const visit = ( trail, reference, proposed, isDesignedElement ) => {
       const phetioID = trail.join( '.' );
 
       // Detect an instrumented instance
       if ( reference.hasOwnProperty( METADATA_KEY_NAME ) ) {
 
-        // Override isDesigned, if specified
-        isDesigned = isDesigned || reference[ METADATA_KEY_NAME ].phetioDesigned;
+        // Override isDesigned, if specified. Once on, you cannot turn off a subtree.
+        isDesignedElement = isDesignedElement || reference[ METADATA_KEY_NAME ].phetioDesigned;
 
         const referenceCompleteMetadata = getMetadataValues( reference, referenceAPI, _, assert );
         const proposedCompleteMetadata = getMetadataValues( proposed, proposedAPI, _, assert );
@@ -249,7 +262,7 @@
         // 'phetioHighFrequency', non-breaking, assuming clients with data have the full data stream
 
         // Check for design changes
-        if ( isDesigned ) {
+        if ( isDesignedElement ) {
           Object.keys( referenceCompleteMetadata ).forEach( metadataKey => {
             reportDifferences( metadataKey, true );
           } );
@@ -260,76 +273,68 @@
 
           // Detect missing expected state
           if ( !proposed._data || !proposed._data.initialState ) {
-            const problemString = `${phetioID}._data.initialState is missing`;
 
-            // Missing but expected state is a breaking problem
-            appendProblem( problemString, false );
+            // apiStateKeys "transition" means error more loudly, since we cannot test the apiStateKeys themselves
+            if ( apiSupportsAPIStateKeys( referenceAPI ) !== apiSupportsAPIStateKeys( proposedAPI ) ) {
 
-            // It is also a designed problem if we expected state in a designed subtree
-            isDesigned && appendProblem( problemString, true );
+              // Missing but expected state is a breaking problem
+              // It is also a designed problem if we expected state in a designed subtree
+              appendBothProblems( `${phetioID}._data.initialState is missing from proposed API` );
+            }
           }
           else {
+            // initialState comparison
 
             const referencesInitialState = reference._data.initialState;
             const proposedInitialState = proposed._data.initialState;
-            const matches = _.isEqualWith( referencesInitialState, proposedInitialState,
-              ( referenceState, proposedState ) => {
 
-                // Top level object comparison of the entire state (not a component piece)
-                if ( referencesInitialState === referenceState && proposedInitialState === proposedState ) {
+            const testInitialState = testDesigned => {
+              const isCompatible = _.isEqualWith( referencesInitialState, proposedInitialState,
+                ( referenceState, proposedState ) => {
 
-                  // The validValues of the localeProperty changes each time a new translation is submitted for a sim.
-                  if ( phetioID === trail[ 0 ] + '.general.model.localeProperty' ) {
+                  // Top level object comparison of the entire state (not a component piece)
+                  if ( referencesInitialState === referenceState && proposedInitialState === proposedState ) {
 
-                    // The sim must have all expected locales, but it is acceptable to add new ones without API error.
-                    return referenceState.validValues.every( validValue => proposedState.validValues.includes( validValue ) );
+                    // The validValues of the localeProperty changes each time a new translation is submitted for a sim.
+                    if ( phetioID === trail[ 0 ] + '.general.model.localeProperty' ) {
+
+                      // We do not worry about the notion of "designing" available locales. For breaking changes: the sim
+                      // must have all expected locales, but it is acceptable to add new one without API error.
+                      return testDesigned || referenceState.validValues.every( validValue => proposedState.validValues.includes( validValue ) );
+                    }
+                    else if ( testDesigned ) {
+                      return undefined; // Meaning use the default lodash algorithm for comparison.
+                    }
+                    else {
+                      // Breaking change test uses the general algorithm for initial state compatibility.
+                      // referenceState is the ground truth for compatibility
+                      return isInitialStateCompatible( proposedState, referenceState );
+                    }
                   }
 
-                  // Ignore any pointers, because they won't occur when generating the actual api, but may if a mouse is over a testing browser.
-                  if ( phetioID === ( trail[ 0 ] + '.general.controller.input' ) ) {
-                    return _.isEqual( { ...referenceState, pointers: null }, { ...proposedState, pointers: null } );
-                  }
+                  return undefined; // Meaning use the default lodash algorithm for comparison.
+                } );
+              if ( !isCompatible ) {
+                const problemString = `${phetioID}._data.initialState differs. \nExpected:\n${JSON.stringify( reference._data.initialState )}\n actual:\n${JSON.stringify( proposed._data.initialState )}\n`;
 
-                  // Ignore the scale's state, because it will be different at startup, depending on the user's window's
-                  // aspect ratio. TODO: Workaround for https://github.com/phetsims/phet-io/issues/1951
-                  if ( phetioID === 'density.mysteryScreen.model.scale' ) {
-                    return true;
-                  }
+                // Report only designed problems if on a designed element.
+                const reportTheProblem = !testDesigned || isDesignedElement;
+                reportTheProblem && appendProblem( problemString, testDesigned );
+              }
+            };
 
-                  // Ignore the wireMeterAttachmentPositionProperty because on it's starting position can change based on
-                  // the browser running the sim. TODO: Root cause is https://github.com/phetsims/phet-io/issues/1951.
-                  if ( phetioID === 'greenhouseEffect.layerModelScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ||
-                       phetioID === 'greenhouseEffect.photonsScreen.model.fluxMeter.wireMeterAttachmentPositionProperty' ) {
-                    return true;
-                  }
-                }
-
-                // When comparing numbers, don't trigger an error based on floating point inaccuracies. https://github.com/phetsims/aqua/issues/200
-                else if ( typeof referenceState === 'number' && typeof proposedState === 'number' ) {
-                  const numberPlaces = 10;
-
-                  // toPrecision is better for larger numbers, since toFixed will result in adjusting many more sig figs than needed.
-                  if ( referenceState > 10000 ) {
-                    return referenceState.toPrecision( numberPlaces ) === proposedState.toPrecision( numberPlaces );
-                  }
-                  else {
-                    return referenceState.toFixed( numberPlaces ) === proposedState.toFixed( numberPlaces );
-                  }
-                }
-
-                return undefined; // Meaning use the default lodash algorithm for comparison.
-              } );
-            if ( !matches ) {
-              const problemString = `${phetioID}._data.initialState differs. \nExpected:\n${JSON.stringify( reference._data.initialState )}\n actual:\n${JSON.stringify( proposed._data.initialState )}\n`;
-
-              // A changed state value could break a client wrapper, so identify it with breaking changes.
-              appendProblem( problemString, false );
-
-              // It is also a designed problem if the proposed values deviate from the specified designed values
-              isDesigned && appendProblem( problemString, true );
-            }
+            // It is also a designed problem if the proposed values deviate from the specified designed values
+            testInitialState( true );
+            // A changed state value could break a client wrapper, so identify it with breaking changes.
+            testInitialState( false );
           }
         }
+      }
+      else if ( proposed._data?.initialState ) {
+
+        // We don't have reference state, but do have a new initialState. this is a designed change
+        isDesignedElement && appendProblem(
+          `${phetioID}._data.initialState is not in reference API but is in proposed`, true );
       }
 
       // Recurse to children
@@ -337,26 +342,21 @@
         if ( reference.hasOwnProperty( componentName ) && isChildKey( componentName ) ) {
 
           if ( !proposed.hasOwnProperty( componentName ) ) {
-            const problemString = `PhET-iO Element missing: ${phetioID}.${componentName}`;
-            appendProblem( problemString, false );
-
-            if ( isDesigned ) {
-              appendProblem( problemString, true );
-            }
+            appendBothProblems( `PhET-iO Element missing: ${phetioID}.${componentName}`, isDesignedElement );
           }
           else {
             visit(
               trail.concat( componentName ),
               reference[ componentName ],
               proposed[ componentName ],
-              isDesigned
+              isDesignedElement
             );
           }
         }
       }
 
       for ( const componentName in proposed ) {
-        if ( isDesigned && proposed.hasOwnProperty( componentName ) && isChildKey( componentName ) && !reference.hasOwnProperty( componentName ) ) {
+        if ( isDesignedElement && proposed.hasOwnProperty( componentName ) && isChildKey( componentName ) && !reference.hasOwnProperty( componentName ) ) {
           appendProblem( `New PhET-iO Element (or uninstrumented intermediate container) not in reference: ${phetioID}.${componentName}`, true );
         }
       }
@@ -366,6 +366,9 @@
 
     // Check for: missing IOTypes, missing methods, or differing parameter types or return types
     for ( const typeName in referenceAPI.phetioTypes ) {
+      // TODO: AFTER_COMMIT We need a notion of phetioDesigned for Type comparison. https://github.com/phetsims/phet-io/issues/1951
+      // TODO: AFTER_COMMIT add comparison for stateSchema https://github.com/phetsims/phet-io/issues/1951
+
       if ( referenceAPI.phetioTypes.hasOwnProperty( typeName ) ) {
 
         // make sure we have the desired type
@@ -412,6 +415,25 @@
             }
           } );
 
+          if ( apiSupportsAPIStateKeys( referenceAPI ) &&
+               apiSupportsAPIStateKeys( proposedAPI ) ) {
+            if ( !!referenceType.apiStateKeys !== !!proposedType.apiStateKeys ) {
+              // TODO: Designed problem, https://github.com/phetsims/phet-io/issues/1951
+            }
+            else {
+              const referenceAPIStateKeys = referenceType.apiStateKeys;
+              const proposedAPIStateKeys = proposedType.apiStateKeys;
+
+              // TODO: AFTER_COMMIT Breaking change to remove an API state key, but not to add https://github.com/phetsims/phet-io/issues/1951
+              if ( !_.isEqual( referenceAPIStateKeys, proposedAPIStateKeys ) ) {
+                appendProblem( `${typeName} apiStateKeys differ:\n` +
+                               `  In reference: ${_.difference( referenceAPIStateKeys, proposedAPIStateKeys )}\n` +
+                               `  In proposed: ${_.difference( proposedAPIStateKeys, referenceAPIStateKeys )}`, true );
+
+              }
+            }
+          }
+
           // make sure we have matching supertype names
           const referenceSupertypeName = referenceType.supertype;
           const proposedSupertypeName = proposedType.supertype;
@@ -445,11 +467,14 @@
       }
     }
 
+
     return {
       breakingProblems: breakingProblems,
       designedProblems: designedProblems
     };
   };
+
+  const apiSupportsAPIStateKeys = api => api.version && api.version.major >= 1 && api.version.minor >= 1;
 
 // @public - used to "up-convert" an old versioned API to the new (version >=1), structured tree API.
   _phetioCompareAPIs.toStructuredTree = toStructuredTree;

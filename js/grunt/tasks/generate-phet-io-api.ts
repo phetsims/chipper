@@ -1,4 +1,4 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2013-2024, University of Colorado Boulder
 
 import getRepo from './util/getRepo';
 
@@ -30,7 +30,7 @@ const skipTranspile = getOption( 'transpile' ) === false;
 if ( !skipTranspile ) {
   const startTime = Date.now();
 
-  const Transpiler = require( '../common/Transpiler' );
+  const Transpiler = require( '../../common/Transpiler' );
   const transpiler = new Transpiler( { silent: true } );
 
   transpiler.transpileAll();
