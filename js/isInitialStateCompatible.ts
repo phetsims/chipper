@@ -37,7 +37,7 @@ function areCompatible( groundTruthValue: IntentionalAny, testValue: Intentional
       const oldItem = testValue[ i ];
 
       // Check compatibility of the current indexed items
-      if ( !areCompatible( oldItem, newItem ) ) {
+      if ( !areCompatible( newItem, oldItem ) ) {
         return false;
       }
     }
@@ -62,7 +62,7 @@ function areCompatible( groundTruthValue: IntentionalAny, testValue: Intentional
         }
 
         // Recursively check compatibility for the nested key
-        if ( !areCompatible( testValue[ key ], groundTruthValue[ key ] ) ) {
+        if ( !areCompatible( groundTruthValue[ key ], testValue[ key ] ) ) {
           return false;
         }
       }
