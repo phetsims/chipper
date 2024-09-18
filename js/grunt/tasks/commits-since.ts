@@ -14,7 +14,6 @@ import getRepo from './util/getRepo';
 
 const commitsSince = require( '../commitsSince' );
 
-// @ts-expect-error
 import assert from 'assert';
 import getOption from './util/getOption';
 

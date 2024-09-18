@@ -14,6 +14,13 @@
 import * as grunt from 'grunt';
 import getRepo from './util/getRepo';
 import * as fs from 'fs';
+import modulify from './modulify';
+
+const generateDevelopmentHTML = require( '../generateDevelopmentHTML' );
+const generateA11yViewHTML = require( '../generateA11yViewHTML' );
+const generateTestHTML = require( '../generateTestHTML' );
+
+const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 
 const repo = getRepo();
 
@@ -32,7 +39,7 @@ else {
   ( async () => {
 
     // modulify is graceful if there are no files that need modulifying.
-    require( './modulify' );
+    await modulify();
 
     // update README.md only for simulations
     if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {
@@ -46,7 +53,6 @@ else {
 
       // If there is already an overrides file, don't overwrite it with an empty one
       if ( !fs.existsSync( `../${repo}/${overridesFile}` ) ) {
-        const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 
         const overridesContent = '/* eslint-disable */\nwindow.phet.preloads.phetio.phetioElementsOverrides = {};';
         await writeFileAndGitAdd( repo, overridesFile, overridesContent );
@@ -72,17 +78,17 @@ else {
       }
     }
 
-// The above code can mutate the package.json, so do these after
+    // The above code can mutate the package.json, so do these after
     if ( packageObject.phet.runnable ) {
 
-      require( './generate-development-html' );
+      await generateDevelopmentHTML( repo );
 
       if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
-        require( './generate-a11y-view-html' );
+        await generateA11yViewHTML( repo );
       }
     }
     if ( packageObject.phet.generatedUnitTests ) {
-      require( './generate-test-html' );
+      await generateTestHTML( repo );
     }
   } )();
 }

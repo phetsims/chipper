@@ -7,7 +7,6 @@
  */
 import * as grunt from 'grunt';
 import getRepo from './util/getRepo';
-// @ts-expect-error
 import jimp from 'jimp';
 
 const generateThumbnails = require( '../generateThumbnails' );

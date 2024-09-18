@@ -5,7 +5,6 @@
  */
 import * as grunt from 'grunt';
 
-// @ts-expect-error
 import assert from 'assert';
 import getOption from './getOption';
 

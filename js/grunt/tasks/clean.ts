@@ -8,12 +8,19 @@
 
 import getRepo from './util/getRepo';
 import * as grunt from 'grunt';
+import isRunDirectly from './util/isRunDirectly.js';
 
-const repo = getRepo();
-const buildDirectory = `../${repo}/build`;
+export default async function clean(): Promise<void> {
+  const repo = getRepo();
+  const buildDirectory = `../${repo}/build`;
 
 // Check if the build directory exists, then delete and recreate it
-if ( grunt.file.exists( buildDirectory ) ) {
-  grunt.file.delete( buildDirectory );
+  if ( grunt.file.exists( buildDirectory ) ) {
+    grunt.file.delete( buildDirectory );
+  }
+  grunt.file.mkdir( buildDirectory );
 }
-grunt.file.mkdir( buildDirectory );
+
+if ( isRunDirectly() ) {
+  clean();
+}

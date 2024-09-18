@@ -1,5 +1,14 @@
 // Copyright 2024, University of Colorado Boulder
 
+import isRunDirectly from './util/isRunDirectly.js';
+import assert from 'assert';
+import * as grunt from 'grunt';
+import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import buildRunnable from '../buildRunnable';
+import buildLocal from './util/buildLocal';
+import getOption from './util/getOption';
+import getRepo from './util/getRepo';
+
 /**
  * Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
  * Runnable build options:
@@ -26,15 +35,6 @@
 
 const buildStandalone = require( '../buildStandalone' );
 
-// @ts-expect-error
-import assert from 'assert';
-import * as grunt from 'grunt';
-import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
-import buildRunnable from '../buildRunnable';
-import buildLocal from './util/buildLocal';
-import getOption from './util/getOption';
-import getRepo from './util/getRepo';
-
 const minify = require( '../minify' );
 const tsc = require( '../tsc' );
 const reportTscResults = require( '../reportTscResults' );
@@ -49,7 +49,7 @@ const repo = getRepo();
 
 const transpiler = new Transpiler( { silent: true } );
 
-( async () => {
+export default async function build(): Promise<void> {
   await phetTimingLog.startAsync( 'grunt-build', async () => {
 
     // Parse minification keys
@@ -131,4 +131,12 @@ const transpiler = new Transpiler( { silent: true } );
       }
     }
   } );
-} )();
+}
+
+// Detect if the script is run directly
+if ( isRunDirectly() ) {
+  build().catch( error => {
+    console.error( 'Build failed:', error );
+    process.exit( 1 );
+  } );
+}
