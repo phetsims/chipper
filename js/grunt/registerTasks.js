@@ -13,13 +13,15 @@ const fs = require( 'fs' );
 const getDocumentationForTask = require( './getDocumentationForTask' );
 const path = require( 'path' );
 const gruntSpawn = require( './gruntSpawn' );
+
+// Constants
 const isWindows = /^win/.test( process.platform );
 
 function execTask( grunt, taskFilename ) {
   const command = `${path.join( '..', 'chipper', 'node_modules', '.bin', 'tsx' )}${isWindows ? '.cmd' : ''}`;
 
   return () => {
-    gruntSpawn( grunt, command, [ `../chipper/js/grunt/tasks/${taskFilename}`, ...process.argv.slice( 2 ) ], process.cwd() );
+    gruntSpawn( grunt, command, [ taskFilename, ...process.argv.slice( 2 ) ], process.cwd() );
   };
 }
 
@@ -29,14 +31,15 @@ module.exports = ( grunt, dir ) => {
     if ( file.endsWith( '.js' ) || file.endsWith( '.ts' ) ) {
       const taskName = file.substring( 0, file.lastIndexOf( '.' ) );
 
-      const tsExists = fs.existsSync( `../chipper/js/grunt/tasks/${taskName}.ts` );
-      const jsExists = fs.existsSync( `../chipper/js/grunt/tasks/${taskName}.js` );
+      const tsExists = fs.existsSync( path.join( dir, `${taskName}.ts` ) );
+      const jsExists = fs.existsSync( path.join( dir, `${taskName}.js` ) );
 
       if ( tsExists && jsExists ) {
         throw new Error( `Both TypeScript and JavaScript versions of the task ${taskName} exist. Please remove one of them.` );
       }
       else {
-        grunt.registerTask( taskName, getDocumentationForTask( file ), execTask( grunt, file ) );
+        const absolutePath = path.join( dir, file );
+        grunt.registerTask( taskName, getDocumentationForTask( absolutePath ), execTask( grunt, absolutePath ) );
       }
     }
   } );

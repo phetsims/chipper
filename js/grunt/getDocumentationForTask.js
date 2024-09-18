@@ -7,7 +7,7 @@ const fs = require( 'fs' );
  * @author Sam Reid (PhET Interactive Simulations)
  */
 module.exports = file => {
-  const source = fs.readFileSync( __dirname + `/tasks/${file}`, { encoding: 'utf-8' } );
+  const source = fs.readFileSync( file, { encoding: 'utf-8' } );
   if ( source.includes( '/**' ) && source.includes( '*/' ) ) {
     const myDoc = source.substring( source.indexOf( '/**' ) + '/**'.length, source.indexOf( '*/' ) );
     const lines = myDoc.split( '\n' );
