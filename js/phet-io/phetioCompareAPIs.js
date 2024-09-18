@@ -46,7 +46,7 @@
   // DUPLICATION ALERT!
   /* @formatter:off */
   function areCompatible( testValue, groundTruthValue ) { if ( Array.isArray( groundTruthValue ) ) { if ( !Array.isArray( testValue ) ) { return false; } if ( testValue.length !== groundTruthValue.length ) { return false; } for ( let i = 0; i < groundTruthValue.length; i++ ) { const newItem = groundTruthValue[ i ]; const oldItem = testValue[ i ]; if ( !areCompatible( oldItem, newItem ) ) { return false; } } return true; } if ( typeof groundTruthValue === 'object' && groundTruthValue !== null ) { if ( typeof testValue !== 'object' || testValue === null || Array.isArray( testValue ) ) { return false; } for ( const key in groundTruthValue ) { if ( groundTruthValue.hasOwnProperty( key ) ) { if ( !testValue.hasOwnProperty( key ) ) { return false; } if ( !areCompatible( testValue[ key ], groundTruthValue[ key ] ) ) { return false; } } } return true; } return testValue === groundTruthValue;}
-  const isInitialStateCompatible = ( testState, groundTruthState ) => areCompatible( testState, groundTruthState );
+  const isInitialStateCompatible = ( groundTruthState, testState ) => areCompatible( testState, groundTruthState );
   /* @formatter:on */
 
   /**
@@ -308,7 +308,7 @@
                     else {
                       // Breaking change test uses the general algorithm for initial state compatibility.
                       // referenceState is the ground truth for compatibility
-                      return isInitialStateCompatible( proposedState, referenceState );
+                      return isInitialStateCompatible( referenceState, proposedState );
                     }
                   }
 
