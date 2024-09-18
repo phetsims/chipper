@@ -181,4 +181,7 @@ QUnit.test( 'isInitialStateCompatible', assert => {
   };
 
   assert.equal( isInitialStateCompatible( testObjC, groundTruthObjD ), false );
+
+  assert.equal( isInitialStateCompatible( {}, {} ), true );
+  assert.equal( isInitialStateCompatible( { hi: true }, {} ), true );
 } );
