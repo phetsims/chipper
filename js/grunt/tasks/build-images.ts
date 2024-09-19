@@ -7,7 +7,8 @@
  */
 import * as grunt from 'grunt';
 import getRepo from './util/getRepo';
-import jimp from 'jimp';
+
+const jimp = require( 'jimp' );
 
 const generateThumbnails = require( '../generateThumbnails' );
 const generateTwitterCard = require( '../generateTwitterCard' );
