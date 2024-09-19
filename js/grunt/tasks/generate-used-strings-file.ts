@@ -14,7 +14,7 @@ const getStringMap = require( '../getStringMap' );
  */
 const repo = getRepo();
 
-const Transpiler = require( '../../../common/Transpiler' );
+const Transpiler = require( '../../common/Transpiler' );
 const transpiler = new Transpiler( { silent: true } );
 
 transpiler.transpileRepos( getPhetLibs( repo ) );
