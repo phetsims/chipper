@@ -6,9 +6,8 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-// modules
 import * as ChipperConstants from '../common/ChipperConstants';
+import webpackBuild from './webpackBuild';
 
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
@@ -37,17 +36,14 @@ const packageRunnable = require( './packageRunnable' );
 const packageXHTML = require( './packageXHTML' );
 const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
-const webpackBuild = require( './webpackBuild' );
+
 const zlib = require( 'zlib' );
 const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog' );
 
-const recordTime = async ( name: string, asyncCallback: () => Promise<unknown>, timeCallback: ( time: number, result: unknown ) => void ) => {
+const recordTime = async <T>( name: string, asyncCallback: () => Promise<T>, timeCallback: ( time: number, result: T ) => void ): Promise<T> => {
   const beforeTime = Date.now();
 
-  const result = await phetTimingLog.startAsync( name, async () => {
-    const result = await asyncCallback();
-    return result;
-  } );
+  const result = await phetTimingLog.startAsync( name, async () => asyncCallback() );
 
   const afterTime = Date.now();
   timeCallback( afterTime - beforeTime, result );
@@ -123,7 +119,6 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     licenseEntries[ mediaType ] = {};
   } );
 
-  // @ts-expect-error
   usedModules.forEach( module => {
     ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
       if ( module.split( '/' )[ 1 ] === mediaType ) {
@@ -147,7 +142,6 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
 
   // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
 
-  // @ts-expect-error
   usedModules.map( module => module.split( '\\' ).join( '/' ) ).forEach( moduleDependency => {
 
     // The first part of the path is the repo.  Or if no directory is specified, the file is in the sim repo.
@@ -237,10 +231,9 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     return [
       ...startupScripts,
       ...minifiableScripts.map( js => minify( js, minifyOptions ) )
-    ];
+    ] satisfies string[];
   }, ( time, scripts ) => {
 
-    // @ts-expect-error
     grunt.log.ok( `Production minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
   } );
   const debugScripts = await recordTime( 'minify-debug', async () => {
@@ -250,7 +243,6 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     ];
   }, ( time, scripts ) => {
 
-    // @ts-expect-error
     grunt.log.ok( `Debug minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
   } );
 
@@ -379,6 +371,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   if ( _.includes( locales, ChipperConstants.FALLBACK_LOCALE ) && brand === 'phet' ) {
     const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 
+    // TODO: maybe we need to commit a change to DefinitelyTyped to support debug logging https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/grunt/index.d.ts#L725, https://github.com/phetsims/chipper/issues/1464
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     let iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( `${englishTitle} iframe test` ) );

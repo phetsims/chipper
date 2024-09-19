@@ -6,12 +6,11 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import * as ChipperConstants from '../common/ChipperConstants.js';
 import * as fs from 'fs';
-
-import * as path from 'path';
 import * as _ from 'lodash';
+import * as path from 'path';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import * as ChipperConstants from '../common/ChipperConstants.js';
 
 const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries' );
 const webpack = require( 'webpack' );
@@ -66,8 +65,8 @@ const getRelativeModules = ( modules: string[] ) => {
 };
 
 type WebpackBuildOptions = {
-  outputDir: string;
-  profileFileSize: boolean;
+  outputDir?: string;
+  profileFileSize?: boolean;
 };
 
 /**
@@ -75,7 +74,7 @@ type WebpackBuildOptions = {
  *
  * @returns The combined JS output from the process
  */
-const webpackBuild = function webpackBuild( repo: string, brand: string, options: WebpackBuildOptions ): Promise<{ js: string; usedModules: string[] }> {
+const webpackBuild = function webpackBuild( repo: string, brand: string, options?: WebpackBuildOptions ): Promise<{ js: string; usedModules: string[] }> {
 
   return new Promise( ( resolve, reject ) => {
 
@@ -83,7 +82,7 @@ const webpackBuild = function webpackBuild( repo: string, brand: string, options
       outputDir: repo
     }, options );
 
-    const outputDir = path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}`, options.outputDir );
+    const outputDir = path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}`, options.outputDir! );
     const outputFileName = `${repo}.js`;
     const outputPath = path.resolve( outputDir, outputFileName );
 
@@ -181,5 +180,5 @@ const webpackBuild = function webpackBuild( repo: string, brand: string, options
   } );
 };
 
-module.exports = webpackBuild;
 webpackBuild.getModuleRules = getModuleRules;
+export default webpackBuild;

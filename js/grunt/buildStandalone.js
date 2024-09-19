@@ -7,12 +7,12 @@
  */
 
 
-// modules
+import webpackBuild from './webpackBuild';
+
 const assert = require( 'assert' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const minify = require( './minify' );
-const webpackBuild = require( './webpackBuild' );
 const _ = require( 'lodash' );
 const getStringMap = require( './getStringMap' );
 const ChipperConstants = require( '../common/ChipperConstants' );

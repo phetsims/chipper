@@ -168,7 +168,7 @@ module.exports = function createMipmap( filename: string, maxLevel: number, qual
         }
       }
 
-      // called when all of encoding is complete
+      // called when all encoding is complete
       function encodingComplete(): void {
 
         // @ts-expect-error - debug really does exist

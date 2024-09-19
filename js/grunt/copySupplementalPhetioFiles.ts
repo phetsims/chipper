@@ -8,10 +8,10 @@
  * @author Matt Pennington (PhET Interactive Simulations)
  */
 
-// modules
-import * as _ from 'lodash';
 import * as fs from 'fs';
+import * as _ from 'lodash';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import webpackBuild from './webpackBuild.ts';
 
 const assert = require( 'assert' );
 const archiver = require( 'archiver' );
@@ -29,7 +29,6 @@ const reportTscResults = require( './reportTscResults' );
 const getPhetLibs = require( './getPhetLibs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
-const webpackBuild = require( '../grunt/webpackBuild' );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
