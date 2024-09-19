@@ -418,18 +418,29 @@
           if ( apiSupportsAPIStateKeys( referenceAPI ) &&
                apiSupportsAPIStateKeys( proposedAPI ) ) {
             if ( !!referenceType.apiStateKeys !== !!proposedType.apiStateKeys ) {
-              // TODO: Designed problem, https://github.com/phetsims/phet-io/issues/1951
+              const result = referenceType.apiStateKeys ? 'present' : 'absent';
+              const problemString = `${typeName} apiStateKeys unexpectedly ${result}`;
+              appendProblem( problemString, true );
+
+              // Breaking if we lost apiStateKeys
+              referenceType.apiStateKeys && appendProblem( problemString, false );
             }
             else {
               const referenceAPIStateKeys = referenceType.apiStateKeys;
               const proposedAPIStateKeys = proposedType.apiStateKeys;
 
-              // TODO: AFTER_COMMIT Breaking change to remove an API state key, but not to add https://github.com/phetsims/phet-io/issues/1951
               if ( !_.isEqual( referenceAPIStateKeys, proposedAPIStateKeys ) ) {
-                appendProblem( `${typeName} apiStateKeys differ:\n` +
-                               `  In reference: ${_.difference( referenceAPIStateKeys, proposedAPIStateKeys )}\n` +
-                               `  In proposed: ${_.difference( proposedAPIStateKeys, referenceAPIStateKeys )}`, true );
+                const inReferenceNotProposed = _.difference( referenceAPIStateKeys, proposedAPIStateKeys );
+                const inProposedNotReference = _.difference( proposedAPIStateKeys, referenceAPIStateKeys );
 
+                appendProblem( `${typeName} apiStateKeys differ:\n` +
+                               `  In reference: ${inReferenceNotProposed}\n` +
+                               `  In proposed: ${inProposedNotReference}`, true );
+
+                // It is only breaking if we lost an apiStateKey
+                if ( !_.every( referenceAPIStateKeys, reference => proposedAPIStateKeys.includes( reference ) ) ) {
+                  appendProblem( `${typeName} apiStateKeys missing from proposed: ${inReferenceNotProposed}`, false );
+                }
               }
             }
           }

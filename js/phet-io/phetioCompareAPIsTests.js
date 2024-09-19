@@ -209,3 +209,111 @@ qunit.test( 'breaking element API changes', assert => {
     }
   } );
 } );
+
+qunit.test( 'testing PhetioTypes', assert => {
+  const referenceAPI = {
+    version: { major: 1, minor: 1 },
+    phetioElements: {},
+    phetioTypes: {
+      'PropertyIO<Vector2IO>': {
+        apiStateKeys: [
+          'validValues',
+          'units'
+        ],
+        dataDefaults: {},
+        documentation: 'Observable values that send out notifications when the value changes. This differs from the traditional listener pattern in that added listeners also receive a callback with the current value when the listeners are registered. This is a widely-used pattern in PhET-iO simulations.',
+        events: [
+          'changed'
+        ],
+        metadataDefaults: {},
+        methodOrder: [
+          'link',
+          'lazyLink'
+        ],
+        methods: {
+          getValidationError: {
+            documentation: 'Checks to see if a proposed value is valid. Returns the first validation error, or null if the value is valid.',
+            parameterTypes: [
+              'Vector2IO'
+            ],
+            returnType: 'NullableIO<StringIO>'
+          },
+          getValue: {
+            documentation: 'Gets the current value.',
+            parameterTypes: [],
+            returnType: 'Vector2IO'
+          },
+          lazyLink: {
+            documentation: 'Adds a listener which will be called when the value changes. This method is like "link", but without the current-value callback on registration. The listener takes two arguments, the new value and the previous value.',
+            parameterTypes: [
+              'FunctionIO(Vector2IO,NullableIO<Vector2IO>)=>VoidIO'
+            ],
+            returnType: 'VoidIO'
+          },
+          link: {
+            documentation: 'Adds a listener which will be called when the value changes. On registration, the listener is also called with the current value. The listener takes two arguments, the new value and the previous value.',
+            parameterTypes: [
+              'FunctionIO(Vector2IO,NullableIO<Vector2IO>)=>VoidIO'
+            ],
+            returnType: 'VoidIO'
+          },
+          setValue: {
+            documentation: 'Sets the value of the Property. If the value differs from the previous value, listeners are notified with the new value.',
+            invocableForReadOnlyElements: false,
+            parameterTypes: [
+              'Vector2IO'
+            ],
+            returnType: 'VoidIO'
+          },
+          unlink: {
+            documentation: 'Removes a listener.',
+            parameterTypes: [
+              'FunctionIO(Vector2IO)=>VoidIO'
+            ],
+            returnType: 'VoidIO'
+          }
+        },
+        parameterTypes: [
+          'Vector2IO'
+        ],
+        stateSchema: {
+          units: 'NullableIO<StringIO>',
+          validValues: 'NullableIO<ArrayIO<Vector2IO>>',
+          value: 'Vector2IO'
+        },
+        supertype: 'ObjectIO',
+        typeName: 'PropertyIO<Vector2IO>'
+      }
+    }
+  };
+
+  const proposedAPI = _.cloneDeep( referenceAPI );
+
+
+  let report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  assert.ok( report.breakingProblems.length === 0, 'missing an element' );
+  assert.ok( report.designedProblems.length === 0, 'missing element is also a designed problem' );
+
+  const propertyIOEntry = proposedAPI.phetioTypes[ 'PropertyIO<Vector2IO>' ];
+  propertyIOEntry.apiStateKeys.push( 'hi' );
+
+  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  assert.ok( report.breakingProblems.length === 0, 'missing an element' );
+  assert.ok( report.designedProblems.length === 1, 'apiStateKeys cannot be different for designed' );
+
+  propertyIOEntry.apiStateKeys = propertyIOEntry.apiStateKeys.slice( 0, 1 );
+  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  assert.ok( report.breakingProblems.length === 1 );
+  assert.ok( report.designedProblems.length === 1 );
+
+  delete propertyIOEntry.apiStateKeys;
+  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  assert.ok( report.breakingProblems.length === 1 );
+  assert.ok( report.designedProblems.length === 1 );
+
+  propertyIOEntry.apiStateKeys = [ 'hi' ];
+  delete referenceAPI.phetioTypes[ 'PropertyIO<Vector2IO>' ].apiStateKeys;
+  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  assert.ok( report.breakingProblems.length === 0 );
+  assert.ok( report.designedProblems.length === 1 );
+} );
