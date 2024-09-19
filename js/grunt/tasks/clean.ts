@@ -8,9 +8,8 @@
 
 import getRepo from './util/getRepo';
 import * as grunt from 'grunt';
-import isRunDirectly from './util/isRunDirectly.js';
 
-export default async function clean(): Promise<void> {
+export const clean = ( async () => {
   const repo = getRepo();
   const buildDirectory = `../${repo}/build`;
 
@@ -19,8 +18,4 @@ export default async function clean(): Promise<void> {
     grunt.file.delete( buildDirectory );
   }
   grunt.file.mkdir( buildDirectory );
-}
-
-if ( isRunDirectly() ) {
-  clean();
-}
+} )();

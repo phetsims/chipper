@@ -11,7 +11,6 @@ import * as grunt from 'grunt';
 import buildLocal from './util/buildLocal';
 import getOption from './util/getOption';
 import getRepo from './util/getRepo';
-import isRunDirectly from './util/isRunDirectly.js';
 
 const getBrands = require( './util/getBrands' );
 const lint = require( '../lint' );
@@ -29,29 +28,22 @@ const getPhetLibs = require( '../getPhetLibs' );
 const brands = getBrands( grunt, repo, buildLocal );
 
 /**
- * Executes the linting process.
+ * Executes the linting process immediately. Additionally returned in case the client wants to await the task.
  */
-// eslint-disable-next-line default-export-match-filename
-export default async function lintAll(): Promise<void> {
+export const lintAll = ( async () => {
+
+  console.log( ' task beginning' );
   const lintReturnValue = await lint( getPhetLibs( repo, brands ), {
     cache: cache,
     fix: fix,
     chipAway: chipAway
   } );
 
-  // Output results on errors.
+// Output results on errors.
   if ( !lintReturnValue.ok ) {
     grunt.fail.fatal( 'Lint failed' );
   }
   else {
     console.log( 'Linting completed successfully.' );
   }
-}
-
-// Detect if the script is run directly
-if ( isRunDirectly() ) {
-  lintAll().catch( error => {
-    console.error( 'Linting failed:', error );
-    process.exit( 1 );
-  } );
-}
+} )();

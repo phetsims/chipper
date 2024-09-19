@@ -6,31 +6,18 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import * as grunt from 'grunt';
-// eslint-disable-next-line default-import-match-filename
-import lintAll from './lint-all';
-import reportMedia from '../reportMedia';
-import getRepo from './util/getRepo.js';
-import clean from './clean';
-import build from './build';
-
-const repo = getRepo();
+import getOption from './util/getOption';
 
 ( async () => {
-  if ( grunt.option( 'lint' ) === false ) {
-    // do nothing
-  }
-  else {
-    await lintAll();
+  if ( getOption( 'lint' ) !== false ) {
+    await ( await import( './lint-all.ts' ) ).lintAll;
   }
 
-  if ( grunt.option( 'report-media' ) === false ) {
-    // do nothing
-  }
-  else {
-    await reportMedia( repo );
+  if ( getOption( 'report-media' ) !== false ) {
+    await ( await import( './report-media.ts' ) ).reportMedia;
   }
 
-  await clean();
-  await build();
+  await ( await import( './clean.ts' ) ).clean;
+
+  await ( await import( './build.ts' ) ).build;
 } )();

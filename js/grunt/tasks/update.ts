@@ -14,7 +14,6 @@
 import * as grunt from 'grunt';
 import getRepo from './util/getRepo';
 import * as fs from 'fs';
-import modulify from './modulify';
 
 const generateDevelopmentHTML = require( '../generateDevelopmentHTML' );
 const generateA11yViewHTML = require( '../generateA11yViewHTML' );
@@ -39,7 +38,7 @@ else {
   ( async () => {
 
     // modulify is graceful if there are no files that need modulifying.
-    await modulify();
+    await ( await import( './modulify.ts' ) ).modulify;
 
     // update README.md only for simulations
     if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {

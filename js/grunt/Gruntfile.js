@@ -14,8 +14,6 @@ require( './checkNodeVersion' );
 const registerTasks = require( './registerTasks' );
 const gruntSpawn = require( './gruntSpawn' );
 
-const isWindows = /^win/.test( process.platform );
-
 // Allow other Gruntfiles to potentially handle exiting and errors differently
 if ( !global.processEventOptOut ) {
 
@@ -37,17 +35,6 @@ module.exports = function( grunt ) {
   const repo = grunt.option( 'repo' ) || packageObject.name;
   assert( typeof repo === 'string' && /^[a-z]+(-[a-z]+)*$/u.test( repo ), 'repo name should be composed of lower-case characters, optionally with dashes used as separators' );
 
-  grunt.registerTask( 'default', 'Builds the repository', [
-    ...( grunt.option( 'lint' ) === false ? [] : [ 'lint-all' ] ),
-    ...( grunt.option( 'report-media' ) === false ? [] : [ 'report-media' ] ),
-    'clean',
-    'build'
-  ] );
-
-  grunt.registerTask( 'build-for-server', 'meant for use by build-server only',
-    [ 'build' ]
-  );
-
   registerTasks( grunt, __dirname + '/tasks' );
 
   /**
@@ -61,6 +48,8 @@ module.exports = function( grunt ) {
     grunt.registerTask( task, 'Run grunt --help in perennial to see documentation', () => {
       grunt.log.writeln( '(Forwarding task to perennial)' );
       const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
+
+      const isWindows = /^win/.test( process.platform );
       gruntSpawn( grunt, isWindows ? 'grunt.cmd' : 'grunt', args, '../perennial', argsString => {
         grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
       } );

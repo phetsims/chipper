@@ -13,8 +13,9 @@ import getRepo from './util/getRepo';
  */
 const repo = getRepo();
 
-const reportMedia = require( '../reportMedia' );
+// eslint-disable-next-line require-statement-match
+const _reportMedia = require( '../reportMedia' );
 
-( async () => {
-  await reportMedia( repo );
+export const reportMedia = ( async () => {
+  await _reportMedia( repo );
 } )();

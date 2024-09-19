@@ -1,6 +1,5 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import isRunDirectly from './util/isRunDirectly.js';
 import assert from 'assert';
 import * as grunt from 'grunt';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
@@ -49,7 +48,10 @@ const repo = getRepo();
 
 const transpiler = new Transpiler( { silent: true } );
 
-export default async function build(): Promise<void> {
+/**
+ * Immediately run the build and export the promise in case the client wants to await the task.
+ */
+export const build = ( async () => {
   await phetTimingLog.startAsync( 'grunt-build', async () => {
 
     // Parse minification keys
@@ -131,12 +133,4 @@ export default async function build(): Promise<void> {
       }
     }
   } );
-}
-
-// Detect if the script is run directly
-if ( isRunDirectly() ) {
-  build().catch( error => {
-    console.error( 'Build failed:', error );
-    process.exit( 1 );
-  } );
-}
+} )();

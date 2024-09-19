@@ -1,9 +1,9 @@
 // Copyright 2013-2024, University of Colorado Boulder
 import getRepo from './util/getRepo';
 import * as fs from 'fs';
-import isRunDirectly from './util/isRunDirectly.js';
 
-const modulify = require( '../modulify' );
+// eslint-disable-next-line require-statement-match
+const _modulify = require( '../modulify' );
 const generateDevelopmentStrings = require( '../generateDevelopmentStrings' );
 
 /**
@@ -11,20 +11,13 @@ const generateDevelopmentStrings = require( '../generateDevelopmentStrings' );
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-const repo = getRepo();
+export const modulify = ( async () => {
 
-// eslint-disable-next-line default-export-match-filename
-export default async function _modulify(): Promise<void> {
-  await modulify( repo );
+  const repo = getRepo();
+
+  await _modulify( repo );
 
   if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) ) {
     generateDevelopmentStrings( repo );
   }
-}
-
-if ( isRunDirectly() ) {
-  _modulify().catch( e => {
-    console.error( e );
-    process.exit( 1 );
-  } );
-}
+} )();
