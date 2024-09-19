@@ -1,6 +1,6 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
-import TGrunt from './TGrunt';
+import * as grunt from 'grunt';
 
 /**
  * Prints commits since a specified date, for all dependencies of the build target.
@@ -18,7 +18,6 @@ import TGrunt from './TGrunt';
 
 const execute = require( '../../../perennial-alias/js/common/execute' );
 const getPhetLibs = require( './getPhetLibs' );
-const grunt = require( 'grunt' ) as TGrunt;
 
 module.exports = async function( repo: string, dateString: string ): Promise<void> {
 

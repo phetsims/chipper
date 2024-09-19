@@ -9,11 +9,11 @@
  * @author Aaron Davis
  */
 
-// modules
-const grunt = require( 'grunt' ) as TGrunt;
-const jimp = require( 'jimp' );
+import * as grunt from 'grunt';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-import TGrunt from './TGrunt.js';
+
+// modules
+const jimp = require( 'jimp' );
 
 /**
  * @param repo - name of the repository

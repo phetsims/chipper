@@ -4,10 +4,10 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import TGrunt from './TGrunt';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import * as grunt from 'grunt';
+
 const getThirdPartyLibEntries = require( './getThirdPartyLibEntries' );
-const grunt = require( 'grunt' ) as TGrunt;
 
 /**
  * Returns an object with information about third-party license entries.

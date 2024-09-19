@@ -7,11 +7,10 @@
  * @author Matt Pennington
  */
 
-
 // modules
-import TGrunt from './TGrunt';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-const grunt = require( 'grunt' ) as TGrunt;
+import * as grunt from 'grunt';
+
 const Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
 
 /**

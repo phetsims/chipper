@@ -10,8 +10,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fixEOL = require( './fixEOL' );
 const getTitleStringKey = require( './getTitleStringKey' );
-import TGrunt from './TGrunt.js';
-const grunt = require( 'grunt' ) as TGrunt;
+import * as grunt from 'grunt';
 
 /**
  * @returns - the html string, filled in from the template.

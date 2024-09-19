@@ -1,9 +1,8 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
 import * as fs from 'fs';
-import TGrunt from './TGrunt';
+import * as grunt from 'grunt';
 
-const grunt = require( 'grunt' ) as TGrunt;
 const jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
 const mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
 const pngjs = require( 'pngjs' );
@@ -171,6 +170,8 @@ module.exports = function createMipmap( filename: string, maxLevel: number, qual
 
       // called when all of encoding is complete
       function encodingComplete(): void {
+
+        // @ts-expect-error - debug really does exist
         grunt.log.debug( `mipmapped ${filename}${maxLevel >= 0 ? ` to level ${maxLevel}` : ''} with quality: ${quality}` );
 
         for ( let level = 0; level < mipmaps.length; level++ ) {
@@ -180,7 +181,7 @@ module.exports = function createMipmap( filename: string, maxLevel: number, qual
           mipmaps[ level ].url = usePNG ? mipmaps[ level ].pngURL : mipmaps[ level ].jpgURL;
           mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
 
-
+          // @ts-expect-error - debug really does exist
           grunt.log.debug( `level ${level} (${usePNG ? 'PNG' : 'JPG'} ${
             mipmaps[ level ].width}x${mipmaps[ level ].height}) base64: ${
             mipmaps[ level ].url!.length} bytes ` );
