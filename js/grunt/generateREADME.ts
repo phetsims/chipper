@@ -13,13 +13,13 @@ const fixEOL = require( './fixEOL' );
 const getPhetLibs = require( './getPhetLibs' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
-const grunt = require( 'grunt' );
+import * as grunt from 'grunt';
 
 /**
- * @param {string} repo - name of the repository
- * @param {boolean} published - has the sim been published?
+ * @param repo - name of the repository
+ * @param published - has the sim been published?
  */
-module.exports = async function( repo, published ) {
+export default async function( repo: string, published: boolean ): Promise<void> {
 
   // Read the title from the English strings file.
   const simTitleStringKey = getTitleStringKey( repo );
@@ -31,7 +31,7 @@ module.exports = async function( repo, published ) {
   phetLibs.sort();
 
   // Commands for cloning all required repositories
-  const cloneCommands = phetLibs.map( phetLib => {
+  const cloneCommands = phetLibs.map( ( phetLib: string ) => {
 
     return phetLib === 'perennial-alias' ?
            'git clone https://github.com/phetsims/perennial.git perennial-alias' :
@@ -49,4 +49,4 @@ module.exports = async function( repo, published ) {
 
   // Write to the repository's root directory.
   await writeFileAndGitAdd( repo, 'README.md', fixEOL( readme ) );
-};
+}

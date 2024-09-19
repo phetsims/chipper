@@ -14,6 +14,7 @@
 import * as grunt from 'grunt';
 import getRepo from './util/getRepo';
 import * as fs from 'fs';
+import generateREADME from '../generateREADME';
 
 const generateDevelopmentHTML = require( '../generateDevelopmentHTML' );
 const generateA11yViewHTML = require( '../generateA11yViewHTML' );
@@ -25,7 +26,6 @@ const repo = getRepo();
 
 const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
-const generateREADME = require( '../generateREADME' );
 const _ = require( 'lodash' );
 
 // support repos that don't have a phet object
