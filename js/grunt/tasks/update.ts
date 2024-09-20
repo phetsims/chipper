@@ -20,7 +20,7 @@ const generateDevelopmentHTML = require( '../generateDevelopmentHTML' );
 const generateA11yViewHTML = require( '../generateA11yViewHTML' );
 const generateTestHTML = require( '../generateTestHTML' );
 
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
+const writeFileAndGitAdd = require( '../../../../perennial-alias/js/common/writeFileAndGitAdd' );
 
 const repo = getRepo();
 
