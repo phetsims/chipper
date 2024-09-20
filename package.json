@@ -87,7 +87,7 @@
         "parser": "@typescript-eslint/parser",
         "parserOptions": {
           "project": [
-            "../chipper/tsconfig.json"
+            "../chipper/tsconfig/eslint-all/tsconfig.json"
           ]
         }
       },
@@ -108,7 +108,7 @@
         "parser": "@typescript-eslint/parser",
         "parserOptions": {
           "project": [
-            "../chipper/tsconfig.json"
+            "../chipper/tsconfig/eslint-all/tsconfig.json"
           ]
         }
       },
@@ -121,7 +121,7 @@
         "parser": "@typescript-eslint/parser",
         "parserOptions": {
           "project": [
-            "../chipper/tsconfig.json"
+            "../chipper/tsconfig/eslint-all/tsconfig.json"
           ]
         }
       }
