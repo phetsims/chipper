@@ -17,7 +17,7 @@ const execute = require( '../../../perennial-alias/js/common/execute' );
  */
 const tsc = async function( path: string, commandLineArgs: string[] = [] ): Promise<{ execResult: { stdout: string; stderr: string; code: number }; time: number }> {
 
-  const args = [ '../chipper/node_modules/typescript/bin/tsc', ...commandLineArgs ];
+  const args = [ '../chipper/node_modules/typescript/bin/tsc', '-b', ...commandLineArgs ];
   return execute( 'node', args, path, {
     errors: 'resolve'
   } );

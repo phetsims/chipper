@@ -49,7 +49,7 @@ if ( !args || args.length === 0 ) {
 
   // console.log( 'changes detected...' );
 
-  const results = await execute( 'node', [ `${__dirname}/../../../chipper/node_modules/typescript/bin/tsc` ], args[ 0 ], {
+  const results = await execute( 'node', [ `${__dirname}/../../../chipper/node_modules/typescript/bin/tsc`, '-b' ], args[ 0 ], {
     errors: 'resolve',
 
     // TODO: it would be nice not to need this, https://github.com/phetsims/chipper/issues/1415

@@ -56,9 +56,6 @@ function runEslint( repos, options ) {
     showProgressBar: true
   }, options );
 
-  const showProgressBar = options.showProgressBar && repos.length > 1;
-  showProgressBar && showCommandLineProgress( 0, false );
-
   const patterns = repos.map( repo => `../${repo}/` );
 
   const args = [ 'eslint' ];
@@ -83,7 +80,11 @@ function runEslint( repos, options ) {
     }
   }
 
+  const showProgressBar = options.showProgressBar && repos.length > 1;
+  showProgressBar && showCommandLineProgress( 0, false );
+
   // Always write to the cache, even if it was cleared above.
+  // TODO: https://github.com/phetsims/chipper/issues/1356 do we need a different cache for different repos or repo combos? We get a speed boost when using repos.join as a filename key
   args.push( '--cache', '--cache-location', '../chipper/eslint/cache/.eslintcache' );
 
   // Add the '--fix' option if fix is true

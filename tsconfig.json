@@ -4,12 +4,18 @@
     "js/**/*",
     "images/**/*",
     "mipmaps/**/*",
-    "sounds/**/*"
+    "sounds/**/*",
+    "test/**/*"
   ],
   "compilerOptions": {
     "module": "NodeNext",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "NodeNext"
-  }
+  },
+  "references": [
+    {
+      "path": "../chipper/tsconfig/buildjson"
+    }
+  ]
 }

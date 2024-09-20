@@ -20,7 +20,7 @@
     "outDir": "../chipper/dist/tsc/outDir",         /* Redirect output structure to the directory. */
     "rootDir": "../",                               /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
     // "rootDir": "./",                             /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
-    "composite": false,                             /* Enable project compilation (project references) */
+    "composite": true,                             /* Enable project compilation (project references) */
     // "tsBuildInfoFile": "./",                     /* Specify file to store incremental compilation information */
     // "removeComments": true,                      /* Do not emit comments to output. */
     "noEmit": false,                                /* Emit outputs. */

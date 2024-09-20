@@ -32,14 +32,13 @@ const brands = getBrands( grunt, repo, buildLocal );
  */
 export const lintAll = ( async () => {
 
-  console.log( ' task beginning' );
   const lintReturnValue = await lint( getPhetLibs( repo, brands ), {
     cache: cache,
     fix: fix,
     chipAway: chipAway
   } );
 
-// Output results on errors.
+  // Output results on errors.
   if ( !lintReturnValue.ok ) {
     grunt.fail.fatal( 'Lint failed' );
   }

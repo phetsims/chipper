@@ -84,7 +84,12 @@
           "**/*.ts",
           "**/*.tsx"
         ],
-        "parser": "@typescript-eslint/parser"
+        "parser": "@typescript-eslint/parser",
+        "parserOptions": {
+          "project": [
+            "../chipper/tsconfig.json"
+          ]
+        }
       },
       {
         "files": [
@@ -99,13 +104,26 @@
           "@typescript-eslint/no-require-imports": "off",
           "@typescript-eslint/no-var-requires": "off",
           "@typescript-eslint/no-floating-promises": "off"
+        },
+        "parser": "@typescript-eslint/parser",
+        "parserOptions": {
+          "project": [
+            "../chipper/tsconfig.json"
+          ]
         }
       },
       {
         "files": [
-          "./js/sim-tests/**/*"
+          "./js/sim-tests/**/*",
+          "./test/**/*"
         ],
-        "extends": "./eslint/sim_eslintrc.js"
+        "extends": "./eslint/sim_eslintrc.js",
+        "parser": "@typescript-eslint/parser",
+        "parserOptions": {
+          "project": [
+            "../chipper/tsconfig.json"
+          ]
+        }
       }
     ]
   }

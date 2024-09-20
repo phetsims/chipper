@@ -206,6 +206,7 @@ module.exports = {
         '@typescript-eslint/naming-convention': 'off', // TODO: We should decide on the conventions and enable this rule.
 
         // Require .toString() to only be called on objects which provide useful information when stringified 🔒  💭
+        // TODO: See https://github.com/phetsims/chipper/issues/1466, this takes a very long time at runtime
         '@typescript-eslint/no-base-to-string': 'error',
 
         // Disallow non-null assertion in locations that may be confusing 🔒 🔧 🛠
@@ -233,6 +234,7 @@ module.exports = {
         '@typescript-eslint/no-extraneous-class': 'off', // It is sometimes useful to have a class with static methods that can call each other
 
         // Require Promise-like statements to be handled appropriately ✅ 🛠 💭
+        // TODO: See https://github.com/phetsims/chipper/issues/1466, this takes a very long time at runtime
         '@typescript-eslint/no-floating-promises': 'error',
 
         // Disallow iterating over an array with a for-in loop ✅  💭
@@ -587,6 +589,7 @@ module.exports = {
         'explicit-method-return-type': 'error',
 
         // Variables that are Properties should end in "Property", like const myProperty = new Property();
+        // TODO: See https://github.com/phetsims/chipper/issues/1466, this takes a very long time at runtime
         'require-property-suffix': 'error',
 
         // Static fields should have the 'readonly' modifier
