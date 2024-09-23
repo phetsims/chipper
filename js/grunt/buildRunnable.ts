@@ -72,7 +72,8 @@ export type MinifyOptions = {
  * @returns - Does not resolve a value
  */
 export default async function( repo: string, minifyOptions: MinifyOptions, allHTML: boolean, brand: string, localesOption: string,
-                               buildLocal: boolean, encodeStringMap: boolean, compressScripts: boolean, profileFileSize: boolean ): Promise<void> {
+                               buildLocal: boolean, encodeStringMap: boolean, compressScripts: boolean, profileFileSize: boolean,
+                               noTSC: boolean ): Promise<void> {
 
   if ( brand === 'phet-io' ) {
 
@@ -416,7 +417,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   }
 
   if ( brand === 'phet-io' ) {
-    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, buildLocal, true );
+    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, buildLocal, true, noTSC );
   }
 
   // Thumbnails and twitter card

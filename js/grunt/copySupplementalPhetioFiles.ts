@@ -99,7 +99,7 @@ const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.m
 const STUDIO_BUILT_FILENAME = 'studio.min.js';
 
 // TODO: remove unused parameter buildLocal, see https://github.com/phetsims/chipper/issues/1459
-module.exports = async ( repo: string, version: string, simulationDisplayName: string, packageObject: IntentionalAny, buildLocal: object, generateMacroAPIFile = false ) => {
+module.exports = async ( repo: string, version: string, simulationDisplayName: string, packageObject: IntentionalAny, buildLocal: object, generateMacroAPIFile = false, noTSC = false ) => {
 
   const repoPhetLibs = getPhetLibs( repo, 'phet-io' );
   assert && assert( _.every( getPhetLibs( 'phet-io-wrappers' ), repo => repoPhetLibs.includes( repo ) ),
@@ -359,7 +359,7 @@ module.exports = async ( repo: string, version: string, simulationDisplayName: s
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build
-  await handleLib( repo, buildDir, filterWrapper );
+  await handleLib( repo, buildDir, noTSC, filterWrapper );
 
   // Create the zipped file that holds all needed items to run PhET-iO offline. NOTE: this must happen after copying wrapper
   await handleOfflineArtifact( buildDir, repo, version );
@@ -373,7 +373,7 @@ module.exports = async ( repo: string, version: string, simulationDisplayName: s
   // create the client guides
   handleClientGuides( repo, simulationDisplayName, buildDir, version, simRepoSHA );
 
-  await handleStudio( repo, wrappersLocation );
+  await handleStudio( repo, wrappersLocation, noTSC );
 
   if ( generateMacroAPIFile ) {
     const fullAPI = ( await generatePhetioMacroAPI( [ repo ], {
@@ -396,7 +396,7 @@ module.exports = async ( repo: string, version: string, simulationDisplayName: s
  * @param filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(absPath, contents)"
  */
-const handleLib = async ( repo: string, buildDir: string, filter: ( absPath: string, contents: string ) => string | null ) => {
+const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
   grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_PRELOADS );
   grunt.file.mkdir( `${buildDir}lib` );
 
@@ -412,8 +412,10 @@ const handleLib = async ( repo: string, buildDir: string, filter: ( absPath: str
   const migrationProcessorsCode = await getCompiledMigrationProcessors( repo, buildDir );
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationProcessorsCode}`, { stripAssertions: false } );
 
-  const results = await tsc( '../phet-io-wrappers' );
-  reportTscResults( results, grunt );
+  if ( !noTSC ) {
+    const results = await tsc( '../phet-io-wrappers' );
+    reportTscResults( results, grunt );
+  }
 
   let wrappersMain = await buildStandalone( 'phet-io-wrappers', {
     stripAssertions: false,
@@ -446,7 +448,7 @@ const handleLib = async ( repo: string, buildDir: string, filter: ( absPath: str
 
   grunt.file.write( `${buildDir}lib/${LIB_OUTPUT_FILE}`,
     `${mainCopyright}
-// 
+//
 // Contains additional code under the specified licenses:
 
 ${THIRD_PARTY_LIB_PRELOADS.map( contribFile => grunt.file.read( contribFile ) ).join( '\n\n' )}
@@ -655,12 +657,14 @@ const generateAndWriteClientGuide = ( repoName: string, title: string, simulatio
  * Support building studio. This compiles the studio modules into a runnable, and copies that over to the expected spot
  * on build.
  */
-const handleStudio = async ( repo: string, wrappersLocation: string ): Promise<void> => {
+const handleStudio = async ( repo: string, wrappersLocation: string, noTSC: boolean ): Promise<void> => {
 
   grunt.log.debug( 'building studio' );
 
-  const results = await tsc( '../studio' );
-  reportTscResults( results, grunt );
+  if ( !noTSC ) {
+    const results = await tsc( '../studio' );
+    reportTscResults( results, grunt );
+  }
 
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {
     stripAssertions: false,

@@ -69,7 +69,8 @@ export const build = ( async () => {
     // Run the type checker first.
     const brands = getBrands( grunt, repo, buildLocal );
 
-    !getOption( 'noTSC' ) && await phetTimingLog.startAsync( 'tsc', async () => {
+    const noTSC = getOption( 'noTSC' );
+    !noTSC && await phetTimingLog.startAsync( 'tsc', async () => {
 
       // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
       // do NOT run this for phet-lib, since it is type-checking things under src/, which is not desirable.
@@ -128,7 +129,7 @@ export const build = ( async () => {
         console.log( `Building brand: ${brand}` );
 
         await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
-          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts, profileFileSize );
+          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts, profileFileSize, noTSC );
         } );
       }
     }
