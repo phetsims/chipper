@@ -5,44 +5,36 @@
  *
  * Usage:
  * cd chipper/
- * node_modules/.bin/tsx js/scripts/transpile-swc.ts
+ * npx tsx js/scripts/transpile-swc.ts
  *
  * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
 import { spawn } from 'child_process';
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-// @ts-expect-error
-const __filename = fileURLToPath( import.meta.url );
-const __dirname = dirname( __filename );
-
-// For iterating, just a minimal subset of repos is used
-// const activeRepos = fs.readFileSync( path.join( __dirname, '..', '..', '..', 'perennial', 'data', 'active-common-sim-repos' ), 'utf-8' ) .split( '\n' ) .filter( repo => repo.trim().length > 0 ) .concat( [ 'buoyancy', 'density-buoyancy-common', 'acid-base-solutions', 'chipper', 'sherpa' ] );
+import _ from 'lodash';
+import path from 'path';
+import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos';
 
 // Read active repositories
-const activeRepos = fs.readFileSync( path.join( __dirname, '..', '..', '..', 'perennial', 'data', 'active-repos' ), 'utf-8' ).split( '\n' ).filter( repo => repo.trim().length > 0 );
+const activeRepos = getActiveRepos();
+
+// Construct the command string with brace expansion
+const runnable = process.platform.startsWith( 'win' ) ? 'swc.cmd' : 'swc';
+const runnablePath = path.join( `chipper/node_modules/.bin/${runnable}` );
 
 const getSubdirectories = ( repo: string ) => {
   const list = [ 'js', 'mipmaps', 'sounds', 'images' ];
   repo === 'sherpa' && list.push( 'lib' );
   repo === 'brand' && list.push( 'phet', 'phet-io', 'adapted-from-phet' );
-  return list.join( ',' );
+  return list.map( subdir => `${repo}/${subdir}/` );
 };
 
-// Construct the command string with brace expansion
-const argsString = `chipper/node_modules/.bin/swc --config-file chipper/.swcrc -s inline ${activeRepos.map( repo => `${repo}/{${getSubdirectories( repo )}}/` ).join( ' ' )} -d chipper/dist/js/ --watch`;
-
-// console.log( `Executing: ${argsString}` );
-console.log( `Transpiling code for ${activeRepos.length} repositories...` );
-
-function spawnCommand( command: string ): Promise<void> {
+function spawnCommand( command: string, args: string[] ): Promise<void> {
   return new Promise( ( resolve, reject ) => {
-    const child = spawn( command, {
-      cwd: path.join( __dirname, '..', '..', '..' ),
-      shell: true, // Enable shell to handle brace expansion
+    const child = spawn( command, args, {
+      cwd: path.resolve( __dirname, '../../../' ),
+      shell: true, // Important for windows.
       stdio: 'inherit' // Inherit stdio to display output directly
     } );
 
@@ -53,17 +45,33 @@ function spawnCommand( command: string ): Promise<void> {
         reject( new Error( `Process exited with code ${code}` ) );
       }
       else {
-        console.log( 'Child process completed successfully.' );
         resolve();
       }
     } );
   } );
 }
 
+const spawnWatch = ( repos: string[] ) => {
+  const argsString = [
+    '--config-file', 'chipper/.swcrc',
+    '-s', 'inline',
+    ..._.flatten( repos.map( repo => getSubdirectories( repo ) ) ),
+    '-d', 'chipper/dist/js/',
+    '--watch'
+  ];
+  // console.log( 'Executing: ', runnablePath, argsString.join( ' ' ) );
+  return spawnCommand( runnablePath, argsString );
+};
+
+async function main( repos = activeRepos ): Promise<void> {
+  console.log( `Transpiling code for ${repos.length} repositories...` );
+  await Promise.all( _.chunk( repos, 75 ).map( chunkedRepos => spawnWatch( chunkedRepos ) ) );
+  console.log( 'SWC transpile completed successfully.' );
+}
+
 ( async () => {
   try {
-    await spawnCommand( argsString );
-    console.log( 'Script completed successfully.' );
+    await main();
   }
   catch( error ) {
     console.error( 'Error:', error );
