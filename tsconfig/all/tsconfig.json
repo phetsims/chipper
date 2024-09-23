@@ -9,6 +9,9 @@
       "path": "../buildjson"
     },
     {
+      "path": "../buildtools"
+    },
+    {
       "path": "../../../acid-base-solutions"
     },
     {
@@ -392,12 +395,12 @@
     {
       "path": "../../../pendulum-lab"
     },
-//    {
-//      "path": "../../../perennial"
-//    },
-//    {
-//      "path": "../../../perennial-alias"
-//    },
+    //    {
+    //      "path": "../../../perennial"
+    //    },
+    //    {
+    //      "path": "../../../perennial-alias"
+    //    },
     {
       "path": "../../../ph-scale"
     },
@@ -422,12 +425,12 @@
     {
       "path": "../../../phet-io-wrappers"
     },
-//    {
-//      "path": "../../../phet-lib"
-//    },
-//    {
-//      "path": "../../../phet-vite-demo"
-//    },
+    //    {
+    //      "path": "../../../phet-lib"
+    //    },
+    //    {
+    //      "path": "../../../phet-vite-demo"
+    //    },
     {
       "path": "../../../phetcommon"
     },
