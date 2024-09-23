@@ -18,7 +18,7 @@ const gruntSpawn = require( './gruntSpawn' );
 const isWindows = /^win/.test( process.platform );
 
 function execTask( grunt, taskFilename ) {
-  const command = `${path.resolve( '../chipper/node_modules/.bin/' )}${isWindows ? 'tsx.cmd' : 'tsx'}`;
+  const command = `${path.join( `../chipper/node_modules/.bin/${isWindows ? 'tsx.cmd' : 'tsx'}` )}`;
 
   return () => {
     gruntSpawn( grunt, command, [ taskFilename, ...process.argv.slice( 2 ) ], process.cwd() );
