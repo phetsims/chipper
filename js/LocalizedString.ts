@@ -7,13 +7,13 @@
  */
 
 import TinyProperty from '../../axon/js/TinyProperty.js';
-import localeProperty, { Locale } from '../../joist/js/i18n/localeProperty.js';
-import Tandem from '../../tandem/js/Tandem.js';
-import chipper from './chipper.js';
 import TProperty from '../../axon/js/TProperty.js';
-import { localizedStrings } from './getStringModule.js';
+import localeProperty, { Locale } from '../../joist/js/i18n/localeProperty.js';
 import arrayRemove from '../../phet-core/js/arrayRemove.js';
+import Tandem from '../../tandem/js/Tandem.js';
 import { PhetioID } from '../../tandem/js/TandemConstants.js';
+import chipper from './chipper.js';
+import { localizedStrings } from './getStringModule.js';
 import LocalizedStringProperty from './LocalizedStringProperty.js';
 
 // constants

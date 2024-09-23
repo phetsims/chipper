@@ -402,6 +402,7 @@ const createImageModule = async ( repo, supportedRegionsAndCultures ) => {
  * Auto-generated from modulify, DO NOT manually modify.
  */
 /* eslint-disable */
+/* @formatter:off */
 import LocalizedImageProperty from '../../joist/js/i18n/LocalizedImageProperty.js';
 import ${namespace} from './${namespace}.js';
 ${imageFiles.map( imageFile => `import ${getImportName( imageFile )} from '../${imageFile.replace( '.ts', '.js' )}';` ).join( '\n' )}
@@ -445,6 +446,7 @@ const createStringModule = async repo => {
  * Auto-generated from modulify, DO NOT manually modify.
  */
 /* eslint-disable */
+/* @formatter:off */
 import getStringModule from '../../chipper/js/getStringModule.js';
 import type LocalizedStringProperty from '../../chipper/js/LocalizedStringProperty.js';
 import ${namespace} from './${namespace}.js';
