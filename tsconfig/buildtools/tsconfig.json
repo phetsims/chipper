@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig-core.json",
+  // Entry points from build.json, see chipper/build.json
+  "include": [
+
+    "../../../perennial-alias/js/common/**/*",
+    "../../../chipper/js/common/**/*",
+    "../../../chipper/js/grunt/**/*",
+    //    "../../../chipper/js/phet-io/**/*",
+    "../../../chipper/js/scripts/**/*",
+    //    "../../../chipper/js/sim-tests/**/*",
+    "../../../phet-core/js/types/**/*"
+  ],
+//  "references": [
+//    //    {
+//    //      "path": "../buildjson"
+//    //    }
+//  ]
+}
