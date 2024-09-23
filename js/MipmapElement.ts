@@ -1,7 +1,7 @@
 // Copyright 2022-2024, University of Colorado Boulder
 
-import phetCore from './phetCore.js';
 import asyncLoader from './asyncLoader.js';
+import phetCore from './phetCore.js';
 
 /**
  * Size and raster data for levels in a mipmap.  See also type Mipmap in Imageable.ts.  Defined in phet-core instead of
