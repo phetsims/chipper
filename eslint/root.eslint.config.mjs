@@ -1873,5 +1873,10 @@ export default [
         GPUExternalTexture: 'readonly'
       }
     }
+  }, {
+    files: [ '*eslint.config*' ],
+    rules: {
+      'phet/default-import-match-filename': 'off'
+    }
   }
 ];
