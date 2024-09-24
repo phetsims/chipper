@@ -21,7 +21,8 @@ module.exports = function spawn( grunt, command, args, cwd, preHook ) {
   const argsString = args.map( arg => `"${arg}"` ).join( ' ' );
   const spawned = child_process.spawn( command, args, {
     cwd: cwd,
-    shell: isWindows // shell is required for a NodeJS security update, see https://github.com/phetsims/perennial/issues/359
+    shell: isWindows, // shell is required for a NodeJS security update, see https://github.com/phetsims/perennial/issues/359
+    env: Object.create( process.env )
   } );
   preHook && preHook( argsString );
 
