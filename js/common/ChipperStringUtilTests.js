@@ -5,9 +5,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-/* eslint-env node*/
-
-
 const ChipperStringUtils = require( './ChipperStringUtils' );
 const qunit = require( 'qunit' );
 qunit.module( 'ChipperStringUtils' );

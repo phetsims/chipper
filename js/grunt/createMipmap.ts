@@ -3,7 +3,7 @@
 import * as fs from 'fs';
 import * as grunt from 'grunt';
 
-const jpeg = require( 'jpeg-js' ); // eslint-disable-line require-statement-match
+const jpeg = require( 'jpeg-js' ); // eslint-disable-line phet/require-statement-match
 const mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale' );
 const pngjs = require( 'pngjs' );
 

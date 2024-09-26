@@ -1,20 +1,25 @@
 // Copyright 2018, University of Colorado Boulder
 // @author Michael Kauzmann
 
+import globals from 'globals';
+import rootEslintConfig from './root.eslint.config.mjs';
 
 /**
  * The node-specific eslint config applied only to "server-side" files that aren't run in sims.
  */
-module.exports = {
-  extends: './.eslintrc.js',
-  env: {
+export default [
+  ...rootEslintConfig,
+  {
+    languageOptions: {
+      globals: {
 
-    // specify appropriate environment vars for node code
-    browser: false,
-    node: true
-  },
+        // TODO: we would like to say exclude browser, but we will have to remove it from root.eslint.config.mjs to do so. See https://github.com/phetsims/chipper/issues/1451
+        // That is, we used to say browser: false. How to do that with flat?
+        ...globals.node
+      }
+    },
 
-  rules: {
-    'bad-sim-text': 'off'
-  }
-};
+    rules: {
+      'bad-sim-text': 'off'
+    }
+  } ];

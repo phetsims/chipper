@@ -13,7 +13,7 @@
  * @copyright 2022 University of Colorado Boulder
  */
 
-const { ESLintUtils } = require( '@typescript-eslint/utils' ); // eslint-disable-line require-statement-match
+const { ESLintUtils } = require( '@typescript-eslint/utils' ); // eslint-disable-line phet/require-statement-match
 
 const visit = ( context, propertyNode ) => {
 

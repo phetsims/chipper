@@ -18,7 +18,7 @@ module.exports = {
       VariableDeclaration: function( node ) {
 
         // Here is the AST of a typical require statement node, for reference
-        // ( should be the same comment as in require-statement-match.js)
+        // ( should be the same comment as in phet/require-statement-match.js)
         //
         //var exemplar = {
         //  'type': 'VariableDeclaration',

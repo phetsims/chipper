@@ -34,7 +34,7 @@
 
   window.addEventListener( 'load', event => {
     // Wait 4 seconds before reporting load, to see if it errors first
-    // eslint-disable-next-line bad-sim-text
+     
     setTimeout( () => {
       if ( !hasErrored ) {
         ( window.parent !== window ) && window.parent.postMessage( JSON.stringify( {

@@ -11,10 +11,10 @@ const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
 const child_process = require( 'child_process' );
 const fs = require( 'fs' );
-const HtmlWebpackPlugin = require( 'html-webpack-plugin' ); // eslint-disable-line require-statement-match
+const HtmlWebpackPlugin = require( 'html-webpack-plugin' ); // eslint-disable-line phet/require-statement-match
 const path = require( 'path' );
 const webpack = require( 'webpack' );
-const WebpackDevServer = require( 'webpack-dev-server' ); // eslint-disable-line require-statement-match
+const WebpackDevServer = require( 'webpack-dev-server' ); // eslint-disable-line phet/require-statement-match
 
 /**
  * @param {string[]} repos

@@ -32,7 +32,7 @@ const execute = require( '../../../perennial-alias/js/common/execute' );
 const CacheLayer = require( '../common/CacheLayer' );
 const os = require( 'os' );
 const path = require( 'path' );
-const { resolve } = require( 'path' ); // eslint-disable-line require-statement-match
+const { resolve } = require( 'path' ); // eslint-disable-line phet/require-statement-match
 
 const args = process.argv.slice( 2 );
 if ( !args || args.length === 0 ) {

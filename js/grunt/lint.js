@@ -8,64 +8,36 @@
  * It is assumed that linting occurs from one level deep in any given repo. This has ramifications for how we write
  * eslint config files across the codebase.
  *
+ * TODO: This file was decimated from https://github.com/phetsims/chipper/issues/1451, we should decide what to support
+ * TODO: should every active-repo have eslint.config.mjs? Or should we have an opt out list somewhere? https://github.com/phetsims/chipper/issues/1451
+ * TODO: Review this file: https://github.com/phetsims/chipper/issues/1451
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
 // modules
-const { spawn } = require( 'child_process' ); // eslint-disable-line require-statement-match
+const { spawn } = require( 'child_process' ); // eslint-disable-line phet/require-statement-match
 const _ = require( 'lodash' );
-const path = require( 'path' );
-const assert = require( 'assert' );
-const showCommandLineProgress = require( '../common/showCommandLineProgress' );
-const chipAway = require( './chipAway' );
-const { ESLint } = require( 'eslint' ); // eslint-disable-line require-statement-match
 const fs = require( 'fs' );
+const showCommandLineProgress = require( '../common/showCommandLineProgress' );
+const path = require( 'path' );
 
-const DEBUG_MARKER = 'eslint:cli-engine';
-const npxCommand = /^win/.test( process.platform ) ? 'npx.cmd' : 'npx';
-
-// Print formatted errors and warning to the console.
-async function consoleLogResults( results ) {
-
-  // No need to have the same ESLint just to format
-  const formatter = await new ESLint().loadFormatter( 'stylish' );
-  const resultText = formatter.format( results );
-  console.log( `\n${resultText}\n` );
-}
+const ESLINT_COMMAND = path.join( '../chipper/node_modules/.bin/eslint' );
 
 /**
- * @param repos
+ * @param repo
  * @param options
- * @returns {Promise<ESLint.LintResult[]>}
+ * @returns {Promise<number>}
  */
-function runEslint( repos, options ) {
+function runEslint( repo, options ) {
 
-  options = _.assignIn( {
-
-    // Cache results for a speed boost.
-    cache: true,
-
-    // Fix things that can be auto-fixed (written to disk)
-    fix: false,
-
-    // prints responsible dev info for any lint errors for easier GitHub issue creation.
-    chipAway: false,
-
-    // Show a progress bar while running, based on the current repo index in the provided list parameter
-    showProgressBar: true
-  }, options );
-
-  const patterns = repos.map( repo => `../${repo}/` );
-
-  const args = [ 'eslint' ];
-
+  const cacheFile = `../chipper/eslint/cache/${repo}.eslintcache`;
   // If options.cache is not set, clear the cache file (if it exists)
   if ( !options.cache ) {
 
     try {
-      fs.unlinkSync( '../chipper/eslint/cache/.eslintcache' );
-      console.log( 'Cache file \'../chipper/eslint/cache/.eslintcache\' deleted successfully' );
+      fs.unlinkSync( cacheFile );
+      console.log( `\nCache file '${cacheFile}' deleted successfully` );
     }
     catch( err ) {
       if ( err.code === 'ENOENT' ) {
@@ -80,35 +52,29 @@ function runEslint( repos, options ) {
     }
   }
 
-  const showProgressBar = options.showProgressBar && repos.length > 1;
-  showProgressBar && showCommandLineProgress( 0, false );
-
   // Always write to the cache, even if it was cleared above.
-  args.push( '--cache', '--cache-location', '../chipper/eslint/cache/.eslintcache' );
+  const args = [ '--cache', '--cache-location', cacheFile ];
+
+  args.push( '--no-error-on-unmatched-pattern' );
 
   // Add the '--fix' option if fix is true
-  if ( options.fix ) {
-    args.push( '--fix' );
-  }
+  options.fix && args.push( '--fix' );
 
-  // Continue building the args array
   args.push( ...[
-    '--rulesdir', '../chipper/eslint/rules/',
-    '--resolve-plugins-relative-to', '../chipper',
-    '--no-error-on-unmatched-pattern',
-    '--ignore-path', '../chipper/eslint/.eslintignore',
-    '--format=json', // JSON output, for easier parsing later
-    '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
-    ...patterns
+    // '--rulesdir', '../chipper/eslint/rules/',
+    // '--resolve-plugins-relative-to', '../chipper',
+    // '--ignore-path', '../chipper/eslint/.eslintignore',
+    // '--ext', '.js,.jsx,.ts,.tsx,.mjs,.cjs,.html',
+    // '--debug'
   ] );
 
-  return new Promise( ( resolve, reject ) => {
+  // Only lint from that single repo, from that repo as cwd; last is best for this one
+  args.push( './' );
+
+  return new Promise( resolve => {
 
     // Prepare environment for spawn process, defaulting to the existing env
     const env = Object.create( process.env );
-    if ( showProgressBar ) {
-      env.DEBUG = DEBUG_MARKER;
-    }
 
     // Increase available memory for NodeJS heap, to future-proof for, https://github.com/phetsims/chipper/issues/1415
     env.NODE_OPTIONS = env.NODE_OPTIONS || '';
@@ -118,62 +84,79 @@ function runEslint( repos, options ) {
     }
 
     // It is nice to use our own spawn here instead of execute() so we can stream progress updates as it runs.
-    const eslint = spawn( npxCommand, args, {
-      cwd: '../chipper',
+    const eslint = spawn( ESLINT_COMMAND, args, {
+      cwd: `../${repo}`,
 
       // A shell is required for npx because the runnable is a shell script. see https://github.com/phetsims/perennial/issues/359
       shell: /^win/.test( process.platform ),
       env: env // Use the prepared environment
     } );
+    let hasPrinted = false;
+    // Make sure that the repo is clearly printed for the log
+    const preLoggingStep = () => {
+      if ( !hasPrinted ) {
+        console.log( `\n${repo}:` );
+        hasPrinted = true;
+      }
+    };
 
     // It is possible the json is bigger than one chunk of data, so append to it.
-    let jsonString = '';
     eslint.stdout.on( 'data', data => {
-      jsonString += data.toString();
+      preLoggingStep();
+      console.log( data.toString() );
     } );
-
     eslint.stderr.on( 'data', data => {
-      const message = data.toString();
-
-      // Log with support for debug messaging (for progress bar)
-      // Handle case where the source code of this file is printed (when there are lint rules in this file)
-      // It was found that debug messages only come to the stderr channel, not stdout.
-      if ( message.includes( DEBUG_MARKER ) && !message.includes( DEBUG_MARKER + '\'' ) ) {
-        assert( showProgressBar, `should only have the debug marker for progress bar support for message:, ${message}` );
-        const repo = tryRepoFromDebugMessage( message );
-        if ( repo ) {
-          assert( repos.indexOf( repo ) >= 0, `repo not in repos, ${repo}, ${message}` );
-          showProgressBar && showCommandLineProgress( repos.indexOf( repo ) / repos.length, false );
-        }
-      }
-      else {
-        console.error( message );
-      }
+      preLoggingStep();
+      console.error( data.toString() );
     } );
-    eslint.on( 'close', () => {
-      try {
-        const parsed = JSON.parse( jsonString );
-        resolve( parsed );
-      }
-      catch( e ) {
-        reject( e );
-      }
-    } );
-
-  } ).then( async parsed => {
-
-    showProgressBar && showCommandLineProgress( 1, true );
-
-    // Ignore non-errors/warnings
-    const results = parsed.filter( x => x.errorCount !== 0 || x.warningCount !== 0 );
-
-    if ( results.length > 0 ) {
-      await consoleLogResults( results );
-      options.chipAway && console.log( chipAway( results ), '\n' );
-    }
-
-    return results;
+    eslint.on( 'close', () => resolve( eslint.exitCode ) );
   } );
+}
+
+/**
+ * Lints repositories using a worker pool approach.
+ */
+async function lintWithWorkers( repos, options ) {
+  const reposQueue = [ ...repos ];
+  const exitCodes = [];
+
+  options.showProgressBar && showCommandLineProgress( 0, false );
+  let doneCount = 0;
+
+  /**
+   * Worker function that continuously processes repositories from the queue.
+   */
+  const worker = async () => {
+
+    // TODO: Why isn't no-constant-condition triggering? https://github.com/phetsims/chipper/issues/1451
+    while ( true ) {
+
+      // Synchronize access to the queue
+      // Since JavaScript is single-threaded, this is safe
+      if ( reposQueue.length === 0 ) {
+        break; // No more repositories to process
+      }
+
+      const repo = reposQueue.shift(); // Get the next repository
+
+      exitCodes.push( await runEslint( repo, options ) );
+      // console.log( `finished linting ${repo}` );
+
+      doneCount++;
+      options.showProgressBar && showCommandLineProgress( doneCount / repos.length, false );
+    }
+  };
+
+  // TODO: https://github.com/phetsims/chipper/issues/1468 fine tune the number of workers, maybe with require('os').cpus().length?
+  const numWorkers = 8;
+  const workers = _.times( numWorkers, () => worker() );
+
+  // Wait for all workers to complete
+  await Promise.all( workers );
+  options.showProgressBar && showCommandLineProgress( 1, true );
+
+  const ok = _.every( exitCodes, code => code === 0 );
+  return { ok: ok };
 }
 
 /**
@@ -182,17 +165,32 @@ function runEslint( repos, options ) {
  *
  * @param {string[]} originalRepos - list of repos to lint
  * @param {Object} [options]
- * @returns {Promise<{results:Array<Object>,ok:boolean}>} - results from linting files, see ESLint.lintFiles.
+ * @returns {Promise<{ok:boolean}>} - results from linting files, see ESLint.lintFiles.
  */
 const lint = async ( originalRepos, options ) => {
+  originalRepos = _.uniq( originalRepos ); // don't double lint repos
+
+  options = _.assignIn( {
+
+    // Cache results for a speed boost.
+    cache: true,
+
+    // Fix things that can be auto-fixed (written to disk)
+    fix: false,
+
+    // prints responsible dev info for any lint errors for easier GitHub issue creation.
+    chipAway: false, // TODO: not easy to support since flat config rewrite, see https://github.com/phetsims/chipper/issues/1451
+
+    // Show a progress bar while running, based on the current repo index in the provided list parameter
+    showProgressBar: true
+  }, options );
+
+  // Don't show a progress bar for just a single repo
+  options.showProgressBar = options.showProgressBar && originalRepos.length > 1;
+
+  // Top level try catch just in case.
   try {
-    const results = await runEslint( originalRepos, options );
-    if ( results.length === 0 ) {
-      return { results: [], ok: true };
-    }
-    else {
-      return { results: results, ok: false };
-    }
+    return await lintWithWorkers( originalRepos, options );
   }
   catch( error ) {
     console.error( 'Error running ESLint:', error.message );
@@ -200,19 +198,8 @@ const lint = async ( originalRepos, options ) => {
   }
 };
 
-const repoRootPath = path.join( __dirname, '../../../' ); // Will end in a slash
-const escaped = repoRootPath.replace( /\\/g, '\\\\' ); // Handle any backslashes in the path
-
-// Regex that captures the repo via the path
-const regExp = new RegExp( `${escaped}([\\w-]+)[\\\\\\/]` );
-
-function tryRepoFromDebugMessage( message ) {
-  assert( message.includes( DEBUG_MARKER ) );
-  const match = message.match( regExp );
-  return match ? match[ 1 ] : null;
-}
-
 // Mark the version so that we don't try to lint old shas if on an older version of chipper.
+// TODO: Should we change this? I'm unsure what all the posibilities are, https://github.com/phetsims/chipper/issues/1451
 lint.chipperAPIVersion = 'npx';
 
 module.exports = lint;

@@ -1,34 +1,47 @@
 // Copyright 2015-2021, University of Colorado Boulder
 
+/* eslint-disable phet/todo-should-have-issue */
+
 import stylisticEslintPlugin from '@stylistic/eslint-plugin';
 import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptEslintParser from '@typescript-eslint/parser';
 import html from 'eslint-plugin-html';
 import globals from 'globals';
-import authorAnnotation from './rules/author-annotation.js';
 
+import additionalBadText from './rules/additional-bad-text.js';
+import authorAnnotation from './rules/author-annotation.js';
+import badChipperText from './rules/bad-chipper-text.js';
+import badPhetLibraryText from './rules/bad-phet-library-text.js';
+import badSimText from './rules/bad-sim-text.js';
 import badText from './rules/bad-text.js';
+import badTypescriptText from './rules/bad-typescript-text.js';
 import copyright from './rules/copyright.js';
 import defaultExportClassShouldRegisterNamespace from './rules/default-export-class-should-register-namespace.js';
 import defaultExportMatchFilename from './rules/default-export-match-filename.js';
 import defaultImportMatchFilename from './rules/default-import-match-filename.js';
+import explicitMethodReturnType from './rules/explicit-method-return-type.js';
 import namespaceMatch from './rules/namespace-match.js';
 import noHtmlConstructors from './rules/no-html-constructors.js';
 import noInstanceofArray from './rules/no-instanceof-array.js';
+import noObjectSpreadOnNonLiterals from './rules/no-object-spread-on-non-literals.js';
 import noPropertyInRequireStatement from './rules/no-property-in-require-statement.js';
+
+import noSimpleTypeCheckingAssertions from './rules/no-simple-type-checking-assertions.js';
 import noViewImportedFromModel from './rules/no-view-imported-from-model.js';
+import phetIoObjectOptionsShouldNotPickFromPhetIoObject from './rules/phet-io-object-options-should-not-pick-from-phet-io-object.js';
 import phetIoRequireContainsIfphetio from './rules/phet-io-require-contains-ifphetio.js';
 import phetObjectShorthand from './rules/phet-object-shorthand.js';
 import preferDerivedStringProperty from './rules/prefer-derived-string-property.js';
+import requirePropertySuffix from './rules/require-property-suffix.js';
 import requireStatementMatch from './rules/require-statement-match.js';
 import singleLineImport from './rules/single-line-import.js';
 import tandemNameShouldMatch from './rules/tandem-name-should-match.js';
 import todoShouldHaveIssue from './rules/todo-should-have-issue.js';
+import uppercaseStaticsShouldBeReadonly from './rules/uppercase-statics-should-be-readonly.js';
 import visibilityAnnotation from './rules/visibility-annotation.js';
 
 // import html from 'html';
-
-/* eslint-disable todo-should-have-issue */
+// TODO: Review this file, see https://github.com/phetsims/chipper/issues/1451
 /**
  * The base eslint configuration for the PhET projects.
  *
@@ -77,7 +90,13 @@ export default [
           // Custom Rules
           //
 
+          'additional-bad-text': additionalBadText,
           'bad-text': badText,
+          'bad-chipper-text': badChipperText,
+          'bad-phet-library-text': badPhetLibraryText,
+          'bad-sim-text': badSimText,
+          'bad-typescript-text': badTypescriptText,
+
           copyright: copyright,
           // Custom rule for checking the copyright.copyright
 
@@ -128,9 +147,16 @@ export default [
           'tandem-name-should-match': tandemNameShouldMatch,
 
           // Each source file should list at least one author
-          'author-annotation': authorAnnotation
-          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          'author-annotation': authorAnnotation,
 
+          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+          // Type checking rules. Documentation is at the usage site below
+          'no-simple-type-checking-assertions': noSimpleTypeCheckingAssertions,
+          'explicit-method-return-type': explicitMethodReturnType,
+          'require-property-suffix': requirePropertySuffix,
+          'uppercase-statics-should-be-readonly': uppercaseStaticsShouldBeReadonly,
+          'no-object-spread-on-non-literals': noObjectSpreadOnNonLiterals,
+          'phet-io-object-options-should-not-pick-from-phet-io-object': phetIoObjectOptionsShouldNotPickFromPhetIoObject
         }
       }
     }
@@ -152,12 +178,6 @@ export default [
       parser: typescriptEslintParser
 
       // TODO: probably don't want node and browser here in the root, see https://github.com/phetsims/chipper/issues/1451
-    },
-
-    // Lint javascript in HTML files too
-    // TODO: Restore html plugin, see https://github.com/phetsims/chipper/issues/1451
-    plugins: {
-      html: html
     },
 
     // reportUnusedDisableDirectives: true,
@@ -1056,7 +1076,6 @@ export default [
       // Custom Rules
       //
 
-      // TODO:
       'phet/bad-text': 'error',
 
       // Custom rule for checking the copyright.
@@ -1120,11 +1139,19 @@ export default [
   {
 
     // Only HTML Files
+
+    // TODO: visit more HTML with **, see https://github.com/phetsims/chipper/issues/1451
+    // files: [ '**/*.html' ],
     files: [ '*.html' ],
     rules: {
       // DUPLICATION ALERT, this overrides the base rule, just for HTML.
       'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 2, maxEOF: 1 } ],
       'bad-sim-text': 'off'
+    },
+    // Lint javascript in HTML files too
+    // TODO: Restore html plugin, see https://github.com/phetsims/chipper/issues/1451
+    plugins: {
+      html: html
     }
   },
   {
@@ -1673,32 +1700,31 @@ export default [
       } ],
 
       // Require spacing around infix operators  🔧
-      '@stylistic/space-infix-ops': 'error'
+      '@stylistic/space-infix-ops': 'error',
 
-      // TODO: Uncomment
-      // ////////////////////////////////////////////////////////////////////////
-      // // Custom TypeScript Rules
-      // 'bad-typescript-text': 'error',
-      //
-      // 'no-simple-type-checking-assertions': 'error',
-      //
-      // // Custom return type rule that only requires for methods. The includes return type was too overarching.
-      // 'explicit-method-return-type': 'error',
-      //
-      // // Variables that are Properties should end in "Property", like const myProperty = new Property();
-      // // TODO: See https://github.com/phetsims/chipper/issues/1466, this takes a very long time at runtime
-      // 'require-property-suffix': 'error',
-      //
-      // // Static fields should have the 'readonly' modifier
-      // 'uppercase-statics-should-be-readonly': 'error',
-      //
-      // // Prevent spread operator on non-literals because it does not do excess property detection. In general, this rule
-      // // helps catch potential errors, and mistakes with PhET's option pattern, but please feel free to disable this rule
-      // // in cases where you feel confident, and strongly don't want the type safety of excess property checking.
-      // 'no-object-spread-on-non-literals': 'error',
-      //
-      // // Often we mistakenly Pick<PhetioObject,'tandem'> but it should be picked from PhetioObjectOptions
-      // 'phet-io-object-options-should-not-pick-from-phet-io-object': 'error'
+      ////////////////////////////////////////////////////////////////////////
+      // Custom TypeScript Rules
+      'phet/bad-typescript-text': 'error',
+
+      'phet/no-simple-type-checking-assertions': 'error',
+
+      // Custom return type rule that only requires for methods. The includes return type was too overarching.
+      'phet/explicit-method-return-type': 'error',
+
+      // Variables that are Properties should end in "Property", like const myProperty = new Property();
+      // TODO: See https://github.com/phetsims/chipper/issues/1466, this takes a very long time at runtime
+      'phet/require-property-suffix': 'error',
+
+      // Static fields should have the 'readonly' modifier
+      'phet/uppercase-statics-should-be-readonly': 'error',
+
+      // Prevent spread operator on non-literals because it does not do excess property detection. In general, this rule
+      // helps catch potential errors, and mistakes with PhET's option pattern, but please feel free to disable this rule
+      // in cases where you feel confident, and strongly don't want the type safety of excess property checking.
+      'phet/no-object-spread-on-non-literals': 'error',
+
+      // Often we mistakenly Pick<PhetioObject,'tandem'> but it should be picked from PhetioObjectOptions
+      'phet/phet-io-object-options-should-not-pick-from-phet-io-object': 'error'
     }
   },
   {

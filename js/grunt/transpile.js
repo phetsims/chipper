@@ -8,7 +8,7 @@
 
 
 // modules
-const babel = require( '@babel/core' ); // eslint-disable-line require-statement-match
+const babel = require( '@babel/core' ); // eslint-disable-line phet/require-statement-match
 
 /**
  * Transpile some code to be compatible with the browsers specified below

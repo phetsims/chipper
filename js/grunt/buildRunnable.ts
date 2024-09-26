@@ -31,7 +31,7 @@ const grunt = require( 'grunt' );
 const jimp = require( 'jimp' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const minify = require( './minify' );
-const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
+const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
 const packageRunnable = require( './packageRunnable' );
 const packageXHTML = require( './packageXHTML' );
 const reportUnusedMedia = require( './reportUnusedMedia' );
@@ -404,7 +404,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     // @ts-expect-error
     packageObject.phet.packageWithBuild.forEach( path => {
 
-      // eslint-disable-next-line no-simple-type-checking-assertions
+      // eslint-disable-next-line phet/no-simple-type-checking-assertions
       assert && assert( typeof path === 'string', 'path should be a string' );
       assert && assert( grunt.file.exists( path ), `path does not exist: ${path}` );
       if ( grunt.file.isDir( path ) ) {

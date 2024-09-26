@@ -13,7 +13,7 @@ import getRepo from './util/getRepo';
  */
 const repo = getRepo();
 
-// eslint-disable-next-line require-statement-match
+// eslint-disable-next-line phet/require-statement-match
 const _reportMedia = require( '../reportMedia' );
 
 export const reportMedia = ( async () => {

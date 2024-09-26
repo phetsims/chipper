@@ -11,7 +11,7 @@
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import * as grunt from 'grunt';
 
-const Jimp = require( 'jimp' ); // eslint-disable-line require-statement-match
+const Jimp = require( 'jimp' ); // eslint-disable-line phet/require-statement-match
 
 /**
  * @param repo - name of the repository

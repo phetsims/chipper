@@ -1,4 +1,4 @@
-/* eslint-disable copyright*/
+/* eslint-disable phet/copyright */
 
 /**
  * Adapted/copied from rule in https://github.com/minseoksuh/eslint-plugin-consistent-default-export-name/blob/de812b2194ca9435920776119a7f732b596b4d8b/lib/rules/default-import-match-filename.js
@@ -9,6 +9,7 @@
  */
 
 const path = require( 'path' );
+const _ = require( 'lodash' );
 
 /**
  * @param {string} filename
@@ -25,7 +26,7 @@ function removeExtension( filename ) {
  * @returns {boolean}
  */
 function isCompatible( localName, filename ) {
-  return localName === removeExtension( filename );
+  return localName === removeExtension( filename ) || matchesCamelCase( localName, removeExtension( filename ) );
 }
 
 /**

@@ -1,4 +1,4 @@
-/* eslint-disable copyright*/
+/* eslint-disable phet/copyright */
 
 /**
  * @fileoverview Rule to enforce disallowing of shorthand for object properties. Object method shorthand is allowed

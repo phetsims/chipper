@@ -8,7 +8,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-// eslint-disable-next-line bad-sim-text
 import * as lodash from 'lodash';
 
 declare global {

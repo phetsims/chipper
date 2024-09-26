@@ -2,7 +2,7 @@
 import getRepo from './util/getRepo';
 import * as fs from 'fs';
 
-// eslint-disable-next-line require-statement-match
+// eslint-disable-next-line phet/require-statement-match
 const _modulify = require( '../modulify' );
 const generateDevelopmentStrings = require( '../generateDevelopmentStrings' );
 

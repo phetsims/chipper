@@ -37,7 +37,7 @@ const wgslMangle = ( str, symbolInfo ) => {
   // Regexp that should match any symbol that is to be replaced (with 1char on each side)
   let firstIndex = 0;
 
-  // eslint-disable-next-line no-constant-condition
+   
   while ( true ) {
     const match = new RegExp( `[^\\w](${symbols.join( '|' )})[^\\w]` ).exec( str.slice( firstIndex ) );
     if ( !match ) {

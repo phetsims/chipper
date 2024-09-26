@@ -6,10 +6,9 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-/* eslint-env node*/
 
 const qunit = require( 'qunit' );
-// eslint-disable-next-line require-statement-match
+// eslint-disable-next-line phet/require-statement-match
 const { execSync } = require( 'child_process' );
 qunit.module( 'GruntfileTests' );
 

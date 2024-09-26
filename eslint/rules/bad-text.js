@@ -1,5 +1,5 @@
 // Copyright 2018-2019, University of Colorado Boulder
-/* eslint-disable bad-text */
+/* eslint-disable phet/bad-text */
 
 /**
  * Lint detector for invalid text.

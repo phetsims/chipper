@@ -11,7 +11,7 @@
  * @copyright 2022 University of Colorado Boulder
  */
 
-const { ESLintUtils } = require( '@typescript-eslint/utils' ); // eslint-disable-line require-statement-match
+const { ESLintUtils } = require( '@typescript-eslint/utils' ); // eslint-disable-line phet/require-statement-match
 
 // these are still MethodDefinition nodes, but don't require an annotation
 const exemptMethods = [ 'get', 'set', 'constructor' ];

@@ -34,7 +34,7 @@ const phetioComments = [
 const nonPhetioLicensedFiles = [
   'Gruntfile.js',
   'Gruntfile.ts',
-  '.eslintrc.js',
+  'eslint.config.mjs',
   '-phet-io-overrides.js'
 ];
 

@@ -14,7 +14,7 @@ import * as ChipperConstants from '../common/ChipperConstants.js';
 
 const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries' );
 const webpack = require( 'webpack' );
-// eslint-disable-next-line require-statement-match
+// eslint-disable-next-line phet/require-statement-match
 const { ModifySourcePlugin, ConcatOperation } = require( 'modify-source-webpack-plugin' );
 
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial-alias/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );

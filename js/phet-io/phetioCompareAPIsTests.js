@@ -7,7 +7,7 @@
 
 const qunit = require( 'qunit' );
 const assert = require( 'assert' );
-const _phetioCompareAPIs = require( './phetioCompareAPIs' ); // eslint-disable-line require-statement-match
+const _phetioCompareAPIs = require( './phetioCompareAPIs' ); // eslint-disable-line phet/require-statement-match
 const _ = require( 'lodash' );
 
 qunit.module( 'phetioCompareAPIs' );

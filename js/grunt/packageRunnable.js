@@ -14,7 +14,7 @@ const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 const pako = require( 'pako' );
 const fs = require( 'fs' );
-const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
+const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
 
 /**
  * From a given set of config (including the JS and other required things), it creates an HTML file for a runnable.

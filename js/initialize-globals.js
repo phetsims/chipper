@@ -458,7 +458,7 @@
      */
     randomSeed: {
       type: 'number',
-      defaultValue: Math.random() // eslint-disable-line bad-sim-text
+      defaultValue: Math.random()
     },
 
     /*
@@ -1173,10 +1173,10 @@
    * testing a sim for robustness, and allowing others to reproduce slow-behavior bugs.
    */
   window.phet.chipper.makeEverythingSlow = function() {
-    window.setInterval( () => { sleep( 64 ); }, 16 ); // eslint-disable-line bad-sim-text
+    window.setInterval( () => { sleep( 64 ); }, 16 );
   };
   window.phet.chipper.makeRandomSlowness = function() {
-    window.setInterval( () => { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) ); // eslint-disable-line bad-sim-text
+    window.setInterval( () => { sleep( Math.ceil( 100 + Math.random() * 200 ) ); }, Math.ceil( 100 + Math.random() * 200 ) );
   };
 
   ( function() {

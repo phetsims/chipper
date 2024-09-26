@@ -2,7 +2,7 @@
 
 /**
  * Lint detector for invalid text, where repo-specific text can be identified. We were unable to find a way to combine
- * this with bad-sim-text, so we just left it separate. Only supports string literals (not predicates or regex).
+ * this with phet/bad-sim-text, so we just left it separate. Only supports string literals (not predicates or regex).
  *
  *  @author Sam Reid (PhET Interactive Simulations)
  */
@@ -15,7 +15,7 @@
 //         "**/*.ts"
 //       ],
 //       "rules": {
-//         "additional-bad-text": [
+//         "phet/additional-bad-text": [
 //           "error",
 //           {
 //             "forbiddenTextObjects": [
