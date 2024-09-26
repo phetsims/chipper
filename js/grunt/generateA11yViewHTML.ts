@@ -12,10 +12,8 @@
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 
-// TODO: Do we really want to use import *? What is a better way, see https://github.com/phetsims/chipper/issues/1451
-// TODO: This will be fixed when we export default, see https://github.com/phetsims/chipper/issues/1451
-import * as ChipperConstants from '../common/ChipperConstants.js';
-import * as ChipperStringUtils from '../common/ChipperStringUtils.js';
+import ChipperConstants from '../common/ChipperConstants.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
 
 module.exports = async function( repo: string ) {
 

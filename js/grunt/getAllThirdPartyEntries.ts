@@ -4,8 +4,8 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import * as grunt from 'grunt';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 const getThirdPartyLibEntries = require( './getThirdPartyLibEntries' );
 
@@ -14,7 +14,7 @@ const getThirdPartyLibEntries = require( './getThirdPartyLibEntries' );
  *
  * NOTE: This pulls entries from some of the chipper globals. Should be done only after the build
  */
-// TODO: type alias for TLicenseEntry, see https://github.com/phetsims/chipper/issues/1451
+// TODO: type alias for TLicenseEntry, see https://github.com/phetsims/chipper/issues/1465
 module.exports = function( repo: string, brand: string, licenseEntries?: Record<string, Record<string, { projectURL: string }>> ) {
   const thirdPartyEntries: Record<string, IntentionalAny> = {
     lib: getThirdPartyLibEntries( repo, brand )

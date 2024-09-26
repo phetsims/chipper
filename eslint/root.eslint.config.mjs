@@ -177,11 +177,10 @@ export default [
     languageOptions: {
 
       // TODO: upgrade version: Maybe 2022? https://github.com/phetsims/chipper/issues/1451
-      ecmaVersion: 8,
+      ecmaVersion: 2022,
       sourceType: 'module',
 
       // Without a parser, .js files are linted without es6 transpilation. Use the same parser that we use for TypeScript.
-      // TODO: always use this parser? https://github.com/phetsims/chipper/issues/1451
       parser: typescriptEslintParser
 
       // TODO: probably don't want node and browser here in the root, see https://github.com/phetsims/chipper/issues/1451
@@ -1154,7 +1153,6 @@ export default [
       'bad-sim-text': 'off'
     },
     // Lint javascript in HTML files too
-    // TODO: Restore html plugin, see https://github.com/phetsims/chipper/issues/1451
     plugins: {
       html: html
     }
@@ -1178,11 +1176,8 @@ export default [
       '**/*.tsx'
     ],
     languageOptions: {
-
       parserOptions: {
-
-        // Look up type information from the closest tsconfig.json
-        projectService: true
+        projectService: true // Look up type information from the closest tsconfig.json
       }
     },
     plugins: {
