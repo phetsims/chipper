@@ -20,6 +20,7 @@ import defaultExportClassShouldRegisterNamespace from './rules/default-export-cl
 import defaultExportMatchFilename from './rules/default-export-match-filename.js';
 import defaultImportMatchFilename from './rules/default-import-match-filename.js';
 import explicitMethodReturnType from './rules/explicit-method-return-type.js';
+import jsxTextElementsContainMatchingClass from './rules/jsx-text-elements-contain-matching-class.js';
 import namespaceMatch from './rules/namespace-match.js';
 import noHtmlConstructors from './rules/no-html-constructors.js';
 import noInstanceofArray from './rules/no-instanceof-array.js';
@@ -39,7 +40,6 @@ import tandemNameShouldMatch from './rules/tandem-name-should-match.js';
 import todoShouldHaveIssue from './rules/todo-should-have-issue.js';
 import uppercaseStaticsShouldBeReadonly from './rules/uppercase-statics-should-be-readonly.js';
 import visibilityAnnotation from './rules/visibility-annotation.js';
-import jscTextElementsContainMatchingClass from './rules/jsx-text-elements-contain-matching-class.js';
 
 // TODO: Review this file, see https://github.com/phetsims/chipper/issues/1451
 /**
@@ -154,7 +154,7 @@ export default [
           'author-annotation': authorAnnotation,
 
           // Used for the website code, do not remove!
-          'jsx-text-elements-contain-matching-class': jscTextElementsContainMatchingClass,
+          'jsx-text-elements-contain-matching-class': jsxTextElementsContainMatchingClass,
 
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           // Type checking rules. Documentation is at the usage site below
@@ -1162,8 +1162,6 @@ export default [
   {
 
     // Not HTML files
-    files: [ '**/*' ],
-    // TODO:
     ignores: [ '**/*.html' ],
     rules: {
 
