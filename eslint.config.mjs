@@ -10,6 +10,7 @@
 // TODO: This file needs help, see https://github.com/phetsims/chipper/issues/1451
 
 import chipperEslintConfig from './eslint/chipper.eslint.config.mjs';
+import { browserGlobals } from './eslint/root.eslint.config.mjs';
 
 // const combine = ( parentArray, files ) => {
 //   const results = parentArray.map( parent => {
@@ -23,6 +24,10 @@ import chipperEslintConfig from './eslint/chipper.eslint.config.mjs';
 // TODO: https://github.com/phetsims/chipper/issues/1451
 export default [
   ...chipperEslintConfig,
+  {
+    files: [ 'js/*' ], // not recursive
+    ...browserGlobals
+  },
   // {
   //   ignores: [ 'js/**/*' ]
   // },

@@ -1750,9 +1750,6 @@ export default [
   }, {
     languageOptions: {
       globals: {
-
-        // ...globals.node,
-        ...globals.browser,
         ...globals.es2018,
 
         //=============================================================================================
@@ -1899,3 +1896,11 @@ export default [
     }
   }
 ];
+
+export const browserGlobals = {
+  languageOptions: {
+    globals: {
+      ...globals.browser
+    }
+  }
+};
