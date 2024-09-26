@@ -109,7 +109,6 @@ async function lintWithWorkers( repos, options ) {
    */
   const worker = async () => {
 
-    // TODO: Why isn't no-constant-condition triggering? https://github.com/phetsims/chipper/issues/1451
     while ( true ) {
 
       // Synchronize access to the queue

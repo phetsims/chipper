@@ -117,7 +117,6 @@ const wgslMinify = str => {
 
   // Replace some predeclared aliases (vec2<f32> => vec2f)
   Object.keys( REPLACEMENT_MAP ).forEach( key => {
-     // TODO https://github.com/phetsims/chipper/issues/1451 - constant condition
     while ( true ) {
       const match = new RegExp( `[^\\w](${key})[^\\w]`, 'g' ).exec( str );
 
