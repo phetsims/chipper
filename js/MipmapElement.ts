@@ -22,7 +22,7 @@ export default class MipmapElement {
     this.height = height;
     this.url = url;
 
-    this.img = new Image(); // eslint-disable-line no-html-constructors
+    this.img = new Image(); // eslint-disable-line phet/no-html-constructors
     this.img.src = this.url; // trigger the loading of the image for its level
 
     this.canvas = document.createElement( 'canvas' );
