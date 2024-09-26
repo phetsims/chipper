@@ -19,6 +19,11 @@ function removeExtension( filename ) {
   return path.basename( filename, path.extname( filename ) );
 }
 
+// TODO: Shouldn't this fix remove the need for some eslint-disable-lines? See https://github.com/phetsims/chipper/issues/1451
+function matchesCamelCase( localName, filenameWithoutExtension ) {
+  return localName === _.camelCase( filenameWithoutExtension );
+}
+
 /**
  * Test if local name matches filename.
  * @param {string} localName
