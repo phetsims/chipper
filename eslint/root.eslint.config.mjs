@@ -39,6 +39,7 @@ import tandemNameShouldMatch from './rules/tandem-name-should-match.js';
 import todoShouldHaveIssue from './rules/todo-should-have-issue.js';
 import uppercaseStaticsShouldBeReadonly from './rules/uppercase-statics-should-be-readonly.js';
 import visibilityAnnotation from './rules/visibility-annotation.js';
+import jscTextElementsContainMatchingClass from './rules/jsx-text-elements-contain-matching-class.js';
 
 // TODO: Review this file, see https://github.com/phetsims/chipper/issues/1451
 /**
@@ -151,6 +152,9 @@ export default [
 
           // Each source file should list at least one author
           'author-annotation': authorAnnotation,
+
+          // Used for the website code, do not remove!
+          'jsx-text-elements-contain-matching-class': jscTextElementsContainMatchingClass,
 
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           // Type checking rules. Documentation is at the usage site below
