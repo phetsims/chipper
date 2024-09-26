@@ -175,7 +175,7 @@ async function lintWithNodeAPI( repo, options ) {
     results = await eslint.lintFiles( patterns );
   }
   catch( error ) {
-    // console.error( `Error linting files in repo ${repo}:`, error );
+    console.error( `Error linting files in repo ${repo}:`, error );
     return 1; // Non-zero exit code to indicate failure
   }
 
