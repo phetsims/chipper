@@ -68,41 +68,5 @@
     "webpack": "~5.76.3",
     "webpack-cli": "~5.0.0",
     "webpack-dev-server": "~4.11.1"
-  },
-  "eslintConfig": {
-    "extends": "../chipper/eslint/phet-library_eslintrc.js",
-    "parser": "@typescript-eslint/parser",
-    "rules": {
-      "bad-chipper-text": "error"
-    },
-    "parserOptions": {
-      "sourceType": "module",
-      "allowImportExportEverywhere": true,
-      "requireConfigFile": false
-    },
-    "overrides": [
-      {
-        "files": [
-          "./js/grunt/**/*",
-          "./js/common/**/*",
-          "./js/phet-io/**/*",
-          "./js/scripts/**/*",
-          "./test/**/*"
-        ],
-        "extends": "./eslint/chipper_eslintrc.js",
-        "rules": {
-          "@typescript-eslint/no-require-imports": "off",
-          "@typescript-eslint/no-var-requires": "off",
-          "@typescript-eslint/no-floating-promises": "off"
-        }
-      },
-      {
-        "files": [
-          "./js/sim-tests/**/*",
-          "./test/**/*"
-        ],
-        "extends": "./eslint/sim_eslintrc.js"
-      }
-    ]
   }
 }

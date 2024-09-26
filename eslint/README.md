@@ -51,8 +51,8 @@ copyright notice. These custom rules live under the `./rules/` directory.
 
 ## Configuring a repo
 
-Each PhET repo specifies which of the above configurations to use. This is usually specified in the `eslintConfig`
-section of the repo's `package.json`. Usually you should use the `extends` keyword to build upon one of the above
+Each PhET repo specifies which of the above configurations to use. This is usually specified in the `eslint.config.mjs`. 
+Usually you should use the `extends` keyword to build upon one of the above
 configurations. Linting rules specific to the repo can be declared or modified here. For example
 see `scenery/package.json`.
 

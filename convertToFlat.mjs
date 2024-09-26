@@ -18,7 +18,7 @@ import loadJSON from '../perennial/js/common/loadJSON.js';
 import getActiveRepos from '../perennial/js/common/getActiveRepos.js';
 
 ///////////////////////
-const DELETE = false;
+const DELETE = true;
 const repoNames = await getActiveRepos();
 // const repoNames = [ 'acid-base-solutions' ];
 
@@ -99,6 +99,7 @@ async function main() {
 
     for ( const repoName of repoNames ) {
       const packagePath = `${rootDir}/${repoName}/package.json`;
+      // eslint-disable-next-line no-unused-vars
       const eslintConfigPath = `${rootDir}/${repoName}/eslint.config.mjs`;
 
       let packageJSON;
@@ -121,7 +122,7 @@ async function main() {
       else {
         const flatConfigContents = flattenPackageEslintConfig( repoName, packageJSON.eslintConfig );
         console.log( flatConfigContents );
-        await fs.writeFile( eslintConfigPath, flatConfigContents );
+        // await fs.writeFile( eslintConfigPath, flatConfigContents );
         console.log( '' );
         if ( DELETE ) {
           delete packageJSON.eslintConfig;

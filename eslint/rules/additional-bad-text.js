@@ -7,23 +7,13 @@
  *  @author Sam Reid (PhET Interactive Simulations)
  */
 // Sample usage:
-// "eslintConfig": {
-//   "extends": "../chipper/eslint/sim_eslintrc.js",
-//     "overrides": [
+// "rules": {
+//   "phet/additional-bad-text": [
+//     "error",
 //     {
-//       "files": [
-//         "**/*.ts"
-//       ],
-//       "rules": {
-//         "phet/additional-bad-text": [
-//           "error",
-//           {
-//             "forbiddenTextObjects": [
-//               "dispose"
-//             ]
-//           }
-//         ]
-//       }
+//       "forbiddenTextObjects": [
+//         "dispose"
+//       ]
 //     }
 //   ]
 // }
