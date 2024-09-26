@@ -11,6 +11,7 @@
  * TODO: should every active-repo have eslint.config.mjs? Or should we have an opt out list somewhere? https://github.com/phetsims/chipper/issues/1451
  * TODO: Review this file: https://github.com/phetsims/chipper/issues/1451
  * TODO: Review the strategy of using new ESLint for cached, and child process for uncached, see https://github.com/phetsims/chipper/issues/1451
+ * TODO: Should we just use new ESLint (node API), but spawn `grunt lint` on subsets of repos, see https://github.com/phetsims/chipper/issues/1451
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
