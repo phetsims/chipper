@@ -40,7 +40,6 @@ import todoShouldHaveIssue from './rules/todo-should-have-issue.js';
 import uppercaseStaticsShouldBeReadonly from './rules/uppercase-statics-should-be-readonly.js';
 import visibilityAnnotation from './rules/visibility-annotation.js';
 
-// import html from 'html';
 // TODO: Review this file, see https://github.com/phetsims/chipper/issues/1451
 /**
  * The base eslint configuration for the PhET projects.
@@ -52,7 +51,11 @@ import visibilityAnnotation from './rules/visibility-annotation.js';
  */
 export default [
   {
-    // files: [ '**/*' ],
+    // Keep this in a separate block from all other keys to make sure this behaves globally.
+    files: [ '{**/*,*}.{js,ts,jsx,tsx,html,mjs,cjs}' ]
+  },
+  {
+    // Keep this in a separate block from all other keys to make sure this behaves globally.
     ignores: [
       '.git/',
       'build/',
@@ -1140,9 +1143,7 @@ export default [
 
     // Only HTML Files
 
-    // TODO: visit more HTML with **, see https://github.com/phetsims/chipper/issues/1451
-    // files: [ '**/*.html' ],
-    files: [ '*.html' ],
+    files: [ '**/*.html' ],
     rules: {
       // DUPLICATION ALERT, this overrides the base rule, just for HTML.
       'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 2, maxEOF: 1 } ],
