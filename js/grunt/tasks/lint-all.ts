@@ -8,9 +8,9 @@
 
 import assert from 'assert';
 import * as grunt from 'grunt';
-import buildLocal from './util/buildLocal';
-import getOption from './util/getOption';
-import getRepo from './util/getRepo';
+import buildLocal from '../../../../perennial-alias/js/grunt/tasks/util/buildLocal';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
 const getBrands = require( './util/getBrands' );
 const lint = require( '../lint' );

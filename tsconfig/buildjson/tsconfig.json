@@ -1,4 +1,5 @@
 {
+  // TODO: rename directory and maybe build.json file? sim-common, and move to perennial-alias https://github.com/phetsims/chipper/issues/1469
   "extends": "../../tsconfig-core.json",
   // Entry points from build.json, see chipper/build.json
   "include": [

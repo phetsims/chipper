@@ -13,9 +13,10 @@
 // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt, or maybe just delete?
   // Dev meeting consensus: DELETE
 
-import getRepo from './util/getRepo';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+
 const webpackDevServer = require( '../webpackDevServer' );
-import getOption from './util/getOption';
 
 const repo = getRepo();
 

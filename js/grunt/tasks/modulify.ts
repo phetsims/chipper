@@ -1,6 +1,6 @@
 // Copyright 2013-2024, University of Colorado Boulder
-import getRepo from './util/getRepo';
 import * as fs from 'fs';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
 // eslint-disable-next-line phet/require-statement-match
 const _modulify = require( '../modulify' );

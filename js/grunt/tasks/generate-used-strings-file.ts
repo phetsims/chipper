@@ -1,7 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import webpackBuild from '../webpackBuild';
-import getRepo from './util/getRepo';
 
 const getPhetLibs = require( '../getPhetLibs' );
 const fs = require( 'fs' );

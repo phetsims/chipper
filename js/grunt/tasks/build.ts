@@ -2,11 +2,11 @@
 
 import assert from 'assert';
 import * as grunt from 'grunt';
+import buildLocal from '../../../../perennial-alias/js/grunt/tasks/util/buildLocal';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import buildRunnable from '../buildRunnable';
-import buildLocal from './util/buildLocal';
-import getOption from './util/getOption';
-import getRepo from './util/getRepo';
 
 /**
  * Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.

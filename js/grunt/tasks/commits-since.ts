@@ -10,12 +10,11 @@
 // SR, AV, JB, MK, JG do not use it. We will check with @pixelzoom to see if it is OK to move to node.
 // MK: But it is nice having a central registry + pattern for "things we run in sim/common repos"
 
-import getRepo from './util/getRepo';
+import assert from 'assert';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
 const commitsSince = require( '../commitsSince' );
-
-import assert from 'assert';
-import getOption from './util/getOption';
 
 const repo = getRepo();
 const dateString = getOption( 'date' );

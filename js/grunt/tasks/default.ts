@@ -6,7 +6,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import getOption from './util/getOption';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 
 ( async () => {
   if ( getOption( 'lint' ) !== false ) {

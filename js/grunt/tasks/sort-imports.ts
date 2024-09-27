@@ -15,9 +15,10 @@
   // MK: All opposed?
   // MK: is working on it.
 
-import getRepo from './util/getRepo';
 import * as grunt from 'grunt';
-import getOption from './util/getOption';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+
 const sortImports = require( '../sortImports' );
 
 const repo = getRepo();

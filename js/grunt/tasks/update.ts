@@ -1,5 +1,6 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
+import * as fs from 'fs';
 /**
  * Updates the normal automatically-generated files for this repository. Includes:
  * * runnables: generate-development-html and modulify
@@ -12,8 +13,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 import * as grunt from 'grunt';
-import getRepo from './util/getRepo';
-import * as fs from 'fs';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import generateREADME from '../generateREADME';
 
 const generateDevelopmentHTML = require( '../generateDevelopmentHTML' );

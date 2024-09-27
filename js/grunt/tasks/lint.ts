@@ -10,9 +10,10 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 import * as grunt from 'grunt';
-import getRepo from './util/getRepo';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+
 const lint = require( '../lint' );
-import getOption from './util/getOption';
 
 const repo = getRepo();
 

@@ -6,8 +6,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import getRepo from './util/getRepo';
 import * as grunt from 'grunt';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
 export const clean = ( async () => {
   const repo = getRepo();

@@ -1,6 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getRepo from './util/getRepo';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
 /**
  * Output the PhET-iO API as JSON to phet-io-sim-specific/api.
@@ -19,7 +20,6 @@ const formatPhetioAPI = require( '../../phet-io/formatPhetioAPI' );
 const getSimList = require( '../../common/getSimList' );
 const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI' );
 const fs = require( 'fs' );
-import getOption from './util/getOption';
 
 const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
 

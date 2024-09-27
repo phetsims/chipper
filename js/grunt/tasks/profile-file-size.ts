@@ -1,6 +1,6 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getRepo from './util/getRepo';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
 /**
  * Profiles the file size of the built JS file for a given repo
