@@ -5,6 +5,7 @@
   "include": [
     // TODO" use a reference just to perennial-alias/tsconfig.json? https://github.com/phetsims/chipper/issues/1469
     "../../../perennial-alias/js/common/**/*",
+    "../../../perennial-alias/js/import-shared/**/*",
     "../../../perennial-alias/js/grunt/tasks/util/**/*",
     "../../../chipper/js/common/**/*",
     "../../../chipper/js/grunt/**/*",
