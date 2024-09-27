@@ -1,7 +1,7 @@
 // Copyright 2024, University of Colorado Boulder
 
 /**
- * Default command which runs lint-all, report-media, clean, and build
+ * Default command which runs lint-all, report-media, clean, and build.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
