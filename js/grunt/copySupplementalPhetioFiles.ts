@@ -98,7 +98,7 @@ const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.m
 
 const STUDIO_BUILT_FILENAME = 'studio.min.js';
 
-// TODO: remove unused parameter buildLocal, see https://github.com/phetsims/chipper/issues/1459
+// TODO: remove unused parameter buildLocal, see https://github.com/phetsims/chipper/issues/1465
 module.exports = async ( repo: string, version: string, simulationDisplayName: string, packageObject: IntentionalAny, buildLocal: object, generateMacroAPIFile = false, noTSC = false ) => {
 
   const repoPhetLibs = getPhetLibs( repo, 'phet-io' );

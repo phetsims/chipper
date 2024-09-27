@@ -50,7 +50,7 @@ const recordTime = async <T>( name: string, asyncCallback: () => Promise<T>, tim
   return result;
 };
 
-// TODO: Relocate, see https://github.com/phetsims/chipper/issues/1459
+// TODO: Relocate, see https://github.com/phetsims/chipper/issues/1465
 export type MinifyOptions = {
   minify?: boolean;
   babelTranspile?: boolean;
@@ -77,7 +77,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
 
   if ( brand === 'phet-io' ) {
 
-    // TODO: Do not assert && assert, see https://github.com/phetsims/chipper/issues/1459
+    // TODO: Do not assert && assert, see https://github.com/phetsims/chipper/issues/1465
     assert && assert( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
   }
 
@@ -114,7 +114,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   const usedModules = webpackResult.usedModules;
   reportUnusedMedia( repo, usedModules );
 
-  // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1459
+  // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1465
   const licenseEntries: Record<string, object> = {};
   ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
     licenseEntries[ mediaType ] = {};
