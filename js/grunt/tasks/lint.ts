@@ -12,12 +12,11 @@
 import * as grunt from 'grunt';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-
-const lint = require( '../lint' );
+import lint from '../lint';
 
 const repo = getRepo();
 
-( async () => {
+export const lintTask = ( async () => {
   const cache = !getOption( 'disable-eslint-cache' );
   const fix = getOption( 'fix' );
   const chipAway = getOption( 'chip-away' );
