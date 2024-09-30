@@ -44,7 +44,7 @@ export default [
   //     '!test/**/*'
   //   ]
   // },
-  ...buildtoolsEslintConfig,
+  buildtoolsEslintConfig,
   {
     rules: {
       'phet/bad-chipper-text': 'error'
