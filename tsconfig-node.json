@@ -3,13 +3,12 @@
   "include": [
     "../chipper/js/common/**/*",
     "../chipper/js/grunt/**/*",
-//    "../chipper/js/phet-io/**/*",
-//    "../chipper/js/scripts/**/*",
-//    "../chipper/js/sim-tests/**/*",
-//    "../chipper/test/**/*",
-//    "../chipper/eslint/**/*",
-//    // Gruntfile and eslint.config.mjs
-//    "../chipper/*"
+    "../chipper/js/phet-io/**/*",
+    "../chipper/js/scripts/**/*",
+    "../chipper/test/**/*",
+    "../chipper/eslint/**/*",
+    // Gruntfile and eslint.config.mjs
+    "../chipper/*"
   ],
   "references": [
     {

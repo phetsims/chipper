@@ -1,6 +1,5 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import * as fs from 'fs';
 /**
  * Updates the normal automatically-generated files for this repository. Includes:
  * * runnables: generate-development-html and modulify
@@ -12,6 +11,8 @@ import * as fs from 'fs';
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+import * as fs from 'fs';
 import * as grunt from 'grunt';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import generateREADME from '../generateREADME';
@@ -70,8 +71,8 @@ else {
           grunt.file.write( 'package.json', JSON.stringify( packageObject, null, 2 ) );
         }
       }
-      catch( e: IntentionalAny ) {
-        if ( !e.message.includes( 'no such file or directory' ) ) {
+      catch( e: unknown ) {
+        if ( e instanceof Error && !e.message.includes( 'no such file or directory' ) ) {
           throw e;
         }
       }

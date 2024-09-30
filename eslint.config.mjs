@@ -25,7 +25,10 @@ import { browserGlobals } from './eslint/root.eslint.config.mjs';
 export default [
   ...chipperEslintConfig,
   {
-    files: [ 'js/*' ], // not recursive
+    files: [
+      'js/*', // not recursive
+      'js/sim-tests/**/*'
+    ],
     ...browserGlobals
   },
   // {

@@ -1,0 +1,9 @@
+{
+  "files": [
+    "*",
+    "sim-tests/**/*"
+  ],
+  "extends": [
+    "../tsconfig-browser.json"
+  ]
+}
