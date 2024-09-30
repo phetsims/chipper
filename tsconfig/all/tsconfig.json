@@ -1,16 +1,18 @@
+/**
+ * Explicitly list all entry points that we want to type check.
+ * Imported images/mipmaps/sounds are still type checked.
+ * This structure was determined in https://github.com/phetsims/chipper/issues/1245
+ * TODO: can we auto generate this? https://github.com/phetsims/chipper/issues/1469
+ * TODO: from MK experience, it seems we need to train people that when they change references, they need to run tsc --clean. Should we update ct or ctq for this? https://github.com/phetsims/chipper/issues/1469
+ * TODO: Hey SR, why would we ever want files specifically added here. Shouldn't they just be their own special project in their own repo? The will improve modularity in general, https://github.com/phetsims/chipper/issues/1469
+ * @author Michael Kauzmann (PhET Interactive Simulations)
+ * @author Sam Reid (PhET Interactive Simulations)
+ */
 {
-  "extends": "../../tsconfig-core.json",
-  // Explicitly list all entry points that we want to type check.
-  // Imported images/mipmaps/sounds are still type checked.
-  // This structure was determined in https://github.com/phetsims/chipper/issues/1245
-
   "references": [
     {
+      // TODO: Isn't this redundant to something below? https://github.com/phetsims/chipper/issues/1469
       "path": "../buildjson"
-    },
-    {
-      // TODO https://github.com/phetsims/chipper/issues/1463
-      "path": "../buildtools"
     },
     {
       "path": "../../../acid-base-solutions"
@@ -396,12 +398,12 @@
     {
       "path": "../../../pendulum-lab"
     },
-    //    {
-    //      "path": "../../../perennial"
-    //    },
-    //    {
-    //      "path": "../../../perennial-alias"
-    //    },
+    {
+      "path": "../../../perennial"
+    },
+    {
+      "path": "../../../perennial-alias"
+    },
     {
       "path": "../../../ph-scale"
     },
@@ -455,6 +457,9 @@
     },
     {
       "path": "../../../quadrilateral"
+    },
+    {
+      "path": "../../../quake"
     },
     {
       "path": "../../../quantum-measurement"
@@ -564,12 +569,5 @@
     {
       "path": "../../../xray-diffraction"
     }
-  ],
-  "include": [
-    "../../../perennial/js/scripts/collate-lint.ts",
-    "../../../perennial-alias/js/scripts/collate-lint.ts",
-    "../../../perennial-alias/js/common/ChipperVersion.d.ts",
-    "../../../perennial-alias/js/common/ReleaseBranch.d.ts",
-    "../../../quake/cordova-plugin-native-vibration/types/index.d.ts"
   ]
 }
