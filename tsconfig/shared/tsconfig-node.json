@@ -1,5 +1,5 @@
 {
-  "extends": "../chipper/tsconfig-core.json",
+  "extends": "./tsconfig-super-core.json",
   "compilerOptions": {
     "module": "NodeNext",
     "esModuleInterop": true,
