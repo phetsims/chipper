@@ -30,7 +30,9 @@ function matchesCamelCase( localName, filenameWithoutExtension ) {
  * @returns {boolean}
  */
 function isCompatible( localName, filename ) {
-  return localName === removeExtension( filename ) || matchesCamelCase( localName, removeExtension( filename ) );
+  return localName === removeExtension( filename ) ||
+         matchesCamelCase( localName, removeExtension( filename ) ) ||
+         localName === '_'; // lodash is allowed to be named differently
 }
 
 /**
