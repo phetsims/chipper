@@ -6,6 +6,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 {
+  "extends": "../chipper/tsconfig/shared/tsconfig-super-core.json",
   "files": [
     "phet-types.d.ts",
     "phet-types-module.d.ts",
