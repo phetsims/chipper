@@ -10,7 +10,8 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig-node.json"
+      // TODO: related path is cleaner, but MK cannot support buildtools extending ./tsconfig-node. https://github.com/phetsims/chipper/issues/1463
+      "path": "./tsconfig/buildtools"
     },
     {
       "path": "./tsconfig-browser.json"

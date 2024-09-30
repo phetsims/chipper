@@ -3,7 +3,5 @@
     "*",
     "sim-tests/**/*"
   ],
-  "extends": [
-    "../tsconfig-browser.json"
-  ]
+  "extends": "../tsconfig-browser.json"
 }
