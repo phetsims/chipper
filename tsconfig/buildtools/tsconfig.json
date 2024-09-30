@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig-node.json",
+  "extends": "../shared/tsconfig-node.json",
   // Entry points for checked out resources that may not be on main, but need to version together. These purposefully
   // live in chipper
   "include": [
