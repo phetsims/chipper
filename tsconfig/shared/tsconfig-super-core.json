@@ -1,5 +1,9 @@
 /**
  * Shared defaults for tsconfig files.
+ *
+ * PLEASE: DO NOT add "files" or "include" or "exclude" in this file without serious investigation. It will likely
+ * break defaults all the way down the hierarchy.
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 {
