@@ -9,6 +9,7 @@
       "path": "../buildjson"
     },
     {
+      // TODO https://github.com/phetsims/chipper/issues/1463
       "path": "../buildtools"
     },
     {
