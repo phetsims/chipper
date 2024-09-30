@@ -9,6 +9,7 @@
 
 // TODO: This file needs help, see https://github.com/phetsims/chipper/issues/1451
 
+import buildtoolsEslintConfig from './eslint/buildtools.eslint.config.mjs';
 import chipperEslintConfig from './eslint/chipper.eslint.config.mjs';
 import { browserGlobals } from './eslint/root.eslint.config.mjs';
 
@@ -43,16 +44,10 @@ export default [
   //     '!test/**/*'
   //   ]
   // },
+  ...buildtoolsEslintConfig,
   {
     rules: {
-
-      // TODO: we only want to turn these off in node code, still run them in the browser, see https://github.com/phetsims/chipper/issues/1451
-      '@typescript-eslint/no-require-imports': 'off',
-      '@typescript-eslint/no-var-requires': 'off',
-      '@typescript-eslint/no-floating-promises': 'off',
-      // 'phet/bad-text': 'off',
-      'phet/bad-chipper-text': 'error',
-      'phet/bad-sim-text': 'off'
+      'phet/bad-chipper-text': 'error'
     }
   }
   // {

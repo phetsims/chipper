@@ -13,7 +13,7 @@
  */
 
 // Can't externally reference
-type IntentionalAny = any; // eslint-disable-line @typescript-eslint/no-explicit-any
+type IntentionalAny = any;
 
 declare var assert: undefined | ( ( x: IntentionalAny, ...messages?: IntentionalAny[] ) => void );
 declare var assertSlow: undefined | ( ( x: IntentionalAny, ...messages?: IntentionalAny[] ) => void );
