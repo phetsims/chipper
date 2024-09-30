@@ -1,7 +1,7 @@
 {
   "extends": "../chipper/tsconfig/shared/tsconfig-node.json",
-  // Entry points for checked out resources that may not be on main, but need to version together. These purposefully
-  // live in chipper
+  // Entry points for checked out resources that may not be on main, but need to version together. These must be usable
+  // by chipper
   "include": [
     // TODO" use a reference just to perennial-alias/tsconfig.json? https://github.com/phetsims/chipper/issues/1469
     "../perennial-alias/js/common/**/*",
