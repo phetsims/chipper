@@ -1832,9 +1832,6 @@ export default [
         React: 'readonly',
         ReactDOM: 'readonly',
 
-        // Deno
-        Deno: 'readonly',
-
         BigInt: 'readonly',
 
         FlatQueue: 'readonly',
