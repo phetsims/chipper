@@ -23,11 +23,19 @@ const activeRepos = getActiveRepos();
 const runnable = process.platform.startsWith( 'win' ) ? 'swc.cmd' : 'swc';
 const runnablePath = path.join( `chipper/node_modules/.bin/${runnable}` );
 
+// Directories in a sim repo that may contain things for transpilation
+// This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
 const getSubdirectories = ( repo: string ) => {
-  const list = [ 'js', 'mipmaps', 'sounds', 'images' ];
-  repo === 'sherpa' && list.push( 'lib' );
-  repo === 'brand' && list.push( 'phet', 'phet-io', 'adapted-from-phet' );
-  return list.map( subdir => `${repo}/${subdir}/` );
+  const subdirs = [ 'js', 'images', 'mipmaps', 'sounds' ];
+
+  repo === 'phet-io-wrappers' && subdirs.push( 'common' );
+  repo === 'phet-io-sim-specific' && subdirs.push( 'repos' );
+  repo === 'my-solar-system' && subdirs.push( 'shaders' );
+  repo === 'alpenglow' && subdirs.push( 'wgsl' );
+  repo === 'sherpa' && subdirs.push( 'lib' );
+  repo === 'brand' && subdirs.push( 'phet', 'phet-io', 'adapted-from-phet' );
+
+  return subdirs.map( subdir => `${repo}/${subdir}/` );
 };
 
 function spawnCommand( command: string, args: string[] ): Promise<void> {
