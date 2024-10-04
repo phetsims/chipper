@@ -74,15 +74,15 @@ type WebpackBuildOptions = {
  *
  * @returns The combined JS output from the process
  */
-const webpackBuild = function webpackBuild( repo: string, brand: string, options?: WebpackBuildOptions ): Promise<{ js: string; usedModules: string[] }> {
+const webpackBuild = function webpackBuild( repo: string, brand: string, providedOptions?: WebpackBuildOptions ): Promise<{ js: string; usedModules: string[] }> {
 
   return new Promise( ( resolve, reject ) => {
 
-    options = _.merge( {
+    const options = _.merge( {
       outputDir: repo
-    }, options );
+    }, providedOptions );
 
-    const outputDir = path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}`, options.outputDir! );
+    const outputDir = path.resolve( __dirname, `../../${ChipperConstants.BUILD_DIR}`, options.outputDir );
     const outputFileName = `${repo}.js`;
     const outputPath = path.resolve( outputDir, outputFileName );
 

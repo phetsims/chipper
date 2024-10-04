@@ -15,5 +15,4 @@ export default {
     '@typescript-eslint/no-floating-promises': 'off',
     'phet/bad-sim-text': 'off'
   }
-}
-;
+};
