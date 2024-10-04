@@ -27,7 +27,6 @@
     "../../../joist/js/**/*",
     "../../../joist/sounds/**/*",
     "../../../kite/js/**/*",
-    "../../../perennial-alias/js/scripts/collate-lint.ts",
     "../../../phet-core/js/**/*",
     // It's OK to list private repo phet-io files here, even though open source clients cannot check them out.
     // They are only checked if they are present at runtime
@@ -60,6 +59,7 @@
     "../../../utterance-queue/js/**/*"
   ],
   "exclude": [
-    "**/Gruntfile.js"
+    "../../../*/Gruntfile.js",
+    "../../../*/js/grunt/**/*"
   ]
 }

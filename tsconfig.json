@@ -1,12 +1,12 @@
+/**
+ * NOTE we do not extend tsconfig-super-core.json. This is a composite just for referencing the individual typescript
+ * sub-projects within this repo.
+ * By default, TypeScript includes all files below the tsconfig.json location. However, we must override that to
+ * blank it out, so that we can let each browser/node decide what they want to include.
+ * @author Michael Kauzmann (PhET Interactive Simulations)
+ * @author Sam Reid (PhET Interactive Simulations)
+ */
 {
-  /**
-   * NOTE we do not extend tsconfig-super-core.json. This is a composite just for referencing the individual typescript
-   * sub-projects within this repo.
-   * By default, TypeScript includes all files below the tsconfig.json location. However, we must override that to
-   * blank it out, so that we can let each browser/node decide what they want to include.
-   * @author Michael Kauzmann (PhET Interactive Simulations)
-   * @author Sam Reid (PhET Interactive Simulations)
-   */
   "files": [],
   "references": [
     {
