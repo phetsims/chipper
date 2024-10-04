@@ -29,6 +29,8 @@ const ESLINT_COMMAND = path.join( '../chipper/node_modules/.bin/eslint' );
 // eslint-disable-next-line phet/require-statement-match
 const { ESLint } = require( 'eslint' );
 
+const DO_NOT_LINT = [ 'babel' ];
+
 const getCacheLocation = repo => path.resolve( `../chipper/eslint/cache/${repo}.eslintcache` );
 
 function lintWithChildProcess( repo, options ) {
@@ -99,7 +101,7 @@ function lintWithChildProcess( repo, options ) {
  * Lints repositories using a worker pool approach.
  */
 async function lintWithWorkers( repos, options ) {
-  const reposQueue = [ ...repos ];
+  const reposQueue = [ ...repos.filter( repo => !DO_NOT_LINT.includes( repo ) ) ];
   const exitCodes = [];
 
   options.showProgressBar && showCommandLineProgress( 0, false );
@@ -208,6 +210,7 @@ async function lintWithNodeAPI( repo, options ) {
   return errorCount === 0 ? 0 : 1; // Return 0 if no errors, 1 if there are errors
 }
 
+// TODO: Console log for all these repos? https://github.com/phetsims/chipper/issues/1451
 const clearCaches = originalRepos => {
   originalRepos.forEach( repo => {
     const cacheFile = getCacheLocation( repo );
