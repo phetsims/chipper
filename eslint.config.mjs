@@ -22,7 +22,6 @@ import { browserGlobals } from './eslint/root.eslint.config.mjs';
 //   } );
 // };
 
-// TODO: https://github.com/phetsims/chipper/issues/1451
 export default [
   ...chipperEslintConfig,
   {
