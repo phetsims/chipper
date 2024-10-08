@@ -11,7 +11,7 @@
 
 import buildtoolsEslintConfig from './eslint/buildtools.eslint.config.mjs';
 import chipperEslintConfig from './eslint/chipper.eslint.config.mjs';
-import { browserGlobals } from './eslint/root.eslint.config.mjs';
+import { browserGlobals } from './eslint/browser.eslint.config.mjs';
 
 // const combine = ( parentArray, files ) => {
 //   const results = parentArray.map( parent => {

@@ -1755,11 +1755,3 @@ export default [
   },
   phetSimBrowserGlobalsEslintConfig
 ];
-
-export const browserGlobals = {
-  languageOptions: {
-    globals: {
-      ...globals.browser
-    }
-  }
-};
