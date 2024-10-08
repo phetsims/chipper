@@ -43,6 +43,7 @@ function lintWithChildProcess( repo, options ) {
 
   // add --flag unstable_config_lookup_from_file so that eslint will look for .eslintrc.js files relative to the file being linted
   // This will be the default behavior in eslint 10.0
+  // TODO: Now that eslint.config.mjs resolution is based on the file being linted, can we bring back multiple repos being linted in one unit? See https://github.com/phetsims/chipper/issues/1451
   args.push( '--flag', 'unstable_config_lookup_from_file' );
 
   // Add the '--fix' option if fix is true
