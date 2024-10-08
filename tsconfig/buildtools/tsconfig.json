@@ -1,5 +1,8 @@
 {
   // Chipper and its node dependencies is what we call "buildtools"
+  "compilerOptions": {
+    "composite": true
+  },
   "references": [
     {
       "path": "../../tsconfig-node.json"
