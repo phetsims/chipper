@@ -234,6 +234,7 @@ const clearCaches = originalRepos => {
         throw err;
       }
     }
+    // TODO: run tsc -b --clean here since we are breaking the cache? https://github.com/phetsims/chipper/issues/1451
   } );
 };
 

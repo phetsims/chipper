@@ -7,6 +7,7 @@ import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptEslintParser from '@typescript-eslint/parser';
 import html from 'eslint-plugin-html';
 import globals from 'globals';
+import phetSimBrowserGlobalsEslintConfig from './phetSimBrowserGlobals.eslint.config.mjs';
 
 import additionalBadText from './rules/additional-bad-text.js';
 import authorAnnotation from './rules/author-annotation.js';
@@ -166,9 +167,7 @@ export default [
           'phet-io-object-options-should-not-pick-from-phet-io-object': phetIoObjectOptionsShouldNotPickFromPhetIoObject
         }
       }
-    }
-  },
-  {
+    },
 
     linterOptions: {
       reportUnusedDisableDirectives: true
@@ -178,6 +177,8 @@ export default [
 
       // TODO: upgrade version: Maybe 2022? https://github.com/phetsims/chipper/issues/1451
       ecmaVersion: 2022,
+
+      // TODO: Does all code use sourceType module?, see https://github.com/phetsims/chipper/issues/1451
       sourceType: 'module',
 
       // Without a parser, .js files are linted without es6 transpilation. Use the same parser that we use for TypeScript.
@@ -1748,148 +1749,11 @@ export default [
   }, {
     languageOptions: {
       globals: {
-        ...globals.es2018,
-
-        //=============================================================================================
-        // globals that should never be accessed
-        //=============================================================================================
-
-        // Using window.event is most likely a bug, instead the event should be passed through via a parameter,
-        // discovered in https://github.com/phetsims/scenery/issues/1053
-        event: 'off',
-
-        //=============================================================================================
-        // read-only globals
-        //=============================================================================================
-
-        phet: 'readonly',
-
-        // allow assertions
-        assert: 'readonly',
-
-        // allow slow assertions
-        assertSlow: 'readonly',
-
-        // decimal.js library
-        Decimal: 'readonly',
-
-        phetio: 'readonly',
-
-        // underscore, lodash
-        _: 'readonly',
-
-        // jQuery
-        $: 'readonly',
-
-        // jQuery for type documentation
-        JQuery: 'readonly',
-
-        // JSON diffs
-        jsondiffpatch: 'readonly',
-
-        document: 'readonly',
-
-        // for linting Node.js code
-        global: 'readonly',
-
-        // QUnit
-        QUnit: 'readonly',
-
-        // as used in Gruntfile.js
-        module: 'readonly',
-
-        // Misc
-        QueryStringMachine: 'readonly',
-        QueryStringMachineSchema: 'readonly',
-        QSMParsedParameters: 'readonly',
-
-        // Prism is a syntax highlighter that renders code in the browser. It is used for PhET-iO wrappers and for a11y.
-        Prism: 'readonly',
-
-        // sole/tween.js
-        TWEEN: 'readonly',
-
-        window: 'readonly',
-
-        handlePlaybackEvent: 'readonly',
-
-        paper: 'readonly',
-
-        pako: 'readonly',
-
-        // define globals for missing Web Audio types, see https://github.com/phetsims/chipper/issues/1214
-        OscillatorType: 'readonly',
-        AudioContextState: 'readonly',
-
-        // type for QUnit assert
-        Assert: 'readonly',
-
-        fetch: 'readonly',
-
-        // React
-        React: 'readonly',
-        ReactDOM: 'readonly',
-
-        BigInt: 'readonly',
-
-        FlatQueue: 'readonly',
-
-        // WebGPU
-        GPUShaderModule: 'readonly',
-        GPUBindGroupLayout: 'readonly',
-        GPUDevice: 'readonly',
-        GPUShaderStage: 'readonly',
-        GPUBindGroupLayoutEntry: 'readonly',
-        GPUComputePipeline: 'readonly',
-        GPUBuffer: 'readonly',
-        GPUTextureView: 'readonly',
-        GPUCommandEncoder: 'readonly',
-        GPUBindGroupEntry: 'readonly',
-        GPUBufferUsage: 'readonly',
-        GPUTextureUsage: 'readonly',
-        GPUTexture: 'readonly',
-        GPUCanvasContext: 'readonly',
-        GPUTextureFormat: 'readonly',
-        GPUImageCopyExternalImageSource: 'readonly',
-        GPUPipelineLayout: 'readonly',
-        GPURenderPipeline: 'readonly',
-        GPUBindGroup: 'readonly',
-        GPUMapMode: 'readonly',
-        GPUFeatureName: 'readonly',
-        GPUQuerySet: 'readonly',
-        GPUComputePassDescriptor: 'readonly',
-        GPUComputePassTimestampWrites: 'readonly',
-        GPUComputePipelineDescriptor: 'readonly',
-        GPUComputePassEncoder: 'readonly',
-        GPUTextureViewDimension: 'readonly',
-        GPUStorageTextureAccess: 'readonly',
-        GPUBufferBindingType: 'readonly',
-        GPUTextureSampleType: 'readonly',
-        GPUBufferBinding: 'readonly',
-        GPURequestAdapterOptions: 'readonly',
-        GPUDeviceDescriptor: 'readonly',
-        GPUBufferDescriptor: 'readonly',
-        GPUQueue: 'readonly',
-        GPUQuerySetDescriptor: 'readonly',
-        GPUAdapter: 'readonly',
-        GPUMapModeFlags: 'readonly',
-        GPUPipelineLayoutDescriptor: 'readonly',
-        GPUCommandEncoderDescriptor: 'readonly',
-        GPUCommandBuffer: 'readonly',
-        GPUBindGroupDescriptor: 'readonly',
-        GPUBindGroupLayoutDescriptor: 'readonly',
-        GPUShaderModuleDescriptor: 'readonly',
-        GPURenderPassDescriptor: 'readonly',
-        GPURenderPassEncoder: 'readonly',
-        GPUCommandBufferDescriptor: 'readonly',
-        GPUImageCopyBuffer: 'readonly',
-        GPUImageCopyTexture: 'readonly',
-        GPUExtent3DStrict: 'readonly',
-        GPUSampler: 'readonly',
-        GPUExternalTexture: 'readonly'
+        ...globals.es2018
       }
     }
-  }
+  },
+  phetSimBrowserGlobalsEslintConfig
 ];
 
 export const browserGlobals = {
