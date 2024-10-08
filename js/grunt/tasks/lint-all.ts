@@ -12,7 +12,7 @@ import buildLocal from '../../../../perennial-alias/js/grunt/tasks/util/buildLoc
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
-const getBrands = require( './util/getBrands' );
+const getBrands = require( '../../../../perennial-alias/js/grunt/tasks/util/getBrands' );
 const lint = require( '../lint' );
 
 const repo = getRepo();

@@ -42,7 +42,7 @@ const fs = require( 'fs' );
 const getPhetLibs = require( '../getPhetLibs' );
 const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog' );
 const Transpiler = require( '../../common/Transpiler' );
-const getBrands = require( './util/getBrands' );
+const getBrands = require( '../../../../perennial-alias/js/grunt/tasks/util/getBrands' );
 
 const repo = getRepo();
 
