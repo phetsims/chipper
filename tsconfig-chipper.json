@@ -3,7 +3,6 @@
   // Entry points for checked out resources that may not be on main, but need to version together. These must be usable
   // by chipper
   "include": [
-    // TODO should we just use a reference just to perennial-alias/tsconfig.json? https://github.com/phetsims/chipper/issues/1469
     "js/common/**/*",
     "js/import-shared/**/*",
     "js/grunt/tasks/util/**/*",
