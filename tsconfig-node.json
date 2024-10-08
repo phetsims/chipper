@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig/shared/tsconfig-node.json",
+  "include": [
+    "js/common/**/*",
+    "js/grunt/**/*",
+    "js/phet-io/**/*",
+    "js/scripts/**/*",
+    "test/**/*",
+    "eslint/**/*",
+    // Gruntfile and eslint.config.mjs
+    "*"
+  ],
+  "references": [
+    {
+      "path": "../perennial-alias/tsconfig-chipper.json"
+    }
+  ]
+}

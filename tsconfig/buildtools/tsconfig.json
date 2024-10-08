@@ -1,24 +1,8 @@
-
-// TODO: Ideally, the contents here would be an extends, but typescript really doesn't want me to do that. https://github.com/phetsims/chipper/issues/1463
-//{
-//  // Chipper and its node dependencies is what we call "buildtools"
-//  "extends": "../../../chipper/tsconfig-node.json"
-//}
 {
-  "extends": "../../tsconfig/shared/tsconfig-node.json",
-  "include": [
-    "../../js/common/**/*",
-    "../../js/grunt/**/*",
-    "../../js/phet-io/**/*",
-    "../../js/scripts/**/*",
-    "../../test/**/*",
-    "../../eslint/**/*",
-    // Gruntfile and eslint.config.mjs
-    "../../*"
-  ],
+  // Chipper and its node dependencies is what we call "buildtools"
   "references": [
     {
-      "path": "../../../perennial-alias/tsconfig-chipper.json"
+      "path": "../../tsconfig-node.json"
     }
   ]
 }

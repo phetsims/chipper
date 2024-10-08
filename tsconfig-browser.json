@@ -1,9 +1,9 @@
 {
   "extends": "../chipper/tsconfig-core.json",
   "include": [
+    "../chipper/js/sim-tests/**/*",
     // top level only
-    "../chipper/js/*",
-    "../chipper/js/sim-tests/**/*"
+    "../chipper/js/*"
   ],
   "references": [
     {

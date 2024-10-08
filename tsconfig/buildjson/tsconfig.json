@@ -26,7 +26,6 @@
     "../../../joist/images/**/*",
     "../../../joist/js/**/*",
     "../../../joist/sounds/**/*",
-    // TODO: kite/js/grunt/ is node code. Oh boy, let's talk about this https://github.com/phetsims/chipper/issues/1469
     "../../../kite/js/**/*",
     "../../../phet-core/js/**/*",
     // It's OK to list private repo phet-io files here, even though open source clients cannot check them out.
