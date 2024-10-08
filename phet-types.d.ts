@@ -13,6 +13,7 @@
  */
 
 // Can't externally reference
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type IntentionalAny = any;
 
 declare var assert: undefined | ( ( x: IntentionalAny, ...messages?: IntentionalAny[] ) => void );
