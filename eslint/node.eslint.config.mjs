@@ -15,11 +15,8 @@ export default [
         ...globals.node,
 
         // Deno
+        // TODO: define only where needed https://github.com/phetsims/chipper/issues/1451
         Deno: 'readonly'
       }
-    },
-
-    rules: {
-      'bad-sim-text': 'off'
     }
   } ];
