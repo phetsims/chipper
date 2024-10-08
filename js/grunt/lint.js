@@ -257,7 +257,7 @@ const lint = async ( originalRepos, options ) => {
     fix: false,
 
     // Prints responsible dev info for any lint errors for easier GitHub issue creation.
-    chipAway: false, // TODO: not easy to support since flat config rewrite, see https://github.com/phetsims/chipper/issues/1451
+    chipAway: false, // TODO: not easy to support since flat config rewrite (since we don't get json output, just console logging), see https://github.com/phetsims/chipper/issues/1451
 
     // Show a progress bar while running, based on the current repo index in the provided list parameter
     showProgressBar: true

@@ -186,8 +186,6 @@ export default [
       // TODO: probably don't want node and browser here in the root, see https://github.com/phetsims/chipper/issues/1451
     },
 
-    // reportUnusedDisableDirectives: true,
-
     // The rules are organized like they are in the list at https://eslint.org/docs/rules/
     // First by type, then alphabetically within type
     // Explicitly list all rules so it is easy to see what's here and to keep organized
