@@ -372,7 +372,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   if ( _.includes( locales, ChipperConstants.FALLBACK_LOCALE ) && brand === 'phet' ) {
     const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 
-    // TODO: maybe we need to commit a change to DefinitelyTyped to support debug logging https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/grunt/index.d.ts#L725, https://github.com/phetsims/chipper/issues/1464
+    // TODO: maybe we need to commit a change to DefinitelyTyped to support debug logging https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/grunt/index.d.ts#L725, https://github.com/phetsims/chipper/issues/1465
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     let iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( `${englishTitle} iframe test` ) );
