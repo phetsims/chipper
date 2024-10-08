@@ -41,6 +41,10 @@ function lintWithChildProcess( repo, options ) {
 
   args.push( '--no-error-on-unmatched-pattern' );
 
+  // add --flag unstable_config_lookup_from_file so that eslint will look for .eslintrc.js files relative to the file being linted
+  // This will be the default behavior in eslint 10.0
+  args.push( '--flag', 'unstable_config_lookup_from_file' );
+
   // Add the '--fix' option if fix is true
   options.fix && args.push( '--fix' );
 
