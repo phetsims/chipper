@@ -79,6 +79,6 @@
     "skipLibCheck": true,                           /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true,        /* Disallow inconsistently-cased references to the same file. */
     // TODO: should this only be on for node code? https://github.com/phetsims/chipper/issues/1463
-    "allowImportingTsExtensions": true              /* Allow importing .ts files without specifying the extension. */
+    "allowImportingTsExtensions": false              /* Allow importing .ts files without specifying the extension. */
   }
 }
