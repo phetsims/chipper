@@ -3,7 +3,6 @@
   "compilerOptions": {
     "module": "NodeNext",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "moduleResolution": "NodeNext",
     "typeRoots": [
       // Hard coded for chipper so that this file can be used by other repos without needing package dependencies duplicated
