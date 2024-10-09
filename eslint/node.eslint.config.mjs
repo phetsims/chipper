@@ -7,11 +7,7 @@ import rootEslintConfig from './root.eslint.config.mjs';
 export const nodeLanguageOptionsAndRules = {
   languageOptions: {
     globals: {
-      ...globals.node,
-
-      // Deno
-      // TODO: define only where needed https://github.com/phetsims/chipper/issues/1451
-      Deno: 'readonly'
+      ...globals.node
     }
   },
   rules: {

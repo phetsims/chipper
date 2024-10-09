@@ -16,8 +16,5 @@
       // no DOM
     ],
     "allowImportingTsExtensions": true
-  },
-  "files": [
-    "../../../perennial-alias/js/phet-node-types.d.ts"
-  ]
+  }
 }
