@@ -8,6 +8,7 @@
  */
 {
   // TODO: This list is quite old, can we look through a list of current options to see what we should add for node vs browser vs both? https://github.com/phetsims/chipper/issues/1463
+  // TODO: Regenerate tsc --init to get a more complete and better structuring for these options, see https://github.com/phetsims/chipper/issues/1463
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
