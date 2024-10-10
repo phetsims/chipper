@@ -76,6 +76,7 @@ export default [
   },
   {
     files: [ 'Gruntfile.js' ],
+    // TODO: reuse same thing as node.eslint.config? https://github.com/phetsims/chipper/issues/1451
     languageOptions: {
       globals: {
         ...globals.node
@@ -1138,7 +1139,6 @@ export default [
       ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     }
-
   },
 
   {
