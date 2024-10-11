@@ -184,8 +184,6 @@ export default [
 
       // Without a parser, .js files are linted without es6 transpilation. Use the same parser that we use for TypeScript.
       parser: typescriptEslintParser
-
-      // TODO: probably don't want node and browser here in the root, see https://github.com/phetsims/chipper/issues/1451
     },
 
     // The rules are organized like they are in the list at https://eslint.org/docs/rules/
