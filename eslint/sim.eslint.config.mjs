@@ -1,13 +1,15 @@
 // Copyright 2018, University of Colorado Boulder
 // @author Michael Kauzmann
 
-import browserEslintConfig from './browser.eslint.config.mjs';
+import { getBrowserConfiguration } from './browser.eslint.config.mjs';
+import rootEslintConfig from './root.eslint.config.mjs';
 
 /**
  * Eslint config applied only to sims.
  */
 export default [
-  ...browserEslintConfig,
+  ...rootEslintConfig,
+  ...getBrowserConfiguration(),
   {
     rules: {
       'phet/bad-sim-text': 'error'

@@ -1,6 +1,7 @@
 // Copyright 2023, University of Colorado Boulder
 // @author Michael Kauzmann
 
+import rootEslintConfig from './root.eslint.config.mjs';
 import simEslintConfig from './sim.eslint.config.mjs';
 
 /**
@@ -8,7 +9,9 @@ import simEslintConfig from './sim.eslint.config.mjs';
  * of phetsims. For example, a SUN/Checkbox shouldn't require a hard dependency on the phetsim environment (for example
  * joist's nav bar or preferences) to correctly run.
  */
+
 export default [
+  ...rootEslintConfig,
   ...simEslintConfig,
   {
     rules: {
