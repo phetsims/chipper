@@ -222,11 +222,11 @@ const clearCaches = originalRepos => {
 
     try {
       fs.unlinkSync( cacheFile );
-      console.log( `Cache file '${cacheFile}' deleted` );
     }
     catch( err ) {
       if ( err.code === 'ENOENT' ) {
-        console.log( 'Cache file does not exist, no need to delete' );
+
+        // Do nothing if the file does not exist
       }
       else {
 
