@@ -7,11 +7,11 @@
  * It is assumed that linting occurs from one level deep in any given repo. This has ramifications for how we write
  * eslint config files across the codebase.
  *
- * TODO: This file was updated from https://github.com/phetsims/chipper/issues/1451, we should decide what to support
- * TODO: should every active-repo have eslint.config.mjs? Or should we have an opt out list somewhere? https://github.com/phetsims/chipper/issues/1451
- * TODO: Review this file: https://github.com/phetsims/chipper/issues/1451
- * TODO: Review the strategy of using new ESLint for cached, and child process for uncached, see https://github.com/phetsims/chipper/issues/1451
- * TODO: Should we just use new ESLint (node API), but spawn `grunt lint` on subsets of repos, see https://github.com/phetsims/chipper/issues/1451
+ * TODO: This file was updated from https://github.com/phetsims/chipper/issues/1484, we should decide what to support
+ * TODO: should every active-repo have eslint.config.mjs? Or should we have an opt out list somewhere? https://github.com/phetsims/chipper/issues/1484
+ * TODO: Review this file: https://github.com/phetsims/chipper/issues/1484
+ * TODO: Review the strategy of using new ESLint for cached, and child process for uncached, see https://github.com/phetsims/chipper/issues/1484
+ * TODO: Should we just use new ESLint (node API), but spawn `grunt lint` on subsets of repos, see https://github.com/phetsims/chipper/issues/1484
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
@@ -43,7 +43,7 @@ function lintWithChildProcess( repo, options ) {
 
   // add --flag unstable_config_lookup_from_file so that eslint will look for .eslintrc.js files relative to the file being linted
   // This will be the default behavior in eslint 10.0
-  // TODO: Now that eslint.config.mjs resolution is based on the file being linted, can we bring back multiple repos being linted in one unit? See https://github.com/phetsims/chipper/issues/1451
+  // TODO: Now that eslint.config.mjs resolution is based on the file being linted, can we bring back multiple repos being linted in one unit? See https://github.com/phetsims/chipper/issues/1484
   args.push( '--flag', 'unstable_config_lookup_from_file' );
 
   // Add the '--fix' option if fix is true
@@ -215,7 +215,7 @@ async function lintWithNodeAPI( repo, options ) {
   return errorCount === 0 ? 0 : 1; // Return 0 if no errors, 1 if there are errors
 }
 
-// TODO: Console log for all these repos? https://github.com/phetsims/chipper/issues/1451
+// TODO: Console log for all these repos? https://github.com/phetsims/chipper/issues/1484
 const clearCaches = originalRepos => {
   originalRepos.forEach( repo => {
     const cacheFile = getCacheLocation( repo );
@@ -234,7 +234,7 @@ const clearCaches = originalRepos => {
         throw err;
       }
     }
-    // TODO: run tsc -b --clean here since we are breaking the cache? https://github.com/phetsims/chipper/issues/1451
+    // TODO: run tsc -b --clean here since we are breaking the cache? https://github.com/phetsims/chipper/issues/1484
   } );
 };
 
@@ -258,7 +258,7 @@ const lint = async ( originalRepos, options ) => {
     fix: false,
 
     // Prints responsible dev info for any lint errors for easier GitHub issue creation.
-    chipAway: false, // TODO: not easy to support since flat config rewrite (since we don't get json output, just console logging), see https://github.com/phetsims/chipper/issues/1451
+    chipAway: false, // TODO: not easy to support since flat config rewrite (since we don't get json output, just console logging), see https://github.com/phetsims/chipper/issues/1484
 
     // Show a progress bar while running, based on the current repo index in the provided list parameter
     showProgressBar: true
@@ -284,7 +284,7 @@ const lint = async ( originalRepos, options ) => {
 };
 
 // Mark the version so that we don't try to lint old shas if on an older version of chipper.
-// TODO: Should we change this? I'm unsure what all the possibilities are, https://github.com/phetsims/chipper/issues/1451
+// TODO: Should we change this? I'm unsure what all the possibilities are, https://github.com/phetsims/chipper/issues/1484
 lint.chipperAPIVersion = 'npx';
 
 module.exports = lint;
