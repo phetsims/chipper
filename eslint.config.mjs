@@ -8,7 +8,7 @@
  */
 
 import { getBrowserConfiguration } from './eslint/browser.eslint.config.mjs';
-import { nodeLanguageOptionsAndRules, nodeNoFloatingPromises } from './eslint/node.eslint.config.mjs';
+import { getNodeConfiguration } from './eslint/node.eslint.config.mjs';
 import rootEslintConfig from './eslint/root.eslint.config.mjs';
 
 const browserFiles = [
@@ -18,22 +18,18 @@ const browserFiles = [
 
 export default [
   ...rootEslintConfig,
+  ...getBrowserConfiguration( { files: browserFiles } ),
+  ...getNodeConfiguration( {
+    files: [
+      '**/*'
+    ],
+    ignores: browserFiles
+  } ),
   {
     rules: {
       'phet/bad-chipper-text': 'error'
     }
-  },
-  ...getBrowserConfiguration( { files: browserFiles } ),
-
-  // TODO: SR: we need this for Node side now, https://github.com/phetsims/chipper/issues/1451
-  {
-    files: [
-      '**/*'
-    ],
-    ignores: browserFiles,
-    ...nodeLanguageOptionsAndRules
-  },
-  nodeNoFloatingPromises
+  }
 
   // TODO: See https://github.com/phetsims/chipper/issues/1451
   //   // 'parserOptions': {
