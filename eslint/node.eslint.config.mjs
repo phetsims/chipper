@@ -7,17 +7,12 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import globals from 'globals';
-import rootEslintConfig from './root.eslint.config.mjs';
+import rootEslintConfig, { nodeLanguageOptions } from './root.eslint.config.mjs';
 
 export const getNodeConfiguration = ( pattern = {} ) => {
   return [
     {
-      languageOptions: {
-        globals: {
-          ...globals.node
-        }
-      },
+      languageOptions: nodeLanguageOptions,
       rules: {
         '@typescript-eslint/no-require-imports': 'off',
         '@typescript-eslint/no-var-requires': 'off'

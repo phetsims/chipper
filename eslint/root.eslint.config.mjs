@@ -42,7 +42,12 @@ import todoShouldHaveIssue from './rules/todo-should-have-issue.js';
 import uppercaseStaticsShouldBeReadonly from './rules/uppercase-statics-should-be-readonly.js';
 import visibilityAnnotation from './rules/visibility-annotation.js';
 
-// TODO: Review this file, see https://github.com/phetsims/chipper/issues/1451
+export const nodeLanguageOptions = {
+  globals: {
+    ...globals.node
+  }
+};
+
 /**
  * The base eslint configuration for the PhET projects.
  *
@@ -76,14 +81,8 @@ export default [
   },
   {
     files: [ 'Gruntfile.js' ],
-    // TODO: reuse same thing as node.eslint.config? https://github.com/phetsims/chipper/issues/1451
-    languageOptions: {
-      globals: {
-        ...globals.node
-      }
-    }
+    languageOptions: nodeLanguageOptions
   },
-
   {
     plugins: {
       phet: {
@@ -175,12 +174,6 @@ export default [
     },
 
     languageOptions: {
-
-      // TODO: upgrade version: Maybe 2022? https://github.com/phetsims/chipper/issues/1451
-      ecmaVersion: 2022,
-
-      // TODO: Does all code use sourceType module?, see https://github.com/phetsims/chipper/issues/1451
-      sourceType: 'module',
 
       // Without a parser, .js files are linted without es6 transpilation. Use the same parser that we use for TypeScript.
       parser: typescriptEslintParser

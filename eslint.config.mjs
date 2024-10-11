@@ -30,12 +30,4 @@ export default [
       'phet/bad-chipper-text': 'error'
     }
   }
-
-  // TODO: See https://github.com/phetsims/chipper/issues/1451
-  //   // 'parserOptions': {
-  //   //   'sourceType': 'module',
-  //   //   'allowImportExportEverywhere': true,
-  //   //   'requireConfigFile': false
-  //   // }
-  // },
 ];
