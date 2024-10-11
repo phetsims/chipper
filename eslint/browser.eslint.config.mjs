@@ -9,15 +9,23 @@
 import globals from 'globals';
 import rootEslintConfig from './root.eslint.config.mjs';
 
-export const browserGlobals = {
-  languageOptions: {
-    globals: {
-      ...globals.browser
-    }
-  }
+export const getBrowserConfiguration = ( pattern = {} ) => {
+  return [
+
+    // Where getBrowserConfiguration is included elsewhere, the call site must supply the rootEslintConfig.
+    {
+      languageOptions: {
+        globals: {
+          ...globals.browser
+        }
+      },
+      ...pattern
+    } ];
 };
 
 export default [
+
+  // Here, we must have a complete set of rules for interpretation, so we include the rootEslintConfig.
   ...rootEslintConfig,
-  browserGlobals
+  ...getBrowserConfiguration()
 ];

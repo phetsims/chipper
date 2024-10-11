@@ -7,9 +7,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-// TODO: This file needs help, see https://github.com/phetsims/chipper/issues/1451
-
-import { browserGlobals } from './eslint/browser.eslint.config.mjs';
+import { getBrowserConfiguration } from './eslint/browser.eslint.config.mjs';
 import { nodeLanguageOptionsAndRules, nodeNoFloatingPromises } from './eslint/node.eslint.config.mjs';
 import rootEslintConfig from './eslint/root.eslint.config.mjs';
 
@@ -25,10 +23,9 @@ export default [
       'phet/bad-chipper-text': 'error'
     }
   },
-  {
-    files: browserFiles,
-    ...browserGlobals
-  },
+  ...getBrowserConfiguration( { files: browserFiles } ),
+
+  // TODO: SR: we need this for Node side now, https://github.com/phetsims/chipper/issues/1451
   {
     files: [
       '**/*'
