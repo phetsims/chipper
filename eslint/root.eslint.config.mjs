@@ -171,7 +171,7 @@ export default [
     },
 
     linterOptions: {
-      reportUnusedDisableDirectives: true
+      reportUnusedDisableDirectives: 'error'
     },
 
     languageOptions: {
