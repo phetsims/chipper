@@ -8,10 +8,6 @@
 {
   "references": [
     {
-      // TODO: Isn't this redundant to something below? https://github.com/phetsims/chipper/issues/1487
-      "path": "../buildjson"
-    },
-    {
       "path": "../../../acid-base-solutions"
     },
     {
