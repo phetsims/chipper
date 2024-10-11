@@ -2,16 +2,13 @@
  * Explicitly list all entry points that we want to type check.
  * Imported images/mipmaps/sounds are still type checked.
  * This structure was determined in https://github.com/phetsims/chipper/issues/1245
- * TODO: can we auto generate this? https://github.com/phetsims/chipper/issues/1469
- * TODO: from MK experience, it seems we need to train people that when they change references, they need to run tsc --clean. Should we update ct or ctq for this? https://github.com/phetsims/chipper/issues/1469
- * TODO: Hey SR, why would we ever want files specifically added here. Shouldn't they just be their own special project in their own repo? The will improve modularity in general, https://github.com/phetsims/chipper/issues/1469
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Sam Reid (PhET Interactive Simulations)
  */
 {
   "references": [
     {
-      // TODO: Isn't this redundant to something below? https://github.com/phetsims/chipper/issues/1469
+      // TODO: Isn't this redundant to something below? https://github.com/phetsims/chipper/issues/1487
       "path": "../buildjson"
     },
     {
