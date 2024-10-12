@@ -1,5 +1,5 @@
 {
-  "extends": "../chipper/tsconfig-browser.json",
+  "extends": "./tsconfig/shared/tsconfig-browser.json",
   "include": [
 
     // top level only

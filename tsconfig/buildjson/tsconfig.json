@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig-browser.json",
+  "extends": "../shared/tsconfig-browser.json",
   // Entry points from build.json, see chipper/build.json
   "include": [
     "../../../axon/js/**/*",

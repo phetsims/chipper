@@ -1,0 +1,22 @@
+/**
+ * This file is the primary tsconfig entry point for typical PhET simulations or libraries.
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
+ */
+{
+  "extends": "./tsconfig-core.json",
+  "files": [
+    "../../phet-types.d.ts",
+    "../../phet-types-module.d.ts",
+    "../../node_modules/@types/jquery/index.d.ts",
+    "../../node_modules/@types/lodash/index.d.ts",
+    "../../node_modules/@types/p2/index.d.ts",
+    "../../node_modules/@types/pako/index.d.ts",
+    "../../node_modules/@types/qunit/index.d.ts",
+    "../../node_modules/@types/react/index.d.ts",
+    "../../node_modules/@types/react-dom/index.d.ts",
+    "../../node_modules/@types/three/index.d.ts",
+    "../../node_modules/@webgpu/types/dist/index.d.ts"
+  ]
+}
