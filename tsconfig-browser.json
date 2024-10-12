@@ -1,11 +1,10 @@
 /**
- * TODO: rename super-core -> core,    https://github.com/phetsims/chipper/issues/1463
  * TODO: move to tsconfig/shared/ https://github.com/phetsims/chipper/issues/1463
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 {
-  "extends": "../chipper/tsconfig/shared/tsconfig-super-core.json",
+  "extends": "../chipper/tsconfig/shared/tsconfig-core.json",
   "files": [
     "phet-types.d.ts",
     "phet-types-module.d.ts",

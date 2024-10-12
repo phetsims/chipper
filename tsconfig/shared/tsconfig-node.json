@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig-super-core.json",
+  "extends": "./tsconfig-core.json",
   "compilerOptions": {
     "module": "NodeNext",
     "esModuleInterop": true,
