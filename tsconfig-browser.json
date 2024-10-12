@@ -1,5 +1,4 @@
 /**
- * TODO: Rename to "tsconfig-browser.json" https://github.com/phetsims/chipper/issues/1463
  * TODO: rename super-core -> core,    https://github.com/phetsims/chipper/issues/1463
  * TODO: move to tsconfig/shared/ https://github.com/phetsims/chipper/issues/1463
  * @author Sam Reid (PhET Interactive Simulations)
