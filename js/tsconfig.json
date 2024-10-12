@@ -1,5 +1,5 @@
 {
-  "extends": "../tsconfig-browser.json",
+  "extends": "../tsconfig-chipper-browser.json",
   "references": [
     {
       "path": "../../../chipper/tsconfig/buildjson"

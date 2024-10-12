@@ -13,7 +13,7 @@
       "path": "./tsconfig-node.json"
     },
     {
-      "path": "./tsconfig-browser.json"
+      "path": "./tsconfig-chipper-browser.json"
     }
   ]
 }
