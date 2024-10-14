@@ -15,7 +15,6 @@
     "../../../chipper/js/LocalizedString.ts",
     "../../../chipper/js/LocalizedStringProperty.ts",
     "../../../chipper/js/chipper.ts",
-    "../../../chipper/js/data/localeInfoModule.js",
     "../../../chipper/js/getStringModule.ts",
     "../../../chipper/js/sim-tests/qunitStart.js",
     "../../../chipper/js/grunt/tasks/util/getOption.ts",

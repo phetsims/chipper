@@ -38,6 +38,7 @@ const getSubdirectories = ( repo: string ) => {
   return subdirs.map( subdir => `${repo}/${subdir}/` );
 };
 
+// TODO: factor out child process https://github.com/phetsims/chipper/issues/1354
 function spawnCommand( command: string, args: string[] ): Promise<void> {
   return new Promise( ( resolve, reject ) => {
     const child = spawn( command, args, {
