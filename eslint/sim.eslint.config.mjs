@@ -9,7 +9,7 @@ const getHTMLPatterns = pattern => {
 
   return {
     ...pattern,
-    files: !pattern.files ? [ '*.html' ] : pattern.files.map( filePattern => {
+    files: !pattern.files ? [ '**/*.html' ] : pattern.files.map( filePattern => {
 
       // This is likely only going to be this horrible until we complete https://github.com/phetsims/chipper/issues/1483
       assert( filePattern.endsWith( '/*' ), 'only limited support for files patterns right now to append "html" file suffix' );
