@@ -8,6 +8,8 @@
 
 import * as ChipperConstants from '../common/ChipperConstants';
 import webpackBuild from './webpackBuild';
+import generateThumbnails from './generateThumbnails';
+import generateTwitterCard from './generateTwitterCard';
 
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
@@ -15,8 +17,7 @@ const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );
 const copyDirectory = require( './copyDirectory' );
 const copySupplementalPhetioFiles = require( './copySupplementalPhetioFiles' );
-const generateThumbnails = require( './generateThumbnails' );
-const generateTwitterCard = require( './generateTwitterCard' );
+
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
