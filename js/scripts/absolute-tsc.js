@@ -29,7 +29,6 @@
  */
 const start = Date.now();
 const execute = require( '../../../perennial-alias/js/common/execute' );
-const CacheLayer = require( '../common/CacheLayer' );
 const os = require( 'os' );
 const path = require( 'path' );
 const { resolve } = require( 'path' ); // eslint-disable-line phet/require-statement-match
@@ -40,12 +39,6 @@ if ( !args || args.length === 0 ) {
 }
 
 ( async () => {
-
-  const cacheKey = 'absolute-tsc#' + args[ 0 ];
-  if ( CacheLayer.isCacheSafe( cacheKey ) ) {
-    // console.log( 'cache safe for: ' + cacheKey );
-    return;
-  }
 
   // console.log( 'changes detected...' );
 
@@ -64,9 +57,7 @@ if ( !args || args.length === 0 ) {
   const elapsed = end - start;
 
   if ( results.stdout.trim().length === 0 ) {
-
     console.log( `0 errors in ${elapsed}ms` );
-    CacheLayer.onSuccess( cacheKey );
   }
   else {
     const lines = results.stdout.trim().split( os.EOL );
