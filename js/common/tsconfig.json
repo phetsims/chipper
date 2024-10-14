@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig-node.json",
+  "extends": "../../tsconfig-chipper-node.json",
   // this reference needs to be duplicated with the super config, because references to not extend
   "references": [
     {

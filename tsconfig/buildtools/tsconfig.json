@@ -5,7 +5,7 @@
   },
   "references": [
     {
-      "path": "../../tsconfig-node.json"
+      "path": "../../tsconfig-chipper-node.json"
     }
   ]
 }
