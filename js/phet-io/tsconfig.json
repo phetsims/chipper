@@ -1,5 +1,6 @@
 {
   "extends": "../../tsconfig-node.json",
+  // this reference needs to be duplicated with the super config, because references to not extend
   "references": [
     {
       "path": "../../../perennial-alias/tsconfig-chipper.json"
