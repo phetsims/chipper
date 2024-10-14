@@ -64,7 +64,6 @@
     "tsx": "~4.19.1",
     "typescript": "~5.5.4",
     "webpack": "~5.76.3",
-    "webpack-cli": "~5.0.0",
-    "webpack-dev-server": "~4.11.1"
+    "webpack-cli": "~5.0.0"
   }
 }
