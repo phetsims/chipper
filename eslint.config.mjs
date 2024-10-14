@@ -20,9 +20,7 @@ export default [
   ...rootEslintConfig,
   ...getBrowserConfiguration( { files: browserFiles } ),
   ...getNodeConfiguration( {
-    files: [
-      '**/*'
-    ],
+    files: [ '**/*' ],
     ignores: browserFiles
   } ),
   {
