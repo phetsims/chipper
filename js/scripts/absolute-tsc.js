@@ -43,10 +43,7 @@ if ( !args || args.length === 0 ) {
   // console.log( 'changes detected...' );
 
   const results = await execute( 'node', [ `${__dirname}/../../../chipper/node_modules/typescript/bin/tsc`, '-b' ], args[ 0 ], {
-    errors: 'resolve',
-
-    // TODO: it would be nice not to need this, https://github.com/phetsims/chipper/issues/1415
-    childProcessEnv: { NODE_OPTIONS: '--max-old-space-size=8192' }
+    errors: 'resolve'
   } );
 
   // If there was a problem running tsc, report it here.  The type errors are reported on stdout below.
