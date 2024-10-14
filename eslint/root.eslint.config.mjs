@@ -76,6 +76,7 @@ export default [
       'mipmaps/',
       'assets/',
       '*_en.html',
+      '*-tests.html',
       '*_a11y_view.html'
     ]
   },
