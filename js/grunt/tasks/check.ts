@@ -39,6 +39,10 @@ const runCommand = ( command: string, args: string[], cwd: string ): Promise<voi
 export const checkTask = ( async () => {
   try {
     const everything = getOption( 'everything' );
+    const clean = getOption( 'clean' );
+
+    // This task defaults to pretty output, but can be overridden with --pretty=false
+    const pretty = getOption( 'pretty' ) === undefined || getOption( 'pretty' ) === true;
 
     if ( everything ) {
       writeEverythingTSConfigFile();
@@ -48,12 +52,11 @@ export const checkTask = ( async () => {
     const pathToTSC = everything ? '../../../chipper/node_modules/typescript/bin/tsc'
                                  : '../chipper/node_modules/typescript/bin/tsc';
 
-    const clean = getOption( 'clean' );
     if ( clean ) {
       await runCommand( 'node', [ pathToTSC, '-b', '--clean' ], tsconfigDir );
     }
 
-    await runCommand( 'node', [ pathToTSC, '-b', '--pretty' ], tsconfigDir );
+    await runCommand( 'node', [ pathToTSC, '-b', '--pretty', pretty + '' ], tsconfigDir );
   }
   catch( error ) {
 
