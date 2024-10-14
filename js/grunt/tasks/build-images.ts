@@ -7,11 +7,9 @@
  */
 import * as grunt from 'grunt';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-
-const jimp = require( 'jimp' );
-
-const generateThumbnails = require( '../generateThumbnails' );
-const generateTwitterCard = require( '../generateTwitterCard' );
+import Jimp from 'jimp';
+import generateThumbnails from '../generateThumbnails';
+import generateTwitterCard from '../generateTwitterCard';
 
 const brand = 'phet';
 
@@ -29,18 +27,18 @@ const repo = getRepo();
       { width: 15, height: 10 }
     ];
     for ( const size of thumbnailSizes ) {
-      grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, jimp.MIME_PNG ) );
+      grunt.file.write( `${buildDir}/${repo}-${size.width}.png`, await generateThumbnails( repo, size.width, size.height, 100, Jimp.MIME_PNG ) );
     }
 
     const altScreenshots = grunt.file.expand( { filter: 'isFile', cwd: `../${repo}/assets` }, [ `./${repo}-screenshot-alt[0123456789].png` ] );
     for ( const altScreenshot of altScreenshots ) {
       const imageNumber = Number( altScreenshot.substr( `./${repo}-screenshot-alt`.length, 1 ) );
-      grunt.file.write( `${buildDir}/${repo}-${600}-alt${imageNumber}.png`, await generateThumbnails( repo, 600, 394, 100, jimp.MIME_PNG, `-alt${imageNumber}` ) );
-      grunt.file.write( `${buildDir}/${repo}-${900}-alt${imageNumber}.png`, await generateThumbnails( repo, 900, 591, 100, jimp.MIME_PNG, `-alt${imageNumber}` ) );
+      grunt.file.write( `${buildDir}/${repo}-${600}-alt${imageNumber}.png`, await generateThumbnails( repo, 600, 394, 100, Jimp.MIME_PNG, `-alt${imageNumber}` ) );
+      grunt.file.write( `${buildDir}/${repo}-${900}-alt${imageNumber}.png`, await generateThumbnails( repo, 900, 591, 100, Jimp.MIME_PNG, `-alt${imageNumber}` ) );
     }
 
     if ( brand === 'phet' ) {
-      grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, jimp.MIME_JPEG ) );
+      grunt.file.write( `${buildDir}/${repo}-ios.png`, await generateThumbnails( repo, 420, 276, 90, Jimp.MIME_JPEG ) );
       grunt.file.write( `${buildDir}/${repo}-twitter-card.png`, await generateTwitterCard( repo ) );
     }
   }

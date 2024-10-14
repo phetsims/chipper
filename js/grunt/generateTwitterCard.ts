@@ -10,14 +10,13 @@
 // modules
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import * as grunt from 'grunt';
-
-const Jimp = require( 'jimp' ); // eslint-disable-line phet/require-statement-match
+import Jimp from 'jimp';
 
 /**
  * @param repo - name of the repository
  * @returns - Resolves with a PNG {Buffer}
  */
-module.exports = function( repo: string ): Promise<Buffer> {
+export default function( repo: string ): Promise<Buffer> {
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot.png`;
 
@@ -42,4 +41,4 @@ module.exports = function( repo: string ): Promise<Buffer> {
         } );
     } );
   } );
-};
+}

@@ -11,9 +11,7 @@
 
 import * as grunt from 'grunt';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-
-// modules
-const jimp = require( 'jimp' );
+import Jimp from 'jimp';
 
 /**
  * @param repo - name of the repository
@@ -24,7 +22,7 @@ const jimp = require( 'jimp' );
  * @param altSuffix - ending for the filename e.g. -alt1
  * @returns Resolves to a {Buffer} with the image data
  */
-module.exports = function( repo: string, width: number, height: number, quality: number, mime: string, altSuffix: string ): Promise<Buffer> {
+export default function( repo: string, width: number, height: number, quality: number, mime: string, altSuffix: string | undefined = undefined ): Promise<Buffer> {
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot${altSuffix || ''}.png`;
 
@@ -33,8 +31,8 @@ module.exports = function( repo: string, width: number, height: number, quality:
       return;
     }
 
-    new jimp( fullResImageName, function( this: IntentionalAny ) { // eslint-disable-line no-new
-      if ( mime === jimp.MIME_JPEG ) {
+    new Jimp( fullResImageName, function( this: IntentionalAny ) { // eslint-disable-line no-new
+      if ( mime === Jimp.MIME_JPEG ) {
         this.quality( quality );
       }
       this.resize( width, height ).getBuffer( mime, ( error: string, buffer: Buffer ) => {
@@ -47,4 +45,4 @@ module.exports = function( repo: string, width: number, height: number, quality:
       } );
     } );
   } );
-};
+}
