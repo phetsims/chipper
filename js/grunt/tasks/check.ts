@@ -1,4 +1,4 @@
-// Copyright 2013-2024, University of Colorado Boulder
+// Copyright 2024, University of Colorado Boulder
 
 /**
  * Type checks *.ts files. Named after deno check. Automatically uses -b as appropriate.
