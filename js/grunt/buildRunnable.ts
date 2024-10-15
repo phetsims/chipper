@@ -14,16 +14,15 @@ import _ from 'lodash';
 import getInitializationScript from './getInitializationScript';
 import packageXHTML from './packageXHTML';
 import reportUnusedStrings from './reportUnusedStrings';
+import getDependencies from './getDependencies';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );
 const copyDirectory = require( './copyDirectory' );
 const copySupplementalPhetioFiles = require( './copySupplementalPhetioFiles' );
-
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
-const getDependencies = require( './getDependencies' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
 const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );

@@ -7,7 +7,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const execute = require( '../../../perennial-alias/js/common/execute' );
@@ -21,25 +20,25 @@ const simNameRegex = /^[^/]+$/;
 
 /**
  * Returns an object in the dependencies.json format. Keys are repo names (or 'comment'). Repo keys have 'sha' and 'branch' fields.
- * @public
  *
- * @param {string} repo
- * @returns {Promise.<Object>} - In the dependencies.json format. JSON.stringify if you want to output to a file
+ * @returns - In the dependencies.json format. JSON.stringify if you want to output to a file
  */
-module.exports = async function getDependencies( repo ) {
+export default async function getDependencies( repo: string ): Promise<object> {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const version = packageObject.version;
 
   // Accumulate dependencies for all brands
-  const dependencies = getPhetLibs( repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at main
+  // @ts-expect-error
+  const dependencies: string[] = getPhetLibs( repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at main
 
   // We need to check dependencies for the main brand, so we can know what is guaranteed to be public
+  // @ts-expect-error
   const mainDependencies = getPhetLibs( repo, 'phet' ).filter( dependency => dependency !== 'babel' );
 
   grunt.log.debug( `Scanning dependencies from:\n${dependencies.toString()}` );
 
-  const dependenciesInfo = {
+  const dependenciesInfo: Record<string, unknown> = {
     comment: `# ${repo} ${version} ${new Date().toString()}`
   };
 
@@ -76,4 +75,4 @@ module.exports = async function getDependencies( repo ) {
   }
 
   return dependenciesInfo;
-};
+}
