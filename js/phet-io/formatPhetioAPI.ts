@@ -10,15 +10,16 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-
 const assert = require( 'assert' );
 const fixEOL = require( '../grunt/fixEOL' );
 
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+
 /**
  * Creates a new object, recursively, by sorting the keys at each level.
- * @param {Object} unordered - jsonifiable object to be sorted by key name.  Sorting is recursive.
+ * @param unordered - jsonifiable object to be sorted by key name.  Sorting is recursive.
  */
-const copyWithSortedKeys = unordered => {
+const copyWithSortedKeys = ( unordered: IntentionalAny ): Record<string, IntentionalAny> => {
   if ( Array.isArray( unordered ) ) {
     return unordered.map( copyWithSortedKeys );
   }
@@ -26,7 +27,7 @@ const copyWithSortedKeys = unordered => {
     return unordered;
   }
 
-  const ordered = {};
+  const ordered: Record<string, IntentionalAny> = {};
   Object.keys( unordered ).sort().forEach( key => {
     const value = unordered[ key ];
     ordered[ key ] = copyWithSortedKeys( value );
@@ -34,10 +35,7 @@ const copyWithSortedKeys = unordered => {
   return ordered;
 };
 
-/**
- * @param {Object} api
- */
-module.exports = api => {
+export default ( api: IntentionalAny ): string => {
   assert( api, 'api expected' );
   const objectString = JSON.stringify( copyWithSortedKeys( api ), null, 2 );
   return fixEOL( objectString );

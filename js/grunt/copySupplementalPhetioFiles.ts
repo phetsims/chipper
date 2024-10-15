@@ -13,6 +13,8 @@ import * as _ from 'lodash';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import webpackBuild from './webpackBuild.ts';
 import buildStandalone from './buildStandalone.ts';
+import formatPhetioAPI from '../phet-io/formatPhetioAPI';
+import reportTscResults from './reportTscResults';
 
 const assert = require( 'assert' );
 const archiver = require( 'archiver' );
@@ -21,11 +23,11 @@ const copyDirectory = require( '../grunt/copyDirectory' );
 const execute = require( '../../../perennial-alias/js/common/execute' );
 const grunt = require( 'grunt' );
 const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
-const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
+
 const minify = require( '../grunt/minify' );
 const marked = require( 'marked' );
 const tsc = require( './tsc' );
-import reportTscResults from './reportTscResults';
+
 const getPhetLibs = require( './getPhetLibs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );

@@ -2,6 +2,7 @@
 
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+import formatPhetioAPI from '../../phet-io/formatPhetioAPI';
 
 /**
  * Output the PhET-iO API as JSON to phet-io-sim-specific/api.
@@ -16,7 +17,6 @@ import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
  */
 const repo = getRepo();
 
-const formatPhetioAPI = require( '../../phet-io/formatPhetioAPI' );
 const getSimList = require( '../../common/getSimList' );
 const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI' );
 const fs = require( 'fs' );
