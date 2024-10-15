@@ -12,6 +12,7 @@ import * as fs from 'fs';
 import * as _ from 'lodash';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import webpackBuild from './webpackBuild.ts';
+import buildStandalone from './buildStandalone.ts';
 
 const assert = require( 'assert' );
 const archiver = require( 'archiver' );
@@ -21,7 +22,6 @@ const execute = require( '../../../perennial-alias/js/common/execute' );
 const grunt = require( 'grunt' );
 const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
 const formatPhetioAPI = require( '../phet-io/formatPhetioAPI' );
-const buildStandalone = require( '../grunt/buildStandalone' );
 const minify = require( '../grunt/minify' );
 const marked = require( 'marked' );
 const tsc = require( './tsc' );

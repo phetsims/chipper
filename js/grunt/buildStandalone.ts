@@ -6,8 +6,8 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
 import webpackBuild from './webpackBuild';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 
 const assert = require( 'assert' );
 const fs = require( 'fs' );
@@ -21,13 +21,11 @@ const getPhetLibs = require( './getPhetLibs' );
 
 /**
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)
- * @public
  *
- * @param {string} repo
- * @param {Object} providedOptions - Passed directly to minify()
- * @returns {Promise<string>}
+ * @param repo
+ * @param providedOptions - Passed directly to minify()
  */
-module.exports = async function( repo, providedOptions ) {
+export default async function( repo: string, providedOptions: IntentionalAny ): Promise<string> {
   assert( typeof repo === 'string' );
   assert( typeof providedOptions === 'object' );
 
@@ -136,4 +134,4 @@ module.exports = async function( repo, providedOptions ) {
   fullSource = minify( fullSource, options );
 
   return fullSource;
-};
+}

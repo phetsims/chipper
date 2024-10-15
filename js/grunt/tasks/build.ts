@@ -32,8 +32,7 @@ import reportTscResults from '../reportTscResults';
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-
-const buildStandalone = require( '../buildStandalone' );
+import buildStandalone from '../buildStandalone';
 
 const minify = require( '../minify' );
 const tsc = require( '../tsc' );
@@ -104,7 +103,7 @@ export const build = ( async () => {
       minifyOptions.babelTranspile = false;
       minifyOptions.uglify = false;
       minifyOptions.isDebug = true;
-      fs.writeFileSync( `${parentDir}/${repo}.debug.js`, await buildStandalone( repo, minifyOptions, true ) );
+      fs.writeFileSync( `${parentDir}/${repo}.debug.js`, await buildStandalone( repo, minifyOptions ) );
 
       if ( repoPackageObject.phet.standaloneTranspiles ) {
         for ( const file of repoPackageObject.phet.standaloneTranspiles ) {
