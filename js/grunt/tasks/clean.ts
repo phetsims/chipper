@@ -8,6 +8,7 @@
 
 import * as grunt from 'grunt';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+import fs from 'fs';
 
 export const clean = ( async () => {
   const repo = getRepo();
@@ -18,4 +19,5 @@ export const clean = ( async () => {
     grunt.file.delete( buildDirectory );
   }
   grunt.file.mkdir( buildDirectory );
+  fs.mkdirSync( buildDirectory, { recursive: true } );
 } )();

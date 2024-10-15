@@ -400,7 +400,7 @@ module.exports = async ( repo: string, version: string, simulationDisplayName: s
  */
 const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
   grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_PRELOADS );
-  grunt.file.mkdir( `${buildDir}lib` );
+  fs.mkdirSync( `${buildDir}lib`, { recursive: true } );
 
   // phet-written preloads
   const phetioLibCode = PHET_IO_LIB_PRELOADS.map( libFile => {

@@ -16,6 +16,7 @@ import packageXHTML from './packageXHTML';
 import reportUnusedStrings from './reportUnusedStrings';
 import getDependencies from './getDependencies';
 import getLocalesFromRepository from './getLocalesFromRepository';
+import fs from 'fs';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -273,7 +274,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
 
   // Create the build-specific directory
   const buildDir = `../${repo}/build/${brand}`;
-  grunt.file.mkdir( buildDir );
+  fs.mkdirSync( buildDir, { recursive: true } );
 
   // {{locale}}.html
   if ( brand !== 'phet-io' ) {
@@ -344,7 +345,8 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
 
   // XHTML build (ePub compatibility, etc.)
   const xhtmlDir = `${buildDir}/xhtml`;
-  grunt.file.mkdir( xhtmlDir );
+  fs.mkdirSync( xhtmlDir, { recursive: true } );
+
   const xhtmlInitializationScript = getInitializationScript( _.assignIn( {
     locale: ChipperConstants.FALLBACK_LOCALE,
     includeAllLocales: true,
