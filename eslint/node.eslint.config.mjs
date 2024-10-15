@@ -16,7 +16,8 @@ export const getNodeConfiguration = ( pattern = {} ) => {
       rules: {
         '@typescript-eslint/no-require-imports': 'off',
         '@typescript-eslint/no-var-requires': 'off',
-        'phet/no-import-from-grunt-tasks': 'error'
+        'phet/no-import-from-grunt-tasks': 'error',
+        'phet/grunt-task-kabob-case': 'error'
       },
       ...pattern
     },

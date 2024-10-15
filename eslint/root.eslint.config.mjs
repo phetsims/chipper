@@ -25,6 +25,7 @@ import jsxTextElementsContainMatchingClass from './rules/jsx-text-elements-conta
 import namespaceMatch from './rules/namespace-match.js';
 import noHtmlConstructors from './rules/no-html-constructors.js';
 import noImportFromGruntTasks from './rules/no-import-from-grunt-tasks.js';
+import gruntTaskKabobCase from './rules/grunt-task-kabob-case.js';
 import noInstanceofArray from './rules/no-instanceof-array.js';
 import noObjectSpreadOnNonLiterals from './rules/no-object-spread-on-non-literals.js';
 import noPropertyInRequireStatement from './rules/no-property-in-require-statement.js';
@@ -165,6 +166,9 @@ export default [
 
           // Used for grunt sub-process Typescript pattern
           'no-import-from-grunt-tasks': noImportFromGruntTasks,
+
+          // Used for kabob-case convention for grunt tasks
+          'grunt-task-kabob-case': gruntTaskKabobCase,
 
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           // Type checking rules. Documentation is at the usage site below
