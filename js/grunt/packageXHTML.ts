@@ -15,15 +15,12 @@ const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
 
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+
 /**
- * From a given set of config (including the JS and other required things), it creates an XHTML structure.
- * @public
- *
- * @param {string} xhtmlDir
- * @param {Object} config
- * @returns {string} - The HTML for the file.
+ * From a given set of config (including the JS and other required things), it creates an XHTML structure and writes it to disk.
  */
-module.exports = function( xhtmlDir, config ) {
+export default function( xhtmlDir: string, config: IntentionalAny ): void {
   const encoder = new nodeHTMLEncoder.Encoder( 'entity' );
 
   const {
@@ -58,4 +55,4 @@ module.exports = function( xhtmlDir, config ) {
   grunt.file.write( `${xhtmlDir}/${licenseScriptFilename}`, licenseScript );
   grunt.file.write( `${xhtmlDir}/${initializationScriptFilename}`, initializationScript );
   grunt.file.write( `${xhtmlDir}/${scriptFilename}`, script );
-};
+}

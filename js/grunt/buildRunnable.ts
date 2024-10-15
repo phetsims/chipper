@@ -12,6 +12,7 @@ import generateThumbnails from './generateThumbnails';
 import generateTwitterCard from './generateTwitterCard';
 import _ from 'lodash';
 import getInitializationScript from './getInitializationScript';
+import packageXHTML from './packageXHTML';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -34,7 +35,7 @@ const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const minify = require( './minify' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
 const packageRunnable = require( './packageRunnable' );
-const packageXHTML = require( './packageXHTML' );
+
 const reportUnusedMedia = require( './reportUnusedMedia' );
 const reportUnusedStrings = require( './reportUnusedStrings' );
 
