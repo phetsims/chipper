@@ -7,6 +7,7 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 
 const _ = require( 'lodash' );
 const createMipmap = require( './createMipmap' );
@@ -36,30 +37,23 @@ const SHADER_SUFFIXES = [ '.glsl', '.vert', '.shader' ];
 
 /**
  * String replacement
- * @param {string} string - the string which will be searched
- * @param {string} search - the text to be replaced
- * @param {string} replacement - the new text
- * @returns {string}
+ * @param string - the string which will be searched
+ * @param search - the text to be replaced
+ * @param replacement - the new text
  */
-const replace = ( string, search, replacement ) => string.split( search ).join( replacement );
+const replace = ( string: string, search: string, replacement: string ) => string.split( search ).join( replacement );
 
 /**
  * Get the relative from the modulified repo to the filename through the provided subdirectory.
- *
- * @param {string} subdir
- * @param {string} filename
- * @returns {string}
  */
-const getRelativePath = ( subdir, filename ) => {
+const getRelativePath = ( subdir: string, filename: string ) => {
   return `${subdir}/${filename}`;
 };
 
 /**
  * Gets the relative path to the root based on the depth of a resource
- *
- * @returns {string}
  */
-const expandDots = abspath => {
+const expandDots = ( abspath: string ): string => {
 
   // Finds the depths of a directory relative to the root of where grunt.recurse was called from (a repo root)
   const depth = abspath.split( '/' ).length - 2;
@@ -72,19 +66,17 @@ const expandDots = abspath => {
 
 /**
  * Output with an OS-specific EOL sequence, see https://github.com/phetsims/chipper/issues/908
- * @param string
- * @returns {string}
  */
-const fixEOL = string => replace( string, '\n', os.EOL );
+const fixEOL = ( string: string ) => replace( string, '\n', os.EOL );
 
 /**
  * Transform an image file to a JS file that loads the image.
- * @param {string} abspath - the absolute path of the image
- * @param {string} repo - repository name for the modulify command
- * @param {string} subdir - subdirectory location for modulified assets
- * @param {string} filename - name of file being modulified
+ * @param abspath - the absolute path of the image
+ * @param repo - repository name for the modulify command
+ * @param subdir - subdirectory location for modulified assets
+ * @param filename - name of file being modulified
  */
-const modulifyImage = async ( abspath, repo, subdir, filename ) => {
+const modulifyImage = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
 
   const dataURI = loadFileAsDataURI( abspath );
 
@@ -103,12 +95,12 @@ export default image;`;
 
 /**
  * Transform an SVG image file to a JS file that loads the image.
- * @param {string} abspath - the absolute path of the image
- * @param {string} repo - repository name for the modulify command
- * @param {string} subdir - subdirectory location for modulified assets
- * @param {string} filename - name of file being modulified
+ * @param abspath - the absolute path of the image
+ * @param repo - repository name for the modulify command
+ * @param subdir - subdirectory location for modulified assets
+ * @param filename - name of file being modulified
  */
-const modulifySVG = async ( abspath, repo, subdir, filename ) => {
+const modulifySVG = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
 
   const fileContents = fs.readFileSync( abspath, 'utf-8' );
 
@@ -147,12 +139,12 @@ export default image;`;
 
 /**
  * Transform an image file to a JS file that loads the image as a mipmap.
- * @param {string} abspath - the absolute path of the image
- * @param {string} repo - repository name for the modulify command
- * @param {string} subdir - subdirectory location for modulified assets
- * @param {string} filename - name of file being modulified
+ * @param abspath - the absolute path of the image
+ * @param repo - repository name for the modulify command
+ * @param subdir - subdirectory location for modulified assets
+ * @param filename - name of file being modulified
  */
-const modulifyMipmap = async ( abspath, repo, subdir, filename ) => {
+const modulifyMipmap = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
 
   // Defaults. NOTE: using the default settings because we have not run into a need, see
   // https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/945
@@ -162,6 +154,7 @@ const modulifyMipmap = async ( abspath, repo, subdir, filename ) => {
   };
 
   const mipmapLevels = await createMipmap( abspath, config.level, config.quality );
+  // @ts-expect-error
   const entries = mipmapLevels.map( ( { width, height, url } ) => `  new MipmapElement( ${width}, ${height}, '${url}' )` );
 
   const mipmapContents = `${HEADER}
@@ -179,12 +172,12 @@ export default mipmaps;`;
 
 /**
  * Transform a GLSL shader file to a JS file that is represented by a string.
- * @param {string} abspath - the absolute path of the image
- * @param {string} repo - repository name for the modulify command
- * @param {string} subdir - subdirectory location for modulified assets
- * @param {string} filename - name of file being modulified
+ * @param abspath - the absolute path of the image
+ * @param repo - repository name for the modulify command
+ * @param subdir - subdirectory location for modulified assets
+ * @param filename - name of file being modulified
  */
-const modulifyShader = async ( abspath, repo, subdir, filename ) => {
+const modulifyShader = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
 
   // load the shader file
   const shaderString = fs.readFileSync( abspath, 'utf-8' ).replace( /\r/g, '' );
@@ -199,12 +192,12 @@ export default ${JSON.stringify( shaderString )}`;
 
 /**
  * Decode a sound file into a Web Audio AudioBuffer.
- * @param {string} abspath - the absolute path of the image
- * @param {string} repo - repository name for the modulify command
- * @param {string} subdir - subdirectory location for modulified assets
- * @param {string} filename - name of file being modulified
+ * @param abspath - the absolute path of the image
+ * @param repo - repository name for the modulify command
+ * @param subdir - subdirectory location for modulified assets
+ * @param filename - name of file being modulified
  */
-const modulifySound = async ( abspath, repo, subdir, filename ) => {
+const modulifySound = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
 
   // load the sound file
   const dataURI = loadFileAsDataURI( abspath );
@@ -264,35 +257,26 @@ export default wrappedAudioBuffer;`;
 /**
  * Convert .png => _png_mipmap.js, etc.
  *
- * @param {string} abspath - file name with a suffix or a path to it
- * @param {string} suffix - the new suffix, such as '.js'
- * @returns {string}
+ * @param abspath - file name with a suffix or a path to it
+ * @param suffix - the new suffix, such as '.js'
  */
-const convertSuffix = ( abspath, suffix ) => {
+const convertSuffix = ( abspath: string, suffix: string ) => {
   const lastDotIndex = abspath.lastIndexOf( '.' );
   return `${abspath.substring( 0, lastDotIndex )}_${abspath.substring( lastDotIndex + 1 )}${suffix}`;
 };
 
 /**
  * Determines the suffix from a filename, everything after the final '.'
- *
- * @param {string} filename
- * @returns {string}
  */
-const getSuffix = filename => {
+const getSuffix = ( filename: string ) => {
   const index = filename.lastIndexOf( '.' );
   return filename.substring( index );
 };
 
 /**
  * Creates a *.js file corresponding to matching resources such as images or sounds.
- * @param {string} abspath
- * @param {string} rootdir
- * @param {string} subdir
- * @param {string} filename
- * @param {string} repo
  */
-const modulifyFile = async ( abspath, rootdir, subdir, filename, repo ) => {
+const modulifyFile = async ( abspath: string, rootdir: string, subdir: string, filename: string, repo: string ) => {
 
   if ( subdir && ( subdir.startsWith( 'images' ) ||
 
@@ -300,7 +284,7 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename, repo ) => {
                    subdir.startsWith( 'phet/images' ) ||
                    subdir.startsWith( 'phet-io/images' ) ||
                    subdir.startsWith( 'adapted-from-phet/images' ) )
-       && IMAGE_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
+       && IMAGE_SUFFIXES.includes( getSuffix( filename ) ) ) {
     if ( getSuffix( filename ) === '.svg' ) {
       await modulifySVG( abspath, repo, subdir, filename );
     }
@@ -315,27 +299,23 @@ const modulifyFile = async ( abspath, rootdir, subdir, filename, repo ) => {
                    subdir.startsWith( 'phet/mipmaps' ) ||
                    subdir.startsWith( 'phet-io/mipmaps' ) ||
                    subdir.startsWith( 'adapted-from-phet/mipmaps' ) )
-       && IMAGE_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
+       && IMAGE_SUFFIXES.includes( getSuffix( filename ) ) ) {
     await modulifyMipmap( abspath, repo, subdir, filename );
   }
 
-  if ( subdir && subdir.startsWith( 'sounds' ) && SOUND_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
+  if ( subdir && subdir.startsWith( 'sounds' ) && SOUND_SUFFIXES.includes( getSuffix( filename ) ) ) {
     await modulifySound( abspath, repo, subdir, filename );
   }
 
-  if ( subdir && subdir.startsWith( 'shaders' ) && SHADER_SUFFIXES.indexOf( getSuffix( filename ) ) >= 0 ) {
+  if ( subdir && subdir.startsWith( 'shaders' ) && SHADER_SUFFIXES.includes( getSuffix( filename ) ) ) {
     await modulifyShader( abspath, repo, subdir, filename );
   }
 };
 
 /**
  * Creates the image module at js/${_.camelCase( repo )}Images.js for repos that need it.
- *
- * @param {string} repo
- * @param {string[]} supportedRegionsAndCultures
- * @returns {Promise<void>}
  */
-const createImageModule = async ( repo, supportedRegionsAndCultures ) => {
+const createImageModule = async ( repo: string, supportedRegionsAndCultures: string[] ): Promise<void> => {
   const spec = grunt.file.readJSON( `../${repo}/${repo}-images.json` );
   const namespace = _.camelCase( repo );
   const imageModuleName = `${pascalCase( repo )}Images`;
@@ -355,11 +335,11 @@ const createImageModule = async ( repo, supportedRegionsAndCultures ) => {
     }
   } );
 
-  const imageNames = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
+  const imageNames: string[] = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
     return Object.keys( spec[ regionAndCulture ] );
   } ) ).sort();
 
-  const imageFiles = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
+  const imageFiles: string[] = _.uniq( providedRegionsAndCultures.flatMap( regionAndCulture => {
     return Object.values( spec[ regionAndCulture ] );
   } ) ).sort();
 
@@ -379,7 +359,7 @@ const createImageModule = async ( repo, supportedRegionsAndCultures ) => {
     } );
   } );
 
-  const getImportName = imageFile => path.basename( imageFile, path.extname( imageFile ) );
+  const getImportName = ( imageFile: string ) => path.basename( imageFile, path.extname( imageFile ) );
 
   // Check that import names are unique
   // NOTE: we could disambiguate in the future in an automated way fairly easily, but should it be done?
@@ -422,11 +402,8 @@ export default ${imageModuleName};
 
 /**
  * Creates the string module at js/${_.camelCase( repo )}Strings.js for repos that need it.
- * @public
- *
- * @param {string} repo
  */
-const createStringModule = async repo => {
+const createStringModule = async ( repo:string ) => {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const stringModuleName = `${pascalCase( repo )}Strings`;
@@ -463,19 +440,16 @@ export default ${stringModuleName};
 
 /**
  * Creates a *.d.ts file that represents the types of the strings for the repo.
- * @public
- *
- * @param {string} repo
  */
-const getStringTypes = repo => {
+const getStringTypes = ( repo: string ) => {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   const json = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
 
   // Track paths to all the keys with values.
-  const all = [];
+  const all:IntentionalAny[] = [];
 
   // Recursively collect all of the paths to keys with values.
-  const visit = ( level, path ) => {
+  const visit = ( level:IntentionalAny, path:string[] ) => {
     Object.keys( level ).forEach( key => {
       if ( key !== '_comment' ) {
         if ( level[ key ].value && typeof level[ key ].value === 'string' ) {
@@ -494,7 +468,7 @@ const getStringTypes = repo => {
   visit( json, [] );
 
   // Transform to a new structure that matches the types we access at runtime.
-  const structure = {};
+  const structure:IntentionalAny = {};
   for ( let i = 0; i < all.length; i++ ) {
     const allElement = all[ i ];
     const path = allElement.path;
@@ -543,12 +517,12 @@ const getStringTypes = repo => {
 
 /**
  * Entry point for modulify, which transforms all of the resources in a repo to *.js files.
- * @param {string} repo - the name of a repo, such as 'joist'
+ * @param repo - the name of a repo, such as 'joist'
  */
-const modulify = async repo => {
+export default async ( repo: string ): Promise<void> => {
   console.log( `modulifying ${repo}` );
-  const relativeFiles = [];
-  grunt.file.recurse( `../${repo}`, async ( abspath, rootdir, subdir, filename ) => {
+  const relativeFiles:IntentionalAny[] = [];
+  grunt.file.recurse( `../${repo}`, async ( abspath:string, rootdir:string, subdir:string, filename:string ) => {
     relativeFiles.push( { abspath: abspath, rootdir: rootdir, subdir: subdir, filename: filename } );
   } );
 
@@ -566,7 +540,7 @@ const modulify = async repo => {
 
   // Images module file (localized images)
   if ( fs.existsSync( `../${repo}/${repo}-images.json` ) ) {
-    const supportedRegionsAndCultures = packageObject?.phet?.simFeatures?.supportedRegionsAndCultures;
+    const supportedRegionsAndCultures:string[] = packageObject?.phet?.simFeatures?.supportedRegionsAndCultures;
 
     if ( !supportedRegionsAndCultures ) {
       throw new Error( `supportedRegionsAndCultures is not defined in package.json, but ${repo}-images.json exists` );
@@ -586,5 +560,3 @@ const modulify = async repo => {
     await createImageModule( repo, concreteRegionsAndCultures );
   }
 };
-
-module.exports = modulify;

@@ -3,8 +3,8 @@ import * as fs from 'fs';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import generateDevelopmentStrings from '../generateDevelopmentStrings';
 
-// eslint-disable-next-line phet/require-statement-match
-const _modulify = require( '../modulify' );
+// eslint-disable-next-line phet/default-import-match-filename
+import _modulify from '../modulify';
 
 /**
  * Creates *.js modules for all images/strings/audio/etc in a repo
