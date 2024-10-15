@@ -1,8 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-
-const updateCopyrightDates = require( '../updateCopyrightDates' );
+import updateCopyrightDates from '../updateCopyrightDates';
 
 /**
  * Update the copyright dates in JS source files based on Github dates

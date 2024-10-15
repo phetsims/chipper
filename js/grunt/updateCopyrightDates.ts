@@ -7,18 +7,16 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import * as grunt from 'grunt';
 
-const grunt = require( 'grunt' );
 const updateCopyrightDate = require( './updateCopyrightDate' );
 
 /**
- * @public
- * @param {string} repo - The repository name for the files to update
- * @param {function} predicate - takes a repo-relative path {string} and returns {boolean} if the path should be updated.
- * @returns {Promise}
+ * @param repo - The repository name for the files to update
+ * @param predicate - takes a repo-relative path {string} and returns {boolean} if the path should be updated.
  */
-module.exports = async function( repo, predicate = () => true ) {
-  let relativeFiles = [];
+export default async function( repo: string, predicate = () => true ): Promise<void> {
+  let relativeFiles: string[] = [];
   grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
     relativeFiles.push( `${subdir}/${filename}` );
   } );
@@ -27,4 +25,4 @@ module.exports = async function( repo, predicate = () => true ) {
   for ( const relativeFile of relativeFiles ) {
     await updateCopyrightDate( repo, relativeFile );
   }
-};
+}
