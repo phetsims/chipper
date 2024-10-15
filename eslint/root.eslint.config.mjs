@@ -92,6 +92,7 @@ export default [
       phet: {
         rules: {
 
+          // TODO: What is this doing here? https://github.com/phetsims/chipper/issues/1492
           'property-visibility-annotation': 'off',
 
 
