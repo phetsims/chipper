@@ -11,15 +11,11 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
 const fs = require( 'fs' );
 const zlib = require( 'zlib' );
 const _ = require( 'lodash' );
 
-/**
- * @param {string} repo
- */
-module.exports = async function( repo ) {
+export default async function( repo: string ): Promise<void> {
   const file = fs.readFileSync( `../${repo}/build/phet/${repo}_all_phet.html`, 'utf-8' );
 
   const rootSection = parseToSections( file );
@@ -27,11 +23,11 @@ module.exports = async function( repo ) {
   const size = rootSection.getSize();
   const gzippedSize = rootSection.getGzippedSize();
 
-  const printString = ( name, string ) => {
+  const printString = ( name: string, string: string ) => {
     console.log( `${name}: ${getSizeString( string, size, gzippedSize )}` );
   };
 
-  const printFilter = ( name, filter ) => {
+  const printFilter = ( name: string, filter: ( section: TaggedSection ) => boolean ) => {
     printString( name, rootSection.getApproxFilteredString( filter ) );
   };
 
@@ -52,37 +48,32 @@ module.exports = async function( repo ) {
   console.log( '\ndetails:\n' );
 
   console.log( rootSection.toReportString( true, size, gzippedSize ) );
-};
+}
 
 class TagMatch {
-  constructor( startIndex, endIndex, isStart, type, name ) {
-    this.startIndex = startIndex;
-    this.endIndex = endIndex;
-    this.isStart = isStart;
-    this.type = type;
-    this.name = name || null;
+  public constructor( public readonly startIndex: number,
+                      public readonly endIndex: number,
+                      public readonly isStart: boolean,
+                      public readonly type: string,
+                      public readonly name: string | null = null ) {
   }
 }
 
 class TaggedSection {
-  constructor( type, name ) {
-    this.type = type;
-    this.name = name || null;
-    this.children = []; // ( TaggedSection | string )[]
+  public readonly children: ( TaggedSection | string )[] = [];
+
+  public constructor( public readonly type: string, public readonly name: string | null = null ) {
   }
 
-  // @public
-  getSize() {
+  public getSize(): number {
     return getUtf8Length( this.getApproxString() );
   }
 
-  // @public
-  getGzippedSize() {
+  public getGzippedSize(): number {
     return getGzippedLength( this.getApproxString() );
   }
 
-  // @public
-  getApproxString() {
+  public getApproxString(): string {
     return this.children.map( child => {
       if ( typeof child === 'string' ) {
         return child;
@@ -93,8 +84,7 @@ class TaggedSection {
     } ).join( '' );
   }
 
-  // @public
-  getApproxFilteredString( filter ) {
+  public getApproxFilteredString( filter: ( section: TaggedSection ) => boolean ): string {
     if ( filter( this ) ) {
       return this.getApproxString();
     }
@@ -110,23 +100,19 @@ class TaggedSection {
     }
   }
 
-  // @public
-  getApproxRepoString( repo ) {
-    return this.getApproxFilteredString( section => section.type === 'MODULE' && section.name && section.name.includes( `chipper/dist/js/${repo}/` ) );
+  public getApproxRepoString( repo: string ): string {
+    return this.getApproxFilteredString( section => !!( section.type === 'MODULE' && section.name && section.name.includes( `chipper/dist/js/${repo}/` ) ) );
   }
 
-  // @public
-  getApproxImagesString() {
-    return this.getApproxFilteredString( section => section.type === 'MODULE' && section.name && /chipper\/dist\/js\/[^/]+\/(images|mipmaps)\//.test( section.name ) );
+  public getApproxImagesString(): string {
+    return this.getApproxFilteredString( section => !!( section.type === 'MODULE' && section.name && /chipper\/dist\/js\/[^/]+\/(images|mipmaps)\//.test( section.name ) ) );
   }
 
-  // @public
-  getApproxSoundsString() {
-    return this.getApproxFilteredString( section => section.type === 'MODULE' && section.name && /chipper\/dist\/js\/[^/]+\/sounds\//.test( section.name ) );
+  public getApproxSoundsString(): string {
+    return this.getApproxFilteredString( section => !!( section.type === 'MODULE' && section.name && /chipper\/dist\/js\/[^/]+\/sounds\//.test( section.name ) ) );
   }
 
-  // @public
-  getRepos() {
+  public getRepos(): string[] {
     let repo = null;
 
     if ( this.type === 'MODULE' && this.name && this.name.includes( 'chipper/dist/js/' ) ) {
@@ -147,10 +133,11 @@ class TaggedSection {
     ] );
   }
 
-  // @public
-  toReportString( sort, size, gzippedSize, indent = '' ) {
+  public toReportString( sort: boolean, size: number, gzippedSize: number, indent = '' ): string {
     // TOD: sort by gzipped size?
+    // @ts-expect-error
     const children = sort ? _.sortBy( this.children, child => -( typeof child === 'string' ? getUtf8Length( child ) : child.getSize() ) ) : this.children;
+    // @ts-expect-error
     return `${getSizeString( this.getApproxString(), size, gzippedSize )} ${indent}${this.type}${this.name ? ' ' + this.name : ''}\n${children.map( child => {
       if ( typeof child === 'string' ) {
         return '';
@@ -162,7 +149,7 @@ class TaggedSection {
   }
 }
 
-const findNextMatch = ( string, startIndex ) => {
+const findNextMatch = ( string: string, startIndex: number ) => {
   const match = ( /console\.log\("(START|END)_([A-Z_]+)"(,"([^"]+)")?\)/g ).exec( string.slice( startIndex ) );
   if ( match ) {
     const matchIndex = match.index + startIndex;
@@ -173,9 +160,9 @@ const findNextMatch = ( string, startIndex ) => {
   }
 };
 
-const getUtf8Length = string => Buffer.from( string, 'utf-8' ).length;
-const getGzippedLength = string => zlib.gzipSync( Buffer.from( string, 'utf-8' ) ).length;
-const getSizeString = ( string, size, gzippedSize ) => {
+const getUtf8Length = ( string: string ) => Buffer.from( string, 'utf-8' ).length;
+const getGzippedLength = ( string: string ) => zlib.gzipSync( Buffer.from( string, 'utf-8' ) ).length;
+const getSizeString = ( string: string, size: number, gzippedSize: number ) => {
   const ourSize = getUtf8Length( string );
   const ourGzippedSize = getGzippedLength( string );
 
@@ -207,7 +194,7 @@ const getSizeString = ( string, size, gzippedSize ) => {
   return `utf-8: ${sizeString} gzip: ${gzippedSizeString}`;
 };
 
-const parseToSections = string => {
+const parseToSections = ( string: string ) => {
   const rootSection = new TaggedSection( 'ROOT', null );
   const stack = [ rootSection ];
 
@@ -229,7 +216,7 @@ const parseToSections = string => {
       stack.push( newSection );
     }
     else {
-      const popped = stack.pop();
+      const popped = stack.pop()!;
       if ( popped.type !== match.type || popped.name !== match.name ) {
         throw new Error( `Mismatched tags: ${popped.type} ${popped.name} !== ${match.type} ${match.name}` );
       }
