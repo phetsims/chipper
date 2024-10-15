@@ -29,7 +29,7 @@ module.exports = {
           if ( isViewFileRegex.test( importValue ) ) {
 
             // Some special cases that are too common for PhET to care about this failure for.
-            if ( node.importKind !== 'type' && // importing is not as bad
+            if ( node.importKind !== 'type' && // importing types is not as bad
                  !importValue.endsWith( 'Colors.js' ) && // Colors files are auto generated and in the view
                  !importValue.endsWith( 'ModelViewTransform2.js' ) ) { // Enough cases to warrant taking it out here.
               context.report( {

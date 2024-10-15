@@ -24,6 +24,7 @@ import explicitMethodReturnType from './rules/explicit-method-return-type.js';
 import jsxTextElementsContainMatchingClass from './rules/jsx-text-elements-contain-matching-class.js';
 import namespaceMatch from './rules/namespace-match.js';
 import noHtmlConstructors from './rules/no-html-constructors.js';
+import noImportFromGruntTasks from './rules/no-import-from-grunt-tasks.js';
 import noInstanceofArray from './rules/no-instanceof-array.js';
 import noObjectSpreadOnNonLiterals from './rules/no-object-spread-on-non-literals.js';
 import noPropertyInRequireStatement from './rules/no-property-in-require-statement.js';
@@ -162,6 +163,9 @@ export default [
           // Used for the website code, do not remove!
           'jsx-text-elements-contain-matching-class': jsxTextElementsContainMatchingClass,
 
+          // Used for grunt sub-process Typescript pattern
+          'no-import-from-grunt-tasks': noImportFromGruntTasks,
+
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           // Type checking rules. Documentation is at the usage site below
           'no-simple-type-checking-assertions': noSimpleTypeCheckingAssertions,
@@ -170,6 +174,7 @@ export default [
           'uppercase-statics-should-be-readonly': uppercaseStaticsShouldBeReadonly,
           'no-object-spread-on-non-literals': noObjectSpreadOnNonLiterals,
           'phet-io-object-options-should-not-pick-from-phet-io-object': phetIoObjectOptionsShouldNotPickFromPhetIoObject
+          //////////////////////////////////////////////
         }
       }
     },

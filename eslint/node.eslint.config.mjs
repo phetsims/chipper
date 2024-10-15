@@ -15,7 +15,8 @@ export const getNodeConfiguration = ( pattern = {} ) => {
       languageOptions: nodeLanguageOptions,
       rules: {
         '@typescript-eslint/no-require-imports': 'off',
-        '@typescript-eslint/no-var-requires': 'off'
+        '@typescript-eslint/no-var-requires': 'off',
+        'phet/no-import-from-grunt-tasks': 'error'
       },
       ...pattern
     },
