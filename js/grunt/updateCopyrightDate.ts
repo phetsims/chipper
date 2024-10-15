@@ -7,7 +7,8 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const getCopyrightLine = require( './getCopyrightLine' );
+import getCopyrightLine from './getCopyrightLine';
+
 const fs = require( 'fs' );
 
 /**

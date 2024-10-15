@@ -8,6 +8,7 @@
  */
 
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import getCopyrightLine from './getCopyrightLine';
 
 const _ = require( 'lodash' );
 const createMipmap = require( './createMipmap' );
@@ -17,7 +18,7 @@ const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const pascalCase = require( '../common/pascalCase' );
 const os = require( 'os' );
-const getCopyrightLine = require( './getCopyrightLine' );
+
 const toLessEscapedString = require( '../common/toLessEscapedString' );
 const assert = require( 'assert' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );

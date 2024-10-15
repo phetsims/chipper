@@ -8,16 +8,13 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
 const execute = require( '../../../perennial-alias/js/common/execute' );
 
 /**
- * @public
- * @param {string} repo - The repository of the file to update (should be a git root)
- * @param {string} relativeFile - The filename relative to the repository root.
- * @returns {Promise}
+ * @param repo - The repository of the file to update (should be a git root)
+ * @param relativeFile - The filename relative to the repository root.
  */
-module.exports = async ( repo, relativeFile ) => {
+export default async ( repo: string, relativeFile: string ): Promise<string> => {
 
   let startDate = ( await execute( 'git', [
     'log', '--diff-filter=A', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
@@ -31,7 +28,7 @@ module.exports = async ( repo, relativeFile ) => {
 
   // git was unable to get any information about the file. Perhaps it is new or not yet tracked in get? Use the current year.
   if ( startDate === '' && endDate === '' ) {
-    dateString = new Date().getFullYear();
+    dateString = new Date().getFullYear() + '';
   }
   else {
 
