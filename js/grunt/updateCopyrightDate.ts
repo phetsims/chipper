@@ -7,18 +7,15 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
 const getCopyrightLine = require( './getCopyrightLine' );
 const fs = require( 'fs' );
 
 /**
- * @public
- * @param {string} repo - The repository of the file to update (should be a git root)
- * @param {string} relativeFile - The filename relative to the repository root.
- * @param {boolean} silent - if true, no console logging will occur
- * @returns {Promise}
+ * @param repo - The repository of the file to update (should be a git root)
+ * @param relativeFile - The filename relative to the repository root.
+ * @param silent - if true, no console logging will occur
  */
-module.exports = async ( repo, relativeFile, silent = false ) => {
+export default async ( repo: string, relativeFile: string, silent = false ): Promise<void> => {
   const absPath = `../${repo}/${relativeFile}`;
   const fileText = fs.readFileSync( absPath, 'utf8' );
 

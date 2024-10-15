@@ -8,8 +8,7 @@
  */
 
 import * as grunt from 'grunt';
-
-const updateCopyrightDate = require( './updateCopyrightDate' );
+import updateCopyrightDate from './updateCopyrightDate';
 
 /**
  * @param repo - The repository name for the files to update
