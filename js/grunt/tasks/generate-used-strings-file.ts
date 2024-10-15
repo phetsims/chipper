@@ -2,11 +2,12 @@
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import webpackBuild from '../webpackBuild';
+import getLocalesFromRepository from '../getLocalesFromRepository';
 
 const getPhetLibs = require( '../getPhetLibs' );
 const fs = require( 'fs' );
 const ChipperConstants = require( '../../common/ChipperConstants' );
-const getLocalesFromRepository = require( '../getLocalesFromRepository' );
+
 const getStringMap = require( '../getStringMap' );
 
 /**

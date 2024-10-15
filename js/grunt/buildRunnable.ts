@@ -15,6 +15,7 @@ import getInitializationScript from './getInitializationScript';
 import packageXHTML from './packageXHTML';
 import reportUnusedStrings from './reportUnusedStrings';
 import getDependencies from './getDependencies';
+import getLocalesFromRepository from './getLocalesFromRepository';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -23,7 +24,7 @@ const copyDirectory = require( './copyDirectory' );
 const copySupplementalPhetioFiles = require( './copySupplementalPhetioFiles' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
-const getLocalesFromRepository = require( './getLocalesFromRepository' );
+
 const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );
 const getPrunedLocaleData = require( './getPrunedLocaleData' );

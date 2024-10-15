@@ -1,28 +1,24 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
-/**
- * @author Chris Malley (PixelZoom, Inc.)
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
- */
-
-
 const assert = require( 'assert' );
 const grunt = require( 'grunt' );
 
-/*
+/**
  * Gets the locales from a repository, by inspecting the names of the string files in babel for that repository.
- * @public
  *
- * @param {string} repo - name of the repository to get locales from
+ * @param repo - name of the repository to get locales from
+ *
+ * @author Chris Malley (PixelZoom, Inc.)
+ * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-module.exports = function( repo ) {
+export default function( repo: string ): string[] {
 
   // confirm that the repository has a strings directory
   const stringsDirectory = `../babel/${repo}`;
   assert( grunt.file.isDir(), `${stringsDirectory} is not a directory` );
 
   // Get names of string files.
-  const stringFiles = grunt.file.expand( `${stringsDirectory}/${repo}-strings_*.json` );
+  const stringFiles: string[] = grunt.file.expand( `${stringsDirectory}/${repo}-strings_*.json` );
 
   // Don't fail out if there are no string files, as this is a normal condition when building new simulations
   if ( stringFiles.length === 0 ) {
@@ -38,4 +34,4 @@ module.exports = function( repo ) {
   assert( locales.length > 0, `no locales found in ${stringsDirectory}` );
 
   return locales;
-};
+}
