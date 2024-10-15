@@ -14,9 +14,9 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 
 /**
- * @param {string} repo - repo to generate strings for
+ * @param repo - repo to generate strings for
  */
-module.exports = repo => {
+export default ( repo: string ): void => {
 
   const start = Date.now();
 
@@ -29,7 +29,7 @@ module.exports = repo => {
   const conglomerateStringFileName = `${repo}_all.json`;
 
   // Create an empty object for the conglomerate string file that we will add to later.
-  const conglomerateStringObject = {};
+  const conglomerateStringObject: Record<string, object> = {};
 
   // Get an array of files (string files) in the repo subdirectory.
   const babelRepoPath = path.join( babelPath, repo );
@@ -39,7 +39,7 @@ module.exports = repo => {
 
   const stringFiles = [];
   try {
-    const paths = fs.readdirSync( babelRepoPath );
+    const paths: string[] = fs.readdirSync( babelRepoPath );
     stringFiles.push( ...paths.map( p => path.join( babelRepoPath, p ) ) );
   }
   catch( e ) {
@@ -78,7 +78,7 @@ module.exports = repo => {
 
       // Add only the values of the string file to the new conglomerate string file, and ignore other fields, such as
       // the history.
-      const objectToAddToLocale = {};
+      const objectToAddToLocale: Record<string, object> = {};
       for ( const stringKey of Object.keys( parsedStringFileContents ) ) {
         objectToAddToLocale[ stringKey ] = {
           value: parsedStringFileContents[ stringKey ].value
