@@ -1,14 +1,5 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import assert from 'assert';
-import * as grunt from 'grunt';
-import buildLocal from '../../../../perennial-alias/js/grunt/tasks/util/buildLocal';
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
-import buildRunnable from '../buildRunnable';
-import reportTscResults from '../reportTscResults';
-
 /**
  * Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
  * Runnable build options:
@@ -32,7 +23,16 @@ import reportTscResults from '../reportTscResults';
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+import assert from 'assert';
+import * as grunt from 'grunt';
+import buildLocal from '../../../../perennial-alias/js/grunt/tasks/util/buildLocal';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import buildRunnable from '../buildRunnable';
 import buildStandalone from '../buildStandalone';
+import reportTscResults from '../reportTscResults';
 
 const minify = require( '../minify' );
 const tsc = require( '../tsc' );
