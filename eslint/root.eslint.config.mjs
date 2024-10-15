@@ -81,7 +81,10 @@ export default [
     ]
   },
   {
-    files: [ 'Gruntfile.js' ],
+    files: [
+      '**/Gruntfile.js',
+      '**/eslint.config.mjs'
+    ],
     languageOptions: nodeLanguageOptions
   },
   {
