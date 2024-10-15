@@ -60,7 +60,7 @@ const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
       const stringsFilename = path.normalize( `../${locale === ChipperConstants.FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json` );
       let fileContents;
       try {
-        fileContents = grunt.file.readJSON( stringsFilename );
+        fileContents = JSON.parse( fs.readFileSync( stringsFilename, 'utf-8' ) );
       }
       catch( error ) {
         grunt.log.debug( `missing string file: ${stringsFilename}` );
