@@ -5,7 +5,10 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-module.exports = ( results, grunt ) => {
+export default (
+  results: { stderr: string; stdout: string; code: number; time: number },
+  grunt: { fail: { fatal: ( s: string ) => void }; log: { ok: ( s: string ) => void } }
+): void => {
   if ( ( results.stderr && results.stderr.length > 0 ) || results.code !== 0 ) {
     grunt.fail.fatal( `tsc failed with code: ${results.code}
 stdout:

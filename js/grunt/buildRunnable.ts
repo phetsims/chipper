@@ -10,8 +10,8 @@ import * as ChipperConstants from '../common/ChipperConstants';
 import webpackBuild from './webpackBuild';
 import generateThumbnails from './generateThumbnails';
 import generateTwitterCard from './generateTwitterCard';
+import _ from 'lodash';
 
-const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const getLicenseEntry = require( '../common/getLicenseEntry' );

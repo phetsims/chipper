@@ -7,6 +7,7 @@ import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import buildRunnable from '../buildRunnable';
+import reportTscResults from '../reportTscResults';
 
 /**
  * Builds the repository. Depending on the repository type (runnable/wrapper/standalone), the result may vary.
@@ -36,7 +37,6 @@ const buildStandalone = require( '../buildStandalone' );
 
 const minify = require( '../minify' );
 const tsc = require( '../tsc' );
-const reportTscResults = require( '../reportTscResults' );
 const path = require( 'path' );
 const fs = require( 'fs' );
 const getPhetLibs = require( '../getPhetLibs' );

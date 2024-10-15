@@ -25,7 +25,7 @@ const buildStandalone = require( '../grunt/buildStandalone' );
 const minify = require( '../grunt/minify' );
 const marked = require( 'marked' );
 const tsc = require( './tsc' );
-const reportTscResults = require( './reportTscResults' );
+import reportTscResults from './reportTscResults';
 const getPhetLibs = require( './getPhetLibs' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
