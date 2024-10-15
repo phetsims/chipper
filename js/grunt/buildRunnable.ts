@@ -11,6 +11,7 @@ import webpackBuild from './webpackBuild';
 import generateThumbnails from './generateThumbnails';
 import generateTwitterCard from './generateTwitterCard';
 import _ from 'lodash';
+import getInitializationScript from './getInitializationScript';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -21,7 +22,6 @@ const copySupplementalPhetioFiles = require( './copySupplementalPhetioFiles' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
 const getDependencies = require( './getDependencies' );
-const getInitializationScript = require( './getInitializationScript' );
 const getLocalesFromRepository = require( './getLocalesFromRepository' );
 const getPhetLibs = require( './getPhetLibs' );
 const getPreloads = require( './getPreloads' );

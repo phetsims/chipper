@@ -9,7 +9,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
 // modules
 const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants' );
@@ -19,14 +18,12 @@ const grunt = require( 'grunt' );
 const transpile = require( './transpile' );
 const stringEncoding = require( '../common/stringEncoding' );
 
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+
 /**
  * Returns a string for the JS of the initialization script.
- * @public
- *
- * @param {Object} config
- * @returns {string}
  */
-module.exports = function( config ) {
+export default function( config: IntentionalAny ): string {
   const {
     brand, // {string}, e.g. 'phet', 'phet-io'
     repo, // {string}
@@ -92,4 +89,4 @@ module.exports = function( config ) {
     PHET_PACKAGE_OBJECT: JSON.stringify( packageObject ),
     IE_DETECTION_SCRIPT: transpile( grunt.file.read( '../chipper/js/ie-detection.js' ), true )
   } );
-};
+}
