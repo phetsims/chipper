@@ -10,21 +10,17 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import getLicenseKeys from './getLicenseKeys';
 
 // modules
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
-const getLicenseKeys = require( './getLicenseKeys' );
 const grunt = require( 'grunt' );
 
 const THIRD_PARTY_LICENSES_FILENAME = '../sherpa/lib/license.json'; // contains third-party license info
 const LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
-/**
- * @param {string} repo
- * @param {string} brand
- */
-module.exports = function( repo, brand ) {
+export default function( repo: string, brand: string ): Record<string, string> {
 
   // Read license info
   const licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );
@@ -42,12 +38,12 @@ module.exports = function( repo, brand ) {
   }
 
   // Sort keys and remove duplicates
-  licenseKeys = _.uniq( _.sortBy( licenseKeys, key => key.toUpperCase() ) );
+  licenseKeys = _.uniq( _.sortBy( licenseKeys, ( key: string ) => key.toUpperCase() ) );
 
   grunt.log.debug( `licenseKeys = ${licenseKeys.toString()}` );
 
   // Combine all licenses into 1 object literal
-  const libEntries = {};
+  const libEntries: Record<string, string> = {};
   licenseKeys.forEach( key => {
 
     const license = licenseInfo[ key ];
@@ -67,4 +63,4 @@ module.exports = function( repo, brand ) {
   } );
 
   return libEntries;
-};
+}

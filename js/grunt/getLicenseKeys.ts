@@ -15,12 +15,8 @@ const grunt = require( 'grunt' );
 
 /**
  * Gets the license keys for sherpa (third-party) libs that are used.
- *
- * @param {string} repo
- * @param {string} brand
- * @returns {Array.<string>}
  */
-module.exports = function( repo, brand ) {
+export default function( repo: string, brand: string ): string[] {
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   let buildObject;
   try {
@@ -32,7 +28,7 @@ module.exports = function( repo, brand ) {
   const preload = getPreloads( repo, brand );
 
   // start with package.json
-  let licenseKeys = packageObject.phet.licenseKeys || [];
+  let licenseKeys: string[] = packageObject.phet.licenseKeys || [];
 
   // add common and brand-specific entries from build.json
   [ 'common', brand ].forEach( id => {
@@ -43,7 +39,7 @@ module.exports = function( repo, brand ) {
 
   // Extract keys from preloads and webpack-supported imports for
   // sherpa (third-party) dependencies.
-  const allPaths = preload.concat( Object.values( webpackGlobalLibraries ).map( path => `../${path}` ) );
+  const allPaths: string[] = preload.concat( Object.values( webpackGlobalLibraries ).map( path => `../${path}` ) );
 
   allPaths.forEach( path => {
     if ( path.includes( '/sherpa/' ) ) {
@@ -54,5 +50,5 @@ module.exports = function( repo, brand ) {
   } );
 
   // sort and remove duplicates
-  return _.uniq( _.sortBy( licenseKeys, key => key.toUpperCase() ) );
-};
+  return _.uniq( _.sortBy( licenseKeys, ( key: string ) => key.toUpperCase() ) );
+}

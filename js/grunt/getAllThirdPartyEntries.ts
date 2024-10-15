@@ -6,8 +6,7 @@
 
 import * as grunt from 'grunt';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-
-const getThirdPartyLibEntries = require( './getThirdPartyLibEntries' );
+import getThirdPartyLibEntries from './getThirdPartyLibEntries';
 
 /**
  * Returns an object with information about third-party license entries.
