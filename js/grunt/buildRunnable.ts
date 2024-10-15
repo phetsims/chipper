@@ -13,6 +13,7 @@ import generateTwitterCard from './generateTwitterCard';
 import _ from 'lodash';
 import getInitializationScript from './getInitializationScript';
 import packageXHTML from './packageXHTML';
+import reportUnusedStrings from './reportUnusedStrings';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -37,7 +38,6 @@ const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line p
 const packageRunnable = require( './packageRunnable' );
 
 const reportUnusedMedia = require( './reportUnusedMedia' );
-const reportUnusedStrings = require( './reportUnusedStrings' );
 
 const zlib = require( 'zlib' );
 const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog' );

@@ -9,27 +9,23 @@
  *
  * See https://github.com/phetsims/tasks/issues/460
  *
- * @author Jesse Greenberg
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
-
 
 const grunt = require( 'grunt' );
 
 /**
- * @param {string} repo
- * @param {string} requirejsNamespace
- * @param {Object} usedStringMap - Maps full keys to string values, FOR USED STRINGS ONLY
+ * @param repo
+ * @param requirejsNamespace
+ * @param usedStringMap - Maps full keys to string values, FOR USED STRINGS ONLY
  */
-module.exports = function( repo, requirejsNamespace, usedStringMap ) {
+export default function( repo: string, requirejsNamespace: string, usedStringMap: Record<string, string> ): void {
 
   /**
    * Builds a string map recursively from a string-file-like object.
-   *
-   * @param {Object} object
-   * @returns {Object}
    */
-  const buildStringMap = object => {
-    const result = {};
+  const buildStringMap = ( object: Record<string, string> ): Record<string, string> => {
+    const result: Record<string, string> = {};
 
     if ( typeof object.value === 'string' ) {
       result[ '' ] = object.value;
@@ -54,4 +50,4 @@ module.exports = function( repo, requirejsNamespace, usedStringMap ) {
       grunt.log.warn( `Unused string: key=${availableStringKey}, value=${availableStringMap[ availableStringKey ]}` );
     }
   } );
-};
+}
