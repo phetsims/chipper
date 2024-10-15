@@ -18,6 +18,5 @@ export const clean = ( async () => {
   if ( grunt.file.exists( buildDirectory ) ) {
     grunt.file.delete( buildDirectory );
   }
-  grunt.file.mkdir( buildDirectory );
   fs.mkdirSync( buildDirectory, { recursive: true } );
 } )();
