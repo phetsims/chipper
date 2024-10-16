@@ -58,7 +58,12 @@ module.exports = {
 
             if ( rhs && rhs.indexOf( '!' ) < 0 ) {
               const lastSlash = rhs.lastIndexOf( '/' );
-              const tail = rhs.substring( lastSlash + 1 );
+              let tail = rhs.substring( lastSlash + 1 );
+
+              // Support keeping a js extension in require statements
+              if ( tail.includes( '.' ) ) {
+                tail = tail.substring( 0, tail.lastIndexOf( '.' ) );
+              }
 
               const isLodash = lhs === '_';
               if ( tail !== lhs && !isLodash ) {
