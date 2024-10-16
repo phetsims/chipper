@@ -1,5 +1,4 @@
 // Copyright 2024, University of Colorado Boulder
-
 /**
  * Type checks *.ts files. Named after deno check. Automatically uses -b as appropriate.
  *
@@ -12,10 +11,12 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+import { spawn } from 'child_process';
 import fs from 'fs';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.ts';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-import { spawn } from 'child_process';
+import fixEOL from '../fixEOL.js';
 
 const repo = getRepo();
 
@@ -92,5 +93,5 @@ function writeEverythingTSConfigFile(): void {
  */
 ${JSON.stringify( json, null, 2 )}`;
 
-  fs.writeFileSync( '../chipper/tsconfig/all/tsconfig.json', fileOutput );
+  fs.writeFileSync( '../chipper/tsconfig/all/tsconfig.json', fixEOL( fileOutput ) );
 }
