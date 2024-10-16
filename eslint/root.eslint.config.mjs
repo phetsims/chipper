@@ -7,6 +7,7 @@ import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptEslintParser from '@typescript-eslint/parser';
 import html from 'eslint-plugin-html';
 import globals from 'globals';
+import getNodeConfiguration from './getNodeConfiguration.mjs';
 import phetSimBrowserGlobalsEslintConfig from './phetSimBrowserGlobals.eslint.config.mjs';
 
 import additionalBadText from './rules/additional-bad-text.js';
@@ -21,11 +22,11 @@ import defaultExportClassShouldRegisterNamespace from './rules/default-export-cl
 import defaultExportMatchFilename from './rules/default-export-match-filename.js';
 import defaultImportMatchFilename from './rules/default-import-match-filename.js';
 import explicitMethodReturnType from './rules/explicit-method-return-type.js';
+import gruntTaskKabobCase from './rules/grunt-task-kabob-case.js';
 import jsxTextElementsContainMatchingClass from './rules/jsx-text-elements-contain-matching-class.js';
 import namespaceMatch from './rules/namespace-match.js';
 import noHtmlConstructors from './rules/no-html-constructors.js';
 import noImportFromGruntTasks from './rules/no-import-from-grunt-tasks.js';
-import gruntTaskKabobCase from './rules/grunt-task-kabob-case.js';
 import noInstanceofArray from './rules/no-instanceof-array.js';
 import noObjectSpreadOnNonLiterals from './rules/no-object-spread-on-non-literals.js';
 import noPropertyInRequireStatement from './rules/no-property-in-require-statement.js';
@@ -43,12 +44,6 @@ import tandemNameShouldMatch from './rules/tandem-name-should-match.js';
 import todoShouldHaveIssue from './rules/todo-should-have-issue.js';
 import uppercaseStaticsShouldBeReadonly from './rules/uppercase-statics-should-be-readonly.js';
 import visibilityAnnotation from './rules/visibility-annotation.js';
-
-export const nodeLanguageOptions = {
-  globals: {
-    ...globals.node
-  }
-};
 
 /**
  * The base eslint configuration for the PhET projects.
@@ -82,13 +77,14 @@ export default [
       '*_a11y_view.html'
     ]
   },
-  {
+
+  // Use node configuration just for these two files
+  ...getNodeConfiguration( {
     files: [
       '**/Gruntfile.js',
       '**/eslint.config.mjs'
-    ],
-    languageOptions: nodeLanguageOptions
-  },
+    ]
+  } ),
   {
     plugins: {
       phet: {

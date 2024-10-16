@@ -8,7 +8,7 @@
  */
 
 import { getBrowserConfiguration } from './eslint/browser.eslint.config.mjs';
-import { getNodeConfiguration } from './eslint/node.eslint.config.mjs';
+import getNodeConfiguration from './eslint/getNodeConfiguration.mjs';
 import rootEslintConfig from './eslint/root.eslint.config.mjs';
 
 const browserFiles = [
