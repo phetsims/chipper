@@ -74,7 +74,7 @@ function writeEverythingTSConfigFile(): void {
 
   const filteredRepos = activeRepos.filter( repo => {
     return fs.existsSync( `../${repo}/tsconfig.json` ) &&
-           // TODO: include these repos, see https://github.com/phetsims/chipper/issues/1487
+           // TODO: include these repos, see https://github.com/phetsims/phet-lib/issues/7 https://github.com/phetsims/phet-vite-demo/issues/2
            repo !== 'phet-lib' && repo !== 'phet-vite-demo';
   } );
 
