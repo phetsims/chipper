@@ -23,7 +23,8 @@
 
 const path = require( 'path' );
 const execute = require( '../../../perennial-alias/js/common/execute' );
-const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog' );
+const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog.js' );
+const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand.js' );
 
 // These repos do not require precommit hooks to be run
 const optOutRepos = [
@@ -56,7 +57,7 @@ const optOutRepos = [
           task,
           async () => {
             const results = await execute(
-              'node',
+              tsxCommand,
               [
                 '../chipper/js/scripts/hook-pre-commit-task.js',
                 `--command=${task}`,
