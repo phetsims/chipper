@@ -1377,7 +1377,7 @@ export default [
       '@typescript-eslint/no-misused-new': 'error',
 
       // Disallow Promises in places not designed to handle them ✅  💭
-      '@typescript-eslint/no-misused-promises': 'off', // TODO: Discuss this rule.  6 failures
+      '@typescript-eslint/no-misused-promises': 'off', // TODO: Discuss this rule.  6 failures https://github.com/phetsims/chipper/issues/1277
 
       // Disallow custom TypeScript modules and namespaces ✅
       '@typescript-eslint/no-namespace': 'error',
@@ -1410,10 +1410,10 @@ export default [
       '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'error',
 
       // Disallow conditionals where the type is always truthy or always falsy 🔒 🔧 💭
-      '@typescript-eslint/no-unnecessary-condition': 'off', // TODO: Would be nice to enable but 500 problems may prevent us
+      '@typescript-eslint/no-unnecessary-condition': 'off', // TODO: Would be nice to enable but 500 problems may prevent us https://github.com/phetsims/chipper/issues/1277
 
       // Disallow unnecessary namespace qualifiers  🔧 💭
-      '@typescript-eslint/no-unnecessary-qualifier': 'off', // TODO: Enable this rule
+      '@typescript-eslint/no-unnecessary-qualifier': 'off', // TODO: Enable this rule https://github.com/phetsims/chipper/issues/1277
 
       // Disallow type arguments that are equal to the default 🔒 🔧 💭
       '@typescript-eslint/no-unnecessary-type-arguments': 'error',
@@ -1425,19 +1425,19 @@ export default [
       '@typescript-eslint/no-unnecessary-type-constraint': 'error',
 
       // Disallow calling a function with a value with type any ✅  💭
-      '@typescript-eslint/no-unsafe-argument': 'off', // TODO: We should enable this rule, but it may be tricky since some of the any come from JS files. 412 failures
+      '@typescript-eslint/no-unsafe-argument': 'off', // TODO: We should enable this rule, but it may be tricky since some of the any come from JS files. 412 failures https://github.com/phetsims/chipper/issues/1277
 
       // Disallow assigning a value with type any to variables and properties ✅  💭
-      '@typescript-eslint/no-unsafe-assignment': 'off', // TODO: Enable this rule since it will help us avoid any.  547 problems, will need to chip-away
+      '@typescript-eslint/no-unsafe-assignment': 'off', // TODO: Enable this rule since it will help us avoid any.  547 problems, will need to chip-away https://github.com/phetsims/chipper/issues/1277
 
       // Disallow calling a value with type any ✅  💭
-      '@typescript-eslint/no-unsafe-call': 'off', // TODO: Enable this rule since it will help us avoid any
+      '@typescript-eslint/no-unsafe-call': 'off', // TODO: Enable this rule since it will help us avoid any https://github.com/phetsims/chipper/issues/1277
 
       // Disallow member access on a value with type any ✅  💭
-      '@typescript-eslint/no-unsafe-member-access': 'off', // TODO: Enable this rule since it will help us avoid any
+      '@typescript-eslint/no-unsafe-member-access': 'off', // TODO: Enable this rule since it will help us avoid any https://github.com/phetsims/chipper/issues/1277
 
       // Disallow returning a value with type any from a function ✅  💭
-      '@typescript-eslint/no-unsafe-return': 'off', // TODO: Enable this rule since it will help us avoid any
+      '@typescript-eslint/no-unsafe-return': 'off', // TODO: Enable this rule since it will help us avoid any https://github.com/phetsims/chipper/issues/1277
 
       // Disallow empty exports that don't change anything in a module file  🔧 🛠
       '@typescript-eslint/no-useless-empty-export': 'error',
@@ -1449,7 +1449,7 @@ export default [
       '@typescript-eslint/non-nullable-type-assertion-style': 'error',
 
       // Require or disallow parameter properties in class constructors
-      '@typescript-eslint/parameter-properties': 'off', // TODO: Let's discuss as a team. 16 failures.  Discuss parameter properties to discuss with the team.  Write up results in the typescript-conventions doc
+      '@typescript-eslint/parameter-properties': 'off', // TODO: Let's discuss as a team. 16 failures.  Discuss parameter properties to discuss with the team.  Write up results in the typescript-conventions doc https://github.com/phetsims/chipper/issues/1277
 
       // Enforce the use of as const over literal type ✅ 🔧 🛠
       '@typescript-eslint/prefer-as-const': 'error',
@@ -1458,10 +1458,10 @@ export default [
       '@typescript-eslint/prefer-enum-initializers': 'error',
 
       // Enforce the use of for-of loop over the standard for loop where possible 🔒
-      '@typescript-eslint/prefer-for-of': 'off', // TODO: We agreed to enable this rule.  It will require chip-away since it has no autofix.  289 failures.
+      '@typescript-eslint/prefer-for-of': 'off', // TODO: We agreed to enable this rule.  It will require chip-away since it has no autofix.  289 failures. https://github.com/phetsims/chipper/issues/1277
 
       // Enforce using function types instead of interfaces with call signatures 🔒 🔧
-      '@typescript-eslint/prefer-function-type': 'off', // TODO: We agreed to enable this rule.  4 failures can be autofixed.
+      '@typescript-eslint/prefer-function-type': 'off', // TODO: We agreed to enable this rule.  4 failures can be autofixed. https://github.com/phetsims/chipper/issues/1277
 
       // Enforce includes method over indexOf method 🔒 🔧 💭
       '@typescript-eslint/prefer-includes': 'error',
@@ -1473,10 +1473,10 @@ export default [
       '@typescript-eslint/prefer-namespace-keyword': 'error',
 
       // Enforce using the nullish coalescing operator instead of logical chaining 🔒 🛠 💭
-      '@typescript-eslint/prefer-nullish-coalescing': 'off', // TODO: Enable rule
+      '@typescript-eslint/prefer-nullish-coalescing': 'off', // TODO: Enable rule https://github.com/phetsims/chipper/issues/1277
 
       // Enforce using concise optional chain expressions instead of chained logical ands 🔒 🛠
-      '@typescript-eslint/prefer-optional-chain': 'off', // TODO: We would like to discuss as a team.  It seems easier to read and write, so we would like to pursue it. 3227 failures.  Many cases may be assertions.  But some developers may want to use && in some cases.
+      '@typescript-eslint/prefer-optional-chain': 'off', // TODO: We would like to discuss as a team.  It seems easier to read and write, so we would like to pursue it. 3227 failures.  Many cases may be assertions.  But some developers may want to use && in some cases. https://github.com/phetsims/chipper/issues/1277
 
       // Require private members to be marked as readonly if they're never modified outside of the constructor  🔧 💭
       '@typescript-eslint/prefer-readonly': 'off',
@@ -1485,7 +1485,7 @@ export default [
       '@typescript-eslint/prefer-readonly-parameter-types': 'off',
 
       // Enforce using type parameter when calling Array#reduce instead of casting 🔒 🔧 💭
-      '@typescript-eslint/prefer-reduce-type-parameter': 'off', // TODO: Enable this rule
+      '@typescript-eslint/prefer-reduce-type-parameter': 'off', // TODO: Enable this rule https://github.com/phetsims/chipper/issues/1277
 
       // Enforce RegExp#exec over String#match if no global flag is provided  🔧 💭
       '@typescript-eslint/prefer-regexp-exec': 'off',
@@ -1515,16 +1515,16 @@ export default [
       '@typescript-eslint/sort-type-union-intersection-members': 'off', // We agreed to sort things semantically rather than alphabetically
 
       // Disallow certain types in boolean expressions  🔧 🛠 💭
-      '@typescript-eslint/strict-boolean-expressions': 'off', // TODO: Is this a good rule for our team?
+      '@typescript-eslint/strict-boolean-expressions': 'off', // TODO: Is this a good rule for our team? https://github.com/phetsims/chipper/issues/1277
 
       // Require switch-case statements to be exhaustive with union type  🛠 💭
-      '@typescript-eslint/switch-exhaustiveness-check': 'off', // TODO: Enable rule
+      '@typescript-eslint/switch-exhaustiveness-check': 'off', // TODO: Enable rule https://github.com/phetsims/chipper/issues/1277
 
       // Disallow certain triple slash directives in favor of ES6-style import declarations ✅
       '@typescript-eslint/triple-slash-reference': 'error',
 
       // Require consistent spacing around type annotations  🔧
-      '@typescript-eslint/type-annotation-spacing': 'off', // TODO: Investigate.  7 failures
+      '@typescript-eslint/type-annotation-spacing': 'off', // TODO: Investigate.  7 failures https://github.com/phetsims/chipper/issues/1277
 
       // Require type annotations in certain places
       '@typescript-eslint/typedef': 'error',
@@ -1533,7 +1533,7 @@ export default [
       '@typescript-eslint/unbound-method': 'off',
 
       // Disallow two overloads that could be unified into one with a union or an optional/rest parameter 🔒
-      '@typescript-eslint/unified-signatures': 'off', // TODO: Investigate. Probably enable. 6 failures
+      '@typescript-eslint/unified-signatures': 'off', // TODO: Investigate. Probably enable. 6 failures https://github.com/phetsims/chipper/issues/1277
 
       ////////////////////////////////////////////////////////////////////////
       // Extension Rules
@@ -1572,7 +1572,7 @@ export default [
       '@typescript-eslint/init-declarations': 'off', // 237 Failures
 
       // Enforce consistent spacing before and after keywords  🔧
-      '@stylistic/keyword-spacing': [ 'error', { // TODO: Check this rule
+      '@stylistic/keyword-spacing': [ 'error', { // TODO: Check this rule https://github.com/phetsims/chipper/issues/1277
         before: true,
         after: true,
         overrides: {
@@ -1596,7 +1596,7 @@ export default [
 
       // Disallow duplicate imports
       'no-duplicate-imports': 'off',
-      '@typescript-eslint/no-duplicate-imports': 'off', // TODO: Deprecated. Investigate this instead https://github.com/import-js/eslint-plugin-import/blob/HEAD/docs/rules/no-duplicates.md
+      '@typescript-eslint/no-duplicate-imports': 'off', // TODO: Deprecated. Investigate this instead https://github.com/import-js/eslint-plugin-import/blob/HEAD/docs/rules/no-duplicates.md https://github.com/phetsims/chipper/issues/1277
 
       // Disallow empty functions ✅
       'no-empty-function': 'off',
@@ -1643,7 +1643,7 @@ export default [
 
       // Disallow throwing literals as exceptions 🔒  💭
       'no-throw-literal': 'off',
-      '@typescript-eslint/no-throw-literal': 'off', // TODO: Enable rule
+      '@typescript-eslint/no-throw-literal': 'off', // TODO: Enable rule https://github.com/phetsims/chipper/issues/1277
 
       // Disallow unused expressions
       'no-unused-expressions': 'off',
@@ -1682,7 +1682,7 @@ export default [
 
       // Enforce consistent returning of awaited values  🔧 🛠 💭
       'return-await': 'off',
-      '@typescript-eslint/return-await': 'off', // TODO: Enable rule
+      '@typescript-eslint/return-await': 'off', // TODO: Enable rule https://github.com/phetsims/chipper/issues/1277
 
       // Require or disallow semicolons instead of ASI  🔧
       '@stylistic/semi': [ 'error', 'always' ],
