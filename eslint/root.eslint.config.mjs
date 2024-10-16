@@ -628,7 +628,7 @@ export default [
       'no-octal-escape': 'error',
 
       // Disallow reassigning `function` parameters
-      'no-param-reassign': 'off', // We reassign options frequently TODO: Revisit this
+      'no-param-reassign': 'off', // We reassign options frequently
 
       // Disallow the unary operators `++` and `--`
       'no-plusplus': 'off',
