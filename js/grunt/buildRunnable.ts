@@ -6,17 +6,17 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+import fs from 'fs';
+import _ from 'lodash';
 import * as ChipperConstants from '../common/ChipperConstants';
-import webpackBuild from './webpackBuild';
 import generateThumbnails from './generateThumbnails';
 import generateTwitterCard from './generateTwitterCard';
-import _ from 'lodash';
+import getDependencies from './getDependencies';
 import getInitializationScript from './getInitializationScript';
+import getLocalesFromRepository from './getLocalesFromRepository';
 import packageXHTML from './packageXHTML';
 import reportUnusedStrings from './reportUnusedStrings';
-import getDependencies from './getDependencies';
-import getLocalesFromRepository from './getLocalesFromRepository';
-import fs from 'fs';
+import webpackBuild from './webpackBuild';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -68,14 +68,13 @@ export type MinifyOptions = {
  * @param allHTML - If the _all.html file should be generated
  * @param brand
  * @param localesOption - e.g,. '*', 'en,es', etc.
- * @param buildLocal
  * @param encodeStringMap
  * @param compressScripts
  * @param profileFileSize
  * @returns - Does not resolve a value
  */
 export default async function( repo: string, minifyOptions: MinifyOptions, allHTML: boolean, brand: string, localesOption: string,
-                               buildLocal: boolean, encodeStringMap: boolean, compressScripts: boolean, profileFileSize: boolean,
+                               encodeStringMap: boolean, compressScripts: boolean, profileFileSize: boolean,
                                noTSC: boolean ): Promise<void> {
 
   if ( brand === 'phet-io' ) {
@@ -421,7 +420,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   }
 
   if ( brand === 'phet-io' ) {
-    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, buildLocal, true, noTSC );
+    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, true, noTSC );
   }
 
   // Thumbnails and twitter card

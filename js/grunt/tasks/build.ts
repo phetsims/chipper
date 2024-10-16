@@ -26,7 +26,6 @@
 
 import assert from 'assert';
 import * as grunt from 'grunt';
-import buildLocal from '../../../../perennial-alias/js/grunt/tasks/util/buildLocal';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
@@ -66,7 +65,7 @@ export const build = ( async () => {
     const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
     // Run the type checker first.
-    const brands = getBrands( grunt, repo, buildLocal );
+    const brands = getBrands( grunt, repo );
 
     const noTSC = getOption( 'noTSC' );
     !noTSC && await phetTimingLog.startAsync( 'tsc', async () => {
@@ -128,7 +127,7 @@ export const build = ( async () => {
         console.log( `Building brand: ${brand}` );
 
         await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
-          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, buildLocal, encodeStringMap, compressScripts, profileFileSize, noTSC );
+          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, noTSC );
         } );
       }
     }

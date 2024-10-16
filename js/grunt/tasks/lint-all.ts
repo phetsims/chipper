@@ -8,7 +8,6 @@
 
 import assert from 'assert';
 import * as grunt from 'grunt';
-import buildLocal from '../../../../perennial-alias/js/grunt/tasks/util/buildLocal';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
@@ -25,7 +24,7 @@ assert( !getOption( 'patterns' ), 'patterns not support for lint-all' );
 
 const getPhetLibs = require( '../getPhetLibs' );
 
-const brands = getBrands( grunt, repo, buildLocal );
+const brands = getBrands( grunt, repo );
 
 /**
  * Executes the linting process immediately. Additionally returned in case the client wants to await the task.
