@@ -6,7 +6,7 @@ import rootEslintConfig from './root.eslint.config.mjs';
 
 /**
  * The config file to use for node-based code.
- * NOTE: No code should be added here!! Instead, add new configuration to `getNodeConfiguration` for reuse.
+ * NOTE: No code should NOT be added here!! Instead, add new configuration to `getNodeConfiguration` for reuse.
  * @author Michael Kauzmann (PhET Interactive Simulations
  * @author Sam Reid (PhET Interactive Simulations)
  */

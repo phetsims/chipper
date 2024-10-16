@@ -76,13 +76,7 @@ export default [
     ]
   },
 
-  // Use node configuration just for these two files
-  ...getNodeConfiguration( {
-    files: [
-      '**/Gruntfile.js',
-      '**/eslint.config.mjs'
-    ]
-  } ),
+  // Main config block that applies everywhere. Do NOT add `files` or `ignores` here.
   {
     plugins: {
       phet: {
@@ -184,7 +178,10 @@ export default [
     languageOptions: {
 
       // Without a parser, .js files are linted without es6 transpilation. Use the same parser that we use for TypeScript.
-      parser: typescriptEslintParser
+      parser: typescriptEslintParser,
+      globals: {
+        ...globals.es2018
+      }
     },
 
     // The rules are organized like they are in the list at https://eslint.org/docs/rules/
@@ -1140,35 +1137,8 @@ export default [
     }
   },
 
+  // TypeScript files config block.
   {
-
-    // Only HTML Files
-
-    files: [ '**/*.html' ],
-    rules: {
-      // DUPLICATION ALERT, this overrides the base rule, just for HTML.
-      'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 2, maxEOF: 1 } ],
-      'bad-sim-text': 'off'
-    },
-    // Lint javascript in HTML files too
-    plugins: {
-      html: html
-    }
-  },
-  {
-
-    // Not HTML files
-    ignores: [ '**/*.html' ],
-    rules: {
-
-      // Require or disallow newline at the end of files. Not a good fit for HTML, since that just moves the
-      // `<script>` tag up to the same line as the last javscript code
-      'eol-last': [ 'error', 'never' ]
-    }
-  },
-  {
-
-    // TypeScript files
     files: [
       '**/*.ts',
       '**/*.tsx'
@@ -1207,8 +1177,8 @@ export default [
       '@typescript-eslint/ban-ts-comment': [ 'error', {
         'ts-ignore': false, // Covered by '@typescript-eslint/prefer-ts-expect-error'
         'ts-check': true,
-        'ts-expect-error': false, // TODO: Chip way as dev team
-        'ts-nocheck': false // TODO: Chip way as dev team
+        'ts-expect-error': false, // TODO: Chip way as dev team https://github.com/phetsims/chipper/issues/1277
+        'ts-nocheck': false // TODO: Chip way as dev team https://github.com/phetsims/chipper/issues/1277
       } ],
 
       // Disallow // tslint:<rule-flag> comments 🔒 🔧
@@ -1322,7 +1292,7 @@ export default [
       '@typescript-eslint/method-signature-style': 'off', // We agreed to leave this as developer preference.  Some developers prefer to use method style in interfaces and property style in types, but the rule doesn't support that option.
 
       // Enforce naming conventions for everything across a codebase   💭
-      '@typescript-eslint/naming-convention': 'off', // TODO: We should decide on the conventions and enable this rule.
+      '@typescript-eslint/naming-convention': 'off', // TODO: We should decide on the conventions and enable this rule. https://github.com/phetsims/chipper/issues/1277
 
       // Require .toString() to only be called on objects which provide useful information when stringified 🔒  💭
       // TODO: See https://github.com/phetsims/chipper/issues/1466, this takes a very long time at runtime
@@ -1723,34 +1693,71 @@ export default [
       'phet/phet-io-object-options-should-not-pick-from-phet-io-object': 'error'
     }
   },
+
+  // Only HTML Files
   {
-    files: [
-      '**/*Tests.js',
-      '**/*tests.js'
-    ],
+    files: [ '**/*.html' ],
+    rules: {
+      // DUPLICATION ALERT, this overrides the base rule, just for HTML.
+      'no-multiple-empty-lines': [ 'error', { max: 2, maxBOF: 2, maxEOF: 1 } ],
+      'bad-sim-text': 'off'
+    },
+    // Lint javascript in HTML files too
+    plugins: {
+      html: html
+    }
+  },
+
+  // Not HTML files
+  {
+    ignores: [ '**/*.html' ],
     rules: {
 
-      // Test files are allowed to use bracket notation to circumnavigate private member access
-      'dot-notation': 'off'
+      // Require or disallow newline at the end of files. Not a good fit for HTML, since that just moves the
+      // `<script>` tag up to the same line as the last javscript code
+      'eol-last': [ 'error', 'never' ]
     }
-  }, {
+  },
+  phetSimBrowserGlobalsEslintConfig,
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // File-specific overrides should go after the main configuration and rules are set up (above).
+  //
+  //
+
+  // A couple of workarounds to make our testing files a bit easier.
+  {
     files: [
-      '**/*Tests.ts',
-      '**/*tests.ts'
+      '**/*[Tt]ests.{js,ts}'
     ],
     rules: {
 
       // Test files are allowed to use bracket notation to circumnavigate private member access. Typescript
       // doesn't complain when accessing a private member this way as an intentional "escape hatch".
       // Decision in https://github.com/phetsims/chipper/issues/1295, and see https://github.com/microsoft/TypeScript/issues/19335
+      'dot-notation': 'off',
       '@typescript-eslint/dot-notation': 'off'
     }
-  }, {
-    languageOptions: {
-      globals: {
-        ...globals.es2018
-      }
-    }
   },
-  phetSimBrowserGlobalsEslintConfig
+
+  // Use node configuration just for these two files
+  ...getNodeConfiguration( {
+    files: [
+      '**/Gruntfile.js',
+      '**/eslint.config.mjs'
+    ]
+  } ),
+
+  // For entry points like scripts and "grunt" tasks, we often end with a floating promise which is not a problem
+  {
+    files: [
+      '**/js/grunt/tasks/**/*',
+      '**/js/scripts/**/*'
+    ],
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'off'
+    }
+  }
 ];

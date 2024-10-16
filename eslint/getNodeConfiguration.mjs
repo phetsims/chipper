@@ -25,17 +25,6 @@ const getNodeConfiguration = ( pattern = {} ) => {
         'phet/grunt-task-kabob-case': 'error'
       },
       ...pattern
-    },
-    {
-
-      // For entry points like scripts and "grunt" tasks, we often end with a floating promise which is not a problem
-      files: [
-        '**/js/grunt/tasks/**/*',
-        '**/js/scripts/**/*'
-      ],
-      rules: {
-        '@typescript-eslint/no-floating-promises': 'off'
-      }
     }
   ];
 };
