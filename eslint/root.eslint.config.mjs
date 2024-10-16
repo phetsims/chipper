@@ -1,7 +1,5 @@
 // Copyright 2015-2021, University of Colorado Boulder
 
-/* eslint-disable phet/todo-should-have-issue */
-
 import stylisticEslintPlugin from '@stylistic/eslint-plugin';
 import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptEslintParser from '@typescript-eslint/parser';
@@ -108,7 +106,7 @@ export default [
           copyright: copyright,
           // Custom rule for checking the copyright.copyright
 
-          // Custom rule for checking TODOs have issues
+          // Custom rule for checking TO-DOs have issues
           'todo-should-have-issue': todoShouldHaveIssue,
 
           // Custom rule for ensuring that images and text use scenery node
@@ -749,7 +747,7 @@ export default [
       'no-void': 'error',
 
       // Disallow specified warning terms in comments
-      'no-warning-comments': 'off', // We don't want TODOs to be lint errors
+      'no-warning-comments': 'off', // We don't want TO-DOs to be lint errors
 
       // Disallow `with` statements
       'no-with': 'error',
@@ -1088,7 +1086,7 @@ export default [
       // Custom rule for checking the copyright.
       'phet/copyright': 'error',
 
-      // Custom rule for checking TODOs have issues
+      // Custom rule for checking TO-DOs have issues
       'phet/todo-should-have-issue': 'error',
 
       // Custom rule for ensuring that images and text use scenery node
@@ -1340,7 +1338,7 @@ export default [
       '@typescript-eslint/no-duplicate-enum-values': 'error',
 
       // Disallow using the delete operator on computed key expressions 🔒 🔧
-      '@typescript-eslint/no-dynamic-delete': 'off', // TODO: Code should use Map or Set instead.  22 failures at the moment.  We would like to enable this rule.
+      '@typescript-eslint/no-dynamic-delete': 'off', // TODO: Code should use Map or Set instead.  22 failures at the moment.  We would like to enable this rule. https://github.com/phetsims/chipper/issues/1277
 
       // Disallow the declaration of empty interfaces ✅ 🔧 🛠
       '@typescript-eslint/no-empty-interface': 'error',
@@ -1541,7 +1539,7 @@ export default [
       // it ignores the syntax, or it falsely reports against it. In these cases, we create what we call an extension
       // rule; a rule within our plugin that has the same functionality, but also supports TypeScript.
 
-      // You must disable the base rule to avoid duplicate/incorrect errors. TODO: Is that still necessary?
+      // You must disable the base rule to avoid duplicate/incorrect errors. TODO: Is that still necessary? https://github.com/phetsims/chipper/issues/1495
 
       // Enforce consistent brace style for blocks  🔧
       '@stylistic/brace-style': [ 'error', 'stroustrup', { allowSingleLine: true } ],
