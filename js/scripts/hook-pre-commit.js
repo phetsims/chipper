@@ -25,6 +25,7 @@ const path = require( 'path' );
 const execute = require( '../../../perennial-alias/js/common/execute' );
 const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog.js' );
 const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand.js' );
+const buildLocal = require( '../../../perennial-alias/js/common/buildLocal.js' );
 
 // These repos do not require precommit hooks to be run
 const optOutRepos = [
@@ -44,6 +45,26 @@ const optOutRepos = [
     process.exit( 0 );
   }
 
+  // By default, run all tasks
+  const tasksToRun = [ 'lint', 'report-media', 'tsc', 'qunit', 'phet-io-api-compare' ];
+
+  // check local preferences for overrides for which tasks to turn 'off'
+  const gitHooks = buildLocal.gitHooks;
+  if ( gitHooks ) {
+    Object.keys( gitHooks ).forEach( key => {
+      if ( gitHooks[ key ] === 'off' ) {
+        if ( key === '*' ) {
+          console.log( 'turning off all tasks' );
+          tasksToRun.length = 0;
+        }
+        else {
+          console.log( 'turning off task:', key );
+          tasksToRun.splice( tasksToRun.indexOf( key ), 1 );
+        }
+      }
+    } );
+  }
+
   const precommitSuccess = await phetTimingLog.startAsync( `hook-pre-commit repo="${repo}"`, async () => {
 
     // Console logging via --console
@@ -52,7 +73,7 @@ const optOutRepos = [
     outputToConsole && console.log( 'repo:', repo );
 
     const taskResults = await Promise.allSettled(
-      [ 'lint', 'report-media', 'tsc', 'qunit', 'phet-io-api-compare' ].map( task => {
+      tasksToRun.map( task => {
         return phetTimingLog.startAsync(
           task,
           async () => {
