@@ -75,7 +75,6 @@ module.exports = function( grunt ) {
     'production',
     'prototype',
     'create-sim',
-    'insert-require-statement',
     'lint-everything',
     'generate-data',
     'pdom-comparison',
