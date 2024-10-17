@@ -35,6 +35,10 @@ const optOutRepos = [
   'babel'
 ];
 
+// Console logging via --console
+const commandLineArguments = process.argv.slice( 2 );
+const outputToConsole = commandLineArguments.includes( '--console' );
+
 ( async () => {
 
   // Identify the current repo
@@ -54,11 +58,11 @@ const optOutRepos = [
     Object.keys( gitHooks ).forEach( key => {
       if ( gitHooks[ key ] === 'off' ) {
         if ( key === '*' ) {
-          console.log( 'turning off all tasks' );
+          outputToConsole && console.log( 'turning off all tasks' );
           tasksToRun.length = 0;
         }
         else {
-          console.log( 'turning off task:', key );
+          outputToConsole && console.log( 'turning off task:', key );
           tasksToRun.splice( tasksToRun.indexOf( key ), 1 );
         }
       }
@@ -67,9 +71,6 @@ const optOutRepos = [
 
   const precommitSuccess = await phetTimingLog.startAsync( `hook-pre-commit repo="${repo}"`, async () => {
 
-    // Console logging via --console
-    const commandLineArguments = process.argv.slice( 2 );
-    const outputToConsole = commandLineArguments.includes( '--console' );
     outputToConsole && console.log( 'repo:', repo );
 
     const taskResults = await Promise.allSettled(
