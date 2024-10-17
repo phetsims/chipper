@@ -20,7 +20,7 @@ import defaultExportClassShouldRegisterNamespace from './rules/default-export-cl
 import defaultExportMatchFilename from './rules/default-export-match-filename.js';
 import defaultImportMatchFilename from './rules/default-import-match-filename.js';
 import explicitMethodReturnType from './rules/explicit-method-return-type.js';
-import gruntTaskKabobCase from './rules/grunt-task-kabob-case.js';
+import gruntTaskKebabCase from './rules/grunt-task-kebab-case.js';
 import jsxTextElementsContainMatchingClass from './rules/jsx-text-elements-contain-matching-class.js';
 import namespaceMatch from './rules/namespace-match.js';
 import noHtmlConstructors from './rules/no-html-constructors.js';
@@ -155,8 +155,8 @@ export default [
           // Used for grunt sub-process Typescript pattern
           'no-import-from-grunt-tasks': noImportFromGruntTasks,
 
-          // Used for kabob-case convention for grunt tasks
-          'grunt-task-kabob-case': gruntTaskKabobCase,
+          // Used for kebab-case convention for grunt tasks
+          'grunt-task-kebab-case': gruntTaskKebabCase,
 
           ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
           // Type checking rules. Documentation is at the usage site below
