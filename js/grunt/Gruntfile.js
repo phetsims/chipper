@@ -68,7 +68,6 @@ module.exports = function( grunt ) {
     'npm-update',
     'create-release',
     'cherry-pick',
-    'wrapper',
     'dev',
     'one-off',
     'rc',
@@ -77,7 +76,6 @@ module.exports = function( grunt ) {
     'create-sim',
     'lint-everything',
     'generate-data',
-    'pdom-comparison',
     'release-branch-list'
   ].forEach( registerPerennialTask );
 };
