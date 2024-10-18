@@ -76,7 +76,6 @@ const repo = getArg( 'repo' );
     }
     else {
 
-      const x: string = 5;
       // no need to check
       process.exit( 0 );
     }
