@@ -7,18 +7,13 @@
  */
 
 import * as grunt from 'grunt';
+import lint from '../../../../perennial-alias/js/grunt/lint.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import parseLintOptions from '../../../../perennial-alias/js/grunt/tasks/util/parseLintOptions.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import getPhetLibs from '../getPhetLibs.js';
-import lint from '../../../../perennial-alias/js/grunt/lint.js';
 
 const repo = getRepo();
-
-// --disable-eslint-cache disables the cache, useful for developing rules
-const cache = !getOption( 'disable-eslint-cache' );
-const fix = getOption( 'fix' );
-const chipAway = getOption( 'chip-away' );
 
 const brands = getBrands( grunt, repo );
 
@@ -27,11 +22,7 @@ const brands = getBrands( grunt, repo );
  */
 export const lintAll = ( async () => {
 
-  const lintReturnValue = await lint( getPhetLibs( repo, brands ), {
-    cache: cache,
-    fix: fix,
-    chipAway: chipAway
-  } );
+  const lintReturnValue = await lint( getPhetLibs( repo, brands ), parseLintOptions() );
 
   // Output results on errors.
   if ( !lintReturnValue.ok ) {
