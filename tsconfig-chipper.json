@@ -6,7 +6,7 @@
     "js/common/**/*",
     "js/npm-dependencies/**/*",
     "js/grunt/tasks/util/**/*",
-    "js/grunt/lint.js",
+    "js/grunt/lint.ts",
     // TODO: should we split buildjson into a subsection that can be used by this one too (just phet-core?)   // TODO: split buildjson into a subsection that can be used by this one too (just phet-core?)
     "../phet-core/js/types/**/*"
   ]
