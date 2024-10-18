@@ -14,7 +14,7 @@
 //------------------------------------------------------------------------------
 
 const isGruntTaskFileRegex = /[\\/]grunt[\\/]tasks[\\/]?/;
-const validKebabCase = /^[a-z][a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/;
+const validKebabCase = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const path = require( 'path' );
 
 module.exports = {
@@ -36,7 +36,7 @@ module.exports = {
           context.report( {
             node: node,
             loc: node.loc,
-            message: `files in "grunt/tasks/" must use kebab-case by convention (no snake or camel): ${parsed.filename}`
+            message: `files in "grunt/tasks/" must use kebab-case by convention (no snake or camel): ${parsed.base}`
           } );
         }
       }
