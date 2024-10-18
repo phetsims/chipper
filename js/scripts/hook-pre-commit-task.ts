@@ -12,9 +12,9 @@ import puppeteer from 'puppeteer';
 import CacheLayer from '../../../chipper/js/common/CacheLayer';
 import Transpiler from '../../../chipper/js/common/Transpiler';
 import reportMedia from '../../../chipper/js/grunt/reportMedia';
-import execute from '../../../perennial-alias/js/common/execute';
 import getRepoList from '../../../perennial-alias/js/common/getRepoList';
 import withServer from '../../../perennial-alias/js/common/withServer';
+import check from '../../../perennial-alias/js/grunt/check';
 import lint from '../../../perennial-alias/js/grunt/lint';
 import getPhetLibs from '../grunt/getPhetLibs';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI';
@@ -76,35 +76,18 @@ const repo = getArg( 'repo' );
     }
     else {
 
+      const x: string = 5;
       // no need to check
       process.exit( 0 );
     }
   }
 
   else if ( command === 'tsc' ) {
-
-
-    // Run typescript type checker if it exists in the checked-out shas
-    const results = await execute( 'node', [ '../chipper/js/scripts/absolute-tsc.js', '../chipper/tsconfig/all' ], '../chipper', {
-      errors: 'resolve'
+    // TODO: only optionally output to console, https://github.com/phetsims/chipper/issues/1487
+   const success = await check( {
+      all: true
     } );
-
-    // TODO: This is complexity that likely will change once execute is in typescript, https://github.com/phetsims/perennial/issues/369
-    if ( typeof results === 'string' ) {
-      return;
-    }
-
-    results.stderr.trim().length > 0 && console.log( results.stderr );
-    results.stdout.trim().length > 0 && console.log( results.stdout );
-
-    if ( results.code === 0 ) {
-      outputToConsole && console.log( 'tsc passed' );
-      process.exit( 0 );
-    }
-    else {
-      outputToConsole && console.log( 'tsc failed' );
-      process.exit( 1 );
-    }
+    process.exit( success ? 0 : 1 );
   }
 
   else if ( command === 'qunit' ) {
