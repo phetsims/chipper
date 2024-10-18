@@ -80,6 +80,7 @@ module.exports = function( grunt ) {
   ].forEach( task => forwardToRepo( 'perennial', task ) );
 
   [
-    'lint'
+    'lint',
+    'check'
   ].forEach( task => forwardToRepo( 'perennial-alias', task ) );
 };
