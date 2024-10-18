@@ -81,7 +81,7 @@ const outputToConsole = commandLineArguments.includes( '--console' );
             const results = await execute(
               tsxCommand,
               [
-                '../chipper/js/scripts/hook-pre-commit-task.js',
+                '../chipper/js/scripts/hook-pre-commit-task.ts',
                 `--command=${task}`,
                 `--repo=${repo}`,
                 outputToConsole ? '--console' : ''

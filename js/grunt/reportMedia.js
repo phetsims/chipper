@@ -28,7 +28,7 @@ const path = require( 'path' );
 
 /**
  * @param {string} repo
- * @returns {boolean} success
+ * @returns {Promise.<boolean>} success
  */
 module.exports = async repo => {
 

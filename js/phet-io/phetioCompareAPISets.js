@@ -16,7 +16,7 @@ const assert = require( 'assert' );
  * @param {string[]} repos
  * @param {Object} proposedAPIs - map where key=repo, value=proposed API for that repo, from generatePhetioMacroAPI()
  * @param {Object} [options]
- * @returns {boolean} ok
+ * @returns {Promise.<boolean>} ok
  */
 module.exports = async ( repos, proposedAPIs, options ) => {
   let ok = true;

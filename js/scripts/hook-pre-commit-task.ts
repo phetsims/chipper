@@ -7,26 +7,30 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-const fs = require( 'fs' );
-const puppeteer = require( 'puppeteer' );
-const withServer = require( '../../../perennial-alias/js/common/withServer' );
-const execute = require( '../../../perennial-alias/js/common/execute' );
-const getPhetLibs = require( '../grunt/getPhetLibs' );
-const getRepoList = require( '../../../perennial-alias/js/common/getRepoList' );
-const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
-const CacheLayer = require( '../../../chipper/js/common/CacheLayer' );
-const phetioCompareAPISets = require( '../phet-io/phetioCompareAPISets' );
-const lint = require( '../../../perennial-alias/js/grunt/lint' );
-const reportMedia = require( '../../../chipper/js/grunt/reportMedia' );
+import fs from 'fs';
+import puppeteer from 'puppeteer';
+import CacheLayer from '../../../chipper/js/common/CacheLayer';
+import Transpiler from '../../../chipper/js/common/Transpiler';
+import reportMedia from '../../../chipper/js/grunt/reportMedia';
+import execute from '../../../perennial-alias/js/common/execute';
+import getRepoList from '../../../perennial-alias/js/common/getRepoList';
+import withServer from '../../../perennial-alias/js/common/withServer';
+import lint from '../../../perennial-alias/js/grunt/lint';
+import getPhetLibs from '../grunt/getPhetLibs';
+import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI';
+import phetioCompareAPISets from '../phet-io/phetioCompareAPISets';
+
+// TODO: Move this from aqua before importing, https://github.com/phetsims/chipper/issues/1489
 const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
-const Transpiler = require( '../../../chipper/js/common/Transpiler' );
+
+type Repo = string;
 
 const transpiler = new Transpiler( { silent: true } );
 
 const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.includes( '--console' );
 
-const getArg = arg => {
+const getArg = ( arg: string ) => {
   const args = commandLineArguments.filter( commandLineArg => commandLineArg.startsWith( `--${arg}=` ) );
   if ( args.length !== 1 ) {
     throw new Error( `expected only one arg: ${args}` );
@@ -83,10 +87,15 @@ const repo = getArg( 'repo' );
     // Run typescript type checker if it exists in the checked-out shas
     const results = await execute( 'node', [ '../chipper/js/scripts/absolute-tsc.js', '../chipper/tsconfig/all' ], '../chipper', {
       errors: 'resolve'
-    } );
+  } );
 
-    results.stderr.trim().length > 0 && console.log( results.stderr );
-    results.stdout.trim().length > 0 && console.log( results.stdout );
+  // TODO: This is complexity that likely will change once execute is in typescript, https://github.com/phetsims/perennial/issues/369
+  if ( typeof results === 'string' ) {
+    return;
+  }
+
+  results.stderr.trim().length > 0 && console.log( results.stderr );
+  results.stdout.trim().length > 0 && console.log( results.stdout );
 
     if ( results.code === 0 ) {
       outputToConsole && console.log( 'tsc passed' );
@@ -160,7 +169,7 @@ const repo = getArg( 'repo' );
         return true;
       }
 
-      const getCacheKey = repo => `phet-io-api-compare#${repo}`;
+      const getCacheKey = ( repo: Repo ) => `phet-io-api-compare#${repo}`;
 
       // Test this repo and all phet-io sims that have it as a dependency.  For instance, changing sun would test
       // every phet-io stable sim.
