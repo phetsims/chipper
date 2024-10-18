@@ -11,7 +11,7 @@
  */
 
 const assert = require( 'assert' );
-import fixEOL from '../grunt/fixEOL';
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 

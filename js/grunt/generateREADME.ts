@@ -9,7 +9,7 @@
 
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-import fixEOL from './fixEOL';
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 const getPhetLibs = require( './getPhetLibs' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );

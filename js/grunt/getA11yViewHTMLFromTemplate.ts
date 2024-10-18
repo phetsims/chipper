@@ -8,7 +8,7 @@
 
 const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-import fixEOL from './fixEOL';
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 const getTitleStringKey = require( './getTitleStringKey' );
 import * as grunt from 'grunt';
 

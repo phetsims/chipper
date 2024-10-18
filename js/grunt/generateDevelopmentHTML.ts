@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-import fixEOL from './fixEOL';
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
