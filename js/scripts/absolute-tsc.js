@@ -1,6 +1,8 @@
 // Copyright 2022-2024, University of Colorado Boulder
 
 /**
+ * @deprecated, please instead use `grunt check --absolute` (likely with --all). Please report trouble to MK or SR in https://github.com/phetsims/chipper/issues/1487
+ *
  * The tsc type checker outputs type errors using relative paths only, which are not hyperlinked in WebStorm and IntelliJ.
  * This thin wrapper uses a heuristic to convert the relative paths to absolute paths.  Combined with an "output filter",
  * this makes the type errors clickable in the tool output panel.
