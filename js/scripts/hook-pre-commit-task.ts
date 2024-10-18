@@ -82,9 +82,9 @@ const repo = getArg( 'repo' );
   }
 
   else if ( command === 'tsc' ) {
-    // TODO: only optionally output to console, https://github.com/phetsims/chipper/issues/1487
-   const success = await check( {
-      all: true
+    const success = await check( {
+      all: true,
+      silent: !outputToConsole
     } );
     process.exit( success ? 0 : 1 );
   }
