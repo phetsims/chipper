@@ -9,7 +9,7 @@
 
 // modules
 const _ = require( 'lodash' );
-const transpile = require( './transpile' );
+const transpileForBuild = require( './transpileForBuild.js' );
 const terser = require( 'terser' );
 
 const MINIFY_DEFAULTS = {
@@ -38,7 +38,7 @@ const minify = function( js, options ) {
 
   // Do transpilation before uglifying.
   if ( babelTranspile ) {
-    js = transpile( js );
+    js = transpileForBuild( js );
   }
 
   const uglifyOptions = {

@@ -15,7 +15,7 @@ const ChipperConstants = require( '../common/ChipperConstants' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
-const transpile = require( './transpile' );
+const transpileForBuild = require( './transpileForBuild.js' );
 const stringEncoding = require( '../common/stringEncoding' );
 
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
@@ -87,6 +87,6 @@ export default function( config: IntentionalAny ): string {
     PHET_IS_DEBUG_BUILD: !!isDebugBuild,
     PHET_ALLOW_LOCALE_SWITCHING: !!allowLocaleSwitching,
     PHET_PACKAGE_OBJECT: JSON.stringify( packageObject ),
-    IE_DETECTION_SCRIPT: transpile( grunt.file.read( '../chipper/js/ie-detection.js' ), true )
+    IE_DETECTION_SCRIPT: transpileForBuild( grunt.file.read( '../chipper/js/ie-detection.js' ), true )
   } );
 }
