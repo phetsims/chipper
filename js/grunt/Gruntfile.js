@@ -47,7 +47,11 @@ module.exports = function( grunt ) {
   function forwardToRepo( forwardingRepo, task ) {
     grunt.registerTask( task, `Run grunt --help in ${forwardingRepo} to see documentation`, () => {
       grunt.log.writeln( `(Forwarding task to ${forwardingRepo})` );
-      const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
+      const currentArgs = process.argv.slice( 2 );
+      const args = [ ...currentArgs ];
+
+      // Don't duplicate repo arg
+      currentArgs.includes( '--repo=' ) && args.unshift( `--repo=${repo}` );
 
       const isWindows = /^win/.test( process.platform );
       gruntSpawn( grunt, isWindows ? 'grunt.cmd' : 'grunt', args, `../${forwardingRepo}`, argsString => {
@@ -79,6 +83,8 @@ module.exports = function( grunt ) {
     'release-branch-list'
   ].forEach( task => forwardToRepo( 'perennial', task ) );
 
+  // Forward these to perennial-alias because they are used for building sims, and should version with sims (like chipper
+  // does).
   [
     'lint',
     'check'
