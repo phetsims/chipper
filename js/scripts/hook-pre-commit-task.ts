@@ -47,7 +47,7 @@ const repo = getArg( 'repo' );
 
     // Run lint tests if they exist in the checked-out SHAs.
     // lint() automatically filters out non-lintable repos
-    const lintReturnValue = await lint( [ repo ] );
+    const lintReturnValue = await lint( { repos: [ repo ] } );
     outputToConsole && console.log( `Linting had ${lintReturnValue.ok ? 'no ' : ''}errors.` );
     process.exit( lintReturnValue.ok ? 0 : 1 );
   }
@@ -87,15 +87,15 @@ const repo = getArg( 'repo' );
     // Run typescript type checker if it exists in the checked-out shas
     const results = await execute( 'node', [ '../chipper/js/scripts/absolute-tsc.js', '../chipper/tsconfig/all' ], '../chipper', {
       errors: 'resolve'
-  } );
+    } );
 
-  // TODO: This is complexity that likely will change once execute is in typescript, https://github.com/phetsims/perennial/issues/369
-  if ( typeof results === 'string' ) {
-    return;
-  }
+    // TODO: This is complexity that likely will change once execute is in typescript, https://github.com/phetsims/perennial/issues/369
+    if ( typeof results === 'string' ) {
+      return;
+    }
 
-  results.stderr.trim().length > 0 && console.log( results.stderr );
-  results.stdout.trim().length > 0 && console.log( results.stdout );
+    results.stderr.trim().length > 0 && console.log( results.stderr );
+    results.stdout.trim().length > 0 && console.log( results.stdout );
 
     if ( results.code === 0 ) {
       outputToConsole && console.log( 'tsc passed' );

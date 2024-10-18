@@ -9,8 +9,8 @@
 import * as grunt from 'grunt';
 import lint from '../../../../perennial-alias/js/grunt/lint.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
-import parseLintOptions from '../../../../perennial-alias/js/grunt/tasks/util/parseLintOptions.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import parseLintOptions from '../../../../perennial-alias/js/grunt/tasks/util/parseLintOptions.js';
 import getPhetLibs from '../getPhetLibs.js';
 
 const repo = getRepo();
@@ -22,7 +22,7 @@ const brands = getBrands( grunt, repo );
  */
 export const lintAll = ( async () => {
 
-  const lintReturnValue = await lint( getPhetLibs( repo, brands ), parseLintOptions() );
+  const lintReturnValue = await lint( parseLintOptions( { repos: getPhetLibs( repo, brands ) } ) );
 
   // Output results on errors.
   if ( !lintReturnValue.ok ) {
