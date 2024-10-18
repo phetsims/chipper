@@ -10,14 +10,14 @@ import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption
 
 ( async () => {
   if ( getOption( 'lint' ) !== false ) {
-    await ( await import( './lint-all.ts' ) ).lintAll;
+    await ( await import( './lint-all.js' ) ).lintAll;
   }
 
   if ( getOption( 'report-media' ) !== false ) {
-    await ( await import( './report-media.ts' ) ).reportMedia;
+    await ( await import( './report-media.js' ) ).reportMedia;
   }
 
-  await ( await import( './clean.ts' ) ).clean;
+  await ( await import( './clean.js' ) ).clean;
 
-  await ( await import( './build.ts' ) ).build;
+  await ( await import( './build.js' ) ).build;
 } )();

@@ -44,13 +44,13 @@ module.exports = function( grunt ) {
    *
    * @param {string} task - The name of the task
    */
-  function registerPerennialTask( task ) {
-    grunt.registerTask( task, 'Run grunt --help in perennial to see documentation', () => {
-      grunt.log.writeln( '(Forwarding task to perennial)' );
+  function forwardToRepo( forwardingRepo, task ) {
+    grunt.registerTask( task, `Run grunt --help in ${forwardingRepo} to see documentation`, () => {
+      grunt.log.writeln( `(Forwarding task to ${forwardingRepo})` );
       const args = [ `--repo=${repo}`, ...process.argv.slice( 2 ) ];
 
       const isWindows = /^win/.test( process.platform );
-      gruntSpawn( grunt, isWindows ? 'grunt.cmd' : 'grunt', args, '../perennial', argsString => {
+      gruntSpawn( grunt, isWindows ? 'grunt.cmd' : 'grunt', args, `../${forwardingRepo}`, argsString => {
         grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
       } );
     } );
@@ -74,8 +74,12 @@ module.exports = function( grunt ) {
     'production',
     'prototype',
     'create-sim',
-    'lint-everything',
+    'lint-everything', // on mixed shas, prefer main
     'generate-data',
     'release-branch-list'
-  ].forEach( registerPerennialTask );
+  ].forEach( task => forwardToRepo( 'perennial', task ) );
+
+  [
+    'lint'
+  ].forEach( task => forwardToRepo( 'perennial-alias', task ) );
 };

@@ -6,13 +6,12 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import assert from 'assert';
 import * as grunt from 'grunt';
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-
-const getBrands = require( '../../../../perennial-alias/js/grunt/tasks/util/getBrands' );
-const lint = require( '../lint' );
+import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import getPhetLibs from '../getPhetLibs.js';
+import lint from '../../../../perennial-alias/js/grunt/lint.js';
 
 const repo = getRepo();
 
@@ -20,9 +19,6 @@ const repo = getRepo();
 const cache = !getOption( 'disable-eslint-cache' );
 const fix = getOption( 'fix' );
 const chipAway = getOption( 'chip-away' );
-assert( !getOption( 'patterns' ), 'patterns not support for lint-all' );
-
-const getPhetLibs = require( '../getPhetLibs' );
 
 const brands = getBrands( grunt, repo );
 
