@@ -26,6 +26,7 @@
 
 import assert from 'assert';
 import * as grunt from 'grunt';
+import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
@@ -40,7 +41,6 @@ const fs = require( 'fs' );
 const getPhetLibs = require( '../getPhetLibs' );
 const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog' );
 const Transpiler = require( '../../common/Transpiler' );
-const getBrands = require( '../../../../perennial-alias/js/grunt/tasks/util/getBrands' );
 
 const repo = getRepo();
 
