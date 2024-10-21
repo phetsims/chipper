@@ -4,8 +4,13 @@
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
+
+// @formatter:off
 {
   "extends": "./tsconfig-core.json",
+  "compilerOptions": {
+    "allowUmdGlobalAccess": true /* Allow accessing UMD globals from modules. */
+  },
   "files": [
     "../../phet-types.d.ts",
     "../../phet-types-module.d.ts",
