@@ -4,6 +4,7 @@
  * Command Line Interface (CLI) for TypeScript transpilation via babel.  Transpiles *.ts and copies all *.js files to
  * chipper/dist/js. Does not do type checking. Filters based on active-repos and subsets of directories within repos
  * (such as js/, images/, and sounds/)
+ * TODO: Delete, and instead use grunt output-js, https://github.com/phetsims/chipper/issues/1499
  *
  * Usage:
  * cd chipper

@@ -1,22 +1,18 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
-import getRepo, { getRepos } from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-import transpile from '../transpile.js';
+import transpile, { getTranspileOptions } from '../transpile.js';
 
 /**
- * Outputs JS just for the specified repo
+ * Main entrypoint for transpiling the PhET codebase to js. See transpile() for API. Outputs JS just
+ * for the specified repo by default.
+ * TODO: Can we rename this to "transpile", it is ok that we keep output-js-project for backwards compatibility. https://github.com/phetsims/chipper/issues/1499
+ *
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-
-const repo = getRepo();
-const repos = getRepos();
-const all = !!getOption( 'all' );
-
-// Prefer the "all" option, then otherwise the "repos" option, and otherwise the single repo
-transpile( all ? 'all' :
-           repos.length > 0 ? repos :
-             [ repo ]
-);
+( async () => {
+  await transpile( getTranspileOptions( {
+    all: true // TODO: Be able to turn this off. https://github.com/phetsims/chipper/issues/1499
+  } ) );
+} )();
