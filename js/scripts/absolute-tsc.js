@@ -2,6 +2,7 @@
 
 /**
  * @deprecated, please instead use `grunt check --absolute` (likely with --all). Please report trouble to MK or SR in https://github.com/phetsims/chipper/issues/1487
+ * TODO: Delete, see https://github.com/phetsims/chipper/issues/1487
  *
  * The tsc type checker outputs type errors using relative paths only, which are not hyperlinked in WebStorm and IntelliJ.
  * This thin wrapper uses a heuristic to convert the relative paths to absolute paths.  Combined with an "output filter",
