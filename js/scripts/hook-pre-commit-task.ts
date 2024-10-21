@@ -81,7 +81,7 @@ const repo = getArg( 'repo' );
     }
   }
 
-  else if ( command === 'tsc' ) {
+  else if ( command === 'check' ) {
     const success = await check( {
       all: true,
       silent: !outputToConsole

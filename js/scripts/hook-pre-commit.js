@@ -50,7 +50,7 @@ const outputToConsole = commandLineArguments.includes( '--console' );
   }
 
   // By default, run all tasks
-  const tasksToRun = [ 'lint', 'report-media', 'tsc', 'qunit', 'phet-io-api-compare' ];
+  const tasksToRun = [ 'lint', 'report-media', 'check', 'qunit', 'phet-io-api-compare' ];
 
   // check local preferences for overrides for which tasks to turn 'off'
   const gitHooks = buildLocal.gitHooks;

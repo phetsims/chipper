@@ -2,7 +2,7 @@
 
 /**
  * Cache the results of processes so that they don't need to be re-run if there have been no changes.
- * For instance, this can speed up tsc, lint and unit tests. This also streamlines the precommit hooks
+ * For instance, this can speed up unit tests and phet-io-api-compare. This streamlines the precommit hooks
  * by avoiding duplicated work.
  *
  * The CacheLayer only works if the watch process is checking for changed files.
