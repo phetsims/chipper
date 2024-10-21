@@ -14,11 +14,11 @@
 
 const hasFileSlash = /[\\/]/;
 const isGruntTaskFileRegex = /[\\/]grunt[\\/]tasks[\\/]/;
+const isGruntTaskUilsFileRegex = /[\\/]grunt[\\/]tasks[\\/]util[\\/]/;
 const path = require( 'path' );
 
 module.exports = {
   create: context => {
-
 
     const filename = context.filename;
     const dir = path.dirname( filename );
@@ -28,8 +28,10 @@ module.exports = {
           const importValue = node.source.value;
           const fullImportFilename = path.join( dir, importValue ); // Absolute path
 
-          // Don't check on something like 'fs' && check on the absolute path to support something like './tasks/x.js'
-          if ( hasFileSlash.test( importValue ) && isGruntTaskFileRegex.test( fullImportFilename ) ) {
+          // Don't check on something like 'fs' && check on the absolute path to support something like './tasks/x.js' &&
+          // allow using getOption/getRepo from outside the directory
+          if ( hasFileSlash.test( importValue ) && isGruntTaskFileRegex.test( fullImportFilename ) &&
+               !isGruntTaskUilsFileRegex.test( fullImportFilename ) ) {
             context.report( {
               node: node,
               loc: node.loc,
