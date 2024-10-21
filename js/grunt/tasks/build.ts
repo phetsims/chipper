@@ -32,10 +32,9 @@ import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import buildRunnable from '../buildRunnable';
 import buildStandalone from '../buildStandalone';
-import reportTscResults from '../reportTscResults';
+import check from '../../../../perennial-alias/js/grunt/check.js';
 
 const minify = require( '../minify' );
-const tsc = require( '../tsc' );
 const path = require( 'path' );
 const fs = require( 'fs' );
 const getPhetLibs = require( '../getPhetLibs' );
@@ -73,8 +72,12 @@ export const build = ( async () => {
       // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
       // do NOT run this for phet-lib, since it is type-checking things under src/, which is not desirable.
       if ( ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ) && repo !== 'phet-lib' ) {
-        const results = await tsc( `../${repo}` );
-        reportTscResults( results, grunt );
+        const success = await check( {
+          repo: repo
+        } );
+        if ( !success ) {
+          grunt.fail.fatal( 'Type checking failed' );
+        }
       }
       else {
         console.log( 'skipping type checking' );

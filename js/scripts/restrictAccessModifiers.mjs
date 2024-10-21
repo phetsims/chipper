@@ -145,7 +145,7 @@ function isBuildSuccessful() {
     const tscPath = '../chipper/node_modules/typescript/bin/tsc';
 
     // Run the specified TypeScript compiler in the current directory
-    execSync( `node ${tscPath}`, {
+    execSync( `node ${tscPath} -b`, {
 
       // set the working directory
       cwd: repoPath

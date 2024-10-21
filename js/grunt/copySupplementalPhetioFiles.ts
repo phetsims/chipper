@@ -14,7 +14,7 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import webpackBuild from './webpackBuild.ts';
 import buildStandalone from './buildStandalone.ts';
 import formatPhetioAPI from '../phet-io/formatPhetioAPI';
-import reportTscResults from './reportTscResults';
+import check from '../../../perennial-alias/js/grunt/check.ts';
 
 const assert = require( 'assert' );
 const archiver = require( 'archiver' );
@@ -26,7 +26,6 @@ const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
 
 const minify = require( '../grunt/minify' );
 const marked = require( 'marked' );
-const tsc = require( './tsc' );
 
 const getPhetLibs = require( './getPhetLibs' );
 const path = require( 'path' );
@@ -414,8 +413,12 @@ const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationProcessorsCode}`, { stripAssertions: false } );
 
   if ( !noTSC ) {
-    const results = await tsc( '../phet-io-wrappers' );
-    reportTscResults( results, grunt );
+    const success = await check( {
+      repo: 'phet-io-wrappers'
+    } );
+    if ( !success ) {
+      grunt.fail.fatal( 'Type checking failed' );
+    }
   }
 
   let wrappersMain = await buildStandalone( 'phet-io-wrappers', {
@@ -663,8 +666,12 @@ const handleStudio = async ( repo: string, wrappersLocation: string, noTSC: bool
   grunt.log.debug( 'building studio' );
 
   if ( !noTSC ) {
-    const results = await tsc( '../studio' );
-    reportTscResults( results, grunt );
+    const success = await check( {
+      repo: 'studio'
+    } );
+    if ( !success ) {
+      grunt.fail.fatal( 'Type checking failed' );
+    }
   }
 
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {
