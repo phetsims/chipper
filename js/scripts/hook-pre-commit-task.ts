@@ -83,6 +83,7 @@ const repo = getArg( 'repo' );
 
   else if ( command === 'check' ) {
     const success = await check( {
+      repo: repo,
       all: true,
       silent: !outputToConsole
     } );
