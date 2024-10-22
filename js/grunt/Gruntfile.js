@@ -42,17 +42,17 @@ module.exports = function( grunt ) {
    * perennial's directory with the same options (but with --repo={{REPO}} added, so that perennial is aware of what
    * repository is the target).
    *
+   * @param {string} forwardingRepo
    * @param {string} task - The name of the task
    */
   function forwardToRepo( forwardingRepo, task ) {
     grunt.registerTask( task, `Run grunt --help in ${forwardingRepo} to see documentation`, () => {
       grunt.log.writeln( `(Forwarding task to ${forwardingRepo})` );
-      const currentArgs = process.argv.slice( 2 );
+      const currentArgs = process.argv.slice( 2 ); // Remove the "node grunt" from the command.
       const args = [ ...currentArgs ];
 
       // Don't duplicate repo arg
-      currentArgs.includes( '--repo=' ) && args.unshift( `--repo=${repo}` );
-
+      !currentArgs.includes( '--repo=' ) && args.push( `--repo=${repo}` );
       const isWindows = /^win/.test( process.platform );
       gruntSpawn( grunt, isWindows ? 'grunt.cmd' : 'grunt', args, `../${forwardingRepo}`, argsString => {
         grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
