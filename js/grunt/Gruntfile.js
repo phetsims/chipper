@@ -13,6 +13,7 @@ const assert = require( 'assert' );
 require( './checkNodeVersion' );
 const registerTasks = require( '../../../perennial-alias/js/grunt/util/registerTasks' );
 const gruntSpawn = require( '../../../perennial-alias/js/grunt/util/gruntSpawn' );
+const _ = require( 'lodash' );
 
 // Allow other Gruntfiles to potentially handle exiting and errors differently
 if ( !global.processEventOptOut ) {
@@ -52,7 +53,7 @@ module.exports = function( grunt ) {
       const args = [ ...currentArgs ];
 
       // Don't duplicate repo arg
-      !currentArgs.includes( '--repo=' ) && args.push( `--repo=${repo}` );
+      !_.some( process.argv, arg => arg.startsWith( '--repo=' ) ) && args.push( `--repo=${repo}` );
       const isWindows = /^win/.test( process.platform );
       gruntSpawn( grunt, isWindows ? 'grunt.cmd' : 'grunt', args, `../${forwardingRepo}`, argsString => {
         grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
