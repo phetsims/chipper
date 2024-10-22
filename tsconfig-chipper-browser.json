@@ -1,16 +1,16 @@
 {
-  "extends": "./tsconfig/shared/tsconfig-browser.json",
+  "extends": "../perennial-alias/tsconfig/shared/tsconfig-browser.json",
   "include": [
 
     // top level only
-    "./js/*",
+    "js/*",
 
     // and the tests
-    "./js/sim-tests/**/*"
+    "js/sim-tests/**/*"
   ],
   "references": [
     {
-      "path": "../chipper/tsconfig/buildjson/tsconfig.json"
+      "path": "../perennial-alias/tsconfig/buildjson/tsconfig.json"
     }
   ]
 }
