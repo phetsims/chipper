@@ -45,7 +45,7 @@ if ( !args || args.length === 0 ) {
 
   // console.log( 'changes detected...' );
 
-  const results = await execute( 'node', [ `${__dirname}/../../../chipper/node_modules/typescript/bin/tsc`, '-b' ], args[ 0 ], {
+  const results = await execute( 'node', [ `${__dirname}/../../../perennial-alias/node_modules/typescript/bin/tsc`, '-b' ], args[ 0 ], {
     errors: 'resolve'
   } );
 
