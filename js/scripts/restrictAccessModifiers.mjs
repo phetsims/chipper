@@ -33,8 +33,8 @@
  * @author Matt Blackman (PhET Interactive Simulations)
  */
 
-import { Project } from 'ts-morph';
 import { execSync } from 'child_process';
+import { Project } from 'ts-morph';
 
 // Function to tighten accessibility annotations
 async function restrictAccessModifiers( repoPath ) {
@@ -142,7 +142,7 @@ function isBuildSuccessful() {
   try {
 
     // Specify the path to the TypeScript compiler you want to use
-    const tscPath = '../chipper/node_modules/typescript/bin/tsc';
+    const tscPath = '../perennial-alias/node_modules/typescript/bin/tsc';
 
     // Run the specified TypeScript compiler in the current directory
     execSync( `node ${tscPath} -b`, {
