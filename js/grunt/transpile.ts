@@ -99,7 +99,7 @@ Watching...
   else {
     // TODO: update doc about running transpiler that doesn't include `--repos` (use output-js-project --watch), https://github.com/phetsims/chipper/issues/1499
     //       https://github.com/phetsims/phet-info/blob/main/doc/phet-development-overview.md#creating-a-new-sim
-    // TODO: The above doesn't work. Do we need to support this before upgrading to swc? https://github.com/phetsims/chipper/issues/1499
+    // TODO: The above doesn't work. Do we need to support this before upgrading to swc? https://github.com/phetsims/chipper/issues/1354
     transpiler.transpileRepos( _.uniq( options.repos ) );
   }
 

@@ -6,8 +6,11 @@ import transpile, { getTranspileOptions } from '../transpile.js';
 
 /**
  * Outputs JS for the specified repo and its dependencies
- * TODO: We need output-js-project because of maintenance tooling, but should we add a duplicate for `transpile-project`? https://github.com/phetsims/chipper/issues/1499
- * TODO: output-js-project --watch does not work. Transpiler.watch() hard codes active repos (let's wait to fix for swc), https://github.com/phetsims/chipper/issues/1499
+ *
+ * NOTE: We need to keep the name output-js-project because of maintenance tooling. This name should never change,
+ * though SR and MK wish it was called "transpile-project".
+ *
+ * TODO: output-js-project --watch does not work. Transpiler.watch() hard codes active repos (let's wait to fix for swc), https://github.com/phetsims/chipper/issues/1354
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
