@@ -27,7 +27,6 @@
     "axios": "~1.7.7",
     "docdash": "~1.2.0",
     "expose-loader": "~4.1.0",
-    "globals": "~15.9.0",
     "grunt": "~1.5.3",
     "html-webpack-plugin": "~5.3.2",
     "jimp": "~0.16.1",
