@@ -5,7 +5,8 @@
   },
   "references": [
     {
-      "path": "../../tsconfig-chipper-node.json"
+    // TODO:fix this so it doesn't hard code importing from chipper, https://github.com/phetsims/perennial/issues/364
+      "path": "../../../chipper/tsconfig-chipper-node.json"
     }
   ]
 }
