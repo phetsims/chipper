@@ -1,5 +1,6 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import transpile, { getTranspileOptions } from '../transpile.js';
 
 /**
@@ -11,6 +12,6 @@ import transpile, { getTranspileOptions } from '../transpile.js';
 
 ( async () => {
   await transpile( getTranspileOptions( {
-    all: true // TODO: Be able to turn this off. https://github.com/phetsims/chipper/issues/1499
+    all: getOption( 'all', true )
   } ) );
 } )();
