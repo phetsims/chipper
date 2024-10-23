@@ -1,0 +1,12 @@
+{
+  // TODO: move this file back to chipper, since perennial shouldn't know about it. https://github.com/phetsims/perennial/issues/364
+  // Chipper and its node dependencies is what we call "buildtools"
+  "compilerOptions": {
+    "composite": true
+  },
+  "references": [
+    {
+      "path": "../../../chipper/tsconfig-chipper-node.json"
+    }
+  ]
+}
