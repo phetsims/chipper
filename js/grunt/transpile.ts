@@ -35,7 +35,7 @@ type TranspileOptions = {
 };
 
 /**
- * Function to support transpiling on the project. See grunt output-js
+ * Function to support transpiling on the project. See grunt transpile
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
