@@ -9,7 +9,7 @@
  *
  * Usage:
  * cd chipper/
- * node js/scripts/restrictAccessModifiers.js [relative-path-to-repo-directory]
+ * sage run js/scripts/restrictAccessModifiers.ts [relative-path-to-repo-directory]
  *
  * Parameters:
  * [relative-path-to-repo-directory] - The path to the repository where TypeScript files are located. This script assumes
@@ -19,7 +19,7 @@
  * --help                   - Displays this help message and exits.
  *
  * Example:
- * node js/scripts/restrictAccessModifiers.js ../my-ts-project
+ * sage run js/scripts/restrictAccessModifiers.ts ../my-ts-project
  *
  * Note:
  * - Ensure that 'tsconfig.json' is correctly set up in your project root.
@@ -34,10 +34,10 @@
  */
 
 import { execSync } from 'child_process';
-import { Project } from 'ts-morph';
+import { Project, Scope } from 'ts-morph';
 
 // Function to tighten accessibility annotations
-async function restrictAccessModifiers( repoPath ) {
+async function restrictAccessModifiers( repoPath: string ): Promise<void> {
 
   // Initialize a new ts-morph Project
   const project = new Project( {
@@ -69,19 +69,19 @@ async function restrictAccessModifiers( repoPath ) {
         if ( member.getScope() === 'public' || member.getScope() === 'protected' ) {
 
           // Try setting to private
-          member.setScope( 'private' );
+          member.setScope( Scope.Private );
           await sourceFile.save();
 
           if ( !isBuildSuccessful() ) {
 
             // If not successful, try protected
-            member.setScope( 'protected' );
+            member.setScope( Scope.Protected );
             await sourceFile.save();
 
             if ( !isBuildSuccessful() ) {
 
               // If still not successful, revert to public
-              member.setScope( 'public' );
+              member.setScope( Scope.Public );
               await sourceFile.save();
             }
             else {
@@ -102,7 +102,7 @@ if ( process.argv.includes( '--help' ) ) {
   console.log( `
 \x1b[1mUsage:\x1b[0m
   \x1b[36mcd chipper/\x1b[0m
-  \x1b[36mnode js/scripts/restrictAccessModifiers.js [relative-path-to-repo-directory]\x1b[0m
+  \x1b[36msage run js/scripts/restrictAccessModifiers.ts [relative-path-to-repo-directory]\x1b[0m
 
 \x1b[1mParameters:\x1b[0m
   \x1b[33m[relative-path-to-repo-directory]\x1b[0m - The path to the repository where TypeScript files are located. Assumes
@@ -112,7 +112,7 @@ if ( process.argv.includes( '--help' ) ) {
   \x1b[32m--help\x1b[0m                  - Displays this help message and exits.
 
 \x1b[1mExample:\x1b[0m
-  \x1b[36mnode js/scripts/restrictAccessModifiers.js ../my-ts-project\x1b[0m
+  \x1b[36msage run js/scripts/restrictAccessModifiers.ts ../my-ts-project\x1b[0m
 
 \x1b[1mNote:\x1b[0m
 - Ensure that 'tsconfig.json' is correctly set up in your project root.
@@ -136,16 +136,15 @@ const repoPath = process.argv[ 2 ];
 
 /**
  * Check if the proposed change (already saved to the filesystem) passes the type checker.
- * @returns {boolean}
  */
-function isBuildSuccessful() {
+function isBuildSuccessful(): boolean {
   try {
 
     // Specify the path to the TypeScript compiler you want to use
-    const tscPath = '../perennial-alias/node_modules/typescript/bin/tsc';
+    const gruntCommand = require( '../../../perennial-alias/js/common/gruntCommand' );
 
     // Run the specified TypeScript compiler in the current directory
-    execSync( `node ${tscPath} -b`, {
+    execSync( `${gruntCommand} check`, {
 
       // set the working directory
       cwd: repoPath
