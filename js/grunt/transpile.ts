@@ -1,4 +1,4 @@
-// Copyright 2013-2024, University of Colorado Boulder
+// Copyright 2024, University of Colorado Boulder
 
 import assert from 'assert';
 import _ from 'lodash';
