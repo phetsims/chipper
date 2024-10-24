@@ -79,7 +79,6 @@ module.exports = function( grunt ) {
     'production',
     'prototype',
     'create-sim',
-    'lint-everything', // on mixed shas, prefer main
     'generate-data',
     'release-branch-list'
   ].forEach( task => forwardToRepo( 'perennial', task ) );
@@ -87,7 +86,8 @@ module.exports = function( grunt ) {
   // Forward these to perennial-alias because they are used for building sims, and should version with sims (like chipper
   // does).
   [
+    'check',
     'lint',
-    'check'
+    'lint-everything'
   ].forEach( task => forwardToRepo( 'perennial-alias', task ) );
 };
