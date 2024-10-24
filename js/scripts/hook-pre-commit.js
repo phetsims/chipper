@@ -51,7 +51,7 @@ const force = commandLineArguments.includes( '--force' );
   }
 
   // By default, run all tasks
-  const tasksToRun = [ 'lint', 'report-media', 'check', 'qunit', 'phet-io-api-compare' ];
+  const tasksToRun = [ 'lint', 'report-media', 'check', 'test', 'phet-io-api-compare' ];
   const OPT_OUT_ALL = '*'; // Key to opt out of all tasks
 
   // check local preferences for overrides for which tasks to turn 'off'

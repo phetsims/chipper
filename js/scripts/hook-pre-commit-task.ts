@@ -89,7 +89,7 @@ const repo = getArg( 'repo' );
     process.exit( success ? 0 : 1 );
   }
 
-  else if ( command === 'qunit' ) {
+  else if ( command === 'test' ) {
 
     // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
     const qUnitOK = await ( async () => {
