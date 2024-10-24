@@ -38,6 +38,7 @@ const optOutRepos = [
 // Console logging via --console
 const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.includes( '--console' );
+const force = commandLineArguments.includes( '--force' );
 
 ( async () => {
 
@@ -51,22 +52,23 @@ const outputToConsole = commandLineArguments.includes( '--console' );
 
   // By default, run all tasks
   const tasksToRun = [ 'lint', 'report-media', 'check', 'qunit', 'phet-io-api-compare' ];
+  const OPT_OUT_ALL = '*'; // Key to opt out of all tasks
 
   // check local preferences for overrides for which tasks to turn 'off'
-  const gitHooks = buildLocal.gitHooks;
-  if ( gitHooks ) {
-    Object.keys( gitHooks ).forEach( key => {
-      if ( gitHooks[ key ] === 'off' ) {
-        if ( key === '*' ) {
-          outputToConsole && console.log( 'turning off all tasks' );
-          tasksToRun.length = 0;
-        }
-        else {
-          outputToConsole && console.log( 'turning off task:', key );
+  const hookPreCommit = buildLocal.hookPreCommit;
+  if ( hookPreCommit && !force ) {
+    if ( hookPreCommit[ OPT_OUT_ALL ] === false ) {
+      outputToConsole && console.log( 'all tasks opted out' );
+      tasksToRun.length = 0;
+    }
+    else {
+      Object.keys( hookPreCommit ).forEach( key => {
+        if ( hookPreCommit[ key ] === false && tasksToRun.indexOf( key ) >= 0 ) {
+          outputToConsole && console.log( 'task opted out:', key );
           tasksToRun.splice( tasksToRun.indexOf( key ), 1 );
         }
-      }
-    } );
+      } );
+    }
   }
 
   const precommitSuccess = await phetTimingLog.startAsync( `hook-pre-commit repo="${repo}"`, async () => {
