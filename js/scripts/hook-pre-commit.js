@@ -15,6 +15,7 @@
  *
  * OPTIONS:
  * --console: outputs information to the console for debugging
+ * --force: forces all tasks to run, even if they are disabled in the local preferences
  *
  * See also phet-info/git-template-dir/hooks/pre-commit for how this is used in precommit hooks.
  *

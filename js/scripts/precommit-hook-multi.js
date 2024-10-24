@@ -4,6 +4,7 @@ const startTime = Date.now();
 const execute = require( '../../../perennial-alias/js/common/execute' );
 const fs = require( 'fs' );
 const child_process = require( 'child_process' );
+const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand.js' );
 
 // constants
 // Don't use getActiveRepos() since it cannot be run from the root
@@ -18,7 +19,7 @@ const all = args.includes( '--all' );
  *
  * USAGE:
  * cd ${root containing all repos}
- * node chipper/js/scripts/precommit-hook-multi.js
+ * sage run chipper/js/scripts/precommit-hook-multi.js
  *
  * OPTIONS:
  *
@@ -69,7 +70,7 @@ const all = args.includes( '--all' );
 
     process.stdout.write( reposToTest[ i ] + ': ' );
 
-    const result = await execute( 'node', [ '../chipper/js/scripts/hook-pre-commit.js' ], `${reposToTest[ i ]}`, {
+    const result = await execute( tsxCommand, [ '../chipper/js/scripts/hook-pre-commit.js' ], `${reposToTest[ i ]}`, {
 
       // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
       errors: 'resolve'
