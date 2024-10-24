@@ -20,8 +20,7 @@ import getPhetLibs from '../grunt/getPhetLibs';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI';
 import phetioCompareAPISets from '../phet-io/phetioCompareAPISets';
 
-// TODO: Move puppeteerQUnit to perennial, https://github.com/phetsims/perennial/issues/376
-const puppeteerQUnit = require( '../../../aqua/js/local/puppeteerQUnit' );
+const puppeteerQUnit = require( '../../../perennial-alias/js/test/puppeteerQUnit.js' );
 
 type Repo = string;
 
