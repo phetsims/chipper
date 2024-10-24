@@ -5,7 +5,7 @@
  *
  * Usage:
  * cd chipper/
- * npx tsx js/scripts/transpile-swc.ts
+ * sage run js/scripts/transpile-swc.ts
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -73,8 +73,11 @@ const spawnWatch = ( repos: string[] ) => {
 };
 
 async function main( repos = activeRepos ): Promise<void> {
-  console.log( `Transpiling code for ${repos.length} repositories...` );
-  await Promise.all( _.chunk( repos, 75 ).map( chunkedRepos => spawnWatch( chunkedRepos ) ) );
+  const chunks = _.chunk( repos, 75 );
+
+  console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
+
+  await Promise.all( chunks.map( chunkedRepos => spawnWatch( chunkedRepos ) ) );
   console.log( 'SWC transpile completed successfully.' );
 }
 
