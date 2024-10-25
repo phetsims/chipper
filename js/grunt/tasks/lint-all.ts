@@ -14,7 +14,7 @@ import getPhetLibs from '../getPhetLibs.js';
 
 const repo = getRepo();
 
-const brands = getBrands( grunt, repo );
+const brands = getBrands( repo );
 
 /**
  * Executes the linting process immediately. Additionally returned in case the client wants to await the task.

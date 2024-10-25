@@ -64,7 +64,7 @@ export const build = ( async () => {
     const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
 
     // Run the type checker first.
-    const brands = getBrands( grunt, repo );
+    const brands = getBrands( repo );
 
     const noTSC = getOption( 'noTSC' );
     !noTSC && await phetTimingLog.startAsync( 'tsc', async () => {
