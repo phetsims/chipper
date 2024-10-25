@@ -1,27 +1,23 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
-/**
- * @author Chris Malley (PixelZoom, Inc.)
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
- */
-
-
-const _ = require( 'lodash' );
-const assert = require( 'assert' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const getPhetLibs = require( './getPhetLibs' );
-const grunt = require( 'grunt' );
+import * as _ from 'lodash';
+import assert from 'assert';
+import * as grunt from 'grunt';
+import ChipperStringUtils from '../common/ChipperStringUtils';
+import getPhetLibs from './getPhetLibs.js';
 
 /**
  * Gets preload, the set of scripts to be preloaded in the .html file.
  * NOTE! Order of the return value is significant, since it corresponds to the order in which scripts will be preloaded.
  *
- * @param {string} repo
- * @param {string} brand
- * @param {boolean} [forSim] - if the preloads are specifically for a simulation
- * @returns {Array.<string>}
+ * @param repo
+ * @param brand
+ * @param [forSim] - if the preloads are specifically for a simulation
+ *
+ * @author Chris Malley (PixelZoom, Inc.)
+ * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-module.exports = function( repo, brand, forSim ) {
+export default function( repo: string, brand: string, forSim: boolean ): string[] {
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
   let buildObject;
@@ -34,7 +30,7 @@ module.exports = function( repo, brand, forSim ) {
     buildObject = {};
   }
 
-  let preload = [];
+  let preload: string[] = [];
 
   // add preloads that are common to all sims, from build.json
   if ( buildObject.common && buildObject.common.preload ) {
@@ -71,7 +67,7 @@ module.exports = function( repo, brand, forSim ) {
 
   // Verifies that preload repositories are included in phetLib.
   const phetLibs = getPhetLibs( repo, brand );
-  const missingRepositories = [];
+  const missingRepositories: string[] = [];
   preload.forEach( entry => {
 
     // preload entries should start with '..', e.g. "../assert/js/assert.js"
@@ -79,7 +75,7 @@ module.exports = function( repo, brand, forSim ) {
 
     // the preload's repository should be in phetLib
     const repositoryName = entry.split( '/' )[ 1 ];
-    if ( phetLibs.indexOf( repositoryName ) === -1 && missingRepositories.indexOf( repositoryName ) === -1 ) {
+    if ( !phetLibs.includes( repositoryName ) && !missingRepositories.includes( repositoryName ) ) {
       missingRepositories.push( repositoryName );
     }
   } );
@@ -87,4 +83,4 @@ module.exports = function( repo, brand, forSim ) {
     `phetLib is missing repositories required by preload: ${missingRepositories.toString()}` );
 
   return preload;
-};
+}

@@ -7,9 +7,9 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+import getPreloads from './getPreloads.js';
 
 const _ = require( 'lodash' );
-const getPreloads = require( './getPreloads' );
 const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries' );
 const grunt = require( 'grunt' );
 
@@ -25,7 +25,7 @@ export default function( repo: string, brand: string ): string[] {
   catch( e ) {
     buildObject = {};
   }
-  const preload = getPreloads( repo, brand );
+  const preload = getPreloads( repo, brand, false );
 
   // start with package.json
   let licenseKeys: string[] = packageObject.phet.licenseKeys || [];

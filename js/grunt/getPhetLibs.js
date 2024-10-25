@@ -18,7 +18,7 @@ const grunt = require( 'grunt' );
  * @public
  *
  * @param {string} repo
- * @param {string[]} [brand]] - If not specified, it will return the dependencies for all brands.
+ * @param {string[] | string} [brand] - If not specified, it will return the dependencies for all brands.
  * @returns {Array.<string>}
  */
 module.exports = function getPhetLibs( repo, brand ) {

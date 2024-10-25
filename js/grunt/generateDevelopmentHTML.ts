@@ -9,13 +9,12 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-// modules
 import * as _ from 'lodash';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
+import getPreloads from './getPreloads';
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-const getPreloads = require( './getPreloads' );
 const getStringRepos = require( './getStringRepos' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
 const grunt = require( 'grunt' );
@@ -58,12 +57,10 @@ module.exports = async function( repo: string, options: IntentionalAny ): Promis
     return string.split( '\n' ).join( '\n    ' );
   };
 
-  // @ts-expect-error
   const preloads = getPreloads( repo, brand, forSim ).filter( preload => {
     return !isPreloadExcluded( preload );
   } ).concat( addedPreloads );
 
-  // @ts-expect-error
   const phetioPreloads = getPreloads( repo, 'phet-io', forSim ).filter( preload => {
     return !isPreloadExcluded( preload ) && !_.includes( preloads, preload );
   } );

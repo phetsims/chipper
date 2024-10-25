@@ -17,6 +17,7 @@ import getLocalesFromRepository from './getLocalesFromRepository';
 import packageXHTML from './packageXHTML';
 import reportUnusedStrings from './reportUnusedStrings';
 import webpackBuild from './webpackBuild';
+import getPreloads from './getPreloads.js';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
@@ -25,9 +26,7 @@ const copyDirectory = require( './copyDirectory' );
 const copySupplementalPhetioFiles = require( './copySupplementalPhetioFiles' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
-
 const getPhetLibs = require( './getPhetLibs' );
-const getPreloads = require( './getPreloads' );
 const getPrunedLocaleData = require( './getPrunedLocaleData' );
 const getStringMap = require( './getStringMap' );
 const getTitleStringKey = require( './getTitleStringKey' );
@@ -220,7 +219,6 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   const minifiableScripts = [
     // Preloads
 
-    // @ts-expect-error
     ...getPreloads( repo, brand, true ).map( filename => wrapProfileFileSize( grunt.file.read( filename ), profileFileSize, 'PRELOAD', filename ) ),
 
     // Our main module content, wrapped in a function called in the startup below
