@@ -8,7 +8,7 @@
 
 
 const qunit = require( 'qunit' );
-// eslint-disable-next-line phet/require-statement-match
+ 
 const { execSync } = require( 'child_process' );
 qunit.module( 'GruntfileTests' );
 
