@@ -1,4 +1,4 @@
-// Copyright 2022, University of Colorado Boulder
+// Copyright 2022-2024, University of Colorado Boulder
 const startTime = Date.now();
 
 const execute = require( '../../../perennial-alias/js/common/execute' );
