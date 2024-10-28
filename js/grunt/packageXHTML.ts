@@ -13,7 +13,7 @@ const ChipperConstants = require( '../common/ChipperConstants.js' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 const getTitleStringKey = require( './getTitleStringKey.js' );
 const grunt = require( 'grunt' );
-const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
+const nodeHtmlEncoder = require( 'node-html-encoder' );
 
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 
@@ -21,7 +21,7 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
  * From a given set of config (including the JS and other required things), it creates an XHTML structure and writes it to disk.
  */
 export default function( xhtmlDir: string, config: IntentionalAny ): void {
-  const encoder = new nodeHTMLEncoder.Encoder( 'entity' );
+  const encoder = new nodeHtmlEncoder.Encoder( 'entity' );
 
   const {
     repo, // {string}

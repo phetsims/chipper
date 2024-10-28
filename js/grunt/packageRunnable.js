@@ -14,7 +14,7 @@ const getTitleStringKey = require( './getTitleStringKey.js' );
 const grunt = require( 'grunt' );
 const pako = require( 'pako' );
 const fs = require( 'fs' );
-const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
+const nodeHtmlEncoder = require( 'node-html-encoder' );
 
 /**
  * From a given set of config (including the JS and other required things), it creates an HTML file for a runnable.
@@ -25,7 +25,7 @@ const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line p
  */
 module.exports = function( config ) {
 
-  const encoder = new nodeHTMLEncoder.Encoder( 'entity' );
+  const encoder = new nodeHtmlEncoder.Encoder( 'entity' );
 
   const {
     repo, // {string}

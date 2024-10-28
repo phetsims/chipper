@@ -3,7 +3,7 @@
 import * as fs from 'fs';
 import * as grunt from 'grunt';
 
-const jpeg = require( 'jpeg-js' ); // eslint-disable-line phet/require-statement-match
+const jpegJs = require( 'jpeg-js' );
 const mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale.js' );
 const pngjs = require( 'pngjs' );
 
@@ -67,7 +67,7 @@ module.exports = function createMipmap( filename: string, maxLevel: number, qual
 
     // Loads / decodes the initial JPEG image, and when done proceeds to the mipmapping
     function loadJPEG(): void {
-      const imageData = jpeg.decode( fs.readFileSync( filename ) );
+      const imageData = jpegJs.decode( fs.readFileSync( filename ) );
 
       mipmaps.push( {
         data: imageData.data,
@@ -112,7 +112,7 @@ module.exports = function createMipmap( filename: string, maxLevel: number, qual
      * @param callback - function( buffer )
      */
     function outputJPEG( data: Buffer, width: number, height: number, quality: number, callback: ( buffer: Buffer ) => void ): void {
-      const encodedOuput = jpeg.encode( {
+      const encodedOuput = jpegJs.encode( {
         data: data,
         width: width,
         height: height

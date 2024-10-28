@@ -34,7 +34,7 @@ const grunt = require( 'grunt' );
 const jimp = require( 'jimp' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI.js' );
 const minify = require( './minify.js' );
-const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
+const nodeHtmlEncoder = require( 'node-html-encoder' );
 const packageRunnable = require( './packageRunnable.js' );
 
 const reportUnusedMedia = require( './reportUnusedMedia.js' );
@@ -83,7 +83,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   }
 
   const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
-  const encoder = new nodeHTMLEncoder.Encoder( 'entity' );
+  const encoder = new nodeHtmlEncoder.Encoder( 'entity' );
 
   // All html files share the same build timestamp
   let timestamp = new Date().toISOString().split( 'T' ).join( ' ' );
