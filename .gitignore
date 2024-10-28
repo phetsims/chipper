@@ -7,6 +7,7 @@ java/src/edu/colorado/phet/buildtools/html/*.class
 *.sublime-project
 *.sublime-workspace
 package-lock.json
+eslint/cache/
 build
 dist
 transpile/cache/status.json
