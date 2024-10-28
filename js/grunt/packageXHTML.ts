@@ -9,9 +9,9 @@
 
 // modules
 const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const getTitleStringKey = require( './getTitleStringKey' );
+const ChipperConstants = require( '../common/ChipperConstants.js' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
+const getTitleStringKey = require( './getTitleStringKey.js' );
 const grunt = require( 'grunt' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
 

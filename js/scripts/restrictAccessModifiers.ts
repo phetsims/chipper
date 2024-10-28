@@ -141,7 +141,7 @@ function isBuildSuccessful(): boolean {
   try {
 
     // Specify the path to the TypeScript compiler you want to use
-    const gruntCommand = require( '../../../perennial-alias/js/common/gruntCommand' );
+    const gruntCommand = require( '../../../perennial-alias/js/common/gruntCommand.js' );
 
     // Run the specified TypeScript compiler in the current directory
     execSync( `${gruntCommand} check`, {

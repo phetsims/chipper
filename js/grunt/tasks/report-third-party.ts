@@ -10,7 +10,7 @@
 
 // TODO: https://github.com/phetsims/chipper/issues/1461 probably does not need to be here in grunt
 ( async () => {
-  const reportThirdParty = require( '../reportThirdParty' );
+  const reportThirdParty = require( '../reportThirdParty.js' );
 
   await reportThirdParty();
 } )();

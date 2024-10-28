@@ -17,8 +17,8 @@ import formatPhetioAPI from '../../phet-io/formatPhetioAPI';
  */
 const repo = getRepo();
 
-const getSimList = require( '../../common/getSimList' );
-const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI' );
+const getSimList = require( '../../common/getSimList.js' );
+const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI.js' );
 const fs = require( 'fs' );
 
 const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
@@ -30,7 +30,7 @@ const skipTranspile = getOption( 'transpile' ) === false;
 if ( !skipTranspile ) {
   const startTime = Date.now();
 
-  const Transpiler = require( '../../common/Transpiler' );
+  const Transpiler = require( '../../common/Transpiler.js' );
   const transpiler = new Transpiler( { silent: true } );
 
   transpiler.transpileAll();

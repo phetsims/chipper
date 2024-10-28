@@ -18,16 +18,16 @@ import check from '../../../perennial-alias/js/grunt/check.ts';
 
 const assert = require( 'assert' );
 const archiver = require( 'archiver' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const copyDirectory = require( '../grunt/copyDirectory' );
-const execute = require( '../../../perennial-alias/js/common/execute' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
+const copyDirectory = require( '../grunt/copyDirectory.js' );
+const execute = require( '../../../perennial-alias/js/common/execute.js' );
 const grunt = require( 'grunt' );
-const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI' );
+const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI.js' );
 
-const minify = require( '../grunt/minify' );
+const minify = require( '../grunt/minify.js' );
 const marked = require( 'marked' );
 
-const getPhetLibs = require( './getPhetLibs' );
+const getPhetLibs = require( './getPhetLibs.js' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 

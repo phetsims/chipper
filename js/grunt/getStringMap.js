@@ -10,9 +10,9 @@
 
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants' );
-const pascalCase = require( '../common/pascalCase' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const ChipperConstants = require( '../common/ChipperConstants.js' );
+const pascalCase = require( '../common/pascalCase.js' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const path = require( 'path' );

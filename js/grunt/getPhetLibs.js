@@ -10,7 +10,7 @@
 
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants' );
+const ChipperConstants = require( '../common/ChipperConstants.js' );
 const grunt = require( 'grunt' );
 
 /**

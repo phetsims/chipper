@@ -7,7 +7,7 @@
  */
 
 const _ = require( 'lodash' );
-const ChipperConstants = require( '../common/ChipperConstants' );
+const ChipperConstants = require( '../common/ChipperConstants.js' );
 const fs = require( 'fs' );
 
 /**

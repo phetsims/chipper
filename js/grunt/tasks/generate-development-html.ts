@@ -2,7 +2,7 @@
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
-const generateDevelopmentHTML = require( '../generateDevelopmentHTML' );
+const generateDevelopmentHTML = require( '../generateDevelopmentHTML.js' );
 
 /**
  * Generates top-level SIM_en.html file based on the preloads in package.json.

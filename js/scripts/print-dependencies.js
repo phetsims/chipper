@@ -6,8 +6,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-const getPhetLibs = require( '../grunt/getPhetLibs' );
+const getPhetLibs = require( '../grunt/getPhetLibs.js' );
 const assert = require( 'assert' );
 
 assert( typeof process.argv[ 2 ] === 'string', 'Provide the repo name as the first parameter' );

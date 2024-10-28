@@ -11,17 +11,16 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 import getCopyrightLine from './getCopyrightLine';
 
 const _ = require( 'lodash' );
-const createMipmap = require( './createMipmap' );
+const createMipmap = require( './createMipmap.js' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const grunt = require( 'grunt' );
-const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
-const pascalCase = require( '../common/pascalCase' );
+const loadFileAsDataURI = require( '../common/loadFileAsDataURI.js' );
+const pascalCase = require( '../common/pascalCase.js' );
 const os = require( 'os' );
-
-const toLessEscapedString = require( '../common/toLessEscapedString' );
+const toLessEscapedString = require( '../common/toLessEscapedString.js' );
 const assert = require( 'assert' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
+const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
 const svgo = require( 'svgo' );
 
 // disable lint in compiled files, because it increases the linting time

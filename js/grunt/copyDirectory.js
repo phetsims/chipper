@@ -10,7 +10,7 @@
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
 const grunt = require( 'grunt' );
-const minify = require( './minify' );
+const minify = require( './minify.js' );
 
 /**
  * @param {string} src - the source directory

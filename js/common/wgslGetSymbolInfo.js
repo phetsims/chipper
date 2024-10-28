@@ -7,7 +7,7 @@
  */
 
 const _ = require( 'lodash' );
-const wgslStripComments = require( './wgslStripComments' );
+const wgslStripComments = require( './wgslStripComments.js' );
 
 const KEYWORDS = [
   'alias',

@@ -19,7 +19,7 @@ import * as grunt from 'grunt';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
-const sortImports = require( '../sortImports' );
+const sortImports = require( '../sortImports.js' );
 
 const repo = getRepo();
 const file = getOption( 'file' );

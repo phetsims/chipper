@@ -1,7 +1,7 @@
 // Copyright 2022-2024, University of Colorado Boulder
 const startTime = Date.now();
 
-const execute = require( '../../../perennial-alias/js/common/execute' );
+const execute = require( '../../../perennial-alias/js/common/execute.js' );
 const fs = require( 'fs' );
 const child_process = require( 'child_process' );
 const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand.js' );

@@ -16,8 +16,8 @@ import * as grunt from 'grunt';
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
-const execute = require( '../../../perennial-alias/js/common/execute' );
-const getPhetLibs = require( './getPhetLibs' );
+const execute = require( '../../../perennial-alias/js/common/execute.js' );
+const getPhetLibs = require( './getPhetLibs.js' );
 
 module.exports = async function( repo: string, dateString: string ): Promise<void> {
 

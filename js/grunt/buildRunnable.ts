@@ -20,27 +20,27 @@ import webpackBuild from './webpackBuild';
 import getPreloads from './getPreloads.js';
 
 const assert = require( 'assert' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const getLicenseEntry = require( '../common/getLicenseEntry' );
-const copyDirectory = require( './copyDirectory' );
-const copySupplementalPhetioFiles = require( './copySupplementalPhetioFiles' );
-const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
-const getAllThirdPartyEntries = require( './getAllThirdPartyEntries' );
-const getPhetLibs = require( './getPhetLibs' );
-const getPrunedLocaleData = require( './getPrunedLocaleData' );
-const getStringMap = require( './getStringMap' );
-const getTitleStringKey = require( './getTitleStringKey' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
+const getLicenseEntry = require( '../common/getLicenseEntry.js' );
+const copyDirectory = require( './copyDirectory.js' );
+const copySupplementalPhetioFiles = require( './copySupplementalPhetioFiles.js' );
+const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate.js' );
+const getAllThirdPartyEntries = require( './getAllThirdPartyEntries.js' );
+const getPhetLibs = require( './getPhetLibs.js' );
+const getPrunedLocaleData = require( './getPrunedLocaleData.js' );
+const getStringMap = require( './getStringMap.js' );
+const getTitleStringKey = require( './getTitleStringKey.js' );
 const grunt = require( 'grunt' );
 const jimp = require( 'jimp' );
-const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
-const minify = require( './minify' );
+const loadFileAsDataURI = require( '../common/loadFileAsDataURI.js' );
+const minify = require( './minify.js' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
-const packageRunnable = require( './packageRunnable' );
+const packageRunnable = require( './packageRunnable.js' );
 
-const reportUnusedMedia = require( './reportUnusedMedia' );
+const reportUnusedMedia = require( './reportUnusedMedia.js' );
 
 const zlib = require( 'zlib' );
-const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog' );
+const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog.js' );
 
 const recordTime = async <T>( name: string, asyncCallback: () => Promise<T>, timeCallback: ( time: number, result: T ) => void ): Promise<T> => {
   const beforeTime = Date.now();

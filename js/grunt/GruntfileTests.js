@@ -12,7 +12,7 @@ const qunit = require( 'qunit' );
 const { execSync } = require( 'child_process' );
 qunit.module( 'GruntfileTests' );
 
-const gruntCommand = require( '../../../perennial-alias/js/common/gruntCommand' );
+const gruntCommand = require( '../../../perennial-alias/js/common/gruntCommand.js' );
 
 qunit.test( 'first test', assert => {
 

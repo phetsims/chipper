@@ -5,7 +5,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-const ChipperStringUtils = require( './ChipperStringUtils' );
+const ChipperStringUtils = require( './ChipperStringUtils.js' );
 const qunit = require( 'qunit' );
 qunit.module( 'ChipperStringUtils' );
 

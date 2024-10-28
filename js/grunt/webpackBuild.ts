@@ -12,7 +12,7 @@ import * as path from 'path';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import * as ChipperConstants from '../common/ChipperConstants.js';
 
-const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries' );
+const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries.js' );
 const webpack = require( 'webpack' );
 const { ModifySourcePlugin, ConcatOperation } = require( 'modify-source-webpack-plugin' );
 

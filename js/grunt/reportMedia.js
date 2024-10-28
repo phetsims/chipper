@@ -20,9 +20,9 @@
  */
 
 
-const ChipperConstants = require( '../common/ChipperConstants' );
-const getLicenseEntry = require( '../common/getLicenseEntry' );
-const getPhetLibs = require( '../grunt/getPhetLibs' );
+const ChipperConstants = require( '../common/ChipperConstants.js' );
+const getLicenseEntry = require( '../common/getLicenseEntry.js' );
+const getPhetLibs = require( '../grunt/getPhetLibs.js' );
 const grunt = require( 'grunt' );
 const path = require( 'path' );
 

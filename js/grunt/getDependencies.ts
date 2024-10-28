@@ -8,9 +8,9 @@
  */
 
 const assert = require( 'assert' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const execute = require( '../../../perennial-alias/js/common/execute' );
-const getPhetLibs = require( './getPhetLibs' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
+const execute = require( '../../../perennial-alias/js/common/execute.js' );
+const getPhetLibs = require( './getPhetLibs.js' );
 const grunt = require( 'grunt' );
 
 // Our definition of an allowed simName is defined in the buildServer: https://github.com/phetsims/perennial/blob/78025b7ae6064e9ab5260cea5e532f3bf24c3ec8/js/build-server/taskWorker.js#L99-L98

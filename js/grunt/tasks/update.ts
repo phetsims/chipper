@@ -17,11 +17,11 @@ import * as grunt from 'grunt';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import generateREADME from '../generateREADME';
 
-const generateDevelopmentHTML = require( '../generateDevelopmentHTML' );
-const generateA11yViewHTML = require( '../generateA11yViewHTML' );
-const generateTestHTML = require( '../generateTestHTML' );
+const generateDevelopmentHTML = require( '../generateDevelopmentHTML.js' );
+const generateA11yViewHTML = require( '../generateA11yViewHTML.js' );
+const generateTestHTML = require( '../generateTestHTML.js' );
 
-const writeFileAndGitAdd = require( '../../../../perennial-alias/js/common/writeFileAndGitAdd' );
+const writeFileAndGitAdd = require( '../../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
 
 const repo = getRepo();
 

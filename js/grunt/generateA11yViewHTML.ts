@@ -9,8 +9,8 @@
  */
 
 // modules
-const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
+const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate.js' );
+const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
 
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';

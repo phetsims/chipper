@@ -7,7 +7,7 @@
  */
 
 import * as _ from 'lodash';
-const generateDevelopmentHTML = require( './generateDevelopmentHTML' );
+const generateDevelopmentHTML = require( './generateDevelopmentHTML.js' );
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 module.exports = async ( repo: string, options: IntentionalAny ): Promise<void> => {

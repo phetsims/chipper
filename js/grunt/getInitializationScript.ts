@@ -11,12 +11,12 @@
 
 // modules
 const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const ChipperConstants = require( '../common/ChipperConstants.js' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const transpileForBuild = require( './transpileForBuild.js' );
-const stringEncoding = require( '../common/stringEncoding' );
+const stringEncoding = require( '../common/stringEncoding.js' );
 
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 

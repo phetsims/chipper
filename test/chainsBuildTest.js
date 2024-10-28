@@ -9,7 +9,7 @@
 
 // const assert = require( 'assert' );
 // const chai = require( 'chai' );
-const execute = require( '../js/grunt/execute' );
+const execute = require( '../js/grunt/execute.js' );
 const grunt = require( 'grunt' );
 const qunit = require( 'qunit' );
 

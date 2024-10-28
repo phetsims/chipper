@@ -14,7 +14,7 @@ import assert from 'assert';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
-const commitsSince = require( '../commitsSince' );
+const commitsSince = require( '../commitsSince.js' );
 
 const repo = getRepo();
 const dateString = getOption( 'date' );

@@ -2,7 +2,7 @@
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
-const generateTestHTML = require( '../generateTestHTML' );
+const generateTestHTML = require( '../generateTestHTML.js' );
 
 /**
  * Generates top-level SIM-tests.html file based on the preloads in package.json.  See https://github.com/phetsims/aqua/blob/main/doc/adding-unit-tests.md

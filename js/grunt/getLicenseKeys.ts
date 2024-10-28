@@ -10,7 +10,7 @@
 import getPreloads from './getPreloads.js';
 
 const _ = require( 'lodash' );
-const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries' );
+const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries.js' );
 const grunt = require( 'grunt' );
 
 /**

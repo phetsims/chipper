@@ -31,7 +31,7 @@
  */
 
 const _ = require( 'lodash' );
-const toLessEscapedString = require( './toLessEscapedString' );
+const toLessEscapedString = require( './toLessEscapedString.js' );
 
 const PUSH_TOKEN = '\u0001'; // push string on the stack
 const PUSH_TOKEN_SLASH = '\u0002'; // push `${string}/` on the stack

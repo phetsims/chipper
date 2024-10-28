@@ -6,10 +6,10 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-const ChipperConstants = require( '../common/ChipperConstants' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const ChipperConstants = require( '../common/ChipperConstants.js' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-const getTitleStringKey = require( './getTitleStringKey' );
+const getTitleStringKey = require( './getTitleStringKey.js' );
 import * as grunt from 'grunt';
 
 /**

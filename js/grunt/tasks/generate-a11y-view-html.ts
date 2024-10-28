@@ -2,7 +2,7 @@
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 
-const generateA11yViewHTML = require( '../generateA11yViewHTML' );
+const generateA11yViewHTML = require( '../generateA11yViewHTML.js' );
 
 /**
  * Generates top-level SIM-a11y-view.html file used for visualizing accessible content. Usually you should

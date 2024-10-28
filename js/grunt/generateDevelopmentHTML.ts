@@ -14,9 +14,9 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 import getPreloads from './getPreloads';
 
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
-const getStringRepos = require( './getStringRepos' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
+const getStringRepos = require( './getStringRepos.js' );
+const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
 const grunt = require( 'grunt' );
 
 // TODO: Get rid of all IntentionalAny, see https://github.com/phetsims/chipper/issues/1437

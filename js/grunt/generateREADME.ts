@@ -8,11 +8,11 @@
  */
 
 
-const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-const getPhetLibs = require( './getPhetLibs' );
-const getTitleStringKey = require( './getTitleStringKey' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd' );
+const getPhetLibs = require( './getPhetLibs.js' );
+const getTitleStringKey = require( './getTitleStringKey.js' );
+const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
 import * as grunt from 'grunt';
 
 /**

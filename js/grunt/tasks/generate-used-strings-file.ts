@@ -4,11 +4,11 @@ import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import webpackBuild from '../webpackBuild';
 import getLocalesFromRepository from '../getLocalesFromRepository';
 
-const getPhetLibs = require( '../getPhetLibs' );
+const getPhetLibs = require( '../getPhetLibs.js' );
 const fs = require( 'fs' );
-const ChipperConstants = require( '../../common/ChipperConstants' );
+const ChipperConstants = require( '../../common/ChipperConstants.js' );
 
-const getStringMap = require( '../getStringMap' );
+const getStringMap = require( '../getStringMap.js' );
 
 /**
  * Writes used strings to phet-io-sim-specific/ so that PhET-iO sims only output relevant strings to the API in unbuilt mode
@@ -16,7 +16,7 @@ const getStringMap = require( '../getStringMap' );
  */
 const repo = getRepo();
 
-const Transpiler = require( '../../common/Transpiler' );
+const Transpiler = require( '../../common/Transpiler.js' );
 const transpiler = new Transpiler( { silent: true } );
 
 transpiler.transpileRepos( getPhetLibs( repo ) );

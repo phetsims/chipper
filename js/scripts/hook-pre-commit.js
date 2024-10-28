@@ -23,7 +23,7 @@
  */
 
 const path = require( 'path' );
-const execute = require( '../../../perennial-alias/js/common/execute' );
+const execute = require( '../../../perennial-alias/js/common/execute.js' );
 const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog.js' );
 const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand.js' );
 const buildLocal = require( '../../../perennial-alias/js/common/buildLocal.js' );

@@ -15,11 +15,11 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 const crypto = require( 'crypto' );
-const CacheLayer = require( './CacheLayer' );
-const wgslMinify = require( './wgslMinify' );
-const wgslPreprocess = require( './wgslPreprocess' );
-const wgslStripComments = require( './wgslStripComments' );
-const webpackGlobalLibraries = require( './webpackGlobalLibraries' );
+const CacheLayer = require( './CacheLayer.js' );
+const wgslMinify = require( './wgslMinify.js' );
+const wgslPreprocess = require( './wgslPreprocess.js' );
+const wgslStripComments = require( './wgslStripComments.js' );
+const webpackGlobalLibraries = require( './webpackGlobalLibraries.js' );
 const core = require( '@babel/core' );
 const assert = require( 'assert' );
 const _ = require( 'lodash' );

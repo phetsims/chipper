@@ -12,8 +12,8 @@
 const puppeteer = require( 'puppeteer' );
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
-const showCommandLineProgress = require( '../common/showCommandLineProgress' );
-const withServer = require( '../../../perennial-alias/js/common/withServer' );
+const showCommandLineProgress = require( '../common/showCommandLineProgress.js' );
+const withServer = require( '../../../perennial-alias/js/common/withServer.js' );
 
 /**
  * Load each sim provided and get the

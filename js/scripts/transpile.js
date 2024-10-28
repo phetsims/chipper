@@ -30,7 +30,7 @@ const start = Date.now();
 const args = process.argv.slice( 2 );
 
 // imports
-const Transpiler = require( '../common/Transpiler' );
+const Transpiler = require( '../common/Transpiler.js' );
 
 const repos = [];
 

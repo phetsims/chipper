@@ -8,7 +8,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const execute = require( '../../../perennial-alias/js/common/execute' );
+const execute = require( '../../../perennial-alias/js/common/execute.js' );
 
 /**
  * @param repo - The repository of the file to update (should be a git root)

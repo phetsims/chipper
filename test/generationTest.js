@@ -8,7 +8,7 @@
 
 
 // const chai = require( 'chai' );
-const execute = require( '../js/grunt/execute' );
+const execute = require( '../js/grunt/execute.js' );
 const gruntCommand = /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt';
 const qunit = require( 'qunit' );
 
