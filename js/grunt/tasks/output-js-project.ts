@@ -6,10 +6,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const Transpiler = require( '../../common/Transpiler' );
-import getOption from './util/getOption';
+const getPhetLibs = require( '../getPhetLibs' );
+import getRepo from './util/getRepo';
 
 const transpiler = new Transpiler( { silent: true } );
-
-const repos = getOption( 'repos' );
-
-transpiler.transpileRepo( repos.split( ',' ) );
+transpiler.transpileRepos( getPhetLibs( getRepo() ) );
