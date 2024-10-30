@@ -10,8 +10,6 @@ import transpile, { getTranspileOptions } from '../transpile.js';
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-( async () => {
-  await transpile( getTranspileOptions( {
-    all: getOption( 'all', true )
-  } ) );
-} )();
+transpile( getTranspileOptions( {
+  all: getOption( 'all', true )
+} ) );

@@ -19,9 +19,7 @@ type TranspileOptions = {
   // Continue watching all directories and transpile on detected changes.
   watch: boolean;
 
-  // Additional repos to compile (not listed in perennial-alias/data/active-repos). The names of the repos,
-  // separated by commas, like --repos=myrepo1,myrepo2. Directory names only, not paths
-  // TODO: This should just be the list of repos, not the list of additional repos, see https://github.com/phetsims/chipper/issues/1354
+  // List of repos to transpile, if not doing all
   repos: Repo[];
 
   silent: boolean; // any logging output.
