@@ -17,6 +17,8 @@ import * as grunt from 'grunt';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import transpileSWC from '../../common/transpileSWC.js';
+import getPhetLibs from '../getPhetLibs.js';
 
 const getSimList = require( '../../common/getSimList.js' );
 const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI.js' );
@@ -36,10 +38,10 @@ let proposedAPIs: Record<string, string> | null = null;
   }
   else {
 
-    const Transpiler = require( '../../common/Transpiler.js' );
-    const transpiler = new Transpiler( { silent: true } );
+    const repos = new Set<string>();
+    sims.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
+    await transpileSWC( Array.from( repos ), false, [] );
 
-    transpiler.transpileAll();
     proposedAPIs = await generatePhetioMacroAPI( sims, {
       showProgressBar: sims.length > 1,
       showMessagesFromSim: false

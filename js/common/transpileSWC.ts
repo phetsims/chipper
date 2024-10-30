@@ -14,14 +14,7 @@
 import { spawn } from 'child_process';
 import _ from 'lodash';
 import path from 'path';
-import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos';
-
-// Read active repositories
-const activeRepos = getActiveRepos();
-
-// Parse command line arguments
-const args = process.argv.slice( 2 );
-const isWatchMode = args.includes( '--watch' );
+import { Repo } from '../../../perennial-alias/js/common/PerennialTypes.js';
 
 // Construct the command string with brace expansion
 const runnable = process.platform.startsWith( 'win' ) ? 'swc.cmd' : 'swc';
@@ -29,7 +22,7 @@ const runnablePath = path.join( `chipper/node_modules/.bin/${runnable}` );
 
 // Directories in a sim repo that may contain things for transpilation
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
-const getSubdirectories = ( repo: string ) => {
+const getSubdirectories = ( repo: string, additionalBrands: string[] ) => {
   const subdirs = [ 'js', 'images', 'mipmaps', 'sounds' ];
 
   repo === 'phet-io-wrappers' && subdirs.push( 'common' );
@@ -37,7 +30,7 @@ const getSubdirectories = ( repo: string ) => {
   repo === 'my-solar-system' && subdirs.push( 'shaders' );
   repo === 'alpenglow' && subdirs.push( 'wgsl' );
   repo === 'sherpa' && subdirs.push( 'lib' );
-  repo === 'brand' && subdirs.push( 'phet', 'phet-io', 'adapted-from-phet' );
+  repo === 'brand' && subdirs.push( 'phet', 'phet-io', 'adapted-from-phet', ...additionalBrands );
 
   return subdirs.map( subdir => `${repo}/${subdir}/` );
 };
@@ -64,11 +57,11 @@ function spawnCommand( command: string, args: string[] ): Promise<void> {
   } );
 }
 
-const spawnTranspile = ( repos: string[], watch: boolean ) => {
+const spawnTranspile = ( repos: string[], watch: boolean, additionalBrands: string[] ) => {
   const argsString = [
     '--config-file', 'chipper/.swcrc',
     '-s', 'inline',
-    ..._.flatten( repos.map( repo => getSubdirectories( repo ) ) ),
+    ..._.flatten( repos.map( repo => getSubdirectories( repo, additionalBrands ) ) ),
     '-d', 'chipper/dist/js/'
   ];
 
@@ -80,21 +73,15 @@ const spawnTranspile = ( repos: string[], watch: boolean ) => {
   return spawnCommand( runnablePath, argsString );
 };
 
-async function main( repos = activeRepos ): Promise<void> {
+export default async function transpileSWC( repos: Repo[], isWatchMode: boolean, additionalBrands: string[] ): Promise<void> {
+
+  // TODO: sherpa/font awesome takes up half the time for a project transpile, see https://github.com/phetsims/chipper/issues/1354
+  // repos = repos.filter( repo => repo !== 'sherpa' );
+
   const chunks = _.chunk( repos, 75 );
 
   console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
 
-  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, isWatchMode ) ) );
+  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, isWatchMode, additionalBrands ) ) );
   console.log( 'SWC transpile completed successfully.' );
 }
-
-( async () => {
-  try {
-    await main();
-  }
-  catch( error ) {
-    console.error( 'Error:', error );
-    process.exit( 1 ); // Exit with failure code
-  }
-} )();

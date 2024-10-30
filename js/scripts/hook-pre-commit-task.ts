@@ -10,7 +10,7 @@
 import fs from 'fs';
 import puppeteer from 'puppeteer';
 import CacheLayer from '../../../chipper/js/common/CacheLayer';
-import Transpiler from '../../../chipper/js/common/Transpiler';
+import transpileSWC from '../common/transpileSWC.js';
 import reportMedia from '../../../chipper/js/grunt/reportMedia';
 import getRepoList from '../../../perennial-alias/js/common/getRepoList';
 import withServer from '../../../perennial-alias/js/common/withServer';
@@ -23,8 +23,6 @@ import phetioCompareAPISets from '../phet-io/phetioCompareAPISets';
 const puppeteerQUnit = require( '../../../perennial-alias/js/test/puppeteerQUnit.js' );
 
 type Repo = string;
-
-const transpiler = new Transpiler( { silent: true } );
 
 const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.includes( '--console' );
@@ -162,7 +160,9 @@ const repo = getArg( 'repo' );
         .filter( repo => !CacheLayer.isCacheSafe( getCacheKey( repo ) ) );
 
       if ( reposToTest.length > 0 ) {
-        transpiler.transpileAll();
+        const repos = new Set<string>();
+        reposToTest.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
+        await transpileSWC( Array.from( repos ), false, [] );
 
         const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {
           showProgressBar: reposToTest.length > 1,

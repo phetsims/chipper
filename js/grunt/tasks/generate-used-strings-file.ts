@@ -16,11 +16,11 @@ const getStringMap = require( '../getStringMap.js' );
  */
 const repo = getRepo();
 
-const Transpiler = require( '../../common/Transpiler.js' );
-const transpiler = new Transpiler( { silent: true } );
+// eslint-disable-next-line phet/no-property-in-require-statement
+const transpileSWC = require( '../../common/transpileSWC.js' ).default;
 
-transpiler.transpileRepos( getPhetLibs( repo ) );
 ( async () => {
+  await transpileSWC( getPhetLibs( repo ), false, [] );
   const webpackResult = await webpackBuild( repo, 'phet' );
 
   const phetLibs = getPhetLibs( repo, 'phet' );

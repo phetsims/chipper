@@ -5,7 +5,8 @@ import _ from 'lodash';
 import { Repo } from '../../../perennial-alias/js/common/PerennialTypes.js';
 import getOption from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo, { getRepos } from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import Transpiler from '../common/Transpiler.js';
+import transpileSWC from '../common/transpileSWC.js';
+import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos';
 
 type TranspileOptions = {
 
@@ -29,9 +30,6 @@ type TranspileOptions = {
   silent: boolean; // any logging output.
 
   brands: string[]; // Extra brands in the brand repo to transpile.
-
-  // Do not minify WGSL files
-  skipMinifyWGSL: boolean;
 };
 
 /**
@@ -56,7 +54,6 @@ const transpile = async ( providedOptions: Partial<TranspileOptions> ): Promise<
   clean: false,
   watch: true,
   repos: [ 'density' ],
-  skipMinifyWGSL: false,
   brands: []
 }
 Clean stale chipper/dist/js files finished in 1444ms
@@ -70,7 +67,6 @@ Running "output-js" task
   clean: false,
   watch: true,
   repos: [ 'density' ],
-  skipMinifyWGSL: false,
   brands: []
 }
 Clean stale chipper/dist/js files finished in 1398ms
@@ -80,28 +76,13 @@ Watching...
 
      */
     watch: false,
-    repos: [],
-    skipMinifyWGSL: false
+    repos: []
   }, providedOptions );
 
   assert( options.repos.length > 0 || options.all, 'must include repos or --all' );
-  const transpiler = new Transpiler( options );
+  const repos = options.all ? getActiveRepos() : options.repos;
 
-  options.all && transpiler.pruneStaleDistFiles();
-
-  // Watch process
-  options.watch && transpiler.watch();
-
-  // Initial pass
-  if ( options.all ) {
-    transpiler.transpileAll();
-  }
-  else {
-    // TODO: update doc about running transpiler that doesn't include `--repos` (use output-js-project --watch), https://github.com/phetsims/chipper/issues/1499
-    //       https://github.com/phetsims/phet-info/blob/main/doc/phet-development-overview.md#creating-a-new-sim
-    // TODO: The above doesn't work. Do we need to support this before upgrading to swc? https://github.com/phetsims/chipper/issues/1354
-    transpiler.transpileRepos( _.uniq( options.repos ) );
-  }
+  await transpileSWC( _.uniq( repos ), !!options.watch, options.brands || [] );
 
   !options.silent && console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
   !options.silent && options.watch && console.log( 'Watching...' );
@@ -119,7 +100,6 @@ export const getTranspileOptions = ( options?: Partial<TranspileOptions> ): Tran
     all: !!getOption( 'all' ),
     clean: !!getOption( 'clean' ),
     silent: !!getOption( 'silent' ),
-    skipMinifyWGSL: !!getOption( 'skipMinifyWGSL' ),
     watch: !!getOption( 'watch' )
   }, options );
 };

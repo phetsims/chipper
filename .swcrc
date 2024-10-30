@@ -21,5 +21,8 @@
     // Requires v1.2.50 or upper and requires target to be es2016 or upper.
     "keepClassNames": true
   },
-  "minify": true
+
+  // Improve readability in chipper/dist for debugging/understanding, and to improve compatibility with chipper code
+  // that scrapes webpack output for strings, etc.
+  "minify": false
 }

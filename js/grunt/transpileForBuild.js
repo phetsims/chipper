@@ -42,7 +42,6 @@ module.exports = function( jsInput, forIE = false ) {
     compact: true,
 
     // Use chipper's copy of babel-preset-env, so we don't have to have 30MB extra per sim checked out.
-    // This strategy is also used in Transpiler.js
     presets: [ [ '../chipper/node_modules/@babel/preset-env', {
 
       // Parse as "script" type, so "this" will refer to "window" instead of being transpiled to `void 0` aka undefined

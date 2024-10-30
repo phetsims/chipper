@@ -3,6 +3,8 @@
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import formatPhetioAPI from '../../phet-io/formatPhetioAPI';
+import getPhetLibs from '../getPhetLibs.js';
+import transpileSWC from '../../common/transpileSWC.js';
 
 /**
  * Output the PhET-iO API as JSON to phet-io-sim-specific/api.
@@ -27,25 +29,27 @@ const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
 // macOS to check all files, and sometimes much longer (50+ seconds) if the cache mechanism is failing.
 // So this "skip" is a band-aid until we reduce those other problems.
 const skipTranspile = getOption( 'transpile' ) === false;
-if ( !skipTranspile ) {
-  const startTime = Date.now();
-
-  const Transpiler = require( '../../common/Transpiler.js' );
-  const transpiler = new Transpiler( { silent: true } );
-
-  transpiler.transpileAll();
-  const transpileTimeMS = Date.now() - startTime;
-
-  // Notify about long transpile times, in case more people need to skip
-  if ( transpileTimeMS >= 5000 ) {
-    console.log( `generate-phet-io-api transpilation took ${transpileTimeMS} ms` );
-  }
-}
-else {
-  console.log( 'Skipping transpilation' );
-}
 
 ( async () => {
+
+  if ( !skipTranspile ) {
+    const startTime = Date.now();
+
+    const repos = new Set<string>();
+    sims.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
+    await transpileSWC( Array.from( repos ), false, [] );
+
+    const transpileTimeMS = Date.now() - startTime;
+
+    // Notify about long transpile times, in case more people need to skip
+    if ( transpileTimeMS >= 5000 ) {
+      console.log( `generate-phet-io-api transpilation took ${transpileTimeMS} ms` );
+    }
+  }
+  else {
+    console.log( 'Skipping transpilation' );
+  }
+
   const results = await generatePhetioMacroAPI( sims, {
     showProgressBar: sims.length > 1,
     throwAPIGenerationErrors: false // Write as many as we can, and print what we didn't write

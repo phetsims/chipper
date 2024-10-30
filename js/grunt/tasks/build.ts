@@ -39,11 +39,10 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const getPhetLibs = require( '../getPhetLibs.js' );
 const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog.js' );
-const Transpiler = require( '../../common/Transpiler.js' );
+// eslint-disable-next-line phet/no-property-in-require-statement
+const transpileSWC = require( '../../common/transpileSWC.js' ).default;
 
 const repo = getRepo();
-
-const transpiler = new Transpiler( { silent: true } );
 
 /**
  * Immediately run the build and export the promise in case the client wants to await the task.
@@ -84,9 +83,9 @@ export const build = ( async () => {
       }
     } );
 
-    !getOption( 'noTranspile' ) && await phetTimingLog.startAsync( 'transpile', () => {
+    !getOption( 'noTranspile' ) && await phetTimingLog.startAsync( 'transpile', async () => {
       // If that succeeds, then convert the code to JS
-      transpiler.transpileRepos( getPhetLibs( repo ) );
+      await transpileSWC( getPhetLibs( repo ), false, brands );
     } );
 
     // standalone
