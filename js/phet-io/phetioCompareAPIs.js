@@ -26,6 +26,8 @@
  * @property {Object} phetioTypes
  */
 
+/* global window */
+
 /**
  * See phetioEngine.js for where this is generated in main. Keep in mind that we support different versions, including
  * APIs that don't have a version attribute.
