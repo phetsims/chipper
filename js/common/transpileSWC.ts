@@ -15,6 +15,7 @@ import { spawn } from 'child_process';
 import _ from 'lodash';
 import path from 'path';
 import { Repo } from '../../../perennial-alias/js/common/PerennialTypes.js';
+import fs from 'fs';
 
 // Construct the command string with brace expansion
 const runnable = process.platform.startsWith( 'win' ) ? 'swc.cmd' : 'swc';
@@ -73,7 +74,14 @@ const spawnTranspile = ( repos: string[], watch: boolean, additionalBrands: stri
   return spawnCommand( runnablePath, argsString );
 };
 
-export default async function transpileSWC( repos: Repo[], isWatchMode: boolean, additionalBrands: string[] ): Promise<void> {
+export default async function transpileSWC( repos: Repo[], isWatchMode: boolean, additionalBrands: string[], clean = false ): Promise<void> {
+
+  if ( clean ) {
+    const distPath = path.resolve( __dirname, '../../../chipper/dist/js' );
+    if ( fs.existsSync( distPath ) ) {
+      fs.rmSync( distPath, { recursive: true, force: true } );
+    }
+  }
 
   // TODO: sherpa/font awesome takes up half the time for a project transpile, see https://github.com/phetsims/chipper/issues/1354
   // repos = repos.filter( repo => repo !== 'sherpa' );

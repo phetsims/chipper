@@ -13,11 +13,7 @@ type TranspileOptions = {
   // Transpile all repos
   all: boolean;
 
-  // Dispose of the cache that tracks file status on startup, can be combined with other commands.
-  // You would need to run --clean if the files in chipper/dist/js or chipper/dist/js-cache-status.json
-  // are modified externally.  For example if you edit a file in chipper/dist/js or if you edit
-  // chipper/dist/js-cache-status.json, they would be out of sync.  If you `rm -rf chipper/dist`
-  // that does not require --clean, because that erases the cache file and the js files together.
+  // Delete of the output directory before transpiling
   clean: boolean;
 
   // Continue watching all directories and transpile on detected changes.
@@ -25,6 +21,7 @@ type TranspileOptions = {
 
   // Additional repos to compile (not listed in perennial-alias/data/active-repos). The names of the repos,
   // separated by commas, like --repos=myrepo1,myrepo2. Directory names only, not paths
+  // TODO: This should just be the list of repos, not the list of additional repos, see https://github.com/phetsims/chipper/issues/1354
   repos: Repo[];
 
   silent: boolean; // any logging output.
@@ -72,8 +69,6 @@ Running "output-js" task
 Clean stale chipper/dist/js files finished in 1398ms
 Finished initial transpilation in 4072ms
 Watching...
-
-
      */
     watch: false,
     repos: []
@@ -82,7 +77,7 @@ Watching...
   assert( options.repos.length > 0 || options.all, 'must include repos or --all' );
   const repos = options.all ? getActiveRepos() : options.repos;
 
-  await transpileSWC( _.uniq( repos ), !!options.watch, options.brands || [] );
+  await transpileSWC( _.uniq( repos ), !!options.watch, options.brands || [], options.clean );
 
   !options.silent && console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
   !options.silent && options.watch && console.log( 'Watching...' );
