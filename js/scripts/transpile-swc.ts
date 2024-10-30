@@ -5,7 +5,7 @@
  *
  * Usage:
  * cd chipper/
- * sage run js/scripts/transpile-swc.ts
+ * sage run js/scripts/transpile-swc.ts --watch
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -18,6 +18,10 @@ import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos';
 
 // Read active repositories
 const activeRepos = getActiveRepos();
+
+// Parse command line arguments
+const args = process.argv.slice( 2 );
+const isWatchMode = args.includes( '--watch' );
 
 // Construct the command string with brace expansion
 const runnable = process.platform.startsWith( 'win' ) ? 'swc.cmd' : 'swc';
@@ -60,14 +64,18 @@ function spawnCommand( command: string, args: string[] ): Promise<void> {
   } );
 }
 
-const spawnWatch = ( repos: string[] ) => {
+const spawnTranspile = ( repos: string[], watch: boolean ) => {
   const argsString = [
     '--config-file', 'chipper/.swcrc',
     '-s', 'inline',
     ..._.flatten( repos.map( repo => getSubdirectories( repo ) ) ),
-    '-d', 'chipper/dist/js/',
-    '--watch'
+    '-d', 'chipper/dist/js/'
   ];
+
+  if ( watch ) {
+    argsString.push( '--watch' );
+  }
+
   // console.log( 'Executing: ', runnablePath, argsString.join( ' ' ) );
   return spawnCommand( runnablePath, argsString );
 };
@@ -77,7 +85,7 @@ async function main( repos = activeRepos ): Promise<void> {
 
   console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
 
-  await Promise.all( chunks.map( chunkedRepos => spawnWatch( chunkedRepos ) ) );
+  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, isWatchMode ) ) );
   console.log( 'SWC transpile completed successfully.' );
 }
 
