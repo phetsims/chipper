@@ -101,7 +101,7 @@ module.exports = function getStringMap( mainRepo, locales, phetLibs, usedModules
   // Load the file contents of every single JS module that used any strings
   const usedFileContents = usedModules.map( usedModule => fs.readFileSync( `../${usedModule}`, 'utf-8' ) );
 
-  // Compute which repositories contain one more more used strings (since we'll need to load string files for those
+  // Compute which repositories contain one or more used strings (since we'll need to load string files for those
   // repositories).
   let reposWithUsedStrings = [];
   usedFileContents.forEach( fileContent => {
