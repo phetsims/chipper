@@ -7,8 +7,14 @@
  */
 
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import testGruntOptions from '../../../../perennial-alias/js/grunt/tasks/util/testGruntOptions';
 
 ( async () => {
+  if ( getOption( 'test-options' ) ) {
+    testGruntOptions();
+    process.exit( 0 );
+  }
+
   if ( getOption( 'lint' ) !== false ) {
     await ( await import( './lint-all.js' ) ).lintAll;
   }
