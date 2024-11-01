@@ -14,6 +14,10 @@ const repos = contents.split( '\n' ).map( sim => sim.trim() );
 const args = process.argv.slice( 2 );
 const all = args.includes( '--all' );
 
+// Force certain tasks to run indepndently of settings in build-local.json.
+// Example: node chipper/js/scripts/precommit-hook-multi.js --forceTasks=lint,report-media,check,test
+const forceTasks = args.find( arg => arg.startsWith( '--forceTasks=' ) );
+
 /**
  * Identify all repos with uncommitted changes, and run the precommit hooks on them.
  *
@@ -70,7 +74,7 @@ const all = args.includes( '--all' );
 
     process.stdout.write( reposToTest[ i ] + ': ' );
 
-    const result = await execute( tsxCommand, [ '../chipper/js/scripts/hook-pre-commit.js' ], `${reposToTest[ i ]}`, {
+    const result = await execute( tsxCommand, [ '../chipper/js/scripts/hook-pre-commit.js', ...( forceTasks ? [ forceTasks ] : [] ) ], `${reposToTest[ i ]}`, {
 
       // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
       errors: 'resolve'

@@ -41,6 +41,11 @@ const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.includes( '--console' );
 const force = commandLineArguments.includes( '--force' );
 
+// Force certain tasks to run indepndently of settings in build-local.json.
+// Takes precedence if specified, to be used in conjuction with precommit-hook-multi.js
+// Example: node chipper/js/scripts/precommit-hook-multi.js --forceTasks=lint,report-media,check,test
+const forceTasks = commandLineArguments.find( arg => arg.startsWith( '--forceTasks=' ) );
+
 ( async () => {
 
   // Identify the current repo
@@ -52,7 +57,7 @@ const force = commandLineArguments.includes( '--force' );
   }
 
   // By default, run all tasks
-  const tasksToRun = [ 'lint', 'report-media', 'check', 'test', 'phet-io-api-compare' ];
+  let tasksToRun = [ 'lint', 'report-media', 'check', 'test', 'phet-io-api-compare' ];
   const OPT_OUT_ALL = '*'; // Key to opt out of all tasks
 
   // check local preferences for overrides for which tasks to turn 'off'
@@ -70,6 +75,10 @@ const force = commandLineArguments.includes( '--force' );
         }
       } );
     }
+  }
+
+  if ( forceTasks ) {
+    tasksToRun = forceTasks.split( '=' )[ 1 ].split( ',' );
   }
 
   const precommitSuccess = await phetTimingLog.startAsync( `hook-pre-commit repo="${repo}"`, async () => {
