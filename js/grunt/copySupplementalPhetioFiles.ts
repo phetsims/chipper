@@ -22,7 +22,7 @@ const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 const copyDirectory = require( '../grunt/copyDirectory.js' );
 const execute = require( '../../../perennial-alias/js/common/execute.js' );
 const grunt = require( 'grunt' );
-const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI.js' );
+import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 
 const minify = require( '../grunt/minify.js' );
 const marked = require( 'marked' );

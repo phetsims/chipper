@@ -25,7 +25,8 @@ export default [
   } ),
   {
     rules: {
-      'phet/bad-chipper-text': 'error'
+      'phet/bad-chipper-text': 'error',
+      '@typescript-eslint/no-explicit-any': 'off' // TODO: if we could use IntentionalAny. . . . https://github.com/phetsims/perennial/issues/371
     }
   }
 ];

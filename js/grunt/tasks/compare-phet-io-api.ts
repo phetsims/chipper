@@ -17,15 +17,16 @@ import * as grunt from 'grunt';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
 
 const getSimList = require( '../../common/getSimList.js' );
-const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI.js' );
+
 const fs = require( 'fs' );
 
 const repo = getRepo();
 const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
 const temporary = getOption( 'temporary' );
-let proposedAPIs: Record<string, string> | null = null;
+let proposedAPIs: Record<string, object | null> | null = null;
 
 ( async () => {
   if ( temporary ) {

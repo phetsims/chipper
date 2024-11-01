@@ -8,24 +8,40 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import assert from 'assert';
+import puppeteer from 'puppeteer';
+import withServer from '../../../perennial-alias/js/common/withServer.js';
+import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
+import showCommandLineProgress from '../common/showCommandLineProgress.js';
 
-const puppeteer = require( 'puppeteer' );
-const _ = require( 'lodash' );
-const assert = require( 'assert' );
-const showCommandLineProgress = require( '../common/showCommandLineProgress.js' );
-const withServer = require( '../../../perennial-alias/js/common/withServer.js' );
+type PhetioAPI = Record<string, any>;
+type APIs = Record<string, PhetioAPI | null>; // null if errored
+
+type GeneratePhetioMacroAPIOptions = {
+
+  // if the built file should be used to generate the API (otherwise uses unbuilt)
+  fromBuiltVersion: boolean;
+
+  // split into chunks with (at most) this many elements per chunk
+  chunkSize: 4;
+  showProgressBar: boolean;
+  showMessagesFromSim: boolean;
+
+  // If false, allow individual repos return null if they encountered problems
+  throwAPIGenerationErrors: boolean;
+};
+
+const TIMEOUT = 120000;
+
 
 /**
  * Load each sim provided and get the
- * @param {string[]} repos
- * @param {Object} [options]
- * @returns {Promise.<Object.<string, Object>>} - keys are the repos, values are the APIs for each repo. If there was a problem with getting the API with throwAPIGenerationErrors:false, then it will return null for that repo.
  */
-const generatePhetioMacroAPI = async ( repos, options ) => {
+const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: Partial<GeneratePhetioMacroAPIOptions> ): Promise<APIs> => {
 
   assert( repos.length === _.uniq( repos ).length, 'repos should be unique' );
 
-  options = _.assignIn( {
+  const options = _.assignIn( {
     fromBuiltVersion: false, // if the built file should be used to generate the API (otherwise uses unbuilt)
     chunkSize: 4, // split into chunks with (at most) this many elements per chunk
     showProgressBar: false,
@@ -33,13 +49,13 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
     // If false, allow individual repos return null if they encountered problems
     throwAPIGenerationErrors: true
-  }, options );
+  }, providedOptions );
 
   repos.length > 1 && console.log( 'Generating PhET-iO API for repos:', repos.join( ', ' ) );
 
-  return withServer( async port => {
+  return withServer( async ( port: number ) => {
     const browser = await puppeteer.launch( {
-      timeout: 10000000, // Don't timeout when generating PhET-iO API.
+      timeout: 10000000, // Don't timeout the browser when generating PhET-iO API, we handle it lower down.
       args: [
         '--disable-gpu',
 
@@ -50,14 +66,19 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
     } );
     const chunks = _.chunk( repos, options.chunkSize );
 
-    const macroAPI = {}; // if throwAPIGenerationErrors:false, a repo will be null if it encountered errors.
-    const errors = {};
+    const macroAPI: APIs = {}; // if throwAPIGenerationErrors:false, a repo will be null if it encountered errors.
+    const errors: Record<string, Error> = {};
 
     for ( let i = 0; i < chunks.length; i++ ) {
       const chunk = chunks[ i ];
       options.showProgressBar && showCommandLineProgress( i / chunks.length, false );
 
-      const promises = chunk.map( async repo => {
+      type Resolved = {
+        repo: string;
+        api?: PhetioAPI;
+        error?: Error;
+      };
+      const promises: Promise<Resolved>[] = chunk.map( async repo => {
         const page = await browser.newPage();
 
         return new Promise( async ( resolve, reject ) => { // eslint-disable-line no-async-promise-executor
@@ -76,12 +97,12 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
 
           // This is likely to occur in the middle of page.goto, so we need to be graceful to the fact that resolving
           // and closing the page will then cause an error in the page.goto call, see https://github.com/phetsims/perennial/issues/268#issuecomment-1382374092
-          const cleanupAndResolve = async value => {
+          const cleanupAndResolve = async ( value: Resolved ) => {
             if ( await cleanup() ) {
               resolve( value );
             }
           };
-          const cleanupAndReject = async e => {
+          const cleanupAndReject = async ( e: Error ) => {
             if ( await cleanup() ) {
               resolve( {
                 repo: repo,
@@ -91,21 +112,17 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           };
 
           // Fail if this takes too long.  Doesn't need to be cleared since only the first resolve/reject is used
-          const id = setTimeout( () => cleanupAndReject( new Error( `Timeout in generatePhetioMacroAPI for ${repo}` ) ), 120000 );
+          const id = setTimeout( () => cleanupAndReject( new Error( `Timeout in generatePhetioMacroAPI for ${repo}` ) ), TIMEOUT );
 
           page.on( 'console', async msg => {
             const messageText = msg.text();
-
-            if ( messageText.indexOf( '"phetioFullAPI": true,' ) >= 0 ) {
-
-              const fullAPI = messageText;
-
-              cleanupAndResolve( {
+            if ( messageText.includes( '"phetioFullAPI": true,' ) ) {
+              await cleanupAndResolve( {
                 // to keep track of which repo this is for
                 repo: repo,
 
-                // For machine readability
-                api: JSON.parse( fullAPI )
+                // For machine readability, the API
+                api: JSON.parse( messageText )
               } );
             }
           } );
@@ -122,7 +139,7 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
           const url = `http://localhost:${port}/${repo}/${relativePath}?ea&brand=phet-io&phetioStandalone&phetioPrintAPI&randomSeed=332211&locales=*&webgl=false`;
           try {
             await page.goto( url, {
-              timeout: 120000
+              timeout: TIMEOUT
             } );
           }
           catch( e ) {
@@ -134,16 +151,25 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
       const chunkResults = await Promise.allSettled( promises );
 
       chunkResults.forEach( chunkResult => {
-        const repo = chunkResult.value.repo;
-        macroAPI[ repo ] = chunkResult.value.api || null;
-        const error = chunkResult.value.error;
-        if ( error ) {
-          if ( options.throwAPIGenerationErrors ) {
-            console.error( `Error in ${repo}:` );
-            throw error;
+        if ( chunkResult.status === 'fulfilled' ) {
+          const repo = chunkResult.value.repo;
+          macroAPI[ repo ] = chunkResult.value.api || null;
+          const error = chunkResult.value.error;
+          if ( error ) {
+            if ( options.throwAPIGenerationErrors ) {
+              console.error( `Error in ${repo}:` );
+              throw error;
+            }
+            else {
+              errors[ repo ] = error;
+            }
           }
-          else {
-            errors[ repo ] = error;
+        }
+        else {
+          const reason = chunkResult.reason;
+          console.error( reason );
+          if ( options.throwAPIGenerationErrors ) {
+            throw new Error( reason );
           }
         }
       } );
@@ -159,11 +185,6 @@ const generatePhetioMacroAPI = async ( repos, options ) => {
   } );
 };
 
-// @public (read-only)
 generatePhetioMacroAPI.apiVersion = '1.0.0-dev.0';
 
-/**
- * @param {string[]} repos
- * @param {Object} [options]
- */
-module.exports = generatePhetioMacroAPI;
+export default generatePhetioMacroAPI;
