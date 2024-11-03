@@ -12,12 +12,14 @@ import puppeteer from 'puppeteer';
 import CacheLayer from '../../../chipper/js/common/CacheLayer';
 import transpileSWC from '../common/transpileSWC.js';
 import reportMedia from '../../../chipper/js/grunt/reportMedia';
+import Transpiler from '../../../chipper/js/common/Transpiler';
+import reportMedia from '../../../chipper/js/grunt/reportMedia.js';
 import getRepoList from '../../../perennial-alias/js/common/getRepoList';
 import withServer from '../../../perennial-alias/js/common/withServer';
 import check from '../../../perennial-alias/js/grunt/check';
 import lint from '../../../perennial-alias/js/grunt/lint';
 import getPhetLibs from '../grunt/getPhetLibs';
-import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI';
+import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import phetioCompareAPISets from '../phet-io/phetioCompareAPISets';
 
 const puppeteerQUnit = require( '../../../perennial-alias/js/test/puppeteerQUnit.js' );

@@ -10,10 +10,11 @@
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-const getPhetLibs = require( './getPhetLibs.js' );
+import getPhetLibs from './getPhetLibs.js';
+import * as grunt from 'grunt';
+
 const getTitleStringKey = require( './getTitleStringKey.js' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
-import * as grunt from 'grunt';
 
 /**
  * @param repo - name of the repository

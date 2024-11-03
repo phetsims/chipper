@@ -1,7 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import getPhetLibs from '../getPhetLibs';
+import getPhetLibs from '../getPhetLibs.js';
 import transpile, { getTranspileOptions } from '../transpile.js';
 
 /**

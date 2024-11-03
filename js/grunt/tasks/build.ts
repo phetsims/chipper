@@ -37,7 +37,7 @@ import check from '../../../../perennial-alias/js/grunt/check.js';
 const minify = require( '../minify.js' );
 const path = require( 'path' );
 const fs = require( 'fs' );
-const getPhetLibs = require( '../getPhetLibs.js' );
+import getPhetLibs from '../getPhetLibs.js';
 const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog.js' );
 // eslint-disable-next-line phet/no-property-in-require-statement
 const transpileSWC = require( '../../common/transpileSWC.js' ).default;

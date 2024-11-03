@@ -22,15 +22,16 @@
 
 const ChipperConstants = require( '../common/ChipperConstants.js' );
 const getLicenseEntry = require( '../common/getLicenseEntry.js' );
-const getPhetLibs = require( '../grunt/getPhetLibs.js' );
-const grunt = require( 'grunt' );
+import * as grunt from 'grunt';
+import getPhetLibs from '../grunt/getPhetLibs.js';
+
 const path = require( 'path' );
 
 /**
  * @param {string} repo
  * @returns {Promise.<boolean>} success
  */
-module.exports = async repo => {
+export default async repo => {
 
   // Check for the dependencies of the target repo
   const dependencies = getPhetLibs( repo );

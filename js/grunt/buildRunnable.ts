@@ -18,6 +18,7 @@ import packageXHTML from './packageXHTML';
 import reportUnusedStrings from './reportUnusedStrings';
 import webpackBuild from './webpackBuild';
 import getPreloads from './getPreloads.js';
+import getPhetLibs from './getPhetLibs.js';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
@@ -26,7 +27,6 @@ const copyDirectory = require( './copyDirectory.js' );
 const copySupplementalPhetioFiles = require( './copySupplementalPhetioFiles.js' );
 const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate.js' );
 const getAllThirdPartyEntries = require( './getAllThirdPartyEntries.js' );
-const getPhetLibs = require( './getPhetLibs.js' );
 const getPrunedLocaleData = require( './getPrunedLocaleData.js' );
 const getStringMap = require( './getStringMap.js' );
 const getTitleStringKey = require( './getTitleStringKey.js' );

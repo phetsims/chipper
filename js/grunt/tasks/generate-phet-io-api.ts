@@ -17,12 +17,15 @@ import transpileSWC from '../../common/transpileSWC.js';
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+import fs from 'fs';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+import getSimList from '../../common/getSimList.js';
+import formatPhetioAPI from '../../phet-io/formatPhetioAPI';
+import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
+
 const repo = getRepo();
-
-const getSimList = require( '../../common/getSimList.js' );
-const generatePhetioMacroAPI = require( '../../phet-io/generatePhetioMacroAPI.js' );
-const fs = require( 'fs' );
-
 const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
 
 // Ideally transpilation would be a no-op if the watch process is running. However, it can take 2+ seconds on

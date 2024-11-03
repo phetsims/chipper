@@ -15,6 +15,8 @@ import webpackBuild from './webpackBuild.ts';
 import buildStandalone from './buildStandalone.ts';
 import formatPhetioAPI from '../phet-io/formatPhetioAPI';
 import check from '../../../perennial-alias/js/grunt/check.ts';
+import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
+import getPhetLibs from './getPhetLibs.js';
 
 const assert = require( 'assert' );
 const archiver = require( 'archiver' );
@@ -22,12 +24,10 @@ const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 const copyDirectory = require( '../grunt/copyDirectory.js' );
 const execute = require( '../../../perennial-alias/js/common/execute.js' );
 const grunt = require( 'grunt' );
-const generatePhetioMacroAPI = require( '../phet-io/generatePhetioMacroAPI.js' );
 
 const minify = require( '../grunt/minify.js' );
 const marked = require( 'marked' );
 
-const getPhetLibs = require( './getPhetLibs.js' );
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 

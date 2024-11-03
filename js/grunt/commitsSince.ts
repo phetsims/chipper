@@ -1,6 +1,7 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
 import * as grunt from 'grunt';
+import getPhetLibs from './getPhetLibs.js';
 
 /**
  * Prints commits since a specified date, for all dependencies of the build target.
@@ -17,7 +18,6 @@ import * as grunt from 'grunt';
  */
 
 const execute = require( '../../../perennial-alias/js/common/execute.js' );
-const getPhetLibs = require( './getPhetLibs.js' );
 
 module.exports = async function( repo: string, dateString: string ): Promise<void> {
 

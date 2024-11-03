@@ -13,8 +13,8 @@ import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
  */
 const repo = getRepo();
 
-// eslint-disable-next-line phet/require-statement-match
-const _reportMedia = require( '../reportMedia' );
+// eslint-disable-next-line phet/default-import-match-filename
+import _reportMedia from '../reportMedia';
 
 export const reportMedia = ( async () => {
   await _reportMedia( repo );

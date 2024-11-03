@@ -49,7 +49,7 @@ type TMipmap = {
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-module.exports = function createMipmap( filename: string, maxLevel: number, quality: number ): Promise<TMipmap[]> {
+export default function createMipmap( filename: string, maxLevel: number, quality: number ): Promise<TMipmap[]> {
   return new Promise( ( resolve, reject ) => {
     const mipmaps: TMipmap[] = [];
 
@@ -175,9 +175,9 @@ module.exports = function createMipmap( filename: string, maxLevel: number, qual
         grunt.log.debug( `mipmapped ${filename}${maxLevel >= 0 ? ` to level ${maxLevel}` : ''} with quality: ${quality}` );
 
         for ( let level = 0; level < mipmaps.length; level++ ) {
+
           // for now, make .url point to the smallest of the two (unless we have an alpha channel need)
-          // @ts-expect-error
-          const usePNG = hasAlpha || mipmaps[ level ].jpgURL.length > mipmaps[ level ].pngURL.length;
+          const usePNG = hasAlpha || mipmaps[ level ].jpgURL!.length > mipmaps[ level ].pngURL!.length;
           mipmaps[ level ].url = usePNG ? mipmaps[ level ].pngURL : mipmaps[ level ].jpgURL;
           mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
 
@@ -237,4 +237,4 @@ module.exports = function createMipmap( filename: string, maxLevel: number, qual
       }
     }
   } );
-};
+}
