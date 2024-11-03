@@ -9,9 +9,9 @@
 
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 import getCopyrightLine from './getCopyrightLine';
+import createMipmap from './createMipmap.js';
 
 const _ = require( 'lodash' );
-const createMipmap = require( './createMipmap.js' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 const grunt = require( 'grunt' );
@@ -154,7 +154,6 @@ const modulifyMipmap = async ( abspath: string, repo: string, subdir: string, fi
   };
 
   const mipmapLevels = await createMipmap( abspath, config.level, config.quality );
-  // @ts-expect-error
   const entries = mipmapLevels.map( ( { width, height, url } ) => `  new MipmapElement( ${width}, ${height}, '${url}' )` );
 
   const mipmapContents = `${HEADER}

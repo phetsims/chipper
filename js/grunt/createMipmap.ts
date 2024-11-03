@@ -49,7 +49,7 @@ type TMipmap = {
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-module.exports = function createMipmap( filename: string, maxLevel: number, quality: number ): Promise<TMipmap[]> {
+export default function createMipmap( filename: string, maxLevel: number, quality: number ): Promise<TMipmap[]> {
   return new Promise( ( resolve, reject ) => {
     const mipmaps: TMipmap[] = [];
 
@@ -237,4 +237,4 @@ module.exports = function createMipmap( filename: string, maxLevel: number, qual
       }
     }
   } );
-};
+}
