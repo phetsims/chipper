@@ -13,7 +13,8 @@
 
 const fs = require( 'fs' );
 const zlib = require( 'zlib' );
-const _ = require( 'lodash' );
+
+import _ from 'lodash';
 
 export default async function( repo: string ): Promise<void> {
   const file = fs.readFileSync( `../${repo}/build/phet/${repo}_all_phet.html`, 'utf-8' );
@@ -135,9 +136,7 @@ class TaggedSection {
 
   public toReportString( sort: boolean, size: number, gzippedSize: number, indent = '' ): string {
     // TOD: sort by gzipped size?
-    // @ts-expect-error
     const children = sort ? _.sortBy( this.children, child => -( typeof child === 'string' ? getUtf8Length( child ) : child.getSize() ) ) : this.children;
-    // @ts-expect-error
     return `${getSizeString( this.getApproxString(), size, gzippedSize )} ${indent}${this.type}${this.name ? ' ' + this.name : ''}\n${children.map( child => {
       if ( typeof child === 'string' ) {
         return '';
