@@ -11,7 +11,7 @@ import fs from 'fs';
 import puppeteer from 'puppeteer';
 import CacheLayer from '../../../chipper/js/common/CacheLayer';
 import Transpiler from '../../../chipper/js/common/Transpiler';
-import reportMedia from '../../../chipper/js/grunt/reportMedia';
+import reportMedia from '../../../chipper/js/grunt/reportMedia.js';
 import getRepoList from '../../../perennial-alias/js/common/getRepoList';
 import withServer from '../../../perennial-alias/js/common/withServer';
 import check from '../../../perennial-alias/js/grunt/check';

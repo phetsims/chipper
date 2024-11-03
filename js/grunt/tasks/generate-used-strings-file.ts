@@ -4,7 +4,7 @@ import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import webpackBuild from '../webpackBuild';
 import getLocalesFromRepository from '../getLocalesFromRepository';
 
-const getPhetLibs = require( '../getPhetLibs.js' );
+import getPhetLibs from '../getPhetLibs.js';
 const fs = require( 'fs' );
 const ChipperConstants = require( '../../common/ChipperConstants.js' );
 

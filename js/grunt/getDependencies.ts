@@ -10,8 +10,9 @@
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 const execute = require( '../../../perennial-alias/js/common/execute.js' );
-const getPhetLibs = require( './getPhetLibs.js' );
 const grunt = require( 'grunt' );
+
+import getPhetLibs from './getPhetLibs.js';
 
 // Our definition of an allowed simName is defined in the buildServer: https://github.com/phetsims/perennial/blob/78025b7ae6064e9ab5260cea5e532f3bf24c3ec8/js/build-server/taskWorker.js#L99-L98
 // We don't want to be this strict though, because 3rd parties are allowed to name sims to be whatever they want. So
@@ -29,11 +30,9 @@ export default async function getDependencies( repo: string ): Promise<object> {
   const version = packageObject.version;
 
   // Accumulate dependencies for all brands
-  // @ts-expect-error
   const dependencies: string[] = getPhetLibs( repo ).filter( dependency => dependency !== 'babel' ); // Remove babel since it should be kept at main
 
   // We need to check dependencies for the main brand, so we can know what is guaranteed to be public
-  // @ts-expect-error
   const mainDependencies = getPhetLibs( repo, 'phet' ).filter( dependency => dependency !== 'babel' );
 
   grunt.log.debug( `Scanning dependencies from:\n${dependencies.toString()}` );

@@ -9,6 +9,7 @@
 import webpackBuild from './webpackBuild';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 import getLocalesFromRepository from './getLocalesFromRepository';
+import getPhetLibs from './getPhetLibs.js';
 
 const assert = require( 'assert' );
 const fs = require( 'fs' );
@@ -17,8 +18,6 @@ const minify = require( './minify.js' );
 const _ = require( 'lodash' );
 const getStringMap = require( './getStringMap.js' );
 const ChipperConstants = require( '../common/ChipperConstants.js' );
-
-const getPhetLibs = require( './getPhetLibs.js' );
 
 /**
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)

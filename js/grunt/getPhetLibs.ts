@@ -7,28 +7,26 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-const _ = require( 'lodash' );
-const assert = require( 'assert' );
 const ChipperConstants = require( '../common/ChipperConstants.js' );
-const grunt = require( 'grunt' );
+
+import _ from 'lodash';
+import assert from 'assert';
+import * as grunt from 'grunt';
 
 /**
  * Returns a list of all dependent repositories.
- * @public
  *
- * @param {string} repo
- * @param {string[] | string} [brand] - If not specified, it will return the dependencies for all brands.
- * @returns {Array.<string>}
+ * @param repo
+ * @param [brand] - If not specified, it will return the dependencies for all brands.
  */
-module.exports = function getPhetLibs( repo, brand ) {
+export default function getPhetLibs( repo: string, brand?: string | string[] ): string[] {
   assert( typeof repo === 'string', 'Repository required for getPhetLibs' );
 
   if ( brand === undefined ) {
     return getPhetLibs( repo, ChipperConstants.BRANDS );
   }
   else if ( Array.isArray( brand ) ) {
-    return _.reduce( brand, ( dependencies, brand ) => {
+    return _.reduce( brand, ( dependencies: string[], brand ) => {
       return _.uniq( dependencies.concat( getPhetLibs( repo, brand ) ).sort() );
     }, [] );
   }
@@ -65,11 +63,11 @@ module.exports = function getPhetLibs( repo, brand ) {
 
     // wrappers are also marked as phetLibs, so we can get their shas without listing them twice
     if ( brand === 'phet-io' && packageObject.phet && packageObject.phet[ brand ] && packageObject.phet[ brand ].wrappers ) {
-      const wrapperRepos = ( packageObject.phet[ brand ].wrappers ).filter( wrapper => !wrapper.startsWith( 'phet-io-sim-specific' ) );
+      const wrapperRepos = ( packageObject.phet[ brand ].wrappers ).filter( ( wrapper: string ) => !wrapper.startsWith( 'phet-io-sim-specific' ) );
       phetLibs = phetLibs.concat( wrapperRepos );
     }
 
     // sort and remove duplicates
     return _.uniq( phetLibs.sort() );
   }
-};
+}
