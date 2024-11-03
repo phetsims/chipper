@@ -16,7 +16,6 @@ const getStringMap = require( '../getStringMap.js' );
  */
 const repo = getRepo();
 
-// eslint-disable-next-line phet/no-property-in-require-statement
 const transpileSWC = require( '../../common/transpileSWC.js' ).default;
 
 ( async () => {

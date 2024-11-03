@@ -19,10 +19,7 @@ import transpileSWC from '../../common/transpileSWC.js';
  */
 
 import fs from 'fs';
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import getSimList from '../../common/getSimList.js';
-import formatPhetioAPI from '../../phet-io/formatPhetioAPI';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
 
 const repo = getRepo();

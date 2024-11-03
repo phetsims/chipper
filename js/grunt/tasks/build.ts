@@ -39,7 +39,6 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 import getPhetLibs from '../getPhetLibs.js';
 const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog.js' );
-// eslint-disable-next-line phet/no-property-in-require-statement
 const transpileSWC = require( '../../common/transpileSWC.js' ).default;
 
 const repo = getRepo();
