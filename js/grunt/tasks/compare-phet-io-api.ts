@@ -18,8 +18,7 @@ import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
-
-const getSimList = require( '../../common/getSimList.js' );
+import getSimList from '../../common/getSimList.js';
 
 const fs = require( 'fs' );
 

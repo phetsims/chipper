@@ -6,15 +6,13 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-const fs = require( 'fs' );
+import fs from 'fs';
 
-'use strict';
-
-module.exports = () => {
+export default function(): string[] {
   const args = process.argv.slice( 2 );
 
   // if the arg is just a flag, then the callback will be called with a null parameter
-  const processKey = ( key, callback ) => {
+  const processKey = ( key: string, callback: ( value: string | null ) => void ) => {
     const prefix = `--${key}`;
     const values = args.filter( arg => arg.startsWith( prefix ) );
     if ( values.length === 1 ) {
@@ -31,9 +29,9 @@ module.exports = () => {
     }
   };
 
-  let repos = [];
+  let repos: string[] = [];
   processKey( 'simList', value => {
-    const contents = fs.readFileSync( value, 'utf8' ).trim();
+    const contents = fs.readFileSync( value!, 'utf8' ).trim();
     repos = contents.split( '\n' ).map( sim => sim.trim() );
   } );
   processKey( 'stable', () => {
@@ -41,8 +39,8 @@ module.exports = () => {
     repos = contents.split( '\n' ).map( sim => sim.trim() );
   } );
   processKey( 'sims', value => {
-    repos = value.split( ',' );
+    repos = value!.split( ',' );
   } );
 
   return repos;
-};
+}
