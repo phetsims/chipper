@@ -6,6 +6,7 @@
     "js/common/**/*",
     "js/npm-dependencies/**/*",
     "js/grunt/tasks/util/**/*",
+    "js/test/puppeteerQUnit.js",
     "js/grunt/check.ts",
     "js/grunt/lint.ts",
     "js/grunt/tasks/lint.ts",
