@@ -12,10 +12,10 @@
  */
 
 import { spawn } from 'child_process';
+import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import { Repo } from '../../../perennial-alias/js/common/PerennialTypes.js';
-import fs from 'fs';
 
 // Construct the command string with brace expansion
 const runnable = process.platform.startsWith( 'win' ) ? 'swc.cmd' : 'swc';
@@ -36,7 +36,7 @@ const getSubdirectories = ( repo: string, additionalBrands: string[] ) => {
   return subdirs.map( subdir => `${repo}/${subdir}/` );
 };
 
-// TODO: factor out child process https://github.com/phetsims/chipper/issues/1354
+// TODO: factor out child process https://github.com/phetsims/perennial/issues/373
 function spawnCommand( command: string, args: string[] ): Promise<void> {
   return new Promise( ( resolve, reject ) => {
     const child = spawn( command, args, {
