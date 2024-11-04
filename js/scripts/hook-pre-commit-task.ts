@@ -16,11 +16,10 @@ import getRepoList from '../../../perennial-alias/js/common/getRepoList';
 import withServer from '../../../perennial-alias/js/common/withServer';
 import check from '../../../perennial-alias/js/grunt/check';
 import lint from '../../../perennial-alias/js/grunt/lint';
+import puppeteerQUnit from '../../../perennial-alias/js/test/puppeteerQUnit.js';
 import getPhetLibs from '../grunt/getPhetLibs';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import phetioCompareAPISets from '../phet-io/phetioCompareAPISets';
-
-const puppeteerQUnit = require( '../../../perennial-alias/js/test/puppeteerQUnit.js' );
 
 type Repo = string;
 
