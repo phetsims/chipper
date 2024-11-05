@@ -8,7 +8,20 @@
  */
 
 import * as grunt from 'grunt';
+import _ from 'lodash';
 import updateCopyrightDate from './updateCopyrightDate';
+
+const unsupportedExtensions = [ '.json', 'md' ];
+
+const filesPredicate = ( file: string ) => {
+  if ( _.some( unsupportedExtensions, extension => file.endsWith( extension ) ) ) {
+    return false;
+  }
+  if ( file.startsWith( 'js/' ) ) {
+    return true;
+  }
+  return false;
+};
 
 /**
  * @param repo - The repository name for the files to update
@@ -19,7 +32,7 @@ export default async function( repo: string, predicate = () => true ): Promise<v
   grunt.file.recurse( `../${repo}`, ( abspath, rootdir, subdir, filename ) => {
     relativeFiles.push( `${subdir}/${filename}` );
   } );
-  relativeFiles = relativeFiles.filter( file => file.startsWith( 'js/' ) ).filter( predicate );
+  relativeFiles = relativeFiles.filter( filesPredicate ).filter( predicate );
 
   for ( const relativeFile of relativeFiles ) {
     await updateCopyrightDate( repo, relativeFile );
