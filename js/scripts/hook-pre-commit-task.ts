@@ -15,7 +15,7 @@ import reportMedia from '../../../chipper/js/grunt/reportMedia.js';
 import getRepoList from '../../../perennial-alias/js/common/getRepoList';
 import withServer from '../../../perennial-alias/js/common/withServer';
 import check from '../../../perennial-alias/js/grunt/check';
-import lint from '../../../perennial-alias/js/grunt/lint';
+import lint from '../../../perennial-alias/js/eslint/lint';
 import getPhetLibs from '../grunt/getPhetLibs';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import phetioCompareAPISets from '../phet-io/phetioCompareAPISets';
