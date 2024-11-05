@@ -21,10 +21,10 @@ const brands = getBrands( repo );
  */
 export const lintAll = ( async () => {
 
-  const lintReturnValue = await lint( getLintOptions( { repos: getPhetLibs( repo, brands ) } ) );
+  const lintSuccess = await lint( getLintOptions( { repos: getPhetLibs( repo, brands ) } ) );
 
   // Output results on errors.
-  if ( !lintReturnValue.ok ) {
+  if ( !lintSuccess ) {
     grunt.fail.fatal( 'Lint failed' );
   }
   else {
