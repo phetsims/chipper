@@ -7,10 +7,11 @@
  */
 
 import * as grunt from 'grunt';
-import lint, { getLintOptions } from '../../../../perennial-alias/js/eslint/lint.js';
+import lint from '../../../../perennial-alias/js/eslint/lint.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import getPhetLibs from '../getPhetLibs.js';
+import getLintOptions from '../../../../perennial-alias/js/eslint/getLintOptions.js';
 
 const repo = getRepo();
 
