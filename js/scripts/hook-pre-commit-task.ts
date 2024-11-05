@@ -14,8 +14,8 @@ import Transpiler from '../../../chipper/js/common/Transpiler';
 import reportMedia from '../../../chipper/js/grunt/reportMedia.js';
 import getRepoList from '../../../perennial-alias/js/common/getRepoList';
 import withServer from '../../../perennial-alias/js/common/withServer';
+import lint from '../../../perennial-alias/js/eslint/lint';
 import check from '../../../perennial-alias/js/grunt/check';
-import lint from '../../../perennial-alias/js/grunt/lint';
 import puppeteerQUnit from '../../../perennial-alias/js/test/puppeteerQUnit.js';
 import getPhetLibs from '../grunt/getPhetLibs';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
@@ -45,9 +45,9 @@ const repo = getArg( 'repo' );
 
     // Run lint tests if they exist in the checked-out SHAs.
     // lint() automatically filters out non-lintable repos
-    const lintReturnValue = await lint( { repos: [ repo ] } );
-    outputToConsole && console.log( `Linting had ${lintReturnValue.ok ? 'no ' : ''}errors.` );
-    process.exit( lintReturnValue.ok ? 0 : 1 );
+    const lintSuccess = await lint( { repos: [ repo ] } );
+    outputToConsole && console.log( `Linting had ${lintSuccess ? 'no ' : ''}errors.` );
+    process.exit( lintSuccess ? 0 : 1 );
   }
 
   else if ( command === 'report-media' ) {
