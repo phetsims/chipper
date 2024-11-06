@@ -83,9 +83,6 @@ export default async function transpileSWC( repos: Repo[], isWatchMode: boolean,
     }
   }
 
-  // TODO: sherpa/font awesome takes up half the time for a project transpile, see https://github.com/phetsims/chipper/issues/1354
-  // repos = repos.filter( repo => repo !== 'sherpa' );
-
   const chunks = _.chunk( repos, 75 );
 
   console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
