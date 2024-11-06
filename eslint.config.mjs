@@ -7,9 +7,9 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import { getBrowserConfiguration } from '../perennial-alias/js/eslint/browser.eslint.config.mjs';
+import { getBrowserConfiguration } from '../perennial-alias/js/eslint/config/browser.eslint.config.mjs';
 import getNodeConfiguration from '../perennial-alias/js/eslint/config/util/getNodeConfiguration.mjs';
-import rootEslintConfig from '../perennial-alias/js/eslint/root.eslint.config.mjs';
+import rootEslintConfig from '../perennial-alias/js/eslint/config/root.eslint.config.mjs';
 
 const browserFiles = [
   'js/*', // not recursive
