@@ -27,11 +27,7 @@ import getPhetLibs from '../grunt/getPhetLibs.js';
 
 const path = require( 'path' );
 
-/**
- * @param {string} repo
- * @returns {Promise.<boolean>} success
- */
-export default async repo => {
+export default async ( repo: string ): Promise<boolean> => {
 
   // Check for the dependencies of the target repo
   const dependencies = getPhetLibs( repo );
@@ -49,7 +45,7 @@ export default async repo => {
     // Check if the repo is missing from the directory
     if ( !grunt.file.exists( rootdir + repo ) ) {
 
-      if ( repo.indexOf( 'phet-io' ) === 0 || repo === 'studio' ) {
+      if ( repo.startsWith( 'phet-io' ) || repo === 'studio' ) {
         console.log( `skipping repo (not checked out): ${repo}` );
         success = true;
         continue;
@@ -67,6 +63,7 @@ export default async repo => {
       if ( grunt.file.exists( searchDir ) ) {
 
         // Iterate over all media directories, such as images and sounds recursively
+        // eslint-disable-next-line @typescript-eslint/no-loop-func
         grunt.file.recurse( searchDir, ( abspath, rootdir, subdir, filename ) => {
 
           if ( filename.endsWith( '.js' ) || filename.endsWith( '.ts' ) ) {
@@ -74,8 +71,8 @@ export default async repo => {
           }
 
           // Some files don't need to be attributed in the license.json
-          if ( abspath.indexOf( 'README.md' ) < 0 &&
-               filename.indexOf( 'license.json' ) !== 0 ) {
+          if ( !abspath.includes( 'README.md' ) &&
+               !filename.startsWith( 'license.json' ) ) {
 
             // Classify the resource
             const result = getLicenseEntry( abspath );

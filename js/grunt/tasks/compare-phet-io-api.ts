@@ -20,8 +20,7 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import transpileSWC from '../../common/transpileSWC.js';
 import getPhetLibs from '../getPhetLibs.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
-
-const getSimList = require( '../../common/getSimList.js' );
+import getSimList from '../../common/getSimList.js';
 
 const fs = require( 'fs' );
 
