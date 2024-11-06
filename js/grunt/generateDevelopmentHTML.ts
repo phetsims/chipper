@@ -19,8 +19,6 @@ const getStringRepos = require( './getStringRepos.js' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
 const grunt = require( 'grunt' );
 
-// TODO: Get rid of all IntentionalAny, see https://github.com/phetsims/chipper/issues/1437
-
 module.exports = async function( repo: string, options: IntentionalAny ): Promise<void> {
 
   const {
