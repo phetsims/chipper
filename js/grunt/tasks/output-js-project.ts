@@ -2,7 +2,7 @@
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import getPhetLibs from '../getPhetLibs.js';
-import transpile, { getTranspileOptions } from '../transpile.js';
+import transpile, { getTranspileOptions } from '../../common/transpile.js';
 
 /**
  * Outputs JS for the specified repo and its dependencies

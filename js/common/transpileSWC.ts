@@ -3,10 +3,6 @@
 /**
  * Spawns an swc process to transpile code into chipper/dist/js
  *
- * Usage:
- * cd chipper/
- * sage run js/scripts/transpile-swc.ts --watch
- *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */

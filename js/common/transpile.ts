@@ -5,8 +5,8 @@ import _ from 'lodash';
 import { Repo } from '../../../perennial-alias/js/common/PerennialTypes.js';
 import getOption from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo, { getRepos } from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import transpileSWC from '../common/transpileSWC.js';
-import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos';
+import transpileSWC from './transpileSWC.js';
+import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
 
 type TranspileOptions = {
 

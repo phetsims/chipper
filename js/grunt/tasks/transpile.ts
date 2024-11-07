@@ -1,7 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
-import transpile, { getTranspileOptions } from '../transpile.js';
+import transpile, { getTranspileOptions } from '../../common/transpile.js';
 
 /**
  * Transpile TypeScript to JavaScript.
