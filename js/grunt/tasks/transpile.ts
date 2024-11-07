@@ -4,8 +4,15 @@ import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption
 import transpile, { getTranspileOptions } from '../transpile.js';
 
 /**
- * Main entrypoint for transpiling the PhET codebase to js. See transpile() for API. Outputs JS just
- * for the specified repo by default.
+ * Transpile TypeScript to JavaScript.
+ *
+ * Options
+ * --watch: Continue watching all directories and transpile on detected changes.
+ * --clean: Delete of the output directory before transpiling.
+ * --silent: Disable any logging output.
+ * --all: Transpile all repos. (default)
+ * --repo: Transpile a specific repo.
+ * --repos: Transpile a list of repos.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
