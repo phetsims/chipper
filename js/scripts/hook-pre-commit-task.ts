@@ -8,7 +8,7 @@
  */
 
 import fs from 'fs';
-import puppeteer from 'puppeteer';
+import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import CacheLayer from '../../../chipper/js/common/CacheLayer';
 import Transpiler from '../../../chipper/js/common/Transpiler';
 import reportMedia from '../../../chipper/js/grunt/reportMedia.js';
