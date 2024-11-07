@@ -11,8 +11,8 @@ import transpile, { getTranspileOptions } from '../transpile.js';
  * --clean: Delete of the output directory before transpiling.
  * --silent: Disable any logging output.
  * --all: Transpile all repos. (default)
- * --repo: Transpile a specific repo.
- * --repos: Transpile a list of repos.
+ * --repo=my-repo: Transpile a specific repo.
+ * --repos-my-repo-1,my-repo-2: Transpile a list of repos.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
