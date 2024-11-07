@@ -29,6 +29,7 @@
  * - The script makes changes to the repo as it progresses. If you look at the source files while this script is running
  *   you will see the changes being made to trial values.
  *
+ * TODO: Move to perennial/js/scripts/ https://github.com/phetsims/perennial/issues/370
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Matt Blackman (PhET Interactive Simulations)
  */
