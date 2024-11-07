@@ -22,6 +22,8 @@
     "keepClassNames": true
   },
 
+  "sourceMaps": "inline",
+
   // Improve readability in chipper/dist for debugging/understanding, and to improve compatibility with chipper code
   // that scrapes webpack output for strings, etc.
   "minify": false

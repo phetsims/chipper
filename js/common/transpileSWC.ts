@@ -61,7 +61,6 @@ function spawnCommand( command: string, args: string[] ): Promise<void> {
 const spawnTranspile = ( repos: string[], watch: boolean, additionalBrands: string[] ) => {
   const argsString = [
     '--config-file', 'chipper/.swcrc',
-    '-s', 'inline',
     ..._.flatten( repos.map( repo => getSubdirectories( repo, additionalBrands ) ) ),
     '-d', 'chipper/dist/js/'
   ];
@@ -76,6 +75,7 @@ const spawnTranspile = ( repos: string[], watch: boolean, additionalBrands: stri
 
 export default async function transpileSWC( repos: Repo[], isWatchMode: boolean, additionalBrands: string[], clean = false ): Promise<void> {
 
+  // We can't use --delete-dir-on-start, because we are operating multiple swc instances in child processes.
   if ( clean ) {
     const distPath = path.resolve( __dirname, '../../../chipper/dist/js' );
     if ( fs.existsSync( distPath ) ) {
