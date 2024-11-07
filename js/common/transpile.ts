@@ -35,7 +35,7 @@ type TranspileOptions = {
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-const transpile = async ( providedOptions: Partial<TranspileOptions> ): Promise<void> => {
+export default async function transpile( providedOptions: Partial<TranspileOptions> ): Promise<void> {
   const start = Date.now();
 
   const options = _.assignIn( {
@@ -53,7 +53,7 @@ const transpile = async ( providedOptions: Partial<TranspileOptions> ): Promise<
 
   !options.silent && console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
   !options.silent && options.watch && console.log( 'Watching...' );
-};
+}
 
 // Parse command line options into an object for the module
 export const getTranspileOptions = ( options?: Partial<TranspileOptions> ): TranspileOptions => {
@@ -70,8 +70,6 @@ export const getTranspileOptions = ( options?: Partial<TranspileOptions> ): Tran
     watch: !!getOption( 'watch' )
   }, options );
 };
-
-export default transpile;
 
 // Construct the command string with brace expansion
 const runnable = process.platform.startsWith( 'win' ) ? 'swc.cmd' : 'swc';
