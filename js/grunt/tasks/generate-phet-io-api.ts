@@ -4,7 +4,6 @@ import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import formatPhetioAPI from '../../phet-io/formatPhetioAPI';
 import getPhetLibs from '../getPhetLibs.js';
-import transpileSWC from '../../common/transpileSWC.js';
 
 /**
  * Output the PhET-iO API as JSON to phet-io-sim-specific/api.
@@ -21,6 +20,7 @@ import transpileSWC from '../../common/transpileSWC.js';
 import fs from 'fs';
 import getSimList from '../../common/getSimList.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
+import { transpileSWC } from '../../common/transpile.js';
 
 const repo = getRepo();
 const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();

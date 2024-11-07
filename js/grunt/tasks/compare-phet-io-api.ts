@@ -17,10 +17,10 @@ import * as grunt from 'grunt';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
-import transpileSWC from '../../common/transpileSWC.js';
 import getPhetLibs from '../getPhetLibs.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
 import getSimList from '../../common/getSimList.js';
+import { transpileSWC } from '../../common/transpile.js';
 
 const fs = require( 'fs' );
 

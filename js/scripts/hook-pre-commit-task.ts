@@ -10,7 +10,6 @@
 import fs from 'fs';
 import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import CacheLayer from '../../../chipper/js/common/CacheLayer';
-import transpileSWC from '../common/transpileSWC.js';
 import reportMedia from '../../../chipper/js/grunt/reportMedia.js';
 import getRepoList from '../../../perennial-alias/js/common/getRepoList';
 import withServer from '../../../perennial-alias/js/common/withServer';
@@ -20,6 +19,7 @@ import puppeteerQUnit from '../../../perennial-alias/js/test/puppeteerQUnit.js';
 import getPhetLibs from '../grunt/getPhetLibs';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import phetioCompareAPISets from '../phet-io/phetioCompareAPISets';
+import { transpileSWC } from '../common/transpile.js';
 
 type Repo = string;
 

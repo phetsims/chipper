@@ -33,13 +33,13 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import buildRunnable from '../buildRunnable';
 import buildStandalone from '../buildStandalone';
 import check from '../../../../perennial-alias/js/grunt/check.js';
+import getPhetLibs from '../getPhetLibs.js';
+import { transpileSWC } from '../../common/transpile.js';
 
 const minify = require( '../minify.js' );
 const path = require( 'path' );
 const fs = require( 'fs' );
-import getPhetLibs from '../getPhetLibs.js';
 const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog.js' );
-const transpileSWC = require( '../../common/transpileSWC.js' ).default;
 
 const repo = getRepo();
 

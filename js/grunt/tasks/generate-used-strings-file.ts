@@ -5,6 +5,7 @@ import webpackBuild from '../webpackBuild';
 import getLocalesFromRepository from '../getLocalesFromRepository';
 
 import getPhetLibs from '../getPhetLibs.js';
+import { transpileSWC } from '../../common/transpile.js';
 const fs = require( 'fs' );
 const ChipperConstants = require( '../../common/ChipperConstants.js' );
 
@@ -15,8 +16,6 @@ const getStringMap = require( '../getStringMap.js' );
  * @author Sam Reid (PhET Interactive Simulations)
  */
 const repo = getRepo();
-
-const transpileSWC = require( '../../common/transpileSWC.js' ).default;
 
 ( async () => {
   await transpileSWC( getPhetLibs( repo ), false, [] );
