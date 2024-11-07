@@ -25,7 +25,7 @@ const ChipperConstants = require( '../common/ChipperConstants.js' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const https = require( 'https' );
-const axios = require( 'axios' );
+const axios = require( '../../../perennial-alias/js/npm-dependencies/axios.js' );
 
 /**
  * @returns {Promise} - Resolves when complete.

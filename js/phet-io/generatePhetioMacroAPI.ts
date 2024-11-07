@@ -9,7 +9,7 @@
  */
 
 import assert from 'assert';
-import puppeteer from 'puppeteer';
+import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import withServer from '../../../perennial-alias/js/common/withServer.js';
 import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
 import showCommandLineProgress from '../common/showCommandLineProgress.js';
