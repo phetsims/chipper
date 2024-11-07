@@ -20,7 +20,7 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import getPhetLibs from '../getPhetLibs.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
 import getSimList from '../../common/getSimList.js';
-import { transpileSWC } from '../../common/transpile.js';
+import transpile from '../../common/transpile.js';
 
 const fs = require( 'fs' );
 
@@ -40,7 +40,9 @@ let proposedAPIs: Record<string, object | null> | null = null;
 
     const repos = new Set<string>();
     sims.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
-    await transpileSWC( Array.from( repos ), false, [] );
+    await transpile( {
+      repos: Array.from( repos )
+    } );
 
     proposedAPIs = await generatePhetioMacroAPI( sims, {
       showProgressBar: sims.length > 1,

@@ -19,7 +19,7 @@ import puppeteerQUnit from '../../../perennial-alias/js/test/puppeteerQUnit.js';
 import getPhetLibs from '../grunt/getPhetLibs';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import phetioCompareAPISets from '../phet-io/phetioCompareAPISets';
-import { transpileSWC } from '../common/transpile.js';
+import transpile from '../common/transpile.js';
 
 type Repo = string;
 
@@ -161,7 +161,9 @@ const repo = getArg( 'repo' );
       if ( reposToTest.length > 0 ) {
         const repos = new Set<string>();
         reposToTest.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
-        await transpileSWC( Array.from( repos ), false, [] );
+        await transpile( {
+          repos: Array.from( repos )
+        } );
 
         const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {
           showProgressBar: reposToTest.length > 1,

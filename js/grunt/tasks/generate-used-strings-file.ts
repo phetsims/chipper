@@ -5,7 +5,7 @@ import webpackBuild from '../webpackBuild';
 import getLocalesFromRepository from '../getLocalesFromRepository';
 
 import getPhetLibs from '../getPhetLibs.js';
-import { transpileSWC } from '../../common/transpile.js';
+import transpile from '../../common/transpile.js';
 const fs = require( 'fs' );
 const ChipperConstants = require( '../../common/ChipperConstants.js' );
 
@@ -18,7 +18,7 @@ const getStringMap = require( '../getStringMap.js' );
 const repo = getRepo();
 
 ( async () => {
-  await transpileSWC( getPhetLibs( repo ), false, [] );
+  await transpile( { repos: getPhetLibs( repo ) } );
   const webpackResult = await webpackBuild( repo, 'phet' );
 
   const phetLibs = getPhetLibs( repo, 'phet' );

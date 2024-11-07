@@ -16,11 +16,10 @@ import getPhetLibs from '../getPhetLibs.js';
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-
 import fs from 'fs';
 import getSimList from '../../common/getSimList.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
-import { transpileSWC } from '../../common/transpile.js';
+import transpile from '../../common/transpile.js';
 
 const repo = getRepo();
 const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
@@ -37,7 +36,9 @@ const skipTranspile = getOption( 'transpile' ) === false;
 
     const repos = new Set<string>();
     sims.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
-    await transpileSWC( Array.from( repos ), false, [] );
+    await transpile( {
+      repos: Array.from( repos )
+    } );
 
     const transpileTimeMS = Date.now() - startTime;
 

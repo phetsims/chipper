@@ -127,7 +127,7 @@ const spawnTranspile = ( repos: string[], watch: boolean, additionalBrands: stri
   return spawnCommand( runnablePath, argsString );
 };
 
-export async function transpileSWC( repos: Repo[], isWatchMode: boolean, additionalBrands: string[], clean = false ): Promise<void> {
+async function transpileSWC( repos: Repo[], isWatchMode: boolean, additionalBrands: string[], clean = false ): Promise<void> {
 
   // We can't use --delete-dir-on-start, because we are operating multiple swc instances in child processes.
   if ( clean ) {

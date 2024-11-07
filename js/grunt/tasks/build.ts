@@ -34,7 +34,7 @@ import buildRunnable from '../buildRunnable';
 import buildStandalone from '../buildStandalone';
 import check from '../../../../perennial-alias/js/grunt/check.js';
 import getPhetLibs from '../getPhetLibs.js';
-import { transpileSWC } from '../../common/transpile.js';
+import transpile from '../../common/transpile.js';
 
 const minify = require( '../minify.js' );
 const path = require( 'path' );
@@ -83,8 +83,12 @@ export const build = ( async () => {
     } );
 
     !getOption( 'noTranspile' ) && await phetTimingLog.startAsync( 'transpile', async () => {
+
       // If that succeeds, then convert the code to JS
-      await transpileSWC( getPhetLibs( repo ), false, brands );
+      await transpile( {
+        repos: getPhetLibs( repo ),
+        brands: brands
+      } );
     } );
 
     // standalone
