@@ -40,34 +40,6 @@ const transpile = async ( providedOptions: Partial<TranspileOptions> ): Promise<
     all: false,
     silent: false,
     clean: false,
-
-    // TODO: I don't think this is working still But I can't reproduce easily: https://github.com/phetsims/chipper/issues/1499
-    /*
-    {
-  all: true,
-  silent: false,
-  clean: false,
-  watch: true,
-  repos: [ 'density' ],
-  brands: []
-}
-Clean stale chipper/dist/js files finished in 1444ms
-Finished initial transpilation in 4107ms
-Watching...
-Restarting 'C:\\Program Files\\nodejs\\node_modules\\grunt\\bin\\grunt output-js --no-respawning'
-Running "output-js" task
-{
-  all: true,
-  silent: false,
-  clean: false,
-  watch: true,
-  repos: [ 'density' ],
-  brands: []
-}
-Clean stale chipper/dist/js files finished in 1398ms
-Finished initial transpilation in 4072ms
-Watching...
-     */
     watch: false,
     repos: []
   }, providedOptions );
