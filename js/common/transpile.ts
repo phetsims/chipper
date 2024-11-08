@@ -93,18 +93,14 @@ function getBrands(): string[] {
   const pathForBrand = path.resolve( __dirname, '../../../brand/' );
   const brands = fs.readdirSync( pathForBrand ).filter( file => fs.statSync( path.join( pathForBrand, file ) ).isDirectory() );
 
-  const arrayRemove = ( array: string[], toRemove: string ) => array.splice( _.indexOf( array, toRemove ), 1 );
+  const omitDirectories = [ 'node_modules', '.github', 'js', '.git' ];
+  const filteredBrands = brands.filter( brand => !omitDirectories.includes( brand ) );
 
-  arrayRemove( brands, 'node_modules' );
-  arrayRemove( brands, '.github' );
-  arrayRemove( brands, 'js' );
-  arrayRemove( brands, '.git' );
+  assert( filteredBrands.includes( 'phet' ), 'phet brand is required' );
+  assert( filteredBrands.includes( 'phet-io' ), 'phet-io brand is required' );
+  assert( filteredBrands.includes( 'adapted-from-phet' ), 'adapted-from-phet brand is required' );
 
-  assert( brands.includes( 'phet' ), 'phet brand is required' );
-  assert( brands.includes( 'phet-io' ), 'phet-io brand is required' );
-  assert( brands.includes( 'adapted-from-phet' ), 'adapted-from-phet brand is required' );
-
-  return brands;
+  return filteredBrands;
 }
 
 // Directories in a sim repo that may contain things for transpilation
