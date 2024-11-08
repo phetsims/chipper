@@ -1,11 +1,12 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import webpackBuild from '../webpackBuild.js';
+import transpile from '../../common/transpile.js';
 import getLocalesFromRepository from '../getLocalesFromRepository.js';
 
 import getPhetLibs from '../getPhetLibs.js';
-import transpile from '../../common/transpile.js';
+import webpackBuild from '../webpackBuild.js';
+
 const fs = require( 'fs' );
 const ChipperConstants = require( '../../common/ChipperConstants.js' );
 
@@ -18,7 +19,7 @@ const getStringMap = require( '../getStringMap.js' );
 const repo = getRepo();
 
 ( async () => {
-  await transpile( { repos: getPhetLibs( repo ) } );
+  await transpile( { repos: getPhetLibs( repo ), silent: true } );
   const webpackResult = await webpackBuild( repo, 'phet' );
 
   const phetLibs = getPhetLibs( repo, 'phet' );

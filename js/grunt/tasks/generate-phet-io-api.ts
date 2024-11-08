@@ -1,9 +1,21 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
+import fs from 'fs';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import getSimList from '../../common/getSimList.js';
+import transpile from '../../common/transpile.js';
 import formatPhetioAPI from '../../phet-io/formatPhetioAPI.js';
+import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
 import getPhetLibs from '../getPhetLibs.js';
+
+const repo = getRepo();
+const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
+
+// Ideally transpilation would be a no-op if the watch process is running. However, it can take 2+ seconds on
+// macOS to check all files, and sometimes much longer (50+ seconds) if the cache mechanism is failing.
+// So this "skip" is a band-aid until we reduce those other problems.
+const skipTranspile = getOption( 'transpile' ) === false;
 
 /**
  * Output the PhET-iO API as JSON to phet-io-sim-specific/api.
@@ -16,19 +28,6 @@ import getPhetLibs from '../getPhetLibs.js';
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-import fs from 'fs';
-import getSimList from '../../common/getSimList.js';
-import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
-import transpile from '../../common/transpile.js';
-
-const repo = getRepo();
-const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
-
-// Ideally transpilation would be a no-op if the watch process is running. However, it can take 2+ seconds on
-// macOS to check all files, and sometimes much longer (50+ seconds) if the cache mechanism is failing.
-// So this "skip" is a band-aid until we reduce those other problems.
-const skipTranspile = getOption( 'transpile' ) === false;
-
 ( async () => {
 
   if ( !skipTranspile ) {
@@ -37,7 +36,8 @@ const skipTranspile = getOption( 'transpile' ) === false;
     const repos = new Set<string>();
     sims.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
     await transpile( {
-      repos: Array.from( repos )
+      repos: Array.from( repos ),
+      silent: true
     } );
 
     const transpileTimeMS = Date.now() - startTime;

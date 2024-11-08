@@ -41,7 +41,8 @@ let proposedAPIs: Record<string, object | null> | null = null;
     const repos = new Set<string>();
     sims.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
     await transpile( {
-      repos: Array.from( repos )
+      repos: Array.from( repos ),
+      silent: true
     } );
 
     proposedAPIs = await generatePhetioMacroAPI( sims, {

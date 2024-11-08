@@ -8,18 +8,18 @@
  */
 
 import fs from 'fs';
-import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import CacheLayer from '../../../chipper/js/common/CacheLayer.js';
 import reportMedia from '../../../chipper/js/grunt/reportMedia.js';
 import getRepoList from '../../../perennial-alias/js/common/getRepoList.js';
 import withServer from '../../../perennial-alias/js/common/withServer.js';
 import lint from '../../../perennial-alias/js/eslint/lint.js';
 import check from '../../../perennial-alias/js/grunt/check.js';
+import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import puppeteerQUnit from '../../../perennial-alias/js/test/puppeteerQUnit.js';
+import transpile from '../common/transpile.js';
 import getPhetLibs from '../grunt/getPhetLibs.js';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import phetioCompareAPISets from '../phet-io/phetioCompareAPISets.js';
-import transpile from '../common/transpile.js';
 
 type Repo = string;
 
@@ -162,7 +162,8 @@ const repo = getArg( 'repo' );
         const repos = new Set<string>();
         reposToTest.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
         await transpile( {
-          repos: Array.from( repos )
+          repos: Array.from( repos ),
+          silent: true
         } );
 
         const proposedAPIs = await generatePhetioMacroAPI( reposToTest, {

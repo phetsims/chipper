@@ -26,15 +26,15 @@
 
 import assert from 'assert';
 import * as grunt from 'grunt';
+import check from '../../../../perennial-alias/js/grunt/check.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import transpile from '../../common/transpile.js';
 import buildRunnable from '../buildRunnable.js';
 import buildStandalone from '../buildStandalone.js';
-import check from '../../../../perennial-alias/js/grunt/check.js';
 import getPhetLibs from '../getPhetLibs.js';
-import transpile from '../../common/transpile.js';
 
 const minify = require( '../minify.js' );
 const path = require( 'path' );
@@ -86,7 +86,8 @@ export const build = ( async () => {
 
       // If that succeeds, then convert the code to JS
       await transpile( {
-        repos: getPhetLibs( repo )
+        repos: getPhetLibs( repo ),
+        silent: true
       } );
     } );
 
