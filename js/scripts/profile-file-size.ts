@@ -10,7 +10,6 @@
  * grunt --locales=* --brands=phet --profileFileSize
  * sage run ../chipper/js/scripts/profile-file-size.ts
  *
- * TODO: Add to code review checklist to use this, see https://github.com/phetsims/chipper/issues/1461
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
