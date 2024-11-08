@@ -1,5 +1,27 @@
 // Copyright 2015-2024, University of Colorado Boulder
 
+import assert from 'assert';
+import fs from 'fs';
+import grunt from 'grunt';
+import https from 'https';
+import _ from 'lodash';
+import axios from '../../../../perennial-alias/js/npm-dependencies/axios.js';
+import ChipperConstants from '../../common/ChipperConstants.js';
+
+type Library = {
+  name: string;
+  libraries: string;
+};
+
+type Augmentable = Record<string, {
+  text: string[];
+  projectURL: string;
+  notes: string;
+  license: string;
+  exception: string;
+  usedBy: 'all-sims' | string[];
+}>;
+
 /**
  * Creates a report of third-party resources (code, images, sound, etc) used in the published PhET simulations by
  * reading the license information in published HTML files on the PhET website. This task must be run from main/.
@@ -20,20 +42,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-
-
-const _ = require( 'lodash' );
-const assert = require( 'assert' );
-const ChipperConstants = require( '../../common/ChipperConstants.js' );
-const fs = require( 'fs' );
-const grunt = require( 'grunt' );
-const https = require( 'https' );
-const axios = require( '../../../../perennial-alias/js/npm-dependencies/axios.js' );
-
-/**
- * @returns {Promise} - Resolves when complete.
- */
-module.exports = async function() {
+( async () => {
 
   // read configuration file - required to write to website database
   const serverName = 'phet.colorado.edu';
@@ -45,15 +54,15 @@ module.exports = async function() {
   const outputFilename = '../sherpa/third-party-licenses.md';
 
   // Aggregate results for each of the license types
-  const compositeCode = {};
-  const compositeMedia = {};
+  const compositeCode: Augmentable = {};
+  const compositeMedia: Augmentable = {};
 
   // List of all of the repository names, so that we can detect which libraries are used by all-sims
   const simTitles = [];
 
   // List of libraries for each sim
   // Type: string in JSON format
-  const simLibraries = [];
+  const simLibraries: Library[] = [];
 
   // Download all sims. If it's not published, it will be skipped in the report
   const activeSims = fs.readFileSync( '../perennial-alias/data/active-sims', 'utf-8' ).trim().split( '\n' ).map( sim => sim.trim() );
@@ -62,6 +71,7 @@ module.exports = async function() {
     const url = `https://${serverName}/sims/html/${sim}/latest/${sim}_en.html`;
     console.log( `downloading ${sim}` );
     try {
+      // @ts-expect-error TODO: fix axios for export default https://github.com/phetsims/perennial/issues/372
       const html = ( await axios( url ) ).data.trim();
 
       const startIndex = html.indexOf( ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
@@ -75,7 +85,7 @@ module.exports = async function() {
       const json = JSON.parse( jsonString );
 
       let title = parseTitle( html );
-      if ( !title || title.indexOf( 'undefined' ) === 0 || title.indexOf( 'TITLE' ) >= 0 ) {
+      if ( !title || title.startsWith( 'undefined' ) || title.startsWith( 'TITLE' ) ) {
         grunt.log.writeln( `title not found for ${sim}` );
         title = sim;
       }
@@ -141,7 +151,7 @@ module.exports = async function() {
   // If anything is used by every sim indicate that here
   for ( const entry in compositeCode ) {
     if ( compositeCode.hasOwnProperty( entry ) ) {
-      compositeCode[ entry ].usedBy.sort();
+      Array.isArray( compositeCode[ entry ].usedBy ) && compositeCode[ entry ].usedBy.sort();
       if ( _.isEqual( simTitles, compositeCode[ entry ].usedBy ) ) {
         compositeCode[ entry ].usedBy = 'all-sims'; // this is an annotation, not the vestigial all-sims repo
       }
@@ -151,8 +161,8 @@ module.exports = async function() {
   const licenseJSON = grunt.file.readJSON( '../sherpa/lib/license.json' );
 
   const codeOutput = [];
-  const codeLicensesUsed = [];
-  const mediaLicensesUsed = [];
+  const codeLicensesUsed: string[] = [];
+  const mediaLicensesUsed: string[] = [];
 
   // Get a list of the library names
   const libraryNames = [];
@@ -191,7 +201,7 @@ module.exports = async function() {
     // viewing from https://github.com/phetsims/sherpa/blob/main/third-party-licenses.md
     codeOutput.push( lineElementsForLibrary.join( '<br>' ) );
 
-    if ( codeLicensesUsed.indexOf( licenseJSON[ library ].license ) < 0 ) {
+    if ( !codeLicensesUsed.includes( licenseJSON[ library ].license ) ) {
       codeLicensesUsed.push( licenseJSON[ library ].license );
     }
   }
@@ -250,7 +260,7 @@ module.exports = async function() {
     if ( license !== 'contact phethelp@colorado.edu' ) {
       mediaOutput.push( mediaEntryLines.join( '<br>' ) );
 
-      if ( mediaLicensesUsed.indexOf( license ) < 0 ) {
+      if ( !mediaLicensesUsed.includes( license ) ) {
         mediaLicensesUsed.push( license );
       }
     }
@@ -300,10 +310,8 @@ module.exports = async function() {
 
   /**
    * Given an HTML text, find the title attribute by parsing for <title>
-   * @param {string} html
-   * @returns {string}
    */
-  function parseTitle( html ) {
+  function parseTitle( html: string ): string {
     const startKey = '<title>';
     const endKey = '</title>';
 
@@ -315,19 +323,16 @@ module.exports = async function() {
 
   /**
    * Add the source (images/sounds/media or code) entries to the destination object, keyed by name.
-   * @param {string} repositoryName - the name of the repository, such as 'energy-skate-park-basics'
-   * @param {Object} source - the object from which to read the entry
-   * @param {Object} destination - the object to which to append the entry
    */
-  function augment( repositoryName, source, destination ) {
+  function augment( repo: string, source: Augmentable, destination: Augmentable ): void {
     for ( const entry in source ) {
       if ( source.hasOwnProperty( entry ) ) {
         if ( !destination.hasOwnProperty( entry ) ) {
           destination[ entry ] = source[ entry ];//overwrites
           destination[ entry ].usedBy = [];
         }
-        destination[ entry ].usedBy.push( repositoryName );
+        Array.isArray( destination[ entry ].usedBy ) && destination[ entry ].usedBy.push( repo );
       }
     }
   }
-};
+} )();
