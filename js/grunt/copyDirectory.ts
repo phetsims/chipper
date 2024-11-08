@@ -1,24 +1,25 @@
 // Copyright 2016-2024, University of Colorado Boulder
 
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import * as grunt from 'grunt';
+
 /**
  * Copy a directory and all of its contents recursively
- * TODO: This is used in weddell, so be careful in changing to TypeScript, see https://github.com/phetsims/weddell/issues/136
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
-const grunt = require( 'grunt' );
 const minify = require( './minify.js' );
 
 /**
- * @param {string} src - the source directory
- * @param {string} dst - the destination directory
- * @param {function} [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
- * @param {Object} [options]
+ * @param src - the source directory
+ * @param dst - the destination directory
+ * @param [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
+ * @param [options]
  */
-module.exports = function( src, dst, filter, options ) {
+module.exports = function( src: string, dst: string, filter?: ( filename: string, contents: string ) => boolean, options?: IntentionalAny ) {
 
   options = _.assignIn( {
     failOnExistingFiles: false,
@@ -56,7 +57,7 @@ module.exports = function( src, dst, filter, options ) {
     let filteredContents = filter && filter( abspath, contents );
 
     // Minify the file if it is javascript code
-    if ( options.minifyJS && filename.endsWith( '.js' ) && abspath.indexOf( 'chipper/templates/' ) < 0 ) {
+    if ( options.minifyJS && filename.endsWith( '.js' ) && !abspath.includes( 'chipper/templates/' ) ) {
       const toBeMinified = filteredContents ? filteredContents : contents;
       filteredContents = minify( toBeMinified, options.minifyOptions );
 
@@ -65,6 +66,7 @@ module.exports = function( src, dst, filter, options ) {
     }
 
     if ( filteredContents ) {
+      // @ts-expect-error
       grunt.file.write( dstPath, filteredContents );
     }
     else {
