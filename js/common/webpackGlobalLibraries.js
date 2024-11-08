@@ -12,18 +12,9 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-const assert = require( 'assert' );
 const webpackGlobalLibraries = {
   peggy: 'sherpa/lib/peggy-3.0.2.js',
   himalaya: 'sherpa/lib/himalaya-1.1.0.js'
 };
-
-Object.keys( webpackGlobalLibraries ).forEach( key => {
-  const filePath = webpackGlobalLibraries[ key ];
-
-  // If you need to support from another repo, just add to this assertion
-  // TODO: https://github.com/phetsims/chipper/issues/1354 Do we need this assertion any more now that swc visits all sherpa by default? Or maybe just revise the comment?
-  assert( filePath.startsWith( 'sherpa' ), 'Path must start with the repo to support transpiling, see Transpiler' );
-} );
 
 module.exports = webpackGlobalLibraries;
