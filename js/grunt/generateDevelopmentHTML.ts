@@ -10,8 +10,8 @@
  */
 
 import * as _ from 'lodash';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import getPreloads from './getPreloads.js';
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );

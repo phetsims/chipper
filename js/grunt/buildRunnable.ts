@@ -14,11 +14,11 @@ import generateTwitterCard from './generateTwitterCard.js';
 import getDependencies from './getDependencies.js';
 import getInitializationScript from './getInitializationScript.js';
 import getLocalesFromRepository from './getLocalesFromRepository.js';
+import getPhetLibs from './getPhetLibs.js';
+import getPreloads from './getPreloads.js';
 import packageXHTML from './packageXHTML.js';
 import reportUnusedStrings from './reportUnusedStrings.js';
 import webpackBuild from './webpackBuild.js';
-import getPreloads from './getPreloads.js';
-import getPhetLibs from './getPhetLibs.js';
 
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );

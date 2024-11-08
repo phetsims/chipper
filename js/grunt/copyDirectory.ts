@@ -1,7 +1,7 @@
 // Copyright 2016-2024, University of Colorado Boulder
 
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import * as grunt from 'grunt';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 /**
  * Copy a directory and all of its contents recursively

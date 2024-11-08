@@ -10,13 +10,13 @@
 
 import * as fs from 'fs';
 import * as _ from 'lodash';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-import webpackBuild from './webpackBuild.ts';
-import buildStandalone from './buildStandalone.ts';
-import formatPhetioAPI from '../phet-io/formatPhetioAPI.js';
 import check from '../../../perennial-alias/js/grunt/check.ts';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import formatPhetioAPI from '../phet-io/formatPhetioAPI.js';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
+import buildStandalone from './buildStandalone.ts';
 import getPhetLibs from './getPhetLibs.js';
+import webpackBuild from './webpackBuild.ts';
 
 const assert = require( 'assert' );
 const archiver = require( 'archiver' );

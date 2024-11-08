@@ -1,8 +1,8 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
-import * as _ from 'lodash';
 import assert from 'assert';
 import * as grunt from 'grunt';
+import * as _ from 'lodash';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import getPhetLibs from './getPhetLibs.js';
 

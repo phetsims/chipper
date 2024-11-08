@@ -8,9 +8,10 @@
 
 const ChipperConstants = require( '../common/ChipperConstants.js' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-const getTitleStringKey = require( './getTitleStringKey.js' );
 import * as grunt from 'grunt';
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
+
+const getTitleStringKey = require( './getTitleStringKey.js' );
 
 /**
  * @returns - the html string, filled in from the template.

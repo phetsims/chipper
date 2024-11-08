@@ -9,9 +9,9 @@
 
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
+import * as grunt from 'grunt';
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 import getPhetLibs from './getPhetLibs.js';
-import * as grunt from 'grunt';
 
 const getTitleStringKey = require( './getTitleStringKey.js' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );

@@ -7,10 +7,10 @@
  * @author Matt Pennington
  */
 
-// modules
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import * as grunt from 'grunt';
 import Jimp from 'jimp';
+// modules
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 /**
  * @param repo - name of the repository

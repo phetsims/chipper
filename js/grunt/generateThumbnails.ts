@@ -10,8 +10,8 @@
  */
 
 import * as grunt from 'grunt';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import Jimp from 'jimp';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 /**
  * @param repo - name of the repository

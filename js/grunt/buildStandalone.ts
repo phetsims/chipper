@@ -6,10 +6,10 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import webpackBuild from './webpackBuild.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 import getLocalesFromRepository from './getLocalesFromRepository.js';
 import getPhetLibs from './getPhetLibs.js';
+import webpackBuild from './webpackBuild.js';
 
 const assert = require( 'assert' );
 const fs = require( 'fs' );

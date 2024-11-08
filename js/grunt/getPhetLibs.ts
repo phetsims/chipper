@@ -9,9 +9,9 @@
 
 const ChipperConstants = require( '../common/ChipperConstants.js' );
 
-import _ from 'lodash';
 import assert from 'assert';
 import * as grunt from 'grunt';
+import _ from 'lodash';
 
 /**
  * Returns a list of all dependent repositories.

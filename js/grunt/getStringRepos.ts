@@ -8,8 +8,8 @@
  */
 
 const fs = require( 'fs' );
-import getDependencies from './getDependencies.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import getDependencies from './getDependencies.js';
 
 module.exports = async ( repo: string ): Promise<IntentionalAny> => {
   return Object.keys( await getDependencies( repo ) ).filter( stringRepo => stringRepo !== 'comment' ).filter( stringRepo => {

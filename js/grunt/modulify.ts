@@ -8,8 +8,8 @@
  */
 
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
-import getCopyrightLine from './getCopyrightLine.js';
 import createMipmap from './createMipmap.js';
+import getCopyrightLine from './getCopyrightLine.js';
 
 const _ = require( 'lodash' );
 const fs = require( 'fs' );
