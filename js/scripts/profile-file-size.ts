@@ -21,7 +21,7 @@
 import fs from 'fs';
 import _ from 'lodash';
 import zlib from 'zlib';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+import getRepo from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 
 
 class TagMatch {
