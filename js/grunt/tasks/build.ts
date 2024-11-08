@@ -102,9 +102,13 @@ export const build = ( async () => {
       fs.writeFileSync( `${parentDir}/${repo}.min.js`, await buildStandalone( repo, minifyOptions ) );
 
       // Build a debug version
+      // eslint-disable-next-line require-atomic-updates
       minifyOptions.minify = false;
+      // eslint-disable-next-line require-atomic-updates
       minifyOptions.babelTranspile = false;
+      // eslint-disable-next-line require-atomic-updates
       minifyOptions.uglify = false;
+      // eslint-disable-next-line require-atomic-updates
       minifyOptions.isDebug = true;
       fs.writeFileSync( `${parentDir}/${repo}.debug.js`, await buildStandalone( repo, minifyOptions ) );
 
