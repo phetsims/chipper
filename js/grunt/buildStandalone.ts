@@ -6,6 +6,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+import { readFileSync } from 'fs';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 import getLocalesFromRepository from './getLocalesFromRepository.js';
 import getPhetLibs from './getPhetLibs.js';
@@ -13,7 +14,6 @@ import webpackBuild from './webpackBuild.js';
 
 const assert = require( 'assert' );
 const fs = require( 'fs' );
-const grunt = require( 'grunt' );
 const minify = require( './minify.js' );
 const _ = require( 'lodash' );
 const getStringMap = require( './getStringMap.js' );
@@ -39,7 +39,7 @@ export default async function( repo: string, providedOptions: IntentionalAny ): 
     tempOutputDir: repo
   }, providedOptions );
 
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   assert( packageObject.phet, '`phet` object expected in package.json' );
 
   const webpackResult = ( await webpackBuild( repo, 'phet', {

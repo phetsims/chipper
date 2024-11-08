@@ -6,8 +6,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-const grunt = require( 'grunt' );
+import { readFileSync } from 'fs';
 
 /**
  * Returns the string key for the title of a runnable.
@@ -16,7 +15,7 @@ const grunt = require( 'grunt' );
  * @param {string} repo
  */
 module.exports = function getPhetLibs( repo ) {
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
   return `${packageObject.phet.requirejsNamespace}/${repo}.title`;
 };

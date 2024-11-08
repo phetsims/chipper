@@ -13,6 +13,7 @@ import * as _ from 'lodash';
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import getPreloads from './getPreloads.js';
+import { readFileSync } from 'fs';
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 const getStringRepos = require( './getStringRepos.js' );
@@ -32,7 +33,7 @@ module.exports = async function( repo: string, options: IntentionalAny ): Promis
     forSim = true // is this html used for a sim, or something else like tests.
   } = options || {};
 
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
   const brand = 'phet';
 

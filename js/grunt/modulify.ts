@@ -7,6 +7,7 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
+import { readFileSync } from 'fs';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 import createMipmap from './createMipmap.js';
 import getCopyrightLine from './getCopyrightLine.js';
@@ -404,7 +405,7 @@ export default ${imageModuleName};
  */
 const createStringModule = async ( repo:string ) => {
 
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   const stringModuleName = `${pascalCase( repo )}Strings`;
   const relativeStringModuleFile = `js/${stringModuleName}.ts`;
   const stringModuleFileJS = `../${repo}/js/${stringModuleName}.js`;
@@ -443,7 +444,7 @@ export default ${stringModuleName};
  * Creates a *.d.ts file that represents the types of the strings for the repo.
  */
 const getStringTypes = ( repo: string ) => {
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   const json = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
 
   // Track paths to all the keys with values.
@@ -532,7 +533,7 @@ export default async ( repo: string ): Promise<void> => {
     await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename, repo );
   }
 
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
   // Strings module file
   if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {

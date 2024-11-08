@@ -16,6 +16,7 @@ import * as fs from 'fs';
 import * as grunt from 'grunt';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import generateREADME from '../generateREADME.js';
+import { readFileSync } from 'fs';
 
 const generateDevelopmentHTML = require( '../generateDevelopmentHTML.js' );
 const generateA11yViewHTML = require( '../generateA11yViewHTML.js' );
@@ -25,7 +26,7 @@ const writeFileAndGitAdd = require( '../../../../perennial-alias/js/common/write
 
 const repo = getRepo();
 
-const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
 const _ = require( 'lodash' );
 

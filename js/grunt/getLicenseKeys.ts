@@ -7,6 +7,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+import { readFileSync } from 'fs';
 import getPreloads from './getPreloads.js';
 
 const _ = require( 'lodash' );
@@ -17,7 +18,7 @@ const grunt = require( 'grunt' );
  * Gets the license keys for sherpa (third-party) libs that are used.
  */
 export default function( repo: string, brand: string ): string[] {
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   let buildObject;
   try {
     buildObject = grunt.file.readJSON( '../chipper/build.json' );

@@ -5,6 +5,7 @@ import * as grunt from 'grunt';
 import * as _ from 'lodash';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import getPhetLibs from './getPhetLibs.js';
+import { readFileSync } from 'fs';
 
 /**
  * Gets preload, the set of scripts to be preloaded in the .html file.
@@ -19,7 +20,7 @@ import getPhetLibs from './getPhetLibs.js';
  */
 export default function( repo: string, brand: string, forSim: boolean ): string[] {
 
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   let buildObject;
   try {
     const buildString = grunt.file.read( '../chipper/build.json' );

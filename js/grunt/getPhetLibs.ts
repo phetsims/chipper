@@ -10,6 +10,7 @@
 const ChipperConstants = require( '../common/ChipperConstants.js' );
 
 import assert from 'assert';
+import { readFileSync } from 'fs';
 import * as grunt from 'grunt';
 import _ from 'lodash';
 
@@ -31,7 +32,7 @@ export default function getPhetLibs( repo: string, brand?: string | string[] ): 
     }, [] );
   }
   else {
-    const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+    const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
     let buildObject;
     try {
       buildObject = grunt.file.readJSON( '../chipper/build.json' );

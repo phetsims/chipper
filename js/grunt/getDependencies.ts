@@ -12,6 +12,7 @@ const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 const execute = require( '../../../perennial-alias/js/common/execute.js' );
 const grunt = require( 'grunt' );
 
+import { readFileSync } from 'fs';
 import getPhetLibs from './getPhetLibs.js';
 
 // Our definition of an allowed simName is defined in the buildServer: https://github.com/phetsims/perennial/blob/78025b7ae6064e9ab5260cea5e532f3bf24c3ec8/js/build-server/taskWorker.js#L99-L98
@@ -26,7 +27,7 @@ const simNameRegex = /^[^/]+$/;
  */
 export default async function getDependencies( repo: string ): Promise<object> {
 
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   const version = packageObject.version;
 
   // Accumulate dependencies for all brands
