@@ -17,6 +17,8 @@ const registerTasks = require( '../../../perennial-alias/js/grunt/util/registerT
 const gruntSpawn = require( '../../../perennial-alias/js/grunt/util/gruntSpawn.js' );
 const _ = require( 'lodash' );
 
+const isOptionArg = arg => arg.startsWith( '--' );
+
 // Allow other Gruntfiles to potentially handle exiting and errors differently
 if ( !global.processEventOptOut ) {
 
@@ -52,7 +54,7 @@ module.exports = function( grunt ) {
     grunt.registerTask( task, `Run grunt --help in ${forwardingRepo} to see documentation`, () => {
       grunt.log.writeln( `(Forwarding task to ${forwardingRepo})` );
       const currentArgs = process.argv.slice( 2 ); // Remove the "node grunt" from the command.
-      const args = [ ...currentArgs ];
+      const args = [ task, ...currentArgs.filter( isOptionArg ) ]; // only propagate options through
 
       // Don't duplicate repo arg
       !_.some( process.argv, arg => arg.startsWith( '--repo=' ) ) && args.push( `--repo=${repo}` );
