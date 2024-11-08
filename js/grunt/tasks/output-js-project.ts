@@ -15,5 +15,7 @@ import getPhetLibs from '../getPhetLibs.js';
  */
 transpile( getTranspileOptions( {
   repos: getPhetLibs( getRepo() ),
+
+  // TODO: explain why output-js-project is silent by default but transpile is not. This can be used outside of the maintenance tooling, see https://github.com/phetsims/chipper/issues/1522
   silent: true
 } ) );
