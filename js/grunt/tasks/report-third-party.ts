@@ -71,7 +71,6 @@ type Augmentable = Record<string, {
     const url = `https://${serverName}/sims/html/${sim}/latest/${sim}_en.html`;
     console.log( `downloading ${sim}` );
     try {
-      // @ts-expect-error TODO: fix axios for export default https://github.com/phetsims/perennial/issues/372
       const html = ( await axios( url ) ).data.trim();
 
       const startIndex = html.indexOf( ChipperConstants.START_THIRD_PARTY_LICENSE_ENTRIES );
