@@ -24,7 +24,8 @@ type TranspileOptions = {
   // List of repos to transpile, if not doing all
   repos: Repo[];
 
-  silent: boolean; // any logging output.
+  // suppress any logging output.
+  silent: boolean;
 };
 
 /**
@@ -59,7 +60,7 @@ export default async function transpile( providedOptions: Partial<TranspileOptio
 
   !options.silent && console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
 
-  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, options.watch ) ) );
+  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, options.watch, options.silent ) ) );
 
   !options.silent && console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
   !options.silent && options.watch && console.log( 'Watching...' );
@@ -141,7 +142,7 @@ function spawnCommand( command: string, args: string[] ): Promise<void> {
   } );
 }
 
-const spawnTranspile = ( repos: string[], watch: boolean ) => {
+const spawnTranspile = ( repos: string[], watch: boolean, silent: boolean ) => {
   const argsString = [
     '--config-file', 'chipper/.swcrc',
     ..._.flatten( repos.map( repo => getSubdirectories( repo ) ) ),
@@ -152,6 +153,9 @@ const spawnTranspile = ( repos: string[], watch: boolean ) => {
     argsString.push( '--watch' );
   }
 
-  // console.log( 'Executing: ', runnablePath, argsString.join( ' ' ) );
+  if ( silent ) {
+    argsString.push( '--quiet' );
+  }
+
   return spawnCommand( runnablePath, argsString );
 };
