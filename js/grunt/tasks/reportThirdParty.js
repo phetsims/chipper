@@ -24,11 +24,11 @@
 
 const _ = require( 'lodash' );
 const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants.js' );
+const ChipperConstants = require( '../../common/ChipperConstants.js' );
 const fs = require( 'fs' );
 const grunt = require( 'grunt' );
 const https = require( 'https' );
-const axios = require( '../../../perennial-alias/js/npm-dependencies/axios.js' );
+const axios = require( '../../../../perennial-alias/js/npm-dependencies/axios.js' );
 
 /**
  * @returns {Promise} - Resolves when complete.
