@@ -316,7 +316,7 @@ const modulifyFile = async ( abspath: string, rootdir: string, subdir: string, f
  * Creates the image module at js/${_.camelCase( repo )}Images.js for repos that need it.
  */
 const createImageModule = async ( repo: string, supportedRegionsAndCultures: string[] ): Promise<void> => {
-  const spec = grunt.file.readJSON( `../${repo}/${repo}-images.json` );
+  const spec = JSON.parse( readFileSync( `../${repo}/${repo}-images.json`, 'utf8' ) );
   const namespace = _.camelCase( repo );
   const imageModuleName = `${pascalCase( repo )}Images`;
   const relativeImageModuleFile = `js/${imageModuleName}.ts`;
@@ -445,7 +445,7 @@ export default ${stringModuleName};
  */
 const getStringTypes = ( repo: string ) => {
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
-  const json = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
+  const json = JSON.parse( readFileSync( `../${repo}/${repo}-strings_en.json`, 'utf8' ) );
 
   // Track paths to all the keys with values.
   const all:IntentionalAny[] = [];

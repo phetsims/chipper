@@ -12,6 +12,7 @@ const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 import * as grunt from 'grunt';
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 import getPhetLibs from './getPhetLibs.js';
+import { readFileSync } from 'fs';
 
 const getTitleStringKey = require( './getTitleStringKey.js' );
 const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
@@ -24,7 +25,7 @@ export default async function( repo: string, published: boolean ): Promise<void>
 
   // Read the title from the English strings file.
   const simTitleStringKey = getTitleStringKey( repo );
-  const strings = grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` );
+  const strings = JSON.parse( readFileSync( `../${repo}/${repo}-strings_en.json`, 'utf8' ) );
   const titleKey = simTitleStringKey.split( '/' ).pop(); // eg. 'EXAMPLE_SIM/example-sim.title' -> 'example-sim.title'
   const title = strings[ titleKey ].value;
   const phetLibs = getPhetLibs( repo, 'phet' );

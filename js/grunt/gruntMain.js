@@ -16,6 +16,7 @@ require( './checkNodeVersion.js' );
 const registerTasks = require( '../../../perennial-alias/js/grunt/util/registerTasks.js' );
 const gruntSpawn = require( '../../../perennial-alias/js/grunt/util/gruntSpawn.js' );
 const _ = require( 'lodash' );
+const { readFileSync } = require( 'fs' );
 
 const isOptionArg = arg => arg.startsWith( '--' );
 
@@ -35,7 +36,7 @@ if ( !global.processEventOptOut ) {
 }
 
 module.exports = function( grunt ) {
-  const packageObject = grunt.file.readJSON( 'package.json' );
+  const packageObject = JSON.parse( readFileSync( 'package.json', 'utf8' ) );
 
   const repo = grunt.option( 'repo' ) || packageObject.name;
   assert( typeof repo === 'string' && /^[a-z]+(-[a-z]+)*$/u.test( repo ), 'repo name should be composed of lower-case characters, optionally with dashes used as separators' );

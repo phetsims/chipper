@@ -1,5 +1,7 @@
 // Copyright 2015-2024, University of Colorado Boulder
 
+import { readFileSync } from 'fs';
+
 /**
  * Report which translatable strings from a sim were not used in the simulation with a require statement.
  *
@@ -43,7 +45,7 @@ export default function( repo: string, requirejsNamespace: string, usedStringMap
     return result;
   };
 
-  const availableStringMap = buildStringMap( grunt.file.readJSON( `../${repo}/${repo}-strings_en.json` ) );
+  const availableStringMap = buildStringMap( JSON.parse( readFileSync( `../${repo}/${repo}-strings_en.json`, 'utf8' ) ) );
 
   Object.keys( availableStringMap ).forEach( availableStringKey => {
     if ( !usedStringMap[ `${requirejsNamespace}/${availableStringKey}` ] ) {

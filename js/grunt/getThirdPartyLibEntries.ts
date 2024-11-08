@@ -10,6 +10,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import { readFileSync } from 'fs';
 import getLicenseKeys from './getLicenseKeys.js';
 
 // modules
@@ -23,7 +24,7 @@ const LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licens
 export default function( repo: string, brand: string ): Record<string, string> {
 
   // Read license info
-  const licenseInfo = grunt.file.readJSON( THIRD_PARTY_LICENSES_FILENAME );
+  const licenseInfo = JSON.parse( readFileSync( THIRD_PARTY_LICENSES_FILENAME, 'utf8' ) );
 
   let licenseKeys = getLicenseKeys( repo, brand );
 

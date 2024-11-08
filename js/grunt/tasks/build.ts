@@ -35,6 +35,7 @@ import transpile from '../../common/transpile.js';
 import buildRunnable from '../buildRunnable.js';
 import buildStandalone from '../buildStandalone.js';
 import getPhetLibs from '../getPhetLibs.js';
+import { readFileSync } from 'fs';
 
 const minify = require( '../minify.js' );
 const path = require( 'path' );
@@ -59,7 +60,7 @@ export const build = ( async () => {
       }
     } );
 
-    const repoPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+    const repoPackageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
     // Run the type checker first.
     const brands = getBrands( repo );
@@ -121,7 +122,7 @@ export const build = ( async () => {
     }
     else {
 
-      const localPackageObject = grunt.file.readJSON( `../${repo}/package.json` );
+      const localPackageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
       assert( localPackageObject.phet.runnable, `${repo} does not appear to be runnable` );
       console.log( `Building runnable repository (${repo}, brands: ${brands.join( ', ' )})` );
 

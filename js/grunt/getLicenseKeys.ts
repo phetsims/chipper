@@ -12,7 +12,6 @@ import getPreloads from './getPreloads.js';
 
 const _ = require( 'lodash' );
 const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries.js' );
-const grunt = require( 'grunt' );
 
 /**
  * Gets the license keys for sherpa (third-party) libs that are used.
@@ -21,7 +20,7 @@ export default function( repo: string, brand: string ): string[] {
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   let buildObject;
   try {
-    buildObject = grunt.file.readJSON( '../chipper/build.json' );
+    buildObject = JSON.parse( readFileSync( '../chipper/build.json', 'utf8' ) );
   }
   catch( e ) {
     buildObject = {};

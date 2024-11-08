@@ -1,7 +1,7 @@
 // Copyright 2015-2024, University of Colorado Boulder
 
 import assert from 'assert';
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 import grunt from 'grunt';
 import https from 'https';
 import _ from 'lodash';
@@ -157,7 +157,7 @@ type Augmentable = Record<string, {
     }
   }
 
-  const licenseJSON = grunt.file.readJSON( '../sherpa/lib/license.json' );
+  const licenseJSON = JSON.parse( readFileSync( '../sherpa/lib/license.json', 'utf8' ) );
 
   const codeOutput = [];
   const codeLicensesUsed: string[] = [];
