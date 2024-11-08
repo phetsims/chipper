@@ -7,7 +7,7 @@
 
 const qunit = require( 'qunit' );
 const assert = require( 'assert' );
-const _phetioCompareAPIs = require( './phetioCompareAPIs' ); // eslint-disable-line phet/require-statement-match
+const phetioCompareAPIs = require( './phetioCompareAPIs.js' );
 const _ = require( 'lodash' );
 
 qunit.module( 'phetioCompareAPIs' );
@@ -18,8 +18,8 @@ qunit.module( 'phetioCompareAPIs' );
  * @param options
  * @returns {{breakingProblems: string[], designedProblems: string[], newAPI: Object}}
  */
-const phetioCompareAPIs = ( referenceAPI, proposedAPI, options ) => {
-  return _phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, options );
+const _phetioCompareAPIs = ( referenceAPI, proposedAPI, options ) => {
+  return phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, options );
 };
 
 // To cover the boilerplate that will be largely copied around otherwise.
@@ -76,7 +76,7 @@ qunit.test( 'basics', assert => {
 
   const proposedAPI = _.cloneDeep( referenceAPI );
 
-  let report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  let report = _phetioCompareAPIs( referenceAPI, proposedAPI );
 
   assert.ok( report.breakingProblems.length === 0, 'no breaking problems when compare to self' );
   assert.ok( report.designedProblems.length === 0, 'no designed problems when compare to self' );
@@ -84,7 +84,7 @@ qunit.test( 'basics', assert => {
 
   proposedAPI.phetioElements.phetioEngine._metadata.phetioPlayback = true;
 
-  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  report = _phetioCompareAPIs( referenceAPI, proposedAPI );
 
   assert.ok( report.breakingProblems.length === 1, 'no breaking problems when compare to self' );
   assert.ok( report.designedProblems.length === 0, 'no designed problems when compare to self' );
@@ -109,25 +109,25 @@ qunit.test( 'designed changes', assert => {
 
   proposedAPI.phetioElements.designedElement._metadata.phetioDocumentation = 'changed though I am designed, oh boy, this cannot be good.';
 
-  let report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  let report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 0, 'no breaking problems when compare to design change' );
   assert.ok( report.designedProblems.length === 1, 'no designed problems when changing designed problem' );
 
   proposedAPI.phetioElements.designedElement.designedChild._metadata.phetioDocumentation =
     'changed though I am a child of designed, oh boy, this cannot be good.';
 
-  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 0, 'no breaking problems when compare to design change' );
   assert.ok( report.designedProblems.length === 2, 'no designed problems when changing designed problem on child' );
 
 
   // in the reference, but not the proposed
   referenceAPI.phetioElements.designedElement.otherChild = { _metadata: {} };
-  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 1, 'cannot delete children like otherChild' );
 
   // test shut off switch suppresses problems
-  report = phetioCompareAPIs( referenceAPI, proposedAPI, {
+  report = _phetioCompareAPIs( referenceAPI, proposedAPI, {
     compareDesignedAPIChanges: false,
     compareBreakingAPIChanges: false
   } );
@@ -154,13 +154,13 @@ qunit.test( 'breaking element API changes', assert => {
 
   delete proposedAPI.phetioElements.breakingElement.designedChild;
 
-  let report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  let report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 1, 'missing an element' );
   assert.ok( report.designedProblems.length === 1, 'missing element is also a designed problem' );
 
   referenceAPI.phetioElements.breakingElement._metadata.phetioDesigned = false;
 
-  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 1, 'missing an element' );
   assert.ok( report.designedProblems.length === 0, 'not a problem if not designed in the reference' );
 
@@ -170,7 +170,7 @@ qunit.test( 'breaking element API changes', assert => {
 
     proposedAPI.phetioElements.breakingElement._metadata[ metadataKey ] = valueThatBreaksAPI;
 
-    report = phetioCompareAPIs( referenceAPI, proposedAPI, {
+    report = _phetioCompareAPIs( referenceAPI, proposedAPI, {
       compareDesignedAPIChanges: false
     } );
     assert.ok( report.breakingProblems.length === 1, `it is a breaking change for ${metadataKey} to become ${valueThatBreaksAPI}` );
@@ -290,30 +290,30 @@ qunit.test( 'testing PhetioTypes', assert => {
   const proposedAPI = _.cloneDeep( referenceAPI );
 
 
-  let report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  let report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 0, 'missing an element' );
   assert.ok( report.designedProblems.length === 0, 'missing element is also a designed problem' );
 
   const propertyIOEntry = proposedAPI.phetioTypes[ 'PropertyIO<Vector2IO>' ];
   propertyIOEntry.apiStateKeys.push( 'hi' );
 
-  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 0, 'missing an element' );
   assert.ok( report.designedProblems.length === 1, 'apiStateKeys cannot be different for designed' );
 
   propertyIOEntry.apiStateKeys = propertyIOEntry.apiStateKeys.slice( 0, 1 );
-  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 1 );
   assert.ok( report.designedProblems.length === 1 );
 
   delete propertyIOEntry.apiStateKeys;
-  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 1 );
   assert.ok( report.designedProblems.length === 1 );
 
   propertyIOEntry.apiStateKeys = [ 'hi' ];
   delete referenceAPI.phetioTypes[ 'PropertyIO<Vector2IO>' ].apiStateKeys;
-  report = phetioCompareAPIs( referenceAPI, proposedAPI );
+  report = _phetioCompareAPIs( referenceAPI, proposedAPI );
   assert.ok( report.breakingProblems.length === 0 );
   assert.ok( report.designedProblems.length === 1 );
 } );
