@@ -6,7 +6,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 import _ from 'lodash';
 import * as ChipperConstants from '../common/ChipperConstants.js';
 import generateThumbnails from './generateThumbnails.js';
@@ -82,7 +82,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     assert && assert( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
   }
 
-  const packageObject = grunt.file.readJSON( `../${repo}/package.json` );
+  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   const encoder = new nodeHtmlEncoder.Encoder( 'entity' );
 
   // All html files share the same build timestamp
