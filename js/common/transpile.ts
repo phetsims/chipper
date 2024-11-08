@@ -49,7 +49,19 @@ export default async function transpile( providedOptions: Partial<TranspileOptio
   assert( options.repos.length > 0 || options.all, 'must include repos or --all' );
   const repos = options.all ? getActiveRepos() : options.repos;
 
-  await transpileSWC( _.uniq( repos ), !!options.watch, options.brands || [], options.clean );
+  // We can't use --delete-dir-on-start, because we are operating multiple swc instances in child processes.
+  if ( options.clean ) {
+    const distPath = path.resolve( __dirname, '../../../chipper/dist/js' );
+    if ( fs.existsSync( distPath ) ) {
+      fs.rmSync( distPath, { recursive: true, force: true } );
+    }
+  }
+
+  const chunks = _.chunk( repos, 75 );
+
+  !options.silent && console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
+
+  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, options.watch, options.brands || [] ) ) );
 
   !options.silent && console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
   !options.silent && options.watch && console.log( 'Watching...' );
@@ -126,21 +138,3 @@ const spawnTranspile = ( repos: string[], watch: boolean, additionalBrands: stri
   // console.log( 'Executing: ', runnablePath, argsString.join( ' ' ) );
   return spawnCommand( runnablePath, argsString );
 };
-
-async function transpileSWC( repos: Repo[], isWatchMode: boolean, additionalBrands: string[], clean = false ): Promise<void> {
-
-  // We can't use --delete-dir-on-start, because we are operating multiple swc instances in child processes.
-  if ( clean ) {
-    const distPath = path.resolve( __dirname, '../../../chipper/dist/js' );
-    if ( fs.existsSync( distPath ) ) {
-      fs.rmSync( distPath, { recursive: true, force: true } );
-    }
-  }
-
-  const chunks = _.chunk( repos, 75 );
-
-  console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
-
-  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, isWatchMode, additionalBrands ) ) );
-  console.log( 'SWC transpile completed successfully.' );
-}
