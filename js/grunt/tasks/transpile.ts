@@ -1,6 +1,6 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import transpile, { getTranspileOptions } from '../../common/transpile.js';
 
 /**
@@ -18,5 +18,5 @@ import transpile, { getTranspileOptions } from '../../common/transpile.js';
  */
 
 transpile( getTranspileOptions( {
-  all: getOption( 'all', true )
+  all: isOptionKeyProvided( 'all' ) ? getOption( 'all' ) : true
 } ) );
