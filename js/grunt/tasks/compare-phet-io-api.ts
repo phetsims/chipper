@@ -17,10 +17,10 @@ import * as grunt from 'grunt';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
-import getPhetLibs from '../getPhetLibs.js';
-import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
 import getSimList from '../../common/getSimList.js';
 import transpile from '../../common/transpile.js';
+import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
+import getPhetLibs from '../getPhetLibs.js';
 
 const fs = require( 'fs' );
 
