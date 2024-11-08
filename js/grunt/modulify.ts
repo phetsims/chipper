@@ -24,7 +24,7 @@ const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFil
 const svgo = require( 'svgo' );
 
 // disable lint in compiled files, because it increases the linting time
-const HEADER = '/* eslint-disable */';
+const HEADER = '/* eslint-disable */\n/* @formatter:off */\n';
 
 // supported image types, not case-sensitive
 const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur', '.svg' ];
