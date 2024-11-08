@@ -25,8 +25,6 @@ type TranspileOptions = {
   repos: Repo[];
 
   silent: boolean; // any logging output.
-
-  brands: string[]; // Extra brands in the brand repo to transpile.
 };
 
 /**
@@ -61,7 +59,7 @@ export default async function transpile( providedOptions: Partial<TranspileOptio
 
   !options.silent && console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
 
-  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, options.watch, options.brands || [] ) ) );
+  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, options.watch ) ) );
 
   !options.silent && console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
   !options.silent && options.watch && console.log( 'Watching...' );
@@ -87,9 +85,32 @@ export const getTranspileOptions = ( options?: Partial<TranspileOptions> ): Tran
 const runnable = process.platform.startsWith( 'win' ) ? 'swc.cmd' : 'swc';
 const runnablePath = path.join( `chipper/node_modules/.bin/${runnable}` );
 
+/**
+ * Identify the brands that are available in the brand directory.
+ * NOTE: Adding a new brand requires restarting the watch process
+ */
+function getBrands(): string[] {
+  const pathForBrand = path.resolve( __dirname, '../../../brand/' );
+  const brands = fs.readdirSync( pathForBrand ).filter( file => fs.statSync( path.join( pathForBrand, file ) ).isDirectory() );
+
+  const arrayRemove = ( array: string[], toRemove: string ) => array.splice( _.indexOf( array, toRemove ), 1 );
+
+  arrayRemove( brands, 'node_modules' );
+  arrayRemove( brands, '.github' );
+  arrayRemove( brands, 'js' );
+  arrayRemove( brands, '.git' );
+
+  assert( brands.includes( 'phet' ), 'phet brand is required' );
+  assert( brands.includes( 'phet-io' ), 'phet-io brand is required' );
+  assert( brands.includes( 'adapted-from-phet' ), 'adapted-from-phet brand is required' );
+
+  return brands;
+}
+
 // Directories in a sim repo that may contain things for transpilation
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
-const getSubdirectories = ( repo: string, additionalBrands: string[] ) => {
+const getSubdirectories = ( repo: string ) => {
+
   const subdirs = [ 'js', 'images', 'mipmaps', 'sounds' ];
 
   repo === 'phet-io-wrappers' && subdirs.push( 'common' );
@@ -97,7 +118,7 @@ const getSubdirectories = ( repo: string, additionalBrands: string[] ) => {
   repo === 'my-solar-system' && subdirs.push( 'shaders' );
   repo === 'alpenglow' && subdirs.push( 'wgsl' );
   repo === 'sherpa' && subdirs.push( 'lib' );
-  repo === 'brand' && subdirs.push( 'phet', 'phet-io', 'adapted-from-phet', ...additionalBrands );
+  repo === 'brand' && subdirs.push( ...getBrands() );
 
   return subdirs.map( subdir => `${repo}/${subdir}/` );
 };
@@ -124,10 +145,10 @@ function spawnCommand( command: string, args: string[] ): Promise<void> {
   } );
 }
 
-const spawnTranspile = ( repos: string[], watch: boolean, additionalBrands: string[] ) => {
+const spawnTranspile = ( repos: string[], watch: boolean ) => {
   const argsString = [
     '--config-file', 'chipper/.swcrc',
-    ..._.flatten( repos.map( repo => getSubdirectories( repo, additionalBrands ) ) ),
+    ..._.flatten( repos.map( repo => getSubdirectories( repo ) ) ),
     '-d', 'chipper/dist/js/'
   ];
 

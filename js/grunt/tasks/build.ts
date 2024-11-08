@@ -86,8 +86,7 @@ export const build = ( async () => {
 
       // If that succeeds, then convert the code to JS
       await transpile( {
-        repos: getPhetLibs( repo ),
-        brands: brands
+        repos: getPhetLibs( repo )
       } );
     } );
 
