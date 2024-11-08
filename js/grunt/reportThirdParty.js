@@ -1,6 +1,9 @@
 // Copyright 2015-2024, University of Colorado Boulder
 
 /**
+ * Creates a report of third-party resources (code, images, sound, etc) used in the published PhET simulations by
+ * reading the license information in published HTML files on the PhET website. This task must be run from main/.
+ *
  * Creates a composite report of all of the 3rd party images, code, sounds and other media used by all of the published
  * PhET Simulations. The reports is published at: https://github.com/phetsims/sherpa/blob/main/third-party-licenses.md
  *
