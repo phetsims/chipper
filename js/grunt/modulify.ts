@@ -376,12 +376,12 @@ const createImageModule = async ( repo: string, supportedRegionsAndCultures: str
   const copyrightLine = await getCopyrightLine( repo, relativeImageModuleFile );
   await writeFileAndGitAdd( repo, relativeImageModuleFile, fixEOL(
     `${copyrightLine}
-
+/* eslint-disable */
+/* @formatter:off */
 /**
  * Auto-generated from modulify, DO NOT manually modify.
  */
-/* eslint-disable */
-/* @formatter:off */
+ 
 import LocalizedImageProperty from '../../joist/js/i18n/LocalizedImageProperty.js';
 import ${namespace} from './${namespace}.js';
 ${imageFiles.map( imageFile => `import ${getImportName( imageFile )} from '../${imageFile.replace( '.ts', '.js' )}';` ).join( '\n' )}
@@ -418,11 +418,13 @@ const createStringModule = async ( repo:string ) => {
   await writeFileAndGitAdd( repo, relativeStringModuleFile, fixEOL(
     `${copyrightLine}
 
+/* eslint-disable */
+/* @formatter:off */
+
 /**
  * Auto-generated from modulify, DO NOT manually modify.
  */
-/* eslint-disable */
-/* @formatter:off */
+
 import getStringModule from '../../chipper/js/getStringModule.js';
 import type LocalizedStringProperty from '../../chipper/js/LocalizedStringProperty.js';
 import ${namespace} from './${namespace}.js';
