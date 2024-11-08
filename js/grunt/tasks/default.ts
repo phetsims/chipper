@@ -16,14 +16,18 @@ import testGruntOptions from '../../../../perennial-alias/js/grunt/tasks/util/te
   }
 
   if ( getOption( 'lint' ) !== false ) {
+    console.log( '\nRunning "lint-all"' );
     await ( await import( './lint-all.js' ) ).lintAll;
   }
 
   if ( getOption( 'report-media' ) !== false ) {
+    console.log( '\nRunning "report-media"' );
     await ( await import( './report-media.js' ) ).reportMedia;
   }
 
+  console.log( '\nRunning "clean"' );
   await ( await import( './clean.js' ) ).clean;
 
+  console.log( '\nRunning "build"' );
   await ( await import( './build.js' ) ).build;
 } )();
