@@ -9,9 +9,9 @@
  */
 
 import assert from 'assert';
-import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import withServer from '../../../perennial-alias/js/common/withServer.js';
 import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
+import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import showCommandLineProgress from '../common/showCommandLineProgress.js';
 
 type PhetioAPI = Record<string, any>;
@@ -125,6 +125,11 @@ const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: Partia
                 api: JSON.parse( messageText )
               } );
             }
+
+            // // For debugging purposes
+            // else if ( msg.type() === 'error' ) {
+            //   console.error( messageText, msg.stackTrace() );
+            // }
           } );
 
           page.on( 'error', cleanupAndReject );
