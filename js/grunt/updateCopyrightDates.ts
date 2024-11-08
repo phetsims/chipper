@@ -9,7 +9,7 @@
 
 import * as grunt from 'grunt';
 import _ from 'lodash';
-import updateCopyrightDate from './updateCopyrightDate';
+import updateCopyrightDate from './updateCopyrightDate.js';
 
 const unsupportedExtensions = [ '.json', 'md' ];
 

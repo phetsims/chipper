@@ -1,8 +1,8 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-import formatPhetioAPI from '../../phet-io/formatPhetioAPI';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import formatPhetioAPI from '../../phet-io/formatPhetioAPI.js';
 import getPhetLibs from '../getPhetLibs.js';
 
 /**

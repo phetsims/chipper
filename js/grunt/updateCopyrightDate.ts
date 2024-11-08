@@ -7,7 +7,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import getCopyrightLine from './getCopyrightLine';
+import getCopyrightLine from './getCopyrightLine.js';
 
 const fs = require( 'fs' );
 

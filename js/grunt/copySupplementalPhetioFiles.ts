@@ -13,7 +13,7 @@ import * as _ from 'lodash';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import webpackBuild from './webpackBuild.ts';
 import buildStandalone from './buildStandalone.ts';
-import formatPhetioAPI from '../phet-io/formatPhetioAPI';
+import formatPhetioAPI from '../phet-io/formatPhetioAPI.js';
 import check from '../../../perennial-alias/js/grunt/check.ts';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import getPhetLibs from './getPhetLibs.js';

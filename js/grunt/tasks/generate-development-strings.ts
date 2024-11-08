@@ -1,7 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-import generateDevelopmentStrings from '../generateDevelopmentStrings';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import generateDevelopmentStrings from '../generateDevelopmentStrings.js';
 const fs = require( 'fs' );
 
 /**

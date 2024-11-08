@@ -14,8 +14,8 @@
 
 import * as fs from 'fs';
 import * as grunt from 'grunt';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-import generateREADME from '../generateREADME';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import generateREADME from '../generateREADME.js';
 
 const generateDevelopmentHTML = require( '../generateDevelopmentHTML.js' );
 const generateA11yViewHTML = require( '../generateA11yViewHTML.js' );

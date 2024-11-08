@@ -6,9 +6,9 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import webpackBuild from './webpackBuild';
+import webpackBuild from './webpackBuild.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
-import getLocalesFromRepository from './getLocalesFromRepository';
+import getLocalesFromRepository from './getLocalesFromRepository.js';
 import getPhetLibs from './getPhetLibs.js';
 
 const assert = require( 'assert' );

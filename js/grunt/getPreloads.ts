@@ -3,7 +3,7 @@
 import * as _ from 'lodash';
 import assert from 'assert';
 import * as grunt from 'grunt';
-import ChipperStringUtils from '../common/ChipperStringUtils';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import getPhetLibs from './getPhetLibs.js';
 
 /**

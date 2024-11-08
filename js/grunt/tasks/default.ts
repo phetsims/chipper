@@ -6,8 +6,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption';
-import testGruntOptions from '../../../../perennial-alias/js/grunt/tasks/util/testGruntOptions';
+import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import testGruntOptions from '../../../../perennial-alias/js/grunt/tasks/util/testGruntOptions.js';
 
 ( async () => {
   if ( getOption( 'test-options' ) ) {

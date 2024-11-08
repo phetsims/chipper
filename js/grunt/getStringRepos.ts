@@ -8,7 +8,7 @@
  */
 
 const fs = require( 'fs' );
-import getDependencies from './getDependencies';
+import getDependencies from './getDependencies.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 module.exports = async ( repo: string ): Promise<IntentionalAny> => {

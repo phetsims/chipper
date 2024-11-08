@@ -1,6 +1,6 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 
 /**
  * (project-wide) Report on license.json files throughout all working copies.
@@ -14,7 +14,7 @@ import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
 const repo = getRepo();
 
 // eslint-disable-next-line phet/default-import-match-filename
-import _reportMedia from '../reportMedia';
+import _reportMedia from '../reportMedia.js';
 
 export const reportMedia = ( async () => {
   await _reportMedia( repo );

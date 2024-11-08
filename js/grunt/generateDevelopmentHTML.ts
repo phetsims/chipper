@@ -12,7 +12,7 @@
 import * as _ from 'lodash';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-import getPreloads from './getPreloads';
+import getPreloads from './getPreloads.js';
 
 const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
 const getStringRepos = require( './getStringRepos.js' );

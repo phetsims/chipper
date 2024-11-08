@@ -6,10 +6,10 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 import * as grunt from 'grunt';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import Jimp from 'jimp';
-import generateThumbnails from '../generateThumbnails';
-import generateTwitterCard from '../generateTwitterCard';
+import generateThumbnails from '../generateThumbnails.js';
+import generateTwitterCard from '../generateTwitterCard.js';
 
 const brand = 'phet';
 

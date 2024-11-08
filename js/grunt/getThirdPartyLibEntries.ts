@@ -10,7 +10,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import getLicenseKeys from './getLicenseKeys';
+import getLicenseKeys from './getLicenseKeys.js';
 
 // modules
 const _ = require( 'lodash' );

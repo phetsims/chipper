@@ -7,7 +7,7 @@
  */
 
 import * as grunt from 'grunt';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import fs from 'fs';
 
 export const clean = ( async () => {

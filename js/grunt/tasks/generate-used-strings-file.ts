@@ -1,8 +1,8 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo';
-import webpackBuild from '../webpackBuild';
-import getLocalesFromRepository from '../getLocalesFromRepository';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import webpackBuild from '../webpackBuild.js';
+import getLocalesFromRepository from '../getLocalesFromRepository.js';
 
 import getPhetLibs from '../getPhetLibs.js';
 import transpile from '../../common/transpile.js';

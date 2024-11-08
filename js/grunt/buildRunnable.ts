@@ -8,15 +8,15 @@
 
 import fs from 'fs';
 import _ from 'lodash';
-import * as ChipperConstants from '../common/ChipperConstants';
-import generateThumbnails from './generateThumbnails';
-import generateTwitterCard from './generateTwitterCard';
-import getDependencies from './getDependencies';
-import getInitializationScript from './getInitializationScript';
-import getLocalesFromRepository from './getLocalesFromRepository';
-import packageXHTML from './packageXHTML';
-import reportUnusedStrings from './reportUnusedStrings';
-import webpackBuild from './webpackBuild';
+import * as ChipperConstants from '../common/ChipperConstants.js';
+import generateThumbnails from './generateThumbnails.js';
+import generateTwitterCard from './generateTwitterCard.js';
+import getDependencies from './getDependencies.js';
+import getInitializationScript from './getInitializationScript.js';
+import getLocalesFromRepository from './getLocalesFromRepository.js';
+import packageXHTML from './packageXHTML.js';
+import reportUnusedStrings from './reportUnusedStrings.js';
+import webpackBuild from './webpackBuild.js';
 import getPreloads from './getPreloads.js';
 import getPhetLibs from './getPhetLibs.js';
 
