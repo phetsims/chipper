@@ -1,7 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 /**
- * Lints all JS files required to build this repository (for the specified brands)
+ * Lints this repo and all of its dependencies.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
