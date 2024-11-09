@@ -34,6 +34,7 @@ export type TranspileOptions = {
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
+// TODO: REVIEW: It worked well in lint to make repos[] required, should we do that here as well? https://github.com/phetsims/chipper/issues/1520
 export default async function transpile( providedOptions: Partial<TranspileOptions> ): Promise<void> {
   const start = Date.now();
 
