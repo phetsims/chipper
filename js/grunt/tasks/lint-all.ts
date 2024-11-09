@@ -7,7 +7,7 @@
  */
 
 import * as grunt from 'grunt';
-import getLintOptions from '../../../../perennial-alias/js/eslint/getLintOptions.js';
+import getLintCLIOptions from '../../../../perennial-alias/js/eslint/getLintCLIOptions.js';
 import lint from '../../../../perennial-alias/js/eslint/lint.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
@@ -22,7 +22,7 @@ const brands = getBrands( repo );
  */
 export const lintAll = ( async () => {
 
-  const lintSuccess = await lint( getPhetLibs( repo, brands ), getLintOptions() );
+  const lintSuccess = await lint( getPhetLibs( repo, brands ), getLintCLIOptions() );
 
   // Output results on errors.
   if ( !lintSuccess ) {
