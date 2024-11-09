@@ -22,7 +22,7 @@ const brands = getBrands( repo );
  */
 export const lintAll = ( async () => {
 
-  const lintSuccess = await lint( getLintOptions( { repos: getPhetLibs( repo, brands ) } ) );
+  const lintSuccess = await lint( getPhetLibs( repo, brands ), getLintOptions() );
 
   // Output results on errors.
   if ( !lintSuccess ) {
