@@ -21,5 +21,5 @@ const defaultOptions = {
   // TODO: REVIEW, I removed silent: true, since this can be used outside of the maintenance tooling. Is that OK? see https://github.com/phetsims/chipper/issues/1522
 };
 
-// TODO: Use combineOptions, see https://github.com/phetsims/chipper/issues/1520
+// TODO: Use combineOptions, see https://github.com/phetsims/chipper/issues/1523
 transpile( _.assignIn( {}, defaultOptions, getTranspileCLIOptions() ) );

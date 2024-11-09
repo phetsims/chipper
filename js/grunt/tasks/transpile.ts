@@ -22,5 +22,5 @@ const defaultOptions = {
   all: isOptionKeyProvided( 'all' ) ? getOption( 'all' ) : true
 };
 
-// TODO: use combineOptions, see https://github.com/phetsims/chipper/issues/1520
+// TODO: use combineOptions, see https://github.com/phetsims/chipper/issues/1523
 transpile( _.assignIn( {}, defaultOptions, getTranspileCLIOptions() ) );

@@ -37,7 +37,7 @@ export type TranspileOptions = {
 export default async function transpile( providedOptions: Partial<TranspileOptions> ): Promise<void> {
   const start = Date.now();
 
-  // TODO: use combineOptions, see https://github.com/phetsims/chipper/issues/1520
+  // TODO: use combineOptions, see https://github.com/phetsims/chipper/issues/1523
   const options = _.assignIn( {
     all: false,
     silent: false,
