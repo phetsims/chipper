@@ -7,10 +7,10 @@ import _ from 'lodash';
 import path from 'path';
 import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
 import { Repo } from '../../../perennial-alias/js/common/PerennialTypes.js';
-import getOption from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
-import getRepo, { getRepos } from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import getOption, { isOptionKeyProvided } from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getRepo from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 
-type TranspileOptions = {
+export type TranspileOptions = {
 
   // Transpile all repos
   all: boolean;
@@ -37,6 +37,7 @@ type TranspileOptions = {
 export default async function transpile( providedOptions: Partial<TranspileOptions> ): Promise<void> {
   const start = Date.now();
 
+  // TODO: use combineOptions, see https://github.com/phetsims/chipper/issues/1520
   const options = _.assignIn( {
     all: false,
     silent: false,
@@ -67,20 +68,39 @@ export default async function transpile( providedOptions: Partial<TranspileOptio
 }
 
 // Parse command line options into an object for the module
-export const getTranspileOptions = ( options?: Partial<TranspileOptions> ): TranspileOptions => {
+export function getTranspileCLIOptions(): Partial<TranspileOptions> {
 
-  const repo = getRepo();
-  const repos = getRepos();
+  const transpileOptions: Partial<TranspileOptions> = {};
 
-  return _.assignIn( {
-    repos: repos.length > 0 ? repos : [ repo ],
-    brands: getOption( 'brands' ) ? getOption( 'brands' ).split( ',' ) : [],
-    all: !!getOption( 'all' ),
-    clean: !!getOption( 'clean' ),
-    silent: !!getOption( 'silent' ),
-    watch: !!getOption( 'watch' )
-  }, options );
-};
+  // command line options override passed-in options
+  if ( isOptionKeyProvided( 'repo' ) ) {
+    transpileOptions.repos = [ getRepo() ];
+  }
+
+  // Takes precedence over repo
+  if ( isOptionKeyProvided( 'repos' ) ) {
+    transpileOptions.repos = getOption( 'repos' ).split( ',' );
+  }
+
+  // Takes precedence over repo and repos
+  if ( isOptionKeyProvided( 'all' ) ) {
+    transpileOptions.all = getOption( 'all' );
+  }
+
+  if ( isOptionKeyProvided( 'watch' ) ) {
+    transpileOptions.watch = getOption( 'watch' );
+  }
+
+  if ( isOptionKeyProvided( 'clean' ) ) {
+    transpileOptions.clean = getOption( 'clean' );
+  }
+
+  if ( isOptionKeyProvided( 'silent' ) ) {
+    transpileOptions.silent = getOption( 'silent' );
+  }
+
+  return transpileOptions;
+}
 
 // Construct the command string with brace expansion
 const runnable = process.platform.startsWith( 'win' ) ? 'swc.cmd' : 'swc';

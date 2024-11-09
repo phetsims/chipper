@@ -1,7 +1,8 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
-import transpile, { getTranspileOptions } from '../../common/transpile.js';
+import transpile, { getTranspileCLIOptions } from '../../common/transpile.js';
+import _ from 'lodash';
 
 /**
  * Transpile TypeScript to JavaScript.
@@ -17,6 +18,9 @@ import transpile, { getTranspileOptions } from '../../common/transpile.js';
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-transpile( getTranspileOptions( {
+const defaultOptions = {
   all: isOptionKeyProvided( 'all' ) ? getOption( 'all' ) : true
-} ) );
+};
+
+// TODO: use combineOptions, see https://github.com/phetsims/chipper/issues/1520
+transpile( _.assignIn( {}, defaultOptions, getTranspileCLIOptions() ) );

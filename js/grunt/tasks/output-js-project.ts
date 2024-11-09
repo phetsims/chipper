@@ -1,8 +1,9 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import transpile, { getTranspileOptions } from '../../common/transpile.js';
+import transpile, { getTranspileCLIOptions } from '../../common/transpile.js';
 import getPhetLibs from '../getPhetLibs.js';
+import _ from 'lodash';
 
 /**
  * Outputs JS for the specified repo and its dependencies
@@ -13,9 +14,12 @@ import getPhetLibs from '../getPhetLibs.js';
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-transpile( getTranspileOptions( {
-  repos: getPhetLibs( getRepo() ),
 
-  // TODO: explain why output-js-project is silent by default but transpile is not. This can be used outside of the maintenance tooling, see https://github.com/phetsims/chipper/issues/1522
-  silent: true
-} ) );
+const defaultOptions = {
+  repos: getPhetLibs( getRepo() )
+
+  // TODO: REVIEW, I removed silent: true, since this can be used outside of the maintenance tooling. Is that OK? see https://github.com/phetsims/chipper/issues/1522
+};
+
+// TODO: Use combineOptions, see https://github.com/phetsims/chipper/issues/1520
+transpile( _.assignIn( {}, defaultOptions, getTranspileCLIOptions() ) );
