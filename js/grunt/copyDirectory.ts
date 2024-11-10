@@ -19,7 +19,7 @@ const minify = require( './minify.js' );
  * @param [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
  * @param [options]
  */
-module.exports = function( src: string, dst: string, filter?: ( filename: string, contents: string ) => boolean, options?: IntentionalAny ) {
+module.exports = function( src: string, dst: string, filter?: ( filename: string, contents: string ) => string, options?: IntentionalAny ) {
 
   options = _.assignIn( {
     failOnExistingFiles: false,
@@ -66,7 +66,6 @@ module.exports = function( src: string, dst: string, filter?: ( filename: string
     }
 
     if ( filteredContents ) {
-      // @ts-expect-error
       grunt.file.write( dstPath, filteredContents );
     }
     else {
