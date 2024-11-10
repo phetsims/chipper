@@ -116,7 +116,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   reportUnusedMedia( repo, usedModules );
 
   // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1465
-  const licenseEntries: Record<string, object> = {};
+  const licenseEntries: Record<string, Record<string, unknown>> = {};
   ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
     licenseEntries[ mediaType ] = {};
   } );
@@ -130,7 +130,6 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
         const index = module.lastIndexOf( '_' );
         const path = `${module.slice( 0, index )}.${module.slice( index + 1, -3 )}`;
 
-        // @ts-expect-error
         licenseEntries[ mediaType ][ module ] = getLicenseEntry( `../${path}` );
       }
     } );
