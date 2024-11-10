@@ -15,8 +15,8 @@ export const clean = ( async () => {
   const buildDirectory = `../${repo}/build`;
 
   // Check if the build directory exists, then delete and recreate it
-  if ( grunt.file.exists( buildDirectory ) ) {
-    grunt.file.delete( buildDirectory );
+  if ( fs.existsSync( buildDirectory ) ) {
+    fs.rmSync( buildDirectory, { recursive: true, force: true } );
   }
   fs.mkdirSync( buildDirectory, { recursive: true } );
 } )();
