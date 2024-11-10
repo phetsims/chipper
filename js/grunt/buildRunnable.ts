@@ -401,8 +401,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
 
     assert && assert( Array.isArray( packageObject.phet.packageWithBuild ) );
 
-    // @ts-expect-error
-    packageObject.phet.packageWithBuild.forEach( path => {
+    packageObject.phet.packageWithBuild.forEach( ( path: string ) => {
 
       // eslint-disable-next-line phet/no-simple-type-checking-assertions
       assert && assert( typeof path === 'string', 'path should be a string' );
