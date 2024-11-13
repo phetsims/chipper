@@ -40,13 +40,13 @@ qunit.test( 'A11Y View HTML', async assert => {
 
 qunit.test( 'Published README', async assert => {
   assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'published-readmen' ], { cwd: '../chains' } );
+  await execute( gruntCommand, [ 'published-readme' ], { cwd: '../chains' } );
   assert.expect( 0 );
 } );
 
 qunit.test( 'Unpublished README', async assert => {
   assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'unpublished-readmen' ], { cwd: '../chains' } );
+  await execute( gruntCommand, [ 'unpublished-readme' ], { cwd: '../chains' } );
   assert.expect( 0 );
 } );
 
