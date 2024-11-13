@@ -10,7 +10,7 @@
 // const chai = require( 'chai' );
 const execute = require( '../js/grunt/execute.js' );
 const gruntCommand = /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt';
-const qunit = require( 'qunit' );
+const qunit = require( '../../perennial-alias/js/npm-dependencies/qunit.js' );
 
 qunit.module( 'Generation', {
   afterEach: async () => {

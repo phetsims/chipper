@@ -7,7 +7,7 @@
     "url": "https://github.com/phetsims/chipper.git"
   },
   "scripts": {
-    "test": "qunit"
+    "test": "bash ../perennial-alias/bin/sage run ../perennial-alias/node_modules/qunit/bin/qunit.js test/generalTests.js"
   },
   "phet": {
     "chipperSupportsOutputJSGruntTasks": true,
@@ -35,7 +35,6 @@
     "node-html-encoder": "~0.0.2",
     "pako": "~2.0.4",
     "pngjs": "~6.0.0",
-    "qunit": "~2.20.0",
     "svgo": "~3.2.0",
     "taffydb": "~2.7.3",
     "terser": "~4.6.4",
