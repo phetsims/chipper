@@ -23,4 +23,4 @@ const defaultOptions = {
 };
 
 // TODO: use combineOptions, see https://github.com/phetsims/chipper/issues/1523
-transpile( _.assignIn( {}, defaultOptions, getTranspileCLIOptions() ) );
+transpile( _.assignIn( defaultOptions, getTranspileCLIOptions() ) );
