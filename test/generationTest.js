@@ -8,50 +8,50 @@
 
 
 // const chai = require( 'chai' );
-const execute = require( '../js/grunt/execute.js' );
-const gruntCommand = /^win/.test( process.platform ) ? 'grunt.cmd' : 'grunt';
+const execute = require( '../../perennial-alias/js/common/execute.js' );
+const gruntCommand = require( '../../perennial-alias/js/common/gruntCommand.js' );
 const qunit = require( '../../perennial-alias/js/npm-dependencies/qunit.js' );
 
 qunit.module( 'Generation', {
   afterEach: async () => {
     // Hard reset to undo what we just did
-    await execute( 'git', [ 'reset', '--hard' ], { cwd: '../chains' } );
-    await execute( 'git', [ 'clean', '-f' ], { cwd: '../chains' } );
+    await execute( 'git', [ 'reset', '--hard' ], '../chains' );
+    await execute( 'git', [ 'clean', '-f' ], '../chains' );
   }
 } );
 
 qunit.test( 'Development HTML', async assert => {
   assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'generate-development-html' ], { cwd: '../chains' } );
+  await execute( gruntCommand, [ 'generate-development-html' ], '../chains' );
   assert.expect( 0 );
 } );
 
 qunit.test( 'Test HTML', async assert => {
   assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'generate-test-html' ], { cwd: '../chains' } );
+  await execute( gruntCommand, [ 'generate-test-html' ], '../chains' );
   assert.expect( 0 );
 } );
 
 qunit.test( 'A11Y View HTML', async assert => {
   assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'generate-a11y-view-html' ], { cwd: '../chains' } );
+  await execute( gruntCommand, [ 'generate-a11y-view-html' ], '../chains' );
   assert.expect( 0 );
 } );
 
 qunit.test( 'Published README', async assert => {
   assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'published-readme' ], { cwd: '../chains' } );
+  await execute( gruntCommand, [ 'published-readme' ], '../chains' );
   assert.expect( 0 );
 } );
 
 qunit.test( 'Unpublished README', async assert => {
   assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'unpublished-readme' ], { cwd: '../chains' } );
+  await execute( gruntCommand, [ 'unpublished-readme' ], '../chains' );
   assert.expect( 0 );
 } );
 
 qunit.test( 'Copyright', async assert => {
   assert.timeout( 120000 );
-  await execute( gruntCommand, [ 'update-copyright-dates' ], { cwd: '../chains' } );
+  await execute( gruntCommand, [ 'update-copyright-dates' ], '../chains' );
   assert.expect( 0 );
 } );
