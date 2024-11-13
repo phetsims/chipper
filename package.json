@@ -7,7 +7,7 @@
     "url": "https://github.com/phetsims/chipper.git"
   },
   "scripts": {
-    "test": "bash ../perennial-alias/bin/sage run ../perennial-alias/node_modules/qunit/bin/qunit.js test/generalTests.js"
+    "test": "bash ../perennial-alias/bin/sage run ../perennial-alias/node_modules/qunit/bin/qunit.js test/chipper-tests.js"
   },
   "phet": {
     "chipperSupportsOutputJSGruntTasks": true,
