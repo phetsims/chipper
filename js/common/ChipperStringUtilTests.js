@@ -5,8 +5,8 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-const ChipperStringUtils = require( './ChipperStringUtils' );
-const qunit = require( '../../../perennial-alias/js/npm-dependencies/qunit' );
+const ChipperStringUtils = require( './ChipperStringUtils.js' );
+const qunit = require( '../../../perennial-alias/js/npm-dependencies/qunit.js' );
 qunit.module( 'ChipperStringUtils' );
 
 qunit.test( 'forEachString', assert => {

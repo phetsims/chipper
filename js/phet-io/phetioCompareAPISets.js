@@ -5,7 +5,7 @@
  */
 
 const fs = require( 'fs' );
-const phetioCompareAPIs = require( './phetioCompareAPIs' );
+const phetioCompareAPIs = require( './phetioCompareAPIs.js' );
 const _ = require( 'lodash' );
 const jsondiffpatch = require( '../../../sherpa/lib/jsondiffpatch-v0.3.11.umd' ).create( {} );
 const assert = require( 'assert' );

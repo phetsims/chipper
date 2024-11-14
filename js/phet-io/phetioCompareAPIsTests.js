@@ -5,9 +5,9 @@
  */
 
 
-const qunit = require( '../../../perennial-alias/js/npm-dependencies/qunit' );
+const qunit = require( '../../../perennial-alias/js/npm-dependencies/qunit.js' );
 const assert = require( 'assert' );
-const phetioCompareAPIs = require( './phetioCompareAPIs' );
+const phetioCompareAPIs = require( './phetioCompareAPIs.js' );
 const _ = require( 'lodash' );
 
 qunit.module( 'phetioCompareAPIs' );

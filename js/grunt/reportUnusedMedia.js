@@ -16,7 +16,7 @@
  */
 
 // modules
-const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
+const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants.js' );
 const grunt = require( 'grunt' );
 
 /**

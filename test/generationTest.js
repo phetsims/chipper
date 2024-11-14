@@ -8,9 +8,9 @@
 
 
 // const chai = require( 'chai' );
-const execute = require( '../../perennial-alias/js/common/execute' );
-const gruntCommand = require( '../../perennial-alias/js/common/gruntCommand' );
-const qunit = require( '../../perennial-alias/js/npm-dependencies/qunit' );
+const execute = require( '../../perennial-alias/js/common/execute.js' );
+const gruntCommand = require( '../../perennial-alias/js/common/gruntCommand.js' );
+const qunit = require( '../../perennial-alias/js/npm-dependencies/qunit.js' );
 
 qunit.module( 'Generation', {
   afterEach: async () => {
