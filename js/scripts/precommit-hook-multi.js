@@ -1,10 +1,10 @@
 // Copyright 2022-2024, University of Colorado Boulder
 const startTime = Date.now();
 
-const execute = require( '../../../perennial-alias/js/common/execute.js' );
+const execute = require( '../../../perennial-alias/js/common/execute' );
 const fs = require( 'fs' );
 const child_process = require( 'child_process' );
-const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand.js' );
+const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand' );
 
 // constants
 // Don't use getActiveRepos() since it cannot be run from the root

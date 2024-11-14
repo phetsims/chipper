@@ -9,10 +9,10 @@
 
 // const assert = require( 'assert' );
 // const chai = require( 'chai' );
-const execute = require( '../../perennial-alias/js/common/execute.js' );
-const gruntCommand = require( '../../perennial-alias/js/common/gruntCommand.js' );
+const execute = require( '../../perennial-alias/js/common/execute' );
+const gruntCommand = require( '../../perennial-alias/js/common/gruntCommand' );
 const grunt = require( 'grunt' );
-const qunit = require( '../../perennial-alias/js/npm-dependencies/qunit.js' );
+const qunit = require( '../../perennial-alias/js/npm-dependencies/qunit' );
 
 
 qunit.module( 'Chains building' );

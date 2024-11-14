@@ -9,7 +9,7 @@
 
 // modules
 const _ = require( 'lodash' );
-const transpileForBuild = require( './transpileForBuild.js' );
+const transpileForBuild = require( './transpileForBuild' );
 const terser = require( 'terser' );
 
 const MINIFY_DEFAULTS = {

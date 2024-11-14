@@ -23,10 +23,10 @@
  */
 
 const path = require( 'path' );
-const execute = require( '../../../perennial-alias/js/common/execute.js' );
-const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog.js' );
-const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand.js' );
-const buildLocal = require( '../../../perennial-alias/js/common/buildLocal.js' );
+const execute = require( '../../../perennial-alias/js/common/execute' );
+const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog' );
+const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand' );
+const buildLocal = require( '../../../perennial-alias/js/common/buildLocal' );
 
 // These repos do not require precommit hooks to be run
 const optOutRepos = [

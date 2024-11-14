@@ -9,8 +9,8 @@
 
 // modules
 const assert = require( 'assert' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-const getTitleStringKey = require( './getTitleStringKey.js' );
+const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 const pako = require( 'pako' );
 const fs = require( 'fs' );
