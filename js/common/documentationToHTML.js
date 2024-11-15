@@ -7,6 +7,8 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+// TODO: Move to commonjs or rename to .cjs, https://github.com/phetsims/perennial/issues/410
+
 /* global window */
 ( function() {
 
