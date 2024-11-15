@@ -10,11 +10,15 @@ import fs from 'fs';
 import _ from 'lodash';
 import { ConcatOperation, ModifySourcePlugin } from 'modify-source-webpack-plugin';
 import path from 'path';
+import dirname from '../../../perennial-alias/js/common/dirname.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import webpackGlobalLibraries from '../common/webpackGlobalLibraries.js';
 
 const webpack = require( 'webpack' );
+
+// @ts-expect-error - until we have "type": "module" in our package.json
+const __dirname = dirname( import.meta.url );
 
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial-alias/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
 const reposByNamespace: Record<string, string> = {};

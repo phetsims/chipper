@@ -12,6 +12,10 @@
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
+import dirname from '../../../perennial-alias/js/common/dirname.js';
+
+// @ts-expect-error - until we have "type": "module" in our package.json
+const __dirname = dirname( import.meta.url );
 
 /**
  * @param repo - repo to generate strings for

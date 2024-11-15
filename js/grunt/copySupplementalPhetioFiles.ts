@@ -12,6 +12,7 @@ import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
+import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
 import check from '../../../perennial-alias/js/grunt/check.ts';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
@@ -28,6 +29,9 @@ import webpackBuild from './webpackBuild.ts';
 const webpack = require( 'webpack' );
 const archiver = require( 'archiver' );
 const marked = require( 'marked' );
+
+// @ts-expect-error - until we have "type": "module" in our package.json
+const __dirname = dirname( import.meta.url );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
