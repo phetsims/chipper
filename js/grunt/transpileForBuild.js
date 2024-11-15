@@ -18,7 +18,7 @@ const babel = require( '@babel/core' ); // eslint-disable-line phet/require-stat
  * @param {boolean} [forIE=false] - whether the jsInput should be transpiled for Internet Explorer
  * @returns {string} - The transpiled code
  */
-module.exports = function( jsInput, forIE = false ) {
+export default function( jsInput, forIE = false ) {
 
   // This list specifies the target browsers for Babel. Its format is described at https://browsersl.ist.
   // Note that this is related to System Requirements advertised on the PhET website, so should be modified with care.
@@ -52,4 +52,4 @@ module.exports = function( jsInput, forIE = false ) {
       }
     } ] ]
   } ).code;
-};
+}

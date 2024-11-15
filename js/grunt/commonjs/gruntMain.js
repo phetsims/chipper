@@ -13,8 +13,8 @@
 
 const assert = require( 'assert' );
 require( './checkNodeVersion.js' );
-const registerTasks = require( '../../../perennial-alias/js/grunt/util/registerTasks' );
-const gruntSpawn = require( '../../../perennial-alias/js/grunt/util/gruntSpawn' );
+const registerTasks = require( '../../../../perennial-alias/js/grunt/util/registerTasks.js' );
+const gruntSpawn = require( '../../../../perennial-alias/js/grunt/util/gruntSpawn.js' );
 const _ = require( 'lodash' );
 const { readFileSync } = require( 'fs' );
 
@@ -41,7 +41,7 @@ module.exports = function( grunt ) {
   const repo = grunt.option( 'repo' ) || packageObject.name;
   assert( typeof repo === 'string' && /^[a-z]+(-[a-z]+)*$/u.test( repo ), 'repo name should be composed of lower-case characters, optionally with dashes used as separators' );
 
-  registerTasks( grunt, __dirname + '/tasks/' );
+  registerTasks( grunt, __dirname + '/../tasks/' );
 
   /**
    * Creates grunt tasks that effectively get forwarded to perennial. It will execute a grunt process running from
