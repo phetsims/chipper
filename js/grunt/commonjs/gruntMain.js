@@ -13,8 +13,8 @@
 
 const assert = require( 'assert' );
 require( './checkNodeVersion.js' );
-const registerTasks = require( '../../../../perennial-alias/js/grunt/util/registerTasks.js' );
-const gruntSpawn = require( '../../../../perennial-alias/js/grunt/util/gruntSpawn.js' );
+const registerTasks = require( '../../../../perennial-alias/js/grunt/commonjs/registerTasks' );
+const gruntSpawn = require( '../../../../perennial-alias/js/grunt/commonjs/gruntSpawn' );
 const _ = require( 'lodash' );
 const { readFileSync } = require( 'fs' );
 
