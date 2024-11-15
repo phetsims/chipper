@@ -16,7 +16,7 @@ import minify from './minify.js';
  * @param [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
  * @param [options]
  */
-export default function( src: string, dst: string, filter?: ( filename: string, contents: string ) => string | null, options?: IntentionalAny ): void {
+export default function copyDirectory( src: string, dst: string, filter?: ( filename: string, contents: string ) => string | null, options?: IntentionalAny ): void {
 
   options = _.assignIn( {
     failOnExistingFiles: false,

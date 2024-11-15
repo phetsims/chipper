@@ -8,7 +8,7 @@
 
 import fs from 'fs';
 
-export default function(): string[] {
+export default function getSimList(): string[] {
   const args = process.argv.slice( 2 );
 
   // if the arg is just a flag, then the callback will be called with a null parameter

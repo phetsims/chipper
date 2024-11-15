@@ -22,7 +22,7 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
  * @param altSuffix - ending for the filename e.g. -alt1
  * @returns Resolves to a {Buffer} with the image data
  */
-export default function( repo: string, width: number, height: number, quality: number, mime: string, altSuffix: string | undefined = undefined ): Promise<Buffer> {
+export default function generateThumbnails( repo: string, width: number, height: number, quality: number, mime: string, altSuffix: string | undefined = undefined ): Promise<Buffer> {
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot${altSuffix || ''}.png`;
 

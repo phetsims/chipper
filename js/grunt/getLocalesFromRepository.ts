@@ -11,7 +11,7 @@ import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-export default function( repo: string ): string[] {
+export default function getLocalesFromRepository( repo: string ): string[] {
 
   // confirm that the repository has a strings directory
   const stringsDirectory = `../babel/${repo}`;

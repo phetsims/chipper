@@ -21,7 +21,7 @@ import transpileForBuild from './transpileForBuild.js';
 /**
  * Returns a string for the JS of the initialization script.
  */
-export default function( config: IntentionalAny ): string {
+export default function getInitializationScript( config: IntentionalAny ): string {
   const {
     brand, // {string}, e.g. 'phet', 'phet-io'
     repo, // {string}

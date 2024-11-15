@@ -15,7 +15,7 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
  * @param repo - name of the repository
  * @returns - Resolves with a PNG {Buffer}
  */
-export default function( repo: string ): Promise<Buffer> {
+export default function generateTwitterCard( repo: string ): Promise<Buffer> {
   return new Promise( ( resolve, reject ) => {
     const fullResImageName = `../${repo}/assets/${repo}-screenshot.png`;
 

@@ -18,7 +18,7 @@ import getPhetLibs from './getPhetLibs.js';
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-export default function( repo: string, brand: string, forSim: boolean ): string[] {
+export default function getPreloads( repo: string, brand: string, forSim: boolean ): string[] {
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   let buildObject;

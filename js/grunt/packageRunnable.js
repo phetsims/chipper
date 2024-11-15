@@ -23,7 +23,7 @@ const nodeHtmlEncoder = require( 'node-html-encoder' );
  * @param {Object} config
  * @returns {string} - The HTML for the file.
  */
-export default function( config ) {
+export default function packageRunnable( config ) {
 
   const encoder = new nodeHtmlEncoder.Encoder( 'entity' );
 

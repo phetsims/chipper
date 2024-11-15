@@ -12,7 +12,7 @@ import getTitleStringKey from './getTitleStringKey.js';
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @returns - the html string, filled in from the template.
  */
-export default function( repo: string ): string {
+export default function getA11yViewHTMLFromTemplate( repo: string ): string {
 
   let html = grunt.file.read( '../chipper/templates/sim-a11y-view.html' ); // the template file
 

@@ -16,7 +16,7 @@ export type LicenseEntries = Record<string, Record<string, { projectURL: string 
  * NOTE: This pulls entries from some of the chipper globals. Should be done only after the build
  */
 // TODO: type alias for TLicenseEntry, see https://github.com/phetsims/chipper/issues/1465
-export default function( repo: string, brand: string, licenseEntries?: LicenseEntries ): Record<string, any> {
+export default function getAllThirdPartyEntries( repo: string, brand: string, licenseEntries?: LicenseEntries ): Record<string, any> {
   const thirdPartyEntries: Record<string, IntentionalAny> = {
     lib: getThirdPartyLibEntries( repo, brand )
   };

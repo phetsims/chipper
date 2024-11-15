@@ -15,7 +15,7 @@ import getPreloads from './getPreloads.js';
 /**
  * Gets the license keys for sherpa (third-party) libs that are used.
  */
-export default function( repo: string, brand: string ): string[] {
+export default function getLicenseKeys( repo: string, brand: string ): string[] {
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   let buildObject;
   try {

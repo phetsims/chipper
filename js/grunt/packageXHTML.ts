@@ -19,7 +19,7 @@ const nodeHtmlEncoder = require( 'node-html-encoder' );
 /**
  * From a given set of config (including the JS and other required things), it creates an XHTML structure and writes it to disk.
  */
-export default function( xhtmlDir: string, config: IntentionalAny ): void {
+export default function packageXHTML( xhtmlDir: string, config: IntentionalAny ): void {
   const encoder = new nodeHtmlEncoder.Encoder( 'entity' );
 
   const {

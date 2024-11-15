@@ -19,7 +19,7 @@ import getLicenseKeys from './getLicenseKeys.js';
 const THIRD_PARTY_LICENSES_FILENAME = '../sherpa/lib/license.json'; // contains third-party license info
 const LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
 
-export default function( repo: string, brand: string ): Record<string, string> {
+export default function getThirdPartyLibEntries( repo: string, brand: string ): Record<string, string> {
 
   // Read license info
   const licenseInfo = JSON.parse( readFileSync( THIRD_PARTY_LICENSES_FILENAME, 'utf8' ) );
