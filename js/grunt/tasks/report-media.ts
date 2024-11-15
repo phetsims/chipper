@@ -14,7 +14,6 @@ import _reportMedia from '../reportMedia.js'; // eslint-disable-line phet/defaul
  */
 const repo = getRepo();
 
-// TODO: rename to "reportMediaTask" https://github.com/phetsims/perennial/issues/410
 export const reportMedia = ( async () => {
   await _reportMedia( repo );
 } )();
