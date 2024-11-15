@@ -1,16 +1,13 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
+import fs from 'fs';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import ChipperConstants from '../../common/ChipperConstants.js';
 import transpile from '../../common/transpile.js';
 import getLocalesFromRepository from '../getLocalesFromRepository.js';
-
 import getPhetLibs from '../getPhetLibs.js';
+import getStringMap from '../getStringMap.js';
 import webpackBuild from '../webpackBuild.js';
-
-const fs = require( 'fs' );
-const ChipperConstants = require( '../../common/ChipperConstants.js' );
-
-const getStringMap = require( '../getStringMap.js' );
 
 /**
  * Writes used strings to phet-io-sim-specific/ so that PhET-iO sims only output relevant strings to the API in unbuilt mode

@@ -8,9 +8,8 @@
  * @author Matt Pennington (PhET Interactive Simulations)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-
-const child_process = require( 'child_process' );
-const fs = require( 'fs' );
+import child_process from 'child_process';
+import fs from 'fs';
 
 /**
  * Converts locale data from babel/localeData.json into legacy formats used by rosetta and the website.

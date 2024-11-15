@@ -93,4 +93,4 @@ function mipmapDownscale( mipmap, createData ) {
   };
 }
 
-module.exports = mipmapDownscale;
+export default mipmapDownscale;

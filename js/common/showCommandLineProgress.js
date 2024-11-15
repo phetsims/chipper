@@ -5,8 +5,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-
-const _ = require( 'lodash' );
+import _ from 'lodash';
 
 /**
  * See https://jagascript.com/how-to-build-a-textual-progress-bar-for-cli-and-terminal-apps/
@@ -14,7 +13,7 @@ const _ = require( 'lodash' );
  * @param {boolean} newline - if each new progress should give a new line, should be false during progress, and true when finally completed
  * @param {Object} [options]
  */
-module.exports = function showCommandLineProgress( progress, newline, options ) {
+export default function showCommandLineProgress( progress, newline, options ) {
   options = _.assignIn( {
     progressBarLength: 40 // in characters
   }, options );
@@ -23,4 +22,4 @@ module.exports = function showCommandLineProgress( progress, newline, options ) 
   const empty = ' '.repeat( Math.round( ( 1 - progress ) * options.progressBarLength ) );
   const newlineString = newline ? '\n' : '';
   process.stdout.write( `\r[${dots}${empty}] ${( progress * 100 ).toFixed( 2 )}%${newlineString}` );
-};
+}

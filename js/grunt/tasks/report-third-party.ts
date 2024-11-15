@@ -2,10 +2,10 @@
 
 import assert from 'assert';
 import fs, { readFileSync } from 'fs';
-import grunt from 'grunt';
 import https from 'https';
 import _ from 'lodash';
 import axios from '../../../../perennial-alias/js/npm-dependencies/axios.js';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperConstants from '../../common/ChipperConstants.js';
 
 type Library = {

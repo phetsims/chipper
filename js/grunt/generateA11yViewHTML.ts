@@ -8,18 +8,16 @@
  * @author Jesse Greenberg
  */
 
-// modules
-const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate.js' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
-
+import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import getA11yViewHTMLFromTemplate from './getA11yViewHTMLFromTemplate.js';
 
-module.exports = async function( repo: string ) {
+export default async function( repo: string ): Promise<void> {
 
   let html = getA11yViewHTMLFromTemplate( repo );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_REPOSITORY}}', repo );
 
   // Write to the repository's root directory.
   await writeFileAndGitAdd( repo, `${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, html );
-};
+}

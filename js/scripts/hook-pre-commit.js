@@ -22,11 +22,11 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-const path = require( 'path' );
-const execute = require( '../../../perennial-alias/js/common/execute.js' );
-const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog.js' );
-const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand.js' );
-const buildLocal = require( '../../../perennial-alias/js/common/buildLocal.js' );
+import path from 'path';
+import execute from '../../../perennial-alias/js/common/execute.js';
+import phetTimingLog from '../../../perennial-alias/js/common/phetTimingLog.js';
+import tsxCommand from '../../../perennial-alias/js/common/tsxCommand.js';
+import buildLocal from '../../../perennial-alias/js/common/buildLocal.js';
 
 // These repos do not require precommit hooks to be run
 const optOutRepos = [

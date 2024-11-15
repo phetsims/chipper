@@ -17,8 +17,7 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-
-const fs = require( 'fs' );
+import fs from 'fs';
 
 /**
  * Retrieves the license entry for a media file from license.json.
@@ -62,4 +61,4 @@ function getLicenseEntry( absolutePath ) {
   return entry;
 }
 
-module.exports = getLicenseEntry;
+export default getLicenseEntry;

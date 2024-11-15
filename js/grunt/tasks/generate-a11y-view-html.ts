@@ -1,8 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-
-const generateA11yViewHTML = require( '../generateA11yViewHTML.js' );
+import generateA11yViewHTML from '../generateA11yViewHTML.js';
 
 /**
  * Generates top-level SIM-a11y-view.html file used for visualizing accessible content. Usually you should

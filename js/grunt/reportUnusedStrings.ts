@@ -14,7 +14,7 @@ import { readFileSync } from 'fs';
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-const grunt = require( 'grunt' );
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 
 /**
  * @param repo

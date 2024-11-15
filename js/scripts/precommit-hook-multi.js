@@ -1,10 +1,10 @@
 // Copyright 2022-2024, University of Colorado Boulder
 const startTime = Date.now();
 
-const execute = require( '../../../perennial-alias/js/common/execute.js' );
-const fs = require( 'fs' );
-const child_process = require( 'child_process' );
-const tsxCommand = require( '../../../perennial-alias/js/common/tsxCommand.js' );
+import child_process from 'child_process';
+import fs from 'fs';
+import execute from '../../../perennial-alias/js/common/execute.js';
+import tsxCommand from '../../../perennial-alias/js/common/tsxCommand.js';
 
 // constants
 // Don't use getActiveRepos() since it cannot be run from the root

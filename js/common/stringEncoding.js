@@ -29,9 +29,8 @@
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-
-const _ = require( 'lodash' );
-const toLessEscapedString = require( './toLessEscapedString.js' );
+import _ from 'lodash';
+import toLessEscapedString from './toLessEscapedString.js';
 
 const PUSH_TOKEN = '\u0001'; // push string on the stack
 const PUSH_TOKEN_SLASH = '\u0002'; // push `${string}/` on the stack
@@ -474,7 +473,7 @@ const smallDecodeStringMapString = "y=>{let m={};let x=[];let s=[];let X=null;le
 // Given a stringMap (map[ locale ][ stringKey ] => string), returns a JS expression string that will decode to it.
 const encodeStringMapToJS = stringMap => `(${smallDecodeStringMapString})(${toLessEscapedString( encodeStringMap( stringMap ) )})`;
 
-module.exports = {
+export default {
   encodeStringMap: encodeStringMap,
   decodeStringMap: decodeStringMap,
   encodeStringMapToJS: encodeStringMapToJS

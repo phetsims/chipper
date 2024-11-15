@@ -1,7 +1,7 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
-const assert = require( 'assert' );
-const grunt = require( 'grunt' );
+import assert from 'assert';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 
 /**
  * Gets the locales from a repository, by inspecting the names of the string files in babel for that repository.
@@ -15,13 +15,14 @@ export default function( repo: string ): string[] {
 
   // confirm that the repository has a strings directory
   const stringsDirectory = `../babel/${repo}`;
-  assert( grunt.file.isDir(), `${stringsDirectory} is not a directory` );
+  assert( grunt.file.isDir( stringsDirectory ), `${stringsDirectory} is not a directory` );
 
   // Get names of string files.
   const stringFiles: string[] = grunt.file.expand( `${stringsDirectory}/${repo}-strings_*.json` );
 
   // Don't fail out if there are no string files, as this is a normal condition when building new simulations
   if ( stringFiles.length === 0 ) {
+    // @ts-expect-error debug is unknown in the type
     grunt.log.debug( `No string files found in ${stringsDirectory} for repository ${repo}` );
     return [];
   }

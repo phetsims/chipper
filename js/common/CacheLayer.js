@@ -9,8 +9,7 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-
-const fs = require( 'fs' );
+import fs from 'fs';
 
 const readCacheLayerJSON = () => {
   try {
@@ -27,7 +26,7 @@ const writeFileAsJSON = json => {
   fs.writeFileSync( '../chipper/dist/cache-layer.json', JSON.stringify( json, null, 2 ) );
 };
 
-module.exports = {
+export default {
 
   // When the watch process exits, invalidate the caches until the watch process resumes
   clearLastChangedTimestamp() {

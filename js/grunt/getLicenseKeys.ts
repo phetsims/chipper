@@ -8,10 +8,9 @@
  */
 
 import { readFileSync } from 'fs';
+import _ from 'lodash';
+import webpackGlobalLibraries from '../common/webpackGlobalLibraries.js';
 import getPreloads from './getPreloads.js';
-
-const _ = require( 'lodash' );
-const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries.js' );
 
 /**
  * Gets the license keys for sherpa (third-party) libs that are used.

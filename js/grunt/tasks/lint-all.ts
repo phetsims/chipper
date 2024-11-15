@@ -6,11 +6,11 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import * as grunt from 'grunt';
 import getLintCLIOptions from '../../../../perennial-alias/js/eslint/getLintCLIOptions.js';
 import lint from '../../../../perennial-alias/js/eslint/lint.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import getPhetLibs from '../getPhetLibs.js';
 
 const repo = getRepo();

@@ -1,11 +1,11 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
-import * as fs from 'fs';
-import * as grunt from 'grunt';
+import fs from 'fs';
+import mipmapDownscale from '../../../chipper/js/common/mipmapDownscale.js';
 import getOption from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 
 const jpegJs = require( 'jpeg-js' );
-const mipmapDownscale = require( '../../../chipper/js/common/mipmapDownscale.js' );
 const pngjs = require( 'pngjs' );
 
 type TMipmap = {

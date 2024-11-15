@@ -7,7 +7,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-// modules
-const os = require( 'os' );
+import os from 'os';
 
 export default ( string: string ): string => string.split( '\r' ).join( '' ).split( '\n' ).join( os.EOL );

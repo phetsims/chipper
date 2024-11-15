@@ -6,16 +6,15 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
 // modules
-const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants.js' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-const getTitleStringKey = require( './getTitleStringKey.js' );
-const grunt = require( 'grunt' );
-const nodeHtmlEncoder = require( 'node-html-encoder' );
-
+import assert from 'assert';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import ChipperConstants from '../common/ChipperConstants.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import getTitleStringKey from './getTitleStringKey.js';
+
+const nodeHtmlEncoder = require( 'node-html-encoder' );
 
 /**
  * From a given set of config (including the JS and other required things), it creates an XHTML structure and writes it to disk.

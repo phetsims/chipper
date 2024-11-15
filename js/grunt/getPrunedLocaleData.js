@@ -6,16 +6,16 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const _ = require( 'lodash' );
-const ChipperConstants = require( '../common/ChipperConstants.js' );
-const fs = require( 'fs' );
+import fs from 'fs';
+import _ from 'lodash';
+import ChipperConstants from '../common/ChipperConstants.js';
 
 /**
  * Returns a subset of the localeData that should be included in the built simulation.
  *
  * @param localesWithTranslations - Array of locales that have translations
  */
-module.exports = localesWithTranslations => {
+export default localesWithTranslations => {
 
   // Load localeData
   const fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );

@@ -1,8 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-// eslint-disable-next-line phet/default-import-match-filename
-import _reportMedia from '../reportMedia.js';
+import _reportMedia from '../reportMedia.js'; // eslint-disable-line phet/default-import-match-filename
 
 /**
  * (project-wide) Report on license.json files throughout all working copies.
@@ -15,6 +14,7 @@ import _reportMedia from '../reportMedia.js';
  */
 const repo = getRepo();
 
+// TODO: rename to "reportMediaTask" https://github.com/phetsims/perennial/issues/410
 export const reportMedia = ( async () => {
   await _reportMedia( repo );
 } )();

@@ -9,16 +9,14 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-// modules
-const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants.js' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-const fs = require( 'fs' );
-const grunt = require( 'grunt' );
-const transpileForBuild = require( './transpileForBuild.js' );
-const stringEncoding = require( '../common/stringEncoding.js' );
-
+import assert from 'assert';
+import fs from 'fs';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import ChipperConstants from '../common/ChipperConstants.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import stringEncoding from '../common/stringEncoding.js';
+import transpileForBuild from './transpileForBuild.js';
 
 /**
  * Returns a string for the JS of the initialization script.

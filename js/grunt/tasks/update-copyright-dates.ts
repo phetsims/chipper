@@ -1,10 +1,10 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import * as grunt from 'grunt';
-import _ from 'lodash';
-import getCopyrightLine from '../getCopyrightLine.js';
 import fs from 'fs';
+import _ from 'lodash';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
+import getCopyrightLine from '../getCopyrightLine.js';
 
 /**
  * Update the copyright dates in JS source files based on Github dates

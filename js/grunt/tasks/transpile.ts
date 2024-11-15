@@ -1,8 +1,8 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
+import _ from 'lodash';
 import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import transpile, { getTranspileCLIOptions } from '../../common/transpile.js';
-import _ from 'lodash';
 
 /**
  * Transpile TypeScript to JavaScript.

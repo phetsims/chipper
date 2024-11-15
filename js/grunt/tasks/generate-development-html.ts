@@ -1,8 +1,7 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-
-const generateDevelopmentHTML = require( '../generateDevelopmentHTML.js' );
+import generateDevelopmentHTML from '../generateDevelopmentHTML.js';
 
 /**
  * Generates top-level SIM_en.html file based on the preloads in package.json.

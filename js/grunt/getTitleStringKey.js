@@ -14,8 +14,8 @@ import { readFileSync } from 'fs';
  *
  * @param {string} repo
  */
-module.exports = function getPhetLibs( repo ) {
+export default function getTitleStringKey( repo ) {
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
   return `${packageObject.phet.requirejsNamespace}/${repo}.title`;
-};
+}

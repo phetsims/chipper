@@ -6,11 +6,9 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-// const chai = require( 'chai' );
-const execute = require( '../../perennial-alias/js/common/execute.js' );
-const gruntCommand = require( '../../perennial-alias/js/common/gruntCommand.js' );
-const qunit = require( '../../perennial-alias/js/npm-dependencies/qunit.js' );
+import execute from '../../perennial-alias/js/common/execute.js';
+import gruntCommand from '../../perennial-alias/js/common/gruntCommand.js';
+import qunit from '../../perennial-alias/js/npm-dependencies/qunit.js';
 
 qunit.module( 'Generation', {
   afterEach: async () => {

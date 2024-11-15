@@ -6,18 +6,16 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import { readFileSync } from 'fs';
+import assert from 'assert';
+import fs, { readFileSync } from 'fs';
+import _ from 'lodash';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import ChipperConstants from '../common/ChipperConstants.js';
 import getLocalesFromRepository from './getLocalesFromRepository.js';
 import getPhetLibs from './getPhetLibs.js';
+import getStringMap from './getStringMap.js';
+import minify from './minify.js';
 import webpackBuild from './webpackBuild.js';
-
-const assert = require( 'assert' );
-const fs = require( 'fs' );
-const minify = require( './minify.js' );
-const _ = require( 'lodash' );
-const getStringMap = require( './getStringMap.js' );
-const ChipperConstants = require( '../common/ChipperConstants.js' );
 
 /**
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)

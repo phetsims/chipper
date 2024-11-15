@@ -9,6 +9,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import _ from 'lodash';
+
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 ( async () => {
 
@@ -17,7 +19,5 @@
   console.log( AudioWorklet );
 
   console.log( process );
-
-  const lodash = require( 'lodash' );
-  console.log( lodash );
+  console.log( _ );
 } )();

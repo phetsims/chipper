@@ -6,41 +6,39 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+import assert from 'assert';
 import fs, { readFileSync } from 'fs';
+import jimp from 'jimp';
 import _ from 'lodash';
-import * as ChipperConstants from '../common/ChipperConstants.js';
+import zlib from 'zlib';
+import phetTimingLog from '../../../perennial-alias/js/common/phetTimingLog.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import ChipperConstants from '../common/ChipperConstants.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import getLicenseEntry from '../common/getLicenseEntry.js';
+import loadFileAsDataURI from '../common/loadFileAsDataURI.js';
+import copyDirectory from './copyDirectory.js';
+import copySupplementalPhetioFiles from './copySupplementalPhetioFiles.js';
 import generateThumbnails from './generateThumbnails.js';
 import generateTwitterCard from './generateTwitterCard.js';
+import getA11yViewHTMLFromTemplate from './getA11yViewHTMLFromTemplate.js';
+import getAllThirdPartyEntries, { LicenseEntries } from './getAllThirdPartyEntries.js';
 import getDependencies from './getDependencies.js';
 import getInitializationScript from './getInitializationScript.js';
 import getLocalesFromRepository from './getLocalesFromRepository.js';
 import getPhetLibs from './getPhetLibs.js';
 import getPreloads from './getPreloads.js';
+import getPrunedLocaleData from './getPrunedLocaleData.js';
+import getStringMap from './getStringMap.js';
+import getTitleStringKey from './getTitleStringKey.js';
+import minify from './minify.js';
+import packageRunnable from './packageRunnable.js';
 import packageXHTML from './packageXHTML.js';
+import reportUnusedMedia from './reportUnusedMedia.js';
 import reportUnusedStrings from './reportUnusedStrings.js';
 import webpackBuild from './webpackBuild.js';
 
-const assert = require( 'assert' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-const getLicenseEntry = require( '../common/getLicenseEntry.js' );
-const copyDirectory = require( './copyDirectory.js' );
-const copySupplementalPhetioFiles = require( './copySupplementalPhetioFiles.js' );
-const getA11yViewHTMLFromTemplate = require( './getA11yViewHTMLFromTemplate.js' );
-const getAllThirdPartyEntries = require( './getAllThirdPartyEntries.js' );
-const getPrunedLocaleData = require( './getPrunedLocaleData.js' );
-const getStringMap = require( './getStringMap.js' );
-const getTitleStringKey = require( './getTitleStringKey.js' );
-const grunt = require( 'grunt' );
-const jimp = require( 'jimp' );
-const loadFileAsDataURI = require( '../common/loadFileAsDataURI.js' );
-const minify = require( './minify.js' );
 const nodeHtmlEncoder = require( 'node-html-encoder' );
-const packageRunnable = require( './packageRunnable.js' );
-
-const reportUnusedMedia = require( './reportUnusedMedia.js' );
-
-const zlib = require( 'zlib' );
-const phetTimingLog = require( '../../../perennial-alias/js/common/phetTimingLog.js' );
 
 const recordTime = async <T>( name: string, asyncCallback: () => Promise<T>, timeCallback: ( time: number, result: T ) => void ): Promise<T> => {
   const beforeTime = Date.now();
@@ -116,7 +114,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   reportUnusedMedia( repo, usedModules );
 
   // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1465
-  const licenseEntries: Record<string, Record<string, unknown>> = {};
+  const licenseEntries: LicenseEntries = {};
   ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
     licenseEntries[ mediaType ] = {};
   } );
@@ -130,6 +128,8 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
         const index = module.lastIndexOf( '_' );
         const path = `${module.slice( 0, index )}.${module.slice( index + 1, -3 )}`;
 
+        // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1465
+        // @ts-expect-error https://github.com/phetsims/chipper/issues/1465
         licenseEntries[ mediaType ][ module ] = getLicenseEntry( `../${path}` );
       }
     } );
@@ -373,6 +373,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 
     // TODO: maybe we need to commit a change to DefinitelyTyped to support debug logging https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/grunt/index.d.ts#L725, https://github.com/phetsims/chipper/issues/1465
+    // @ts-expect-error debug is unknown in the type
     grunt.log.debug( 'Constructing HTML for iframe testing from template' );
     let iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( `${englishTitle} iframe test` ) );

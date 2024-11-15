@@ -6,14 +6,14 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
 // modules
-const assert = require( 'assert' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-const getTitleStringKey = require( './getTitleStringKey.js' );
-const grunt = require( 'grunt' );
+import assert from 'assert';
+import fs from 'fs';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import getTitleStringKey from './getTitleStringKey.js';
+
 const pako = require( 'pako' );
-const fs = require( 'fs' );
 const nodeHtmlEncoder = require( 'node-html-encoder' );
 
 /**
@@ -23,7 +23,7 @@ const nodeHtmlEncoder = require( 'node-html-encoder' );
  * @param {Object} config
  * @returns {string} - The HTML for the file.
  */
-module.exports = function( config ) {
+export default function( config ) {
 
   const encoder = new nodeHtmlEncoder.Encoder( 'entity' );
 
@@ -67,9 +67,9 @@ module.exports = function( config ) {
   let scriptSection;
   if ( compressScripts ) {
     scriptSection = `<script>\n${licenseScript}\n</script>` +
-      `<script>${fs.readFileSync( '../sherpa/lib/pako_inflate-2.0.3.min.js', 'utf-8' )}</script>\n` +
-      '<script>let _R=q=>{var s=document.createElement("script");s.type=\'text/javascript\';s.async=false;var c=document.createTextNode(q);s.appendChild(c);document.body.appendChild(s);};let _D=s=>{const ar=new Uint8Array(s.length);for (let i=0;i<s.length;i++){ar[i]=s.charCodeAt(i);}return ar;};let _F=s=>pako.inflate(_D(atob(s)),{to:\'string\'});let _C=string=>_R(_F(string));' +
-      scripts.map( script => `${toRunString( script )}` ).join( '\n' ) + '</script>';
+                    `<script>${fs.readFileSync( '../sherpa/lib/pako_inflate-2.0.3.min.js', 'utf-8' )}</script>\n` +
+                    '<script>let _R=q=>{var s=document.createElement("script");s.type=\'text/javascript\';s.async=false;var c=document.createTextNode(q);s.appendChild(c);document.body.appendChild(s);};let _D=s=>{const ar=new Uint8Array(s.length);for (let i=0;i<s.length;i++){ar[i]=s.charCodeAt(i);}return ar;};let _F=s=>pako.inflate(_D(atob(s)),{to:\'string\'});let _C=string=>_R(_F(string));' +
+                    scripts.map( script => `${toRunString( script )}` ).join( '\n' ) + '</script>';
   }
   else {
     scriptSection = [ licenseScript, ...scripts ].map( script => `<script type="text/javascript">${script}</script>` ).join( '\n' );
@@ -88,4 +88,4 @@ module.exports = function( config ) {
     OG_URL: `${latestDir}${repo}_${locale}.html`,
     OG_IMAGE: `${latestDir}${repo}-600.png`
   } );
-};
+}

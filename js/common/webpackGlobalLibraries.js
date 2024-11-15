@@ -17,4 +17,4 @@ const webpackGlobalLibraries = {
   himalaya: 'sherpa/lib/himalaya-1.1.0.js'
 };
 
-module.exports = webpackGlobalLibraries;
+export default webpackGlobalLibraries;

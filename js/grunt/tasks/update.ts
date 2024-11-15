@@ -12,23 +12,20 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import * as fs from 'fs';
-import * as grunt from 'grunt';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import generateREADME from '../generateREADME.js';
+import fs from 'fs';
 import { readFileSync } from 'fs';
-
-const generateDevelopmentHTML = require( '../generateDevelopmentHTML.js' );
-const generateA11yViewHTML = require( '../generateA11yViewHTML.js' );
-const generateTestHTML = require( '../generateTestHTML.js' );
-
-const writeFileAndGitAdd = require( '../../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
+import _ from 'lodash';
+import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
+import generateA11yViewHTML from '../generateA11yViewHTML.js';
+import generateDevelopmentHTML from '../generateDevelopmentHTML.js';
+import generateREADME from '../generateREADME.js';
+import generateTestHTML from '../generateTestHTML.js';
 
 const repo = getRepo();
 
 const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
-
-const _ = require( 'lodash' );
 
 // support repos that don't have a phet object
 if ( !packageObject.phet ) {

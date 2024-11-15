@@ -7,15 +7,13 @@
  * @author Chris Malley (PixelZoom, Inc.)
  */
 
-
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-import * as grunt from 'grunt';
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-import getPhetLibs from './getPhetLibs.js';
 import { readFileSync } from 'fs';
-
-const getTitleStringKey = require( './getTitleStringKey.js' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
+import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import getPhetLibs from './getPhetLibs.js';
+import getTitleStringKey from './getTitleStringKey.js';
 
 /**
  * @param repo - name of the repository
@@ -26,7 +24,7 @@ export default async function( repo: string, published: boolean ): Promise<void>
   // Read the title from the English strings file.
   const simTitleStringKey = getTitleStringKey( repo );
   const strings = JSON.parse( readFileSync( `../${repo}/${repo}-strings_en.json`, 'utf8' ) );
-  const titleKey = simTitleStringKey.split( '/' ).pop(); // eg. 'EXAMPLE_SIM/example-sim.title' -> 'example-sim.title'
+  const titleKey = simTitleStringKey.split( '/' ).pop()!; // eg. 'EXAMPLE_SIM/example-sim.title' -> 'example-sim.title'
   const title = strings[ titleKey ].value;
   const phetLibs = getPhetLibs( repo, 'phet' );
 

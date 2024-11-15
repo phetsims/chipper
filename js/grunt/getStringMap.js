@@ -7,15 +7,14 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-
-const _ = require( 'lodash' );
-const assert = require( 'assert' );
-const ChipperConstants = require( '../common/ChipperConstants.js' );
-const pascalCase = require( '../common/pascalCase.js' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-const fs = require( 'fs' );
-const grunt = require( 'grunt' );
-const path = require( 'path' );
+import assert from 'assert';
+import fs from 'fs';
+import _ from 'lodash';
+import path from 'path';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import ChipperConstants from '../common/ChipperConstants.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import pascalCase from '../common/pascalCase.js';
 
 const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
@@ -63,6 +62,7 @@ const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
         fileContents = JSON.parse( fs.readFileSync( stringsFilename, 'utf-8' ) );
       }
       catch( error ) {
+        // @ts-expect-error debug is unknown in the type
         grunt.log.debug( `missing string file: ${stringsFilename}` );
         fileContents = {};
       }
@@ -92,9 +92,9 @@ const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
  * @param {Array.<string>} phetLibs - Used to check for bad string dependencies
  * @param {Array.<string>} usedModules - relative file path of the module (filename) from the repos root
  *
- * @returns {Object} - map[locale][stringKey] => {string}
+ * @returns {{ stringMap: any, stringMetadata:any}} - map[locale][stringKey] => {string}
  */
-module.exports = function getStringMap( mainRepo, locales, phetLibs, usedModules ) {
+export default function getStringMap( mainRepo, locales, phetLibs, usedModules ) {
 
   assert( locales.indexOf( ChipperConstants.FALLBACK_LOCALE ) !== -1, 'fallback locale is required' );
 
@@ -233,4 +233,4 @@ module.exports = function getStringMap( mainRepo, locales, phetLibs, usedModules
   } );
 
   return { stringMap: stringMap, stringMetadata: stringMetadata };
-};
+}

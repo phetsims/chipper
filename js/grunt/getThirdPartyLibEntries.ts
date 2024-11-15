@@ -10,13 +10,11 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import assert from 'assert';
 import { readFileSync } from 'fs';
+import _ from 'lodash';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import getLicenseKeys from './getLicenseKeys.js';
-
-// modules
-const _ = require( 'lodash' );
-const assert = require( 'assert' );
-const grunt = require( 'grunt' );
 
 const THIRD_PARTY_LICENSES_FILENAME = '../sherpa/lib/license.json'; // contains third-party license info
 const LICENSES_DIRECTORY = '../sherpa/licenses/'; // contains third-party licenses themselves.
@@ -41,6 +39,7 @@ export default function( repo: string, brand: string ): Record<string, string> {
   // Sort keys and remove duplicates
   licenseKeys = _.uniq( _.sortBy( licenseKeys, ( key: string ) => key.toUpperCase() ) );
 
+  // @ts-expect-error debug is unknown in the type
   grunt.log.debug( `licenseKeys = ${licenseKeys.toString()}` );
 
   // Combine all licenses into 1 object literal
@@ -57,7 +56,7 @@ export default function( repo: string, brand: string ): Record<string, string> {
     assert( license.notes, `${THIRD_PARTY_LICENSES_FILENAME}: no notes field for key = ${key}` );
 
     // read the license file
-    const licenseText = grunt.file.read( `${LICENSES_DIRECTORY + key}.txt`, 'utf-8' );
+    const licenseText = grunt.file.read( `${LICENSES_DIRECTORY + key}.txt` );
     license.licenseText = licenseText.split( /\r?\n/ );
 
     libEntries[ key ] = license;

@@ -1,11 +1,11 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
 import assert from 'assert';
-import * as grunt from 'grunt';
-import * as _ from 'lodash';
+import { readFileSync } from 'fs';
+import _ from 'lodash';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import getPhetLibs from './getPhetLibs.js';
-import { readFileSync } from 'fs';
 
 /**
  * Gets preload, the set of scripts to be preloaded in the .html file.

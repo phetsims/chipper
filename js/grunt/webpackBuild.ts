@@ -6,15 +6,15 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import * as fs from 'fs';
-import * as _ from 'lodash';
-import * as path from 'path';
+import fs from 'fs';
+import _ from 'lodash';
+import { ConcatOperation, ModifySourcePlugin } from 'modify-source-webpack-plugin';
+import path from 'path';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-import * as ChipperConstants from '../common/ChipperConstants.js';
+import ChipperConstants from '../common/ChipperConstants.js';
+import webpackGlobalLibraries from '../common/webpackGlobalLibraries.js';
 
-const webpackGlobalLibraries = require( '../common/webpackGlobalLibraries.js' );
 const webpack = require( 'webpack' );
-const { ModifySourcePlugin, ConcatOperation } = require( 'modify-source-webpack-plugin' );
 
 const activeRepos = fs.readFileSync( path.resolve( __dirname, '../../../perennial-alias/data/active-repos' ), 'utf-8' ).trim().split( /\r?\n/ ).map( s => s.trim() );
 const reposByNamespace: Record<string, string> = {};
@@ -36,7 +36,7 @@ const getModuleRules = function getModuleRules() {
     return {
 
       // path.join to normalize on the right path separator, perhaps there is another way?!
-      test: ( fileName: string ) => fileName.includes( path.join( webpackGlobalLibraries[ globalKey ] ) ),
+      test: ( fileName: string ) => fileName.includes( path.join( webpackGlobalLibraries[ globalKey as keyof typeof webpackGlobalLibraries ] ) ),
       loader: '../chipper/node_modules/expose-loader',
       options: {
         exposes: globalKey

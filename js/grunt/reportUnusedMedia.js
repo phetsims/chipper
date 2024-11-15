@@ -16,14 +16,14 @@
  */
 
 // modules
-const ChipperConstants = require( '../../../chipper/js/common/ChipperConstants.js' );
-const grunt = require( 'grunt' );
+import ChipperConstants from '../../../chipper/js/common/ChipperConstants.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 
 /**
  * @param {string} repo - Name of the repo
  * @param {Array.<string>} usedModules - Used modules within the repo
  */
-module.exports = ( repo, usedModules ) => {
+export default ( repo, usedModules ) => {
 
   // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
   const normalizedUsedModules = usedModules.map( module => module.split( '\\' ).join( '/' ) );

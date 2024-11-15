@@ -7,12 +7,11 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const assert = require( 'assert' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-const execute = require( '../../../perennial-alias/js/common/execute.js' );
-const grunt = require( 'grunt' );
-
+import assert from 'assert';
 import { readFileSync } from 'fs';
+import execute from '../../../perennial-alias/js/common/execute.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import getPhetLibs from './getPhetLibs.js';
 
 // Our definition of an allowed simName is defined in the buildServer: https://github.com/phetsims/perennial/blob/78025b7ae6064e9ab5260cea5e532f3bf24c3ec8/js/build-server/taskWorker.js#L99-L98
@@ -36,6 +35,7 @@ export default async function getDependencies( repo: string ): Promise<object> {
   // We need to check dependencies for the main brand, so we can know what is guaranteed to be public
   const mainDependencies = getPhetLibs( repo, 'phet' ).filter( dependency => dependency !== 'babel' );
 
+  // @ts-expect-error debug is unknown in the type
   grunt.log.debug( `Scanning dependencies from:\n${dependencies.toString()}` );
 
   const dependenciesInfo: Record<string, unknown> = {
@@ -62,7 +62,9 @@ export default async function getDependencies( repo: string ): Promise<object> {
     let branch = null;
 
     try {
+      // @ts-expect-error https://github.com/phetsims/perennial/issues/403
       sha = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${dependency}` ) ).trim();
+      // @ts-expect-error https://github.com/phetsims/perennial/issues/403
       branch = ( await execute( 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], `../${dependency}` ) ).trim();
     }
     catch( e ) {
@@ -70,6 +72,7 @@ export default async function getDependencies( repo: string ): Promise<object> {
       console.log( `Did not find git information for ${dependency}` );
     }
 
+    // @ts-expect-error debug is unknown in the type
     grunt.log.debug( `${ChipperStringUtils.padString( dependency, 20 ) + branch} ${sha}` );
     dependenciesInfo[ dependency ] = { sha: sha, branch: branch };
   }

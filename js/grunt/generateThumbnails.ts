@@ -9,8 +9,8 @@
  * @author Aaron Davis
  */
 
-import * as grunt from 'grunt';
-import Jimp from 'jimp';
+import jimp from 'jimp';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 /**
@@ -31,8 +31,8 @@ export default function( repo: string, width: number, height: number, quality: n
       return;
     }
 
-    new Jimp( fullResImageName, function( this: IntentionalAny ) { // eslint-disable-line no-new
-      if ( mime === Jimp.MIME_JPEG ) {
+    new jimp( fullResImageName, function( this: IntentionalAny ) { // eslint-disable-line no-new
+      if ( mime === jimp.MIME_JPEG ) {
         this.quality( quality );
       }
       this.resize( width, height ).getBuffer( mime, ( error: string, buffer: Buffer ) => {

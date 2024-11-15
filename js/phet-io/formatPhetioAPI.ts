@@ -10,9 +10,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-const assert = require( 'assert' );
+import assert from 'assert';
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
 
 /**

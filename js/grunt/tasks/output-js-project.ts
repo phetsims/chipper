@@ -1,9 +1,9 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
+import _ from 'lodash';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import transpile, { getTranspileCLIOptions } from '../../common/transpile.js';
 import getPhetLibs from '../getPhetLibs.js';
-import _ from 'lodash';
 
 /**
  * Outputs JS for the specified repo and its dependencies

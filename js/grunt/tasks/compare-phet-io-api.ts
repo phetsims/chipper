@@ -13,16 +13,16 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-import * as grunt from 'grunt';
+
+import fs from 'fs';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import getSimList from '../../common/getSimList.js';
 import transpile from '../../common/transpile.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
 import getPhetLibs from '../getPhetLibs.js';
-
-const fs = require( 'fs' );
 
 const repo = getRepo();
 const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();

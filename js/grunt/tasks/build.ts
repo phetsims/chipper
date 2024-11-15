@@ -25,22 +25,20 @@
  */
 
 import assert from 'assert';
-import * as grunt from 'grunt';
+import fs, { readFileSync } from 'fs';
+import path from 'path';
+import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
 import check from '../../../../perennial-alias/js/grunt/check.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import transpile from '../../common/transpile.js';
 import buildRunnable from '../buildRunnable.js';
 import buildStandalone from '../buildStandalone.js';
 import getPhetLibs from '../getPhetLibs.js';
-import { readFileSync } from 'fs';
-
-const minify = require( '../minify.js' );
-const path = require( 'path' );
-const fs = require( 'fs' );
-const phetTimingLog = require( '../../../../perennial-alias/js/common/phetTimingLog.js' );
+import minify from '../minify.js';
 
 const repo = getRepo();
 

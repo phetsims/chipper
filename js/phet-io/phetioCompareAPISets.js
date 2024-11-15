@@ -4,11 +4,12 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-const fs = require( 'fs' );
-const phetioCompareAPIs = require( './phetioCompareAPIs.js' );
-const _ = require( 'lodash' );
+import fs from 'fs';
+import phetioCompareAPIs from './phetioCompareAPIs.js';
+import _ from 'lodash';
+import assert from 'assert';
+
 const jsondiffpatch = require( '../../../sherpa/lib/jsondiffpatch-v0.3.11.umd' ).create( {} );
-const assert = require( 'assert' );
 
 /**
  * Compare two sets of APIs using phetioCompareAPIs.
@@ -18,7 +19,7 @@ const assert = require( 'assert' );
  * @param {Object} [options]
  * @returns {Promise.<boolean>} ok
  */
-module.exports = async ( repos, proposedAPIs, options ) => {
+export default async ( repos, proposedAPIs, options ) => {
   let ok = true;
   options = _.assignIn( {
     delta: false,

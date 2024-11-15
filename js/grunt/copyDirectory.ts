@@ -1,25 +1,22 @@
 // Copyright 2016-2024, University of Colorado Boulder
 
-import * as grunt from 'grunt';
+import assert from 'assert';
+import _ from 'lodash';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import minify from './minify.js';
 
 /**
  * Copy a directory and all of its contents recursively
  *
  * @author Sam Reid (PhET Interactive Simulations)
- */
-
-const _ = require( 'lodash' );
-const assert = require( 'assert' );
-const minify = require( './minify.js' );
-
-/**
+ *
  * @param src - the source directory
  * @param dst - the destination directory
  * @param [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
  * @param [options]
  */
-module.exports = function( src: string, dst: string, filter?: ( filename: string, contents: string ) => string, options?: IntentionalAny ) {
+export default function( src: string, dst: string, filter?: ( filename: string, contents: string ) => string | null, options?: IntentionalAny ): void {
 
   options = _.assignIn( {
     failOnExistingFiles: false,
@@ -72,4 +69,4 @@ module.exports = function( src: string, dst: string, filter?: ( filename: string
       grunt.file.copy( abspath, dstPath );
     }
   } );
-};
+}

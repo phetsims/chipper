@@ -19,13 +19,11 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-
-const ChipperConstants = require( '../common/ChipperConstants.js' );
-const getLicenseEntry = require( '../common/getLicenseEntry.js' );
-import * as grunt from 'grunt';
+import path from 'path';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import ChipperConstants from '../common/ChipperConstants.js';
+import getLicenseEntry from '../common/getLicenseEntry.js';
 import getPhetLibs from '../grunt/getPhetLibs.js';
-
-const path = require( 'path' );
 
 export default async ( repo: string ): Promise<boolean> => {
 
@@ -81,7 +79,8 @@ export default async ( repo: string ): Promise<boolean> => {
               grunt.log.error( `not-annotated: ${abspath}` );
               success = false;
             }
-            // Report if it is a problem
+              // Report if it is a problem
+            // @ts-expect-error
             else if ( result.isProblematic === true ) {
               grunt.log.error( `incompatible-license: ${abspath}` );
               success = false;

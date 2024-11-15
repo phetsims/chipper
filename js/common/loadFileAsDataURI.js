@@ -5,8 +5,7 @@
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-
-const fs = require( 'fs' );
+import fs from 'fs';
 
 /**
  * @param {string} filename
@@ -39,4 +38,4 @@ function loadFileAsDataURI( filename ) {
   return base64;
 }
 
-module.exports = loadFileAsDataURI;
+export default loadFileAsDataURI;

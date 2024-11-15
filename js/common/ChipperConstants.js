@@ -32,4 +32,4 @@ const ChipperConstants = {
   BUILD_DIR: 'build'
 };
 
-module.exports = ChipperConstants;
+export default ChipperConstants;

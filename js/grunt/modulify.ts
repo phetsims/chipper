@@ -7,21 +7,20 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
-import { readFileSync } from 'fs';
+import assert from 'assert';
+import fs, { readFileSync } from 'fs';
+import _ from 'lodash';
+import os from 'os';
+import path from 'path';
+import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import loadFileAsDataURI from '../common/loadFileAsDataURI.js';
+import pascalCase from '../common/pascalCase.js';
+import toLessEscapedString from '../common/toLessEscapedString.js';
 import createMipmap from './createMipmap.js';
 import getCopyrightLine from './getCopyrightLine.js';
 
-const _ = require( 'lodash' );
-const fs = require( 'fs' );
-const path = require( 'path' );
-const grunt = require( 'grunt' );
-const loadFileAsDataURI = require( '../common/loadFileAsDataURI.js' );
-const pascalCase = require( '../common/pascalCase.js' );
-const os = require( 'os' );
-const toLessEscapedString = require( '../common/toLessEscapedString.js' );
-const assert = require( 'assert' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
 const svgo = require( 'svgo' );
 
 // disable lint in compiled files, because it increases the linting time
@@ -316,7 +315,7 @@ const modulifyFile = async ( abspath: string, rootdir: string, subdir: string, f
  * Creates the image module at js/${_.camelCase( repo )}Images.js for repos that need it.
  */
 const createImageModule = async ( repo: string, supportedRegionsAndCultures: string[] ): Promise<void> => {
-  const spec = JSON.parse( readFileSync( `../${repo}/${repo}-images.json`, 'utf8' ) );
+  const spec: Record<string, Record<string, string>> = JSON.parse( readFileSync( `../${repo}/${repo}-images.json`, 'utf8' ) );
   const namespace = _.camelCase( repo );
   const imageModuleName = `${pascalCase( repo )}Images`;
   const relativeImageModuleFile = `js/${imageModuleName}.ts`;

@@ -9,9 +9,9 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-// imports
-const fs = require( 'fs' );
-const path = require( 'path' );
+import assert from 'assert';
+import fs from 'fs';
+import path from 'path';
 
 /**
  * @param repo - repo to generate strings for
@@ -63,6 +63,7 @@ export default ( repo: string ): void => {
       // Extract the locale.
       const join = stringFile.split( '\\' ).join( '/' );
       const localeMatches = join.substring( join.lastIndexOf( '/' ) ).match( localeRegex );
+      assert( localeMatches );
       const locale = localeMatches[ 0 ];
 
       if ( !localeData[ locale ] ) {

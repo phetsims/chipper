@@ -4,9 +4,9 @@
  * Tests for ChipperStringUtils
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
+import ChipperStringUtils from './ChipperStringUtils.js';
+import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
 
-const ChipperStringUtils = require( './ChipperStringUtils.js' );
-const qunit = require( '../../../perennial-alias/js/npm-dependencies/qunit.js' );
 qunit.module( 'ChipperStringUtils' );
 
 qunit.test( 'forEachString', assert => {

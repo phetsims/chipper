@@ -7,11 +7,10 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const ChipperConstants = require( '../common/ChipperConstants.js' );
-
 import assert from 'assert';
 import { readFileSync } from 'fs';
 import _ from 'lodash';
+import ChipperConstants from '../common/ChipperConstants.js';
 
 /**
  * Returns a list of all dependent repositories.

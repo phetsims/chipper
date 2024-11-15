@@ -7,9 +7,8 @@
  * @author Matt Pennington
  */
 
-import * as grunt from 'grunt';
 import Jimp from 'jimp';
-// modules
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 /**

@@ -6,9 +6,8 @@
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-
-const assert = require( 'assert' );
-const _ = require( 'lodash' );
+import assert from 'assert';
+import _ from 'lodash';
 
 // What divides the repo prefix from the rest of the string key, like `FRICTION/friction.title`
 const NAMESPACE_PREFIX_DIVIDER = '/';
@@ -223,4 +222,4 @@ const ChipperStringUtils = {
  * Object with StringObjects throughout the object structure (as supported in English JSON string files).
  */
 
-module.exports = ChipperStringUtils;
+export default ChipperStringUtils;

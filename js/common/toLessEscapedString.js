@@ -30,4 +30,4 @@ const toLessEscapedString = string => {
   return `'${result}'`;
 };
 
-module.exports = toLessEscapedString;
+export default toLessEscapedString;

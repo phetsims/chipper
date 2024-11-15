@@ -17,8 +17,4 @@
 
   // eslint-disable-next-line no-undef
   console.log( process );
-
-  // eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-require-imports,no-undef
-  const lodash = require( 'lodash' );
-  console.log( lodash );
 } )();

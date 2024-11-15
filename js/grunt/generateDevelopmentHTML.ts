@@ -9,18 +9,17 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import * as _ from 'lodash';
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-import getPreloads from './getPreloads.js';
 import { readFileSync } from 'fs';
+import _ from 'lodash';
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
+import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import getPreloads from './getPreloads.js';
+import getStringRepos from './getStringRepos.js';
 
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-const getStringRepos = require( './getStringRepos.js' );
-const writeFileAndGitAdd = require( '../../../perennial-alias/js/common/writeFileAndGitAdd.js' );
-const grunt = require( 'grunt' );
-
-module.exports = async function( repo: string, options: IntentionalAny ): Promise<void> {
+export default async function( repo: string, options?: IntentionalAny ): Promise<void> {
 
   const {
     stylesheets = '',
@@ -86,4 +85,4 @@ module.exports = async function( repo: string, options: IntentionalAny ): Promis
 
   // Write to the repository's root directory.
   await writeFileAndGitAdd( repo, outputFile, fixEOL( html ) );
-};
+}

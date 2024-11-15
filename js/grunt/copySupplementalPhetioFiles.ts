@@ -8,28 +8,26 @@
  * @author Matt Pennington (PhET Interactive Simulations)
  */
 
-import * as fs from 'fs';
-import * as _ from 'lodash';
+import assert from 'assert';
+import fs from 'fs';
+import _ from 'lodash';
+import path from 'path';
+import execute from '../../../perennial-alias/js/common/execute.js';
 import check from '../../../perennial-alias/js/grunt/check.ts';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import copyDirectory from '../grunt/copyDirectory.js';
+import minify from '../grunt/minify.js';
 import formatPhetioAPI from '../phet-io/formatPhetioAPI.js';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import buildStandalone from './buildStandalone.ts';
 import getPhetLibs from './getPhetLibs.js';
 import webpackBuild from './webpackBuild.ts';
 
-const assert = require( 'assert' );
-const archiver = require( 'archiver' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-const copyDirectory = require( '../grunt/copyDirectory.js' );
-const execute = require( '../../../perennial-alias/js/common/execute.js' );
-const grunt = require( 'grunt' );
-
-const minify = require( '../grunt/minify.js' );
-const marked = require( 'marked' );
-
-const path = require( 'path' );
 const webpack = require( 'webpack' );
+const archiver = require( 'archiver' );
+const marked = require( 'marked' );
 
 // constants
 const DEDICATED_REPO_WRAPPER_PREFIX = 'phet-io-wrapper-';
@@ -99,7 +97,7 @@ const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.m
 
 const STUDIO_BUILT_FILENAME = 'studio.min.js';
 
-module.exports = async ( repo: string, version: string, simulationDisplayName: string, packageObject: IntentionalAny, generateMacroAPIFile = false, noTSC = false ) => {
+export default async ( repo: string, version: string, simulationDisplayName: string, packageObject: IntentionalAny, generateMacroAPIFile = false, noTSC = false ): Promise<void> => {
 
   const repoPhetLibs = getPhetLibs( repo, 'phet-io' );
   assert && assert( _.every( getPhetLibs( 'phet-io-wrappers' ), repo => repoPhetLibs.includes( repo ) ),
@@ -111,6 +109,7 @@ module.exports = async ( repo: string, version: string, simulationDisplayName: s
   // every brand. Developers without phet-io checked out still need to be able to build.
   assert && assert( fs.readFileSync( transpiledClientPath ).toString().includes( '/**' ), 'babel should not strip comments from transpiling' );
 
+  // @ts-expect-error https://github.com/phetsims/perennial/issues/403
   const simRepoSHA = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${repo}` ) ).trim();
 
   const buildDir = `../${repo}/build/phet-io/`;
@@ -397,6 +396,7 @@ module.exports = async ( repo: string, version: string, simulationDisplayName: s
  *                            Has arguments like "function(absPath, contents)"
  */
 const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
+  // @ts-expect-error debug is unknown in the type
   grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_PRELOADS );
   fs.mkdirSync( `${buildDir}lib`, { recursive: true } );
 
@@ -466,6 +466,7 @@ ${minifiedPhetioCode}\n${filteredMain}` );
  * Copy all the third party libraries from sherpa to the build directory under the 'contrib' folder.
  */
 const handleContrib = ( buildDir: string ) => {
+  // @ts-expect-error debug is unknown in the type
   grunt.log.debug( 'Creating phet-io contrib folder' );
 
   CONTRIB_FILES.forEach( filePath => {
@@ -536,6 +537,7 @@ const handleJSDOC = async ( buildDir: string ): Promise<void> => {
   await execute( 'node', getJSDocArgs( false ), process.cwd() );
 
   // Running with explanation -X appears to not output the files, so we have to run it twice.
+  // @ts-expect-error https://github.com/phetsims/perennial/issues/403
   const explanation = ( await execute( 'node', getJSDocArgs( true ), process.cwd() ) ).trim();
 
   // Copy the logo file
@@ -663,6 +665,7 @@ const generateAndWriteClientGuide = ( repoName: string, title: string, simulatio
  */
 const handleStudio = async ( repo: string, wrappersLocation: string, noTSC: boolean ): Promise<void> => {
 
+  // @ts-expect-error debug is unknown in the type
   grunt.log.debug( 'building studio' );
 
   if ( !noTSC ) {
@@ -690,6 +693,7 @@ const getCompiledMigrationProcessors = async ( repo: string, buildDir: string ):
     const migrationProcessorsFilename = `${repo}-migration-processors.js`;
     const entryPointFilename = `../chipper/dist/js/phet-io-sim-specific/repos/${repo}/js/${migrationProcessorsFilename}`;
     if ( !fs.existsSync( entryPointFilename ) ) {
+      // @ts-expect-error debug is unknown in the type
       grunt.log.debug( `No migration processors found at ${entryPointFilename}, no processors to be bundled with ${LIB_OUTPUT_FILE}.` );
       resolve( '' ); // blank string because there are no processors to add.
     }

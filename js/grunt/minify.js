@@ -6,10 +6,9 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
+import _ from 'lodash';
+import transpileForBuild from './transpileForBuild.js';
 
-// modules
-const _ = require( 'lodash' );
-const transpileForBuild = require( './transpileForBuild.js' );
 const terser = require( 'terser' );
 
 const MINIFY_DEFAULTS = {
@@ -100,4 +99,4 @@ minify.MINIFY_DEFAULTS = MINIFY_DEFAULTS;
  * @param {Object} [options]
  * @returns {string} - The minified code
  */
-module.exports = minify;
+export default minify;

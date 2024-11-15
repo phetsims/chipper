@@ -4,11 +4,10 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-
-const qunit = require( '../../../perennial-alias/js/npm-dependencies/qunit.js' );
-const assert = require( 'assert' );
-const phetioCompareAPIs = require( './phetioCompareAPIs.js' );
-const _ = require( 'lodash' );
+import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
+import assert from 'assert';
+import phetioCompareAPIs from './phetioCompareAPIs.js';
+import _ from 'lodash';
 
 qunit.module( 'phetioCompareAPIs' );
 

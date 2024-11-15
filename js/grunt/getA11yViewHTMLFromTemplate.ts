@@ -1,22 +1,18 @@
 // Copyright 2016-2024, University of Colorado Boulder
 
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import ChipperConstants from '../common/ChipperConstants.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import getTitleStringKey from './getTitleStringKey.js';
+
 /**
  * From the a11y view template file, fill in the templated values and return the html as a string.
  *
  * @author Michael Kauzmann (PhET Interactive Simulations)
- */
-
-const ChipperConstants = require( '../common/ChipperConstants.js' );
-const ChipperStringUtils = require( '../common/ChipperStringUtils.js' );
-import * as grunt from 'grunt';
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-
-const getTitleStringKey = require( './getTitleStringKey.js' );
-
-/**
  * @returns - the html string, filled in from the template.
  */
-module.exports = function( repo: string ): string {
+export default function( repo: string ): string {
 
   let html = grunt.file.read( '../chipper/templates/sim-a11y-view.html' ); // the template file
 
@@ -33,4 +29,4 @@ module.exports = function( repo: string ): string {
   html = html.replace( /^.*\/\/[\s]?TODO.*\r?\n/mg, '' );
 
   return fixEOL( html );
-};
+}

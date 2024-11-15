@@ -5,9 +5,10 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-import * as grunt from 'grunt';
+
 import Jimp from 'jimp';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import generateThumbnails from '../generateThumbnails.js';
 import generateTwitterCard from '../generateTwitterCard.js';
 
