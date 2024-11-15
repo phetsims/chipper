@@ -15,7 +15,6 @@ export default function( repo: string ): string[] {
 
   // confirm that the repository has a strings directory
   const stringsDirectory = `../babel/${repo}`;
-  assert( grunt.file.isDir( stringsDirectory ), `${stringsDirectory} is not a directory` );
 
   // Get names of string files.
   const stringFiles: string[] = grunt.file.expand( `${stringsDirectory}/${repo}-strings_*.json` );
