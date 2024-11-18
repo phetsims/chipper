@@ -11,7 +11,7 @@
  * Note that even though it is a preload, it uses a different global/namespacing pattern than phet-io-initialize-globals.js
  * in order to simplify usage in all these sites.
  *
- * TODO: AFTER_COMMIT Turn this into a typescript module used in sim and Node code, https://github.com/phetsims/phet-io/issues/1951
+ * TODO: AFTER_COMMIT Turn this into a typescript module used in sim and Node code, https://github.com/phetsims/chipper/issues/1526
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -44,7 +44,7 @@
   // Is not the reserved keys to store data/metadata on PhET-iO Elements.
   const isChildKey = key => key !== METADATA_KEY_NAME && key !== DATA_KEY_NAME;
 
-  // TODO: Remove this duplication once phetioCompareAPIs can import isInitialStateCompatible, https://github.com/phetsims/phet-io/issues/1951
+  // TODO: Remove this duplication once phetioCompareAPIs can import isInitialStateCompatible, https://github.com/phetsims/chipper/issues/1526
   // DUPLICATION ALERT!
   /* @formatter:off */
   function areCompatible( testValue, groundTruthValue ) { if ( Array.isArray( groundTruthValue ) ) { if ( !Array.isArray( testValue ) ) { return false; } if ( testValue.length !== groundTruthValue.length ) { return false; } for ( let i = 0; i < groundTruthValue.length; i++ ) { const newItem = groundTruthValue[ i ]; const oldItem = testValue[ i ]; if ( !areCompatible( oldItem, newItem ) ) { return false; } } return true; } if ( typeof groundTruthValue === 'object' && groundTruthValue !== null ) { if ( typeof testValue !== 'object' || testValue === null || Array.isArray( testValue ) ) { return false; } for ( const key in groundTruthValue ) { if ( groundTruthValue.hasOwnProperty( key ) ) { if ( !testValue.hasOwnProperty( key ) ) { return false; } if ( !areCompatible( testValue[ key ], groundTruthValue[ key ] ) ) { return false; } } } return true; } return testValue === groundTruthValue;}
