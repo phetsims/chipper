@@ -12,13 +12,10 @@ const babel = require( '@babel/core' ); // eslint-disable-line phet/require-stat
 
 /**
  * Transpile some code to be compatible with the browsers specified below
- * @public
- *
- * @param {string} jsInput
- * @param {boolean} [forIE=false] - whether the jsInput should be transpiled for Internet Explorer
- * @returns {string} - The transpiled code
+ * @param jsInput
+ * @param forIE=false - whether the jsInput should be transpiled for Internet Explorer
  */
-export default function transpileForBuild( jsInput, forIE = false ) {
+export default function transpileForBuild( jsInput: string, forIE = false ): string {
 
   // This list specifies the target browsers for Babel. Its format is described at https://browsersl.ist.
   // Note that this is related to System Requirements advertised on the PhET website, so should be modified with care.

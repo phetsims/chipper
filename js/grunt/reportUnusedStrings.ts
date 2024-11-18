@@ -13,7 +13,6 @@ import { readFileSync } from 'fs';
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
-
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 
 /**
@@ -21,7 +20,7 @@ import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
  * @param requirejsNamespace
  * @param usedStringMap - Maps full keys to string values, FOR USED STRINGS ONLY
  */
-export default function reportUnusedStrings( repo: string, requirejsNamespace: string, usedStringMap: Record<string, string> ): void {
+export default function reportUnusedStrings( repo: string, requirejsNamespace: string, usedStringMap: Record<string, unknown> ): void {
 
   /**
    * Builds a string map recursively from a string-file-like object.

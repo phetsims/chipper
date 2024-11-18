@@ -19,15 +19,20 @@
  */
 import fs from 'fs';
 
+export type LicenseEntry = {
+  text: string[];
+  projectURL: string;
+  license: string;
+  notes: string;
+};
+
 /**
  * Retrieves the license entry for a media file from license.json.
  *
- * @param {string} absolutePath - the path for the media file
- * @returns {Object|null} the entry from the license.json file, null if there is no entry
- *
- * @private
+ * @param absolutePath - the path for the media file
+ * @returns the entry from the license.json file, null if there is no entry
  */
-function getLicenseEntry( absolutePath ) {
+function getLicenseEntry( absolutePath: string ): LicenseEntry | null {
 
   const lastSlashIndex = absolutePath.lastIndexOf( '/' );
   const prefix = absolutePath.substring( 0, lastSlashIndex );

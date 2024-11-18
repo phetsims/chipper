@@ -1,16 +1,16 @@
 // Copyright 2019-2024, University of Colorado Boulder
 
+import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
 /**
  * Tests for ChipperStringUtils
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-import ChipperStringUtils from './ChipperStringUtils.js';
-import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
+import ChipperStringUtils, { StringFileMap } from './ChipperStringUtils.js';
 
 qunit.module( 'ChipperStringUtils' );
 
 qunit.test( 'forEachString', assert => {
-  const map1 = {
+  const map1: StringFileMap = {
     x: { value: 'x' },
     y: {
       value: 'y',

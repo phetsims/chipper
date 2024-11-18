@@ -22,6 +22,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import assert from 'assert';
 import path from 'path';
 import buildLocal from '../../../perennial-alias/js/common/buildLocal.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
@@ -49,7 +50,7 @@ const forceTasks = commandLineArguments.find( arg => arg.startsWith( '--forceTas
 ( async () => {
 
   // Identify the current repo
-  const repo = process.cwd().split( path.sep ).pop();
+  const repo = process.cwd().split( path.sep ).pop()!;
 
   if ( optOutRepos.includes( repo ) ) {
     console.log( `Skipping precommit hooks for the repo: ${repo}` );
@@ -69,7 +70,7 @@ const forceTasks = commandLineArguments.find( arg => arg.startsWith( '--forceTas
     }
     else {
       Object.keys( hookPreCommit ).forEach( key => {
-        if ( hookPreCommit[ key ] === false && tasksToRun.indexOf( key ) >= 0 ) {
+        if ( hookPreCommit[ key ] === false && tasksToRun.includes( key ) ) {
           outputToConsole && console.log( 'task opted out:', key );
           tasksToRun.splice( tasksToRun.indexOf( key ), 1 );
         }
@@ -103,6 +104,7 @@ const forceTasks = commandLineArguments.find( arg => arg.startsWith( '--forceTas
                 errors: 'resolve'
               }
             );
+            assert( typeof results !== 'string' );
             results.stdout && results.stdout.trim().length > 0 && console.log( results.stdout );
             results.stderr && results.stderr.trim().length > 0 && console.log( results.stderr );
 

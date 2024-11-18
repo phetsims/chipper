@@ -19,11 +19,6 @@
 
 /**
  * @typedef API
- * @property {boolean} phetioFullAPI
- * @property {Object} phetioElements - phetioElements for version >=1.0 this will be a sparse, tree like structure with
- *                    metadata in key: `_metadata`. For version<1 this will be a flat list with phetioIDs as keys,
- *                    and values as metadata.
- * @property {Object} phetioTypes
  */
 
 /* global window */

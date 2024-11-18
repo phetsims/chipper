@@ -1,5 +1,8 @@
 // Copyright 2023-2024, University of Colorado Boulder
 
+// eslint-disable-next-line phet/bad-typescript-text
+// @ts-nocheck
+
 /**
  * Handles encoding and decoding of strings to/from a compact format, to lower the file size and download size of
  * simulations.
@@ -30,6 +33,7 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 import _ from 'lodash';
+import { StringFileMap } from './ChipperStringUtils.js';
 import toLessEscapedString from './toLessEscapedString.js';
 
 const PUSH_TOKEN = '\u0001'; // push string on the stack
@@ -77,7 +81,7 @@ const CHAR_RTL = '\u202B';
 const CHAR_POP = '\u202C';
 
 // Converts a map[ locale ][ stringKey ] => string (with a compact encoding)
-const encodeStringMap = stringMap => {
+const encodeStringMap = ( stringMap: StringFileMap ): string => {
   const locales = Object.keys( stringMap ).filter( locale => !!stringMap[ locale ] ).sort();
 
   // Get all string keys
@@ -129,7 +133,7 @@ const encodeStringMap = stringMap => {
   // Pushes a token onto the stack (combining with the previous token if possible)
   const push = token => {
     stack.push( token );
-    const hasPop = output.length > 0 && output[ output.length - 1 ] === POP;
+    const hasPop = output.length > 0 && output.endsWith( POP );
 
     if ( hasPop ) {
       output = output.slice( 0, -1 );
@@ -269,7 +273,8 @@ const encodeStringMap = stringMap => {
 
       startString();
 
-      indices.forEach( i => {
+      // eslint-disable-next-line @typescript-eslint/no-loop-func
+      indices.forEach( ( i: number ) => {
         const locale = stringLocales[ i ];
         const string = stringValues[ i ];
 
@@ -303,7 +308,7 @@ const encodeStringMap = stringMap => {
 };
 
 // Converts a compact encoding to map[ locale ][ stringKey ]: string
-const decodeStringMap = encodedString => {
+const decodeStringMap = ( encodedString: string ): string => {
   const stringMap = {}; // map[ locale ][ stringKey ] => string
   const locales = [];
   const stack = []; // string[], stack.join( '' ) will be the current stringKey
@@ -467,11 +472,13 @@ const decodeStringMap = encodedString => {
 // q = string/result
 // y = encodedString
 /* eslint-disable */
+/* @formatter:off */
 const smallDecodeStringMapString = "y=>{let m={};let x=[];let s=[];let X=null;let S=null;let e=null;let t=new Set();let k=null;let f=String.fromCharCode;let A=f(1);let B=f(2);let C=f(3);let D=f(4);let E=f(5);let F=f(6);let G=f(7);let H=f(8);let I=f(9);let J=f(0xA);let K=f(0xB);let L=f(0xC);let M=f(0xD);let N=f(0xE);let O=f(0xF);let a=q=>{S=q;m[X][k]=q;if(X=='en'){e=q;}t.add(X);};let j=0;let b=y.split(/(?:)/u);let r=()=>{let q='';while(j<b.length){let d=b[j];let p=d.codePointAt(0);if(p>0x10){q+=d;j++;}else if(p==0x10){q+=b[j+1];j+=2;}else{break;}}return q;};while(j<b.length){let c=b[j++];if(c==A){s.push(r());}else if(c==B){s.push(r()+'/');}else if(c==C){s.push(r()+'.');}else if(c==D){s.pop();}else if(c==E){s.pop();s.push(r());}else if(c==F){s.pop();s.push(r()+'/');}else if(c==G){s.pop();s.push(r()+'.');}else if(c==H){X=r();}else if(c==I){t.clear();e=null;k=s.join('');}else if(c==J){for(let i=0;i<x.length;i++){let l=x[i];if(!t.has(l)){m[l][k]=e;}}}else if(c==K){a(r());}else if(c==L){a(`\u202a${r()}\u202c`);}else if(c==M){a(`\u202b${r()}\u202c`);}else if(c==N){a(S);}else if(c==O){let l=r();m[l]={};x.push(l);}}return m;}";
+/* @formatter:on */
 /* eslint-enable */
 
 // Given a stringMap (map[ locale ][ stringKey ] => string), returns a JS expression string that will decode to it.
-const encodeStringMapToJS = stringMap => `(${smallDecodeStringMapString})(${toLessEscapedString( encodeStringMap( stringMap ) )})`;
+const encodeStringMapToJS = ( stringMap: StringFileMap ): string => `(${smallDecodeStringMapString})(${toLessEscapedString( encodeStringMap( stringMap ) )})`;
 
 export default {
   encodeStringMap: encodeStringMap,

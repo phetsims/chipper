@@ -1,5 +1,8 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
+// eslint-disable-next-line phet/bad-typescript-text
+// @ts-nocheck
+
 /**
  * Uglifies the given JS code (with phet-relevant options)
  *
@@ -11,7 +14,21 @@ import transpileForBuild from './transpileForBuild.js';
 
 const terser = require( 'terser' );
 
-const MINIFY_DEFAULTS = {
+type MinifyOptions = {
+  minify: boolean;
+
+  // Only enabled if minify is true
+  babelTranspile: boolean;
+  uglify: boolean;
+
+  // Only enabled if uglify is true
+  mangle: boolean;
+  stripAssertions: boolean;
+  stripLogging: boolean;
+  beautify: boolean;
+};
+
+const MINIFY_DEFAULTS: MinifyOptions = {
   minify: true,
 
   // Only enabled if minify is true
@@ -25,7 +42,7 @@ const MINIFY_DEFAULTS = {
   beautify: false
 };
 
-const minify = function( js, options ) {
+const minify = function( js: string, options?: Partial<MinifyOptions> ): string {
   options = _.assignIn( {}, MINIFY_DEFAULTS, options );
 
   // Promote to top level variables
@@ -88,15 +105,9 @@ const minify = function( js, options ) {
   }
 };
 
-// @public (read-only) - export defaults
 minify.MINIFY_DEFAULTS = MINIFY_DEFAULTS;
 
 /**
  * Returns a minified version of the code (with optional mangling).
- * @public
- *
- * @param {string} js - The source code
- * @param {Object} [options]
- * @returns {string} - The minified code
  */
 export default minify;

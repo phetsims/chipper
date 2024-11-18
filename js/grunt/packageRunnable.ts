@@ -11,19 +11,26 @@ import assert from 'assert';
 import fs from 'fs';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import { StringMap } from './getStringMap.js';
 import getTitleStringKey from './getTitleStringKey.js';
 
 const pako = require( 'pako' );
 const nodeHtmlEncoder = require( 'node-html-encoder' );
 
+type PackageRunnableOptions = {
+  repo: string;
+  stringMap: StringMap;
+  licenseScript: string;
+  scripts: string[];
+  locale: string;
+  htmlHeader: string;
+  compressScripts?: boolean;
+};
+
 /**
  * From a given set of config (including the JS and other required things), it creates an HTML file for a runnable.
- * @public
- *
- * @param {Object} config
- * @returns {string} - The HTML for the file.
  */
-export default function packageRunnable( config ) {
+export default function packageRunnable( config: PackageRunnableOptions ): string {
 
   const encoder = new nodeHtmlEncoder.Encoder( 'entity' );
 
@@ -49,7 +56,7 @@ export default function packageRunnable( config ) {
   const latestDir = `https://phet.colorado.edu/sims/html/${repo}/latest/`;
 
   // Converts a Uint8Array to a base64-encoded string (the usual String.fromCharCode.apply trick doesn't work for large arrays)
-  const encodeBytes = uint8Array => {
+  const encodeBytes = ( uint8Array: Uint8Array ) => {
     let binary = '';
     const len = uint8Array.byteLength;
     for ( let i = 0; i < len; i++ ) {
@@ -59,10 +66,10 @@ export default function packageRunnable( config ) {
   };
 
   // Converts from a JS string to a base64-encoded string
-  const toEncodedString = string => encodeBytes( pako.deflate( string ) );
+  const toEncodedString = ( string: string ) => encodeBytes( pako.deflate( string ) );
 
   // Converts from a JS string to a compressed JS string that can be run
-  const toRunString = string => `_C('${toEncodedString( string )}')`;
+  const toRunString = ( string: string ) => `_C('${toEncodedString( string )}')`;
 
   let scriptSection;
   if ( compressScripts ) {

@@ -1,6 +1,7 @@
 // Copyright 2022-2024, University of Colorado Boulder
 const startTime = Date.now();
 
+import assert from 'assert';
 import child_process from 'child_process';
 import fs from 'fs';
 import execute from '../../../perennial-alias/js/common/execute.js';
@@ -39,7 +40,7 @@ const forceTasks = args.find( arg => arg.startsWith( '--forceTasks=' ) );
 
   if ( !all ) {
 
-    const execOnRepos = async ( repoSubset, command ) => {
+    const execOnRepos = async ( repoSubset: string[], command: string ) => {
 
       const promises = repoSubset.map( repo => {
         return new Promise( resolve => child_process.exec( command, { cwd: repo }, error => resolve( error ) ) );
@@ -79,6 +80,8 @@ const forceTasks = args.find( arg => arg.startsWith( '--forceTasks=' ) );
       // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
       errors: 'resolve'
     } );
+    assert( typeof result !== 'string' );
+
     if ( result.code === 0 ) {
 
       console.log( 'Success' );

@@ -6,10 +6,10 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-const toLessEscapedString = string => {
+const toLessEscapedString = ( string: string ): string => {
   let result = '';
 
-  string.split( /(?:)/u ).forEach( char => {
+  string.split( /(?:)/u ).forEach( ( char: string ) => {
     if ( char === '\r' ) {
       result += '\\r';
     }

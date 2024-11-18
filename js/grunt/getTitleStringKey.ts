@@ -10,11 +10,8 @@ import { readFileSync } from 'fs';
 
 /**
  * Returns the string key for the title of a runnable.
- * @public
- *
- * @param {string} repo
  */
-export default function getTitleStringKey( repo ) {
+export default function getTitleStringKey( repo:string ): string {
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
   return `${packageObject.phet.requirejsNamespace}/${repo}.title`;

@@ -1,5 +1,8 @@
 // Copyright 2015-2024, University of Colorado Boulder
 
+// eslint-disable-next-line phet/bad-typescript-text
+// @ts-nocheck
+
 /**
  * Returns a map such that map["locale"]["REPO/stringKey"] will be the string value (with fallbacks to English where needed).
  * Loads each string file only once, and only loads the repository/locale combinations necessary.
@@ -12,11 +15,29 @@ import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+// import { PhetioElementMetadata } from '../../../tandem/js/TandemConstants.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import pascalCase from '../common/pascalCase.js';
 
-const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+
+export type Locale = string;
+// TODO: Use this in all spots importing localeData.json https://github.com/phetsims/chipper/issues/1465
+export type LocaleData = Record<Locale, {
+  englishName: string;
+  localizedName: string;
+  direction: 'rtl' | 'ltr';
+  locale3?: string;
+  fallbackLocales?: Locale[];
+}>;
+
+// Metadata for a single string key from an english strings file
+type StringKeyMetadata = Record<string, boolean | string | number>;
+
+const localeData: LocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+
+// TODO: https://github.com/phetsims/chipper/issues/1465
+export type StringMap = Record<string, Record<string, string>>;
 
 /**
  * For a given locale, return an array of specific locales that we'll use as fallbacks, e.g.
@@ -24,10 +45,8 @@ const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf
  * 'es' => [ 'es', 'en' ]
  * 'en' => [ 'en' ]
  *
- * @param {string} locale
- * @returns {Array.<string>}
  */
-const localeFallbacks = locale => {
+const localeFallbacks = ( locale: Locale ): Locale[] => {
   return [
     ...( locale !== ChipperConstants.FALLBACK_LOCALE ? [ locale ] : [] ),
     ...( localeData[ locale ].fallbackLocales || [] ),
@@ -38,23 +57,20 @@ const localeFallbacks = locale => {
 /**
  * Load all the required string files into memory, so we don't load them multiple times (for each usage).
  *
- * @param {Array.<string>} reposWithUsedStrings - All of the repos that have 1+ used strings
- * @param {Array.<string>} locales - All supported locales for this build
- * @returns {Object} - maps {locale:string} => Another map with: {stringKey:string} => {stringValue:string}
+ * @param reposWithUsedStrings - All of the repos that have 1+ used strings
+ * @param locales - All supported locales for this build
+ * @returns - maps {locale:string} => Another map with: {stringKey:string} => {stringValue:string}
  */
-const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
-  const stringFilesContents = {}; // maps [repositoryName][locale] => contents of locale string file
+const getStringFilesContents = ( reposWithUsedStrings: string[], locales: Locale[] ): StringMap => {
+  const stringFilesContents: StringMap = {}; // maps [repositoryName][locale] => contents of locale string file
 
   reposWithUsedStrings.forEach( repo => {
-    stringFilesContents[ repo ] = {};
+    stringFilesContents[ repo ] = {} as Record<string, string>;
 
     /**
      * Adds a locale into our stringFilesContents map.
-     *
-     * @param {string} locale
-     * @param {boolean} isRTL
      */
-    const addLocale = ( locale, isRTL ) => {
+    const addLocale = ( locale: string, isRTL: boolean ) => {
       // Read optional string file
       const stringsFilename = path.normalize( `../${locale === ChipperConstants.FALLBACK_LOCALE ? '' : 'babel/'}${repo}/${repo}-strings_${locale}.json` );
       let fileContents;
@@ -87,16 +103,14 @@ const getStringFilesContents = ( reposWithUsedStrings, locales ) => {
 };
 
 /**
- * @param {string} mainRepo
- * @param {Array.<string>} locales
- * @param {Array.<string>} phetLibs - Used to check for bad string dependencies
- * @param {Array.<string>} usedModules - relative file path of the module (filename) from the repos root
- *
- * @returns {{ stringMap: any, stringMetadata:any}} - map[locale][stringKey] => {string}
+ * @param mainRepo
+ * @param locales
+ * @param phetLibs - Used to check for bad string dependencies
+ * @param usedModules - relative file path of the module (filename) from the repos root
  */
-export default function getStringMap( mainRepo, locales, phetLibs, usedModules ) {
+export default function getStringMap( mainRepo: string, locales: string[], phetLibs: string[], usedModules: string[] ): { stringMap: StringMap; stringMetadata: Record<string, StringKeyMetadata> } {
 
-  assert( locales.indexOf( ChipperConstants.FALLBACK_LOCALE ) !== -1, 'fallback locale is required' );
+  assert( locales.includes( ChipperConstants.FALLBACK_LOCALE ), 'fallback locale is required' );
 
   // Load the file contents of every single JS module that used any strings
   const usedFileContents = usedModules.map( usedModule => fs.readFileSync( `../${usedModule}`, 'utf-8' ) );

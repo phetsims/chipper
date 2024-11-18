@@ -20,10 +20,10 @@ import ChipperConstants from '../../../chipper/js/common/ChipperConstants.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 
 /**
- * @param {string} repo - Name of the repo
- * @param {Array.<string>} usedModules - Used modules within the repo
+ * @param usedModules - Used modules within the repo
+ * @param repo - Name of the repo
  */
-export default ( repo, usedModules ) => {
+export default ( repo: string, usedModules: string[] ): void => {
 
   // on Windows, paths are reported with a backslash, normalize to forward slashes so this works everywhere
   const normalizedUsedModules = usedModules.map( module => module.split( '\\' ).join( '/' ) );
@@ -35,7 +35,7 @@ export default ( repo, usedModules ) => {
     if ( grunt.file.isDir( subdirectory ) ) {
       grunt.file.recurse( subdirectory, ( abspath, rootdir, subdir, filename ) => {
 
-        if ( filename !== 'license.json' && filename !== 'README.md' && filename.indexOf( '.js' ) !== -1 ) {
+        if ( filename !== 'license.json' && filename !== 'README.md' && filename.includes( '.js' ) ) {
           const module = subdir ?
                          `${repo}/${mediaType}/${subdir}/${filename}` :
                          `${repo}/${mediaType}/${filename}`;

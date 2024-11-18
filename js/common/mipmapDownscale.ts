@@ -1,5 +1,12 @@
 // Copyright 2015-2024, University of Colorado Boulder
 
+
+type MipMap = {
+  data: Buffer;
+  width: number;
+  height: number;
+};
+
 /**
  * Takes in a mipmap object with data/width/height and returns another mipmap object with data/width/height that is
  * downscaled by a factor of 2. Needs to round the width/height up to include all of the image (if it's not a
@@ -10,13 +17,13 @@
  * Handles alpha blending of 4 pixels into 1, and does so with the proper gamma corrections so that we only add/blend
  * colors in the linear sRGB colorspace.
  *
- * @param {Object} mipmap - Mipmap object with { data: {Buffer}, width: {number}, height: {number} }
- * @param {function} createData - function( width, height ), creates an array-accessible data container, Buffer
+ * @param mipmap - Mipmap object with { data: {Buffer}, width: {number}, height: {number} }
+ * @param createData - function( width, height ), creates an array-accessible data container, Buffer
  *                                for Node.js, or presumably a typed array otherwise, with 4*width*height components
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-function mipmapDownscale( mipmap, createData ) {
+function mipmapDownscale( mipmap: MipMap, createData: ( width: number, height: number ) => Buffer ): { data: any; width: number; height: number } {
   // array index constants for the channels
   const R = 0;
   const G = 1;
@@ -31,12 +38,12 @@ function mipmapDownscale( mipmap, createData ) {
   const height = mipmap.height;
   const data = mipmap.data;
 
-  function inside( row, col ) {
+  function inside( row: number, col: number ): boolean {
     return row < height && col < width;
   }
 
   // grabbing pixel data for a row/col, applying corrections into the [0,1] range.
-  function pixel( row, col ) {
+  function pixel( row: number, col: number ): number[] {
     if ( !inside( row, col ) ) {
       return [ 0, 0, 0, 0 ];
     }
@@ -55,7 +62,7 @@ function mipmapDownscale( mipmap, createData ) {
   const smallHeight = Math.ceil( height / 2 );
   const smallData = createData( smallWidth, smallHeight );
 
-  function smallPixel( row, col ) {
+  function smallPixel( row: number, col: number ): number {
     return 4 * ( row * smallWidth + col );
   }
 

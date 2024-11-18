@@ -9,21 +9,22 @@
 import fs from 'fs';
 import _ from 'lodash';
 import ChipperConstants from '../common/ChipperConstants.js';
+import { Locale, LocaleData } from './getStringMap.js';
 
 /**
  * Returns a subset of the localeData that should be included in the built simulation.
  *
  * @param localesWithTranslations - Array of locales that have translations
  */
-export default localesWithTranslations => {
+export default ( localesWithTranslations: string[] ): object => {
 
   // Load localeData
-  const fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
+  const fullLocaleData: LocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
   // Include a (larger) subset of locales' localeData. It will need more locales than just the locales directly specified
   // in phet.chipper.strings (the stringMap). We also need locales that will fall back to ANY of those locales in phet.chipper.strings,
   // e.g. if we have an "es" translation, we will include the locale data for "es_PY" because it falls back to "es".
-  const includedDataLocales = _.uniq( [
+  const includedDataLocales: Locale[] = _.uniq( [
     // Always include the fallback (en)
     ChipperConstants.FALLBACK_LOCALE,
 
@@ -32,7 +33,7 @@ export default localesWithTranslations => {
 
     // Include locales that will fall back to locales with a translation
     ...Object.keys( fullLocaleData ).filter( locale => {
-      return fullLocaleData[ locale ].fallbackLocales && fullLocaleData[ locale ].fallbackLocales.some( fallbackLocale => {
+      return fullLocaleData[ locale ].fallbackLocales && fullLocaleData[ locale ].fallbackLocales.some( ( fallbackLocale: string ) => {
         return localesWithTranslations.includes( fallbackLocale );
       } );
     } )
@@ -65,7 +66,7 @@ export default localesWithTranslations => {
   // 2. If one of a locale's localeData[ locale ].fallbackLocales is translated, include that locale.
   // 3. If a locale is in an included localeData[ someOtherLocale ].fallbackLocales, include that locale.
   // 4. Always include the default locale "en".
-  const localeData = {};
+  const localeData: LocaleData = {};
   for ( const locale of _.sortBy( includedDataLocales ) ) {
     localeData[ locale ] = fullLocaleData[ locale ];
   }

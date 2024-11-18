@@ -13,7 +13,7 @@ import fs from 'fs';
 
 const readCacheLayerJSON = () => {
   try {
-    return JSON.parse( fs.readFileSync( '../chipper/dist/cache-layer.json' ) );
+    return JSON.parse( fs.readFileSync( '../chipper/dist/cache-layer.json', 'utf-8' ) );
   }
   catch( e ) {
     return {};
@@ -22,28 +22,28 @@ const readCacheLayerJSON = () => {
 
 const LATEST_CHANGE_TIMESTAMP_KEY = 'latestChangeTimestamp';
 
-const writeFileAsJSON = json => {
+const writeFileAsJSON = ( json: object ) => {
   fs.writeFileSync( '../chipper/dist/cache-layer.json', JSON.stringify( json, null, 2 ) );
 };
 
 export default {
 
   // When the watch process exits, invalidate the caches until the watch process resumes
-  clearLastChangedTimestamp() {
+  clearLastChangedTimestamp(): void {
     const json = readCacheLayerJSON();
     delete json[ LATEST_CHANGE_TIMESTAMP_KEY ];
     writeFileAsJSON( json );
   },
 
   // Invalidate caches when a relevant file changes
-  updateLastChangedTimestamp() {
+  updateLastChangedTimestamp(): void {
     const json = readCacheLayerJSON();
     json[ LATEST_CHANGE_TIMESTAMP_KEY ] = Date.now();
     writeFileAsJSON( json );
   },
 
   // When a process succeeds, save the timestamp
-  onSuccess( keyName ) {
+  onSuccess( keyName: string ): void {
     const json = readCacheLayerJSON();
     json.cache = json.cache || {};
     json.cache[ keyName ] = Date.now();
@@ -51,15 +51,11 @@ export default {
   },
 
   // Check whether we need to re-run a process
-  isCacheStale( keyName ) {
+  isCacheStale( keyName: string ): boolean {
     return !this.isCacheSafe( keyName );
   },
 
-  /**
-   * @param {string} keyName
-   * @returns {boolean} - true if a cache hit
-   */
-  isCacheSafe( keyName ) {
+  isCacheSafe( keyName: string ): boolean {
     const json = readCacheLayerJSON();
     const time = json.cache && json.cache[ keyName ];
     const lastChanged = json[ LATEST_CHANGE_TIMESTAMP_KEY ];

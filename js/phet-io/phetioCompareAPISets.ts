@@ -4,29 +4,36 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import fs from 'fs';
-import phetioCompareAPIs from './phetioCompareAPIs.js';
-import _ from 'lodash';
 import assert from 'assert';
+import fs from 'fs';
+import _ from 'lodash';
+import phetioCompareAPIs from './phetioCompareAPIs.js';
 
 const jsondiffpatch = require( '../../../sherpa/lib/jsondiffpatch-v0.3.11.umd' ).create( {} );
 
+type API = unknown;
+
+type PhetioCompareAPISetssOptions = {
+  delta: boolean;
+} & PhetioCompareAPIsOptions;
+
+// TODO: Use this in https://github.com/phetsims/chipper/issues/1526
+type PhetioCompareAPIsOptions = {
+  compareBreakingAPIChanges: boolean;
+  compareDesignedAPIChanges: boolean;
+};
+
 /**
  * Compare two sets of APIs using phetioCompareAPIs.
- *
- * @param {string[]} repos
- * @param {Object} proposedAPIs - map where key=repo, value=proposed API for that repo, from generatePhetioMacroAPI()
- * @param {Object} [options]
- * @returns {Promise.<boolean>} ok
  */
-export default async ( repos, proposedAPIs, options ) => {
+export default async ( repos: string[], proposedAPIs: Record<string, API>, options?: Partial<PhetioCompareAPISetssOptions> ): Promise<boolean> => {
   let ok = true;
   options = _.assignIn( {
     delta: false,
     compareBreakingAPIChanges: true
   }, options );
 
-  repos.forEach( repo => {
+  repos.forEach( ( repo: string ) => {
 
     const packageObject = JSON.parse( fs.readFileSync( `../${repo}/package.json`, 'utf8' ) );
     const phetioSection = packageObject.phet[ 'phet-io' ] || {};
