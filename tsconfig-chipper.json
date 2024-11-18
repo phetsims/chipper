@@ -8,13 +8,15 @@
     "js/grunt/tasks/util/**/*",
     "js/test/puppeteerQUnit.js",
     "js/grunt/check.ts",
-
     "js/eslint/lint.ts",
     "js/eslint/divideIntoBatches.ts",
     "js/eslint/getLintCLIOptions.ts",
-
     "js/grunt/tasks/lint.ts",
     // TODO: should we split buildjson into a subsection that can be used by this one too (just phet-core?)   // TODO: split buildjson into a subsection that can be used by this one too (just phet-core?)
     "../phet-core/js/types/**/*"
+
+    // TODO: TandemConstants needs namespace, https://github.com/phetsims/chipper/issues/1526
+    // "../phet-core/js/**/*",
+    //"../tandem/js/TandemConstants.ts"
   ]
 }
