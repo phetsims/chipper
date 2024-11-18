@@ -2,6 +2,7 @@
   "extends": "../perennial-alias/tsconfig/tsconfig-node.json",
   "include": [
     "js/common/**/*",
+    "js/data/**/*",
     "js/grunt/**/*",
     "js/phet-io/**/*",
     "js/scripts/**/*",
