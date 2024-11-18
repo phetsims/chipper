@@ -22,6 +22,7 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import getSimList from '../../common/getSimList.js';
 import transpile from '../../common/transpile.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
+import phetioCompareAPISets from '../../phet-io/phetioCompareAPISets';
 import getPhetLibs from '../getPhetLibs.js';
 
 const repo = getRepo();
@@ -59,7 +60,7 @@ let proposedAPIs: Record<string, object | null> | null = null;
   if ( getOption( 'compareBreakingAPIChanges' ) ) {
     options.compareBreakingAPIChanges = getOption( 'compareBreakingAPIChanges' );
   }
-  const ok = await require( '../../phet-io/phetioCompareAPISets' )( sims, proposedAPIs, options );
+  const ok = await phetioCompareAPISets( sims, proposedAPIs, options );
   !ok && grunt.fail.fatal( 'PhET-iO API comparison failed' );
 
 } )();
