@@ -12,7 +12,6 @@ import gruntCommand from '../../perennial-alias/js/common/gruntCommand.js';
 import grunt from '../../perennial-alias/js/npm-dependencies/grunt.js';
 import qunit from '../../perennial-alias/js/npm-dependencies/qunit.js';
 
-// TODO: use bumper instead, https://github.com/phetsims/perennial/issues/410
 qunit.module( 'Chains building' );
 
 function assertFileExistence( assert, filename ) {
