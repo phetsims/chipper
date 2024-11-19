@@ -1,7 +1,7 @@
 // Copyright 2022-2024, University of Colorado Boulder
 
 /**
- * Runs tasks for pre-commit, including lint and qunit testing.  Avoids the overhead of grunt and Gruntfile.js for speed.
+ * Runs tasks for pre-commit, including lint and qunit testing.  Avoids the overhead of grunt and Gruntfile.cjs for speed.
  *
  * Should only be run when developing in main, because when dependency shas are checked out for one sim,
  * they will likely be inconsistent for other repos which would cause failures for processes like type checking.
