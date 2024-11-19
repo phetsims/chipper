@@ -19,8 +19,9 @@ const brands = getBrands( repo );
 
 /**
  * Executes the linting process immediately. Additionally returned in case the client wants to await the task.
+ * We wish this was "export default" but cannot get type information to work for the dynamic import(). See https://github.com/phetsims/perennial/issues/375#issuecomment-2477665963
  */
-export const lintAll = ( async () => {
+export const lintAllPromise = ( async () => {
 
   const lintSuccess = await lint( getPhetLibs( repo, brands ), getLintCLIOptions() );
 
