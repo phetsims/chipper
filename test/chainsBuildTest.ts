@@ -6,7 +6,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-// TODO: Convert chainsBuildTest.js to TypeScript and get rid of *.ts in the import, see https://github.com/phetsims/perennial/issues/410
 import execute from '../../perennial-alias/js/common/execute.ts';
 import gruntCommand from '../../perennial-alias/js/common/gruntCommand.js';
 import grunt from '../../perennial-alias/js/npm-dependencies/grunt.js';
@@ -14,11 +13,17 @@ import qunit from '../../perennial-alias/js/npm-dependencies/qunit.js';
 
 qunit.module( 'Chains building' );
 
-function assertFileExistence( assert, filename ) {
+function assertFileExistence( assert: Assert, filename: string ): void {
   assert.ok( grunt.file.exists( filename ), filename );
 }
 
-function assertChainsExistence( assert, brand, options ) {
+type AssertChainsExistenceOptions = {
+  allHTML: boolean;
+  debugHTML: boolean;
+  locales: string[];
+};
+
+function assertChainsExistence( assert: Assert, brand: string, options: Partial<AssertChainsExistenceOptions> ): void {
   const {
     allHTML = false,
     debugHTML = false,

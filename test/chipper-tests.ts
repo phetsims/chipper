@@ -14,5 +14,5 @@
  */
 
 
-require( '../js/common/ChipperStringUtilTests' );
-require( '../js/phet-io/phetioCompareAPIsTests' );
+import '../js/common/ChipperStringUtilTests.js';
+import '../js/phet-io/phetioCompareAPIsTests.js';

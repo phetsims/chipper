@@ -6,7 +6,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-// TODO: Convert generationTest.js to TypeScript and get rid of *.ts in the import, see https://github.com/phetsims/perennial/issues/410
 import execute from '../../perennial-alias/js/common/execute.ts';
 import gruntCommand from '../../perennial-alias/js/common/gruntCommand.js';
 import qunit from '../../perennial-alias/js/npm-dependencies/qunit.js';
