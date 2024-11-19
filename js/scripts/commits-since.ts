@@ -30,9 +30,8 @@ import getPhetLibs from '../grunt/getPhetLibs.js';
   for ( const dependency of getPhetLibs( repo ) ) {
     output += `${dependency} since ${dateString} ----------------------------------------------\n`;
 
-    // TODO: https://github.com/phetsims/perennial/issues/403
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string
-    output += await execute( 'git', [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], `../${dependency}` );
+    const logOut = await execute( 'git', [ 'log', `--since="${dateString}"`, '--pretty=tformat:"%h | %ci | %cn | %s"' ], `../${dependency}` );
+    output += logOut;
   }
 
   console.log( output );

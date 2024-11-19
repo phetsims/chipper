@@ -62,9 +62,7 @@ export default async function getDependencies( repo: string ): Promise<object> {
     let branch = null;
 
     try {
-      // @ts-expect-error https://github.com/phetsims/perennial/issues/403
       sha = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${dependency}` ) ).trim();
-      // @ts-expect-error https://github.com/phetsims/perennial/issues/403
       branch = ( await execute( 'git', [ 'rev-parse', '--abbrev-ref', 'HEAD' ], `../${dependency}` ) ).trim();
     }
     catch( e ) {

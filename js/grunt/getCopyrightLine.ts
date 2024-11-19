@@ -18,12 +18,10 @@ export default async ( repo: string, relativeFile: string ): Promise<string> => 
 
   let startDate = ( await execute( 'git', [
     'log', '--diff-filter=A', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
-    // @ts-expect-error https://github.com/phetsims/perennial/issues/403
   ], `../${repo}` ) ).trim().split( '-' )[ 0 ];
 
   const endDate = ( await execute( 'git', [
     'log', '--follow', '--date=short', '--format=%cd', '-1', '--', relativeFile
-    // @ts-expect-error https://github.com/phetsims/perennial/issues/403
   ], `../${repo}` ) ).trim().split( '-' )[ 0 ];
 
   let dateString = '';

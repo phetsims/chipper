@@ -113,7 +113,6 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   // every brand. Developers without phet-io checked out still need to be able to build.
   assert && assert( fs.readFileSync( transpiledClientPath ).toString().includes( '/**' ), 'babel should not strip comments from transpiling' );
 
-  // @ts-expect-error https://github.com/phetsims/perennial/issues/403
   const simRepoSHA = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${repo}` ) ).trim();
 
   const buildDir = `../${repo}/build/phet-io/`;
@@ -541,7 +540,6 @@ const handleJSDOC = async ( buildDir: string ): Promise<void> => {
   await execute( 'node', getJSDocArgs( false ), process.cwd() );
 
   // Running with explanation -X appears to not output the files, so we have to run it twice.
-  // @ts-expect-error https://github.com/phetsims/perennial/issues/403
   const explanation = ( await execute( 'node', getJSDocArgs( true ), process.cwd() ) ).trim();
 
   // Copy the logo file

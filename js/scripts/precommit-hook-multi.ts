@@ -1,7 +1,6 @@
 // Copyright 2022-2024, University of Colorado Boulder
 const startTime = Date.now();
 
-import assert from 'assert';
 import child_process from 'child_process';
 import fs from 'fs';
 import execute from '../../../perennial-alias/js/common/execute.js';
@@ -80,8 +79,6 @@ const forceTasks = args.find( arg => arg.startsWith( '--forceTasks=' ) );
       // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
       errors: 'resolve'
     } );
-    assert( typeof result !== 'string' );
-
     if ( result.code === 0 ) {
 
       console.log( 'Success' );
