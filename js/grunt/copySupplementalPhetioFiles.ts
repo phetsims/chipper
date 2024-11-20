@@ -61,8 +61,7 @@ const PHET_IO_LIB_PRELOADS = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
   '../assert/js/assert.js',
   '../chipper/js/phet-io/phetioCompareAPIs.js',
-  '../tandem/js/PhetioIDUtils.js',
-  '../perennial-alias/js/common/SimVersion.js'
+  '../tandem/js/PhetioIDUtils.js'
 ];
 
 const LIB_PRELOADS = THIRD_PARTY_LIB_PRELOADS.concat( PHET_IO_LIB_PRELOADS );
@@ -95,7 +94,7 @@ const JSDOC_FILES = [
   '../tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
   '../chipper/js/initialize-globals.js',
-  '../perennial-alias/js/common/SimVersion.js'
+  '../chipper/dist/js/perennial-alias/js/common/SimVersion.js'
 ];
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
@@ -119,6 +118,7 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
 
   // This regex was copied from perennial's `SimVersion.parse()` consult that code before changing things here.
+  // TODO: Use SimVersion in https://github.com/phetsims/chipper/issues/972
   const matches = version.match( /^(\d+)\.(\d+)\.(\d+)(-(([^.-]+)\.(\d+)))?(-([^.-]+))?$/ );
   if ( !matches ) {
     throw new Error( `could not parse version: ${version}` );
