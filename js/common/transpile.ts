@@ -179,13 +179,9 @@ const spawnTranspile = ( repos: string[], live: boolean, silent: boolean ) => {
   ];
 
   // This occurrence of "--watch" is accurate, since it is the terminology used by swc
-  if ( live ) {
-    argsString.push( '--watch' );
-  }
+  live && argsString.push( '--watch' );
 
-  if ( silent ) {
-    argsString.push( '--quiet' );
-  }
+  silent && argsString.push( '--quiet' );
 
   return spawnCommand( runnablePath, argsString );
 };
