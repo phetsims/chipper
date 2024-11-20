@@ -50,7 +50,6 @@
   },
   "phet-io": {
     "preload": [
-      "../chipper/js/phet-io/phetioCompareAPIs.js",
       "../phet-io/js/phet-io-initialize-globals.js"
     ],
     "simulationSpecificPreload": [
