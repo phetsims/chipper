@@ -12,7 +12,7 @@
  */
 
 const assert = require( 'assert' );
-require( './checkNodeVersion' );
+require( '../../../../perennial-alias/js/grunt/commonjs/checkNodeVersion' );
 const registerTasks = require( '../../../../perennial-alias/js/grunt/commonjs/registerTasks' );
 const gruntSpawn = require( '../../../../perennial-alias/js/grunt/commonjs/gruntSpawn' );
 const _ = require( 'lodash' );
