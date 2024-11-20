@@ -8,7 +8,7 @@ import transpile, { getTranspileCLIOptions } from '../../common/transpile.js';
  * Transpile TypeScript to JavaScript.
  *
  * Options
- * --watch: Continue watching all directories and transpile on detected changes.
+ * --live: Continue watching all directories and transpile on detected changes.
  * --clean: Delete of the output directory before transpiling.
  * --silent: Disable any logging output.
  * --all: Transpile all repos. (default)

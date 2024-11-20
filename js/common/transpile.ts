@@ -23,7 +23,7 @@ export type TranspileOptions = {
   clean: boolean;
 
   // Continue watching all directories and transpile on detected changes.
-  watch: boolean;
+  live: boolean;
 
   // List of repos to transpile, if not doing all
   repos: Repo[];
@@ -46,7 +46,7 @@ export default async function transpile( providedOptions: Partial<TranspileOptio
     all: false,
     silent: false,
     clean: false,
-    watch: false,
+    live: false,
     repos: []
   }, providedOptions );
 
@@ -65,10 +65,10 @@ export default async function transpile( providedOptions: Partial<TranspileOptio
 
   !options.silent && console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
 
-  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, options.watch, options.silent ) ) );
+  await Promise.all( chunks.map( chunkedRepos => spawnTranspile( chunkedRepos, options.live, options.silent ) ) );
 
   !options.silent && console.log( 'Finished initial transpilation in ' + ( Date.now() - start ) + 'ms' );
-  !options.silent && options.watch && console.log( 'Watching...' );
+  !options.silent && options.live && console.log( 'Watching...' );
 }
 
 // Parse command line options into an object for the module
@@ -92,7 +92,12 @@ export function getTranspileCLIOptions(): Partial<TranspileOptions> {
   }
 
   if ( isOptionKeyProvided( 'watch' ) ) {
-    transpileOptions.watch = getOption( 'watch' );
+    transpileOptions.live = getOption( 'watch' );
+    console.log( '--watch is deprecated, use --live instead' );
+  }
+
+  if ( isOptionKeyProvided( 'live' ) ) {
+    transpileOptions.live = getOption( 'live' );
   }
 
   if ( isOptionKeyProvided( 'clean' ) ) {
@@ -166,14 +171,15 @@ function spawnCommand( command: string, args: string[] ): Promise<void> {
   } );
 }
 
-const spawnTranspile = ( repos: string[], watch: boolean, silent: boolean ) => {
+const spawnTranspile = ( repos: string[], live: boolean, silent: boolean ) => {
   const argsString = [
     '--config-file', 'chipper/.swcrc',
     ..._.flatten( repos.map( repo => getSubdirectories( repo ) ) ),
     '-d', 'chipper/dist/js/'
   ];
 
-  if ( watch ) {
+  // This occurrence of "--watch" is accurate, since it is the terminology used by swc
+  if ( live ) {
     argsString.push( '--watch' );
   }
 
