@@ -7,7 +7,7 @@
     "url": "https://github.com/phetsims/chipper.git"
   },
   "scripts": {
-    "test": "bash ../perennial-alias/bin/sage run ../perennial-alias/node_modules/qunit/bin/qunit.js test/chipper-tests.js",
+    "test": "bash ../perennial-alias/bin/sage run ../perennial-alias/node_modules/qunit/bin/qunit.js test/chipper-tests.ts",
     "test-long": "bash ../perennial-alias/bin/sage run ../perennial-alias/node_modules/qunit/bin/qunit.js test/*"
   },
   "phet": {
