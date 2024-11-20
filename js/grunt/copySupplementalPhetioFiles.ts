@@ -60,7 +60,6 @@ const THIRD_PARTY_LIB_PRELOADS = [
 const PHET_IO_LIB_PRELOADS = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
   '../assert/js/assert.js',
-  '../chipper/js/phet-io/phetioCompareAPIs.js',
   '../tandem/js/PhetioIDUtils.js'
 ];
 
