@@ -22,12 +22,12 @@ import testGruntOptions from '../../../../perennial-alias/js/grunt/tasks/util/te
 
   if ( getOption( 'report-media' ) !== false ) {
     console.log( '\nRunning "report-media"' );
-    await ( await import( './report-media.js' ) ).reportMedia;
+    await ( await import( './report-media.js' ) ).reportMediaPromise;
   }
 
   console.log( '\nRunning "clean"' );
-  await ( await import( './clean.js' ) ).clean;
+  await ( await import( './clean.js' ) ).cleanPromise;
 
   console.log( '\nRunning "build"' );
-  await ( await import( './build.js' ) ).build;
+  await ( await import( './build.js' ) ).buildPromise;
 } )();

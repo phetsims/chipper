@@ -9,7 +9,7 @@
 import fs from 'fs';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 
-export const clean = ( async () => {
+export const cleanPromise = ( async () => {
   const repo = getRepo();
   const buildDirectory = `../${repo}/build`;
 

@@ -14,6 +14,6 @@ import _reportMedia from '../reportMedia.js'; // eslint-disable-line phet/defaul
  */
 const repo = getRepo();
 
-export const reportMedia = ( async () => {
+export const reportMediaPromise = ( async () => {
   await _reportMedia( repo );
 } )();

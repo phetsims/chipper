@@ -12,7 +12,7 @@ import _modulify from '../modulify.js';
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
-export const modulify = ( async () => {
+export const modulifyPromise = ( async () => {
 
   const repo = getRepo();
 

@@ -45,7 +45,7 @@ const repo = getRepo();
 /**
  * Immediately run the build and export the promise in case the client wants to await the task.
  */
-export const build = ( async () => {
+export const buildPromise = ( async () => {
   await phetTimingLog.startAsync( 'grunt-build', async () => {
 
     // Parse minification keys
