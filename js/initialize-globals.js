@@ -35,6 +35,7 @@
 
   // Create the attachment point for all PhET globals
   window.phet = window.phet ?? {};
+  window.phet.preloads = window.phet.preloads || {};
   window.phet.chipper = window.phet.chipper ?? {};
 
   // packageObject may not always be available if initialize-globals used without chipper-initialization.js
