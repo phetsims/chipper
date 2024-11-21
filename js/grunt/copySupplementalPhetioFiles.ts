@@ -25,6 +25,7 @@ import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
 import buildStandalone from './buildStandalone.ts';
 import getPhetLibs from './getPhetLibs.js';
 import webpackBuild from './webpackBuild.ts';
+import SimVersion from '../../../perennial-alias/js/common/SimVersion.js';
 
 const webpack = require( 'webpack' );
 const archiver = require( 'archiver' );
@@ -116,15 +117,8 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   const buildDir = `../${repo}/build/phet-io/`;
   const wrappersLocation = `${buildDir}${WRAPPERS_FOLDER}`;
 
-  // This regex was copied from perennial's `SimVersion.parse()` consult that code before changing things here.
-  // TODO: Use SimVersion in https://github.com/phetsims/chipper/issues/972
-  const matches = version.match( /^(\d+)\.(\d+)\.(\d+)(-(([^.-]+)\.(\d+)))?(-([^.-]+))?$/ );
-  if ( !matches ) {
-    throw new Error( `could not parse version: ${version}` );
-  }
-  const major = Number( matches[ 1 ] );
-  const minor = Number( matches[ 2 ] );
-  const latestVersion = `${major}.${minor}`;
+  const simVersion = SimVersion.parse( version );
+  const latestVersion = `${simVersion.major}.${simVersion.minor}`;
 
   const standardPhetioWrapperTemplateSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/standardPhetioWrapperTemplateSkeleton.html', 'utf8' );
   const customPhetioWrapperTemplateSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/customPhetioWrapperTemplateSkeleton.html', 'utf8' );
