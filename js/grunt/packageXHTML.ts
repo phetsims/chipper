@@ -9,7 +9,7 @@
 // modules
 import assert from 'assert';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import getTitleStringKey from './getTitleStringKey.js';

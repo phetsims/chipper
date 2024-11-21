@@ -22,7 +22,7 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import getSimList from '../../common/getSimList.js';
 import transpile from '../../common/transpile.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
-import phetioCompareAPISets from '../../phet-io/phetioCompareAPISets';
+import phetioCompareAPISets from '../../phet-io/phetioCompareAPISets.js';
 import getPhetLibs from '../getPhetLibs.js';
 
 const repo = getRepo();
