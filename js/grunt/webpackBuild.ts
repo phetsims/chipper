@@ -105,7 +105,7 @@ const webpackBuild = function webpackBuild( repo: string, brand: string, provide
 
     // Allow builds for developers that do not have the phet-io repo checked out. IgnorePlugin will skip any require
     // that matches the following regex.
-    const ignorePhetioRepo = new webpack.IgnorePlugin( {
+    const ignorePhetioDirectories = new webpack.IgnorePlugin( {
       resourceRegExp: /\/phet-io\// // ignore anything in a phet-io named directory
     } );
 
@@ -136,11 +136,11 @@ const webpackBuild = function webpackBuild( repo: string, brand: string, provide
       plugins: [
 
         // Exclude brand specific code. This includes all of the `phet-io` repo for non phet-io builds.
-        ...( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioRepo, ignoreAdaptedFromPhetBrand ] :
+        ...( brand === 'phet' ? [ ignorePhetioBrand, ignorePhetioDirectories, ignoreAdaptedFromPhetBrand ] :
              brand === 'phet-io' ? [ ignorePhetBrand, ignoreAdaptedFromPhetBrand ] :
 
                // adapted-from-phet and all other brands
-               [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioRepo ] ),
+               [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioDirectories ] ),
         ...( options.profileFileSize ? [
           new ModifySourcePlugin( {
             rules: [
