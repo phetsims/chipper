@@ -1,21 +1,28 @@
 // Copyright 2022-2024, University of Colorado Boulder
 
 /**
- * Runs tasks for pre-commit, including lint and qunit testing.  Avoids the overhead of grunt and Gruntfile.cjs for speed.
+ * Runs tasks for pre-commit, including lint and qunit testing.
  *
  * Should only be run when developing in main, because when dependency shas are checked out for one sim,
- * they will likely be inconsistent for other repos which would cause failures for processes like type checking.
+ * they will likely be inconsistent for other repos which would cause failures for cross-repo processes like type checking.
  * This means when running maintenance release steps, you may need to run git commands with --no-verify.
  *
  * Timing data is streamed through phetTimingLog, please see that file for how to see the results live and/or afterwards.
  *
  * USAGE:
  * cd ${repo}
- * node ../chipper/js/scripts/hook-pre-commit.js
+ * sage run ../chipper/js/scripts/pre-commit.js
  *
  * OPTIONS:
  * --console: outputs information to the console for debugging
  * --force: forces all tasks to run, even if they are disabled in the local preferences
+ *
+ * TASKS:
+ * --lint: runs eslint on the repo
+ * --report-media: checks for missing or unused media files
+ * --check: runs check.js
+ * --test: runs qunit tests
+ * --phet-io-api: compares the PhET-iO API with the previous version
  *
  * See also phet-info/git-template-dir/hooks/pre-commit for how this is used in precommit hooks.
  *
@@ -23,11 +30,12 @@
  */
 
 import assert from 'assert';
-import path from 'path';
-import buildLocal from '../../../perennial-alias/js/common/buildLocal.js';
-import execute from '../../../perennial-alias/js/common/execute.js';
-import phetTimingLog from '../../../perennial-alias/js/common/phetTimingLog.js';
-import tsxCommand from '../../../perennial-alias/js/common/tsxCommand.js';
+import buildLocal from '../../../../perennial-alias/js/common/buildLocal.js';
+import execute from '../../../../perennial-alias/js/common/execute.js';
+import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
+import tsxCommand from '../../../../perennial-alias/js/common/tsxCommand.js';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 
 // These repos do not require precommit hooks to be run
 const optOutRepos = [
@@ -37,52 +45,62 @@ const optOutRepos = [
   'babel'
 ];
 
-// Console logging via --console
-const commandLineArguments = process.argv.slice( 2 );
-const outputToConsole = commandLineArguments.includes( '--console' );
-const force = commandLineArguments.includes( '--force' );
+const repo = getRepo();
 
-// Force certain tasks to run indepndently of settings in build-local.json.
-// Takes precedence if specified, to be used in conjuction with precommit-hook-multi.js
-// Example: node chipper/js/scripts/precommit-hook-multi.js --forceTasks=lint,report-media,check,test
-const forceTasks = commandLineArguments.find( arg => arg.startsWith( '--forceTasks=' ) );
+const outputToConsole = getOption( 'console' ); // Console logging via --console
 
 ( async () => {
-
-  // Identify the current repo
-  const repo = process.cwd().split( path.sep ).pop()!;
 
   if ( optOutRepos.includes( repo ) ) {
     console.log( `Skipping precommit hooks for the repo: ${repo}` );
     process.exit( 0 );
   }
 
+  const possibleTasks = [ 'lint', 'report-media', 'check', 'test', 'phet-io-api' ];
+
   // By default, run all tasks
-  let tasksToRun = [ 'lint', 'report-media', 'check', 'test', 'phet-io-api-compare' ];
+  let tasksToRun = [ ...possibleTasks ];
   const OPT_OUT_ALL = '*'; // Key to opt out of all tasks
 
   // check local preferences for overrides for which tasks to turn 'off'
   const hookPreCommit = buildLocal.hookPreCommit;
-  if ( hookPreCommit && !force ) {
-    if ( hookPreCommit[ OPT_OUT_ALL ] === false ) {
-      outputToConsole && console.log( 'all tasks opted out' );
-      tasksToRun.length = 0;
+  if ( hookPreCommit && hookPreCommit[ OPT_OUT_ALL ] === false ) {
+    outputToConsole && console.log( 'all tasks opted out from build-local.json' );
+    tasksToRun.length = 0;
+  }
+
+  possibleTasks.forEach( ( task: string ) => {
+
+    // process the buildLocal preferences first
+    if ( hookPreCommit && hookPreCommit[ task ] === false ) {
+      outputToConsole && console.log( 'task opted out from build-local.json:', task );
+      tasksToRun = tasksToRun.filter( t => t !== task );
     }
-    else {
-      Object.keys( hookPreCommit ).forEach( key => {
-        if ( hookPreCommit[ key ] === false && tasksToRun.includes( key ) ) {
-          outputToConsole && console.log( 'task opted out:', key );
-          tasksToRun.splice( tasksToRun.indexOf( key ), 1 );
+
+    // process the CLI overrides
+    if ( isOptionKeyProvided( task ) ) {
+      if ( getOption( task ) ) {
+        if ( !tasksToRun.includes( task ) ) {
+          outputToConsole && console.log( 'task added from CLI:', task );
+          tasksToRun.push( task );
         }
-      } );
+      }
+      else {
+        outputToConsole && console.log( 'task removed from CLI:', task );
+        tasksToRun = tasksToRun.filter( t => t !== task );
+      }
     }
+  } );
+
+  // TODO: This is kind of like * in the json, or --all. Is this a good API? See https://github.com/phetsims/perennial/issues/404
+  if ( getOption( 'force' ) ) {
+    outputToConsole && console.log( 'forcing all tasks to run' );
+    tasksToRun = [ ...possibleTasks ];
   }
 
-  if ( forceTasks ) {
-    tasksToRun = forceTasks.split( '=' )[ 1 ].split( ',' );
-  }
+  outputToConsole && console.log( 'tasks to run:', tasksToRun );
 
-  const precommitSuccess = await phetTimingLog.startAsync( `hook-pre-commit repo="${repo}"`, async () => {
+  const precommitSuccess = await phetTimingLog.startAsync( `pre-commit repo="${repo}"`, async () => {
 
     outputToConsole && console.log( 'repo:', repo );
 
@@ -94,7 +112,7 @@ const forceTasks = commandLineArguments.find( arg => arg.startsWith( '--forceTas
             const results = await execute(
               tsxCommand,
               [
-                '../chipper/js/scripts/hook-pre-commit-task.ts',
+                '../chipper/js/common/pre-commit-main.ts',
                 `--command=${task}`,
                 `--repo=${repo}`,
                 outputToConsole ? '--console' : ''

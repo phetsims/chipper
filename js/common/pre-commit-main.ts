@@ -1,7 +1,7 @@
 // Copyright 2020-2024, University of Colorado Boulder
 
 /**
- * See hook-pre-commit. This implements each task for that process so they can run in parallel.
+ * See grunt/tasks/pre-commit.ts. This implements each task for that process so they can run in parallel.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -134,7 +134,7 @@ const repo = getArg( 'repo' );
     process.exit( qUnitOK ? 0 : 1 );
   }
 
-  else if ( command === 'phet-io-api-compare' ) {
+  else if ( command === 'phet-io-api' ) {
 
     ////////////////////////////////////////////////////////////////////////////////
     // Compare PhET-iO APIs for this repo and anything that has it as a dependency
@@ -147,7 +147,7 @@ const repo = getArg( 'repo' );
         return true;
       }
 
-      const getCacheKey = ( repo: Repo ) => `phet-io-api-compare#${repo}`;
+      const getCacheKey = ( repo: Repo ) => `phet-io-api#${repo}`;
 
       // Test this repo and all phet-io sims that have it as a dependency.  For instance, changing sun would test
       // every phet-io stable sim.

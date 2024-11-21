@@ -74,7 +74,7 @@ const forceTasks = args.find( arg => arg.startsWith( '--forceTasks=' ) );
 
     process.stdout.write( reposToTest[ i ] + ': ' );
 
-    const result = await execute( tsxCommand, [ '../chipper/js/scripts/hook-pre-commit.js', ...( forceTasks ? [ forceTasks ] : [] ) ], `${reposToTest[ i ]}`, {
+    const result = await execute( tsxCommand, [ '../chipper/js/grunt/tasks/pre-commit.ts', ...( forceTasks ? [ forceTasks ] : [] ) ], `${reposToTest[ i ]}`, {
 
       // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
       errors: 'resolve'
