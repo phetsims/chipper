@@ -6,6 +6,7 @@ import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js
 import path from 'path';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 
+// TODO: https://github.com/phetsims/perennial/issues/404 why is this detecting commonjs mode?
 // @ts-expect-error ok to use import meta here
 const __dirname = dirname( import.meta.url );
 
@@ -18,7 +19,6 @@ export default async function getReposWithWorkingCopyChanges(): Promise<Repo[]> 
   const activeRepos = getActiveRepos();
 
   const execOnRepos = async ( repoSubset: string[], command: string ) => {
-
 
     const promises = repoSubset.map( repo => {
 

@@ -62,7 +62,7 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
   if ( getOption( 'changed' ) ) {
 
     const changedRepos = await getReposWithWorkingCopyChanges();
-    await spawnOnRepos( changedRepos );
+    await spawnOnRepos( changedRepos, outputToConsole );
     // TODO: Exit code would be nice, see https://github.com/phetsims/perennial/issues/404
     return;
   }
@@ -70,7 +70,7 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
   // Re-spawn the same process on all repos
   if ( getOption( 'all' ) ) {
 
-    await spawnOnRepos( getActiveRepos() );
+    await spawnOnRepos( getActiveRepos(), outputToConsole );
 
     // TODO: Exit code would be nice, see https://github.com/phetsims/perennial/issues/404
     return;
@@ -196,7 +196,7 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
 /**
  * Spawns the same process on each repo in the list
  */
-async function spawnOnRepos( repos: Repo[] ): Promise<void> {
+async function spawnOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<void> {
   const startTime = Date.now();
 
   // This is done sequentially so we don't spawn a bunch of uncached tsc at once, but in the future we may want to optimize
@@ -207,7 +207,7 @@ async function spawnOnRepos( repos: Repo[] ): Promise<void> {
 
     // get all argv, but drop out --all and --changed
     const args = process.argv.slice( 2 ).filter( arg => ![ '--all', '--changed' ].includes( arg ) );
-    console.log( 'spawning pre-commit.ts with args:', args );
+    outputToConsole && console.log( 'spawning pre-commit.ts with args:', args );
 
     // @ts-expect-error
     const __dirname = dirname( import.meta.url );
@@ -220,7 +220,7 @@ async function spawnOnRepos( repos: Repo[] ): Promise<void> {
       // resolve errors so Promise.all doesn't fail on first repo that cannot pull/rebase
       errors: 'resolve'
     } );
-    console.log( 'result:', result );
+    outputToConsole && console.log( 'result:', result );
     if ( result.code === 0 ) {
 
       console.log( 'Success' );
