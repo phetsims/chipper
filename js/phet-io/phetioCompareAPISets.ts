@@ -7,26 +7,19 @@
 import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
-import phetioCompareAPIs from './phetioCompareAPIs.js';
+import { PhetioAPIs } from './generatePhetioMacroAPI.js';
+import phetioCompareAPIs, { PhetioCompareAPIsOptions } from './phetioCompareAPIs.js';
 
 const jsondiffpatch = require( '../../../sherpa/lib/jsondiffpatch-v0.3.11.umd' ).create( {} );
 
-type API = unknown;
-
-type PhetioCompareAPISetssOptions = {
+type PhetioCompareAPISetsOptions = {
   delta: boolean;
 } & PhetioCompareAPIsOptions;
-
-// TODO: Use this in https://github.com/phetsims/chipper/issues/1526
-type PhetioCompareAPIsOptions = {
-  compareBreakingAPIChanges: boolean;
-  compareDesignedAPIChanges: boolean;
-};
 
 /**
  * Compare two sets of APIs using phetioCompareAPIs.
  */
-export default async ( repos: string[], proposedAPIs: Record<string, API>, options?: Partial<PhetioCompareAPISetssOptions> ): Promise<boolean> => {
+export default async ( repos: string[], proposedAPIs: PhetioAPIs, options?: Partial<PhetioCompareAPISetsOptions> ): Promise<boolean> => {
   let ok = true;
   options = _.assignIn( {
     delta: false,

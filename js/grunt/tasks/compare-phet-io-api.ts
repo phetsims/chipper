@@ -21,14 +21,14 @@ import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import getSimList from '../../common/getSimList.js';
 import transpile from '../../common/transpile.js';
-import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
+import generatePhetioMacroAPI, { PhetioAPIs } from '../../phet-io/generatePhetioMacroAPI.js';
 import phetioCompareAPISets from '../../phet-io/phetioCompareAPISets.js';
 import getPhetLibs from '../getPhetLibs.js';
 
 const repo = getRepo();
 const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
 const temporary = getOption( 'temporary' );
-let proposedAPIs: Record<string, object | null> | null = null;
+let proposedAPIs: PhetioAPIs | null = null;
 
 ( async () => {
   if ( temporary ) {
