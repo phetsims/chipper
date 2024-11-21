@@ -37,6 +37,7 @@ const getArg = ( arg: string ) => {
 const command = getArg( 'command' );
 const repo = getArg( 'repo' );
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 ( async () => {
 
   if ( command === 'lint' ) {
