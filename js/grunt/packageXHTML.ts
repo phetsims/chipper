@@ -31,10 +31,8 @@ export default function packageXHTML( xhtmlDir: string, config: IntentionalAny )
     scripts, // {Array.<string>}
     htmlHeader // {string}
   } = config;
-  assert( typeof repo === 'string', 'Requires repo' );
   assert( stringMap, 'Requires stringMap' );
   assert( scripts, 'Requires scripts' );
-  assert( typeof htmlHeader === 'string', 'Requires htmlHeader' );
 
   const localizedTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 

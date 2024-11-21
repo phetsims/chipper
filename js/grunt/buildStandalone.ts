@@ -24,8 +24,6 @@ import webpackBuild from './webpackBuild.js';
  * @param providedOptions - Passed directly to minify()
  */
 export default async function( repo: string, providedOptions: IntentionalAny ): Promise<string> {
-  assert( typeof repo === 'string' );
-  assert( typeof providedOptions === 'object' );
 
   const options = _.merge( {
     isDebug: false,

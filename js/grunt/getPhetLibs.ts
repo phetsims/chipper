@@ -7,7 +7,6 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import assert from 'assert';
 import { readFileSync } from 'fs';
 import _ from 'lodash';
 import ChipperConstants from '../common/ChipperConstants.js';
@@ -19,7 +18,6 @@ import ChipperConstants from '../common/ChipperConstants.js';
  * @param [brand] - If not specified, it will return the dependencies for all brands.
  */
 export default function getPhetLibs( repo: string, brand?: string | string[] ): string[] {
-  assert( typeof repo === 'string', 'Repository required for getPhetLibs' );
 
   if ( brand === undefined ) {
     return getPhetLibs( repo, ChipperConstants.BRANDS );
