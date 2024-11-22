@@ -15,6 +15,7 @@
  *
  * OPTIONS:
  * --console: outputs information to the console for debugging
+ * // TODO: rename --force to --allTasks https://github.com/phetsims/perennial/issues/404
  * --force: forces all tasks to run, even if they are disabled in the local preferences
  * --changed: run on all repos with working copy changes
  * --all: run on all repos
