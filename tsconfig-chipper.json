@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig/tsconfig-node.json",
+  // Entry points for checked out resources that may not be on main, but need to version together. These must be usable
+  // by chipper
+  "include": [
+    "js/common/**/*",
+    "js/npm-dependencies/**/*",
+    "js/grunt/tasks/util/**/*",
+    "js/test/puppeteerQUnit.js",
+    "js/grunt/check.ts",
+    "js/eslint/lint.ts",
+    "js/eslint/divideIntoBatches.ts",
+    "js/eslint/getLintCLIOptions.ts",
+    "js/grunt/tasks/lint.ts",
+    "js/phet-types-module.d.ts",
+    // TODO: should we split buildjson into a subsection that can be used by this one too (just phet-core?)   // TODO: split buildjson into a subsection that can be used by this one too (just phet-core?)
+    "../phet-core/js/types/**/*",
+    "../tandem/js/phet-io-types.ts"
+  ]
+}
