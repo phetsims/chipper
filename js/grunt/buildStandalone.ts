@@ -9,7 +9,7 @@
 import assert from 'assert';
 import fs, { readFileSync } from 'fs';
 import _ from 'lodash';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import getLocalesFromRepository from './getLocalesFromRepository.js';
 import getPhetLibs from './getPhetLibs.js';
@@ -24,8 +24,6 @@ import webpackBuild from './webpackBuild.js';
  * @param providedOptions - Passed directly to minify()
  */
 export default async function( repo: string, providedOptions: IntentionalAny ): Promise<string> {
-  assert( typeof repo === 'string' );
-  assert( typeof providedOptions === 'object' );
 
   const options = _.merge( {
     isDebug: false,
@@ -34,13 +32,16 @@ export default async function( repo: string, providedOptions: IntentionalAny ): 
     omitPreloads: null,
 
     // For concurrent builds, provide a unique output dir for the webpack process, default to the repo building
-    tempOutputDir: repo
+    tempOutputDir: repo,
+
+    // Some phet-io wrapper repos want to be built as "phet-io" brand so that resources under `phet-io` dirs are included.
+    brand: 'phet'
   }, providedOptions );
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   assert( packageObject.phet, '`phet` object expected in package.json' );
 
-  const webpackResult = ( await webpackBuild( repo, 'phet', {
+  const webpackResult = ( await webpackBuild( repo, options.brand, {
     outputDir: options.tempOutputDir,
     profileFileSize: options.profileFileSize
   } ) );

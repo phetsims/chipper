@@ -12,10 +12,10 @@ import assert from 'assert';
 import withServer from '../../../perennial-alias/js/common/withServer.js';
 import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
 import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
+import { PhetioAPI } from '../../../tandem/js/phet-io-types.js';
 import showCommandLineProgress from '../common/showCommandLineProgress.js';
 
-type PhetioAPI = Record<string, any>;
-type APIs = Record<string, PhetioAPI | null>; // null if errored
+export type PhetioAPIs = Record<string, PhetioAPI | null>; // null if errored
 
 type GeneratePhetioMacroAPIOptions = {
 
@@ -37,7 +37,7 @@ const TIMEOUT = 120000;
 /**
  * Load each sim provided and get the
  */
-const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: Partial<GeneratePhetioMacroAPIOptions> ): Promise<APIs> => {
+const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: Partial<GeneratePhetioMacroAPIOptions> ): Promise<PhetioAPIs> => {
 
   assert( repos.length === _.uniq( repos ).length, 'repos should be unique' );
 
@@ -66,7 +66,7 @@ const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: Partia
     } );
     const chunks = _.chunk( repos, options.chunkSize );
 
-    const macroAPI: APIs = {}; // if throwAPIGenerationErrors:false, a repo will be null if it encountered errors.
+    const macroAPI: PhetioAPIs = {}; // if throwAPIGenerationErrors:false, a repo will be null if it encountered errors.
     const errors: Record<string, Error> = {};
 
     for ( let i = 0; i < chunks.length; i++ ) {

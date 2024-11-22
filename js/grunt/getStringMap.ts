@@ -15,7 +15,7 @@ import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-// import { PhetioElementMetadata } from '../../../tandem/js/TandemConstants.js';
+// import { PhetioElementMetadata } from '../../../tandem/js/phet-io-types.js'; // TODO: Use this, https://github.com/phetsims/chipper/issues/1526
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import pascalCase from '../common/pascalCase.js';

@@ -43,12 +43,9 @@ export default function packageRunnable( config: PackageRunnableOptions ): strin
     htmlHeader, // {string}
     compressScripts = false
   } = config;
-  assert( typeof repo === 'string', 'Requires repo' );
   assert( stringMap, 'Requires stringMap' );
   assert( scripts, 'Requires scripts' );
   assert( licenseScript, 'Requires license script' );
-  assert( typeof locale === 'string', 'Requires locale' );
-  assert( typeof htmlHeader === 'string', 'Requires htmlHeader' );
 
   const localizedTitle = stringMap[ locale ][ getTitleStringKey( repo ) ];
 

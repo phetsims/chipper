@@ -14,7 +14,8 @@ import _ from 'lodash';
 import path from 'path';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
-import check from '../../../perennial-alias/js/grunt/check.ts';
+import SimVersion from '../../../perennial-alias/js/common/SimVersion.js';
+import check from '../../../perennial-alias/js/grunt/check.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
@@ -22,10 +23,9 @@ import copyDirectory from '../grunt/copyDirectory.js';
 import minify from '../grunt/minify.js';
 import formatPhetioAPI from '../phet-io/formatPhetioAPI.js';
 import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
-import buildStandalone from './buildStandalone.ts';
+import buildStandalone from './buildStandalone.js';
 import getPhetLibs from './getPhetLibs.js';
-import webpackBuild from './webpackBuild.ts';
-import SimVersion from '../../../perennial-alias/js/common/SimVersion.js';
+import webpackBuild from './webpackBuild.js';
 
 const webpack = require( 'webpack' );
 const archiver = require( 'archiver' );
@@ -421,6 +421,7 @@ const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter
     stripAssertions: false,
     stripLogging: false,
     tempOutputDir: repo,
+    brand: 'phet-io',
 
     // Avoid getting a 2nd copy of the files that are already bundled into the lib file
     omitPreloads: THIRD_PARTY_LIB_PRELOADS
@@ -675,7 +676,8 @@ const handleStudio = async ( repo: string, wrappersLocation: string, noTSC: bool
   fs.writeFileSync( `${wrappersLocation}studio/${STUDIO_BUILT_FILENAME}`, await buildStandalone( 'studio', {
     stripAssertions: false,
     stripLogging: false,
-    tempOutputDir: repo
+    tempOutputDir: repo,
+    brand: 'phet-io'
   } ) );
 };
 

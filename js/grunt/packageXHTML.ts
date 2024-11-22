@@ -9,7 +9,7 @@
 // modules
 import assert from 'assert';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import getTitleStringKey from './getTitleStringKey.js';
@@ -31,10 +31,8 @@ export default function packageXHTML( xhtmlDir: string, config: IntentionalAny )
     scripts, // {Array.<string>}
     htmlHeader // {string}
   } = config;
-  assert( typeof repo === 'string', 'Requires repo' );
   assert( stringMap, 'Requires stringMap' );
   assert( scripts, 'Requires scripts' );
-  assert( typeof htmlHeader === 'string', 'Requires htmlHeader' );
 
   const localizedTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 

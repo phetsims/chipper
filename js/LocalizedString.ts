@@ -11,7 +11,7 @@ import TProperty from '../../axon/js/TProperty.js';
 import localeProperty, { Locale } from '../../joist/js/i18n/localeProperty.js';
 import arrayRemove from '../../phet-core/js/arrayRemove.js';
 import Tandem from '../../tandem/js/Tandem.js';
-import { PhetioID } from '../../tandem/js/TandemConstants.js';
+import { PhetioID } from '../../tandem/js/phet-io-types.js';
 import chipper from './chipper.js';
 import { localizedStrings } from './getStringModule.js';
 import LocalizedStringProperty from './LocalizedStringProperty.js';

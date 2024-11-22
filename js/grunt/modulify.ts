@@ -14,7 +14,7 @@ import os from 'os';
 import path from 'path';
 import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import loadFileAsDataURI from '../common/loadFileAsDataURI.js';
 import pascalCase from '../common/pascalCase.js';
 import toLessEscapedString from '../common/toLessEscapedString.js';

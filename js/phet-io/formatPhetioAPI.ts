@@ -12,7 +12,7 @@
 
 import assert from 'assert';
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 /**
  * Creates a new object, recursively, by sorting the keys at each level.

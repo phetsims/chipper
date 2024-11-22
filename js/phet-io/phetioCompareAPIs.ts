@@ -11,50 +11,53 @@
  * Note that even though it is a preload, it uses a different global/namespacing pattern than phet-io-initialize-globals.js
  * in order to simplify usage in all these sites.
  *
- * TODO: AFTER_COMMIT Turn this into a typescript module used in sim and Node code, https://github.com/phetsims/chipper/issues/1526
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-/**
- * @typedef API
- */
+import { FlattenedAPIPhetioElements, PhetioAPI, PhetioElement, PhetioElementMetadata, PhetioElementMetadataValue, PhetioElements, PhetioElementState } from '../../../tandem/js/phet-io-types.js';
 
-/**
- * See phetioEngine.js for where this is generated in main. Keep in mind that we support different versions, including
- * APIs that don't have a version attribute.
- * @typedef API_1_0
- * @extends API
- * @property {{major:number, minor:number}} version
- * @property {string} sim
- */
+export type PhetioCompareAPIsOptions = {
+  compareBreakingAPIChanges: boolean;
+  compareDesignedAPIChanges: boolean;
+};
+
+type PhetioCompareAPIsResult = {
+  breakingProblems: string[];
+  designedProblems: string[];
+};
+
+// TODO: how to type this? https://github.com/phetsims/chipper/issues/1465
+type Lodash = any;
+type Assert = undefined | ( ( bool: any, message?: string ) => void );
 
 const METADATA_KEY_NAME = '_metadata';
 const DATA_KEY_NAME = '_data';
 
 // Is not the reserved keys to store data/metadata on PhET-iO Elements.
-const isChildKey = key => key !== METADATA_KEY_NAME && key !== DATA_KEY_NAME;
+const isChildKey = ( key: string ) => key !== METADATA_KEY_NAME && key !== DATA_KEY_NAME;
 
 // TODO: Remove this duplication once phetioCompareAPIs can import isInitialStateCompatible, https://github.com/phetsims/chipper/issues/1526
 // DUPLICATION ALERT!
 /* @formatter:off */
-  function areCompatible( testValue, groundTruthValue ) { if ( Array.isArray( groundTruthValue ) ) { if ( !Array.isArray( testValue ) ) { return false; } if ( testValue.length !== groundTruthValue.length ) { return false; } for ( let i = 0; i < groundTruthValue.length; i++ ) { const newItem = groundTruthValue[ i ]; const oldItem = testValue[ i ]; if ( !areCompatible( oldItem, newItem ) ) { return false; } } return true; } if ( typeof groundTruthValue === 'object' && groundTruthValue !== null ) { if ( typeof testValue !== 'object' || testValue === null || Array.isArray( testValue ) ) { return false; } for ( const key in groundTruthValue ) { if ( groundTruthValue.hasOwnProperty( key ) ) { if ( !testValue.hasOwnProperty( key ) ) { return false; } if ( !areCompatible( testValue[ key ], groundTruthValue[ key ] ) ) { return false; } } } return true; } return testValue === groundTruthValue;}
+// eslint-disable-next-line phet/bad-text
+// @ts-expect-error see TO-DO above
+  function areCompatible( testValue, groundTruthValue ) { if ( Array.isArray( groundTruthValue ) ) { if ( !Array.isArray( testValue ) ) { return false; } if ( testValue.length !== groundTruthValue.length ) { return false; } for ( let i = 0; i < groundTruthValue.length; i++ ) { const newItem = groundTruthValue[ i ]; const oldItem = testValue[ i ]; if ( !areCompatible( oldItem, newItem ) ) { return false; } } return true; } if ( typeof groundTruthValue === 'object' && groundTruthValue !== null ) { if ( typeof testValue !== 'object' || testValue === null || Array.isArray( testValue ) ) { return false; } for ( const key in groundTruthValue ) { if ( groundTruthValue.hasOwnProperty( key ) ) { if ( !testValue.hasOwnProperty( key ) ) { return false; } if ( !areCompatible( testValue[ key ], groundTruthValue[ key ] ) ) { return false; } } } return true; } return testValue === groundTruthValue;} // eslint-disable-line
+// @ts-expect-error see TO-DO above
   const isInitialStateCompatible = ( groundTruthState, testState ) => areCompatible( testState, groundTruthState );
   /* @formatter:on */
 
 /**
  * "up-convert" an API to be in the format of API version >=1.0. This generally is thought of as a "sparse, tree-like" API.
- * @param {API} api
- * @param _
- * @returns {API} - In this version, phetioElements will be structured as a tree, but will have a verbose and complete
+ * @returns - In this version, phetioElements will be structured as a tree, but will have a verbose and complete
  *                  set of all metadata keys for each element. There will not be `metadataDefaults` in each type.
  */
-const toStructuredTree = ( api, _ ) => {
-  const sparseAPI = _.cloneDeep( api );
+const toStructuredTree = ( api: { phetioElements: FlattenedAPIPhetioElements }, _: Lodash ): PhetioAPI => {
+  const sparseAPI: PhetioAPI = _.cloneDeep( api );
 
   // DUPLICATED with phetioEngine.js
-  const sparseElements = {};
+  const sparseElements: any = {};
   Object.keys( api.phetioElements ).forEach( phetioID => {
     const entry = api.phetioElements[ phetioID ];
 
@@ -74,6 +77,7 @@ const toStructuredTree = ( api, _ ) => {
     Object.keys( entry ).forEach( key => {
 
         // write all values without trying to factor out defaults
+        // @ts-expect-error HELP!!!
         level[ METADATA_KEY_NAME ][ key ] = entry[ key ];
       }
     );
@@ -83,14 +87,7 @@ const toStructuredTree = ( api, _ ) => {
   return sparseAPI;
 };
 
-/**
- * @param {Object} phetioElement
- * @param {API} api
- * @param {Object} _ - lodash
- * @param {function|undefined} assert - optional assert
- * @returns {Object}
- */
-const getMetadataValues = ( phetioElement, api, _, assert ) => {
+const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: Lodash, assert: Assert ): PhetioElementMetadata => {
   const ioTypeName = phetioElement[ METADATA_KEY_NAME ] ? ( phetioElement[ METADATA_KEY_NAME ].phetioTypeName || 'ObjectIO' ) : 'ObjectIO';
 
   if ( api.version ) {
@@ -105,17 +102,13 @@ const getMetadataValues = ( phetioElement, api, _, assert ) => {
 };
 
 /**
- * @param {string} typeName
- * @param {API} api
- * @param {Object} _ - lodash
- * @param {function|undefined} assert - optional assert
- * @returns {Object} - defensive copy, non-mutating
+ * @returns - defensive copy, non-mutating
  */
-const getMetadataDefaults = ( typeName, api, _, assert ) => {
+const getMetadataDefaults = ( typeName: string, api: PhetioAPI, _: Lodash, assert: Assert ): PhetioElementMetadata => {
   const entry = api.phetioTypes[ typeName ];
   assert && assert( entry, `entry missing: ${typeName}` );
   if ( entry.supertype ) {
-    return _.merge( getMetadataDefaults( entry.supertype, api, _ ), entry.metadataDefaults );
+    return _.merge( getMetadataDefaults( entry.supertype, api, _, assert ), entry.metadataDefaults );
   }
   else {
     return _.merge( {}, entry.metadataDefaults );
@@ -123,24 +116,22 @@ const getMetadataDefaults = ( typeName, api, _, assert ) => {
 };
 
 /**
- * @param {API} api
- * @returns {boolean} - whether or not the API is of type API_1_0
+ * @returns  - whether or not the API is "old", meaning it uses a "flat" structure for phetioElements
  */
-const isOldAPIVersion = api => {
+const isOldAPIVersion = ( api: PhetioAPI ): boolean => {
   return !api.hasOwnProperty( 'version' );
 };
 
 /**
  * Compare two APIs for breaking or design changes.
  *
- * @param {API} referenceAPI - the "ground truth" or reference API
- * @param {API} proposedAPI - the proposed API for comparison with referenceAPI
+ * @param referenceAPI - the "ground truth" or reference API
+ * @param proposedAPI - the proposed API for comparison with referenceAPI
  * @param _ - lodash, so this can be used from different contexts.
- * @param {function|undefined} assert - so this can be used from different contexts
- * @param {Object} [options]
- * @returns {{breakingProblems:string[], designedProblems:string[]}}
+ * @param assert - so this can be used from different contexts
+ * @param providedOptions
  */
-const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
+const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: Lodash, assert: Assert, providedOptions?: Partial<PhetioCompareAPIsOptions> ): PhetioCompareAPIsResult => {
 
   // If the proposed version predates 1.0, then bring it forward to the structured tree with metadata under `_metadata`.
   if ( isOldAPIVersion( proposedAPI ) ) {
@@ -151,15 +142,15 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
     referenceAPI = toStructuredTree( referenceAPI, _ );
   }
 
-  options = _.merge( {
+  const options: PhetioCompareAPIsOptions = _.assignIn( {
     compareDesignedAPIChanges: true,
     compareBreakingAPIChanges: true
-  }, options );
+  }, providedOptions );
 
-  const breakingProblems = [];
-  const designedProblems = [];
+  const breakingProblems: string[] = [];
+  const designedProblems: string[] = [];
 
-  const appendProblem = ( problemString, isDesignedProblem = false ) => {
+  const appendProblem = ( problemString: string, isDesignedProblem = false ) => {
     if ( isDesignedProblem && options.compareDesignedAPIChanges ) {
       designedProblems.push( problemString );
     }
@@ -168,19 +159,19 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
     }
   };
 
-  const appendBothProblems = ( problemString, isDesignedElement ) => {
+  const appendBothProblems = ( problemString: string, isDesignedElement?: boolean ) => {
     appendProblem( problemString, false );
     isDesignedElement && appendProblem( problemString, true );
   };
 
   /**
    * Visit one element along the APIs.
-   * @param {string[]} trail - the path of tandem componentNames
-   * @param {Object} reference - current value in the referenceAPI
-   * @param {Object} proposed - current value in the proposedAPI
-   * @param {boolean} isDesignedElement - are we testing for designed changes, or for breaking changes.
+   * @param trail - the path of tandem componentNames
+   * @param reference - current value in the referenceAPI
+   * @param proposed - current value in the proposedAPI
+   * @param isDesignedElement - are we testing for designed changes, or for breaking changes.
    */
-  const visit = ( trail, reference, proposed, isDesignedElement ) => {
+  const visit = ( trail: string[], reference: PhetioElements, proposed: PhetioElements, isDesignedElement: boolean ) => {
     const phetioID = trail.join( '.' );
 
     // Detect an instrumented instance
@@ -194,12 +185,12 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
 
       /**
        * Push any problems that may exist for the provided metadataKey.
-       * @param {string} metadataKey - See PhetioObject.getMetadata()
-       * @param {boolean} isDesignedChange - if the difference is from a design change, and not from a breaking change test
-       * @param {*} [invalidProposedValue] - an optional new value that would signify a breaking change. Any other value would be acceptable.
+       * @param metadataKey - See PhetioObject.getMetadata()
+       * @param isDesignedChange - if the difference is from a design change, and not from a breaking change test
+       * @param invalidProposedValue - an optional new value that would signify a breaking change. Any other value would be acceptable.
        */
-      const reportDifferences = ( metadataKey, isDesignedChange, invalidProposedValue ) => {
-        const referenceValue = referenceCompleteMetadata[ metadataKey ];
+      const reportDifferences = ( metadataKey: keyof PhetioElementMetadata, isDesignedChange: boolean, invalidProposedValue?: PhetioElementMetadataValue ) => {
+        const referenceValue: PhetioElementMetadataValue = referenceCompleteMetadata[ metadataKey ];
 
         // Gracefully handle missing metadata from the <1.0 API format
         const proposedValue = proposedCompleteMetadata ? proposedCompleteMetadata[ metadataKey ] : {};
@@ -255,7 +246,7 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
 
       // Check for design changes
       if ( isDesignedElement ) {
-        Object.keys( referenceCompleteMetadata ).forEach( metadataKey => {
+        ( Object.keys( referenceCompleteMetadata ) as Array<keyof PhetioElementMetadata> ).forEach( metadataKey => {
           reportDifferences( metadataKey, true );
         } );
       }
@@ -271,7 +262,8 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
 
             // Missing but expected state is a breaking problem
             // It is also a designed problem if we expected state in a designed subtree
-            appendBothProblems( `${phetioID}._data.initialState is missing from proposed API` );
+            // TODO: is "false" a bug? shouldn't we pass isDesignedElement? https://github.com/phetsims/chipper/issues/1526
+            appendBothProblems( `${phetioID}._data.initialState is missing from proposed API`, false );
           }
         }
         else {
@@ -280,9 +272,9 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
           const referencesInitialState = reference._data.initialState;
           const proposedInitialState = proposed._data.initialState;
 
-          const testInitialState = testDesigned => {
+          const testInitialState = ( testDesigned: boolean ) => {
             const isCompatible = _.isEqualWith( referencesInitialState, proposedInitialState,
-              ( referenceState, proposedState ) => {
+              ( referenceState: PhetioElementState, proposedState: PhetioElementState ) => {
 
                 // Top level object comparison of the entire state (not a component piece)
                 if ( referencesInitialState === referenceState && proposedInitialState === proposedState ) {
@@ -292,7 +284,7 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
 
                     // We do not worry about the notion of "designing" available locales. For breaking changes: the sim
                     // must have all expected locales, but it is acceptable to add new one without API error.
-                    return testDesigned || referenceState.validValues.every( validValue => proposedState.validValues.includes( validValue ) );
+                    return testDesigned || referenceState.validValues.every( ( validValue: any ) => proposedState.validValues.includes( validValue ) );
                   }
                   else if ( testDesigned ) {
                     return undefined; // Meaning use the default lodash algorithm for comparison.
@@ -307,7 +299,7 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
                 return undefined; // Meaning use the default lodash algorithm for comparison.
               } );
             if ( !isCompatible ) {
-              const problemString = `${phetioID}._data.initialState differs. \nExpected:\n${JSON.stringify( reference._data.initialState )}\n actual:\n${JSON.stringify( proposed._data.initialState )}\n`;
+              const problemString = `${phetioID}._data.initialState differs. \nExpected:\n${JSON.stringify( reference._data!.initialState )}\n actual:\n${JSON.stringify( proposed._data!.initialState )}\n`;
 
               // Report only designed problems if on a designed element.
               const reportTheProblem = !testDesigned || isDesignedElement;
@@ -430,7 +422,7 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
                              `  In proposed: ${inProposedNotReference}`, true );
 
               // It is only breaking if we lost an apiStateKey
-              if ( !_.every( referenceAPIStateKeys, reference => proposedAPIStateKeys.includes( reference ) ) ) {
+              if ( !_.every( referenceAPIStateKeys, ( reference: string ) => proposedAPIStateKeys!.includes( reference ) ) ) {
                 appendProblem( `${typeName} apiStateKeys missing from proposed: ${inReferenceNotProposed}`, false );
               }
             }
@@ -449,7 +441,7 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
         const referenceParameterTypes = referenceType.parameterTypes || [];
         const proposedParameterTypes = proposedType.parameterTypes;
         if ( !_.isEqual( referenceParameterTypes, proposedParameterTypes ) ) {
-          appendProblem( `${typeName} parameter types changed from [${referenceParameterTypes.join( ', ' )}] to [${proposedParameterTypes.join( ', ' )}]. This may or may not 
+          appendProblem( `${typeName} parameter types changed from [${referenceParameterTypes.join( ', ' )}] to [${proposedParameterTypes!.join( ', ' )}]. This may or may not 
           be a breaking change, but we are reporting it just in case.` );
         }
 
@@ -460,16 +452,20 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
           const referenceDefaults = referenceAPI.phetioTypes[ typeName ].metadataDefaults;
           const proposedDefaults = proposedAPI.phetioTypes[ typeName ].metadataDefaults;
 
-          Object.keys( referenceDefaults ).forEach( key => {
-            if ( referenceDefaults[ key ] !== proposedDefaults[ key ] ) {
-              appendProblem( `${typeName} metadata value ${key} changed from "${referenceDefaults[ key ]}" to "${proposedDefaults[ key ]}". This may or may not be a breaking change, but we are reporting it just in case.` );
-            }
-          } );
+          if ( !!referenceDefaults !== !!proposedDefaults ) {
+            appendProblem( `${typeName} metadata defaults not found from "${referenceDefaults}" to "${proposedDefaults}". This may or may not be a breaking change, but we are reporting it just in case.` );
+          }
+          else if ( referenceDefaults && proposedDefaults ) {
+            ( Object.keys( referenceDefaults ) as Array<keyof PhetioElementMetadata> ).forEach( key => {
+              if ( referenceDefaults[ key ] !== proposedDefaults[ key ] ) {
+                appendProblem( `${typeName} metadata value ${key} changed from "${referenceDefaults[ key ]}" to "${proposedDefaults[ key ]}". This may or may not be a breaking change, but we are reporting it just in case.` );
+              }
+            } );
+          }
         }
       }
     }
   }
-
 
   return {
     breakingProblems: breakingProblems,
@@ -477,9 +473,9 @@ const phetioCompareAPIs = ( referenceAPI, proposedAPI, _, assert, options ) => {
   };
 };
 
-const apiSupportsAPIStateKeys = api => api.version && api.version.major >= 1 && api.version.minor >= 1;
+const apiSupportsAPIStateKeys = ( api: PhetioAPI ) => api.version && api.version.major >= 1 && api.version.minor >= 1;
 
-// @public - used to "up-convert" an old versioned API to the new (version >=1), structured tree API.
+// used to "up-convert" an old versioned API to the new (version >=1), structured tree API.
 phetioCompareAPIs.toStructuredTree = toStructuredTree;
 
 export default phetioCompareAPIs;

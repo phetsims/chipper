@@ -12,7 +12,7 @@
 import assert from 'assert';
 import fs from 'fs';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.ts';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import stringEncoding from '../common/stringEncoding.js';
@@ -39,14 +39,8 @@ export default function getInitializationScript( config: IntentionalAny ): strin
     profileFileSize, // {boolean}
     packageObject
   } = config;
-  assert( typeof repo === 'string', 'Requires repo' );
   assert( stringMap, 'Requires stringMap' );
-  assert( typeof version === 'string', 'Requires version' );
   assert( dependencies, 'Requires dependencies' );
-  assert( typeof timestamp === 'string', 'Requires timestamp' );
-  assert( typeof locale === 'string', 'Requires locale' );
-  assert( typeof includeAllLocales === 'boolean', 'Requires includeAllLocales' );
-  assert( typeof isDebugBuild === 'boolean', 'Requires isDebugBuild' );
 
   // Load localeData
   const fullLocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
