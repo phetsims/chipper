@@ -48,13 +48,23 @@ const minify = function( js: string, options?: Partial<MinifyOptions> ): string 
   // Promote to top level variables
   const { minify, babelTranspile, uglify, mangle, stripAssertions, stripLogging, beautify } = options;
 
+  // This assertion is safe to keep in, but do we want it? It may be better to think of babelTranspile as an override, see TODO: see https://github.com/phetsims/assert/issues/5
+  if ( stripAssertions && !babelTranspile ) {
+    throw new Error( 'stripAssertions requires babelTranspile' );
+  }
+
+  // TODO: This one throws an error during build, see TODO: see https://github.com/phetsims/assert/issues/5
+  // if ( stripAssertions && !minify ) {
+  //   throw new Error( 'stripAssertions requires minify' ); // Is this a graceful shutoff valve? TODO: see https://github.com/phetsims/assert/issues/5
+  // }
+
   if ( !minify ) {
     return js;
   }
 
   // Do transpilation before uglifying.
   if ( babelTranspile ) {
-    js = transpileForBuild( js );
+    js = transpileForBuild( js, stripAssertions );
   }
 
   const uglifyOptions = {
