@@ -49,9 +49,10 @@ const minify = function( js: string, options?: Partial<MinifyOptions> ): string 
   const { minify, babelTranspile, uglify, mangle, stripAssertions, stripLogging, beautify } = options;
 
   // This assertion is safe to keep in, but do we want it? It may be better to think of babelTranspile as an override, see TODO: see https://github.com/phetsims/assert/issues/5
-  if ( stripAssertions && !babelTranspile ) {
-    throw new Error( 'stripAssertions requires babelTranspile' );
-  }
+  // UPDATE: It actually fails a dot standalone build TODO: see https://github.com/phetsims/assert/issues/5
+  // if ( stripAssertions && !babelTranspile ) {
+  //   throw new Error( 'stripAssertions requires babelTranspile' );
+  // }
 
   // TODO: This one throws an error during build, see TODO: see https://github.com/phetsims/assert/issues/5
   // if ( stripAssertions && !minify ) {
