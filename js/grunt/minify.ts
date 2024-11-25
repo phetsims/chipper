@@ -42,22 +42,18 @@ const MINIFY_DEFAULTS: MinifyOptions = {
   beautify: false
 };
 
+/**
+ * Minifies the given JS code (with phet-relevant options). Note that often the parameters conflict with each other. For
+ * instance, during one phase of a dot standalone build, stripAssertions is true but babelTranspile is false.
+ *
+ * @param js
+ * @param options
+ */
 const minify = function( js: string, options?: Partial<MinifyOptions> ): string {
   options = _.assignIn( {}, MINIFY_DEFAULTS, options );
 
   // Promote to top level variables
   const { minify, babelTranspile, uglify, mangle, stripAssertions, stripLogging, beautify } = options;
-
-  // This assertion is safe to keep in, but do we want it? It may be better to think of babelTranspile as an override, see TODO: see https://github.com/phetsims/assert/issues/5
-  // UPDATE: It actually fails a dot standalone build TODO: see https://github.com/phetsims/assert/issues/5
-  // if ( stripAssertions && !babelTranspile ) {
-  //   throw new Error( 'stripAssertions requires babelTranspile' );
-  // }
-
-  // TODO: This one throws an error during build, see TODO: see https://github.com/phetsims/assert/issues/5
-  // if ( stripAssertions && !minify ) {
-  //   throw new Error( 'stripAssertions requires minify' ); // Is this a graceful shutoff valve? TODO: see https://github.com/phetsims/assert/issues/5
-  // }
 
   if ( !minify ) {
     return js;
