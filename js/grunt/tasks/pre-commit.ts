@@ -15,8 +15,7 @@
  *
  * OPTIONS:
  * --console: outputs information to the console for debugging
- * // TODO: rename --force to --allTasks https://github.com/phetsims/perennial/issues/404
- * --force: forces all tasks to run, even if they are disabled in the local preferences
+ * --allTasks: forces all tasks to run, even if they are disabled in the local preferences
  * --changed: run on all repos with working copy changes
  * --all: run on all repos
  *
@@ -33,17 +32,17 @@
  */
 
 import assert from 'assert';
+import path from 'path';
 import buildLocal from '../../../../perennial-alias/js/common/buildLocal.js';
+import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../../perennial-alias/js/common/execute.js';
-import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
-import tsxCommand from '../../../../perennial-alias/js/common/tsxCommand.js';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
-import getReposWithWorkingCopyChanges from '../../common/getReposWithWorkingCopyChanges.js';
 import getActiveRepos from '../../../../perennial-alias/js/common/getActiveRepos.js';
 import { Repo } from '../../../../perennial-alias/js/common/PerennialTypes.js';
-import dirname from '../../../../perennial-alias/js/common/dirname.js';
-import path from 'path';
+import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
+import tsxCommand from '../../../../perennial-alias/js/common/tsxCommand.js';
+import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import getReposWithWorkingCopyChanges from '../../common/getReposWithWorkingCopyChanges.js';
 
 // These repos do not require precommit hooks to be run
 const optOutRepos = [
@@ -61,19 +60,16 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
 
   // Re-spawn the same process on repos with working copy changes
   if ( getOption( 'changed' ) ) {
-
     const changedRepos = await getReposWithWorkingCopyChanges();
-    await spawnOnRepos( changedRepos, outputToConsole );
-    // TODO: Exit code would be nice, see https://github.com/phetsims/perennial/issues/404
+    const success = await spawnOnRepos( changedRepos, outputToConsole );
+    process.exit( success ? 0 : 1 );
     return;
   }
 
   // Re-spawn the same process on all repos
   if ( getOption( 'all' ) ) {
-
-    await spawnOnRepos( getActiveRepos(), outputToConsole );
-
-    // TODO: Exit code would be nice, see https://github.com/phetsims/perennial/issues/404
+    const success = await spawnOnRepos( getActiveRepos(), outputToConsole );
+    process.exit( success ? 0 : 1 );
     return;
   }
 
@@ -118,8 +114,7 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
     }
   } );
 
-  // TODO: This is kind of like * in the json, or --all. Is this a good API? See https://github.com/phetsims/perennial/issues/404
-  if ( getOption( 'force' ) ) {
+  if ( getOption( 'allTasks' ) ) {
     outputToConsole && console.log( 'forcing all tasks to run' );
     tasksToRun = [ ...possibleTasks ];
   }
@@ -197,8 +192,10 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
 /**
  * Spawns the same process on each repo in the list
  */
-async function spawnOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<void> {
+async function spawnOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<boolean> {
   const startTime = Date.now();
+
+  let success = true;
 
   // This is done sequentially so we don't spawn a bunch of uncached tsc at once, but in the future we may want to optimize
   // to run one sequentially then the rest in parallel
@@ -223,15 +220,16 @@ async function spawnOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<
     } );
     outputToConsole && console.log( 'result:', result );
     if ( result.code === 0 ) {
-
       console.log( 'Success' );
     }
     else {
       console.log();
       result.stdout.trim().length > 0 && console.log( result.stdout.trim() );
       result.stderr.trim().length > 0 && console.log( result.stderr.trim() );
+      success = false;
     }
   }
 
   console.log( 'Done in ' + ( Date.now() - startTime ) + 'ms' );
+  return success;
 }
