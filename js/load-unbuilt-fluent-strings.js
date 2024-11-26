@@ -13,18 +13,20 @@
   window.phet = window.phet || {};
   window.phet.chipper = window.phet.chipper || {};
 
-  const repoName = phet.chipper.packageObject.name;
-
   // Constructing the string map
   window.phet.chipper.fluentStrings = {};
 
-  const requestFluentFile = locale => {
+  const requestFluentFile = ( repoName, locale ) => {
     const xhr = new XMLHttpRequest();
-    xhr.open( 'GET', `${repoName}-strings_${locale}.ftl`, true );
+    xhr.open( 'GET', `../${repoName}/${repoName}-strings_${locale}.ftl`, true );
     xhr.responseType = 'text';
     xhr.onload = () => {
       if ( xhr.status === 200 ) {
-        window.phet.chipper.fluentStrings[ locale ] = xhr.response;
+        if ( !window.phet.chipper.fluentStrings[ locale ] ) {
+          window.phet.chipper.fluentStrings[ locale ] = {};
+        }
+
+        window.phet.chipper.fluentStrings[ locale ][ repoName ] = xhr.response;
       }
     };
 
@@ -44,7 +46,20 @@
   //   support fallback locales appropriately.
   const localeList = [ 'en', 'es' ];
 
-  localeList.forEach( locale => {
-    requestFluentFile( locale );
-  } );
+  // TODO: How to manage multiple repos? https://github.com/phetsims/joist/issues/992
+  //  For now, we just include the main repo and anything in phetLibs (to test a suite like greenhouse-effect).
+  //  But this does not handle collisions. ONLY ONE FLUENT FILE PER LOCALE IS SUPPORTED,
+  //  localizedFluentBundleProperty will update
+  const repoList = [ phet.chipper.packageObject.name ];
+  if ( phet.chipper.packageObject.phet && phet.chipper.packageObject.phet.phetLibs ) {
+    phet.chipper.packageObject.phet.phetLibs.forEach( phetLib => {
+      repoList.push( phetLib );
+    } );
+  }
+
+  repoList.forEach( repoName => {
+    localeList.forEach( locale => {
+      requestFluentFile( repoName, locale );
+    } );
+  } )
 } )();

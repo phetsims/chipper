@@ -24,12 +24,24 @@ const FluentRef = Fluent;
 // Create the Fluent bundles for each locale, and save them to the map for use.
 localeProperty.availableRuntimeLocales.forEach( locale => {
 
+  const repoList = [ phet.chipper.packageObject.name ];
+  if ( phet.chipper.packageObject.phet && phet.chipper.packageObject.phet.phetLibs ) {
+    phet.chipper.packageObject.phet.phetLibs.forEach( ( phetLib: string ) => {
+      repoList.push( phetLib );
+    } );
+  }
+
   // If strings are available for the locale, create a bundle. Graceful fallbacks
   // happen in the Properties below.
   if ( phet.chipper.fluentStrings[ locale ] ) {
     const bundle = new FluentRef.FluentBundle( locale );
-    const resource = FluentRef.FluentResource.fromString( phet.chipper.fluentStrings[ locale ] );
-    bundle.addResource( resource );
+
+    repoList.forEach( repo => {
+
+      // TODO: Overlapping messages will be overwritten!! Need to handle this case.
+      const resource = FluentRef.FluentResource.fromString( phet.chipper.fluentStrings[ locale ][ repo ] );
+      bundle.addResource( resource );
+    } );
 
     bundleMap.set( locale, bundle );
   }
