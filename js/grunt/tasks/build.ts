@@ -9,7 +9,7 @@
  *  --XHTML - Includes an xhtml/ directory in the build output that contains a runnable XHTML form of the sim (with
  *            a separated-out JS file).
  *  --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales
- *  --noTranspile - Flag to opt out of transpiling repos before build. This should only be used if you are confident that chipper/dist is already correct (to save time).
+ *  --transpile=false - To opt out of transpiling repos before build. This should only be used if you are confident that chipper/dist is already correct (to save time).
  *  --tsc=false - To opt out of type checking before build. This should only be used if you are confident that TypeScript is already errorless (to save time).
  *  --encodeStringMap=false - Disables the encoding of the string map in the built file. This is useful for debugging.
  *
@@ -34,7 +34,6 @@ import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/g
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
-import transpile from '../../common/transpile.js';
 import buildRunnable from '../buildRunnable.js';
 import buildStandalone from '../buildStandalone.js';
 import getPhetLibs from '../getPhetLibs.js';
@@ -81,7 +80,8 @@ export const buildPromise = ( async () => {
       }
     } );
 
-    !getOption( 'noTranspile' ) && await phetTimingLog.startAsync( 'transpile', async () => {
+    const transpile = isOptionKeyProvided( 'transpile' ) ? getOption( 'transpile' ) : true;
+    transpile && await phetTimingLog.startAsync( 'transpile', async () => {
 
       // If that succeeds, then convert the code to JS
       await transpile( {
