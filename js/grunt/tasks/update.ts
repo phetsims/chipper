@@ -37,7 +37,7 @@ else {
   ( async () => {
 
     // modulify is graceful if there are no files that need modulifying.
-    await ( await import( './modulify.ts' ) ).modulifyPromise;
+    await ( await import( './modulify.js' ) ).modulifyPromise;
 
     // update README.md only for simulations
     if ( packageObject.phet.simulation && !packageObject.phet.readmeCreatedManually ) {

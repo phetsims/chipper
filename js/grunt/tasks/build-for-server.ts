@@ -7,5 +7,5 @@
  */
 
 ( async () => {
-  await ( await import( './build.ts' ) ).buildPromise;
+  await ( await import( './build.js' ) ).buildPromise;
 } )();
