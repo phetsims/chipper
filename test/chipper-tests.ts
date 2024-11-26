@@ -16,3 +16,4 @@
 
 import '../js/common/ChipperStringUtilTests.js';
 import '../js/phet-io/phetioCompareAPIsTests.js';
+import '../js/phet-io/isInitialStateCompatibleTests.js';

@@ -16,6 +16,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
+import isInitialStateCompatible from './isInitialStateCompatible.js';
 import { FlattenedAPIPhetioElements, PhetioAPI, PhetioElement, PhetioElementMetadata, PhetioElementMetadataValue, PhetioElements, PhetioElementState } from '../../../tandem/js/phet-io-types.js';
 
 export type PhetioCompareAPIsOptions = {
@@ -37,16 +38,6 @@ const DATA_KEY_NAME = '_data';
 
 // Is not the reserved keys to store data/metadata on PhET-iO Elements.
 const isChildKey = ( key: string ) => key !== METADATA_KEY_NAME && key !== DATA_KEY_NAME;
-
-// TODO: Remove this duplication once phetioCompareAPIs can import isInitialStateCompatible, https://github.com/phetsims/chipper/issues/1526
-// DUPLICATION ALERT!
-/* @formatter:off */
-// eslint-disable-next-line phet/bad-text
-// @ts-expect-error see TO-DO above
-  function areCompatible( testValue, groundTruthValue ) { if ( Array.isArray( groundTruthValue ) ) { if ( !Array.isArray( testValue ) ) { return false; } if ( testValue.length !== groundTruthValue.length ) { return false; } for ( let i = 0; i < groundTruthValue.length; i++ ) { const newItem = groundTruthValue[ i ]; const oldItem = testValue[ i ]; if ( !areCompatible( oldItem, newItem ) ) { return false; } } return true; } if ( typeof groundTruthValue === 'object' && groundTruthValue !== null ) { if ( typeof testValue !== 'object' || testValue === null || Array.isArray( testValue ) ) { return false; } for ( const key in groundTruthValue ) { if ( groundTruthValue.hasOwnProperty( key ) ) { if ( !testValue.hasOwnProperty( key ) ) { return false; } if ( !areCompatible( testValue[ key ], groundTruthValue[ key ] ) ) { return false; } } } return true; } return testValue === groundTruthValue;} // eslint-disable-line
-// @ts-expect-error see TO-DO above
-  const isInitialStateCompatible = ( groundTruthState, testState ) => areCompatible( testState, groundTruthState );
-  /* @formatter:on */
 
 /**
  * "up-convert" an API to be in the format of API version >=1.0. This generally is thought of as a "sparse, tree-like" API.

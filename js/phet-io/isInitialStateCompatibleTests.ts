@@ -11,7 +11,7 @@
  */
 
 
-import isInitialStateCompatible from './isInitialStateCompatible.js';
+import isInitialStateCompatible from '../browser-and-node/isInitialStateCompatible.js';
 
 QUnit.module( 'isInitialStateCompatible' );
 
