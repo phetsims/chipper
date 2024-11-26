@@ -68,11 +68,11 @@ export type MinifyOptions = {
  * @param encodeStringMap
  * @param compressScripts
  * @param profileFileSize
- * @returns - Does not resolve a value
+ * @param typeCheck
  */
 export default async function( repo: string, minifyOptions: MinifyOptions, allHTML: boolean, brand: string, localesOption: string,
                                encodeStringMap: boolean, compressScripts: boolean, profileFileSize: boolean,
-                               noTSC: boolean ): Promise<void> {
+                               typeCheck: boolean ): Promise<void> {
 
   if ( brand === 'phet-io' ) {
 
@@ -417,7 +417,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   }
 
   if ( brand === 'phet-io' ) {
-    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, true, noTSC );
+    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, true, typeCheck );
   }
 
   // Thumbnails and twitter card

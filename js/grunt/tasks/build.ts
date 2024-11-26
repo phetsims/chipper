@@ -10,7 +10,7 @@
  *            a separated-out JS file).
  *  --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales
  *  --noTranspile - Flag to opt out of transpiling repos before build. This should only be used if you are confident that chipper/dist is already correct (to save time).
- *  --noTSC - Flag to opt out of type checking before build. This should only be used if you are confident that TypeScript is already errorless (to save time).
+ *  --tsc=false - To opt out of type checking before build. This should only be used if you are confident that TypeScript is already errorless (to save time).
  *  --encodeStringMap=false - Disables the encoding of the string map in the built file. This is useful for debugging.
  *
  * Minify-specific options:
@@ -30,7 +30,7 @@ import path from 'path';
 import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
 import check from '../../../../perennial-alias/js/grunt/check.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
@@ -63,8 +63,8 @@ export const buildPromise = ( async () => {
     // Run the type checker first.
     const brands = getBrands( repo );
 
-    const noTSC = getOption( 'noTSC' );
-    !noTSC && await phetTimingLog.startAsync( 'tsc', async () => {
+    const typeCheck = isOptionKeyProvided( 'tsc' ) ? getOption( 'tsc' ) : true;
+    typeCheck && await phetTimingLog.startAsync( 'tsc', async () => {
 
       // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
       // do NOT run this for phet-lib, since it is type-checking things under src/, which is not desirable.
@@ -135,7 +135,7 @@ export const buildPromise = ( async () => {
         console.log( `Building brand: ${brand}` );
 
         await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
-          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, noTSC );
+          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, typeCheck );
         } );
       }
     }

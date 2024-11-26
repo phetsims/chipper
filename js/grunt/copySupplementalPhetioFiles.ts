@@ -100,7 +100,7 @@ const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.m
 
 const STUDIO_BUILT_FILENAME = 'studio.min.js';
 
-export default async ( repo: string, version: string, simulationDisplayName: string, packageObject: IntentionalAny, generateMacroAPIFile = false, noTSC = false ): Promise<void> => {
+export default async ( repo: string, version: string, simulationDisplayName: string, packageObject: IntentionalAny, generateMacroAPIFile = false, typeCheck = true ): Promise<void> => {
 
   const repoPhetLibs = getPhetLibs( repo, 'phet-io' );
   assert && assert( _.every( getPhetLibs( 'phet-io-wrappers' ), repo => repoPhetLibs.includes( repo ) ),
@@ -354,7 +354,7 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build
-  await handleLib( repo, buildDir, noTSC, filterWrapper );
+  await handleLib( repo, buildDir, typeCheck, filterWrapper );
 
   // Create the zipped file that holds all needed items to run PhET-iO offline. NOTE: this must happen after copying wrapper
   await handleOfflineArtifact( buildDir, repo, version );
@@ -368,7 +368,7 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   // create the client guides
   handleClientGuides( repo, simulationDisplayName, buildDir, version, simRepoSHA );
 
-  await handleStudio( repo, wrappersLocation, noTSC );
+  await handleStudio( repo, wrappersLocation, typeCheck );
 
   if ( generateMacroAPIFile ) {
     const fullAPI = ( await generatePhetioMacroAPI( [ repo ], {
@@ -388,10 +388,11 @@ export default async ( repo: string, version: string, simulationDisplayName: str
 
  * @param repo
  * @param buildDir
+ * @param typeCheck
  * @param filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(absPath, contents)"
  */
-const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
+const handleLib = async ( repo: string, buildDir: string, typeCheck: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
   // @ts-expect-error debug is unknown in the type
   grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_PRELOADS );
   fs.mkdirSync( `${buildDir}lib`, { recursive: true } );
@@ -408,7 +409,7 @@ const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter
   const migrationProcessorsCode = await getCompiledMigrationProcessors( repo, buildDir );
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationProcessorsCode}`, { stripAssertions: false } );
 
-  if ( !noTSC ) {
+  if ( typeCheck ) {
     const success = await check( {
       repo: 'phet-io-wrappers'
     } );
@@ -659,12 +660,12 @@ const generateAndWriteClientGuide = ( repoName: string, title: string, simulatio
  * Support building studio. This compiles the studio modules into a runnable, and copies that over to the expected spot
  * on build.
  */
-const handleStudio = async ( repo: string, wrappersLocation: string, noTSC: boolean ): Promise<void> => {
+const handleStudio = async ( repo: string, wrappersLocation: string, typeCheck: boolean ): Promise<void> => {
 
   // @ts-expect-error debug is unknown in the type
   grunt.log.debug( 'building studio' );
 
-  if ( !noTSC ) {
+  if ( typeCheck ) {
     const success = await check( {
       repo: 'studio'
     } );
