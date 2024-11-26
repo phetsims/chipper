@@ -340,8 +340,8 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
 
   // Check for: missing IOTypes, missing methods, or differing parameter types or return types
   for ( const typeName in referenceAPI.phetioTypes ) {
-    // TODO: AFTER_COMMIT We need a notion of phetioDesigned for Type comparison. https://github.com/phetsims/phet-io/issues/1951
-    // TODO: AFTER_COMMIT add comparison for stateSchema https://github.com/phetsims/phet-io/issues/1951
+    // TODO: We need a notion of phetioDesigned for Type comparison. https://github.com/phetsims/phet-io/issues/1951
+    // TODO: add comparison for stateSchema https://github.com/phetsims/phet-io/issues/1951
 
     if ( referenceAPI.phetioTypes.hasOwnProperty( typeName ) ) {
 

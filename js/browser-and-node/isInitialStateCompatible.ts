@@ -25,7 +25,7 @@ function areCompatible( groundTruthValue: IntentionalAny, testValue: Intentional
     }
 
     // The old array must have at least as many items as the new array
-    // TODO: AFTER_COMMIT hard code something for validValues for supporting sets, https://github.com/phetsims/phet-io/issues/1951
+    // TODO: Hard code something for validValues for supporting sets? https://github.com/phetsims/phet-io/issues/1951
     //       key === 'validValues' -> treat as set
     if ( testValue.length !== groundTruthValue.length ) {
       return false;
