@@ -7,7 +7,7 @@
 import assert from 'assert';
 import _ from 'lodash';
 import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
-import phetioCompareAPIs from './phetioCompareAPIs.js';
+import phetioCompareAPIs from '../browser-and-node/phetioCompareAPIs.js';
 
 qunit.module( 'phetioCompareAPIs' );
 

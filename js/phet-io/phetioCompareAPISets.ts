@@ -8,7 +8,7 @@ import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
 import { PhetioAPIs } from './generatePhetioMacroAPI.js';
-import phetioCompareAPIs, { PhetioCompareAPIsOptions } from './phetioCompareAPIs.js';
+import phetioCompareAPIs, { PhetioCompareAPIsOptions } from '../browser-and-node/phetioCompareAPIs.js';
 
 const jsondiffpatch = require( '../../../sherpa/lib/jsondiffpatch-v0.3.11.umd' ).create( {} );
 
