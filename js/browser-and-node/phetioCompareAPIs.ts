@@ -262,7 +262,6 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
 
             // Missing but expected state is a breaking problem
             // It is also a designed problem if we expected state in a designed subtree
-            // TODO: is "false" a bug? shouldn't we pass isDesignedElement? https://github.com/phetsims/chipper/issues/1526
             appendBothProblems( `${phetioID}._data.initialState is missing from proposed API`, false );
           }
         }
