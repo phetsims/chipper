@@ -34,6 +34,7 @@ import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/g
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import transpile from '../../common/transpile.js';
 import buildRunnable from '../buildRunnable.js';
 import buildStandalone from '../buildStandalone.js';
 import getPhetLibs from '../getPhetLibs.js';
@@ -80,8 +81,8 @@ export const buildPromise = ( async () => {
       }
     } );
 
-    const transpile = isOptionKeyProvided( 'transpile' ) ? getOption( 'transpile' ) : true;
-    transpile && await phetTimingLog.startAsync( 'transpile', async () => {
+    const doTranspile = isOptionKeyProvided( 'transpile' ) ? getOption( 'transpile' ) : true;
+    doTranspile && await phetTimingLog.startAsync( 'transpile', async () => {
 
       // If that succeeds, then convert the code to JS
       await transpile( {
