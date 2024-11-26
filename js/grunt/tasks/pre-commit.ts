@@ -23,7 +23,7 @@
  * --lint: runs eslint on the repo
  * --report-media: checks for missing or unused media files
  * --check: runs check.js
- * --test: runs qunit tests // TODO: rename test to unit-test, see https://github.com/phetsims/perennial/issues/404
+ * --unit-test: runs qunit tests
  * --phet-io-api: compares the PhET-iO API with the previous version
  *
  * See also phet-info/git-template-dir/hooks/pre-commit for how this is used in precommit hooks.
@@ -78,7 +78,7 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
     process.exit( 0 );
   }
 
-  const possibleTasks = [ 'lint', 'report-media', 'check', 'test', 'phet-io-api' ];
+  const possibleTasks = [ 'lint', 'report-media', 'check', 'unit-test', 'phet-io-api' ];
 
   // By default, run all tasks
   let tasksToRun = [ ...possibleTasks ];
