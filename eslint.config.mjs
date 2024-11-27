@@ -7,22 +7,10 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import { getBrowserConfiguration } from '../perennial-alias/js/eslint/config/browser.eslint.config.mjs';
-import rootEslintConfig from '../perennial-alias/js/eslint/config/root.eslint.config.mjs';
-import getNodeConfiguration from '../perennial-alias/js/eslint/config/util/getNodeConfiguration.mjs';
-
-const browserFiles = [
-  'js/*', // not recursive
-  'js/sim-tests/**/*'
-];
+import nodeEslintConfig from '../perennial-alias/js/eslint/config/node.eslint.config.mjs';
 
 export default [
-  ...rootEslintConfig,
-  ...getBrowserConfiguration( { files: browserFiles } ),
-  ...getNodeConfiguration( {
-    files: [ '**/*' ],
-    ignores: browserFiles
-  } ),
+  ...nodeEslintConfig,
   {
     rules: {
       'phet/bad-chipper-text': 'error',
