@@ -6,7 +6,7 @@
     "js/*",
 
     // and the tests
-    "js/sim-tests/**/*"
+    "js/browser/sim-tests/**/*"
   ],
   "references": [
     {

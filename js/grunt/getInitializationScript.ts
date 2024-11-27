@@ -79,6 +79,6 @@ export default function getInitializationScript( config: IntentionalAny ): strin
     PHET_IS_DEBUG_BUILD: !!isDebugBuild,
     PHET_ALLOW_LOCALE_SWITCHING: !!allowLocaleSwitching,
     PHET_PACKAGE_OBJECT: JSON.stringify( packageObject ),
-    IE_DETECTION_SCRIPT: transpileForBuild( grunt.file.read( '../chipper/js/ie-detection.js' ), true )
+    IE_DETECTION_SCRIPT: transpileForBuild( grunt.file.read( '../chipper/js/browser/ie-detection.js' ), true )
   } );
 }

@@ -6,12 +6,12 @@
  * @author Jonathan Olson <jonathan.olson>
  */
 
-import TinyProperty from '../../axon/js/TinyProperty.js';
-import TProperty from '../../axon/js/TProperty.js';
-import localeProperty, { Locale } from '../../joist/js/i18n/localeProperty.js';
-import arrayRemove from '../../phet-core/js/arrayRemove.js';
-import { PhetioID } from '../../tandem/js/phet-io-types.js';
-import Tandem from '../../tandem/js/Tandem.js';
+import TinyProperty from '../../../axon/js/TinyProperty.js';
+import TProperty from '../../../axon/js/TProperty.js';
+import localeProperty, { Locale } from '../../../joist/js/i18n/localeProperty.js';
+import arrayRemove from '../../../phet-core/js/arrayRemove.js';
+import { PhetioID } from '../../../tandem/js/phet-io-types.js';
+import Tandem from '../../../tandem/js/Tandem.js';
 import chipper from './chipper.js';
 import { localizedStrings } from './getStringModule.js';
 import LocalizedStringProperty from './LocalizedStringProperty.js';

@@ -26,7 +26,7 @@ export default async ( repo: string, options?: IntentionalAny ): Promise<void> =
     bodystart: `<div id="qunit"></div>\n<div id="qunit-fixture"></div>${repo === 'scenery' ? '<div id="display"></div>' : ''}`,
 
     // Add QUnit JS
-    addedPreloads: [ '../sherpa/lib/qunit-2.20.0.js', '../chipper/js/sim-tests/qunit-connector.js' ],
+    addedPreloads: [ '../sherpa/lib/qunit-2.20.0.js', '../chipper/js/browser/sim-tests/qunit-connector.js' ],
 
     // Do not show the splash screen
     stripPreloads: [ '../joist/js/splash.js' ],

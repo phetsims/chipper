@@ -93,7 +93,7 @@ const JSDOC_FILES = [
   transpiledClientPath,
   '../tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
-  '../chipper/js/initialize-globals.js',
+  '../chipper/js/browser/initialize-globals.js',
   '../chipper/dist/js/perennial-alias/js/common/SimVersion.js'
 ];
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';

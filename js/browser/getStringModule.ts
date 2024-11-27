@@ -13,14 +13,14 @@
  * @author Jonathan Olson <jonathan.olson>
  */
 
-import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
-import { Locale } from '../../joist/js/i18n/localeProperty.js';
-import CouldNotYetDeserializeError from '../../tandem/js/CouldNotYetDeserializeError.js';
-import { PhetioID } from '../../tandem/js/phet-io-types.js';
-import PhetioObject from '../../tandem/js/PhetioObject.js';
-import Tandem from '../../tandem/js/Tandem.js';
-import IOType from '../../tandem/js/types/IOType.js';
-import ObjectLiteralIO from '../../tandem/js/types/ObjectLiteralIO.js';
+import TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
+import { Locale } from '../../../joist/js/i18n/localeProperty.js';
+import CouldNotYetDeserializeError from '../../../tandem/js/CouldNotYetDeserializeError.js';
+import { PhetioID } from '../../../tandem/js/phet-io-types.js';
+import PhetioObject from '../../../tandem/js/PhetioObject.js';
+import Tandem from '../../../tandem/js/Tandem.js';
+import IOType from '../../../tandem/js/types/IOType.js';
+import ObjectLiteralIO from '../../../tandem/js/types/ObjectLiteralIO.js';
 import LocalizedString, { LocalizedStringStateDelta, StringsStateStateObject } from './LocalizedString.js';
 
 // constants
