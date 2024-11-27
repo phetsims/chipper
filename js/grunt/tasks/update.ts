@@ -12,8 +12,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import fs from 'fs';
-import { readFileSync } from 'fs';
+import fs, { readFileSync } from 'fs';
 import _ from 'lodash';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';

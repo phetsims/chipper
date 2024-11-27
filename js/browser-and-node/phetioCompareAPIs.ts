@@ -16,8 +16,8 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import isInitialStateCompatible from './isInitialStateCompatible.js';
 import { FlattenedAPIPhetioElements, PhetioAPI, PhetioElement, PhetioElementMetadata, PhetioElementMetadataValue, PhetioElements, PhetioElementState } from '../../../tandem/js/phet-io-types.js';
+import isInitialStateCompatible from './isInitialStateCompatible.js';
 
 export type PhetioCompareAPIsOptions = {
   compareBreakingAPIChanges: boolean;
