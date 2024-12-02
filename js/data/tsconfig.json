@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig/buildtools/tsconfig.json",
-  // this reference needs to be duplicated with the super config, because references to not extend
-  "references": [
-    {
-      "path": "../../tsconfig/buildtools/tsconfig-build-tool-dependencies.json"
-    }
-  ]
-}

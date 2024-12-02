@@ -9,11 +9,29 @@
     "../../test/**/*",
     "../../eslint/**/*",
     // Gruntfile and eslint.config.mjs
-    "../../*"
+    "../../*",
+    /////////////////////////////////////////
+    // Dependencies outside of chipper
+    "../../../perennial-alias/js/common/**/*",
+    "../../../perennial-alias/js/npm-dependencies/**/*",
+    "../../../perennial-alias/js/grunt/tasks/util/**/*",
+    "../../../perennial-alias/js/test/puppeteerQUnit.js",
+    "../../../perennial-alias/js/grunt/check.ts",
+    "../../../perennial-alias/js/eslint/lint.ts",
+    "../../../perennial-alias/js/eslint/divideIntoBatches.ts",
+    "../../../perennial-alias/js/eslint/getLintCLIOptions.ts",
+    "../../../perennial-alias/js/grunt/tasks/lint.ts",
+    "../../../perennial-alias/js/phet-types-module.d.ts",
+    // TODO: should we split buildjson into a subsection that can be used by this one too (just phet-core?)
+    "../../../phet-core/js/types/**/*",
+    "../../../tandem/js/phet-io-types.ts",
+    // TODO: Should have its now tsconfig for this in chipper, and use as a reference here instead of include? https://github.com/phetsims/perennial/issues/418
+    "../../../chipper/js/browser-and-node/**/*"
   ],
+  // DUPLICATION ALERT, any additions here need to be added to ../js/tsconfig.json
   "references": [
     {
-      "path": "./tsconfig-build-tool-dependencies.json"
+      "path": "../../../perennial-alias/js/browser-and-node/tsconfig.json"
     }
   ]
 }
