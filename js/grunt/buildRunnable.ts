@@ -11,6 +11,7 @@ import fs, { readFileSync } from 'fs';
 import jimp from 'jimp';
 import _ from 'lodash';
 import zlib from 'zlib';
+import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import phetTimingLog from '../../../perennial-alias/js/common/phetTimingLog.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperConstants from '../common/ChipperConstants.js';
@@ -75,9 +76,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
                                typeCheck: boolean ): Promise<void> {
 
   if ( brand === 'phet-io' ) {
-
-    // TODO: Do not assert && assert, see https://github.com/phetsims/chipper/issues/1465
-    assert && assert( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
+    affirm( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
   }
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
