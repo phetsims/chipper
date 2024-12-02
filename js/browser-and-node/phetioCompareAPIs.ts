@@ -16,7 +16,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-// Import only the types from LoDashStatic
+// Import only the types from LoDashStatic, the actual lodash instance is dependency-injected at runtime
 import type { LoDashStatic } from 'lodash';
 
 import { FlattenedAPIPhetioElements, PhetioAPI, PhetioElement, PhetioElementMetadata, PhetioElementMetadataValue, PhetioElements, PhetioElementState } from '../../../tandem/js/phet-io-types.js';
