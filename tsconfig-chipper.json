@@ -1,4 +1,4 @@
-{
+{ // TODO: Rename to tsconfig-build-tool-dependencies.json
   "extends": "../perennial-alias/tsconfig/tsconfig-node.json",
   // Entry points for checked out resources that may not be on main, but need to version together. These must be usable
   // by chipper
@@ -16,7 +16,12 @@
     // TODO: should we split buildjson into a subsection that can be used by this one too (just phet-core?)   // TODO: split buildjson into a subsection that can be used by this one too (just phet-core?)
     "../phet-core/js/types/**/*",
     "../tandem/js/phet-io-types.ts",
-    "../perennial-alias/js/browser-and-node/affirm.ts",
-    "../chipper/js/browser-and-node/**/*" // TODO: Should have its now tsconfig for this in chipper? https://github.com/phetsims/perennial/issues/418
+    // TODO: Should have its now tsconfig for this in chipper, and use as a reference here instead of include? https://github.com/phetsims/perennial/issues/418
+    "../chipper/js/browser-and-node/**/*"
+  ],
+  "references": [
+    {
+      "path": "../perennial-alias/js/browser-and-node/tsconfig.json"
+    }
   ]
 }
