@@ -18,6 +18,7 @@
 
 // Import only the types from LoDashStatic, the actual lodash instance is dependency-injected at runtime
 import type { LoDashStatic } from 'lodash';
+import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 
 import { FlattenedAPIPhetioElements, PhetioAPI, PhetioElement, PhetioElementMetadata, PhetioElementMetadataValue, PhetioElements, PhetioElementState } from '../../../tandem/js/phet-io-types.js';
 import isInitialStateCompatible from './isInitialStateCompatible.js';
@@ -31,8 +32,6 @@ type PhetioCompareAPIsResult = {
   breakingProblems: string[];
   designedProblems: string[];
 };
-
-type Assert = undefined | ( ( bool: any, message?: string ) => void );
 
 const METADATA_KEY_NAME = '_metadata';
 const DATA_KEY_NAME = '_data';
@@ -79,11 +78,11 @@ const toStructuredTree = ( api: { phetioElements: FlattenedAPIPhetioElements }, 
   return sparseAPI;
 };
 
-const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: LoDashStatic, assert: Assert ): PhetioElementMetadata => {
+const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: LoDashStatic ): PhetioElementMetadata => {
   const ioTypeName = phetioElement[ METADATA_KEY_NAME ] ? ( phetioElement[ METADATA_KEY_NAME ].phetioTypeName || 'ObjectIO' ) : 'ObjectIO';
 
   if ( api.version ) {
-    const defaults = getMetadataDefaults( ioTypeName, api, _, assert );
+    const defaults = getMetadataDefaults( ioTypeName, api, _ );
     return _.merge( defaults, phetioElement[ METADATA_KEY_NAME ] );
   }
   else {
@@ -96,11 +95,11 @@ const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: LoD
 /**
  * @returns - defensive copy, non-mutating
  */
-const getMetadataDefaults = ( typeName: string, api: PhetioAPI, _: LoDashStatic, assert: Assert ): PhetioElementMetadata => {
+const getMetadataDefaults = ( typeName: string, api: PhetioAPI, _: LoDashStatic ): PhetioElementMetadata => {
   const entry = api.phetioTypes[ typeName ];
-  assert && assert( entry, `entry missing: ${typeName}` );
+  affirm( entry, `entry missing: ${typeName}` );
   if ( entry.supertype ) {
-    return _.merge( getMetadataDefaults( entry.supertype, api, _, assert ), entry.metadataDefaults );
+    return _.merge( getMetadataDefaults( entry.supertype, api, _ ), entry.metadataDefaults );
   }
   else {
     return _.merge( {}, entry.metadataDefaults ) as PhetioElementMetadata;
@@ -120,10 +119,9 @@ const isOldAPIVersion = ( api: PhetioAPI ): boolean => {
  * @param referenceAPI - the "ground truth" or reference API
  * @param proposedAPI - the proposed API for comparison with referenceAPI
  * @param _ - lodash, so this can be used from different contexts.
- * @param assert - so this can be used from different contexts
  * @param providedOptions
  */
-const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: LoDashStatic, assert: Assert, providedOptions?: Partial<PhetioCompareAPIsOptions> ): PhetioCompareAPIsResult => {
+const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: LoDashStatic, providedOptions?: Partial<PhetioCompareAPIsOptions> ): PhetioCompareAPIsResult => {
 
   // If the proposed version predates 1.0, then bring it forward to the structured tree with metadata under `_metadata`.
   if ( isOldAPIVersion( proposedAPI ) ) {
@@ -172,8 +170,8 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
       // Override isDesigned, if specified. Once on, you cannot turn off a subtree.
       isDesignedElement = isDesignedElement || reference[ METADATA_KEY_NAME ].phetioDesigned;
 
-      const referenceCompleteMetadata = getMetadataValues( reference, referenceAPI, _, assert );
-      const proposedCompleteMetadata = getMetadataValues( proposed, proposedAPI, _, assert );
+      const referenceCompleteMetadata = getMetadataValues( reference, referenceAPI, _ );
+      const proposedCompleteMetadata = getMetadataValues( proposed, proposedAPI, _ );
 
       /**
        * Push any problems that may exist for the provided metadataKey.

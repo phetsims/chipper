@@ -4,7 +4,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
 import phetioCompareAPIs, { PhetioCompareAPIsOptions } from '../browser-and-node/phetioCompareAPIs.js';
@@ -39,7 +38,7 @@ export default async ( repos: string[], proposedAPIs: PhetioAPIs, options?: Part
       throw new Error( `No proposedAPI for repo: ${repo}` );
     }
 
-    const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, {
+    const comparisonData = phetioCompareAPIs( referenceAPI, proposedAPI, _, {
       compareBreakingAPIChanges: options.compareBreakingAPIChanges,
       compareDesignedAPIChanges: !!phetioSection.compareDesignedAPIChanges // determined from the package.json flag
     } );

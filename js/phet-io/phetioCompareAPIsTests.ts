@@ -4,7 +4,6 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import assert from 'assert';
 import _ from 'lodash';
 import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
 import { PhetioAPI } from '../../../tandem/js/phet-io-types.js';
@@ -12,9 +11,8 @@ import phetioCompareAPIs, { PhetioCompareAPIsOptions } from '../browser-and-node
 
 qunit.module( 'phetioCompareAPIs' );
 
-
 const _phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, options?: Partial<PhetioCompareAPIsOptions> ) => {
-  return phetioCompareAPIs( referenceAPI, proposedAPI, _, assert, options );
+  return phetioCompareAPIs( referenceAPI, proposedAPI, _, options );
 };
 
 // To cover the boilerplate that will be largely copied around otherwise.
