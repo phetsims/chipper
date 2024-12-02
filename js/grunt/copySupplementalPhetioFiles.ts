@@ -14,7 +14,7 @@ import _ from 'lodash';
 import path from 'path';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
-import SimVersion from '../../../perennial-alias/js/common/SimVersion.js';
+import SimVersion from '../../../perennial-alias/js/browser-and-node/SimVersion.js';
 import check from '../../../perennial-alias/js/grunt/check.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
@@ -94,7 +94,7 @@ const JSDOC_FILES = [
   '../tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
   '../chipper/js/browser/initialize-globals.js',
-  '../chipper/dist/js/perennial-alias/js/common/SimVersion.js'
+  '../chipper/dist/js/perennial-alias/js/browser-and-node/SimVersion.js'
 ];
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
