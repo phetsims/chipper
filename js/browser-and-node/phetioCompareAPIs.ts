@@ -16,6 +16,9 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
+// Import only the types from LoDashStatic
+import type { LoDashStatic } from 'lodash';
+
 import { FlattenedAPIPhetioElements, PhetioAPI, PhetioElement, PhetioElementMetadata, PhetioElementMetadataValue, PhetioElements, PhetioElementState } from '../../../tandem/js/phet-io-types.js';
 import isInitialStateCompatible from './isInitialStateCompatible.js';
 
@@ -29,8 +32,6 @@ type PhetioCompareAPIsResult = {
   designedProblems: string[];
 };
 
-// TODO: how to type this? https://github.com/phetsims/chipper/issues/1465
-type Lodash = any;
 type Assert = undefined | ( ( bool: any, message?: string ) => void );
 
 const METADATA_KEY_NAME = '_metadata';
@@ -44,8 +45,8 @@ const isChildKey = ( key: string ) => key !== METADATA_KEY_NAME && key !== DATA_
  * @returns - In this version, phetioElements will be structured as a tree, but will have a verbose and complete
  *                  set of all metadata keys for each element. There will not be `metadataDefaults` in each type.
  */
-const toStructuredTree = ( api: { phetioElements: FlattenedAPIPhetioElements }, _: Lodash ): PhetioAPI => {
-  const sparseAPI: PhetioAPI = _.cloneDeep( api );
+const toStructuredTree = ( api: { phetioElements: FlattenedAPIPhetioElements }, _: LoDashStatic ): PhetioAPI => {
+  const sparseAPI = _.cloneDeep( api ) as PhetioAPI;
 
   // DUPLICATED with phetioEngine.js
   const sparseElements: any = {};
@@ -78,7 +79,7 @@ const toStructuredTree = ( api: { phetioElements: FlattenedAPIPhetioElements }, 
   return sparseAPI;
 };
 
-const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: Lodash, assert: Assert ): PhetioElementMetadata => {
+const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: LoDashStatic, assert: Assert ): PhetioElementMetadata => {
   const ioTypeName = phetioElement[ METADATA_KEY_NAME ] ? ( phetioElement[ METADATA_KEY_NAME ].phetioTypeName || 'ObjectIO' ) : 'ObjectIO';
 
   if ( api.version ) {
@@ -95,14 +96,14 @@ const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: Lod
 /**
  * @returns - defensive copy, non-mutating
  */
-const getMetadataDefaults = ( typeName: string, api: PhetioAPI, _: Lodash, assert: Assert ): PhetioElementMetadata => {
+const getMetadataDefaults = ( typeName: string, api: PhetioAPI, _: LoDashStatic, assert: Assert ): PhetioElementMetadata => {
   const entry = api.phetioTypes[ typeName ];
   assert && assert( entry, `entry missing: ${typeName}` );
   if ( entry.supertype ) {
     return _.merge( getMetadataDefaults( entry.supertype, api, _, assert ), entry.metadataDefaults );
   }
   else {
-    return _.merge( {}, entry.metadataDefaults );
+    return _.merge( {}, entry.metadataDefaults ) as PhetioElementMetadata;
   }
 };
 
@@ -122,7 +123,7 @@ const isOldAPIVersion = ( api: PhetioAPI ): boolean => {
  * @param assert - so this can be used from different contexts
  * @param providedOptions
  */
-const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: Lodash, assert: Assert, providedOptions?: Partial<PhetioCompareAPIsOptions> ): PhetioCompareAPIsResult => {
+const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: LoDashStatic, assert: Assert, providedOptions?: Partial<PhetioCompareAPIsOptions> ): PhetioCompareAPIsResult => {
 
   // If the proposed version predates 1.0, then bring it forward to the structured tree with metadata under `_metadata`.
   if ( isOldAPIVersion( proposedAPI ) ) {
@@ -404,8 +405,8 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
             const proposedAPIStateKeys = proposedType.apiStateKeys;
 
             if ( !_.isEqual( referenceAPIStateKeys, proposedAPIStateKeys ) ) {
-              const inReferenceNotProposed = _.difference( referenceAPIStateKeys, proposedAPIStateKeys );
-              const inProposedNotReference = _.difference( proposedAPIStateKeys, referenceAPIStateKeys );
+              const inReferenceNotProposed = _.difference( referenceAPIStateKeys, proposedAPIStateKeys! );
+              const inProposedNotReference = _.difference( proposedAPIStateKeys, referenceAPIStateKeys! );
 
               appendProblem( `${typeName} apiStateKeys differ:\n` +
                              `  In reference: ${inReferenceNotProposed}\n` +
