@@ -17,10 +17,10 @@
   "files": [],
   "references": [
     {
-      "path": "./tsconfig-chipper-node.json"
+      "path": "./tsconfig/buildtools/tsconfig.json"
     },
     {
-      "path": "./tsconfig-chipper-browser.json"
+      "path": "./js/browser/tsconfig.json"
     }
   ]
 }

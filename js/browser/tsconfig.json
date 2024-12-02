@@ -1,6 +1,5 @@
 {
-  "extends": "../../tsconfig-chipper-browser.json",
-  // this reference needs to be duplicated with the super config, because references to not extend
+  "extends": "../../../perennial-alias/tsconfig/tsconfig-browser.json",
   "references": [
     {
       "path": "../../../perennial-alias/tsconfig/buildjson/tsconfig.json"
