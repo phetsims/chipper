@@ -21,6 +21,9 @@
     },
     {
       "path": "./js/browser/tsconfig.json"
+    },
+    {
+      "path": "./js/browser-and-node/tsconfig.json"
     }
   ]
 }

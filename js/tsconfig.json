@@ -3,7 +3,7 @@
   // this reference needs to be duplicated with the super config, because references do not extend
   "references": [
     {
-      "path": "../../../perennial-alias/js/browser-and-node/tsconfig.json"
+      "path": "./browser-and-node/tsconfig.json"
     }
   ]
 }

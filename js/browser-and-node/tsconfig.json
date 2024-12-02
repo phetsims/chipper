@@ -1,8 +1,11 @@
 {
-  "extends": "../../../perennial-alias/js/browser-and-node/tsconfig.json",
+  "extends": "../../../perennial-alias/tsconfig/tsconfig-browser-and-node.json",
   "include": [
-    "../../../phet-core/js/types/**/*",
-    "../../../tandem/js/phet-io-types.ts",
-    "./**/*"
+    "./**/*",
+  ],
+  "references": [
+    {
+      "path": "./tsconfig-dependencies.json"
+    }
   ]
 }
