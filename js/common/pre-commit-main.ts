@@ -25,6 +25,7 @@ type Repo = string;
 
 const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.includes( '--console' );
+const absolute = commandLineArguments.includes( '--absolute' );
 
 const getArg = ( arg: string ) => {
   const args = commandLineArguments.filter( commandLineArg => commandLineArg.startsWith( `--${arg}=` ) );
@@ -81,7 +82,8 @@ const repo = getArg( 'repo' );
   else if ( command === 'check' ) {
     const success = await check( {
       all: true,
-      silent: !outputToConsole
+      silent: !outputToConsole && !absolute, // Don't be silent if absolute output is requested
+      absolute: absolute
     } );
     process.exit( success ? 0 : 1 );
   }

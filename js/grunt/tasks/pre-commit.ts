@@ -18,6 +18,7 @@
  * --allTasks: forces all tasks to run, even if they are disabled in the local preferences
  * --changed: run on all repos with working copy changes
  * --all: run on all repos
+ * --absolute: output paths that WebStorm External Tools can parse and hyperlink
  *
  * TASKS:
  * --lint: runs eslint on the repo
@@ -55,6 +56,7 @@ const optOutRepos = [
 const repo = getRepo();
 
 const outputToConsole = getOption( 'console' ); // Console logging via --console
+const absolute = getOption( 'absolute' ); // Output paths that WebStorm External Tools can parse and hyperlink
 
 ( async () => {
 
@@ -136,7 +138,8 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
                 '../chipper/js/common/pre-commit-main.ts',
                 `--command=${task}`,
                 `--repo=${repo}`,
-                outputToConsole ? '--console' : ''
+                outputToConsole ? '--console' : '',
+                absolute ? '--absolute' : ''
               ],
               '../chipper',
               {
