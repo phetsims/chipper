@@ -190,7 +190,7 @@ const ChipperStringUtils = {
   }
 };
 
-// TODO: Bad name central, please help https://github.com/phetsims/chipper/issues/1465
+// TODO: Bad name central, please help https://github.com/phetsims/chipper/issues/1537
 type ValueString = { value?: string };
 
 // An object that has a "value" field that holds the string. It can still include more nested `StringObject`s.
