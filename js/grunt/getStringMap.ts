@@ -36,7 +36,7 @@ type StringKeyMetadata = Record<string, boolean | string | number> & PhetioEleme
 
 const localeData: LocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
-// TODO: https://github.com/phetsims/chipper/issues/1465
+// TODO: https://github.com/phetsims/chipper/issues/1537
 export type StringMap = Record<string, Record<string, string>>;
 
 /**
