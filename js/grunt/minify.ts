@@ -14,18 +14,18 @@ import transpileForBuild from './transpileForBuild.js';
 
 const terser = require( 'terser' );
 
-type MinifyOptions = {
-  minify: boolean;
+export type MinifyOptions = {
+  minify?: boolean;
 
   // Only enabled if minify is true
-  babelTranspile: boolean;
-  uglify: boolean;
+  babelTranspile?: boolean;
+  uglify?: boolean;
 
   // Only enabled if uglify is true
-  mangle: boolean;
-  stripAssertions: boolean;
-  stripLogging: boolean;
-  beautify: boolean;
+  mangle?: boolean;
+  stripAssertions?: boolean;
+  stripLogging?: boolean;
+  beautify?: boolean;
 };
 
 const MINIFY_DEFAULTS: MinifyOptions = {
@@ -49,7 +49,7 @@ const MINIFY_DEFAULTS: MinifyOptions = {
  * @param js
  * @param options
  */
-const minify = function( js: string, options?: Partial<MinifyOptions> ): string {
+const minify = function( js: string, options?: MinifyOptions ): string {
   options = _.assignIn( {}, MINIFY_DEFAULTS, options );
 
   // Promote to top level variables

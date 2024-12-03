@@ -32,7 +32,7 @@ import getPreloads from './getPreloads.js';
 import getPrunedLocaleData from './getPrunedLocaleData.js';
 import getStringMap from './getStringMap.js';
 import getTitleStringKey from './getTitleStringKey.js';
-import minify from './minify.js';
+import minify, { MinifyOptions } from './minify.js';
 import packageRunnable from './packageRunnable.js';
 import packageXHTML from './packageXHTML.js';
 import reportUnusedMedia from './reportUnusedMedia.js';
@@ -51,13 +51,6 @@ const recordTime = async <T>( name: string, asyncCallback: () => Promise<T>, tim
   return result;
 };
 
-// TODO: Relocate, see https://github.com/phetsims/chipper/issues/1465
-export type MinifyOptions = {
-  minify?: boolean;
-  babelTranspile?: boolean;
-  uglify?: boolean;
-  isDebug?: boolean;
-};
 /**
  * Builds a runnable (e.g. a simulation).
  *
