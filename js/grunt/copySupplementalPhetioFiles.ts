@@ -12,6 +12,7 @@ import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
+import { Stats } from 'webpack';
 import SimVersion from '../../../perennial-alias/js/browser-and-node/SimVersion.js';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
@@ -482,7 +483,7 @@ const handleOfflineArtifact = async ( buildDir: string, repo: string, version: s
   const output = fs.createWriteStream( `${buildDir}${repo}-phet-io-${version}.zip` );
   const archive = archiver( 'zip' );
 
-  archive.on( 'error', ( err: IntentionalAny ) => grunt.fail.fatal( `error creating archive: ${err}` ) );
+  archive.on( 'error', ( err: unknown ) => grunt.fail.fatal( `error creating archive: ${err}` ) );
 
   archive.pipe( output );
 
@@ -717,7 +718,7 @@ const getCompiledMigrationProcessors = async ( repo: string, buildDir: string ):
         }
       } );
 
-      compiler.run( ( err: Error, stats: IntentionalAny ) => {
+      compiler.run( ( err: Error, stats: Stats ) => {
         if ( err || stats.hasErrors() ) {
           console.error( 'Migration processors webpack build errors:', stats.compilation.errors );
           reject( err || stats.compilation.errors[ 0 ] );

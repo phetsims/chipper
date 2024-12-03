@@ -14,6 +14,7 @@ import dirname from '../../../perennial-alias/js/common/dirname.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import webpackGlobalLibraries from '../common/webpackGlobalLibraries.js';
+import { Stats } from 'webpack';
 
 const webpack = require( 'webpack' );
 
@@ -163,7 +164,7 @@ const webpackBuild = function webpackBuild( repo: string, brand: string, provide
       ]
     } );
 
-    compiler.run( ( err: Error, stats: IntentionalAny ) => {
+    compiler.run( ( err: Error, stats: Stats ) => {
       if ( err || stats.hasErrors() ) {
         console.error( 'Webpack build errors:', stats.compilation.errors );
         reject( err || stats.compilation.errors[ 0 ] );
