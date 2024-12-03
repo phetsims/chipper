@@ -19,6 +19,7 @@
 // Import only the types from LoDashStatic, the actual lodash instance is dependency-injected at runtime
 import type { LoDashStatic } from 'lodash';
 import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 import { FlattenedAPIPhetioElements, PhetioAPI, PhetioElement, PhetioElementMetadata, PhetioElementMetadataValue, PhetioElements, PhetioElementState } from '../../../tandem/js/phet-io-types.js';
 import isInitialStateCompatible from './isInitialStateCompatible.js';
@@ -48,7 +49,7 @@ const toStructuredTree = ( api: { phetioElements: FlattenedAPIPhetioElements }, 
   const sparseAPI = _.cloneDeep( api ) as PhetioAPI;
 
   // DUPLICATED with phetioEngine.js
-  const sparseElements: any = {};
+  const sparseElements: IntentionalAny = {};
   Object.keys( api.phetioElements ).forEach( phetioID => {
     const entry = api.phetioElements[ phetioID ];
 
@@ -273,7 +274,7 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
 
                     // We do not worry about the notion of "designing" available locales. For breaking changes: the sim
                     // must have all expected locales, but it is acceptable to add new one without API error.
-                    return testDesigned || referenceState.validValues.every( ( validValue: any ) => proposedState.validValues.includes( validValue ) );
+                    return testDesigned || referenceState.validValues.every( ( validValue: IntentionalAny ) => proposedState.validValues.includes( validValue ) );
                   }
                   else if ( testDesigned ) {
                     return undefined; // Meaning use the default lodash algorithm for comparison.
