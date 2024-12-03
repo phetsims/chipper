@@ -10,11 +10,10 @@ import fs from 'fs';
 import _ from 'lodash';
 import { ConcatOperation, ModifySourcePlugin } from 'modify-source-webpack-plugin';
 import path from 'path';
+import { Stats } from 'webpack';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import webpackGlobalLibraries from '../common/webpackGlobalLibraries.js';
-import { Stats } from 'webpack';
 
 const webpack = require( 'webpack' );
 
