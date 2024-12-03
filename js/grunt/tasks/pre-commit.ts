@@ -200,7 +200,7 @@ async function spawnOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<
 
   let success = true;
 
-  // This is done sequentially so we don't spawn a bunch of uncached tsc at once, but in the future we may want to optimize
+  // This is done sequentially so we don't spawn a bunch of uncached type-check at once, but in the future we may want to optimize
   // to run one sequentially then the rest in parallel
   for ( let i = 0; i < repos.length; i++ ) {
 

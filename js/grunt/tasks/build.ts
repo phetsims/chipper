@@ -10,7 +10,7 @@
  *            a separated-out JS file).
  *  --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales
  *  --transpile=false - To opt out of transpiling repos before build. This should only be used if you are confident that chipper/dist is already correct (to save time).
- *  --tsc=false - To opt out of type checking before build. This should only be used if you are confident that TypeScript is already errorless (to save time).
+ *  --type-check=false - To opt out of type checking before build. This should only be used if you are confident that TypeScript is already errorless (to save time).
  *  --encodeStringMap=false - Disables the encoding of the string map in the built file. This is useful for debugging.
  *
  * Minify-specific options:
