@@ -38,7 +38,7 @@ import buildLocal from '../../../../perennial-alias/js/common/buildLocal.js';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../../perennial-alias/js/common/execute.js';
 import getActiveRepos from '../../../../perennial-alias/js/common/getActiveRepos.js';
-import { Repo } from '../../../../perennial-alias/js/common/PerennialTypes.js';
+import { Repo } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
 import tsxCommand from '../../../../perennial-alias/js/common/tsxCommand.js';
 import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
