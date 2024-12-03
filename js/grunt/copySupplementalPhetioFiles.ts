@@ -16,7 +16,7 @@ import { Stats } from 'webpack';
 import SimVersion from '../../../perennial-alias/js/browser-and-node/SimVersion.js';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
-import check from '../../../perennial-alias/js/grunt/check.js';
+import typeCheck from '../../../perennial-alias/js/grunt/typeCheck.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
@@ -393,7 +393,7 @@ export default async ( repo: string, version: string, simulationDisplayName: str
  * @param filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(absPath, contents)"
  */
-const handleLib = async ( repo: string, buildDir: string, typeCheck: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
+const handleLib = async ( repo: string, buildDir: string, isTypeCheck: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
   grunt.log.verbose.writeln( `Creating phet-io lib file from: ${PHET_IO_LIB_PRELOADS.join( ', ' )}` );
   fs.mkdirSync( `${buildDir}lib`, { recursive: true } );
 
@@ -409,8 +409,8 @@ const handleLib = async ( repo: string, buildDir: string, typeCheck: boolean, fi
   const migrationProcessorsCode = await getCompiledMigrationProcessors( repo, buildDir );
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationProcessorsCode}`, { stripAssertions: false } );
 
-  if ( typeCheck ) {
-    const success = await check( {
+  if ( isTypeCheck ) {
+    const success = await typeCheck( {
       repo: 'phet-io-wrappers'
     } );
     if ( !success ) {
@@ -659,12 +659,12 @@ const generateAndWriteClientGuide = ( repoName: string, title: string, simulatio
  * Support building studio. This compiles the studio modules into a runnable, and copies that over to the expected spot
  * on build.
  */
-const handleStudio = async ( repo: string, wrappersLocation: string, typeCheck: boolean ): Promise<void> => {
+const handleStudio = async ( repo: string, wrappersLocation: string, isTypeCheck: boolean ): Promise<void> => {
 
   grunt.log.verbose.writeln( 'building studio' );
 
-  if ( typeCheck ) {
-    const success = await check( {
+  if ( isTypeCheck ) {
+    const success = await typeCheck( {
       repo: 'studio'
     } );
     if ( !success ) {

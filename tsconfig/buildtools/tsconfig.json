@@ -10,7 +10,7 @@
     "../../../perennial-alias/js/npm-dependencies/**/*",
     "../../../perennial-alias/js/grunt/tasks/util/**/*",
     "../../../perennial-alias/js/test/puppeteerQUnit.js",
-    "../../../perennial-alias/js/grunt/check.ts",
+    "../../../perennial-alias/js/grunt/typeCheck.ts",
     "../../../perennial-alias/js/eslint/lint.ts",
     "../../../perennial-alias/js/eslint/divideIntoBatches.ts",
     "../../../perennial-alias/js/eslint/getLintCLIOptions.ts",

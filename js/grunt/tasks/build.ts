@@ -28,7 +28,7 @@ import assert from 'assert';
 import fs, { readFileSync } from 'fs';
 import path from 'path';
 import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
-import check from '../../../../perennial-alias/js/grunt/check.js';
+import typeCheck from '../../../../perennial-alias/js/grunt/typeCheck.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
 import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
@@ -63,13 +63,13 @@ export const buildPromise = ( async () => {
     // Run the type checker first.
     const brands = getBrands( repo );
 
-    const typeCheck = isOptionKeyProvided( 'tsc' ) ? getOption( 'tsc' ) : true;
-    typeCheck && await phetTimingLog.startAsync( 'tsc', async () => {
+    const isTypeCheck = isOptionKeyProvided( 'type-check' ) ? getOption( 'type-check' ) : true;
+    isTypeCheck && await phetTimingLog.startAsync( 'type-check', async () => {
 
       // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
       // do NOT run this for phet-lib, since it is type-checking things under src/, which is not desirable.
       if ( ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ) && repo !== 'phet-lib' ) {
-        const success = await check( {
+        const success = await typeCheck( {
           repo: repo
         } );
         if ( !success ) {
@@ -136,7 +136,7 @@ export const buildPromise = ( async () => {
         console.log( `Building brand: ${brand}` );
 
         await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
-          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, typeCheck );
+          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, isTypeCheck );
         } );
       }
     }

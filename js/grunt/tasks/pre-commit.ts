@@ -23,7 +23,7 @@
  * TASKS:
  * --lint: runs eslint on the repo
  * --report-media: checks for missing or unused media files
- * --check: runs check.js
+ * --type-check: runs type-check.js
  * --unit-test: runs qunit tests
  * --phet-io-api: compares the PhET-iO API with the previous version
  *
@@ -80,7 +80,7 @@ const absolute = getOption( 'absolute' ); // Output paths that WebStorm External
     process.exit( 0 );
   }
 
-  const possibleTasks = [ 'lint', 'report-media', 'check', 'unit-test', 'phet-io-api' ];
+  const possibleTasks = [ 'lint', 'report-media', 'type-check', 'unit-test', 'phet-io-api' ];
 
   // By default, run all tasks
   let tasksToRun = [ ...possibleTasks ];
