@@ -1,4 +1,4 @@
-// Copyright 2019, University of Colorado Boulder
+// Copyright 2019-2024, University of Colorado Boulder
 
 /**
  * launch point to load any tests located around the chipper repo. This is to support running `qunit` with no args
