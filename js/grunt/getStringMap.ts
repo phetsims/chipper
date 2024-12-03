@@ -22,7 +22,8 @@ import pascalCase from '../common/pascalCase.js';
 
 
 export type Locale = string;
-// TODO: Use this in all spots importing localeData.json https://github.com/phetsims/chipper/issues/1465
+
+// TODO: Use this in all spots importing localeData.json https://github.com/phetsims/chipper/issues/1539
 export type LocaleData = Record<Locale, {
   englishName: string;
   localizedName: string;
