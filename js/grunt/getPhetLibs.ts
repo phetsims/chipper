@@ -19,7 +19,7 @@ import ChipperConstants from '../common/ChipperConstants.js';
  */
 export default function getPhetLibs( repo: string, brand?: string | string[] ): string[] {
 
-  if ( brand === undefined ) {
+  if ( brand === undefined || brand.length === 0 ) {
     return getPhetLibs( repo, ChipperConstants.BRANDS );
   }
   else if ( Array.isArray( brand ) ) {
