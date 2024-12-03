@@ -79,8 +79,7 @@ const getStringFilesContents = ( reposWithUsedStrings: string[], locales: Locale
         fileContents = JSON.parse( fs.readFileSync( stringsFilename, 'utf-8' ) );
       }
       catch( error ) {
-        // @ts-expect-error debug is unknown in the type
-        grunt.log.debug( `missing string file: ${stringsFilename}` );
+        grunt.log.verbose.writeln( `missing string file: ${stringsFilename}` );
         fileContents = {};
       }
 

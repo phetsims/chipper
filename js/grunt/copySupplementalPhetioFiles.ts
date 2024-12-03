@@ -12,9 +12,9 @@ import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
+import SimVersion from '../../../perennial-alias/js/browser-and-node/SimVersion.js';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
-import SimVersion from '../../../perennial-alias/js/browser-and-node/SimVersion.js';
 import check from '../../../perennial-alias/js/grunt/check.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
@@ -393,8 +393,7 @@ export default async ( repo: string, version: string, simulationDisplayName: str
  *                            Has arguments like "function(absPath, contents)"
  */
 const handleLib = async ( repo: string, buildDir: string, typeCheck: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
-  // @ts-expect-error debug is unknown in the type
-  grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_PRELOADS );
+  grunt.log.verbose.writeln( `Creating phet-io lib file from: ${PHET_IO_LIB_PRELOADS.join( ', ' )}` );
   fs.mkdirSync( `${buildDir}lib`, { recursive: true } );
 
   // phet-written preloads
@@ -464,8 +463,7 @@ ${minifiedPhetioCode}\n${filteredMain}` );
  * Copy all the third party libraries from sherpa to the build directory under the 'contrib' folder.
  */
 const handleContrib = ( buildDir: string ) => {
-  // @ts-expect-error debug is unknown in the type
-  grunt.log.debug( 'Creating phet-io contrib folder' );
+  grunt.log.verbose.writeln( 'Creating phet-io contrib folder' );
 
   CONTRIB_FILES.forEach( filePath => {
     const filePathParts = filePath.split( '/' );
@@ -662,8 +660,7 @@ const generateAndWriteClientGuide = ( repoName: string, title: string, simulatio
  */
 const handleStudio = async ( repo: string, wrappersLocation: string, typeCheck: boolean ): Promise<void> => {
 
-  // @ts-expect-error debug is unknown in the type
-  grunt.log.debug( 'building studio' );
+  grunt.log.verbose.writeln( 'building studio' );
 
   if ( typeCheck ) {
     const success = await check( {
@@ -691,8 +688,7 @@ const getCompiledMigrationProcessors = async ( repo: string, buildDir: string ):
     const migrationProcessorsFilename = `${repo}-migration-processors.js`;
     const entryPointFilename = `../chipper/dist/js/phet-io-sim-specific/repos/${repo}/js/${migrationProcessorsFilename}`;
     if ( !fs.existsSync( entryPointFilename ) ) {
-      // @ts-expect-error debug is unknown in the type
-      grunt.log.debug( `No migration processors found at ${entryPointFilename}, no processors to be bundled with ${LIB_OUTPUT_FILE}.` );
+      grunt.log.verbose.writeln( `No migration processors found at ${entryPointFilename}, no processors to be bundled with ${LIB_OUTPUT_FILE}.` );
       resolve( '' ); // blank string because there are no processors to add.
     }
     else {

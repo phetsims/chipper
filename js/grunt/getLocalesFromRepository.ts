@@ -21,8 +21,7 @@ export default function getLocalesFromRepository( repo: string ): string[] {
 
   // Don't fail out if there are no string files, as this is a normal condition when building new simulations
   if ( stringFiles.length === 0 ) {
-    // @ts-expect-error debug is unknown in the type
-    grunt.log.debug( `No string files found in ${stringsDirectory} for repository ${repo}` );
+    grunt.log.verbose.writeln( `No string files found in ${stringsDirectory} for repository ${repo}` );
     return [];
   }
 

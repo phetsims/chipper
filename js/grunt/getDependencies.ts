@@ -35,8 +35,7 @@ export default async function getDependencies( repo: string ): Promise<object> {
   // We need to check dependencies for the main brand, so we can know what is guaranteed to be public
   const mainDependencies = getPhetLibs( repo, 'phet' ).filter( dependency => dependency !== 'babel' );
 
-  // @ts-expect-error debug is unknown in the type
-  grunt.log.debug( `Scanning dependencies from:\n${dependencies.toString()}` );
+  grunt.log.verbose.writeln( `Scanning dependencies from:\n${dependencies.toString()}` );
 
   const dependenciesInfo: Record<string, unknown> = {
     comment: `# ${repo} ${version} ${new Date().toString()}`
@@ -70,8 +69,7 @@ export default async function getDependencies( repo: string ): Promise<object> {
       console.log( `Did not find git information for ${dependency}` );
     }
 
-    // @ts-expect-error debug is unknown in the type
-    grunt.log.debug( `${ChipperStringUtils.padString( dependency, 20 ) + branch} ${sha}` );
+    grunt.log.verbose.writeln( `${ChipperStringUtils.padString( dependency, 20 ) + branch} ${sha}` );
     dependenciesInfo[ dependency ] = { sha: sha, branch: branch };
   }
 

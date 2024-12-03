@@ -61,7 +61,7 @@ module.exports = function( grunt ) {
       !_.some( process.argv, arg => arg.startsWith( '--repo=' ) ) && args.push( `--repo=${repo}` );
       const isWindows = /^win/.test( process.platform );
       gruntSpawn( grunt, isWindows ? 'grunt.cmd' : 'grunt', args, `../${forwardingRepo}`, argsString => {
-        grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
+        grunt.log.verbose.writeln( `running grunt ${argsString} in ../${repo}` );
       } );
     } );
   }
