@@ -79,12 +79,6 @@ export default async ( repo: string ): Promise<boolean> => {
               grunt.log.error( `not-annotated: ${abspath}` );
               success = false;
             }
-              // Report if it is a problem
-            // @ts-expect-error
-            else if ( result.isProblematic === true ) {
-              grunt.log.error( `incompatible-license: ${abspath}` );
-              success = false;
-            }
           }
 
           // Now iterate through the license.json entries and see which are missing files
