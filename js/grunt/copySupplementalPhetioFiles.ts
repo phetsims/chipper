@@ -393,7 +393,7 @@ export default async ( repo: string, version: string, simulationDisplayName: str
  * @param filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(absPath, contents)"
  */
-const handleLib = async ( repo: string, buildDir: string, isTypeCheck: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
+const handleLib = async ( repo: string, buildDir: string, shouldTypeCheck: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
   grunt.log.verbose.writeln( `Creating phet-io lib file from: ${PHET_IO_LIB_PRELOADS.join( ', ' )}` );
   fs.mkdirSync( `${buildDir}lib`, { recursive: true } );
 
@@ -409,7 +409,7 @@ const handleLib = async ( repo: string, buildDir: string, isTypeCheck: boolean, 
   const migrationProcessorsCode = await getCompiledMigrationProcessors( repo, buildDir );
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationProcessorsCode}`, { stripAssertions: false } );
 
-  if ( isTypeCheck ) {
+  if ( shouldTypeCheck ) {
     const success = await typeCheck( {
       repo: 'phet-io-wrappers'
     } );
@@ -659,11 +659,11 @@ const generateAndWriteClientGuide = ( repoName: string, title: string, simulatio
  * Support building studio. This compiles the studio modules into a runnable, and copies that over to the expected spot
  * on build.
  */
-const handleStudio = async ( repo: string, wrappersLocation: string, isTypeCheck: boolean ): Promise<void> => {
+const handleStudio = async ( repo: string, wrappersLocation: string, shouldTypeCheck: boolean ): Promise<void> => {
 
   grunt.log.verbose.writeln( 'building studio' );
 
-  if ( isTypeCheck ) {
+  if ( shouldTypeCheck ) {
     const success = await typeCheck( {
       repo: 'studio'
     } );

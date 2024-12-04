@@ -63,8 +63,8 @@ export const buildPromise = ( async () => {
     // Run the type checker first.
     const brands = getBrands( repo );
 
-    const isTypeCheck = isOptionKeyProvided( 'type-check' ) ? getOption( 'type-check' ) : true;
-    isTypeCheck && await phetTimingLog.startAsync( 'type-check', async () => {
+    const shouldTypeCheck = isOptionKeyProvided( 'type-check' ) ? getOption( 'type-check' ) : true;
+    shouldTypeCheck && await phetTimingLog.startAsync( 'type-check', async () => {
 
       // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
       // do NOT run this for phet-lib, since it is type-checking things under src/, which is not desirable.
@@ -136,7 +136,7 @@ export const buildPromise = ( async () => {
         console.log( `Building brand: ${brand}` );
 
         await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
-          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, isTypeCheck );
+          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, shouldTypeCheck );
         } );
       }
     }
