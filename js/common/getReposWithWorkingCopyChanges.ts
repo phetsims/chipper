@@ -6,7 +6,6 @@ import dirname from '../../../perennial-alias/js/common/dirname.js';
 import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
 import { Repo } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
-// TODO: https://github.com/phetsims/perennial/issues/404 why is this detecting commonjs mode?
 // @ts-expect-error ok to use import meta here
 const __dirname = dirname( import.meta.url );
 
