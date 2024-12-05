@@ -27,6 +27,25 @@
  * --unit-test: runs qunit tests
  * --phet-io-api: compares the PhET-iO API with the previous version
  *
+ * DEFAULTS in build-local.json
+ * By default all tasks will be run for every repo if that repo supports the task. Specify opt-out behavior for this
+ * grunt task AND the actual pre-commit hooks via the 'hookPreCommit` key in build-local.json.
+ * Keys are the name of the task (see above), and values are boolean, true means test that task. Use '*' to apply to
+ * all tasks. For example:
+ * MK: opts out of phet-io api checking:
+ * "hookPreCommit": {
+ *   "phet-io-api": false,
+ * }
+ * SR: runs them manually, and turns them off for the git hooks:
+ * "hookPreCommit": {
+ *   "*": false, // This key takes precedent, so all other keys here would be ignored.
+ * },
+ * If someone didn't want linting or type checking:
+ * "hookPreCommit": {
+ *   "lint": false,
+ *   "type-check": false,
+ * },
+ *
  * See also phet-info/git-template-dir/hooks/pre-commit for how this is used in precommit hooks.
  *
  * @author Sam Reid (PhET Interactive Simulations)
