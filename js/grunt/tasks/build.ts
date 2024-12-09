@@ -43,6 +43,7 @@ import minify from '../minify.js';
 
 const repo = getRepo();
 
+const NO_TYPE_CHECK = [ 'phet-lib' ];
 /**
  * Immediately run the build and export the promise in case the client wants to await the task.
  */
@@ -69,7 +70,10 @@ export const buildPromise = ( async () => {
 
       // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
       // do NOT run this for phet-lib, since it is type-checking things under src/, which is not desirable.
-      if ( ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ) && repo !== 'phet-lib' ) {
+      if ( !NO_TYPE_CHECK.includes( repo ) &&
+           ( ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ||
+               repoPackageObject.phet.buildStandalone // no brand for standalone
+           ) ) ) {
         const success = await typeCheck( {
           repo: repo
         } );
