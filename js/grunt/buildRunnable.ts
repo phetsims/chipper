@@ -32,6 +32,7 @@ import getPreloads from './getPreloads.js';
 import getPrunedLocaleData from './getPrunedLocaleData.js';
 import getStringMap from './getStringMap.js';
 import getTitleStringKey from './getTitleStringKey.js';
+import gruntTimingLog from './gruntTimingLog.js';
 import minify, { MinifyOptions } from './minify.js';
 import packageRunnable from './packageRunnable.js';
 import packageXHTML from './packageXHTML.js';
@@ -40,16 +41,6 @@ import reportUnusedStrings from './reportUnusedStrings.js';
 import webpackBuild from './webpackBuild.js';
 
 const nodeHtmlEncoder = require( 'node-html-encoder' );
-
-const recordTime = async <T>( name: string, asyncCallback: () => Promise<T>, timeCallback: ( time: number, result: T ) => void ): Promise<T> => {
-  const beforeTime = Date.now();
-
-  const result = await phetTimingLog.startAsync( name, async () => asyncCallback() );
-
-  const afterTime = Date.now();
-  timeCallback( afterTime - beforeTime, result );
-  return result;
-};
 
 /**
  * Builds a runnable (e.g. a simulation).
@@ -80,10 +71,10 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   timestamp = `${timestamp.substring( 0, timestamp.indexOf( '.' ) )} UTC`;
 
   // Start running webpack
-  const webpackResult = await recordTime( 'webpack', async () => webpackBuild( repo, brand, {
+  const webpackResult = await phetTimingLog.startAsync( 'webpack', async () => webpackBuild( repo, brand, {
     profileFileSize: profileFileSize
-  } ), time => {
-    grunt.log.ok( `Webpack build complete: ${time}ms` );
+  } ), {
+    timingCallback: time => gruntTimingLog( 'Webpack build complete', time )
   } );
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
@@ -219,23 +210,21 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     wrapProfileFileSize( grunt.file.read( '../chipper/templates/chipper-startup.js' ), profileFileSize, 'STARTUP' )
   ];
 
-  const productionScripts = await recordTime( 'minify-production', async () => {
+  const productionScripts = await phetTimingLog.startAsync( 'minify-production', async () => {
     return [
       ...startupScripts,
       ...minifiableScripts.map( js => minify( js, minifyOptions ) )
     ] satisfies string[];
-  }, ( time, scripts ) => {
-
-    grunt.log.ok( `Production minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
+  }, {
+    timingCallback: ( time, scripts ) => gruntTimingLog( 'Production minify complete', time, _.sum( scripts.map( js => js.length ) ) )
   } );
-  const debugScripts = await recordTime( 'minify-debug', async () => {
+  const debugScripts = await phetTimingLog.startAsync( 'minify-debug', async () => {
     return [
       ...startupScripts,
       ...minifiableScripts.map( js => minify( js, debugMinifyOptions ) )
     ];
-  }, ( time, scripts ) => {
-
-    grunt.log.ok( `Debug minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
+  }, {
+    timingCallback: ( time, scripts ) => gruntTimingLog( 'Debug minify complete', time, _.sum( scripts.map( js => js.length ) ) )
   } );
 
   const licenseScript = wrapProfileFileSize( ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/license-initialization.js' ), {
@@ -407,7 +396,11 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   }
 
   if ( brand === 'phet-io' ) {
-    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, true, typeCheck );
+    await phetTimingLog.startAsync( 'phet-io-sub-build', async () => {
+      await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, true, typeCheck );
+    }, {
+      timingCallback: time => gruntTimingLog( 'PhET-iO resources built', time )
+    } );
   }
 
   // Thumbnails and twitter card

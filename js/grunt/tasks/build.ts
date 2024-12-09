@@ -28,16 +28,17 @@ import assert from 'assert';
 import fs, { readFileSync } from 'fs';
 import path from 'path';
 import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
-import typeCheck from '../../../../perennial-alias/js/grunt/typeCheck.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
 import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import typeCheck from '../../../../perennial-alias/js/grunt/typeCheck.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import transpile from '../../common/transpile.js';
 import buildRunnable from '../buildRunnable.js';
 import buildStandalone from '../buildStandalone.js';
 import getPhetLibs from '../getPhetLibs.js';
+import gruntTimingLog from '../gruntTimingLog.js';
 import minify from '../minify.js';
 
 const repo = getRepo();
@@ -79,6 +80,8 @@ export const buildPromise = ( async () => {
       else {
         console.log( 'skipping type checking' );
       }
+    }, {
+      timingCallback: time => gruntTimingLog( 'Type Check complete', time )
     } );
 
     const doTranspile = isOptionKeyProvided( 'transpile' ) ? getOption( 'transpile' ) : true;
@@ -89,6 +92,8 @@ export const buildPromise = ( async () => {
         repos: getPhetLibs( repo ),
         silent: true
       } );
+    }, {
+      timingCallback: time => gruntTimingLog( 'Transpile complete', time )
     } );
 
     // standalone
@@ -137,6 +142,8 @@ export const buildPromise = ( async () => {
 
         await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
           await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, shouldTypeCheck );
+        }, {
+          timingCallback: time => gruntTimingLog( `Brand ${brand} complete`, time )
         } );
       }
     }
