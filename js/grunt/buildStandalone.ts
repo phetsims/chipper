@@ -23,7 +23,7 @@ import webpackBuild from './webpackBuild.js';
  * @param repo
  * @param providedOptions - Passed directly to minify()
  */
-export default async function( repo: string, providedOptions: IntentionalAny ): Promise<string> {
+export default async function buildStandalone( repo: string, providedOptions: IntentionalAny ): Promise<string> {
 
   const options = _.merge( {
     isDebug: false,

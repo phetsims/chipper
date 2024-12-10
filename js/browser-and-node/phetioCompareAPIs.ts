@@ -16,7 +16,13 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
+// Import only the types from LoDashStatic, the actual lodash instance is dependency-injected at runtime
+import type { LoDashStatic } from 'lodash';
+import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+
 import { FlattenedAPIPhetioElements, PhetioAPI, PhetioElement, PhetioElementMetadata, PhetioElementMetadataValue, PhetioElements, PhetioElementState } from '../../../tandem/js/phet-io-types.js';
+import isInitialStateCompatible from './isInitialStateCompatible.js';
 
 export type PhetioCompareAPIsOptions = {
   compareBreakingAPIChanges: boolean;
@@ -28,36 +34,22 @@ type PhetioCompareAPIsResult = {
   designedProblems: string[];
 };
 
-// TODO: how to type this? https://github.com/phetsims/chipper/issues/1465
-type Lodash = any;
-type Assert = undefined | ( ( bool: any, message?: string ) => void );
-
 const METADATA_KEY_NAME = '_metadata';
 const DATA_KEY_NAME = '_data';
 
 // Is not the reserved keys to store data/metadata on PhET-iO Elements.
 const isChildKey = ( key: string ) => key !== METADATA_KEY_NAME && key !== DATA_KEY_NAME;
 
-// TODO: Remove this duplication once phetioCompareAPIs can import isInitialStateCompatible, https://github.com/phetsims/chipper/issues/1526
-// DUPLICATION ALERT!
-/* @formatter:off */
-// eslint-disable-next-line phet/bad-text
-// @ts-expect-error see TO-DO above
-  function areCompatible( testValue, groundTruthValue ) { if ( Array.isArray( groundTruthValue ) ) { if ( !Array.isArray( testValue ) ) { return false; } if ( testValue.length !== groundTruthValue.length ) { return false; } for ( let i = 0; i < groundTruthValue.length; i++ ) { const newItem = groundTruthValue[ i ]; const oldItem = testValue[ i ]; if ( !areCompatible( oldItem, newItem ) ) { return false; } } return true; } if ( typeof groundTruthValue === 'object' && groundTruthValue !== null ) { if ( typeof testValue !== 'object' || testValue === null || Array.isArray( testValue ) ) { return false; } for ( const key in groundTruthValue ) { if ( groundTruthValue.hasOwnProperty( key ) ) { if ( !testValue.hasOwnProperty( key ) ) { return false; } if ( !areCompatible( testValue[ key ], groundTruthValue[ key ] ) ) { return false; } } } return true; } return testValue === groundTruthValue;} // eslint-disable-line
-// @ts-expect-error see TO-DO above
-  const isInitialStateCompatible = ( groundTruthState, testState ) => areCompatible( testState, groundTruthState );
-  /* @formatter:on */
-
 /**
  * "up-convert" an API to be in the format of API version >=1.0. This generally is thought of as a "sparse, tree-like" API.
  * @returns - In this version, phetioElements will be structured as a tree, but will have a verbose and complete
  *                  set of all metadata keys for each element. There will not be `metadataDefaults` in each type.
  */
-const toStructuredTree = ( api: { phetioElements: FlattenedAPIPhetioElements }, _: Lodash ): PhetioAPI => {
-  const sparseAPI: PhetioAPI = _.cloneDeep( api );
+const toStructuredTree = ( api: { phetioElements: FlattenedAPIPhetioElements }, _: LoDashStatic ): PhetioAPI => {
+  const sparseAPI = _.cloneDeep( api ) as PhetioAPI;
 
   // DUPLICATED with phetioEngine.js
-  const sparseElements: any = {};
+  const sparseElements: IntentionalAny = {};
   Object.keys( api.phetioElements ).forEach( phetioID => {
     const entry = api.phetioElements[ phetioID ];
 
@@ -87,11 +79,11 @@ const toStructuredTree = ( api: { phetioElements: FlattenedAPIPhetioElements }, 
   return sparseAPI;
 };
 
-const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: Lodash, assert: Assert ): PhetioElementMetadata => {
+const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: LoDashStatic ): PhetioElementMetadata => {
   const ioTypeName = phetioElement[ METADATA_KEY_NAME ] ? ( phetioElement[ METADATA_KEY_NAME ].phetioTypeName || 'ObjectIO' ) : 'ObjectIO';
 
   if ( api.version ) {
-    const defaults = getMetadataDefaults( ioTypeName, api, _, assert );
+    const defaults = getMetadataDefaults( ioTypeName, api, _ );
     return _.merge( defaults, phetioElement[ METADATA_KEY_NAME ] );
   }
   else {
@@ -104,14 +96,14 @@ const getMetadataValues = ( phetioElement: PhetioElement, api: PhetioAPI, _: Lod
 /**
  * @returns - defensive copy, non-mutating
  */
-const getMetadataDefaults = ( typeName: string, api: PhetioAPI, _: Lodash, assert: Assert ): PhetioElementMetadata => {
+const getMetadataDefaults = ( typeName: string, api: PhetioAPI, _: LoDashStatic ): PhetioElementMetadata => {
   const entry = api.phetioTypes[ typeName ];
-  assert && assert( entry, `entry missing: ${typeName}` );
+  affirm( entry, `entry missing: ${typeName}` );
   if ( entry.supertype ) {
-    return _.merge( getMetadataDefaults( entry.supertype, api, _, assert ), entry.metadataDefaults );
+    return _.merge( getMetadataDefaults( entry.supertype, api, _ ), entry.metadataDefaults );
   }
   else {
-    return _.merge( {}, entry.metadataDefaults );
+    return _.merge( {}, entry.metadataDefaults ) as PhetioElementMetadata;
   }
 };
 
@@ -128,10 +120,9 @@ const isOldAPIVersion = ( api: PhetioAPI ): boolean => {
  * @param referenceAPI - the "ground truth" or reference API
  * @param proposedAPI - the proposed API for comparison with referenceAPI
  * @param _ - lodash, so this can be used from different contexts.
- * @param assert - so this can be used from different contexts
  * @param providedOptions
  */
-const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: Lodash, assert: Assert, providedOptions?: Partial<PhetioCompareAPIsOptions> ): PhetioCompareAPIsResult => {
+const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: LoDashStatic, providedOptions?: Partial<PhetioCompareAPIsOptions> ): PhetioCompareAPIsResult => {
 
   // If the proposed version predates 1.0, then bring it forward to the structured tree with metadata under `_metadata`.
   if ( isOldAPIVersion( proposedAPI ) ) {
@@ -180,8 +171,8 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
       // Override isDesigned, if specified. Once on, you cannot turn off a subtree.
       isDesignedElement = isDesignedElement || reference[ METADATA_KEY_NAME ].phetioDesigned;
 
-      const referenceCompleteMetadata = getMetadataValues( reference, referenceAPI, _, assert );
-      const proposedCompleteMetadata = getMetadataValues( proposed, proposedAPI, _, assert );
+      const referenceCompleteMetadata = getMetadataValues( reference, referenceAPI, _ );
+      const proposedCompleteMetadata = getMetadataValues( proposed, proposedAPI, _ );
 
       /**
        * Push any problems that may exist for the provided metadataKey.
@@ -262,7 +253,6 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
 
             // Missing but expected state is a breaking problem
             // It is also a designed problem if we expected state in a designed subtree
-            // TODO: is "false" a bug? shouldn't we pass isDesignedElement? https://github.com/phetsims/chipper/issues/1526
             appendBothProblems( `${phetioID}._data.initialState is missing from proposed API`, false );
           }
         }
@@ -284,7 +274,7 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
 
                     // We do not worry about the notion of "designing" available locales. For breaking changes: the sim
                     // must have all expected locales, but it is acceptable to add new one without API error.
-                    return testDesigned || referenceState.validValues.every( ( validValue: any ) => proposedState.validValues.includes( validValue ) );
+                    return testDesigned || referenceState.validValues.every( ( validValue: IntentionalAny ) => proposedState.validValues.includes( validValue ) );
                   }
                   else if ( testDesigned ) {
                     return undefined; // Meaning use the default lodash algorithm for comparison.
@@ -350,8 +340,8 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
 
   // Check for: missing IOTypes, missing methods, or differing parameter types or return types
   for ( const typeName in referenceAPI.phetioTypes ) {
-    // TODO: AFTER_COMMIT We need a notion of phetioDesigned for Type comparison. https://github.com/phetsims/phet-io/issues/1951
-    // TODO: AFTER_COMMIT add comparison for stateSchema https://github.com/phetsims/phet-io/issues/1951
+    // TODO: We need a notion of phetioDesigned for Type comparison. https://github.com/phetsims/phet-io/issues/1999
+    // TODO: add comparison for stateSchema https://github.com/phetsims/phet-io/issues/1999
 
     if ( referenceAPI.phetioTypes.hasOwnProperty( typeName ) ) {
 
@@ -414,8 +404,8 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
             const proposedAPIStateKeys = proposedType.apiStateKeys;
 
             if ( !_.isEqual( referenceAPIStateKeys, proposedAPIStateKeys ) ) {
-              const inReferenceNotProposed = _.difference( referenceAPIStateKeys, proposedAPIStateKeys );
-              const inProposedNotReference = _.difference( proposedAPIStateKeys, referenceAPIStateKeys );
+              const inReferenceNotProposed = _.difference( referenceAPIStateKeys, proposedAPIStateKeys! );
+              const inProposedNotReference = _.difference( proposedAPIStateKeys, referenceAPIStateKeys! );
 
               appendProblem( `${typeName} apiStateKeys differ:\n` +
                              `  In reference: ${inReferenceNotProposed}\n` +

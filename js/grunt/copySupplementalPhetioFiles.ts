@@ -12,10 +12,11 @@ import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
+import { Stats } from 'webpack';
+import SimVersion from '../../../perennial-alias/js/browser-and-node/SimVersion.js';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../perennial-alias/js/common/execute.js';
-import SimVersion from '../../../perennial-alias/js/common/SimVersion.js';
-import check from '../../../perennial-alias/js/grunt/check.js';
+import typeCheck from '../../../perennial-alias/js/grunt/typeCheck.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
@@ -93,24 +94,24 @@ const JSDOC_FILES = [
   transpiledClientPath,
   '../tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
-  '../chipper/js/initialize-globals.js',
-  '../chipper/dist/js/perennial-alias/js/common/SimVersion.js'
+  '../chipper/js/browser/initialize-globals.js',
+  '../chipper/dist/js/perennial-alias/js/browser-and-node/SimVersion.js'
 ];
 const JSDOC_README_FILE = '../phet-io/doc/wrapper/phet-io-documentation_README.md';
 
 const STUDIO_BUILT_FILENAME = 'studio.min.js';
 
-export default async ( repo: string, version: string, simulationDisplayName: string, packageObject: IntentionalAny, generateMacroAPIFile = false, noTSC = false ): Promise<void> => {
+export default async ( repo: string, version: string, simulationDisplayName: string, packageObject: IntentionalAny, generateMacroAPIFile = false, typeCheck = true ): Promise<void> => {
 
   const repoPhetLibs = getPhetLibs( repo, 'phet-io' );
-  assert && assert( _.every( getPhetLibs( 'phet-io-wrappers' ), repo => repoPhetLibs.includes( repo ) ),
+  assert( _.every( getPhetLibs( 'phet-io-wrappers' ), repo => repoPhetLibs.includes( repo ) ),
     'every dependency of phet-io-wrappers is not included in phetLibs of ' + repo + ' ' + repoPhetLibs + ' ' + getPhetLibs( 'phet-io-wrappers' ) );
-  assert && assert( _.every( getPhetLibs( 'studio' ), repo => repoPhetLibs.includes( repo ) ),
+  assert( _.every( getPhetLibs( 'studio' ), repo => repoPhetLibs.includes( repo ) ),
     'every dependency of studio is not included in phetLibs of ' + repo + ' ' + repoPhetLibs + ' ' + getPhetLibs( 'studio' ) );
 
   // This must be checked after copySupplementalPhetioFiles is called, since all the imports and outer code is run in
   // every brand. Developers without phet-io checked out still need to be able to build.
-  assert && assert( fs.readFileSync( transpiledClientPath ).toString().includes( '/**' ), 'babel should not strip comments from transpiling' );
+  assert( fs.readFileSync( transpiledClientPath ).toString().includes( '/**' ), 'babel should not strip comments from transpiling' );
 
   const simRepoSHA = ( await execute( 'git', [ 'rev-parse', 'HEAD' ], `../${repo}` ) ).trim();
 
@@ -123,8 +124,8 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   const standardPhetioWrapperTemplateSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/standardPhetioWrapperTemplateSkeleton.html', 'utf8' );
   const customPhetioWrapperTemplateSkeleton = fs.readFileSync( '../phet-io-wrappers/common/html/customPhetioWrapperTemplateSkeleton.html', 'utf8' );
 
-  assert && assert( !standardPhetioWrapperTemplateSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
-  assert && assert( !customPhetioWrapperTemplateSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
+  assert( !standardPhetioWrapperTemplateSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
+  assert( !customPhetioWrapperTemplateSkeleton.includes( '`' ), 'The templates cannot contain backticks due to how the templates are passed through below' );
 
   // The filter that we run every phet-io wrapper file through to transform dev content into built content. This mainly
   // involves lots of hard coded copy replace of template strings and marker values.
@@ -354,7 +355,7 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );
 
   // Create the lib file that is minified and publicly available under the /lib folder of the build
-  await handleLib( repo, buildDir, noTSC, filterWrapper );
+  await handleLib( repo, buildDir, typeCheck, filterWrapper );
 
   // Create the zipped file that holds all needed items to run PhET-iO offline. NOTE: this must happen after copying wrapper
   await handleOfflineArtifact( buildDir, repo, version );
@@ -368,13 +369,13 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   // create the client guides
   handleClientGuides( repo, simulationDisplayName, buildDir, version, simRepoSHA );
 
-  await handleStudio( repo, wrappersLocation, noTSC );
+  await handleStudio( repo, wrappersLocation, typeCheck );
 
   if ( generateMacroAPIFile ) {
     const fullAPI = ( await generatePhetioMacroAPI( [ repo ], {
       fromBuiltVersion: true
     } ) )[ repo ];
-    assert && assert( fullAPI, 'Full API expected but not created from puppeteer step, likely caused by https://github.com/phetsims/chipper/issues/1022.' );
+    assert( fullAPI, 'Full API expected but not created from puppeteer step, likely caused by https://github.com/phetsims/chipper/issues/1022.' );
     grunt.file.write( `${buildDir}${repo}-phet-io-api.json`, formatPhetioAPI( fullAPI ) );
   }
 
@@ -388,12 +389,12 @@ export default async ( repo: string, version: string, simulationDisplayName: str
 
  * @param repo
  * @param buildDir
+ * @param typeCheck
  * @param filter - the filter function used when copying over wrapper files to fix relative paths and such.
  *                            Has arguments like "function(absPath, contents)"
  */
-const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
-  // @ts-expect-error debug is unknown in the type
-  grunt.log.debug( 'Creating phet-io lib file from: ', PHET_IO_LIB_PRELOADS );
+const handleLib = async ( repo: string, buildDir: string, shouldTypeCheck: boolean, filter: ( absPath: string, contents: string ) => string | null ) => {
+  grunt.log.verbose.writeln( `Creating phet-io lib file from: ${PHET_IO_LIB_PRELOADS.join( ', ' )}` );
   fs.mkdirSync( `${buildDir}lib`, { recursive: true } );
 
   // phet-written preloads
@@ -408,8 +409,8 @@ const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter
   const migrationProcessorsCode = await getCompiledMigrationProcessors( repo, buildDir );
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationProcessorsCode}`, { stripAssertions: false } );
 
-  if ( !noTSC ) {
-    const success = await check( {
+  if ( shouldTypeCheck ) {
+    const success = await typeCheck( {
       repo: 'phet-io-wrappers'
     } );
     if ( !success ) {
@@ -429,8 +430,8 @@ const handleLib = async ( repo: string, buildDir: string, noTSC: boolean, filter
 
   // In loadWrapperTemplate in unbuilt mode, it uses readFile to dynamically load the templates at runtime.
   // In built mode, we must inline the templates into the build artifact. See loadWrapperTemplate.js
-  assert && assert( wrappersMain.includes( '"{{STANDARD_WRAPPER_SKELETON}}"' ) || wrappersMain.includes( '\'{{STANDARD_WRAPPER_SKELETON}}\'' ), 'Template variable is missing: STANDARD_WRAPPER_SKELETON' );
-  assert && assert( wrappersMain.includes( '"{{CUSTOM_WRAPPER_SKELETON}}"' ) || wrappersMain.includes( '\'{{CUSTOM_WRAPPER_SKELETON}}\'' ), 'Template variable is missing: CUSTOM_WRAPPER_SKELETON' );
+  assert( wrappersMain.includes( '"{{STANDARD_WRAPPER_SKELETON}}"' ) || wrappersMain.includes( '\'{{STANDARD_WRAPPER_SKELETON}}\'' ), 'Template variable is missing: STANDARD_WRAPPER_SKELETON' );
+  assert( wrappersMain.includes( '"{{CUSTOM_WRAPPER_SKELETON}}"' ) || wrappersMain.includes( '\'{{CUSTOM_WRAPPER_SKELETON}}\'' ), 'Template variable is missing: CUSTOM_WRAPPER_SKELETON' );
 
   // Robustly handle double or single quotes.  At the moment it is double quotes.
   // buildStandalone will mangle a template string into "" because it hasn't been filled in yet, bring it back here (with
@@ -463,8 +464,7 @@ ${minifiedPhetioCode}\n${filteredMain}` );
  * Copy all the third party libraries from sherpa to the build directory under the 'contrib' folder.
  */
 const handleContrib = ( buildDir: string ) => {
-  // @ts-expect-error debug is unknown in the type
-  grunt.log.debug( 'Creating phet-io contrib folder' );
+  grunt.log.verbose.writeln( 'Creating phet-io contrib folder' );
 
   CONTRIB_FILES.forEach( filePath => {
     const filePathParts = filePath.split( '/' );
@@ -483,7 +483,7 @@ const handleOfflineArtifact = async ( buildDir: string, repo: string, version: s
   const output = fs.createWriteStream( `${buildDir}${repo}-phet-io-${version}.zip` );
   const archive = archiver( 'zip' );
 
-  archive.on( 'error', ( err: IntentionalAny ) => grunt.fail.fatal( `error creating archive: ${err}` ) );
+  archive.on( 'error', ( err: unknown ) => grunt.fail.fatal( `error creating archive: ${err}` ) );
 
   archive.pipe( output );
 
@@ -546,12 +546,12 @@ const handleJSDOC = async ( buildDir: string ): Promise<void> => {
   const json = explanation.substring( explanation.indexOf( '[' ), explanation.lastIndexOf( ']' ) + 1 );
 
   // basic sanity checks
-  assert && assert( json.length > 5000, 'JSON seems odd' );
+  assert( json.length > 5000, 'JSON seems odd' );
   try {
     JSON.parse( json );
   }
   catch( e ) {
-    assert && assert( false, 'JSON parsing failed' );
+    assert( false, 'JSON parsing failed' );
   }
 
   fs.writeFileSync( `${buildDir}doc/jsdoc-explanation.json`, json );
@@ -635,7 +635,7 @@ const generateAndWriteClientGuide = ( repoName: string, title: string, simulatio
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${GUIDES_COMMON_DIR}`, '' );
 
   // Since we don't have a phet/bad-text lint rule for md files, see https://github.com/phetsims/phet-io-sim-specific/issues/34
-  assertNoConstAwait && assert && assert( !/^.*const.*await.*$/gm.test( clientGuideSource ),
+  assertNoConstAwait && assert( !/^.*const.*await.*$/gm.test( clientGuideSource ),
     `use let instead of const when awaiting values in PhET-iO "${EXAMPLES_FILENAME}" files` );
 
   const renderedClientGuide = marked.parse( clientGuideSource );
@@ -659,13 +659,12 @@ const generateAndWriteClientGuide = ( repoName: string, title: string, simulatio
  * Support building studio. This compiles the studio modules into a runnable, and copies that over to the expected spot
  * on build.
  */
-const handleStudio = async ( repo: string, wrappersLocation: string, noTSC: boolean ): Promise<void> => {
+const handleStudio = async ( repo: string, wrappersLocation: string, shouldTypeCheck: boolean ): Promise<void> => {
 
-  // @ts-expect-error debug is unknown in the type
-  grunt.log.debug( 'building studio' );
+  grunt.log.verbose.writeln( 'building studio' );
 
-  if ( !noTSC ) {
-    const success = await check( {
+  if ( shouldTypeCheck ) {
+    const success = await typeCheck( {
       repo: 'studio'
     } );
     if ( !success ) {
@@ -690,8 +689,7 @@ const getCompiledMigrationProcessors = async ( repo: string, buildDir: string ):
     const migrationProcessorsFilename = `${repo}-migration-processors.js`;
     const entryPointFilename = `../chipper/dist/js/phet-io-sim-specific/repos/${repo}/js/${migrationProcessorsFilename}`;
     if ( !fs.existsSync( entryPointFilename ) ) {
-      // @ts-expect-error debug is unknown in the type
-      grunt.log.debug( `No migration processors found at ${entryPointFilename}, no processors to be bundled with ${LIB_OUTPUT_FILE}.` );
+      grunt.log.verbose.writeln( `No migration processors found at ${entryPointFilename}, no processors to be bundled with ${LIB_OUTPUT_FILE}.` );
       resolve( '' ); // blank string because there are no processors to add.
     }
     else {
@@ -720,7 +718,7 @@ const getCompiledMigrationProcessors = async ( repo: string, buildDir: string ):
         }
       } );
 
-      compiler.run( ( err: Error, stats: IntentionalAny ) => {
+      compiler.run( ( err: Error, stats: Stats ) => {
         if ( err || stats.hasErrors() ) {
           console.error( 'Migration processors webpack build errors:', stats.compilation.errors );
           reject( err || stats.compilation.errors[ 0 ] );

@@ -11,6 +11,7 @@ import fs, { readFileSync } from 'fs';
 import jimp from 'jimp';
 import _ from 'lodash';
 import zlib from 'zlib';
+import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import phetTimingLog from '../../../perennial-alias/js/common/phetTimingLog.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperConstants from '../common/ChipperConstants.js';
@@ -31,7 +32,8 @@ import getPreloads from './getPreloads.js';
 import getPrunedLocaleData from './getPrunedLocaleData.js';
 import getStringMap from './getStringMap.js';
 import getTitleStringKey from './getTitleStringKey.js';
-import minify from './minify.js';
+import gruntTimingLog from './gruntTimingLog.js';
+import minify, { MinifyOptions } from './minify.js';
 import packageRunnable from './packageRunnable.js';
 import packageXHTML from './packageXHTML.js';
 import reportUnusedMedia from './reportUnusedMedia.js';
@@ -40,23 +42,6 @@ import webpackBuild from './webpackBuild.js';
 
 const nodeHtmlEncoder = require( 'node-html-encoder' );
 
-const recordTime = async <T>( name: string, asyncCallback: () => Promise<T>, timeCallback: ( time: number, result: T ) => void ): Promise<T> => {
-  const beforeTime = Date.now();
-
-  const result = await phetTimingLog.startAsync( name, async () => asyncCallback() );
-
-  const afterTime = Date.now();
-  timeCallback( afterTime - beforeTime, result );
-  return result;
-};
-
-// TODO: Relocate, see https://github.com/phetsims/chipper/issues/1465
-export type MinifyOptions = {
-  minify?: boolean;
-  babelTranspile?: boolean;
-  uglify?: boolean;
-  isDebug?: boolean;
-};
 /**
  * Builds a runnable (e.g. a simulation).
  *
@@ -68,16 +53,14 @@ export type MinifyOptions = {
  * @param encodeStringMap
  * @param compressScripts
  * @param profileFileSize
- * @returns - Does not resolve a value
+ * @param typeCheck
  */
 export default async function( repo: string, minifyOptions: MinifyOptions, allHTML: boolean, brand: string, localesOption: string,
                                encodeStringMap: boolean, compressScripts: boolean, profileFileSize: boolean,
-                               noTSC: boolean ): Promise<void> {
+                               typeCheck: boolean ): Promise<void> {
 
   if ( brand === 'phet-io' ) {
-
-    // TODO: Do not assert && assert, see https://github.com/phetsims/chipper/issues/1465
-    assert && assert( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
+    affirm( grunt.file.exists( '../phet-io' ), 'Aborting the build of phet-io brand since proprietary repositories are not checked out.\nPlease use --brands=={{BRAND}} in the future to avoid this.' );
   }
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
@@ -88,10 +71,10 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   timestamp = `${timestamp.substring( 0, timestamp.indexOf( '.' ) )} UTC`;
 
   // Start running webpack
-  const webpackResult = await recordTime( 'webpack', async () => webpackBuild( repo, brand, {
+  const webpackResult = await phetTimingLog.startAsync( 'webpack', async () => webpackBuild( repo, brand, {
     profileFileSize: profileFileSize
-  } ), time => {
-    grunt.log.ok( `Webpack build complete: ${time}ms` );
+  } ), {
+    timingCallback: time => gruntTimingLog( 'Webpack build complete', time )
   } );
 
   // NOTE: This build currently (due to the string/mipmap plugins) modifies globals. Some operations need to be done after this.
@@ -113,7 +96,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   const usedModules = webpackResult.usedModules;
   reportUnusedMedia( repo, usedModules );
 
-  // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1465
+  // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1538
   const licenseEntries: LicenseEntries = {};
   ChipperConstants.MEDIA_TYPES.forEach( mediaType => {
     licenseEntries[ mediaType ] = {};
@@ -128,8 +111,8 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
         const index = module.lastIndexOf( '_' );
         const path = `${module.slice( 0, index )}.${module.slice( index + 1, -3 )}`;
 
-        // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1465
-        // @ts-expect-error https://github.com/phetsims/chipper/issues/1465
+        // TODO: More specific object type, see https://github.com/phetsims/chipper/issues/1538
+        // @ts-expect-error https://github.com/phetsims/chipper/issues/1538
         licenseEntries[ mediaType ][ module ] = getLicenseEntry( `../${path}` );
       }
     } );
@@ -227,23 +210,21 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     wrapProfileFileSize( grunt.file.read( '../chipper/templates/chipper-startup.js' ), profileFileSize, 'STARTUP' )
   ];
 
-  const productionScripts = await recordTime( 'minify-production', async () => {
+  const productionScripts = await phetTimingLog.startAsync( 'minify-production', async () => {
     return [
       ...startupScripts,
       ...minifiableScripts.map( js => minify( js, minifyOptions ) )
     ] satisfies string[];
-  }, ( time, scripts ) => {
-
-    grunt.log.ok( `Production minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
+  }, {
+    timingCallback: ( time, scripts ) => gruntTimingLog( 'Production minify complete', time, _.sum( scripts.map( js => js.length ) ) )
   } );
-  const debugScripts = await recordTime( 'minify-debug', async () => {
+  const debugScripts = await phetTimingLog.startAsync( 'minify-debug', async () => {
     return [
       ...startupScripts,
       ...minifiableScripts.map( js => minify( js, debugMinifyOptions ) )
     ];
-  }, ( time, scripts ) => {
-
-    grunt.log.ok( `Debug minification complete: ${time}ms (${_.sum( scripts.map( js => js.length ) )} bytes)` );
+  }, {
+    timingCallback: ( time, scripts ) => gruntTimingLog( 'Debug minify complete', time, _.sum( scripts.map( js => js.length ) ) )
   } );
 
   const licenseScript = wrapProfileFileSize( ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/license-initialization.js' ), {
@@ -372,9 +353,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   if ( _.includes( locales, ChipperConstants.FALLBACK_LOCALE ) && brand === 'phet' ) {
     const englishTitle = stringMap[ ChipperConstants.FALLBACK_LOCALE ][ getTitleStringKey( repo ) ];
 
-    // TODO: maybe we need to commit a change to DefinitelyTyped to support debug logging https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/grunt/index.d.ts#L725, https://github.com/phetsims/chipper/issues/1465
-    // @ts-expect-error debug is unknown in the type
-    grunt.log.debug( 'Constructing HTML for iframe testing from template' );
+    grunt.log.verbose.writeln( 'Constructing HTML for iframe testing from template' );
     let iframeTestHtml = grunt.file.read( '../chipper/templates/sim-iframe.html' );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_SIM_TITLE}}', encoder.htmlEncode( `${englishTitle} iframe test` ) );
     iframeTestHtml = ChipperStringUtils.replaceFirst( iframeTestHtml, '{{PHET_REPOSITORY}}', repo );
@@ -417,7 +396,11 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   }
 
   if ( brand === 'phet-io' ) {
-    await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, true, noTSC );
+    await phetTimingLog.startAsync( 'phet-io-sub-build', async () => {
+      await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, true, typeCheck );
+    }, {
+      timingCallback: time => gruntTimingLog( 'PhET-iO resources built', time )
+    } );
   }
 
   // Thumbnails and twitter card

@@ -23,7 +23,7 @@ type MipMap = {
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
-function mipmapDownscale( mipmap: MipMap, createData: ( width: number, height: number ) => Buffer ): { data: any; width: number; height: number } {
+function mipmapDownscale( mipmap: MipMap, createData: ( width: number, height: number ) => Buffer ): { data: Buffer; width: number; height: number } {
   // array index constants for the channels
   const R = 0;
   const G = 1;

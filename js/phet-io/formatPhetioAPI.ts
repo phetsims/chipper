@@ -18,7 +18,7 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
  * Creates a new object, recursively, by sorting the keys at each level.
  * @param unordered - jsonifiable object to be sorted by key name.  Sorting is recursive.
  */
-const copyWithSortedKeys = ( unordered: IntentionalAny ): Record<string, IntentionalAny> => {
+const copyWithSortedKeys = ( unordered: Record<string, IntentionalAny> ): Record<string, IntentionalAny> => {
   if ( Array.isArray( unordered ) ) {
     return unordered.map( copyWithSortedKeys );
   }
@@ -34,7 +34,7 @@ const copyWithSortedKeys = ( unordered: IntentionalAny ): Record<string, Intenti
   return ordered;
 };
 
-export default ( api: IntentionalAny ): string => {
+export default ( api: object ): string => {
   assert( api, 'api expected' );
   const objectString = JSON.stringify( copyWithSortedKeys( api ), null, 2 );
   return fixEOL( objectString );

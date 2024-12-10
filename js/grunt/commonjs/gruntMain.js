@@ -61,7 +61,7 @@ module.exports = function( grunt ) {
       !_.some( process.argv, arg => arg.startsWith( '--repo=' ) ) && args.push( `--repo=${repo}` );
       const isWindows = /^win/.test( process.platform );
       gruntSpawn( grunt, isWindows ? 'grunt.cmd' : 'grunt', args, `../${forwardingRepo}`, argsString => {
-        grunt.log.debug( `running grunt ${argsString} in ../${repo}` );
+        grunt.log.verbose.writeln( `running grunt ${argsString} in ../${repo}` );
       } );
     } );
   }
@@ -91,7 +91,8 @@ module.exports = function( grunt ) {
   // Forward these to perennial-alias because they are used for building sims, and should version with sims (like chipper
   // does).
   [
-    'check',
+    'check', // TODO: See https://github.com/phetsims/perennial/issues/420
+    'type-check',
     'lint',
     'lint-everything'
   ].forEach( task => forwardToRepo( 'perennial-alias', task ) );

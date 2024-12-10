@@ -15,17 +15,36 @@
  *
  * OPTIONS:
  * --console: outputs information to the console for debugging
- * // TODO: rename --force to --allTasks https://github.com/phetsims/perennial/issues/404
- * --force: forces all tasks to run, even if they are disabled in the local preferences
+ * --allTasks: forces all tasks to run, even if they are disabled in the local preferences
  * --changed: run on all repos with working copy changes
  * --all: run on all repos
+ * --absolute: output paths that WebStorm External Tools can parse and hyperlink
  *
  * TASKS:
  * --lint: runs eslint on the repo
  * --report-media: checks for missing or unused media files
- * --check: runs check.js
- * --test: runs qunit tests // TODO: rename test to unit-test, see https://github.com/phetsims/perennial/issues/404
+ * --type-check: runs type-check.js
+ * --unit-test: runs qunit tests
  * --phet-io-api: compares the PhET-iO API with the previous version
+ *
+ * DEFAULTS in build-local.json
+ * By default all tasks will be run for every repo if that repo supports the task. Specify opt-out behavior for this
+ * grunt task AND the actual pre-commit hooks via the 'hookPreCommit` key in build-local.json.
+ * Keys are the name of the task (see above), and values are boolean, true means test that task. Use '*' to apply to
+ * all tasks. For example:
+ * MK: opts out of phet-io api checking:
+ * "hookPreCommit": {
+ *   "phet-io-api": false,
+ * }
+ * SR: runs them manually, and turns them off for the git hooks:
+ * "hookPreCommit": {
+ *   "*": false, // This key takes precedent, so all other keys here would be ignored.
+ * },
+ * If someone didn't want linting or type checking:
+ * "hookPreCommit": {
+ *   "lint": false,
+ *   "type-check": false,
+ * },
  *
  * See also phet-info/git-template-dir/hooks/pre-commit for how this is used in precommit hooks.
  *
@@ -33,17 +52,17 @@
  */
 
 import assert from 'assert';
+import path from 'path';
 import buildLocal from '../../../../perennial-alias/js/common/buildLocal.js';
+import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../../perennial-alias/js/common/execute.js';
+import getActiveRepos from '../../../../perennial-alias/js/common/getActiveRepos.js';
+import { Repo } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
 import tsxCommand from '../../../../perennial-alias/js/common/tsxCommand.js';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import getReposWithWorkingCopyChanges from '../../common/getReposWithWorkingCopyChanges.js';
-import getActiveRepos from '../../../../perennial-alias/js/common/getActiveRepos.js';
-import { Repo } from '../../../../perennial-alias/js/common/PerennialTypes.js';
-import dirname from '../../../../perennial-alias/js/common/dirname.js';
-import path from 'path';
 
 // These repos do not require precommit hooks to be run
 const optOutRepos = [
@@ -56,24 +75,22 @@ const optOutRepos = [
 const repo = getRepo();
 
 const outputToConsole = getOption( 'console' ); // Console logging via --console
+const absolute = getOption( 'absolute' ); // Output paths that WebStorm External Tools can parse and hyperlink
 
 ( async () => {
 
   // Re-spawn the same process on repos with working copy changes
   if ( getOption( 'changed' ) ) {
-
     const changedRepos = await getReposWithWorkingCopyChanges();
-    await spawnOnRepos( changedRepos, outputToConsole );
-    // TODO: Exit code would be nice, see https://github.com/phetsims/perennial/issues/404
+    const success = await spawnOnRepos( changedRepos, outputToConsole );
+    process.exit( success ? 0 : 1 );
     return;
   }
 
   // Re-spawn the same process on all repos
   if ( getOption( 'all' ) ) {
-
-    await spawnOnRepos( getActiveRepos(), outputToConsole );
-
-    // TODO: Exit code would be nice, see https://github.com/phetsims/perennial/issues/404
+    const success = await spawnOnRepos( getActiveRepos(), outputToConsole );
+    process.exit( success ? 0 : 1 );
     return;
   }
 
@@ -82,7 +99,7 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
     process.exit( 0 );
   }
 
-  const possibleTasks = [ 'lint', 'report-media', 'check', 'test', 'phet-io-api' ];
+  const possibleTasks = [ 'lint', 'report-media', 'type-check', 'unit-test', 'phet-io-api' ];
 
   // By default, run all tasks
   let tasksToRun = [ ...possibleTasks ];
@@ -118,8 +135,7 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
     }
   } );
 
-  // TODO: This is kind of like * in the json, or --all. Is this a good API? See https://github.com/phetsims/perennial/issues/404
-  if ( getOption( 'force' ) ) {
+  if ( getOption( 'allTasks' ) ) {
     outputToConsole && console.log( 'forcing all tasks to run' );
     tasksToRun = [ ...possibleTasks ];
   }
@@ -141,7 +157,8 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
                 '../chipper/js/common/pre-commit-main.ts',
                 `--command=${task}`,
                 `--repo=${repo}`,
-                outputToConsole ? '--console' : ''
+                outputToConsole ? '--console' : '',
+                absolute ? '--absolute' : ''
               ],
               '../chipper',
               {
@@ -197,10 +214,12 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
 /**
  * Spawns the same process on each repo in the list
  */
-async function spawnOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<void> {
+async function spawnOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<boolean> {
   const startTime = Date.now();
 
-  // This is done sequentially so we don't spawn a bunch of uncached tsc at once, but in the future we may want to optimize
+  let success = true;
+
+  // This is done sequentially so we don't spawn a bunch of uncached type-check at once, but in the future we may want to optimize
   // to run one sequentially then the rest in parallel
   for ( let i = 0; i < repos.length; i++ ) {
 
@@ -223,15 +242,16 @@ async function spawnOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<
     } );
     outputToConsole && console.log( 'result:', result );
     if ( result.code === 0 ) {
-
       console.log( 'Success' );
     }
     else {
       console.log();
       result.stdout.trim().length > 0 && console.log( result.stdout.trim() );
       result.stderr.trim().length > 0 && console.log( result.stderr.trim() );
+      success = false;
     }
   }
 
   console.log( 'Done in ' + ( Date.now() - startTime ) + 'ms' );
+  return success;
 }

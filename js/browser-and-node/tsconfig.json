@@ -1,0 +1,11 @@
+{
+  "extends": "../../../perennial-alias/tsconfig/tsconfig-browser-and-node.json",
+  "include": [
+    "./**/*",
+  ],
+  "references": [
+    {
+      "path": "./tsconfig-dependencies.json"
+    }
+  ]
+}

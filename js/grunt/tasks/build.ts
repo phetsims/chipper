@@ -9,8 +9,8 @@
  *  --XHTML - Includes an xhtml/ directory in the build output that contains a runnable XHTML form of the sim (with
  *            a separated-out JS file).
  *  --locales={{LOCALES}} - Can be * (build all available locales, "en" and everything in babel), or a comma-separated list of locales
- *  --noTranspile - Flag to opt out of transpiling repos before build. This should only be used if you are confident that chipper/dist is already correct (to save time).
- *  --noTSC - Flag to opt out of type checking before build. This should only be used if you are confident that TypeScript is already errorless (to save time).
+ *  --transpile=false - To opt out of transpiling repos before build. This should only be used if you are confident that chipper/dist is already correct (to save time).
+ *  --type-check=false - To opt out of type checking before build. This should only be used if you are confident that TypeScript is already errorless (to save time).
  *  --encodeStringMap=false - Disables the encoding of the string map in the built file. This is useful for debugging.
  *
  * Minify-specific options:
@@ -28,20 +28,22 @@ import assert from 'assert';
 import fs, { readFileSync } from 'fs';
 import path from 'path';
 import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.js';
-import check from '../../../../perennial-alias/js/grunt/check.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import typeCheck from '../../../../perennial-alias/js/grunt/typeCheck.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import transpile from '../../common/transpile.js';
 import buildRunnable from '../buildRunnable.js';
 import buildStandalone from '../buildStandalone.js';
 import getPhetLibs from '../getPhetLibs.js';
+import gruntTimingLog from '../gruntTimingLog.js';
 import minify from '../minify.js';
 
 const repo = getRepo();
 
+const NO_TYPE_CHECK = [ 'phet-lib' ];
 /**
  * Immediately run the build and export the promise in case the client wants to await the task.
  */
@@ -63,13 +65,16 @@ export const buildPromise = ( async () => {
     // Run the type checker first.
     const brands = getBrands( repo );
 
-    const noTSC = getOption( 'noTSC' );
-    !noTSC && await phetTimingLog.startAsync( 'tsc', async () => {
+    const shouldTypeCheck = isOptionKeyProvided( 'type-check' ) ? getOption( 'type-check' ) : true;
+    shouldTypeCheck && await phetTimingLog.startAsync( 'type-check', async () => {
 
       // We must have phet-io code checked out to type check, since simLauncher imports phetioEngine
       // do NOT run this for phet-lib, since it is type-checking things under src/, which is not desirable.
-      if ( ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ) && repo !== 'phet-lib' ) {
-        const success = await check( {
+      if ( !NO_TYPE_CHECK.includes( repo ) &&
+           ( ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ||
+               repoPackageObject.phet.buildStandalone // no brand for standalone
+           ) ) ) {
+        const success = await typeCheck( {
           repo: repo
         } );
         if ( !success ) {
@@ -79,15 +84,20 @@ export const buildPromise = ( async () => {
       else {
         console.log( 'skipping type checking' );
       }
+    }, {
+      timingCallback: time => gruntTimingLog( 'Type Check complete', time )
     } );
 
-    !getOption( 'noTranspile' ) && await phetTimingLog.startAsync( 'transpile', async () => {
+    const doTranspile = isOptionKeyProvided( 'transpile' ) ? getOption( 'transpile' ) : true;
+    doTranspile && await phetTimingLog.startAsync( 'transpile', async () => {
 
       // If that succeeds, then convert the code to JS
       await transpile( {
         repos: getPhetLibs( repo ),
         silent: true
       } );
+    }, {
+      timingCallback: time => gruntTimingLog( 'Transpile complete', time )
     } );
 
     // standalone
@@ -135,7 +145,9 @@ export const buildPromise = ( async () => {
         console.log( `Building brand: ${brand}` );
 
         await phetTimingLog.startAsync( 'build-brand-' + brand, async () => {
-          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, noTSC );
+          await buildRunnable( repo, minifyOptions, allHTML, brand, localesOption, encodeStringMap, compressScripts, profileFileSize, shouldTypeCheck );
+        }, {
+          timingCallback: time => gruntTimingLog( `Brand ${brand} complete`, time )
         } );
       }
     }

@@ -1,12 +1,11 @@
 // Copyright 2024, University of Colorado Boulder
 
 import child_process from 'child_process';
-import { Repo } from '../../../perennial-alias/js/common/PerennialTypes.js';
-import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
 import path from 'path';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
+import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
+import { Repo } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 
-// TODO: https://github.com/phetsims/perennial/issues/404 why is this detecting commonjs mode?
 // @ts-expect-error ok to use import meta here
 const __dirname = dirname( import.meta.url );
 

@@ -7,7 +7,7 @@ import _ from 'lodash';
 import path from 'path';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
 import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
-import { Repo } from '../../../perennial-alias/js/common/PerennialTypes.js';
+import { Repo } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import getOption, { isOptionKeyProvided } from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 

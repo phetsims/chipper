@@ -15,14 +15,15 @@ import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-// import { PhetioElementMetadata } from '../../../tandem/js/phet-io-types.js'; // TODO: Use this, https://github.com/phetsims/chipper/issues/1526
+import { PhetioElementMetadata } from '../../../tandem/js/phet-io-types.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import pascalCase from '../common/pascalCase.js';
 
 
 export type Locale = string;
-// TODO: Use this in all spots importing localeData.json https://github.com/phetsims/chipper/issues/1465
+
+// TODO: Use this in all spots importing localeData.json https://github.com/phetsims/chipper/issues/1539
 export type LocaleData = Record<Locale, {
   englishName: string;
   localizedName: string;
@@ -32,11 +33,11 @@ export type LocaleData = Record<Locale, {
 }>;
 
 // Metadata for a single string key from an english strings file
-type StringKeyMetadata = Record<string, boolean | string | number>;
+type StringKeyMetadata = Record<string, boolean | string | number> & PhetioElementMetadata;
 
 const localeData: LocaleData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf8' ) );
 
-// TODO: https://github.com/phetsims/chipper/issues/1465
+// TODO: https://github.com/phetsims/chipper/issues/1537
 export type StringMap = Record<string, Record<string, string>>;
 
 /**
@@ -78,8 +79,7 @@ const getStringFilesContents = ( reposWithUsedStrings: string[], locales: Locale
         fileContents = JSON.parse( fs.readFileSync( stringsFilename, 'utf-8' ) );
       }
       catch( error ) {
-        // @ts-expect-error debug is unknown in the type
-        grunt.log.debug( `missing string file: ${stringsFilename}` );
+        grunt.log.verbose.writeln( `missing string file: ${stringsFilename}` );
         fileContents = {};
       }
 

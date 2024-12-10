@@ -6,7 +6,7 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import Tandem from '../../../tandem/js/Tandem.js';
+import Tandem from '../../../../tandem/js/Tandem.js';
 
 const qunitStart = () => {
 
@@ -18,7 +18,7 @@ const qunitStart = () => {
     }
 
     if ( Tandem.PHET_IO_ENABLED ) {
-      import( /* webpackMode: "eager" */ '../../../phet-io/js/phetioEngine.js' ).then( () => {
+      import( /* webpackMode: "eager" */ '../../../../phet-io/js/phetioEngine.js' ).then( () => {
 
         // no API validation in unit tests
         phet.tandem.phetioAPIValidation.enabled = false;

@@ -39,8 +39,7 @@ export default function getThirdPartyLibEntries( repo: string, brand: string ): 
   // Sort keys and remove duplicates
   licenseKeys = _.uniq( _.sortBy( licenseKeys, ( key: string ) => key.toUpperCase() ) );
 
-  // @ts-expect-error debug is unknown in the type
-  grunt.log.debug( `licenseKeys = ${licenseKeys.toString()}` );
+  grunt.log.verbose.writeln( `licenseKeys = ${licenseKeys.toString()}` );
 
   // Combine all licenses into 1 object literal
   const libEntries: Record<string, string> = {};

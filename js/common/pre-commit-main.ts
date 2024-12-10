@@ -13,7 +13,7 @@ import reportMedia from '../../../chipper/js/grunt/reportMedia.js';
 import getRepoList from '../../../perennial-alias/js/common/getRepoList.js';
 import withServer from '../../../perennial-alias/js/common/withServer.js';
 import lint from '../../../perennial-alias/js/eslint/lint.js';
-import check from '../../../perennial-alias/js/grunt/check.js';
+import typeCheck from '../../../perennial-alias/js/grunt/typeCheck.js';
 import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
 import puppeteerQUnit from '../../../perennial-alias/js/test/puppeteerQUnit.js';
 import transpile from '../common/transpile.js';
@@ -25,6 +25,7 @@ type Repo = string;
 
 const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.includes( '--console' );
+const absolute = commandLineArguments.includes( '--absolute' );
 
 const getArg = ( arg: string ) => {
   const args = commandLineArguments.filter( commandLineArg => commandLineArg.startsWith( `--${arg}=` ) );
@@ -78,15 +79,16 @@ const repo = getArg( 'repo' );
     }
   }
 
-  else if ( command === 'check' ) {
-    const success = await check( {
+  else if ( command === 'type-check' ) {
+    const success = await typeCheck( {
       all: true,
-      silent: !outputToConsole
+      silent: !outputToConsole && !absolute, // Don't be silent if absolute output is requested
+      absolute: absolute
     } );
     process.exit( success ? 0 : 1 );
   }
 
-  else if ( command === 'test' ) {
+  else if ( command === 'unit-test' ) {
 
     // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
     const qUnitOK = await ( async () => {

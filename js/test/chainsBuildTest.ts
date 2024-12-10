@@ -1,4 +1,4 @@
-// Copyright 2017, University of Colorado Boulder
+// Copyright 2017-2024, University of Colorado Boulder
 
 /**
  * Unit tests, run with `qunit` at the *top-level* of chipper. May need `npm install -g qunit` beforehand, if it hasn't been run yet.
@@ -6,10 +6,10 @@
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
 
-import execute from '../../perennial-alias/js/common/execute.js';
-import gruntCommand from '../../perennial-alias/js/common/gruntCommand.js';
-import grunt from '../../perennial-alias/js/npm-dependencies/grunt.js';
-import qunit from '../../perennial-alias/js/npm-dependencies/qunit.js';
+import execute from '../../../perennial-alias/js/common/execute.js';
+import gruntCommand from '../../../perennial-alias/js/common/gruntCommand.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import qunit from '../../../perennial-alias/js/npm-dependencies/qunit.js';
 
 qunit.module( 'Chains building' );
 

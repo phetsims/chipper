@@ -6,11 +6,11 @@
  * @author Jonathan Olson <jonathan.olson>
  */
 
-import DynamicProperty from '../../axon/js/DynamicProperty.js';
-import localeProperty, { Locale } from '../../joist/js/i18n/localeProperty.js';
-import Tandem from '../../tandem/js/Tandem.js';
-import TandemConstants from '../../tandem/js/TandemConstants.js';
-import StringIO from '../../tandem/js/types/StringIO.js';
+import DynamicProperty from '../../../axon/js/DynamicProperty.js';
+import localeProperty, { Locale } from '../../../joist/js/i18n/localeProperty.js';
+import Tandem from '../../../tandem/js/Tandem.js';
+import TandemConstants from '../../../tandem/js/TandemConstants.js';
+import StringIO from '../../../tandem/js/types/StringIO.js';
 import chipper from './chipper.js';
 import LocalizedString from './LocalizedString.js';
 

@@ -2,7 +2,6 @@
 
 import fs from 'fs';
 import mipmapDownscale from '../../../chipper/js/common/mipmapDownscale.js';
-import getOption from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 
 const jpegJs = require( 'jpeg-js' );
@@ -172,10 +171,7 @@ export default function createMipmap( filename: string, maxLevel: number, qualit
       // called when all encoding is complete
       function encodingComplete(): void {
 
-        // grunt.log.debug is not supported in definitely typed grunt, so simulate it
-        if ( getOption( 'debug' ) ) {
-          grunt.log.writeln( `mipmapped ${filename}${maxLevel >= 0 ? ` to level ${maxLevel}` : ''} with quality: ${quality}` );
-        }
+        grunt.log.verbose.writeln( `mipmapped ${filename}${maxLevel >= 0 ? ` to level ${maxLevel}` : ''} with quality: ${quality}` );
 
         for ( let level = 0; level < mipmaps.length; level++ ) {
 
@@ -184,12 +180,9 @@ export default function createMipmap( filename: string, maxLevel: number, qualit
           mipmaps[ level ].url = usePNG ? mipmaps[ level ].pngURL : mipmaps[ level ].jpgURL;
           mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
 
-          // grunt.log.debug is not supported in definitely typed grunt, so simulate it
-          if ( getOption( 'debug' ) ) {
-            grunt.log.writeln( `level ${level} (${usePNG ? 'PNG' : 'JPG'} ${
+          grunt.log.verbose.writeln( `level ${level} (${usePNG ? 'PNG' : 'JPG'} ${
               mipmaps[ level ].width}x${mipmaps[ level ].height}) base64: ${
               mipmaps[ level ].url!.length} bytes ` );
-          }
         }
 
         resolve( mipmaps );

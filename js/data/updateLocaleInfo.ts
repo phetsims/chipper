@@ -11,6 +11,7 @@
 
 import child_process from 'child_process';
 import fs from 'fs';
+import { LocaleData } from '../grunt/getStringMap.js';
 
 /**
  * Converts locale data from babel/localeData.json into legacy formats used by rosetta and the website.
@@ -25,7 +26,7 @@ import fs from 'fs';
  */
 
 // Load our ground source of truth
-const localeData = JSON.parse( fs.readFileSync( '../../../babel/localeData.json', 'utf8' ) );
+const localeData: LocaleData = JSON.parse( fs.readFileSync( '../../../babel/localeData.json', 'utf8' ) );
 
 // Construct the concise JS that defines the legacy locale-info format
 let localeInfoSnippet = '{';
@@ -44,11 +45,15 @@ for ( const locale of Object.keys( localeData ) ) {
 localeInfoSnippet = localeInfoSnippet.slice( 0, -1 );
 // Close the object
 localeInfoSnippet += '\n}';
+type LocaleInfoObject = {
+  name: string;
+  localizedName: string;
+  direction: string;
+};
 
-const localeInfo = {};
+const localeInfo: Record<string, LocaleInfoObject> = {};
 for ( const locale of Object.keys( localeData ) ) {
 
-  // @ts-expect-error, this may be deleted soon anyways
   localeInfo[ locale ] = {
     name: localeData[ locale ].englishName,
     localizedName: localeData[ locale ].localizedName,
