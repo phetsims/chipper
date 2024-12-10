@@ -13,7 +13,14 @@
   window.phet = window.phet || {};
   window.phet.chipper = window.phet.chipper || {};
 
-  // Constructing the string map
+  // A map that looks like
+  //   {
+  //     en: {
+  //       greenhouse-effect: 'fluent messages string',
+  //       molecules-and-light: 'fluen messages string'
+  //     },
+  //
+  //   }
   window.phet.chipper.fluentStrings = {};
 
   const requestFluentFile = ( repoName, locale ) => {
