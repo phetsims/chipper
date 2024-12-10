@@ -23,7 +23,7 @@ module.exports = function() {
         if ( callee.isIdentifier( { name: 'isAffirmEnabled' } ) ) {
 
           // The internet says replaceWithSourceString() is a bit less performant than using babel/types
-          // path.replaceWith( t.booleanLiteral( false ) ), but adding that npm dependency seems like undo overhead
+          // path.replaceWith( t.booleanLiteral( false ) ), but adding that npm dependency seems like undue overhead
           // for this line.
           path.replaceWithSourceString( 'false' );
         }
