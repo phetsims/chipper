@@ -15,7 +15,6 @@
  */
 
 import { DerivedProperty1 } from '../../axon/js/DerivedProperty.js';
-import chipper from './chipper.js';
 import localizedFluentBundleProperty, { englishBundle } from './localizedFluentBundleProperty.js';
 
 export default class LocalizedMessageProperty extends DerivedProperty1<string, null> {
@@ -34,5 +33,3 @@ export default class LocalizedMessageProperty extends DerivedProperty1<string, n
     } );
   }
 }
-
-chipper.register( 'LocalizedMessageProperty', LocalizedMessageProperty );
