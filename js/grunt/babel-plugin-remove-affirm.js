@@ -1,9 +1,10 @@
 // Copyright 2024, University of Colorado Boulder
 
 /**
- * Babel plugin that removes calls to 'affirm' and 'affirmLazy'.
+ * Babel plugin that removes calls to 'affirm', 'affirmLazy', and replaces 'isAffirmEnabled()' with "false" so it can be stripped out as dead code.
  *
  * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 module.exports = function() {
   return {
@@ -16,6 +17,15 @@ module.exports = function() {
         if ( callee.isIdentifier( { name: 'affirm' } ) ||
              callee.isIdentifier( { name: 'affirmLazy' } ) ) {
           path.remove();
+        }
+
+        // Handle the use of a boolean function, so blocks of code can be stripped out too.
+        if ( callee.isIdentifier( { name: 'isAffirmEnabled' } ) ) {
+
+          // The internet says replaceWithSourceString() is a bit less performant than using babel/types
+          // path.replaceWith( t.booleanLiteral( false ) ), but adding that npm dependency seems like undo overhead
+          // for this line.
+          path.replaceWithSourceString( 'false' );
         }
       }
     }
