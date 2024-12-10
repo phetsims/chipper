@@ -15,6 +15,7 @@
 import DerivedProperty from '../../axon/js/DerivedProperty.js';
 import localeProperty from '../../joist/js/i18n/localeProperty.js';
 
+// Maps locale code to a Fluent bundle.
 const bundleMap = new Map();
 
 // @ts-expect-error - Why isn't Fluent available here? It was availabel in ohms-law. I expected
