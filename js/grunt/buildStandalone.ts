@@ -9,13 +9,30 @@
 import assert from 'assert';
 import fs, { readFileSync } from 'fs';
 import _ from 'lodash';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import optionize from '../../../phet-core/js/optionize.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import getLocalesFromRepository from './getLocalesFromRepository.js';
 import getPhetLibs from './getPhetLibs.js';
 import getStringMap from './getStringMap.js';
-import minify from './minify.js';
+import minify, { MinifyOptions } from './minify.js';
 import webpackBuild from './webpackBuild.js';
+
+type SelfOptions = {
+  isDebug?: boolean;
+
+  // if provided, exclude these preloads from the built standalone
+  omitPreloads?: string[] | null;
+
+  // For concurrent builds, provide a unique output dir for the webpack process, default to the repo building
+  tempOutputDir?: string;
+
+  // Some phet-io wrapper repos want to be built as "phet-io" brand so that resources under `phet-io` dirs are included.
+  brand?: string;
+
+  profileFileSize?: boolean;
+};
+
+type BuildStandaloneOptions = SelfOptions & MinifyOptions;
 
 /**
  * Builds standalone JS deliverables (e.g. dot/kite/scenery)
@@ -23,19 +40,14 @@ import webpackBuild from './webpackBuild.js';
  * @param repo
  * @param providedOptions - Passed directly to minify()
  */
-export default async function buildStandalone( repo: string, providedOptions: IntentionalAny ): Promise<string> {
+export default async function buildStandalone( repo: string, providedOptions?: BuildStandaloneOptions ): Promise<string> {
 
-  const options = _.merge( {
+  const options = optionize<BuildStandaloneOptions, SelfOptions, MinifyOptions>()( {
     isDebug: false,
-
-    // {null|string[]} - if provided, exclude these preloads from the built standalone
     omitPreloads: null,
-
-    // For concurrent builds, provide a unique output dir for the webpack process, default to the repo building
     tempOutputDir: repo,
-
-    // Some phet-io wrapper repos want to be built as "phet-io" brand so that resources under `phet-io` dirs are included.
-    brand: 'phet'
+    brand: 'phet',
+    profileFileSize: false
   }, providedOptions );
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
@@ -73,7 +85,7 @@ export default async function buildStandalone( repo: string, providedOptions: In
     } );
   }
   if ( options.omitPreloads ) {
-    includedSources = includedSources.filter( source => !options.omitPreloads.includes( source ) );
+    includedSources = includedSources.filter( source => !options.omitPreloads!.includes( source ) );
   }
 
   let includedJS = includedSources.map( file => fs.readFileSync( file, 'utf8' ) ).join( '\n' );
