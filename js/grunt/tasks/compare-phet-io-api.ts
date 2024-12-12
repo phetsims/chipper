@@ -15,7 +15,7 @@
  */
 
 import fs from 'fs';
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
@@ -29,6 +29,7 @@ const repo = getRepo();
 const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
 const temporary = getOption( 'temporary' );
 let proposedAPIs: PhetioAPIs | null = null;
+const needsTranspile = isOptionKeyProvided( 'transpile' ) ? getOption( 'transpile' ) : true;
 
 ( async () => {
   if ( temporary ) {
@@ -41,7 +42,7 @@ let proposedAPIs: PhetioAPIs | null = null;
 
     const repos = new Set<string>();
     sims.forEach( sim => getPhetLibs( sim ).forEach( lib => repos.add( lib ) ) );
-    await transpile( {
+    needsTranspile && await transpile( {
       repos: Array.from( repos ),
       silent: true
     } );
