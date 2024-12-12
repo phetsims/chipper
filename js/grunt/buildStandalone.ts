@@ -61,8 +61,7 @@ export default async function buildStandalone( repo: string, providedOptions?: B
   const webpackJS = webpackResult.js;
 
   let includedSources = [
-    '../assert/js/assert.js',
-    '../tandem/js/PhetioIDUtils.js'
+    '../assert/js/assert.js'
   ];
 
   // add repo-specific preloads from package.json

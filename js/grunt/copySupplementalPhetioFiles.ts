@@ -62,7 +62,7 @@ const THIRD_PARTY_LIB_PRELOADS = [
 const PHET_IO_LIB_PRELOADS = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
   '../assert/js/assert.js',
-  '../tandem/js/PhetioIDUtils.js'
+  '../tandem/js/PhetioIDUtils.js' // TODO: Delete this and set this global in PhetioClient, https://github.com/phetsims/tandem/issues/316
 ];
 
 const LIB_PRELOADS = THIRD_PARTY_LIB_PRELOADS.concat( PHET_IO_LIB_PRELOADS );
