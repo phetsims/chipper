@@ -52,7 +52,7 @@ const skipTranspile = getOption( 'transpile' ) === false;
   }
 
   const results = await generatePhetioMacroAPI( sims, {
-    chunkSize: getOption( 'chunkSize' ) || 4,
+    workers: getOption( 'workers' ) || 4,
     showProgressBar: sims.length > 1,
     throwAPIGenerationErrors: false // Write as many as we can, and print what we didn't write
   } );

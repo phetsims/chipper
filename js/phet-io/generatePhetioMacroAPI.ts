@@ -23,8 +23,8 @@ type GeneratePhetioMacroAPIOptions = {
   // if the built file should be used to generate the API (otherwise uses unbuilt)
   fromBuiltVersion: boolean;
 
-  // split into chunks with (at most) this many elements per chunk
-  chunkSize: number;
+  // how many internal workers to run (how many instances of puppeteer to kick off in parallel)
+  workers: number;
   showProgressBar: boolean;
   showMessagesFromSim: boolean;
 
@@ -51,7 +51,7 @@ const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: Partia
 
   const options = _.assignIn( {
     fromBuiltVersion: false, // if the built file should be used to generate the API (otherwise uses unbuilt)
-    chunkSize: 4, // split into chunks with (at most) this many elements per chunk
+    workers: 4, // split into chunks with (at most) this many elements per chunk
     showProgressBar: false,
     showMessagesFromSim: true,
 
@@ -98,7 +98,7 @@ const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: Partia
 
       options.showProgressBar && showCommandLineProgress( ++completed / repos.length, false );
     }, {
-      workers: options.chunkSize
+      workers: options.workers
     } );
 
     options.showProgressBar && showCommandLineProgress( 1, true );
