@@ -1,7 +1,7 @@
 // Copyright 2024, University of Colorado Boulder
 
 /**
- * Babel plugin that removes calls to 'affirm', 'affirmLazy', and replaces 'isAffirmEnabled()' with "false" so it can be stripped out as dead code.
+ * Babel plugin that removes calls to 'affirm', 'affirmCallback', and replaces 'isAffirmEnabled()' with "false" so it can be stripped out as dead code.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -13,9 +13,9 @@ module.exports = function() {
 
         const callee = path.get( 'callee' );
 
-        // Check if the call expression is a call to 'affirm' or 'affirmLazy'
+        // Check if the call expression is a call to 'affirm' or 'affirmCallback'
         if ( callee.isIdentifier( { name: 'affirm' } ) ||
-             callee.isIdentifier( { name: 'affirmLazy' } ) ) {
+             callee.isIdentifier( { name: 'affirmCallback' } ) ) {
           path.remove();
         }
 
