@@ -51,7 +51,7 @@
   //   results in many 404 errors when there ins't a file to load. load-unbuilt-strings.js pulls from babel but I
   //   didn't undersetand that. And this prototype pulls files from the sim repo for now. These also don't
   //   support fallback locales appropriately.
-  const localeList = [ 'en', 'es', 'fr' ];
+  const localeList = [ 'en', 'es', 'fr', 'ar' ];
 
   // TODO: How to manage multiple repos? https://github.com/phetsims/joist/issues/992
   //  For now, we just include the main repo and anything in phetLibs (to test a suite like greenhouse-effect).
