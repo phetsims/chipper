@@ -61,8 +61,7 @@ const THIRD_PARTY_LIB_PRELOADS = [
 // Make sure to add new files to the jsdoc generation list below also
 const PHET_IO_LIB_PRELOADS = [
   '../query-string-machine/js/QueryStringMachine.js', // must be first, other types use this
-  '../assert/js/assert.js',
-  '../tandem/js/PhetioIDUtils.js' // TODO: Delete this and set this global in PhetioClient, https://github.com/phetsims/tandem/issues/316
+  '../assert/js/assert.js'
 ];
 
 const LIB_PRELOADS = THIRD_PARTY_LIB_PRELOADS.concat( PHET_IO_LIB_PRELOADS );
@@ -92,7 +91,7 @@ const transpiledClientPath = `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/Cli
 const JSDOC_FILES = [
   `../chipper/dist/js/${WRAPPER_COMMON_FOLDER}/js/PhetioClient.js`,
   transpiledClientPath,
-  '../tandem/js/PhetioIDUtils.js',
+  '../chipper/dist/js/tandem/js/PhetioIDUtils.js',
   '../phet-io/js/phet-io-initialize-globals.js',
   '../chipper/js/browser/initialize-globals.js',
   '../chipper/dist/js/perennial-alias/js/browser-and-node/SimVersion.js'
