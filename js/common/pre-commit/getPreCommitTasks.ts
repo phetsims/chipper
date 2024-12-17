@@ -16,11 +16,11 @@ const SUPPORTED_TASKS = [ 'lint', 'report-media', 'type-check', 'unit-test', 'ph
 const getPreCommitTasks = ( outputToConsole: boolean ): string[] => {
 
 
-// By default, run all tasks
+  // By default, run all tasks
   const OPT_OUT_ALL = '*'; // Key to opt out of all tasks
   let tasksToRun = isOptionKeyProvided( OPT_OUT_ALL ) && !getOption( OPT_OUT_ALL ) ? [] : [ ...SUPPORTED_TASKS ];
 
-// check local preferences for overrides for which tasks to turn 'off'
+  // check local preferences for overrides for which tasks to turn 'off'
   const hookPreCommit = buildLocal.hookPreCommit;
   if ( hookPreCommit && hookPreCommit[ OPT_OUT_ALL ] === false ) {
     outputToConsole && console.log( 'all tasks opted out from build-local.json' );

@@ -94,7 +94,7 @@ const repo = getArg( 'repo' );
   else if ( command === 'unit-test' ) {
 
     // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
-    const qUnitOK = await ( async () => {
+    const qUnitOKPromise = ( async () => {
 
       const cacheKey = `puppeteerQUnit#${repo}`;
 
@@ -107,6 +107,7 @@ const repo = getArg( 'repo' );
             return true;
           }
           else {
+            outputToConsole && console.log( 'unit-test: testing browser QUnit' );
             const browser = await puppeteer.launch( {
               args: [
                 '--disable-gpu'
@@ -130,14 +131,16 @@ const repo = getArg( 'repo' );
             }
           }
         }
+        else {
+          outputToConsole && console.log( 'unit-test: no browser unit tests detected' );
+        }
 
-        outputToConsole && console.log( 'QUnit: no problems detected' );
         return true;
       }
       return true;
     } )();
 
-    const npmRunTestOk = await ( async () => {
+    const npmRunTestOkPromise = ( async () => {
 
       // Detect the presence of npm run test by looking in package.json's scripts.test
       let hasNpmRunTest = false;
@@ -152,15 +155,13 @@ const repo = getArg( 'repo' );
         // no package.json or not parseable
       }
 
-      outputToConsole && console.log( `npm run test exists: ${hasNpmRunTest}` );
-
       if ( hasNpmRunTest ) {
+        outputToConsole && console.log( 'unit-test: testing "npm run test" task' );
         const output = await execute( npmCommand, [ 'run', 'test' ], `../${repo}`, { errors: 'resolve' } );
         const testPassed = output.code === 0;
 
         ( outputToConsole || !testPassed ) && output.stdout.length > 0 && console.log( output.stdout );
         ( outputToConsole || !testPassed ) && output.stderr.length > 0 && console.log( output.stderr );
-        ( outputToConsole || !testPassed ) && console.log( `npm run test passed: ${testPassed}` );
 
         return testPassed;
       }
@@ -168,6 +169,12 @@ const repo = getArg( 'repo' );
         return true;
       }
     } )();
+
+    const results = await Promise.all( [ qUnitOKPromise, npmRunTestOkPromise ] );
+    const qUnitOK = results[ 0 ];
+    const npmRunTestOk = results[ 1 ];
+    outputToConsole && console.log( `unit-test: QUnit browser success: ${qUnitOK}` );
+    outputToConsole && console.log( `unit-test: npm run test success: ${npmRunTestOk}` );
 
     process.exit( ( qUnitOK && npmRunTestOk ) ? 0 : 1 );
   }
