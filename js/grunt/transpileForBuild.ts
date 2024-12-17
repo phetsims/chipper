@@ -52,7 +52,7 @@ export default function transpileForBuild( jsInput: string, stripAffirmations: b
     } ] ],
 
     plugins: stripAffirmations ? [
-      // Plugin to remove calls to 'affirm' and 'affirmLazy'
+      // Plugin to remove calls to 'affirm' and 'affirmCallback'
       babelPluginRemoveAffirm
     ] : []
   } ).code;

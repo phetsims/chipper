@@ -157,7 +157,7 @@ const modulifyMipmap = async ( abspath: string, repo: string, subdir: string, fi
   const entries = mipmapLevels.map( ( { width, height, url } ) => `  new MipmapElement( ${width}, ${height}, '${url}' )` );
 
   const mipmapContents = `${HEADER}
-import MipmapElement from '${expandDots( abspath )}phet-core/js/MipmapElement.js';
+import MipmapElement from '${expandDots( abspath )}chipper/js/browser/MipmapElement.js';
 
 // The levels in the mipmap. Specify explicit types rather than inferring to assist the type checker, for this boilerplate case.
 const mipmaps = [
