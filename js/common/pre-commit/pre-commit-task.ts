@@ -1,27 +1,28 @@
 // Copyright 2020-2024, University of Colorado Boulder
 
 /**
- * See grunt/tasks/pre-commit.ts. This implements each task for that process so they can run in parallel.
+ * See grunt/tasks/pre-commit.ts. This implements each task for that process so they can run in parallel. This is run
+ * as a script, and not as a module.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
 import fs from 'fs';
-import CacheLayer from '../../../chipper/js/common/CacheLayer.js';
-import reportMedia from '../../../chipper/js/grunt/reportMedia.js';
-import execute from '../../../perennial-alias/js/common/execute.js';
-import getRepoList from '../../../perennial-alias/js/common/getRepoList.js';
-import npmCommand from '../../../perennial-alias/js/common/npmCommand.js';
-import withServer from '../../../perennial-alias/js/common/withServer.js';
-import lint from '../../../perennial-alias/js/eslint/lint.js';
-import typeCheck from '../../../perennial-alias/js/grunt/typeCheck.js';
-import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
-import puppeteerQUnit from '../../../perennial-alias/js/test/puppeteerQUnit.js';
-import transpile from '../common/transpile.js';
-import getPhetLibs from '../grunt/getPhetLibs.js';
-import generatePhetioMacroAPI from '../phet-io/generatePhetioMacroAPI.js';
-import phetioCompareAPISets from '../phet-io/phetioCompareAPISets.js';
+import execute from '../../../../perennial-alias/js/common/execute.js';
+import getRepoList from '../../../../perennial-alias/js/common/getRepoList.js';
+import npmCommand from '../../../../perennial-alias/js/common/npmCommand.js';
+import withServer from '../../../../perennial-alias/js/common/withServer.js';
+import lint from '../../../../perennial-alias/js/eslint/lint.js';
+import typeCheck from '../../../../perennial-alias/js/grunt/typeCheck.js';
+import puppeteer from '../../../../perennial-alias/js/npm-dependencies/puppeteer.js';
+import puppeteerQUnit from '../../../../perennial-alias/js/test/puppeteerQUnit.js';
+import getPhetLibs from '../../grunt/getPhetLibs.js';
+import reportMedia from '../../grunt/reportMedia.js';
+import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
+import phetioCompareAPISets from '../../phet-io/phetioCompareAPISets.js';
+import CacheLayer from '../CacheLayer.js';
+import transpile from '../transpile.js';
 
 type Repo = string;
 
