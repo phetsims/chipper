@@ -190,6 +190,67 @@ export default ${JSON.stringify( shaderString )}`;
 };
 
 /**
+ * Prepares modules so that contents of fluent files can be used in the simulation.
+ * @param abspath - the absolute path of the fluent file
+ * @param repo - repository name for the modulify command
+ * @param filename - name of file being modulified
+ */
+const modulifyFluentFile = async ( abspath: string, repo: string, filename: string ) => {
+  if ( !filename.endsWith( '_en.ftl' ) ) {
+    throw new Error( 'Only english fluent files can be modulified.' );
+  }
+  const nameWithoutSuffix = filename.replace( '_en.ftl', '' );
+
+  const localeToFluentFileContents: Record<string, string> = {};
+  localeToFluentFileContents.en = readFileSync( abspath, 'utf8' );
+
+  const babelPath = `../babel/fluent/${repo}`;
+  const localBabelFiles = fs.readdirSync( babelPath );
+
+  localBabelFiles.forEach( babelFile => {
+    if ( babelFile.startsWith( `${nameWithoutSuffix}_`) ) {
+      const locale = babelFile.match( /_([^_]+)\.ftl/ )![1];
+
+      if ( !locale ) {
+        throw new Error( `Could not determine locale from ${babelFile}` );
+      }
+
+      localeToFluentFileContents[ locale ] = readFileSync( `${babelPath}/${babelFile}`, 'utf8' );
+    }
+  } );
+
+  const modulifiedName = `${nameWithoutSuffix}Messages`;
+  const relativeModulifiedName = `strings/${modulifiedName}.ts`;
+  const namespace = _.camelCase( repo );
+  const copyrightLine = await getCopyrightLine( repo, relativeModulifiedName );
+
+  await writeFileAndGitAdd( repo, relativeModulifiedName, fixEOL(
+    `${copyrightLine}
+    
+/* eslint-disable */
+/* @formatter:off */
+
+/**
+ * Auto-generated from modulify, DO NOT manually modify.
+ */
+
+import getFluentModule from '../../chipper/js/browser/getFluentModule.js';
+import ${namespace} from '../js/${namespace}.js';
+import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
+import type { FluentNode } from '../../perennial-alias/node_modules/@types/fluent/index.d.ts';
+
+// TODO: Generate type safety for this. Check out https://projectfluent.org/fluent.js/syntax/
+type FluentStringsType = Record<string, TReadOnlyProperty<FluentNode[]>>
+
+const ${modulifiedName} = getFluentModule( ${JSON.stringify(localeToFluentFileContents, null, 2)} ) as FluentStringsType;
+
+${namespace}.register( '${modulifiedName}', ${modulifiedName} );
+
+export default ${modulifiedName};
+` ) );
+};
+
+/**
  * Decode a sound file into a Web Audio AudioBuffer.
  * @param abspath - the absolute path of the image
  * @param repo - repository name for the modulify command
@@ -304,6 +365,10 @@ const modulifyFile = async ( abspath: string, rootdir: string, subdir: string, f
 
   if ( subdir && subdir.startsWith( 'sounds' ) && SOUND_SUFFIXES.includes( getSuffix( filename ) ) ) {
     await modulifySound( abspath, repo, subdir, filename );
+  }
+
+  if ( subdir && subdir.startsWith( 'strings' ) && getSuffix( filename ) === '.ftl' ) {
+    await modulifyFluentFile( abspath, repo, filename );
   }
 
   if ( subdir && subdir.startsWith( 'shaders' ) && SHADER_SUFFIXES.includes( getSuffix( filename ) ) ) {
