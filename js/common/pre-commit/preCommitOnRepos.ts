@@ -1,4 +1,4 @@
-// Copyright 2022-2024, University of Colorado Boulder
+// Copyright 2024, University of Colorado Boulder
 
 import path from 'path';
 import { Repo } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
