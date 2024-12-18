@@ -25,7 +25,16 @@
 
   const requestFluentFile = ( repoName, locale ) => {
     const xhr = new XMLHttpRequest();
-    xhr.open( 'GET', `../${repoName}/${repoName}-strings_${locale}.ftl`, true );
+
+    // Convert the repo name to PascalCase, likd ohms-law -> OhmsLaw and
+    // 'models-of-the-hydrogen-atom' -> 'ModelsOfTheHydrogenAtom'
+    const repoToPascalCase = repoName => {
+      return repoName.split( '-' ).map( word => {
+        return word.charAt( 0 ).toUpperCase() + word.slice( 1 );
+      } ).join( '' );
+    }
+
+    xhr.open( 'GET', `../${repoName}/strings/${repoToPascalCase( repoName )}_${locale}.ftl`, true );
     xhr.responseType = 'text';
     xhr.onload = () => {
       if ( xhr.status === 200 ) {

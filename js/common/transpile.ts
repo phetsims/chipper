@@ -61,7 +61,7 @@ export default async function transpile( providedOptions?: TranspileOptions ): P
     }
   }
 
-  const chunks = _.chunk( repos, 75 );
+  const chunks = _.chunk( repos, 50 );
 
   !options.silent && console.log( `Transpiling code for ${repos.length} repositories, split into ${chunks.length} chunks...` );
 
@@ -137,7 +137,7 @@ function getBrands(): string[] {
 // This is used for a top-down search in the initial transpilation and for filtering relevant files in the watch process
 const getSubdirectories = ( repo: string ) => {
 
-  const subdirs = [ 'js', 'images', 'mipmaps', 'sounds' ];
+  const subdirs = [ 'js', 'images', 'mipmaps', 'sounds', 'strings' ];
 
   repo === 'phet-io-wrappers' && subdirs.push( 'common' );
   repo === 'phet-io-sim-specific' && subdirs.push( 'repos' );
