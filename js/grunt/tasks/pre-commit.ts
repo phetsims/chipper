@@ -53,9 +53,9 @@
  */
 
 import getActiveRepos from '../../../../perennial-alias/js/common/getActiveRepos.js';
+import getReposWithWorkingCopyChanges from '../../../../perennial-alias/js/common/getReposWithWorkingCopyChanges.js';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import getReposWithWorkingCopyChanges from '../../common/getReposWithWorkingCopyChanges.js';
 import { preCommitMain } from '../../common/pre-commit/preCommitMain.js';
 import preCommitOnRepos from '../../common/pre-commit/preCommitOnRepos.js';
 
