@@ -399,7 +399,7 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
     await phetTimingLog.startAsync( 'phet-io-sub-build', async () => {
       await copySupplementalPhetioFiles( repo, version, englishTitle, packageObject, true, typeCheck );
     }, {
-      timingCallback: time => gruntTimingLog( 'PhET-iO resources built', time )
+      timingCallback: time => gruntTimingLog( 'PhET-iO artifacts complete', time )
     } );
   }
 
