@@ -11,6 +11,8 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import generateDevelopmentHTML from './generateDevelopmentHTML.js';
 
 export default async ( repo: string, options?: IntentionalAny ): Promise<void> => {
+  const isChipper = repo === 'chipper';
+
   await generateDevelopmentHTML( repo, _.merge( {
 
     // Include QUnit CSS
@@ -31,7 +33,7 @@ export default async ( repo: string, options?: IntentionalAny ): Promise<void> =
     // Do not show the splash screen
     stripPreloads: [ '../joist/js/splash.js' ],
 
-    mainFile: `../chipper/dist/js/${repo}/js/${repo}-tests.js`,
+    mainFile: `../chipper/dist/js/${repo}/js/${isChipper ? 'browser/' : ''}${repo}-tests.js`,
 
     // Specify to use test config
     qualifier: 'test-',

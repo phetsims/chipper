@@ -12,7 +12,7 @@ import Tandem from '../../../tandem/js/Tandem.js';
 import TandemConstants from '../../../tandem/js/TandemConstants.js';
 import StringIO from '../../../tandem/js/types/StringIO.js';
 import chipper from './chipper.js';
-import LocalizedString from './LocalizedString.js';
+import type LocalizedString from './LocalizedString.js';
 
 class LocalizedStringProperty extends DynamicProperty<string, string, Locale> {
 

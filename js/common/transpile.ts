@@ -1,13 +1,13 @@
 // Copyright 2024, University of Colorado Boulder
 
 import assert from 'assert';
-import { spawn } from 'child_process';
 import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
-import dirname from '../../../perennial-alias/js/common/dirname.js';
-import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
 import { Repo } from '../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
+import dirname from '../../../perennial-alias/js/common/dirname.js';
+import execute from '../../../perennial-alias/js/common/execute.js';
+import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
 import getOption, { isOptionKeyProvided } from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 
@@ -149,28 +149,6 @@ const getSubdirectories = ( repo: string ) => {
   return subdirs.map( subdir => `${repo}/${subdir}/` );
 };
 
-// TODO: factor out child process https://github.com/phetsims/perennial/issues/373
-function spawnCommand( command: string, args: string[] ): Promise<void> {
-  return new Promise( ( resolve, reject ) => {
-    const child = spawn( command, args, {
-      cwd: path.resolve( __dirname, '../../../' ),
-      shell: true, // Important for windows.
-      stdio: 'inherit' // Inherit stdio to display output directly
-    } );
-
-    child.on( 'error', error => reject( error ) );
-
-    child.on( 'close', code => {
-      if ( code !== 0 ) {
-        reject( new Error( `Process exited with code ${code}` ) );
-      }
-      else {
-        resolve();
-      }
-    } );
-  } );
-}
-
 const spawnTranspile = ( repos: string[], live: boolean, silent: boolean ) => {
   const argsString = [
     '--config-file', 'chipper/.swcrc',
@@ -183,5 +161,10 @@ const spawnTranspile = ( repos: string[], live: boolean, silent: boolean ) => {
 
   silent && argsString.push( '--quiet' );
 
-  return spawnCommand( runnablePath, argsString );
+  const cwd = path.resolve( __dirname, '../../../' );
+  return execute( runnablePath, argsString, cwd, {
+    childProcessOptions: {
+      stdio: 'inherit'
+    }
+  } );
 };
