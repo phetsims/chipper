@@ -8,7 +8,7 @@
       "path": "../../../perennial-alias/js/browser-and-node/tsconfig.json"
     },
     {
-      "path": "../../../phet-core/tsconfig-browser-and-node.json"
+      "path": "../../../phet-core/tsconfig-module.json"
     }
   ]
 }
