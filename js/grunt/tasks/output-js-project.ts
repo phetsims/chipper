@@ -1,8 +1,8 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import _ from 'lodash';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import transpile, { getTranspileCLIOptions } from '../../common/transpile.js';
+import { combineOptions } from '../../../../phet-core/js/optionize.js';
+import transpile, { getTranspileCLIOptions, TranspileOptions } from '../../common/transpile.js';
 import getPhetLibs from '../getPhetLibs.js';
 
 /**
@@ -15,9 +15,6 @@ import getPhetLibs from '../getPhetLibs.js';
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-const defaultOptions = {
+transpile( combineOptions<TranspileOptions>( {
   repos: getPhetLibs( getRepo() )
-};
-
-// TODO: Use combineOptions, see https://github.com/phetsims/chipper/issues/1523
-transpile( _.assignIn( {}, defaultOptions, getTranspileCLIOptions() ) );
+}, getTranspileCLIOptions() ) );

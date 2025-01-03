@@ -13,6 +13,7 @@ import callbackOnWorkers from '../../../perennial-alias/js/common/callbackOnWork
 import withServer from '../../../perennial-alias/js/common/withServer.js';
 import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
 import puppeteer from '../../../perennial-alias/js/npm-dependencies/puppeteer.js';
+import optionize from '../../../phet-core/js/optionize.js';
 import { PhetioAPI } from '../../../tandem/js/phet-io-types.js';
 import showCommandLineProgress from '../common/showCommandLineProgress.js';
 
@@ -21,15 +22,15 @@ export type PhetioAPIs = Record<string, PhetioAPI | null>; // null if errored
 type GeneratePhetioMacroAPIOptions = {
 
   // if the built file should be used to generate the API (otherwise uses unbuilt)
-  fromBuiltVersion: boolean;
+  fromBuiltVersion?: boolean;
 
   // how many internal workers to run (how many instances of puppeteer to kick off in parallel)
-  workers: number;
-  showProgressBar: boolean;
-  showMessagesFromSim: boolean;
+  workers?: number;
+  showProgressBar?: boolean;
+  showMessagesFromSim?: boolean;
 
   // If false, allow individual repos return null if they encountered problems
-  throwAPIGenerationErrors: boolean;
+  throwAPIGenerationErrors?: boolean;
 };
 
 const TIMEOUT = 120000;
@@ -45,11 +46,11 @@ type Browser = Awaited<ReturnType<typeof puppeteer.launch>>;
 /**
  * Load each sim provided and get the
  */
-const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: Partial<GeneratePhetioMacroAPIOptions> ): Promise<PhetioAPIs> => {
+const generatePhetioMacroAPI = async ( repos: string[], providedOptions?: GeneratePhetioMacroAPIOptions ): Promise<PhetioAPIs> => {
 
   assert( repos.length === _.uniq( repos ).length, 'repos should be unique' );
 
-  const options = _.assignIn( {
+  const options = optionize<GeneratePhetioMacroAPIOptions>()( {
     fromBuiltVersion: false, // if the built file should be used to generate the API (otherwise uses unbuilt)
     workers: 4, // split into chunks with (at most) this many elements per chunk
     showProgressBar: false,

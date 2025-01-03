@@ -1,22 +1,24 @@
 // Copyright 2022-2024, University of Colorado Boulder
 
+import optionize from '../../../phet-core/js/optionize.js';
+
+type ShowCommandLineProgressOptions = {
+  progressBarLength?: number;
+};
+
 /**
  * Helper function to show a progress bar on the command line.
- * @author Sam Reid (PhET Interactive Simulations)
+ *
  * @author Michael Kauzmann (PhET Interactive Simulations)
- */
-import _ from 'lodash';
-
-type ShowCommandLineProgressOptions = { processBarLength: number };
-
-/**
+ * @author Sam Reid (PhET Interactive Simulations)
+ *
  * See https://jagascript.com/how-to-build-a-textual-progress-bar-for-cli-and-terminal-apps/
  * @param progress - decimal between 0 and 1
  * @param newline - if each new progress should give a new line, should be false during progress, and true when finally completed
  * @param providedOptions
  */
-export default function showCommandLineProgress( progress: number, newline: boolean, providedOptions?: Partial<ShowCommandLineProgressOptions> ): void {
-  const options = _.assignIn( {
+export default function showCommandLineProgress( progress: number, newline: boolean, providedOptions?: ShowCommandLineProgressOptions ): void {
+  const options = optionize<ShowCommandLineProgressOptions>()( {
     progressBarLength: 40 // in characters
   }, providedOptions );
 

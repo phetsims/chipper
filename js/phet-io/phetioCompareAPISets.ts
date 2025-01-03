@@ -6,24 +6,29 @@
 
 import fs from 'fs';
 import _ from 'lodash';
+import optionize from '../../../phet-core/js/optionize.js';
 import phetioCompareAPIs, { PhetioCompareAPIsOptions } from '../browser-and-node/phetioCompareAPIs.js';
 import { PhetioAPIs } from './generatePhetioMacroAPI.js';
 
 const jsondiffpatch = require( '../../../sherpa/lib/jsondiffpatch-v0.3.11.umd' ).create( {} );
 
-type PhetioCompareAPISetsOptions = {
-  delta: boolean;
-} & PhetioCompareAPIsOptions;
+type SelfOptions = {
+  delta?: boolean;
+};
+type ParentOptions = PhetioCompareAPIsOptions;
+type PhetioCompareAPISetsOptions = SelfOptions & ParentOptions;
 
 /**
  * Compare two sets of APIs using phetioCompareAPIs.
  */
-export default async ( repos: string[], proposedAPIs: PhetioAPIs, options?: Partial<PhetioCompareAPISetsOptions> ): Promise<boolean> => {
-  let ok = true;
-  options = _.assignIn( {
+export default async ( repos: string[], proposedAPIs: PhetioAPIs, providedOptions?: PhetioCompareAPISetsOptions ): Promise<boolean> => {
+
+  const options = optionize<PhetioCompareAPISetsOptions, SelfOptions, ParentOptions>()( {
     delta: false,
     compareBreakingAPIChanges: true
-  }, options );
+  }, providedOptions );
+
+  let ok = true;
 
   repos.forEach( ( repo: string ) => {
 

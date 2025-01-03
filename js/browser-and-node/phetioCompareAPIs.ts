@@ -25,8 +25,8 @@ import { FlattenedAPIPhetioElements, PhetioAPI, PhetioElement, PhetioElementMeta
 import isInitialStateCompatible from './isInitialStateCompatible.js';
 
 export type PhetioCompareAPIsOptions = {
-  compareBreakingAPIChanges: boolean;
-  compareDesignedAPIChanges: boolean;
+  compareBreakingAPIChanges?: boolean;
+  compareDesignedAPIChanges?: boolean;
 };
 
 type PhetioCompareAPIsResult = {
@@ -122,7 +122,7 @@ const isOldAPIVersion = ( api: PhetioAPI ): boolean => {
  * @param _ - lodash, so this can be used from different contexts.
  * @param providedOptions
  */
-const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: LoDashStatic, providedOptions?: Partial<PhetioCompareAPIsOptions> ): PhetioCompareAPIsResult => {
+const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: LoDashStatic, providedOptions?: PhetioCompareAPIsOptions ): PhetioCompareAPIsResult => {
 
   // If the proposed version predates 1.0, then bring it forward to the structured tree with metadata under `_metadata`.
   if ( isOldAPIVersion( proposedAPI ) ) {
@@ -133,7 +133,7 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
     referenceAPI = toStructuredTree( referenceAPI, _ );
   }
 
-  const options: PhetioCompareAPIsOptions = _.assignIn( {
+  const options: Required<PhetioCompareAPIsOptions> = _.assignIn( {
     compareDesignedAPIChanges: true,
     compareBreakingAPIChanges: true
   }, providedOptions );
