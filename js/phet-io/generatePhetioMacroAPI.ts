@@ -1,4 +1,4 @@
-// Copyright 2019-2024, University of Colorado Boulder
+// Copyright 2019-2025, University of Colorado Boulder
 
 /**
  * Launch an instance of the simulation using puppeteer, gather the PhET-iO API of the simulation,
