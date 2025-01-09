@@ -929,8 +929,9 @@
     // Read query parameters
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
 
-    // Are we running a built html file?
-    window.phet.chipper.isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
+    // Are we running a built html file? (Note, if running in a Web Worker, we
+    // won't have a document to check for this).
+    window.phet.chipper.isProduction = self.document ? self.document.querySelector( 'meta[name="phet-sim-level"]' )?.content === 'production' : true;
 
     // Are we running in an app?
     window.phet.chipper.isApp = phet.chipper.queryParameters[ 'phet-app' ] || phet.chipper.queryParameters[ 'phet-android-app' ];
