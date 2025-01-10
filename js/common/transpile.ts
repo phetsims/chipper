@@ -1,4 +1,4 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2024-2025, University of Colorado Boulder
 
 import assert from 'assert';
 import fs from 'fs';
@@ -10,6 +10,7 @@ import execute from '../../../perennial-alias/js/common/execute.js';
 import getActiveRepos from '../../../perennial-alias/js/common/getActiveRepos.js';
 import getOption, { isOptionKeyProvided } from '../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import optionize from '../../../phet-core/js/optionize.js';
 
 // @ts-expect-error - until we have "type": "module" in our package.json
 const __dirname = dirname( import.meta.url );
@@ -17,19 +18,19 @@ const __dirname = dirname( import.meta.url );
 export type TranspileOptions = {
 
   // Transpile all repos
-  all: boolean;
+  all?: boolean;
 
   // Delete of the output directory before transpiling
-  clean: boolean;
+  clean?: boolean;
 
   // Continue watching all directories and transpile on detected changes.
-  live: boolean;
+  live?: boolean;
 
   // List of repos to transpile, if not doing all
-  repos: Repo[];
+  repos?: Repo[];
 
   // suppress any logging output.
-  silent: boolean;
+  silent?: boolean;
 };
 
 /**
@@ -38,11 +39,10 @@ export type TranspileOptions = {
  * @author Sam Reid (PhET Interactive Simulations)
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-export default async function transpile( providedOptions: Partial<TranspileOptions> ): Promise<void> {
+export default async function transpile( providedOptions?: TranspileOptions ): Promise<void> {
   const start = Date.now();
 
-  // TODO: use combineOptions, see https://github.com/phetsims/chipper/issues/1523
-  const options = _.assignIn( {
+  const options = optionize<TranspileOptions>()( {
     all: false,
     silent: false,
     clean: false,
@@ -72,9 +72,9 @@ export default async function transpile( providedOptions: Partial<TranspileOptio
 }
 
 // Parse command line options into an object for the module
-export function getTranspileCLIOptions(): Partial<TranspileOptions> {
+export function getTranspileCLIOptions(): TranspileOptions {
 
-  const transpileOptions: Partial<TranspileOptions> = {};
+  const transpileOptions: TranspileOptions = {};
 
   // command line options override passed-in options
   if ( isOptionKeyProvided( 'repo' ) ) {
@@ -143,7 +143,7 @@ const getSubdirectories = ( repo: string ) => {
   repo === 'phet-io-sim-specific' && subdirs.push( 'repos' );
   repo === 'my-solar-system' && subdirs.push( 'shaders' );
   repo === 'alpenglow' && subdirs.push( 'wgsl' );
-  repo === 'sherpa' && subdirs.push( 'lib' );
+  repo === 'sherpa' && subdirs.push( 'lib', 'lodash-es' );
   repo === 'brand' && subdirs.push( ...getBrands() );
 
   return subdirs.map( subdir => `${repo}/${subdir}/` );

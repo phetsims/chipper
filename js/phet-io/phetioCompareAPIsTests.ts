@@ -1,4 +1,4 @@
-// Copyright 2021-2024, University of Colorado Boulder
+// Copyright 2021-2025, University of Colorado Boulder
 
 /**
  * @author Michael Kauzmann (PhET Interactive Simulations)
@@ -11,7 +11,7 @@ import phetioCompareAPIs, { PhetioCompareAPIsOptions } from '../browser-and-node
 
 qunit.module( 'phetioCompareAPIs' );
 
-const _phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, options?: Partial<PhetioCompareAPIsOptions> ) => {
+const _phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, options?: PhetioCompareAPIsOptions ) => {
   return phetioCompareAPIs( referenceAPI, proposedAPI, _, options );
 };
 

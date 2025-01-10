@@ -1,4 +1,4 @@
-// Copyright 2015-2024, University of Colorado Boulder
+// Copyright 2015-2025, University of Colorado Boulder
 
 /**
  * Initializes phet globals that are used by all simulations, including assertions and query-parameters.
@@ -734,6 +734,19 @@
     },
 
     /**
+     * Controls whether Tier 1 Voicing is enabled. This is a subset of the Voicing feature, the Voicing toolbar,
+     * name responses, and hint responses are all avialable. Context and Object responses are disabled and cannot
+     * be enabled from the Preferences dialog.
+     *
+     * This feature is enabled by default when supportsTier1Voicing is true in package.json. The query parameter will always
+     * override the package.json entry.
+     */
+    supportsTier1Voicing: {
+      type: 'boolean',
+      defaultValue: !!packageSimFeatures.supportsTier1Voicing
+    },
+
+    /**
      * Switches the Vello rendering of Text to use Swash (with embedded fonts), instead of Canvas.
      *
      * For internal use only. This is currently only used in prototypes.
@@ -916,8 +929,9 @@
     // Read query parameters
     window.phet.chipper.queryParameters = QueryStringMachine.getAll( QUERY_PARAMETERS_SCHEMA );
 
-    // Are we running a built html file?
-    window.phet.chipper.isProduction = $( 'meta[name=phet-sim-level]' ).attr( 'content' ) === 'production';
+    // Are we running a built html file? (Note, if running in a Web Worker, we
+    // won't have a document to check for this).
+    window.phet.chipper.isProduction = self.document ? self.document.querySelector( 'meta[name="phet-sim-level"]' )?.content === 'production' : true;
 
     // Are we running in an app?
     window.phet.chipper.isApp = phet.chipper.queryParameters[ 'phet-app' ] || phet.chipper.queryParameters[ 'phet-android-app' ];
@@ -965,6 +979,11 @@
         window.phet.chipper.queryParameters.fuzzTouch ||
         window.phet.chipper.queryParameters.fuzzBoard
       );
+
+    window.phet.chipper.supportsAnyVoicing = () => {
+      return window.phet.chipper.queryParameters.supportsVoicing ||
+             window.phet.chipper.queryParameters.supportsTier1Voicing;
+    };
 
     // Add a log function that displays messages to the console. Examples:
     // phet.log && phet.log( 'You win!' );
@@ -1261,6 +1280,7 @@
     const simFeaturesSchema = {
       supportsInteractiveDescription: { type: 'boolean' },
       supportsVoicing: { type: 'boolean' },
+      supportsTier1Voicing: { type: 'boolean' },
       supportsInteractiveHighlights: { type: 'boolean' },
       supportsDescriptionPlugin: { type: 'boolean' },
       supportsSound: { type: 'boolean' },
