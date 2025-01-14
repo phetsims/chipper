@@ -70,6 +70,17 @@ const expandDots = ( abspath: string ): string => {
 const fixEOL = ( string: string ) => replace( string, '\n', os.EOL );
 
 /**
+ * Reads a Fluent.js file from the absolute path. Removes any comments from the file to reduce the size of the module.
+ * @param abspath - the absolute path of the file
+ */
+const readFluentFile = ( abspath: string ): string => {
+  const fileContents = readFileSync( abspath, 'utf8' );
+
+  // Remove Fluent.js comments from the file contents
+  return fileContents.replace( /#.*(\r?\n|$)/g, '' );
+};
+
+/**
  * Transform an image file to a JS file that loads the image.
  * @param abspath - the absolute path of the image
  * @param repo - repository name for the modulify command
@@ -202,20 +213,20 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
   const nameWithoutSuffix = filename.replace( '_en.ftl', '' );
 
   const localeToFluentFileContents: Record<string, string> = {};
-  localeToFluentFileContents.en = readFileSync( abspath, 'utf8' );
+  localeToFluentFileContents.en = readFluentFile( abspath );
 
   const babelPath = `../babel/fluent/${repo}`;
   const localBabelFiles = fs.readdirSync( babelPath );
 
   localBabelFiles.forEach( babelFile => {
-    if ( babelFile.startsWith( `${nameWithoutSuffix}_`) ) {
-      const locale = babelFile.match( /_([^_]+)\.ftl/ )![1];
+    if ( babelFile.startsWith( `${nameWithoutSuffix}_` ) ) {
+      const locale = babelFile.match( /_([^_]+)\.ftl/ )![ 1 ];
 
       if ( !locale ) {
         throw new Error( `Could not determine locale from ${babelFile}` );
       }
 
-      localeToFluentFileContents[ locale ] = readFileSync( `${babelPath}/${babelFile}`, 'utf8' );
+      localeToFluentFileContents[ locale ] = readFluentFile( `${babelPath}/${babelFile}` );
     }
   } );
 
@@ -242,7 +253,7 @@ import type { FluentNode } from '../../perennial-alias/node_modules/@types/fluen
 // TODO: Generate type safety for this. Check out https://projectfluent.org/fluent.js/syntax/
 type FluentStringsType = Record<string, TReadOnlyProperty<FluentNode[]>>
 
-const ${modulifiedName} = getFluentModule( ${JSON.stringify(localeToFluentFileContents, null, 2)} ) as FluentStringsType;
+const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileContents, null, 2 )} ) as FluentStringsType;
 
 ${namespace}.register( '${modulifiedName}', ${modulifiedName} );
 
