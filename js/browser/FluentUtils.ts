@@ -55,7 +55,12 @@ const FluentUtils = {
    */
   formatMessage: ( localizedMessageProperty: LocalizedMessageProperty, args: IntentionalAny ): string => {
     const newArgs = FluentUtils.handleFluentArgs( args );
-    return localizedMessageProperty.bundleProperty.value.format( localizedMessageProperty.value, newArgs );
+
+    const errors: string[] = [];
+    const value = localizedMessageProperty.bundleProperty.value.format( localizedMessageProperty.value, newArgs, errors );
+    assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
+
+    return value;
   }
 };
 

@@ -28,11 +28,7 @@ export default class PatternMessageProperty extends DerivedProperty1<string, str
 
     // @ts-expect-error This is a prototype so I am not going to worry about this complicated TS for now.
     super( dependencies, ( message, ...unusedArgs ) => {
-
-      const args = FluentUtils.handleFluentArgs( values );
-
-      // Format the message with the arguments to resolve a string.
-      return messageProperty.bundleProperty.value.format( message, args );
+      return FluentUtils.formatMessage( messageProperty, values );
     } );
   }
 }

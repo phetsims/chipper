@@ -19,7 +19,7 @@ import chipper from './chipper.js';
 type Locale = string;
 
 export default class LocalizedMessageProperty extends DerivedProperty1<FluentNode[] | null, Locale> {
-  public bundleProperty: Fluent.FluentBundle;
+  public readonly bundleProperty: TReadOnlyProperty<Fluent.FluentBundle>;
 
   public constructor( bundleProperty: TReadOnlyProperty<Fluent.FluentBundle>, derivation: ( bundle: Fluent.FluentBundle ) => FluentNode[] ) {
     super( [ bundleProperty ], derivation );
