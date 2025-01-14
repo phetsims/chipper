@@ -36,7 +36,11 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
     const localeFile = localeToFluentFileMap[ locale ];
 
     const resource = Fluent.FluentResource.fromString( localeFile );
-    bundle.addResource( resource );
+
+    // This does not catch syntax errors unfortunately, Fluent skips over messages with syntax errors.
+    // See https://github.com/projectfluent/fluent.js/blob/2f675def5b19ad34ff2d4d89c7d1269e5b352e9e/fluent/src/resource.js#L81C1-L83C20
+    const errors = bundle.addResource( resource );
+    assert && assert( errors.length === 0, `Errors when adding resource for locale: ${locale}` );
 
     localeToBundleMap.set( locale, bundle );
   } );
@@ -63,6 +67,8 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
           return bundle;
         }
       }
+      assert && assert( false, `Could not find bundle for key: ${key}.` );
+
       return null;
     } );
 
@@ -70,6 +76,7 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
       if ( bundle && bundle.hasMessage( key ) ) {
         return bundle.getMessage( key );
       }
+      assert && assert( false, `Could not find message for: ${key}.` );
       return null;
     } );
 
