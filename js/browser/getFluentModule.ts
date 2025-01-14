@@ -7,22 +7,21 @@
  * - Message: An data structure in a FluentBundle. The message can be formatted with arguments into a final string.
  *            If there are no arguments, the message is a string.
  *
- * This is used in the generated files from modulify.
+ * This is used in generated files from modulify.
  *
  * @author Jonathan Olson <jonathan.olson>
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import DerivedProperty from '../../../axon/js/DerivedProperty.js';
-import TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
 import localeProperty from '../../../joist/js/i18n/localeProperty.js';
-import type { FluentNode } from '../../../perennial-alias/node_modules/@types/fluent/index.d.ts';
+import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 import LocalizedString from './LocalizedString.js';
 
 // TODO: use Locale for this.
 type Locale = string;
 
-const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Record<string, TReadOnlyProperty<FluentNode[]>> => {
+const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Record<string, LocalizedMessageProperty> => {
   const locales = Object.keys( localeToFluentFileMap );
   const localeToBundleMap = new Map<Locale, Fluent.FluentBundle>();
 
@@ -48,26 +47,37 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
     return arr[ 0 ];
   } );
 
-  const messagePropertiesMap: Record<string, TReadOnlyProperty<FluentNode[]>> = {};
+  const messagePropertiesMap: Record<string, LocalizedMessageProperty> = {};
 
   messageKeys.forEach( key => {
 
-    // The key is the fluent id, we need to wrap it in a MessageProperty suffix.
-    const propertyKey = `${key}MessageProperty`;
-    messagePropertiesMap[ propertyKey ] = new DerivedProperty( [ localeProperty ], locale => {
+    // Create the bundle Property for a locale and key. Uses locale fallbacks until
+    // a bundle with the message key is found.
+    const bundleProperty = new DerivedProperty( [ localeProperty ], locale => {
       const localeFallbacks = LocalizedString.getLocaleFallbacks( locale );
 
       for ( const fallbackLocale of localeFallbacks ) {
         const bundle = localeToBundleMap.get( fallbackLocale )!;
 
         if ( bundle.hasMessage( key ) ) {
-          return bundle.getMessage( key );
+          return bundle;
         }
       }
+      return null;
     } );
+
+    const localizedMessageProperty = new LocalizedMessageProperty( bundleProperty, bundle => {
+      if ( bundle && bundle.hasMessage( key ) ) {
+        return bundle.getMessage( key );
+      }
+      return null;
+    } );
+
+    const propertyKey = `${key}MessageProperty`;
+    messagePropertiesMap[ propertyKey ] = localizedMessageProperty;
   } );
 
   return messagePropertiesMap;
-}
+};
 
 export default getFluentModule;

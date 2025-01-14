@@ -6,9 +6,8 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import { isTReadOnlyProperty } from '../../axon/js/TReadOnlyProperty.js';
-import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
-import localizedFluentBundleProperty from './localizedFluentBundleProperty.js';
+import { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 
 const FluentUtils = {
@@ -49,14 +48,14 @@ const FluentUtils = {
     return newArgs;
   },
 
-  /**h
-   * Directly format a fluent message. Most of the time, you should use a PatternMessageProperty instead.
-   * This should only be used when the string does not need to be changed when the locale changes. Real-time
-   * alerts are a good exaple.
+  /**
+   * Directly format a fluent message. Usually, you should use a PatternMessageProperty instead so that
+   * the string will update when the locale changes. This is useful when you do not want the overhead of
+   * creating a new Property. For example, real-time alerts.
    */
   formatMessage: ( localizedMessageProperty: LocalizedMessageProperty, args: IntentionalAny ): string => {
     const newArgs = FluentUtils.handleFluentArgs( args );
-    return localizedFluentBundleProperty.value.format( localizedMessageProperty.value, newArgs );
+    return localizedMessageProperty.bundleProperty.value.format( localizedMessageProperty.value, newArgs );
   }
 };
 
