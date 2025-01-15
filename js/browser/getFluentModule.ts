@@ -63,7 +63,7 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
       for ( const fallbackLocale of localeFallbacks ) {
         const bundle = localeToBundleMap.get( fallbackLocale )!;
 
-        if ( bundle.hasMessage( key ) ) {
+        if ( bundle && bundle.hasMessage( key ) ) {
           return bundle;
         }
       }
