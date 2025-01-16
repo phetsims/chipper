@@ -245,14 +245,12 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
  * Auto-generated from modulify, DO NOT manually modify.
  */
 
-// @ts-ignore TODO: See https://github.com/phetsims/joist/issues/994
 import getFluentModule from '../../chipper/js/browser/getFluentModule.js';
 import ${namespace} from '../js/${namespace}.js';
-import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
-import type { FluentNode } from '../../perennial-alias/node_modules/@types/fluent/index.d.ts';
+import LocalizedMessageProperty from '../../chipper/js/browser/LocalizedMessageProperty.js';
 
 // TODO: Generate type safety for this. Check out https://projectfluent.org/fluent.js/syntax/
-type FluentStringsType = Record<string, TReadOnlyProperty<FluentNode[]>>
+type FluentStringsType = Record<string, LocalizedMessageProperty>
 
 const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileContents, null, 2 )} ) as FluentStringsType;
 
