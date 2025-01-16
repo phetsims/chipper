@@ -18,12 +18,11 @@ import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
 
 ( async () => {
 
-  type hasEnglish = { en: object };
   const getStringMap = async ( releaseBranch: ReleaseBranch ): Promise<object> => {
 
     const url = `https://phet.colorado.edu/sims/html/${releaseBranch.repo}/latest/english-string-map.json`;
     const x = await fetch( url );
-    return x.json() as unknown as hasEnglish;
+    return x.json() as object;
   };
 
   const releaseBranches = await ReleaseBranch.getAllMaintenanceBranches( false );
