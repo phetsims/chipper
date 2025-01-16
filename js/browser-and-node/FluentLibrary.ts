@@ -1,8 +1,14 @@
+// Copyright 2025, University of Colorado Boulder
+
+/* eslint-disable phet/default-export-class-should-register-namespace */
+
 /**
  * An entry point for the Fluent library. In the browser-and-node directory, it lets Fluent be used by
  * both simulation code and during the grunt modulify process. Follow tsconfig-dependencies.json to see
  * how Fluent code is referenced for typescript. See the README in the sherpa/lib/fluent directory
  * for more information on how Fluent is set up for PhET simulations.
+ *
+ * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
 import { Pattern } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/ast.js';
@@ -32,4 +38,3 @@ class FluentLibrary {
 export default FluentLibrary;
 export { FluentBundle, FluentResource };
 export type { Pattern };
-

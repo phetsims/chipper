@@ -50,8 +50,13 @@ const FluentUtils = {
 
     const errors: Error[] = [];
 
-    // TODO - See https://github.com/phetsims/joist/issues/994
-    const value = localizedMessageProperty.bundleProperty.value!.formatPattern( localizedMessageProperty.value!, newArgs, errors );
+    const bundle = localizedMessageProperty.bundleProperty.value!;
+    assert && assert( bundle, 'Fluent bundle is not available.' );
+
+    const messageValue = localizedMessageProperty.value!;
+    assert && assert( messageValue, 'Fluent message is undefined.' );
+
+    const value = bundle.formatPattern( messageValue, newArgs, errors );
     assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
 
     return value;

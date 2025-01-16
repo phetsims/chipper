@@ -231,12 +231,12 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
     }
   } );
 
-  const fluentKeys = FluentLibrary.getFluentMessageKeys( localeToFluentFileContents[ 'en' ] );
+  const fluentKeys = FluentLibrary.getFluentMessageKeys( localeToFluentFileContents.en );
 
   // Convert keys into a type that we can use in the generated file
-  let fluentKeysType = `type ${nameWithoutSuffix}FluentType = {`
+  let fluentKeysType = `type ${nameWithoutSuffix}FluentType = {`;
   fluentKeys.forEach( ( fluentKey: string ) => {
-    fluentKeysType += `\n  '${fluentKey}': LocalizedMessageProperty;`
+    fluentKeysType += `\n  '${fluentKey}': LocalizedMessageProperty;`;
   } );
   fluentKeysType += '\n};';
 

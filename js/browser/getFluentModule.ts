@@ -40,7 +40,7 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
     localeToBundleMap.set( locale, bundle );
   } );
 
-  const englishMessageKeys = FluentLibrary.getFluentMessageKeys( localeToFluentFileMap[ 'en' ] );
+  const englishMessageKeys = FluentLibrary.getFluentMessageKeys( localeToFluentFileMap.en );
 
   const messagePropertiesMap: Record<string, LocalizedMessageProperty> = {};
 
