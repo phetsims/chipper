@@ -15,6 +15,7 @@ import path from 'path';
 import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import FluentLibrary from '../browser-and-node/FluentLibrary.js';
 import loadFileAsDataURI from '../common/loadFileAsDataURI.js';
 import pascalCase from '../common/pascalCase.js';
 import toLessEscapedString from '../common/toLessEscapedString.js';
@@ -230,8 +231,17 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
     }
   } );
 
+  const fluentKeys = FluentLibrary.getFluentMessageKeys( localeToFluentFileContents[ 'en' ] );
+
+  // Convert keys into a type that we can use in the generated file
+  let fluentKeysType = `type ${nameWithoutSuffix}FluentType = {`
+  fluentKeys.forEach( ( fluentKey: string ) => {
+    fluentKeysType += `\n  '${fluentKey}': LocalizedMessageProperty;`
+  } );
+  fluentKeysType += '\n};';
+
   const modulifiedName = `${nameWithoutSuffix}Messages`;
-  const relativeModulifiedName = `strings/${modulifiedName}.ts`;
+  const relativeModulifiedName = `js/strings/${modulifiedName}.ts`;
   const namespace = _.camelCase( repo );
   const copyrightLine = await getCopyrightLine( repo, relativeModulifiedName );
 
@@ -245,14 +255,13 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
  * Auto-generated from modulify, DO NOT manually modify.
  */
 
-import getFluentModule from '../../chipper/js/browser/getFluentModule.js';
-import ${namespace} from '../js/${namespace}.js';
-import LocalizedMessageProperty from '../../chipper/js/browser/LocalizedMessageProperty.js';
+import getFluentModule from '../../../chipper/js/browser/getFluentModule.js';
+import ${namespace} from '../../js/${namespace}.js';
+import LocalizedMessageProperty from '../../../chipper/js/browser/LocalizedMessageProperty.js';
 
-// TODO: Generate type safety for this. Check out https://projectfluent.org/fluent.js/syntax/
-type FluentStringsType = Record<string, LocalizedMessageProperty>
+${fluentKeysType}
 
-const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileContents, null, 2 )} ) as FluentStringsType;
+const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileContents, null, 2 )} ) as ${nameWithoutSuffix}FluentType;
 
 ${namespace}.register( '${modulifiedName}', ${modulifiedName} );
 

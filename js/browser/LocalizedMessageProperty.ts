@@ -12,8 +12,8 @@
 
 import { DerivedProperty1 } from '../../../axon/js/DerivedProperty.js';
 import TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
-import { Pattern } from '../../../sherpa/lib/fluent-bundle/src/ast.js';
-import { FluentBundle } from '../../../sherpa/lib/fluent-bundle/src/bundle.js';
+import { Pattern } from '../browser-and-node/FluentLibrary.js';
+import { FluentBundle} from '../browser-and-node/FluentLibrary.js';
 import chipper from './chipper.js';
 
 export default class LocalizedMessageProperty extends DerivedProperty1<Pattern | null, FluentBundle | null> {

@@ -15,8 +15,7 @@
 
 import DerivedProperty from '../../../axon/js/DerivedProperty.js';
 import localeProperty from '../../../joist/js/i18n/localeProperty.js';
-import { FluentBundle } from '../../../sherpa/lib/fluent-bundle/src/bundle.js';
-import { FluentResource } from '../../../sherpa/lib/fluent-bundle/src/resource.js';
+import FluentLibrary, { FluentBundle, FluentResource } from '../browser-and-node/FluentLibrary.js';
 import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 import LocalizedString from './LocalizedString.js';
 
@@ -41,13 +40,11 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
     localeToBundleMap.set( locale, bundle );
   } );
 
-  const messageKeys = Array.from( localeToBundleMap.get( 'en' )!._messages ).map( arr => {
-    return arr[ 0 ];
-  } );
+  const englishMessageKeys = FluentLibrary.getFluentMessageKeys( localeToFluentFileMap[ 'en' ] );
 
   const messagePropertiesMap: Record<string, LocalizedMessageProperty> = {};
 
-  messageKeys.forEach( key => {
+  englishMessageKeys.forEach( key => {
 
     // Create the bundle Property for a locale and key. Uses locale fallbacks until
     // a bundle with the message key is found.

@@ -13,14 +13,6 @@ import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 const FluentUtils = {
 
   /**
-   * Converts a camelCase id to a message key. For example, 'choose-unit-for-current' becomes
-   * 'chooseUnitForCurrentMessageProperty'.
-   */
-  fluentIdToMessageKey: ( id: string ): string => {
-    return `${id.replace( /-([a-z])/g, ( match, letter ) => letter.toUpperCase() )}MessageProperty`;
-  },
-
-  /**
    * Changes a set of arguments for the message into a set of values that can easily be used to
    * format the message. Does things like get Property values and converts enumeration values to strings.
    */
