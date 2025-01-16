@@ -245,6 +245,7 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
  * Auto-generated from modulify, DO NOT manually modify.
  */
 
+// @ts-ignore TODO: See https://github.com/phetsims/joist/issues/994
 import getFluentModule from '../../chipper/js/browser/getFluentModule.js';
 import ${namespace} from '../js/${namespace}.js';
 import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';

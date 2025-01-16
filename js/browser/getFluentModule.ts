@@ -15,27 +15,23 @@
 
 import DerivedProperty from '../../../axon/js/DerivedProperty.js';
 import localeProperty from '../../../joist/js/i18n/localeProperty.js';
+import { FluentBundle } from '../../../sherpa/lib/fluent-bundle/src/bundle.js';
+import { FluentResource } from '../../../sherpa/lib/fluent-bundle/src/resource.js';
 import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 import LocalizedString from './LocalizedString.js';
 
-// TODO: use Locale for this.
+// This can be any locale supported by PhET. PhET uses custom and non-standard locales. There
+// is no type for it at this time. See babel README for more information.
 type Locale = string;
 
 const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Record<string, LocalizedMessageProperty> => {
   const locales = Object.keys( localeToFluentFileMap );
-  const localeToBundleMap = new Map<Locale, Fluent.FluentBundle>();
+  const localeToBundleMap = new Map<Locale, FluentBundle>();
 
   locales.forEach( locale => {
-
-    // TODO: Map PhET locales to Fluent locales
-    // - Check out babel/localeData.json "locale3" entries
-    // - Check out hebrew for phet specific locales
-    // - Figure out what locales Fluent is using. We can use that to determine best fallbacks.
-    const bundle = new Fluent.FluentBundle( locale );
-
+    const bundle = new FluentBundle( locale );
     const localeFile = localeToFluentFileMap[ locale ];
-
-    const resource = Fluent.FluentResource.fromString( localeFile );
+    const resource = new FluentResource( localeFile );
 
     // This does not catch syntax errors unfortunately, Fluent skips over messages with syntax errors.
     // See https://github.com/projectfluent/fluent.js/blob/2f675def5b19ad34ff2d4d89c7d1269e5b352e9e/fluent/src/resource.js#L81C1-L83C20
@@ -45,9 +41,7 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
     localeToBundleMap.set( locale, bundle );
   } );
 
-  const messageKeys = Array.from( localeToBundleMap.get( 'en' )!.messages ).map( arr => {
-
-    // @ts-expect-error TODO
+  const messageKeys = Array.from( localeToBundleMap.get( 'en' )!._messages ).map( arr => {
     return arr[ 0 ];
   } );
 
@@ -74,7 +68,7 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
 
     const localizedMessageProperty = new LocalizedMessageProperty( bundleProperty, bundle => {
       if ( bundle && bundle.hasMessage( key ) ) {
-        return bundle.getMessage( key );
+        return bundle.getMessage( key )!.value;
       }
       assert && assert( false, `Could not find message for: ${key}.` );
       return null;

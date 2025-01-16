@@ -56,8 +56,10 @@ const FluentUtils = {
   formatMessage: ( localizedMessageProperty: LocalizedMessageProperty, args: IntentionalAny ): string => {
     const newArgs = FluentUtils.handleFluentArgs( args );
 
-    const errors: string[] = [];
-    const value = localizedMessageProperty.bundleProperty.value.format( localizedMessageProperty.value, newArgs, errors );
+    const errors: Error[] = [];
+
+    // TODO - See https://github.com/phetsims/joist/issues/994
+    const value = localizedMessageProperty.bundleProperty.value!.formatPattern( localizedMessageProperty.value!, newArgs, errors );
     assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
 
     return value;

@@ -12,16 +12,14 @@
 
 import { DerivedProperty1 } from '../../../axon/js/DerivedProperty.js';
 import TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
-import type { FluentNode } from '../../../perennial-alias/node_modules/@types/fluent/index.d.ts';
+import { Pattern } from '../../../sherpa/lib/fluent-bundle/src/ast.js';
+import { FluentBundle } from '../../../sherpa/lib/fluent-bundle/src/bundle.js';
 import chipper from './chipper.js';
 
-// TODO: Use actual typing or locales.
-type Locale = string;
+export default class LocalizedMessageProperty extends DerivedProperty1<Pattern | null, FluentBundle | null> {
+  public readonly bundleProperty: TReadOnlyProperty<FluentBundle | null>;
 
-export default class LocalizedMessageProperty extends DerivedProperty1<FluentNode[] | null, Locale> {
-  public readonly bundleProperty: TReadOnlyProperty<Fluent.FluentBundle>;
-
-  public constructor( bundleProperty: TReadOnlyProperty<Fluent.FluentBundle>, derivation: ( bundle: Fluent.FluentBundle ) => FluentNode[] ) {
+  public constructor( bundleProperty: TReadOnlyProperty<FluentBundle | null>, derivation: ( bundle: FluentBundle | null ) => Pattern | null ) {
     super( [ bundleProperty ], derivation );
     this.bundleProperty = bundleProperty;
   }
