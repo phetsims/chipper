@@ -19,9 +19,9 @@ import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
 ( async () => {
 
   type hasEnglish = { en: object };
-  const getStringMap = async ( releaseBranch: ReleaseBranch ): Promise<{ en: object }> => {
+  const getStringMap = async ( releaseBranch: ReleaseBranch ): Promise<object> => {
 
-    const url = `https://phet.colorado.edu/sims/html/${releaseBranch.repo}/latest/string-map.json`;
+    const url = `https://phet.colorado.edu/sims/html/${releaseBranch.repo}/latest/english-string-map.json`;
     const x = await fetch( url );
     return x.json() as unknown as hasEnglish;
   };
@@ -63,10 +63,7 @@ import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
       console.error( `cannot get string map for ${releaseBranch.toString()}`, e );
       continue;
     }
-    if ( !stringMap.hasOwnProperty( 'en' ) ) {
-      throw new Error( `no en for sim: ${releaseBranch.repo}` );
-    }
-    for ( const stringKey of Object.keys( stringMap.en ) ) {
+    for ( const stringKey of Object.keys( stringMap ) ) {
       const keyParts = stringKey.split( '/' );
       const requireJSNamespace = keyParts[ 0 ];
       const actualKey = keyParts.slice( 1, keyParts.length ).join( '/' );
