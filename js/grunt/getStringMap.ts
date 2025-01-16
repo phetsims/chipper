@@ -195,9 +195,12 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
               // Handle JoistStrings[ 'some-thingStringProperty' ].value => JoistStrings[ 'some-thing' ]
               // -- Anything after StringProperty should go
               // away, but we need to add the final '] to maintain the format
-              .replace( /StringProperty'].*/, '\']' )
+              .replace( /StringProperty'\s?].*/, '\' ]' )
               // Handle JoistStrings.somethingStringProperty.value => JoistStrings.something
-              .replace( /StringProperty.*/, '' );
+              .replace( /StringProperty.*/, '' )
+              // Normalize whitespace
+              .replace( /\[ '/g, '[\'' )
+              .replace( /' \]/g, '\']' );
           } ) );
         }
       }
