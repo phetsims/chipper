@@ -33,7 +33,8 @@
       "scripts": {
         "test": "bash ../perennial-alias/bin/sage run ../perennial-alias/node_modules/qunit/bin/qunit.js js/test/chipper-tests.ts",
         "test-long": "bash ../perennial-alias/bin/sage run ../perennial-alias/node_modules/qunit/bin/qunit.js js/test/*",
-        "test-string-keys": "bash ../perennial-alias/bin/sage run js/scripts/assertNoMissingMainEnStringKeys.ts"
+        "test-string-keys": "bash ../perennial-alias/bin/sage run js/scripts/assertNoMissingMainEnStringKeys.ts",
+        "test-deprecated-string-keys": "bash ../perennial-alias/bin/sage run js/scripts/assertAllDeprecatedStringKeysUsed.ts"
       },
       "phet": {
         "chipperSupportsOutputJSGruntTasks": true,
