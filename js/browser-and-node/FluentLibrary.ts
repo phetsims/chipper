@@ -37,4 +37,4 @@ class FluentLibrary {
 
 export default FluentLibrary;
 export { FluentBundle, FluentResource };
-export type { Pattern };
+export type { Pattern as FluentPattern };
