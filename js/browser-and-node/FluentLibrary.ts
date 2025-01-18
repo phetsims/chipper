@@ -11,10 +11,29 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import { Pattern } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/ast.js';
 import { FluentBundle } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/bundle.js';
 import { FluentResource } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/resource.js';
 import { FluentParser } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/parser.js';
+import { Visitor } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/visitor.js';
+
+/**
+ * A visitor that collects all term references in a Fluent AST.
+ */
+class TermCollector extends Visitor {
+  public readonly usedTerms = new Set<string>();
+
+  // IntentionalAny because the node type could not be found in Fluent source.
+  public override visitTermReference( node: IntentionalAny ): void {
+
+    // Add the term name to the set of used terms
+    this.usedTerms.add( node.id.name );
+
+    // Continue traversing the AST
+    this.genericVisit( node );
+  }
+}
 
 class FluentLibrary {
 
@@ -32,6 +51,33 @@ class FluentLibrary {
       .map( entry => entry.id.name );
 
     return keys;
+  }
+
+  /**
+   * Verify syntax in the fluent file. Right now, it just checks for undefined terms.
+   */
+  public static verifyFluentFile( fluentFileString: string ): void {
+    const parser = new FluentParser();
+    const resource = parser.parse( fluentFileString );
+
+    // Collect all defined term keys from the AST.
+    const termKeys = resource.body
+      .filter( entry => entry.type === 'Term' )
+      .map( entry => entry.id.name );
+
+    // Use the TermCollector to find all used terms.
+    const collector = new TermCollector();
+    collector.visit( resource );
+
+    // Identify used terms that are not defined
+    const undefinedTerms = Array.from( collector.usedTerms ).filter(
+      term => !termKeys.includes( term )
+    );
+
+    if ( undefinedTerms.length > 0 ) {
+      const undefinedTermsFormatted = undefinedTerms.join( ', ' );
+      throw new Error( `These terms are not defined: [ ${undefinedTermsFormatted} ]` );
+    }
   }
 }
 

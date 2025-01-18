@@ -231,6 +231,11 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
     }
   } );
 
+  // Loop through every fluent file and do any necessary checks for syntax.
+  Object.values( localeToFluentFileContents ).forEach( fluentFile => {
+    FluentLibrary.verifyFluentFile( fluentFile );
+  } );
+
   const fluentKeys = FluentLibrary.getFluentMessageKeys( localeToFluentFileContents.en );
 
   // Convert keys into a type that we can use in the generated file
