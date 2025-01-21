@@ -143,6 +143,7 @@ const getSubdirectories = ( repo: string ) => {
   repo === 'phet-io-sim-specific' && subdirs.push( 'repos' );
   repo === 'my-solar-system' && subdirs.push( 'shaders' );
   repo === 'alpenglow' && subdirs.push( 'wgsl' );
+  repo === 'sherpa' && subdirs.push( 'lib', 'lodash-es' );
   repo === 'brand' && subdirs.push( ...getBrands() );
 
   return subdirs.map( subdir => `${repo}/${subdir}/` );
