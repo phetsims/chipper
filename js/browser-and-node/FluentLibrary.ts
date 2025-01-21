@@ -54,11 +54,21 @@ class FluentLibrary {
   }
 
   /**
-   * Verify syntax in the fluent file. Right now, it just checks for undefined terms.
+   * Verify syntax in the fluent file. Right now it checks for:
+   *   - Message keys should use camelCase instead of dashes.
+   *   - All terms used in the file should be defined.
    */
   public static verifyFluentFile( fluentFileString: string ): void {
     const parser = new FluentParser();
     const resource = parser.parse( fluentFileString );
+
+    // Collect all message keys. None of them should contain dashes.
+    const messages = FluentLibrary.getFluentMessageKeys( fluentFileString );
+    const messagesWithDashes = messages.filter( key => key.includes( '-' ) );
+    if ( messagesWithDashes.length > 0 ) {
+      const messagesWithDashesFormatted = messagesWithDashes.join( ', ' );
+      throw new Error( `Message keys should not contain dashes: [ ${messagesWithDashesFormatted} ]` );
+    }
 
     // Collect all defined term keys from the AST.
     const termKeys = resource.body
