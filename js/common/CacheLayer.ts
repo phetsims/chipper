@@ -28,31 +28,12 @@ const writeFileAsJSON = ( json: object ) => {
 
 export default {
 
-  // When the watch process exits, invalidate the caches until the watch process resumes
-  clearLastChangedTimestamp(): void {
-    const json = readCacheLayerJSON();
-    delete json[ LATEST_CHANGE_TIMESTAMP_KEY ];
-    writeFileAsJSON( json );
-  },
-
-  // Invalidate caches when a relevant file changes
-  updateLastChangedTimestamp(): void {
-    const json = readCacheLayerJSON();
-    json[ LATEST_CHANGE_TIMESTAMP_KEY ] = Date.now();
-    writeFileAsJSON( json );
-  },
-
   // When a process succeeds, save the timestamp
   onSuccess( keyName: string ): void {
     const json = readCacheLayerJSON();
     json.cache = json.cache || {};
     json.cache[ keyName ] = Date.now();
     writeFileAsJSON( json );
-  },
-
-  // Check whether we need to re-run a process
-  isCacheStale( keyName: string ): boolean {
-    return !this.isCacheSafe( keyName );
   },
 
   isCacheSafe( keyName: string ): boolean {
