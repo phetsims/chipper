@@ -103,6 +103,7 @@ const repo = getArg( 'repo' );
         const exists = fs.existsSync( `../${testFilePath}` );
         if ( exists ) {
 
+          // TODO: Everything is a cache miss at the moment, see https://github.com/phetsims/chipper/issues/1549
           if ( CacheLayer.isCacheSafe( cacheKey ) ) {
             return true;
           }
@@ -201,6 +202,7 @@ const repo = getArg( 'repo' );
         .filter( phetioSimRepo => getPhetLibs( phetioSimRepo ).includes( repo ) )
 
         // Only worry about the ones that are not cached
+        // TODO: Everything is a cache miss at the moment, see https://github.com/phetsims/chipper/issues/1549
         .filter( repo => !CacheLayer.isCacheSafe( getCacheKey( repo ) ) );
 
       if ( reposToTest.length > 0 ) {
