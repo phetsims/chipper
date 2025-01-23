@@ -217,7 +217,11 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
   localeToFluentFileContents.en = readFluentFile( abspath );
 
   const babelPath = `../babel/fluent/${repo}`;
-  const localBabelFiles = fs.readdirSync( babelPath );
+
+  let localBabelFiles: string[] = [];
+  if ( fs.existsSync( babelPath ) ) {
+    localBabelFiles = fs.readdirSync( babelPath );
+  }
 
   localBabelFiles.forEach( babelFile => {
     if ( babelFile.startsWith( `${nameWithoutSuffix}_` ) ) {
@@ -241,7 +245,7 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
   // Convert keys into a type that we can use in the generated file
   let fluentKeysType = `type ${nameWithoutSuffix}FluentType = {`;
   fluentKeys.forEach( ( fluentKey: string ) => {
-    fluentKeysType += `\n  '${fluentKey}': LocalizedMessageProperty;`;
+    fluentKeysType += `\n  '${fluentKey}MessageProperty': LocalizedMessageProperty;`;
   } );
   fluentKeysType += '\n};';
 
