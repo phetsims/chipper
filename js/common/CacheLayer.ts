@@ -20,7 +20,8 @@ const readCacheLayerJSON = () => {
   }
 };
 
-const LATEST_CHANGE_TIMESTAMP_KEY = 'latestChangeTimestamp';
+// TODO: See https://github.com/phetsims/chipper/issues/1549
+// const LATEST_CHANGE_TIMESTAMP_KEY = 'latestChangeTimestamp';
 
 const writeFileAsJSON = ( json: object ) => {
   fs.writeFileSync( '../chipper/dist/cache-layer.json', JSON.stringify( json, null, 2 ) );
@@ -37,14 +38,22 @@ export default {
   },
 
   isCacheSafe( keyName: string ): boolean {
-    const json = readCacheLayerJSON();
-    const time = json.cache && json.cache[ keyName ];
-    const lastChanged = json[ LATEST_CHANGE_TIMESTAMP_KEY ];
-    if ( typeof time === 'number' && typeof lastChanged === 'number' && lastChanged < time ) {
-      return true;
-    }
-    else {
-      return false;
-    }
+
+    // TODO: https://github.com/phetsims/chipper/issues/1549 The cache no longer knows how to invalidate since we switched to SWC transpiler.
+    // Therefore, to be safe, there is never a cache hit.
+    // There are some ideas in https://github.com/phetsims/chipper/issues/1549 about how to hash the dependencies for caching,
+    // or to use a "timeout", like "if it succeeded within the last N minutes, it is probably fine".
+    return false;
+
+    // TODO: Sample usage in case we leverage the cache file in the future, see https://github.com/phetsims/chipper/issues/1549
+    // const json = readCacheLayerJSON();
+    // const time = json.cache && json.cache[ keyName ];
+    // const lastChanged = json[ LATEST_CHANGE_TIMESTAMP_KEY ];
+    // if ( typeof time === 'number' && typeof lastChanged === 'number' && lastChanged < time ) {
+    //   return true;
+    // }
+    // else {
+    //   return false;
+    // }
   }
 };
