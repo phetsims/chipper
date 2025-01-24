@@ -6,7 +6,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
+import TReadOnlyProperty, { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 
@@ -50,16 +50,26 @@ const FluentUtils = {
 
     const errors: Error[] = [];
 
-    const bundle = localizedMessageProperty.bundleProperty.value!;
+    const bundle = localizedMessageProperty.bundleProperty.value;
     assert && assert( bundle, 'Fluent bundle is not available.' );
 
-    const messageValue = localizedMessageProperty.value!;
+    const messageValue = localizedMessageProperty.value;
     assert && assert( messageValue, 'Fluent message is undefined.' );
 
     const value = bundle.formatPattern( messageValue, newArgs, errors );
     assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
 
     return value;
+  },
+
+  /**
+   * For our "simple" fluent messages with no arguments, they are essentially just
+   * string properties, so we can treat them as such.
+   */
+  asStringProperty: ( localizedMessageProperty: LocalizedMessageProperty ): TReadOnlyProperty<string> => {
+    assert && assert( typeof localizedMessageProperty.value === 'string' );
+
+    return localizedMessageProperty as TReadOnlyProperty<string>;
   }
 };
 

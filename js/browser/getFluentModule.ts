@@ -30,6 +30,10 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
   locales.forEach( locale => {
     const bundle = new FluentBundle( locale );
     const localeFile = localeToFluentFileMap[ locale ];
+
+    // If assertions are enabled, error out if the file is not valid Fluent syntax (or has keys with dashes)
+    assert && FluentLibrary.verifyFluentFile( localeFile );
+
     const resource = new FluentResource( localeFile );
 
     // This does not catch syntax errors unfortunately, Fluent skips over messages with syntax errors.
@@ -58,17 +62,20 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
           return bundle;
         }
       }
-      assert && assert( false, `Could not find bundle for key: ${key}.` );
 
-      return null;
+      throw new Error( `Could not find bundle for key: ${key}.` );
     } );
 
     const localizedMessageProperty = new LocalizedMessageProperty( bundleProperty, bundle => {
-      if ( bundle && bundle.hasMessage( key ) ) {
-        return bundle.getMessage( key )!.value;
+      if ( bundle.hasMessage( key ) ) {
+        const value = bundle.getMessage( key )!.value;
+        assert && assert( value !== null );
+
+        return value!;
       }
-      assert && assert( false, `Could not find message for: ${key}.` );
-      return null;
+      else {
+        throw new Error( `Could not find message for: ${key}.` );
+      }
     } );
 
     const propertyKey = `${key}MessageProperty`;

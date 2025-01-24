@@ -15,7 +15,7 @@ import path from 'path';
 import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-import FluentLibrary from '../browser-and-node/FluentLibrary.js';
+import FluentLibrary, { FluentBundle, FluentResource } from '../browser-and-node/FluentLibrary.js';
 import loadFileAsDataURI from '../common/loadFileAsDataURI.js';
 import pascalCase from '../common/pascalCase.js';
 import toLessEscapedString from '../common/toLessEscapedString.js';
@@ -242,10 +242,14 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
 
   const fluentKeys = FluentLibrary.getFluentMessageKeys( localeToFluentFileContents.en );
 
+  const englishBundle = new FluentBundle( 'en' );
+  englishBundle.addResource( new FluentResource( localeToFluentFileContents.en ) );
+
   // Convert keys into a type that we can use in the generated file
   let fluentKeysType = `type ${nameWithoutSuffix}FluentType = {`;
   fluentKeys.forEach( ( fluentKey: string ) => {
-    fluentKeysType += `\n  '${fluentKey}MessageProperty': LocalizedMessageProperty;`;
+    const isStringProperty = typeof englishBundle.getMessage( fluentKey )!.value === 'string';
+    fluentKeysType += `\n  '${fluentKey}MessageProperty': ${isStringProperty ? 'TReadOnlyProperty<string>' : 'LocalizedMessageProperty'};`;
   } );
   fluentKeysType += '\n};';
 
@@ -267,10 +271,11 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
 import getFluentModule from '../../../chipper/js/browser/getFluentModule.js';
 import ${namespace} from '../../js/${namespace}.js';
 import LocalizedMessageProperty from '../../../chipper/js/browser/LocalizedMessageProperty.js';
+import type TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
 
 ${fluentKeysType}
 
-const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileContents, null, 2 )} ) as ${nameWithoutSuffix}FluentType;
+const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileContents, null, 2 )} ) as unknown as ${nameWithoutSuffix}FluentType;
 
 ${namespace}.register( '${modulifiedName}', ${modulifiedName} );
 

@@ -16,12 +16,12 @@ import { FluentPattern } from '../browser-and-node/FluentLibrary.js';
 import { FluentBundle } from '../browser-and-node/FluentLibrary.js';
 import chipper from './chipper.js';
 
-export default class LocalizedMessageProperty extends DerivedProperty1<FluentPattern | null, FluentBundle | null> {
-  public readonly bundleProperty: TReadOnlyProperty<FluentBundle | null>;
-
-  public constructor( bundleProperty: TReadOnlyProperty<FluentBundle | null>, derivation: ( bundle: FluentBundle | null ) => FluentPattern | null ) {
+export default class LocalizedMessageProperty extends DerivedProperty1<FluentPattern, FluentBundle> {
+  public constructor(
+    public readonly bundleProperty: TReadOnlyProperty<FluentBundle>,
+    derivation: ( bundle: FluentBundle ) => FluentPattern
+  ) {
     super( [ bundleProperty ], derivation );
-    this.bundleProperty = bundleProperty;
   }
 }
 
