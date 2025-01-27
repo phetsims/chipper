@@ -40,7 +40,7 @@
     "html-webpack-plugin": "~5.3.2",
     "jimp": "~0.16.1",
     "jpeg-js": "~0.4.3",
-    "jsdoc": "~3.6.7",
+    "jsdoc": "~4.0.4",
     "lodash": "~4.17.21",
     "marked": "~4.0.1",
     "node-html-encoder": "~0.0.2",
