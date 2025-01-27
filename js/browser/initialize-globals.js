@@ -338,18 +338,17 @@
      * Specify supports for dynamic locale switching in the runtime of the sim. By default, the value will be the support
      * in the runnable's package.json. Use this to turn off things like the locale switcher preference.
      * The package flag for this means very specific things depending on its presence and value.
-     * - By default, with no entry in the package.json, we will still try to support locale switching if multiple locales
-     * are available.
-     * - If you add the truthy flag (supportsDynamicLocale:true), then it will ensure that strings use StringProperties
+     * - By default, with no entry in the package.json, dynamic locale switching will not be available. This is to ensure
+     * the package flag is used consistently when a sim supports this, see https://github.com/phetsims/joist/issues/1005
+     * - If you add the truthy flag (`"supportsDynamicLocale": true`), then it will ensure that strings use StringProperties
      * in your sim.
-     * - If you do not want to support this, then you can opt out in the package.json with supportsDynamicLocale:false
+     * - If you do not want to support this, then you can opt out in the package.json with `"supportsDynamicLocale": false`
      *
      * For more information about supporting dynamic locale, see the "Dynamic Strings Layout Quickstart Guide": https://github.com/phetsims/phet-info/blob/main/doc/dynamic-string-layout-quickstart.md
      */
     supportsDynamicLocale: {
       type: 'boolean',
-      defaultValue: allowLocaleSwitching &&
-                    ( !packageSimFeatures.hasOwnProperty( 'supportsDynamicLocale' ) || packageSimFeatures.supportsDynamicLocale )
+      defaultValue: allowLocaleSwitching && !!packageSimFeatures.supportsDynamicLocale
     },
 
     /**
