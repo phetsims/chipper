@@ -12,19 +12,22 @@ import assert from 'assert';
  * sage run js/scripts/assertNoMissingMainEnStringKeys.ts
  */
 import fs from 'fs';
-import getFileAtBranch from '../../../perennial-alias/js/common/getFileAtBranch.js';
 import ReleaseBranch from '../../../perennial-alias/js/common/ReleaseBranch.js';
 import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 
 ( async () => {
 
-  const getStringMap = async ( releaseBranch: ReleaseBranch ): Promise<object> => {
-
-    const url = `https://phet.colorado.edu/sims/html/${releaseBranch.repo}/latest/english-string-map.json`;
+  const getJSON = async ( url: string ): Promise<Record<string, IntentionalAny>> => {
     const x = await fetch( url );
-    return x.json() as object;
+    return x.json() as Record<string, IntentionalAny>;
   };
-
+  const getStringMap = async ( releaseBranch: ReleaseBranch ): Promise<Record<string, IntentionalAny>> => {
+    return getJSON( `https://phet.colorado.edu/sims/html/${releaseBranch.repo}/latest/english-string-map.json` );
+  };
+  const getPackage = async ( releaseBranch: ReleaseBranch ): Promise<Record<string, IntentionalAny>> => {
+    return getJSON( `https://raw.githubusercontent.com/phetsims/${releaseBranch.repo}/refs/heads/${releaseBranch.branch}/package.json` );
+  };
   const releaseBranches = await ReleaseBranch.getAllMaintenanceBranches( false );
 
   // Record<fullStringKey, releaseBranchesEffected[]>
@@ -50,8 +53,7 @@ import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';
     if ( !releaseBranch.brands.includes( 'phet' ) ) {
       continue;
     }
-    console.log( releaseBranch.toString() );
-    const packageJSON = JSON.parse( await getFileAtBranch( releaseBranch.repo, releaseBranch.branch, 'package.json' ) );
+    const packageJSON = await getPackage( releaseBranch );
     const simRequireJSNamespace = packageJSON.phet.requirejsNamespace;
 
     let stringMap;
