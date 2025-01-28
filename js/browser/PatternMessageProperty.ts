@@ -1,10 +1,13 @@
 // Copyright 2025, University of Colorado Boulder
 
 /**
- * A Property whose value is a message from a bundle with arguments. Each argument can be a Property,
+ * A Property whose value is a message from a Fluent bundle with arguments. Each argument can be a Property,
  * and the message will be updated either the message or the argument changes.
  *
  * A similar idea as PatternStringProperty, but for Fluent messages.
+ *
+ * For values that are being used in a message with CLDR plural category, the value needs be a number.
+ * Otherwise, the string will be used and always hit the "other" category.
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
