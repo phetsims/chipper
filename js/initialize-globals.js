@@ -477,7 +477,6 @@
     regionAndCulture: {
       public: true,
       type: 'string',
-      validValues: packageSimFeatures.supportedRegionsAndCultures || [ null ],
       defaultValue: packageSimFeatures.supportedRegionsAndCultures?.[ 0 ] ?
                     packageSimFeatures.supportedRegionsAndCultures[ 0 ] : null
     },
