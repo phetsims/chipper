@@ -406,7 +406,7 @@ const handleJSDOC = async buildDir => {
     ...JSDOC_FILES,
     '-c', '../phet-io/doc/wrapper/jsdoc-config.json',
     '-d', `${buildDir}doc/api`,
-    '-t', '../sherpa/lib/docdash-1.2.0',
+    '-t', '../chipper/node_modules/docdash',
     '--readme', JSDOC_README_FILE
   ];
 
