@@ -91,6 +91,8 @@ export const buildPromise = ( async () => {
     const doTranspile = isOptionKeyProvided( 'transpile' ) ? getOption( 'transpile' ) : true;
     doTranspile && await phetTimingLog.startAsync( 'transpile', async () => {
 
+      prepForTranspile( brands );
+
       // If that succeeds, then convert the code to JS
       await transpile( {
         repos: getPhetLibs( repo ),
@@ -152,4 +154,20 @@ export const buildPromise = ( async () => {
       }
     }
   } );
+
+  // Pre-transpile step, needed to delete files that won't be cleared out during transpile, see https://github.com/phetsims/chipper/issues/1554
+  function prepForTranspile( brands: string[] ): void {
+    if ( brands.includes( 'phet-io' ) ) {
+      try {
+        fs.rmSync( '../chipper/dist/js/phet-io-sim-specific', { recursive: true } );
+      }
+      catch( e ) {
+
+        // Graceful handling if the directory doesn't exist.
+        if ( !( e instanceof Error && e.message.includes( 'no such file or directory' ) ) ) {
+          throw e;
+        }
+      }
+    }
+  }
 } )();
