@@ -414,7 +414,7 @@ const handleLib = async ( repo: string, buildDir: string, shouldTypeCheck: boole
       repo: 'phet-io-wrappers'
     } );
     if ( !success ) {
-      grunt.fail.fatal( 'Type checking failed' );
+      throw new Error( 'Type checking failed' );
     }
   }
 
@@ -483,7 +483,7 @@ const handleOfflineArtifact = async ( buildDir: string, repo: string, version: s
   const output = fs.createWriteStream( `${buildDir}${repo}-phet-io-${version}.zip` );
   const archive = archiver( 'zip' );
 
-  archive.on( 'error', ( err: unknown ) => grunt.fail.fatal( `error creating archive: ${err}` ) );
+  archive.on( 'error', ( err: unknown ) => { throw new Error( `error creating archive: ${err}` ); } );
 
   archive.pipe( output );
 
@@ -668,7 +668,7 @@ const handleStudio = async ( repo: string, wrappersLocation: string, shouldTypeC
       repo: 'studio'
     } );
     if ( !success ) {
-      grunt.fail.fatal( 'Type checking failed' );
+      throw new Error( 'Type checking failed' );
     }
   }
 

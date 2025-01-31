@@ -78,7 +78,7 @@ export const buildPromise = ( async () => {
           repo: repo
         } );
         if ( !success ) {
-          grunt.fail.fatal( 'Type checking failed' );
+          throw new Error( 'Type checking failed' );
         }
       }
       else {

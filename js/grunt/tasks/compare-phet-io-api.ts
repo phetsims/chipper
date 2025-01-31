@@ -17,7 +17,6 @@
 import fs from 'fs';
 import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import getSimList from '../../common/getSimList.js';
 import transpile from '../../common/transpile.js';
@@ -62,6 +61,8 @@ const needsTranspile = isOptionKeyProvided( 'transpile' ) ? getOption( 'transpil
     options.compareBreakingAPIChanges = getOption( 'compareBreakingAPIChanges' );
   }
   const ok = await phetioCompareAPISets( sims, proposedAPIs, options );
-  !ok && grunt.fail.fatal( 'PhET-iO API comparison failed' );
+  if ( !ok ) {
+    throw new Error( 'PhET-iO API comparison failed' );
+  }
 
 } )();

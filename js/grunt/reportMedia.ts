@@ -109,7 +109,7 @@ export default async ( repo: string ): Promise<boolean> => {
   }
 
   if ( !success ) {
-    grunt.fail.fatal( 'There is an issue with the licenses for media types.' );
+    throw new Error( 'There is an issue with the licenses for media types.' );
   }
 
   return success;

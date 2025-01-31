@@ -10,7 +10,6 @@ import getLintCLIOptions from '../../../../perennial-alias/js/eslint/getLintCLIO
 import lint from '../../../../perennial-alias/js/eslint/lint.js';
 import getBrands from '../../../../perennial-alias/js/grunt/tasks/util/getBrands.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
 import getPhetLibs from '../getPhetLibs.js';
 
 const repo = getRepo();
@@ -27,7 +26,7 @@ export const lintAllPromise = ( async () => {
 
   // Output results on errors.
   if ( !lintSuccess ) {
-    grunt.fail.fatal( 'Lint failed' );
+    throw new Error( 'Lint failed' );
   }
   else {
     console.log( 'Linting completed successfully.' );
