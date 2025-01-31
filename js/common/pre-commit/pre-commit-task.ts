@@ -21,10 +21,8 @@ import getPhetLibs from '../../grunt/getPhetLibs.js';
 import reportMedia from '../../grunt/reportMedia.js';
 import generatePhetioMacroAPI from '../../phet-io/generatePhetioMacroAPI.js';
 import phetioCompareAPISets from '../../phet-io/phetioCompareAPISets.js';
-import CacheLayer from '../CacheLayer.js';
 import transpile from '../transpile.js';
 
-type Repo = string;
 
 const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.includes( '--console' );
@@ -96,40 +94,31 @@ const repo = getArg( 'repo' );
     // Run qunit tests if puppeteerQUnit exists in the checked-out SHAs and a test HTML exists.
     const qUnitOKPromise = ( async () => {
 
-      const cacheKey = `puppeteerQUnit#${repo}`;
-
       if ( repo !== 'scenery' && repo !== 'phet-io-wrappers' ) { // scenery unit tests take too long, so skip those
         const testFilePath = `${repo}/${repo}-tests.html`;
         const exists = fs.existsSync( `../${testFilePath}` );
         if ( exists ) {
 
-          // TODO: Everything is a cache miss at the moment, see https://github.com/phetsims/chipper/issues/1549
-          if ( CacheLayer.isCacheSafe( cacheKey ) ) {
-            return true;
+          outputToConsole && console.log( 'unit-test: testing browser QUnit' );
+          const browser = await puppeteer.launch( {
+            args: [
+              '--disable-gpu'
+            ]
+          } );
+
+          const result = await withServer( async port => {
+            return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
+          } );
+
+          await browser.close();
+
+          outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
+          if ( !result.ok ) {
+            console.error( `unit tests failed in ${repo}`, result );
+            return false;
           }
           else {
-            outputToConsole && console.log( 'unit-test: testing browser QUnit' );
-            const browser = await puppeteer.launch( {
-              args: [
-                '--disable-gpu'
-              ]
-            } );
-
-            const result = await withServer( async port => {
-              return puppeteerQUnit( browser, `http://localhost:${port}/${testFilePath}?ea&brand=phet-io` );
-            } );
-
-            await browser.close();
-
-            outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
-            if ( !result.ok ) {
-              console.error( `unit tests failed in ${repo}`, result );
-              return false;
-            }
-            else {
-              CacheLayer.onSuccess( cacheKey );
-              return true;
-            }
+            return true;
           }
         }
         else {
@@ -193,17 +182,10 @@ const repo = getArg( 'repo' );
         return true;
       }
 
-      const getCacheKey = ( repo: Repo ) => `phet-io-api#${repo}`;
-
       // Test this repo and all phet-io sims that have it as a dependency.  For instance, changing sun would test
       // every phet-io stable sim.
       const phetioAPIStable = getRepoList( 'phet-io-api-stable' );
-      const reposToTest = phetioAPIStable
-        .filter( phetioSimRepo => getPhetLibs( phetioSimRepo ).includes( repo ) )
-
-        // Only worry about the ones that are not cached
-        // TODO: Everything is a cache miss at the moment, see https://github.com/phetsims/chipper/issues/1549
-        .filter( repo => !CacheLayer.isCacheSafe( getCacheKey( repo ) ) );
+      const reposToTest = phetioAPIStable.filter( phetioSimRepo => getPhetLibs( phetioSimRepo ).includes( repo ) );
 
       if ( reposToTest.length > 0 ) {
         const repos = new Set<string>();
@@ -218,13 +200,7 @@ const repo = getArg( 'repo' );
           showMessagesFromSim: false
         } );
 
-        const phetioAPIComparisonSuccessful = await phetioCompareAPISets( reposToTest, proposedAPIs );
-
-        if ( phetioAPIComparisonSuccessful ) {
-          reposToTest.forEach( repo => CacheLayer.onSuccess( getCacheKey( repo ) ) );
-        }
-
-        return phetioAPIComparisonSuccessful;
+        return phetioCompareAPISets( reposToTest, proposedAPIs );
       }
       else {
         return true;
