@@ -257,6 +257,21 @@ Minify-specific options:
         } );
 
         !grunt.option( 'noTranspile' ) && await phetTimingLog.startAsync( 'transpile', () => {
+
+          // Pre-transpile step, needed to delete files that won't be cleared out during transpile, see https://github.com/phetsims/chipper/issues/1554
+          if ( brands.includes( 'phet-io' ) ) {
+            try {
+              fs.rmSync( '../chipper/dist/js/phet-io-sim-specific', { recursive: true } );
+            }
+            catch( e ) {
+
+              // Graceful handling if the directory doesn't exist.
+              if ( !( e instanceof Error && e.message.includes( 'no such file or directory' ) ) ) {
+                throw e;
+              }
+            }
+          }
+
           // If that succeeds, then convert the code to JS
           transpiler.transpileRepos( getPhetLibs( repo ) );
         } );
