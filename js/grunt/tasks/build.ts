@@ -75,7 +75,8 @@ export const buildPromise = ( async () => {
                repoPackageObject.phet.buildStandalone // no brand for standalone
            ) ) ) {
         const success = await typeCheck( {
-          repo: repo
+          repo: repo,
+          clean: true
         } );
         if ( !success ) {
           grunt.fail.fatal( 'Type checking failed' );
