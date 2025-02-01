@@ -1,4 +1,4 @@
-// Copyright 2015-2024, University of Colorado Boulder
+// Copyright 2015-2025, University of Colorado Boulder
 
 /**
  * This grunt task iterates over all of the license.json files and reports any media files (images, sound, ...)
