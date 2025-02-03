@@ -15,7 +15,7 @@ const qunitStart = () => {
       import( /* webpackMode: "eager" */ '../../../../phet-io/js/phetioEngine.js' ).then( () => {
 
         // no API validation in unit tests
-        phet.tandem.phetioAPIValidation.enabled = false;
+        phet.tandem.Tandem.apiValidationEnabled = false;
         phet.phetio.phetioEngine.flushPhetioObjectBuffer();
         QUnit.start();
       } );
