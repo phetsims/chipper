@@ -22,12 +22,10 @@ import Tandem from '../../../tandem/js/Tandem.js';
 import IOType from '../../../tandem/js/types/IOType.js';
 import ObjectLiteralIO from '../../../tandem/js/types/ObjectLiteralIO.js';
 import LocalizedString, { LocalizedStringStateDelta, StringsStateStateObject } from './LocalizedString.js';
+import localizedStrings from './localizedStrings.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
-
-// Holds all of our localizedStrings, so that we can save our phet-io string change state
-export const localizedStrings: LocalizedString[] = [];
 
 // For developer internal use, particularly for memory leak detection
 // e.g. _.max( phet.chipper.localizedStrings.map( ls => ls.property.tinyProperty.listeners.size ) ) to see if there is

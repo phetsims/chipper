@@ -13,8 +13,8 @@ import arrayRemove from '../../../phet-core/js/arrayRemove.js';
 import { PhetioID } from '../../../tandem/js/phet-io-types.js';
 import Tandem from '../../../tandem/js/Tandem.js';
 import chipper from './chipper.js';
-import { localizedStrings } from './getStringModule.js';
 import LocalizedStringProperty from './LocalizedStringProperty.js';
+import localizedStrings from './localizedStrings.js';
 
 // constants
 const FALLBACK_LOCALE = 'en';
