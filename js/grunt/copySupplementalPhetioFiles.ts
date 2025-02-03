@@ -319,12 +319,14 @@ export default async ( repo: string, version: string, simulationDisplayName: str
   // Make sure to copy the phet-io-wrappers common wrapper code too.
   wrappers.push( WRAPPER_COMMON_FOLDER );
 
+  const simSpecificWrappersPath = `phet-io-sim-specific/repos/${repo}/wrappers/`;
+
   // Add sim-specific wrappers
   let simSpecificWrappers: string[];
   try {
-    simSpecificWrappers = fs.readdirSync( `../phet-io-sim-specific/repos/${repo}/wrappers/`, { withFileTypes: true } )
+    simSpecificWrappers = fs.readdirSync( `../${simSpecificWrappersPath}`, { withFileTypes: true } )
       .filter( dirent => dirent.isDirectory() )
-      .map( dirent => `phet-io-sim-specific/repos/${repo}/wrappers/${dirent.name}` );
+      .map( dirent => `${simSpecificWrappersPath}${dirent.name}` );
   }
   catch( e ) {
     simSpecificWrappers = [];
@@ -332,12 +334,11 @@ export default async ( repo: string, version: string, simulationDisplayName: str
 
   wrappers.push( ...simSpecificWrappers );
 
-
   const additionalWrappers: string[] = packageObject.phet && packageObject.phet[ 'phet-io' ] && packageObject.phet[ 'phet-io' ].wrappers ?
                                        packageObject.phet[ 'phet-io' ].wrappers : [];
 
   // phet-io-sim-specific wrappers are automatically added above
-  wrappers.push( ...additionalWrappers.filter( x => !x.includes( 'phet-io-sim-specific' ) ) );
+  wrappers.push( ...additionalWrappers.filter( x => !x.includes( simSpecificWrappersPath ) ) );
 
   wrappers.forEach( wrapper => {
 
