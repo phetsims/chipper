@@ -78,7 +78,8 @@ export const buildPromise = ( async () => {
           repo: repo
         } );
         if ( !success ) {
-          throw new Error( 'Type checking failed' );
+          console.error( 'Type checking failed' );
+          process.exit( 1 );
         }
       }
       else {

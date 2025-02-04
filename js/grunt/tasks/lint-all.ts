@@ -22,11 +22,14 @@ const brands = getBrands( repo );
  */
 export const lintAllPromise = ( async () => {
 
+
+
   const lintSuccess = await lint( getPhetLibs( repo, brands ), getLintCLIOptions() );
 
   // Output results on errors.
   if ( !lintSuccess ) {
-    throw new Error( 'Lint failed' );
+    console.error( 'Lint failed' );
+    process.exit( 1 );
   }
   else {
     console.log( 'Linting completed successfully.' );
