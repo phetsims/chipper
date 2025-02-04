@@ -22,8 +22,6 @@ const brands = getBrands( repo );
  */
 export const lintAllPromise = ( async () => {
 
-
-
   const lintSuccess = await lint( getPhetLibs( repo, brands ), getLintCLIOptions() );
 
   // Output results on errors.
