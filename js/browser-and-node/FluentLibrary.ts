@@ -110,15 +110,14 @@ class FluentLibrary {
       throw new Error( `These terms are not defined: [ ${undefinedTermsFormatted} ]` );
     }
 
-    // Terms are not allowed to use placeables because terms used in placeables cannot take forwarded variables.
-    // This is a PhET specific catch. Fluent allows translators to use terms with placeables and specify cases
-    // in the translation, see https://projectfluent.org/fluent/guide/terms.html. But it is an easy programming
-    // mistake to assume that terms with placeables can be used like messages so we catch it loudly here.
+    // In the PhET project, terms with placeables are prohibited since they can't accept forwarded variables.
+    // Fluent allows this for translation flexibility (see: https://projectfluent.org/fluent/guide/terms.html),
+    // but it can be misleading, causing developers to treat terms like messages. We enforce this check to prevent errors.
     Array.from( collector.declaredTerms ).forEach( ( term: IntentionalAny ) => {
       if ( term && term.value &&
            term.value.elements &&
            term.value.elements.some( ( element: IntentionalAny ) => element.type === 'Placeable' ) ) {
-        throw new Error( `Terms with placeables are not allowed: -${term.id.name} ` );
+        throw new Error( `Terms with placeables are not allowed: -${term.id.name}. Use a Message instead.` );
       }
     } );
 
