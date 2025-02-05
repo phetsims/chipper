@@ -19,10 +19,11 @@ import { FluentParser } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/sr
 import { Visitor } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/visitor.js';
 
 /**
- * A visitor that collects all term references in a Fluent AST.
+ * A visitor that collects Nodes from the AST so we can inspect them for problems.
  */
-class TermCollector extends Visitor {
+class FluentVisitor extends Visitor {
   public readonly usedTerms = new Set<string>();
+  public readonly foundJunk = new Set<string>();
 
   // IntentionalAny because the node type could not be found in Fluent source.
   public override visitTermReference( node: IntentionalAny ): void {
@@ -31,6 +32,14 @@ class TermCollector extends Visitor {
     this.usedTerms.add( node.id.name );
 
     // Continue traversing the AST
+    this.genericVisit( node );
+  }
+
+  // Nodes with syntax errors are called "junk" in Fluent and can be visited with this method.
+  public override visitJunk( node: IntentionalAny ): void {
+
+    this.foundJunk.add( node );
+
     this.genericVisit( node );
   }
 }
@@ -57,6 +66,7 @@ class FluentLibrary {
    * Verify syntax in the fluent file. Right now it checks for:
    *   - Message keys should use camelCase instead of dashes.
    *   - All terms used in the file should be defined.
+   *   - All selectors must have a default case.
    */
   public static verifyFluentFile( fluentFileString: string ): void {
     const parser = new FluentParser();
@@ -75,8 +85,8 @@ class FluentLibrary {
       .filter( entry => entry.type === 'Term' )
       .map( entry => entry.id.name );
 
-    // Use the TermCollector to find all used terms.
-    const collector = new TermCollector();
+    // Use the FluentVisitor to find all used terms.
+    const collector = new FluentVisitor();
     collector.visit( resource );
 
     // Identify used terms that are not defined
@@ -88,6 +98,20 @@ class FluentLibrary {
       const undefinedTermsFormatted = undefinedTerms.join( ', ' );
       throw new Error( `These terms are not defined: [ ${undefinedTermsFormatted} ]` );
     }
+
+    // Other problems found by the collector.
+    collector.foundJunk.forEach( ( junk: IntentionalAny ) => {
+
+      const messages = junk.annotations.map( ( annotation: IntentionalAny ) => annotation.message ).join( '\n' );
+
+      const errorReport = `Junk found in fluent file:
+      
+${messages}
+${junk.content}
+`;
+
+      throw new Error( errorReport );
+    } );
   }
 }
 
