@@ -22,14 +22,23 @@ import { Visitor } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/vis
  * A visitor that collects Nodes from the AST so we can inspect them for problems.
  */
 class FluentVisitor extends Visitor {
-  public readonly usedTerms = new Set<string>();
+  public readonly usedTermNames = new Set<string>();
+  public readonly usedTerms = new Set<Pattern>();
   public readonly foundJunk = new Set<string>();
+  public readonly declaredTerms = new Set<string>();
+
+  public override visitTerm( node: IntentionalAny ): void {
+    this.declaredTerms.add( node );
+
+    this.genericVisit( node );
+  }
 
   // IntentionalAny because the node type could not be found in Fluent source.
   public override visitTermReference( node: IntentionalAny ): void {
 
     // Add the term name to the set of used terms
-    this.usedTerms.add( node.id.name );
+    this.usedTermNames.add( node.id.name );
+    this.usedTerms.add( node );
 
     // Continue traversing the AST
     this.genericVisit( node );
@@ -67,6 +76,9 @@ class FluentLibrary {
    *   - Message keys should use camelCase instead of dashes.
    *   - All terms used in the file should be defined.
    *   - All selectors must have a default case.
+   *   - Terms are not allowed to use placeables because terms used in placeables cannot take forwarded variables.
+   *      - This is PhET specific and was added because it an easy programming mistake to assume that terms with
+   *      placeables can be used like messages. This can be relaxed if needed in the future.
    */
   public static verifyFluentFile( fluentFileString: string ): void {
     const parser = new FluentParser();
@@ -85,12 +97,11 @@ class FluentLibrary {
       .filter( entry => entry.type === 'Term' )
       .map( entry => entry.id.name );
 
-    // Use the FluentVisitor to find all used terms.
     const collector = new FluentVisitor();
     collector.visit( resource );
 
     // Identify used terms that are not defined
-    const undefinedTerms = Array.from( collector.usedTerms ).filter(
+    const undefinedTerms = Array.from( collector.usedTermNames ).filter(
       term => !termKeys.includes( term )
     );
 
@@ -98,6 +109,18 @@ class FluentLibrary {
       const undefinedTermsFormatted = undefinedTerms.join( ', ' );
       throw new Error( `These terms are not defined: [ ${undefinedTermsFormatted} ]` );
     }
+
+    // Terms are not allowed to use placeables because terms used in placeables cannot take forwarded variables.
+    // This is a PhET specific catch. Fluent allows translators to use terms with placeables and specify cases
+    // in the translation, see https://projectfluent.org/fluent/guide/terms.html. But it is an easy programming
+    // mistake to assume that terms with placeables can be used like messages so we catch it loudly here.
+    Array.from( collector.declaredTerms ).forEach( ( term: IntentionalAny ) => {
+      if ( term && term.value &&
+           term.value.elements &&
+           term.value.elements.some( ( element: IntentionalAny ) => element.type === 'Placeable' ) ) {
+        throw new Error( `Terms with placeables are not allowed: -${term.id.name} ` );
+      }
+    } );
 
     // Other problems found by the collector.
     collector.foundJunk.forEach( ( junk: IntentionalAny ) => {
