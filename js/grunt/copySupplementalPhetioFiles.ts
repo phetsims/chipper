@@ -334,22 +334,31 @@ export default async ( repo: string, version: string, simulationDisplayName: str
 
   wrappers.push( ...simSpecificWrappers );
 
-  const additionalWrappers: string[] = packageObject.phet && packageObject.phet[ 'phet-io' ] && packageObject.phet[ 'phet-io' ].wrappers ?
-                                       packageObject.phet[ 'phet-io' ].wrappers : [];
+  const phetioPackageBlock: Record<string, IntentionalAny> | undefined = packageObject.phet && packageObject.phet[ 'phet-io' ];
+  const additionalWrappers: string[] = phetioPackageBlock?.wrappers || [];
 
   // phet-io-sim-specific wrappers are automatically added above
   wrappers.push( ...additionalWrappers.filter( x => !x.includes( simSpecificWrappersPath ) ) );
 
-  wrappers.forEach( wrapper => {
-
+  const wrapperNames = wrappers.map( wrapper => {
     const wrapperParts = wrapper.split( '/' );
 
     // either take the last path part, or take the first (repo name) and remove the wrapper prefix
-    const wrapperName = wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
+    return wrapperParts.length > 1 ? wrapperParts[ wrapperParts.length - 1 ] : wrapperParts[ 0 ].replace( DEDICATED_REPO_WRAPPER_PREFIX, '' );
+  } );
+  wrappers.forEach( ( wrapper, i ) => {
+    const wrapperName = wrapperNames[ i ];
 
     // Copy the wrapper into the build dir /wrappers/, exclude the excluded list
     copyWrapper( `../${wrapper}`, `${wrappersLocation}${wrapperName}`, wrapper, wrapperName );
   } );
+
+  assert( _.uniq( wrapperNames ).length === wrapperNames.length, `wrapper name is duplicated: ${wrapperNames}` );
+  if ( phetioPackageBlock?.publicWrappers ) {
+    phetioPackageBlock.publicWrappers.forEach( ( publicWrapper: string ) => {
+      assert( wrapperNames.includes( publicWrapper ), `publicWrapper listed but does not exist:${publicWrapper}` );
+    } );
+  }
 
   // Copy the wrapper index into the top level of the build dir, exclude the excluded list
   copyWrapper( '../phet-io-wrappers/index', `${buildDir}`, null, null );

@@ -60,7 +60,7 @@ export default function getPhetLibs( repo: string, brand?: string | string[] ): 
 
     // wrappers are also marked as phetLibs, so we can get their shas without listing them twice
     if ( brand === 'phet-io' && packageObject.phet && packageObject.phet[ brand ] && packageObject.phet[ brand ].wrappers ) {
-      const wrapperRepos = ( packageObject.phet[ brand ].wrappers ).filter( ( wrapper: string ) => !wrapper.startsWith( 'phet-io-sim-specific' ) );
+      const wrapperRepos = ( packageObject.phet[ brand ].wrappers ).filter( ( wrapper: string ) => !wrapper.includes( '/' ) );
       phetLibs = phetLibs.concat( wrapperRepos );
     }
 
