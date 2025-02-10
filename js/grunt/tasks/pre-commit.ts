@@ -11,7 +11,7 @@
  *
  * USAGE:
  * cd ${repo}
- * sage run ../chipper/js/scripts/pre-commit.js
+ * sage run ../chipper/js/grunt/tasks/pre-commit.ts
  *
  * OPTIONS:
  * --console: outputs information to the console for debugging
