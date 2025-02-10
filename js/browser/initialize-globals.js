@@ -442,6 +442,20 @@
     preventFullScreen: { type: 'flag' },
 
     /**
+     * Allows prevention of multitouch in the sim (if for some reason the sim
+     * cannot be made to work gracefully with multitouch).
+     *
+     * This will mainly prevent multiple touch-level pointers, but mouse + touch
+     * or multiple mice will still be possible.
+     *
+     * See https://github.com/phetsims/scenery/issues/1684
+     */
+    preventMultitouch: {
+      type: 'boolean',
+      defaultValue: packagePhet?.simFeatures?.defaultRegionAndCulture ?? false
+    },
+
+    /**
      * shows profiling information for the sim
      */
     profiler: { type: 'flag' },
@@ -1286,7 +1300,8 @@
       supportsDynamicLocale: { type: 'boolean' },
       colorProfiles: { type: 'array' },
       supportedRegionsAndCultures: { type: 'array' },
-      defaultRegionAndCulture: { type: 'string' }
+      defaultRegionAndCulture: { type: 'string' },
+      preventMultitouch: { type: 'boolean' }
     };
 
     Object.keys( simFeaturesSchema ).forEach( schemaKey => {
