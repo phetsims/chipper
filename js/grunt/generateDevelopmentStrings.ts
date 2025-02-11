@@ -2,8 +2,7 @@
 
 /**
  * This script makes a JSON file that combines translations for all locales in a repo. Each locale object has every
- * string key/translated-value pair we have for that locale. This is used when running the unbuilt mode simulation with
- * locales=*
+ * string key/translated-value pair we have for that locale.
  *
  * @author Liam Mulhall (PhET Interactive Simulations)
  * @author Sam Reid (PhET Interactive Simulations)

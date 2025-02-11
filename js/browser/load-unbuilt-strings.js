@@ -90,7 +90,7 @@
   };
 
   /**
-   * Load a conglomerate string file with many locales. Only used in locales=*
+   * Load a conglomerate string file with many locales.
    */
   const processConglomerateStringFile = ( stringObject, requirejsNamespace ) => {
 
