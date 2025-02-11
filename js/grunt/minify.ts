@@ -104,7 +104,8 @@ const minify = function( js: string, options?: MinifyOptions ): string {
     }
     else {
       // workaround for Uglify2's Unicode unescaping. see https://github.com/phetsims/chipper/issues/70
-      return result.code.replace( '\x0B', '\\x0B' );
+      // Also, 0x7f is converted for https://github.com/phetsims/scenery/issues/1687.
+      return result.code.replace( '\x0B', '\\x0B' ).replace( /\u007f/g, '\\u007f' );
     }
   }
   else {
