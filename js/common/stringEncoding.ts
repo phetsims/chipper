@@ -117,7 +117,7 @@ const encodeStringMap = ( stringMap: StringFileMap ): string => {
   const encode = string => {
     let result = '';
 
-    string.split( /(?:)/u ).forEach( char => {
+    string.normalize().split( /(?:)/u ).forEach( char => {
       if ( CONTROL_CHARACTERS.includes( char ) ) {
         result += ESCAPE_CHARACTER + char;
       }
@@ -302,7 +302,7 @@ const encodeStringMap = ( stringMap: StringFileMap ): string => {
   const testStringMap = decodeStringMap( output );
   for ( const locale in stringMap ) {
     for ( const stringKey in stringMap[ locale ] ) {
-      if ( stringMap[ locale ][ stringKey ] !== testStringMap[ locale ][ stringKey ] ) {
+      if ( stringMap[ locale ][ stringKey ].normalize() !== testStringMap[ locale ][ stringKey ] ) {
         throw new Error( `String map encoding failed, mismatch at ${locale} ${stringKey}` );
       }
     }

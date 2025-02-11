@@ -240,7 +240,9 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
           assert( stringEntry !== null, `Missing string information for ${repo} ${partialStringKey}` );
 
           const stringKey = `${requirejsNamespaceMap[ repo ]}/${partialStringKey}`;
-          stringMap[ locale ][ stringKey ] = stringEntry.value;
+          // Normalize the string value, so that it will not generate warnings for HTML validation,
+          // see https://github.com/phetsims/scenery/issues/1687
+          stringMap[ locale ][ stringKey ] = stringEntry.value.normalize();
           if ( stringEntry.metadata && locale === ChipperConstants.FALLBACK_LOCALE ) {
             stringMetadata[ stringKey ] = stringEntry.metadata;
           }
