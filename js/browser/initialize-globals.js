@@ -452,7 +452,7 @@
      */
     preventMultitouch: {
       type: 'boolean',
-      defaultValue: packagePhet?.simFeatures?.defaultRegionAndCulture ?? false
+      defaultValue: packagePhet?.simFeatures?.preventMultitouch ?? false
     },
 
     /**
