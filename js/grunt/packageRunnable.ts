@@ -76,7 +76,7 @@ export default function packageRunnable( config: PackageRunnableOptions ): strin
                     scripts.map( script => `${toRunString( script )}` ).join( '\n' ) + '</script>';
   }
   else {
-    scriptSection = [ licenseScript, ...scripts ].map( script => `<script type="text/javascript">${script}</script>` ).join( '\n' );
+    scriptSection = [ licenseScript, ...scripts ].map( script => `<script>${script}</script>` ).join( '\n' );
   }
 
   return ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/sim.html' ), {
