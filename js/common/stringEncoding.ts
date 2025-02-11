@@ -36,25 +36,27 @@ import _ from 'lodash';
 import { StringFileMap } from './ChipperStringUtils.js';
 import toLessEscapedString from './toLessEscapedString.js';
 
-const PUSH_TOKEN = '\u0001'; // push string on the stack
-const PUSH_TOKEN_SLASH = '\u0002'; // push `${string}/` on the stack
-const PUSH_TOKEN_DOT = '\u0003'; // push `${string}.` on the stack
-const POP = '\u0004'; // pop from the stack
-const POP_PUSH_TOKEN = '\u0005'; // pop from the stack, then push string on the stack
-const POP_PUSH_TOKEN_SLASH = '\u0006'; // pop from the stack, then push `${string}/` on the stack
-const POP_PUSH_TOKEN_DOT = '\u0007'; // pop from the stack, then push `${string}.` on the stack
-const SWITCH_LOCALE = '\u0008'; // switch to the given locale
-const START_STRING = '\u0009'; // start a string
-const END_STRING = '\u000A'; // end a string (and fill in missing translations)
-const ADD_STRING = '\u000B'; // add a translation string to the current locale and stringKey
-const ADD_STRING_LTR_POP = '\u000C'; // add `${LTR}${string}${POP}` to the current locale and stringKey
-const ADD_STRING_RTL_POP = '\u000D'; // add `${RTL}${string}${POP}` to the current locale and stringKey
-const ADD_STRING_COPY_LAST = '\u000E'; // add the last-used translation to the current locale and stringKey
-const ADD_LOCALE = '\u000F'; // add a locale (at the start)
-const ESCAPE_CHARACTER = '\u0010'; // we'll need to escape any of these characters if they appear in a string
+// NOTE: Remapped control character regions to avoid invalid characters in
+// HTML and XHTML, see https://github.com/phetsims/scenery/issues/1687.
+// Should be in the regions of 0x21-0x2A and 0x5B-0x60.
+const PUSH_TOKEN = '\u0021'; // push string on the stack
+const PUSH_TOKEN_SLASH = '\u0022'; // push `${string}/` on the stack
+const PUSH_TOKEN_DOT = '\u0023'; // push `${string}.` on the stack
+const POP = '\u0024'; // pop from the stack
+const POP_PUSH_TOKEN = '\u0025'; // pop from the stack, then push string on the stack
+const POP_PUSH_TOKEN_SLASH = '\u0026'; // pop from the stack, then push `${string}/` on the stack
+const POP_PUSH_TOKEN_DOT = '\u0027'; // pop from the stack, then push `${string}.` on the stack
+const SWITCH_LOCALE = '\u0028'; // switch to the given locale
+const START_STRING = '\u0029'; // start a string
+const END_STRING = '\u002A'; // end a string (and fill in missing translations)
+const ADD_STRING = '\u005B'; // add a translation string to the current locale and stringKey
+const ADD_STRING_LTR_POP = '\u005C'; // add `${LTR}${string}${POP}` to the current locale and stringKey
+const ADD_STRING_RTL_POP = '\u005D'; // add `${RTL}${string}${POP}` to the current locale and stringKey
+const ADD_STRING_COPY_LAST = '\u005E'; // add the last-used translation to the current locale and stringKey
+const ADD_LOCALE = '\u005F'; // add a locale (at the start)
+const ESCAPE_CHARACTER = '\u0060'; // we'll need to escape any of these characters if they appear in a string
 
-const MAX_CONTROL_CHARACTER_CODE_POINT = 0x10;
-const ESCAPE_CHARACTER_CODE_POINT = 0x10;
+const ESCAPE_CHARACTER_CODE_POINT = 0x60;
 
 const CONTROL_CHARACTERS = [
   PUSH_TOKEN,
@@ -74,6 +76,8 @@ const CONTROL_CHARACTERS = [
   ADD_LOCALE,
   ESCAPE_CHARACTER
 ];
+
+const CONTROL_CODE_POINTS = CONTROL_CHARACTERS.map( char => char.codePointAt( 0 )! );
 
 // Our LTR/RTL embedding characters
 const CHAR_LTR = '\u202A';
@@ -375,7 +379,7 @@ const decodeStringMap = ( encodedString: string ): string => {
       const codePoint = char.codePointAt( 0 );
 
       // Pass through any non-control characters
-      if ( codePoint > MAX_CONTROL_CHARACTER_CODE_POINT ) {
+      if ( !CONTROL_CODE_POINTS.includes( codePoint ) ) {
         result += char;
         index++;
       }
@@ -473,7 +477,7 @@ const decodeStringMap = ( encodedString: string ): string => {
 // y = encodedString
 /* eslint-disable */
 /* @formatter:off */
-const smallDecodeStringMapString = "y=>{let m={};let x=[];let s=[];let X=null;let S=null;let e=null;let t=new Set();let k=null;let f=String.fromCharCode;let A=f(1);let B=f(2);let C=f(3);let D=f(4);let E=f(5);let F=f(6);let G=f(7);let H=f(8);let I=f(9);let J=f(0xA);let K=f(0xB);let L=f(0xC);let M=f(0xD);let N=f(0xE);let O=f(0xF);let a=q=>{S=q;m[X][k]=q;if(X=='en'){e=q;}t.add(X);};let j=0;let b=y.split(/(?:)/u);let r=()=>{let q='';while(j<b.length){let d=b[j];let p=d.codePointAt(0);if(p>0x10){q+=d;j++;}else if(p==0x10){q+=b[j+1];j+=2;}else{break;}}return q;};while(j<b.length){let c=b[j++];if(c==A){s.push(r());}else if(c==B){s.push(r()+'/');}else if(c==C){s.push(r()+'.');}else if(c==D){s.pop();}else if(c==E){s.pop();s.push(r());}else if(c==F){s.pop();s.push(r()+'/');}else if(c==G){s.pop();s.push(r()+'.');}else if(c==H){X=r();}else if(c==I){t.clear();e=null;k=s.join('');}else if(c==J){for(let i=0;i<x.length;i++){let l=x[i];if(!t.has(l)){m[l][k]=e;}}}else if(c==K){a(r());}else if(c==L){a(`\u202a${r()}\u202c`);}else if(c==M){a(`\u202b${r()}\u202c`);}else if(c==N){a(S);}else if(c==O){let l=r();m[l]={};x.push(l);}}return m;}";
+const smallDecodeStringMapString = "y=>{let m={};let x=[];let s=[];let X=null;let S=null;let e=null;let t=new Set();let k=null;let f=String.fromCharCode;let A=f(0x21);let B=f(0x22);let C=f(0x23);let D=f(0x24);let E=f(0x25);let F=f(0x26);let G=f(0x27);let H=f(0x28);let I=f(0x29);let J=f(0x2A);let K=f(0x5B);let L=f(0x5C);let M=f(0x5D);let N=f(0x5E);let O=f(0x5F);let a=q=>{S=q;m[X][k]=q;if(X=='en'){e=q;}t.add(X);};let j=0;let b=y.split(/(?:)/u);let r=()=>{let q='';while(j<b.length){let d=b[j];let p=d.codePointAt(0);if(p<0x21||(p>0x2A&&p<0x5B)||p>0x60){q+=d;j++;}else if(p==0x60){q+=b[j+1];j+=2;}else{break;}}return q;};while(j<b.length){let c=b[j++];if(c==A){s.push(r());}else if(c==B){s.push(r()+'/');}else if(c==C){s.push(r()+'.');}else if(c==D){s.pop();}else if(c==E){s.pop();s.push(r());}else if(c==F){s.pop();s.push(r()+'/');}else if(c==G){s.pop();s.push(r()+'.');}else if(c==H){X=r();}else if(c==I){t.clear();e=null;k=s.join('');}else if(c==J){for(let i=0;i<x.length;i++){let l=x[i];if(!t.has(l)){m[l][k]=e;}}}else if(c==K){a(r());}else if(c==L){a(`\u202a${r()}\u202c`);}else if(c==M){a(`\u202b${r()}\u202c`);}else if(c==N){a(S);}else if(c==O){let l=r();m[l]={};x.push(l);}}return m;}";
 /* @formatter:on */
 /* eslint-enable */
 
