@@ -309,6 +309,17 @@
     },
 
     /**
+     * If true, and a second touch is detected, it will interrupt the first (active)
+     * touch. See https://github.com/phetsims/scenery/issues/1684.
+     *
+     * See https://github.com/phetsims/scenery/issues/1684
+     */
+    interruptMultitouch: {
+      type: 'boolean',
+      defaultValue: packagePhet?.simFeatures?.interruptMultitouch ?? false
+    },
+
+    /**
      * Enables support for Legends of Learning platform, including broadcasting 'init' and responding to pause/resume.
      */
     legendsOfLearning: { type: 'flag' },
@@ -1301,7 +1312,8 @@
       colorProfiles: { type: 'array' },
       supportedRegionsAndCultures: { type: 'array' },
       defaultRegionAndCulture: { type: 'string' },
-      preventMultitouch: { type: 'boolean' }
+      preventMultitouch: { type: 'boolean' },
+      interruptMultitouch: { type: 'boolean' }
     };
 
     Object.keys( simFeaturesSchema ).forEach( schemaKey => {
