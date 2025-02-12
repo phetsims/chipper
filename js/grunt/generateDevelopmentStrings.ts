@@ -1,4 +1,4 @@
-// Copyright 2022-2024, University of Colorado Boulder
+// Copyright 2022-2025, University of Colorado Boulder
 
 /**
  * This script makes a JSON file that combines translations for all locales in a repo. Each locale object has every
