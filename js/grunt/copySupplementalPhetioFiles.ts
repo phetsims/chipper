@@ -420,9 +420,7 @@ const handleLib = async ( repo: string, buildDir: string, shouldTypeCheck: boole
   const minifiedPhetioCode = minify( `${phetioLibCode}\n${migrationProcessorsCode}`, { stripAssertions: false } );
 
   if ( shouldTypeCheck ) {
-    const success = await typeCheck( {
-      repo: 'phet-io-wrappers'
-    } );
+    const success = await typeCheck( { repo: 'phet-io-wrappers' } );
     if ( !success ) {
       throw new Error( 'Type checking failed' );
     }
@@ -674,9 +672,7 @@ const handleStudio = async ( repo: string, wrappersLocation: string, shouldTypeC
   grunt.log.verbose.writeln( 'building studio' );
 
   if ( shouldTypeCheck ) {
-    const success = await typeCheck( {
-      repo: 'studio'
-    } );
+    const success = await typeCheck( { repo: 'studio' } );
     if ( !success ) {
       throw new Error( 'Type checking failed' );
     }

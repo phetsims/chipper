@@ -74,12 +74,9 @@ export const buildPromise = ( async () => {
            ( ( brands.includes( 'phet-io' ) || brands.includes( 'phet' ) ||
                repoPackageObject.phet.buildStandalone // no brand for standalone
            ) ) ) {
-        const success = await typeCheck( {
-          repo: repo
-        } );
+        const success = await typeCheck( { repo: repo } );
         if ( !success ) {
-          console.error( 'Type checking failed' );
-          process.exit( 1 );
+          throw new Error( 'Type checking failed' );
         }
       }
       else {
