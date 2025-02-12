@@ -26,7 +26,7 @@ export const lintAllPromise = ( async () => {
 
   // Output results on errors.
   if ( !lintSuccess ) {
-    console.error( 'Lint failed' );
+    console.log( 'Lint failed' );
     process.exit( 1 );
   }
   else {

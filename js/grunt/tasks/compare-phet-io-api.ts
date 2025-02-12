@@ -62,7 +62,7 @@ const needsTranspile = isOptionKeyProvided( 'transpile' ) ? getOption( 'transpil
   }
   const ok = await phetioCompareAPISets( sims, proposedAPIs, options );
   if ( !ok ) {
-    console.error( 'PhET-iO API comparison failed' );
+    console.log( 'PhET-iO API comparison failed' );
     process.exit( 1 );
   }
 

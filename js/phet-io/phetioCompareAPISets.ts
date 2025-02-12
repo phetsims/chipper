@@ -50,16 +50,16 @@ export default async ( repos: string[], proposedAPIs: PhetioAPIs, providedOption
 
     if ( comparisonData.breakingProblems.length ) {
       ok = false;
-      console.error( `${repo} BREAKING PROBLEMS` );
-      console.error( comparisonData.breakingProblems.join( '\n' ) );
-      console.error( '\n' );
+      console.log( `${repo} BREAKING PROBLEMS` );
+      console.log( comparisonData.breakingProblems.join( '\n' ) );
+      console.log( '\n' );
     }
 
     if ( comparisonData.designedProblems.length ) {
       ok = false;
-      console.error( `${repo} DESIGN PROBLEMS` );
-      console.error( comparisonData.designedProblems.join( '\n' ) );
-      console.error( '\n' );
+      console.log( `${repo} DESIGN PROBLEMS` );
+      console.log( comparisonData.designedProblems.join( '\n' ) );
+      console.log( '\n' );
     }
 
     if ( options.delta ) {
