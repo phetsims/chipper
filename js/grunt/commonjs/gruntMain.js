@@ -86,7 +86,7 @@ module.exports = function( grunt ) {
     'create-sim',
     'generate-data',
     'release-branch-list',
-    'sync-codebase'
+    'sync'
   ].forEach( task => forwardToRepo( 'perennial', task ) );
 
   // Forward these to perennial-alias because they are used for building sims, and should version with sims (like chipper
