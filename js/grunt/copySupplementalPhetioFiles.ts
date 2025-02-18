@@ -136,6 +136,11 @@ export default async ( repo: string, version: string, simulationDisplayName: str
     // For info about LIB_OUTPUT_FILE, see handleLib()
     const pathToLib = `lib/${LIB_OUTPUT_FILE}`;
 
+    // Sim specific wrappers need to support shared resources. See https://github.com/phetsims/phet-io-sim-specific/issues/45
+    if ( /phet-io-sim-specific\/repos\/[\w-]+\/wrappers\//.test( absPath ) ) {
+      contents = contents.replace( /(\.\.\/){4}phet-io-wrappers\/common\//g, 'common/' );
+    }
+
     if ( absPath.includes( '.html' ) ) {
 
       // change the paths of sherpa files to point to the contrib/ folder
