@@ -47,7 +47,7 @@ const repo = getArg( 'repo' );
     // Run lint tests if they exist in the checked-out SHAs.
     // lint() automatically filters out non-lintable repos
     const lintSuccess = await lint( [ repo ] );
-    outputToConsole && console.log( `Linting had ${lintSuccess ? 'no ' : ''}errors.` );
+    outputToConsole && console.log( `lint: ${lintSuccess ? 'no ' : ''}errors.` );
     process.exit( lintSuccess ? 0 : 1 );
   }
 
