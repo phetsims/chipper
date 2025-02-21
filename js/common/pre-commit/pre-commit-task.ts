@@ -112,7 +112,7 @@ const repo = getArg( 'repo' );
 
           await browser.close();
 
-          outputToConsole && console.log( `${repo}: ${JSON.stringify( result, null, 2 )}` );
+          outputToConsole && console.log( `unit-test: ${JSON.stringify( result, null, 2 )}` );
           if ( !result.ok ) {
             console.error( `unit tests failed in ${repo}`, result );
             return false;
