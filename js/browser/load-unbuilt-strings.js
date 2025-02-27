@@ -77,8 +77,8 @@
 
           localeStringMap[ stringKey ] = value;
 
-          if ( locale === FALLBACK_LOCALE && object.metadata ) {
-            phet.chipper.stringMetadata[ stringKey ] = object.metadata;
+          if ( locale === FALLBACK_LOCALE && object.simMetadata ) {
+            phet.chipper.stringMetadata[ stringKey ] = object.simMetadata;
           }
         }
         else if ( object[ key ] && typeof object[ key ] === 'object' ) {

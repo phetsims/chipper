@@ -243,8 +243,8 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
           // Normalize the string value, so that it will not generate warnings for HTML validation,
           // see https://github.com/phetsims/scenery/issues/1687
           stringMap[ locale ][ stringKey ] = stringEntry.value.normalize();
-          if ( stringEntry.metadata && locale === ChipperConstants.FALLBACK_LOCALE ) {
-            stringMetadata[ stringKey ] = stringEntry.metadata;
+          if ( stringEntry.simMetadata && locale === ChipperConstants.FALLBACK_LOCALE ) {
+            stringMetadata[ stringKey ] = stringEntry.simMetadata;
           }
         }
       } );
