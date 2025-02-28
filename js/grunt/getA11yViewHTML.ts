@@ -14,7 +14,7 @@ import getTitleStringKey from './getTitleStringKey.js';
  */
 export default function getA11yViewHTML( repo: string ): string {
 
-  let html = grunt.file.read( '../chipperz/wrappers/a11y-view/index.html' ); // the template file is also runnable
+  let html = grunt.file.read( '../chipper/wrappers/a11y-view/index.html' ); // the template file is also runnable
 
   const englishStringsString = grunt.file.read( `../${repo}/${repo}-strings_en.json` ); // the english strings file
   const englishStringsJSON = JSON.parse( englishStringsString );
