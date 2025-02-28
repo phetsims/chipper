@@ -1,8 +1,9 @@
 // Copyright 2013-2025, University of Colorado Boulder
 
-import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import { combineOptions } from '../../../../phet-core/js/optionize.js';
 import transpile, { getTranspileCLIOptions, TranspileOptions } from '../../common/transpile.js';
+import getPhetLibs from '../getPhetLibs.js';
 
 /**
  * Transpile TypeScript to JavaScript.
@@ -19,5 +20,5 @@ import transpile, { getTranspileCLIOptions, TranspileOptions } from '../../commo
  */
 
 transpile( combineOptions<TranspileOptions>( {
-  all: isOptionKeyProvided( 'all' ) ? getOption( 'all' ) : true
+  repos: getPhetLibs( getRepo() )
 }, getTranspileCLIOptions() ) );
