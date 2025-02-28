@@ -12,9 +12,9 @@ import getTitleStringKey from './getTitleStringKey.js';
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @returns - the html string, filled in from the template.
  */
-export default function getA11yViewHTMLFromTemplate( repo: string ): string {
+export default function getA11yViewHTML( repo: string ): string {
 
-  let html = grunt.file.read( '../chipper/templates/sim-a11y-view.html' ); // the template file
+  let html = grunt.file.read( '../scenery/wrappers/a11y-view/index.html' ); // the template file is also runnable
 
   const englishStringsString = grunt.file.read( `../${repo}/${repo}-strings_en.json` ); // the english strings file
   const englishStringsJSON = JSON.parse( englishStringsString );

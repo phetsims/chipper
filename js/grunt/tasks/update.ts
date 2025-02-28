@@ -17,7 +17,6 @@ import _ from 'lodash';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
-import generateA11yViewHTML from '../generateA11yViewHTML.js';
 import generateDevelopmentHTML from '../generateDevelopmentHTML.js';
 import generateREADME from '../generateREADME.js';
 import generateTestHTML from '../generateTestHTML.js';
@@ -77,12 +76,7 @@ else {
 
     // The above code can mutate the package.json, so do these after
     if ( packageObject.phet.runnable ) {
-
       await generateDevelopmentHTML( repo );
-
-      if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription ) {
-        await generateA11yViewHTML( repo );
-      }
     }
     if ( packageObject.phet.generatedUnitTests ) {
       await generateTestHTML( repo );

@@ -22,7 +22,7 @@ import copyDirectory from './copyDirectory.js';
 import copySupplementalPhetioFiles from './copySupplementalPhetioFiles.js';
 import generateThumbnails from './generateThumbnails.js';
 import generateTwitterCard from './generateTwitterCard.js';
-import getA11yViewHTMLFromTemplate from './getA11yViewHTMLFromTemplate.js';
+import getA11yViewHTML from './getA11yViewHTML.js';
 import getAllThirdPartyEntries, { LicenseEntries } from './getAllThirdPartyEntries.js';
 import getDependencies from './getDependencies.js';
 import getInitializationScript from './getInitializationScript.js';
@@ -368,9 +368,9 @@ export default async function( repo: string, minifyOptions: MinifyOptions, allHT
   // If the sim is a11y outfitted, then add the a11y pdom viewer to the build dir. NOTE: Not for phet-io builds.
   if ( packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsInteractiveDescription && brand === 'phet' ) {
     // (a11y) Create the a11y-view HTML file for PDOM viewing.
-    let a11yHTML = getA11yViewHTMLFromTemplate( repo );
+    let a11yHTML = getA11yViewHTML( repo );
 
-    // this replaceAll is outside of the getA11yViewHTMLFromTemplate because we only want it filled in during the build
+    // this replaceAll is outside of the getA11yViewHTML because we only want it filled in during the build
     a11yHTML = ChipperStringUtils.replaceAll( a11yHTML, '{{IS_BUILT}}', 'true' );
 
     grunt.file.write( `${buildDir}/${repo}${ChipperConstants.A11Y_VIEW_HTML_SUFFIX}`, a11yHTML );
