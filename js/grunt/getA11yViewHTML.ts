@@ -1,4 +1,4 @@
-// Copyright 2016-2024, University of Colorado Boulder
+// Copyright 2016-2025, University of Colorado Boulder
 
 import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
