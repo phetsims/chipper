@@ -241,6 +241,9 @@
   // Remove the sim query parameter from the URL so that it doesn't go to the iframe url
   simulationQueryString.delete( 'sim' );
 
+  // Do not liveReload on the nested iframe, just in the outer a11y view.
+  simulationQueryString.delete( 'liveReload' );
+
   // Append the required parameters.
   simulationQueryString.set( 'postMessageOnLoad', '' );
   simulationQueryString.set( 'postMessageOnError', '' );
@@ -596,6 +599,13 @@
       } );
     }
   } );
+
+  // Live reload, see https://esbuild.github.io/api/#live-reload
+  const query = new URLSearchParams( window.location.search );
+  const liveReload = !!query.has( 'liveReload' );
+  if ( liveReload ) {
+    new EventSource( '/esbuild' ).addEventListener( 'change', () => location.reload() );
+  }
 </script>
 </body>
 </html>
