@@ -10,7 +10,7 @@
   <!--have to scroll right and left! allows to resize also-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>A11y View: {{PHET_SIM_TITLE}}</title>
+  <title>A11y View</title>
 
   <style>
     html {
@@ -162,7 +162,7 @@
 
   <div id="content">
     <div id="intro">
-      <h1>A11y View: {{PHET_SIM_TITLE}}</h1>
+      <h1>A11y View</h1>
       <details>
         <summary>About the A11y View Tool</summary>
         <p>
@@ -183,7 +183,7 @@
     <!--The sim and alert containers will both be placed in here -->
     <div id="left" class="left">
       <div class="aspect-ratio">
-        <iframe id="iframe" allowfullscreen scrolling="no" title="Interact with {{PHET_SIM_TITLE}}"></iframe>
+        <iframe id="iframe" allowfullscreen scrolling="no" title="Interact with simulation"></iframe>
       </div>
       <div id="alerts">
         <div class="activity-log-heading-container">
@@ -209,7 +209,7 @@
     <!--The PDOM copy will be placed in this container -->
     <div class="right" id="right">
       <div id="pdom">
-        <h3>State Descriptions for {{PHET_SIM_TITLE}}</h3>
+        <h3>State Descriptions</h3>
         <details>
           <summary>About State Descriptions</summary>
           State Descriptions are a combination of static state descriptions (descriptions that never change) and dynamic
@@ -232,28 +232,40 @@
   const IS_BUILT_STRING = '{{IS_BUILT}}';
   const IS_BUILT = IS_BUILT_STRING.indexOf( '{{' ) !== 0; // escape for better syntax highlighting support
 
-  // Grab all query parameters to pass to the simulation, and a couple of params that are required for this test
-  let simulationQueryString = window.location.search;
-  if ( simulationQueryString.indexOf( '?' ) >= 0 ) {
-    simulationQueryString += '&';
-  }
-  else {
-    simulationQueryString += '?';
-  }
+  const simulationQueryString = new URLSearchParams( window.location.search );
 
-  const noPostMessage = simulationQueryString.indexOf( 'postMessageOnLoad&postMessageOnError' ) === -1;
-  const noAccessibility = simulationQueryString.indexOf( 'supportsInteractiveDescription' ) === -1;
+  // TODO: This code is very PhET-sim specific, we would like a way to specify an arbitrary scenery-stack app
+  // TODO: https://github.com/phetsims/chipper/issues/1512
+  let sim = simulationQueryString.get( 'sim' );
 
-  noPostMessage && ( simulationQueryString += 'postMessageOnLoad&postMessageOnError&' );
-  noAccessibility && ( simulationQueryString += 'supportsInteractiveDescription=true' );
+  // Remove the sim query parameter from the URL so that it doesn't go to the iframe url
+  simulationQueryString.delete( 'sim' );
 
+  // Do not liveReload on the nested iframe, just in the outer a11y view.
+  simulationQueryString.delete( 'liveReload' );
+
+  // Append the required parameters.
+  simulationQueryString.set( 'postMessageOnLoad', '' );
+  simulationQueryString.set( 'postMessageOnError', '' );
+  simulationQueryString.set( 'supportsInteractiveDescription', 'true' );
 
   // in unbuilt mode and on phet-server, the brand suffix is removed
   const filenameEnding = ( window.location.hostname === 'phet.colorado.edu' || !IS_BUILT ) ? '.html' : '_phet.html';
 
+  if ( IS_BUILT ) {
+    sim = '{{PHET_REPOSITORY}}';
+  }
+  if ( !sim ) {
+    throw new Error( 'No sim query parameter provided' );
+  }
+
   // Unbuilt sims include all locales in the en file, built versions only include all strings in the all file
-  const repoLocale = `{{PHET_REPOSITORY}}_${IS_BUILT ? 'all' : 'en'}`;
-  const simURL = repoLocale + filenameEnding + simulationQueryString;
+  const simWithLocale = `${sim}_${IS_BUILT ? 'all' : 'en'}`;
+  let simURL = `../../../${sim}/${simWithLocale}${filenameEnding}?${simulationQueryString}`;
+
+  if ( IS_BUILT ) {
+    simURL = `./${simWithLocale}${filenameEnding}?${simulationQueryString}`;
+  }
 
   // set the source of the sim iframe
   document.getElementById( 'iframe' ).setAttribute( 'src', simURL );
@@ -572,7 +584,7 @@
       clearButton.addEventListener( 'click', () => clearActivityLog( alertList ) );
 
       const iframe = document.getElementById( 'iframe' );
-      const iframeDocument = iframe.contentWindow.document
+      const iframeDocument = iframe.contentWindow.document;
 
       // set focus to the loaded iframe
       iframe.focus();
@@ -587,6 +599,13 @@
       } );
     }
   } );
+
+  // Live reload, see https://esbuild.github.io/api/#live-reload
+  const query = new URLSearchParams( window.location.search );
+  const liveReload = !!query.has( 'liveReload' );
+  if ( liveReload ) {
+    new EventSource( '/esbuild' ).addEventListener( 'change', () => location.reload() );
+  }
 </script>
 </body>
 </html>
