@@ -20,7 +20,8 @@
   ],
   "exclude": [
     "../../js/browser/**/*",
-    "../../js/browser-and-node/**/*"
+    "../../js/browser-and-node/**/*",
+    "../../../perennial-alias/js/common/Maintenance.ts"
   ],
   // DUPLICATION ALERT, any additions here need to be added to ../js/tsconfig.json
   "references": [
