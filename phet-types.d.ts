@@ -99,7 +99,7 @@ declare var QueryStringMachine: {
 };
 
 // globals used in Sim.ts
-declare var phetSplashScreenDownloadComplete: () => void;
+declare var phetSplashScreenDownloadComplete: ( brand: string ) => number; // returns the progress bar width for sizing.
 declare var TWEEN: { update: ( dt: number ) => void };
 declare var phetSplashScreen: { dispose: () => void };
 declare var phetio: Record<string, IntentionalAny>;
