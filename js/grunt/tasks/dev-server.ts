@@ -37,7 +37,6 @@ const options = {
   const bundleName = `${pascalCase( options.repo )}Bundle`;
   const outFile = `${chipper}/dist/bundles/phetBundle.js`;
 
-
   const buildConfig: IntentionalPerennialAny = {
     entryPoints: [
       // TODO: Support mode with ALL sim entrypoints? https://github.com/phetsims/chipper/issues/1559
@@ -51,13 +50,12 @@ const options = {
     sourcemap: true
   };
 
-
   if ( options.live ) {
     const context = await esbuild.context( buildConfig );
 
     await context.serve( {
       servedir: gitRoot,
-      port: options.port
+      port: typeof options.port === 'number' ? options.port : parseInt( options.port, 10 )
     } );
 
     console.log( 'Watching' );
