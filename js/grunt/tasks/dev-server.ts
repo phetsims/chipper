@@ -11,11 +11,11 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
+import esbuild from 'esbuild';
 import path from 'node:path';
+import { IntentionalPerennialAny } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
-import execute from '../../../../perennial-alias/js/common/execute.js';
-import { npxCommand } from '../../../../perennial-alias/js/common/npxCommand.js';
-import { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getOption, { getOptionIfProvided, isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import pascalCase from '../../common/pascalCase.js';
 
@@ -26,7 +26,8 @@ const __dirname = dirname(
 
 const options = {
   repo: getRepo(), // repo to bundle, must have a simluation entrypoint like repo/js/repo-main.ts
-  port: getOptionIfProvided( 'port' ) || 80 // port of the server
+  port: getOptionIfProvided( 'port' ) || 80, // port of the server
+  live: isOptionKeyProvided( 'live' ) ? getOption( 'live' ) : true
 };
 
 ( async () => {
@@ -34,24 +35,35 @@ const options = {
   const gitRoot = `${path.resolve( __dirname, '../../../../' )}`;
   const chipper = `${gitRoot}/chipper/`;
   const bundleName = `${pascalCase( options.repo )}Bundle`;
-  const argsString = [
-    'esbuild',
-    // TODO: Support mode with ALL sim entrypoints? https://github.com/phetsims/chipper/issues/1559
-    // TODO: Support mode with ALL non-sim entrypoints too? https://github.com/phetsims/chipper/issues/1559
-    `${gitRoot}/${options.repo}/js/${options.repo}-main.ts`, // TODO: support js entrypoints. https://github.com/phetsims/chipper/issues/1558
-    '--bundle',
-    '--format=iife',
-    `--global-name=${bundleName}`,
-    `--outfile=${chipper}/dist/js/${options.repo}/bundle.js`,
-    '--sourcemap',
-    '--watch',
-    `--servedir=${gitRoot}`,
-    `--serve=${options.port}`
-  ];
+  const outFile = `${chipper}/dist/bundles/phetBundle.js`;
 
-  await execute( npxCommand, argsString, chipper, {
-    childProcessOptions: {
-      stdio: 'inherit'
-    }
-  } );
+
+  const buildConfig: IntentionalPerennialAny = {
+    entryPoints: [
+      // TODO: Support mode with ALL sim entrypoints? https://github.com/phetsims/chipper/issues/1559
+      // TODO: Support mode with ALL non-sim entrypoints too? https://github.com/phetsims/chipper/issues/1559
+      `${gitRoot}/${options.repo}/js/${options.repo}-main.ts` // TODO: support js entrypoints. https://github.com/phetsims/chipper/issues/1558
+    ],
+    bundle: true,
+    format: 'iife',
+    globalName: bundleName,
+    outfile: outFile,
+    sourcemap: true
+  };
+
+
+  if ( options.live ) {
+    const context = await esbuild.context( buildConfig );
+
+    await context.serve( {
+      servedir: gitRoot,
+      port: options.port
+    } );
+
+    console.log( 'Watching' );
+    await context.watch();
+  }
+  else {
+    await esbuild.build( buildConfig );
+  }
 } )();
