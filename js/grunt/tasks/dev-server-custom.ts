@@ -1,5 +1,6 @@
 // Copyright 2025, University of Colorado Boulder
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Serve for phetsims development:
  *
@@ -21,7 +22,6 @@ import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 
 const options = {
-
   // Set the port you want the server to listen on.
   port: getOptionIfProvided( 'port' ) || 80
 };
@@ -51,6 +51,59 @@ function getContentType( filePath: string ): string {
   }
 }
 
+// Helper to send responses with proper headers.
+function sendResponse( res: http.ServerResponse, statusCode: number, contentType: string, data: any ): void {
+  res.statusCode = statusCode;
+  res.setHeader( 'Content-Type', contentType );
+  res.end( data );
+}
+
+// Bundles a TS file using esbuild.
+function bundleTS( filePath: string, res: http.ServerResponse, extraOptions: Record<string, any> = {} ): void {
+  console.log( `Bundling main TS file: ${filePath}` );
+  const defaultOptions = {
+    entryPoints: [ filePath ],
+    bundle: true,
+    format: 'esm',
+    write: false
+  };
+  const buildOptions = Object.assign( {}, defaultOptions, extraOptions );
+
+  // @ts-expect-error
+  esbuild.build( buildOptions )
+    .then( result => {
+      console.log( 'Bundling successful' );
+      res.statusCode = 200;
+      res.setHeader( 'Content-Type', 'application/javascript' );
+      res.setHeader( 'Cache-Control', 'no-store' );
+      res.end( result.outputFiles![ 0 ].contents );
+    } )
+    .catch( err => {
+      console.error( 'Esbuild bundling error:', err );
+      sendResponse( res, 500, 'text/plain', 'Build failed:\n' + err.message );
+    } );
+}
+
+// Transpiles a TS file in-memory.
+function transpileTS( tsCode: string, filePath: string, res: http.ServerResponse ): void {
+  console.log( `Transpiling TS file: ${filePath}` );
+  esbuild.transform( tsCode, {
+    loader: 'ts',
+    target: 'esnext'
+  } )
+    .then( result => {
+      console.log( 'Transpilation successful' );
+      res.statusCode = 200;
+      res.setHeader( 'Content-Type', 'application/javascript' );
+      res.setHeader( 'Cache-Control', 'no-store' );
+      res.end( result.code );
+    } )
+    .catch( err => {
+      console.error( 'Esbuild transform error:', err );
+      sendResponse( res, 500, 'text/plain', 'Build failed:\n' + err.message );
+    } );
+}
+
 const server = http.createServer( ( req, res ) => {
   res.setHeader( 'Connection', 'close' );
   const parsedUrl = new URL( req.url!, `http://${req.headers.host}` );
@@ -77,56 +130,14 @@ const server = http.createServer( ( req, res ) => {
     fs.readFile( filePath, ( err, tsData ) => {
       if ( err ) {
         console.error( 'TS file not found:', filePath );
-        res.statusCode = 404;
-        res.setHeader( 'Content-Type', 'text/plain' );
-        res.end( 'File not found.' );
+        sendResponse( res, 404, 'text/plain', 'File not found.' );
         return;
       }
-      // Bundle if the TS file is a *-main.ts file.
       if ( filePath.endsWith( '-main.ts' ) ) {
-        console.log( 'Bundling main TS file:', filePath );
-        esbuild
-          .build( {
-            entryPoints: [ filePath ],
-            bundle: true,
-            format: 'esm',
-            sourcemap: 'inline',
-            write: false
-          } )
-          .then( result => {
-            console.log( 'Bundling successful' );
-            res.statusCode = 200;
-            res.setHeader( 'Content-Type', 'application/javascript' );
-            res.setHeader( 'Cache-Control', 'no-store' );
-            res.end( result.outputFiles[ 0 ].contents );
-          } )
-          .catch( err => {
-            console.error( 'Esbuild bundling error:', err );
-            res.statusCode = 500;
-            res.setHeader( 'Content-Type', 'text/plain' );
-            res.end( 'Build failed:\n' + err.message );
-          } );
+        bundleTS( filePath, res, { sourcemap: 'inline' } );
       }
       else {
-        console.log( 'Transpiling TS file:', filePath );
-        esbuild
-          .transform( tsData.toString(), {
-            loader: 'ts',
-            target: 'esnext'
-          } )
-          .then( result => {
-            console.log( 'Transpilation successful' );
-            res.statusCode = 200;
-            res.setHeader( 'Content-Type', 'application/javascript' );
-            res.setHeader( 'Cache-Control', 'no-store' );
-            res.end( result.code );
-          } )
-          .catch( err => {
-            console.error( 'Esbuild transform error:', err );
-            res.statusCode = 500;
-            res.setHeader( 'Content-Type', 'text/plain' );
-            res.end( 'Build failed:\n' + err.message );
-          } );
+        transpileTS( tsData.toString(), filePath, res );
       }
     } );
     return;
@@ -138,9 +149,7 @@ const server = http.createServer( ( req, res ) => {
     fs.readFile( filePath, ( err, data ) => {
       if ( !err ) {
         console.log( 'Serving static JS file:', filePath );
-        res.statusCode = 200;
-        res.setHeader( 'Content-Type', getContentType( filePath ) );
-        res.end( data );
+        sendResponse( res, 200, getContentType( filePath ), data );
       }
       else {
         // If the static .js file is not found, look for a corresponding .ts file.
@@ -149,55 +158,14 @@ const server = http.createServer( ( req, res ) => {
         fs.readFile( tsFilePath, ( err2, tsData ) => {
           if ( err2 ) {
             console.error( 'TS file for JS request not found:', tsFilePath );
-            res.statusCode = 404;
-            res.setHeader( 'Content-Type', 'text/plain' );
-            res.end( 'File not found.' );
+            sendResponse( res, 404, 'text/plain', 'File not found.' );
             return;
           }
-          // Bundle if the TS file is a *-main.ts file.
           if ( tsFilePath.endsWith( '-main.ts' ) ) {
-            console.log( 'Bundling main TS file (from JS request):', tsFilePath );
-            esbuild.build( {
-              entryPoints: [ tsFilePath ],
-              bundle: true,
-              format: 'esm',
-              globalName: 'MembraneChannelsBundle',
-              write: false // TODO: maybe writing the file to outdir will save on bandwidth for the sourcemaps, but will do a lot of disk thrashing, see https://github.com/phetsims/chipper/issues/1559
-            } )
-              .then( result => {
-                console.log( 'Bundling successful' );
-                res.statusCode = 200;
-                res.setHeader( 'Content-Type', 'application/javascript' );
-                res.setHeader( 'Cache-Control', 'no-store' );
-                res.end( result.outputFiles[ 0 ].contents );
-              } )
-              .catch( err => {
-                console.error( 'Esbuild bundling error:', err );
-                res.statusCode = 500;
-                res.setHeader( 'Content-Type', 'text/plain' );
-                res.end( 'Build failed:\n' + err.message );
-              } );
+            bundleTS( tsFilePath, res, { globalName: 'MembraneChannelsBundle' } );
           }
           else {
-            console.log( 'Transpiling TS file (from JS request):', tsFilePath );
-            esbuild
-              .transform( tsData.toString(), {
-                loader: 'ts',
-                target: 'esnext'
-              } )
-              .then( result => {
-                console.log( 'Transpilation successful' );
-                res.statusCode = 200;
-                res.setHeader( 'Content-Type', 'application/javascript' );
-                res.setHeader( 'Cache-Control', 'no-store' );
-                res.end( result.code );
-              } )
-              .catch( err => {
-                console.error( 'Esbuild transform error:', err );
-                res.statusCode = 500;
-                res.setHeader( 'Content-Type', 'text/plain' );
-                res.end( 'Build failed:\n' + err.message );
-              } );
+            transpileTS( tsData.toString(), tsFilePath, res );
           }
         } );
       }
@@ -209,15 +177,11 @@ const server = http.createServer( ( req, res ) => {
   fs.readFile( filePath, ( err, data ) => {
     if ( err ) {
       console.error( 'Static file not found:', filePath );
-      res.statusCode = 404;
-      res.setHeader( 'Content-Type', 'text/plain' );
-      res.end( 'File not found.' );
+      sendResponse( res, 404, 'text/plain', 'File not found.' );
       return;
     }
     console.log( 'Serving static file:', filePath );
-    res.statusCode = 200;
-    res.setHeader( 'Content-Type', getContentType( filePath ) );
-    res.end( data );
+    sendResponse( res, 200, getContentType( filePath ), data );
   } );
 } );
 
