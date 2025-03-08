@@ -20,6 +20,7 @@ import http from 'node:http';
 import path from 'path';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
 const options = {
   // Set the port you want the server to listen on.
@@ -58,18 +59,39 @@ function sendResponse( res: http.ServerResponse, statusCode: number, contentType
   res.end( data );
 }
 
+
+// HACK ALERT: for simLauncher, rename 'js' to 'ts' in the file so it will load a Brand
+const exampleOnLoadPlugin = {
+  name: 'example',
+  setup( build: IntentionalAny ) {
+    // Load ".txt" files and return an array of words
+    build.onLoad( { filter: /simLauncher.ts$/ }, async ( args: IntentionalAny ) => {
+      let text = await fs.promises.readFile( args.path, 'utf8' );
+
+      text = text.replace( '\'js\'', '\'ts\'' );
+      return {
+        contents: text,
+        loader: 'ts'
+      };
+    } );
+  }
+};
+
 // Bundles a TS file using esbuild.
 function bundleTS( filePath: string, res: http.ServerResponse, extraOptions: Record<string, any> = {} ): void {
   console.log( `Bundling main TS file: ${filePath}` );
+
   const defaultOptions = {
     entryPoints: [ filePath ],
     bundle: true,
     format: 'esm',
-    write: false
+    write: false,
+    plugins: [ exampleOnLoadPlugin ]
   };
+
   const buildOptions = Object.assign( {}, defaultOptions, extraOptions );
 
-  // @ts-expect-error
+// @ts-expect-error
   esbuild.build( buildOptions )
     .then( result => {
       console.log( 'Bundling successful' );
@@ -104,6 +126,24 @@ function transpileTS( tsCode: string, filePath: string, res: http.ServerResponse
     } );
 }
 
+// HACK ALERT. Requests for /chipper/dist/js/ are rerouted to the source *.ts or *.js file
+function rewritePathname( pathname: string ): string {
+  const match = '/chipper/dist/js/';
+
+  if ( pathname.startsWith( match ) ) {
+    return pathname.replace( match, '' );
+  }
+
+  if ( pathname.includes( match ) ) {
+    const relativePath = pathname.split( match )[ 1 ];
+    const newPathname = `/alternative/js/${relativePath}`;
+    console.log( `Rewriting ${pathname} to ${newPathname}` );
+    return newPathname;
+  }
+  return pathname;
+}
+
+
 const server = http.createServer( ( req, res ) => {
   res.setHeader( 'Connection', 'close' );
   const parsedUrl = new URL( req.url!, `http://${req.headers.host}` );
@@ -120,6 +160,50 @@ const server = http.createServer( ( req, res ) => {
   if ( pathname.endsWith( '/' ) ) {
     pathname += 'index.html';
   }
+
+  // Check if we need to rewrite the path:
+  pathname = rewritePathname( pathname );
+
+  // HACK ALERT peggy and himalaya are somehow forgotten in this serve, so we have to add them.
+  const serveBonus = ( bonusFile: string ) => {
+    const fileSaverPath = path.join( STATIC_ROOT, pathname );
+
+    const himalayaPath = path.join( STATIC_ROOT, bonusFile );
+
+    console.log( 'Concatenating FileSaver and Himalaya JS files.' );
+
+    fs.readFile( fileSaverPath, ( err, fileSaverData ) => {
+      if ( err ) {
+        console.error( 'FileSaver file not found:', fileSaverPath );
+        sendResponse( res, 404, 'text/plain', 'FileSaver file not found.' );
+        return;
+      }
+
+      fs.readFile( himalayaPath, ( err2, himalayaData ) => {
+        if ( err2 ) {
+          console.error( 'Himalaya file not found:', himalayaPath );
+          sendResponse( res, 404, 'text/plain', 'Himalaya file not found.' );
+          return;
+        }
+
+        // Concatenate both files' contents
+        const concatenatedData = Buffer.concat( [ fileSaverData, himalayaData ] );
+        sendResponse( res, 200, 'application/javascript', concatenatedData );
+      } );
+    } );
+  };
+
+  if ( pathname === '/sherpa/lib/FileSaver-b8054a2.js' ) {
+    serveBonus( '/sherpa/lib/himalaya-1.1.0.js' );
+    return;
+  }
+
+  // TODO: Or adjust HTML contents to add it? https://github.com/phetsims/chipper/issues/1559
+  if ( pathname === '/sherpa/lib/react-18.1.0.production.min.js' ) {
+    serveBonus( '/sherpa/lib/peggy-3.0.2.js' );
+    return;
+  }
+
 
   const filePath = path.join( STATIC_ROOT, pathname );
   const ext = path.extname( filePath ).toLowerCase();
