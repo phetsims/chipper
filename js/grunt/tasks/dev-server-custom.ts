@@ -78,27 +78,23 @@ const exampleOnLoadPlugin = {
 };
 
 // Bundles a TS file using esbuild.
-function bundleTS( filePath: string, res: http.ServerResponse, extraOptions: Record<string, any> = {} ): void {
+function bundleTS( filePath: string, res: http.ServerResponse ): void {
   console.log( `Bundling main TS file: ${filePath}` );
 
-  const defaultOptions = {
+  esbuild.build( {
     entryPoints: [ filePath ],
     bundle: true,
     format: 'esm',
     write: false,
+    sourcemap: 'inline',
     plugins: [ exampleOnLoadPlugin ]
-  };
-
-  const buildOptions = Object.assign( {}, defaultOptions, extraOptions );
-
-// @ts-expect-error
-  esbuild.build( buildOptions )
+  } )
     .then( result => {
       console.log( 'Bundling successful' );
       res.statusCode = 200;
       res.setHeader( 'Content-Type', 'application/javascript' );
       res.setHeader( 'Cache-Control', 'no-store' );
-      res.end( result.outputFiles![ 0 ].contents );
+      res.end( result.outputFiles[ 0 ].contents );
     } )
     .catch( err => {
       console.error( 'Esbuild bundling error:', err );
@@ -218,7 +214,7 @@ const server = http.createServer( ( req, res ) => {
         return;
       }
       if ( filePath.endsWith( '-main.ts' ) ) {
-        bundleTS( filePath, res, { sourcemap: 'inline' } );
+        bundleTS( filePath, res );
       }
       else {
         transpileTS( tsData.toString(), filePath, res );
@@ -232,21 +228,21 @@ const server = http.createServer( ( req, res ) => {
     // First try to serve the static .js file.
     fs.readFile( filePath, ( err, data ) => {
       if ( !err ) {
-        console.log( 'Serving static JS file:', filePath );
+        // console.log( 'Serving static JS file:', filePath );
         sendResponse( res, 200, getContentType( filePath ), data );
       }
       else {
         // If the static .js file is not found, look for a corresponding .ts file.
         const tsFilePath = filePath.slice( 0, -3 ) + '.ts';
-        console.log( 'Static JS file not found, trying TS file:', tsFilePath );
+        // console.log( 'Static JS file not found, trying TS file:', tsFilePath );
         fs.readFile( tsFilePath, ( err2, tsData ) => {
           if ( err2 ) {
-            console.error( 'TS file for JS request not found:', tsFilePath );
+            // console.error( 'TS file for JS request not found:', tsFilePath );
             sendResponse( res, 404, 'text/plain', 'File not found.' );
             return;
           }
           if ( tsFilePath.endsWith( '-main.ts' ) ) {
-            bundleTS( tsFilePath, res, { globalName: 'MembraneChannelsBundle' } );
+            bundleTS( tsFilePath, res );
           }
           else {
             transpileTS( tsData.toString(), tsFilePath, res );
