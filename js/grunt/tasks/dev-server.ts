@@ -41,7 +41,7 @@ const options = {
     entryPoints: [
       // TODO: Support mode with ALL sim entrypoints? https://github.com/phetsims/chipper/issues/1559
       // TODO: Support mode with ALL non-sim entrypoints too? https://github.com/phetsims/chipper/issues/1559
-      `${gitRoot}/${options.repo}/js/${options.repo}-main.ts` // TODO: support js entrypoints. https://github.com/phetsims/chipper/issues/1558
+      `${gitRoot}/${options.repo}/js/${options.repo}-main.ts` // TODO: support js entrypoints. https://github.com/phetsims/chipper/issues/1559
     ],
     bundle: true,
     format: 'iife',
