@@ -213,7 +213,7 @@ const server = http.createServer( ( req, res ) => {
         sendResponse( res, 404, 'text/plain', 'File not found.' );
         return;
       }
-      if ( filePath.endsWith( '-main.ts' ) ) {
+      if ( filePath.endsWith( '-main.ts' ) || filePath.endsWith( '-tests.ts' ) ) {
         bundleTS( filePath, res );
       }
       else {
@@ -241,7 +241,7 @@ const server = http.createServer( ( req, res ) => {
             sendResponse( res, 404, 'text/plain', 'File not found.' );
             return;
           }
-          if ( tsFilePath.endsWith( '-main.ts' ) ) {
+          if ( tsFilePath.endsWith( '-main.ts' ) || tsFilePath.endsWith( '-tests.ts' ) ) {
             bundleTS( tsFilePath, res );
           }
           else {
