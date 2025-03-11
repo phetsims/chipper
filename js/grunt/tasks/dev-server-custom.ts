@@ -142,6 +142,7 @@ function saveToDist( pathname: string, contents: string ): void {
 function bundleTS( filePath: string, res: http.ServerResponse, pathname: string ): void {
   VERBOSE && console.log( `Bundling main TS/JS file: ${filePath}` );
 
+  const start = Date.now();
   esbuild.build( {
     entryPoints: [ filePath ],
     bundle: true,
@@ -156,7 +157,7 @@ function bundleTS( filePath: string, res: http.ServerResponse, pathname: string 
     .then( result => {
       const code = result.outputFiles[ 0 ].contents;
       saveToDist( pathname, result.outputFiles[ 0 ].text );
-      VERBOSE && console.log( 'Bundling successful' );
+      VERBOSE && console.log( 'Bundling successful in ' + ( Date.now() - start ) + 'ms' );
       res.statusCode = 200;
       res.setHeader( 'Content-Type', 'application/javascript' );
       res.setHeader( 'Cache-Control', 'no-store' );
@@ -166,7 +167,6 @@ function bundleTS( filePath: string, res: http.ServerResponse, pathname: string 
       console.error( 'Esbuild bundling error:', err );
       sendResponse( res, 500, 'text/plain', 'Build failed:\n' + err.message );
     } );
-
 }
 
 // Transpiles a TS file in-memory.
