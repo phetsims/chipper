@@ -138,9 +138,9 @@ function saveToDist( pathname: string, contents: string ): void {
   fs.writeFileSync( fullPath, contents );
 }
 
-// Bundles a TS file using esbuild.
+// Bundles a TS (or JS) file using esbuild.
 function bundleTS( filePath: string, res: http.ServerResponse, pathname: string ): void {
-  VERBOSE && console.log( `Bundling main TS file: ${filePath}` );
+  VERBOSE && console.log( `Bundling main TS/JS file: ${filePath}` );
 
   esbuild.build( {
     entryPoints: [ filePath ],
@@ -298,11 +298,19 @@ const server = http.createServer( ( req, res ) => {
 
   // --- Handle JavaScript requests ---
   if ( ext === '.js' ) {
+
+    // Bundle *.js entry points (e.g., -main.js or -tests.js) using bundleTS.
+    if ( filePath.endsWith( '-main.js' ) || filePath.endsWith( '-tests.js' ) ) {
+      VERBOSE && console.log( 'JS entry point detected, bundling:', filePath );
+      bundleTS( filePath, res, pathname );
+      return;
+    }
+
     // First try to serve the static .js file.
     fs.readFile( filePath, ( err, data ) => {
       if ( !err ) {
         VERBOSE && console.log( 'Serving static JS file:', filePath );
-        sendResponse( res, 200, getContentType( filePath ), data ); // TODO: Bundle js sims? https://github.com/phetsims/chipper/issues/1559
+        sendResponse( res, 200, getContentType( filePath ), data );
       }
       else {
         // If the static .js file is not found, look for a corresponding .ts file.
