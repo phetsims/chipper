@@ -235,44 +235,38 @@ const server = http.createServer( ( req, res ) => {
 
   // // TODO: Or adjust HTML contents to add it? https://github.com/phetsims/chipper/issues/1559
   // // HACK ALERT peggy and himalaya are somehow forgotten in this serve, so we have to add them.
-  // const serveBonus = ( bonusFile: string ) => {
-  //   const fileSaverPath = path.join( STATIC_ROOT, pathname );
-  //
-  //   const himalayaPath = path.join( STATIC_ROOT, bonusFile );
-  //
-  //   VERBOSE && console.log( 'Concatenating FileSaver and Himalaya JS files.' );
-  //
-  //   fs.readFile( fileSaverPath, ( err, fileSaverData ) => {
-  //     if ( err ) {
-  //       console.error( 'FileSaver file not found:', fileSaverPath );
-  //       sendResponse( res, 404, 'text/plain', 'FileSaver file not found.' );
-  //       return;
-  //     }
-  //
-  //     fs.readFile( himalayaPath, ( err2, himalayaData ) => {
-  //       if ( err2 ) {
-  //         console.error( 'Himalaya file not found:', himalayaPath );
-  //         sendResponse( res, 404, 'text/plain', 'Himalaya file not found.' );
-  //         return;
-  //       }
-  //
-  //       // Concatenate both files' contents
-  //       const concatenatedData = Buffer.concat( [ fileSaverData, himalayaData ] );
-  //       sendResponse( res, 200, 'application/javascript', concatenatedData );
-  //     } );
-  //   } );
-  // };
-  //
-  // if ( pathname === '/sherpa/lib/FileSaver-b8054a2.js' ) {
-  //   serveBonus( '/sherpa/lib/himalaya-1.1.0.js' );
-  //   return;
-  // }
-  //
-  // if ( pathname === '/sherpa/lib/react-18.1.0.production.min.js' ) {
-  //   serveBonus( '/sherpa/lib/peggy-3.0.2.js' );
-  //   return;
-  // }
+  const serveBonus = ( bonusFile: string ) => {
+    const fileSaverPath = path.join( STATIC_ROOT, pathname );
 
+    const himalayaPath = path.join( STATIC_ROOT, bonusFile );
+
+    VERBOSE && console.log( 'Concatenating FileSaver and Himalaya JS files.' );
+
+    fs.readFile( fileSaverPath, ( err, fileSaverData ) => {
+      if ( err ) {
+        console.error( 'FileSaver file not found:', fileSaverPath );
+        sendResponse( res, 404, 'text/plain', 'FileSaver file not found.' );
+        return;
+      }
+
+      fs.readFile( himalayaPath, ( err2, himalayaData ) => {
+        if ( err2 ) {
+          console.error( 'Himalaya file not found:', himalayaPath );
+          sendResponse( res, 404, 'text/plain', 'Himalaya file not found.' );
+          return;
+        }
+
+        // Concatenate both files' contents
+        const concatenatedData = Buffer.concat( [ fileSaverData, himalayaData ] );
+        sendResponse( res, 200, 'application/javascript', concatenatedData );
+      } );
+    } );
+  };
+
+  if ( pathname === '/sherpa/lib/react-18.1.0.production.min.js' ) {
+    serveBonus( '/sherpa/lib/peggy-3.0.2.js' );
+    return;
+  }
 
   const filePath = path.join( STATIC_ROOT, pathname );
   const ext = path.extname( filePath ).toLowerCase();
