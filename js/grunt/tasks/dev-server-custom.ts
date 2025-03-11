@@ -61,20 +61,73 @@ function sendResponse( res: http.ServerResponse, statusCode: number, contentType
   res.end( data );
 }
 
-
 // HACK ALERT: for simLauncher, rename 'js' to 'ts' in the file so it will load a Brand
-const exampleOnLoadPlugin = {
+const simLauncherRewrite = {
   name: 'example',
   setup( build: IntentionalAny ) {
-    // Load ".txt" files and return an array of words
     build.onLoad( { filter: /simLauncher.ts$/ }, async ( args: IntentionalAny ) => {
       let text = await fs.promises.readFile( args.path, 'utf8' );
-
       text = text.replace( '\'js\'', '\'ts\'' );
-      return {
-        contents: text,
-        loader: 'ts'
-      };
+      return { contents: text, loader: 'ts' };
+    } );
+  }
+};
+
+// HACK ALERT: for himalaya, export to window
+const himalayaRewrite = {
+  name: 'example',
+  setup( build: IntentionalAny ) {
+    build.onLoad( { filter: /himalaya-1.1.0.js$/ }, async ( args: IntentionalAny ) => {
+      let text = await fs.promises.readFile( args.path, 'utf8' );
+      text = text.replace( '(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.himalaya = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module \'"+o+"\'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){',
+        `( function( f ) {
+  if ( false ) {module.exports = f()}
+  else if ( false ) {define( [], f )}
+  else {
+    // var g;
+    // if ( typeof window !== 'undefined' ) {g = window}
+    // else if ( typeof global !== 'undefined' ) {g = global}
+    // else if ( typeof self !== 'undefined' ) {g = self}
+    // else {g = this}
+    window.himalaya = f()
+  }
+} )( function() {
+  var define, module, exports;
+  return ( function() {
+    function e( t, n, r ) {
+      function s( o, u ) {
+        if ( !n[ o ] ) {
+          if ( !t[ o ] ) {
+            var a = typeof require == 'function' && require;
+            if ( !u && a ) {
+              return a( o, !0 );
+            }
+            if ( i ) {
+              return i( o, !0 );
+            }
+            var f = new Error( 'Cannot find module \\'' + o + '\\'' );
+            throw f.code = 'MODULE_NOT_FOUND', f
+          }
+          var l = n[ o ] = { exports: {} };
+          t[ o ][ 0 ].call( l.exports, function( e ) {
+            var n = t[ o ][ 1 ][ e ];
+            return s( n ? n : e )
+          }, l, l.exports, e, t, n, r )
+        }
+        return n[ o ].exports
+      }
+
+      var i = typeof require == 'function' && require;
+      for ( var o = 0; o < r.length; o++ ) {
+        s( r[ o ] );
+      }
+      return s
+    }
+
+    return e
+  } )()( {
+    1: [ function( require, module, exports ) {` );
+      return { contents: text, loader: 'js' };
     } );
   }
 };
@@ -95,7 +148,10 @@ function bundleTS( filePath: string, res: http.ServerResponse, pathname: string 
     format: 'esm',
     write: false,
     sourcemap: 'inline', // TODO: Are sourcemaps: false in the browser the same as the exact source code? https://github.com/phetsims/chipper/issues/1559
-    plugins: [ exampleOnLoadPlugin ]
+    plugins: [
+      simLauncherRewrite,
+      himalayaRewrite
+    ]
   } )
     .then( result => {
       const code = result.outputFiles[ 0 ].contents;
