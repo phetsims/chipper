@@ -32,10 +32,11 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
 const options = {
   // Set the port you want the server to listen on.
-  port: getOptionIfProvided( 'port' ) || 80
+  port: getOptionIfProvided( 'port' ) || 80,
+  logLevel: getOptionIfProvided( 'logLevel' ) || 'info' // or 'verbose'
 };
 
-const VERBOSE = true; // Lots of console.log
+const VERBOSE = options.logLevel === 'verbose'; // Lots of console.log
 const SAVE_TO_DIST = false; // Write files to the disk, for inspection and debugging
 
 // @ts-expect-error
@@ -149,7 +150,9 @@ function saveToDist( pathname: string, contents: string ): void {
 
 // Bundles a TS (or JS) file using esbuild.
 function bundleTS( filePath: string, res: http.ServerResponse, pathname: string ): void {
-  VERBOSE && console.log( `Bundling main TS/JS file: ${filePath}` );
+
+  // print without newline
+  process.stdout.write( `Bundling ${filePath}: ` );
 
   const start = Date.now();
   esbuild.build( {
@@ -166,7 +169,7 @@ function bundleTS( filePath: string, res: http.ServerResponse, pathname: string 
     .then( result => {
       const code = result.outputFiles[ 0 ].contents;
       SAVE_TO_DIST && saveToDist( pathname, result.outputFiles[ 0 ].text );
-      VERBOSE && console.log( 'Bundling successful in ' + ( Date.now() - start ) + 'ms' );
+      console.log( `${Date.now() - start}ms` );
       res.statusCode = 200;
       res.setHeader( 'Content-Type', 'application/javascript' );
       res.setHeader( 'Cache-Control', 'no-store' );
@@ -232,12 +235,7 @@ const server = http.createServer( ( req, res ) => {
   const parsedUrl = new URL( req.url!, `http://${req.headers.host}` );
   let pathname = parsedUrl.pathname;
 
-  console.log( 'Request:', pathname );
-
-  // Warn if the URL contains chipper/dist.
-  if ( pathname.includes( 'chipper/dist' ) ) {
-    VERBOSE && console.log( 'WARNING: found chipper dist' );
-  }
+  VERBOSE && console.log( 'Request:', pathname );
 
   // Check if we need to rewrite the path:
   pathname = rewritePathname( pathname );
