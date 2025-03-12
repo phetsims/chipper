@@ -2,14 +2,18 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * Serve for phetsims development:
+ * Serve for phetsims development. This can be used as an alternative to the swc/transpiler watch processes. Files
+ * are lazily converted to *.js on the fly, and served to the browser. This is useful for debugging and development.
+ * Sims and other runnables with -main.js, -tests.js, -main.ts, -tests.ts files are bundled with esbuild for speed.
  *
- * 1. static server
+ * See https://github.com/phetsims/chipper/issues/1559 for the initial development issue.
+ *
+ * OVERVIEW:
+ * 1. mainly a static server
  * 2. If the request is for a *.ts file, then transpile it to a *.js file and return it.
  *    a. If the request is for a *-main.ts or *-tests.ts file, then bundle it with esbuild and return it.
  *    b. If the request is for a *.ts file that is not a *-main.ts file, then transpile it in-memory (single file) and return it.
- * 3. If the request is found on the filesystem, return it.
- * 4. Add sufficient console.log statements to help debug.
+ * 3. If the request is found on the filesystem (say, a *.js or *.png file), return it.
  *
  * NOTES:
  * - There is no caching, files are always read from disk
