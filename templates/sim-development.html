@@ -66,7 +66,7 @@
   // Queue all of the preloads to be loaded.
   preloads.forEach( preload => loadURL( preload ) );
 
-  const targetSource = esbuild ? './dist/bundle.js' : '{{MAIN_FILE}}';
+  const targetSource = esbuild ? '../chipper/dist/dev-server-runnable/{{REPOSITORY}}.js' : '{{MAIN_FILE}}';
 
   // Module loading in compilation-free (development) mode will be kicked off once strings are loaded.
   // This is done in load-unbuilt-strings.js
