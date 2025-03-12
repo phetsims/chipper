@@ -11,6 +11,10 @@
  * 3. If the request is found on the filesystem, return it.
  * 4. Add sufficient console.log statements to help debug.
  *
+ * NOTES:
+ * - There is no caching, files are always read from disk
+ * - By default, no files are written to the disk
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
@@ -27,7 +31,8 @@ const options = {
   port: getOptionIfProvided( 'port' ) || 80
 };
 
-const VERBOSE = true;
+const VERBOSE = true; // Lots of console.log
+const SAVE_TO_DIST = false; // Write files to the disk, for inspection and debugging
 
 // @ts-expect-error
 const __dirname = dirname( import.meta.url );
@@ -156,7 +161,7 @@ function bundleTS( filePath: string, res: http.ServerResponse, pathname: string 
   } )
     .then( result => {
       const code = result.outputFiles[ 0 ].contents;
-      saveToDist( pathname, result.outputFiles[ 0 ].text );
+      SAVE_TO_DIST && saveToDist( pathname, result.outputFiles[ 0 ].text );
       VERBOSE && console.log( 'Bundling successful in ' + ( Date.now() - start ) + 'ms' );
       res.statusCode = 200;
       res.setHeader( 'Content-Type', 'application/javascript' );
@@ -178,7 +183,7 @@ function transpileTS( tsCode: string, filePath: string, res: http.ServerResponse
   } )
     .then( result => {
       VERBOSE && console.log( 'Transpilation successful' );
-      saveToDist( pathname, result.code );
+      SAVE_TO_DIST && saveToDist( pathname, result.code );
       res.statusCode = 200;
       res.setHeader( 'Content-Type', 'application/javascript' );
       res.setHeader( 'Cache-Control', 'no-store' );
