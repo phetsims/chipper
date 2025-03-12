@@ -6,7 +6,7 @@
  *
  * 1. static server
  * 2. If the request is for a *.ts file, then transpile it to a *.js file and return it.
- *    a. If the request is for a *-main.ts file, then bundle it with esbuild and return it.
+ *    a. If the request is for a *-main.ts or *-tests.ts file, then bundle it with esbuild and return it.
  *    b. If the request is for a *.ts file that is not a *-main.ts file, then transpile it in-memory (single file) and return it.
  * 3. If the request is found on the filesystem, return it.
  * 4. Add sufficient console.log statements to help debug.
@@ -200,7 +200,7 @@ function rewritePathname( pathname: string ): string {
 
   // pathname = pathname.replace( /\/2,}/g, '/' );
 
-  // HACK ALERT. Requests for /chipper/dist/js/ are rerouted to the source *.ts or *.js file
+  // Requests for /chipper/dist/js/ are rerouted to the source *.ts or *.js file
   const match = '/chipper/dist/js/';
   if ( pathname.startsWith( match ) ) {
     return pathname.replace( match, '' );
@@ -233,8 +233,6 @@ const server = http.createServer( ( req, res ) => {
   // Check if we need to rewrite the path:
   pathname = rewritePathname( pathname );
 
-  // // TODO: Or adjust HTML contents to add it? https://github.com/phetsims/chipper/issues/1559
-  // // HACK ALERT peggy and himalaya are somehow forgotten in this serve, so we have to add them.
   const serveBonus = ( bonusFile: string ) => {
     const fileSaverPath = path.join( STATIC_ROOT, pathname );
 
@@ -263,6 +261,7 @@ const server = http.createServer( ( req, res ) => {
     } );
   };
 
+  // TODO: See if peggy and pako are failing due to the UMD problem like himalaya had, see https://github.com/phetsims/chipper/issues/1559
   if ( pathname === '/sherpa/lib/react-18.1.0.production.min.js' ) {
     serveBonus( '/sherpa/lib/peggy-3.0.2.js' );
     return;
