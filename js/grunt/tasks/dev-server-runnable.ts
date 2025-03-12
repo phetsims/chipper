@@ -1,7 +1,8 @@
 // Copyright 2025, University of Colorado Boulder
 
 /**
- * Launch an esbuild dev server that bundles a simulation's code into a single resource for quicker loading.
+ * Launch an esbuild dev server that bundles a simulation (or runnable)'s code into a single resource for quicker loading.
+ * This watches all depenedncies and automatically rebundles on any dependency change.
  *
  * Expected to be used with the "unbuilt *_en.html" simulation html with `?esbuild`.
  *
@@ -12,10 +13,11 @@
  */
 
 import esbuild from 'esbuild';
+import fs from 'node:fs';
 import path from 'node:path';
 import { IntentionalPerennialAny } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
-import getOption, { getOptionIfProvided, isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import pascalCase from '../../common/pascalCase.js';
 
@@ -26,8 +28,7 @@ const __dirname = dirname(
 
 const options = {
   repo: getRepo(), // repo to bundle, must have a simluation entrypoint like repo/js/repo-main.ts
-  port: getOptionIfProvided( 'port' ) || 80, // port of the server
-  live: isOptionKeyProvided( 'live' ) ? getOption( 'live' ) : true
+  port: getOptionIfProvided( 'port' ) || 8123 // port of the server
 };
 
 ( async () => {
@@ -35,33 +36,32 @@ const options = {
   const gitRoot = `${path.resolve( __dirname, '../../../../' )}`;
   const chipper = `${gitRoot}/chipper/`;
   const bundleName = `${pascalCase( options.repo )}Bundle`;
-  const outFile = `${chipper}/dist/bundles/phetBundle.js`;
+  const outFile = `${chipper}/dist/dev-server-runnable/${options.repo}.js`;
+
+  // mkdir on the outFile parent
+  fs.mkdirSync( path.dirname( outFile ), { recursive: true } );
 
   const buildConfig: IntentionalPerennialAny = {
     entryPoints: [
-      // TODO: Support mode with ALL sim entrypoints? https://github.com/phetsims/chipper/issues/1559
-      // TODO: Support mode with ALL non-sim entrypoints too? https://github.com/phetsims/chipper/issues/1559
-      `${gitRoot}/${options.repo}/js/${options.repo}-main.ts` // TODO: support js entrypoints. https://github.com/phetsims/chipper/issues/1559
+
+      // TODO: support js entrypoints. https://github.com/phetsims/chipper/issues/1559
+      `${gitRoot}/${options.repo}/js/${options.repo}-main.ts`
     ],
     bundle: true,
     format: 'iife',
     globalName: bundleName,
     outfile: outFile,
-    sourcemap: true
+    sourcemap: true,
+    logLevel: 'info' // indicate when builds begin and end
   };
 
-  if ( options.live ) {
-    const context = await esbuild.context( buildConfig );
+  const context = await esbuild.context( buildConfig );
 
-    await context.serve( {
-      servedir: gitRoot,
-      port: typeof options.port === 'number' ? options.port : parseInt( options.port, 10 )
-    } );
+  await context.serve( {
+    servedir: gitRoot,
+    port: typeof options.port === 'number' ? options.port : parseInt( options.port, 10 )
+  } );
 
-    console.log( 'Watching' );
-    await context.watch();
-  }
-  else {
-    await esbuild.build( buildConfig );
-  }
+  console.log( 'Serving on port: ' + options.port );
+  await context.watch();
 } )();
