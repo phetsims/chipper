@@ -15,7 +15,6 @@
     "../../../perennial-alias/js/eslint/divideIntoBatches.ts",
     "../../../perennial-alias/js/eslint/getLintCLIOptions.ts",
     "../../../perennial-alias/js/grunt/tasks/lint.ts",
-    "../../../perennial-alias/js/browser-and-node/phet-types-module.d.ts",
     "../../../tandem/js/phet-io-types.ts"
   ],
   "exclude": [
