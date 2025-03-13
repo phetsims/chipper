@@ -1,6 +1,5 @@
 // Copyright 2025, University of Colorado Boulder
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Serve for phetsims development. This can be used as an alternative to the swc/transpiler watch processes. Files
  * are lazily converted to *.js on the fly, and served to the browser. This is useful for debugging and development.
@@ -21,6 +20,8 @@
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import esbuild from 'esbuild';
 import fs from 'fs';
