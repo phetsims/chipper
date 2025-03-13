@@ -10,10 +10,13 @@
  */
 
 import * as lodash from 'lodash';
+import QueryStringMachineModule from '../../../query-string-machine/js/QueryStringMachineModule.js';
 
 declare global {
 
   // Specify the correct type for lodash as a global object to work around the TS2686 warning in WebStorm/IntelliJ
   // See https://github.com/phetsims/chipper/issues/1402
   const _: typeof lodash;
+
+  const QueryStringMachine: typeof QueryStringMachineModule;
 }
