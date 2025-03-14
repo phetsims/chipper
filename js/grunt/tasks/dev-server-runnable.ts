@@ -28,7 +28,7 @@ const __dirname = dirname(
 
 const options = {
   repo: getRepo(), // repo to bundle, must have a simluation entrypoint like repo/js/repo-main.ts
-  port: getOptionIfProvided( 'port' ) || 8123 // port of the server
+  port: getOptionIfProvided( 'port', 8123 )  // port of the server
 };
 
 ( async () => {

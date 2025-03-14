@@ -33,8 +33,8 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
 const options = {
   // Set the port you want the server to listen on.
-  port: getOptionIfProvided( 'port' ) || 80,
-  logLevel: getOptionIfProvided( 'logLevel' ) || 'info' // or 'verbose'
+  port: getOptionIfProvided( 'port', 80 ),
+  logLevel: getOptionIfProvided( 'logLevel', 'info' )  // or 'verbose'
 };
 
 const VERBOSE = options.logLevel === 'verbose'; // Lots of console.log
