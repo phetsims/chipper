@@ -1,4 +1,4 @@
-// Copyright 2023, University of Colorado Boulder
+// Copyright 2025, University of Colorado Boulder
 
 /**
  * Ambient type declarations for PhET code that requires import statements. Please note this type declaration file is in
