@@ -19,4 +19,9 @@ declare global {
   const _: typeof lodash;
 
   const QueryStringMachine: typeof QueryStringMachineModule;
+
+  interface Window { // eslint-disable-line @typescript-eslint/consistent-type-definitions
+    _: typeof lodash;
+    QueryStringMachine: typeof QueryStringMachineModule;
+  }
 }
