@@ -10,7 +10,7 @@
  */
 
 import * as lodash from 'lodash';
-import QueryStringMachineModule from '../../../query-string-machine/js/QueryStringMachineModule.js';
+import { QueryStringMachine as QueryStringMachineModule } from '../../../query-string-machine/js/QueryStringMachineModule.js';
 
 declare global {
 
