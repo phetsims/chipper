@@ -1,7 +1,7 @@
 // Copyright 2024, University of Colorado Boulder
 
 /**
- * Default command which runs lint-all, report-media, clean, and build.
+ * Default command which runs lint-project, report-media, clean, and build.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -16,8 +16,8 @@ import testGruntOptions from '../../../../perennial-alias/js/grunt/tasks/util/te
   }
 
   if ( getOption( 'lint' ) !== false ) {
-    console.log( '\nRunning "lint-all"' );
-    await ( await import( './lint-all.js' ) ).lintAllPromise;
+    console.log( '\nRunning "lint-project"' );
+    await ( await import( './lint-project.js' ) ).lintProjectPromise;
   }
 
   if ( getOption( 'report-media' ) !== false ) {
