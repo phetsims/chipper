@@ -161,7 +161,7 @@ function bundleTS( filePath: string, res: http.ServerResponse, pathname: string 
     bundle: true,
     format: 'esm',
     write: false,
-    sourcemap: 'inline', // TODO: Are sourcemaps: false in the browser the same as the exact source code? https://github.com/phetsims/chipper/issues/1559
+    sourcemap: 'inline',
     plugins: [
       simLauncherRewrite,
       himalayaRewrite
@@ -206,9 +206,11 @@ function transpileTS( tsCode: string, filePath: string, res: http.ServerResponse
 function rewritePathname( pathname: string ): string {
 
   // If the request is for a directory, serve index.html.
-  // TODO: support directories mapping to index.html https://github.com/phetsims/chipper/issues/1559
   if ( pathname.endsWith( '/' ) ) {
     pathname += 'index.html';
+  }
+  else if ( fs.lstatSync( path.join( STATIC_ROOT, pathname ) ).isDirectory() ) {
+    pathname += '/index.html';
   }
 
   // pathname = pathname.replace( /\/2,}/g, '/' );
