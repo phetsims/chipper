@@ -209,8 +209,15 @@ function rewritePathname( pathname: string ): string {
   if ( pathname.endsWith( '/' ) ) {
     pathname += 'index.html';
   }
-  else if ( fs.lstatSync( path.join( STATIC_ROOT, pathname ) ).isDirectory() ) {
-    pathname += '/index.html';
+  else if ( !pathname.includes( '.' ) ) {
+    try {
+      if ( fs.lstatSync( path.join( STATIC_ROOT, pathname ) ).isDirectory() ) {
+        pathname += '/index.html';
+      }
+    }
+    catch( e ) {
+      // doesn't exist as is, probably not a directory!
+    }
   }
 
   // pathname = pathname.replace( /\/2,}/g, '/' );
