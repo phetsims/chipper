@@ -314,22 +314,39 @@ const server = http.createServer( ( req, res ) => {
         sendResponse( res, 200, getContentType( filePath ), data );
       }
       else {
+        let found = false;
+        VERBOSE && console.log( 'Static JS file not found file:', filePath );
+        const nonJSExtensions = [ 'ts', 'jsx', 'tsx', 'mts' ];
+
         // If the static .js file is not found, look for a corresponding .ts file.
-        const tsFilePath = filePath.slice( 0, -3 ) + '.ts';
-        VERBOSE && console.log( 'Static JS file not found, trying TS file:', tsFilePath );
-        fs.readFile( tsFilePath, ( err2, tsData ) => {
-          if ( err2 ) {
-            // console.error( 'TS file for JS request not found:', tsFilePath );
-            sendResponse( res, 404, 'text/plain', 'File not found.' );
-            return;
+        for ( let i = 0; i < nonJSExtensions.length; i++ ) {
+          const ext = nonJSExtensions[ i ];
+
+          const extFilePath = filePath.slice( 0, -ext.length - 1 ) + `.${ext}`;
+
+          let contents: string;
+          try {
+            contents = fs.readFileSync( extFilePath, 'utf-8' );
           }
-          if ( tsFilePath.endsWith( '-main.ts' ) || tsFilePath.endsWith( '-tests.ts' ) ) {
-            bundleTS( tsFilePath, res, pathname );
+          catch( e ) {
+            VERBOSE && console.log( 'Static JS file not found, but found file with ext:', extFilePath );
+
+            // try another file extension
+            continue;
+          }
+          if ( extFilePath.endsWith( `-main.${ext}` ) || extFilePath.endsWith( `-tests.${ext}` ) ) {
+            found = true;
+            bundleTS( extFilePath, res, pathname );
           }
           else {
-            transpileTS( tsData.toString(), tsFilePath, res, pathname );
+            found = true;
+            transpileTS( contents, extFilePath, res, pathname );
           }
-        } );
+          // Found it
+          break;
+        }
+
+        !found && sendResponse( res, 404, 'text/plain', 'File not found.' );
       }
     } );
     return;
