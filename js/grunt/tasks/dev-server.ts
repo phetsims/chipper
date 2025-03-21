@@ -209,9 +209,13 @@ function rewritePathname( pathname: string ): string {
 
 const server = http.createServer( ( req, res ) => {
   res.setHeader( 'Connection', 'close' );
+  let url = req.url!;
 
-  // TODO: URL.pathname does not support a request like `//phet-io-sim-specific/repos/buoyancy/buoyancy-phet-io-api.json` https://github.com/phetsims/chipper/issues/1559
-  const parsedUrl = new URL( req.url!, `http://${req.headers.host}` );
+  // This can not be done with the pathname, it must be done before the URL() construction
+  if ( url.startsWith( '//' ) ) {
+    url = url.slice( 1 );
+  }
+  const parsedUrl = new URL( url, `http://${req.headers.host}` );
   let pathname = parsedUrl.pathname;
 
   VERBOSE && console.log( 'Request:', pathname );
