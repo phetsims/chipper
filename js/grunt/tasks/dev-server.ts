@@ -367,5 +367,5 @@ const server = http.createServer( ( req, res ) => {
 } );
 
 server.listen( options.port, () => {
-  console.log( `Server running at http://localhost:${options.port}/` );
+  console.log( `Serving phetsims repo root at http://localhost:${options.port}/` );
 } );

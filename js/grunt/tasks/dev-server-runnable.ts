@@ -62,6 +62,6 @@ const options = {
     port: typeof options.port === 'number' ? options.port : parseInt( options.port, 10 )
   } );
 
-  console.log( 'Serving on port: ' + options.port );
+  console.log( `Serving ${options.repo} on port: ` + options.port );
   await context.watch();
 } )();
