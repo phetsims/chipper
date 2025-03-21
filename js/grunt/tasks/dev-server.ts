@@ -97,6 +97,19 @@ const himalayaRewrite = {
     } );
   }
 };
+// HACK ALERT: for peggy, export to window
+const peggyRewrite = {
+  name: 'example',
+  setup( build: IntentionalAny ) {
+    build.onLoad( { filter: /peggy-3.0.2.js$/ }, async ( args: IntentionalAny ) => {
+      let text = await fs.promises.readFile( args.path, 'utf8' );
+      text = text.replace(
+        'function(e,u){"object"==typeof exports&&"undefined"!=typeof module?module.exports=u():"function"==typeof define&&define.amd?define(u):(e="undefined"!=typeof globalThis?globalThis:e||self).peggy=u()}',
+        '( function( e,u ) {self.peggy = u();})' );
+      return { contents: text, loader: 'js' };
+    } );
+  }
+};
 
 function saveToDist( pathname: string, contents: string ): void {
   const fullPath = path.join( STATIC_ROOT, 'chipper/dist/dev-server/', pathname );
@@ -119,7 +132,8 @@ function bundleTS( filePath: string, res: http.ServerResponse, pathname: string 
     sourcemap: 'inline',
     plugins: [
       simLauncherRewrite,
-      himalayaRewrite
+      himalayaRewrite,
+      peggyRewrite
     ]
   } )
     .then( result => {
@@ -204,40 +218,6 @@ const server = http.createServer( ( req, res ) => {
 
   // Check if we need to rewrite the path:
   pathname = rewritePathname( pathname );
-
-  const serveBonus = ( bonusFile: string ) => {
-    const fileSaverPath = path.join( STATIC_ROOT, pathname );
-
-    const himalayaPath = path.join( STATIC_ROOT, bonusFile );
-
-    VERBOSE && console.log( 'Concatenating FileSaver and Himalaya JS files.' );
-
-    fs.readFile( fileSaverPath, ( err, fileSaverData ) => {
-      if ( err ) {
-        console.error( 'FileSaver file not found:', fileSaverPath );
-        sendResponse( res, 404, 'text/plain', 'FileSaver file not found.' );
-        return;
-      }
-
-      fs.readFile( himalayaPath, ( err2, himalayaData ) => {
-        if ( err2 ) {
-          console.error( 'Himalaya file not found:', himalayaPath );
-          sendResponse( res, 404, 'text/plain', 'Himalaya file not found.' );
-          return;
-        }
-
-        // Concatenate both files' contents
-        const concatenatedData = Buffer.concat( [ fileSaverData, himalayaData ] );
-        sendResponse( res, 200, 'application/javascript', concatenatedData );
-      } );
-    } );
-  };
-
-  // TODO: See if peggy and pako are failing due to the UMD problem like himalaya had, see https://github.com/phetsims/chipper/issues/1559
-  if ( pathname === '/sherpa/lib/react-18.1.0.production.min.js' ) {
-    serveBonus( '/sherpa/lib/peggy-3.0.2.js' );
-    return;
-  }
 
   const filePath = path.join( STATIC_ROOT, pathname );
   const ext = path.extname( filePath ).toLowerCase();
