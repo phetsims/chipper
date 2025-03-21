@@ -41,12 +41,12 @@ const options = {
   // mkdir on the outFile parent
   fs.mkdirSync( path.dirname( outFile ), { recursive: true } );
 
-  const buildConfig: IntentionalPerennialAny = {
-    entryPoints: [
+  const noExtension = `${gitRoot}/${options.repo}/js/${options.repo}-main`;
+  const tsEntryPoint = `${noExtension}.ts`;
+  const entryPoint = fs.existsSync( tsEntryPoint ) ? tsEntryPoint : `${noExtension}.js`;
 
-      // TODO: support js entrypoints. https://github.com/phetsims/chipper/issues/1559
-      `${gitRoot}/${options.repo}/js/${options.repo}-main.ts`
-    ],
+  const buildConfig: IntentionalPerennialAny = {
+    entryPoints: [ entryPoint ],
     bundle: true,
     format: 'iife',
     globalName: bundleName,
