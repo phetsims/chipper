@@ -213,7 +213,7 @@ const server = http.createServer( ( req, res ) => {
 
   // This can not be done with the pathname, it must be done before the URL() construction
   if ( url.startsWith( '//' ) ) {
-    url = url.slice( 1 );
+    url = url.replace( /^\/{2,}/, '/' );
   }
   const parsedUrl = new URL( url, `http://${req.headers.host}` );
   let pathname = parsedUrl.pathname;
