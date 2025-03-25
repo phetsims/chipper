@@ -17,7 +17,7 @@ const __dirname = dirname( import.meta.url );
 ( async () => {
 
   const bundledResult = await bundle( path.join( __dirname, '../../../query-string-machine/js/preload-main.ts' ) );
-  fs.writeFileSync( path.join( __dirname, '../../../query-string-machine/js/QueryStringMachine.js' ), `// Copyright 2017-2025, University of Colorado Boulder
+  fs.writeFileSync( path.join( __dirname, '../../../query-string-machine/js/QueryStringMachine.js' ), `// Copyright 2025, University of Colorado Boulder
 // @author Michael Kauzmann (PhET Interactive Simulations)
 // AUTO GENERATED: DO NOT EDIT!!!! See QueryStringMachineModule.ts and chipper/js/scripts/build-qsm.ts
 /* eslint-disable */
