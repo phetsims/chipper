@@ -216,6 +216,9 @@ const server = http.createServer( ( req, res ) => {
     url = url.replace( /^\/{2,}/, '/' );
   }
   const parsedUrl = new URL( url, `http://${req.headers.host}` );
+
+  // Raw mode bypasses transpilation and just returns the text. It is triggered by adding ?raw=true to the URL.
+  const rawMode = parsedUrl.searchParams.get( 'raw' ) === 'true';
   let pathname = parsedUrl.pathname;
 
   VERBOSE && console.log( 'Request:', pathname );
@@ -227,7 +230,7 @@ const server = http.createServer( ( req, res ) => {
   const ext = path.extname( filePath ).toLowerCase();
 
   // --- Handle TypeScript requests ---
-  if ( ext === '.ts' ) {
+  if ( ext === '.ts' && !rawMode ) {
     VERBOSE && console.log( 'TS file request detected:', filePath );
     fs.readFile( filePath, ( err, tsData ) => {
       if ( err ) {
@@ -246,7 +249,7 @@ const server = http.createServer( ( req, res ) => {
   }
 
   // --- Handle JavaScript requests ---
-  if ( ext === '.js' ) {
+  if ( ext === '.js' && !rawMode ) {
 
     // Bundle *.js entry points (e.g., -main.js or -tests.js) using bundleTS.
     if ( filePath.endsWith( '-main.js' ) || filePath.endsWith( '-tests.js' ) ) {
