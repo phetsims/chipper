@@ -205,11 +205,11 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
           if ( !ignore ) {
 
             if ( invalidProposedValue === undefined || isDesignedChange ) {
-              appendProblem( `${phetioID}.${metadataKey} changed from "${referenceValue}" to "${proposedValue}"`, isDesignedChange );
+              appendProblem( `${phetioID}.${metadataKey} changed from "${JSON.stringify( referenceValue )}" to "${JSON.stringify( proposedValue )}"`, isDesignedChange );
             }
             else if ( !isDesignedChange ) {
               if ( proposedValue === invalidProposedValue ) {
-                appendProblem( `${phetioID}.${metadataKey} changed from "${referenceValue}" to "${proposedValue}"` );
+                appendProblem( `${phetioID}.${metadataKey} changed from "${JSON.stringify( referenceValue )}" to "${JSON.stringify( proposedValue )}"` );
               }
               else {
 
@@ -443,7 +443,10 @@ const phetioCompareAPIs = ( referenceAPI: PhetioAPI, proposedAPI: PhetioAPI, _: 
           const proposedDefaults = proposedAPI.phetioTypes[ typeName ].metadataDefaults;
 
           if ( !!referenceDefaults !== !!proposedDefaults ) {
-            appendProblem( `${typeName} metadata defaults not found from "${referenceDefaults}" to "${proposedDefaults}". This may or may not be a breaking change, but we are reporting it just in case.` );
+            appendProblem(
+              `${typeName} metadata defaults not found from "${JSON.stringify( referenceDefaults )}" to 
+"${JSON.stringify( proposedDefaults )}". This may or may not be a breaking change, but we are reporting it just in case.`
+            );
           }
           else if ( referenceDefaults && proposedDefaults ) {
             ( Object.keys( referenceDefaults ) as Array<keyof PhetioElementMetadata> ).forEach( key => {

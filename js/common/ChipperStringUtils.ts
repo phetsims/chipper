@@ -194,7 +194,7 @@ const ChipperStringUtils = {
 type ValueString = { value?: string };
 
 // An object that has a "value" field that holds the string. It can still include more nested `StringObject`s.
-type MaybeHasAStringValue = { // eslint-disable-line @typescript-eslint/consistent-indexed-object-style
+type MaybeHasAStringValue = {
 
   // Each string is a component name of a PhetioID
   [ name: string ]: StringFileMapNode;
