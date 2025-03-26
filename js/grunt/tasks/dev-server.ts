@@ -117,11 +117,9 @@ function saveToDist( pathname: string, contents: string ): void {
   fs.writeFileSync( fullPath, contents );
 }
 
-// Bundles a TS (or JS) file using esbuild.
+// Bundles a TS (or JS) entrypoint using esbuild.
+// This could be a ".js" path, and esbuild will automatically find the ".ts" resource if there isn't a js file.
 function bundleTS( filePath: string, res: http.ServerResponse, pathname: string ): void {
-
-  // print without newline
-  process.stdout.write( `Bundling ${filePath}: ` );
 
   const start = Date.now();
   esbuild.build( {
@@ -139,7 +137,7 @@ function bundleTS( filePath: string, res: http.ServerResponse, pathname: string 
     .then( result => {
       const code = result.outputFiles[ 0 ].contents;
       SAVE_TO_DIST && saveToDist( pathname, result.outputFiles[ 0 ].text );
-      console.log( `${Date.now() - start}ms` );
+      VERBOSE && console.log( `Bundled: ${filePath} in ${Date.now() - start}ms` );
       res.statusCode = 200;
       res.setHeader( 'Content-Type', 'application/javascript' );
       res.setHeader( 'Cache-Control', 'no-store' );
