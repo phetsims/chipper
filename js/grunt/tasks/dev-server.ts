@@ -3,33 +3,29 @@
 
 /**
  * Development server for phetsims, acting as an alternative to watch processes.
- * Files are lazily transpiled/bundled on demand and served. Ideal for debugging.
- * Entry points (*-main.js, *-tests.js, *-main.ts, *-tests.ts) are bundled via esbuild.
+ * Files are lazily transpiled/bundled on demand and served. Ideal for debugging and iterative development/testing.
+ * Entry points (*-main.js\ts, *-tests.js\ts) are bundled via esbuild.
  * Other TS files are transpiled individually. Static files are served directly.
  *
  * See https://github.com/phetsims/chipper/issues/1559
  *
  * HOW IT WORKS (Express Middleware Chain):
- * 1. Logging (optional verbose) & basic setup (Connection header).
- * 2. Raw Mode Check: If ?raw=true, skips TS/JS processing.
- * 3. Path Rewriting: Handles directory indexes and /chipper/dist/js/ aliasing.
- * 4. TS/JS Handling:
- *    a. If *.ts: Bundles entry points, transpiles others using esbuild.
- *    b. If *.js: Bundles entry points. If not an entry point and not found,
- *       attempts to find and transpile/bundle corresponding .ts/.tsx/.jsx/.mts
+ * 1. Logging (optional verbose with --logLeve=verbose) & basic setup (Connection header).
+ * 2. Raw Mode Check: If ?raw=true, skips TS/JS processing/bundling/transpiling.
+ * 3. Path Rewriting: Handles directory indexes and mapping /chipper/dist/js/ to top level file.
+ * 4. TS/JS Handling for -main and -tests entry points: bundles using esbuild
+ * 5. Other javascript handling: if non js file is found (ts/jsx/tsx/mts), transpile that individual file with esbuild.
  * 5. Static File Serving: `express.static` serves remaining files from the filesystem.
  * 6. 404 Handler: Catches requests not handled above.
  * 7. Error Handler: Catches errors from middleware.
  *
  * NOTES:
  * - No server-side caching; files are always read from disk.
- * - By default, no files are written to disk (unless SAVE_TO_DIST is true).
+ * - By default, no files are written to disk (unless --saveToDist is provided).
  *
  * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
-
-// TODO: remove this, https://github.com/phetsims/chipper/issues/1572
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import esbuild from 'esbuild';
 import express from 'express'; // Import express
@@ -37,15 +33,15 @@ import fs from 'fs/promises'; // eslint-disable-line phet/default-import-match-f
 import http from 'node:http'; // Still needed for Server type hint if desired, but not core functionality
 import path from 'path';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
-import { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getOption, { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 
 const options = {
   port: getOptionIfProvided( 'port', 80 ),
   logLevel: getOptionIfProvided( 'logLevel', 'info' ) // or 'verbose'
 };
 
-const VERBOSE = options.logLevel === 'verbose'; // Lots of console.log
-const SAVE_TO_DIST = false; // Write files to disk for inspection
+const VERBOSE = options.logLevel === 'verbose'; // Lots of console.logs
+const SAVE_TO_DIST = getOption( 'saveToDist' ); // Write files to disk for inspection
 
 // @ts-expect-error -- __dirname workaround for ES modules
 const __dirname = dirname( import.meta.url );
@@ -134,12 +130,9 @@ async function bundleFile( filePath: string, originalPathname: string ): Promise
 
     return { text: output.text }; // Return both buffer and text
   }
-  catch( err: any ) {
-    console.error( '\nEsbuild bundling error:', err );
-    // Re-throw a more specific error for the error handler
-    const buildError = new Error( `Build failed for ${filePath}:\n${err.message}` );
-    ( buildError as any ).buildResult = err; // Attach original error if needed
-    throw buildError;
+  catch( err: unknown ) {
+    console.error( 'Esbuild bundling error:', err );
+    throw err;
   }
 }
 
@@ -158,12 +151,9 @@ async function transpileTS( tsCode: string, filePath: string, originalPathname: 
     await saveToDist( originalPathname, result.code );
     return { text: result.code };
   }
-  catch( err: any ) {
+  catch( err: unknown ) {
     console.error( 'Esbuild transform error:', err );
-    // Re-throw a more specific error for the error handler
-    const transformError = new Error( `Transform failed for ${filePath}:\n${err.message}` );
-    ( transformError as any ).transformResult = err; // Attach original error if needed
-    throw transformError;
+    throw err;
   }
 }
 
@@ -221,6 +211,7 @@ app.use( async ( req, res, next ) => {
   let currentPath = req.path;
   const originalPath = currentPath; // Keep for reference
 
+  // TODO: Delete https://github.com/phetsims/chipper/issues/1572
   // Handle // in URLs like the original
   // Express typically normalizes paths, but req.url might retain it.
   if ( req.url.startsWith( '//' ) ) {
@@ -232,7 +223,7 @@ app.use( async ( req, res, next ) => {
     catch( e ) { /* ignore potential URL parsing errors */ }
   }
 
-
+  // TODO: Delete https://github.com/phetsims/chipper/issues/1572
   // If the request is for a directory, implicitly serve index.html.
   // express.static can do this, but we replicate it here for clarity
   // and to potentially handle it before the /chipper/dist/js rewrite.
@@ -243,6 +234,7 @@ app.use( async ( req, res, next ) => {
     // Check if it's a directory path without a trailing slash
     const potentialDirPath = path.join( STATIC_ROOT, currentPath );
     try {
+      // TODO: Delete https://github.com/phetsims/chipper/issues/1572
       const stats = await fs.stat( potentialDirPath );
       if ( stats.isDirectory() ) {
         // Redirect to path with trailing slash to simplify relative paths
@@ -251,9 +243,10 @@ app.use( async ( req, res, next ) => {
         VERBOSE && console.log( `Directory request: serving ${currentPath}` );
       }
     }
-    catch( e: any ) {
+    catch( e: unknown ) {
+
       // If stat fails (likely ENOENT), it's not a directory, proceed normally.
-      if ( e.code !== 'ENOENT' ) {
+      if ( e instanceof Error && !e.message.includes( 'ENOENT' ) ) {
         console.warn( `Error stating path ${potentialDirPath}: ${e.message}` );
       }
     }
@@ -312,8 +305,8 @@ app.use( async ( req, res, next ) => {
         res.type( 'application/javascript' ).send( text );
       }
     }
-    catch( err: any ) {
-      if ( err.code === 'ENOENT' ) {
+    catch( err: unknown ) {
+      if ( err instanceof Error && err.message.includes( 'ENOENT' ) ) {
         VERBOSE && console.log( `TS file not found: ${filePath}, passing to next handler.` );
         next(); // Let static or 404 handle it
       }
@@ -336,8 +329,8 @@ app.use( async ( req, res, next ) => {
         const { text } = await bundleFile( filePath, requestedPath );
         res.type( 'application/javascript' ).send( text );
       }
-      catch( jsErr: any ) {
-        if ( jsErr.code === 'ENOENT' ) {
+      catch( err: unknown ) {
+        if ( err instanceof Error && err.message.includes( 'ENOENT' ) ) {
           // JS not found, try TS entry point
           const tsFilePath = filePath.replace( /\.js$/, '.ts' );
           VERBOSE && console.log( `JS entry point not found, trying ${tsFilePath}` );
@@ -346,18 +339,18 @@ app.use( async ( req, res, next ) => {
             const { text } = await bundleFile( tsFilePath, requestedPath ); // Bundle TS but serve as original JS path
             res.type( 'application/javascript' ).send( text );
           }
-          catch( tsErr: any ) {
-            if ( tsErr.code === 'ENOENT' ) {
+          catch( err: unknown ) {
+            if ( err instanceof Error && err.message.includes( 'ENOENT' ) ) {
               VERBOSE && console.log( `Neither JS nor TS entry point found: ${filePath}` );
               next(); // Let 404 handle it
             }
             else {
-              next( tsErr ); // Error bundling TS file
+              next( err ); // Error bundling TS file
             }
           }
         }
         else {
-          next( jsErr ); // Error accessing JS file (not ENOENT) or bundling JS file
+          next( err ); // Error accessing JS file (not ENOENT) or bundling JS file
         }
       }
       return Promise.resolve(); // Handled (or error passed)
@@ -371,8 +364,8 @@ app.use( async ( req, res, next ) => {
       VERBOSE && console.log( `Static JS file exists: ${filePath}, passing to express.static` );
       next();
     }
-    catch( jsErr: any ) {
-      if ( jsErr.code === 'ENOENT' ) {
+    catch( err: unknown ) {
+      if ( err instanceof Error && err.message.includes( 'ENOENT' ) ) {
         // Static JS file not found, look for corresponding TS/etc.
         VERBOSE && console.log( `Static JS file not found: ${filePath}. Looking for TS/JSX source...` );
         const possibleExtensions = [ 'ts', 'tsx', 'jsx', 'mts' ]; // Order matters?
@@ -387,10 +380,10 @@ app.use( async ( req, res, next ) => {
             found = true;
             break; // Stop looking once found and handled
           }
-          catch( sourceErr: any ) {
-            if ( sourceErr.code !== 'ENOENT' ) {
+          catch( err: unknown ) {
+            if ( err instanceof Error && !err.message.includes( 'ENOENT' ) ) {
               // Error reading a potential source file (not just 'not found')
-              next( sourceErr ); // Pass this error on
+              next( err ); // Pass this error on
               return Promise.resolve(); // Stop processing this request
             }
             // Source file with this extension not found, continue loop
@@ -405,7 +398,7 @@ app.use( async ( req, res, next ) => {
       }
       else {
         // Other error accessing the static JS file
-        next( jsErr );
+        next( err );
       }
     }
     return Promise.resolve(); // Handled (either passed to static or transpiled)
@@ -430,13 +423,10 @@ app.use( ( req, res ) => {
 } );
 
 // 7. Error Handling Middleware (must have 4 arguments)
-app.use( ( err: any, req: express.Request, res: express.Response, next: express.NextFunction ) => {
-  console.error( `Server Error for ${req.path}:`, err.message || err ); // Log the error message
+app.use( ( error: Error, req: express.Request, res: express.Response, next: express.NextFunction ) => {
+  console.error( `Server Error for ${req.path}:`, error.message || error ); // Log the error message
   // Avoid sending detailed stack traces to the client in production
-  const message = err.message && ( err.message.startsWith( 'Build failed' ) || err.message.startsWith( 'Transform failed' ) )
-                  ? err.message // Show esbuild errors directly
-                  : 'Internal Server Error';
-  res.status( 500 ).type( 'text/plain' ).send( message );
+  res.status( 500 ).type( 'text/plain' ).send( 'Internal Server Error' );
 } );
 
 // --- Start Server ---
