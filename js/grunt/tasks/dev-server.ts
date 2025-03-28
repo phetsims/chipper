@@ -206,51 +206,10 @@ app.use( ( req, res, next ) => {
   next(); // Continue if not raw mode
 } );
 
-// 3. Path Rewriting Middleware
+// 3. Path Rewriting Middleware (from chipper/dist to top level file)
 app.use( async ( req, res, next ) => {
   let currentPath = req.path;
   const originalPath = currentPath; // Keep for reference
-
-  // TODO: Delete https://github.com/phetsims/chipper/issues/1572
-  // Handle // in URLs like the original
-  // Express typically normalizes paths, but req.url might retain it.
-  if ( req.url.startsWith( '//' ) ) {
-    req.url = req.url.replace( /^\/{2,}/, '/' );
-    // Update currentPath based on the potentially modified req.url
-    try {
-      currentPath = new URL( req.url, `http://${req.headers.host}` ).pathname;
-    }
-    catch( e ) { /* ignore potential URL parsing errors */ }
-  }
-
-  // TODO: Delete https://github.com/phetsims/chipper/issues/1572
-  // If the request is for a directory, implicitly serve index.html.
-  // express.static can do this, but we replicate it here for clarity
-  // and to potentially handle it before the /chipper/dist/js rewrite.
-  if ( currentPath.endsWith( '/' ) ) {
-    currentPath += 'index.html';
-  }
-  else {
-    // Check if it's a directory path without a trailing slash
-    const potentialDirPath = path.join( STATIC_ROOT, currentPath );
-    try {
-      // TODO: Delete https://github.com/phetsims/chipper/issues/1572
-      const stats = await fs.stat( potentialDirPath );
-      if ( stats.isDirectory() ) {
-        // Redirect to path with trailing slash to simplify relative paths
-        // Or just serve index.html directly? Let's serve index.html directly.
-        currentPath += '/index.html';
-        VERBOSE && console.log( `Directory request: serving ${currentPath}` );
-      }
-    }
-    catch( e: unknown ) {
-
-      // If stat fails (likely ENOENT), it's not a directory, proceed normally.
-      if ( e instanceof Error && !e.message.includes( 'ENOENT' ) ) {
-        console.warn( `Error stating path ${potentialDirPath}: ${e.message}` );
-      }
-    }
-  }
 
   // Requests for /chipper/dist/js/ are rerouted to the source *.ts or *.js file
   const chipperDistPrefix = '/chipper/dist/js/';
@@ -259,18 +218,12 @@ app.use( async ( req, res, next ) => {
     VERBOSE && console.log( `Rewriting ${originalPath} to ${newPath}` );
     currentPath = newPath;
   }
-  // TODO: The original code had another rewrite condition:  https://github.com/phetsims/chipper/issues/1572
-  // if ( pathname.includes( match ) ) { ... return `/alternative/js/${relativePath}`; }
-  // This seemed less common, decide if it's needed. Assuming not for now.
 
-  // Update req.path if it changed, so subsequent middleware see the rewritten path
+  // Update req.url if it changed, so subsequent middleware see the rewritten path
+  // This is a common pattern, though modifying req objects needs care.
   if ( currentPath !== req.path ) {
-    // req.path = currentPath;
-    // Also update req.url to be consistent (important for express.static)
-    // This is a common pattern, though modifying req objects needs care.
     const parsedUrl = new URL( req.url, `http://${req.headers.host}` );
-    parsedUrl.pathname = currentPath;
-    req.url = parsedUrl.pathname + parsedUrl.search; // Keep query params
+    req.url = currentPath + parsedUrl.search; // Keep query params
   }
 
   next();
