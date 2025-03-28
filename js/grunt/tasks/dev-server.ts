@@ -233,7 +233,6 @@ app.use( async ( req, res, next ) => {
       for ( const sourceExt of EXTENSIONS_TO_TRANSPILE ) {
         const ext = `.${sourceExt}`;
         const potentialSourceFilePath = currentPath.slice( 0, -3 ) + `${ext}`; // Replace .js with .ts, etc.
-        console.log( 'well try ', potentialSourceFilePath );
         try {
           await fs.access( path.join( STATIC_ROOT, potentialSourceFilePath ) );
           VERBOSE && console.log( `Mapped js file to ext: ${ext}: ${potentialSourceFilePath}` );
