@@ -171,10 +171,20 @@ async function transpileTS( tsCode: string, filePath: string, originalPathname: 
 
 const app = express();
 
+// Settings for disabling cache
+app.set( 'etag', false );
+app.disable( 'view cache' );
+
 // --- Middleware ---
 
 // 1. Basic Logging & Setup Middleware
 app.use( ( req, res, next ) => {
+
+  // Disable cache:
+  res.setHeader( 'Surrogate-Control', 'no-store' );
+  res.setHeader( 'Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate' );
+  res.setHeader( 'Expires', '0' );
+
   // Set 'Connection: close' header like the original server
   // This disables keep-alive, might impact performance slightly but matches original behavior.
   res.setHeader( 'Connection', 'close' );
@@ -294,12 +304,12 @@ app.use( async ( req, res, next ) => {
 
       if ( filePath.endsWith( '-main.ts' ) || filePath.endsWith( '-tests.ts' ) ) {
         const { text } = await bundleFile( filePath, requestedPath );
-        res.type( 'application/javascript' ).set( 'Cache-Control', 'no-store' ).send( text );
+        res.type( 'application/javascript' ).send( text );
       }
       else {
         const tsData = await fs.readFile( filePath, 'utf-8' );
         const { text } = await transpileTS( tsData, filePath, requestedPath );
-        res.type( 'application/javascript' ).set( 'Cache-Control', 'no-store' ).send( text );
+        res.type( 'application/javascript' ).send( text );
       }
     }
     catch( err: any ) {
@@ -324,8 +334,7 @@ app.use( async ( req, res, next ) => {
         // Try bundling the JS file directly
         await fs.access( filePath, fs.constants.R_OK );
         const { text } = await bundleFile( filePath, requestedPath );
-        // TODO: too many types and cache-controls, https://github.com/phetsims/chipper/issues/1572
-        res.type( 'application/javascript' ).set( 'Cache-Control', 'no-store' ).send( text );
+        res.type( 'application/javascript' ).send( text );
       }
       catch( jsErr: any ) {
         if ( jsErr.code === 'ENOENT' ) {
@@ -335,7 +344,7 @@ app.use( async ( req, res, next ) => {
           try {
             await fs.access( tsFilePath, fs.constants.R_OK );
             const { text } = await bundleFile( tsFilePath, requestedPath ); // Bundle TS but serve as original JS path
-            res.type( 'application/javascript' ).set( 'Cache-Control', 'no-store' ).send( text );
+            res.type( 'application/javascript' ).send( text );
           }
           catch( tsErr: any ) {
             if ( tsErr.code === 'ENOENT' ) {
@@ -374,7 +383,7 @@ app.use( async ( req, res, next ) => {
             const contents = await fs.readFile( sourceFilePath, 'utf-8' );
             VERBOSE && console.log( `Found source file: ${sourceFilePath}, transpiling...` );
             const { text } = await transpileTS( contents, sourceFilePath, requestedPath ); // Serve as original .js path
-            res.type( 'application/javascript' ).set( 'Cache-Control', 'no-store' ).send( text );
+            res.type( 'application/javascript' ).send( text );
             found = true;
             break; // Stop looking once found and handled
           }
@@ -411,9 +420,7 @@ app.use( async ( req, res, next ) => {
 // Serve files from the static root directory.
 // This runs *after* the dynamic TS/JS handler.
 app.use( express.static( STATIC_ROOT, {
-  // T
-  // etag: false, // Consider disabling etags if strict no-caching needed, but often useful
-  // lastModified: false // Consider disabling if needed
+  etag: false // Helps prevent caching
 } ) );
 
 // 6. 404 Handler - If nothing above matched
