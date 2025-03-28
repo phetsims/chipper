@@ -11,7 +11,7 @@
  *
  * HOW IT WORKS (Express Middleware Chain):
  * 1. Logging (optional verbose with --logLeve=verbose) & basic setup (Connection header).
- * 2. Raw Mode Check: If ?raw=true, skips TS/JS processing/bundling/transpiling.
+ * 2. Raw Mode Check: If ?raw=true, skips TS/JS bundling, and will just transpile individual files.
  * 3. Path Rewriting: Handles directory indexes and mapping /chipper/dist/js/ to top level file.
  * 4. TS/JS Handling for -main and -tests entry points: bundles using esbuild
  * 5. Other javascript handling: if non js file is found (ts/jsx/tsx/mts), transpile that individual file with esbuild.
@@ -30,7 +30,7 @@
 import esbuild from 'esbuild';
 import express from 'express'; // Import express
 import fs from 'fs/promises'; // eslint-disable-line phet/default-import-match-filename
-import http from 'node:http'; // Still needed for Server type hint if desired, but not core functionality
+import http from 'node:http';
 import path from 'path';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import getOption, { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
@@ -42,6 +42,7 @@ const options = {
 
 const VERBOSE = options.logLevel === 'verbose'; // Lots of console.logs
 const SAVE_TO_DIST = getOption( 'saveToDist' ); // Write files to disk for inspection
+const EXTENSIONS_TO_TRANSPILE = [ 'ts', 'tsx', 'jsx', 'mts' ];
 
 // @ts-expect-error -- __dirname workaround for ES modules
 const __dirname = dirname( import.meta.url );
@@ -106,6 +107,15 @@ const peggyRewrite: esbuild.Plugin = {
   }
 };
 
+function isRaw( query: Record<string, unknown> ): boolean {
+  return query.hasOwnProperty( 'raw' ) && query.raw !== 'false';
+}
+
+// Entry point paths that should be bundled into a single resource before sending (never bundle if serving raw)
+function isBundleEntryPoint( path: string, raw: boolean ): boolean {
+  return !raw && ( path.endsWith( '-main.ts' ) || path.endsWith( '-tests.ts' ) ||
+                   path.endsWith( '-main.js' ) || path.endsWith( '-tests.js' ) );
+}
 
 // --- esbuild Operations ---
 
@@ -139,15 +149,19 @@ async function bundleFile( filePath: string, originalPathname: string ): Promise
 // Transpiles a single TS file in-memory.
 // Throws an error on failure.
 async function transpileTS( tsCode: string, filePath: string, originalPathname: string ): Promise<{ text: string }> {
-  VERBOSE && console.log( `Transpiling TS file: ${filePath}` );
+  const start = Date.now();
   try {
+    const loader = filePath.endsWith( 'tsx' ) ? 'tsx' :
+                   filePath.endsWith( 'jsx' ) ? 'jsx' :
+                   'ts';
     const result = await esbuild.transform( tsCode, {
-      loader: 'ts',
+      loader: loader,
       format: 'esm', // Output ESM
       sourcemap: 'inline', // Keep source maps inline for dev
       target: 'esnext' // Use modern JS features
     } );
-    VERBOSE && console.log( 'Transpilation successful' );
+    VERBOSE && console.log( `Transpiled ${filePath} in ${Date.now() - start}` );
+
     await saveToDist( originalPathname, result.code );
     return { text: result.code };
   }
@@ -192,22 +206,12 @@ app.use( ( req, res, next ) => {
   next();
 } );
 
-// 2. Raw Mode Check
-// If '?raw=true', skip dynamic processing/path mapping/bundling and let express.static handle it.
-app.use( ( req, res, next ) => {
-  if ( req.query.raw === 'true' ) {
-    VERBOSE && console.log( `Raw mode request for ${req.path}, skipping dynamic handling.` );
-    // Need to let static handler serve the raw .ts/.js file
-    // We achieve this by simply calling next() here and letting the static handler run.
-    // Ensure the static handler is configured to serve .ts files if needed,
-    // though usually it only serves known web types. We might need to explicitly set
-    // the content type later if express.static doesn't handle .ts well.
-  }
-  next(); // Continue if not raw mode
-} );
-
 // 3. Path Rewriting Middleware (from chipper/dist to top level file)
 app.use( async ( req, res, next ) => {
+  if ( isRaw( req.query ) ) {
+    VERBOSE && console.log( `Raw mode request for ${req.path}, skipping dynamic handling.` );
+  }
+
   let currentPath = req.path;
   const originalPath = currentPath; // Keep for reference
 
@@ -215,8 +219,45 @@ app.use( async ( req, res, next ) => {
   const chipperDistPrefix = '/chipper/dist/js/';
   if ( currentPath.startsWith( chipperDistPrefix ) ) {
     const newPath = '/' + currentPath.substring( chipperDistPrefix.length );
-    VERBOSE && console.log( `Rewriting ${originalPath} to ${newPath}` );
+    VERBOSE && console.log( `Rewriting from chipper dist:\t${originalPath} to ${newPath}` );
     currentPath = newPath;
+  }
+
+  // This should be AFTER the chipper/dist mapping above.
+  if ( currentPath.endsWith( '.js' ) ) {
+    try {
+      await fs.access( path.join( STATIC_ROOT, currentPath ) );
+    }
+    catch( e ) {
+      let found = false;
+      for ( const sourceExt of EXTENSIONS_TO_TRANSPILE ) {
+        const ext = `.${sourceExt}`;
+        const potentialSourceFilePath = currentPath.slice( 0, -3 ) + `${ext}`; // Replace .js with .ts, etc.
+        console.log( 'well try ', potentialSourceFilePath );
+        try {
+          await fs.access( path.join( STATIC_ROOT, potentialSourceFilePath ) );
+          VERBOSE && console.log( `Mapped js file to ext: ${ext}: ${potentialSourceFilePath}` );
+          currentPath = potentialSourceFilePath;
+          found = true;
+          break; // Stop looking once found and handled
+        }
+        catch( err: unknown ) {
+          if ( err instanceof Error && !err.message.includes( 'ENOENT' ) ) {
+            // Error reading a potential source file (not just 'not found')
+            next( err ); // Pass this error on
+            break;
+          }
+          else {
+            console.log( e );
+          }
+
+          // Source file with this extension not found, continue loop
+        }
+      }
+      if ( !found ) {
+        VERBOSE && console.log( `Could not map js file to another ext: ${currentPath}` );
+      }
+    }
   }
 
   // Update req.url if it changed, so subsequent middleware see the rewritten path
@@ -229,26 +270,23 @@ app.use( async ( req, res, next ) => {
   next();
 } );
 
-// 4. TS/JS Dynamic Handling Middleware
+// 4. Dynamic Javascript bundling/transpiling Middleware
 app.use( async ( req, res, next ) => {
 
   // Skip if raw mode was detected earlier
-  if ( req.query.raw === 'true' ) {
-    return next();
-  }
+  const raw = isRaw( req.query );
 
   const requestedPath = req.path; // Use the potentially rewritten path
   const filePath = path.join( STATIC_ROOT, requestedPath );
   const ext = path.extname( filePath ).toLowerCase();
+  const extNoPeriod = ext.slice( 1 );
 
-  // --- Handle TypeScript requests ---
-  if ( ext === '.ts' ) {
-    VERBOSE && console.log( 'TS file request detected:', filePath );
+  // --- Handle Bundling/Transpiling requests ---
+  if ( isBundleEntryPoint( requestedPath, raw ) ||
+       EXTENSIONS_TO_TRANSPILE.includes( extNoPeriod ) ) {
+    VERBOSE && console.log( 'Bundle/Transpile need detected:', filePath );
     try {
-      // Check existence first
-      await fs.access( filePath, fs.constants.R_OK );
-
-      if ( filePath.endsWith( '-main.ts' ) || filePath.endsWith( '-tests.ts' ) ) {
+      if ( isBundleEntryPoint( requestedPath, raw ) ) {
         const { text } = await bundleFile( filePath, requestedPath );
         res.type( 'application/javascript' ).send( text );
       }
@@ -260,7 +298,7 @@ app.use( async ( req, res, next ) => {
     }
     catch( err: unknown ) {
       if ( err instanceof Error && err.message.includes( 'ENOENT' ) ) {
-        VERBOSE && console.log( `TS file not found: ${filePath}, passing to next handler.` );
+        VERBOSE && console.log( `File not found, cannot bundle/transpile: ${filePath}, passing to next handler.` );
         next(); // Let static or 404 handle it
       }
       else {
@@ -270,94 +308,7 @@ app.use( async ( req, res, next ) => {
     return Promise.resolve(); // Handled
   }
 
-  // --- Handle JavaScript requests (with potential TS fallback) ---
-  if ( ext === '.js' ) {
-
-    // If it's an entry point, always try to bundle it (JS or TS source)
-    if ( requestedPath.endsWith( '-main.js' ) || requestedPath.endsWith( '-tests.js' ) ) {
-      VERBOSE && console.log( 'JS entry point detected, attempting to bundle:', filePath );
-      try {
-        // Try bundling the JS file directly
-        await fs.access( filePath, fs.constants.R_OK );
-        const { text } = await bundleFile( filePath, requestedPath );
-        res.type( 'application/javascript' ).send( text );
-      }
-      catch( err: unknown ) {
-        if ( err instanceof Error && err.message.includes( 'ENOENT' ) ) {
-          // JS not found, try TS entry point
-          const tsFilePath = filePath.replace( /\.js$/, '.ts' );
-          VERBOSE && console.log( `JS entry point not found, trying ${tsFilePath}` );
-          try {
-            await fs.access( tsFilePath, fs.constants.R_OK );
-            const { text } = await bundleFile( tsFilePath, requestedPath ); // Bundle TS but serve as original JS path
-            res.type( 'application/javascript' ).send( text );
-          }
-          catch( err: unknown ) {
-            if ( err instanceof Error && err.message.includes( 'ENOENT' ) ) {
-              VERBOSE && console.log( `Neither JS nor TS entry point found: ${filePath}` );
-              next(); // Let 404 handle it
-            }
-            else {
-              next( err ); // Error bundling TS file
-            }
-          }
-        }
-        else {
-          next( err ); // Error accessing JS file (not ENOENT) or bundling JS file
-        }
-      }
-      return Promise.resolve(); // Handled (or error passed)
-    }
-
-    // If not an entry point, try serving static JS, then fallback to transpiling TS/TSX/JSX
-    try {
-      // Check if static JS file exists
-      await fs.access( filePath, fs.constants.R_OK );
-      // If it exists, do nothing here - let express.static handle it.
-      VERBOSE && console.log( `Static JS file exists: ${filePath}, passing to express.static` );
-      next();
-    }
-    catch( err: unknown ) {
-      if ( err instanceof Error && err.message.includes( 'ENOENT' ) ) {
-        // Static JS file not found, look for corresponding TS/etc.
-        VERBOSE && console.log( `Static JS file not found: ${filePath}. Looking for TS/JSX source...` );
-        const possibleExtensions = [ 'ts', 'tsx', 'jsx', 'mts' ]; // Order matters?
-        let found = false;
-        for ( const sourceExt of possibleExtensions ) {
-          const sourceFilePath = filePath.slice( 0, -3 ) + `.${sourceExt}`; // Replace .js with .ts, etc.
-          try {
-            const contents = await fs.readFile( sourceFilePath, 'utf-8' );
-            VERBOSE && console.log( `Found source file: ${sourceFilePath}, transpiling...` );
-            const { text } = await transpileTS( contents, sourceFilePath, requestedPath ); // Serve as original .js path
-            res.type( 'application/javascript' ).send( text );
-            found = true;
-            break; // Stop looking once found and handled
-          }
-          catch( err: unknown ) {
-            if ( err instanceof Error && !err.message.includes( 'ENOENT' ) ) {
-              // Error reading a potential source file (not just 'not found')
-              next( err ); // Pass this error on
-              return Promise.resolve(); // Stop processing this request
-            }
-            // Source file with this extension not found, continue loop
-          }
-        }
-
-        if ( !found ) {
-          // Neither static JS nor any source equivalent found
-          VERBOSE && console.log( `No static JS or TS/JSX source found for ${requestedPath}` );
-          next(); // Let 404 handler deal with it
-        }
-      }
-      else {
-        // Other error accessing the static JS file
-        next( err );
-      }
-    }
-    return Promise.resolve(); // Handled (either passed to static or transpiled)
-  }
-
-  // If not .ts or .js (or raw mode handled it), pass to the next middleware (express.static)
+  // If not file for bundling/transpiling, pass to the next (express.static)
   next();
   return Promise.resolve();
 } );
