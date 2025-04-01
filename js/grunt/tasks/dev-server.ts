@@ -10,14 +10,14 @@
  * See https://github.com/phetsims/chipper/issues/1559
  *
  * HOW IT WORKS (Express Middleware Chain):
- * 1. Logging (optional verbose with --logLeve=verbose) & basic setup (Connection header).
+ * 1. Logging (optional verbose with --logLevel=verbose) & basic setup (Connection header).
  * 2. Raw Mode Check: If ?raw=true, skips TS/JS bundling, and will just transpile individual files.
  * 3. Path Rewriting: Handles directory indexes and mapping /chipper/dist/js/ to top level file.
  * 4. TS/JS Handling for -main and -tests entry points: bundles using esbuild
  * 5. Other javascript handling: if non js file is found (ts/jsx/tsx/mts), transpile that individual file with esbuild.
- * 5. Static File Serving: `express.static` serves remaining files from the filesystem.
- * 6. 404 Handler: Catches requests not handled above.
- * 7. Error Handler: Catches errors from middleware.
+ * 6. Static File Serving: `express.static` serves remaining files from the filesystem.
+ * 7. 404 Handler: Catches requests not handled above.
+ * 8. Error Handler: Catches errors from middleware.
  *
  * NOTES:
  * - No server-side caching; files are always read from disk.
@@ -269,7 +269,7 @@ app.use( async ( req, res, next ) => {
   next();
 } );
 
-// 4. Dynamic Javascript bundling/transpiling Middleware
+// 4. Dynamic JavaScript bundling/transpiling Middleware
 app.use( async ( req, res, next ) => {
 
   // Skip if raw mode was detected earlier
@@ -307,7 +307,7 @@ app.use( async ( req, res, next ) => {
     return Promise.resolve(); // Handled
   }
 
-  // If not file for bundling/transpiling, pass to the next (express.static)
+  // If there is no file for bundling/transpiling, pass to the next (express.static)
   next();
   return Promise.resolve();
 } );
