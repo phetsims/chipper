@@ -17,9 +17,15 @@ const __dirname = dirname( import.meta.url );
 ( async () => {
 
   const bundledResult = await bundle( path.join( __dirname, '../../../query-string-machine/js/preload-main.ts' ) );
+  let bundled = bundledResult.outputFiles![ 0 ].text;
+
+  // We disable all linting below, so remove individual declarations. Handle cases like:
+  bundled = bundled.replace( /^[ /]*eslint-disable-(next-)?line.*$\n/gm, '' );
+
   fs.writeFileSync( path.join( __dirname, '../../../query-string-machine/js/QueryStringMachine.js' ), `// Copyright 2025, University of Colorado Boulder
 // @author Michael Kauzmann (PhET Interactive Simulations)
 // AUTO GENERATED: DO NOT EDIT!!!! See QueryStringMachineModule.ts and chipper/js/scripts/build-qsm.ts
 /* eslint-disable */
-  ${bundledResult.outputFiles![ 0 ].text}` );
+
+${bundled}` );
 } )();
