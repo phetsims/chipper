@@ -117,7 +117,7 @@ function isBundleEntryPoint( path: string, raw: boolean ): boolean {
 // --- esbuild Operations ---
 
 // Bundles a TS (or JS) entry point using esbuild, throws an error on failure.
-async function bundleFile( filePath: string, originalPathname: string ): Promise<{ text: string }> {
+async function bundleFile( filePath: string, originalPathname: string ): Promise<string> {
   const start = Date.now();
   try {
     const result = await esbuild.build( {
@@ -133,7 +133,7 @@ async function bundleFile( filePath: string, originalPathname: string ): Promise
     VERBOSE && console.log( `Bundled: ${filePath} in ${Date.now() - start}ms` );
     await saveToDist( originalPathname, output.contents );
 
-    return { text: output.text }; // TODO: Just return text, see https://github.com/phetsims/chipper/issues/1572
+    return output.text;
   }
   catch( err: unknown ) {
     console.error( 'Esbuild bundling error:', err );
@@ -281,7 +281,7 @@ app.use( async ( req, res, next ) => {
     VERBOSE && console.log( 'Bundle/Transpile need detected:', filePath );
     try {
       if ( isBundleEntryPoint( requestedPath, raw ) ) {
-        const { text } = await bundleFile( filePath, requestedPath );
+        const text = await bundleFile( filePath, requestedPath );
         res.type( 'application/javascript' ).send( text );
       }
       else {
