@@ -1,5 +1,4 @@
 // Copyright 2025, University of Colorado Boulder
-// Rewritten using Express.js for idiomatic structure
 
 /**
  * Development server for phetsims, acting as an alternative to watch processes.
@@ -28,7 +27,7 @@
  */
 
 import esbuild from 'esbuild';
-import express from 'express'; // Import express
+import express from 'express';
 import fs from 'fs/promises'; // eslint-disable-line phet/default-import-match-filename
 import http from 'node:http';
 import path from 'path';
@@ -66,8 +65,6 @@ async function saveToDist( pathname: string, contents: string | Uint8Array ): Pr
 }
 
 // --- esbuild Plugins (Hacks) ---
-// NOTE: These are kept largely the same as they are specific esbuild configurations.
-
 const simLauncherRewrite: esbuild.Plugin = {
   name: 'simLauncher-rewrite',
   setup( build ) {
@@ -119,8 +116,7 @@ function isBundleEntryPoint( path: string, raw: boolean ): boolean {
 
 // --- esbuild Operations ---
 
-// Bundles a TS (or JS) entry point using esbuild.
-// Throws an error on failure.
+// Bundles a TS (or JS) entry point using esbuild, throws an error on failure.
 async function bundleFile( filePath: string, originalPathname: string ): Promise<{ text: string }> {
   const start = Date.now();
   try {
@@ -131,14 +127,13 @@ async function bundleFile( filePath: string, originalPathname: string ): Promise
       write: false, // We handle writing/sending the response
       sourcemap: 'inline', // Keep source maps inline for dev
       plugins: [ simLauncherRewrite, himalayaRewrite, peggyRewrite ],
-      // Needed to resolve files relative to the entry point's directory
-      absWorkingDir: STATIC_ROOT
+      absWorkingDir: STATIC_ROOT // Needed to resolve files relative to the entry point's directory
     } );
     const output = result.outputFiles[ 0 ];
     VERBOSE && console.log( `Bundled: ${filePath} in ${Date.now() - start}ms` );
     await saveToDist( originalPathname, output.contents );
 
-    return { text: output.text }; // Return both buffer and text
+    return { text: output.text }; // TODO: Just return text, see https://github.com/phetsims/chipper/issues/1572
   }
   catch( err: unknown ) {
     console.error( 'Esbuild bundling error:', err );
@@ -146,8 +141,7 @@ async function bundleFile( filePath: string, originalPathname: string ): Promise
   }
 }
 
-// Transpiles a single TS file in-memory.
-// Throws an error on failure.
+// Transpiles a single TS file in-memory, throws an error on failure.
 async function transpileTS( tsCode: string, filePath: string, originalPathname: string ): Promise<{ text: string }> {
   const start = Date.now();
   try {
@@ -242,6 +236,7 @@ app.use( async ( req, res, next ) => {
         }
         catch( err: unknown ) {
           if ( err instanceof Error && !err.message.includes( 'ENOENT' ) ) {
+
             // Error reading a potential source file (not just 'not found')
             next( err ); // Pass this error on
             break;
@@ -327,7 +322,8 @@ app.use( ( req, res ) => {
 
 // 7. Error Handling Middleware (must have 4 arguments)
 app.use( ( error: Error, req: express.Request, res: express.Response, next: express.NextFunction ) => {
-  console.error( `Server Error for ${req.path}:`, error.message || error ); // Log the error message
+  console.error( `Server Error for ${req.path}:`, error.message || error );
+
   // Avoid sending detailed stack traces to the client in production
   res.status( 500 ).type( 'text/plain' ).send( 'Internal Server Error' );
 } );
