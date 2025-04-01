@@ -31,6 +31,7 @@ import express from 'express';
 import fs from 'fs/promises'; // eslint-disable-line phet/default-import-match-filename
 import http from 'node:http';
 import path from 'path';
+import serveIndex from 'serve-index';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import getOption, { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 
@@ -314,13 +315,16 @@ app.use( express.static( STATIC_ROOT, {
   etag: false // Helps prevent caching
 } ) );
 
-// 6. 404 Handler - If nothing above matched
+// 6. If static didn't find a file (esp. index.html in a dir), serveIndex will check if it's a directory and list contents.
+app.use( serveIndex( STATIC_ROOT, { icons: true } ) ); // Optional: adds icons
+
+// 7. 404 Handler - If nothing above matched
 app.use( ( req, res ) => {
   VERBOSE && console.error( `404 Not Found: ${req.path}` );
   res.status( 404 ).type( 'text/plain' ).send( 'File not found.' );
 } );
 
-// 7. Error Handling Middleware (must have 4 arguments)
+// 8. Error Handling Middleware (must have 4 arguments)
 app.use( ( error: Error, req: express.Request, res: express.Response, next: express.NextFunction ) => {
   console.error( `Server Error for ${req.path}:`, error.message || error );
 
