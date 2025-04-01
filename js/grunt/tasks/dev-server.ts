@@ -143,7 +143,7 @@ async function bundleFile( filePath: string, originalPathname: string ): Promise
 }
 
 // Transpiles a single TS file in-memory, throws an error on failure.
-async function transpileTS( tsCode: string, filePath: string, originalPathname: string ): Promise<{ text: string }> {
+async function transpileTS( tsCode: string, filePath: string, originalPathname: string ): Promise<string> {
   const start = Date.now();
   try {
     const loader = filePath.endsWith( 'tsx' ) ? 'tsx' :
@@ -158,7 +158,7 @@ async function transpileTS( tsCode: string, filePath: string, originalPathname: 
     VERBOSE && console.log( `Transpiled ${filePath} in ${Date.now() - start}` );
 
     await saveToDist( originalPathname, result.code );
-    return { text: result.code };
+    return result.code;
   }
   catch( err: unknown ) {
     console.error( 'Esbuild transform error:', err );
@@ -287,7 +287,7 @@ app.use( async ( req, res, next ) => {
       }
       else {
         const tsData = await fs.readFile( filePath, 'utf-8' );
-        const { text } = await transpileTS( tsData, filePath, requestedPath );
+        const text = await transpileTS( tsData, filePath, requestedPath );
         res.type( 'application/javascript' ).send( text );
       }
     }
