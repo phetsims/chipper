@@ -1309,6 +1309,7 @@
       supportsSound: { type: 'boolean' },
       supportsExtraSound: { type: 'boolean' },
       supportsDynamicLocale: { type: 'boolean' },
+      supportsPanAndZoom: { type: 'boolean' },
       colorProfiles: { type: 'array' },
       supportedRegionsAndCultures: { type: 'array' },
       defaultRegionAndCulture: { type: 'string' },
