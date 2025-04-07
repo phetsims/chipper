@@ -76,6 +76,16 @@ const outputToConsole = getOption( 'console' ); // Console logging via --console
   // Re-spawn the same process on repos with working copy changes
   if ( getOption( 'changed' ) ) {
     const changedRepos = await getReposWithWorkingCopyChanges();
+
+    // Remove babel, we don't test it here
+    if ( changedRepos.includes( 'babel' ) ) {
+      const index = changedRepos.indexOf( 'babel' );
+      if ( index > -1 ) {
+        changedRepos.splice( index, 1 );
+      }
+      console.log( 'removing babel from changed repos to test, it doesn\'t typically require testing' );
+    }
+
     const success = await preCommitOnRepos( changedRepos, outputToConsole );
     process.exit( success ? 0 : 1 );
     return;
