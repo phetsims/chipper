@@ -13,6 +13,7 @@ import TandemConstants from '../../../tandem/js/TandemConstants.js';
 import StringIO from '../../../tandem/js/types/StringIO.js';
 import chipper from './chipper.js';
 import type LocalizedString from './LocalizedString.js';
+import TProperty from '../../../axon/js/TProperty.js';
 
 class LocalizedStringProperty extends DynamicProperty<string, string, Locale> {
 
@@ -49,6 +50,14 @@ class LocalizedStringProperty extends DynamicProperty<string, string, Locale> {
 
   public get stringKey(): string {
     return this.localizedString.stringKey;
+  }
+
+  /**
+   * Returns a translation-specific Property for the given locale. This Property will not change when the localeProperty
+   * (current locale) changes, but instead will only change during translation updates, stringTests, etc.
+   */
+  public getTranslatedStringProperty( locale: Locale ): TProperty<string> {
+    return this.localizedString.getLocaleSpecificProperty( locale );
   }
 }
 
