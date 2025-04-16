@@ -3,9 +3,6 @@
 // USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.
 // For licensing, please contact phethelp@colorado.edu
 
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-import { PhetioElementState } from '../../../tandem/js/phet-io-types.js';
-
 /**
  * Checks if the test value is compatible with the groundTruth value. This does so recursively on component values of state.
  * Compatability relies on treating one as the correct value, and determining if the other is compatible with it.
@@ -16,6 +13,10 @@ import { PhetioElementState } from '../../../tandem/js/phet-io-types.js';
  * @param testValue - The original value to check against.
  * @returns `true` if compatible, `false` otherwise.
  */
+
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import { PhetioElementState } from '../../../tandem/js/phet-io-types.js';
+
 function areCompatible( groundTruthValue: IntentionalAny, testValue: IntentionalAny ): boolean {
   // If groundTruthValue is an array, handle array compatibility with ordered elements
   if ( Array.isArray( groundTruthValue ) ) {

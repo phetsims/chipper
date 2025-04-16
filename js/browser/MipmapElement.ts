@@ -1,14 +1,15 @@
 // Copyright 2022-2024, University of Colorado Boulder
 
-import asyncLoader from '../../../phet-core/js/asyncLoader.js';
-import chipper from './chipper.js';
-
 /**
  * Size and raster data for levels in a mipmap.  See also type Mipmap in Imageable.ts.  Defined in phet-core instead of
  * scenery because it is loaded upstream and should not have any downstream dependencies such as scenery.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+import asyncLoader from '../../../phet-core/js/asyncLoader.js';
+import chipper from './chipper.js';
+
 export default class MipmapElement {
   public readonly width: number;
   public readonly height: number;
