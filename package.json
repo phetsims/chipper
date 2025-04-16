@@ -34,7 +34,6 @@
     "grunt": "~1.5.3",
     "html-webpack-plugin": "~5.3.2",
     "jimp": "~0.16.1",
-    "json5": "^2.2.3",
     "jpeg-js": "~0.4.3",
     "jsdoc": "~4.0.4",
     "lodash": "~4.17.21",

@@ -9,7 +9,6 @@
 
 import assert from 'assert';
 import fs, { readFileSync } from 'fs';
-import json5 from 'json5';
 import _ from 'lodash';
 import os from 'os';
 import path from 'path';
@@ -616,54 +615,6 @@ const getStringTypes = ( repo: string ) => {
 };
 
 /**
- * Recursively wraps all string values in an object with { value: ... }.
- * If the value is an object, it recurses.
- * Arrays (if any) are also handled.
- * @param input - The parsed JSON5 data.
- * @returns The transformed object.
- */
-function nestJSONStringValues( input: Record<string, IntentionalAny> ): object {
-  if ( typeof input === 'string' ) {
-    return { value: input };
-  }
- else if ( input !== null && typeof input === 'object' ) {
-    if ( Array.isArray( input ) ) {
-      return input.map( nestJSONStringValues );
-    }
-    const result:Record<string, object> = {};
-    for ( const key in input ) {
-      // @ts-expect-error
-      if ( Object.hasOwn( input, key ) ) {
-        result[ key ] = nestJSONStringValues( input[ key ] );
-      }
-    }
-    return result;
-  }
-  // For numbers, booleans, or null we return as is
-  return input;
-}
-
-/**
- * Converts a JSON5 file to JSON, nesting each leaf value under a "value" key,
- * and writes the result to a JSON file.
- * @param repo - The name of a repo, e.g. 'joist'
- */
-const convertStringsJSON5toJSON = async ( repo:string ) => {
-  const filePath = `../${repo}/${repo}-strings_en.json5`;
-  const json5Contents = fs.readFileSync( filePath, 'utf8' );
-  const parsed = json5.parse( json5Contents );
-
-  // Recursively nest all string values.
-  const nested = nestJSONStringValues( parsed );
-
-  // Convert to a pretty-printed JSON string.
-  const jsonContents = JSON.stringify( nested, null, 2 );
-  const jsonFilename = `${repo}-strings_en.json`;
-
-  await writeFileAndGitAdd( repo, jsonFilename, jsonContents );
-};
-
-/**
  * Entry point for modulify, which transforms all of the resources in a repo to *.js files.
  * @param repo - the name of a repo, such as 'joist'
  */
@@ -680,11 +631,6 @@ export default async ( repo: string ): Promise<void> => {
   }
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
-
-  // If the JSON5 strings file exists, transform it into the regular JSON file before going to the next step.
-  if ( fs.existsSync( `../${repo}/${repo}-strings_en.json5` ) ) {
-    await convertStringsJSON5toJSON( repo );
-  }
 
   // Strings module file
   if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace ) {
