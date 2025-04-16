@@ -13,7 +13,8 @@ export default [
   ...nodeEslintConfig,
   {
     rules: {
-      'phet/bad-chipper-text': 'error'
+      'phet/bad-chipper-text': 'error',
+      'phet/documentation-before-imports': 'off'
     }
   },
   {
