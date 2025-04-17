@@ -1,4 +1,4 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2024-2025, University of Colorado Boulder
 // This PhET-iO file requires a license
 // USE WITHOUT A LICENSE AGREEMENT IS STRICTLY PROHIBITED.
 // For licensing, please contact phethelp@colorado.edu
