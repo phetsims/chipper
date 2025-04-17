@@ -7,6 +7,7 @@
  */
 
 import TReadOnlyProperty, { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
+import EnumerationValue from '../../../phet-core/js/EnumerationValue.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 
@@ -17,27 +18,23 @@ const FluentUtils = {
    * format the message. Does things like get Property values and converts enumeration values to strings.
    */
   handleFluentArgs: ( args: IntentionalAny ): IntentionalAny => {
-    const keys = Object.keys( args );
-
-    const newArgs: Record<string, string> = {};
-
-    keys.forEach( key => {
-      let value = args[ key ];
-
-      // If the value is a Property, get the value.
+    return _.mapValues( args, value => {
       if ( isTReadOnlyProperty( value ) ) {
         value = value.value;
       }
 
-      // If the value is an EnumerationValue, automatically use the enum name.
-      if ( value && value.name ) {
+      // Allow "cascading", so that a Property<EnumerationValue> can be passed in and parsed correctly.
+      if ( value && value instanceof EnumerationValue ) {
         value = value.name;
       }
 
-      newArgs[ key ] = value;
-    } );
+      // Allow "cascading", so that a Property<boolean> can be passed in and parsed correctly.
+      if ( typeof value === 'boolean' ) {
+        value = value ? 'true' : 'false';
+      }
 
-    return newArgs;
+      return value;
+    } );
   },
 
   /**
