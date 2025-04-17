@@ -1,5 +1,12 @@
 // Copyright 2024-2025, University of Colorado Boulder
 
+/**
+ * Function to support transpiling on the project. See grunt transpile
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
+ */
+
 import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
@@ -33,12 +40,6 @@ export type TranspileOptions = {
   silent?: boolean;
 };
 
-/**
- * Function to support transpiling on the project. See grunt transpile
- *
- * @author Sam Reid (PhET Interactive Simulations)
- * @author Michael Kauzmann (PhET Interactive Simulations)
- */
 export default async function transpile( providedOptions?: TranspileOptions ): Promise<void> {
   const start = Date.now();
 

@@ -1,19 +1,19 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import fs from 'fs';
-import _ from 'lodash';
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
-import getCopyrightLine from '../getCopyrightLine.js';
-
 /**
  * Update the copyright dates in JS source files based on Github dates
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import fs from 'fs';
+import _ from 'lodash';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
+import getCopyrightLine from '../getCopyrightLine.js';
+
 // Grunt task that determines created and last modified dates from git, and
-  // updates copyright statements accordingly, see #403
+// updates copyright statements accordingly, see #403
 const repo = getRepo();
 
 

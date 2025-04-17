@@ -1,5 +1,11 @@
 // Copyright 2024, University of Colorado Boulder
 
+/**
+ * Main logic of pre-commit responsible for launching pre-commit tasks in parallel for a given repo
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
+ * @author Michael Kauzmann (PhET Interactive Simulations)
+ */
 
 import assert from 'assert';
 import execute from '../../../../perennial-alias/js/common/execute.js';
@@ -7,13 +13,6 @@ import phetTimingLog from '../../../../perennial-alias/js/common/phetTimingLog.j
 import tsxCommand from '../../../../perennial-alias/js/common/tsxCommand.js';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getPreCommitTasks from './getPreCommitTasks.js';
-
-/**
- * Main logic of pre-commit responsible for launching pre-commit tasks in parallel for a given repo
- *
- * @author Sam Reid (PhET Interactive Simulations)
- * @author Michael Kauzmann (PhET Interactive Simulations)
- */
 
 export async function preCommitMain( repo: string, outputToConsole: boolean ): Promise<void> {
   const absolute = getOption( 'absolute' ); // Output paths that WebStorm External Tools can parse and hyperlink

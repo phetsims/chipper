@@ -1,16 +1,17 @@
 // Copyright 2024, University of Colorado Boulder
 
+/**
+ * Spawns the same pre-commit process on each repo in the list
+ * @author Michael Kauzmann (PhET Interactive Simulations)
+ * @author Sam Reid (PhET Interactive Simulations)
+ */
+
 import path from 'path';
 import { Repo } from '../../../../perennial-alias/js/browser-and-node/PerennialTypes.js';
 import dirname from '../../../../perennial-alias/js/common/dirname.js';
 import execute from '../../../../perennial-alias/js/common/execute.js';
 import tsxCommand from '../../../../perennial-alias/js/common/tsxCommand.js';
 
-/**
- * Spawns the same pre-commit process on each repo in the list
- * @author Michael Kauzmann (PhET Interactive Simulations)
- * @author Sam Reid (PhET Interactive Simulations)
- */
 export default async function preCommitOnRepos( repos: Repo[], outputToConsole: boolean ): Promise<boolean> {
   const startTime = Date.now();
 

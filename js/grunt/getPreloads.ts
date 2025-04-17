@@ -1,12 +1,5 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
-import assert from 'assert';
-import { readFileSync } from 'fs';
-import _ from 'lodash';
-import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-import ChipperStringUtils from '../common/ChipperStringUtils.js';
-import getPhetLibs from './getPhetLibs.js';
-
 /**
  * Gets preload, the set of scripts to be preloaded in the .html file.
  * NOTE! Order of the return value is significant, since it corresponds to the order in which scripts will be preloaded.
@@ -18,6 +11,14 @@ import getPhetLibs from './getPhetLibs.js';
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
+
+import assert from 'assert';
+import { readFileSync } from 'fs';
+import _ from 'lodash';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+import getPhetLibs from './getPhetLibs.js';
+
 export default function getPreloads( repo: string, brand: string, forSim: boolean ): string[] {
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );

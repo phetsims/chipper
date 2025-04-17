@@ -1,10 +1,5 @@
 // Copyright 2013-2025, University of Colorado Boulder
 
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import { combineOptions } from '../../../../phet-core/js/optionize.js';
-import transpile, { getTranspileCLIOptions, TranspileOptions } from '../../common/transpile.js';
-import getPhetLibs from '../getPhetLibs.js';
-
 /**
  * Transpile TypeScript to JavaScript.
  *
@@ -18,6 +13,11 @@ import getPhetLibs from '../getPhetLibs.js';
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import { combineOptions } from '../../../../phet-core/js/optionize.js';
+import transpile, { getTranspileCLIOptions, TranspileOptions } from '../../common/transpile.js';
+import getPhetLibs from '../getPhetLibs.js';
 
 transpile( combineOptions<TranspileOptions>( {
   repos: getPhetLibs( getRepo() )

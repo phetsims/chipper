@@ -1,7 +1,5 @@
 // Copyright 2015-2024, University of Colorado Boulder
 
-import { readFileSync } from 'fs';
-
 /**
  * Report which translatable strings from a sim were not used in the simulation with a require statement.
  *
@@ -13,6 +11,8 @@ import { readFileSync } from 'fs';
  *
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
+
+import { readFileSync } from 'fs';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 
 /**

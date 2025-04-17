@@ -1,8 +1,5 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
-import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import _reportMedia from '../reportMedia.js'; // eslint-disable-line phet/default-import-match-filename
-
 /**
  * (project-wide) Report on license.json files throughout all working copies.
  * Reports any media (such as images or sound) files that have any of the following problems:
@@ -12,6 +9,10 @@ import _reportMedia from '../reportMedia.js'; // eslint-disable-line phet/defaul
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
+
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
+import _reportMedia from '../reportMedia.js'; // eslint-disable-line phet/default-import-match-filename
+
 const repo = getRepo();
 
 export const reportMediaPromise = ( async () => {

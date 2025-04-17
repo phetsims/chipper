@@ -1,8 +1,5 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
-import assert from 'assert';
-import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-
 /**
  * Gets the locales from a repository, by inspecting the names of the string files in babel for that repository.
  *
@@ -11,6 +8,10 @@ import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
  * @author Chris Malley (PixelZoom, Inc.)
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
+
+import assert from 'assert';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+
 export default function getLocalesFromRepository( repo: string ): string[] {
 
   // confirm that the repository has a strings directory

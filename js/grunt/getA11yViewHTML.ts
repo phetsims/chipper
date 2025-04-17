@@ -1,15 +1,16 @@
 // Copyright 2016-2025, University of Colorado Boulder
 
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
-import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-import ChipperStringUtils from '../common/ChipperStringUtils.js';
-
 /**
  * From the a11y view template file, fill in the templated values and return the html as a string.
  *
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @returns - the html string, filled in from the template.
  */
+
+import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import ChipperStringUtils from '../common/ChipperStringUtils.js';
+
 export default function getA11yViewHTML( repo: string ): string {
 
   let html = grunt.file.read( '../chipper/wrappers/a11y-view/index.html' ); // the template file is also runnable

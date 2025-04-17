@@ -1,5 +1,17 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
+/**
+ * Output the PhET-iO API as JSON to phet-io-sim-specific/api.
+ * Options
+ * --sims=... a list of sims to compare (defaults to the sim in the current dir)
+ * --simList=... a file with a list of sims to compare (defaults to the sim in the current dir)
+ * --stable - regenerate for all "stable sims" (see perennial/data/phet-io-api-stable/)
+ * --temporary - outputs to the temporary directory
+ * --transpile=false - skips the transpilation step. You can skip transpilation if a watch process is handling it.
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
+ */
+
 import fs from 'fs';
 import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
@@ -17,17 +29,6 @@ const sims: string[] = getSimList().length === 0 ? [ repo ] : getSimList();
 // So this "skip" is a band-aid until we reduce those other problems.
 const skipTranspile = getOption( 'transpile' ) === false;
 
-/**
- * Output the PhET-iO API as JSON to phet-io-sim-specific/api.
- * Options
- * --sims=... a list of sims to compare (defaults to the sim in the current dir)
- * --simList=... a file with a list of sims to compare (defaults to the sim in the current dir)
- * --stable - regenerate for all "stable sims" (see perennial/data/phet-io-api-stable/)
- * --temporary - outputs to the temporary directory
- * --transpile=false - skips the transpilation step. You can skip transpilation if a watch process is handling it.
- *
- * @author Sam Reid (PhET Interactive Simulations)
- */
 ( async () => {
 
   if ( !skipTranspile ) {

@@ -1,11 +1,5 @@
 // Copyright 2022-2025, University of Colorado Boulder
 
-import optionize from '../../../phet-core/js/optionize.js';
-
-type ShowCommandLineProgressOptions = {
-  progressBarLength?: number;
-};
-
 /**
  * Helper function to show a progress bar on the command line.
  *
@@ -17,6 +11,13 @@ type ShowCommandLineProgressOptions = {
  * @param newline - if each new progress should give a new line, should be false during progress, and true when finally completed
  * @param providedOptions
  */
+
+import optionize from '../../../phet-core/js/optionize.js';
+
+type ShowCommandLineProgressOptions = {
+  progressBarLength?: number;
+};
+
 export default function showCommandLineProgress( progress: number, newline: boolean, providedOptions?: ShowCommandLineProgressOptions ): void {
   const options = optionize<ShowCommandLineProgressOptions>()( {
     progressBarLength: 40 // in characters

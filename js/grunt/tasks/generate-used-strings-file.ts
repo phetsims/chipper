@@ -1,5 +1,10 @@
 // Copyright 2013-2024, University of Colorado Boulder
 
+/**
+ * Writes used strings to phet-io-sim-specific/ so that PhET-iO sims only output relevant strings to the API in unbuilt mode
+ * @author Sam Reid (PhET Interactive Simulations)
+ */
+
 import fs from 'fs';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import ChipperConstants from '../../common/ChipperConstants.js';
@@ -9,10 +14,6 @@ import getPhetLibs from '../getPhetLibs.js';
 import getStringMap from '../getStringMap.js';
 import webpackBuild from '../webpackBuild.js';
 
-/**
- * Writes used strings to phet-io-sim-specific/ so that PhET-iO sims only output relevant strings to the API in unbuilt mode
- * @author Sam Reid (PhET Interactive Simulations)
- */
 const repo = getRepo();
 
 ( async () => {

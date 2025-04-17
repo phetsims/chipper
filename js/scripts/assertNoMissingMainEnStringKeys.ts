@@ -1,6 +1,5 @@
 // Copyright 2025, University of Colorado Boulder
 
-import assert from 'assert';
 /**
  * Throws an error if any latest production phet sims use common code string keys that do not exist in the en.json
  * of that common code repo on main.
@@ -11,6 +10,8 @@ import assert from 'assert';
  * cd chipper/
  * sage run js/scripts/assertNoMissingMainEnStringKeys.ts
  */
+
+import assert from 'assert';
 import fs from 'fs';
 import ReleaseBranch from '../../../perennial-alias/js/common/ReleaseBranch.js';
 import _ from '../../../perennial-alias/js/npm-dependencies/lodash.js';

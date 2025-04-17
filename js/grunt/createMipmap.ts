@@ -1,24 +1,5 @@
 // Copyright 2017-2024, University of Colorado Boulder
 
-import fs from 'fs';
-import mipmapDownscale from '../../../chipper/js/common/mipmapDownscale.js';
-import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-
-const jpegJs = require( 'jpeg-js' );
-const pngjs = require( 'pngjs' );
-
-type TMipmap = {
-  width: number;
-  height: number;
-  data: Buffer;
-  url?: string;
-  buffer?: Buffer;
-  pngURL?: string;
-  pngBuffer?: Buffer;
-  jpgURL?: string;
-  jpgBuffer?: Buffer;
-};
-
 /**
  * Responsible for converting a single PNG/JPEG file to a structured list of mipmapped versions of it, each
  * at half the scale of the previous version.
@@ -49,6 +30,27 @@ type TMipmap = {
  *
  * @author Jonathan Olson <jonathan.olson@colorado.edu>
  */
+
+
+import fs from 'fs';
+import mipmapDownscale from '../../../chipper/js/common/mipmapDownscale.js';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+
+const jpegJs = require( 'jpeg-js' );
+const pngjs = require( 'pngjs' );
+
+type TMipmap = {
+  width: number;
+  height: number;
+  data: Buffer;
+  url?: string;
+  buffer?: Buffer;
+  pngURL?: string;
+  pngBuffer?: Buffer;
+  jpgURL?: string;
+  jpgBuffer?: Buffer;
+};
+
 export default function createMipmap( filename: string, maxLevel: number, quality: number ): Promise<TMipmap[]> {
   return new Promise( ( resolve, reject ) => {
     const mipmaps: TMipmap[] = [];
@@ -181,8 +183,8 @@ export default function createMipmap( filename: string, maxLevel: number, qualit
           mipmaps[ level ].buffer = usePNG ? mipmaps[ level ].pngBuffer : mipmaps[ level ].jpgBuffer;
 
           grunt.log.verbose.writeln( `level ${level} (${usePNG ? 'PNG' : 'JPG'} ${
-              mipmaps[ level ].width}x${mipmaps[ level ].height}) base64: ${
-              mipmaps[ level ].url!.length} bytes ` );
+            mipmaps[ level ].width}x${mipmaps[ level ].height}) base64: ${
+            mipmaps[ level ].url!.length} bytes ` );
         }
 
         resolve( mipmaps );

@@ -1,5 +1,26 @@
 // Copyright 2015-2024, University of Colorado Boulder
 
+/**
+ * Creates a report of third-party resources (code, images, sound, etc) used in the published PhET simulations by
+ * reading the license information in published HTML files on the PhET website. This task must be run from main/.
+ *
+ * Creates a composite report of all of the 3rd party images, code, sounds and other media used by all of the published
+ * PhET Simulations. The reports is published at: https://github.com/phetsims/sherpa/blob/main/third-party-licenses.md
+ *
+ * Usage:
+ * grunt report-third-party
+ * // then push sherpa/third-party-licenses.md
+ *
+ * Third party entries are parsed from the HTML files for all simulations published on the PhET website.
+ * See getLicenseEntry.js for documentation of the fields in the entries.
+ *
+ * Copy the local-auth-code key value from phet-server2:/usr/local/tomcat8/conf/context.xml into the value for
+ * websiteAuthorizationCode in ~/.phet/build-local.json
+ *
+ * @author Sam Reid (PhET Interactive Simulations)
+ * @author Jonathan Olson <jonathan.olson@colorado.edu>
+ */
+
 import assert from 'assert';
 import fs, { readFileSync } from 'fs';
 import https from 'https';
@@ -22,26 +43,6 @@ type Augmentable = Record<string, {
   usedBy: 'all-sims' | string[];
 }>;
 
-/**
- * Creates a report of third-party resources (code, images, sound, etc) used in the published PhET simulations by
- * reading the license information in published HTML files on the PhET website. This task must be run from main/.
- *
- * Creates a composite report of all of the 3rd party images, code, sounds and other media used by all of the published
- * PhET Simulations. The reports is published at: https://github.com/phetsims/sherpa/blob/main/third-party-licenses.md
- *
- * Usage:
- * grunt report-third-party
- * // then push sherpa/third-party-licenses.md
- *
- * Third party entries are parsed from the HTML files for all simulations published on the PhET website.
- * See getLicenseEntry.js for documentation of the fields in the entries.
- *
- * Copy the local-auth-code key value from phet-server2:/usr/local/tomcat8/conf/context.xml into the value for
- * websiteAuthorizationCode in ~/.phet/build-local.json
- *
- * @author Sam Reid (PhET Interactive Simulations)
- * @author Jonathan Olson <jonathan.olson@colorado.edu>
- */
 ( async () => {
 
   // read configuration file - required to write to website database

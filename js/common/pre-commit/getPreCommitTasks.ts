@@ -1,18 +1,17 @@
 // Copyright 2024, University of Colorado Boulder
 
-// @author Michael Kauzmann (PhET Interactive Simulations)
-
-import buildLocal from '../../../../perennial-alias/js/common/buildLocal.js';
-import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
-
-const SUPPORTED_TASKS = [ 'lint', 'report-media', 'type-check', 'unit-test', 'phet-io-api' ];
-
 /**
  * Parse options and build-local defaults to get the list of tasks to be run for pre-commit hooks.
  * @author Michael Kauzmann (PhET Interactive Simulations)
  * @author Sam Reid (PhET Interactive Simulations)
  *
  */
+
+import buildLocal from '../../../../perennial-alias/js/common/buildLocal.js';
+import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+
+const SUPPORTED_TASKS = [ 'lint', 'report-media', 'type-check', 'unit-test', 'phet-io-api' ];
+
 const getPreCommitTasks = ( outputToConsole: boolean ): string[] => {
 
 

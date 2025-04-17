@@ -1,11 +1,5 @@
 // Copyright 2016-2024, University of Colorado Boulder
 
-import assert from 'assert';
-import _ from 'lodash';
-import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-import minify from './minify.js';
-
 /**
  * Copy a directory and all of its contents recursively
  *
@@ -16,6 +10,13 @@ import minify from './minify.js';
  * @param [filter] - rules for filtering files.  If returns falsy, then the file will be copied directly (helps with images)
  * @param [options]
  */
+
+import assert from 'assert';
+import _ from 'lodash';
+import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import minify from './minify.js';
+
 export default function copyDirectory( src: string, dst: string, filter?: ( filename: string, contents: string ) => string | null, options?: IntentionalAny ): void {
 
   options = _.assignIn( {
