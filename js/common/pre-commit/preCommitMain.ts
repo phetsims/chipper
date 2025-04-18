@@ -1,4 +1,4 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2024-2025, University of Colorado Boulder
 
 /**
  * Main logic of pre-commit responsible for launching pre-commit tasks in parallel for a given repo

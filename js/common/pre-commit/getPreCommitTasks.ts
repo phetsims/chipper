@@ -1,4 +1,4 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2024-2025, University of Colorado Boulder
 
 /**
  * Parse options and build-local defaults to get the list of tasks to be run for pre-commit hooks.
