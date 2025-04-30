@@ -24,11 +24,16 @@ import getCopyrightLine from './getCopyrightLine.js';
 
 const svgo = require( 'svgo' );
 
+const OFF = 'off';
+
 // disable lint in compiled files, because it increases the linting time
-const HEADER = '/* eslint-disable */\n/* @formatter:off */\n';
+const HEADER = '/* eslint-disable */\n/* @formatter:' + OFF + ' */\n';
 
 // supported image types, not case-sensitive
 const IMAGE_SUFFIXES = [ '.png', '.jpg', '.cur', '.svg' ];
+
+const SVG_SUFFIXES = [ '.svg' ];
+const OTHER_IMAGE_SUFFIXES = IMAGE_SUFFIXES.filter( suffix => !SVG_SUFFIXES.includes( suffix ) );
 
 // supported sound file types, not case-sensitive
 const SOUND_SUFFIXES = [ '.mp3', '.wav' ];
@@ -45,19 +50,12 @@ const SHADER_SUFFIXES = [ '.glsl', '.vert', '.shader' ];
 const replace = ( string: string, search: string, replacement: string ) => string.split( search ).join( replacement );
 
 /**
- * Get the relative from the modulified repo to the filename through the provided subdirectory.
- */
-const getRelativePath = ( subdir: string, filename: string ) => {
-  return `${subdir}/${filename}`;
-};
-
-/**
  * Gets the relative path to the root based on the depth of a resource
  */
-const expandDots = ( abspath: string ): string => {
+const expandDots = ( relativePath: string ): string => {
 
   // Finds the depths of a directory relative to the root of where grunt.recurse was called from (a repo root)
-  const depth = abspath.split( '/' ).length - 2;
+  const depth = relativePath.split( '/' ).length;
   let parentDirectory = '';
   for ( let i = 0; i < depth; i++ ) {
     parentDirectory = `${parentDirectory}../`;
@@ -83,17 +81,16 @@ const readFluentFile = ( abspath: string ): string => {
 
 /**
  * Transform an image file to a JS file that loads the image.
- * @param abspath - the absolute path of the image
  * @param repo - repository name for the modulify command
- * @param subdir - subdirectory location for modulified assets
- * @param filename - name of file being modulified
+ * @param relativePath - the relative path of the image file
  */
-const modulifyImage = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
+const modulifyImage = async ( repo: string, relativePath: string ) => {
 
+  const abspath = path.resolve( `../${repo}`, relativePath );
   const dataURI = loadFileAsDataURI( abspath );
 
   const contents = `${HEADER}
-import asyncLoader from '${expandDots( abspath )}phet-core/js/asyncLoader.js';
+import asyncLoader from '${expandDots( relativePath )}phet-core/js/asyncLoader.js';
 
 const image = new Image();
 const unlock = asyncLoader.createLock( image );
@@ -101,19 +98,18 @@ image.onload = unlock;
 image.src = '${dataURI}';
 export default image;`;
 
-  const tsFilename = convertSuffix( filename, '.ts' );
-  await writeFileAndGitAdd( repo, getRelativePath( subdir, tsFilename ), fixEOL( contents ) );
+  const tsFilename = convertSuffix( relativePath, '.ts' );
+  await writeFileAndGitAdd( repo, tsFilename, fixEOL( contents ) );
 };
 
 /**
  * Transform an SVG image file to a JS file that loads the image.
- * @param abspath - the absolute path of the image
  * @param repo - repository name for the modulify command
- * @param subdir - subdirectory location for modulified assets
- * @param filename - name of file being modulified
+ * @param relativePath - the relative path of the SVG file
  */
-const modulifySVG = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
+const modulifySVG = async ( repo: string, relativePath: string ) => {
 
+  const abspath = path.resolve( `../${repo}`, relativePath );
   const fileContents = fs.readFileSync( abspath, 'utf-8' );
 
   if ( !fileContents.includes( 'width="' ) || !fileContents.includes( 'height="' ) ) {
@@ -137,7 +133,7 @@ const modulifySVG = async ( abspath: string, repo: string, subdir: string, filen
   } ).data;
 
   const contents = `${HEADER}
-import asyncLoader from '${expandDots( abspath )}phet-core/js/asyncLoader.js';
+import asyncLoader from '${expandDots( relativePath )}phet-core/js/asyncLoader.js';
 
 const image = new Image();
 const unlock = asyncLoader.createLock( image );
@@ -145,18 +141,16 @@ image.onload = unlock;
 image.src = \`data:image/svg+xml;base64,\${btoa(${toLessEscapedString( optimizedContents )})}\`;
 export default image;`;
 
-  const tsFilename = convertSuffix( filename, '.ts' );
-  await writeFileAndGitAdd( repo, getRelativePath( subdir, tsFilename ), fixEOL( contents ) );
+  const tsFilename = convertSuffix( relativePath, '.ts' );
+  await writeFileAndGitAdd( repo, tsFilename, fixEOL( contents ) );
 };
 
 /**
  * Transform an image file to a JS file that loads the image as a mipmap.
- * @param abspath - the absolute path of the image
  * @param repo - repository name for the modulify command
- * @param subdir - subdirectory location for modulified assets
- * @param filename - name of file being modulified
+ * @param relativePath - the relative path of the image file
  */
-const modulifyMipmap = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
+const modulifyMipmap = async ( repo: string, relativePath: string ) => {
 
   // Defaults. NOTE: using the default settings because we have not run into a need, see
   // https://github.com/phetsims/chipper/issues/820 and https://github.com/phetsims/chipper/issues/945
@@ -165,11 +159,12 @@ const modulifyMipmap = async ( abspath: string, repo: string, subdir: string, fi
     quality: 98
   };
 
+  const abspath = path.resolve( `../${repo}`, relativePath );
   const mipmapLevels = await createMipmap( abspath, config.level, config.quality );
   const entries = mipmapLevels.map( ( { width, height, url } ) => `  new MipmapElement( ${width}, ${height}, '${url}' )` );
 
   const mipmapContents = `${HEADER}
-import MipmapElement from '${expandDots( abspath )}chipper/js/browser/MipmapElement.js';
+import MipmapElement from '${expandDots( relativePath )}chipper/js/browser/MipmapElement.js';
 
 // The levels in the mipmap. Specify explicit types rather than inferring to assist the type checker, for this boilerplate case.
 const mipmaps = [
@@ -177,18 +172,18 @@ ${entries.join( ',\n' )}
 ];
 
 export default mipmaps;`;
-  const jsFilename = convertSuffix( filename, '.ts' );
-  await writeFileAndGitAdd( repo, getRelativePath( subdir, jsFilename ), fixEOL( mipmapContents ) );
+  const tsFilename = convertSuffix( relativePath, '.ts' );
+  await writeFileAndGitAdd( repo, tsFilename, fixEOL( mipmapContents ) );
 };
 
 /**
  * Transform a GLSL shader file to a JS file that is represented by a string.
- * @param abspath - the absolute path of the image
  * @param repo - repository name for the modulify command
- * @param subdir - subdirectory location for modulified assets
- * @param filename - name of file being modulified
+ * @param relativePath - subdirectory location for modulified assets
  */
-const modulifyShader = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
+const modulifyShader = async ( repo: string, relativePath: string ) => {
+
+  const abspath = path.resolve( `../${repo}`, relativePath );
 
   // load the shader file
   const shaderString = fs.readFileSync( abspath, 'utf-8' ).replace( /\r/g, '' );
@@ -197,20 +192,23 @@ const modulifyShader = async ( abspath: string, repo: string, subdir: string, fi
   const contents = `${HEADER}
 export default ${JSON.stringify( shaderString )}`;
 
-  const jsFilename = convertSuffix( filename, '.js' );
-  await writeFileAndGitAdd( repo, getRelativePath( subdir, jsFilename ), fixEOL( contents ) );
+  const jsFilename = convertSuffix( relativePath, '.js' );
+  await writeFileAndGitAdd( repo, jsFilename, fixEOL( contents ) );
 };
 
 /**
  * Prepares modules so that contents of fluent files can be used in the simulation.
- * @param abspath - the absolute path of the fluent file
  * @param repo - repository name for the modulify command
- * @param filename - name of file being modulified
+ * @param relativePath - the relative path of the fluent file
  */
-const modulifyFluentFile = async ( abspath: string, repo: string, filename: string ) => {
-  if ( !filename.endsWith( '_en.ftl' ) ) {
+const modulifyFluentFile = async ( repo: string, relativePath: string ) => {
+  if ( !relativePath.endsWith( '_en.ftl' ) ) {
     throw new Error( 'Only english fluent files can be modulified.' );
   }
+
+  const abspath = path.resolve( `../${repo}`, relativePath );
+  const filename = path.basename( abspath );
+
   const nameWithoutSuffix = filename.replace( '_en.ftl', '' );
 
   const localeToFluentFileContents: Record<string, string> = {};
@@ -262,7 +260,7 @@ const modulifyFluentFile = async ( abspath: string, repo: string, filename: stri
     `${copyrightLine}
     
 /* eslint-disable */
-/* @formatter:off */
+/* @formatter:${OFF} */
 
 /**
  * Auto-generated from modulify, DO NOT manually modify.
@@ -285,22 +283,22 @@ export default ${modulifiedName};
 
 /**
  * Decode a sound file into a Web Audio AudioBuffer.
- * @param abspath - the absolute path of the image
  * @param repo - repository name for the modulify command
- * @param subdir - subdirectory location for modulified assets
- * @param filename - name of file being modulified
+ * @param relativePath - the relative path of the sound file
  */
-const modulifySound = async ( abspath: string, repo: string, subdir: string, filename: string ) => {
+const modulifySound = async ( repo: string, relativePath: string ) => {
+
+  const abspath = path.resolve( `../${repo}`, relativePath );
 
   // load the sound file
   const dataURI = loadFileAsDataURI( abspath );
 
   // output the contents of the file that will define the sound in JS format
   const contents = `${HEADER}
-import asyncLoader from '${expandDots( abspath )}phet-core/js/asyncLoader.js';
-import base64SoundToByteArray from '${expandDots( abspath )}tambo/js/base64SoundToByteArray.js';
-import WrappedAudioBuffer from '${expandDots( abspath )}tambo/js/WrappedAudioBuffer.js';
-import phetAudioContext from '${expandDots( abspath )}tambo/js/phetAudioContext.js';
+import asyncLoader from '${expandDots( relativePath )}phet-core/js/asyncLoader.js';
+import base64SoundToByteArray from '${expandDots( relativePath )}tambo/js/base64SoundToByteArray.js';
+import WrappedAudioBuffer from '${expandDots( relativePath )}tambo/js/WrappedAudioBuffer.js';
+import phetAudioContext from '${expandDots( relativePath )}tambo/js/phetAudioContext.js';
 
 const soundURI = '${dataURI}';
 const soundByteArray = base64SoundToByteArray( phetAudioContext, soundURI );
@@ -343,8 +341,8 @@ if ( decodePromise ) {
 }
 export default wrappedAudioBuffer;`;
 
-  const jsFilename = convertSuffix( filename, '.js' );
-  await writeFileAndGitAdd( repo, getRelativePath( subdir, jsFilename ), fixEOL( contents ) );
+  const jsFilename = convertSuffix( relativePath, '.js' );
+  await writeFileAndGitAdd( repo, jsFilename, fixEOL( contents ) );
 };
 
 /**
@@ -364,49 +362,6 @@ const convertSuffix = ( abspath: string, suffix: string ) => {
 const getSuffix = ( filename: string ) => {
   const index = filename.lastIndexOf( '.' );
   return filename.substring( index );
-};
-
-/**
- * Creates a *.js file corresponding to matching resources such as images or sounds.
- */
-const modulifyFile = async ( abspath: string, rootdir: string, subdir: string, filename: string, repo: string ) => {
-
-  if ( subdir && ( subdir.startsWith( 'images' ) ||
-
-                   // for brand
-                   subdir.startsWith( 'phet/images' ) ||
-                   subdir.startsWith( 'phet-io/images' ) ||
-                   subdir.startsWith( 'adapted-from-phet/images' ) )
-       && IMAGE_SUFFIXES.includes( getSuffix( filename ) ) ) {
-    if ( getSuffix( filename ) === '.svg' ) {
-      await modulifySVG( abspath, repo, subdir, filename );
-    }
-    else {
-      await modulifyImage( abspath, repo, subdir, filename );
-    }
-  }
-
-  if ( subdir && ( subdir.startsWith( 'mipmaps' ) ||
-
-                   // for brand
-                   subdir.startsWith( 'phet/mipmaps' ) ||
-                   subdir.startsWith( 'phet-io/mipmaps' ) ||
-                   subdir.startsWith( 'adapted-from-phet/mipmaps' ) )
-       && IMAGE_SUFFIXES.includes( getSuffix( filename ) ) ) {
-    await modulifyMipmap( abspath, repo, subdir, filename );
-  }
-
-  if ( subdir && subdir.startsWith( 'sounds' ) && SOUND_SUFFIXES.includes( getSuffix( filename ) ) ) {
-    await modulifySound( abspath, repo, subdir, filename );
-  }
-
-  if ( subdir && subdir.startsWith( 'strings' ) && getSuffix( filename ) === '.ftl' ) {
-    await modulifyFluentFile( abspath, repo, filename );
-  }
-
-  if ( subdir && subdir.startsWith( 'shaders' ) && SHADER_SUFFIXES.includes( getSuffix( filename ) ) ) {
-    await modulifyShader( abspath, repo, subdir, filename );
-  }
 };
 
 /**
@@ -475,7 +430,7 @@ const createImageModule = async ( repo: string, supportedRegionsAndCultures: str
   await writeFileAndGitAdd( repo, relativeImageModuleFile, fixEOL(
     `${copyrightLine}
 /* eslint-disable */
-/* @formatter:off */
+/* @formatter:${OFF} */
 /**
  * Auto-generated from modulify, DO NOT manually modify.
  */
@@ -517,7 +472,7 @@ const createStringModule = async ( repo:string ) => {
     `${copyrightLine}
 
 /* eslint-disable */
-/* @formatter:off */
+/* @formatter:${OFF} */
 
 /**
  * Auto-generated from modulify, DO NOT manually modify.
@@ -615,20 +570,42 @@ const getStringTypes = ( repo: string ) => {
 };
 
 /**
- * Entry point for modulify, which transforms all of the resources in a repo to *.js files.
+ * Entry point for modulify, which transforms all the resources in a repo to *.js files.
+ *
  * @param repo - the name of a repo, such as 'joist'
  */
 export default async ( repo: string ): Promise<void> => {
   console.log( `modulifying ${repo}` );
-  const relativeFiles:IntentionalAny[] = [];
-  grunt.file.recurse( `../${repo}`, async ( abspath:string, rootdir:string, subdir:string, filename:string ) => {
-    relativeFiles.push( { abspath: abspath, rootdir: rootdir, subdir: subdir, filename: filename } );
-  } );
 
-  for ( let i = 0; i < relativeFiles.length; i++ ) {
-    const entry = relativeFiles[ i ];
-    await modulifyFile( entry.abspath, entry.rootdir, entry.subdir, entry.filename, repo );
-  }
+  const visitDirectories = async ( dirs:string[], suffixes:string[], processor: ( repo: string, relativePath: string )=>Promise<void> ) => {
+    for ( const dir of dirs ) {
+      const dirPath = `../${repo}/${dir}`;
+      if ( fs.existsSync( dirPath ) ) {
+        const paths:string[] = [];
+        grunt.file.recurse( dirPath, async abspath => {
+          if ( suffixes.includes( getSuffix( abspath ) ) ) {
+            paths.push( path.relative( `../${repo}`, abspath ) );
+          }
+        } );
+
+        // Run in a separate loop so processors can be awaited.
+        for ( let i = 0; i < paths.length; i++ ) {
+          await processor( repo, paths[ i ] );
+        }
+      }
+    }
+  };
+
+  // Process images in various directories
+  const imageDirectories = [ 'images', 'phet/images', 'phet-io/images', 'adapted-from-phet/images' ];
+  const mipmapDirectories = [ 'mipmaps', 'phet/mipmaps', 'phet-io/mipmaps', 'adapted-from-phet/mipmaps' ];
+
+  await visitDirectories( imageDirectories, SVG_SUFFIXES, modulifySVG );
+  await visitDirectories( imageDirectories, OTHER_IMAGE_SUFFIXES, modulifyImage );
+  await visitDirectories( mipmapDirectories, IMAGE_SUFFIXES, modulifyMipmap );
+  await visitDirectories( [ `../${repo}/sounds` ], SOUND_SUFFIXES, modulifySound );
+  await visitDirectories( [ `../${repo}/strings` ], [ '*.ftl' ], modulifyFluentFile );
+  await visitDirectories( [ `../${repo}/shaders` ], SHADER_SUFFIXES, modulifyShader );
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
