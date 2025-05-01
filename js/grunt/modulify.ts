@@ -611,7 +611,7 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
   targetImages && await visitDirectories( imageDirectories, OTHER_IMAGE_SUFFIXES, modulifyImage );
   targetImages && await visitDirectories( mipmapDirectories, IMAGE_SUFFIXES, modulifyMipmap );
   targetSounds && await visitDirectories( [ `../${repo}/sounds` ], SOUND_SUFFIXES, modulifySound );
-  targetStrings && await visitDirectories( [ `../${repo}/strings` ], [ '*.ftl' ], modulifyFluentFile );
+  targetStrings && await visitDirectories( [ `../${repo}/strings` ], [ '.ftl' ], modulifyFluentFile );
   targetShaders && await visitDirectories( [ `../${repo}/shaders` ], SHADER_SUFFIXES, modulifyShader );
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
