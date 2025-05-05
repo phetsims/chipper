@@ -274,7 +274,7 @@ import type TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
 
 ${fluentKeysType}
 
-const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileContents, null, 2 )} ) as unknown as ${nameWithoutSuffix}FluentType;
+const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileContents, null, 2 ).replaceAll( '\\r\\n', '\\n' )} ) as unknown as ${nameWithoutSuffix}FluentType;
 
 ${namespace}.register( '${modulifiedName}', ${modulifiedName} );
 
