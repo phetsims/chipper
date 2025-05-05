@@ -19,7 +19,9 @@
  *
  * See https://github.com/phetsims/rosetta/issues/459
  *
- * @author Sam Reid (PHET Interactive Simulations)
+ * @author Sam Reid (PhET Interactive Simulations)
+ *
+ * This software was developed with OpenAI o3.
  */
 
 import { FluentBundle, FluentResource } from '@fluent/bundle';
