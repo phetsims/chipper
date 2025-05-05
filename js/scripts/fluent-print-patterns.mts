@@ -7,7 +7,7 @@
  * plus each attribute) in a given FTL file, along with a summary of the
  * parameters (variables / selectors) that influence it.
  *
- * usage:  ts-node fluent-print-patterns.ts path/to/file.ftl
+ * usage:  sage run js/scripts/fluent-print-patterns.ts path/to/file.ftl
  *
  * Highlights
  * ──────────
@@ -32,7 +32,7 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 // ─── CLI handling ────────────────────────────────────────────────────────────
 const filePath = process.argv[ 2 ];
 if ( !filePath ) {
-  console.error( 'usage: ts-node fluent-print-patterns.ts <ftl-file>' );
+  console.error( 'usage: sage run js/scripts/fluent-print-patterns.ts <ftl-file>' );
   process.exit( 1 );
 }
 const source = fs.readFileSync( filePath, 'utf-8' );
