@@ -39,9 +39,6 @@ const OTHER_IMAGE_SUFFIXES = IMAGE_SUFFIXES.filter( suffix => !SVG_SUFFIXES.incl
 // supported sound file types, not case-sensitive
 const SOUND_SUFFIXES = [ '.mp3', '.wav' ];
 
-// supported shader file types, not case-sensitive
-const SHADER_SUFFIXES = [ '.glsl', '.vert', '.shader' ];
-
 /**
  * String replacement
  * @param string - the string which will be searched
@@ -177,26 +174,6 @@ ${entries.join( ',\n' )}
 export default mipmaps;`;
   const tsFilename = convertSuffix( relativePath, '.ts' );
   await writeFileAndGitAdd( repo, tsFilename, fixEOL( mipmapContents ) );
-};
-
-/**
- * Transform a GLSL shader file to a JS file that is represented by a string.
- * @param repo - repository name for the modulify command
- * @param relativePath - subdirectory location for modulified assets
- */
-const modulifyShader = async ( repo: string, relativePath: string ) => {
-
-  const abspath = path.resolve( `../${repo}`, relativePath );
-
-  // load the shader file
-  const shaderString = fs.readFileSync( abspath, 'utf-8' ).replace( /\r/g, '' );
-
-  // output the contents of the file that will define the shader in JS format
-  const contents = `${HEADER}
-export default ${JSON.stringify( shaderString )}`;
-
-  const jsFilename = convertSuffix( relativePath, '.js' );
-  await writeFileAndGitAdd( repo, jsFilename, fixEOL( contents ) );
 };
 
 /**
@@ -581,7 +558,6 @@ const getStringTypes = ( repo: string ) => {
 export default async ( repo: string, targets: Array<'images' | 'strings' | 'shaders' | 'sounds'> | null ): Promise<void> => {
   const targetImages = targets === null || targets.includes( 'images' );
   const targetStrings = targets === null || targets.includes( 'strings' );
-  const targetShaders = targets === null || targets.includes( 'shaders' );
   const targetSounds = targets === null || targets.includes( 'sounds' );
 
   console.log( `modulifying ${repo} for targets: ${targets ? targets.join( ', ' ) : 'all'}` );
@@ -614,7 +590,6 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
   targetImages && await visitDirectories( mipmapDirectories, IMAGE_SUFFIXES, modulifyMipmap );
   targetSounds && await visitDirectories( [ `../${repo}/sounds` ], SOUND_SUFFIXES, modulifySound );
   targetStrings && await visitDirectories( [ `../${repo}/strings` ], [ '.ftl' ], modulifyFluentFile );
-  targetShaders && await visitDirectories( [ `../${repo}/shaders` ], SHADER_SUFFIXES, modulifyShader );
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
