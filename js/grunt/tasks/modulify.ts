@@ -6,9 +6,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import fs from 'fs';
+import { getOption } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import generateDevelopmentStrings from '../generateDevelopmentStrings.js';
 
 // eslint-disable-next-line phet/default-import-match-filename
 import _modulify from '../modulify.js';
@@ -17,9 +16,7 @@ export const modulifyPromise = ( async () => {
 
   const repo = getRepo();
 
-  await _modulify( repo );
+  const targets = getOption( 'targets' );
 
-  if ( fs.existsSync( `../${repo}/${repo}-strings_en.json` ) ) {
-    generateDevelopmentStrings( repo );
-  }
+  await _modulify( repo, targets ? targets.split( ',' ) : null );
 } )();
