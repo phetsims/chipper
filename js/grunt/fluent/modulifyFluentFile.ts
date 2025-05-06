@@ -1,4 +1,4 @@
-// Copyright 2020-2025, University of Colorado Boulder
+// Copyright 2025, University of Colorado Boulder
 
 /**
  * Generates JS modules from resources such as images/strings/audio/etc.
