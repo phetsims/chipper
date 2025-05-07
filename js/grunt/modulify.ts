@@ -52,7 +52,7 @@ const replace = ( string: string, search: string, replacement: string ) => strin
  */
 const expandDots = ( relativePath: string ): string => {
 
-  relativePath = relativePath.replace( '\\', '/' ); // Normalize the path to use forward slashes
+  relativePath = relativePath.replaceAll( '\\', '/' ); // Normalize the path to use forward slashes
 
   // Finds the depths of a directory relative to the root of where grunt.recurse was called from (a repo root)
   const depth = relativePath.split( '/' ).length;
