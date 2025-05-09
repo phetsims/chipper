@@ -51,8 +51,6 @@ import ${namespace} from './${namespace}.js';
 
 ${getStringTypes( repo )}
 
-const ${stringModuleName} = getStringModule( '${packageObject.phet.requirejsNamespace}' ) as StringsType;
-
 ${namespace}.register( '${stringModuleName}', ${stringModuleName} );
 
 export default ${stringModuleName};

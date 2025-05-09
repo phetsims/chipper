@@ -287,6 +287,9 @@ const getStringModule = ( requirejsNamespace: string ): object => {
   // @ts-expect-error (hopefully we never have a translation string key named `fluentBundleProperty`
   stringModule.fluentBundleProperty = fluentBundleProperty;
 
+  // TODO: https://github.com/phetsims/chipper/issues/1588 type safety, review, etc.
+  stringModule.localizedStringMap = localizedStringMap;
+
   return stringModule;
 };
 

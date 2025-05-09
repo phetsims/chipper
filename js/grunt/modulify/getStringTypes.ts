@@ -120,33 +120,106 @@ const getStringTypes = ( repo: string ): string => {
     }
   }
 
-  // Now create the new interface with pattern functions
-  const newInterfaceLines: string[] = [];
-  newInterfaceLines.push( `
-// Interface for Fluent pattern strings with parameters
-export const ${packageObject.phet.requirejsNamespace.toLowerCase()}StringsNewInterface = {` );
+  // Now create the new interface with all strings, matching the nested structure of StringsType
+  const newInterfaceStructure: IntentionalAny = {};
 
-  // Add entries for each parameterized string
-  keyToParamsMap.forEach( ( params, joinedPath ) => {
-    const path = joinedPath.split( '.' );
+  // Build the same structure as the original StringsType
+  for ( const allElement of all ) {
+    const path = allElement.path;
+    let level = newInterfaceStructure;
+
+    // Create nested structure
+    for ( let k = 0; k < path.length - 1; k++ ) {
+      const token = path[ k ];
+      level[ token ] = level[ token ] || {};
+      level = level[ token ];
+    }
+
+    // Get the leaf token (last part of path)
     const lastKeyPart = path[ path.length - 1 ];
-    const { id } = convertJsonToFluent( joinedPath, '' );
+    const joinedPath = path.join( '.' );
 
-    const paramString = params.map( p => `${p}: IntentionalAny` ).join( ', ' );
+    if ( keyToParamsMap.has( joinedPath ) ) {
+      // For parameterized strings, add the format/toProperty interface
+      const params = keyToParamsMap.get( joinedPath )!;
+      const { id } = convertJsonToFluent( joinedPath, '' );
+      const paramString = params.map( p => `${p}: IntentionalAny` ).join( ', ' );
 
-    newInterfaceLines.push( `  ${lastKeyPart}: {
-    format: (args: { ${paramString} }) => ${pascalCase( repo )}Strings.fluentBundleProperty.value.formatPattern(
-      ${pascalCase( repo )}Strings.fluentBundleProperty.value.getMessage('${id}').value,
-      args
-    ),
-    toProperty: (args: { ${paramString} }) => new PatternMessageProperty(
-      ${pascalCase( repo )}Strings.${lastKeyPart}StringProperty,
-      args
-    )
-  },` );
-  } );
+      level[ lastKeyPart ] = {
+        __formatToProperty: {
+          paramString,
+          id,
+          fullKey: `${packageObject.phet.requirejsNamespace}/${joinedPath}`
+        }
+      };
+    }
+    else {
+      // For non-parameterized strings, reference the StringProperty directly
+      level[ lastKeyPart ] = {
+        __direct: true,
+        fullKey: `${packageObject.phet.requirejsNamespace}/${joinedPath}`
+      };
+    }
+  }
 
-  newInterfaceLines.push( '};' );
+  // Convert the structure to JavaScript code
+  const generateInterfaceCode = ( structure: IntentionalAny, path: string[] = [], indent: string = '' ) => {
+    let lines: string[] = [];
+
+    // Start with opening brace
+    if ( path.length === 0 ) {
+      lines.push( `
+// Interface for all strings, with special handling for parameterized patterns
+export const ${packageObject.phet.requirejsNamespace.toLowerCase()}StringsNewInterface = {` );
+    }
+    else {
+      lines.push( `${indent}{` );
+    }
+
+    // Generate code for each key
+    Object.keys( structure ).forEach( ( key, index, array ) => {
+      const value = structure[ key ];
+      const isLast = index === array.length - 1;
+      const comma = isLast ? '' : ',';
+
+      if ( value.__formatToProperty ) {
+        // For parameterized strings
+        const { paramString, id, fullKey } = value.__formatToProperty;
+
+        lines.push( `${indent}  '${key}': {
+${indent}    format: (args: { ${paramString} }) => ${pascalCase( repo )}Strings.fluentBundleProperty.value.formatPattern(
+${indent}      ${pascalCase( repo )}Strings.fluentBundleProperty.value.getMessage('${id}').value,
+${indent}      args
+${indent}    ),
+${indent}    toProperty: (args: { ${paramString} }) => new PatternMessageProperty(
+${indent}      ${pascalCase( repo )}Strings.localizedStringMap['${fullKey}'].property,
+${indent}      args
+${indent}    )
+${indent}  }${comma}` );
+      }
+      else if ( value.__direct ) {
+        // For non-parameterized strings, reference the StringProperty directly from localizedStringMap
+        lines.push( `${indent}  '${key}': ${pascalCase( repo )}Strings.localizedStringMap['${value.fullKey}'].property${comma}` );
+      }
+      else {
+        // For nested objects
+        const nestedLines = generateInterfaceCode( value, [ ...path, key ], indent + '  ' );
+        lines.push( `${indent}  '${key}': ${nestedLines}${comma}` );
+      }
+    } );
+
+    // End with closing brace
+    if ( path.length === 0 ) {
+      lines.push( '};' );
+    }
+    else {
+      lines.push( `${indent}}` );
+    }
+
+    return path.length === 0 ? lines.join( '\n' ) : lines.join( '\n' );
+  };
+
+  const newInterfaceLines = [ generateInterfaceCode( newInterfaceStructure ) ];
 
   // Convert the structure to text
   let structureText = JSON.stringify( structure, null, 2 );
@@ -165,6 +238,8 @@ export const ${packageObject.phet.requirejsNamespace.toLowerCase()}StringsNewInt
   structureText = replace( structureText, ',', ';' );
 
   const result = `type StringsType = ${structureText}
+
+const ${pascalCase( repo )}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' ) as StringsType;
 
 ${newInterfaceLines.join( '\n' )}`;
 
