@@ -22,7 +22,7 @@ const getStringTypes = ( repo: string ): string => {
   // Track paths to all the keys with values.
   const all: IntentionalAny[] = [];
 
-  // Recursively collect all of the paths to keys with values.
+  // Recursively collect all the paths to keys with values.
   const visit = ( level: IntentionalAny, path: string[] ) => {
     Object.keys( level ).forEach( key => {
       if ( key !== '_comment' ) {
