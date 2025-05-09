@@ -10,7 +10,27 @@
 import assert from 'assert';
 import { readFileSync } from 'fs';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import { listFluentParams } from './listFluentParams.js';
 import { replace } from './modulify.js';
+
+/**
+ * Converts a string key and its value to a Fluent identifier and message.
+ * Based on rebuildFluentBundle in getStringModule.ts
+ * @param stringKey - The key for the string
+ * @param value - The value of the string
+ * @returns An object with id and ftlString
+ */
+const convertJsonToFluent = ( stringKey: string, value: string ): { id: string; ftlString: string } => {
+  // Sanitize key → valid Fluent identifier (lower‑case, letters/digits/-).
+  const id = stringKey
+    .replace( /^[^/]+\//, '' )   // strip namespace prefix
+    .replace( /[^a-zA-Z0-9.]/g, '-' )
+    .split( '.' ).join( '_' )
+    .split( '-' ).join( '_' );
+
+  const ftlString = `${id} = ${value}`;
+  return { id: id, ftlString: ftlString };
+};
 
 /**
  * Creates a *.d.ts file that represents the types of the strings for the repo.
@@ -41,7 +61,33 @@ const getStringTypes = ( repo: string ): string => {
   };
   visit( json, [] );
 
+  // Build an FTL file in memory to extract parameters
+  let ftlContent = '';
+
+  // Map of string key to its fluent parameters
+  const keyToParamsMap = new Map<string, string[]>();
+
+  for ( let i = 0; i < all.length; i++ ) {
+    const allElement = all[ i ];
+    const joinedPath = allElement.path.join( '.' );
+    const { id, ftlString } = convertJsonToFluent( joinedPath, allElement.value );
+    ftlContent += ftlString + '\n';
+
+    // Analyze the string for parameters
+    try {
+      const params = listFluentParams( ftlContent, id );
+      if ( params.length > 0 ) {
+        keyToParamsMap.set( joinedPath, params );
+      }
+    }
+    catch( e ) {
+      // If there's an error parsing, assume no parameters
+      console.warn( `Error parsing fluent parameters for ${id}: ${e}` );
+    }
+  }
+
   // Transform to a new structure that matches the types we access at runtime.
+  // This is the legacy structure with only StringProperties
   const structure: IntentionalAny = {};
   for ( let i = 0; i < all.length; i++ ) {
     const allElement = all[ i ];
@@ -58,10 +104,13 @@ const getStringTypes = ( repo: string ): string => {
         assert( !token.includes( ' ' ), `Token ${token} cannot include forbidden characters` );
 
         if ( k === path.length - 1 && m === tokens.length - 1 ) {
-          if ( !( packageObject.phet && packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsDynamicLocale ) ) {
-            level[ token ] = '{{STRING}}'; // instead of value = allElement.value
-          }
+          // Legacy structure only has StringProperty types
           level[ `${token}StringProperty` ] = '{{STRING_PROPERTY}}';
+
+          // Also include the string value if supportsDynamicLocale is not true
+          if ( !( packageObject.phet && packageObject.phet.simFeatures && packageObject.phet.simFeatures.supportsDynamicLocale ) ) {
+            level[ token ] = '{{STRING}}';
+          }
         }
         else {
           level[ token ] = level[ token ] || {};
@@ -71,22 +120,63 @@ const getStringTypes = ( repo: string ): string => {
     }
   }
 
-  let text = JSON.stringify( structure, null, 2 );
+  // Now create the new interface with pattern functions
+  const newInterfaceLines: string[] = [];
+  newInterfaceLines.push( `
+// Interface for Fluent pattern strings with parameters
+export const ${packageObject.phet.requirejsNamespace.toLowerCase()}StringsNewInterface = {` );
+
+  // Add entries for each parameterized string
+  keyToParamsMap.forEach( ( params, joinedPath ) => {
+    const path = joinedPath.split( '.' );
+    const lastKeyPart = path[ path.length - 1 ];
+    const { id } = convertJsonToFluent( joinedPath, '' );
+
+    const paramString = params.map( p => `${p}: IntentionalAny` ).join( ', ' );
+
+    newInterfaceLines.push( `  ${lastKeyPart}: {
+    format: (args: { ${paramString} }) => ${pascalCase( repo )}Strings.fluentBundleProperty.value.formatPattern(
+      ${pascalCase( repo )}Strings.fluentBundleProperty.value.getMessage('${id}').value,
+      args
+    ),
+    toProperty: (args: { ${paramString} }) => new PatternMessageProperty(
+      ${pascalCase( repo )}Strings.${lastKeyPart}StringProperty,
+      args
+    )
+  },` );
+  } );
+
+  newInterfaceLines.push( '};' );
+
+  // Convert the structure to text
+  let structureText = JSON.stringify( structure, null, 2 );
 
   // Use single quotes instead of the double quotes from JSON
-  text = replace( text, '"', '\'' );
+  structureText = replace( structureText, '"', '\'' );
 
-  text = replace( text, '\'{{STRING}}\'', 'string' );
-  text = replace( text, '\'{{STRING_PROPERTY}}\'', 'LocalizedStringProperty' );
+  structureText = replace( structureText, '\'{{STRING}}\'', 'string' );
+  structureText = replace( structureText, '\'{{STRING_PROPERTY}}\'', 'LocalizedStringProperty' );
 
   // Add ; to the last in the list
-  text = replace( text, ': string\n', ': string;\n' );
-  text = replace( text, ': LocalizedStringProperty\n', ': LocalizedStringProperty;\n' );
+  structureText = replace( structureText, ': string\n', ': string;\n' );
+  structureText = replace( structureText, ': LocalizedStringProperty\n', ': LocalizedStringProperty;\n' );
 
   // Use ; instead of ,
-  text = replace( text, ',', ';' );
+  structureText = replace( structureText, ',', ';' );
 
-  return text;
+  const result = `type StringsType = ${structureText}
+
+${newInterfaceLines.join( '\n' )}`;
+
+  // Function to pascal case a string (copied from pascalCase.js)
+  function pascalCase( repo: string ): string {
+    return repo
+      .split( '-' )
+      .map( word => word.charAt( 0 ).toUpperCase() + word.slice( 1 ) )
+      .join( '' );
+  }
+
+  return result;
 };
 
 export default getStringTypes;

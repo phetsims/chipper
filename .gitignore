@@ -11,3 +11,5 @@ eslint/cache/
 build
 dist
 transpile/cache/status.json
+
+**/.claude/settings.local.json

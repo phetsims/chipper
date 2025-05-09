@@ -45,9 +45,11 @@ const createStringModule = async ( repo: string ): Promise<void> => {
 
 import getStringModule from '../../chipper/js/browser/getStringModule.js';
 import type LocalizedStringProperty from '../../chipper/js/browser/LocalizedStringProperty.js';
+import type TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
+import type IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 import ${namespace} from './${namespace}.js';
 
-type StringsType = ${getStringTypes( repo )};
+${getStringTypes( repo )}
 
 const ${stringModuleName} = getStringModule( '${packageObject.phet.requirejsNamespace}' ) as StringsType;
 

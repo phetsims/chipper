@@ -3,7 +3,7 @@
 /**
  * Returns every variable / selector that can influence the pattern identified
  * by `key` within the given Fluent file contents.
-*
+ *
  * - fluentFileFTL : raw FTL file contents
  * - key           : message id ("id") or term id ("-id")
  * ← string[]      : alphabetical list of parameter / placeholder names
@@ -11,7 +11,9 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-import { FluentParser, Entry, Pattern, Resource } from '@fluent/syntax';
+// @ts-expect-error TODO: https://github.com/phetsims/chipper/issues/1588
+import { Entry, FluentParser, Pattern, Resource } from '@fluent/syntax';
+import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
 export function listFluentParams( fluentFileFTL: string, key: string ): string[] {
 
@@ -48,8 +50,10 @@ export function listFluentParams( fluentFileFTL: string, key: string ): string[]
       }
     };
 
-    const visitExpression = ( expr: any ): void => {
-      switch ( expr.type ) {
+    const visitExpression = ( expr: IntentionalAny ): void => {
+
+      // eslint-disable-next-line default-case
+      switch( expr.type ) {
 
         case 'VariableReference': {
           out.add( expr.id.name );
@@ -80,7 +84,7 @@ export function listFluentParams( fluentFileFTL: string, key: string ): string[]
 
         case 'CallExpression': {
           for ( const pos of expr.positional ) { visitExpression( pos ); }
-          for ( const named of expr.named )   { visitExpression( named.value ); }
+          for ( const named of expr.named ) { visitExpression( named.value ); }
           break;
         }
 
@@ -92,7 +96,7 @@ export function listFluentParams( fluentFileFTL: string, key: string ): string[]
     };
 
     // @ts-expect-error – Entry may include value/attributes depending on kind
-    if ( entry.value )                 { walkPattern( entry.value ); }
+    if ( entry.value ) { walkPattern( entry.value ); }
     // @ts-expect-error
     if ( entry.attributes?.length ) {
       // @ts-expect-error
