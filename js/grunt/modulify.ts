@@ -547,7 +547,10 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
   // If the JSON5 strings file exists, transform it into the regular JSON file before going to the next step.
-  if ( fs.existsSync( `../${repo}/${repo}-strings_en.json5` ) ) {
+  if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.json5` ) ) {
+
+    // TODO: https://github.com/phetsims/chipper/issues/1588 write a message or banner that the JSON file was machine generated
+    // TODO: https://github.com/phetsims/chipper/issues/1588 and should not be edited manually
     await convertStringsJSON5toJSON( repo );
   }
 
