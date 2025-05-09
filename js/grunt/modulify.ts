@@ -20,7 +20,7 @@ import loadFileAsDataURI from '../common/loadFileAsDataURI.js';
 import pascalCase from '../common/pascalCase.js';
 import toLessEscapedString from '../common/toLessEscapedString.js';
 import createMipmap from './createMipmap.js';
-import modulifyFluentFile from './fluent/modulifyFluentFile.js';
+import modulifyFluentFile from './modulify/modulifyFluentFile.js';
 import generateDevelopmentStrings from './generateDevelopmentStrings.js';
 import getCopyrightLine from './getCopyrightLine.js';
 
