@@ -13,16 +13,16 @@ import json5 from 'json5';
 import _ from 'lodash';
 import os from 'os';
 import path from 'path';
-import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
-import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
-import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-import loadFileAsDataURI from '../common/loadFileAsDataURI.js';
-import pascalCase from '../common/pascalCase.js';
-import toLessEscapedString from '../common/toLessEscapedString.js';
-import createMipmap from './createMipmap.js';
-import modulifyFluentFile from './modulify/modulifyFluentFile.js';
-import generateDevelopmentStrings from './generateDevelopmentStrings.js';
-import getCopyrightLine from './getCopyrightLine.js';
+import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
+import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
+import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import loadFileAsDataURI from '../../common/loadFileAsDataURI.js';
+import pascalCase from '../../common/pascalCase.js';
+import toLessEscapedString from '../../common/toLessEscapedString.js';
+import createMipmap from '../createMipmap.js';
+import modulifyFluentFile from './modulifyFluentFile.js';
+import generateDevelopmentStrings from '../generateDevelopmentStrings.js';
+import getCopyrightLine from '../getCopyrightLine.js';
 
 const svgo = require( 'svgo' );
 

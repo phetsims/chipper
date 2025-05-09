@@ -10,7 +10,7 @@ import { getOption } from '../../../../perennial-alias/js/grunt/tasks/util/getOp
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 
 // eslint-disable-next-line phet/default-import-match-filename
-import _modulify from '../modulify.js';
+import _modulify from '../modulify/modulify.js';
 
 export const modulifyPromise = ( async () => {
 
