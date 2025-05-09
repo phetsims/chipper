@@ -9,6 +9,7 @@
 import TReadOnlyProperty, { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import EnumerationValue from '../../../phet-core/js/EnumerationValue.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import { FluentBundle, FluentPattern } from '../browser-and-node/FluentLibrary.js';
 import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 
 const FluentUtils = {
@@ -54,6 +55,17 @@ const FluentUtils = {
     assert && assert( messageValue, 'Fluent message is undefined.' );
 
     const value = bundle.formatPattern( messageValue, newArgs, errors );
+    assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
+
+    return value;
+  },
+
+  formatMessageWithBundle: ( message: FluentPattern, bundle: FluentBundle, args: IntentionalAny ): string => {
+    const newArgs = FluentUtils.handleFluentArgs( args );
+
+    const errors: Error[] = [];
+
+    const value = bundle.formatPattern( message, newArgs, errors );
     assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
 
     return value;

@@ -17,6 +17,7 @@ import { FluentBundle } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/sr
 import { FluentResource } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/resource.js';
 import { FluentParser } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/parser.js';
 import { Visitor } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/visitor.js';
+import { Message } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
 
 /**
  * A visitor that collects Nodes from the AST so we can inspect them for problems.
@@ -140,3 +141,4 @@ ${junk.content}
 export default FluentLibrary;
 export { FluentBundle, FluentResource };
 export type { Pattern as FluentPattern };
+export type { Message };

@@ -120,6 +120,10 @@ const getStringTypes = ( repo: string ): string => {
     }
   }
 
+  // localizedStringMap: Record<string, LocalizedString>;
+  structure.localizedStringMap = '{{LOCALIZED_STRING_MAP_RECORD}}';
+  structure.fluentBundleProperty = '{{FLUENT_BUNDLE_PROPERTY}}';
+
   // Now create the new interface with all strings, matching the nested structure of StringsType
   const newInterfaceStructure: IntentionalAny = {};
 
@@ -184,17 +188,15 @@ export const ${packageObject.phet.requirejsNamespace.toLowerCase()}StringsNewInt
 
       if ( value.__formatToProperty ) {
         // For parameterized strings
-        const { paramString, id, fullKey } = value.__formatToProperty;
+        const { paramString, id } = value.__formatToProperty;
 
         lines.push( `${indent}  '${key}': {
-${indent}    format: (args: { ${paramString} }) => ${pascalCase( repo )}Strings.fluentBundleProperty.value.formatPattern(
-${indent}      ${pascalCase( repo )}Strings.fluentBundleProperty.value.getMessage('${id}').value,
+${indent}    format: (args: { ${paramString} }) => FluentUtils.formatMessageWithBundle(
+${indent}      ${pascalCase( repo )}Strings.fluentBundleProperty.value.getMessage('${id}')!.value!,
+${indent}      ${pascalCase( repo )}Strings.fluentBundleProperty.value,
 ${indent}      args
 ${indent}    ),
-${indent}    toProperty: (args: { ${paramString} }) => new PatternMessageProperty(
-${indent}      ${pascalCase( repo )}Strings.localizedStringMap['${fullKey}'].property,
-${indent}      args
-${indent}    )
+${indent}    createProperty: (args: { ${paramString} }) => createFluentMessageProperty( ${pascalCase( repo )}Strings.fluentBundleProperty, '${id}', args ) 
 ${indent}  }${comma}` );
       }
       else if ( value.__direct ) {
@@ -236,6 +238,10 @@ ${indent}  }${comma}` );
 
   // Use ; instead of ,
   structureText = replace( structureText, ',', ';' );
+
+  // These types need to use commas and not semicolons
+  structureText = replace( structureText, '\'{{LOCALIZED_STRING_MAP_RECORD}}\'', 'Record<string, LocalizedString>' );
+  structureText = replace( structureText, '\'{{FLUENT_BUNDLE_PROPERTY}}\'', 'TReadOnlyProperty<FluentBundle>;' );
 
   const result = `type StringsType = ${structureText}
 

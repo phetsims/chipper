@@ -45,7 +45,11 @@ const createStringModule = async ( repo: string ): Promise<void> => {
 
 import getStringModule from '../../chipper/js/browser/getStringModule.js';
 import type LocalizedStringProperty from '../../chipper/js/browser/LocalizedStringProperty.js';
-import type TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
+import createFluentMessageProperty from '../../chipper/js/browser/createFluentMessageProperty.js';
+import LocalizedString from '../../chipper/js/browser/LocalizedString.js';
+import { FluentBundle } from '../../chipper/js/browser-and-node/FluentLibrary.js';
+import FluentUtils from '../../chipper/js/browser/FluentUtils.js';
+import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import type IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 import ${namespace} from './${namespace}.js';
 
