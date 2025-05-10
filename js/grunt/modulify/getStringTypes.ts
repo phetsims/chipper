@@ -151,8 +151,8 @@ const getStringTypes = ( repo: string ): string => {
 
       level[ lastKeyPart ] = {
         __formatToProperty: {
-          paramString,
-          id,
+          paramString: paramString,
+          id: id,
           fullKey: `${packageObject.phet.requirejsNamespace}/${joinedPath}`
         }
       };
@@ -167,8 +167,8 @@ const getStringTypes = ( repo: string ): string => {
   }
 
   // Convert the structure to JavaScript code
-  const generateInterfaceCode = ( structure: IntentionalAny, path: string[] = [], indent: string = '' ) => {
-    let lines: string[] = [];
+  const generateInterfaceCode = ( structure: IntentionalAny, path: string[] = [], indent = '' ) => {
+    const lines: string[] = [];
 
     // Start with opening brace
     if ( path.length === 0 ) {

@@ -7,7 +7,7 @@
  * @author Jonathan Olson (PhET Interactive Simulations)
  */
 
-import fs, { readFileSync } from 'fs';
+import fs from 'fs';
 import _ from 'lodash';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import pascalCase from '../../common/pascalCase.js';
@@ -22,7 +22,6 @@ const OFF = 'off';
  */
 const createStringModule = async ( repo: string ): Promise<void> => {
 
-  const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   const stringModuleName = `${pascalCase( repo )}Strings`;
   const relativeStringModuleFile = `js/${stringModuleName}.ts`;
   const stringModuleFileJS = `../${repo}/js/${stringModuleName}.js`;

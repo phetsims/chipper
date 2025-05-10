@@ -284,10 +284,11 @@ const getStringModule = ( requirejsNamespace: string ): object => {
     fluentBundleProperty.value = rebuildFluentBundle( phet.chipper.locale as Locale, localizedStringMap );
   } );
 
-  // @ts-expect-error (hopefully we never have a translation string key named `fluentBundleProperty`
+  // @ts-expect-error (hopefully we never have a translation string key named `fluentBundleProperty`)
   stringModule.fluentBundleProperty = fluentBundleProperty;
 
   // TODO: https://github.com/phetsims/chipper/issues/1588 type safety, review, etc.
+  // @ts-expect-error (hopefully we never have a translation string key named `localizedStringMap`)
   stringModule.localizedStringMap = localizedStringMap;
 
   return stringModule;
