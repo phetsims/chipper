@@ -8,7 +8,7 @@
  */
 
 import fs, { readFileSync } from 'fs';
-import json5 from 'json5';
+import Hjson from 'hjson';
 import _ from 'lodash';
 import os from 'os';
 import path from 'path';
@@ -366,14 +366,18 @@ function nestJSONStringValues( input: Record<string, IntentionalAny> ): object {
 }
 
 /**
- * Converts a JSON5 file to JSON, nesting each leaf value under a "value" key,
+ * Converts an Hjson file to JSON, nesting each leaf value under a "value" key,
  * and writes the result to a JSON file.
+ *
+ * To add support for syntax highlighting in IntelliJ or WebStorm, use the TextMate bundle like so:
+ * git clone https://github.com/hjson/textmate-hjson, press “+” in the IntelliJ TextMate settings, pick folder
+ *
  * @param repo - The name of a repo, e.g. 'joist'
  */
-const convertStringsJSON5toJSON = async ( repo: string ) => {
-  const filePath = `../${repo}/${repo}-strings_en.json5`;
-  const json5Contents = fs.readFileSync( filePath, 'utf8' );
-  const parsed = json5.parse( json5Contents );
+const convertStringsHjsonToJSON = async ( repo: string ) => {
+  const filePath = `../${repo}/${repo}-strings_en.hjson`;
+  const hjsonContents = fs.readFileSync( filePath, 'utf8' );
+  const parsed = Hjson.parse( hjsonContents, { keepWsc: true } );
 
   // Recursively nest all string values.
   const nested = nestJSONStringValues( parsed );
@@ -429,12 +433,12 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
-  // If the JSON5 strings file exists, transform it into the regular JSON file before going to the next step.
-  if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.json5` ) ) {
+  // If the Hjson strings file exists, transform it into the regular JSON file before going to the next step.
+  if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.hjson` ) ) {
 
     // TODO: https://github.com/phetsims/chipper/issues/1588 write a message or banner that the JSON file was machine generated
     // TODO: https://github.com/phetsims/chipper/issues/1588 and should not be edited manually
-    await convertStringsJSON5toJSON( repo );
+    await convertStringsHjsonToJSON( repo );
   }
 
   // Strings module file
