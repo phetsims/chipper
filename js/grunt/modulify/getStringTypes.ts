@@ -35,7 +35,7 @@ const convertJsonToFluent = ( stringKey: string, value: string ): { id: string; 
 /**
  * Creates a *.d.ts file that represents the types of the strings for the repo.
  */
-const getStringTypes = ( repo: string ): string => {
+const getStringTypes = ( repo: string, fluentExportName: string ): string => {
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
   const json = JSON.parse( readFileSync( `../${repo}/${repo}-strings_en.json`, 'utf8' ) );
 
@@ -194,7 +194,7 @@ const getStringTypes = ( repo: string ): string => {
     if ( path.length === 0 ) {
       lines.push( `
 // Interface for all strings, with special handling for parameterized patterns
-export const ${packageObject.phet.requirejsNamespace.toLowerCase()}StringsNewInterface = {` );
+export const ${fluentExportName} = {` );
     }
     else {
       lines.push( `${indent}{` );

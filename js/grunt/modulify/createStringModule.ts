@@ -23,6 +23,7 @@ const OFF = 'off';
 const createStringModule = async ( repo: string ): Promise<void> => {
 
   const stringModuleName = `${pascalCase( repo )}Strings`;
+  const fluentExportName = `${pascalCase( repo )}Fluent`;
   const relativeStringModuleFile = `js/${stringModuleName}.ts`;
   const stringModuleFileJS = `../${repo}/js/${stringModuleName}.js`;
   const namespace = _.camelCase( repo );
@@ -52,7 +53,7 @@ import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import type IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 import ${namespace} from './${namespace}.js';
 
-${getStringTypes( repo )}
+${getStringTypes( repo, fluentExportName )}
 
 ${namespace}.register( '${stringModuleName}', ${stringModuleName} );
 
