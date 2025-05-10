@@ -10,6 +10,7 @@
 import assert from 'assert';
 import { readFileSync } from 'fs';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
 import { listFluentParams, ParamInfo } from './listFluentParams.js';
 import { replace } from './modulify.js';
 
@@ -74,6 +75,9 @@ const getStringTypes = ( repo: string, fluentExportName: string ): string => {
     idToPathMap.set( id, joinedPath );
     allFluentStrings.push( { id: id, joinedPath: joinedPath } );
   }
+
+  // Verify the fluent file.
+  FluentLibrary.verifyFluentFile( ftlContent );
 
   // Map of string key to its fluent parameters with variant information
   const keyToParamsMap = new Map<string, ParamInfo[]>();

@@ -150,11 +150,3 @@ export function listFluentParams( fluentFileFTL: string, key: string ): ParamInf
   // Convert the map to an array of ParamInfo objects, sorted by name
   return Array.from( paramsMap.values() ).sort( ( a, b ) => a.name.localeCompare( b.name ) );
 }
-
-/**
- * For backward compatibility - returns only parameter names
- * @deprecated Use listFluentParams directly for full parameter information
- */
-export function listFluentParamNames( fluentFileFTL: string, key: string ): string[] {
-  return listFluentParams( fluentFileFTL, key ).map( param => param.name );
-}
