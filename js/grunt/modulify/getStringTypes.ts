@@ -63,17 +63,23 @@ const getStringTypes = ( repo: string, fluentExportName: string ): string => {
 
   // Build an FTL file in memory to extract parameters
   let ftlContent = '';
+  const idToPathMap = new Map<string, string>();
+  const allFluentStrings: Array<{ id: string; joinedPath: string }> = [];
+
+  // First loop: Build the complete FTL content, so that subsequent variables can be referenced by a term that *precedes* them
+  for ( const allElement of all ) {
+    const joinedPath = allElement.path.join( '.' );
+    const { id, ftlString } = convertJsonToFluent( joinedPath, allElement.value );
+    ftlContent += ftlString + '\n';
+    idToPathMap.set( id, joinedPath );
+    allFluentStrings.push( { id: id, joinedPath: joinedPath } );
+  }
 
   // Map of string key to its fluent parameters with variant information
   const keyToParamsMap = new Map<string, ParamInfo[]>();
 
-  for ( let i = 0; i < all.length; i++ ) {
-    const allElement = all[ i ];
-    const joinedPath = allElement.path.join( '.' );
-    const { id, ftlString } = convertJsonToFluent( joinedPath, allElement.value );
-    ftlContent += ftlString + '\n';
-
-    // Analyze the string for parameters
+  // Second loop: Extract parameters for each string using the complete FTL file
+  for ( const { id, joinedPath } of allFluentStrings ) {
     try {
       const params = listFluentParams( ftlContent, id );
       if ( params.length > 0 ) {
