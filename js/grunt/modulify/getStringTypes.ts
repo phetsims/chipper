@@ -10,7 +10,7 @@
 import assert from 'assert';
 import { readFileSync } from 'fs';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
-import { listFluentParams } from './listFluentParams.js';
+import { listFluentParams, ParamInfo } from './listFluentParams.js';
 import { replace } from './modulify.js';
 
 /**
@@ -64,8 +64,8 @@ const getStringTypes = ( repo: string ): string => {
   // Build an FTL file in memory to extract parameters
   let ftlContent = '';
 
-  // Map of string key to its fluent parameters
-  const keyToParamsMap = new Map<string, string[]>();
+  // Map of string key to its fluent parameters with variant information
+  const keyToParamsMap = new Map<string, ParamInfo[]>();
 
   for ( let i = 0; i < all.length; i++ ) {
     const allElement = all[ i ];
@@ -147,7 +147,27 @@ const getStringTypes = ( repo: string ): string => {
       // For parameterized strings, add the format/toProperty interface
       const params = keyToParamsMap.get( joinedPath )!;
       const { id } = convertJsonToFluent( joinedPath, '' );
-      const paramString = params.map( p => `${p}: IntentionalAny` ).join( ', ' );
+
+      // Generate type information for each parameter
+      const paramTypesArray = params.map( param => {
+        if ( param.variants && param.variants.length > 0 ) {
+          // For select expression parameters, generate a union type of the variants
+          // Filter out '*' which represents the 'other' case
+          const variantOptions = param.variants
+            .filter( v => v !== '*' )
+            .map( v => `'${v}'` )
+            .join( ' | ' );
+
+          // Return both the direct union type and the TReadOnlyProperty wrapped version
+          return `${param.name}: ${variantOptions} | TReadOnlyProperty<${variantOptions}>`;
+        }
+        else {
+          // For simple parameters, use IntentionalAny
+          return `${param.name}: IntentionalAny`;
+        }
+      } );
+
+      const paramString = paramTypesArray.join( ', ' );
 
       level[ lastKeyPart ] = {
         __formatToProperty: {

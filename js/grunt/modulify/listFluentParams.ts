@@ -6,7 +6,7 @@
  *
  * - fluentFileFTL : raw FTL file contents
  * - key           : message id ("id") or term id ("-id")
- * ← string[]      : alphabetical list of parameter / placeholder names
+ * ← ParamInfo[]   : information about each parameter including name and variant options
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -15,8 +15,18 @@
 import { Entry, FluentParser, Pattern, Resource } from '@fluent/syntax';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
-export function listFluentParams( fluentFileFTL: string, key: string ): string[] {
+/**
+ * Information about a parameter in a Fluent message
+ */
+export type ParamInfo = {
+  name: string;
+  variants?: string[];  // For select expressions, the possible variant keys
+};
 
+/**
+ * Returns parameters and their variant options (if applicable) for a Fluent message
+ */
+export function listFluentParams( fluentFileFTL: string, key: string ): ParamInfo[] {
   // ─── Parse FTL & build entry index (for recursive walks) ────────────────
   const parser = new FluentParser();
   const resourceAst: Resource = parser.parse( fluentFileFTL );
@@ -35,10 +45,12 @@ export function listFluentParams( fluentFileFTL: string, key: string ): string[]
     return [];
   }
 
-  // ─── Recursive parameter extraction ─────────────────────────────────────
-  const collect = ( entry: Entry, seen = new Set<Entry>(), out = new Set<string>() ): Set<string> => {
+  // Map to store parameter info (name -> ParamInfo)
+  const paramsMap = new Map<string, ParamInfo>();
 
-    if ( seen.has( entry ) ) { return out; }
+  // ─── Recursive parameter extraction ─────────────────────────────────────
+  const collect = ( entry: Entry, seen = new Set<Entry>() ): void => {
+    if ( seen.has( entry ) ) { return; }
     seen.add( entry );
 
     const walkPattern = ( pat?: Pattern ): void => {
@@ -51,19 +63,47 @@ export function listFluentParams( fluentFileFTL: string, key: string ): string[]
     };
 
     const visitExpression = ( expr: IntentionalAny ): void => {
-
       // eslint-disable-next-line default-case
       switch( expr.type ) {
-
         case 'VariableReference': {
-          out.add( expr.id.name );
+          const paramName = expr.id.name;
+          if ( !paramsMap.has( paramName ) ) {
+            paramsMap.set( paramName, { name: paramName } );
+          }
           break;
         }
 
         case 'SelectExpression': {
           if ( expr.selector.type === 'VariableReference' ) {
-            out.add( expr.selector.id.name );
+            const paramName = expr.selector.id.name;
+
+            // Extract variant keys from the SelectExpression
+            const variants = expr.variants.map( ( variant: IntentionalAny ) =>
+              variant.key.name === 'other' ? '*' : variant.key.name
+            );
+
+            // Store param with its variants
+            if ( paramsMap.has( paramName ) ) {
+              // If already exists, add/merge variants
+              const existing = paramsMap.get( paramName )!;
+              if ( !existing.variants ) {
+                existing.variants = variants;
+              }
+              else {
+                // Merge with existing variants
+                for ( const variant of variants ) {
+                  if ( !existing.variants.includes( variant ) ) {
+                    existing.variants.push( variant );
+                  }
+                }
+              }
+            }
+            else {
+              paramsMap.set( paramName, { name: paramName, variants: variants } );
+            }
           }
+
+          // Process the selector and all variants
           for ( const variant of expr.variants ) {
             walkPattern( variant.value );
           }
@@ -77,7 +117,7 @@ export function listFluentParams( fluentFileFTL: string, key: string ): string[]
           const refKey = expr.type === 'TermReference' ? `-${refName}` : refName;
           const refEntry = entryIndex.get( refKey );
           if ( refEntry ) {
-            collect( refEntry, seen, out );
+            collect( refEntry, seen );
           }
           break;
         }
@@ -102,9 +142,19 @@ export function listFluentParams( fluentFileFTL: string, key: string ): string[]
       // @ts-expect-error
       for ( const attr of entry.attributes ) { walkPattern( attr.value ); }
     }
-    return out;
   };
 
-  // ─── Run & return sorted list ───────────────────────────────────────────
-  return Array.from( collect( rootEntry ).values() ).sort();
+  // Run the collection process
+  collect( rootEntry );
+
+  // Convert the map to an array of ParamInfo objects, sorted by name
+  return Array.from( paramsMap.values() ).sort( ( a, b ) => a.name.localeCompare( b.name ) );
+}
+
+/**
+ * For backward compatibility - returns only parameter names
+ * @deprecated Use listFluentParams directly for full parameter information
+ */
+export function listFluentParamNames( fluentFileFTL: string, key: string ): string[] {
+  return listFluentParams( fluentFileFTL, key ).map( param => param.name );
 }
