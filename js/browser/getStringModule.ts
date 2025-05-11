@@ -98,6 +98,7 @@ PhetioObject.create( {
 function rebuildFluentBundle( locale: Locale, map: Record<string, LocalizedString> ): FluentBundle {
   const ftlLines: string[] = [];
 
+  // First pass: process normal strings without references
   Object.entries( map ).forEach( ( [ stringKey, ls ] ) => {
     // Sanitize key → valid Fluent identifier (lower‑case, letters/digits/-).
     const id = stringKey

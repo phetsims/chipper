@@ -18,7 +18,7 @@ import FluentUtils from './FluentUtils.js';
 export default function createFluentMessageProperty(
   bundleProperty: TReadOnlyProperty<FluentBundle>,
   messageKey: string,
-  values: IntentionalAny ): TReadOnlyProperty<string> {
+  values: IntentionalAny = {} ): TReadOnlyProperty<string> {
 
   const dependencies: TReadOnlyProperty<IntentionalAny>[] = [ bundleProperty ];
   const keys = Object.keys( values );

@@ -24,7 +24,8 @@ export type ParamInfo = {
 };
 
 /**
- * Returns parameters and their variant options (if applicable) for a Fluent message
+ * Returns parameters and their variant options (if applicable) for a Fluent message.
+ * Also detects if the message has any references to other messages.
  */
 export function listFluentParams( fluentFileFTL: string, key: string ): ParamInfo[] {
   // ─── Parse FTL & build entry index (for recursive walks) ────────────────
@@ -47,6 +48,9 @@ export function listFluentParams( fluentFileFTL: string, key: string ): ParamInf
 
   // Map to store parameter info (name -> ParamInfo)
   const paramsMap = new Map<string, ParamInfo>();
+
+  // Flag to track if we found any message references (even without variables)
+  let hasMessageReferences = false;
 
   // ─── Recursive parameter extraction ─────────────────────────────────────
   const collect = ( entry: Entry, seen = new Set<Entry>() ): void => {
@@ -113,6 +117,9 @@ export function listFluentParams( fluentFileFTL: string, key: string ): ParamInf
 
         case 'MessageReference':
         case 'TermReference': {
+          // Set the flag when we find a message reference
+          hasMessageReferences = true;
+
           const refName = expr.id.type === 'Identifier' ? expr.id.name : String( expr.id.value );
           const refKey = expr.type === 'TermReference' ? `-${refName}` : refName;
           const refEntry = entryIndex.get( refKey );
@@ -146,6 +153,11 @@ export function listFluentParams( fluentFileFTL: string, key: string ): ParamInf
 
   // Run the collection process
   collect( rootEntry );
+
+  // If we found message references but no parameters, add a dummy parameter to force Fluent handling
+  if ( hasMessageReferences && paramsMap.size === 0 ) {
+    paramsMap.set( '__hasReferences', { name: '__hasReferences' } );
+  }
 
   // Convert the map to an array of ParamInfo objects, sorted by name
   return Array.from( paramsMap.values() ).sort( ( a, b ) => a.name.localeCompare( b.name ) );

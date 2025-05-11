@@ -160,7 +160,11 @@ const getStringTypes = ( repo: string, fluentExportName: string ): string => {
 
       // Generate type information for each parameter
       const paramTypesArray = params.map( param => {
-        if ( param.variants && param.variants.length > 0 ) {
+        // Skip the special __hasReferences parameter which is just a marker
+        if ( param.name === '__hasReferences' ) {
+          return null;
+        }
+        else if ( param.variants && param.variants.length > 0 ) {
           // For select expression parameters, generate a union type of the variants
           // Filter out '*' which represents the 'other' case
           const variantOptions = param.variants
@@ -175,15 +179,19 @@ const getStringTypes = ( repo: string, fluentExportName: string ): string => {
           // For simple parameters, use IntentionalAny
           return `${param.name}: IntentionalAny`;
         }
-      } );
+      } ).filter( param => param !== null );
 
       const paramString = paramTypesArray.join( ', ' );
+
+      // Check if this is a message with only references (no real parameters)
+      const isReferenceOnlyMessage = params.length === 1 && params[ 0 ].name === '__hasReferences';
 
       level[ lastKeyPart ] = {
         __formatToProperty: {
           paramString: paramString,
           id: id,
-          fullKey: `${packageObject.phet.requirejsNamespace}/${joinedPath}`
+          fullKey: `${packageObject.phet.requirejsNamespace}/${joinedPath}`,
+          isReferenceOnlyMessage: isReferenceOnlyMessage
         }
       };
     }
@@ -218,16 +226,23 @@ export const ${fluentExportName} = {` );
 
       if ( value.__formatToProperty ) {
         // For parameterized strings
-        const { paramString, id } = value.__formatToProperty;
+        const { paramString, id, isReferenceOnlyMessage } = value.__formatToProperty;
 
-        lines.push( `${indent}  '${key}': {
+        if ( isReferenceOnlyMessage ) {
+          // For strings with only message references but no variables
+          lines.push( `${indent}  '${key}': createFluentMessageProperty( ${pascalCase( repo )}Strings.fluentBundleProperty, '${id}' )${comma}` );
+        }
+        else {
+          // For regular parameterized strings
+          lines.push( `${indent}  '${key}': {
 ${indent}    format: (args: { ${paramString} }) => FluentUtils.formatMessageWithBundle(
 ${indent}      ${pascalCase( repo )}Strings.fluentBundleProperty.value.getMessage('${id}')!.value!,
 ${indent}      ${pascalCase( repo )}Strings.fluentBundleProperty.value,
 ${indent}      args
 ${indent}    ),
-${indent}    createProperty: (args: { ${paramString} }) => createFluentMessageProperty( ${pascalCase( repo )}Strings.fluentBundleProperty, '${id}', args ) 
+${indent}    createProperty: (args: { ${paramString} }) => createFluentMessageProperty( ${pascalCase( repo )}Strings.fluentBundleProperty, '${id}', args )
 ${indent}  }${comma}` );
+        }
       }
       else if ( value.__direct ) {
         // For non-parameterized strings, reference the StringProperty directly from localizedStringMap
