@@ -290,7 +290,7 @@ ${indent}  }${comma}` );
 
   const result = `type StringsType = ${structureText}
 
-const ${pascalCase( repo )}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' ) as unknown as StringsType;
+const ${pascalCase( repo )}Strings = getStringModule( '${packageObject.phet.requirejsNamespace}' ) as StringsType;
 
 ${newInterfaceLines.join( '\n' )}`;
 

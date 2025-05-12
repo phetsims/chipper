@@ -124,24 +124,15 @@ function rebuildFluentBundle( locale: Locale, map: Record<string, LocalizedStrin
   return bundle;
 }
 
-type TStringLeaf = string | TReadOnlyProperty<string>;
-
-// Recursive structure for arbitrary translation keys
-type TStringTree = {
-  [ key: string ]: TStringLeaf | TStringTree;
+type TStringModule = {
+  [ key: string ]: TStringModule | string | TReadOnlyProperty<string>;
 };
-
-// Root‑level object returned by `getStringModule`.
-type TRootStringModule = {
-  fluentBundleProperty: Property<FluentBundle | null>;
-  localizedStringMap: Record<string, LocalizedString>;
-} & TStringTree;
 
 /**
  * @param requirejsNamespace - E.g. 'JOIST', to pull string keys out from that namespace
  * @returns Nested object to be accessed like JoistStrings.ResetAllButton.name
  */
-const getStringModule = ( requirejsNamespace: string ): TRootStringModule => {
+const getStringModule = ( requirejsNamespace: string ): object => {
   // Our string information is pulled globally, e.g. phet.chipper.strings[ locale ][ stringKey ] = stringValue;
   // Our locale information is from phet.chipper.locale
 
@@ -150,6 +141,7 @@ const getStringModule = ( requirejsNamespace: string ): TRootStringModule => {
   assert && assert( phet.chipper.strings, 'phet.chipper.strings should have been loaded by now' );
 
   // Construct locales in increasing specificity, e.g. [ 'en', 'zh', 'zh_CN' ], so we get fallbacks in order
+  // const locales = [ FALLBACK_LOCALE ];
   const stringKeyPrefix = `${requirejsNamespace}/`;
 
   // We may have other older (unused) keys in babel, and we are only doing the search that matters with the English
@@ -167,7 +159,7 @@ const getStringModule = ( requirejsNamespace: string ): TRootStringModule => {
   // localizedStringMap[ stringKey ]
   const localizedStringMap: Record<string, LocalizedString> = {};
 
-  const stringModule = {} as TRootStringModule;
+  const stringModule: TStringModule = {};
 
   const fluentBundleProperty = new Property<FluentBundle | null>( null );
 
@@ -187,7 +179,7 @@ const getStringModule = ( requirejsNamespace: string ): TRootStringModule => {
 
     // During traversal into the string object, this will hold the object where the next level needs to be defined,
     // whether that's another child object, or the string value itself.
-    let reference: TStringTree = stringModule;
+    let reference: TStringModule = stringModule;
 
     // We'll traverse down through the parts of a string key (separated by '.'), creating a new level in the
     // string object for each one. This is done for all BUT the last part, since we'll want to assign the result
@@ -210,12 +202,12 @@ const getStringModule = ( requirejsNamespace: string ): TRootStringModule => {
         reference[ keyPart ] = {};
       }
 
-      reference = reference[ keyPart ] as TStringTree; // since we are on all but the last key part, it cannot be stringlike
+      reference = reference[ keyPart ] as TStringModule; // since we are on all but the last key part, it cannot be stringlike
     } );
 
     assert && assert( typeof reference[ lastKeyPart ] !== 'object',
       'It is not allowed to have two different string keys where one is extended by adding a period (.) at the end ' +
-      `of the other. The string key ${stringKey} is extended by another key, something containing ${reference[ lastKeyPart ] && Object.keys( reference[ lastKeyPart ] as TStringTree )}.` );
+      `of the other. The string key ${stringKey} is extended by another key, something containing ${reference[ lastKeyPart ] && Object.keys( reference[ lastKeyPart ] )}.` );
     assert && assert( !reference[ lastKeyPart ],
       `We should not have defined this place in the object (${stringKey}), otherwise it means a duplicated string key OR extended string key` );
 
@@ -273,7 +265,7 @@ const getStringModule = ( requirejsNamespace: string ): TRootStringModule => {
       localizedStringMap[ stringKey ] = localizedString;
 
       // Put our Property in the stringModule
-      reference[ `${lastKeyPart}StringProperty` ] = localizedString.property as unknown as TReadOnlyProperty<string>;
+      reference[ `${lastKeyPart}StringProperty` ] = localizedString.property;
 
       // >>> Fluent: rebuild when this string mutates
       localizedString.property.lazyLink( () => {
@@ -293,8 +285,11 @@ const getStringModule = ( requirejsNamespace: string ): TRootStringModule => {
     fluentBundleProperty.value = rebuildFluentBundle( phet.chipper.locale as Locale, localizedStringMap );
   } );
 
-  // Attach root-level metadata
+  // @ts-expect-error (hopefully we never have a translation string key named `fluentBundleProperty`)
   stringModule.fluentBundleProperty = fluentBundleProperty;
+
+  // TODO: https://github.com/phetsims/chipper/issues/1588 type safety, review, etc.
+  // @ts-expect-error (hopefully we never have a translation string key named `localizedStringMap`)
   stringModule.localizedStringMap = localizedStringMap;
 
   return stringModule;
