@@ -11,9 +11,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-// @ts-expect-error TODO: https://github.com/phetsims/chipper/issues/1588
-import { Entry, FluentParser, Pattern, Resource } from '@fluent/syntax';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import { ASTEntry, FluentParser, FluentSyntaxPattern } from '../../browser-and-node/FluentLibrary.js';
 
 /**
  * Information about a parameter in a Fluent message
@@ -30,9 +29,9 @@ export type ParamInfo = {
 export function listFluentParams( fluentFileFTL: string, key: string ): ParamInfo[] {
   // ─── Parse FTL & build entry index (for recursive walks) ────────────────
   const parser = new FluentParser();
-  const resourceAst: Resource = parser.parse( fluentFileFTL );
+  const resourceAst = parser.parse( fluentFileFTL );
 
-  const entryIndex = new Map<string, Entry>(); // "id" | "-id" → Entry
+  const entryIndex = new Map<string, ASTEntry>(); // "id" | "-id" → Entry
   for ( const entry of resourceAst.body ) {
     if ( 'id' in entry ) {
       // @ts-expect-error – AST node types are slightly wider than Entry
@@ -53,11 +52,11 @@ export function listFluentParams( fluentFileFTL: string, key: string ): ParamInf
   let hasMessageReferences = false;
 
   // ─── Recursive parameter extraction ─────────────────────────────────────
-  const collect = ( entry: Entry, seen = new Set<Entry>() ): void => {
+  const collect = ( entry: ASTEntry, seen = new Set<ASTEntry>() ): void => {
     if ( seen.has( entry ) ) { return; }
     seen.add( entry );
 
-    const walkPattern = ( pat?: Pattern ): void => {
+    const walkPattern = ( pat?: FluentSyntaxPattern ): void => {
       if ( !pat ) { return; }
       for ( const elem of pat.elements ) {
         if ( elem.type === 'Placeable' ) {

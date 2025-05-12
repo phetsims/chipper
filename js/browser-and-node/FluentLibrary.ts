@@ -15,9 +15,12 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import { Pattern } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/ast.js';
 import { FluentBundle } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/bundle.js';
 import { FluentResource } from '../../../sherpa/lib/fluent/fluent-bundle-0.18.0/src/resource.js';
+import { Message } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
 import { FluentParser } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/parser.js';
 import { Visitor } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/visitor.js';
-import { Message } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
+import { Entry } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
+import { Pattern as SyntaxPattern } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
+import { Resource } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/ast.js';
 
 /**
  * A visitor that collects Nodes from the AST so we can inspect them for problems.
@@ -142,3 +145,7 @@ export default FluentLibrary;
 export { FluentBundle, FluentResource };
 export type { Pattern as FluentPattern };
 export type { Message };
+export { FluentParser };
+export type { Entry as ASTEntry };
+export { SyntaxPattern as FluentSyntaxPattern };
+export { Resource as FluentSyntaxResource };

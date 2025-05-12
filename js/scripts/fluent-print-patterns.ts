@@ -24,10 +24,9 @@
  * This software was developed with OpenAI o3.
  */
 
-import { FluentBundle, FluentResource } from '@fluent/bundle';
-import { Entry, FluentParser, Pattern, Resource } from '@fluent/syntax';
 import * as fs from 'fs';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import { ASTEntry, FluentBundle, FluentResource, FluentParser, FluentSyntaxPattern, FluentSyntaxResource } from '../browser-and-node/FluentLibrary.js';
 
 // ─── CLI handling ────────────────────────────────────────────────────────────
 const filePath = process.argv[ 2 ];
@@ -39,8 +38,8 @@ const source = fs.readFileSync( filePath, 'utf-8' );
 
 // ─── Parse FTL & build entry index (for recursive walks) ─────────────────────
 const parser = new FluentParser();
-const resourceAst: Resource = parser.parse( source );
-const entryIndex = new Map<string, Entry>(); // "id" | "-id" → Entry
+const resourceAst: FluentSyntaxResource = parser.parse( source );
+const entryIndex = new Map<string, ASTEntry>(); // "id" | "-id" → Entry
 
 for ( const entry of resourceAst.body ) {
   if ( 'id' in entry ) {
@@ -57,8 +56,8 @@ for ( const entry of resourceAst.body ) {
 type ChoicesMap = Map<string, Set<string>>;
 
 function collectChoices(
-  entry: Entry,
-  seen = new Set<Entry>(),
+  entry: ASTEntry,
+  seen = new Set<ASTEntry>(),
   out?: ChoicesMap
 ): ChoicesMap {
   if ( seen.has( entry ) ) {
@@ -67,7 +66,7 @@ function collectChoices(
   seen.add( entry );
   const choices = out ?? new Map<string, Set<string>>();
 
-  const walkPattern = ( pat?: Pattern ) => {
+  const walkPattern = ( pat?: FluentSyntaxPattern ) => {
     if ( !pat ) {
       return;
     }

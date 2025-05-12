@@ -14,9 +14,8 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-// @ts-expect-error
-import { Entry, FluentParser, Resource } from '@fluent/syntax';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import { FluentParser, ASTEntry } from '../../browser-and-node/FluentLibrary.js';
 
 /**
  * For a given Fluent string and parameter name, extract the possible selector values
@@ -28,9 +27,9 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 export function getSelectorValues( fluentFileFTL: string, key: string, paramName: string ): string[] {
   // Parse FTL & build entry index
   const parser = new FluentParser();
-  const resourceAst: Resource = parser.parse( fluentFileFTL );
+  const resourceAst = parser.parse( fluentFileFTL );
 
-  const entryIndex = new Map<string, Entry>(); // "id" | "-id" → Entry
+  const entryIndex = new Map<string, ASTEntry>(); // "id" | "-id" → Entry
   for ( const entry of resourceAst.body ) {
     if ( 'id' in entry ) {
       // @ts-expect-error – AST node types are slightly wider than Entry
