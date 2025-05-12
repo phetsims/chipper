@@ -1790,11 +1790,6 @@
     "localizedName": "Li Niha",
     "direction": "ltr"
   },
-  "nk": {
-    "name": "Norwegian",
-    "localizedName": "norsk",
-    "direction": "ltr"
-  },
   "nl": {
     "name": "Dutch",
     "localizedName": "Nederlands",
@@ -1813,6 +1808,11 @@
   "nn": {
     "name": "Norwegian Nynorsk",
     "localizedName": "Norsk nynorsk",
+    "direction": "ltr"
+  },
+  "no": {
+    "name": "Norwegian",
+    "localizedName": "norsk",
     "direction": "ltr"
   },
   "np": {
@@ -1975,6 +1975,11 @@
     "localizedName": "Papiamentu",
     "direction": "ltr"
   },
+  "pr": {
+    "name": "Purépecha",
+    "localizedName": "Pʼurhépecha",
+    "direction": "ltr"
+  },
   "ps": {
     "name": "Pashto",
     "localizedName": "پښتو",
@@ -2060,11 +2065,6 @@
     "localizedName": "Terêna",
     "direction": "ltr"
   },
-  "rh": {
-    "name": "Romansh",
-    "localizedName": "Rumantsch",
-    "direction": "ltr"
-  },
   "ri": {
     "name": "Rapanui",
     "localizedName": "Vananga rapa nui",
@@ -2078,6 +2078,11 @@
   "rl": {
     "name": "Karelian",
     "localizedName": "karjal",
+    "direction": "ltr"
+  },
+  "rm": {
+    "name": "Romansh",
+    "localizedName": "Rumantsch",
     "direction": "ltr"
   },
   "rn": {
