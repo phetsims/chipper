@@ -19,6 +19,8 @@ const grunt = require( 'grunt' );
 const loadFileAsDataURI = require( '../common/loadFileAsDataURI' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
 
+const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf-8' ) );
+
 /**
  * From a given set of options (including the JS and other required things), it creates an HTML file for a runnable.
  * @public
@@ -105,6 +107,9 @@ module.exports = function( options ) {
   // Directory on the PhET website where the latest version of the sim lives
   var latestDir = `https://phet.colorado.edu/sims/html/${repo}/latest/`;
 
+  var bcp47Lang = localeData[ locale ].bcp47;
+  assert( bcp47Lang, 'Requires bcp47 language' );
+
   // Select the HTML comment header based on the brand, see https://github.com/phetsims/chipper/issues/156
   var htmlHeader;
   if ( brand === 'phet-io' ) {
@@ -140,6 +145,12 @@ module.exports = function( options ) {
   // See https://github.com/phetsims/joist/issues/164 and
   // https://msdn.microsoft.com/en-us/library/ms537628%28v=vs.85%29.aspx
   html = html.replace( /\r/g, '' );
+
+  // Provide an initial value for the HTML lang attribute, see https://github.com/phetsims/chipper/issues/1332
+  // The actual value may be changed on startup (e.g. if a locale query parameter is provided, or locale is
+  // dynamically changed.
+  html = ChipperStringUtils.replaceFirst( html, '{{PHET_LANG}}', bcp47Lang );
+
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_CARRIAGE_RETURN}}', '\r' );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_BRAND}}', brand );
   html = ChipperStringUtils.replaceFirst( html, '{{PHET_HTML_HEADER}}', htmlHeader );
