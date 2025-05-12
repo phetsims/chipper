@@ -11,9 +11,12 @@
 // modules
 const assert = require( 'assert' );
 const ChipperStringUtils = require( '../common/ChipperStringUtils' );
+const fs = require( 'fs' );
 const getTitleStringKey = require( './getTitleStringKey' );
 const grunt = require( 'grunt' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line require-statement-match
+
+const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf-8' ) );
 
 /**
  * From a given set of config (including the JS and other required things), it creates an HTML file for a runnable.
@@ -44,10 +47,18 @@ module.exports = function( config ) {
   // Directory on the PhET website where the latest version of the sim lives
   const latestDir = `https://phet.colorado.edu/sims/html/${repo}/latest/`;
 
+  const bcp47Lang = localeData[ locale ].bcp47;
+  assert( bcp47Lang, 'Requires bcp47 language' );
+
   return ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/sim.html' ), {
     PHET_CARRIAGE_RETURN: '\r',
     PHET_SIM_TITLE: encoder.htmlEncode( localizedTitle ),
     PHET_HTML_HEADER: htmlHeader,
+
+    // Provide an initial value for the HTML lang attribute, see https://github.com/phetsims/chipper/issues/1332
+    // The actual value may be changed on startup (e.g. if a locale query parameter is provided, or locale is
+    // dynamically changed.
+    PHET_LANG: bcp47Lang,
 
     // wrap scripts in global check for IE
     PHET_SIM_SCRIPTS: scripts.map( script => `<script type="text/javascript">if(!window.isIE){${script}}</script>` ).join( '\n' ),
