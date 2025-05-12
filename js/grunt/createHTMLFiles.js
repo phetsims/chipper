@@ -25,6 +25,8 @@ var ChipperConstants = require( '../../../chipper/js/common/ChipperConstants' );
 var ChipperStringUtils = require( '../../../chipper/js/common/ChipperStringUtils' );
 var zlib = require( 'zlib' );
 
+var localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf-8' ) );
+
 /**
  * @param grunt - the grunt instance
  * @param buildConfig - see getBuildConfig.js
@@ -245,7 +247,15 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
       localeData[ locale ] = fullLocaleData[ locale ];
     } );
 
+    var bcp47Lang = localeData[ locale ].bcp47;
+    assert( bcp47Lang, 'Requires bcp47 language' );
+
     string = ChipperStringUtils.replaceFirst( string, '{{PHET_STRINGS}}', JSON.stringify( stringObject, null, '' ) );
+
+    // Provide an initial value for the HTML lang attribute, see https://github.com/phetsims/chipper/issues/1332
+    // The actual value may be changed on startup (e.g. if a locale query parameter is provided, or locale is
+    // dynamically changed.
+    string = ChipperStringUtils.replaceFirst( string, '{{PHET_LANG}}', bcp47Lang );
 
     //TODO: if locale is being made available for changing layout, we'll need it in requirejs mode
     // Make the locale accessible at runtime (e.g., for changing layout based on RTL languages), see #40
