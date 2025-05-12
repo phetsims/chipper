@@ -16,6 +16,8 @@ const pako = require( 'pako' );
 const fs = require( 'fs' );
 const nodeHTMLEncoder = require( 'node-html-encoder' ); // eslint-disable-line phet/require-statement-match
 
+const localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf-8' ) );
+
 /**
  * From a given set of config (including the JS and other required things), it creates an HTML file for a runnable.
  * @public
@@ -75,10 +77,18 @@ module.exports = function( config ) {
     scriptSection = [ licenseScript, ...scripts ].map( script => `<script type="text/javascript">${script}</script>` ).join( '\n' );
   }
 
+  const bcp47Lang = localeData[ locale ].bcp47;
+  assert( bcp47Lang, 'Requires bcp47 language' );
+
   return ChipperStringUtils.replacePlaceholders( grunt.file.read( '../chipper/templates/sim.html' ), {
     PHET_CARRIAGE_RETURN: '\r',
     PHET_SIM_TITLE: encoder.htmlEncode( localizedTitle ),
     PHET_HTML_HEADER: htmlHeader,
+
+    // Provide an initial value for the HTML lang attribute, see https://github.com/phetsims/chipper/issues/1332
+    // The actual value may be changed on startup (e.g. if a locale query parameter is provided, or locale is
+    // dynamically changed.
+    PHET_LANG: bcp47Lang,
 
     // wrap scripts in global check for IE
     PHET_SIM_SCRIPTS: scriptSection,
