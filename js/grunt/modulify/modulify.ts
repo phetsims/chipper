@@ -489,8 +489,7 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
   // If the Hjson strings file exists, transform it into the regular JSON file before going to the next step.
   if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.hjson` ) ) {
 
-    // TODO: https://github.com/phetsims/chipper/issues/1588 write a message or banner that the JSON file was machine generated
-    // TODO: https://github.com/phetsims/chipper/issues/1588 and should not be edited manually
+    // TODO: https://github.com/phetsims/chipper/issues/1589 write a message or banner that the JSON file was machine generated and should not be edited manually
     await convertStringsHjsonToJSON( repo );
   }
 
