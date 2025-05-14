@@ -8,7 +8,7 @@
  */
 
 import fs, { readFileSync } from 'fs';
-import Hjson from 'hjson';
+import yaml from 'js-yaml';
 import _ from 'lodash';
 import os from 'os';
 import path from 'path';
@@ -338,7 +338,7 @@ export default ${imageModuleName};
 };
 
 /**
- * Recursively processes an HJSON-parsed structure:
+ * Recursively processes a YAML-parsed structure:
  * - Wraps string values in an object: ` "string"` becomes `{ "value": "string" }`.
  * - For any key `originalKey`, if a corresponding `originalKey__simMetadata` key exists
  *   at the same level, its value is added as a `simMetadata` property to the object
@@ -349,7 +349,7 @@ export default ${imageModuleName};
  * - Primitives (numbers, booleans, null) are returned as-is, unless they have `__simMetadata`,
  *   in which case they are wrapped: `{ value: primitive, simMetadata: {...} }`.
  *
- * @param input - The parsed HJSON data (can be an object, array, string, or other primitive).
+ * @param input - The parsed YAML data (can be an object, array, string, or other primitive).
  * @returns The transformed JavaScript structure.
  */
 function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
@@ -365,7 +365,7 @@ function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
   // Recursive step: Input is an object (but not null)
   else if ( input !== null && typeof input === 'object' ) {
     const result: Record<string, IntentionalAny> = {};
-    const inputKeys = Object.keys( input ); // Get own keys, generally preserves order from Hjson.parse
+    const inputKeys = Object.keys( input ); // Get own keys, which preserves order from yaml.load
 
     for ( const key of inputKeys ) {
       // If the key is a metadata key, check if its parent exists.
@@ -418,19 +418,17 @@ function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
 }
 
 /**
- * Converts an Hjson file to JSON, nesting each leaf value under a "value" key,
+ * Converts a YAML file to JSON, nesting each leaf value under a "value" key,
  * and writes the result to a JSON file.
- *
- * To add support for syntax highlighting in IntelliJ or WebStorm, use the TextMate bundle like so:
- * git clone https://github.com/hjson/textmate-hjson, press “+” in the IntelliJ TextMate settings, pick folder
  *
  * @param repo - The name of a repo, e.g. 'joist'
  */
-const convertStringsHjsonToJSON = async ( repo: string ) => {
-  const filePath = `../${repo}/${repo}-strings_en.hjson`;
-  const hjsonContents = fs.readFileSync( filePath, 'utf8' );
-  // Hjson.parse by default preserves key order, which is helpful here.
-  const parsed = Hjson.parse( hjsonContents, { keepWsc: true } );
+const convertStringsYamlToJSON = async ( repo: string ) => {
+  const filePath = `../${repo}/${repo}-strings_en.yaml`;
+  const yamlContents = fs.readFileSync( filePath, 'utf8' );
+
+  // js-yaml preserves key order when loading YAML
+  const parsed = yaml.load( yamlContents );
 
   // Recursively nest all string values and incorporate simMetadata.
   const nested = nestJSONStringValues( parsed );
@@ -486,11 +484,11 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
 
   const packageObject = JSON.parse( readFileSync( `../${repo}/package.json`, 'utf8' ) );
 
-  // If the Hjson strings file exists, transform it into the regular JSON file before going to the next step.
-  if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.hjson` ) ) {
+  // If the YAML strings file exists, transform it into the regular JSON file before going to the next step.
+  if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.yaml` ) ) {
 
     // TODO: https://github.com/phetsims/chipper/issues/1589 write a message or banner that the JSON file was machine generated and should not be edited manually
-    await convertStringsHjsonToJSON( repo );
+    await convertStringsYamlToJSON( repo );
   }
 
   // Strings module file
