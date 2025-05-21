@@ -207,6 +207,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       const localeToTranslationMap: LocalizedStringStateDelta = {};
       ( Object.keys( phet.chipper.strings ) as Locale[] ).forEach( ( locale: Locale ) => {
         const string: string = phet.chipper.strings[ locale ][ stringKey ];
+
         // Ignore zero-length strings, see https://github.com/phetsims/chipper/issues/1343
         if ( locale === FALLBACK_LOCALE || ( typeof string === 'string' && string !== '' ) ) {
           // A11y is not translatable and should not appear mapped, see https://github.com/phetsims/tasks/issues/1133

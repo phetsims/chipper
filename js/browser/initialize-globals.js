@@ -1047,7 +1047,7 @@
       return stringTest === null ? string :
              stringTest === 'double' ? `${string}:${string}` :
              stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
-             stringTest === 'rtl' ? '\u202b\u062a\u0633\u062a (\u0632\u0628\u0627\u0646)\u202c' :
+             stringTest === 'rtl' ? mapRtlString( string ) :
              stringTest === 'xss' ? `${string}<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIW2NkYGD4DwABCQEBtxmN7wAAAABJRU5ErkJggg==" onload="window.location.href=atob('aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ==')" />` :
              stringTest === 'xss2' ? `${string}<${script}>alert('XSS')</${script}>` :
              stringTest === 'none' ? string :
@@ -1344,3 +1344,113 @@
     }
   } )();
 }() );
+
+
+// constants used by mapRtlString
+const LTR_MARK = '\u202a';
+const RTL_MARK = '\u202b';
+const NON_BREAKING_SPACE = '\u00a0';
+const END_DIRECTIONAL_MARK = '\u202c';
+const LONGER_RTL_STRING = `${RTL_MARK}\u062a\u0633\u062a (\u0632\u0628\u0627\u0646)${END_DIRECTIONAL_MARK}`;
+const SHORTER_RTL_STRING = `${RTL_MARK}\u062a\u0633\u062a${END_DIRECTIONAL_MARK}`;
+const RTL_FRAGMENT = '\u062a\u0633\u062a';
+
+/**
+ * Helper function to map a string to an right-to-left (RTL) string.  This keeps placeholders in place, and replaces the
+ * textual fragments with a default RTL string.  See https://github.com/phetsims/phetcommon/issues/68 for more
+ * background on this if needed.
+ * @param {string} stringToMap - the string to map to an RTL string
+ * @returns {string}
+ */
+function mapRtlString( stringToMap ) {
+
+  // Regular expression to match placeholders in the string.  This matches both {{...}} and {...} patterns.
+  const regex = /{{[^{}]*}}|{[^{}]*}/g;
+
+  // return value
+  let mappedString;
+
+  if ( regex.test( stringToMap ) ) {
+
+    // The string is a pattern, meaning that it contains placeholders.  We want to mark the whole string as RTL, keep
+    // the placeholders roughly where they are, and replace the textual fragments with a default RTL string.
+    mappedString = '' + RTL_MARK;
+
+    // Loop through the string, mapping the placeholders and textual fragments to a synthetic RTL string.
+    let braceDepth = 0;
+    let placeholderStartIndex = -1;
+    let textFragmentStartIndex = -1;
+    for ( let currentIndex = 0; currentIndex < stringToMap.length; currentIndex++ ) {
+      const char = stringToMap.charAt( currentIndex );
+
+      if ( char === LTR_MARK || char === RTL_MARK || char === END_DIRECTIONAL_MARK ) {
+
+        // This is a control character that sets the directionality of the text.  We want to ignore it.
+        continue;
+      }
+
+      if ( char === '{' ) {
+
+        // This is the start of a placeholder.  Check if this is the end of a textual fragment and, if so, handle it.
+        if ( textFragmentStartIndex !== -1 ) {
+
+          // Replace the textual fragment with an RTL string fragment, preserving any surrounding whitespace, and
+          // handling the case where the string is *all* whitespace.
+          if ( stringToMap.charAt( textFragmentStartIndex ) === NON_BREAKING_SPACE ||
+               stringToMap.charAt( textFragmentStartIndex ) === ' ' ) {
+
+            mappedString += stringToMap.charAt( textFragmentStartIndex );
+          }
+          if ( currentIndex - textFragmentStartIndex > 1 ) {
+            mappedString += RTL_FRAGMENT;
+
+            // If there is a space or non-breaking space before the placeholder, add it to the mapped string.
+            const lastCharInFragment = stringToMap.charAt( currentIndex - 1 );
+            if ( lastCharInFragment === NON_BREAKING_SPACE || lastCharInFragment === ' ' ) {
+              mappedString += stringToMap.charAt( currentIndex - 1 );
+            }
+          }
+          textFragmentStartIndex = -1;
+        }
+
+        if ( braceDepth === 0 ) {
+          placeholderStartIndex = currentIndex;
+        }
+        braceDepth++;
+        assert && assert( braceDepth <= 2, `max brace depth exceeded, string = ${stringToMap}` );
+      }
+      else if ( char === '}' ) {
+        braceDepth--;
+        assert && assert( braceDepth >= 0, `brace depth exceeded, string = ${stringToMap}` );
+        if ( braceDepth === 0 ) {
+
+          // This is the end of a placeholder, so add it unaltered to the mapped string.
+          mappedString += stringToMap.substring( placeholderStartIndex, currentIndex + 1 );
+        }
+      }
+      else if ( braceDepth === 0 && textFragmentStartIndex === -1 ) {
+
+        // This is the start of a textual fragment.  Remember where it starts.
+        textFragmentStartIndex = currentIndex;
+      }
+    }
+
+    if ( textFragmentStartIndex !== -1 ) {
+
+      // There is a textual fragment at the end of the string being mapped.  Add a corresponding RTL string fragment to
+      // the mapped string.
+      mappedString += ' ' + RTL_FRAGMENT;
+    }
+
+    // Add the control character that resets the directionality.
+    mappedString += END_DIRECTIONAL_MARK;
+  }
+  else {
+
+    // The string isn't a pattern, meaning that it contains no placeholders.  Return a default RTL string based on the
+    // length of the string being mapped.
+    mappedString = stringToMap.length < 5 ? SHORTER_RTL_STRING : LONGER_RTL_STRING;
+  }
+
+  return mappedString;
+}
