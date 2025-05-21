@@ -223,6 +223,9 @@
       }
 
       phet.chipper.locale = locale;
+
+      // Set HTML lang attribute
+      document.documentElement.lang = phet.chipper.localeData[ locale ].bcp47;
     };
 
     // Need to initialize our locale before we send off Google Analytics queries (it was being done afterwards in
