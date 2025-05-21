@@ -664,6 +664,9 @@
       }
 
       phet.chipper.locale = locale;
+
+      // Set HTML lang attribute
+      document.documentElement.lang = phet.chipper.localeData[ locale ].bcp47;
     };
 
     // If locale was provided as a query parameter, then change the locale used by Google Analytics.
