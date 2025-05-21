@@ -1182,6 +1182,10 @@
       // (Yotta and GA will want the non-fallback locale for now, for consistency)
       phet.chipper.remappedLocale = remappedLocale;
       phet.chipper.locale = finalLocale; // NOTE: this will change with every setting of JOIST/localeProperty
+
+      // Set HTML lang attribute
+      document.documentElement.lang = phet.chipper.localeData[ finalLocale ].bcp47;
+
       return finalLocale;
     };
 
