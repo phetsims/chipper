@@ -14,6 +14,8 @@ import path from 'path';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLine from '../getCopyrightLine.js';
+import { fixEOL } from './modulify.js';
+import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 
 type Leaf = { pathArr: string[] };
 type Obj = Record<string, IntentionalAny>;
@@ -218,7 +220,7 @@ ${camelCaseRepo}.register('${pascalCaseRepo}Fluent', ${pascalCaseRepo}Fluent);
 `;
 
 // 6 write out
-  fs.writeFileSync( outPath, fileContents );
+  await writeFileAndGitAdd( repo, outPath, fixEOL( fileContents ) );
   console.log( `✅  Wrote ${outPath} with ${leaves.length} messages.` );
 };
 
