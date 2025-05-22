@@ -95,7 +95,19 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
     // ---------------------------------------------
 
     return `${id} = \${${accessor}}`;
-  } ).join( '\n\n' );
+  } ).join( '\n' );
+
+  // TODO: Refactor to deduplicate with the above, see https://github.com/phetsims/chipper/issues/1588
+  const stringLines = leaves.map( ( { pathArr } ) => {
+    // ----------  FIX: smarter accessor  ----------
+    const accessor = pathArr.reduce( ( acc, key ) => {
+      key.split( '.' ).forEach( part => { acc += propAccess( part ); } );
+      return acc;
+    }, `${pascalCaseRepo}Strings` ) + 'StringProperty';
+    // ---------------------------------------------
+
+    return accessor;
+  } );
 
   const copyrightLine = await getCopyrightLine( repo, outPath );
 
@@ -110,7 +122,10 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 /* eslint-disable */
 /* @formatter:off */
 
+import Multilink from '../../axon/js/Multilink.js';
+import Property from '../../axon/js/Property.js';
 import StringProperty from '../../axon/js/StringProperty.js';
+import localeProperty from '../../joist/js/i18n/localeProperty.js';
 import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import FluentUtils from '../../chipper/js/browser/FluentUtils.js';
 import { FluentBundle, FluentResource } from '../../chipper/js/browser-and-node/FluentLibrary.js';
@@ -126,15 +141,48 @@ ${ftlLines}
   return ftl;
 };
 
-const formatPattern = (key: string, args: IntentionalAny): string => {
+const allStringProperties = [
+  ${stringLines.join( ',\n' )}
+];
+
+let isLocaleChanging = false;
+
+localeProperty.lazyLink( () => {
+  isLocaleChanging = true;
+} );
+
+const rebuildFluentBundle = () => {
   const bundle = new FluentBundle('en');
   const resource = new FluentResource(getFTL());
   const errors = bundle.addResource(resource);
   assert && assert(errors.length === 0, 'Errors when adding resource for locale en');
+  
+  return bundle;
+};
+
+// Initial compute of the bundle
+const fluentBundleProperty = new Property<FluentBundle>( rebuildFluentBundle() );
+
+Multilink.multilinkAny( allStringProperties, () => {
+  if ( !isLocaleChanging ) {
+    fluentBundleProperty.value = rebuildFluentBundle();
+  }
+} );
+
+// When all strings change due to a locale change, update the bundle once
+localeProperty.lazyLink( () => {
+  isLocaleChanging = false;
+  fluentBundleProperty.value = rebuildFluentBundle();
+} );
+
+const formatPattern = (key: string, args: IntentionalAny): string => {
+  const bundle = fluentBundleProperty.value;
 
   const newArgs = FluentUtils.handleFluentArgs(args);
 
   const message = bundle.getMessage(key);
+
+  const errors: Array<Error> = [];
   const result = bundle.formatPattern(message!.value!, newArgs, errors);
   assert && assert(errors.length === 0, \`Fluent errors found when formatting message: \${errors}\`);
   return result;
@@ -156,6 +204,9 @@ const formatToProperty = (key: string, args: IntentionalAny): TReadOnlyProperty<
   });
 
   // TODO: When the locale changes or when a string forming the FTL changes, also update the string property, see https://github.com/phetsims/chipper/issues/1588
+  fluentBundleProperty.lazyLink( () => {
+    update();
+  } );
 
   return stringProperty;
 };
