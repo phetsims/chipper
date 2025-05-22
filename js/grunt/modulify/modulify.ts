@@ -22,6 +22,7 @@ import createMipmap from '../createMipmap.js';
 import generateDevelopmentStrings from '../generateDevelopmentStrings.js';
 import getCopyrightLine from '../getCopyrightLine.js';
 import createStringModule from './createStringModule.js';
+import generateFluentTypes from './generateFluentTypes.js';
 import modulifyFluentFile from './modulifyFluentFile.js';
 
 const svgo = require( 'svgo' );
@@ -489,6 +490,7 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
 
     // TODO: https://github.com/phetsims/chipper/issues/1589 write a message or banner that the JSON file was machine generated and should not be edited manually
     await convertStringsYamlToJSON( repo );
+    await generateFluentTypes( repo );
   }
 
   // Strings module file
