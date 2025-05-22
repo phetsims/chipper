@@ -13,16 +13,14 @@
  * @author Jonathan Olson <jonathan.olson>
  */
 
-import Property from '../../../axon/js/Property.js';
 import TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
-import localeProperty, { Locale } from '../../../joist/js/i18n/localeProperty.js';
+import { Locale } from '../../../joist/js/i18n/localeProperty.js';
 import CouldNotYetDeserializeError from '../../../tandem/js/CouldNotYetDeserializeError.js';
 import { PhetioID } from '../../../tandem/js/phet-io-types.js';
 import PhetioObject from '../../../tandem/js/PhetioObject.js';
 import Tandem from '../../../tandem/js/Tandem.js';
 import IOType from '../../../tandem/js/types/IOType.js';
 import ObjectLiteralIO from '../../../tandem/js/types/ObjectLiteralIO.js';
-import { FluentBundle, FluentResource } from '../browser-and-node/FluentLibrary.js';
 import LocalizedString, { LocalizedStringStateDelta, StringsStateStateObject } from './LocalizedString.js';
 import localizedStrings from './localizedStrings.js';
 
@@ -92,38 +90,6 @@ PhetioObject.create( {
   phetioState: true
 } );
 
-/**
- * Fluent integration. Convert every current `LocalizedString` into an FTL line and rebuild the global bundle.
- */
-function rebuildFluentBundle( locale: Locale, map: Record<string, LocalizedString> ): FluentBundle {
-  const ftlLines: string[] = [];
-
-  // First pass: process normal strings without references
-  Object.entries( map ).forEach( ( [ stringKey, ls ] ) => {
-    // Sanitize key → valid Fluent identifier (lower‑case, letters/digits/-).
-    const id = stringKey
-      .replace( /^[^/]+\//, '' )   // strip namespace prefix
-      .replace( /[^a-zA-Z0-9.]/g, '-' )
-      .split( '.' ).join( '_' )
-      .split( '-' ).join( '_' );
-
-    const value = ls.property.value;
-    if ( typeof value === 'string' && value.length > 0 ) {
-      ftlLines.push( `${id} = ${value}` );
-    }
-  } );
-
-  const ftlFile = ftlLines.join( '\n' );
-  const resource = new FluentResource( ftlFile );
-  const bundle = new FluentBundle( locale, { useIsolating: false } );
-  const errors = bundle.addResource( resource );
-  if ( errors.length && window?.phet?.chipper?.i18nLogging ) {
-    console.warn( 'Fluent parse errors:', errors );
-  }
-
-  return bundle;
-}
-
 type TStringModule = {
   [ key: string ]: TStringModule | string | TReadOnlyProperty<string>;
 };
@@ -160,14 +126,6 @@ const getStringModule = ( requirejsNamespace: string ): object => {
   const localizedStringMap: Record<string, LocalizedString> = {};
 
   const stringModule: TStringModule = {};
-
-  const fluentBundleProperty = new Property<FluentBundle | null>( null );
-
-  let isLocaleChanging = false;
-
-  localeProperty.lazyLink( () => {
-    isLocaleChanging = true;
-  } );
 
   allStringKeysInRepo.forEach( stringKey => {
     // strip off the requirejsNamespace, e.g. 'JOIST/ResetAllButton.name' => 'ResetAllButton.name'
@@ -268,30 +226,12 @@ const getStringModule = ( requirejsNamespace: string ): object => {
       // Put our Property in the stringModule
       reference[ `${lastKeyPart}StringProperty` ] = localizedString.property;
 
-      // >>> Fluent: rebuild when this string mutates
-      localizedString.property.lazyLink( () => {
-        if ( !isLocaleChanging ) {
-          fluentBundleProperty.value = rebuildFluentBundle( phet.chipper.locale as Locale, localizedStringMap );
-        }
+      // Change our stringModule based on the Property value
+      localizedString.property.link( string => {
+        reference[ lastKeyPart ] = string;
       } );
     }
   } );
-
-  // Initial build of the bundle
-  fluentBundleProperty.value = rebuildFluentBundle( phet.chipper.locale as Locale, localizedStringMap );
-
-  // When all strings change due to a locale change, update the bundle once
-  localeProperty.lazyLink( () => {
-    isLocaleChanging = false;
-    fluentBundleProperty.value = rebuildFluentBundle( phet.chipper.locale as Locale, localizedStringMap );
-  } );
-
-  // @ts-expect-error (hopefully we never have a translation string key named `fluentBundleProperty`)
-  stringModule.fluentBundleProperty = fluentBundleProperty;
-
-  // TODO: https://github.com/phetsims/chipper/issues/1588 type safety, review, etc.
-  // @ts-expect-error (hopefully we never have a translation string key named `localizedStringMap`)
-  stringModule.localizedStringMap = localizedStringMap;
 
   return stringModule;
 };
