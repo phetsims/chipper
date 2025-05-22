@@ -9,6 +9,7 @@
 
 import fs from 'fs';
 import yaml from 'js-yaml';
+import _ from 'lodash';
 import path from 'path';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import pascalCase from '../../common/pascalCase.js';
@@ -20,7 +21,7 @@ type Obj = Record<string, IntentionalAny>;
 /** true if key is a valid JS identifier (no quoting needed). */
 const IDENT = /^[A-Za-z_$][\w$]*$/;
 
-/** JS property accessor for MembraneTransportStrings key (dot or bracket). */
+/** JS property accessor for {{Repo}}Strings keys (dot or bracket). */
 const propAccess = ( key: string ): string => ( IDENT.test( key ) ? `.${key}` : `[${JSON.stringify( key )}]` );
 
 /** Indent helper. */
@@ -69,8 +70,11 @@ function buildFluentObject( obj: Obj, pathArr: string[] = [], lvl = 1 ): string 
 
 /** Build nested TS literal from YAML, inserting both helpers at leaves. */
 const generateFluentTypes = async ( repo: string ): Promise<void> => {
+  const pascalCaseRepo = pascalCase( repo );
+  const camelCaseRepo = _.camelCase( repo );
+
   const yamlPath = `../${repo}/${repo}-strings_en.yaml`;
-  const outPath = `js/${pascalCase( repo )}Fluent.ts`;
+  const outPath = `js/${pascalCaseRepo}Fluent.ts`;
 
   // 1 load YAML
   const yamlText = fs.readFileSync( yamlPath, 'utf8' );
@@ -87,7 +91,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
     const accessor = pathArr.reduce( ( acc, key ) => {
       key.split( '.' ).forEach( part => { acc += propAccess( part ); } );
       return acc;
-    }, 'MembraneTransportStrings' ) + 'StringProperty.value';
+    }, `${pascalCaseRepo}Strings` ) + 'StringProperty.value';
     // ---------------------------------------------
 
     return `${id} = \${${accessor}}`;
@@ -111,8 +115,8 @@ import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import FluentUtils from '../../chipper/js/browser/FluentUtils.js';
 import { FluentBundle, FluentResource } from '../../chipper/js/browser-and-node/FluentLibrary.js';
 import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
-import membraneTransport from './membraneTransport.js';
-import MembraneTransportStrings from './MembraneTransportStrings.js';
+import ${camelCaseRepo} from './${camelCaseRepo}.js';
+import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
 import { isTReadOnlyProperty } from '../../axon/js/TReadOnlyProperty.js';
 
 const getFTL = (): string => {
@@ -156,11 +160,11 @@ const formatToProperty = (key: string, args: IntentionalAny): TReadOnlyProperty<
   return stringProperty;
 };
 
-const MembraneTransportFluent = ${fluentObjectLiteral};
+const ${pascalCaseRepo}Fluent = ${fluentObjectLiteral};
 
-export default MembraneTransportFluent;
+export default ${pascalCaseRepo}Fluent;
 
-membraneTransport.register('MembraneTransportFluent', MembraneTransportFluent);
+${camelCaseRepo}.register('${pascalCaseRepo}Fluent', ${pascalCaseRepo}Fluent);
 `;
 
 // 6 write out
