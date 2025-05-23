@@ -29,7 +29,7 @@ var generateA11yViewHTML = require( '../../../chipper/js/grunt/generateA11yViewH
 var loadFileAsDataURI = require( '../../../chipper/js/common/loadFileAsDataURI' );
 var zlib = require( 'zlib' );
 
-var localeData = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf-8' ) );
+var localeDataFile = JSON.parse( fs.readFileSync( '../babel/localeData.json', 'utf-8' ) );
 
 /**
  * @param grunt - the grunt instance
@@ -250,7 +250,7 @@ module.exports = function( grunt, buildConfig, dependencies, mipmapsJavaScript, 
       localeData[ locale ] = fullLocaleData[ locale ];
     } );
 
-    var bcp47Lang = localeData[ locale ].bcp47;
+    var bcp47Lang = localeDataFile[ locale ].bcp47;
     assert( bcp47Lang, 'Requires bcp47 language' );
 
     string = ChipperStringUtils.replaceFirst( string, '{{PHET_STRINGS}}', JSON.stringify( stringObject, null, '' ) );
