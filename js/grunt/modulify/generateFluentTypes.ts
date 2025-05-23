@@ -11,13 +11,15 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import _ from 'lodash';
 import path from 'path';
+import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLine from '../getCopyrightLine.js';
+import { getFluentParams, ParamInfo } from './getFluentParams.js';
 import { fixEOL } from './modulify.js';
 
-type Leaf = { pathArr: string[] };
+type Leaf = { pathArr: string[]; value: string };
 type Obj = Record<string, IntentionalAny>;
 
 /** true if key is a valid JS identifier (no quoting needed). */
@@ -37,14 +39,19 @@ function collectLeaves( obj: Obj, pathArr: string[] = [] ): Leaf[] {
       leaves.push( ...collectLeaves( val, [ ...pathArr, key ] ) );
     }
     else {
-      leaves.push( { pathArr: [ ...pathArr, key ] } ); // scalar leaf
+      leaves.push( { pathArr: [ ...pathArr, key ], value: val } ); // scalar leaf
     }
   }
   return leaves;
 }
 
+// Create a key for the fluent contents, nesting is indicated by underscores for valid fluent syntax.
+function createFluentKey( pathArr: string[] ): string {
+  return pathArr.join( '_' );
+}
+
 /** Build nested TS literal from YAML, inserting both helpers at leaves. */
-function buildFluentObject( obj: Obj, pathArr: string[] = [], lvl = 1 ): string {
+function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pathArr: string[] = [], lvl = 1 ): string {
   const lines = [ '{' ];
   const entries = Object.entries( obj );
   entries.forEach( ( [ key, val ], idx ) => {
@@ -52,15 +59,49 @@ function buildFluentObject( obj: Obj, pathArr: string[] = [], lvl = 1 ): string 
     const comma = idx < entries.length - 1 ? ',' : '';
     if ( val !== null && typeof val === 'object' && !Array.isArray( val ) ) {
       // recurse
-      const sub = buildFluentObject( val, [ ...pathArr, key ], lvl + 1 );
+      const sub = buildFluentObject( val, typeInfoMap, [ ...pathArr, key ], lvl + 1 );
       lines.push( `${indent( lvl )}${safeKey}: ${sub}${comma}` );
     }
     else {
       // leaf
-      const id = [ ...pathArr, key ].join( '_' );
+      const id = createFluentKey( [ ...pathArr, key ] );
+
+      const paramInfo = typeInfoMap.get( id );
+      affirm( paramInfo, `Missing type info for ${id}` );
+
+      // Convert param info from the fluent value into a TypeScript type for development.
+      function generateTypeDefinition( schema: ParamInfo[] ): string {
+
+        if ( !Array.isArray( schema ) ) {
+          console.error( 'Input must be an array of property definitions.' );
+          return '{}';
+        }
+
+        const properties = schema.map( prop => {
+          const name = prop.name;
+          let typeString;
+
+          if ( prop.variants && Array.isArray( prop.variants ) && prop.variants.length > 0 ) {
+            // Create the union of string literals
+            const variantLiterals = prop.variants.map( v => `'${v}'` ).join( ' | ' );
+            // Create the full type string including TReadOnlyProperty
+            typeString = `${variantLiterals} | TReadOnlyProperty<${variantLiterals}>`;
+          }
+          else {
+            // Default to IntentionalAny if no variants are provided
+            typeString = 'IntentionalAny';
+          }
+          return `${name}: ${typeString}`;
+        } );
+
+        // TODO: If properties is empty, it means the string can be treated as a constant, see https://github.com/phetsims/chipper/issues/1588
+        return `{ ${properties.join( ', ' )} }`;
+      }
+
+      const T = ( generateTypeDefinition( paramInfo ) );
 
       lines.push(
-        `${indent( lvl )}${safeKey}: new FluentPattern( fluentBundleProperty, '${id}' )${comma}`
+        `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentBundleProperty, '${id}' )${comma}`
       );
     }
   } );
@@ -102,7 +143,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   const ftlLines = leaves.map( ( { pathArr } ) => {
 
     // Create an ID using underscore-separated path segments
-    const id = pathArr.join( '_' );
+    const id = createFluentKey( pathArr );
 
     // Build full property path to access the string value
     const accessor = createAccessor( pathArr, 'StringProperty.value' );
@@ -116,8 +157,22 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 
   const copyrightLine = await getCopyrightLine( repo, outPath );
 
+  let ftlContent = '';
+  leaves.forEach( ( { pathArr, value } ) => {
+    const key = createFluentKey( pathArr );
+    const ftlString = `${key} = ${value}`;
+    ftlContent += ftlString + '\n';
+  } );
+
+  const keyToTypeInfoMap = new Map<string, ParamInfo[]>();
+
+  leaves.forEach( ( { pathArr } ) => {
+    const fluentKey = createFluentKey( pathArr );
+    keyToTypeInfoMap.set( fluentKey, getFluentParams( ftlContent, fluentKey ) );
+  } );
+
   // 4 Fluent object literal
-  const fluentObjectLiteral = buildFluentObject( yamlObj );
+  const fluentObjectLiteral = buildFluentObject( yamlObj, keyToTypeInfoMap );
 
   // 5 Template TypeScript file
   const fileContents = `${copyrightLine}
@@ -129,16 +184,13 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 
 import Multilink from '../../axon/js/Multilink.js';
 import Property from '../../axon/js/Property.js';
-import StringProperty from '../../axon/js/StringProperty.js';
 import localeProperty from '../../joist/js/i18n/localeProperty.js';
 import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
-import FluentUtils from '../../chipper/js/browser/FluentUtils.js';
 import FluentPattern from '../../chipper/js/browser/FluentPattern.js';
 import { FluentBundle, FluentResource } from '../../chipper/js/browser-and-node/FluentLibrary.js';
 import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 import ${camelCaseRepo} from './${camelCaseRepo}.js';
 import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
-import { isTReadOnlyProperty } from '../../axon/js/TReadOnlyProperty.js';
 
 const getFTL = (): string => {
   const ftl = \`
