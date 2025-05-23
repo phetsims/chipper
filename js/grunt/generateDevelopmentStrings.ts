@@ -12,6 +12,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import dirname from '../../../perennial-alias/js/common/dirname.js';
+import fixEOL from './fixEOL.js';
 
 // @ts-expect-error - until we have "type": "module" in our package.json
 const __dirname = dirname( import.meta.url );
@@ -104,7 +105,7 @@ export default ( repo: string ): void => {
     }
 
     const outputPath = path.join( outputDir, conglomerateStringFileName );
-    fs.writeFileSync( outputPath, JSON.stringify( conglomerateStringObject, null, 2 ) );
+    fs.writeFileSync( outputPath, fixEOL( JSON.stringify( conglomerateStringObject, null, 2 ) ) );
 
     const end = Date.now();
     console.log( 'Wrote ' + outputPath + ' in ' + ( end - start ) + 'ms' );
