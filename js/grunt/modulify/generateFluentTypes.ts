@@ -51,7 +51,7 @@ function createFluentKey( pathArr: string[] ): string {
 }
 
 /** Build nested TS literal from YAML, inserting both helpers at leaves. */
-function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pathArr: string[] = [], lvl = 1 ): string {
+function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pascalCaseRepo: string, pathArr: string[] = [], lvl = 1 ): string {
   const lines = [ '{' ];
   const entries = Object.entries( obj );
   entries.forEach( ( [ key, val ], idx ) => {
@@ -59,7 +59,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pat
     const comma = idx < entries.length - 1 ? ',' : '';
     if ( val !== null && typeof val === 'object' && !Array.isArray( val ) ) {
       // recurse
-      const sub = buildFluentObject( val, typeInfoMap, [ ...pathArr, key ], lvl + 1 );
+      const sub = buildFluentObject( val, typeInfoMap, pascalCaseRepo, [ ...pathArr, key ], lvl + 1 );
       lines.push( `${indent( lvl )}${safeKey}: ${sub}${comma}` );
     }
     else {
@@ -98,15 +98,32 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pat
           return `${name}: ${typeString}`;
         } );
 
-        // TODO: If properties is empty, it means the string can be treated as a constant, see https://github.com/phetsims/chipper/issues/1588
         return `{ ${properties.join( ', ' )} }`;
       }
 
-      const T = ( generateTypeDefinition( paramInfo ) );
+      // Check if there are no parameters (empty cleaned schema)
+      // TODO: Eliminate __hasReferences since it is never consulted. See https://github.com/phetsims/chipper/issues/1588
+      const cleanedSchema = paramInfo.filter( prop => prop.name !== '__hasReferences' );
 
-      lines.push(
-        `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentBundleProperty, '${id}' )${comma}`
-      );
+      if ( cleanedSchema.length === 0 ) {
+
+        // No parameters - use direct StringProperty access
+        // TODO: call createAccessor here See https://github.com/phetsims/chipper/issues/1588
+        const stringPropertyPath = [ ...pathArr, key ];
+        const accessor = stringPropertyPath.reduce( ( acc, k ) => {
+          k.split( '.' ).forEach( part => { acc += propAccess( part ); } );
+          return acc;
+        }, `${pascalCaseRepo}Strings` ) + 'StringProperty';
+
+        // Add "StringProperty" suffix to the key name for no-parameter strings
+        const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
+        lines.push( `${indent( lvl )}${stringPropertyKey}: ${accessor}${comma}` );
+      }
+      else {
+        // Has parameters - use FluentPattern
+        const T = ( generateTypeDefinition( paramInfo ) );
+        lines.push( `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentBundleProperty, '${id}' )${comma}` );
+      }
     }
   } );
   lines.push( `${indent( lvl - 1 )}}` );
@@ -176,7 +193,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   } );
 
   // 4 Fluent object literal
-  const fluentObjectLiteral = buildFluentObject( yamlObj, keyToTypeInfoMap );
+  const fluentObjectLiteral = buildFluentObject( yamlObj, keyToTypeInfoMap, pascalCaseRepo, [], 1 );
 
   // 5 Template TypeScript file
   const fileContents = `${copyrightLine}
