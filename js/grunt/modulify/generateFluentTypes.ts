@@ -77,7 +77,11 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pat
           return '{}';
         }
 
-        const properties = schema.map( prop => {
+        // The schema may have a __hasReferences property which should not be in the final type definition.
+        // TODO: Can this property be removed? See https://github.com/phetsims/chipper/issues/1588
+        const cleanedSchema = schema.filter( prop => prop.name !== '__hasReferences' );
+
+        const properties = cleanedSchema.map( prop => {
           const name = prop.name;
           let typeString;
 
