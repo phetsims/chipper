@@ -11,11 +11,11 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import _ from 'lodash';
 import path from 'path';
+import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLine from '../getCopyrightLine.js';
 import { fixEOL } from './modulify.js';
-import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 
 type Leaf = { pathArr: string[] };
 type Obj = Record<string, IntentionalAny>;
@@ -85,31 +85,36 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   // 2 collect all leaves
   const leaves = collectLeaves( yamlObj );
 
-  // 3 FTL snippet
-  const ftlLines = leaves.map( ( { pathArr } ) => {
-    const id = pathArr.join( '_' );
+  /**
+   * Creates an accessor string for the given path array with the specified suffix
+   * e.g., for pathArr=['a', 'b.c'] and suffix='.value', returns "PascalRepoStrings.a['b']['c'].value"
+   */
+  const createAccessor = ( pathArr: string[], suffix: string ): string => {
 
-    // ----------  FIX: smarter accessor  ----------
-    const accessor = pathArr.reduce( ( acc, key ) => {
+    // Start with the repo strings object and progressively build the property accessor chain
+    return pathArr.reduce( ( acc, key ) => {
+
+      // Handle keys with dots (e.g., "a.b" becomes separate properties ["a"]["b"])
       key.split( '.' ).forEach( part => { acc += propAccess( part ); } );
       return acc;
-    }, `${pascalCaseRepo}Strings` ) + 'StringProperty.value';
-    // ---------------------------------------------
+    }, `${pascalCaseRepo}Strings` ) + suffix;
+  };
 
+  // 3 FTL snippet - create Fluent Translation List entries for each string
+  const ftlLines = leaves.map( ( { pathArr } ) => {
+
+    // Create an ID using underscore-separated path segments
+    const id = pathArr.join( '_' );
+
+    // Build full property path to access the string value
+    const accessor = createAccessor( pathArr, 'StringProperty.value' );
+
+    // Format as "id = ${SimStrings.path.to.StringProperty.value}"
     return `${id} = \${${accessor}}`;
   } ).join( '\n' );
 
-  // TODO: Refactor to deduplicate with the above, see https://github.com/phetsims/chipper/issues/1588
-  const stringLines = leaves.map( ( { pathArr } ) => {
-    // ----------  FIX: smarter accessor  ----------
-    const accessor = pathArr.reduce( ( acc, key ) => {
-      key.split( '.' ).forEach( part => { acc += propAccess( part ); } );
-      return acc;
-    }, `${pascalCaseRepo}Strings` ) + 'StringProperty';
-    // ---------------------------------------------
-
-    return accessor;
-  } );
+  // Generate array of all StringProperty accessors for monitoring changes
+  const stringLines = leaves.map( ( { pathArr } ) => createAccessor( pathArr, 'StringProperty' ) );
 
   const copyrightLine = await getCopyrightLine( repo, outPath );
 
