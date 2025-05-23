@@ -48,7 +48,7 @@ function buildFluentObject( obj: Obj, pathArr: string[] = [], lvl = 1 ): string 
   const lines = [ '{' ];
   const entries = Object.entries( obj );
   entries.forEach( ( [ key, val ], idx ) => {
-    const safeKey = IDENT.test( key ) ? key : JSON.stringify( key );
+    const safeKey = IDENT.test( key ) ? key : JSON.stringify( key ); // TODO: is stringify appropriate here? https://github.com/phetsims/chipper/issues/1588
     const comma = idx < entries.length - 1 ? ',' : '';
     if ( val !== null && typeof val === 'object' && !Array.isArray( val ) ) {
       // recurse
@@ -58,11 +58,9 @@ function buildFluentObject( obj: Obj, pathArr: string[] = [], lvl = 1 ): string 
     else {
       // leaf
       const id = [ ...pathArr, key ].join( '_' );
+
       lines.push(
-        `${indent( lvl )}${safeKey}: {`,
-        `${indent( lvl + 1 )}format: (args: IntentionalAny): string => formatPattern('${id}', args),`,
-        `${indent( lvl + 1 )}createProperty: (args: IntentionalAny): TReadOnlyProperty<string> => formatToProperty('${id}', args)`,
-        `${indent( lvl )}}${comma}`
+        `${indent( lvl )}${safeKey}: new FluentPattern( fluentBundleProperty, '${id}' )${comma}`
       );
     }
   } );
@@ -135,6 +133,7 @@ import StringProperty from '../../axon/js/StringProperty.js';
 import localeProperty from '../../joist/js/i18n/localeProperty.js';
 import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import FluentUtils from '../../chipper/js/browser/FluentUtils.js';
+import FluentPattern from '../../chipper/js/browser/FluentPattern.js';
 import { FluentBundle, FluentResource } from '../../chipper/js/browser-and-node/FluentLibrary.js';
 import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 import ${camelCaseRepo} from './${camelCaseRepo}.js';
@@ -158,7 +157,7 @@ localeProperty.lazyLink( () => {
   isLocaleChanging = true;
 } );
 
-const rebuildFluentBundle = () => {
+const createFluentBundle = () => {
   const bundle = new FluentBundle('en');
   const resource = new FluentResource(getFTL());
   const errors = bundle.addResource(resource);
@@ -168,18 +167,18 @@ const rebuildFluentBundle = () => {
 };
 
 // Initial compute of the bundle
-const fluentBundleProperty = new Property<FluentBundle>( rebuildFluentBundle() );
+const fluentBundleProperty = new Property<FluentBundle>( createFluentBundle() );
 
 Multilink.multilinkAny( allStringProperties, () => {
   if ( !isLocaleChanging ) {
-    fluentBundleProperty.value = rebuildFluentBundle();
+    fluentBundleProperty.value = createFluentBundle();
   }
 } );
 
 // When all strings change due to a locale change, update the bundle once
 localeProperty.lazyLink( () => {
   isLocaleChanging = false;
-  fluentBundleProperty.value = rebuildFluentBundle();
+  fluentBundleProperty.value = createFluentBundle();
 } );
 
 const formatPattern = (key: string, args: IntentionalAny): string => {
