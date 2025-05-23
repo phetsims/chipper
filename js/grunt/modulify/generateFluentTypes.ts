@@ -122,7 +122,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
       else {
         // Has parameters - use FluentPattern
         const T = ( generateTypeDefinition( paramInfo ) );
-        lines.push( `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentBundleProperty, '${id}' )${comma}` );
+        lines.push( `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentSupport.bundleProperty, '${id}' )${comma}` );
       }
     }
   } );
@@ -203,12 +203,9 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 /* eslint-disable */
 /* @formatter:off */
 
-import Multilink from '../../axon/js/Multilink.js';
-import Property from '../../axon/js/Property.js';
-import localeProperty from '../../joist/js/i18n/localeProperty.js';
 import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import FluentPattern from '../../chipper/js/browser/FluentPattern.js';
-import { FluentBundle, FluentResource } from '../../chipper/js/browser-and-node/FluentLibrary.js';
+import FluentContainer from '../../chipper/js/browser/FluentContainer.js';
 import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 import ${camelCaseRepo} from './${camelCaseRepo}.js';
 import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
@@ -224,35 +221,7 @@ const allStringProperties = [
   ${stringLines.join( ',\n' )}
 ];
 
-let isLocaleChanging = false;
-
-localeProperty.lazyLink( () => {
-  isLocaleChanging = true;
-} );
-
-const createFluentBundle = () => {
-  const bundle = new FluentBundle('en');
-  const resource = new FluentResource(getFTL());
-  const errors = bundle.addResource(resource);
-  assert && assert(errors.length === 0, 'Errors when adding resource for locale en');
-  
-  return bundle;
-};
-
-// Initial compute of the bundle
-const fluentBundleProperty = new Property<FluentBundle>( createFluentBundle() );
-
-Multilink.multilinkAny( allStringProperties, () => {
-  if ( !isLocaleChanging ) {
-    fluentBundleProperty.value = createFluentBundle();
-  }
-} );
-
-// When all strings change due to a locale change, update the bundle once
-localeProperty.lazyLink( () => {
-  isLocaleChanging = false;
-  fluentBundleProperty.value = createFluentBundle();
-} );
+const fluentSupport = new FluentContainer( getFTL, allStringProperties );
 
 const ${pascalCaseRepo}Fluent = ${fluentObjectLiteral};
 
