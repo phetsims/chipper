@@ -31,6 +31,17 @@ const propAccess = ( key: string ): string => ( IDENT.test( key ) ? `.${key}` : 
 /** Indent helper. */
 const indent = ( lvl: number, spaces = 2 ): string => ' '.repeat( lvl * spaces );
 
+/**
+ * If the string uses the legacy pattern form, it won't be compatible with Fluent.
+ * If it uses double curly braces for StringUtils.fillIn, Fluent will try to find the inner term and likely fail.
+ * If it uses single curly surrounding a number, it is intended for StringUtils.format.
+ */
+const isLegacyString = ( str: string ): boolean => {
+
+  // check for the string including a number surrounded by single curly braces
+  return ( str.includes( '{{' ) || str.includes( '}}' ) ) || str.match( /{(\d+)}/ ) !== null;
+};
+
 /** Recursively walk object, returning leaf records. */
 function collectLeaves( obj: Obj, pathArr: string[] = [] ): Leaf[] {
   const leaves: Leaf[] = [];
@@ -45,10 +56,40 @@ function collectLeaves( obj: Obj, pathArr: string[] = [] ): Leaf[] {
   return leaves;
 }
 
-// Create a key for the fluent contents, nesting is indicated by underscores for valid fluent syntax.
+/**
+ * Create a key for the fluent file from the path array. Nesting from the YAML is indicated by underscores.
+ * Characters that are not valid in Fluent keys are replaced with dashes.
+ */
 function createFluentKey( pathArr: string[] ): string {
-  return pathArr.join( '_' );
+  const stringKey = pathArr.join( '_' );
+
+  // Make sure that the string key is valid for Fluent syntax. Notably, Fluent does not allow
+  // dashes or dots in the key names.
+  const id = stringKey
+    .replace( /[^a-zA-Z0-9.]/g, '-' ) // Replace any non-alphanumeric character with a dash
+    .split( '.' ).join( '_' ) // Replace dots with underscores
+    .split( '-' ).join( '_' ); // Replace dashes with underscores
+
+  return id;
 }
+
+/**
+ * Creates an accessor string for the given path array with the specified suffix
+ * e.g., for pathArr=['a', 'b.c'] and suffix='.value', returns "PascalRepoStrings.a['b']['c'].value"
+ * @param pathArr - An array with the "path" to the string from nesting in the file.
+ * @param suffix - The suffix to append to the end of the accessor string.
+ * @param pascalCaseRepo - The PascalCase name of the repo.
+ */
+const createAccessor = ( pathArr: string[], suffix: string, pascalCaseRepo: string ): string => {
+
+  // Start with the repo strings object and progressively build the property accessor chain
+  return pathArr.reduce( ( acc, key ) => {
+
+    // Handle keys with dots (e.g., "a.b" becomes separate properties ["a"]["b"])
+    key.split( '.' ).forEach( part => { acc += propAccess( part ); } );
+    return acc;
+  }, `${pascalCaseRepo}Strings` ) + suffix;
+};
 
 /** Build nested TS literal from YAML, inserting both helpers at leaves. */
 function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pascalCaseRepo: string, pathArr: string[] = [], lvl = 1 ): string {
@@ -105,21 +146,24 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
       // TODO: Eliminate __hasReferences since it is never consulted. See https://github.com/phetsims/chipper/issues/1588
       const cleanedSchema = paramInfo.filter( prop => prop.name !== '__hasReferences' );
 
-      if ( cleanedSchema.length === 0 ) {
+      // A suffix for the key in the line if it is going to be a StringProperty
+      const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
 
-        // No parameters - use direct StringProperty access
-        // TODO: call createAccessor here See https://github.com/phetsims/chipper/issues/1588
-        const stringPropertyPath = [ ...pathArr, key ];
-        const accessor = stringPropertyPath.reduce( ( acc, k ) => {
-          k.split( '.' ).forEach( part => { acc += propAccess( part ); } );
-          return acc;
-        }, `${pascalCaseRepo}Strings` ) + 'StringProperty';
+      if ( isLegacyString( val ) ) {
 
-        // Add "StringProperty" suffix to the key name for no-parameter strings
-        const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
+        // This is a legacy string and is meant to be used with StringUtils.format or
+        // StringUtils.fillIn. It should use the LocalizedStringProperty directly.
+        const accessor = createAccessor( [ ...pathArr, key ], 'StringProperty', pascalCaseRepo );
         lines.push( `${indent( lvl )}${stringPropertyKey}: ${accessor}${comma}` );
       }
+      else if ( cleanedSchema.length === 0 ) {
+
+        // No parameters - use FluentConstant
+        const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
+        lines.push( `${indent( lvl )}${stringPropertyKey}: new FluentConstant( fluentSupport.bundleProperty, '${id}' )${comma}` );
+      }
       else {
+
         // Has parameters - use FluentPattern
         const T = ( generateTypeDefinition( paramInfo ) );
         lines.push( `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentSupport.bundleProperty, '${id}' )${comma}` );
@@ -145,43 +189,30 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   // 2 collect all leaves
   const leaves = collectLeaves( yamlObj );
 
-  /**
-   * Creates an accessor string for the given path array with the specified suffix
-   * e.g., for pathArr=['a', 'b.c'] and suffix='.value', returns "PascalRepoStrings.a['b']['c'].value"
-   */
-  const createAccessor = ( pathArr: string[], suffix: string ): string => {
-
-    // Start with the repo strings object and progressively build the property accessor chain
-    return pathArr.reduce( ( acc, key ) => {
-
-      // Handle keys with dots (e.g., "a.b" becomes separate properties ["a"]["b"])
-      key.split( '.' ).forEach( part => { acc += propAccess( part ); } );
-      return acc;
-    }, `${pascalCaseRepo}Strings` ) + suffix;
-  };
-
-  // 3 FTL snippet - create Fluent Translation List entries for each string
-  const ftlLines = leaves.map( ( { pathArr } ) => {
+  // 3 FTL snippet - create Fluent Translation List entries for each string. Legacy strings (strings with contents
+  // for StringUtils.format or StringUtils.fillIn) are not included in the FTL.
+  const ftlLines = leaves.filter( leaf => !isLegacyString( leaf.value ) ).map( ( { pathArr } ) => {
 
     // Create an ID using underscore-separated path segments
     const id = createFluentKey( pathArr );
 
     // Build full property path to access the string value
-    const accessor = createAccessor( pathArr, 'StringProperty.value' );
+    const accessor = createAccessor( pathArr, 'StringProperty.value', pascalCaseRepo );
 
     // Format as "id = ${SimStrings.path.to.StringProperty.value}"
     return `${id} = \${${accessor}}`;
   } ).join( '\n' );
 
   // Generate array of all StringProperty accessors for monitoring changes
-  const stringLines = leaves.map( ( { pathArr } ) => createAccessor( pathArr, 'StringProperty' ) );
+  const stringLines = leaves.map( ( { pathArr } ) => createAccessor( pathArr, 'StringProperty', pascalCaseRepo ) );
 
   const copyrightLine = await getCopyrightLine( repo, outPath );
 
   let ftlContent = '';
-  leaves.forEach( ( { pathArr, value } ) => {
-    const key = createFluentKey( pathArr );
-    const ftlString = `${key} = ${value}`;
+
+  leaves.forEach( leaf => {
+    const key = createFluentKey( leaf.pathArr );
+    const ftlString = `${key} = ${leaf.value}`;
     ftlContent += ftlString + '\n';
   } );
 
@@ -206,6 +237,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
 import FluentPattern from '../../chipper/js/browser/FluentPattern.js';
 import FluentContainer from '../../chipper/js/browser/FluentContainer.js';
+import FluentConstant from '../../chipper/js/browser/FluentConstant.js';
 import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 import ${camelCaseRepo} from './${camelCaseRepo}.js';
 import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
