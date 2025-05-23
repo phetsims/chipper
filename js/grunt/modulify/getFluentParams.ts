@@ -26,7 +26,7 @@ export type ParamInfo = {
  * Returns parameters and their variant options (if applicable) for a Fluent message.
  * Also detects if the message has any references to other messages.
  */
-export function listFluentParams( fluentFileFTL: string, key: string ): ParamInfo[] {
+export function getFluentParams( fluentFileFTL: string, key: string ): ParamInfo[] {
   // ─── Parse FTL & build entry index (for recursive walks) ────────────────
   const parser = new FluentParser();
   const resourceAst = parser.parse( fluentFileFTL );

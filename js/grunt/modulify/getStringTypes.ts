@@ -11,7 +11,7 @@ import assert from 'assert';
 import { readFileSync } from 'fs';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
-import { listFluentParams, ParamInfo } from './listFluentParams.js';
+import { getFluentParams, ParamInfo } from './getFluentParams.js';
 import { replace } from './modulify.js';
 
 /**
@@ -85,7 +85,7 @@ const getStringTypes = ( repo: string, fluentExportName: string ): string => {
   // Second loop: Extract parameters for each string using the complete FTL file
   for ( const { id, joinedPath } of allFluentStrings ) {
     try {
-      const params = listFluentParams( ftlContent, id );
+      const params = getFluentParams( ftlContent, id );
       if ( params.length > 0 ) {
         keyToParamsMap.set( joinedPath, params );
       }
