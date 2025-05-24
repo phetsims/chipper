@@ -1,4 +1,4 @@
-// Copyright 2025, University of Colorado Boulder
+// Copyright 2020-2025, University of Colorado Boulder
 
 /**
  * Creates the string module at js/${_.camelCase( repo )}Strings.js for repos that need it.
