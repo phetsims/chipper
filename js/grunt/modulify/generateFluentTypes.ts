@@ -40,10 +40,7 @@ const indent = ( lvl: number, spaces = 2 ): string => ' '.repeat( lvl * spaces )
  * TODO: Can/should this be used by rosetta? It will need to know what kind of string it is for validation and maybe UX, see https://github.com/phetsims/chipper/issues/1588
  */
 const isLegacyString = ( str: string ): boolean => {
-
-  // check for the string including a number surrounded by single curly braces
-  // TODO: double check this regex, see https://github.com/phetsims/chipper/issues/1588
-  return ( str.includes( '{{' ) || str.includes( '}}' ) ) || str.match( /{(\d+)}/ ) !== null;
+  return str.includes( '{{' ) || str.includes( '}}' ) || /{\d+}/.test( str );
 };
 
 /** Recursively walk object, returning leaf records. */
