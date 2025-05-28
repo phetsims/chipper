@@ -35,10 +35,13 @@ const indent = ( lvl: number, spaces = 2 ): string => ' '.repeat( lvl * spaces )
  * If the string uses the legacy pattern form, it won't be compatible with Fluent.
  * If it uses double curly braces for StringUtils.fillIn, Fluent will try to find the inner term and likely fail.
  * If it uses single curly surrounding a number, it is intended for StringUtils.format.
+ *
+ * TODO: Can/should this be used by rosetta? It will need to know what kind of string it is for validation and maybe UX, see https://github.com/phetsims/chipper/issues/1588
  */
 const isLegacyString = ( str: string ): boolean => {
 
   // check for the string including a number surrounded by single curly braces
+  // TODO: double check this regex, see https://github.com/phetsims/chipper/issues/1588
   return ( str.includes( '{{' ) || str.includes( '}}' ) ) || str.match( /{(\d+)}/ ) !== null;
 };
 
@@ -65,6 +68,9 @@ function createFluentKey( pathArr: string[] ): string {
 
   // Make sure that the string key is valid for Fluent syntax. Notably, Fluent does not allow
   // dashes or dots in the key names.
+
+  // TODO: double check this regex, should we replace with - only to replace dashes shortly thereafter, see https://github.com/phetsims/chipper/issues/1588
+
   const id = stringKey
     .replace( /[^a-zA-Z0-9.]/g, '-' ) // Replace any non-alphanumeric character with a dash
     .split( '.' ).join( '_' ) // Replace dots with underscores
@@ -149,6 +155,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
       // A suffix for the key in the line if it is going to be a StringProperty
       const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
 
+      // TODO: Was this tested yet? See https://github.com/phetsims/chipper/issues/1588
       if ( isLegacyString( val ) ) {
 
         // This is a legacy string and is meant to be used with StringUtils.format or
