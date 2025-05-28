@@ -64,19 +64,12 @@ function collectLeaves( obj: Obj, pathArr: string[] = [] ): Leaf[] {
  * Characters that are not valid in Fluent keys are replaced with dashes.
  */
 function createFluentKey( pathArr: string[] ): string {
-  const stringKey = pathArr.join( '_' );
 
-  // Make sure that the string key is valid for Fluent syntax. Notably, Fluent does not allow
-  // dashes or dots in the key names.
+  return pathArr
+    .join( '_' )
 
-  // TODO: double check this regex, should we replace with - only to replace dashes shortly thereafter, see https://github.com/phetsims/chipper/issues/1588
-
-  const id = stringKey
-    .replace( /[^a-zA-Z0-9.]/g, '-' ) // Replace any non-alphanumeric character with a dash
-    .split( '.' ).join( '_' ) // Replace dots with underscores
-    .split( '-' ).join( '_' ); // Replace dashes with underscores
-
-  return id;
+    // This regex matches any character that is not a letter, digit, or underscore.
+    .replace( /[^a-zA-Z0-9]/g, '_' );
 }
 
 /**
@@ -155,7 +148,6 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
       // A suffix for the key in the line if it is going to be a StringProperty
       const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
 
-      // TODO: Was this tested yet? See https://github.com/phetsims/chipper/issues/1588
       if ( isLegacyString( val ) ) {
 
         // This is a legacy string and is meant to be used with StringUtils.format or
