@@ -14,6 +14,7 @@ import path from 'path';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLine from '../getCopyrightLine.js';
 import { getFluentParams, ParamInfo } from './getFluentParams.js';
@@ -214,6 +215,9 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
     const ftlString = `${key} = ${leaf.value}`;
     ftlContent += ftlString + '\n';
   } );
+
+  // Verify the fluent file to report syntax errors in the english content.
+  FluentLibrary.verifyFluentFile( ftlContent );
 
   const keyToTypeInfoMap = new Map<string, ParamInfo[]>();
 
