@@ -186,15 +186,17 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   // 2 collect all leaves
   const leaves = collectLeaves( yamlObj );
 
+  const filteredLeaves = leaves.filter( leaf => !isLegacyString( leaf.value ) );
+
   // 3 FTL snippet - create Fluent Translation List entries for each string. Legacy strings (strings with contents
   // for StringUtils.format or StringUtils.fillIn) are not included in the FTL.
-  const ftlLines = leaves.filter( leaf => !isLegacyString( leaf.value ) ).map( ( { pathArr } ) => {
+  const ftlLines = filteredLeaves.map( leaf => {
 
     // Create an ID using underscore-separated path segments
-    const id = createFluentKey( pathArr );
+    const id = createFluentKey( leaf.pathArr );
 
     // Build full property path to access the string value
-    const accessor = createAccessor( pathArr, 'StringProperty.value', pascalCaseRepo );
+    const accessor = createAccessor( leaf.pathArr, 'StringProperty.value', pascalCaseRepo );
 
     // Format as "id = ${SimStrings.path.to.StringProperty.value}"
     return `${id} = \${${accessor}}`;
@@ -205,13 +207,12 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 
   const copyrightLine = await getCopyrightLine( repo, outPath );
 
-  let ftlContent = '';
-
-  leaves.forEach( leaf => {
-    const key = createFluentKey( leaf.pathArr );
-    const ftlString = `${key} = ${leaf.value}`;
-    ftlContent += ftlString + '\n';
-  } );
+  // Create FTL file contents from the english entries in the YAML so that we can create TypeScript types
+  // and verify the syntax.
+  const ftlContent = filteredLeaves.map( leaf => {
+    const id = createFluentKey( leaf.pathArr );
+    return `${id} = ${leaf.value}`;
+  } ).join( '\n' );
 
   // Verify the fluent file to report syntax errors in the english content.
   FluentLibrary.verifyFluentFile( ftlContent );
