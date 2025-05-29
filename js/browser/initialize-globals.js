@@ -1316,9 +1316,9 @@
       preventMultitouch: { type: 'boolean' },
       interruptMultitouch: { type: 'boolean' },
 
-      // If true, the sim will exclusively use the Fluent string system. Only the {{Sim}}Fluent.ts file
+      // If true, the sim will exclusively use the Fluent strings system. Only the {{Sim}}Fluent.ts file
       // will be generated, and the {{Sim}}Strings.ts file will not be generated.
-      fluentStringsOnly: { type: 'boolean' }
+      onlyFluent: { type: 'boolean' }
     };
 
     Object.keys( simFeaturesSchema ).forEach( schemaKey => {
