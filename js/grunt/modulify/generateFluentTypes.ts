@@ -246,7 +246,7 @@ ${fluentKeyMapLines}
 const createFluentFile = (): string => {
   let ftl = '';
   for (const [key, stringProperty] of fluentKeyToStringPropertyMap.entries()) {
-    ftl += \`\${key} = \${stringProperty.value}\n\`;
+    ftl += \`\${key} = \${stringProperty.value}\\n\`;
   }
   return ftl;
 };
