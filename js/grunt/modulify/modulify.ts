@@ -494,15 +494,14 @@ export default async ( repo: string, targets: Array<'images' | 'strings' | 'shad
   }
 
   // Strings module file
-  const onlyFluent = packageObject?.phet?.simFeatures?.onlyFluent;
-  console.log( `onlyFluent: ${onlyFluent}` );
-  if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace && !onlyFluent ) {
+  const fluentStringsOnly = packageObject?.phet?.simFeatures?.fluentStringsOnly;
+  if ( targetStrings && fs.existsSync( `../${repo}/${repo}-strings_en.json` ) && packageObject.phet && packageObject.phet.requirejsNamespace && !fluentStringsOnly ) {
     await createStringModule( repo );
 
     generateDevelopmentStrings( repo );
   }
-  else if ( onlyFluent && fs.existsSync( `../${repo}/js/${pascalCase( repo )}Strings.ts` ) ) {
-    throw new Error( 'The strings file should not exist when onlyFluent is true, please remove it.' );
+  else if ( fluentStringsOnly && fs.existsSync( `../${repo}/js/${pascalCase( repo )}Strings.ts` ) ) {
+    throw new Error( 'The strings file should not exist when fluentStringsOnly is true, please remove it.' );
   }
 
   // Images module file (localized images)
