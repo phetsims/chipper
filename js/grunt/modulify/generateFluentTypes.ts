@@ -179,55 +179,48 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   const yamlPath = `../${repo}/${repo}-strings_en.yaml`;
   const outPath = `js/${pascalCaseRepo}Fluent.ts`;
 
-  // 1 load YAML
+  // load YAML
   const yamlText = fs.readFileSync( yamlPath, 'utf8' );
   const yamlObj = yaml.load( yamlText ) as Obj;
 
-  // 2 collect all leaves
+  // collect all leaves
   const leaves = collectLeaves( yamlObj );
-
   const filteredLeaves = leaves.filter( leaf => !isLegacyString( leaf.value ) );
 
-  // 3 FTL snippet - create Fluent Translation List entries for each string. Legacy strings (strings with contents
-  // for StringUtils.format or StringUtils.fillIn) are not included in the FTL.
-  const ftlLines = filteredLeaves.map( leaf => {
+  // map fluent keys to StringProperty accessors for usage later
+  const fluentKeyMapLines = filteredLeaves.map( leaf => {
 
     // Create an ID using underscore-separated path segments
     const id = createFluentKey( leaf.pathArr );
 
-    // Build full property path to access the string value
-    const accessor = createAccessor( leaf.pathArr, 'StringProperty.value', pascalCaseRepo );
+    // Build full path to access the Property
+    const accessor = createAccessor( leaf.pathArr, 'StringProperty', pascalCaseRepo );
 
-    // Format as "id = ${SimStrings.path.to.StringProperty.value}"
-    return `${id} = \${${accessor}}`;
-  } ).join( '\n' );
-
-  // Generate array of all StringProperty accessors for monitoring changes
-  const stringLines = leaves.map( ( { pathArr } ) => createAccessor( pathArr, 'StringProperty', pascalCaseRepo ) );
+    return `${indent( 1 )}['${id}', ${accessor}]`;
+  } ).join( ',\n' );
 
   const copyrightLine = await getCopyrightLine( repo, outPath );
 
-  // Create FTL file contents from the english entries in the YAML so that we can create TypeScript types
+  // create FTL file contents from the english entries in the YAML so that we can create TypeScript types
   // and verify the syntax.
   const ftlContent = filteredLeaves.map( leaf => {
     const id = createFluentKey( leaf.pathArr );
     return `${id} = ${leaf.value}`;
   } ).join( '\n' );
 
-  // Verify the fluent file to report syntax errors in the english content.
+  // verify the fluent file to report syntax errors in the english content.
   FluentLibrary.verifyFluentFile( ftlContent );
 
   const keyToTypeInfoMap = new Map<string, ParamInfo[]>();
-
   leaves.forEach( ( { pathArr } ) => {
     const fluentKey = createFluentKey( pathArr );
     keyToTypeInfoMap.set( fluentKey, getFluentParams( ftlContent, fluentKey ) );
   } );
 
-  // 4 Fluent object literal
+  // an object literal that will be used to create the Fluent typescript object
   const fluentObjectLiteral = buildFluentObject( yamlObj, keyToTypeInfoMap, pascalCaseRepo, [], 1 );
 
-  // 5 Template TypeScript file
+  // template TypeScript file
   const fileContents = `${copyrightLine}
 // AUTOMATICALLY GENERATED – DO NOT EDIT.
 // Generated from ${path.basename( yamlPath )}
@@ -243,18 +236,22 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 import ${camelCaseRepo} from './${camelCaseRepo}.js';
 import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
 
-const getFTL = (): string => {
-  const ftl = \`
-${ftlLines}
-\`;
+// This map is used to create the fluent file and link to all StringProperties.
+// Accessing StringProperties is also critical for including them in the built sim.
+const fluentKeyToStringPropertyMap = new Map( [
+${fluentKeyMapLines}
+] );
+
+// A function that creates contents for a new Fluent file, which will be needed if any string changes.
+const createFluentFile = (): string => {
+  let ftl = '';
+  for (const [key, stringProperty] of fluentKeyToStringPropertyMap.entries()) {
+    ftl += \`\${key} = \${stringProperty.value}\n\`;
+  }
   return ftl;
 };
 
-const allStringProperties = [
-  ${stringLines.join( ',\n' )}
-];
-
-const fluentSupport = new FluentContainer( getFTL, allStringProperties );
+const fluentSupport = new FluentContainer( createFluentFile, Array.from(fluentKeyToStringPropertyMap.values()) );
 
 const ${pascalCaseRepo}Fluent = ${fluentObjectLiteral};
 
