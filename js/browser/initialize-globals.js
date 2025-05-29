@@ -1314,7 +1314,11 @@
       supportedRegionsAndCultures: { type: 'array' },
       defaultRegionAndCulture: { type: 'string' },
       preventMultitouch: { type: 'boolean' },
-      interruptMultitouch: { type: 'boolean' }
+      interruptMultitouch: { type: 'boolean' },
+
+      // If true, the sim will exclusively use the Fluent strings system. Only the {{Sim}}Fluent.ts file
+      // will be generated, and the {{Sim}}Strings.ts file will not be generated.
+      onlyFluent: { type: 'boolean' }
     };
 
     Object.keys( simFeaturesSchema ).forEach( schemaKey => {
