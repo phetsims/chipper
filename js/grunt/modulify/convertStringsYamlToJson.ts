@@ -21,8 +21,7 @@ export default async ( repo: string ): Promise<void> => {
   const filePath = `../${repo}/${repo}-strings_en.yaml`;
   const yamlContents = fs.readFileSync( filePath, 'utf8' );
 
-  // js-yaml preserves key order when loading YAML
-  const parsed = yaml.load( yamlContents );
+  const parsed = safeLoadYaml( yamlContents );
 
   // Recursively nest all string values and incorporate simMetadata.
   const nested = nestJSONStringValues( parsed );
@@ -32,6 +31,15 @@ export default async ( repo: string ): Promise<void> => {
   const jsonFilename = `${repo}-strings_en.json`;
 
   await writeFileAndGitAdd( repo, jsonFilename, jsonContents );
+};
+
+/**
+ * Use js-yaml to parse the YAML contents, preserving key order. The FAILSAFE_SCHEMA is used so that all
+ * YAML Scalars are loaded as strings. Otherwise booleans and numbers would be loaded as their native types.
+ * @param yamlContents
+ */
+export const safeLoadYaml = ( yamlContents: string ): IntentionalAny => {
+  return yaml.load( yamlContents, { schema: yaml.FAILSAFE_SCHEMA } );
 };
 
 /**

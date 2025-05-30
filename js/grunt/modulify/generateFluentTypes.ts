@@ -8,7 +8,6 @@
  */
 
 import fs from 'fs';
-import yaml from 'js-yaml';
 import _ from 'lodash';
 import path from 'path';
 import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
@@ -17,6 +16,7 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLine from '../getCopyrightLine.js';
+import { safeLoadYaml } from './convertStringsYamlToJson.js';
 import { getFluentParams, ParamInfo } from './getFluentParams.js';
 import { fixEOL } from './modulify.js';
 
@@ -244,7 +244,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 
   // load YAML
   const yamlText = fs.readFileSync( yamlPath, 'utf8' );
-  const yamlObj = yaml.load( yamlText ) as Obj;
+  const yamlObj = safeLoadYaml( yamlText ) as Obj;
 
   // collect all leaves
   const leaves = collectLeaves( yamlObj );
