@@ -88,8 +88,71 @@ const createAccessor = ( pathArr: string[], suffix: string, pascalCaseRepo: stri
   }, `${pascalCaseRepo}Strings` ) + suffix;
 };
 
+/**
+ * Expands “dot-notation” keys into real nested objects.
+ *
+ * If the key contains one or more dots (e.g. `"a.b.c"`), the key is split on the dot
+ * characters and intermediate objects are created so that the value resides
+ * at the correct depth:
+ *
+ *   expandDottedKeys({ "a.b": 1, "x.y.z": 2 })
+ *   // { a: { b: 1 }, x: { y: { z: 2 } } }
+ *
+ * Keys without dots are copied verbatim.
+ *
+ * If several keys share a common prefix, the resulting sub-objects are merged;
+ * when the same final path is encountered more than once, the later value
+ * overwrites the earlier one.
+ */
+function expandDottedKeys( object: Record<string, unknown> ): Record<string, unknown> {
+  const newObject: Record<string, unknown> = {};
+
+  Object.entries( object ).forEach( ( [ rawKey, value ] ) => {
+    const parts = rawKey.split( '.' );
+
+    // The 'cursor' is the position where we are in the tree as we recursively build the object.
+    let cursor: Record<string, unknown> = newObject;
+
+    for ( let i = 0; i < parts.length - 1; i++ ) {
+      const part = parts[ i ];
+
+      // We have never seen this key before, so we need to create an object for it.
+      // If we HAVE seen it, we will use the existing object and merge into it.
+      if ( cursor[ part ] === undefined || cursor[ part ] === null ) {
+        cursor[ part ] = {};
+      }
+      cursor = cursor[ part ] as Record<string, unknown>;
+    }
+
+    const last = parts[ parts.length - 1 ];
+
+    let nextEntry;
+    if ( value && typeof value === 'object' && !Array.isArray( value ) ) {
+      // If the value is an object, we recursively expand its keys as well.
+      nextEntry = expandDottedKeys( value as Record<string, unknown> );
+    }
+    else {
+      nextEntry = value;
+    }
+
+    // Set the final value in the cursor object.
+    cursor[ last ] = nextEntry;
+
+    cursor[ last ] =
+      ( value && typeof value === 'object' && !Array.isArray( value ) ) ? expandDottedKeys( value as Record<string, unknown> )
+                                                                        : value;
+  } );
+
+  return newObject;
+}
+
 /** Build nested TS literal from YAML, inserting both helpers at leaves. */
 function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pascalCaseRepo: string, pathArr: string[] = [], lvl = 1 ): string {
+
+  // Keys with dots should be expanded into nested objects so that usages can easily access values with
+  // dot notation.
+  obj = expandDottedKeys( obj );
+
   const lines = [ '{' ];
   const entries = Object.entries( obj );
   entries.forEach( ( [ key, val ], idx ) => {
