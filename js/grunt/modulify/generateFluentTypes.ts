@@ -210,8 +210,9 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
             typeString = `${variantLiterals} | TReadOnlyProperty<${variantLiterals}>`;
           }
           else {
-            // Default to IntentionalAny if no variants are provided
-            typeString = 'IntentionalAny';
+
+            // If no variants are provided, this will be a string, number, or TReadOnlyProperty of those types.
+            typeString = 'FluentVariable';
           }
           return `${name}: ${typeString}`;
         } );
@@ -309,10 +310,10 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 /* @formatter:off */
 
 import TReadOnlyProperty from '../../axon/js/TReadOnlyProperty.js';
+import type { FluentVariable } from '../../chipper/js/browser/FluentPattern.js';
 import FluentPattern from '../../chipper/js/browser/FluentPattern.js';
 import FluentContainer from '../../chipper/js/browser/FluentContainer.js';
 import FluentConstant from '../../chipper/js/browser/FluentConstant.js';
-import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 import ${camelCaseRepo} from './${camelCaseRepo}.js';
 import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
 

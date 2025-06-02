@@ -12,8 +12,14 @@ import DerivedProperty from '../../../axon/js/DerivedProperty.js';
 import ReadOnlyProperty from '../../../axon/js/ReadOnlyProperty.js';
 import TReadOnlyProperty, { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import { FluentBundle } from '../../../chipper/js/browser-and-node/FluentLibrary.js';
+import EnumerationValue from '../../../phet-core/js/EnumerationValue.js';
 import chipper from './chipper.js';
 import FluentUtils from './FluentUtils.js';
+
+// A type for simple variables that can be used in Fluent messages. While strings and numbers are handled natively,
+// booleans and EnumerationValues are handled by FluentUtils.handleFluentArgs.
+type VariableType = string | number | boolean | EnumerationValue;
+export type FluentVariable = VariableType | TReadOnlyProperty<VariableType>;
 
 export default class FluentPattern<T extends Record<string, unknown>> {
   public constructor(
