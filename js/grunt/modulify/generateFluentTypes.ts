@@ -17,7 +17,7 @@ import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLine from '../getCopyrightLine.js';
 import { safeLoadYaml } from './convertStringsYamlToJson.js';
-import { getFluentParams, ParamInfo } from './getFluentParams.js';
+import { getFluentParams, NUMBER_LITERAL, ParamInfo } from './getFluentParams.js';
 import { fixEOL } from './modulify.js';
 
 type Leaf = { pathArr: string[]; value: string };
@@ -188,7 +188,24 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
 
           if ( prop.variants && Array.isArray( prop.variants ) && prop.variants.length > 0 ) {
             // Create the union of string literals
-            const variantLiterals = prop.variants.map( v => `'${v}'` ).join( ' | ' );
+            const variantLiterals = prop.variants.map( v => {
+
+              if ( typeof v === 'number' ) {
+
+                // If the variant is a number, return it as is, so it will appear in the type like a number literal
+                return v;
+              }
+              else if ( typeof v === 'string' ) {
+                return `'${v}'`;
+              }
+              else {
+
+                affirm( v.type === NUMBER_LITERAL, 'Unexpected variant type, expected string or number literal' );
+
+                return `number | '${v.value}'`;
+
+              }
+            } ).join( ' | ' );
             // Create the full type string including TReadOnlyProperty
             typeString = `${variantLiterals} | TReadOnlyProperty<${variantLiterals}>`;
           }

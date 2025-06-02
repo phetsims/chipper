@@ -11,6 +11,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import { ASTEntry, FluentParser, FluentSyntaxPattern } from '../../browser-and-node/FluentLibrary.js';
 
@@ -19,8 +20,19 @@ import { ASTEntry, FluentParser, FluentSyntaxPattern } from '../../browser-and-n
  */
 export type ParamInfo = {
   name: string;
-  variants?: string[];  // For select expressions, the possible variant keys
+
+  // For select expressions, the possible variant keys
+  variants?: ( string | number |
+
+    // Encode numeric literal so we can distinguish it from the string literal.
+    // const x: number = 7;
+    // const x: 'number' = 'number';
+    { type: string; value: string } )[];
 };
+
+const NUMERIC_KEYWORDS = [ 'zero', 'one', 'two', 'few', 'many', 'other' ];
+
+export const NUMBER_LITERAL = 'number';
 
 /**
  * Returns parameters and their variant options (if applicable) for a Fluent message.
@@ -81,8 +93,20 @@ export function getFluentParams( fluentFileFTL: string, key: string ): ParamInfo
             const paramName = expr.selector.id.name;
 
             // Extract variant keys from the SelectExpression
-            const variants = expr.variants.map( ( variant: IntentionalAny ) =>
-              variant.key.name === 'other' ? '*' : variant.key.name
+            const variants = expr.variants.map( ( variant: IntentionalAny ) => {
+                if ( variant.key.type && variant.key.type === 'NumberLiteral' ) {
+
+                  const parsed = Number( variant.key.value );
+                  affirm( Number.isFinite( parsed ), `Expected a finite number for variant key, got: ${variant.key.value}` );
+                  return parsed;
+                }
+                else {
+
+                  // Treat zero, one, two, few, many, and other as numeric values, as type 'number'
+                  // and all other keys as strings.
+                  return NUMERIC_KEYWORDS.includes( variant.key.name ) ? { type: NUMBER_LITERAL, value: variant.key.name } : variant.key.name;
+                }
+              }
             );
 
             // Store param with its variants
