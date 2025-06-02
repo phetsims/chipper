@@ -20,7 +20,6 @@ import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import pascalCase from '../common/pascalCase.js';
 
-
 export type Locale = string;
 
 // TODO: Use this in all spots importing localeData.json https://github.com/phetsims/chipper/issues/1539
@@ -112,20 +111,26 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
 
   assert( locales.includes( ChipperConstants.FALLBACK_LOCALE ), 'fallback locale is required' );
 
+  // --------------------------------------------------------------------
+  // The Fluent.js file uses all Strings.js keys internally so they do not count as usages.
+  // --------------------------------------------------------------------
+  const nonFluentModules = usedModules.filter( modulePath => !modulePath.endsWith( 'Fluent.js' ) );
+
   // Load the file contents of every single JS module that used any strings
-  const usedFileContents = usedModules.map( usedModule => fs.readFileSync( `../${usedModule}`, 'utf-8' ) );
+  const usedFileContents = nonFluentModules.map( usedModule => fs.readFileSync( `../${usedModule}`, 'utf-8' ) );
 
   // Compute which repositories contain one or more used strings (since we'll need to load string files for those
   // repositories).
   let reposWithUsedStrings = [];
   usedFileContents.forEach( fileContent => {
+    // Accept imports for either *Strings.js or *Fluent.js
     // [a-zA-Z_$][a-zA-Z0-9_$] ---- general JS identifiers, first character can't be a number
     // [^\n\r] ---- grab everything except for newlines here, so we get everything
-    const allImportStatements = fileContent.match( /import [a-zA-Z_$][a-zA-Z0-9_$]*Strings from '[^\n\r]+Strings.js';/g );
+    const allImportStatements = fileContent.match( /import [a-zA-Z_$][a-zA-Z0-9_$]*(Strings|Fluent) from '[^\n\r]+(Strings|Fluent)\.js';/g );
     if ( allImportStatements ) {
       reposWithUsedStrings.push( ...allImportStatements.map( importStatement => {
-        // Grabs out the prefix before `Strings.js` (without the leading slash too)
-        const importName = importStatement.match( /\/([\w-]+)Strings\.js/ )[ 1 ];
+        // Grabs out the prefix before `Strings.js` OR `Fluent.js` (without the leading slash)
+        const importName = importStatement.match( /\/([\w-]+)(Strings|Fluent)\.js/ )[ 1 ];
 
         // kebab case the repo
         return _.kebabCase( importName );
@@ -166,48 +171,63 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
     // included, even though only part of that is a string access.
     let stringAccesses = [];
 
-    const prefix = `${pascalCase( repo )}Strings`; // e.g. JoistStrings
-    usedFileContents.forEach( ( fileContent, i ) => {
-      // Only scan files where we can identify an import for it
-      if ( fileContent.includes( `import ${prefix} from` ) ) {
+    // We need to look for both SomethingStrings.* and SomethingFluent.*
+    const prefixes = [
+      `${pascalCase( repo )}Strings`,
+      `${pascalCase( repo )}Fluent`
+    ];
 
-        // Look for normal matches, e.g. `JoistStrings.` followed by one or more chunks like:
-        // .somethingVaguely_alphaNum3r1c
-        // [ 'aStringInBracketsBecauseOfSpecialCharacters' ]
-        //
-        // It will also then end on anything that doesn't look like another one of those chunks
-        // [a-zA-Z_$][a-zA-Z0-9_$]* ---- this grabs things that looks like valid JS identifiers
-        // \\[ '[^']+' \\])+ ---- this grabs things like our second case above
-        // [^\\.\\[] ---- matches something at the end that is NOT either of those other two cases
-        // It is also generalized to support arbitrary whitespace and requires that ' match ' or " match ", since
-        // this must support JS code and minified TypeScript code
-        // Matches one final character that is not '.' or '[', since any valid string accesses should NOT have that
-        // after. NOTE: there are some degenerate cases that will break this, e.g.:
-        // - JoistStrings.someStringProperty[ 0 ]
-        // - JoistStrings.something[ 0 ]
-        // - JoistStrings.something[ 'length' ]
-        const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[\\s*['"][^'"]+['"]\\s*\\])+[^\\.\\[]`, 'g' ) );
-        if ( matches ) {
-          stringAccesses.push( ...matches.map( match => {
-            return match
-              // We always have to strip off the last character - it's a character that shouldn't be in a string access
-              .slice( 0, match.length - 1 )
-              // Handle JoistStrings[ 'some-thingStringProperty' ].value => JoistStrings[ 'some-thing' ]
-              // -- Anything after StringProperty should go
-              // away, but we need to add the final '] to maintain the format
-              .replace( /StringProperty'\s?].*/, '\' ]' )
-              // Handle JoistStrings.somethingStringProperty.value => JoistStrings.something
-              .replace( /StringProperty.*/, '' )
-              // Normalize whitespace
-              .replace( /\[ '/g, '[\'' )
-              .replace( /' \]/g, '\']' );
-          } ) );
+    prefixes.forEach( prefix => {
+      usedFileContents.forEach( fileContent => {
+
+        // Only scan files where we can identify an import for it
+        if ( fileContent.includes( `import ${prefix} from` ) ) {
+
+          // Look for normal matches, e.g. `JoistStrings.` followed by one or more chunks like:
+          // .somethingVaguely_alphaNum3r1c
+          // [ 'aStringInBracketsBecauseOfSpecialCharacters' ]
+          //
+          // It will also then end on anything that doesn't look like another one of those chunks
+          // [a-zA-Z_$][a-zA-Z0-9_$]* ---- this grabs things that looks like valid JS identifiers
+          // \\[ '[^']+' \\])+ ---- this grabs things like our second case above
+          // [^\\.\\[] ---- matches something at the end that is NOT either of those other two cases
+          // It is also generalized to support arbitrary whitespace and requires that ' match ' or " match ", since
+          // this must support JS code and minified TypeScript code
+          // Matches one final character that is not '.' or '[', since any valid string accesses should NOT have that
+          // after. NOTE: there are some degenerate cases that will break this, e.g.:
+          // - JoistStrings.someStringProperty[ 0 ]
+          // - JoistStrings.something[ 0 ]
+          // - JoistStrings.something[ 'length' ]
+          const matches = fileContent.match( new RegExp( `${prefix}(\\.[a-zA-Z_$][a-zA-Z0-9_$]*|\\[\\s*['"][^'"]+['"]\\s*\\])+[^\\.\\[]`, 'g' ) );
+          if ( matches ) {
+            stringAccesses.push( ...matches.map( match => {
+              return match
+                // We always have to strip off the last character - it's a character that shouldn't be in a string access
+                .slice( 0, match.length - 1 )
+                // Handle JoistStrings[ 'some-thingStringProperty' ].value => JoistStrings[ 'some-thing' ]
+                // -- Anything after StringProperty should go
+                // away, but we need to add the final '] to maintain the format
+                .replace( /StringProperty'\s?].*/, '\']' )
+                // Handle JoistStrings.somethingStringProperty.value => JoistStrings.something
+                .replace( /StringProperty.*/, '' )
+                // .format( ... )
+                .replace( /\.format.*/, '' )
+                // .createProperty( ... )
+                .replace( /\.createProperty.*/, '' )
+                // Normalize whitespace
+                .replace( /\[ '/g, '[\'' )
+                .replace( /' \]/g, '\']' );
+            } ) );
+          }
         }
-      }
+      } );
     } );
 
     // Strip off our prefixes, so our stringAccesses will have things like `'ResetAllButton.name'` inside.
-    stringAccesses = _.uniq( stringAccesses ).map( str => str.slice( prefix.length ) );
+    stringAccesses = _.uniq( stringAccesses ).map( str => {
+      // Take off whichever prefix it had (Strings or Fluent)
+      return prefixes.reduce( ( acc, pre ) => acc.startsWith( pre ) ? acc.slice( pre.length ) : acc, str );
+    } );
 
     // The JS outputted by TS is minified and missing the whitespace
     const depth = 2;
