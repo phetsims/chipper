@@ -810,9 +810,9 @@
     },
 
     /**
-     * Console log the voicing responses that are spoken by SpeechSynthesis
+     * Print output from Voicing speech synthesis responses to the console.
      */
-    printVoicingResponses: {
+    logVoicingResponses: {
       type: 'flag'
     },
 
