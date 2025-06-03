@@ -757,7 +757,7 @@
     },
 
     /**
-     * Controls whether Tier 1 Voicing is enabled. This is a subset of the Voicing feature, the Voicing toolbar,
+     * Controls whether Tier 1 Voicing is enabled. This is a subset of the Voicing feature, the VoicingToolbar,
      * name responses, and hint responses are all avialable. Context and Object responses are disabled and cannot
      * be enabled from the Preferences dialog.
      *
@@ -904,7 +904,7 @@
     },
 
     /**
-     * Only relevant when the sim supports the Voicing feature. If true, the Voicing toolbar will be collapsed
+     * Only relevant when the sim supports the Voicing feature. If true, the VoicingToolbar will be collapsed
      * by default when Voicing is enabled.
      *
      * These parameters allow fine-=tuned control over the initial state and behavior of the Voicing feature,
@@ -916,7 +916,7 @@
     },
 
     /**
-     * Only relevant when the sim supports the Voicing feature. If true, the Voicing toolbar will be fully hidden
+     * Only relevant when the sim supports the Voicing feature. If true, the VoicingToolbar will be fully hidden
      * by default when Voicing is enabled.
      *
      * These parameters allow fine-=tuned control over the initial state and behavior of the Voicing feature,
