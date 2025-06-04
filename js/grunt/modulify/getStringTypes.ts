@@ -169,7 +169,16 @@ const getStringTypes = ( repo: string, fluentExportName: string ): string => {
           // Filter out '*' which represents the 'other' case
           const variantOptions = param.variants
             .filter( v => v !== '*' )
-            .map( v => `'${v}'` )
+            .map( v => {
+              if ( typeof v === 'string' || typeof v === 'number' ) {
+                return `'${v}'`;
+              }
+              else {
+
+                // object variant, see ParamInfo: { type, value }
+                return `'${v.value}'`;
+              }
+            } )
             .join( ' | ' );
 
           // Return both the direct union type and the TReadOnlyProperty wrapped version
