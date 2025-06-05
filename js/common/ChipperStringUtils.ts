@@ -13,6 +13,10 @@ import _ from 'lodash';
 const NAMESPACE_PREFIX_DIVIDER = '/';
 const A11Y_MARKER = 'a11y.';
 
+// So that we can use a regular expression on strings that may contain special
+// characters, such as curly braces in fluent patterns.
+const escapeRegex = ( s: string ) => s.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' );
+
 const ChipperStringUtils = {
 
   /**
@@ -155,6 +159,80 @@ const ChipperStringUtils = {
    */
   isA11yStringKey( key: string ): boolean {
     return key.startsWith( ChipperStringUtils.A11Y_MARKER );
+  },
+
+  /**
+   * Creates a key that can be used in a fluent file. Converting all underscores, dots, and
+   * non-alphanumeric characters into underscores.
+   *
+   * @param dotSeparatedKey - a key like 'a11y.some.thing.accessibleName'
+   */
+  createFluentKey( dotSeparatedKey: string ): string {
+    return dotSeparatedKey.replace( /[^a-zA-Z0-9]/g, '_' );
+  },
+
+  /**
+   * Does a message string contain a placeholder that references the supplied
+   * Fluent key?
+   *
+   * Example:
+   *   str         = 'Area is { rectangle_area }.'
+   *   fluentKey   = 'rectangle_area'
+   *   returns     = true
+   *
+   * Matching rules:
+   *   • Placeholder must be wrapped in “{ … }”.
+   *   • Any amount of white-space after “{” or before “}” is allowed.
+   */
+  stringUsesFluentReference( str: string, fluentKey: string ): boolean {
+    const key = escapeRegex( fluentKey );
+    const re = new RegExp( `\\{\\s*${key}\\s*\\}`, 'u' );  // exact match, optional spaces
+    return re.test( str );
+  },
+
+  /**
+   * Flattens the nested “string-file” JSON structure into a Map so that each
+   * keys, fluent keys, and values can be easily worked with.
+   *   dot-path            → { fluentKey: dot_path, value: 'Some string' }
+   *
+   * Example
+   * -------
+   *   {
+   *     screen1: {
+   *       title: { value: 'Screen 1' }
+   *     }
+   *   }
+   *
+   * => Map entry:  'screen1.title' → { fluentKey: 'screen1_title', value: 'Screen 1' }
+   *
+   * Implementation notes
+   * --------------------
+   * • Depth-first traversal: `trail` holds the property path as we descend.
+   * • A node is considered a leaf when it is an object that owns a `value` property
+   */
+  getFluentKeyMap( messages: Record<string, unknown> ): Map<string, { fluentKey: string; value: string }> {
+    const result = new Map<string, { fluentKey: string; value: string }>();
+
+    const visit = ( node: unknown, trail: string[] ): void => {
+      if ( node && typeof node === 'object' && !Array.isArray( node ) && 'value' in node ) {
+        const jsonKey = trail.join( '.' );
+        result.set( jsonKey, {
+          fluentKey: ChipperStringUtils.createFluentKey( jsonKey ),
+          value: ( node as { value: string } ).value
+        } );
+        return;
+      }
+
+      // Recurse through nested objects
+      if ( node && typeof node === 'object' ) {
+        for ( const [ k, v ] of Object.entries( node ) ) {
+          visit( v, [ ...trail, k ] );
+        }
+      }
+    };
+
+    visit( messages, [] );
+    return result;
   },
 
   /**

@@ -229,6 +229,27 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
       return prefixes.reduce( ( acc, pre ) => acc.startsWith( pre ) ? acc.slice( pre.length ) : acc, str );
     } );
 
+    // This will hold the keys in the strings file that are referred to by fluent patterns. They may not have direct
+    // usages in simulation code, but are dependencies on other patterns so they must be marked considered used.
+    const keysUsedByFluent = new Set<string>();
+    const englishStringContents = stringFilesContents[ repo ][ ChipperConstants.FALLBACK_LOCALE ];
+
+    const fluentKeyMap = ChipperStringUtils.getFluentKeyMap( englishStringContents );
+    const allStringValues = Array.from( fluentKeyMap.values() ).map( entry => entry.value );
+
+    fluentKeyMap.forEach( ( object, jsonKey ) => {
+      const fluentKey = object.fluentKey;
+
+      allStringValues.forEach( stringValue => {
+        if ( ChipperStringUtils.stringUsesFluentReference( stringValue, fluentKey ) ) {
+          keysUsedByFluent.add( jsonKey );
+        }
+      } );
+    } );
+
+    // Add these string accesses to the stringAccesses map in the same format as our regular legacy strings.
+    stringAccesses.push( ...Array.from( keysUsedByFluent ).map( key => `.${key}` ) );
+
     // The JS outputted by TS is minified and missing the whitespace
     const depth = 2;
 
