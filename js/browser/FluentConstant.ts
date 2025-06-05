@@ -14,6 +14,8 @@ import { FluentBundle } from '../../../chipper/js/browser-and-node/FluentLibrary
 import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import chipper from './chipper.js';
 
+const NO_STRING = '';
+
 export default class FluentConstant extends DerivedProperty1<string, FluentBundle> {
 
   /**
@@ -30,12 +32,19 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
 
       const errors: Array<Error> = [];
 
-      affirm( message, `Fluent message not found for key: ${key}` );
-      affirm( message.value, `Fluent message value not found for key: ${key}` );
-      const result = bundle.formatPattern( message.value, {}, errors );
+      // The message and value must be available during development. But the build removes unused strings.
+      // FluentConstant is added to the Fluent.ts file during modulify so one will be created for all (even unused) keys.
+      // Therefore, we must be graceful for the built simulation.
+      affirm( message && message.value, `Fluent message value not found for key: ${key}` );
+      if ( message && message.value ) {
+        const result = bundle.formatPattern( message.value, {}, errors );
 
-      assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
-      return result;
+        assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
+        return result;
+      }
+      else {
+        return NO_STRING;
+      }
     } );
   }
 }

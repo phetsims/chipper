@@ -26,8 +26,8 @@ type Obj = Record<string, IntentionalAny>;
 /** true if key is a valid JS identifier (no quoting needed). */
 const IDENT = /^[A-Za-z_$][\w$]*$/;
 
-/** JS property accessor for {{Repo}}Strings keys (dot or bracket). */
-const propAccess = ( key: string ): string => ( IDENT.test( key ) ? `.${key}` : `[${JSON.stringify( key )}]` );
+/** Graceful JS property accessor – always optional-chained brackets. */
+const gracefulPropertyAccess = ( key: string ): string => `?.[${JSON.stringify( key )}]`;
 
 /** Indent helper. */
 const indent = ( lvl: number, spaces = 2 ): string => ' '.repeat( lvl * spaces );
@@ -71,21 +71,28 @@ function createFluentKey( pathArr: string[] ): string {
 }
 
 /**
- * Creates an accessor string for the given path array with the specified suffix
- * e.g., for pathArr=['a', 'b.c'] and suffix='.value', returns "PascalRepoStrings.a['b']['c'].value"
+ * Creates an accessor for a StringProperty for the given path array. Uses graceful
+ * field access because strings may have been removed during the build.
+ *
+ * e.g., for pathArr=['a', 'b.c'], returns "PascalRepoStrings?.[ 'a' ]?.['b']?.['c.StringProperty']"
+ *
  * @param pathArr - An array with the "path" to the string from nesting in the file.
- * @param suffix - The suffix to append to the end of the accessor string.
  * @param pascalCaseRepo - The PascalCase name of the repo.
  */
-const createAccessor = ( pathArr: string[], suffix: string, pascalCaseRepo: string ): string => {
+const createAccessor = ( pathArr: string[], pascalCaseRepo: string ): string => {
 
-  // Start with the repo strings object and progressively build the property accessor chain
-  return pathArr.reduce( ( acc, key ) => {
+  affirm( pathArr.length > 0, 'pathArr must contain at least one key' );
 
-    // Handle keys with dots (e.g., "a.b" becomes separate properties ["a"]["b"])
-    key.split( '.' ).forEach( part => { acc += propAccess( part ); } );
+  // Clone the array and glue the suffix onto its last element
+  const parts = pathArr.slice();
+  const lastIdx = parts.length - 1;
+  parts[ lastIdx ] = parts[ lastIdx ] + 'StringProperty'; // strip leading dot if given
+
+  // Build the accessor
+  return parts.reduce( ( acc, key ) => {
+    key.split( '.' ).forEach( p => { acc += gracefulPropertyAccess( p ); } );
     return acc;
-  }, `${pascalCaseRepo}Strings` ) + suffix;
+  }, `${pascalCaseRepo}Strings` );
 };
 
 /**
@@ -231,7 +238,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
 
         // This is a legacy string and is meant to be used with StringUtils.format or
         // StringUtils.fillIn. It should use the LocalizedStringProperty directly.
-        const accessor = createAccessor( [ ...pathArr, key ], 'StringProperty', pascalCaseRepo );
+        const accessor = createAccessor( [ ...pathArr, key ], pascalCaseRepo );
         lines.push( `${indent( lvl )}${stringPropertyKey}: ${accessor}${comma}` );
       }
       else if ( cleanedSchema.length === 0 ) {
@@ -275,10 +282,10 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
     const id = createFluentKey( leaf.pathArr );
 
     // Build full path to access the Property
-    const accessor = createAccessor( leaf.pathArr, 'StringProperty', pascalCaseRepo );
+    const accessor = createAccessor( leaf.pathArr, pascalCaseRepo );
 
-    return `${indent( 1 )}['${id}', ${accessor}]`;
-  } ).join( ',\n' );
+    return `addToMapIfDefined( '${id}', ${accessor} );`;
+  } ).join( '\n' );
 
   const copyrightLine = await getCopyrightLine( repo, outPath );
 
@@ -319,9 +326,17 @@ import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
 
 // This map is used to create the fluent file and link to all StringProperties.
 // Accessing StringProperties is also critical for including them in the built sim.
-const fluentKeyToStringPropertyMap = new Map( [
+// However, if strings are unused in Fluent system too, they will be fully excluded from
+// the build. So we need to only add actually used strings.
+const fluentKeyToStringPropertyMap = new Map();
+
+const addToMapIfDefined = ( key: string, sp: TReadOnlyProperty<string> | undefined ) => {
+  if ( sp ) {
+    fluentKeyToStringPropertyMap.set( key, sp );
+  }
+};
+
 ${fluentKeyMapLines}
-] );
 
 // A function that creates contents for a new Fluent file, which will be needed if any string changes.
 const createFluentFile = (): string => {
