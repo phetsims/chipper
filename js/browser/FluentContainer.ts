@@ -30,7 +30,13 @@ export default class FluentContainer {
     } );
 
     const createFluentBundle = () => {
-      const bundle = new FluentBundle( 'en' );
+      const bundle = new FluentBundle( 'en', {
+
+        // Fluent wraps every interpolated value in the invisible FSI / PDI 'isolation' marks
+        // to keep the reading order correct when left-to-right and right-to-left text are mixed.
+        // Because those marks confuse speech-synthesis engines, we disable them.
+        useIsolating: false
+      } );
       const resource = new FluentResource( getFTL() );
       const errors = bundle.addResource( resource );
       assert && assert( errors.length === 0, 'Errors when adding resource for locale en' );
