@@ -25,14 +25,35 @@ import { Resource } from '../../../sherpa/lib/fluent/fluent-syntax-0.19.0/src/as
 /**
  * A visitor that collects Nodes from the AST so we can inspect them for problems.
  */
-class FluentVisitor extends Visitor {
+export class FluentVisitor extends Visitor {
   public readonly usedTermNames = new Set<string>();
   public readonly usedTerms = new Set<Pattern>();
   public readonly foundJunk = new Set<string>();
   public readonly declaredTerms = new Set<string>();
 
+  public readonly referencedMessages = new Set<string>();
+
   public override visitTerm( node: IntentionalAny ): void {
     this.declaredTerms.add( node );
+
+    this.genericVisit( node );
+  }
+
+  /**
+   * Visitor for messages that are referenced in another value. Collects
+   * keys in an array for inspection.
+   * For example,
+   *
+   *   name = Fred
+   *   hello_pattern = Hello, { fred }
+   *
+   * Key "fred" will be added to referencedMessages.
+   * @param node
+   */
+  public override visitMessageReference( node: IntentionalAny ): void {
+
+    // Add the message name to the set of used messages
+    this.referencedMessages.add( node.id.name );
 
     this.genericVisit( node );
   }

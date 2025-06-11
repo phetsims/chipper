@@ -14,6 +14,7 @@ import affirm from '../../../../perennial-alias/js/browser-and-node/affirm.js';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
+import ChipperStringUtils from '../../common/ChipperStringUtils.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLine from '../getCopyrightLine.js';
 import { safeLoadYaml } from './convertStringsYamlToJson.js';
@@ -31,17 +32,6 @@ const gracefulPropertyAccess = ( key: string ): string => `?.[${JSON.stringify( 
 
 /** Indent helper. */
 const indent = ( lvl: number, spaces = 2 ): string => ' '.repeat( lvl * spaces );
-
-/**
- * If the string uses the legacy pattern form, it won't be compatible with Fluent.
- * If it uses double curly braces for StringUtils.fillIn, Fluent will try to find the inner term and likely fail.
- * If it uses single curly surrounding a number, it is intended for StringUtils.format.
- *
- * TODO: Can/should this be used by rosetta? It will need to know what kind of string it is for validation and maybe UX, see https://github.com/phetsims/chipper/issues/1588
- */
-const isLegacyString = ( str: string ): boolean => {
-  return str.includes( '{{' ) || str.includes( '}}' ) || /{\d+}/.test( str );
-};
 
 /** Recursively walk object, returning leaf records. */
 function collectLeaves( obj: Obj, pathArr: string[] = [] ): Leaf[] {
@@ -234,7 +224,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
       // A suffix for the key in the line if it is going to be a StringProperty
       const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
 
-      if ( isLegacyString( val ) ) {
+      if ( ChipperStringUtils.isLegacyStringPattern( val ) ) {
 
         // This is a legacy string and is meant to be used with StringUtils.format or
         // StringUtils.fillIn. It should use the LocalizedStringProperty directly.
@@ -273,7 +263,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 
   // collect all leaves
   const leaves = collectLeaves( yamlObj );
-  const filteredLeaves = leaves.filter( leaf => !isLegacyString( leaf.value ) );
+  const filteredLeaves = leaves.filter( leaf => !ChipperStringUtils.isLegacyStringPattern( leaf.value ) );
 
   // map fluent keys to StringProperty accessors for usage later
   const fluentKeyMapLines = filteredLeaves.map( leaf => {

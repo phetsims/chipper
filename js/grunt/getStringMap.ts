@@ -16,6 +16,7 @@ import _ from 'lodash';
 import path from 'path';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import { PhetioElementMetadata } from '../../../tandem/js/phet-io-types.js';
+import { FluentParser, FluentVisitor } from '../browser-and-node/FluentLibrary.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import pascalCase from '../common/pascalCase.js';
@@ -235,16 +236,18 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
     const englishStringContents = stringFilesContents[ repo ][ ChipperConstants.FALLBACK_LOCALE ];
 
     const fluentKeyMap = ChipperStringUtils.getFluentKeyMap( englishStringContents );
-    const allStringValues = Array.from( fluentKeyMap.values() ).map( entry => entry.value );
+    const ftl = ChipperStringUtils.createFluentFileFromData( fluentKeyMap.values() );
+
+    const fluentVisitor = new FluentVisitor();
+    fluentVisitor.visit( new FluentParser().parse( ftl ) );
 
     fluentKeyMap.forEach( ( object, jsonKey ) => {
       const fluentKey = object.fluentKey;
 
-      allStringValues.forEach( stringValue => {
-        if ( ChipperStringUtils.stringUsesFluentReference( stringValue, fluentKey ) ) {
-          keysUsedByFluent.add( jsonKey );
-        }
-      } );
+      // Fluent counts our legacy string patterns as referenced messages because they are also valid fluent syntax.
+      if ( fluentVisitor.referencedMessages.has( fluentKey ) && !ChipperStringUtils.isLegacyStringPattern( object.value ) ) {
+        keysUsedByFluent.add( jsonKey );
+      }
     } );
 
     // Add these string accesses to the stringAccesses map in the same format as our regular legacy strings.

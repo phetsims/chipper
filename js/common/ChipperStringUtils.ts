@@ -13,9 +13,8 @@ import _ from 'lodash';
 const NAMESPACE_PREFIX_DIVIDER = '/';
 const A11Y_MARKER = 'a11y.';
 
-// So that we can use a regular expression on strings that may contain special
-// characters, such as curly braces in fluent patterns.
-const escapeRegex = ( s: string ) => s.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' );
+// A frequently used descriptor for a fluent key to its string value.
+type FluentData = { fluentKey: string; value: string };
 
 const ChipperStringUtils = {
 
@@ -172,22 +171,26 @@ const ChipperStringUtils = {
   },
 
   /**
-   * Does a message string contain a placeholder that references the supplied
-   * Fluent key?
+   * If the string uses the legacy pattern form, it won't be compatible with Fluent.
+   * If it uses double curly braces for StringUtils.fillIn, Fluent will try to find the inner term and likely fail.
+   * If it uses single curly surrounding a number, it is intended for StringUtils.format.
    *
-   * Example:
-   *   str         = 'Area is { rectangle_area }.'
-   *   fluentKey   = 'rectangle_area'
-   *   returns     = true
-   *
-   * Matching rules:
-   *   • Placeholder must be wrapped in “{ … }”.
-   *   • Any amount of white-space after “{” or before “}” is allowed.
+   * TODO: Can/should this be used by rosetta? It will need to know what kind of string it is for validation and maybe UX, see https://github.com/phetsims/chipper/issues/1588
    */
-  stringUsesFluentReference( str: string, fluentKey: string ): boolean {
-    const key = escapeRegex( fluentKey );
-    const re = new RegExp( `\\{\\s*${key}\\s*\\}`, 'u' );  // exact match, optional spaces
-    return re.test( str );
+  isLegacyStringPattern( str: string ): boolean {
+    return str.includes( '{{' ) || str.includes( '}}' ) || /{\d+}/.test( str );
+  },
+
+  /**
+   * Creates a full Fluent (FTL) file string from the provided FluentData values.
+   */
+  createFluentFileFromData( fluentData: FluentData[] ): string {
+    let ftl = '';
+    for ( const entry of fluentData ) {
+      ftl += `${entry.fluentKey} = ${entry.value}\n`;
+    }
+
+    return ftl;
   },
 
   /**
@@ -210,8 +213,8 @@ const ChipperStringUtils = {
    * • Depth-first traversal: `trail` holds the property path as we descend.
    * • A node is considered a leaf when it is an object that owns a `value` property
    */
-  getFluentKeyMap( messages: Record<string, unknown> ): Map<string, { fluentKey: string; value: string }> {
-    const result = new Map<string, { fluentKey: string; value: string }>();
+  getFluentKeyMap( messages: Record<string, unknown> ): Map<string, FluentData> {
+    const result = new Map<string, FluentData>();
 
     const visit = ( node: unknown, trail: string[] ): void => {
       if ( node && typeof node === 'object' && !Array.isArray( node ) && 'value' in node ) {
