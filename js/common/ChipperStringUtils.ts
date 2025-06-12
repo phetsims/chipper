@@ -13,6 +13,10 @@ import _ from 'lodash';
 const NAMESPACE_PREFIX_DIVIDER = '/';
 const A11Y_MARKER = 'a11y.';
 
+// Matches { … } placeholders in fluent that are NOT variables. Note this will catch
+// legacy patterns like {$0} and {{value}}. Use `isLegacyStringPattern` to check for those.
+const FLUENT_PLACEHOLDER_EXPRESSION = /\{\s*(?!\$)([^\s}]+)\s*\}/gu;
+
 // A frequently used descriptor for a fluent key to its string value.
 type FluentData = { fluentKey: string; value: string };
 
@@ -171,6 +175,29 @@ const ChipperStringUtils = {
   },
 
   /**
+   * Replace every fluent reference key in the string with a canonical form for Fluent.
+   * This is often used to convert dot separated keys into underscore separated keys.
+   *
+   * This function will not touch legacy patterns like {{value}} or {$0} that are not
+   * compatible with fluent. It will also not match variable placeholders like { $variable }.
+   */
+  replaceFluentReferences( str: string ): string {
+    if ( ChipperStringUtils.isLegacyStringPattern( str ) ) {
+      return str;
+    }
+
+    function canonicalisePlaceholder( _match: string, key: string ): string {
+      const canonical = ChipperStringUtils.createFluentKey( key.trim() );
+      return `{ ${canonical} }`; // so that spacing is normalized
+    }
+
+    // These needs to use a string replace instead of using the FLuent AST visitor because
+    // dot notation in variable references is not valid syntax in Fluent and therefore
+    // the AST visitor will not find it.
+    return str.replace( FLUENT_PLACEHOLDER_EXPRESSION, canonicalisePlaceholder );
+  },
+
+  /**
    * If the string uses the legacy pattern form, it won't be compatible with Fluent.
    * If it uses double curly braces for StringUtils.fillIn, Fluent will try to find the inner term and likely fail.
    * If it uses single curly surrounding a number, it is intended for StringUtils.format.
@@ -221,7 +248,10 @@ const ChipperStringUtils = {
         const jsonKey = trail.join( '.' );
         result.set( jsonKey, {
           fluentKey: ChipperStringUtils.createFluentKey( jsonKey ),
-          value: ( node as { value: string } ).value
+
+          // Replace any dots in references in the string value to underscores so that it is compatible with Fluent.
+          // This allows PhET developers to use dot notation in the references which is more familiar.
+          value: ChipperStringUtils.replaceFluentReferences( ( node as { value: string } ).value )
         } );
         return;
       }

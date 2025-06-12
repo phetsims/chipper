@@ -13,6 +13,7 @@ import fs from 'fs';
 import yaml from 'js-yaml';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
+import ChipperStringUtils from '../../common/ChipperStringUtils.js';
 
 /**
  * @param repo - The name of a repo, e.g. 'joist'
@@ -60,7 +61,11 @@ export const safeLoadYaml = ( yamlContents: string ): IntentionalAny => {
 function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
   // Base case 1: Input is a string
   if ( typeof input === 'string' ) {
-    return { value: input };
+
+    // This allows developers to reference messages with dot notation, which is not valid in Fluent.
+    // We replace dots with underscores so it matches the Fluent key format.
+    const replacedString = ChipperStringUtils.replaceFluentReferences( input );
+    return { value: replacedString };
   }
   // Base case 2: Input is an array
   else if ( Array.isArray( input ) ) {

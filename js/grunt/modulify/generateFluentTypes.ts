@@ -41,7 +41,12 @@ function collectLeaves( obj: Obj, pathArr: string[] = [] ): Leaf[] {
       leaves.push( ...collectLeaves( val, [ ...pathArr, key ] ) );
     }
     else {
-      leaves.push( { pathArr: [ ...pathArr, key ], value: val } ); // scalar leaf
+
+      // Replace fluent references with dot separated values (which is not valid in Fluent syntax) with
+      // underscores. This allows PhET developers to use dot notation when referencing fluent keys,
+      // which is more familiar.
+      const replacedString = ChipperStringUtils.replaceFluentReferences( val );
+      leaves.push( { pathArr: [ ...pathArr, key ], value: replacedString } ); // scalar leaf
     }
   }
   return leaves;
