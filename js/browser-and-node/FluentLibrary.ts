@@ -164,7 +164,7 @@ ${junk.content}
 
 export default FluentLibrary;
 export { FluentBundle, FluentResource };
-export type { Pattern as FluentPattern };
+export type { Pattern as FluentBundlePattern }; // Exported as FluentBundlePattern because there is already a Pattern and FluentPattern in SceneryStack
 export type { Message };
 export { FluentParser };
 export type { Entry as ASTEntry };

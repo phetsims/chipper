@@ -9,7 +9,7 @@
 import TReadOnlyProperty, { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import EnumerationValue from '../../../phet-core/js/EnumerationValue.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
-import { FluentBundle, FluentPattern } from '../browser-and-node/FluentLibrary.js';
+import { FluentBundle, FluentBundlePattern } from '../browser-and-node/FluentLibrary.js';
 import LocalizedMessageProperty from './LocalizedMessageProperty.js';
 
 const FluentUtils = {
@@ -60,7 +60,7 @@ const FluentUtils = {
     return value;
   },
 
-  formatMessageWithBundle: ( message: FluentPattern, bundle: FluentBundle, args: IntentionalAny ): string => {
+  formatMessageWithBundle: ( message: FluentBundlePattern, bundle: FluentBundle, args: IntentionalAny ): string => {
     const newArgs = FluentUtils.handleFluentArgs( args );
 
     const errors: Error[] = [];
