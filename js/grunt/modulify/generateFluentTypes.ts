@@ -268,6 +268,15 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 
   // collect all leaves
   const leaves = collectLeaves( yamlObj );
+
+  // Make sure that there are no key collisions in the fluent keys. Dots and nesting
+  // are all converted to underscores.
+  const allKeys = leaves.map( leaf => createFluentKey( leaf.pathArr ) );
+  allKeys.forEach( key => {
+    const count = allKeys.filter( k => k === key ).length;
+    affirm( count === 1, `Duplicate key found in YAML: ${key} appears ${count} times` );
+  } );
+
   const filteredLeaves = leaves.filter( leaf => !ChipperStringUtils.isLegacyStringPattern( leaf.value ) );
 
   // map fluent keys to StringProperty accessors for usage later
