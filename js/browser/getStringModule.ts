@@ -199,8 +199,10 @@ const getStringModule = ( requirejsNamespace: string ): object => {
         tandem = tandem.createTandem( tandemName );
       }
 
+      const supportsPhetioInstrumentedA11yStrings = _.get( phet.chipper.packageObject, 'phet.simFeatures.supportsPhetioInstrumentedA11yStrings' ); // false, true, or undefined
+
       // strings nested under the a11y section are not currently PhET-iO instrumented, see https://github.com/phetsims/chipper/issues/1352
-      if ( tandem.phetioID.includes( '.a11y.' ) ) {
+      if ( tandem.phetioID.includes( '.a11y.' ) && !supportsPhetioInstrumentedA11yStrings ) {
         tandem = Tandem.OPT_OUT;
       }
 

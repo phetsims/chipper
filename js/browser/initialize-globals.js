@@ -1314,7 +1314,8 @@
       supportedRegionsAndCultures: { type: 'array' },
       defaultRegionAndCulture: { type: 'string' },
       preventMultitouch: { type: 'boolean' },
-      interruptMultitouch: { type: 'boolean' }
+      interruptMultitouch: { type: 'boolean' },
+      supportsPhetioInstrumentedA11yStrings: { type: 'boolean' }
     };
 
     Object.keys( simFeaturesSchema ).forEach( schemaKey => {
