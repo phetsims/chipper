@@ -16,10 +16,10 @@ import _ from 'lodash';
 import path from 'path';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import { PhetioElementMetadata } from '../../../tandem/js/phet-io-types.js';
-import { FluentParser, FluentVisitor } from '../browser-and-node/FluentLibrary.js';
 import ChipperConstants from '../common/ChipperConstants.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 import pascalCase from '../common/pascalCase.js';
+import { getFluentInternalReferences } from './modulify/getFluentInternalReferences.js';
 
 export type Locale = string;
 
@@ -238,20 +238,29 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
     const fluentKeyMap = ChipperStringUtils.getFluentKeyMap( englishStringContents );
     const ftl = ChipperStringUtils.createFluentFileFromData( fluentKeyMap.values() );
 
-    const fluentVisitor = new FluentVisitor();
-    fluentVisitor.visit( new FluentParser().parse( ftl ) );
+    // Loop over every fluent key in the file.
+    fluentKeyMap.forEach( entry => {
+      const fluentKey = entry.fluentKey;
 
-    fluentKeyMap.forEach( ( object, jsonKey ) => {
-      const fluentKey = object.fluentKey;
+      // Every string referenced in simulation code, in its fluent key form. A leading '.' is removed from the key assembled in stringAccesses.
+      const fluentFormsAccessed = stringAccesses.map( stringAccess => ChipperStringUtils.createFluentKey( stringAccess.substring( 1 ) ) );
 
-      // Fluent counts our legacy string patterns as referenced messages because they are also valid fluent syntax.
-      if ( fluentVisitor.referencedMessages.has( fluentKey ) && !ChipperStringUtils.isLegacyStringPattern( object.value ) ) {
-        keysUsedByFluent.add( jsonKey );
+      // The fluent key is used in simulation code. So all references in its pattern value must be considered used.
+      if ( fluentFormsAccessed.includes( fluentKey ) ) {
+
+        // All references used by this fluent key, catching deeply nested references.
+        const references = getFluentInternalReferences( ftl, fluentKey );
+        references.forEach( reference => {
+
+          // Convert the fluent key back to its JSON style, replacing underscores with dots. Add a leading dot back to match the
+          // format of the stringAccesses.
+          const jsonFormattedReference = ( '.' + reference ).replace( /_/g, '.' );
+          keysUsedByFluent.add( jsonFormattedReference );
+        } );
       }
     } );
 
-    // Add these string accesses to the stringAccesses map in the same format as our regular legacy strings.
-    stringAccesses.push( ...Array.from( keysUsedByFluent ).map( key => `.${key}` ) );
+    stringAccesses.push( ...Array.from( keysUsedByFluent ) );
 
     // The JS outputted by TS is minified and missing the whitespace
     const depth = 2;
