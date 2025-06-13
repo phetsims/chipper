@@ -27,9 +27,6 @@ type Obj = Record<string, IntentionalAny>;
 /** true if key is a valid JS identifier (no quoting needed). */
 const IDENT = /^[A-Za-z_$][\w$]*$/;
 
-/** Graceful JS property accessor – always optional-chained brackets. */
-const gracefulPropertyAccess = ( key: string ): string => `?.[${JSON.stringify( key )}]`;
-
 /** Indent helper. */
 const indent = ( lvl: number, spaces = 2 ): string => ' '.repeat( lvl * spaces );
 
@@ -66,15 +63,13 @@ function createFluentKey( pathArr: string[] ): string {
 }
 
 /**
- * Creates an accessor for a StringProperty for the given path array. Uses graceful
- * field access because strings may have been removed during the build.
+ * Creates an accessor path for a StringProperty for the given path array.
  *
- * e.g., for pathArr=['a', 'b.c'], returns "PascalRepoStrings?.[ 'a' ]?.['b']?.['c.StringProperty']"
+ * e.g., for pathArr=['a', 'b.c'], returns "a.b.cStringProperty".
  *
  * @param pathArr - An array with the "path" to the string from nesting in the file.
- * @param pascalCaseRepo - The PascalCase name of the repo.
  */
-const createAccessor = ( pathArr: string[], pascalCaseRepo: string ): string => {
+const createAccessor = ( pathArr: string[] ): string => {
 
   affirm( pathArr.length > 0, 'pathArr must contain at least one key' );
 
@@ -83,11 +78,8 @@ const createAccessor = ( pathArr: string[], pascalCaseRepo: string ): string => 
   const lastIdx = parts.length - 1;
   parts[ lastIdx ] = parts[ lastIdx ] + 'StringProperty'; // strip leading dot if given
 
-  // Build the accessor
-  return parts.reduce( ( acc, key ) => {
-    key.split( '.' ).forEach( p => { acc += gracefulPropertyAccess( p ); } );
-    return acc;
-  }, `${pascalCaseRepo}Strings` );
+  // .get is graceful which is nice because strings are removed from the build if they are not used.
+  return parts.join( '.' );
 };
 
 /**
@@ -233,8 +225,8 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
 
         // This is a legacy string and is meant to be used with StringUtils.format or
         // StringUtils.fillIn. It should use the LocalizedStringProperty directly.
-        const accessor = createAccessor( [ ...pathArr, key ], pascalCaseRepo );
-        lines.push( `${indent( lvl )}${stringPropertyKey}: ${accessor}${comma}` );
+        const accessor = createAccessor( [ ...pathArr, key ] );
+        lines.push( `${indent( lvl )}${stringPropertyKey}: _.get( ${pascalCaseRepo}Strings, '${accessor}' )${comma}` );
       }
       else if ( cleanedSchema.length === 0 ) {
 
@@ -286,9 +278,9 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
     const id = createFluentKey( leaf.pathArr );
 
     // Build full path to access the Property
-    const accessor = createAccessor( leaf.pathArr, pascalCaseRepo );
+    const accessor = createAccessor( leaf.pathArr );
 
-    return `addToMapIfDefined( '${id}', ${accessor} );`;
+    return `addToMapIfDefined( '${id}', '${accessor}' );`;
   } ).join( '\n' );
 
   const copyrightLine = await getCopyrightLine( repo, outPath );
@@ -334,7 +326,8 @@ import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
 // the build. So we need to only add actually used strings.
 const fluentKeyToStringPropertyMap = new Map();
 
-const addToMapIfDefined = ( key: string, sp: TReadOnlyProperty<string> | undefined ) => {
+const addToMapIfDefined = ( key: string, path: string ) => {
+  const sp = _.get( ${pascalCaseRepo}Strings, path );
   if ( sp ) {
     fluentKeyToStringPropertyMap.set( key, sp );
   }
