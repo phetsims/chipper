@@ -115,29 +115,8 @@ export class FluentVisitor extends Visitor {
   public readonly foundJunk = new Set<string>();
   public readonly declaredTerms = new Set<string>();
 
-  public readonly referencedMessages = new Set<string>();
-
   public override visitTerm( node: IntentionalAny ): void {
     this.declaredTerms.add( node );
-
-    this.genericVisit( node );
-  }
-
-  /**
-   * Visitor for messages that are referenced in another value. Collects
-   * keys in an array for inspection.
-   * For example,
-   *
-   *   name = Fred
-   *   hello_pattern = Hello, { name }
-   *
-   * Key "name" will be added to referencedMessages.
-   * @param node
-   */
-  public override visitMessageReference( node: IntentionalAny ): void {
-
-    // Add the message name to the set of used messages
-    this.referencedMessages.add( node.id.name );
 
     this.genericVisit( node );
   }

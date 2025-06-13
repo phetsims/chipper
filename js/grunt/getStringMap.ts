@@ -230,20 +230,19 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
       return prefixes.reduce( ( acc, pre ) => acc.startsWith( pre ) ? acc.slice( pre.length ) : acc, str );
     } );
 
-    // This will hold the keys in the strings file that are referred to by fluent patterns. They may not have direct
-    // usages in simulation code, but are dependencies on other patterns so they must be marked considered used.
-    const keysUsedByFluent = new Set<string>();
+    // Search for any string accesses that are in used fluent patterns. They are not used direcly in simulation code,
+    // but are used, so they need to be in the string map.
     const englishStringContents = stringFilesContents[ repo ][ ChipperConstants.FALLBACK_LOCALE ];
 
     const fluentKeyMap = ChipperStringUtils.getFluentKeyMap( englishStringContents );
     const ftl = ChipperStringUtils.createFluentFileFromData( fluentKeyMap.values() );
 
+    // Every string referenced in simulation code, in its fluent key form. A leading '.' is removed from the key assembled in stringAccesses.
+    const fluentFormsAccessed = stringAccesses.map( stringAccess => ChipperStringUtils.createFluentKey( stringAccess.substring( 1 ) ) );
+
     // Loop over every fluent key in the file.
     fluentKeyMap.forEach( entry => {
       const fluentKey = entry.fluentKey;
-
-      // Every string referenced in simulation code, in its fluent key form. A leading '.' is removed from the key assembled in stringAccesses.
-      const fluentFormsAccessed = stringAccesses.map( stringAccess => ChipperStringUtils.createFluentKey( stringAccess.substring( 1 ) ) );
 
       // The fluent key is used in simulation code. So all references in its pattern value must be considered used.
       if ( fluentFormsAccessed.includes( fluentKey ) ) {
@@ -255,12 +254,12 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
           // Convert the fluent key back to its JSON style, replacing underscores with dots. Add a leading dot back to match the
           // format of the stringAccesses.
           const jsonFormattedReference = ( '.' + reference ).replace( /_/g, '.' );
-          keysUsedByFluent.add( jsonFormattedReference );
+          if ( !stringAccesses.includes( jsonFormattedReference ) ) {
+            stringAccesses.push( jsonFormattedReference );
+          }
         } );
       }
     } );
-
-    stringAccesses.push( ...Array.from( keysUsedByFluent ) );
 
     // The JS outputted by TS is minified and missing the whitespace
     const depth = 2;
