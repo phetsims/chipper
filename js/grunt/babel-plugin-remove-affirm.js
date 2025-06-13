@@ -1,4 +1,4 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2024-2025, University of Colorado Boulder
 
 /**
  * Babel plugin that removes calls to 'affirm', 'affirmCallback', and replaces 'isAffirmEnabled()' with "false" so it can be stripped out as dead code.
