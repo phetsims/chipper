@@ -46,8 +46,9 @@ module.exports = function() {
 
                 if ( name === 'affirm' || name.includes( '_affirm_' ) ) {
 
+                  // TODO: Remove console.log statements after review, see https://github.com/phetsims/perennial/issues/452
                   // display the code to be removed:
-                  console.log( 'Removing affirm call:', path.toString() );
+                  // console.log( 'Removing affirm call:', path.toString() );
 
                   // Check if this CallExpression is the direct child of an ExpressionStatement
                   if ( path.parentPath.isExpressionStatement() ) {
