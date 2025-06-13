@@ -11,7 +11,6 @@
 import { DerivedProperty1 } from '../../../axon/js/DerivedProperty.js';
 import ReadOnlyProperty from '../../../axon/js/ReadOnlyProperty.js';
 import { FluentBundle } from '../../../chipper/js/browser-and-node/FluentLibrary.js';
-import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import chipper from './chipper.js';
 
 const NO_STRING = '';
@@ -32,10 +31,10 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
 
       const errors: Array<Error> = [];
 
-      // The message and value must be available during development. But the build removes unused strings.
+      // The message and value should be available during development. But the build removes unused strings.
       // FluentConstant is added to the Fluent.ts file during modulify so one will be created for all (even unused) keys.
-      // Therefore, we must be graceful for the built simulation.
-      affirm( message && message.value, `Fluent message value not found for key: ${key}` );
+      // Therefore, we must be graceful for the built simulation. We cannot assert or affirm because sometimes
+      // assertions are kept in the build (like for debug).
       if ( message && message.value ) {
         const result = bundle.formatPattern( message.value, {}, errors );
 
