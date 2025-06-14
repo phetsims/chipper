@@ -232,7 +232,8 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
 
         // No parameters - use FluentConstant
         const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
-        lines.push( `${indent( lvl )}${stringPropertyKey}: new FluentConstant( fluentSupport.bundleProperty, '${id}' )${comma}` );
+        const accessor = createAccessor( [ ...pathArr, key ] );
+        lines.push( `${indent( lvl )}${stringPropertyKey}: new FluentConstant( fluentSupport.bundleProperty, '${id}', _.get( ${pascalCaseRepo}Strings, '${accessor}' )  )${comma}` );
       }
       else {
 

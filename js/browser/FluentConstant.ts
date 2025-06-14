@@ -11,6 +11,7 @@
 import { DerivedProperty1 } from '../../../axon/js/DerivedProperty.js';
 import ReadOnlyProperty from '../../../axon/js/ReadOnlyProperty.js';
 import { FluentBundle } from '../../../chipper/js/browser-and-node/FluentLibrary.js';
+import PhetioObject from '../../../tandem/js/PhetioObject.js';
 import chipper from './chipper.js';
 
 const NO_STRING = '';
@@ -23,8 +24,10 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
    * @param bundleProperty
    * @param key - The string key, where nesting is indicated by underscores (since that is compatible with Fluent syntax)
    *              such as a11y_summary_playAreaSummaryIntro
+   * @param targetProperty - The target property that this FluentConstant will be associated with, solely for phet-io studio autoselect, see Text and RichText.
    */
-  public constructor( bundleProperty: ReadOnlyProperty<FluentBundle>, key: string ) {
+  public constructor( bundleProperty: ReadOnlyProperty<FluentBundle>, key: string,
+                      public readonly targetProperty: PhetioObject ) {
 
     super( [ bundleProperty ], bundle => {
       const message = bundle.getMessage( key );
