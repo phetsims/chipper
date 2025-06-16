@@ -213,7 +213,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
         // Ignore zero-length strings, see https://github.com/phetsims/chipper/issues/1343
         if ( locale === FALLBACK_LOCALE || ( typeof string === 'string' && string !== '' ) ) {
           // A11y is not translatable and should not appear mapped, see https://github.com/phetsims/tasks/issues/1133
-          localeToTranslationMap[ locale ] = phet.chipper.mapString( string );
+          localeToTranslationMap[ locale ] = stringKey.includes( '/a11y.' ) ? string : phet.chipper.mapString( string );
         }
       } );
 
