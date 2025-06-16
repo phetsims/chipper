@@ -177,11 +177,6 @@ export function getFluentParams( fluentFileFTL: string, key: string ): ParamInfo
   // Run the collection process
   collect( rootEntry );
 
-  // If we found message references but no parameters, add a dummy parameter to force Fluent handling
-  if ( hasMessageReferences && paramsMap.size === 0 ) {
-    paramsMap.set( '__hasReferences', { name: '__hasReferences' } );
-  }
-
   // Convert the map to an array of ParamInfo objects, sorted by name
   return Array.from( paramsMap.values() ).sort( ( a, b ) => a.name.localeCompare( b.name ) );
 }

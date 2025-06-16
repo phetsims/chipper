@@ -174,11 +174,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
           return '{}';
         }
 
-        // The schema may have a __hasReferences property which should not be in the final type definition.
-        // TODO: Can this property be removed? See https://github.com/phetsims/chipper/issues/1588
-        const cleanedSchema = schema.filter( prop => prop.name !== '__hasReferences' );
-
-        const properties = cleanedSchema.map( prop => {
+        const properties = schema.map( prop => {
           const name = prop.name;
           let typeString;
 
@@ -217,8 +213,6 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
       }
 
       // Check if there are no parameters (empty cleaned schema)
-      // TODO: Eliminate __hasReferences since it is never consulted. See https://github.com/phetsims/chipper/issues/1588
-      const cleanedSchema = paramInfo.filter( prop => prop.name !== '__hasReferences' );
 
       // A suffix for the key in the line if it is going to be a StringProperty
       const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
@@ -230,7 +224,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
         const accessor = createAccessor( [ ...pathArr, key ] );
         lines.push( `${indent( lvl )}${stringPropertyKey}: _.get( ${pascalCaseRepo}Strings, '${accessor}' )${comma}` );
       }
-      else if ( cleanedSchema.length === 0 ) {
+      else if ( paramInfo.length === 0 ) {
 
         // No parameters - use FluentConstant
         const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
