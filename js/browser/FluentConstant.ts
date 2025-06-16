@@ -25,9 +25,11 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
    * @param key - The string key, where nesting is indicated by underscores (since that is compatible with Fluent syntax)
    *              such as a11y_summary_playAreaSummaryIntro
    * @param targetProperty - The target property that this FluentConstant will be associated with, solely for phet-io studio autoselect, see Text and RichText.
+   *                       - this will be undefined in a built simulation when the corresponding string is unused.
    */
-  public constructor( bundleProperty: ReadOnlyProperty<FluentBundle>, key: string,
-                      public readonly targetProperty: PhetioObject ) {
+  public constructor( bundleProperty: ReadOnlyProperty<FluentBundle>,
+                      key: string,
+                      public readonly targetProperty: PhetioObject | undefined ) {
 
     super( [ bundleProperty ], bundle => {
       const message = bundle.getMessage( key );

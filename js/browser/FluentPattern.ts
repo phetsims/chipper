@@ -8,11 +8,13 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import DerivedProperty from '../../../axon/js/DerivedProperty.js';
+import DerivedStringProperty from '../../../axon/js/DerivedStringProperty.js';
 import ReadOnlyProperty from '../../../axon/js/ReadOnlyProperty.js';
 import TReadOnlyProperty, { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import { FluentBundle } from '../../../chipper/js/browser-and-node/FluentLibrary.js';
 import EnumerationValue from '../../../phet-core/js/EnumerationValue.js';
+import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
+import PhetioObject from '../../../tandem/js/PhetioObject.js';
 import chipper from './chipper.js';
 import FluentUtils from './FluentUtils.js';
 
@@ -22,13 +24,20 @@ type VariableType = string | number | boolean | EnumerationValue;
 export type FluentVariable = VariableType | TReadOnlyProperty<VariableType>;
 
 export default class FluentPattern<T extends Record<string, unknown>> {
+
+  /**
+   *
+   * @param bundleProperty
+   * @param key - The string key, where nesting is indicated by underscores (since that is compatible with Fluent syntax)
+   *              such as a11y_summary_playAreaSummaryIntro
+   * @param targetProperty - The target property that this FluentConstant will be associated with, solely for phet-io studio autoselect, see Text and RichText.
+   *                       - this will be undefined in a built simulation when the corresponding string is unused.
+   */
   public constructor(
-    //
     private readonly bundleProperty: ReadOnlyProperty<FluentBundle>,
-    //
-    // The string key, where nesting is indicated by underscores (since that is compatible with Fluent syntax)
-    // such as a11y_summary_playAreaSummaryIntro
-    public readonly key: string ) { }
+    public readonly key: string,
+    public readonly targetProperty: PhetioObject | undefined
+  ) { }
 
   public format( args: T ): string {
     const bundle = this.bundleProperty.value;
@@ -51,7 +60,27 @@ export default class FluentPattern<T extends Record<string, unknown>> {
    */
   public createProperty( args: T ): TReadOnlyProperty<string> {
     const dependencies = [ this.bundleProperty, ...Object.values( args ).filter( isTReadOnlyProperty ) ];
-    return DerivedProperty.deriveAny( dependencies, () => this.format( args ) );
+    return new FluentPatternDerivedProperty( dependencies, () => this.format( args ), this.targetProperty );
+  }
+}
+
+/**
+ * Adds support for targetProperty for phet-io studio autoselect.
+ */
+export class FluentPatternDerivedProperty extends DerivedStringProperty<string,
+  IntentionalAny, IntentionalAny, IntentionalAny, IntentionalAny,
+  IntentionalAny, IntentionalAny, IntentionalAny, IntentionalAny,
+  IntentionalAny, IntentionalAny, IntentionalAny, IntentionalAny,
+  IntentionalAny, IntentionalAny, IntentionalAny> {
+
+  /**
+   * @param dependencies
+   * @param args
+   * @param targetProperty - the target property that this FluentPatternDerivedProperty will be associated with, solely for phet-io studio autoselect, see Text and RichText.
+   *                       - this will be undefined in a built simulation when the corresponding string is unused.
+   */
+  public constructor( dependencies: IntentionalAny, args: IntentionalAny, public readonly targetProperty: PhetioObject | undefined ) {
+    super( dependencies, args );
   }
 }
 

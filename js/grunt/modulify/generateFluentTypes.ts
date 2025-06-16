@@ -217,25 +217,25 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
       // A suffix for the key in the line if it is going to be a StringProperty
       const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
 
+      const accessor = createAccessor( [ ...pathArr, key ] );
+      const getter = `_.get( ${pascalCaseRepo}Strings, '${accessor}' )`;
       if ( ChipperStringUtils.isLegacyStringPattern( val ) ) {
 
         // This is a legacy string and is meant to be used with StringUtils.format or
         // StringUtils.fillIn. It should use the LocalizedStringProperty directly.
-        const accessor = createAccessor( [ ...pathArr, key ] );
-        lines.push( `${indent( lvl )}${stringPropertyKey}: _.get( ${pascalCaseRepo}Strings, '${accessor}' )${comma}` );
+        lines.push( `${indent( lvl )}${stringPropertyKey}: ${getter} ${comma}` );
       }
       else if ( paramInfo.length === 0 ) {
 
         // No parameters - use FluentConstant
         const stringPropertyKey = IDENT.test( key + 'StringProperty' ) ? key + 'StringProperty' : JSON.stringify( key + 'StringProperty' );
-        const accessor = createAccessor( [ ...pathArr, key ] );
-        lines.push( `${indent( lvl )}${stringPropertyKey}: new FluentConstant( fluentSupport.bundleProperty, '${id}', _.get( ${pascalCaseRepo}Strings, '${accessor}' ) )${comma}` );
+        lines.push( `${indent( lvl )}${stringPropertyKey}: new FluentConstant( fluentSupport.bundleProperty, '${id}', ${getter} )${comma}` );
       }
       else {
 
         // Has parameters - use FluentPattern
         const T = ( generateTypeDefinition( paramInfo ) );
-        lines.push( `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentSupport.bundleProperty, '${id}' )${comma}` );
+        lines.push( `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentSupport.bundleProperty, '${id}', ${getter} )${comma}` );
       }
     }
   } );
