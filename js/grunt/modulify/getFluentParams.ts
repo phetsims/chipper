@@ -60,9 +60,6 @@ export function getFluentParams( fluentFileFTL: string, key: string ): ParamInfo
   // Map to store parameter info (name -> ParamInfo)
   const paramsMap = new Map<string, ParamInfo>();
 
-  // Flag to track if we found any message references (even without variables)
-  let hasMessageReferences = false;
-
   // ─── Recursive parameter extraction ─────────────────────────────────────
   const collect = ( entry: ASTEntry, seen = new Set<ASTEntry>() ): void => {
     if ( seen.has( entry ) ) { return; }
@@ -140,8 +137,6 @@ export function getFluentParams( fluentFileFTL: string, key: string ): ParamInfo
 
         case 'MessageReference':
         case 'TermReference': {
-          // Set the flag when we find a message reference
-          hasMessageReferences = true;
 
           const refName = expr.id.type === 'Identifier' ? expr.id.name : String( expr.id.value );
           const refKey = expr.type === 'TermReference' ? `-${refName}` : refName;
