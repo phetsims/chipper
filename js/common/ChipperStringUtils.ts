@@ -202,7 +202,8 @@ const ChipperStringUtils = {
    * If it uses double curly braces for StringUtils.fillIn, Fluent will try to find the inner term and likely fail.
    * If it uses single curly surrounding a number, it is intended for StringUtils.format.
    *
-   * TODO: Can/should this be used by rosetta? It will need to know what kind of string it is for validation and maybe UX, see https://github.com/phetsims/chipper/issues/1588
+   * NOTE: Rosetta has similar logic to determine how to highlight strings with patterns, but rosetta does not use
+   * this implementation.
    */
   isLegacyStringPattern( str: string ): boolean {
     return str.includes( '{{' ) || str.includes( '}}' ) || /{\d+}/.test( str );

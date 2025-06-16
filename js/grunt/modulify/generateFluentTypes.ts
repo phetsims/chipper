@@ -150,7 +150,9 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
   const lines = [ '{' ];
   const entries = Object.entries( obj );
   entries.forEach( ( [ key, val ], idx ) => {
-    const safeKey = IDENT.test( key ) ? key : JSON.stringify( key ); // TODO: is stringify appropriate here? https://github.com/phetsims/chipper/issues/1588
+
+    // If the key is not a valid JS identifier, we need to quote it. This can be accomplished by using JSON.stringify.
+    const safeKey = IDENT.test( key ) ? key : JSON.stringify( key );
     const comma = idx < entries.length - 1 ? ',' : '';
     if ( val !== null && typeof val === 'object' && !Array.isArray( val ) ) {
       // recurse
