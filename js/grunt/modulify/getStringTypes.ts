@@ -169,6 +169,7 @@ const getStringTypes = ( repo: string, fluentExportName: string ): string => {
           // Filter out '*' which represents the 'other' case
           const variantOptions = param.variants
             .filter( v => v !== '*' )
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             .map( v => `'${v}'` )
             .join( ' | ' );
 
