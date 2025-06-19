@@ -6,6 +6,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import localeProperty, { Locale } from '../../../joist/js/i18n/localeProperty.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import FluentConstant from './FluentConstant.js';
 import FluentPattern from './FluentPattern.js';
@@ -104,6 +105,48 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
     controlGroup.appendChild( labelText );
     controls.appendChild( controlGroup );
   } );
+
+  // Create locale selector
+  const localeGroup = document.createElement( 'div' );
+  localeGroup.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+  `;
+
+  const localeLabel = document.createElement( 'span' );
+  localeLabel.textContent = 'Locale:';
+
+  const localeInput = document.createElement( 'select' );
+  localeInput.id = 'localeInput';
+  localeInput.style.cssText = `
+    padding: 0.25rem;
+    border: 1px solid #bdc3c7;
+    border-radius: 3px;
+    font-size: 0.85rem;
+  `;
+
+  // Populate with available locales
+  localeProperty.availableRuntimeLocales.forEach( locale => {
+    const option = document.createElement( 'option' );
+    option.value = locale;
+    option.textContent = locale;
+    if ( locale === 'en' ) {
+      option.selected = true;
+    }
+    localeInput.appendChild( option );
+  } );
+
+  localeInput.addEventListener( 'change', () => {
+    localeProperty.value = localeInput.value as Locale;
+    console.log( localeProperty.value );
+  } );
+
+  localeGroup.appendChild( localeLabel );
+  localeGroup.appendChild( localeInput );
+  controls.appendChild( localeGroup );
 
   // Create table container
   const tableContainer = document.createElement( 'div' );
