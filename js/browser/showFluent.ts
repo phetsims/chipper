@@ -44,18 +44,18 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
     padding: 1rem 1.5rem;
     flex-shrink: 0;
   `;
-  
+
   const title = document.createElement( 'h1' );
   title.textContent = 'Fluent String Evaluation Tool';
   title.style.cssText = `
     margin: 0 0 0.5rem 0;
     font-size: 1.5rem;
   `;
-  
+
   const subtitle = document.createElement( 'p' );
   subtitle.textContent = 'Evaluate fluent string translations with real-time parameter interpolation';
   subtitle.style.margin = '0';
-  
+
   header.appendChild( title );
   header.appendChild( subtitle );
 
@@ -124,7 +124,7 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
   // Create table header
   const thead = document.createElement( 'thead' );
   const headerRow = document.createElement( 'tr' );
-  
+
   const headers = [
     { id: 'keyHeader', text: 'Key' },
     { id: 'optionsHeader', text: 'Options' },
@@ -160,7 +160,7 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
 
   // Collect all fluent entries
   const fluentEntries: FluentEntry[] = [];
-  
+
   const collectEntries = (
     obj: IntentionalAny,
     prefix = '',
@@ -271,7 +271,7 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
       optionsCell.textContent = 'No parameters';
       optionsCell.style.fontStyle = 'italic';
       optionsCell.style.color = '#7f8c8d';
-      
+
       const constantValue = entry.fluentConstant.value;
       englishCell.textContent = constantValue;
       translationCell.textContent = constantValue; // Initially same as English
@@ -279,11 +279,11 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
     else if ( !entry.isConstant && entry.fluentPattern ) {
       // Handle FluentPattern (has parameters)
       const pattern = entry.fluentPattern;
-      
+
       // Create parameter inputs
       const inputContainer = document.createElement( 'div' );
       const parameterValues: Record<string, unknown> = {};
-      
+
       if ( pattern.args && pattern.args.length > 0 ) {
         pattern.args.forEach( ( argDef, index ) => {
           const inputGroup = document.createElement( 'div' );
@@ -299,18 +299,18 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
             font-size: 0.8rem;
             color: #34495e;
           `;
-          
+
           // Extract parameter name and variants from the arg definition
-          const paramName = ( argDef as any ).name || `param${index}`;
-          const variants = ( argDef as any ).variants;
+          const paramName = ( argDef as IntentionalAny ).name || `param${index}`;
+          const variants = ( argDef as IntentionalAny ).variants;
           label.textContent = paramName;
 
           let input: HTMLInputElement | HTMLSelectElement;
-          
+
           if ( variants && variants.length > 0 ) {
             // Create dropdown for parameters with variants
             input = document.createElement( 'select' );
-            variants.forEach( ( variant: any ) => {
+            variants.forEach( ( variant: IntentionalAny ) => {
               const option = document.createElement( 'option' );
               // Handle complex variant objects like {"type":"number","value":"one"}
               const value = typeof variant === 'object' && variant.value !== undefined ? variant.value : variant;
@@ -325,10 +325,11 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
               border-radius: 3px;
               font-size: 0.8rem;
             `;
-            
+
             // Store initial parameter value
             parameterValues[ paramName ] = input.value;
-          } else {
+          }
+          else {
             // Create text input for parameters without variants
             input = document.createElement( 'input' );
             input.type = 'text';
@@ -340,7 +341,7 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
               border-radius: 3px;
               font-size: 0.8rem;
             `;
-            
+
             // Store initial parameter value
             parameterValues[ paramName ] = input.value;
           }
@@ -387,28 +388,30 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
   document.body.appendChild( container );
 
   // Function to update pattern row
-  function updatePatternRow( 
-    entry: FluentEntry, 
-    parameterValues: Record<string, unknown>, 
-    englishCell: HTMLElement, 
-    translationCell: HTMLElement 
+  function updatePatternRow(
+    entry: FluentEntry,
+    parameterValues: Record<string, unknown>,
+    englishCell: HTMLElement,
+    translationCell: HTMLElement
   ): void {
-    if ( !entry.fluentPattern ) return;
+    if ( !entry.fluentPattern ) {
+      return;
+    }
 
     try {
       const result = entry.fluentPattern.format( parameterValues );
       englishCell.textContent = result;
       translationCell.textContent = result; // Initially same as English
-      
+
       // Remove error styling
       englishCell.style.color = '#27ae60';
       translationCell.style.color = '#8e44ad';
     }
-    catch ( error ) {
+    catch( error ) {
       const errorMessage = `Error: ${error instanceof Error ? error.message : String( error )}`;
       englishCell.textContent = errorMessage;
       translationCell.textContent = errorMessage;
-      
+
       // Add error styling
       englishCell.style.color = '#e74c3c';
       translationCell.style.color = '#e74c3c';
@@ -443,10 +446,18 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
     const englishHeader = document.getElementById( 'englishHeader' );
     const translationHeader = document.getElementById( 'translationHeader' );
 
-    if ( keyHeader ) keyHeader.style.display = showKey ? '' : 'none';
-    if ( optionsHeader ) optionsHeader.style.display = showOptions ? '' : 'none';
-    if ( englishHeader ) englishHeader.style.display = showEnglish ? '' : 'none';
-    if ( translationHeader ) translationHeader.style.display = showTranslation ? '' : 'none';
+    if ( keyHeader ) {
+      keyHeader.style.display = showKey ? '' : 'none';
+    }
+    if ( optionsHeader ) {
+      optionsHeader.style.display = showOptions ? '' : 'none';
+    }
+    if ( englishHeader ) {
+      englishHeader.style.display = showEnglish ? '' : 'none';
+    }
+    if ( translationHeader ) {
+      translationHeader.style.display = showTranslation ? '' : 'none';
+    }
 
     // Update cells
     const keyCells = document.querySelectorAll( '.key-cell' );
