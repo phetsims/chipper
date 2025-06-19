@@ -32,11 +32,13 @@ export default class FluentPattern<T extends Record<string, unknown>> {
    *              such as a11y_summary_playAreaSummaryIntro
    * @param targetProperty - The target property that this FluentConstant will be associated with, solely for phet-io studio autoselect, see Text and RichText.
    *                       - this will be undefined in a built simulation when the corresponding string is unused.
+   * @param args - Shows the arguments that must be passed in to evaluate the pattern.
    */
   public constructor(
     private readonly bundleProperty: ReadOnlyProperty<FluentBundle>,
     public readonly key: string,
-    public readonly targetProperty: PhetioObject | undefined
+    public readonly targetProperty: PhetioObject | undefined,
+    public readonly args: Record<string, IntentionalAny>[]
   ) { }
 
   public format( args: T ): string {

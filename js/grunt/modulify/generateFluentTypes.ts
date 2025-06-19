@@ -234,8 +234,8 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
       else {
 
         // Has parameters - use FluentPattern
-        const T = ( generateTypeDefinition( paramInfo ) );
-        lines.push( `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentSupport.bundleProperty, '${id}', ${getter} )${comma}` );
+        const T = generateTypeDefinition( paramInfo );
+        lines.push( `${indent( lvl )}${safeKey}: new FluentPattern<${T}>( fluentSupport.bundleProperty, '${id}', ${getter}, ${JSON.stringify( paramInfo )} )${comma}` );
       }
     }
   } );
