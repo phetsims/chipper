@@ -22,7 +22,9 @@ type FluentEntry = {
   isConstant: boolean;
 };
 
-export default function showFluent( simFluent: Record<string, IntentionalAny> ): void {
+export default function showFluent( simFluent: Record<string, IntentionalAny>, translationLocale: string ): void {
+
+  window.phetSplashScreen && window.phetSplashScreen.dispose();
 
   // Create the main container
   const container = document.createElement( 'div' );
@@ -142,14 +144,11 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
     localeInput.appendChild( option );
   } );
 
-  console.log( 'Available locales:', localeProperty.availableRuntimeLocales );
-
   // Create Property for the selected locale
-  const userSelectedLocaleProperty = new Property<Locale>( localeInput.value as Locale || 'en' );
+  const userSelectedLocaleProperty = new Property<Locale>( 'en' );
 
   localeInput.addEventListener( 'change', () => {
     userSelectedLocaleProperty.value = localeInput.value as Locale;
-    console.log( 'Selected locale changed to:', userSelectedLocaleProperty.value );
   } );
 
   localeGroup.appendChild( localeLabel );
@@ -324,20 +323,15 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
       optionsCell.style.fontStyle = 'italic';
       optionsCell.style.color = '#7f8c8d';
 
-      const originalLocale = localeProperty.value;
       localeProperty.value = 'en';
       const result = entry.fluentConstant.value;
-      localeProperty.value = originalLocale;
 
       // Create Properties for English and translation values
       const englishProperty = new Property( result );
 
       const translationProperty = new DerivedProperty( [ userSelectedLocaleProperty ], () => {
-        const originalLocale = localeProperty.value;
         localeProperty.value = userSelectedLocaleProperty.value;
-        const result = entry.fluentConstant!.value;
-        localeProperty.value = originalLocale;
-        return result;
+        return entry.fluentConstant!.value;
       } );
 
       // Link Properties to DOM elements
@@ -415,7 +409,7 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
             // Create text input for parameters without variants
             input = document.createElement( 'input' );
             input.type = 'text';
-            input.value = 'hello world'; // Default value
+            input.value = '???'; // Default value
             input.style.cssText = `
               width: 100%;
               padding: 0.25rem;
@@ -467,31 +461,22 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
 
       // Create English Property (always uses 'en' locale)
       const englishProperty = DerivedProperty.deriveAny( Array.from( parameterProperties.values() ), () => {
-        const originalLocale = localeProperty.value;
         localeProperty.value = 'en';
         try {
-          const result = pattern.createProperty( parameterObject ).value;
-          localeProperty.value = originalLocale;
-          return result;
+          return pattern.createProperty( parameterObject ).value;
         }
         catch( error ) {
-          localeProperty.value = originalLocale;
           return `Error: ${error instanceof Error ? error.message : String( error )}`;
         }
       } );
 
       // Create Translation Property (uses selected locale)
       const translationProperty = DerivedProperty.deriveAny( [ userSelectedLocaleProperty, ...Array.from( parameterProperties.values() ) ], () => {
-        const originalLocale = localeProperty.value;
         localeProperty.value = userSelectedLocaleProperty.value;
         try {
-          const result = pattern.format( parameterObject );
-          console.log( result );
-          localeProperty.value = originalLocale;
-          return result;
+          return pattern.format( parameterObject );
         }
         catch( error ) {
-          localeProperty.value = originalLocale;
           return `Error: ${error instanceof Error ? error.message : String( error )}`;
         }
       } );
@@ -591,4 +576,7 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
     }
   `;
   document.head.appendChild( style );
+
+  // Set once after building, so it doesn't swap back and forth locales during the build
+  userSelectedLocaleProperty.value = translationLocale as Locale;
 }

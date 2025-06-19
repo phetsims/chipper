@@ -195,6 +195,11 @@
       public: true
     },
 
+    fluentTable: {
+      type: 'string',
+      defaultValue: 'none'
+    },
+
     /**
      * Force Scenery to refresh SVG contents every frame (to help detect rendering/browser-repaint issues with SVG).
      */
