@@ -306,16 +306,20 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
           label.textContent = paramName;
 
           let input: HTMLInputElement | HTMLSelectElement;
+          let variantMap: Map<string, unknown> | undefined;
 
           if ( variants && variants.length > 0 ) {
             // Create dropdown for parameters with variants
             input = document.createElement( 'select' );
-            variants.forEach( ( variant: IntentionalAny ) => {
+            variantMap = new Map<string, unknown>();
+            variants.forEach( ( variant: IntentionalAny, index: number ) => {
               const option = document.createElement( 'option' );
               // Handle complex variant objects like {"type":"number","value":"one"}
               const value = typeof variant === 'object' && variant.value !== undefined ? variant.value : variant;
-              option.value = String( value );
+              const optionKey = `${index}`;
+              option.value = optionKey;
               option.textContent = String( value );
+              variantMap!.set( optionKey, value );
               input.appendChild( option );
             } );
             input.style.cssText = `
@@ -326,8 +330,8 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
               font-size: 0.8rem;
             `;
 
-            // Store initial parameter value
-            parameterValues[ paramName ] = input.value;
+            // Store initial parameter value using original type
+            parameterValues[ paramName ] = variantMap.get( input.value );
           }
           else {
             // Create text input for parameters without variants
@@ -348,7 +352,14 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
 
           // Add event listener for real-time updates
           input.addEventListener( 'input', () => {
-            parameterValues[ paramName ] = input.value;
+            if ( variantMap ) {
+              // For dropdowns, use the original value from the map
+              parameterValues[ paramName ] = variantMap.get( input.value );
+            }
+            else {
+              // For text inputs, use the string value
+              parameterValues[ paramName ] = input.value;
+            }
             debounceUpdate( entry.key, () => updatePatternRow( entry, parameterValues, englishCell, translationCell ) );
           } );
 
