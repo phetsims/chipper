@@ -6,6 +6,9 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import DerivedProperty from '../../../axon/js/DerivedProperty.js';
+import Property from '../../../axon/js/Property.js';
+import TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
 import localeProperty, { Locale } from '../../../joist/js/i18n/localeProperty.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import FluentConstant from './FluentConstant.js';
@@ -141,14 +144,12 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
 
   console.log( 'Available locales:', localeProperty.availableRuntimeLocales );
 
-  // Store the selected locale for translation column
-  let selectedLocale: Locale = localeInput.value as Locale || 'en';
+  // Create Property for the selected locale
+  const userSelectedLocaleProperty = new Property<Locale>( localeInput.value as Locale || 'en' );
 
   localeInput.addEventListener( 'change', () => {
-    selectedLocale = localeInput.value as Locale;
-    console.log( 'Selected locale changed to:', selectedLocale );
-    // Re-evaluate all rows when locale changes
-    reEvaluateAllRows();
+    userSelectedLocaleProperty.value = localeInput.value as Locale;
+    console.log( 'Selected locale changed to:', userSelectedLocaleProperty.value );
   } );
 
   localeGroup.appendChild( localeLabel );
@@ -254,17 +255,10 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
   // Sort entries by key for consistent display
   fluentEntries.sort( ( a, b ) => a.key.localeCompare( b.key ) );
 
-  // Store for parameter updates
-  const parameterInputs = new Map<string, HTMLElement>();
-  const updateTimeouts = new Map<string, number>();
-
-  // Store row data for re-evaluation when locale changes
-  const rowData = new Map<string, {
-    entry: FluentEntry;
-    parameterValues: Record<string, unknown>;
-    englishCell: HTMLElement;
-    translationCell: HTMLElement;
-  }>();
+  // Store parameter Properties for each row
+  const rowParameterProperties = new Map<string, Map<string, TReadOnlyProperty<unknown>>>();
+  const rowEnglishProperties = new Map<string, TReadOnlyProperty<string>>();
+  const rowTranslationProperties = new Map<string, TReadOnlyProperty<string>>();
 
   // Create table rows
   fluentEntries.forEach( entry => {
@@ -330,23 +324,34 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
       optionsCell.style.fontStyle = 'italic';
       optionsCell.style.color = '#7f8c8d';
 
-      // Set English value with 'en' locale
+      const originalLocale = localeProperty.value;
       localeProperty.value = 'en';
-      const englishValue = entry.fluentConstant.value;
-      englishCell.textContent = englishValue;
+      const result = entry.fluentConstant.value;
+      localeProperty.value = originalLocale;
 
-      // Set translation value with selected locale
-      localeProperty.value = selectedLocale;
-      const translationValue = entry.fluentConstant.value;
-      translationCell.textContent = translationValue;
+      // Create Properties for English and translation values
+      const englishProperty = new Property( result );
 
-      // Store row data for re-evaluation
-      rowData.set( entry.key, {
-        entry: entry,
-        parameterValues: {},
-        englishCell: englishCell,
-        translationCell: translationCell
+      const translationProperty = new DerivedProperty( [ userSelectedLocaleProperty ], () => {
+        const originalLocale = localeProperty.value;
+        localeProperty.value = userSelectedLocaleProperty.value;
+        const result = entry.fluentConstant!.value;
+        localeProperty.value = originalLocale;
+        return result;
       } );
+
+      // Link Properties to DOM elements
+      englishProperty.link( value => {
+        englishCell.textContent = value;
+      } );
+
+      translationProperty.link( value => {
+        translationCell.textContent = value;
+      } );
+
+      // Store Properties for cleanup if needed
+      rowEnglishProperties.set( entry.key, englishProperty );
+      rowTranslationProperties.set( entry.key, translationProperty );
     }
     else if ( !entry.isConstant && entry.fluentPattern ) {
       // Handle FluentPattern (has parameters)
@@ -354,7 +359,7 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
 
       // Create parameter inputs
       const inputContainer = document.createElement( 'div' );
-      const parameterValues: Record<string, unknown> = {};
+      const parameterProperties = new Map<string, TReadOnlyProperty<IntentionalAny>>();
 
       if ( pattern.args && pattern.args.length > 0 ) {
         pattern.args.forEach( ( argDef, index ) => {
@@ -379,6 +384,7 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
 
           let input: HTMLInputElement | HTMLSelectElement;
           let variantMap: Map<string, unknown> | undefined;
+          let parameterProperty: Property<IntentionalAny>;
 
           if ( variants && variants.length > 0 ) {
             // Create dropdown for parameters with variants
@@ -402,8 +408,8 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
               font-size: 0.8rem;
             `;
 
-            // Store initial parameter value using original type
-            parameterValues[ paramName ] = variantMap.get( input.value );
+            // Create Property with initial value
+            parameterProperty = new Property( variantMap.get( input.value ) );
           }
           else {
             // Create text input for parameters without variants
@@ -418,31 +424,23 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
               font-size: 0.8rem;
             `;
 
-            // Store initial parameter value
-            parameterValues[ paramName ] = input.value;
+            // Create Property with initial value
+            parameterProperty = new Property( input.value );
           }
 
-          // Add event listener for real-time updates
+          // Add event listener to update Property
           input.addEventListener( 'input', () => {
             if ( variantMap ) {
               // For dropdowns, use the original value from the map
-              parameterValues[ paramName ] = variantMap.get( input.value );
+              parameterProperty.value = variantMap.get( input.value );
             }
             else {
               // For text inputs, use the string value
-              parameterValues[ paramName ] = input.value;
+              parameterProperty.value = input.value;
             }
-
-            // Update stored parameter values
-            const storedData = rowData.get( entry.key );
-            if ( storedData ) {
-              // eslint-disable-next-line phet/no-object-spread-on-non-literals
-              storedData.parameterValues = { ...parameterValues };
-            }
-
-            debounceUpdate( entry.key, () => updatePatternRow( entry, parameterValues, englishCell, translationCell ) );
           } );
 
+          parameterProperties.set( paramName, parameterProperty );
           inputGroup.appendChild( label );
           inputGroup.appendChild( input );
           inputContainer.appendChild( inputGroup );
@@ -459,18 +457,59 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
       }
 
       optionsCell.appendChild( inputContainer );
-      parameterInputs.set( entry.key, inputContainer );
+      rowParameterProperties.set( entry.key, parameterProperties );
 
-      // Store row data for re-evaluation
-      rowData.set( entry.key, {
-        entry: entry,
-        parameterValues: parameterValues,
-        englishCell: englishCell,
-        translationCell: translationCell
+      // Create parameter object for FluentPattern.createProperty()
+      const parameterObject: Record<string, unknown> = {};
+      parameterProperties.forEach( ( property, paramName ) => {
+        parameterObject[ paramName ] = property;
       } );
 
-      // Initial interpolation
-      updatePatternRow( entry, parameterValues, englishCell, translationCell );
+      // Create English Property (always uses 'en' locale)
+      const englishProperty = DerivedProperty.deriveAny( Array.from( parameterProperties.values() ), () => {
+        const originalLocale = localeProperty.value;
+        localeProperty.value = 'en';
+        try {
+          const result = pattern.createProperty( parameterObject ).value;
+          localeProperty.value = originalLocale;
+          return result;
+        }
+        catch( error ) {
+          localeProperty.value = originalLocale;
+          return `Error: ${error instanceof Error ? error.message : String( error )}`;
+        }
+      } );
+
+      // Create Translation Property (uses selected locale)
+      const translationProperty = DerivedProperty.deriveAny( [ userSelectedLocaleProperty, ...Array.from( parameterProperties.values() ) ], () => {
+        const originalLocale = localeProperty.value;
+        localeProperty.value = userSelectedLocaleProperty.value;
+        try {
+          const result = pattern.format( parameterObject );
+          console.log( result );
+          localeProperty.value = originalLocale;
+          return result;
+        }
+        catch( error ) {
+          localeProperty.value = originalLocale;
+          return `Error: ${error instanceof Error ? error.message : String( error )}`;
+        }
+      } );
+
+      // Link Properties to DOM elements
+      englishProperty.link( value => {
+        englishCell.textContent = value;
+        englishCell.style.color = value.startsWith( 'Error:' ) ? '#e74c3c' : '#27ae60';
+      } );
+
+      translationProperty.link( value => {
+        translationCell.textContent = value;
+        translationCell.style.color = value.startsWith( 'Error:' ) ? '#e74c3c' : '#8e44ad';
+      } );
+
+      // Store Properties for cleanup if needed
+      rowEnglishProperties.set( entry.key, englishProperty );
+      rowTranslationProperties.set( entry.key, translationProperty );
     }
 
     row.appendChild( keyCell );
@@ -486,83 +525,6 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
   container.appendChild( tableContainer );
   document.body.appendChild( container );
 
-  // Function to re-evaluate all rows when locale changes
-  function reEvaluateAllRows(): void {
-    rowData.forEach( ( data, key ) => {
-      if ( data.entry.isConstant && data.entry.fluentConstant ) {
-        // Handle FluentConstant
-        localeProperty.value = 'en';
-        const englishValue = data.entry.fluentConstant.value;
-        data.englishCell.textContent = englishValue;
-        console.log( `English for ${key}:`, englishValue );
-
-        localeProperty.value = selectedLocale;
-        const translationValue = data.entry.fluentConstant.value;
-        console.log( `Translation for ${key}:`, translationValue );
-        data.translationCell.textContent = translationValue;
-        console.log( 'Cell updated:', data.translationCell.textContent );
-      }
-      else if ( !data.entry.isConstant && data.entry.fluentPattern ) {
-        // Handle FluentPattern
-        updatePatternRow( data.entry, data.parameterValues, data.englishCell, data.translationCell );
-      }
-    } );
-  }
-
-  // Function to update pattern row
-  function updatePatternRow(
-    entry: FluentEntry,
-    parameterValues: Record<string, unknown>,
-    englishCell: HTMLElement,
-    translationCell: HTMLElement
-  ): void {
-    if ( !entry.fluentPattern ) {
-      return;
-    }
-
-    // Update English column - always use 'en' locale
-    try {
-      localeProperty.value = 'en';
-      const englishResult = entry.fluentPattern.format( parameterValues );
-      englishCell.textContent = englishResult;
-      englishCell.style.color = '#27ae60';
-    }
-    catch( error ) {
-      const errorMessage = `Error: ${error instanceof Error ? error.message : String( error )}`;
-      englishCell.textContent = errorMessage;
-      englishCell.style.color = '#e74c3c';
-    }
-
-    // Update Translation column - use selected locale
-    try {
-      localeProperty.value = selectedLocale;
-      console.log( `Selected locale for translation: ${selectedLocale}` );
-      const translationResult = entry.fluentPattern.format( parameterValues );
-      console.log( `Translation result for ${entry.key}:`, translationResult );
-      translationCell.textContent = translationResult;
-      translationCell.style.color = '#8e44ad';
-    }
-    catch( error ) {
-      const errorMessage = `Error: ${error instanceof Error ? error.message : String( error )}`;
-      translationCell.textContent = errorMessage;
-      translationCell.style.color = '#e74c3c';
-    }
-  }
-
-  // Debounce function for performance
-  function debounceUpdate( key: string, callback: () => void ): void {
-    const existingTimeout = updateTimeouts.get( key );
-    if ( existingTimeout ) {
-      clearTimeout( existingTimeout );
-    }
-
-    const timeoutId = window.setTimeout( () => {
-      callback();
-      updateTimeouts.delete( key );
-    }, 300 );
-
-    updateTimeouts.set( key, timeoutId );
-  }
 
   // Function to update column visibility
   function updateColumnVisibility(): void {
