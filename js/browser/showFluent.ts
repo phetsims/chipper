@@ -139,9 +139,16 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
     localeInput.appendChild( option );
   } );
 
+  console.log( 'Available locales:', localeProperty.availableRuntimeLocales );
+
+  // Store the selected locale for translation column
+  let selectedLocale: Locale = localeInput.value as Locale || 'en';
+
   localeInput.addEventListener( 'change', () => {
-    localeProperty.value = localeInput.value as Locale;
-    console.log( localeProperty.value );
+    selectedLocale = localeInput.value as Locale;
+    console.log( 'Selected locale changed to:', selectedLocale );
+    // Re-evaluate all rows when locale changes
+    reEvaluateAllRows();
   } );
 
   localeGroup.appendChild( localeLabel );
@@ -251,6 +258,14 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
   const parameterInputs = new Map<string, HTMLElement>();
   const updateTimeouts = new Map<string, number>();
 
+  // Store row data for re-evaluation when locale changes
+  const rowData = new Map<string, {
+    entry: FluentEntry;
+    parameterValues: Record<string, unknown>;
+    englishCell: HTMLElement;
+    translationCell: HTMLElement;
+  }>();
+
   // Create table rows
   fluentEntries.forEach( entry => {
     const row = document.createElement( 'tr' );
@@ -315,9 +330,23 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
       optionsCell.style.fontStyle = 'italic';
       optionsCell.style.color = '#7f8c8d';
 
-      const constantValue = entry.fluentConstant.value;
-      englishCell.textContent = constantValue;
-      translationCell.textContent = constantValue; // Initially same as English
+      // Set English value with 'en' locale
+      localeProperty.value = 'en';
+      const englishValue = entry.fluentConstant.value;
+      englishCell.textContent = englishValue;
+
+      // Set translation value with selected locale
+      localeProperty.value = selectedLocale;
+      const translationValue = entry.fluentConstant.value;
+      translationCell.textContent = translationValue;
+
+      // Store row data for re-evaluation
+      rowData.set( entry.key, {
+        entry: entry,
+        parameterValues: {},
+        englishCell: englishCell,
+        translationCell: translationCell
+      } );
     }
     else if ( !entry.isConstant && entry.fluentPattern ) {
       // Handle FluentPattern (has parameters)
@@ -403,6 +432,14 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
               // For text inputs, use the string value
               parameterValues[ paramName ] = input.value;
             }
+
+            // Update stored parameter values
+            const storedData = rowData.get( entry.key );
+            if ( storedData ) {
+              // eslint-disable-next-line phet/no-object-spread-on-non-literals
+              storedData.parameterValues = { ...parameterValues };
+            }
+
             debounceUpdate( entry.key, () => updatePatternRow( entry, parameterValues, englishCell, translationCell ) );
           } );
 
@@ -424,6 +461,14 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
       optionsCell.appendChild( inputContainer );
       parameterInputs.set( entry.key, inputContainer );
 
+      // Store row data for re-evaluation
+      rowData.set( entry.key, {
+        entry: entry,
+        parameterValues: parameterValues,
+        englishCell: englishCell,
+        translationCell: translationCell
+      } );
+
       // Initial interpolation
       updatePatternRow( entry, parameterValues, englishCell, translationCell );
     }
@@ -441,6 +486,29 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
   container.appendChild( tableContainer );
   document.body.appendChild( container );
 
+  // Function to re-evaluate all rows when locale changes
+  function reEvaluateAllRows(): void {
+    rowData.forEach( ( data, key ) => {
+      if ( data.entry.isConstant && data.entry.fluentConstant ) {
+        // Handle FluentConstant
+        localeProperty.value = 'en';
+        const englishValue = data.entry.fluentConstant.value;
+        data.englishCell.textContent = englishValue;
+        console.log( `English for ${key}:`, englishValue );
+
+        localeProperty.value = selectedLocale;
+        const translationValue = data.entry.fluentConstant.value;
+        console.log( `Translation for ${key}:`, translationValue );
+        data.translationCell.textContent = translationValue;
+        console.log( 'Cell updated:', data.translationCell.textContent );
+      }
+      else if ( !data.entry.isConstant && data.entry.fluentPattern ) {
+        // Handle FluentPattern
+        updatePatternRow( data.entry, data.parameterValues, data.englishCell, data.translationCell );
+      }
+    } );
+  }
+
   // Function to update pattern row
   function updatePatternRow(
     entry: FluentEntry,
@@ -452,22 +520,31 @@ export default function showFluent( simFluent: Record<string, IntentionalAny> ):
       return;
     }
 
+    // Update English column - always use 'en' locale
     try {
-      const result = entry.fluentPattern.format( parameterValues );
-      englishCell.textContent = result;
-      translationCell.textContent = result; // Initially same as English
-
-      // Remove error styling
+      localeProperty.value = 'en';
+      const englishResult = entry.fluentPattern.format( parameterValues );
+      englishCell.textContent = englishResult;
       englishCell.style.color = '#27ae60';
-      translationCell.style.color = '#8e44ad';
     }
     catch( error ) {
       const errorMessage = `Error: ${error instanceof Error ? error.message : String( error )}`;
       englishCell.textContent = errorMessage;
-      translationCell.textContent = errorMessage;
-
-      // Add error styling
       englishCell.style.color = '#e74c3c';
+    }
+
+    // Update Translation column - use selected locale
+    try {
+      localeProperty.value = selectedLocale;
+      console.log( `Selected locale for translation: ${selectedLocale}` );
+      const translationResult = entry.fluentPattern.format( parameterValues );
+      console.log( `Translation result for ${entry.key}:`, translationResult );
+      translationCell.textContent = translationResult;
+      translationCell.style.color = '#8e44ad';
+    }
+    catch( error ) {
+      const errorMessage = `Error: ${error instanceof Error ? error.message : String( error )}`;
+      translationCell.textContent = errorMessage;
       translationCell.style.color = '#e74c3c';
     }
   }
