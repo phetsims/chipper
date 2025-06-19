@@ -409,7 +409,7 @@ export default function showFluent( simFluent: Record<string, IntentionalAny>, t
             // Create text input for parameters without variants
             input = document.createElement( 'input' );
             input.type = 'text';
-            input.value = '???'; // Default value
+            input.value = `{ $${paramName} }`; // Default value is to show the name of the parameter in fluent syntax
             input.style.cssText = `
               width: 100%;
               padding: 0.25rem;
