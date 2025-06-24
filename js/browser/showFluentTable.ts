@@ -22,7 +22,7 @@ type FluentEntry = {
   isConstant: boolean;
 };
 
-export default function showFluentTable( simFluent: Record<string, IntentionalAny>, translationLocale: string ): void {
+export default function showFluentTable( simFluent: Record<string, IntentionalAny>, translationLocale: Locale ): void {
 
   window.phetSplashScreen && window.phetSplashScreen.dispose();
 
@@ -138,14 +138,14 @@ export default function showFluentTable( simFluent: Record<string, IntentionalAn
     const option = document.createElement( 'option' );
     option.value = locale;
     option.textContent = locale;
-    if ( locale === 'en' ) {
+    if ( locale === translationLocale ) {
       option.selected = true;
     }
     localeInput.appendChild( option );
   } );
 
   // Create Property for the selected locale
-  const userSelectedLocaleProperty = new Property<Locale>( 'en' );
+  const userSelectedLocaleProperty = new Property<Locale>( translationLocale );
 
   localeInput.addEventListener( 'change', () => {
     userSelectedLocaleProperty.value = localeInput.value as Locale;
