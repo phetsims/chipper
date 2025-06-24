@@ -1,7 +1,7 @@
 // Copyright 2025, University of Colorado Boulder
 
 /**
- * When a sim is run with ?showFluent, show a UI that displays translations, for evaluation purposes.
+ * When a sim is run with ?fluentTable, show a UI that displays translations, for evaluation purposes.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -22,7 +22,7 @@ type FluentEntry = {
   isConstant: boolean;
 };
 
-export default function showFluent( simFluent: Record<string, IntentionalAny>, translationLocale: string ): void {
+export default function showFluentTable( simFluent: Record<string, IntentionalAny>, translationLocale: string ): void {
 
   window.phetSplashScreen && window.phetSplashScreen.dispose();
 
