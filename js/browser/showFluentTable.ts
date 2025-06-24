@@ -332,7 +332,7 @@ export default function showFluentTable( simFluent: Record<string, IntentionalAn
       // Handle FluentConstant (no parameters)
       optionsCell.textContent = '';
       optionsCell.style.fontStyle = 'italic';
-      optionsCell.style.color = '#7f8c8d';
+      optionsCell.style.color = '#2c74e8';
 
       localeProperty.value = 'en';
       const result = entry.fluentConstant.value;
@@ -495,12 +495,12 @@ export default function showFluentTable( simFluent: Record<string, IntentionalAn
       // Link Properties to DOM elements
       englishProperty.link( value => {
         englishCell.textContent = value;
-        englishCell.style.color = value.startsWith( 'Error:' ) ? '#e74c3c' : '#27ae60';
+        englishCell.style.color = value.startsWith( 'Error:' ) ? '#e74c3c' : '#2c74e8';
       } );
 
       translationProperty.link( value => {
         translationCell.textContent = value;
-        translationCell.style.color = value.startsWith( 'Error:' ) ? '#e74c3c' : '#8e44ad';
+        translationCell.style.color = value.startsWith( 'Error:' ) ? '#e74c3c' : 'black';
       } );
 
       // Store Properties for cleanup if needed
