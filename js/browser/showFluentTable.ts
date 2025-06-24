@@ -13,13 +13,16 @@ import localeProperty, { Locale } from '../../../joist/js/i18n/localeProperty.js
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import FluentConstant from './FluentConstant.js';
 import FluentPattern from './FluentPattern.js';
+import FluentComment from './FluentComment.js';
 
 // Types for fluent entries
 type FluentEntry = {
   key: string;
   fluentConstant?: FluentConstant;
   fluentPattern?: FluentPattern<Record<string, unknown>>;
+  fluentComment?: FluentComment;
   isConstant: boolean;
+  isComment: boolean;
 };
 
 export default function showFluentTable( simFluent: Record<string, IntentionalAny>, translationLocale: Locale ): void {
@@ -233,14 +236,24 @@ export default function showFluentTable( simFluent: Record<string, IntentionalAn
         fluentEntries.push( {
           key: fullKey,
           fluentConstant: value,
-          isConstant: true
+          isConstant: true,
+          isComment: false
         } );
       }
       else if ( value instanceof FluentPattern ) {
         fluentEntries.push( {
           key: fullKey,
           fluentPattern: value,
-          isConstant: false
+          isConstant: false,
+          isComment: false
+        } );
+      }
+      else if ( value instanceof FluentComment ) {
+        fluentEntries.push( {
+          key: fullKey,
+          fluentComment: value,
+          isConstant: false,
+          isComment: true
         } );
       }
       else {
@@ -494,11 +507,36 @@ export default function showFluentTable( simFluent: Record<string, IntentionalAn
       rowEnglishProperties.set( entry.key, englishProperty );
       rowTranslationProperties.set( entry.key, translationProperty );
     }
+    else if ( entry.isComment && entry.fluentComment ) {
+      // Handle FluentComment - create a single cell that spans all columns
+      row.style.cssText += `
+        background-color: #f8f9fa;
+        border-left: 4px solid #6c757d;
+      `;
+      
+      // Create a single cell that spans all 4 columns
+      const commentCell = document.createElement( 'td' );
+      commentCell.setAttribute( 'colspan', '4' );
+      commentCell.textContent = entry.fluentComment.comment;
+      commentCell.style.cssText = `
+        padding: 0.75rem;
+        font-weight: bold;
+        font-size: 1rem;
+        color: #2c3e50;
+        background-color: #f8f9fa;
+        text-align: left;
+      `;
+      
+      row.appendChild( commentCell );
+    }
 
-    row.appendChild( keyCell );
-    row.appendChild( optionsCell );
-    row.appendChild( englishCell );
-    row.appendChild( translationCell );
+    // Add cells for non-comment entries
+    if ( !entry.isComment ) {
+      row.appendChild( keyCell );
+      row.appendChild( optionsCell );
+      row.appendChild( englishCell );
+      row.appendChild( translationCell );
+    }
     tbody.appendChild( row );
   } );
 
@@ -576,5 +614,5 @@ export default function showFluentTable( simFluent: Record<string, IntentionalAn
   document.head.appendChild( style );
 
   // Set once after building, so it doesn't swap back and forth locales during the build
-  userSelectedLocaleProperty.value = translationLocale as Locale;
+  userSelectedLocaleProperty.value = translationLocale;
 }

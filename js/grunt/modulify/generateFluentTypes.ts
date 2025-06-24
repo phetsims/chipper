@@ -30,6 +30,48 @@ const IDENT = /^[A-Za-z_$][\w$]*$/;
 /** Indent helper. */
 const indent = ( lvl: number, spaces = 2 ): string => ' '.repeat( lvl * spaces );
 
+type FluentComment = IntentionalAny;
+
+/**
+ * Parse comments from raw YAML text while preserving order.
+ * Returns an array of FluentComment objects with line numbers and associated keys.
+ */
+function parseYamlComments( yamlText: string ): FluentComment[] {
+  const lines = yamlText.split( '\n' );
+  const comments: FluentComment[] = [];
+
+  for ( let i = 0; i < lines.length; i++ ) {
+    const line = lines[ i ].trim();
+
+    // Check if line is a comment (starts with #)
+    if ( line.startsWith( '#' ) ) {
+      const comment = line.substring( 1 ).trim(); // Remove # and trim whitespace
+
+      // Look ahead to find the next non-comment, non-empty line to associate with
+      let associatedKey: string | undefined;
+      for ( let j = i + 1; j < lines.length; j++ ) {
+        const nextLine = lines[ j ].trim();
+        if ( nextLine && !nextLine.startsWith( '#' ) ) {
+          // Extract the key from "key: value" format
+          const colonIndex = nextLine.indexOf( ':' );
+          if ( colonIndex > 0 ) {
+            associatedKey = nextLine.substring( 0, colonIndex ).trim();
+          }
+          break;
+        }
+      }
+
+      comments.push( {
+        comment: comment,
+        lineNumber: i + 1, // 1-based line numbers
+        associatedKey: associatedKey
+      } );
+    }
+  }
+
+  return comments;
+}
+
 /** Recursively walk object, returning leaf records. */
 function collectLeaves( obj: Obj, pathArr: string[] = [] ): Leaf[] {
   const leaves: Leaf[] = [];
@@ -140,8 +182,8 @@ function expandDottedKeys( object: Record<string, unknown> ): Record<string, unk
   return newObject;
 }
 
-/** Build nested TS literal from YAML, inserting both helpers at leaves. */
-function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pascalCaseRepo: string, pathArr: string[] = [], lvl = 1 ): string {
+/** Build nested TS literal from YAML, inserting both helpers at leaves and interleaving comments. */
+function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pascalCaseRepo: string, comments: FluentComment[] = [], pathArr: string[] = [], lvl = 1 ): string {
 
   // Keys with dots should be expanded into nested objects so that usages can easily access values with
   // dot notation.
@@ -149,14 +191,61 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
 
   const lines = [ '{' ];
   const entries = Object.entries( obj );
+
+  // Helper to get the full key path for a given key at current level
+  const getFullPath = ( key: string ) => [ ...pathArr, key ].join( '.' );
+
+  // Find comments that should be placed at this level
+  const levelComments = comments.filter( comment => {
+    if ( !comment.associatedKey ) {
+      return false;
+    }
+
+    // Check if this comment's associated key matches any key at this level
+    const associatedKeyPath = comment.associatedKey;
+    return entries.some( ( [ key ] ) => {
+      const fullPath = getFullPath( key );
+      return associatedKeyPath === key || associatedKeyPath === fullPath;
+    } );
+  } );
+
+  // Group comments by their associated keys
+  const commentsByKey = new Map<string, FluentComment[]>();
+  levelComments.forEach( comment => {
+    if ( comment.associatedKey ) {
+      // Find the entry key that matches this comment
+      const matchingKey = entries.find( ( [ key ] ) => {
+        const fullPath = getFullPath( key );
+        return comment.associatedKey === key || comment.associatedKey === fullPath;
+      } )?.[ 0 ];
+
+      if ( matchingKey ) {
+        if ( !commentsByKey.has( matchingKey ) ) {
+          commentsByKey.set( matchingKey, [] );
+        }
+        commentsByKey.get( matchingKey )!.push( comment );
+      }
+    }
+  } );
+
   entries.forEach( ( [ key, val ], idx ) => {
+    // Add comments before this key if any exist
+    const keyComments = commentsByKey.get( key );
+    if ( keyComments ) {
+      keyComments.forEach( ( comment, commentIdx ) => {
+        const commentKey = `_comment_${comment.lineNumber}`;
+        const commentData = JSON.stringify( comment );
+        // Comments always need a comma since they're followed by either another comment or the actual key
+        lines.push( `${indent( lvl )}${commentKey}: new FluentComment( ${commentData} ),` );
+      } );
+    }
 
     // If the key is not a valid JS identifier, we need to quote it. This can be accomplished by using JSON.stringify.
     const safeKey = IDENT.test( key ) ? key : JSON.stringify( key );
     const comma = idx < entries.length - 1 ? ',' : '';
     if ( val !== null && typeof val === 'object' && !Array.isArray( val ) ) {
       // recurse
-      const sub = buildFluentObject( val, typeInfoMap, pascalCaseRepo, [ ...pathArr, key ], lvl + 1 );
+      const sub = buildFluentObject( val, typeInfoMap, pascalCaseRepo, comments, [ ...pathArr, key ], lvl + 1 );
       lines.push( `${indent( lvl )}${safeKey}: ${sub}${comma}` );
     }
     else {
@@ -223,7 +312,7 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
 
         // This is a legacy string and is meant to be used with StringUtils.format or
         // StringUtils.fillIn. It should use the LocalizedStringProperty directly.
-        lines.push( `${indent( lvl )}${stringPropertyKey}: ${getter} ${comma}` );
+        lines.push( `${indent( lvl )}${stringPropertyKey}: ${getter}${comma}` );
       }
       else if ( paramInfo.length === 0 ) {
 
@@ -254,6 +343,9 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   // load YAML
   const yamlText = fs.readFileSync( yamlPath, 'utf8' );
   const yamlObj = safeLoadYaml( yamlText ) as Obj;
+
+  // Parse comments from the YAML text
+  const comments = parseYamlComments( yamlText );
 
   // collect all leaves
   const leaves = collectLeaves( yamlObj );
@@ -289,6 +381,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
     return `${id} = ${leaf.value}`;
   } ).join( '\n' );
 
+
   // verify the fluent file to report syntax errors in the english content.
   FluentLibrary.verifyFluentFile( ftlContent );
 
@@ -299,7 +392,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   } );
 
   // an object literal that will be used to create the Fluent typescript object
-  const fluentObjectLiteral = buildFluentObject( yamlObj, keyToTypeInfoMap, pascalCaseRepo, [], 1 );
+  const fluentObjectLiteral = buildFluentObject( yamlObj, keyToTypeInfoMap, pascalCaseRepo, comments, [], 1 );
 
   // template TypeScript file
   const fileContents = `${copyrightLine}
@@ -314,6 +407,7 @@ import type { FluentVariable } from '../../chipper/js/browser/FluentPattern.js';
 import FluentPattern from '../../chipper/js/browser/FluentPattern.js';
 import FluentContainer from '../../chipper/js/browser/FluentContainer.js';
 import FluentConstant from '../../chipper/js/browser/FluentConstant.js';
+import FluentComment from '../../chipper/js/browser/FluentComment.js';
 import ${camelCaseRepo} from './${camelCaseRepo}.js';
 import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
 
