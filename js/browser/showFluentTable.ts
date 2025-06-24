@@ -313,7 +313,7 @@ export default function showFluentTable( simFluent: Record<string, IntentionalAn
       vertical-align: top;
       max-width: 400px;
       word-wrap: break-word;
-      color: #27ae60;
+      color: #2c74e8;
       border-right: 1px solid #ecf0f1;
     `;
 
@@ -325,12 +325,12 @@ export default function showFluentTable( simFluent: Record<string, IntentionalAn
       vertical-align: top;
       max-width: 400px;
       word-wrap: break-word;
-      color: #8e44ad;
+      color: black;
     `;
 
     if ( entry.isConstant && entry.fluentConstant ) {
       // Handle FluentConstant (no parameters)
-      optionsCell.textContent = 'No parameters';
+      optionsCell.textContent = '';
       optionsCell.style.fontStyle = 'italic';
       optionsCell.style.color = '#7f8c8d';
 
