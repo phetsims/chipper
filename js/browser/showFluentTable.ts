@@ -249,10 +249,8 @@ export default function showFluentTable( simFluent: Record<string, IntentionalAn
     }
   };
 
+  // NOTE: This preserves the order from the SimFluent file.
   collectEntries( simFluent );
-
-  // Sort entries by key for consistent display
-  fluentEntries.sort( ( a, b ) => a.key.localeCompare( b.key ) );
 
   // Store parameter Properties for each row
   const rowParameterProperties = new Map<string, Map<string, TReadOnlyProperty<unknown>>>();
