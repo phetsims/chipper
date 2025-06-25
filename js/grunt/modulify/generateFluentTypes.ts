@@ -63,7 +63,6 @@ function parseYamlComments( yamlText: string ): FluentComment[] {
 
       comments.push( {
         comment: comment,
-        lineNumber: i + 1, // 1-based line numbers
         associatedKey: associatedKey
       } );
     }
@@ -228,15 +227,18 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
     }
   } );
 
+  let commentCounter = 0;
+
   entries.forEach( ( [ key, val ], idx ) => {
     // Add comments before this key if any exist
     const keyComments = commentsByKey.get( key );
     if ( keyComments ) {
-      keyComments.forEach( ( comment, commentIdx ) => {
-        const commentKey = `_comment_${comment.lineNumber}`;
+      keyComments.forEach( comment => {
+        const commentKey = `_comment_${commentCounter}`;
         const commentData = JSON.stringify( comment );
         // Comments always need a comma since they're followed by either another comment or the actual key
         lines.push( `${indent( lvl )}${commentKey}: new FluentComment( ${commentData} ),` );
+        commentCounter++;
       } );
     }
 
