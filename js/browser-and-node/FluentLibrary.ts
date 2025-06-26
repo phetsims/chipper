@@ -79,6 +79,17 @@ class FluentLibrary {
       throw new Error( `These terms are not defined: [ ${undefinedTermsFormatted} ]` );
     }
 
+    // Identify used messages that are not defined. A message can reference other messages or terms.
+    const allDefinedKeys = [ ...messages, ...termKeys ];
+    const undefinedMessages = Array.from( collector.usedMessageNames ).filter(
+      messageKey => !allDefinedKeys.includes( messageKey )
+    );
+
+    if ( undefinedMessages.length > 0 ) {
+      const undefinedMessagesFormatted = undefinedMessages.join( ', ' );
+      throw new Error( `These messages are not defined: [ ${undefinedMessagesFormatted} ]` );
+    }
+
     // In the PhET project, terms with placeables are prohibited since they can't accept forwarded variables.
     // Fluent allows this for translation flexibility (see: https://projectfluent.org/fluent/guide/terms.html),
     // but it can be misleading, causing developers to treat terms like messages. We enforce this check to prevent errors.
@@ -111,6 +122,7 @@ ${junk.content}
  */
 export class FluentVisitor extends Visitor {
   public readonly usedTermNames = new Set<string>();
+  public readonly usedMessageNames = new Set<string>();
   public readonly usedTerms = new Set<Pattern>();
   public readonly foundJunk = new Set<string>();
   public readonly declaredTerms = new Set<string>();
@@ -118,6 +130,11 @@ export class FluentVisitor extends Visitor {
   public override visitTerm( node: IntentionalAny ): void {
     this.declaredTerms.add( node );
 
+    this.genericVisit( node );
+  }
+
+  public override visitMessageReference( node: IntentionalAny ): void {
+    this.usedMessageNames.add( node.id.name );
     this.genericVisit( node );
   }
 
