@@ -762,16 +762,16 @@
     },
 
     /**
-     * Controls whether Tier 1 Voicing is enabled. This is a subset of the Voicing feature, the VoicingToolbar,
+     * Controls whether Core Voicing is enabled. This is a subset of the Voicing feature, the VoicingToolbar,
      * name responses, and hint responses are all avialable. Context and Object responses are disabled and cannot
      * be enabled from the Preferences dialog.
      *
-     * This feature is enabled by default when supportsTier1Voicing is true in package.json. The query parameter will always
+     * This feature is enabled by default when supportsCoreVoicing is true in package.json. The query parameter will always
      * override the package.json entry.
      */
-    supportsTier1Voicing: {
+    supportsCoreVoicing: {
       type: 'boolean',
-      defaultValue: !!packageSimFeatures.supportsTier1Voicing
+      defaultValue: !!packageSimFeatures.supportsCoreVoicing
     },
 
     /**
@@ -1010,7 +1010,7 @@
 
     window.phet.chipper.supportsAnyVoicing = () => {
       return window.phet.chipper.queryParameters.supportsVoicing ||
-             window.phet.chipper.queryParameters.supportsTier1Voicing;
+             window.phet.chipper.queryParameters.supportsCoreVoicing;
     };
 
     // Add a log function that displays messages to the console. Examples:
@@ -1308,7 +1308,7 @@
     const simFeaturesSchema = {
       supportsInteractiveDescription: { type: 'boolean' },
       supportsVoicing: { type: 'boolean' },
-      supportsTier1Voicing: { type: 'boolean' },
+      supportsCoreVoicing: { type: 'boolean' },
       supportsInteractiveHighlights: { type: 'boolean' },
       supportsDescriptionPlugin: { type: 'boolean' },
       supportsSound: { type: 'boolean' },
