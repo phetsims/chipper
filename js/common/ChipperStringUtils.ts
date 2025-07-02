@@ -147,8 +147,10 @@ const ChipperStringUtils = {
 
       // Until rosetta supports nested strings in https://github.com/phetsims/rosetta/issues/215, keep this assertion.
       // This should be after because the above errors are more specific. This is better as a fallback.
-      assert && !ChipperStringUtils.isA11yStringKey( key ) && assert( map[ key ],
-        `nested strings are not allowed outside of a11y string object for key: ${key}` );
+      // TODO: See https://github.com/phetsims/rosetta/issues/215.  Commenting this out for now, should remove entirely
+      //       once support for nested strings has been added and verified.
+      // assert && !ChipperStringUtils.isA11yStringKey( key ) && assert( map[ key ],
+      //   `nested strings are not allowed outside of a11y string object for key: ${key}` );
 
       return result as StringObject;
     }
