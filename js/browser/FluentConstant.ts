@@ -21,7 +21,7 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
   // For runtime "type checking" in PhetioObject. Note we cannot use instanceof FluentConstant there without causing a
   // cyclic dependency. This is used to help FluentConstant interoperate with the legacy phet-io instrumented string
   // requirements
-  public override isFluentConstant(): this is FluentConstant { return true; }
+  public override hasTargetProperty(): this is { targetProperty: PhetioObject } { return true; }
 
   /**
    * Creates a string Property that will update when the bundle changes.
