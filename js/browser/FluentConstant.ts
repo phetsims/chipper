@@ -10,9 +10,13 @@
 
 import { DerivedProperty1 } from '../../../axon/js/DerivedProperty.js';
 import ReadOnlyProperty from '../../../axon/js/ReadOnlyProperty.js';
+import TProperty from '../../../axon/js/TProperty.js';
 import { FluentBundle } from '../../../chipper/js/browser-and-node/FluentLibrary.js';
+import { Locale } from '../../../joist/js/i18n/localeProperty.js';
+import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import PhetioObject from '../../../tandem/js/PhetioObject.js';
 import chipper from './chipper.js';
+import LocalizedStringProperty from './LocalizedStringProperty.js';
 
 const NO_STRING = '';
 
@@ -29,12 +33,13 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
    * @param bundleProperty
    * @param key - The string key, where nesting is indicated by underscores (since that is compatible with Fluent syntax)
    *              such as a11y_summary_playAreaSummaryIntro
-   * @param targetProperty - The target property that this FluentConstant will be associated with, solely for phet-io studio autoselect, see Text and RichText.
-   *                       - this will be undefined in a built simulation when the corresponding string is unused.
+   * @param targetProperty - The target property that this FluentConstant will be associated with, solely for
+   *                       - phet-io concerns because that is the PhET-iO instrumented part. see Text and RichText.
+   *                       - This will be undefined in a built simulation when the corresponding string is unused.
    */
   public constructor( bundleProperty: ReadOnlyProperty<FluentBundle>,
                       key: string,
-                      public readonly targetProperty: PhetioObject | undefined ) {
+                      public readonly targetProperty: LocalizedStringProperty | undefined ) {
 
     super( [ bundleProperty ], bundle => {
       const message = bundle.getMessage( key );
@@ -55,6 +60,18 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
         return NO_STRING;
       }
     } );
+  }
+
+  /**
+   * Returns the StringProperty for the given locale. See LocalizedStringProperty.getTranslatedStringProperty.
+   * This only works for strings with no Fluent parameters or syntax. In order to support that, we would need a way to
+   * look up the locale-specific string in the bundle. Since the use case for this is very rare, we are not going
+   * to complicate the implementation with that right now. This is not implemented in FluentPattern because
+   * those strings are expected to have parameters.
+   */
+  public getTranslatedStringProperty( locale: Locale ): TProperty<string> {
+    affirm( this.targetProperty, 'If using getTranslatedStringProperty, the targetProperty must be defined. Why was it removed during the build?' );
+    return this.targetProperty.getTranslatedStringProperty( locale );
   }
 }
 
