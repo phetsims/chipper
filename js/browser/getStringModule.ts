@@ -21,6 +21,7 @@ import PhetioObject from '../../../tandem/js/PhetioObject.js';
 import Tandem from '../../../tandem/js/Tandem.js';
 import IOType from '../../../tandem/js/types/IOType.js';
 import ObjectLiteralIO from '../../../tandem/js/types/ObjectLiteralIO.js';
+import isA11yStringKey from './isA11yStringKey.js';
 import LocalizedString, { LocalizedStringStateDelta, StringsStateStateObject } from './LocalizedString.js';
 import localizedStrings from './localizedStrings.js';
 
@@ -211,7 +212,7 @@ const getStringModule = ( requirejsNamespace: string ): object => {
         // Ignore zero-length strings, see https://github.com/phetsims/chipper/issues/1343
         if ( locale === FALLBACK_LOCALE || ( typeof string === 'string' && string !== '' ) ) {
           // A11y is not translatable and should not appear mapped, see https://github.com/phetsims/tasks/issues/1133
-          localeToTranslationMap[ locale ] = stringKey.includes( '/a11y.' ) ? string : phet.chipper.mapString( string );
+          localeToTranslationMap[ locale ] = isA11yStringKey( stringKey ) ? string : phet.chipper.mapString( string );
         }
       } );
 
