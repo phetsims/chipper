@@ -13,6 +13,7 @@
 import Multilink from '../../../axon/js/Multilink.js';
 import Property from '../../../axon/js/Property.js';
 import ReadOnlyProperty from '../../../axon/js/ReadOnlyProperty.js';
+import bcp47LocaleProperty from '../../../joist/js/i18n/bcp47LocaleProperty.js';
 import localeProperty from '../../../joist/js/i18n/localeProperty.js';
 import { FluentBundle, FluentResource } from '../browser-and-node/FluentLibrary.js';
 import chipper from './chipper.js';
@@ -30,7 +31,11 @@ export default class FluentContainer {
     } );
 
     const createFluentBundle = () => {
-      const bundle = new FluentBundle( 'en', {
+
+      // Instantiate the FluentBundle with the bcp47 locale corresponding to the
+      // currently selected locale. It will be passed to Intl formatters as Fluent is processed.
+      // See https://github.com/phetsims/chipper/issues/1611
+      const bundle = new FluentBundle( bcp47LocaleProperty.value, {
 
         // Fluent wraps every interpolated value in the invisible FSI / PDI 'isolation' marks
         // to keep the reading order correct when left-to-right and right-to-left text are mixed.
