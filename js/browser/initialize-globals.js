@@ -687,14 +687,6 @@
     },
 
     /**
-     * Enables support for the accessible description plugin feature.
-     */
-    supportsDescriptionPlugin: {
-      type: 'boolean',
-      defaultValue: !!packageSimFeatures.supportsDescriptionPlugin
-    },
-
-    /**
      *
      * Enables interactive description in the simulation. Use this option to render the Parallel DOM for keyboard
      * navigation and screen-reader-based auditory descriptions. Can be permanently enabled if
@@ -1310,7 +1302,6 @@
       supportsVoicing: { type: 'boolean' },
       supportsCoreVoicing: { type: 'boolean' },
       supportsInteractiveHighlights: { type: 'boolean' },
-      supportsDescriptionPlugin: { type: 'boolean' },
       supportsSound: { type: 'boolean' },
       supportsExtraSound: { type: 'boolean' },
       supportsDynamicLocale: { type: 'boolean' },
