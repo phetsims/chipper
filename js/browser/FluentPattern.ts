@@ -64,6 +64,14 @@ export default class FluentPattern<T extends Record<string, unknown>> {
     const dependencies = _.uniq( [ this.bundleProperty, ...Object.values( args ).filter( isTReadOnlyProperty ) ] );
     return new FluentPatternDerivedProperty( dependencies, () => this.format( args ), this.targetProperty );
   }
+
+  /**
+   * Returns all of the Properties that should be listened to in order to determine if results from format() need to be
+   * recomputed.
+   */
+  public getDependentProperties(): TReadOnlyProperty<unknown>[] {
+    return [ this.bundleProperty ];
+  }
 }
 
 /**
