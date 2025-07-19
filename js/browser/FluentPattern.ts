@@ -48,9 +48,21 @@ export default class FluentPattern<T extends Record<string, unknown>> {
 
     const message = bundle.getMessage( this.key );
 
+    // At runtime, users can edit the strings, using PhET-iO Studio or the PhET-iO API, so we must be graceful if something
+    // goes wrong with the formatting.
+    // In case of bad syntax, a target message may not be found.
+    if ( !message ) {
+      return `Fluent message not found for key: ${this.key}`;
+    }
+
     const errors: Array<Error> = [];
-    const result = bundle.formatPattern( message!.value!, newArgs, errors );
-    assert && assert( errors.length === 0, `Fluent errors found when formatting message: ${errors}` );
+    const result = bundle.formatPattern( message.value!, newArgs, errors );
+
+    // At runtime, users can edit the strings, using PhET-iO Studio or the PhET-iO API, so we must be graceful if something
+    // goes wrong with the formatting.
+    if ( errors.length > 0 ) {
+      return `Fluent errors found when formatting message: ${errors.map( error => error.message ).join( ', ' )}`;
+    }
     return result;
   }
 
