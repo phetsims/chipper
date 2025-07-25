@@ -14,6 +14,7 @@ import assert from 'assert';
 import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
+import strip from 'strip-comments';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import { PhetioElementMetadata } from '../../../tandem/js/phet-io-types.js';
 import ChipperConstants from '../common/ChipperConstants.js';
@@ -117,13 +118,15 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
   // --------------------------------------------------------------------
   const nonFluentModules = usedModules.filter( modulePath => !modulePath.endsWith( 'Fluent.js' ) );
 
-  // Load the file contents of every single JS module that used any strings
-  const usedFileContents = nonFluentModules.map( usedModule => fs.readFileSync( `../${usedModule}`, 'utf-8' ) );
+  // Load the file contents of every single JS module that used any strings.
+  // Strip out comments so we only find code usages of strings.
+  const usedFileContents = nonFluentModules.map( usedModule => fs.readFileSync( `../${usedModule}`, 'utf-8' ) ).map( fileContent => strip( fileContent ) );
 
   // Compute which repositories contain one or more used strings (since we'll need to load string files for those
   // repositories).
   let reposWithUsedStrings = [];
   usedFileContents.forEach( fileContent => {
+
     // Accept imports for either *Strings.js or *Fluent.js
     // [a-zA-Z_$][a-zA-Z0-9_$] ---- general JS identifiers, first character can't be a number
     // [^\n\r] ---- grab everything except for newlines here, so we get everything
