@@ -755,7 +755,7 @@
 
     /**
      * Controls whether Core Voicing is enabled. This is a subset of the Voicing feature, the VoicingToolbar,
-     * name responses, and hint responses are all avialable. Context and Object responses are disabled and cannot
+     * name responses, and hint responses are all available. Context and Object responses are disabled and cannot
      * be enabled from the Preferences dialog.
      *
      * This feature is enabled by default when supportsCoreVoicing is true in package.json. The query parameter will always
@@ -810,6 +810,13 @@
      * Print output from Voicing speech synthesis responses to the console.
      */
     logVoicingResponses: {
+      type: 'flag'
+    },
+
+    /**
+     * Print output from AriaLiveAnnouncer responses to the console.
+     */
+    logAriaLiveResponses: {
       type: 'flag'
     },
 
