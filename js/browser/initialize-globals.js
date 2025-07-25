@@ -932,6 +932,15 @@
     },
 
     /**
+     * When true, will add a draggable view of the minimum sizes needed for 24x24 px and 44x44 px targets.
+     * The red square will be of 24x24 CSS pixels, and the red circle will be the smallest circle that fits a 24x24 square.
+     * The blue square will be of 44x44 CSS pixels, and the blue circle will be the smallest circle that fits a 44x44 square.
+     */
+    wcagSize: {
+      type: 'flag'
+    },
+
+    /**
      * Enables WebGL rendering. See https://github.com/phetsims/scenery/issues/289.
      * Note that simulations can opt-in to webgl via new Sim({webgl:true}), but using ?webgl=true takes
      * precedence.  If no webgl query parameter is supplied, then simulations take the Sim option value, which
