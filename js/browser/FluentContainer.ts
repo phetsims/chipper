@@ -13,7 +13,6 @@
 import Multilink from '../../../axon/js/Multilink.js';
 import Property from '../../../axon/js/Property.js';
 import ReadOnlyProperty from '../../../axon/js/ReadOnlyProperty.js';
-import bcp47LocaleProperty from '../../../joist/js/i18n/bcp47LocaleProperty.js';
 import localeProperty from '../../../joist/js/i18n/localeProperty.js';
 import { FluentBundle, FluentResource } from '../browser-and-node/FluentLibrary.js';
 import chipper from './chipper.js';
@@ -24,18 +23,13 @@ export default class FluentContainer {
 
   public constructor( getFTL: () => string, allStringProperties: Array<ReadOnlyProperty<string>> ) {
 
-    // If the locale is changing, we only want to recompute the bundle once.
-    let isLocaleChanging = false;
-    localeProperty.lazyLink( () => {
-      isLocaleChanging = true;
-    } );
-
     const createFluentBundle = () => {
+      const bcp47 = phet.chipper.localeData[ localeProperty.value ].bcp47;
 
       // Instantiate the FluentBundle with the bcp47 locale corresponding to the
       // currently selected locale. It will be passed to Intl formatters as Fluent is processed.
       // See https://github.com/phetsims/chipper/issues/1611
-      const bundle = new FluentBundle( bcp47LocaleProperty.value, {
+      const bundle = new FluentBundle( bcp47, {
 
         // Fluent wraps every interpolated value in the invisible FSI / PDI 'isolation' marks
         // to keep the reading order correct when left-to-right and right-to-left text are mixed.
@@ -54,7 +48,7 @@ export default class FluentContainer {
     this.bundleProperty = bundleProperty;
 
     Multilink.multilinkAny( allStringProperties, () => {
-      if ( !isLocaleChanging ) {
+      if ( !localeProperty.isLocaleChanging ) {
         bundleProperty.value = createFluentBundle();
       }
     } );
@@ -63,7 +57,6 @@ export default class FluentContainer {
     // isLocaleChanging to true. Otherwise, the bundle will be recomputed for every
     // string change.
     localeProperty.lazyLink( () => {
-      isLocaleChanging = false;
       bundleProperty.value = createFluentBundle();
     } );
   }
