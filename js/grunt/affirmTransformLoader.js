@@ -1,10 +1,12 @@
-// Copyright 2024, University of Colorado Boulder
+// Copyright 2025, University of Colorado Boulder
 
 /**
  * Webpack loader that transforms " affirm(" to " assert && affirm("
  *
  * This transformation happens before webpack processes the code, so that we can re-use our logic for stripping or
  * preserving assertions.
+ *
+ * NOTE: This loader should NOT be used on affirm.ts.
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */

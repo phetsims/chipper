@@ -118,11 +118,9 @@ const webpackBuild = function webpackBuild( repo: string, brand: string, provide
             test: /\.js$/,
             exclude: /affirm\.js$/,
             enforce: 'pre',
-            use: [
-              {
-                loader: require.resolve( './affirmTransformLoader.js' )
-              }
-            ]
+            use: [ {
+              loader: require.resolve( './affirmTransformLoader.js' )
+            } ]
           },
           ...getModuleRules()
         ]
@@ -156,21 +154,19 @@ const webpackBuild = function webpackBuild( repo: string, brand: string, provide
                [ ignorePhetBrand, ignorePhetioBrand, ignorePhetioDirectories ] ),
         ...( options.profileFileSize ? [
           new ModifySourcePlugin( {
-            rules: [
-              {
-                test: /.*/,
-                operations: [
-                  new ConcatOperation(
-                    'start',
-                    'console.log(\'START_MODULE\',\'$FILE_PATH\');\n\n'
-                  ),
-                  new ConcatOperation(
-                    'end',
-                    '\n\nconsole.log(\'END_MODULE\',\'$FILE_PATH\');\n\n'
-                  )
-                ]
-              }
-            ]
+            rules: [ {
+              test: /.*/,
+              operations: [
+                new ConcatOperation(
+                  'start',
+                  'console.log(\'START_MODULE\',\'$FILE_PATH\');\n\n'
+                ),
+                new ConcatOperation(
+                  'end',
+                  '\n\nconsole.log(\'END_MODULE\',\'$FILE_PATH\');\n\n'
+                )
+              ]
+            } ]
           } )
         ] : [] )
       ]

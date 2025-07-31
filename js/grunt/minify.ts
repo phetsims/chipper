@@ -61,7 +61,7 @@ const minify = function( js: string, options?: MinifyOptions ): string {
 
   // Do transpilation before uglifying.
   if ( babelTranspile ) {
-    js = transpileForBuild( js, stripAssertions );
+    js = transpileForBuild( js );
   }
 
   const uglifyOptions = {
