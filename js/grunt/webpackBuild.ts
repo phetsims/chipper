@@ -117,6 +117,10 @@ const webpackBuild = function webpackBuild( repo: string, brand: string, provide
           {
             test: /\.js$/,
             exclude: /affirm\.js$/,
+
+            // Run this loader at 'pre' priority so the affirm→assert && affirm rewrite sees pristine source before
+            // Babel, TS, etc. For each matched file Webpack gathers post-enforced loaders first, then normal, then pre,
+            // and executes the list right-to-left—so without 'pre' this loader would run last, when it’s too late.
             enforce: 'pre',
             use: [ {
               loader: require.resolve( './affirmTransformLoader.js' )
