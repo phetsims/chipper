@@ -64,7 +64,7 @@ const getFluentModule = ( localeToFluentFileMap: Record<Locale, string> ): Recor
       }
 
       throw new Error( `Could not find bundle for key: ${key}.` );
-    } );
+    }, { disableListenerLimit: true } );
 
     const localizedMessageProperty = new LocalizedMessageProperty( bundleProperty, bundle => {
       if ( bundle.hasMessage( key ) ) {

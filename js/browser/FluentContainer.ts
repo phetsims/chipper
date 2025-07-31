@@ -44,7 +44,7 @@ export default class FluentContainer {
     };
 
     // Initial compute of the bundle
-    const bundleProperty = new Property<FluentBundle>( createFluentBundle() );
+    const bundleProperty = new Property<FluentBundle>( createFluentBundle(), { disableListenerLimit: true } );
     this.bundleProperty = bundleProperty;
 
     Multilink.multilinkAny( allStringProperties, () => {
