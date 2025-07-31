@@ -10,14 +10,12 @@
 // modules
 const babel = require( '@babel/core' ); // eslint-disable-line phet/require-statement-match
 
-const babelPluginRemoveAffirm = require( './babel-plugin-remove-affirm.js' );
-
 /**
  * Transpile some code to be compatible with the browsers specified below
  * @param jsInput
  * @param forIE=false - whether the jsInput should be transpiled for Internet Explorer
  */
-export default function transpileForBuild( jsInput: string, stripAffirmations: boolean, forIE = false ): string {
+export default function transpileForBuild( jsInput: string, forIE = false ): string {
 
   // This list specifies the target browsers for Babel. Its format is described at https://browsersl.ist.
   // Note that this is related to System Requirements advertised on the PhET website, so should be modified with care.
@@ -49,11 +47,6 @@ export default function transpileForBuild( jsInput: string, stripAffirmations: b
       targets: {
         browsers: browsers
       }
-    } ] ],
-
-    plugins: stripAffirmations ? [
-      // Plugin to remove calls to 'affirm' and 'affirmCallback'
-      babelPluginRemoveAffirm
-    ] : []
+    } ] ]
   } ).code;
 }

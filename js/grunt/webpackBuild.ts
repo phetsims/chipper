@@ -112,7 +112,20 @@ const webpackBuild = function webpackBuild( repo: string, brand: string, provide
     const compiler = webpack( {
 
       module: {
-        rules: getModuleRules()
+        rules: [
+          // Apply affirm transformation before any other processing
+          {
+            test: /\.js$/,
+            exclude: /affirm\.js$/,
+            enforce: 'pre',
+            use: [
+              {
+                loader: require.resolve( './affirmTransformLoader.js' )
+              }
+            ]
+          },
+          ...getModuleRules()
+        ]
       },
 
       // We uglify as a step after this, with many custom rules. So we do NOT optimize or uglify in this step.
