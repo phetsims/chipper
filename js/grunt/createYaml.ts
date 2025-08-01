@@ -35,3 +35,5 @@ const getValues = ( json: IntentionalAny ): IntentionalAny => {
 const yamlData = getValues( json );
 
 fs.writeFileSync( yamlFile, yaml.dump( yamlData ) );
+
+console.log( `Created ${yamlFile} from ${jsonFile}. Manually inspect the result. Note that features such as comments, deprecated tags, and phet-io metadata are not supported by this script.` );
