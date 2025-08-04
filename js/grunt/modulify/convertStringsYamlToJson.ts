@@ -49,11 +49,17 @@ export const safeLoadYaml = ( yamlContents: string ): IntentionalAny => {
  * - For any key `originalKey`, if a corresponding `originalKey__simMetadata` key exists
  *   at the same level, its value is added as a `simMetadata` property to the object
  *   representing `originalKey`.
- * - `__simMetadata` keys themselves are not included as top-level keys in the output.
- * - Arrays are processed element-wise. If an array itself has `__simMetadata`, it will be
- *   wrapped like: `{ value: [processed elements], simMetadata: {...} }`.
- * - Primitives (numbers, booleans, null) are returned as-is, unless they have `__simMetadata`,
- *   in which case they are wrapped: `{ value: primitive, simMetadata: {...} }`.
+ * - For any key `originalKey`, if a corresponding `originalKey__deprecated` key exists
+ *   at the same level with value 'true', a `deprecated: true` property is added to the object.
+ *   An error is thrown if `__deprecated` has any value other than 'true'.
+ * - For any key `originalKey`, if a corresponding `originalKey__comment` key exists
+ *   at the same level, its value is added as a `_comment` property to the object.
+ * - `__simMetadata`, `__deprecated`, and `__comment` keys themselves are not included 
+ *   as top-level keys in the output.
+ * - Arrays are processed element-wise. If an array itself has metadata, it will be
+ *   wrapped like: `{ value: [processed elements], simMetadata: {...}, deprecated: true, _comment: "..." }`.
+ * - Primitives (numbers, booleans, null) are returned as-is, unless they have metadata,
+ *   in which case they are wrapped: `{ value: primitive, simMetadata: {...}, deprecated: true, _comment: "..." }`.
  *
  * @param input - The parsed YAML data (can be an object, array, string, or other primitive).
  * @returns The transformed JavaScript structure.
@@ -80,15 +86,30 @@ function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
     for ( const key of inputKeys ) {
       // If the key is a metadata key, check if its parent exists.
       // If so, it will be handled when its parent is processed, so skip.
-      if ( key.endsWith( '__simMetadata' ) ) {
-        const originalKey = key.substring( 0, key.length - '__simMetadata'.length );
+      if ( key.endsWith( '__simMetadata' ) || key.endsWith( '__deprecated' ) || key.endsWith( '__comment' ) ) {
+        let originalKey = '';
+        let metadataType = '';
+        
+        if ( key.endsWith( '__simMetadata' ) ) {
+          originalKey = key.substring( 0, key.length - '__simMetadata'.length );
+          metadataType = '__simMetadata';
+        }
+        else if ( key.endsWith( '__deprecated' ) ) {
+          originalKey = key.substring( 0, key.length - '__deprecated'.length );
+          metadataType = '__deprecated';
+        }
+        else if ( key.endsWith( '__comment' ) ) {
+          originalKey = key.substring( 0, key.length - '__comment'.length );
+          metadataType = '__comment';
+        }
+        
         if ( inputKeys.includes( originalKey ) ) {
           continue; // This metadata will be picked up by the originalKey
         }
         else {
           // Orphaned metadata key. Decide behavior: warn, error, or process as normal.
           // For now, let's warn and skip, as it's not meant to be independent.
-          console.warn( `Orphaned __simMetadata key found and skipped: ${key}` );
+          console.warn( `Orphaned ${metadataType} key found and skipped: ${key}` );
           continue;
         }
       }
@@ -118,6 +139,44 @@ function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
           processedValue = { value: processedValue, simMetadata: metadataObject };
         }
       }
+
+      // Check for corresponding __deprecated for this key
+      const deprecatedKey = `${key}__deprecated`;
+      // eslint-disable-next-line prefer-object-has-own
+      if ( Object.prototype.hasOwnProperty.call( input, deprecatedKey ) ) {
+        const deprecatedValue = input[ deprecatedKey ];
+        
+        // Validate that __deprecated is only true
+        if ( deprecatedValue !== 'true' ) {
+          throw new Error( `__deprecated must be true, but found: ${deprecatedValue} for key: ${key}` );
+        }
+
+        // Ensure processedValue is an object that can hold the deprecated property
+        if ( typeof processedValue === 'object' && processedValue !== null && !Array.isArray( processedValue ) ) {
+          processedValue.deprecated = true;
+        }
+        else {
+          // Wrap primitive or array values
+          processedValue = { value: processedValue, deprecated: true };
+        }
+      }
+
+      // Check for corresponding __comment for this key
+      const commentKey = `${key}__comment`;
+      // eslint-disable-next-line prefer-object-has-own
+      if ( Object.prototype.hasOwnProperty.call( input, commentKey ) ) {
+        const commentValue = input[ commentKey ];
+
+        // Ensure processedValue is an object that can hold the _comment property
+        if ( typeof processedValue === 'object' && processedValue !== null && !Array.isArray( processedValue ) ) {
+          processedValue._comment = commentValue;
+        }
+        else {
+          // Wrap primitive or array values
+          processedValue = { value: processedValue, _comment: commentValue };
+        }
+      }
+
       result[ key ] = processedValue;
     }
     return result;
