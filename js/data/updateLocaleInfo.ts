@@ -91,7 +91,12 @@ try {
   console.log( 'No locale info changes, no commit needed.' );
 }
 catch( e ) {
-  console.log( e );
+  if ( e instanceof Object && 'stdout' in e && 'stderr' in e && e.stdout instanceof Buffer && e.stderr instanceof Buffer ) {
+    console.log( e.stdout.toString( 'utf8' ) );
+    console.log( e.stderr.toString( 'utf8' ) );
+    console.log( e );
+    process.exit();
+  }
   needsCommit = true;
 }
 
