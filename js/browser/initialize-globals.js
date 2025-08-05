@@ -331,8 +331,9 @@
 
     /**
      * If this is a finite number AND assertions are enabled, it will track maximum (TinyEmitter) listener counts, and
-     * will assert that the count is not greater than the limit. Many TinyEmitters with know giant listener sets opt
-     * out of this feature, see doc for "disableListenerLimit".
+     * will assert that the count is not greater than the limit. To make this feature usable by sim developers, some
+     * TinyEmitters opt out of this feature because they have legitimately large numbers of listeners. To identify
+     * those that opt out, search for disableListenerLimit: true, and see doc for disableListenerLimit.
      */
     listenerLimit: {
       type: 'number',
