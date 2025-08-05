@@ -87,7 +87,7 @@ let needsCommit = false;
 try {
 
   // 0 exit code if there are no working copy changes from HEAD.
-  child_process.execSync( 'git diff-index --quiet HEAD --' );
+  child_process.execSync( 'git diff-index --quiet HEAD ./' );
   console.log( 'No locale info changes, no commit needed.' );
 }
 catch( e ) {
