@@ -105,12 +105,10 @@ if ( needsCommit ) {
     child_process.execSync( 'git add ../../data/localeInfo.json' );
     child_process.execSync( 'git add ./localeInfo.js' );
 
-    if ( needsCommit ) {
-      console.log( 'committing' );
-      child_process.execSync( 'git commit --no-verify ../../data/localeInfo.json ./localeInfo.js -m "Automatically updated generated localeInfo files"' );
-      console.log( 'pushing' );
-      child_process.execSync( 'git push' );
-    }
+    console.log( 'committing' );
+    child_process.execSync( 'git commit --no-verify ../../data/localeInfo.json ./localeInfo.js -m "Automatically updated generated localeInfo files"' );
+    console.log( 'pushing' );
+    child_process.execSync( 'git push' );
   }
   catch( e ) {
     console.error( 'Unable to update files in git.', e );
