@@ -86,6 +86,9 @@ console.log( 'locale info files updated' );
 let needsCommit = false;
 try {
 
+  // To ensure that the diff-index is correct every time no matter what
+  child_process.execSync( 'git update-index --refresh' );
+
   // 0 exit code if there are no working copy changes from HEAD.
   child_process.execSync( 'git diff-index --quiet HEAD ./' );
   console.log( 'No locale info changes, no commit needed.' );
