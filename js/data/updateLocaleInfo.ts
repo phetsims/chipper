@@ -91,6 +91,7 @@ try {
   console.log( 'No locale info changes, no commit needed.' );
 }
 catch( e ) {
+  console.log( e );
   needsCommit = true;
 }
 
