@@ -72,7 +72,7 @@ export default class FluentPattern<T extends Record<string, unknown>> {
    *
    * @param args - The arguments to be passed to the Fluent pattern, like MembraneTransportFluent.myPattern.format({ numberOfSolutes: model.numberOfSolutesProperty});
    */
-  public createProperty( args: T ): TReadOnlyProperty<string> {
+  public createProperty( args: T ): FluentPatternDerivedProperty {
     const dependencies = _.uniq( [ this.bundleProperty, ...Object.values( args ).filter( isTReadOnlyProperty ) ] );
     return new FluentPatternDerivedProperty( dependencies, () => this.format( args ), this.targetProperty );
   }
