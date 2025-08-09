@@ -816,9 +816,9 @@
     },
 
     /**
-     * Print output from AriaLiveAnnouncer responses to the console.
+     * Print accessibility responses related Interactive Description to the console.
      */
-    logAriaLiveResponses: {
+    logInteractiveDescriptionResponses: {
       type: 'flag'
     },
 
