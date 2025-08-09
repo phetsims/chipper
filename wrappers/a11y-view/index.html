@@ -286,7 +286,7 @@
 
 <script>
   // Number of alerts that remain in the Activity log before fading out.
-  const ACTIVITY_LOG_LENGTH = 10;
+  const ACTIVITY_LOG_LENGTH = 6;
 
   // The attributes that we want to display as additional data in the PDOM copy. Otherwise these are invisible unless you
   // inspect the DOM.
@@ -488,30 +488,25 @@
               listItem.classList.add( 'assertive' );
             }
 
-            listElement.insertBefore( listItem, listElement.children[ 0 ] );
+            listElement.appendChild( listItem );
 
-            // items fade out as they get older
-            for ( let j = 0; j < listElement.children.length; j++ ) {
-              listElement.children[ j ].style.opacity = 1.0 / ( j + 1 ) + 0.50;
+            // Children at the front of the list should be more transparent because
+            // they are older.
+            const listChildren = Array.from( listElement.children );
+            const max = Math.min( listChildren.length, ACTIVITY_LOG_LENGTH );
+            listChildren.forEach( ( child, index ) => {
+              const opacity = ( index + 1 ) / max;
+              child.style.opacity = Math.max( 0, Math.min( 1, opacity ) );
+            } );
+
+            // Remove the oldest items from the list if we are over the limit.
+            const overflow = listElement.children.length - ACTIVITY_LOG_LENGTH;
+            for ( let i = 0; i < overflow; i++ ) {
+
+              // remove the first child, which is the oldest
+              listElement.removeChild( listElement.firstChild );
             }
 
-            // if the list is too large, remove the last items from the list
-            const childrenArray = Array.prototype.slice.call( listElement.children );
-            const fadeArray = childrenArray.slice( ACTIVITY_LOG_LENGTH, childrenArray.length );
-
-            for ( let i = 0; i < fadeArray.length; i++ ) {
-              const fadeChild = fadeArray[ i ];
-
-              const intervalId = window.setInterval( () => {
-                fadeChild.style.opacity = fadeChild.style.opacity * 0.95;
-
-                // stop animating and remove child
-                if ( listElement.contains( fadeChild ) && fadeChild.style.opacity < 0.1 ) {
-                  window.clearInterval( intervalId );
-                  listElement.removeChild( fadeChild );
-                }
-              }, 20 );
-            }
           }
         }
       } );
