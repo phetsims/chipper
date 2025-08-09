@@ -83,7 +83,8 @@
       background: #e5c45b;
       border-radius: 1em;
       padding: .25em .75em 1em;
-      min-height: 18em;
+      height: 18em;
+      overflow-y: auto;
     }
 
     p.alert_copy {
@@ -285,10 +286,10 @@
 </script>
 
 <script>
-  // Number of alerts that remain in the Activity log before fading out.
-  const ACTIVITY_LOG_LENGTH = 6;
+  // Number of alerts that remain in the Activity log
+  const ACTIVITY_LOG_LENGTH = 40;
 
-  // The attributes that we want to display as additional data in the PDOM copy. Otherwise these are invisible unless you
+  // The attributes that we want to display as additional data in the PDOM copy. Otherwise, these are invisible unless you
   // inspect the DOM.
   const IMPORTANT_ARIA_ATTRIBUTES = [ 'aria-valuetext', 'aria-expanded', 'aria-roledescription' ];
 
@@ -490,14 +491,9 @@
 
             listElement.appendChild( listItem );
 
-            // Children at the front of the list should be more transparent because
-            // they are older.
-            const listChildren = Array.from( listElement.children );
-            const max = Math.min( listChildren.length, ACTIVITY_LOG_LENGTH );
-            listChildren.forEach( ( child, index ) => {
-              const opacity = ( index + 1 ) / max;
-              child.style.opacity = Math.max( 0, Math.min( 1, opacity ) );
-            } );
+            // Auto-scroll to bottom to show the newest messages
+            const alertContainer = document.getElementById( 'alert-copy-container' );
+            alertContainer.scrollTop = alertContainer.scrollHeight;
 
             // Remove the oldest items from the list if we are over the limit.
             const overflow = listElement.children.length - ACTIVITY_LOG_LENGTH;
