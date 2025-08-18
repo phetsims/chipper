@@ -2145,8 +2145,8 @@ module.exports = {
   },
   sd: {
     name: 'Sindhi',
-    localizedName: 'सिन्धी',
-    direction: 'ltr'
+    localizedName: 'سنڌي',
+    direction: 'rtl'
   },
   se: {
     name: 'Northern Sami',
