@@ -43,8 +43,7 @@ npm install
 
 (3) Run `grunt dev-server` to start a local development server that will serve the simulation.
 
-(4) Open in the browser: `http://localhost/{{REPOSITORY}}/{{REPOSITORY}}_en.html` (You will probably need to modify this
-URL based on your HTTP port and relative path.)
+(4) Open in the browser: `http://localhost/{{REPOSITORY}}/{{REPOSITORY}}_en.html`
 
 #### Optional: Build the simulation into a single file
 
@@ -55,8 +54,7 @@ like `>> WARNING404: Skipping potentially non-public dependency`, which indicate
 being included in the build.
 
 (3) Open in the
-browser: `http://localhost/{{REPOSITORY}}/build/adapted-from-phet/{{REPOSITORY}}_en_adapted-from-phet.html` (You will
-probably need to modify this URL based on your HTTP port and relative path.)
+browser: `http://localhost/{{REPOSITORY}}/build/adapted-from-phet/{{REPOSITORY}}_en_adapted-from-phet.html`
 
 ### Get Involved
 
