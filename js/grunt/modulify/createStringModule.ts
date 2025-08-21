@@ -13,7 +13,7 @@ import _ from 'lodash';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import pascalCase from '../../common/pascalCase.js';
-import getCopyrightLineFromFile from '../getCopyrightLineFromFile.js';
+import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
 import { replace } from './modulify.js';
 
 const OFF = 'off';
@@ -30,7 +30,7 @@ export default async ( repo: string ): Promise<void> => {
     console.log( 'Found JS string file in TS repo.  It should be deleted manually.  ' + stringModuleFileJS );
   }
 
-  const copyrightLine = await getCopyrightLineFromFile( repo, relativeStringModuleFile );
+  const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeStringModuleFile );
   await writeFileAndGitAdd( repo, relativeStringModuleFile,
     `${copyrightLine}
 

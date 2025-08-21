@@ -17,7 +17,7 @@ import pascalCase from '../../common/pascalCase.js';
 import toLessEscapedString from '../../common/toLessEscapedString.js';
 import createMipmap from '../createMipmap.js';
 import generateDevelopmentStrings from '../generateDevelopmentStrings.js';
-import getCopyrightLineFromFile from '../getCopyrightLineFromFile.js';
+import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
 import convertStringsYamlToJson from './convertStringsYamlToJson.js';
 import createStringModule from './createStringModule.js';
 import generateFluentTypes from './generateFluentTypes.js';
@@ -305,7 +305,7 @@ const createImageModule = async ( repo: string, supportedRegionsAndCultures: str
     }
   }
 
-  const copyrightLine = await getCopyrightLineFromFile( repo, relativeImageModuleFile );
+  const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeImageModuleFile );
   await writeFileAndGitAdd( repo, relativeImageModuleFile,
     `${copyrightLine}
 /* eslint-disable */

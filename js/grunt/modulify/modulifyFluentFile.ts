@@ -13,7 +13,7 @@ import _ from 'lodash';
 import path from 'path';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import FluentLibrary, { FluentBundle, FluentResource } from '../../browser-and-node/FluentLibrary.js';
-import getCopyrightLineFromFile from '../getCopyrightLineFromFile.js';
+import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
 
 const OFF = 'off';
 
@@ -86,7 +86,7 @@ const modulifyFluentFile = async ( repo: string, relativePath: string ): Promise
   const modulifiedName = `${nameWithoutSuffix}Messages`;
   const relativeModulifiedName = `js/strings/${modulifiedName}.ts`;
   const namespace = _.camelCase( repo );
-  const copyrightLine = await getCopyrightLineFromFile( repo, relativeModulifiedName );
+  const copyrightLine = await getCopyrightLineFromFileContents( repo, relativeModulifiedName );
 
   await writeFileAndGitAdd( repo, relativeModulifiedName,
     `${copyrightLine}

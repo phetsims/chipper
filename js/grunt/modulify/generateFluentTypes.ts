@@ -16,7 +16,7 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
 import ChipperStringUtils from '../../common/ChipperStringUtils.js';
 import pascalCase from '../../common/pascalCase.js';
-import getCopyrightLineFromFile from '../getCopyrightLineFromFile.js';
+import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
 import { safeLoadYaml } from './convertStringsYamlToJson.js';
 import { getFluentParamsFromIndex, NUMBER_LITERAL, ParamInfo, parseFluentToMap } from './getFluentParams.js';
 
@@ -373,7 +373,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
     return `addToMapIfDefined( '${id}', '${accessor}' );`;
   } ).join( '\n' );
 
-  const copyrightLine = await getCopyrightLineFromFile( repo, outPath );
+  const copyrightLine = await getCopyrightLineFromFileContents( repo, outPath );
 
   // create FTL file contents from the english entries in the YAML so that we can create TypeScript types
   // and verify the syntax.
