@@ -8,8 +8,6 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
-// TODO: https://github.com/phetsims/chipper/issues/1624 rename to fromContents
-
 import fs from 'fs';
 import getCopyrightLine from './getCopyrightLine.js';
 
