@@ -11,7 +11,6 @@
 
 import { readFileSync } from 'fs';
 import _ from 'lodash';
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
@@ -84,5 +83,5 @@ export default async function( repo: string, options?: IntentionalAny ): Promise
   html = ChipperStringUtils.replaceAll( html, '{{BROWSER_WINDOW_TITLE}}', repo );
 
   // Write to the repository's root directory.
-  await writeFileAndGitAdd( repo, outputFile, fixEOL( html ) );
+  await writeFileAndGitAdd( repo, outputFile, html );
 }

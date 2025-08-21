@@ -16,10 +16,9 @@ import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import FluentLibrary from '../../browser-and-node/FluentLibrary.js';
 import ChipperStringUtils from '../../common/ChipperStringUtils.js';
 import pascalCase from '../../common/pascalCase.js';
-import getCopyrightLine from '../getCopyrightLine.js';
+import getCopyrightLineFromFile from '../getCopyrightLineFromFile.js';
 import { safeLoadYaml } from './convertStringsYamlToJson.js';
-import { getFluentParamsFromIndex, parseFluentToMap, NUMBER_LITERAL, ParamInfo } from './getFluentParams.js';
-import { fixEOL } from './modulify.js';
+import { getFluentParamsFromIndex, NUMBER_LITERAL, ParamInfo, parseFluentToMap } from './getFluentParams.js';
 
 type Leaf = { pathArr: string[]; value: string };
 type Obj = Record<string, IntentionalAny>;
@@ -374,7 +373,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
     return `addToMapIfDefined( '${id}', '${accessor}' );`;
   } ).join( '\n' );
 
-  const copyrightLine = await getCopyrightLine( repo, outPath );
+  const copyrightLine = await getCopyrightLineFromFile( repo, outPath );
 
   // create FTL file contents from the english entries in the YAML so that we can create TypeScript types
   // and verify the syntax.
@@ -447,8 +446,7 @@ ${camelCaseRepo}.register('${pascalCaseRepo}Fluent', ${pascalCaseRepo}Fluent);
 `;
 
 // 6 write out
-  await writeFileAndGitAdd( repo, outPath, fixEOL( fileContents ) );
-  console.log( `✅  Wrote ${outPath} with ${leaves.length} messages.` );
+  await writeFileAndGitAdd( repo, outPath, fileContents );
 };
 
 export default generateFluentTypes;

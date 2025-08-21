@@ -10,26 +10,12 @@
 
 import fs, { readFileSync } from 'fs';
 import _ from 'lodash';
-import os from 'os';
 import path from 'path';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import FluentLibrary, { FluentBundle, FluentResource } from '../../browser-and-node/FluentLibrary.js';
-import getCopyrightLine from '../getCopyrightLine.js';
+import getCopyrightLineFromFile from '../getCopyrightLineFromFile.js';
 
 const OFF = 'off';
-
-/**
- * String replacement
- * @param string - the string which will be searched
- * @param search - the text to be replaced
- * @param replacement - the new text
- */
-const replace = ( string: string, search: string, replacement: string ) => string.split( search ).join( replacement );
-
-/**
- * Output with an OS-specific EOL sequence, see https://github.com/phetsims/chipper/issues/908
- */
-const fixEOL = ( string: string ) => replace( string, '\n', os.EOL );
 
 /**
  * Reads a Fluent.js file from the absolute path. Removes any comments from the file to reduce the size of the module.
@@ -100,9 +86,9 @@ const modulifyFluentFile = async ( repo: string, relativePath: string ): Promise
   const modulifiedName = `${nameWithoutSuffix}Messages`;
   const relativeModulifiedName = `js/strings/${modulifiedName}.ts`;
   const namespace = _.camelCase( repo );
-  const copyrightLine = await getCopyrightLine( repo, relativeModulifiedName );
+  const copyrightLine = await getCopyrightLineFromFile( repo, relativeModulifiedName );
 
-  await writeFileAndGitAdd( repo, relativeModulifiedName, fixEOL(
+  await writeFileAndGitAdd( repo, relativeModulifiedName,
     `${copyrightLine}
     
 /* eslint-disable */
@@ -124,7 +110,7 @@ const ${modulifiedName} = getFluentModule( ${JSON.stringify( localeToFluentFileC
 ${namespace}.register( '${modulifiedName}', ${modulifiedName} );
 
 export default ${modulifiedName};
-` ) );
+` );
 };
 
 export default modulifyFluentFile;

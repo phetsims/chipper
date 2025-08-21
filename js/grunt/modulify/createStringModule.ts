@@ -13,8 +13,8 @@ import _ from 'lodash';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import pascalCase from '../../common/pascalCase.js';
-import getCopyrightLine from '../getCopyrightLine.js';
-import { fixEOL, replace } from './modulify.js';
+import getCopyrightLineFromFile from '../getCopyrightLineFromFile.js';
+import { replace } from './modulify.js';
 
 const OFF = 'off';
 
@@ -30,8 +30,8 @@ export default async ( repo: string ): Promise<void> => {
     console.log( 'Found JS string file in TS repo.  It should be deleted manually.  ' + stringModuleFileJS );
   }
 
-  const copyrightLine = await getCopyrightLine( repo, relativeStringModuleFile );
-  await writeFileAndGitAdd( repo, relativeStringModuleFile, fixEOL(
+  const copyrightLine = await getCopyrightLineFromFile( repo, relativeStringModuleFile );
+  await writeFileAndGitAdd( repo, relativeStringModuleFile,
     `${copyrightLine}
 
 /* eslint-disable */
@@ -52,7 +52,7 @@ const ${stringModuleName} = getStringModule( '${packageObject.phet.requirejsName
 ${namespace}.register( '${stringModuleName}', ${stringModuleName} );
 
 export default ${stringModuleName};
-` ) );
+` );
 };
 
 /**

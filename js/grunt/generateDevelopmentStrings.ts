@@ -57,8 +57,6 @@ const addValuesRecursively = ( source: Record<string, IntentionalAny>, destinati
  */
 export default ( repo: string ): void => {
 
-  const start = Date.now();
-
   const rootPath = path.join( __dirname, '..', '..', '..' );
 
   // OS-independent path to babel repo.
@@ -135,9 +133,6 @@ export default ( repo: string ): void => {
 
     const outputPath = path.join( outputDir, conglomerateStringFileName );
     fs.writeFileSync( outputPath, fixEOL( JSON.stringify( conglomerateStringObject, null, 2 ) ) );
-
-    const end = Date.now();
-    console.log( 'Wrote ' + outputPath + ' in ' + ( end - start ) + 'ms' );
   }
   else {
     console.log( 'no translations found' );

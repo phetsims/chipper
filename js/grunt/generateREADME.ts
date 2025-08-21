@@ -8,7 +8,6 @@
  */
 
 import { readFileSync } from 'fs';
-import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 import writeFileAndGitAdd from '../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
@@ -48,5 +47,5 @@ export default async function( repo: string, published: boolean ): Promise<void>
   readme = ChipperStringUtils.replaceAll( readme, '{{CLONE_COMMANDS}}', cloneCommands );
 
   // Write to the repository's root directory.
-  await writeFileAndGitAdd( repo, 'README.md', fixEOL( readme ) );
+  await writeFileAndGitAdd( repo, 'README.md', readme );
 }

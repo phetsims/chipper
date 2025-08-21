@@ -9,7 +9,6 @@
 
 import fs, { readFileSync } from 'fs';
 import _ from 'lodash';
-import os from 'os';
 import path from 'path';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import grunt from '../../../../perennial-alias/js/npm-dependencies/grunt.js';
@@ -18,7 +17,7 @@ import pascalCase from '../../common/pascalCase.js';
 import toLessEscapedString from '../../common/toLessEscapedString.js';
 import createMipmap from '../createMipmap.js';
 import generateDevelopmentStrings from '../generateDevelopmentStrings.js';
-import getCopyrightLine from '../getCopyrightLine.js';
+import getCopyrightLineFromFile from '../getCopyrightLineFromFile.js';
 import convertStringsYamlToJson from './convertStringsYamlToJson.js';
 import createStringModule from './createStringModule.js';
 import generateFluentTypes from './generateFluentTypes.js';
@@ -65,11 +64,6 @@ const expandDots = ( relativePath: string ): string => {
 };
 
 /**
- * Output with an OS-specific EOL sequence, see https://github.com/phetsims/chipper/issues/908
- */
-export const fixEOL = ( string: string ): string => replace( string, '\n', os.EOL );
-
-/**
  * Transform an image file to a JS file that loads the image.
  * @param repo - repository name for the modulify command
  * @param relativePath - the relative path of the image file
@@ -89,7 +83,7 @@ image.src = '${dataURI}';
 export default image;`;
 
   const tsFilename = convertSuffix( relativePath, '.ts' );
-  await writeFileAndGitAdd( repo, tsFilename, fixEOL( contents ) );
+  await writeFileAndGitAdd( repo, tsFilename, contents );
 };
 
 /**
@@ -132,7 +126,7 @@ image.src = \`data:image/svg+xml;base64,\${btoa(${toLessEscapedString( optimized
 export default image;`;
 
   const tsFilename = convertSuffix( relativePath, '.ts' );
-  await writeFileAndGitAdd( repo, tsFilename, fixEOL( contents ) );
+  await writeFileAndGitAdd( repo, tsFilename, contents );
 };
 
 /**
@@ -163,7 +157,7 @@ ${entries.join( ',\n' )}
 
 export default mipmaps;`;
   const tsFilename = convertSuffix( relativePath, '.ts' );
-  await writeFileAndGitAdd( repo, tsFilename, fixEOL( mipmapContents ) );
+  await writeFileAndGitAdd( repo, tsFilename, mipmapContents );
 };
 
 /**
@@ -227,7 +221,7 @@ if ( decodePromise ) {
 export default wrappedAudioBuffer;`;
 
   const jsFilename = convertSuffix( relativePath, '.js' );
-  await writeFileAndGitAdd( repo, jsFilename, fixEOL( contents ) );
+  await writeFileAndGitAdd( repo, jsFilename, contents );
 };
 
 /**
@@ -311,8 +305,8 @@ const createImageModule = async ( repo: string, supportedRegionsAndCultures: str
     }
   }
 
-  const copyrightLine = await getCopyrightLine( repo, relativeImageModuleFile );
-  await writeFileAndGitAdd( repo, relativeImageModuleFile, fixEOL(
+  const copyrightLine = await getCopyrightLineFromFile( repo, relativeImageModuleFile );
+  await writeFileAndGitAdd( repo, relativeImageModuleFile,
     `${copyrightLine}
 /* eslint-disable */
 /* @formatter:${OFF} */
@@ -334,7 +328,7 @@ const ${imageModuleName} = {
 ${namespace}.register( '${imageModuleName}', ${imageModuleName} );
 
 export default ${imageModuleName};
-` ) );
+` );
 };
 
 /**
