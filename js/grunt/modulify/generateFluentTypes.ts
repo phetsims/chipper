@@ -18,7 +18,7 @@ import ChipperStringUtils from '../../common/ChipperStringUtils.js';
 import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLine from '../getCopyrightLine.js';
 import { safeLoadYaml } from './convertStringsYamlToJson.js';
-import { getFluentParams, NUMBER_LITERAL, ParamInfo } from './getFluentParams.js';
+import { getFluentParamsFromIndex, parseFluentToMap, NUMBER_LITERAL, ParamInfo } from './getFluentParams.js';
 import { fixEOL } from './modulify.js';
 
 type Leaf = { pathArr: string[]; value: string };
@@ -383,14 +383,14 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
     return `${id} = ${leaf.value}`;
   } ).join( '\n' );
 
-
   // verify the fluent file to report syntax errors in the english content.
   FluentLibrary.verifyFluentFile( ftlContent );
 
+  const entryIndex = parseFluentToMap( ftlContent );
   const keyToTypeInfoMap = new Map<string, ParamInfo[]>();
   leaves.forEach( ( { pathArr } ) => {
     const fluentKey = createFluentKey( pathArr );
-    keyToTypeInfoMap.set( fluentKey, getFluentParams( ftlContent, fluentKey ) );
+    keyToTypeInfoMap.set( fluentKey, getFluentParamsFromIndex( entryIndex, fluentKey ) );
   } );
 
   // an object literal that will be used to create the Fluent typescript object

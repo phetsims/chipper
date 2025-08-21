@@ -38,8 +38,7 @@ export const NUMBER_LITERAL = 'number';
  * Returns parameters and their variant options (if applicable) for a Fluent message.
  * Also detects if the message has any references to other messages.
  */
-export function getFluentParams( fluentFileFTL: string, key: string ): ParamInfo[] {
-  // ─── Parse FTL & build entry index (for recursive walks) ────────────────
+export function parseFluentToMap( fluentFileFTL: string ): Map<string, ASTEntry> {
   const parser = new FluentParser();
   const resourceAst = parser.parse( fluentFileFTL );
 
@@ -51,7 +50,13 @@ export function getFluentParams( fluentFileFTL: string, key: string ): ParamInfo
       entryIndex.set( entry.type === 'Term' ? `-${id}` : id, entry );
     }
   }
+  return entryIndex;
+}
 
+/**
+ * Get fluent parameters from a pre-parsed entry index (optimized version).
+ */
+export function getFluentParamsFromIndex( entryIndex: Map<string, ASTEntry>, key: string ): ParamInfo[] {
   const rootEntry = entryIndex.get( key );
   if ( !rootEntry ) {
     return [];
