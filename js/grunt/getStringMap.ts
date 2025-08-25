@@ -291,7 +291,7 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
             }
           }
         }
-        if ( !partialStringKey.endsWith( 'StringProperty' ) ) {
+        if ( !partialStringKey.endsWith( 'StringProperty' ) && !partialStringKey.endsWith( '.getDependentProperties' ) ) {
           assert( stringEntry !== null, `Missing string information for ${repo} ${partialStringKey}` );
 
           const stringKey = `${requirejsNamespaceMap[ repo ]}/${partialStringKey}`;
