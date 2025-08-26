@@ -17,14 +17,14 @@ import getCopyrightLine from './getCopyrightLine.js';
  */
 export default async ( repo: string, relativeFile: string ): Promise<string> => {
 
-  const fileContents = fs.readFileSync( `../${repo}/${relativeFile}`, 'utf8' );
-  if ( fileContents.startsWith( '// Copyright ' ) ) {
+  if ( fs.existsSync( `../${repo}/${relativeFile}` ) ) {
+    const fileContents = fs.readFileSync( `../${repo}/${relativeFile}`, 'utf8' );
+    if ( fileContents.startsWith( '// Copyright ' ) ) {
 
-    // return the 1st line
-    const firstLine = fileContents.split( '\n' )[ 0 ];
-    return firstLine.trim();
+      // return the 1st line
+      const firstLine = fileContents.split( '\n' )[ 0 ];
+      return firstLine.trim();
+    }
   }
-  else {
-    return getCopyrightLine( repo, relativeFile );
-  }
+  return getCopyrightLine( repo, relativeFile );
 };
