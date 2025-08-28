@@ -92,11 +92,13 @@ export default class FluentPattern<T extends Record<string, unknown>> {
     key: string,
     args: Record<string, IntentionalAny>[]
   ): FluentPattern<T> {
+    const fluentKey = key.replace( /[^a-zA-Z0-9]/g, '_' );
+
     const fluentContainer = new FluentContainer( () => {
-      return `${key} = ${stringProperty.value.replace( '\n', '\n ' )}\n`;
+      return `${fluentKey} = ${stringProperty.value.replace( '\n', '\n ' )}\n`;
     }, [ stringProperty ] );
 
-    return new FluentPattern<T>( fluentContainer.bundleProperty, key, stringProperty, args );
+    return new FluentPattern<T>( fluentContainer.bundleProperty, fluentKey, stringProperty, args );
   }
 }
 

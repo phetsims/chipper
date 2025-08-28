@@ -79,11 +79,13 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
     stringProperty: LocalizedStringProperty,
     key: string
   ): FluentConstant {
+    const fluentKey = key.replace( /[^a-zA-Z0-9]/g, '_' );
+
     const fluentContainer = new FluentContainer( () => {
-      return `${key} = ${stringProperty.value.replace( '\n', '\n ' )}\n`;
+      return `${fluentKey} = ${stringProperty.value.replace( '\n', '\n ' )}\n`;
     }, [ stringProperty ] );
 
-    return new FluentConstant( fluentContainer.bundleProperty, key, stringProperty );
+    return new FluentConstant( fluentContainer.bundleProperty, fluentKey, stringProperty );
   }
 }
 
