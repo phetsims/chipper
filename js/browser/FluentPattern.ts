@@ -17,6 +17,8 @@ import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import PhetioObject from '../../../tandem/js/PhetioObject.js';
 import chipper from './chipper.js';
 import FluentUtils from './FluentUtils.js';
+import FluentContainer from './FluentContainer.js';
+import LocalizedStringProperty from './LocalizedStringProperty.js';
 
 // A type for simple variables that can be used in Fluent messages. While strings and numbers are handled natively,
 // booleans and EnumerationValues are handled by FluentUtils.handleFluentArgs.
@@ -83,6 +85,18 @@ export default class FluentPattern<T extends Record<string, unknown>> {
    */
   public getDependentProperties(): TReadOnlyProperty<unknown>[] {
     return [ this.bundleProperty ];
+  }
+
+  public static fromStringProperty<T extends Record<string, unknown>>(
+    stringProperty: LocalizedStringProperty,
+    key: string,
+    args: Record<string, IntentionalAny>[]
+  ): FluentPattern<T> {
+    const fluentContainer = new FluentContainer( () => {
+      return `${key} = ${stringProperty.value.replace( '\n', '\n ' )}\n`;
+    }, [ stringProperty ] );
+
+    return new FluentPattern<T>( fluentContainer.bundleProperty, key, stringProperty, args );
   }
 }
 
