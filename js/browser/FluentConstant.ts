@@ -76,16 +76,18 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
   }
 
   public static fromStringProperty(
-    stringProperty: LocalizedStringProperty,
-    key: string
+    targetProperty: LocalizedStringProperty,
+    stringProperties: LocalizedStringProperty[],
+    primaryFluentKey: string,
+    fluentKeyMap: Map<LocalizedStringProperty, string> // map of string Property to fluent key (e.g. dots turned to underscores)
   ): FluentConstant {
-    const fluentKey = key.replace( /[^a-zA-Z0-9]/g, '_' );
-
     const fluentContainer = new FluentContainer( () => {
-      return `${fluentKey} = ${stringProperty.value.replace( '\n', '\n ' )}\n`;
-    }, [ stringProperty ] );
+      return stringProperties.map( stringProperty => {
+        return `${fluentKeyMap.get( stringProperty )!} = ${stringProperty.value.replace( '\n', '\n ' )}\n`;
+      } ).join( '\n' );
+    }, stringProperties );
 
-    return new FluentConstant( fluentContainer.bundleProperty, fluentKey, stringProperty );
+    return new FluentConstant( fluentContainer.bundleProperty, primaryFluentKey, targetProperty );
   }
 }
 
