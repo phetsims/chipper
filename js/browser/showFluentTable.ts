@@ -8,7 +8,7 @@
 
 import DerivedProperty from '../../../axon/js/DerivedProperty.js';
 import Property from '../../../axon/js/Property.js';
-import TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
+import { TReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import localeProperty, { Locale } from '../../../joist/js/i18n/localeProperty.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import FluentConstant from './FluentConstant.js';

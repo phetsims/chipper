@@ -6,7 +6,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import TReadOnlyProperty, { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
+import { TReadOnlyProperty, isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import EnumerationValue from '../../../phet-core/js/EnumerationValue.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import { FluentBundle, FluentBundlePattern } from '../browser-and-node/FluentLibrary.js';

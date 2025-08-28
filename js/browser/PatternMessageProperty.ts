@@ -13,7 +13,7 @@
  */
 
 import { DerivedProperty1 } from '../../../axon/js/DerivedProperty.js';
-import TReadOnlyProperty, { isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
+import { TReadOnlyProperty, isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import chipper from './chipper.js';
 import FluentUtils from './FluentUtils.js';

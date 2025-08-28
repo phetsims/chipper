@@ -101,7 +101,7 @@ const modulifyFluentFile = async ( repo: string, relativePath: string ): Promise
 import getFluentModule from '../../../chipper/js/browser/getFluentModule.js';
 import ${namespace} from '../../js/${namespace}.js';
 import LocalizedMessageProperty from '../../../chipper/js/browser/LocalizedMessageProperty.js';
-import type TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
+import type { TReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 
 ${fluentKeysType}
 

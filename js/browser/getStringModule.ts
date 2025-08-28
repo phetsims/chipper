@@ -13,7 +13,7 @@
  * @author Jonathan Olson <jonathan.olson>
  */
 
-import TReadOnlyProperty from '../../../axon/js/TReadOnlyProperty.js';
+import { TReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import { Locale } from '../../../joist/js/i18n/localeProperty.js';
 import CouldNotYetDeserializeError from '../../../tandem/js/CouldNotYetDeserializeError.js';
 import { PhetioID } from '../../../tandem/js/phet-io-types.js';
