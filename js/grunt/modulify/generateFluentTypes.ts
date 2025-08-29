@@ -309,10 +309,19 @@ function buildFluentObject( obj: Obj, typeInfoMap: Map<string, ParamInfo[]>, pas
 
       const accessor = createAccessor( [ ...pathArr, key ] );
       const getter = `_.get( ${pascalCaseRepo}Strings, '${accessor}' )`;
-      if ( ChipperStringUtils.isLegacyStringPattern( val ) ) {
 
-        // This is a legacy string and is meant to be used with StringUtils.format or
-        // StringUtils.fillIn. It should use the LocalizedStringProperty directly.
+      // Do not pass the following strings through Fluent:
+      //
+      // - Strings that live outside the `a11y` namespace. They are not currently
+      //   translated; treating them as Fluent may introduce runtime errors if a
+      //   translator inserts Fluent syntax or references another key.
+      //
+      // - Strings that use legacy placeholder patterns such as `{0}` or `{{value}}`.
+      //   These are formatted at runtime with `StringUtils.format` or `StringUtils.fillIn`
+      //   and are therefore incompatible with FluentPattern.
+      //
+      // TODO: https://github.com/phetsims/rosetta/issues/221, Revisit when full Fluent support is available for non-a11y content.
+      if ( ChipperStringUtils.isLegacyStringPattern( val ) || !accessor.startsWith( 'a11y.' ) ) {
         lines.push( `${indent( lvl )}${stringPropertyKey}: ${getter}${comma}` );
       }
       else if ( paramInfo.length === 0 ) {
