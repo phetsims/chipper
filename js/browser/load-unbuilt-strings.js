@@ -177,6 +177,29 @@
   // The callback to execute when all string files are processed.
   const finishProcessing = () => {
 
+    // Optional in-browser override of strings for unbuilt mode.
+    try {
+      const params = new window.URLSearchParams( window.location.search );
+      const useOverride = params.has( 'stringsOverride' );
+      if ( useOverride ) {
+        const key = `phet-strings-override-${ourRepo}`;
+        const raw = window.localStorage.getItem( key );
+        if ( raw ) {
+          const overrideObject = JSON.parse( raw );
+
+          // Apply to English locale for this repo using the same processing as file-based loading.
+          ourRequirejsNamespace && processStringFile( overrideObject, ourRequirejsNamespace, 'en' );
+
+          // Clear after applying to avoid unexpected reuse.
+          window.localStorage.removeItem( key );
+        }
+      }
+    }
+    catch( e ) {
+      // Non-fatal: log and continue with default strings.
+      console.log( 'Strings override not applied:', e );
+    }
+
     // Because load-unbuilt-strings' "loading" of the locale data and strings might not have happened BEFORE initialize-globals
     // runs (and sets phet.chipper.locale), we'll attempt to handle the case where it hasn't been set yet. You'll see the same call over in initialize-globals
     phet.chipper.checkAndRemapLocale && phet.chipper.checkAndRemapLocale();

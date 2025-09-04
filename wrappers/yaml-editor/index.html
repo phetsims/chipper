@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>YAML Strings Editor</title>
+  <style>
+    html {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.4;
+    }
+
+    body {
+      margin: 1em;
+      background: #eee;
+    }
+
+    .container {
+      display: flex;
+      gap: 1.5em;
+    }
+
+    .left {
+      flex: 1 1 47%;
+      min-width: 360px;
+    }
+
+    .right {
+      flex: 1 1 47%;
+      min-width: 360px;
+    }
+
+    .controls {
+      display: flex;
+      gap: .5em;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: .5em;
+    }
+
+    .controls input[type="text"] {
+      width: 20em;
+    }
+
+    textarea {
+      width: 100%;
+      height: 70vh;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 80vh;
+      border: 1px solid #bbb;
+      background: #fff;
+    }
+
+    .path {
+      opacity: .7;
+      font-size: .9em;
+      margin: .25em 0 .5em;
+    }
+
+    .error {
+      color: #a00;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0 0 .5em;
+    }
+
+    /* Monaco container */
+    #editor {
+      width: 100%;
+      height: 70vh;
+      border: 1px solid #bbb;
+      background: #fff;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<h1>YAML Strings Editor</h1>
+<div class="container">
+  <div class="left">
+    <div class="controls">
+      <label for="simInput"><b>sim</b>:</label>
+      <input id="simInput" type="text" placeholder="e.g. membrane-transport"/>
+      <button id="loadBtn">Load YAML</button>
+      <button id="launchBtn">Launch A11y View →</button>
+    </div>
+    <div id="path" class="path"></div>
+    <div id="error" class="error" role="alert" aria-live="polite"></div>
+    <div id="editor" aria-label="YAML Editor"></div>
+    <textarea id="yamlText" placeholder="YAML will load here..."></textarea>
+  </div>
+  <div class="right">
+    <iframe id="viewer" title="A11y View"></iframe>
+  </div>
+</div>
+
+<script>
+  // Very small YAML parser for PhET strings files (mappings + block scalars). Not a full YAML implementation.
+  function parsePhetYaml( yaml ) {
+    const lines = yaml.replace( /\r\n?/g, '\n' ).split( '\n' );
+    const root = {};
+    const stack = [ { indent: -1, obj: root } ];
+    const indentSize = 2; // PhET strings yaml uses 2-space indents
+
+    const setAtPath = ( pathArr, value ) => {
+      let cur = root;
+      for ( let i = 0; i < pathArr.length - 1; i++ ) {
+        const k = pathArr[ i ];
+        if ( !Object.hasOwn( cur, k ) || typeof cur[ k ] !== 'object' ) {
+          cur[ k ] = {};
+        }
+        cur = cur[ k ];
+      }
+      cur[ pathArr[ pathArr.length - 1 ] ] = value;
+    };
+
+    const getIndent = s => s.match( /^ */ )[ 0 ].length;
+
+    let i = 0;
+    while ( i < lines.length ) {
+      const raw = lines[ i ];
+      i++;
+      if ( !raw.trim() || raw.trimStart().startsWith( '#' ) ) { continue; }
+      const indent = getIndent( raw );
+      const line = raw.slice( indent );
+
+      while ( stack.length && indent <= stack[ stack.length - 1 ].indent ) { stack.pop(); }
+
+      // Split key: value at first ':' only
+      const colonIndex = line.indexOf( ':' );
+      if ( colonIndex === -1 ) { continue; }
+      const key = line.slice( 0, colonIndex ).trim();
+      let rest = line.slice( colonIndex + 1 ); // includes possible leading space
+
+      // Block scalar (| or |-)
+      if ( /^\s*\|-\s*$/.test( rest ) || /^\s*\|\s*$/.test( rest ) ) {
+        const blockIndent = indent + indentSize;
+        const blockLines = [];
+        while ( i < lines.length ) {
+          const r = lines[ i ];
+          const rIndent = getIndent( r );
+          if ( r.trim() === '' && rIndent >= blockIndent ) {
+            blockLines.push( '' );
+            i++;
+            continue;
+          }
+          if ( rIndent < blockIndent ) { break; }
+          blockLines.push( r.slice( blockIndent ) );
+          i++;
+        }
+        const value = blockLines.join( '\n' );
+        const pathArr = stack.slice( 1 ).map( e => e.key ).concat( [ key ] );
+        setAtPath( pathArr, value );
+        continue;
+      }
+
+      // Trim one leading space if present
+      rest = rest.replace( /^\s/, '' );
+
+      if ( rest === '' ) {
+        // Nested mapping starts
+        const parent = stack.length ? stack[ stack.length - 1 ].obj : root;
+        parent[ key ] = parent[ key ] || {};
+        stack.push( { indent: indent, obj: parent[ key ], key: key } );
+      }
+      else {
+        // Scalar value
+        let value = rest;
+        // Strip quotes if wrapped
+        if ( ( value.startsWith( '"' ) && value.endsWith( '"' ) ) || ( value.startsWith( '\'' ) && value.endsWith( '\'' ) ) ) {
+          value = value.slice( 1, -1 );
+        }
+        const pathArr = stack.slice( 1 ).map( e => e.key ).concat( [ key ] );
+        setAtPath( pathArr, value );
+      }
+    }
+    return root;
+  }
+
+  // Fluent reference helpers adapted from ChipperStringUtils
+  const FLUENT_PLACEHOLDER_EXPRESSION = /\{\s*(?!\$)([^\s}]+)\s*\}/gu;
+
+  function createFluentKey( dotSeparatedKey ) {
+    return dotSeparatedKey.replace( /[^a-zA-Z0-9]/g, '_' );
+  }
+
+  function isLegacyStringPattern( str ) {
+    return str.includes( '{{' ) || str.includes( '}}' ) || /{\d+}/.test( str );
+  }
+
+  function replaceFluentReferences( str ) {
+    if ( isLegacyStringPattern( str ) ) { return str; }
+    return str.replace( FLUENT_PLACEHOLDER_EXPRESSION, ( _m, key ) => `{ ${createFluentKey( String( key ).trim() )} }` );
+  }
+
+  // Convert parsed YAML object to the JSON form expected by load-unbuilt-strings.js, honoring metadata suffixes
+  function nestJSONStringValues( input ) {
+    if ( typeof input === 'string' ) {
+      // Trim leading/trailing whitespace to avoid layout issues from accidental spaces
+      return { value: replaceFluentReferences( input.trim() ) };
+    }
+    else if ( Array.isArray( input ) ) {
+      return input.map( item => nestJSONStringValues( item ) );
+    }
+    else if ( input && typeof input === 'object' ) {
+      const result = {};
+      const keys = Object.keys( input );
+      for ( const key of keys ) {
+        if ( key.endsWith( '__simMetadata' ) || key.endsWith( '__deprecated' ) || key.endsWith( '__comment' ) ) {
+          const base = key.replace( /__(simMetadata|deprecated|comment)$/, '' );
+          if ( keys.includes( base ) ) { continue; }
+          console.warn( 'Orphaned metadata key skipped:', key );
+          continue;
+        }
+        let processed = nestJSONStringValues( input[ key ] );
+
+        const mdKey = `${key}__simMetadata`;
+        if ( Object.hasOwn( input, mdKey ) ) {
+          const md = input[ mdKey ];
+          if ( processed && typeof processed === 'object' && !Array.isArray( processed ) ) {
+            processed.simMetadata = md;
+          }
+          else {
+            processed = { value: processed, simMetadata: md };
+          }
+        }
+
+        const depKey = `${key}__deprecated`;
+        if ( Object.hasOwn( input, depKey ) ) {
+          const dep = input[ depKey ];
+          if ( dep !== 'true' ) { throw new Error( `__deprecated must be true for key: ${key}` ); }
+          if ( processed && typeof processed === 'object' && !Array.isArray( processed ) ) {
+            processed.deprecated = true;
+          }
+          else {
+            processed = { value: processed, deprecated: true };
+          }
+        }
+
+        const cKey = `${key}__comment`;
+        if ( Object.hasOwn( input, cKey ) ) {
+          const c = input[ cKey ];
+          if ( processed && typeof processed === 'object' && !Array.isArray( processed ) ) {
+            processed._comment = c;
+          }
+          else {
+            processed = { value: processed, _comment: c };
+          }
+        }
+
+        result[ key ] = processed;
+      }
+      return result;
+    }
+    return input; // number/boolean/null
+  }
+
+  const $ = sel => document.querySelector( sel );
+
+  const query = new URLSearchParams( window.location.search );
+  const simInput = $( '#simInput' );
+  const yamlText = $( '#yamlText' );
+  const editorEl = $( '#editor' );
+  const pathEl = $( '#path' );
+  const errorEl = $( '#error' );
+  const viewer = $( '#viewer' );
+  let monacoEditor = null;
+
+  function setError( msg ) { errorEl.textContent = msg || ''; }
+
+  function currentYamlPath( sim ) {
+    return `../../../${sim}/${sim}-strings_en.yaml`;
+  }
+
+  async function loadYamlForSim( sim ) {
+    setError( '' );
+    if ( !sim ) {
+      setError( 'Enter a sim repo name.' );
+      return;
+    }
+    pathEl.textContent = currentYamlPath( sim );
+    try {
+      const res = await fetch( currentYamlPath( sim ), { cache: 'no-store' } );
+      if ( !res.ok ) { throw new Error( `${res.status} ${res.statusText}` ); }
+      const text = await res.text();
+      setEditorValue( text );
+    }
+    catch( e ) {
+      setError( `Failed to load YAML: ${e.message}` );
+    }
+  }
+
+  function launchA11yView() {
+    setError( '' );
+    const sim = ( simInput.value || '' ).trim();
+    if ( !sim ) {
+      setError( 'Enter a sim repo name.' );
+      return;
+    }
+    try {
+      const parsed = parsePhetYaml( getEditorValue() || '' );
+      const wrapped = nestJSONStringValues( parsed );
+      localStorage.setItem( `phet-strings-override-${sim}`, JSON.stringify( wrapped ) );
+    }
+    catch( e ) {
+      setError( `YAML parse failed: ${e.message}` );
+      return;
+    }
+    const params = new URLSearchParams( window.location.search );
+    params.set( 'sim', sim );
+    params.set( 'stringsOverride', '' );
+    const url = `../a11y-view/index.html?${params.toString()}`;
+    viewer.src = url;
+  }
+
+  // Wire up controls
+  $( '#loadBtn' ).addEventListener( 'click', () => loadYamlForSim( simInput.value.trim() ) );
+  $( '#launchBtn' ).addEventListener( 'click', launchA11yView );
+
+  // Initialize from query string if present
+  // Try to initialize Monaco editor lazily; fallback is textarea
+  ensureMonaco();
+
+  if ( query.get( 'sim' ) ) {
+    simInput.value = query.get( 'sim' );
+    loadYamlForSim( simInput.value );
+  }
+
+  function setEditorValue( text ) {
+    if ( monacoEditor ) { monacoEditor.setValue( text ?? '' ); }
+    else { yamlText.value = text ?? ''; }
+  }
+
+  function getEditorValue() {
+    return monacoEditor ? monacoEditor.getValue() : yamlText.value;
+  }
+
+  function ensureMonaco() {
+    return new Promise( resolve => {
+      if ( monacoEditor ) { return resolve( true ); }
+
+      function initWithBase( baseUrl, onFail ) {
+        const loaderUrl = `${baseUrl}/loader.js`;
+        const script = document.createElement( 'script' );
+        script.src = loaderUrl;
+        script.async = true;
+        script.onload = () => {
+
+          require.config( { paths: { vs: baseUrl } } );
+
+          require( [ 'vs/editor/editor.main' ], () => {
+            // Register a minimal YAML tokenizer if not present
+            if ( !window.monaco.languages.getEncodedLanguageId || !window.monaco.languages.getEncodedLanguageId( 'yaml' ) ) {
+              try {
+                window.monaco.languages.register( { id: 'yaml' } );
+                window.monaco.languages.setMonarchTokensProvider( 'yaml', {
+                  tokenizer: {
+                    root: [
+                      [ /#.*/, 'comment' ],
+                      [ /\s*-\s+[^:]+$/, 'string' ],
+                      [ /(\s*)([\w.-]+)(\s*:\s*)/, [ '', 'key', '' ] ],
+                      [ /"([^"\\]|\\.)*"/, 'string' ],
+                      [ /'([^'\\]|\\.)*'/, 'string' ]
+                    ]
+                  }
+                } );
+              }
+              catch( e ) { /* ignore */ }
+            }
+
+            monacoEditor = window.monaco.editor.create( editorEl, {
+              value: yamlText.value || '',
+              language: 'yaml',
+              automaticLayout: true,
+              minimap: { enabled: false },
+              wordWrap: 'on',
+              tabSize: 2
+            } );
+
+            // Swap visibility
+            editorEl.style.display = 'block';
+            yamlText.style.display = 'none';
+            resolve( true );
+          } );
+        };
+        script.onerror = onFail;
+        document.head.appendChild( script );
+      }
+
+      initWithBase( '../../node_modules/monaco-editor/min/vs', () => {
+        initWithBase( 'https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs', () => {
+          resolve( false );
+        } );
+      } );
+
+      return true;
+    } );
+  }
+</script>
+</body>
+</html>
