@@ -16,6 +16,7 @@ import getPreCommitTasks from './getPreCommitTasks.js';
 
 export async function preCommitMain( repo: string, outputToConsole: boolean ): Promise<void> {
   const absolute = getOption( 'absolute' ); // Output paths that WebStorm External Tools can parse and hyperlink
+  const fix = getOption( 'fix' ); // Fix issues that can be automatically fixed
 
   const tasksToRun = getPreCommitTasks( outputToConsole );
 
@@ -37,7 +38,8 @@ export async function preCommitMain( repo: string, outputToConsole: boolean ): P
                 `--command=${task}`,
                 `--repo=${repo}`,
                 outputToConsole ? '--console' : '',
-                absolute ? '--absolute' : ''
+                absolute ? '--absolute' : '',
+                fix ? '--fix' : ''
               ],
               '../chipper',
               {

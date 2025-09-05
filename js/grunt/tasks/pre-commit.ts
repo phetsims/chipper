@@ -19,6 +19,7 @@
  * --changed: run on all repos with working copy changes
  * --all: run on all repos
  * --absolute: output paths that WebStorm External Tools can parse and hyperlink
+ * --fix: apply fixes when possible, for example eslint --fix
  *
  * TASKS:
  * --lint: runs eslint on the repo

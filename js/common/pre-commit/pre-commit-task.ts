@@ -27,6 +27,7 @@ import transpile from '../transpile.js';
 const commandLineArguments = process.argv.slice( 2 );
 const outputToConsole = commandLineArguments.includes( '--console' );
 const absolute = commandLineArguments.includes( '--absolute' );
+const fix = commandLineArguments.includes( '--fix' );
 
 const getArg = ( arg: string ) => {
   const args = commandLineArguments.filter( commandLineArg => commandLineArg.startsWith( `--${arg}=` ) );
@@ -46,7 +47,9 @@ const repo = getArg( 'repo' );
 
     // Run lint tests if they exist in the checked-out SHAs.
     // lint() automatically filters out non-lintable repos
-    const lintSuccess = await lint( [ repo ] );
+    const lintSuccess = await lint( [ repo ], {
+      fix: fix
+    } );
     outputToConsole && console.log( `lint: ${lintSuccess ? 'no ' : ''}errors.` );
     process.exit( lintSuccess ? 0 : 1 );
   }
