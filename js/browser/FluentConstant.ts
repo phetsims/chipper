@@ -17,7 +17,6 @@ import affirm from '../../../perennial-alias/js/browser-and-node/affirm.js';
 import PhetioObject from '../../../tandem/js/PhetioObject.js';
 import chipper from './chipper.js';
 import LocalizedStringProperty from './LocalizedStringProperty.js';
-import FluentContainer from './FluentContainer.js';
 
 const NO_STRING = '';
 
@@ -73,21 +72,6 @@ export default class FluentConstant extends DerivedProperty1<string, FluentBundl
   public getTranslatedStringProperty( locale: Locale ): TProperty<string> {
     affirm( this.targetProperty, 'If using getTranslatedStringProperty, the targetProperty must be defined. Why was it removed during the build?' );
     return this.targetProperty.getTranslatedStringProperty( locale );
-  }
-
-  public static fromStringProperty(
-    targetProperty: LocalizedStringProperty,
-    stringProperties: LocalizedStringProperty[],
-    primaryFluentKey: string,
-    fluentKeyMap: Map<LocalizedStringProperty, string> // map of string Property to fluent key (e.g. dots turned to underscores)
-  ): FluentConstant {
-    const fluentContainer = new FluentContainer( () => {
-      return stringProperties.map( stringProperty => {
-        return `${fluentKeyMap.get( stringProperty )!} = ${stringProperty.value.replace( '\n', '\n ' )}\n`;
-      } ).join( '\n' );
-    }, stringProperties );
-
-    return new FluentConstant( fluentContainer.bundleProperty, primaryFluentKey, targetProperty );
   }
 }
 

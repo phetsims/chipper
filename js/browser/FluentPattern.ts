@@ -10,15 +10,13 @@
 
 import DerivedStringProperty from '../../../axon/js/DerivedStringProperty.js';
 import ReadOnlyProperty from '../../../axon/js/ReadOnlyProperty.js';
-import { TReadOnlyProperty, isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
+import { isTReadOnlyProperty, TReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import { FluentBundle } from '../../../chipper/js/browser-and-node/FluentLibrary.js';
 import EnumerationValue from '../../../phet-core/js/EnumerationValue.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import PhetioObject from '../../../tandem/js/PhetioObject.js';
 import chipper from './chipper.js';
 import FluentUtils from './FluentUtils.js';
-import FluentContainer from './FluentContainer.js';
-import LocalizedStringProperty from './LocalizedStringProperty.js';
 
 // A type for simple variables that can be used in Fluent messages. While strings and numbers are handled natively,
 // booleans and EnumerationValues are handled by FluentUtils.handleFluentArgs.
@@ -85,22 +83,6 @@ export default class FluentPattern<T extends Record<string, unknown>> {
    */
   public getDependentProperties(): TReadOnlyProperty<unknown>[] {
     return [ this.bundleProperty ];
-  }
-
-  public static fromStringProperty<T extends Record<string, unknown>>(
-    targetProperty: LocalizedStringProperty,
-    stringProperties: LocalizedStringProperty[],
-    primaryFluentKey: string,
-    fluentKeyMap: Map<LocalizedStringProperty, string>, // map of string Property to fluent key (e.g. dots turned to underscores)
-    args: Record<string, IntentionalAny>[]
-  ): FluentPattern<T> {
-    const fluentContainer = new FluentContainer( () => {
-      return stringProperties.map( stringProperty => {
-        return `${fluentKeyMap.get( stringProperty )!} = ${stringProperty.value.replace( '\n', '\n ' )}\n`;
-      } ).join( '\n' );
-    }, stringProperties );
-
-    return new FluentPattern<T>( fluentContainer.bundleProperty, primaryFluentKey, targetProperty, args );
   }
 }
 
