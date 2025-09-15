@@ -648,7 +648,7 @@ const generateAndWriteClientGuide = ( repoName: string, title: string, simulatio
   clientGuideSource = ChipperStringUtils.replaceAll( clientGuideSource, `/${GUIDES_COMMON_DIR}`, '' );
 
   // Since we don't have a phet/bad-text lint rule for md files, see https://github.com/phetsims/phet-io-sim-specific/issues/34
-  assertNoConstAwait && assert( !/^.*const.*await.*$/gm.test( clientGuideSource ),
+  assertNoConstAwait && assert( !/^.*const.*await.*$/g.test( clientGuideSource ),
     `use let instead of const when awaiting values in PhET-iO "${EXAMPLES_FILENAME}" files` );
 
   const renderedClientGuide = marked.parse( clientGuideSource );
