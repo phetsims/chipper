@@ -93,10 +93,6 @@ export default async function buildStandalone( repo: string, providedOptions?: B
   const testLodash = '  if ( !window.hasOwnProperty( \'_\' ) ) {\n' +
                      '    throw new Error( \'Underscore/Lodash not found: _\' );\n' +
                      '  }\n';
-  // Checks if jQuery exists
-  const testJQuery = '  if ( !window.hasOwnProperty( \'$\' ) ) {\n' +
-                     '    throw new Error( \'jQuery not found: $\' );\n' +
-                     '  }\n';
 
   const debugJS = '\nwindow.assertions.enableAssert();\n';
   if ( options.isDebug ) {
@@ -104,9 +100,6 @@ export default async function buildStandalone( repo: string, providedOptions?: B
   }
 
   let fullSource = `${includedJS}\n${webpackJS}`;
-  if ( packageObject.phet.requiresJQuery ) {
-    fullSource = testJQuery + fullSource;
-  }
   if ( packageObject.phet.requiresLodash ) {
     fullSource = testLodash + fullSource;
   }
