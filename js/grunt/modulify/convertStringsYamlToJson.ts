@@ -64,7 +64,7 @@ export const safeLoadYaml = ( yamlContents: string ): IntentionalAny => {
  * @param input - The parsed YAML data (can be an object, array, string, or other primitive).
  * @returns The transformed JavaScript structure.
  */
-function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
+export function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
   // Base case 1: Input is a string
   if ( typeof input === 'string' ) {
 
