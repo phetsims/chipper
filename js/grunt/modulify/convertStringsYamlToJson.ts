@@ -28,12 +28,7 @@ export default async ( repo: string ): Promise<void> => {
   const nested = nestJSONStringValues( parsed );
 
   // Convert to a pretty-printed JSON string.
-  const jsonContents = JSON.stringify( nested, null, 2 )
-
-    // Backward compatibility for joist strings
-    .split( '…' ).join( '\\u2026' )
-    .split( '"phetioReadOnly": "true"' ).join( '"phetioReadOnly": true' ) // Convert phetioReadOnly to a boolean;
-    .split( '—' ).join( '\\u2014' );
+  const jsonContents = JSON.stringify( nested, null, 2 );
   const jsonFilename = `${repo}-strings_en.json`;
 
   await writeFileAndGitAdd( repo, jsonFilename, jsonContents );
