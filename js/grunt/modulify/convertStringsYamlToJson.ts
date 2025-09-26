@@ -28,7 +28,12 @@ export default async ( repo: string ): Promise<void> => {
   const nested = nestJSONStringValues( parsed );
 
   // Convert to a pretty-printed JSON string.
-  const jsonContents = JSON.stringify( nested, null, 2 );
+  const jsonContents = JSON.stringify( nested, null, 2 )
+
+    // Backward compatibility for joist strings
+    .split( '…' ).join( '\\u2026' )
+    .split( '"phetioReadOnly": "true"' ).join( '"phetioReadOnly": true' ) // Convert phetioReadOnly to a boolean;
+    .split( '—' ).join( '\\u2014' );
   const jsonFilename = `${repo}-strings_en.json`;
 
   await writeFileAndGitAdd( repo, jsonFilename, jsonContents );
@@ -54,7 +59,7 @@ export const safeLoadYaml = ( yamlContents: string ): IntentionalAny => {
  *   An error is thrown if `__deprecated` has any value other than 'true'.
  * - For any key `originalKey`, if a corresponding `originalKey__comment` key exists
  *   at the same level, its value is added as a `_comment` property to the object.
- * - `__simMetadata`, `__deprecated`, and `__comment` keys themselves are not included 
+ * - `__simMetadata`, `__deprecated`, and `__comment` keys themselves are not included
  *   as top-level keys in the output.
  * - Arrays are processed element-wise. If an array itself has metadata, it will be
  *   wrapped like: `{ value: [processed elements], simMetadata: {...}, deprecated: true, _comment: "..." }`.
@@ -89,7 +94,7 @@ export function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
       if ( key.endsWith( '__simMetadata' ) || key.endsWith( '__deprecated' ) || key.endsWith( '__comment' ) ) {
         let originalKey = '';
         let metadataType = '';
-        
+
         if ( key.endsWith( '__simMetadata' ) ) {
           originalKey = key.substring( 0, key.length - '__simMetadata'.length );
           metadataType = '__simMetadata';
@@ -102,7 +107,7 @@ export function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
           originalKey = key.substring( 0, key.length - '__comment'.length );
           metadataType = '__comment';
         }
-        
+
         if ( inputKeys.includes( originalKey ) ) {
           continue; // This metadata will be picked up by the originalKey
         }
@@ -145,7 +150,7 @@ export function nestJSONStringValues( input: IntentionalAny ): IntentionalAny {
       // eslint-disable-next-line prefer-object-has-own
       if ( Object.prototype.hasOwnProperty.call( input, deprecatedKey ) ) {
         const deprecatedValue = input[ deprecatedKey ];
-        
+
         // Validate that __deprecated is only true
         if ( deprecatedValue !== 'true' ) {
           throw new Error( `__deprecated must be true, but found: ${deprecatedValue} for key: ${key}` );
