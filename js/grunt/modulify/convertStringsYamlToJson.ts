@@ -28,7 +28,8 @@ export default async ( repo: string ): Promise<void> => {
   const nested = nestJSONStringValues( parsed );
 
   // Convert to a pretty-printed JSON string.
-  const jsonContents = JSON.stringify( nested, null, 2 );
+  const jsonContents = JSON.stringify( nested, null, 2 )
+    .split( '"phetioReadOnly": "true"' ).join( '"phetioReadOnly": true' );
   const jsonFilename = `${repo}-strings_en.json`;
 
   await writeFileAndGitAdd( repo, jsonFilename, jsonContents );
