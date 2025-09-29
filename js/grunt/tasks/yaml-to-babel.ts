@@ -19,11 +19,14 @@
 
 import fs from 'fs';
 import path from 'path';
+import getOption, { isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
-import getOption from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import { nestJSONStringValues, safeLoadYaml } from '../modulify/convertStringsYamlToJson.js';
 
 type LeafMap = Record<string, string>;
+
+type BabelEntryData = Record<string, unknown> & { value?: unknown };
+type BabelJson = Record<string, BabelEntryData>;
 
 function fail( message: string ): never {
   console.error( `yaml-to-babel error: ${message}` );
@@ -95,33 +98,86 @@ function collectValueLeaves( node: unknown, prefix: string[], out: LeafMap ): vo
   const leaves: LeafMap = {};
   collectValueLeaves( nested, [], leaves );
 
-  // Build Babel JSON structure: { key: { value, history: [ ... ] } }
-  const timestamp = Date.now();
-  const babelObject: Record<string, unknown> = {};
-  let count = 0;
+  const filterA11yOnly = isOptionKeyProvided( 'a11y' ) ? getOption( 'a11y' ) !== false : false;
 
-  for ( const [ key, value ] of Object.entries( leaves ) ) {
-    babelObject[ key ] = {
-      value: value,
-      history: [ {
-        userId: userId,
-        timestamp: timestamp,
-        oldValue: '',
-        newValue: value,
-        explanation: null
-      } ]
-    };
-    count++;
+  let leafEntries = Object.entries( leaves );
+  if ( filterA11yOnly ) {
+    // Only contribute strings scoped under the `a11y` namespace.
+    leafEntries = leafEntries.filter( ( [ key ] ) => key.startsWith( 'a11y.' ) );
   }
+  const leafCount = leafEntries.length;
 
   const outDir = path.resolve( path.join( '..', 'babel', repo ) );
   fs.mkdirSync( outDir, { recursive: true } );
 
   const outBase = path.basename( yamlPath ).replace( /\.ya?ml$/u, '.json' );
   const outPath = path.join( outDir, outBase );
+
+  const leavesMap = new Map<string, string>( leafEntries );
+
+  let existingEntries: [ string, BabelEntryData ][] = [];
+  if ( fs.existsSync( outPath ) ) {
+    const existingContent = fs.readFileSync( outPath, 'utf8' );
+    let parsedExisting: unknown;
+    try {
+      parsedExisting = JSON.parse( existingContent ) as BabelJson;
+    }
+    catch( e ) {
+      fail( `unable to parse existing Babel JSON: ${e instanceof Error ? e.message : String( e )}` );
+    }
+
+    if ( parsedExisting && typeof parsedExisting === 'object' && !Array.isArray( parsedExisting ) ) {
+      existingEntries = Object.entries( parsedExisting as BabelJson );
+    }
+    else {
+      fail( 'existing Babel JSON is not an object' );
+    }
+  }
+
+  const timestamp = Date.now();
+  const createNewEntry = ( value: string ): BabelEntryData => ( {
+    value: value,
+    history: [ {
+      userId: userId,
+      timestamp: timestamp,
+      oldValue: '',
+      newValue: value,
+      explanation: null
+    } ]
+  } );
+
+  const mergedEntries: [ string, BabelEntryData ][] = [];
+
+  for ( const [ key, existingEntry ] of existingEntries ) {
+    let mergedEntry = existingEntry;
+
+    if ( leavesMap.has( key ) ) {
+      const newValue = leavesMap.get( key )!;
+      if ( existingEntry && typeof existingEntry === 'object' && !Array.isArray( existingEntry ) ) {
+
+        // makeshift clone
+        // eslint-disable-next-line phet/no-object-spread-on-non-literals
+        mergedEntry = { ...existingEntry } as BabelEntryData;
+        ( mergedEntry ).value = newValue;
+      }
+      else {
+        mergedEntry = createNewEntry( newValue );
+      }
+      leavesMap.delete( key );
+    }
+
+    mergedEntries.push( [ key, mergedEntry ] );
+  }
+
+  const newKeys = Array.from( leavesMap.entries() ).sort( ( a, b ) => a[ 0 ].localeCompare( b[ 0 ] ) );
+  for ( const [ key, value ] of newKeys ) {
+    mergedEntries.push( [ key, createNewEntry( value ) ] );
+  }
+
+  const babelObject = Object.fromEntries( mergedEntries );
   fs.writeFileSync( outPath, JSON.stringify( babelObject, null, 2 ) + '\n' );
 
-  console.log( `yaml-to-babel: wrote ${count} entries` );
+  console.log( `yaml-to-babel: wrote ${leafCount} entries` );
   console.log( `  input:  ${yamlPath}` );
   console.log( `  output: ${outPath}` );
 } )().catch( e => {
