@@ -6,8 +6,7 @@
  * @author Jesse Greenberg (PhET Interactive Simulations)
  */
 
-import { TReadOnlyProperty, isTReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
-import EnumerationValue from '../../../phet-core/js/EnumerationValue.js';
+import { isTReadOnlyProperty, TReadOnlyProperty } from '../../../axon/js/TReadOnlyProperty.js';
 import IntentionalAny from '../../../phet-core/js/types/IntentionalAny.js';
 import { FluentBundle, FluentBundlePattern } from '../browser-and-node/FluentLibrary.js';
 import LocalizedMessageProperty from './LocalizedMessageProperty.js';
@@ -20,21 +19,7 @@ const FluentUtils = {
    */
   handleFluentArgs: ( args: IntentionalAny ): IntentionalAny => {
     return _.mapValues( args, value => {
-      if ( isTReadOnlyProperty( value ) ) {
-        value = value.value;
-      }
-
-      // Allow "cascading", so that a Property<EnumerationValue> can be passed in and parsed correctly.
-      if ( value && value instanceof EnumerationValue ) {
-        value = value.name;
-      }
-
-      // Allow "cascading", so that a Property<boolean> can be passed in and parsed correctly.
-      if ( typeof value === 'boolean' ) {
-        value = value ? 'true' : 'false';
-      }
-
-      return value;
+      return isTReadOnlyProperty( value ) ? value.value : value;
     } );
   },
 
