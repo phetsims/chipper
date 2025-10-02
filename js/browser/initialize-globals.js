@@ -679,6 +679,16 @@
     },
 
     /**
+     * Works the same as stringTest, but applies only to accessibility strings sourced from the a11y string bundle.
+     * Supported values: see stringTest. When 'dynamic' is provided, accessibility strings are left unchanged to avoid
+     * corrupting Fluent syntax fragments, and since visual layout is not a concern for a11y strings.
+     */
+    a11yStringTest: {
+      type: 'string',
+      defaultValue: null
+    },
+
+    /**
      * adds keyboard shortcuts. ctrl+i (forward) or ctrl+u (backward). Also, the same physical keys on the
      * dvorak keyboard (c=forward and g=backwards)
      *
@@ -1045,9 +1055,13 @@
 
     // {string|null} - See documentation of stringTest query parameter - we need to support this during build, where
     //                 there aren't any query parameters.
-    const stringTest = ( typeof window !== 'undefined' && phet.chipper.queryParameters.stringTest ) ?
-                       phet.chipper.queryParameters.stringTest :
-                       null;
+    const visualStringTest = ( typeof window !== 'undefined' && phet.chipper.queryParameters.stringTest ) ?
+                             phet.chipper.queryParameters.stringTest :
+                             null;
+
+    const a11yStringTest = ( typeof window !== 'undefined' && phet.chipper.queryParameters.a11yStringTest ) ?
+                           phet.chipper.queryParameters.a11yStringTest :
+                           null;
 
     /**
      * Maps an input string to a final string, accommodating tricks like doubleStrings.
@@ -1055,10 +1069,12 @@
      * The stringTest query parameter and its options are documented in the query parameter docs above.
      * It is used in string.js and sim.html.
      * @param string - the string to be mapped
+     * @param {boolean} isA11yKey - whether this is an accessibility string, which uses a11yStringTest
      * @returns {string}
      */
-    window.phet.chipper.mapString = function( string ) {
+    window.phet.chipper.mapString = function( string, isA11yKey ) {
       const script = 'script';
+      const stringTest = isA11yKey ? a11yStringTest : visualStringTest;
       return stringTest === null ? string :
              stringTest === 'double' ? `${string}:${string}` :
              stringTest === 'long' ? '12345678901234567890123456789012345678901234567890' :
