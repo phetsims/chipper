@@ -26,7 +26,7 @@ class FluentLibrary {
 
   /**
    * Gets all message keys (excluding terms) from a Fluent file string. This exists in
-   * FluentLiberary (instead of FluentUtils) because it needs to be used outside of simulation
+   * FluentLibrary (instead of FluentUtils) because it needs to be used outside of simulation
    * code.
    */
   public static getFluentMessageKeys( fluentFileString: string ): string[] {

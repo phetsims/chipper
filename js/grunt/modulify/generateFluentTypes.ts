@@ -29,6 +29,9 @@ const IDENT = /^[A-Za-z_$][\w$]*$/;
 /** Indent helper. */
 const indent = ( lvl: number, spaces = 2 ): string => ' '.repeat( lvl * spaces );
 
+/** Matches Fluent variable placeholders such as `{ $value }`. */
+const FLUENT_VARIABLE_PLACEHOLDER_REGEX = /\{\s*\$[\w.-]+/;
+
 type FluentComment = IntentionalAny;
 
 /**
@@ -366,6 +369,20 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   allKeys.forEach( key => {
     const count = allKeys.filter( k => k === key ).length;
     affirm( count === 1, `Duplicate key found in YAML: ${key} appears ${count} times` );
+  } );
+
+  // Throw an error when Fluent patterns are used outside the a11y key
+  leaves.forEach( leaf => {
+    const accessor = createAccessor( leaf.pathArr );
+    if ( accessor.startsWith( 'a11y.' ) ) {
+      return;
+    }
+
+    const value = leaf.value;
+    const containsFluentPlaceholder = FLUENT_VARIABLE_PLACEHOLDER_REGEX.test( value );
+    affirm( !containsFluentPlaceholder,
+      `Fluent placeholders (e.g. { $value }) are only allowed under the a11y key. Found '${leaf.pathArr.join( '.' )}' in ${repo}-strings_en.yaml.` );
+
   } );
 
   const filteredLeaves = leaves.filter( leaf => !ChipperStringUtils.isLegacyStringPattern( leaf.value ) );
