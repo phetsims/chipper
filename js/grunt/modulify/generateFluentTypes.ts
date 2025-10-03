@@ -421,24 +421,51 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
   // an object literal that will be used to create the Fluent typescript object
   const fluentObjectLiteral = buildFluentObject( yamlObj, keyToTypeInfoMap, pascalCaseRepo, comments, [], 1 );
 
-  // template TypeScript file
-  const fileContents = `${copyrightLine}
+  const header = `${copyrightLine}
 // AUTOMATICALLY GENERATED – DO NOT EDIT.
 // Generated from ${path.basename( yamlPath )}
 
 /* eslint-disable */
 /* @formatter:off */
 
-import { TReadOnlyProperty } from '../../axon/js/TReadOnlyProperty.js';
-import type { FluentVariable } from '../../chipper/js/browser/FluentPattern.js';
-import FluentPattern from '../../chipper/js/browser/FluentPattern.js';
-import FluentContainer from '../../chipper/js/browser/FluentContainer.js';
-import FluentConstant from '../../chipper/js/browser/FluentConstant.js';
-import FluentComment from '../../chipper/js/browser/FluentComment.js';
-import ${camelCaseRepo} from './${camelCaseRepo}.js';
-import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';
+`;
 
-// This map is used to create the fluent file and link to all StringProperties.
+  const importStatements: { line: string; identifiers: string[] }[] = [
+    {
+      line: 'import { TReadOnlyProperty } from \'../../axon/js/TReadOnlyProperty.js\';',
+      identifiers: [ 'TReadOnlyProperty' ]
+    },
+    {
+      line: 'import type { FluentVariable } from \'../../chipper/js/browser/FluentPattern.js\';',
+      identifiers: [ 'FluentVariable' ]
+    },
+    {
+      line: 'import FluentPattern from \'../../chipper/js/browser/FluentPattern.js\';',
+      identifiers: [ 'FluentPattern' ]
+    },
+    {
+      line: 'import FluentConstant from \'../../chipper/js/browser/FluentConstant.js\';',
+      identifiers: [ 'FluentConstant' ]
+    },
+    {
+      line: 'import FluentContainer from \'../../chipper/js/browser/FluentContainer.js\';',
+      identifiers: [ 'FluentContainer' ]
+    },
+    {
+      line: 'import FluentComment from \'../../chipper/js/browser/FluentComment.js\';',
+      identifiers: [ 'FluentComment' ]
+    },
+    {
+      line: `import ${camelCaseRepo} from './${camelCaseRepo}.js';`,
+      identifiers: [ `${camelCaseRepo}.register` ]
+    },
+    {
+      line: `import ${pascalCaseRepo}Strings from './${pascalCaseRepo}Strings.js';`,
+      identifiers: [ `${pascalCaseRepo}Strings` ]
+    }
+  ];
+
+  const body = `// This map is used to create the fluent file and link to all StringProperties.
 // Accessing StringProperties is also critical for including them in the built sim.
 // However, if strings are unused in Fluent system too, they will be fully excluded from
 // the build. So we need to only add actually used strings.
@@ -470,6 +497,15 @@ export default ${pascalCaseRepo}Fluent;
 
 ${camelCaseRepo}.register('${pascalCaseRepo}Fluent', ${pascalCaseRepo}Fluent);
 `;
+
+  const usedImportLines = importStatements
+    .filter( statement => statement.identifiers.some( identifier => body.includes( identifier ) ) )
+    .map( statement => statement.line );
+
+  const importSection = usedImportLines.length > 0 ? `${usedImportLines.join( '\n' )}\n\n` : '';
+
+  // template TypeScript file
+  const fileContents = `${header}${importSection}${body}`;
 
 // 6 write out
   await writeFileAndGitAdd( repo, outPath, fileContents );
