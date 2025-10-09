@@ -1,4 +1,4 @@
-// Copyright 2020-2024, University of Colorado Boulder
+// Copyright 2025, University of Colorado Boulder
 
 /**
  * Prints out a JSON map from repo name => list of all dependencies (used by e.g. phettest), for a comma-separated list of repos.
