@@ -556,6 +556,14 @@
       // eslint-disable-next-line dot-notation
       const ariaLiveElementsContainer = innerWindow[ 'phet' ].joist.sim.display.descriptionUtteranceQueue.announcer.ariaLiveContainer;
 
+      // Add the global aria-live elements as well
+      // eslint-disable-next-line dot-notation
+      const globalContainer = innerWindow[ 'phet' ].scenery.globalDescriptionQueue.announcer.ariaLiveContainer;
+
+      const simDisplayElements = Array.prototype.slice.call( ariaLiveElementsContainer.children );
+      const globalElements = Array.prototype.slice.call( globalContainer.children );
+      const allSourceAriaLiveElements = [ ...simDisplayElements, ...globalElements ];
+
       // get the alert dom elements from the PDOM copy
       const alertList = document.getElementById( 'alert-list' );
 
@@ -566,8 +574,8 @@
       addPDOMObserver( PDOMRoot, copyContainer, MUTATION_OBSERVER_CONFIG );
 
       // observe each of the live elements and add new text content to the list view
-      for ( let i = 0; i < ariaLiveElementsContainer.children.length; i++ ) {
-        addLiveObserver( ariaLiveElementsContainer.children[ i ], alertList, MUTATION_OBSERVER_CONFIG );
+      for ( let i = 0; i < allSourceAriaLiveElements.length; i++ ) {
+        addLiveObserver( allSourceAriaLiveElements[ i ], alertList, MUTATION_OBSERVER_CONFIG );
       }
 
       // clear all alerts when the "Clear Log" button is pressed
