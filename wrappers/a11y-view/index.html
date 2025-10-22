@@ -289,9 +289,20 @@
   // Number of alerts that remain in the Activity log
   const ACTIVITY_LOG_LENGTH = 40;
 
-  // The attributes that we want to display as additional data in the PDOM copy. Otherwise, these are invisible unless you
-  // inspect the DOM.
-  const IMPORTANT_ARIA_ATTRIBUTES = [ 'aria-valuetext', 'aria-expanded', 'aria-roledescription', 'aria-disabled' ];
+  // The attributes that we want to display as additional data in the PDOM copy. Otherwise, these are invisible
+  // unless you inspect the DOM. For each entry, you can provide a shouldDisplay predicate that will control
+  // how it is shown.
+  const IMPORTANT_ARIA_ATTRIBUTES = [
+    { name: 'aria-valuetext' },
+    { name: 'aria-expanded' },
+    { name: 'aria-roledescription' },
+    {
+      name: 'aria-disabled',
+
+      // aria-disabled: false is too noisy to show so it is hidden
+      shouldDisplay: value => value === 'true'
+    }
+  ];
 
   /*******************************************************************************
    * Helper Functions
@@ -389,9 +400,17 @@
           }
         }
 
-        IMPORTANT_ARIA_ATTRIBUTES.forEach( attribute => {
-          if ( element.hasAttribute( attribute ) ) {
-            const value = element.getAttribute( attribute );
+        IMPORTANT_ARIA_ATTRIBUTES.forEach( attributeDefinition => {
+          const config = typeof attributeDefinition === 'string' ? { name: attributeDefinition } : attributeDefinition;
+          const attributeName = config.name;
+          const shouldDisplay = config.shouldDisplay;
+
+          if ( element.hasAttribute( attributeName ) ) {
+            const value = element.getAttribute( attributeName );
+
+            if ( shouldDisplay && !shouldDisplay( value, element ) ) {
+              return;
+            }
 
             // add a new element to the DOM that displays the value of the attribute
             const valueElement = document.createElement( 'p' );
@@ -401,7 +420,7 @@
             valueElement.style.opacity = 0.55;
             valueElement.style.display = 'inline-block';
             valueElement.style.paddingLeft = '1em';
-            valueElement.textContent = `(${attribute}: ${value})`;
+            valueElement.textContent = `(${attributeName}: ${value})`;
 
             // insert directly after the element that has the attribute. This handles the case if element is last, see https://stackoverflow.com/questions/4793604/how-to-insert-an-element-after-another-element-in-javascript-without-using-a-lib
             element.parentNode.insertBefore( valueElement, element.nextSibling );
