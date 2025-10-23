@@ -636,14 +636,24 @@
       return;
     }
 
+    const tagName = element.tagName.toLowerCase();
+    const isDivElement = tagName === 'div';
+
     const entry = document.createElement( 'div' );
     entry.className = 'formatted-entry';
-    entry.style.marginLeft = `${depth * 1.25}em`;
+    const indentDepth = isDivElement && depth > 0 ? depth - 1 : depth;
+    entry.style.marginLeft = `${indentDepth * 1.25}em`;
 
-    const title = document.createElement( 'div' );
-    title.className = 'formatted-entry-title';
-    title.textContent = getFormattedTitle( element );
-    entry.appendChild( title );
+    let hasContent = false;
+
+    const titleText = getFormattedTitle( element );
+    if ( titleText ) {
+      const title = document.createElement( 'div' );
+      title.className = 'formatted-entry-title';
+      title.textContent = titleText;
+      entry.appendChild( title );
+      hasContent = true;
+    }
 
     const primaryText = getPrimaryFormattedText( element );
     if ( primaryText ) {
@@ -651,6 +661,7 @@
       textLine.className = 'formatted-entry-text';
       textLine.textContent = primaryText;
       entry.appendChild( textLine );
+      hasContent = true;
     }
 
     const metadataItems = getFormattedMetadata( element );
@@ -659,10 +670,15 @@
       metadataLine.className = 'formatted-entry-metadata';
       metadataLine.textContent = metadataItems.join( ' · ' );
       entry.appendChild( metadataLine );
+      hasContent = true;
     }
 
-    parent.appendChild( entry );
-    Array.from( element.children ).forEach( child => buildFormattedEntry( child, parent, depth + 1 ) );
+    if ( hasContent ) {
+      parent.appendChild( entry );
+    }
+
+    const childDepth = isDivElement && depth > 0 ? depth : depth + 1;
+    Array.from( element.children ).forEach( child => buildFormattedEntry( child, parent, childDepth ) );
   }
 
   function getFormattedTitle( element ) {
@@ -679,6 +695,10 @@
       return `Heading level ${tagName.charAt( 1 )}`;
     }
 
+    if ( tagName === 'div' ) {
+      return '';
+    }
+
     const tagLabels = {
       button: 'Button',
       input: `Input${element.type ? ` (${element.type})` : ''}`,
@@ -689,8 +709,7 @@
       label: 'Label',
       span: 'Span',
       section: 'Section',
-      article: 'Article',
-      div: 'Group'
+      article: 'Article'
     };
 
     return tagLabels[ tagName ] || toTitleCase( tagName );
