@@ -149,10 +149,105 @@
       font-size: 1.17em;
     }
 
+    .view-mode-controls {
+      display: flex;
+      gap: 0.75em;
+      flex-wrap: wrap;
+      padding: 0.75em 1em 0.5em;
+      background: #ecf4fb;
+      border-radius: 0.75em;
+      margin-bottom: 1em;
+    }
+
+    .view-mode-option {
+      display: flex;
+      align-items: center;
+      gap: 0.35em;
+      font-size: 0.95em;
+    }
+
+    .view-mode-option input[type="radio"] {
+      accent-color: #0a74b9;
+    }
+
+    .dom-view {
+      display: none;
+    }
+
+    .dom-view[data-active="true"] {
+      display: block;
+    }
+
+    .formatted-entry {
+      border-left: 3px solid #c0d4e6;
+      padding: 0.5em 0.75em;
+      border-radius: 0.35em;
+      margin-bottom: 0.5em;
+      background-color: #f8fcff;
+    }
+
+    .formatted-entry-title {
+      font-weight: 600;
+      color: #134575;
+      margin-bottom: 0.25em;
+    }
+
+    .formatted-entry-text {
+      color: #1c1c1c;
+    }
+
+    .formatted-entry-metadata {
+      margin-top: 0.35em;
+      font-size: 0.85em;
+      color: #3a3a3a;
+      opacity: 0.7;
+    }
+
+    .development-container {
+      font-family: "Courier New", Courier, monospace;
+      background: #0f111a;
+      color: #d8dee9;
+      padding: 0.75em 1em;
+      border-radius: 0.75em;
+      overflow-x: auto;
+    }
+
+    .development-line {
+      white-space: pre;
+    }
+
+    .development-tag {
+      color: #7285a8;
+    }
+
+    .development-attribute {
+      color: #9fb4d9;
+    }
+
+    .development-attribute-value {
+      color: #d9c27f;
+    }
+
+    .development-text-node {
+      color: #f5f7fa;
+    }
+
     /* ************SAFARI ONLY *********************** */
     .left-safari {
       display: inline-block;
       width: 47%;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
   </style>
 
@@ -219,7 +314,28 @@
           user can read through or review as they feel the need when they are accessing a simulation (i.e., not the A11y
           View tool).
         </details>
-        <div id="dom-copy-container" class="dom_copy_container" role="presentation"></div>
+        <div class="dom_copy_container" role="presentation">
+          <fieldset id="view-mode-controls" class="view-mode-controls" role="radiogroup" aria-label="View mode">
+            <legend class="sr-only">Select view mode</legend>
+            <label class="view-mode-option">
+              <input type="radio" name="a11y-view-mode" value="formatted">
+              Formatted view
+            </label>
+            <label class="view-mode-option">
+              <input type="radio" name="a11y-view-mode" value="development">
+              Development view
+            </label>
+            <label class="view-mode-option">
+              <input type="radio" name="a11y-view-mode" value="legacy">
+              Legacy view
+            </label>
+          </fieldset>
+          <div id="dom-copy-container">
+            <div class="dom-view" data-view="formatted"></div>
+            <div class="dom-view" data-view="development"></div>
+            <div class="dom-view" data-view="legacy"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -295,7 +411,9 @@
   const IMPORTANT_ARIA_ATTRIBUTES = [
     { name: 'aria-valuetext' },
     { name: 'aria-expanded' },
+    { name: 'aria-pressed' },
     { name: 'aria-roledescription' },
+    { name: 'role' },
     {
       name: 'aria-disabled',
 
@@ -303,6 +421,51 @@
       shouldDisplay: value => value === 'true'
     }
   ];
+
+  const VIEW_MODES = {
+    FORMATTED: 'formatted',
+    DEVELOPMENT: 'development',
+    LEGACY: 'legacy'
+  };
+
+  const VIEW_MODE_STORAGE_KEY = 'a11y-view-mode';
+  const DEFAULT_VIEW_MODE = VIEW_MODES.FORMATTED;
+
+  const DEVELOPMENT_ALLOWED_ATTRIBUTES = new Set( [
+    'role',
+    'type',
+    'name',
+    'value',
+    'checked',
+    'disabled',
+    'required',
+    'hidden',
+    'title',
+    'alt',
+    'lang',
+    'for',
+    'placeholder',
+    'min',
+    'max',
+    'step'
+  ] );
+
+  const VOID_ELEMENTS = new Set( [
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr'
+  ] );
 
   /*******************************************************************************
    * Helper Functions
@@ -352,6 +515,446 @@
         element.removeAttribute( 'style' );
       }
     }
+  }
+
+  function setActiveView( viewContainers, viewMode ) {
+    Object.keys( viewContainers ).forEach( key => {
+      const container = viewContainers[ key ];
+      if ( !container ) {
+        return;
+      }
+      if ( key === viewMode ) {
+        container.setAttribute( 'data-active', 'true' );
+      }
+      else {
+        container.removeAttribute( 'data-active' );
+      }
+    } );
+  }
+
+  function loadViewMode() {
+    try {
+      const value = localStorage.getItem( VIEW_MODE_STORAGE_KEY );
+      if ( value && Object.values( VIEW_MODES ).includes( value ) ) {
+        return value;
+      }
+    }
+    catch( e ) {
+      // ignore storage errors, fall back to default
+    }
+    return DEFAULT_VIEW_MODE;
+  }
+
+  function storeViewMode( viewMode ) {
+    try {
+      localStorage.setItem( VIEW_MODE_STORAGE_KEY, viewMode );
+    }
+    catch( e ) {
+      // ignore storage failures
+    }
+  }
+
+  function initializeViewModeControls( viewContainers ) {
+    const controls = document.getElementById( 'view-mode-controls' );
+    if ( !controls ) {
+      return DEFAULT_VIEW_MODE;
+    }
+
+    const radioButtons = controls.querySelectorAll( 'input[name="a11y-view-mode"]' );
+    let currentMode = loadViewMode();
+
+    radioButtons.forEach( radio => {
+      if ( radio.value === currentMode ) {
+        radio.checked = true;
+      }
+
+      radio.addEventListener( 'change', event => {
+        if ( event.target.checked ) {
+          currentMode = event.target.value;
+          storeViewMode( currentMode );
+          setActiveView( viewContainers, currentMode );
+        }
+      } );
+    } );
+
+    if ( !Array.from( radioButtons ).some( radio => radio.checked ) ) {
+      const firstRadio = Array.from( radioButtons )[ 0 ];
+      if ( firstRadio ) {
+        currentMode = firstRadio.value;
+        firstRadio.checked = true;
+      }
+    }
+
+    setActiveView( viewContainers, currentMode );
+    return currentMode;
+  }
+
+  function renderLegacyView( pdomRoot, container ) {
+    if ( !container ) {
+      return;
+    }
+    container.innerHTML = '';
+    const pdomCopy = pdomRoot.cloneNode( true );
+    pdomCopy.removeAttribute( 'style' );
+    container.appendChild( pdomCopy );
+    addInlineAttributesTHTML( pdomCopy );
+    styleCopy( pdomCopy );
+  }
+
+  function renderFormattedView( pdomRoot, container ) {
+    if ( !container ) {
+      return;
+    }
+    container.innerHTML = '';
+    const fragment = document.createDocumentFragment();
+    const roots = Array.from( pdomRoot.children );
+
+    roots.forEach( child => buildFormattedEntry( child, fragment, 0 ) );
+
+    if ( fragment.childNodes.length === 0 ) {
+      const emptyMessage = document.createElement( 'p' );
+      emptyMessage.textContent = 'No accessible content available.';
+      fragment.appendChild( emptyMessage );
+    }
+
+    container.appendChild( fragment );
+  }
+
+  function shouldSkipFormattedElement( element ) {
+    if ( !element || element.nodeType !== Node.ELEMENT_NODE ) {
+      return true;
+    }
+    if ( element.hidden || element.getAttribute( 'aria-hidden' ) === 'true' ) {
+      return true;
+    }
+    const tagName = element.tagName;
+    return tagName === 'SCRIPT' || tagName === 'STYLE' || tagName === 'TEMPLATE';
+  }
+
+  function buildFormattedEntry( element, parent, depth ) {
+    if ( shouldSkipFormattedElement( element ) ) {
+      return;
+    }
+
+    const entry = document.createElement( 'div' );
+    entry.className = 'formatted-entry';
+    entry.style.marginLeft = `${depth * 1.25}em`;
+
+    const title = document.createElement( 'div' );
+    title.className = 'formatted-entry-title';
+    title.textContent = getFormattedTitle( element );
+    entry.appendChild( title );
+
+    const primaryText = getPrimaryFormattedText( element );
+    if ( primaryText ) {
+      const textLine = document.createElement( 'div' );
+      textLine.className = 'formatted-entry-text';
+      textLine.textContent = primaryText;
+      entry.appendChild( textLine );
+    }
+
+    const metadataItems = getFormattedMetadata( element );
+    if ( metadataItems.length > 0 ) {
+      const metadataLine = document.createElement( 'div' );
+      metadataLine.className = 'formatted-entry-metadata';
+      metadataLine.textContent = metadataItems.join( ' · ' );
+      entry.appendChild( metadataLine );
+    }
+
+    parent.appendChild( entry );
+    Array.from( element.children ).forEach( child => buildFormattedEntry( child, parent, depth + 1 ) );
+  }
+
+  function getFormattedTitle( element ) {
+    if ( element.hasAttribute( 'aria-roledescription' ) ) {
+      return toTitleCase( element.getAttribute( 'aria-roledescription' ) );
+    }
+
+    if ( element.hasAttribute( 'role' ) ) {
+      return formatRoleName( element.getAttribute( 'role' ) );
+    }
+
+    const tagName = element.tagName.toLowerCase();
+    if ( /^h[1-6]$/.test( tagName ) ) {
+      return `Heading level ${tagName.charAt( 1 )}`;
+    }
+
+    const tagLabels = {
+      button: 'Button',
+      input: `Input${element.type ? ` (${element.type})` : ''}`,
+      p: 'Paragraph',
+      li: 'List item',
+      ul: 'List',
+      ol: 'Ordered list',
+      label: 'Label',
+      span: 'Span',
+      section: 'Section',
+      article: 'Article',
+      div: 'Group'
+    };
+
+    return tagLabels[ tagName ] || toTitleCase( tagName );
+  }
+
+  function formatRoleName( role ) {
+    if ( !role ) {
+      return 'Element';
+    }
+    return role.split( /\s+/ ).map( toTitleCase ).join( ', ' );
+  }
+
+  function toTitleCase( text ) {
+    return text.replace( /\w\S*/g, chunk => chunk.charAt( 0 ).toUpperCase() + chunk.slice( 1 ).toLowerCase() );
+  }
+
+  function getPrimaryFormattedText( element ) {
+    if ( element.hasAttribute( 'aria-label' ) ) {
+      return element.getAttribute( 'aria-label' );
+    }
+
+    if ( element.tagName.toLowerCase() === 'input' ) {
+      const type = element.getAttribute( 'type' );
+      if ( type === 'button' || type === 'submit' || type === 'reset' ) {
+        return element.getAttribute( 'value' ) || '';
+      }
+    }
+
+    const directText = getDirectTextContent( element );
+    if ( directText ) {
+      return directText;
+    }
+
+    if ( element.tagName.toLowerCase() === 'img' && element.hasAttribute( 'alt' ) ) {
+      return element.getAttribute( 'alt' );
+    }
+
+    return '';
+  }
+
+  function getDirectTextContent( element ) {
+    return Array.from( element.childNodes )
+      .filter( node => node.nodeType === Node.TEXT_NODE )
+      .map( node => node.textContent.replace( /\s+/g, ' ' ).trim() )
+      .filter( text => text.length > 0 )
+      .join( ' ' );
+  }
+
+  function getFormattedMetadata( element ) {
+    const metadata = [];
+
+    IMPORTANT_ARIA_ATTRIBUTES.forEach( attributeDefinition => {
+      const config = typeof attributeDefinition === 'string' ? { name: attributeDefinition } : attributeDefinition;
+      const attributeName = config.name;
+      const shouldDisplay = config.shouldDisplay;
+
+      if ( attributeName === 'role' ) {
+        return;
+      }
+
+      if ( element.hasAttribute( attributeName ) ) {
+        const value = element.getAttribute( attributeName );
+
+        if ( shouldDisplay && !shouldDisplay( value, element ) ) {
+          return;
+        }
+
+        metadata.push( `${attributeName}: ${value}` );
+      }
+    } );
+
+    if ( element.hasAttribute( 'aria-describedby' ) ) {
+      const references = element.getAttribute( 'aria-describedby' ).trim().split( /\s+/ ).filter( token => token.length > 0 );
+      if ( references.length > 0 ) {
+        metadata.push( `Describes: ${references.length}` );
+      }
+    }
+
+    return metadata;
+  }
+
+  function renderDevelopmentView( pdomRoot, container ) {
+    if ( !container ) {
+      return;
+    }
+    container.innerHTML = '';
+
+    const wrapper = document.createElement( 'div' );
+    wrapper.className = 'development-container';
+
+    const workingCopy = pdomRoot.cloneNode( true );
+    sanitizeForDevelopmentView( workingCopy );
+
+    const topLevelElements = Array.from( workingCopy.children );
+    topLevelElements.forEach( element => renderDevelopmentNode( element, wrapper, 0 ) );
+
+    if ( wrapper.childNodes.length === 0 ) {
+      wrapper.textContent = 'No accessible markup available.';
+    }
+
+    container.appendChild( wrapper );
+  }
+
+  function sanitizeForDevelopmentView( root ) {
+
+    // Remove hidden elements entirely from the view.
+    Array.from( root.querySelectorAll( '[hidden]' ) ).forEach( element => {
+      if ( element.parentNode ) {
+        element.parentNode.removeChild( element );
+      }
+    } );
+
+    const walker = document.createTreeWalker( root, NodeFilter.SHOW_ELEMENT, null );
+    while ( walker.nextNode() ) {
+      sanitizeElement( walker.currentNode );
+    }
+  }
+
+  function sanitizeElement( element ) {
+    Array.from( element.attributes ).forEach( attribute => {
+      const name = attribute.name;
+      const value = attribute.value;
+
+      if ( name === 'class' || name === 'style' || name.startsWith( 'data-' ) ) {
+        element.removeAttribute( name );
+        return;
+      }
+
+      if ( name === 'tabindex' ) {
+        element.removeAttribute( name );
+        return;
+      }
+
+      if ( name === 'id' || name === 'hidden' ) {
+        element.removeAttribute( name );
+        return;
+      }
+
+      if ( name.startsWith( 'aria-' ) || DEVELOPMENT_ALLOWED_ATTRIBUTES.has( name ) ) {
+        if ( ( name === 'aria-describedby' || name === 'aria-labelledby' || name === 'aria-controls' || name === 'aria-owns' || name === 'aria-activedescendant' || name === 'for' ) && value ) {
+          element.setAttribute( name, '...' );
+        }
+        return;
+      }
+
+      element.removeAttribute( name );
+    } );
+  }
+
+  function renderDevelopmentNode( element, container, depth ) {
+    const tagName = element.tagName.toLowerCase();
+    const indent = `${depth * 1.25}em`;
+
+    const openLine = document.createElement( 'div' );
+    openLine.className = 'development-line';
+    openLine.style.marginLeft = indent;
+    openLine.appendChild( createTagSpan( `<${tagName}` ) );
+
+    const attributes = Array.from( element.attributes ).sort( ( a, b ) => a.name.localeCompare( b.name ) );
+    attributes.forEach( attribute => appendAttributeTokens( openLine, attribute ) );
+
+    if ( VOID_ELEMENTS.has( tagName ) ) {
+      openLine.appendChild( createTagSpan( ' />' ) );
+      container.appendChild( openLine );
+      return;
+    }
+
+    openLine.appendChild( createTagSpan( '>' ) );
+    container.appendChild( openLine );
+
+    Array.from( element.childNodes ).forEach( node => {
+      if ( node.nodeType === Node.ELEMENT_NODE ) {
+        renderDevelopmentNode( node, container, depth + 1 );
+      }
+      else if ( node.nodeType === Node.TEXT_NODE ) {
+        renderDevelopmentTextNode( node, container, depth );
+      }
+    } );
+
+    const closeLine = document.createElement( 'div' );
+    closeLine.className = 'development-line';
+    closeLine.style.marginLeft = indent;
+    closeLine.appendChild( createTagSpan( `</${tagName}>` ) );
+    container.appendChild( closeLine );
+  }
+
+  function createTagSpan( text ) {
+    const span = document.createElement( 'span' );
+    span.className = 'development-tag';
+    span.textContent = text;
+    return span;
+  }
+
+  function appendAttributeTokens( line, attribute ) {
+    line.appendChild( document.createTextNode( ' ' ) );
+
+    const nameSpan = document.createElement( 'span' );
+    nameSpan.className = 'development-attribute';
+    nameSpan.textContent = attribute.name;
+    line.appendChild( nameSpan );
+
+    if ( attribute.value ) {
+      const equalsSpan = document.createElement( 'span' );
+      equalsSpan.className = 'development-tag';
+      equalsSpan.textContent = '=';
+      line.appendChild( equalsSpan );
+
+      const valueSpan = document.createElement( 'span' );
+      valueSpan.className = 'development-attribute-value';
+      valueSpan.textContent = `"${attribute.value}"`;
+      line.appendChild( valueSpan );
+    }
+  }
+
+  function renderDevelopmentTextNode( node, container, depth ) {
+    const content = node.textContent.replace( /\s+/g, ' ' ).trim();
+    if ( !content ) {
+      return;
+    }
+
+    const textLine = document.createElement( 'div' );
+    textLine.className = 'development-line';
+    textLine.style.marginLeft = `${( depth + 1 ) * 1.25}em`;
+
+    const span = document.createElement( 'span' );
+    span.className = 'development-text-node';
+    span.textContent = content;
+    textLine.appendChild( span );
+    container.appendChild( textLine );
+  }
+
+  function renderViews( pdomRoot, viewContainers ) {
+    renderFormattedView( pdomRoot, viewContainers[ VIEW_MODES.FORMATTED ] );
+    renderDevelopmentView( pdomRoot, viewContainers[ VIEW_MODES.DEVELOPMENT ] );
+    renderLegacyView( pdomRoot, viewContainers[ VIEW_MODES.LEGACY ] );
+  }
+
+  function addPDOMObserver( pdomRoot, viewContainers, mutationConfig ) {
+    let dirty = true;
+    let renderTimeoutId = null;
+
+    const scheduleRender = () => {
+      if ( renderTimeoutId !== null ) {
+        return;
+      }
+      renderTimeoutId = setTimeout( () => {
+        renderViews( pdomRoot, viewContainers );
+        dirty = false;
+        renderTimeoutId = null;
+      }, 10 );
+    };
+
+    setInterval( () => {
+      if ( dirty ) {
+        scheduleRender();
+      }
+    }, 300 );
+
+    const domObserver = new MutationObserver( () => {
+      dirty = true;
+    } );
+
+    domObserver.observe( pdomRoot, mutationConfig );
+    scheduleRender();
   }
 
   /**
@@ -428,58 +1031,6 @@
         } );
       }
     }
-  }
-
-  /**
-   * Copy the necessary PDOM content over to the a11y view
-   * @param {HTMLElement} pdomRoot
-   * @param {HTMLElement} copyContainer - the parent of where the copy will be added in the a11y view
-   */
-  function setPDOMCopyContent( pdomRoot, copyContainer ) {
-
-    // NOTE: This is extremely inefficient every time the document changes, make a new copy, remove
-    // the visual DOM, and add a new one.
-    copyContainer.innerHTML = '';
-    const pdomCopy = pdomRoot.cloneNode( true );
-    pdomCopy.removeAttribute( 'style' );
-    copyContainer.appendChild( pdomCopy );
-
-    addInlineAttributesTHTML( pdomCopy );
-
-    // we have to update styles of all elements when they are cloned
-    styleCopy( pdomCopy );
-  }
-
-  /**
-   * Add an observer to the PDOM root that will update the a11y view copy whenever the sim pdom changes.
-   * @param {HTMLElement} pdomRoot
-   * @param {HTMLElement} copyContainer - the PDOM copy will be added as a child here, see setPDOMCopyContent
-   * @param {Object} mutationConfig
-   */
-  function addPDOMObserver( pdomRoot, copyContainer, mutationConfig ) {
-
-    // Initially dirty so that the PDOM copy is updated on the first frame
-    let dirty = true;
-
-    // poll for updates to help performance on chrome
-    setInterval( () => {
-
-      if ( dirty ) {
-
-        // update the PDOM copy after a delay to fix a FF/Safari bug where cloneNode prevents hidden DOM elements
-        // in the iframe from staying hidden - see https://github.com/phetsims/chipper/issues/648
-        setTimeout( () => {
-          setPDOMCopyContent( pdomRoot, copyContainer );
-          dirty = false;
-        }, 10 );
-      }
-    }, 300 ); // as of this writing, 200 ms was pretty good, but could get a bit laggy at times on chrome while using NVDA.
-
-    // whenever an element in the parallel DOM changes, we need to update its copied element as well
-    const domObserver = new MutationObserver( mutations => { dirty = true; } );
-
-    // pass in the target node, as well as the observer configuration options
-    domObserver.observe( pdomRoot, MUTATION_OBSERVER_CONFIG );
   }
 
   /**
@@ -587,10 +1138,16 @@
       const alertList = document.getElementById( 'alert-list' );
 
       // get the parent container for the parallel DOM copy and the alert content
-      const copyContainer = document.getElementById( 'dom-copy-container' );
+      const viewContainerRoot = document.getElementById( 'dom-copy-container' );
+      const viewContainers = {
+        formatted: viewContainerRoot.querySelector( '[data-view="formatted"]' ),
+        development: viewContainerRoot.querySelector( '[data-view="development"]' ),
+        legacy: viewContainerRoot.querySelector( '[data-view="legacy"]' )
+      };
+      initializeViewModeControls( viewContainers );
 
       // update the PDOM copy whenever the sim's PDOM changes
-      addPDOMObserver( PDOMRoot, copyContainer, MUTATION_OBSERVER_CONFIG );
+      addPDOMObserver( PDOMRoot, viewContainers, MUTATION_OBSERVER_CONFIG );
 
       // observe each of the live elements and add new text content to the list view
       for ( let i = 0; i < allSourceAriaLiveElements.length; i++ ) {
@@ -624,6 +1181,7 @@
   if ( liveReload ) {
     new EventSource( '/esbuild' ).addEventListener( 'change', () => location.reload() );
   }
+
 </script>
 </body>
 </html>
