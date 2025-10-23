@@ -186,6 +186,11 @@
       background-color: #f8fcff;
     }
 
+    .formatted-entry-content {
+      display: grid;
+      gap: 0.35em;
+    }
+
     .formatted-entry-title {
       font-weight: 600;
       color: #134575;
@@ -201,6 +206,42 @@
       font-size: 0.85em;
       color: #3a3a3a;
       opacity: 0.7;
+    }
+
+    .formatted-entry-badge {
+      font-size: 0.75em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #134575;
+    }
+
+    .formatted-radio-group {
+      margin: 0;
+      padding: 0.5em 0.75em;
+      border: 1px solid #cbd6e4;
+      border-radius: 0.4em;
+      display: grid;
+      gap: 0.5em;
+    }
+
+    .formatted-radio-group legend {
+      font-size: 0.85em;
+      font-weight: 600;
+      color: #134575;
+      padding: 0 0.25em;
+    }
+
+    .formatted-radio-options {
+      display: grid;
+      gap: 0.35em;
+    }
+
+    .formatted-radio-option {
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
+      font-size: 0.95em;
     }
 
     .development-container {
@@ -646,22 +687,29 @@
 
     let hasContent = false;
 
-    const titleText = getFormattedTitle( element );
-    if ( titleText ) {
-      const title = document.createElement( 'div' );
-      title.className = 'formatted-entry-title';
-      title.textContent = titleText;
-      entry.appendChild( title );
+    const preview = createFormattedPreview( element );
+    if ( preview ) {
+      entry.appendChild( preview );
       hasContent = true;
     }
+    else {
+      const titleText = getFormattedTitle( element );
+      if ( titleText ) {
+        const title = document.createElement( 'div' );
+        title.className = 'formatted-entry-title';
+        title.textContent = titleText;
+        entry.appendChild( title );
+        hasContent = true;
+      }
 
-    const primaryText = getPrimaryFormattedText( element );
-    if ( primaryText ) {
-      const textLine = document.createElement( 'div' );
-      textLine.className = 'formatted-entry-text';
-      textLine.textContent = primaryText;
-      entry.appendChild( textLine );
-      hasContent = true;
+      const primaryText = getPrimaryFormattedText( element );
+      if ( primaryText ) {
+        const textLine = document.createElement( 'div' );
+        textLine.className = 'formatted-entry-text';
+        textLine.textContent = primaryText;
+        entry.appendChild( textLine );
+        hasContent = true;
+      }
     }
 
     const metadataItems = getFormattedMetadata( element );
@@ -678,7 +726,299 @@
     }
 
     const childDepth = isDivElement && depth > 0 ? depth : depth + 1;
-    Array.from( element.children ).forEach( child => buildFormattedEntry( child, parent, childDepth ) );
+    getChildrenForFormattedEntry( element ).forEach( child => buildFormattedEntry( child, parent, childDepth ) );
+  }
+
+  function createFormattedPreview( element ) {
+    const tagName = element.tagName.toLowerCase();
+    const role = ( element.getAttribute( 'role' ) || '' ).toLowerCase();
+
+    const container = document.createElement( 'div' );
+    container.className = 'formatted-entry-content';
+
+    if ( /^h[1-6]$/.test( tagName ) ) {
+      const heading = document.createElement( tagName );
+      heading.textContent = getPrimaryFormattedText( element ) || element.textContent.trim();
+      container.appendChild( heading );
+      return container;
+    }
+
+    if ( tagName === 'p' ) {
+      const paragraph = document.createElement( 'p' );
+      paragraph.textContent = getPrimaryFormattedText( element ) || element.textContent.trim();
+      container.appendChild( paragraph );
+      return container;
+    }
+
+    if ( tagName === 'section' || tagName === 'article' ) {
+      const badge = document.createElement( 'div' );
+      badge.className = 'formatted-entry-badge';
+      badge.textContent = toTitleCase( tagName );
+      container.appendChild( badge );
+
+      const text = getPrimaryFormattedText( element );
+      if ( text ) {
+        const paragraph = document.createElement( 'p' );
+        paragraph.textContent = text;
+        container.appendChild( paragraph );
+      }
+      return container;
+    }
+
+    if ( tagName === 'ul' || tagName === 'ol' ) {
+      const list = buildListPreviewStructure( element );
+      if ( list.childNodes.length === 0 ) {
+        return null;
+      }
+      container.appendChild( list );
+      return container;
+    }
+
+    if ( role === 'radiogroup' ) {
+      const radioGroup = createRadioGroupPreview( element );
+      if ( radioGroup ) {
+        container.appendChild( radioGroup );
+        return container;
+      }
+    }
+
+    if ( isRadioElement( element ) ) {
+      const radioOption = createRadioOptionPreview( element );
+      if ( radioOption ) {
+        container.appendChild( radioOption );
+        return container;
+      }
+    }
+
+    if ( tagName === 'button' || role === 'button' ) {
+      const buttonPreview = createButtonPreview( element );
+      container.appendChild( buttonPreview );
+      return container;
+    }
+
+    if ( tagName === 'label' ) {
+      const label = document.createElement( 'label' );
+      label.textContent = getPrimaryFormattedText( element ) || element.textContent.trim();
+      container.appendChild( label );
+      return container;
+    }
+
+    if ( tagName === 'input' ) {
+      const inputPreview = createInputPreview( element );
+      if ( inputPreview ) {
+        container.appendChild( inputPreview );
+        return container;
+      }
+    }
+
+    const primaryText = getPrimaryFormattedText( element );
+    if ( primaryText ) {
+      container.textContent = primaryText;
+      return container;
+    }
+
+    if ( container.childNodes.length > 0 ) {
+      return container;
+    }
+
+    return null;
+  }
+
+  function buildListPreviewStructure( listElement ) {
+    const tagName = listElement.tagName.toLowerCase();
+    const previewList = document.createElement( tagName );
+
+    Array.from( listElement.children ).forEach( child => {
+      if ( child.nodeType === Node.ELEMENT_NODE && child.tagName.toLowerCase() === 'li' ) {
+        const previewItem = document.createElement( 'li' );
+        const text = getPrimaryFormattedText( child ) || child.textContent.trim();
+        if ( text ) {
+          const textSpan = document.createElement( 'span' );
+          textSpan.textContent = text;
+          previewItem.appendChild( textSpan );
+        }
+
+        Array.from( child.children ).forEach( grandchild => {
+          if ( grandchild.nodeType !== Node.ELEMENT_NODE ) {
+            return;
+          }
+          const grandchildTag = grandchild.tagName.toLowerCase();
+          if ( grandchildTag === 'ul' || grandchildTag === 'ol' ) {
+            const nestedList = buildListPreviewStructure( grandchild );
+            if ( nestedList.childNodes.length > 0 ) {
+              previewItem.appendChild( nestedList );
+            }
+          }
+        } );
+
+        previewList.appendChild( previewItem );
+      }
+    } );
+
+    return previewList;
+  }
+
+  function createRadioGroupPreview( element ) {
+    const options = Array.from( element.children )
+      .map( createRadioOptionPreview )
+      .filter( option => option );
+
+    if ( options.length === 0 ) {
+      return null;
+    }
+
+    const fieldset = document.createElement( 'fieldset' );
+    fieldset.className = 'formatted-radio-group';
+
+    const legendText = getPrimaryFormattedText( element );
+    if ( legendText ) {
+      const legend = document.createElement( 'legend' );
+      legend.textContent = legendText;
+      fieldset.appendChild( legend );
+    }
+
+    const optionsContainer = document.createElement( 'div' );
+    optionsContainer.className = 'formatted-radio-options';
+    options.forEach( option => optionsContainer.appendChild( option ) );
+    fieldset.appendChild( optionsContainer );
+
+    return fieldset;
+  }
+
+  function createRadioOptionPreview( element ) {
+    if ( !isRadioElement( element ) ) {
+      return null;
+    }
+
+    const label = document.createElement( 'label' );
+    label.className = 'formatted-radio-option';
+
+    const input = document.createElement( 'input' );
+    input.type = 'radio';
+    input.disabled = true;
+
+    if ( element.tagName.toLowerCase() === 'input' ) {
+      if ( element.checked ) {
+        input.checked = true;
+      }
+    }
+    else if ( element.getAttribute( 'aria-checked' ) === 'true' ) {
+      input.checked = true;
+    }
+
+    label.appendChild( input );
+
+    const optionText = getPrimaryFormattedText( element ) || element.textContent.trim() || 'Option';
+    const textSpan = document.createElement( 'span' );
+    textSpan.textContent = optionText;
+    label.appendChild( textSpan );
+
+    return label;
+  }
+
+  function createButtonPreview( element ) {
+    const button = document.createElement( 'button' );
+    button.type = 'button';
+    button.disabled = true;
+    button.textContent = getPrimaryFormattedText( element ) || element.textContent.trim() || 'Button';
+    return button;
+  }
+
+  function createInputPreview( element ) {
+    const type = ( element.getAttribute( 'type' ) || 'text' ).toLowerCase();
+
+    if ( type === 'radio' ) {
+      return createRadioOptionPreview( element );
+    }
+
+    if ( type === 'checkbox' ) {
+      const label = document.createElement( 'label' );
+      const input = document.createElement( 'input' );
+      input.type = 'checkbox';
+      input.disabled = true;
+
+      if ( element.checked || element.getAttribute( 'aria-checked' ) === 'true' ) {
+        input.checked = true;
+      }
+
+      label.appendChild( input );
+
+      const text = element.getAttribute( 'aria-label' ) || element.getAttribute( 'title' ) || '';
+      if ( text ) {
+        const span = document.createElement( 'span' );
+        span.textContent = text;
+        label.appendChild( span );
+      }
+
+      return label;
+    }
+
+    if ( type === 'button' || type === 'submit' || type === 'reset' ) {
+      return createButtonPreview( element );
+    }
+
+    const input = document.createElement( 'input' );
+    input.type = type || 'text';
+    input.disabled = true;
+    input.value = element.value || '';
+    input.placeholder = element.getAttribute( 'placeholder' ) || '';
+    return input;
+  }
+
+  function isRadioElement( element ) {
+    if ( !element || element.nodeType !== Node.ELEMENT_NODE ) {
+      return false;
+    }
+
+    const role = ( element.getAttribute( 'role' ) || '' ).toLowerCase();
+    if ( role === 'radio' ) {
+      return true;
+    }
+
+    if ( element.tagName.toLowerCase() === 'input' ) {
+      const type = ( element.getAttribute( 'type' ) || '' ).toLowerCase();
+      return type === 'radio';
+    }
+
+    return false;
+  }
+
+  function getChildrenForFormattedEntry( element ) {
+    const tagName = element.tagName.toLowerCase();
+
+    if ( tagName === 'ul' || tagName === 'ol' ) {
+      return Array.from( element.children ).filter( child => {
+        if ( child.nodeType !== Node.ELEMENT_NODE ) {
+          return false;
+        }
+        if ( child.tagName.toLowerCase() !== 'li' ) {
+          return true;
+        }
+        return Array.from( child.children ).some( grandchild => {
+          if ( grandchild.nodeType !== Node.ELEMENT_NODE ) {
+            return false;
+          }
+          const grandchildTag = grandchild.tagName.toLowerCase();
+          if ( grandchildTag === 'ul' || grandchildTag === 'ol' ) {
+            return true;
+          }
+          if ( grandchild.getAttribute( 'role' ) ) {
+            return true;
+          }
+          return grandchildTag === 'button' ||
+                 grandchildTag === 'input' ||
+                 grandchildTag === 'select' ||
+                 grandchildTag === 'textarea' ||
+                 grandchildTag === 'a';
+        } );
+      } );
+    }
+
+    if ( ( element.getAttribute( 'role' ) || '' ).toLowerCase() === 'radiogroup' ) {
+      return Array.from( element.children ).filter( child => !isRadioElement( child ) );
+    }
+
+    return Array.from( element.children );
   }
 
   function getFormattedTitle( element ) {
