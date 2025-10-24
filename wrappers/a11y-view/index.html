@@ -218,29 +218,11 @@
       color: #1b5fa7;
     }
 
-    .formatted-aria summary {
-      cursor: pointer;
-      list-style: none;
-      display: block;
+    .formatted-aria-heading {
       margin: 0.55em 0 0;
       font-size: 0.92em;
       font-weight: normal;
       line-height: 1.4;
-    }
-
-    .formatted-aria summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .formatted-aria summary::before {
-      content: '\25BA';
-      display: inline-block;
-      margin-right: 0.35em;
-      transition: transform 0.2s ease;
-    }
-
-    .formatted-aria[open] summary::before {
-      transform: rotate( 90deg );
     }
 
     .formatted-aria-body {
@@ -471,22 +453,68 @@
   // Number of alerts that remain in the Activity log
   const ACTIVITY_LOG_LENGTH = 40;
 
+  // Helpers to keep shouldDisplay predicates readable when filtering ARIA attributes.
+  const DISPLAY_WHEN_TRUE = value => value === 'true';
+  const DISPLAY_WHEN_NOT_FALSE = value => value !== 'false';
+  const DISPLAY_WHEN_PRESENT = value => value && value.trim().length > 0;
+  const RELATIONSHIP_PLACEHOLDER = '...';
+
+  function formatAriaValue( config, value, element ) {
+    if ( config.formatValue ) {
+      return config.formatValue( value, element );
+    }
+    return value;
+  }
+
   // The attributes that we want to display as additional data in the PDOM copy. Otherwise, these are invisible
   // unless you inspect the DOM. For each entry, you can provide a shouldDisplay predicate that will control
   // how it is shown.
   const IMPORTANT_ARIA_ATTRIBUTES = [
-    { name: 'aria-valuetext' },
+    // Roles and semantics
+    { name: 'role' },
+    { name: 'aria-roledescription', shouldDisplay: DISPLAY_WHEN_PRESENT },
+
+    // Relationships and labelling
+    { name: 'aria-labelledby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+    { name: 'aria-describedby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+    { name: 'aria-controls', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+    { name: 'aria-owns', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+    { name: 'aria-activedescendant', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+
+    // Visibility and modality
+    { name: 'aria-hidden', shouldDisplay: DISPLAY_WHEN_TRUE },
+    { name: 'aria-modal', shouldDisplay: DISPLAY_WHEN_TRUE },
+
+    // Widget state
     { name: 'aria-expanded' },
     { name: 'aria-pressed' },
     { name: 'aria-checked' },
-    { name: 'aria-roledescription' },
-    { name: 'role' },
-    {
-      name: 'aria-disabled',
+    { name: 'aria-selected', shouldDisplay: DISPLAY_WHEN_TRUE },
+    { name: 'aria-current', shouldDisplay: DISPLAY_WHEN_NOT_FALSE },
+    { name: 'aria-haspopup', shouldDisplay: DISPLAY_WHEN_NOT_FALSE },
+    { name: 'aria-required', shouldDisplay: DISPLAY_WHEN_TRUE },
+    { name: 'aria-invalid', shouldDisplay: DISPLAY_WHEN_NOT_FALSE },
+    { name: 'aria-readonly', shouldDisplay: DISPLAY_WHEN_TRUE },
+    { name: 'aria-disabled', shouldDisplay: DISPLAY_WHEN_TRUE },
 
-      // aria-disabled: false is too noisy to show so it is hidden
-      shouldDisplay: value => value === 'true'
-    }
+    // Live region hints
+    { name: 'aria-live', shouldDisplay: value => value && value !== 'off' },
+    { name: 'aria-atomic', shouldDisplay: DISPLAY_WHEN_TRUE },
+
+    // Orientation and range metadata
+    { name: 'aria-orientation', shouldDisplay: DISPLAY_WHEN_PRESENT },
+    { name: 'aria-valuenow' },
+    { name: 'aria-valuemin' },
+    { name: 'aria-valuemax' },
+    { name: 'aria-valuetext' },
+
+    // Set membership
+    { name: 'aria-level', shouldDisplay: DISPLAY_WHEN_PRESENT },
+    { name: 'aria-posinset', shouldDisplay: DISPLAY_WHEN_PRESENT },
+    { name: 'aria-setsize', shouldDisplay: DISPLAY_WHEN_PRESENT },
+
+    // Busy state
+    { name: 'aria-busy', shouldDisplay: DISPLAY_WHEN_TRUE }
   ];
 
   const VIEW_MODES = {
@@ -871,7 +899,10 @@
           return;
         }
 
-        attributes.push( { name: attributeName, value: value } );
+        attributes.push( {
+          name: attributeName,
+          value: formatAriaValue( config, value, element )
+        } );
       }
     } );
 
@@ -894,13 +925,13 @@
     const wrapper = document.createElement( 'div' );
     wrapper.className = 'formatted-aria-block';
 
-    const details = document.createElement( 'details' );
-    details.className = 'formatted-aria';
+    const ariaContainer = document.createElement( 'div' );
+    ariaContainer.className = 'formatted-aria';
 
-    const summary = document.createElement( 'summary' );
-    summary.tabIndex = -1;
-    summary.textContent = `ARIA details (${attributes.length})`;
-    details.appendChild( summary );
+    const heading = document.createElement( 'div' );
+    heading.className = 'formatted-aria-heading';
+    heading.textContent = `ARIA details (${attributes.length})`;
+    ariaContainer.appendChild( heading );
 
     const body = document.createElement( 'div' );
     body.className = 'formatted-aria-body';
@@ -912,9 +943,9 @@
       body.appendChild( chip );
     } );
 
-    details.appendChild( body );
+    ariaContainer.appendChild( body );
     wrapper.appendChild( clone );
-    wrapper.appendChild( details );
+    wrapper.appendChild( ariaContainer );
 
     if ( insertionPoint ) {
       parent.insertBefore( wrapper, insertionPoint );
@@ -1238,6 +1269,8 @@
               return;
             }
 
+            const displayValue = formatAriaValue( config, value, element );
+
             // add a new element to the DOM that displays the value of the attribute
             const valueElement = document.createElement( 'p' );
 
@@ -1246,7 +1279,7 @@
             valueElement.style.opacity = 0.55;
             valueElement.style.display = 'inline-block';
             valueElement.style.paddingLeft = '1em';
-            valueElement.textContent = `(${attributeName}: ${value})`;
+            valueElement.textContent = `(${attributeName}: ${displayValue})`;
 
             // insert directly after the element that has the attribute. This handles the case if element is last, see https://stackoverflow.com/questions/4793604/how-to-insert-an-element-after-another-element-in-javascript-without-using-a-lib
             element.parentNode.insertBefore( valueElement, element.nextSibling );
