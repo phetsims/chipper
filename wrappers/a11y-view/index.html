@@ -793,58 +793,10 @@
     const clone = sourceElement.cloneNode( false );
     clone.removeAttribute( 'style' );
     clone.tabIndex = -1;
-    applyInteractiveState( sourceElement, clone );
+
+    // Grouping names assigned in the simulation will not work when all cloned elements are in the same document.
+    clone.removeAttribute( 'name' );
     return clone;
-  }
-
-  /**
-   * Mirrors the non-interactive state of form controls so the preview reflects their current value without being
-   * interactive.
-   *
-   * @param {HTMLElement} sourceElement
-   * @param {HTMLElement} clone
-   */
-  function applyInteractiveState( sourceElement, clone ) {
-    const tagName = sourceElement.tagName.toLowerCase();
-
-    if ( tagName === 'button' ) {
-      clone.disabled = true;
-      return;
-    }
-
-    if ( tagName === 'input' ) {
-      const type = ( sourceElement.getAttribute( 'type' ) || 'text' ).toLowerCase();
-      clone.setAttribute( 'type', type );
-      clone.disabled = true;
-
-      if ( type === 'checkbox' || type === 'radio' ) {
-        if ( sourceElement.checked || sourceElement.getAttribute( 'aria-checked' ) === 'true' ) {
-          clone.checked = true;
-        }
-      }
-      else {
-        clone.value = sourceElement.value || sourceElement.getAttribute( 'value' ) || '';
-      }
-      return;
-    }
-
-    if ( tagName === 'select' ) {
-      clone.disabled = true;
-      return;
-    }
-
-    if ( tagName === 'textarea' ) {
-      clone.disabled = true;
-      clone.value = sourceElement.value || sourceElement.textContent || '';
-      return;
-    }
-
-    if ( tagName === 'a' ) {
-      clone.removeAttribute( 'href' );
-      if ( !clone.hasAttribute( 'role' ) ) {
-        clone.setAttribute( 'role', 'link' );
-      }
-    }
   }
 
   /**
