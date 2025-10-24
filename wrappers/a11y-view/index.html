@@ -206,6 +206,61 @@
       border-left-color: #a8c4e6;
     }
 
+    .formatted-aria-block {
+      border-top: 1px dashed #cbd6e4;
+      border-bottom: 1px dashed #cbd6e4;
+      padding: 0.45em 0;
+      margin: 0.45em 0;
+    }
+
+    .formatted-aria {
+      font-size: 0.85em;
+      color: #1b5fa7;
+    }
+
+    .formatted-aria summary {
+      cursor: pointer;
+      list-style: none;
+      display: block;
+      margin: 0.55em 0 0;
+      font-size: 0.92em;
+      font-weight: normal;
+      line-height: 1.4;
+    }
+
+    .formatted-aria summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .formatted-aria summary::before {
+      content: '\25BA';
+      display: inline-block;
+      margin-right: 0.35em;
+      transition: transform 0.2s ease;
+    }
+
+    .formatted-aria[open] summary::before {
+      transform: rotate( 90deg );
+    }
+
+    .formatted-aria-body {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3em;
+      margin-top: 0.45em;
+      color: #214d85;
+    }
+
+    .aria-chip {
+      background: #eef4fc;
+      border: 1px solid #b9cdea;
+      border-radius: 999px;
+      padding: 0.2em 0.6em;
+      font-size: 0.78em;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
     .formatted-group > *:first-child {
       margin-top: 0;
     }
@@ -423,6 +478,7 @@
     { name: 'aria-valuetext' },
     { name: 'aria-expanded' },
     { name: 'aria-pressed' },
+    { name: 'aria-checked' },
     { name: 'aria-roledescription' },
     { name: 'role' },
     {
@@ -751,6 +807,7 @@
     const clone = cloneFormattedElement( sourceElement );
     targetParent.appendChild( clone );
     appendFormattedContent( sourceElement, clone );
+    appendFormattedAriaDetails( sourceElement, clone );
     finalizeFormattedElement( sourceElement, clone );
   }
 
@@ -797,6 +854,74 @@
     // Grouping names assigned in the simulation will not work when all cloned elements are in the same document.
     clone.removeAttribute( 'name' );
     return clone;
+  }
+
+  function collectImportantAriaAttributes( element ) {
+    const attributes = [];
+
+    IMPORTANT_ARIA_ATTRIBUTES.forEach( attributeDefinition => {
+      const config = typeof attributeDefinition === 'string' ? { name: attributeDefinition } : attributeDefinition;
+      const attributeName = config.name;
+      const shouldDisplay = config.shouldDisplay;
+
+      if ( element.hasAttribute( attributeName ) ) {
+        const value = element.getAttribute( attributeName );
+
+        if ( shouldDisplay && !shouldDisplay( value, element ) ) {
+          return;
+        }
+
+        attributes.push( { name: attributeName, value: value } );
+      }
+    } );
+
+    return attributes;
+  }
+
+  function appendFormattedAriaDetails( sourceElement, clone ) {
+    const attributes = collectImportantAriaAttributes( sourceElement );
+    if ( attributes.length === 0 ) {
+      return;
+    }
+
+    const parent = clone.parentNode;
+    if ( !parent ) {
+      return;
+    }
+
+    const insertionPoint = clone.nextSibling;
+
+    const wrapper = document.createElement( 'div' );
+    wrapper.className = 'formatted-aria-block';
+
+    const details = document.createElement( 'details' );
+    details.className = 'formatted-aria';
+
+    const summary = document.createElement( 'summary' );
+    summary.tabIndex = -1;
+    summary.textContent = `ARIA details (${attributes.length})`;
+    details.appendChild( summary );
+
+    const body = document.createElement( 'div' );
+    body.className = 'formatted-aria-body';
+
+    attributes.forEach( attribute => {
+      const chip = document.createElement( 'span' );
+      chip.className = 'aria-chip';
+      chip.textContent = `${attribute.name}: ${attribute.value}`;
+      body.appendChild( chip );
+    } );
+
+    details.appendChild( body );
+    wrapper.appendChild( clone );
+    wrapper.appendChild( details );
+
+    if ( insertionPoint ) {
+      parent.insertBefore( wrapper, insertionPoint );
+    }
+    else {
+      parent.appendChild( wrapper );
+    }
   }
 
   /**
