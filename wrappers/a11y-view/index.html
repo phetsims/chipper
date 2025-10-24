@@ -413,6 +413,10 @@
     const IS_BUILT_STRING = '{{IS_BUILT}}';
     const IS_BUILT = IS_BUILT_STRING.indexOf( '{{' ) !== 0; // escape for better syntax highlighting support
 
+    /**
+     * Initializes the embedded simulation iframe by reading the search parameters, building the expected
+     * simulation URL, and enabling sticky layout behavior once the iframe is configured.
+     */
     function initializeSimulationFrame() {
       const simulationQueryString = new URLSearchParams( window.location.search );
 
@@ -459,7 +463,9 @@
 
     initializeSimulationFrame();
 
-    // apply sticky styling for all browsers except chrome.
+    /**
+     * Adds sticky positioning styles to the left column, accounting for Safari's non-standard behavior.
+     */
     function applyStickyBehavior() {
       const left = document.getElementById( 'left' );
       if ( !left ) {
@@ -490,6 +496,14 @@
     const DISPLAY_WHEN_PRESENT = value => value && value.trim().length > 0;
     const RELATIONSHIP_PLACEHOLDER = '...';
 
+    /**
+     * Formats the value for an ARIA attribute using optional value formatting metadata.
+     *
+     * @param {{ name: string, shouldDisplay?: function(string, HTMLElement): boolean, formatValue?: function(string, HTMLElement): string }} config
+     * @param {string} value
+     * @param {HTMLElement} element
+     * @returns {string}
+     */
     function formatAriaValue( config, value, element ) {
       if ( config.formatValue ) {
         return config.formatValue( value, element );
@@ -688,6 +702,12 @@
       }
     }
 
+    /**
+     * Updates the data-active attribute for view containers so that only the selected view is marked active.
+     *
+     * @param {Object.<string, HTMLElement|null>} viewContainers
+     * @param {string} viewMode
+     */
     function setActiveView( viewContainers, viewMode ) {
       Object.keys( viewContainers ).forEach( key => {
         const container = viewContainers[ key ];
@@ -703,6 +723,11 @@
       } );
     }
 
+    /**
+     * Loads the persisted view mode preference from localStorage, falling back to the default on failure.
+     *
+     * @returns {string}
+     */
     function loadViewMode() {
       try {
         const value = localStorage.getItem( VIEW_MODE_STORAGE_KEY );
@@ -716,6 +741,11 @@
       return DEFAULT_VIEW_MODE;
     }
 
+    /**
+     * Persists the current view mode selection to localStorage, intentionally ignoring storage failures.
+     *
+     * @param {string} viewMode
+     */
     function storeViewMode( viewMode ) {
       try {
         localStorage.setItem( VIEW_MODE_STORAGE_KEY, viewMode );
@@ -725,6 +755,13 @@
       }
     }
 
+    /**
+     * Wires up the view mode radio group so that selections update the active DOM view and persisted preference.
+     *
+     * @param {HTMLElement|null} controls
+     * @param {Object.<string, HTMLElement|null>} viewContainers
+     * @returns {string} The mode that is active after initialization.
+     */
     function initializeViewModeControls( controls, viewContainers ) {
       if ( !controls ) {
         return DEFAULT_VIEW_MODE;
@@ -759,6 +796,12 @@
       return currentMode;
     }
 
+    /**
+     * Renders an unmodified copy of the PDOM into the legacy view container.
+     *
+     * @param {HTMLElement} pdomRoot
+     * @param {HTMLElement|null} container
+     */
     function renderLegacyView( pdomRoot, container ) {
       if ( !container ) {
         return;
@@ -774,6 +817,12 @@
     // Elements that exist purely for document structure; we flatten them when building the formatted view.
     const DECORATOR_TAGS = new Set( [ 'SECTION', 'ARTICLE', 'MAIN', 'ASIDE' ] );
 
+    /**
+     * Renders a formatted, human-friendly representation of the PDOM structure.
+     *
+     * @param {HTMLElement} pdomRoot
+     * @param {HTMLElement|null} container
+     */
     function renderFormattedView( pdomRoot, container ) {
       if ( !container ) {
         return;
@@ -791,6 +840,12 @@
       container.appendChild( fragment );
     }
 
+    /**
+     * Determines whether an element should be omitted from the formatted view.
+     *
+     * @param {HTMLElement} element
+     * @returns {boolean}
+     */
     function shouldSkipFormattedElement( element ) {
       if ( !element || element.nodeType !== Node.ELEMENT_NODE ) {
         return true;
@@ -959,6 +1014,12 @@
       return clone;
     }
 
+    /**
+     * Collects ARIA attributes that should be surfaced in the formatted view, respecting per-attribute filters.
+     *
+     * @param {HTMLElement} element
+     * @returns {{ name: string, value: string }[]}
+     */
     function collectImportantAriaAttributes( element ) {
       const attributes = [];
 
@@ -984,6 +1045,12 @@
       return attributes;
     }
 
+    /**
+     * Appends ARIA attribute chips for the supplied element directly after its clone in the formatted view.
+     *
+     * @param {HTMLElement} sourceElement
+     * @param {HTMLElement} clone
+     */
     function appendFormattedAriaDetails( sourceElement, clone ) {
       const attributes = collectImportantAriaAttributes( sourceElement );
       if ( attributes.length === 0 ) {
@@ -1101,6 +1168,12 @@
       return DECORATOR_TAGS.has( element.tagName );
     }
 
+    /**
+     * Renders a sanitized, code-like representation of the PDOM structure for development analysis.
+     *
+     * @param {HTMLElement} pdomRoot
+     * @param {HTMLElement|null} container
+     */
     function renderDevelopmentView( pdomRoot, container ) {
       if ( !container ) {
         return;
@@ -1128,6 +1201,12 @@
       refreshDevelopmentFocusHighlight();
     }
 
+    /**
+     * Copies source node metadata onto clone nodes so the development view can trace back to the live PDOM.
+     *
+     * @param {Node} sourceRoot
+     * @param {Node} cloneRoot
+     */
     function annotateDevelopmentClone( sourceRoot, cloneRoot ) {
       if ( !sourceRoot || !cloneRoot ) {
         return;
@@ -1151,6 +1230,12 @@
       }
     }
 
+    /**
+     * Generates or retrieves a stable ID used to associate development view lines with source elements.
+     *
+     * @param {HTMLElement} element
+     * @returns {string|null}
+     */
     function generateDevelopmentSourceId( element ) {
       if ( !element ) {
         return null;
@@ -1164,6 +1249,12 @@
       return id;
     }
 
+    /**
+     * Tracks rendered development lines so they can be highlighted in response to focus changes.
+     *
+     * @param {string|null} sourceId
+     * @param {HTMLElement} line
+     */
     function registerDevelopmentLine( sourceId, line ) {
       if ( !sourceId || !line ) {
         return;
@@ -1176,6 +1267,9 @@
       lines.push( line );
     }
 
+    /**
+     * Removes the visual highlight from any development view lines that are currently emphasized.
+     */
     function clearDevelopmentFocusHighlight() {
       if ( developmentFocusLines.length === 0 ) {
         return;
@@ -1184,6 +1278,11 @@
       developmentFocusLines = [];
     }
 
+    /**
+     * Highlights the development view lines that correspond to the provided source node ID.
+     *
+     * @param {string|null} sourceId
+     */
     function applyDevelopmentFocusHighlight( sourceId ) {
       clearDevelopmentFocusHighlight();
       if ( !sourceId ) {
@@ -1197,6 +1296,9 @@
       developmentFocusLines = lines.slice();
     }
 
+    /**
+     * Reapplies focus highlighting based on the iframe's currently focused element.
+     */
     function refreshDevelopmentFocusHighlight() {
       if ( !currentFocusedElement ) {
         clearDevelopmentFocusHighlight();
@@ -1210,6 +1312,11 @@
       applyDevelopmentFocusHighlight( sourceId );
     }
 
+    /**
+     * Cleans and normalizes the cloned PDOM so that the development view focuses on semantic markup.
+     *
+     * @param {HTMLElement} root
+     */
     function sanitizeForDevelopmentView( root ) {
 
       // Remove hidden elements entirely from the view.
@@ -1225,6 +1332,11 @@
       }
     }
 
+    /**
+     * Removes non-essential attributes and masks sensitive references on a cloned element.
+     *
+     * @param {HTMLElement} element
+     */
     function sanitizeElement( element ) {
       Array.from( element.attributes ).forEach( attribute => {
         const name = attribute.name;
@@ -1251,6 +1363,13 @@
       } );
     }
 
+    /**
+     * Renders a single DOM element (and its descendants) into the development view line-by-line.
+     *
+     * @param {HTMLElement} element
+     * @param {HTMLElement} container
+     * @param {number} depth
+     */
     function renderDevelopmentNode( element, container, depth ) {
       const tagName = element.tagName.toLowerCase();
       const indent = `${depth * DEVELOPMENT_INDENT_SIZE_EM}em`;
@@ -1312,6 +1431,12 @@
       container.appendChild( closeLine );
     }
 
+    /**
+     * Builds a span element styled as a markup tag for the development view.
+     *
+     * @param {string} text
+     * @returns {HTMLSpanElement}
+     */
     function createTagSpan( text ) {
       const span = document.createElement( 'span' );
       span.className = 'development-tag';
@@ -1319,6 +1444,12 @@
       return span;
     }
 
+    /**
+     * Appends styled attribute tokens (name/value) to the provided development line.
+     *
+     * @param {HTMLElement} line
+     * @param {Attr} attribute
+     */
     function appendAttributeTokens( line, attribute ) {
       line.appendChild( document.createTextNode( ' ' ) );
 
@@ -1340,6 +1471,13 @@
       }
     }
 
+    /**
+     * Renders a text node in the development view, collapsing whitespace for readability.
+     *
+     * @param {Text} node
+     * @param {HTMLElement} container
+     * @param {number} depth
+     */
     function renderDevelopmentTextNode( node, container, depth ) {
       const content = node.textContent.replace( /\s+/g, ' ' ).trim();
       if ( !content ) {
@@ -1357,6 +1495,12 @@
       container.appendChild( textLine );
     }
 
+    /**
+     * Returns the whitespace-collapsed text content of an element's immediate text children.
+     *
+     * @param {HTMLElement} element
+     * @returns {string}
+     */
     function getCollapsedTextContent( element ) {
       const text = Array.from( element.childNodes )
         .filter( node => node.nodeType === Node.TEXT_NODE )
@@ -1367,6 +1511,13 @@
       return text;
     }
 
+    /**
+     * Determines whether an element should be rendered inline (opening tag, text, closing tag on one line).
+     *
+     * @param {HTMLElement} element
+     * @param {string} textContent
+     * @returns {boolean}
+     */
     function shouldRenderInlineElement( element, textContent ) {
       if ( element.childElementCount > 0 ) {
         return false;
@@ -1382,6 +1533,13 @@
       return INLINE_SINGLE_LINE_TAGS.has( tagName ) || element.childNodes.length === 1;
     }
 
+    /**
+     * Executes each registered renderer to populate the DOM view containers with up-to-date content.
+     *
+     * @param {HTMLElement} pdomRoot
+     * @param {Object.<string, HTMLElement|null>} viewContainers
+     * @param {Object.<string, Function>} renderers
+     */
     function renderViews( pdomRoot, viewContainers, renderers ) {
       if ( !renderers ) {
         return;
@@ -1403,6 +1561,14 @@
       }
     }
 
+    /**
+     * Observes the PDOM for changes and throttles re-rendering of the various DOM views.
+     *
+     * @param {HTMLElement} pdomRoot
+     * @param {Object.<string, HTMLElement|null>} viewContainers
+     * @param {MutationObserverInit} mutationConfig
+     * @param {Object.<string, Function>} renderers
+     */
     function addPDOMObserver( pdomRoot, viewContainers, mutationConfig, renderers ) {
       let dirty = true;
       let renderTimeoutId = null;
@@ -1433,11 +1599,9 @@
     }
 
     /**
-     * Convert the inline ARIA labels with label information to input values or additional label elements in the
-     * PDOM copy so that they are visible in demonstrations. For example, this could be an aria-label, aria-valuetext,
-     * and so on.
+     * Converts inline ARIA metadata into visible markup in the legacy view so the information is easy to inspect.
      *
-     * @param {HTMLElement} rootNode - descendants of this root are traversed so we have
+     * @param {HTMLElement} rootNode - Root whose descendants will be processed.
      */
     function addInlineAttributesTHTML( rootNode ) {
 
@@ -1511,10 +1675,12 @@
     }
 
     /**
-     * add mutation observers to each of the aria-live elements
+     * Adds a mutation observer to mirror ARIA live region updates in the activity log UI.
+     *
      * @param {HTMLElement} originalElement
      * @param {HTMLElement} listElement
-     * @param {Object} mutationConfig
+     * @param {HTMLElement} alertContainer
+     * @param {MutationObserverInit} mutationConfig
      */
     function addLiveObserver( originalElement, listElement, alertContainer, mutationConfig ) {
       if ( !originalElement || !listElement || !alertContainer ) {
@@ -1561,8 +1727,9 @@
     }
 
     /**
-     * Remove all alerts from the activity log by removing all children of the parent containing them. Solution to clear
-     * children from https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+     * Removes all alerts from the activity log container.
+     *
+     * @param {HTMLElement} listElement
      */
     function clearActivityLog( listElement ) {
       while ( listElement.firstChild ) {
@@ -1570,6 +1737,12 @@
       }
     }
 
+    /**
+     * Sets up the activity log clear button to remove all logged alerts on click.
+     *
+     * @param {HTMLElement|null} button
+     * @param {HTMLElement|null} listElement
+     */
     function initializeActivityLogButton( button, listElement ) {
       if ( !button || !listElement ) {
         return;
@@ -1577,6 +1750,14 @@
       button.addEventListener( 'click', () => clearActivityLog( listElement ) );
     }
 
+    /**
+     * Subscribes to iframe load events, wiring DOM observers and view renderers once the sim is ready.
+     *
+     * @param {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null }} domRefs
+     * @param {Object.<string, HTMLElement|null>} viewContainers
+     * @param {Object.<string, Function>} renderers
+     * @param {MutationObserverInit} mutationConfig
+     */
     function setupMessageListener( domRefs, viewContainers, renderers, mutationConfig ) {
       if ( !domRefs || !domRefs.iframe ) {
         return;
@@ -1657,6 +1838,11 @@
       } );
     }
 
+    /**
+     * Collects frequently accessed DOM nodes for later use.
+     *
+     * @returns {{ iframe: HTMLIFrameElement|null, alertList: HTMLElement|null, alertContainer: HTMLElement|null, clearActivityLogButton: HTMLElement|null, viewModeControls: HTMLElement|null, domCopyContainer: HTMLElement|null }}
+     */
     function createDomReferences() {
       return {
         iframe: document.getElementById( 'iframe' ),
@@ -1668,6 +1854,12 @@
       };
     }
 
+    /**
+     * Resolves the specific DOM view containers under the provided root element.
+     *
+     * @param {HTMLElement|null} root
+     * @returns {{ formatted: HTMLElement|null, development: HTMLElement|null, legacy: HTMLElement|null }}
+     */
     function createViewContainers( root ) {
       if ( !root ) {
         return {
@@ -1684,6 +1876,9 @@
       };
     }
 
+    /**
+     * Enables live-reload updates for local development when the query parameter is present.
+     */
     function initializeLiveReload() {
       const query = new URLSearchParams( window.location.search );
       if ( !query.has( 'liveReload' ) ) {
