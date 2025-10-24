@@ -1791,15 +1791,12 @@
           return;
         }
 
-        // eslint-disable-next-line dot-notation
         const PDOMRoot = phetNamespace.joist.display.pdomRootElement;
         if ( !PDOMRoot ) {
           return;
         }
 
-        // eslint-disable-next-line dot-notation
         const ariaLiveElementsContainer = phetNamespace.joist.sim.display.descriptionUtteranceQueue.announcer.ariaLiveContainer;
-        // eslint-disable-next-line dot-notation
         const globalContainer = phetNamespace.scenery.globalDescriptionQueue.announcer.ariaLiveContainer;
 
         const simDisplayElements = Array.prototype.slice.call( ariaLiveElementsContainer.children );
