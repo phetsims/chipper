@@ -253,32 +253,41 @@
 
     .development-container {
       font-family: "Courier New", Courier, monospace;
-      background: #0f111a;
-      color: #d8dee9;
+      background: #f7f9fc;
+      color: #4b5f79;
       padding: 0.75em 1em;
       border-radius: 0.75em;
+      box-shadow: inset 0 0 0 1px rgba(19, 69, 117, 0.08);
       overflow-x: auto;
+      line-height: 1.45;
     }
 
     .development-line {
       white-space: pre;
+      margin: 0;
+      padding-left: 0;
     }
 
     .development-tag {
-      color: #7285a8;
+      color: #0033b3;
+      font-weight: 600;
     }
 
     .development-attribute {
-      color: #9fb4d9;
+      color: #c1571a;
+      font-weight: 600;
     }
 
     .development-attribute-value {
-      color: #d9c27f;
+      color: #2c536d;
+      font-weight: 400;
     }
 
     .development-text-node {
-      color: #f5f7fa;
+      color: #0b1726;
+      font-weight: 600;
     }
+
 
     /* ************SAFARI ONLY *********************** */
     .left-safari {
@@ -535,6 +544,7 @@
     'disabled',
     'required',
     'hidden',
+    'tabindex',
     'title',
     'alt',
     'lang',
@@ -562,9 +572,23 @@
     'wbr'
   ] );
 
-  /*******************************************************************************
-   * Helper Functions
-   */
+  const DEVELOPMENT_INDENT_SIZE_EM = 1.25;
+  const INLINE_SINGLE_LINE_TAGS = new Set( [
+    'a',
+    'abbr',
+    'button',
+    'code',
+    'em',
+    'label',
+    'small',
+    'span',
+    'strong'
+  ] );
+  const DEVELOPMENT_INLINE_TEXT_LIMIT = 80;
+
+/*******************************************************************************
+ * Helper Functions
+ */
 
   /**
    * Get all 'element' nodes off the parent element, placing them in an array for easy traversal.  Note that this
@@ -1073,11 +1097,6 @@
         return;
       }
 
-      if ( name === 'tabindex' ) {
-        element.removeAttribute( name );
-        return;
-      }
-
       if ( name === 'id' || name === 'hidden' ) {
         element.removeAttribute( name );
         return;
@@ -1096,11 +1115,11 @@
 
   function renderDevelopmentNode( element, container, depth ) {
     const tagName = element.tagName.toLowerCase();
-    const indent = `${depth * 1.25}em`;
+    const indent = `${depth * DEVELOPMENT_INDENT_SIZE_EM}em`;
 
     const openLine = document.createElement( 'div' );
     openLine.className = 'development-line';
-    openLine.style.marginLeft = indent;
+    openLine.style.paddingLeft = indent;
     openLine.appendChild( createTagSpan( `<${tagName}` ) );
 
     const attributes = Array.from( element.attributes ).sort( ( a, b ) => a.name.localeCompare( b.name ) );
@@ -1108,6 +1127,20 @@
 
     if ( VOID_ELEMENTS.has( tagName ) ) {
       openLine.appendChild( createTagSpan( ' />' ) );
+      container.appendChild( openLine );
+      return;
+    }
+
+    const inlineTextContent = getCollapsedTextContent( element );
+    if ( shouldRenderInlineElement( element, inlineTextContent ) ) {
+      openLine.appendChild( createTagSpan( '>' ) );
+
+      const textSpan = document.createElement( 'span' );
+      textSpan.className = 'development-text-node';
+      textSpan.textContent = inlineTextContent;
+      openLine.appendChild( textSpan );
+
+      openLine.appendChild( createTagSpan( `</${tagName}>` ) );
       container.appendChild( openLine );
       return;
     }
@@ -1126,7 +1159,7 @@
 
     const closeLine = document.createElement( 'div' );
     closeLine.className = 'development-line';
-    closeLine.style.marginLeft = indent;
+    closeLine.style.paddingLeft = indent;
     closeLine.appendChild( createTagSpan( `</${tagName}>` ) );
     container.appendChild( closeLine );
   }
@@ -1167,13 +1200,38 @@
 
     const textLine = document.createElement( 'div' );
     textLine.className = 'development-line';
-    textLine.style.marginLeft = `${( depth + 1 ) * 1.25}em`;
+    textLine.style.paddingLeft = `${( depth + 1 ) * DEVELOPMENT_INDENT_SIZE_EM}em`;
 
     const span = document.createElement( 'span' );
     span.className = 'development-text-node';
     span.textContent = content;
     textLine.appendChild( span );
     container.appendChild( textLine );
+  }
+
+  function getCollapsedTextContent( element ) {
+    const text = Array.from( element.childNodes )
+      .filter( node => node.nodeType === Node.TEXT_NODE )
+      .map( node => node.textContent || '' )
+      .join( ' ' )
+      .replace( /\s+/g, ' ' )
+      .trim();
+    return text;
+  }
+
+  function shouldRenderInlineElement( element, textContent ) {
+    if ( element.childElementCount > 0 ) {
+      return false;
+    }
+    if ( !textContent ) {
+      return false;
+    }
+    if ( textContent.length > DEVELOPMENT_INLINE_TEXT_LIMIT ) {
+      return false;
+    }
+
+    const tagName = element.tagName.toLowerCase();
+    return INLINE_SINGLE_LINE_TAGS.has( tagName ) || element.childNodes.length === 1;
   }
 
   function renderViews( pdomRoot, viewContainers ) {
