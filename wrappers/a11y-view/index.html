@@ -178,70 +178,40 @@
       display: block;
     }
 
-    .formatted-entry {
-      border-left: 3px solid #c0d4e6;
-      padding: 0.5em 0.75em;
-      border-radius: 0.35em;
-      margin-bottom: 0.5em;
-      background-color: #f8fcff;
+    .dom-view[data-view="formatted"] {
+      background: #fdfefe;
+      border-radius: 0.75em;
+      padding: 1em;
+      box-shadow: 0 0 0 1px rgba(19, 69, 117, 0.08);
     }
 
-    .formatted-entry-content {
-      display: grid;
-      gap: 0.35em;
+    .dom-view[data-view="formatted"] > *:not(.formatted-group) + * {
+      margin-top: 0.65em;
     }
 
-    .formatted-entry-title {
-      font-weight: 600;
-      color: #134575;
-      margin-bottom: 0.25em;
-    }
-
-    .formatted-entry-text {
-      color: #1c1c1c;
-    }
-
-    .formatted-entry-metadata {
-      margin-top: 0.35em;
-      font-size: 0.85em;
-      color: #3a3a3a;
-      opacity: 0.7;
-    }
-
-    .formatted-entry-badge {
-      font-size: 0.75em;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #134575;
-    }
-
-    .formatted-radio-group {
-      margin: 0;
-      padding: 0.5em 0.75em;
+    .formatted-group {
       border: 1px solid #cbd6e4;
-      border-radius: 0.4em;
-      display: grid;
-      gap: 0.5em;
+      border-left: 4px solid #7ba5d9;
+      border-radius: 0.6em;
+      padding: 0.5em 0.25em;
+      margin: 0 0 0.9em;
+      background: #f6f9fd;
     }
 
-    .formatted-radio-group legend {
-      font-size: 0.85em;
-      font-weight: 600;
-      color: #134575;
-      padding: 0 0.25em;
+    .formatted-group .formatted-group {
+      margin-top: 0.65em;
+      margin-bottom: 0;
+      margin-left: 0.25em;
+      background: #ffffff;
+      border-left-color: #a8c4e6;
     }
 
-    .formatted-radio-options {
-      display: grid;
-      gap: 0.35em;
+    .formatted-group > *:first-child {
+      margin-top: 0;
     }
 
-    .formatted-radio-option {
-      display: flex;
-      align-items: center;
-      gap: 0.4em;
-      font-size: 0.95em;
+    .formatted-group > *:last-child {
+      margin-bottom: 0;
     }
 
     .development-container {
@@ -642,15 +612,16 @@
     styleCopy( pdomCopy );
   }
 
+  // Elements that exist purely for document structure; we flatten them when building the formatted view.
+  const DECORATOR_TAGS = new Set( [ 'SECTION', 'ARTICLE', 'MAIN', 'ASIDE' ] );
+
   function renderFormattedView( pdomRoot, container ) {
     if ( !container ) {
       return;
     }
     container.innerHTML = '';
     const fragment = document.createDocumentFragment();
-    const roots = Array.from( pdomRoot.children );
-
-    roots.forEach( child => buildFormattedEntry( child, fragment, 0 ) );
+    appendFormattedContent( pdomRoot, fragment );
 
     if ( fragment.childNodes.length === 0 ) {
       const emptyMessage = document.createElement( 'p' );
@@ -672,463 +643,279 @@
     return tagName === 'SCRIPT' || tagName === 'STYLE' || tagName === 'TEMPLATE';
   }
 
-  function buildFormattedEntry( element, parent, depth ) {
-    if ( shouldSkipFormattedElement( element ) ) {
+  /**
+   * Recursively walks the PDOM subtree and appends a lightly-processed clone into the formatted container.
+   *
+   * @param {HTMLElement|DocumentFragment} sourceParent - Node within the live PDOM that we are mirroring.
+   * @param {HTMLElement|DocumentFragment} targetParent - Destination container in the formatted view.
+   */
+  function appendFormattedContent( sourceParent, targetParent ) {
+    const nodes = Array.from( sourceParent.childNodes );
+    let index = 0;
+
+    while ( index < nodes.length ) {
+      const node = nodes[ index ];
+
+      if ( node.nodeType === Node.TEXT_NODE ) {
+        appendFormattedTextNode( node, targetParent );
+        index++;
+        continue;
+      }
+
+      if ( node.nodeType !== Node.ELEMENT_NODE ) {
+        index++;
+        continue;
+      }
+
+      const element = node;
+      if ( shouldSkipFormattedElement( element ) ) {
+        index++;
+        continue;
+      }
+
+      const headingLevel = getHeadingLevel( element );
+      if ( headingLevel !== null ) {
+        index = appendHeadingGroup( nodes, index, headingLevel, targetParent );
+        continue;
+      }
+
+      appendFormattedNode( element, targetParent );
+      index++;
+    }
+  }
+
+  /**
+   * Creates a grouped block starting with the heading at startIndex and including following siblings until another
+   * heading of the same or higher level appears.
+   *
+   * @param {Node[]} nodes - Child nodes belonging to the current parent in the source PDOM.
+   * @param {number} startIndex - Index of the heading that initiated this group.
+   * @param {number} headingLevel - Numeric heading level (1-6) for the initiating heading.
+   * @param {HTMLElement|DocumentFragment} targetParent - Destination container for the grouped content.
+   * @returns {number} Index of the next node to process in the caller's loop.
+   */
+  function appendHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
+    const groupContainer = document.createElement( 'div' );
+    groupContainer.className = 'formatted-group';
+
+    let index = startIndex;
+    while ( index < nodes.length ) {
+      const current = nodes[ index ];
+
+      if ( current.nodeType === Node.TEXT_NODE ) {
+        appendFormattedTextNode( current, groupContainer );
+        index++;
+        continue;
+      }
+
+      if ( current.nodeType !== Node.ELEMENT_NODE ) {
+        index++;
+        continue;
+      }
+
+      const element = current;
+      if ( shouldSkipFormattedElement( element ) ) {
+        index++;
+        continue;
+      }
+
+      const currentHeadingLevel = getHeadingLevel( element );
+      // Stop once we reach a heading that should belong to an outer group.
+      if ( index !== startIndex && currentHeadingLevel !== null && currentHeadingLevel <= headingLevel ) {
+        break;
+      }
+
+      appendFormattedNode( element, groupContainer );
+      index++;
+    }
+
+    if ( groupContainer.childNodes.length > 0 ) {
+      targetParent.appendChild( groupContainer );
+    }
+
+    return index;
+  }
+
+  /**
+   * Clones a PDOM element into the formatted view, skipping decorator elements and removing unwanted styling.
+   *
+   * @param {HTMLElement} sourceElement - Element from the live PDOM.
+   * @param {HTMLElement|DocumentFragment} targetParent - Container in the formatted view.
+   */
+  function appendFormattedNode( sourceElement, targetParent ) {
+    if ( isDecoratorElement( sourceElement ) ) {
+      appendFormattedContent( sourceElement, targetParent );
       return;
     }
 
-    const tagName = element.tagName.toLowerCase();
-    const isDivElement = tagName === 'div';
-
-    const entry = document.createElement( 'div' );
-    entry.className = 'formatted-entry';
-    const indentDepth = isDivElement && depth > 0 ? depth - 1 : depth;
-    entry.style.marginLeft = `${indentDepth * 1.25}em`;
-
-    let hasContent = false;
-
-    const preview = createFormattedPreview( element );
-    if ( preview ) {
-      entry.appendChild( preview );
-      hasContent = true;
-    }
-    else {
-      const titleText = getFormattedTitle( element );
-      if ( titleText ) {
-        const title = document.createElement( 'div' );
-        title.className = 'formatted-entry-title';
-        title.textContent = titleText;
-        entry.appendChild( title );
-        hasContent = true;
-      }
-
-      const primaryText = getPrimaryFormattedText( element );
-      if ( primaryText ) {
-        const textLine = document.createElement( 'div' );
-        textLine.className = 'formatted-entry-text';
-        textLine.textContent = primaryText;
-        entry.appendChild( textLine );
-        hasContent = true;
-      }
-    }
-
-    const metadataItems = getFormattedMetadata( element );
-    if ( metadataItems.length > 0 ) {
-      const metadataLine = document.createElement( 'div' );
-      metadataLine.className = 'formatted-entry-metadata';
-      metadataLine.textContent = metadataItems.join( ' · ' );
-      entry.appendChild( metadataLine );
-      hasContent = true;
-    }
-
-    if ( hasContent ) {
-      parent.appendChild( entry );
-    }
-
-    const childDepth = isDivElement && depth > 0 ? depth : depth + 1;
-    getChildrenForFormattedEntry( element ).forEach( child => buildFormattedEntry( child, parent, childDepth ) );
+    const clone = cloneFormattedElement( sourceElement );
+    targetParent.appendChild( clone );
+    appendFormattedContent( sourceElement, clone );
+    finalizeFormattedElement( sourceElement, clone );
   }
 
-  function createFormattedPreview( element ) {
-    const tagName = element.tagName.toLowerCase();
-    const role = ( element.getAttribute( 'role' ) || '' ).toLowerCase();
-
-    const container = document.createElement( 'div' );
-    container.className = 'formatted-entry-content';
-
-    if ( /^h[1-6]$/.test( tagName ) ) {
-      const heading = document.createElement( tagName );
-      heading.textContent = getPrimaryFormattedText( element ) || element.textContent.trim();
-      container.appendChild( heading );
-      return container;
+  /**
+   * Copies a text node into the formatted view, trimming and collapsing whitespace while preserving deliberate
+   * leading/trailing spaces.
+   *
+   * @param {Text} textNode - Source text node from the PDOM.
+   * @param {HTMLElement|DocumentFragment} targetParent - Destination container.
+   */
+  function appendFormattedTextNode( textNode, targetParent ) {
+    if ( !textNode ) {
+      return;
     }
 
-    if ( tagName === 'p' ) {
-      const paragraph = document.createElement( 'p' );
-      paragraph.textContent = getPrimaryFormattedText( element ) || element.textContent.trim();
-      container.appendChild( paragraph );
-      return container;
+    const content = textNode.textContent;
+    if ( !content ) {
+      return;
     }
 
-    if ( tagName === 'section' || tagName === 'article' ) {
-      const badge = document.createElement( 'div' );
-      badge.className = 'formatted-entry-badge';
-      badge.textContent = toTitleCase( tagName );
-      container.appendChild( badge );
-
-      const text = getPrimaryFormattedText( element );
-      if ( text ) {
-        const paragraph = document.createElement( 'p' );
-        paragraph.textContent = text;
-        container.appendChild( paragraph );
-      }
-      return container;
+    const collapsed = content.replace( /\s+/g, ' ' );
+    const trimmed = collapsed.trim();
+    if ( trimmed.length === 0 ) {
+      return;
     }
 
-    if ( tagName === 'ul' || tagName === 'ol' ) {
-      const list = buildListPreviewStructure( element );
-      if ( list.childNodes.length === 0 ) {
-        return null;
-      }
-      container.appendChild( list );
-      return container;
-    }
+    const needsLeadingSpace = /^\s/.test( content );
+    const needsTrailingSpace = /\s$/.test( content );
+    const finalText = `${needsLeadingSpace ? ' ' : ''}${trimmed}${needsTrailingSpace ? ' ' : ''}`;
+    targetParent.appendChild( document.createTextNode( finalText ) );
+  }
 
-    if ( role === 'radiogroup' ) {
-      const radioGroup = createRadioGroupPreview( element );
-      if ( radioGroup ) {
-        container.appendChild( radioGroup );
-        return container;
-      }
-    }
+  /**
+   * Creates a shallow clone for a source element, removing inline styling and neutralising focus management.
+   *
+   * @param {HTMLElement} sourceElement - Element from the live PDOM.
+   * @returns {HTMLElement} Shallow clone ready to receive child content.
+   */
+  function cloneFormattedElement( sourceElement ) {
+    const clone = sourceElement.cloneNode( false );
+    clone.removeAttribute( 'style' );
+    clone.tabIndex = -1;
+    applyInteractiveState( sourceElement, clone );
+    return clone;
+  }
 
-    if ( isRadioElement( element ) ) {
-      const radioOption = createRadioOptionPreview( element );
-      if ( radioOption ) {
-        container.appendChild( radioOption );
-        return container;
-      }
-    }
+  /**
+   * Mirrors the non-interactive state of form controls so the preview reflects their current value without being
+   * interactive.
+   *
+   * @param {HTMLElement} sourceElement
+   * @param {HTMLElement} clone
+   */
+  function applyInteractiveState( sourceElement, clone ) {
+    const tagName = sourceElement.tagName.toLowerCase();
 
-    if ( tagName === 'button' || role === 'button' ) {
-      const buttonPreview = createButtonPreview( element );
-      container.appendChild( buttonPreview );
-      return container;
-    }
-
-    if ( tagName === 'label' ) {
-      const label = document.createElement( 'label' );
-      label.textContent = getPrimaryFormattedText( element ) || element.textContent.trim();
-      container.appendChild( label );
-      return container;
+    if ( tagName === 'button' ) {
+      clone.disabled = true;
+      return;
     }
 
     if ( tagName === 'input' ) {
-      const inputPreview = createInputPreview( element );
-      if ( inputPreview ) {
-        container.appendChild( inputPreview );
-        return container;
+      const type = ( sourceElement.getAttribute( 'type' ) || 'text' ).toLowerCase();
+      clone.setAttribute( 'type', type );
+      clone.disabled = true;
+
+      if ( type === 'checkbox' || type === 'radio' ) {
+        if ( sourceElement.checked || sourceElement.getAttribute( 'aria-checked' ) === 'true' ) {
+          clone.checked = true;
+        }
+      }
+      else {
+        clone.value = sourceElement.value || sourceElement.getAttribute( 'value' ) || '';
+      }
+      return;
+    }
+
+    if ( tagName === 'select' ) {
+      clone.disabled = true;
+      return;
+    }
+
+    if ( tagName === 'textarea' ) {
+      clone.disabled = true;
+      clone.value = sourceElement.value || sourceElement.textContent || '';
+      return;
+    }
+
+    if ( tagName === 'a' ) {
+      clone.removeAttribute( 'href' );
+      if ( !clone.hasAttribute( 'role' ) ) {
+        clone.setAttribute( 'role', 'link' );
       }
     }
+  }
 
-    const primaryText = getPrimaryFormattedText( element );
-    if ( primaryText ) {
-      container.textContent = primaryText;
-      return container;
+  /**
+   * Performs post-recursion adjustments that require access to the source element's descendants (e.g. option state).
+   *
+   * @param {HTMLElement} sourceElement
+   * @param {HTMLElement} clone
+   */
+  function finalizeFormattedElement( sourceElement, clone ) {
+    const tagName = sourceElement.tagName.toLowerCase();
+
+    if ( tagName === 'select' ) {
+      clone.selectedIndex = sourceElement.selectedIndex;
+      return;
     }
 
-    if ( container.childNodes.length > 0 ) {
-      return container;
+    if ( tagName === 'option' ) {
+      if ( sourceElement.selected ) {
+        clone.selected = true;
+      }
+      return;
+    }
+
+    if ( tagName === 'textarea' ) {
+      clone.value = sourceElement.value || sourceElement.textContent || '';
+    }
+  }
+
+  /**
+   * Extracts the heading level for an element, supporting native heading tags, role=heading, and id patterns.
+   *
+   * @param {HTMLElement} element
+   * @returns {number|null}
+   */
+  function getHeadingLevel( element ) {
+    const tagName = element.tagName.toLowerCase();
+    if ( /^h[1-6]$/.test( tagName ) ) {
+      return Number( tagName.charAt( 1 ) );
+    }
+
+    const role = ( element.getAttribute( 'role' ) || '' ).toLowerCase();
+    if ( role === 'heading' ) {
+      const ariaLevel = parseInt( element.getAttribute( 'aria-level' ), 10 );
+      if ( !Number.isNaN( ariaLevel ) ) {
+        return ariaLevel;
+      }
+      return 2;
+    }
+
+    if ( element.id && element.id.indexOf( '-heading-' ) >= 0 ) {
+      const ariaLevel = parseInt( element.getAttribute( 'aria-level' ), 10 );
+      if ( !Number.isNaN( ariaLevel ) ) {
+        return ariaLevel;
+      }
+      if ( /^h[1-6]$/.test( tagName ) ) {
+        return Number( tagName.charAt( 1 ) );
+      }
+      return 2;
     }
 
     return null;
   }
 
-  function buildListPreviewStructure( listElement ) {
-    const tagName = listElement.tagName.toLowerCase();
-    const previewList = document.createElement( tagName );
-
-    Array.from( listElement.children ).forEach( child => {
-      if ( child.nodeType === Node.ELEMENT_NODE && child.tagName.toLowerCase() === 'li' ) {
-        const previewItem = document.createElement( 'li' );
-        const text = getPrimaryFormattedText( child ) || child.textContent.trim();
-        if ( text ) {
-          const textSpan = document.createElement( 'span' );
-          textSpan.textContent = text;
-          previewItem.appendChild( textSpan );
-        }
-
-        Array.from( child.children ).forEach( grandchild => {
-          if ( grandchild.nodeType !== Node.ELEMENT_NODE ) {
-            return;
-          }
-          const grandchildTag = grandchild.tagName.toLowerCase();
-          if ( grandchildTag === 'ul' || grandchildTag === 'ol' ) {
-            const nestedList = buildListPreviewStructure( grandchild );
-            if ( nestedList.childNodes.length > 0 ) {
-              previewItem.appendChild( nestedList );
-            }
-          }
-        } );
-
-        previewList.appendChild( previewItem );
-      }
-    } );
-
-    return previewList;
-  }
-
-  function createRadioGroupPreview( element ) {
-    const options = Array.from( element.children )
-      .map( createRadioOptionPreview )
-      .filter( option => option );
-
-    if ( options.length === 0 ) {
-      return null;
-    }
-
-    const fieldset = document.createElement( 'fieldset' );
-    fieldset.className = 'formatted-radio-group';
-
-    const legendText = getPrimaryFormattedText( element );
-    if ( legendText ) {
-      const legend = document.createElement( 'legend' );
-      legend.textContent = legendText;
-      fieldset.appendChild( legend );
-    }
-
-    const optionsContainer = document.createElement( 'div' );
-    optionsContainer.className = 'formatted-radio-options';
-    options.forEach( option => optionsContainer.appendChild( option ) );
-    fieldset.appendChild( optionsContainer );
-
-    return fieldset;
-  }
-
-  function createRadioOptionPreview( element ) {
-    if ( !isRadioElement( element ) ) {
-      return null;
-    }
-
-    const label = document.createElement( 'label' );
-    label.className = 'formatted-radio-option';
-
-    const input = document.createElement( 'input' );
-    input.type = 'radio';
-    input.disabled = true;
-
-    if ( element.tagName.toLowerCase() === 'input' ) {
-      if ( element.checked ) {
-        input.checked = true;
-      }
-    }
-    else if ( element.getAttribute( 'aria-checked' ) === 'true' ) {
-      input.checked = true;
-    }
-
-    label.appendChild( input );
-
-    const optionText = getPrimaryFormattedText( element ) || element.textContent.trim() || 'Option';
-    const textSpan = document.createElement( 'span' );
-    textSpan.textContent = optionText;
-    label.appendChild( textSpan );
-
-    return label;
-  }
-
-  function createButtonPreview( element ) {
-    const button = document.createElement( 'button' );
-    button.type = 'button';
-    button.disabled = true;
-    button.textContent = getPrimaryFormattedText( element ) || element.textContent.trim() || 'Button';
-    return button;
-  }
-
-  function createInputPreview( element ) {
-    const type = ( element.getAttribute( 'type' ) || 'text' ).toLowerCase();
-
-    if ( type === 'radio' ) {
-      return createRadioOptionPreview( element );
-    }
-
-    if ( type === 'checkbox' ) {
-      const label = document.createElement( 'label' );
-      const input = document.createElement( 'input' );
-      input.type = 'checkbox';
-      input.disabled = true;
-
-      if ( element.checked || element.getAttribute( 'aria-checked' ) === 'true' ) {
-        input.checked = true;
-      }
-
-      label.appendChild( input );
-
-      const text = element.getAttribute( 'aria-label' ) || element.getAttribute( 'title' ) || '';
-      if ( text ) {
-        const span = document.createElement( 'span' );
-        span.textContent = text;
-        label.appendChild( span );
-      }
-
-      return label;
-    }
-
-    if ( type === 'button' || type === 'submit' || type === 'reset' ) {
-      return createButtonPreview( element );
-    }
-
-    const input = document.createElement( 'input' );
-    input.type = type || 'text';
-    input.disabled = true;
-    input.value = element.value || '';
-    input.placeholder = element.getAttribute( 'placeholder' ) || '';
-    return input;
-  }
-
-  function isRadioElement( element ) {
-    if ( !element || element.nodeType !== Node.ELEMENT_NODE ) {
-      return false;
-    }
-
-    const role = ( element.getAttribute( 'role' ) || '' ).toLowerCase();
-    if ( role === 'radio' ) {
-      return true;
-    }
-
-    if ( element.tagName.toLowerCase() === 'input' ) {
-      const type = ( element.getAttribute( 'type' ) || '' ).toLowerCase();
-      return type === 'radio';
-    }
-
-    return false;
-  }
-
-  function getChildrenForFormattedEntry( element ) {
-    const tagName = element.tagName.toLowerCase();
-
-    if ( tagName === 'ul' || tagName === 'ol' ) {
-      return Array.from( element.children ).filter( child => {
-        if ( child.nodeType !== Node.ELEMENT_NODE ) {
-          return false;
-        }
-        if ( child.tagName.toLowerCase() !== 'li' ) {
-          return true;
-        }
-        return Array.from( child.children ).some( grandchild => {
-          if ( grandchild.nodeType !== Node.ELEMENT_NODE ) {
-            return false;
-          }
-          const grandchildTag = grandchild.tagName.toLowerCase();
-          if ( grandchildTag === 'ul' || grandchildTag === 'ol' ) {
-            return true;
-          }
-          if ( grandchild.getAttribute( 'role' ) ) {
-            return true;
-          }
-          return grandchildTag === 'button' ||
-                 grandchildTag === 'input' ||
-                 grandchildTag === 'select' ||
-                 grandchildTag === 'textarea' ||
-                 grandchildTag === 'a';
-        } );
-      } );
-    }
-
-    if ( ( element.getAttribute( 'role' ) || '' ).toLowerCase() === 'radiogroup' ) {
-      return Array.from( element.children ).filter( child => !isRadioElement( child ) );
-    }
-
-    return Array.from( element.children );
-  }
-
-  function getFormattedTitle( element ) {
-    if ( element.hasAttribute( 'aria-roledescription' ) ) {
-      return toTitleCase( element.getAttribute( 'aria-roledescription' ) );
-    }
-
-    if ( element.hasAttribute( 'role' ) ) {
-      return formatRoleName( element.getAttribute( 'role' ) );
-    }
-
-    const tagName = element.tagName.toLowerCase();
-    if ( /^h[1-6]$/.test( tagName ) ) {
-      return `Heading level ${tagName.charAt( 1 )}`;
-    }
-
-    if ( tagName === 'div' ) {
-      return '';
-    }
-
-    const tagLabels = {
-      button: 'Button',
-      input: `Input${element.type ? ` (${element.type})` : ''}`,
-      p: 'Paragraph',
-      li: 'List item',
-      ul: 'List',
-      ol: 'Ordered list',
-      label: 'Label',
-      span: 'Span',
-      section: 'Section',
-      article: 'Article'
-    };
-
-    return tagLabels[ tagName ] || toTitleCase( tagName );
-  }
-
-  function formatRoleName( role ) {
-    if ( !role ) {
-      return 'Element';
-    }
-    return role.split( /\s+/ ).map( toTitleCase ).join( ', ' );
-  }
-
-  function toTitleCase( text ) {
-    return text.replace( /\w\S*/g, chunk => chunk.charAt( 0 ).toUpperCase() + chunk.slice( 1 ).toLowerCase() );
-  }
-
-  function getPrimaryFormattedText( element ) {
-    if ( element.hasAttribute( 'aria-label' ) ) {
-      return element.getAttribute( 'aria-label' );
-    }
-
-    if ( element.tagName.toLowerCase() === 'input' ) {
-      const type = element.getAttribute( 'type' );
-      if ( type === 'button' || type === 'submit' || type === 'reset' ) {
-        return element.getAttribute( 'value' ) || '';
-      }
-    }
-
-    const directText = getDirectTextContent( element );
-    if ( directText ) {
-      return directText;
-    }
-
-    if ( element.tagName.toLowerCase() === 'img' && element.hasAttribute( 'alt' ) ) {
-      return element.getAttribute( 'alt' );
-    }
-
-    return '';
-  }
-
-  function getDirectTextContent( element ) {
-    return Array.from( element.childNodes )
-      .filter( node => node.nodeType === Node.TEXT_NODE )
-      .map( node => node.textContent.replace( /\s+/g, ' ' ).trim() )
-      .filter( text => text.length > 0 )
-      .join( ' ' );
-  }
-
-  function getFormattedMetadata( element ) {
-    const metadata = [];
-
-    IMPORTANT_ARIA_ATTRIBUTES.forEach( attributeDefinition => {
-      const config = typeof attributeDefinition === 'string' ? { name: attributeDefinition } : attributeDefinition;
-      const attributeName = config.name;
-      const shouldDisplay = config.shouldDisplay;
-
-      if ( attributeName === 'role' ) {
-        return;
-      }
-
-      if ( element.hasAttribute( attributeName ) ) {
-        const value = element.getAttribute( attributeName );
-
-        if ( shouldDisplay && !shouldDisplay( value, element ) ) {
-          return;
-        }
-
-        metadata.push( `${attributeName}: ${value}` );
-      }
-    } );
-
-    if ( element.hasAttribute( 'aria-describedby' ) ) {
-      const references = element.getAttribute( 'aria-describedby' ).trim().split( /\s+/ ).filter( token => token.length > 0 );
-      if ( references.length > 0 ) {
-        metadata.push( `Describes: ${references.length}` );
-      }
-    }
-
-    return metadata;
+  /**
+   * Determines whether an element exists purely for structure and should be flattened in the formatted view.
+   *
+   * @param {HTMLElement} element
+   * @returns {boolean}
+   */
+  function isDecoratorElement( element ) {
+    return DECORATOR_TAGS.has( element.tagName );
   }
 
   function renderDevelopmentView( pdomRoot, container ) {
