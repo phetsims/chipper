@@ -409,1211 +409,1290 @@
 </div>
 
 <script type="application/javascript">
-  const IS_BUILT_STRING = '{{IS_BUILT}}';
-  const IS_BUILT = IS_BUILT_STRING.indexOf( '{{' ) !== 0; // escape for better syntax highlighting support
+  ( () => {
+    const IS_BUILT_STRING = '{{IS_BUILT}}';
+    const IS_BUILT = IS_BUILT_STRING.indexOf( '{{' ) !== 0; // escape for better syntax highlighting support
 
-  const simulationQueryString = new URLSearchParams( window.location.search );
+    function initializeSimulationFrame() {
+      const simulationQueryString = new URLSearchParams( window.location.search );
 
-  // TODO: This code is very PhET-sim specific, we would like a way to specify an arbitrary scenery-stack app
-  // TODO: https://github.com/phetsims/chipper/issues/1512
-  let sim = simulationQueryString.get( 'sim' );
+      // TODO: This code is very PhET-sim specific, we would like a way to specify an arbitrary scenery-stack app
+      // TODO: https://github.com/phetsims/chipper/issues/1512
+      let sim = simulationQueryString.get( 'sim' );
 
-  // Remove the sim query parameter from the URL so that it doesn't go to the iframe url
-  simulationQueryString.delete( 'sim' );
+      // Remove the sim query parameter from the URL so that it doesn't go to the iframe url
+      simulationQueryString.delete( 'sim' );
 
-  // Do not liveReload on the nested iframe, just in the outer a11y view.
-  simulationQueryString.delete( 'liveReload' );
+      // Do not liveReload on the nested iframe, just in the outer a11y view.
+      simulationQueryString.delete( 'liveReload' );
 
-  // Append the required parameters.
-  simulationQueryString.set( 'postMessageOnLoad', '' );
-  simulationQueryString.set( 'postMessageOnError', '' );
-  simulationQueryString.set( 'supportsInteractiveDescription', 'true' );
+      // Append the required parameters.
+      simulationQueryString.set( 'postMessageOnLoad', '' );
+      simulationQueryString.set( 'postMessageOnError', '' );
+      simulationQueryString.set( 'supportsInteractiveDescription', 'true' );
 
-  // in unbuilt mode and on phet-server, the brand suffix is removed
-  const filenameEnding = ( window.location.hostname === 'phet.colorado.edu' || !IS_BUILT ) ? '.html' : '_phet.html';
+      // in unbuilt mode and on phet-server, the brand suffix is removed
+      const filenameEnding = ( window.location.hostname === 'phet.colorado.edu' || !IS_BUILT ) ? '.html' : '_phet.html';
 
-  if ( IS_BUILT ) {
-    sim = '{{PHET_REPOSITORY}}';
-  }
-  if ( !sim ) {
-    throw new Error( 'No sim query parameter provided' );
-  }
+      if ( IS_BUILT ) {
+        sim = '{{PHET_REPOSITORY}}';
+      }
+      if ( !sim ) {
+        throw new Error( 'No sim query parameter provided' );
+      }
 
-  // Unbuilt sims include all locales in the en file, built versions only include all strings in the all file
-  const simWithLocale = `${sim}_${IS_BUILT ? 'all' : 'en'}`;
-  let simURL = `../../../${sim}/${simWithLocale}${filenameEnding}?${simulationQueryString}`;
+      // Unbuilt sims include all locales in the en file, built versions only include all strings in the all file
+      const simWithLocale = `${sim}_${IS_BUILT ? 'all' : 'en'}`;
+      const iframe = document.getElementById( 'iframe' );
+      if ( !iframe ) {
+        return;
+      }
 
-  if ( IS_BUILT ) {
-    simURL = `./${simWithLocale}${filenameEnding}?${simulationQueryString}`;
-  }
+      let simURL = `../../../${sim}/${simWithLocale}${filenameEnding}?${simulationQueryString}`;
+      if ( IS_BUILT ) {
+        simURL = `./${simWithLocale}${filenameEnding}?${simulationQueryString}`;
+      }
 
-  // set the source of the sim iframe
-  document.getElementById( 'iframe' ).setAttribute( 'src', simURL );
-
-  // apply sticky styling for all browsers except chrome.
-  const left = document.getElementById( 'left' );
-  const ua = navigator.userAgent.toLowerCase();
-  if ( ua.indexOf( 'safari' ) !== -1 ) {
-    if ( ua.indexOf( 'chrome' ) > -1 ) {
-      left.classList.add( 'left' );
+      iframe.setAttribute( 'src', simURL );
+      applyStickyBehavior();
     }
-    else {
-      left.classList.add( 'left-safari' );
-    }
-  }
 
+    initializeSimulationFrame();
+
+    // apply sticky styling for all browsers except chrome.
+    function applyStickyBehavior() {
+      const left = document.getElementById( 'left' );
+      if ( !left ) {
+        return;
+      }
+
+      const ua = navigator.userAgent.toLowerCase();
+      if ( ua.indexOf( 'safari' ) !== -1 ) {
+        if ( ua.indexOf( 'chrome' ) > -1 ) {
+          left.classList.add( 'left' );
+        }
+        else {
+          left.classList.add( 'left-safari' );
+        }
+      }
+    }
+  } )();
 </script>
 
 <script>
-  // Number of alerts that remain in the Activity log
-  const ACTIVITY_LOG_LENGTH = 40;
+  ( () => {
+    // Number of alerts that remain in the Activity log
+    const ACTIVITY_LOG_LENGTH = 40;
 
-  // Helpers to keep shouldDisplay predicates readable when filtering ARIA attributes.
-  const DISPLAY_WHEN_TRUE = value => value === 'true';
-  const DISPLAY_WHEN_NOT_FALSE = value => value !== 'false';
-  const DISPLAY_WHEN_PRESENT = value => value && value.trim().length > 0;
-  const RELATIONSHIP_PLACEHOLDER = '...';
+    // Helpers to keep shouldDisplay predicates readable when filtering ARIA attributes.
+    const DISPLAY_WHEN_TRUE = value => value === 'true';
+    const DISPLAY_WHEN_NOT_FALSE = value => value !== 'false';
+    const DISPLAY_WHEN_PRESENT = value => value && value.trim().length > 0;
+    const RELATIONSHIP_PLACEHOLDER = '...';
 
-  function formatAriaValue( config, value, element ) {
-    if ( config.formatValue ) {
-      return config.formatValue( value, element );
+    function formatAriaValue( config, value, element ) {
+      if ( config.formatValue ) {
+        return config.formatValue( value, element );
+      }
+      return value;
     }
-    return value;
-  }
 
-  // The attributes that we want to display as additional data in the PDOM copy. Otherwise, these are invisible
-  // unless you inspect the DOM. For each entry, you can provide a shouldDisplay predicate that will control
-  // how it is shown.
-  const IMPORTANT_ARIA_ATTRIBUTES = [
-    // Roles and semantics
-    { name: 'role' },
-    { name: 'aria-roledescription', shouldDisplay: DISPLAY_WHEN_PRESENT },
+    // The attributes that we want to display as additional data in the PDOM copy. Otherwise, these are invisible
+    // unless you inspect the DOM. For each entry, you can provide a shouldDisplay predicate that will control
+    // how it is shown.
+    const IMPORTANT_ARIA_ATTRIBUTES = [
+      // Roles and semantics
+      { name: 'role' },
+      { name: 'aria-roledescription', shouldDisplay: DISPLAY_WHEN_PRESENT },
 
-    // Relationships and labelling
-    { name: 'aria-labelledby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-    { name: 'aria-describedby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-    { name: 'aria-controls', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-    { name: 'aria-owns', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
-    { name: 'aria-activedescendant', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+      // Relationships and labelling
+      { name: 'aria-labelledby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+      { name: 'aria-describedby', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+      { name: 'aria-controls', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+      { name: 'aria-owns', shouldDisplay: DISPLAY_WHEN_PRESENT, formatValue: () => RELATIONSHIP_PLACEHOLDER },
+      {
+        name: 'aria-activedescendant',
+        shouldDisplay: DISPLAY_WHEN_PRESENT,
+        formatValue: () => RELATIONSHIP_PLACEHOLDER
+      },
 
-    // Visibility and modality
-    { name: 'aria-hidden', shouldDisplay: DISPLAY_WHEN_TRUE },
-    { name: 'aria-modal', shouldDisplay: DISPLAY_WHEN_TRUE },
+      // Visibility and modality
+      { name: 'aria-hidden', shouldDisplay: DISPLAY_WHEN_TRUE },
+      { name: 'aria-modal', shouldDisplay: DISPLAY_WHEN_TRUE },
 
-    // Widget state
-    { name: 'aria-expanded' },
-    { name: 'aria-pressed' },
-    { name: 'aria-checked' },
-    { name: 'aria-selected', shouldDisplay: DISPLAY_WHEN_TRUE },
-    { name: 'aria-current', shouldDisplay: DISPLAY_WHEN_NOT_FALSE },
-    { name: 'aria-haspopup', shouldDisplay: DISPLAY_WHEN_NOT_FALSE },
-    { name: 'aria-required', shouldDisplay: DISPLAY_WHEN_TRUE },
-    { name: 'aria-invalid', shouldDisplay: DISPLAY_WHEN_NOT_FALSE },
-    { name: 'aria-readonly', shouldDisplay: DISPLAY_WHEN_TRUE },
-    { name: 'aria-disabled', shouldDisplay: DISPLAY_WHEN_TRUE },
+      // Widget state
+      { name: 'aria-expanded' },
+      { name: 'aria-pressed' },
+      { name: 'aria-checked' },
+      { name: 'aria-selected', shouldDisplay: DISPLAY_WHEN_TRUE },
+      { name: 'aria-current', shouldDisplay: DISPLAY_WHEN_NOT_FALSE },
+      { name: 'aria-haspopup', shouldDisplay: DISPLAY_WHEN_NOT_FALSE },
+      { name: 'aria-required', shouldDisplay: DISPLAY_WHEN_TRUE },
+      { name: 'aria-invalid', shouldDisplay: DISPLAY_WHEN_NOT_FALSE },
+      { name: 'aria-readonly', shouldDisplay: DISPLAY_WHEN_TRUE },
+      { name: 'aria-disabled', shouldDisplay: DISPLAY_WHEN_TRUE },
 
-    // Live region hints
-    { name: 'aria-live', shouldDisplay: value => value && value !== 'off' },
-    { name: 'aria-atomic', shouldDisplay: DISPLAY_WHEN_TRUE },
+      // Live region hints
+      { name: 'aria-live', shouldDisplay: value => value && value !== 'off' },
+      { name: 'aria-atomic', shouldDisplay: DISPLAY_WHEN_TRUE },
 
-    // Orientation and range metadata
-    { name: 'aria-orientation', shouldDisplay: DISPLAY_WHEN_PRESENT },
-    { name: 'aria-valuenow' },
-    { name: 'aria-valuemin' },
-    { name: 'aria-valuemax' },
-    { name: 'aria-valuetext' },
+      // Orientation and range metadata
+      { name: 'aria-orientation', shouldDisplay: DISPLAY_WHEN_PRESENT },
+      { name: 'aria-valuenow' },
+      { name: 'aria-valuemin' },
+      { name: 'aria-valuemax' },
+      { name: 'aria-valuetext' },
 
-    // Set membership
-    { name: 'aria-level', shouldDisplay: DISPLAY_WHEN_PRESENT },
-    { name: 'aria-posinset', shouldDisplay: DISPLAY_WHEN_PRESENT },
-    { name: 'aria-setsize', shouldDisplay: DISPLAY_WHEN_PRESENT },
+      // Set membership
+      { name: 'aria-level', shouldDisplay: DISPLAY_WHEN_PRESENT },
+      { name: 'aria-posinset', shouldDisplay: DISPLAY_WHEN_PRESENT },
+      { name: 'aria-setsize', shouldDisplay: DISPLAY_WHEN_PRESENT },
 
-    // Busy state
-    { name: 'aria-busy', shouldDisplay: DISPLAY_WHEN_TRUE }
-  ];
+      // Busy state
+      { name: 'aria-busy', shouldDisplay: DISPLAY_WHEN_TRUE }
+    ];
 
-  const VIEW_MODES = {
-    FORMATTED: 'formatted',
-    DEVELOPMENT: 'development',
-    LEGACY: 'legacy'
-  };
+    const VIEW_MODES = {
+      FORMATTED: 'formatted',
+      DEVELOPMENT: 'development',
+      LEGACY: 'legacy'
+    };
 
-  const VIEW_MODE_STORAGE_KEY = 'a11y-view-mode';
-  const DEFAULT_VIEW_MODE = VIEW_MODES.FORMATTED;
+    const VIEW_MODE_STORAGE_KEY = 'a11y-view-mode';
+    const DEFAULT_VIEW_MODE = VIEW_MODES.FORMATTED;
 
-  const DEVELOPMENT_ALLOWED_ATTRIBUTES = new Set( [
-    'role',
-    'type',
-    'name',
-    'value',
-    'checked',
-    'disabled',
-    'required',
-    'hidden',
-    'tabindex',
-    'title',
-    'alt',
-    'lang',
-    'for',
-    'placeholder',
-    'min',
-    'max',
-    'step'
-  ] );
+    const DEVELOPMENT_ALLOWED_ATTRIBUTES = new Set( [
+      'role',
+      'type',
+      'name',
+      'value',
+      'checked',
+      'disabled',
+      'required',
+      'hidden',
+      'tabindex',
+      'title',
+      'alt',
+      'lang',
+      'for',
+      'placeholder',
+      'min',
+      'max',
+      'step'
+    ] );
 
-  const VOID_ELEMENTS = new Set( [
-    'area',
-    'base',
-    'br',
-    'col',
-    'embed',
-    'hr',
-    'img',
-    'input',
-    'link',
-    'meta',
-    'param',
-    'source',
-    'track',
-    'wbr'
-  ] );
+    const VOID_ELEMENTS = new Set( [
+      'area',
+      'base',
+      'br',
+      'col',
+      'embed',
+      'hr',
+      'img',
+      'input',
+      'link',
+      'meta',
+      'param',
+      'source',
+      'track',
+      'wbr'
+    ] );
 
-  const DEVELOPMENT_INDENT_SIZE_EM = 1.25;
-  const INLINE_SINGLE_LINE_TAGS = new Set( [
-    'a',
-    'abbr',
-    'button',
-    'code',
-    'em',
-    'label',
-    'small',
-    'span',
-    'strong'
-  ] );
-  const DEVELOPMENT_INLINE_TEXT_LIMIT = 80;
-  const DEVELOPMENT_SOURCE_ID_SYMBOL = Symbol( 'a11yViewSourceNodeId' );
-  let developmentSourceIdCounter = 0;
-  let developmentLineLookup = new Map();
-  let developmentFocusLines = [];
-  const DEVELOPMENT_FOCUS_CLASS = 'development-focus-highlight';
-  let currentFocusedElement = null;
+    const DEVELOPMENT_INDENT_SIZE_EM = 1.25;
+    const INLINE_SINGLE_LINE_TAGS = new Set( [
+      'a',
+      'abbr',
+      'button',
+      'code',
+      'em',
+      'label',
+      'small',
+      'span',
+      'strong'
+    ] );
+    const DEVELOPMENT_INLINE_TEXT_LIMIT = 80;
+    const DEVELOPMENT_SOURCE_ID_SYMBOL = Symbol( 'a11yViewSourceNodeId' );
+    let developmentSourceIdCounter = 0;
+    let developmentLineLookup = new Map();
+    let developmentFocusLines = [];
+    const DEVELOPMENT_FOCUS_CLASS = 'development-focus-highlight';
+    let currentFocusedElement = null;
 
-/*******************************************************************************
- * Helper Functions
- */
+    const domReferences = createDomReferences();
+    const viewContainers = createViewContainers( domReferences.domCopyContainer );
+    const viewRenderers = {
+      [ VIEW_MODES.FORMATTED ]: renderFormattedView,
+      [ VIEW_MODES.DEVELOPMENT ]: renderDevelopmentView,
+      [ VIEW_MODES.LEGACY ]: renderLegacyView
+    };
 
-  /**
-   * Get all 'element' nodes off the parent element, placing them in an array for easy traversal.  Note that this
-   * includes all elements, even those that are 'hidden' or purely for structure.
-   *
-   * @param  {HTMLElement} ancestor - parent whose children will be linearized
-   * @returns {HTMLElement[]}
-   */
-  function getAllDOMElementsAsLinear( ancestor ) {
+    const MUTATION_OBSERVER_CONFIG = {
+      attributes: true,
+      childList: true,
+      characterData: true,
+      subtree: true
+    };
 
-    // gets ALL descendant children for the element
-    const children = ancestor.getElementsByTagName( '*' );
+    initializeViewModeControls( domReferences.viewModeControls, viewContainers );
+    initializeActivityLogButton( domReferences.clearActivityLogButton, domReferences.alertList );
+    setupMessageListener( domReferences, viewContainers, viewRenderers, MUTATION_OBSERVER_CONFIG );
+    initializeLiveReload();
 
-    const linearDOM = [];
-    for ( let i = 0; i < children.length; i++ ) {
+    /*******************************************************************************
+     * Helper Functions
+     */
 
-      // searching for the HTML element nodes (NOT Scenery nodes)
-      if ( children[ i ].nodeType === Node.ELEMENT_NODE ) {
-        linearDOM[ i ] = ( children[ i ] );
+    /**
+     * Get all 'element' nodes off the parent element, placing them in an array for easy traversal.  Note that this
+     * includes all elements, even those that are 'hidden' or purely for structure.
+     *
+     * @param  {HTMLElement} ancestor - parent whose children will be linearized
+     * @returns {HTMLElement[]}
+     */
+    function getAllDOMElementsAsLinear( ancestor ) {
+
+      // gets ALL descendant children for the element
+      const children = ancestor.getElementsByTagName( '*' );
+
+      const linearDOM = [];
+      for ( let i = 0; i < children.length; i++ ) {
+
+        // searching for the HTML element nodes (NOT Scenery nodes)
+        if ( children[ i ].nodeType === Node.ELEMENT_NODE ) {
+          linearDOM[ i ] = ( children[ i ] );
+        }
+      }
+      return linearDOM;
+    }
+
+    /**
+     * Apply the necessary styling to the PDOM copy so that it looks and behaves well. This includes removing from
+     * navigation order and ensuring that all of the styling copied from the actual PDOM is removed so that the copy
+     * is visible and elements have proper dimensions.
+     *
+     * @param {HTMLElement} root - ancestor element, this and all descendants will be styled
+     */
+    function styleCopy( root ) {
+      const allElements = getAllDOMElementsAsLinear( root );
+
+      for ( let i = 0; i < allElements.length; i++ ) {
+        const element = allElements[ i ];
+
+        // make sure nothing in copy is focusable
+        element.tabIndex = '-1';
+
+        // make sure that styling is removed, unless some styling was added just for the copy
+        if ( element.className !== 'pdom-style' ) {
+          element.removeAttribute( 'style' );
+        }
       }
     }
-    return linearDOM;
-  }
 
-  /**
-   * Apply the necessary styling to the PDOM copy so that it looks and behaves well. This includes removing from
-   * navigation order and ensuring that all of the styling copied from the actual PDOM is removed so that the copy
-   * is visible and elements have proper dimensions.
-   *
-   * @param {HTMLElement} root - ancestor element, this and all descendants will be styled
-   */
-  function styleCopy( root ) {
-    const allElements = getAllDOMElementsAsLinear( root );
-
-    for ( let i = 0; i < allElements.length; i++ ) {
-      const element = allElements[ i ];
-
-      // make sure nothing in copy is focusable
-      element.tabIndex = '-1';
-
-      // make sure that styling is removed, unless some styling was added just for the copy
-      if ( element.className !== 'pdom-style' ) {
-        element.removeAttribute( 'style' );
-      }
+    function setActiveView( viewContainers, viewMode ) {
+      Object.keys( viewContainers ).forEach( key => {
+        const container = viewContainers[ key ];
+        if ( !container ) {
+          return;
+        }
+        if ( key === viewMode ) {
+          container.setAttribute( 'data-active', 'true' );
+        }
+        else {
+          container.removeAttribute( 'data-active' );
+        }
+      } );
     }
-  }
 
-  function setActiveView( viewContainers, viewMode ) {
-    Object.keys( viewContainers ).forEach( key => {
-      const container = viewContainers[ key ];
-      if ( !container ) {
-        return;
+    function loadViewMode() {
+      try {
+        const value = localStorage.getItem( VIEW_MODE_STORAGE_KEY );
+        if ( value && Object.values( VIEW_MODES ).includes( value ) ) {
+          return value;
+        }
       }
-      if ( key === viewMode ) {
-        container.setAttribute( 'data-active', 'true' );
+      catch( e ) {
+        // ignore storage errors, fall back to default
       }
-      else {
-        container.removeAttribute( 'data-active' );
-      }
-    } );
-  }
-
-  function loadViewMode() {
-    try {
-      const value = localStorage.getItem( VIEW_MODE_STORAGE_KEY );
-      if ( value && Object.values( VIEW_MODES ).includes( value ) ) {
-        return value;
-      }
-    }
-    catch( e ) {
-      // ignore storage errors, fall back to default
-    }
-    return DEFAULT_VIEW_MODE;
-  }
-
-  function storeViewMode( viewMode ) {
-    try {
-      localStorage.setItem( VIEW_MODE_STORAGE_KEY, viewMode );
-    }
-    catch( e ) {
-      // ignore storage failures
-    }
-  }
-
-  function initializeViewModeControls( viewContainers ) {
-    const controls = document.getElementById( 'view-mode-controls' );
-    if ( !controls ) {
       return DEFAULT_VIEW_MODE;
     }
 
-    const radioButtons = controls.querySelectorAll( 'input[name="a11y-view-mode"]' );
-    let currentMode = loadViewMode();
+    function storeViewMode( viewMode ) {
+      try {
+        localStorage.setItem( VIEW_MODE_STORAGE_KEY, viewMode );
+      }
+      catch( e ) {
+        // ignore storage failures
+      }
+    }
 
-    radioButtons.forEach( radio => {
-      if ( radio.value === currentMode ) {
-        radio.checked = true;
+    function initializeViewModeControls( controls, viewContainers ) {
+      if ( !controls ) {
+        return DEFAULT_VIEW_MODE;
       }
 
-      radio.addEventListener( 'change', event => {
-        if ( event.target.checked ) {
-          currentMode = event.target.value;
-          storeViewMode( currentMode );
-          setActiveView( viewContainers, currentMode );
+      const radioButtons = controls.querySelectorAll( 'input[name="a11y-view-mode"]' );
+      let currentMode = loadViewMode();
+
+      radioButtons.forEach( radio => {
+        if ( radio.value === currentMode ) {
+          radio.checked = true;
+        }
+
+        radio.addEventListener( 'change', event => {
+          if ( event.target.checked ) {
+            currentMode = event.target.value;
+            storeViewMode( currentMode );
+            setActiveView( viewContainers, currentMode );
+          }
+        } );
+      } );
+
+      if ( !Array.from( radioButtons ).some( radio => radio.checked ) ) {
+        const firstRadio = Array.from( radioButtons )[ 0 ];
+        if ( firstRadio ) {
+          currentMode = firstRadio.value;
+          firstRadio.checked = true;
+        }
+      }
+
+      setActiveView( viewContainers, currentMode );
+      return currentMode;
+    }
+
+    function renderLegacyView( pdomRoot, container ) {
+      if ( !container ) {
+        return;
+      }
+      container.innerHTML = '';
+      const pdomCopy = pdomRoot.cloneNode( true );
+      pdomCopy.removeAttribute( 'style' );
+      container.appendChild( pdomCopy );
+      addInlineAttributesTHTML( pdomCopy );
+      styleCopy( pdomCopy );
+    }
+
+    // Elements that exist purely for document structure; we flatten them when building the formatted view.
+    const DECORATOR_TAGS = new Set( [ 'SECTION', 'ARTICLE', 'MAIN', 'ASIDE' ] );
+
+    function renderFormattedView( pdomRoot, container ) {
+      if ( !container ) {
+        return;
+      }
+      container.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+      appendFormattedContent( pdomRoot, fragment );
+
+      if ( fragment.childNodes.length === 0 ) {
+        const emptyMessage = document.createElement( 'p' );
+        emptyMessage.textContent = 'No accessible content available.';
+        fragment.appendChild( emptyMessage );
+      }
+
+      container.appendChild( fragment );
+    }
+
+    function shouldSkipFormattedElement( element ) {
+      if ( !element || element.nodeType !== Node.ELEMENT_NODE ) {
+        return true;
+      }
+      if ( element.hidden || element.getAttribute( 'aria-hidden' ) === 'true' ) {
+        return true;
+      }
+      const tagName = element.tagName;
+      return tagName === 'SCRIPT' || tagName === 'STYLE' || tagName === 'TEMPLATE';
+    }
+
+    /**
+     * Recursively walks the PDOM subtree and appends a lightly-processed clone into the formatted container.
+     *
+     * @param {HTMLElement|DocumentFragment} sourceParent - Node within the live PDOM that we are mirroring.
+     * @param {HTMLElement|DocumentFragment} targetParent - Destination container in the formatted view.
+     */
+    function appendFormattedContent( sourceParent, targetParent ) {
+      const nodes = Array.from( sourceParent.childNodes );
+      let index = 0;
+
+      while ( index < nodes.length ) {
+        const node = nodes[ index ];
+
+        if ( node.nodeType === Node.TEXT_NODE ) {
+          appendFormattedTextNode( node, targetParent );
+          index++;
+          continue;
+        }
+
+        if ( node.nodeType !== Node.ELEMENT_NODE ) {
+          index++;
+          continue;
+        }
+
+        const element = node;
+        if ( shouldSkipFormattedElement( element ) ) {
+          index++;
+          continue;
+        }
+
+        const headingLevel = getHeadingLevel( element );
+        if ( headingLevel !== null ) {
+          index = appendHeadingGroup( nodes, index, headingLevel, targetParent );
+          continue;
+        }
+
+        appendFormattedNode( element, targetParent );
+        index++;
+      }
+    }
+
+    /**
+     * Creates a grouped block starting with the heading at startIndex and including following siblings until another
+     * heading of the same or higher level appears.
+     *
+     * @param {Node[]} nodes - Child nodes belonging to the current parent in the source PDOM.
+     * @param {number} startIndex - Index of the heading that initiated this group.
+     * @param {number} headingLevel - Numeric heading level (1-6) for the initiating heading.
+     * @param {HTMLElement|DocumentFragment} targetParent - Destination container for the grouped content.
+     * @returns {number} Index of the next node to process in the caller's loop.
+     */
+    function appendHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
+      const groupContainer = document.createElement( 'div' );
+      groupContainer.className = 'formatted-group';
+
+      let index = startIndex;
+      while ( index < nodes.length ) {
+        const current = nodes[ index ];
+
+        if ( current.nodeType === Node.TEXT_NODE ) {
+          appendFormattedTextNode( current, groupContainer );
+          index++;
+          continue;
+        }
+
+        if ( current.nodeType !== Node.ELEMENT_NODE ) {
+          index++;
+          continue;
+        }
+
+        const element = current;
+        if ( shouldSkipFormattedElement( element ) ) {
+          index++;
+          continue;
+        }
+
+        const currentHeadingLevel = getHeadingLevel( element );
+        // Stop once we reach a heading that should belong to an outer group.
+        if ( index !== startIndex && currentHeadingLevel !== null && currentHeadingLevel <= headingLevel ) {
+          break;
+        }
+
+        appendFormattedNode( element, groupContainer );
+        index++;
+      }
+
+      if ( groupContainer.childNodes.length > 0 ) {
+        targetParent.appendChild( groupContainer );
+      }
+
+      return index;
+    }
+
+    /**
+     * Clones a PDOM element into the formatted view, skipping decorator elements and removing unwanted styling.
+     *
+     * @param {HTMLElement} sourceElement - Element from the live PDOM.
+     * @param {HTMLElement|DocumentFragment} targetParent - Container in the formatted view.
+     */
+    function appendFormattedNode( sourceElement, targetParent ) {
+      if ( isDecoratorElement( sourceElement ) ) {
+        appendFormattedContent( sourceElement, targetParent );
+        return;
+      }
+
+      const clone = cloneFormattedElement( sourceElement );
+      targetParent.appendChild( clone );
+      appendFormattedContent( sourceElement, clone );
+      appendFormattedAriaDetails( sourceElement, clone );
+      finalizeFormattedElement( sourceElement, clone );
+    }
+
+    /**
+     * Copies a text node into the formatted view, trimming and collapsing whitespace while preserving deliberate
+     * leading/trailing spaces.
+     *
+     * @param {Text} textNode - Source text node from the PDOM.
+     * @param {HTMLElement|DocumentFragment} targetParent - Destination container.
+     */
+    function appendFormattedTextNode( textNode, targetParent ) {
+      if ( !textNode ) {
+        return;
+      }
+
+      const content = textNode.textContent;
+      if ( !content ) {
+        return;
+      }
+
+      const collapsed = content.replace( /\s+/g, ' ' );
+      const trimmed = collapsed.trim();
+      if ( trimmed.length === 0 ) {
+        return;
+      }
+
+      const needsLeadingSpace = /^\s/.test( content );
+      const needsTrailingSpace = /\s$/.test( content );
+      const finalText = `${needsLeadingSpace ? ' ' : ''}${trimmed}${needsTrailingSpace ? ' ' : ''}`;
+      targetParent.appendChild( document.createTextNode( finalText ) );
+    }
+
+    /**
+     * Creates a shallow clone for a source element, removing inline styling and neutralising focus management.
+     *
+     * @param {HTMLElement} sourceElement - Element from the live PDOM.
+     * @returns {HTMLElement} Shallow clone ready to receive child content.
+     */
+    function cloneFormattedElement( sourceElement ) {
+      const clone = sourceElement.cloneNode( false );
+      clone.removeAttribute( 'style' );
+      clone.tabIndex = -1;
+
+      // Grouping names assigned in the simulation will not work when all cloned elements are in the same document.
+      clone.removeAttribute( 'name' );
+      return clone;
+    }
+
+    function collectImportantAriaAttributes( element ) {
+      const attributes = [];
+
+      IMPORTANT_ARIA_ATTRIBUTES.forEach( attributeDefinition => {
+        const config = typeof attributeDefinition === 'string' ? { name: attributeDefinition } : attributeDefinition;
+        const attributeName = config.name;
+        const shouldDisplay = config.shouldDisplay;
+
+        if ( element.hasAttribute( attributeName ) ) {
+          const value = element.getAttribute( attributeName );
+
+          if ( shouldDisplay && !shouldDisplay( value, element ) ) {
+            return;
+          }
+
+          attributes.push( {
+            name: attributeName,
+            value: formatAriaValue( config, value, element )
+          } );
         }
       } );
-    } );
 
-    if ( !Array.from( radioButtons ).some( radio => radio.checked ) ) {
-      const firstRadio = Array.from( radioButtons )[ 0 ];
-      if ( firstRadio ) {
-        currentMode = firstRadio.value;
-        firstRadio.checked = true;
+      return attributes;
+    }
+
+    function appendFormattedAriaDetails( sourceElement, clone ) {
+      const attributes = collectImportantAriaAttributes( sourceElement );
+      if ( attributes.length === 0 ) {
+        return;
+      }
+
+      const parent = clone.parentNode;
+      if ( !parent ) {
+        return;
+      }
+
+      const insertionPoint = clone.nextSibling;
+
+      const wrapper = document.createElement( 'div' );
+      wrapper.className = 'formatted-aria-block';
+
+      const ariaContainer = document.createElement( 'div' );
+      ariaContainer.className = 'formatted-aria';
+
+      const heading = document.createElement( 'div' );
+      heading.className = 'formatted-aria-heading';
+      heading.textContent = `ARIA details (${attributes.length})`;
+      ariaContainer.appendChild( heading );
+
+      const body = document.createElement( 'div' );
+      body.className = 'formatted-aria-body';
+
+      attributes.forEach( attribute => {
+        const chip = document.createElement( 'span' );
+        chip.className = 'aria-chip';
+        chip.textContent = `${attribute.name}: ${attribute.value}`;
+        body.appendChild( chip );
+      } );
+
+      ariaContainer.appendChild( body );
+      wrapper.appendChild( clone );
+      wrapper.appendChild( ariaContainer );
+
+      if ( insertionPoint ) {
+        parent.insertBefore( wrapper, insertionPoint );
+      }
+      else {
+        parent.appendChild( wrapper );
       }
     }
 
-    setActiveView( viewContainers, currentMode );
-    return currentMode;
-  }
+    /**
+     * Performs post-recursion adjustments that require access to the source element's descendants (e.g. option state).
+     *
+     * @param {HTMLElement} sourceElement
+     * @param {HTMLElement} clone
+     */
+    function finalizeFormattedElement( sourceElement, clone ) {
+      const tagName = sourceElement.tagName.toLowerCase();
 
-  function renderLegacyView( pdomRoot, container ) {
-    if ( !container ) {
-      return;
-    }
-    container.innerHTML = '';
-    const pdomCopy = pdomRoot.cloneNode( true );
-    pdomCopy.removeAttribute( 'style' );
-    container.appendChild( pdomCopy );
-    addInlineAttributesTHTML( pdomCopy );
-    styleCopy( pdomCopy );
-  }
-
-  // Elements that exist purely for document structure; we flatten them when building the formatted view.
-  const DECORATOR_TAGS = new Set( [ 'SECTION', 'ARTICLE', 'MAIN', 'ASIDE' ] );
-
-  function renderFormattedView( pdomRoot, container ) {
-    if ( !container ) {
-      return;
-    }
-    container.innerHTML = '';
-    const fragment = document.createDocumentFragment();
-    appendFormattedContent( pdomRoot, fragment );
-
-    if ( fragment.childNodes.length === 0 ) {
-      const emptyMessage = document.createElement( 'p' );
-      emptyMessage.textContent = 'No accessible content available.';
-      fragment.appendChild( emptyMessage );
-    }
-
-    container.appendChild( fragment );
-  }
-
-  function shouldSkipFormattedElement( element ) {
-    if ( !element || element.nodeType !== Node.ELEMENT_NODE ) {
-      return true;
-    }
-    if ( element.hidden || element.getAttribute( 'aria-hidden' ) === 'true' ) {
-      return true;
-    }
-    const tagName = element.tagName;
-    return tagName === 'SCRIPT' || tagName === 'STYLE' || tagName === 'TEMPLATE';
-  }
-
-  /**
-   * Recursively walks the PDOM subtree and appends a lightly-processed clone into the formatted container.
-   *
-   * @param {HTMLElement|DocumentFragment} sourceParent - Node within the live PDOM that we are mirroring.
-   * @param {HTMLElement|DocumentFragment} targetParent - Destination container in the formatted view.
-   */
-  function appendFormattedContent( sourceParent, targetParent ) {
-    const nodes = Array.from( sourceParent.childNodes );
-    let index = 0;
-
-    while ( index < nodes.length ) {
-      const node = nodes[ index ];
-
-      if ( node.nodeType === Node.TEXT_NODE ) {
-        appendFormattedTextNode( node, targetParent );
-        index++;
-        continue;
+      if ( tagName === 'select' ) {
+        clone.selectedIndex = sourceElement.selectedIndex;
+        return;
       }
 
-      if ( node.nodeType !== Node.ELEMENT_NODE ) {
-        index++;
-        continue;
-      }
-
-      const element = node;
-      if ( shouldSkipFormattedElement( element ) ) {
-        index++;
-        continue;
-      }
-
-      const headingLevel = getHeadingLevel( element );
-      if ( headingLevel !== null ) {
-        index = appendHeadingGroup( nodes, index, headingLevel, targetParent );
-        continue;
-      }
-
-      appendFormattedNode( element, targetParent );
-      index++;
-    }
-  }
-
-  /**
-   * Creates a grouped block starting with the heading at startIndex and including following siblings until another
-   * heading of the same or higher level appears.
-   *
-   * @param {Node[]} nodes - Child nodes belonging to the current parent in the source PDOM.
-   * @param {number} startIndex - Index of the heading that initiated this group.
-   * @param {number} headingLevel - Numeric heading level (1-6) for the initiating heading.
-   * @param {HTMLElement|DocumentFragment} targetParent - Destination container for the grouped content.
-   * @returns {number} Index of the next node to process in the caller's loop.
-   */
-  function appendHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
-    const groupContainer = document.createElement( 'div' );
-    groupContainer.className = 'formatted-group';
-
-    let index = startIndex;
-    while ( index < nodes.length ) {
-      const current = nodes[ index ];
-
-      if ( current.nodeType === Node.TEXT_NODE ) {
-        appendFormattedTextNode( current, groupContainer );
-        index++;
-        continue;
-      }
-
-      if ( current.nodeType !== Node.ELEMENT_NODE ) {
-        index++;
-        continue;
-      }
-
-      const element = current;
-      if ( shouldSkipFormattedElement( element ) ) {
-        index++;
-        continue;
-      }
-
-      const currentHeadingLevel = getHeadingLevel( element );
-      // Stop once we reach a heading that should belong to an outer group.
-      if ( index !== startIndex && currentHeadingLevel !== null && currentHeadingLevel <= headingLevel ) {
-        break;
-      }
-
-      appendFormattedNode( element, groupContainer );
-      index++;
-    }
-
-    if ( groupContainer.childNodes.length > 0 ) {
-      targetParent.appendChild( groupContainer );
-    }
-
-    return index;
-  }
-
-  /**
-   * Clones a PDOM element into the formatted view, skipping decorator elements and removing unwanted styling.
-   *
-   * @param {HTMLElement} sourceElement - Element from the live PDOM.
-   * @param {HTMLElement|DocumentFragment} targetParent - Container in the formatted view.
-   */
-  function appendFormattedNode( sourceElement, targetParent ) {
-    if ( isDecoratorElement( sourceElement ) ) {
-      appendFormattedContent( sourceElement, targetParent );
-      return;
-    }
-
-    const clone = cloneFormattedElement( sourceElement );
-    targetParent.appendChild( clone );
-    appendFormattedContent( sourceElement, clone );
-    appendFormattedAriaDetails( sourceElement, clone );
-    finalizeFormattedElement( sourceElement, clone );
-  }
-
-  /**
-   * Copies a text node into the formatted view, trimming and collapsing whitespace while preserving deliberate
-   * leading/trailing spaces.
-   *
-   * @param {Text} textNode - Source text node from the PDOM.
-   * @param {HTMLElement|DocumentFragment} targetParent - Destination container.
-   */
-  function appendFormattedTextNode( textNode, targetParent ) {
-    if ( !textNode ) {
-      return;
-    }
-
-    const content = textNode.textContent;
-    if ( !content ) {
-      return;
-    }
-
-    const collapsed = content.replace( /\s+/g, ' ' );
-    const trimmed = collapsed.trim();
-    if ( trimmed.length === 0 ) {
-      return;
-    }
-
-    const needsLeadingSpace = /^\s/.test( content );
-    const needsTrailingSpace = /\s$/.test( content );
-    const finalText = `${needsLeadingSpace ? ' ' : ''}${trimmed}${needsTrailingSpace ? ' ' : ''}`;
-    targetParent.appendChild( document.createTextNode( finalText ) );
-  }
-
-  /**
-   * Creates a shallow clone for a source element, removing inline styling and neutralising focus management.
-   *
-   * @param {HTMLElement} sourceElement - Element from the live PDOM.
-   * @returns {HTMLElement} Shallow clone ready to receive child content.
-   */
-  function cloneFormattedElement( sourceElement ) {
-    const clone = sourceElement.cloneNode( false );
-    clone.removeAttribute( 'style' );
-    clone.tabIndex = -1;
-
-    // Grouping names assigned in the simulation will not work when all cloned elements are in the same document.
-    clone.removeAttribute( 'name' );
-    return clone;
-  }
-
-  function collectImportantAriaAttributes( element ) {
-    const attributes = [];
-
-    IMPORTANT_ARIA_ATTRIBUTES.forEach( attributeDefinition => {
-      const config = typeof attributeDefinition === 'string' ? { name: attributeDefinition } : attributeDefinition;
-      const attributeName = config.name;
-      const shouldDisplay = config.shouldDisplay;
-
-      if ( element.hasAttribute( attributeName ) ) {
-        const value = element.getAttribute( attributeName );
-
-        if ( shouldDisplay && !shouldDisplay( value, element ) ) {
-          return;
+      if ( tagName === 'option' ) {
+        if ( sourceElement.selected ) {
+          clone.selected = true;
         }
-
-        attributes.push( {
-          name: attributeName,
-          value: formatAriaValue( config, value, element )
-        } );
+        return;
       }
-    } );
 
-    return attributes;
-  }
-
-  function appendFormattedAriaDetails( sourceElement, clone ) {
-    const attributes = collectImportantAriaAttributes( sourceElement );
-    if ( attributes.length === 0 ) {
-      return;
-    }
-
-    const parent = clone.parentNode;
-    if ( !parent ) {
-      return;
-    }
-
-    const insertionPoint = clone.nextSibling;
-
-    const wrapper = document.createElement( 'div' );
-    wrapper.className = 'formatted-aria-block';
-
-    const ariaContainer = document.createElement( 'div' );
-    ariaContainer.className = 'formatted-aria';
-
-    const heading = document.createElement( 'div' );
-    heading.className = 'formatted-aria-heading';
-    heading.textContent = `ARIA details (${attributes.length})`;
-    ariaContainer.appendChild( heading );
-
-    const body = document.createElement( 'div' );
-    body.className = 'formatted-aria-body';
-
-    attributes.forEach( attribute => {
-      const chip = document.createElement( 'span' );
-      chip.className = 'aria-chip';
-      chip.textContent = `${attribute.name}: ${attribute.value}`;
-      body.appendChild( chip );
-    } );
-
-    ariaContainer.appendChild( body );
-    wrapper.appendChild( clone );
-    wrapper.appendChild( ariaContainer );
-
-    if ( insertionPoint ) {
-      parent.insertBefore( wrapper, insertionPoint );
-    }
-    else {
-      parent.appendChild( wrapper );
-    }
-  }
-
-  /**
-   * Performs post-recursion adjustments that require access to the source element's descendants (e.g. option state).
-   *
-   * @param {HTMLElement} sourceElement
-   * @param {HTMLElement} clone
-   */
-  function finalizeFormattedElement( sourceElement, clone ) {
-    const tagName = sourceElement.tagName.toLowerCase();
-
-    if ( tagName === 'select' ) {
-      clone.selectedIndex = sourceElement.selectedIndex;
-      return;
-    }
-
-    if ( tagName === 'option' ) {
-      if ( sourceElement.selected ) {
-        clone.selected = true;
+      if ( tagName === 'textarea' ) {
+        clone.value = sourceElement.value || sourceElement.textContent || '';
       }
-      return;
     }
 
-    if ( tagName === 'textarea' ) {
-      clone.value = sourceElement.value || sourceElement.textContent || '';
-    }
-  }
-
-  /**
-   * Extracts the heading level for an element, supporting native heading tags, role=heading, and id patterns.
-   *
-   * @param {HTMLElement} element
-   * @returns {number|null}
-   */
-  function getHeadingLevel( element ) {
-    const tagName = element.tagName.toLowerCase();
-    if ( /^h[1-6]$/.test( tagName ) ) {
-      return Number( tagName.charAt( 1 ) );
-    }
-
-    const role = ( element.getAttribute( 'role' ) || '' ).toLowerCase();
-    if ( role === 'heading' ) {
-      const ariaLevel = parseInt( element.getAttribute( 'aria-level' ), 10 );
-      if ( !Number.isNaN( ariaLevel ) ) {
-        return ariaLevel;
-      }
-      return 2;
-    }
-
-    if ( element.id && element.id.indexOf( '-heading-' ) >= 0 ) {
-      const ariaLevel = parseInt( element.getAttribute( 'aria-level' ), 10 );
-      if ( !Number.isNaN( ariaLevel ) ) {
-        return ariaLevel;
-      }
+    /**
+     * Extracts the heading level for an element, supporting native heading tags, role=heading, and id patterns.
+     *
+     * @param {HTMLElement} element
+     * @returns {number|null}
+     */
+    function getHeadingLevel( element ) {
+      const tagName = element.tagName.toLowerCase();
       if ( /^h[1-6]$/.test( tagName ) ) {
         return Number( tagName.charAt( 1 ) );
       }
-      return 2;
-    }
 
-    return null;
-  }
-
-  /**
-   * Determines whether an element exists purely for structure and should be flattened in the formatted view.
-   *
-   * @param {HTMLElement} element
-   * @returns {boolean}
-   */
-  function isDecoratorElement( element ) {
-    return DECORATOR_TAGS.has( element.tagName );
-  }
-
-  function renderDevelopmentView( pdomRoot, container ) {
-    if ( !container ) {
-      return;
-    }
-    clearDevelopmentFocusHighlight();
-    container.innerHTML = '';
-
-    const wrapper = document.createElement( 'div' );
-    wrapper.className = 'development-container';
-
-    const workingCopy = pdomRoot.cloneNode( true );
-    annotateDevelopmentClone( pdomRoot, workingCopy );
-    sanitizeForDevelopmentView( workingCopy );
-
-    developmentLineLookup = new Map();
-
-    const topLevelElements = Array.from( workingCopy.children );
-    topLevelElements.forEach( element => renderDevelopmentNode( element, wrapper, 0 ) );
-
-    if ( wrapper.childNodes.length === 0 ) {
-      wrapper.textContent = 'No accessible markup available.';
-    }
-
-    container.appendChild( wrapper );
-    refreshDevelopmentFocusHighlight();
-  }
-
-  function annotateDevelopmentClone( sourceRoot, cloneRoot ) {
-    if ( !sourceRoot || !cloneRoot ) {
-      return;
-    }
-    if ( sourceRoot.nodeType !== Node.ELEMENT_NODE || cloneRoot.nodeType !== Node.ELEMENT_NODE ) {
-      return;
-    }
-
-    const sourceElements = [ sourceRoot, ...sourceRoot.getElementsByTagName( '*' ) ];
-    const cloneElements = [ cloneRoot, ...cloneRoot.getElementsByTagName( '*' ) ];
-    const count = Math.min( sourceElements.length, cloneElements.length );
-
-    for ( let i = 0; i < count; i++ ) {
-      const sourceElement = sourceElements[ i ];
-      const cloneElement = cloneElements[ i ];
-      if ( !sourceElement || !cloneElement ) {
-        continue;
+      const role = ( element.getAttribute( 'role' ) || '' ).toLowerCase();
+      if ( role === 'heading' ) {
+        const ariaLevel = parseInt( element.getAttribute( 'aria-level' ), 10 );
+        if ( !Number.isNaN( ariaLevel ) ) {
+          return ariaLevel;
+        }
+        return 2;
       }
-      const id = generateDevelopmentSourceId( sourceElement );
-      cloneElement[ DEVELOPMENT_SOURCE_ID_SYMBOL ] = id;
-    }
-  }
 
-  function generateDevelopmentSourceId( element ) {
-    if ( !element ) {
+      if ( element.id && element.id.indexOf( '-heading-' ) >= 0 ) {
+        const ariaLevel = parseInt( element.getAttribute( 'aria-level' ), 10 );
+        if ( !Number.isNaN( ariaLevel ) ) {
+          return ariaLevel;
+        }
+        if ( /^h[1-6]$/.test( tagName ) ) {
+          return Number( tagName.charAt( 1 ) );
+        }
+        return 2;
+      }
+
       return null;
     }
-    let id = element[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
-    if ( !id ) {
-      developmentSourceIdCounter += 1;
-      id = `a11y-node-${developmentSourceIdCounter}`;
-      element[ DEVELOPMENT_SOURCE_ID_SYMBOL ] = id;
-    }
-    return id;
-  }
 
-  function registerDevelopmentLine( sourceId, line ) {
-    if ( !sourceId || !line ) {
-      return;
+    /**
+     * Determines whether an element exists purely for structure and should be flattened in the formatted view.
+     *
+     * @param {HTMLElement} element
+     * @returns {boolean}
+     */
+    function isDecoratorElement( element ) {
+      return DECORATOR_TAGS.has( element.tagName );
     }
-    let lines = developmentLineLookup.get( sourceId );
-    if ( !lines ) {
-      lines = [];
-      developmentLineLookup.set( sourceId, lines );
-    }
-    lines.push( line );
-  }
 
-  function clearDevelopmentFocusHighlight() {
-    if ( developmentFocusLines.length === 0 ) {
-      return;
-    }
-    developmentFocusLines.forEach( line => line.classList.remove( DEVELOPMENT_FOCUS_CLASS ) );
-    developmentFocusLines = [];
-  }
-
-  function applyDevelopmentFocusHighlight( sourceId ) {
-    clearDevelopmentFocusHighlight();
-    if ( !sourceId ) {
-      return;
-    }
-    const lines = developmentLineLookup.get( sourceId );
-    if ( !lines || lines.length === 0 ) {
-      return;
-    }
-    lines.forEach( line => line.classList.add( DEVELOPMENT_FOCUS_CLASS ) );
-    developmentFocusLines = lines.slice();
-  }
-
-  function refreshDevelopmentFocusHighlight() {
-    if ( !currentFocusedElement ) {
-      clearDevelopmentFocusHighlight();
-      return;
-    }
-    const sourceId = currentFocusedElement[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
-    if ( !sourceId ) {
-      clearDevelopmentFocusHighlight();
-      return;
-    }
-    applyDevelopmentFocusHighlight( sourceId );
-  }
-
-  function sanitizeForDevelopmentView( root ) {
-
-    // Remove hidden elements entirely from the view.
-    Array.from( root.querySelectorAll( '[hidden]' ) ).forEach( element => {
-      if ( element.parentNode ) {
-        element.parentNode.removeChild( element );
+    function renderDevelopmentView( pdomRoot, container ) {
+      if ( !container ) {
+        return;
       }
-    } );
+      clearDevelopmentFocusHighlight();
+      container.innerHTML = '';
 
-    const walker = document.createTreeWalker( root, NodeFilter.SHOW_ELEMENT, null );
-    while ( walker.nextNode() ) {
-      sanitizeElement( walker.currentNode );
+      const wrapper = document.createElement( 'div' );
+      wrapper.className = 'development-container';
+
+      const workingCopy = pdomRoot.cloneNode( true );
+      annotateDevelopmentClone( pdomRoot, workingCopy );
+      sanitizeForDevelopmentView( workingCopy );
+
+      developmentLineLookup = new Map();
+
+      const topLevelElements = Array.from( workingCopy.children );
+      topLevelElements.forEach( element => renderDevelopmentNode( element, wrapper, 0 ) );
+
+      if ( wrapper.childNodes.length === 0 ) {
+        wrapper.textContent = 'No accessible markup available.';
+      }
+
+      container.appendChild( wrapper );
+      refreshDevelopmentFocusHighlight();
     }
-  }
 
-  function sanitizeElement( element ) {
-    Array.from( element.attributes ).forEach( attribute => {
-      const name = attribute.name;
-      const value = attribute.value;
-
-      if ( name === 'class' || name === 'style' || name.startsWith( 'data-' ) ) {
-        element.removeAttribute( name );
+    function annotateDevelopmentClone( sourceRoot, cloneRoot ) {
+      if ( !sourceRoot || !cloneRoot ) {
+        return;
+      }
+      if ( sourceRoot.nodeType !== Node.ELEMENT_NODE || cloneRoot.nodeType !== Node.ELEMENT_NODE ) {
         return;
       }
 
-      if ( name === 'id' || name === 'hidden' ) {
-        element.removeAttribute( name );
-        return;
-      }
+      const sourceElements = [ sourceRoot, ...sourceRoot.getElementsByTagName( '*' ) ];
+      const cloneElements = [ cloneRoot, ...cloneRoot.getElementsByTagName( '*' ) ];
+      const count = Math.min( sourceElements.length, cloneElements.length );
 
-      if ( name.startsWith( 'aria-' ) || DEVELOPMENT_ALLOWED_ATTRIBUTES.has( name ) ) {
-        if ( ( name === 'aria-describedby' || name === 'aria-labelledby' || name === 'aria-controls' || name === 'aria-owns' || name === 'aria-activedescendant' || name === 'for' ) && value ) {
-          element.setAttribute( name, '...' );
+      for ( let i = 0; i < count; i++ ) {
+        const sourceElement = sourceElements[ i ];
+        const cloneElement = cloneElements[ i ];
+        if ( !sourceElement || !cloneElement ) {
+          continue;
         }
+        const id = generateDevelopmentSourceId( sourceElement );
+        cloneElement[ DEVELOPMENT_SOURCE_ID_SYMBOL ] = id;
+      }
+    }
+
+    function generateDevelopmentSourceId( element ) {
+      if ( !element ) {
+        return null;
+      }
+      let id = element[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
+      if ( !id ) {
+        developmentSourceIdCounter += 1;
+        id = `a11y-node-${developmentSourceIdCounter}`;
+        element[ DEVELOPMENT_SOURCE_ID_SYMBOL ] = id;
+      }
+      return id;
+    }
+
+    function registerDevelopmentLine( sourceId, line ) {
+      if ( !sourceId || !line ) {
+        return;
+      }
+      let lines = developmentLineLookup.get( sourceId );
+      if ( !lines ) {
+        lines = [];
+        developmentLineLookup.set( sourceId, lines );
+      }
+      lines.push( line );
+    }
+
+    function clearDevelopmentFocusHighlight() {
+      if ( developmentFocusLines.length === 0 ) {
+        return;
+      }
+      developmentFocusLines.forEach( line => line.classList.remove( DEVELOPMENT_FOCUS_CLASS ) );
+      developmentFocusLines = [];
+    }
+
+    function applyDevelopmentFocusHighlight( sourceId ) {
+      clearDevelopmentFocusHighlight();
+      if ( !sourceId ) {
+        return;
+      }
+      const lines = developmentLineLookup.get( sourceId );
+      if ( !lines || lines.length === 0 ) {
+        return;
+      }
+      lines.forEach( line => line.classList.add( DEVELOPMENT_FOCUS_CLASS ) );
+      developmentFocusLines = lines.slice();
+    }
+
+    function refreshDevelopmentFocusHighlight() {
+      if ( !currentFocusedElement ) {
+        clearDevelopmentFocusHighlight();
+        return;
+      }
+      const sourceId = currentFocusedElement[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
+      if ( !sourceId ) {
+        clearDevelopmentFocusHighlight();
+        return;
+      }
+      applyDevelopmentFocusHighlight( sourceId );
+    }
+
+    function sanitizeForDevelopmentView( root ) {
+
+      // Remove hidden elements entirely from the view.
+      Array.from( root.querySelectorAll( '[hidden]' ) ).forEach( element => {
+        if ( element.parentNode ) {
+          element.parentNode.removeChild( element );
+        }
+      } );
+
+      const walker = document.createTreeWalker( root, NodeFilter.SHOW_ELEMENT, null );
+      while ( walker.nextNode() ) {
+        sanitizeElement( walker.currentNode );
+      }
+    }
+
+    function sanitizeElement( element ) {
+      Array.from( element.attributes ).forEach( attribute => {
+        const name = attribute.name;
+        const value = attribute.value;
+
+        if ( name === 'class' || name === 'style' || name.startsWith( 'data-' ) ) {
+          element.removeAttribute( name );
+          return;
+        }
+
+        if ( name === 'id' || name === 'hidden' ) {
+          element.removeAttribute( name );
+          return;
+        }
+
+        if ( name.startsWith( 'aria-' ) || DEVELOPMENT_ALLOWED_ATTRIBUTES.has( name ) ) {
+          if ( ( name === 'aria-describedby' || name === 'aria-labelledby' || name === 'aria-controls' || name === 'aria-owns' || name === 'aria-activedescendant' || name === 'for' ) && value ) {
+            element.setAttribute( name, '...' );
+          }
+          return;
+        }
+
+        element.removeAttribute( name );
+      } );
+    }
+
+    function renderDevelopmentNode( element, container, depth ) {
+      const tagName = element.tagName.toLowerCase();
+      const indent = `${depth * DEVELOPMENT_INDENT_SIZE_EM}em`;
+
+      const openLine = document.createElement( 'div' );
+      openLine.className = 'development-line';
+      openLine.style.paddingLeft = indent;
+      openLine.appendChild( createTagSpan( `<${tagName}` ) );
+
+      const attributes = Array.from( element.attributes ).sort( ( a, b ) => a.name.localeCompare( b.name ) );
+      attributes.forEach( attribute => appendAttributeTokens( openLine, attribute ) );
+
+      const sourceId = element[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
+      if ( sourceId ) {
+        openLine.dataset.sourceNodeId = sourceId;
+        registerDevelopmentLine( sourceId, openLine );
+      }
+
+      if ( VOID_ELEMENTS.has( tagName ) ) {
+        openLine.appendChild( createTagSpan( ' />' ) );
+        container.appendChild( openLine );
         return;
       }
 
-      element.removeAttribute( name );
-    } );
-  }
+      const inlineTextContent = getCollapsedTextContent( element );
+      if ( shouldRenderInlineElement( element, inlineTextContent ) ) {
+        openLine.appendChild( createTagSpan( '>' ) );
 
-  function renderDevelopmentNode( element, container, depth ) {
-    const tagName = element.tagName.toLowerCase();
-    const indent = `${depth * DEVELOPMENT_INDENT_SIZE_EM}em`;
+        const textSpan = document.createElement( 'span' );
+        textSpan.className = 'development-text-node';
+        textSpan.textContent = inlineTextContent;
+        openLine.appendChild( textSpan );
 
-    const openLine = document.createElement( 'div' );
-    openLine.className = 'development-line';
-    openLine.style.paddingLeft = indent;
-    openLine.appendChild( createTagSpan( `<${tagName}` ) );
+        openLine.appendChild( createTagSpan( `</${tagName}>` ) );
+        container.appendChild( openLine );
+        return;
+      }
 
-    const attributes = Array.from( element.attributes ).sort( ( a, b ) => a.name.localeCompare( b.name ) );
-    attributes.forEach( attribute => appendAttributeTokens( openLine, attribute ) );
-
-    const sourceId = element[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
-    if ( sourceId ) {
-      openLine.dataset.sourceNodeId = sourceId;
-      registerDevelopmentLine( sourceId, openLine );
-    }
-
-    if ( VOID_ELEMENTS.has( tagName ) ) {
-      openLine.appendChild( createTagSpan( ' />' ) );
-      container.appendChild( openLine );
-      return;
-    }
-
-    const inlineTextContent = getCollapsedTextContent( element );
-    if ( shouldRenderInlineElement( element, inlineTextContent ) ) {
       openLine.appendChild( createTagSpan( '>' ) );
-
-      const textSpan = document.createElement( 'span' );
-      textSpan.className = 'development-text-node';
-      textSpan.textContent = inlineTextContent;
-      openLine.appendChild( textSpan );
-
-      openLine.appendChild( createTagSpan( `</${tagName}>` ) );
       container.appendChild( openLine );
-      return;
-    }
 
-    openLine.appendChild( createTagSpan( '>' ) );
-    container.appendChild( openLine );
+      Array.from( element.childNodes ).forEach( node => {
+        if ( node.nodeType === Node.ELEMENT_NODE ) {
+          renderDevelopmentNode( node, container, depth + 1 );
+        }
+        else if ( node.nodeType === Node.TEXT_NODE ) {
+          renderDevelopmentTextNode( node, container, depth );
+        }
+      } );
 
-    Array.from( element.childNodes ).forEach( node => {
-      if ( node.nodeType === Node.ELEMENT_NODE ) {
-        renderDevelopmentNode( node, container, depth + 1 );
+      const closeLine = document.createElement( 'div' );
+      closeLine.className = 'development-line';
+      closeLine.style.paddingLeft = indent;
+      closeLine.appendChild( createTagSpan( `</${tagName}>` ) );
+      if ( sourceId ) {
+        closeLine.dataset.sourceNodeId = sourceId;
+        registerDevelopmentLine( sourceId, closeLine );
       }
-      else if ( node.nodeType === Node.TEXT_NODE ) {
-        renderDevelopmentTextNode( node, container, depth );
+      container.appendChild( closeLine );
+    }
+
+    function createTagSpan( text ) {
+      const span = document.createElement( 'span' );
+      span.className = 'development-tag';
+      span.textContent = text;
+      return span;
+    }
+
+    function appendAttributeTokens( line, attribute ) {
+      line.appendChild( document.createTextNode( ' ' ) );
+
+      const nameSpan = document.createElement( 'span' );
+      nameSpan.className = 'development-attribute';
+      nameSpan.textContent = attribute.name;
+      line.appendChild( nameSpan );
+
+      if ( attribute.value ) {
+        const equalsSpan = document.createElement( 'span' );
+        equalsSpan.className = 'development-tag';
+        equalsSpan.textContent = '=';
+        line.appendChild( equalsSpan );
+
+        const valueSpan = document.createElement( 'span' );
+        valueSpan.className = 'development-attribute-value';
+        valueSpan.textContent = `"${attribute.value}"`;
+        line.appendChild( valueSpan );
       }
-    } );
-
-    const closeLine = document.createElement( 'div' );
-    closeLine.className = 'development-line';
-    closeLine.style.paddingLeft = indent;
-    closeLine.appendChild( createTagSpan( `</${tagName}>` ) );
-    if ( sourceId ) {
-      closeLine.dataset.sourceNodeId = sourceId;
-      registerDevelopmentLine( sourceId, closeLine );
-    }
-    container.appendChild( closeLine );
-  }
-
-  function createTagSpan( text ) {
-    const span = document.createElement( 'span' );
-    span.className = 'development-tag';
-    span.textContent = text;
-    return span;
-  }
-
-  function appendAttributeTokens( line, attribute ) {
-    line.appendChild( document.createTextNode( ' ' ) );
-
-    const nameSpan = document.createElement( 'span' );
-    nameSpan.className = 'development-attribute';
-    nameSpan.textContent = attribute.name;
-    line.appendChild( nameSpan );
-
-    if ( attribute.value ) {
-      const equalsSpan = document.createElement( 'span' );
-      equalsSpan.className = 'development-tag';
-      equalsSpan.textContent = '=';
-      line.appendChild( equalsSpan );
-
-      const valueSpan = document.createElement( 'span' );
-      valueSpan.className = 'development-attribute-value';
-      valueSpan.textContent = `"${attribute.value}"`;
-      line.appendChild( valueSpan );
-    }
-  }
-
-  function renderDevelopmentTextNode( node, container, depth ) {
-    const content = node.textContent.replace( /\s+/g, ' ' ).trim();
-    if ( !content ) {
-      return;
     }
 
-    const textLine = document.createElement( 'div' );
-    textLine.className = 'development-line';
-    textLine.style.paddingLeft = `${( depth + 1 ) * DEVELOPMENT_INDENT_SIZE_EM}em`;
-
-    const span = document.createElement( 'span' );
-    span.className = 'development-text-node';
-    span.textContent = content;
-    textLine.appendChild( span );
-    container.appendChild( textLine );
-  }
-
-  function getCollapsedTextContent( element ) {
-    const text = Array.from( element.childNodes )
-      .filter( node => node.nodeType === Node.TEXT_NODE )
-      .map( node => node.textContent || '' )
-      .join( ' ' )
-      .replace( /\s+/g, ' ' )
-      .trim();
-    return text;
-  }
-
-  function shouldRenderInlineElement( element, textContent ) {
-    if ( element.childElementCount > 0 ) {
-      return false;
-    }
-    if ( !textContent ) {
-      return false;
-    }
-    if ( textContent.length > DEVELOPMENT_INLINE_TEXT_LIMIT ) {
-      return false;
-    }
-
-    const tagName = element.tagName.toLowerCase();
-    return INLINE_SINGLE_LINE_TAGS.has( tagName ) || element.childNodes.length === 1;
-  }
-
-  function renderViews( pdomRoot, viewContainers ) {
-    renderFormattedView( pdomRoot, viewContainers[ VIEW_MODES.FORMATTED ] );
-    renderDevelopmentView( pdomRoot, viewContainers[ VIEW_MODES.DEVELOPMENT ] );
-    renderLegacyView( pdomRoot, viewContainers[ VIEW_MODES.LEGACY ] );
-  }
-
-  function addPDOMObserver( pdomRoot, viewContainers, mutationConfig ) {
-    let dirty = true;
-    let renderTimeoutId = null;
-
-    const scheduleRender = () => {
-      if ( renderTimeoutId !== null ) {
+    function renderDevelopmentTextNode( node, container, depth ) {
+      const content = node.textContent.replace( /\s+/g, ' ' ).trim();
+      if ( !content ) {
         return;
       }
-      renderTimeoutId = setTimeout( () => {
-        renderViews( pdomRoot, viewContainers );
-        dirty = false;
-        renderTimeoutId = null;
-      }, 10 );
-    };
 
-    setInterval( () => {
-      if ( dirty ) {
-        scheduleRender();
+      const textLine = document.createElement( 'div' );
+      textLine.className = 'development-line';
+      textLine.style.paddingLeft = `${( depth + 1 ) * DEVELOPMENT_INDENT_SIZE_EM}em`;
+
+      const span = document.createElement( 'span' );
+      span.className = 'development-text-node';
+      span.textContent = content;
+      textLine.appendChild( span );
+      container.appendChild( textLine );
+    }
+
+    function getCollapsedTextContent( element ) {
+      const text = Array.from( element.childNodes )
+        .filter( node => node.nodeType === Node.TEXT_NODE )
+        .map( node => node.textContent || '' )
+        .join( ' ' )
+        .replace( /\s+/g, ' ' )
+        .trim();
+      return text;
+    }
+
+    function shouldRenderInlineElement( element, textContent ) {
+      if ( element.childElementCount > 0 ) {
+        return false;
       }
-    }, 300 );
+      if ( !textContent ) {
+        return false;
+      }
+      if ( textContent.length > DEVELOPMENT_INLINE_TEXT_LIMIT ) {
+        return false;
+      }
 
-    const domObserver = new MutationObserver( () => {
-      dirty = true;
-    } );
+      const tagName = element.tagName.toLowerCase();
+      return INLINE_SINGLE_LINE_TAGS.has( tagName ) || element.childNodes.length === 1;
+    }
 
-    domObserver.observe( pdomRoot, mutationConfig );
-    scheduleRender();
-  }
+    function renderViews( pdomRoot, viewContainers, renderers ) {
+      if ( !renderers ) {
+        return;
+      }
 
-  /**
-   * Convert the inline ARIA labels with label information to input values or additional label elements in the
-   * PDOM copy so that they are visible in demonstrations. For example, this could be an aria-label, aria-valuetext,
-   * and so on.
-   *
-   * @param {HTMLElement} rootNode - descendants of this root are traversed so we have
-   */
-  function addInlineAttributesTHTML( rootNode ) {
+      const formattedRenderer = renderers[ VIEW_MODES.FORMATTED ];
+      if ( typeof formattedRenderer === 'function' ) {
+        formattedRenderer( pdomRoot, viewContainers[ VIEW_MODES.FORMATTED ] );
+      }
 
-    // all elements in the PDOM - a defensive copy since we may be adding new elements to the DOM
-    const allElements = Array.prototype.slice.call( rootNode.getElementsByTagName( '*' ) );
+      const developmentRenderer = renderers[ VIEW_MODES.DEVELOPMENT ];
+      if ( typeof developmentRenderer === 'function' ) {
+        developmentRenderer( pdomRoot, viewContainers[ VIEW_MODES.DEVELOPMENT ] );
+      }
 
-    for ( let i = 0; i < allElements.length; i++ ) {
-      const element = allElements[ i ];
+      const legacyRenderer = renderers[ VIEW_MODES.LEGACY ];
+      if ( typeof legacyRenderer === 'function' ) {
+        legacyRenderer( pdomRoot, viewContainers[ VIEW_MODES.LEGACY ] );
+      }
+    }
 
-      // this check works because PDOMInstance sets hidden on the entire subtree of PDOMInstances when not visible on
-      // an accessible display rather than just the hidden ancestor
-      if ( !element.hidden ) {
-        if ( element.hasAttribute( 'aria-label' ) && element.innerHTML === '' ) {
-          const ariaLabel = element.getAttribute( 'aria-label' );
+    function addPDOMObserver( pdomRoot, viewContainers, mutationConfig, renderers ) {
+      let dirty = true;
+      let renderTimeoutId = null;
 
-          // remove the style
-          element.removeAttribute( 'style' );
+      const scheduleRender = () => {
+        if ( renderTimeoutId !== null ) {
+          return;
+        }
+        renderTimeoutId = setTimeout( () => {
+          renderViews( pdomRoot, viewContainers, renderers );
+          dirty = false;
+          renderTimeoutId = null;
+        }, 10 );
+      };
 
-          if ( element.tagName.toLowerCase() === 'input' ) {
-            if ( element.type === 'button' ) {
+      setInterval( () => {
+        if ( dirty ) {
+          scheduleRender();
+        }
+      }, 300 );
 
-              // set the value of the input to be the same as the aria-label appears inside the button
-              element.setAttribute( 'value', ariaLabel );
+      const domObserver = new MutationObserver( () => {
+        dirty = true;
+      } );
+
+      domObserver.observe( pdomRoot, mutationConfig );
+      scheduleRender();
+    }
+
+    /**
+     * Convert the inline ARIA labels with label information to input values or additional label elements in the
+     * PDOM copy so that they are visible in demonstrations. For example, this could be an aria-label, aria-valuetext,
+     * and so on.
+     *
+     * @param {HTMLElement} rootNode - descendants of this root are traversed so we have
+     */
+    function addInlineAttributesTHTML( rootNode ) {
+
+      // all elements in the PDOM - a defensive copy since we may be adding new elements to the DOM
+      const allElements = Array.prototype.slice.call( rootNode.getElementsByTagName( '*' ) );
+
+      for ( let i = 0; i < allElements.length; i++ ) {
+        const element = allElements[ i ];
+
+        // this check works because PDOMInstance sets hidden on the entire subtree of PDOMInstances when not visible on
+        // an accessible display rather than just the hidden ancestor
+        if ( !element.hidden ) {
+          if ( element.hasAttribute( 'aria-label' ) && element.innerHTML === '' ) {
+            const ariaLabel = element.getAttribute( 'aria-label' );
+
+            // remove the style
+            element.removeAttribute( 'style' );
+
+            if ( element.tagName.toLowerCase() === 'input' ) {
+              if ( element.type === 'button' ) {
+
+                // set the value of the input to be the same as the aria-label appears inside the button
+                element.setAttribute( 'value', ariaLabel );
+              }
+              else {
+
+                // add a special label element to appear before the input element
+                const labelElement = document.createElement( 'label' );
+                labelElement.textContent = ariaLabel;
+                const parentElement = element.parentNode;
+                parentElement.insertBefore( labelElement, parentElement.firstChild );
+              }
             }
             else {
 
-              // add a special label element to appear before the input element
-              const labelElement = document.createElement( 'label' );
-              labelElement.textContent = ariaLabel;
-              const parentElement = element.parentNode;
-              parentElement.insertBefore( labelElement, parentElement.firstChild );
+              // if not an input, then add it to the innerHTML of an element, without overriding what is already there.
+              element.innerHTML = ariaLabel + element.innerHTML;
             }
           }
-          else {
 
-            // if not an input, then add it to the innerHTML of an element, without overriding what is already there.
-            element.innerHTML = ariaLabel + element.innerHTML;
-          }
+          IMPORTANT_ARIA_ATTRIBUTES.forEach( attributeDefinition => {
+            const config = typeof attributeDefinition === 'string' ? { name: attributeDefinition } : attributeDefinition;
+            const attributeName = config.name;
+            const shouldDisplay = config.shouldDisplay;
+
+            if ( element.hasAttribute( attributeName ) ) {
+              const value = element.getAttribute( attributeName );
+
+              if ( shouldDisplay && !shouldDisplay( value, element ) ) {
+                return;
+              }
+
+              const displayValue = formatAriaValue( config, value, element );
+
+              // add a new element to the DOM that displays the value of the attribute
+              const valueElement = document.createElement( 'p' );
+
+              // Assign a className so that we can avoid removing this specific styling when we present the PDOM copy
+              valueElement.className = 'pdom-style';
+              valueElement.style.opacity = 0.55;
+              valueElement.style.display = 'inline-block';
+              valueElement.style.paddingLeft = '1em';
+              valueElement.textContent = `(${attributeName}: ${displayValue})`;
+
+              // insert directly after the element that has the attribute. This handles the case if element is last, see https://stackoverflow.com/questions/4793604/how-to-insert-an-element-after-another-element-in-javascript-without-using-a-lib
+              element.parentNode.insertBefore( valueElement, element.nextSibling );
+            }
+          } );
         }
+      }
+    }
 
-        IMPORTANT_ARIA_ATTRIBUTES.forEach( attributeDefinition => {
-          const config = typeof attributeDefinition === 'string' ? { name: attributeDefinition } : attributeDefinition;
-          const attributeName = config.name;
-          const shouldDisplay = config.shouldDisplay;
+    /**
+     * add mutation observers to each of the aria-live elements
+     * @param {HTMLElement} originalElement
+     * @param {HTMLElement} listElement
+     * @param {Object} mutationConfig
+     */
+    function addLiveObserver( originalElement, listElement, alertContainer, mutationConfig ) {
+      if ( !originalElement || !listElement || !alertContainer ) {
+        return;
+      }
+      const liveObserver = new MutationObserver( mutations => {
+        mutations.forEach( mutation => {
 
-          if ( element.hasAttribute( attributeName ) ) {
-            const value = element.getAttribute( attributeName );
+          // Only display added DOM nodes. ariaLiveAnnouncer will remove the content from aria-live elements so that it
+          // can't be read by the virtual cursor. This registers as a "mutation", but we don't want to display
+          // the removal.
+          if ( mutation.addedNodes.length > 0 ) {
+            const alertText = mutation.target.textContent;
 
-            if ( shouldDisplay && !shouldDisplay( value, element ) ) {
-              return;
+            // update the text content of the copied element to match the element in the iframe document
+            // create a list item to add to the alert list
+            if ( alertText.length > 0 ) {
+              const listItem = document.createElement( 'li' );
+              listItem.style.opacity = 1.0;
+              listItem.textContent = alertText;
+              if ( mutation.target.id.includes( 'assertive' ) ) {
+                listItem.classList.add( 'assertive' );
+              }
+
+              listElement.appendChild( listItem );
+
+              // Auto-scroll to bottom to show the newest messages
+              alertContainer.scrollTop = alertContainer.scrollHeight;
+
+              // Remove the oldest items from the list if we are over the limit.
+              const overflow = listElement.children.length - ACTIVITY_LOG_LENGTH;
+              for ( let i = 0; i < overflow; i++ ) {
+
+                // remove the first child, which is the oldest
+                listElement.removeChild( listElement.firstChild );
+              }
+
             }
-
-            const displayValue = formatAriaValue( config, value, element );
-
-            // add a new element to the DOM that displays the value of the attribute
-            const valueElement = document.createElement( 'p' );
-
-            // Assign a className so that we can avoid removing this specific styling when we present the PDOM copy
-            valueElement.className = 'pdom-style';
-            valueElement.style.opacity = 0.55;
-            valueElement.style.display = 'inline-block';
-            valueElement.style.paddingLeft = '1em';
-            valueElement.textContent = `(${attributeName}: ${displayValue})`;
-
-            // insert directly after the element that has the attribute. This handles the case if element is last, see https://stackoverflow.com/questions/4793604/how-to-insert-an-element-after-another-element-in-javascript-without-using-a-lib
-            element.parentNode.insertBefore( valueElement, element.nextSibling );
           }
         } );
+      } );
+
+      liveObserver.observe( originalElement, mutationConfig );
+    }
+
+    /**
+     * Remove all alerts from the activity log by removing all children of the parent containing them. Solution to clear
+     * children from https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+     */
+    function clearActivityLog( listElement ) {
+      while ( listElement.firstChild ) {
+        listElement.removeChild( listElement.lastChild );
       }
     }
-  }
 
-  /**
-   * add mutation observers to each of the aria-live elements
-   * @param {HTMLElement} originalElement
-   * @param {HTMLElement} listElement
-   * @param {Object} mutationConfig
-   */
-  function addLiveObserver( originalElement, listElement, mutationConfig ) {
-    const liveObserver = new MutationObserver( mutations => {
-      mutations.forEach( mutation => {
+    function initializeActivityLogButton( button, listElement ) {
+      if ( !button || !listElement ) {
+        return;
+      }
+      button.addEventListener( 'click', () => clearActivityLog( listElement ) );
+    }
 
-        // Only display added DOM nodes. ariaLiveAnnouncer will remove the content from aria-live elements so that it
-        // can't be read by the virtual cursor. This registers as a "mutation", but we don't want to display
-        // the removal.
-        if ( mutation.addedNodes.length > 0 ) {
-          const alertText = mutation.target.textContent;
+    function setupMessageListener( domRefs, viewContainers, renderers, mutationConfig ) {
+      if ( !domRefs || !domRefs.iframe ) {
+        return;
+      }
 
-          // update the text content of the copied element to match the element in the iframe document
-          // create a list item to add to the alert list
-          if ( alertText.length > 0 ) {
-            const listItem = document.createElement( 'li' );
-            listItem.style.opacity = 1.0;
-            listItem.textContent = alertText;
-            if ( mutation.target.id.includes( 'assertive' ) ) {
-              listItem.classList.add( 'assertive' );
-            }
+      window.addEventListener( 'message', event => {
+        if ( !event.data ) {
+          return;
+        }
 
-            listElement.appendChild( listItem );
+        let data;
+        try {
+          data = JSON.parse( event.data );
+        }
+        catch( e ) {
+          return;
+        }
 
-            // Auto-scroll to bottom to show the newest messages
-            const alertContainer = document.getElementById( 'alert-copy-container' );
-            alertContainer.scrollTop = alertContainer.scrollHeight;
+        if ( data.type !== 'load' ) {
+          return;
+        }
 
-            // Remove the oldest items from the list if we are over the limit.
-            const overflow = listElement.children.length - ACTIVITY_LOG_LENGTH;
-            for ( let i = 0; i < overflow; i++ ) {
+        const innerWindow = domRefs.iframe.contentWindow;
+        if ( !innerWindow ) {
+          return;
+        }
 
-              // remove the first child, which is the oldest
-              listElement.removeChild( listElement.firstChild );
-            }
+        // eslint-disable-next-line dot-notation
+        const phetNamespace = innerWindow[ 'phet' ];
+        if ( !phetNamespace || !phetNamespace.joist || !phetNamespace.joist.display ) {
+          return;
+        }
 
+        // eslint-disable-next-line dot-notation
+        const PDOMRoot = phetNamespace.joist.display.pdomRootElement;
+        if ( !PDOMRoot ) {
+          return;
+        }
+
+        // eslint-disable-next-line dot-notation
+        const ariaLiveElementsContainer = phetNamespace.joist.sim.display.descriptionUtteranceQueue.announcer.ariaLiveContainer;
+        // eslint-disable-next-line dot-notation
+        const globalContainer = phetNamespace.scenery.globalDescriptionQueue.announcer.ariaLiveContainer;
+
+        const simDisplayElements = Array.prototype.slice.call( ariaLiveElementsContainer.children );
+        const globalElements = Array.prototype.slice.call( globalContainer.children );
+        const allSourceAriaLiveElements = [ ...simDisplayElements, ...globalElements ];
+
+        addPDOMObserver( PDOMRoot, viewContainers, mutationConfig, renderers );
+
+        if ( domRefs.alertList && domRefs.alertContainer ) {
+          for ( let i = 0; i < allSourceAriaLiveElements.length; i++ ) {
+            addLiveObserver( allSourceAriaLiveElements[ i ], domRefs.alertList, domRefs.alertContainer, mutationConfig );
           }
         }
+
+        const iframeDocument = domRefs.iframe.contentWindow.document;
+
+        domRefs.iframe.focus();
+
+        let previousElement = null;
+        const handleIframeFocus = () => {
+          if ( previousElement ) {
+            previousElement.classList.remove( 'highlight' );
+          }
+          const activeElement = iframeDocument.activeElement;
+          previousElement = activeElement;
+          const isDocumentBody = activeElement === iframeDocument.body;
+          if ( activeElement && !isDocumentBody && typeof activeElement.classList !== 'undefined' ) {
+            activeElement.classList.add( 'highlight' );
+          }
+          currentFocusedElement = !isDocumentBody ? activeElement : null;
+          refreshDevelopmentFocusHighlight();
+        };
+
+        iframeDocument.addEventListener( 'focusin', handleIframeFocus );
+        handleIframeFocus();
       } );
-    } );
-
-    liveObserver.observe( originalElement, mutationConfig );
-  }
-
-  /**
-   * Remove all alerts from the activity log by removing all children of the parent containing them. Solution to clear
-   * children from https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
-   */
-  function clearActivityLog( listElement ) {
-    while ( listElement.firstChild ) {
-      listElement.removeChild( listElement.lastChild );
-    }
-  }
-
-  // constants
-  // see https://developer.mozilla.org/en-US/docs/Web/API/MutationObserverInit for details
-  const MUTATION_OBSERVER_CONFIG = {
-    attributes: true,
-    childList: true,
-    characterData: true,
-    subtree: true
-  };
-
-  // handling messages from sims
-  window.addEventListener( 'message', event => {
-    if ( !event.data ) {
-      return;
     }
 
-    let data;
-    try {
-      data = JSON.parse( event.data );
-    }
-    catch( e ) {
-      return;
-    }
-
-    // if load is successful, create a visualization of the parallel DOM
-    if ( data.type === 'load' ) {
-
-      const simFrame = document.getElementById( 'iframe' );
-      const innerWindow = simFrame.contentWindow;
-      // eslint-disable-next-line dot-notation
-      const PDOMRoot = innerWindow[ 'phet' ].joist.display.pdomRootElement; // copy of the parallel DOM
-
-      // get the alert dom elements from the iframe's inner document
-      // eslint-disable-next-line dot-notation
-      const ariaLiveElementsContainer = innerWindow[ 'phet' ].joist.sim.display.descriptionUtteranceQueue.announcer.ariaLiveContainer;
-
-      // Add the global aria-live elements as well
-      // eslint-disable-next-line dot-notation
-      const globalContainer = innerWindow[ 'phet' ].scenery.globalDescriptionQueue.announcer.ariaLiveContainer;
-
-      const simDisplayElements = Array.prototype.slice.call( ariaLiveElementsContainer.children );
-      const globalElements = Array.prototype.slice.call( globalContainer.children );
-      const allSourceAriaLiveElements = [ ...simDisplayElements, ...globalElements ];
-
-      // get the alert dom elements from the PDOM copy
-      const alertList = document.getElementById( 'alert-list' );
-
-      // get the parent container for the parallel DOM copy and the alert content
-      const viewContainerRoot = document.getElementById( 'dom-copy-container' );
-      const viewContainers = {
-        formatted: viewContainerRoot.querySelector( '[data-view="formatted"]' ),
-        development: viewContainerRoot.querySelector( '[data-view="development"]' ),
-        legacy: viewContainerRoot.querySelector( '[data-view="legacy"]' )
+    function createDomReferences() {
+      return {
+        iframe: document.getElementById( 'iframe' ),
+        alertList: document.getElementById( 'alert-list' ),
+        alertContainer: document.getElementById( 'alert-copy-container' ),
+        clearActivityLogButton: document.getElementById( 'clear-activity-log-button' ),
+        viewModeControls: document.getElementById( 'view-mode-controls' ),
+        domCopyContainer: document.getElementById( 'dom-copy-container' )
       };
-      initializeViewModeControls( viewContainers );
+    }
 
-      // update the PDOM copy whenever the sim's PDOM changes
-      addPDOMObserver( PDOMRoot, viewContainers, MUTATION_OBSERVER_CONFIG );
-
-      // observe each of the live elements and add new text content to the list view
-      for ( let i = 0; i < allSourceAriaLiveElements.length; i++ ) {
-        addLiveObserver( allSourceAriaLiveElements[ i ], alertList, MUTATION_OBSERVER_CONFIG );
+    function createViewContainers( root ) {
+      if ( !root ) {
+        return {
+          formatted: null,
+          development: null,
+          legacy: null
+        };
       }
 
-      // clear all alerts when the "Clear Log" button is pressed
-      const clearButton = document.getElementById( 'clear-activity-log-button' );
-      clearButton.addEventListener( 'click', () => clearActivityLog( alertList ) );
-
-      const iframe = document.getElementById( 'iframe' );
-      const iframeDocument = iframe.contentWindow.document;
-
-      // set focus to the loaded iframe
-      iframe.focus();
-
-      let previousElement = null;
-      const handleIframeFocus = () => {
-        if ( previousElement ) {
-          previousElement.classList.remove( 'highlight' );
-        }
-        const activeElement = iframeDocument.activeElement;
-        previousElement = activeElement;
-        const isDocumentBody = activeElement === iframeDocument.body;
-        if ( activeElement && !isDocumentBody && typeof activeElement.classList !== 'undefined' ) {
-          activeElement.classList.add( 'highlight' );
-        }
-        currentFocusedElement = !isDocumentBody ? activeElement : null;
-        refreshDevelopmentFocusHighlight();
+      return {
+        formatted: root.querySelector( '[data-view="formatted"]' ),
+        development: root.querySelector( '[data-view="development"]' ),
+        legacy: root.querySelector( '[data-view="legacy"]' )
       };
-
-      iframeDocument.addEventListener( 'focusin', handleIframeFocus );
-      handleIframeFocus();
     }
-  } );
 
-  // Live reload, see https://esbuild.github.io/api/#live-reload
-  const query = new URLSearchParams( window.location.search );
-  const liveReload = !!query.has( 'liveReload' );
-  if ( liveReload ) {
-    new EventSource( '/esbuild' ).addEventListener( 'change', () => location.reload() );
-  }
+    function initializeLiveReload() {
+      const query = new URLSearchParams( window.location.search );
+      if ( !query.has( 'liveReload' ) ) {
+        return;
+      }
+      new EventSource( '/esbuild' ).addEventListener( 'change', () => location.reload() );
+    }
 
+  } )();
 </script>
 </body>
 </html>
