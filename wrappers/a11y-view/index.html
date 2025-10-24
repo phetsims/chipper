@@ -288,6 +288,12 @@
       font-weight: 600;
     }
 
+    .development-focus-highlight {
+      background: #ffe9b5;
+      border-radius: 0.4em;
+      box-shadow: inset 0 0 0 1px rgba(220, 157, 16, 0.6);
+    }
+
 
     /* ************SAFARI ONLY *********************** */
     .left-safari {
@@ -585,6 +591,12 @@
     'strong'
   ] );
   const DEVELOPMENT_INLINE_TEXT_LIMIT = 80;
+  const DEVELOPMENT_SOURCE_ID_SYMBOL = Symbol( 'a11yViewSourceNodeId' );
+  let developmentSourceIdCounter = 0;
+  let developmentLineLookup = new Map();
+  let developmentFocusLines = [];
+  const DEVELOPMENT_FOCUS_CLASS = 'development-focus-highlight';
+  let currentFocusedElement = null;
 
 /*******************************************************************************
  * Helper Functions
@@ -1054,13 +1066,17 @@
     if ( !container ) {
       return;
     }
+    clearDevelopmentFocusHighlight();
     container.innerHTML = '';
 
     const wrapper = document.createElement( 'div' );
     wrapper.className = 'development-container';
 
     const workingCopy = pdomRoot.cloneNode( true );
+    annotateDevelopmentClone( pdomRoot, workingCopy );
     sanitizeForDevelopmentView( workingCopy );
+
+    developmentLineLookup = new Map();
 
     const topLevelElements = Array.from( workingCopy.children );
     topLevelElements.forEach( element => renderDevelopmentNode( element, wrapper, 0 ) );
@@ -1070,6 +1086,89 @@
     }
 
     container.appendChild( wrapper );
+    refreshDevelopmentFocusHighlight();
+  }
+
+  function annotateDevelopmentClone( sourceRoot, cloneRoot ) {
+    if ( !sourceRoot || !cloneRoot ) {
+      return;
+    }
+    if ( sourceRoot.nodeType !== Node.ELEMENT_NODE || cloneRoot.nodeType !== Node.ELEMENT_NODE ) {
+      return;
+    }
+
+    const sourceElements = [ sourceRoot, ...sourceRoot.getElementsByTagName( '*' ) ];
+    const cloneElements = [ cloneRoot, ...cloneRoot.getElementsByTagName( '*' ) ];
+    const count = Math.min( sourceElements.length, cloneElements.length );
+
+    for ( let i = 0; i < count; i++ ) {
+      const sourceElement = sourceElements[ i ];
+      const cloneElement = cloneElements[ i ];
+      if ( !sourceElement || !cloneElement ) {
+        continue;
+      }
+      const id = generateDevelopmentSourceId( sourceElement );
+      cloneElement[ DEVELOPMENT_SOURCE_ID_SYMBOL ] = id;
+    }
+  }
+
+  function generateDevelopmentSourceId( element ) {
+    if ( !element ) {
+      return null;
+    }
+    let id = element[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
+    if ( !id ) {
+      developmentSourceIdCounter += 1;
+      id = `a11y-node-${developmentSourceIdCounter}`;
+      element[ DEVELOPMENT_SOURCE_ID_SYMBOL ] = id;
+    }
+    return id;
+  }
+
+  function registerDevelopmentLine( sourceId, line ) {
+    if ( !sourceId || !line ) {
+      return;
+    }
+    let lines = developmentLineLookup.get( sourceId );
+    if ( !lines ) {
+      lines = [];
+      developmentLineLookup.set( sourceId, lines );
+    }
+    lines.push( line );
+  }
+
+  function clearDevelopmentFocusHighlight() {
+    if ( developmentFocusLines.length === 0 ) {
+      return;
+    }
+    developmentFocusLines.forEach( line => line.classList.remove( DEVELOPMENT_FOCUS_CLASS ) );
+    developmentFocusLines = [];
+  }
+
+  function applyDevelopmentFocusHighlight( sourceId ) {
+    clearDevelopmentFocusHighlight();
+    if ( !sourceId ) {
+      return;
+    }
+    const lines = developmentLineLookup.get( sourceId );
+    if ( !lines || lines.length === 0 ) {
+      return;
+    }
+    lines.forEach( line => line.classList.add( DEVELOPMENT_FOCUS_CLASS ) );
+    developmentFocusLines = lines.slice();
+  }
+
+  function refreshDevelopmentFocusHighlight() {
+    if ( !currentFocusedElement ) {
+      clearDevelopmentFocusHighlight();
+      return;
+    }
+    const sourceId = currentFocusedElement[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
+    if ( !sourceId ) {
+      clearDevelopmentFocusHighlight();
+      return;
+    }
+    applyDevelopmentFocusHighlight( sourceId );
   }
 
   function sanitizeForDevelopmentView( root ) {
@@ -1125,6 +1224,12 @@
     const attributes = Array.from( element.attributes ).sort( ( a, b ) => a.name.localeCompare( b.name ) );
     attributes.forEach( attribute => appendAttributeTokens( openLine, attribute ) );
 
+    const sourceId = element[ DEVELOPMENT_SOURCE_ID_SYMBOL ];
+    if ( sourceId ) {
+      openLine.dataset.sourceNodeId = sourceId;
+      registerDevelopmentLine( sourceId, openLine );
+    }
+
     if ( VOID_ELEMENTS.has( tagName ) ) {
       openLine.appendChild( createTagSpan( ' />' ) );
       container.appendChild( openLine );
@@ -1161,6 +1266,10 @@
     closeLine.className = 'development-line';
     closeLine.style.paddingLeft = indent;
     closeLine.appendChild( createTagSpan( `</${tagName}>` ) );
+    if ( sourceId ) {
+      closeLine.dataset.sourceNodeId = sourceId;
+      registerDevelopmentLine( sourceId, closeLine );
+    }
     container.appendChild( closeLine );
   }
 
@@ -1479,13 +1588,22 @@
       iframe.focus();
 
       let previousElement = null;
-      iframeDocument.addEventListener( 'focusin', event => {
+      const handleIframeFocus = () => {
         if ( previousElement ) {
           previousElement.classList.remove( 'highlight' );
         }
-        previousElement = iframeDocument.activeElement;
-        previousElement.classList.add( 'highlight' );
-      } );
+        const activeElement = iframeDocument.activeElement;
+        previousElement = activeElement;
+        const isDocumentBody = activeElement === iframeDocument.body;
+        if ( activeElement && !isDocumentBody && typeof activeElement.classList !== 'undefined' ) {
+          activeElement.classList.add( 'highlight' );
+        }
+        currentFocusedElement = !isDocumentBody ? activeElement : null;
+        refreshDevelopmentFocusHighlight();
+      };
+
+      iframeDocument.addEventListener( 'focusin', handleIframeFocus );
+      handleIframeFocus();
     }
   } );
 
