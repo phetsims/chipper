@@ -427,6 +427,14 @@
     'phet-app': { type: 'flag' },
 
     /**
+     * Feature flag that enables a11y strings and a11y view within PhET-iO Studio (not PhET Studion)
+     * see https://github.com/phetsims/chipper/issues/1631
+     *
+     * NOTE: Duplicated in StudioQueryParameters.ts so phet-io studio can access it.
+     */
+    phetioStudioA11y: { type: 'flag' },
+
+    /**
      * If true, puts the simulation in a special mode where it will wait for manual control of the sim playback.
      */
     playbackMode: {
