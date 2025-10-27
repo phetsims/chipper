@@ -268,6 +268,10 @@
       color: #214d85;
     }
 
+    .formatted-related-group > *:not(.formatted-aria) + *:not(.formatted-aria) {
+      margin-top: 0.4em;
+    }
+
     .aria-chip {
       background: #eef4fc;
       border: 1px solid #b9cdea;
@@ -851,6 +855,8 @@
     // Elements that exist purely for document structure; we flatten them when building the formatted view.
     const DECORATOR_TAGS = new Set( [ 'SECTION', 'ARTICLE', 'MAIN', 'ASIDE' ] );
 
+    let relatedGroupWrappers = null;
+
     /**
      * Renders a formatted, human-friendly representation of the PDOM structure.
      *
@@ -862,16 +868,22 @@
         return;
       }
       container.innerHTML = '';
-      const fragment = document.createDocumentFragment();
-      appendFormattedContent( pdomRoot, fragment );
+      relatedGroupWrappers = new Map();
+      try {
+        const fragment = document.createDocumentFragment();
+        appendFormattedContent( pdomRoot, fragment );
 
-      if ( fragment.childNodes.length === 0 ) {
-        const emptyMessage = document.createElement( 'p' );
-        emptyMessage.textContent = 'No accessible content available.';
-        fragment.appendChild( emptyMessage );
+        if ( fragment.childNodes.length === 0 ) {
+          const emptyMessage = document.createElement( 'p' );
+          emptyMessage.textContent = 'No accessible content available.';
+          fragment.appendChild( emptyMessage );
+        }
+
+        container.appendChild( fragment );
       }
-
-      container.appendChild( fragment );
+      finally {
+        relatedGroupWrappers = null;
+      }
     }
 
     /**
@@ -997,9 +1009,14 @@
       }
 
       const clone = cloneFormattedElement( sourceElement );
+      const groupKey = getRelatedElementGroupKey( sourceElement );
+      if ( groupKey ) {
+        clone.dataset.relatedGroupKey = groupKey;
+      }
       targetParent.appendChild( clone );
+      attachCloneToExistingGroup( clone, groupKey );
       appendFormattedContent( sourceElement, clone );
-      appendFormattedAriaDetails( sourceElement, clone );
+      appendFormattedAriaDetails( sourceElement, clone, groupKey );
       finalizeFormattedElement( sourceElement, clone );
     }
 
@@ -1080,14 +1097,42 @@
     }
 
     /**
-     * Appends ARIA attribute chips for the supplied element directly after its clone in the formatted view.
+     * Appends ARIA attribute chips for the supplied element, either aggregating into a related group wrapper or
+     * wrapping the individual clone when no grouping applies.
      *
      * @param {HTMLElement} sourceElement
      * @param {HTMLElement} clone
+     * @param {string|null} groupKey
      */
-    function appendFormattedAriaDetails( sourceElement, clone ) {
+    function appendFormattedAriaDetails( sourceElement, clone, groupKey ) {
       const attributes = collectImportantAriaAttributes( sourceElement );
       if ( attributes.length === 0 ) {
+        return;
+      }
+
+      const resolvedGroupKey = groupKey || getRelatedElementGroupKey( sourceElement );
+
+      if ( resolvedGroupKey ) {
+        const groupInfo = ensureGroupWrapperForClone( clone, resolvedGroupKey );
+        if ( !groupInfo ) {
+          return;
+        }
+        const ariaBody = ensureGroupAriaContainer( groupInfo );
+        if ( !ariaBody ) {
+          return;
+        }
+
+        attributes.forEach( attribute => {
+          const chip = document.createElement( 'span' );
+          chip.className = 'aria-chip';
+          chip.textContent = `${attribute.name}: ${attribute.value}`;
+          ariaBody.appendChild( chip );
+          groupInfo.attributeCount += 1;
+        } );
+
+        if ( groupInfo.ariaHeading ) {
+          groupInfo.ariaHeading.textContent = `ARIA details (${groupInfo.attributeCount})`;
+        }
         return;
       }
 
@@ -1200,6 +1245,170 @@
      */
     function isDecoratorElement( element ) {
       return DECORATOR_TAGS.has( element.tagName );
+    }
+
+    /**
+     * Derives a grouping key for related elements by removing the final descriptor token before the trailing numeric
+     * path in an element ID. This keeps label/control/heading/description sets with matching scene-graph paths
+     * visually connected in the formatted view.
+     *
+     * @param {HTMLElement} element
+     * @returns {string|null}
+     */
+    function getRelatedElementGroupKey( element ) {
+      if ( !element || !element.id ) {
+        return null;
+      }
+      const tokens = element.id.split( '-' );
+      if ( tokens.length < 3 ) {
+        return null;
+      }
+
+      let numericStart = tokens.length;
+      while ( numericStart > 0 && /^\d+$/.test( tokens[ numericStart - 1 ] ) ) {
+        numericStart--;
+      }
+
+      if ( numericStart === tokens.length ) {
+        return null;
+      }
+
+      const numericTokens = tokens.slice( numericStart );
+      const descriptorIndex = numericStart - 1;
+      if ( descriptorIndex < 0 ) {
+        return null;
+      }
+
+      const baseTokens = tokens.slice( 0, descriptorIndex );
+      if ( baseTokens.length === 0 ) {
+        return null;
+      }
+
+      const basePrefix = baseTokens.join( '-' );
+      const numericSuffix = numericTokens.join( '-' );
+      return `${basePrefix}-${numericSuffix}`;
+    }
+
+    /**
+     * Appends a node to the appropriate location in a related group wrapper, ensuring ARIA details remain last.
+     *
+     * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null }} groupInfo
+     * @param {HTMLElement} node
+     */
+    function addNodeToGroupWrapper( groupInfo, node ) {
+      if ( !groupInfo || !node ) {
+        return;
+      }
+      const insertionPoint = groupInfo.ariaContainer;
+      if ( insertionPoint ) {
+        groupInfo.wrapper.insertBefore( node, insertionPoint );
+      }
+      else {
+        groupInfo.wrapper.appendChild( node );
+      }
+    }
+
+    /**
+     * If a related group already exists for the key, moves the clone into it.
+     *
+     * @param {HTMLElement} clone
+     * @param {string|null} groupKey
+     */
+    function attachCloneToExistingGroup( clone, groupKey ) {
+      if ( !clone || !groupKey || !relatedGroupWrappers ) {
+        return;
+      }
+      const groupInfo = relatedGroupWrappers.get( groupKey );
+      if ( !groupInfo ) {
+        return;
+      }
+      addNodeToGroupWrapper( groupInfo, clone );
+    }
+
+    /**
+     * Ensures a wrapper exists for the supplied clone and group key, moving any already-rendered related elements
+     * into the wrapper in document order.
+     *
+     * @param {HTMLElement} clone
+     * @param {string|null} groupKey
+     * @returns {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaHeading: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }|null}
+     */
+    function ensureGroupWrapperForClone( clone, groupKey ) {
+      if ( !clone || !groupKey || !relatedGroupWrappers ) {
+        return null;
+      }
+
+      let groupInfo = relatedGroupWrappers.get( groupKey );
+      if ( groupInfo ) {
+        if ( clone.parentNode !== groupInfo.wrapper ) {
+          addNodeToGroupWrapper( groupInfo, clone );
+        }
+        return groupInfo;
+      }
+
+      const parent = clone.parentNode;
+      if ( !parent ) {
+        return null;
+      }
+
+      const wrapper = document.createElement( 'div' );
+      wrapper.className = 'formatted-aria-block formatted-related-group';
+      parent.insertBefore( wrapper, clone );
+
+      const siblings = Array.from( parent.childNodes );
+      siblings.forEach( node => {
+        if ( node === wrapper ) {
+          return;
+        }
+        if ( node.nodeType === Node.ELEMENT_NODE &&
+             node.dataset &&
+             node.dataset.relatedGroupKey === groupKey ) {
+          wrapper.appendChild( node );
+        }
+      } );
+
+      groupInfo = {
+        wrapper: wrapper,
+        ariaContainer: null,
+        ariaHeading: null,
+        ariaBody: null,
+        attributeCount: 0
+      };
+      relatedGroupWrappers.set( groupKey, groupInfo );
+      return groupInfo;
+    }
+
+    /**
+     * Ensures the ARIA details container exists for a related group, creating it on demand.
+     *
+     * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaHeading: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }} groupInfo
+     * @returns {HTMLElement|null}
+     */
+    function ensureGroupAriaContainer( groupInfo ) {
+      if ( !groupInfo ) {
+        return null;
+      }
+      if ( groupInfo.ariaContainer ) {
+        return groupInfo.ariaBody;
+      }
+
+      const ariaContainer = document.createElement( 'div' );
+      ariaContainer.className = 'formatted-aria';
+
+      const heading = document.createElement( 'div' );
+      heading.className = 'formatted-aria-heading';
+      ariaContainer.appendChild( heading );
+
+      const body = document.createElement( 'div' );
+      body.className = 'formatted-aria-body';
+      ariaContainer.appendChild( body );
+
+      groupInfo.wrapper.appendChild( ariaContainer );
+      groupInfo.ariaContainer = ariaContainer;
+      groupInfo.ariaHeading = heading;
+      groupInfo.ariaBody = body;
+      groupInfo.attributeCount = 0;
+      return body;
     }
 
     /**
