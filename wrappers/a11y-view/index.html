@@ -1302,12 +1302,31 @@
       if ( !groupInfo || !node ) {
         return;
       }
+      const wrapper = groupInfo.wrapper;
+      if ( !wrapper || wrapper === node ) {
+        return;
+      }
+
+      if ( wrapper.contains( node ) ) {
+        return;
+      }
+
+      if ( node.contains( wrapper ) ) {
+        const parent = node.parentNode;
+        if ( parent ) {
+          parent.insertBefore( wrapper, node );
+        }
+        else {
+          return;
+        }
+      }
+
       const insertionPoint = groupInfo.ariaContainer;
       if ( insertionPoint ) {
-        groupInfo.wrapper.insertBefore( node, insertionPoint );
+        wrapper.insertBefore( node, insertionPoint );
       }
       else {
-        groupInfo.wrapper.appendChild( node );
+        wrapper.appendChild( node );
       }
     }
 
@@ -1343,9 +1362,7 @@
 
       let groupInfo = relatedGroupWrappers.get( groupKey );
       if ( groupInfo ) {
-        if ( clone.parentNode !== groupInfo.wrapper ) {
-          addNodeToGroupWrapper( groupInfo, clone );
-        }
+        addNodeToGroupWrapper( groupInfo, clone );
         return groupInfo;
       }
 
