@@ -11,12 +11,13 @@ import fixEOL from '../../../perennial-alias/js/common/fixEOL.js';
 import grunt from '../../../perennial-alias/js/npm-dependencies/grunt.js';
 import ChipperStringUtils from '../common/ChipperStringUtils.js';
 
-export default function getA11yViewHTML( repo: string ): string {
+export default function getA11yViewHTML( repo: string, brand: 'phet' | 'phet-io' ): string {
 
   let html = grunt.file.read( '../chipper/wrappers/a11y-view/index.html' ); // the template file is also runnable
 
   // Replace placeholders in the template.
   html = ChipperStringUtils.replaceAll( html, '{{PHET_REPOSITORY}}', repo );
+  html = ChipperStringUtils.replaceAll( html, '{{BRAND}}', brand );
 
   // Remove to-dos so they don't propagate to all repo copies
   html = html.replace( /^.*\/\/[\s]?TODO.*\r?\n/mg, '' );

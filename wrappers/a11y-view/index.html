@@ -474,8 +474,11 @@
       simulationQueryString.set( 'postMessageOnError', '' );
       simulationQueryString.set( 'supportsInteractiveDescription', 'true' );
 
+      // In built mode, see if it is phet or phet-io since the htmls have different filenames. See https://github.com/phetsims/chipper/issues/1631
+      const brand = '{{BRAND}}';
+
       // in unbuilt mode and on phet-server, the brand suffix is removed
-      const filenameEnding = ( window.location.hostname === 'phet.colorado.edu' || !IS_BUILT ) ? '.html' : '_phet.html';
+      const filenameEnding = ( window.location.hostname === 'phet.colorado.edu' || !IS_BUILT ) ? '.html' : `_${brand}.html`;
 
       if ( IS_BUILT ) {
         sim = '{{PHET_REPOSITORY}}';
