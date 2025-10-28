@@ -271,13 +271,6 @@
       color: #1b5fa7;
     }
 
-    .formatted-aria-heading {
-      margin: 0.55em 0 0;
-      font-size: 0.92em;
-      font-weight: normal;
-      line-height: 1.4;
-    }
-
     .formatted-aria-body {
       display: flex;
       flex-wrap: wrap;
@@ -1228,10 +1221,6 @@
           ariaBody.appendChild( chip );
           groupInfo.attributeCount += 1;
         } );
-
-        if ( groupInfo.ariaHeading ) {
-          groupInfo.ariaHeading.textContent = `ARIA details (${groupInfo.attributeCount})`;
-        }
         return;
       }
 
@@ -1247,11 +1236,6 @@
 
       const ariaContainer = document.createElement( 'div' );
       ariaContainer.className = 'formatted-aria';
-
-      const heading = document.createElement( 'div' );
-      heading.className = 'formatted-aria-heading';
-      heading.textContent = `ARIA details (${attributes.length})`;
-      ariaContainer.appendChild( heading );
 
       const body = document.createElement( 'div' );
       body.className = 'formatted-aria-body';
@@ -1449,7 +1433,7 @@
      *
      * @param {HTMLElement} clone
      * @param {string|null} groupKey
-     * @returns {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaHeading: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }|null}
+     * @returns {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }|null}
      */
     function ensureGroupWrapperForClone( clone, groupKey ) {
       if ( !clone || !groupKey || !relatedGroupWrappers ) {
@@ -1486,7 +1470,6 @@
       groupInfo = {
         wrapper: wrapper,
         ariaContainer: null,
-        ariaHeading: null,
         ariaBody: null,
         attributeCount: 0
       };
@@ -1497,7 +1480,7 @@
     /**
      * Ensures the ARIA details container exists for a related group, creating it on demand.
      *
-     * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaHeading: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }} groupInfo
+     * @param {{ wrapper: HTMLElement, ariaContainer: HTMLElement|null, ariaBody: HTMLElement|null, attributeCount: number }} groupInfo
      * @returns {HTMLElement|null}
      */
     function ensureGroupAriaContainer( groupInfo ) {
@@ -1511,17 +1494,12 @@
       const ariaContainer = document.createElement( 'div' );
       ariaContainer.className = 'formatted-aria';
 
-      const heading = document.createElement( 'div' );
-      heading.className = 'formatted-aria-heading';
-      ariaContainer.appendChild( heading );
-
       const body = document.createElement( 'div' );
       body.className = 'formatted-aria-body';
       ariaContainer.appendChild( body );
 
       groupInfo.wrapper.appendChild( ariaContainer );
       groupInfo.ariaContainer = ariaContainer;
-      groupInfo.ariaHeading = heading;
       groupInfo.ariaBody = body;
       groupInfo.attributeCount = 0;
       return body;
