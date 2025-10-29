@@ -141,7 +141,7 @@
     .highlight {
       /*use outline instead of border because border doesn't apply to all DOMElements, add margin because outline
       doesn't take up any space*/
-      outline: 6px double rgb(250,40,135);
+      outline: 6px double rgb(250, 40, 135);
       margin: 1%;
     }
 
@@ -1905,6 +1905,7 @@
      * @param {Object.<string, HTMLElement|null>} viewContainers
      * @param {MutationObserverInit} mutationConfig
      * @param {Object.<string, Function>} renderers
+     * @returns {Function} Function that triggers a re-render on demand.
      */
     function addPDOMObserver( pdomRoot, viewContainers, mutationConfig, renderers ) {
       let dirty = true;
@@ -1933,6 +1934,18 @@
 
       domObserver.observe( pdomRoot, mutationConfig );
       scheduleRender();
+
+      // Return a function that will trigger a re-render on demand.
+      const invalidateView = () => {
+        dirty = true;
+      };
+
+      // Some input changes do not trigger mutations, so listen for events explicitly.
+      [ 'input', 'change' ].forEach( eventType => {
+        pdomRoot.addEventListener( eventType, invalidateView );
+      } );
+
+      return invalidateView;
     }
 
     /**
@@ -2140,7 +2153,46 @@
         const globalElements = Array.prototype.slice.call( globalContainer.children );
         const allSourceAriaLiveElements = [ ...simDisplayElements, ...globalElements ];
 
-        addPDOMObserver( PDOMRoot, viewContainers, mutationConfig, renderers );
+        const invalidateView = addPDOMObserver( PDOMRoot, viewContainers, mutationConfig, renderers );
+
+        // HACK ALERT! When checkboxes become checked, they only set the checked attribute, which does not trigger a
+        // mutation or input event. Therefore, we need to monkey-patch the checked property setter to notify us when it
+        // changes so we can invalidate the formatted view and re-render immediately.
+        // Note that this apparently doesn't work for keyboard input because with keyboard input, the checked
+        // attribute is updated in browser-native code. So we need this code for mouse input and the input/change
+        // listeners in addPDOMObserver for keyboard input.
+        const frameWindow = PDOMRoot.ownerDocument.defaultView;
+        if ( frameWindow && !frameWindow.__a11yViewCheckedPatched ) {
+
+          // Grab the original getter/setter for HTMLInputElement.checked inside the iframe.
+          const descriptor = Object.getOwnPropertyDescriptor( frameWindow.HTMLInputElement.prototype, 'checked' );
+          if ( descriptor && descriptor.set && descriptor.get ) {
+            const originalGet = descriptor.get;
+            const originalSet = descriptor.set;
+
+            Object.defineProperty( frameWindow.HTMLInputElement.prototype, 'checked', {
+              configurable: descriptor.configurable,
+              enumerable: descriptor.enumerable,
+              get: originalGet,
+              set( value ) {
+
+                // Snapshot the current property value before delegating to the native setter.
+                const previous = originalGet.call( this );
+
+                // Let the browser perform the original state change.
+                originalSet.call( this, value );
+
+                // When the value actually flips, notify the formatted view so it can re-render immediately.
+                if ( previous !== value ) {
+                  invalidateView();
+                }
+              }
+            } );
+
+            // Remember that we’ve already patched this iframe so we don’t redefine the property on subsequent loads.
+            frameWindow.__a11yViewCheckedPatched = true;
+          }
+        }
 
         if ( domRefs.alertList && domRefs.alertContainer ) {
           for ( let i = 0; i < allSourceAriaLiveElements.length; i++ ) {
