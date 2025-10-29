@@ -68,12 +68,12 @@
    * an object defined in the global scope, but rather it serves as documentation about available query parameters.
    * Note: The "flag" type for query parameters does not expect a value for the key, but rather just the presence of
    * the key itself.
+   *
+   * Schema that describes query parameters for PhET common code.
+   * These query parameters are available via global phet.chipper.queryParameters.
    * @namespace {Object} PhetQueryParameters
    */
   const QUERY_PARAMETERS_SCHEMA = {
-    // Schema that describes query parameters for PhET common code.
-    // These query parameters are available via global phet.chipper.queryParameters.
-
     /**
      * In environments where users should not be able to navigate hyperlinks away from the simulation, clients can use
      * ?allowLinks=false.  In this case, links are displayed and not clickable. This query parameter is public facing.
