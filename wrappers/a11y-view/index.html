@@ -1046,7 +1046,72 @@
      * @param {HTMLElement|DocumentFragment} targetParent - Destination container for the grouped content.
      * @returns {number} Index of the next node to process in the caller's loop.
      */
+    /**
+     * Builds the formatted output for a heading. The algorithm first tries to locate a sibling container whose ID
+     * shares the heading's related group key and contains the "primary" token. When found, the heading and that
+     * container are grouped together, mirroring the logical structure used in the PDOM. If no qualifying sibling is
+     * present, we fall back to the legacy behavior of grouping contiguous content until the next heading of the same
+     * or higher level.
+     */
     function appendHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
+      const headingElement = nodes[ startIndex ];
+      const headingGroupKey = headingElement && headingElement.nodeType === Node.ELEMENT_NODE ? getRelatedElementGroupKey( headingElement ) : null;
+      const primaryIndex = findMatchingPrimarySiblingIndex( nodes, startIndex + 1, headingLevel, headingGroupKey );
+
+      if ( primaryIndex !== null ) {
+        return appendHeadingGroupWithPrimary( nodes, startIndex, primaryIndex, targetParent );
+      }
+
+      return appendDefaultHeadingGroup( nodes, startIndex, headingLevel, targetParent );
+    }
+
+    /**
+     * Groups a heading with the sibling container that carries the "primary" descriptor and the same related group
+     * key. Only nodes up to and including the matching container are copied to ensure the formatted view highlights the
+     * intended logical section without over-nesting unrelated siblings.
+     */
+    function appendHeadingGroupWithPrimary( nodes, startIndex, primaryIndex, targetParent ) {
+      const groupContainer = document.createElement( 'div' );
+      groupContainer.className = 'formatted-group';
+
+      let index = startIndex;
+      while ( index <= primaryIndex ) {
+        const current = nodes[ index ];
+
+        if ( current.nodeType === Node.TEXT_NODE ) {
+          appendFormattedTextNode( current, groupContainer );
+          index++;
+          continue;
+        }
+
+        if ( current.nodeType !== Node.ELEMENT_NODE ) {
+          index++;
+          continue;
+        }
+
+        const element = current;
+        if ( shouldSkipFormattedElement( element ) ) {
+          index++;
+          continue;
+        }
+
+        appendFormattedNode( element, groupContainer );
+        index++;
+      }
+
+      if ( groupContainer.childNodes.length > 0 ) {
+        targetParent.appendChild( groupContainer );
+      }
+
+      return primaryIndex + 1;
+    }
+
+    /**
+     * Legacy fallback when no matching primary sibling exists. Continues to collect nodes until the next heading of the
+     * same or higher level is encountered, preserving the previous structured output for PDOM fragments that have not
+     * migrated to the new naming conventions yet.
+     */
+    function appendDefaultHeadingGroup( nodes, startIndex, headingLevel, targetParent ) {
       const groupContainer = document.createElement( 'div' );
       groupContainer.className = 'formatted-group';
 
@@ -1072,7 +1137,6 @@
         }
 
         const currentHeadingLevel = getHeadingLevel( element );
-        // Stop once we reach a heading that should belong to an outer group.
         if ( index !== startIndex && currentHeadingLevel !== null && currentHeadingLevel <= headingLevel ) {
           break;
         }
@@ -1086,6 +1150,48 @@
       }
 
       return index;
+    }
+
+    /**
+     * Scans forward from a heading for the first sibling element that:
+     *   - is not skipped by the formatted view filters,
+     *   - does not introduce a new heading of the same or higher level, and
+     *   - shares the heading's related group key while including the "primary" token in its ID.
+     * Returning the index of this element lets the caller group only the heading and its authoritative content block.
+     */
+    function findMatchingPrimarySiblingIndex( nodes, startIndex, headingLevel, headingGroupKey ) {
+      if ( headingGroupKey === null ) {
+        return null;
+      }
+
+      for ( let index = startIndex; index < nodes.length; index++ ) {
+        const current = nodes[ index ];
+
+        if ( current.nodeType === Node.TEXT_NODE ) {
+          continue;
+        }
+
+        if ( current.nodeType !== Node.ELEMENT_NODE ) {
+          continue;
+        }
+
+        const element = current;
+        if ( shouldSkipFormattedElement( element ) ) {
+          continue;
+        }
+
+        const currentHeadingLevel = getHeadingLevel( element );
+        if ( currentHeadingLevel !== null && currentHeadingLevel <= headingLevel ) {
+          break;
+        }
+
+        const currentGroupKey = getRelatedElementGroupKey( element );
+        if ( currentGroupKey === headingGroupKey && element.id && element.id.indexOf( 'primary' ) >= 0 ) {
+          return index;
+        }
+      }
+
+      return null;
     }
 
     /**
@@ -1286,7 +1392,7 @@
     }
 
     /**
-     * Extracts the heading level for an element, supporting native heading tags, role=heading, and id patterns.
+     * Extracts the heading level if the element is a native HTML heading tag (h1-h6).
      *
      * @param {HTMLElement} element
      * @returns {number|null}
@@ -1295,26 +1401,6 @@
       const tagName = element.tagName.toLowerCase();
       if ( /^h[1-6]$/.test( tagName ) ) {
         return Number( tagName.charAt( 1 ) );
-      }
-
-      const role = ( element.getAttribute( 'role' ) || '' ).toLowerCase();
-      if ( role === 'heading' ) {
-        const ariaLevel = parseInt( element.getAttribute( 'aria-level' ), 10 );
-        if ( !Number.isNaN( ariaLevel ) ) {
-          return ariaLevel;
-        }
-        return 2;
-      }
-
-      if ( element.id && element.id.indexOf( '-heading-' ) >= 0 ) {
-        const ariaLevel = parseInt( element.getAttribute( 'aria-level' ), 10 );
-        if ( !Number.isNaN( ariaLevel ) ) {
-          return ariaLevel;
-        }
-        if ( /^h[1-6]$/.test( tagName ) ) {
-          return Number( tagName.charAt( 1 ) );
-        }
-        return 2;
       }
 
       return null;
