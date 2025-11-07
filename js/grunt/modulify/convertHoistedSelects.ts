@@ -50,6 +50,7 @@
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
+import assert from 'assert';
 import yaml from 'js-yaml';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 
@@ -62,6 +63,10 @@ export const convertHoistedSelects = ( node: IntentionalAny ): IntentionalAny =>
   }
   else if ( isPlainObject( node ) ) {
     const keys = Object.keys( node );
+    const selectChildKey = keys.find( key => key.startsWith( SELECT_PREFIX ) );
+    if ( selectChildKey ) {
+      assert( keys.length === 1, `select_* helper '${selectChildKey}' must be the only child on its parent object. Found keys: ${keys.join( ', ' )}` );
+    }
     if ( keys.length === 1 && keys[ 0 ].startsWith( SELECT_PREFIX ) ) {
       const selectKey = keys[ 0 ];
       const arms = node[ selectKey ];
