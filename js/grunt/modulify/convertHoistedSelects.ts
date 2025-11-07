@@ -3,6 +3,49 @@
 /**
  * Converts nested select_* containers into Fluent select expressions, leaving other values untouched.
  *
+ * Why it exists:
+ * - YAML authors need a compact syntax for selects (e.g. `select_shownSides`) without littering files with fluent UI
+ *   logic selector `|- { $var -> ... }` blocks.
+ * - Fluent best practices warn against using variants for UI control flow (“Prefer separate messages over variants for
+ *   UI logic”). Variants should only exist when grammar demands them, the default arm must make sense for every value,
+ *   and other locales are free to collapse variants.
+ * - By expanding `select_*` nodes *in-memory*, we keep authoring ergonomic while guaranteeing that downstream tooling
+ *   (JSON generation, Fluent type extraction, runtime value interpolation.) only sees canonical Fluent strings.
+ *
+ * Typical usage:
+ *
+ * ```ts
+ * const yamlObj = safeLoadYaml( fileContents );
+ * const unhoisted = convertHoistedSelects( yamlObj );
+ * const nested = nestJSONStringValues( unhoisted );
+ * ```
+ *
+ * Example input YAML
+ *
+ * ```yaml
+ * currentDetails:
+ *   select_shownSides:
+ *     none: Counting area hidden.
+ *     left: Right area hidden, total { $total }.
+ *     right: Left area hidden, total { $total }.
+ * ```
+ *
+ * Example Fluent output later in the pipeline
+ *
+ * ```fluent
+ * currentDetails = { $shownSides ->
+ *   [none] Counting area hidden.
+ *   [left] Right area hidden, total { $total }.
+ *  *[right] Left area hidden, total { $total }.
+ * }
+ * ```
+ *
+ * If any arm serves a different UI purpose (e.g. switching icons or behaviors), split it into separate messages so that
+ * all locales must translate each case explicitly.
+ *
+ * NOTE that specifying one item as the default with * is arbitrary (required by Fluent), and our TypeScript system will
+ * guarantee that one of the selector values is always used.
+ *
  * @author Sam Reid (PhET Interactive Simulations)
  */
 
