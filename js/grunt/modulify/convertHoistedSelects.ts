@@ -9,6 +9,7 @@
  * - Fluent best practices warn against using variants for UI control flow (“Prefer separate messages over variants for
  *   UI logic”). Variants should only exist when grammar demands them, the default arm must make sense for every value,
  *   and other locales are free to collapse variants.
+ * - Continue to use fluent selector logic for linguistic logic, such as pluralization.
  * - By expanding `select_*` nodes *in-memory*, we keep authoring ergonomic while guaranteeing that downstream tooling
  *   (JSON generation, Fluent type extraction, runtime value interpolation.) only sees canonical Fluent strings.
  *
