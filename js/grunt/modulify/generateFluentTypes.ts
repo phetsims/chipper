@@ -19,6 +19,7 @@ import pascalCase from '../../common/pascalCase.js';
 import getCopyrightLineFromFileContents from '../getCopyrightLineFromFileContents.js';
 import { safeLoadYaml } from './convertStringsYamlToJson.js';
 import { getFluentParamsFromIndex, NUMBER_LITERAL, ParamInfo, parseFluentToMap } from './getFluentParams.js';
+import convertHoistedSelects from './convertHoistedSelects.js';
 
 type Leaf = { pathArr: string[]; value: string };
 type Obj = Record<string, IntentionalAny>;
@@ -355,7 +356,7 @@ const generateFluentTypes = async ( repo: string ): Promise<void> => {
 
   // load YAML
   const yamlText = fs.readFileSync( yamlPath, 'utf8' );
-  const yamlObj = safeLoadYaml( yamlText ) as Obj;
+  const yamlObj = convertHoistedSelects( safeLoadYaml( yamlText ) ) as Obj;
 
   // Parse comments from the YAML text
   const comments = parseYamlComments( yamlText );

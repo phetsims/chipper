@@ -14,6 +14,7 @@ import yaml from 'js-yaml';
 import writeFileAndGitAdd from '../../../../perennial-alias/js/common/writeFileAndGitAdd.js';
 import IntentionalAny from '../../../../phet-core/js/types/IntentionalAny.js';
 import ChipperStringUtils from '../../common/ChipperStringUtils.js';
+import convertHoistedSelects from './convertHoistedSelects.js';
 
 /**
  * @param repo - The name of a repo, e.g. 'joist'
@@ -23,9 +24,10 @@ export default async ( repo: string ): Promise<void> => {
   const yamlContents = fs.readFileSync( filePath, 'utf8' );
 
   const parsed = safeLoadYaml( yamlContents );
+  const unhoisted = convertHoistedSelects( parsed );
 
   // Recursively nest all string values and incorporate simMetadata.
-  const nested = nestJSONStringValues( parsed );
+  const nested = nestJSONStringValues( unhoisted );
 
   // Convert to a pretty-printed JSON string.
   const jsonContents = JSON.stringify( nested, null, 2 )
