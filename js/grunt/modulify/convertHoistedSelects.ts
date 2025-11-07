@@ -58,8 +58,12 @@ const SELECT_PREFIX = 'select_';
 const SELECT_INDENT = '  ';
 
 export const convertHoistedSelects = ( node: IntentionalAny ): IntentionalAny => {
+  return convertHoistedSelectsImpl( node, new Set() );
+};
+
+const convertHoistedSelectsImpl = ( node: IntentionalAny, activeVariables: Set<string> ): IntentionalAny => {
   if ( Array.isArray( node ) ) {
-    return node.map( convertHoistedSelects );
+    return node.map( child => convertHoistedSelectsImpl( child, activeVariables ) );
   }
   else if ( isPlainObject( node ) ) {
     const keys = Object.keys( node );
@@ -72,13 +76,14 @@ export const convertHoistedSelects = ( node: IntentionalAny ): IntentionalAny =>
       const arms = node[ selectKey ];
       if ( isPlainObject( arms ) && Object.keys( arms ).length > 0 ) {
         const variable = selectKey.slice( SELECT_PREFIX.length );
-        return renderSelectExpression( variable, arms );
+        assert( !activeVariables.has( variable ), `Nested select_* helper collision detected for '${variable}'. Choose unique variable names along a branch.` );
+        return renderSelectExpression( variable, arms, activeVariables );
       }
     }
 
     const result: Record<string, IntentionalAny> = {};
     for ( const key of keys ) {
-      result[ key ] = convertHoistedSelects( node[ key ] );
+      result[ key ] = convertHoistedSelectsImpl( node[ key ], activeVariables );
     }
     return result;
   }
@@ -90,12 +95,14 @@ const isPlainObject = ( value: IntentionalAny ): value is Record<string, Intenti
   return typeof value === 'object' && value !== null && !Array.isArray( value );
 };
 
-const renderSelectExpression = ( variable: string, arms: Record<string, IntentionalAny> ): string => {
+const renderSelectExpression = ( variable: string, arms: Record<string, IntentionalAny>, activeVariables: Set<string> ): string => {
   const entries = Object.entries( arms );
   const lines: string[] = [ `{ $${variable} ->` ];
+  const nextActiveVariables = new Set( activeVariables );
+  nextActiveVariables.add( variable );
 
   entries.forEach( ( [ armKey, armValue ], index ) => {
-    const processedValue = convertHoistedSelects( armValue );
+    const processedValue = convertHoistedSelectsImpl( armValue, nextActiveVariables );
     const renderedValue = renderArmValue( processedValue );
     const isDefault = index === entries.length - 1;
     lines.push( formatArmLine( armKey, renderedValue, isDefault ) );
