@@ -19,6 +19,7 @@ const DEFAULT_HOST = 'http://localhost';
 const DEFAULT_PORT = 80;
 const DEFAULT_PATHNAME = '/chipper/wrappers/a11y-view/';
 const DEFAULT_QUERY_FLAGS = [ 'phetioStandalone', 'ea', 'debugger', 'printA11yView' ] as const;
+const DEVELOPMENT_VIEW_LOG_PREFIX = '[A11y View] Development view snapshot:';
 
 const repo = getRepo();
 const defaultSim = repo !== 'chipper' ? repo : 'circuit-construction-kit-dc';
@@ -105,8 +106,29 @@ export const printA11yViewPromise = ( async () => {
     waitAfterLoad: waitAfterLoad,
     allowedTimeToLoad: allowedTimeToLoad,
     gotoTimeout: gotoTimeout,
+    resolveFromLoad: false,
+    onLoadTimeout: ( resolve: () => void, reject: ( error: Error ) => void ) => reject( new Error( `Timed out waiting for ${DEVELOPMENT_VIEW_LOG_PREFIX}` ) ),
+    onPageCreation: async ( page: playwright.Page, resolve: ( value: unknown ) => void ) => {
+
+      let resolved = false;
+      const maybeResolve = () => {
+        if ( !resolved ) {
+          resolved = true;
+          resolve( null );
+        }
+      };
+
+      page.on( 'console', ( msg: playwright.ConsoleMessage ) => {
+        const text = msg.text();
+        if ( text.startsWith( DEVELOPMENT_VIEW_LOG_PREFIX ) ) {
+          maybeResolve();
+        }
+      } );
+    },
     launchOptions: {
       headless: headless
     }
   } );
+
+  process.exit( 0 );
 } )();
