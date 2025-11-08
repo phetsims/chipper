@@ -4,7 +4,7 @@
  * Tests keyboard interaction for a simulation, outputting results to console.log.
  *
  * Usage
- * grunt test-keyboard --screens=2 --accessibleName="Reset All"
+ * grunt test-keyboard --screens=2 --sequence="Reset All"
  *
  * @author Sam Reid (PhET Interactive Simulations)
  */
@@ -12,7 +12,7 @@
 /* eslint-disable no-undef */
 
 import playwrightLoad from '../../../../perennial-alias/js/common/playwrightLoad.js';
-import getOption, { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getOption, { getOptionIfProvided, isOptionKeyProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import playwright from '../../../../perennial-alias/js/npm-dependencies/playwright.js';
 
@@ -62,7 +62,20 @@ function buildTargetUrl(): string {
 
 export const testKeyboardInteraction = ( async () => {
   const targetUrl = buildTargetUrl();
-  const accessibleName = getOptionIfProvided<string>( 'accessibleName', 'Reset All' );
+  const sequenceProvided = isOptionKeyProvided( 'sequence' );
+
+  const sequenceOption = sequenceProvided ?
+                         getOptionIfProvided<string>( 'sequence', '' ) :
+                         'Reset All';
+
+  const accessibleNameSequence = sequenceOption.split( ';' )
+    .map( name => name.trim() )
+    .filter( name => name.length > 0 );
+
+  if ( accessibleNameSequence.length === 0 ) {
+    throw new Error( 'No targets provided via --sequence.' );
+  }
+
   const tabPressCount = Number( getOptionIfProvided( 'tabPressCount', `${TAB_PRESS_COUNT}` ) );
   const tabDelay = Number( getOptionIfProvided( 'tabDelay', `${TAB_DELAY_MS}` ) );
 
@@ -148,24 +161,35 @@ export const testKeyboardInteraction = ( async () => {
             document.body && document.body.focus();
           } );
 
-          for ( let i = 0; i < tabPressCount; i++ ) {
-            await page.keyboard.press( 'Tab' );
-            await page.waitForTimeout( tabDelay );
-            const activeElementInfo = await logActiveElement( i + 1 );
+          let totalTabPresses = 0;
 
-            if ( activeElementInfo.derivedAccessibleName === accessibleName ) {
-              console.log( `[test-keyboard] Focused "${accessibleName}" after ${i + 1} tab presses, pressing spacebar` );
-              await page.keyboard.press( 'Space' );
-              console.log( 'success' );
+          for ( const targetName of accessibleNameSequence ) {
+            let foundTarget = false;
 
-              await page.waitForTimeout( 250 );
-              maybeResolve();
-              return;
+            for ( let i = 0; i < tabPressCount; i++ ) {
+              await page.keyboard.press( 'Tab' );
+              totalTabPresses++;
+              await page.waitForTimeout( tabDelay );
+              const activeElementInfo = await logActiveElement( totalTabPresses );
+
+              if ( activeElementInfo.derivedAccessibleName === targetName ) {
+                console.log( `[test-keyboard] Focused "${targetName}" after ${i + 1} tab presses, pressing spacebar` );
+                await page.keyboard.press( 'Space' );
+                console.log( 'success' );
+
+                await page.waitForTimeout( 250 );
+                foundTarget = true;
+                break;
+              }
+            }
+
+            if ( !foundTarget ) {
+              console.error( `[test-keyboard] Failed to focus "${targetName}" after ${tabPressCount} tab presses` );
+              process.exit( 1 );
             }
           }
 
-          console.error( `[test-keyboard] Failed to focus "${accessibleName}" after ${tabPressCount} tab presses` );
-          process.exit( 1 );
+          maybeResolve();
         }
         catch( error ) {
           console.error( `[test-keyboard] Error during tab sequence: ${( error as Error ).message}` );
