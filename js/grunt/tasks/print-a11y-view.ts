@@ -16,6 +16,7 @@ import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js'
 import playwright from '../../../../perennial-alias/js/npm-dependencies/playwright.js';
 
 const DEFAULT_HOST = 'http://localhost';
+const DEFAULT_PORT = 80;
 const DEFAULT_PATHNAME = '/chipper/wrappers/a11y-view/';
 const DEFAULT_QUERY_FLAGS = [ 'phetioStandalone', 'ea', 'debugger', 'printA11yView' ] as const;
 
@@ -57,6 +58,8 @@ function getBooleanOption( key: string, defaultValue: boolean ): boolean {
 }
 
 function buildTargetUrl(): string {
+  const port = Number( getOptionIfProvided( 'port', DEFAULT_PORT ) );
+  assert( Number.isFinite( port ) && port > 0, 'port must be a positive number' );
   const host = getOptionIfProvided<string>( 'host', DEFAULT_HOST );
   const pathname = getOptionIfProvided<string>( 'pathname', DEFAULT_PATHNAME );
   const sim = getOptionIfProvided<string>( 'sim', defaultSim );
@@ -79,7 +82,7 @@ function buildTargetUrl(): string {
       .forEach( part => queryParts.push( part ) );
   }
 
-  return `${normalizeHost( host )}${normalizePath( pathname )}?${queryParts.join( '&' )}`;
+  return `${normalizeHost( host )}:${port}${normalizePath( pathname )}?${queryParts.join( '&' )}`;
 }
 
 export const printA11yViewPromise = ( async () => {
