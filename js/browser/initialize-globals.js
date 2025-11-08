@@ -840,6 +840,11 @@
       type: 'flag'
     },
 
+    /* For automation, print a message to the console when the sim has launched. See Sim.ts*/
+    logSimLifecycle: {
+      type: 'flag'
+    },
+
     /**
      * Enables panning and zooming of the simulation. Can be permanently disabled if supportsPanAndZoom: false is
      * added under the `phet.simFeatures` entry of package.json. Query parameter value will always override package.json entry.
