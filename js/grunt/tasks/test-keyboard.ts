@@ -12,18 +12,63 @@
 /* eslint-disable no-undef */
 
 import playwrightLoad from '../../../../perennial-alias/js/common/playwrightLoad.js';
+import getOption, { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
+import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import playwright from '../../../../perennial-alias/js/npm-dependencies/playwright.js';
 
-const TARGET_URL = 'http://localhost/circuit-construction-kit-dc/circuit-construction-kit-dc_en.html?brand=phet-io&screens=2&ea&debugger&phetioStandalone&logInteractiveDescriptionResponses&logSimLifecycle&audio=disabled';
+const DEFAULT_HOST = 'http://localhost';
+const DEFAULT_PORT = 80;
+const DEFAULT_BRAND = 'phet-io';
+const DEFAULT_QUERY_FLAGS = [ 'ea', 'debugger', 'phetioStandalone', 'logInteractiveDescriptionResponses', 'logSimLifecycle', 'audio=disabled' ] as const;
+const repo = getRepo();
+const defaultSim = repo !== 'chipper' ? repo : 'circuit-construction-kit-dc';
 const TARGET_MESSAGE = '[SimLifecycle] Sim started';
 const TAB_PRESS_COUNT = 100;
 const TAB_DELAY_MS = 10;
-const RESET_ALL_ACCESSIBLE_NAME = 'Reset All';
+
+function normalizeHost( host: string ): string {
+  return host.endsWith( '/' ) ? host.slice( 0, -1 ) : host;
+}
+
+function buildTargetUrl(): string {
+  const host = getOptionIfProvided<string>( 'host', DEFAULT_HOST );
+  const portString = getOptionIfProvided<string>( 'port', `${DEFAULT_PORT}` );
+  const port = Number( portString );
+  if ( Number.isNaN( port ) || port <= 0 ) {
+    throw new Error( `Invalid port "${portString}", expected a positive number.` );
+  }
+  const sim = getOptionIfProvided<string>( 'sim', defaultSim );
+  const brand = getOptionIfProvided<string>( 'brand', DEFAULT_BRAND );
+  const screens = getOption( 'screens' );
+
+  const queryParts = [
+    `brand=${encodeURIComponent( brand )}`
+  ];
+  screens !== undefined && queryParts.push( `screens=${encodeURIComponent( `${screens}` )}` );
+  DEFAULT_QUERY_FLAGS.forEach( flag => queryParts.push( flag ) );
+
+  const extraQuery = getOptionIfProvided<string>( 'query', '' );
+  if ( extraQuery.trim().length > 0 ) {
+    extraQuery.split( '&' )
+      .map( part => part.trim() )
+      .filter( part => part.length > 0 )
+      .forEach( part => queryParts.push( part ) );
+  }
+
+  const baseHost = normalizeHost( host );
+  const hostWithPort = port === 80 ? baseHost : `${baseHost}:${port}`;
+  return `${hostWithPort}/${encodeURIComponent( sim )}/${encodeURIComponent( sim )}_en.html?${queryParts.join( '&' )}`;
+}
 
 export const testKeyboardInteraction = ( async () => {
-  console.log( `[test-keyboard] Launching ${TARGET_URL}` );
+  const targetUrl = buildTargetUrl();
+  const accessibleName = getOptionIfProvided<string>( 'accessibleName', 'Reset All' );
+  const tabPressCount = Number( getOptionIfProvided( 'tabPressCount', `${TAB_PRESS_COUNT}` ) );
+  const tabDelay = Number( getOptionIfProvided( 'tabDelay', `${TAB_DELAY_MS}` ) );
 
-  await playwrightLoad( TARGET_URL, {
+  console.log( `[test-keyboard] Launching ${targetUrl}` );
+
+  await playwrightLoad( targetUrl, {
     testingBrowserCreator: playwright.chromium,
     logConsoleOutput: true,
     resolveFromLoad: false,
@@ -103,13 +148,13 @@ export const testKeyboardInteraction = ( async () => {
             document.body && document.body.focus();
           } );
 
-          for ( let i = 0; i < TAB_PRESS_COUNT; i++ ) {
+          for ( let i = 0; i < tabPressCount; i++ ) {
             await page.keyboard.press( 'Tab' );
-            await page.waitForTimeout( TAB_DELAY_MS );
+            await page.waitForTimeout( tabDelay );
             const activeElementInfo = await logActiveElement( i + 1 );
 
-            if ( activeElementInfo.derivedAccessibleName === RESET_ALL_ACCESSIBLE_NAME ) {
-              console.log( `[test-a11y-view] Focused "${RESET_ALL_ACCESSIBLE_NAME}" after ${i + 1} tab presses, pressing spacebar` );
+            if ( activeElementInfo.derivedAccessibleName === accessibleName ) {
+              console.log( `[test-keyboard] Focused "${accessibleName}" after ${i + 1} tab presses, pressing spacebar` );
               await page.keyboard.press( 'Space' );
               console.log( 'success' );
 
@@ -119,11 +164,11 @@ export const testKeyboardInteraction = ( async () => {
             }
           }
 
-          console.error( `[test-a11y-view] Failed to focus "${RESET_ALL_ACCESSIBLE_NAME}" after ${TAB_PRESS_COUNT} tab presses` );
+          console.error( `[test-keyboard] Failed to focus "${accessibleName}" after ${tabPressCount} tab presses` );
           process.exit( 1 );
         }
         catch( error ) {
-          console.error( `[test-a11y-view] Error during tab sequence: ${( error as Error ).message}` );
+          console.error( `[test-keyboard] Error during tab sequence: ${( error as Error ).message}` );
           process.exit( 1 );
         }
       };
