@@ -344,7 +344,6 @@
       box-shadow: inset 0 0 0 1px rgba(220, 157, 16, 0.6);
     }
 
-
     /* ************SAFARI ONLY *********************** */
     .left-safari {
       display: inline-block;
@@ -704,6 +703,10 @@
 
     const VIEW_MODE_STORAGE_KEY = 'a11y-view-mode';
     const DEFAULT_VIEW_MODE = VIEW_MODES.FORMATTED;
+
+    const queryParameters = new URLSearchParams( window.location.search );
+    const SHOULD_PRINT_DEVELOPMENT_VIEW = queryParameters.has( 'printA11yView' );
+    let hasPrintedDevelopmentView = false;
 
     const DEVELOPMENT_ALLOWED_ATTRIBUTES = new Set( [
       'role',
@@ -1622,6 +1625,74 @@
 
       container.appendChild( wrapper );
       refreshDevelopmentFocusHighlight();
+      maybePrintDevelopmentView( container );
+    }
+
+    /**
+     * Logs the development view snapshot to the console when requested via query parameter.
+     *
+     * @param {HTMLElement|null} container
+     */
+    function maybePrintDevelopmentView( container ) {
+      if ( !SHOULD_PRINT_DEVELOPMENT_VIEW || hasPrintedDevelopmentView ) {
+        return;
+      }
+      const snapshot = buildDevelopmentViewSnapshot( container );
+      if ( !snapshot ) {
+        return;
+      }
+      console.log( `[A11y View] Development view snapshot:\n${snapshot}` );
+      hasPrintedDevelopmentView = true;
+    }
+
+    /**
+     * Builds a textual snapshot of the rendered development view lines.
+     *
+     * @param {HTMLElement|null} container
+     * @returns {string}
+     */
+    function buildDevelopmentViewSnapshot( container ) {
+      if ( !container ) {
+        return '';
+      }
+      const lines = Array.from( container.querySelectorAll( '.development-line' ) );
+      if ( lines.length === 0 ) {
+        return '';
+      }
+      return lines
+        .map( line => {
+          const content = ( line.innerText || line.textContent || '' ).trim();
+          if ( !content ) {
+            return '';
+          }
+          const depth = getDevelopmentLineDepth( line );
+          const indent = depth > 0 ? '  '.repeat( depth ) : '';
+          return `${indent}${content}`;
+        } )
+        .filter( Boolean )
+        .join( '\n' )
+        .trim();
+    }
+
+    /**
+     * Converts the inline padding on development view rows to a text indentation depth.
+     *
+     * @param {HTMLElement} line
+     * @returns {number}
+     */
+    function getDevelopmentLineDepth( line ) {
+      if ( !( line instanceof HTMLElement ) ) {
+        return 0;
+      }
+      const paddingValue = line.style ? line.style.paddingLeft : '';
+      if ( !paddingValue ) {
+        return 0;
+      }
+      const numericPadding = parseFloat( paddingValue );
+      if ( Number.isNaN( numericPadding ) ) {
+        return 0;
+      }
+      return Math.max( 0, Math.round( numericPadding / DEVELOPMENT_INDENT_SIZE_EM ) );
     }
 
     /**
