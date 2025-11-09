@@ -25,6 +25,7 @@ const defaultSim = repo !== 'chipper' ? repo : 'circuit-construction-kit-dc';
 const TARGET_MESSAGE = '[SimLifecycle] Sim started';
 const TAB_PRESS_COUNT = 100;
 const TAB_DELAY_MS = 10;
+const ARIA_LIVE_WAIT_TIMEOUT_MS = 1000;
 
 function normalizeHost( host: string ): string {
   return host.endsWith( '/' ) ? host.slice( 0, -1 ) : host;
@@ -163,6 +164,34 @@ export const testKeyboardInteraction = ( async () => {
         }, step );
       };
 
+      const waitForAriaLiveLog = ( targetName: string ): Promise<void> => {
+        return new Promise( resolve => {
+          let resolved = false;
+          const timeoutId = setTimeout( () => cleanup( false ), ARIA_LIVE_WAIT_TIMEOUT_MS );
+
+          const handleConsole = ( msg: playwright.ConsoleMessage ) => {
+            if ( msg.text().includes( '[ARIA-LIVE]' ) ) {
+              cleanup( true );
+            }
+          };
+
+          const cleanup = ( found: boolean ) => {
+            if ( resolved ) {
+              return;
+            }
+            resolved = true;
+            clearTimeout( timeoutId );
+            page.off( 'console', handleConsole );
+            if ( !found ) {
+              console.warn( `[test-keyboard] No aria-live log observed for "${targetName}" within ${ARIA_LIVE_WAIT_TIMEOUT_MS}ms` );
+            }
+            resolve();
+          };
+
+          page.on( 'console', handleConsole );
+        } );
+      };
+
       const runTabSequence = async () => {
         try {
           await page.bringToFront();
@@ -192,10 +221,12 @@ export const testKeyboardInteraction = ( async () => {
 
               if ( activeElementInfo.derivedAccessibleName === target.name ) {
                 console.log( `[test-keyboard] Focused "${target.name}" after ${i + 1} tab presses, pressing ${target.activationKey}` );
+                const ariaLivePromise = waitForAriaLiveLog( target.name );
                 await page.keyboard.press( target.activationKey );
-                console.log( 'success' );
+                console.log( 'finished pressing key' );
 
-                await page.waitForTimeout( 500 );
+                await ariaLivePromise;
+                console.log( `[test-keyboard] Activated "${target.name}"` );
                 foundTarget = true;
                 break;
               }
@@ -229,5 +260,6 @@ export const testKeyboardInteraction = ( async () => {
     }
   } );
 
+  console.log( 'process exited' );
   process.exit( 0 );
 } )();
