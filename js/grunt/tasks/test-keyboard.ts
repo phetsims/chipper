@@ -68,11 +68,29 @@ export const testKeyboardInteraction = ( async () => {
                          getOptionIfProvided<string>( 'sequence', '' ) :
                          'Reset All';
 
-  const accessibleNameSequence = sequenceOption.split( ';' )
+  type TargetAction = {
+    name: string;
+    activationKey: string;
+  };
+
+  const accessibleTargets = sequenceOption.split( ';' )
     .map( name => name.trim() )
     .filter( name => name.length > 0 );
 
-  if ( accessibleNameSequence.length === 0 ) {
+  const targetActions: TargetAction[] = accessibleTargets.map( target => {
+    const colonIndex = target.indexOf( ':' );
+    const name = ( colonIndex === -1 ? target : target.slice( 0, colonIndex ) ).trim();
+    const activationKey = ( colonIndex === -1 ? 'Space' : target.slice( colonIndex + 1 ) ).trim() || 'Space';
+    if ( name.length === 0 ) {
+      throw new Error( `Invalid target entry "${target}", no accessible name provided.` );
+    }
+    return {
+      name: name,
+      activationKey: activationKey
+    };
+  } );
+
+  if ( targetActions.length === 0 ) {
     throw new Error( 'No targets provided via --sequence.' );
   }
 
@@ -113,16 +131,13 @@ export const testKeyboardInteraction = ( async () => {
           // @ts-expect-error
           const activeElement = document.activeElement;
 
-          // guess the accessible name:
-          const accessibleName = activeElement?.getAttribute( 'aria-label' );
           // @ts-expect-error
           const activeElementId = activeElement && 'id' in activeElement ? ( activeElement as HTMLElement ).id : '';
-
-          // if tagName is BUTTON, then get the accessible name from the innerText
+          const accessibleName = activeElement?.getAttribute?.( 'aria-label' );
           let derivedAccessibleName = accessibleName;
 
           // @ts-expect-error
-          if ( activeElement?.tagName === 'BUTTON' && ( activeElement as HTMLElement ).innerText ) {
+          if ( !derivedAccessibleName && activeElement?.tagName === 'BUTTON' && ( activeElement as HTMLElement ).innerText ) {
 
             // @ts-expect-error
             derivedAccessibleName = ( activeElement as HTMLElement ).innerText;
@@ -163,7 +178,7 @@ export const testKeyboardInteraction = ( async () => {
 
           let totalTabPresses = 0;
 
-          for ( const targetName of accessibleNameSequence ) {
+          for ( const target of targetActions ) {
             let foundTarget = false;
 
             for ( let i = 0; i < tabPressCount; i++ ) {
@@ -172,19 +187,22 @@ export const testKeyboardInteraction = ( async () => {
               await page.waitForTimeout( tabDelay );
               const activeElementInfo = await logActiveElement( totalTabPresses );
 
-              if ( activeElementInfo.derivedAccessibleName === targetName ) {
-                console.log( `[test-keyboard] Focused "${targetName}" after ${i + 1} tab presses, pressing spacebar` );
-                await page.keyboard.press( 'Space' );
+              // console.log( `[test-keyboard] Step ${activeElementInfo.stepNumber}: tag=${activeElementInfo.tag} role=${activeElementInfo.role} id=${activeElementInfo.id} ` +
+              //              `aria-label="${activeElementInfo.accessibleName}" derived="${activeElementInfo.derivedAccessibleName}"` );
+
+              if ( activeElementInfo.derivedAccessibleName === target.name ) {
+                console.log( `[test-keyboard] Focused "${target.name}" after ${i + 1} tab presses, pressing ${target.activationKey}` );
+                await page.keyboard.press( target.activationKey );
                 console.log( 'success' );
 
-                await page.waitForTimeout( 250 );
+                await page.waitForTimeout( 500 );
                 foundTarget = true;
                 break;
               }
             }
 
             if ( !foundTarget ) {
-              console.error( `[test-keyboard] Failed to focus "${targetName}" after ${tabPressCount} tab presses` );
+              console.error( `[test-keyboard] Failed to focus "${target.name}" after ${tabPressCount} tab presses` );
               process.exit( 1 );
             }
           }
