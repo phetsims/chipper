@@ -240,6 +240,17 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
     const fluentKeyMap = ChipperStringUtils.getFluentKeyMap( englishStringContents );
     const ftl = ChipperStringUtils.createFluentFileFromData( fluentKeyMap.values() );
 
+    // Build a reverse lookup from Fluent key → original JSON key for bijective mapping
+    const fluentToJsonKey = new Map<string, string>();
+    fluentKeyMap.forEach( ( entry, jsonKey ) => {
+
+      // Safety check to avoid collisions
+      const prev = fluentToJsonKey.get( entry.fluentKey );
+      assert( !prev || prev === jsonKey, `Fluent key collision for "${entry.fluentKey}" from "${prev}" and "${jsonKey}"` );
+
+      fluentToJsonKey.set( entry.fluentKey, jsonKey );
+    } );
+
     // Every string referenced in simulation code, in its fluent key form. A leading '.' is removed from the key assembled in stringAccesses.
     const fluentFormsAccessed = stringAccesses.map( stringAccess => ChipperStringUtils.createFluentKey( stringAccess.substring( 1 ) ) );
 
@@ -254,9 +265,11 @@ export default function getStringMap( mainRepo: string, locales: string[], phetL
         const references = getFluentInternalReferences( ftl, fluentKey );
         references.forEach( reference => {
 
-          // Convert the fluent key back to its JSON style, replacing underscores with dots. Add a leading dot back to match the
-          // format of the stringAccesses.
-          const jsonFormattedReference = ( '.' + reference ).replace( /_/g, '.' );
+          // Convert the fluent key back to its JSON key using the reverse lookup (lossless, supports underscores anywhere)
+          const jsonKey = fluentToJsonKey.get( reference );
+          assert( jsonKey, `Unknown Fluent reference "${reference}" (no mapping back to JSON key).` );
+
+          const jsonFormattedReference = '.' + jsonKey;
           if ( !stringAccesses.includes( jsonFormattedReference ) ) {
             stringAccesses.push( jsonFormattedReference );
           }
