@@ -29,7 +29,7 @@
  * ### GET /status
  * Returns daemon status and current focus
  * ```bash
- * curl http://localhost:3001/status | jq
+ * curl -s http://localhost:3001/status | jq
  * ```
  * Response:
  * ```json
@@ -43,7 +43,7 @@
  * ### POST /cmd
  * Execute one or more commands
  * ```bash
- * curl -X POST http://localhost:3001/cmd \
+ * curl -s -X POST http://localhost:3001/cmd \
  *   -H "Content-Type: application/json" \
  *   -d '{"commands": [{"tab": 5}, {"find": "Values", "press": "Space"}]}' | jq
  * ```
@@ -51,8 +51,11 @@
  * ### POST /reload
  * Reload the simulation page (useful when things go wrong)
  * ```bash
- * curl -X POST http://localhost:3001/reload | jq
+ * curl -s -X POST http://localhost:3001/reload | jq
  * ```
+ *
+ * **Note:** Always use `-s` (silent) flag with curl to suppress the progress meter,
+ * which saves tokens and reduces output noise.
  *
  * ## Command API
  *
@@ -114,10 +117,20 @@
  * ```
  * Milliseconds. Useful for waiting for animations or async updates.
  *
- * ## Complete Example
+ * ### Navigation
  *
+ * Navigate to a different simulation or URL:
+ * ```json
+ * { "navigate": "http://localhost/number-pairs/number-pairs_en.html?brand=phet-io&ea&debugger&screens=5&phetioStandalone" }
+ * ```
+ * Loads the new URL and waits for the sim to be ready (up to 30 seconds).
+ * The current page state is replaced. Use this to switch between different sims or screens.
+ *
+ * ## Complete Examples
+ *
+ * Basic interaction sequence:
  * ```bash
- * curl -X POST http://localhost:3001/cmd \
+ * curl -s -X POST http://localhost:3001/cmd \
  *   -H "Content-Type: application/json" \
  *   -d '{
  *     "commands": [
@@ -126,6 +139,19 @@
  *       { "wait": 100 },
  *       { "find": "Values", "press": "Space" },
  *       { "getFocus": true }
+ *     ]
+ *   }' | jq
+ * ```
+ *
+ * Navigate to a different sim:
+ * ```bash
+ * curl -s -X POST http://localhost:3001/cmd \
+ *   -H "Content-Type: application/json" \
+ *   -d '{
+ *     "commands": [
+ *       { "navigate": "http://localhost/number-pairs/number-pairs_en.html?brand=phet-io&ea&debugger&screens=5&phetioStandalone&logSimLifecycle" },
+ *       { "tab": 5 },
+ *       { "find": "Reset All" }
  *     ]
  *   }' | jq
  * ```
@@ -153,6 +179,19 @@
  *     "role": "checkbox",
  *     "checked": true
  *   }
+ * }
+ * ```
+ *
+ * When ARIA live region announcements occur, they are captured:
+ * ```json
+ * {
+ *   "success": true,
+ *   "command": { "press": "ArrowDown" },
+ *   "action": "Pressed ArrowDown",
+ *   "focus": { "name": "Conventional", "role": "" },
+ *   "ariaLive": [
+ *     "Conventional current selected"
+ *   ]
  * }
  * ```
  *
@@ -205,11 +244,11 @@
 
 /* eslint-disable no-undef */
 
+import http from 'http';
 import playwrightLoad from '../../../../perennial-alias/js/common/playwrightLoad.js';
 import getOption, { getOptionIfProvided } from '../../../../perennial-alias/js/grunt/tasks/util/getOption.js';
 import getRepo from '../../../../perennial-alias/js/grunt/tasks/util/getRepo.js';
 import playwright from '../../../../perennial-alias/js/npm-dependencies/playwright.js';
-import http from 'http';
 
 const DEFAULT_HOST = 'http://localhost';
 const DEFAULT_PORT = 80;
@@ -221,6 +260,7 @@ const defaultSim = repo !== 'chipper' ? repo : 'circuit-construction-kit-dc';
 const TARGET_MESSAGE = '[SimLifecycle] Sim started';
 const TAB_PRESS_COUNT = 100;
 const TAB_DELAY_MS = 10;
+const ARIA_LIVE_WAIT_TIMEOUT_MS = 500;
 
 function normalizeHost( host: string ): string {
   return host.endsWith( '/' ) ? host.slice( 0, -1 ) : host;
@@ -290,6 +330,9 @@ type CommandResult = {
   /** Focus info after command execution */
   focus: FocusInfo;
 
+  /** ARIA live region announcements captured after command execution */
+  ariaLive?: string[];
+
   /** Full PDOM tree (only present for getPDOM commands) */
   pdom?: string;
 
@@ -308,7 +351,38 @@ type Command =
   | { find: string; press?: string }
   | { getPDOM: true }
   | { getFocus: true }
-  | { wait: number };
+  | { wait: number }
+  | { navigate: string };
+
+/**
+ * Wait for and capture ARIA live region announcements.
+ * Returns all ARIA-LIVE messages captured within the timeout period.
+ */
+function waitForAriaLiveMessages( page: playwright.Page, timeoutMs: number ): Promise<string[]> {
+  return new Promise( resolve => {
+    const ariaLiveMessages: string[] = [];
+    // eslint-disable-next-line prefer-const
+    let timeoutId: NodeJS.Timeout;
+
+    const handleConsole = ( msg: playwright.ConsoleMessage ) => {
+      const text = msg.text();
+      if ( text.includes( '[ARIA-LIVE]' ) ) {
+        // Extract just the message content, removing the [ARIA-LIVE] prefix
+        const message = text.replace( /^\[ARIA-LIVE\]\s*/, '' );
+        ariaLiveMessages.push( message );
+      }
+    };
+
+    const cleanup = () => {
+      clearTimeout( timeoutId );
+      page.off( 'console', handleConsole );
+      resolve( ariaLiveMessages );
+    };
+
+    page.on( 'console', handleConsole );
+    timeoutId = setTimeout( cleanup, timeoutMs );
+  } );
+}
 
 /**
  * Get information about the currently focused element.
@@ -354,51 +428,60 @@ async function getFocusInfo( page: playwright.Page ): Promise<FocusInfo> {
 /**
  * Execute a single command in the simulation.
  */
-async function executeCommand( page: playwright.Page, cmd: Command ): Promise<CommandResult> {
+async function executeCommand( page: playwright.Page, cmd: Command, simReadyRef: { current: boolean } ): Promise<CommandResult> {
   const tabDelay = Number( getOptionIfProvided( 'tabDelay', `${TAB_DELAY_MS}` ) );
 
   try {
     // Tab forward
     if ( 'tab' in cmd ) {
       const count = cmd.tab;
+      const ariaLivePromise = waitForAriaLiveMessages( page, ARIA_LIVE_WAIT_TIMEOUT_MS );
       for ( let i = 0; i < count; i++ ) {
         await page.keyboard.press( 'Tab' );
         await page.waitForTimeout( tabDelay );
       }
+      const ariaLive = await ariaLivePromise;
       return {
         success: true,
         command: cmd,
         action: `Tabbed ${count} time(s)`,
-        focus: await getFocusInfo( page )
+        focus: await getFocusInfo( page ),
+        ariaLive: ariaLive.length > 0 ? ariaLive : undefined
       };
     }
 
     // Tab backward
     if ( 'shiftTab' in cmd ) {
       const count = cmd.shiftTab;
+      const ariaLivePromise = waitForAriaLiveMessages( page, ARIA_LIVE_WAIT_TIMEOUT_MS );
       for ( let i = 0; i < count; i++ ) {
         await page.keyboard.press( 'Shift+Tab' );
         await page.waitForTimeout( tabDelay );
       }
+      const ariaLive = await ariaLivePromise;
       return {
         success: true,
         command: cmd,
         action: `Shift+Tabbed ${count} time(s)`,
-        focus: await getFocusInfo( page )
+        focus: await getFocusInfo( page ),
+        ariaLive: ariaLive.length > 0 ? ariaLive : undefined
       };
     }
 
     // Press a key
     if ( 'press' in cmd ) {
       const key = cmd.press;
+      const ariaLivePromise = waitForAriaLiveMessages( page, ARIA_LIVE_WAIT_TIMEOUT_MS );
       // @ts-expect-error
       await page.keyboard.press( key );
       await page.waitForTimeout( tabDelay );
+      const ariaLive = await ariaLivePromise;
       return {
         success: true,
         command: cmd,
         action: `Pressed ${key}`,
-        focus: await getFocusInfo( page )
+        focus: await getFocusInfo( page ),
+        ariaLive: ariaLive.length > 0 ? ariaLive : undefined
       };
     }
 
@@ -452,13 +535,16 @@ async function executeCommand( page: playwright.Page, cmd: Command ): Promise<Co
         const focus = await getFocusInfo( page );
 
         if ( focus.name === targetName ) {
+          const ariaLivePromise = waitForAriaLiveMessages( page, ARIA_LIVE_WAIT_TIMEOUT_MS );
           await page.keyboard.press( pressKey );
           await page.waitForTimeout( tabDelay );
+          const ariaLive = await ariaLivePromise;
           return {
             success: true,
             command: cmd,
             action: `Tabbed ${i + 1} time(s), found "${targetName}", pressed ${pressKey}`,
-            focus: await getFocusInfo( page )
+            focus: await getFocusInfo( page ),
+            ariaLive: ariaLive.length > 0 ? ariaLive : undefined
           };
         }
       }
@@ -470,6 +556,48 @@ async function executeCommand( page: playwright.Page, cmd: Command ): Promise<Co
         focus: await getFocusInfo( page ),
         error: `Target "${targetName}" not found`
       };
+    }
+
+    // Navigate to a new URL
+    if ( 'navigate' in cmd ) {
+      const url = cmd.navigate;
+      try {
+        simReadyRef.current = false;
+        await page.goto( url, { waitUntil: 'load' } );
+
+        // Wait for sim to be ready (up to 30 seconds)
+        const maxWaitTime = 30000;
+        const startTime = Date.now();
+        while ( !simReadyRef.current && ( Date.now() - startTime ) < maxWaitTime ) {
+          await page.waitForTimeout( 100 );
+        }
+
+        if ( !simReadyRef.current ) {
+          return {
+            success: false,
+            command: cmd,
+            action: `Navigated to ${url} but sim did not become ready within ${maxWaitTime}ms`,
+            focus: await getFocusInfo( page ),
+            error: 'Sim ready timeout'
+          };
+        }
+
+        return {
+          success: true,
+          command: cmd,
+          action: `Navigated to ${url}`,
+          focus: await getFocusInfo( page )
+        };
+      }
+      catch( error ) {
+        return {
+          success: false,
+          command: cmd,
+          action: `Failed to navigate to ${url}`,
+          focus: await getFocusInfo( page ),
+          error: ( error as Error ).message
+        };
+      }
     }
 
     // Unknown command
@@ -499,7 +627,7 @@ export const keyboardDaemon = ( async () => {
   console.log( `[keyboard-daemon] HTTP server will start on port ${daemonPort}` );
   console.log( '[keyboard-daemon]' );
 
-  let simReady = false;
+  const simReadyRef = { current: false };
 
   await playwrightLoad( targetUrl, {
     testingBrowserCreator: playwright.chromium,
@@ -513,8 +641,8 @@ export const keyboardDaemon = ( async () => {
 
       page.on( 'console', ( msg: playwright.ConsoleMessage ) => {
         const text = msg.text();
-        if ( text.includes( TARGET_MESSAGE ) && !simReady ) {
-          simReady = true;
+        if ( text.includes( TARGET_MESSAGE ) && !simReadyRef.current ) {
+          simReadyRef.current = true;
           console.log( '[keyboard-daemon] ✓ Sim ready' );
           console.log( '[keyboard-daemon]' );
         }
@@ -537,9 +665,9 @@ export const keyboardDaemon = ( async () => {
         if ( req.url === '/status' && req.method === 'GET' ) {
           res.writeHead( 200 );
           res.end( JSON.stringify( {
-            ready: simReady,
-            url: targetUrl,
-            focus: simReady ? await getFocusInfo( page ) : null
+            ready: simReadyRef.current,
+            url: page.url(),
+            focus: simReadyRef.current ? await getFocusInfo( page ) : null
           }, null, 2 ) );
           return;
         }
@@ -548,7 +676,7 @@ export const keyboardDaemon = ( async () => {
         if ( req.url === '/reload' && req.method === 'POST' ) {
           try {
             console.log( '[keyboard-daemon] Reloading page...' );
-            simReady = false;
+            simReadyRef.current = false;
             await page.reload( { waitUntil: 'load' } );
             await page.waitForTimeout( 1000 );
             res.writeHead( 200 );
@@ -563,12 +691,6 @@ export const keyboardDaemon = ( async () => {
 
         // Command endpoint
         if ( req.url === '/cmd' && req.method === 'POST' ) {
-          if ( !simReady ) {
-            res.writeHead( 503 );
-            res.end( JSON.stringify( { error: 'Sim not ready yet' }, null, 2 ) );
-            return;
-          }
-
           let body = '';
           req.on( 'data', chunk => {
             body += chunk.toString();
@@ -588,7 +710,21 @@ export const keyboardDaemon = ( async () => {
 
               const results: CommandResult[] = [];
               for ( const cmd of commands ) {
-                const result = await executeCommand( page, cmd );
+                // Check if sim is ready, but allow navigate commands to proceed regardless
+                if ( !simReadyRef.current && !( 'navigate' in cmd ) ) {
+                  results.push( {
+                    success: false,
+                    command: cmd,
+                    focus: { name: 'unknown', role: '' },
+                    error: 'Sim not ready yet (use navigate command to load a new sim)'
+                  } );
+                  if ( !continueOnError ) {
+                    break;
+                  }
+                  continue;
+                }
+
+                const result = await executeCommand( page, cmd, simReadyRef );
                 results.push( result );
                 console.log( `[keyboard-daemon] ${JSON.stringify( cmd )} → ${result.action || result.error}` );
 
@@ -622,11 +758,11 @@ export const keyboardDaemon = ( async () => {
         console.log( '[keyboard-daemon]   POST /cmd     - Execute command(s)' );
         console.log( '[keyboard-daemon]   POST /reload  - Reload the simulation page' );
         console.log( '[keyboard-daemon]' );
-        console.log( '[keyboard-daemon] Example commands:' );
-        console.log( `[keyboard-daemon]   curl http://localhost:${daemonPort}/status | jq` );
-        console.log( `[keyboard-daemon]   curl -X POST http://localhost:${daemonPort}/cmd -d '{"commands":[{"tab":5}]}' | jq` );
-        console.log( `[keyboard-daemon]   curl -X POST http://localhost:${daemonPort}/cmd -d '{"commands":[{"find":"Values","press":"Space"}]}' | jq` );
-        console.log( `[keyboard-daemon]   curl -X POST http://localhost:${daemonPort}/reload | jq` );
+        console.log( '[keyboard-daemon] Example commands (use -s to suppress progress meter):' );
+        console.log( `[keyboard-daemon]   curl -s http://localhost:${daemonPort}/status | jq` );
+        console.log( `[keyboard-daemon]   curl -s -X POST http://localhost:${daemonPort}/cmd -d '{"commands":[{"tab":5}]}' | jq` );
+        console.log( `[keyboard-daemon]   curl -s -X POST http://localhost:${daemonPort}/cmd -d '{"commands":[{"find":"Values","press":"Space"}]}' | jq` );
+        console.log( `[keyboard-daemon]   curl -s -X POST http://localhost:${daemonPort}/reload | jq` );
         console.log( '[keyboard-daemon]' );
         console.log( '[keyboard-daemon] Press Ctrl+C to stop the daemon' );
         console.log( '[keyboard-daemon]' );
